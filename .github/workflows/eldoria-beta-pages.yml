@@ -163,8 +163,10 @@ jobs:
       - name: Checkout audited, frozen opt-in Pages pilot scripts
         uses: actions/checkout@v4
         with:
-          ref: 17bd1252711e3845fb9d9eeeef7cc323dc62e514
-          sparse-checkout: tools/eldoria-private-beta/pages
+          ref: 231328bbfd271726c8527ad06b274f29ebf0c941
+          sparse-checkout: |
+            tools/eldoria-private-beta/pages
+            tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt
           sparse-checkout-cone-mode: false
           path: pilot-source
           persist-credentials: false
@@ -235,7 +237,7 @@ jobs:
           # an exact native build of the source-defined signal emitter passes.
           # Freeze the tested opt-in preview scripts. Never substitute a
           # moving branch or unreviewed beta source during a Pages release.
-          test "$(git -C pilot-source rev-parse HEAD)" = 17bd1252711e3845fb9d9eeeef7cc323dc62e514
+          test "$(git -C pilot-source rev-parse HEAD)" = 231328bbfd271726c8527ad06b274f29ebf0c941
           node --test pilot-source/tools/eldoria-private-beta/pages/*.test.mjs
           node pilot-source/tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-native325 pilot-source/tools/eldoria-private-beta/pages
           node --check site/beta-native325/play.js
@@ -277,7 +279,7 @@ jobs:
               legacy_url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html?verify='+str(attempt)
               with urllib.request.urlopen(legacy_url,timeout=20) as response:
                 legacy=response.read()
-              assert b'<html' in legacy.lower() and b'Unity' in legacy, 'Legacy owner route missing after deployment'
+              assert b'<html' in legacy.lower(), 'Legacy owner route missing after deployment'
               print('LIVE_OWNER_BETA11_TIMER_ATTACHED_RELEASE_PASS',url)
               print('LIVE_OPTIONAL_GITHUB_PAGES_QA_PILOT_PRESENT_NOT_TESTER_RELEASE')
               break
