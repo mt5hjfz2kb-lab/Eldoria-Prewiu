@@ -453,9 +453,21 @@ namespace Eldoria.BreachWatch
                 resourceAmounts[i]=Label(resourceChips[i],"Actual quantity",17,TextAnchor.MiddleLeft,TextIvory,true);
                 At(resourceAmounts[i].rectTransform,47,5,90,35);
             }
-            centerMark=Rect("Open-air Breach witness sigil / no opaque plaque",uiRoot);
-            var rift=centerMark.gameObject.AddComponent<BreachWatchRiftSeparator>();
-            rift.raycastTarget=false;
+            // One authentic transparent gold/orange break and chiseled
+            // horizontal filigree from the owner's accepted screenshot.
+            // This replaces, never overlays, the former generic X-shaped
+            // procedural Breach; it is decoration, not a gameplay control.
+            centerMark=Rect("One owner-approved transparent Breach signal",uiRoot);
+            var approvedRift=Resources.Load<Sprite>(
+                "VigiliaArt/OwnerControls/breach_signal");
+            if(!approvedRift)
+                throw new InvalidOperationException(
+                    "Vigilia requires its original standalone orange Breach artwork");
+            var crack=centerMark.gameObject.AddComponent<Image>();
+            crack.sprite=approvedRift;
+            crack.type=Image.Type.Simple;
+            crack.preserveAspect=true;
+            crack.raycastTarget=false;
             objective=Rect("Chapter side tablet",uiRoot);
             var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var angledPlate=Resources.Load<Sprite>(
