@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T14:28:26.967Z",
+  "updated_at": "2026-11-09T14:35:10.640Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7242,7 +7242,7 @@
       "title": "EONSCAR — prueba reversible de identidad y entrada al juego",
       "owner": "chatgpt-eonscar-branding-trial-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eonscar-branding-trial-20261109",
@@ -7252,7 +7252,8 @@
         "docs/branding/eonscar-trial/**",
         "tools/eonscar-branding-trial/**",
         ".github/workflows/eonscar-branding-trial-check.yml",
-        ".github/workflows/eonscar-branding-native.yml"
+        ".github/workflows/eonscar-branding-native.yml",
+        "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
       ],
       "resources": [],
       "budget_eur": 0,
@@ -7260,11 +7261,11 @@
       "base_main_sha": null,
       "phase": "IMAGE_IN_PR_UI_LAYOUT_SMOKE_PASS_NATIVE_PROBE_PREP",
       "next": "Native workflow ready in separate branch; request exclusive Windows runner only after live registry says free. No Unity run yet, no merge or tester publication.",
-      "note": "CI eonscar source-sanity PASS at de03147b0afbcf4297827ddb8897a11bff53edfb; domain EarlyRetentionRules failure CS0103 unrelated; public itch.io browser restricted. Logo image not yet versioned in GitHub. No native Unity execution, no product rename.",
+      "note": "PR184 holds exact 512x384 QA image derived from owner-selected 1448x1086 art, with hash/provenance and reversible UI. Source/layout CI PASS. AI art route registered; native Windows still reserved by construction timer.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Opt-in presentation-only prototype with existing owner-selected generated art; no new 3D or gameplay assets.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-selected AI-generated logo with exact source/provenance and mandatory real Unity artistic QA.",
       "last_verified": {
         "browser_preview": "Chromium PASS: desktop 1920x1080, landscape 844x390, portrait 390x844; logo and two buttons work; no JS exceptions",
         "unity_native": "NOT_RUN",
@@ -7286,7 +7287,8 @@
         "native_probe_source_ready": true,
         "native_executed": false,
         "layout_test_cases": 9
-      }
+      },
+      "art_production_request": "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
     }
   ],
   "history": [
