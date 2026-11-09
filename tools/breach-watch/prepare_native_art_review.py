@@ -41,6 +41,9 @@ def collect(root:Path, out:Path, source_sha:str):
         digest=hashlib.sha256(source.read_bytes()).hexdigest()
         if digest!=shot.get("sha256"):
             raise ValueError(f"Untrusted/stale image digest: {name}")
+        expected_selection="bastion" if "-bastion-" in name else ""
+        if shot.get("selected")!=expected_selection:
+            raise ValueError(f"Real city/selected-Bastion evidence mismatch: {name}")
         wh=tuple(map(int,name.removesuffix(".png").split("-")[-1].split("x")))
         if (shot.get("width"),shot.get("height"))!=wh:
             raise ValueError(f"Wrong Unity output resolution: {name}")
