@@ -549,6 +549,8 @@ namespace Eldoria.ReferenceClean.Editor {
     h.Guidance.FollowObjective();
     Need(h.Hud.NarrativeOpen,"First march needs its contextual explanation");
    },"march explanation precedes preparation");
+   // Let the newly activated narrative canvas register its raycast graphics.
+   yield return new WaitForSecondsRealtime(.2f);
    for(int page=0;page<12&&h.Hud.NarrativeOpen;page++){
     Click(h.Hud.Modal.Extra);yield return new WaitForSecondsRealtime(.18f);
    }

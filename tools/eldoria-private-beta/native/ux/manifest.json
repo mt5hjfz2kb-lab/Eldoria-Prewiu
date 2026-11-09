@@ -8,7 +8,7 @@
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
       "overlay": "ValoriaIntegrationBuild.cs.txt",
       "baseline_sha256": "51b70f48acb1c9d82f9c8f8ea4c051b052863145ba2005c9c385a1e5f35ab59f",
-      "candidate_sha256": "da1c108cbbe32ad05f0c6ba79fca65d649d53b264704814a010590e4f47f95be"
+      "candidate_sha256": "f24a4b7290bf5154f510a23046bde58269345158c1abf9bd516af4036e489d91"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
