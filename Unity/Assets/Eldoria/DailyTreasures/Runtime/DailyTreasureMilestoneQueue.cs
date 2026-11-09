@@ -104,9 +104,13 @@ namespace Eldoria.DailyTreasures
                     (1<<report.DiscoveryKind))==0)
                 return false;
             var order=state.Retention.Orders.Find(o=>
-                o!=null && o.Id==orderId && o.Claimed &&
-                o.Kind==report.DiscoveryKind);
-            return order!=null;
+                o!=null && o.Id==orderId);
+            // A real claimed, old order can be pruned on the same command
+            // that creates the immutable mail. Its receipt, family and saved
+            // discovery mask remain authoritative, even without an Order row.
+            // If an order still exists, it MUST be confirmed as claimed.
+            return order==null ||
+                   (order.Claimed && order.Kind==report.DiscoveryKind);
         }
 
         // The UI may only queue a chapter victory or first family discovery
