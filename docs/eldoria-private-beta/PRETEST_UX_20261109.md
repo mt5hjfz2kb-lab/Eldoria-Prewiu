@@ -1,7 +1,7 @@
 # PR179 — owner's pretester corrections
 
-Status: **NATIVE UX, FULL JOURNEY AND WEBGL BUILD PASS — BROWSER VALIDATION / PUBLICATION PENDING**.
-The stable owner-tested mobile9 site remains unchanged.
+Status: **MOBILE10 PUBLISHED — NATIVE, BROWSER AND LIVE HOSTED ENTRY/RELOAD PASS**.
+The owner site now serves mobile10. The original mobile9 package and Sites version6 remain available for rollback.
 
 User requested twelve pretester corrections after confirming beta9 was playable and initially stable.
 These changes target that frozen runtime. They do not replace PR173's new interface, PR181's treasures work, their canonical source files, or their resource ownership.
@@ -95,3 +95,15 @@ Run42596176998 completed successfully: package and macOS Apple GPU WebKit. Artif
 Single paired desktop comparison: used heap -0.29%, capacity unchanged, resident peak +3.11%, within publication bounds. This is not a physical-iPhone stability certificate.
 
 Candidate package13665750302 SHA256 `8097c6836d743347e5af536db89e3fe181a2547836ad21f91b9e6c8c97c5a62d`. Publication workflow main commit18f889fb85cf2ea2a900975b2d7a4f6958df0a72 started; final live version and hosted check still pending.
+
+## Owner publication
+
+Pages42600463889 succeeded; owner shell artifact13664913737. Existing Sites project retained its public audience and URL; version7 source `b24504b886d127a3f1bf58be17d33245c5922389`, deployment `appgdep_6af19fad4c94819191c2f297403a1286` succeeded at2026-11-09T10:26:02Z.
+
+[Owner beta10](https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=native325-mobile10-pretest-ux). Hosted WebKit recheck42600894847 pending at this checkpoint. No physical device certificate, APK update, tester invitation or PR merge is claimed.
+
+## Final hosted verification
+
+[42600894847](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42600894847) **SUCCESS** against the actual owner Sites URL. Artifact13665603942 SHA256 `0d4d62f29ebd8b7db984a95a856117c2b372a973b98502baaf370fd4b4100357`. Exact mobile10 identity verified, early entry, 90-second initial observation, name entry, reload and 45-second post-reload observation passed without runtime errors. Downloaded `reloaded.png` visibly retains **Beta QA** and the opening chronicle; Mail is the only initial dock destination.
+
+Implementation and web owner delivery are complete. User physical-device confirmation remains; this work does not claim an APK update, premium-art approval, external tester release or a merge of the frozen beta overlays into canonical main. Earlier pending entries above are historical checkpoints.
