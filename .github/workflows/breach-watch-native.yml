@@ -106,7 +106,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]') || contains(github.event.head_commit.message, '[vigilia-owner-controls]') || contains(github.event.head_commit.message, '[vigilia-owner-close]') || contains(github.event.head_commit.message, '[vigilia-owner-rift]') || contains(github.event.head_commit.message, '[vigilia-button-art]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]') || contains(github.event.head_commit.message, '[vigilia-owner-controls]') || contains(github.event.head_commit.message, '[vigilia-owner-close]') || contains(github.event.head_commit.message, '[vigilia-owner-rift]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -161,9 +161,6 @@ jobs:
       - name: Paint source-faithful single dark material from approved empty panel
         if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
         run: python tools/breach-watch/author_material_from_owner_reference.py
-      - name: Author unified blue-gold navigation and upgrade family from approved source
-        if: contains(github.event.head_commit.message, '[vigilia-button-art]')
-        run: python tools/breach-watch/author_unified_buttons.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
@@ -440,22 +437,8 @@ jobs:
               assert 'guid: '+item['guid'] in im and 'spriteMode: 1' in im
               assert 'spriteBorder: {x: '+str(item['border'][0]) in im
           hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          # Legacy owner-source assets stay byte-perfect and auditable.
-          # Only profile/resource remain visible; the rejection of the old
-          # burgundy CTA was explicitly owner-directed, not a lost license.
-          for name in ('profile_bar','resource_capsule'):
+          for name in expected:
               assert 'VigiliaArt/OwnerControls/'+name in hud,name
-          assert 'VigiliaArt/UnifiedButtons/action_gold' in hud
-          assert 'VigiliaArt/OwnerControls/upgrade_button' not in hud
-          unified=folder.parent/'UnifiedButtons'
-          authored=json.loads((unified/'manifest.json').read_text())
-          assert authored['no_baked_gameplay_text'] is True
-          assert len(authored['files'])==12
-          for item in authored['files']:
-              src=unified/(item['name']+'.png')
-              assert hashlib.sha256(src.read_bytes()).hexdigest()==item['sha256']
-              meta=src.with_suffix('.png.meta').read_text()
-              assert 'guid: '+item['guid'] in meta
           assert 'BreachWatchCrossedHammers' not in hud
           assert 'VigiliaArt/PremiumSurfaces/burgundy_action' not in hud
           assert 'VigiliaArt/PremiumSurfaces/profile_plate' not in hud
@@ -694,7 +677,7 @@ jobs:
           JS
   native:
     needs: [owner-preflight, source-syntax, approved-art-integrity]
-    if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-button-art]')
+    if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 120
     steps:

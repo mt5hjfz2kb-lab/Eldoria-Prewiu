@@ -194,11 +194,11 @@ namespace Eldoria.BreachWatch.Editor
                  b.gameObject.activeInHierarchy),
                  "Future utility buttons must not appear before their gameplay exists");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
-            Need(ui.UsesUnifiedNavigation && ui.UsesApprovedReferenceMedallions &&
+            Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
                  ui.UsesPremiumSculptedMedallions && ui.UsesPremiumForgedPortraitFrame &&
                  ui.UsesCompactRealmCrest && ui.UsesSinglePremiumContext &&
-                 ui.UsesExactOwnerApprovedGoldBorder && ui.UsesIntegratedGoldAction,
-                "Vigilia needs one real blue-gold nav dock, source-composited tiles, a nine-sliced gold gameplay action and the live Bastion frame");
+                 ui.UsesExactOwnerApprovedGoldBorder && ui.UsesPremiumBurgundyAction,
+                "Vigilia needs original 5 sculpted medallions, true 9-slice basalt, deep burgundy gameplay button and premium brass 3D portrait frame");
 
 
             var shots = new List<Shot>();
@@ -603,15 +603,7 @@ namespace Eldoria.BreachWatch.Editor
                 Need(ui.VisibleResourceCount == (ui.CurrentSnapshot.ShowFood?3:2),
                      "The native screenshot shows the wrong number of live resource chips: "+name);
                 var nav = ui.NavButtons;
-                Need(nav.Count==5 && nav.All(x=>x), "Five real underlying navigation destinations are required");
-                var dock=ui.GetComponentsInChildren<Image>(true)
-                    .Where(x=>x && x.sprite && x.sprite.name=="nav_dock").ToArray();
-                Need(dock.Length==1 && dock[0].type==Image.Type.Sliced &&
-                     dock[0].gameObject.activeInHierarchy && !dock[0].raycastTarget,
-                     "Missing integrated base bar or duplicated dock painted over World: "+name);
-                Need(!ui.GetComponentsInChildren<BreachWatchNavFiligree>(true)
-                         .Any(x=>x.enabled && x.gameObject.activeInHierarchy),
-                     "Old thin copper links still float behind the new one-piece bar: "+name);
+                Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
                 // An approved medallion image is now ONE authority:
                 // no secondary button background, glyph or extra ring.
                 // A transparent hit-only Image on the Button is permitted,
@@ -633,7 +625,7 @@ namespace Eldoria.BreachWatch.Editor
                     var painted=button.GetComponentsInChildren<BreachWatchPlate>(true);
                     Need(painted.Length==1 && painted[0] &&
                          painted[0].sprite &&
-                         painted[0].sprite.name.StartsWith("nav_"+expectedMedallions[index]) &&
+                         painted[0].sprite.name==expectedMedallions[index] &&
                          !painted[0].raycastTarget &&
                          painted[0].type==Image.Type.Simple,
                          "Incorrect or duplicated approved icon art in "+
@@ -646,17 +638,11 @@ namespace Eldoria.BreachWatch.Editor
                     Need(button.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
                          "Old vector icons still layered under a final medallion in "+
                          name+"/"+button.name);
-                    var liveCaptions=button.GetComponentsInChildren<Text>(true);
-                    Need(liveCaptions.Length==1 && liveCaptions[0].name=="Real navigation caption" &&
-                         !liveCaptions[0].raycastTarget &&
-                         liveCaptions[0].rectTransform.rect.height>=17f &&
-                         liveCaptions[0].fontSize>=14,
-                         "One live destination inscription must sit inside its tile: "+name+"/"+button.name);
                     var visiblePaint=button.GetComponentsInChildren<Graphic>(true)
-                        .Count(g=>g && g.enabled && g.gameObject.activeInHierarchy &&
-                            g.color.a>.01f);
-                    Need(visiblePaint==(button.gameObject.activeInHierarchy?2:0),
-                         "Duplicated nav symbol or caption paints over the one-piece tile: "+
+                        .Count(g=>g && g.enabled &&
+                            g.gameObject.activeInHierarchy && g.color.a>.01f);
+                    Need(visiblePaint==(button.gameObject.activeInHierarchy?1:0),
+                         "Unimplemented or duplicated painted navigation appears in "+
                          name+"/"+button.name);
                 }
                 float previousRight = -1;
@@ -970,12 +956,12 @@ namespace Eldoria.BreachWatch.Editor
                     var actionArt=ui.BuildingAction.GetComponentInChildren<BreachWatchPlate>(true);
                     var actionHit=ui.BuildingAction.GetComponent<Image>();
                     Need(actionArt && actionArt.sprite &&
-                         actionArt.sprite.name=="action_gold" &&
-                         actionArt.type==Image.Type.Sliced &&
-                         !actionArt.preserveAspect && !actionArt.raycastTarget &&
+                         actionArt.sprite.name=="upgrade_button" &&
+                         actionArt.type==Image.Type.Simple &&
+                         actionArt.preserveAspect && !actionArt.raycastTarget &&
                          actionHit && actionHit.color.a<=.001f &&
                          actionHit.raycastTarget,
-                         "Premium CTA must render one complete nine-sliced gold sprite plus invisible full-size touch target: "+name);
+                         "Owner's hammered button must render as one undistorted original image plus only an invisible native hit area: "+name);
                     Need(ui.BuildingAction.transition==Selectable.Transition.ColorTint &&
                          ui.BuildingAction.targetGraphic==actionArt &&
                          ui.BuildingAction.colors.disabledColor==Color.white,
@@ -986,11 +972,12 @@ namespace Eldoria.BreachWatch.Editor
                          ui.BuildingAction.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
                          "Duplicated upgrade art or old procedural glyph remains layered over the CTA: "+name);
                     var visualRect=(RectTransform)actionArt.transform;
-                    Need(visualRect.rect.height>=action.rect.height-5f &&
-                         Mathf.Abs(visualRect.rect.width-action.rect.width)<.85f &&
-                         actionArt.sprite.border.x>=30f &&
-                         actionArt.sprite.border.z>=30f,
-                         "True nine-slice gold CTA misses hit area or loses authored corner proportions: "+name);
+                    float artAspect=actionArt.sprite.rect.width/
+                        Mathf.Max(1f,actionArt.sprite.rect.height);
+                    Need(visualRect.rect.height>22f &&
+                         Mathf.Abs(visualRect.rect.height*artAspect-
+                                   visualRect.rect.width)<.85f,
+                         "Original painted button is stretched or does not fill the authored width: "+name);
                     float artTopInCard=Top(action)+Top(visualRect);
                     float artBottomInCard=artTopInCard+visualRect.rect.height;
                     Need(artTopInCard>=Bottom(state)-.65f &&
@@ -1001,23 +988,23 @@ namespace Eldoria.BreachWatch.Editor
                     // Compare against VISIBLE sprite geometry (246x60)
                     // instead of the wider invisible touch target. A caption
                     // can be inside the Button but outside the red painting.
-                    float artDrawnWidth=visualRect.rect.width;
-                    float artDrawnLeft=0f;
+                    float artDrawnWidth=Mathf.Min(visualRect.rect.width,
+                        visualRect.rect.height*artAspect);
+                    float artDrawnLeft=(action.rect.width-artDrawnWidth)*.5f;
                     Need(artDrawnWidth>=action.rect.width-.85f,
-                         "Gilded nine-slice art does not cover actual action width: "+name);
+                         "Burgundy sprite is letterboxed inside a larger invisible Button: "+name);
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
-                           artDrawnLeft+artDrawnWidth*.235f,
+                           artDrawnLeft+artDrawnWidth*.25f,
                          "Real upgrade text intersects the painted source hammers: "+name);
                     Need(actionText.rectTransform.anchoredPosition.x+
                          actionText.rectTransform.rect.width<=
                            artDrawnLeft+artDrawnWidth-3f,
                          "Real upgrade caption escapes the PAINTED burgundy sprite: "+name);
-                    Need(actionText.color.r>=.90f &&
-                         (ui.BuildingAction.interactable || actionArt.color.r<.75f),
-                         "Real nine-slice upgrade CTA has dark illegible text "+
-                         "or a falsely active gold state: "+name);
-                    string expectedCaption=host.English?"Upgrade to II":"Mejorar a II";
+                    bool fullCaption=w>=800;
+                    string expectedCaption=host.English
+                        ?(fullCaption?"Upgrade to Bastion II":"Upgrade II")
+                        :(fullCaption?"Mejorar a Bastión II":"Mejorar a II");
                     Need(actionText.text==expectedCaption,
                          "Native button caption is not appropriate for language/orientation: "+name);
                     // The approved reference's circular gold X is one
