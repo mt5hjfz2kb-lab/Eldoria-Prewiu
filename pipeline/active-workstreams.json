@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:11:04.123Z",
+  "updated_at": "2026-11-09T13:13:27.654Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7223,6 +7223,38 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-09T11:43:00Z",
       "runner_release_basis": "Native Unity workflow 42609669589 completed all Windows jobs (native-ui failure), source SHA 321faff58fc5e986950dc8769e33e79c535f61ac. Preserve source ownership; release physical runner for other workstreams, diagnose isolated failure from artifact 13670287864 without disturbing beta, Vigilia or main code."
+    },
+    {
+      "id": "eldoria-eonscar-branding-trial-20261109",
+      "title": "EONSCAR — prueba reversible de identidad y entrada al juego",
+      "owner": "chatgpt-eonscar-branding-trial-20261109",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eonscar-branding-trial-20261109",
+      "scope": [
+        "Unity/Assets/Eldoria/Branding/EonscarTrial/**",
+        "Unity/Assets/Eldoria/Branding/EonscarTrial.meta",
+        "docs/branding/eonscar-trial/**",
+        "tools/eonscar-branding-trial/**"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "claimed_at": "2026-11-09T13:13:27.651Z",
+      "base_main_sha": null,
+      "phase": "ISOLATED_TRIAL_CODE_AND_BROWSER_LAYOUT_PROOF",
+      "next": "Prepare complete isolated Unity trial, validate editor screenshots and no gameplay/save regressions before optional beta integration. No Windows runner while held by PR181.",
+      "note": "Owner approved EONSCAR brand direction. No production rename, no publication, no modifications in other workstreams. Production art and legal vetting pending.",
+      "art_approved": false,
+      "physical_mobile_tested": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Opt-in presentation-only prototype with existing owner-selected generated art; no new 3D or gameplay assets.",
+      "last_verified": {
+        "browser_preview": "Chromium responsive 1920x1080,844x390,390x844 and two-way button navigation PASS; NOT Unity",
+        "unity_native": "NOT_RUN",
+        "production_published": false
+      }
     }
   ],
   "history": [
