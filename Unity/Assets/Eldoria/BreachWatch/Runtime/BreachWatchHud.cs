@@ -49,6 +49,7 @@ namespace Eldoria.BreachWatch
         BreachWatchPlate actionPlate;
         Image exactOwnerGoldBorder;
         BreachWatchNavFiligree navFiligree;
+        readonly BreachWatchPlate[] approvedUtilitySeals = new BreachWatchPlate[3];
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
         static readonly string[] ReferenceNavArt = {
@@ -98,6 +99,21 @@ namespace Eldoria.BreachWatch
             boldFont==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold") &&
             bodyFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Regular") &&
             bodyBoldFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
+        public bool HasOwnerApprovedUtilityArtwork
+        {
+            get
+            {
+                string[] names={"bell","settings","breach"};
+                for(int i=0;i<names.Length;i++)
+                {
+                    var image=approvedUtilitySeals[i];
+                    if(!image || !image.sprite ||
+                       image.sprite!=Resources.Load<Sprite>(
+                           "VigiliaArt/OwnerUtilities/"+names[i]))return false;
+                }
+                return true;
+            }
+        }
         public bool HasPremiumCarvedQuest
         {
             get
@@ -460,23 +476,37 @@ namespace Eldoria.BreachWatch
             // No fake buttons: these destinations are not part of the first
             // proof. Keep their artistic seals, but make disabled state explicit.
             foreach(var design in new [] {
-                (name:"Notices",icon:BreachWatchGlyph.Sigil.Bell),
-                (name:"Settings",icon:BreachWatchGlyph.Sigil.Settings),
-                (name:"Fissure",icon:BreachWatchGlyph.Sigil.Breach) })
+                (name:"Notices",icon:BreachWatchGlyph.Sigil.Bell,art:"bell"),
+                (name:"Settings",icon:BreachWatchGlyph.Sigil.Settings,art:"settings"),
+                (name:"Fissure",icon:BreachWatchGlyph.Sigil.Breach,art:"breach") })
             {
                 var seal=BuildButton(utilityRail,design.name,design.icon,()=>{});
-                seal.GetComponent<Button>().interactable=false;
+                var disabled=seal.GetComponent<Button>();
+                disabled.interactable=false; // never fake an unbuilt destination
+                disabled.transition=Selectable.Transition.None;
                 var utilityPlate=seal.GetComponent<BreachWatchPlate>();
+                var genuineArt=Resources.Load<Sprite>(
+                    "VigiliaArt/OwnerUtilities/"+design.art);
                 if(utilityPlate)
                 {
                     utilityPlate.Type=BreachWatchPlate.PlateType.Navigation;
+                    if(genuineArt)utilityPlate.ApplyIndependentArt(genuineArt);
                     utilityPlate.VisualScale=.94f;
                 }
+                approvedUtilitySeals[design.art=="bell"?0:
+                    design.art=="settings"?1:2]=utilityPlate;
                 var glyph=seal.GetComponentInChildren<BreachWatchGlyph>();
                 if(glyph)
                 {
-                    glyph.Ink=new Color(.72f,.52f,.32f,1f);
-                    glyph.SetVerticesDirty();
+                    // The uploaded approved artwork already includes the
+                    // fully engraved icon. Do not draw a cheap secondary
+                    // vector Bell/Gear/Breach on top of it.
+                    glyph.enabled=!genuineArt;
+                    if(!genuineArt)
+                    {
+                        glyph.Ink=new Color(.72f,.52f,.32f,1f);
+                        glyph.SetVerticesDirty();
+                    }
                 }
             }
             panel=Rect("Independent selected-building cartouche",uiRoot);
