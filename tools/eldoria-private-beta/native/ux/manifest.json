@@ -8,7 +8,7 @@
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
       "overlay": "ValoriaIntegrationBuild.cs.txt",
       "baseline_sha256": "51b70f48acb1c9d82f9c8f8ea4c051b052863145ba2005c9c385a1e5f35ab59f",
-      "candidate_sha256": "f24a4b7290bf5154f510a23046bde58269345158c1abf9bd516af4036e489d91"
+      "candidate_sha256": "572d1ce0a63a2775fe76980ce2a4da177c22cee87670022b2f8d02fd18a31ff8"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
@@ -20,7 +20,7 @@
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
       "overlay": "ValoriaJourneyGuidance.cs.txt",
       "baseline_sha256": "882b6170c3bdda74f4bfd9c47632f7d9c61914f2f0f5c5b4cb577610000a183e",
-      "candidate_sha256": "1aefda4b1392fa51ba1eab29e661ae85afca10572cb107fe24181a8f6afce08e"
+      "candidate_sha256": "2b6925d8d4d8af986f7beda0c0997bda0b37eb368ab326bbc04fd7b36cb48de8"
     },
     {
       "path": "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
