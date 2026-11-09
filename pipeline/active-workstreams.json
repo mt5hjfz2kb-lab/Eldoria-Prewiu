@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T10:17:25.149Z",
+  "updated_at": "2026-11-09T10:19:08.641Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7080,7 +7080,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7103,11 +7103,13 @@
         "Unity/Assets/Eldoria/DailyTreasures/Editor/**",
         "tools/march-capacity/Smoke.csproj"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "PRE_PC_PAINTERLY_ART_REAL_MOBILE_QA_AND_NATIVE_TYPOGRAPHY_READY",
+      "phase": "NATIVE_UNITY_EXACT_HEAD_COMPONENT_ART_CERT_REQUESTED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.",
-      "next": "PR181 original painterly replacement: 4 real 256px cleaned photo-like icons replace flat crops; exact actual PNG SHA256 repaired in source-manifest after Git blobs changed, 13 texture integrity checks, mobile contact at 32/48/64 in Actions 42597168674 (artifact 13664102624), source and compatibility CI exact SHA b9f3331cd9a39df7ea56f0042c5abab4edd31f23 success. New native Editor probes for real Unity Text.preferredHeight and paid day-7 orientation swap/restoration; fixed clipping of two-line receipt in landscape. PR173 live current OwnerControls and reward-safe premium reusable surfaces checked; avoid using upgrade_button with baked hammer. Windows runner held by PR179 beta per canonical lease: never interrupt/claim without CAS release. Only after formal lease and exact HEAD native: 52 actual Unity captures, 56 pointer interactions, 8 authentic awards, native font/rotation/art review, full city/mobile/audio, then ask owner approval. No merge/release yet.",
+      "next": "Reserved one isolated native Unity QA turn under existing PR181 workstream, not beta PR179 or UI PR173. Trigger request on exact PR181 HEAD after syncing registry. Inspect actual Unity 52 PNG, 56 pointer paths, 8 genuine gateway claims, 16 visual-only scenes and typography/rotation checks. Release windows-runner-heavy promptly after job completes or is genuinely blocked. No merge, no release or art approval from code alone.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7135,7 +7137,9 @@
         "art_approved": false,
         "merged": false,
         "published": false
-      }
+      },
+      "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
+      "windows_claim_requested_at": "2026-11-09T10:28:00+01:00"
     }
   ],
   "history": [
