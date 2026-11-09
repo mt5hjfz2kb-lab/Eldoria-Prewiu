@@ -45,7 +45,14 @@ for parts in manifest['decoded_parts'].values():
 for item in identity['decoded_files']:
  for field in ('url','path'):
   if item.get(field) in renamed:item[field]=renamed[item[field]]
-entry='https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build='+revision
+# Preserve the independently verified playable HTML on the SAME origin as its
+# large WebGL data. The user-facing Sites shell is a separate deployment and
+# must not be claimed to have changed just because Pages was published.
+direct='direct-beta.html'
+interactive=(p/'index.html').read_bytes()
+assert interactive and b'<html' in interactive.lower(), 'Missing genuine Unity entry page'
+(p/direct).write_bytes(interactive)
+entry='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/'+direct+'?eldoria_diag=1&build='+revision
 identity['desktop_memory_comparison']=memory_evidence
 identity.update(native_input_restoration_run=int(os.environ['NATIVE_RUN']),game_entry_url=entry,runtime_verified=True,runtime_qa_run=int(os.environ['QA_RUN']),release_for_external_testers=False,physical_mobile_tested=False,physical_iphone_verified=False,release_purpose='Owner physical iPhone verification; NOT physical-device certified',runtime_environment='macOS Apple GPU WebKit; NOT physical iPhone')
 (p/'build-manifest.json').write_text(json.dumps(manifest,indent=2));(p/'release-identity.json').write_text(json.dumps(identity,indent=2))
