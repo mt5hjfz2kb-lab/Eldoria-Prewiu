@@ -1,0 +1,38 @@
+{
+  "source": "tools/breach-watch/source/owner-utility-40.webp.b64",
+  "source_sha256": "01fcf2fe0aa7526fda850cdb6690807801235536e2151a037380fa7712365bb6",
+  "origin": "Owner-approved vertical Vigilia screenshot in this conversation",
+  "copyright": "User-provided generated image, independent cropped medallions",
+  "runtime_scope": "Only the new Vigilia canvas; all three remain non-functional until their systems exist",
+  "not_native_screenshot": true,
+  "art_approved_in_unity": false,
+  "sprites": [
+    {
+      "name": "bell",
+      "guid": "4da9483b75da4303ac4b1d4c963d3615",
+      "size": [
+        80,
+        80
+      ],
+      "sha256": "8cd6d886c28de1c0c5b4a69f58baf17223d4fb5a151fbc926466b9baaabea48b"
+    },
+    {
+      "name": "settings",
+      "guid": "64de6b1fad4e428ab66e6bb5a535413e",
+      "size": [
+        80,
+        80
+      ],
+      "sha256": "b2454a3f0d4a67c03991fcd0aebf09b4da85e8674a59047e751dc76a0add7da3"
+    },
+    {
+      "name": "breach",
+      "guid": "7be55da4b5cd4ba3924cdf3fb073237e",
+      "size": [
+        80,
+        80
+      ],
+      "sha256": "e85c06b13626065321965a14beae76db712775bafa658795342407c50f0f20f8"
+    }
+  ]
+}
