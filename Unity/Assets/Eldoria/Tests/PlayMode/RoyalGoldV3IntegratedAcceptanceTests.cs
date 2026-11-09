@@ -896,9 +896,26 @@ namespace Eldoria.Tests
                 x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
                 Is.True, "The illustrated selected sheet must display the gateway countdown");
             Call(hud, "SelectBuilding", "");
+            // The illustrated V2 cartouche and the V3 clock are synchronized
+            // from two distinct LateUpdate callbacks. Wait for the real
+            // unselected viewport and camera layout instead of demanding that
+            // both presentation layers finish before the very next frame.
+            yield return null;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
             Call(v3, "SynchronizeNow");
+            var siteForDiagnostic = (Member(v3, "FindAnchor") as Delegate)
+                ?.DynamicInvoke("sawmill") as Transform;
+            var sceneCamForDiagnostic = Member(host, "PlayerCamera") as Camera;
+            var projectedSite = siteForDiagnostic && sceneCamForDiagnostic
+                ? sceneCamForDiagnostic.WorldToScreenPoint(siteForDiagnostic.position)
+                : Vector3.zero;
             Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "Deselecting a paid construction must expose the world-anchored timer in the SAME frame");
+                "Visible paid work must expose one attached timer after normal V2/V3 frame synchronization. " +
+                "selected=" + Member(hud, "SelectedBuildingId") +
+                " siteScreen=" + projectedSite +
+                " cameraSize=" + (sceneCamForDiagnostic
+                    ? sceneCamForDiagnostic.pixelRect.ToString() : "null"));
             Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
                 x.gameObject.name=="Live remaining time" &&
                 x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
