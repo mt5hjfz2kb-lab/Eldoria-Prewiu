@@ -143,6 +143,53 @@ def paid_label_pixel_proof(image, variant, width, height):
     return results
 
 
+
+QUIET_DAYS = (1, 2, 3, 5, 6)
+QUIET_ITEM_COUNTS = {1:1, 2:1, 3:2, 5:1, 6:2}
+
+def quiet_card_centers(day,width,height):
+    """Native production quiet layout, from DailyTreasurePanel.Layout()."""
+    assert_quality(day in QUIET_DAYS, "Unknown ordinary reward day")
+    portrait=height>width
+    panel_width=min(width-24,440 if portrait else 740)
+    count=QUIET_ITEM_COUNTS[day]
+    gap=8 if portrait else 6
+    card_width=min(175,(panel_width-38-(count-1)*gap)/count)
+    shelf_y=height*.5-(64 if portrait else 35)
+    centers=[width*.5+(i-(count-1)*.5)*(card_width+gap)
+             for i in range(count)]
+    return centers,shelf_y,(129 if portrait else 115)
+
+def quiet_label_pixel_proof(image,day,width,height):
+    """Require *both* distinct visible fields on every real quiet card.
+
+    A working command and existing text nodes are not enough. On the first
+    real Unity 1600x900 QA, paid cards were effectively empty despite source
+    and typography preflights passing. Keep each ROI inside its actual item
+    art: title at -0.08 card height and quantity at -0.35 in Unity Y.
+    """
+    rgb=image.convert("RGB")
+    centers,shelf_y,card_height=quiet_card_centers(day,width,height)
+    evidence=[]
+    for i,center in enumerate(centers):
+        regions=(("name",shelf_y+card_height*.08,9),
+                 ("quantity",shelf_y+card_height*.35,10))
+        pixel_counts=[]
+        for field,y,half_h in regions:
+            roi=(round(center-48),round(y-half_h),
+                 round(center+48),round(y+half_h))
+            crop=rgb.crop(roi)
+            bright=sum(1 for red,green,blue in crop.getdata()
+                if red>95 and green>65 and blue>40)
+            assert_quality(bright>=12,
+                "Ordinary day "+str(day)+" card "+str(i+1)+
+                " has no visible "+field+" in real Unity "+
+                str(width)+"x"+str(height)+" pixels; count="+str(bright))
+            pixel_counts.append(bright)
+        evidence.append({"namePixels":pixel_counts[0],
+                         "quantityPixels":pixel_counts[1]})
+    return evidence
+
 def read_report(folder, expected_sha):
     report_file=folder/"report.json"
     assert_quality(report_file.is_file(),"Unity did not produce report.json")
@@ -154,6 +201,11 @@ def read_report(folder, expected_sha):
          and r.get("graphicalPointerHits")==56
          and r.get("visualOnlyMilestoneCaptures")==16,
          "Incomplete real claims, native interactions or style preview coverage")
+    assert_quality(r.get("quietImages")==20 and
+         r.get("quietGatewayClaims")==20 and
+         r.get("quietPointerHits")==60 and
+         len(r.get("quietShots") or [])==20,
+         "Five ordinary days across four native viewports are missing")
     assert_quality(r.get("authoredSpritesImported") is True and
         r.get("artApproved") is False and r.get("fullSceneVerified") is False,
         "Source component must not claim final artistic/full-game certification")
@@ -262,6 +314,66 @@ def analyze(folder,expected_sha,output):
             paid_label_pixel_proof(
                 actual[(variant,width,height)][0],variant,width,height)
 
+
+    # Do not hide the ordinary paid cards under the old exact 52-shot count.
+    # The 20 extra screenshots live in a separate directory and represent
+    # independently credited days 1,2,3,5,6 on all four screen geometries.
+    quiet_dir=folder/"quiet"
+    assert_quality(quiet_dir.is_dir(),
+        "Ordinary-day native receipt directory absent")
+    quiet_expected={
+        ("quiet-day"+str(day)+"-received",w,h)
+        for w,h in REQUIRED_SIZES for day in QUIET_DAYS
+    }
+    quiet_actual={}
+    quiet_details=[]
+    for record in (r.get("quietShots") or []):
+        filename=record.get("file","")
+        parsed=re.fullmatch(
+            r"real-unity-daily-quiet-day([12356])-received-([0-9]+)x([0-9]+)\.png",
+            filename)
+        assert_quality(parsed is not None,
+            "Wrong ordinary-day evidence name: "+filename)
+        day,width,height=map(int,parsed.groups())
+        key=("quiet-day"+str(day)+"-received",width,height)
+        assert_quality(key in quiet_expected and key not in quiet_actual,
+            "Duplicate/unknown native ordinary-day image: "+filename)
+        assert_quality((record.get("width"),record.get("height"))==
+            (width,height) and record.get("nativeCanvas") is True and
+            record.get("preserved") is True and
+            record.get("coversReward") is True and
+            record.get("readyToClaim") is False,
+            "Ordinary reward not backed by real paid data: "+filename)
+        file=quiet_dir/filename
+        assert_quality(file.is_file(),
+            "Missing original Unity ordinary-day PNG: "+filename)
+        data=file.read_bytes()
+        assert_quality(len(data)>7000 and len(data)==record.get("bytes") and
+            data.startswith(b"\\x89PNG\\r\\n\\x1a\\n") and
+            hashlib.sha256(data).hexdigest()==record.get("sha256"),
+            "Corrupted or altered ordinary-day Unity PNG: "+filename)
+        with Image.open(file) as image:
+            assert_quality(image.format=="PNG" and
+                           image.size==(width,height) and
+                           image.mode in ("RGB","RGBA"),
+                           "Ordinary reward not genuine expected PNG: "+filename)
+            rgb=image.convert("RGB").copy()
+        style=sample(rgb)
+        assert_quality(style["meanStdDev"]>8 and
+                       style["uniqueColorBins"]>25 and
+                       style["warmPixels"]>4,
+                       "Ordinary native reward blank or no genuine premium art: "+filename)
+        pixels=quiet_label_pixel_proof(rgb,day,width,height)
+        quiet_actual[key]=(rgb,style)
+        quiet_details.append({
+            "file":filename,"day":day,"size":[width,height],
+            "visibleReceiptTextPixels":pixels,
+            "artApproved":False
+        })
+    assert_quality(set(quiet_actual)==quiet_expected and
+                   len(list(quiet_dir.glob("*.png")))==20,
+                   "Not exactly twenty authentic ordinary-day receipts")
+
     transitions=[]
     for w,h in REQUIRED_SIZES:
         for a,b in [("closed","opening"),("closed","opened"),
@@ -345,14 +457,14 @@ def analyze(folder,expected_sha,output):
 
     # Contact sheet: one row per phone/desktop viewport, seven paid scenes;
     # second contact sheet for special-event presentation in both orientations.
-    def sheet(keys,filename,columns):
+    def sheet(keys,filename,columns,origin=actual):
         fw,fh=260,200
         rows=math.ceil(len(keys)/columns)
         out=Image.new("RGB",(columns*fw,rows*fh),(18,16,15))
         draw=ImageDraw.Draw(out)
         for i,key in enumerate(keys):
             variant,w,h=key
-            source=actual[key][0]
+            source=origin[key][0]
             image=source.copy()
             image.thumbnail((fw-16,fh-37),Image.Resampling.LANCZOS)
             ix=(i%columns)*fw + (fw-image.width)//2
@@ -372,6 +484,10 @@ def analyze(folder,expected_sha,output):
     sheet(moving,"actual_reward_card_flights_contact_sheet.png",2)
     style=[k for k in expected if k[0] in MILESTONE]
     sheet(style,"milestone_visual_styles_contact_sheet.png",4)
+    quiet_keys=[("quiet-day"+str(day)+"-received",w,h)
+        for w,h in REQUIRED_SIZES for day in QUIET_DAYS]
+    sheet(quiet_keys,"ordinary_paid_rewards_contact_sheet.png",5,
+          origin=quiet_actual)
 
     result={
         "status":"AUTOMATED_NATIVE_PREFLIGHT_PASSED_ART_REVIEW_REQUIRED",
@@ -381,6 +497,10 @@ def analyze(folder,expected_sha,output):
         "verifiedUnpaidCalendarFrames":8,
         "verifiedNativePointerInteractions":56,
         "verifiedVisualOnlyMilestoneFrames":16,
+        "additionalQuietDayRealGatewayClaims":20,
+        "additionalQuietDayNativePointerInteractions":60,
+        "additionalQuietDayOriginalPngCount":len(quiet_actual),
+        "ordinaryDayReceiptSamples":quiet_details,
         "artApproved":False,
         "fullGameVerified":False,
         "humanReviewStillRequired":True,
@@ -392,6 +512,7 @@ def analyze(folder,expected_sha,output):
             "eventThemesNotIdentical":True,
             "originalSceneryVisibleInItsOwnAperture":True,
             "allFourAspectRatiosPresent":True,
+            "ordinaryDayNamesAndAmountsVisibleIndependently":True,
         },
         "transitions":transitions,
         "originalSceneryApertureChecks":scenic_checks,
@@ -493,6 +614,36 @@ def selftest():
         except ValueError:
             failed=True
         assert_quality(failed,"Visible quantities with missing names must fail")
+
+        # Five day-specific ordinary reward receipts need visual proof too.
+        # A fully blank image, a title-only image, or a quantity-only image
+        # must never pass the separate right-side paid receipt check.
+        for width,height,day in ((844,390,6),(390,844,3),(1600,900,1)):
+            blank=Image.new("RGB",(width,height),(19,18,20))
+            failed=False
+            try: quiet_label_pixel_proof(blank,day,width,height)
+            except ValueError: failed=True
+            assert_quality(failed,"Blank ordinary-day labels were accepted")
+            centers,y,card_h=quiet_card_centers(day,width,height)
+            name_only=blank.copy()
+            dr=ImageDraw.Draw(name_only)
+            for x in centers:
+                dr.rectangle((round(x-15),round(y+card_h*.08-2),
+                              round(x+15),round(y+card_h*.08+2)),
+                              fill=(215,184,123))
+            failed=False
+            try: quiet_label_pixel_proof(name_only,day,width,height)
+            except ValueError: failed=True
+            assert_quality(failed,"Quiet day with missing quantity was accepted")
+            both=name_only.copy()
+            dr=ImageDraw.Draw(both)
+            for x in centers:
+                dr.rectangle((round(x-15),round(y+card_h*.35-2),
+                              round(x+15),round(y+card_h*.35+2)),
+                              fill=(235,215,174))
+            assert_quality(len(quiet_label_pixel_proof(both,day,width,height))==
+                           QUIET_ITEM_COUNTS[day],
+                           "Valid ordinary paid text should pass independently")
         a.save(Path(tmp)/"original.png")
         assert_quality((Path(tmp)/"original.png").is_file(),
             "PNG save smoke failed")
