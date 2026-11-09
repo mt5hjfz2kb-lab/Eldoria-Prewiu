@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T12:38:23.008Z",
+  "updated_at": "2026-11-09T12:43:59.537Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2867,7 +2867,7 @@
       "claimed_at": "2026-11-09T12:36:18.720Z",
       "base_main_sha": "0a9e1039436bf396e0cfbd6ebaad3df0967e4051",
       "branch": "fix/eldoria-construction-timer-anchor-20261109",
-      "pr": null,
+      "pr": 183,
       "owner_instruction": "2026-11-09 owner requests restoring construction timer attachment to its world building on camera pan; preserve compact readable timer and no duplicate selected action, do not touch frozen PR179 or PR173/181 sources.",
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
@@ -2922,7 +2922,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Edit isolated candidate against live main, static source contract check; Unity native city portrait/landscape test before merge and beta republication. PR179 owner retains live beta.",
+      "next": "PR183 draft: compact construction timers now scene-anchored. 26 source/model checks pass; CI Ubuntu V3/early-retention dotnet fails on pre-existing missing NarrativeCoherenceRules include, unrelated to V3 Canvas patch. Need exact Unity native render and QA; PR179 owner notified for frozen beta overlay port, hash/regression and republish.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
