@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T16:28:22.114Z",
+  "updated_at": "2026-11-09T16:41:53.809Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7133,7 +7133,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 18,
+      "ownership_revision": 19,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7157,13 +7157,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_EXACT_HEAD_UNITY_CANDIDATE_EXCLUSIVE_LEASE",
+      "phase": "UNITY_NATIVE_FAILED_PR173_SCREENSPACE_CANVAS_CONTRACT_RELEASED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Run exact PR181 HEAD via existing daily-treasures-native.yml and inspect actual 52+20 Unity screenshots, 116 real pointer actions, 28 genuine gateway claims; keep ART_APPROVED false until meaningful visual comparison and true game validation. Release runner when native QA ends.",
+      "next": "Diagnose actual Unity Canvas ScreenSpaceCamera / camera / overrideSorting / sortingOrder values against PR173; amend only PR181 evidence fixture after cause confirmed. Rerun after separate exclusive Windows CAS lease; review 52+20 real PNG and preserve ART_APPROVED=false; no release.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7212,8 +7210,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-09T13:41:12.992Z",
-      "runner_release_basis": "Native exact-HEAD 64bce6cd0737588539631306f331335d3a02de38 run 42622935466 completed failure, job 129179417321: Vigilia modal close registered but graphic depth=-1, zero raycasts after Canvas migration. Preserve PR181 source ownership and correction work; release exclusive Windows to other workstreams.",
+      "runner_released_at": "2026-11-09T16:41:53.809Z",
+      "runner_release_basis": "Exclusive Unity 6 run 42655206846 at exact PR181 SHA 6af0d46e completed failure, native Windows job 129291819625; first 8 genuine 1600x900 PNG captured, failed editor assertion at DailyTreasureNativeEvidence.cs:929: 'Native Vigilia rehearsal diverged from PR173 Canvas'. Preserve PR181 source ownership and native artifact 13691174759; no artistic approval.",
       "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia."
     },
     {
