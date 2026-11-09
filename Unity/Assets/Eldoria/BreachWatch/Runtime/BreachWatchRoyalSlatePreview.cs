@@ -39,9 +39,13 @@ namespace Eldoria.BreachWatch
                 for(int slot=8;slot<=10;slot++)
                 {
                     var source=materials[slot];
-                    if(!source || !source.name.StartsWith(
-                        "bastion-slate-material",StringComparison.OrdinalIgnoreCase))
-                        continue;
+                    if(!source)continue;
+                    // Architecture201 established these precise genuine roof
+                    // indices. GLB material names can be changed by import;
+                    // never infer failure from the display name alone. Log
+                    // the exact scene identity and verify by native A/B.
+                    Debug.Log("VIGILIA_SLATE_SOURCE renderer="+renderer.name+
+                        " slot="+slot+" material="+source.name);
                     var material=new Material(source);
                     material.name="Vigilia A/B royal-blue genuine slate "+slot;
                     // Bright, saturated lapis with visible tile grain.
