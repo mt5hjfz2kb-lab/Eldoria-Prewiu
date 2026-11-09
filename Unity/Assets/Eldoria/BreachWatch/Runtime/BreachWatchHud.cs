@@ -527,11 +527,9 @@ namespace Eldoria.BreachWatch
 
             // No extra shadow: the carved quest PNG already has a baked
             // shadow and finished outline. This is one plate, not two.
-            // The chapter's approval reference has a tiny tower crest
-            // attached to the tablet. The open-air Breach sigil is separate.
-            var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Castle);
-            objectiveSeal.Ink=Copper;
-            At((RectTransform)objectiveSeal.transform,9,9,20,20);
+            // The approved stone already has an engraved ornamental
+            // silhouette. Do not paste a bright vector tower ON TOP of it:
+            // the live chapter title itself identifies the real quest.
             chapterName=Label(objective,"Actual chapter",15,TextAnchor.MiddleLeft,Copper,true);
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
@@ -653,12 +651,10 @@ namespace Eldoria.BreachWatch
             portraitView.raycastTarget=false;
             buildingPortrait=gameObject.AddComponent<BreachWatchBuildingPortrait>();
             buildingPortrait.Initialize(portraitView);
-            // Keep one SMALL engraved building identifier, not a bright
-            // white pictogram visually floating above the owner's metalwork.
-            // Typography and engraved icon now share the warm metal palette.
-            var buildingSeal=Glyph(panel,"Building crest",BreachWatchGlyph.Sigil.Castle);
-            buildingSeal.Ink=new Color(.76f,.62f,.42f,1f);
-            At((RectTransform)buildingSeal.transform,18,16,29,29);
+            // The actual stone card has its own sculpted source contour.
+            // A separate vector castle floated over the metal and the
+            // live title redundantly said the same thing twice. Remove it;
+            // reserve a single calm typographic header within the stone.
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
             buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
             buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,TextIvory);
@@ -1014,7 +1010,7 @@ namespace Eldoria.BreachWatch
                 // ends at x=29, while title started at x=28. They touched,
                 // making the mission feel like two pasted graphics. One
                 // 2u breathing gap + font-safe width holds the real title.
-                At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);
+                At(chapterName.rectTransform,17f,5f,missionWidth-29f,20f);
                 At(chapterObjective.rectTransform,13f,24f,missionWidth-22f,
                     fullObjective?59f:31f);
                 At(chapterProgress.rectTransform,13f,
@@ -1061,8 +1057,8 @@ namespace Eldoria.BreachWatch
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
-                At(buildingName.rectTransform,51,7,pw-110,28);
-                At(buildingLevel.rectTransform,51,36,pw-110,17);
+                At(buildingName.rectTransform,18,7,pw-80,28);
+                At(buildingLevel.rectTransform,18,36,pw-80,17);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
                 // This 90-unit live portrait well is at ~1.9:1 aspect
                 // rather than the prior 2.4:1 slit. Together with the
@@ -1121,7 +1117,7 @@ namespace Eldoria.BreachWatch
                 // progress position left only 2.6 physical pixels above
                 // the bottom bevel. Keep true text visibly inside the stone.
                 At(objective,margin,102,225,fullObjective?118:83);
-                At(chapterName.rectTransform,37,8,178,20);
+                At(chapterName.rectTransform,17,8,193,20);
                 At(chapterObjective.rectTransform,14,31,197,fullObjective?57:24);
                 At(chapterProgress.rectTransform,14,fullObjective?92:57,190,19);
                 chapterName.fontSize=14;
@@ -1159,8 +1155,8 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,58,8,pw-119,31);
-                At(buildingLevel.rectTransform,58,40,pw-119,17);
+                At(buildingName.rectTransform,18,8,pw-80,31);
+                At(buildingLevel.rectTransform,18,40,pw-80,17);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 buildingName.fontSize=21;
                 buildingLevel.fontSize=15;
