@@ -904,8 +904,8 @@ namespace Eldoria.BreachWatch
                 // separately rendered 1.6:1 texture, its center crop fits
                 // all original Bastion parapets and gate without stretching
                 // the real 3D mesh or enlarging the panel's width.
-                At(portraitFrame,11,55,pw-22,90);
-                At(buildingFunction.rectTransform,13,147,pw-26,34);
+                At(portraitFrame,11,55,pw-22,83);
+                At(buildingFunction.rectTransform,13,140,pw-26,42);
                 descriptionDivider.gameObject.SetActive(true);
                 At(descriptionDivider,14,183,pw-28,8);
                 At(costHeader.rectTransform,13,191,pw-26,15);
