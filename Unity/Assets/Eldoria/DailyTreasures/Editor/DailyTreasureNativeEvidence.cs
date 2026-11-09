@@ -127,7 +127,7 @@ namespace Eldoria.DailyTreasures.Editor
             string[] essential={
                 "Reward heading","Claim label","Confirmed received items",
                 "Actual paid count","Reward name","Day heading",
-                "Consecutive visits"
+                "Consecutive visits","Actual reward contents"
             };
             int count=0;
             foreach(var label in panel.GetComponentsInChildren<Text>(true))
@@ -158,6 +158,33 @@ namespace Eldoria.DailyTreasures.Editor
             // A milestone result intentionally shows only its main caption
             // and the Continue label; that is a valid, uncluttered scene.
             Need(count>=2,"Real native text audit had no meaningful visible labels: "+phase);
+        }
+
+        static void VerifyCalendarMultipleResourceMargins(DailyTreasurePanel panel,
+            string phase)
+        {
+            // The first real Unity screenshot showed Day 4 and Day 6 second
+            // lines colliding with the lower nine-slice bronze frame. Verify
+            // the exact RectTransform bounds and font geometry, not only that
+            // data was correctly awarded in LocalGateway.
+            foreach(int day in new[]{4,6})
+            {
+                string name="Day "+day+" / non-clickable informational card";
+                var card=panel.GetComponentsInChildren<RectTransform>(true)
+                    .Single(x=>x.name==name);
+                var label=card.GetComponentsInChildren<Text>(true)
+                    .Single(x=>x.name=="Actual reward contents");
+                Need(label.gameObject.activeInHierarchy &&
+                     label.text.Split('\n').Length==2,
+                     "Expected two real resources on day "+day+" / "+phase);
+                float margin=label.rectTransform.anchoredPosition.y+
+                    label.rectTransform.rect.yMin-card.rect.yMin;
+                Need(margin>=4.5f,
+                     "Two-line day "+day+" painted onto bottom frame, "+
+                     "margin="+margin.ToString("F1")+" / "+phase);
+                Need(label.preferredHeight<=label.rectTransform.rect.height+6f,
+                     "Two-line day "+day+" truncated in Unity Text / "+phase);
+            }
         }
 
         static void VerifyCleanPaintedResources(DailyTreasurePanel panel,
@@ -486,6 +513,7 @@ namespace Eldoria.DailyTreasures.Editor
                     // Capture BEFORE interacting, then tap through Unity's actual
                     // raycaster and selectable pointer sequence.
                     VerifyCriticalTypography(panel,"calendar day seven");
+                    VerifyCalendarMultipleResourceMargins(panel,"calendar day seven");
                     pictures.Add(Render(camera,rt,output,width,height,"calendar",
                         "Available calendar before claim",true,false));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
@@ -603,6 +631,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Need(panel.IsOpen,"Special-day entry not interactive");
                     Canvas.ForceUpdateCanvases();
                     VerifyCriticalTypography(panel,"calendar day four");
+                    VerifyCalendarMultipleResourceMargins(panel,"calendar day four");
                     pictures.Add(Render(camera,rt,output,width,height,
                         "special-day4-calendar",
                         "Real day-four candidate before claim",true,false));
