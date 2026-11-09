@@ -208,7 +208,9 @@ namespace Eldoria.BreachWatch
             portraitFrame && portraitFrame.GetComponent<BreachWatchPlate>() &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="brass_portrait" &&
-            portraitFrame.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced;
+            portraitFrame.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
+            portraitFrame.GetComponent<BreachWatchPlate>().enabled &&
+            !portraitFrame.GetComponent<BreachWatchPlate>().fillCenter;
         public bool UsesExactOwnerApprovedGoldBorder =>
             exactOwnerGoldBorder && exactOwnerGoldBorder.sprite &&
             exactOwnerGoldBorder.sprite==
@@ -643,7 +645,12 @@ namespace Eldoria.BreachWatch
             // Even at 18% opacity it rendered an extra rectangular card
             // behind the URP alpha-cut 3D Bastion. Retain its authored
             // asset for provenance, but do NOT paint the duplicate surface.
-            brassFrame.enabled=false;
+            // Keep only the real 9-slice brass CONTOUR as in the approved
+            // picture: Unity Image.fillCenter=false discards the source PNG's
+            // opaque interior instead of painting an extra card beneath URP.
+            // This is an alternative to the repeated stacked-border strategy.
+            brassFrame.fillCenter=false;
+            brassFrame.enabled=true;
             brassFrame.raycastTarget=false;
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
             Fill(liveView,5);
