@@ -24,7 +24,8 @@ class TransactionTest(unittest.TestCase):
   text=candidate.decode('utf-8')
   self.assertIn('private bool TryPlaceConstructionTimer(',text)
   self.assertIn('FindAnchor(id == "upgrade-barracks" ? "barracks" : id)',text)
-  self.assertIn('CanProject(target, camera, safe, true, out projectedRoof)',text)
+  self.assertIn('TryProjectConstructionSilhouette(target, camera, safe,',text)
+  self.assertIn('out projectedRoof, out bottomEdge, out roofVisible, out footVisible)',text)
   self.assertIn('timer.Root.anchoredPosition = center;',text)
   self.assertIn('BUILDING_NOT_VISIBLE_OR_NO_ROOM',text)
   # There may still be an operation dock for scouting/travel, never for buildings.
@@ -36,4 +37,25 @@ class TransactionTest(unittest.TestCase):
   self.assertIn('construction timer moves on-screen with the camera pan',probe)
   self.assertIn('timer hides when its building leaves the camera',probe)
   self.assertNotIn('timer stays at fixed HUD position:',probe)
+ def test_iphone_timer_hot_path_avoids_duplicate_projection_and_gc_churn(self):
+  root=Path(__file__).parent
+  text=(root/'RoyalGoldV3ContextHud.cs.txt').read_text(encoding='utf-8')
+  silhouette=text.split('private static bool TryProjectConstructionSilhouette(',1)[1].split('private static Vector2 FitToSafe(',1)[0]
+  placement=text.split('private bool TryPlaceConstructionTimer(',1)[1].split('private void RenderTimer(',1)[0]
+  timer=text.split('private void RenderTimer(',1)[1]
+  self.assertEqual(silhouette.count('for (int cornerIndex = 0; cornerIndex < 8; ++cornerIndex)'),1)
+  self.assertEqual(silhouette.count('camera.WorldToScreenPoint(vertex)'),1)
+  self.assertNotIn('new Vector3[',silhouette)
+  self.assertNotIn('CanProject(target, camera, safe, true',placement)
+  self.assertNotIn('CanProject(target, camera, safe, false',placement)
+  self.assertEqual(text.count('new Vector3[4]'),1)
+  self.assertIn('GetWorldCorners(objectiveWorldCorners)',placement)
+  self.assertIn('timer.LastRenderedTime = data.Time;',timer)
+  self.assertIn('if (!timer.HasLayout || Mathf.Abs(timer.LastLayoutWidth - width) > .1f)',timer)
+  self.assertIn('if ((timer.Root.anchoredPosition - center).sqrMagnitude > .0025f)',timer)
+  self.assertIn('if (timer.Visibility.alpha < .5f)',timer)
+  self.assertIn('timer.Fill.rectTransform.anchorMax = new Vector2(progress, 1f);',timer)
+  self.assertNotIn('StartCoroutine(',text)
+  self.assertNotIn('SaveGame(',text)
+  self.assertTrue((root/'PretestUXProbe.cs').read_text().find('timer hides when its building leaves the camera')>=0)
 if __name__=='__main__':unittest.main()
