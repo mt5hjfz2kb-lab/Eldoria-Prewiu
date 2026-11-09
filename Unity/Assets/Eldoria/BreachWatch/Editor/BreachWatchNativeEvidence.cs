@@ -455,7 +455,7 @@ namespace Eldoria.BreachWatch.Editor
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 string[] important=selection=="bastion"
                     ?new[]{"Real building name","Real effects",
-                        "Compact engraved cost heading","Real action title",
+                        "Real state and timer","Compact engraved cost heading","Real action title",
                         "Objective progress"}
                     :new[]{"Actual chapter","Objective progress"};
                 var scratch=new Texture2D(w,h,TextureFormat.RGB24,false);
