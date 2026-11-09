@@ -79,9 +79,10 @@ def verify():
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
-    # Original owner-authored 246x60 sprite must cover the complete
-    # visible button, not letterbox in a wider transparent Unity Button.
-    # Exact aspect preserves undistorted engraved hammers and true label.
+    # The full original-for-Vigilia GOLD nine-slice is one continuous
+    # chamfered button, with a left-side engraved hammer and live title.
+    # Unlike the rejected burgundy sprite, it can change width without
+    # stretching its bevels or letterboxing its text.
     for hit_width,label,caption,size in [
         (147,"900 portrait","Mejorar a Bastión II",13),
         (147,"390 portrait","Mejorar a II",16),
@@ -89,17 +90,19 @@ def verify():
         (186,"844 historical tight-landscape safety","Mejorar a Bastión II",15),
         (210,"844 actual widened-landscape","Mejorar a Bastión II",15),
     ]:
-        paint_height=hit_width*60/246
-        assert 22<paint_height<55, (label,"image size")
-        assert abs(paint_height*246/60-hit_width)<.01, (label,"letterbox")
-        free_width=hit_width*(1-.25)-7
-        fits(caption,SEMIBOLD,size,free_width,
-             label+" within FULL WIDTH genuine 246x60 artwork")
+        free_width=hit_width*(1-.22)-8
+        fits(caption,SEMIBOLD,size,free_width,label+" within single gold face")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "float paintedHeight=plate.rect.width/Mathf.Max(1f,artAspect);" in hud, (
-        "Premium CTA must render source at full painted width")
-    assert "bool fullUpgradeCaption=lastWidth>=800;" in hud, (
-        "Full chapter action must be readable in both >=800px orientations")
+    assert "VigiliaArt/UnifiedButtons/action_gold" in hud
+    assert "actionPlate.type=Image.Type.Sliced;" in hud
+    assert "float paintedHeight=Mathf.Max(30f,plate.rect.height-4f);" in hud
+    assert "bool fullUpgradeCaption=lastWidth>=800;" in hud
+    # Dynamic nav captions are live Cormorant, inside the same 80u source
+    # tile, rather than an extra small medallion and detached text label.
+    for text in ("REINO","RECURSOS","EXPLORAR"):
+        fits(text,SEMIBOLD,14,112,"one painted nav tile "+text)
+    assert "navCaptions[i].fontSize=14;" in hud
+    assert "VigiliaArt/UnifiedButtons/nav_dock" in hud
 
     # The right-edge close badge must not touch either heading, in portrait
     # or small landscape; both rows preserve >=4 Unity design units.
