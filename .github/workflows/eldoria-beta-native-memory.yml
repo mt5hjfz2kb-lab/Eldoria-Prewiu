@@ -15,7 +15,7 @@ concurrency:
   group: eldoria-beta-native-warm-preserved
   cancel-in-progress: false
 env:
-  EXPECTED_LEASE_REVISION: '13'
+  EXPECTED_LEASE_REVISION: '17'
 jobs:
   preflight:
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
           own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
           prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
           if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
-          valid=own['owner']=='codex-pr179-stability-2ea88ced1c46' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
+          valid=own['owner']=='chatgpt-beta-timer-reconciliation-20261109' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('available='+str(valid).lower()+'\n')
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
             f.write('PowerShell syntax checked. Native Unity '+('authorized for this exact lease.' if valid else 'NOT RUN: resource lease is not available to this revision. No gameplay/build certification.')+'\n')
@@ -110,7 +110,7 @@ jobs:
           $ErrorActionPreference='Stop'
           $r=Get-Content beta-structural-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
           $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'codex-pr179-stability-2ea88ced1c46' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-beta-timer-reconciliation-20261109' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
       - name: Recover imported isolated project and verify existing production artwork
