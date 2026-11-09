@@ -1,6 +1,7 @@
 using UnityEngine;
 namespace Eldoria.UI.RoyalGold
 {
+    [DefaultExecutionOrder(2000)]
     public sealed class BuildingLabel : MonoBehaviour
     {
         public RoyalText Label;
@@ -22,6 +23,8 @@ namespace Eldoria.UI.RoyalGold
             rect.SetParent(layer, false);
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
         }
+        private void OnEnable() => Canvas.willRenderCanvases += RefreshPosition;
+        private void OnDisable() => Canvas.willRenderCanvases -= RefreshPosition;
         private void LateUpdate() => RefreshPosition();
         public void RefreshPosition()
         {
@@ -34,7 +37,7 @@ namespace Eldoria.UI.RoyalGold
             var canvas = Layer.GetComponentInParent<Canvas>();
             var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(Layer, screenPoint, uiCamera, out var local))
-                ((RectTransform)transform).anchoredPosition = local;
+                transform.localPosition = new Vector3(local.x,local.y,0f);
         }
         private void Compact()
         {

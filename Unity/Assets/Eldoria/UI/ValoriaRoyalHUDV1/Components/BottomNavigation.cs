@@ -7,25 +7,20 @@ namespace Eldoria.UI.RoyalGold {
   // Opt-in for the real integrated Crónica Real HUD only. The historic
   // vertical slice keeps the original progression-driven hide behavior.
   public bool ChronicleLayout;
+  public bool WorldIsCity;
   void OnEnable(){handlers=new UnityEngine.Events.UnityAction[Items.Length];for(int i=0;i<Items.Length;i++){var item=Items[i];handlers[i]=()=>Requested?.Invoke(item.Section);item.Button.onClick.AddListener(handlers[i]);}}
   void OnDisable(){if(handlers==null)return;for(int i=0;i<Items.Length&&i<handlers.Length;i++)Items[i].Button.onClick.RemoveListener(handlers[i]);}
   public void Layout(bool english,IRoyalNavigation host){
    int count=0;
    foreach(var item in Items){
+    if(ChronicleLayout&&item.Section==RoyalSection.Inventory)item.Section=RoyalSection.Mailbox;
     bool unlocked=host!=null?host.CanOpen(item.Section):
       item.Section!=RoyalSection.Inventory&&item.Section!=RoyalSection.World;
-    bool realDestination=ChronicleOrder(item.Section)<5;
-    // Crónica Real always presents its five approved destinations.
-    // Narrative locks disable Army/World; hiding them changes the approved
-    // navigation and moves the other entries as progression advances.
-    // Historic non-Chronicle navigation retains its original hide behavior.
-    bool utility=ChronicleLayout&&(item.Section==RoyalSection.Bastion||
-      item.Section==RoyalSection.Inventory||item.Section==RoyalSection.Missions);
-    bool show=ChronicleLayout?realDestination:unlocked;
+    bool show=unlocked&&(!ChronicleLayout||ChronicleOrder(item.Section)<2);
     item.Button.gameObject.SetActive(show);
-    item.Button.interactable=show&&(unlocked||utility);
-    item.Label.Put(ChronicleLayout?ChronicleName(item.Section,english):
-      Name(item.Section,english));
+    item.Button.interactable=show;
+    item.Label.Put(item.Section==RoyalSection.World&&WorldIsCity?(english?"City":"Ciudad"):
+      ChronicleLayout?ChronicleName(item.Section,english):Name(item.Section,english));
     if(show)count++;
    }
    if(ChronicleLayout)return; // The V3 artist owns exact safe-edge reflow.
@@ -48,14 +43,11 @@ namespace Eldoria.UI.RoyalGold {
   }
   public static int ChronicleOrder(RoyalSection s){
    switch(s){
-    case RoyalSection.Bastion:return 0;
-    case RoyalSection.Inventory:return 1;
-    case RoyalSection.Army:return 2;
-    case RoyalSection.World:return 3;
-    case RoyalSection.Missions:return 4;
+    case RoyalSection.World:return 0;
+    case RoyalSection.Mailbox:return 1;
     default:return 99;
    }
   }
-  public static string Name(RoyalSection s,bool en){switch(s){case RoyalSection.Heroes:return en?"Heroes":"Héroes";case RoyalSection.Army:return en?"Army":"Ejército";case RoyalSection.Missions:return en?"Missions":"Misiones";case RoyalSection.Inventory:return en?"Inventory":"Inventario";case RoyalSection.World:return en?"World":"Mundo";case RoyalSection.Bastion:return en?"Bastion":"Bastión";case RoyalSection.Settings:return en?"Interface":"Interfaz";default:return "Valoria";}}
+  public static string Name(RoyalSection s,bool en){switch(s){case RoyalSection.Mailbox:return en?"Mail":"Correo";case RoyalSection.Heroes:return en?"Heroes":"Héroes";case RoyalSection.Army:return en?"Army":"Ejército";case RoyalSection.Missions:return en?"Missions":"Misiones";case RoyalSection.Inventory:return en?"Inventory":"Inventario";case RoyalSection.World:return en?"World":"Mundo";case RoyalSection.Bastion:return en?"Bastion":"Bastión";case RoyalSection.Settings:return en?"Interface":"Interfaz";default:return "Valoria";}}
  }
 }

@@ -199,6 +199,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if (gateway == null || Hud == null) return;
             var s = gateway.Snapshot();
             if (s.BastionLevel < 2 || s.BarracksLevel < 1) return;
+            if(destination==Destination.March&&!NarrativeCoherenceRules.Seen(s,"march-preparation"))return;
             if(Hud.NarrativeOpen || (Hud.Modal != null && Hud.Modal.gameObject.activeSelf))
             {
                 deferredDestination=destination;
@@ -655,7 +656,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
             for(int i=0;i<2;i++)
             {
-                trainingTierChoices[i].gameObject.SetActive(training);
+                trainingTierChoices[i].gameObject.SetActive(training&&(i==0||s.BarracksLevel>=4));
                 bool unlocked=i==0||s.BarracksLevel>=4;
                 trainingTierLabels[i].Put(i==0?"ARQUEROS T1":
                     unlocked?"ARQUEROS T2":"T2\nREQUIERE\nCUARTEL IV");
@@ -717,7 +718,7 @@ namespace Eldoria.UI.RoyalGold.V2
             heading.Put(training?"ENTRENAMIENTO":"PREPARACIÓN DE MARCHA");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · EXPEDICIONES");
             unitTitle.Put(training?"ARQUERO · T"+selectedTier:"HÉROES DE LA MARCHA");
-            chapterAction.gameObject.SetActive(training&&s.BastionLevel>=3);
+            chapterAction.gameObject.SetActive(training&&s.BastionLevel>=2);
             chapterActionLabel.Put("MEJORAR CUARTEL");
             for(int i=0;i<3;i++)
             {
@@ -745,6 +746,7 @@ namespace Eldoria.UI.RoyalGold.V2
             unitDetail.Put(training?(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
                 "ARQUEROS T"+selectedTier+" · DISPONIBLES "+selectedAvailable);
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
+            switchDestination.gameObject.SetActive(!training||NarrativeCoherenceRules.Seen(s,"march-preparation"));
             switchDestination.interactable=true;
             bool busy=s.RecruitmentCompletesUtcTicks>0;
             if(training)
@@ -955,7 +957,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float hw=header.rect.width;
             // Keep the destination discoverable while its narrative prerequisite is locked.
             // Interactability and both destination guards still enforce Lyra recruitment.
-            heroesButton.gameObject.SetActive(HeroesRequested!=null);
+            heroesButton.gameObject.SetActive(HeroesRequested!=null&&CanOpenHeroes!=null&&CanOpenHeroes());
             heroesButton.interactable=HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes());
             var heroesCaption=heroesButton.GetComponentInChildren<RoyalText>();
             if(heroesCaption){heroesCaption.Put(heroesButton.interactable?"HÉROES":"HÉROES\nRecluta a Lyra");heroesCaption.fontSize=heroesButton.interactable?18:14;}

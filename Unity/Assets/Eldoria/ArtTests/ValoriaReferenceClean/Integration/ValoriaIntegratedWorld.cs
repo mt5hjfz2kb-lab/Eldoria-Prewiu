@@ -23,7 +23,13 @@ namespace Eldoria.ReferenceClean {
   public Vector3 WorldHome=new Vector3(982,0,24);
   public RoyalHUD Hud {get;private set;}
   public bool InWorld {get;private set;}
-  public bool Ready {get;private set;}
+  bool presentationBindingsReady;
+  RegionOneCanonicalLandscape worldPresentation;
+  internal bool PresentationBindingsReady=>presentationBindingsReady;
+  internal void BindWorldPresentation(RegionOneCanonicalLandscape presentation){worldPresentation=presentation;}
+  // All existing navigation/selection callers keep one readiness contract:
+  // the map must be complete before any world camera or target can be exposed.
+  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady);
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
   public ValoriaReferenceCleanGameplay City=>city;
@@ -148,7 +154,7 @@ namespace Eldoria.ReferenceClean {
    // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
    city.Controls.homeZoom=Mathf.Min(65f,city.PlayerCamera.orthographicSize*1.08f);
    city.Controls.ResetView();
-   Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
+   presentationBindingsReady=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
   }
@@ -244,7 +250,7 @@ namespace Eldoria.ReferenceClean {
      "\n\nMaestría PvE: "+mastery+". Sus mejoras se aplican a las actividades personales de los Vigilantes y Exploradores."
    };
   }
-  public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
+  public void RefreshNavigation(){if(Hud==null)return;Hud.Navigation.WorldIsCity=InWorld;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;
    SmoothCameraDrag();
@@ -274,12 +280,11 @@ namespace Eldoria.ReferenceClean {
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
-   // A physical built barracks is a city building. From chapter III its
-   // upgrade offer has a separate existing target; recruitment remains an
-   // explicit Army/training destination, never an automatic building overlay.
+   // A built barracks always opens its building sheet. Upgrade and training
+   // are explicit choices on that sheet, including at Bastion II.
    if(id=="barracks"){
     var state=boundGateway.Snapshot();
-    if(state.BastionLevel>=3&&state.BarracksLevel>0)id="upgrade-barracks";
+    if(state.BarracksLevel>0)id="upgrade-barracks";
    }
    Hud.SelectBuilding(id);return true;
   }
@@ -318,13 +323,14 @@ namespace Eldoria.ReferenceClean {
   }
   public bool CanOpen(RoyalSection section){
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();
+   if(section==RoyalSection.Mailbox)return Hud.GetComponent<RoyalGoldV41MailboxScreen>()!=null;
    if(section==RoyalSection.World)return InWorld||CanEnterWorld(s);
    if(section==RoyalSection.Inventory)return s.ChapterThree.Inventory.Count>0;
    if(section==RoyalSection.Army)return s.BastionLevel>=2&&s.BarracksLevel>0;
    if(section==RoyalSection.Bastion)return s.BastionLevel<=2&&s.JourneyComplete;
    return false;
   }
-  public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);else if(section==RoyalSection.Inventory){var s=boundGateway.Snapshot();Hud.ShowNarrative(L("ARCÓN","CHEST"),string.Join("\n\n",s.ChapterThree.Inventory.OrderBy(x=>x=="breach-manuscript"?0:1).Select(x=>x=="breach-manuscript"?L("Manuscrito de la Fisura · Misterio sin descifrar. No utilizable todavía.","Fissure Manuscript · An unsolved mystery. Not usable yet."):x=="treated-hide"?L("Piel curtida de ceniza · Material del Granero","Ash-treated hide · Granary material"):x=="iron-brace"?L("Abrazadera de hierro antiguo · Material del Aserradero","Ancient iron brace · Sawmill material"):L("Colmillo pétreo · Material de construcción","Stone tusk · Building material"))));}}
+  public void Open(RoyalSection section){if(section==RoyalSection.Mailbox){Hud.GetComponent<RoyalGoldV41MailboxScreen>()?.Open();return;}if(section==RoyalSection.World)TrySetWorld(!InWorld);else if(section==RoyalSection.Inventory){var s=boundGateway.Snapshot();Hud.ShowNarrative(L("ARCÓN","CHEST"),string.Join("\n\n",s.ChapterThree.Inventory.OrderBy(x=>x=="breach-manuscript"?0:1).Select(x=>x=="breach-manuscript"?L("Manuscrito de la Fisura · Misterio sin descifrar. No utilizable todavía.","Fissure Manuscript · An unsolved mystery. Not usable yet."):x=="treated-hide"?L("Piel curtida de ceniza · Material del Granero","Ash-treated hide · Granary material"):x=="iron-brace"?L("Abrazadera de hierro antiguo · Material del Aserradero","Ancient iron brace · Sawmill material"):L("Colmillo pétreo · Material de construcción","Stone tusk · Building material"))));}}
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
   public void Home(){

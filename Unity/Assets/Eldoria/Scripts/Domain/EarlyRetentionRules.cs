@@ -71,9 +71,9 @@ namespace Eldoria.Domain
         // the archers are temporarily away on a march. Entry stays visible;
         // COMBATIR itself is disabled while no troops are available.
         public static bool VigilantsUnlocked(PlayerState s) =>
-            s!=null && s.SawmillLevel>=1;
+            s!=null && (s.EngendroDefeated||s.BastionLevel>=3) && NarrativeCoherenceRules.Seen(s,"vigilants-introduction");
         public static bool ScoutsUnlocked(PlayerState s) =>
-            s!=null && s.BastionLevel>=2 && s.BarracksLevel>=1 &&
+            s!=null && s.BastionLevel>=3 && s.BarracksLevel>=1 && NarrativeCoherenceRules.Seen(s,"scouts-introduction") &&
             s.ChapterProgress!=null && s.ChapterProgress.MarchConfirmed;
         public static bool StageUnlocked(PlayerState s,int absolute) =>
             VigilantsUnlocked(s) && absolute>0 && absolute<=10000 &&

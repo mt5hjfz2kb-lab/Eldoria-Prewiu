@@ -29,6 +29,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private readonly RoyalText[] councilCaptions = new RoyalText[3];
         private RoyalText speedOneLabel, speedFiveLabel;
         private RoyalText objectiveActionLabel, objectivesButtonLabel;
+        private RoyalButton buildingTraining;
+        private CanvasGroup buildingTrainingGroup;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
         private RoyalGoldV3BuildingEngravingGraphic miniatureArt;
@@ -36,7 +38,8 @@ namespace Eldoria.UI.RoyalGold.V2
         public System.Func<string, GameObject> BuildingModelFor;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
-        private bool ready, expanded, portrait, hasGeometry, compactObjective, lastCouncil;
+        private bool ready, expanded, portrait, hasGeometry, compactObjective, lastCouncil, lastOperation;
+        private string lastSelection;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
@@ -48,6 +51,16 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Muted = new Color(.775f, .76f, .715f);
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
+        private bool CompactConstructionOperation
+        {
+            get
+            {
+                if (!Source || !Source.Building || !Source.Building.OperationActive) return false;
+                string id = Source.SelectedBuildingId ?? "";
+                if (id.StartsWith("upgrade-", StringComparison.Ordinal)) id = id.Substring(8);
+                return id == "bastion" || id == "sawmill" || id == "barracks" || id == "granary" || id == "stoneworks";
+            }
+        }
         public bool ChapterExpanded => expanded;
         public bool ChronicleIllustratedBuildingVisible => buildingGroup && buildingGroup.alpha > .5f;
         public RoyalButton ChronicleBuildingAction => buildingAction;
@@ -67,6 +80,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public void HideConsumedBuildingAction()
         {
             SetVisible(buildingActionGroup, false);
+            SetVisible(buildingTrainingGroup, false);
             if (buildingAction) buildingAction.interactable = false;
         }
         public bool BuildingVisible
@@ -248,7 +262,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 new Color(.44f, .30f, .15f, 1f));
             objectiveAction = Button("Go to existing objective", objectiveCard, out objectiveActionLabel, true);
             objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
-            objectiveActionLabel.Put("Ir al objetivo");
+            objectiveActionLabel.Put("Ir");
             objectivesButtonLabel.Put("Misiones");
             // Unity offscreen portrait captures exposed a uGUI canvas ordering
             // defect: the original Text children were clipped to blank blue
@@ -268,8 +282,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // Real actions now have their original pictogram treatment.
             // Their accessibility names and events survive, but duplicate
             // rectangular captions are not drawn over the medallions.
-            objectiveActionLabel.enabled = false;
-            objectivesButtonLabel.enabled = false;
+            objectiveActionLabel.enabled = true;
+            objectivesButtonLabel.enabled = true;
             objectiveActionLabel.fontSize = 18;
             objectivesButtonLabel.fontSize = 18;
             objectiveActionLabel.alignment = TextAnchor.MiddleCenter;
@@ -288,7 +302,8 @@ namespace Eldoria.UI.RoyalGold.V2
             });
 
             chapterClose = Button("Close chapter overlay", safe, out var closeChapterText, false);
-            closeChapterText.Put("×");
+            closeChapterText.Put("");
+            StyleChronicleMedallion(chapterClose,11);
             closeChapterText.fontSize = 30;
             chapterClose.onClick.AddListener(() =>
             {
@@ -380,6 +395,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 var sourceButton = Source.Building.Primary.Button;
                 if (sourceButton && sourceButton.interactable) sourceButton.onClick.Invoke();
             });
+            buildingTraining=Button("Barracks / enter training",buildingCard,out var trainingLabel,true);
+            trainingLabel.Put("Entrenar");
+            buildingTraining.onClick.AddListener(()=>GetComponent<RoyalGoldV3ManagementScreens>()?.Open(RoyalGoldV3ManagementScreens.Destination.Training));
+            buildingTrainingGroup=buildingTraining.gameObject.AddComponent<CanvasGroup>();
+            SetVisible(buildingTrainingGroup,false);
             // Inline supplementary buttons share the SAME bottom cartouche.
             // They delegate to the pre-existing gateway/command handlers; no
             // separate building modal, clock, economy or state machine.
@@ -403,6 +423,7 @@ namespace Eldoria.UI.RoyalGold.V2
             chapterCloseGroup = chapterClose.gameObject.AddComponent<CanvasGroup>();
             SetVisible(buildingGroup, false);
             SetVisible(buildingActionGroup, false);
+            SetVisible(buildingTrainingGroup, false);
             SetVisible(chapterCloseGroup, false);
             // The report's live heading is the visual frontmost text; it must
             // not be hidden by the runtime scroll/CTA graphics during the
@@ -569,7 +590,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // The selected Engendro has no resource-cost row. On portrait
             // phones reuse that empty row for status and visible body text.
             bool portraitEncounter=portrait && Source.SelectedBuildingId=="engendro-valoria" && !council;
-            float cardHeight = council?(portrait?190f:193f):(portrait?218f:196f);
+            bool compactOperation=CompactConstructionOperation;
+            float cardHeight = compactOperation?112f:council?(portrait?190f:193f):(portrait?218f:196f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -619,6 +641,18 @@ namespace Eldoria.UI.RoyalGold.V2
             else
                 Top((RectTransform)buildingAction.transform,
                     cardWidth-actionWidth-14f,cardHeight-66f,actionWidth,51f);
+            bool barracksSelection=Source&&Source.SelectedBuildingId=="upgrade-barracks";
+            if(barracksSelection)
+            {
+                float rowLeft=portrait?14f:cardWidth-actionWidth-14f;
+                float rowWidth=portrait?cardWidth-28f:actionWidth;
+                float rowY=cardHeight-(portrait?51f:112f);
+                Top((RectTransform)buildingTraining.transform,rowLeft,rowY,
+                    portrait?(rowWidth-8f)*.5f:rowWidth,40f);
+                Top((RectTransform)buildingAction.transform,
+                    portrait?rowLeft+(rowWidth+8f)*.5f:rowLeft,
+                    portrait?rowY:rowY+46f,portrait?(rowWidth-8f)*.5f:rowWidth,40f);
+            }
             // Accelerators occupy the identical action row, only if a real
             // timer is active and the player's ledger contains a speed-up.
             float extraWidth=portrait?(cardWidth-34f)*.5f:actionWidth*.50f;
@@ -637,6 +671,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 // PRODUCCIÓN and VIDA CIVIL fit as readable single lines.
                 Stretch(councilCaptions[i].rectTransform,4f);
                 councilCaptions[i].fontSize=20;
+            }
+            buildingMiniature.gameObject.SetActive(!compactOperation);
+            buildingLevel.gameObject.SetActive(!compactOperation);
+            buildingCost.gameObject.SetActive(!compactOperation);
+            if(compactOperation){
+                Top(buildingTitle.rectTransform,14f,5f,cardWidth-76f,28f);
+                Top(buildingWorkState.rectTransform,14f,34f,cardWidth-28f,25f);
+                Top((RectTransform)speedOne.transform,14f,65f,(cardWidth-36f)*.5f,40f);
+                Top((RectTransform)speedFive.transform,22f+(cardWidth-36f)*.5f,65f,(cardWidth-36f)*.5f,40f);
             }
             // Use an optical inset for *labels*, not for action hit targets.
             // Keep the real full-height button and its existing callbacks.
@@ -698,6 +741,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 !objectiveAction || !objectivesButton) return;
             PlaceObjectiveLabel(objectiveActionLabel, (RectTransform)objectiveAction.transform);
             PlaceObjectiveLabel(objectivesButtonLabel, (RectTransform)objectivesButton.transform);
+            Top(objectiveActionLabel.rectTransform,objectiveCard.rect.width+3f,63f,66f,22f);
+            Top(objectivesButtonLabel.rectTransform,objectiveCard.rect.width+61f,63f,70f,22f);
+            objectiveActionLabel.fontSize=14;objectivesButtonLabel.fontSize=14;
+            objectiveActionLabel.color=objectivesButtonLabel.color=new Color(.96f,.88f,.68f,1f);
             objectiveActionLabel.transform.SetAsLastSibling();
             objectivesButtonLabel.transform.SetAsLastSibling();
         }
@@ -795,9 +842,10 @@ namespace Eldoria.UI.RoyalGold.V2
             bool hasLongRestriction=!building&&!council&&
                 !string.IsNullOrWhiteSpace(Safe(source.Requirements));
             if(buildingScroll)buildingScroll.gameObject.SetActive(
-                !council&&!(portrait&&hasLongRestriction));
+                !CompactConstructionOperation&&!council&&!(portrait&&hasLongRestriction));
             bool offered=!building&&!council&&source.Primary&&source.Primary.Visible;
             SetVisible(buildingActionGroup,offered);
+            SetVisible(buildingTrainingGroup,Source.SelectedBuildingId=="upgrade-barracks"&&!building&&!council);
             if(offered){
                 primaryLabel.Put(Safe(source.Primary.Label));
                 buildingAction.interactable=source.Offer!=null&&
@@ -1080,13 +1128,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 : Mathf.Clamp((availableWidth * .9f - 12f -
                     columnGap * (columns - 1)) / columns, 90f, 240f);
             // Never create a visual button that cannot fit its own safe width.
-            cellWidth = Mathf.Max(1f, cellWidth);
+            cellWidth = Mathf.Clamp(cellWidth,1f,120f);
             float cellHeight = rows > 1 ? 74f : vertical ? 105f : 106f;
             float contentHeight = rows * cellHeight + (rows - 1) * rowGap;
             float totalWidth = cellWidth * columns +
                 columnGap * (columns - 1);
             float dockWidth = Mathf.Min(availableWidth,
-                Mathf.Max(totalWidth + 12f, availableWidth * .90f));
+                totalWidth + 12f);
             float dockHeight = contentHeight + 6f;
 
             var dock = nav.transform as RectTransform;
@@ -1170,7 +1218,8 @@ namespace Eldoria.UI.RoyalGold.V2
                         int desired = item.Section == RoyalSection.Bastion ? 9 :
                             item.Section == RoyalSection.Inventory ? 15 :
                             item.Section == RoyalSection.Army ? 4 :
-                            item.Section == RoyalSection.World ? 16 : 6;
+                            item.Section == RoyalSection.Mailbox ? 17 :
+                            item.Section == RoyalSection.World ? (Source.Navigation.WorldIsCity?9:16) : 6;
                         if (icon && icon.Icon != desired)
                         {
                             icon.Icon = desired;
@@ -1272,7 +1321,8 @@ namespace Eldoria.UI.RoyalGold.V2
             bool isCouncil=GetComponent<RoyalGoldV3BuildingScreens>()?.
                 InlineCouncilNeeded(Source.SelectedBuildingId)==true;
             bool resized = !hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||
-                Mathf.Abs(safe.rect.height - lastHeight) > .5f || isCouncil!=lastCouncil;
+                Mathf.Abs(safe.rect.height - lastHeight) > .5f || isCouncil!=lastCouncil||lastSelection!=Source.SelectedBuildingId||lastOperation!=(Source.Building&&Source.Building.OperationActive);
+            lastSelection=Source.SelectedBuildingId;lastOperation=Source.Building&&Source.Building.OperationActive;
             lastCouncil=isCouncil;
             if (resized)
             {

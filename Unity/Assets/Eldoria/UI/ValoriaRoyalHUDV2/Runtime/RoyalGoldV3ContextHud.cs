@@ -581,7 +581,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderTimer(string id, Camera camera, bool blocked)
         {
             var timer = timers[id];
-            if (blocked || !live.TryGetValue(id, out var data) ||
+            if (blocked || ((Source.SelectedBuildingId==id||Source.SelectedBuildingId=="upgrade-"+id)&&Chronicle&&Chronicle.ChronicleIllustratedBuildingVisible) || !live.TryGetValue(id, out var data) ||
                 !data.OperationActive || string.IsNullOrWhiteSpace(data.Time))
             {
                 Visible(timer.Visibility, false, false);
@@ -589,60 +589,24 @@ namespace Eldoria.UI.RoyalGold.V2
                     ProbeTimerState(id, "NO_LIVE_OPERATION_OR_BLOCKED", timer, Vector2.zero);
                 return;
             }
-            var target = FindAnchor(id);
-            if (!CanProject(target, camera, safe, true, out var screen))
+            // Operation summaries belong to a compact HUD dock, not a camera-following panel.
+            int slot=0;
+            foreach(var candidate in TimedTargets)
             {
-                Visible(timer.Visibility, false, false);
-                ProbeTimerState(id, "ANCHOR_NOT_PROJECTABLE", timer, Vector2.zero);
-                return;
+                if(candidate==id)break;
+                if(live.TryGetValue(candidate,out var operation)&&operation.OperationActive&&
+                    !string.IsNullOrWhiteSpace(operation.Time))slot++;
             }
-            float width = Mathf.Min(254f, safe.rect.width - 26f);
-            float height = 70f;
-            timer.Root.sizeDelta = new Vector2(width, height);
-            timer.Label.Put(data.Time);
-            timer.Label.fontSize = 18;
-            Place(timer.Label.rectTransform, 8f, 7f, width - 16f, 42f);
-            Place(timer.Progress, 10f, 57f, width - 20f, 6f);
-            timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
-            // The original 421-unit portrait top exclusion belonged to an
-            // obsolete full-height quest window. Native 390×844 screenshots
-            // showed it pushing the genuine timer DOWN across the Sawmill's
-            // roof even though the current quest occupies only a small
-            // upper-left manuscript. Use the current HUD geometry instead:
-            // place above the model when it fits, and stay clear of both
-            // the live objective and the actual bottom cartouche.
-            var chronicle=Source?Source.GetComponent<RoyalGoldV2Hud>():null;
-            Rect free=chronicle?chronicle.GetFreeSceneViewport():
-                Source?Source.GetVisibleSceneViewport():new Rect(.06f,.14f,.88f,.72f);
-            // Horizontal-conditional exclusion: a small upper-left quest
-            // never forbids an unrelated countdown above a right-hand roof.
-            // Read the live manuscript's four corners in the SAME safe-local
-            // coordinate space as the actual projected building hotspot.
-            float topMargin=Mathf.Max(105f,safe.rect.height*.12f);
-            if(chronicle&&chronicle.ChronicleObjectiveVisible&&
-                chronicle.ChronicleObjectiveRect)
-            {
-                var mission=chronicle.ChronicleObjectiveRect;
-                var worldCorners=new Vector3[4];mission.GetWorldCorners(worldCorners);
-                float left=float.PositiveInfinity,right=float.NegativeInfinity;
-                float bottom=float.PositiveInfinity;
-                foreach(var corner in worldCorners)
-                {
-                    var local=safe.InverseTransformPoint(corner);
-                    left=Mathf.Min(left,local.x);right=Mathf.Max(right,local.x);
-                    bottom=Mathf.Min(bottom,local.y);
-                }
-                if(screen.x+width*.5f>=left-8f&&
-                    screen.x-width*.5f<=right+8f)
-                    topMargin=Mathf.Max(topMargin,safe.rect.yMax-bottom+12f);
-            }
-            float bottomMargin=Mathf.Max(88f,
-                Mathf.Clamp01(free.yMin)*safe.rect.height+10f);
-            Vector2 lowerEdge;
-            Vector2? oppositeEdge=CanProject(target,camera,safe,false,out lowerEdge)
-                ? lowerEdge : (Vector2?)null;
-            var center=FitToSafe(screen,width,height,safe,
-                topMargin,bottomMargin,true,oppositeEdge);
+            float width=Mathf.Min(220f,safe.rect.width-26f),height=46f;
+            timer.Root.sizeDelta=new Vector2(width,height);
+            timer.Label.Put(data.Name+" · "+data.Time);
+            timer.Label.fontSize=16;
+            Place(timer.Label.rectTransform,8f,3f,width-16f,31f);
+            Place(timer.Progress,10f,37f,width-20f,5f);
+            timer.Fill.rectTransform.anchorMax=new Vector2(Mathf.Clamp01(data.Progress),1f);
+            var center=new Vector2(safe.rect.xMax-width*.5f-12f,
+                safe.rect.yMin+150f+height*.5f+slot*(height+6f));
+            var screen=center;
             timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);

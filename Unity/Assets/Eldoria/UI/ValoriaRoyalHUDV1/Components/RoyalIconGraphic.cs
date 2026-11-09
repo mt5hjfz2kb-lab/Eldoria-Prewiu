@@ -28,6 +28,7 @@ namespace Eldoria.UI.RoyalGold {
     case 13:Stroke(28,50,72,50,6);break;
     case 14:Stroke(28,50,72,50,6);Stroke(50,28,50,72,6);break;
     case 15:Stroke(27,22,67,68,10);Shape(P(47,74),P(59,87),P(88,62),P(77,49));break;
+    case 17:Stroke(20,27,80,27);Stroke(80,27,80,73);Stroke(80,73,20,73);Stroke(20,73,20,27);Stroke(20,73,50,48);Stroke(50,48,80,73);break;
     case 16:
      for(int i=0;i<40;i++){float a=i*Mathf.PI/20,b=(i+1)*Mathf.PI/20;Stroke(50+32*Mathf.Cos(a),50+32*Mathf.Sin(a),50+32*Mathf.Cos(b),50+32*Mathf.Sin(b),2);}
      Shape(P(50,96),P(57,56),P(50,50),P(43,56));Shape(P(50,4),P(43,44),P(50,50),P(57,44));

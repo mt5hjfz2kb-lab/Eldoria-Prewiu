@@ -182,40 +182,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
         }
 
-        void Update()
-        {
-            if(!artwork || !isActiveAndEnabled || !gameObject.activeInHierarchy ||
-                Time.unscaledTime<nextRepaint)return;
-            // Five mesh updates a second; mesh is small and reuses the
-            // existing imported texture. The canonical route stays fixed.
-            nextRepaint=Time.unscaledTime+.20f;
-            if(materialized)
-            {
-                // Quiet camera drift: near rock is nearly fixed so the
-                // original 25 stage stones NEVER detach from their road.
-                float phase=Time.unscaledTime*.35f;
-                float minSide=Mathf.Min(rectTransform.rect.width,rectTransform.rect.height);
-                for(int i=0;i<planeRects.Length;i++)
-                {
-                    var r=planeRects[i];
-                    // Genuine independent scenic masses: this B11 variant
-                    // has separately materialized backgrounds. Motion has
-                    // an occlusion-safe backplate instead of duplicate pixels.
-                    // Closest road-facing terrain remains nearly fixed: the
-                    // REAL 25 interactive stage stones must never detach.
-                    var k=DepthMotion[i]*minSide*
-                        (structuralB11 && i!=5 ? 2.0f : 1f);
-                    var offset=new Vector2(
-                        Mathf.Sin(phase+i*.47f)*k,
-                        Mathf.Cos(phase*.72f+i*.51f)*k*.57f);
-                    if((r.anchoredPosition-offset).sqrMagnitude>.001f)
-                        r.anchoredPosition=offset;
-                }
-                return;
-            }
-            SetVerticesDirty();
-        }
-
+        // The map and its interactive stage stones share a stationary composition.
+        // Geometry is rebuilt only for artwork or layout changes.
         Vector2 Map(Rect bounds,Vector2 pixelUv)
         {
             return new Vector2(
@@ -263,9 +231,9 @@ namespace Eldoria.UI.RoyalGold.V2
             var bounds=GetPixelAdjustedRect();
             if(bounds.width<36f||bounds.height<36f)return;
             float unit=Mathf.Min(bounds.width,bounds.height)/600f;
-            float t=Time.unscaledTime;
+            float t=0f;
             float slow=Mathf.Sin(t*.29f);
-            float slower=Mathf.Sin(t*.17f+1.4f);
+            float slower=0f;
             // Far citadel moves almost imperceptibly, middle rock face
             // less, and near vegetation/waterfall banks more. Painting pixels
             // are sampled from their own original UV, not a second image.

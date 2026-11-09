@@ -108,7 +108,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void RefreshEntryVisibility()
         {
             if(!entry||!hud)return;
-            entry.gameObject.SetActive(MailboxIntroduced&&!IsOpen&&!hud.NarrativeOpen&&
+            entry.gameObject.SetActive(!(hud.Navigation&&hud.Navigation.ChronicleLayout)&&MailboxIntroduced&&!IsOpen&&!hud.NarrativeOpen&&
                 !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
                 !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false)&&
@@ -116,7 +116,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         public void Open()
         {
-            if(hud==null||gateway==null || !MailboxIntroduced || hud.NarrativeOpen ||
+            if(hud==null||gateway==null || hud.NarrativeOpen ||
                (hud.Modal!=null&&hud.Modal.gameObject.activeSelf))return;
             Ensure();window.gameObject.SetActive(true);
             window.SetAsLastSibling();offset=0;selectedId=null;
