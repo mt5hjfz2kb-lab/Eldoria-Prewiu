@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T10:46:08.281Z",
+  "updated_at": "2026-11-09T10:49:44.402Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6818,9 +6818,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_MOBILE10_PRETEST_UX_PUBLISHED_LIVE_VERIFIED",
+      "phase": "OWNER_REQUESTED_CANONICAL_UX_INTEGRATION_PREPARATION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Owner can test published mobile10. Native focused UX, 227-check I–V journey, desktop Apple GPU control/candidate and live URL entry/reload passed. No further Windows work queued; physical-device confirmation pending. PR179 remains open; no APK or external tester release.",
+      "next": "Reconcile beta10 UX with current main and preserve PR180 hero fixes in existing PR179. Prepare and validate independent source checks. Canonical shared files RoyalGoldV2Hud.cs and LocalGateway.cs require conflict-safe ownership reconciliation with PR173/181 before promotion; Windows remains with PR181.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7082,7 +7082,23 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-09T08:26:10.917Z"
+      "runner_claimed_at": "2026-11-09T08:26:10.917Z",
+      "canonical_integration_request": {
+        "requested_at": "2026-11-09T10:49:44.401Z",
+        "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
+        "base_main": "dcbe8a56c19ce73009d79cb4c5f0fd0666d6eec8",
+        "preserve": [
+          "PR180 paired-hero mastery correction",
+          "PR173 independent BreachWatch UI",
+          "PR181 daily treasures"
+        ],
+        "canonical_pr": 179,
+        "shared_files": [
+          "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+          "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
+        ],
+        "windows_claimed": false
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
