@@ -101,7 +101,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         panely=navtop-280-34
         context=place("context",w-m-panelw,panely,panelw,280)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        header=R(18,7,panelw-80,26)
+        header=R(18,7,panelw-80,21)
         level=R(18,31,panelw-80,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
@@ -198,7 +198,7 @@ def main():
         'chapterName.fontSize=smallPhone?13:11;',
         'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
-        'At(buildingName.rectTransform,18,7,pw-80,26);',
+        'At(buildingName.rectTransform,18,7,pw-80,21);',
         'At(buildingName.rectTransform,18,8,pw-80,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
         'At(buildingLevel.rectTransform,18,31,pw-80,17);',
