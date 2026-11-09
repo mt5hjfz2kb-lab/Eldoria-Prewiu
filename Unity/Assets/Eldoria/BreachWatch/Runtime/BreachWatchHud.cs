@@ -1124,13 +1124,16 @@ namespace Eldoria.BreachWatch
                 // On the real 844x390 Unity capture, the previous 61+19
                 // progress position left only 2.6 physical pixels above
                 // the bottom bevel. Keep true text visibly inside the stone.
+                // The actual 1600x900 Unity first native screenshot showed
+                // title and objective fraction too near the source-metal rim.
+                // Shift live ink INSIDE the same authentic complete illustration.
                 At(objective,margin,100,256,fullObjective?122:92);
-                At(chapterName.rectTransform,66,7,174,24);
-                At(chapterObjective.rectTransform,66,36,176,fullObjective?58:34);
-                At(chapterProgress.rectTransform,66,fullObjective?99:71,176,18);
-                chapterName.fontSize=14;
+                At(chapterName.rectTransform,66,14,174,20);
+                At(chapterObjective.rectTransform,66,40,176,fullObjective?55:23);
+                At(chapterProgress.rectTransform,66,fullObjective?99:65,176,16);
+                chapterName.fontSize=13;
                 chapterObjective.fontSize=15;
-                chapterProgress.fontSize=14;
+                chapterProgress.fontSize=13;
 
                 At(utilityRail,margin,h-165,44,145);
                 for(int i=0;i<utilityRail.childCount;i++)

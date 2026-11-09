@@ -116,7 +116,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
             assert 5+30+1.5<=38,size
         place("mission",m,100,256,92)
-        chapter_text=R(66,7,174,24)
+        chapter_text=R(66,14,174,20)
         assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
         place("breach",w*.49-17,11,34,34)
         navsize,gap=55,15

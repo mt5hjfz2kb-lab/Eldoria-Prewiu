@@ -50,6 +50,8 @@ def verify():
          "approved single-line chapter and Breach inscription")
     fits("Construye el aserradero",REGULAR,13,mission_width-70,
          "true objective alongside painted castle badge")
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,174,
+         "landscape single-line chapter inside original metal")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     assert "At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);" in hud
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")

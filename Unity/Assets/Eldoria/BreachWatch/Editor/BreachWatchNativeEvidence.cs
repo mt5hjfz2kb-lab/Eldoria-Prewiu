@@ -819,8 +819,11 @@ namespace Eldoria.BreachWatch.Editor
                          (host.English
                             ?chapterLabel.text.Contains("THE BREACH")
                             :chapterLabel.text.Contains("LA BRECHA")) &&
-                         chapterLabel.text.Contains("\n") &&
-                         chapterLabel.rectTransform.rect.height>=30f,
+                         chapterLabel.text.Contains(" / ") &&
+                         !chapterLabel.text.Contains("\n") &&
+                         chapterLabel.rectTransform.rect.height>=20f &&
+                         chapterLabel.preferredWidth <=
+                            chapterLabel.rectTransform.rect.width+5f,
                          "Owner-approved Chapter I / La Brecha identity not readable: "+name);
                 // Verify that the authentic chapter progress is visible
                 // inside its carved tablet, not hidden behind the lower edge.
