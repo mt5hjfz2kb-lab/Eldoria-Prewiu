@@ -46,3 +46,26 @@ Se ha trabajado por técnica, no por retoques superficiales: la versión geomét
 La API oficial de **Unity 6000.3** define que `GameObject.Find("A / B")` interpreta la barra como **separador de jerarquía**, no como un carácter literal del nombre. El Canvas canónico de PR173 se llama realmente `VIGILIA / independent canvas`, y la sala de héroes se llama `Heroes / canonical destination`. Por tanto, la implementación previa podía no detectar ninguno de los dos aunque existieran: el cofre quedaría unido al Canvas Royal ya deshabilitado y la ceremonia de Lyra podría tapar la pantalla auténtica de incorporación. Esta es una **causa funcional**, no un cambio decorativo. Fuente oficial: https://docs.unity.cn/6000.3/Documentation/ScriptReference/GameObject.Find.html.
 
 **Corregido en el código de PR181, sin editar PR173 ni la beta:** localizar el Canvas activo examinando los componentes Canvas y comparando su **nombre literal exacto**; buscar la sala real dentro de la zona segura que la crea, memorizar la referencia y comprobar visibilidad auténtica en su Canvas antes de mostrar una ceremonia. Sin introducir una referencia de ensamblado a PR173 ni un segundo Canvas o EventSystem. Se cambiaron los controles de compatibilidad e integración para rechazar en CI el `GameObject.Find` inseguro, y se añadió un ensayo nativo que crea una sala con barra literal, prueba abierta/cerrada, y comprueba que Lyra no quede tapada. El ensayo sigue **pendiente de ejecución real en Unity**, junto al contrato de 52 capturas, 56 punteros y 8 premios; no declaramos calidad o integración visual aprobadas por una prueba fuente.
+
+
+## Revisión pre-PC del 9/11/2026 — experiencia, coherencia y balance
+
+Se ha trabajado directamente en la rama, sin reclamar el ejecutor Windows de Vigilia:
+
+- **Integración viva con la interfaz:** `check-vigilia-compat.mjs` consulta el HEAD actual de PR173 en GitHub usando el permiso de lectura del workflow. Comprueba nombres literales de Canvas y `Safe composition`, jerarquía, Canvas deshabilitado, fuente de iconos y materiales. Si PR173 cambia el contrato, CI falla antes de gastar una sesión de Unity. No implica que las dos PR ya estén integradas ni que la calidad visual esté aprobada.
+- **Lógica de fidelidad y claridad:** ya no aparece el mensaje ambiguo «Vuelve mañana». Se muestra la cuenta atrás correcta hasta el siguiente día **UTC**, con tests de frontera en 00:00, 23:59 y segundos finales. El reloj es del prototipo local, **no** se presenta como reloj de servidor fiable.
+- **No interrumpir al jugador:** al producirse varios hitos durante una sesión, como máximo se muestra **una ceremonia automáticamente**. Los siguientes quedan pendientes, sin volver a conceder recursos, y se pueden abrir voluntariamente desde el medallón («HITOS») una vez recogido el tributo diario. El buzón mantiene el historial aunque el jugador cierre la sesión. Esto evita cadenas de ventanas cada vez que el jugador cierra una.
+- **Salida limpia:** «Saltar», «Cerrar» o la prioridad del tutorial detienen el sonido de pestillo/bronce aún reproduciéndose; nunca ejecutan de nuevo `ClaimDailyTreasure`. El sonido real en un dispositivo todavía debe escucharse y aprobarse en Unity.
+- **Economía de 30 días:** `EconomyCandidate.cs` ahora simula reclamaciones **reales** sobre `DailyTreasureState` para perfiles constantes y ocasionales. Se mantiene el calendario de siete premios incluso si se pierde la racha; no hay premios por días no reclamados.
+
+| Patrón hipotético en 30 días | Reclamaciones | Madera | Piedra | Comida | Minutos acelerados |
+|---|---:|---:|---:|---:|---:|
+| Todos los días | 30 | 1380 | 1240 | 945 | 32 |
+| Cinco días por semana | 22 | 1050 | 900 | 400 | 24 |
+| Tres días por semana | 13 | 480 | 480 | 200 | 11 |
+| Dos días por semana | 9 | 390 | 340 | 100 | 8 |
+| Todos salvo el día 8 | 29 | 1380 | 1200 | 920 | 32 |
+
+**Interpretación limitada:** son cantidades obtenidas de las reglas implementadas, comprobadas por CI de fuente en la ejecución [42580279155](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42580279155). No representan el comportamiento de los testers, ni validan aún que sean los premios adecuados. Se pospone cambiar importes hasta conocer la progresión, los tiempos de construcción y los resultados de jugadores reales.
+
+**Puerta que sigue sin superar:** artísticos y layouts verdaderos de Unity 6000.3.23f1 y convivencia en ciudad con PR173, audio real, móvil y partida Bastión I–V. Una prueba completa en Ubuntu no aprueba el efecto «guau». No fusionar ni publicar.
