@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T18:18:52.254Z",
+  "updated_at": "2026-11-09T18:38:19.403Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6796,9 +6796,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PAGES_CONSENT_PILOT_SOURCE_READY_DEPLOY_JOB_START_FAILURE",
+      "phase": "GITHUB_PAGES_OWNER_QA_PILOT_LIVE_NATIVE_BASTION_SIGNALS_WAITING_WINDOWS",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "GitHub beta PR179 17bd1252711e3845fb9d9eeeef7cc323dc62e514 adds optional Pages pilot-stage.mjs + 3 locally passing tests (source no Unity). Main Pages workflow c48c2f018a18caacd41015e0ac0d613bcbb8e9e3 attempts owner-only pilot.html; CI runs 42672048392/42672048457/42672256775 concluded failure with ZERO jobs, reason not yet proven, published pilot URL 404. Diagnose/retry legitimate GitHub Actions startup before declaring release. Supabase QA endpoint active (8 synthetic, 0 real). Crucial: actual released Unity source 8dc875... lacks new ELDORIA_BETA_SIGNAL authored later in ValoriaIntegratedWorld.cs overlay, so beta rebuild/native QA after Windows lease release is required for real I-V telemetry. No Cloudflare (user rejected), keep Pages and rollback stable. No tester invites while readiness BLOCKED; device stability #96 and license #171 unresolved.",
+      "next": "GitHub Pages owner-only pilot QA live: /beta-native325/pilot.html?eldoriaBetaTelemetry=1; published run 42674820886 publish PASS, live macOS WebKit pending. Existing game and unity-owner preserved. PR179 source HEAD 231328bbfd271726c8527ad06b274f29ebf0c941 source-only event alignment run 42674713658 PASS. Supabase: 10 QA rows, 0 real. Must acquire windows-runner-heavy after Vigilia formally releases it (currently rev27), update native workflow obsolete owner/revision, Unity/WebGL rebuild with Bastion I–V markers, then real consented event QA, phone stability/legal, owner GO before external invitations. No Cloudflare, no APK, budget zero.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7162,7 +7162,20 @@
         "GitHub Pages opt-in pilot QA route with true live consent and backend receipt",
         "Native Unity rebuilt I-V source milestone marker and WebGL exact-source QA",
         "Physical iPhone Safari / Android stability and final license/release gate"
-      ]
+      ],
+      "pilot_qa": {
+        "github_pages_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/pilot.html?eldoriaBetaTelemetry=1",
+        "published_run": 42674820886,
+        "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+        "overlay_telemetry_candidate": "231328bbfd271726c8527ad06b274f29ebf0c941",
+        "stage": "OWNER_QA_ONLY",
+        "external_invites_enabled": false,
+        "consent_required": true,
+        "supabase_qa_receipts": 10,
+        "supabase_real_receipts": 0,
+        "unity_marker_qa": "NOT BUILT",
+        "live_webkit": "PENDING"
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
