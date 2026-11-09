@@ -766,19 +766,27 @@ namespace Eldoria.BreachWatch.Editor
                          ui.BuildingAction.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
                          "Duplicated upgrade art or old procedural glyph remains layered over the CTA: "+name);
                     var visualRect=(RectTransform)actionArt.transform;
-                    Need(visualRect.rect.height<((RectTransform)ui.BuildingAction.transform).rect.height-7f &&
-                         visualRect.rect.height>22f,
-                         "Original painted button has wrong natural aspect or touch target is too small: "+name);
+                    float artAspect=actionArt.sprite.rect.width/
+                        Mathf.Max(1f,actionArt.sprite.rect.height);
+                    Need(visualRect.rect.height>22f &&
+                         Mathf.Abs(visualRect.rect.height*artAspect-
+                                   visualRect.rect.width)<.85f,
+                         "Original painted button is stretched or does not fill the authored width: "+name);
+                    float artTopInCard=Top(action)+Top(visualRect);
+                    float artBottomInCard=artTopInCard+visualRect.rect.height;
+                    Need(artTopInCard>=Bottom(state)-.65f &&
+                         artBottomInCard<=ui.BuildingPanel.rect.height+.5f,
+                         "Actual painted burgundy art overlaps gameplay status or escapes card: "+name);
                     var actionText=ui.BuildingAction.GetComponentsInChildren<Text>(true)
                         .FirstOrDefault(q=>q && q.name=="Real action title");
                     // Compare against VISIBLE sprite geometry (246x60)
                     // instead of the wider invisible touch target. A caption
                     // can be inside the Button but outside the red painting.
-                    float artAspect=actionArt.sprite.rect.width/
-                        actionArt.sprite.rect.height;
                     float artDrawnWidth=Mathf.Min(visualRect.rect.width,
                         visualRect.rect.height*artAspect);
                     float artDrawnLeft=(action.rect.width-artDrawnWidth)*.5f;
+                    Need(artDrawnWidth>=action.rect.width-.85f,
+                         "Burgundy sprite is letterboxed inside a larger invisible Button: "+name);
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
                            artDrawnLeft+artDrawnWidth*.25f,
@@ -787,7 +795,7 @@ namespace Eldoria.BreachWatch.Editor
                          actionText.rectTransform.rect.width<=
                            artDrawnLeft+artDrawnWidth-3f,
                          "Real upgrade caption escapes the PAINTED burgundy sprite: "+name);
-                    bool fullCaption=(w>=800 && h>w);
+                    bool fullCaption=w>=800;
                     string expectedCaption=host.English
                         ?(fullCaption?"Upgrade to Bastion II":"Upgrade II")
                         :(fullCaption?"Mejorar a Bastión II":"Mejorar a II");
