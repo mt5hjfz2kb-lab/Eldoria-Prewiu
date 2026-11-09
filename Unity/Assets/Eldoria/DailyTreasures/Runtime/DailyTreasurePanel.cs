@@ -1109,6 +1109,14 @@ namespace Eldoria.DailyTreasures
             // compact luxury frame. The ceremonial coffer remains immersive.
             bool focusedQuiet=ceremony&&ceremony.gameObject.activeSelf &&
                 prizeCount>0 && !chestReward;
+            // Rotation can happen after an already-paid reward is revealed.
+            // Update its caption to the CURRENT orientation without touching
+            // the gateway, replaying the ceremony or losing the earned cards.
+            if(prizeCount>0 && ceremony.gameObject.activeSelf && !playing &&
+               claimButton.gameObject.activeSelf)
+                resultText.text=portrait?
+                    ceremonialTitle+"\nGuardado en tu inventario y buzón":
+                    ceremonialTitle+" · GUARDADO";
             float panelH=Mathf.Min(h-20f,portrait?
                 (focusedQuiet?460f:700f):(focusedQuiet?330f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
