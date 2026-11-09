@@ -377,8 +377,9 @@ namespace Eldoria.BreachWatch.Editor
                 var actualPixels=image.GetPixels32();
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 string[] important=selection=="bastion"
-                    ?new[]{"Real building name","Compact engraved cost heading",
-                        "Real action title","Objective progress"}
+                    ?new[]{"Real building name","Real effects",
+                        "Compact engraved cost heading","Real action title",
+                        "Objective progress"}
                     :new[]{"Actual chapter","Objective progress"};
                 var scratch=new Texture2D(w,h,TextureFormat.RGB24,false);
                 var checkedLabels=new List<Text>();
@@ -676,6 +677,13 @@ namespace Eldoria.BreachWatch.Editor
                     }
                     var costs=Part("Real costs");
                     var state=Part("Real state and timer");
+                    var description=Part("Real effects");
+                    var descText=description.GetComponent<Text>();
+                    Need(descText && descText.gameObject.activeInHierarchy &&
+                         descText.preferredHeight<=description.rect.height+1.0f,
+                         "The actual two-line Bastion description is truncated: "+name+
+                         " preferred="+(descText?descText.preferredHeight.ToString("F2"):"null")+
+                         " allotted="+description.rect.height.ToString("F2"));
                     var header=Part("Compact engraved cost heading");
                     var headingLabel=header.GetComponent<Text>();
                     var stateLabel=state.GetComponent<Text>();
