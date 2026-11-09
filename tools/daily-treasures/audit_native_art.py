@@ -119,15 +119,27 @@ def paid_label_pixel_proof(image, variant, width, height):
             (i-(count-1)/2)*(card_width+gap))
         # The new premium short-card layout reserves this RIGHT column for
         # resource name and actual quantity, away from card frame and icon.
-        window=(center_x+22,shelf_y-18,center_x+56,shelf_y+23)
-        crop=rgb.crop(window)
-        colored=sum(1 for r,g,b in crop.getdata()
-            if r>95 and g>65 and b>40)
-        assert_quality(colored>=15,
-            "Paid reward card "+str(i+1)+" has blank/occluded name and "
-            "quantity in real "+str(width)+"x"+str(height)+" Unity pixels: "
-            +variant+" count="+str(colored))
-        results.append(colored)
+        # Separate text rectangles, not one merged bright-pixel count:
+        # otherwise a rendered NAME can hide a missing or cropped QUANTITY.
+        # These are from the actual landscape short-card production geometry:
+        # label center y=+12, quantity y=-15 in Unity's upward Y system.
+        name_window=(center_x+20,shelf_y-23,
+                     center_x+58,shelf_y)
+        quantity_window=(center_x+20,shelf_y+5,
+                         center_x+58,shelf_y+24)
+        painted=[]
+        for field,window in (("name",name_window),
+                             ("actual quantity",quantity_window)):
+            crop=rgb.crop(window)
+            colored=sum(1 for r,g,b in crop.getdata()
+                if r>95 and g>65 and b>40)
+            assert_quality(colored>=8,
+                "Paid reward card "+str(i+1)+" has missing/occluded "+field+
+                " in real "+str(width)+"x"+str(height)+" Unity pixels: "+
+                variant+" count="+str(colored))
+            painted.append(colored)
+        results.append({"namePixels":painted[0],
+                        "quantityPixels":painted[1]})
     return results
 
 
@@ -454,11 +466,33 @@ def selftest():
             center=round(800+(i-1.5)*146)
             ink.rectangle((center+25,shelf_y-12,center+45,shelf_y-10),
                           fill=(220,183,129))
+        # Regression: a screenshot may show every resource NAME while the
+        # actual earned quantity is missing. Both must be independently real.
+        failed=False
+        try:
+            paid_label_pixel_proof(blank,"opened",1600,900)
+        except ValueError:
+            failed=True
+        assert_quality(failed,"Visible names with absent quantities must fail")
+        for i in range(4):
+            center=round(800+(i-1.5)*146)
             ink.rectangle((center+25,shelf_y+8,center+45,shelf_y+10),
                           fill=(235,214,173))
         assert_quality(len(paid_label_pixel_proof(
             blank,"opened",1600,900))==4,
-            "Actual painted text pixels should pass the paid-receipt visual gate")
+            "Names AND actual paid quantities must pass independently")
+        only_quantity=Image.new("RGB",(1600,900),(20,18,19))
+        ink=ImageDraw.Draw(only_quantity)
+        for i in range(4):
+            center=round(800+(i-1.5)*146)
+            ink.rectangle((center+25,shelf_y+8,center+45,shelf_y+10),
+                          fill=(235,214,173))
+        failed=False
+        try:
+            paid_label_pixel_proof(only_quantity,"opened",1600,900)
+        except ValueError:
+            failed=True
+        assert_quality(failed,"Visible quantities with missing names must fail")
         a.save(Path(tmp)/"original.png")
         assert_quality((Path(tmp)/"original.png").is_file(),
             "PNG save smoke failed")
