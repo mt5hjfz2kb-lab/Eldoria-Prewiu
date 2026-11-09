@@ -926,11 +926,31 @@ namespace Eldoria.DailyTreasures.Editor
                     var nativeScaler=nativeObj.GetComponent<CanvasScaler>();
                     nativeScaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;
                     nativeScaler.scaleFactor=1f;
+                    // On a ROOT Canvas overrideSorting is a NESTED-CANVAS
+                    // property (Unity API contract). In batchmode Unity can
+                    // report false for it even when it was assigned true;
+                    // testing that irrelevant flag caused a false FAIL before
+                    // any migrated-pointer evidence was exercised. PR173 uses
+                    // root ScreenSpaceCamera, camera, order and pixel scale.
+                    // Require those real functional properties, never bypass
+                    // the GraphicRaycaster or synthesize UI clicks.
+                    Canvas.ForceUpdateCanvases();
                     Need(nativeCanvas.renderMode==RenderMode.ScreenSpaceCamera &&
                          nativeCanvas.worldCamera==camera &&
-                         nativeCanvas.overrideSorting &&
-                         nativeCanvas.sortingOrder==5000,
-                         "Native Vigilia rehearsal diverged from PR173 Canvas");
+                         nativeCanvas.sortingOrder==5000 &&
+                         Mathf.Abs(nativeScaler.scaleFactor-1f)<.001f &&
+                         nativeScaler.uiScaleMode==
+                             CanvasScaler.ScaleMode.ConstantPixelSize,
+                         "Native Vigilia Canvas fields differ: mode="+
+                         nativeCanvas.renderMode+
+                         " camera="+(nativeCanvas.worldCamera?
+                             nativeCanvas.worldCamera.name:"null")+
+                         " expected="+camera.name+
+                         " sorting="+nativeCanvas.sortingOrder+
+                         " overrideRoot="+nativeCanvas.overrideSorting+
+                         " isRoot="+nativeCanvas.isRootCanvas+
+                         " scale="+nativeScaler.scaleFactor+
+                         " scaler="+nativeScaler.uiScaleMode);
                     var safeObj=new GameObject("Safe composition",
                         typeof(RectTransform));
                     safeObj.layer=5;
