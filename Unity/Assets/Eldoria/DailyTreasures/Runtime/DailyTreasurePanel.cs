@@ -1403,10 +1403,17 @@ namespace Eldoria.DailyTreasures
                 float captionY=openingChest?(portrait?-132f:-100f):
                     quietRewards?(portrait?-106f:-74f):
                     compactPrizePortrait?-217f:portrait?-232f:-15f;
+                // Genuine Unity portrait receipt needed 66px for its two
+                // actual lines (run 42776890262). The former 41px crop
+                // hid the saved-inventory confirmation. At 72px its lower
+                // edge is -142, 6px ABOVE the 54px Continue button top
+                // (-148), while the prize shelf remains 46.5px above.
+                // Preserve the landscape one-line 41px presentation.
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                     0f,captionY,panelW-45f,
                     openingChest?(portrait?45f:32f):
-                    quietRewards?41f:compactPrizePortrait?39f:portrait?50f:29f);
+                    quietRewards?(portrait?72f:41f):
+                    compactPrizePortrait?39f:portrait?50f:29f);
             }
             else
             {
