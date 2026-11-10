@@ -933,16 +933,19 @@ namespace Eldoria.BreachWatch
                 // Source-faithful physical gap after the FULL lion ring,
                 // now preserved by a 35% non-stretching 9-slice border.
                 float lionTextInset=crestSize+(smallPhone?8f:16f);
-                At(identityName.rectTransform,lionTextInset,smallPhone?6f:5f,
-                    (smallPhone?174f:166f)-crestSize,smallPhone?25f:19f);
-                // Genuine 900px GPU sample showed the power baseline
-                // touching the bottom copper rim. Move the row into the
-                // carved interior and keep it separate from the player name.
+                // The real cf73 Unity screenshot had a completely blank
+                // profile even though the live session supplies name and
+                // power: Unity's legacy Text silently paints zero glyphs
+                // when Truncate box is shorter than font line metrics.
+                // Give BOTH actual labels their full line heights inside the
+                // single hand-painted profile; no duplicated crest or card.
+                At(identityName.rectTransform,lionTextInset,smallPhone?3f:2f,
+                    (smallPhone?174f:166f)-crestSize,smallPhone?26f:22f);
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?31f:24f,(smallPhone?174f:166f)-crestSize,
-                    smallPhone?17f:14f);
-                identityName.fontSize=smallPhone?17:16;
-                identityPower.fontSize=smallPhone?14:12;
+                    smallPhone?30f:24f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?21f:19f);
+                identityName.fontSize=smallPhone?17:15;
+                identityPower.fontSize=smallPhone?14:11;
 
                 float rightSpace=w-(margin+182+9+margin);
                 // Three approved stone counters occupy predictable slots.
