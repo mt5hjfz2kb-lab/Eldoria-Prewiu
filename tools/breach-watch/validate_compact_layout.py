@@ -60,6 +60,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             f"{size}: {name} physical touch area {r.w*scale:.1f}x{r.h*scale:.1f}")
     if portrait:
         place("identity",m,11 if pw<600 else 14,182,52 if pw<600 else 43)
+        # Approved lion badge is a COMPLETE one-piece circle, with a real
+        # ~15px breathing gap before Prueba Valoria at 900px. A previous
+        # source split the lion rim at 25%, causing an extended wing and
+        # player name painted ON the gold emblem.
+        painted_lion_right=round(2496*.35)*100/2000
+        name_left=(45+8) if pw<600 else (37+16)
+        assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
         profile_name=R(0,6 if pw<600 else 4,1,25 if pw<600 else 21)
         profile_power=R(0,31 if pw<600 else 25,1,17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
@@ -181,6 +188,7 @@ def main():
     expected=[
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
+        'float lionTextInset=crestSize+(smallPhone?8f:16f);',
         'float navSize=52,navGap=16',
         'float navTop=h-111f',
         'float ph=280f',
