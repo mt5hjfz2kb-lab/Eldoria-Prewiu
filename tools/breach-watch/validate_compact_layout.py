@@ -71,11 +71,12 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         profile_power=R(0,31 if pw<600 else 25,1,17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         right=w-(m+182+9+m)
-        chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 75
-        resw=resources*chip+4*(resources-1)
-        resource_left=w-m-resw if pw<600 else min(w-m-resw,w*.54)
+        chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 62
+        resgap=4 if pw<600 else 12
+        resw=resources*chip+resgap*(resources-1)
+        resource_left=w-m-resw if pw<600 else min(w-m-resw,w*.52)
         for i in range(resources):
-            place("resource"+str(i),resource_left+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
+            place("resource"+str(i),resource_left+i*(chip+resgap),18 if pw<600 else 17,chip,38 if pw<600 else 28)
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(211 if pw<600 else 170,w*(.49 if pw<600 else .38))
@@ -98,17 +99,17 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # Compact source plaque keeps native text within both real bevels.
         assert missionw/(69 if pw<600 else 50)>=3.0,size
         assert short_objective.y+short_objective.h<progress.y,size
-        place("breach",w*.52-56,74,112,30)
+        place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
-        navsize,gap=52,16
+        navsize,gap=52,9
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-111
+        navtop=h-(111 if pw<600 else 90)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         panelw=min(171,w*.42) if pw<600 else 158
         card_right=m if pw<600 else 39
-        panely=navtop-280-(34 if pw<600 else 51)
+        panely=navtop-280-(34 if pw<600 else 72)
         context=place("context",w-card_right-panelw,panely,panelw,280)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
         header=R(48,7,panelw-109,21)
@@ -190,11 +191,12 @@ def main():
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
         'float lionTextInset=crestSize+(smallPhone?8f:16f);',
-        'float navSize=52,navGap=16',
-        'float navTop=h-111f',
+        'float navSize=52,navGap=9',
+        'float navTop=h-(smallPhone?111f:90f)',
         'float ph=280f',
         'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
         'float cardRightInset=smallPhone?margin:39f;',
+        'float chipGap=smallPhone?4f:12f;',
         'float top=navTop-ph-(smallPhone?34f:51f);',
         'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
         'float navSize=55,navGap=15',
