@@ -108,6 +108,17 @@ for legacy in ('var brassFrame=Plate(', 'Glyph(objective,"Chapter stone rune"',
                'Rect("Independent circular realm crest",identity)'):
     assert legacy not in HUD,legacy
 assert 'identityCrest=null;' in HUD
+# Owner's original medallion silhouette measures about 62-69px on the
+# 900px reference. The NEW source sprites have alpha closely cropped to
+# their ring, so they cannot paint across the full 91px native hitbox.
+# Paint size changes, hitboxes stay physically >=44px for accessibility.
+assert 'surface.VisualScale=.70f;' in HUD
+assert 'if(p)p.VisualScale=i==activeTab?.76f:.70f;' in HUD
+import math
+scale_900=900/514
+assert 61 <= 52*scale_900*.70 <= 66
+assert 67 <= 52*scale_900*.76 <= 71
+assert 52*.91 >=44
 assert 'identity.GetComponentsInChildren<Graphic>(true).Length==3' in HUD
 assert 'exactOwnerGoldBorder=null;' in HUD
 assert '!portraitFrame.GetComponent<Graphic>()' in HUD
