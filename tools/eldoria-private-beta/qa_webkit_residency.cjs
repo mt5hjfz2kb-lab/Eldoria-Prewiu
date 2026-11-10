@@ -23,8 +23,9 @@ function processes() {
     if(!['webkit','chromium'].includes(engine))throw Error('Unknown engine');
     browser=await ({webkit,chromium}[engine]).launch({headless:true});
     report.version=browser.version();
+    report.perDrawTracing=process.env.QA_TRACE_GL==='1';
     const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
-    await context.addInitScript(({variant})=>{
+    await context.addInitScript(({variant,traceGL})=>{
       window.__growth=[];
       window.__preallocation=[];
       // Diagnostic A/B: grow the exported heap before Emscripten receives it.
@@ -60,7 +61,9 @@ function processes() {
         const supported=proto.getSupportedExtensions;
         proto.getSupportedExtensions=function(){return supported.call(this)?.filter(x=>!denied.test(x));};
       }
-      for(const name of ['compressedTexImage2D','compressedTexSubImage2D','texImage2D','texStorage2D','bufferData','compileShader','linkProgram','drawElements','drawArrays']){
+      // Full draw tracing allocates on every draw and perturbs RSS. Opt in only
+      // for graphics diagnosis, never for the normal memory comparison.
+      if(traceGL)for(const name of ['compressedTexImage2D','compressedTexSubImage2D','texImage2D','texStorage2D','bufferData','compileShader','linkProgram','drawElements','drawArrays']){
         const original=proto[name];
         proto[name]=function(...args){remember(name,args);return original.apply(this,args);};
       }
@@ -82,7 +85,7 @@ function processes() {
         try {const ret=original.call(this,pages);x.after=this.buffer.byteLength;return ret;}
         catch(e){x.error=String(e);throw e;}
       };
-    },{variant});
+    },{variant,traceGL:process.env.QA_TRACE_GL==='1'});
     page=await context.newPage();
     page.on('console',m=>log({type:'console',level:m.type(),text:m.text()}));
     page.on('pageerror',e=>{report.errors.push(String(e));log({type:'pageerror',text:String(e)});write();});
