@@ -436,76 +436,7 @@ jobs:
           if(@($report.shots).Count -ne 8){throw 'Missing paired canonical city and daily context captures'}
           foreach($shot in $report.shots){
             $name=[string]$shot.file
-            if($name -notmatch '^real-city-daily-(actual-city-baseline|authored-calendar-context)-(1600x900|900x1600|844x390|390x844)\.png
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: eldoria-daily-treasures-native-${{ github.sha }}
-          path: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}\
-          retention-days: 30
-          if-no-files-found: warn
-
-  analyze-original-native-screenshots:
-    name: Inspect genuine Unity screenshots, including partial FAILED evidence
-    needs: native-ui
-    # A genuine Unity failure often leaves valuable PNGs (8 in the earlier
-    # PR181 run). Analyze and retain their hashes/contact sheets without
-    # treating the component as certified or taking a second Windows lease.
-    if: ${{ always() && (needs.native-ui.result == 'success' || needs.native-ui.result == 'failure') }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
-    steps:
-      - name: Checkout pixel audit source from exact SHA
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /tools/daily-treasures/audit_native_art.py
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install independent image validation dependency
-        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
-      - name: Run known-positive/known-distinct pixel preflight
-        run: python tools/daily-treasures/audit_native_art.py --selftest
-      - name: Fetch exact native evidence, if Unity reached the camera
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          name: eldoria-daily-treasures-native-${{ github.sha }}
-          path: native-originals
-      - name: Preserve authentic failed frames or audit full 52+20 images
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ ! -f native-originals/report.json ]; then
-            echo 'No Unity report was produced; cannot claim native proof'
-            exit 0
-          fi
-          status=$(python -c "import json; print(json.load(open('native-originals/report.json',encoding='utf-8-sig'))['status'])")
-          if [ "$status" = NATIVE_COMPONENT_FAILED ]; then
-            python tools/daily-treasures/audit_native_art.py \
-              --partial \
-              --input native-originals \
-              --source-sha ${{ github.sha }} \
-              --output native-art-qa
-            echo 'INCOMPLETE: saved verified partial originals, no native pass'
-          else
-            python tools/daily-treasures/audit_native_art.py \
-              --input native-originals \
-              --source-sha ${{ github.sha }} \
-              --output native-art-qa
-          fi
-      - name: Keep both human review contact sheets and machine report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: eldoria-treasure-native-visual-audit-${{ github.sha }}
-          path: native-art-qa/
-          retention-days: 30
-          if-no-files-found: warn
-){
+            if($name -notmatch '^real-city-daily-(actual-city-baseline|authored-calendar-context)-(1600x900|900x1600|844x390|390x844)\.png$'){
               throw "Unexpected city art screenshot: $name"
             }
             $path=Join-Path $cityOut $name
