@@ -1,6 +1,6 @@
 // Diagnostic only: identity-pinned candidate, genuine desktop browsers, no mobile certification.
 const fs = require('fs');
-const {execFileSync} = require('child_process');
+const {execFileSync,spawn} = require('child_process');
 const {webkit, chromium} = require('playwright');
 const engine = process.env.QA_ENGINE || 'webkit';
 const variant = process.env.QA_VARIANT || 'unchanged';
@@ -9,6 +9,28 @@ fs.mkdirSync(out, {recursive:true});
 const report = {engine, variant, platform:process.platform, arch:process.arch, passed:false,
   scope:'Identity-pinned candidate; desktop engine comparison, NOT physical iPhone', samples:[], errors:[], navigations:[]};
 const write = () => fs.writeFileSync(out+'/report.json', JSON.stringify(report,null,2));
+
+const profileTasks=[],profiledPhases=new Set();
+function nativeProfile(sample,phase){
+ if(process.env.QA_NATIVE_PROFILE!=='1'||process.platform!=='darwin'||profiledPhases.has(phase))return;
+ const p=(sample.processes||[]).filter(p=>p.name?.includes('WebContent')).sort((a,b)=>b.rssKiB-a.rssKiB)[0];
+ if(!p||p.rssKiB<1800000)return;
+ profiledPhases.add(phase);
+ const prefix=out+'/native-'+phase;
+ (report.nativeProfiles??=[]).push({phase,pid:p.pid,rssKiB:p.rssKiB,at:sample.at,prefix});
+ function run(command,args,suffix){
+  profileTasks.push(new Promise(resolve=>{
+   const child=spawn(command,args);const output=fs.createWriteStream(prefix+suffix);
+   child.stdout.pipe(output);child.stderr.pipe(output);
+   const timer=setTimeout(()=>child.kill('SIGTERM'),20000);
+   child.on('error',err=>{output.end(String(err));clearTimeout(timer);resolve();});
+   child.on('exit',code=>{output.end('\nEXIT_CODE='+code);clearTimeout(timer);resolve();});
+  }));
+ }
+ run('/usr/bin/sample',[String(p.pid),'2','-file',prefix+'-sample.txt'],'-sample-status.txt');
+ run('/usr/bin/vmmap',['-summary',String(p.pid)],'-vmmap.txt');
+}
+
 const log = event => fs.appendFileSync(out+'/events.jsonl', JSON.stringify({at:new Date().toISOString(),...event})+'\n');
 function processes() {
   try {return execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:3000})
@@ -122,7 +144,7 @@ function processes() {
           error:document.getElementById('error')?.textContent,
           wasmCapacityBytes:game?.Module?.HEAPU8?.byteLength||0};
       });
-      s.processes=processes();report.samples.push(s);write();
+      s.processes=processes();report.samples.push(s);nativeProfile(s,'fresh');write();
       if(s.ready&&!readyAt){readyAt=Date.now();log({type:'unity-ready'});}
       if(readyAt&&(!s.ready||!s.visible))throw Error('Unity exited after ready');
       if(process.env.QA_EARLY_ENTRY==='1'&&readyAt&&!earlyEntry&&Date.now()-readyAt>2000){
@@ -145,7 +167,7 @@ function processes() {
         const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
           visible:!document.getElementById('game').hidden,
           metrics:window.valoriaGame?.GetMetricsInfo?.(),wasmCapacityBytes:window.valoriaGame?.Module?.HEAPU8?.byteLength||0}));
-        sample.phase=phase;sample.processes=processes();report.entrySamples.push(sample);write();
+        sample.phase=phase;sample.processes=processes();report.entrySamples.push(sample);if(phase==='reloaded')nativeProfile(sample,phase);write();
         verifyOrigin();
         if(report.errors.length||!sample.ready||!sample.visible)throw Error('Unity failed during '+phase);
         await page.waitForTimeout(1000);
@@ -169,7 +191,7 @@ function processes() {
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
-    write();clearTimeout(watchdog);
+    await Promise.all(profileTasks);write();clearTimeout(watchdog);
     const closeTimer=setTimeout(()=>process.exit(report.passed?0:1),10000);
     if(browser)await browser.close().catch(()=>{});
     clearTimeout(closeTimer);
