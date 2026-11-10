@@ -1,4 +1,4 @@
-name: Eldoria P0 — direct transport compiled-byte browser verification
+name: Eldoria P0 — live direct transport entry and persistence
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -18,23 +18,6 @@ jobs:
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42785047968
-          name: beta10-clock-copyadd-owner-only-site
-          github-token: ${{ github.token }}
-          path: site
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42812046053
-          name: eldoria-immediate-entry-canvas-ab-not-iphone
-          github-token: ${{ github.token }}
-          path: browser-proof
-      - name: Recreate current wrapper then remove browser reconstruction, exact engine unchanged
-        run: |
-          python3 tools/eldoria-private-beta/iphone_ab/stage_stable_canvas.py site tools/eldoria-private-beta/iphone_ab/stable_canvas.js browser-proof/evidence/canvas-shell-proof.json
-          python3 tools/eldoria-private-beta/iphone_ab/stage_direct_control.py site
-          node --check site/beta-iphone-clock-direct/play.js
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -43,18 +26,11 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/direct-webkit" --no-save playwright@1.55.0
           "$RUNNER_TEMP/direct-webkit/node_modules/.bin/playwright" install webkit
           export NODE_PATH="$RUNNER_TEMP/direct-webkit/node_modules"
-          node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >server.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_SKIP_PREFLIGHT=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18975 QA_URL='http://127.0.0.1:18975/beta-iphone-clock-direct/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs
+          QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_SKIP_PREFLIGHT=1 QA_EXPECT_ORIGIN=https://mt5hjfz2kb-lab.github.io QA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?transport=direct-r1&eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-direct-transport-browser-proof-not-iphone
+          name: eldoria-direct-transport-live-proof-not-iphone
           path: |
             evidence/
-            server.log
-            site/beta-iphone-clock-direct/direct-control-proof.json
-            site/beta-iphone-clock-direct/play.js
-            site/beta-iphone-clock-direct/build-manifest.json
           retention-days: 14
