@@ -487,11 +487,17 @@ namespace Eldoria.BreachWatch.Editor
                 File.WriteAllBytes(file,image.EncodeToPNG());
                 CheckLiveSlicedGeometry(ui,name);
                 var allText=ui.GetComponentsInChildren<Text>(true);
+                // Do not accept a visually blank upper-left player plate
+                // just because other headings passed. The original cf73
+                // screen had zero visible name and power despite valid
+                // gateway data; prove actual GPU glyph contribution for both.
                 string[] important=selection=="bastion"
-                    ?new[]{"Real building name","Real effects",
+                    ?new[]{"Player name","Realm power",
+                        "Real building name","Real effects",
                         "Real state and timer","Compact engraved cost heading","Real action title",
                         "Objective progress"}
-                    :new[]{"Actual chapter","Objective progress"};
+                    :new[]{"Player name","Realm power",
+                        "Actual chapter","Objective progress"};
                 var scratch=new Texture2D(w,h,TextureFormat.RGB24,false);
                 var checkedLabels=new List<Text>();
                 try
