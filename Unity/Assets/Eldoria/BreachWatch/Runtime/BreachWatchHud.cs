@@ -1062,11 +1062,15 @@ namespace Eldoria.BreachWatch
                 // The original approved sprites stay untouched. On a narrow
                 // phone, the painted medal was ~31px despite a ~47px tap
                 // area. Expand the actual visible artwork, not its style.
-                float navSize=smallPhone?60f:52f,navGap=smallPhone?10f:9f;
+                // Native 42865155787 measured 35.29px painted REINO
+                // at 844x390 despite 52 source geometry checks passing.
+                // Preserve owner-approved artwork, increase its real mesh
+                // footprint and keep the complete row within the safe area.
+                float navSize=smallPhone?70f:58f,navGap=smallPhone?10f:5f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
                 float navTop=h-(smallPhone?111f:90f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    smallPhone?70f:64f);
+                    smallPhone?80f:70f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1075,8 +1079,8 @@ namespace Eldoria.BreachWatch
                     navButtons[i].gameObject.SetActive(visible);
                     if(visible)
                     {
-                        Fill(navPlates[i].rectTransform,smallPhone?4f:6f);
-                        navPlates[i].VisualScale=smallPhone?.90f:.86f;
+                        Fill(navPlates[i].rectTransform,smallPhone?4f:5f);
+                        navPlates[i].VisualScale=smallPhone?.92f:.90f;
                         At((RectTransform)navButtons[i].transform,
                             navColumn++*(navSize+navGap),3,navSize,navSize);
                     }
@@ -1222,12 +1226,12 @@ namespace Eldoria.BreachWatch
                 // The landscape phone also needs visible medals, while 1600x900
                 // keeps the approved desktop pitch and silhouettes.
                 bool compactLandscape=h<530f;
-                float navSize=compactLandscape?62f:55f,
-                    navGap=compactLandscape?12f:15f;
+                float navSize=compactLandscape?75f:55f,
+                    navGap=compactLandscape?10f:15f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-78;
+                float navTop=h-(compactLandscape?88f:78f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    compactLandscape?73f:69f);
+                    compactLandscape?85f:69f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1237,7 +1241,7 @@ namespace Eldoria.BreachWatch
                     if(visible)
                     {
                         Fill(navPlates[i].rectTransform,compactLandscape?4f:6f);
-                        navPlates[i].VisualScale=compactLandscape?.90f:.86f;
+                        navPlates[i].VisualScale=compactLandscape?.92f:.86f;
                         At((RectTransform)navButtons[i].transform,
                             navColumn++*(navSize+navGap),3,navSize,navSize);
                     }
