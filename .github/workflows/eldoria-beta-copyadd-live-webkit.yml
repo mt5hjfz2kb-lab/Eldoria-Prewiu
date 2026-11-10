@@ -32,7 +32,7 @@ jobs:
       - name: Download exact previous source QA pass artifact, no Unity compilation
         uses: actions/download-artifact@v4
         with:
-          run-id: 42781066472
+          run-id: 42785047968
           name: beta10-clock-copyadd-owner-only-site
           github-token: ${{ github.token }}
           path: site
@@ -54,11 +54,11 @@ jobs:
           assert proof['parts_verified']==31 and proof['patch_literal_bytes']==8000096
           import hashlib
           assert hashlib.sha256(script.encode()).hexdigest()=='7b0717a4e4b655861084cf33f9c3df07e1e3c70660d2b8a6600d0c6a2ca98725', 'Must match actual published transport'
-          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42781066472',
+          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42785047968',
             headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Eldoria-owner-webkit'})
           with urllib.request.urlopen(request,timeout=25) as response:
             job=json.load(response)
-          assert job['conclusion']=='success' and job['head_sha']=='495eac8e47640ee3bb992506b7162cfed31de283'
+          assert job['conclusion']=='success' and job['head_sha']=='836fce54e33e0c3c5cc87ea4ca480da5eb44835a'
           control=pathlib.Path('tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html').read_bytes()
           assert hashlib.sha256(control).hexdigest()=='f964ee3a8086d6a18005a34ca21ff7f2f95a3bfc5266558ef1e942dbb717045b'
           assert b'http-equiv="refresh"' not in control and b'play-16f4527815248e48.js' in control
