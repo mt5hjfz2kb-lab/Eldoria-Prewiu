@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T21:48:28.140Z",
+  "updated_at": "2026-11-10T21:52:49.547Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 59,
+      "ownership_revision": 60,
       "write_scope_released": false,
-      "phase": "ICON_SAMPLING_AND_RESOURCE_CENTER_NATIVE",
-      "next": "Run exact-head native capture after PR181 explicit release; compare original and filtered medallions at390/900 and actual resource frame centering.",
+      "phase": "OWNER_REPORTED_SAMPLING_AND_RESOURCE_CENTER_FIXED_NATIVE",
+      "next": "Two reported defects corrected and native verified. PR173 remains draft, no publication. Preserve owner-liked design. Deliver900x1600 evidence rather than enlarging390px capture.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T19:57:05.165Z",
@@ -6776,8 +6774,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "cf67093b053d48e00e17f72dd6401324e4bde696",
-        "native_run": 42905592560,
+        "source_sha": "1cf3f6d049aedbf2d323594f502bc40adef1a758",
+        "native_run": 42908608187,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13793216174,
@@ -6812,14 +6810,14 @@
         "art_ab_artifact": 13791189975,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13803953548,
+        "native_artifact": 13806706101,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
-        "owner_requested_polish": "Completed clean alignment pass after owner accepted the restored base. Same artwork, fonts, layout and navigation retained; phone quest left edges aligned; both costs have6u icon-to-number spacing. Native portrait images inspected."
+        "owner_requested_polish": "Original nav/resources PNGs preserved; bounded512 uncompressed trilinear mipmap import. Actual imported textures checked in native. Resource frame PPU2200, icon centre423/22 and proportional vertical centre, measured in native. Visually checked390x844,900x1600,844x390 against prior cf67093: smoother medal edges and resource pictograms correctly seated."
       },
-      "runner_release_basis": "Exact-head run42905592560 completed native and genuine A/B success. Final clean screenshots inspected and saved; no pending Unity work for this request.",
+      "runner_release_basis": "Run42908608187 terminal success including native and genuine A/B; eight exact-head image hashes verified, final images inspected.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
-      "visual_learning": "RectTransform/source tests alone missed ink touching real painted mission rim. Inspect genuine portrait and landscape screenshots. Reset per-orientation BestFit limits explicitly; retain physical phone legibility."
+      "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
