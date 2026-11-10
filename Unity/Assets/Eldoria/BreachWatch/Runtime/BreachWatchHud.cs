@@ -1255,7 +1255,9 @@ namespace Eldoria.BreachWatch
                 At(illustration,paintedLeft,paintedTop,paintedWidth,paintedHeight);
                 // Caption is anchored to PAINTED pixels, not the larger
                 // invisible accessible touch target. Hammers occupy ~28%.
-                float captionLeft=paintedLeft+paintedWidth*.28f;
+                // Extra clearance after native GPU test showed the new 2K hammer
+                // relief extends beyond 28% of the painted button.
+                float captionLeft=paintedLeft+paintedWidth*.325f;
                 float captionRight=paintedLeft+paintedWidth-7f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
