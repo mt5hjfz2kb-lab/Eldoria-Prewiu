@@ -1,6 +1,6 @@
 """Safari/iOS Simulator diagnostic. Never certifies a physical iPhone.
 
-Uses XCUITest's Safari automation, with a fresh simulator per build. Records
+Uses Apple's native SafariDriver, with isolated automation sessions. Records
 actual capabilities, screenshots, process samples and document identity.
 No fabricated nickname/gameplay success: startup and input are separate stages.
 """
@@ -41,17 +41,14 @@ def snapshot(name):
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 try:
+    report['phase']='create_session';save()
     caps={'platformName':'iOS','browserName':'Safari',
-          'appium:automationName':'XCUITest',
-          'appium:udid':os.environ['QA_SIM_UDID'],
-          'appium:platformVersion':os.environ['QA_IOS_VERSION'],
-          'appium:deviceName':'iPhone 16',
-          'appium:newCommandTimeout':300,'appium:wdaLaunchTimeout':180000,
-          'appium:autoAcceptAlerts':True,'appium:nativeWebTap':True,
-          'appium:showXcodeLog':True}
+          'safari:useSimulator':True,
+          'safari:deviceUDID':os.environ['QA_SIM_UDID']}
     result=request('/session',{'capabilities':{'alwaysMatch':caps,'firstMatch':[{}]}})
     session=result['sessionId']; report['capabilities']=result.get('capabilities')
     save()
+    report['phase']='navigate';save()
     command('/url',{'url':os.environ['QA_URL']})
     report['page']=js('return {url:location.href,ua:navigator.userAgent,width:innerWidth,height:innerHeight};')
     assert report['page']['url'].startswith('http://127.0.0.1:18975/'), 'Unexpected origin'
@@ -62,6 +59,7 @@ try:
     element=command('/element',{'using':'css selector','value':'#play'})
     eid=element['element-6066-11e4-a52e-4f735466cecf']
     command('/element/'+eid+'/click',{})
+    report['phase']='observe_startup';save()
     start=time.monotonic(); ready_at=None
     while time.monotonic()-start<300:
         sample=js("return {document:window.__qaDocument,url:location.href,ready:!!window.valoriaGame,visible:!document.getElementById('game')?.hidden,error:document.getElementById('error')?.textContent,errors:window.__qaErrors,metrics:window.valoriaGame?.GetMetricsInfo?.(),diagnostic:window.EldoriaLocalDiagnostic?.read?.(),width:innerWidth,height:innerHeight};")
