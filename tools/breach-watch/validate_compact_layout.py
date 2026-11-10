@@ -149,8 +149,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         limit=34
     else:
         place("identity",m,11,234,58)
-        profile_name=R(0,6,1,31)
-        profile_power=R(0,37,1,20)
+        profile_name=R(0,6,1,30)
+        profile_power=R(0,36,1,21)
         assert profile_name.y+profile_name.h<=profile_power.y,size
         chip=(min(110,max(82,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
         resw=resources*chip+7*(resources-1)
@@ -234,7 +234,7 @@ def main():
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,7,pw-104,21);',
         'At(buildingName.rectTransform,50,8,pw-111,31);',
-        'At(identityPower.rectTransform,59,37,165,20);',
+        'At(identityPower.rectTransform,59,36,165,21);',
         'At(buildingLevel.rectTransform,45,30,pw-104,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]
