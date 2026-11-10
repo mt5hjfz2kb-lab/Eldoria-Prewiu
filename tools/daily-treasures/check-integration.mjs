@@ -97,15 +97,21 @@ assert.match(panel,/FindLiteralVigiliaCanvas\(\)/);
 assert.match(panel,/candidate\.gameObject\.name=="VIGILIA \/ independent canvas"/);
 assert.match(panel,/HasVisibleCanonicalHeroRoom\(\)/);
 assert.match(panel,/cachedCanonicalHeroRoom\.gameObject\.activeInHierarchy/);
-// Heroes may be constructed later than the treasury. Keep same-frame
-// detection without allocating an array in a 60fps Android Update loop.
-// Unity 6000.3 explicitly supports the reused List<T> overload.
-assert.match(panel,/readonly List<RectTransform> heroRoomSearchBuffer/);
-assert.match(panel,/originalSafeArea\.GetComponentsInChildren\(\s*true,heroRoomSearchBuffer\)/);
+// The actual HeroesApprovedDestination is a DIRECT child of HUD safeArea.
+// Validate that production contract before allowing the fast, zero-allocation
+// same-frame lookup; recursive traversal of all nested cards every frame is
+// unnecessary on Android and can degrade FPS before Heroes first opens.
+const canonicalHeroes=fs.readFileSync(
+  'Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs','utf8');
+assert.match(canonicalHeroes,/root=Rect\("Heroes \/ canonical destination",safeArea\)/);
+assert.match(panel,/for\(int i=0;i<originalSafeArea\.childCount;i\+\+\)/);
+assert.match(panel,/originalSafeArea\.GetChild\(i\)/);
 const heroFinder=panel.split('bool HasVisibleCanonicalHeroRoom()')[1]
   ?.split('bool HasVisibleVigiliaBuildingPanel()')[0] || '';
-assert.doesNotMatch(heroFinder,/GetComponentsInChildren<RectTransform>\(true\)/,
-  'Canonical hero search must not allocate a new array every mobile frame');
+assert.doesNotMatch(heroFinder,/GetComponentsInChildren\(/,
+  'Hero-room lookup must not traverse every descendant per Android frame');
+assert.doesNotMatch(heroFinder,/new List<|new RectTransform\[/,
+  'Hero-room lookup must never allocate temporary native UI buffers');
 assert.doesNotMatch(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
 assert.doesNotMatch(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
 assert.match(panel,/canvas\.transform\.Find\("Safe composition"\)/);
