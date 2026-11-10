@@ -1475,14 +1475,20 @@ namespace Eldoria.BreachWatch
                             :(fullUpgradeCaption?"Mejorar a Bastión II":"Mejorar a II");
                     }
                     actionLabel.text=actionCaption;
-                    actionLabel.resizeTextForBestFit=true;
-                    actionLabel.resizeTextMinSize=11;
-                    actionLabel.resizeTextMaxSize=lastWidth<1000?16:17;
-                    // Real Cormorant single-line action: no artificial two-line wrap.
-                    // The extra 2K painted width is independently bounded by
-                    // 7u right padding and the Native ink/geometry checks.
-                    actionLabel.horizontalOverflow=HorizontalWrapMode.Overflow;
+                    // Fit the ACTUAL Unity font's preferred width into the
+                    // carved red field before letting uGUI render it. Unity's
+                    // BestFit+Overflow had passed CI while visibly painting
+                    // "II" outside the medal on a 900x1600 phone.
+                    actionLabel.resizeTextForBestFit=false;
+                    actionLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
                     actionLabel.verticalOverflow=VerticalWrapMode.Truncate;
+                    float legalWidth=Mathf.Max(16f,
+                        actionLabel.rectTransform.rect.width-2.5f);
+                    for(int size=lastPortrait?15:16;size>=11;size--)
+                    {
+                        actionLabel.fontSize=size;
+                        if(actionLabel.preferredWidth<=legalWidth)break;
+                    }
                     actionLabel.color=can?TextIvory:new Color(.91f,.85f,.72f,1f);
                 }
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
