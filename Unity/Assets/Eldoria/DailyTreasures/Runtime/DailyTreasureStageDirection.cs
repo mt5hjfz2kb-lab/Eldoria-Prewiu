@@ -136,7 +136,7 @@ namespace Eldoria.DailyTreasures
                     .95f,.08f,false);
             }
             return new DailyTreasureStageLayout(kind,
-                -.145f*w,.018f*h,.68f*w,h-42f,
+                -.18f*w,.018f*h,.62f*w,h-42f,
                 .236f*w,.166f*h,Math.Min(.374f*w,282f),
                 Math.Min(.475f*h,175f),
                 .29f*w,-.19f*h,.34f*w,.19f*h,
