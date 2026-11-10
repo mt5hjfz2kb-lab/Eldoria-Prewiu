@@ -68,6 +68,7 @@ function Run-Probe([string]$Mode){
 try {
  New-Item -ItemType Directory -Force (Join-Path $probe 'Editor')|Out-Null
  Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/StructuralStartupProbe.cs') (Join-Path $probe 'Editor/StructuralStartupProbe.cs')
+ Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/CollisionBake.cs') (Join-Path $probe 'Editor/CollisionBake.cs')
  # Compile all verification code at the first native phase, not after the long journey.
  Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/PretestUXProbe.cs') (Join-Path $probe 'Editor/PretestUXProbe.cs')
  # The unchanged frozen baseline was already executed twice with this topology
@@ -95,6 +96,12 @@ try {
  }
  Install-UxOverlay
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
+ # Prepare static collision structures in the build, preserving exact meshes.
+ # Enable before ALL candidate certificates; warm runner restores settings.
+ $env:ELDORIA_COLLISION_BAKE_OUT=$Evidence
+ Invoke-Native 'EldoriaBetaCollisionBake.Enable' (Join-Path $Evidence 'collision-bake-setting.log') 'Win64'
+ $collisionSetting=Get-Content (Join-Path $Evidence 'collision-bake-setting.json') -Raw|ConvertFrom-Json
+ if(-not $collisionSetting.after){throw 'Static collision prebake setting absent'}
  Run-Probe 'bake'
  $queryHash=(Get-FileHash $queryAsset -Algorithm SHA256).Hash
  # A/B the exact same tape, collider validation, imported assets and saves.

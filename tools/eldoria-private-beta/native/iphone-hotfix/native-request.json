@@ -4,7 +4,7 @@
   "owner": "codex-iphone-stability-6f75130e87ae",
   "ownership_revision": 25,
   "state": "WAITING_FOR_RESOURCE",
-  "variant": "beta10-clock-initialization-memory-r1",
+  "variant": "beta10-clock-prebaked-collisions-r1",
   "replay_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
   "minimal_source_blob": "144b1d6becec3055aac6a69cce07007cad1849a6",
@@ -18,7 +18,7 @@
     "offline owner iPhone A/B",
     "physical 30min proof before promotion"
   ],
-  "change_scope": "Preserve all19 frozen beta10 minimal-clock overlays; only RegionOneBlenderLandscape initialization arrays change; structural probe checks no retained normal copy",
+  "change_scope": "Preserve all19 frozen beta10 minimal-clock overlays; only RegionOneBlenderLandscape initialization arrays change; structural probe checks no retained normal copy; enable PlayerSettings.bakeCollisionMeshes only in isolated preserved build and verify actual cooked collision payload against original mesh hashes",
   "external_testers_enabled": false,
   "owner_ios_stability_proven": false,
   "note": "This file is NOT a native test result. Change state to CLAIMED_FOR_NATIVE only after formal CAS workstream lease handoff and zero Unity/Blender process.",

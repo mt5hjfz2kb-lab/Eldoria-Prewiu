@@ -1,4 +1,4 @@
-name: Eldoria initialization-memory native parity and WebGL (P0 isolated)
+name: Eldoria prebaked collision and memory native parity (P0 isolated)
 # Owner confirmed Windows handoff on 2026-11-09: validate frozen pretester UX.
 # Bake original collider responses, replay with exact parity, then build without runtime cooking.
 on:
@@ -118,7 +118,7 @@ jobs:
           request=json.load(open('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json'))
           assert request['schema']==1 and request['workstream_id']==own['id']
           assert request['owner']=='codex-iphone-stability-6f75130e87ae'
-          assert request['variant']=='beta10-clock-initialization-memory-r1'
+          assert request['variant']=='beta10-clock-prebaked-collisions-r1'
           assert request['minimal_source_blob']=='144b1d6becec3055aac6a69cce07007cad1849a6'
           assert request['qa_artifact_run']==42692715252
           assert request['external_testers_enabled'] is False
@@ -320,3 +320,27 @@ jobs:
           compression-level: 0
           retention-days: 14
 
+
+  verify-collision-payload:
+    needs: native
+    if: needs.native.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta/native
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: beta10-minimal-clock-webgl-unverified
+          path: webgl
+      - run: python -m pip install UnityPy==1.25.4
+      - name: Verify cooked data and original mesh identity in actual WebGL bytes
+        run: python tools/eldoria-private-beta/native/verify_collision_bake.py webgl collision-payload-proof.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: collision-payload-byte-proof-not-iphone
+          path: collision-payload-proof.json
+          retention-days: 14

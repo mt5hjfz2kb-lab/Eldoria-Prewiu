@@ -62,3 +62,31 @@ Corrected probe removes screenshots during observation and requires a
 fresh successful ready/visible/document sample after120seconds. Reversed
 arm order checks a cold/warm confound. Bounded Unity phase logs and null
 shader diagnostics are recorded; these hooks do not repair the engine.
+
+## Static castle collision discovery and candidate
+The frozen actual ProjectSettings have bakeCollisionMeshes:0. Both actual
+compiled castle meshes have empty m_BakedTriangleCollisionMesh and
+m_BakedConvexCollisionMesh, cookingOptions30. Both are attached to enabled
+non-convex MeshCollider components. Bastion_I has323834vertices and
+Bastion_II_GI366884vertices. This is an avoidable runtime cooking path,
+not proof that it caused the owner's termination.
+
+225 frozen runtime C# files were inspected for mesh CPU access. Do NOT
+blindly discard readable mesh buffers: terrain/resource/creature readers
+exist, and the two large castles themselves have MeshColliders.
+
+New isolated build step enables Unity's collision prebake API BEFORE the
+native certificates and WebGL compilation. The warm runner preserves and
+restores every ProjectSettings byte. No scene/collider/mesh or player
+selection shape is edited. A subsequent Ubuntu gate reads the actual
+WebGL bundle, requires non-empty baked triangle data for BOTH castles,
+removes only baked data in memory, and requires every remaining serialized
+mesh byte to hash identically to the physically failed original.
+Sources:
+https://docs.unity3d.com/6000.3/Documentation/ScriptReference/PlayerSettings-bakeCollisionMeshes.html
+https://docs.unity3d.com/6000.3/Documentation/Manual/physics-optimization-cpu-collider-types.html
+
+Native runtime behaviour, compiled-bundle gate and physical stability
+are PENDING. Preflight42907142804 passed; its native job was SKIPPED due
+to the other owner's runner lease. Do not call the source change a fix
+for the physical restart until validated.
