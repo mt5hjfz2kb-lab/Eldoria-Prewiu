@@ -106,9 +106,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
-        panelw=min(171,w*.42)
-        panely=navtop-280-34
-        context=place("context",w-m-panelw,panely,panelw,280)
+        panelw=min(171,w*.42) if pw<600 else 158
+        card_right=m if pw<600 else 39
+        panely=navtop-280-(34 if pw<600 else 51)
+        context=place("context",w-card_right-panelw,panely,panelw,280)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
         header=R(48,7,panelw-109,21)
         level=R(48,31,panelw-109,17)
@@ -192,6 +193,9 @@ def main():
         'float navSize=52,navGap=16',
         'float navTop=h-111f',
         'float ph=280f',
+        'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
+        'float cardRightInset=smallPhone?margin:39f;',
+        'float top=navTop-ph-(smallPhone?34f:51f);',
         'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
