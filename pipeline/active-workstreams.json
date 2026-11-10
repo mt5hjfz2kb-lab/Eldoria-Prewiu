@@ -6865,9 +6865,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "DIRECT_R1_LIVE_VERIFIED_AWAITING_PHYSICAL_RESULT",
+      "phase": "DIRECT_R1_PHYSICAL_FAILURE_ENGINE_MEMORY_INVESTIGATION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Owner needs to open direct-r1 in Safari and report whether entry restarts; no automation can certify their physical phone. Public all181files verified42898405543 and entry/reload visually verified42895738602. Inspect iOS direct-launch retry42898705517 when complete; prior simulator failures were infrastructure only. Keep physical P0 open and tester invitations disabled.",
+      "next": "Inspect actual-start iOS Simulator run42905159087 without claiming physical certification. Candidate e6017e154f38e12f934907920064b77e5c371763 releases initialization-only normals and avoids duplicate terrain array; native/regression and physical QA pending. Respect PR181 Windows lease. Preserve beta10/save origin; no tester invitations.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7475,7 +7475,24 @@
         "all_public_files_byte_verified": 181,
         "full_public_verification_run": 42898405543,
         "ios_warm_retry_result": "FAILED_BEFORE_GAME: about:blank unsupported simctl URL; direct Safari launch retry42898705517 queued",
-        "ios_direct_launch_run": 42898705517
+        "ios_direct_launch_run": 42898705517,
+        "physical_result": "OWNER_REPORTED_FAIL_IMG_5065_20261110",
+        "physical_evidence": {
+          "ready": "22:24:15",
+          "new_boot": "22:24:23",
+          "heap_capacity_mib": 412,
+          "root_cause_confirmed": false
+        }
+      },
+      "initialization_memory_candidate": {
+        "source": "e6017e154f38e12f934907920064b77e5c371763",
+        "status": "IMPLEMENTED_NOT_BUILT_NOT_PUBLISHED",
+        "readable_mesh_serialized_bytes": 359219828,
+        "removed_managed_normal_reference_payload_bytes": 4998072,
+        "avoided_additional_array_payload_bytes_per_world_vertices_call": 4998072,
+        "actual_process_memory_saved": null,
+        "root_cause_confirmed": false,
+        "external_testers_enabled": false
       }
     },
     {
