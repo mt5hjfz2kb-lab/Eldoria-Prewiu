@@ -101,10 +101,17 @@ namespace Eldoria.DailyTreasures
         RawImage milestoneScenery;
         Image milestoneVignette;
         Image milestoneInsignia;
+        // The hero is sourced only from the game's real hero inventory. Never
+        // bake the imagined Lyra from a concept poster into a live milestone.
+        Image milestoneLyraPortrait;
         Image bastionStoryInk;
         string milestoneSceneryKey;
         Rect milestoneSceneryBaseUv;
         public string MilestoneSceneryKey => milestoneSceneryKey;
+        public bool DisplaysCanonicalLyraPortrait =>
+            currentStage==DailyTreasureStageKind.Lyra &&
+            milestoneLyraPortrait && milestoneLyraPortrait.sprite &&
+            milestoneLyraPortrait.gameObject.activeInHierarchy;
         public bool HasMilestoneScenery =>
             milestoneScenery && milestoneScenery.texture &&
             milestoneScenery.gameObject.activeInHierarchy;
@@ -413,6 +420,11 @@ namespace Eldoria.DailyTreasures
             var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
             milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
             milestoneVignette.gameObject.SetActive(false);
+            var lyraPortraitRect=NewRect(
+                "Canonical Lyra / actual recruited hero illustration",ceremony);
+            milestoneLyraPortrait=Plate(lyraPortraitRect,Color.white,false);
+            milestoneLyraPortrait.preserveAspect=true;
+            milestoneLyraPortrait.gameObject.SetActive(false);
             // Authentic original scouting / Vigilants crests already belong
             // to Eldoria; a restrained insignia strengthens each milestone
             // without inventing a new faction, reward, hero or building.
@@ -681,6 +693,11 @@ namespace Eldoria.DailyTreasures
             {
                 milestoneInsignia.sprite=null;
                 milestoneInsignia.gameObject.SetActive(false);
+            }
+            if(milestoneLyraPortrait)
+            {
+                milestoneLyraPortrait.sprite=null;
+                milestoneLyraPortrait.gameObject.SetActive(false);
             }
             if(header)header.gameObject.SetActive(true);
             if(subhead)subhead.gameObject.SetActive(true);
@@ -1011,6 +1028,15 @@ namespace Eldoria.DailyTreasures
             glow.color=new Color(1f,.75f,.36f,dailyCoffer?0f:.16f);
             ambient.color=Color.clear;
             SetMilestoneScenery(eventId,showChest);
+            if(milestoneLyraPortrait)
+            {
+                // Pull the same owned sprite that the canonical Heroes room
+                // displays. No generated face, no duplicated hero asset.
+                var portrait=currentStage==DailyTreasureStageKind.Lyra &&
+                    showChest?TryCanonicalLyraPortrait():null;
+                milestoneLyraPortrait.sprite=portrait;
+                milestoneLyraPortrait.gameObject.SetActive(portrait!=null);
+            }
             // The original approved artwork now has category-specific stage
             // composition, not merely a recolored copy of the daily calendar.
             Layout();
@@ -1035,6 +1061,53 @@ namespace Eldoria.DailyTreasures
             // misleading artwork of a different building level.
             return null;
         }
+        // This project keeps HeroesApprovedDestination in Assembly-CSharp;
+        // DailyTreasures is an isolated asmdef that intentionally cannot
+        // reference it directly. Resolve its public, already-bound ReadHeroes
+        // once on a committed Lyra ceremony, not on Update()/each mobile frame.
+        // Reflection reads ONLY the authoritative Lyra portrait from that
+        // destination; it never creates/unlocks a hero or changes a save.
+        static Sprite TryCanonicalLyraPortrait()
+        {
+            var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
+            foreach(var component in components)
+            {
+                if(!component ||
+                   component.GetType().FullName!=
+                       "Eldoria.HeroesUI.HeroesApprovedDestination")
+                    continue;
+                try
+                {
+                    var field=component.GetType().GetField("ReadHeroes");
+                    var reader=field?.GetValue(component) as Delegate;
+                    var heroes=reader?.DynamicInvoke() as Array;
+                    if(heroes==null)continue;
+                    foreach(var hero in heroes)
+                    {
+                        if(hero==null)continue;
+                        var type=hero.GetType();
+                        var id=type.GetField("Id")?.GetValue(hero) as string;
+                        if(!string.Equals(id,"lyra",
+                            StringComparison.OrdinalIgnoreCase))continue;
+                        // A portrait is art, not a replacement for a genuine
+                        // 3D hero. Reject thumbnail upscaling and null states.
+                        var image=type.GetField("Portrait")?.GetValue(hero)
+                            as Sprite;
+                        if(image && image.rect.width>=256f &&
+                           image.rect.height>=256f)
+                            return image;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Debug.LogWarning("Daily treasures: canonical Lyra art "+
+                        "lookup unavailable: "+ex.Message);
+                }
+            }
+            return null;
+        }
+
         void SetMilestoneScenery(string eventId,bool showChest)
         {
             var path=showChest?MilestoneScenerySource(eventId):null;
@@ -1301,6 +1374,29 @@ namespace Eldoria.DailyTreasures
                 milestoneScenery.color=MilestonePaintTint(stage);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
+                // The authoritative hero portrait is the focal subject of
+                // Lyra's ceremony, with actual Eldoria hall as the depth layer.
+                // Portrait crops are independent of text/hitboxes. Keep its
+                // top edge below the native heading on both orientations.
+                if(milestoneLyraPortrait.gameObject.activeSelf)
+                {
+                    float portraitWidth=stage.SideBySide?
+                        Mathf.Min(stage.SceneW*.68f,245f):
+                        Mathf.Min(stage.SceneW*.64f,245f);
+                    float portraitHeight=stage.SideBySide?
+                        Mathf.Min(stage.SceneH*.79f,255f):
+                        Mathf.Min(stage.SceneH*.68f,267f);
+                    float portraitX=stage.SceneX+
+                        (stage.SideBySide?-stage.SceneW*.06f:0f);
+                    float portraitY=stage.SceneY-
+                        (stage.SideBySide?stage.SceneH*.12f:
+                            stage.SceneH*.23f);
+                    Place(milestoneLyraPortrait.rectTransform,
+                        .5f,.5f,.5f,.5f,portraitX,portraitY,
+                        portraitWidth,portraitHeight);
+                    milestoneLyraPortrait.color=new Color(
+                        1f,.97f,.90f,.96f);
+                }
                 if(milestoneInsignia.gameObject.activeSelf)
                 {
                     float insigniaSize=portrait?57f:65f;
