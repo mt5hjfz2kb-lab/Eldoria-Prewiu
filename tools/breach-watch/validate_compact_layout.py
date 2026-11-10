@@ -262,7 +262,7 @@ def main():
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,21,pw-104,21);',
         'At(buildingName.rectTransform,50,8,pw-111,31);',
-        'At(identityPower.rectTransform,59,36,165,21);',
+        'At(identityPower.rectTransform,59,32,165,21);',
         'At(buildingLevel.rectTransform,45,43,pw-104,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]

@@ -31,7 +31,7 @@ namespace Eldoria.BreachWatch
             vh.Clear();
             Rect r=GetPixelAdjustedRect();
             if(r.width<80||r.height<30||visibleMedallions<2)return;
-            float y=r.center.y;
+            float y=r.yMax-3f-medallionSize*.5f;
             float step=medallionStep;
             float first=r.xMin+medallionSize*.5f;
             float last=first+(visibleMedallions-1)*step;
@@ -65,13 +65,38 @@ namespace Eldoria.BreachWatch
                     vh.AddTriangle(idx,idx+i+1,idx+(i+1)%4+1);
                 for(int i=0;i<4;i++)Line(p[i],p[(i+1)%4],.85f,gold);
             }
-            Line(new Vector2(r.xMin+3,y-2),new Vector2(r.xMax-3,y-2),5.5f,shadow);
-            Line(new Vector2(r.xMin+3,y),new Vector2(r.xMax-3,y),1.9f,copper);
-            Line(new Vector2(r.xMin+8,y+1.1f),new Vector2(r.xMax-8,y+1.1f),.75f,gold);
-            Diamond(r.xMin+8,5);
-            Diamond(r.xMax-8,5);
+            // Fine open metalwork occupies only the gaps. A thick dark
+            // strip behind all icons made the original dock look rigid.
+            void Link(float a,float b)
+            {
+                Line(new Vector2(a,y-1),new Vector2(b,y-1),2.8f,shadow);
+                Line(new Vector2(a,y),new Vector2(b,y),1.4f,copper);
+                Line(new Vector2(a,y+.7f),new Vector2(b,y+.7f),.65f,gold);
+            }
+            void Finial(float edge,float direction)
+            {
+                float tip=edge+direction*10f;
+                float neck=edge-direction*8f;
+                Line(new Vector2(tip,y),new Vector2(neck,y+3.5f),.85f,gold);
+                Line(new Vector2(neck,y+3.5f),new Vector2(edge-direction*3f,y),.8f,copper);
+                Line(new Vector2(edge-direction*3f,y),new Vector2(neck,y-3.5f),.8f,copper);
+                Line(new Vector2(neck,y-3.5f),new Vector2(tip,y),.85f,gold);
+                Link(Mathf.Min(edge,neck),Mathf.Max(edge,neck));
+                Diamond(edge-direction*1.5f,2.6f);
+            }
+            Finial(r.xMin,-1f);
+            Finial(r.xMax,1f);
             for(int i=0;i<visibleMedallions-1;i++)
-                Diamond(first+(i+.5f)*step,4.8f);
+            {
+                float midpoint=first+(i+.5f)*step;
+                float a=first+i*step+medallionSize*.34f;
+                float b=first+(i+1)*step-medallionSize*.34f;
+                Link(a,b);
+                Diamond(midpoint,3.8f);
+                // Two engraved shoulders echo the approved gold dock.
+                Line(new Vector2(midpoint-5,y),new Vector2(midpoint-8,y+2),.65f,gold);
+                Line(new Vector2(midpoint+5,y),new Vector2(midpoint+8,y+2),.65f,gold);
+            }
         }
     }
 }

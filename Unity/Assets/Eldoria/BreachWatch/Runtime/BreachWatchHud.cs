@@ -946,10 +946,10 @@ namespace Eldoria.BreachWatch
                 // when Truncate box is shorter than font line metrics.
                 // Give BOTH actual labels their full line heights inside the
                 // single hand-painted profile; no duplicated crest or card.
-                At(identityName.rectTransform,lionTextInset,smallPhone?5f:4f,
+                At(identityName.rectTransform,lionTextInset,smallPhone?6f:6f,
                     (smallPhone?174f:166f)-crestSize,smallPhone?22f:18f);
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?27f:22f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?26f:21f,(smallPhone?174f:166f)-crestSize,
                     smallPhone?18f:17f);
                 identityName.fontSize=smallPhone?17:15;
                 identityPower.fontSize=smallPhone?14:10;
@@ -1018,7 +1018,7 @@ namespace Eldoria.BreachWatch
                 // Move the same live text 1u UP and make the row 1u taller,
                 // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?10f:7f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?11f:9f,missionWidth-(smallPhone?64f:44f),
                     smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
@@ -1172,7 +1172,7 @@ namespace Eldoria.BreachWatch
                 // 844x390 (.86 scale), therefore 14pt is mandatory; reserve
                 // its full Legacy Text line height without another panel.
                 At(identityName.rectTransform,59,6,166,30);
-                At(identityPower.rectTransform,59,36,165,21);
+                At(identityPower.rectTransform,59,32,165,21);
                 identityName.fontSize=20;
                 identityPower.fontSize=14;
 
@@ -1563,7 +1563,10 @@ namespace Eldoria.BreachWatch
                     // An unavailable destination is absent, not a tappable or
                     // faded promise of a screen that does not yet exist.
                     var p=navPlates[i];
-                    if(p)p.VisualScale=i==activeTab?.76f:.70f;
+                    // Keep the authored relief visible after every data refresh.
+                    // Reflow previously used .86-.92, then RenderNow silently
+                    // shrank the same artwork to .70-.76 in the next frame.
+                    if(p)p.VisualScale=i==activeTab?.92f:.88f;
                     if(p)p.color=allowed
                         ? i==(host.InWorld?3:selectedTab)
                             ?new Color(1f,.97f,.87f,1f):Color.white
