@@ -63,8 +63,12 @@ def verify():
     assert "chapterName.resizeTextMaxSize=smallPhone?13:11;" in hud
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
-    fits("Bastión",SEMIBOLD,16,panel_width-109,
-         "selected building title")
+    # Genuine Unity 900x1600 prior failure: 49u Baskerville NIVEL I
+    # wrapped into two lines. The real approval reference uses a slim copper
+    # engraving, not a giant square-serif heading. Render the exact live
+    # level in Cormorant, with 54u available and 4u next to the close badge.
+    fits("Bastión",SEMIBOLD,16,54,"real Bastion name in 54u")
+    fits("NIVEL I",SEMIBOLD,12,54,"real Bastion level single row")
     paragraph="Gobierno y progreso de Valoria."
     paragraphs=lines(REGULAR,12,paragraph,panel_width-26)
     assert len(paragraphs)<=2,(paragraphs,"narrative wraps beyond its 43u card")
@@ -120,8 +124,8 @@ def verify():
     # or small landscape; both rows preserve >=4 Unity design units.
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     for clause in (
-        "At(buildingName.rectTransform,48,7,pw-109,21);",
-        "At(buildingLevel.rectTransform,48,31,pw-109,17);",
+        "At(buildingName.rectTransform,45,7,pw-104,21);",
+        "At(buildingLevel.rectTransform,45,30,pw-104,17);",
         "At(buildingName.rectTransform,50,8,pw-111,31);",
         "At(buildingLevel.rectTransform,50,40,pw-111,17);",
     ):
