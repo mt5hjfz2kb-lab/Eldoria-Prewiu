@@ -116,13 +116,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-(115 if pw<600 else 130)
+        navtop=h-(130 if pw<600 else 111)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         panelw=min(171,w*.42) if pw<600 else 158
         card_right=m if pw<600 else 39
-        panely=navtop-297-(34 if pw<600 else 72)
+        panely=navtop-297-(34 if pw<600 else 32)
         context=place("context",w-card_right-panelw,panely,panelw,297)
         touch("close",R(context.x+panelw-55,context.y+14,50,50))
         header=R(45,21,panelw-104,21)
