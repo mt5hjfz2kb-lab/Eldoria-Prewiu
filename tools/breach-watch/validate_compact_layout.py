@@ -80,7 +80,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(211 if pw<600 else 170,w*(.49 if pw<600 else .38))
         # The new alpha-trimmed carved source starts at its real painted edge.
-        place("mission",m,80 if pw<600 else 79,missionw,69 if pw<600 else 55)
+        place("mission",m,80 if pw<600 else 82,missionw,69 if pw<600 else 50)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
         chapter_text=R(54 if pw<600 else 36,8 if pw<600 else 6,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
@@ -90,13 +90,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 36,26 if pw<600 else 22,missionw-(70 if pw<600 else 44),18 if pw<600 else 14)
-        progress=R(59 if pw<600 else 36,46 if pw<600 else 38,missionw-(70 if pw<600 else 44),18 if pw<600 else 13)
+        short_objective=R(59 if pw<600 else 36,26 if pw<600 else 21,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        progress=R(59 if pw<600 else 36,46 if pw<600 else 34,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
         assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (69 if pw<600 else 55)-3,size
+        assert progress.y+progress.h<= (69 if pw<600 else 50)-3,size
         assert 87+20<=112-3,size
         # Compact source plaque keeps native text within both real bevels.
-        assert missionw/(69 if pw<600 else 55)>=3.0,size
+        assert missionw/(69 if pw<600 else 50)>=3.0,size
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
