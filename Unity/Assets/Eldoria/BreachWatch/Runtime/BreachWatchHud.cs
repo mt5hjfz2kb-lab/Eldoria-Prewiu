@@ -1076,8 +1076,15 @@ namespace Eldoria.BreachWatch
                 // when dock moves down, no second panel or masking layer.
                 float top=navTop-ph-(smallPhone?34f:72f);
                 At(panel,left,top,pw,ph);
-                At(buildingName.rectTransform,48,7,pw-109,21);
-                At(buildingLevel.rectTransform,48,31,pw-109,17);
+                // Unity 6000.3 GPU proof 42824817856: the original
+                // 49u second line wrapped NIVEL I into 29.7u of glyphs
+                // while its 17u masked rect hid the actual level numeral.
+                // The approved crest ends at x45; the 50u close button
+                // starts x103. Both true text rows can safely occupy the
+                // intervening 57u, with a 1u hard separation from close.
+                // Keep both captions fully live, no painted placeholder.
+                At(buildingName.rectTransform,45,7,pw-101,21);
+                At(buildingLevel.rectTransform,45,30,pw-101,17);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
                 // This 90-unit live portrait well is at ~1.9:1 aspect
                 // rather than the prior 2.4:1 slit. Together with the
