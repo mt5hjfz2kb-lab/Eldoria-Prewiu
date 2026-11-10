@@ -364,7 +364,8 @@ jobs:
           assert 'guid: '+provenance['unity_guid'] in meta
           assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
           src=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          assert 'VigiliaArt/OwnerReference/lion_crest' in src
+          assert 'VigiliaArt/OwnerReference/lion_crest' not in src
+          assert 'VigiliaArt/CleanRoom/profile' in src
           print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
           PY
       - name: Verify authentic owner orange/gold Breach source and absence of generic X glyph
@@ -441,10 +442,16 @@ jobs:
           # must NEVER be active underneath the 13 new generated UI assets.
           for name in expected:
               assert 'VigiliaArt/OwnerControls/'+name not in hud,name
-          fresh=json.loads((folder.parent/'FreshArt/manifest.json').read_text())['files']
-          assert len(fresh)==13
-          for name in ('profile_panel','resource_chip','upgrade_button'):
-              assert name in fresh and 'VigiliaArt/FreshArt/'+name in hud,name
+          # Retain historical source sheets for traceability, not runtime.
+          former=json.loads((folder.parent/'FreshArt/manifest.json').read_text())['files']
+          assert len(former)==13
+          clean=json.loads((folder.parent/'CleanRoom/manifest.json').read_text())
+          artworks={entry['asset'] for entry in clean['assets']}
+          assert clean['output_count']==10
+          for name in ('panel','profile','mission','resource','upgrade'):
+              assert name in artworks and 'VigiliaArt/CleanRoom/'+name in hud,name
+          for name in ('profile_panel','resource_chip','upgrade_button','building_panel','quest_panel'):
+              assert 'VigiliaArt/FreshArt/'+name not in hud,name
           assert 'BreachWatchCrossedHammers' not in hud
           assert 'VigiliaArt/PremiumSurfaces/burgundy_action' not in hud
           assert 'VigiliaArt/PremiumSurfaces/profile_plate' not in hud
@@ -511,7 +518,7 @@ jobs:
           # Provenance of rejected interim art is retained, but no visible
           # old metal insert is allowed under the new 2K cleanroom cartouche.
           assert 'VigiliaArt/PremiumSurfaces/brass_portrait' not in csharp
-          assert 'VigiliaArt/FreshArt/building_panel' in csharp
+          assert 'VigiliaArt/CleanRoom/panel' in csharp
           assert '!portraitFrame.GetComponent<Graphic>()' in csharp
           assert 'VigiliaArt/PremiumSurfaces/basalt_context' not in csharp
           assert 'BreachWatchBevelTrim' not in csharp
@@ -539,7 +546,7 @@ jobs:
           assert 'guid: '+proof['guid'] in meta and 'textureType: 8' in meta
           hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
           assert 'VigiliaArt/PremiumSurfaces/panel_fill' not in hud
-          assert 'VigiliaArt/FreshArt/building_panel' in hud
+          assert 'VigiliaArt/CleanRoom/panel' in hud
           assert 'exactOwnerGoldBorder=null;' in hud
           assert 'panel.gameObject.AddComponent<BreachWatchPanelInk>()' not in hud
           print('VIGILIA_CLEANROOM_SINGLE_2K_PANEL_ZERO_OLD_OVERLAY_PASS')
