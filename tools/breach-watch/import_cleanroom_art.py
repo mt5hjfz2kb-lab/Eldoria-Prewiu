@@ -198,6 +198,12 @@ def store(name,image,sourcehash,task,source_label):
     elif name=="resource":border=(round(w*.20),round(h*.18),round(w*.10),round(h*.18))
     else:border=(0,0,0,0)
     left,bottom,right,top=border
+    # Unity UI.Image Sliced interprets spriteBorder in PIXELS divided by
+    # spritePixelsToUnits. For a 2K asset, leaving PPU=100 shrinks a 624px
+    # integral lion crest to ~6 UI units: an unacceptably tiny icon.
+    # Author border scale against the actual live first-screen UI footprint.
+    # No extra lion, icon, border or dark slab is permitted.
+    pixels_per_unit={"profile":16,"mission":20,"resource":26}.get(name,100)
     meta=f"""fileFormatVersion: 2
 guid: {guid}
 TextureImporter:
@@ -211,7 +217,7 @@ TextureImporter:
   textureType: 8
   spriteMode: 1
   spriteBorder: {{x: {left}, y: {bottom}, z: {right}, w: {top}}}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: {pixels_per_unit}
   alphaIsTransparency: 1
   textureShape: 1
   maxTextureSize: 4096
