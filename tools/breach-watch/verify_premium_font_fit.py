@@ -39,23 +39,23 @@ def verify():
 
     # Phone design-units are stable between 390x844 and Retina 900x1600.
     panel_width=171
-    mission_width=184
+    mission_width=170
     def fits(text,font,size,limit,control):
         value=width(font,size,text)
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
     # The reference's single carved title is dynamic, not baked into PNG.
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,11,mission_width-57,
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,11,mission_width-44,
          "900px real single-line chapter in owner bronze")
-    fits("Construye el aserradero",REGULAR,12,mission_width-57,
+    fits("Construye el aserradero",REGULAR,12,mission_width-44,
          "true objective alongside painted castle badge")
     fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,211-64,
          "390px approved single-line chapter readable at 13pt")
     fits("BASTIÓN I / LA BRECHA",SEMIBOLD,14,180,
          "844px approved single-line chapter readable at 14pt")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,smallPhone?54f:48f," in hud
+    assert "At(chapterName.rectTransform,smallPhone?54f:36f," in hud
     # This exact accepted Chapter I inscription is measured to fit at 13/14,
     # so it must NOT be silently shrunk by Unity legacy BestFit on small RT.
     assert "chapterName.resizeTextForBestFit=!chapterOne;" in hud
