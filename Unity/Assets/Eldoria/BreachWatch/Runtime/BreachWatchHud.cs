@@ -1199,16 +1199,16 @@ namespace Eldoria.BreachWatch
                 // The actual 1600x900 Unity first native screenshot showed
                 // title and objective fraction too near the source-metal rim.
                 // Shift live ink INSIDE the same authentic complete illustration.
-                At(objective,margin,100,256,fullObjective?122:92);
-                At(chapterName.rectTransform,66,14,180,20);
+                At(objective,margin,100,256,fullObjective?122:100);
+                At(chapterName.rectTransform,66,14,180,18);
                 // Native 844x390 measured only 2.6px between the real
                 // progress ink and the lower gold contour. Reserve at least
                 // 9px; no second panel, no hidden fake fraction or font shrink.
                 // Native 844x390 (run 42865155787) shows 0/1 visibly
                 // touching the bottom carved rim. Move BOTH live rows up
                 // in the SAME approved plate; preserve title and text data.
-                At(chapterObjective.rectTransform,66,36,176,fullObjective?50:19);
-                At(chapterProgress.rectTransform,66,fullObjective?93:59,176,18);
+                At(chapterObjective.rectTransform,66,34,176,fullObjective?50:19);
+                At(chapterProgress.rectTransform,66,fullObjective?93:55,176,18);
                 // 844x390 actual native pixels: 13 at scale .86 gives only
                 // 11.18px. Enlarge the live caption rather than weaken QA.
                 chapterName.fontSize=14;
@@ -1218,6 +1218,9 @@ namespace Eldoria.BreachWatch
                 chapterName.resizeTextMinSize=14;
                 chapterName.resizeTextMaxSize=14;
                 chapterObjective.fontSize=15;
+                // Reset the portrait best-fit limits when rotating the same Canvas.
+                chapterObjective.resizeTextMinSize=14;
+                chapterObjective.resizeTextMaxSize=15;
                 chapterProgress.fontSize=14;
 
                 At(utilityRail,margin,h-165,44,145);
@@ -1261,10 +1264,10 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,50,8,pw-111,31);
+                At(buildingName.rectTransform,50,12,pw-111,27);
                 At(buildingLevel.rectTransform,50,40,pw-111,17);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
-                buildingName.fontSize=21;
+                buildingName.fontSize=18;
                 buildingLevel.fontSize=15;
                 if(ph<305)
                 {

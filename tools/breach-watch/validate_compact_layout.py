@@ -174,14 +174,14 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
             assert 5+30+1.5<=38,size
-        place("mission",m,100,256,92)
-        chapter_text=R(66,14,174,20)
+        place("mission",m,100,256,100)
+        chapter_text=R(66,14,174,18)
         assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
-        quest_task=R(66,36,176,19)
-        quest_progress=R(66,59,176,18)
+        quest_task=R(66,34,176,19)
+        quest_progress=R(66,55,176,18)
         assert chapter_text.y+chapter_text.h+2<=quest_task.y,size
-        assert quest_task.y+quest_task.h+4<=quest_progress.y,size
-        assert quest_progress.y+quest_progress.h<=92-12,size
+        assert quest_task.y+quest_task.h+2<=quest_progress.y,size
+        assert quest_progress.y+quest_progress.h<=100-12,size
         place("breach",w*.49-17,11,34,34)
         compact=h<530
         navsize,gap=(75,10) if compact else (55,15)
@@ -199,7 +199,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
-        header=R(50,8,contextw-111,31)
+        header=R(50,12,contextw-111,27)
         level=R(50,40,contextw-111,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=contextw-57-3.5,size
@@ -261,7 +261,7 @@ def main():
         'chapterName.resizeTextMinSize=smallPhone?13:10;',
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,21,pw-104,21);',
-        'At(buildingName.rectTransform,50,8,pw-111,31);',
+        'At(buildingName.rectTransform,50,12,pw-111,27);',
         'At(identityPower.rectTransform,59,32,165,21);',
         'At(buildingLevel.rectTransform,45,43,pw-104,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
