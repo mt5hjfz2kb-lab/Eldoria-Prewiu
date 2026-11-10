@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T23:04:36.314Z",
+  "updated_at": "2026-11-10T23:19:31.597Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "codex-pr173-completion-9eb868087db6",
+      "owner": "chatgpt-vigilia-art-automation-20261111",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 63,
+      "ownership_revision": 64,
       "write_scope_released": false,
-      "phase": "FRAME_SPACING_AND_FINISH_NATIVE_CERTIFIED",
-      "next": "Current requested frame/typography finishing pass certified at138416cf. No merge/publication. Long custom names, expanded toast and larger later-tier prices remain stress-review cases outside first-screen evidence.",
+      "phase": "REFERENCE_COMPOSITION_PANEL_VERTICAL_OFFSET_NATIVE_PENDING",
+      "next": "Align Bastion selected single panel vertically against approved original 864x1536 (current genuine 900x1600 image has ~75px too high card), retaining 2K art, all gameplay, 6 clicks and 8 pixel hash checks; rerun native exact HEAD when runner free, no merging/art approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T22:36:02.850Z",
@@ -6764,6 +6764,14 @@
           "to_owner": "codex-pr173-completion-9eb868087db6",
           "reason": "Owner explicitly asks this chat to continue and finish pending native evidence; preserve original-art candidate and repair obsolete capture contract.",
           "transferred_at": "2026-11-10T18:40:28.554Z"
+        },
+        {
+          "previous_owner": "codex-pr173-completion-9eb868087db6",
+          "from_revision": 63,
+          "to_revision": 64,
+          "to_owner": "chatgpt-vigilia-art-automation-20261111",
+          "transferred_at": "2026-11-10T23:19:31.596Z",
+          "reason": "El propietario ordena continuación ejecutiva en el único PR173: tras capturas certificadas138416cf, corregir la gran diferencia espacial de ficha Bastión respecto de JPEG aprobado; no reabrir arte ni invadir código ajeno. Sin reserva Windows."
         }
       ],
       "runner_priority_handoff": {
