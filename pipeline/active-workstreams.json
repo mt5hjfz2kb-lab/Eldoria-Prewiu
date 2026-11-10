@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "write_scope_released": false,
-      "phase": "CAS37_NATIVE_REAL_PLAYER_NAME_POWER_GPU_RETEST",
-      "next": "Trigger exact head native 8 screenshot of portrait/landscape in PR173, verify genuine name/power glyphs and all real controls, download A/B, release Windows CAS after completion; do not merge or art approve on mere CI.",
+      "phase": "NATIVE_8_REAL_NAME_POWER_PASS_OWNER_ART_AB_PENDING",
+      "next": "Compare exact Unity 8 PNG for SHA 392b3117 vs user's approved reference; adjust remaining premium art fidelity, no old HUD overlays, continue only on owner-design-approved visual changes. Native screenshots 8/8 and all pointer/text GPU checks PASSED but artistic 7-7.5/10 not claimed. Windows released for other workstreams.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T14:43:14.001Z",
@@ -6745,11 +6743,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "cf73b49fcc8519b8e15d574b9ade917bc6ffdead",
-        "native_run": 42835897261,
+        "source_sha": "392b3117f7a651a93848f444042df9344bcb87d7",
+        "native_run": 42838782164,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13772693376,
+        "artifact": 13775270659,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6774,9 +6772,11 @@
         "oldHudGraphicsReused": false,
         "new_fresh_original_2k_assets": true,
         "upgrade_glyph_width_guard": true,
-        "upgrade_one_line": true
+        "upgrade_one_line": true,
+        "player_name_real_gpu_visible": true,
+        "player_power_real_gpu_visible": true
       },
-      "runner_release_basis": "Unity native job success in run 42835897261, SHA cf73b49fcc8519b8e15d574b9ade917bc6ffdead, 8 PNG artifact 13772693376; independent Ubuntu visual A/B job does not require Windows."
+      "runner_release_basis": "Exact-head Unity native run 42838782164 SUCCESS 8 genuine views, GPU player name/power and all costs, input click proof, source 392b3117; preserve A/B and wait for new artistic iteration."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
