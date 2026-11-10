@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T19:49:42.933Z",
+  "updated_at": "2026-11-10T19:52:19.690Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6860,9 +6860,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA10_STABLE_AND_MINIMAL_CLOCK_OWNER_AB_LIVE_IPHONE_TEST_PENDING",
+      "phase": "STABLE_CANVAS_PHYSICAL_IPHONE_FAILED",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Owner confirmed Safari and repeat failure after closing ChatGPT; no matching OS termination log exists, do NOT block progress solely on unavailable log. Pivot: previous Mac tests waited90s before nickname; immediate startup + keyboard/toolbar resizes were untested. Source2bc2ac1 stabilizes render target on height-only viewport changes, preserves original1.5 DPR and width/rotation; 3 focused tests PASS. Actual live COPYADD hash7b0717 maps to source836fce5/run42785047968 (not older42781066472). Current exact transport immediate-entry A/B run42810897933; inspect entry/reload/screenshots, resize sequence and final footprint before owner-only deployment. Stager592022ab requires browser proof before/after hashes and preserves beta10+all Unity bytes. No external release; no Windows lease held.",
+      "next": "Owner reports stable-canvas-r1 still restarts. Record physical failure; do not repeat canvas/OMG-JIT hypotheses or claim desktop PASS as mobile proof. Preserve beta10. A true physical same-browser/origin control remains missing: beta10 entry redirects to original Sites origin; mobile12 is hosted on Pages. Existing Mac same-origin tests cannot resolve that physical distinction. No new candidate should be called fixed without device evidence.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7433,6 +7433,14 @@
         "ios_ab_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-ab/",
         "stable_beta10_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
         "external_release": false
+      },
+      "iphone_stable_canvas": {
+        "revision": "stable-canvas-r1",
+        "physical_result": "OWNER_REPORTED_RESTART",
+        "reported_date": "2026-11-10",
+        "desktop_qa": 42812046053,
+        "publish_run": 42814955703,
+        "root_cause_confirmed": false
       }
     },
     {
