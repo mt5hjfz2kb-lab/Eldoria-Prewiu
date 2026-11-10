@@ -44,26 +44,24 @@ const sourceRequirements=[
   [/legacyCanvas\.enabled\s*=\s*false/,'legacy canvas is disabled but game object survives'],
   [/legacyGroup\.alpha\s*=\s*0/,'legacy UI is hidden'],
   [/host\.Hud\.SelectionChanged\s*\+=/,'canonical session owner is reused'],
-  // PR173's genuine isolated 2K Canvas (head bf427141d7e1,
-  // verified 2026-11-10) now paints FreshArt originals. Its previous
-  // OwnerControls/profile_bar, resource_capsule and upgrade_button paths
-  // are historical, NOT its actual current materials. Validate the source
-  // and the real FreshArt files; do not wrongly fail the daily workflow
-  // for obsolete names or reuse the construction CTA in loyalty rewards.
-  [/Resources\.Load<Sprite>\("VigiliaArt\/FreshArt\/profile_panel"\)/,
-    'Current Vigilia independent 2K identity panel'],
-  [/Resources\.Load<Sprite>\([\s\S]{0,55}"VigiliaArt\/FreshArt\/resource_chip"\)/,
-    'Current Vigilia independent 2K resource background'],
-  [/Resources\.Load<Sprite>\("VigiliaArt\/FreshArt\/upgrade_button"\)/,
-    'Current genuine upgrade CTA art (not a loyalty reward)'],
-  [/actionPlate\.ApplyIndependentArt\(originalArt\)/,
-    'Native one-piece painted CTA instead of stretched nine-slice'],
-  [/actionPlate\.preserveAspect\s*=\s*true/,
-    'Painted action retains original proportions'],
-  [/actionPlate\.raycastTarget\s*=\s*false/,
-    'Painted overlay cannot steal pointer input'],
-  [/actionHit\.raycastTarget\s*=\s*true/,
-    'Full-size transparent native action hit target'],
+  // PR173 head ba71afea now binds its visible profile/resource/upgrade
+  // directly from CleanRoom. FreshArt remains live for wood/stone/food only.
+  // Never keep a stale FreshArt surface assertion when the source actually
+  // loads a different named painted original.
+  [/Resources\\.Load<Sprite>\\("VigiliaArt\\/CleanRoom\\/profile"\\)/,
+    'Current Vigilia player identity uses approved single-piece CleanRoom profile'],
+  [/Resources\\.Load<Sprite>\\(\\s*"VigiliaArt\\/CleanRoom\\/resource"\\)/,
+    'Current Vigilia resource row uses original CleanRoom capsule'],
+  [/Resources\\.Load<Sprite>\\("VigiliaArt\\/CleanRoom\\/upgrade"\\)/,
+    'Current upgrade CTA uses original CleanRoom art (never as a loyalty reward)'],
+  [/actionPlate\\.ApplyIndependentArt\\(originalArt\\)/,
+    'One painted upgrade CTA rather than a stacked border'],
+  [/actionPlate\\.preserveAspect\\s*=\\s*true/,
+    'Native painted action retains source aspect'],
+  [/actionPlate\\.raycastTarget\\s*=\\s*false/,
+    'Painted overlay does not steal pointer input'],
+  [/actionHit\\.raycastTarget\\s*=\\s*true/,
+    'True native action hit target'],
   [/resourceIllustrations\[i\]\.sprite=Resources\.Load<Sprite>\(/,
     'Canonical three resource sprites are drawn from real imported art']
 ];
@@ -71,22 +69,25 @@ for(const [expression,meaning] of sourceRequirements)
   assert.match(native,expression,
     'PR173 head '+ref.slice(0,12)+' changed contract: '+meaning);
 
-// The FreshArt profile, resource bar and upgrade action are actual
-// authored 2K UI paintings, not merely names in source or conceptual
-// mockups. Verify them in PR173 at this exact HEAD without importing them
-// into PR181's independent chest artwork.
-for(const name of ['profile_panel','resource_chip','upgrade_button',
-                   'wood','stone','food']){
-  const path='Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/'+name+'.png';
+// The current two independently painted families both exist in PR173's
+// exact HEAD. CleanRoom supplies the actual identity/resource/action material;
+// FreshArt supplies the three actual resource drawings. Validate their sprite
+// importers, not deprecated FreshArt surface names or screenshot mockups.
+for(const [family,name] of [
+  ['CleanRoom','profile'],['CleanRoom','resource'],['CleanRoom','upgrade'],
+  ['FreshArt','wood'],['FreshArt','stone'],['FreshArt','food']
+]) {
+  const path='Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/'+
+    family+'/'+name+'.png';
   const [asset,meta]=await Promise.all([
     api('/contents/'+path+'?ref='+ref),
     api('/contents/'+path+'.meta?ref='+ref)
   ]);
-  assert.equal(asset.type,'file','Genuine Vigilia FreshArt disappeared: '+name);
-  assert.ok(asset.size>5000,'Vigilia painting too small or missing: '+name);
-  const info=Buffer.from(meta.content.replace(/\s/g,''),'base64').toString('utf8');
-  assert.match(info,/textureType: 8/,'Vigilia art is not imported as Sprite: '+name);
-  assert.match(info,/spriteMode: 1/,'Vigilia art unexpected sprite mode: '+name);
+  assert.equal(asset.type,'file','Live Vigilia source art disappeared: '+path);
+  assert.ok(asset.size>5000,'Current painted source too small/missing: '+path);
+  const info=Buffer.from(meta.content.replace(/\\s/g,''),'base64').toString('utf8');
+  assert.match(info,/textureType: 8/,'Current Vigilia material is not a Sprite: '+path);
+  assert.match(info,/spriteMode: 1/,'Unexpected Sprite mode: '+path);
 }
 
 // The old bronze-outline cards are a deliberately SEMANTICALLY CLEAN
