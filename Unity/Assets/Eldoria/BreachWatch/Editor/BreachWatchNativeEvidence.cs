@@ -863,7 +863,12 @@ namespace Eldoria.BreachWatch.Editor
                          chapterLabel.fontSize*ui.NativeCanvas.scaleFactor>=11.75f &&
                          chapterLabel.preferredWidth <=
                             chapterLabel.rectTransform.rect.width+5f,
-                         "Owner-approved Chapter I / La Brecha identity not readable: "+name);
+                         "Owner-approved Chapter I / La Brecha identity not readable: "+name+
+                         " value="+(chapterLabel?chapterLabel.text:"<missing>")+
+                         " size="+(chapterLabel?chapterLabel.rectTransform.rect.height.ToString("F1"):"0")+
+                         " preferredWidth="+(chapterLabel?chapterLabel.preferredWidth.ToString("F1"):"0")+
+                         " availableWidth="+(chapterLabel?chapterLabel.rectTransform.rect.width.ToString("F1"):"0")+
+                         " actualFontPx="+(chapterLabel?(chapterLabel.fontSize*ui.NativeCanvas.scaleFactor).ToString("F1"):"0"));
                 // Verify that the authentic chapter progress is visible
                 // inside its carved tablet, not hidden behind the lower edge.
                 var realProgress=ui.GetComponentsInChildren<Text>(true)
