@@ -160,6 +160,8 @@ jobs:
       - name: Deploy protected old beta10 and isolated clock candidate
         id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
       - name: Confirm both real live build identities and binary routes; no external invites
         run: |
           python3 - <<'PY'
