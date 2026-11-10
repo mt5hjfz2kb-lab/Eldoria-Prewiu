@@ -1,4 +1,4 @@
-name: Eldoria beta10 minimal world clock native parity and WebGL (P0 isolated)
+name: Eldoria initialization-memory native parity and WebGL (P0 isolated)
 # Owner confirmed Windows handoff on 2026-11-09: validate frozen pretester UX.
 # Bake original collider responses, replay with exact parity, then build without runtime cooking.
 on:
@@ -90,6 +90,18 @@ jobs:
           assert selected[difference[0]]['candidate_sha256']==proof['minimal_timer_sha256']
           print('BETA10_EXACT_19_OVERLAY_AB_SOURCE_AUDIT_PASS: 18 unchanged, clock only; NATIVE NOT RUN')
           PY
+      - name: Verify exact six engine inputs for initialization-memory candidate
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,subprocess
+          expected={"Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs":"76425d914f71ec7c5d1ddbe416f6264b2c21dc18","Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs":"2daa985a36df3599d49f00239a3774112c5651ee","Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs":"6f28c164c42cfebe4337bf4ec02acca30373c42c","Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs":"7859f60566187ed0c1d35c6f78271914b978000e","Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs":"80f2293b19ac8e420bcf22908b2aed1bf2cbd667","Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs":"960b7a51c383b6988f2e13118e200f5078d00216"}
+          for path,want in expected.items():
+            # Preflight's sparse checkout omits engine files; inspect pinned Git tree.
+            got=subprocess.check_output(['git','-C','beta-tools','rev-parse','HEAD:'+path],text=True).strip()
+            assert got==want,(path,got,want)
+          print('EXACT_ENGINE_INPUTS_VERIFIED; only terrain initialization differs from mobile12')
+          PY
       - name: Check current ownership without occupying Windows
         id: lease
         env:
@@ -105,15 +117,15 @@ jobs:
           own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
           request=json.load(open('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json'))
           assert request['schema']==1 and request['workstream_id']==own['id']
-          assert request['owner']=='chatgpt-eldoria-pilot-telemetry-20261109'
-          assert request['variant']=='beta10-minimal-anchor'
+          assert request['owner']=='codex-iphone-stability-6f75130e87ae'
+          assert request['variant']=='beta10-clock-initialization-memory-r1'
           assert request['minimal_source_blob']=='144b1d6becec3055aac6a69cce07007cad1849a6'
           assert request['qa_artifact_run']==42692715252
           assert request['external_testers_enabled'] is False
           prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
           if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
           valid=(request['state']=='CLAIMED_FOR_NATIVE'
-            and own['owner']=='chatgpt-eldoria-pilot-telemetry-20261109'
+            and own['owner']=='codex-iphone-stability-6f75130e87ae'
             and own['ownership_state']=='claimed'
             and own['ownership_revision']==request['ownership_revision']
             and len(holders)==1 and holders[0]['id']==own['id']
@@ -172,7 +184,7 @@ jobs:
           $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($request.state -ne 'CLAIMED_FOR_NATIVE' -or
             $holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or
-            $holders[0].owner -ne 'chatgpt-eldoria-pilot-telemetry-20261109' -or
+            $holders[0].owner -ne 'codex-iphone-stability-6f75130e87ae' -or
             $holders[0].ownership_state -ne 'claimed' -or
             $holders[0].ownership_revision -ne [int]$request.ownership_revision){
               throw 'Minimal beta10 timer native lease not exclusively owned; no Windows work permitted'
@@ -278,7 +290,7 @@ jobs:
             & (Join-Path $tools 'tools/eldoria-private-beta/native/run_warm_structural.ps1') -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools $tools -Evidence $evidence -WebOutput $web
             if(-not(Test-Path (Join-Path $evidence 'complete.txt'))){throw 'Exact Unity Bastion I-V native proof missing'}
             if(-not(Test-Path (Join-Path $web 'index.html'))){throw 'Fresh minimal WebGL output missing'}
-            Write-Host 'BETA10_MINIMAL_CLOCK_NATIVE_I_V_AND_WEBGL_PASS_OWNER_IPHONE_UNTESTED'
+            Write-Host 'INITIALIZATION_MEMORY_NATIVE_I_V_AND_WEBGL_PASS_OWNER_IPHONE_UNTESTED'
           } finally {
             Copy-Item (Join-Path $backup 'manifest.json') $manifest -Force -ErrorAction Stop
             $restoreFailures=@()

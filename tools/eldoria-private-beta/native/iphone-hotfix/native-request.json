@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "workstream_id": "eldoria-private-beta-i-v-20261107",
-  "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
-  "ownership_revision": 24,
-  "state": "CLAIMED_FOR_NATIVE",
-  "variant": "beta10-minimal-anchor",
+  "owner": "codex-iphone-stability-6f75130e87ae",
+  "ownership_revision": 25,
+  "state": "WAITING_FOR_RESOURCE",
+  "variant": "beta10-clock-initialization-memory-r1",
   "replay_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
   "minimal_source_blob": "144b1d6becec3055aac6a69cce07007cad1849a6",
@@ -18,9 +18,17 @@
     "offline owner iPhone A/B",
     "physical 30min proof before promotion"
   ],
-  "change_scope": "RoyalGoldV3ContextHud only; preserve original beta10 public Pages and save data",
+  "change_scope": "Preserve all19 frozen beta10 minimal-clock overlays; only RegionOneBlenderLandscape initialization arrays change; structural probe checks no retained normal copy",
   "external_testers_enabled": false,
   "owner_ios_stability_proven": false,
   "note": "This file is NOT a native test result. Change state to CLAIMED_FOR_NATIVE only after formal CAS workstream lease handoff and zero Unity/Blender process.",
-  "activated_at_utc": "2026-11-09T22:43:17.116Z"
+  "engine_source": "e6017e154f38e12f934907920064b77e5c371763",
+  "engine_input_blobs": {
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "76425d914f71ec7c5d1ddbe416f6264b2c21dc18",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "2daa985a36df3599d49f00239a3774112c5651ee",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "6f28c164c42cfebe4337bf4ec02acca30373c42c",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "7859f60566187ed0c1d35c6f78271914b978000e",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "80f2293b19ac8e420bcf22908b2aed1bf2cbd667",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216"
+  }
 }
