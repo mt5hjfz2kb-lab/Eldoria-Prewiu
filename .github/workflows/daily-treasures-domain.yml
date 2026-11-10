@@ -56,6 +56,13 @@ jobs:
           git ls-files Unity/Assets/Eldoria |
             grep -Ei 'lyra|hero.{0,40}(portrait|master)|portrait.{0,40}hero' |
             head -100 || true
+      - name: Prove the pre-Unity ceremony art source gate rejects duplicates and fictional loot
+        shell: bash
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check Pillow
+          python3 tools/daily-treasures/preflight_ceremony_art.py --selftest
+          # Do not run a non-existent production manifest here: until genuine
+          # event-specific artworks exist, ART_APPROVED remains false.
       - name: Verify built-in Unity Audio module required by actual chest audio
         run: node tools/daily-treasures/check-audio-module.mjs
       - name: Compile and test original C# reward rules (no Unity mocks)
