@@ -41,6 +41,22 @@ for name in asset_names:
     if name in ('profile','mission','resource'):
         assert 'spriteBorder: {x: ' in meta,name
         assert ('VigiliaArt/CleanRoom/'+name) in HUD,name
+    if name=='panel':
+        # The source generator once added a second lower gold line at 66.5%
+        # that collided with live costs. It is deliberately erased from the
+        # NEW painted material; Unity has only its single dynamic separator.
+        with Image.open(file).convert('RGBA') as art:
+            width,height=art.size
+            peak=0
+            for y in range(round(height*.659),round(height*.673)):
+                total=0
+                for x in range(round(width*.10),round(width*.90)):
+                    r,g,b,a=art.getpixel((x,y))
+                    if (a>160 and r>70 and g>44 and
+                        r>g*1.11 and g>b*1.07):
+                        total+=1
+                peak=max(peak,total)
+            assert peak<80,('reintroduced duplicate gold divider',peak)
 for name in ('panel','mission','profile','resource','upgrade'):
     assert 'VigiliaArt/CleanRoom/'+name in HUD,name
 assert '"VigiliaArt/CleanRoom/nav_"+symbol' in HUD
