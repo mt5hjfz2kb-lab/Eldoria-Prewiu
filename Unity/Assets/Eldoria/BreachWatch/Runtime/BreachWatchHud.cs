@@ -1081,7 +1081,7 @@ namespace Eldoria.BreachWatch
                 // Exact real Unity 5b57bb0 390x844 failed: 65u photo forced
                 // y=0.13..0.84 but genuine masonry occupied y=0.12..0.85.
                 // In the original one-panel composition add 17u ONLY to the
-                // portrait well and overall card; move subsequent live rows
+                // portrait well up to the real painted rule, and overall card; move later live rows
                 // with it. This gives the native 512x320 mesh an aspect-safe
                 // 82u aperture instead of silently cropping turrets/stairs.
                 float ph=297f;
@@ -1104,7 +1104,7 @@ namespace Eldoria.BreachWatch
                 // Source-measured new card: illustration well ends at 129.7u,
                 // description below it; one painted divider at 160.8u.
                 // Never include live description inside the portrait frame.
-                At(portraitFrame,15,61,pw-30,82);
+                At(portraitFrame,15,61,pw-30,74);
                 At(buildingFunction.rectTransform,13,146,pw-26,22);
                 descriptionDivider.gameObject.SetActive(false);
                 At(costHeader.rectTransform,13,174,pw-26,17);
