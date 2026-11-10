@@ -31,12 +31,15 @@ def decode(b,item):
         raise RuntimeError("SHA mismatch")
     return v
 
-def run(stable_tar, new_root, out_file):
+def run(stable_tar, new_root, out_file, emit_dir=None):
     new=Path(new_root)
     meta_new=json.loads((new/"release-identity.json").read_text())
     if meta_new["source_sha"]!=SOURCE_NEW:raise RuntimeError("wrong new source")
     bparts=chunks(json.loads((new/"build-manifest.json").read_text()))
     rows=[]
+    if emit_dir is not None:
+        if emit_dir.exists():raise RuntimeError('Never replace an existing output patch directory')
+        emit_dir.mkdir(parents=True,exist_ok=False)
     with tarfile.open(stable_tar,"r:*") as tar:
         members={}
         for m in tar:
@@ -59,12 +62,15 @@ def run(stable_tar, new_root, out_file):
                 left=decode(oldbytes(a["url"]),a)
                 right=decode((new/safe_rel(b["url"])).read_bytes(),b)
                 before.write_bytes(left);after.write_bytes(right)
-                subprocess.run(["xdelta3","-f","-e","-s",str(before),str(after),str(delta)],check=True,
+                subprocess.run(["xdelta3","-f","-e","-S","none","-A=","-a","-s",str(before),str(after),str(delta)],check=True,
                                stdout=subprocess.PIPE,stderr=subprocess.PIPE)
                 subprocess.run(["xdelta3","-f","-d","-s",str(before),str(delta),str(restored)],
                                check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
                 if hashlib.sha256(restored.read_bytes()).hexdigest()!=b["decoded_sha256"]:
                     raise RuntimeError("xdelta verification failed: "+str(i))
+                if emit_dir is not None:
+                    from shutil import copyfile
+                    copyfile(delta,emit_dir/('part-%02d.vcdiff'%i))
                 row={"part":i,"old_compressed":len(gzip.compress(left,1)),
                      "new_compressed_original":len((new/safe_rel(b["url"])).read_bytes()),
                      "new_decoded":len(right),"delta_bytes":delta.stat().st_size,
@@ -85,5 +91,6 @@ if __name__=="__main__":
     p.add_argument("--stable-pages-artifact-tar",required=True,type=Path)
     p.add_argument("--candidate-root",required=True,type=Path)
     p.add_argument("--output",required=True,type=Path)
+    p.add_argument("--emit-dir",type=Path,default=None)
     a=p.parse_args()
-    run(a.stable_pages_artifact_tar,a.candidate_root,a.output)
+    run(a.stable_pages_artifact_tar,a.candidate_root,a.output,a.emit_dir)
