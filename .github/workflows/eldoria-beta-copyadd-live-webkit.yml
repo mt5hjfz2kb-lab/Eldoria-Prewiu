@@ -1,4 +1,4 @@
-name: Eldoria P0 — native WebKit memory diagnosis, NOT release approval
+name: Eldoria P0 — WebKit compiler isolation, NOT release approval
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -100,7 +100,8 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           failed=0
-          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1 >evidence-default.log 2>&1
+          JSC_useOMGJIT=false __XPC_JSC_useOMGJIT=false JSC_dumpOptions=1 __XPC_JSC_dumpOptions=1 DEBUG=pw:browser QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/no-omg node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1 >evidence-no-omg.log 2>&1
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -108,13 +109,25 @@ jobs:
           print('NATIVE_MEMORY_DIAGNOSTIC_ONLY_NOT_RELEASE_APPROVAL',json.dumps({'passed':r['passed'],'profiles':r.get('nativeProfiles',[])}))
           assert r['passed'] and r.get('nativeProfiles'), 'Need actual peak stack captures'
           PY
+          python3 - <<'PY'
+          import json,pathlib
+          rows={}
+          for name in ('direct','no-omg'):
+            r=json.loads(pathlib.Path('evidence',name,'report.json').read_text())
+            rows[name]={'passed':r['passed'],'peak_kib':max(p.get('rssKiB',0) for v in r['samples']+r.get('entrySamples',[]) for p in v.get('processes',[]) if 'WebContent' in p.get('name',''))}
+          pathlib.Path('evidence/compiler-isolation.json').write_text(json.dumps(rows,indent=2))
+          print('DIAGNOSTIC_ONLY_COMPILER_ISOLATION',rows)
+          assert all(r['passed'] for r in rows.values())
+          PY
           if [ "$failed" != 0 ]; then exit 1; fi
       - name: Archive real Mac WebKit evidence, NEVER claim physical iPhone certification
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-native-webkit-memory-diagnosis-not-release
+          name: eldoria-webkit-compiler-isolation-not-release
           path: |
             evidence/
             server.log
+            evidence-default.log
+            evidence-no-omg.log
           retention-days: 14
