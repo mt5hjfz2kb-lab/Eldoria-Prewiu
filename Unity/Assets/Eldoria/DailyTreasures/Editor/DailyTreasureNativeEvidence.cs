@@ -853,6 +853,19 @@ namespace Eldoria.DailyTreasures.Editor
                     clock.UtcTicks=Day(4);
                     var specialBefore=specialGateway.Snapshot();
                     panel.Bind(specialGateway,()=>clock.UtcTicks,()=>{});
+                    // This is a new disposable player's visit immediately
+                    // after dismissing day seven. In batchmode no Unity player
+                    // frame runs between those independent sessions. The new
+                    // optional medallion is registered, but Graphic.depth=-1
+                    // until its own canvas is actually drawn (native run
+                    // 42798661482, Capture line 856). Advance the REAL render
+                    // before the next REAL GraphicRaycaster pointer; never
+                    // call Button.onClick, fabricate a receipt, or weaken the
+                    // hit test. This matches the existing quiet-day rehearsal.
+                    Canvas.ForceUpdateCanvases();
+                    camera.Render();
+                    camera.Render();
+                    Canvas.ForceUpdateCanvases();
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                         FindButton(panel,"Daily reward / optional medallion"),
                         width,height);
