@@ -153,7 +153,12 @@ def remove_chroma_edge_halo(image,name):
     g=rgba[:,:,1].astype(np.int16)
     b=rgba[:,:,2].astype(np.int16)
     magenta=(r>145)&(b>145)&(g<125)&(r>g*1.45)&(b>g*1.45)
-    contaminated=(alpha>12)&(alpha<244)&magenta
+    # Some generator pixels are FULLY opaque neon magenta despite being
+    # adjacent to transparent background. Detect the outer three-pixel ring
+    # as well, without touching legitimate purple mineral details inside.
+    distance=cv2.distanceTransform((alpha>12).astype(np.uint8),
+                                    cv2.DIST_L2,3)
+    contaminated=(alpha>12)&magenta&((alpha<244)|(distance<3.5))
     changed=int(contaminated.sum())
     if changed:
         repaired=cv2.inpaint(rgba[:,:,:3],
@@ -165,7 +170,7 @@ def remove_chroma_edge_halo(image,name):
     nr=rgba[:,:,0].astype(np.int16)
     ng=rgba[:,:,1].astype(np.int16)
     nb=rgba[:,:,2].astype(np.int16)
-    residual=((alpha>12)&(alpha<244)&
+    residual=((alpha>12)&((alpha<244)|(distance<3.5))&
               (nr>145)&(nb>145)&(ng<125)&
               (nr>ng*1.45)&(nb>ng*1.45))
     if int(residual.sum())>max(20,int(changed*.01)):
