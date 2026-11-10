@@ -45,7 +45,14 @@ try:
     caps={'platformName':'iOS','browserName':'Safari',
           'safari:useSimulator':True,
           'safari:deviceUDID':os.environ['QA_SIM_UDID']}
-    result=request('/session',{'capabilities':{'alwaysMatch':caps,'firstMatch':[{}]}})
+    for attempt in range(2):
+        try:
+            result=request('/session',{'capabilities':{'alwaysMatch':caps,'firstMatch':[{}]}})
+            break
+        except RuntimeError as error:
+            if attempt or 'session not created' not in str(error): raise
+            report['cold_session_error']=str(error);save()
+            time.sleep(5)  # Retry the now-initialized Safari, not another cold simulator.
     session=result['sessionId']; report['capabilities']=result.get('capabilities')
     save()
     report['phase']='navigate';save()
