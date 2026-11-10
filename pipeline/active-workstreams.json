@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T17:07:44.491Z",
+  "updated_at": "2026-11-10T17:09:11.309Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-vigilia-automation-20261110",
+      "owner": "chatgpt-pr173-hud-fidelity-20261110",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 44,
+      "ownership_revision": 45,
       "write_scope_released": false,
-      "phase": "TRUE_UNITY_EIGHT_VIEW_ART_AB_REAL_OBTAINED_ART_REVIEW_NOT_APPROVED",
-      "next": "Compare genuine native 3f04846b with owner's 75B5D217 source visual; improve large remaining material/3D castle blue roof and miniature lighting without falsifying locked navigation; reacquire exclusive runner only when QA-ready.",
+      "phase": "HUD_2D_PRIORITY_OWNER_DIRECTED_20261110",
+      "next": "Implementar mejoras demostrables del HUD 2D en PR173; preservar sprites/botones aprobados y navegación desbloqueada real; ejecutar primero controles fuente; cuando Windows libre, QA Unity 8 capturas SHA exacto y comparación visual A/B de referencia. No retocar Bastión 3D ni beta iPhone, sin merge/deploy hasta validación.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T16:48:21.090Z",
@@ -6748,6 +6748,14 @@
           "to_owner": "chatgpt-vigilia-automation-20261110",
           "reason": "Owner explicitly requests canonical PR173 visual continuation in this scheduled chat; Unity run 42842186794 complete/failed, no active jobs, preserve branch, scope and existing lease, repair real clipped portrait and profile/mission text rather than start over.",
           "transferred_at": "2026-11-10T16:32:41Z"
+        },
+        {
+          "previous_owner": "chatgpt-vigilia-automation-20261110",
+          "from_revision": 44,
+          "to_revision": 45,
+          "to_owner": "chatgpt-pr173-hud-fidelity-20261110",
+          "reason": "El propietario ordena expresamente en esta conversación 'Pero haz tú el trabajo': relevo autorizado de PR173 para corregir él mismo HUD 2D (misión, perfil, recursos, medallones, legibilidad y adaptación móvil); Bastión 3D fuera de prioridad. Conservar fuente, rama, ocho capturas Unity y beta iPhone sin cambios; Windows actualmente PR181.",
+          "transferred_at": "2026-11-10T17:09:11.309Z"
         }
       ],
       "runner_priority_handoff": {
