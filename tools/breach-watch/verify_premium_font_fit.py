@@ -104,16 +104,16 @@ def verify():
         art_ratio=art.width/art.height
     assert 3.8<art_ratio<5.7,('New reference-guided burgundy art has invalid silhouette',art_ratio)
     for hit_width,hit_height,label,caption,size in [
-        (159,50,'900 portrait','Mejorar a Bastión II',12),
-        (159,50,'390 portrait','Mejorar a II',15),
-        (196,45,'1600 landscape','Mejorar a II',16),
+        (146,50,'900 portrait','Mejorar a Bastión II',11),
+        (159,50,'390 portrait','Mejorar a II',14),
+        (196,45,'1600 landscape','Mejorar a II',15),
         (210,53,'844 compact landscape','Mejorar a II',15),
     ]:
         painted_h=min(hit_height-4,hit_width/art_ratio)
         painted_w=painted_h*art_ratio
         assert painted_w>=hit_width*.70 and painted_h<=hit_height-4+1e-3,label
         assert abs(painted_w/painted_h-art_ratio)<.001,label
-        free_width=painted_w*.70-7
+        free_width=painted_w*.70-14
         fits(caption,SEMIBOLD,size,free_width,
              label+' inside original cleanroom red painting')
     hud=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()

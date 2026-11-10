@@ -931,7 +931,7 @@ namespace Eldoria.BreachWatch
                 // two tall rectangular headers. Compact at 900px, but
                 // preserve comfortable actual phone lettering at 390px.
                 bool smallPhone=pixelWidth<600;
-                float identityHeight=smallPhone?52f:43f;
+                float identityHeight=smallPhone?58f:48f;
                 At(identity,margin,smallPhone?11f:14f,182,identityHeight);
                 float crestSize=smallPhone?45f:37f;
                 // Engraved lion lives INSIDE the one painted player plaque:
@@ -946,12 +946,12 @@ namespace Eldoria.BreachWatch
                 // when Truncate box is shorter than font line metrics.
                 // Give BOTH actual labels their full line heights inside the
                 // single hand-painted profile; no duplicated crest or card.
-                At(identityName.rectTransform,lionTextInset,smallPhone?5f:5f,
+                At(identityName.rectTransform,lionTextInset,smallPhone?10f:9f,
                     (smallPhone?174f:166f)-crestSize,smallPhone?21f:17f);
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?26f:22f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?31f:27f,(smallPhone?174f:166f)-crestSize,
                     smallPhone?18f:17f);
-                identityName.fontSize=smallPhone?15:13;
+                identityName.fontSize=smallPhone?14:12;
                 identityPower.fontSize=smallPhone?13:10;
 
                 float rightSpace=w-(margin+182+9+margin);
@@ -959,13 +959,13 @@ namespace Eldoria.BreachWatch
                 // Right-align only on the narrow phone. Hiding unbuilt food
                 // cannot push the two existing counters 100 pixels away from
                 // their original positions on the owner's 864px reference.
-                // Keep upper-right resource counters as small as the
-                // approved art: ~108px wide, separated by ~21px at 900px.
+                // Preserve the correctly centred badge; widen its capsule so
+                // the amount has real space before the pointed right cap.
                 float chip=smallPhone
                     ?(visibleResources==2
-                        ?Mathf.Min(85f,Mathf.Max(72f,(rightSpace-4f)/2f))
+                        ?Mathf.Min(94f,Mathf.Max(72f,(rightSpace-4f)/2f))
                         :Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f)))
-                    :62f;
+                    :82f;
                 float chipGap=smallPhone?4f:12f;
                 float resourcesWidth=visibleResources*chip+
                     chipGap*(visibleResources-1);
@@ -991,10 +991,10 @@ namespace Eldoria.BreachWatch
                 // Keep live chapter, objective and progress editable on top.
                 // The owner's carved quest plaque is wide and shallow. The
                 // original 78u height made the illustration look like a poster.
-                float missionWidth=Mathf.Min(smallPhone?211f:170f,
-                    w*(smallPhone?.49f:.38f));
+                float missionWidth=Mathf.Min(smallPhone?225f:184f,
+                    w*(smallPhone?.52f:.40f));
                 float missionTop=smallPhone?80f:82f;
-                float missionHeight=smallPhone?80f:60f;
+                float missionHeight=smallPhone?88f:68f;
                 // The NEW independently illustrated mission asset has an
                 // alpha-trimmed painted silhouette, unlike the older cropped
                 // reference with 12u transparent padding. Align its true
@@ -1014,7 +1014,7 @@ namespace Eldoria.BreachWatch
                 // Move the same live text 1u UP and make the row 1u taller,
                 // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?15f:10f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?18f:13f,missionWidth-(smallPhone?64f:44f),
                     smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
@@ -1025,10 +1025,10 @@ namespace Eldoria.BreachWatch
                 // spacing. Move ONLY live ink upward, with 2u minimum row
                 // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?54f:36f,
-                    smallPhone?32f:24f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?37f:27f,missionWidth-(smallPhone?64f:44f),
                     fullObjective?51f:(smallPhone?12f:10f));
                 At(chapterProgress.rectTransform,smallPhone?54f:36f,
-                    fullObjective?87f:(smallPhone?46f:36f),
+                    fullObjective?87f:(smallPhone?53f:41f),
                     missionWidth-(smallPhone?64f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:10;
                 chapterName.resizeTextForBestFit=true;
@@ -1163,19 +1163,19 @@ namespace Eldoria.BreachWatch
             }
             else
             {
-                At(identity,margin,11,234,58);
+                At(identity,margin,11,234,66);
                 // The single profile illustration already contains its lion.
                 // Native 1600x900 proves the name draws in the first row.
                 // The power must remain >= 11.75 physical pixels even in
                 // 844x390 (.86 scale), therefore 14pt is mandatory; reserve
                 // its full Legacy Text line height without another panel.
-                At(identityName.rectTransform,59,6,166,25);
-                At(identityPower.rectTransform,59,32,165,21);
-                identityName.fontSize=18;
+                At(identityName.rectTransform,59,12,166,25);
+                At(identityPower.rectTransform,59,39,165,21);
+                identityName.fontSize=17;
                 identityPower.fontSize=14;
 
                 float chip=visibleResources==2
-                    ?Mathf.Min(110f,Mathf.Max(82f,(w*.28f-7f)/2f))
+                    ?Mathf.Min(124f,Mathf.Max(94f,(w*.28f-7f)/2f))
                     :Mathf.Min(100f,Mathf.Max(82f,(w*.28f-12f)/3f));
                 float resourcesWidth=visibleResources*chip+7f*(visibleResources-1);
                 At(resourceRow,w-margin-resourcesWidth,16,resourcesWidth,43);
@@ -1194,16 +1194,16 @@ namespace Eldoria.BreachWatch
                 // The actual 1600x900 Unity first native screenshot showed
                 // title and objective fraction too near the source-metal rim.
                 // Shift live ink INSIDE the same authentic complete illustration.
-                At(objective,margin,100,256,fullObjective?122:100);
-                At(chapterName.rectTransform,66,14,180,18);
+                At(objective,margin,100,256,fullObjective?122:106);
+                At(chapterName.rectTransform,66,20,180,18);
                 // Native 844x390 measured only 2.6px between the real
                 // progress ink and the lower gold contour. Reserve at least
                 // 9px; no second panel, no hidden fake fraction or font shrink.
                 // Native 844x390 (run 42865155787) shows 0/1 visibly
                 // touching the bottom carved rim. Move BOTH live rows up
                 // in the SAME approved plate; preserve title and text data.
-                At(chapterObjective.rectTransform,66,34,176,fullObjective?50:19);
-                At(chapterProgress.rectTransform,66,fullObjective?93:55,176,18);
+                At(chapterObjective.rectTransform,66,42,176,fullObjective?50:19);
+                At(chapterProgress.rectTransform,66,fullObjective?93:65,176,18);
                 // 844x390 actual native pixels: 13 at scale .86 gives only
                 // 11.18px. Enlarge the live caption rather than weaken QA.
                 chapterName.fontSize=14;
@@ -1353,7 +1353,7 @@ namespace Eldoria.BreachWatch
                 // Extra clearance after native GPU test showed the new 2K hammer
                 // relief extends beyond 28% of the painted button.
                 float captionLeft=paintedLeft+paintedWidth*.30f;
-                float captionRight=paintedLeft+paintedWidth-10f;
+                float captionRight=paintedLeft+paintedWidth-14f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
                     Mathf.Max(20f,captionRight-captionLeft),

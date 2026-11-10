@@ -59,7 +59,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert r.w*scale>=43.5 and r.h*scale>=43.5,(
             f"{size}: {name} physical touch area {r.w*scale:.1f}x{r.h*scale:.1f}")
     if portrait:
-        place("identity",m,11 if pw<600 else 14,182,52 if pw<600 else 43)
+        place("identity",m,11 if pw<600 else 14,182,58 if pw<600 else 48)
         # Approved lion badge is a COMPLETE one-piece circle, with a real
         # ~15px breathing gap before Prueba Valoria at 900px. A previous
         # source split the lion rim at 25%, causing an extended wing and
@@ -67,15 +67,15 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         painted_lion_right=round(2496*.35)*100/2000
         name_left=(45+8) if pw<600 else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,5,1,21 if pw<600 else 17)
-        profile_power=R(0,26 if pw<600 else 22,1,18 if pw<600 else 17)
+        profile_name=R(0,10 if pw<600 else 9,1,21 if pw<600 else 17)
+        profile_power=R(0,31 if pw<600 else 27,1,18 if pw<600 else 17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         # Real ink was touching the lower profile bevel, not a mere layout
         # style issue: both dynamic lines must now have bottom inset and
         # no overlapping nominal rows in the source contract.
-        assert profile_power.y+profile_power.h<= (52 if pw<600 else 43)-4,size
+        assert profile_power.y+profile_power.h<= (58 if pw<600 else 48)-4,size
         right=w-(m+182+9+m)
-        chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 62
+        chip=(min(94,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 82
         resgap=4 if pw<600 else 12
         resw=resources*chip+resgap*(resources-1)
         resource_left=w-m-resw if pw<600 else min(w-m-resw,w*.52)
@@ -87,26 +87,26 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             amount_left=badge_x+symbolsize/2+4
             assert icon_left>=3 and amount_left+20<=chip-3,size
             assert amount_left-(icon_left+symbolsize)==4,size
-        missionw=min(211 if pw<600 else 170,w*(.49 if pw<600 else .38))
+        missionw=min(225 if pw<600 else 184,w*(.52 if pw<600 else .40))
         # The new alpha-trimmed carved source starts at its real painted edge.
-        place("mission",m,80 if pw<600 else 82,missionw,80 if pw<600 else 60)
+        place("mission",m,80 if pw<600 else 82,missionw,88 if pw<600 else 68)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 36,15 if pw<600 else 10,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        chapter_text=R(54 if pw<600 else 36,18 if pw<600 else 13,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
         assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
         assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(54 if pw<600 else 36,32 if pw<600 else 24,missionw-(64 if pw<600 else 44),12 if pw<600 else 10)
-        progress=R(54 if pw<600 else 36,46 if pw<600 else 36,missionw-(64 if pw<600 else 44),18 if pw<600 else 12)
+        short_objective=R(54 if pw<600 else 36,37 if pw<600 else 27,missionw-(64 if pw<600 else 44),12 if pw<600 else 10)
+        progress=R(54 if pw<600 else 36,53 if pw<600 else 41,missionw-(64 if pw<600 else 44),18 if pw<600 else 12)
         assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
         assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (80 if pw<600 else 60)-(8 if pw<600 else 5),size
+        assert progress.y+progress.h<= (88 if pw<600 else 68)-(8 if pw<600 else 5),size
         assert 87+20<=112-3,size
         # Compact source plaque keeps native text within both real bevels.
-        assert missionw/(80 if pw<600 else 60)>=2.6,size
+        assert missionw/(88 if pw<600 else 68)>=2.5,size
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
@@ -170,24 +170,24 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert not boxes["mission"].intersects(context),size
         limit=34
     else:
-        place("identity",m,11,234,58)
-        profile_name=R(0,6,1,25)
-        profile_power=R(0,32,1,21)
+        place("identity",m,11,234,66)
+        profile_name=R(0,12,1,25)
+        profile_power=R(0,39,1,21)
         assert profile_name.y+profile_name.h<=profile_power.y,size
-        chip=(min(110,max(82,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
+        chip=(min(124,max(94,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
         resw=resources*chip+7*(resources-1)
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
             assert 423/22-23/2>=3,size
             assert 423/22+23/2+4+30<=chip-3,size
-        place("mission",m,100,256,100)
-        chapter_text=R(66,14,174,18)
+        place("mission",m,100,256,106)
+        chapter_text=R(66,20,174,18)
         assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
-        quest_task=R(66,34,176,19)
-        quest_progress=R(66,55,176,18)
+        quest_task=R(66,42,176,19)
+        quest_progress=R(66,65,176,18)
         assert chapter_text.y+chapter_text.h+2<=quest_task.y,size
         assert quest_task.y+quest_task.h+2<=quest_progress.y,size
-        assert quest_progress.y+quest_progress.h<=100-12,size
+        assert quest_progress.y+quest_progress.h<=106-12,size
         place("breach",w*.49-17,11,34,34)
         compact=h<530
         navsize,gap=(75,10) if compact else (55,15)
@@ -268,7 +268,7 @@ def main():
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,21,pw-104,21);',
         'At(buildingName.rectTransform,50,12,pw-111,27);',
-        'At(identityPower.rectTransform,59,32,165,21);',
+        'At(identityPower.rectTransform,59,39,165,21);',
         'At(buildingLevel.rectTransform,45,43,pw-104,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]
