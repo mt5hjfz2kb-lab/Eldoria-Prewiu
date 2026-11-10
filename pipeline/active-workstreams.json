@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T17:09:11.309Z",
+  "updated_at": "2026-11-10T17:27:07.381Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,16 +6665,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 45,
+      "ownership_revision": 46,
       "write_scope_released": false,
-      "phase": "HUD_2D_PRIORITY_OWNER_DIRECTED_20261110",
-      "next": "Implementar mejoras demostrables del HUD 2D en PR173; preservar sprites/botones aprobados y navegación desbloqueada real; ejecutar primero controles fuente; cuando Windows libre, QA Unity 8 capturas SHA exacto y comparación visual A/B de referencia. No retocar Bastión 3D ni beta iPhone, sin merge/deploy hasta validación.",
+      "phase": "HUD_2D_NATIVE_EIGHT_SHOT_IN_PROGRESS",
+      "next": "Trigger exact-head native UI proof by editing tools/breach-watch/native-request.txt only; inspect 8/8 Unity PNG and compare source prior head; release runner after terminal status via registry CAS.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-10T16:48:21.090Z",
-      "runner_claim_basis": "No other registered owner; one 8-view Unity correction to actual measured alpha inner text collisions. Source commit cdcab935... ready, no merge/deploy.",
+      "runner_claimed_at": "2026-11-10T17:27:07.381Z",
+      "runner_claim_basis": "User directs continuation of PR173; source-only HUD compact navigation medallion correction f76726a verified; no other registered runner holders or active jobs; 8 native Unity screenshots for exact SHA without altering iPhone or main gameplay.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
