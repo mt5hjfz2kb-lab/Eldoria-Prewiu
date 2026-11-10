@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Owner reports stable-canvas-r1 still restarts on iPhone. Canvas-height mitigation rejected as a solution. Preserve owner-playable beta10; root cause remains unconfirmed; external testers NO-GO.",
+  "reason": "Owner physical Safari test of direct-r1 also restarts; transport-only mitigation rejected. Investigate engine initialization; P0 remains open.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T20:47:25.172Z",
+  "updated_at": "2026-11-10T21:26:08.876Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -460,7 +460,7 @@
   },
   "iphone_direct_transport": {
     "revision": "direct-r1",
-    "status": "PUBLIC_DESKTOP_WEBKIT_VERIFIED_PHYSICAL_IPHONE_PENDING",
+    "status": "PHYSICAL_IPHONE_FAILED_OWNER_REPORTED",
     "engine_source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
     "staging_source_sha": "5555c2b3fed6b6b5c644679d42272254bffeedec",
     "compiled_data_bytes": 503831429,
@@ -486,6 +486,18 @@
     "all_public_file_hashes_verified": 181,
     "publication_retry_result": "42896193107 hit deploy-pages hard 600000ms cap; original files stayed live. 42898405543 verifies all181files identical and skips redundant deployment.",
     "ios_warm_attempt": 42897348434,
-    "ios_warm_result": "simctl cannot open about:blank (LSApplicationWorkspace115); no game test. Change to launching Safari app directly."
+    "ios_warm_result": "simctl cannot open about:blank (LSApplicationWorkspace115); no game test. Change to launching Safari app directly.",
+    "owner_report": {
+      "date": "2026-11-10",
+      "local_time": "22:24",
+      "timezone": "Europe/Madrid",
+      "image": "IMG_5065.png",
+      "ready": "22:24:15",
+      "new_boot": "22:24:23",
+      "heap_capacity_mib": 412,
+      "elapsed_seconds": 8,
+      "result": "RESTART",
+      "root_cause": "UNCONFIRMED"
+    }
   }
 }
