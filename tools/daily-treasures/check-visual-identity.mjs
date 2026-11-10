@@ -41,11 +41,11 @@ assert.match(theme,/\.44f,\.39f,\.53f,strength,legendary/);
 // The original Lyra hall was genuinely too dark in 390x844 Unity capture.
 // Only portrait Lyra receives increased visibility; never brighten the
 // other painted milestones or the Bastion city with a blanket neon filter.
-assert.match(stage,/kind==DailyTreasureStageKind\\.Lyra\\?\\.92f:\\.73f/);
-assert.match(stage,/kind==DailyTreasureStageKind\\.Lyra\\?\\.10f:\\.20f,false/);
-assert.match(panel,/static Color MilestonePaintTint\\(/);
-assert.match(panel,/hallPortrait\\?\\.82f:\\.70f/);
-assert.match(panel,/milestoneScenery\\.color=MilestonePaintTint\\(stage/);
+assert.match(stage,/kind==DailyTreasureStageKind\.Lyra\?\.92f:\.73f/);
+assert.match(stage,/kind==DailyTreasureStageKind\.Lyra\?\.10f:\.20f,false/);
+assert.match(panel,/static Color MilestonePaintTint\(/);
+assert.match(panel,/hallPortrait\?\.82f:\.70f/);
+assert.match(panel,/milestoneScenery\.color=MilestonePaintTint\(stage/);
 assert.match(stage,/\.88f,\.76f,\.22f,true/);
 
 // The real daily ledger has exactly real owned resources and accelerators.
