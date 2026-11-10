@@ -121,6 +121,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check Pillow==11.3.0
           python tools/daily-treasures/audit_native_art.py --selftest
+          python tools/daily-treasures/audit_city_art.py --selftest
           python tools/daily-treasures/check_clean_icon_quality.py
       - name: Render source-only 32-48-64px art contact and verify legibility
         run: python tools/daily-treasures/mobile_visual_preflight.py
