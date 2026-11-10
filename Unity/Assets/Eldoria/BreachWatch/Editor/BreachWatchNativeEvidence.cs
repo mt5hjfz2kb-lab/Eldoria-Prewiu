@@ -698,6 +698,10 @@ namespace Eldoria.BreachWatch.Editor
                     medal.rectTransform.GetWorldCorners(paintedCorners);
                     var pa=RectTransformUtility.WorldToScreenPoint(camera,paintedCorners[0]);
                     var pb=RectTransformUtility.WorldToScreenPoint(camera,paintedCorners[2]);
+                    Need(medal.sprite.texture.mipmapCount>1 &&
+                         medal.sprite.texture.filterMode==FilterMode.Trilinear &&
+                         medal.sprite.texture.width<=512,
+                         "Medallion must use bounded, filtered minification: "+name);
                     float visibleInkWidth=(pb.x-pa.x)*medal.VisualScale;
                     float visibleInkHeight=(pb.y-pa.y)*medal.VisualScale;
                     Need(visibleInkWidth>=38f && visibleInkHeight>=38f,
@@ -808,6 +812,17 @@ namespace Eldoria.BreachWatch.Editor
                              icon.rectTransform.rect.width+1.5f<=
                          amount.rectTransform.anchoredPosition.x,
                          "Resource symbol covers the true amount: "+name+"/"+stone.name);
+                    float iconCentre=icon.rectTransform.anchoredPosition.x+
+                        icon.rectTransform.rect.width*.5f;
+                    float iconY=-icon.rectTransform.anchoredPosition.y+
+                        icon.rectTransform.rect.height*.5f;
+                    Need(Mathf.Abs(iconCentre-423f/22f)<.25f &&
+                         Mathf.Abs(iconY-stone.rect.height*.49f)<.25f,
+                         "Resource artwork is not centred on its actual capsule badge: "+name);
+                    Need(icon.sprite.texture.mipmapCount>1 &&
+                         icon.sprite.texture.filterMode==FilterMode.Trilinear,
+                         "Resource icon missing small-size filtering: "+name);
+
                 }
                 foreach(var label in ui.GetComponentsInChildren<Text>(true))
                 {

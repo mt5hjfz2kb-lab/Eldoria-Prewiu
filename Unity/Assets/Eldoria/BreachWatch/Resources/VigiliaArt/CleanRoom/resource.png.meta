@@ -11,7 +11,7 @@ TextureImporter:
   textureType: 8
   spriteMode: 1
   spriteBorder: {x: 519, y: 117, z: 259, w: 117}
-  spritePixelsToUnits: 2600
+  spritePixelsToUnits: 2200
   alphaIsTransparency: 1
   textureShape: 1
   maxTextureSize: 4096

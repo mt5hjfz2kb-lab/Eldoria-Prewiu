@@ -970,8 +970,7 @@ namespace Eldoria.BreachWatch
                 float resourcesWidth=visibleResources*chip+
                     chipGap*(visibleResources-1);
                 float chipHeight=smallPhone?38f:28f;
-                float symbolSize=smallPhone?25f:19f;
-                float symbolTop=(chipHeight-symbolSize)*.5f;
+                float symbolSize=smallPhone?23f:19f;
                 float resourceLeft=smallPhone
                     ?w-margin-resourcesWidth
                     :Mathf.Min(w-margin-resourcesWidth,w*.52f);
@@ -982,10 +981,7 @@ namespace Eldoria.BreachWatch
                     resourceChips[i].gameObject.SetActive(i<visibleResources);
                     if(i>=visibleResources)continue;
                     At(resourceChips[i],i*(chip+chipGap),0,chip,chipHeight);
-                    At(resourceIllustrations[i].rectTransform,
-                        4f,symbolTop,symbolSize,symbolSize);
-                    At(resourceAmounts[i].rectTransform,
-                        symbolSize+8f,3f,chip-symbolSize-10f,chipHeight-6f);
+                    LayoutResourceContents(i,chip,chipHeight,symbolSize);
                     resourceAmounts[i].fontSize=smallPhone?14:12;
                 }
 
@@ -1188,8 +1184,7 @@ namespace Eldoria.BreachWatch
                     resourceChips[i].gameObject.SetActive(i<visibleResources);
                     if(i>=visibleResources)continue;
                     At(resourceChips[i],i*(chip+7),0,chip,41);
-                    At(resourceIllustrations[i].rectTransform,5,5,30,30);
-                    At(resourceAmounts[i].rectTransform,38,5,chip-41,30);
+                    LayoutResourceContents(i,chip,41f,23f);
                     resourceAmounts[i].fontSize=16;
                 }
                 At(centerMark,w*.49f-60,18,120,28);
@@ -1420,6 +1415,21 @@ namespace Eldoria.BreachWatch
             float x=Mathf.Clamp(center.x-cropWidth*.5f,0f,1f-cropWidth);
             float y=Mathf.Clamp(center.y-cropHeight*.5f,0f,1f-cropHeight);
             portraitView.uvRect=new Rect(x,y,cropWidth,cropHeight);
+        }
+
+        void LayoutResourceContents(int index,float chipWidth,float chipHeight,float iconSize)
+        {
+            // The authored capsule badge is centred at x=423/2593, not at
+            // the centre of an arbitrary icon slot. Its centre lies inside
+            // the unscaled left nine-slice border: 423px / (2200/100).
+            const float badgeCenterX=423f/22f;
+            float badgeCenterY=chipHeight*.49f;
+            At(resourceIllustrations[index].rectTransform,
+                badgeCenterX-iconSize*.5f,badgeCenterY-iconSize*.5f,
+                iconSize,iconSize);
+            float amountLeft=badgeCenterX+iconSize*.5f+4f;
+            At(resourceAmounts[index].rectTransform,amountLeft,3f,
+                chipWidth-amountLeft-3f,chipHeight-6f);
         }
 
         public void RenderNow()

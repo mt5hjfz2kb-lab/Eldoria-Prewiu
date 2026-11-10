@@ -81,8 +81,12 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         resource_left=w-m-resw if pw<600 else min(w-m-resw,w*.52)
         for i in range(resources):
             place("resource"+str(i),resource_left+i*(chip+resgap),18 if pw<600 else 17,chip,38 if pw<600 else 28)
-            symbolsize=25 if pw<600 else 19
-            assert 4+symbolsize+1.5<=symbolsize+8,size
+            symbolsize=23 if pw<600 else 19
+            badge_x=423/22
+            icon_left=badge_x-symbolsize/2
+            amount_left=badge_x+symbolsize/2+4
+            assert icon_left>=3 and amount_left+20<=chip-3,size
+            assert amount_left-(icon_left+symbolsize)==4,size
         missionw=min(211 if pw<600 else 170,w*(.49 if pw<600 else .38))
         # The new alpha-trimmed carved source starts at its real painted edge.
         place("mission",m,80 if pw<600 else 82,missionw,80 if pw<600 else 60)
@@ -174,7 +178,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         resw=resources*chip+7*(resources-1)
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
-            assert 5+30+1.5<=38,size
+            assert 423/22-23/2>=3,size
+            assert 423/22+23/2+4+30<=chip-3,size
         place("mission",m,100,256,100)
         chapter_text=R(66,14,174,18)
         assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
