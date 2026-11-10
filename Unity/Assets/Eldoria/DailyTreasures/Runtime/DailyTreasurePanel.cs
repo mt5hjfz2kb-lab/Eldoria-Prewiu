@@ -104,6 +104,7 @@ namespace Eldoria.DailyTreasures
         // The hero is sourced only from the game's real hero inventory. Never
         // bake the imagined Lyra from a concept poster into a live milestone.
         Image milestoneLyraPortrait;
+        float nextLyraArtProbe,stopLyraArtProbe,lyraArtRevealAt;
         Image bastionStoryInk;
         string milestoneSceneryKey;
         Rect milestoneSceneryBaseUv;
@@ -698,6 +699,7 @@ namespace Eldoria.DailyTreasures
             {
                 milestoneLyraPortrait.sprite=null;
                 milestoneLyraPortrait.gameObject.SetActive(false);
+                nextLyraArtProbe=stopLyraArtProbe=0f;
             }
             if(header)header.gameObject.SetActive(true);
             if(subhead)subhead.gameObject.SetActive(true);
@@ -1036,6 +1038,9 @@ namespace Eldoria.DailyTreasures
                     showChest?TryCanonicalLyraPortrait():null;
                 milestoneLyraPortrait.sprite=portrait;
                 milestoneLyraPortrait.gameObject.SetActive(portrait!=null);
+                lyraArtRevealAt=Time.unscaledTime;
+                nextLyraArtProbe=Time.unscaledTime+.7f;
+                stopLyraArtProbe=Time.unscaledTime+5.4f;
             }
             // The original approved artwork now has category-specific stage
             // composition, not merely a recolored copy of the daily calendar.
@@ -1073,12 +1078,29 @@ namespace Eldoria.DailyTreasures
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
             foreach(var component in components)
             {
-                if(!component ||
-                   component.GetType().FullName!=
-                       "Eldoria.HeroesUI.HeroesApprovedDestination")
-                    continue;
+                if(!component)continue;
+                var typeName=component.GetType().FullName;
                 try
                 {
+                    // The canonical hero loader validates the original
+                    // PR127 GLB by SHA256 and caches its native render as a
+                    // Sprite. Reuse that completed portrait without ever
+                    // loading another 4.77 MB GLB in the reward overlay.
+                    if(typeName=="Eldoria.HeroesUI.HeroesLyraModel")
+                    {
+                        var type=component.GetType();
+                        var value=type.GetProperty("Ready")?.GetValue(component);
+                        if(value is bool ready && ready)
+                        {
+                            var sprite=type.GetProperty("Portrait")?
+                                .GetValue(component) as Sprite;
+                            if(sprite && sprite.rect.width>=256f &&
+                               sprite.rect.height>=256f)return sprite;
+                        }
+                        continue;
+                    }
+                    if(typeName!="Eldoria.HeroesUI.HeroesApprovedDestination")
+                        continue;
                     var field=component.GetType().GetField("ReadHeroes");
                     var reader=field?.GetValue(component) as Delegate;
                     var heroes=reader?.DynamicInvoke() as Array;
@@ -1973,6 +1995,33 @@ namespace Eldoria.DailyTreasures
                 else if(!claimButton.interactable &&
                     gateway.Snapshot().DailyTreasures.TotalClaims<int.MaxValue)
                     claimCaption.text=NextRewardCountdown(currentUtc);
+            }
+            // The real Lyra GLB is loaded asynchronously by HeroesUI. The
+            // earlier scenery remains visible while it completes; probe
+            // a bounded five-second window, never trigger a second importer.
+            if(currentStage==DailyTreasureStageKind.Lyra &&
+               milestoneLyraPortrait && !milestoneLyraPortrait.sprite &&
+               Time.unscaledTime>=nextLyraArtProbe &&
+               Time.unscaledTime<stopLyraArtProbe)
+            {
+                nextLyraArtProbe=Time.unscaledTime+.7f;
+                var realArt=TryCanonicalLyraPortrait();
+                if(realArt)
+                {
+                    milestoneLyraPortrait.sprite=realArt;
+                    milestoneLyraPortrait.gameObject.SetActive(true);
+                    lyraArtRevealAt=Time.unscaledTime;
+                    Layout();
+                }
+            }
+            if(currentStage==DailyTreasureStageKind.Lyra &&
+               milestoneLyraPortrait && milestoneLyraPortrait.sprite &&
+               milestoneLyraPortrait.gameObject.activeSelf)
+            {
+                var tint=milestoneLyraPortrait.color;
+                tint.a=.96f*Mathf.Clamp01(
+                    (Time.unscaledTime-lyraArtRevealAt)/.42f);
+                milestoneLyraPortrait.color=tint;
             }
             if(!playing)
             {
