@@ -20,7 +20,7 @@ jobs:
       - name: Checkout exact audited, source-only Mac WebKit probe
         uses: actions/checkout@v4
         with:
-          ref: 2bc2ac169bc6d675d1b2d831c1d40c834052bda4
+          ref: 052d8c65edf0191fa819d7d08438c6ab172ccf83
           sparse-checkout: |
             tools/eldoria-private-beta/qa_webkit_residency.cjs
             tools/eldoria-private-beta/qa_static_server.cjs
@@ -93,7 +93,7 @@ jobs:
           import pathlib,json,hashlib
           root=pathlib.Path('site/beta-iphone-clock-ab')
           module=pathlib.Path('tools/eldoria-private-beta/iphone_ab/stable_canvas.js').read_text()
-          proof={'source':'2bc2ac169bc6d675d1b2d831c1d40c834052bda4','engine_modified':False,'shell_changes':[],'physical_iphone_tested':False}
+          proof={'source':'052d8c65edf0191fa819d7d08438c6ab172ccf83','engine_modified':False,'shell_changes':[],'physical_iphone_tested':False}
           for p in root.glob('play*.js'):
             before=p.read_text()
             assert before.count('matchWebGLToCanvasSize:true')==1
