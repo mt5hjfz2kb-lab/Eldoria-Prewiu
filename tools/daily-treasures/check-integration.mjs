@@ -377,6 +377,20 @@ assert.match(nativePixelAudit,/def quiet_label_pixel_proof\(image,day,width,heig
 assert.match(nativePixelAudit,/Ordinary reward not backed by real paid data/);
 assert.match(nativePixelAudit,/additionalQuietDayOriginalPngCount/);
 assert.match(nativePixelAudit,/ordinary_paid_rewards_contact_sheet\.png/);
+// Native run 42789608293 (50 REAL frames before failure) found that the
+// 390px portrait day-seven title wrapped to a second 31px line inside a
+// 40px RectTransform. Verify the width-based corrective approach and
+// demand a true Unity preferredWidth / preferredHeight proof, not mockups.
+assert.match(panel,/safeHeadingWidth=Mathf\.Max\(180f,panelW-124f\)/);
+assert.match(panel,/header\.preferredWidth>safeHeadingWidth-8f/);
+assert.match(native,/Unity premium title exceeds reserved close-safe width/);
+// Real 844x390 milestone images exposed TWO unrelated compositions layered
+// over the original scenery: the left medallion outside an open modal, and
+// the center-wide CONTINUAR button pasted over the Scouts map.
+assert.ok((panel.match(/entryRect\.gameObject\.SetActive\(false\)/g)||[]).length>=3);
+assert.match(panel,/if\(eventStage && stage\.SideBySide\)/);
+assert.match(panel,/stage\.ReceiptX,13f,Mathf\.Min\(stage\.ReceiptW,320f\),54f/);
+assert.match(panel,/if\(screen\)screen\.gameObject\.SetActive\(false\);[\s\S]*?entryRect\.gameObject\.SetActive\(!suppressed/);
 // The original genuine Unity day-seven calendar displayed only 3/4 paid
 // resources: the five-minute accelerator was omitted by a 4-line text clip.
 // Never declare visual success without ALL promised items, including streak
