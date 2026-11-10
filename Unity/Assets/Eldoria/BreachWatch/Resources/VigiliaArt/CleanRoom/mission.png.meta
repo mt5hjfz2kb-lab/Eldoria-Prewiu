@@ -10,6 +10,7 @@ TextureImporter:
   isReadable: 0
   textureType: 8
   spriteMode: 1
+  spriteBorder: {x: 524, y: 130, z: 250, w: 130}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureShape: 1
