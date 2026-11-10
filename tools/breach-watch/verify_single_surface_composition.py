@@ -112,8 +112,8 @@ assert 'identityCrest=null;' in HUD
 # 900px reference. The NEW source sprites have alpha closely cropped to
 # their ring, so they cannot paint across the full 91px native hitbox.
 # Paint size changes, hitboxes stay physically >=44px for accessibility.
-assert 'surface.VisualScale=.70f;' in HUD
-assert 'if(p)p.VisualScale=i==activeTab?.76f:.70f;' in HUD
+assert 'surface.VisualScale=.88f;' in HUD
+assert 'if(p)p.VisualScale=i==activeTab?.94f:.88f;' in HUD
 import math
 scale_900=900/514
 assert 61 <= 52*scale_900*.70 <= 66
