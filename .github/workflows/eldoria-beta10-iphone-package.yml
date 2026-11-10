@@ -272,6 +272,27 @@ jobs:
           r['terrain_query_cache_sha256']=cache['sha256'].lower();r['terrain_query_runtime_cooking']=False;r['terrain_query_source']='original PhysX responses, full native replay certified'
           p.write_text(json.dumps(r,indent=2))
           PY
+          python - <<'PY'
+          import pathlib,hashlib,json,re
+          root=pathlib.Path('site')
+          module=pathlib.Path('tools/eldoria-private-beta/iphone_ab/stable_canvas.js').read_text()
+          before=(root/'play.js').read_text()
+          assert before.count('matchWebGLToCanvasSize:true')==1
+          assert before.count('const instance=await createUnityInstance(canvas,{')==1
+          after=module+'\n'+before.replace('matchWebGLToCanvasSize:true','matchWebGLToCanvasSize:false').replace(
+            'const instance=await createUnityInstance(canvas,{',
+            'window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\n  const instance=await createUnityInstance(canvas,{')
+          digest=hashlib.sha256(after.encode()).hexdigest()
+          name='play-'+digest[:16]+'.js'
+          html,count=re.subn(r'src="play(?:-[a-f0-9]+)?\\.js(?:\\?[^"]*)?"','src="'+name+'"',(root/'index.html').read_text())
+          assert count==1
+          (root/'play.js').write_text(after);(root/name).write_text(after);(root/'index.html').write_text(html)
+          p=root/'release-identity.json';identity=json.loads(p.read_text())
+          identity.update(shell_revision='stable-canvas-r1',shell_script_sha256=digest,
+            stable_canvas_module_sha256=hashlib.sha256(module.encode()).hexdigest())
+          p.write_text(json.dumps(identity,indent=2))
+          PY
+          node --check site/play.js
           node tools/delivery/test-exact-decoded-transport.mjs site
           python - <<'PY'
           import pathlib
