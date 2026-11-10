@@ -995,8 +995,8 @@ namespace Eldoria.BreachWatch
                 // Shift ink 5u right of the same badge contour; 136u
                 // now fits ONE true source-faithful line at both phone sizes.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?8f:6f,missionWidth-(smallPhone?64f:44f),
-                    smallPhone?17f:15f);
+                    smallPhone?8f:5f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?17f:14f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
@@ -1004,7 +1004,7 @@ namespace Eldoria.BreachWatch
                     smallPhone?26f:21f,missionWidth-(smallPhone?70f:44f),
                     fullObjective?51f:(smallPhone?18f:12f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?46f:34f),
+                    fullObjective?87f:(smallPhone?46f:35f),
                     missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
