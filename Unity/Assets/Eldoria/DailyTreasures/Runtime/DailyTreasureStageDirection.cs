@@ -111,8 +111,8 @@ namespace Eldoria.DailyTreasures
                     0,0,w-25,h-28,
                     0,portrait?103f:85f,portrait?302f:296f,
                     portrait?269f:176f,
-                    0,portrait?-.31f*h:-.19f*h,w-48,
-                    portrait?.12f*h:.18f*h,
+                    0,portrait?-.28f*h:-.17f*h,w-48,
+                    portrait?.16f*h:.22f*h,
                     .38f,0f,0f,false);
 
             // Lyra, Scouts and Vigilants each use existing original Eldoria
@@ -126,7 +126,7 @@ namespace Eldoria.DailyTreasures
                     0,.15f*h,w-24,.56f*h,
                     0,.005f*h,Math.Min(w*.64f,272f),
                     Math.Min(h*.33f,223f),
-                    0,-.32f*h,w-48,.12f*h,
+                    0,-.27f*h,w-48,.16f*h,
                     // Genuine Unity portrait Lyra hall lost its carved
                     // masonry in the dark veil: archived native 42818514510
                     // has only ten color bins in the painted aperture.
@@ -139,7 +139,7 @@ namespace Eldoria.DailyTreasures
                 -.18f*w,.018f*h,.62f*w,h-42f,
                 .236f*w,.166f*h,Math.Min(.374f*w,282f),
                 Math.Min(.475f*h,175f),
-                .29f*w,-.19f*h,.34f*w,.19f*h,
+                .29f*w,.07f*h,.34f*w,.34f*h,
                 .88f,.92f,.10f,true);
         }
     }
