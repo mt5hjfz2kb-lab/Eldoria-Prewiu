@@ -1110,9 +1110,13 @@ namespace Eldoria.BreachWatch
                 float ph=297f;
                 float cardRightInset=smallPhone?margin:39f;
                 float left=w-cardRightInset-pw;
-                // Position of the approved one-piece context unchanged
-                // when dock moves down, no second panel or masking layer.
-                float top=navTop-ph-(smallPhone?34f:72f);
+                // Genuine 900x1600 reference comparison at SHA 138416cf:
+                // approved 864x1536 card sits about 65-75 physical pixels
+                // LOWER than the Unity panel. Shift the ONE already live
+                // context panel +40 authored units (~70px at 900-wide);
+                // do not change its material or overlay a second card.
+                // Small phones retain their separately verified safe layout.
+                float top=navTop-ph-(smallPhone?34f:32f);
                 At(panel,left,top,pw,ph);
                 // Unity 6000.3 GPU proof 42824817856: the original
                 // 49u second line wrapped NIVEL I into 29.7u of glyphs
