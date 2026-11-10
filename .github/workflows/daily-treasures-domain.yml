@@ -61,6 +61,7 @@ jobs:
         run: |
           python3 -m pip install --quiet --disable-pip-version-check Pillow
           python3 tools/daily-treasures/preflight_ceremony_art.py --selftest
+          python3 tools/daily-treasures/preview_ceremony_art.py --selftest
           # Do not run a non-existent production manifest here: until genuine
           # event-specific artworks exist, ART_APPROVED remains false.
       - name: Verify built-in Unity Audio module required by actual chest audio
