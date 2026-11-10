@@ -264,6 +264,9 @@ namespace Eldoria.BreachWatch
             canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
             SyncLiveCamera();
             scaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;scaler.scaleFactor=1f;
+            // Stable 2K sprite-border conversion: Image divides sprite PPU
+            // by the Canvas reference PPU when generating sliced geometry.
+            scaler.referencePixelsPerUnit=100f;
             raycaster.enabled=true;
             // The old RoyalInputGate detects only descendants of RoyalHUD.
             // A new standalone Canvas must block world gestures itself.

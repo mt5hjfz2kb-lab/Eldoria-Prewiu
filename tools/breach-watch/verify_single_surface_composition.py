@@ -42,17 +42,32 @@ for name in asset_names:
         assert 'spriteBorder: {x: ' in meta,name
         assert ('VigiliaArt/CleanRoom/'+name) in HUD,name
         # PPU=100 on a 2K source made 40-unit engraved insignias become
-        # 5-unit specks. Check actual Unity 9-slice LEFT BORDER dimensions,
-        # not merely its source-pixel declaration.
-        ppu={'profile':16,'mission':20,'resource':26}[name]
+        # 5-unit specks. Image.pixelsPerUnit = spritePPU / Canvas.referencePPU
+        # in UnityEngine.UI; its nine-slice borders use spriteBorder divided
+        # by that ratio. The previous source model divided just by spritePPU
+        # and incorrectly passed UI whose entire center collapsed in Unity.
+        ppu={'profile':1600,'mission':2000,'resource':2600}[name]
+        canvas_reference_ppu=100
         import re
+        assert 'scaler.referencePixelsPerUnit=100f;' in HUD,name
         assert f'spritePixelsToUnits: {ppu}' in meta,name
-        m=re.search(r'spriteBorder: \{x: (\d+),',meta)
-        assert m,('No left source border',name)
-        actual=int(m.group(1))/ppu
+        m=re.search(r'spriteBorder: \{x: (\d+), y: (\d+), z: (\d+), w: (\d+)\}',meta)
+        assert m,('No four-way source borders',name)
+        left,bottom,right,top=map(int,m.groups())
+        unit_scale=canvas_reference_ppu/ppu
+        actual=left*unit_scale
         minmax={'profile':(32,47),'mission':(22,34),
                 'resource':(16,24)}[name]
-        assert minmax[0]<=actual<=minmax[1],(name,'nine-slice left well',actual)
+        assert minmax[0]<=actual<=minmax[1],(name,'actual nine-slice left well',actual)
+        live_min_width={'profile':182,'mission':184,'resource':58}[name]
+        center=live_min_width-(left+right)*unit_scale
+        # Unity GetAdjustedBorders shrinks both sides if their sum exceeds
+        # the UI rect, leaving NO actual flexible center and deformed art.
+        assert center>=14,(name,'collapsed nine-slice center',center)
+        # Y borders similarly must leave space inside the live 28–69u plates.
+        live_min_height={'profile':43,'mission':60,'resource':28}[name]
+        assert live_min_height-(top+bottom)*unit_scale>=8,(
+            name,'collapsed vertical nine-slice center')
     if name=='panel':
         # The source generator once added a second lower gold line at 66.5%
         # that collided with live costs. It is deliberately erased from the
