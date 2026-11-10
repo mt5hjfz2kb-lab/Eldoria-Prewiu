@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 31,
+      "ownership_revision": 32,
       "write_scope_released": false,
-      "phase": "WINDOWS_CAS31_NEW_2K_EXACT_HEAD_NATIVE_AND_VISUAL_AB",
-      "next": "PR173 actual Unity 6000.3.23f1 eight screenshots at HEAD 7d8f090f34a83edb06146ef541a69d091b090c0a; verify exact SHA, live state pointer, portrait and approved owner A/B, independent canvas, no publication. Release lease by CAS after native run; art approval pending.",
+      "phase": "NATIVE_9B95_FAILED_REAL_TEXT_ZERO_LINES_FIX_PENDING",
+      "next": "Unity genuine run 42823264943 failed: 900x1600 objective text cached lineCount=0 from short 12u vertical truncation; complete real city screenshots survive in partial artifact 13767329300, no Bastion shots. Set objective verticalOverflow=Overflow (progress already did), preserve 2-unit separation and rerun native when free. No ART_APPROVED.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T13:19:00Z",
@@ -6776,8 +6774,8 @@
         "upgrade_glyph_width_guard": true,
         "upgrade_one_line": true
       },
-      "runner_released_at": "2026-11-09T19:06:55Z",
-      "runner_release_basis": "Unity native run 42679974131 success on exact PR173 HEAD cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768; all eight PNG SHA verified against JSON, six actual navigation clicks, no legacy HUD, actual player save unchanged. No ART_APPROVED and no release. Windows resource given back."
+      "runner_released_at": "2026-11-10T13:22:00Z",
+      "runner_release_basis": "Exact-SHA native Unity run 42823264943 completed FAILURE on real objective TextGenerator 0 lines at 900x1600. Runner released for corrected rerun; partial real screenshots saved; no claim of PASS or art approval."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
