@@ -557,7 +557,7 @@ namespace Eldoria.BreachWatch.Editor
                          t && t.name=="Independent forged copper surface trim"),
                     "New premium Vigilia must DELETE obsolete stacked bevel surfaces, not overlay them");
                 Need(ui.HasPremiumCarvedQuest,
-                    "Chapter objective must be the new angled carved nine-slice tablet, not an old rectangular overlay");
+                    "Mission must be the complete original owner-approved illustrated tablet, not a generated or old generic HUD overlay");
                 if(selection=="bastion" && (w>h || h>=w))
                 {
                     var section=ui.GetComponentInChildren<BreachWatchSectionDivider>(true);
@@ -580,11 +580,17 @@ namespace Eldoria.BreachWatch.Editor
                     .FirstOrDefault(x=>x && x.name=="Identity / basalt crest");
                 var duplicatedLion=ui.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.name=="Independent circular realm crest");
-                // The independently regenerated gold lion is part of the one
-                // finished profile illustration; any second crest is a bug.
-                Need(profilePlate && !duplicatedLion &&
-                     profilePlate.GetComponentsInChildren<Graphic>(true).Length==3,
-                     "Duplicate lion badge or second identity surface in "+name);
+                // The original reference has one lion and one nameplate.
+                // They are separate cutouts under one runtime control,
+                // with exactly two additional live Text graphics.
+                var lion=profilePlate?profilePlate.Find("Approved original Valoria lion"):null;
+                var lionImg=lion?lion.GetComponent<Image>():null;
+                Need(profilePlate && !duplicatedLion && lionImg &&
+                     lionImg.sprite==Resources.Load<Sprite>(
+                         "VigiliaArt/OwnerReference/lion_crest") &&
+                     !lionImg.raycastTarget &&
+                     profilePlate.GetComponentsInChildren<Graphic>(true).Length==4,
+                     "Duplicate lion, wrong original source or extra identity surface in "+name);
                 // Strict cleanroom invariant: the entire panel must have
                 // precisely one independent high-resolution sprite.
                 // No old owner_gold_border overlay, separate brass portrait
@@ -606,14 +612,16 @@ namespace Eldoria.BreachWatch.Editor
                     .Where(x=>x && x.sprite).ToArray();
                 Need(palette.Count(x=>x.sprite.name=="panel" &&
                          x.color.r>=.95f && x.color.g>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="profile" &&
+                     palette.Count(x=>x.sprite.name=="profile_bar" &&
                          x.color.r>=.95f && x.color.g>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="resource" &&
+                     palette.Count(x=>x.sprite.name=="lion_crest" &&
+                         x.color.a>=.95f)==1 &&
+                     palette.Count(x=>x.sprite.name=="resource_capsule" &&
                          x.color.r>=.95f && x.color.g>=.95f)>=2,
                      "Player, resources and cartouche no longer share "+
                      "the same warm material treatment: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
-                    "All three live resources must use original complete 2K cleanroom capsules, not old procedural frames");
+                    "All live resource capsules must be exact owner-approved source cutouts, not generated/procedural frames");
                 Need(ui.HasOwnerApprovedUtilityArtwork,
                     "The three compact utility seals must match the separately cropped "+
                     "gold medallions in the owner's approved UI, not generic hexagons");
