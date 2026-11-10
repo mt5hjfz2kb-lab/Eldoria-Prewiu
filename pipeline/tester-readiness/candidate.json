@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Stable iPhone owner-playable beta10 remains live and unchanged. Isolated corrected construction clock candidate has passed genuine native Unity Bastion I–V, WebGL, Apple GPU desktop WebKit, byte-identical 31-chunk browser HTTP reconstruction and live Pages promotion. Physical iPhone/Android stability and rights+consent/real telemetry gates unverified; NO-GO 15–20 external testers.",
+  "reason": "Owner reported physical iPhone restart within 2–3 seconds of ENTERING the live compact copy/add clock candidate mobile12. Previous beta10 still opens and permits play. Source-only/Unity/Mac WebKit/browser-byte CI PASS do not establish iPhone runtime stability. The owner-only candidate is REJECTED P0; testers remain NO-GO.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -74,10 +74,10 @@
   },
   "final_review": null,
   "blockers": [
-    "P0 #96: owner physical iPhone 30 minutes uninterrupted on isolated clock candidate plus clock follows active building, phone reload retains save; current beta10 must remain playable",
     "Physical Android Chrome 30-minute session and persistence test",
     "Third-party asset license rights and redistribution review #171",
-    "Confirm genuine Bastion I–V gameplay telemetry with opt-in opt-out on exact hosted candidate, Supabase QA receipt and privacy gate before enable"
+    "Confirm genuine Bastion I–V gameplay telemetry with opt-in opt-out on exact hosted candidate, Supabase QA receipt and privacy gate before enable",
+    "P0 #96: live mobile12 clock candidate physically restarts within 2–3 seconds on owner's iPhone; candidate REJECTED; preserve working beta10; new exact build must survive 30 min and show anchored clock"
   ],
   "telemetry": {
     "project": "Eldoria Playtest Feedback",
@@ -91,7 +91,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T08:20:10.448Z",
+  "updated_at": "2026-11-10T08:42:24.440Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -316,5 +316,17 @@
     "native_timer_positioning_test_pass": true,
     "owner_phone_timer_verified": false,
     "permanent_root_cause_beta11": "UNKNOWN"
+  },
+  "iphone_clock_ab_report": {
+    "build": "native325-mobile12-minimal-world-clock-qa",
+    "source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
+    "reported_at": "2026-11-10",
+    "device": "owner physical iPhone",
+    "observed": "Unexpected restart 2–3 seconds after entering game",
+    "result": "FAIL_P0_REAL_DEVICE",
+    "candidate_passed_server_and_mac": true,
+    "stable_beta10_remains_playable": true,
+    "root_cause": "UNCONFIRMED; candidate-only JS copy/add streaming and extra live memory top suspects",
+    "next": "Optimize browser reconstruction memory or deploy candidate with ordinary Unity assets on separate zero-cost static host. Do not overwrite stable beta10 or enable testers."
   }
 }
