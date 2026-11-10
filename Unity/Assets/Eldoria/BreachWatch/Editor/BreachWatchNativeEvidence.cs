@@ -172,14 +172,15 @@ namespace Eldoria.BreachWatch.Editor
         {
             var surfaces=ui.GetComponentsInChildren<BreachWatchPlate>(true)
                 .Where(x=>x && x.gameObject.activeInHierarchy && x.sprite &&
-                    x.type==Image.Type.Sliced &&
-                    (x.sprite.name=="profile" || x.sprite.name=="mission" ||
-                     x.sprite.name=="resource")).ToArray();
-            foreach(string category in new[]{"profile","mission","resource"})
+                    (x.sprite==Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar") ||
+                     x.sprite==Resources.Load<Sprite>("VigiliaArt/OwnerControls/resource_capsule"))).ToArray();
+            foreach(string category in new[]{"profile_bar","resource_capsule"})
                 Need(surfaces.Any(x=>x.sprite.name==category),
-                     "Missing active original 2K painted nine-slice "+category+" / "+shot);
+                     "Missing active owner-source painted nine-slice "+category+" / "+shot);
             foreach(var paint in surfaces)
             {
+                Need(paint.type==Image.Type.Sliced,
+                    "Owner profile/resource must retain nine-slice borders: "+paint.name+" / "+shot);
                 float ratio=paint.pixelsPerUnit;
                 float reference=paint.canvas ? paint.canvas.referencePixelsPerUnit : 0f;
                 Need(reference>0f && ratio>0f &&
@@ -190,10 +191,26 @@ namespace Eldoria.BreachWatch.Editor
                 float freeX=rect.width-(border.x+border.z)/ratio;
                 float freeY=rect.height-(border.y+border.w)/ratio;
                 Need(freeX>=8f && freeY>=7f,
-                    "Unity 2K nine-slice borders collapse painted center "+
+                    "Unity nine-slice borders collapse painted center "+
                     paint.sprite.name+" / "+shot+" width="+freeX+" height="+freeY+
                     " spritePPU="+paint.sprite.pixelsPerUnit+" refPPU="+reference);
             }
+            // The authored mission is one complete tablet, unlike the sliced
+            // profile/resource surfaces. Require its exact source and an
+            // undistorted Simple image instead of accepting a missing category.
+            var missions=ui.GetComponentsInChildren<BreachWatchPlate>(true)
+                .Where(x=>x && x.gameObject.activeInHierarchy && x.sprite==
+                    Resources.Load<Sprite>("VigiliaArt/OwnerControls/mission_plate"))
+                .ToArray();
+            Need(missions.Length==1 && missions[0].sprite &&
+                 missions[0].type==Image.Type.Simple && missions[0].preserveAspect,
+                 "Expected one undistorted owner mission tablet: "+shot);
+            var mission=missions[0];
+            var area=mission.rectTransform.rect;
+            float aspect=mission.sprite.rect.width/mission.sprite.rect.height;
+            Need(area.width>0f && area.height>0f &&
+                 Mathf.Abs(area.width-area.height*aspect)<1f,
+                 "Owner mission tablet geometry no longer follows source aspect: "+shot);
         }
         static void CaptureRealCity()
         {
