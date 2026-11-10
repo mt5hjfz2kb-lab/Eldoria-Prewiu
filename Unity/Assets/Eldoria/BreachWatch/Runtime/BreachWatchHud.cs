@@ -992,7 +992,7 @@ namespace Eldoria.BreachWatch
                 float missionWidth=Mathf.Min(smallPhone?211f:170f,
                     w*(smallPhone?.49f:.38f));
                 float missionTop=smallPhone?80f:82f;
-                float missionHeight=smallPhone?69f:50f;
+                float missionHeight=smallPhone?80f:60f;
                 // The NEW independently illustrated mission asset has an
                 // alpha-trimmed painted silhouette, unlike the older cropped
                 // reference with 12u transparent padding. Align its true
@@ -1012,16 +1012,16 @@ namespace Eldoria.BreachWatch
                 // Move the same live text 1u UP and make the row 1u taller,
                 // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?8f:4f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?10f:7f,missionWidth-(smallPhone?64f:44f),
                     smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
                 At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?26f:21f,missionWidth-(smallPhone?70f:44f),
+                    smallPhone?30f:24f,missionWidth-(smallPhone?70f:44f),
                     fullObjective?51f:(smallPhone?18f:12f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?46f:35f),
+                    fullObjective?87f:(smallPhone?51f:42f),
                     missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
@@ -1078,7 +1078,13 @@ namespace Eldoria.BreachWatch
                 // panel once, do not build a second decorative panel.
                 // Phones retain their 44px targets and own safe-area inset.
                 float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;
-                float ph=280f;
+                // Exact real Unity 5b57bb0 390x844 failed: 65u photo forced
+                // y=0.13..0.84 but genuine masonry occupied y=0.12..0.85.
+                // In the original one-panel composition add 17u ONLY to the
+                // portrait well and overall card; move subsequent live rows
+                // with it. This gives the native 512x320 mesh an aspect-safe
+                // 82u aperture instead of silently cropping turrets/stairs.
+                float ph=297f;
                 float cardRightInset=smallPhone?margin:39f;
                 float left=w-cardRightInset-pw;
                 // Position of the approved one-piece context unchanged
@@ -1098,23 +1104,23 @@ namespace Eldoria.BreachWatch
                 // Source-measured new card: illustration well ends at 129.7u,
                 // description below it; one painted divider at 160.8u.
                 // Never include live description inside the portrait frame.
-                At(portraitFrame,15,61,pw-30,65);
-                At(buildingFunction.rectTransform,13,133,pw-26,24);
+                At(portraitFrame,15,61,pw-30,82);
+                At(buildingFunction.rectTransform,13,146,pw-26,22);
                 descriptionDivider.gameObject.SetActive(false);
-                At(costHeader.rectTransform,13,163,pw-26,17);
-                At(buildingCosts.rectTransform,13,184,pw-26,20);
-                At(costIcons[0].rectTransform,14,184,19,19);
-                At(costQuantities[0].rectTransform,39,184,42,20);
-                At(costIcons[1].rectTransform,89,184,19,19);
+                At(costHeader.rectTransform,13,174,pw-26,17);
+                At(buildingCosts.rectTransform,13,194,pw-26,20);
+                At(costIcons[0].rectTransform,14,194,19,19);
+                At(costQuantities[0].rectTransform,39,194,42,20);
+                At(costIcons[1].rectTransform,89,194,19,19);
                 // Unity native 42835121287 proved that the canonical 300
                 // stone cost wrapped to 40u in its 33u-wide slot; the
                 // screenshot falsely appeared to cost only 30. Never hide
                 // or truncate a real price. Use the remaining true 43u
                 // before the card's bronze rim, not a painted overlay.
-                At(costQuantities[1].rectTransform,110,184,pw-115,20);
+                At(costQuantities[1].rectTransform,110,194,pw-115,20);
                 costQuantities[0].fontSize=15;
                 costQuantities[1].fontSize=15;
-                At(buildingState.rectTransform,13,209,pw-26,17);
+                At(buildingState.rectTransform,13,220,pw-26,17);
                 // The full live Spanish action is 95px wide at 12pt: retain a
                 // 32.5% hammer well AND widen the actual painted action, rather
                 // than shrinking the gameplay text below legibility.
