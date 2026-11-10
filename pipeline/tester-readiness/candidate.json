@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Native minimal-anchor clock completed genuine Unity Bastion I–V and fresh WebGL; same-host macOS Apple GPU WebKit A/B passed. Isolated Pages staging is independent of physically playable beta10; physical iPhone and Android 30-minute sessions, release rights (#171), and real in-game telemetry/consent still unverified. External invitations are BLOCKED.",
+  "reason": "Stable iPhone owner-playable beta10 remains live and unchanged. Isolated corrected construction clock candidate has passed genuine native Unity Bastion I–V, WebGL, Apple GPU desktop WebKit, byte-identical 31-chunk browser HTTP reconstruction and live Pages promotion. Physical iPhone/Android stability and rights+consent/real telemetry gates unverified; NO-GO 15–20 external testers.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -67,7 +67,10 @@
     "rollback_build_live_verified_by_workflow": 42686613921,
     "rolled_back_to_previous_owner_playable_version": true,
     "previous_pilot_routes_no_longer_approved": true,
-    "legacy_unity_owner_route": "TEMPORARILY_REDIRECTED_TO_RECOVERED_BETA10_TO_MEET_PAGES_DEPLOY_LIMIT"
+    "legacy_unity_owner_route": "TEMPORARILY_REDIRECTED_TO_RECOVERED_BETA10_TO_MEET_PAGES_DEPLOY_LIMIT",
+    "owner_ab_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-ab/",
+    "isolated_clock_candidate_published": true,
+    "isolated_clock_candidate_publish_run": 42781430767
   },
   "final_review": null,
   "blockers": [
@@ -88,7 +91,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-09T23:40:34.953Z",
+  "updated_at": "2026-11-10T08:20:10.448Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -293,37 +296,25 @@
     "no_need_to_reask_whether_user_wants_testers": true
   },
   "iphone_clock_ab": {
-    "revision": "native325-mobile12-minimal-world-clock-qa",
-    "source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
-    "native_unity_run": 42714385780,
-    "native_unity_result": "SUCCESS",
-    "native_bastion_i_v_verified": true,
-    "world_clock_pan_offscreen_test": "PASSED_NATIVE_PROBE_NOT_DEVICE_VISUAL_PROOF",
-    "native_evidence_artifact": 13718618384,
-    "webgl_compiled": true,
-    "packaging_run": 42716414385,
-    "packaging_result": "SUCCESS",
-    "macos_webkit_apple_gpu_result": "SUCCESS",
-    "macos_webkit_evidence_artifact": 13721115054,
-    "macos_webcontent_peak_kib_control": 2628752,
-    "macos_webcontent_peak_kib_candidate": 2841360,
-    "macos_peak_increase_pct": 8.09,
-    "macos_peak_not_iphone_evidence": true,
-    "isolated_pages_run": 42721530925,
-    "isolated_pages_last_checked": [
-      {
-        "job": "stage-and-publish-owner-ab",
-        "status": "in_progress",
-        "conclusion": null,
-        "step": "Publish stable beta10 plus isolated clock candidate without any save mutation"
-      }
-    ],
-    "stable_beta10_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
-    "stable_beta10_physical_entry": "OWNER_CONFIRMED",
-    "candidate_physical_iphone_30min": "NOT_TESTED",
-    "candidate_physical_android_30min": "NOT_TESTED",
-    "external_invites": false,
-    "license_issue": 171,
-    "uncertainty": "Browser desktop PASS and Unity PASS do not prove physical-phone stability or source-rights approval."
+    "stable_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+    "candidate_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-ab/",
+    "stable_revision": "native325-mobile10-pretest-ux",
+    "candidate_revision": "native325-mobile12-minimal-world-clock-qa",
+    "old_source": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+    "candidate_source": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
+    "native_bastion_iv_pass_run": 42714385780,
+    "desktop_apple_gpu_pass_run": 42716414385,
+    "all31_browser_copyadd_sha_pass_run": 42781066472,
+    "separate_Pages_live_verified_run": 42781430767,
+    "byte_exact_unity_data": 503831429,
+    "literal_patch_bytes": 8000096,
+    "pages_total_bytes": 490382194,
+    "source_stable_unchanged": true,
+    "external_testers_enabled": false,
+    "physical_iphone_30min_pass": false,
+    "physical_android_30min_pass": false,
+    "native_timer_positioning_test_pass": true,
+    "owner_phone_timer_verified": false,
+    "permanent_root_cause_beta11": "UNKNOWN"
   }
 }
