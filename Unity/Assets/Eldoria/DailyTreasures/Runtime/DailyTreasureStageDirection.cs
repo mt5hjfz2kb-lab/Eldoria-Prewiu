@@ -127,7 +127,14 @@ namespace Eldoria.DailyTreasures
                     0,.005f*h,Math.Min(w*.64f,272f),
                     Math.Min(h*.33f,223f),
                     0,-.32f*h,w-48,.12f*h,
-                    .90f,.73f,.20f,false);
+                    // Genuine Unity portrait Lyra hall lost its carved
+                    // masonry in the dark veil: archived native 42818514510
+                    // has only ten color bins in the painted aperture.
+                    // Brighten the existing hall ONLY, keeping other
+                    // categories and Bastion's real city untouched.
+                    .90f,
+                    kind==DailyTreasureStageKind.Lyra?.92f:.73f,
+                    kind==DailyTreasureStageKind.Lyra?.10f:.20f,false);
             }
             return new DailyTreasureStageLayout(kind,
                 -.247f*w,.018f*h,.486f*w,h-42f,
