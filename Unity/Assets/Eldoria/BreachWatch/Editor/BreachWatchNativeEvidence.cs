@@ -525,7 +525,7 @@ namespace Eldoria.BreachWatch.Editor
                 // gateway data; prove actual GPU glyph contribution for both.
                 string[] important=selection=="bastion"
                     ?new[]{"Player name","Realm power",
-                        "Real building name","Real effects",
+                        "Real building name","Real building level","Real effects",
                         "Real state and timer","Compact engraved cost heading","Real action title",
                         "Objective progress"}
                     :new[]{"Player name","Realm power",

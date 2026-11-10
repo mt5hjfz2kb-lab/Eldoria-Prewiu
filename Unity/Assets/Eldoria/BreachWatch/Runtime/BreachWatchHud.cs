@@ -1262,8 +1262,8 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,50,12,pw-111,27);
-                At(buildingLevel.rectTransform,50,40,pw-111,17);
+                At(buildingName.rectTransform,50,h<530f?12f:22f,pw-111,27);
+                At(buildingLevel.rectTransform,50,h<530f?40f:45f,pw-111,21);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 buildingNameMaxFont=18;
                 buildingNameMinFont=16;
@@ -1300,7 +1300,8 @@ namespace Eldoria.BreachWatch
                     // as an intentional illustrated information hierarchy.
                     At(portraitFrame,12,61,pw-24,93);
                     At(buildingFunction.rectTransform,13,157,pw-26,40);
-                    descriptionDivider.gameObject.SetActive(true);
+                    // The complete source card already paints its gold rule.
+                    descriptionDivider.gameObject.SetActive(false);
                     At(descriptionDivider,14,197,pw-28,9);
                     At(costHeader.rectTransform,13,204,pw-26,19);
                     costHeader.fontSize=14;
