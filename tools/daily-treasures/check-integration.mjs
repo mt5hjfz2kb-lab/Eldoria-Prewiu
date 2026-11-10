@@ -37,7 +37,9 @@ const milestone=panel.split('public bool PresentCommittedMilestone(')[1]
   .split('// Safe to reuse for milestone ceremonies')[0];
 assert.doesNotMatch(milestone,/gateway\.Execute|new GameCommand|\.Resources\./);
 assert.match(panel,/hasAuthoredChestArt=closedSource && openSource/);
-assert.match(panel,/showChest && !hasAuthoredChestArt/);
+assert.match(panel,/dailyCoffer && !hasAuthoredChestArt/);
+assert.match(panel,/currentStage==DailyTreasureStageKind.Daily/);
+assert.match(native,/A milestone incorrectly repeats the DAILY loot chest/);
 assert.match(panel,/DailyTreasureArt\/treasure_opened_512/);
 assert.match(native,/NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED/);
 assert.match(native,/authoredSpritesImported/);
