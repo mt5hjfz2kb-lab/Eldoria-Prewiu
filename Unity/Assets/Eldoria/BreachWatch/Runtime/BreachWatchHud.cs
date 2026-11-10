@@ -998,9 +998,13 @@ namespace Eldoria.BreachWatch
                 // across but the old 130u rect wrapped into TWO lines.
                 // Shift ink 5u right of the same badge contour; 136u
                 // now fits ONE true source-faithful line at both phone sizes.
+                // Real Unity 900x1600 proves the old 14u row painted a
+                // visible heading but failed the 15u native legibility guard.
+                // Move the same live text 1u UP and make the row 1u taller,
+                // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?8f:5f,missionWidth-(smallPhone?64f:44f),
-                    smallPhone?17f:14f);
+                    smallPhone?8f:4f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
