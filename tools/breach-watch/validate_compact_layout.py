@@ -106,7 +106,11 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
-        navsize,gap=52,9
+        navsize,gap=(60,10) if pw<600 else (52,9)
+        inset,art_scale=(4,.90) if pw<600 else (6,.86)
+        painted_physical=(navsize-2*inset)*art_scale*scale
+        assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
+        assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
         navtop=h-(111 if pw<600 else 90)
         for i in range(nav_count):
@@ -174,7 +178,12 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         chapter_text=R(66,14,174,20)
         assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
         place("breach",w*.49-17,11,34,34)
-        navsize,gap=55,15
+        compact=h<530
+        navsize,gap=(62,12) if compact else (55,15)
+        inset,art_scale=(4,.90) if compact else (6,.86)
+        painted_physical=(navsize-2*inset)*art_scale*scale
+        assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
+        assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
         navtop=h-78
         for i in range(nav_count):
@@ -214,6 +223,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
     assert compact<=limit,(size,compact,limit)
     print(f"VIGILIA_SOURCE_GEOMETRY_PASS {pw}x{ph} {compact:.1f}% upper-mask "
           f"max {limit}% nav={nav_count} resources={resources}, >=44px touch, "
+          f"painted medal >=38px, all 5 fit, "
           f"no premature buttons or cost/state/button overlap")
 
 def main():
@@ -222,7 +232,7 @@ def main():
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
         'float lionTextInset=crestSize+(smallPhone?8f:16f);',
-        'float navSize=52,navGap=9',
+        'float navSize=smallPhone?60f:52f,navGap=smallPhone?10f:9f;',
         'float navTop=h-(smallPhone?111f:90f)',
         'float ph=297f',
         'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
@@ -230,7 +240,7 @@ def main():
         'float chipGap=smallPhone?4f:12f;',
         'float top=navTop-ph-(smallPhone?34f:72f);',
         'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
-        'float navSize=55,navGap=15',
+        'float navSize=compactLandscape?62f:55f,',
         'float navTop=h-78',
         'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
