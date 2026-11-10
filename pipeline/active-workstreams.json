@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-vigilia-reference-fidelity-20261109",
+      "owner": "codex-vigilia-b5a434f403d6",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 38,
+      "ownership_revision": 39,
       "write_scope_released": false,
-      "phase": "NATIVE_8_REAL_NAME_POWER_PASS_OWNER_ART_AB_PENDING",
-      "next": "Compare exact Unity 8 PNG for SHA 392b3117 vs user's approved reference; adjust remaining premium art fidelity, no old HUD overlays, continue only on owner-design-approved visual changes. Native screenshots 8/8 and all pointer/text GPU checks PASSED but artistic 7-7.5/10 not claimed. Windows released for other workstreams.",
+      "phase": "REFERENCE_FIDELITY_CORRECTION_PORTRAIT_MISSION",
+      "next": "Correct portrait viewport and mission crest from inspected original reference and native392b3117; native comparison required.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T14:43:14.001Z",
@@ -6733,6 +6733,13 @@
           "ownership_revision": 28,
           "transferred_at": "2026-11-09T19:42:13.250Z",
           "reason": "El propietario ordena expresamente en este chat implementar la fidelidad visual de la referencia aprobada en la PR 173. Relevo seguro, sin cancelar jobs ni ocupar Windows reservado por PR179."
+        },
+        {
+          "previous_owner": "chatgpt-vigilia-reference-fidelity-20261109",
+          "from_revision": 38,
+          "to_revision": 39,
+          "to_owner": "codex-vigilia-b5a434f403d6",
+          "reason": "User explicitly continues PR173 corrective visual work in current session; preserve latest exact Unity evidence and canonical branch."
         }
       ],
       "runner_priority_handoff": {
