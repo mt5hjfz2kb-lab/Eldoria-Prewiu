@@ -1223,6 +1223,33 @@ namespace Eldoria.DailyTreasures.Editor
                     // presentation as a day-4/day-7 chest claim.
                     foreach(int quietDay in new[]{1,2,3,5,6})
                     {
+                        // A separate disposable player visit must begin with
+                        // a FRESH native Canvas, not the render hierarchy just
+                        // reparented twice during the Vigilia migration probe.
+                        // The prior genuine Unity failure had depth=-1 only
+                        // on this reused canvas, despite a registered graphic,
+                        // an on-screen hitbox and a valid EventSystem. Rebinding
+                        // unrelated saves five times without a player loop
+                        // did not model distinct daily logins. Recreate the
+                        // ordinary-day UI for each independent gateway visit,
+                        // retaining real camera renders and GraphicRaycaster
+                        // pointer tests; never fake a press or a prize.
+                        Object.DestroyImmediate(canvasObj);
+                        canvasObj=new GameObject("Disposable native uGUI component",
+                            typeof(RectTransform),typeof(Canvas),
+                            typeof(CanvasScaler),typeof(GraphicRaycaster));
+                        canvasObj.layer=5;
+                        rect=(RectTransform)canvasObj.transform;
+                        rect.sizeDelta=new Vector2(width,height);
+                        rect.localScale=Vector3.one*.01f;
+                        canvas=canvasObj.GetComponent<Canvas>();
+                        canvas.renderMode=RenderMode.WorldSpace;
+                        canvas.worldCamera=camera;
+                        panel=DailyTreasurePanel.Install(rect);
+                        Need(panel.HasAuthoredChestArt,
+                            "An independent daily session lost original chest art");
+                        VerifyUiOwnership(1,eventSystem);
+
                         var quietStore=new TransientStore();
                         clock.UtcTicks=Day(1);
                         var quietGateway=new LocalGateway(clock,quietStore);
