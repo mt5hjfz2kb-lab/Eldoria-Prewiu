@@ -1,4 +1,4 @@
-Owner-requested comprehensive finish review, 2026-11-10.
-Measure long real building names; reset cost inscription sizing per orientation.
-Source-only while beta owner holds Windows; do not reserve or run native without explicit resource release.
-Preserve preceding frame-capacity, inner-padding and sampling corrections.
+Native certification requested after explicit beta Windows release.
+Owner codex-pr173-completion-9eb868087db6, live revision62.
+Source1bb1bc69: wider resource frames, profile/mission padding, original filtered images, cost heading orientation stability, measured dynamic building title fit.
+Capture all eight authentic views and verify six navigation clicks, unchanged save and typography orientation checks.
