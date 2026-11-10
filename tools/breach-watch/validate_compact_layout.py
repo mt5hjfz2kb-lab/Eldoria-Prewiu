@@ -95,8 +95,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 36,32 if pw<600 else 24,missionw-(70 if pw<600 else 44),12 if pw<600 else 10)
-        progress=R(59 if pw<600 else 36,46 if pw<600 else 36,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        short_objective=R(54 if pw<600 else 36,32 if pw<600 else 24,missionw-(64 if pw<600 else 44),12 if pw<600 else 10)
+        progress=R(54 if pw<600 else 36,46 if pw<600 else 36,missionw-(64 if pw<600 else 44),18 if pw<600 else 12)
         assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
         assert short_objective.y+short_objective.h+2<=progress.y,size
         assert progress.y+progress.h<= (80 if pw<600 else 60)-(8 if pw<600 else 5),size
@@ -141,9 +141,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         wood_icon=R(14,194,19,19)
         wood_qty=R(39,194,42,20)
         stone_icon=R(89,194,19,19)
-        stone_qty=R(110,194,panelw-115,20)
+        stone_qty=R(114,194,panelw-119,20)
         assert wood_icon.x+wood_icon.w+3<=wood_qty.x,size
-        assert stone_icon.x+stone_icon.w+2<=stone_qty.x,size
+        assert stone_icon.x+stone_icon.w+6<=stone_qty.x,size
+        assert wood_qty.x-(wood_icon.x+wood_icon.w)==stone_qty.x-(stone_icon.x+stone_icon.w),size
         assert stone_qty.x+stone_qty.w<=panelw-4,size
         state=R(13,220,panelw-26,17)
         action=R(6,244,panelw-12,50)

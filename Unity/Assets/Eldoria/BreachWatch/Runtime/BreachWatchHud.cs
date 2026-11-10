@@ -1028,12 +1028,12 @@ namespace Eldoria.BreachWatch
                 // gold rim, while the preceding task row had extra line
                 // spacing. Move ONLY live ink upward, with 2u minimum row
                 // separation; keep the genuine 2K source and active button.
-                At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?32f:24f,missionWidth-(smallPhone?70f:44f),
+                At(chapterObjective.rectTransform,smallPhone?54f:36f,
+                    smallPhone?32f:24f,missionWidth-(smallPhone?64f:44f),
                     fullObjective?51f:(smallPhone?12f:10f));
-                At(chapterProgress.rectTransform,smallPhone?59f:36f,
+                At(chapterProgress.rectTransform,smallPhone?54f:36f,
                     fullObjective?87f:(smallPhone?46f:36f),
-                    missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
+                    missionWidth-(smallPhone?64f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:10;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:10;
@@ -1143,7 +1143,7 @@ namespace Eldoria.BreachWatch
                 // screenshot falsely appeared to cost only 30. Never hide
                 // or truncate a real price. Use the remaining true 43u
                 // before the card's bronze rim, not a painted overlay.
-                At(costQuantities[1].rectTransform,110,194,pw-115,20);
+                At(costQuantities[1].rectTransform,114,194,pw-119,20);
                 costQuantities[0].fontSize=14;
                 costQuantities[1].fontSize=14;
                 At(buildingState.rectTransform,13,220,pw-26,17);
