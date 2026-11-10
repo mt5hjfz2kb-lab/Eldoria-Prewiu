@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 33,
+      "ownership_revision": 34,
       "write_scope_released": false,
-      "phase": "CAS33_RETEST_REAL_OBJECTIVE_OVERFLOW_AND_8_NATIVE_CAPTURES",
-      "next": "Retest exact current PR173 HEAD d531e0dee2397ca5eb7526e0112e38728b3df1ff after Unity 900x1600 objective zero-glyph bug fix from run 42823264943. Require actual eight screenshots, owner A/B, real text and no old canvas, correct save, no ART_APPROVED. Release after completion.",
+      "phase": "NATIVE_37B8_FAILED_HEADER_HEIGHT_SOURCE_MISMATCH_FIX_PENDING",
+      "next": "Unity run 42823929912 900x1600 captures correctly display live objective/progress; next native gate fails because source sets chapterName.height=14u but native requires >=15u for legible Cormorant. Shift top to 4u, increase height to 15u, maintain >=2u gap to objective. Re-run exact head for eight shots, then A/B, no art approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T13:24:00Z",
@@ -6776,8 +6774,8 @@
         "upgrade_glyph_width_guard": true,
         "upgrade_one_line": true
       },
-      "runner_released_at": "2026-11-10T13:22:00Z",
-      "runner_release_basis": "Exact-SHA native Unity run 42823264943 completed FAILURE on real objective TextGenerator 0 lines at 900x1600. Runner released for corrected rerun; partial real screenshots saved; no claim of PASS or art approval."
+      "runner_released_at": "2026-11-10T13:26:00Z",
+      "runner_release_basis": "Unity run 42823929912 completed FAILURE on chapter layout source/native mismatch. Two partial genuine city renders in artifact 13768990337; owner screenshot cannot be labeled as full 8-shot PASS."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
