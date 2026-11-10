@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T20:26:14.862Z",
+  "updated_at": "2026-11-10T20:38:11.812Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 54,
+      "ownership_revision": 55,
       "write_scope_released": false,
-      "phase": "OWNER_REQUESTED_VISIBLE_NAV_AND_TEXT_INSETS",
-      "next": "Increase actual lower medallion footprint and text breathing room; native full-screen evidence required. Preserve approved restored style and progression gating.",
+      "phase": "OWNER_REQUESTED_FOOTER_AND_TYPOGRAPHY_POLISH_NATIVE_VERIFIED",
+      "next": "Requested footer visibility and typography refinement completed and checked in native portrait/landscape. Preserve restored design. PR173 remains draft, no merge/deployment. Reopen only for concrete next owner feedback.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T19:57:05.165Z",
@@ -6776,8 +6774,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "bd40cc1cbd49eaef65ee9160e41ddda86b983a1c",
-        "native_run": 42890387207,
+        "source_sha": "78847c345346273ba3a5444dbd454e717b35d184",
+        "native_run": 42896741960,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13793216174,
@@ -6812,13 +6810,14 @@
         "art_ab_artifact": 13791189975,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13796809549,
+        "native_artifact": 13801266335,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
-        "owner_requested_polish": "Profile/mission framing, larger original sculpted medallions and refined single-mesh gold links. Actual native evidence reviewed."
+        "owner_requested_polish": "Larger and raised original footer medals, reduced profile/card lettering, actual painted mission-rim clearance, landscape title inset and reset of objective BestFit after rotation. Native screenshots reviewed; no global artistic score claimed."
       },
-      "runner_release_basis": "Run42890387207 completed success; eight screenshot hashes verified against exact source; no remaining native work for this polish.",
-      "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection."
+      "runner_release_basis": "Run42896741960 completed success with native and genuine A/B; all8 exact-head image hashes verified. Requested polish complete, runner no longer needed.",
+      "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
+      "visual_learning": "RectTransform/source tests alone missed ink touching real painted mission rim. Inspect genuine portrait and landscape screenshots. Reset per-orientation BestFit limits explicitly; retain physical phone legibility."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
