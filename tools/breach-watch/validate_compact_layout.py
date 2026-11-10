@@ -112,8 +112,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         panely=navtop-280-(34 if pw<600 else 72)
         context=place("context",w-card_right-panelw,panely,panelw,280)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        header=R(48,7,panelw-109,21)
-        level=R(48,31,panelw-109,17)
+        header=R(45,7,panelw-101,21)
+        level=R(45,30,panelw-101,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
@@ -226,7 +226,7 @@ def main():
         'At(buildingName.rectTransform,48,7,pw-109,21);',
         'At(buildingName.rectTransform,50,8,pw-111,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
-        'At(buildingLevel.rectTransform,48,31,pw-109,17);',
+        'At(buildingLevel.rectTransform,45,30,pw-101,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]
     for pattern in expected:
