@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T21:26:08.876Z",
+  "updated_at": "2026-11-10T22:11:00.730Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -499,5 +499,39 @@
       "result": "RESTART",
       "root_cause": "UNCONFIRMED"
     }
+  },
+  "iphone_collision_prebake": {
+    "status": "NATIVE_JOURNEY_FINISHED_WEBGL_COMPILING",
+    "source_sha": "7ae5416613480ba526a839b429459d53629041e5",
+    "native_run": 42909656581,
+    "packaging_run": 42911989989,
+    "packaging_source": "fbc0262e87ba0f2d575ec74c53d328549e79c8f0",
+    "revision": "native325-mobile13-prebaked-collision-qa",
+    "changes": [
+      "Prebake static collision meshes during WebGL build; exact Bastion I/II noncollision-byte gate",
+      "Release initialization-only copied terrain normals; reuse owned vertex array",
+      "Retain stable-canvas-r1 wrapper"
+    ],
+    "native_artifact_verified": false,
+    "actual_cooked_payload_verified": false,
+    "published": false,
+    "physical_iphone_verified": false,
+    "external_testers_enabled": false,
+    "root_cause_confirmed": false
+  },
+  "ios_simulator_diagnostic": {
+    "run": 42908325634,
+    "artifact": 13805524368,
+    "source": "21343c34c6da4aae3e6a5280ba65e775e042a23b",
+    "result": "FAIL_BOTH_ARMS_GPU_PROCESS_CRASH_NOT_PHYSICAL_PHONE_PROOF",
+    "beta10_reached_ready": true,
+    "direct_reached_ready": true,
+    "fresh_120_second_observation": false,
+    "simulator_host_evidence": "MTLSimDriver lost SimMetalHost XPC connection; GPUProcessProxy::gpuProcessExited reason=Crash",
+    "prior_120_second_pass_retracted": {
+      "run": 42905159087,
+      "reason": "Screenshot latency consumed observation window without fresh samples"
+    },
+    "physical_cause_proven": false
   }
 }
