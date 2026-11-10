@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 import json
 import hashlib
 from prepare_native_art_review import run as prepare_review
+from compare_to_owner_reference import make as compare_owner_reference
 from PIL import Image, ImageDraw
 from compare_native_art import compare, SIZES, SCENES
 
@@ -64,6 +65,17 @@ def verify():
         certified=prepare_review(before,after,root/"certified","a"*40,"b"*40)
         assert certified["captured_screens"]==8 and not certified["art_approved"]
         assert (root/"certified/vigilia_native_art_ab.jpg").is_file()
+        # Regression for the ACTUAL owner-reference A/B pipeline. Artificial
+        # pixels are intentionally local unit fixtures, NEVER Unity claims.
+        fake_owner=root/"FAKE_OWNER_REFERENCE_UNIT_TEST_ONLY.jpg"
+        Image.new("RGB",(864,1536),(24,20,18)).save(fake_owner)
+        comparison=compare_owner_reference(
+            fake_owner,after,root/"owner-comparison-TEST-ONLY","b"*40)
+        assert comparison["reference_sha256"]==hashlib.sha256(fake_owner.read_bytes()).hexdigest()
+        assert comparison["candidate_source_sha"]=="b"*40
+        assert comparison["candidate_is_verified_unity_screenshot"] is True
+        assert comparison["visual_score"] is None and not comparison["art_approved"]
+        assert (root/"owner-comparison-TEST-ONLY/vigilia_OWNER_reference_vs_REAL_Unity.jpg").is_file()
         # Intentionally corrupt a baseline pixel AFTER signing the manifest:
         # it must be rejected rather than silently becoming user evidence.
         tampered=before/"real-unity-bastion-390x844.png"
