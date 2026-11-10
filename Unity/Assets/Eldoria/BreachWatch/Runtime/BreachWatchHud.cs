@@ -1113,7 +1113,14 @@ namespace Eldoria.BreachWatch
                 At(costIcons[0].rectTransform,14,179,19,19);
                 At(costQuantities[0].rectTransform,39,179,42,20);
                 At(costIcons[1].rectTransform,89,179,19,19);
-                At(costQuantities[1].rectTransform,113,179,pw-125,20);
+                // Unity native 42835121287 proved that the canonical 300
+                // stone cost wrapped to 40u in its 33u-wide slot; the
+                // screenshot falsely appeared to cost only 30. Never hide
+                // or truncate a real price. Use the remaining true 43u
+                // before the card's bronze rim, not a painted overlay.
+                At(costQuantities[1].rectTransform,110,179,pw-115,20);
+                costQuantities[0].fontSize=15;
+                costQuantities[1].fontSize=15;
                 At(buildingState.rectTransform,13,209,pw-26,17);
                 // The full live Spanish action is 95px wide at 12pt: retain a
                 // 32.5% hammer well AND widen the actual painted action, rather
