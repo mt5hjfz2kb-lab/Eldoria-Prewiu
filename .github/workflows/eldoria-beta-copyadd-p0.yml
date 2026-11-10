@@ -1,14 +1,8 @@
-name: Eldoria P0 — exact compact beta10 + world clock browser QA
+name: Eldoria P0 — direct transport compiled-byte browser verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths:
-      - '.github/workflows/eldoria-beta-copyadd-p0.yml'
-      - 'tools/eldoria-private-beta/iphone_ab/stage_copyadd_owner_ab.py'
-      - 'tools/eldoria-private-beta/iphone_ab/copyadd_transport.js'
-      - 'tools/eldoria-private-beta/iphone_ab/copyadd_transport.test.mjs'
-      - 'tools/eldoria-private-beta/iphone_ab/verify_copyadd_real_http.mjs'
-      - 'tools/eldoria-private-beta/iphone_ab/pinned_beta10_mobile12_delta_ops.json'
+    paths: ['.github/workflows/eldoria-beta-copyadd-p0.yml']
 permissions:
   contents: read
   actions: read
@@ -16,88 +10,51 @@ concurrency:
   group: eldoria-p0-copyadd-verified-no-pages-mutation
   cancel-in-progress: false
 jobs:
-  verify-compact-owner-ab:
-    name: Verify real 31-chunk iPhone A/B with stable beta10 untouched
-    runs-on: ubuntu-latest
-    timeout-minutes: 70
+  direct-browser:
+    runs-on: macos-15
+    timeout-minutes: 30
     steps:
-      - name: Checkout actual candidate source, never an unreviewed moving ref
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
-          sparse-checkout: tools/eldoria-private-beta/iphone_ab
-          sparse-checkout-cone-mode: false
+          sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - name: Require archived native, macOS Apple GPU and owner recovery PASS; testers disabled
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 - <<'PY'
-          import urllib.request,json,base64,os
-          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
-          def read(path):
-            req=urllib.request.Request(root+path,headers={
-              'Authorization':'Bearer '+os.environ['GH_TOKEN'],
-              'Accept':'application/vnd.github+json','User-Agent':'Eldoria-P0-copyadd-QA'})
-            with urllib.request.urlopen(req,timeout=25) as response:return json.load(response)
-          certified={42687093695:None,42714385780:'004d3ef9c26e9070762e9e38ce84d69d525efd4f',
-                     42716414385:'5af92f0fe64f65280b9a57816aafaa32d2cb7d47'}
-          for run,source in certified.items():
-            r=read('actions/runs/'+str(run))
-            assert r['status']=='completed' and r['conclusion']=='success','Original certified build did not pass'
-            if source:assert r['head_sha']==source,'Wrong original native/Apple GPU source'
-          request=read('contents/pipeline/tester-readiness/release-request.json?ref=main')
-          status=json.loads(base64.b64decode(request['content']))
-          assert status['enabled'] is False and status['status']=='BLOCKED','Testers must remain blocked'
-          print('ELDORIA_OWNER_ONLY_COPYADD_PRECHECK_PASS')
-          PY
-      - name: Download previous owner-confirmed playable beta10 Pages artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          run-id: 42687093695
-          name: github-pages
-          github-token: ${{ github.token }}
-          path: old-pages
-      - name: Download exact native and macOS Apple GPU certified minimal clock candidate
-        uses: actions/download-artifact@v4
-        with:
-          run-id: 42716414385
-          name: beta10-minimal-clock-candidate-site
-          github-token: ${{ github.token }}
-          path: new-site
-      - name: Stage exact stable old 31 chunks plus 8 MB byte literals of new Unity game
-        run: |
-          node --test tools/eldoria-private-beta/iphone_ab/copyadd_transport.test.mjs
-          python3 -m py_compile tools/eldoria-private-beta/iphone_ab/stage_copyadd_owner_ab.py
-          python3 tools/eldoria-private-beta/iphone_ab/stage_copyadd_owner_ab.py \
-            --stable-pages-artifact old-pages/artifact.tar \
-            --candidate-site new-site \
-            --output-site site \
-            --ops tools/eldoria-private-beta/iphone_ab/pinned_beta10_mobile12_delta_ops.json \
-            --transport-source tools/eldoria-private-beta/iphone_ab/copyadd_transport.js
-          test -f site/beta-native325/index.html
-          test -f site/beta-iphone-clock-ab/index.html
-          test -f site/unity-owner/index.html
-          node --check site/beta-iphone-clock-ab/copy-transport.js
-          node --check site/beta-iphone-clock-ab/play.js
-      - name: SHA verify all 31 real Unity data parts over actual browser transport and local HTTP
-        run: |
-          node --max-old-space-size=2048 tools/eldoria-private-beta/iphone_ab/verify_copyadd_real_http.mjs site
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          j=json.loads(Path('site/beta-iphone-clock-ab-proof.json').read_text())
-          assert j['parts_verified']==31 and j['patch_literal_bytes']==8000096
-          assert j['combined_bytes']<650000000
-          assert j['stable_game_sha256_unchanged'] is True
-          assert j['external_testers_enabled'] is False
-          assert j['physical_iphone_stability_verified'] is False
-          print('ELDORIA_EXACT_COPYADD_QA_PASS_NOT_IPHONE_CERTIFICATION',j['combined_bytes'])
-          PY
-      - name: Retain compact owner-only A/B as artifact, do not publish or invite testers
-        uses: actions/upload-artifact@v4
-        with:
+          run-id: 42785047968
           name: beta10-clock-copyadd-owner-only-site
-          path: site/
-          compression-level: 0
+          github-token: ${{ github.token }}
+          path: site
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42812046053
+          name: eldoria-immediate-entry-canvas-ab-not-iphone
+          github-token: ${{ github.token }}
+          path: browser-proof
+      - name: Recreate current wrapper then remove browser reconstruction, exact engine unchanged
+        run: |
+          python3 tools/eldoria-private-beta/iphone_ab/stage_stable_canvas.py site tools/eldoria-private-beta/iphone_ab/stable_canvas.js browser-proof/evidence/canvas-shell-proof.json
+          python3 tools/eldoria-private-beta/iphone_ab/stage_direct_control.py site
+          node --check site/beta-iphone-clock-direct/play.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Actual Mac WebKit entry, nickname, persistence and reload; not physical iPhone
+        run: |
+          npm install --prefix "$RUNNER_TEMP/direct-webkit" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/direct-webkit/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/direct-webkit/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_SKIP_PREFLIGHT=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18975 QA_URL='http://127.0.0.1:18975/beta-iphone-clock-direct/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-direct-transport-browser-proof-not-iphone
+          path: |
+            evidence/
+            server.log
+            site/beta-iphone-clock-direct/direct-control-proof.json
+            site/beta-iphone-clock-direct/play.js
+            site/beta-iphone-clock-direct/build-manifest.json
           retention-days: 14
