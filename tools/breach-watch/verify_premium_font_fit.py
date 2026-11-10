@@ -84,32 +84,37 @@ def verify():
     # target, just like the owner's approved UI. Unity BestFit may select
     # 13pt to stay inside its true carved bronze button.
     inset_900=max(31,min(38,action_width*.25))
-    fits("Mejorar a Bastión II",SEMIBOLD,13,
-         action_width-inset_900-7,"900px premium full upgrade caption")
+    fits("Mejorar a Bastión II",SEMIBOLD,12,
+         action_width*.72-7,"900px premium full upgrade caption")
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
-    # Original owner-authored 246x60 sprite must cover the complete
-    # visible button, not letterbox in a wider transparent Unity Button.
-    # Exact aspect preserves undistorted engraved hammers and true label.
-    for hit_width,label,caption,size in [
-        (147,"900 portrait","Mejorar a Bastión II",13),
-        (147,"390 portrait","Mejorar a II",16),
-        (196,"1600 landscape","Mejorar a Bastión II",16),
-        (186,"844 historical tight-landscape safety","Mejorar a Bastión II",15),
-        (210,"844 actual widened-landscape","Mejorar a Bastión II",15),
+    # The NEW 2K original action sprite is 3.45:1, not legacy 246:60.
+    # Preserve source aspect, contain it inside real touch bounds and measure
+    # captions against the *painted* red region rather than invisible hitbox.
+    from PIL import Image
+    fresh=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/upgrade_button.png')
+    with Image.open(fresh) as art:
+        art_ratio=art.width/art.height
+    assert 3.2<art_ratio<3.8,('Unexpected newly generated action art ratio',art_ratio)
+    for hit_width,hit_height,label,caption,size in [
+        (147,50,'900 portrait','Mejorar a Bastión II',12),
+        (147,50,'390 portrait','Mejorar a II',15),
+        (196,45,'1600 landscape','Mejorar a Bastión II',11),
+        (210,53,'844 compact landscape','Mejorar a Bastión II',14),
     ]:
-        paint_height=hit_width*60/246
-        assert 22<paint_height<55, (label,"image size")
-        assert abs(paint_height*246/60-hit_width)<.01, (label,"letterbox")
-        free_width=hit_width*(1-.25)-7
+        painted_h=min(hit_height-4,hit_width/art_ratio)
+        painted_w=painted_h*art_ratio
+        assert painted_w>=hit_width*.70 and painted_h<=hit_height-4+1e-3,label
+        assert abs(painted_w/painted_h-art_ratio)<.001,label
+        free_width=painted_w*.72-7
         fits(caption,SEMIBOLD,size,free_width,
-             label+" within FULL WIDTH genuine 246x60 artwork")
-    hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "float paintedHeight=plate.rect.width/Mathf.Max(1f,artAspect);" in hud, (
-        "Premium CTA must render source at full painted width")
-    assert "bool fullUpgradeCaption=lastWidth>=800;" in hud, (
-        "Full chapter action must be readable in both >=800px orientations")
+             label+' inside original cleanroom red painting')
+    hud=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+    assert 'float paintedHeight=Mathf.Min(plate.rect.height-4f,' in hud
+    assert 'float paintedWidth=paintedHeight*artAspect;' in hud
+    assert 'float captionLeft=paintedLeft+paintedWidth*.28f;' in hud
+    assert 'bool fullUpgradeCaption=lastWidth>=800;' in hud
 
     # The right-edge close badge must not touch either heading, in portrait
     # or small landscape; both rows preserve >=4 Unity design units.
