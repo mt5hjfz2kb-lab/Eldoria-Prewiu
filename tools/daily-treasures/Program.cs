@@ -340,8 +340,8 @@ internal static class Program
         catch(ArgumentOutOfRangeException){badSoundRate=true;}
         True(badSoundRate,"invalid audio sampling is rejected");
         // Premium live-game milestone stages are DIFFERENT SCENES, not the
-        // same daily coffer with a tint. Verify stage boundaries and title/
-        // Skip/Continue touch space at every supported portrait/landscape.
+        // same daily coffer with a tint. Verify genuine scene boundaries and
+        // Skip/Continue touch space at every supported device orientation.
         var stageTypes=new[]{
             ("milestone:hero:lyra",DailyTreasureStageKind.Lyra),
             ("scout:first:family",DailyTreasureStageKind.Explorers),
@@ -366,12 +366,8 @@ internal static class Program
                 var stage=DailyTreasureStageDirection.Compose(
                     target.Item1,device.Item1,device.Item2);
                 True(stage.Kind==target.Item2,"unique painted event stage");
-                True(stage.ChestW>180f && stage.ChestH>150f &&
-                     stage.ChestX-stage.ChestW/2>=-width/2 &&
-                     stage.ChestX+stage.ChestW/2<=width/2 &&
-                     stage.ChestY-stage.ChestH/2>=-height/2 &&
-                     stage.ChestY+stage.ChestH/2<=height/2,
-                     "premium chest remains fully within real safe area");
+                // The original chest is now exclusively a DAILY loot prop.
+                // No milestone may require visible chest geometry.
                 True(stage.ReceiptW>180f && stage.ReceiptH>50f &&
                      stage.ReceiptX-stage.ReceiptW/2>=-width/2 &&
                      stage.ReceiptX+stage.ReceiptW/2<=width/2,
@@ -380,9 +376,8 @@ internal static class Program
                 float continueTop=-height/2+67f;
                 True(stage.ReceiptY-stage.ReceiptH/2>=continueTop+8f,
                     "earned event description cannot cover Continue");
-                True(stage.ReceiptY+stage.ReceiptH/2<=
-                    stage.ChestY-stage.ChestH/2-7f,
-                    "explanation stays below dimensional illustrated chest");
+                True(stage.ReceiptY+stage.ReceiptH/2<=height/2,
+                    "authentic milestone report remains inside the frame");
                 if(target.Item2==DailyTreasureStageKind.Bastion)
                 {
                     True(stage.SceneryOpacity==0f &&
@@ -404,17 +399,15 @@ internal static class Program
                          stage.SceneY+stage.SceneH/2<=height/2,
                          "real original painting stays within decorated event frame");
                     Eq(stage.SideBySide,!portrait,
-                         "true painterly scene and coffer use horizontal storytelling on landscape");
+                         "genuine painting and story use landscape columns");
                     if(stage.SideBySide)
-                        True(stage.SceneX+stage.SceneW/2+8f<=
-                             stage.ChestX-stage.ChestW/2,
-                            "large original painterly scenery and coffer do not obscure each other");
+                        True(stage.SceneX+stage.SceneW/2<=
+                             stage.ReceiptX-stage.ReceiptW/2+18f,
+                             "real landscape painting does not bury the narrative caption");
                     else
-                        True(stage.SceneY-stage.SceneH/2<
-                             stage.ChestY+stage.ChestH/2 &&
-                             stage.SceneY+stage.SceneH/2>
-                             stage.ChestY-stage.ChestH/2,
-                            "portrait imagery layers behind the actual chest, not as an unrelated thumbnail");
+                        True(stage.SceneY-stage.SceneH/2>
+                             stage.ReceiptY+stage.ReceiptH/2-18f,
+                             "portrait authentic painting remains above the story receipt");
                 }
             }
         }
