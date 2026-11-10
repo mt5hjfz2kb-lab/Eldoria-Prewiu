@@ -130,26 +130,21 @@ namespace Eldoria.BreachWatch
             {
                 var tablet=objective?objective.GetComponent<BreachWatchPlate>():null;
                 return tablet && tablet.sprite &&
-                    tablet.sprite ==
-                        Resources.Load<Sprite>("VigiliaArt/OwnerControls/mission_plate") &&
-                    tablet.type==Image.Type.Simple && tablet.preserveAspect;
+                    tablet.sprite.name=="mission" &&
+                    tablet.type==Image.Type.Sliced &&
+                    !tablet.preserveAspect;
             }
         }
         public bool HasSinglePremiumIdentity =>
             identity && identity.GetComponent<BreachWatchPlate>() &&
             identity.GetComponent<BreachWatchPlate>().sprite &&
-            identity.GetComponent<BreachWatchPlate>().sprite ==
-                Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar") &&
+            identity.GetComponent<BreachWatchPlate>().sprite.name=="profile" &&
             identity.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
             // The original painted profile already contains shading.
             // Do not require a second uGUI Shadow after the approved
             // single-surface unification.
             !identity.GetComponent<Shadow>() &&
-            identity.GetComponentsInChildren<Graphic>(true).Length==4 &&
-            identityCrest && identityCrest.GetComponent<Image>() &&
-            identityCrest.GetComponent<Image>().sprite ==
-                Resources.Load<Sprite>("VigiliaArt/OwnerReference/lion_crest") &&
-            !identityCrest.GetComponent<Image>().raycastTarget;
+            identity.GetComponentsInChildren<Graphic>(true).Length==3;
 
         public bool HasPremiumResourceSurfaces
         {
@@ -160,8 +155,7 @@ namespace Eldoria.BreachWatch
                     if(!resourceChips[i])return false;
                     var surface=resourceChips[i].GetComponent<BreachWatchPlate>();
                     if(!surface || !surface.sprite ||
-                       surface.sprite!=Resources.Load<Sprite>(
-                            "VigiliaArt/OwnerControls/resource_capsule") ||
+                       surface.sprite.name!="resource" ||
                        surface.type!=Image.Type.Sliced)return false;
                 }
                 return true;
@@ -175,13 +169,10 @@ namespace Eldoria.BreachWatch
             resourceIllustrations[2] && resourceIllustrations[2].sprite &&
             resourceIllustrations[2].sprite.name=="food";
         public bool UsesCompactRealmCrest =>
-            identity && identityCrest &&
+            identity && !identityCrest &&
             identity.GetComponent<BreachWatchPlate>() &&
             identity.GetComponent<BreachWatchPlate>().sprite ==
-                Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar") &&
-            identityCrest.GetComponent<Image>() &&
-            identityCrest.GetComponent<Image>().sprite ==
-                Resources.Load<Sprite>("VigiliaArt/OwnerReference/lion_crest");
+                Resources.Load<Sprite>("VigiliaArt/CleanRoom/profile");
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
             navPlates[0].sprite.name=="nav_castle";
@@ -449,7 +440,7 @@ namespace Eldoria.BreachWatch
             // REPLACEMENT, not a bevel pasted over another panel: one
             // authoritative forged-metal plate from the approved art kit.
             var identitySurface=Plate(identity,BreachWatchPlate.PlateType.Basalt);
-            var finalProfile=Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar");
+            var finalProfile=Resources.Load<Sprite>("VigiliaArt/CleanRoom/profile");
             if(!finalProfile)throw new InvalidOperationException(
                 "Missing Vigilia's approved player profile art");
             identitySurface.ApplyIndependentArt(finalProfile,true);
@@ -459,18 +450,9 @@ namespace Eldoria.BreachWatch
             identitySurface.raycastTarget=true;
             // No additional uGUI Shadow: the genuine profile painting already
             // owns its falloff. Doubling it made the entire header float.
-            // Compose original owner-source lion and nameplate as one identity
-            // control. Neither piece contains fake text or gameplay values.
-            identityCrest=Rect("Approved original Valoria lion",identity);
-            var approvedLion=Resources.Load<Sprite>(
-                "VigiliaArt/OwnerReference/lion_crest");
-            if(!approvedLion)throw new InvalidOperationException(
-                "Missing exact approved separate Valoria lion relief");
-            var approvedLionArt=identityCrest.gameObject.AddComponent<Image>();
-            approvedLionArt.sprite=approvedLion;
-            approvedLionArt.type=Image.Type.Simple;
-            approvedLionArt.preserveAspect=true;
-            approvedLionArt.raycastTarget=false;
+            // The forged lion medallion is baked into the independently
+            // illustrated profile sprite; no second decorative child exists.
+            identityCrest=null;
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
             // Keep actual gameplay identity ink fully inside a single
@@ -481,7 +463,7 @@ namespace Eldoria.BreachWatch
             identityPower.verticalOverflow=VerticalWrapMode.Overflow;
             resourceRow=Rect("Separate resource stones",uiRoot);
             var originalResourceStone=Resources.Load<Sprite>(
-                "VigiliaArt/OwnerControls/resource_capsule");
+                "VigiliaArt/CleanRoom/resource");
             if(!originalResourceStone)throw new InvalidOperationException(
                 "Missing Vigilia's approved resource capsule art");
             for(int i=0;i<3;i++)
@@ -524,14 +506,14 @@ namespace Eldoria.BreachWatch
             objective=Rect("Chapter side tablet",uiRoot);
             var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var angledPlate=Resources.Load<Sprite>(
-                "VigiliaArt/OwnerControls/mission_plate");
+                "VigiliaArt/CleanRoom/mission");
             if(!angledPlate)throw new InvalidOperationException(
                 "Missing Vigilia's approved integral chapter tablet");
             // The actual tapered ornament is a single authored silhouette:
             // never silently fall back to a generic procedural dark panel.
-            chapterStone.ApplyIndependentArt(angledPlate);
+            chapterStone.ApplyIndependentArt(angledPlate,true);
             chapterStone.color=Color.white;
-            chapterStone.preserveAspect=true;
+            chapterStone.preserveAspect=false;
 
             // No extra shadow: the carved quest PNG already has a baked
             // shadow and finished outline. This is one plate, not two.
@@ -752,7 +734,7 @@ namespace Eldoria.BreachWatch
             }
             feedbackPlate=Rect("Temporary real action requirement tablet",uiRoot);
             var feedbackStone=Plate(feedbackPlate,BreachWatchPlate.PlateType.Resource);
-            var authoredStone=Resources.Load<Sprite>("VigiliaArt/OwnerControls/resource_capsule");
+            var authoredStone=Resources.Load<Sprite>("VigiliaArt/CleanRoom/resource");
             if(authoredStone)feedbackStone.ApplyIndependentArt(authoredStone,true);
             feedbackStone.raycastTarget=false;
             feedback=Label(feedbackPlate,"Action feedback / live or disabled",
@@ -958,8 +940,6 @@ namespace Eldoria.BreachWatch
                 // Source-faithful physical gap after the FULL lion ring,
                 // now preserved by a 35% non-stretching 9-slice border.
                 float lionTextInset=crestSize+(smallPhone?8f:16f);
-                At(identityCrest,0,(identityHeight-crestSize)*.5f,
-                    crestSize,crestSize);
                 // The real cf73 Unity screenshot had a completely blank
                 // profile even though the live session supplies name and
                 // power: Unity's legacy Text silently paints zero glyphs
@@ -1186,7 +1166,6 @@ namespace Eldoria.BreachWatch
             else
             {
                 At(identity,margin,11,234,58);
-                At(identityCrest,5,4,50,50);
                 // The single profile illustration already contains its lion.
                 // Native 1600x900 proves the name draws in the first row.
                 // The power must remain >= 11.75 physical pixels even in

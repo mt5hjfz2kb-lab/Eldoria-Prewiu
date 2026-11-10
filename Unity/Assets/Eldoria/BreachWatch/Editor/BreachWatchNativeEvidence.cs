@@ -172,15 +172,14 @@ namespace Eldoria.BreachWatch.Editor
         {
             var surfaces=ui.GetComponentsInChildren<BreachWatchPlate>(true)
                 .Where(x=>x && x.gameObject.activeInHierarchy && x.sprite &&
-                    (x.sprite==Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar") ||
-                     x.sprite==Resources.Load<Sprite>("VigiliaArt/OwnerControls/resource_capsule"))).ToArray();
-            foreach(string category in new[]{"profile_bar","resource_capsule"})
+                    x.type==Image.Type.Sliced &&
+                    (x.sprite.name=="profile" || x.sprite.name=="mission" ||
+                     x.sprite.name=="resource")).ToArray();
+            foreach(string category in new[]{"profile","mission","resource"})
                 Need(surfaces.Any(x=>x.sprite.name==category),
-                     "Missing active owner-source painted nine-slice "+category+" / "+shot);
+                     "Missing active original 2K painted nine-slice "+category+" / "+shot);
             foreach(var paint in surfaces)
             {
-                Need(paint.type==Image.Type.Sliced,
-                    "Owner profile/resource must retain nine-slice borders: "+paint.name+" / "+shot);
                 float ratio=paint.pixelsPerUnit;
                 float reference=paint.canvas ? paint.canvas.referencePixelsPerUnit : 0f;
                 Need(reference>0f && ratio>0f &&
@@ -191,26 +190,10 @@ namespace Eldoria.BreachWatch.Editor
                 float freeX=rect.width-(border.x+border.z)/ratio;
                 float freeY=rect.height-(border.y+border.w)/ratio;
                 Need(freeX>=8f && freeY>=7f,
-                    "Unity nine-slice borders collapse painted center "+
+                    "Unity 2K nine-slice borders collapse painted center "+
                     paint.sprite.name+" / "+shot+" width="+freeX+" height="+freeY+
                     " spritePPU="+paint.sprite.pixelsPerUnit+" refPPU="+reference);
             }
-            // The authored mission is one complete tablet, unlike the sliced
-            // profile/resource surfaces. Require its exact source and an
-            // undistorted Simple image instead of accepting a missing category.
-            var missions=ui.GetComponentsInChildren<BreachWatchPlate>(true)
-                .Where(x=>x && x.gameObject.activeInHierarchy && x.sprite==
-                    Resources.Load<Sprite>("VigiliaArt/OwnerControls/mission_plate"))
-                .ToArray();
-            Need(missions.Length==1 && missions[0].sprite &&
-                 missions[0].type==Image.Type.Simple && missions[0].preserveAspect,
-                 "Expected one undistorted owner mission tablet: "+shot);
-            var mission=missions[0];
-            var area=mission.rectTransform.rect;
-            // preserveAspect fits the source inside this responsive hit area;
-            // the hit area's aspect itself intentionally differs by orientation.
-            Need(area.width>0f && area.height>0f,
-                 "Owner mission tablet has no drawable area: "+shot);
         }
         static void CaptureRealCity()
         {
@@ -574,7 +557,7 @@ namespace Eldoria.BreachWatch.Editor
                          t && t.name=="Independent forged copper surface trim"),
                     "New premium Vigilia must DELETE obsolete stacked bevel surfaces, not overlay them");
                 Need(ui.HasPremiumCarvedQuest,
-                    "Mission must be the complete original owner-approved illustrated tablet, not a generated or old generic HUD overlay");
+                    "Chapter objective must be the new angled carved nine-slice tablet, not an old rectangular overlay");
                 if(selection=="bastion" && (w>h || h>=w))
                 {
                     var section=ui.GetComponentInChildren<BreachWatchSectionDivider>(true);
@@ -597,17 +580,11 @@ namespace Eldoria.BreachWatch.Editor
                     .FirstOrDefault(x=>x && x.name=="Identity / basalt crest");
                 var duplicatedLion=ui.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.name=="Independent circular realm crest");
-                // The original reference has one lion and one nameplate.
-                // They are separate cutouts under one runtime control,
-                // with exactly two additional live Text graphics.
-                var lion=profilePlate?profilePlate.Find("Approved original Valoria lion"):null;
-                var lionImg=lion?lion.GetComponent<Image>():null;
-                Need(profilePlate && !duplicatedLion && lionImg &&
-                     lionImg.sprite==Resources.Load<Sprite>(
-                         "VigiliaArt/OwnerReference/lion_crest") &&
-                     !lionImg.raycastTarget &&
-                     profilePlate.GetComponentsInChildren<Graphic>(true).Length==4,
-                     "Duplicate lion, wrong original source or extra identity surface in "+name);
+                // The independently regenerated gold lion is part of the one
+                // finished profile illustration; any second crest is a bug.
+                Need(profilePlate && !duplicatedLion &&
+                     profilePlate.GetComponentsInChildren<Graphic>(true).Length==3,
+                     "Duplicate lion badge or second identity surface in "+name);
                 // Strict cleanroom invariant: the entire panel must have
                 // precisely one independent high-resolution sprite.
                 // No old owner_gold_border overlay, separate brass portrait
@@ -629,16 +606,14 @@ namespace Eldoria.BreachWatch.Editor
                     .Where(x=>x && x.sprite).ToArray();
                 Need(palette.Count(x=>x.sprite.name=="panel" &&
                          x.color.r>=.95f && x.color.g>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="profile_bar" &&
+                     palette.Count(x=>x.sprite.name=="profile" &&
                          x.color.r>=.95f && x.color.g>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="lion_crest" &&
-                         x.color.a>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="resource_capsule" &&
+                     palette.Count(x=>x.sprite.name=="resource" &&
                          x.color.r>=.95f && x.color.g>=.95f)>=2,
                      "Player, resources and cartouche no longer share "+
                      "the same warm material treatment: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
-                    "All live resource capsules must be exact owner-approved source cutouts, not generated/procedural frames");
+                    "All three live resources must use original complete 2K cleanroom capsules, not old procedural frames");
                 Need(ui.HasOwnerApprovedUtilityArtwork,
                     "The three compact utility seals must match the separately cropped "+
                     "gold medallions in the owner's approved UI, not generic hexagons");
