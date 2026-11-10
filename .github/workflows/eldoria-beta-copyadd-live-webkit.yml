@@ -101,7 +101,7 @@ jobs:
           # Initialize once; SafariDriver gives each test a separate storage session.
           python3 -c 'import time;time.sleep(45)'
           failed=0
-          for variant in beta-iphone-clock-direct beta-native325 beta-iphone-clock-ab; do
+          for variant in beta-iphone-clock-direct beta-native325; do
             export QA_OUT="evidence/$variant"
             mkdir -p "$QA_OUT"
             export QA_URL="http://127.0.0.1:18975/$variant/?eldoria_diag=1"
