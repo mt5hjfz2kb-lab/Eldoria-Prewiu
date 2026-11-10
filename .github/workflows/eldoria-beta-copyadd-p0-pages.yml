@@ -35,13 +35,13 @@ jobs:
               'User-Agent':'Eldoria-P0-verified-compact-owner'})
             with urllib.request.urlopen(request,timeout=30) as response:
               return json.load(response)
-          source=read('actions/runs/42781066472')
-          assert source['head_sha']=='495eac8e47640ee3bb992506b7162cfed31de283'
+          source=read('actions/runs/42785047968')
+          assert source['head_sha']=='836fce54e33e0c3c5cc87ea4ca480da5eb44835a'
           assert source['status']=='completed' and source['conclusion']=='success'
-          items=read('actions/runs/42781066472/artifacts')['artifacts']
-          artifact=[a for a in items if a['id']==13746172476
+          items=read('actions/runs/42785047968/artifacts')['artifacts']
+          artifact=[a for a in items if a['id']==13749626125
                   and a['name']=='beta10-clock-copyadd-owner-only-site'
-                  and a['size_in_bytes']==490401987 and not a['expired']]
+                  and a['size_in_bytes']==490403680 and not a['expired']]
           assert len(artifact)==1, 'Exact certified 490 MB owner site artifact unavailable'
           latest=read('contents/pipeline/tester-readiness/release-request.json?ref=main')
           gate=json.loads(base64.b64decode(latest['content']))
@@ -51,7 +51,7 @@ jobs:
       - name: Download frozen owner-friendly dual-build site from previous passed QA
         uses: actions/download-artifact@v4
         with:
-          run-id: 42781066472
+          run-id: 42785047968
           name: beta10-clock-copyadd-owner-only-site
           github-token: ${{ github.token }}
           path: site
@@ -90,6 +90,12 @@ jobs:
           html=(candidate/'index.html').read_text()
           assert '<script src="./copy-transport.js"></script>' in html
           assert 'installEldoriaCopyTransport(build.data,build.clock_copy_delta)' in (candidate/'play.js').read_text()
+          transport=(candidate/'copy-transport.js').read_text()
+          assert 'MAX_OUTPUT=262144' in transport and 'stable_cache_parts:1' in transport
+          assert 'new Uint8Array(part.decoded_bytes)' not in transport
+          assert 'localStorage' not in transport and 'indexedDB' not in transport
+          assert 'sessionStorage' not in transport
+          assert len(transport)<12000, 'Unexpected growth in loader footprint'
           assert proof['role']=='OWNER_AB_IOS_QA_ONLY'
           assert proof['external_testers_enabled'] is False
           assert proof['physical_iphone_stability_verified'] is False
