@@ -4,8 +4,8 @@ namespace Eldoria.DailyTreasures
 {
     /// <summary>
     /// Presentation-only event palette. Every ceremony uses the same authored
-    /// iron/bronze UI and the same high-detail chest art; only the atmospheric
-    /// light identifies WHY a real event was important.
+    /// iron/bronze UI. The premium chest belongs to credited daily rewards;
+    /// genuine milestone scenery and emblems identify narrative events.
     /// No currency, loot table, progression state, time or Unity dependency.
     /// </summary>
     public readonly struct DailyTreasureCeremonyTheme
