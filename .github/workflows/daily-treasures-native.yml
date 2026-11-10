@@ -425,7 +425,7 @@ jobs:
           if(-not(Test-Path $reportFile)){throw 'No actual canonical city report'}
           $report=Get-Content $reportFile -Raw | ConvertFrom-Json
           if($report.status -ne 'CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED' -or
-             $report.source -ne $env:GITHUB_SHA -or $report.pngCount -ne 8 -or
+             $report.source -ne $env:GITHUB_SHA -or $report.pngCount -ne 12 -or
              $report.cityRenderers -lt 30 -or
              $report.citySceneOpened -ne $true -or $report.cityCameraUsed -ne $true -or
              $report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or
@@ -433,10 +433,10 @@ jobs:
              $report.realGatewayClaims -ne 0){
             throw 'Actual city art proof missing or falsely claims live game/PR173/earned reward'
           }
-          if(@($report.shots).Count -ne 8){throw 'Missing paired canonical city and daily context captures'}
+          if(@($report.shots).Count -ne 12){throw 'Missing city baselines, calendar and genuine Bastion visual-only context'}
           foreach($shot in $report.shots){
             $name=[string]$shot.file
-            if($name -notmatch '^real-city-daily-(actual-city-baseline|authored-calendar-context)-(1600x900|900x1600|844x390|390x844)\.png$'){
+            if($name -notmatch '^real-city-daily-(actual-city-baseline|authored-calendar-context|authored-bastion-visual-only)-(1600x900|900x1600|844x390|390x844)\.png$'){
               throw "Unexpected city art screenshot: $name"
             }
             $path=Join-Path $cityOut $name
@@ -446,10 +446,10 @@ jobs:
             $hash=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
             if($hash -ne [string]$shot.sha256){throw "City art photo SHA mismatch: $name"}
           }
-          if(@(Get-ChildItem $cityOut -File -Filter '*.png').Count -ne 8){
+          if(@(Get-ChildItem $cityOut -File -Filter '*.png').Count -ne 12){
             throw 'Unexpected extra/stale city art screenshot'
           }
-          Write-Host 'ACTUAL_CITY_ART_CONTEXT_PROOF: 8 native images; no gameplay, PR173, device or art approval'
+          Write-Host 'ACTUAL_CITY_ART_CONTEXT_PROOF: 12 native images including 4 non-paying Bastion stages; NO gameplay, PR173, device or art approval'
       - name: Preserve real Unity screenshots and error log even when test fails
         if: always()
         uses: actions/upload-artifact@v4
