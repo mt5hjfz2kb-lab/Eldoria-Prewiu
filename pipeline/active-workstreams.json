@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 35,
+      "ownership_revision": 36,
       "write_scope_released": false,
-      "phase": "CAS35_RETEST_15U_NATIVE_HEADER_AND_SIXFOCUS_AB",
-      "next": "Native exact-HEAD check of real Chapter I panel 15u row, overflow glyphs, whole city+Bastion in 4 viewports, 8 SHA images and owner A/B. New title assertion logs effective values without reducing QA. Release Windows immediately after job, no merge.",
+      "phase": "UNITY_NATIVE_8_PASS_OWNER_AB_VISUAL_ART_REVIEW_PENDING",
+      "next": "Inspect exact SHA cf73b49 native 8 PNG and owner-approved six-region A/B; retain source owner and draft PR, no ART_APPROVED without genuine visual 7.5. Windows resource released after native job success.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T13:28:00Z",
@@ -6745,11 +6743,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "52cbd976637235094d137a90107f264683131584",
-        "native_run": 42775867314,
+        "source_sha": "cf73b49fcc8519b8e15d574b9ade917bc6ffdead",
+        "native_run": 42835897261,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13743772584,
+        "artifact": 13772693376,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6776,8 +6774,7 @@
         "upgrade_glyph_width_guard": true,
         "upgrade_one_line": true
       },
-      "runner_released_at": "2026-11-10T13:26:00Z",
-      "runner_release_basis": "Unity run 42823929912 completed FAILURE on chapter layout source/native mismatch. Two partial genuine city renders in artifact 13768990337; owner screenshot cannot be labeled as full 8-shot PASS."
+      "runner_release_basis": "Unity native job success in run 42835897261, SHA cf73b49fcc8519b8e15d574b9ade917bc6ffdead, 8 PNG artifact 13772693376; independent Ubuntu visual A/B job does not require Windows."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
