@@ -67,8 +67,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         painted_lion_right=round(2496*.35)*100/2000
         name_left=(45+8) if pw<600 else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,6 if pw<600 else 5,1,25 if pw<600 else 19)
-        profile_power=R(0,31 if pw<600 else 24,1,17 if pw<600 else 14)
+        profile_name=R(0,3 if pw<600 else 2,1,26 if pw<600 else 22)
+        profile_power=R(0,30 if pw<600 else 24,1,21 if pw<600 else 19)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         right=w-(m+182+9+m)
         chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 62
@@ -150,8 +150,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
     else:
         place("identity",m,11,234,58)
         profile_name=R(0,6,1,31)
-        profile_power=R(0,38,1,17)
-        assert profile_name.y+profile_name.h+.7<=profile_power.y,size
+        profile_power=R(0,37,1,20)
+        assert profile_name.y+profile_name.h<=profile_power.y,size
         chip=(min(110,max(82,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
         resw=resources*chip+7*(resources-1)
         for i in range(resources):
@@ -234,7 +234,7 @@ def main():
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,7,pw-104,21);',
         'At(buildingName.rectTransform,50,8,pw-111,31);',
-        'At(identityPower.rectTransform,59,38,165,17);',
+        'At(identityPower.rectTransform,59,37,165,20);',
         'At(buildingLevel.rectTransform,45,30,pw-104,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]
