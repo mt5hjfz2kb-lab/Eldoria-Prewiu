@@ -47,7 +47,7 @@ for name in asset_names:
         ppu={'profile':16,'mission':20,'resource':26}[name]
         import re
         assert f'spritePixelsToUnits: {ppu}' in meta,name
-        m=re.search(r'spriteBorder: \\{x: (\\d+),',meta)
+        m=re.search(r'spriteBorder: \{x: (\d+),',meta)
         assert m,('No left source border',name)
         actual=int(m.group(1))/ppu
         minmax={'profile':(32,47),'mission':(22,34),
