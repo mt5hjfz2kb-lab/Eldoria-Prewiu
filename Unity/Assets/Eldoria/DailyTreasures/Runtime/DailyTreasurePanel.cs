@@ -1092,8 +1092,8 @@ namespace Eldoria.DailyTreasures
                         var value=type.GetProperty("Ready")?.GetValue(component);
                         if(value is bool ready && ready)
                         {
-                            var sprite=type.GetProperty("Portrait")?
-                                .GetValue(component) as Sprite;
+                            var sprite=type.GetProperty("Portrait")
+                                ?.GetValue(component) as Sprite;
                             if(sprite && sprite.rect.width>=256f &&
                                sprite.rect.height>=256f)return sprite;
                         }
