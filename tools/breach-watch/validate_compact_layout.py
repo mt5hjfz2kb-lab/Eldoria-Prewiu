@@ -67,9 +67,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         painted_lion_right=round(2496*.35)*100/2000
         name_left=(45+8) if pw<600 else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,3 if pw<600 else 2,1,26 if pw<600 else 22)
-        profile_power=R(0,30 if pw<600 else 24,1,21 if pw<600 else 19)
+        profile_name=R(0,5 if pw<600 else 4,1,22 if pw<600 else 18)
+        profile_power=R(0,27 if pw<600 else 22,1,18 if pw<600 else 17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
+        # Real ink was touching the lower profile bevel, not a mere layout
+        # style issue: both dynamic lines must now have bottom inset and
+        # no overlapping nominal rows in the source contract.
+        assert profile_power.y+profile_power.h<= (52 if pw<600 else 43)-4,size
         right=w-(m+182+9+m)
         chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 62
         resgap=4 if pw<600 else 12
@@ -91,8 +95,9 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 36,30 if pw<600 else 24,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
-        progress=R(59 if pw<600 else 36,51 if pw<600 else 42,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        short_objective=R(59 if pw<600 else 36,28 if pw<600 else 22,missionw-(70 if pw<600 else 44),12 if pw<600 else 10)
+        progress=R(59 if pw<600 else 36,42 if pw<600 else 34,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
         assert short_objective.y+short_objective.h+2<=progress.y,size
         assert progress.y+progress.h<= (80 if pw<600 else 60)-(8 if pw<600 else 5),size
         assert 87+20<=112-3,size
