@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T10:00:30.103Z",
+  "updated_at": "2026-11-10T11:01:43.719Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -330,7 +330,24 @@
     "candidate_passed_server_and_mac": true,
     "stable_beta10_remains_playable": true,
     "root_cause": "UNKNOWN: desktop entry/reload succeeds; disabling optimizing compiler does not reduce memory. Single-run RSS differences are affected by native memory compression and are not physical crash diagnosis.",
-    "next": "Obtain owner iPhone termination report at restart time (WebContent/Safari or JetsamEvent), exact entry URL and Safari vs embedded browser context. Keep beta10 and external release disabled. No running diagnostic remains."
+    "next": "Use a termination report matching 11:59 local time to identify killed process/reason. Do not repeat the close-ChatGPT experiment: it failed. Published entry HTML has no refresh redirect; current play script only calls location.reload on explicit retry button. Root cause remains unconfirmed; preserve beta10 and tester NO-GO.",
+    "browser_context": "Safari, explicitly confirmed by owner",
+    "repeat_after_closing_chatgpt": {
+      "result": "FAIL_OWNER_REPORTED_SAME_RESTART",
+      "date": "2026-11-10",
+      "timezone": "Europe/Madrid",
+      "visible_ready_time": "11:59:36",
+      "visible_new_boot_time": "11:59:51",
+      "visible_navigation_type": "back_forward",
+      "visible_pageshow": "normal",
+      "visible_heap_capacity_mib": 412,
+      "interpretation": "Screenshot proves successful startup followed by a new document boot ~15 seconds later. 412 MiB is Unity heap capacity, not total process memory. back_forward is navigation classification, not proof of a user gesture nor jetsam."
+    },
+    "prior_os_report": {
+      "local_time": "2026-11-10T10:02:06+01:00",
+      "finding": "System memory pressure and suspended WebContent terminations; does not identify the game tab and does not correspond to the 11:59 reproduction.",
+      "raw_private_log_published": false
+    }
   },
   "iphone_forward_transport": {
     "state": "BYTE_CERTIFIED_MEMORY_GATE_FAILED_NOT_PUBLISHED",
