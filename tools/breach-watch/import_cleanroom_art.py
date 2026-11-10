@@ -43,6 +43,60 @@ def chroma(src):
     if not bbox: raise ValueError("No isolated foreground; cannot import")
     return rgba.crop(bbox)
 
+def isolate_standalone_painting(image,name):
+    """Keep ONE real illustrated object, not the model's bonus background strip.
+
+    Some source generators render a magenta-and-olive shadow bar beneath
+    the requested sprite, separated by 100 transparent rows. If shipped,
+    this becomes a giant rectangular artifact behind the UI. Crop using
+    alpha-content bands before creating the genuine Unity sprite.
+    """
+    if name not in ("panel","mission","profile","resource","upgrade"):
+        return image
+    image=image.convert("RGBA")
+    w,h=image.size
+    row_coverage=image.getchannel("A").point(
+        lambda v: 255 if v>=90 else 0
+    ).resize((1,h),Image.Resampling.BOX)
+    values=list(row_coverage.getdata())
+    bands=[];start=None
+    for y,coverage in enumerate(values):
+        live=coverage>=15  # more than 6% of the image width
+        if live and start is None:start=y
+        if start is not None and (not live or y==h-1):
+            end=y if not live else y+1
+            if end-start>=max(24,int(h*.08)):
+                bands.append((start,end))
+            start=None
+    if not bands:
+        raise ValueError("Generated art has no reliable foreground "+name)
+    start,end=bands[0]
+    if len(bands)>1:
+        print("CLEANROOM_REMOVE_BACKGROUND_STRIP",name,
+              "retained",start,end,"discarded",bands[1:])
+    # The picked band includes full shadows and hand-painted edges, not
+    # cropped from the user's finished HUD reference.
+    top=max(0,start-12);bottom=min(h,end+12)
+    pic=image.crop((0,top,w,bottom))
+    bounds=pic.getchannel("A").point(
+        lambda v: 255 if v>24 else 0).getbbox()
+    if bounds is None:
+        raise ValueError("Source became invisible "+name)
+    l,t,r,b=bounds
+    pad=16
+    obj=pic.crop((max(0,l-pad),max(0,t-pad),
+                  min(w,r+pad),min(pic.height,b+pad)))
+    # Avoid converting natural metal details into stretched blobs.
+    ratio=obj.width/obj.height
+    expected={"panel":(.38,1.5),"mission":(1.9,6.0),
+              "profile":(1.8,6.0),"resource":(2.1,6.5),
+              "upgrade":(2.1,6.5)}
+    low,high=expected[name]
+    if not low<ratio<high:
+        raise ValueError(f"Standalone {name} art ratio {ratio:.2f} invalid")
+    return obj
+
+
 def store(name,image,sourcehash,task,source_label):
     if min(image.size)<90:raise ValueError(f"tiny/failed art: {name} {image.size}")
     BASE.mkdir(parents=True,exist_ok=True)
@@ -194,7 +248,7 @@ def main():
             for name,sprite in atlas_medals(img):
                 entries.append(store("nav_"+name,sprite,sha(raw),task,key))
         else:
-            pic=chroma(img)
+            pic=isolate_standalone_painting(chroma(img),key)
             entries.append(store(key,pic,sha(raw),task,key))
     assert len(entries)==10
     # Source links are temporary; final published manifest contains only
