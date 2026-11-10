@@ -200,10 +200,10 @@ def main():
         'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,48,7,pw-109,21);',
-        'At(buildingName.rectTransform,50,8,pw-107,31);',
+        'At(buildingName.rectTransform,50,8,pw-111,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
         'At(buildingLevel.rectTransform,48,31,pw-109,17);',
-        'At(buildingLevel.rectTransform,50,40,pw-107,17);'
+        'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
