@@ -9,10 +9,10 @@
   "visual_evidence": [],
   "gameplay": {
     "scope": "Bastion I–V",
-    "native_run": 42645633286,
+    "native_run": 42595057735,
     "native_pass": true,
     "published_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
-    "webgl_browser_run": 42656897252,
+    "webgl_browser_run": 42600894847,
     "webgl_browser_pass": true,
     "physical_mobile_gameplay_pass": false,
     "source_signal_emitter_status": "COMPILED_IN_UNPUBLISHED_NATIVE_WEBGL_CANDIDATE; LIVE_BETA10_HAS_NO_SIGNALS",
@@ -20,13 +20,16 @@
     "latest_unpublished_exact_source_native_pass": true,
     "latest_unpublished_exact_source_commit": "3a406b0ed14e546b338ab44e941efed3ea526685",
     "latest_unpublished_webgl_build": "COMPILED_NOT_HOSTED_OR_BROWSER_TESTED",
-    "latest_unpublished_webgl_artifact": 13704497757
+    "latest_unpublished_webgl_artifact": 13704497757,
+    "source_proof_note": "Fields refer only to unchanged published beta10 source be49d62e3daf490f41dba0bf8123a8e2eee64480; clock candidate evidence is separately scoped below. Earlier beta11 proof must not certify beta10."
   },
   "device_tests": [
     {
       "device": "macOS Apple GPU desktop WebKit",
       "status": "PASS",
-      "run": 42656897252
+      "run": 42600894847,
+      "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+      "scope": "historical exact published beta10 desktop entry/reload, not physical iPhone"
     },
     {
       "device": "iPhone (browser context not yet independently established)",
@@ -91,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T08:42:24.440Z",
+  "updated_at": "2026-11-10T09:09:37.778Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -328,5 +331,35 @@
     "stable_beta10_remains_playable": true,
     "root_cause": "UNCONFIRMED; candidate-only JS copy/add streaming and extra live memory top suspects",
     "next": "Optimize browser reconstruction memory or deploy candidate with ordinary Unity assets on separate zero-cost static host. Do not overwrite stable beta10 or enable testers."
+  },
+  "iphone_forward_transport": {
+    "state": "BYTE_CERTIFIED_MAC_WEBKIT_PENDING_NOT_PUBLISHED",
+    "source_commit": "de7095ec2b4b4553d9662a3cce67eb44822cc64e",
+    "qa_run": 42787786118,
+    "qa_result": "SUCCESS",
+    "artifact_id": 13749609930,
+    "artifact_bytes": 490409729,
+    "verified_decoded_bytes": 503831429,
+    "verified_target_sha256_parts": 31,
+    "local_tests": 36,
+    "local_tests_failed": 0,
+    "transport_sha256": "f1019dfb4f9ce27dedaec126aca77f004c43c915141bd8bbb18d1b7b7b3ee46b",
+    "max_output_bytes": 65536,
+    "full_base_buffers": 0,
+    "full_target_buffers": 0,
+    "runtime_integrity": "same-origin HTTPS, monotonic program and source byte counts; full 31 output SHA256 verified in HTTP CI, not computed at runtime",
+    "cache_identity": "content-hashed JS filename",
+    "memory_qa": 42787998561,
+    "physical_iphone_verified": false,
+    "external_testers_enabled": false
+  },
+  "iphone_rejected_low_memory_transport": {
+    "qa_run": 42786071982,
+    "result": "FAILED_MEMORY_GATE",
+    "control_webcontent_peak_kib": 2542880,
+    "candidate_webcontent_peak_kib": 2930304,
+    "excess_percent": 15.235,
+    "entry_reload": "PASS_DESKTOP_ONLY",
+    "note": "Per-draw trace allocations present in both arms. New comparison disables this observer interference equally. Neither observation establishes iPhone cause."
   }
 }
