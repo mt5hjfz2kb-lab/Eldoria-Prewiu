@@ -932,10 +932,14 @@ namespace Eldoria.BreachWatch
                 // Source-faithful physical gap after the FULL lion ring,
                 // now preserved by a 35% non-stretching 9-slice border.
                 float lionTextInset=crestSize+(smallPhone?8f:16f);
-                At(identityName.rectTransform,lionTextInset,smallPhone?6f:4f,
-                    (smallPhone?174f:166f)-crestSize,smallPhone?25f:21f);
+                At(identityName.rectTransform,lionTextInset,smallPhone?6f:5f,
+                    (smallPhone?174f:166f)-crestSize,smallPhone?25f:19f);
+                // Genuine 900px GPU sample showed the power baseline
+                // touching the bottom copper rim. Move the row into the
+                // carved interior and keep it separate from the player name.
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?31f:25f,(smallPhone?174f:166f)-crestSize,17f);
+                    smallPhone?31f:24f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?17f:14f);
                 identityName.fontSize=smallPhone?17:16;
                 identityPower.fontSize=smallPhone?14:12;
 
