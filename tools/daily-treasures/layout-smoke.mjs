@@ -47,6 +47,28 @@ for(const [name,regex] of [
   ['real command gateway rewards',/new GameCommand\(Guid\.NewGuid\(\)\.ToString\("N"\)/]
 ])assert.match(code,regex,name);
 
+// Regression from real Unity run 42776890262: one line of the ordinary
+// PORTRAIT paid receipt was lost when its Text box was only 41px tall.
+// The Unity TextGenerator measured 66px for two actual receipt lines.
+// The screen-space safe area is shared with the earned prize shelf and the
+// real 54px CONTINUAR hit target. Model their exact portrait rectangles,
+// without relaxing the native Text.preferredHeight gate.
+assert.match(code,/quietRewards\\?\\(portrait\\?72f:41f\\)/,
+  'Portrait quiet reward needs a real 72px two-line confirmed receipt');
+for(const [w,h] of [[900,1600],[390,844],[375,667],[768,1024]])
+{
+  const receiptTop=-106+72/2, receiptBottom=-106-72/2;
+  const continueTop=-175+54/2;
+  const paidShelfBottom=64-175/2;
+  assert.ok(receiptBottom>=continueTop+4,
+    `${w}x${h}: confirmed receipt overlaps real Continue action`);
+  assert.ok(receiptTop<=paidShelfBottom-4,
+    `${w}x${h}: confirmed receipt overlaps earned cards`);
+  assert.ok(72>=66,`${w}x${h}: receipt has less than measured 66px`);
+  assert.ok(receiptBottom>=-Math.min(h-20,430)/2+8,
+    `${w}x${h}: receipt text exceeds quiet frame`);
+}
+
 const checks=[];
 function gap(a,b){return b-a;}
 function rect(cx,cy,w,h){return {x0:cx-w/2,x1:cx+w/2,y0:cy-h/2,y1:cy+h/2};}
