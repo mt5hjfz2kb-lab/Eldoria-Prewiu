@@ -1,9 +1,8 @@
-name: Eldoria P0 — immediate entry and keyboard resize candidate
+name: Eldoria P0 — genuine iOS Simulator Safari comparison
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths:
-      - '.github/workflows/eldoria-beta-copyadd-live-webkit.yml'
+    paths: ['.github/workflows/eldoria-beta-copyadd-live-webkit.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,120 +11,103 @@ concurrency:
   group: eldoria-beta-lowmem-mac-webkit-ab
   cancel-in-progress: false
 jobs:
-  mac-webkit-memory-ab:
-    name: Isolate compiled clock build from browser reconstruction on same Mac WebKit
-    runs-on: macos-15
-    timeout-minutes: 40
+  ios-safari:
+    runs-on: macos-26
+    timeout-minutes: 45
     steps:
-      - name: Checkout exact audited, source-only Mac WebKit probe
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: 052d8c65edf0191fa819d7d08438c6ab172ccf83
           sparse-checkout: |
-            tools/eldoria-private-beta/qa_webkit_residency.cjs
-            tools/eldoria-private-beta/qa_static_server.cjs
-            tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html
-            tools/eldoria-private-beta/iphone_ab/stable_canvas.js
-            tools/eldoria-private-beta/iphone_ab/stable_canvas.test.mjs
-          sparse-checkout-cone-mode: false
+            tools/eldoria-private-beta
           persist-credentials: false
-      - name: Download exact previous source QA pass artifact, no Unity compilation
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           run-id: 42785047968
           name: beta10-clock-copyadd-owner-only-site
           github-token: ${{ github.token }}
           path: site
-      - name: Check exact direct build and protected stable control
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42812046053
+          name: eldoria-immediate-entry-canvas-ab-not-iphone
+          github-token: ${{ github.token }}
+          path: browser-proof
+      - name: Stage exact control and physically rejected canvas candidate; no publication
         run: |
           python3 - <<'PY'
-          import json,os,urllib.request,pathlib
+          import json,pathlib,hashlib,shutil,importlib.util
           root=pathlib.Path('site')
           old=json.loads((root/'beta-native325/release-identity.json').read_text())
           new=json.loads((root/'beta-iphone-clock-ab/release-identity.json').read_text())
-          proof=json.loads((root/'beta-iphone-clock-ab-proof.json').read_text())
-          script=(root/'beta-iphone-clock-ab/copy-transport.js').read_text()
           assert old['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
           assert new['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
-          assert new['release_for_external_testers'] is False
-          assert proof['external_testers_enabled'] is False and proof['stable_game_sha256_unchanged'] is True
-          assert proof['parts_verified']==31 and proof['patch_literal_bytes']==8000096
-          import hashlib
-          assert hashlib.sha256(script.encode()).hexdigest()=='7b0717a4e4b655861084cf33f9c3df07e1e3c70660d2b8a6600d0c6a2ca98725', 'Must match actual published transport'
-          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42785047968',
-            headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Eldoria-owner-webkit'})
-          with urllib.request.urlopen(request,timeout=25) as response:
-            job=json.load(response)
-          assert job['conclusion']=='success' and job['head_sha']=='836fce54e33e0c3c5cc87ea4ca480da5eb44835a'
-          control=pathlib.Path('tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html').read_bytes()
-          assert hashlib.sha256(control).hexdigest()=='f964ee3a8086d6a18005a34ca21ff7f2f95a3bfc5266558ef1e942dbb717045b'
-          assert b'http-equiv="refresh"' not in control and b'play-16f4527815248e48.js' in control
-          assert (root/'beta-native325/play-16f4527815248e48.js').is_file()
-          (root/'beta-native325/index.html').write_bytes(control)
-          print('SAME_ORIGIN_CONTROL_ENTRY_RESTORED_LOCALLY_ONLY_NO_LIVE_MUTATION')
+          assert not new['release_for_external_testers']
+          assert hashlib.sha256((root/'beta-iphone-clock-ab/copy-transport.js').read_bytes()).hexdigest()=='7b0717a4e4b655861084cf33f9c3df07e1e3c70660d2b8a6600d0c6a2ca98725'
+          code=pathlib.Path('tools/eldoria-private-beta/iphone_ab')
+          shutil.copyfile(code/'control-beta10-entry.html',root/'beta-native325/index.html')
+          spec=importlib.util.spec_from_file_location('stage',code/'stage_stable_canvas.py')
+          stage=importlib.util.module_from_spec(spec);spec.loader.exec_module(stage)
+          stage.stage(root,code/'stable_canvas.js','browser-proof/evidence/canvas-shell-proof.json')
           PY
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Profile genuine WebKit WebContent memory and entry/reload for both builds
+      - name: Inventory installed iOS runtimes and install pinned XCUITest automation
         env:
-          QA_ENGINE: webkit
-          QA_VARIANT: unchanged
-          QA_ENTRY: '1'
-          QA_SKIP_PREFLIGHT: '1'
-          QA_EXPECT_ORIGIN: 'http://127.0.0.1:18975'
-          QA_NATIVE_PROFILE: '1'
-          QA_EARLY_ENTRY: '1'
-          QA_RESIZE_STRESS: '1'
+          APPIUM_HOME: ${{ runner.temp }}/eldoria-appium
         run: |
-          npm install --prefix "$RUNNER_TEMP/compact-webkit" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/compact-webkit/node_modules/.bin/playwright" install webkit
-          export NODE_PATH="$RUNNER_TEMP/compact-webkit/node_modules"
-          node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >server.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          node --test tools/eldoria-private-beta/iphone_ab/stable_canvas.test.mjs
-          failed=0
-          QA_URL='http://127.0.0.1:18975/beta-iphone-clock-ab/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs >control.log 2>&1 || failed=1
-          python3 - <<'PY'
-          import pathlib,json,hashlib
-          root=pathlib.Path('site/beta-iphone-clock-ab')
-          module=pathlib.Path('tools/eldoria-private-beta/iphone_ab/stable_canvas.js').read_text()
-          proof={'source':'052d8c65edf0191fa819d7d08438c6ab172ccf83','engine_modified':False,'shell_changes':[],'physical_iphone_tested':False}
-          for p in root.glob('play*.js'):
-            before=p.read_text()
-            assert before.count('matchWebGLToCanvasSize:true')==1
-            assert before.count('const instance=await createUnityInstance(canvas,{')==1
-            after=module+'\n'+before.replace('matchWebGLToCanvasSize:true','matchWebGLToCanvasSize:false').replace('const instance=await createUnityInstance(canvas,{','window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\n  const instance=await createUnityInstance(canvas,{')
-            p.write_text(after)
-            proof['shell_changes'].append({'file':p.name,'before':hashlib.sha256(before.encode()).hexdigest(),'after':hashlib.sha256(after.encode()).hexdigest()})
-          pathlib.Path('evidence/canvas-shell-proof.json').write_text(json.dumps(proof,indent=2))
-          PY
-          QA_VARIANT=stable-canvas QA_URL='http://127.0.0.1:18975/beta-iphone-clock-ab/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs >candidate.log 2>&1 || failed=1
+          mkdir -p evidence
+          xcodebuild -version > evidence/xcode.txt
+          xcrun simctl list -j > evidence/simulators.json
           python3 - <<'PY'
           import json,pathlib
-          rows={}
-          for name in ('control','candidate'):
-            r=json.loads(pathlib.Path('evidence',name,'report.json').read_text())
-            seq=r.get('resizeSequence',[])
-            rows[name]={'passed':r['passed'],'early':r.get('earlyEntry'),'resize':seq,'peak_rss_kib':max(p.get('rssKiB',0) for v in r['samples']+r.get('entrySamples',[]) for p in v.get('processes',[]) if 'WebContent' in p.get('name',''))}
-          pathlib.Path('evidence/immediate-resize-ab.json').write_text(json.dumps(rows,indent=2))
-          print('IMMEDIATE_ENTRY_RESIZE_DESKTOP_ONLY',rows)
-          assert all(r['passed'] and r['early']['attempted'] for r in rows.values())
-          seq=rows['candidate']['resize']
-          assert len(seq)==4 and len({(x['canvas']['width'],x['canvas']['height']) for x in seq})==1,'Candidate render target must remain unchanged during keyboard-height resize'
+          data=json.loads(pathlib.Path('evidence/simulators.json').read_text())
+          runs=[r for r in data['runtimes'] if r.get('isAvailable') and r['name'].startswith('iOS 26')]
+          assert runs,'No iOS 26 runtime available; do not substitute desktop Safari'
+          runtime=max(runs,key=lambda r:tuple(int(x) for x in r['version'].split('.')))
+          pathlib.Path('evidence/runtime.json').write_text(json.dumps(runtime,indent=2))
+          print(runtime)
           PY
-          if [ "$failed" != 0 ]; then exit 1; fi
-      - name: Archive real Mac WebKit evidence, NEVER claim physical iPhone certification
+          npm install --prefix "$RUNNER_TEMP/ios-tools" --no-save appium@3.1.2
+          "$RUNNER_TEMP/ios-tools/node_modules/.bin/appium" driver install xcuitest@12.22.8
+      - name: Run Safari in fresh iPhone simulators and capture actual failures
+        env:
+          APPIUM_HOME: ${{ runner.temp }}/eldoria-appium
+        run: |
+          export PATH="$RUNNER_TEMP/ios-tools/node_modules/.bin:$PATH"
+          node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >evidence/server.log 2>&1 &
+          server_pid=$!
+          appium --address 127.0.0.1 --port 4723 --log-level info >evidence/appium.log 2>&1 &
+          appium_pid=$!
+          trap 'kill "$server_pid" "$appium_pid" || true' EXIT
+          python3 - <<'PY'
+          import urllib.request,time
+          for n in range(60):
+            try:
+              urllib.request.urlopen('http://127.0.0.1:4723/status',timeout=2);break
+            except Exception:
+              if n==59: raise
+              time.sleep(1)
+          PY
+          runtime_id=$(python3 -c "import json;print(json.load(open('evidence/runtime.json'))['identifier'])")
+          export QA_IOS_VERSION=$(python3 -c "import json;print(json.load(open('evidence/runtime.json'))['version'])")
+          failed=0
+          for variant in beta-native325 beta-iphone-clock-ab; do
+            export QA_SIM_UDID=$(xcrun simctl create "Eldoria-$variant" com.apple.CoreSimulator.SimDeviceType.iPhone-16 "$runtime_id")
+            export QA_OUT="evidence/$variant"
+            mkdir -p "$QA_OUT"
+            xcrun simctl boot "$QA_SIM_UDID"
+            xcrun simctl bootstatus "$QA_SIM_UDID" -b
+            export QA_URL="http://127.0.0.1:18975/$variant/?eldoria_diag=1"
+            python3 tools/eldoria-private-beta/qa_ios_simulator.py || failed=1
+            xcrun simctl spawn "$QA_SIM_UDID" log show --last 10m --style compact --predicate 'process CONTAINS "WebKit" OR process == "MobileSafari"' >"$QA_OUT/system.log" 2>&1 || true
+            xcrun simctl shutdown "$QA_SIM_UDID" || true
+            xcrun simctl delete "$QA_SIM_UDID" || true
+          done
+          exit "$failed"
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: eldoria-immediate-entry-canvas-ab-not-iphone
-          path: |
-            evidence/
-            server.log
-            control.log
-            candidate.log
+          name: eldoria-ios-simulator-safari-not-physical-device
+          path: evidence/
           retention-days: 14
