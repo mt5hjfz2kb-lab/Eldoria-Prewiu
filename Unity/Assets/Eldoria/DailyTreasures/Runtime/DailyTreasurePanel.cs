@@ -1259,7 +1259,19 @@ namespace Eldoria.DailyTreasures
                     stage.ReceiptX,stage.ReceiptY,
                     stage.ReceiptW+16f,stage.ReceiptH+12f);
             UpdateSceneryCrop();
-            Place(header.rectTransform,.5f,1f,.5f,1f,0,-8f,panelW-64f,40f);
+            // A real 390px portrait calendar asked the 27px title to
+            // wrap to two 31px lines inside a 40px box. It also approached
+            // Vigilia's close affordance on 900px tablets. Keep this title
+            // in its OWN left-clear band and measure the actual imported
+            // font in Unity; never truncate one of the two words or let
+            // the title paint beneath the native close button.
+            float safeHeadingWidth=Mathf.Max(180f,panelW-124f);
+            Place(header.rectTransform,.5f,1f,.5f,1f,
+                -28f,-10f,safeHeadingWidth,40f);
+            header.fontSize=27;
+            while(header.fontSize>17 &&
+                  header.preferredWidth>safeHeadingWidth-8f)
+                header.fontSize--;
             Place(subhead.rectTransform,.5f,1f,.5f,1f,0,-49f,panelW-44f,26f);
             Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,48f,48f);
             int cols=portrait?2:4,rows=portrait?4:2;
