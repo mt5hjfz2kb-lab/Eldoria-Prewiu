@@ -48,19 +48,19 @@ const sourceRequirements=[
   // directly from CleanRoom. FreshArt remains live for wood/stone/food only.
   // Never keep a stale FreshArt surface assertion when the source actually
   // loads a different named painted original.
-  [/Resources\\.Load<Sprite>\\("VigiliaArt\\/CleanRoom\\/profile"\\)/,
+  [/Resources\.Load<Sprite>\("VigiliaArt\/CleanRoom\/profile"\)/,
     'Current Vigilia player identity uses approved single-piece CleanRoom profile'],
-  [/Resources\\.Load<Sprite>\\(\\s*"VigiliaArt\\/CleanRoom\\/resource"\\)/,
+  [/Resources\.Load<Sprite>\(\s*"VigiliaArt\/CleanRoom\/resource"\)/,
     'Current Vigilia resource row uses original CleanRoom capsule'],
-  [/Resources\\.Load<Sprite>\\("VigiliaArt\\/CleanRoom\\/upgrade"\\)/,
+  [/Resources\.Load<Sprite>\("VigiliaArt\/CleanRoom\/upgrade"\)/,
     'Current upgrade CTA uses original CleanRoom art (never as a loyalty reward)'],
-  [/actionPlate\\.ApplyIndependentArt\\(originalArt\\)/,
+  [/actionPlate\.ApplyIndependentArt\(originalArt\)/,
     'One painted upgrade CTA rather than a stacked border'],
-  [/actionPlate\\.preserveAspect\\s*=\\s*true/,
+  [/actionPlate\.preserveAspect\s*=\s*true/,
     'Native painted action retains source aspect'],
-  [/actionPlate\\.raycastTarget\\s*=\\s*false/,
+  [/actionPlate\.raycastTarget\s*=\s*false/,
     'Painted overlay does not steal pointer input'],
-  [/actionHit\\.raycastTarget\\s*=\\s*true/,
+  [/actionHit\.raycastTarget\s*=\s*true/,
     'True native action hit target'],
   [/resourceIllustrations\[i\]\.sprite=Resources\.Load<Sprite>\(/,
     'Canonical three resource sprites are drawn from real imported art']
@@ -85,7 +85,7 @@ for(const [family,name] of [
   ]);
   assert.equal(asset.type,'file','Live Vigilia source art disappeared: '+path);
   assert.ok(asset.size>5000,'Current painted source too small/missing: '+path);
-  const info=Buffer.from(meta.content.replace(/\\s/g,''),'base64').toString('utf8');
+  const info=Buffer.from(meta.content.replace(/\s/g,''),'base64').toString('utf8');
   assert.match(info,/textureType: 8/,'Current Vigilia material is not a Sprite: '+path);
   assert.match(info,/spriteMode: 1/,'Unexpected Sprite mode: '+path);
 }
