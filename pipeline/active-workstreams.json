@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T11:13:42.595Z",
+  "updated_at": "2026-11-10T11:55:58.923Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6825,7 +6825,7 @@
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "BETA10_STABLE_AND_MINIMAL_CLOCK_OWNER_AB_LIVE_IPHONE_TEST_PENDING",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "All current diagnostic runs completed. Source-only forward transport de7095e: 36 tests + all31 HTTP hashes PASS, NOT published. Same-origin desktop memory run42789786979 failed threshold, but RSS varies with compression; NOT causal iPhone proof. Compiler isolation42793879891/artifact13752933860 confirms useOMGJIT=false yet footprint3.4GiB vs direct3.3GiB: compiler hypothesis not supported, do NOT add speculative WASM padding. Actual physical restart remains unreproduced here. Required owner evidence: iPhone termination log at failure time (JetsamEvent/WebContent/Safari), exact URL and Safari vs embedded app. See PR179 and candidate.json. Stable beta10/save origin unchanged. Testers blocked; no background diagnostic, no Windows lease held.",
+      "next": "Owner confirmed Safari and repeat failure after closing ChatGPT; no matching OS termination log exists, do NOT block progress solely on unavailable log. Pivot: previous Mac tests waited90s before nickname; immediate startup + keyboard/toolbar resizes were untested. Source2bc2ac1 stabilizes render target on height-only viewport changes, preserves original1.5 DPR and width/rotation; 3 focused tests PASS. Actual live COPYADD hash7b0717 maps to source836fce5/run42785047968 (not older42781066472). Current exact transport immediate-entry A/B run42810897933; inspect entry/reload/screenshots, resize sequence and final footprint before owner-only deployment. Stager592022ab requires browser proof before/after hashes and preserves beta10+all Unity bytes. No external release; no Windows lease held.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
