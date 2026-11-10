@@ -162,6 +162,39 @@ namespace Eldoria.BreachWatch.Editor
             using(var stream = File.OpenRead(path))
                 return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
         }
+        // Run on ACTUAL Unity uGUI after Reflow: a source-only division by
+        // sprite.pixelsPerUnit is not the physical 9-slice size. Unity's
+        // Image.pixelsPerUnit includes Canvas.referencePixelsPerUnit and
+        // GetAdjustedBorders compresses both sides if the center is negative.
+        // Check the genuinely instantiated, visible image geometry at each
+        // real landscape/portrait screenshot resolution before certification.
+        static void CheckLiveSlicedGeometry(BreachWatchHud ui,string shot)
+        {
+            var surfaces=ui.GetComponentsInChildren<BreachWatchPlate>(true)
+                .Where(x=>x && x.gameObject.activeInHierarchy && x.sprite &&
+                    x.type==Image.Type.Sliced &&
+                    (x.sprite.name=="profile" || x.sprite.name=="mission" ||
+                     x.sprite.name=="resource")).ToArray();
+            foreach(string category in new[]{"profile","mission","resource"})
+                Need(surfaces.Any(x=>x.sprite.name==category),
+                     "Missing active original 2K painted nine-slice "+category+" / "+shot);
+            foreach(var paint in surfaces)
+            {
+                float ratio=paint.pixelsPerUnit;
+                float reference=paint.canvas ? paint.canvas.referencePixelsPerUnit : 0f;
+                Need(reference>0f && ratio>0f &&
+                    Mathf.Abs(ratio-paint.sprite.pixelsPerUnit/reference)<.001f,
+                    "Unexpected Unity canvas sprite PPU "+paint.name+" / "+shot);
+                var border=paint.sprite.border;
+                var rect=paint.rectTransform.rect;
+                float freeX=rect.width-(border.x+border.z)/ratio;
+                float freeY=rect.height-(border.y+border.w)/ratio;
+                Need(freeX>=8f && freeY>=7f,
+                    "Unity 2K nine-slice borders collapse painted center "+
+                    paint.sprite.name+" / "+shot+" width="+freeX+" height="+freeY+
+                    " spritePPU="+paint.sprite.pixelsPerUnit+" refPPU="+reference);
+            }
+        }
         static void CaptureRealCity()
         {
             var dir = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "../" + ArtifactDir));
@@ -452,6 +485,7 @@ namespace Eldoria.BreachWatch.Editor
                 // Always archive the exact real screenshot even when a following
                 // visual/text gate fails. Previous FAILs hid the actual cause.
                 File.WriteAllBytes(file,image.EncodeToPNG());
+                CheckLiveSlicedGeometry(ui,name);
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 string[] important=selection=="bastion"
                     ?new[]{"Real building name","Real effects",
