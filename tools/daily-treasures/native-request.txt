@@ -1,16 +1,14 @@
-# Exact PR181 Unity 6000.3.23f1; real screenshots, pointer events and disposable gateway claims.
-# Trigger ONLY with verified CAS Windows lease; workflow fails closed on HEAD drift.
+# One exact SHA PR181 Unity 6000.3.23f1 run. 72 genuine images and real Gateway/GraphicRaycaster proof.
 state=REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION
 workstream=eldoria-daily-treasures-20261108
-source_before_request=3af5be36bb869a95f39767e2db9f46c6fc76675d
-registry_main_commit_claim=07ecd98d2af1223a938074b237e45ccfc174228c
-runner_lease_revision=21
+source_before_request=b95c0d910e67845f0fe7f92a3a23a65f8b5b4b36
+registry_main_commit_claim=ba938709c15fca9d7ce0b7c61b7908798fffa9a0
+runner_lease_revision=23
 runner_owner=chatgpt-daily-treasures-20261108
 evidence=52_contract_png+20_paid_quiet_png+116_real_pointer_events+28_real_gateway_claims
 scenes=Lyra+Scouts+Vigilants+Bastion
-vigilia=ScreenSpaceCamera_at_sort_order_5000
-native_failure_regression=quiet_day_pointer_depth_minus_one_new_Canvas_per_claim
+native_failure_regression=real_Unity_66px_portrait_receipt_72px_layout
 art_approved=false
 full_game_verified=false
 merge_or_publish=false
-requested_at=2026-11-10T07:42:00Z
+requested_at=2026-11-10T07:58:00Z
