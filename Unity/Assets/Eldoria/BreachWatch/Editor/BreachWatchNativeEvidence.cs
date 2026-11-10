@@ -497,9 +497,8 @@ namespace Eldoria.BreachWatch.Editor
                 Need(ui.IndependentCanvas && ui.LegacyPresentationHidden && ui.HasRealSession,
                     "Old presentation visible or disconnected UI in "+name);
                 var atmosphericVeil=ui.GetComponentInChildren<BreachWatchAtmosphere>(true);
-                Need(atmosphericVeil && !atmosphericVeil.raycastTarget &&
-                     atmosphericVeil.gameObject.activeInHierarchy,
-                     "Independent unobtrusive atmospheric layer missing or stealing input: "+name);
+                Need(!atmosphericVeil,
+                     "Fresh HUD rebuild must NOT overlay a previous fullscreen atmospheric layer: "+name);
                 var rift=ui.GetComponentsInChildren<Image>(true)
                     .FirstOrDefault(x=>x && x.sprite &&
                         x.sprite.name=="breach_signal");
@@ -547,52 +546,41 @@ namespace Eldoria.BreachWatch.Editor
                      profileLion.anchoredPosition.y<=-1f,
                      "Realm crest hangs outside the owner profile plaque "+
                      "and looks like a second attached badge: "+name);
-                var contour=ui.BuildingPanel.GetComponentsInChildren<Image>(true)
-                    .Where(i=>i && i.sprite &&
-                        i.sprite.name=="owner_gold_border").ToArray();
-                Need(contour.Length==1 &&
-                     contour[0].type==Image.Type.Simple &&
-                     contour[0].color.a>=.84f && contour[0].color.a<=.92f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMin.x)<=2f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMin.y)<=20f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMax.x)<=2f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMax.y)<=20f,
-                     "Reference contour is a duplicated or misaligned overlay "+
-                     "rather than the single integral cartouche rim: "+name);
-                // The two source-painted gold FINIALS must remain outside
-                // live title and CTA, not pushed inward by over-shrinking
-                // a single non-sliced ornate sprite. Constrain their native
-                // offset to the exact approved 19u vertical clearance.
-                Need(Mathf.Abs(contour[0].rectTransform.offsetMin.y+19f)<.8f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMax.y-19f)<.8f,
-                     "Shrunken ring places the source-painted gold finial "+
-                     "on top of genuine Bastion title or upgrade text: "+name);
-                var brassWells=ui.BuildingPanel.GetComponentsInChildren<BreachWatchPlate>(true)
-                    .Where(i=>i && i.sprite && i.sprite.name=="brass_portrait").ToArray();
-                Need(brassWells.Length==1 &&
-                     brassWells[0].type==Image.Type.Sliced &&
-                     brassWells[0].enabled && !brassWells[0].fillCenter &&
-                     !brassWells[0].raycastTarget,
-                     "One authentic nine-sliced brass outline must have ZERO "+
-                     "opaque center behind the transparent real 3D Bastion: "+name);
+                // Strict cleanroom invariant: the entire panel must have
+                // precisely one independent high-resolution sprite.
+                // No old owner_gold_border overlay, separate brass portrait
+                // plate or procedural fallback can survive underneath it.
+                var oldGold=ui.BuildingPanel.GetComponentsInChildren<Image>(true)
+                    .Count(i=>i && i.sprite && i.sprite.name=="owner_gold_border");
+                var oldBrass=ui.BuildingPanel.GetComponentsInChildren<BreachWatchPlate>(true)
+                    .Count(i=>i && i.sprite && i.sprite.name=="brass_portrait");
+                var cleanPanel=ui.BuildingPanel.GetComponent<Image>();
+                Need(oldGold==0 && oldBrass==0 &&
+                     cleanPanel && cleanPanel.sprite &&
+                     cleanPanel.sprite==Resources.Load<Sprite>("VigiliaArt/FreshArt/building_panel") &&
+                     cleanPanel.type==Image.Type.Simple && cleanPanel.raycastTarget &&
+                     ui.UsesPremiumForgedPortraitFrame &&
+                     ui.UsesSinglePremiumContext,
+                     "Old panel artwork, detached rim or duplicate portrait frame "+
+                     "is still layered under the new 2K painted panel: "+name);
                 var palette=ui.GetComponentsInChildren<Image>(true)
                     .Where(x=>x && x.sprite).ToArray();
-                Need(palette.Any(x=>x.sprite.name=="panel_fill" &&
-                         x.color.r>=.95f && x.color.g>=.93f) &&
-                     palette.Any(x=>x.sprite.name=="profile_bar" &&
-                         x.color.r>=.95f && x.color.g>=.93f) &&
-                     palette.Count(x=>x.sprite.name=="resource_capsule" &&
-                         x.color.r>=.95f && x.color.g>=.93f)>=2,
+                Need(palette.Count(x=>x.sprite.name=="building_panel" &&
+                         x.color.r>=.95f && x.color.g>=.95f)==1 &&
+                     palette.Count(x=>x.sprite.name=="profile_panel" &&
+                         x.color.r>=.95f && x.color.g>=.95f)==1 &&
+                     palette.Count(x=>x.sprite.name=="resource_chip" &&
+                         x.color.r>=.95f && x.color.g>=.95f)>=2,
                      "Player, resources and cartouche no longer share "+
                      "the same warm material treatment: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
-                    "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
+                    "All three live resources must use original complete 2K cleanroom capsules, not old procedural frames");
                 Need(ui.HasOwnerApprovedUtilityArtwork,
                     "The three compact utility seals must match the separately cropped "+
                     "gold medallions in the owner's approved UI, not generic hexagons");
                 var mineral=ui.BuildingPanel.GetComponent<Image>();
                 Need(mineral && mineral.sprite &&
-                     mineral.sprite.name=="panel_fill" &&
+                     mineral.sprite.name=="building_panel" &&
                      mineral.type==Image.Type.Simple && mineral.raycastTarget &&
                      ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==0 &&
                      !ui.BuildingPanel.GetComponent<BreachWatchPlate>(),
