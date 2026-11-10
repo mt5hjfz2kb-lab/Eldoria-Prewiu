@@ -104,10 +104,14 @@ function processes() {
     });
     write();
     if(!report.capabilities.webgl2)throw Error('ENVIRONMENT_NO_WEBGL2');
+    const expectedOrigin=process.env.QA_EXPECT_ORIGIN;
+    const verifyOrigin=()=>{if(expectedOrigin&&new URL(page.url()).origin!==expectedOrigin)throw Error('QA_UNEXPECTED_ORIGIN '+page.url());};
+    verifyOrigin();
     await page.locator('#play').click();
     let readyAt=0,earlyEntry=false;
     const started=Date.now();
     while(Date.now()-started<330000){
+      verifyOrigin();
       if(report.errors.length)throw Error('Browser failure');
       const s=await page.evaluate(()=>{
         const game=window.valoriaGame;
@@ -142,6 +146,7 @@ function processes() {
           visible:!document.getElementById('game').hidden,
           metrics:window.valoriaGame?.GetMetricsInfo?.(),wasmCapacityBytes:window.valoriaGame?.Module?.HEAPU8?.byteLength||0}));
         sample.phase=phase;sample.processes=processes();report.entrySamples.push(sample);write();
+        verifyOrigin();
         if(report.errors.length||!sample.ready||!sample.visible)throw Error('Unity failed during '+phase);
         await page.waitForTimeout(1000);
       }
@@ -153,6 +158,9 @@ function processes() {
       await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
       await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:120000});await observeEntry(45,"reloaded");
       await page.screenshot({path:out+'/reloaded.png',timeout:15000});
+      const loadedIdentity=await page.evaluate(()=>fetch('release-identity.json',{cache:'no-store'}).then(r=>r.json()));
+      if(loadedIdentity.source_sha!==report.identity.source_sha||loadedIdentity.revision!==report.identity.revision)throw Error('QA_RELOADED_SOURCE_IDENTITY_CHANGED');
+      report.reloadedIdentity={source_sha:loadedIdentity.source_sha,revision:loadedIdentity.revision};
       report.entry={nickname:'Beta QA',typed:true,reloaded:true,observationSeconds:45,visualNameVerification:'pending image inspection'};
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
       if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))throw Error('Entry/reload runtime errors');
