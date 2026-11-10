@@ -69,6 +69,8 @@ def verify():
     # level in Cormorant, with 54u available and 4u next to the close badge.
     fits("Bastión",SEMIBOLD,16,54,"real Bastion name in 54u")
     fits("NIVEL I",SEMIBOLD,12,54,"real Bastion level single row")
+    fits("450",BODY_BOLD,15,42,"real 450 wood price single row")
+    fits("300",BODY_BOLD,15,43,"real 300 stone price single row")
     paragraph="Gobierno y progreso de Valoria."
     paragraphs=lines(REGULAR,12,paragraph,panel_width-26)
     assert len(paragraphs)<=2,(paragraphs,"narrative wraps beyond its 43u card")
