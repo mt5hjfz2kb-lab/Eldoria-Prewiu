@@ -687,6 +687,22 @@ namespace Eldoria.BreachWatch.Editor
                     var b = RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
                     Need(b.x-a.x>=43.5 && b.y-a.y>=43.5,
                         "Navigation touch-target smaller than 44px: "+name+"/"+button.name);
+                    // A 44px invisible tap surface is NOT enough: the earlier
+                    // native 390x844 / 844x390 screenshots painted medallions
+                    // only ~31px wide. Check the real source Image rect and
+                    // its mesh-space VisualScale at all four resolutions.
+                    var medal=button.GetComponentInChildren<BreachWatchPlate>(true);
+                    Need(medal && medal.sprite && medal.VisualScale>.0f,
+                        "Approved painted navigation medallion missing: "+name);
+                    Vector3[] paintedCorners=new Vector3[4];
+                    medal.rectTransform.GetWorldCorners(paintedCorners);
+                    var pa=RectTransformUtility.WorldToScreenPoint(camera,paintedCorners[0]);
+                    var pb=RectTransformUtility.WorldToScreenPoint(camera,paintedCorners[2]);
+                    float visibleInkWidth=(pb.x-pa.x)*medal.VisualScale;
+                    float visibleInkHeight=(pb.y-pa.y)*medal.VisualScale;
+                    Need(visibleInkWidth>=38f && visibleInkHeight>=38f,
+                        "Native navigation art under 38px despite legal hit target: "+
+                        name+"/"+button.name+" ["+visibleInkWidth+","+visibleInkHeight+"]");
                     Need(a.x>=-2 && b.x<=w+2 && a.y>=-2 && b.y<=h+2,
                         "Off-screen independent nav button: "+name+"/"+button.name);
                     if (!float.IsNaN(baselineY) && Mathf.Abs(a.y-baselineY)>2) oneRow=false;
