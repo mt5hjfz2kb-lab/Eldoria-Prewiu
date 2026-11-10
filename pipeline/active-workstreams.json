@@ -7403,7 +7403,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 28,
+      "ownership_revision": 29,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7427,13 +7427,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "WINDOWS_EXCLUSIVE_CAS28_NATIVE_RETEST_511B47_PENDING",
+      "phase": "NATIVE_RETEST_42805795367_FAILED_MILESTONE_VIGILANTS_TEXT_FIX_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Run exact PR181 HEAD 511b47e... one Unity Windows native proof via tools/daily-treasures/native-request.txt; 72 originals, 116 pointer hits, 28 disposable claims. Evaluate real pixels; ART_APPROVED false until human sign-off. Release runner by CAS immediately after run concludes.",
+      "next": "Fix only PR181 receipt typography in landscape/portrait based on genuine Unity log (110px required vs84 available in Vigilants result). Source test then lease Windows CAS again only when free, rerun same PR exact HEAD; inspect 72 PNG,116 native interactions,28 payouts. PR draft ART_APPROVED=false; no main/beta/PR173 changes or merge.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7482,8 +7480,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-10T11:10:36.775Z",
-      "runner_release_basis": "Unity run 42789608293 SHA 2e293a36a5a1a2f4e9480f52372f65bf22a36f77 concluded FAILURE with 50 genuine screenshot frames; Unity Text Reward heading required 62 px, available 40 px during day-seven calendar; all jobs completed including independent audit; preserve artifacts 13752726221 and 13752711274. No Unity running job in this reservation.",
+      "runner_released_at": "2026-11-10T12:38:37.892Z",
+      "runner_release_basis": "Native Unity run 42805795367 exact PR181 HEAD 6a7c91bcabfa524a36e2d32bec8c977accdc49b5 FINISHED FAILURE; Unity compiled and generated partial authentic PNGs, but VerifyCriticalTypography rejected milestone vigilants receipt (preferredHeight=110, available=84); all jobs completed including image audit; evidence artifacts 13761367483 / 13760348535. Preserve for diagnosis. No running Windows task under this lease.",
       "runner_claimed_at": "2026-11-10T10:22:36.607Z",
       "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia.",
       "runner_claim_basis": "Second exclusive claim after run 42789608293 FINISHED FAILURE and revision25 CAS release; no other active windows holders in main, PR173/179 inspected; new native must verify Unity/Blender processes and exact PR HEAD again."
