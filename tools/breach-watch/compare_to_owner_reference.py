@@ -62,6 +62,49 @@ def make(owner:Path,evidence:Path,out:Path,candidate_sha:str):
              font=font(17),fill=paper)
     output=out/"vigilia_OWNER_reference_vs_REAL_Unity.jpg"
     canvas.save(output,quality=91,subsampling=0,optimize=True)
+    # The reference's artistic quality lives in small, independent regions
+    # as much as in the full scene. The full-screen A/B above is preserved,
+    # and this additional paired sheet reveals the actual GPU typography,
+    # sculpted nav surfaces, resource chips, mission and burgundy CTA.
+    # Each pair is cropped at IDENTICAL pixel coordinates from the 9:16
+    # owner image and the exact-SHA-verified Unity image. This is a diagnostic
+    # enlargement, not a reconstructed screen or a subjective art score.
+    focus=(
+        ("01  PERFIL Y PODER", (0,0,385,135)),
+        ("02  RECURSOS", (445,0,900,135)),
+        ("03  MISION Y LA BRECHA", (0,112,610,275)),
+        ("04  CASTILLO REAL", (205,305,820,810)),
+        ("05  FICHA DEL BASTION Y BOTON BURDEOS", (500,760,900,1365)),
+        ("06  MEDALLONES DE NAVEGACION", (90,1370,805,1590)),
+    )
+    rows=[]
+    colwidth=520
+    for label,rect in focus:
+        crops=(reference.crop(rect),actual.crop(rect))
+        tw=min(colwidth,round((rect[2]-rect[0])*2.1))
+        th=round((rect[3]-rect[1])*tw/(rect[2]-rect[0]))
+        row=Image.new("RGB",(colwidth*2+58,th+94),bg)
+        rd=ImageDraw.Draw(row)
+        rd.text((20,8),label,font=font(24),fill=bronze)
+        rd.text((20,43),"A · REFERENCIA",font=font(16),fill=paper)
+        rd.text((colwidth+40,43),"B · UNITY REAL",font=font(16),fill=paper)
+        for i,frame in enumerate(crops):
+            thumb=frame.resize((tw,th),Image.Resampling.LANCZOS)
+            row.paste(thumb,(20+i*(colwidth+20),82))
+        rows.append(row)
+    detail=Image.new("RGB",(colwidth*2+58,sum(row.height for row in rows)+
+            (len(rows)+1)*20+85),bg)
+    dp=ImageDraw.Draw(detail)
+    dp.text((20,12),"VIGILIA · 6 ZONAS ARTISTICAS · A/B",
+            font=font(27),fill=bronze)
+    dp.text((20,55),"Recortes de imagen aprobada y Unity verificado; no es aprobacion.",
+            font=font(16),fill=paper)
+    dy=105
+    for row in rows:
+        detail.paste(row,(0,dy))
+        dy+=row.height+20
+    detail_name="vigilia_OWNER_details_vs_REAL_Unity.jpg"
+    detail.save(out/detail_name,quality=92,subsampling=0,optimize=True)
     manifest={
         "reference_sha256":digest(owner),
         "candidate_source_sha":candidate_sha,
@@ -72,6 +115,8 @@ def make(owner:Path,evidence:Path,out:Path,candidate_sha:str):
         "reference_is_user_provided":True,
         "candidate_is_verified_unity_screenshot":True,
         "visual_score":None,
+        "focus_region_count":len(focus),
+        "detail_sheet":detail_name,
         "art_approved":False,
         "output":output.name
     }
