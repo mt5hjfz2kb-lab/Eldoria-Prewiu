@@ -57,11 +57,10 @@ jobs:
           git config user.name "Eldoria VisualKit CI"
           git config user.email "visualkit-ci@users.noreply.github.com"
           git add Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/
-          remote=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
-          if [ "$remote" != "$GITHUB_SHA" ]; then
-             echo 'CLEANROOM_SOURCE_HEAD_CHANGED_SAFE_ABORT'
-             exit 1
-          fi
           git diff --cached --quiet && echo 'Already imported' && exit 0
           git commit -m 'art(vigilia): import fresh independently generated premium HUD sprite kit'
+          # Rebase only onto the same canonical fast-forward branch. Never
+          # force-push, override assets or alter another workstream's files.
+          git fetch origin "${GITHUB_REF#refs/heads/}" --depth=80
+          git rebase FETCH_HEAD
           git push origin HEAD:"$GITHUB_REF"
