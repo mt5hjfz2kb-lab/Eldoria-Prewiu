@@ -1013,7 +1013,9 @@ namespace Eldoria.BreachWatch.Editor
                          actionText.rectTransform.rect.width<=
                            artDrawnLeft+artDrawnWidth-3f,
                          "Real upgrade caption escapes the PAINTED burgundy sprite: "+name);
-                    bool fullCaption=w>=800;
+                    // Full destination title fits on roomy portrait; landscape shows
+                    // the same real Bastion II action in one clear line.
+                    bool fullCaption=h>w && w>=800;
                     string expectedCaption=host.English
                         ?(fullCaption?"Upgrade to Bastion II":"Upgrade II")
                         :(fullCaption?"Mejorar a Bastión II":"Mejorar a II");
