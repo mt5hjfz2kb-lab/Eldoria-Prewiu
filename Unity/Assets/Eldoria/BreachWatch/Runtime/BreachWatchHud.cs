@@ -951,8 +951,8 @@ namespace Eldoria.BreachWatch
                 At(identityPower.rectTransform,lionTextInset,
                     smallPhone?26f:22f,(smallPhone?174f:166f)-crestSize,
                     smallPhone?18f:17f);
-                identityName.fontSize=smallPhone?17:15;
-                identityPower.fontSize=smallPhone?14:10;
+                identityName.fontSize=smallPhone?15:13;
+                identityPower.fontSize=smallPhone?13:10;
 
                 float rightSpace=w-(margin+182+9+margin);
                 // Three approved stone counters occupy predictable slots.
@@ -1018,7 +1018,7 @@ namespace Eldoria.BreachWatch
                 // Move the same live text 1u UP and make the row 1u taller,
                 // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?11f:9f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?15f:13f,missionWidth-(smallPhone?64f:44f),
                     smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
@@ -1029,10 +1029,10 @@ namespace Eldoria.BreachWatch
                 // spacing. Move ONLY live ink upward, with 2u minimum row
                 // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?28f:24f,missionWidth-(smallPhone?70f:44f),
+                    smallPhone?32f:28f,missionWidth-(smallPhone?70f:44f),
                     fullObjective?51f:(smallPhone?12f:10f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?42f:36f),
+                    fullObjective?87f:(smallPhone?46f:40f),
                     missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
@@ -1066,11 +1066,13 @@ namespace Eldoria.BreachWatch
                 // at 844x390 despite 52 source geometry checks passing.
                 // Preserve owner-approved artwork, increase its real mesh
                 // footprint and keep the complete row within the safe area.
-                float navSize=smallPhone?70f:58f,navGap=smallPhone?10f:5f;
+                // Owner review: footer must remain visibly present in a full-screen mobile capture.
+                // Larger original medallions, safe-area clearance and all five slots still fit.
+                float navSize=75f,navGap=6f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-(smallPhone?111f:90f);
+                float navTop=h-(smallPhone?130f:111f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    smallPhone?80f:70f);
+                    84f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1142,8 +1144,8 @@ namespace Eldoria.BreachWatch
                 // or truncate a real price. Use the remaining true 43u
                 // before the card's bronze rim, not a painted overlay.
                 At(costQuantities[1].rectTransform,110,194,pw-115,20);
-                costQuantities[0].fontSize=15;
-                costQuantities[1].fontSize=15;
+                costQuantities[0].fontSize=14;
+                costQuantities[1].fontSize=14;
                 At(buildingState.rectTransform,13,220,pw-26,17);
                 // The full live Spanish action is 95px wide at 12pt: retain a
                 // 32.5% hammer well AND widen the actual painted action, rather
@@ -1151,12 +1153,12 @@ namespace Eldoria.BreachWatch
                 At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50);
                 // Readable physical text survives the .91 scale of 390px
                 // devices while the larger 900px design stays lightweight.
-                buildingName.fontSize=16;
-                buildingLevel.fontSize=smallPhone?14:12;
-                buildingFunction.fontSize=smallPhone?14:12;
+                buildingName.fontSize=15;
+                buildingLevel.fontSize=smallPhone?13:11;
+                buildingFunction.fontSize=smallPhone?13:11;
                 buildingCosts.fontSize=smallPhone?14:12;
                 buildingState.fontSize=smallPhone?13:11;
-                costHeader.fontSize=smallPhone?14:11;
+                costHeader.fontSize=smallPhone?13:10;
                 actionLabel.fontSize=smallPhone?16:13;
 
                 At(feedbackPlate,margin,h-160,Mathf.Max(120,left-margin-15),36);
@@ -1173,7 +1175,7 @@ namespace Eldoria.BreachWatch
                 // its full Legacy Text line height without another panel.
                 At(identityName.rectTransform,59,6,166,25);
                 At(identityPower.rectTransform,59,32,165,21);
-                identityName.fontSize=20;
+                identityName.fontSize=18;
                 identityPower.fontSize=14;
 
                 float chip=visibleResources==2
@@ -1353,7 +1355,7 @@ namespace Eldoria.BreachWatch
                 // Extra clearance after native GPU test showed the new 2K hammer
                 // relief extends beyond 28% of the painted button.
                 float captionLeft=paintedLeft+paintedWidth*.30f;
-                float captionRight=paintedLeft+paintedWidth-7f;
+                float captionRight=paintedLeft+paintedWidth-10f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
                     Mathf.Max(20f,captionRight-captionLeft),
@@ -1541,7 +1543,7 @@ namespace Eldoria.BreachWatch
                     actionLabel.verticalOverflow=VerticalWrapMode.Truncate;
                     float legalWidth=Mathf.Max(16f,
                         actionLabel.rectTransform.rect.width-2.5f);
-                    for(int size=lastPortrait?15:16;size>=11;size--)
+                    for(int size=lastPortrait?14:15;size>=11;size--)
                     {
                         actionLabel.fontSize=size;
                         if(actionLabel.preferredWidth<=legalWidth)break;

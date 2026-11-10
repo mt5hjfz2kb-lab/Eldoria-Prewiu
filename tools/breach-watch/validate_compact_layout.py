@@ -88,15 +88,15 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("mission",m,80 if pw<600 else 82,missionw,80 if pw<600 else 60)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 36,11 if pw<600 else 9,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        chapter_text=R(54 if pw<600 else 36,15 if pw<600 else 13,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
         assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
         assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 36,28 if pw<600 else 24,missionw-(70 if pw<600 else 44),12 if pw<600 else 10)
-        progress=R(59 if pw<600 else 36,42 if pw<600 else 36,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        short_objective=R(59 if pw<600 else 36,32 if pw<600 else 28,missionw-(70 if pw<600 else 44),12 if pw<600 else 10)
+        progress=R(59 if pw<600 else 36,46 if pw<600 else 40,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
         assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
         assert short_objective.y+short_objective.h+2<=progress.y,size
         assert progress.y+progress.h<= (80 if pw<600 else 60)-(8 if pw<600 else 5),size
@@ -106,13 +106,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
-        navsize,gap=(70,10) if pw<600 else (58,5)
+        navsize,gap=75,6
         inset,art_scale=(4,.88) if pw<600 else (5,.88)
         painted_physical=(navsize-2*inset)*art_scale*scale
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-(111 if pw<600 else 90)
+        navtop=h-(115 if pw<600 else 130)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
@@ -237,8 +237,8 @@ def main():
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
         'float lionTextInset=crestSize+(smallPhone?8f:16f);',
-        'float navSize=smallPhone?70f:58f,navGap=smallPhone?10f:5f;',
-        'float navTop=h-(smallPhone?111f:90f)',
+        'float navSize=75f,navGap=6f;',
+        'float navTop=h-(smallPhone?130f:111f)',
         'float ph=297f',
         'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
         'float cardRightInset=smallPhone?margin:39f;',
