@@ -1,0 +1,75 @@
+name: Eldoria P0 — exact beta10 vs clock candidate streamed-payload reuse feasibility
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - '.github/workflows/eldoria-beta-payload-reuse.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-beta-p0-payload-delta-readonly
+  cancel-in-progress: false
+jobs:
+  verify-xor-reuse:
+    name: Verify all 31 decoded chunks and compute lossless delta feasibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: e7c43f17a354c1b981b0708e80dd7abf2a6569d9
+          sparse-checkout: tools/eldoria-private-beta/iphone_ab/analyze_stream_reuse.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify both original source runs passed and remained exact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def get(path):
+              request=urllib.request.Request(root+path,headers={
+                  'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                  'Accept':'application/vnd.github+json','User-Agent':'Eldoria-ReadOnly-Delta-QA'})
+              with urllib.request.urlopen(request,timeout=35) as response:return json.load(response)
+          for run in (42687093695,42716414385):
+              x=get('actions/runs/'+str(run))
+              assert x['status']=='completed' and x['conclusion']=='success', 'Run did not pass: '+str(run)
+              if run==42716414385:
+                  assert x['head_sha']=='5af92f0fe64f65280b9a57816aafaa32d2cb7d47', 'Wrong clock candidate'
+          print('EXACT_VERIFIED_RUNS_PASSED_NO_LIVE_PAGES_MODIFICATIONS')
+          PY
+      - name: Fetch immutable previously iPhone-playable beta10 Pages archive
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42687093695
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: old-pages
+      - name: Fetch exact native-tested candidate clock WebGL site
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42716414385
+          name: beta10-minimal-clock-candidate-site
+          github-token: ${{ github.token }}
+          path: new-site
+      - name: SHA-check all 31 real Unity chunks and compute reversible compression feasibility
+        run: |
+          python3 tools/eldoria-private-beta/iphone_ab/analyze_stream_reuse.py --stable-pages-artifact-tar old-pages/artifact.tar --candidate-root new-site --output payload-reuse-result.json
+          python3 - <<'PY'
+          import json
+          x=json.load(open('payload-reuse-result.json'))
+          assert len(x['parts'])==31
+          t=x['totals']
+          assert t['stable_decoded_bytes']>500_000_000 and t['candidate_decoded_bytes']>500_000_000
+          assert t['candidate_not_live'] and not t['iphone_stability_tested']
+          print('BETA10_VS_WORLD_CLOCK_STREAM_DELTA_SHA_VERIFIED',t)
+          PY
+      - name: Retain small exact feasibility report; never publish binary data or invite testers
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta10-minimal-clock-readonly-delta-report
+          path: payload-reuse-result.json
+          retention-days: 14
