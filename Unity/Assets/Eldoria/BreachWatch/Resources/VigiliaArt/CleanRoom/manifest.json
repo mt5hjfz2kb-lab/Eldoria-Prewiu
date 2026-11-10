@@ -1,6 +1,6 @@
 {
   "pipeline": "cleanroom-new-asset-generation-v1",
-  "created_utc": "2026-11-10T08:16:12.524180+00:00",
+  "created_utc": "2026-11-10T08:24:02.934527+00:00",
   "reference_pixels_reused": false,
   "legacy_hud_asset_reused": false,
   "output_count": 10,
@@ -8,11 +8,11 @@
   "assets": [
     {
       "asset": "panel",
-      "width": 1374,
-      "height": 2318,
-      "sha256": "e33e959eace65859e0ce12a864fb7fe4025532a6a7f5c243f5bc8cb8b61f078c",
-      "source_sha256": "116bd54703c01aab8f3c42851afe431ee46a83b04c57ebba0028c6e62dd8bb83",
-      "source_task": "34949944-84e1-4d76-942c-cf2813de7d63",
+      "width": 1375,
+      "height": 2320,
+      "sha256": "49c58972f94fa1829afcee9a17f92bf17d58569afe1159e514ab9bfcfbafdc9d",
+      "source_sha256": "cb5b1b1c82f938348f1538be8b90e1a2a139dcc8027a22a06b9f4bb50598a739",
+      "source_task": "db7a3239-c818-43da-a3ab-e1b7aa9fe9be",
       "origin": "panel",
       "derived_from": "new_generation_only"
     },
