@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T22:00:56.127Z",
+  "updated_at": "2026-11-10T22:12:25.827Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6817,7 +6817,18 @@
       },
       "runner_release_basis": "Run42908608187 terminal success including native and genuine A/B; eight exact-head image hashes verified, final images inspected.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
-      "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets."
+      "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof.",
+      "pending_frame_spacing": {
+        "source_sha": "e7e4328b2c14d448242c91574315dbdf20e74ec0",
+        "source_run": 42910800273,
+        "source_syntax": "PASS",
+        "source_art_integrity": "PASS",
+        "source_font_fit": "PASS",
+        "geometry_scenarios": 52,
+        "native_visual_verified": false,
+        "changes": "Wider resource capsules; taller profile and mission wells; name 1pt smaller with larger top inset; separate mission rows from gold trim; CTA right inset14.",
+        "native_dependency": "Windows explicitly held by private-beta workstream revision25; native job correctly skipped. Reclaim only after release and obtain exact-head eight native captures."
+      }
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
