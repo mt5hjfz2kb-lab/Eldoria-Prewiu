@@ -1290,7 +1290,7 @@ namespace Eldoria.DailyTreasures
                 // at the centre, never behind an unrelated daily coffer.
                 bool cityStage=currentStage==DailyTreasureStageKind.Bastion;
                 float headingWidth=cityStage?
-                    Mathf.Min(panelW-116f,portrait?240f:300f):
+                    Mathf.Min(panelW-132f,portrait?230f:300f):
                     portrait?Mathf.Min(panelW-116f,280f):
                     Mathf.Min(panelW*.58f,330f);
                 float headingX=portrait?
