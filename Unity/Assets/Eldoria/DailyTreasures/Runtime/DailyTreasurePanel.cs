@@ -18,6 +18,10 @@ namespace Eldoria.DailyTreasures
         static readonly Color Ivory=new Color(.98f,.94f,.84f,1f);
         static readonly Color Muted=new Color(.83f,.81f,.76f,1f);
         static readonly Color Stone=new Color(.085f,.090f,.095f,1f);
+        // Native real-city A/B run 42888085086: previous .91f dimmer
+        // retained just ~15-19% of scenery outside the seven-day calendar.
+        // Restore actual Valoria scenery, without changing the solid slate cards.
+        const float CalendarBackdropOpacity=.70f;
         static readonly Color Oak=new Color(.28f,.12f,.10f,1f);
         ICommandGateway gateway;
         Func<long> now;
@@ -336,7 +340,7 @@ namespace Eldoria.DailyTreasures
 
             screen=NewRect("Tributo de los siete días / modal",root);
             Stretch(screen);
-            screenShade=Plate(screen,new Color(.018f,.020f,.026f,.91f));
+            screenShade=Plate(screen,new Color(.018f,.020f,.026f,CalendarBackdropOpacity));
             cardSurface=NewRect("Basalt and worn bronze reward parchment",screen);
             mainFrameSurface=Plate(cardSurface,Stone);
             if(!ApplyAuthoredFrame(cardSurface,"valoria_frame_main_512"))
@@ -642,7 +646,7 @@ namespace Eldoria.DailyTreasures
                 !HasVisibleVigiliaBuildingPanel());
             currentStage=DailyTreasureStageKind.Daily;
             activeMilestoneId=null;
-            if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,.91f);
+            if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,CalendarBackdropOpacity);
             if(mainFrameSurface)
                 mainFrameSurface.color=mainFrameSurface.sprite?Color.white:Stone;
             if(milestoneBanner)milestoneBanner.gameObject.SetActive(false);
@@ -1242,7 +1246,7 @@ namespace Eldoria.DailyTreasures
                     roomyCalendar?420f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
-                eventStage?stage.BackdropOpacity:.91f);
+                eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);
             if(mainFrameSurface)
             {
                 if(mainFrameSurface.sprite)

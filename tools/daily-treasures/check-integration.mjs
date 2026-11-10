@@ -463,4 +463,9 @@ assert.match(gateway,/#if UNITY_6000_0_OR_NEWER \|\| DAILY_TREASURE_FEATURE[\s\S
 assert.match(dailyGatewayProject,/DefineConstants>\$\(DefineConstants\);DAILY_TREASURE_FEATURE/);
 assert.match(dailyCI,/tools\/early-retention\/Smoke.csproj/);
 assert.match(dailyCI,/tools\/ui-v3-domain-smoke\/Smoke.csproj/);
+// Real Unity city A/B showed only 15-19% surviving luminance outside
+// the solid authored slate. Preserve the measured calendar-only recovery.
+assert.ok(panel.includes('const float CalendarBackdropOpacity=.70f;'));
+assert.ok(panel.includes('eventStage?stage.BackdropOpacity:CalendarBackdropOpacity'));
+assert.ok(!panel.includes('new Color(.018f,.020f,.026f,.91f)'));
 console.log('PASS daily treasures gateway integration source invariants');
