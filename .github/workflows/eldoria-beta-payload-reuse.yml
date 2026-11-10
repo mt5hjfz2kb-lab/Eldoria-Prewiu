@@ -94,7 +94,8 @@ jobs:
           if(typeof decoder.decode!=='function')throw Error('Decoder API not supported');
           console.log('PINNED_BROWSER_VCDIFF_APACHE_LICENSE_AND_API_PASS',pkg.version,pkg.license);
           NODE
-          vendor/node_modules/.bin/esbuild tools/eldoria-private-beta/iphone_ab/browser_decoder_entry.js --bundle --format=iife --platform=browser --target=es2020 --outfile=vcdiff-browser.bundle.js --node-path=vendor/node_modules
+          ln -s vendor/node_modules node_modules
+          vendor/node_modules/.bin/esbuild tools/eldoria-private-beta/iphone_ab/browser_decoder_entry.js --bundle --format=iife --platform=browser --target=es2020 --outfile=vcdiff-browser.bundle.js
           find vendor/node_modules/@ably/vcdiff-decoder -maxdepth 2 -iname 'LICENSE*' -type f -print
           LICENSE="$(find vendor/node_modules/@ably/vcdiff-decoder -maxdepth 2 -iname 'LICENSE*' -type f | head -1)"
           test -n "$LICENSE"
