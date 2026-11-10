@@ -1091,11 +1091,11 @@ namespace Eldoria.DailyTreasures
                !claimButton.gameObject.activeSelf)return;
             var bounds=resultText.rectTransform.rect;
             float allowed=bounds.height+Mathf.Max(6f,bounds.height*.18f);
-            resultText.text=ceremonialTitle+"\\n"+
+            resultText.text=ceremonialTitle+"\n"+
                 ConfirmedMilestoneSummary(ceremonialReceipt)+
-                "\\nRegistrado en el buzón";
+                "\nRegistrado en el buzón";
             if(resultText.preferredHeight>allowed)
-                resultText.text=ceremonialTitle+"\\nRegistrado en el buzón";
+                resultText.text=ceremonialTitle+"\nRegistrado en el buzón";
             if(resultText.preferredHeight>allowed)
                 resultText.text=ceremonialTitle;
             // If an unusually long authentic title still fails, let the
