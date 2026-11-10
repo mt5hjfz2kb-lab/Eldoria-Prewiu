@@ -115,11 +115,11 @@ namespace Eldoria.DailyTreasures
                     portrait?.12f*h:.18f*h,
                     .38f,0f,0f,false);
 
-            // Lyra, Scouts and Vigilants each have an actual original
-            // painterly artwork resource. In landscape that painting
-            // dominates the LEFT while the premium coffer forms a distinct
-            // RIGHT-hand vignette. In portrait they become a richly layered
-            // theatre: painterly backdrop high, coffer in the foreground.
+            // Lyra, Scouts and Vigilants each use existing original Eldoria
+            // scenery, not an imaginary character/map/building from a
+            // generated mockup. The real painting must be the focal image.
+            // The daily coffer is absent; the right-hand landscape column
+            // belongs to the recorded story and Continue action.
             if(portrait)
             {
                 return new DailyTreasureStageLayout(kind,
@@ -133,15 +133,14 @@ namespace Eldoria.DailyTreasures
                     // Brighten the existing hall ONLY, keeping other
                     // categories and Bastion's real city untouched.
                     .90f,
-                    kind==DailyTreasureStageKind.Lyra?.92f:.73f,
-                    kind==DailyTreasureStageKind.Lyra?.10f:.20f,false);
+                    .95f,.08f,false);
             }
             return new DailyTreasureStageLayout(kind,
-                -.247f*w,.018f*h,.486f*w,h-42f,
+                -.145f*w,.018f*h,.68f*w,h-42f,
                 .236f*w,.166f*h,Math.Min(.374f*w,282f),
                 Math.Min(.475f*h,175f),
-                .236f*w,-.19f*h,.452f*w,.19f*h,
-                .88f,.76f,.22f,true);
+                .29f*w,-.19f*h,.34f*w,.19f*h,
+                .88f,.92f,.10f,true);
         }
     }
 }
