@@ -71,25 +71,25 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             place("resource"+str(i),resource_left+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
-        missionw=min(211 if pw<600 else 184,w*(.49 if pw<600 else .41))
+        missionw=min(211 if pw<600 else 170,w*(.49 if pw<600 else .38))
         # The new alpha-trimmed carved source starts at its real painted edge.
-        place("mission",m,80 if pw<600 else 79,missionw,69 if pw<600 else 60)
+        place("mission",m,80 if pw<600 else 79,missionw,69 if pw<600 else 55)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 48,8 if pw<600 else 9,missionw-(64 if pw<600 else 57),17 if pw<600 else 15)
-        assert chapter_text.x>=48 and chapter_text.x+chapter_text.w<=missionw-8,size
+        chapter_text=R(54 if pw<600 else 36,8 if pw<600 else 6,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
         assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 48,26 if pw<600 else 20,missionw-(70 if pw<600 else 57),18 if pw<600 else 15)
-        progress=R(59 if pw<600 else 48,46 if pw<600 else 37,missionw-(70 if pw<600 else 57),18)
+        short_objective=R(59 if pw<600 else 36,26 if pw<600 else 22,missionw-(70 if pw<600 else 44),18 if pw<600 else 14)
+        progress=R(59 if pw<600 else 36,46 if pw<600 else 38,missionw-(70 if pw<600 else 44),18 if pw<600 else 13)
         assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (69 if pw<600 else 60)-3,size
+        assert progress.y+progress.h<= (69 if pw<600 else 55)-3,size
         assert 87+20<=112-3,size
         # Compact source plaque keeps native text within both real bevels.
-        assert missionw/(69 if pw<600 else 60)>=3.0,size
+        assert missionw/(69 if pw<600 else 55)>=3.0,size
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
@@ -196,7 +196,7 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,smallPhone?54f:48f,',
+        'At(chapterName.rectTransform,smallPhone?54f:36f,',
         'chapterName.fontSize=smallPhone?13:11;',
         'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
