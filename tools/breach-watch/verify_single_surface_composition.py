@@ -38,6 +38,24 @@ for name in asset_names:
         aspect=im.width/im.height
         lo,hi=expected_ratios.get(name,(.81,1.2))
         assert lo<aspect<hi,(name,aspect)
+    if name in ('panel','profile','mission','resource'):
+        # Compare sampled mineral pixels to the owner-approved graphite
+        # rather than accepting the AI generator's rejected violet hue.
+        # This is an ART SOURCE color contract, not proof of Unity rendering.
+        from statistics import median
+        with Image.open(file).convert('RGBA') as art:
+            x0,x1=(.15,.75) if name=='panel' else (.4,.8)
+            y0,y1=(.55,.90) if name=='panel' else (.2,.8)
+            coords=[(round(art.width*(x0+(x1-x0)*j/20)),
+                     round(art.height*(y0+(y1-y0)*i/20)))
+                    for i in range(1,20) for j in range(1,20)]
+            samples=[art.getpixel(xy)[:3] for xy in coords
+                     if art.getpixel(xy)[3]>220]
+        assert len(samples)>100,(name,"Not enough real opaque mineral")
+        med=[median(sample[i] for sample in samples) for i in range(3)]
+        assert med[2]<=med[0]+4 and med[2]<=med[1]+5,(
+            name,"Purple mineral instead of approved warm slate",med)
+        print("VIGILIA_APPROVED_GRAPHITE_PALETTE",name,med)
     if name in ('profile','mission','resource'):
         assert 'spriteBorder: {x: ' in meta,name
         assert ('VigiliaArt/CleanRoom/'+name) in HUD,name
