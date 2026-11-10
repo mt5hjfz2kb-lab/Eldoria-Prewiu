@@ -75,7 +75,14 @@ def verify():
         assert comparison["candidate_source_sha"]=="b"*40
         assert comparison["candidate_is_verified_unity_screenshot"] is True
         assert comparison["visual_score"] is None and not comparison["art_approved"]
+        assert comparison["focus_region_count"]==6
+        assert comparison["detail_sheet"]=="vigilia_OWNER_details_vs_REAL_Unity.jpg"
         assert (root/"owner-comparison-TEST-ONLY/vigilia_OWNER_reference_vs_REAL_Unity.jpg").is_file()
+        with Image.open(root/"owner-comparison-TEST-ONLY/vigilia_OWNER_details_vs_REAL_Unity.jpg") as detail:
+            assert detail.width>=1000 and detail.height>2800
+            # The dark simulated fixture is never represented as a real
+            # render outside this source-only regression test.
+            assert detail.format=="JPEG"
         # Intentionally corrupt a baseline pixel AFTER signing the manifest:
         # it must be rejected rather than silently becoming user evidence.
         tampered=before/"real-unity-bastion-390x844.png"
