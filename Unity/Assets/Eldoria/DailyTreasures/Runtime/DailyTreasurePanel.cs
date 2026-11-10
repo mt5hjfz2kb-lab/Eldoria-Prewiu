@@ -92,6 +92,12 @@ namespace Eldoria.DailyTreasures
         DailyTreasureStageKind currentStage=DailyTreasureStageKind.Daily;
         string activeMilestoneId;
         public DailyTreasureStageKind ActiveMilestoneStage => currentStage;
+        // The chest belongs to paid daily tributes, never to a hero unlock,
+        // scout discovery, Vigilants report or Bastion development milestone.
+        public bool DisplaysCeremonialChest =>
+            ceremony && ceremony.gameObject.activeSelf &&
+            (chest.gameObject.activeSelf || illustratedClosed.gameObject.activeSelf ||
+             illustratedOpen.gameObject.activeSelf);
         RawImage milestoneScenery;
         Image milestoneVignette;
         Image bastionStoryInk;
@@ -395,9 +401,9 @@ namespace Eldoria.DailyTreasures
             Stretch(claimCaption.rectTransform);
 
             ceremony=NewRect("Saved reward / optional animated reveal",cardSurface);
-            // This block has no reward-awarding logic. Existing painterly
-            // Eldoria illustrations differentiate HEROs, Scouts and Vigilants,
-            // while the newly authored premium chest remains the focal object.
+            // This block has no reward-awarding logic. Existing REAL Eldoria
+            // scenery is the focal illustration of narrative milestones.
+            // The authored coffer belongs exclusively to earned daily gifts.
             var sceneryRect=NewRect("Genuine Eldoria milestone scenery / visual only",ceremony);
             milestoneScenery=sceneryRect.gameObject.AddComponent<RawImage>();
             milestoneScenery.raycastTarget=false;
@@ -413,9 +419,8 @@ namespace Eldoria.DailyTreasures
             bastionStoryInk=Plate(cityInk,new Color(.045f,.049f,.052f,.82f),false);
             cityInk.gameObject.SetActive(false);
             milestoneBanner=NewRect("Milestone heraldic event banner / visual only",ceremony);
-            // An actual story heading is NOT a second clickable bronze
-            // button pasted on the picture. Keep the original paint and chest
-            // visible under one restrained basalt typographic title band.
+            // A literary heading is NOT a second clickable bronze button.
+            // Keep the real event artwork unobstructed and legible.
             Plate(milestoneBanner,new Color(.050f,.048f,.046f,.58f),false);
             milestoneBannerCaption=Label(milestoneBanner,
                 "Real milestone category","",19,Ivory,TextAnchor.MiddleCenter);
@@ -945,7 +950,13 @@ namespace Eldoria.DailyTreasures
                     milestoneRule.color=new Color(activeTheme.R,
                         activeTheme.G,activeTheme.B,.72f);
             }
-            ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
+            ceremonialTitle=title;ceremonialReceipt=alreadyReceived;
+            // Milestones are real story notifications, not invented loot.
+            // Keep their paced reveal, but reserve the authored two-pose
+            // coffer exclusively for actual daily-resource claims.
+            bool dailyCoffer=showChest &&
+                currentStage==DailyTreasureStageKind.Daily;
+            chestReward=dailyCoffer;
             // A focused cinematic view replaces the calendar's small header.
             // This gives the same illustrated chest room to shine even on
             // compact phones rather than squeezing it below an extra title.
@@ -962,21 +973,21 @@ namespace Eldoria.DailyTreasures
             prizeShelf.gameObject.SetActive(false);
             rays.SetIntensity(0f);
             chimePlayed=false;
-            if(UnityEngine.Application.isPlaying && originalSfx && chestKnock && showChest)
+            if(UnityEngine.Application.isPlaying && originalSfx && chestKnock && dailyCoffer)
             {
                 if(originalSfx.isPlaying)originalSfx.Stop();
                 originalSfx.PlayOneShot(chestKnock);
             }
             startTime=Time.unscaledTime;
-            chest.gameObject.SetActive(showChest && !hasAuthoredChestArt);
+            chest.gameObject.SetActive(dailyCoffer && !hasAuthoredChestArt);
             chest.SetOpening(0f);
-            illustratedClosed.gameObject.SetActive(showChest && hasAuthoredChestArt);
-            illustratedOpen.gameObject.SetActive(showChest && hasAuthoredChestArt);
+            illustratedClosed.gameObject.SetActive(dailyCoffer && hasAuthoredChestArt);
+            illustratedOpen.gameObject.SetActive(dailyCoffer && hasAuthoredChestArt);
             illustratedClosed.color=Color.white;
             illustratedOpen.color=new Color(1f,1f,1f,0f);
             illustratedClosed.rectTransform.localScale=Vector3.one;
             illustratedOpen.rectTransform.localScale=Vector3.one;
-            glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
+            glow.color=new Color(1f,.75f,.36f,dailyCoffer?0f:.16f);
             ambient.color=Color.clear;
             SetMilestoneScenery(eventId,showChest);
             // The original approved artwork now has category-specific stage
@@ -1013,9 +1024,10 @@ namespace Eldoria.DailyTreasures
             milestoneVignette.gameObject.SetActive(source!=null);
             if(source)
             {
-                // Source textures are color-graded and darkened; they are not
-                // stretched into poster-like panels or higher than the chest.
-                milestoneScenery.color=new Color(.65f,.61f,.56f,.43f);
+                // Preserve the actual painting as the central illustration.
+                // A strong dark tint previously made the original hall/map
+                // nearly invisible; legibility belongs to the separate ink.
+                milestoneScenery.color=Color.white;
                 UpdateSceneryCrop();
             }
         }
@@ -1121,7 +1133,8 @@ namespace Eldoria.DailyTreasures
         {
             playing=false;
             chest.SetOpening(1f);
-            rays.SetIntensity(prizeCount>0 && !chestReward?.24f:.12f);
+            rays.SetIntensity(currentStage==DailyTreasureStageKind.Daily?
+                (prizeCount>0 && !chestReward?.24f:.12f):0f);
             ambient.color=new Color(activeTheme.R,activeTheme.G,
                 activeTheme.B,activeTheme.Strength*.28f);
             if(hasAuthoredChestArt)
@@ -1168,7 +1181,8 @@ namespace Eldoria.DailyTreasures
             // illustrated-card layout rather than an empty chest slot.
             Layout();
             skipButton.gameObject.SetActive(false);
-            glow.color=new Color(1f,.74f,.34f,.27f);
+            glow.color=new Color(1f,.74f,.34f,
+                currentStage==DailyTreasureStageKind.Daily?.27f:.08f);
             for(int i=0;i<sparks.Length;i++)
                 sparks[i].color=new Color(1f,.75f,.30f,0f);
         }
@@ -1270,20 +1284,19 @@ namespace Eldoria.DailyTreasures
                 // but the top-right 100x45 SKIP control owns the upper band.
                 // Put the story heading BELOW that hitbox rather than layering
                 // another ornate button on the same location.
-                // Bastion celebrates the ACTUAL built city with a chest in
-                // the center. Its title must stay in the clear LEFT margin:
-                // the old wide gold-framed header literally covered the
-                // coffer's lid (also in portrait). Other authentic scenic
-                // events keep their broad literary top title.
+                // The Bastion milestone uses the ACTUAL built city; there is
+                // no fictional chest or painted substitute for its level.
+                // Other milestones put the game's authentic scenic painting
+                // at the centre, never behind an unrelated daily coffer.
                 bool cityStage=currentStage==DailyTreasureStageKind.Bastion;
                 float headingWidth=cityStage?
-                    (portrait?Mathf.Min(panelW*.52f,192f):
-                     Mathf.Min(210f,panelW*.5f-stage.ChestW*.5f-14f)):
-                    portrait?Mathf.Min(panelW-36f,280f):
-                    Mathf.Min(panelW*.52f,302f);
-                float headingX=cityStage?
-                    -panelW*.5f+10f+headingWidth*.5f:
-                    portrait?0f:stage.SideBySide?stage.SceneX:-panelW*.10f;
+                    Mathf.Min(panelW-116f,portrait?240f:300f):
+                    portrait?Mathf.Min(panelW-116f,280f):
+                    Mathf.Min(panelW*.58f,330f);
+                float headingX=portrait?
+                    -Mathf.Min(26f,(panelW-headingWidth)*.20f):
+                    cityStage?-panelW*.5f+12f+headingWidth*.5f:
+                    stage.SideBySide?stage.SceneX:-panelW*.10f;
                 float headingY=cityStage?panelH*.405f:
                     portrait?panelH*.29f:panelH*.405f;
                 Place(milestoneBanner,.5f,.5f,.5f,.5f,
@@ -1966,7 +1979,8 @@ namespace Eldoria.DailyTreasures
             PaintMilestoneAtmosphere(elapsed,frame);
             ambient.color=new Color(activeTheme.R,activeTheme.G,
                 activeTheme.B,frame.Glow*activeTheme.Strength);
-            rays.SetIntensity(frame.Glow*.79f);
+            rays.SetIntensity(currentStage==DailyTreasureStageKind.Daily?
+                frame.Glow*.79f:0f);
             for(int i=0;i<sparks.Length;i++)
             {
                 float angle=i*Mathf.PI*2f/sparks.Length;
@@ -1983,7 +1997,8 @@ namespace Eldoria.DailyTreasures
                     Mathf.Cos(angle)*distance+Mathf.Sin(age*3.4f+i)*4f,
                     Mathf.Sin(angle)*distance+age*age*15f+baseY);
                 sparks[i].color=new Color(1f,.68f+.025f*i,.24f,
-                    Mathf.Clamp01(frame.Embers*(1f-(i%3)*.08f)));
+                    currentStage==DailyTreasureStageKind.Daily?
+                    Mathf.Clamp01(frame.Embers*(1f-(i%3)*.08f)):0f);
             }
             return frame;
         }
