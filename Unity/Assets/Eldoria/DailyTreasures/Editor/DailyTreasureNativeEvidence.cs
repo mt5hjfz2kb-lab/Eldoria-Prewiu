@@ -590,6 +590,18 @@ namespace Eldoria.DailyTreasures.Editor
         public static void Capture()
         {
             string output=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+Folder));
+            // Windows self-hosted jobs retain an earlier sparse checkout. A prior
+            // failed proof left stale PNGs beside fresh ones; counting them as
+            // this run's captures corrupts the evidence ledger. Remove ONLY
+            // this method's generated output (never Assets, saves or other jobs).
+            // The GitHub job already enforces exclusive CAS ownership.
+            string project=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,".."));
+            Need(string.Equals(Path.GetDirectoryName(output),project,
+                     StringComparison.OrdinalIgnoreCase) &&
+                 string.Equals(Path.GetFileName(output),Folder,
+                     StringComparison.Ordinal),
+                 "Refuse to clear any directory outside the isolated native proof");
+            if(Directory.Exists(output))Directory.Delete(output,true);
             Directory.CreateDirectory(output);
             var report=new Report{
                 status="NATIVE_COMPONENT_PROOF_PENDING",
