@@ -41,6 +41,18 @@ for name in asset_names:
     if name in ('profile','mission','resource'):
         assert 'spriteBorder: {x: ' in meta,name
         assert ('VigiliaArt/CleanRoom/'+name) in HUD,name
+        # PPU=100 on a 2K source made 40-unit engraved insignias become
+        # 5-unit specks. Check actual Unity 9-slice LEFT BORDER dimensions,
+        # not merely its source-pixel declaration.
+        ppu={'profile':16,'mission':20,'resource':26}[name]
+        import re
+        assert f'spritePixelsToUnits: {ppu}' in meta,name
+        m=re.search(r'spriteBorder: \\{x: (\\d+),',meta)
+        assert m,('No left source border',name)
+        actual=int(m.group(1))/ppu
+        minmax={'profile':(32,47),'mission':(22,34),
+                'resource':(16,24)}[name]
+        assert minmax[0]<=actual<=minmax[1],(name,'nine-slice left well',actual)
     if name=='panel':
         # The source generator once added a second lower gold line at 66.5%
         # that collided with live costs. It is deliberately erased from the
