@@ -10,8 +10,8 @@ TextureImporter:
   isReadable: 0
   textureType: 8
   spriteMode: 1
-  spriteBorder: {x: 624, y: 150, z: 250, w: 150}
-  spritePixelsToUnits: 1600
+  spriteBorder: {x: 874, y: 150, z: 250, w: 150}
+  spritePixelsToUnits: 2000
   alphaIsTransparency: 1
   textureShape: 1
   maxTextureSize: 4096
