@@ -36,9 +36,11 @@ def js(script):
     return command('/execute/sync', {'script':script,'args':[]})
 
 def snapshot(name):
-    subprocess.run(['xcrun','simctl','io',os.environ['QA_SIM_UDID'],
-        'screenshot',str(OUT/(name+'.png'))], timeout=30, check=True,
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    try:
+        payload=command('/screenshot')
+        (OUT/(name+'.png')).write_bytes(base64.b64decode(payload))
+    except Exception as error:
+        report.setdefault('screenshot_warnings',[]).append(str(error));save()
 
 try:
     report['phase']='create_session';save()
@@ -62,10 +64,18 @@ try:
     assert 'iPhone' in report['page']['ua'], 'Not iPhone Safari'
     js("window.__qaDocument=Date.now()+'-'+Math.random(); window.__qaErrors=[]; window.addEventListener('error',e=>window.__qaErrors.push(String(e.message))); window.addEventListener('unhandledrejection',e=>window.__qaErrors.push(String(e.reason)));")
     report['document']=js('return window.__qaDocument;')
-    snapshot('landing')
     element=command('/element',{'using':'css selector','value':'#play'})
     eid=element['element-6066-11e4-a52e-4f735466cecf']
     command('/element/'+eid+'/click',{})
+    time.sleep(2)
+    started=js("return !!window.EldoriaLocalDiagnostic?.read?.().some(e=>e.kind==='startup-start');")
+    report['trusted_click_started_loading']=bool(started)
+    if not started:
+        # Explicit engine-startup diagnostic, NOT a physical tap test.
+        report['startup_trigger']='PROGRAMMATIC_CLICK_NOT_TOUCH_CERTIFICATION'
+        js("document.getElementById('play').click();return true;")
+    else:
+        report['startup_trigger']='WEBDRIVER_ELEMENT_CLICK'
     report['phase']='observe_startup';save()
     start=time.monotonic(); ready_at=None
     while time.monotonic()-start<300:
