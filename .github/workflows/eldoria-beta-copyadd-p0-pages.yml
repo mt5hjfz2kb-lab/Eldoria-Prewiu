@@ -1,4 +1,4 @@
-name: Eldoria P0 — publish verified stable-canvas owner candidate
+name: Eldoria P0 — publish direct-transport owner comparison
 on:
   push:
     branches: [main]
@@ -41,6 +41,9 @@ jobs:
           qa=read('actions/runs/42812046053')
           assert qa['head_sha']=='79b9fdf8862a502a2452be88571d6d42658b532d'
           assert qa['status']=='completed' and qa['conclusion']=='success', 'Actual published transport + immediate entry resize QA must pass'
+          direct=read('actions/runs/42893674666')
+          assert direct['head_sha']=='d369dea58c8b67e90969b67a57ca36bdb9066ca1'
+          assert direct['status']=='completed' and direct['conclusion']=='success'
           items=read('actions/runs/42785047968/artifacts')['artifacts']
           artifact=[a for a in items if a['id']==13749626125
                   and a['name']=='beta10-clock-copyadd-owner-only-site'
@@ -112,11 +115,12 @@ jobs:
       - name: Checkout exact wrapper staging and tested module
         uses: actions/checkout@v4
         with:
-          ref: 592022ab96811f397aeb0db657f63c4f06124fc1
+          ref: 5555c2b3fed6b6b5c644679d42272254bffeedec
           path: wrapper-source
           sparse-checkout: |
             tools/eldoria-private-beta/iphone_ab/stable_canvas.js
             tools/eldoria-private-beta/iphone_ab/stage_stable_canvas.py
+            tools/eldoria-private-beta/iphone_ab/stage_direct_control.py
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Download exact successful immediate-entry comparison
@@ -153,6 +157,32 @@ jobs:
           print('ALL_UNITY_BYTES_BETA10_AND_OTHER_ROUTES_UNCHANGED_TESTED_CANVAS_WRAPPER_ONLY')
           PY
           node --check site/beta-iphone-clock-ab/play.js
+      - name: Download successful direct transport browser evidence
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42893674666
+          name: eldoria-direct-transport-browser-proof-not-iphone
+          github-token: ${{ github.token }}
+          path: direct-proof
+      - name: Stage separate direct comparison and verify against browser-tested bytes
+        run: |
+          python3 wrapper-source/tools/eldoria-private-beta/iphone_ab/stage_direct_control.py site
+          python3 - <<'PY'
+          import pathlib,json,hashlib
+          root=pathlib.Path('site/beta-iphone-clock-direct')
+          tested=pathlib.Path('direct-proof/site/beta-iphone-clock-direct')
+          report=json.loads(pathlib.Path('direct-proof/evidence/direct/report.json').read_text())
+          assert report['passed'] and not report['errors']
+          assert report['entry']['typed'] and report['entry']['reloaded']
+          for name in ['play.js','build-manifest.json','direct-control-proof.json']:
+            assert (root/name).read_bytes()==(tested/name).read_bytes(),name
+          assert 'installEldoriaCopyTransport(build.data' not in (root/'play.js').read_text()
+          assert 'clock_copy_delta' not in json.loads((root/'build-manifest.json').read_text())
+          size=sum(p.stat().st_size for p in pathlib.Path('site').rglob('*') if p.is_file())
+          assert size<980000000, size
+          print('DIRECT_ROUTE_EXACT_BROWSER_TESTED_BYTES',size)
+          PY
+          node --check site/beta-iphone-clock-direct/play.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -199,7 +229,20 @@ jobs:
                 'beta-iphone-clock-ab/copy-literals/part-28.bin',
                 'unity-owner/index.html'):
                 assert read(path,method='HEAD')==200, 'Unreachable static asset: '+path
-              print('ELDORIA_OWNER_AB_LIVE_TWO_EXACT_BUILDS_STABLE_BETA10_PRESERVED_NO_TESTER_RELEASE')
+              direct=json.loads(read('beta-iphone-clock-direct/release-identity.json?direct='+str(attempt)))
+              assert direct['transport_revision']=='direct-r1'
+              assert direct['physical_mobile_tested'] is False
+              assert direct['release_for_external_testers'] is False
+              dh=read('beta-iphone-clock-direct/index.html?direct='+str(attempt)).decode()
+              df=re.search(r'src="(play-[a-f0-9]+\\.js)"',dh).group(1)
+              dp=read('beta-iphone-clock-direct/'+df)
+              assert hashlib.sha256(dp).hexdigest()==direct['shell_script_sha256']
+              assert b'installEldoriaCopyTransport(build.data' not in dp
+              dm=json.loads(read('beta-iphone-clock-direct/build-manifest.json'))
+              assert 'clock_copy_delta' not in dm
+              for part in [dm['decoded_parts'][dm['data']][0],dm['decoded_parts'][dm['data']][-1]]:
+                assert read('beta-iphone-clock-direct/'+part['url'],method='HEAD')==200
+              print('DIRECT_COMPARISON_LIVE_BETA10_PRESERVED_NOT_PHYSICAL_IPHONE_CERTIFIED')
               break
             except Exception as error:
               if attempt==23: raise
