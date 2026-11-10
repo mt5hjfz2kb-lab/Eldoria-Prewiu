@@ -255,6 +255,32 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.SelectedBuildingId=="sawmill" &&
                  ui.CurrentSnapshot?.Building?.Id=="sawmill",
                  "Provisions/RECURSOS did not select the live sawmill");
+            // Inspect both real destinations through repeated orientations.
+            // The Bastion-only screenshots cannot detect a clipped Aserradero
+            // title or BestFit bounds inherited from the preceding layout.
+            foreach(var size in new[]{(900,1600),(390,844),(844,390),(1600,900),(900,1600)})
+            {
+                ui.Reflow(size.Item1,size.Item2);
+                foreach(var id in new[]{"sawmill","bastion"})
+                {
+                    ui.SelectBuilding(id);
+                    ui.RenderNow();
+                    Canvas.ForceUpdateCanvases();
+                    var title=ui.GetComponentsInChildren<Text>(true)
+                        .First(t=>t && t.name=="Real building name");
+                    Need(title.text==ui.CurrentSnapshot.Building.Name &&
+                         title.preferredWidth<=title.rectTransform.rect.width+.1f,
+                         "Real building title escapes its painted well: "+id+"/"+size);
+                    Need(title.fontSize*ui.NativeCanvas.scaleFactor>=12f,
+                         "Dynamic building title was shrunk below readability: "+id+"/"+size);
+                    var cost=ui.GetComponentsInChildren<Text>(true)
+                        .First(t=>t && t.name=="Compact engraved cost heading");
+                    int expectedCostFont=size.Item2>size.Item1
+                        ?(size.Item1<600?13:10):14;
+                    Need(!cost.resizeTextForBestFit && cost.fontSize==expectedCostFont,
+                         "Cost heading inherited a different orientation's font: "+size);
+                }
+            }
             // Exercise the REAL uGUI GraphicRaycaster and pointer sequence.
             ui.SelectBuilding("");
             int pointerClicks = 0;

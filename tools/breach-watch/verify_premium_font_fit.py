@@ -122,6 +122,31 @@ def verify():
     assert 'float captionLeft=paintedLeft+paintedWidth*.30f;' in hud
     assert 'bool fullUpgradeCaption=lastPortrait && lastWidth>=800;' in hud
 
+    # Dynamic titles must fit the existing title well, including the real
+    # Aserradero destination reached by the provisions medallion.
+    for title_width,min_size,max_size,label in [
+        (54,12,15,"900 portrait"),
+        (67,14,15,"390 portrait"),
+        (109,16,18,"1600 landscape"),
+        (123,16,18,"844 landscape"),
+    ]:
+        for name in ["Bastión","Aserradero","Cuartel","Granero","Cantera"]:
+            chosen=next((s for s in range(max_size,min_size-1,-1)
+                         if width(SEMIBOLD,s,name)<=title_width),None)
+            assert chosen is not None,(label,name,title_width)
+            fits(name,SEMIBOLD,chosen,title_width,label+" real building title")
+    assert width(SEMIBOLD,15,"Aserradero")>54, "Regression case no longer exercises overflow"
+    assert "FitBuildingName();" in hud
+    assert "for(int size=buildingNameMaxFont;size>=buildingNameMinFont;size--)" in hud
+
+    # Fixed layout sizes must survive every orientation; construction-time
+    # BestFit bounds used to override the narrower portrait inscription.
+    assert "costHeader.resizeTextForBestFit=false;" in hud
+    for size,available,label in [(10,132,"900"),(13,145,"390"),
+                                  (14,194,"1600"),(14,210,"844")]:
+        fits("COSTE DE LA MEJORA",SEMIBOLD,size,available,label+" fixed cost heading")
+    assert "costHeader.fontSize=14;" in hud
+
     # The right-edge close badge must not touch either heading, in portrait
     # or small landscape; both rows preserve >=4 Unity design units.
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()

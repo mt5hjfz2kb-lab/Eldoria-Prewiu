@@ -1,1 +1,4 @@
-Owner reports capsules too short and name/mission text crowding art rims. Preserve approved filtered icons and source artwork. Expand portrait resources62->82, phone85->94; enlarge profile/mission frames with actual inner padding; landscape pair110->124, inset name/mission; CTA right inset14. Source52 geometry variants pass under original32/34percent cover and physical text thresholds. Source-only while beta owner holds Windows; native pending explicit release.
+Owner-requested comprehensive finish review, 2026-11-10.
+Measure long real building names; reset cost inscription sizing per orientation.
+Source-only while beta owner holds Windows; do not reserve or run native without explicit resource release.
+Preserve preceding frame-capacity, inner-padding and sampling corrections.

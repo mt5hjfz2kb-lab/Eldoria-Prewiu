@@ -38,6 +38,7 @@ namespace Eldoria.BreachWatch
         RectTransform closePainted;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
+        int buildingNameMaxFont=18,buildingNameMinFont=16;
         Text[] resourceAmounts = new Text[3];
         readonly Image[] resourceIllustrations = new Image[3];
         Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback, costHeader;
@@ -1149,7 +1150,9 @@ namespace Eldoria.BreachWatch
                 At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50);
                 // Readable physical text survives the .91 scale of 390px
                 // devices while the larger 900px design stays lightweight.
-                buildingName.fontSize=15;
+                buildingNameMaxFont=15;
+                buildingNameMinFont=smallPhone?14:12;
+                buildingName.fontSize=buildingNameMaxFont;
                 buildingLevel.fontSize=smallPhone?13:11;
                 buildingFunction.fontSize=smallPhone?14:11;
                 buildingCosts.fontSize=smallPhone?14:12;
@@ -1262,7 +1265,9 @@ namespace Eldoria.BreachWatch
                 At(buildingName.rectTransform,50,12,pw-111,27);
                 At(buildingLevel.rectTransform,50,40,pw-111,17);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
-                buildingName.fontSize=18;
+                buildingNameMaxFont=18;
+                buildingNameMinFont=16;
+                buildingName.fontSize=buildingNameMaxFont;
                 buildingLevel.fontSize=15;
                 if(ph<305)
                 {
@@ -1298,6 +1303,7 @@ namespace Eldoria.BreachWatch
                     descriptionDivider.gameObject.SetActive(true);
                     At(descriptionDivider,14,197,pw-28,9);
                     At(costHeader.rectTransform,13,204,pw-26,19);
+                    costHeader.fontSize=14;
                     At(buildingCosts.rectTransform,13,227,pw-26,30);
                     At(costIcons[0].rectTransform,17,227,30,30);
                     At(costQuantities[0].rectTransform,52,227,53,30);
@@ -1315,6 +1321,12 @@ namespace Eldoria.BreachWatch
                 Fill(feedback.rectTransform,6);
                 feedback.fontSize=14;
             }
+
+            // BestFit limits set during construction otherwise override each
+            // layout's fontSize, and survive orientation changes. Use the
+            // measured fixed size for this short inscription in every layout.
+            costHeader.resizeTextForBestFit=false;
+            FitBuildingName();
 
             // A real set of crossed hammers is engraved at the LEFT of the
             // authored burgundy artwork. Keep the live Cormorant/Baskerville
@@ -1479,6 +1491,7 @@ namespace Eldoria.BreachWatch
                 if(show)
                 {
                     buildingName.text=b.Name;
+                    FitBuildingName();
                     buildingLevel.text="NIVEL "+b.Level;
                     if(buildingPortrait)
                     {
@@ -1594,6 +1607,22 @@ namespace Eldoria.BreachWatch
                 Debug.LogException(e);throw;
             }
         }
+        void FitBuildingName()
+        {
+            // The first-screen Bastion fits at 15pt, but Aserradero measures
+            // 65.9u in the same font against a 54u portrait well. Measure the
+            // actual live title; retain the full name and readable lower bound.
+            // Reset from the layout maximum on every selection so a long name
+            // cannot leave subsequent short names permanently undersized.
+            buildingName.resizeTextForBestFit=false;
+            float available=Mathf.Max(1f,buildingName.rectTransform.rect.width);
+            for(int size=buildingNameMaxFont;size>=buildingNameMinFont;size--)
+            {
+                buildingName.fontSize=size;
+                if(buildingName.preferredWidth<=available)break;
+            }
+        }
+
         static string CompactRealState(string state,string time)
         {
             // Preserve the real operation and timer; strip only duplicated
