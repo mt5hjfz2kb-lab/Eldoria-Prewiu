@@ -13,14 +13,14 @@ concurrency:
   cancel-in-progress: false
 jobs:
   mac-webkit-memory-ab:
-    name: Compare owner-playable beta10 vs exact 256KiB candidate on same Mac WebKit
+    name: Compare owner-playable beta10 vs exact forward-only candidate on same Mac WebKit
     runs-on: macos-15
     timeout-minutes: 40
     steps:
       - name: Checkout exact audited, source-only Mac WebKit probe
         uses: actions/checkout@v4
         with:
-          ref: 836fce54e33e0c3c5cc87ea4ca480da5eb44835a
+          ref: 061a9cbc40deca221436e44c6aa55afcca4244bf
           sparse-checkout: |
             tools/eldoria-private-beta/qa_webkit_residency.cjs
             tools/eldoria-private-beta/qa_static_server.cjs
@@ -29,7 +29,7 @@ jobs:
       - name: Download exact previous source QA pass artifact, no Unity compilation
         uses: actions/download-artifact@v4
         with:
-          run-id: 42785047968
+          run-id: 42787786118
           name: beta10-clock-copyadd-owner-only-site
           github-token: ${{ github.token }}
           path: site
@@ -49,14 +49,18 @@ jobs:
           assert new['release_for_external_testers'] is False
           assert proof['external_testers_enabled'] is False and proof['stable_game_sha256_unchanged'] is True
           assert proof['parts_verified']==31 and proof['patch_literal_bytes']==8000096
-          assert 'MAX_OUTPUT=262144' in script and 'stable_cache_parts:1' in script
+          assert 'MAX_OUTPUT=65536' in script and 'stable_cache_parts:0' in script
+          import hashlib
+          assert proof['transport_sha256']==hashlib.sha256(script.encode()).hexdigest()
+          assert proof['transport_file'] in (root/'beta-iphone-clock-ab/index.html').read_text()
+          assert '.arrayBuffer(' not in script
           assert 'localStorage' not in script and 'indexedDB' not in script
-          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42785047968',
+          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42787786118',
             headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Eldoria-owner-webkit'})
           with urllib.request.urlopen(request,timeout=25) as response:
             job=json.load(response)
-          assert job['conclusion']=='success' and job['head_sha']=='836fce54e33e0c3c5cc87ea4ca480da5eb44835a'
-          print('LOWMEM_256K_WEBKIT_QA_PINNED_31_SHA_VALIDATED')
+          assert job['conclusion']=='success' and job['head_sha']=='de7095ec2b4b4553d9662a3cce67eb44822cc64e'
+          print('LOWMEM_FORWARD_ONLY_WEBKIT_QA_PINNED_31_SHA_VALIDATED')
           PY
       - uses: actions/setup-node@v4
         with:
