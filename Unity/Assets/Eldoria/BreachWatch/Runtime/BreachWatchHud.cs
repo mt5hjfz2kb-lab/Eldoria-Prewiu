@@ -1086,7 +1086,7 @@ namespace Eldoria.BreachWatch
                 // the baked 146u rule and NEVER draw the duplicate line.
                 // This uses the existing one-piece panel, no extra layers.
                 At(portraitFrame,11,48,pw-22,57);
-                At(buildingFunction.rectTransform,13,108,pw-26,36);
+                At(buildingFunction.rectTransform,13,108,pw-26,35);
                 descriptionDivider.gameObject.SetActive(false);
                 At(costHeader.rectTransform,13,157,pw-26,17);
                 At(buildingCosts.rectTransform,13,178,pw-26,20);
