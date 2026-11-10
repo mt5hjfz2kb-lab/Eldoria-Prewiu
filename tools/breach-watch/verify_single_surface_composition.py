@@ -130,12 +130,18 @@ assert 'identityCrest=null;' in HUD
 # 900px reference. The NEW source sprites have alpha closely cropped to
 # their ring, so they cannot paint across the full 91px native hitbox.
 # Paint size changes, hitboxes stay physically >=44px for accessibility.
-assert 'surface.VisualScale=.88f;' in HUD
-assert 'if(p)p.VisualScale=i==activeTab?.94f:.88f;' in HUD
+assert 'surface.VisualScale=.70f;' in HUD
+assert 'if(p)p.VisualScale=i==activeTab?.76f:.70f;' in HUD
 import math
 scale_900=900/514
 assert 61 <= 52*scale_900*.70 <= 66
 assert 67 <= 52*scale_900*.76 <= 71
+# Generated source alpha covers ~98% of its 674px icon crop, so the
+# REAL visible 900px diameter is 0.98*52*(900/514)*paintScale.
+# Selected gold is ~68px and other icons ~63px in the owner's image.
+alpha_fraction=.98
+assert 61<=alpha_fraction*52*scale_900*.70<=66
+assert 67<=alpha_fraction*52*scale_900*.76<=71
 assert 52*.91 >=44
 assert 'identity.GetComponentsInChildren<Graphic>(true).Length==3' in HUD
 assert 'exactOwnerGoldBorder=null;' in HUD
