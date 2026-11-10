@@ -321,7 +321,8 @@ namespace Eldoria.BreachWatch.Editor
                     ui.NativeCanvas.GetComponent<GraphicRaycaster>().Raycast(e,hits);
                     Need(hits.Count>0 &&
                          hits[0].gameObject.transform.IsChildOf(button.transform),
-                         "Player cannot touch native "+label+" at its visible center");
+                         "Player cannot touch native "+label+" at its visible center "+pos+
+                         " hits="+string.Join(" | ",hits.Select(h=>HierarchyPath(h.gameObject.transform))));
                     Need(host.City.Presenter.ExternalPointerBlocked!=null &&
                          host.City.Presenter.ExternalPointerBlocked(pos),
                          "Native "+label+" taps penetrate the city behind the UI");
