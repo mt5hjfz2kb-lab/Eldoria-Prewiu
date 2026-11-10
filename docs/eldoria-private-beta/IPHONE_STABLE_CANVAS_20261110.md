@@ -1,3 +1,25 @@
+# Current result — physical failure supersedes desktop PASS
+
+The owner reported that stable-canvas-r1 still restarts on the physical iPhone. It is rejected as a solution. Do not reinterpret the previous Mac comparison as physical success.
+
+## Direct transport comparison (same compiled game)
+A separate owner route, beta-iphone-clock-direct/?transport=direct-r1&eldoria_diag=1, removes in-browser copy/add reconstruction. Every one of 31 decoded parts matches mobile12; total503831429bytes. Stage source5555c2b3fed6b6b5c644679d42272254bffeedec. No new engine or timer change.
+- Local Mac WebKit run42893674666 passed.
+- Actual public WebKit run42895738602 passed entry/name/reload; artifact13801096099. Reload screenshot visibly retains Beta QA.
+- Public verification42898405543 checked all181servedfiles byte-for-byte and confirmed original beta10 redirect/save origin unchanged.
+- Physical direct-r1 result is still absent. This is an owner comparison, not a tester release or confirmed root-cause fix.
+
+## Publication lesson
+Run42895222597 deployed successfully but its final verifier had an overescaped regex. The script was corrected. A redundant deployment42896193107 hit the hard600000ms cap: deploy-pages@v4 explicitly clamps even a1800000ms input. Do not claim that a30minute input overrides this cap.
+The corrected workflow first compares every served file with staged bytes and skips redeployment only on a complete match. Run42898405543 verified181/181 and passed final live checks without redeploying identical data.
+
+## Simulator evidence boundary
+Run42890758782 timed out creating Appium/WDA sessions. Run42894597804 could launch Safari but native SafariDriver timed out waiting for its RWIApplication; no game samples existed. Neither is a game failure or an iPhone stability test.
+Warm-up attempt42897348434 failed even earlier: simctl could not open about:blank (LSApplicationWorkspace115). The next attempt launches com.apple.mobilesafari directly, waits for initialization, and permits one bounded session-creation retry. Do not retry every game variant if infrastructure cannot establish its first session.
+Pending native Safari launch attempt:42898705517. This remains a simulator, never a physical-device substitute.
+
+---
+
 # iPhone P0 — stable canvas candidate, 2026-11-10
 
 Canonical workstream: eldoria-private-beta-i-v-20261107; PR #179.
