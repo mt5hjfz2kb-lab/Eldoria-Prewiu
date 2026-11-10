@@ -1075,6 +1075,33 @@ namespace Eldoria.DailyTreasures
             return first.Substring(0,stop).TrimEnd()+"…";
         }
 
+        // Genuine Unity run 42805795367: the portrait Vigilants receipt
+        // needs 110px of glyph lines inside an 84px text box. A ceremonial
+        // panel must NEVER truncate a true report merely to preserve three
+        // redundant sentences. Prefer the complete committed summary when
+        // it fits the measured *actual font*; otherwise display the exact
+        // event title and a concise mailbox pointer. The canonical mailbox
+        // always retains the full report, and this UI never awards anything.
+        // Re-evaluate after orientation changes rather than shrinking a
+        // whole painting, inventing loot, or disabling the typography gate.
+        void FitCommittedMilestoneReceipt()
+        {
+            if(prizeCount!=0 || currentStage==DailyTreasureStageKind.Daily ||
+               playing || !ceremony.gameObject.activeSelf ||
+               !claimButton.gameObject.activeSelf)return;
+            var bounds=resultText.rectTransform.rect;
+            float allowed=bounds.height+Mathf.Max(6f,bounds.height*.18f);
+            resultText.text=ceremonialTitle+"\\n"+
+                ConfirmedMilestoneSummary(ceremonialReceipt)+
+                "\\nRegistrado en el buzón";
+            if(resultText.preferredHeight>allowed)
+                resultText.text=ceremonialTitle+"\\nRegistrado en el buzón";
+            if(resultText.preferredHeight>allowed)
+                resultText.text=ceremonialTitle;
+            // If an unusually long authentic title still fails, let the
+            // independent native typography assertion report that defect.
+        }
+
         void ShowResult(bool immediate=false)
         {
             playing=false;
@@ -1481,6 +1508,8 @@ namespace Eldoria.DailyTreasures
                     Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
                         portrait?-148f:-71f,panelW-45f,portrait?141f:66f);
             }
+
+            if(eventStage)FitCommittedMilestoneReceipt();
 
             // Four day-seven rewards need at least 65px per item, even
             // on small portrait screens. Raise the two-row shelf rather
