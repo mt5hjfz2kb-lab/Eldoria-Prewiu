@@ -1087,8 +1087,8 @@ namespace Eldoria.BreachWatch
                 // starts x103. Both true text rows can safely occupy the
                 // intervening 57u, with a 1u hard separation from close.
                 // Keep both captions fully live, no painted placeholder.
-                At(buildingName.rectTransform,45,7,pw-101,21);
-                At(buildingLevel.rectTransform,45,30,pw-101,17);
+                At(buildingName.rectTransform,45,7,pw-104,21);
+                At(buildingLevel.rectTransform,45,30,pw-104,17);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
                 // This 90-unit live portrait well is at ~1.9:1 aspect
                 // rather than the prior 2.4:1 slit. Together with the
