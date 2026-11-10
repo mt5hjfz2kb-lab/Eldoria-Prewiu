@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T09:21:16.502Z",
+  "updated_at": "2026-11-10T09:47:02.350Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -329,11 +329,11 @@
     "result": "FAIL_P0_REAL_DEVICE",
     "candidate_passed_server_and_mac": true,
     "stable_beta10_remains_playable": true,
-    "root_cause": "UNCONFIRMED; candidate-only JS copy/add streaming and extra live memory top suspects",
-    "next": "Optimize browser reconstruction memory or deploy candidate with ordinary Unity assets on separate zero-cost static host. Do not overwrite stable beta10 or enable testers."
+    "root_cause": "UNCONFIRMED: direct and forward clock both exceed beta10 in corrected same-origin desktop WebKit; native process profiling in progress",
+    "next": "Inspect native WebContent stack and VM region captures from 42792903970 to identify excess outside Unity heap before further code changes; preserve beta10."
   },
   "iphone_forward_transport": {
-    "state": "BYTE_CERTIFIED_COMPARATIVE_MEMORY_PROOF_INVALID_CONTROL_REDIRECT_NOT_PUBLISHED",
+    "state": "BYTE_CERTIFIED_MEMORY_GATE_FAILED_NOT_PUBLISHED",
     "source_commit": "de7095ec2b4b4553d9662a3cce67eb44822cc64e",
     "qa_run": 42787786118,
     "qa_result": "SUCCESS",
@@ -374,8 +374,16 @@
         "minimal-clock-direct-local",
         "minimal-clock-forward-only-local"
       ],
-      "status": "PENDING",
-      "public_beta10_changed": false
+      "status": "FAIL_MEMORY_GATE_GAMEPLAY_ENTRY_RELOAD_PASS_DESKTOP_ONLY",
+      "public_beta10_changed": false,
+      "artifact_id": 13752110780,
+      "control_webcontent_peak_kib": 2653776,
+      "direct_clock_webcontent_peak_kib": 3042464,
+      "forward_clock_webcontent_peak_kib": 2931856,
+      "control_wasm_used_peak_bytes": 578524344,
+      "direct_wasm_used_peak_bytes": 579939416,
+      "forward_wasm_used_peak_bytes": 578513704,
+      "interpretation": "Same-origin Apple GPU WebKit comparison confirms higher WebContent RSS with direct clock as well as forward transport. Similar Unity heap and GPU peaks; loader changes alone do not resolve this. Not physical iPhone proof."
     }
   },
   "iphone_rejected_low_memory_transport": {
@@ -387,5 +395,12 @@
     "entry_reload": "PASS_DESKTOP_ONLY",
     "note": "Per-draw trace allocations present in both arms. New comparison disables this observer interference equally. Neither observation establishes iPhone cause.",
     "comparative_causal_validity": "INVALID: control redirects to remote Sites, candidate is localhost; not a same-origin experiment"
+  },
+  "iphone_native_memory_diagnosis": {
+    "run": 42792903970,
+    "probe_commit": "450d7e9ad4603c51d4491fb6749dab544b78d5e0",
+    "status": "IN_PROGRESS",
+    "release_approval": false,
+    "physical_iphone_tested": false
   }
 }
