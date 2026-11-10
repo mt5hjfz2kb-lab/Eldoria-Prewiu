@@ -340,7 +340,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   {
     const city=family==='bastion';
     const headingW=city?
-      Math.min(pw-116,portrait?240:300):
+      Math.min(pw-132,portrait?230:300):
       portrait?Math.min(pw-116,280):Math.min(pw*.58,330);
     const headingX=portrait?
       (city?-pw/2+10+headingW/2:-Math.min(26,(pw-headingW)*.20)):
