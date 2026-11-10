@@ -7,6 +7,8 @@ from __future__ import annotations
 import hashlib, io, json, pathlib, urllib.request, math
 from PIL import Image
 from datetime import datetime, timezone
+import numpy as np
+import cv2
 
 BASE=pathlib.Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom")
 INPUT=pathlib.Path("tools/breach-watch/cleanroom-source-links.json")
@@ -42,6 +44,44 @@ def chroma(src):
     bbox=rgba.getchannel("A").point(lambda v:255 if v>35 else 0).getbbox()
     if not bbox: raise ValueError("No isolated foreground; cannot import")
     return rgba.crop(bbox)
+
+def remove_second_panel_divider(panel):
+    """Fix one reproducible AI-generation defect BEFORE Unity import.
+
+    The new lower card is a continuous single slab, but the generator added
+    a horizontal decorative divider at 66.5% height. The reference has its
+    ONLY divider about 57.5%, rendered by the existing noninteractive native
+    BreachWatchSectionDivider. Leaving both results in duplicated gold lines
+    and a cost heading crossing the wrong one. Remove the baked second line
+    with a tightly bounded material-preserving inpaint. Do not add another
+    UI layer, composite a screenshot or alter the source panel silhouette.
+    """
+    source=np.asarray(panel.convert("RGBA")).copy()
+    h,w=source.shape[:2]
+    x0,x1=round(w*.063),round(w*.937)
+    y0,y1=round(h*.649),round(h*.681)
+    if x1<=x0 or y1<=y0:raise ValueError("panel inpaint bounds invalid")
+    original=source[:,:,:3]
+    mask=np.zeros((h,w),dtype=np.uint8)
+    mask[y0:y1,x0:x1]=255
+    cleaned=cv2.inpaint(original,mask,5,cv2.INPAINT_TELEA)
+    # Restore subtle actual nearby mineral grain, with feathered edges;
+    # avoid leaving a broad flat smear where the AI divider once was.
+    donor_start=round(h*.595)
+    for j,y in enumerate(range(y0,y1)):
+        fy=min(1.0,(j+1)/20.0,(y1-y)/20.0)
+        donor_y=donor_start+j
+        if not(0<=donor_y<h):continue
+        x=np.arange(x0,x1)
+        fx=np.minimum(1.0,np.minimum((x-x0+1)/38.0,(x1-x)/38.0))
+        weight=(0.35*fy*fx)[:,None]
+        old=cleaned[y,x0:x1].astype(np.float32)
+        donor=original[donor_y,x0:x1].astype(np.float32)
+        cleaned[y,x0:x1]=np.uint8(np.clip(old*(1-weight)+donor*weight,0,255))
+    # Keep original source alpha untouched, including chamfered corners.
+    source[:,:,:3]=cleaned
+    return Image.fromarray(source,"RGBA")
+
 
 def isolate_standalone_painting(image,name):
     """Keep ONE real illustrated object, not the model's bonus background strip.
@@ -259,6 +299,8 @@ def main():
                 entries.append(store("nav_"+name,sprite,sha(raw),task,key))
         else:
             pic=isolate_standalone_painting(chroma(img),key)
+            if key=="panel" and task=="a1a6753c-0df4-4624-87fb-a0ee977413a0":
+                pic=remove_second_panel_divider(pic)
             entries.append(store(key,pic,sha(raw),task,key))
     assert len(entries)==10
     # Source links are temporary; final published manifest contains only
