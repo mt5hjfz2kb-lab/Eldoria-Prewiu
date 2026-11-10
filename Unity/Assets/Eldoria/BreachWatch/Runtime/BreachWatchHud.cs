@@ -714,7 +714,7 @@ namespace Eldoria.BreachWatch
                 // their full 52u TOUCH footprint made 91px-wide badges
                 // vs the 62-68px sculpted coins in the owner's 900px image.
                 // Preserve >=44px physical hit area; scale PAINT only.
-                surface.VisualScale=.88f;
+                surface.VisualScale=.70f;
                 surface.raycastTarget=false;
                 UseSourceArtInteraction(button,surface);
                 navButtons[i]=button;
@@ -1523,7 +1523,7 @@ namespace Eldoria.BreachWatch
                     // An unavailable destination is absent, not a tappable or
                     // faded promise of a screen that does not yet exist.
                     var p=navPlates[i];
-                    if(p)p.VisualScale=i==activeTab?.94f:.88f;
+                    if(p)p.VisualScale=i==activeTab?.76f:.70f;
                     if(p)p.color=allowed
                         ? i==(host.InWorld?3:selectedTab)
                             ?new Color(1f,.97f,.87f,1f):Color.white
