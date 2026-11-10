@@ -112,7 +112,7 @@ def stage(stable_archive,candidate_path,output,decoder_bundle,decoder_license,
             second=decoded((candidate/safe(b["url"])).read_bytes(),b)
             raw_old.write_bytes(first)
             raw_new.write_bytes(second)
-            subprocess.run(["xdelta3","-f","-e","-S","none","-A=","-a",
+            subprocess.run(["xdelta3","-f","-e","-S","none","-A=",
                             "-s",str(raw_old),str(raw_new),str(patch)],
                            check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             subprocess.run(["xdelta3","-f","-d","-s",str(raw_old),str(patch),str(recovered)],
