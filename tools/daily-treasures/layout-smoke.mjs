@@ -363,8 +363,9 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   }
   assert.ok((1-.38)*(1-.34)>.40,
     `${w}x${h}: actual Bastion city hidden by stacked plates`);
-  const milestoneCaption=rect(0,portrait?-.32*eventH:-.19*eventH,
-    portrait?pw-48:.34*pw,portrait?.12*eventH:.19*eventH);
+  const milestoneCaption=rect(portrait?0:.29*pw,
+    portrait?-.27*eventH:.07*eventH,
+    portrait?pw-48:.34*pw,portrait?.16*eventH:.34*eventH);
   const milestoneContinue=portrait?
     rect(0,-eventH/2+13+54/2,Math.min(pw-30,325),54):
     rect(.29*pw,-eventH/2+13+54/2,Math.min(.34*pw,320),54);
