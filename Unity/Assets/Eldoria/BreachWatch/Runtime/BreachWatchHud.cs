@@ -714,12 +714,13 @@ namespace Eldoria.BreachWatch
                 var surface=Plate(art,BreachWatchPlate.PlateType.Navigation);
                 surface.ApplyIndependentArt(painted);
                 surface.color=Color.white;
-                // The independently generated 2K medallions are alpha-
-                // trimmed to the metal circumference; painting them at
-                // their full 52u TOUCH footprint made 91px-wide badges
-                // vs the 62-68px sculpted coins in the owner's 900px image.
-                // Preserve >=44px physical hit area; scale PAINT only.
-                surface.VisualScale=.70f;
+                // True Unity 900x1600 GPU A/B cf73b49: source at .70
+                // painted only ~45px while the approved 900px owner reference
+                // is ~62-68px per medallion. Raise the ACTUAL independent
+                // sculpted artwork (not click/hit bounds and not unused
+                // future systems) inside the same 52u nav anchors. The
+                // 6u edge inset and .86 fill yield ~60px painted diameter.
+                surface.VisualScale=.86f;
                 surface.raycastTarget=false;
                 UseSourceArtInteraction(button,surface);
                 navButtons[i]=button;
