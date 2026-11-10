@@ -1059,18 +1059,27 @@ namespace Eldoria.BreachWatch
                 // link rather than a second dark bottom toolbar.
                 // Small independent gold medallions, reference pitch 107px
                 // and footer y1493 on 900x1600; keep full invisible hitbox.
-                float navSize=52,navGap=9;
+                // The original approved sprites stay untouched. On a narrow
+                // phone, the painted medal was ~31px despite a ~47px tap
+                // area. Expand the actual visible artwork, not its style.
+                float navSize=smallPhone?60f:52f,navGap=smallPhone?10f:9f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
                 float navTop=h-(smallPhone?111f:90f);
-                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
+                    smallPhone?70f:64f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
                 {
                     bool visible=(navigationMask & (1<<i))!=0;
                     navButtons[i].gameObject.SetActive(visible);
-                    if(visible)At((RectTransform)navButtons[i].transform,
-                        navColumn++*(navSize+navGap),3,navSize,navSize);
+                    if(visible)
+                    {
+                        Fill(navPlates[i].rectTransform,smallPhone?4f:6f);
+                        navPlates[i].VisualScale=smallPhone?.90f:.86f;
+                        At((RectTransform)navButtons[i].transform,
+                            navColumn++*(navSize+navGap),3,navSize,navSize);
+                    }
                 }
 
                 // Approved portrait reference places the card across
@@ -1210,18 +1219,28 @@ namespace Eldoria.BreachWatch
                     At(utility,0,i*44f,37,37);
                 }
 
-                float navSize=55,navGap=15;
+                // The landscape phone also needs visible medals, while 1600x900
+                // keeps the approved desktop pitch and silhouettes.
+                bool compactLandscape=h<530f;
+                float navSize=compactLandscape?62f:55f,
+                    navGap=compactLandscape?12f:15f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
                 float navTop=h-78;
-                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,69);
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
+                    compactLandscape?73f:69f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
                 {
                     bool visible=(navigationMask & (1<<i))!=0;
                     navButtons[i].gameObject.SetActive(visible);
-                    if(visible)At((RectTransform)navButtons[i].transform,
-                        navColumn++*(navSize+navGap),3,navSize,navSize);
+                    if(visible)
+                    {
+                        Fill(navPlates[i].rectTransform,compactLandscape?4f:6f);
+                        navPlates[i].VisualScale=compactLandscape?.90f:.86f;
+                        At((RectTransform)navButtons[i].transform,
+                            navColumn++*(navSize+navGap),3,navSize,navSize);
+                    }
                 }
 
                 // Short landscape currently compresses the genuine 3-line
