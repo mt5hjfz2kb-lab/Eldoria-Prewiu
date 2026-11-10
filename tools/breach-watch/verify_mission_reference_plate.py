@@ -26,5 +26,9 @@ assert 'chapterStone.preserveAspect=false;' in hud
 assert 'Glyph(objective,"Chapter stone rune"' not in hud
 assert 'realChapter.ToUpperInvariant()' in hud
 assert 'chapterProgress.text=snapshot.ObjectiveProgress;' in hud
+# Real GPU evidence run 42823264943: a 12u native objective row
+# vertically TRUNCATED to zero glyphs. Protect its concrete fix.
+assert 'chapterObjective.verticalOverflow=VerticalWrapMode.Overflow;' in hud
+assert 'chapterProgress.verticalOverflow=VerticalWrapMode.Overflow;' in hud
 assert 'VigiliaArt/OwnerControls/mission_plate' not in hud
 print('VIGILIA_REFERENCE_GUIDED_QUEST_2K_9SLICE_LIVE_TEXT_PASS native image pending')
