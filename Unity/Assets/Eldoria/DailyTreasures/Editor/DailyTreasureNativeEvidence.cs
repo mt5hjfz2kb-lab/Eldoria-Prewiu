@@ -158,6 +158,13 @@ namespace Eldoria.DailyTreasures.Editor
                     " required="+required.ToString("F1")+
                     " available="+bounds.height.ToString("F1")+
                     " value="+label.text);
+                // A one-line header must fit horizontally too. A taller
+                // box or disabled clipping could hide a wrap/close overlap.
+                if(label.name=="Reward heading")
+                    Need(label.preferredWidth<=bounds.width+3f,
+                        "Unity premium title exceeds reserved close-safe width ("+
+                        phase+") requiredWidth="+label.preferredWidth+
+                        " availableWidth="+bounds.width);
                 count++;
             }
             // A milestone result intentionally shows only its main caption
