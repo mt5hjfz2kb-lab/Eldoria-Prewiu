@@ -95,9 +95,12 @@ for name in asset_names:
         assert live_min_height-(top+bottom)*unit_scale>=8,(
             name,'collapsed vertical nine-slice center')
     if name=='panel':
-        # The source generator once added a second lower gold line at 66.5%
-        # that collided with live costs. It is deliberately erased from the
-        # NEW painted material; Unity has only its single dynamic separator.
+        # The generated art already paints ONE brass horizontal rule at
+        # ~52.1% of its height. That source-painted line sits immediately
+        # below the real 3D photo and actual two-line gameplay description.
+        # Do not draw an extra procedural divider, or the first screen
+        # regresses to the rejected pasted-up overlapping-card appearance.
+        # A SECOND accidental source line at 66.5% was previously erased.
         with Image.open(file).convert('RGBA') as art:
             width,height=art.size
             peak=0
@@ -110,6 +113,32 @@ for name in asset_names:
                         total+=1
                 peak=max(peak,total)
             assert peak<80,('reintroduced duplicate gold divider',peak)
+            # Detect the existing inner well's REAL painted lower border;
+            # it must continue to justify 144u text end and 157u cost top.
+            # Sample the central 80% only, not outer decorative left/right.
+            gold_rows=[]
+            for y in range(round(height*.47),round(height*.56)):
+                total=0
+                for x in range(round(width*.10),round(width*.90),3):
+                    r,g,b,a=art.getpixel((x,y))
+                    if a>160 and r>70 and g>44 and r>g*1.11 and g>b*1.07:
+                        total+=1
+                gold_rows.append((total,y))
+            count,rule_y=max(gold_rows)
+            assert count>=100,('single engraved well border missing',count)
+            rule_ui=280*rule_y/height
+            assert 144+1.5<=rule_ui<=157-10,(
+                'real Unity gameplay text crosses actual generated painting',
+                rule_y,rule_ui)
+            for required in (
+                'At(portraitFrame,11,48,pw-22,57);',
+                'At(buildingFunction.rectTransform,13,108,pw-26,36);',
+                'descriptionDivider.gameObject.SetActive(false);',
+                'At(costHeader.rectTransform,13,157,pw-26,17);',
+            ):
+                assert required in HUD,('new one-piece panel layout lost',required)
+            print('VIGILIA_SOURCE_PAINTED_INSET_LINE',round(rule_ui,2),
+                  'UI units; description ends=144; cost starts=157')
 for name in ('panel','mission','profile','resource','upgrade'):
     assert 'VigiliaArt/CleanRoom/'+name in HUD,name
 assert '"VigiliaArt/CleanRoom/nav_"+symbol' in HUD
