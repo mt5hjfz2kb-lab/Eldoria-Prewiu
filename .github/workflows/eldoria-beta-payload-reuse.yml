@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: b946345ffb305486da58449724b529617c40e21f
+          ref: 501035c6dd2997b98feca1010281bb7544fccba3
           sparse-checkout: tools/eldoria-private-beta/iphone_ab
           sparse-checkout-cone-mode: false
           persist-credentials: false
