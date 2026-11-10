@@ -1021,6 +1021,18 @@ namespace Eldoria.BreachWatch.Editor
                         :(fullCaption?"Mejorar a Bastión II":"Mejorar a II");
                     Need(actionText.text==expectedCaption,
                          "Native button caption is not appropriate for language/orientation: "+name);
+                    // True visible-art glyph fit, not only the caption's
+                    // rectangular anchor: no overflown "II" outside the gold.
+                    // Keep this check even when BestFit is disabled to avoid
+                    // passing the exact screenshot defect observed by owner.
+                    Need(actionText.cachedTextGenerator.lineCount==1 &&
+                         actionText.cachedTextGenerator.vertexCount>=4 &&
+                         actionText.preferredWidth<=
+                             actionText.rectTransform.rect.width-1f,
+                         "Real one-line upgrade caption escapes original burgundy art: "+
+                         name+" font="+actionText.fontSize+
+                         " glyphWidth="+actionText.preferredWidth.ToString("F1")+
+                         " available="+actionText.rectTransform.rect.width.ToString("F1"));
                     // The approved reference's circular gold X is one
                     // painted image, never a generic octagonal Backing +
                     // painted vector X. Hidden root image owns the hit only.
