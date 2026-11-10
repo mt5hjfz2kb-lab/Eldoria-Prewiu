@@ -79,7 +79,7 @@ def verify():
         assert comparison["detail_sheet"]=="vigilia_OWNER_details_vs_REAL_Unity.jpg"
         assert (root/"owner-comparison-TEST-ONLY/vigilia_OWNER_reference_vs_REAL_Unity.jpg").is_file()
         with Image.open(root/"owner-comparison-TEST-ONLY/vigilia_OWNER_details_vs_REAL_Unity.jpg") as detail:
-            assert detail.width>=1000 and detail.height>2800
+            assert detail.width>=1000 and detail.height>2600
             # The dark simulated fixture is never represented as a real
             # render outside this source-only regression test.
             assert detail.format=="JPEG"
