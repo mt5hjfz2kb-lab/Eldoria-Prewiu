@@ -44,6 +44,16 @@ assert.match(native,/authoredSpritesImported/);
 // The nine PNG sources alone cannot certify that Unity imported all nine
 // Sprites, applied 9-slice borders or avoided a duplicate active Canvas.
 assert.match(native,/RequireNineImportedSprites\(\)/);
+// A persistent Windows runner can retain genuine PNGs from another SHA.
+// Clear ONLY the isolated generated output at the start of every capture;
+// never weaken per-frame provenance or delete gameplay assets/saves.
+assert.match(native,/Path\.GetDirectoryName\(output\),project/);
+assert.match(native,/Path\.GetFileName\(output\),Folder/);
+assert.match(native,/if\(Directory\.Exists\(output\)\)Directory\.Delete\(output,true\);/);
+assert.ok(native.indexOf('Directory.Delete(output,true)') <
+  native.indexOf('Directory.CreateDirectory(output)'),
+  'Old native screenshots must be removed before starting a new evidence ledger');
+
 assert.match(native,/Resources\.Load<Sprite>\("DailyTreasureArt\/"\+item\.name\)/);
 assert.match(native,/importer\.spriteImportMode==SpriteImportMode\.Single/);
 assert.match(native,/var border=sprite\.border/);
