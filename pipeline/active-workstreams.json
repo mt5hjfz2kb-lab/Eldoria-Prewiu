@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T11:10:36.775Z",
+  "updated_at": "2026-11-10T11:13:42.595Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7403,7 +7403,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7427,11 +7427,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "UNITY_NATIVE_POINTER_DEPTH_MINUS_ONE_FAIL_RUNNER_RELEASED",
+      "phase": "WINDOWS_EXCLUSIVE_CAS28_NATIVE_RETEST_511B47_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Unity native 42798661482 exact 1d01b32e failed after first genuine frame: Daily reward medallion raycast depth=-1 registered=6 hit=<none>. Inspect root Canvas graphics depth cause in PR181 without modifying other workstreams; retry only with separate formally acquired Windows CAS lease; ART_APPROVED=false; no merge/release.",
+      "next": "Run exact PR181 HEAD 511b47e... one Unity Windows native proof via tools/daily-treasures/native-request.txt; 72 originals, 116 pointer hits, 28 disposable claims. Evaluate real pixels; ART_APPROVED false until human sign-off. Release runner by CAS immediately after run concludes.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
