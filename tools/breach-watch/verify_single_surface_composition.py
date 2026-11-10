@@ -46,7 +46,7 @@ for name in asset_names:
         # in UnityEngine.UI; its nine-slice borders use spriteBorder divided
         # by that ratio. The previous source model divided just by spritePPU
         # and incorrectly passed UI whose entire center collapsed in Unity.
-        ppu={'profile':1600,'mission':2000,'resource':2600}[name]
+        ppu={'profile':2000,'mission':2000,'resource':2600}[name]
         canvas_reference_ppu=100
         import re
         assert 'scaler.referencePixelsPerUnit=100f;' in HUD,name
