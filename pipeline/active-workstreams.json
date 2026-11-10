@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T20:50:25.799Z",
+  "updated_at": "2026-11-10T21:29:14.747Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,12 +6665,14 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 55,
+      "ownership_revision": 56,
       "write_scope_released": false,
-      "phase": "OWNER_REQUESTED_FOOTER_AND_TYPOGRAPHY_POLISH_NATIVE_VERIFIED",
-      "next": "Requested footer visibility and typography refinement completed and checked in native portrait/landscape. Preserve restored design. PR173 remains draft, no merge/deployment. Reopen only for concrete next owner feedback.",
+      "phase": "OWNER_FINAL_CLEAN_ALIGNMENT",
+      "next": "Owner likes restored design; finish only mission text left alignment and equal resource icon-to-amount spacing, verify native. No redesign or publication.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T19:57:05.165Z",
