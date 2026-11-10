@@ -1244,15 +1244,19 @@ namespace Eldoria.BreachWatch
                     ?actionPlate.sprite.rect.width/
                         Mathf.Max(1f,actionPlate.sprite.rect.height)
                     :246f/60f;
-                float paintedHeight=plate.rect.width/Mathf.Max(1f,artAspect);
+                // The NEW independent 2K painting is 3.45:1 instead of the
+                // old 246:60 sprite. Contain it in BOTH dimensions so its
+                // real source gold border cannot protrude into the timer.
+                float paintedHeight=Mathf.Min(plate.rect.height-4f,
+                    plate.rect.width/Mathf.Max(1f,artAspect));
+                float paintedWidth=paintedHeight*artAspect;
+                float paintedLeft=(plate.rect.width-paintedWidth)*.5f;
                 float paintedTop=(plate.rect.height-paintedHeight)*.5f;
-                At(illustration,0f,paintedTop,plate.rect.width,paintedHeight);
-                // The hammered engraving lives inside the first quarter of
-                // the ORIGINAL painting, not the invisible wider hit target.
-                // 25% left and 7u right clearances keep the full genuine
-                // Spanish chapter action visible on every orientation.
-                float captionLeft=plate.rect.width*.25f;
-                float captionRight=plate.rect.width-7f;
+                At(illustration,paintedLeft,paintedTop,paintedWidth,paintedHeight);
+                // Caption is anchored to PAINTED pixels, not the larger
+                // invisible accessible touch target. Hammers occupy ~28%.
+                float captionLeft=paintedLeft+paintedWidth*.28f;
+                float captionRight=paintedLeft+paintedWidth-7f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
                     Mathf.Max(20f,captionRight-captionLeft),
