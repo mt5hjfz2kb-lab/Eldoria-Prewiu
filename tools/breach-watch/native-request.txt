@@ -1,1 +1,1 @@
-Diagnose genuine post-orientation action raycast failure: report actual hit hierarchy and pointer position. Keep every interaction assertion intact. Lease62.
+Render camera-space panel after synchronous re-enable before raycast in same editor tick; preserve all genuine pointer and state assertions. Lease62.

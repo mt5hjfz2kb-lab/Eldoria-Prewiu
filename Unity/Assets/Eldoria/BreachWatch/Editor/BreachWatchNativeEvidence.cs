@@ -309,6 +309,11 @@ namespace Eldoria.BreachWatch.Editor
                          (allowDisabled||button.interactable),
                          "Missing real native destination "+label);
                     Canvas.ForceUpdateCanvases();
+                    // Synchronous editor probes do not advance a player frame.
+                    // Render newly re-enabled camera-space graphics before
+                    // querying their depth/culling in the GraphicRaycaster.
+                    camera.Render();
+                    Canvas.ForceUpdateCanvases();
                     var corners=new Vector3[4];
                     ((RectTransform)button.transform).GetWorldCorners(corners);
                     var pos=RectTransformUtility.WorldToScreenPoint(camera,
