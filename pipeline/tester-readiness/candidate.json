@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T19:50:49.637Z",
+  "updated_at": "2026-11-10T20:33:56.745Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -330,7 +330,7 @@
     "candidate_passed_server_and_mac": true,
     "stable_beta10_remains_playable": true,
     "root_cause": "UNKNOWN: desktop entry/reload succeeds; disabling optimizing compiler does not reduce memory. Single-run RSS differences are affected by native memory compression and are not physical crash diagnosis.",
-    "next": "Use a termination report matching 11:59 local time to identify killed process/reason. Do not repeat the close-ChatGPT experiment: it failed. Published entry HTML has no refresh redirect; current play script only calls location.reload on explicit retry button. Root cause remains unconfirmed; preserve beta10 and tester NO-GO.",
+    "next": "OS report unavailable; do not request again. Continue isolated direct-transport comparison and native iOS Simulator Safari investigation. Stable-canvas physical failure remains authoritative; no external release before physical proof.",
     "browser_context": "Safari, explicitly confirmed by owner",
     "repeat_after_closing_chatgpt": {
       "result": "FAIL_OWNER_REPORTED_SAME_RESTART",
@@ -457,5 +457,29 @@
       "date": "2026-11-10",
       "quote": "Se reinicia…."
     }
+  },
+  "iphone_direct_transport": {
+    "revision": "direct-r1",
+    "status": "PUBLIC_DESKTOP_WEBKIT_VERIFIED_PHYSICAL_IPHONE_PENDING",
+    "engine_source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
+    "staging_source_sha": "5555c2b3fed6b6b5c644679d42272254bffeedec",
+    "compiled_data_bytes": 503831429,
+    "compiled_parts_hash_verified": 31,
+    "local_browser_run": 42893674666,
+    "public_browser_run": 42895738602,
+    "public_browser_artifact": 13801096099,
+    "public_entry_and_reload_pass": true,
+    "public_reloaded_nickname_visually_verified": true,
+    "public_boundary_parts_hash_verified": true,
+    "publication_run": 42895222597,
+    "publication_verifier_retry": 42896193107,
+    "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?transport=direct-r1&eldoria_diag=1",
+    "physical_iphone_verified": false,
+    "external_testers_enabled": false,
+    "original_beta10_origin_preserved": true,
+    "ios_simulator_run": 42894597804,
+    "ios_simulator_result": "PENDING",
+    "previous_simulator_run": 42890758782,
+    "previous_simulator_result": "SESSION_CREATION_TIMEOUT_NO_GAME_TEST"
   }
 }
