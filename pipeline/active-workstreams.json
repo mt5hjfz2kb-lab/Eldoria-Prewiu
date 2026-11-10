@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T19:52:19.690Z",
+  "updated_at": "2026-11-10T19:57:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7448,7 +7448,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 34,
+      "ownership_revision": 35,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7472,13 +7472,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "CAS34_EXCLUSIVE_UNITY_CITY_ART_EVIDENCE_REQUEST",
+      "phase": "CAS35_WINDOWS_RELEASED_REAL_CITY_8_PLUS_COMPONENT_72_NATIVE_AND_PIXEL_PASS_ART_INTEGRATION_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Execute one native PR181 exact-head Unity run: 72 original component captures and eight real-city paired captures, verify pixels/source and release Windows CAS when all jobs finish. Do not merge/publish, ART_APPROVED=false.",
+      "next": "Review genuine canonical city art A/B for aesthetic quality, improve only PR181 as appropriate and retest with fresh CAS. Full gameplay, PR173 composition, mobile/audio/FPS not certified; ART_APPROVED=false; do not merge/publish.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7507,28 +7505,34 @@
         "merged": false,
         "published": false,
         "native_component": {
-          "run": 42776890262,
-          "source_sha": "ead9759be4d9f75203afa7171788f23a8b56000b",
-          "job_id": 129134599737,
-          "conclusion": "failure",
-          "artifact_id": 13670287864,
-          "authentic_pngs": 8,
-          "resolutions": [
-            "1600x900"
-          ],
-          "root_failure": "GraphicRaycaster blocked first Vigilia-canvas medallion click after presentation reparent, Capture line 631",
-          "pixels_defect": "Day7/Day4 item titles and quantities wholly absent from genuine Unity screenshots due to overlapping undersized Text rectangles",
-          "source_fix_head": "e66c80edd6021339395c101104786758dcda318e",
-          "source_ci_run": 42612268799,
-          "unity_native_pass": false,
-          "art_approved": false,
-          "full_game_tested": false
+          "run": 42888085086,
+          "source_sha": "160192a6592d0be1f75b4ed575fce1b38197dd12",
+          "conclusion": "success",
+          "real_png": 72,
+          "real_pointer_hits": 116,
+          "real_gateway_claims": 28,
+          "real_png_sha_verified": true,
+          "post_pixel_audit": "PASS"
+        },
+        "native_city": {
+          "run": 42888085086,
+          "source_sha": "160192a6592d0be1f75b4ed575fce1b38197dd12",
+          "conclusion": "success",
+          "scene": "Valoria_City_World_UI.unity",
+          "genuine_pairs": 4,
+          "png": 8,
+          "renderers": 95,
+          "real_camera": "PlayerCamera",
+          "png_sha_verified": true,
+          "gateway_claims": 0,
+          "full_gameplay_verified": false,
+          "pr173_integrated": false
         }
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-10T17:07:44.491Z",
-      "runner_release_basis": "Native 42859660700 exact e5d9755a4544402580628b186558fe2b7936062a: all jobs terminal. verify-exclusive-lease:success, native-ui:success, Inspect genuine Unity screenshots, including partial FAILED evidence:success. Evidence artifacts 13786035381 native & 13784019448 pixel audit; review remains required. No merge/release, ART_APPROVED=false.",
+      "runner_released_at": "2026-11-10T19:57:00Z",
+      "runner_release_basis": "Native Unity run 42888085086 exact PR181 head 160192a6 completed three jobs SUCCESS. 72 component PNG + 116 pointer hits + 28 disposable gateway claims; canonical Valoria scene produced eight paired real camera images, 95 active renderers, zero city claims. 80 genuine PNG hashes independently matched. Full playable game, Vigilia PR173, device and owner art approval still not certified.",
       "runner_claimed_at": "2026-11-10T19:40:26Z",
       "runner_lease_note": "Exact HEAD PR181 Unity 6000.3.23f1 retest after portrait Lyra genuine-art contrast and isolated screenshot hygiene fix; require 72 genuine PNG, 116 pointer hits, 28 real disposable-state claims; ART_APPROVED=false.",
       "runner_claim_basis": "Owner-requested single exact-HEAD Unity scene integration proof; main CAS has zero Windows holders and most recent GitHub Actions jobs completed. Protect PR173/PR179; verify processes in Windows job before Unity."
