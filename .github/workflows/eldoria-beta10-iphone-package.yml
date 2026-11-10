@@ -284,7 +284,7 @@ jobs:
             'window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\n  const instance=await createUnityInstance(canvas,{')
           digest=hashlib.sha256(after.encode()).hexdigest()
           name='play-'+digest[:16]+'.js'
-          html,count=re.subn(r'src="play(?:-[a-f0-9]+)?\\.js(?:\\?[^"]*)?"','src="'+name+'"',(root/'index.html').read_text())
+          html,count=re.subn(r'src="play(?:-[a-f0-9]+)?\.js(?:\?[^"]*)?"','src="'+name+'"',(root/'index.html').read_text())
           assert count==1
           (root/'play.js').write_text(after);(root/name).write_text(after);(root/'index.html').write_text(html)
           p=root/'release-identity.json';identity=json.loads(p.read_text())
