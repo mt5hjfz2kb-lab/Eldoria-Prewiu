@@ -18,8 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: e7c43f17a354c1b981b0708e80dd7abf2a6569d9
-          sparse-checkout: tools/eldoria-private-beta/iphone_ab/analyze_stream_reuse.py
+          ref: b87c72e462ee295187b482d7b67f080dcb6bb8f5
+          sparse-checkout: |
+            tools/eldoria-private-beta/iphone_ab/analyze_stream_reuse.py
+            tools/eldoria-private-beta/iphone_ab/analyze_xdelta_reuse.py
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Verify both original source runs passed and remained exact
@@ -67,6 +69,28 @@ jobs:
           assert t['candidate_not_live'] and not t['iphone_stability_tested']
           print('BETA10_VS_WORLD_CLOCK_STREAM_DELTA_SHA_VERIFIED',t)
           PY
+      - name: Install standard VCDIFF decoder for read-only source alignment checks
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xdelta3
+          xdelta3 -V | head -2
+      - name: Verify alignment-aware exact VCDIFF patches for all 31 chunks
+        run: |
+          python3 tools/eldoria-private-beta/iphone_ab/analyze_xdelta_reuse.py --stable-pages-artifact-tar old-pages/artifact.tar --candidate-root new-site --output payload-vcdiff-result.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('payload-vcdiff-result.json'))
+          assert len(d['rows'])==31
+          assert d['totals']['decoded_sha_verified']
+          assert d['totals']['physical_iphone_tested'] is False
+          print('ELDORIA_READONLY_ALIGNMENT_AWARE_DELTA_VALIDATED',d['totals'])
+          PY
+      - name: Retain small exact VCDIFF report, not public QA release
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta10-minimal-clock-readonly-vcdiff-report
+          path: payload-vcdiff-result.json
+          retention-days: 14
       - name: Retain small exact feasibility report; never publish binary data or invite testers
         uses: actions/upload-artifact@v4
         with:
