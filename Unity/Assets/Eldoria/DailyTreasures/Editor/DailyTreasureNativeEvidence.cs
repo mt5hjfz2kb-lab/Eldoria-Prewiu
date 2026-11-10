@@ -434,6 +434,19 @@ namespace Eldoria.DailyTreasures.Editor
                 "Real event is presented with the wrong category art/layout");
             var painted=FindRect(panel,
                 "Genuine Eldoria milestone scenery / visual only");
+            var insignia=FindRect(panel,
+                "Authentic Eldoria event insignia / visual only")
+                .GetComponent<Image>();
+            var expectedInsignia=expected.Kind==DailyTreasureStageKind.Explorers?
+                "EldoriaRetention/scouts-crest":
+                expected.Kind==DailyTreasureStageKind.Vigilants?
+                "EldoriaRetention/vigilants-compass":null;
+            Need(expectedInsignia==null?
+                    !insignia.gameObject.activeInHierarchy:
+                    insignia.gameObject.activeInHierarchy &&
+                    insignia.sprite==Resources.Load<Sprite>(expectedInsignia) &&
+                    !insignia.raycastTarget,
+                "Non-canonical or missing real Eldoria milestone insignia");
             var chest=FindRect(panel,"Authored chest / opened");
             var closedChest=FindRect(panel,"Authored chest / closed");
             var fallbackChest=FindRect(panel,
