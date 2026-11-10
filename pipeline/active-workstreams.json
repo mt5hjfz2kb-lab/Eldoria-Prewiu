@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T13:17:04.476Z",
+  "updated_at": "2026-11-10T16:55:26.757Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7420,7 +7420,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 31,
+      "ownership_revision": 32,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7444,11 +7444,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "CAS31_WINDOWS_RELEASED_NATIVE_PASS_PIXEL_AUDIT_REJECTED",
+      "phase": "CAS32_WINDOWS_LEASE_CLAIMED_EXACT_HEAD_NATIVE_RETEST_NEXT",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Inspect genuine PNGs and pixel gate false-positive vs true missing quantity, correct PR181 only, perform exact-head source CI, later claim Windows via fresh CAS and retest. No merge, release or ART approval.",
+      "next": "Trigger one exact-HEAD PR181 native workflow by changing only tools/daily-treasures/native-request.txt; verify lease first; inspect output and release runner CAS on terminal success/failure.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7499,9 +7501,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-10T13:17:04.476Z",
       "runner_release_basis": "Native Unity run 42818514510 for exact PR181 HEAD 7ab792c0d8b43cbf9527526b441cf277dada2847: native-ui SUCCESS 52+20 PNG, 56+60 pointer events, 8+20 genuine disposable-state claims; post-run pixel auditor FAILED special-day4-received 1600x900 card1 quantity count=0. All runner jobs terminal; preserve ownership of PR181 source, ART_APPROVED=false.",
-      "runner_claimed_at": "2026-11-10T12:45:19.921Z",
-      "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia.",
-      "runner_claim_basis": "CAS30: PR181 exact b301207f0808eecc5a4500b2c2398d337818ac36 after CI daily run 42818155507 SUCCESS and Unity run 42805795367 completed FAILURE; no live Windows holder and no recent queued/in-progress native Unity Actions; stale October 7 publish probes have zero jobs. Unity workflow will re-check active Unity/Blender process and lease."
+      "runner_claimed_at": "2026-11-10T16:55:26.757Z",
+      "runner_lease_note": "Exact HEAD PR181 Unity 6000.3.23f1 retest after portrait Lyra genuine-art contrast and isolated screenshot hygiene fix; require 72 genuine PNG, 116 pointer hits, 28 real disposable-state claims; ART_APPROVED=false.",
+      "runner_claim_basis": "CAS32: zero live holders in main, GitHub actions queued only two stale October 7 WebGL probes and zero in_progress/waiting; PR181 exact 0d1105e source CI Daily 42846358897 SUCCESS; Unity must verify active Blender/Unity processes before launch. No interference with PR173 or PR179."
     },
     {
       "id": "eldoria-eonscar-branding-trial-20261109",
