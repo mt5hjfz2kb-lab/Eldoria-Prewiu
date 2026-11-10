@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T22:11:00.730Z",
+  "updated_at": "2026-11-10T22:46:46.996Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -501,23 +501,50 @@
     }
   },
   "iphone_collision_prebake": {
-    "status": "NATIVE_JOURNEY_FINISHED_WEBGL_COMPILING",
+    "status": "NATIVE_AND_REAL_COLLISION_PAYLOAD_PASS_PACKAGING_IN_PROGRESS",
     "source_sha": "7ae5416613480ba526a839b429459d53629041e5",
     "native_run": 42909656581,
-    "packaging_run": 42911989989,
-    "packaging_source": "fbc0262e87ba0f2d575ec74c53d328549e79c8f0",
+    "packaging_run": 42916816001,
+    "packaging_source": "a6c2d7837584ac7d826c60c3389ac950316b450e",
     "revision": "native325-mobile13-prebaked-collision-qa",
     "changes": [
       "Prebake static collision meshes during WebGL build; exact Bastion I/II noncollision-byte gate",
       "Release initialization-only copied terrain normals; reuse owned vertex array",
       "Retain stable-canvas-r1 wrapper"
     ],
-    "native_artifact_verified": false,
-    "actual_cooked_payload_verified": false,
+    "native_artifact_verified": true,
+    "actual_cooked_payload_verified": true,
     "published": false,
     "physical_iphone_verified": false,
     "external_testers_enabled": false,
-    "root_cause_confirmed": false
+    "root_cause_confirmed": false,
+    "native_job": 130156795850,
+    "native_checks": 227,
+    "native_parity_queries_per_pass": 119870,
+    "native_parity_passes": 2,
+    "native_inputs_restored": true,
+    "native_evidence_artifact": 13809346377,
+    "collision_payload_proof": {
+      "data_sha256": "c8aa6e45f19d94a7ac070a62710e86cbc61f0545afe66405225d081d5f07d203",
+      "bundle_sha256": "fed036980db7b0e6eb5feab0c99cd931e106344c9a2accdee0c60c680dc536ff",
+      "meshes": {
+        "Bastion_II_GI": {
+          "baked_triangle_bytes": 5651094,
+          "non_collision_bytes_sha256": "30e4ec63d249c9657fa7dfb01b6cb71c937a8794b2956af64efd7e9a96f79605"
+        },
+        "Bastion_I": {
+          "baked_triangle_bytes": 4967218,
+          "non_collision_bytes_sha256": "5fa376ac44869b90935ae3f6b63652c3671a815f0a695e43ac731111e6913b1b"
+        }
+      },
+      "status": "REAL_WEBGL_COLLISIONS_PREBAKED_ORIGINAL_MESH_BYTES_VERIFIED",
+      "physical_iphone_verified": false,
+      "external_testers_enabled": false
+    },
+    "prior_packaging_failure": {
+      "run": 42914592603,
+      "reason": "Overescaped HTML filename regex after native payload verification; corrected whole staging block tested on real beta shell"
+    }
   },
   "ios_simulator_diagnostic": {
     "run": 42908325634,
