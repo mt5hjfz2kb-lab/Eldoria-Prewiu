@@ -395,3 +395,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-10: Source mission gate updated for original newly generated 2K PNG, with exact sha from 13-sprite manifest, transparent alpha, real data text and no obsolete mission layer; run all native eight images and unchanged game input checks. 
 
 2026-11-10: Art-integrity QA now respects archived old art as provenance only and rejects it from the rebuilt clean HUD. Require 13 generated original 2K PNGs loaded as current sprites, clean single selected-building panel, no old gold/brass/background layers, real game controls intact. Run eight exact-HEAD Unity native screenshots and GPU glyph diff. No production merge/publish.
+
+2026-11-10: Genuine Unity cleanroom run 42726113771 confirmed new 2K HUD and showed exact 1600×900 red action overlapping operating timer because source asset aspect 3.45 differs from old 4.1. Fixed using painted geometry contained in source ratio and accessible button, updated GPU layout checks and actual typography size tests, no fake action and no old layers. Re-run eight native captures exact-HEAD; do not auto-approve.
