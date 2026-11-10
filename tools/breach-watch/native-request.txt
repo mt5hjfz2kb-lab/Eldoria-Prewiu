@@ -1,1 +1,1 @@
-Native42917163192 passed all interactions. Visual inspection found desktop building title on upper rim, hidden level and duplicate procedural divider. Inset desktop title, give live level full line height; retain only source-painted divider. Add level GPU contribution check. Lease62.
+Native final desktop card finishing: real title22u from top,22u line height; level45u and21u line. Source geometry and font tests aligned without changing limits,52 scenarios PASS. Keep new GPU-level visibility check. Lease62.

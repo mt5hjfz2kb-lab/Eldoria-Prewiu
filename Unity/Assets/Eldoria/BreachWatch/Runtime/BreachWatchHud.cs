@@ -1262,7 +1262,7 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,50,h<530f?12f:22f,pw-111,27);
+                At(buildingName.rectTransform,50,h<530f?12f:22f,pw-111,h<530f?27f:22f);
                 At(buildingLevel.rectTransform,50,h<530f?40f:45f,pw-111,21);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 buildingNameMaxFont=18;
