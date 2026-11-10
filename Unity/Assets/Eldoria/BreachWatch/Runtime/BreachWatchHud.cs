@@ -1076,16 +1076,24 @@ namespace Eldoria.BreachWatch
                 // separately rendered 1.6:1 texture, its center crop fits
                 // all original Bastion parapets and gate without stretching
                 // the real 3D mesh or enlarging the panel's width.
-                At(portraitFrame,11,47,pw-22,75);
-                At(buildingFunction.rectTransform,13,125,pw-26,35);
-                descriptionDivider.gameObject.SetActive(true);
-                At(descriptionDivider,14,161,pw-28,8);
-                At(costHeader.rectTransform,13,170,pw-26,17);
-                At(buildingCosts.rectTransform,13,187,pw-26,20);
-                At(costIcons[0].rectTransform,14,188,19,19);
-                At(costQuantities[0].rectTransform,39,188,42,20);
-                At(costIcons[1].rectTransform,89,188,19,19);
-                At(costQuantities[1].rectTransform,113,188,pw-125,20);
+                // The actual generated CleanRoom panel ALREADY has its
+                // sole inner brass rule at 52.1% of panel height (146u on
+                // this real 280u panel), verified from the source pixels.
+                // The old 75u portrait pushed 2 lines of live description
+                // ACROSS that painted edge, and an extra uGUI divider at
+                // y161 made the UI look like two cards pasted together.
+                // Fit BOTH true Unity portrait and live description ABOVE
+                // the baked 146u rule and NEVER draw the duplicate line.
+                // This uses the existing one-piece panel, no extra layers.
+                At(portraitFrame,11,48,pw-22,57);
+                At(buildingFunction.rectTransform,13,108,pw-26,36);
+                descriptionDivider.gameObject.SetActive(false);
+                At(costHeader.rectTransform,13,157,pw-26,17);
+                At(buildingCosts.rectTransform,13,178,pw-26,20);
+                At(costIcons[0].rectTransform,14,179,19,19);
+                At(costQuantities[0].rectTransform,39,179,42,20);
+                At(costIcons[1].rectTransform,89,179,19,19);
+                At(costQuantities[1].rectTransform,113,179,pw-125,20);
                 At(buildingState.rectTransform,13,209,pw-26,17);
                 // The full live Spanish action is 95px wide at 12pt: retain a
                 // 32.5% hammer well AND widen the actual painted action, rather
