@@ -455,6 +455,12 @@ namespace Eldoria.BreachWatch
             identityCrest=null;
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
+            // Keep actual gameplay identity ink fully inside a single
+            // painted plate at 390 and 900px. The previous middle-aligned
+            // second line hung BELOW its source rim. Overflow here prevents
+            // false zero-glyph truncation but native pixel QA still applies.
+            identityName.verticalOverflow=VerticalWrapMode.Overflow;
+            identityPower.verticalOverflow=VerticalWrapMode.Overflow;
             resourceRow=Rect("Separate resource stones",uiRoot);
             var originalResourceStone=Resources.Load<Sprite>(
                 "VigiliaArt/CleanRoom/resource");
@@ -940,13 +946,13 @@ namespace Eldoria.BreachWatch
                 // when Truncate box is shorter than font line metrics.
                 // Give BOTH actual labels their full line heights inside the
                 // single hand-painted profile; no duplicated crest or card.
-                At(identityName.rectTransform,lionTextInset,smallPhone?3f:2f,
-                    (smallPhone?174f:166f)-crestSize,smallPhone?26f:22f);
+                At(identityName.rectTransform,lionTextInset,smallPhone?5f:4f,
+                    (smallPhone?174f:166f)-crestSize,smallPhone?22f:18f);
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?30f:24f,(smallPhone?174f:166f)-crestSize,
-                    smallPhone?21f:19f);
+                    smallPhone?27f:22f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?18f:17f);
                 identityName.fontSize=smallPhone?17:15;
-                identityPower.fontSize=smallPhone?14:11;
+                identityPower.fontSize=smallPhone?14:10;
 
                 float rightSpace=w-(margin+182+9+margin);
                 // Three approved stone counters occupy predictable slots.
@@ -1017,11 +1023,16 @@ namespace Eldoria.BreachWatch
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
+                // Genuine Unity screenshot 8a8bd8 (900x1600 and 390x844)
+                // proved the live 0/1 fraction was below the painted lower
+                // gold rim, while the preceding task row had extra line
+                // spacing. Move ONLY live ink upward, with 2u minimum row
+                // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?30f:24f,missionWidth-(smallPhone?70f:44f),
-                    fullObjective?51f:(smallPhone?18f:12f));
+                    smallPhone?28f:22f,missionWidth-(smallPhone?70f:44f),
+                    fullObjective?51f:(smallPhone?12f:10f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?51f:42f),
+                    fullObjective?87f:(smallPhone?42f:34f),
                     missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
