@@ -231,6 +231,28 @@ namespace Eldoria.DailyTreasures.Editor
                             "Real city and daily panel images are identical: "+
                             width+"x"+height+"; UI was not drawn over the scene");
                         panel.Close();
+                        // A second visual-only capture proves the actual city
+                        // stays beneath the BASTION ceremonial coffer, rather
+                        // than a fake future-building painting or a black
+                        // component fixture. No level/report/reward is earned.
+                        panel.Open();
+                        Require(panel.IsOpen,
+                            "Visual-only Bastion theatre did not open");
+                        panel.Present("BASTIÓN · ESTUDIO VISUAL",
+                            "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
+                            true,DailyTreasureCeremonyTier.Special,
+                            "milestone:bastion:visual-only");
+                        Require(panel.ActiveMilestoneStage==
+                                DailyTreasureStageKind.Bastion &&
+                            !panel.HasMilestoneScenery,
+                            "Bastion scene must show the REAL city, not a painted substitute");
+                        Canvas.ForceUpdateCanvases();
+                        var bastionStudy=Photograph(camera,target,folder,
+                            width,height,"authored-bastion-visual-only",false);
+                        pictures.Add(bastionStudy);
+                        Require(baseline.sha256!=bastionStudy.sha256,
+                            "Bastion stage was absent above real city camera");
+                        panel.Close();
                         panel.Suppressed=true;
                     }
                     finally
@@ -247,8 +269,8 @@ namespace Eldoria.DailyTreasures.Editor
                     before.Resources.Food==after.Resources.Food &&
                     before.Mailbox.Messages.Count==after.Mailbox.Messages.Count,
                     "An ART-ONLY city preview unexpectedly changed real rewards");
-                Require(pictures.Count==8,
-                    "Expected paired genuine city and UI captures in four viewports");
+                Require(pictures.Count==12,
+                    "Expected four genuine city baselines, calendars AND non-paying Bastion stages");
                 report.pngCount=pictures.Count;
                 report.status="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED";
             }
