@@ -1,20 +1,19 @@
-# Single exclusive PR181 Unity 6000.3.23f1 exact-HEAD genuine component AND canonical city art-context certification.
+# Single exclusive PR181 Unity 6000.3.23f1 exact-HEAD genuine 72-component AND 12 canonical city art-context images.
 state=REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION
 workstream=eldoria-daily-treasures-20261108
 branch=feature/eldoria-daily-treasures-20261108
-source_before_request=00f9f898ce3620158b1b6ad33c578229683d8fa5
-registry_main_commit_claim=a1349eeae112017b9225fa15e04099296b09253f
-runner_lease_revision=34
+source_before_request=263a27baf7eeec557bde55de4eabb2846f39dd5e
+registry_main_commit_claim=ef2f2e403661a7da1c85c8022ddd2fc7dc350832
+runner_lease_revision=36
 runner_owner=chatgpt-daily-treasures-20261108
-previous_native_complete=42859660700
+previous_native_complete=42888085086
 previous_native_evidence=72_original_PNG+116_real_pointer_hits+28_disposable_gateway_claims+pixel_audit_PASS
 required_component=52_contract_PNG+20_quiet_PNG+116_pointer_hits+28_claims
-required_real_city=8_native_paired_PNG_from_Valoria_City_World_UI_scene
+required_real_city=12_native_PNG_in_4_sizes_(baseline+calendar+Bastion_visual_only)_from_Valoria_City_World_UI_scene
 city_claims=0
-city_gameplay_certified=false
 scope=Only_PR181_Unity_sources_and_canonical_real_city_no_beta_PR173_main_changes
 art_approved=false
 full_game_verified=false
 ios_verified=false
 merge_or_publish=false
-request_time_utc=2026-11-10T19:40:26Z
+request_time_utc=2026-11-10T21:34:54.354Z
