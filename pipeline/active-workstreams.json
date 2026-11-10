@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 43,
+      "ownership_revision": 44,
       "write_scope_released": false,
-      "phase": "ONE_NATIVE_INNER_TEXT_RECHECK",
-      "next": "Repair visual text row over lower painted edges (mission 0/1 and profile PODER) from inspected 900x1600 and 390x844 GPU; reacquire runner only when corrected exact SHA prepared. Keep one canvas and live data.",
+      "phase": "TRUE_UNITY_EIGHT_VIEW_ART_AB_REAL_OBTAINED_ART_REVIEW_NOT_APPROVED",
+      "next": "Compare genuine native 3f04846b with owner's 75B5D217 source visual; improve large remaining material/3D castle blue roof and miniature lighting without falsifying locked navigation; reacquire exclusive runner only when QA-ready.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T16:48:21.090Z",
@@ -6760,11 +6758,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "8a8bd8f4179a0982b99914fdc9b8442a2e647e0b",
-        "native_run": 42857223904,
+        "source_sha": "3f04846b87ff623991f24eb2bda3fd3c180759d8",
+        "native_run": 42858352697,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13784375199,
+        "artifact": 13784386431,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6792,9 +6790,9 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Full 8 actual Unity shot; 390x844 cropped real portrait repaired, portrait border proof and source syntax passed. Visual inspect still shows mission fraction crosses lower bevel and profile power touches lower edge; not art-approved."
+        "notes": "Genuine Unity 6000.3.23f1 full 8-view PASS; player power and 0/1 moved within silhouette. Art remains noticeably below owner reference in world blue roof, composition/background, absent game-locked medals and UI preview quality; subjective 7.5/10 not established."
       },
-      "runner_release_basis": "Native 42857223904 finished SUCCESS eight true screenshots, all jobs complete; release without art approval for next revision source correction."
+      "runner_release_basis": "Exact head 3f04846b native 42858352697 SUCCESS + QA job complete, eight actual screenshots artifact13784386431; runner released by CAS, no merge or art approval."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
