@@ -100,8 +100,8 @@ def verify():
     for hit_width,hit_height,label,caption,size in [
         (147,50,'900 portrait','Mejorar a Bastión II',12),
         (147,50,'390 portrait','Mejorar a II',15),
-        (196,45,'1600 landscape','Mejorar a Bastión II',11),
-        (210,53,'844 compact landscape','Mejorar a Bastión II',14),
+        (196,45,'1600 landscape','Mejorar a II',16),
+        (210,53,'844 compact landscape','Mejorar a II',15),
     ]:
         painted_h=min(hit_height-4,hit_width/art_ratio)
         painted_w=painted_h*art_ratio
@@ -114,7 +114,7 @@ def verify():
     assert 'float paintedHeight=Mathf.Min(plate.rect.height-4f,' in hud
     assert 'float paintedWidth=paintedHeight*artAspect;' in hud
     assert 'float captionLeft=paintedLeft+paintedWidth*.28f;' in hud
-    assert 'bool fullUpgradeCaption=lastWidth>=800;' in hud
+    assert 'bool fullUpgradeCaption=lastPortrait && lastWidth>=800;' in hud
 
     # The right-edge close badge must not touch either heading, in portrait
     # or small landscape; both rows preserve >=4 Unity design units.
