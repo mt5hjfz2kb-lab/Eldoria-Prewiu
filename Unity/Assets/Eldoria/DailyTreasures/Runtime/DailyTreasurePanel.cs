@@ -613,6 +613,9 @@ namespace Eldoria.DailyTreasures
             root.SetAsLastSibling();
             screen.gameObject.SetActive(true);
             screen.SetAsLastSibling();
+            // The entry medallion is NOT a second HUD behind the open modal.
+            // Authentic native frames showed it poking outside the left frame.
+            entryRect.gameObject.SetActive(false);
             ceremony.gameObject.SetActive(false);
             header.gameObject.SetActive(true);
             subhead.gameObject.SetActive(true);
@@ -634,6 +637,9 @@ namespace Eldoria.DailyTreasures
             // no audio continues over the actual city or another room.
             if(originalSfx && originalSfx.isPlaying)originalSfx.Stop();
             if(screen)screen.gameObject.SetActive(false);
+            if(entryRect)entryRect.gameObject.SetActive(!suppressed &&
+                !HasVisibleCanonicalHeroRoom() &&
+                !HasVisibleVigiliaBuildingPanel());
             currentStage=DailyTreasureStageKind.Daily;
             activeMilestoneId=null;
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,.91f);
@@ -883,6 +889,7 @@ namespace Eldoria.DailyTreasures
             root.SetAsLastSibling();
             screen.gameObject.SetActive(true);
             screen.SetAsLastSibling();
+            entryRect.gameObject.SetActive(false);
             lastWidth=lastHeight=-1f;
             Layout();
             Present(title,confirmedResult,true,legendary?
@@ -901,6 +908,8 @@ namespace Eldoria.DailyTreasures
             DailyTreasureCeremonyTier tier,string eventId=null)
         {
             if(!IsOpen)return;
+            // A claim can transition to its own ceremony without an Update().
+            entryRect.gameObject.SetActive(false);
             ceremonyTier=tier;
             activeTheme=DailyTreasureCeremonyTheme.ForEvent(
                 eventId,tier==DailyTreasureCeremonyTier.Legendary);
@@ -1353,7 +1362,16 @@ namespace Eldoria.DailyTreasures
                         roomy?(twoResources?15:16):tiny?13:14;
                 }
             }
-            if(focusedQuiet)
+            if(eventStage && stage.SideBySide)
+            {
+                // Native Scouts/Explorers 844x390: the centered 405px
+                // CONTINUAR button intruded into the authentic painting.
+                // Keep the single real action in the RIGHT-hand receipt
+                // column; no opaque strip across the original map.
+                Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
+                    stage.ReceiptX,13f,Mathf.Min(stage.ReceiptW,320f),54f);
+            }
+            else if(focusedQuiet)
                 Place((RectTransform)claimButton.transform,.5f,.5f,.5f,.5f,
                     0f,portrait?-175f:-127f,
                     Mathf.Min(panelW-30f,portrait?325f:405f),54f);
@@ -1751,6 +1769,10 @@ namespace Eldoria.DailyTreasures
                 }
                 return;
             }
+            // Any open scene supersedes its own small entry medallion.
+            // Restore the medallion only after Close() has finished.
+            if(entryRect.gameObject.activeSelf)
+                entryRect.gameObject.SetActive(false);
             if(calendar.gameObject.activeSelf && rareDayGlow)
             {
                 float gentle=rareDayAvailable?
