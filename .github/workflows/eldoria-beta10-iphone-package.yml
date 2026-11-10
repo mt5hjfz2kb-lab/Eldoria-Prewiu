@@ -1,4 +1,4 @@
-name: Eldoria beta10 minimal world-clock genuine WebGL and Mac QA — owner only
+name: Eldoria prebaked-collision WebGL packaging and Apple GPU QA — owner only
 on:
   push:
     branches: [main]
@@ -11,9 +11,9 @@ concurrency:
   group: eldoria-beta10-iphone-package
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42714385780'
-  NATIVE_SOURCE: 004d3ef9c26e9070762e9e38ce84d69d525efd4f
-  CANDIDATE_REVISION: native325-mobile12-minimal-world-clock-qa
+  NATIVE_RUN: '42909656581'
+  NATIVE_SOURCE: 7ae5416613480ba526a839b429459d53629041e5
+  CANDIDATE_REVISION: native325-mobile13-prebaked-collision-qa
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 004d3ef9c26e9070762e9e38ce84d69d525efd4f
+          ref: 7ae5416613480ba526a839b429459d53629041e5
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
@@ -98,6 +98,12 @@ jobs:
           name: beta10-minimal-clock-native-evidence
           github-token: ${{ github.token }}
           path: native-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: collision-payload-byte-proof-not-iphone
+          github-token: ${{ github.token }}
+          path: collision-proof
       - name: Retrieve immutable beta10 source-only A/B proof (separate from actual Unity)
         uses: actions/download-artifact@v4
         with:
@@ -114,6 +120,15 @@ jobs:
           python tools/eldoria-private-beta/reuse_mobile6_profile.py --parent reference-parent/data.unity3d --reference mobile6.unity3d --fresh deduplicated/data.unity3d --expected-fresh-sha256 "$HASH" --output transformed
           python - <<'PY'
           import json,pathlib,os,hashlib
+          collision=json.load(open('collision-proof/collision-payload-proof.json'))
+          extraction=json.load(open('extracted/extraction.json'))
+          assert collision['status']=='REAL_WEBGL_COLLISIONS_PREBAKED_ORIGINAL_MESH_BYTES_VERIFIED'
+          assert collision['data_sha256']==extraction['data_sha256']
+          assert collision['bundle_sha256']==extraction['bundle_sha256']
+          assert set(collision['meshes'])=={'Bastion_I','Bastion_II_GI'}
+          assert all(m['baked_triangle_bytes']>0 for m in collision['meshes'].values())
+          setting=json.load(open('native-evidence/collision-bake-setting.json',encoding='utf-8-sig'))
+          assert setting['after'] is True and setting['source']==os.environ['NATIVE_SOURCE']
           restored=json.load(open('native-evidence/warm-cache-restoration.json',encoding='utf-8-sig'))
           assert restored['restored'] and not restored['conflicts'] and not restored['existing_input_changes']
           parity=json.load(open('native-evidence/comparison.json',encoding='utf-8-sig'))
@@ -178,7 +193,10 @@ jobs:
           p=pathlib.Path('site/release-identity.json');r=json.loads(p.read_text());cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
           r['route_buffers_reused']=True;r['exact_population_and_routes_verified']=True
           r['tutorial_unchanged']=False
-          r['source_composition']='Exact owner-playable beta10 19 overlays: only minimal anchored clock changed; original terrain response tape'
+          r['source_composition']='Frozen beta10 UX and minimal anchored clock; initialization-array cleanup and exact static castle collision prebake'
+          r['static_castle_collisions_prebaked']=True
+          r['collision_payload_proof']=json.load(open('collision-proof/collision-payload-proof.json'))
+          r['initialization_normal_copy_released']=True
           r['pretest_ux_native_verified']=True
           r['owner_only_iphone_timer_ab']=True
           r['external_testers_enabled']=False
@@ -199,8 +217,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: beta10-minimal-clock-packaging-evidence
+          name: beta13-prebaked-collision-packaging-evidence
           path: |
+            collision-proof/
             extracted/extraction.json
             deduplicated/integrity.json
             transformed/*.json
@@ -210,7 +229,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: beta10-minimal-clock-candidate-site
+          name: beta13-prebaked-collision-candidate-site
           path: site/
           compression-level: 0
           retention-days: 14
@@ -221,12 +240,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 004d3ef9c26e9070762e9e38ce84d69d525efd4f
+          ref: 7ae5416613480ba526a839b429459d53629041e5
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: beta10-minimal-clock-candidate-site
+          name: beta13-prebaked-collision-candidate-site
           path: qa-sites/candidate
       - uses: actions/download-artifact@v4
         with:
@@ -260,7 +279,7 @@ jobs:
           def load(folder):
             report=json.loads(Path(folder,'report.json').read_text())
             assert report['passed'] and report['identity']['revision'] in (
-              'native325-mobile10-pretest-ux','native325-mobile12-minimal-world-clock-qa'), 'WebKit session did not pass'
+              'native325-mobile10-pretest-ux','native325-mobile13-prebaked-collision-qa'), 'WebKit session did not pass'
             samples=report.get('samples',[])+report.get('entrySamples',[])
             return max((process.get('rssKiB',0)
                 for sample in samples for process in sample.get('processes',[])
@@ -274,7 +293,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: beta10-minimal-clock-desktop-apple-gpu-not-iphone-certification
+          name: beta13-prebaked-collision-apple-gpu-not-iphone
           path: |
             evidence/
             server.log
