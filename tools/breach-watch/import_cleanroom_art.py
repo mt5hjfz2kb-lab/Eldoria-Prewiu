@@ -119,21 +119,67 @@ def fetch(url):
     return data,img
 
 def atlas_medals(img):
+    # The image model may wrap five independent medallions into two rows,
+    # even when asked for one row. Fixed five vertical strips are NOT valid:
+    # they cut circular game icons into half-discs. Identify actual objects.
     img=chroma(img)
-    a=img.getchannel("A")
     w,h=img.size
-    # Five independent equal-width lanes. Every lane gets its own alpha
-    # bbox, never painted atop an existing UI button or chopped from
-    # a screenshot of Eldoria.
+    reduction=5
+    sw,sh=max(1,w//reduction),max(1,h//reduction)
+    alpha=img.getchannel("A").resize((sw,sh),Image.Resampling.NEAREST)
+    binary=alpha.point(lambda v: 255 if v>=155 else 0)
+    pixels=binary.load()
+    visited=bytearray(sw*sh)
+    comps=[]
+    from collections import deque
+    for sy in range(sh):
+        for sx in range(sw):
+            ix=sy*sw+sx
+            if visited[ix] or pixels[sx,sy]==0: continue
+            queue=deque([(sx,sy)])
+            visited[ix]=1
+            count=0
+            x0=x1=sx;y0=y1=sy
+            while queue:
+                x,y=queue.popleft()
+                count+=1
+                x0=min(x0,x);x1=max(x1,x)
+                y0=min(y0,y);y1=max(y1,y)
+                for nx,ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                    if not(0<=nx<sw and 0<=ny<sh):continue
+                    key=ny*sw+nx
+                    if not visited[key] and pixels[nx,ny]:
+                        visited[key]=1
+                        queue.append((nx,ny))
+            if count>240:
+                comps.append((count,x0,y0,x1+1,y1+1))
+    comps.sort(key=lambda item:item[0],reverse=True)
+    if len(comps)<5:
+        raise ValueError("Model produced fewer than five independent medallions: "+str(comps))
+    candidates=comps[:5]
+    centers=[((x0+x1)/2,(y0+y1)/2,i) for i,(_,x0,y0,x1,y1) in enumerate(candidates)]
+    centers.sort(key=lambda t:t[1])
+    # 3+2 grid = common model layout; 5-in-row is also accepted.
+    cy_range=centers[-1][1]-centers[0][1]
+    if cy_range>sh*.22:
+        top=sorted(centers[:3],key=lambda t:t[0])
+        bottom=sorted(centers[3:],key=lambda t:t[0])
+        order=[v[2] for v in top+bottom]
+    else:
+        order=[v[2] for v in sorted(centers,key=lambda t:t[0])]
     output=[]
-    for i,name in enumerate(("castle","provisions","swords","raven","helm")):
-        l=round(i*w/5);r=round((i+1)*w/5)
-        lane=img.crop((l,0,r,h))
-        bbox=lane.getchannel("A").point(lambda v:255 if v>45 else 0).getbbox()
-        if not bbox:raise ValueError("Medal not present in lane "+str(i))
-        # Keep proportional padding, keep pixels/embossing intact.
-        obj=lane.crop(bbox)
-        output.append((name,obj))
+    for name,idx in zip(("castle","provisions","swords","raven","helm"),order):
+        _,x0,y0,x1,y1=candidates[idx]
+        pad=7
+        left=max(0,x0*reduction-pad);top=max(0,y0*reduction-pad)
+        right=min(w,x1*reduction+pad);bottom=min(h,y1*reduction+pad)
+        crop=img.crop((left,top,right,bottom))
+        # Strong acceptance: nothing may touch its crop edge, and the shape
+        # must be roughly round in BOTH dimensions (no sliced icon halves).
+        ratio=crop.width/crop.height
+        if not .75<ratio<1.28:
+            raise ValueError(f"Cut-up medallion {name}: {crop.size}; abort")
+        output.append((name,crop))
     return output
 
 def main():
