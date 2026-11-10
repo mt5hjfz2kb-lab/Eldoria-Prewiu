@@ -359,6 +359,7 @@ namespace Eldoria.BreachWatch
             // concise two-line inscriptions and the upgrade button: the
             // latter now fits without truncation at phone width.
             bool display=name=="Player name" || name=="Real building name" ||
+                name=="Real building level" ||
                 name=="Compact engraved cost heading" ||
                 name=="Actual chapter" || name=="Actual objective" ||
                 name=="Real effects" || name=="Real action title" ||
