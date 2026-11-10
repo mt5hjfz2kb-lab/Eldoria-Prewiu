@@ -56,6 +56,14 @@ for name in asset_names:
         left,bottom,right,top=map(int,m.groups())
         unit_scale=canvas_reference_ppu/ppu
         actual=left*unit_scale
+        # Insignia must lie FULLY INSIDE its unscaled source region.
+        # The previous 25%-left split ran straight through the original
+        # 34%-wide circular lion, leaving a stretched wing at the seam.
+        if name=='profile':
+            assert left>=int(im.width*.34),(
+                'Lion ring cut by nine-slice vertical seam',left,im.width)
+            assert 42<=actual<=46,('lion physical crest width',actual)
+            assert 'float lionTextInset=crestSize+(smallPhone?8f:16f);' in HUD
         minmax={'profile':(32,47),'mission':(22,34),
                 'resource':(16,24)}[name]
         assert minmax[0]<=actual<=minmax[1],(name,'actual nine-slice left well',actual)
