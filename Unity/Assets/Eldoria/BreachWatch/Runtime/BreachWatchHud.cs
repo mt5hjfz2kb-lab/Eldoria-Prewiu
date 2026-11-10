@@ -1044,10 +1044,16 @@ namespace Eldoria.BreachWatch
                 // instead of baking it into an image.
                 // Source-faithful owner cartouche: less dead header height,
                 // more world visible and one sculpted material, not stacked cards.
-                float pw=Mathf.Min(171f,w*.42f);
+                // At 900x1600 Unity the old card was 299px wide and
+                // anchored 23px from the right edge; owner's approved card
+                // is ~276px wide and set ~69px in. Shift the WHOLE real
+                // panel once, do not build a second decorative panel.
+                // Phones retain their 44px targets and own safe-area inset.
+                float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;
                 float ph=280f;
-                float left=w-margin-pw;
-                float top=navTop-ph-34;
+                float cardRightInset=smallPhone?margin:39f;
+                float left=w-cardRightInset-pw;
+                float top=navTop-ph-(smallPhone?34f:51f);
                 At(panel,left,top,pw,ph);
                 At(buildingName.rectTransform,48,7,pw-109,21);
                 At(buildingLevel.rectTransform,48,31,pw-109,17);
