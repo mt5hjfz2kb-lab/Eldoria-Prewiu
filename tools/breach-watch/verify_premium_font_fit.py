@@ -63,7 +63,7 @@ def verify():
     assert "chapterName.resizeTextMaxSize=smallPhone?13:11;" in hud
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
-    fits("Bastión",SEMIBOLD,16,panel_width-80,
+    fits("Bastión",SEMIBOLD,16,panel_width-109,
          "selected building title")
     paragraph="Gobierno y progreso de Valoria."
     paragraphs=lines(REGULAR,12,paragraph,panel_width-26)
@@ -120,10 +120,10 @@ def verify():
     # or small landscape; both rows preserve >=4 Unity design units.
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     for clause in (
-        "At(buildingName.rectTransform,18,7,pw-80,21);",
-        "At(buildingLevel.rectTransform,18,31,pw-80,17);",
-        "At(buildingName.rectTransform,18,8,pw-80,31);",
-        "At(buildingLevel.rectTransform,18,40,pw-80,17);",
+        "At(buildingName.rectTransform,48,7,pw-109,21);",
+        "At(buildingLevel.rectTransform,48,31,pw-109,17);",
+        "At(buildingName.rectTransform,50,8,pw-107,31);",
+        "At(buildingLevel.rectTransform,50,40,pw-107,17);",
     ):
         assert clause in hud, ("Missing separate title/close geometry",clause)
 
