@@ -1,4 +1,4 @@
-name: Eldoria P0 — direct unmodified Unity clock WebKit A/B
+name: Eldoria P0 — same-origin WebKit control direct and streamed clock
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -20,10 +20,11 @@ jobs:
       - name: Checkout exact audited, source-only Mac WebKit probe
         uses: actions/checkout@v4
         with:
-          ref: 061a9cbc40deca221436e44c6aa55afcca4244bf
+          ref: 97830343d85ffa91fc206630230cd430ee7d3ea9
           sparse-checkout: |
             tools/eldoria-private-beta/qa_webkit_residency.cjs
             tools/eldoria-private-beta/qa_static_server.cjs
+            tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Download exact previous source QA pass artifact, no Unity compilation
@@ -73,7 +74,12 @@ jobs:
           assert 'clock_copy_delta' not in manifest
           for part in manifest['decoded_parts'][manifest['data']]:
             assert (root/'beta-direct-clock'/part['url']).is_file()
-          print('ORIGINAL_DIRECT_UNITY_CLOCK_NO_BROWSER_RECONSTRUCTION')
+          control=pathlib.Path('tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html').read_bytes()
+          assert hashlib.sha256(control).hexdigest()=='f964ee3a8086d6a18005a34ca21ff7f2f95a3bfc5266558ef1e942dbb717045b'
+          assert b'http-equiv="refresh"' not in control and b'play-16f4527815248e48.js' in control
+          assert (root/'beta-native325/play-16f4527815248e48.js').is_file()
+          (root/'beta-native325/index.html').write_bytes(control)
+          print('SAME_ORIGIN_CONTROL_ENTRY_RESTORED_LOCALLY_ONLY_NO_LIVE_MUTATION')
           PY
       - uses: actions/setup-node@v4
         with:
@@ -84,6 +90,7 @@ jobs:
           QA_VARIANT: unchanged
           QA_ENTRY: '1'
           QA_SKIP_PREFLIGHT: '1'
+          QA_EXPECT_ORIGIN: 'http://127.0.0.1:18975'
         run: |
           npm install --prefix "$RUNNER_TEMP/compact-webkit" --no-save playwright@1.55.0
           "$RUNNER_TEMP/compact-webkit/node_modules/.bin/playwright" install webkit
@@ -93,24 +100,28 @@ jobs:
           trap 'kill "$server_pid"' EXIT
           failed=0
           QA_URL='http://127.0.0.1:18975/beta-native325/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile10-pretest-ux QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18975/beta-iphone-clock-ab/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           python3 - <<'PY'
           import json
           from pathlib import Path
           rows={}
-          for kind,expected in (('control','native325-mobile10-pretest-ux'),('candidate','native325-mobile12-minimal-world-clock-qa')):
+          for kind,expected in (('control','native325-mobile10-pretest-ux'),('direct','native325-mobile12-minimal-world-clock-qa'),('candidate','native325-mobile12-minimal-world-clock-qa')):
             report=json.loads(Path('evidence',kind,'report.json').read_text())
             samples=report.get('samples',[])+report.get('entrySamples',[])
             rss=max((p.get('rssKiB',0) for s in samples for p in s.get('processes',[]) if 'WebContent' in p.get('name','')),default=0)
             gpu=max((p.get('rssKiB',0) for s in samples for p in s.get('processes',[]) if 'GPU' in p.get('name','')),default=0)
             wasm=max(((s.get('metrics') or {}).get('usedWASMHeapSize') or 0 for s in samples),default=0)
             rows[kind]={'passed':report.get('passed'),'revision':(report.get('identity') or {}).get('revision'),'webcontent_peak_kib':rss,'gpu_peak_kib':gpu,'wasm_used_peak_bytes':wasm,'errors':report.get('errors'),'samples':len(samples)}
+            assert report.get('perDrawTracing') is False
+            assert all(n['url'].startswith('http://127.0.0.1:18975/') for n in report['navigations']), 'Cross-origin control invalidates comparison'
             assert rows[kind]['revision']==expected,'Wrong QA artifact identity'
           with Path('evidence/owner-ab-memory.json').open('w') as out:
             json.dump({'physical_iphone_tested':False,'scope':'same-host macOS WebKit ONLY','data':rows},out,indent=2)
           print('OWNER_AB_REAL_WEBKIT_MEMORY_EVIDENCE',json.dumps(rows))
-          assert rows['control']['passed'] and rows['candidate']['passed'],'Actual WebKit entry or reload failed'
+          assert rows['control']['passed'] and rows['direct']['passed'] and rows['candidate']['passed'],'Actual WebKit entry or reload failed'
           assert rows['control']['webcontent_peak_kib']>0 and rows['candidate']['webcontent_peak_kib']>0
+          assert rows['direct']['webcontent_peak_kib']<=rows['control']['webcontent_peak_kib']*1.05, 'Direct clock build memory regression vs identical-host beta10'
           assert rows['candidate']['webcontent_peak_kib']<=rows['control']['webcontent_peak_kib']*1.05,\
               'Direct unmodified build still requires >5% extra WebContent memory vs playable beta10'
           PY
@@ -119,7 +130,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-direct-clock-real-macos-webkit-not-iphone
+          name: eldoria-same-origin-three-arm-webkit-not-iphone
           path: |
             evidence/
             server.log
