@@ -238,7 +238,10 @@ assert.match(native,/panel\.HasMilestoneScenery/);
 assert.match(native,/panel\.MilestoneSceneryKey==requiredScenery\[style\]/);
 assert.match(panel,/DailyTreasureStageDirection\.Compose\(/);
 assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
-assert.match(panel,/milestoneScenery\.color=new Color\(\.70f,\.68f,\.65f,/);
+// Match production tint in both the static and live animated Unity path.
+// Do not freeze the former dark portrait color after the authentic Lyra fix.
+assert.match(panel,/milestoneScenery\.color=MilestonePaintTint\(stage/);
+assert.match(panel,/hallPortrait\?\.82f:\.70f/);
 // Real story event scenes cannot look like four copies of a clickable
 // superimposed button. Their headings are short enough for phone portrait,
 // and one low-opacity ink band maintains the Vigilia material grammar.
