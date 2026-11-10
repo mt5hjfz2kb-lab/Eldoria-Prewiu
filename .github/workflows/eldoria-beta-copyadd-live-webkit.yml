@@ -96,7 +96,7 @@ jobs:
           export QA_SIM_UDID=$(xcrun simctl create "Eldoria-warm-safari" com.apple.CoreSimulator.SimDeviceType.iPhone-16 "$runtime_id")
           xcrun simctl boot "$QA_SIM_UDID"
           xcrun simctl bootstatus "$QA_SIM_UDID" -b
-          xcrun simctl openurl "$QA_SIM_UDID" about:blank
+          xcrun simctl launch "$QA_SIM_UDID" com.apple.mobilesafari
           # A fresh Safari took >60s to start inspector services in the previous log.
           # Initialize once; SafariDriver gives each test a separate storage session.
           python3 -c 'import time;time.sleep(45)'
