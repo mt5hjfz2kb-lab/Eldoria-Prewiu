@@ -59,8 +59,8 @@ def verify():
     # This exact accepted Chapter I inscription is measured to fit at 13/14,
     # so it must NOT be silently shrunk by Unity legacy BestFit on small RT.
     assert "chapterName.resizeTextForBestFit=!chapterOne;" in hud
-    assert "chapterName.resizeTextMinSize=smallPhone?13:11;" in hud
-    assert "chapterName.resizeTextMaxSize=smallPhone?13:11;" in hud
+    assert "chapterName.resizeTextMinSize=smallPhone?13:10;" in hud
+    assert "chapterName.resizeTextMaxSize=smallPhone?13:10;" in hud
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
     # Genuine Unity 900x1600 prior failure: 49u Baskerville NIVEL I

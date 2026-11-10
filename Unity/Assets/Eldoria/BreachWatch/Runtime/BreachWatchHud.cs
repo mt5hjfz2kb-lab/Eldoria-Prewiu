@@ -1018,7 +1018,7 @@ namespace Eldoria.BreachWatch
                 // Move the same live text 1u UP and make the row 1u taller,
                 // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?15f:13f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?15f:10f,missionWidth-(smallPhone?64f:44f),
                     smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
@@ -1029,20 +1029,20 @@ namespace Eldoria.BreachWatch
                 // spacing. Move ONLY live ink upward, with 2u minimum row
                 // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?32f:28f,missionWidth-(smallPhone?70f:44f),
+                    smallPhone?32f:24f,missionWidth-(smallPhone?70f:44f),
                     fullObjective?51f:(smallPhone?12f:10f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?46f:40f),
+                    fullObjective?87f:(smallPhone?46f:36f),
                     missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
-                chapterName.fontSize=smallPhone?13:11;
+                chapterName.fontSize=smallPhone?13:10;
                 chapterName.resizeTextForBestFit=true;
-                chapterName.resizeTextMinSize=smallPhone?13:11;
-                chapterName.resizeTextMaxSize=smallPhone?13:11;
-                chapterObjective.fontSize=smallPhone?14:12;
+                chapterName.resizeTextMinSize=smallPhone?13:10;
+                chapterName.resizeTextMaxSize=smallPhone?13:10;
+                chapterObjective.fontSize=smallPhone?14:11;
                 chapterObjective.resizeTextForBestFit=true;
                 chapterObjective.resizeTextMinSize=smallPhone?12:11;
-                chapterObjective.resizeTextMaxSize=smallPhone?14:12;
-                chapterProgress.fontSize=smallPhone?13:11;
+                chapterObjective.resizeTextMaxSize=smallPhone?14:11;
+                chapterProgress.fontSize=smallPhone?13:10;
 
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
