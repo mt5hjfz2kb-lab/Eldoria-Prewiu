@@ -54,8 +54,9 @@ def check_layer(directory, item):
         visible = sum(histogram[160:]) / (w * h)
         require(.08 <= transparent <= .94 and visible >= .04,
                 "Flat screenshot or empty sprite: " + name)
-        values = [sum(pixel) / 3 for pixel in
-                  picture.convert("RGB").resize((64, 36)).get_flattened_data()]
+        thumb = picture.convert("RGB").resize((64, 36))
+        values = [sum(thumb.getpixel((x, y))) / 3
+                  for y in range(36) for x in range(64)]
         require(max(values) - min(values) > 32,
                 "Unillustrated flat source plate: " + name)
     return {"filename": name, "sha256": digest, "size": [w, h],
