@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Owner physical Safari test of direct-r1 also restarts; transport-only mitigation rejected. Investigate engine initialization; P0 remains open.",
+  "reason": "Beta13 collision-prebake candidate is published and byte-verified; Mac comparison passed. Physical iPhone restart remains unresolved until owner-device validation; external invitations remain blocked.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -80,7 +80,7 @@
     "Physical Android Chrome 30-minute session and persistence test",
     "Third-party asset license rights and redistribution review #171",
     "Confirm genuine Bastion I–V gameplay telemetry with opt-in opt-out on exact hosted candidate, Supabase QA receipt and privacy gate before enable",
-    "P0 #96: live mobile12 clock candidate physically restarts within 2–3 seconds on owner's iPhone; candidate REJECTED; preserve working beta10; new exact build must survive 30 min and show anchored clock"
+    "P0 #96: previous candidates physically restart; new beta13 compiled collision/initialization candidate requires real iPhone 30-minute stability, persistence and anchored-clock verification. No physical PASS yet."
   ],
   "telemetry": {
     "project": "Eldoria Playtest Feedback",
@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T22:46:46.996Z",
+  "updated_at": "2026-11-10T22:58:15.643Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -501,7 +501,7 @@
     }
   },
   "iphone_collision_prebake": {
-    "status": "NATIVE_AND_REAL_COLLISION_PAYLOAD_PASS_PACKAGING_IN_PROGRESS",
+    "status": "PUBLISHED_ALL_146_FILES_VERIFIED_PUBLIC_WEBKIT_RUNNING",
     "source_sha": "7ae5416613480ba526a839b429459d53629041e5",
     "native_run": 42909656581,
     "packaging_run": 42916816001,
@@ -514,7 +514,7 @@
     ],
     "native_artifact_verified": true,
     "actual_cooked_payload_verified": true,
-    "published": false,
+    "published": true,
     "physical_iphone_verified": false,
     "external_testers_enabled": false,
     "root_cause_confirmed": false,
@@ -544,7 +544,24 @@
     "prior_packaging_failure": {
       "run": 42914592603,
       "reason": "Overescaped HTML filename regex after native payload verification; corrected whole staging block tested on real beta shell"
-    }
+    },
+    "packaging_result": "success",
+    "mac_webkit_result": "success",
+    "mac_webkit_artifact": 13810653131,
+    "mac_webkit_nickname_persisted_visually_verified": true,
+    "mac_webkit_control_peak_rss_kib": 2640304,
+    "mac_webkit_candidate_peak_rss_kib": 2651088,
+    "memory_scope": "Mac WebKit RSS, not physical iPhone memory",
+    "site_artifact": 13810611917,
+    "site_sha256": "e9ac92d2063b6bc016eb81f22e08a964c6d046d67cc28640dd957354eaee50f5",
+    "site_bytes": 465389078,
+    "publication_run": 42917944631,
+    "publication_source": "49f1ed41faff53b27a0f611156fcca84f1655f17",
+    "public_file_hashes_verified": 146,
+    "public_files_expected": 146,
+    "combined_pages_bytes": 955792623,
+    "public_webkit_run": 42918233684,
+    "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1"
   },
   "ios_simulator_diagnostic": {
     "run": 42908325634,
