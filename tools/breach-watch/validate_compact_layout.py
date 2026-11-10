@@ -124,7 +124,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # The original separate uGUI divider is now disabled for portrait.
         real_painted_rule=.521*280
         portraitphoto=R(11,48,panelw-22,57)
-        info=R(13,108,panelw-26,36)
+        info=R(13,108,panelw-26,35)
         costlabel=R(13,157,panelw-26,17)
         costdata=R(13,178,panelw-26,20)
         state=R(13,209,panelw-26,17)
