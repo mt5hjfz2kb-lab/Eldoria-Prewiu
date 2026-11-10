@@ -574,8 +574,8 @@ internal static class GatewayChecks
                 }
             }
         };
-        Assert(NarrativeCoherenceRules.Seen(player,"scouts-introduction"),
-            "Scouts introduced through canonical narrative ledger");
+        Assert(player.ChapterProgress.SeenNarrative.Contains("scouts-introduction"),
+            "Scouts introduced through canonical saved narrative ledger");
         Assert(EarlyRetentionRules.ScoutsUnlocked(player),
             "Story-valid Scouts really become available");
         var store=new MemoryStore{Saved=player};
