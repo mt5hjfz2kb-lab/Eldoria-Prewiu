@@ -44,19 +44,18 @@ const sourceRequirements=[
   [/legacyCanvas\.enabled\s*=\s*false/,'legacy canvas is disabled but game object survives'],
   [/legacyGroup\.alpha\s*=\s*0/,'legacy UI is hidden'],
   [/host\.Hud\.SelectionChanged\s*\+=/,'canonical session owner is reused'],
-  // Verified against exact PR173 head 94541b8f1cfd (2026-11-09):
-  // the genuine one-piece upgrade CTA is OwnerControls/upgrade_button.
-  // It is painted once through ApplyIndependentArt, at natural aspect,
-  // with a separate transparent raycast target. The earlier strict check
-  // for UnifiedButtons/action_gold is obsolete and would fail BEFORE
-  // native testing even though PR173's current UI is valid. Do not reuse
-  // either construction-hammer graphic as a daily reward action.
-  [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/profile_bar"\)/,
-    'Current Vigilia identity bar'],
-  [/Resources\.Load<Sprite>\([\s\S]{0,55}"VigiliaArt\/OwnerControls\/resource_capsule"\)/,
-    'Current Vigilia resource treatment'],
-  [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/upgrade_button"\)/,
-    'Owner-approved independent upgrade art; NOT a treasury claim button'],
+  // PR173's genuine isolated 2K Canvas (head bf427141d7e1,
+  // verified 2026-11-10) now paints FreshArt originals. Its previous
+  // OwnerControls/profile_bar, resource_capsule and upgrade_button paths
+  // are historical, NOT its actual current materials. Validate the source
+  // and the real FreshArt files; do not wrongly fail the daily workflow
+  // for obsolete names or reuse the construction CTA in loyalty rewards.
+  [/Resources\.Load<Sprite>\("VigiliaArt\/FreshArt\/profile_panel"\)/,
+    'Current Vigilia independent 2K identity panel'],
+  [/Resources\.Load<Sprite>\([\s\S]{0,55}"VigiliaArt\/FreshArt\/resource_chip"\)/,
+    'Current Vigilia independent 2K resource background'],
+  [/Resources\.Load<Sprite>\("VigiliaArt\/FreshArt\/upgrade_button"\)/,
+    'Current genuine upgrade CTA art (not a loyalty reward)'],
   [/actionPlate\.ApplyIndependentArt\(originalArt\)/,
     'Native one-piece painted CTA instead of stretched nine-slice'],
   [/actionPlate\.preserveAspect\s*=\s*true/,
@@ -70,6 +69,23 @@ const sourceRequirements=[
 for(const [expression,meaning] of sourceRequirements)
   assert.match(native,expression,
     'PR173 head '+ref.slice(0,12)+' changed contract: '+meaning);
+
+// The FreshArt profile, resource bar and upgrade action are actual
+// authored 2K UI paintings, not merely names in source or conceptual
+// mockups. Verify them in PR173 at this exact HEAD without importing them
+// into PR181's independent chest artwork.
+for(const name of ['profile_panel','resource_chip','upgrade_button']){
+  const path='Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/'+name+'.png';
+  const [asset,meta]=await Promise.all([
+    api('/contents/'+path+'?ref='+ref),
+    api('/contents/'+path+'.meta?ref='+ref)
+  ]);
+  assert.equal(asset.type,'file','Genuine Vigilia FreshArt disappeared: '+name);
+  assert.ok(asset.size>5000,'Vigilia painting too small or missing: '+name);
+  const info=Buffer.from(meta.content.replace(/\\s/g,''),'base64').toString('utf8');
+  assert.match(info,/textureType: 8/,'Vigilia art is not imported as Sprite: '+name);
+  assert.match(info,/spriteMode: 1/,'Vigilia art unexpected sprite mode: '+name);
+}
 
 // The old bronze-outline cards are a deliberately SEMANTICALLY CLEAN
 // separate reward treatment: unlike the current forge upgrade_button they
