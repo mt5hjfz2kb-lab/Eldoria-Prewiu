@@ -1,14 +1,15 @@
-# One exact SHA PR181 Unity 6000.3.23f1 run. 72 genuine images and real Gateway/GraphicRaycaster proof.
+# Unity 6000.3.23f1 at exact PR181 HEAD; preserve original authored assets and no speculative claims.
 state=REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION
 workstream=eldoria-daily-treasures-20261108
-source_before_request=8fb7c6e290d30b40e8d9de7c45159adf47cf26d8
-registry_main_commit_claim=be3f844286a94ef6a3a970811c918e2602beda09
-runner_lease_revision=24
+source_before_request=814b404a6ea40e299bdc57a8a9d6c1a8de660a52
+registry_main_commit_claim=28520420545ac5efd97f676d46976ff93084bd18
+runner_lease_revision=26
 runner_owner=chatgpt-daily-treasures-20261108
 evidence=52_contract_png+20_paid_quiet_png+116_real_pointer_events+28_real_gateway_claims
 scenes=Lyra+Scouts+Vigilants+Bastion
-native_failure_regression=Unity_paid_day7_after_rotation_63px_text_preferredHeight_receipt_corrected_72px
+native_failure_regression=real_unity_42789608293_reward_title_wrapped_62px_over_40px_on_mobile_potrait
+corrective_changes=responsive_title_measured_preferredWidth+hide_entry_medallion_in_modal+right_column_continue_for_scenic_events
 art_approved=false
 full_game_verified=false
 merge_or_publish=false
-requested_at=2026-11-10T09:18:27.818Z
+requested_at=2026-11-10T10:22:55.459Z
