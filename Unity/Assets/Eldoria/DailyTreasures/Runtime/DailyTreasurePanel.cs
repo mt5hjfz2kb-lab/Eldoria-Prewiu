@@ -1294,7 +1294,8 @@ namespace Eldoria.DailyTreasures
                     portrait?Mathf.Min(panelW-116f,280f):
                     Mathf.Min(panelW*.58f,330f);
                 float headingX=portrait?
-                    -Mathf.Min(26f,(panelW-headingWidth)*.20f):
+                    (cityStage?-panelW*.5f+10f+headingWidth*.5f:
+                     -Mathf.Min(26f,(panelW-headingWidth)*.20f)):
                     cityStage?-panelW*.5f+12f+headingWidth*.5f:
                     stage.SideBySide?stage.SceneX:-panelW*.10f;
                 float headingY=cityStage?panelH*.405f:
