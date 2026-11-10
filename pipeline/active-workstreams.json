@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T22:56:18.297Z",
+  "updated_at": "2026-11-10T23:04:36.314Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6841,11 +6841,11 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "codex-iphone-stability-6f75130e87ae",
-      "ownership_state": "claimed",
-      "ownership_revision": 25,
-      "write_scope_released": false,
-      "status": "active",
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 26,
+      "write_scope_released": true,
+      "status": "blocked",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
       "scope": [
         "tools/eldoria-private-beta/**",
@@ -6884,9 +6884,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STATIC_COLLISION_NATIVE_PASS_PACKAGE_VERIFICATION",
-      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Windows released. Complete independent actual collision-byte verification and packaging in Ubuntu, then Mac WebKit entry/reload comparison and isolated owner publication if gates pass. Physical iPhone stability remains unverified.",
+      "phase": "BETA13_PUBLISHED_BLOCKED_ON_REAL_IPHONE_RESULT",
+      "note": "Owner beta13 is implemented, built, published and desktop-tested, not certified on physical iPhone. Original beta10 and save origin preserved. Work is not marked complete; canonical ID and all evidence retained for continuation.",
+      "next": "Resume the SAME PR179/workstream after the owner's beta13 physical Safari result. If it still restarts, investigate exact initialization/real-device evidence without repeating rejected transport/JIT/canvas-only remedies. If stable, verify prolonged persistence/clock and remaining tester gates before invitations. No automation; no whole historical branch merge.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7124,7 +7124,11 @@
           "iphone_candidate_30min_tested": false,
           "android_candidate_30min_tested": false,
           "tester_invites_enabled": false
-        }
+        },
+        "beta13_publication": 42917944631,
+        "beta13_public_webkit": 42918233684,
+        "beta13_evidence_commit": "3085642bc8be3525122a4ab56063ec53dd0380af",
+        "beta13_physical_iphone_verified": false
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
@@ -7192,6 +7196,13 @@
           "to_owner": "codex-iphone-stability-6f75130e87ae",
           "reason": "User explicitly requests this session continue and finish iPhone stability and tester readiness. Preserve current read-only Mac WebKit run42786071982 and stable beta10, reuse canonical PR179.",
           "transferred_at": "2026-11-10T08:59:47.933Z"
+        },
+        {
+          "previous_owner": "codex-iphone-stability-6f75130e87ae",
+          "from_revision": 25,
+          "to_revision": 26,
+          "released_at": "2026-11-10T23:04:36.314Z",
+          "reason": "Native227, exact collision data, texture/transport integrity, Mac A/B, all146 public file hashes and actual public nickname/reload PASS. All owned native/package/publication/browser jobs complete; Windows already released. Physical iPhone result is a genuine external dependency after repeated physical failures despite desktop PASS; do not mark P0 solved or retain exclusive write reservation while awaiting owner input."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7516,7 +7527,7 @@
       },
       "static_collision_candidate": {
         "source": "2154334c617d20304987be61f623868a53580547",
-        "status": "ACTUAL_PAYLOAD_VERIFICATION_IN_PROGRESS",
+        "status": "PUBLISHED_NATIVE_AND_PUBLIC_WEBKIT_PASS_PHYSICAL_IPHONE_PENDING",
         "original_bake_collision_meshes": false,
         "original_castle_baked_buffers_empty": true,
         "original_castle_vertices": [
@@ -7535,8 +7546,18 @@
         "parity_queries_per_pass": 119870,
         "parity_passes": 2,
         "original_inputs_restored": true,
-        "packaging_source": "5a8509e35c69b81c2aed564a1c66f07fbc0d968a"
-      }
+        "packaging_source": "5a8509e35c69b81c2aed564a1c66f07fbc0d968a",
+        "package_run": 42916816001,
+        "publication_run": 42917944631,
+        "public_webkit_run": 42918233684,
+        "public_webkit_artifact": 13811435888,
+        "public_files_verified": 146,
+        "evidence_commit": "3085642bc8be3525122a4ab56063ec53dd0380af",
+        "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1",
+        "external_testers_enabled": false
+      },
+      "previous_owner": "codex-iphone-stability-6f75130e87ae",
+      "released_at": "2026-11-10T23:04:36.314Z"
     },
     {
       "id": "eldoria-daily-treasures-20261108",
