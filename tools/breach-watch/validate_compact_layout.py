@@ -205,8 +205,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
-        header=R(50,12 if h<530 else 22,contextw-111,27 if h<530 else 22)
-        level=R(50,40 if h<530 else 45,contextw-111,21)
+        header=R(60,12 if h<530 else 22,contextw-121,27 if h<530 else 22)
+        level=R(60,40 if h<530 else 45,contextw-121,21)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=contextw-57-3.5,size
         assert level.x+level.w<=contextw-57-3.5,size
@@ -267,10 +267,10 @@ def main():
         'chapterName.resizeTextMinSize=smallPhone?13:10;',
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,21,pw-104,21);',
-        'At(buildingName.rectTransform,50,h<530f?12f:22f,pw-111,h<530f?27f:22f);',
+        'At(buildingName.rectTransform,60,h<530f?12f:22f,pw-121,h<530f?27f:22f);',
         'At(identityPower.rectTransform,59,39,165,21);',
         'At(buildingLevel.rectTransform,45,43,pw-104,17);',
-        'At(buildingLevel.rectTransform,50,h<530f?40f:45f,pw-111,21);'
+        'At(buildingLevel.rectTransform,60,h<530f?40f:45f,pw-121,21);'
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"

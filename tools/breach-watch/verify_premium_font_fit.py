@@ -127,8 +127,8 @@ def verify():
     for title_width,min_size,max_size,label in [
         (54,12,15,"900 portrait"),
         (67,14,15,"390 portrait"),
-        (109,16,18,"1600 landscape"),
-        (123,16,18,"844 landscape"),
+        (99,16,18,"1600 landscape"),
+        (113,16,18,"844 landscape"),
     ]:
         for name in ["Bastión","Aserradero","Cuartel","Granero","Cantera"]:
             chosen=next((s for s in range(max_size,min_size-1,-1)
@@ -153,8 +153,8 @@ def verify():
     for clause in (
         "At(buildingName.rectTransform,45,21,pw-104,21);",
         "At(buildingLevel.rectTransform,45,43,pw-104,17);",
-        "At(buildingName.rectTransform,50,h<530f?12f:22f,pw-111,h<530f?27f:22f);",
-        "At(buildingLevel.rectTransform,50,h<530f?40f:45f,pw-111,21);",
+        "At(buildingName.rectTransform,60,h<530f?12f:22f,pw-121,h<530f?27f:22f);",
+        "At(buildingLevel.rectTransform,60,h<530f?40f:45f,pw-121,21);",
     ):
         assert clause in hud, ("Missing separate title/close geometry",clause)
 
