@@ -67,8 +67,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         painted_lion_right=round(2496*.35)*100/2000
         name_left=(45+8) if pw<600 else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,6 if pw<600 else 4,1,25 if pw<600 else 21)
-        profile_power=R(0,31 if pw<600 else 25,1,17)
+        profile_name=R(0,6 if pw<600 else 5,1,25 if pw<600 else 19)
+        profile_power=R(0,31 if pw<600 else 24,1,17 if pw<600 else 14)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         right=w-(m+182+9+m)
         chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 62
