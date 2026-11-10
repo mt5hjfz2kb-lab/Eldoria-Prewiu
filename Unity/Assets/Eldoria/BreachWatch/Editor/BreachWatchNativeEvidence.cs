@@ -986,6 +986,7 @@ namespace Eldoria.BreachWatch.Editor
                     float artAspect=actionArt.sprite.rect.width/
                         Mathf.Max(1f,actionArt.sprite.rect.height);
                     Need(visualRect.rect.height>22f &&
+                         visualRect.rect.height<=action.rect.height-3.5f &&
                          Mathf.Abs(visualRect.rect.height*artAspect-
                                    visualRect.rect.width)<.85f,
                          "Original painted button is stretched or does not fill the authored width: "+name);
@@ -1002,11 +1003,11 @@ namespace Eldoria.BreachWatch.Editor
                     float artDrawnWidth=Mathf.Min(visualRect.rect.width,
                         visualRect.rect.height*artAspect);
                     float artDrawnLeft=(action.rect.width-artDrawnWidth)*.5f;
-                    Need(artDrawnWidth>=action.rect.width-.85f,
-                         "Burgundy sprite is letterboxed inside a larger invisible Button: "+name);
+                    Need(artDrawnWidth>=action.rect.width*.70f,
+                         "Real 2K burgundy action is too small relative to its touch target: "+name);
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
-                           artDrawnLeft+artDrawnWidth*.25f,
+                           artDrawnLeft+artDrawnWidth*.28f,
                          "Real upgrade text intersects the painted source hammers: "+name);
                     Need(actionText.rectTransform.anchoredPosition.x+
                          actionText.rectTransform.rect.width<=
