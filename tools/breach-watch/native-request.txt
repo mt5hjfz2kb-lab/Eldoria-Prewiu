@@ -1,1 +1,1 @@
-Native final desktop card finishing: real title22u from top,22u line height; level45u and21u line. Source geometry and font tests aligned without changing limits,52 scenarios PASS. Keep new GPU-level visibility check. Lease62.
+Require exactly the source-card painted divider and reject active procedural duplicate in all formats. Old native assertion required the extra divider seen duplicated in actual1600 capture; aligned with corrected single-surface artwork. Retain every text pixel and pointer assertion. Lease62.

@@ -593,9 +593,12 @@ namespace Eldoria.BreachWatch.Editor
                 if(selection=="bastion" && (w>h || h>=w))
                 {
                     var section=ui.GetComponentInChildren<BreachWatchSectionDivider>(true);
+                    var authoredCard=ui.BuildingPanel.GetComponent<Image>();
                     Need(section && !section.raycastTarget &&
-                         (w<h || section.gameObject.activeInHierarchy || h<500),
-                         "Selected Bastion narrative needs the original non-blocking metallic divider");
+                         !section.gameObject.activeInHierarchy &&
+                         authoredCard && authoredCard.sprite &&
+                         authoredCard.sprite.name=="panel",
+                         "The authored card owns its single painted rule; a procedural divider must not duplicate it");
                 }
                 var depthLayers=ui.GetComponentsInChildren<Shadow>(true)
                     .Where(q=>q && (q.name=="Identity / basalt crest" ||
