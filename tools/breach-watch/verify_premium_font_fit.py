@@ -79,13 +79,13 @@ def verify():
     # Physically readable small-phone context despite the tighter panel.
     assert 14*.91>=12.5, "390px contextual text too small"
     assert "buildingFunction.fontSize=smallPhone?14:12;" in hud
-    action_width=panel_width-16
+    action_width=panel_width-12
     # Source-accurate caption at 900x1600 uses title-case and the whole
     # target, just like the owner's approved UI. Unity BestFit may select
     # 13pt to stay inside its true carved bronze button.
     inset_900=max(31,min(38,action_width*.25))
     fits("Mejorar a Bastión II",SEMIBOLD,12,
-         action_width*.675-7,"900px premium full upgrade caption")
+         action_width*.70-7,"900px premium full upgrade caption")
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
@@ -98,8 +98,8 @@ def verify():
         art_ratio=art.width/art.height
     assert 3.2<art_ratio<3.8,('Unexpected newly generated action art ratio',art_ratio)
     for hit_width,hit_height,label,caption,size in [
-        (155,50,'900 portrait','Mejorar a Bastión II',12),
-        (155,50,'390 portrait','Mejorar a II',15),
+        (159,50,'900 portrait','Mejorar a Bastión II',12),
+        (159,50,'390 portrait','Mejorar a II',15),
         (196,45,'1600 landscape','Mejorar a II',16),
         (210,53,'844 compact landscape','Mejorar a II',15),
     ]:
@@ -107,13 +107,13 @@ def verify():
         painted_w=painted_h*art_ratio
         assert painted_w>=hit_width*.70 and painted_h<=hit_height-4+1e-3,label
         assert abs(painted_w/painted_h-art_ratio)<.001,label
-        free_width=painted_w*.675-7
+        free_width=painted_w*.70-7
         fits(caption,SEMIBOLD,size,free_width,
              label+' inside original cleanroom red painting')
     hud=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
     assert 'float paintedHeight=Mathf.Min(plate.rect.height-4f,' in hud
     assert 'float paintedWidth=paintedHeight*artAspect;' in hud
-    assert 'float captionLeft=paintedLeft+paintedWidth*.325f;' in hud
+    assert 'float captionLeft=paintedLeft+paintedWidth*.30f;' in hud
     assert 'bool fullUpgradeCaption=lastPortrait && lastWidth>=800;' in hud
 
     # The right-edge close badge must not touch either heading, in portrait
