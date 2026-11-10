@@ -84,7 +84,16 @@ namespace Eldoria.World4XCanon
   void OnDestroy(){if(activeSurface==this)activeSurface=null;foreach(var mesh in fittedPigments)if(mesh)Destroy(mesh);}
 
   public Mesh DirectedTerrain=>terrain.sharedMesh;
-  public Vector3[] WorldVertices=>terrain.sharedMesh.vertices.Select(terrain.transform.TransformPoint).ToArray();
+  public Vector3[] WorldVertices
+  {
+   get {
+    // Mesh.vertices already returns an owned copy. Transform it in place
+    // instead of retaining that copy while LINQ allocates a second array.
+    var positions=terrain.sharedMesh.vertices;
+    for(int i=0;i<positions.Length;i++)positions[i]=terrain.transform.TransformPoint(positions[i]);
+    return positions;
+   }
+  }
   public Texture2D GeographicMask
   {
    get {EnsureData();var texture=new Texture2D(nx,nz,TextureFormat.RGBA32,false,true);texture.LoadRawTextureData(masks);texture.Apply();return texture;}
@@ -152,6 +161,10 @@ namespace Eldoria.World4XCanon
    TraceStartupMemory("contact-ready");
    yield return null;
    instance.FitImportedPigment(host.WorldHome);
+   // Only CoincidentGroundNormal reads these copied normals, exclusively during
+   // FitImportedPigment above. Keep contact vertices/triangles/cells for gameplay.
+   // Do not discard shared Mesh CPU data: a later scene load still reads it.
+   instance.contactNormals=null;
    TraceStartupMemory("pigment-ready");
    yield return null;
    RegionOneProductionLod.Install(instance.artwork);

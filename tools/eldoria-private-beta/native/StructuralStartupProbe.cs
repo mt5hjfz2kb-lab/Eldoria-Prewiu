@@ -31,6 +31,7 @@ public static class EldoriaBetaStructuralStartupProbe {
   public string[] editorOnlyDiagnostics;
   public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash,topologyHash,populationRouteHash;
   public int terrainParityCheckedQueries;
+  public int retainedContactNormals;
   public int pass,guardedFrames,retainedVerificationBuckets,verifiedSites,validatedCities;
   public double secondsToReady;
   public long peakAllocated,peakReserved,peakManaged,managedAfterFullGC;
@@ -85,11 +86,13 @@ public static class EldoriaBetaStructuralStartupProbe {
    Need(errors.Count==0,"Unity errors: "+string.Join(" | ",errors));
    if(Staged){Need(Environment.GetEnvironmentVariable("ELDORIA_BAKE_TERRAIN_QUERIES")=="1"||terrainParityQueries>10000,"Per-query collider parity missing");Need(guardedFrames>=2,"Staged startup did not yield protected frame boundaries");Need(VerificationBuckets()==0,"Verification cache remains resident");}
    var surface=Object.FindFirstObjectByType<RegionOneBlenderLandscape>(FindObjectsInactive.Include);Need(surface,"Missing exact terrain");
+   var retainedNormals=Field(surface,"contactNormals") as Vector3[];
+   if(Staged)Need(retainedNormals==null,"Initialization-only terrain normals remain resident");
    var placement=Object.FindFirstObjectByType<RegionOneResourcePlacement>(FindObjectsInactive.Include);Need(placement&&placement.VerifiedSiteCount>0,"Missing resource placement");
    string geometry=Geometry(surface),queries=Queries();
    if(pass==0){firstGeometry=geometry;firstQueries=queries;}else{Need(firstGeometry==geometry,"Geometry changed after real scene reload");Need(firstQueries==queries,"Terrain queries changed after real scene reload");}
    foreach(var file in Saves)Need(SessionState.GetString(Flag+file,"")==HashFile(Path.Combine(Application.persistentDataPath,file)),"Canonical save changed: "+file);
-   var result=new Result{populationRouteHash=PopulationRoutes(host,placement),topologyHash=Topology(placement),terrainParityCheckedQueries=terrainParityQueries,editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
+   var result=new Result{retainedContactNormals=retainedNormals==null?0:retainedNormals.Length,populationRouteHash=PopulationRoutes(host,placement),topologyHash=Topology(placement),terrainParityCheckedQueries=terrainParityQueries,editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
    result.managedAfterFullGC=GC.GetTotalMemory(true);
    File.WriteAllText(Path.Combine(Out,"startup-"+pass+".json"),JsonUtility.ToJson(result,true));
    if(pass==0){
