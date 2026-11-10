@@ -127,18 +127,18 @@ for name in asset_names:
             count,rule_y=max(gold_rows)
             assert count>=100,('single engraved well border missing',count)
             rule_ui=280*rule_y/height
-            assert 144+1.5<=rule_ui<=157-10,(
+            assert 143+1.5<=rule_ui<=157-10,(
                 'real Unity gameplay text crosses actual generated painting',
                 rule_y,rule_ui)
             for required in (
                 'At(portraitFrame,11,48,pw-22,57);',
-                'At(buildingFunction.rectTransform,13,108,pw-26,36);',
+                'At(buildingFunction.rectTransform,13,108,pw-26,35);',
                 'descriptionDivider.gameObject.SetActive(false);',
                 'At(costHeader.rectTransform,13,157,pw-26,17);',
             ):
                 assert required in HUD,('new one-piece panel layout lost',required)
             print('VIGILIA_SOURCE_PAINTED_INSET_LINE',round(rule_ui,2),
-                  'UI units; description ends=144; cost starts=157')
+                  'UI units; description ends=143; cost starts=157')
 for name in ('panel','mission','profile','resource','upgrade'):
     assert 'VigiliaArt/CleanRoom/'+name in HUD,name
 assert '"VigiliaArt/CleanRoom/nav_"+symbol' in HUD
