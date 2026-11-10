@@ -48,6 +48,18 @@ assert.match(panel,/hallPortrait\?\.82f:\.70f/);
 assert.match(panel,/milestoneScenery\.color=MilestonePaintTint\(stage/);
 assert.match(stage,/\.88f,\.92f,\.10f,true/);
 
+// Lyra's focal image must be the actual image from the live, canonical
+// HeroesApprovedDestination inventory. No invented character portrait or
+// old whole-screen screenshot may masquerade as a genuine unlock.
+assert.match(panel,/static Sprite TryCanonicalLyraPortrait\(\)/);
+assert.match(panel,/Eldoria\\.HeroesUI\\.HeroesApprovedDestination/);
+assert.match(panel,/GetField\("ReadHeroes"\)/);
+assert.match(panel,/image\\.rect\\.width>=256f/);
+assert.match(panel,/milestoneLyraPortrait=Plate\(lyraPortraitRect,Color\\.white,false\)/);
+assert.match(panel,/milestoneLyraPortrait\\.gameObject\\.SetActive\(portrait!=null\)/);
+assert.match(panel,/milestoneLyraPortrait\\.sprite=null/);
+
+
 // The real daily ledger has exactly real owned resources and accelerators.
 // Old fantasy mockups depicting gems, gold packs, potions and loot rarity are
 // NOT a valid input to this UI. Only the actual LocalGateway credits matter.
