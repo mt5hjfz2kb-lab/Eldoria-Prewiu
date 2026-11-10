@@ -211,11 +211,22 @@ def main():
     # Preserve >=11.75 physical px rather than lower the native quality gate.
     assert 13*.91 >= 11.75, 'phone portrait title below minimum'
     assert 14*.86 >= 11.75, 'short landscape title below minimum'
-    for size in [(1600,900),(900,1600),(844,390),(390,844),(1170,2532)]:
+    # 13 grounded screen resolutions × four actual Chapter-I unlock states
+    # = 52 source-level layout checks. They complement, never replace, the
+    # eight exact native GPU captures on the real Windows/Unity runner.
+    devices=[
+        (1600,900),(900,1600),(844,390),(390,844),(1170,2532),
+        (1290,2796),(1080,2400),(768,1366),(1284,2778),
+        (2340,1080),(720,1280),(1920,1080),(1179,2556),
+    ]
+    validated=0
+    for size in devices:
         for food in (False,True):
             for world in (False,True):
                 check(size,food,world)
-    print("BOUNDARY: 20 source-only unlocking/layout combinations, needs real Unity pixels")
+                validated+=1
+    assert validated==52
+    print(f"BOUNDARY: {validated} source-only unlocked/layout variants; actual Unity GPU still required")
 
 if __name__=="__main__":
     main()
