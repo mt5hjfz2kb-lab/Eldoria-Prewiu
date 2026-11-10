@@ -50,6 +50,12 @@ jobs:
           dotnet-version: |
             8.0.x
             10.0.x
+      - name: Inventory canonical source art identities for Lyra, never generated portraits
+        shell: bash
+        run: |
+          git ls-files Unity/Assets/Eldoria |
+            grep -Ei 'lyra|hero.{0,40}(portrait|master)|portrait.{0,40}hero' |
+            head -100 || true
       - name: Verify built-in Unity Audio module required by actual chest audio
         run: node tools/daily-treasures/check-audio-module.mjs
       - name: Compile and test original C# reward rules (no Unity mocks)
