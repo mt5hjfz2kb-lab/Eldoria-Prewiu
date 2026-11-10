@@ -115,13 +115,25 @@ for name in asset_names:
             assert 126<well_bottom<131,('portrait crosses painted frame',well_bottom)
             assert 157<divider<169,('description crosses divider',divider)
             for required in (
-                'At(portraitFrame,15,61,pw-30,65);',
-                'At(buildingFunction.rectTransform,13,133,pw-26,24);',
+                'At(portraitFrame,15,61,pw-30,74);',
+                'At(buildingFunction.rectTransform,13,146,pw-26,22);',
                 'descriptionDivider.gameObject.SetActive(false);',
-                'At(costHeader.rectTransform,13,163,pw-26,17);',
+                'At(costHeader.rectTransform,13,174,pw-26,17);',
             ):
                 assert required in HUD,('new panel layout lost',required)
-            print('VIGILIA_SEPARATE_PORTRAIT_DESCRIPTION',well_bottom,divider)
+            # The panel is drawn as ONE simple sprite at 297u, not a
+            # free-floating overlay. Its original painted lower photo rim
+            # at ~129/280 becomes ~137/297, so the native portrait must
+            # end BEFORE the real border and the description before divider.
+            displayed_well=well_bottom*297/280
+            displayed_divider=divider*297/280
+            assert 61+74<=displayed_well-1.0,(
+                'True portrait crosses engraved border',displayed_well)
+            assert 146+22<=displayed_divider-1.0,(
+                'Live building description crosses material divider',displayed_divider)
+            assert 174>=displayed_divider+2.0,(
+                'Cost title sits on a painted divider',displayed_divider)
+            print('VIGILIA_SEPARATE_PORTRAIT_DESCRIPTION',displayed_well,displayed_divider)
 for name in ('panel','mission','profile','resource','upgrade'):
     assert 'VigiliaArt/CleanRoom/'+name in HUD,name
 assert '"VigiliaArt/CleanRoom/nav_"+symbol' in HUD
