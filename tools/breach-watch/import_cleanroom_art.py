@@ -105,6 +105,15 @@ def store(name,image,sourcehash,task,source_label):
     # Unity 2D sprite importer: complete illustration, with stable GUID;
     # no 9-slicing in this initial candidate to avoid unexpected edge warping.
     guid=hashlib.sha256(("eldoria-clean-v1/"+name).encode()).hexdigest()[:32]
+    # Protect sculpted source corners and the integrated lion/castle sockets
+    # when the runtime screen differs from the 2K generator's proportions.
+    # Preserve real metal art; only widen or shorten the EMPTY central well.
+    w,h=image.size
+    if name=="profile":border=(round(w*.25),round(h*.18),round(w*.10),round(h*.18))
+    elif name=="mission":border=(round(w*.21),round(h*.18),round(w*.10),round(h*.18))
+    elif name=="resource":border=(round(w*.20),round(h*.18),round(w*.10),round(h*.18))
+    else:border=(0,0,0,0)
+    left,bottom,right,top=border
     meta=f"""fileFormatVersion: 2
 guid: {guid}
 TextureImporter:
@@ -117,6 +126,7 @@ TextureImporter:
   isReadable: 0
   textureType: 8
   spriteMode: 1
+  spriteBorder: {{x: {left}, y: {bottom}, z: {right}, w: {top}}}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureShape: 1
