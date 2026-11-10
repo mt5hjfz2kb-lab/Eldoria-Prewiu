@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "codex-vigilia-b5a434f403d6",
+      "owner": "chatgpt-vigilia-automation-20261110",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6669,10 +6669,10 @@
         "windows-runner-heavy"
       ],
       "ownership_state": "claimed",
-      "ownership_revision": 40,
+      "ownership_revision": 41,
       "write_scope_released": false,
-      "phase": "REFERENCE_FIDELITY_CORRECTION_PORTRAIT_MISSION",
-      "next": "Correct portrait viewport and mission crest from inspected original reference and native392b3117; native comparison required.",
+      "phase": "CORRECT_NATIVE_PORTRAIT_CROP_AND_OWNER_REF_ART",
+      "next": "Repair real GPU 390x844 crop, improve observed overlap in live crest/profile/mission, rerun eight true Unity views at exact SHA; compare against 75B5D217 owner art; release runner by CAS after native pass/fail.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T14:43:14.001Z",
@@ -6742,6 +6742,14 @@
           "to_revision": 39,
           "to_owner": "codex-vigilia-b5a434f403d6",
           "reason": "User explicitly continues PR173 corrective visual work in current session; preserve latest exact Unity evidence and canonical branch."
+        },
+        {
+          "previous_owner": "codex-vigilia-b5a434f403d6",
+          "from_revision": 40,
+          "to_revision": 41,
+          "to_owner": "chatgpt-vigilia-automation-20261110",
+          "reason": "Owner explicitly requests canonical PR173 visual continuation in this scheduled chat; Unity run 42842186794 complete/failed, no active jobs, preserve branch, scope and existing lease, repair real clipped portrait and profile/mission text rather than start over.",
+          "transferred_at": "2026-11-10T16:32:41Z"
         }
       ],
       "runner_priority_handoff": {
