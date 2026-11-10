@@ -1462,7 +1462,9 @@ namespace Eldoria.BreachWatch
                         // has enough real horizontal room. Narrow landscape
                         // retains the authentic destination but avoids tiny
                         // text beyond the painted gilded edge.
-                        bool fullUpgradeCaption=lastWidth>=800;
+                        // The true 2K forged-iron art has a shorter text well on landscape;
+                        // use the exact same real Bastion II action with concise text.
+                        bool fullUpgradeCaption=lastPortrait && lastWidth>=800;
                         actionCaption=host.English
                             ?(fullUpgradeCaption?"Upgrade to Bastion II":"Upgrade II")
                             :(fullUpgradeCaption?"Mejorar a Bastión II":"Mejorar a II");
