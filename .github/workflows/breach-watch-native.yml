@@ -364,8 +364,9 @@ jobs:
           assert 'guid: '+provenance['unity_guid'] in meta
           assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
           src=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          assert 'VigiliaArt/OwnerReference/lion_crest' not in src
-          assert 'VigiliaArt/CleanRoom/profile' in src
+          assert 'VigiliaArt/OwnerReference/lion_crest' in src
+          assert 'VigiliaArt/OwnerControls/profile_bar' in src
+          assert 'identityCrest=Rect("Approved original Valoria lion",identity);' in src
           print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
           PY
       - name: Verify authentic owner orange/gold Breach source and absence of generic X glyph
@@ -438,10 +439,17 @@ jobs:
               assert 'guid: '+item['guid'] in im and 'spriteMode: 1' in im
               assert 'spriteBorder: {x: '+str(item['border'][0]) in im
           hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          # Old reference crops remain archived with SHA provenance but
-          # must NEVER be active underneath the 13 new generated UI assets.
-          for name in expected:
-              assert 'VigiliaArt/OwnerControls/'+name not in hud,name
+          # The original owner SOURCE is now active for the profile
+          # and resource bar only (not an extra layer over generated art).
+          # The button remains exactly the already approved control;
+          # no navigation or button replacement is authorized.
+          for name in ('profile_bar','resource_capsule'):
+              assert 'VigiliaArt/OwnerControls/'+name in hud,name
+          assert 'VigiliaArt/OwnerControls/upgrade_button' not in hud
+          assert 'VigiliaArt/OwnerReference/lion_crest' in hud
+          assert 'VigiliaArt/OwnerControls/mission_plate' in hud
+          for old in ('CleanRoom/profile','CleanRoom/mission','CleanRoom/resource'):
+              assert 'VigiliaArt/'+old not in hud,old
           # Retain historical source sheets for traceability, not runtime.
           former=json.loads((folder.parent/'FreshArt/manifest.json').read_text())['files']
           assert len(former)==13
@@ -449,7 +457,9 @@ jobs:
           artworks={entry['asset'] for entry in clean['assets']}
           assert clean['output_count']==10
           for name in ('panel','profile','mission','resource','upgrade'):
-              assert name in artworks and 'VigiliaArt/CleanRoom/'+name in hud,name
+              assert name in artworks,name  # no source art discarded
+          for name in ('panel','upgrade'):
+              assert 'VigiliaArt/CleanRoom/'+name in hud,name
           for name in ('profile_panel','resource_chip','upgrade_button','building_panel','quest_panel'):
               assert 'VigiliaArt/FreshArt/'+name not in hud,name
           assert 'BreachWatchCrossedHammers' not in hud
