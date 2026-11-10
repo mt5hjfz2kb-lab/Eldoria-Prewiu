@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T22:36:02.850Z",
+  "updated_at": "2026-11-10T22:56:18.297Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 62,
+      "ownership_revision": 63,
       "write_scope_released": false,
-      "phase": "NATIVE_FRAME_SPACING_AND_FINISH_REVIEW",
-      "next": "Run exact-head native capture, inspect eight screenshots and typography orientation checks, correct genuine failures, release Windows after certification.",
+      "phase": "FRAME_SPACING_AND_FINISH_NATIVE_CERTIFIED",
+      "next": "Current requested frame/typography finishing pass certified at138416cf. No merge/publication. Long custom names, expanded toast and larger later-tier prices remain stress-review cases outside first-screen evidence.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T22:36:02.850Z",
@@ -6776,11 +6774,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "1cf3f6d049aedbf2d323594f502bc40adef1a758",
-        "native_run": 42908608187,
+        "source_sha": "138416cfac5ef0e00db8ff418d595e8520b1e904",
+        "native_run": 42918575888,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13793216174,
+        "artifact": 13809598450,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6808,30 +6806,36 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Exact-head recovery after independently rejecting source96b6e79 native42878041020. Restored visually cleaner baseline; inspected authentic eight views, all PNG SHA256 verified. Six navigation interactions, unchanged save, no old HUD. No new artistic gain claimed; target7.5 not met.",
-        "art_ab_artifact": 13791189975,
+        "notes": "Final pass widened resource capsules; profile/mission inset text, CTA padding, dynamic building-name width and fixed cost heading sizes. Native visual review additionally fixed desktop title/level and removed duplicate divider. Actual138416cf screenshots inspected; no artistic score, physical-device or full I-V stress certification claimed.",
+        "art_ab_artifact": 13810188077,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13806706101,
+        "native_artifact": 13809598450,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
-        "owner_requested_polish": "Original nav/resources PNGs preserved; bounded512 uncompressed trilinear mipmap import. Actual imported textures checked in native. Resource frame PPU2200, icon centre423/22 and proportional vertical centre, measured in native. Visually checked390x844,900x1600,844x390 against prior cf67093: smoother medal edges and resource pictograms correctly seated."
+        "owner_requested_polish": "Complete for current captured first-screen layouts; retained sharper original icons. Full900x1600 delivered as Eldoria_marcos_ampliados.png.",
+        "building_level_real_gpu_visible": true,
+        "building_title_orientation_sequence": "PASS",
+        "cost_heading_orientation_sequence": "PASS"
       },
-      "runner_release_basis": "Run42908608187 terminal success including native and genuine A/B; eight exact-head image hashes verified, final images inspected.",
+      "runner_release_basis": "Exact-head42918575888 native and genuine visual A/B success;8 authentic capture hashes verified,6 pointer interactions, save unchanged. Inspected all4 selected-building formats. Windows released after completion.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
-      "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum.",
+      "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
-        "source_sha": "1bb1bc69a41501045e547e9c0665bdbe81e97e44",
-        "source_run": 42913615357,
+        "source_sha": "138416cfac5ef0e00db8ff418d595e8520b1e904",
+        "source_run": 42918575888,
         "source_syntax": "PASS",
         "source_art_integrity": "PASS",
         "source_font_fit": "PASS",
         "geometry_scenarios": 52,
-        "native_visual_verified": false,
+        "native_visual_verified": true,
         "changes": "Wider resource capsules; taller profile and mission wells; name 1pt smaller with larger top inset; separate mission rows from gold trim; CTA right inset14.",
-        "native_dependency": "Windows explicitly held by private-beta workstream revision25; native job correctly skipped. Reclaim only after release and obtain exact-head eight native captures.",
+        "native_dependency": null,
         "additional_finish_review": "Measured Aserradero65.9u versus54u well, fitted at12pt52.7u; cost title BestFit disabled and all orientation sizes explicit. Source syntax, packaged fonts and art integrity PASS; native skipped for valid beta lease.",
-        "review_record": "docs/ui-v3/BREACH_WATCH_FINISH_REVIEW_20261110.md"
+        "review_record": "docs/ui-v3/BREACH_WATCH_FINISH_REVIEW_20261110.md",
+        "completed": true,
+        "native_artifact": 13809598450,
+        "delivered_image": "Eldoria_marcos_ampliados.png"
       }
     },
     {
