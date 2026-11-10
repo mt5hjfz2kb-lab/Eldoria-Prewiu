@@ -123,7 +123,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # two-line text must fit INSIDE, not across the built-in painted line.
         # The original separate uGUI divider is now disabled for portrait.
         real_painted_rule=160.785*297/280
-        portraitphoto=R(15,61,panelw-30,82)
+        portraitphoto=R(15,61,panelw-30,74)
         info=R(13,146,panelw-26,22)
         costlabel=R(13,174,panelw-26,17)
         costdata=R(13,194,panelw-26,20)
