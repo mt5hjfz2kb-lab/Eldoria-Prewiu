@@ -435,6 +435,14 @@ namespace Eldoria.DailyTreasures.Editor
             var painted=FindRect(panel,
                 "Genuine Eldoria milestone scenery / visual only");
             var chest=FindRect(panel,"Authored chest / opened");
+            var closedChest=FindRect(panel,"Authored chest / closed");
+            var fallbackChest=FindRect(panel,
+                "Real animated chest / two-layer bronze oak graphic");
+            Need(!panel.DisplaysCeremonialChest &&
+                 !chest.gameObject.activeSelf &&
+                 !closedChest.gameObject.activeSelf &&
+                 !fallbackChest.gameObject.activeSelf,
+                 "A milestone incorrectly repeats the DAILY loot chest");
             var receipt=FindRect(panel,"Confirmed received items");
             var banner=FindRect(panel,
                 "Milestone heraldic event banner / visual only");
@@ -476,48 +484,32 @@ namespace Eldoria.DailyTreasures.Editor
                 (titleBounds.size.y+skipBounds.size.y)*.5f;
             Need(!(xOverlap&&yOverlap),
                 "Original milestone text overlaps the real Skip finger target");
-            var chestBounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
-                banner.parent,chest);
-            bool chestXOverlap=
-                Mathf.Abs(titleBounds.center.x-chestBounds.center.x)<
-                (titleBounds.size.x+chestBounds.size.x)*.5f;
-            bool chestYOverlap=
-                Mathf.Abs(titleBounds.center.y-chestBounds.center.y)<
-                (titleBounds.size.y+chestBounds.size.y)*.5f;
-            Need(!(chestXOverlap && chestYOverlap),
-                "Actual milestone title is pasted over the original coffer lid");
             Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
                  Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
                  Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
                  Mathf.Abs(painted.rect.height-expected.SceneH)<1.1f,
                  "Wrong native painterly scene size/position for "+
                  expected.Kind);
-            Need(Mathf.Abs(chest.anchoredPosition.x-expected.ChestX)<1.1f &&
-                 Mathf.Abs(chest.anchoredPosition.y-expected.ChestY)<1.1f &&
-                 Mathf.Abs(chest.rect.width-expected.ChestW)<1.1f &&
-                 Mathf.Abs(chest.rect.height-expected.ChestH)<1.1f,
-                 "Original premium coffer lost event-specific composition for "+
-                 expected.Kind);
             Need(Mathf.Abs(receipt.anchoredPosition.x-expected.ReceiptX)<1.1f &&
                  Mathf.Abs(receipt.anchoredPosition.y-expected.ReceiptY)<1.1f &&
                  Mathf.Abs(receipt.rect.width-expected.ReceiptW)<1.1f &&
                  Mathf.Abs(receipt.rect.height-expected.ReceiptH)<1.1f,
-                 "Actual event report is not placed legibly below chest");
+                 "Actual event report is not placed legibly beside the event art");
             var screen=FindRect(panel,"Tributo de los siete días / modal");
             var backdrop=screen.GetComponent<Image>();
             Need(backdrop &&
                  Mathf.Abs(backdrop.color.a-expected.BackdropOpacity)<.03f,
                 "The Bastion city / event stage is too opaque or too faint");
             if(expected.SideBySide)
-                Need(painted.anchoredPosition.x+painted.rect.width*.5f+7f<=
-                     chest.anchoredPosition.x-chest.rect.width*.5f,
-                     "Real native landscape art is obscured by the reward chest");
+                Need(painted.anchoredPosition.x+painted.rect.width*.5f<=
+                     receipt.anchoredPosition.x-receipt.rect.width*.5f+18f,
+                     "True Eldoria scenery overlaps the event report");
             else if(expected.Kind==DailyTreasureStageKind.Bastion)
                 Need(!panel.HasMilestoneScenery,
                     "Do not disguise a Bastion level by painting a fake city");
             else
                 Need(panel.HasMilestoneScenery,
-                    "Original real Eldoria artwork does not appear behind chest");
+                    "Original real Eldoria artwork is absent from the milestone");
             var ink=FindRect(panel,"Bastion / real-city milestone caption ink");
             var plate=FindRect(panel,
                 "Basalt and worn bronze reward parchment").GetComponent<Image>();
