@@ -21,10 +21,10 @@ function nativeProfile(sample,phase){
  function run(command,args,suffix){
   profileTasks.push(new Promise(resolve=>{
    const child=spawn(command,args);const output=fs.createWriteStream(prefix+suffix);
-   child.stdout.pipe(output);child.stderr.pipe(output);
+   child.stdout.pipe(output,{end:false});child.stderr.pipe(output,{end:false});
    const timer=setTimeout(()=>child.kill('SIGTERM'),20000);
    child.on('error',err=>{output.end(String(err));clearTimeout(timer);resolve();});
-   child.on('exit',code=>{output.end('\nEXIT_CODE='+code);clearTimeout(timer);resolve();});
+   child.on('close',code=>{output.end('\nEXIT_CODE='+code);clearTimeout(timer);resolve();});
   }));
  }
  run('/usr/bin/sample',[String(p.pid),'2','-file',prefix+'-sample.txt'],'-sample-status.txt');
