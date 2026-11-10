@@ -23,6 +23,9 @@ namespace Eldoria.BreachWatch
         Camera portraitCamera;
         GameObject lastModel;
         string lastKey;
+#if UNITY_EDITOR
+        static bool materialInventoryLogged;
+#endif
 
         public bool HasLiveBuilding => image && image.enabled && image.texture == texture && lastModel;
         public bool RenderedFromIsolatedRealMeshes { get; private set; }
@@ -97,6 +100,38 @@ namespace Eldoria.BreachWatch
                 }
 
                 var originals=model.GetComponentsInChildren<Renderer>(true);
+#if UNITY_EDITOR
+                // First-party art diagnosis only. The approved concept has
+                // recognisably cobalt-blue roofs but the exact playable
+                // Bastion is grey. We must identify ORIGINAL material
+                // submeshes before considering any non-destructive palette
+                // adaptation. No 3D material/prefab/camera is changed here.
+                if(!materialInventoryLogged)
+                {
+                    materialInventoryLogged=true;
+                    int count=0;
+                    foreach(var sample in originals)
+                    {
+                        if(!sample)continue;
+                        var parts=sample.sharedMaterials;
+                        for(int i=0;i<parts.Length && count<48;i++)
+                        {
+                            var mat=parts[i];
+                            if(!mat)continue;
+                            string color="unset";
+                            if(mat.HasProperty("_BaseColor"))
+                                color=mat.GetColor("_BaseColor").ToString("F3");
+                            else if(mat.HasProperty("_Color"))
+                                color=mat.GetColor("_Color").ToString("F3");
+                            Debug.Log("VIGILIA_CASTLE_ORIGINAL_SUBMESH "+count+
+                                " renderer="+sample.name+" index="+i+
+                                " material="+mat.name+" color="+color+
+                                " shader="+(mat.shader?mat.shader.name:"missing"));
+                            count++;
+                        }
+                    }
+                }
+#endif
                 foreach(var renderer in originals)
                 {
                     if(!renderer || !renderer.enabled || !renderer.gameObject.activeInHierarchy)continue;
