@@ -81,23 +81,23 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(211 if pw<600 else 170,w*(.49 if pw<600 else .38))
         # The new alpha-trimmed carved source starts at its real painted edge.
-        place("mission",m,80 if pw<600 else 82,missionw,69 if pw<600 else 50)
+        place("mission",m,80 if pw<600 else 82,missionw,80 if pw<600 else 60)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 36,8 if pw<600 else 4,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        chapter_text=R(54 if pw<600 else 36,10 if pw<600 else 7,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
         assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
         assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 36,26 if pw<600 else 21,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
-        progress=R(59 if pw<600 else 36,46 if pw<600 else 35,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        short_objective=R(59 if pw<600 else 36,30 if pw<600 else 24,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        progress=R(59 if pw<600 else 36,51 if pw<600 else 42,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
         assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (69 if pw<600 else 50)-3,size
+        assert progress.y+progress.h<= (80 if pw<600 else 60)-(8 if pw<600 else 5),size
         assert 87+20<=112-3,size
         # Compact source plaque keeps native text within both real bevels.
-        assert missionw/(69 if pw<600 else 50)>=3.0,size
+        assert missionw/(80 if pw<600 else 60)>=2.6,size
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
@@ -109,35 +109,43 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             touch("nav"+str(i),item)
         panelw=min(171,w*.42) if pw<600 else 158
         card_right=m if pw<600 else 39
-        panely=navtop-280-(34 if pw<600 else 72)
-        context=place("context",w-card_right-panelw,panely,panelw,280)
+        panely=navtop-297-(34 if pw<600 else 72)
+        context=place("context",w-card_right-panelw,panely,panelw,297)
         touch("close",R(context.x+panelw-55,context.y+14,50,50))
         header=R(45,21,panelw-104,21)
         level=R(45,43,panelw-104,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
-        touch("action",R(context.x+6,context.y+280-53,panelw-12,50))
+        touch("action",R(context.x+6,context.y+297-53,panelw-12,50))
         # Real CleanRoom one-piece painted well has its gold lower rule at
         # 52.1% of the 280u card = 145.9u. The live selected mesh and
         # two-line text must fit INSIDE, not across the built-in painted line.
         # The original separate uGUI divider is now disabled for portrait.
-        real_painted_rule=160.785
-        portraitphoto=R(15,61,panelw-30,65)
-        info=R(13,133,panelw-26,24)
-        costlabel=R(13,163,panelw-26,17)
-        costdata=R(13,184,panelw-26,20)
+        real_painted_rule=160.785*297/280
+        portraitphoto=R(15,61,panelw-30,82)
+        info=R(13,146,panelw-26,22)
+        costlabel=R(13,174,panelw-26,17)
+        costdata=R(13,194,panelw-26,20)
         # Actual Unity text numbers are fully separate live labels:
         # retain readable 450 and 300 with gap after true 19u icons.
-        wood_icon=R(14,184,19,19)
-        wood_qty=R(39,184,42,20)
-        stone_icon=R(89,184,19,19)
-        stone_qty=R(110,184,panelw-115,20)
+        wood_icon=R(14,194,19,19)
+        wood_qty=R(39,194,42,20)
+        stone_icon=R(89,194,19,19)
+        stone_qty=R(110,194,panelw-115,20)
         assert wood_icon.x+wood_icon.w+3<=wood_qty.x,size
         assert stone_icon.x+stone_icon.w+2<=stone_qty.x,size
         assert stone_qty.x+stone_qty.w<=panelw-4,size
-        state=R(13,209,panelw-26,17)
-        action=R(6,227,panelw-12,50)
+        state=R(13,220,panelw-26,17)
+        action=R(6,244,panelw-12,50)
+        # A native 512x320 RGBA render of the genuine Bastion occupies
+        # y=.12..85 and x=.24..78. The final raw displayed viewport
+        # minus its 2u inset MUST accommodate its vertical silhouette
+        # without invoking the old aspect-clipping clamp.
+        raw_display_w=portraitphoto.w-4
+        raw_display_h=portraitphoto.h-4
+        visible_uv_height=1/((raw_display_w/raw_display_h)/(512/320))
+        assert visible_uv_height>=.80,(size,"True flag/stairs cannot fit in portrait aperture")
         assert portraitphoto.y+portraitphoto.h+3<=info.y,size
         assert info.y+info.h+1.5<=real_painted_rule,size
         assert costlabel.y>=real_painted_rule+2,size
@@ -211,7 +219,7 @@ def main():
         'float lionTextInset=crestSize+(smallPhone?8f:16f);',
         'float navSize=52,navGap=9',
         'float navTop=h-(smallPhone?111f:90f)',
-        'float ph=280f',
+        'float ph=297f',
         'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
         'float cardRightInset=smallPhone?margin:39f;',
         'float chipGap=smallPhone?4f:12f;',
