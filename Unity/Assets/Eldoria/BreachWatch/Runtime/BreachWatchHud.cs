@@ -1155,7 +1155,7 @@ namespace Eldoria.BreachWatch
                 // devices while the larger 900px design stays lightweight.
                 buildingName.fontSize=15;
                 buildingLevel.fontSize=smallPhone?13:11;
-                buildingFunction.fontSize=smallPhone?13:11;
+                buildingFunction.fontSize=smallPhone?14:11;
                 buildingCosts.fontSize=smallPhone?14:12;
                 buildingState.fontSize=smallPhone?13:11;
                 costHeader.fontSize=smallPhone?13:10;

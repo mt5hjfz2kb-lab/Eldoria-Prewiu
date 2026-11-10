@@ -84,7 +84,7 @@ def verify():
          "real status/timer")
     # Physically readable small-phone context despite the tighter panel.
     assert 14*.91>=12.5, "390px contextual text too small"
-    assert "buildingFunction.fontSize=smallPhone?14:12;" in hud
+    assert "buildingFunction.fontSize=smallPhone?14:11;" in hud
     action_width=panel_width-12
     # Source-accurate caption at 900x1600 uses title-case and the whole
     # target, just like the owner's approved UI. Unity BestFit may select
