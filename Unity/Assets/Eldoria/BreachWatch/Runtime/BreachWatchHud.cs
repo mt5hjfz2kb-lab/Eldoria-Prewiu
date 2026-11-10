@@ -1070,7 +1070,10 @@ namespace Eldoria.BreachWatch
                 At(costIcons[1].rectTransform,89,188,19,19);
                 At(costQuantities[1].rectTransform,113,188,pw-125,20);
                 At(buildingState.rectTransform,13,209,pw-26,17);
-                At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50);
+                // The full live Spanish action is 95px wide at 12pt: retain a
+                // 32.5% hammer well AND widen the actual painted action, rather
+                // than shrinking the gameplay text below legibility.
+                At(((RectTransform)actionButton.transform),8,ph-53,pw-16,50);
                 // Readable physical text survives the .91 scale of 390px
                 // devices while the larger 900px design stays lightweight.
                 buildingName.fontSize=16;
