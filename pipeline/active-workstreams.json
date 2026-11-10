@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T08:16:09.326Z",
+  "updated_at": "2026-11-10T08:19:42.342Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6821,9 +6821,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA10_CLOCK_COPYADD_EXACT_31_PARTS_PASS_PAGES_PROMOTION_READY",
+      "phase": "BETA10_STABLE_AND_MINIMAL_CLOCK_OWNER_AB_LIVE_IPHONE_TEST_PENDING",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Lossless browser-native Copy/Add A/B proven locally (all 31 SHA256 Unity segments, 503,831,429 decoded bytes) and GitHub runner CI 42781066472 SUCCESS exact PR179 SHA 495eac8e47640ee3bb992506b7162cfed31de283, artifact 13746172476 size490,401,987 (<650MB). Old owner-playable beta10 included unchanged; stage no saves/persistence mutation. Publish this exact artifact from main Pages workflow only, verify live old and new URLs and root; do not promote testers. After Pages live test corrected timer and iPhone physical continuous stability, Android, licencing and consent before external invitations. Avoid broken @ably/vcdiff-decoder; preserve original beta10 and NO-GO gate.",
+      "next": "LIVE GH Pages run42781430767 SUCCESS: stable owner-playable beta10 exact source be49d62e... unchanged at /beta-native325/ and independently hosted minimal anchored timer candidate source 004d3ef9... at /beta-iphone-clock-ab/. Compact Copy/Add 31 exact 503831429 Unity bytes SHA verified in local HTTP and CI runner42781066472; site490MB with 8MB literal patches; no third-party decoder or browser persistent-state writes. Source iPhone stability not certified. Owner must test candidate on physical iPhone for entry/30min, active construction clock follows building/camera, offline+reload preserves save. Do NOT overwrite live stable beta10; external tester gate remains BLOCKED until phone+Android+licenses+consent/telemetry. Only after source approvals release to 15–20 testers.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7379,8 +7379,13 @@
         "decoded_bytes": 503831429,
         "literal_bytes": 8000096,
         "stable_build_untouched": true,
-        "published": false,
-        "iphone_tested": false
+        "published": true,
+        "iphone_tested": false,
+        "published_run": 42781430767,
+        "published_site_sha": "d824ab753d0ba29fcf8da12b6d1e6ffa18f166e1",
+        "ios_ab_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-ab/",
+        "stable_beta10_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+        "external_release": false
       }
     },
     {
