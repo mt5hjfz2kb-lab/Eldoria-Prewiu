@@ -14,7 +14,7 @@ const profileTasks=[],profiledPhases=new Set();
 function nativeProfile(sample,phase){
  if(process.env.QA_NATIVE_PROFILE!=='1'||process.platform!=='darwin'||profiledPhases.has(phase))return;
  const p=(sample.processes||[]).filter(p=>p.name?.includes('WebContent')).sort((a,b)=>b.rssKiB-a.rssKiB)[0];
- if(!p||p.rssKiB<1800000)return;
+ if(!p||(phase!=='final'&&p.rssKiB<1800000))return;
  profiledPhases.add(phase);
  const prefix=out+'/native-'+phase;
  (report.nativeProfiles??=[]).push({phase,pid:p.pid,rssKiB:p.rssKiB,at:sample.at,prefix});
@@ -142,14 +142,22 @@ function processes() {
           diagnostic:window.EldoriaLocalDiagnostic?.read?.(),
           visible:!document.getElementById('game').hidden,
           error:document.getElementById('error')?.textContent,
-          wasmCapacityBytes:game?.Module?.HEAPU8?.byteLength||0};
+          wasmCapacityBytes:game?.Module?.HEAPU8?.byteLength||0,canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height},stableCanvasChanges:window.__eldoriaStableCanvas?.changes};
       });
       s.processes=processes();report.samples.push(s);nativeProfile(s,'fresh');write();
       if(s.ready&&!readyAt){readyAt=Date.now();log({type:'unity-ready'});}
       if(readyAt&&(!s.ready||!s.visible))throw Error('Unity exited after ready');
       if(process.env.QA_EARLY_ENTRY==='1'&&readyAt&&!earlyEntry&&Date.now()-readyAt>2000){
         await page.screenshot({path:out+'/early-entry-before.png',timeout:15000});
-        await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});
+        await page.mouse.click(195,490,{delay:200});
+        if(process.env.QA_RESIZE_STRESS==='1'){
+          report.resizeSequence=[];
+          for(const height of [500,390,640,844]){
+            await page.setViewportSize({width:390,height});await page.waitForTimeout(350);
+            report.resizeSequence.push(await page.evaluate(()=>({viewport:{width:innerWidth,height:innerHeight},canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height}})));
+          }
+        }
+        await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});
         earlyEntry=true;report.earlyEntry={attempted:true,secondsAfterReady:(Date.now()-readyAt)/1000};write();
       }
       if(readyAt&&Date.now()-readyAt>90000)break;
@@ -188,6 +196,7 @@ function processes() {
       if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))throw Error('Entry/reload runtime errors');
     }
     if(/^preallocated-(640|1024)$/.test(variant)&&!report.samples.some(s=>s.preallocation?.some(p=>p.after===Number(variant.split('-')[1])*1024*1024)))throw Error('Preallocation intervention not observed');
+    if(process.env.QA_NATIVE_PROFILE==='1')nativeProfile({processes:processes(),at:Date.now()},'final');
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
