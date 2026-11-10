@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T17:27:07.381Z",
+  "updated_at": "2026-11-10T17:47:42.651Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,17 +6665,15 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 46,
+      "ownership_revision": 47,
       "write_scope_released": false,
-      "phase": "HUD_2D_NATIVE_EIGHT_SHOT_IN_PROGRESS",
-      "next": "Trigger exact-head native UI proof by editing tools/breach-watch/native-request.txt only; inspect 8/8 Unity PNG and compare source prior head; release runner after terminal status via registry CAS.",
+      "phase": "HUD_2D_NATIVE_8_OF_8_PASS_ART_STILL_NOT_APPROVED",
+      "next": "Más trabajo artístico en UI 2D, NO Bastión 3D: comparar perfil/león y placa de misión frente al concepto original y ensayar una variante reversible de material/grabado cálido; A/B nativo real antes de aceptar. Conservar medallones aprobados, mostrar solo rutas legítimamente abiertas. La beta iPhone y el resto de PR no se tocan. No aprobación ≥7,5, no merge ni release.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-10T17:27:07.381Z",
+      "runner_claimed_at": null,
       "runner_claim_basis": "User directs continuation of PR173; source-only HUD compact navigation medallion correction f76726a verified; no other registered runner holders or active jobs; 8 native Unity screenshots for exact SHA without altering iPhone or main gameplay.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
@@ -6768,11 +6766,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "3f04846b87ff623991f24eb2bda3fd3c180759d8",
-        "native_run": 42858352697,
+        "source_sha": "ff07ae2d9383cd9192289177f0ce93019faffeb0",
+        "native_run": 42866907280,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13784386431,
+        "artifact": 13788161413,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6800,9 +6798,12 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Genuine Unity 6000.3.23f1 full 8-view PASS; player power and 0/1 moved within silhouette. Art remains noticeably below owner reference in world blue roof, composition/background, absent game-locked medals and UI preview quality; subjective 7.5/10 not established."
+        "notes": "First native run 42865155787 properly FAILED for painted 844x390 medal 35.2944px. Corrected size (source sprites unchanged) and landscape mission fraction position. Second exact HEAD native 42866907280 passed 8 screenshots with SHA256-verified manifest and 6 real interactions. Visual A/B against approved owner image still differs in warm palette/profile/missional carving; not 7.5/10 accepted.",
+        "art_ab_artifact": 13786684317,
+        "painted_medal_min_px_gate": 38,
+        "source_52_layout_states": "PASS"
       },
-      "runner_release_basis": "Exact head 3f04846b native 42858352697 SUCCESS + QA job complete, eight actual screenshots artifact13784386431; runner released by CAS, no merge or art approval."
+      "runner_release_basis": "Exact-head Unity 42866907280 SUCCESS 8/8 PNG SHA256 verified, graphical QA and clicks PASS; no other Windows job in this workstream, lease released after test. Artistic score unresolved."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
