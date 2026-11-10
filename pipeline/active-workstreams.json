@@ -6860,14 +6860,16 @@
         ".github/workflows/eldoria-beta-copyadd-live-webkit.yml",
         ".github/workflows/eldoria-beta-copyadd-p0.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "DIRECT_R1_PHYSICAL_FAILURE_ENGINE_MEMORY_INVESTIGATION",
+      "phase": "STATIC_COLLISION_PREBAKE_NATIVE_REGRESSION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Inspect actual-start iOS Simulator run42905159087 without claiming physical certification. Candidate e6017e154f38e12f934907920064b77e5c371763 releases initialization-only normals and avoids duplicate terrain array; native/regression and physical QA pending. Respect PR181 Windows lease. Preserve beta10/save origin; no tester invitations.",
+      "next": "Enable isolated collision prebake, certify native geometry/query/routes/save reload and I-V journey, build WebGL, require actual castle baked buffers and unchanged remaining mesh bytes. Physical cause unresolved; no external tester release.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7195,7 +7197,7 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-09T19:18:00.392Z",
+      "runner_claimed_at": "2026-11-10T21:55:03.230Z",
       "canonical_integration_request": {
         "requested_at": "2026-11-09T10:49:44.401Z",
         "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
@@ -7281,7 +7283,7 @@
         "issue": 96,
         "release_allowed": false
       },
-      "runner_claim_basis": "Vigilia explicitly released 2026-11-09T19:06:55Z after native 42679974131; source/registry CAS and no current native Unity run. Perform isolated PR179 candidate I–V exact-marker Unity/Windows/WebGL; startup checks deny when local Unity busy.",
+      "runner_claim_basis": "Live registry resource free after PR173 release; all open PRs and running Actions checked. Exact isolated candidate2154334; no other Unity job active. Fresh process/lease preflight remains mandatory.",
       "native_candidate": {
         "run_id": 42682071151,
         "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
@@ -7493,6 +7495,18 @@
         "actual_process_memory_saved": null,
         "root_cause_confirmed": false,
         "external_testers_enabled": false
+      },
+      "static_collision_candidate": {
+        "source": "2154334c617d20304987be61f623868a53580547",
+        "status": "PREPARED_NATIVE_REQUEST_NEXT",
+        "original_bake_collision_meshes": false,
+        "original_castle_baked_buffers_empty": true,
+        "original_castle_vertices": [
+          323834,
+          366884
+        ],
+        "physical_iphone_verified": false,
+        "shared_project_untouched": true
       }
     },
     {
