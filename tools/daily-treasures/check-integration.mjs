@@ -177,7 +177,7 @@ assert.match(panel,/DailyTreasureRewardPresentation\.FromCommittedReward\(reward
 assert.match(panel,/prizeGroups\[i\]\.alpha=immediate\?1f:0f/);
 assert.match(panel,/prizeShelf\.gameObject\.SetActive\(true\)/);
 assert.match(panel,/claimCaption\.text="CONTINUAR"/);
-assert.match(panel,/rays\.SetIntensity\(frame\.Glow\*\.79f\)/);
+assert.match(panel,/frame\.Glow\*\.79f:0f/);
 assert.match(panel,/HasRevealedIllustratedEarnedItems/);
 assert.match(native,/panel\.EarnedItemCardCount==4/);
 assert.match(native,/panel\.EarnedItemCardCount==2/);
