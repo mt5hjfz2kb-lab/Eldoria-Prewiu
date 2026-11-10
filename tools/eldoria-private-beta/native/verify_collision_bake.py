@@ -9,8 +9,8 @@ EXPECTED = {
 def sha(data): return hashlib.sha256(data).hexdigest()
 def verify(root, output):
  root=pathlib.Path(root)
- candidates=list(root.rglob("*.data.gz"))
- if not candidates: candidates=list(root.rglob("*.data"))
+ candidates=sorted({p for pattern in ("*.data.gz","*.data","*.data.unityweb")
+                    for p in root.rglob(pattern)})
  assert len(candidates)==1,("Expected exactly one Unity data payload",candidates)
  payload=candidates[0].read_bytes()
  if payload[:2]==b"\x1f\x8b": payload=gzip.decompress(payload)

@@ -90,3 +90,28 @@ Native runtime behaviour, compiled-bundle gate and physical stability
 are PENDING. Preflight42907142804 passed; its native job was SKIPPED due
 to the other owner's runner lease. Do not call the source change a fix
 for the physical restart until validated.
+
+
+## iOS Simulator evidence correction — 42908325634
+
+The revised harness at 21343c34c6da4aae3e6a5280ba65e775e042a23b did not certify either arm. Both reached the Unity JavaScript promise (FPS 0); the next automation evaluation returned null. Neither produced 120 seconds of fresh healthy post-ready samples. The old beta10 120-second PASS in run 42905159087 is invalid: screenshot latency consumed the observation interval before a fresh sample.
+
+Artifact 13805524368, SHA256 82a1dc366589d3e36defc1bda8cde0f7fd0280c5afdbea781462fc4b8a3fed85, records the simulator GPU process crashing in both arms. For beta10, at 21:53:42.426 UTC MTLSimDriver lost its SimMetalHost XPC connection, followed by GPUProcessProxy::gpuProcessExited reason=Crash. Direct-r1 also records GPUProcessProxy crashes (21:54:44 and 21:56:33). This is simulator evidence, not a physical iPhone termination report and not proof of the owner's restart cause. Do not label null automation responses as confirmed jetsam.
+
+## Packaging verifier extension correction
+
+The first collision verifier matched .data and .data.gz but Unity's current output uses .data.unityweb. The corrected read-only verifier recognizes all three, rejects ambiguous multiple payloads, and retains the exact collision and noncollision-byte assertions. Local fixtures verified all three suffixes reach the same exact bundle parser, and ambiguity fails. Native build and packaging evidence must remain separately scoped if this follow-up job fails only for the filename mistake. Packaging independently repeats the full verifier against the exact native artifact; no engine or geometry gate is skipped.
+
+
+## Additional source audit during compilation (not included as a fix)
+
+Frozen BastionIIIWorldPresentation.cs at 948ffa9837168a0b68dab80be76b66350422b23a and candidate branch have identical blob d596e96995fe6da799fceff7b23cb20227c162ef. Initialize creates the granary, stock, wolves, boars and private-fissure presentation before Apply hides locked level-III content. Deferral needs to preserve WorldHotspot identity and host target indexing; no untested lazy-loading edit was added to this candidate. Tier-V presentation already has LoadUnlockedAssets gated behind BastionLevel>=5; do not falsely report all level-V meshes loaded at level I.
+
+The compiled texture inventory includes 135 format-48 ASTC objects and 89 DXT objects (58 DXT5, 31 DXT1). Inventory bytes are not measured residency. Legacy blanket statements that iPhones cannot use DXT are insufficient for this owner's iPhone 16: Apple's May-2026 Metal feature tables list BC filtering for Apple9/10, while older families differ. Exact WebGL extension support must be measured before asserting a decompression fallback. No new texture conversion or quality loss was introduced.
+
+
+## Exact native result
+
+Native run 42909656581, job 130156795850 completed SUCCESS at source 7ae5416613480ba526a839b429459d53629041e5. Evidence artifact 13809346377 (366275289 bytes), SHA256 6c02f606b22f481d768b0b57012af5648e7df1a0d27be6e4178bb98727ff75f7, was downloaded and verified. Canonical journey: 227 checks. Terrain: two parity passes with 119870 checked queries each, retainedContactNormals=0, retainedVerificationBuckets=0, canonicalSavesUnchanged=true, ready/worldComplete=true. warm-cache-restoration.json reports restored=true, no conflicts, no status changes, no existing input changes. Pre-existing authored/normalized asset differences were preserved, not discarded. WebGL compiled 1490774387 bytes in seven files; artifact 13807824950. Windows resource released in main commit 1e1cf1aec0365c1827b5c71861f8f3b57829a2cd.
+
+The native workflow follow-up job 130177005433 failed exactly on its filename discovery assertion (zero .data/.data.gz paths); this does not invalidate the successful native job. Independent packaging run 42914592603 at 5a8509e35c69b81c2aed564a1c66f07fbc0d968a successfully passed the corrected full collision-byte verifier before proceeding to texture-preserving packaging. The full packaging/WebKit result and physical phone result are still pending at this checkpoint. Native shader/mesh/build proof is not a physical restart fix certificate.
