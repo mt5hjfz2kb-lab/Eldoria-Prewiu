@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T09:47:02.350Z",
+  "updated_at": "2026-11-10T10:00:30.103Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -329,8 +329,8 @@
     "result": "FAIL_P0_REAL_DEVICE",
     "candidate_passed_server_and_mac": true,
     "stable_beta10_remains_playable": true,
-    "root_cause": "UNCONFIRMED: direct and forward clock both exceed beta10 in corrected same-origin desktop WebKit; native process profiling in progress",
-    "next": "Inspect native WebContent stack and VM region captures from 42792903970 to identify excess outside Unity heap before further code changes; preserve beta10."
+    "root_cause": "UNKNOWN: desktop entry/reload succeeds; disabling optimizing compiler does not reduce memory. Single-run RSS differences are affected by native memory compression and are not physical crash diagnosis.",
+    "next": "Obtain owner iPhone termination report at restart time (WebContent/Safari or JetsamEvent), exact entry URL and Safari vs embedded browser context. Keep beta10 and external release disabled. No running diagnostic remains."
   },
   "iphone_forward_transport": {
     "state": "BYTE_CERTIFIED_MEMORY_GATE_FAILED_NOT_PUBLISHED",
@@ -383,7 +383,8 @@
       "control_wasm_used_peak_bytes": 578524344,
       "direct_wasm_used_peak_bytes": 579939416,
       "forward_wasm_used_peak_bytes": 578513704,
-      "interpretation": "Same-origin Apple GPU WebKit comparison confirms higher WebContent RSS with direct clock as well as forward transport. Similar Unity heap and GPU peaks; loader changes alone do not resolve this. Not physical iPhone proof."
+      "interpretation": "Same-origin Apple GPU WebKit comparison confirms higher WebContent RSS with direct clock as well as forward transport. Similar Unity heap and GPU peaks; loader changes alone do not resolve this. Not physical iPhone proof.",
+      "measurement_limit": "RSS only; single-run peaks vary with native compression/paging. Do not attribute a causal compiler or transport regression or physical iPhone failure from these values."
     }
   },
   "iphone_rejected_low_memory_transport": {
@@ -398,8 +399,18 @@
   },
   "iphone_native_memory_diagnosis": {
     "run": 42792903970,
-    "probe_commit": "450d7e9ad4603c51d4491fb6749dab544b78d5e0",
-    "status": "IN_PROGRESS",
+    "artifact_id": 13752687573,
+    "status": "COMPLETE_NATIVE_PROFILES_CAPTURED_NOT_IPHONE",
+    "observed_peak_footprint_gib": 3.4,
+    "compiler_isolation_run": 42793879891,
+    "compiler_isolation_artifact_id": 13752933860,
+    "compiler_option_verified_in_logs": "useOMGJIT=false (default: true)",
+    "compiler_isolation_result": "NO_MEMORY_REDUCTION_WITH_OMG_DISABLED",
+    "direct_peak_rss_kib": 2662592,
+    "no_omg_peak_rss_kib": 2724704,
+    "direct_peak_footprint_gib": 3.3,
+    "no_omg_peak_footprint_gib": 3.4,
+    "both_desktop_entry_reload_pass": true,
     "release_approval": false,
     "physical_iphone_tested": false
   }
