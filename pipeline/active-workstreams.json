@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
       "ownership_revision": 30,
       "write_scope_released": false,
-      "phase": "FRESH_2K_UI_CLEANROOM_NATIVE_PROOF",
-      "next": "Exact-head Unity 8 screenshots; verify 13 newly imported original high-res sprites, no legacy painted layers, actual data and gestures; only keep if visually closer to owner reference. No production merge.",
+      "phase": "NEW_FIRST_PARTY_ART_NATIVE_8_PASS_ART_REVIEW_PENDING",
+      "next": "Review eight actual Unity screenshots from PR173 SHA 52cbd976637235094d137a90107f264683131584 against owner-approved image. Art quality not approved; do not merge or publish. Further artistic work requires user-specified acceptance proof, not more minor patch rounds. Windows runner released for beta work.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T00:03:54.138Z",
@@ -6745,11 +6743,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "c40ca7d2b3342e547d77859d17d11e7147aeb5d1",
-        "native_run": 42710392713,
+        "source_sha": "52cbd976637235094d137a90107f264683131584",
+        "native_run": 42775867314,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13714449890,
+        "artifact": 13743772584,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6769,7 +6767,12 @@
         "bastion_header_and_timer_real_gpu_visible": true,
         "uses_original_owner_reference_nav": true,
         "owner_quest_and_resources_aligned": true,
-        "owner_context_compact": true
+        "owner_context_compact": true,
+        "oldCanvasVisible": 0,
+        "oldHudGraphicsReused": false,
+        "new_fresh_original_2k_assets": true,
+        "upgrade_glyph_width_guard": true,
+        "upgrade_one_line": true
       },
       "runner_released_at": "2026-11-09T19:06:55Z",
       "runner_release_basis": "Unity native run 42679974131 success on exact PR173 HEAD cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768; all eight PNG SHA verified against JSON, six actual navigation clicks, no legacy HUD, actual player save unchanged. No ART_APPROVED and no release. Windows resource given back."
