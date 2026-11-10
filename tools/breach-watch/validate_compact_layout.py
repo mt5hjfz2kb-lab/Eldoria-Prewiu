@@ -127,6 +127,15 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         info=R(13,108,panelw-26,35)
         costlabel=R(13,157,panelw-26,17)
         costdata=R(13,178,panelw-26,20)
+        # Actual Unity text numbers are fully separate live labels:
+        # retain readable 450 and 300 with gap after true 19u icons.
+        wood_icon=R(14,179,19,19)
+        wood_qty=R(39,179,42,20)
+        stone_icon=R(89,179,19,19)
+        stone_qty=R(110,179,panelw-115,20)
+        assert wood_icon.x+wood_icon.w+3<=wood_qty.x,size
+        assert stone_icon.x+stone_icon.w+2<=stone_qty.x,size
+        assert stone_qty.x+stone_qty.w<=panelw-4,size
         state=R(13,209,panelw-26,17)
         action=R(6,227,panelw-12,50)
         assert portraitphoto.y+portraitphoto.h+3<=info.y,size
