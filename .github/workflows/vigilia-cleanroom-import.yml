@@ -4,6 +4,8 @@ on:
     branches: [feature/forja-oscura-native-proof-20261107]
     paths:
       - tools/breach-watch/cleanroom-source-links.json
+      - tools/breach-watch/import_cleanroom_art.py
+      - .github/workflows/vigilia-cleanroom-import.yml
   workflow_dispatch:
 permissions:
   contents: write
