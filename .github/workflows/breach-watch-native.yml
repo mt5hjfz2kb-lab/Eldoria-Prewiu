@@ -175,7 +175,7 @@ jobs:
               raw=json.load(response)
           reg=json.loads(base64.b64decode(raw['content']))
           item=next((x for x in reg['active'] if x.get('id')=='eldoria-forja-oscura-visual-proof-20261107'),None)
-          assert item and item['owner']=='codex-vigilia-b5a434f403d6' and item['ownership_state']=='claimed'
+          assert item and item['owner']=='chatgpt-vigilia-automation-20261110' and item['ownership_state']=='claimed'
           assert any('BreachWatch/**' in x for x in item.get('scope',[]))
           print('BREACHWATCH_ART_CLAIM_PASS',item['ownership_revision'])
           PY
@@ -690,7 +690,7 @@ jobs:
           const d=JSON.parse(fs.readFileSync('live-main/pipeline/active-workstreams.json','utf8'));
           const w=d.active.find(x=>x.id==='eldoria-forja-oscura-visual-proof-20261107');
           const holders=d.active.filter(x=>x.ownership_state==='claimed'&&(x.resources||[]).includes('windows-runner-heavy'));
-          const ok=!!w&&holders.length===1&&holders[0]===w&&w.owner==='codex-vigilia-b5a434f403d6'&&w.ownership_revision>=21&&w.ownership_state==='claimed'&&w.branch==='feature/forja-oscura-native-proof-20261107';
+          const ok=!!w&&holders.length===1&&holders[0]===w&&w.owner==='chatgpt-vigilia-automation-20261110'&&w.ownership_revision>=21&&w.ownership_state==='claimed'&&w.branch==='feature/forja-oscura-native-proof-20261107';
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\n');
           console.log(ok?'BREACHWATCH_EXCLUSIVE_OWNER_PASS':'BREACHWATCH_NO_OWNER_WINDOWS_SKIPPED');
           JS
@@ -725,7 +725,7 @@ jobs:
           $raw=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
           $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw.content -replace '\s',''))) | ConvertFrom-Json
           $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].owner -ne 'codex-vigilia-b5a434f403d6' -or
+          if($holders.Count -ne 1 -or $holders[0].owner -ne 'chatgpt-vigilia-automation-20261110' -or
              $holders[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
              [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Native lease moved; fail closed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied; do not interfere'}
