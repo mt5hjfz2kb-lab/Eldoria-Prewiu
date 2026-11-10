@@ -9,7 +9,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-beta10-iphone-package
-  cancel-in-progress: false
+  cancel-in-progress: true
 env:
   NATIVE_RUN: '42909656581'
   NATIVE_SOURCE: 7ae5416613480ba526a839b429459d53629041e5
