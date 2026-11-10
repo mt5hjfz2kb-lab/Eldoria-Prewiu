@@ -1148,15 +1148,14 @@ namespace Eldoria.BreachWatch
             {
                 At(identity,margin,11,234,58);
                 // The single profile illustration already contains its lion.
-                At(identityName.rectTransform,59,6,166,31);
-                // Exact 1600x900 Unity GPU check proved the player's
-                // actual name is visible but the second row draws ZERO
-                // pixels: Libre Baskerville 14pt line metrics exceed a 17u
-                // truncated rect. Keep its entire baseline inside the
-                // single 58u carved profile (no extra plate or mock text).
-                At(identityPower.rectTransform,59,37,165,20);
+                // Native 1600x900 proves the name draws in the first row.
+                // The power must remain >= 11.75 physical pixels even in
+                // 844x390 (.86 scale), therefore 14pt is mandatory; reserve
+                // its full Legacy Text line height without another panel.
+                At(identityName.rectTransform,59,6,166,30);
+                At(identityPower.rectTransform,59,36,165,21);
                 identityName.fontSize=20;
-                identityPower.fontSize=12;
+                identityPower.fontSize=14;
 
                 float chip=visibleResources==2
                     ?Mathf.Min(110f,Mathf.Max(82f,(w*.28f-7f)/2f))
