@@ -1,4 +1,4 @@
-name: Eldoria P0 — same-origin WebKit control direct and streamed clock
+name: Eldoria P0 — native WebKit memory diagnosis, NOT release approval
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout exact audited, source-only Mac WebKit probe
         uses: actions/checkout@v4
         with:
-          ref: 97830343d85ffa91fc206630230cd430ee7d3ea9
+          ref: 450d7e9ad4603c51d4491fb6749dab544b78d5e0
           sparse-checkout: |
             tools/eldoria-private-beta/qa_webkit_residency.cjs
             tools/eldoria-private-beta/qa_static_server.cjs
@@ -91,6 +91,7 @@ jobs:
           QA_ENTRY: '1'
           QA_SKIP_PREFLIGHT: '1'
           QA_EXPECT_ORIGIN: 'http://127.0.0.1:18975'
+          QA_NATIVE_PROFILE: '1'
         run: |
           npm install --prefix "$RUNNER_TEMP/compact-webkit" --no-save playwright@1.55.0
           "$RUNNER_TEMP/compact-webkit/node_modules/.bin/playwright" install webkit
@@ -99,38 +100,20 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           failed=0
-          QA_URL='http://127.0.0.1:18975/beta-native325/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile10-pretest-ux QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          QA_URL='http://127.0.0.1:18975/beta-iphone-clock-ab/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           python3 - <<'PY'
           import json
           from pathlib import Path
-          rows={}
-          for kind,expected in (('control','native325-mobile10-pretest-ux'),('direct','native325-mobile12-minimal-world-clock-qa'),('candidate','native325-mobile12-minimal-world-clock-qa')):
-            report=json.loads(Path('evidence',kind,'report.json').read_text())
-            samples=report.get('samples',[])+report.get('entrySamples',[])
-            rss=max((p.get('rssKiB',0) for s in samples for p in s.get('processes',[]) if 'WebContent' in p.get('name','')),default=0)
-            gpu=max((p.get('rssKiB',0) for s in samples for p in s.get('processes',[]) if 'GPU' in p.get('name','')),default=0)
-            wasm=max(((s.get('metrics') or {}).get('usedWASMHeapSize') or 0 for s in samples),default=0)
-            rows[kind]={'passed':report.get('passed'),'revision':(report.get('identity') or {}).get('revision'),'webcontent_peak_kib':rss,'gpu_peak_kib':gpu,'wasm_used_peak_bytes':wasm,'errors':report.get('errors'),'samples':len(samples)}
-            assert report.get('perDrawTracing') is False
-            assert all(n['url'].startswith('http://127.0.0.1:18975/') for n in report['navigations']), 'Cross-origin control invalidates comparison'
-            assert rows[kind]['revision']==expected,'Wrong QA artifact identity'
-          with Path('evidence/owner-ab-memory.json').open('w') as out:
-            json.dump({'physical_iphone_tested':False,'scope':'same-host macOS WebKit ONLY','data':rows},out,indent=2)
-          print('OWNER_AB_REAL_WEBKIT_MEMORY_EVIDENCE',json.dumps(rows))
-          assert rows['control']['passed'] and rows['direct']['passed'] and rows['candidate']['passed'],'Actual WebKit entry or reload failed'
-          assert rows['control']['webcontent_peak_kib']>0 and rows['candidate']['webcontent_peak_kib']>0
-          assert rows['direct']['webcontent_peak_kib']<=rows['control']['webcontent_peak_kib']*1.05, 'Direct clock build memory regression vs identical-host beta10'
-          assert rows['candidate']['webcontent_peak_kib']<=rows['control']['webcontent_peak_kib']*1.05,\
-              'Direct unmodified build still requires >5% extra WebContent memory vs playable beta10'
+          r=json.loads(Path('evidence/direct/report.json').read_text())
+          print('NATIVE_MEMORY_DIAGNOSTIC_ONLY_NOT_RELEASE_APPROVAL',json.dumps({'passed':r['passed'],'profiles':r.get('nativeProfiles',[])}))
+          assert r['passed'] and r.get('nativeProfiles'), 'Need actual peak stack captures'
           PY
           if [ "$failed" != 0 ]; then exit 1; fi
       - name: Archive real Mac WebKit evidence, NEVER claim physical iPhone certification
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-same-origin-three-arm-webkit-not-iphone
+          name: eldoria-native-webkit-memory-diagnosis-not-release
           path: |
             evidence/
             server.log
