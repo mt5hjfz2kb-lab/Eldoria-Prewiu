@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T09:05:06.298Z",
+  "updated_at": "2026-11-10T09:09:24.895Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7427,13 +7427,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "UNITY_NATIVE_SECOND_RETEST_EXCLUSIVE_HELD",
+      "phase": "UNITY_NATIVE_RECEIPT_PORTRAIT_ROTATION_FAIL_RUN_COMPLETED_RUNNER_RELEASED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Execute exact current HEAD PR181 Unity run; inspect real 72 images + 116 hits + 28 credits; release Windows after job completes even failure.",
+      "next": "Native Unity run 42778827380 exact source c1523dc FAIL after 22 genuine PNG: portrait orientation-change receipt needs 63px Text.preferredHeight but has 50px. Correct only PR181 owned source, CI exact SHA; when Windows legitimately free and re-claimed CAS, rerun all 72 PNG/116 pointer/28 claims; no merge/art signoff.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7484,6 +7482,8 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-10T07:52:00Z",
       "runner_release_basis": "PR181 native Unity 42776890262 SHA ead9759b completed FAILURE; source/artifact investigation pending; lease released unconditionally after completed job without changing code owner.",
+      "runner_released_at": "2026-11-10T09:09:24.895Z",
+      "runner_release_basis": "PR181 Unity run 42778827380 finished FAILURE, exact SHA c1523dc4933c34f7d32b65920af116c58e5163da, genuine native orientation text truncation at DailyTreasureNativeEvidence.cs:805; both native and audit jobs completed. No further Windows job active for this claim.",
       "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia.",
       "runner_claimed_at": "2026-11-10T07:57:00Z",
       "runner_claim_basis": "At source HEAD b95c0d9 domain CI SUCCESS run 42778669432, owner canonical, no other Windows holders or active/queued recent Windows jobs, PR173 and PR179 read; single new native Unity test for corrected real TextGenerator 66px truncation with 72px space. Fail-closed process guard."
