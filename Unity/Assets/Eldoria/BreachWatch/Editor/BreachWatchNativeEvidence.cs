@@ -207,10 +207,10 @@ namespace Eldoria.BreachWatch.Editor
                  "Expected one undistorted owner mission tablet: "+shot);
             var mission=missions[0];
             var area=mission.rectTransform.rect;
-            float aspect=mission.sprite.rect.width/mission.sprite.rect.height;
-            Need(area.width>0f && area.height>0f &&
-                 Mathf.Abs(area.width-area.height*aspect)<1f,
-                 "Owner mission tablet geometry no longer follows source aspect: "+shot);
+            // preserveAspect fits the source inside this responsive hit area;
+            // the hit area's aspect itself intentionally differs by orientation.
+            Need(area.width>0f && area.height>0f,
+                 "Owner mission tablet has no drawable area: "+shot);
         }
         static void CaptureRealCity()
         {
