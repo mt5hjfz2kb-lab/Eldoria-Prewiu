@@ -393,3 +393,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-10: After 13 new independent high-resolution art sprites fully integrated, updated original-surface QA to require no prior gold ring, brass image, old fallback plates or full-screen veil. Re-render eight real Unity screenshots from exact code and validate input and actual Spanish text. Only accept if visual output is closer; not production release.
 
 2026-11-10: Source mission gate updated for original newly generated 2K PNG, with exact sha from 13-sprite manifest, transparent alpha, real data text and no obsolete mission layer; run all native eight images and unchanged game input checks. 
+
+2026-11-10: Art-integrity QA now respects archived old art as provenance only and rejects it from the rebuilt clean HUD. Require 13 generated original 2K PNGs loaded as current sprites, clean single selected-building panel, no old gold/brass/background layers, real game controls intact. Run eight exact-HEAD Unity native screenshots and GPU glyph diff. No production merge/publish.
