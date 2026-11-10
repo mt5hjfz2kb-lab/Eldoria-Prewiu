@@ -58,7 +58,7 @@ for name in asset_names:
         print("VIGILIA_APPROVED_GRAPHITE_PALETTE",name,med)
     if name in ('profile','mission','resource'):
         assert 'spriteBorder: {x: ' in meta,name
-        assert ('VigiliaArt/CleanRoom/'+name) in HUD,name
+        assert ('VigiliaArt/OwnerControls/'+{'profile':'profile_bar','mission':'mission_plate','resource':'resource_capsule'}[name]) in HUD,name
         # PPU=100 on a 2K source made 40-unit engraved insignias become
         # 5-unit specks. Image.pixelsPerUnit = spritePPU / Canvas.referencePPU
         # in UnityEngine.UI; its nine-slice borders use spriteBorder divided
@@ -134,7 +134,7 @@ for name in asset_names:
             assert 174>=displayed_divider+2.0,(
                 'Cost title sits on a painted divider',displayed_divider)
             print('VIGILIA_SEPARATE_PORTRAIT_DESCRIPTION',displayed_well,displayed_divider)
-for name in ('panel','mission','profile','resource','upgrade'):
+for name in ('panel','upgrade'):
     assert 'VigiliaArt/CleanRoom/'+name in HUD,name
 assert '"VigiliaArt/CleanRoom/nav_"+symbol' in HUD
 assert '"VigiliaArt/CleanRoom/nav_"+ReferenceNavArt[i]' in HUD
@@ -142,14 +142,13 @@ assert '"VigiliaArt/CleanRoom/nav_"+ReferenceNavArt[i]' in HUD
 # version control for audit, but must be visually ABSENT from the new Canvas.
 for path in ('FreshArt/profile_panel','FreshArt/quest_panel',
              'FreshArt/building_panel','FreshArt/resource_chip',
-             'FreshArt/upgrade_button','OwnerReference/lion_crest',
-             'OwnerControls/profile_bar','PremiumSurfaces/panel_fill'):
+             'FreshArt/upgrade_button','PremiumSurfaces/panel_fill'):
     assert path not in HUD,path
 for legacy in ('var brassFrame=Plate(', 'Glyph(objective,"Chapter stone rune"',
                'Rect("Soft volcanic atmosphere / no world replacement"',
                'Rect("Independent circular realm crest",identity)'):
     assert legacy not in HUD,legacy
-assert 'identityCrest=null;' in HUD
+assert 'identityCrest=Rect("Approved original Valoria lion",identity);' in HUD
 # Owner's original medallion silhouette measures about 62-69px on the
 # 900px reference. The NEW source sprites have alpha closely cropped to
 # their ring, so they cannot paint across the full 91px native hitbox.
@@ -170,7 +169,7 @@ alpha_fraction=.98
 assert 61<=alpha_fraction*52*scale_900*.70<=66
 assert 67<=alpha_fraction*52*scale_900*.76<=71
 assert 52*.91 >=44
-assert 'identity.GetComponentsInChildren<Graphic>(true).Length==3' in HUD
+assert 'identity.GetComponentsInChildren<Graphic>(true).Length==4' in HUD
 assert 'exactOwnerGoldBorder=null;' in HUD
 assert '!portraitFrame.GetComponent<Graphic>()' in HUD
 assert 'Need(!atmosphericVeil,' in QA
@@ -193,4 +192,26 @@ for clause in (
     assert clause in HUD+'\n'+QA,('lost real gameplay',clause)
 assert HUD.count('AddContactShadow(')==1
 assert HUD.count('UseSourceArtInteraction(')==4
-print('VIGILIA_NEW_REFERENCE_GUIDED_10_ORIGINAL_SPRITES_INDEPENDENT_HUD_PASS')
+# The approved user's original art, not a newly hallucinated UI family,
+# is the active HUD in exactly three top-level elements. Validate source
+# PNG transparency, original SHA lineage and anti-duplicate architecture.
+original=ROOT/'Resources/VigiliaArt/OwnerControls'
+original_manifest=json.loads((original/'manifest.json').read_text())
+by_control={x['control']:x for x in original_manifest['controls']}
+for label,stem in [('profile','profile_bar'),('resource','resource_capsule')]:
+    record=by_control[label]
+    p=original/(stem+'.png')
+    assert hashlib.sha256(p.read_bytes()).hexdigest()==record['png_sha256'],label
+    with Image.open(p).convert('RGBA') as im:
+        assert im.getchannel('A').getextrema()==(0,255),label
+    assert ('VigiliaArt/OwnerControls/'+stem) in HUD,label
+lion=ROOT/'Resources/VigiliaArt/OwnerReference/lion_crest.png'
+assert lion.is_file()
+assert 'VigiliaArt/OwnerReference/lion_crest' in HUD
+quest=original/'mission_plate.png'
+assert quest.is_file()
+assert 'VigiliaArt/OwnerControls/mission_plate' in HUD
+assert 'chapterStone.ApplyIndependentArt(angledPlate);' in HUD
+assert 'chapterStone.preserveAspect=true;' in HUD
+assert 'identityCrest.GetComponent<Image>().sprite' in HUD
+print('VIGILIA_OWNER_ORIGINAL_PROFILE_QUEST_RESOURCES_SOURCE_PASS — native art proof still required')
