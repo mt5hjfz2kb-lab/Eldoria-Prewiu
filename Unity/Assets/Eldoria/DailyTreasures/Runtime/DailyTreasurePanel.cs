@@ -1395,6 +1395,13 @@ namespace Eldoria.DailyTreasures
                 chestX,chestY,artWidth,artHeight);
             bool compactPrizePortrait=portrait && prizeCount>0 && panelH<680f;
             bool quietRewards=prizeCount>0 && !chestReward;
+            // A very short portrait viewport cannot fit two receipt lines
+            // BETWEEN the two-row earned-card shelf and the Continue button.
+            // Keep the authentic full receipt in the mailbox and show a
+            // single-line confirmation here, without changing the award.
+            if(compactPrizePortrait && !playing &&
+               ceremony.gameObject.activeSelf && claimButton.gameObject.activeSelf)
+                resultText.text=ceremonialTitle+" · GUARDADO";
             if(prizeCount>0)
             {
                 resultText.fontSize=openingChest?(portrait?20:18):
@@ -1408,12 +1415,18 @@ namespace Eldoria.DailyTreasures
                 // hid the saved-inventory confirmation. At 72px its lower
                 // edge is -142, 6px ABOVE the 54px Continue button top
                 // (-148), while the prize shelf remains 46.5px above.
-                // Preserve the landscape one-line 41px presentation.
+                // The real day-seven portrait rotation (run 42778827380)
+                // needs 63px for its two-line caption; the previous 50px box
+                // clipped it. 72px fits: at panelH=700, the bottom is -268,
+                // 15px above Continue's top (-283), and its top (-196)
+                // clears the two-row item shelf bottom (-194) by 2px.
+                // Shorter portrait screens use a single-line 39px caption.
+                // Preserve the landscape one-line 29px presentation.
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                     0f,captionY,panelW-45f,
                     openingChest?(portrait?45f:32f):
                     quietRewards?(portrait?72f:41f):
-                    compactPrizePortrait?39f:portrait?50f:29f);
+                    compactPrizePortrait?39f:portrait?72f:29f);
             }
             else
             {
