@@ -53,7 +53,7 @@ for(const [name,regex] of [
 // The screen-space safe area is shared with the earned prize shelf and the
 // real 54px CONTINUAR hit target. Model their exact portrait rectangles,
 // without relaxing the native Text.preferredHeight gate.
-assert.match(code,/quietRewards\\?\\(portrait\\?72f:41f\\)/,
+assert.match(code,/quietRewards\?\(portrait\?72f:41f\)/,
   'Portrait quiet reward needs a real 72px two-line confirmed receipt');
 for(const [w,h] of [[900,1600],[390,844],[375,667],[768,1024]])
 {
