@@ -63,18 +63,40 @@ try{
  assert.equal(response.status,200);
  assert.equal(response.url,url);
  assert.equal(Number(response.headers.get('Content-Length')),503831429);
- let index=0,total=0;
+ // The real iPhone memory fix emits sub-256KiB frames instead of 16MiB
+ // target allocations. Verify every true 16MiB Unity part by incremental
+ // SHA256 across frames, with real HTTP/gzip and exact frozen engine payload.
+ let index=0,total=0,partBytes=0,frameCount=0,maxFrame=0;
+ let currentHash=createHash('sha256');
  const reader=response.body.getReader();
  while(true){
   const {value,done}=await reader.read();
   if(done)break;
-  assert.equal(digest(value),info.target_parts[index].decoded_sha256,
-               'Real HTTP Unity chunk mismatch '+index);
-  total+=value.byteLength;index++;
-  console.log('ELDORIA_OWNER_AB_REAL_HTTP_CHUNK_SHA_PASS',index,value.byteLength);
+  assert.ok(value.byteLength>0 && value.byteLength<=262144,
+     'Browser emitted oversized Unity memory frame '+value.byteLength);
+  frameCount++;
+  maxFrame=Math.max(maxFrame,value.byteLength);
+  total+=value.byteLength;
+  let off=0;
+  while(off<value.byteLength){
+    assert.ok(index<31,'Unexpected extra Unity bytes');
+    const part=info.target_parts[index],left=part.decoded_bytes-partBytes;
+    const take=Math.min(left,value.byteLength-off);
+    currentHash.update(value.subarray(off,off+take));
+    off+=take;partBytes+=take;
+    if(partBytes===part.decoded_bytes){
+      assert.equal(currentHash.digest('hex'),part.decoded_sha256,
+         'Real HTTP low-memory Unity part SHA mismatch '+index);
+      console.log('ELDORIA_LOW_MEMORY_REAL_HTTP_PART_SHA_PASS',index,partBytes);
+      index++;partBytes=0;currentHash=createHash('sha256');
+    }
+  }
  }
  assert.equal(index,31);
+ assert.equal(partBytes,0);
  assert.equal(total,503831429);
+ assert.ok(frameCount>1500, 'Expected genuinely small streamed memory frames');
+ console.log('ELDORIA_SMALL_FRAMES_VERIFIED',frameCount,'max',maxFrame);
  const unknown=await window.fetch(origin+'/Eldoria-Prewiu/unknown-id');
  assert.equal(unknown.status,404);
  console.log('ELDORIA_OWNER_AB_BROWSER_STREAM_31_PARTS_PASS',total,
