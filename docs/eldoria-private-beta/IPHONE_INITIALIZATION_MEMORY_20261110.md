@@ -115,3 +115,30 @@ The compiled texture inventory includes 135 format-48 ASTC objects and 89 DXT ob
 Native run 42909656581, job 130156795850 completed SUCCESS at source 7ae5416613480ba526a839b429459d53629041e5. Evidence artifact 13809346377 (366275289 bytes), SHA256 6c02f606b22f481d768b0b57012af5648e7df1a0d27be6e4178bb98727ff75f7, was downloaded and verified. Canonical journey: 227 checks. Terrain: two parity passes with 119870 checked queries each, retainedContactNormals=0, retainedVerificationBuckets=0, canonicalSavesUnchanged=true, ready/worldComplete=true. warm-cache-restoration.json reports restored=true, no conflicts, no status changes, no existing input changes. Pre-existing authored/normalized asset differences were preserved, not discarded. WebGL compiled 1490774387 bytes in seven files; artifact 13807824950. Windows resource released in main commit 1e1cf1aec0365c1827b5c71861f8f3b57829a2cd.
 
 The native workflow follow-up job 130177005433 failed exactly on its filename discovery assertion (zero .data/.data.gz paths); this does not invalidate the successful native job. Independent packaging run 42914592603 at 5a8509e35c69b81c2aed564a1c66f07fbc0d968a successfully passed the corrected full collision-byte verifier before proceeding to texture-preserving packaging. The full packaging/WebKit result and physical phone result are still pending at this checkpoint. Native shader/mesh/build proof is not a physical restart fix certificate.
+
+
+## Actual compiled collision payload verified
+
+Packaging job 130173780223 in run 42914592603 independently parsed exact native data SHA256 c8aa6e45f19d94a7ac070a62710e86cbc61f0545afe66405225d081d5f07d203 and bundle SHA256 fed036980db7b0e6eb5feab0c99cd931e106344c9a2accdee0c60c680dc536ff. Bastion_I contains 4,967,218 bytes of baked triangle collision data; Bastion_II_GI contains 5,651,094 bytes. After clearing only the baked collision buffers in memory, both serialized mesh hashes equal the original hashes above. The geometry, vertices, material-related mesh channels, and all other serialized mesh fields are unchanged. Existing exact texture transformations passed (168 changed objects / 144 exact transforms); transformed bundle size 505857170 bytes. This is evidence of the implemented workload change, not a measured physical iPhone memory reduction or stability result.
+
+That packaging run subsequently failed while substituting the content-hashed startup-script filename: an overescaped regex did not match the generated HTML. The corrected workflow block was executed locally against the real beta shell, its resulting JavaScript passed node --check, and plain/hashed/query-suffixed script cases all passed. Run 42916816001 at a6c2d7837584ac7d826c60c3389ac950316b450e repeats packaging without rebuilding or changing native Unity bytes.
+
+
+## Packaged beta13 succeeds
+
+Run 42916816001, package job 130181273671: SUCCESS. Exact decoded transport checks pass for framework 442142 bytes, WASM 44199259 bytes, and data 513647363 bytes, including truncated-part and error rejection. The Unity download-cache clone remains disabled; save code is unchanged. Site size: 465389078 bytes. Site artifact 13810611917 (465397652-byte ZIP), SHA256 e9ac92d2063b6bc016eb81f22e08a964c6d046d67cc28640dd957354eaee50f5. Evidence artifact 13809922201, SHA256 e6ef1066154ce58d590f58c54f710569ed5e7b3d424053b6bd7de839685c35a0. Mac WebKit comparison remains a separate gate.
+
+Publication run 42917944631 at main 49f1ed41faff53b27a0f611156fcca84f1655f17 waits for the entire package/Mac run to pass, preserves beta10 and the other existing routes, and replaces only the failed direct candidate route with the exact new site. It checks every public file hash after deployment. Independent live WebKit run 42918233684 at b4b9133538bd7cd2f804ea747ea8e40077cd98cc waits for that successful public verification and then tests entry, nickname, persistence and reload. These queued gates are not yet passed or physical-device proof.
+
+
+## Completed publication and actual public WebKit verification
+
+Mac comparison 42916816001 completed SUCCESS. Both fresh control and candidate entered, saved Beta QA and reloaded. Artifact 13810653131 SHA256 9427eaa3e222bdc49163abf3438284e4bbc46484321116e876e6b56a23640b45 was downloaded and inspected; candidate/reloaded.png visibly shows Beta QA and diagnostic beta13. Peak WebContent RSS: control 2640304 KiB, candidate 2651088 KiB (~0.4% higher). This is not a physical-phone reduction claim.
+
+Publication 42917944631 completed SUCCESS. Staged combined site 955792623 bytes; all 146 public files matched exactly after deployment. Existing beta10 redirect/save origin and other routes were preserved. Only the rejected direct-comparison route was replaced.
+
+Independent actual-public WebKit 42918233684 completed SUCCESS. Artifact 13811435888 SHA256 02b02ae07d4db6a3814f670ae56f8af2d6a7991f5576b45a30f3547b545729a7 was downloaded and verified. report.json: passed=true, errors=[], typed=true, reloaded=true, 45-second post-entry observation. Both navigation URLs are the intended public beta13 URL (initial entry and deliberate reload). direct/reloaded.png was visually inspected and shows Beta QA and diagnostic beta13. These are desktop Mac WebKit tests, not real iPhone tests.
+
+Owner candidate: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1
+
+Remaining external gate: actual owner iPhone stability and prolonged session/persistence/clock verification. The reported physical restart is not marked fixed. No new OS-report request, save clearing, external tester invitations, automation, or full historical branch merge. If the owner reports failure, retain these exact bytes and investigate next; do not repeat rejected transport/JIT/canvas-only fixes or cite simulator/desktop PASS as phone proof.

@@ -1,0 +1,25 @@
+{
+  "native_source": "7ae5416613480ba526a839b429459d53629041e5",
+  "native_run": 42909656581,
+  "package_run": 42916816001,
+  "public_run": 42917944631,
+  "public_webkit_run": 42918233684,
+  "proof": {
+    "data_sha256": "c8aa6e45f19d94a7ac070a62710e86cbc61f0545afe66405225d081d5f07d203",
+    "bundle_sha256": "fed036980db7b0e6eb5feab0c99cd931e106344c9a2accdee0c60c680dc536ff",
+    "meshes": {
+      "Bastion_II_GI": {
+        "baked_triangle_bytes": 5651094,
+        "non_collision_bytes_sha256": "30e4ec63d249c9657fa7dfb01b6cb71c937a8794b2956af64efd7e9a96f79605"
+      },
+      "Bastion_I": {
+        "baked_triangle_bytes": 4967218,
+        "non_collision_bytes_sha256": "5fa376ac44869b90935ae3f6b63652c3671a815f0a695e43ac731111e6913b1b"
+      }
+    },
+    "status": "REAL_WEBGL_COLLISIONS_PREBAKED_ORIGINAL_MESH_BYTES_VERIFIED",
+    "physical_iphone_verified": false,
+    "external_testers_enabled": false
+  },
+  "physical_iphone_verified": false
+}

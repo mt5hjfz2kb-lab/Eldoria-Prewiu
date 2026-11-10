@@ -1,3 +1,7 @@
+# Current status — historical transport experiments rejected
+
+The physical owner rejected stable-canvas-r1 and direct-r1. The live direct route now serves beta13 with a newly compiled collision-prebake and initialization-memory candidate; the original direct-r1 URL below is historical and no longer identifies current bytes. [Current implementation and verified evidence](IPHONE_INITIALIZATION_MEMORY_20261110.md). Beta13 passed native and desktop public WebKit tests, but physical iPhone stability is still unverified and testers remain blocked.
+
 # Current result — physical failure supersedes desktop PASS
 
 The owner reported that stable-canvas-r1 still restarts on the physical iPhone. It is rejected as a solution. Do not reinterpret the previous Mac comparison as physical success.
@@ -7,7 +11,7 @@ A separate owner route, beta-iphone-clock-direct/?transport=direct-r1&eldoria_di
 - Local Mac WebKit run42893674666 passed.
 - Actual public WebKit run42895738602 passed entry/name/reload; artifact13801096099. Reload screenshot visibly retains Beta QA.
 - Public verification42898405543 checked all181servedfiles byte-for-byte and confirmed original beta10 redirect/save origin unchanged.
-- Physical direct-r1 result is still absent. This is an owner comparison, not a tester release or confirmed root-cause fix.
+- Physical direct-r1 FAILED: owner screenshot IMG_5065 reaches ready at22:24:15 and records another boot at22:24:23. This mitigation is rejected; never present its desktop PASS as a phone fix.
 
 ## Publication lesson
 Run42895222597 deployed successfully but its final verifier had an overescaped regex. The script was corrected. A redundant deployment42896193107 hit the hard600000ms cap: deploy-pages@v4 explicitly clamps even a1800000ms input. Do not claim that a30minute input overrides this cap.
@@ -16,7 +20,7 @@ The corrected workflow first compares every served file with staged bytes and sk
 ## Simulator evidence boundary
 Run42890758782 timed out creating Appium/WDA sessions. Run42894597804 could launch Safari but native SafariDriver timed out waiting for its RWIApplication; no game samples existed. Neither is a game failure or an iPhone stability test.
 Warm-up attempt42897348434 failed even earlier: simctl could not open about:blank (LSApplicationWorkspace115). The next attempt launches com.apple.mobilesafari directly, waits for initialization, and permits one bounded session-creation retry. Do not retry every game variant if infrastructure cannot establish its first session.
-Pending native Safari launch attempt:42898705517. This remains a simulator, never a physical-device substitute.
+Later simulator run42908325634 reached Unity ready in both arms but then recorded GPU-process crashes and a lost SimMetalHost connection. No valid120-second stability PASS exists. See the initialization-memory document for the corrected evidence.
 
 ---
 
