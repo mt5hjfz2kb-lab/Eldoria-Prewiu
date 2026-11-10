@@ -130,16 +130,16 @@ namespace Eldoria.BreachWatch
             {
                 var tablet=objective?objective.GetComponent<BreachWatchPlate>():null;
                 return tablet && tablet.sprite &&
-                    tablet.sprite.name=="mission_plate" &&
-                    tablet.type==Image.Type.Sliced &&
+                    tablet.sprite.name=="quest_panel" &&
+                    tablet.type==Image.Type.Simple &&
                     !tablet.preserveAspect;
             }
         }
         public bool HasSinglePremiumIdentity =>
             identity && identity.GetComponent<BreachWatchPlate>() &&
             identity.GetComponent<BreachWatchPlate>().sprite &&
-            identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_bar" &&
-            identity.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
+            identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_panel" &&
+            identity.GetComponent<BreachWatchPlate>().type==Image.Type.Simple &&
             // The original painted profile already contains shading.
             // Do not require a second uGUI Shadow after the approved
             // single-surface unification.
@@ -155,8 +155,8 @@ namespace Eldoria.BreachWatch
                     if(!resourceChips[i])return false;
                     var surface=resourceChips[i].GetComponent<BreachWatchPlate>();
                     if(!surface || !surface.sprite ||
-                       surface.sprite.name!="resource_capsule" ||
-                       surface.type!=Image.Type.Sliced)return false;
+                       surface.sprite.name!="resource_chip" ||
+                       surface.type!=Image.Type.Simple)return false;
                 }
                 return true;
             }
@@ -181,7 +181,7 @@ namespace Eldoria.BreachWatch
             {
                 for(int i=0;i<navPlates.Length;i++)
                 {
-                    var requested=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
+                    var requested=Resources.Load<Sprite>("VigiliaArt/FreshArt/"+ReferenceNavArt[i]);
                     if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
                         return false;
                 }
@@ -204,26 +204,18 @@ namespace Eldoria.BreachWatch
                 return true;
             }
         }
+        // One new painted card, no older decorative layers underneath it.
         public bool UsesPremiumForgedPortraitFrame =>
-            portraitFrame && portraitFrame.GetComponent<BreachWatchPlate>() &&
-            portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
-            portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="brass_portrait" &&
-            portraitFrame.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
-            portraitFrame.GetComponent<BreachWatchPlate>().enabled &&
-            !portraitFrame.GetComponent<BreachWatchPlate>().fillCenter;
+            portraitFrame && !portraitFrame.GetComponent<Graphic>() &&
+            portraitView && portraitView.transform.IsChildOf(portraitFrame);
         public bool UsesExactOwnerApprovedGoldBorder =>
-            exactOwnerGoldBorder && exactOwnerGoldBorder.sprite &&
-            exactOwnerGoldBorder.sprite==
-                Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border") &&
-            exactOwnerGoldBorder.type==Image.Type.Simple &&
-            !exactOwnerGoldBorder.raycastTarget;
-        // The authoritative context now has exactly one slate interior and
-        // one owner-approved external gold contour. The superseded basalt
-        // picture and extra interim dark overlays are NOT layered under it.
+            !exactOwnerGoldBorder && panel && panel.GetComponent<Image>() &&
+            panel.GetComponent<Image>().sprite ==
+                Resources.Load<Sprite>("VigiliaArt/FreshArt/building_panel");
         public bool UsesSinglePremiumContext =>
             panel && panel.GetComponent<Image>() &&
             panel.GetComponent<Image>().sprite ==
-                Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill") &&
+                Resources.Load<Sprite>("VigiliaArt/FreshArt/building_panel") &&
             panel.GetComponent<Image>().type==Image.Type.Simple &&
             !panel.GetComponent<BreachWatchPanelInk>() &&
             !panel.GetComponent<BreachWatchPlate>() &&
@@ -437,22 +429,17 @@ namespace Eldoria.BreachWatch
         }
         void BuildIndependentComponents()
         {
-            // A truly independent world-safe material wash, only 26% dark at
-            // extreme edges and nearly transparent over the playable center.
-            var atmosphere=Rect("Soft volcanic atmosphere / no world replacement",uiRoot);
-            Fill(atmosphere);
-            var veil=atmosphere.gameObject.AddComponent<BreachWatchAtmosphere>();
-            veil.raycastTarget=false;
+            // Rebuild starts on a clear Canvas, without an atmospheric overlay.
             // Asymmetrical stone architecture instead of a header/footer re-skin.
             identity=Rect("Identity / basalt crest",uiRoot);
             // REPLACEMENT, not a bevel pasted over another panel: one
             // authoritative forged-metal plate from the approved art kit.
             var identitySurface=Plate(identity,BreachWatchPlate.PlateType.Basalt);
-            var finalProfile=Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar");
+            var finalProfile=Resources.Load<Sprite>("VigiliaArt/FreshArt/profile_panel");
             if(!finalProfile)throw new InvalidOperationException(
                 "Missing Vigilia's approved player profile art");
-            identitySurface.ApplyIndependentArt(finalProfile,true);
-            identitySurface.color=new Color(.97f,.95f,.90f,1f);
+            identitySurface.ApplyIndependentArt(finalProfile);
+            identitySurface.color=Color.white;
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
             identitySurface.raycastTarget=true;
@@ -475,7 +462,7 @@ namespace Eldoria.BreachWatch
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
             resourceRow=Rect("Separate resource stones",uiRoot);
             var originalResourceStone=Resources.Load<Sprite>(
-                "VigiliaArt/OwnerControls/resource_capsule");
+                "VigiliaArt/FreshArt/resource_chip");
             if(!originalResourceStone)throw new InvalidOperationException(
                 "Missing Vigilia's approved resource capsule art");
             for(int i=0;i<3;i++)
@@ -485,14 +472,14 @@ namespace Eldoria.BreachWatch
                 // Single premium brass-edged 9-slice capsule. The earlier
                 // procedural tile PLUS a second border produced an ugly
                 // cross/X behind the actual resource amount in Unity.
-                resourceSurface.ApplyIndependentArt(originalResourceStone,true);
-                resourceSurface.color=new Color(.97f,.95f,.90f,1f);
+                resourceSurface.ApplyIndependentArt(originalResourceStone);
+                resourceSurface.color=Color.white;
 
                 resourceSurface.raycastTarget=true;
                 var picture=Rect("True illustrated resource",resourceChips[i]);
                 resourceIllustrations[i]=picture.gameObject.AddComponent<Image>();
                 resourceIllustrations[i].sprite=Resources.Load<Sprite>(
-                    "VigiliaArt/ResourceIcons/"+(i==0?"wood":i==1?"stone":"food"));
+                    "VigiliaArt/FreshArt/"+(i==0?"wood":i==1?"stone":"food"));
                 resourceIllustrations[i].type=Image.Type.Simple;
                 resourceIllustrations[i].preserveAspect=true;
                 resourceIllustrations[i].raycastTarget=false;
@@ -518,13 +505,13 @@ namespace Eldoria.BreachWatch
             objective=Rect("Chapter side tablet",uiRoot);
             var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var angledPlate=Resources.Load<Sprite>(
-                "VigiliaArt/OwnerControls/mission_plate");
+                "VigiliaArt/FreshArt/quest_panel");
             if(!angledPlate)throw new InvalidOperationException(
                 "Missing Vigilia's approved integral chapter tablet");
             // The actual tapered ornament is a single authored silhouette:
             // never silently fall back to a generic procedural dark panel.
-            chapterStone.ApplyIndependentArt(angledPlate,true);
-            chapterStone.color=new Color(.97f,.95f,.90f,1f);
+            chapterStone.ApplyIndependentArt(angledPlate);
+            chapterStone.color=Color.white;
             chapterStone.preserveAspect=false;
 
             // No extra shadow: the carved quest PNG already has a baked
@@ -596,68 +583,18 @@ namespace Eldoria.BreachWatch
             // source. It REPLACES the featureless procedural PanelInk mesh:
             // exactly one painted surface behind the single transparent
             // outer-gold reference border, never another card layered on top.
-            var realMineral=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
-            if(!realMineral)
-                throw new InvalidOperationException(
-                    "Missing separately authored owner-reference mineral card material");
+            // Rebuilt from a blank canvas: one complete ORIGINAL 2K card.
+            // All previous gold borders, slate slabs and inset frames are gone.
+            var finishedPanel=Resources.Load<Sprite>("VigiliaArt/FreshArt/building_panel");
+            if(!finishedPanel)throw new InvalidOperationException("Missing original 2K selected-building panel");
             var singleSlate=panel.gameObject.AddComponent<Image>();
-            singleSlate.sprite=realMineral;
-            singleSlate.color=new Color(.97f,.95f,.90f,1f);
+            singleSlate.sprite=finishedPanel;
+            singleSlate.color=Color.white;
             singleSlate.type=Image.Type.Simple;
             singleSlate.preserveAspect=false;
-            // Passive native input shield prevents clicks leaking through.
             singleSlate.raycastTarget=true;
-            // The mineral surface and the ONE owner rim carry all relief.
-            // A second UI Shadow beneath them created a detached slab.
-            // Most faithful finish: transparent embossed metal border
-            // extracted solely from the exact image the owner approved.
-            // Real building data and 3D meshes remain separate.
-            var outlined=Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border");
-            if(outlined)
-            {
-                var ring=Rect("Exact owner-approved independent gold relief ring",panel);
-                Fill(ring);
-                // The reference's upper/lower diamonds sit OUTSIDE the
-                // readable tablet. Enlarge only the independently rendered
-                // ornamental ring, never the actual text/button surfaces.
-                ring.offsetMin=new Vector2(-1.5f,-19f);
-                ring.offsetMax=new Vector2(1.5f,19f);
-                exactOwnerGoldBorder=ring.gameObject.AddComponent<Image>();
-                exactOwnerGoldBorder.sprite=outlined;
-                // One complete owner-approved border, including top and bottom
-                // diamonds. No second bottom finial overlaid on the old one.
-                exactOwnerGoldBorder.type=Image.Type.Simple;
-                exactOwnerGoldBorder.raycastTarget=false;
-                exactOwnerGoldBorder.color=new Color(.96f,.93f,.87f,.88f);
-            }
-            else throw new InvalidOperationException(
-                "Missing Vigilia's single approved sculpted-gold contour");
-            portraitFrame=Rect("Carved recess / live building illustration",panel);
-            var brassFrame=Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
-            var premiumBrass=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/brass_portrait");
-            if(!premiumBrass)throw new InvalidOperationException(
-                "Missing Vigilia's genuine brass picture recess");
-            brassFrame.ApplyIndependentArt(premiumBrass,true);
-            // The portrait must be a subtle recess of the SAME mineral
-            // cartouche, not a second thick black/bronze plate perched on it.
-            // Keep the original 9-slice ornament and a single live 3D image,
-            // but let the shared mineral body read through the heavy center.
-            // The actual 3D image now has a transparent background. The old
-            // 55% opaque border becomes a SECOND golden frame below that
-            // transparent texture, reintroducing the pasted-on-panel effect.
-            // Keep a very soft relief at 18% and the ONE outer approved rim.
-            // The brass source PNG has an entirely opaque CENTRAL slab.
-            // Even at 18% opacity it rendered an extra rectangular card
-            // behind the URP alpha-cut 3D Bastion. Retain its authored
-            // asset for provenance, but do NOT paint the duplicate surface.
-            // Keep only the real 9-slice brass CONTOUR as in the approved
-            // picture: Unity Image.fillCenter=false discards the source PNG's
-            // opaque interior instead of painting an extra card beneath URP.
-            // This is an alternative to the repeated stacked-border strategy.
-            brassFrame.fillCenter=false;
-            brassFrame.color=new Color(1f,1f,1f,.68f);
-            brassFrame.enabled=true;
-            brassFrame.raycastTarget=false;
+            exactOwnerGoldBorder=null;
+            portraitFrame=Rect("One clean real building diorama viewport",panel);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
             Fill(liveView,5);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
@@ -683,7 +620,7 @@ namespace Eldoria.BreachWatch
             {
                 var icon=Rect(i==0?"Real wood icon":"Real stone icon",panel);
                 var image=icon.gameObject.AddComponent<Image>();
-                image.sprite=Resources.Load<Sprite>("VigiliaArt/ResourceIcons/"+(i==0?"wood":"stone"));
+                image.sprite=Resources.Load<Sprite>("VigiliaArt/FreshArt/"+(i==0?"wood":"stone"));
                 image.type=Image.Type.Simple;
                 image.preserveAspect=true;
                 image.raycastTarget=false;
@@ -730,7 +667,7 @@ namespace Eldoria.BreachWatch
             actionButton=Button(actionRect,SubmitSelectedBuilding);
             actionButton.targetGraphic=actionHit;
             actionButton.transition=Selectable.Transition.None;
-            var originalArt=Resources.Load<Sprite>("VigiliaArt/OwnerControls/upgrade_button");
+            var originalArt=Resources.Load<Sprite>("VigiliaArt/FreshArt/upgrade_button");
             if(!originalArt)
                 throw new InvalidOperationException(
                     "Vigilia requires the owner's standalone upgrade image");
@@ -762,7 +699,7 @@ namespace Eldoria.BreachWatch
                 int index=i;
                 string symbol=ReferenceNavArt[i];
                 var painted=Resources.Load<Sprite>(
-                    "VigiliaArt/OwnerReference/"+symbol);
+                    "VigiliaArt/FreshArt/"+symbol);
                 if(!painted)
                     throw new InvalidOperationException(
                         "Vigilia requires the approved navigation sprite: "+symbol);
@@ -777,7 +714,7 @@ namespace Eldoria.BreachWatch
                 Fill(art,6f);
                 var surface=Plate(art,BreachWatchPlate.PlateType.Navigation);
                 surface.ApplyIndependentArt(painted);
-                surface.color=new Color(.97f,.95f,.90f,1f);
+                surface.color=Color.white;
                 surface.VisualScale=1f;
                 surface.raycastTarget=false;
                 UseSourceArtInteraction(button,surface);
@@ -786,7 +723,7 @@ namespace Eldoria.BreachWatch
             }
             feedbackPlate=Rect("Temporary real action requirement tablet",uiRoot);
             var feedbackStone=Plate(feedbackPlate,BreachWatchPlate.PlateType.Resource);
-            var authoredStone=Resources.Load<Sprite>("VigiliaArt/OwnerControls/resource_capsule");
+            var authoredStone=Resources.Load<Sprite>("VigiliaArt/FreshArt/resource_chip");
             if(authoredStone)feedbackStone.ApplyIndependentArt(authoredStone,true);
             feedbackStone.raycastTarget=false;
             feedback=Label(feedbackPlate,"Action feedback / live or disabled",
