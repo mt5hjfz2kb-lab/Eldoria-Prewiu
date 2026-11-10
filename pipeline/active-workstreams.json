@@ -6665,16 +6665,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
       "ownership_revision": 30,
       "write_scope_released": false,
-      "phase": "OWNER_REFERENCE_HUD_NATIVE_8_PASS_ART_REVIEW_PENDING",
-      "next": "Revisar visualmente los ocho PNG reales de Unity de la PR173 SHA c40ca7d2; no declarar 7/10 ni aprobar ni integrar en main sin fidelidad al arte aprobado. El propietario conserva el workstream y Windows queda libre para la beta y PR179.",
+      "phase": "FRESH_2K_UI_CLEANROOM_NATIVE_PROOF",
+      "next": "Exact-head Unity 8 screenshots; verify 13 newly imported original high-res sprites, no legacy painted layers, actual data and gestures; only keep if visually closer to owner reference. No production merge.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-09T19:58:24.782Z",
-      "runner_claim_basis": "Owner explicitly requested direct Unity implementation of approved Vigilia screenshot; beta PR179 released Windows after native42682071151, no active holder; 8 genuine Unity screen pairs required",
+      "runner_claimed_at": "2026-11-10T00:03:54.138Z",
+      "runner_claim_basis": "Owner expressly ordered clean original 2K HUD integration and native visual evidence; no current Windows reservation",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
