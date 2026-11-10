@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-"""Owner-reference mission panel: verify actual PNG bytes and native binding. Source QA only."""
+"""Check the original high-resolution, isolated mission plate used by the cleanroom HUD."""
 from pathlib import Path
-import hashlib
 from PIL import Image
-root=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls")
-p=root/"mission_plate.png"
-b=p.read_bytes()
-assert hashlib.sha256(b).hexdigest()=="067568edfe8d59a0087e733131257e3aafe537df30ab8248e728069f7a0d5e2a"
-with Image.open(p) as original:
-    assert original.size==(303,100) and original.mode in ("P","RGBA")
-    rgba=original.convert("RGBA")
-    assert rgba.getpixel((0,0))[3]==0
-    # Quantized PNG preserves near-opaque center as alpha 254 in the palette.
-    assert rgba.getpixel((165,55))[3]>=250
-    assert rgba.getpixel((45,50))[3]>=250
-meta=(root/"mission_plate.png.meta").read_text()
-assert "guid: 35ad1478e20a4c4493e6e918bcd21e05" in meta
-assert "spritePixelsToUnits: 150" in meta
-assert "spriteBorder: {x: 75, y: 12, z: 40, w: 16}" in meta
-hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-assert 'VigiliaArt/OwnerControls/mission_plate' in hud
-assert 'tablet.sprite.name=="mission_plate"' in hud
-assert "chapterStone.ApplyIndependentArt(angledPlate,true);" in hud
-assert "chapterStone.preserveAspect=false;" in hud
+import hashlib,json
+root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt')
+source=root/'quest_panel.png'
+assert source.exists() and (root/'quest_panel.png.meta').exists()
+info=json.loads((root/'manifest.json').read_text())['files']['quest_panel']
+assert hashlib.sha256(source.read_bytes()).hexdigest()==info['sha256']
+with Image.open(source) as image:
+    image=image.convert('RGBA')
+    assert image.width>1000 and image.height>=330,image.size
+    assert image.getpixel((0,0))[3]<16,'chroma edge not removed'
+    assert image.getpixel((image.width//2,image.height//2))[3]>230,'empty in-game content panel'
+metadata=(root/'quest_panel.png.meta').read_text()
+assert 'textureType: 8' in metadata
+assert 'alphaIsTransparency: 1' in metadata
+hud=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+assert 'VigiliaArt/FreshArt/quest_panel' in hud
+assert 'tablet.sprite.name=="quest_panel"' in hud
+assert 'chapterStone.ApplyIndependentArt(angledPlate);' in hud
+assert 'chapterStone.preserveAspect=false;' in hud
 assert 'Glyph(objective,"Chapter stone rune"' not in hud
-assert "realChapter.ToUpperInvariant()" in hud
-print("OWNER_MISSION_SOURCE_PLATE_PASS source-derived live panel; Unity visual approval not claimed")
+assert 'realChapter.ToUpperInvariant()' in hud
+assert 'chapterProgress.text=snapshot.ObjectiveProgress;' in hud
+assert 'VigiliaArt/OwnerControls/mission_plate' not in hud
+print('VIGILIA_FRESH_QUEST_2K_ALPHA_LIVE_TEXT_PASS native image pending')
