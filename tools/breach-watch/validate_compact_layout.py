@@ -144,8 +144,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
-        header=R(50,8,contextw-107,31)
-        level=R(50,40,contextw-107,17)
+        header=R(50,8,contextw-111,31)
+        level=R(50,40,contextw-111,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=contextw-57-3.5,size
         assert level.x+level.w<=contextw-57-3.5,size
