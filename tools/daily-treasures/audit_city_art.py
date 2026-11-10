@@ -58,16 +58,17 @@ def audit(folder,source_sha,output):
     require(report.get('realGatewayClaims')==0,'art-only scene paid a reward')
     require(report.get('citySceneOpened') is True and report.get('cityCameraUsed') is True,
             'non-canonical scene or camera')
-    require(report.get('cityRenderers',0)>=30 and report.get('pngCount')==8,
+    require(report.get('cityRenderers',0)>=30 and report.get('pngCount')==12,
             'city graphics incomplete')
     shots=report.get('shots',[])
-    require(len(shots)==8,'native report must have eight paired PNG')
+    require(len(shots)==12,'native report must have twelve genuine city/context PNG')
     names={s.get('file'):s for s in shots}
-    require(len(names)==8,'duplicate city image in report')
+    require(len(names)==12,'duplicate city image in report')
     results=[]
     for w,h in SIZES:
         pair=[]
-        for variant in ('actual-city-baseline','authored-calendar-context'):
+        for variant in ('actual-city-baseline','authored-calendar-context',
+                        'authored-bastion-visual-only'):
             name=f'real-city-daily-{variant}-{w}x{h}.png'
             shot=names.get(name)
             require(shot is not None and shot.get('variant')==variant,
@@ -82,14 +83,21 @@ def audit(folder,source_sha,output):
                     f'native camera crop mismatch: {name}')
             pair.append(im.copy())
             im.close()
-        results.append(visibility(*pair))
+        baseline, calendar, bastion = pair
+        daily_result = visibility(baseline, calendar)
+        daily_result['variant'] = 'calendar'
+        bastion_result = visibility(baseline, bastion)
+        bastion_result['variant'] = 'bastion_visual_only'
+        results.extend((daily_result, bastion_result))
     require(set(names)=={f'real-city-daily-{v}-{w}x{h}.png'
-        for w,h in SIZES for v in ('actual-city-baseline','authored-calendar-context')},
+        for w,h in SIZES for v in ('actual-city-baseline','authored-calendar-context',
+            'authored-bastion-visual-only')},
         'extra unexplained city artifact')
     out=Path(output)
     out.mkdir(parents=True,exist_ok=True)
     (out/'city-visibility.json').write_text(json.dumps({
-        'source_sha':source_sha,'native_city_pairs':4,
+        'source_sha':source_sha,'native_city_pairs':8,
+        'visual_only_bastion_studies':4,
         'artApproved':False,'fullSceneVerified':False,'pr173Integrated':False,
         'minimum_relative_luminance':MIN_VISIBLE_LUMINANCE,
         'results':results},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
