@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T11:55:58.923Z",
+  "updated_at": "2026-11-10T13:17:04.476Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7403,7 +7403,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7427,13 +7427,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "WINDOWS_CAS30_NATIVE_RETEST_MILESTONE_TEXT",
+      "phase": "CAS31_WINDOWS_RELEASED_NATIVE_PASS_PIXEL_AUDIT_REJECTED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Request one exact-HEAD Unity native run by changing only tools/daily-treasures/native-request.txt; inspect 72 PNG/116 native pointer hits/28 claims and original art; release Windows CAS after completion even if FAIL, keep PR draft.",
+      "next": "Inspect genuine PNGs and pixel gate false-positive vs true missing quantity, correct PR181 only, perform exact-head source CI, later claim Windows via fresh CAS and retest. No merge, release or ART approval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7482,8 +7480,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-10T12:38:37.892Z",
-      "runner_release_basis": "Native Unity run 42805795367 exact PR181 HEAD 6a7c91bcabfa524a36e2d32bec8c977accdc49b5 FINISHED FAILURE; Unity compiled and generated partial authentic PNGs, but VerifyCriticalTypography rejected milestone vigilants receipt (preferredHeight=110, available=84); all jobs completed including image audit; evidence artifacts 13761367483 / 13760348535. Preserve for diagnosis. No running Windows task under this lease.",
+      "runner_released_at": "2026-11-10T13:17:04.476Z",
+      "runner_release_basis": "Native Unity run 42818514510 for exact PR181 HEAD 7ab792c0d8b43cbf9527526b441cf277dada2847: native-ui SUCCESS 52+20 PNG, 56+60 pointer events, 8+20 genuine disposable-state claims; post-run pixel auditor FAILED special-day4-received 1600x900 card1 quantity count=0. All runner jobs terminal; preserve ownership of PR181 source, ART_APPROVED=false.",
       "runner_claimed_at": "2026-11-10T12:45:19.921Z",
       "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia.",
       "runner_claim_basis": "CAS30: PR181 exact b301207f0808eecc5a4500b2c2398d337818ac36 after CI daily run 42818155507 SUCCESS and Unity run 42805795367 completed FAILURE; no live Windows holder and no recent queued/in-progress native Unity Actions; stale October 7 publish probes have zero jobs. Unity workflow will re-check active Unity/Blender process and lease."
