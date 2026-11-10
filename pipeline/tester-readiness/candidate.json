@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T11:01:43.719Z",
+  "updated_at": "2026-11-10T12:21:05.710Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -430,5 +430,25 @@
     "both_desktop_entry_reload_pass": true,
     "release_approval": false,
     "physical_iphone_tested": false
+  },
+  "iphone_stable_canvas": {
+    "revision": "stable-canvas-r1",
+    "status": "DESKTOP_WEBKIT_PASS_PUBLICATION_PENDING_PHYSICAL_IPHONE_UNVERIFIED",
+    "engine_source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
+    "shell_source_commit": "052d8c65edf0191fa819d7d08438c6ab172ccf83",
+    "shell_sha256": "961e07c2da9490e5b0fd033440689219468d55ced6ae80b8f4a31c63bba14434",
+    "qa_run": 42812046053,
+    "qa_artifact": 13763721526,
+    "publication_run": 42814955703,
+    "physical_iphone_verified": false,
+    "external_testers_enabled": false,
+    "root_cause_confirmed": false,
+    "observed": "Both desktop WebKit builds pass entry/reload. Candidate render target stays fixed through four height changes; screenshot confirms nickname persists.",
+    "scope": "Canvas-only mitigation. Same engine, timer, transport and save origin. Not an iPhone stability certificate.",
+    "prior_publication": {
+      "run": 42813303983,
+      "result": "PAGES_SYNC_TIMEOUT_AFTER_TEN_MINUTES",
+      "qa_and_staging_passed": true
+    }
   }
 }
