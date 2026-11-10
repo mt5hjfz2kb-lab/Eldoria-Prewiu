@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T21:47:05.717Z",
+  "updated_at": "2026-11-10T21:48:28.140Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,12 +6665,14 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 58,
+      "ownership_revision": 59,
       "write_scope_released": false,
-      "phase": "OWNER_REPORTED_ICON_ALIASING_RESOURCE_ALIGNMENT",
-      "next": "Diagnose and fix original medallion minification filtering and resource badge-to-icon alignment. Preserve source art, no new design. Native certification after PR181 explicitly releases Windows.",
+      "phase": "ICON_SAMPLING_AND_RESOURCE_CENTER_NATIVE",
+      "next": "Run exact-head native capture after PR181 explicit release; compare original and filtered medallions at390/900 and actual resource frame centering.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T19:57:05.165Z",
