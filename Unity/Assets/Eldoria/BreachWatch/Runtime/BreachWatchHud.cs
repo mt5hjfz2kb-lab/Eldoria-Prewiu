@@ -920,10 +920,13 @@ namespace Eldoria.BreachWatch
                 // Engraved lion lives INSIDE the one painted player plaque:
                 // no separate disc hanging over a second visible surface.
                 // The single profile illustration already contains its lion.
-                At(identityName.rectTransform,crestSize+8f,smallPhone?6f:4f,
-                    174f-crestSize,smallPhone?25f:21f);
-                At(identityPower.rectTransform,crestSize+8f,
-                    smallPhone?31f:25f,174f-crestSize,17f);
+                // Source-faithful physical gap after the FULL lion ring,
+                // now preserved by a 35% non-stretching 9-slice border.
+                float lionTextInset=crestSize+(smallPhone?8f:16f);
+                At(identityName.rectTransform,lionTextInset,smallPhone?6f:4f,
+                    (smallPhone?174f:166f)-crestSize,smallPhone?25f:21f);
+                At(identityPower.rectTransform,lionTextInset,
+                    smallPhone?31f:25f,(smallPhone?174f:166f)-crestSize,17f);
                 identityName.fontSize=smallPhone?17:16;
                 identityPower.fontSize=smallPhone?14:12;
 
