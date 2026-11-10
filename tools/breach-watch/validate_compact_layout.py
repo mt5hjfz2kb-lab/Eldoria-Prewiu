@@ -118,11 +118,20 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
         touch("action",R(context.x+6,context.y+280-53,panelw-12,50))
-        info=R(13,125,panelw-26,35)
-        costlabel=R(13,170,panelw-26,17)
-        costdata=R(13,187,panelw-26,20)
+        # Real CleanRoom one-piece painted well has its gold lower rule at
+        # 52.1% of the 280u card = 145.9u. The live selected mesh and
+        # two-line text must fit INSIDE, not across the built-in painted line.
+        # The original separate uGUI divider is now disabled for portrait.
+        real_painted_rule=.521*280
+        portraitphoto=R(11,48,panelw-22,57)
+        info=R(13,108,panelw-26,36)
+        costlabel=R(13,157,panelw-26,17)
+        costdata=R(13,178,panelw-26,20)
         state=R(13,209,panelw-26,17)
         action=R(6,227,panelw-12,50)
+        assert portraitphoto.y+portraitphoto.h+3<=info.y,size
+        assert info.y+info.h+1.5<=real_painted_rule,size
+        assert costlabel.y>=real_painted_rule+10,size
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
