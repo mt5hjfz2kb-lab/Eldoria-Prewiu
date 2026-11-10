@@ -107,12 +107,12 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
-        touch("action",R(context.x+8,context.y+280-53,panelw-16,50))
+        touch("action",R(context.x+6,context.y+280-53,panelw-12,50))
         info=R(13,125,panelw-26,35)
         costlabel=R(13,170,panelw-26,17)
         costdata=R(13,187,panelw-26,20)
         state=R(13,209,panelw-26,17)
-        action=R(8,227,panelw-16,50)
+        action=R(6,227,panelw-12,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
@@ -183,7 +183,7 @@ def main():
         'float navSize=52,navGap=16',
         'float navTop=h-111f',
         'float ph=280f',
-        'At(((RectTransform)actionButton.transform),8,ph-53,pw-16,50)',
+        'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
         'float pw=h<530f?234f:220f',
