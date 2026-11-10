@@ -538,14 +538,13 @@ namespace Eldoria.BreachWatch.Editor
                      "painted relief and leave the HUD floating: "+name);
                 var profilePlate=ui.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.name=="Identity / basalt crest");
-                var profileLion=ui.GetComponentsInChildren<RectTransform>(true)
+                var duplicatedLion=ui.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.name=="Independent circular realm crest");
-                Need(profilePlate && profileLion &&
-                     profileLion.rect.width<=profilePlate.rect.height-4f &&
-                     profileLion.anchoredPosition.x>=3f &&
-                     profileLion.anchoredPosition.y<=-1f,
-                     "Realm crest hangs outside the owner profile plaque "+
-                     "and looks like a second attached badge: "+name);
+                // The independently regenerated gold lion is part of the one
+                // finished profile illustration; any second crest is a bug.
+                Need(profilePlate && !duplicatedLion &&
+                     profilePlate.GetComponentsInChildren<Graphic>(true).Length==3,
+                     "Duplicate lion badge or second identity surface in "+name);
                 // Strict cleanroom invariant: the entire panel must have
                 // precisely one independent high-resolution sprite.
                 // No old owner_gold_border overlay, separate brass portrait
@@ -557,7 +556,7 @@ namespace Eldoria.BreachWatch.Editor
                 var cleanPanel=ui.BuildingPanel.GetComponent<Image>();
                 Need(oldGold==0 && oldBrass==0 &&
                      cleanPanel && cleanPanel.sprite &&
-                     cleanPanel.sprite==Resources.Load<Sprite>("VigiliaArt/FreshArt/building_panel") &&
+                     cleanPanel.sprite==Resources.Load<Sprite>("VigiliaArt/CleanRoom/panel") &&
                      cleanPanel.type==Image.Type.Simple && cleanPanel.raycastTarget &&
                      ui.UsesPremiumForgedPortraitFrame &&
                      ui.UsesSinglePremiumContext,
@@ -565,11 +564,11 @@ namespace Eldoria.BreachWatch.Editor
                      "is still layered under the new 2K painted panel: "+name);
                 var palette=ui.GetComponentsInChildren<Image>(true)
                     .Where(x=>x && x.sprite).ToArray();
-                Need(palette.Count(x=>x.sprite.name=="building_panel" &&
+                Need(palette.Count(x=>x.sprite.name=="panel" &&
                          x.color.r>=.95f && x.color.g>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="profile_panel" &&
+                     palette.Count(x=>x.sprite.name=="profile" &&
                          x.color.r>=.95f && x.color.g>=.95f)==1 &&
-                     palette.Count(x=>x.sprite.name=="resource_chip" &&
+                     palette.Count(x=>x.sprite.name=="resource" &&
                          x.color.r>=.95f && x.color.g>=.95f)>=2,
                      "Player, resources and cartouche no longer share "+
                      "the same warm material treatment: "+name);
@@ -580,7 +579,7 @@ namespace Eldoria.BreachWatch.Editor
                     "gold medallions in the owner's approved UI, not generic hexagons");
                 var mineral=ui.BuildingPanel.GetComponent<Image>();
                 Need(mineral && mineral.sprite &&
-                     mineral.sprite.name=="building_panel" &&
+                     mineral.sprite.name=="panel" &&
                      mineral.type==Image.Type.Simple && mineral.raycastTarget &&
                      ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==0 &&
                      !ui.BuildingPanel.GetComponent<BreachWatchPlate>(),
@@ -602,7 +601,7 @@ namespace Eldoria.BreachWatch.Editor
                 Need(!ui.GetComponentsInChildren<Graphic>(true).Any(g=>g &&
                          g.name=="Selected medallion / warm engraved relief"),
                      "Old duplicated selection halo remains in native scene: "+name);
-                var expectedMedallions=new[]{"castle","provisions","swords","raven","helm"};
+                var expectedMedallions=new[]{"nav_castle","nav_provisions","nav_swords","nav_raven","nav_helm"};
                 Need(nav.Count(x=>x.gameObject.activeInHierarchy)==
                      (host.CanOpen(RoyalSection.World)?3:2),
                      "Incorrect count of unlocked destination icons: "+name);
@@ -967,7 +966,7 @@ namespace Eldoria.BreachWatch.Editor
                     var actionArt=ui.BuildingAction.GetComponentInChildren<BreachWatchPlate>(true);
                     var actionHit=ui.BuildingAction.GetComponent<Image>();
                     Need(actionArt && actionArt.sprite &&
-                         actionArt.sprite.name=="upgrade_button" &&
+                         actionArt.sprite.name=="upgrade" &&
                          actionArt.type==Image.Type.Simple &&
                          actionArt.preserveAspect && !actionArt.raycastTarget &&
                          actionHit && actionHit.color.a<=.001f &&
