@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T20:33:56.745Z",
+  "updated_at": "2026-11-10T20:47:25.172Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -478,8 +478,14 @@
     "external_testers_enabled": false,
     "original_beta10_origin_preserved": true,
     "ios_simulator_run": 42894597804,
-    "ios_simulator_result": "PENDING",
+    "ios_simulator_result": "INFRASTRUCTURE_FAILURE_BEFORE_GAME",
     "previous_simulator_run": 42890758782,
-    "previous_simulator_result": "SESSION_CREATION_TIMEOUT_NO_GAME_TEST"
+    "previous_simulator_result": "SESSION_CREATION_TIMEOUT_NO_GAME_TEST",
+    "publication_verifier_run": 42898405543,
+    "publication_verifier_pass": true,
+    "all_public_file_hashes_verified": 181,
+    "publication_retry_result": "42896193107 hit deploy-pages hard 600000ms cap; original files stayed live. 42898405543 verifies all181files identical and skips redundant deployment.",
+    "ios_warm_attempt": 42897348434,
+    "ios_warm_result": "simctl cannot open about:blank (LSApplicationWorkspace115); no game test. Change to launching Safari app directly."
   }
 }
