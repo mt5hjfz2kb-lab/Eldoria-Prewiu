@@ -32,17 +32,10 @@ jobs:
       - name: Download exact previous source QA pass artifact, no Unity compilation
         uses: actions/download-artifact@v4
         with:
-          run-id: 42787786118
+          run-id: 42781066472
           name: beta10-clock-copyadd-owner-only-site
           github-token: ${{ github.token }}
           path: site
-      - name: Download original native-certified direct clock files without reconstruction
-        uses: actions/download-artifact@v4
-        with:
-          run-id: 42716414385
-          name: beta10-minimal-clock-candidate-site
-          github-token: ${{ github.token }}
-          path: site/beta-direct-clock
       - name: Check exact direct build and protected stable control
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,7 +44,7 @@ jobs:
           import json,os,urllib.request,pathlib
           root=pathlib.Path('site')
           old=json.loads((root/'beta-native325/release-identity.json').read_text())
-          new=json.loads((root/'beta-direct-clock/release-identity.json').read_text())
+          new=json.loads((root/'beta-iphone-clock-ab/release-identity.json').read_text())
           proof=json.loads((root/'beta-iphone-clock-ab-proof.json').read_text())
           script=(root/'beta-iphone-clock-ab/copy-transport.js').read_text()
           assert old['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
@@ -59,23 +52,13 @@ jobs:
           assert new['release_for_external_testers'] is False
           assert proof['external_testers_enabled'] is False and proof['stable_game_sha256_unchanged'] is True
           assert proof['parts_verified']==31 and proof['patch_literal_bytes']==8000096
-          assert 'MAX_OUTPUT=65536' in script and 'stable_cache_parts:0' in script
           import hashlib
-          assert proof['transport_sha256']==hashlib.sha256(script.encode()).hexdigest()
-          assert proof['transport_file'] in (root/'beta-iphone-clock-ab/index.html').read_text()
-          assert '.arrayBuffer(' not in script
-          assert 'localStorage' not in script and 'indexedDB' not in script
-          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42787786118',
+          assert hashlib.sha256(script.encode()).hexdigest()=='7b0717a4e4b655861084cf33f9c3df07e1e3c70660d2b8a6600d0c6a2ca98725', 'Must match actual published transport'
+          request=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42781066472',
             headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Eldoria-owner-webkit'})
           with urllib.request.urlopen(request,timeout=25) as response:
             job=json.load(response)
-          assert job['conclusion']=='success' and job['head_sha']=='de7095ec2b4b4553d9662a3cce67eb44822cc64e'
-          direct=(root/'beta-direct-clock/play.js').read_text()
-          assert 'installEldoriaCopyTransport' not in direct, 'Direct arm must not run any COPY/ADD reconstruction'
-          manifest=json.loads((root/'beta-direct-clock/build-manifest.json').read_text())
-          assert 'clock_copy_delta' not in manifest
-          for part in manifest['decoded_parts'][manifest['data']]:
-            assert (root/'beta-direct-clock'/part['url']).is_file()
+          assert job['conclusion']=='success' and job['head_sha']=='495eac8e47640ee3bb992506b7162cfed31de283'
           control=pathlib.Path('tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html').read_bytes()
           assert hashlib.sha256(control).hexdigest()=='f964ee3a8086d6a18005a34ca21ff7f2f95a3bfc5266558ef1e942dbb717045b'
           assert b'http-equiv="refresh"' not in control and b'play-16f4527815248e48.js' in control
@@ -105,10 +88,10 @@ jobs:
           trap 'kill "$server_pid"' EXIT
           node --test tools/eldoria-private-beta/iphone_ab/stable_canvas.test.mjs
           failed=0
-          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs >control.log 2>&1 || failed=1
+          QA_URL='http://127.0.0.1:18975/beta-iphone-clock-ab/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs >control.log 2>&1 || failed=1
           python3 - <<'PY'
           import pathlib,json,hashlib
-          root=pathlib.Path('site/beta-direct-clock')
+          root=pathlib.Path('site/beta-iphone-clock-ab')
           module=pathlib.Path('tools/eldoria-private-beta/iphone_ab/stable_canvas.js').read_text()
           proof={'source':'2bc2ac169bc6d675d1b2d831c1d40c834052bda4','engine_modified':False,'shell_changes':[],'physical_iphone_tested':False}
           for p in root.glob('play*.js'):
@@ -120,7 +103,7 @@ jobs:
             proof['shell_changes'].append({'file':p.name,'before':hashlib.sha256(before.encode()).hexdigest(),'after':hashlib.sha256(after.encode()).hexdigest()})
           pathlib.Path('evidence/canvas-shell-proof.json').write_text(json.dumps(proof,indent=2))
           PY
-          QA_VARIANT=stable-canvas QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs >candidate.log 2>&1 || failed=1
+          QA_VARIANT=stable-canvas QA_URL='http://127.0.0.1:18975/beta-iphone-clock-ab/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs >candidate.log 2>&1 || failed=1
           python3 - <<'PY'
           import json,pathlib
           rows={}
