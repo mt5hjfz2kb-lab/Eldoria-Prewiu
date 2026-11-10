@@ -1,0 +1,275 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using Eldoria.Application;
+using Eldoria.Domain;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
+
+namespace Eldoria.DailyTreasures.Editor
+{
+    /// <summary>
+    /// Read-only artistic context proof. It opens the ACTUAL checked-in Valoria
+    /// city scene and renders the authored daily panel above its real camera.
+    /// Deliberately not a gameplay, earned-Bastion, Vigilia-PR173 or device test:
+    /// no canonical state/scene is saved and no milestone is invented.
+    /// </summary>
+    public static class DailyTreasureCityArtEvidence
+    {
+        const string Scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
+        const string Folder="DailyTreasureCityArtEvidence";
+
+        sealed class TemporaryClock : IClock
+        {
+            public long UtcTicks { get; set; } =
+                new DateTime(2026,11,10,12,0,0,DateTimeKind.Utc).Ticks;
+        }
+
+        sealed class MemoryStateStore : IStateStore
+        {
+            PlayerState state;
+            public PlayerState Load() => state;
+            public void Save(PlayerState next) { state=next; }
+        }
+
+        [Serializable] sealed class Shot
+        {
+            public string file,sha256,variant;
+            public int width,height,bytes;
+        }
+
+        [Serializable] sealed class Report
+        {
+            public string status,source,scene,camera,reason;
+            public int cityRenderers,pngCount,realGatewayClaims;
+            public bool citySceneOpened,cityCameraUsed,artApproved;
+            public bool fullSceneVerified,pr173Integrated,iosVerified;
+            public Shot[] shots;
+        }
+
+        static void Require(bool condition,string message)
+        {
+            if(!condition)throw new InvalidOperationException(message);
+        }
+
+        static string Hash(string path)
+        {
+            using(var stream=File.OpenRead(path))
+            using(var sha=SHA256.Create())
+                return BitConverter.ToString(sha.ComputeHash(stream))
+                    .Replace("-","").ToLowerInvariant();
+        }
+
+        static Shot Photograph(Camera camera,RenderTexture target,
+            string folder,int width,int height,string label,
+            bool requireCityPixels)
+        {
+            var oldActive=RenderTexture.active;
+            var texture=new Texture2D(width,height,TextureFormat.RGB24,false);
+            try
+            {
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+                camera.Render();
+                RenderTexture.active=target;
+                texture.ReadPixels(new Rect(0,0,width,height),0,0);
+                texture.Apply();
+                // A black fixture with only a chest is not proof of a city.
+                // Inspect the unoccluded BASELINE, not decorative UI pixels.
+                if(requireCityPixels)
+                {
+                    int total=0,lit=0;
+                    var colors=new HashSet<int>();
+                    var pixels=texture.GetPixels32();
+                    for(int y=height/8;y<height*7/8;y+=11)
+                        for(int x=width/8;x<width*7/8;x+=11)
+                        {
+                            var color=pixels[y*width+x];
+                            int brightness=color.r+color.g+color.b;
+                            total++;
+                            if(brightness>30)lit++;
+                            colors.Add(((int)color.r>>4)*256+
+                                ((int)color.g>>4)*16+((int)color.b>>4));
+                        }
+                    Require(total>30 && lit>total/7 && colors.Count>=35,
+                        "Real city baseline is dark/blank or camera points away: "+
+                        "lit="+lit+"/"+total+" colors="+colors.Count);
+                }
+                string name="real-city-daily-"+label+"-"+width+"x"+height+".png";
+                string file=Path.Combine(folder,name);
+                var bytes=texture.EncodeToPNG();
+                Require(bytes.Length>12000,"Empty city render: "+name);
+                File.WriteAllBytes(file,bytes);
+                return new Shot{file=name,width=width,height=height,
+                    variant=label,bytes=bytes.Length,sha256=Hash(file)};
+            }
+            finally
+            {
+                RenderTexture.active=oldActive;
+                Object.DestroyImmediate(texture);
+            }
+        }
+
+        public static void Capture()
+        {
+            string project=Path.GetFullPath(
+                Path.Combine(UnityEngine.Application.dataPath,".."));
+            string folder=Path.GetFullPath(Path.Combine(project,Folder));
+            Require(string.Equals(Path.GetDirectoryName(folder),project,
+                    StringComparison.OrdinalIgnoreCase) &&
+                Path.GetFileName(folder)==Folder,
+                "Refuse to clear a folder outside isolated city art proof");
+            if(Directory.Exists(folder))Directory.Delete(folder,true);
+            Directory.CreateDirectory(folder);
+            var report=new Report{
+                status="CITY_ART_CONTEXT_INCOMPLETE",
+                source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
+                scene=Scene,reason="Read-only city composition only; no real city gameplay, PR173 HUD or physical device certified",
+                artApproved=false,fullSceneVerified=false,pr173Integrated=false,
+                iosVerified=false,realGatewayClaims=0,shots=new Shot[0]
+            };
+            var pictures=new List<Shot>();
+            Camera camera=null;
+            RenderTexture originalTarget=null;
+            int originalMask=0;
+            float originalAspect=1;
+            GameObject canvasObject=null;
+            try
+            {
+                var scene=EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
+                Require(scene.IsValid() && scene.path==Scene,
+                    "The exact canonical Valoria city scene was not opened");
+                report.citySceneOpened=true;
+                var components=Object.FindObjectsByType<MonoBehaviour>(
+                    FindObjectsInactive.Include,FindObjectsSortMode.None);
+                var host=components.FirstOrDefault(x=>x &&
+                    x.GetType().Name=="ValoriaIntegratedWorld");
+                var city=components.FirstOrDefault(x=>x &&
+                    x.GetType().Name=="ValoriaReferenceCleanGameplay");
+                Require(host && city &&
+                    host.gameObject==city.gameObject,
+                    "Real ValoriaIntegratedWorld and gameplay host are not in canonical city scene");
+                var cityCameraProperty=city.GetType().GetProperty("PlayerCamera");
+                camera=cityCameraProperty?.GetValue(city,null) as Camera;
+                Require(camera && camera.gameObject.scene==scene,
+                    "Canonical city player camera is not available in scene");
+                report.camera=camera.name;
+                report.cityCameraUsed=true;
+                report.cityRenderers=Object.FindObjectsByType<Renderer>(
+                    FindObjectsInactive.Exclude,FindObjectsSortMode.None)
+                    .Count(x=>x && x.enabled && !(x is CanvasRenderer));
+                Require(report.cityRenderers>=30,
+                    "Real city scene has too few active visible 3D renderers: "+
+                    report.cityRenderers);
+
+                // The test only previews a REAL daily calendar. The actual
+                // player's gateway, nickname, tutorials and save are untouched.
+                var clock=new TemporaryClock();
+                var gateway=new LocalGateway(clock,new MemoryStateStore());
+                var before=gateway.Snapshot();
+                originalTarget=camera.targetTexture;
+                originalAspect=camera.aspect;
+                originalMask=camera.cullingMask;
+                camera.cullingMask|=1<<5;
+                canvasObject=new GameObject("TEMP / City daily art-context only",
+                    typeof(RectTransform),typeof(Canvas),
+                    typeof(CanvasScaler),typeof(GraphicRaycaster));
+                canvasObject.layer=5;
+                var canvas=canvasObject.GetComponent<Canvas>();
+                canvas.renderMode=RenderMode.ScreenSpaceCamera;
+                canvas.worldCamera=camera;
+                canvas.planeDistance=1f;
+                canvas.sortingOrder=5000;
+                var scaler=canvasObject.GetComponent<CanvasScaler>();
+                scaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;
+                scaler.scaleFactor=1f;
+                var safeObject=new GameObject("Read-only art proof safe area",
+                    typeof(RectTransform));
+                safeObject.layer=5;
+                safeObject.transform.SetParent(canvasObject.transform,false);
+                var safe=(RectTransform)safeObject.transform;
+                safe.anchorMin=Vector2.zero;
+                safe.anchorMax=Vector2.one;
+                safe.offsetMin=Vector2.zero;
+                safe.offsetMax=Vector2.zero;
+                var panel=DailyTreasurePanel.Install(safe);
+                panel.Bind(gateway,()=>clock.UtcTicks,()=>{});
+                Require(panel.HasAuthoredChestArt,
+                    "City context lacks ORIGINAL coffer illustration");
+                panel.Suppressed=true;
+                foreach(var size in new []{(1600,900),(900,1600),(844,390),(390,844)})
+                {
+                    int width=size.Item1,height=size.Item2;
+                    var root=(RectTransform)canvasObject.transform;
+                    root.sizeDelta=new Vector2(width,height);
+                    camera.aspect=width/(float)height;
+                    var target=new RenderTexture(width,height,24,
+                        RenderTextureFormat.ARGB32);
+                    try
+                    {
+                        camera.targetTexture=target;
+                        Canvas.ForceUpdateCanvases();
+                        pictures.Add(Photograph(camera,target,folder,width,height,
+                            "actual-city-baseline",true));
+                        panel.Suppressed=false;
+                        panel.Open();
+                        Require(panel.IsOpen,
+                            "Daily calendar not visible above real city artwork");
+                        Canvas.ForceUpdateCanvases();
+                        pictures.Add(Photograph(camera,target,folder,width,height,
+                            "authored-calendar-context",false));
+                        panel.Close();
+                        panel.Suppressed=true;
+                    }
+                    finally
+                    {
+                        camera.targetTexture=null;
+                        target.Release();
+                        Object.DestroyImmediate(target);
+                    }
+                }
+                var after=gateway.Snapshot();
+                Require(before.Revision==after.Revision &&
+                    before.Resources.Wood==after.Resources.Wood &&
+                    before.Resources.Stone==after.Resources.Stone &&
+                    before.Resources.Food==after.Resources.Food &&
+                    before.Mailbox.Messages.Count==after.Mailbox.Messages.Count,
+                    "An ART-ONLY city preview unexpectedly changed real rewards");
+                Require(pictures.Count==8,
+                    "Expected paired genuine city and UI captures in four viewports");
+                report.pngCount=pictures.Count;
+                report.status="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED";
+            }
+            catch(Exception ex)
+            {
+                report.status="CITY_ART_CONTEXT_FAILED";
+                report.reason=ex.ToString();
+                Debug.LogException(ex);
+            }
+            finally
+            {
+                report.shots=pictures.ToArray();
+                if(camera)
+                {
+                    camera.targetTexture=originalTarget;
+                    camera.cullingMask=originalMask;
+                    camera.aspect=originalAspect;
+                }
+                if(canvasObject)Object.DestroyImmediate(canvasObject);
+                File.WriteAllText(Path.Combine(folder,"city-art-report.json"),
+                    JsonUtility.ToJson(report,true));
+                // The scene is never saved: all artwork and gameplay belongs
+                // to other workstreams. A running game is not simulated.
+                EditorApplication.Exit(
+                    report.status=="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED"?0:1);
+            }
+        }
+    }
+}
+#endif
