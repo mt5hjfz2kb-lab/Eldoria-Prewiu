@@ -11,6 +11,13 @@ from PIL import Image, ImageDraw
 
 EVENTS=("lyra","explorers","vigilants","bastion")
 SIZES=((1600,900),(900,1600),(844,390),(390,844))
+# The official artist paintings are already committed to Eldoria.
+OFFICIAL_PAINTINGS={
+    "lyra":"Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg",
+    "explorers":"Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png",
+    "vigilants":"Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png",
+}
+
 
 def require(flag,msg):
     if not flag:raise ValueError(msg)
@@ -58,6 +65,17 @@ def run(manifest,identities,out):
     for event in EVENTS:
         real=identities[event]
         require(real.is_file(),"Missing canonical image: "+str(real))
+        if event in OFFICIAL_PAINTINGS:
+            expected=Path(OFFICIAL_PAINTINGS[event]).resolve()
+            require(real.resolve()==expected,
+                    "Use actual checked-in Eldoria painting, not a concept: "+event)
+            require(Path(str(expected)+".meta").is_file(),
+                    "Missing genuine Unity importer: "+event)
+        else:
+            # Bastion requires an authentic Unity city screenshot and external
+            # ledger review; a filename and hash cannot certify that alone.
+            require(real.suffix.lower()==".png",
+                    "Bastion requires city-source PNG")
         with Image.open(real) as src:
             base=src.convert("RGBA")
         layers=[]
