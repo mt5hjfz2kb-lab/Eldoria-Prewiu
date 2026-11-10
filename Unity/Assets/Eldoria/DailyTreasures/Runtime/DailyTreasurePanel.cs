@@ -1035,6 +1035,18 @@ namespace Eldoria.DailyTreasures
             }
             milestoneSceneryBaseUv=milestoneScenery.uvRect;
         }
+        // Render the same authentic painting with a measured, category-
+        // specific tint. Native 42818514510 crushed the *existing* Lyra
+        // hall to ten color bins in portrait; no replacement art is used.
+        static Color MilestonePaintTint(DailyTreasureStageLayout stage,
+            float intensity=1f)
+        {
+            bool hallPortrait=stage.Kind==DailyTreasureStageKind.Lyra &&
+                !stage.SideBySide;
+            return new Color(hallPortrait?.82f:.70f,
+                hallPortrait?.79f:.68f,hallPortrait?.74f:.65f,
+                stage.SceneryOpacity*intensity);
+        }
         void PaintMilestoneAtmosphere(float elapsed,DailyTreasureRevealFrame frame)
         {
             if(!milestoneScenery || !milestoneScenery.texture ||
@@ -1054,11 +1066,10 @@ namespace Eldoria.DailyTreasures
                 DailyTreasureStageDirection.SafePainterlyDrift(
                     elapsed,freeY,true),0f,freeY);
             milestoneScenery.uvRect=crop;
-            float a=DailyTreasureStageDirection.Compose(
-                activeMilestoneId,root.rect.width,root.rect.height)
-                .SceneryOpacity;
-            milestoneScenery.color=new Color(.70f,.68f,.65f,
-                a*(.93f+.07f*frame.Glow));
+            var stage=DailyTreasureStageDirection.Compose(
+                activeMilestoneId,root.rect.width,root.rect.height);
+            milestoneScenery.color=MilestonePaintTint(stage,
+                .93f+.07f*frame.Glow);
         }
         static string ConfirmedMilestoneSummary(string committedText)
         {
@@ -1248,8 +1259,7 @@ namespace Eldoria.DailyTreasures
                     stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
                 Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
                     stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
-                milestoneScenery.color=new Color(.70f,.68f,.65f,
-                    stage.SceneryOpacity);
+                milestoneScenery.color=MilestonePaintTint(stage);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
                 // Portrait has enough width for a readable literary heading,
