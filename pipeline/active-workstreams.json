@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T08:59:47.933Z",
+  "updated_at": "2026-11-10T09:05:06.298Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6815,7 +6815,8 @@
         ".github/workflows/eldoria-beta10-iphone-ab-pages.yml",
         ".github/workflows/eldoria-beta-payload-reuse.yml",
         ".github/workflows/eldoria-beta-copyadd-p0-pages.yml",
-        ".github/workflows/eldoria-beta-copyadd-live-webkit.yml"
+        ".github/workflows/eldoria-beta-copyadd-live-webkit.yml",
+        ".github/workflows/eldoria-beta-copyadd-p0.yml"
       ],
       "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
