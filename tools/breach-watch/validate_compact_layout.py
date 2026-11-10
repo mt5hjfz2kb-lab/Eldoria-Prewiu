@@ -177,6 +177,11 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("mission",m,100,256,92)
         chapter_text=R(66,14,174,20)
         assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
+        quest_task=R(66,36,176,19)
+        quest_progress=R(66,59,176,18)
+        assert chapter_text.y+chapter_text.h+2<=quest_task.y,size
+        assert quest_task.y+quest_task.h+4<=quest_progress.y,size
+        assert quest_progress.y+quest_progress.h<=92-12,size
         place("breach",w*.49-17,11,34,34)
         compact=h<530
         navsize,gap=(75,10) if compact else (55,15)
