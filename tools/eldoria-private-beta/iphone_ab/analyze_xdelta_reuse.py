@@ -62,7 +62,7 @@ def run(stable_tar, new_root, out_file, emit_dir=None):
                 left=decode(oldbytes(a["url"]),a)
                 right=decode((new/safe_rel(b["url"])).read_bytes(),b)
                 before.write_bytes(left);after.write_bytes(right)
-                subprocess.run(["xdelta3","-f","-e","-S","none","-A=","-a","-s",str(before),str(after),str(delta)],check=True,
+                subprocess.run(["xdelta3","-f","-e","-S","none","-A=","-s",str(before),str(after),str(delta)],check=True,
                                stdout=subprocess.PIPE,stderr=subprocess.PIPE)
                 subprocess.run(["xdelta3","-f","-d","-s",str(before),str(delta),str(restored)],
                                check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
