@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T20:05:21.081Z",
+  "updated_at": "2026-11-10T20:26:14.862Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6866,9 +6866,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STABLE_CANVAS_PHYSICAL_IPHONE_FAILED",
+      "phase": "DIRECT_TRANSPORT_COMPARISON_PENDING_IOS",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Owner reports stable-canvas-r1 still restarts. Record physical failure; do not repeat canvas/OMG-JIT hypotheses or claim desktop PASS as mobile proof. Preserve beta10. A true physical same-browser/origin control remains missing: beta10 entry redirects to original Sites origin; mobile12 is hosted on Pages. Existing Mac same-origin tests cannot resolve that physical distinction. No new candidate should be called fixed without device evidence.",
+      "next": "Continue native SafariDriver iOS Simulator run42894597804 and isolated owner-route publication from87d9aca1e95a4112cfe6ac08ba9727469eedadee. Verify public bytes then physical iPhone; never promote desktop/simulator to physical success. Preserve beta10 and do not repeat stable-canvas as a fix.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7447,6 +7447,23 @@
         "desktop_qa": 42812046053,
         "publish_run": 42814955703,
         "root_cause_confirmed": false
+      },
+      "direct_transport_comparison": {
+        "source": "d369dea58c8b67e90969b67a57ca36bdb9066ca1",
+        "mac_webkit_run": 42893674666,
+        "mac_webkit_result": "PASS",
+        "artifact": 13798714617,
+        "compiled_parts_verified": 31,
+        "decoded_bytes": 503831429,
+        "visual_nickname_and_reload": "VERIFIED screenshots after-name and reloaded show Beta QA",
+        "physical_iphone_verified": false,
+        "external_testers_enabled": false,
+        "ios_first_run": 42890758782,
+        "ios_first_result": "INFRASTRUCTURE_FAILURE: session creation timed out; no game samples",
+        "ios_retry_run": 42894597804,
+        "ios_retry_driver": "native SafariDriver",
+        "new_route": "beta-iphone-clock-direct/",
+        "published": false
       }
     },
     {
