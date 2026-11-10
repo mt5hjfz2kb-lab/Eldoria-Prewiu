@@ -107,13 +107,13 @@ def verify():
         painted_w=painted_h*art_ratio
         assert painted_w>=hit_width*.70 and painted_h<=hit_height-4+1e-3,label
         assert abs(painted_w/painted_h-art_ratio)<.001,label
-        free_width=painted_w*.72-7
+        free_width=painted_w*.675-7
         fits(caption,SEMIBOLD,size,free_width,
              label+' inside original cleanroom red painting')
     hud=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
     assert 'float paintedHeight=Mathf.Min(plate.rect.height-4f,' in hud
     assert 'float paintedWidth=paintedHeight*artAspect;' in hud
-    assert 'float captionLeft=paintedLeft+paintedWidth*.28f;' in hud
+    assert 'float captionLeft=paintedLeft+paintedWidth*.325f;' in hud
     assert 'bool fullUpgradeCaption=lastPortrait && lastWidth>=800;' in hud
 
     # The right-edge close badge must not touch either heading, in portrait
