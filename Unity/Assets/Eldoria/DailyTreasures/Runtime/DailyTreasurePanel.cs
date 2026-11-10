@@ -100,6 +100,7 @@ namespace Eldoria.DailyTreasures
              illustratedOpen.gameObject.activeSelf);
         RawImage milestoneScenery;
         Image milestoneVignette;
+        Image milestoneInsignia;
         Image bastionStoryInk;
         string milestoneSceneryKey;
         Rect milestoneSceneryBaseUv;
@@ -412,6 +413,14 @@ namespace Eldoria.DailyTreasures
             var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
             milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
             milestoneVignette.gameObject.SetActive(false);
+            // Authentic original scouting / Vigilants crests already belong
+            // to Eldoria; a restrained insignia strengthens each milestone
+            // without inventing a new faction, reward, hero or building.
+            var insigniaRect=NewRect(
+                "Authentic Eldoria event insignia / visual only",ceremony);
+            milestoneInsignia=Plate(insigniaRect,Color.white,false);
+            milestoneInsignia.preserveAspect=true;
+            milestoneInsignia.gameObject.SetActive(false);
             // The real completed Bastion supplies the landscape. Only the
             // genuine receipt receives a plain basalt legibility ink field;
             // never add a false city, ornamental duplicate frame or hitbox.
@@ -668,6 +677,11 @@ namespace Eldoria.DailyTreasures
             }
             if(milestoneVignette)
                 milestoneVignette.gameObject.SetActive(false);
+            if(milestoneInsignia)
+            {
+                milestoneInsignia.sprite=null;
+                milestoneInsignia.gameObject.SetActive(false);
+            }
             if(header)header.gameObject.SetActive(true);
             if(subhead)subhead.gameObject.SetActive(true);
             ClearPrizeCards();
@@ -924,6 +938,13 @@ namespace Eldoria.DailyTreasures
                 eventId,tier==DailyTreasureCeremonyTier.Legendary);
             currentStage=DailyTreasureStageDirection.FromEvent(eventId);
             activeMilestoneId=eventId;
+            string insigniaPath=currentStage==DailyTreasureStageKind.Explorers?
+                "EldoriaRetention/scouts-crest":
+                currentStage==DailyTreasureStageKind.Vigilants?
+                "EldoriaRetention/vigilants-compass":null;
+            milestoneInsignia.sprite=insigniaPath==null?null:
+                Resources.Load<Sprite>(insigniaPath);
+            milestoneInsignia.gameObject.SetActive(milestoneInsignia.sprite!=null);
             if(milestoneBanner)
             {
                 milestoneBanner.gameObject.SetActive(
@@ -1280,6 +1301,15 @@ namespace Eldoria.DailyTreasures
                 milestoneScenery.color=MilestonePaintTint(stage);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
+                if(milestoneInsignia.gameObject.activeSelf)
+                {
+                    float insigniaSize=portrait?57f:65f;
+                    Place(milestoneInsignia.rectTransform,.5f,.5f,.5f,.5f,
+                        stage.SceneX+stage.SceneW*.33f,
+                        stage.SceneY-stage.SceneH*.31f,
+                        insigniaSize,insigniaSize);
+                    milestoneInsignia.color=new Color(1f,.95f,.87f,.87f);
+                }
                 // Portrait has enough width for a readable literary heading,
                 // but the top-right 100x45 SKIP control owns the upper band.
                 // Put the story heading BELOW that hitbox rather than layering
