@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T18:16:45.438Z",
+  "updated_at": "2026-11-10T18:40:28.557Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-pr173-hud-fidelity-20261110",
+      "owner": "codex-pr173-completion-9eb868087db6",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6669,10 +6669,10 @@
         "windows-runner-heavy"
       ],
       "ownership_state": "claimed",
-      "ownership_revision": 48,
+      "ownership_revision": 49,
       "write_scope_released": false,
-      "phase": "HUD_OWNER_ORIGINAL_ART_THREE_PANEL_NATIVE_AB",
-      "next": "Run one exact-head 8-view Unity native comparison; inspect genuine artwork against original reference; undo if regression or follow with one coherent correction, release Windows after terminal run.",
+      "phase": "REPAIR_NATIVE_CONTRACT_THEN_REVIEW_ORIGINAL_ART",
+      "next": "Repair obsolete sprite contract from failed run 42873624537; execute eight original Unity views, inspect artwork and retain only evidenced improvement.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T18:16:45.438Z",
@@ -6758,6 +6758,14 @@
           "to_owner": "chatgpt-pr173-hud-fidelity-20261110",
           "reason": "El propietario ordena expresamente en esta conversación 'Pero haz tú el trabajo': relevo autorizado de PR173 para corregir él mismo HUD 2D (misión, perfil, recursos, medallones, legibilidad y adaptación móvil); Bastión 3D fuera de prioridad. Conservar fuente, rama, ocho capturas Unity y beta iPhone sin cambios; Windows actualmente PR181.",
           "transferred_at": "2026-11-10T17:09:11.309Z"
+        },
+        {
+          "previous_owner": "chatgpt-pr173-hud-fidelity-20261110",
+          "from_revision": 48,
+          "to_revision": 49,
+          "to_owner": "codex-pr173-completion-9eb868087db6",
+          "reason": "Owner explicitly asks this chat to continue and finish pending native evidence; preserve original-art candidate and repair obsolete capture contract.",
+          "transferred_at": "2026-11-10T18:40:28.554Z"
         }
       ],
       "runner_priority_handoff": {
