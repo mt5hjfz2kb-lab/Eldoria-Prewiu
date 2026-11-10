@@ -1,0 +1,112 @@
+{
+  "pipeline": "cleanroom-new-asset-generation-v1",
+  "created_utc": "2026-11-10T00:02:09.509315+00:00",
+  "reference_pixels_reused": false,
+  "legacy_hud_asset_reused": false,
+  "output_count": 10,
+  "source_count": 6,
+  "assets": [
+    {
+      "asset": "panel",
+      "width": 1615,
+      "height": 2320,
+      "sha256": "a43dfea9c65cb29527fad8f816283422553c1d0ef3d269890e510a083aa7d896",
+      "source_sha256": "2671e47cf4c506ee28cd94ff51655578307d4f65bba11e7de8e1ad0b3387ee53",
+      "source_task": "ac5f08b1-6ad8-4cf4-b8c3-df02c749acc2",
+      "origin": "panel",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "mission",
+      "width": 2645,
+      "height": 1350,
+      "sha256": "79428c3abda859b1ddfd406db93838801cde249ae0e8285a1df69c91bcddfc02",
+      "source_sha256": "d0dc457f4616a4618637578e1bec8ecbf9cf2d5b7ebbbfd3def90a1c7554c741",
+      "source_task": "f466bcd9-6ca4-4548-9bef-0f0a08e51686",
+      "origin": "mission",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_castle",
+      "width": 674,
+      "height": 667,
+      "sha256": "79933e265a9bd936aba10bd98aa80c8d5597c3c422edb1c0f9b98cd3696d467e",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_provisions",
+      "width": 679,
+      "height": 667,
+      "sha256": "dde69d28d5b8f338cf302ec8e3d580404cb450a08fab0ccc644839437ef2d183",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_swords",
+      "width": 674,
+      "height": 667,
+      "sha256": "61ae33b9aaea0a86c3f98aefb77ea8dc44ec68f651ac25643b9ada54118965da",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_raven",
+      "width": 667,
+      "height": 674,
+      "sha256": "88d007c26a68c83c7ce89971e4607ee71b5b06ef1f54323c73f9c3030a0dbc94",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_helm",
+      "width": 674,
+      "height": 674,
+      "sha256": "84e5000bfbbfd97d5b418a6c5a19f282e127f465a0ac2bd33e484f772102feb2",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "profile",
+      "width": 2608,
+      "height": 1141,
+      "sha256": "bfd2f68844f515fa4e25235de65e8f27362a9589c3c7a8927fb3c5fd31259172",
+      "source_sha256": "1b8caf547d02567647daf9d100c00efbedd0dfd0a505a3dcb579e1b4e0b2fb21",
+      "source_task": "53352d32-441a-4737-9f99-67fd739a9ae0",
+      "origin": "profile",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "resource",
+      "width": 2725,
+      "height": 1319,
+      "sha256": "e2ef208935e6d73967852e676079162980f4ac336db4b43002a67e043573fdcb",
+      "source_sha256": "89eebde141cf62ede450bde5c8b703b3a03dacbdfd8a862fbe364c4ecf78a8e6",
+      "source_task": "f811d59e-4e6d-42ad-952a-adb78b817ca3",
+      "origin": "resource",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "upgrade",
+      "width": 2616,
+      "height": 1218,
+      "sha256": "127534c0808ee8fdd9835300fcb247b712ae1d653acfb8255adb8e6a317a4cbe",
+      "source_sha256": "1f489027ee0aa5badb505bcdc4fd4007b22fa1a0e9de822785526a79dc0bf541",
+      "source_task": "35763a97-fb06-4644-b80e-0e027e1571f9",
+      "origin": "upgrade",
+      "derived_from": "new_generation_only"
+    }
+  ],
+  "art_approved": false,
+  "unity_native_qa": "pending"
+}
