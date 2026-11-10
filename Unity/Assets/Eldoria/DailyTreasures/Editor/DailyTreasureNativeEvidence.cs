@@ -447,6 +447,22 @@ namespace Eldoria.DailyTreasures.Editor
                     insignia.sprite==Resources.Load<Sprite>(expectedInsignia) &&
                     !insignia.raycastTarget,
                 "Non-canonical or missing real Eldoria milestone insignia");
+            var trueLyra=FindRect(panel,
+                "Canonical Lyra / actual recruited hero illustration")
+                .GetComponent<Image>();
+            Need(trueLyra && !trueLyra.raycastTarget,
+                "Native Lyra illustration may not intercept gameplay input");
+            if(expected.Kind!=DailyTreasureStageKind.Lyra)
+                Need(!trueLyra.gameObject.activeInHierarchy &&
+                     !trueLyra.sprite,
+                     "Lyra original character leaked into another ceremony");
+            else if(panel.DisplaysCanonicalLyraPortrait)
+                Need(trueLyra.sprite && trueLyra.sprite.rect.width>=256f &&
+                     trueLyra.sprite.rect.height>=256f,
+                     "Lyra original model portrait was replaced with a small fake thumbnail");
+            else
+                Debug.LogWarning("LYRA_REAL_AUTHORITATIVE_PORTRAIT_ABSENT "+
+                    "in isolated fixture: the hall is not a certified hero unlock.");
             var chest=FindRect(panel,"Authored chest / opened");
             var closedChest=FindRect(panel,"Authored chest / closed");
             var fallbackChest=FindRect(panel,
