@@ -180,9 +180,48 @@ def remove_chroma_edge_halo(image,name):
     return Image.fromarray(rgba,"RGBA")
 
 
+def grade_owner_mineral(image,name):
+    """Reference-directed material grade, NOT a new overlay.
+
+    The approved UI plate is warm graphite/black mineral (typical interior
+    RGB ~31,25,19). AI generation made every 2K blank slate visibly violet
+    (interior ~49,45,57). Shift ONLY the low-luminance dark mineral RGB,
+    preserving the sculpted gold/bronze edging, the tiny original emblems,
+    entire original alpha mask and all source geometry. No fake text or HUD.
+    Tested against the actual owner-approved and source-art pixel samples.
+    """
+    if name not in ("panel","profile","mission","resource"):
+        return image
+    rgba=np.asarray(image.convert("RGBA")).copy()
+    rgb=rgba[:,:,:3].astype(np.float32)
+    red,green,blue=rgb[:,:,0],rgb[:,:,1],rgb[:,:,2]
+    alpha=rgba[:,:,3]
+    luminance=.2126*red+.7152*green+.0722*blue
+    metallic=(red>green*1.22)&(green>blue*1.09)&(red>77)
+    dark=(alpha>30)&(~metallic)&(luminance<120)
+    fade=(np.clip((120-luminance)/45,0,1)*
+          np.clip((alpha.astype(np.float32)-30)/90,0,1)*dark)
+    # Preserve entire baked icons/crest in their original generated colors;
+    # on-screen they live INSIDE the artwork, never in a pasted second disk.
+    h,w=alpha.shape
+    if name=="profile":fade[:,:round(w*.35)]=0
+    if name=="mission":fade[:,:round(w*.23)]=0
+    if name=="resource":fade[:,:round(w*.23)]=0
+    if name=="panel":fade[:round(h*.16),:round(w*.30)]=0
+    darken=(.79,.76,.56) # warm obsidian instead of violet
+    for channel,factor in enumerate(darken):
+        rgb[:,:,channel]*=(1-fade*(1-factor))
+    rgba[:,:,:3]=np.uint8(np.clip(rgb,0,255))
+    assert np.array_equal(rgba[:,:,3],alpha)
+    print("VIGILIA_WARM_GRAPHITE_ART",name,
+          "changed_pixels",int((fade>.2).sum()))
+    return Image.fromarray(rgba,"RGBA")
+
+
 def store(name,image,sourcehash,task,source_label):
     if min(image.size)<90:raise ValueError(f"tiny/failed art: {name} {image.size}")
     image=remove_chroma_edge_halo(image,name)
+    image=grade_owner_mineral(image,name)
     BASE.mkdir(parents=True,exist_ok=True)
     dest=BASE/(name+".png")
     image.save(dest,optimize=True)
