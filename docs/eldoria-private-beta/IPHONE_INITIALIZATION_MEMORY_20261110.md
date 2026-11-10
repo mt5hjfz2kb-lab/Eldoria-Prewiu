@@ -43,3 +43,22 @@ Run42905159087 attempts actual engine startup with native SafariDriver.
 A programmatic click fallback is explicitly marked as not touch-input
 certification. Earlier run42898705517 connected to Safari but never
 started Unity; neither its timeout nor its unchanged page is a game test.
+
+## First actual iOS engine observations (run42905159087)
+Artifact13806191135 (zip SHA256211d738c03a62b507b2eed3410f764017bbccea0ed7fcde176348c892f525f62).
+Direct-r1 failed before ready: createShader returned null; Emscripten
+_glCreateShader dereferenced the null shader, followed by WebGL context
+loss. No physical-process termination or root cause is established.
+The simulator failed BEFORE ready, unlike the owner's after-ready restart.
+
+Beta10 reached ready with usedWASMHeapSize305985064 and capacity432275456,
+but only ONE ready sample exists. Its report's passed=true/120seconds
+is INVALID: a blocking screenshot timeout consumed the observation
+interval, then the probe reused its stale pre-screenshot sample.
+Do not cite this as stability success. The two screenshot and cleanup
+requests timed out. Gameplay and rendered frames remain unverified.
+
+Corrected probe removes screenshots during observation and requires a
+fresh successful ready/visible/document sample after120seconds. Reversed
+arm order checks a cold/warm confound. Bounded Unity phase logs and null
+shader diagnostics are recorded; these hooks do not repair the engine.

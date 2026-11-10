@@ -63,6 +63,19 @@ try:
     assert report['page']['url'].startswith('http://127.0.0.1:18975/'), 'Unexpected origin'
     assert 'iPhone' in report['page']['ua'], 'Not iPhone Safari'
     js("window.__qaDocument=Date.now()+'-'+Math.random(); window.__qaErrors=[]; window.addEventListener('error',e=>window.__qaErrors.push(String(e.message))); window.addEventListener('unhandledrejection',e=>window.__qaErrors.push(String(e.reason)));")
+    js("""window.__qaEngine=[];window.__qaGL=[];
+      const oldLog=console.log;
+      console.log=function(...args){const text=args.map(String).join(' ');
+        if(/ELDORIA_MEMORY_PHASE|REGION1_|WebGL|GL_INVALID|out of memory/i.test(text)){
+          window.__qaEngine.push({at:performance.now(),text:text.slice(0,1500)});
+          if(window.__qaEngine.length>100)window.__qaEngine.shift();
+        }return oldLog.apply(this,args);};
+      for(const C of [window.WebGLRenderingContext,window.WebGL2RenderingContext]){
+        if(!C)continue;const original=C.prototype.createShader;
+        C.prototype.createShader=function(type){const shader=original.call(this,type);
+          if(!shader)window.__qaGL.push({at:performance.now(),type,lost:this.isContextLost(),error:this.getError()});
+          return shader;};
+      }""")
     report['document']=js('return window.__qaDocument;')
     element=command('/element',{'using':'css selector','value':'#play'})
     eid=element['element-6066-11e4-a52e-4f735466cecf']
@@ -79,25 +92,25 @@ try:
     report['phase']='observe_startup';save()
     start=time.monotonic(); ready_at=None
     while time.monotonic()-start<300:
-        sample=js("return {document:window.__qaDocument,url:location.href,ready:!!window.valoriaGame,visible:!document.getElementById('game')?.hidden,error:document.getElementById('error')?.textContent,errors:window.__qaErrors,metrics:window.valoriaGame?.GetMetricsInfo?.(),diagnostic:window.EldoriaLocalDiagnostic?.read?.(),width:innerWidth,height:innerHeight};")
+        sample=js("return {document:window.__qaDocument,url:location.href,ready:!!window.valoriaGame,visible:!document.getElementById('game')?.hidden,error:document.getElementById('error')?.textContent,errors:window.__qaErrors,metrics:window.valoriaGame?.GetMetricsInfo?.(),engine:window.__qaEngine,gl:window.__qaGL,diagnostic:window.EldoriaLocalDiagnostic?.read?.(),width:innerWidth,height:innerHeight};")
         sample['elapsed']=time.monotonic()-start
         sample['processes']=subprocess.check_output(['ps','-axo','pid=,rss=,comm='],text=True)
         sample['processes']='\n'.join(x for x in sample['processes'].splitlines() if any(s in x for s in ['WebContent','MobileSafari','WebKit.GPU']))
         report['samples'].append(sample);save()
         assert sample['document']==report['document'], 'Unexpected document replacement'
         if sample['ready'] and ready_at is None:
-            ready_at=time.monotonic();snapshot('ready')
+            ready_at=time.monotonic()
         if ready_at is not None:
             assert sample['ready'] and sample['visible'], 'Unity disappeared after ready'
             if time.monotonic()-ready_at>=120:
-                snapshot('after-120s');report['startup_survived_seconds']=120
+                report['startup_survived_seconds']=time.monotonic()-ready_at
                 report['passed']=True;break
         time.sleep(3)
     assert report['passed'], 'Unity did not become ready and survive observation'
 except Exception as e:
     report['errors'].append(str(e))
-    try: snapshot('failure')
-    except Exception: pass
+    # Do not block observation or miscount screenshot time as healthy samples.
+    # A report without successful post-ready samples cannot pass.
 finally:
     save()
     if session:
