@@ -437,8 +437,14 @@ jobs:
               assert 'guid: '+item['guid'] in im and 'spriteMode: 1' in im
               assert 'spriteBorder: {x: '+str(item['border'][0]) in im
           hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          # Old reference crops remain archived with SHA provenance but
+          # must NEVER be active underneath the 13 new generated UI assets.
           for name in expected:
-              assert 'VigiliaArt/OwnerControls/'+name in hud,name
+              assert 'VigiliaArt/OwnerControls/'+name not in hud,name
+          fresh=json.loads((folder.parent/'FreshArt/manifest.json').read_text())['files']
+          assert len(fresh)==13
+          for name in ('profile_panel','resource_chip','upgrade_button'):
+              assert name in fresh and 'VigiliaArt/FreshArt/'+name in hud,name
           assert 'BreachWatchCrossedHammers' not in hud
           assert 'VigiliaArt/PremiumSurfaces/burgundy_action' not in hud
           assert 'VigiliaArt/PremiumSurfaces/profile_plate' not in hud
@@ -502,11 +508,11 @@ jobs:
               assert 'spriteBorder: {x: '+str(entry['border'][0]) in meta
               guids.add(entry['guid'])
           csharp=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          # Older generated plates stay archived with SHA provenance, but
-          # only the genuine 3D portrait and pointed chapter card are used
-          # live. User-approved profile, materials and CTA are independent.
-          for name in ['brass_portrait']:
-              assert 'VigiliaArt/PremiumSurfaces/'+name in csharp,name
+          # Provenance of rejected interim art is retained, but no visible
+          # old metal insert is allowed under the new 2K cleanroom cartouche.
+          assert 'VigiliaArt/PremiumSurfaces/brass_portrait' not in csharp
+          assert 'VigiliaArt/FreshArt/building_panel' in csharp
+          assert '!portraitFrame.GetComponent<Graphic>()' in csharp
           assert 'VigiliaArt/PremiumSurfaces/basalt_context' not in csharp
           assert 'BreachWatchBevelTrim' not in csharp
           assert not (folder/'basalt_context.png').exists()
@@ -532,9 +538,11 @@ jobs:
           meta=(root/'PremiumSurfaces/panel_fill.png.meta').read_text()
           assert 'guid: '+proof['guid'] in meta and 'textureType: 8' in meta
           hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          assert 'VigiliaArt/PremiumSurfaces/panel_fill' in hud
+          assert 'VigiliaArt/PremiumSurfaces/panel_fill' not in hud
+          assert 'VigiliaArt/FreshArt/building_panel' in hud
+          assert 'exactOwnerGoldBorder=null;' in hud
           assert 'panel.gameObject.AddComponent<BreachWatchPanelInk>()' not in hud
-          print('VIGILIA_SINGLE_APPROVED_MATERIAL_AND_ONE_BORDER_PASS')
+          print('VIGILIA_CLEANROOM_SINGLE_2K_PANEL_ZERO_OLD_OVERLAY_PASS')
           PY
       - name: Verify five separately finished original medallions
         shell: bash
