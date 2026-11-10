@@ -137,8 +137,47 @@ def isolate_standalone_painting(image,name):
     return obj
 
 
+def remove_chroma_edge_halo(image,name):
+    """Remove visible magenta fringes, WITHOUT altering geometry or alpha.
+
+    The AI's #FF00FF backdrop leaks into partially transparent pixels.
+    Our actual cleanroom alpha pass leaves between 1,031 and 4,976 pink
+    pixels per sprite. On green Unity terrain these show as pasted-on
+    purple rims. Inpaint only those contaminated edge RGB samples from
+    adjacent genuine artwork, while preserving the original alpha channel.
+    Benchmarked on the full 10-source sprite kit before use.
+    """
+    rgba=np.asarray(image.convert("RGBA")).copy()
+    alpha=rgba[:,:,3]
+    r=rgba[:,:,0].astype(np.int16)
+    g=rgba[:,:,1].astype(np.int16)
+    b=rgba[:,:,2].astype(np.int16)
+    magenta=(r>145)&(b>145)&(g<125)&(r>g*1.45)&(b>g*1.45)
+    contaminated=(alpha>12)&(alpha<244)&magenta
+    changed=int(contaminated.sum())
+    if changed:
+        repaired=cv2.inpaint(rgba[:,:,:3],
+                             contaminated.astype(np.uint8)*255,
+                             2,cv2.INPAINT_TELEA)
+        rgba[contaminated,:3]=repaired[contaminated]
+        # Transparent edges stay transparent. No extra sprite/glow is drawn.
+        assert np.array_equal(rgba[:,:,3],alpha)
+    nr=rgba[:,:,0].astype(np.int16)
+    ng=rgba[:,:,1].astype(np.int16)
+    nb=rgba[:,:,2].astype(np.int16)
+    residual=((alpha>12)&(alpha<244)&
+              (nr>145)&(nb>145)&(ng<125)&
+              (nr>ng*1.45)&(nb>ng*1.45))
+    if int(residual.sum())>max(20,int(changed*.01)):
+        raise ValueError(f"Chroma removal insufficient: {name}")
+    print("CLEANROOM_MAGENTA_FRINGE_FIXED",name,
+          "removed",changed,"remaining",int(residual.sum()))
+    return Image.fromarray(rgba,"RGBA")
+
+
 def store(name,image,sourcehash,task,source_label):
     if min(image.size)<90:raise ValueError(f"tiny/failed art: {name} {image.size}")
+    image=remove_chroma_edge_halo(image,name)
     BASE.mkdir(parents=True,exist_ok=True)
     dest=BASE/(name+".png")
     image.save(dest,optimize=True)
