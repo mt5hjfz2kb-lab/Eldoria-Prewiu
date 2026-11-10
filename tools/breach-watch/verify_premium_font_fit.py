@@ -122,8 +122,8 @@ def verify():
     for clause in (
         "At(buildingName.rectTransform,48,7,pw-109,21);",
         "At(buildingLevel.rectTransform,48,31,pw-109,17);",
-        "At(buildingName.rectTransform,50,8,pw-107,31);",
-        "At(buildingLevel.rectTransform,50,40,pw-107,17);",
+        "At(buildingName.rectTransform,50,8,pw-111,31);",
+        "At(buildingLevel.rectTransform,50,40,pw-111,17);",
     ):
         assert clause in hud, ("Missing separate title/close geometry",clause)
 
