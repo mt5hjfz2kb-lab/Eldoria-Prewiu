@@ -168,8 +168,11 @@ def stage(old_archive,new_source,out,ops_path,js_file):
         'installEldoriaCopyTransport(build.data,build.clock_copy_delta);')
     (candidate/'play.js').write_text(play)
     (candidate/versioned).write_text(play)
+    transport_bytes=js_file.read_bytes()
+    transport_name='copy-transport-'+digest(transport_bytes)[:20]+'.js'
+    (candidate/transport_name).write_bytes(transport_bytes)
     html=html.replace('<script src="'+versioned+'"></script>',
-        '<script src="./copy-transport.js"></script>\n'+
+        '<script src="./'+transport_name+'"></script>\n'+
         '<script src="'+versioned+'"></script>',1)
     (candidate/'index.html').write_text(html)
     shutil.copyfile(js_file,candidate/'copy-transport.js')
@@ -186,7 +189,8 @@ def stage(old_archive,new_source,out,ops_path,js_file):
        'data_verified_bytes':new_size,'parts_verified':31,
        'patch_literal_bytes':sum(x['literal_bytes'] for x in parts),
        'combined_bytes':bytes_out,'stable_game_sha256_unchanged':True,
-       'method':'Byte-identical 158-operation copy/add; no external JS decoder'}
+       'transport_file':transport_name, 'transport_sha256':digest(transport_bytes),
+       'method':'Forward-only 158-operation copy/add; no full-block reconstruction'}
     (out/'beta-iphone-clock-ab-proof.json').write_text(json.dumps(proof,indent=2)+'\n')
     print('ELDORIA_OWNER_IOS_COPYADD_31_EXACT_PARTS_PASS',
           json.dumps(proof,sort_keys=True),flush=True)

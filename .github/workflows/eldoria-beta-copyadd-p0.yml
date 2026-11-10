@@ -6,6 +6,7 @@ on:
       - '.github/workflows/eldoria-beta-copyadd-p0.yml'
       - 'tools/eldoria-private-beta/iphone_ab/stage_copyadd_owner_ab.py'
       - 'tools/eldoria-private-beta/iphone_ab/copyadd_transport.js'
+      - 'tools/eldoria-private-beta/iphone_ab/copyadd_transport.test.mjs'
       - 'tools/eldoria-private-beta/iphone_ab/verify_copyadd_real_http.mjs'
       - 'tools/eldoria-private-beta/iphone_ab/pinned_beta10_mobile12_delta_ops.json'
 permissions:
@@ -66,6 +67,7 @@ jobs:
           path: new-site
       - name: Stage exact stable old 31 chunks plus 8 MB byte literals of new Unity game
         run: |
+          node --test tools/eldoria-private-beta/iphone_ab/copyadd_transport.test.mjs
           python3 -m py_compile tools/eldoria-private-beta/iphone_ab/stage_copyadd_owner_ab.py
           python3 tools/eldoria-private-beta/iphone_ab/stage_copyadd_owner_ab.py \
             --stable-pages-artifact old-pages/artifact.tar \

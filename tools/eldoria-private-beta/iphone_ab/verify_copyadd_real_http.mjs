@@ -23,10 +23,12 @@ assert.equal(proof.physical_iphone_stability_verified,false);
 assert.ok(proof.combined_bytes<650000000);
 assert.equal(info.target_parts.length,31);
 const markup=fs.readFileSync(path.join(candidate,'index.html'),'utf8');
-assert.match(markup,/<script src="\.\/copy-transport\.js"><\/script>\s*<script src="play-[^"]+\.js"><\/script>/);
+assert.match(markup,/<script src="\.\/copy-transport-[a-f0-9]{20}\.js"><\/script>\s*<script src="play-[^"]+\.js"><\/script>/);
 const play=fs.readFileSync(path.join(candidate,'play.js'),'utf8');
 assert.match(play,/installEldoriaCopyTransport\(build\.data,build\.clock_copy_delta\)/);
-const browserCode=fs.readFileSync(path.join(candidate,'copy-transport.js'),'utf8');
+const transportFile=markup.match(/src="\.\/(copy-transport-[a-f0-9]{20}\.js)"/)[1];
+const browserCode=fs.readFileSync(path.join(candidate,transportFile),'utf8');
+assert.equal(transportFile,'copy-transport-'+createHash('sha256').update(browserCode).digest('hex').slice(0,20)+'.js');
 assert.doesNotMatch(browserCode,/localStorage|sessionStorage|indexedDB|serviceWorker/);
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 
@@ -52,7 +54,7 @@ try{
  const window={location:{href:base,origin},fetch:fetch.bind(globalThis),
                crypto:webcrypto,DecompressionStream};
  const context={window,ReadableStream,DecompressionStream,
-                Response,URL,Uint8Array,console};
+                Response,URL,Uint8Array,AbortController,console};
  vm.createContext(context);
  vm.runInContext(browserCode,context);
  assert.equal(typeof window.installEldoriaCopyTransport,'function');
@@ -63,7 +65,7 @@ try{
  assert.equal(response.status,200);
  assert.equal(response.url,url);
  assert.equal(Number(response.headers.get('Content-Length')),503831429);
- // The real iPhone memory fix emits sub-256KiB frames instead of 16MiB
+ // The forward-only candidate emits sub-64KiB frames instead of 16MiB
  // target allocations. Verify every true 16MiB Unity part by incremental
  // SHA256 across frames, with real HTTP/gzip and exact frozen engine payload.
  let index=0,total=0,partBytes=0,frameCount=0,maxFrame=0;
@@ -72,7 +74,7 @@ try{
  while(true){
   const {value,done}=await reader.read();
   if(done)break;
-  assert.ok(value.byteLength>0 && value.byteLength<=262144,
+  assert.ok(value.byteLength>0 && value.byteLength<=65536,
      'Browser emitted oversized Unity memory frame '+value.byteLength);
   frameCount++;
   maxFrame=Math.max(maxFrame,value.byteLength);
@@ -95,7 +97,7 @@ try{
  assert.equal(index,31);
  assert.equal(partBytes,0);
  assert.equal(total,503831429);
- assert.ok(frameCount>1500, 'Expected genuinely small streamed memory frames');
+ assert.ok(frameCount>7000, 'Expected genuinely small streamed memory frames');
  console.log('ELDORIA_SMALL_FRAMES_VERIFIED',frameCount,'max',maxFrame);
  const unknown=await window.fetch(origin+'/Eldoria-Prewiu/unknown-id');
  assert.equal(unknown.status,404);
