@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Prior mobile12 physically restarted in Safari. stable-canvas-r1 is now published owner-only after exact desktop WebKit entry/reload and height-resize QA; physical iPhone restart resolution remains unverified. Beta10 is preserved. External testers remain NO-GO.",
+  "reason": "Owner reports stable-canvas-r1 still restarts on iPhone. Canvas-height mitigation rejected as a solution. Preserve owner-playable beta10; root cause remains unconfirmed; external testers NO-GO.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T12:22:37.564Z",
+  "updated_at": "2026-11-10T19:50:49.637Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -433,7 +433,7 @@
   },
   "iphone_stable_canvas": {
     "revision": "stable-canvas-r1",
-    "status": "PUBLISHED_DESKTOP_WEBKIT_PASS_PHYSICAL_IPHONE_UNVERIFIED",
+    "status": "PHYSICAL_IPHONE_FAILED_OWNER_REPORTED",
     "engine_source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
     "shell_source_commit": "052d8c65edf0191fa819d7d08438c6ab172ccf83",
     "shell_sha256": "961e07c2da9490e5b0fd033440689219468d55ced6ae80b8f4a31c63bba14434",
@@ -452,6 +452,10 @@
     },
     "publication_pass": true,
     "live_hash_verified": true,
-    "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-ab/?shell=stable-canvas-r1&eldoria_diag=1"
+    "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-ab/?shell=stable-canvas-r1&eldoria_diag=1",
+    "owner_report": {
+      "date": "2026-11-10",
+      "quote": "Se reinicia…."
+    }
   }
 }
