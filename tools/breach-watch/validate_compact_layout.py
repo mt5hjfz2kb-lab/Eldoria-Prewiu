@@ -72,7 +72,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(211 if pw<600 else 184,w*(.49 if pw<600 else .41))
-        place("mission",m-12,80 if pw<600 else 79,missionw,69 if pw<600 else 60)
+        # The new alpha-trimmed carved source starts at its real painted edge.
+        place("mission",m,80 if pw<600 else 79,missionw,69 if pw<600 else 60)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
         chapter_text=R(54 if pw<600 else 48,8 if pw<600 else 9,missionw-(64 if pw<600 else 57),17 if pw<600 else 15)
