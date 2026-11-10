@@ -197,7 +197,7 @@ def main():
         'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
         'float cardRightInset=smallPhone?margin:39f;',
         'float chipGap=smallPhone?4f:12f;',
-        'float top=navTop-ph-(smallPhone?34f:51f);',
+        'float top=navTop-ph-(smallPhone?34f:72f);',
         'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
