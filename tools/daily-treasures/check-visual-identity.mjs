@@ -52,12 +52,12 @@ assert.match(stage,/\.88f,\.92f,\.10f,true/);
 // HeroesApprovedDestination inventory. No invented character portrait or
 // old whole-screen screenshot may masquerade as a genuine unlock.
 assert.match(panel,/static Sprite TryCanonicalLyraPortrait\(\)/);
-assert.match(panel,/Eldoria\\.HeroesUI\\.HeroesApprovedDestination/);
+assert.match(panel,/Eldoria\.HeroesUI\.HeroesApprovedDestination/);
 assert.match(panel,/GetField\("ReadHeroes"\)/);
-assert.match(panel,/image\\.rect\\.width>=256f/);
-assert.match(panel,/milestoneLyraPortrait=Plate\(lyraPortraitRect,Color\\.white,false\)/);
-assert.match(panel,/milestoneLyraPortrait\\.gameObject\\.SetActive\(portrait!=null\)/);
-assert.match(panel,/milestoneLyraPortrait\\.sprite=null/);
+assert.match(panel,/image\.rect\.width>=256f/);
+assert.match(panel,/milestoneLyraPortrait=Plate\(lyraPortraitRect,Color\.white,false\)/);
+assert.match(panel,/milestoneLyraPortrait\.gameObject\.SetActive\(portrait!=null\)/);
+assert.match(panel,/milestoneLyraPortrait\.sprite=null/);
 
 
 // The real daily ledger has exactly real owned resources and accelerators.
