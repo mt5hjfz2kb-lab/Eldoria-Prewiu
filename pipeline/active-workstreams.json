@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T08:22:13.389Z",
+  "updated_at": "2026-11-10T08:59:47.933Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6780,9 +6780,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
+      "owner": "codex-iphone-stability-6f75130e87ae",
       "ownership_state": "claimed",
-      "ownership_revision": 24,
+      "ownership_revision": 25,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7121,6 +7121,14 @@
           "revision": 20,
           "transferred_at": "2026-11-09T17:11:20.832Z",
           "reason": "Owner explicitly requires completing previously prepared closed beta, telemetry and Supabase tooling for Bastion I–V; canonical PR179 is available and no other tester pipeline writer claimed."
+        },
+        {
+          "previous_owner": "chatgpt-eldoria-pilot-telemetry-20261109",
+          "from_revision": 24,
+          "to_revision": 25,
+          "to_owner": "codex-iphone-stability-6f75130e87ae",
+          "reason": "User explicitly requests this session continue and finish iPhone stability and tester readiness. Preserve current read-only Mac WebKit run42786071982 and stable beta10, reuse canonical PR179.",
+          "transferred_at": "2026-11-10T08:59:47.933Z"
         }
       ],
       "frozen_beta_ux_scope": {
