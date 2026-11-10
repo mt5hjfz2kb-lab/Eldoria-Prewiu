@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T20:41:42.659Z",
+  "updated_at": "2026-11-10T20:50:25.799Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6865,9 +6865,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "DIRECT_TRANSPORT_COMPARISON_PENDING_IOS",
+      "phase": "DIRECT_R1_LIVE_VERIFIED_AWAITING_PHYSICAL_RESULT",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Public direct-r1 comparison ready for owner physical Safari check. Desktop public entry/nickname/reload passed42895738602, actual screenshots checked. Finish warm Safari simulator attempt42897348434; previous attempts never reached game and are not game failures. Physical restart remains unresolved until new device report. Preserve beta10 and tester NO-GO.",
+      "next": "Owner needs to open direct-r1 in Safari and report whether entry restarts; no automation can certify their physical phone. Public all181files verified42898405543 and entry/reload visually verified42895738602. Inspect iOS direct-launch retry42898705517 when complete; prior simulator failures were infrastructure only. Keep physical P0 open and tester invitations disabled.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7471,7 +7471,11 @@
         "public_boundary_part_hashes": "PASS",
         "ios_retry_result": "INFRASTRUCTURE_FAILURE: Safari RWI connection timed out before any game loaded",
         "ios_warm_retry_run": 42897348434,
-        "publication_retry_run": 42896193107
+        "publication_retry_run": 42896193107,
+        "all_public_files_byte_verified": 181,
+        "full_public_verification_run": 42898405543,
+        "ios_warm_retry_result": "FAILED_BEFORE_GAME: about:blank unsupported simctl URL; direct Safari launch retry42898705517 queued",
+        "ios_direct_launch_run": 42898705517
       }
     },
     {
