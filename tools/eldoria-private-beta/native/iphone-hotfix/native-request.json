@@ -3,7 +3,7 @@
   "workstream_id": "eldoria-private-beta-i-v-20261107",
   "owner": "codex-iphone-stability-6f75130e87ae",
   "ownership_revision": 25,
-  "state": "WAITING_FOR_RESOURCE",
+  "state": "CLAIMED_FOR_NATIVE",
   "variant": "beta10-clock-prebaked-collisions-r1",
   "replay_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
@@ -30,5 +30,6 @@
     "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "7859f60566187ed0c1d35c6f78271914b978000e",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "80f2293b19ac8e420bcf22908b2aed1bf2cbd667",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216"
-  }
+  },
+  "activated_at_utc": "2026-11-10T21:55:14.562Z"
 }
