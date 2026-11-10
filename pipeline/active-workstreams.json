@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T21:52:49.547Z",
+  "updated_at": "2026-11-10T22:00:56.127Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 60,
+      "ownership_revision": 61,
       "write_scope_released": false,
-      "phase": "OWNER_REPORTED_SAMPLING_AND_RESOURCE_CENTER_FIXED_NATIVE",
-      "next": "Two reported defects corrected and native verified. PR173 remains draft, no publication. Preserve owner-liked design. Deliver900x1600 evidence rather than enlarging390px capture.",
+      "phase": "OWNER_REPORTED_FRAME_CAPACITY_AND_INNER_PADDING",
+      "next": "Retain approved sampling fix; expand resource capsules and profile/mission painted capacity, inset live text and review all four formats. Do not reserve Windows while beta owner holds it.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T19:57:05.165Z",
