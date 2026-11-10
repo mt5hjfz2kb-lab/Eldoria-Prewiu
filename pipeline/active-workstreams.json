@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T20:02:12.122Z",
+  "updated_at": "2026-11-10T20:05:21.081Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,12 +6665,14 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 53,
+      "ownership_revision": 54,
       "write_scope_released": false,
-      "phase": "OWNER_REQUESTED_HUD_POLISH_NATIVE_VERIFIED",
-      "next": "Owner-requested framing and lower navigation polish complete and native verified. Preserve restored owner-liked design. PR173 remains draft, no merge or publication performed.",
+      "phase": "OWNER_REQUESTED_VISIBLE_NAV_AND_TEXT_INSETS",
+      "next": "Increase actual lower medallion footprint and text breathing room; native full-screen evidence required. Preserve approved restored style and progression gating.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T19:57:05.165Z",
