@@ -112,9 +112,15 @@ def paid_label_pixel_proof(image, variant, width, height):
     count=4 if variant=="opened" else 2
     assert_quality(variant in ("opened","special-day4-received"),
                    "Unknown actual-paid reward style")
-    panel_width=min(width-24,740)
+    # Unity DailyTreasurePanel.Layout uses a focused 650px paid coffer,
+    # not the 740px calendar: day 4 has 190px cards, day 7 has 146px.
+    # Native 42818514510 visibly drew x90/x60 in the TWO day-four cards;
+    # the previous 140px-only sampling read an empty edge and falsely
+    # rejected true text. Pixel evidence must follow actual card geometry.
+    panel_width=min(width-24,650)
     gap=6
-    card_width=min(140,(panel_width-38-(count-1)*gap)/count)
+    card_width=min(190 if count==2 else 146,
+                   (panel_width-38-(count-1)*gap)/count)
     shelf_y=round(height*.5+69)
     rgb=image.convert("RGB")
     results=[]
@@ -127,10 +133,16 @@ def paid_label_pixel_proof(image, variant, width, height):
         # otherwise a rendered NAME can hide a missing or cropped QUANTITY.
         # These are from the actual landscape short-card production geometry:
         # label center y=+12, quantity y=-15 in Unity's upward Y system.
-        name_window=(center_x+20,shelf_y-23,
-                     center_x+58,shelf_y)
-        quantity_window=(center_x+20,shelf_y+5,
-                         center_x+58,shelf_y+24)
+        label_width=card_width-62
+        # Unity places both text rectangles at +24px relative to the
+        # card centre; take the INNER 76% of the actual right-side column.
+        # Do not sample the gilt border, wood/stone icon or adjacent card.
+        label_center=center_x+card_width*.5-label_width*.5-7
+        label_left=round(label_center-label_width*.38)
+        label_right=round(label_center+label_width*.38)
+        name_window=(label_left,shelf_y-23,label_right,shelf_y)
+        quantity_window=(label_left,shelf_y+5,
+                         label_right,shelf_y+24)
         painted=[]
         for field,window in (("name",name_window),
                              ("actual quantity",quantity_window)):
@@ -725,7 +737,7 @@ def selftest():
         ink=ImageDraw.Draw(blank)
         shelf_y=450+69
         for i in range(4):
-            center=round(800+(i-1.5)*146)
+            center=round(800+(i-1.5)*152)
             ink.rectangle((center+25,shelf_y-12,center+45,shelf_y-10),
                           fill=(220,183,129))
         # Regression: a screenshot may show every resource NAME while the
@@ -737,7 +749,7 @@ def selftest():
             failed=True
         assert_quality(failed,"Visible names with absent quantities must fail")
         for i in range(4):
-            center=round(800+(i-1.5)*146)
+            center=round(800+(i-1.5)*152)
             ink.rectangle((center+25,shelf_y+8,center+45,shelf_y+10),
                           fill=(235,214,173))
         assert_quality(len(paid_label_pixel_proof(
@@ -746,7 +758,7 @@ def selftest():
         only_quantity=Image.new("RGB",(1600,900),(20,18,19))
         ink=ImageDraw.Draw(only_quantity)
         for i in range(4):
-            center=round(800+(i-1.5)*146)
+            center=round(800+(i-1.5)*152)
             ink.rectangle((center+25,shelf_y+8,center+45,shelf_y+10),
                           fill=(235,214,173))
         failed=False
@@ -755,6 +767,31 @@ def selftest():
         except ValueError:
             failed=True
         assert_quality(failed,"Visible quantities with missing names must fail")
+
+        # Native 42818514510 proved day-four names AND counts exist in two
+        # 190px cards; previous 140px ROI sampled blank card edges. This
+        # synthetic two-card case rejects EITHER missing field and accepts
+        # real-looking letters in the correct Unity right-side column.
+        day4=Image.new("RGB",(1600,900),(20,18,19))
+        pen=ImageDraw.Draw(day4)
+        for center in (702,898):
+            pen.rectangle((center+9,507,center+39,511),
+                          fill=(220,183,129))
+            pen.rectangle((center+9,533,center+39,537),
+                          fill=(235,214,173))
+        assert_quality(len(paid_label_pixel_proof(
+            day4,"special-day4-received",1600,900))==2,
+            "Two authentic day-four cards must allow separate paid labels")
+        for center in (702,898):
+            pen.rectangle((center+9,533,center+39,537),
+                          fill=(20,18,19))
+        failed=False
+        try:
+            paid_label_pixel_proof(day4,"special-day4-received",1600,900)
+        except ValueError:
+            failed=True
+        assert_quality(failed,
+            "Day-four names must not conceal a missing genuine quantity")
 
         # Five day-specific ordinary reward receipts need visual proof too.
         # A fully blank image, a title-only image, or a quantity-only image
