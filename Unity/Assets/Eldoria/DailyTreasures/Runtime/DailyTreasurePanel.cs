@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Eldoria.Application;
 using Eldoria.Domain;
 using UnityEngine;
@@ -26,12 +25,11 @@ namespace Eldoria.DailyTreasures
         RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect,ambientRect;
         RectTransform originalSafeArea;
         RectTransform cachedCanonicalHeroRoom;
-        // Canonical Heroes is sometimes built later than the treasury HUD.
-        // Its missing-room probe runs each frame so the room wins immediately,
-        // but allocating a RectTransform[] every frame causes mobile GC
-        // hitches. Unity 6's List overload overwrites this reusable buffer.
-        readonly List<RectTransform> heroRoomSearchBuffer=
-            new List<RectTransform>(64);
+        // HeroesApprovedDestination.Initialize places its actual root directly
+        // under the canonical HUD safe area. Probe only its immediate children
+        // when the destination is not yet initialized: scanning every nested
+        // card on each Android frame needlessly traverses the entire HUD.
+        // This still detects the room in the SAME frame it appears.
         RectTransform cachedVigiliaBuildingPanel;
         float nextCanvasProbe;
         bool onVigiliaCanvas;
@@ -1545,16 +1543,19 @@ namespace Eldoria.DailyTreasures
         {
             if(!cachedCanonicalHeroRoom && originalSafeArea)
             {
-                originalSafeArea.GetComponentsInChildren(
-                    true,heroRoomSearchBuffer);
-                foreach(var candidate in heroRoomSearchBuffer)
+                // Direct-child lookup mirrors the real HeroesApprovedDestination
+                // parent contract. No recursive O(all HUD descendants) traversal,
+                // managed buffer or allocation on a 60fps Android Update.
+                for(int i=0;i<originalSafeArea.childCount;i++)
+                {
+                    var candidate=originalSafeArea.GetChild(i) as RectTransform;
                     if(candidate && candidate.gameObject.name==
                         "Heroes / canonical destination")
                     {
                         cachedCanonicalHeroRoom=candidate;
                         break;
                     }
-                heroRoomSearchBuffer.Clear();
+                }
             }
             if(!cachedCanonicalHeroRoom ||
                !cachedCanonicalHeroRoom.gameObject.activeInHierarchy)
