@@ -94,7 +94,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T09:09:37.778Z",
+  "updated_at": "2026-11-10T09:21:16.502Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -333,7 +333,7 @@
     "next": "Optimize browser reconstruction memory or deploy candidate with ordinary Unity assets on separate zero-cost static host. Do not overwrite stable beta10 or enable testers."
   },
   "iphone_forward_transport": {
-    "state": "BYTE_CERTIFIED_MAC_WEBKIT_PENDING_NOT_PUBLISHED",
+    "state": "BYTE_CERTIFIED_COMPARATIVE_MEMORY_PROOF_INVALID_CONTROL_REDIRECT_NOT_PUBLISHED",
     "source_commit": "de7095ec2b4b4553d9662a3cce67eb44822cc64e",
     "qa_run": 42787786118,
     "qa_result": "SUCCESS",
@@ -351,7 +351,32 @@
     "cache_identity": "content-hashed JS filename",
     "memory_qa": 42787998561,
     "physical_iphone_verified": false,
-    "external_testers_enabled": false
+    "external_testers_enabled": false,
+    "mac_webkit_observation": {
+      "run": 42787998561,
+      "status": "FAILED_THRESHOLD_AND_INVALID_SAME_ORIGIN_COMPARISON",
+      "control_origin": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site",
+      "candidate_origin": "http://127.0.0.1:18975",
+      "control_peak_kib": 2450128,
+      "candidate_peak_kib": 2799344,
+      "control_after_entry_peak_kib": 1584928,
+      "candidate_after_entry_peak_kib": 1459664,
+      "peak_phase": "reload",
+      "reason": "Archived beta10 index.html redirects to remote Sites. Initial manifest fetched locally before redirect is not proof of actually loaded source/origin. Cannot attribute memory delta to transport.",
+      "artifact": 13751331056
+    },
+    "corrected_comparison": {
+      "run": 42789786979,
+      "source_commit": "8026ba01c116ea7f1db98bd7c9b7c2d8423a710a",
+      "probe_commit": "97830343d85ffa91fc206630230cd430ee7d3ea9",
+      "arms": [
+        "beta10-local",
+        "minimal-clock-direct-local",
+        "minimal-clock-forward-only-local"
+      ],
+      "status": "PENDING",
+      "public_beta10_changed": false
+    }
   },
   "iphone_rejected_low_memory_transport": {
     "qa_run": 42786071982,
@@ -360,6 +385,7 @@
     "candidate_webcontent_peak_kib": 2930304,
     "excess_percent": 15.235,
     "entry_reload": "PASS_DESKTOP_ONLY",
-    "note": "Per-draw trace allocations present in both arms. New comparison disables this observer interference equally. Neither observation establishes iPhone cause."
+    "note": "Per-draw trace allocations present in both arms. New comparison disables this observer interference equally. Neither observation establishes iPhone cause.",
+    "comparative_causal_validity": "INVALID: control redirects to remote Sites, candidate is localhost; not a same-origin experiment"
   }
 }
