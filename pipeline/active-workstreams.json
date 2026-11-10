@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T19:57:00Z",
+  "updated_at": "2026-11-10T19:57:05.165Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,16 +6665,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 51,
+      "ownership_revision": 52,
       "write_scope_released": false,
-      "phase": "OWNER_ACCEPTS_RESTORED_DIRECTION_FRAMING_AND_NAV_POLISH",
-      "next": "Owner says restored UI looks quite good. Preserve restored design/art and refine text framing plus restrained richness of lower medallions. No re-design or replacement crop attempt. Prepare source while PR181 holds Windows; native verify once free.",
+      "phase": "OWNER_REQUESTED_FRAMING_NAV_POLISH_NATIVE",
+      "next": "Run eight authentic Unity views of41a6000 finishing pass, inspect against user-liked bedcb370 restored base. Preserve style, verify actual refreshed art scale and text encuadre; release Windows after terminal validation.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-10T18:16:45.438Z",
-      "runner_claim_basis": "One owner-directed cohesive visual A/B of original reference profile/lion, mission tablet and resource housings, exact source QA SUCCESS 42873406979; no other registry runner holder or incompatible Unity job.",
+      "runner_claimed_at": "2026-11-10T19:57:05.165Z",
+      "runner_claim_basis": "PR181 released Windows after successful run42888085086; current registry has no resource holder. Source syntax/art checks42889766831 passed; exact-head UI polishing requested by owner.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
