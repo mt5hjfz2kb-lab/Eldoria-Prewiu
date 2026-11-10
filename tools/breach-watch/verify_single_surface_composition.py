@@ -158,7 +158,7 @@ assert 'surface.VisualScale=.86f;' in HUD
 # Pixel-informed, only the one genuine illustrated medallion gets scaled.
 # Keep all touch areas and dormant destinations unchanged; no second overlay.
 assert 'At((RectTransform)navButtons[i].transform,' in HUD
-assert 'if(p)p.VisualScale=i==activeTab?.76f:.70f;' in HUD
+assert 'if(p)p.VisualScale=i==activeTab?.92f:.88f;' in HUD
 import math
 scale_900=900/514
 assert 61 <= 52*scale_900*.70 <= 66

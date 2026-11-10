@@ -692,7 +692,7 @@ namespace Eldoria.BreachWatch.Editor
                     // only ~31px wide. Check the real source Image rect and
                     // its mesh-space VisualScale at all four resolutions.
                     var medal=button.GetComponentInChildren<BreachWatchPlate>(true);
-                    Need(medal && medal.sprite && medal.VisualScale>.0f,
+                    Need(medal && medal.sprite && medal.VisualScale>=.88f,
                         "Approved painted navigation medallion missing: "+name);
                     Vector3[] paintedCorners=new Vector3[4];
                     medal.rectTransform.GetWorldCorners(paintedCorners);

@@ -67,8 +67,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         painted_lion_right=round(2496*.35)*100/2000
         name_left=(45+8) if pw<600 else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,5 if pw<600 else 4,1,22 if pw<600 else 18)
-        profile_power=R(0,27 if pw<600 else 22,1,18 if pw<600 else 17)
+        profile_name=R(0,5,1,21 if pw<600 else 17)
+        profile_power=R(0,26 if pw<600 else 22,1,18 if pw<600 else 17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         # Real ink was touching the lower profile bevel, not a mere layout
         # style issue: both dynamic lines must now have bottom inset and
@@ -88,15 +88,15 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("mission",m,80 if pw<600 else 82,missionw,80 if pw<600 else 60)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 36,10 if pw<600 else 7,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        chapter_text=R(54 if pw<600 else 36,11 if pw<600 else 9,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
         assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
         assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 36,28 if pw<600 else 22,missionw-(70 if pw<600 else 44),12 if pw<600 else 10)
-        progress=R(59 if pw<600 else 36,42 if pw<600 else 34,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        short_objective=R(59 if pw<600 else 36,28 if pw<600 else 24,missionw-(70 if pw<600 else 44),12 if pw<600 else 10)
+        progress=R(59 if pw<600 else 36,42 if pw<600 else 36,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
         assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
         assert short_objective.y+short_objective.h+2<=progress.y,size
         assert progress.y+progress.h<= (80 if pw<600 else 60)-(8 if pw<600 else 5),size
@@ -107,7 +107,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=(70,10) if pw<600 else (58,5)
-        inset,art_scale=(4,.92) if pw<600 else (5,.90)
+        inset,art_scale=(4,.88) if pw<600 else (5,.88)
         painted_physical=(navsize-2*inset)*art_scale*scale
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
@@ -166,8 +166,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         limit=34
     else:
         place("identity",m,11,234,58)
-        profile_name=R(0,6,1,30)
-        profile_power=R(0,36,1,21)
+        profile_name=R(0,6,1,25)
+        profile_power=R(0,32,1,21)
         assert profile_name.y+profile_name.h<=profile_power.y,size
         chip=(min(110,max(82,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
         resw=resources*chip+7*(resources-1)
@@ -185,7 +185,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("breach",w*.49-17,11,34,34)
         compact=h<530
         navsize,gap=(75,10) if compact else (55,15)
-        inset,art_scale=(4,.92) if compact else (6,.86)
+        inset,art_scale=(4,.88) if compact else (6,.88)
         painted_physical=(navsize-2*inset)*art_scale*scale
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")

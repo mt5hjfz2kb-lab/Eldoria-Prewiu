@@ -946,10 +946,10 @@ namespace Eldoria.BreachWatch
                 // when Truncate box is shorter than font line metrics.
                 // Give BOTH actual labels their full line heights inside the
                 // single hand-painted profile; no duplicated crest or card.
-                At(identityName.rectTransform,lionTextInset,smallPhone?6f:6f,
-                    (smallPhone?174f:166f)-crestSize,smallPhone?22f:18f);
+                At(identityName.rectTransform,lionTextInset,smallPhone?5f:5f,
+                    (smallPhone?174f:166f)-crestSize,smallPhone?21f:17f);
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?26f:21f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?26f:22f,(smallPhone?174f:166f)-crestSize,
                     smallPhone?18f:17f);
                 identityName.fontSize=smallPhone?17:15;
                 identityPower.fontSize=smallPhone?14:10;
@@ -1029,10 +1029,10 @@ namespace Eldoria.BreachWatch
                 // spacing. Move ONLY live ink upward, with 2u minimum row
                 // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?28f:22f,missionWidth-(smallPhone?70f:44f),
+                    smallPhone?28f:24f,missionWidth-(smallPhone?70f:44f),
                     fullObjective?51f:(smallPhone?12f:10f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?42f:34f),
+                    fullObjective?87f:(smallPhone?42f:36f),
                     missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
@@ -1171,7 +1171,7 @@ namespace Eldoria.BreachWatch
                 // The power must remain >= 11.75 physical pixels even in
                 // 844x390 (.86 scale), therefore 14pt is mandatory; reserve
                 // its full Legacy Text line height without another panel.
-                At(identityName.rectTransform,59,6,166,30);
+                At(identityName.rectTransform,59,6,166,25);
                 At(identityPower.rectTransform,59,32,165,21);
                 identityName.fontSize=20;
                 identityPower.fontSize=14;
