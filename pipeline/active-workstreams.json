@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T07:52:00Z",
+  "updated_at": "2026-11-10T07:57:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7374,7 +7374,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7398,11 +7398,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "UNITY_NATIVE_FAILED_LEASE_RELEASED_INVESTIGATE_ARTIFACT",
+      "phase": "UNITY_NATIVE_SECOND_RETEST_EXCLUSIVE_HELD",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Download native evidence from 42776890262 and diagnose exact error; patch same PR181 within scope, only request another Unity run with a future legitimate Windows CAS lease.",
+      "next": "Execute exact current HEAD PR181 Unity run; inspect real 72 images + 116 hits + 28 credits; release Windows after job completes even failure.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7454,8 +7456,8 @@
       "runner_released_at": "2026-11-10T07:52:00Z",
       "runner_release_basis": "PR181 native Unity 42776890262 SHA ead9759b completed FAILURE; source/artifact investigation pending; lease released unconditionally after completed job without changing code owner.",
       "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia.",
-      "runner_claimed_at": "2026-11-10T07:41:00Z",
-      "runner_claim_basis": "Live main registry contains zero other Windows holders; no recent Windows/Unity Actions queued or running; two stale October 7 probes excluded. PR181 exact SHA 3af5be36; source owner unchanged. Workflow checks Unity/Blender processes before execution. No cancellation or forced transfer."
+      "runner_claimed_at": "2026-11-10T07:57:00Z",
+      "runner_claim_basis": "At source HEAD b95c0d9 domain CI SUCCESS run 42778669432, owner canonical, no other Windows holders or active/queued recent Windows jobs, PR173 and PR179 read; single new native Unity test for corrected real TextGenerator 66px truncation with 72px space. Fail-closed process guard."
     },
     {
       "id": "eldoria-eonscar-branding-trial-20261109",
