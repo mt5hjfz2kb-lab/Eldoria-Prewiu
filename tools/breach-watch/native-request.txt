@@ -1,5 +1,4 @@
-VIGILIA_ART_NATIVE_20261111_0015
-Requested source HEAD: 7ffa0bbf9ec6aff40ac9c63a2850ece9cdcdb5b7
-Workstream: eldoria-forja-oscura-visual-proof-20261107
-Owner: chatgpt-vigilia-art-automation-20261111; main CAS revision: 65; exclusive windows-runner-heavy reservation.
-Check approved owner JPEG 864x1536 against real Unity 900x1600: correct the previously too-high single Bastion card by 40 authored units at large portrait. No extra Canvas, no prior HUD, unchanged source artwork, small phone untouched. Measure 8 genuine city/Bastion renders at 1600x900,900x1600,844x390,390x844, live GPU legibility, six pointer clicks, unchanged save. Art score MUST remain pending independently of tech PASS.
+VIGILIA_ART_NATIVE_20261111_0024_CORRECT_SOURCE_CONTRACT
+Source layout/test HEAD: 2a51cbb9408a1b0fcabb9af0c11ae3ab50e8e1be
+Owner: chatgpt-vigilia-art-automation-20261111 rev65; windows-runner-heavy still exclusive.
+Repair red run42922641420: source-only layout validator expected obsolete literal 72f instead of new 32f; now both runtime and validator use matching 32f. This is test repair, not relaxed guard. Validate native 8 genuine Unity screenshots, visual card y alignment to approved 864x1536 original, save unchanged and pointer passes. ART_APPROVED remains false pending actual A/B.
