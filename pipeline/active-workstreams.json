@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T19:40:26Z",
+  "updated_at": "2026-11-10T19:49:42.933Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 50,
+      "ownership_revision": 51,
       "write_scope_released": false,
-      "phase": "NATIVE_RECOVERY_COMPLETE_LATEST_ART_BATCH_REJECTED_BASELINE_RESTORED",
-      "next": "Native validation requested by owner completed. Do not repeat rejected low-resolution OwnerControls crop substitution. Art remains about5.5/10, target7.5 not reached. Next production must improve high-resolution finished 2D surfaces against original reference, not micro-layout or Bastion3D.",
+      "phase": "OWNER_ACCEPTS_RESTORED_DIRECTION_FRAMING_AND_NAV_POLISH",
+      "next": "Owner says restored UI looks quite good. Preserve restored design/art and refine text framing plus restrained richness of lower medallions. No re-design or replacement crop attempt. Prepare source while PR181 holds Windows; native verify once free.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T18:16:45.438Z",
@@ -6811,7 +6811,8 @@
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS"
       },
-      "runner_release_basis": "Native42878742542 and genuine visual A/B completed SUCCESS; release Windows after exact-head eight-view validation and independent visual rejection of previous candidate. No merge/release."
+      "runner_release_basis": "Native42878742542 and genuine visual A/B completed SUCCESS; release Windows after exact-head eight-view validation and independent visual rejection of previous candidate. No merge/release.",
+      "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
