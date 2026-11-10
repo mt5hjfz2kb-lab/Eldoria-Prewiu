@@ -1,4 +1,4 @@
-name: Eldoria P0 — publish exact verified compact world-clock owner A/B
+name: Eldoria P0 — publish verified stable-canvas owner candidate
 on:
   push:
     branches: [main]
@@ -38,6 +38,9 @@ jobs:
           source=read('actions/runs/42785047968')
           assert source['head_sha']=='836fce54e33e0c3c5cc87ea4ca480da5eb44835a'
           assert source['status']=='completed' and source['conclusion']=='success'
+          qa=read('actions/runs/42812046053')
+          assert qa['head_sha']=='79b9fdf8862a502a2452be88571d6d42658b532d'
+          assert qa['status']=='completed' and qa['conclusion']=='success', 'Actual published transport + immediate entry resize QA must pass'
           items=read('actions/runs/42785047968/artifacts')['artifacts']
           artifact=[a for a in items if a['id']==13749626125
                   and a['name']=='beta10-clock-copyadd-owner-only-site'
@@ -106,6 +109,50 @@ jobs:
           PY
           node --check site/beta-iphone-clock-ab/copy-transport.js
           node --check site/beta-iphone-clock-ab/play.js
+      - name: Checkout exact wrapper staging and tested module
+        uses: actions/checkout@v4
+        with:
+          ref: 592022ab96811f397aeb0db657f63c4f06124fc1
+          path: wrapper-source
+          sparse-checkout: |
+            tools/eldoria-private-beta/iphone_ab/stable_canvas.js
+            tools/eldoria-private-beta/iphone_ab/stage_stable_canvas.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Download exact successful immediate-entry comparison
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42812046053
+          name: eldoria-immediate-entry-canvas-ab-not-iphone
+          github-token: ${{ github.token }}
+          path: browser-proof
+      - name: Apply only byte-identical browser-tested wrapper, preserve all other routes
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,importlib.util,json
+          root=pathlib.Path('site')
+          before={p.relative_to(root).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file()}
+          code=pathlib.Path('wrapper-source/tools/eldoria-private-beta/iphone_ab')
+          result=json.loads(pathlib.Path('browser-proof/evidence/immediate-resize-ab.json').read_text())
+          assert result['control']['passed'] and result['candidate']['passed']
+          assert result['candidate']['early']['attempted']
+          seq=result['candidate']['resize']
+          assert len(seq)==4 and len({(x['canvas']['width'],x['canvas']['height']) for x in seq})==1
+          spec=importlib.util.spec_from_file_location('stage',code/'stage_stable_canvas.py')
+          stage=importlib.util.module_from_spec(spec);spec.loader.exec_module(stage)
+          proof_path=pathlib.Path('browser-proof/evidence/canvas-shell-proof.json')
+          proof=json.loads(proof_path.read_text())
+          assert proof['source']=='052d8c65edf0191fa819d7d08438c6ab172ccf83'
+          stage.stage(root,code/'stable_canvas.js',proof_path)
+          allowed={'beta-iphone-clock-ab/'+x['file'] for x in proof['shell_changes']}
+          allowed.update({'beta-iphone-clock-ab/index.html','beta-iphone-clock-ab/release-identity.json'})
+          for name,digest in before.items():
+            assert (root/name).is_file()
+            if name not in allowed:
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest, 'Unrelated file changed: '+name
+          print('ALL_UNITY_BYTES_BETA10_AND_OTHER_ROUTES_UNCHANGED_TESTED_CANVAS_WRAPPER_ONLY')
+          PY
+          node --check site/beta-iphone-clock-ab/play.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -132,6 +179,14 @@ jobs:
               assert stable['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
               assert clock['revision']=='native325-mobile12-minimal-world-clock-qa'
               assert clock['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+              assert clock['shell_revision']=='stable-canvas-r1'
+              import hashlib,re
+              html=read('beta-iphone-clock-ab/index.html?canvas='+str(attempt)).decode()
+              filename=re.search(r'src="(play-[a-f0-9]+\.js)"',html).group(1)
+              payload=read('beta-iphone-clock-ab/'+filename)
+              assert hashlib.sha256(payload).hexdigest()==clock['shell_script_sha256']
+              assert b'matchWebGLToCanvasSize:false' in payload
+              assert b'installEldoriaStableCanvas(canvas)' in payload
               assert proof['external_testers_enabled'] is False
               assert proof['stable_source_sha']==stable['source_sha']
               assert proof['candidate_source_sha']==clock['source_sha']
