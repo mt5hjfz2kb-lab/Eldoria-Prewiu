@@ -1042,8 +1042,8 @@ namespace Eldoria.BreachWatch
                 float left=w-margin-pw;
                 float top=navTop-ph-34;
                 At(panel,left,top,pw,ph);
-                At(buildingName.rectTransform,18,7,pw-80,21);
-                At(buildingLevel.rectTransform,18,31,pw-80,17);
+                At(buildingName.rectTransform,48,7,pw-109,21);
+                At(buildingLevel.rectTransform,48,31,pw-109,17);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
                 // This 90-unit live portrait well is at ~1.9:1 aspect
                 // rather than the prior 2.4:1 slit. Together with the
@@ -1158,8 +1158,8 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,18,8,pw-80,31);
-                At(buildingLevel.rectTransform,18,40,pw-80,17);
+                At(buildingName.rectTransform,50,8,pw-107,31);
+                At(buildingLevel.rectTransform,50,40,pw-107,17);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 buildingName.fontSize=21;
                 buildingLevel.fontSize=15;
