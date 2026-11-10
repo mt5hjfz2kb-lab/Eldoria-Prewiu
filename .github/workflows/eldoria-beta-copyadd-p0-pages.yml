@@ -234,7 +234,7 @@ jobs:
               assert direct['physical_mobile_tested'] is False
               assert direct['release_for_external_testers'] is False
               dh=read('beta-iphone-clock-direct/index.html?direct='+str(attempt)).decode()
-              df=re.search(r'src="(play-[a-f0-9]+\\.js)"',dh).group(1)
+              df=re.search(r'src="(play-[a-f0-9]+\.js)"',dh).group(1)
               dp=read('beta-iphone-clock-direct/'+df)
               assert hashlib.sha256(dp).hexdigest()==direct['shell_script_sha256']
               assert b'installEldoriaCopyTransport(build.data' not in dp
