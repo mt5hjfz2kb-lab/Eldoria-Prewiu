@@ -714,7 +714,7 @@ namespace Eldoria.BreachWatch
                 // their full 52u TOUCH footprint made 91px-wide badges
                 // vs the 62-68px sculpted coins in the owner's 900px image.
                 // Preserve >=44px physical hit area; scale PAINT only.
-                surface.VisualScale=.70f;
+                surface.VisualScale=.88f;
                 surface.raycastTarget=false;
                 UseSourceArtInteraction(button,surface);
                 navButtons[i]=button;
@@ -940,25 +940,29 @@ namespace Eldoria.BreachWatch
                 // Right-align only on the narrow phone. Hiding unbuilt food
                 // cannot push the two existing counters 100 pixels away from
                 // their original positions on the owner's 864px reference.
+                // Keep upper-right resource counters as small as the
+                // approved art: ~108px wide, separated by ~21px at 900px.
                 float chip=smallPhone
                     ?(visibleResources==2
                         ?Mathf.Min(85f,Mathf.Max(72f,(rightSpace-4f)/2f))
                         :Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f)))
-                    :75f;
-                float resourcesWidth=visibleResources*chip+4f*(visibleResources-1);
+                    :62f;
+                float chipGap=smallPhone?4f:12f;
+                float resourcesWidth=visibleResources*chip+
+                    chipGap*(visibleResources-1);
                 float chipHeight=smallPhone?38f:28f;
                 float symbolSize=smallPhone?25f:19f;
                 float symbolTop=(chipHeight-symbolSize)*.5f;
                 float resourceLeft=smallPhone
                     ?w-margin-resourcesWidth
-                    :Mathf.Min(w-margin-resourcesWidth,w*.54f);
+                    :Mathf.Min(w-margin-resourcesWidth,w*.52f);
                 At(resourceRow,resourceLeft,smallPhone?18f:17f,
                     resourcesWidth,chipHeight);
                 for(int i=0;i<3;i++)
                 {
                     resourceChips[i].gameObject.SetActive(i<visibleResources);
                     if(i>=visibleResources)continue;
-                    At(resourceChips[i],i*(chip+4f),0,chip,chipHeight);
+                    At(resourceChips[i],i*(chip+chipGap),0,chip,chipHeight);
                     At(resourceIllustrations[i].rectTransform,
                         4f,symbolTop,symbolSize,symbolSize);
                     At(resourceAmounts[i].rectTransform,
@@ -966,7 +970,7 @@ namespace Eldoria.BreachWatch
                     resourceAmounts[i].fontSize=smallPhone?14:12;
                 }
 
-                At(centerMark,w*.52f-56,74,112,30);
+                At(centerMark,w*.50f-56,69,112,30);
                 // Single carved plate taken from the owner's approved 864x1536
                 // original: the castle insignia is PAINTED IN that one plate.
                 // Keep live chapter, objective and progress editable on top.
@@ -1025,9 +1029,11 @@ namespace Eldoria.BreachWatch
 
                 // Full owner-reference medallions; retain a restrained bronze
                 // link rather than a second dark bottom toolbar.
-                float navSize=52,navGap=16;
+                // Small independent gold medallions, reference pitch 107px
+                // and footer y1493 on 900x1600; keep full invisible hitbox.
+                float navSize=52,navGap=9;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-111f;
+                float navTop=h-(smallPhone?111f:90f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
@@ -1058,7 +1064,9 @@ namespace Eldoria.BreachWatch
                 float ph=280f;
                 float cardRightInset=smallPhone?margin:39f;
                 float left=w-cardRightInset-pw;
-                float top=navTop-ph-(smallPhone?34f:51f);
+                // Position of the approved one-piece context unchanged
+                // when dock moves down, no second panel or masking layer.
+                float top=navTop-ph-(smallPhone?34f:72f);
                 At(panel,left,top,pw,ph);
                 At(buildingName.rectTransform,48,7,pw-109,21);
                 At(buildingLevel.rectTransform,48,31,pw-109,17);
@@ -1515,7 +1523,7 @@ namespace Eldoria.BreachWatch
                     // An unavailable destination is absent, not a tappable or
                     // faded promise of a screen that does not yet exist.
                     var p=navPlates[i];
-                    if(p)p.VisualScale=i==activeTab?.76f:.70f;
+                    if(p)p.VisualScale=i==activeTab?.94f:.88f;
                     if(p)p.color=allowed
                         ? i==(host.InWorld?3:selectedTab)
                             ?new Color(1f,.97f,.87f,1f):Color.white
