@@ -1073,7 +1073,7 @@ namespace Eldoria.BreachWatch
                 // The full live Spanish action is 95px wide at 12pt: retain a
                 // 32.5% hammer well AND widen the actual painted action, rather
                 // than shrinking the gameplay text below legibility.
-                At(((RectTransform)actionButton.transform),8,ph-53,pw-16,50);
+                At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50);
                 // Readable physical text survives the .91 scale of 390px
                 // devices while the larger 900px design stays lightweight.
                 buildingName.fontSize=16;
@@ -1260,7 +1260,7 @@ namespace Eldoria.BreachWatch
                 // invisible accessible touch target. Hammers occupy ~28%.
                 // Extra clearance after native GPU test showed the new 2K hammer
                 // relief extends beyond 28% of the painted button.
-                float captionLeft=paintedLeft+paintedWidth*.325f;
+                float captionLeft=paintedLeft+paintedWidth*.30f;
                 float captionRight=paintedLeft+paintedWidth-7f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
@@ -1478,7 +1478,10 @@ namespace Eldoria.BreachWatch
                     actionLabel.resizeTextForBestFit=true;
                     actionLabel.resizeTextMinSize=11;
                     actionLabel.resizeTextMaxSize=lastWidth<1000?16:17;
-                    actionLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
+                    // Real Cormorant single-line action: no artificial two-line wrap.
+                    // The extra 2K painted width is independently bounded by
+                    // 7u right padding and the Native ink/geometry checks.
+                    actionLabel.horizontalOverflow=HorizontalWrapMode.Overflow;
                     actionLabel.verticalOverflow=VerticalWrapMode.Truncate;
                     actionLabel.color=can?TextIvory:new Color(.91f,.85f,.72f,1f);
                 }
