@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 95
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}beta-iphone-clock-ab/
+      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/
     steps:
       - name: Verify frozen exact runner source and tester invitations BLOCKED
         env:
@@ -183,15 +183,44 @@ jobs:
           print('DIRECT_ROUTE_EXACT_BROWSER_TESTED_BYTES',size)
           PY
           node --check site/beta-iphone-clock-direct/play.js
+      - name: Reuse an already byte-identical publication instead of redeploying
+        id: existing
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,urllib.request,urllib.parse,concurrent.futures,os
+          root=pathlib.Path('site')
+          files=[p for p in root.rglob('*') if p.is_file() and p.name!='.nojekyll']
+          def identical(p):
+            name=p.relative_to(root).as_posix()
+            try:
+              request=urllib.request.Request('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'+urllib.parse.quote(name),headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-exact-publication-reuse'})
+              sha=hashlib.sha256();size=0
+              with urllib.request.urlopen(request,timeout=45) as response:
+                while chunk:=response.read(1024*1024):
+                  sha.update(chunk);size+=len(chunk)
+              with p.open('rb') as local: expected=hashlib.file_digest(local,'sha256').hexdigest()
+              return size==p.stat().st_size and sha.hexdigest()==expected
+            except Exception as e:
+              print('LIVE_DIFF_OR_UNAVAILABLE',name,str(e)[:120],flush=True)
+              return False
+          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            results=list(pool.map(identical,files))
+          same=all(results) and bool(files)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('same='+str(same).lower()+'\n')
+          print('LIVE_FILE_HASHES',sum(results),'OF',len(files),'EXACT_SITE',same)
+          PY
       - uses: actions/configure-pages@v5
+        if: steps.existing.outputs.same != 'true'
       - uses: actions/upload-pages-artifact@v3
+        if: steps.existing.outputs.same != 'true'
         with:
           path: site
       - name: Deploy protected old beta10 and isolated clock candidate
         id: deploy
+        if: steps.existing.outputs.same != 'true'
         uses: actions/deploy-pages@v4
         with:
-          timeout: 1800000
+          timeout: 600000
       - name: Confirm both real live build identities and binary routes; no external invites
         run: |
           python3 - <<'PY'
