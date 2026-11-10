@@ -46,7 +46,7 @@ assert.match(stage,/The daily coffer is absent/);
 assert.match(panel,/static Color MilestonePaintTint\(/);
 assert.match(panel,/hallPortrait\?\.82f:\.70f/);
 assert.match(panel,/milestoneScenery\.color=MilestonePaintTint\(stage/);
-assert.match(stage,/\.88f,\.76f,\.22f,true/);
+assert.match(stage,/\.88f,\.92f,\.10f,true/);
 
 // The real daily ledger has exactly real owned resources and accelerators.
 // Old fantasy mockups depicting gems, gold packs, potions and loot rarity are
