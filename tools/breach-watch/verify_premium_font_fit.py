@@ -89,14 +89,14 @@ def verify():
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
-    # The NEW 2K original action sprite is 3.45:1, not legacy 246:60.
+    # The new reference-guided single burgundy artwork is approximately 4.7:1.
     # Preserve source aspect, contain it inside real touch bounds and measure
     # captions against the *painted* red region rather than invisible hitbox.
     from PIL import Image
-    fresh=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/upgrade_button.png')
+    fresh=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png')
     with Image.open(fresh) as art:
         art_ratio=art.width/art.height
-    assert 3.2<art_ratio<3.8,('Unexpected newly generated action art ratio',art_ratio)
+    assert 3.8<art_ratio<5.7,('New reference-guided burgundy art has invalid silhouette',art_ratio)
     for hit_width,hit_height,label,caption,size in [
         (159,50,'900 portrait','Mejorar a Bastión II',12),
         (159,50,'390 portrait','Mejorar a II',15),
