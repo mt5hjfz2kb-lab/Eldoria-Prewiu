@@ -67,6 +67,12 @@ def stage(root):
     assert n==1
     html,n=re.subn(r'src="play-[a-f0-9]+\.js"','src="'+filename+'"',html);assert n==1
     (destination/'index.html').write_text(html)
+    identity=json.loads((destination/'release-identity.json').read_text())
+    identity['transport_revision']='direct-r1'
+    identity['shell_script_sha256']=digest(play.encode())
+    identity['physical_mobile_tested']=False
+    identity['release_for_external_testers']=False
+    (destination/'release-identity.json').write_text(json.dumps(identity,indent=2)+'\n')
     proof={'role':'LOCAL_IOS_TRANSPORT_CONTROL_ONLY','physical_iphone_verified':False,
            'engine_bytes_unchanged':True,'parts':prepared,'decoded_bytes':sum(p['bytes'] for p in prepared)}
     assert proof['decoded_bytes']==503831429
