@@ -79,13 +79,13 @@ def verify():
     # Physically readable small-phone context despite the tighter panel.
     assert 14*.91>=12.5, "390px contextual text too small"
     assert "buildingFunction.fontSize=smallPhone?14:12;" in hud
-    action_width=panel_width-24
+    action_width=panel_width-16
     # Source-accurate caption at 900x1600 uses title-case and the whole
     # target, just like the owner's approved UI. Unity BestFit may select
     # 13pt to stay inside its true carved bronze button.
     inset_900=max(31,min(38,action_width*.25))
     fits("Mejorar a Bastión II",SEMIBOLD,12,
-         action_width*.72-7,"900px premium full upgrade caption")
+         action_width*.675-7,"900px premium full upgrade caption")
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
@@ -98,8 +98,8 @@ def verify():
         art_ratio=art.width/art.height
     assert 3.2<art_ratio<3.8,('Unexpected newly generated action art ratio',art_ratio)
     for hit_width,hit_height,label,caption,size in [
-        (147,50,'900 portrait','Mejorar a Bastión II',12),
-        (147,50,'390 portrait','Mejorar a II',15),
+        (155,50,'900 portrait','Mejorar a Bastión II',12),
+        (155,50,'390 portrait','Mejorar a II',15),
         (196,45,'1600 landscape','Mejorar a II',16),
         (210,53,'844 compact landscape','Mejorar a II',15),
     ]:
