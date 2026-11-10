@@ -163,7 +163,7 @@ namespace Eldoria.DailyTreasures.Editor
                 report.cityCameraUsed=true;
                 report.cityRenderers=Object.FindObjectsByType<Renderer>(
                     FindObjectsInactive.Exclude,FindObjectsSortMode.None)
-                    .Count(x=>x && x.enabled && !(x is CanvasRenderer));
+                    .Count(x=>x && x.enabled);
                 Require(report.cityRenderers>=30,
                     "Real city scene has too few active visible 3D renderers: "+
                     report.cityRenderers);
