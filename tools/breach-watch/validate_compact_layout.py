@@ -84,7 +84,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("mission",m,80 if pw<600 else 82,missionw,69 if pw<600 else 50)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 36,8 if pw<600 else 6,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        chapter_text=R(54 if pw<600 else 36,8 if pw<600 else 5,missionw-(64 if pw<600 else 44),17 if pw<600 else 14)
         assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
         assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
@@ -92,7 +92,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
         short_objective=R(59 if pw<600 else 36,26 if pw<600 else 21,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
-        progress=R(59 if pw<600 else 36,46 if pw<600 else 34,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
+        progress=R(59 if pw<600 else 36,46 if pw<600 else 35,missionw-(70 if pw<600 else 44),18 if pw<600 else 12)
         assert short_objective.y+short_objective.h+2<=progress.y,size
         assert progress.y+progress.h<= (69 if pw<600 else 50)-3,size
         assert 87+20<=112-3,size
