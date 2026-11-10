@@ -517,10 +517,14 @@ namespace Eldoria.BreachWatch
             chapterName.lineSpacing=.93f;
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.UpperLeft,Muted);
-            // Legacy uGUI Text with VerticalWrapMode.Truncate draws ZERO
-            // glyphs when its internal line-height exceeds the short source-
-            // art row. Allow only this real dynamic fraction to paint its
-            // measured glyphs, with bounds verified by native GPU readback.
+            // Genuine Unity 6000.3.23f1 run 42823264943 proved that the
+            // new art's 12-unit objective row rendered ZERO glyphs with
+            // default VerticalWrapMode.Truncate, despite source-only font
+            // width checks passing. The fraction needed the same repair.
+            // Overflow draws real glyphs without deleting or falsifying a
+            // quest row; native GPU and line-count verification still enforce
+            // one legible line and no overlap with the next real row.
+            chapterObjective.verticalOverflow=VerticalWrapMode.Overflow;
             chapterProgress.verticalOverflow=VerticalWrapMode.Overflow;
             var questPlate=objective.GetComponent<BreachWatchPlate>();questPlate.raycastTarget=true;
             var questHit=Button(objective,()=>{fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);});
