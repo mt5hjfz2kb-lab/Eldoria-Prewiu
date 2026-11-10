@@ -1,1 +1,5 @@
-Final native visual review: separate horizontal card live title/level from painted tower by10u; preserve right close clearance. Prior42918127027 passed8screens6clicks and unchanged save; full52layout and actual font measurements remain green. Lease62.
+VIGILIA_ART_NATIVE_20261111_0015
+Requested source HEAD: 7ffa0bbf9ec6aff40ac9c63a2850ece9cdcdb5b7
+Workstream: eldoria-forja-oscura-visual-proof-20261107
+Owner: chatgpt-vigilia-art-automation-20261111; main CAS revision: 65; exclusive windows-runner-heavy reservation.
+Check approved owner JPEG 864x1536 against real Unity 900x1600: correct the previously too-high single Bastion card by 40 authored units at large portrait. No extra Canvas, no prior HUD, unchanged source artwork, small phone untouched. Measure 8 genuine city/Bastion renders at 1600x900,900x1600,844x390,390x844, live GPU legibility, six pointer clicks, unchanged save. Art score MUST remain pending independently of tech PASS.
