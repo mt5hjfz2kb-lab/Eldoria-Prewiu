@@ -332,63 +332,50 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     }
   }
 
-  // Previously the heraldic title and Skip overlapped by 20+ pixels in
-  // narrow portrait; check both physical hit areas and text composition.
-  // Two distinct real event compositions: an original landscape scene
-  // with the chest to the right; a true Bastion view with the built city
-  // visible behind the chest. Neither may cover its required Skip touch area.
-  // The portrait heading is lower and wider so a full-length chapter label
-  // does not become a floating fake button layered over the real artwork.
+  // Real event ceremonies now reserve the imported chest ONLY for daily loot.
+  // Lyra, Explorers and Vigilants give genuine Eldoria paintings the focal
+  // area; Bastion shows the genuine city, never a fictional castle or reward.
   const eventH=Math.min(h-20,portrait?700:370);
   for(const family of ['painterly','bastion'])
   {
     const city=family==='bastion';
-    const chest=city?
-      rect(0,portrait?103:85,portrait?302:296,portrait?269:176):
-      rect(portrait?0:.236*pw,portrait?.005*eventH:.166*eventH,
-        portrait?Math.min(pw*.64,272):Math.min(.374*pw,282),
-        portrait?Math.min(eventH*.33,223):Math.min(.475*eventH,175));
     const headingW=city?
-      portrait?Math.min(pw*.52,192):
-        Math.min(210,pw/2-296/2-14):
-      portrait?Math.min(pw-36,280):Math.min(pw*.52,302);
-    const headingX=city?
-      -pw/2+10+headingW/2:
-      portrait?0:-.247*pw;
+      Math.min(pw-116,portrait?240:300):
+      portrait?Math.min(pw-116,280):Math.min(pw*.58,330);
+    const headingX=portrait?
+      (city?-pw/2+10+headingW/2:-Math.min(26,(pw-headingW)*.20)):
+      city?-pw/2+12+headingW/2:-.18*pw;
     const headingY=city?eventH*.405:
       portrait?eventH*.29:eventH*.405;
     const heading=rect(headingX,headingY,headingW,40);
     const skip=portrait?rect(pw/2-60,eventH/2-82.5,100,45):
-      family==='painterly'
-        ?rect(-.247*pw,eventH/2-88.5,100,45)
-        :rect(pw/2-60,eventH/2-82.5,100,45);
+      city?rect(pw/2-60,eventH/2-82.5,100,45):
+        rect(-.18*pw,eventH/2-88.5,100,45);
     assert.ok(noOverlap(heading,skip),
-      `${w}x${h}: ${family} story banner steals the Skip tap`);
-    assert.ok(noOverlap(heading,chest),
-      `${w}x${h}: ${family} title pasted over real coffer lid`);
+      `${w}x${h}: ${family} title steals the real Skip tap`);
     assert.ok(heading.x0>=-pw/2+2 && heading.x1<=pw/2-2 &&
               heading.y1<=eventH/2-5 && headingW>=145,
       `${w}x${h}: ${family} title cropped by its own stage`);
-    // One legible 2px metal-ink line is the only decorative stage mark.
     const underline=rect(headingX,heading.y0+3,headingW-30,2);
     assert.ok(underline.x0>=heading.x0 && underline.x1<=heading.x1 &&
               underline.y0>=heading.y0 && underline.y1<=heading.y1,
-      `${w}x${h}: ${family} forged-ink accent escapes its title`);
+      `${w}x${h}: ${family} bronze-ink accent escapes its title`);
   }
   assert.ok((1-.38)*(1-.34)>.40,
-    `${w}x${h}: actual Bastion city hidden by stacked panels`);
-  // Real non-paying milestones also use the same premium authored chest.
-  // Their short true-gameplay report line must remain clear of the Continue
-  // button, even on a 375px portrait or 390px landscape device.
-  const milestoneChest=rect(0,portrait?105:87,portrait?294:282,portrait?265:175);
-  const milestoneCaption=rect(0,portrait?-148:-71,pw-45,portrait?141:66);
-  const milestoneContinue=rect(0,-ph/2+13+54/2,Math.min(pw-30,portrait?325:405),54);
-  assert.ok(noOverlap(milestoneChest,milestoneCaption),
-    `${w}x${h}: hero or kingdom story overlays the premium chest`);
+    `${w}x${h}: actual Bastion city hidden by stacked plates`);
+  const milestoneCaption=rect(0,portrait?-.32*eventH:-.19*eventH,
+    portrait?pw-48:.34*pw,portrait?.12*eventH:.19*eventH);
+  const milestoneContinue=portrait?
+    rect(0,-eventH/2+13+54/2,Math.min(pw-30,325),54):
+    rect(.29*pw,-eventH/2+13+54/2,Math.min(.34*pw,320),54);
   assert.ok(noOverlap(milestoneCaption,milestoneContinue),
-    `${w}x${h}: milestone report covers Continue action`);
-  assert.ok(milestoneChest.y1<=ph/2+eps,
-    `${w}x${h}: ceremonial chest exceeds top of frame`);
+    `${w}x${h}: authentic milestone report covers Continue action`);
+  if(!portrait)
+  {
+    const painting=rect(-.18*pw,.018*eventH,.62*pw,eventH-42);
+    assert.ok(painting.x1<=milestoneCaption.x0+18,
+      `${w}x${h}: painted event image obscures the real report`);
+  }
 
   checks.push({size:`${w}x${h}`,cards:cards.length,daySevenWidth:Math.round(cards[6].x1-cards[6].x0),touchTargets:true});
 }
