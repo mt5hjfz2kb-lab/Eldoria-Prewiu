@@ -27,7 +27,7 @@ jobs:
             /tools/breach-watch/cleanroom-source-links.json
             /Unity/Assets/Eldoria/BreachWatch/Resources/**
       - name: Install bounded image decoder
-        run: python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+        run: python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0 numpy==2.3.4 opencv-python-headless==4.12.0.88
       - name: Verify exclusive canonical owner before any GitHub write
         env:
           GH_TOKEN: ${{ github.token }}
