@@ -965,10 +965,11 @@ namespace Eldoria.BreachWatch
                     w*(smallPhone?.49f:.41f));
                 float missionTop=smallPhone?80f:79f;
                 float missionHeight=smallPhone?69f:60f;
-                // One extracted blank panel has a substantial transparent
-                // left margin. Place the actual painted silhouette flush with
-                // the profile crest (as on the approved screenshot).
-                At(objective,margin-12f,missionTop,missionWidth,
+                // The NEW independently illustrated mission asset has an
+                // alpha-trimmed painted silhouette, unlike the older cropped
+                // reference with 12u transparent padding. Align its true
+                // pixels with the 13u profile inset; never clip the bevel.
+                At(objective,margin,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
                 // A genuine 390x844 phone showed 12*.91=10.92px, below
                 // the minimum readable physical text. Use a 13u authored
