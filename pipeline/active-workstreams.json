@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T23:20:50.835Z",
+  "updated_at": "2026-11-10T23:30:31.665Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6672,7 +6672,7 @@
       "ownership_revision": 65,
       "write_scope_released": false,
       "phase": "NATIVE_EXCLUSIVE_CAS65_REVIEW_PENDING",
-      "next": "Align Bastion selected single panel vertically against approved original 864x1536 (current genuine 900x1600 image has ~75px too high card), retaining 2K art, all gameplay, 6 clicks and 8 pixel hash checks; rerun native exact HEAD when runner free, no merging/art approval.",
+      "next": "Wait for existing GitHub Actions native run42922829351 exact PR173 HEAD b2623105, do not trigger duplicate. Once completed download all8 real captures, verify SHA256 and six clicks + unchanged save, compare original approved JPEG 864x1536 directly; if true PASS release windows-runner-heavy with CAS same owner and next revision. Art quality remains subjective/NOT APPROVED.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T23:20:50.835Z",
@@ -6846,6 +6846,15 @@
         "completed": true,
         "native_artifact": 13809598450,
         "delivered_image": "Eldoria_marcos_ampliados.png"
+      },
+      "pending_native_run": {
+        "run_id": 42922829351,
+        "source_sha": "b26231055ff76d2ca583bdb364127ea205e5e2e0",
+        "owner_revision": 65,
+        "source_syntax": "SUCCESS",
+        "native_status": "queued",
+        "unity_art_unverified": true,
+        "reason": "Windows native job queued behind simultaneous work; do not cancel or release exclusive lease until native finishes; collect 8 captures and inspect approved JPEG once complete."
       }
     },
     {
