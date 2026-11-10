@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-10T18:40:28.557Z",
+  "updated_at": "2026-11-10T18:51:08.457Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 49,
+      "ownership_revision": 50,
       "write_scope_released": false,
-      "phase": "REPAIR_NATIVE_CONTRACT_THEN_REVIEW_ORIGINAL_ART",
-      "next": "Repair obsolete sprite contract from failed run 42873624537; execute eight original Unity views, inspect artwork and retain only evidenced improvement.",
+      "phase": "NATIVE_RECOVERY_COMPLETE_LATEST_ART_BATCH_REJECTED_BASELINE_RESTORED",
+      "next": "Native validation requested by owner completed. Do not repeat rejected low-resolution OwnerControls crop substitution. Art remains about5.5/10, target7.5 not reached. Next production must improve high-resolution finished 2D surfaces against original reference, not micro-layout or Bastion3D.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-10T18:16:45.438Z",
@@ -6776,11 +6774,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "ff07ae2d9383cd9192289177f0ce93019faffeb0",
-        "native_run": 42866907280,
+        "source_sha": "bedcb370274d2f1ef6be854235b42599e3f8efa0",
+        "native_run": 42878742542,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13788161413,
+        "artifact": 13793216174,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6808,12 +6806,12 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "First native run 42865155787 properly FAILED for painted 844x390 medal 35.2944px. Corrected size (source sprites unchanged) and landscape mission fraction position. Second exact HEAD native 42866907280 passed 8 screenshots with SHA256-verified manifest and 6 real interactions. Visual A/B against approved owner image still differs in warm palette/profile/missional carving; not 7.5/10 accepted.",
-        "art_ab_artifact": 13786684317,
+        "notes": "Exact-head recovery after independently rejecting source96b6e79 native42878041020. Restored visually cleaner baseline; inspected authentic eight views, all PNG SHA256 verified. Six navigation interactions, unchanged save, no old HUD. No new artistic gain claimed; target7.5 not met.",
+        "art_ab_artifact": 13791189975,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS"
       },
-      "runner_release_basis": "Exact-head Unity 42866907280 SUCCESS 8/8 PNG SHA256 verified, graphical QA and clicks PASS; no other Windows job in this workstream, lease released after test. Artistic score unresolved."
+      "runner_release_basis": "Native42878742542 and genuine visual A/B completed SUCCESS; release Windows after exact-head eight-view validation and independent visual rejection of previous candidate. No merge/release."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
