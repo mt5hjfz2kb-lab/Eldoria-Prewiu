@@ -1,4 +1,4 @@
-name: Eldoria P0 — WebKit compiler isolation, NOT release approval
+name: Eldoria P0 — immediate entry and keyboard resize candidate
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -20,11 +20,13 @@ jobs:
       - name: Checkout exact audited, source-only Mac WebKit probe
         uses: actions/checkout@v4
         with:
-          ref: 450d7e9ad4603c51d4491fb6749dab544b78d5e0
+          ref: 2bc2ac169bc6d675d1b2d831c1d40c834052bda4
           sparse-checkout: |
             tools/eldoria-private-beta/qa_webkit_residency.cjs
             tools/eldoria-private-beta/qa_static_server.cjs
             tools/eldoria-private-beta/iphone_ab/control-beta10-entry.html
+            tools/eldoria-private-beta/iphone_ab/stable_canvas.js
+            tools/eldoria-private-beta/iphone_ab/stable_canvas.test.mjs
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Download exact previous source QA pass artifact, no Unity compilation
@@ -92,6 +94,8 @@ jobs:
           QA_SKIP_PREFLIGHT: '1'
           QA_EXPECT_ORIGIN: 'http://127.0.0.1:18975'
           QA_NATIVE_PROFILE: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_RESIZE_STRESS: '1'
         run: |
           npm install --prefix "$RUNNER_TEMP/compact-webkit" --no-save playwright@1.55.0
           "$RUNNER_TEMP/compact-webkit/node_modules/.bin/playwright" install webkit
@@ -99,35 +103,46 @@ jobs:
           node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
+          node --test tools/eldoria-private-beta/iphone_ab/stable_canvas.test.mjs
           failed=0
-          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1 >evidence-default.log 2>&1
-          JSC_useOMGJIT=false __XPC_JSC_useOMGJIT=false JSC_dumpOptions=1 __XPC_JSC_dumpOptions=1 DEBUG=pw:browser QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/no-omg node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1 >evidence-no-omg.log 2>&1
+          QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs >control.log 2>&1 || failed=1
           python3 - <<'PY'
-          import json
-          from pathlib import Path
-          r=json.loads(Path('evidence/direct/report.json').read_text())
-          print('NATIVE_MEMORY_DIAGNOSTIC_ONLY_NOT_RELEASE_APPROVAL',json.dumps({'passed':r['passed'],'profiles':r.get('nativeProfiles',[])}))
-          assert r['passed'] and r.get('nativeProfiles'), 'Need actual peak stack captures'
+          import pathlib,json,hashlib
+          root=pathlib.Path('site/beta-direct-clock')
+          module=pathlib.Path('tools/eldoria-private-beta/iphone_ab/stable_canvas.js').read_text()
+          proof={'source':'2bc2ac169bc6d675d1b2d831c1d40c834052bda4','engine_modified':False,'shell_changes':[],'physical_iphone_tested':False}
+          for p in root.glob('play*.js'):
+            before=p.read_text()
+            assert before.count('matchWebGLToCanvasSize:true')==1
+            assert before.count('const instance=await createUnityInstance(canvas,{')==1
+            after=module+'\\n'+before.replace('matchWebGLToCanvasSize:true','matchWebGLToCanvasSize:false').replace('const instance=await createUnityInstance(canvas,{','window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\\n  const instance=await createUnityInstance(canvas,{')
+            p.write_text(after)
+            proof['shell_changes'].append({'file':p.name,'before':hashlib.sha256(before.encode()).hexdigest(),'after':hashlib.sha256(after.encode()).hexdigest()})
+          pathlib.Path('evidence/canvas-shell-proof.json').write_text(json.dumps(proof,indent=2))
           PY
+          QA_VARIANT=stable-canvas QA_URL='http://127.0.0.1:18975/beta-direct-clock/?eldoria_diag=1' QA_REVISION=native325-mobile12-minimal-world-clock-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs >candidate.log 2>&1 || failed=1
           python3 - <<'PY'
           import json,pathlib
           rows={}
-          for name in ('direct','no-omg'):
+          for name in ('control','candidate'):
             r=json.loads(pathlib.Path('evidence',name,'report.json').read_text())
-            rows[name]={'passed':r['passed'],'peak_kib':max(p.get('rssKiB',0) for v in r['samples']+r.get('entrySamples',[]) for p in v.get('processes',[]) if 'WebContent' in p.get('name',''))}
-          pathlib.Path('evidence/compiler-isolation.json').write_text(json.dumps(rows,indent=2))
-          print('DIAGNOSTIC_ONLY_COMPILER_ISOLATION',rows)
-          assert all(r['passed'] for r in rows.values())
+            seq=r.get('resizeSequence',[])
+            rows[name]={'passed':r['passed'],'early':r.get('earlyEntry'),'resize':seq,'peak_rss_kib':max(p.get('rssKiB',0) for v in r['samples']+r.get('entrySamples',[]) for p in v.get('processes',[]) if 'WebContent' in p.get('name',''))}
+          pathlib.Path('evidence/immediate-resize-ab.json').write_text(json.dumps(rows,indent=2))
+          print('IMMEDIATE_ENTRY_RESIZE_DESKTOP_ONLY',rows)
+          assert all(r['passed'] and r['early']['attempted'] for r in rows.values())
+          seq=rows['candidate']['resize']
+          assert len(seq)==4 and len({(x['canvas']['width'],x['canvas']['height']) for x in seq})==1,'Candidate render target must remain unchanged during keyboard-height resize'
           PY
           if [ "$failed" != 0 ]; then exit 1; fi
       - name: Archive real Mac WebKit evidence, NEVER claim physical iPhone certification
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-webkit-compiler-isolation-not-release
+          name: eldoria-immediate-entry-canvas-ab-not-iphone
           path: |
             evidence/
             server.log
-            evidence-default.log
-            evidence-no-omg.log
+            control.log
+            candidate.log
           retention-days: 14
