@@ -49,10 +49,14 @@ jobs:
           stage=importlib.util.module_from_spec(spec);spec.loader.exec_module(stage)
           stage.stage(root,code/'stable_canvas.js','browser-proof/evidence/canvas-shell-proof.json')
           PY
+          python3 tools/eldoria-private-beta/iphone_ab/stage_direct_control.py site
+          python3 - <<'PY'
+          print('All three same-origin routes staged; no publication')
+          PY
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Inventory installed iOS runtimes and install pinned XCUITest automation
+      - name: Inventory installed iOS runtimes and enable native SafariDriver
         env:
           APPIUM_HOME: ${{ runner.temp }}/eldoria-appium
         run: |
@@ -68,16 +72,14 @@ jobs:
           pathlib.Path('evidence/runtime.json').write_text(json.dumps(runtime,indent=2))
           print(runtime)
           PY
-          npm install --prefix "$RUNNER_TEMP/ios-tools" --no-save appium@3.1.2
-          "$RUNNER_TEMP/ios-tools/node_modules/.bin/appium" driver install xcuitest@12.22.8
+          sudo /usr/bin/safaridriver --enable
       - name: Run Safari in fresh iPhone simulators and capture actual failures
         env:
           APPIUM_HOME: ${{ runner.temp }}/eldoria-appium
         run: |
-          export PATH="$RUNNER_TEMP/ios-tools/node_modules/.bin:$PATH"
           node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >evidence/server.log 2>&1 &
           server_pid=$!
-          appium --address 127.0.0.1 --port 4723 --log-level info >evidence/appium.log 2>&1 &
+          /usr/bin/safaridriver --port 4723 --diagnose >evidence/safaridriver.log 2>&1 &
           appium_pid=$!
           trap 'kill "$server_pid" "$appium_pid" || true' EXIT
           python3 - <<'PY'
@@ -92,7 +94,7 @@ jobs:
           runtime_id=$(python3 -c "import json;print(json.load(open('evidence/runtime.json'))['identifier'])")
           export QA_IOS_VERSION=$(python3 -c "import json;print(json.load(open('evidence/runtime.json'))['version'])")
           failed=0
-          for variant in beta-native325 beta-iphone-clock-ab; do
+          for variant in beta-native325 beta-iphone-clock-ab beta-iphone-clock-direct; do
             export QA_SIM_UDID=$(xcrun simctl create "Eldoria-$variant" com.apple.CoreSimulator.SimDeviceType.iPhone-16 "$runtime_id")
             export QA_OUT="evidence/$variant"
             mkdir -p "$QA_OUT"
