@@ -71,7 +71,7 @@ def verify():
     fits("NIVEL I",SEMIBOLD,12,54,"real Bastion level single row")
     fits("450",BODY_BOLD,15,42,"real 450 wood price single row")
     fits("300",BODY_BOLD,15,43,"real 300 stone price single row")
-    paragraph="Gobierno y progreso de Valoria."
+    paragraph="Gobierno de Valoria."
     paragraphs=lines(REGULAR,12,paragraph,panel_width-26)
     assert len(paragraphs)<=2,(paragraphs,"narrative wraps beyond its 43u card")
     assert all(width(REGULAR,12,line)<=panel_width-26 for line in paragraphs)
@@ -126,8 +126,8 @@ def verify():
     # or small landscape; both rows preserve >=4 Unity design units.
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     for clause in (
-        "At(buildingName.rectTransform,45,7,pw-104,21);",
-        "At(buildingLevel.rectTransform,45,30,pw-104,17);",
+        "At(buildingName.rectTransform,45,21,pw-104,21);",
+        "At(buildingLevel.rectTransform,45,43,pw-104,17);",
         "At(buildingName.rectTransform,50,8,pw-111,31);",
         "At(buildingLevel.rectTransform,50,40,pw-111,17);",
     ):

@@ -1092,37 +1092,26 @@ namespace Eldoria.BreachWatch
                 // starts x103. Both true text rows can safely occupy the
                 // intervening 57u, with a 1u hard separation from close.
                 // Keep both captions fully live, no painted placeholder.
-                At(buildingName.rectTransform,45,7,pw-104,21);
-                At(buildingLevel.rectTransform,45,30,pw-104,17);
-                At(((RectTransform)closeButton.transform),pw-55,3,50,50);
-                // This 90-unit live portrait well is at ~1.9:1 aspect
-                // rather than the prior 2.4:1 slit. Together with the
-                // separately rendered 1.6:1 texture, its center crop fits
-                // all original Bastion parapets and gate without stretching
-                // the real 3D mesh or enlarging the panel's width.
-                // The actual generated CleanRoom panel ALREADY has its
-                // sole inner brass rule at 52.1% of panel height (146u on
-                // this real 280u panel), verified from the source pixels.
-                // The old 75u portrait pushed 2 lines of live description
-                // ACROSS that painted edge, and an extra uGUI divider at
-                // y161 made the UI look like two cards pasted together.
-                // Fit BOTH true Unity portrait and live description ABOVE
-                // the baked 146u rule and NEVER draw the duplicate line.
-                // This uses the existing one-piece panel, no extra layers.
-                At(portraitFrame,11,48,pw-22,57);
-                At(buildingFunction.rectTransform,13,108,pw-26,35);
+                At(buildingName.rectTransform,45,21,pw-104,21);
+                At(buildingLevel.rectTransform,45,43,pw-104,17);
+                At(((RectTransform)closeButton.transform),pw-55,14,50,50);
+                // Source-measured new card: illustration well ends at 129.7u,
+                // description below it; one painted divider at 160.8u.
+                // Never include live description inside the portrait frame.
+                At(portraitFrame,15,61,pw-30,65);
+                At(buildingFunction.rectTransform,13,133,pw-26,24);
                 descriptionDivider.gameObject.SetActive(false);
-                At(costHeader.rectTransform,13,157,pw-26,17);
-                At(buildingCosts.rectTransform,13,178,pw-26,20);
-                At(costIcons[0].rectTransform,14,179,19,19);
-                At(costQuantities[0].rectTransform,39,179,42,20);
-                At(costIcons[1].rectTransform,89,179,19,19);
+                At(costHeader.rectTransform,13,163,pw-26,17);
+                At(buildingCosts.rectTransform,13,184,pw-26,20);
+                At(costIcons[0].rectTransform,14,184,19,19);
+                At(costQuantities[0].rectTransform,39,184,42,20);
+                At(costIcons[1].rectTransform,89,184,19,19);
                 // Unity native 42835121287 proved that the canonical 300
                 // stone cost wrapped to 40u in its 33u-wide slot; the
                 // screenshot falsely appeared to cost only 30. Never hide
                 // or truncate a real price. Use the remaining true 43u
                 // before the card's bronze rim, not a painted overlay.
-                At(costQuantities[1].rectTransform,110,179,pw-115,20);
+                At(costQuantities[1].rectTransform,110,184,pw-115,20);
                 costQuantities[0].fontSize=15;
                 costQuantities[1].fontSize=15;
                 At(buildingState.rectTransform,13,209,pw-26,17);
@@ -1336,46 +1325,11 @@ namespace Eldoria.BreachWatch
                     (full.rect.height-disk)*.5f,disk,disk);
             }
 
-            // Render only the original selected building in its native
-            // illustration well. Reproject the physical camera texture without
-            // stretching stone, gold trim or actual building geometry.
+            // The viewport matches the single illustration well painted into
+            // the new panel. Do not letterbox it into a second smaller box.
+            // CropPortraitToTrueGeometry preserves the model's proportions.
             if(portraitView && portraitFrame)
-            {
-                float availableWidth=Mathf.Max(1f,portraitFrame.rect.width-10f);
-                float availableHeight=Mathf.Max(1f,portraitFrame.rect.height-10f);
-                float ratio=availableWidth/availableHeight;
-                // Preserve the *actual* aspect of the separately rendered
-                // 3D camera. Our earlier 2:1 constant both shrank the castle
-                // and silently cropped towers on widescreen UI cards.
-                float renderRatio=portraitView.texture
-                    ?portraitView.texture.width/(float)portraitView.texture.height
-                    :1.60f;
-                if(ratio>2.0f)
-                {
-                    // Wide landscape well: letterbox a natural 1.6:1 image
-                    // against the premium dark brass frame rather than
-                    // cropping the 3D ramparts out of the live photograph.
-                    float fittedWidth=availableHeight*renderRatio;
-                    float inset=(portraitFrame.rect.width-fittedWidth)*.5f;
-                    At(portraitView.rectTransform,inset,5f,
-                        fittedWidth,availableHeight);
-                    portraitView.uvRect=new Rect(0,0,1,1);
-                }
-                else
-                {
-                    Fill(portraitView.rectTransform,5f);
-                    if(ratio<=renderRatio)
-                    {
-                        float uvW=ratio/renderRatio;
-                        portraitView.uvRect=new Rect((1f-uvW)*.5f,0,uvW,1);
-                    }
-                    else
-                    {
-                        float uvH=renderRatio/ratio;
-                        portraitView.uvRect=new Rect(0,(1f-uvH)*.5f,1,uvH);
-                    }
-                }
-            }
+                Fill(portraitView.rectTransform,2f);
             lastPortrait=portrait;
             lastNavigationMask=navigationMask;
             lastResourceCount=visibleResources;
@@ -1475,8 +1429,8 @@ namespace Eldoria.BreachWatch
                         CropPortraitToTrueGeometry();
                     }
                     buildingFunction.text=(b.Id=="bastion" && b.Level==1)
-                        ? (host.English?"Valoria's government and progress."
-                            :"Gobierno y progreso de Valoria.")
+                        ? (host.English?"Valoria's government."
+                            :"Gobierno de Valoria.")
                         : b.Function??"";
                     buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)
                         ?(host.English?"No cost":"Sin coste")

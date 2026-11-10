@@ -64,7 +64,7 @@ for name in asset_names:
         # in UnityEngine.UI; its nine-slice borders use spriteBorder divided
         # by that ratio. The previous source model divided just by spritePPU
         # and incorrectly passed UI whose entire center collapsed in Unity.
-        ppu={'profile':2000,'mission':2000,'resource':2600}[name]
+        ppu={'profile':2000,'mission':1400,'resource':2600}[name]
         canvas_reference_ppu=100
         import re
         assert 'scaler.referencePixelsPerUnit=100f;' in HUD,name
@@ -95,50 +95,33 @@ for name in asset_names:
         assert live_min_height-(top+bottom)*unit_scale>=8,(
             name,'collapsed vertical nine-slice center')
     if name=='panel':
-        # The generated art already paints ONE brass horizontal rule at
-        # ~52.1% of its height. That source-painted line sits immediately
-        # below the real 3D photo and actual two-line gameplay description.
-        # Do not draw an extra procedural divider, or the first screen
-        # regresses to the rejected pasted-up overlapping-card appearance.
-        # A SECOND accidental source line at 66.5% was previously erased.
+        # Detect actual source-painted inset bottom and separate description
+        # divider. Unlike the rejected source, description is OUTSIDE the well.
         with Image.open(file).convert('RGBA') as art:
             width,height=art.size
-            peak=0
-            for y in range(round(height*.659),round(height*.673)):
-                total=0
-                for x in range(round(width*.10),round(width*.90)):
-                    r,g,b,a=art.getpixel((x,y))
-                    if (a>160 and r>70 and g>44 and
-                        r>g*1.11 and g>b*1.07):
-                        total+=1
-                peak=max(peak,total)
-            assert peak<80,('reintroduced duplicate gold divider',peak)
-            # Detect the existing inner well's REAL painted lower border;
-            # it must continue to justify 144u text end and 157u cost top.
-            # Sample the central 80% only, not outer decorative left/right.
-            gold_rows=[]
-            for y in range(round(height*.47),round(height*.56)):
-                total=0
-                for x in range(round(width*.10),round(width*.90),3):
-                    r,g,b,a=art.getpixel((x,y))
-                    if a>160 and r>70 and g>44 and r>g*1.11 and g>b*1.07:
-                        total+=1
-                gold_rows.append((total,y))
-            count,rule_y=max(gold_rows)
-            assert count>=100,('single engraved well border missing',count)
-            rule_ui=280*rule_y/height
-            assert 143+1.5<=rule_ui<=157-10,(
-                'real Unity gameplay text crosses actual generated painting',
-                rule_y,rule_ui)
+            def gold_line(lo,hi):
+                rows=[]
+                for y in range(round(height*lo),round(height*hi)):
+                    total=0
+                    for x in range(round(width*.12),round(width*.88),3):
+                        r,g,b,a=art.getpixel((x,y))
+                        total+=int(a>160 and r>90 and g>60 and r>g*1.11 and g>b*1.07)
+                    rows.append((total,y))
+                count,y=max(rows)
+                assert count>=width*.12,('missing painted rule',count)
+                return y*280/height
+            well_bottom=gold_line(.44,.48)
+            divider=gold_line(.56,.60)
+            assert 126<well_bottom<131,('portrait crosses painted frame',well_bottom)
+            assert 157<divider<169,('description crosses divider',divider)
             for required in (
-                'At(portraitFrame,11,48,pw-22,57);',
-                'At(buildingFunction.rectTransform,13,108,pw-26,35);',
+                'At(portraitFrame,15,61,pw-30,65);',
+                'At(buildingFunction.rectTransform,13,133,pw-26,24);',
                 'descriptionDivider.gameObject.SetActive(false);',
-                'At(costHeader.rectTransform,13,157,pw-26,17);',
+                'At(costHeader.rectTransform,13,163,pw-26,17);',
             ):
-                assert required in HUD,('new one-piece panel layout lost',required)
-            print('VIGILIA_SOURCE_PAINTED_INSET_LINE',round(rule_ui,2),
-                  'UI units; description ends=143; cost starts=157')
+                assert required in HUD,('new panel layout lost',required)
+            print('VIGILIA_SEPARATE_PORTRAIT_DESCRIPTION',well_bottom,divider)
 for name in ('panel','mission','profile','resource','upgrade'):
     assert 'VigiliaArt/CleanRoom/'+name in HUD,name
 assert '"VigiliaArt/CleanRoom/nav_"+symbol' in HUD

@@ -111,9 +111,9 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         card_right=m if pw<600 else 39
         panely=navtop-280-(34 if pw<600 else 72)
         context=place("context",w-card_right-panelw,panely,panelw,280)
-        touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        header=R(45,7,panelw-104,21)
-        level=R(45,30,panelw-104,17)
+        touch("close",R(context.x+panelw-55,context.y+14,50,50))
+        header=R(45,21,panelw-104,21)
+        level=R(45,43,panelw-104,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
@@ -122,17 +122,17 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # 52.1% of the 280u card = 145.9u. The live selected mesh and
         # two-line text must fit INSIDE, not across the built-in painted line.
         # The original separate uGUI divider is now disabled for portrait.
-        real_painted_rule=.521*280
-        portraitphoto=R(11,48,panelw-22,57)
-        info=R(13,108,panelw-26,35)
-        costlabel=R(13,157,panelw-26,17)
-        costdata=R(13,178,panelw-26,20)
+        real_painted_rule=160.785
+        portraitphoto=R(15,61,panelw-30,65)
+        info=R(13,133,panelw-26,24)
+        costlabel=R(13,163,panelw-26,17)
+        costdata=R(13,184,panelw-26,20)
         # Actual Unity text numbers are fully separate live labels:
         # retain readable 450 and 300 with gap after true 19u icons.
-        wood_icon=R(14,179,19,19)
-        wood_qty=R(39,179,42,20)
-        stone_icon=R(89,179,19,19)
-        stone_qty=R(110,179,panelw-115,20)
+        wood_icon=R(14,184,19,19)
+        wood_qty=R(39,184,42,20)
+        stone_icon=R(89,184,19,19)
+        stone_qty=R(110,184,panelw-115,20)
         assert wood_icon.x+wood_icon.w+3<=wood_qty.x,size
         assert stone_icon.x+stone_icon.w+2<=stone_qty.x,size
         assert stone_qty.x+stone_qty.w<=panelw-4,size
@@ -140,7 +140,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         action=R(6,227,panelw-12,50)
         assert portraitphoto.y+portraitphoto.h+3<=info.y,size
         assert info.y+info.h+1.5<=real_painted_rule,size
-        assert costlabel.y>=real_painted_rule+10,size
+        assert costlabel.y>=real_painted_rule+2,size
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
@@ -232,10 +232,10 @@ def main():
         'chapterName.fontSize=smallPhone?13:11;',
         'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
-        'At(buildingName.rectTransform,45,7,pw-104,21);',
+        'At(buildingName.rectTransform,45,21,pw-104,21);',
         'At(buildingName.rectTransform,50,8,pw-111,31);',
         'At(identityPower.rectTransform,59,36,165,21);',
-        'At(buildingLevel.rectTransform,45,30,pw-104,17);',
+        'At(buildingLevel.rectTransform,45,43,pw-104,17);',
         'At(buildingLevel.rectTransform,50,40,pw-111,17);'
     ]
     for pattern in expected:

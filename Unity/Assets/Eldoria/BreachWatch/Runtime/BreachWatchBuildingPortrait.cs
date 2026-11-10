@@ -326,10 +326,9 @@ namespace Eldoria.BreachWatch
                     {
                         var p=pixels[py*texture.width+px];
                         if(p.a<=12)transparentBackground++;
-                        if(Mathf.Abs(p.r-background.r)+
-                           Mathf.Abs(p.g-background.g)+
-                           Mathf.Abs(p.b-background.b)<=42)
-                            continue;
+                        // Transparent render target gives an authoritative
+                        // silhouette, including stone matching the clear RGB.
+                        if(p.a<=12)continue;
                         nonBackground++;
                         if(p.a>=200)opaqueMasonry++;
                         minX=Mathf.Min(minX,px);drawMaxX=Mathf.Max(drawMaxX,px);
