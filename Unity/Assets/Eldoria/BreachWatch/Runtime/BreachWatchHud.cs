@@ -974,8 +974,8 @@ namespace Eldoria.BreachWatch
                 // original 78u height made the illustration look like a poster.
                 float missionWidth=Mathf.Min(smallPhone?211f:170f,
                     w*(smallPhone?.49f:.38f));
-                float missionTop=smallPhone?80f:79f;
-                float missionHeight=smallPhone?69f:55f;
+                float missionTop=smallPhone?80f:82f;
+                float missionHeight=smallPhone?69f:50f;
                 // The NEW independently illustrated mission asset has an
                 // alpha-trimmed painted silhouette, unlike the older cropped
                 // reference with 12u transparent padding. Align its true
@@ -997,11 +997,11 @@ namespace Eldoria.BreachWatch
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
                 At(chapterObjective.rectTransform,smallPhone?59f:36f,
-                    smallPhone?26f:22f,missionWidth-(smallPhone?70f:44f),
-                    fullObjective?51f:(smallPhone?18f:14f));
+                    smallPhone?26f:21f,missionWidth-(smallPhone?70f:44f),
+                    fullObjective?51f:(smallPhone?18f:12f));
                 At(chapterProgress.rectTransform,smallPhone?59f:36f,
-                    fullObjective?87f:(smallPhone?46f:38f),
-                    missionWidth-(smallPhone?70f:44f),smallPhone?18f:13f);
+                    fullObjective?87f:(smallPhone?46f:34f),
+                    missionWidth-(smallPhone?70f:44f),smallPhone?18f:12f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:11;
