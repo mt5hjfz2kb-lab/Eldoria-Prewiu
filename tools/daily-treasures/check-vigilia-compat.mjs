@@ -64,7 +64,8 @@ const sourceRequirements=[
     'Painted overlay cannot steal pointer input'],
   [/actionHit\.raycastTarget\s*=\s*true/,
     'Full-size transparent native action hit target'],
-  [/VigiliaArt\/ResourceIcons\//,'canonical resource icon source']
+  [/resourceIllustrations\[i\]\.sprite=Resources\.Load<Sprite>\(/,
+    'Canonical three resource sprites are drawn from real imported art']
 ];
 for(const [expression,meaning] of sourceRequirements)
   assert.match(native,expression,
@@ -74,7 +75,8 @@ for(const [expression,meaning] of sourceRequirements)
 // authored 2K UI paintings, not merely names in source or conceptual
 // mockups. Verify them in PR173 at this exact HEAD without importing them
 // into PR181's independent chest artwork.
-for(const name of ['profile_panel','resource_chip','upgrade_button']){
+for(const name of ['profile_panel','resource_chip','upgrade_button',
+                   'wood','stone','food']){
   const path='Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/'+name+'.png';
   const [asset,meta]=await Promise.all([
     api('/contents/'+path+'?ref='+ref),
@@ -82,7 +84,7 @@ for(const name of ['profile_panel','resource_chip','upgrade_button']){
   ]);
   assert.equal(asset.type,'file','Genuine Vigilia FreshArt disappeared: '+name);
   assert.ok(asset.size>5000,'Vigilia painting too small or missing: '+name);
-  const info=Buffer.from(meta.content.replace(/\\s/g,''),'base64').toString('utf8');
+  const info=Buffer.from(meta.content.replace(/\s/g,''),'base64').toString('utf8');
   assert.match(info,/textureType: 8/,'Vigilia art is not imported as Sprite: '+name);
   assert.match(info,/spriteMode: 1/,'Vigilia art unexpected sprite mode: '+name);
 }
