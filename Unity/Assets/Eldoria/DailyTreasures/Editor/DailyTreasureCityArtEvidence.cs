@@ -215,15 +215,21 @@ namespace Eldoria.DailyTreasures.Editor
                     {
                         camera.targetTexture=target;
                         Canvas.ForceUpdateCanvases();
-                        pictures.Add(Photograph(camera,target,folder,width,height,
-                            "actual-city-baseline",true));
+                        var baseline=Photograph(camera,target,folder,width,height,
+                            "actual-city-baseline",true);
+                        pictures.Add(baseline);
                         panel.Suppressed=false;
                         panel.Open();
                         Require(panel.IsOpen,
                             "Daily calendar not visible above real city artwork");
                         Canvas.ForceUpdateCanvases();
-                        pictures.Add(Photograph(camera,target,folder,width,height,
-                            "authored-calendar-context",false));
+                        var withCalendar=Photograph(camera,target,folder,width,height,
+                            "authored-calendar-context",false);
+                        pictures.Add(withCalendar);
+                        Require(!string.Equals(baseline.sha256,withCalendar.sha256,
+                                StringComparison.OrdinalIgnoreCase),
+                            "Real city and daily panel images are identical: "+
+                            width+"x"+height+"; UI was not drawn over the scene");
                         panel.Close();
                         panel.Suppressed=true;
                     }
