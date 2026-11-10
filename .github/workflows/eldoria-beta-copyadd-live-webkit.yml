@@ -115,7 +115,7 @@ jobs:
             before=p.read_text()
             assert before.count('matchWebGLToCanvasSize:true')==1
             assert before.count('const instance=await createUnityInstance(canvas,{')==1
-            after=module+'\\n'+before.replace('matchWebGLToCanvasSize:true','matchWebGLToCanvasSize:false').replace('const instance=await createUnityInstance(canvas,{','window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\\n  const instance=await createUnityInstance(canvas,{')
+            after=module+'\n'+before.replace('matchWebGLToCanvasSize:true','matchWebGLToCanvasSize:false').replace('const instance=await createUnityInstance(canvas,{','window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\n  const instance=await createUnityInstance(canvas,{')
             p.write_text(after)
             proof['shell_changes'].append({'file':p.name,'before':hashlib.sha256(before.encode()).hexdigest(),'after':hashlib.sha256(after.encode()).hexdigest()})
           pathlib.Path('evidence/canvas-shell-proof.json').write_text(json.dumps(proof,indent=2))
