@@ -89,8 +89,21 @@ namespace Eldoria.BetaMemory.Tests
                 Assert.That(world.activeInHierarchy,Is.False);
                 Assert.That(camera.enabled,Is.False);
                 var gateway=(LocalGateway)Member(city,"Gateway");
-                var before=gateway.Snapshot();
                 Assert.That((bool)Member(city,"Probe"),Is.True,"Never test against a real owner save");
+                // Real revision-guarded gameplay command on a disposable save,
+                // not a fabricated in-memory nickname. Verify the same saved
+                // name survives real terrain loading and disk deserialization.
+                var original=gateway.Snapshot();
+                if(string.IsNullOrWhiteSpace(original.PlayerName))
+                {
+                    var rename=gateway.Execute(new GameCommand(
+                        "lazy-world-native-nickname-"+Guid.NewGuid().ToString("N"),
+                        original.PlayerId,"ChoosePlayerName","Beta QA",original.Revision));
+                    Assert.That(rename.Ok,Is.True,"Real nickname command must commit: "+rename.Message);
+                }
+                var before=gateway.Snapshot();
+                Assert.That(before.PlayerName,Is.Not.Empty,
+                    "Nickname must be genuinely saved before Region 1 starts");
 
                 // Preserve the existing sawmill progression gate; do not bypass it.
                 if(!(before.SawmillLevel>0||before.Resources.Wood<SliceRules.SawmillWoodCost))
