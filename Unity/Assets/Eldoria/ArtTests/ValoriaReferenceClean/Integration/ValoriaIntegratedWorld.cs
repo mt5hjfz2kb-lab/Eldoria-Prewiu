@@ -79,6 +79,11 @@ namespace Eldoria.ReferenceClean {
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
   bool cityFog,englishInterface; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
   float nextVisualSync;
+  // Read-only private beta instrument; never records names or full saves.
+  bool betaMetricsEnabled,betaBaseline,betaWorldSeen,betaEndSeen,betaLyraSeen,betaFissureSeen;
+  float nextBetaSignal;
+  int betaLastBastion=-1,betaLastSawmill,betaLastBarracks,betaLastGranary,betaLastStoneworks,betaLastMarches;
+  string betaLastBattle="";
   // Motion is measured in screen pixels, so easing is consistent in both camera modes.
   Vector2 unappliedDragPixels;
   const float DragResponse=20f;
@@ -199,6 +204,11 @@ namespace Eldoria.ReferenceClean {
    presentationBindingsReady=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
+   // Only a signed and consented beta invitation adds this marker. Never
+   // enable the existing full-save eldoriaPlaytest=1 diagnostics here.
+   var betaUrl=UnityEngine.Application.absoluteURL??"";
+   betaMetricsEnabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer &&
+    (betaUrl.Contains("?eldoriaBetaTelemetry=1")||betaUrl.Contains("&eldoriaBetaTelemetry=1"));
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);
    var buildings=Hud.GetComponent<RoyalGoldV3BuildingScreens>();if(!buildings)buildings=Hud.gameObject.AddComponent<RoyalGoldV3BuildingScreens>();
@@ -292,10 +302,14 @@ namespace Eldoria.ReferenceClean {
      "\n\nMaestría PvE: "+mastery+". Sus mejoras se aplican a las actividades personales de los Vigilantes y Exploradores."
    };
   }
-  public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
+  public void RefreshNavigation(){if(Hud==null)return;Hud.Navigation.WorldIsCity=InWorld;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;
    SmoothCameraDrag();
+   if(betaMetricsEnabled&&Time.unscaledTime>=nextBetaSignal){
+    nextBetaSignal=Time.unscaledTime+.75f;
+    ScanBetaMilestones();
+   }
    if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
@@ -314,6 +328,56 @@ namespace Eldoria.ReferenceClean {
     SelectionChanged(Selected);
    }
   }
+  void EmitBetaSignal(string name,string codes){
+   Debug.Log("ELDORIA_BETA_SIGNAL|"+name+"|"+codes);
+  }
+  void ScanBetaMilestones(){
+   if(!Ready||city==null||city.Gateway==null)return;
+   var state=city.Gateway.Snapshot(); // authoritative read-only state
+   int level=Mathf.Clamp(state.BastionLevel,1,5);
+   if(level!=betaLastBastion){
+    betaLastBastion=level;
+    EmitBetaSignal("bastion_reached","bastion="+level);
+   }
+   // Level 5 alone is NOT chapter V completion.
+   if(!betaEndSeen&&SliceRules.CurrentObjectiveKey(state)=="b5.complete"){
+    betaEndSeen=true;EmitBetaSignal("end_of_slice","bastion=5");
+   }
+   if(InWorld&&!betaWorldSeen){
+    betaWorldSeen=true;EmitBetaSignal("world_opened","bastion="+level);
+   }
+   var c=state.ChapterThree;
+   int sawmill=state.SawmillLevel,barracks=state.BarracksLevel;
+   int granary=c!=null?c.GranaryLevel:0,stoneworks=c!=null?c.StoneworksLevel:0;
+   int active=MarchCapacityRules.ActiveWorldCount(state);
+   var report=state.LastBattleReport;
+   string reportKey=report==null||string.IsNullOrEmpty(report.TargetId)?""
+    :report.TargetId+"|"+report.Won+"|"+report.Rounds+"|"+report.RemainingHealth+
+     "|"+report.RewardWood+"|"+report.RewardStone;
+   bool lyra=c!=null&&c.LyraRecruited,fissure=c!=null&&c.FissureClosed;
+   if(betaBaseline){
+    if(sawmill>betaLastSawmill&&sawmill<=5)
+     EmitBetaSignal("build_completed","building_code=sawmill|level="+sawmill);
+    if(barracks>betaLastBarracks&&barracks<=5)
+     EmitBetaSignal("build_completed","building_code=barracks|level="+barracks);
+    if(granary>betaLastGranary&&granary<=5)
+     EmitBetaSignal("build_completed","building_code=granary|level="+granary);
+    if(stoneworks>betaLastStoneworks&&stoneworks<=5)
+     EmitBetaSignal("build_completed","building_code=stoneworks|level="+stoneworks);
+    if(active>betaLastMarches&&active<=3)
+     EmitBetaSignal("march_sent","march_slots_used="+active);
+    if(!string.IsNullOrEmpty(reportKey)&&reportKey!=betaLastBattle)
+     EmitBetaSignal("battle_resolved","outcome_code="+
+      (report.VersionedOutcome!=null&&report.VersionedOutcome.Outcome=="draw"?"draw":report.Won?"win":"loss"));
+    if(lyra&&!betaLyraSeen)EmitBetaSignal("lyra_state","state_code=recruited");
+    if(fissure&&!betaFissureSeen)EmitBetaSignal("fissure_state","state_code=closed");
+   }
+   betaBaseline=true;
+   betaLastSawmill=sawmill;betaLastBarracks=barracks;
+   betaLastGranary=granary;betaLastStoneworks=stoneworks;
+   betaLastMarches=active;betaLastBattle=reportKey;
+   betaLyraSeen=lyra;betaFissureSeen=fissure;
+  }
   void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2&&state.BastionLevel<5);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
   void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;city.Presenter.ExternalNavigationOwned=false;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public static bool CanEnterWorld(PlayerState s)=>s!=null&&(s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost);
@@ -322,12 +386,11 @@ namespace Eldoria.ReferenceClean {
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
-   // A physical built barracks is a city building. From chapter III its
-   // upgrade offer has a separate existing target; recruitment remains an
-   // explicit Army/training destination, never an automatic building overlay.
+   // A built barracks always opens its building sheet. Upgrade and training
+   // are explicit choices on that sheet, including at Bastion II.
    if(id=="barracks"){
     var state=boundGateway.Snapshot();
-    if(state.BastionLevel>=3&&state.BarracksLevel>0)id="upgrade-barracks";
+    if(state.BarracksLevel>0)id="upgrade-barracks";
    }
    Hud.SelectBuilding(id);return true;
   }
@@ -384,13 +447,14 @@ namespace Eldoria.ReferenceClean {
   }
   public bool CanOpen(RoyalSection section){
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();
+   if(section==RoyalSection.Mailbox)return Hud.GetComponent<RoyalGoldV41MailboxScreen>()!=null;
    if(section==RoyalSection.World)return InWorld||CanEnterWorld(s);
    if(section==RoyalSection.Inventory)return s.ChapterThree.Inventory.Count>0;
    if(section==RoyalSection.Army)return s.BastionLevel>=2&&s.BarracksLevel>0;
    if(section==RoyalSection.Bastion)return s.BastionLevel<=2&&s.JourneyComplete;
    return false;
   }
-  public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);else if(section==RoyalSection.Inventory){var s=boundGateway.Snapshot();Hud.ShowNarrative(L("ARCÓN","CHEST"),string.Join("\n\n",s.ChapterThree.Inventory.OrderBy(x=>x=="breach-manuscript"?0:1).Select(x=>x=="breach-manuscript"?L("Manuscrito de la Fisura · Misterio sin descifrar. No utilizable todavía.","Fissure Manuscript · An unsolved mystery. Not usable yet."):x=="treated-hide"?L("Piel curtida de ceniza · Material del Granero","Ash-treated hide · Granary material"):x=="iron-brace"?L("Abrazadera de hierro antiguo · Material del Aserradero","Ancient iron brace · Sawmill material"):L("Colmillo pétreo · Material de construcción","Stone tusk · Building material"))));}}
+  public void Open(RoyalSection section){if(section==RoyalSection.Mailbox){Hud.GetComponent<RoyalGoldV41MailboxScreen>()?.Open();return;}if(section==RoyalSection.World)TrySetWorld(!InWorld);else if(section==RoyalSection.Inventory){var s=boundGateway.Snapshot();Hud.ShowNarrative(L("ARCÓN","CHEST"),string.Join("\n\n",s.ChapterThree.Inventory.OrderBy(x=>x=="breach-manuscript"?0:1).Select(x=>x=="breach-manuscript"?L("Manuscrito de la Fisura · Misterio sin descifrar. No utilizable todavía.","Fissure Manuscript · An unsolved mystery. Not usable yet."):x=="treated-hide"?L("Piel curtida de ceniza · Material del Granero","Ash-treated hide · Granary material"):x=="iron-brace"?L("Abrazadera de hierro antiguo · Material del Aserradero","Ancient iron brace · Sawmill material"):L("Colmillo pétreo · Material de construcción","Stone tusk · Building material"))));}}
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
   public void Home(){
