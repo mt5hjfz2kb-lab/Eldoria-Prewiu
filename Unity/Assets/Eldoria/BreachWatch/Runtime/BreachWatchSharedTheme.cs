@@ -252,9 +252,45 @@ namespace Eldoria.BreachWatch
         public void ReassertSinglePainting()
         {
             if(!installed)return;
-            foreach(var item in originalGraphics)
-                if(item.Graphic && item.Graphic.enabled)
-                    item.Graphic.enabled=false;
+            // Canonical Reflow may add or turn on new blue-paper Images
+            // after the initial Apply(). Re-scan the REAL destination, not
+            // only the snapshot of components captured at installation.
+            // This is the root cause found by Unity: 4 panels/14 buttons
+            // styled, but a source blue-panel still painted after reflow.
+            foreach(var graphic in GetComponentsInChildren<Graphic>(true))
+            {
+                if(!graphic || !graphic.gameObject.activeInHierarchy ||
+                    !graphic.enabled)continue;
+                bool legacyStage=graphic is RoyalGoldV3ManagementBackdrop ||
+                    graphic is RoyalGoldV3ManagementBackdropGraphic ||
+                    graphic is RoyalGoldV3LayeredFinish;
+                bool legacyPaper=graphic is Image &&
+                    (graphic.name=="Approved source / blue-panel" ||
+                     graphic.name=="Approved source / gold-button" ||
+                     graphic.name=="Approved source / HeroCardNineSliceGold" ||
+                     graphic.name=="Approved source / training-courtyard-layer-v1" ||
+                     graphic.name.StartsWith("Training / genuine costs") ||
+                     graphic.name.StartsWith("Training / actual timer") ||
+                     graphic.name.StartsWith("Training / unit manuscript") ||
+                     graphic.name.StartsWith("Training / live quantity instruments") ||
+                     graphic.name.StartsWith("Training / one continuous military order") ||
+                     graphic.name.StartsWith("Training / framed transparent bust"));
+                if(!legacyStage&&!legacyPaper)continue;
+                bool known=false;
+                foreach(var existing in originalGraphics)
+                    if(existing.Graphic==graphic){known=true;break;}
+                if(known)graphic.enabled=false;
+                else
+                {
+                    // New legacy art created by canonical controller refresh
+                    // must be remembered for exact reversible restoration.
+                    originalGraphics.Add(new Original {
+                        Graphic=graphic, Enabled=true
+                    });
+                    graphic.enabled=false;
+                    ReplacedLegacyGraphics++;
+                }
+            }
             if(originalBackdrop)
                 originalBackdrop.color=new Color(.080f,.071f,.064f,1f);
         }
