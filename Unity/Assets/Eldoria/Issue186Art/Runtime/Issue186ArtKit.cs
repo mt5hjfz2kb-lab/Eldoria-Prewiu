@@ -104,11 +104,11 @@ namespace Eldoria.Issue186Art
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
             }
-            // Aim the right-pointing fingertip just INSIDE the left edge, not
-            // at the label center. The body of the hand stays outside the CTA.
-            // The halo still tracks the real button's center.
+            // The actual PNG points LEFT (fingertip in its upper-left).
+            // Approach from the RIGHT side of a button, not its label center.
+            // The halo independently stays centered on the real target.
             Vector3 tipWorld = actualControl.TransformPoint(new Vector3(
-                actualControl.rect.xMin + Mathf.Min(6f, actualControl.rect.width * .08f),
+                actualControl.rect.xMax - Mathf.Min(6f, actualControl.rect.width * .08f),
                 actualControl.rect.center.y, 0f));
             Vector2 tipScreen = RectTransformUtility.WorldToScreenPoint(camera, tipWorld);
             var parent = pointer.rectTransform.parent as RectTransform;
@@ -128,8 +128,10 @@ namespace Eldoria.Issue186Art
             }
             var rect = pointer.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(.5f, .5f);
-            // Fingertip anchor for the authored right-pointing gauntlet.
-            rect.pivot = new Vector2(.82f, .59f);
+            // The hand asset points LEFT: sleeve at right, glowing fingertip
+            // near x=16%, y=61% after preserveAspect letterboxing.
+            // A right-side sleeve must NEVER be mistaken for the fingertip.
+            rect.pivot = new Vector2(.16f, .61f);
             rect.anchoredPosition = local;
             pointer.sprite = sprite;
             pointer.type = Image.Type.Simple;
