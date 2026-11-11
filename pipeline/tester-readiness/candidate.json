@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Beta13 is published, all146 public file hashes verified, native227 and local/public Mac WebKit entry/persistence/reload pass. Actual iPhone stability is pending; do not mark P0 fixed or open tester invitations.",
+  "reason": "OWNER_REPORTED_FAIL beta13 physical iPhone Safari 2026-11-11 08:17 CET: reached startup-ready 08:17:13, resize vertical, then new boot back_forward 08:17:20. Prior native/Mac WebKit PASS cannot certify iPhone. Root cause still unconfirmed; external testers disabled.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -96,7 +96,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-10T23:03:23.372Z",
+  "updated_at": "2026-11-11",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -570,7 +570,8 @@
     "public_webkit_artifact": 13811435888,
     "public_webkit_artifact_sha256": "02b02ae07d4db6a3814f670ae56f8af2d6a7991f5576b45a30f3547b545729a7",
     "public_nickname_persistence_visually_verified": true,
-    "evidence_commit": "3085642bc8be3525122a4ab56063ec53dd0380af"
+    "evidence_commit": "3085642bc8be3525122a4ab56063ec53dd0380af",
+    "physical_iphone_result": "OWNER_REPORTED_FAIL_2026_11_11"
   },
   "ios_simulator_diagnostic": {
     "run": 42908325634,
@@ -586,5 +587,31 @@
       "reason": "Screenshot latency consumed observation window without fresh samples"
     },
     "physical_cause_proven": false
+  },
+  "owner_iphone_beta13_physical": {
+    "date": "2026-11-11",
+    "time_zone": "Europe/Madrid",
+    "build": "native325-mobile13-prebaked-collision-qa",
+    "device": "owner physical iPhone, Safari",
+    "status": "OWNER_REPORTED_FAIL",
+    "owner_description": "Game enters, nickname prompt appears, display changes size, page restarts at same point",
+    "screenshot": "IMG_5066",
+    "observed": [
+      "08:17:13 startup-progress 100",
+      "08:17:13 startup-post-run",
+      "08:17:13 startup-heap-mib 412",
+      "08:17:13 startup-ready",
+      "08:17:13 resize vertical",
+      "08:17:20 boot back_forward",
+      "08:17:21 pageshow normal"
+    ],
+    "ready_to_next_boot_seconds": 7,
+    "heap_412_mib_is_capacity_not_total_process_memory": true,
+    "back_forward_does_not_prove_user_navigation": true,
+    "jetsam_confirmed": false,
+    "physical_30min_pass": false,
+    "root_cause": "UNKNOWN",
+    "evidence_pr_comment": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/179#issuecomment-6789662897",
+    "evidence_issue_comment": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/96#issuecomment-6789663462"
   }
 }
