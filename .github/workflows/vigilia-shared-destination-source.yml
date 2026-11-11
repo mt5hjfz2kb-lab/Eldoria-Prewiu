@@ -17,6 +17,7 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesBridge.cs'
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs'
+      - 'Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
@@ -45,6 +46,7 @@ jobs:
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
             /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs
+            /Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png
