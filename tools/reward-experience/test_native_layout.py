@@ -152,20 +152,26 @@ def verify():
         checks+=verify_hand_geometry(width,height,d)
         print(f"ISSUE186_LAYOUT_SOURCE_PASS {width}x{height} icon={d['icon']:.1f}px "
               f"4 tiers per resource row, safe CTA/title/alert boundaries")
-    # Contract-crosscheck the genuine C# result/acceptance and the Windows
-    # workflow. A prior version returned firstUseCompleted=true and then
-    # demanded !x.firstUseCompleted, making ANY native Unity capture fail
-    # even after a real successful button click. Pure geometry missed it.
+    # A real UGUI raycast/click tests tap routing, NOT a completed gameplay
+    # claim. PR181 still owns LocalGateway: no genuine ClaimReward result is
+    # produced in this disposable art-only scene. The tutorial must therefore
+    # remain pending until a REAL gateway command succeeds. Do not let source
+    # gates contradict that contract or certify fake completion.
     root=Path(__file__).resolve().parents[2]
     editor=(root/"Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs").read_text(encoding="utf-8")
     workflow=(root/".github/workflows/issue186-native.yml").read_text(encoding="utf-8")
-    assert re.search(r"firstUseCompleted\s*=\s*true\s*[,}]",editor), "Capture must record a successful action"
+    assert re.search(r"firstUseCompleted\s*=\s*false\s*[,}]",editor), \
+        "Art-only tap may not masquerade as authoritative reward completion"
     checks+=1
-    assert re.search(r"results\.TrueForAll\([\s\S]*?x\.firstUsePointer\s*&&\s*x\.firstUseCompleted\s*&&",editor), \
-        "Native acceptance cannot invert a completed first-use click"
+    assert re.search(r"results\.TrueForAll\([\s\S]*?x\.firstUsePointer\s*&&\s*!x\.firstUseCompleted\s*&&",editor), \
+        "Native acceptance must keep first-use tutorial pending without gateway success"
     checks+=1
-    assert re.search(r"\$shot\.firstUseCompleted\s+-ne\s+\$true",workflow), \
-        "Native Windows workflow must require the completed click, not an absent action"
+    assert re.search(r"\$shot\.firstUseCompleted\s+-ne\s+\$false",workflow), \
+        "Windows native proof must agree that UI-only click does not complete tutorial"
+    checks+=1
+    assert re.search(r"GuidedTutorialRules\.ConfirmAction\([\s\S]{0,180}?false\)",editor) and \
+        "pointer.gameObject.activeInHierarchy" in editor, \
+        "UI art fixture must explicitly reject false-positive action completion"
     checks+=1
     print(f"ISSUE186_LAYOUT_MODEL_PASS checks={checks}; SOURCE ONLY, UNITY PIXELS PENDING")
 
