@@ -31,6 +31,17 @@ internal static class Program
             "reject negative");
         Check(!ResourceRewardRules.TryIssue(p, "mission:ore", "mission", "ore", 100),
             "unsupported resource");
+        foreach (var resource in new[] {"wood", "stone", "food"})
+        foreach (var amount in new[] {100, 1000, 10000, 100000})
+        {
+            string expected = "Issue186ResourceArt/pack_" + resource + "_" +
+                ResourceRewardRules.TierLabel(amount).ToLowerInvariant();
+            Check(ResourceRewardRules.SpriteKey(resource, amount) == expected,
+                "real package sprite address: " + expected);
+        }
+        Check(ResourceRewardRules.SpriteKey("invalid", 100) == null &&
+            ResourceRewardRules.SpriteKey("wood", 30) == null,
+            "no fabricated sprite for unsupported denomination");
         Check(!ResourceRewardRules.TryIssue(p, "mission:99", "mission", "wood", 99),
             "reject nonstandard resource denominations");
         Check(ResourceRewardRules.IsStandardTier(100) &&
