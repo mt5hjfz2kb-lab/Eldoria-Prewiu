@@ -232,6 +232,56 @@ foreach(var choice in new[]{"production","defense","civil"})
      "reload and replay cannot duplicate development bonus");
 }
 
+// A source-only UI bridge reads REAL persistent mail and inventory, and
+// dispatches the actual gateway commands. It is not yet a Unity Canvas.
+var uiSeed=new PlayerState{ResourceRewards=Packets("ui-letter")};
+uiSeed.Mailbox.Receive(new EldoriaV41Message{
+ EventId="ui-letter",Category="recompensas",Type="mission",Title="Premio de ruta",
+ Subtitle="Dos paquetes por reclamar"});
+var uiStore=new JsonStore(uiSeed);
+var uiGateway=new LocalGateway(clock,uiStore);
+var uiBridge=new Eldoria.Issue186Art.ResourceExperienceUiBridge(uiGateway);
+var view=uiBridge.Refresh();
+Need(view.Mail.Count==1&&view.Mail[0].CanClaim&&view.Mail[0].LockedPackets==2 &&
+     view.MailAttention==AttentionLevel.ActionReady &&
+     view.ClaimTutorialPending && view.Bag.Count==0,
+     "actual mailbox projection distinguishes actionable claim, not consumed bag");
+Need(uiBridge.ReadMail("ui-letter").Ok,"real UI bridge dispatches read independently");
+view=uiBridge.Refresh();
+Need(!view.Mail[0].Unread&&view.Mail[0].CanClaim &&
+     view.MailAttention==AttentionLevel.ActionReady,
+     "reading through UI bridge cannot clear actionable reward");
+int uiBaseWood=uiGateway.Snapshot().Resources.Wood;
+Need(uiBridge.ClaimMail("ui-letter").Ok,"real UI bridge dispatches claim");
+view=uiBridge.Refresh();
+Need(view.Mail.Count==1&&!view.Mail[0].CanClaim&&view.Bag.Count==2 &&
+     view.MailAttention==AttentionLevel.None &&
+     view.BagAttention==AttentionLevel.New &&
+     view.Bag.All(p=>p.CanUse&&p.New) &&
+     view.Bag.All(p=>!string.IsNullOrEmpty(p.SpriteKey)&&!string.IsNullOrEmpty(p.AmountText)),
+     "real claimed reward projects exact actionable bag icon, amount and novelty");
+Need(!view.ClaimTutorialPending&&view.UseTutorialPending,
+     "tutorial progression reflects successful gateway claim, not mere UI click");
+Need(uiGateway.Snapshot().Resources.Wood==uiBaseWood,
+     "UI bridge cannot credit wallet on mail claim");
+Need(uiBridge.MarkBagSeen("mission:chapter1:wood").Ok,
+     "UI bridge can clear bag novelty without spending");
+view=uiBridge.Refresh();
+Need(view.Bag.Count(p=>p.New)==1&&view.Bag.Count==2,
+     "one bag seen event does not consume either item");
+Need(uiBridge.UsePacket("mission:chapter1:wood").Ok,
+     "actual use button dispatches authoritative saved command");
+view=uiBridge.Refresh();
+Need(uiGateway.Snapshot().Resources.Wood==uiBaseWood+75&&view.Bag.Count==1 &&
+     !view.UseTutorialPending,
+     "UI bridge uses one exact packet and tutorial completes on real success");
+Need(!uiBridge.UsePacket("mission:chapter1:wood").Ok,
+     "UI bridge cannot resurrect spent packet");
+uiGateway=new LocalGateway(clock,uiStore);
+view=new Eldoria.Issue186Art.ResourceExperienceUiBridge(uiGateway).Refresh();
+Need(view.Bag.Count==1&&uiGateway.Snapshot().Resources.Wood==uiBaseWood+75,
+     "real UI bridge projection survives JSON save/reload and tombstone");
+
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{

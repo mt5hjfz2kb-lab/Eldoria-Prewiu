@@ -17,6 +17,7 @@
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Issue186Art/Runtime/ResourceExperienceUiBridge.cs"/>
     <Compile Include="GatewayChecks.cs"/>
   </ItemGroup>
 </Project>
