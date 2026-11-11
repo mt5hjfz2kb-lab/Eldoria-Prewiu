@@ -59,6 +59,7 @@ namespace Eldoria.BreachWatch
         BreachWatchNavFiligree navFiligree;
         readonly BreachWatchPlate[] approvedUtilitySeals = new BreachWatchPlate[3];
         readonly Button[] navButtons = new Button[5];
+        Button mailUtilityButton;
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
         static readonly string[] ReferenceNavArt = {
             "castle", "provisions", "swords", "raven", "helm"
@@ -92,6 +93,7 @@ namespace Eldoria.BreachWatch
         // destination proof is accepted. No production-screen takeover.
         public BreachWatchDestinationBridge RealDestinations => destinationBridge;
         public BreachWatchMailboxBridge RealMailbox => mailboxBridge;
+        public Button ActualMailboxEntry => mailUtilityButton;
         public BreachWatchHeroesBridge RealHeroes => heroesBridge;
         public BreachWatchRetentionBridge RealRetention => retentionBridge;
         public bool CanonicalModalVisibleOnIndependentCanvas => modalBridge &&
@@ -594,10 +596,17 @@ namespace Eldoria.BreachWatch
                 (name:"Settings",icon:BreachWatchGlyph.Sigil.Settings,art:"settings"),
                 (name:"Fissure",icon:BreachWatchGlyph.Sigil.Breach,art:"breach") })
             {
-                var seal=BuildButton(utilityRail,design.name,design.icon,()=>{});
+                var seal=BuildButton(utilityRail,design.name,design.icon,()=>{
+                    if(design.art=="bell")OpenActualMailbox();
+                });
                 var disabled=seal.GetComponent<Button>();
-                disabled.interactable=false; // never fake an unbuilt destination
+                disabled.interactable=false; // until this REAL source unlocks
                 disabled.transition=Selectable.Transition.None;
+                if(design.art=="bell")
+                {
+                    mailUtilityButton=disabled;
+                    seal.name="CORREO / real introduced mailbox";
+                }
                 var utilityPlate=seal.GetComponent<BreachWatchPlate>();
                 var genuineArt=Resources.Load<Sprite>(
                     "VigiliaArt/OwnerUtilities/"+design.art);
@@ -869,6 +878,52 @@ namespace Eldoria.BreachWatch
                 mask|=1<<4;
             return mask;
         }
+        bool CanShowCanonicalMailbox()
+        {
+            if(!host || !host.Ready || !host.Hud || !host.City ||
+               host.InWorld || !mailboxBridge || mailboxBridge.IsShowing)
+                return false;
+            var saved=host.City.Gateway?.Snapshot();
+            var mailbox=saved?.Mailbox;
+            if(mailbox==null || (mailbox.ReceivedEventIds?.Count??0)==0 &&
+               (mailbox.Messages?.Count??0)==0)
+                return false;
+            var canonical=host.Hud.GetComponent<
+                Eldoria.UI.RoyalGold.V2.RoyalGoldV41MailboxScreen>();
+            if(!canonical || canonical.IsOpen ||
+               host.Hud.NarrativeOpen ||
+               (host.Hud.Modal && host.Hud.Modal.gameObject.activeSelf) ||
+               (canonical.CanShowEntry!=null && !canonical.CanShowEntry()))
+                return false;
+            return !(destinationBridge && destinationBridge.IsShowing) &&
+                !(heroesBridge && heroesBridge.IsShowing) &&
+                !(retentionBridge && retentionBridge.IsShowing);
+        }
+
+        void UpdateMailSeal()
+        {
+            if(!utilityRail || !mailUtilityButton)return;
+            bool show=CanShowCanonicalMailbox();
+            // This pre-existing original bell medallion is now the one real
+            // introduced-mail route. Gear and breach designs remain hidden,
+            // not inert fake promises or overlapping lower nav controls.
+            utilityRail.gameObject.SetActive(show);
+            mailUtilityButton.gameObject.SetActive(show);
+            mailUtilityButton.interactable=show;
+            for(int i=1;i<utilityRail.childCount;i++)
+                utilityRail.GetChild(i).gameObject.SetActive(false);
+        }
+
+        void OpenActualMailbox()
+        {
+            if(!CanShowCanonicalMailbox())return;
+            if(mailboxBridge.TryOpen())
+            {
+                SetFeedback("");
+                UpdateMailSeal();
+            }
+        }
+
         void Navigate(int index)
         {
             if(!host)return;
@@ -1144,7 +1199,10 @@ namespace Eldoria.BreachWatch
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
                 // three large touch footprints over the playable terrain.
-                At(utilityRail,margin,h-306,42,138);
+                // One introduced-mail seal near the mission (not an extra
+                // row of stacked lower buttons). Chapter-I remains untouched
+                // until the real first delivery creates its event ledger.
+                At(utilityRail,margin,missionTop+missionHeight+16f,44f,49f);
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
@@ -1330,7 +1388,9 @@ namespace Eldoria.BreachWatch
                 chapterObjective.resizeTextMaxSize=15;
                 chapterProgress.fontSize=14;
 
-                At(utilityRail,margin,h-165,44,145);
+                // Landscape quest ends at y~206; the separate small mail
+                // seal sits below, clear of the centered bottom medallions.
+                At(utilityRail,margin,219f,44f,49f);
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
@@ -1498,6 +1558,7 @@ namespace Eldoria.BreachWatch
             lastPortrait=portrait;
             lastNavigationMask=navigationMask;
             lastResourceCount=visibleResources;
+            UpdateMailSeal();
             Canvas.ForceUpdateCanvases();
             CropPortraitToTrueGeometry();
         }
@@ -1713,6 +1774,7 @@ namespace Eldoria.BreachWatch
                             ?new Color(1f,.97f,.87f,1f):Color.white
                         :new Color(.70f,.68f,.65f,.88f);
                 }
+                UpdateMailSeal();
             }
             catch(Exception e)
             {
