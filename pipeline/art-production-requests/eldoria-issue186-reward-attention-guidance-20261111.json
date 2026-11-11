@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-issue186-reward-attention-guidance-20261111",
+  "workstream_id": "eldoria-issue186-reward-attention-guidance-20261111",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Mochila, buzón y tutorial: doce iconos de paquetes genéricos 100/1K/10K/100K, dos señales y mano contextual",
+  "profile": "environment_composition",
+  "visual_gate_state": "ILLUSTRATED_SPRITES_SOURCE_QA_UNITY_PENDING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "La primera tanda de imágenes incrustaba los importes, dificultando la reutilización, y el recorte uniforme 3x4 arrastraba elementos del icono vecino. Se generaron originales ilustrados sin texto, con recortes específicos por fila, alfa real y manifest SHA256; aún no existe captura nativa Unity exacta ni aprobación artística del propietario. No activar en producción sin QA móvil.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "original_ai_illustrated_icons": true,
+    "unity_native_uGUI": true,
+    "existing_3d_assets_modified": false,
+    "illustrated_transparent_pngs": true
+  },
+  "artist": {
+    "design": "Pizarra oscura, burdeos, oro envejecido, material pintado y detalles táctiles. 12 siluetas crecientes por cantidad; madera, piedra y comida. Badges solo cuando el estado real lo requiera; mano anclada al botón verdaderamente pulsable.",
+    "source": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/",
+    "reference": "Vigilia de la Brecha aprobada y cofre Tesoros de Valoria; esta edición del arte fue creada 11-11-2026 en la conversación del propietario."
+  },
+  "validation": {
+    "source_gate": "12 PNG RGBA de recurso + dos badges + puntero y halo, GUID estables y SHA256 por sprite, cantidades pintadas prohibidas, imágenes aisladas sin contaminación de iconos vecinos. Tests deterministas de dominio sobre las cuatro denominaciones. No ocupación de Windows.",
+    "final_gate": "Capturas Unity auténticas sobre importación 6000.3 en cuatro orientaciones, comprobación alfa/legibilidad 48–96px, no overlays de HUD, recompensas idempotentes, buzón->mochila->usar, persistencia, touch y pruebas dispositivo iPhone/WebGL del SHA exacto."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "PR #187 draft, issue #186. Los PNG originales están preparados como ZIP de importación entregado al propietario; hasta que aparezcan en el árbol Git no afirmar que el repositorio contiene su binario. Respetar titularidad del PC de PR173 y las rutas GameState/LocalGateway y Tesoros de PR181."
+}
