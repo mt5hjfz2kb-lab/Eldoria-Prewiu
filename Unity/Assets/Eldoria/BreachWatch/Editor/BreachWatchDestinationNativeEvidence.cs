@@ -45,6 +45,7 @@ namespace Eldoria.BreachWatch.Editor
             public int interactiveButtons;
             public bool authoredMailTextureVerified;
             public int authoredMailChangedPixels;
+            public int authoredMailUpperChangedPixels;
         }
         [Serializable] public sealed class Report
         {
@@ -664,6 +665,7 @@ namespace Eldoria.BreachWatch.Editor
                 }
                 bool authoredMailTextureVerified=false;
                 int authoredMailChangedPixels=0;
+                int authoredMailUpperChangedPixels=0;
                 if(name=="mail" && height>width)
                 {
                     var art=ui.GetComponentsInChildren<BreachWatchMailboxEmptyArtwork>(true)
@@ -688,10 +690,19 @@ namespace Eldoria.BreachWatch.Editor
                         {
                             var a=originalPixels[pixel];var b=hiddenPixels[pixel];
                             if(Mathf.Abs(a.r-b.r)>12 || Mathf.Abs(a.g-b.g)>12 ||
-                               Mathf.Abs(a.b-b.b)>12)authoredMailChangedPixels++;
+                               Mathf.Abs(a.b-b.b)>12)
+                            {
+                                authoredMailChangedPixels++;
+                                // Unity framebuffer is bottom-origin.
+                                // Upper mail image MUST have GPU coverage.
+                                if(pixel/width>=height*.51f)
+                                    authoredMailUpperChangedPixels++;
+                            }
                         }
                         Need(authoredMailChangedPixels>width*height*.01f,
                             "Authored mail imported but not genuinely visible in GPU output");
+                        Need(authoredMailUpperChangedPixels>width*height*.0005f,
+                            "Mail art still clipped behind the existing collection board");
                         authoredMailTextureVerified=true;
                     }
                     finally
@@ -712,7 +723,8 @@ namespace Eldoria.BreachWatch.Editor
                     oldCanvasOff=ui.LegacyPresentationHidden,
                     newCanvasOwnsScreen=verify(),interactiveButtons=buttons,
                     authoredMailTextureVerified=authoredMailTextureVerified,
-                    authoredMailChangedPixels=authoredMailChangedPixels
+                    authoredMailChangedPixels=authoredMailChangedPixels,
+                    authoredMailUpperChangedPixels=authoredMailUpperChangedPixels
                 };
             }
             finally

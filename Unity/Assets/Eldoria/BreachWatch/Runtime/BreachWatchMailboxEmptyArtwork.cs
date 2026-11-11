@@ -25,7 +25,12 @@ namespace Eldoria.BreachWatch
             rt.SetParent(window, false);
             rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
             rt.offsetMin = rt.offsetMax = Vector2.zero;
-            rt.SetSiblingIndex(1);
+            // The canonical empty-message collection board sits above old
+            // index 1 and cropped the REAL parchment's top half (native
+            // 43109761153). Preserve its genuine transparency instead.
+            // This illustration is disabled when mail is populated and
+            // never receives raycasts, so it cannot steal message input.
+            rt.SetAsLastSibling();
             var art = go.GetComponent<BreachWatchMailboxEmptyArtwork>();
             art.raycastTarget = false;
             art.color = Color.white;
