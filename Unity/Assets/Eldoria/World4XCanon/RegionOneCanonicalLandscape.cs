@@ -89,7 +89,13 @@ namespace Eldoria.World4XCanon
         {
             building=true;
             while (host && !host.PresentationBindingsReady) yield return null;
-            if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera) yield break;
+            if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera)
+            {
+                // An aborted coroutine must never leave the lazy-load gate permanently busy.
+                building=false;
+                Debug.LogError("REGION1_CANON_WORLD_MISSING_BINDINGS");
+                yield break;
+            }
             navigation = host.WorldNavigation;
             origin = host.WorldHome;
             if (host.WorldRoot.transform.Find("Region 1 canonical continuous geography"))
@@ -99,6 +105,8 @@ namespace Eldoria.World4XCanon
                 var existing=UnityEngine.Object.FindObjectsByType<RegionOneCanonicalLandscape>(FindObjectsSortMode.None)
                     .FirstOrDefault(other=>other!=this&&other.host==host&&other.IsReady);
                 if(existing)host.BindWorldPresentation(existing);
+                else Debug.LogError("REGION1_CANON_WORLD_EXISTING_LAYER_NOT_READY");
+                building=false;
                 yield break;
             }
             InstallCameraLimits();
