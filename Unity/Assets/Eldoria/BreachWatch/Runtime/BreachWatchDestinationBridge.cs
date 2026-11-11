@@ -110,6 +110,16 @@ namespace Eldoria.BreachWatch
             return theme.NoLegacyBluePaintingVisible;
         }
 
+        // Native offscreen capture changes render-target orientation without
+        // a normal Unity LateUpdate frame. Apply exactly the same post-Reflow
+        // visual contract as the live scene, or screenshots misrepresent it.
+        public void SynchronizeVisual()
+        {
+            if(!IsShowing)return;
+            if(theme)theme.ReassertSinglePainting();
+            if(cinematicTraining)cinematicTraining.RefreshPortrait();
+        }
+
         void LateUpdate()
         {
             if(!destinationRoot)
@@ -127,8 +137,7 @@ namespace Eldoria.BreachWatch
                 Restore();
                 return;
             }
-            if(theme)theme.ReassertSinglePainting();
-            if(cinematicTraining)cinematicTraining.RefreshPortrait();
+            SynchronizeVisual();
             // The canonical destination's own Update handles Back/Escape,
             // live counts, sliders and action delivery. No parallel UI logic.
         }
