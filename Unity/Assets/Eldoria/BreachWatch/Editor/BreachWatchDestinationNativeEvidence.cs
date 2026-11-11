@@ -269,9 +269,19 @@ namespace Eldoria.BreachWatch.Editor
                 if(military.IsShowing)military.Close();
 
                 var mail=ui.RealMailbox;
-                Need(mail!=null && mail.TryOpen() && mail.IsShowing &&
-                     mail.ReplacedOldPainting,
-                     "Real introduced mailbox still uses old parchment or is inaccessible");
+                // Actual first delivery is present in this isolated advanced
+                // player state. The bell must appear only now, not in the
+                // fresh-save Chapter-I screen. Invoke the REAL UI control,
+                // not just the direct service/bridge method.
+                ui.RenderNow();
+                var mailButton=ui.ActualMailboxEntry;
+                Need(mailButton && mailButton.gameObject.activeInHierarchy &&
+                     mailButton.interactable,
+                     "Genuine mail entry medallion not shown after first delivery");
+                mailButton.onClick.Invoke();
+                Need(mail!=null && mail.IsShowing && mail.ReplacedOldPainting &&
+                     !mailButton.gameObject.activeInHierarchy,
+                     "Mail medallion did not open canonical new UI or stayed over its panel");
                 CaptureMany(ui,folder,"mail",shots,()=>mail.IsShowing &&
                     mail.ReplacedOldPainting);
                 mail.Close();
