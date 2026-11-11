@@ -133,8 +133,18 @@ namespace Eldoria.DailyTreasures
         {
             if(!Resolve(out var source,out var bounds))return null;
             bool portrait=panelHeight>panelWidth;
-            int width=portrait?600:960;
-            int height=portrait?900:540;
+            // Render the ACTUAL city at the same shape as the visible
+            // cathedral-sized ceremony, not a 3:2 fixed photo cropped again
+            // inside a 1:2 portrait. This also prevents GPU upscale blur
+            // after expanding the genuine full-world modal on desktop.
+            var frame=DailyTreasureStageDirection.NarrativeTheatreFrame(
+                panelWidth,panelHeight);
+            float screenAspect=Mathf.Max(.35f,
+                (frame.Width-25f)/Mathf.Max(1f,frame.Height-28f));
+            int height=portrait?(panelWidth>=650f?1152:1024):
+                (panelWidth>=950f?720:540);
+            int width=Mathf.Clamp(Mathf.RoundToInt(
+                height*screenAspect),500,1360);
             RenderTexture result=null;
             GameObject cameraObject=null,lightObject=null;
             var previous=RenderTexture.active;
