@@ -11,6 +11,8 @@ on:
       - 'tools/breach-watch/validate_heroes_theme.py'
       - 'tools/breach-watch/validate_retention_theme.py'
       - 'tools/breach-watch/validate_march_composition.py'
+      - 'tools/breach-watch/native_visual_ab_review.py'
+      - 'pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMarchComposition.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
@@ -48,6 +50,8 @@ jobs:
             /tools/breach-watch/validate_heroes_theme.py
             /tools/breach-watch/validate_retention_theme.py
             /tools/breach-watch/validate_march_composition.py
+            /tools/breach-watch/native_visual_ab_review.py
+            /pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json
             /Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
@@ -80,3 +84,5 @@ jobs:
           python3 tools/breach-watch/validate_heroes_theme.py
           python3 tools/breach-watch/validate_retention_theme.py
           python3 tools/breach-watch/validate_march_composition.py
+          python3 -m py_compile tools/breach-watch/native_visual_ab_review.py
+          python3 -m json.tool pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json >/dev/null
