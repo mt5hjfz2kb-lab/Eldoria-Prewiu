@@ -81,8 +81,15 @@ namespace Eldoria.Issue186Art
                 ? null : canvas.worldCamera;
             Vector3 centerWorld = actualControl.TransformPoint(actualControl.rect.center);
             Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(camera, centerWorld);
-            if (screenPoint.x < 0 || screenPoint.x > Screen.width ||
-                screenPoint.y < 0 || screenPoint.y > Screen.height)
+            // Camera render-target dimensions are authoritative during
+            // disposable Unity captures; Screen.width can be the host editor
+            // window rather than this actual mobile-sized render texture.
+            int viewWidth = camera && camera.targetTexture
+                ? camera.targetTexture.width : Screen.width;
+            int viewHeight = camera && camera.targetTexture
+                ? camera.targetTexture.height : Screen.height;
+            if (screenPoint.x < 0 || screenPoint.x > viewWidth ||
+                screenPoint.y < 0 || screenPoint.y > viewHeight)
             {
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
@@ -99,9 +106,18 @@ namespace Eldoria.Issue186Art
             var parent = pointer.rectTransform.parent as RectTransform;
             if (!parent || !RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 parent, screenPoint, camera, out var local))
+            {
+                pointer.gameObject.SetActive(false);
+                if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
+            }
             var sprite = Resources.Load<Sprite>(Prefix + "tutorial_pointing_hand");
-            if (!sprite) return false;
+            if (!sprite)
+            {
+                pointer.gameObject.SetActive(false);
+                if (targetHalo) targetHalo.gameObject.SetActive(false);
+                return false;
+            }
             var rect = pointer.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(.5f, .5f);
             // Fingertip anchor for the authored right-pointing gauntlet.
