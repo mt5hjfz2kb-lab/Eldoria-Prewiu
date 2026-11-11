@@ -418,6 +418,37 @@ namespace Eldoria.BreachWatch.Editor
                          "Full archer composition did not render in portrait "+
                          width+"x"+height+"; reject decorative-only PASS. "+
                          ui.RealDestinations.NativeTrainingLayoutDiagnostic);
+                if(name=="vigilants" || name=="scouts")
+                {
+                    var retention=ui.RealRetention;
+                    Need(retention && retention.IsShowing &&
+                         retention.OwnsActualSafeViewport &&
+                         retention.LiveScreenRect,
+                         "Real retention screen is still laid out on hidden RoyalHUD");
+                    retention.SynchronizeVisual();
+                    var rect=retention.LiveScreenRect.rect;
+                    float desiredAspect=width/(float)height;
+                    float actualAspect=rect.width/Mathf.Max(1f,rect.height);
+                    Need(Mathf.Abs(actualAspect-desiredAspect)<.13f,
+                         "Retention viewport incorrectly reports "+
+                         rect.width+"x"+rect.height+
+                         " for render target "+width+"x"+height);
+                    var manuscript=retention.LiveScreenRect.
+                        GetComponentsInChildren<RectTransform>(true).
+                        FirstOrDefault(x=>x.name=="Independent royal manuscript room");
+                    Need(manuscript,
+                         "Canonical retention scenic manuscript is missing");
+                    var bounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
+                        retention.LiveScreenRect,manuscript);
+                    Need(bounds.size.x<=rect.width+5f &&
+                         bounds.size.y<=rect.height+5f &&
+                         Mathf.Abs(bounds.center.x)<=rect.width*.10f &&
+                         Mathf.Abs(bounds.center.y)<=rect.height*.10f,
+                         "Old retention landscape 2.5D card is still offscreen "+
+                         "screen="+rect.width+"x"+rect.height+
+                         " content="+bounds.size+
+                         " centered="+bounds.center);
+                }
                 var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
                 var heroes=ui.RealHeroes;
