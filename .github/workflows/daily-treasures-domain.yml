@@ -343,6 +343,48 @@ jobs:
           (folder/'lyra-model-source-provenance.json').write_text(json.dumps(receipt,indent=2))
           print('Canonical Lyra geometry SHA-verified for independent pre-Unity evaluation; no invented portrait')
           PY
+      - name: Render genuine Lyra geometry as isolated source-only portrait before Unity
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet --disable-pip-version-check vtk==9.5.2
+          python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --out tools/daily-treasures/preunity-studies/lyra-canonical-portrait-SOURCE-ONLY.png
+      - name: Preserve actual independent stage paintings for source-level art review
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          root=Path('tools/daily-treasures')
+          staged=root/'preunity-studies'/'source-plates'
+          staged.mkdir(parents=True,exist_ok=True)
+          files={
+            'lyra':root/'art-candidates/lyra_stage.png',
+            'explorers':root/'art-candidates/explorers_stage.png',
+            'vigilants':root/'art-candidates/vigilants_stage.png',
+            'bastion':root/'art-candidates/bastion_stage.png',
+            'original-ornament':root/'art-candidates/shared_ornament.png',
+            'real-hero-hall':Path('Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg'),
+            'real-scout-landscape':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png'),
+            'real-vigilant-landscape':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png'),
+            'real-city':root/'real-city-source-verified.png',
+          }
+          proof={}
+          for name,p in files.items():
+              assert p.is_file(),f'Missing isolated source {name}: {p}'
+              target=staged/(name+p.suffix)
+              shutil.copyfile(p,target)
+              proof[name]={'source':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+                           'export':str(target),'source_not_gameplay':True}
+          (staged/'source-provenance.json').write_text(json.dumps({
+              'classification':'ORIGINAL_PREUNITY_INPUTS_NOT_UNITY_SCREENSHOTS',
+              'art_approved':False,'images':proof},indent=2))
+          PY
       - name: Export 16 clearly labeled source-only studies for actual art comparison
         if: steps.present.outputs.ready == 'yes'
         uses: actions/upload-artifact@v4
