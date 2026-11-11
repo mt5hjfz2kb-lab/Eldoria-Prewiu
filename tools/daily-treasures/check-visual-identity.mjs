@@ -34,10 +34,11 @@ for(const signature of [
 ]) assert.ok(theme.includes(signature),
   'Unknown or invented celebration category: '+signature);
 
-// The actual Breach may have a SMALL violet rift-glow; the entire UI cannot
-// become purple neon. Scene palettes remain low-intensity, warm/dark.
+// The Breach ALONE may glow violet; Vigilants' ceremonies use aged bronze
+// and wrought iron. Keep all event palettes dark and low-intensity.
 assert.match(theme,/strength=legendary\?\.33f:\.22f/);
-assert.match(theme,/\.44f,\.39f,\.53f,strength,legendary/);
+assert.match(theme,/\.54f,\.49f,\.40f,strength,legendary/);
+assert.doesNotMatch(theme,/\.44f,\.39f,\.53f,strength,legendary/);
 // The original Lyra hall was genuinely too dark in 390x844 Unity capture.
 // Only portrait Lyra receives increased visibility; never brighten the
 // other painted milestones or the Bastion city with a blanket neon filter.
