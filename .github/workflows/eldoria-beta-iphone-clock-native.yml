@@ -98,7 +98,7 @@ jobs:
           import json
           request=json.load(open('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json'))
           expected=request['engine_input_blobs']
-          assert len(expected)==6 and request['variant']=='beta13-p0-city-only-v1' and request['ownership_revision']==28
+          assert len(expected)==6 and request['variant']=='beta13-p0-city-only-v1' and request['ownership_revision']==29
           for path,want in expected.items():
             # Preflight's sparse checkout omits engine files; inspect pinned Git tree.
             got=subprocess.check_output(['git','-C','beta-tools','rev-parse','HEAD:'+path],text=True).strip()
@@ -149,7 +149,7 @@ jobs:
           own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
           request=json.load(open('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json'))
           assert request['schema']==1 and request['workstream_id']==own['id']
-          assert request['owner']=='chatgpt-iphone-p0-physical-followup-20261111'
+          assert request['owner']=='chatgpt-pr179-iphone-repair-20261111'
           assert request['variant']=='beta13-p0-city-only-v1'
           assert request['minimal_source_blob']=='144b1d6becec3055aac6a69cce07007cad1849a6'
           assert request['qa_artifact_run']==42692715252
@@ -157,7 +157,7 @@ jobs:
           prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
           if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
           valid=(request['state']=='CLAIMED_FOR_NATIVE'
-            and own['owner']=='chatgpt-iphone-p0-physical-followup-20261111'
+            and own['owner']=='chatgpt-pr179-iphone-repair-20261111'
             and own['ownership_state']=='claimed'
             and own['ownership_revision']==request['ownership_revision']
             and len(holders)==1 and holders[0]['id']==own['id']
@@ -216,7 +216,7 @@ jobs:
           $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($request.state -ne 'CLAIMED_FOR_NATIVE' -or
             $holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or
-            $holders[0].owner -ne 'chatgpt-iphone-p0-physical-followup-20261111' -or
+            $holders[0].owner -ne 'chatgpt-pr179-iphone-repair-20261111' -or
             $holders[0].ownership_state -ne 'claimed' -or
             $holders[0].ownership_revision -ne [int]$request.ownership_revision){
               throw 'Minimal beta10 timer native lease not exclusively owned; no Windows work permitted'
