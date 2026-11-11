@@ -103,3 +103,29 @@ assert.match(panel,/milestoneStageArt\.raycastTarget=false/);
 assert.match(panel,/HasDistinctMilestoneArt/);
 assert.match(panel,/mainFrameSurface\.sprite=singleFrame\?null:dailyFrameSprite/);
 console.log('PASS unique original ceremony artwork in actual Unity Resources; pending Unity/human review');
+
+
+// Isolated Unity screenshots previously had an empty Lyra arch. The backup
+// must come ONLY from a SHA-traced render of the canonical 4.77MB GLB.
+const trueLyraFile='canonical_lyra_bust.png';
+const trueLyraSource=candidateRoot+'/lyra-canonical-bust-source.png';
+const trueLyraData=fs.readFileSync(trueLyraSource);
+const realModelProvenance=JSON.parse(fs.readFileSync(
+  candidateRoot+'/lyra-canonical-bust-source.provenance.json','utf8'));
+const authenticLyra=importedManifest.assets.canonical_lyra_bust;
+assert.equal(realModelProvenance.generated_person,false);
+assert.equal(realModelProvenance.source_sha256,
+  'a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725');
+assert.equal(createHash('sha256').update(trueLyraData).digest('hex'),
+  realModelProvenance.output_sha256);
+assert.equal(createHash('sha256').update(
+  fs.readFileSync(importedRoot+'/'+trueLyraFile)).digest('hex'),
+  authenticLyra.sha256);
+assert.ok(trueLyraData.equals(fs.readFileSync(importedRoot+'/'+trueLyraFile)));
+const realLyraMeta=fs.readFileSync(importedRoot+'/'+trueLyraFile+'.meta','utf8');
+assert.ok(realLyraMeta.includes('guid: '+authenticLyra.guid));
+assert.ok(realLyraMeta.includes('textureType: 8') &&
+          realLyraMeta.includes('alphaIsTransparency: 1'));
+assert.match(panel,/Resources.Load<Sprite>\(\s*"DailyTreasureCeremonies\/canonical_lyra_bust"\)/);
+assert.match(panel,/lyraFallbackActive=portrait!=null/);
+console.log('PASS authentic Lyra GLB-only portrait fallback and non-obscuring category art composition');

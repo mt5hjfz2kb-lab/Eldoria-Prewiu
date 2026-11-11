@@ -113,6 +113,7 @@ namespace Eldoria.DailyTreasures
         // The hero is sourced only from the game's real hero inventory. Never
         // bake the imagined Lyra from a concept poster into a live milestone.
         Image milestoneLyraPortrait;
+        bool lyraFallbackActive;
         float nextLyraArtProbe,stopLyraArtProbe,lyraArtRevealAt;
         Image bastionStoryInk;
         string milestoneSceneryKey;
@@ -731,6 +732,7 @@ namespace Eldoria.DailyTreasures
                 milestoneLyraPortrait.sprite=null;
                 milestoneLyraPortrait.gameObject.SetActive(false);
                 nextLyraArtProbe=stopLyraArtProbe=0f;
+                lyraFallbackActive=false;
             }
             if(milestoneStageArt)
             {
@@ -1086,6 +1088,19 @@ namespace Eldoria.DailyTreasures
                 // displays. No generated face, no duplicated hero asset.
                 var portrait=currentStage==DailyTreasureStageKind.Lyra &&
                     showChest?TryCanonicalLyraPortrait():null;
+                // An isolated native fixture may not contain the Heroes UI
+                // component. Use a sprite copied byte-for-byte from the
+                // original approved 4.77MB Lyra GLB's model render; this is
+                // an AUTHENTIC IDENTITY FALLBACK, not an invented heroine.
+                // Replace it with live HeroesUI portrait as soon as ready.
+                lyraFallbackActive=false;
+                if(!portrait && currentStage==DailyTreasureStageKind.Lyra &&
+                   showChest)
+                {
+                    portrait=Resources.Load<Sprite>(
+                        "DailyTreasureCeremonies/canonical_lyra_bust");
+                    lyraFallbackActive=portrait!=null;
+                }
                 milestoneLyraPortrait.sprite=portrait;
                 milestoneLyraPortrait.gameObject.SetActive(portrait!=null);
                 lyraArtRevealAt=Time.unscaledTime;
@@ -1478,12 +1493,49 @@ namespace Eldoria.DailyTreasures
                 {
                     // Painterly foreground is transparent and cannot invent
                     // a different Lyra, reward, or future Bastion city.
+                    // Genuine Unity screenshot 43005395878 proved the
+                    // first generic 1.72x/1.78x foregrounds obscured their
+                    // painterly scenes and even covered receipt/Continue.
+                    // Do not compensate with a tint: each DISTINCT physical
+                    // subject must fit its actual scenic column. The Bastion
+                    // arch belongs at the edge; the REAL BUILDING is the hero.
+                    float artX=stage.SceneX,artY=stage.SceneY;
+                    float artW=stage.SceneW,artH=stage.SceneH;
+                    switch(currentStage)
+                    {
+                        case DailyTreasureStageKind.Explorers:
+                            // Shrink the authentic parchment enough that the
+                            // original surveyed country remains visible both
+                            // beside and above its unfilled discovery map.
+                            artW*=portrait?.88f:.96f;
+                            artH*=portrait?.74f:.90f;
+                            artY-=portrait?stage.SceneH*.04f:0f;
+                            break;
+                        case DailyTreasureStageKind.Vigilants:
+                            // Monumental ceremonial shield, contained within
+                            // the SAME left scenery rather than over narration.
+                            artW*=portrait?1.13f:.96f;
+                            artH*=portrait?.88f:.90f;
+                            break;
+                        case DailyTreasureStageKind.Lyra:
+                            artW*=portrait?.92f:.98f;
+                            artH*=portrait?.83f:.94f;
+                            break;
+                        case DailyTreasureStageKind.Bastion:
+                            // The central city is real gameplay geometry.
+                            // Move the original alpha stonework to the EDGE
+                            // as a slender architectural side ornament.
+                            artW*=portrait?.80f:.57f;
+                            artH*=portrait?.60f:.60f;
+                            artX+=portrait?-stage.SceneW*.26f:
+                                stage.SceneW*.31f;
+                            artY+=stage.SceneH*.09f;
+                            break;
+                    }
                     Place(milestoneStageArt.rectTransform,
-                        .5f,.5f,.5f,.5f,stage.SceneX,stage.SceneY,
-                        stage.SceneW*(portrait?1.72f:1.78f),
-                        stage.SceneH*(portrait?1.20f:1.16f));
+                        .5f,.5f,.5f,.5f,artX,artY,artW,artH);
                     milestoneStageArt.color=new Color(1f,1f,1f,
-                        currentStage==DailyTreasureStageKind.Bastion?.83f:.96f);
+                        currentStage==DailyTreasureStageKind.Bastion?.68f:.96f);
                 }
                 // The authoritative hero portrait is the focal subject of
                 // Lyra's ceremony, with actual Eldoria hall as the depth layer.
@@ -1659,7 +1711,16 @@ namespace Eldoria.DailyTreasures
                         roomy?(twoResources?15:16):tiny?13:14;
                 }
             }
-            if(eventStage && stage.SideBySide)
+            if(eventStage && currentStage==DailyTreasureStageKind.Bastion &&
+               !portrait)
+            {
+                // Keep both the real built city AND its entrance in view.
+                // The narrative and Continue occupy the left ink column.
+                Place((RectTransform)claimButton.transform,
+                    .5f,0f,.5f,0f,stage.ReceiptX,13f,
+                    Mathf.Min(stage.ReceiptW,320f),54f);
+            }
+            else if(eventStage && stage.SideBySide)
             {
                 // Native Scouts/Explorers 844x390: the centered 405px
                 // CONTINUAR button intruded into the authentic painting.
@@ -2094,7 +2155,8 @@ namespace Eldoria.DailyTreasures
             // earlier scenery remains visible while it completes; probe
             // a bounded five-second window, never trigger a second importer.
             if(currentStage==DailyTreasureStageKind.Lyra &&
-               milestoneLyraPortrait && !milestoneLyraPortrait.sprite &&
+               milestoneLyraPortrait &&
+               (lyraFallbackActive || !milestoneLyraPortrait.sprite) &&
                Time.unscaledTime>=nextLyraArtProbe &&
                Time.unscaledTime<stopLyraArtProbe)
             {
@@ -2103,6 +2165,7 @@ namespace Eldoria.DailyTreasures
                 if(realArt)
                 {
                     milestoneLyraPortrait.sprite=realArt;
+                    lyraFallbackActive=false;
                     milestoneLyraPortrait.gameObject.SetActive(true);
                     lyraArtRevealAt=Time.unscaledTime;
                     Layout();

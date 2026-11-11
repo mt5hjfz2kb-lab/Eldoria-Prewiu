@@ -111,8 +111,10 @@ namespace Eldoria.DailyTreasures
                     0,0,w-25,h-28,
                     0,portrait?103f:85f,portrait?302f:296f,
                     portrait?269f:176f,
-                    0,portrait?-.28f*h:-.17f*h,w-48,
-                    portrait?.16f*h:.22f*h,
+                    portrait?0f:-.24f*w,
+                    portrait?-.28f*h:-.08f*h,
+                    portrait?w-48:.40f*w,
+                    portrait?.16f*h:.31f*h,
                     .38f,0f,0f,false);
 
             // Lyra, Scouts and Vigilants each use existing original Eldoria
