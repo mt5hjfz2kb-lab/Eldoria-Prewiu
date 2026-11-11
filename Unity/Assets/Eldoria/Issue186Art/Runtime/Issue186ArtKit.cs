@@ -95,17 +95,25 @@ namespace Eldoria.Issue186Art
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
             }
-            // Do not place a fake tap marker over a non-interactive component.
-            if (!actualControl.GetComponentInParent<Selectable>() ||
-                !actualControl.GetComponentInParent<Selectable>().IsInteractable())
+            // Only the exact target may receive the tap: a selectable parent
+            // does not make an arbitrary child a valid tutorial button.
+            var selectable = actualControl.GetComponent<Selectable>();
+            if (!selectable || !selectable.IsInteractable())
             {
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
             }
+            // Aim the right-pointing fingertip just INSIDE the left edge, not
+            // at the label center. The body of the hand stays outside the CTA.
+            // The halo still tracks the real button's center.
+            Vector3 tipWorld = actualControl.TransformPoint(new Vector3(
+                actualControl.rect.xMin + Mathf.Min(6f, actualControl.rect.width * .08f),
+                actualControl.rect.center.y, 0f));
+            Vector2 tipScreen = RectTransformUtility.WorldToScreenPoint(camera, tipWorld);
             var parent = pointer.rectTransform.parent as RectTransform;
             if (!parent || !RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parent, screenPoint, camera, out var local))
+                parent, tipScreen, camera, out var local))
             {
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
@@ -128,6 +136,21 @@ namespace Eldoria.Issue186Art
             pointer.preserveAspect = true;
             pointer.raycastTarget = false;
             pointer.gameObject.SetActive(true);
+            // Account for the real Canvas scale/rotation, not a guessed size
+            // or host Editor resolution: never draw a half-clipped hand.
+            var corners = new Vector3[4];
+            rect.GetWorldCorners(corners);
+            foreach (var corner in corners)
+            {
+                Vector2 projected = RectTransformUtility.WorldToScreenPoint(camera, corner);
+                if (projected.x < 3f || projected.y < 3f ||
+                    projected.x > viewWidth - 3f || projected.y > viewHeight - 3f)
+                {
+                    pointer.gameObject.SetActive(false);
+                    if (targetHalo) targetHalo.gameObject.SetActive(false);
+                    return false;
+                }
+            }
 
             if (targetHalo)
             {
