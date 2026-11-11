@@ -28,6 +28,11 @@ def main():
          "root.SetParent(canvas.transform,false)" in B and
          "root.SetParent(parent,false)" in B,
          "Use the ONE real Vigilants/Scouts screen and restore original parent")
+    need('GetField(' in B and '"safe",BindingFlags.NonPublic|BindingFlags.Instance' in B and
+         "actualSafeField.SetValue(retention,root)" in B and
+         "actualSafeField.SetValue(retention,canonicalSafe)" in B and
+         "OwnsActualSafeViewport" in B and "SynchronizeVisual()" in B,
+         "Canonical retention safe rect must be temporarily redirected to actual new Canvas; never cropped from old landscape viewport")
     need("retentionBridge.Initialize(host,canvas)" in H,
          "Independent Canvas must register the canonical retention bridge")
     nav=H.split("void Navigate(int index)",1)[1].split("void LateUpdate()",1)[0]
