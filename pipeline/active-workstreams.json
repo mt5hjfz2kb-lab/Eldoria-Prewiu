@@ -22,9 +22,9 @@
   {
    "id": "eldoria-issue186-reward-attention-guidance-20261111",
    "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-   "owner": "chatgpt-issue186-art-import-recovery-20261111",
+   "owner": "chatgpt-central-resource-art-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 4,
+   "ownership_revision": 5,
    "branch": "feature/issue186-reward-attention-guidance-20261111",
    "status": "active",
    "phase": "ART_SOURCE_IMPORTED_NATIVE_GATE_DESIGN_AND_IMPORT_QA",
@@ -42,9 +42,9 @@
     "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
     ".github/workflows/issue186-native.yml"
    ],
-   "next": "Independent native Unity capture workflow planned under own scope, exact Windows CAS claim required. PC remains #173; no dispatch until honest resource transfer.",
+   "next": "PC belongs to PR179 rev36, then PR181, then this PR187. Prepare installed Git before checkout so no 26GB archive fallback; inspect 16 actual resource images and final Unity before owner art A/B approval.",
    "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
-   "previous_owner": "chatgpt-issue186-art-20261111",
+   "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
    "ownership_history": [
     {
      "from": "chatgpt-issue186-art-20261111",
@@ -53,6 +53,14 @@
      "revision": 3,
      "transferred_at": "2026-11-11T16:38:00Z",
      "reason": "El propietario ordena en este chat continuar sin interrumpirse la importación artística y QA de #186/#187. Mismo ID y rama, sin reservar Windows de #173 ni tocar rutas de #181/#179; último PR187 SHA b19b1a82 y CI dominio PASS."
+    },
+    {
+     "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
+     "from_revision": 4,
+     "to_revision": 5,
+     "to_owner": "chatgpt-central-resource-art-20261111",
+     "transferred_at": "2026-11-11T20:14:10.493Z",
+     "reason": "Owner assumes four projects in central execution. Prepare proven installed-Git sparse checkout before resource art native turn; preserve sixteen authored PNG and PR187."
     }
    ]
   },
