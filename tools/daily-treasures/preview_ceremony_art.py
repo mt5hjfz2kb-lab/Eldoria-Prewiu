@@ -113,6 +113,15 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
     require(len(ornaments)<=1,"Multiple ornate frames overlap")
     require(all(role in ("stage","ornament") for role,_ in layers),
             "Unknown source composition layer")
+    # Explicitly fail closed when someone accidentally passes a stage without
+    # a verified canonical scene. Overlay compositing is no proof of identity.
+    require(event in ("","lyra","explorers","vigilants","bastion"),
+            "Unknown game event must not receive a fabricated ceremony")
+    # It is dangerous to silently accept a generated ornament after refusing
+    # generated scenery: a candidate may still have baked loot, text or fake
+    # heraldry at the margins. Until independently reviewed, its only allowed
+    # use is PRE-UNITY reference. Final Unity UI must use separately admitted
+    # canonical material sprites, not this source compositor.
     # Stage candidates contain fictional coasts, emblems and buildings.
     # Suppress them all rather than making a small retouch that preserves
     # these inaccuracies. Real environment occupies the complete frame.
