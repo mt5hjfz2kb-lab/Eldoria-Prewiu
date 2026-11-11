@@ -348,6 +348,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Ubuntu hosted runners omit both EGL and OSMesa. VTK cannot load
+          # genuine glTF geometry without a headless OpenGL backend.
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends libosmesa6 libegl1 libgl1-mesa-dri
           python3 -m pip install --quiet --disable-pip-version-check vtk==9.5.2
           python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
             --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
