@@ -984,8 +984,8 @@ namespace Eldoria.DailyTreasures
                         break;
                 }
                 // Shared iron/bronze grammar: the color only marks context.
-                // Indigo/violet is restricted to Brecha/Vigilantes, with no
-                // full-frame neon recoloring of the original painting.
+                // Violet belongs exclusively to the Breach, not Vigilants;
+                // there is no full-frame neon recoloring of real scenery.
                 if(milestoneRule)
                     milestoneRule.color=new Color(activeTheme.R,
                         activeTheme.G,activeTheme.B,.72f);

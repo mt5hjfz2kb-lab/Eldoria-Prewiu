@@ -459,9 +459,8 @@ internal static class Program
                 True(style.Strength>=.15f && style.Strength<=.34f,
                     "events stay atmospheric, not an overwhelming colored screen wash");
                 if(eventKey!=null && eventKey.StartsWith("vigilant:"))
-                    True(style.B<=.54f &&
-                         style.G>=.37f,
-                        "violet of the Breach remains stone-like, never electric purple");
+                    True(style.R>style.B && style.G>=style.B,
+                        "Vigilants use forged iron/bronze, never the Breach's violet");
             }
         }
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");

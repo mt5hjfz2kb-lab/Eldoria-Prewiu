@@ -41,8 +41,10 @@ namespace Eldoria.DailyTreasures
                         .45f,.56f,.43f,strength,legendary);
                 if(eventId.StartsWith("vigilant:",
                     StringComparison.Ordinal))
+                    // Only the Breach owns violet. Victories of the real
+                    // Vigilants are celebrated in forged iron and old bronze.
                     return new DailyTreasureCeremonyTheme(
-                        .44f,.39f,.53f,strength,legendary);
+                        .54f,.49f,.40f,strength,legendary);
             }
             // Daily chest and any unrecognized future event use the same
             // original bronze-and-amber reference, not an unknown color.
