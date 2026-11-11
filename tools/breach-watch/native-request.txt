@@ -1,4 +1,5 @@
-VIGILIA_ART_NATIVE_20261111_0248_REAL_BASTION_MATERIAL_PROVENANCE
-Source exact HEAD: e9e0bdb3654961cf91c360d4ba335636576702b4
-PR173 canonical owner chatgpt-vigilia-art-automation-20261111, main claim revision69, exclusive windows-runner-heavy.
-Required 8 genuine Unity 6000.3.23f1 city/Bastion screenshots + six real raycasts/navigation, GPU text, old Canvas hidden and original save unchanged. Additional strictly EDITOR-only diagnostic "VigiliaActualBastionMaterialIndexAtlas.png": one true original Bastion submesh marked magenta per tile on a disposable clone; all materials restored after diagnostic, production render exactly one. Resolve roof material provenance before any macro palette recommendation. No fake grass or overlays, no gameplay material editing, no publication and no ART_APPROVED.
+VIGILIA_ART_NATIVE_20261111_0304_REAL_COBALT_ROOF_PALETTE
+Source exact HEAD before request: ca39f63376d617efd41d891e2fbcd4458da3e735
+Owner chatgpt-vigilia-art-automation-20261111; exclusive windows-runner-heavy main claim revision 71.
+New artistic macroscopic correction after real Unity GPU diagnostic 42948401195 identified original Bastion roof-only material indices 8/9/10 (material-3/4/5). Only opt-in independent HUD (BreachWatchCityComposition) overrides renderer MATERIAL PROPERTY BLOCKS temporarily with approved cobalt BLUE colour; exact originals restored on HUD teardown. Same live source meshes/textures, no new fake geometry, no shared materials, game saves or published builds changed. The isolated actual-mesh portrait camera copies live per-submesh properties, so castle city and Bastion card must display same roof.
+Required genuine Unity 6000.3.23f1 8 screenshots (city/Bastion x 4), GPU text legibility, six pointer/navigation events, independent Canvas, old Canvas hidden and save untouched. Judge by genuine pixel BEFORE/AFTER vs owner JPEG, not source CI. No merge, no ART_APPROVED, no publish.
