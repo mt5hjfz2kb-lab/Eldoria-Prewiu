@@ -34,6 +34,7 @@ jobs:
           sparse-checkout: |
             tools/eldoria-private-beta
             pipeline/eldoria-private-beta
+            .github/workflows/eldoria-beta-lazy-world-native.yml
             Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode
