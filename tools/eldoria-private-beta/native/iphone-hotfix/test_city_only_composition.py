@@ -43,7 +43,7 @@ class CityOnlyCompositionTests(unittest.TestCase):
     def test_essential_features_still_in_composed(self):
         for token in (b'RoyalGoldV41MailboxScreen',b'ValoriaPlaytestTelemetry',
                       b'RoyalSection.Mailbox',b'WorldHotspot',b'SyncWorldCity',
-                      b'ObserveBetaMilestones',b'BuildStaged'):
+                      b'ScanBetaMilestones',b'BuildStaged'):
             # BuildStaged is in world builder, not in UI host; exclude when absent.
             if token==b'BuildStaged': continue
             self.assertIn(token,COMPOSED)
