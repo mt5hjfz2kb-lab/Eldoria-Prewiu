@@ -20,12 +20,6 @@ $overlays=@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
-# P0 must NOT stage a second, mutually incompatible copy of the host
-# before applying the complete hash-pinned UX overlay.
-if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1'){
- $hostPath='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
- $overlays=@($overlays|Where-Object {$_ -ne $hostPath})
-}
 . (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/overlay.ps1')
 New-Item -ItemType Directory -Force $Evidence|Out-Null
 if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Wrong frozen source'}
@@ -95,6 +89,17 @@ try {
  $hashes=@()
  foreach($path in $overlays){
   $from=Join-Path $Tools $path;$to=Join-Path $Source $path
+  if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1' -and
+     $path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
+   # The frozen beta10 UX manifest expects EXACTLY the old native-PASS
+   # host as input (SHA256 19e289...). The newer P0 engine file is not
+   # admissible: do not stage both and silently lose the UX.
+   $from=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.beta13-engine-control.cs.txt'
+   if(-not(Test-Path $from -PathType Leaf) -or
+      (Get-FileHash $from -Algorithm SHA256).Hash -ne '19E289FF881B483748EA627C0B570768498B798CB0CF684E8C2A45ECC D11CB88'.Replace(' ','')){
+     throw 'Immutable native-PASS engine host differs from frozen UX baseline'
+   }
+  }
   if(-not(Test-Path $from) -or -not(Test-Path $to)){throw "Overlay absent: $path"}
   $before=(Get-FileHash $to -Algorithm SHA256).Hash
   Copy-Item $from $to -Force
@@ -118,7 +123,10 @@ try {
   Copy-Item $composed $hostTo -Force
   $composedHash=(Get-FileHash $composed -Algorithm SHA256).Hash
   if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne $composedHash){throw 'P0 staged composition hash mismatch'}
-  $hashes+=@{path=$hostRel;baseline=$uxHash;candidate=$composedHash;mode='OPT_IN_CITY_ONLY_OVER_EXACT_FROZEN_BETA10_UX'}
+  $hostRows=@($hashes|Where-Object {$_.path -eq $hostRel})
+  if($hostRows.Count -ne 1){throw 'P0 source overlay must contain one engine host'}
+  $hostRows[0].candidate=$composedHash
+  $hostRows[0].mode='OPT_IN_CITY_ONLY_OVER_EXACT_FROZEN_BETA10_UX'
  }
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
  # Prepare static collision structures in the build, preserving exact meshes.
