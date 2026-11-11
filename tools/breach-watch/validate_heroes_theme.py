@@ -30,6 +30,12 @@ def main():
          "if(realModelPortrait)return realModelPortrait;" in hero_source and
          'const string key="approved-lyra-portrait"' in hero_source,
          "Lyra must display approved illustration while live model portrait loads")
+    genuine_profile=(ROOT/"Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs").read_text()
+    need("FinishApprovedFallback(img,hero.Portrait)" in genuine_profile and
+         'SetFloat("_PortraitFeather",.20f)' in genuine_profile and
+         'SetVector("_PortraitUVRect"' in genuine_profile and
+         "hallProfileFallbackMaterial" in genuine_profile,
+         "Lyra's genuine approved photo fallback must be feathered in the 2.5D hall")
     need("Heroes / live controls" in H and
          "ResetPresentation()" in H and "originals" in H and
          "IsOldRoyalFrame" in H and "SpriteMeshType.FullRect" in H,
