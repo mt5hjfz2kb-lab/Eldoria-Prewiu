@@ -26,6 +26,7 @@ namespace Eldoria.BreachWatch
         int originalSibling;
         BreachWatchSharedTheme theme;
         BreachWatchTrainingComposition cinematicTraining;
+        BreachWatchMarchComposition cinematicMarch;
 
         public bool IsShowing => destinationRoot &&
             destinationRoot.gameObject.activeInHierarchy &&
@@ -33,6 +34,8 @@ namespace Eldoria.BreachWatch
         public bool HasApprovedTheme => theme && theme.Installed &&
             theme.RestyledPanels==4 && theme.RestyledButtons>0 &&
             theme.NoLegacyBluePaintingVisible;
+        public bool RealMarchFullWidthScorecard => cinematicMarch &&
+            cinematicMarch.UsesFullWidthMetrics;
         public bool RealTrainingCinematic => cinematicTraining &&
             cinematicTraining.IsCinematicPortrait;
         public string NativeThemeDiagnostic => theme
@@ -107,6 +110,11 @@ namespace Eldoria.BreachWatch
                 cinematicTraining=root.gameObject.AddComponent<BreachWatchTrainingComposition>();
             cinematicTraining.Initialize(management);
             cinematicTraining.RefreshPortrait();
+            cinematicMarch=root.GetComponent<BreachWatchMarchComposition>();
+            if(!cinematicMarch)
+                cinematicMarch=root.gameObject.AddComponent<BreachWatchMarchComposition>();
+            cinematicMarch.Initialize(management);
+            cinematicMarch.RefreshScorecard();
             return theme.NoLegacyBluePaintingVisible;
         }
 
@@ -118,6 +126,7 @@ namespace Eldoria.BreachWatch
             if(!IsShowing)return;
             if(theme)theme.ReassertSinglePainting();
             if(cinematicTraining)cinematicTraining.RefreshPortrait();
+            if(cinematicMarch)cinematicMarch.RefreshScorecard();
         }
 
         void LateUpdate()
@@ -151,6 +160,7 @@ namespace Eldoria.BreachWatch
         void Restore()
         {
             if(cinematicTraining)cinematicTraining.Restore();
+            if(cinematicMarch)cinematicMarch.Restore();
             if(theme)theme.Restore();
             if(destinationRoot && originalParent)
             {
