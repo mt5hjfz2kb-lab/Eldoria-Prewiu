@@ -43,6 +43,8 @@ namespace Eldoria.BreachWatch.Editor
             public int width,height;
             public bool oldCanvasOff,newCanvasOwnsScreen;
             public int interactiveButtons;
+            public bool authoredMailTextureVerified;
+            public int authoredMailChangedPixels;
         }
         [Serializable] public sealed class Report
         {
@@ -660,13 +662,57 @@ namespace Eldoria.BreachWatch.Editor
                         " bottom="+bottom.ToString("F2")+
                         " saved="+file);
                 }
+                bool authoredMailTextureVerified=false;
+                int authoredMailChangedPixels=0;
+                if(name=="mail" && height>width)
+                {
+                    var art=ui.GetComponentsInChildren<BreachWatchMailboxEmptyArtwork>(true)
+                        .FirstOrDefault(x=>x && x.gameObject.activeInHierarchy);
+                    Need(art && art.isActiveAndEnabled && !art.raycastTarget,
+                        "Authored empty mail illustration is missing or intercepts input");
+                    var expected=Resources.Load<Sprite>("VigiliaArt/MailboxArtwork/sealed_letter");
+                    Need(expected && art.mainTexture==expected.texture &&
+                         expected.texture.width<=512 && expected.texture.height<=512,
+                        "Empty mail did not bind its actual bounded authored texture");
+                    var originalPixels=texture.GetPixels32();
+                    var withoutArt=new Texture2D(width,height,TextureFormat.RGB24,false);
+                    try
+                    {
+                        art.enabled=false;
+                        Canvas.ForceUpdateCanvases();camera.Render();
+                        RenderTexture.active=rt;
+                        withoutArt.ReadPixels(new Rect(0,0,width,height),0,0);
+                        withoutArt.Apply();
+                        var hiddenPixels=withoutArt.GetPixels32();
+                        for(int pixel=0;pixel<originalPixels.Length;pixel++)
+                        {
+                            var a=originalPixels[pixel];var b=hiddenPixels[pixel];
+                            if(Mathf.Abs(a.r-b.r)>12 || Mathf.Abs(a.g-b.g)>12 ||
+                               Mathf.Abs(a.b-b.b)>12)authoredMailChangedPixels++;
+                        }
+                        Need(authoredMailChangedPixels>width*height*.01f,
+                            "Authored mail imported but not genuinely visible in GPU output");
+                        authoredMailTextureVerified=true;
+                    }
+                    finally
+                    {
+                        art.enabled=true;Canvas.ForceUpdateCanvases();camera.Render();
+                        Object.DestroyImmediate(withoutArt);
+                    }
+                }
+                if(name=="mail-with-report-row" || name=="mail-report-document")
+                    Need(!ui.GetComponentsInChildren<BreachWatchMailboxEmptyArtwork>(true)
+                        .Any(x=>x && x.gameObject.activeInHierarchy),
+                        "Empty mailbox artwork is covering populated correspondence");
                 int buttons=ui.GetComponentsInChildren<Button>(true)
                     .Count(b=>b && b.IsActive() && b.interactable);
                 Need(buttons>0,"Real destination has no interactive controls: "+name);
                 return new Screen{
                     destination=name,file=file,sha256=Hash(full),width=width,height=height,
                     oldCanvasOff=ui.LegacyPresentationHidden,
-                    newCanvasOwnsScreen=verify(),interactiveButtons=buttons
+                    newCanvasOwnsScreen=verify(),interactiveButtons=buttons,
+                    authoredMailTextureVerified=authoredMailTextureVerified,
+                    authoredMailChangedPixels=authoredMailChangedPixels
                 };
             }
             finally
