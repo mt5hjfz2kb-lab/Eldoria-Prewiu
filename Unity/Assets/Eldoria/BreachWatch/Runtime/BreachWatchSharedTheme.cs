@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,12 +32,17 @@ namespace Eldoria.BreachWatch
         readonly Dictionary<Button, Selectable.Transition> originalTransitions =
             new Dictionary<Button, Selectable.Transition>();
         Sprite slicedStone;
+        Image originalBackdrop;
+        Color originalBackdropColor;
+        readonly Dictionary<Text, Color> originalTextColors =
+            new Dictionary<Text, Color>();
         Sprite stone, action;
         bool installed;
 
         public bool Installed => installed;
         public int RestyledPanels { get; private set; }
         public int RestyledButtons { get; private set; }
+        public int ReplacedLegacyGraphics { get; private set; }
 
         public bool Apply(RectTransform destination)
         {
@@ -53,6 +59,17 @@ namespace Eldoria.BreachWatch
             }
             RestyledPanels=0;
             RestyledButtons=0;
+            ReplacedLegacyGraphics=0;
+            // Replace the old blue canvas with a neutral warm-stone stage.
+            // This is a single authoritative background, not a dark image
+            // pasted on top of the previous military backdrop.
+            originalBackdrop=destination.GetComponent<Image>();
+            if(originalBackdrop)
+            {
+                originalBackdropColor=originalBackdrop.color;
+                originalBackdrop.color=new Color(.080f,.071f,.064f,1f);
+            }
+            ReplaceLegacyPainting(destination);
 
             // Only structural destination frames. Other images include
             // genuine soldiers, heroes, resources and narrative illustrations.
@@ -96,13 +113,62 @@ namespace Eldoria.BreachWatch
                 button.transition=Selectable.Transition.None;
                 RestyledButtons++;
             }
-            installed=RestyledPanels==frameNames.Length;
+            installed=RestyledPanels==frameNames.Length && ReplacedLegacyGraphics>=4;
             if(!installed)
             {
                 Restore();
                 Debug.LogWarning("VIGILIA_DESTINATION_THEME_INCOMPLETE_FRAME_SET");
             }
             return installed;
+        }
+
+        void ReplaceLegacyPainting(RectTransform destination)
+        {
+            // The old Royal management UI had independently layered blue
+            // scenery, parchment images, foreground meshes and heraldry.
+            // Hide those genuine graphics BEFORE installing the new surfaces.
+            // Do not hide functional text, hero portraits, troop illustrations
+            // or the original Slider/Selectables.
+            var original=destination.GetComponentsInChildren<Graphic>(true);
+            foreach(var graphic in original)
+            {
+                if(!graphic || graphic.transform==destination)continue;
+                bool obsoleteBackdrop=graphic is RoyalGoldV3ManagementBackdrop ||
+                    graphic is RoyalGoldV3ManagementBackdropGraphic ||
+                    graphic is RoyalGoldV3LayeredFinish;
+                bool obsoletePaper=graphic is Image &&
+                    (graphic.name=="Approved source / blue-panel" ||
+                     graphic.name=="Approved source / gold-button" ||
+                     graphic.name=="Approved source / training-courtyard-layer-v1");
+                if(!obsoleteBackdrop && !obsoletePaper)continue;
+                Hide(graphic);
+                ReplacedLegacyGraphics++;
+                // Repaint only independent subcards; the four parent panels
+                // receive their own stone surface below in Apply().
+                if(obsoletePaper && graphic.name=="Approved source / blue-panel")
+                {
+                    var parent=graphic.transform.parent as RectTransform;
+                    if(parent && parent.name!="V3 / Destination header" &&
+                       parent.name!="V3 / Featured military unit" &&
+                       parent.name!="V3 / Authoritative status and cost" &&
+                       parent.name!="V3 / Destination actions")
+                        AddSurface(parent,stone,"Vigilia / replaced inset paper",false);
+                }
+            }
+
+            // Blue-paper text was dark; it becomes illegible on real
+            // charcoal stone. Retint live labels without modifying content.
+            foreach(var text in destination.GetComponentsInChildren<RoyalText>(true))
+            {
+                if(!text)continue;
+                originalTextColors[text]=text.color;
+                var c=text.color;
+                bool wasInk=(c.r+c.g+c.b)/3f<.49f;
+                bool wasGold=c.r>c.b*1.3f && c.g>c.b*1.12f;
+                text.color=wasGold
+                    ?new Color(.94f,.75f,.45f,c.a)
+                    :new Color(.97f,.93f,.84f,c.a);
+            }
         }
 
         void Hide(Graphic graphic)
@@ -160,12 +226,18 @@ namespace Eldoria.BreachWatch
             foreach(var entry in originalGraphics)
                 if(entry.Graphic)entry.Graphic.enabled=entry.Enabled;
             originalGraphics.Clear();
+            foreach(var pair in originalTextColors)
+                if(pair.Key)pair.Key.color=pair.Value;
+            originalTextColors.Clear();
+            if(originalBackdrop)originalBackdrop.color=originalBackdropColor;
+            originalBackdrop=null;
             foreach(var go in createdSurfaces)
                 if(go)Destroy(go);
             createdSurfaces.Clear();
             installed=false;
             RestyledPanels=0;
             RestyledButtons=0;
+            ReplacedLegacyGraphics=0;
         }
 
         void OnDestroy()
