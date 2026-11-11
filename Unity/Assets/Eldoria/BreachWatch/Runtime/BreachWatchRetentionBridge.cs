@@ -34,6 +34,7 @@ namespace Eldoria.BreachWatch
             root && root.parent==canvas.transform;
         public bool ReplacedOldChrome => theme && theme.Installed &&
             theme.OldRoyalChromeHidden && IsShowing && viewportRedirected;
+        public RectTransform LiveScreenRect => IsShowing?root:null;
         public bool OwnsActualSafeViewport => viewportRedirected &&
             actualSafeField!=null && retention &&
             ReferenceEquals(actualSafeField.GetValue(retention),root);
@@ -98,6 +99,16 @@ namespace Eldoria.BreachWatch
             Canvas.ForceUpdateCanvases();
             retention.SynchronizeLayout();
             return OwnsActualSafeViewport && theme.OldRoyalChromeHidden;
+        }
+
+        public void SynchronizeVisual()
+        {
+            if(!IsShowing || !OwnsActualSafeViewport)return;
+            // Unity's offscreen native QA changes target resolution in one
+            // frame: apply the actual portrait/landscape layout immediately.
+            // The canonical Update() does this normally on real devices.
+            Canvas.ForceUpdateCanvases();
+            retention.SynchronizeLayout();
         }
 
         void LateUpdate()
