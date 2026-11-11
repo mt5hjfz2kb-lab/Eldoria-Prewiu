@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T10:38:32.926Z",
+  "updated_at": "2026-11-11T10:33:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6945,7 +6945,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-pr179-iphone-repair-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6979,16 +6979,17 @@
         ".github/workflows/eldoria-beta-payload-reuse.yml",
         ".github/workflows/eldoria-beta-copyadd-p0-pages.yml",
         ".github/workflows/eldoria-beta-copyadd-live-webkit.yml",
-        ".github/workflows/eldoria-beta-copyadd-p0.yml"
+        ".github/workflows/eldoria-beta-copyadd-p0.yml",
+        ".github/workflows/eldoria-beta-p0-city-owner-pages.yml"
       ],
       "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "P0_CITY_ONLY_NATIVE_VERIFIED_WINDOWS_RELEASED_PACKAGE_AND_WEBKIT_PENDING",
-      "note": "Beta13 owner-reported physical failure remains P0; skip full world only in owner QA URL. Windows exact source CRLF-only guard repaired with SHA proof, branch 63fb2095; native job active, package workflow e9c861ac staged. No testers.",
-      "next": "Native run 42998206844 SUCCESS, restoration artifact restored=true. Package from immutable run using .github/workflows/eldoria-beta-p0-city-package.yml on branch PR179, Apple GPU compare opt-in city-only vs beta13. Keep beta10 unchanged; no external testers, physical iPhone P0 still unresolved.",
+      "phase": "P0_CITY_ONLY_NATIVE_AND_MAC_QA_PASS_OWNER_PREVIEW_STAGING",
+      "note": "Proven technical passes, NOT physical iPhone success. Mac Apple GPU uses city-only flag and checks actual world-deferred log. City-only diagnostic must not be handed to external testers.",
+      "next": "Unity run42998206844 SUCCESS, verified restored=true/no conflicts; separate package+Mac WebKit run42999782863 SUCCESS (90s ready, nickname and graceful reopen per gate). Prepare owner diagnostic-only Pages route from immutable beta10 snapshot and exact city-only package; remove failed beta13 payload if size requires but never replace beta10 or invite external testers. Need physical iPhone next; flag city-only excludes world, not playable I–V.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7336,6 +7337,14 @@
           "to_owner": "chatgpt-pr179-iphone-repair-20261111",
           "released_at": "2026-11-11T10:27:00Z",
           "reason": "Native run 42998206844 and collision proof success, inspected exact warm-cache-restoration.json restored=true, zero conflicts/status/input changes. Release Windows-only exclusive claim; keep same PR179 workstream active for package, mobile diagnostics and tester gate."
+        },
+        {
+          "owner": "chatgpt-pr179-iphone-repair-20261111",
+          "from_revision": 30,
+          "to_revision": 31,
+          "to_owner": "chatgpt-pr179-iphone-repair-20261111",
+          "reason": "Add tightly scoped Pages owner-only diagnostic publication workflow after certified native+Mac success; no Windows claim or changes to beta10 release",
+          "transferred_at": "2026-11-11T10:33:00Z"
         }
       ],
       "frozen_beta_ux_scope": {
