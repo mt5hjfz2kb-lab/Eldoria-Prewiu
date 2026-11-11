@@ -35,9 +35,6 @@ namespace Eldoria.BreachWatch
         public bool ReplacedOldChrome => theme && theme.Installed &&
             theme.OldRoyalChromeHidden && IsShowing && viewportRedirected;
         public RectTransform LiveScreenRect => IsShowing?root:null;
-        public bool RealScoutsContractStoneReplaced => IsShowing && theme &&
-            theme.RealScoutsContractStoneReplaced;
-
         public bool HasSingleGradedScoutsPainting => IsShowing &&
             retention.OpenDestination == RoyalGoldV3EarlyRetentionScreens.Destination.Scouts &&
             theme && theme.HasIndependentScoutColorGrade;
