@@ -226,6 +226,27 @@ internal static class Program
                 AttentionLevel.ActionReady),
               "notification save/load retains pending actions and resolved receipts");
 
+        var nestedAttention=new AttentionCueLedger();
+        Check(AttentionCueRules.Signal(nestedAttention,"unread:1","hud/mail",
+                AttentionLevel.New) &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud")==AttentionLevel.New &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud/mail")==AttentionLevel.New,
+              "nested new-mail alert bubbles to its real HUD navigation");
+        Check(AttentionCueRules.AtOrDescendants(nestedAttention,"hu")==AttentionLevel.None &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud2")==AttentionLevel.None,
+              "prefix collision cannot create phantom navigation indicators");
+        Check(AttentionCueRules.Signal(nestedAttention,"daily:claim","hud/rewards/daily",
+                AttentionLevel.ActionReady) &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud")==AttentionLevel.ActionReady &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud/rewards")==AttentionLevel.ActionReady,
+              "pending action outranks unread child in parent navigation");
+        Check(AttentionCueRules.Resolve(nestedAttention,"daily:claim",true) &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud")==AttentionLevel.New,
+              "parent falls back to remaining unread information");
+        Check(AttentionCueRules.MarkViewed(nestedAttention,"unread:1") &&
+              AttentionCueRules.AtOrDescendants(nestedAttention,"hud")==AttentionLevel.None,
+              "parent clears only once all children have no outstanding attention");
+
         var guide = new GuidedTutorialProgress();
         Check(!GuidedTutorialRules.ShouldPoint(guide, "first-mail", "mail-button", false, true),
             "locked features cannot point");
