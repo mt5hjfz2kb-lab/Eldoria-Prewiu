@@ -610,6 +610,36 @@ namespace Eldoria.DailyTreasures.Editor
             else
                 Need(panel.HasMilestoneScenery,
                     "Original real Eldoria artwork is absent from the milestone");
+            // Native test must check the ARTISTIC METHOD actually rendered:
+            // premium scenes wrap original game scenery across the full
+            // ceremony, not a generic empty black right half. The shader
+            // is not a fake UI screenshot; it shades the SAME real texture.
+            var fullWorld=FindRect(panel,
+                "Genuine story world / cinematic full-bleed atmosphere")
+                .GetComponent<RawImage>();
+            var originalWorld=painted.GetComponent<RawImage>();
+            if(expected.Kind==DailyTreasureStageKind.Bastion)
+            {
+                // Isolated fixture has no city, so black is the truthful
+                // fallback. The separate real-city fixture MUST verify the
+                // actual one-frame 3D camera instead.
+                Need(!fullWorld.gameObject.activeInHierarchy,
+                    "No false Bastion city may be shown in isolated fixture");
+            }
+            else
+                Need(fullWorld.gameObject.activeInHierarchy &&
+                     fullWorld.texture==originalWorld.texture &&
+                     fullWorld.material &&
+                     fullWorld.material.shader &&
+                     fullWorld.material.shader.name==
+                        "Eldoria/DailyNarrativeBackdrop" &&
+                     !fullWorld.raycastTarget,
+                    "Native ceremony lacks genuine full-world painterly backdrop");
+            if(expected.Kind==DailyTreasureStageKind.Vigilants)
+                Need(insignia.material && insignia.material.shader &&
+                     insignia.material.shader.name==
+                         "Eldoria/DailyHeraldicRelief",
+                    "Original Vigilants compass still appears as a flat sticker");
             var uniqueStage=FindRect(panel,
                 "Unique Eldoria event stage / transparent foreground");
             Need(panel.HasDistinctMilestoneArt &&
