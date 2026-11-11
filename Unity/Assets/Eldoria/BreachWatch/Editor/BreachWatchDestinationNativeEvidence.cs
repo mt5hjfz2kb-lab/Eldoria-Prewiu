@@ -153,6 +153,7 @@ namespace Eldoria.BreachWatch.Editor
             var profileShots=new List<Screen>();
             var unlockedNavShots=new List<Screen>();
             var retentionShots=new List<Screen>();
+            var mailContentShots=new List<Screen>();
             try
             {
                 host.City.Apply(fixture);
@@ -284,6 +285,57 @@ namespace Eldoria.BreachWatch.Editor
                      "Mail medallion did not open canonical new UI or stayed over its panel");
                 CaptureMany(ui,folder,"mail",shots,()=>mail.IsShowing &&
                     mail.ReplacedOldPainting);
+
+                // Art QA of the POPULATED mailbox is indispensable. The
+                // original 16 screenshots exercised only empty categories.
+                // A purely disposable in-memory canonical domain event now
+                // tests one real row and its real report detail, with NO
+                // command, receipt or persisted message in the player's save.
+                fixture.Mailbox.Receive(new EldoriaV41Message {
+                    EventId="VIGILIA_NATIVE_MAIL_QA_NEVER_PERSIST",
+                    Category="informes",
+                    Type="system",
+                    Title="Informe de prueba visual (no real)",
+                    Subtitle="Registro temporal de prueba para verificar "+
+                        "la distribución, el contraste y la lectura del buzón.",
+                    OccurredAtUtcTicks=new DateTime(2026,11,10,10,0,0,
+                        DateTimeKind.Utc).Ticks
+                });
+                stateField.SetValue(gateway,fixture);
+                host.City.Apply(fixture);
+                var canonicalMailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
+                Need(canonicalMailbox && mail.IsShowing,
+                    "Populated in-memory fixture lost the actual mailbox UI");
+                canonicalMailbox.Refresh();
+                mail.SynchronizeVisual();
+                Need(canonicalMailbox.VisibleMessageRows>0 &&
+                     mail.ReplacedOldPainting,
+                    "A real category message still has obsolete art or no live row");
+                foreach(var size in new[]{(900,1600),(390,844)})
+                    mailContentShots.Add(Capture(ui,folder,"mail-with-report-row",
+                        size.Item1,size.Item2,
+                        ()=>mail.IsShowing &&
+                            canonicalMailbox.VisibleMessageRows>0 &&
+                            mail.ReplacedOldPainting));
+                var firstRow=canonicalMailbox.GetComponentsInChildren<Button>(true)
+                    .FirstOrDefault(x=>x && x.name=="Buzón / mensaje 0");
+                Need(firstRow && firstRow.gameObject.activeInHierarchy &&
+                     firstRow.interactable,
+                    "First actual report row is not clickable");
+                firstRow.onClick.Invoke();
+                canonicalMailbox.Refresh();
+                mail.SynchronizeVisual();
+                var actualDocument=canonicalMailbox
+                    .GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x && x.name=="Mailbox / report document");
+                Need(actualDocument && actualDocument.gameObject.activeInHierarchy,
+                    "Real report content was not opened by its own canonical button");
+                foreach(var size in new[]{(900,1600),(390,844)})
+                    mailContentShots.Add(Capture(ui,folder,"mail-report-document",
+                        size.Item1,size.Item2,
+                        ()=>mail.IsShowing &&
+                            actualDocument.gameObject.activeInHierarchy &&
+                            mail.ReplacedOldPainting));
                 mail.Close();
                 Need(!mail.IsShowing,"Mailbox exit failed");
                 // Previously unverified canonical Vigilantes/Exploradores
@@ -327,6 +379,8 @@ namespace Eldoria.BreachWatch.Editor
                 "Two genuinely unlocked city navigation captures required");
             Need(retentionShots.Count==8,
                 "Expected four real Unity orientations for each retained destination");
+            Need(mailContentShots.Count==4,
+                "Expected two real-populated category and report images each");
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
@@ -336,6 +390,17 @@ namespace Eldoria.BreachWatch.Editor
             };
             File.WriteAllText(Path.Combine(folder,"BreachWatchDestinationEvidence.json"),
                 JsonUtility.ToJson(report,true));
+            var mailReport=new Report {
+                status="VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING",
+                source=report.source,
+                notes="Only in-memory, explicitly labelled synthetic report for canonical message list/report UI QA. No player messages or save were modified.",
+                probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                screenshotCount=mailContentShots.Count,
+                screens=mailContentShots.ToArray()
+            };
+            File.WriteAllText(Path.Combine(folder,
+                "BreachWatchPopulatedMailEvidence.json"),
+                JsonUtility.ToJson(mailReport,true));
             // Separate, SHA256-labelled supplemental art audit. The canonical
             // 16-image destination manifest stays unchanged for existing CI.
             var heroReport=new Report {
@@ -518,6 +583,8 @@ namespace Eldoria.BreachWatch.Editor
                 }
                 var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
+                if(ui.RealMailbox && ui.RealMailbox.IsShowing)
+                    ui.RealMailbox.SynchronizeVisual();
                 var heroes=ui.RealHeroes;
                 if(heroes && heroes.IsShowing)
                 {
