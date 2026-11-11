@@ -5,7 +5,7 @@
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
   "ownership_revision": 36,
-  "state": "CLAIMED_FOR_NATIVE",
+  "state": "WAITING_FOR_WINDOWS_TURN",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -18,11 +18,11 @@
     "tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1": "30bdba1a639fbc8420de398e1ab301afd2165476",
     "tools/eldoria-private-beta/native/run_structural.ps1": "f1fa30a0543b08dd410cc8ae8655b982c3636b2b",
     "tools/eldoria-private-beta/native/run_warm_structural.ps1": "e2efdbb5eef34fe1eb620ae3f327865524a8381f",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "03f70ac722f807466fb77b95c576214284c42085",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "7a0c4d1ed094757927531a3f6659dab5f482a9e9",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "58fb92831f3d1a7fd7d242f25ad231d41d82adca",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "a67557f22642b2aa8b8904e6b073a6a92233a538",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "0e005cedfa10aa1b4cb75a543430b9cdc7e5d1ca",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "c2d8614a358908ca5341e2e1772b001340012c90",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216",
-    "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "e9b665544f686a1e7272812c6a9982cb463dee82"
+    "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "15d7ad201a3b0ca0031c07ce6d2c73a0a94da6bd"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
@@ -30,5 +30,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "Owner-directed Windows lease transferred from PR173; execute one real native batch and restore inputs, then release Windows to PR181. No publication or mobile PASS inferred."
+  "next": "Prepared time/work-sliced candidate verified in Linux source/actual-GLB index lab only. Apply only after current native job130766199765 has ended safely; preserve next Windows turns181,187,173. Renew live CAS revision and request when PR179 owns the next turn. Native/mobile results remain pending."
 }

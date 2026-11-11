@@ -56,6 +56,7 @@ namespace Eldoria.World4XCanon
                     var key=new Vector2Int(x,z);if(!obstacleCells.TryGetValue(key,out var bucket)){bucket=new List<Bounds>();obstacleCells[key]=bucket;}bucket.Add(bounds);
                 }
             }
+            var slice=new RegionOneFrameSlice(8);
             for(int z=-224;z<=224;z++)
             {
              for(int x=-112;x<=112;x++)
@@ -69,7 +70,7 @@ namespace Eldoria.World4XCanon
                     if(hit.point.x>bounds.min.x-1&&hit.point.x<bounds.max.x+1&&hit.point.z>bounds.min.z-1&&hit.point.z<bounds.max.z+1){blocked=true;break;}
                 if(!blocked)cells[new Vector2Int(x,z)]=hit.point;
             }
-             yield return null;
+             if(slice.ShouldYield()){yield return null;slice.Resume();}
             }
         }
         public bool FootprintClear(Vector3 point,float clearance)

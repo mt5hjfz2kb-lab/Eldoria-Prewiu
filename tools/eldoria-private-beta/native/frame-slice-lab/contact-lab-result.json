@@ -1,0 +1,20 @@
+{
+  "scope": "Linux .NET contact-index algorithm laboratory on actual source GLB; NOT Unity/native/WebGL/iPhone performance",
+  "checks": 92,
+  "source_sha256": "d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738",
+  "triangles": 733288,
+  "buckets_sha256": "4ce21951600a1a95e93283ec6ce875d733a885e2eea0a4ad2c07df80cfe83629",
+  "bucket_entries": 1169750,
+  "baseline_forced_frame_boundaries": 2864,
+  "candidate_work_boundaries": 45,
+  "baseline_cpu_ms": 219.4078,
+  "candidate_cpu_ms": 100.1774,
+  "source_head": "8ce635c61bcbee5b4da2e5f12dd5ba5b43a0d47e",
+  "branch_modified": false,
+  "unity_api_compiled": false,
+  "notes": [
+    "Single-pass CPU timings are warmup-sensitive and are NOT a causal speed comparison.",
+    "Only frame-boundary policy and exact bucket/index equality are evaluated here.",
+    "Unity mesh transforms/import, complete route queries, rendering and physical-phone stability remain unverified."
+  ]
+}

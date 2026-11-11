@@ -84,9 +84,34 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 240
     steps:
+      - name: Resolve installed Git before checkout; refuse archive fallback
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'No installed Git found; refuse large archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          $version=(& git --version)
+          if($LASTEXITCODE -or $version -notmatch '(\d+\.\d+\.\d+)'){
+            throw 'Installed Git version could not be verified'
+          }
+          if([Version]$Matches[1] -lt [Version]'2.25.0'){
+            throw 'Installed Git is too old for reliable sparse checkout'
+          }
+          Write-Host $version
       - uses: actions/checkout@v4
+        timeout-minutes: 15
         with:
           path: pr179-source
+          fetch-depth: 1
+          filter: blob:none
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/eldoria-private-beta/native/
@@ -377,3 +402,4 @@ jobs:
           path: evidence/
           if-no-files-found: warn
           retention-days: 7
+

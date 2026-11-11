@@ -9,6 +9,34 @@ using UnityEngine;
 
 namespace Eldoria.World4XCanon
 {
+ // One bounded amount of work between frames, not one mandatory frame per
+ // tiny batch. Resume AFTER the yield so idle browser time is never charged.
+ internal sealed class RegionOneFrameSlice
+ {
+  readonly Func<long> clock; readonly long limit; readonly int maximumUnits;
+  long started; int completed;
+  internal RegionOneFrameSlice(int maximumUnits):this(
+   System.Diagnostics.Stopwatch.GetTimestamp,
+   System.Diagnostics.Stopwatch.Frequency,4,maximumUnits) {}
+  internal RegionOneFrameSlice(Func<long> clock,long frequency,
+   int milliseconds,int maximumUnits)
+  {
+   if(clock==null)throw new ArgumentNullException(nameof(clock));
+   if(frequency<=0||milliseconds<=0||milliseconds>1000||maximumUnits<=0)
+    throw new ArgumentOutOfRangeException();
+   this.clock=clock;this.maximumUnits=maximumUnits;
+   limit=Math.Max(1,(long)(frequency*(milliseconds/1000.0)));
+   Resume();
+  }
+  internal bool ShouldYield(int units=1)
+  {
+   if(units<=0)throw new ArgumentOutOfRangeException(nameof(units));
+   completed=units>=maximumUnits-completed?maximumUnits:completed+units;
+   return completed>=maximumUnits||clock()-started>=limit;
+  }
+  internal void Resume(){started=clock();completed=0;}
+ }
+
  // The exported Blender asset is the only landscape. This component never generates terrain.
  public sealed class RegionOneBlenderLandscape : MonoBehaviour
  {
@@ -34,13 +62,16 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<contactVertices.Length;i++)contactVertices[i]=terrain.transform.TransformPoint(contactVertices[i])-origin;
    contactNormals=terrain.sharedMesh.normals;
    for(int i=0;i<contactNormals.Length;i++)contactNormals[i]=terrain.transform.TransformDirection(contactNormals[i]).normalized;
+   var slice=new RegionOneFrameSlice(16384);
    for(int i=0;i<contactTriangles.Length;i+=3){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
     int x0=Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))/16);
     int z0=Mathf.FloorToInt(Mathf.Min(a.z,Mathf.Min(b.z,c.z))/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,Mathf.Max(b.z,c.z))/16);
     for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){var k=new Vector2Int(x,z);if(!contactCells.TryGetValue(k,out var list)){list=new List<int>();contactCells[k]=list;}list.Add(i);}
-    // The 16 m contact spatial buckets can allocate many lists. Let WebGL GC breathe
-    // after 256 COMPLETE triangles, never halfway through a triangle's bucket updates.
-    if(((i/3)+1)%256==0)yield return null;
+    // Check time every 256 COMPLETE triangles. Force a boundary by 16384
+    // triangles even on a coarse clock, retaining GC opportunities in WebGL.
+    if(((i/3)+1)%256==0&&slice.ShouldYield(256)){
+     yield return null; slice.Resume();
+    }
    }
    activeSurface=this;
   }

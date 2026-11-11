@@ -1,0 +1,842 @@
+{
+  "scope": "static source GLB audit; not runtime Unity GPU allocation or phone RSS",
+  "source_head": "8ce635c61bcbee5b4da2e5f12dd5ba5b43a0d47e",
+  "source_sha256": "d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738",
+  "source_bytes": 49912632,
+  "mesh_count": 66,
+  "material_count": 44,
+  "vertices_summed_across_primitives": 558584,
+  "triangles": 878104,
+  "unique_vertex_attribute_bytes": 17571784,
+  "unique_index_bytes": 8559684,
+  "images": [
+    {
+      "index": 0,
+      "name": "E_river_depth_and_current",
+      "size": [
+        2048,
+        384
+      ],
+      "compressed_bytes": 48931,
+      "rgba32_bytes": 3145728,
+      "rgba32_with_full_mips_bytes": 4194304
+    },
+    {
+      "index": 1,
+      "name": "ContinuousLivingGeography",
+      "size": [
+        3072,
+        3072
+      ],
+      "compressed_bytes": 5266051,
+      "rgba32_bytes": 37748736,
+      "rgba32_with_full_mips_bytes": 50331648
+    },
+    {
+      "index": 2,
+      "name": "FracturedBasinPigment",
+      "size": [
+        1024,
+        1024
+      ],
+      "compressed_bytes": 1047384,
+      "rgba32_bytes": 4194304,
+      "rgba32_with_full_mips_bytes": 5592405
+    },
+    {
+      "index": 3,
+      "name": "O_painted_bank_1",
+      "size": [
+        2048,
+        512
+      ],
+      "compressed_bytes": 378807,
+      "rgba32_bytes": 4194304,
+      "rgba32_with_full_mips_bytes": 5592405
+    },
+    {
+      "index": 4,
+      "name": "O_painted_bank_-1",
+      "size": [
+        2048,
+        512
+      ],
+      "compressed_bytes": 367392,
+      "rgba32_bytes": 4194304,
+      "rgba32_with_full_mips_bytes": 5592405
+    },
+    {
+      "index": 5,
+      "name": "Continuous neighbouring land pigment",
+      "size": [
+        1536,
+        1536
+      ],
+      "compressed_bytes": 1286330,
+      "rgba32_bytes": 9437184,
+      "rgba32_with_full_mips_bytes": 12582912
+    },
+    {
+      "index": 6,
+      "name": "Eastern shelf water pigment",
+      "size": [
+        512,
+        1024
+      ],
+      "compressed_bytes": 112225,
+      "rgba32_bytes": 2097152,
+      "rgba32_with_full_mips_bytes": 2796203
+    },
+    {
+      "index": 7,
+      "name": "I_recovered_exact_retained_surface",
+      "size": [
+        2048,
+        2048
+      ],
+      "compressed_bytes": 6496757,
+      "rgba32_bytes": 16777216,
+      "rgba32_with_full_mips_bytes": 22369621
+    },
+    {
+      "index": 8,
+      "name": "AF_broad_meadow_flows",
+      "size": [
+        2048,
+        1024
+      ],
+      "compressed_bytes": 2659993,
+      "rgba32_bytes": 8388608,
+      "rgba32_with_full_mips_bytes": 11184811
+    },
+    {
+      "index": 9,
+      "name": "AI_meadow",
+      "size": [
+        2048,
+        1024
+      ],
+      "compressed_bytes": 3164853,
+      "rgba32_bytes": 8388608,
+      "rgba32_with_full_mips_bytes": 11184811
+    },
+    {
+      "index": 10,
+      "name": "Authored weathered crossing planks",
+      "size": [
+        512,
+        1024
+      ],
+      "compressed_bytes": 156153,
+      "rgba32_bytes": 2097152,
+      "rgba32_with_full_mips_bytes": 2796203
+    }
+  ],
+  "total_rgba32_image_bytes": 100663296,
+  "total_rgba32_image_mip_bytes": 134217728,
+  "notes": [
+    "RGBA32 totals describe uncompressed source image dimensions, not imported platform formats.",
+    "Vertex accessor sizes exclude Unity object overhead, GPU copies, contact-query copies, collider structures and transient imports.",
+    "Do not sum static figures and claim a measured runtime peak.",
+    "Do not resize textures or change landscape until visual A/B and target-platform measurements justify it."
+  ],
+  "largest_meshes": [
+    {
+      "mesh": "Authored low uplands with continuous rounded geological incision",
+      "nodes": [
+        "BLD_Terrain"
+      ],
+      "triangles": 733288,
+      "vertices": 416506,
+      "primitives": 9,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Continuous neighbouring continental ground",
+      "nodes": [
+        "BLD_ContinentalContinuation"
+      ],
+      "triangles": 50116,
+      "vertices": 26416,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_BreachFloor actual connected ground exposure",
+      "nodes": [
+        "BLD_BreachFloor"
+      ],
+      "triangles": 29527,
+      "vertices": 17793,
+      "primitives": 2,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_BreachBrokenBasaltPlates actual connected ground exposure",
+      "nodes": [
+        "BLD_BreachBrokenBasaltPlates"
+      ],
+      "triangles": 13514,
+      "vertices": 10007,
+      "primitives": 2,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Z authored linked woodland understory mesh",
+      "nodes": [
+        "Z retained-sector woodland understory"
+      ],
+      "triangles": 7230,
+      "vertices": 21690,
+      "primitives": 3,
+      "instance_count": 1
+    },
+    {
+      "mesh": "O continued sculpted bank.001",
+      "nodes": [
+        "BLD_ConnectedCutbank_-1_1"
+      ],
+      "triangles": 5168,
+      "vertices": 3235,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "O continued sculpted bank",
+      "nodes": [
+        "BLD_ConnectedCutbank_-1_-1"
+      ],
+      "triangles": 5168,
+      "vertices": 3235,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_BreachTerracedStrata actual connected ground exposure",
+      "nodes": [
+        "BLD_BreachTerracedStrata"
+      ],
+      "triangles": 4218,
+      "vertices": 3851,
+      "primitives": 2,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Curved understory leaves",
+      "nodes": [
+        "Directed understory mesh"
+      ],
+      "triangles": 3072,
+      "vertices": 4608,
+      "primitives": 3,
+      "instance_count": 1
+    },
+    {
+      "mesh": "AF adjacent nonblocking three-dimensional grass tufts",
+      "nodes": [
+        "BLD_NearMeadowHabitat"
+      ],
+      "triangles": 2295,
+      "vertices": 6885,
+      "primitives": 3,
+      "instance_count": 1
+    },
+    {
+      "mesh": "O continued sculpted bank.003",
+      "nodes": [
+        "BLD_ConnectedCutbank_1_1"
+      ],
+      "triangles": 1856,
+      "vertices": 1165,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "O continued sculpted bank.002",
+      "nodes": [
+        "BLD_ConnectedCutbank_1_-1"
+      ],
+      "triangles": 1856,
+      "vertices": 1165,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_BreachWeatheredRockfall actual connected ground exposure",
+      "nodes": [
+        "BLD_BreachWeatheredRockfall"
+      ],
+      "triangles": 1687,
+      "vertices": 2070,
+      "primitives": 2,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Pilot_Cutbank_1 sculpted profile",
+      "nodes": [
+        "Pilot_Cutbank_1"
+      ],
+      "triangles": 1536,
+      "vertices": 3072,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Pilot_Cutbank_-1 sculpted profile",
+      "nodes": [
+        "Pilot_Cutbank_-1"
+      ],
+      "triangles": 1536,
+      "vertices": 3072,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "K Slender fir editable branch masses",
+      "nodes": [
+        "Pilot_Pine",
+        "Pilot_Pine.002"
+      ],
+      "triangles": 1522,
+      "vertices": 4252,
+      "primitives": 5,
+      "instance_count": 259
+    },
+    {
+      "mesh": "K Layered fir editable branch masses",
+      "nodes": [
+        "Pilot_Pine.001",
+        "Pilot_Pine.005"
+      ],
+      "triangles": 1522,
+      "vertices": 4246,
+      "primitives": 5,
+      "instance_count": 203
+    },
+    {
+      "mesh": "Continuous eastern shelf",
+      "nodes": [
+        "BLD_EasternSeaContinuation"
+      ],
+      "triangles": 1360,
+      "vertices": 2720,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Connected water",
+      "nodes": [
+        "BLD_RiverExtension_-1"
+      ],
+      "triangles": 1292,
+      "vertices": 1294,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_BreachOutlyingFractures actual connected ground exposure",
+      "nodes": [
+        "BLD_BreachOutlyingFractures"
+      ],
+      "triangles": 1283,
+      "vertices": 960,
+      "primitives": 2,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Lowpoly native underbrush crowns",
+      "nodes": [
+        "BLD_NearUndergrowth"
+      ],
+      "triangles": 1155,
+      "vertices": 3465,
+      "primitives": 3,
+      "instance_count": 1
+    },
+    {
+      "mesh": "K Slender fir editable branch masses.001",
+      "nodes": [
+        "BLD_ForestMass_00_011",
+        "BLD_ForestMass_00_013"
+      ],
+      "triangles": 1064,
+      "vertices": 2922,
+      "primitives": 5,
+      "instance_count": 2565
+    },
+    {
+      "mesh": "Measured river crossing rails.002",
+      "nodes": [
+        "BLD_CrossingRails_450.0"
+      ],
+      "triangles": 744,
+      "vertices": 1488,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Measured river crossing rails",
+      "nodes": [
+        "BLD_CrossingRails_-550.0"
+      ],
+      "triangles": 744,
+      "vertices": 1488,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Eastern sea",
+      "nodes": [
+        "BLD_EasternSea"
+      ],
+      "triangles": 720,
+      "vertices": 722,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Measured river crossing rails.001",
+      "nodes": [
+        "BLD_CrossingRails_0.0"
+      ],
+      "triangles": 552,
+      "vertices": 1104,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Player directed rounded broadleaf / shared near",
+      "nodes": [
+        "BLD_ForestMass_00_004",
+        "BLD_ForestMass_00_010"
+      ],
+      "triangles": 512,
+      "vertices": 1392,
+      "primitives": 5,
+      "instance_count": 2482
+    },
+    {
+      "mesh": "Connected water.001",
+      "nodes": [
+        "BLD_RiverExtension_1"
+      ],
+      "triangles": 464,
+      "vertices": 466,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_AuthoredTributary_1",
+      "nodes": [
+        "BLD_AuthoredTributary_1"
+      ],
+      "triangles": 448,
+      "vertices": 782,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "BLD_AuthoredTributary_0",
+      "nodes": [
+        "BLD_AuthoredTributary_0"
+      ],
+      "triangles": 438,
+      "vertices": 712,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Pilot_River",
+      "nodes": [
+        "Pilot_River"
+      ],
+      "triangles": 384,
+      "vertices": 386,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "AB ridge-side exposed strata mesh",
+      "nodes": [
+        "AB authored ridge rock shelves"
+      ],
+      "triangles": 378,
+      "vertices": 1134,
+      "primitives": 2,
+      "instance_count": 1
+    },
+    {
+      "mesh": "K Slender fir editable branch masses.001 strategic branch volume",
+      "nodes": [
+        "BLD_ForestFar_00_011",
+        "BLD_ForestFar_00_013"
+      ],
+      "triangles": 230,
+      "vertices": 690,
+      "primitives": 5,
+      "instance_count": 2565
+    },
+    {
+      "mesh": "K Layered fir editable branch masses.002",
+      "nodes": [
+        "Far_Pilot_Pine.001",
+        "Far_Pilot_Pine.005"
+      ],
+      "triangles": 230,
+      "vertices": 690,
+      "primitives": 5,
+      "instance_count": 203
+    },
+    {
+      "mesh": "K Slender fir editable branch masses.002",
+      "nodes": [
+        "Far_Pilot_Pine",
+        "Far_Pilot_Pine.002"
+      ],
+      "triangles": 228,
+      "vertices": 684,
+      "primitives": 5,
+      "instance_count": 259
+    },
+    {
+      "mesh": "Player directed rounded broadleaf / shared far",
+      "nodes": [
+        "BLD_ForestFar_00_004",
+        "BLD_ForestFar_00_010"
+      ],
+      "triangles": 100,
+      "vertices": 276,
+      "primitives": 5,
+      "instance_count": 2482
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.028",
+      "nodes": [
+        "J shore stone 0_0",
+        "J shore stone 0_1"
+      ],
+      "triangles": 80,
+      "vertices": 180,
+      "primitives": 1,
+      "instance_count": 14
+    },
+    {
+      "mesh": "Rare mineral vents in actual canyon floor",
+      "nodes": [
+        "BLD_BreachMineralHeart"
+      ],
+      "triangles": 27,
+      "vertices": 81,
+      "primitives": 1,
+      "instance_count": 1
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica",
+      "nodes": [
+        "Bank forest stone 000",
+        "Bank forest stone 028"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 14
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.001",
+      "nodes": [
+        "Bank forest stone 001",
+        "Bank forest stone 029"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.002",
+      "nodes": [
+        "Bank forest stone 002",
+        "Bank forest stone 030"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.003",
+      "nodes": [
+        "Bank forest stone 003",
+        "Bank forest stone 031"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.004",
+      "nodes": [
+        "Bank forest stone 004",
+        "Bank forest stone 032"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.005",
+      "nodes": [
+        "Bank forest stone 005",
+        "Bank forest stone 033"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.006",
+      "nodes": [
+        "Bank forest stone 006",
+        "Bank forest stone 034"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.007",
+      "nodes": [
+        "Bank forest stone 007",
+        "Bank forest stone 035"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.008",
+      "nodes": [
+        "Bank forest stone 008",
+        "Bank forest stone 036"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.009",
+      "nodes": [
+        "Bank forest stone 009",
+        "Bank forest stone 037"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.010",
+      "nodes": [
+        "Bank forest stone 010",
+        "Bank forest stone 038"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.011",
+      "nodes": [
+        "Bank forest stone 011",
+        "Bank forest stone 039"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 7
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.012",
+      "nodes": [
+        "Bank forest stone 012",
+        "Bank forest stone 040"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.013",
+      "nodes": [
+        "Bank forest stone 013",
+        "Bank forest stone 041"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.014",
+      "nodes": [
+        "Bank forest stone 014",
+        "Bank forest stone 042"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.015",
+      "nodes": [
+        "Bank forest stone 015",
+        "Bank forest stone 043"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.016",
+      "nodes": [
+        "Bank forest stone 016",
+        "Bank forest stone 044"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 4
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.017",
+      "nodes": [
+        "Bank forest stone 017",
+        "Bank forest stone 045"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 4
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.018",
+      "nodes": [
+        "Bank forest stone 018",
+        "Bank forest stone 046"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.019",
+      "nodes": [
+        "Bank forest stone 019",
+        "Bank forest stone 047"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.020",
+      "nodes": [
+        "Bank forest stone 020",
+        "Bank forest stone 048"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.021",
+      "nodes": [
+        "Bank forest stone 021",
+        "Bank forest stone 049"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.022",
+      "nodes": [
+        "Bank forest stone 022",
+        "Bank forest stone 050"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.023",
+      "nodes": [
+        "Bank forest stone 023",
+        "Bank forest stone 051"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.024",
+      "nodes": [
+        "Bank forest stone 024",
+        "Bank forest stone 052"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.025",
+      "nodes": [
+        "Bank forest stone 025",
+        "Bank forest stone 053"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.026",
+      "nodes": [
+        "Bank forest stone 026",
+        "Bank forest stone 054"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 5
+    },
+    {
+      "mesh": "Esfera geod\u00e9sica.027",
+      "nodes": [
+        "Bank forest stone 027",
+        "Bank forest stone 055"
+      ],
+      "triangles": 20,
+      "vertices": 60,
+      "primitives": 1,
+      "instance_count": 6
+    }
+  ]
+}

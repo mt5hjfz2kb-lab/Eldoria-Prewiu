@@ -85,6 +85,7 @@ namespace Eldoria.World4XCanon
                     }
                     if(valid&&high-low<.5f){city.Validated=true;ValidatedCityCount++;}
                 }
+                var slice=new RegionOneFrameSlice(8);
                 for(int z=-1500;z<=1600;z+=32)
                 {
                  for(int x=-750;x<=600;x+=32)
@@ -104,10 +105,9 @@ namespace Eldoria.World4XCanon
                     for(int i=0;i<8;i++){float a=i*Mathf.PI/4;wood|=RegionOneBlenderLandscape.Forest(x+Mathf.Cos(a)*24,z+Mathf.Sin(a)*24)>.15f;}
                     sites.Add(new Site{Id="region1:"+x+":"+z,Point=centre,Wood=wood});
                  }
-                 // At most one 32 m row of the SAME certified response tape
-                 // executes in a frame. On WebGL GC only runs between frames;
-                 // do not batch the entire 35k+ terrain-query scan into one.
-                 yield return null;
+                 // Preserve complete row/query order and the SAME tape;
+                 // yield on elapsed work or at most eight rows, never all rows.
+                 if(slice.ShouldYield()){yield return null;slice.Resume();}
                 }
             }
             if(routes==null)
