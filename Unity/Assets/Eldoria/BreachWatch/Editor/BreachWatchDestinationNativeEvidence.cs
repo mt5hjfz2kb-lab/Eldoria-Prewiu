@@ -168,7 +168,8 @@ namespace Eldoria.BreachWatch.Editor
                 Debug.Log("VIGILIA_TRAINING_PREVIEW_STATE opened="+opened+
                     " canonical="+(manager!=null&&manager.IsOpen)+
                     " showing="+military.IsShowing+
-                    " approved="+military.HasApprovedTheme);
+                    " approved="+military.HasApprovedTheme+
+                    " diagnostics="+military.NativeThemeDiagnostic);
                 Need(available && opened && military.IsShowing &&
                      military.HasApprovedTheme,
                     "Training staging failed: gate="+available+
