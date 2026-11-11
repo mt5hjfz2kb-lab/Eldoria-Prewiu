@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 36,
-  "state": "WAITING_FOR_WINDOWS_TURN",
+  "ownership_revision": 38,
+  "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -29,6 +29,6 @@
   "full_world_iphone_verified": false,
   "external_testers_enabled": false,
   "publish_allowed": false,
-  "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "Prepared time/work-sliced candidate verified in Linux source/actual-GLB index lab only. Apply only after current native job130766199765 has ended safely; preserve next Windows turns181,187,173. Renew live CAS revision and request when PR179 owns the next turn. Native/mobile results remain pending."
+  "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
+  "next": "Native one bounded batch under revision38; preserve exact source and original save, restore every warm input. Release only Windows toPR181 as soon as native completes, before package/Mac review. Same-binary desktop Mac A/B is not physical iPhone/Android evidence."
 }
