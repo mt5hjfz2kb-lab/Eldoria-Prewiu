@@ -26,7 +26,9 @@ def main():
           "MaskableGraphic" in seal.read_text() and "OnPopulateMesh" in seal.read_text(),
           "Native empty mail engraving must be a crisp reversible vector drawing")
     check("BreachWatchEmptyMailSeal.Install" in S and
-          'text.name!="Mailbox / genuine empty state"' in S,
+          'text.name=="Mailbox / genuine empty state"' in S and
+          "realEmptySentence.gameObject.activeInHierarchy" in S and
+          "realListSummary.enabled=originalSummaryVisible&&!actuallyEmpty" in S,
           "Decorative wax seal must only follow the canonical empty-state label")
     check("mailbox.Open()" in B and "mailbox.SynchronizeLayout()" in B and
           "mailbox.Close()" in B,
