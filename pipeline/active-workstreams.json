@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 67,
+      "ownership_revision": 68,
       "write_scope_released": false,
-      "phase": "PORTRAIT_APERTURE_83U_NATIVE_EXACT_HEAD_REQUEST_PENDING",
-      "next": "Run exact-HEAD PR173 Unity 6000.3.23f1 after enlarging genuine 3D portrait from 74u to 83u within same CleanRoom frame; 8 screenshots, 6 raycasts, live text/save gates, verify against approved image, release Windows CAS after run; no ART_APPROVED.",
+      "phase": "EXACT_HEAD_UNITY_PASS_ART_REFERENCE_MISMATCH_REQUIRES_MACRO_PIVOT",
+      "next": "Unity exact HEAD fc20bd7e61d410b9a8e45efb42898d9a0137f6e1 native run 42940563051 PASS technical (8 real PNG, six pointer events, save unchanged); direct JPEG original comparison and previous b262 show near-identical artistic image. Raw masonry pixels 27.21% previous vs 26.94% now, change <1% screen pixels. Isolated pitch/UV crop was not the impactful solution; inspect genuine roof/scene provenance and consider macro art workflow without invading world workstream or faking locked UI. ART_APPROVED=false; no merge/publish. Windows released and may be reacquired only via new main CAS for verified new candidate.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T01:41:00Z",
@@ -6784,8 +6782,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "b26231055ff76d2ca583bdb364127ea205e5e2e0",
-        "native_run": 42922829351,
+        "source_sha": "fc20bd7e61d410b9a8e45efb42898d9a0137f6e1",
+        "native_run": 42940563051,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13812488796,
@@ -6798,7 +6796,7 @@
         "android_tested": false,
         "webgl_tested": false,
         "portrait_transparent_bg_fraction": 0.7279,
-        "portrait_opaque_masonry_fraction": 0.2688,
+        "portrait_opaque_masonry_fraction": 0.2694,
         "active_foreign_screen_space_canvases": 0,
         "save_unchanged": true,
         "original_icon_medallions_removed": true,
@@ -6816,17 +6814,19 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Native exact-HEAD post layout-correction run success, 8 SHA verified; approved-reference comparison pending external artistic gate; no physical mobile/WebGL pass.",
-        "art_ab_artifact": 13814395037,
+        "notes": "2026-11-11 source-art gold-rim integrity correctly rejected 83u expanded aperture (first source CI failed, source reverted). Second native run exact fc20 passed; approved original 75B5D217-A914-4451-854D-AE54849E4A50(3).jpeg recovered and compared. Candidate did not yield significant visual improvement; macro art/scene approach needed. No Unity claim presently.",
+        "art_ab_artifact": 13819539278,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13809598450,
+        "native_artifact": 13821175052,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
         "owner_requested_polish": "Complete for current captured first-screen layouts; retained sharper original icons. Full900x1600 delivered as Eldoria_marcos_ampliados.png.",
         "building_level_real_gpu_visible": true,
         "building_title_orientation_sequence": "PASS",
-        "cost_heading_orientation_sequence": "PASS"
+        "cost_heading_orientation_sequence": "PASS",
+        "prechange_masonry_fraction": 0.2721,
+        "artistic_review": "NEAR_IDENTICAL_TO_B262_REJECT_MINOR_CAMERA_GUTTER_EXPERIMENT"
       },
       "runner_release_basis": "Run 42922829351 exact HEAD b26231055ff76d2ca583bdb364127ea205e5e2e0 completed success; eight authentic SHA256-verified native captures, six live pointer clicks, old canvas hidden, save unchanged. Art still NOT APPROVED.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
@@ -6855,7 +6855,7 @@
         "native_artifact": 13812488796,
         "visual_ab_artifact": 13814395037
       },
-      "runner_released_at": "2026-11-10T23:46:49Z"
+      "runner_released_at": "2026-11-11T01:47:00Z"
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
