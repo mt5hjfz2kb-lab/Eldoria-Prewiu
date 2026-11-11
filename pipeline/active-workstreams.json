@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T10:27:00Z",
+  "updated_at": "2026-11-11T10:38:32.926Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7697,7 +7697,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7721,7 +7721,9 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "phase": "CAS37_WINDOWS_RELEASED_NATIVE84_UNITY_SUCCESS_ART_REVIEW_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
@@ -7782,9 +7784,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-10T19:57:00Z",
       "runner_release_basis": "Native Unity run 42888085086 exact PR181 head 160192a6 completed three jobs SUCCESS. 72 component PNG + 116 pointer hits + 28 disposable gateway claims; canonical Valoria scene produced eight paired real camera images, 95 active renderers, zero city claims. 80 genuine PNG hashes independently matched. Full playable game, Vigilia PR173, device and owner art approval still not certified.",
-      "runner_claimed_at": "2026-11-10T19:40:26Z",
-      "runner_lease_note": "Exact HEAD PR181 Unity 6000.3.23f1 retest after portrait Lyra genuine-art contrast and isolated screenshot hygiene fix; require 72 genuine PNG, 116 pointer hits, 28 real disposable-state claims; ART_APPROVED=false.",
-      "runner_claim_basis": "Owner-requested single exact-HEAD Unity scene integration proof; main CAS has zero Windows holders and most recent GitHub Actions jobs completed. Protect PR173/PR179; verify processes in Windows job before Unity.",
+      "runner_claimed_at": "2026-11-11T10:38:32.923Z",
+      "runner_lease_note": "Source SHA a6d2f5f58fe246d5a5600a503664d4db2efde743 plus new native request commit; 72 component PNG, 116 actual pointers, 28 claims, 12 genuine city captures, 4 distinct authored event Sprite layers. ART_APPROVED=false.",
+      "runner_claim_basis": "Exclusive CAS after registry FREE and global Actions no active self-hosted Unity/Windows/Blender jobs; PR179 native42998206844 restored/released; only one PR181 native84 exact-HEAD QA; never alter other workstreams.",
       "last_native_execution": {
         "run_id": 42906443088,
         "sha": "9b86b7626b8d544f974c5395ad41f5f443d13f6b",
