@@ -1567,7 +1567,14 @@ namespace Eldoria.DailyTreasures
                             // visible central silhouette inside the scenic
                             // column even if alpha margins extend outside.
                             artW*=portrait?1.40f:1.45f;
-                            artH*=portrait?1.03f:1.06f;
+                            // Source PNG's actual nontransparent bounds span
+                            // 29..733 / 768 in Y. In tall UI the previous
+                            // 1.03x shield sat under "CAPÍTULO SUPERADO" and
+                            // also reached the confirmed mailbox report.
+                            // Reserve ONE central heraldic zone BETWEEN
+                            // title and receipt. No clipping or icon shrink.
+                            artH*=portrait?.83f:1.06f;
+                            artY-=portrait?stage.SceneH*.205f:0f;
                             break;
                         case DailyTreasureStageKind.Lyra:
                             artW*=portrait?.92f:.98f;

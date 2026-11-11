@@ -361,6 +361,24 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
               underline.y0>=heading.y0 && underline.y1<=heading.y1,
       `${w}x${h}: ${family} bronze-ink accent escapes its title`);
   }
+  if(portrait)
+  {
+    // Native source alpha bounds for the ORIGINAL SHA-backed Vigilants plate
+    // are y=29..733 within 768px. Its previously oversized shield intruded
+    // into BOTH the headline and the actual report in 390x844.
+    const sceneY=.15*eventH,sceneHeight=.56*eventH;
+    const shieldY=sceneY-.205*sceneHeight,shieldH=.83*sceneHeight;
+    const shieldTop=shieldY+(.5-29/768)*shieldH;
+    const shieldBottom=shieldY+(.5-733/768)*shieldH;
+    const titleBottom=.29*eventH-20;
+    const storyTop=-.27*eventH+.08*eventH;
+    assert.ok(titleBottom-shieldTop>=4,
+      `${w}x${h}: real Vigilants bronze shield crosses its ceremonial heading`);
+    assert.ok(shieldBottom-storyTop>=8,
+      `${w}x${h}: real Vigilants bronze shield covers the earned combat report`);
+    assert.match(code,/artH\*=portrait\?\.83f:1\.06f/);
+    assert.match(code,/artY-=portrait\?stage\.SceneH\*\.205f:0f/);
+  }
   assert.ok((1-.38)*(1-.34)>.40,
     `${w}x${h}: actual Bastion city hidden by stacked plates`);
   const milestoneCaption=rect(portrait?0:.29*pw,
