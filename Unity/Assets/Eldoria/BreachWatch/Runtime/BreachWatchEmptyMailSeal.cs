@@ -27,9 +27,13 @@ namespace Eldoria.BreachWatch
             var rt=(RectTransform)go.transform;
             rt.SetParent(emptyState,false);
             rt.anchorMin=rt.anchorMax=rt.pivot=new Vector2(.5f,.5f);
-            rt.anchoredPosition=new Vector2(0,Mathf.Min(104f,
-                Mathf.Max(52f,emptyState.rect.height*.20f)));
-            rt.sizeDelta=new Vector2(146f,108f);
+            // The real empty-category sentence is centred inside this
+            // RectTransform. The previous 104-unit icon offset caused the
+            // gold ring to touch the text at 900x1600. Use a deliberately
+            // smaller seal with a generous visual break; no second message.
+            float headroom=Mathf.Clamp(emptyState.rect.height*.31f,112f,172f);
+            rt.anchoredPosition=new Vector2(0,headroom);
+            rt.sizeDelta=new Vector2(120f,90f);
             var art=go.GetComponent<BreachWatchEmptyMailSeal>();
             art.raycastTarget=false;
             art.color=Color.white;
