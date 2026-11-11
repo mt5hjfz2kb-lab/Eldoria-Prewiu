@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T03:46:30.000Z",
+  "updated_at": "2026-11-11T05:32:42.328Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 75,
+      "ownership_revision": 76,
       "write_scope_released": false,
-      "phase": "Bronze_Profile_Direct_Sprite_Tint_Native_Proof_Requested",
-      "next": "Native exact fb0d43 8 shots PASS and original roof color median ~[14,99,180] vs owner ~[12,100,180]; significant macro roof palette improvement but UI whole art still differs (world scene/portrait/typography); further 2D premium work and visual comparison before art approval. Do not merge or publish.",
+      "phase": "Profile_Tint_Rejected_Reverted_Native_PASS_Art_Still_Pending",
+      "next": "Native 42965945720 restored Color.white after rejection; do not repeat whole-image profile tint. Compare original approved JPEG actual RGB and authored CleanRoom art, target next macro artistic delta with asset-side repaint/true 3D environmental provenance; no overlays or fake buttons. Not 7.5 proven, no merge/deploy.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T03:04:58.275Z",
@@ -6774,6 +6772,12 @@
           "to_owner": "chatgpt-vigilia-art-automation-20261111",
           "transferred_at": "2026-11-10T23:19:31.596Z",
           "reason": "El propietario ordena continuación ejecutiva en el único PR173: tras capturas certificadas138416cf, corregir la gran diferencia espacial de ficha Bastión respecto de JPEG aprobado; no reabrir arte ni invadir código ajeno. Sin reserva Windows."
+        },
+        {
+          "owner": "chatgpt-vigilia-art-automation-20261111",
+          "ownership_revision": 76,
+          "reason": "Run 42965945720 SUCCESS on exact SHA 756891a; eight genuine PNG verified SHA256, 6 real navigation clicks, old Canvas off, save unchanged. Rejected profile tint rollback shown identical to earlier fb0d baseline. Release Windows only, retain PR173 canonical owner; ART_APPROVED remains false.",
+          "transferred_at": "2026-11-11T05:32:42.328Z"
         }
       ],
       "runner_priority_handoff": {
@@ -6784,8 +6788,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "fb0d43c58373bac0e0f4ed704c046ae4145654b4",
-        "native_run": 42950761050,
+        "source_sha": "756891a89dda572bb7797b6abb289184b49f4fd9",
+        "native_run": 42965945720,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13812488796,
@@ -6816,11 +6820,11 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Exact Unity 6000.3.23f1 run42950761050 rendered 8 genuine screenshots 8/8 SHA-256 valid; 6 pointer clicks; one independent Canvas; old disabled; save unchanged. Native roof blue color sample using locked baseline mask x372-640,y405-570 improved from median (15,86,197) to (14,99,180), owner blue region independent sample approx (12,100,180). Earlier cyan attempt run42950375602 worsened palette and was rejected. ART_APPROVED false; no APK/WebGL or device proof.",
+        "notes": "Exact Unity 6000.3.23f1 run42965945720: 8/8 PNG SHA-256 matches and six real clicks, old Canvas hidden, same original save. Compared all eight views with fb0d43c original: only 0.002-0.003% pixels above max RGB 6 (render noise), no new art improvement. Rejected run42954979987 failed profile palette gate; reverted full-sprite tint without weakening guard.",
         "art_ab_artifact": 13824399074,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13824847821,
+        "native_artifact": 13831336636,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
         "owner_requested_polish": "Complete for current captured first-screen layouts; retained sharper original icons. Full900x1600 delivered as Eldoria_marcos_ampliados.png.",
@@ -6861,10 +6865,16 @@
         ],
         "roof_palette_euclidean_color_distance_approx_before": 22.2,
         "roof_palette_euclidean_color_distance_approx_after": 2.2,
-        "pending_native_head": "c0c397bf67af722b0f51e8a92b165372cff5a1ea",
-        "pending_art_hypothesis": "Direct antique-bronze profile tint of new single CleanRoom 2K profile Image; retain art authored, game state, one Canvas."
+        "profile_tint_experiment": {
+          "experiment_sha": "650fdf190af8a7ea65318b6ba88e1861a32fbcff",
+          "failed_native_run": 42954979987,
+          "reason": "Full profile sprite tint to (1,.91,.68) breaks strict shared material gate profile.g>=.95 at first 1600x900 capture",
+          "reverted_sha": "756891a89dda572bb7797b6abb289184b49f4fd9",
+          "acceptance": "REJECTED",
+          "artistic_improvement_proven": false
+        }
       },
-      "runner_release_basis": "Native run42950761050 SUCCESS exact fb0d43c, eight PNGs verified SHA256, owner/reference roof RGB pixel A/B and working navigation/save. Only Windows released; PR173 owner remains canonical.",
+      "runner_release_basis": "Run 42965945720 SUCCESS SHA756891a; eight genuine city/Bastion × 4 images verified SHA256, six real clicks, original save unchanged. Direct profile tint in run 42954979987 rejected by strict palette guard and reverted. New source visually matches approved baseline fb0d within 0.003% pixels; NO new artistic score. Windows released.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
