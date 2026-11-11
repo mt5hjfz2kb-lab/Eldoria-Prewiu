@@ -77,7 +77,13 @@ namespace Eldoria.BreachWatch
             window.SetAsLastSibling();
             Canvas.ForceUpdateCanvases();
             mailbox.SynchronizeLayout();
+            theme.SynchronizeVisual();
             return true;
+        }
+
+        public void SynchronizeVisual()
+        {
+            if(IsShowing && theme)theme.SynchronizeVisual();
         }
 
         void LateUpdate()
