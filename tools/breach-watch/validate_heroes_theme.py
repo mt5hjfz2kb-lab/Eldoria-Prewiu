@@ -25,6 +25,11 @@ def main():
          "The real hall must be graded in-place and restorable")
     need("SynchronizeVisual()" in B and "theme.Refresh(root)" in B,
          "Dynamic portrait rebuild must restyle on each layout/capture")
+    hero_source=(ROOT/"Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs").read_text()
+    need("var realModelPortrait=LyraPortraitProvider();" in hero_source and
+         "if(realModelPortrait)return realModelPortrait;" in hero_source and
+         'const string key="approved-lyra-portrait"' in hero_source,
+         "Lyra must display approved illustration while live model portrait loads")
     need("Heroes / live controls" in H and
          "ResetPresentation()" in H and "originals" in H and
          "IsOldRoyalFrame" in H and "SpriteMeshType.FullRect" in H,
