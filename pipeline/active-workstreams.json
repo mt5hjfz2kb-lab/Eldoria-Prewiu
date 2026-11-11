@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T10:55:00Z",
+  "updated_at": "2026-11-11T10:57:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6988,9 +6988,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA14_CITY_OWNER_PREVIEW_LIVE_MEMORY_EVIDENCE_AND_IPHONE_TEST",
-      "note": "Isolated owner diagnostic URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-city/?eldoria_p0_city_only=1&eldoria_diag=1; beta10 unchanged; no external testers.",
-      "next": "Owner city-only beta14 diagnostic published and verified live in run43006294342; owner physical Safari city-only test awaits. Cheap Mac evidence extraction compares actual WebContent RSS and WASM, then investigate on-demand Region 1 loading only with evidence. No testers until full journey stable physical, P0 #96 open.",
+      "phase": "BETA14_OWNER_DIAG_LIVE_MAC_MEASURED_IPHONE_PHYSICAL_PENDING",
+      "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
+      "next": "Owner-only city diagnostic URL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-city/?eldoria_p0_city_only=1&eldoria_diag=1; verify physical iPhone once. Mac WebKit run 42999782863 and memory read-only proof 43007132542: WebContent peak 2790048->2593376 KiB (-7.05%), WASM capacity 622592000->518782976 (-16.67%). This is NOT iPhone process proof; if still restarts, pivot to real Unity WebGL asset loading/AssetBundles, not minor timer/viewport changes. Preserve beta10 and all save data; no testers until full game iPhone/Android gates.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7232,7 +7232,23 @@
         "beta13_publication": 42917944631,
         "beta13_public_webkit": 42918233684,
         "beta13_evidence_commit": "3085642bc8be3525122a4ab56063ec53dd0380af",
-        "beta13_physical_iphone_verified": false
+        "beta13_physical_iphone_verified": false,
+        "p0_city_only": {
+          "source_sha": "63fb2095412a3066e18f3a8a31c2a03f40ef4944",
+          "native_run": 42998206844,
+          "mac_run": 42999782863,
+          "public_run": 43006294342,
+          "mac_memory_run": 43007132542,
+          "mac_control_webcontent_peak_rss_kib": 2790048,
+          "mac_candidate_webcontent_peak_rss_kib": 2593376,
+          "mac_peak_rss_saving_percent": 7.05,
+          "mac_control_wasm_capacity_bytes": 622592000,
+          "mac_candidate_wasm_capacity_bytes": 518782976,
+          "mac_wasm_capacity_saving_percent": 16.67,
+          "physical_iphone_verified": false,
+          "external_testers_enabled": false,
+          "windows_runner_claimed": false
+        }
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
