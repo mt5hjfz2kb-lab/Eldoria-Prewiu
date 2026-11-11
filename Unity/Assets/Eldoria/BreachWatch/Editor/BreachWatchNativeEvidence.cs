@@ -195,6 +195,59 @@ namespace Eldoria.BreachWatch.Editor
                     " spritePPU="+paint.sprite.pixelsPerUnit+" refPPU="+reference);
             }
         }
+        // Diagnostic only: log the *actual* live terrain/shore materials from
+        // the disposable city BEFORE attempting any palette change. The
+        // approved image has a muted ochre/olive ground, whereas the native
+        // screenshot has brighter lime-green terrain. Pixel masks alone do
+        // not identify a source Renderer; tinting without this evidence risks
+        // changing masonry, water or vegetation, so this probe is read-only.
+        static void CaptureActualGroundMaterialInventory(string directory)
+        {
+            var entries=new List<string> {
+                "VIGILIA_GROUND_MATERIAL_INVENTORY_ONLY: no scene or shared material changed"
+            };
+            foreach(var terrain in Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None))
+            {
+                if(!terrain || !terrain.gameObject.scene.isLoaded)continue;
+                var data=terrain.terrainData;
+                entries.Add("TERRAIN path="+HierarchyPath(terrain.transform)+
+                    " size="+(data?data.size.ToString("F2"):"missing")+
+                    " material="+(terrain.materialTemplate?terrain.materialTemplate.name:"default"));
+            }
+            var large=Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
+                .Where(r=>r && r.gameObject.scene.isLoaded && r.enabled &&
+                    r.gameObject.activeInHierarchy &&
+                    r.bounds.size.x>=10f && r.bounds.size.z>=10f)
+                .OrderByDescending(r=>r.bounds.size.x*r.bounds.size.z)
+                .Take(48).ToArray();
+            foreach(var renderer in large)
+            {
+                var area=renderer.bounds.size.x*renderer.bounds.size.z;
+                var materials=renderer.sharedMaterials;
+                var descriptions=new List<string>();
+                for(int i=0;i<materials.Length && i<24;i++)
+                {
+                    var material=materials[i];
+                    if(!material)continue;
+                    var color=material.HasProperty("_BaseColor")
+                        ?material.GetColor("_BaseColor").ToString("F3")
+                        :material.HasProperty("_Color")
+                            ?material.GetColor("_Color").ToString("F3"):"none";
+                    descriptions.Add(i+":"+material.name+
+                        " color="+color+
+                        " shader="+(material.shader?material.shader.name:"none"));
+                }
+                entries.Add("RENDERER areaXZ="+area.ToString("F2")+
+                    " bounds="+renderer.bounds.size.ToString("F2")+
+                    " path="+HierarchyPath(renderer.transform)+
+                    " materialSlots=["+string.Join(";",descriptions)+"]");
+            }
+            File.WriteAllLines(Path.Combine(directory,"VigiliaGroundMaterialInventory.txt"),entries);
+            Debug.Log("VIGILIA_GROUND_INVENTORY_READ_ONLY "+
+                "terrain="+Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Length+
+                " largeRenderers="+large.Length);
+        }
+
         static void CaptureRealCity()
         {
             var dir = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "../" + ArtifactDir));
@@ -202,6 +255,7 @@ namespace Eldoria.BreachWatch.Editor
             Need(!host.Hud.NarrativeOpen, "Existing narrative still active at capture start");
             var before = JsonUtility.ToJson(host.City.Gateway.Snapshot());
             var ui = BreachWatchHud.Install(host);
+            CaptureActualGroundMaterialInventory(dir);
             Need(ui != null && ui.IndependentCanvas && ui.LegacyPresentationHidden,
                 "This must be a new Canvas; the entire old HUD presentation must be OFF");
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
