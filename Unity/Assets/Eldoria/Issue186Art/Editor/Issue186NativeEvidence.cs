@@ -84,6 +84,8 @@ namespace Eldoria.Issue186Art.Editor
             t.raycastTarget=false;
             return t;
         }
+        static bool portraitSize(int width,int height) => width < height;
+
         static Camera SetupCamera(GameObject holder,int width,int height,
             RenderTexture rt)
         {
@@ -141,10 +143,26 @@ namespace Eldoria.Issue186Art.Editor
                 Paint(root,"header carved background",
                     new Vector2(0,height*.5f-30),new Vector2(width*.98f,58f),
                     new Color(.14f,.057f,.058f,1f));
+                // Guard the headline from BOTH the unread medallion at
+                // left and the real claim button at right. The previous
+                // centered 72% title overlapped the CTA on 390px phones.
+                float claimCenterX=width*.5f-(portraitSize(width,height)?70f:90f);
+                float claimWidth=portraitSize(width,height)?92f:118f;
+                float titleLeft=-width*.5f+70f;
+                float titleRight=claimCenterX-claimWidth*.5f-16f;
+                float titleWidth=titleRight-titleLeft;
+                Need(titleWidth>150f,"Not enough headline space beside action and alert");
                 int titleSize=width<=480?17:width<=900?21:28;
-                Caption(root,"real native heading","RECURSOS DE VALORIA",
-                    new Vector2(0,height*.5f-30),new Vector2(width*.72f,45),
-                    titleSize,new Color(.93f,.79f,.47f,1),font);
+                var heading=Caption(root,"real native heading","RECURSOS DE VALORIA",
+                    new Vector2((titleLeft+titleRight)*.5f,height*.5f-30),
+                    new Vector2(titleWidth,45),titleSize,
+                    new Color(.93f,.79f,.47f,1),font);
+                // UI Text must fit the measured box in genuine Unity, not
+                // silently paint across the claim action via Overflow.
+                while(heading.preferredWidth>titleWidth-8f && heading.fontSize>12)
+                    heading.fontSize--;
+                Need(heading.preferredWidth<=titleWidth-8f,
+                    "Actual native title still overlaps the claim action");
 
                 bool portrait=width<height;
                 // Every row is a complete resource family: 100 / 1K / 10K /
