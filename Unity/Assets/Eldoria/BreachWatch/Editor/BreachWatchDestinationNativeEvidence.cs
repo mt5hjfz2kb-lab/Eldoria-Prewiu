@@ -361,11 +361,22 @@ namespace Eldoria.BreachWatch.Editor
                     RoyalGoldV3EarlyRetentionScreens.Destination.Scouts) &&
                     retention.ReplacedOldChrome,
                     "Real unlocked Scouts still opens old HUD chrome");
+                // Artistic material hypothesis: source image is color graded
+                // directly, without an extra full-screen rectangle/Canvas.
+                // Validate genuine renderer and explicit restoration on exit.
+                var scenic=retention.LiveScreenRect.GetComponentsInChildren<RawImage>(true)
+                    .FirstOrDefault(x=>x && x.name==
+                        "Original illustrated world / decorative only");
+                Need(scenic && retention.HasSingleGradedScoutsPainting,
+                    "Scouts violet-night palette was not applied to the REAL world image");
                 CaptureMany(ui,folder,"scouts",retentionShots,
-                    ()=>retention.IsShowing && retention.ReplacedOldChrome);
+                    ()=>retention.IsShowing && retention.ReplacedOldChrome &&
+                        retention.HasSingleGradedScoutsPainting);
                 retention.Close();
                 Need(!retention.IsShowing,
                     "Scouts did not return to new city Canvas");
+                Need(scenic && scenic.color==Color.white,
+                    "Reversible Scouts grade leaked into the old canonical UI");
             }
             finally
             {
