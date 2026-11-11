@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T14:14:48Z",
+ "updated_at": "2026-11-11T15:32:00Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -22,24 +22,27 @@
   {
    "id": "eldoria-issue186-reward-attention-guidance-20261111",
    "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-   "owner": "chatgpt-issue186-reward-domain-20261111",
+   "owner": "chatgpt-issue186-art-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 1,
+   "ownership_revision": 2,
    "branch": "feature/issue186-reward-attention-guidance-20261111",
    "status": "active",
-   "phase": "ISOLATED_DOMAIN_IMPLEMENTATION_CI_PENDING",
+   "phase": "ISSUE186_SOURCE_ART_IMPORT_V5_CANDIDATE_REVIEW_NATIVE_PENDING",
    "claimed_at": "2026-11-11T14:14:48Z",
-   "art_production_routing": "not_applicable",
-   "art_production_routing_reason": "Rules-only source with no generated art. Future visual badges and hand pointer belong to PR173 after actual Unity comparison.",
+   "art_production_routing": "required",
    "resources": [],
    "scope": [
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
     "tools/reward-experience/**",
     ".github/workflows/reward-experience-domain.yml",
-    "docs/issue186/**"
+    "docs/issue186/**",
+    "Unity/Assets/Eldoria/Issue186Art/**",
+    "Unity/Assets/Eldoria/Issue186Art.meta",
+    "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json"
    ],
-   "next": "PR187 source only. No changes to GameState/LocalGateway or concurrent PR181, UI PR173, beta PR179. No Windows, merge or release. Coordinate handoff before gameplay wiring."
+   "next": "Publish source art into isolated Issue186Art only when verified, validate 16 exact sprites and inspector/Canvas at 4 sizes in Unity after authorized Windows handoff. No merge, beta override or changes to PR173/PR181.",
+   "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json"
   },
   {
    "id": "valoria-master-plan-layered-construction-20261016",
