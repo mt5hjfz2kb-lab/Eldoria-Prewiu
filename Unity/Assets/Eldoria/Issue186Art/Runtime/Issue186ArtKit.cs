@@ -18,7 +18,7 @@ namespace Eldoria.Issue186Art
 
         public static bool BindPacket(Image icon, Text quantity, string kind, int amount)
         {
-            if (!icon || !ResourceRewardRules.IsStandardTier(amount))
+            if (!icon || amount <= 0)
                 return false;
             Sprite sprite = PacketSprite(kind, amount);
             if (!sprite) return false; // Missing art is NOT an excuse for fake items.
@@ -27,7 +27,7 @@ namespace Eldoria.Issue186Art
             icon.preserveAspect = true;
             icon.raycastTarget = false;
             if (quantity)
-                quantity.text = ResourceRewardRules.TierLabel(amount);
+                quantity.text = ResourceRewardRules.AmountLabel(amount);
             return true;
         }
 
