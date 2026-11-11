@@ -98,12 +98,20 @@ try{
  $root=$results.DocumentElement
  if($root.Name -ne 'test-run'){throw 'Not a Unity NUnit result'}
  $total=[int]$root.GetAttribute('total')
+ $passed=[int]$root.GetAttribute('passed')
  $failed=[int]$root.GetAttribute('failed')
- if($total -lt 1 -or $failed -ne 0 -or $root.GetAttribute('result') -ne 'Passed'){
-  throw "Unity lazy-world PlayMode not certified: tests=$total failed=$failed"
- }
- if(-not((Get-Content $xml -Raw).Contains('RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD'))){
-  throw 'The actual lazy-world fixture was not executed'
+ $skipped=[int]$root.GetAttribute('skipped')
+ # NUnit can pass the aggregate while the targeted fixture is skipped or
+ # another case passes. Require the exact real-scene test case to have run.
+ $requiredCase='RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD'
+ $cases=@($results.SelectNodes('//test-case')|Where-Object {
+  $_.GetAttribute('name') -eq $requiredCase -or
+  $_.GetAttribute('fullname').EndsWith('.'+$requiredCase,[StringComparison]::Ordinal)
+ })
+ if($total -ne 1 -or $passed -ne 1 -or $failed -ne 0 -or $skipped -ne 0 -or
+    $root.GetAttribute('result') -ne 'Passed' -or $cases.Count -ne 1 -or
+    $cases[0].GetAttribute('result') -ne 'Passed'){
+  throw "Unity lazy-world real test not certified: total=$total passed=$passed failed=$failed skipped=$skipped matching_real_cases=$($cases.Count)"
  }
  $verified=$true
 }catch{
