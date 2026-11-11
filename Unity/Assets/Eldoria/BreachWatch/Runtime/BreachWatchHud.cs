@@ -470,7 +470,7 @@ namespace Eldoria.BreachWatch
             // illustrated profile sprite; no second decorative child exists.
             identityCrest=null;
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
-            identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
+            identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Copper);
             // Keep actual gameplay identity ink fully inside a single
             // painted plate at 390 and 900px. The previous middle-aligned
             // second line hung BELOW its source rim. Overflow here prevents
@@ -968,7 +968,7 @@ namespace Eldoria.BreachWatch
                     smallPhone?31f:27f,(smallPhone?174f:166f)-crestSize,
                     smallPhone?18f:17f);
                 identityName.fontSize=smallPhone?14:12;
-                identityPower.fontSize=smallPhone?13:10;
+                identityPower.fontSize=smallPhone?13:11;
 
                 float rightSpace=w-(margin+182+9+margin);
                 // Three approved stone counters occupy predictable slots.
