@@ -136,9 +136,28 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
               h*(.76 if h>w else .80)/upper.height)
         ww,hh=max(1,round(upper.width*k)),max(1,round(upper.height*k))
         figure=upper.resize((ww,hh),Image.Resampling.LANCZOS)
+        # Source cutouts have a straight horizontal GLB camera edge. A soft
+        # opacity roll-off near the waist makes the authentic room visible
+        # through the silhouette instead of reading as a cardboard sticker.
+        alpha=figure.getchannel("A")
+        fade=Image.new("L",(1,hh),255)
+        fade_start=round(hh*.78)
+        for yy in range(fade_start,hh):
+            fraction=(hh-1-yy)/max(1,hh-1-fade_start)
+            fade.putpixel((0,yy),round(255*fraction*fraction))
+        mask=fade.resize((ww,hh))
+        from PIL import ImageChops, ImageFilter
+        alpha=ImageChops.multiply(alpha,mask)
+        figure.putalpha(alpha)
         cx=round(w*(.50 if h>w else .36))
         cy=round(h*(.48 if h>w else .50))
-        dst.alpha_composite(figure,(max(0,cx-ww//2),max(0,cy-hh//2)))
+        fx,fy=max(0,cx-ww//2),max(0,cy-hh//2)
+        # One diffuse ambient contact shadow derived from THE SAME actor,
+        # rather than a fabricated halo or second decorative illustration.
+        shade=Image.new("RGBA",(ww,hh),(32,20,20,0))
+        shade.putalpha(alpha.filter(ImageFilter.GaussianBlur(max(3,round(ww*.026)))).point(lambda v:round(v*.23)))
+        dst.alpha_composite(shade,(min(w-ww,fx+max(2,ww//70)),min(h-hh,fy+max(2,hh//80))))
+        dst.alpha_composite(figure,(fx,fy))
     if badge is not None and event in ("explorers","vigilants"):
         icon=crop_authentic_insignia(badge)
         side=max(26,round(min(w*(.60 if h>w else .36),
