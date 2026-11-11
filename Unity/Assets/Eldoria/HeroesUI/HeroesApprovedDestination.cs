@@ -1525,14 +1525,15 @@ namespace Eldoria.HeroesUI
                     button.onClick.AddListener(()=>OpenHero(hero.Id));
                 }
             }
-            // Canonical bottom action bar follows the approved four-destination
-            // grammar. VOLVER and MARCHAS are REAL, HEROES stays on this live
-            // view, and RELICARIO is genuinely disabled by progression.
-            // No fake clickable pixels, no additional scene or canvas.
+            // Every bottom medallion must open a REAL destination.
+            // The former fourth "RELICARIO PRÓXIMO" was a dead, disabled
+            // promise of a system not yet implemented. It consumed 25% of
+            // the mobile toolbar and reduced three useful touch targets.
+            // Do not render it until Relicario has its own real controller.
             float navGap=portraitLayout&&w<600f?4f:phoneLandscape?6f:10f;
             float navWidth=Mathf.Min(w-(portraitLayout&&w<600f?12f:22f),illustratedDesktop?
                 referenceStageWidth:portraitLayout?540f:820f);
-            float navCell=(navWidth-navGap*3f)/4f;
+            float navCell=(navWidth-navGap*2f)/3f;
             float navLeft=(w-navWidth)*.5f;
             float navHeight=phoneLandscape?44f:illustratedDesktop?58f:
                 portraitLayout&&w<600f?76f:47f;
@@ -1560,10 +1561,7 @@ namespace Eldoria.HeroesUI
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navMarches,5,navCell,navHeight,false);
-            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMO",
-                navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
-            HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
-            HallNavIcon(navRelicary,7,navCell,navHeight,false);
+
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {
