@@ -51,8 +51,34 @@ def run():
               f"true_model_goal_width={target_width:.2f}")
     assert "PortraitCityFramed" in hud
     portrait=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchBuildingPortrait.cs").read_text()
-    assert portrait.count("portraitCamera.Render();")==1, (
-        "Premium building diorama must not redraw a fake ground image over genuine 3D meshes")
+    # Count only actual player-facing runtime renders. UNITY_EDITOR debug atlas
+    # deliberately re-renders an isolated clone for diagnostic tiles, and
+    # restores the genuine materials before the final normal render. The
+    # previous raw string count incorrectly treated that editor-only probe as
+    # a fake ground pass, preventing Unity from running this investigation.
+    runtime_lines=[]
+    editor_depth=0
+    for line in portrait.splitlines():
+        directive=line.strip()
+        if directive.startswith("#if UNITY_EDITOR"):
+            editor_depth+=1
+            continue
+        if directive=="#endif" and editor_depth:
+            editor_depth-=1
+            continue
+        if not editor_depth:
+            runtime_lines.append(line)
+    assert editor_depth==0,"Unbalanced diagnostic-only Unity editor preprocessor"
+    runtime_portrait="\\n".join(runtime_lines)
+    assert runtime_portrait.count("portraitCamera.Render();")==1, (
+        "Runtime diorama must not add extra passes, synthetic ground or overlays")
+    if "VigiliaActualBastionMaterialIndexAtlas.png" in portrait:
+        assert "#if UNITY_EDITOR" in portrait
+        assert "targets[i].sharedMaterials=originalsByRenderer[i]" in portrait
+        assert "portraitCamera.Render();" in portrait and "GetPixels32()" in portrait
+        assert "File.WriteAllBytes" in portrait and "SetPixels32" in portrait
+        assert "new GameObject(\\\"Vigilia / one-shot genuine selected building\\\")" in portrait, (
+            "Diagnostic may only probe the disposable copy of original building geometry")
     assert "Vigilia / one-shot earth under real building" not in portrait, (
         "No rectangular synthetic grass stage may reappear behind the real castle")
     assert "portraitCamera.clearFlags=CameraClearFlags.SolidColor;" in portrait
