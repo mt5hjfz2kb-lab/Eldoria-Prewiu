@@ -163,6 +163,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/daily-treasures/
+            /Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/valoria_frame_main_512.png
       - name: Validate isolated art candidate without touching gameplay
         shell: bash
         run: |
@@ -176,13 +177,16 @@ jobs:
             count=$((count+1))
           done
           echo "Processed $count independent non-approved art-source requests"
+          python3 tools/daily-treasures/assemble_authored_ceremonies.py
       - name: Preserve one unapproved source art candidate on the same PR only
         shell: bash
         run: |
           set -euo pipefail
           shopt -s nullglob
           assets=(tools/daily-treasures/art-candidates/*_stage.png
-                  tools/daily-treasures/art-candidates/*_stage.provenance.json)
+                  tools/daily-treasures/art-candidates/*_stage.provenance.json
+                  tools/daily-treasures/art-candidates/shared_ornament.png
+                  tools/daily-treasures/art-candidates/ceremony-art-production.json)
           if (( ${#assets[@]} == 0 )); then
             echo "No verified candidates; no commit"
             exit 0
