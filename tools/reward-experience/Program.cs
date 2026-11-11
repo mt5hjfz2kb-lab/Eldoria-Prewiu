@@ -203,6 +203,12 @@ internal static class Program
             "bundle:daily7","daily",120,250,0,"mail:day7") &&
             bundleInventory.Packets.Count==2,
             "replayed bundle cannot duplicate any of its component receipts");
+        Check(!ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:daily7","daily",0,0,999,"mail:day7") &&
+            !ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:daily7","daily",0,250,500,"mail:day7") &&
+            bundleInventory.Packets.Count==2,
+            "same reward event cannot gain newly nonzero resources on reconnect");
         Check(!ResourceRewardRules.TryUse(bundleInventory,bundleWallet,
             "bundle:daily7:wood",out _) &&
             ResourceRewardRules.ClaimMail(bundleInventory,"mail:wrong")==0 &&
@@ -237,8 +243,15 @@ internal static class Program
         Check(restoredBundle.Packets.Count==2 &&
             !ResourceRewardRules.TryIssueBundle(restoredBundle,
                 "bundle:daily7","daily",120,250,0,"mail:day7") &&
+            !ResourceRewardRules.TryIssueBundle(restoredBundle,
+                "bundle:daily7","daily",0,0,300,"mail:day7") &&
             ResourceRewardRules.ClaimMail(restoredBundle,"mail:day7")==0,
-            "reconnected saved bundle cannot be replayed or re-claimed");
+            "saved bundle tombstones block same-event replay even with changed components");
+        Check(ResourceRewardRules.TryIssueBundle(restoredBundle,
+                "bundle:daily70","daily",0,0,300,"mail:day70") &&
+            ResourceRewardRules.ClaimMail(restoredBundle,"mail:day70")==1 &&
+            restoredBundle.Packets.Count==3,
+            "distinct reward event with a prefix-sharing ID is still allowed");
 
         // Exact queued events, not a perpetual red dot on each menu button.
         var attentionLedger = new AttentionCueLedger();
