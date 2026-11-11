@@ -285,7 +285,7 @@ namespace Eldoria.Issue186Art.Editor
                     "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo);
                 Need(pointed && pointer.gameObject.activeInHierarchy &&
                      !pointer.raycastTarget && !halo.raycastTarget,
-                    "Pointer not anchored to a real interactable button");
+                    "Pointer not anchored to a real interactable button; reason="+Issue186ArtKit.LastPointerRejectReason);
                 // Either the original RIGHT hand or a mirrored LEFT hand
                 // is valid. Measure genuine transformed geometry rather than
                 // assuming it always approaches from the right; that false

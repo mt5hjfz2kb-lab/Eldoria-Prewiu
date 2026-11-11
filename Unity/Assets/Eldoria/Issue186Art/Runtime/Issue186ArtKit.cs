@@ -75,11 +75,15 @@ namespace Eldoria.Issue186Art
         // Both pointer and halo must be Image components already belonging to
         // an existing Canvas. This method does not create a Canvas/EventSystem.
         // The control is resolved by the actual UI owner, not hardcoded coords.
+        // Native batch diagnostic; never bypass a blocking Graphic.
+        public static string LastPointerRejectReason { get; private set; } = "";
+
         public static bool BindFirstUsePointer(
             GuidedTutorialProgress progress, string stepId, string controlId,
             bool featureUnlocked, Canvas canvas, RectTransform actualControl,
             Image pointer, Image targetHalo)
         {
+            LastPointerRejectReason = "not-reached";
             bool visible = actualControl && actualControl.gameObject.activeInHierarchy
                 && actualControl.rect.width > 0 && actualControl.rect.height > 0;
             bool shouldPoint = GuidedTutorialRules.ShouldPoint(
@@ -87,6 +91,7 @@ namespace Eldoria.Issue186Art
             if (!shouldPoint || !canvas || !canvas.isActiveAndEnabled ||
                 !pointer || !pointer.rectTransform.parent)
             {
+                LastPointerRejectReason = "step-hidden-or-canvas-missing";
                 if (pointer) pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -106,6 +111,7 @@ namespace Eldoria.Issue186Art
             if (screenPoint.x < 0 || screenPoint.x > viewWidth ||
                 screenPoint.y < 0 || screenPoint.y > viewHeight)
             {
+                LastPointerRejectReason = "control-outside-render-target:" + screenPoint;
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -115,6 +121,7 @@ namespace Eldoria.Issue186Art
             var selectable = actualControl.GetComponent<Selectable>();
             if (!selectable || !selectable.IsInteractable())
             {
+                LastPointerRejectReason = "control-is-not-interactable";
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -127,6 +134,7 @@ namespace Eldoria.Issue186Art
             var eventSystem = EventSystem.current;
             if (!eventSystem || !eventSystem.isActiveAndEnabled)
             {
+                LastPointerRejectReason = "event-system-missing-or-disabled";
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -138,6 +146,7 @@ namespace Eldoria.Issue186Art
                 ExecuteEvents.GetEventHandler<IPointerClickHandler>(
                     pointerHits[0].gameObject) != actualControl.gameObject)
             {
+                LastPointerRejectReason = "raycast-first=" + (pointerHits.Count==0 ? "none" : pointerHits[0].gameObject.name) + ";target=" + actualControl.name + ";screen=" + screenPoint;
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -149,6 +158,7 @@ namespace Eldoria.Issue186Art
             var sprite = Resources.Load<Sprite>(Prefix + "tutorial_pointing_hand");
             if (!parent || !sprite)
             {
+                LastPointerRejectReason = "pointer-parent-or-sprite-missing";
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -162,6 +172,7 @@ namespace Eldoria.Issue186Art
             float originalScaleX = Mathf.Abs(rect.localScale.x);
             if (originalScaleX <= .0001f)
             {
+                LastPointerRejectReason = "pointer-scale-invalid";
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
@@ -217,6 +228,7 @@ namespace Eldoria.Issue186Art
             }
             if (!fits)
             {
+                LastPointerRejectReason = "hand-outside-safe-area";
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
                 return false;
