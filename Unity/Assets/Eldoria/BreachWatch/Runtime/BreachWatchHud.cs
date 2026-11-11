@@ -24,6 +24,7 @@ namespace Eldoria.BreachWatch
         Canvas canvas;
         BreachWatchDestinationBridge destinationBridge;
         BreachWatchMailboxBridge mailboxBridge;
+        BreachWatchModalBridge modalBridge;
         CanvasScaler scaler;
         GraphicRaycaster raycaster;
         Canvas legacyCanvas;
@@ -89,6 +90,8 @@ namespace Eldoria.BreachWatch
         // destination proof is accepted. No production-screen takeover.
         public BreachWatchDestinationBridge RealDestinations => destinationBridge;
         public BreachWatchMailboxBridge RealMailbox => mailboxBridge;
+        public bool CanonicalModalVisibleOnIndependentCanvas => modalBridge &&
+            modalBridge.Installed;
         public Button BuildingAction => actionButton;
         public Button BuildingClose => closeButton;
         public RectTransform BuildingPanel => panel;
@@ -315,6 +318,13 @@ namespace Eldoria.BreachWatch
             destinationBridge.Initialize(host,canvas);
             mailboxBridge=gameObject.AddComponent<BreachWatchMailboxBridge>();
             mailboxBridge.Initialize(host,canvas);
+            // The legacy Canvas is disabled, but actual story/confirmation
+            // callbacks still live on its canonical ModalWindow. Move and
+            // restyle that ONE modal so it cannot become invisible in Vigilia.
+            modalBridge=gameObject.AddComponent<BreachWatchModalBridge>();
+            if(!modalBridge.Initialize(host,canvas))
+                throw new InvalidOperationException(
+                    "Canonical narrative/modal bridge missing for independent HUD");
             created=true;Reflow(Screen.width,Screen.height);RenderNow();
         }
 
