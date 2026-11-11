@@ -21,15 +21,21 @@ def main():
     for name in ("BreachWatchMailboxTheme", "BreachWatchMailboxBridge"):
         check((R / (name + ".cs.meta")).exists(),
               "Mailbox code requires stable Unity meta: " + name)
-    seal=R/"BreachWatchEmptyMailSeal.cs"
-    check(seal.is_file() and seal.with_suffix(".cs.meta").is_file() and
-          "MaskableGraphic" in seal.read_text() and "OnPopulateMesh" in seal.read_text(),
-          "Native empty mail engraving must be a crisp reversible vector drawing")
-    check("BreachWatchEmptyMailSeal.Install" in S and
+    scene=R/"BreachWatchMailboxEmptyArtwork.cs"
+    check(scene.is_file() and scene.with_suffix(".cs.meta").is_file(),
+          "The original large illustrated empty-mail scene needs a stable Unity GUID")
+    painting=scene.read_text()
+    check("MaskableGraphic" in painting and "OnPopulateMesh" in painting and
+          "Sprite" not in painting and "raycastTarget=false" in painting and
+          "if(width<285f||height<530f||width>height)return;" in painting,
+          "Large native vector manuscript illustration must be crisp, noninteractive and responsive")
+    check("BreachWatchMailboxEmptyArtwork.Install" in S and
           'text.name=="Mailbox / genuine empty state"' in S and
           "realEmptySentence.gameObject.activeInHierarchy" in S and
-          "realListSummary.enabled=originalSummaryVisible&&!actuallyEmpty" in S,
-          "Decorative wax seal must only follow the canonical empty-state label")
+          "realListSummary.enabled=originalSummaryVisible&&!actuallyEmpty" in S and
+          "pageCaption.enabled=originalPageCaptionVisible&&!actuallyEmpty" in S and
+          "RestoreEmptyLabel()" in S,
+          "Real empty status must be centered, reversible and never duplicated")
     check("mailbox.Open()" in B and "mailbox.SynchronizeLayout()" in B and
           "mailbox.Close()" in B,
           "Mailbox must reuse genuine page/command controller")
