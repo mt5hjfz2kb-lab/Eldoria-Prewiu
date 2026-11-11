@@ -1,4 +1,4 @@
-VIGILIA_ART_NATIVE_20261111_0024_CORRECT_SOURCE_CONTRACT
-Source layout/test HEAD: 2a51cbb9408a1b0fcabb9af0c11ae3ab50e8e1be
-Owner: chatgpt-vigilia-art-automation-20261111 rev65; windows-runner-heavy still exclusive.
-Repair red run42922641420: source-only layout validator expected obsolete literal 72f instead of new 32f; now both runtime and validator use matching 32f. This is test repair, not relaxed guard. Validate native 8 genuine Unity screenshots, visual card y alignment to approved 864x1536 original, save unchanged and pointer passes. ART_APPROVED remains false pending actual A/B.
+VIGILIA_ART_NATIVE_20261111_0141_BASTION_PORTRAIT_APERTURE
+Source layout/test exact HEAD before request: 43ded9fb396b359fc64075620d5c64c9484af554
+Owner: chatgpt-vigilia-art-automation-20261111; ownership revision: 67; exclusive resource: windows-runner-heavy.
+Visual cause: real Bastion thumbnail too small inside approved single CleanRoom context card. Reallocate existing blank vertical aperture from 74 to 83 authored units without new layered artwork, retained 20u live description, original 2K sprite and original render camera. Check four true city+Bastion view pairs, raw 3D geometry cropping, 6 actual pointer hits, GPU text and save invariance; compare visual against 864x1536 approved image. Technical green is not ART_APPROVED. PR173 remains open, no merge and no build publish.
