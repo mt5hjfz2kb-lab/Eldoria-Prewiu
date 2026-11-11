@@ -326,3 +326,15 @@ assert.match(cinematicSource,/camera\.transform\.position=b.center\+away\*distan
 assert.match(cinematicSource,/camera\.farClipPlane=Mathf.Max/);
 assert.doesNotMatch(cinematicSource,/Texture2D\.Resize/);
 console.log('PASS authentic three-quarter PBR Bastion lens, not digital image zoom');
+
+// Actual GPU pixels must show original 3D Bastion masonry/terrain,
+// not an empty but successfully allocated URP RenderTexture or UI border.
+const cityArtSource=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureCityArtEvidence.cs','utf8');
+assert.match(cityArtSource,/ProveNativeBastionSilhouette\(panel,report\)/);
+assert.match(cityArtSource,/raw\.texture is RenderTexture/);
+assert.match(cityArtSource,/RenderTexture\.active=rt/);
+assert.match(cityArtSource,/colors\.Count>=36/);
+assert.match(cityArtSource,/trueBastionPixelProofs==8/);
+assert.match(cityArtSource,/Object\.DestroyImmediate\(tex\)/);
+console.log('PASS editor readback verifies 8 real, nonblack 3D Bastion shots');

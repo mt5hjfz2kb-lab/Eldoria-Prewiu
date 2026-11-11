@@ -48,6 +48,8 @@ namespace Eldoria.DailyTreasures.Editor
         {
             public string status,source,scene,camera,reason;
             public int cityRenderers,pngCount,realGatewayClaims;
+            public int trueBastionPixelProofs,minimumOriginalColorBins;
+            public float minimumLitSourceFraction;
             public int bastionSnapshotsVerified;
             public bool citySceneOpened,cityCameraUsed,artApproved;
             public bool fullSceneVerified,pr173Integrated,iosVerified;
@@ -65,6 +67,59 @@ namespace Eldoria.DailyTreasures.Editor
             using(var sha=SHA256.Create())
                 return BitConverter.ToString(sha.ComputeHash(stream))
                     .Replace("-","").ToLowerInvariant();
+        }
+
+        static void ProveNativeBastionSilhouette(
+            DailyTreasurePanel panel,Report report)
+        {
+            var raw=panel.GetComponentsInChildren<RawImage>(true)
+                .FirstOrDefault(image=>image && image.gameObject.name==
+                    "Genuine Eldoria milestone scenery / visual only");
+            Require(raw && raw.texture is RenderTexture,
+                "No true URP RenderTexture backing the Bastion ceremony");
+            var rt=(RenderTexture)raw.texture;
+            Require(rt.IsCreated() && rt.width>=500 && rt.height>=500,
+                "Bastion hero shot is not an actual GPU render");
+            int rx=rt.width/5,ry=rt.height/5;
+            int w=rt.width-rx*2,h=rt.height-ry*2;
+            var tex=new Texture2D(w,h,TextureFormat.RGB24,false);
+            var previous=RenderTexture.active;
+            try
+            {
+                // Editor fixture only. Read actual BUILDING camera pixels
+                // rather than pixels of gold ornamental UI elements.
+                RenderTexture.active=rt;
+                tex.ReadPixels(new Rect(rx,ry,w,h),0,0);
+                tex.Apply();
+                int sampled=0,lit=0;
+                var colors=new HashSet<int>();
+                var pixels=tex.GetPixels32();
+                for(int y=0;y<h;y+=7)
+                    for(int x=0;x<w;x+=7)
+                    {
+                        var color=pixels[y*w+x];
+                        sampled++;
+                        if(color.r+color.g+color.b>=48)lit++;
+                        colors.Add(((int)color.r>>4)*65536+
+                            ((int)color.g>>4)*256+
+                            ((int)color.b>>4));
+                    }
+                var fraction=sampled>0?(float)lit/sampled:0f;
+                Require(sampled>=150 && lit>sampled/6 &&
+                        colors.Count>=36,
+                    "True Bastion camera contains no meaningful geometry: "+
+                    lit+"/"+sampled+" lit, "+colors.Count+" colors");
+                report.trueBastionPixelProofs++;
+                report.minimumOriginalColorBins=
+                    Math.Min(report.minimumOriginalColorBins,colors.Count);
+                report.minimumLitSourceFraction=Math.Min(
+                    report.minimumLitSourceFraction,fraction);
+            }
+            finally
+            {
+                RenderTexture.active=previous;
+                Object.DestroyImmediate(tex);
+            }
         }
 
         static Shot Photograph(Camera camera,RenderTexture target,
@@ -249,6 +304,8 @@ namespace Eldoria.DailyTreasures.Editor
             Directory.CreateDirectory(folder);
             var report=new Report{
                 status="CITY_ART_CONTEXT_INCOMPLETE",
+                minimumOriginalColorBins=int.MaxValue,
+                minimumLitSourceFraction=1f,
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
                 scene=Scene,reason="Read-only city composition only; no real city gameplay, PR173 HUD or physical device certified",
                 artApproved=false,fullSceneVerified=false,pr173Integrated=false,
@@ -389,6 +446,7 @@ namespace Eldoria.DailyTreasures.Editor
                         VerifyLiveBastionTexture(panel,width,height);
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
+                        ProveNativeBastionSilhouette(panel,report);
                         var bastionStudy=Photograph(camera,target,folder,
                             width,height,"authored-bastion-visual-only",false);
                         pictures.Add(bastionStudy);
@@ -415,6 +473,7 @@ namespace Eldoria.DailyTreasures.Editor
                         VerifyLiveBastionTexture(panel,width,height);
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
+                        ProveNativeBastionSilhouette(panel,report);
                         var heroStage=Photograph(camera,target,folder,
                             width,height,"real-bastion-camera-ceremony",false);
                         pictures.Add(heroStage);
@@ -437,6 +496,11 @@ namespace Eldoria.DailyTreasures.Editor
                     before.Resources.Food==after.Resources.Food &&
                     before.Mailbox.Messages.Count==after.Mailbox.Messages.Count,
                     "An ART-ONLY city preview unexpectedly changed real rewards");
+                Require(report.trueBastionPixelProofs==8 &&
+                        report.minimumOriginalColorBins>=36 &&
+                        report.minimumLitSourceFraction>1f/6f,
+                    "At least one of eight genuine GPU Bastion renderings "+
+                    "is blank or an unvarying clear color");
                 Require(pictures.Count==20,
                     "Expected 20 genuine city, Bastion context AND canonical camera-framed PNGs");
                 Require(report.bastionSnapshotsVerified==8,
