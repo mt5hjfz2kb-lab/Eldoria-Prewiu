@@ -39,7 +39,8 @@ $overlays=@(
  . (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/overlay.ps1')
 $overlays=@($overlays)+@($uxFiles|ForEach-Object {$_.path})
 $overlays=@($overlays|Sort-Object -Unique)
-$paths=@($overlays)+@($audit.files|ForEach-Object {$_.path})
+. (Join-Path $Tools 'tools/eldoria-private-beta/native/preserve_native_materials.ps1')
+$paths=@(Get-PR179NativeMaterialPaths)+@($overlays)+@($audit.files|ForEach-Object {$_.path})
 # Unity populates URP runtime resource lists during WebGL compilation. Preserve
 # these tracked inputs before any phase, just like ProjectSettings; do not
 # mistake the post-build metadata for an authored runtime-source change.
@@ -130,3 +131,4 @@ try {
  [IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-restoration.json'),(@{conflicts=$conflicts;unity_status=$after;status_changes=$statusChanges;existing_input_changes=$inputChanges;restored=$restored}|ConvertTo-Json -Depth 6),$utf8)
  if(-not $restored){throw 'Warm source has unexpected differences; evidence saved, no automatic overwrite'}
 }
+

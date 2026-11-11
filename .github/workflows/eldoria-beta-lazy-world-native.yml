@@ -32,6 +32,8 @@ jobs:
             /tools/eldoria-private-beta/native/existing-input-audit.json
             /tools/eldoria-private-beta/native/run_structural.ps1
             /tools/eldoria-private-beta/native/run_warm_structural.ps1
+            /tools/eldoria-private-beta/native/preserve_native_materials.ps1
+            /tools/eldoria-private-beta/native/test_material_restore.py
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
@@ -87,6 +89,9 @@ jobs:
           if not allowed:
               print('SAFE_SKIP: no exclusive PR179 CAS lease or stale PR head; no native Unity invoked')
           PY
+      - name: Verify guarded material recovery with real Git and PowerShell, no Unity
+        shell: bash
+        run: python3 candidate/tools/eldoria-private-beta/native/test_material_restore.py
   native:
     needs: preflight
     if: needs.preflight.outputs.authorized == 'true'

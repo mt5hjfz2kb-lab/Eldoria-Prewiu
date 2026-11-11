@@ -136,7 +136,10 @@ if($LASTEXITCODE -ne 0 -or $ownedDirty.Count){throw "Foreign pending changes in 
 foreach($rel in $overlays){
  if(-not(Test-Path (Join-Path $OverlaySource $rel) -PathType Leaf)){throw "Candidate source missing: $rel"}
 }
-$preserve=@($overlays)+@($uxPaths)+@(
+# The previous actual PlayMode run normalized nine tracked materials.
+# Preserve their precise starting bytes before Unity, not only Git status.
+. (Join-Path $OverlaySource 'tools/eldoria-private-beta/native/preserve_native_materials.ps1')
+$preserve=@(Get-PR179NativeMaterialPaths)+@($overlays)+@($uxPaths)+@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset',
  'Unity/Assets/UniversalRenderPipelineGlobalSettings.asset'
 )
@@ -290,3 +293,4 @@ try{
 if($failure){throw $failure}
 if(-not $verified){throw 'No PlayMode certification'}
 Write-Host 'ELDORIA_P0_REAL_LAZY_WORLD_PLAYMODE_PASS_AND_PROJECT_RESTORED'
+
