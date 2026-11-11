@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T19:46:18.308Z",
+ "updated_at": "2026-11-11T19:47:57.685Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -6705,11 +6705,9 @@
     "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs",
     "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta"
    ],
-   "resources": [
-    "windows-runner-heavy"
-   ],
+   "resources": [],
    "ownership_state": "claimed",
-   "ownership_revision": 91,
+   "ownership_revision": 92,
    "write_scope_released": false,
    "phase": "STAGED_DESTINATION_MIGRATION_NATIVE_QA",
    "next": "Test real canonical Training/March and mailbox adapters on exclusive Unity runner, preserve existing main HUD, remove old paintings instead of superimposing, validate native before activation.",
@@ -6838,14 +6836,15 @@
     }
    ],
    "runner_priority_handoff": {
-    "status": "OWNER_DIRECTED_RELEASE_AFTER_CURRENT_NATIVE_BATCH",
+    "status": "TRANSFERRED_TO_PR179",
     "at": "2026-11-11T19:46:18.307Z",
     "to": "eldoria-private-beta-i-v-20261107",
     "after_run_id": 43089450921,
     "from_owner": "chatgpt-pr173-complete-ui-migration-20261111",
     "from_revision": 91,
     "reason": "El propietario pide en este chat mirar y forzar el relevo. Terminar el lote nativo en curso y preservar evidencias; liberar SOLO Windows por CAS y ceder a PR179; conservar titularidad de escritura, PR173 y trabajo artístico. No iniciar otro lote Windows antes de la cesión. Rotación posterior PR181, PR187, PR173.",
-    "transfer_completed": false
+    "transfer_completed": true,
+    "transferred_at": "2026-11-11T19:47:57.685Z"
    },
    "last_verified": {
     "source_sha": "73d15578b0815a40f5f49af285c0ae929166ef7d",
@@ -6951,7 +6950,7 @@
     ],
     "source_gameplay_unchanged": true
    },
-   "runner_release_basis": "Native 42977646724 and visual A/B completed SUCCESS on exact 73d15578; eight screenshot hashes validated, six pointer clicks, save unchanged.",
+   "runner_release_basis": "Owner-directed resource-only handoff: native job130764183302 in run43089450921 completed success, exact source72d132cf789738278ca17d1580e472b29a0eadd8, isolated UI project, child Unity processes exited, artifacts13887684195 preserved. Live queue: only Ubuntu tester QA and planner; historical startup runs have no jobs. Retain UI writer and PR173.",
    "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
    "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
    "pending_frame_spacing": {
@@ -6978,7 +6977,7 @@
     "native_artifact": 13836976829,
     "visual_ab_artifact": 13837400815
    },
-   "runner_released_at": "2026-11-11T07:33:16.802Z",
+   "runner_released_at": "2026-11-11T19:47:57.685Z",
    "delivery_definition": {
     "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
     "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -6995,7 +6994,7 @@
    "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
    "owner": "chatgpt-pr179-iphone-automation-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 35,
+   "ownership_revision": 36,
    "write_scope_released": false,
    "status": "active",
    "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7036,14 +7035,16 @@
     "Unity/Assets/Eldoria/BetaMemoryProbe.meta",
     ".github/workflows/eldoria-beta-lazy-world-native.yml"
    ],
-   "resources": [],
+   "resources": [
+    "windows-runner-heavy"
+   ],
    "claimed_at": "2026-11-09T22:42:54.852Z",
    "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
    "budget_eur": 0,
    "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-   "phase": "REAL_LAZY_WORLD_NATIVE_PLAYMODE_WORKFLOW_PREP_AWAIT_WINDOWS",
+   "phase": "WINDOWS_LEASE_TRANSFERRED_NATIVE_REQUEST_NEXT",
    "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-   "next": "One unique owner-only workflow .github/workflows/eldoria-beta-lazy-world-native.yml, frozen-UX parity source checked, native Unity PlayMode pending CAS Windows release PR173. No testers until full-world iPhone/Android long session.",
+   "next": "Update pinned lazy-world request to CLAIMED_FOR_NATIVE revision36 and run existing canonical native workflow; preserve source, release Windows after bounded batch.",
    "last_verified": {
     "frozen_release_id": 437784073,
     "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7468,7 +7469,7 @@
     "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
     "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
    },
-   "runner_claimed_at": null,
+   "runner_claimed_at": "2026-11-11T19:47:57.685Z",
    "canonical_integration_request": {
     "requested_at": "2026-11-09T10:49:44.401Z",
     "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
@@ -7554,7 +7555,7 @@
     "issue": 96,
     "release_allowed": false
    },
-   "runner_claim_basis": "Live registry resource free after PR173 release; all open PRs and running Actions checked. Exact isolated candidate2154334; no other Unity job active. Fresh process/lease preflight remains mandatory.",
+   "runner_claim_basis": "Explicit owner-directed handoff from PR173 after completed native43089450921. One bounded PR179 lazy-world PlayMode/I-V/WebGL batch; no publication; release to PR181 after completion and verified restoration.",
    "native_candidate": {
     "run_id": 42682071151,
     "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
