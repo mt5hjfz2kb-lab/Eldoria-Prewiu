@@ -20,6 +20,7 @@ def require(value, explanation):
 
 def main():
     theme = (R / "BreachWatchSharedTheme.cs").read_text()
+    composition = (R / "BreachWatchTrainingComposition.cs").read_text()
     bridge = (R / "BreachWatchDestinationBridge.cs").read_text()
     hud = (R / "BreachWatchHud.cs").read_text()
     for path in ["PremiumSurfaces/panel_fill.png",
@@ -27,7 +28,8 @@ def main():
         require((A / path).is_file(), "Missing reusable original art: " + path)
         require((A / (path + ".meta")).is_file(), "Missing import settings: " + path)
     for source in [R / "BreachWatchSharedTheme.cs",
-                   R / "BreachWatchDestinationBridge.cs"]:
+                   R / "BreachWatchDestinationBridge.cs",
+                   R / "BreachWatchTrainingComposition.cs"]:
         require(source.with_suffix(".cs.meta").is_file(),
                 "Missing stable script GUID: " + source.name)
     require("source.border.sqrMagnitude" in theme and
@@ -39,6 +41,17 @@ def main():
             "ReplacedLegacyGraphics>=4" in theme and
             "originalTextColors" in theme,
             "Legacy blue artwork must be removed, not covered by a new image")
+    require("ReassertSinglePainting" in theme and
+            "approvedArcher" not in theme and
+            '"Vigilia / one stone panel"' in theme and
+            "surface.transform.SetAsFirstSibling()" in theme and
+            "originalTextColors" in theme,
+            "Old ink and z-order must not hide the cinematic archer")
+    require("Training unit card T1" in composition and
+            "Training unit card T2" in composition and
+            "FindDirect" in composition and
+            "Vigilia" not in composition.split("new Button",1)[-1],
+            "Cinematic destination must reuse true unit art and controls")
     require("originalButtonTargets" in theme and
             "originalTransitions" in theme and "Restore()" in theme,
             "Theme must preserve original Selectable behavior")
@@ -49,6 +62,9 @@ def main():
             "Destination must reuse and restore canonical live screen")
     require("host.CanOpen(RoyalSection.Army)" in bridge,
             "Destination must retain story gate")
+    require("BreachWatchTrainingComposition" in bridge and
+            "cinematicTraining.RefreshPortrait()" in bridge,
+            "Native bridge must refresh cinematic composition after real layout")
     require("destinationBridge.Initialize(host,canvas)" in hud,
             "Native proof canvas must initialize destination bridge")
     require("int mask=(1<<0)|(1<<1);" in hud,
