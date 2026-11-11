@@ -18,11 +18,11 @@
     "tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1": "30bdba1a639fbc8420de398e1ab301afd2165476",
     "tools/eldoria-private-beta/native/run_structural.ps1": "f1fa30a0543b08dd410cc8ae8655b982c3636b2b",
     "tools/eldoria-private-beta/native/run_warm_structural.ps1": "e2efdbb5eef34fe1eb620ae3f327865524a8381f",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "76425d914f71ec7c5d1ddbe416f6264b2c21dc18",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "03f70ac722f807466fb77b95c576214284c42085",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "7a0c4d1ed094757927531a3f6659dab5f482a9e9",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "58fb92831f3d1a7fd7d242f25ad231d41d82adca",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216",
-    "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "85986e2bb862b327eac98088fd5732ffdb97657e"
+    "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "e9b665544f686a1e7272812c6a9982cb463dee82"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
@@ -30,5 +30,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "Windows lease required before Unity. Staged site scan (98 rows) AND route lattice (449 rows) share unmodified eager query bodies; verify true PlayMode tape parity then WebGL same-bundle Mac A/B and physical mobile before testers."
+  "next": "Windows CAS rev35 still held by PR173. Opt-in deferred world now stages imported terrain contact buckets every 256 full triangles, plus 98 resource rows and 449 route rows; eager drains identical algorithm synchronously. Verify Unity PlayMode + native I-V, actual WebGL and same-bundle Mac A/B; no device or tester claim."
 }
