@@ -55,6 +55,78 @@ def png_info(blob):
     return width, height
 
 
+
+def alpha_matte_stats(blob):
+    """Decode actual 8-bit, noninterlaced PNG alpha with all five row filters.
+
+    No Pillow dependency. This is SOURCE evidence, not perceived-art approval.
+    """
+    w, h, depth, color_type, _, _, interlace = struct.unpack_from(">IIBBBBB", blob, 16)
+    if depth != 8 or color_type not in (4, 6) or interlace:
+        raise ValueError("Unsupported alpha decoding format")
+    bpp = 4 if color_type == 6 else 2
+    stride = w * bpp
+    ptr = 8
+    compressed = bytearray()
+    while ptr + 12 <= len(blob):
+        length = struct.unpack_from(">I", blob, ptr)[0]
+        kind = blob[ptr+4:ptr+8]
+        if kind == b"IDAT":
+            compressed.extend(blob[ptr+8:ptr+8+length])
+        ptr += length + 12
+        if kind == b"IEND":
+            break
+    raw = zlib.decompress(compressed)
+    if len(raw) != h * (stride + 1):
+        raise ValueError("PNG scanline size mismatch")
+    prev = bytearray(stride)
+    total_clear = border_clear = border_total = 0
+    corners = [None, None, None, None]
+    center = None
+    for y in range(h):
+        off = y * (stride + 1)
+        filter_kind = raw[off]
+        if filter_kind > 4:
+            raise ValueError("Invalid PNG row filter " + str(filter_kind))
+        src = raw[off+1:off+1+stride]
+        cur = bytearray(stride)
+        for j, val in enumerate(src):
+            a = cur[j-bpp] if j >= bpp else 0
+            above = prev[j]
+            c = prev[j-bpp] if j >= bpp else 0
+            if filter_kind == 1:
+                predictor = a
+            elif filter_kind == 2:
+                predictor = above
+            elif filter_kind == 3:
+                predictor = (a + above) // 2
+            elif filter_kind == 4:
+                p = a + above - c
+                da, db, dc = abs(p-a), abs(p-above), abs(p-c)
+                predictor = a if da <= db and da <= dc else above if db <= dc else c
+            else:
+                predictor = 0
+            cur[j] = (val + predictor) & 255
+        for x in range(w):
+            a = cur[x*bpp+bpp-1]
+            clear = a <= 16
+            total_clear += clear
+            if y == 0 or y == h-1 or x == 0 or x == w-1:
+                border_total += 1
+                border_clear += clear
+            if (x, y) == (0, 0): corners[0] = a
+            if (x, y) == (w-1, 0): corners[1] = a
+            if (x, y) == (0, h-1): corners[2] = a
+            if (x, y) == (w-1, h-1): corners[3] = a
+            if (x, y) == (w//2, h//2): center = a
+        prev = cur
+    return {
+        "transparentFraction": round(total_clear/(w*h), 4),
+        "transparentBorderFraction": round(border_clear/max(1, border_total), 4),
+        "cornerAlpha": corners,
+        "centerAlpha": center,
+    }
+
 def audit():
     errors, warnings, output, ids = [], [], [], set()
     if not MANIFEST.is_file():
@@ -91,6 +163,17 @@ def audit():
         try:
             width, height = png_info(blob)
             log["actualWidth"], log["actualHeight"] = width, height
+            if name in {"badge_new.png", "badge_claimable.png",
+                        "tutorial_pointing_hand.png", "tutorial_target_halo.png"}:
+                matte = alpha_matte_stats(blob)
+                log["actualAlphaMatte"] = matte
+                if matte["transparentBorderFraction"] < 0.55:
+                    warnings.append(f"{name}: BADGE_OR_POINTER_MATTE_REVIEW: "
+                                    f"edge transparency={matte['transparentBorderFraction']}; "
+                                    "possible square-background overlay")
+                if max(matte["cornerAlpha"]) > 64:
+                    warnings.append(f"{name}: corner has opaque pixels; "
+                                    "inspect original Unity icon against approved HUD")
         except Exception as exc:
             errors.append(f"{name}: {exc}")
         if log["actualSha256"] != row.get("sha256"):
@@ -126,6 +209,8 @@ def audit():
     REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     for error in errors:
         print("ISSUE186_IMPORT_ERROR:", error)
+    for warning in warnings:
+        print("ISSUE186_ART_ALPHA_WARNING:", warning)
     print(f"ISSUE186_SOURCE_IMPORT_{report['status']}: checked={len(output)} "
           f"errors={len(errors)} report={REPORT}")
     return 1 if errors else 0
