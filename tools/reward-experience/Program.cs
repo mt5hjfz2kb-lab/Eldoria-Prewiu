@@ -29,8 +29,17 @@ internal static class Program
             "reject zero");
         Check(!ResourceRewardRules.TryIssue(p, "mission:-1", "mission", "wood", -2),
             "reject negative");
-        Check(!ResourceRewardRules.TryIssue(p, "mission:ore", "mission", "ore", 10),
+        Check(!ResourceRewardRules.TryIssue(p, "mission:ore", "mission", "ore", 100),
             "unsupported resource");
+        Check(!ResourceRewardRules.TryIssue(p, "mission:99", "mission", "wood", 99),
+            "reject nonstandard resource denominations");
+        Check(ResourceRewardRules.IsStandardTier(100) &&
+            ResourceRewardRules.IsStandardTier(1000) &&
+            ResourceRewardRules.IsStandardTier(10000) &&
+            ResourceRewardRules.IsStandardTier(100000) &&
+            !ResourceRewardRules.IsStandardTier(250) &&
+            ResourceRewardRules.TierLabel(100000) == "100K",
+            "all four UI tiers map to correct authoritative amounts");
         Check(ResourceRewardRules.TryIssue(p, "mission:wood", "mission", "wood", 100),
             "mission package received");
         Check(!ResourceRewardRules.TryIssue(p, "mission:wood", "mission", "wood", 100),
@@ -49,8 +58,8 @@ internal static class Program
         Check(!ResourceRewardRules.TryIssue(p, "mission:wood", "mission", "wood", 100),
             "spent packet receipt cannot be replayed");
 
-        Check(ResourceRewardRules.TryIssue(p, "daily:wood", "daily", "wood", 120, "mail:daily") &&
-              ResourceRewardRules.TryIssue(p, "daily:stone", "daily", "stone", 30, "mail:daily"),
+        Check(ResourceRewardRules.TryIssue(p, "daily:wood", "daily", "wood", 1000, "mail:daily") &&
+              ResourceRewardRules.TryIssue(p, "daily:stone", "daily", "stone", 100, "mail:daily"),
             "a mail can hold a mixed reward");
         Check(ResourceRewardRules.ClaimableMailMessages(p) == 1,
             "mail badge counts messages, not resource items");
@@ -67,9 +76,9 @@ internal static class Program
         Check(ResourceRewardRules.ClaimableMailMessages(p) == 0,
             "mail action badge disappears after real claim");
         Check(ResourceRewardRules.TryUse(p, wallet, "daily:stone", out int stone) &&
-            stone == 30 && wallet.Stone == 70, "independent stone usage");
+            stone == 100 && wallet.Stone == 140, "independent stone usage");
         Check(ResourceRewardRules.TryUse(p, wallet, "daily:wood", out int wood) &&
-            wood == 120 && wallet.Wood == 470, "independent wood usage");
+            wood == 1000 && wallet.Wood == 1350, "independent wood usage");
         Check(AttentionSignalRules.Mail(1, 0) == AttentionLevel.New, "unread mail badge");
         Check(AttentionSignalRules.Mail(0, 0) == AttentionLevel.None, "no phantom mail badge");
         Check(AttentionSignalRules.DailyTreasure(true) == AttentionLevel.ActionReady,
@@ -77,7 +86,7 @@ internal static class Program
         Check(AttentionSignalRules.DailyTreasure(false) == AttentionLevel.None,
             "daily empty badge");
 
-        Check(ResourceRewardRules.TryIssue(p, "overflow:food", "event", "food", 11),
+        Check(ResourceRewardRules.TryIssue(p, "overflow:food", "event", "food", 100),
             "overflow test package");
         wallet.Food = int.MaxValue - 3;
         Check(!ResourceRewardRules.TryUse(p, wallet, "overflow:food", out _) &&
@@ -85,7 +94,7 @@ internal static class Program
             "overflow rejects atomically and keeps package");
         wallet.Food = 5;
         Check(ResourceRewardRules.TryUse(p, wallet, "overflow:food", out _) &&
-            wallet.Food == 16, "package remains usable after overflow prevention");
+            wallet.Food == 105, "package remains usable after overflow prevention");
 
         var saved = p.Copy();
         saved.Packets[0].Used = false;
