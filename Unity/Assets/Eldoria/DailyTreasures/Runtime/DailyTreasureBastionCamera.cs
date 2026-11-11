@@ -15,45 +15,56 @@ namespace Eldoria.DailyTreasures
     {
         public const string SceneKey="RealBastion/LiveAuthenticatedCamera";
 
+        // VERIFIED against actual main source:
+        // ValoriaIntegratedWorld owns PlayerCamera but NOT BastionOne/Two.
+        // Those GameObjects belong to ValoriaReferenceCleanGameplay; the old
+        // reflection searched the wrong component and always returned null,
+        // silently leaving the milestone on a black placeholder.
         static bool Resolve(out Camera source,out Bounds bounds)
         {
-            source=null;bounds=default;
+            source=null;
+            bounds=default;
             var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
             foreach(var item in components)
             {
-                if(!item || item.GetType().Name!="ValoriaIntegratedWorld" ||
+                if(!item || item.GetType().Name!="ValoriaReferenceCleanGameplay" ||
                    !item.gameObject.scene.isLoaded)continue;
-                var t=item.GetType();
-                // Use ONLY active geometry. Level 5 cannot be substituted by
-                // a future design or by an unrelated background illustration.
-                var names=new[]{"BastionFive","BastionFour","BastionThree",
-                                "BastionTwo","BastionOne"};
-                foreach(var name in names)
+                var type=item.GetType();
+                var property=type.GetProperty("PlayerCamera",
+                    BindingFlags.Instance|BindingFlags.Public);
+                var realCamera=property?.GetValue(item,null) as Camera;
+                if(!realCamera ||
+                   realCamera.gameObject.scene!=item.gameObject.scene)continue;
+                // The real gameplay class activates BastionTwo for ALL
+                // built levels >=2 and BastionOne for level 1. Use only
+                // active existing renderers; never create a fake future 3D.
+                foreach(var slot in new[]{"BastionTwo","BastionOne"})
                 {
-                    var field=t.GetField(name,BindingFlags.Public|
-                        BindingFlags.Instance);
-                    var property=t.GetProperty(name,BindingFlags.Public|
-                        BindingFlags.Instance);
-                    var go=(property!=null?
-                        property.GetValue(item,null):field?.GetValue(item)) as GameObject;
-                    if(!go || !go.activeInHierarchy)continue;
-                    bool found=false;
-                    foreach(var renderer in go.GetComponentsInChildren<Renderer>(true))
+                    var field=type.GetField(slot,
+                        BindingFlags.Public|BindingFlags.Instance);
+                    var propertySlot=type.GetProperty(slot,
+                        BindingFlags.Public|BindingFlags.Instance);
+                    var building=(propertySlot!=null?
+                        propertySlot.GetValue(item,null):
+                        field?.GetValue(item)) as GameObject;
+                    if(!building || !building.activeInHierarchy)continue;
+                    bool any=false;
+                    Bounds realBounds=default;
+                    foreach(var renderer in building.GetComponentsInChildren<Renderer>(true))
                     {
                         if(!renderer || !renderer.enabled ||
                            !renderer.gameObject.activeInHierarchy)continue;
-                        if(!found){bounds=renderer.bounds;found=true;}
-                        else bounds.Encapsulate(renderer.bounds);
+                        if(!any){realBounds=renderer.bounds;any=true;}
+                        else realBounds.Encapsulate(renderer.bounds);
                     }
-                    if(!found || bounds.size.sqrMagnitude<=.01f)continue;
-                    source=t.GetProperty("PlayerCamera",
-                        BindingFlags.Public|BindingFlags.Instance)
-                        ?.GetValue(item,null) as Camera;
-                    if(source && source.gameObject.scene==item.gameObject.scene)
-                        return true;
+                    if(!any || realBounds.size.sqrMagnitude<=.01f)continue;
+                    source=realCamera;
+                    bounds=realBounds;
+                    return true;
                 }
             }
+            Debug.LogWarning("TRUE_BASTION_NOT_ACTIVE: cannot manufacture ceremonial architecture");
             return false;
         }
 
