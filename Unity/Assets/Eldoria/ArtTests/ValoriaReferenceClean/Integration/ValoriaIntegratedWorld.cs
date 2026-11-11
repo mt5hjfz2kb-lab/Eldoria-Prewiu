@@ -63,7 +63,8 @@ namespace Eldoria.ReferenceClean {
   {
    float started=Time.realtimeSinceStartup;
    while(this&&deferredWorldEntryQueued&&epoch==deferredWorldEpoch&&worldPresentation&&
-         !worldPresentation.IsReady&&Time.realtimeSinceStartup-started<120f)
+         !worldPresentation.IsReady&&!worldPresentation.HasFailed&&
+         Time.realtimeSinceStartup-started<120f)
     yield return null;
    if(!this||!deferredWorldEntryQueued||epoch!=deferredWorldEpoch)yield break;
    deferredWorldEntryQueued=false;
@@ -411,6 +412,10 @@ namespace Eldoria.ReferenceClean {
     // Never expose camera or enemy targets before complete canonical installation.
     if(!worldPresentation){if(Hud)Hud.Feedback.Put("Preparando el acceso al mundo.");return false;}
     if(!worldPresentation.IsReady){
+     if(worldPresentation.HasFailed){
+      if(Hud)Hud.Feedback.Put("La Región 1 no ha podido cargarse. La ciudad y tu progreso están a salvo.");
+      return false;
+     }
      if(worldPresentation.BeginDeferredLoad()&&!deferredWorldEntryQueued){
       deferredWorldEntryQueued=true;
       StartCoroutine(EnterWorldAfterDeferredBuild(++deferredWorldEpoch));

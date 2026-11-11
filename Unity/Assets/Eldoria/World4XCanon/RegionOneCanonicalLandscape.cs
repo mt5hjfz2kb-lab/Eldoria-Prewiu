@@ -20,18 +20,84 @@ namespace Eldoria.World4XCanon
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
-  bool built,building;
+  bool built,building,failed;
+  Transform partialWorldRoot;
   public bool IsReady=>built;
   public bool IsLoading=>building&&!built;
+  public bool HasFailed=>failed;
   // Lazy-world is an opt-in diagnostic. The normal startup path is unchanged.
   public bool BeginDeferredLoad()
   {
+   if(failed)return false; // Fail closed: never retry atop partially built assets.
    if(built||building)return true;
    if(!ValoriaIntegratedWorld.P0LazyWorldProbe||!host||!host.PresentationBindingsReady)return false;
    building=true;
    Debug.Log("ELDORIA_P0_LAZY_WORLD_REQUESTED");
-   StartCoroutine(BuildAndInstall());
+   StartCoroutine(GuardedDeferredBuild());
    return true;
+  }
+  // Unity stops an IEnumerator after a nested MoveNext exception, which used
+  // to leave building=true indefinitely and a half-loaded terrain retained.
+  // Drive nested stages explicitly ONLY for the opt-in lazy experiment, so
+  // we can dispose the certified query tape and restore the original city.
+  IEnumerator GuardedDeferredBuild()
+  {
+   var stack=new Stack<IEnumerator>();
+   stack.Push(BuildAndInstall());
+   Exception failure=null;
+   float deadline=Time.realtimeSinceStartup+120f;
+   try
+   {
+    while(stack.Count>0)
+    {
+     if(Time.realtimeSinceStartup>deadline)
+     {
+      failure=new TimeoutException("Lazy Region 1 exceeded the 120s load budget");
+      break;
+     }
+     IEnumerator active=stack.Peek();
+     bool advanced=false;
+     object yielded=null;
+     try
+     {
+      advanced=active.MoveNext();
+      if(advanced)yielded=active.Current;
+     }
+     catch(Exception ex){failure=ex;break;}
+     if(!advanced)
+     {
+      stack.Pop();
+      try{(active as IDisposable)?.Dispose();}catch(Exception ex){failure=ex;break;}
+      continue;
+     }
+     if(yielded is IEnumerator inner){stack.Push(inner);continue;}
+     yield return yielded;
+    }
+   }
+   finally
+   {
+    while(stack.Count>0)
+    {
+     try{(stack.Pop() as IDisposable)?.Dispose();}
+     catch(Exception ex){Debug.LogError("REGION1_P0_LAZY_STAGE_DISPOSAL "+ex.GetType().Name);}
+    }
+   }
+   if(failure==null&&!built)failure=new InvalidOperationException("Region 1 stage did not reach ready");
+   if(failure!=null)
+   {
+    Debug.LogError("REGION1_P0_LAZY_BUILD_FAILED "+failure.GetType().Name);
+    // Leave the authoritative gateway, HUD, construction clock and save
+    // untouched. Only presentation objects from THIS attempt are discarded.
+    failed=true;building=false;built=false;
+    if(partialWorldRoot)Destroy(partialWorldRoot.gameObject);
+    partialWorldRoot=null;
+    for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i];
+    for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];
+    originals.Clear();states.Clear();lods.Clear();lodStates.Clear();background.Clear();
+    geography=null;nodes=null;placement=null;resourceModels=null;
+    creaturePopulation=null;lookDevelopment=null;
+   }
+   else partialWorldRoot=null;
   }
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
@@ -189,6 +255,7 @@ namespace Eldoria.World4XCanon
     if(lod.GetComponentsInChildren<Renderer>(true).Any(background.Contains))
     {lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}
    var root=new GameObject("Region 1 canonical continuous geography").transform;root.SetParent(existingWorld,true);
+   if(ValoriaIntegratedWorld.P0LazyWorldProbe)partialWorldRoot=root;
    yield return null;
    yield return RegionOneBlenderLandscape.InstallStaged(root,host,value=>geography=value);
    lookDevelopment=root.GetComponentInChildren<RegionOneLookDevelopment>();
