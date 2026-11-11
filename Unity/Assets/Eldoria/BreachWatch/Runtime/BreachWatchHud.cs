@@ -849,13 +849,24 @@ namespace Eldoria.BreachWatch
             var result=host.Submit(action);SetFeedback(result.Message);
             RenderNow();
         }
-        // Do not expose an icon before its REAL gameplay destination exists.
-        // Army/Heroes art remains authored but dormant in this first-screen
-        // proof; World becomes visible only on canonical unlock.
+        // The two original city buttons always exist. Each other gilded
+        // medallion appears ONLY at its authoritative narrative unlock.
+        // Routes open the ONE canonical destination reparented into this
+        // Canvas, never the older blue screen and never a fake placeholder.
         int NavigationMask()
         {
             int mask=(1<<0)|(1<<1);
-            if(host && host.CanOpen(RoyalSection.World))mask|=1<<3;
+            if(!host)return mask;
+            if(destinationBridge && host.CanOpen(RoyalSection.Army))
+                mask|=1<<2;
+            if(host.CanOpen(RoyalSection.World))
+                mask|=1<<3;
+            var hero=host.Hud
+                ?host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>()
+                :null;
+            if(heroesBridge && hero && hero.CanOpenDestination!=null &&
+               hero.CanOpenDestination())
+                mask|=1<<4;
             return mask;
         }
         void Navigate(int index)
@@ -879,6 +890,46 @@ namespace Eldoria.BreachWatch
                     SelectBuilding("sawmill");
                     SyncLiveCamera();
                     break;
+                case 2:
+                    // Ejército is the REAL, source-bound march composition.
+                    // It cannot appear before Bastion/Barracks narrative
+                    // unlock, and has no independent army save or mock troops.
+                    if((NavigationMask()&(1<<2))==0)return;
+                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    string lastBuilding=selected;
+                    SelectBuilding("");
+                    if(destinationBridge && destinationBridge.TryOpen(
+                        Eldoria.UI.RoyalGold.V2.RoyalGoldV3ManagementScreens.Destination.March))
+                    {
+                        selectedTab=2;
+                        RenderNow();
+                    }
+                    else
+                    {
+                        if(!string.IsNullOrEmpty(lastBuilding))
+                            SelectBuilding(lastBuilding);
+                        SetFeedback("Todavía no está disponible la marcha.");
+                    }
+                    break;
+                case 4:
+                    // The canonical heroine recruitment gate is stronger than
+                    // a static level check; no premature, hollow Heroes button.
+                    if((NavigationMask()&(1<<4))==0)return;
+                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    string returnBuilding=selected;
+                    SelectBuilding("");
+                    if(heroesBridge && heroesBridge.TryOpen())
+                    {
+                        selectedTab=4;
+                        RenderNow();
+                    }
+                    else
+                    {
+                        if(!string.IsNullOrEmpty(returnBuilding))
+                            SelectBuilding(returnBuilding);
+                        SetFeedback("Recluta primero a Lyra.");
+                    }
+                    break;
                 case 3:
                     // Explore is idempotent. A second tap cannot accidentally
                     // return the player to the city; Reino handles that.
@@ -889,14 +940,18 @@ namespace Eldoria.BreachWatch
                         SyncLiveCamera();
                     }
                     break;
-                // Ejército and Héroes deliberately stay disabled until their
-                // future independent screens exist; chapter progress is opened
-                // using the actual objective tablet, not a falsely named route.
             }
         }
         void LateUpdate()
         {
             if(!created||!host)return;
+            // A canonical modal handles its own Back/Close. When the actual
+            // destination closes, restore the city navigation highlight;
+            // never leave a selected emblem pointing at a hidden panel.
+            if(selectedTab==2 && destinationBridge &&
+               !destinationBridge.IsShowing)selectedTab=0;
+            if(selectedTab==4 && heroesBridge &&
+               !heroesBridge.IsShowing)selectedTab=0;
             if(feedbackUntil>0f && Time.unscaledTime>=feedbackUntil)
                 SetFeedback("");
             // When the canonical world map returns to city it resets the
