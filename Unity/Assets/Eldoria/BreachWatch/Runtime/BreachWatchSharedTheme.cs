@@ -59,7 +59,14 @@ namespace Eldoria.BreachWatch
                     if(item is Image &&
                        (item.name=="Approved source / blue-panel" ||
                         item.name=="Approved source / gold-button" ||
-                        item.name=="Approved source / training-courtyard-layer-v1"))
+                        item.name=="Approved source / training-courtyard-layer-v1" ||
+                     item.name=="Approved source / HeroCardNineSliceGold" ||
+                     item.name.StartsWith("Training / genuine costs") ||
+                     item.name.StartsWith("Training / actual timer") ||
+                     item.name.StartsWith("Training / unit manuscript") ||
+                     item.name.StartsWith("Training / live quantity instruments") ||
+                     item.name.StartsWith("Training / one continuous military order") ||
+                     item.name.StartsWith("Training / framed transparent bust")))
                         return false;
                 }
                 return true;
@@ -158,16 +165,30 @@ namespace Eldoria.BreachWatch
                 bool obsoleteBackdrop=graphic is RoyalGoldV3ManagementBackdrop ||
                     graphic is RoyalGoldV3ManagementBackdropGraphic ||
                     graphic is RoyalGoldV3LayeredFinish;
+                bool obsoleteTrainingPaper=graphic is Image &&
+                    (graphic.name.StartsWith("Training / genuine costs") ||
+                     graphic.name.StartsWith("Training / actual timer") ||
+                     graphic.name.StartsWith("Training / unit manuscript") ||
+                     graphic.name.StartsWith("Training / live quantity instruments") ||
+                     graphic.name.StartsWith("Training / one continuous military order") ||
+                     graphic.name.StartsWith("Training / framed transparent bust"));
                 bool obsoletePaper=graphic is Image &&
                     (graphic.name=="Approved source / blue-panel" ||
                      graphic.name=="Approved source / gold-button" ||
+                     graphic.name=="Approved source / HeroCardNineSliceGold" ||
                      graphic.name=="Approved source / training-courtyard-layer-v1");
-                if(!obsoleteBackdrop && !obsoletePaper)continue;
+                if(!obsoleteBackdrop && !obsoletePaper && !obsoleteTrainingPaper)
+                    continue;
                 Hide(graphic);
                 ReplacedLegacyGraphics++;
                 // Repaint only independent subcards; the four parent panels
                 // receive their own stone surface below in Apply().
-                if(obsoletePaper && graphic.name=="Approved source / blue-panel")
+                if(obsoleteTrainingPaper)
+                {
+                    var rect=graphic.transform as RectTransform;
+                    if(rect)AddSurface(rect,stone,"Vigilia / replaced training parchment",false);
+                }
+                else if(obsoletePaper && graphic.name=="Approved source / blue-panel")
                 {
                     var parent=graphic.transform.parent as RectTransform;
                     if(parent && parent.name!="V3 / Destination header" &&
