@@ -174,7 +174,16 @@ function processes() {
       report.p0LocalPhaseRecorderVerified=true;
     }
     const events=fs.readFileSync(out+'/events.jsonl','utf8');
-    if(!events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('World initialization incomplete');
+    // A city-only P0 experiment deliberately defers the massive Region 1
+    // build. Never give it a normal full-world certificate, or vice versa.
+    if(process.env.QA_CITY_ONLY==='1'){
+      const requested=new URL(process.env.QA_URL||'http://localhost/').searchParams.get('eldoria_p0_city_only')==='1';
+      if(!requested)throw Error('City-only QA requires the actual opt-in URL flag');
+      if(!events.includes('ELDORIA_P0_CITY_ONLY_WORLD_INITIALIZATION_SKIPPED'))throw Error('City-only world deferral was not executed');
+      if(events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('City-only experiment unexpectedly built full Region 1');
+      report.cityOnlyDeferredWorldVerified=true;
+      write();
+    }else if(!events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('World initialization incomplete');
     if(/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(events))throw Error('Unity runtime errors');
     await page.screenshot({path:out+'/game.png',timeout:15000});
     async function observeEntry(seconds,phase){
