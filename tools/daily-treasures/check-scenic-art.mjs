@@ -230,6 +230,21 @@ const narrativeMaterial=fs.readFileSync(
 assert.match(narrativeMaterial,/Shader "Eldoria\/DailyNarrativeBackdrop"/);
 assert.match(narrativeMaterial,/fixed4 src=tex2D\(_MainTex,i.uv\)/);
 assert.match(narrativeMaterial,/float rightInk=smoothstep/);
+assert.match(narrativeMaterial,/float bottomInk=smoothstep/);
+assert.match(narrativeMaterial,/float readingInk=lerp/);
+assert.match(narrativeMaterial,/_VisibleUv/);
+assert.match(panel,/ScenicCoverUv\(Texture texture,Rect rect\)/);
+assert.match(panel,/milestoneCinematicBackdrop\.uvRect=uv/);
+assert.match(panel,/ownedCinematicBackdropMaterial\.SetVector/);
+assert.match(panel,/ownedCinematicBackdropMaterial\.SetFloat/);
+for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844]]){
+  const src=16/9,dst=w/h;
+  const cropW=dst<src?dst/src:1, cropH=dst<src?1:src/dst;
+  assert.ok(Math.abs(src*cropW/cropH-dst)<1e-10,
+    'Authentic panorama would distort in '+w+'x'+h);
+}
+assert.match(nativeArt,/paintedAspect-screenAspect/);
+assert.match(nativeArt,/Native cinematic ink darkens wrong reading side/);
 assert.match(panel,/milestoneCinematicBackdrop\.raycastTarget=false/);
 assert.match(panel,/milestoneCinematicBackdrop\.texture=milestoneScenery\.texture/);
 assert.match(panel,/DestroyOwned\(ownedCinematicBackdropMaterial\)/);

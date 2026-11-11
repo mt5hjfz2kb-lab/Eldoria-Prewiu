@@ -1392,7 +1392,7 @@ namespace Eldoria.DailyTreasures
                 milestoneCinematicBackdrop.texture=milestoneScenery.texture;
                 milestoneCinematicBackdrop.gameObject.SetActive(
                     hasImage && ownedCinematicBackdropMaterial);
-                milestoneCinematicBackdrop.uvRect=new Rect(0f,0f,1f,1f);
+                // Final cover UV is set by UpdateSceneryCrop/ Layout().
             }
             milestoneScenery.gameObject.SetActive(hasImage);
             milestoneVignette.gameObject.SetActive(hasImage);
@@ -1453,25 +1453,56 @@ namespace Eldoria.DailyTreasures
             }
         }
 
-        void UpdateSceneryCrop()
+        // Retain genuine painterly proportions in wide/portrait layouts.
+        // Cover by cropping original pixels, never by compressing the world.
+        static Rect ScenicCoverUv(Texture texture,Rect rect)
         {
-            if(!milestoneScenery || !milestoneScenery.texture)return;
-            var rect=milestoneScenery.rectTransform.rect;
-            if(rect.width<10f || rect.height<10f)return;
-            float source=(float)milestoneScenery.texture.width/
-                milestoneScenery.texture.height;
-            float target=rect.width/rect.height;
+            float source=(float)texture.width/Mathf.Max(1,texture.height);
+            float target=rect.width/Mathf.Max(1f,rect.height);
             if(target<source)
             {
-                float width=target/source;
-                milestoneScenery.uvRect=new Rect((1f-width)*.5f,0f,width,1f);
+                float width=Mathf.Clamp01(target/source);
+                return new Rect((1f-width)*.5f,0f,width,1f);
             }
-            else
+            float height=Mathf.Clamp01(source/target);
+            return new Rect(0f,(1f-height)*.5f,1f,height);
+        }
+        void UpdateSceneryCrop()
+        {
+            if(milestoneScenery && milestoneScenery.texture)
             {
-                float height=source/target;
-                milestoneScenery.uvRect=new Rect(0f,(1f-height)*.5f,1f,height);
+                var rect=milestoneScenery.rectTransform.rect;
+                if(rect.width>=10f && rect.height>=10f)
+                {
+                    milestoneScenery.uvRect=ScenicCoverUv(
+                        milestoneScenery.texture,rect);
+                    milestoneSceneryBaseUv=milestoneScenery.uvRect;
+                }
             }
-            milestoneSceneryBaseUv=milestoneScenery.uvRect;
+            if(milestoneCinematicBackdrop &&
+               milestoneCinematicBackdrop.texture)
+            {
+                var rect=milestoneCinematicBackdrop.rectTransform.rect;
+                if(rect.width>=10f && rect.height>=10f)
+                {
+                    var uv=ScenicCoverUv(
+                        milestoneCinematicBackdrop.texture,rect);
+                    milestoneCinematicBackdrop.uvRect=uv;
+                    if(ownedCinematicBackdropMaterial)
+                    {
+                        // Ink position is evaluated in visible on-screen UV,
+                        // never the source UV cropped during device rotation.
+                        ownedCinematicBackdropMaterial.SetVector(
+                            "_VisibleUv",new Vector4(
+                                uv.x,uv.y,uv.width,uv.height));
+                        bool stacked=!DailyTreasureStageDirection.Compose(
+                            activeMilestoneId,root.rect.width,
+                            root.rect.height).SideBySide;
+                        ownedCinematicBackdropMaterial.SetFloat(
+                            "_PortraitReading",stacked?1f:0f);
+                    }
+                }
+            }
         }
         // Render the same authentic painting with a measured, category-
         // specific tint. Native 42818514510 crushed the *existing* Lyra

@@ -635,6 +635,25 @@ namespace Eldoria.DailyTreasures.Editor
                         "Eldoria/DailyNarrativeBackdrop" &&
                      !fullWorld.raycastTarget,
                     "Native ceremony lacks genuine full-world painterly backdrop");
+            if(expected.Kind!=DailyTreasureStageKind.Bastion)
+            {
+                // The actual Unity RawImage must not stretch genuine 16:9
+                // architecture to a 390px portrait reading column.
+                var uv=fullWorld.uvRect;
+                float paintedAspect=fullWorld.texture.width*uv.width/
+                    (fullWorld.texture.height*uv.height);
+                float screenAspect=fullWorld.rectTransform.rect.width/
+                    fullWorld.rectTransform.rect.height;
+                Need(Mathf.Abs(paintedAspect-screenAspect)<.02f &&
+                     uv.width>0f && uv.height>0f &&
+                     uv.x>=0f && uv.y>=0f &&
+                     uv.xMax<=1.001f && uv.yMax<=1.001f,
+                     "Full-bleed scenery stretches real source aspect");
+                Need(Mathf.Abs(fullWorld.material.GetFloat(
+                         "_PortraitReading")-
+                         (expected.SideBySide?0f:1f))<.01f,
+                     "Native cinematic ink darkens wrong reading side");
+            }
             if(expected.Kind==DailyTreasureStageKind.Vigilants)
                 Need(insignia.material && insignia.material.shader &&
                      insignia.material.shader.name==
