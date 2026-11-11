@@ -129,3 +129,14 @@ assert.ok(realLyraMeta.includes('textureType: 8') &&
 assert.match(panel,/Resources.Load<Sprite>\(\s*"DailyTreasureCeremonies\/canonical_lyra_bust"\)/);
 assert.match(panel,/lyraFallbackActive=portrait!=null/);
 console.log('PASS authentic Lyra GLB-only portrait fallback and non-obscuring category art composition');
+
+// Protect the authored four-way ceremony from reverting to the same static
+// coffer effect. These are pure source contracts; only Unity PNGs prove art.
+const direction=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs','utf8');
+assert.match(direction,/DailyTreasureStageEntrance SampleEntrance\(/);
+assert.match(panel,/PaintMilestoneStageEntrance\(elapsed\)/);
+assert.match(panel,/PaintMilestoneStageEntrance\(0f\)/);
+assert.match(panel,/milestoneStageRest\+new Vector2\(beat.ShiftX,beat.ShiftY\)/);
+assert.match(panel,/milestoneStageRestOpacity\*beat.Opacity/);
+console.log('PASS four original authored scene entrance motions; daily chest remains separate');

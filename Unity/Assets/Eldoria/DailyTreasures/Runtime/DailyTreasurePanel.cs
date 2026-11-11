@@ -103,6 +103,8 @@ namespace Eldoria.DailyTreasures
         Image milestoneInsignia;
         // Separately painted alpha layers, behind official scene/hero identity.
         Image milestoneStageArt,milestoneOrnament;
+        Vector2 milestoneStageRest;
+        float milestoneStageRestOpacity;
         Sprite dailyFrameSprite;
         string milestoneArtworkResourceKey;
         public string MilestoneArtworkResourceKey => milestoneArtworkResourceKey;
@@ -1120,6 +1122,9 @@ namespace Eldoria.DailyTreasures
             // The original approved artwork now has category-specific stage
             // composition, not merely a recolored copy of the daily calendar.
             Layout();
+            // A new milestone's FIRST visible frame must already have its
+            // own poised entrance, not jump from full size to reduced size.
+            if(showChest)PaintMilestoneStageEntrance(0f);
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult(true);
         }
@@ -1295,6 +1300,22 @@ namespace Eldoria.DailyTreasures
                 activeMilestoneId,root.rect.width,root.rect.height);
             milestoneScenery.color=MilestonePaintTint(stage,
                 .93f+.07f*frame.Glow);
+        }
+        void PaintMilestoneStageEntrance(float elapsed)
+        {
+            if(currentStage==DailyTreasureStageKind.Daily ||
+               !milestoneStageArt || !milestoneStageArt.sprite ||
+               !milestoneStageArt.gameObject.activeInHierarchy)return;
+            var beat=DailyTreasureStageDirection.SampleEntrance(
+                currentStage,elapsed);
+            // Restore from Layout()'s real anchored geometry; never add
+            // offsets to LAST frame's position or drift across rotations.
+            milestoneStageArt.rectTransform.anchoredPosition=
+                milestoneStageRest+new Vector2(beat.ShiftX,beat.ShiftY);
+            milestoneStageArt.rectTransform.localScale=
+                Vector3.one*beat.Scale;
+            milestoneStageArt.color=new Color(1f,1f,1f,
+                milestoneStageRestOpacity*beat.Opacity);
         }
         static string ConfirmedMilestoneSummary(string committedText)
         {
@@ -1555,8 +1576,12 @@ namespace Eldoria.DailyTreasures
                     }
                     Place(milestoneStageArt.rectTransform,
                         .5f,.5f,.5f,.5f,artX,artY,artW,artH);
+                    milestoneStageRest=milestoneStageArt.rectTransform.anchoredPosition;
+                    milestoneStageRestOpacity=
+                        currentStage==DailyTreasureStageKind.Bastion?.68f:.96f;
                     milestoneStageArt.color=new Color(1f,1f,1f,
-                        currentStage==DailyTreasureStageKind.Bastion?.68f:.96f);
+                        milestoneStageRestOpacity);
+                    milestoneStageArt.rectTransform.localScale=Vector3.one;
                 }
                 // The authoritative hero portrait is the focal subject of
                 // Lyra's ceremony, with actual Eldoria hall as the depth layer.
@@ -2354,6 +2379,7 @@ namespace Eldoria.DailyTreasures
             }
             glow.color=new Color(1f,.77f,.35f,frame.Glow*.86f);
             PaintMilestoneAtmosphere(elapsed,frame);
+            PaintMilestoneStageEntrance(elapsed);
             ambient.color=new Color(activeTheme.R,activeTheme.G,
                 activeTheme.B,frame.Glow*activeTheme.Strength);
             rays.SetIntensity(currentStage==DailyTreasureStageKind.Daily?

@@ -41,8 +41,64 @@ namespace Eldoria.DailyTreasures
         }
     }
 
+    // Pure deterministic stage entrance — no Unity objects, allocations,
+    // new rewards, new actors or re-rendered paintings. The four ceremonies
+    // each unveil an EXISTING original in their OWN way instead of playing
+    // a second chest animation under a different heading.
+    public readonly struct DailyTreasureStageEntrance
+    {
+        public readonly float Opacity,Scale,ShiftX,ShiftY;
+        public DailyTreasureStageEntrance(float opacity,float scale,
+            float shiftX,float shiftY)
+        {
+            Opacity=opacity;Scale=scale;ShiftX=shiftX;ShiftY=shiftY;
+        }
+    }
+
     public static class DailyTreasureStageDirection
     {
+        public static DailyTreasureStageEntrance SampleEntrance(
+            DailyTreasureStageKind kind,float elapsed)
+        {
+            if(float.IsNaN(elapsed)||float.IsInfinity(elapsed))
+                throw new ArgumentOutOfRangeException(nameof(elapsed));
+            if(kind==DailyTreasureStageKind.Daily)
+                return new DailyTreasureStageEntrance(1f,1f,0f,0f);
+            float duration=kind==DailyTreasureStageKind.Explorers?1.28f:
+                kind==DailyTreasureStageKind.Vigilants?1.05f:
+                kind==DailyTreasureStageKind.Lyra?1.16f:1.12f;
+            float progress=Math.Min(1f,Math.Max(0f,elapsed/duration));
+            // Genuine bronze/stone has weight; ease out without bouncing.
+            float eased=progress*progress*(3f-2f*progress);
+            float waiting=1f-eased;
+            switch(kind)
+            {
+                case DailyTreasureStageKind.Lyra:
+                    return new DailyTreasureStageEntrance(
+                        1f-.24f*waiting,1f-.025f*waiting,
+                        0f,-5f*waiting);
+                case DailyTreasureStageKind.Explorers:
+                    // The TRUE surveyed background remains still while the
+                    // original EMPTY parchment enters beside it.
+                    return new DailyTreasureStageEntrance(
+                        1f-.48f*waiting,1f-.095f*waiting,
+                        10f*waiting,-3f*waiting);
+                case DailyTreasureStageKind.Vigilants:
+                    // Weighty forged shield; actual 128px insignia stays bound
+                    // to its own existing overlay, never redrawn as a symbol.
+                    return new DailyTreasureStageEntrance(
+                        1f-.42f*waiting,1f-.075f*waiting,
+                        0f,-9f*waiting);
+                case DailyTreasureStageKind.Bastion:
+                    // Only the edge decoration moves; the real world camera
+                    // and finished building NEVER move or change ownership.
+                    return new DailyTreasureStageEntrance(
+                        1f-.48f*waiting,1f-.015f*waiting,
+                        -5f*waiting,0f);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+        }
         // A Bastion milestone celebrates the player's ACTUAL finished city.
         // Prior two stacked layers transmitted only ~35% of its light. Open
         // them to ~41% while preserving a dark forged frame and a separate

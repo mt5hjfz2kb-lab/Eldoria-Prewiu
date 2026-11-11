@@ -431,6 +431,40 @@ internal static class Program
                 }
             }
         }
+        // Four visual ceremonies are paced differently from DAILY loot.
+        // Pure production equations can be tested before running native Unity,
+        // but do NOT constitute artistic approval or screenshots.
+        foreach(var kind in new[]{
+            DailyTreasureStageKind.Daily,DailyTreasureStageKind.Lyra,
+            DailyTreasureStageKind.Explorers,DailyTreasureStageKind.Vigilants,
+            DailyTreasureStageKind.Bastion
+        })
+        {
+            var first=DailyTreasureStageDirection.SampleEntrance(kind,0f);
+            var middle=DailyTreasureStageDirection.SampleEntrance(kind,.5f);
+            var last=DailyTreasureStageDirection.SampleEntrance(kind,2.0f);
+            Eq(last.Opacity,1f,"ceremony reveal fully opaque");
+            Eq(last.Scale,1f,"painted ceremony returns original proportions");
+            Eq(last.ShiftX,0f,"visual-only stage finishes at authored X");
+            Eq(last.ShiftY,0f,"visual-only stage finishes at authored Y");
+            True(first.Opacity<=middle.Opacity && middle.Opacity<=last.Opacity,
+                "category reveal stays monotonic, no flashing scene");
+            True(first.Scale<=middle.Scale && middle.Scale<=last.Scale,
+                "category painting settles without plastic bounce");
+            True(first.Scale>=.90f && first.Scale<=1f,
+                "original artwork stays legible and never distorts");
+            True(Math.Abs(first.ShiftX)<=10.01f && Math.Abs(first.ShiftY)<=10.01f,
+                "entrance cannot obscure other HUD text or real city");
+            if(kind==DailyTreasureStageKind.Daily)
+                Eq(first.Scale,1f,"daily chest remains exclusively animated by chest timeline");
+            else True(first.Opacity<1f,"new milestone reveal has its own measured staging");
+        }
+        bool refusedNaNEntrance=false;
+        try{DailyTreasureStageDirection.SampleEntrance(
+            DailyTreasureStageKind.Explorers,float.NaN);}
+        catch(ArgumentOutOfRangeException){refusedNaNEntrance=true;}
+        True(refusedNaNEntrance,
+            "invalid UI time cannot corrupt original alpha painting");
         bool invalidPainterlySize=false;
         try{DailyTreasureStageDirection.Compose("milestone:hero:lyra",
             float.PositiveInfinity,840f);}
