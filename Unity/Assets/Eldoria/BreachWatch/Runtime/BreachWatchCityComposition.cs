@@ -36,13 +36,16 @@ namespace Eldoria.BreachWatch
             public bool HadBefore;
         }
         readonly List<RoofRestore> roofRestores=new List<RoofRestore>();
-        // Native HUD A/B f6cf192c: the cobalt restoration succeeded but its
-        // rendered roof ROI median was RGB (17,76,176), substantially more
-        // violet than the owner's blue (14,106,191). Increase green more
-        // than blue for a cooler blue-cyan roof on the ORIGINAL geometry.
-        // This is a hypothesis until a new exact-HEAD Unity screenshot proves it.
+        // Native Unity A/B measurements on identical 900x1600 screen:
+        // f6cf192c roof median [14,86,198] in a strict changed-pixel mask;
+        // 3171065 roof median [13,118,214], against owner's original JPEG
+        // roof median [12,100,180] in its corresponding cobalt-roof region.
+        // 3171065 OVERCORRECTED toward cyan and is rejected artistically.
+        // Predict using measured channel response: 0.15/1.28/1.84 should
+        // approach the real JPEG color. Must verify in genuine Unity PNG,
+        // not assume source code numbers prove final rendered appearance.
         static readonly Color OwnerApprovedCobaltRoof=
-            new Color(.16f,1.52f,2.18f,1f);
+            new Color(.15f,1.28f,1.84f,1f);
         static readonly string[] RoofSlotMaterials={
             "material-3","material-4","material-5"
         };
