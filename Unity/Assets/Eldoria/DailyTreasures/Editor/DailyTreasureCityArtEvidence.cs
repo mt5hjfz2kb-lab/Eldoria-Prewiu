@@ -48,6 +48,7 @@ namespace Eldoria.DailyTreasures.Editor
         {
             public string status,source,scene,camera,reason;
             public int cityRenderers,pngCount,realGatewayClaims;
+            public int bastionSnapshotsVerified;
             public bool citySceneOpened,cityCameraUsed,artApproved;
             public bool fullSceneVerified,pr173Integrated,iosVerified;
             public Shot[] shots;
@@ -116,6 +117,62 @@ namespace Eldoria.DailyTreasures.Editor
             }
         }
 
+
+        // A RenderTexture name/SceneKey proves only allocation, not actual
+        // masonry pixels. The new isolated URP SingleCameraRequest can return
+        // a valid yet BLACK texture on a broken render route. Sample the real
+        // GPU output in EDITOR ONLY; never stall the player's mobile GPU.
+        static void VerifyLiveBastionTexture(DailyTreasurePanel panel,
+            int width,int height)
+        {
+            var field=typeof(DailyTreasurePanel).GetField(
+                "capturedBastionScene",
+                System.Reflection.BindingFlags.Instance|
+                System.Reflection.BindingFlags.NonPublic);
+            var captured=field?.GetValue(panel) as RenderTexture;
+            Require(captured && captured.IsCreated() &&
+                    captured.width>=500 && captured.height>=500,
+                "Bastion ceremony has no valid authentic URP render "+
+                width+"x"+height);
+            // Resolve MSAA before reading; never attempt ReadPixels from a
+            // multisampled source and never assume the texture was painted.
+            const int samples=192;
+            var resolved=RenderTexture.GetTemporary(samples,samples,0,
+                RenderTextureFormat.ARGB32);
+            var scan=new Texture2D(samples,samples,TextureFormat.RGB24,false);
+            var previous=RenderTexture.active;
+            try
+            {
+                Graphics.Blit(captured,resolved);
+                RenderTexture.active=resolved;
+                scan.ReadPixels(new Rect(0,0,samples,samples),0,0);
+                scan.Apply(false);
+                var pixels=scan.GetPixels32();
+                var colors=new HashSet<int>();
+                int tested=0,lit=0;
+                for(int y=samples/8;y<samples*7/8;y+=3)
+                    for(int x=samples/8;x<samples*7/8;x+=3)
+                    {
+                        var pixel=pixels[y*samples+x];
+                        int brightness=pixel.r+pixel.g+pixel.b;
+                        tested++;
+                        if(brightness>45)lit++;
+                        colors.Add(((int)pixel.r>>4)*256+
+                            ((int)pixel.g>>4)*16+(pixel.b>>4));
+                    }
+                Require(tested>700 && lit>tested/6 && colors.Count>=35,
+                    "Real Bastion GPU texture is dark/flat/unrendered at "+
+                    width+"x"+height+": lit "+lit+"/"+tested+
+                    ", color bins "+colors.Count+
+                    ". No fabricated premium city photo is acceptable.");
+            }
+            finally
+            {
+                RenderTexture.active=previous;
+                Object.DestroyImmediate(scan);
+                RenderTexture.ReleaseTemporary(resolved);
+            }
+        }
 
         // A visual-only Bastion ceremony needs an actual camera view of the
         // already built canonical structure. Digitally zooming a flat PNG
@@ -329,6 +386,8 @@ namespace Eldoria.DailyTreasures.Editor
                             panel.MilestoneArtworkResourceKey==null,
                             "Real built Bastion must be the only architecture; "+
                             "a painted extra gate is forbidden");
+                        VerifyLiveBastionTexture(panel,width,height);
+                        report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         var bastionStudy=Photograph(camera,target,folder,
                             width,height,"authored-bastion-visual-only",false);
@@ -353,6 +412,8 @@ namespace Eldoria.DailyTreasures.Editor
                             "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
                             true,DailyTreasureCeremonyTier.Special,
                             "milestone:bastion:visual-only");
+                        VerifyLiveBastionTexture(panel,width,height);
+                        report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         var heroStage=Photograph(camera,target,folder,
                             width,height,"real-bastion-camera-ceremony",false);
@@ -378,6 +439,8 @@ namespace Eldoria.DailyTreasures.Editor
                     "An ART-ONLY city preview unexpectedly changed real rewards");
                 Require(pictures.Count==20,
                     "Expected 20 genuine city, Bastion context AND canonical camera-framed PNGs");
+                Require(report.bastionSnapshotsVerified==8,
+                    "All four orientations must have TWO real nonblank URP Bastion snapshots");
                 report.pngCount=pictures.Count;
                 report.status="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED";
             }
