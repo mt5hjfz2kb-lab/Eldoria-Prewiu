@@ -89,7 +89,7 @@ for(const [key,file] of Object.entries(authored)){
     'Unexpected Unity imported art: '+file);
   const meta=fs.readFileSync(importedRoot+'/'+file+'.meta','utf8');
   const guid=importedManifest.assets[key].guid;
-  assert.ok(meta.includes('guid: '+guid+'\\n'),'Wrong GUID: '+file);
+  assert.ok(meta.includes('guid: '+guid),'Wrong GUID: '+file);
   for(const required of ['textureType: 8','spriteMode: 1',
                           'alphaIsTransparency: 1','enableMipMap: 0'])
     assert.ok(meta.includes(required),'Wrong Unity importer: '+file+' '+required);
