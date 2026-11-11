@@ -39,7 +39,9 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
     importer = vtk.vtkGLTFImporter()
     importer.SetFileName(str(verified_glb.resolve()))
     importer.SetRenderWindow(window)
-    importer.Update()
+    loaded = importer.Update()
+    if loaded is False:
+        raise RuntimeError("VTK rejected the SHA-verified GLB")
     actors = scene.GetActors()
     actors.InitTraversal()
     count = 0
@@ -48,14 +50,29 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         count += 1
     if count <= 0:
         raise RuntimeError("Original Lyra source has no renderable mesh")
+    # Camera distance MUST follow the actual imported GLB geometry. The old
+    # hard-coded 1.45-unit position could produce an empty/cropped portrait
+    # while its source-GUID check still passed.
+    bounds = tuple(float(x) for x in scene.ComputeVisiblePropBounds())
+    if (len(bounds) != 6 or not all(math.isfinite(v) for v in bounds)
+            or any(bounds[k + 1] <= bounds[k] for k in (0, 2, 4))):
+        raise RuntimeError("Canonical model has invalid visible bounds")
+    center = tuple((bounds[k] + bounds[k + 1]) / 2 for k in (0, 2, 4))
+    diagonal = math.sqrt(sum((bounds[k+1] - bounds[k]) ** 2
+                             for k in (0, 2, 4)))
+    if not 0.00001 < diagonal < 100000:
+        raise RuntimeError("Canonical Lyra geometry has unreasonable scale")
     angle = math.radians(yaw)
     camera = scene.GetActiveCamera()
     camera.ParallelProjectionOff()
-    camera.SetPosition(1.45 * math.sin(angle), 0.04, 1.45 * math.cos(angle))
-    camera.SetFocalPoint(0.0, 0.0, 0.0)
+    camera.SetPosition(center[0] + 2.0 * diagonal * math.sin(angle),
+                       center[1] + 0.18 * diagonal,
+                       center[2] + 2.0 * diagonal * math.cos(angle))
+    camera.SetFocalPoint(*center)
     camera.SetViewUp(0.0, 1.0, 0.0)
     camera.SetViewAngle(39.0)
-    camera.SetClippingRange(0.05, 10.0)
+    scene.ResetCamera(bounds)
+    scene.ResetCameraClippingRange()
     scene.RemoveAllLights()
     # Original textured pixels remain the source of truth. These only light it.
     for offset, strength, rgb in [
@@ -66,9 +83,10 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         lamp = vtk.vtkLight()
         lamp.SetLightTypeToSceneLight()
         lamp.SetPositional(False)
-        lamp.SetPosition(1.45 * math.sin(angle) + offset,
-                         1.25, 1.45 * math.cos(angle) + 0.25)
-        lamp.SetFocalPoint(0.0, 0.0, 0.0)
+        lamp.SetPosition(center[0] + diagonal * (1.45 * math.sin(angle) + offset),
+                         center[1] + 1.25 * diagonal,
+                         center[2] + diagonal * (1.45 * math.cos(angle) + 0.25))
+        lamp.SetFocalPoint(*center)
         lamp.SetIntensity(strength)
         lamp.SetColor(*rgb)
         scene.AddLight(lamp)
@@ -88,6 +106,19 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         bounds = pic.getchannel("A").getbbox()
         if min_a != 0 or max_a < 250 or bounds is None:
             raise RuntimeError("Transparent authentic portrait unavailable")
+        # Fail on a technically successful but visually empty / badly framed
+        # raster, a real failure mode not caught by a mesh-count assertion.
+        alpha = pic.getchannel("A")
+        visible_ratio = sum(n for i, n in enumerate(alpha.histogram()) if i >= 160) / (width * height)
+        clear_ratio = sum(n for i, n in enumerate(alpha.histogram()) if i <= 16) / (width * height)
+        if not 0.07 < visible_ratio < 0.93 or clear_ratio < 0.04:
+            raise RuntimeError(f"Canonical portrait is empty/cropped: visible={visible_ratio:.3f} clear={clear_ratio:.3f}")
+        colors = {pic.getpixel((x, y))[:3]
+                  for y in range(0, height, max(1, height // 70))
+                  for x in range(0, width, max(1, width // 60))
+                  if alpha.getpixel((x, y)) > 160}
+        if len(colors) < 30:
+            raise RuntimeError("Canonical portrait lacks textured detail")
         size = list(pic.size)
     receipt = {
         "classification": "CANONICAL_3D_LYRA_SOURCE_ONLY_NOT_UNITY",
@@ -99,6 +130,11 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         "image_dimensions": size,
         "alpha_bounds": list(bounds),
         "actor_count": count,
+        "geometry_bounds": list(bounds),
+        "geometry_diagonal": round(diagonal, 6),
+        "visible_pixel_ratio": round(visible_ratio, 4),
+        "clear_pixel_ratio": round(clear_ratio, 4),
+        "sampled_opaque_colors": len(colors),
         "view_yaw": yaw,
         "generated_person": False,
         "art_approved": False,
