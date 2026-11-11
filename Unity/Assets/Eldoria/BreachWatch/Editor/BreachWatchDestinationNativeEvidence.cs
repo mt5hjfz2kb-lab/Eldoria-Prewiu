@@ -380,6 +380,28 @@ namespace Eldoria.BreachWatch.Editor
                 output.Add(Capture(ui,folder,name,size.Item1,size.Item2,verify));
         }
 
+        static float PaintedBandCoverage(Texture2D screenshot,float from,float to)
+        {
+            // Independent IMAGE-SPACE guard: a blue legacy screen could be
+            // disabled and a new RectTransform could fit its viewport while
+            // the rendered result still contained enormous black bands.
+            // Check actual baked pixels from the genuine Unity GPU, not
+            // layout source or an image model's subjective interpretation.
+            if(!screenshot)return 0f;
+            int good=0,total=0;
+            int w=screenshot.width,h=screenshot.height;
+            for(int y=Mathf.FloorToInt(h*from);y<Mathf.CeilToInt(h*to);
+                y+=Mathf.Max(1,h/80))
+                for(int x=Mathf.FloorToInt(w*.08f);x<Mathf.CeilToInt(w*.92f);
+                    x+=Mathf.Max(1,w/60))
+                {
+                    var c=screenshot.GetPixel(x,y);
+                    if(c.r+c.g+c.b>.12f)good++;
+                    total++;
+                }
+            return total>0?good/(float)total:0f;
+        }
+
         static Screen Capture(BreachWatchHud ui,string folder,string name,
             int width,int height,Func<bool> verify)
         {
@@ -501,6 +523,17 @@ namespace Eldoria.BreachWatch.Editor
                 File.WriteAllBytes(full,texture.EncodeToPNG());
                 Need(retentionOverflow==null,
                      retentionOverflow+" / actual native screenshot="+file);
+                if((name=="vigilants"||name=="scouts") && height>width)
+                {
+                    float top=PaintedBandCoverage(texture,.80f,.92f);
+                    float bottom=PaintedBandCoverage(texture,.08f,.20f);
+                    Need(top>.30f && bottom>.30f,
+                        "True Unity screenshot still shows giant black bars: "+
+                        name+" "+width+"x"+height+
+                        " top="+top.ToString("F2")+
+                        " bottom="+bottom.ToString("F2")+
+                        " saved="+file);
+                }
                 int buttons=ui.GetComponentsInChildren<Button>(true)
                     .Count(b=>b && b.IsActive() && b.interactable);
                 Need(buttons>0,"Real destination has no interactive controls: "+name);
