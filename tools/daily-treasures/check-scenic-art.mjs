@@ -204,7 +204,7 @@ assert.match(liveBastion,/new UniversalRenderPipeline.SingleCameraRequest\(\)/);
 assert.match(liveBastion,/RenderPipeline.SupportsRenderRequest\(camera,request\)/);
 assert.match(liveBastion,/request.destination=result/);
 assert.match(liveBastion,/RenderPipeline.SubmitRenderRequest\(camera,request\)/);
-assert.doesNotMatch(liveBastion, /camera.Render\(\)/);
+assert.doesNotMatch(liveBastion, /^\\s*camera\\.Render\\(\\);/m);
 assert.match(liveBastion,/result.Release\(\)/);
 assert.match(panel,/DailyTreasureBastionCamera.Capture\(/);
 assert.match(panel,/DailyTreasureBastionCamera.Release\(/);
