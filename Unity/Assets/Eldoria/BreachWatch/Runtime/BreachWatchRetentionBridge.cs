@@ -1,3 +1,4 @@
+using System.Reflection;
 using Eldoria.ReferenceClean;
 using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
@@ -21,10 +22,21 @@ namespace Eldoria.BreachWatch
         RectTransform root;
         Transform parent;
         int sibling;
+        // Canonical Retention.Layout reads its PRIVATE 'safe' RectTransform.
+        // After moving the real screen to an independent Canvas, the old
+        // disabled RoyalHudLayout still advertises landscape dimensions.
+        // Retarget ONLY this presentation field while the destination is
+        // visible. Never reparent the canonical safe area or mutate gameplay.
+        FieldInfo actualSafeField;
+        RectTransform canonicalSafe;
+        bool viewportRedirected;
         public bool IsShowing => retention && retention.IsOpen &&
             root && root.parent==canvas.transform;
         public bool ReplacedOldChrome => theme && theme.Installed &&
-            theme.OldRoyalChromeHidden && IsShowing;
+            theme.OldRoyalChromeHidden && IsShowing && viewportRedirected;
+        public bool OwnsActualSafeViewport => viewportRedirected &&
+            actualSafeField!=null && retention &&
+            ReferenceEquals(actualSafeField.GetValue(retention),root);
 
         public void Initialize(ValoriaIntegratedWorld source,Canvas presentation)
         {
@@ -32,6 +44,8 @@ namespace Eldoria.BreachWatch
             retention=source && source.Hud
                 ?source.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()
                 :null;
+            actualSafeField=typeof(RoyalGoldV3EarlyRetentionScreens).GetField(
+                "safe",BindingFlags.NonPublic|BindingFlags.Instance);
         }
 
         public bool TryOpen(RoyalGoldV3EarlyRetentionScreens.Destination destination)
@@ -62,8 +76,28 @@ namespace Eldoria.BreachWatch
             root.offsetMin=Vector2.zero;root.offsetMax=Vector2.zero;
             root.SetAsLastSibling();
             Canvas.ForceUpdateCanvases();
+            // The source component still uses the abandoned RoyalHUD safe
+            // rect for all portrait/landscape calculations. Temporarily
+            // substitute the NEW, correctly sized screen viewport. Without
+            // this, the native 900x1600 screenshot renders a 1600x900-wide
+            // panel cropped halfway off the phone despite green click tests.
+            if(actualSafeField==null ||
+               actualSafeField.FieldType!=typeof(RectTransform))
+            {
+                Debug.LogError("VIGILIA_RETENTION_SAFE_VIEWPORT_API_CHANGED");
+                retention.Close();Restore();return false;
+            }
+            canonicalSafe=actualSafeField.GetValue(retention) as RectTransform;
+            if(!canonicalSafe)
+            {
+                Debug.LogError("VIGILIA_RETENTION_CANONICAL_SAFE_MISSING");
+                retention.Close();Restore();return false;
+            }
+            actualSafeField.SetValue(retention,root);
+            viewportRedirected=true;
+            Canvas.ForceUpdateCanvases();
             retention.SynchronizeLayout();
-            return true;
+            return OwnsActualSafeViewport && theme.OldRoyalChromeHidden;
         }
 
         void LateUpdate()
@@ -83,6 +117,11 @@ namespace Eldoria.BreachWatch
 
         void Restore()
         {
+            if(viewportRedirected && retention && actualSafeField!=null &&
+               canonicalSafe)
+                actualSafeField.SetValue(retention,canonicalSafe);
+            canonicalSafe=null;
+            viewportRedirected=false;
             if(theme)theme.Restore();
             if(root && parent)
             {
