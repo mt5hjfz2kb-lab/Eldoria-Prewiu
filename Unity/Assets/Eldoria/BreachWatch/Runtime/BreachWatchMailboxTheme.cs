@@ -210,12 +210,13 @@ namespace Eldoria.BreachWatch
             return img;
         }
 
-        void LateUpdate()
+        public void SynchronizeVisual()
         {
             if(!styled)return;
             RefreshInk();
             RefreshEmptyComposition();
         }
+        void LateUpdate() { SynchronizeVisual(); }
 
         void RefreshEmptyComposition()
         {
