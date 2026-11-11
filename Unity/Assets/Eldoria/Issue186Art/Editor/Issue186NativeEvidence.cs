@@ -153,8 +153,12 @@ namespace Eldoria.Issue186Art.Editor
                 float gapX=portrait?7f:12f;
                 float slotWidth=Mathf.Min(portrait?220:235,
                     (availableWidth-(columns-1)*gapX)/columns);
-                float icon= Mathf.Min(slotWidth-8,
-                    Mathf.Max(32,(height-(portrait?170f:100f))/rows-30f));
+                // Actual asset-size study, not misleading 200px blowups:
+                // art direction requires legibility between 48 and 96 px.
+                float icon=Mathf.Min(96f,slotWidth-8f,
+                    Mathf.Max(48f,(height-(portrait?170f:100f))/rows-30f));
+                Need(icon>=48f && icon<=96f,
+                    "Viewport cannot display reward items at the approved 48-96px study size");
                 float rowH=icon+23f;
                 float gapY=portrait?10f:7f;
                 float gridHeight=rows*rowH+(rows-1)*gapY;
