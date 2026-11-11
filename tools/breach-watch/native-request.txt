@@ -8,3 +8,4 @@ Capture 16 real post-B1 native previews of staged Training/March/Heroes/Mail wit
 Native retry after fixing canonical integration fixture C# namespace: execute exact SHA a2c67856ee6a6e6225c5e84ffee3fb69acc7d795; 8 real HUD images plus 16 actual destination images with unchanged probe save.
 Diagnose and rerun exact native training/march/hero/mail preview after logging canonical unlock gate, modal visibility and theme replacement; head 6d20bd6c0c8a89b608fe3db718f96050dc658a3c
 Native QA diagnosis of actual Training theme: report exact visible legacy art, count replaced panels/buttons, all original 8 captures and destination acceptance. HEAD de95c9847f4a3355a9b06ec67065f08cf2f2db9e.
+Prove improved replacement approach (not micro alignment): old blue source is disabled after canonical Training/March Update+Reflow and before Canvas render. Check 16 destination views and user-approved artistic baseline. Source 56b148fb130166cc1fb2d5fac0b37ea6630f8ef3.
