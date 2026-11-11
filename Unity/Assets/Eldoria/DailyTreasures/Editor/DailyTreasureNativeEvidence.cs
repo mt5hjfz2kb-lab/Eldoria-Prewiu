@@ -468,9 +468,23 @@ namespace Eldoria.DailyTreasures.Editor
                 "DailyTreasureCeremonies/canonical_lyra_illustration");
             Need(original && hero.sprite==original,
                 "Lyra ceremony reverted to a model render instead of the original illustration");
-            Need(original.texture && !original.texture.isReadable &&
-                 original.texture.width<=1024 && original.texture.height<=1024,
-                "Original illustration import must remain bounded and non-readable");
+            var texture=original.texture;
+            Need(texture,
+                "Original Lyra illustration Sprite references no imported Texture2D");
+            var sourcePath=AssetDatabase.GetAssetPath(original);
+            var sourceImporter=AssetImporter.GetAtPath(sourcePath) as TextureImporter;
+            Debug.Log("NATIVE_CANONICAL_LYRA_IMPORT_STATE source="+sourcePath+
+                " imported="+texture.width+"x"+texture.height+
+                " readable="+texture.isReadable+
+                " importerReadable="+(sourceImporter?sourceImporter.isReadable.ToString():"missing")+
+                " defaultMax="+(sourceImporter?sourceImporter.maxTextureSize.ToString():"missing")+
+                " standaloneMax="+(sourceImporter?sourceImporter.GetPlatformTextureSettings("Standalone").maxTextureSize.ToString():"missing"));
+            Need(!texture.isReadable,
+                "Canonical original Lyra GPU texture is CPU-readable: "+
+                texture.width+"x"+texture.height);
+            Need(texture.width<=1024 && texture.height<=1024,
+                "Canonical original Lyra exceeded bounded 1024 import: "+
+                texture.width+"x"+texture.height);
             var withHero=ReadNativePixels(camera,rt,width,height);
             Color32[] withoutHero;
             try
