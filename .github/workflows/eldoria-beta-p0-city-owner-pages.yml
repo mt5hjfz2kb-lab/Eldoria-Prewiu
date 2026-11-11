@@ -1,0 +1,127 @@
+name: Eldoria P0 owner-only city-mode Pages, preserving playable beta10
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/eldoria-beta-p0-city-owner-pages.yml']
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: eldoria-pages-p0-owner-recovery
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    environment:
+      name: github-pages
+      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-city/
+    steps:
+      - name: Require exact Unity and Apple GPU success and no external testers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import base64,json,os,urllib.request
+          base='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def get(p):
+            r=urllib.request.Request(base+p,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Eldoria-P0-owner-only'})
+            with urllib.request.urlopen(r,timeout=40) as x:return json.load(x)
+          for runid,expected in ((42998206844,'63fb2095412a3066e18f3a8a31c2a03f40ef4944'),(42999782863,'e9c861acb19bd78388f597d1578af7efd807c76d'),(42785047968,'836fce54e33e0c3c5cc87ea4ca480da5eb44835a')):
+            run=get('actions/runs/'+str(runid))
+            assert run['head_sha']==expected and run['conclusion']=='success' and run['status']=='completed',runid
+          gate=json.loads(base64.b64decode(get('contents/pipeline/tester-readiness/release-request.json?ref=main')['content']))
+          assert gate['enabled'] is False and gate['status']=='BLOCKED'
+          reg=json.loads(base64.b64decode(get('contents/pipeline/active-workstreams.json?ref=main')['content']))
+          entry=[x for x in reg['active'] if x['id']=='eldoria-private-beta-i-v-20261107']
+          assert len(entry)==1 and entry[0]['owner']=='chatgpt-pr179-iphone-repair-20261111' and entry[0]['ownership_revision']>=31
+          print('OWNER_ONLY_QA_NATIVE_AND_MAC_PASS_TESTERS_BLOCKED')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42785047968
+          name: beta10-clock-copyadd-owner-only-site
+          github-token: ${{ github.token }}
+          path: site
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42999782863
+          name: beta14-city-only-candidate-site
+          github-token: ${{ github.token }}
+          path: city-candidate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42999782863
+          name: beta14-city-only-apple-gpu-not-iphone-certification
+          github-token: ${{ github.token }}
+          path: mac-proof
+      - name: Preserve beta10 files, check real Mac A/B and assemble isolated city route
+        run: |
+          python - <<'PY'
+          import json,pathlib,shutil,hashlib
+          base=pathlib.Path('site');new=pathlib.Path('city-candidate')
+          old=json.loads((base/'beta-native325/release-identity.json').read_text())
+          candidate=json.loads((new/'release-identity.json').read_text())
+          assert old['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert old['candidate_bundle_sha256']=='57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2'
+          assert (base/'index.html').is_file() and (base/'beta-iphone-clock-ab/index.html').is_file()
+          assert candidate['source_sha']=='63fb2095412a3066e18f3a8a31c2a03f40ef4944'
+          assert candidate['revision']=='native325-mobile14-city-only-owner-qa'
+          assert candidate['p0_city_only_owner_diagnostic'] is True and candidate['city_only_flag']=='eldoria_p0_city_only=1'
+          assert candidate['release_for_external_testers'] is False and candidate['physical_mobile_tested'] is False
+          for arm in ('control','candidate'):
+            result=json.loads((pathlib.Path('mac-proof/evidence')/arm/'report.json').read_text())
+            assert result['passed'] is True and not result['errors'] and result['entry']['reloaded'] is True
+            if arm=='candidate':assert result['cityOnlyDeferredWorldVerified'] is True
+          def digest(p):
+            with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+          preserved={p.relative_to(base).as_posix():digest(p) for p in base.rglob('*') if p.is_file()}
+          dest=base/'beta-iphone-p0-city'
+          assert not dest.exists() and not (base/'beta-iphone-clock-direct').exists()
+          shutil.copytree(new,dest)
+          for name,value in preserved.items():assert digest(base/name)==value,name
+          for p in new.rglob('*'):
+            if p.is_file():assert digest(dest/p.relative_to(new))==digest(p),str(p)
+          size=sum(p.stat().st_size for p in base.rglob('*') if p.is_file())
+          assert size<980000000,('GitHub Pages size guard',size)
+          proof={'scope':'OWNER_QA_NOT_TESTER_RELEASE','external_testers_enabled':False,'physical_iphone_stability_proven':False,'stable_source_sha':old['source_sha'],'candidate_source_sha':candidate['source_sha'],'owner_url':'beta-iphone-p0-city/?eldoria_p0_city_only=1&eldoria_diag=1','native_run':42998206844,'mac_run':42999782863,'preserved_files':len(preserved),'site_bytes':size}
+          (base/'beta-iphone-city-p0-proof.json').write_text(json.dumps(proof,indent=2))
+          print('STAGED_OWNER_CITY_ONLY_BETA10_PRESERVED',len(preserved),size)
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy owner-only diagnostic without replacing beta10
+        id: deploy
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
+      - name: Confirm live beta10 and city-only candidate identities
+        run: |
+          python - <<'PY'
+          import json,urllib.request,time
+          root='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          def fetch(path):
+            req=urllib.request.Request(root+path,headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-Owner-P0-Live-Verification'})
+            with urllib.request.urlopen(req,timeout=40) as r:return r.read()
+          for attempt in range(15):
+            try:
+              stable=json.loads(fetch('beta-native325/release-identity.json?attempt='+str(attempt)))
+              test=json.loads(fetch('beta-iphone-p0-city/release-identity.json?attempt='+str(attempt)))
+              proof=json.loads(fetch('beta-iphone-city-p0-proof.json?attempt='+str(attempt)))
+              assert stable['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+              assert test['source_sha']=='63fb2095412a3066e18f3a8a31c2a03f40ef4944'
+              assert test['revision']=='native325-mobile14-city-only-owner-qa'
+              assert test['p0_city_only_owner_diagnostic'] is True
+              assert proof['stable_source_sha']==stable['source_sha'] and proof['external_testers_enabled'] is False
+              assert b'<html' in fetch('beta-native325/index.html?attempt='+str(attempt)).lower()
+              assert b'<html' in fetch('beta-iphone-p0-city/index.html?attempt='+str(attempt)).lower()
+              print('LIVE_OWNER_QA_CITY_AND_ORIGINAL_BETA10_VERIFIED_NOT_TESTERS')
+              break
+            except Exception:
+              if attempt==14:raise
+              time.sleep(8)
+          PY
