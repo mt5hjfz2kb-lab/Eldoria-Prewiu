@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 69,
+      "ownership_revision": 70,
       "write_scope_released": false,
-      "phase": "REAL_MATERIAL_INDEX_GPU_DIAGNOSTIC_QUEUED",
-      "next": "Unity 6000.3.23f1 exact a30358c: inspect submesh atlas to locate real roof material index, then choose artistically justified separate isolated improvement; do not recolor guess or approve until actual Unity A/B.",
+      "phase": "REAL_ROOF_MATERIAL_SLOTS_PROVEN_IN_UNITY_ART_IMPROVEMENT_NEXT",
+      "next": "Unity real GPU run 42948401195 (SHA54c5165) proves Bastion model roof comprises submesh material slots indices 8,9,10 (material-3/4/5); artistically adapt ONLY independent UI proof presentation, original real model and shared assets intact, compare eight authentic Unity screen images with owner JPEG; no 7.5/10 yet.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T02:45:00Z",
@@ -6784,8 +6782,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "fc20bd7e61d410b9a8e45efb42898d9a0137f6e1",
-        "native_run": 42940563051,
+        "source_sha": "54c516577f5c07c30f970d727ebeecbde99fbc08",
+        "native_run": 42948401195,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13812488796,
@@ -6828,9 +6826,15 @@
         "building_title_orientation_sequence": "PASS",
         "cost_heading_orientation_sequence": "PASS",
         "prechange_masonry_fraction": 0.2721,
-        "artistic_review": "NEAR_IDENTICAL_TO_B262_REJECT_MINOR_CAMERA_GUTTER_EXPERIMENT"
+        "artistic_review": "NEAR_IDENTICAL_TO_B262_REJECT_MINOR_CAMERA_GUTTER_EXPERIMENT",
+        "material_index_artifact": 13824376000,
+        "roof_material_indices": [
+          8,
+          9,
+          10
+        ]
       },
-      "runner_release_basis": "Run 42922829351 exact HEAD b26231055ff76d2ca583bdb364127ea205e5e2e0 completed success; eight authentic SHA256-verified native captures, six live pointer clicks, old canvas hidden, save unchanged. Art still NOT APPROVED.",
+      "runner_release_basis": "Completed exact-head Unity native run 42948401195 success; 8 genuine screenshots, GPU material-index atlas (roof slots 8-10), six real navigation raycasts, save unchanged. No ART_APPROVED; lease released before any further run.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -6857,7 +6861,7 @@
         "native_artifact": 13812488796,
         "visual_ab_artifact": 13814395037
       },
-      "runner_released_at": "2026-11-11T01:47:00Z"
+      "runner_released_at": "2026-11-11T02:52:00Z"
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
