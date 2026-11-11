@@ -6,10 +6,12 @@ on:
       - '.github/workflows/vigilia-shared-destination-source.yml'
       - 'tools/breach-watch/validate_shared_destination_theme.py'
       - 'tools/breach-watch/validate_mailbox_theme.py'
+      - 'tools/breach-watch/validate_modal_bridge.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchModalBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
   workflow_dispatch:
@@ -27,6 +29,7 @@ jobs:
           sparse-checkout: |
             /tools/breach-watch/validate_shared_destination_theme.py
             /tools/breach-watch/validate_mailbox_theme.py
+            /tools/breach-watch/validate_modal_bridge.py
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
@@ -34,6 +37,8 @@ jobs:
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png.meta
           persist-credentials: false
       - name: Parse real C-sharp syntax without occupying Windows Unity runner
         uses: actions/setup-dotnet@v4
@@ -47,3 +52,4 @@ jobs:
         run: |
           python3 tools/breach-watch/validate_shared_destination_theme.py
           python3 tools/breach-watch/validate_mailbox_theme.py
+          python3 tools/breach-watch/validate_modal_bridge.py
