@@ -149,7 +149,7 @@ function processes() {
       if(s.ready&&!readyAt){readyAt=Date.now();log({type:'unity-ready'});}
       if(readyAt&&(!s.ready||!s.visible))throw Error('Unity exited after ready');
       if(process.env.QA_EARLY_ENTRY==='1'&&readyAt&&!earlyEntry&&Date.now()-readyAt>2000){
-        await page.screenshot({path:out+'/early-entry-before.png',timeout:15000});
+        if(process.env.QA_EARLY_NO_SCREENSHOT!=='1')await page.screenshot({path:out+'/early-entry-before.png',timeout:15000});
         await page.mouse.click(195,490,{delay:200});
         if(process.env.QA_RESIZE_STRESS==='1'){
           report.resizeSequence=[];
