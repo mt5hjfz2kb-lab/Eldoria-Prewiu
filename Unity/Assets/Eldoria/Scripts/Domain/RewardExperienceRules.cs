@@ -309,6 +309,31 @@ namespace Eldoria.Domain
             }
             return current;
         }
+
+        // Nested features may have their real icon in a parent navigation
+        // group. Only true path descendants propagate a signal: "hud/mail"
+        // belongs to "hud", but "hud2" does not. No permanent generic badge
+        // is created and pending actions still outrank informational ones.
+        public static AttentionLevel AtOrDescendants(AttentionCueLedger ledger,
+            string destination)
+        {
+            if(ledger?.Records == null || string.IsNullOrWhiteSpace(destination))
+                return AttentionLevel.None;
+            string childPrefix = destination + "/";
+            AttentionLevel result = AttentionLevel.None;
+            foreach(var cue in ledger.Records)
+            {
+                if(cue == null || cue.Resolved ||
+                   !(cue.Destination == destination ||
+                     (cue.Destination != null && cue.Destination.StartsWith(
+                         childPrefix,StringComparison.Ordinal))))continue;
+                if(cue.Level == AttentionLevel.ActionReady)
+                    return AttentionLevel.ActionReady;
+                if(cue.Level == AttentionLevel.New && !cue.Viewed)
+                    result = AttentionLevel.New;
+            }
+            return result;
+        }
     }
 
     [Serializable] public sealed class GuidedTutorialProgress
