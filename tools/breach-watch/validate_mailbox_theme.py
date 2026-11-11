@@ -49,6 +49,13 @@ def main():
     check("originalTargets" in S and "originalEnabled" in S and
           "originalInkColors" in S and "Restore()" in S,
           "Visual replacement must restore controls and live ink")
+    check("ActualMailboxEntry => mailUtilityButton" in HUD and
+          "mailbox.ReceivedEventIds?.Count" in HUD and
+          "mailbox.Messages?.Count" in HUD and
+          "mailboxBridge.TryOpen()" in HUD and
+          "utilityRail.gameObject.SetActive(show)" in HUD and
+          "for(int i=1;i<utilityRail.childCount;i++)" in HUD,
+          "Buzón must be an unlocked actual mail action, never a fake or stacked new control")
     check("BreachWatchMailboxBridge RealMailbox" in HUD and
           "mailboxBridge.Initialize(host,canvas)" in HUD,
           "Mailbox adapter must be available to native proof")
