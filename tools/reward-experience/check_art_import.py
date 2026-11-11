@@ -129,6 +129,9 @@ def alpha_matte_stats(blob):
 
 def audit():
     errors, warnings, output, ids = [], [], [], set()
+    # iPhone Safari beta is sensitive to memory. This is an uncompressed
+    # RGBA32 source-footprint budget, NOT a claim about GPU allocations.
+    total_encoded_bytes, total_rgba32_bytes = 0, 0
     if not MANIFEST.is_file():
         raise SystemExit("Missing art manifest: " + str(MANIFEST))
     obj = json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -160,9 +163,11 @@ def audit():
         blob = png.read_bytes()
         log["actualSha256"] = hashlib.sha256(blob).hexdigest()
         log["actualSize"] = len(blob)
+        total_encoded_bytes += len(blob)
         try:
             width, height = png_info(blob)
             log["actualWidth"], log["actualHeight"] = width, height
+            total_rgba32_bytes += width * height * 4
             if name in {"badge_new.png", "badge_claimable.png",
                         "tutorial_pointing_hand.png", "tutorial_target_halo.png"}:
                 matte = alpha_matte_stats(blob)
@@ -203,7 +208,18 @@ def audit():
     actual_pngs = {p.name for p in PNG_DIR.glob("*.png")}
     if actual_pngs != expected:
         errors.append("Unexpected/missing imported PNG files: " + repr(sorted(actual_pngs ^ expected)))
+    # A new art iteration must not quietly double the beta payload.
+    # Keep these values below the 5 MiB compressed / 6 MiB RGBA32 source
+    # guardrail. URP texture compression and real GPU/runtime allocations
+    # require separate native evidence and cannot be inferred from PNG sizes.
+    if total_encoded_bytes > 5 * 1024 * 1024:
+        errors.append("Encoded PNG sprite payload exceeds 5 MiB")
+    if total_rgba32_bytes > 6 * 1024 * 1024:
+        errors.append("Raw RGBA32 sprite estimate exceeds 6 MiB")
     report = {"status": "FAIL" if errors else "PASS", "checked": len(output),
+              "sourceEncodedPngBytes": total_encoded_bytes,
+              "sourceRgba32EstimateBytes": total_rgba32_bytes,
+              "sourceRgba32EstimateMiB": round(total_rgba32_bytes / (1024 ** 2), 3),
               "shaAndMetaActual": output, "errors": errors, "warnings": warnings,
               "note": "Source/import preflight only. Not actual Unity, mobile, or art approval."}
     REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
