@@ -412,3 +412,22 @@ assert.match(panel,/bastionCameraPending=false;\s*Layout\(\);/);
 assert.match(nativeArt,/float liveLight=\(1f-backdrop\.color\.a\)/);
 assert.match(nativeArt,/worldThrough\?\.70f:\.40f/);
 console.log('PASS true city-through fallback, with frame restored after live 3D capture');
+
+// Actual live world tier V: ValoriaIntegratedWorld chooses its real
+// PlayerCamera and BastionIVVWorldPresentation owns two REAL replacement
+// meshes. Tier >=5 actively disables BastionTwo. Never show tier-II as
+// the achievement for Bastion V, or mistake InWorld for the city camera.
+const builtLens=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
+assert.match(builtLens,/item.GetType\(\).Name!="ValoriaIntegratedWorld"/);
+assert.match(builtLens,/ReadMember\(item,"InWorld"\)/);
+assert.match(builtLens,/component.GetType\(\).Name=="BastionIVVWorldPresentation"/);
+assert.match(builtLens,/ReadMember\(progression,"WorldModel"\)/);
+assert.match(builtLens,/GetMethod\("ModelFor"/);
+assert.match(builtLens,/new\[\]\{"WorldBastionTwo","WorldBastionOne"\}/);
+assert.match(builtLens,/new\[\]\{"BastionTwo","BastionOne"\}/);
+assert.match(builtLens,/TryActiveBounds\(tierFive,camera,out bounds\)/);
+assert.match(builtLens,/camera\.cullingMask&\(1<<r\.gameObject\.layer\)/);
+assert.match(builtLens,/item.GetType\(\).Name!="ValoriaReferenceCleanGameplay"/);
+assert.doesNotMatch(builtLens,/new\[\]\{"BastionFive","BastionFour","BastionThree"/);
+console.log('PASS active real Bastion I–V world/city models, not legacy tier-II in level-V');

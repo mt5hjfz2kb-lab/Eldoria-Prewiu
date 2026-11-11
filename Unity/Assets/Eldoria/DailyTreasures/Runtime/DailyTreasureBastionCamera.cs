@@ -16,56 +16,127 @@ namespace Eldoria.DailyTreasures
     {
         public const string SceneKey="RealBastion/LiveAuthenticatedCamera";
 
-        // VERIFIED against actual main source:
-        // ValoriaIntegratedWorld owns PlayerCamera but NOT BastionOne/Two.
-        // Those GameObjects belong to ValoriaReferenceCleanGameplay; the old
-        // reflection searched the wrong component and always returned null,
-        // silently leaving the milestone on a black placeholder.
+        // The saved city supports TWO genuine views, and tier V has a
+        // different ACTIVE real model, not BastionTwo! The old resolver
+        // found the tier-I/II city owner only; at Bastion V the progressive
+        // world presentation explicitly disables those legacy renderers,
+        // leading to a black stage. Read only LIVE existing meshes.
+        // These scene hosts are in the foreign Assembly-CSharp; reflection
+        // is necessary from the isolated DailyTreasures asmdef.
+        static object ReadMember(object target,string member)
+        {
+            if(target==null)return null;
+            var type=target.GetType();
+            return type.GetProperty(member,
+                BindingFlags.Instance|BindingFlags.Public)
+                ?.GetValue(target,null) ??
+                type.GetField(member,BindingFlags.Instance|
+                    BindingFlags.Public)?.GetValue(target);
+        }
+
+        static bool TryActiveBounds(GameObject root,Camera camera,
+            out Bounds result)
+        {
+            result=default;
+            if(!root || !root.activeInHierarchy || !camera ||
+                root.scene!=camera.gameObject.scene)return false;
+            bool any=false;
+            foreach(var r in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if(!r || !r.enabled || !r.gameObject.activeInHierarchy)
+                    continue;
+                if((camera.cullingMask&(1<<r.gameObject.layer))==0)
+                    continue;
+                if(!any){result=r.bounds;any=true;}
+                else result.Encapsulate(r.bounds);
+            }
+            return any && result.size.sqrMagnitude>.01f;
+        }
+
+        static bool TryCaptureOwner(object owner,Camera camera,
+            string[] slots,out Bounds bounds)
+        {
+            bounds=default;
+            if(owner==null||!camera)return false;
+            foreach(var name in slots)
+            {
+                var building=ReadMember(owner,name) as GameObject;
+                if(TryActiveBounds(building,camera,out bounds))return true;
+            }
+            return false;
+        }
+
         static bool Resolve(out Camera source,out Bounds bounds)
         {
-            source=null;
-            bounds=default;
+            source=null;bounds=default;
             var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
+            // FIRST: true playable owner. It chooses between city and region
+            // and can display the real level-V Bastion via BastionIVVWorld-
+            // Presentation, replacing WorldBastionTwo or City.BastionTwo.
+            // Never show a tier-II building as the milestone for level V.
             foreach(var item in components)
             {
-                if(!item || item.GetType().Name!="ValoriaReferenceCleanGameplay" ||
+                if(!item || !item.isActiveAndEnabled ||
+                   item.GetType().Name!="ValoriaIntegratedWorld" ||
                    !item.gameObject.scene.isLoaded)continue;
-                var type=item.GetType();
-                var property=type.GetProperty("PlayerCamera",
-                    BindingFlags.Instance|BindingFlags.Public);
-                var realCamera=property?.GetValue(item,null) as Camera;
-                if(!realCamera ||
-                   realCamera.gameObject.scene!=item.gameObject.scene)continue;
-                // The real gameplay class activates BastionTwo for ALL
-                // built levels >=2 and BastionOne for level 1. Use only
-                // active existing renderers; never create a fake future 3D.
-                foreach(var slot in new[]{"BastionTwo","BastionOne"})
+                var ready=ReadMember(item,"Ready");
+                if(!(ready is bool) || !(bool)ready)continue;
+                var camera=ReadMember(item,"PlayerCamera") as Camera;
+                if(!camera || !camera.gameObject.scene.isLoaded)continue;
+                bool inWorld=ReadMember(item,"InWorld") is bool value && value;
+                MonoBehaviour progression=null;
+                foreach(var component in item.GetComponents<MonoBehaviour>())
+                    if(component &&
+                       component.GetType().Name=="BastionIVVWorldPresentation")
+                    {progression=component;break;}
+                if(progression && progression.isActiveAndEnabled)
                 {
-                    var field=type.GetField(slot,
-                        BindingFlags.Public|BindingFlags.Instance);
-                    var propertySlot=type.GetProperty(slot,
-                        BindingFlags.Public|BindingFlags.Instance);
-                    var building=(propertySlot!=null?
-                        propertySlot.GetValue(item,null):
-                        field?.GetValue(item)) as GameObject;
-                    if(!building || !building.activeInHierarchy)continue;
-                    bool any=false;
-                    Bounds realBounds=default;
-                    foreach(var renderer in building.GetComponentsInChildren<Renderer>(true))
+                    // WorldModel is the genuine active tier-V render. In the
+                    // city the real replacement is ModelFor("bastion").
+                    GameObject tierFive=null;
+                    if(inWorld)
+                        tierFive=ReadMember(progression,"WorldModel") as GameObject;
+                    else
                     {
-                        if(!renderer || !renderer.enabled ||
-                           !renderer.gameObject.activeInHierarchy)continue;
-                        if(!any){realBounds=renderer.bounds;any=true;}
-                        else realBounds.Encapsulate(renderer.bounds);
+                        var method=progression.GetType().GetMethod("ModelFor",
+                            BindingFlags.Instance|BindingFlags.Public);
+                        tierFive=method?.Invoke(progression,
+                            new object[]{"bastion"}) as GameObject;
                     }
-                    if(!any || realBounds.size.sqrMagnitude<=.01f)continue;
-                    source=realCamera;
-                    bounds=realBounds;
-                    return true;
+                    if(TryActiveBounds(tierFive,camera,out bounds))
+                    {source=camera;return true;}
+                }
+                if(inWorld)
+                {
+                    // Real owned world geometry, not invented fake castle.
+                    if(TryCaptureOwner(item,camera,
+                       new[]{"WorldBastionTwo","WorldBastionOne"},out bounds))
+                    {source=camera;return true;}
+                }
+                else
+                {
+                    var city=ReadMember(item,"City");
+                    if(TryCaptureOwner(city,camera,
+                       new[]{"BastionTwo","BastionOne"},out bounds))
+                    {source=camera;return true;}
                 }
             }
-            Debug.LogWarning("TRUE_BASTION_NOT_ACTIVE: cannot manufacture ceremonial architecture");
+            // SECOND: native editor's genuine standalone city scene without
+            // an initialized integrated world. Retain existing validated
+            // test coverage and original active player camera.
+            foreach(var item in components)
+            {
+                if(!item || !item.isActiveAndEnabled ||
+                   item.GetType().Name!="ValoriaReferenceCleanGameplay" ||
+                   !item.gameObject.scene.isLoaded)continue;
+                var camera=ReadMember(item,"PlayerCamera") as Camera;
+                if(TryCaptureOwner(item,camera,
+                   new[]{"BastionTwo","BastionOne"},out bounds))
+                {source=camera;return true;}
+            }
+            Debug.LogWarning(
+                "TRUE_BASTION_NOT_ACTIVE: cannot manufacture ceremonial architecture");
             return false;
         }
 
