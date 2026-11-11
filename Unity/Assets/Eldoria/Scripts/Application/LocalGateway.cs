@@ -494,30 +494,65 @@ namespace Eldoria.Application
 #if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
                 case "ClaimDailyTreasure":
                     {
-                        // Award first, then persist an informational mailbox receipt in
-                        // the SAME gateway commit. Mail read/delete NEVER awards again.
+                        // Claim daily progress, but never credit resource wallet yet.
+                        // Packages are attached to a claimable letter, then bag use
+                        // separately credits the actual amount exactly once.
                         var preview=DailyTreasureRules.Preview(state.DailyTreasures,clock.UtcTicks);
                         if(!preview.IsValid)return Fail("El tributo de hoy ya fue reclamado");
+                        var mailEventId="daily-treasure:"+DailyTreasureRules.UtcDay(clock.UtcTicks);
+                        if(state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==mailEventId))
+                            return Fail("El tributo de este día ya tiene un correo registrado");
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                        bool hasPackets=preview.Wood>0||preview.Stone>0||preview.Food>0;
+                        ResourceRewardInventory pendingInventory=null;
+                        if(hasPackets)
+                        {
+                            // Validate a COPY before changing state: failed or
+                            // replayed grants cannot advance a streak or save.
+                            pendingInventory=state.ResourceRewards.Copy();
+                            if(!ResourceRewardRules.TryIssueBundle(pendingInventory,
+                                mailEventId,"daily",preview.Wood,preview.Stone,
+                                preview.Food,mailEventId))
+                                return Fail("El tributo ya tiene paquetes registrados");
+                        }
+#else
+                        // Historical daily-only smoke without resource feature.
                         if(state.Resources.Wood>int.MaxValue-preview.Wood ||
                            state.Resources.Stone>int.MaxValue-preview.Stone ||
-                           state.Resources.Food>int.MaxValue-preview.Food ||
-                           state.SpeedupOneMinute>int.MaxValue-preview.SpeedupOneMinute ||
+                           state.Resources.Food>int.MaxValue-preview.Food)
+                            return Fail("No hay capacidad para recibir el tributo");
+#endif
+                        if(state.SpeedupOneMinute>int.MaxValue-preview.SpeedupOneMinute ||
                            state.SpeedupFiveMinutes>int.MaxValue-preview.SpeedupFiveMinutes)
                             return Fail("No hay capacidad para recibir el tributo");
                         if(!DailyTreasureRules.TryClaim(state.DailyTreasures,clock.UtcTicks,
                             out var received))return Fail("El tributo ya no está disponible");
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                        if(pendingInventory!=null)state.ResourceRewards=pendingInventory;
+#else
                         state.Resources.Wood+=received.Wood;
                         state.Resources.Stone+=received.Stone;
                         state.Resources.Food+=received.Food;
+#endif
                         state.SpeedupOneMinute+=received.SpeedupOneMinute;
                         state.SpeedupFiveMinutes+=received.SpeedupFiveMinutes;
+                        string summary=DailyTreasureRules.Receipt(received);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                        if(hasPackets)
+                            summary="Los paquetes esperan en este correo. Reclámalos y úsalos en la mochila. "+
+                                summary.Replace("Ya recibidos: ","Contenido: ");
+#endif
                         state.Mailbox.Receive(new EldoriaV41Message {
-                            EventId="daily-treasure:"+state.DailyTreasures.LastClaimUtcDay,
-                            Category="recompensas",Type="daily-treasure",
+                            EventId=mailEventId,Category="recompensas",Type="daily-treasure",
                             Title="Tributo de Valoria · día "+received.CycleDay,
-                            Subtitle=DailyTreasureRules.Receipt(received),
-                            RewardReceiptId=command.Id,OccurredAtUtcTicks=clock.UtcTicks
+                            Subtitle=summary,RewardReceiptId=command.Id,
+                            OccurredAtUtcTicks=clock.UtcTicks
                         });
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                        if(hasPackets)
+                            AttentionCueRules.Signal(state.RewardAttention,
+                                "mail-reward:"+mailEventId,"mail",AttentionLevel.ActionReady);
+#endif
                         break;
                     }
 #endif
@@ -786,7 +821,7 @@ namespace Eldoria.Application
             Commit();
 #if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
             return new CommandResult(true, command.Kind=="ClaimDailyTreasure" ?
-                "Tributo recibido" : "Acción iniciada", state.Revision);
+                "Tributo registrado; revisa el correo" : "Acción iniciada", state.Revision);
 #else
             return new CommandResult(true,"Acción iniciada",state.Revision);
 #endif

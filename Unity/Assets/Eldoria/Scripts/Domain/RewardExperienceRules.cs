@@ -13,8 +13,8 @@ namespace Eldoria.Domain
         public const string FirstMailClaimStep="resource:first-mail-claim";
     }
 
-    // Issue #186 phase one. Kept separate from PlayerState/LocalGateway until
-    // the PR #181 writer hands over those paths. All fields are Unity-serializable.
+    // Issue #186 durable receipt ledger. Shared save and gateway paths have
+    // been formally transferred from #181. All records remain serializable.
     [Serializable] public sealed class ResourceRewardPacket
     {
         public string ReceiptId = "";

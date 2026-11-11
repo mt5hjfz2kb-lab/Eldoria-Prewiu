@@ -55,6 +55,70 @@ Need(Send(seenGateway,"seen",ResourceRewardCommands.MarkBagSeen,"mission:chapter
 Need(Send(seenGateway,"skip",ResourceRewardCommands.DismissGuidance,ResourceRewardCommands.FirstUseStep).Ok,"explicit tutorial skip accepted");seenGateway=new LocalGateway(clock,seenStore);var progress=seenGateway.Snapshot().ResourceGuidance;Need(progress.Dismissed.Contains(ResourceRewardCommands.FirstUseStep)&&!progress.Completed.Contains(ResourceRewardCommands.FirstUseStep),"skip persists without fake completion");Need(!GuidedTutorialRules.ShouldPoint(progress,ResourceRewardCommands.FirstUseStep,"actual-use-button",true,true),"dismissed pointer does not return after reload");Need(!Send(seenGateway,"unknown-skip",ResourceRewardCommands.DismissGuidance,"unrelated-feature").Ok,"resource module cannot dismiss unrelated steps");
 var legacy=new PlayerState{ResourceRewardsVersion=0,ResourceRewards=null,ResourceGuidance=null,RewardAttention=null};int oldWood=legacy.Resources.Wood;var oldStore=new JsonStore(legacy);var migrated=new LocalGateway(clock,oldStore).Snapshot();Need(migrated.ResourceRewardsVersion==1&&migrated.ResourceRewards.Packets.Count==0,"legacy null ledger migrates additively");Need(migrated.ResourceGuidance.Completed.Count==0&&migrated.RewardAttention.Records.Count==0,"legacy missing guidance initializes safely");Need(migrated.Resources.Wood==oldWood,"migration does not retroactively reissue/credit rewards");
 try{new LocalGateway(clock,new JsonStore(new PlayerState{ResourceRewardsVersion=2}));Need(false,"future module save must not be overwritten");}catch(InvalidOperationException){checks++;}
+
+// Daily resources arrive as unopened MAIL packets, never as wallet
+// deposits. Check the actual gateway, JSON storage and replay boundaries.
+long utcDay=DailyTreasureRules.UtcDay(clock.UtcTicks);
+string dailyLetter="daily-treasure:"+utcDay;
+var dailyStore=new JsonStore(new PlayerState());
+var daily=new LocalGateway(clock,dailyStore);daily.Advance();
+int initialDailyWood=daily.Snapshot().Resources.Wood;
+int dailyWrites=dailyStore.Writes;
+Need(Send(daily,"day1-real-gateway","ClaimDailyTreasure","").Ok,"day one real daily claim");
+var day1=daily.Snapshot();
+Need(dailyStore.Writes==dailyWrites+1,"daily claim, mail, packets saved once");
+Need(day1.Resources.Wood==initialDailyWood,"daily claim did not bypass the bag");
+var day1Pack=day1.ResourceRewards.Packets.Single(p=>p.MailEventId==dailyLetter);
+Need(day1Pack.Kind=="wood"&&day1Pack.Amount==60&&!day1Pack.Collected&&!day1Pack.Used,"day one exact locked 60 wood");
+Need(day1.Mailbox.Messages.Any(m=>m.EventId==dailyLetter&&m.Subtitle.Contains("paquetes esperan")),"daily mail explains pending packets");
+Need(AttentionCueRules.At(day1.RewardAttention,"mail")==AttentionLevel.ActionReady,"daily claim creates actionable mail cue");
+dailyWrites=dailyStore.Writes;
+Need(!Send(daily,"day1-second-id","ClaimDailyTreasure","").Ok,"day one replay cannot credit new packets");
+Need(dailyStore.Writes==dailyWrites,"replayed daily claim does not save");
+Need(Send(daily,"day1-mail-read","MailRead",dailyLetter).Ok,"daily mail read");
+Need(!daily.Snapshot().ResourceRewards.Packets.Single().Collected,"read is not claim");
+Need(!Send(daily,"day1-mail-delete","MailDelete",dailyLetter).Ok,"pending letter cannot be deleted");
+Need(Send(daily,"day1-mail-claim",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"mail claim transfers daily packet to bag");
+Need(daily.Snapshot().Resources.Wood==initialDailyWood,"mail claim does not credit wallet");
+daily=new LocalGateway(clock,dailyStore);
+Need(Send(daily,"day1-bag-use",ResourceRewardCommands.UsePacket,day1Pack.ReceiptId).Ok,"daily bag use after reload");
+Need(daily.Snapshot().Resources.Wood==initialDailyWood+60,"daily credit only upon use");
+Need(!Send(daily,"day1-use-again",ResourceRewardCommands.UsePacket,day1Pack.ReceiptId).Ok,"daily packet cannot be reused");
+// Multi-resource rewards retain both components, zero partial replays.
+var fourth=new PlayerState{DailyTreasures=new DailyTreasureState{
+    LastClaimUtcDay=utcDay-1,CycleDay=3,ConsecutiveDays=3,TotalClaims=3}};
+var fourStore=new JsonStore(fourth);
+var four=new LocalGateway(clock,fourStore);four.Advance();
+Need(Send(four,"day4-real-gateway","ClaimDailyTreasure","").Ok,"day four accepts two resource components");
+var day4=four.Snapshot();
+Need(day4.ResourceRewards.Packets.Count(p=>p.MailEventId==dailyLetter)==2,"day four awards two locked packets");
+Need(day4.ResourceRewards.Packets.Any(p=>p.Kind=="wood"&&p.Amount==90&&!p.Collected)&&
+     day4.ResourceRewards.Packets.Any(p=>p.Kind=="stone"&&p.Amount==60&&!p.Collected),"day four actual amounts 90 and 60");
+Need(!Send(four,"day4-second-id","ClaimDailyTreasure","").Ok,"day four replay cannot grant more resources");
+Need(Send(four,"day4-mail-claim",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"multi-resource mail claim works");
+Need(four.Snapshot().ResourceRewards.Packets.All(p=>p.Collected),"one claim collects entire two-part bundle");
+// A day containing only acceleration generates no fake resource packet.
+var fifth=new PlayerState{DailyTreasures=new DailyTreasureState{
+    LastClaimUtcDay=utcDay-1,CycleDay=4,ConsecutiveDays=4,TotalClaims=4}};
+var fiveStore=new JsonStore(fifth);
+var five=new LocalGateway(clock,fiveStore);five.Advance();
+int oldSpeedups=five.Snapshot().SpeedupOneMinute;
+Need(Send(five,"day5-speedups","ClaimDailyTreasure","").Ok,"speedup-only day claims successfully");
+var day5=five.Snapshot();
+Need(day5.SpeedupOneMinute==oldSpeedups+2&&day5.ResourceRewards.Packets.Count==0,"day five retains direct speedups, zero fake packets");
+Need(day5.Mailbox.Messages.Any(m=>m.EventId==dailyLetter),"informational day five mail exists");
+Need(!Send(five,"day5-nothing",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"day five cannot fake packet claim");
+Need(Send(five,"day5-mail-delete","MailDelete",dailyLetter).Ok,"no locked resource means mail may be deleted");
+// A full wallet never forfeits an earned packet. Only USE is blocked.
+var full=new PlayerState();full.Resources.Wood=int.MaxValue;
+var fullStore=new JsonStore(full);
+var fullGateway=new LocalGateway(clock,fullStore);fullGateway.Advance();
+Need(Send(fullGateway,"day1-full-wallet","ClaimDailyTreasure","").Ok,"full wallet still receives packet");
+var fullPack=fullGateway.Snapshot().ResourceRewards.Packets.Single();
+Need(Send(fullGateway,"day1-full-mail",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"full wallet still allows collecting packet");
+Need(!Send(fullGateway,"day1-use-overflow",ResourceRewardCommands.UsePacket,fullPack.ReceiptId).Ok,"overflow rejects use only");
+Need(!fullGateway.Snapshot().ResourceRewards.Packets.Single().Used,"overflow keeps packet unspent");
+
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{
