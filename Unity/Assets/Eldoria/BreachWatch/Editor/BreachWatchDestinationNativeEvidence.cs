@@ -113,7 +113,7 @@ namespace Eldoria.BreachWatch.Editor
             {
                 SessionState.SetBool(Flag,false);
                 Debug.LogException(e);
-                var dir=Path.Combine(Application.dataPath,"../"+Folder);
+                var dir=Path.Combine(UnityEngine.Application.dataPath,"../"+Folder);
                 Directory.CreateDirectory(dir);
                 File.WriteAllText(Path.Combine(dir,"error.txt"),e.ToString());
                 EditorApplication.Exit(1);
@@ -122,7 +122,7 @@ namespace Eldoria.BreachWatch.Editor
 
         static void CaptureRealDestinations()
         {
-            var folder=Path.GetFullPath(Path.Combine(Application.dataPath,"../"+Folder));
+            var folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+Folder));
             Directory.CreateDirectory(folder);
             Need(!host.Hud.NarrativeOpen,"Narrative must finish before UI fixture");
             var gateway=host.City.Gateway;
