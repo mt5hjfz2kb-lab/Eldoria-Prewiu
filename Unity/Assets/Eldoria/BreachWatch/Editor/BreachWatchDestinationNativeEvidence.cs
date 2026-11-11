@@ -155,9 +155,27 @@ namespace Eldoria.BreachWatch.Editor
                     "Real destination previews must not show original HUD canvas");
                 var military=ui.RealDestinations;
                 Need(military!=null,"Missing staged canonical military bridge");
-                Need(military.TryOpen(RoyalGoldV3ManagementScreens.Destination.Training)
-                    && military.IsShowing && military.HasApprovedTheme,
-                    "Training displayed original blue UI or was not routed to Vigilia");
+                var available=host.CanOpen(RoyalSection.Army);
+                var manager=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+                Debug.Log("VIGILIA_TRAINING_PREVIEW_GATE available="+available+
+                    " manager="+(manager!=null)+
+                    " modal="+(host.Hud.Modal&&host.Hud.Modal.gameObject.activeSelf)+
+                    " narrative="+host.Hud.NarrativeOpen+
+                    " b="+gateway.Snapshot().BastionLevel+
+                    " barracks="+gateway.Snapshot().BarracksLevel);
+                bool opened=military.TryOpen(
+                    RoyalGoldV3ManagementScreens.Destination.Training);
+                Debug.Log("VIGILIA_TRAINING_PREVIEW_STATE opened="+opened+
+                    " canonical="+(manager!=null&&manager.IsOpen)+
+                    " showing="+military.IsShowing+
+                    " approved="+military.HasApprovedTheme);
+                Need(available && opened && military.IsShowing &&
+                     military.HasApprovedTheme,
+                    "Training staging failed: gate="+available+
+                    " opened="+opened+" canonical="+
+                    (manager!=null&&manager.IsOpen)+
+                    " showing="+military.IsShowing+
+                    " theme="+military.HasApprovedTheme);
                 CaptureMany(ui,folder,"training",shots,()=>military.IsShowing &&
                     military.HasApprovedTheme);
                 military.Close();
