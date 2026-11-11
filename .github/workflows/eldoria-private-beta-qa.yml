@@ -70,6 +70,19 @@ jobs:
           assert 'finally' in fixture and 'optIn.SetValue(null,previousFlag)' in fixture
           print('P0_LAZY_WORLD_PLAYMODE_SOURCE_REGISTERED; UNITY_NOT_EXECUTED')
           PY
+      - name: Parse reversible lazy-world native PlayMode runner without launching Unity
+        shell: pwsh
+        run: |
+          $tokens=$null;$errors=$null
+          $path='tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1'
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path),[ref]$tokens,[ref]$errors)|Out-Null
+          if($errors.Count){$errors|Format-List;throw 'PowerShell syntax errors in reversible native probe'}
+          $code=Get-Content $path -Raw
+          foreach($marker in @('runTests','LazyRegionStartupTests','lazy-world-native-result.json',
+              'Testers','if($issues.Count)','Get-Process Unity,blender','git status --porcelain')){
+            if(-not $code.Contains($marker)){throw "Native QA missing gate: $marker"}
+          }
+          Write-Host 'LAZY_REGION_NATIVE_RUNNER_SOURCE_AND_PARSER_PASS; UNITY_NOT_RUN'
       # Source-only iPhone regression experiment. Never runs Unity or deploys
       # Pages: compare immutable beta10 with an anchored clock-only variant.
       - name: Pin and verify previous playable beta10 versus isolated timer candidate
