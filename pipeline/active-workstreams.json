@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T08:04:54.688Z",
+  "updated_at": "2026-11-11T08:14:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6945,7 +6945,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-iphone-p0-physical-followup-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6981,14 +6981,16 @@
         ".github/workflows/eldoria-beta-copyadd-live-webkit.yml",
         ".github/workflows/eldoria-beta-copyadd-p0.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA13_PHYSICAL_RESTART_CONFIRMED_DIAGNOSTIC",
+      "phase": "P0_CITY_ONLY_ISOLATION_NATIVE_CANDIDATE",
       "note": "Owner beta13 physically FAILED 2026-11-11: ready 08:17:13, resize vertical, new boot 08:17:20. Not cured by collision prebake. Workstream reclaimed for bounded investigation while preserving separate beta10.",
-      "next": "Investigate physical post-ready restart with independently verified local instrumentation and source evidence, rule out repeated failed transport/collision-only mitigations. No release/tester promotion until physical stability proven.",
+      "next": "Native isolate exact frozen source: opt-in diagnostic disables Region1 world bootstrap only for WebGL URL flag, preserves default Bastion I-V native behavior, compare real Mac process footprint and game entry. Run only one heavy Unity job, auto-release Windows after native completion. Not a fix; require physical diagnostic before tester readiness.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7236,12 +7238,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_success",
-        "run_id": 42909656581,
-        "job_id": 130156795850,
-        "source_sha": "7ae5416613480ba526a839b429459d53629041e5",
-        "released_at": "2026-11-10T22:35:09.623Z",
-        "reason": "Native job completed success; downloaded artifact SHA verified; 227 checks, two 119870-query parity passes, original inputs and settings restored with no conflicts"
+        "status": "claimed",
+        "owner": "chatgpt-iphone-p0-physical-followup-20261111",
+        "ownership_revision": 28,
+        "reason": "New opt-in memory A/B to isolate startup world construction from Safari city nickname; user instructed continue PR179, Windows currently free.",
+        "planned_variant": "beta13-p0-city-only-v1"
       },
       "ownership_history": [
         {
