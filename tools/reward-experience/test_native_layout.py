@@ -33,8 +33,9 @@ def layout(width, height):
                      (width * (.93 if portrait else .91) - 3 * gap_x) / 4)
     icon = min(96.0, slot_width - 8.0,
                max(48.0, (height - (170.0 if portrait else 100.0)) / 3 - 30.0))
-    row_height = icon + 23.0
-    gap_y = 10.0 if portrait else 7.0
+    # Imported card includes its own gold border and lower value plaque.
+    row_height = icon + 8.0
+    gap_y = 14.0 if portrait else 11.0
     grid_height = 3 * row_height + 2 * gap_y
     top = height * .5 - 74.0
     bottom = -height * .5 + 25.0
@@ -146,6 +147,16 @@ def verify():
             for j,(_,_,previous) in enumerate(d["cards"][:i]):
                 assert not rect.overlaps(previous), f"Cards {i} and {j} overlap"
                 checks+=1
+        # The real source artwork has a lower 17%-high inset value plaque.
+        # Live values must be contained in it, not rendered beneath the card.
+        for _,_,rect in d["cards"]:
+            x=(rect.left+rect.right)*.5
+            y=(rect.bottom+rect.top)*.5
+            label=Box(x-d["icon"]*.35, y-d["icon"]*.47,
+                      x+d["icon"]*.35, y-d["icon"]*.30)
+            assert label.left >= rect.left and label.right <= rect.right
+            assert label.bottom >= rect.bottom and label.top <= rect.top
+            checks+=2
         # Target area must be large enough for mobile touch; probe CTA only.
         assert d["claim"].right-d["claim"].left>=92
         checks+=1
@@ -192,6 +203,18 @@ def verify():
     assert "x.blockedUiClickRejected" in editor and \
         "$shot.blockedUiClickRejected -ne $true" in workflow, \
         "Four-viewpoint native report and Windows CI must require blocker rejection"
+    checks+=1
+    assert 'float rowH=icon+8f;' in editor and \
+        'float gapY=portrait?14f:11f;' in editor, \
+        "Native capture must match plaque-aware source geometry"
+    checks+=1
+    assert 'Paint(root,"dark cartridge "' not in editor and \
+        'new Vector2(x,y-icon*.385f)' in editor and \
+        'new Vector2(plaqueWidth,icon*.17f)' in editor, \
+        "Imported cards already have a border and painted plaque: no duplicate overlays"
+    checks+=1
+    assert "quantity.preferredWidth<=plaqueWidth-2f" in editor, \
+        "Native Unity must measure text to prevent spill outside the real label plaque"
     checks+=1
     print(f"ISSUE186_LAYOUT_MODEL_PASS checks={checks}; SOURCE ONLY, UNITY PIXELS PENDING")
 
