@@ -147,8 +147,11 @@ namespace Eldoria.Issue186Art.Editor
                     titleSize,new Color(.93f,.79f,.47f,1),font);
 
                 bool portrait=width<height;
-                int columns=portrait?3:4;
-                int rows=(12+columns-1)/columns;
+                // Every row is a complete resource family: 100 / 1K / 10K /
+                // 100K. Three columns on a phone mixed the last WOOD tier
+                // with STONE, making the quantity progression misleading.
+                const int columns=4;
+                const int rows=3;
                 float availableWidth=width*(portrait?.93f:.91f);
                 float gapX=portrait?7f:12f;
                 float slotWidth=Mathf.Min(portrait?220:235,
@@ -162,8 +165,15 @@ namespace Eldoria.Issue186Art.Editor
                 float rowH=icon+23f;
                 float gapY=portrait?10f:7f;
                 float gridHeight=rows*rowH+(rows-1)*gapY;
-                float upperY=height*.5f-79f;
-                float firstCenter=upperY-rowH*.5f;
+                // Align the entire comparison grid between the fixed header
+                // and mobile safe bottom. Old top-stacking left huge empty
+                // lower space in portrait while crowding the header.
+                float contentTop=height*.5f-74f;
+                float contentBottom=-height*.5f+25f;
+                Need(gridHeight<=contentTop-contentBottom,
+                    "No vertical room for 3 coherent resource rows: "+width+"x"+height);
+                float midY=(contentTop+contentBottom)*.5f;
+                float firstCenter=midY+(gridHeight-rowH)*.5f;
                 var rects=new List<Rect>();
                 string[] kinds={"wood","stone","food"};
                 int[] sizes={100,1000,10000,100000};
@@ -199,8 +209,9 @@ namespace Eldoria.Issue186Art.Editor
                         "Value text not derived from actual denomination");
                     rendered++;
                 }
-                Need(firstCenter-(rows-1)*(rowH+gapY)-rowH*.5f>=-height*.5f+8f,
-                    "Grid clipped vertically "+width+"x"+height);
+                Need(firstCenter+rowH*.5f<=contentTop+.01f &&
+                     firstCenter-(rows-1)*(rowH+gapY)-rowH*.5f>=contentBottom-.01f,
+                    "Grid clipped near header/safe bottom "+width+"x"+height);
                 var buttonRect=Element(root,"Actual button / Claim",
                     new Vector2(width*.5f-(portrait?70:90),
                         height*.5f-30),new Vector2(portrait?92:118,34),
