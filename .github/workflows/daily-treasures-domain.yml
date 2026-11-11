@@ -485,6 +485,13 @@ jobs:
             --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
             --shot bust \
             --out tools/daily-treasures/preunity-studies/lyra-canonical-bust-SOURCE-ONLY.png
+          # A/B source-only portrait with the actual GLB facial materials.
+          # 125-degree camera avoids the distant/stiff incumbent frontal pose.
+          # Human art review is required: this is NOT an approved heroine sprite.
+          python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --shot portrait --yaw 125 \
+            --out tools/daily-treasures/preunity-studies/lyra-canonical-closeup-CANDIDATE-NOT-APPROVED.png
       - name: Preserve actual independent stage paintings for source-level art review
         if: steps.present.outputs.ready == 'yes'
         shell: bash
