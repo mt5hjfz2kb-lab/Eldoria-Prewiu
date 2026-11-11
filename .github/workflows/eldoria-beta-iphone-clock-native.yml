@@ -105,6 +105,29 @@ jobs:
             assert got==want,(path,got,want)
           print('EXACT_ENGINE_INPUTS_VERIFIED_PINNED_REQUEST city-only opt-in changed two of six engine blobs')
           PY
+      - name: Prove P0 compose against EXACT frozen beta10 host before Windows
+        shell: bash
+        run: |
+          pwsh -NoProfile -File beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/compose_city_only.ps1 -UxSource ab-source-preflight/beta10-control/ValoriaIntegratedWorld.cs.txt -OutputPath p0-city-only-composed-test.cs
+          python3 - <<'PY'
+          import pathlib,hashlib
+          baseline=pathlib.Path('ab-source-preflight/beta10-control/ValoriaIntegratedWorld.cs.txt').read_text()
+          candidate=pathlib.Path('p0-city-only-composed-test.cs').read_text()
+          assert hashlib.sha256(baseline.encode()).hexdigest()=='9866eb11239f2a0c1ecd1083eba122d0e1724c20caa825a7380afeb45dfcb426'
+          ready='  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe);'
+          old='  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady);'
+          head='  // All existing navigation/selection callers keep one readiness contract:\n  // the map must be complete before any world camera or target can be exposed.\n'
+          prop=candidate.split(head,1)[1].split(ready,1)[0]
+          jump='  public bool TrySetWorld(bool open){\n   if(!Ready)return false;\n'
+          guard=candidate.split(jump,1)[1].split('   if(open&&!CanEnterWorld',1)[0]
+          assert prop.count('public static bool P0CityOnlyProbe')==1
+          assert '#if UNITY_WEBGL && !UNITY_EDITOR' in prop and 'return false;' in prop
+          assert guard.count('if(open&&P0CityOnlyProbe)')==1
+          assert candidate.count('P0CityOnlyProbe')==3
+          assert 'RoyalGoldV41MailboxScreen' in candidate
+          assert candidate.replace(prop,'').replace(ready,old).replace(guard,'')==baseline
+          print('FROZEN_BETA10_UX_662_LINES_COMPOSITION_3_REVERSED_PASS; NOT_NATIVE_OR_IPHONE')
+          PY
       - name: Check current ownership without occupying Windows
         id: lease
         env:
@@ -290,7 +313,10 @@ jobs:
               physical_iphone_stability_certified=$false
               external_testers_enabled=$false
             }|ConvertTo-Json | Set-Content (Join-Path $evidence 'iphone-minimal-provenance.json') -Encoding UTF8
-            & (Join-Path $tools 'tools/eldoria-private-beta/native/run_warm_structural.ps1') -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools $tools -Evidence $evidence -WebOutput $web
+            # P0 flag is only for the isolated experimental build. Engine defaults
+          # and the canonical nineteen beta10 overlays are otherwise unchanged.
+          $env:ELDORIA_P0_CITY_ONLY_BUILD='1'
+          & (Join-Path $tools 'tools/eldoria-private-beta/native/run_warm_structural.ps1') -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools $tools -Evidence $evidence -WebOutput $web
             if(-not(Test-Path (Join-Path $evidence 'complete.txt'))){throw 'Exact Unity Bastion I-V native proof missing'}
             if(-not(Test-Path (Join-Path $web 'index.html'))){throw 'Fresh minimal WebGL output missing'}
             Write-Host 'P0_CITY_ONLY_OPTIN_NATIVE_I_V_AND_WEBGL_PASS_IPHONE_UNTESTED'
