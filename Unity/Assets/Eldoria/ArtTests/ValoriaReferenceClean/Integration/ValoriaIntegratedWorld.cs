@@ -40,7 +40,38 @@ namespace Eldoria.ReferenceClean {
 #endif
    }
   }
-  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe);
+  // The real world may be constructed on first entry without blocking city HUD.
+  // This is separate from the city-only diagnostic, which NEVER constructs the map.
+  public static bool P0LazyWorldProbe {
+   get {
+#if UNITY_EDITOR
+    return P0LazyWorldEditorTestOverride;
+#elif UNITY_WEBGL
+    return !P0CityOnlyProbe && UnityEngine.Application.absoluteURL.Contains("eldoria_p0_lazy_world=1");
+#else
+    return false;
+#endif
+   }
+  }
+#if UNITY_EDITOR
+  public static bool P0LazyWorldEditorTestOverride {get;set;}
+#endif
+  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe||P0LazyWorldProbe);
+  bool deferredWorldEntryQueued;
+  int deferredWorldEpoch;
+  IEnumerator EnterWorldAfterDeferredBuild(int epoch)
+  {
+   float started=Time.realtimeSinceStartup;
+   while(this&&deferredWorldEntryQueued&&epoch==deferredWorldEpoch&&worldPresentation&&
+         !worldPresentation.IsReady&&Time.realtimeSinceStartup-started<120f)
+    yield return null;
+   if(!this||!deferredWorldEntryQueued||epoch!=deferredWorldEpoch)yield break;
+   deferredWorldEntryQueued=false;
+   if(worldPresentation&&worldPresentation.IsReady){
+    Debug.Log("ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY");
+    TrySetWorld(true);
+   }else if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+  }
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
   public ValoriaReferenceCleanGameplay City=>city;
@@ -312,10 +343,24 @@ namespace Eldoria.ReferenceClean {
     Hud.Feedback.Put(L("Construye primero el aserradero. Pulsa «Ir al objetivo» para encontrar la parcela.","Build the sawmill first. Choose Go to objective to find its plot."));
     Hud.SelectBuilding("sawmill");return false;
    }
+   if(!open&&deferredWorldEntryQueued){deferredWorldEntryQueued=false;deferredWorldEpoch++;}
+   if(open&&P0LazyWorldProbe){
+    // Never expose camera or enemy targets before complete canonical installation.
+    if(!worldPresentation){if(Hud)Hud.Feedback.Put("Preparando el acceso al mundo.");return false;}
+    if(!worldPresentation.IsReady){
+     if(worldPresentation.BeginDeferredLoad()&&!deferredWorldEntryQueued){
+      deferredWorldEntryQueued=true;
+      StartCoroutine(EnterWorldAfterDeferredBuild(++deferredWorldEpoch));
+     }
+     if(Hud)Hud.Feedback.Put("Preparando Región 1. La ciudad y tu progreso permanecen disponibles.");
+     return false;
+    }
+   }
    if(InWorld==open)return true;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    unappliedDragPixels=Vector2.zero;
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
+   if(open&&P0LazyWorldProbe)Debug.Log("ELDORIA_P0_LAZY_WORLD_ENTERED");
    if(!open)city.Controls.ResetView();
    RenderSettings.fog=open?false:cityFog;
    if(open){

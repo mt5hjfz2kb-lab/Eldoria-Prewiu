@@ -20,8 +20,19 @@ namespace Eldoria.World4XCanon
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
-  bool built;
+  bool built,building;
   public bool IsReady=>built;
+  public bool IsLoading=>building&&!built;
+  // Lazy-world is an opt-in diagnostic. The normal startup path is unchanged.
+  public bool BeginDeferredLoad()
+  {
+   if(built||building)return true;
+   if(!ValoriaIntegratedWorld.P0LazyWorldProbe||!host||!host.PresentationBindingsReady)return false;
+   building=true;
+   Debug.Log("ELDORIA_P0_LAZY_WORLD_REQUESTED");
+   StartCoroutine(BuildAndInstall());
+   return true;
+  }
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
   RegionOneCreaturePopulation creaturePopulation;RegionOneLookDevelopment lookDevelopment;
@@ -67,6 +78,16 @@ namespace Eldoria.World4XCanon
                 Debug.Log("ELDORIA_P0_CITY_ONLY_WORLD_INITIALIZATION_SKIPPED");
                 yield break;
             }
+            if (ValoriaIntegratedWorld.P0LazyWorldProbe) {
+                Debug.Log("ELDORIA_P0_LAZY_WORLD_WAITING_FOR_ENTRY");
+                yield break;
+            }
+            yield return BuildAndInstall();
+        }
+
+        IEnumerator BuildAndInstall()
+        {
+            building=true;
             while (host && !host.PresentationBindingsReady) yield return null;
             if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera) yield break;
             navigation = host.WorldNavigation;
@@ -88,6 +109,7 @@ namespace Eldoria.World4XCanon
             host.WorldCamera.backgroundColor=new Color(.48f,.53f,.35f,1); // continental boundary haze, never implied surrounding sea
             ConfigureRegionCoverage();
             built = true;
+            building=false;
             UpdateLevelOfDetail(true);
             Debug.Log("REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState");
         }
