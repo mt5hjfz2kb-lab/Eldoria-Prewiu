@@ -189,3 +189,191 @@ jobs:
             pr179-hot-recovery-*/
           if-no-files-found: warn
           retention-days: 7
+
+  # Only after the ONE authorised Windows run passed actual Unity PlayMode,
+  # real Region 1, native I-V and byte-exact project restoration.
+  package-owner:
+    needs: native
+    if: needs.native.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-full-lazy-world-i-v-native-evidence
+          path: native-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-lazy-world-unity-playmode-owner-evidence
+          path: playmode-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-full-lazy-world-webgl-owner-only-not-iphone-certified
+          path: compiled-webgl
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42999782863
+          name: beta14-city-only-candidate-site
+          github-token: ${{ github.token }}
+          path: immutable-beta14-owner-shell
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Package only exact current Unity build with frozen owner-confirmed beta14 shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/eldoria-private-beta/prepare_lazy_owner_site.py \
+            --native-artifact native-evidence \
+            --playmode-artifact playmode-evidence \
+            --webgl-artifact compiled-webgl \
+            --beta14-shell-artifact immutable-beta14-owner-shell \
+            --output owner-only-site --work isolated-packaging-source \
+            --source-head "$GITHUB_SHA" --native-run "$GITHUB_RUN_ID" \
+            --revision native325-mobile15-full-lazy-owner-qa
+          node tools/delivery/test-exact-decoded-transport.mjs owner-only-site
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('owner-only-site')
+          identity=json.loads((root/'release-identity.json').read_text())
+          proof=json.loads((root/'owner-only-lazy-proof.json').read_text())
+          assert identity['source_sha']==proof['source_head']
+          assert identity['candidate_bundle_sha256']==proof['unchanged_original_bundle_sha256']
+          assert identity['texture_payload_modified'] is False
+          assert identity['release_for_external_testers'] is False
+          assert identity['physical_iphone_30min_verified'] is False
+          assert identity['physical_android_30min_verified'] is False
+          assert identity['mac_same_binary_ab_verified'] is False
+          assert identity['owner_only'] is True
+          assert proof['same_compiled_binary_for_both_mac_ab_arms'] is True
+          print('PR179_VERIFIED_FULL_WORLD_OWNER_SITE_PACKAGED_UNPUBLISHED_AND_UNTESTED_ON_PHYSICAL_PHONE')
+          PY
+      - name: Retain provenance and exact identity, not a tester invitation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-owner-packaging-proof-not-mobile-pass
+          path: |
+            owner-only-site/release-identity.json
+            owner-only-site/owner-only-lazy-proof.json
+            isolated-packaging-source/original/extraction.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Retain immutable owner-only same-bundle Mac A/B source, never deploy Pages
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-owner-only-packaged-site-not-iphone-pass
+          path: owner-only-site/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 3
+
+  # Both arms use ONE native bundle and ONE shell, differing solely in URL flag.
+  # This is real desktop Apple GPU/WebKit evidence, never a physical iPhone pass.
+  mac-same-bundle-ab:
+    needs: package-owner
+    if: needs.package-owner.result == 'success'
+    runs-on: macos-15
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-full-lazy-owner-only-packaged-site-not-iphone-pass
+          path: qa-site/same-bundle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exercise eager versus deferred authentic Unity game in desktop Apple GPU WebKit
+        shell: bash
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_REVISION: native325-mobile15-full-lazy-owner-qa
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+        run: |
+          set -uo pipefail
+          mkdir -p evidence
+          npm install --prefix "$RUNNER_TEMP/eldoria-owner-webkit" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-owner-webkit/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-owner-webkit/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >evidence/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in {1..40}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18765/same-bundle/release-identity.json; then ready=1;break;fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then echo "Owner-only local WebGL server not ready";exit 1;fi
+          failed=0
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1' \
+            QA_OUT=evidence/eager node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1' \
+            QA_LAZY_WORLD=1 QA_OUT=evidence/deferred node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          if [ "$failed" != 0 ]; then echo 'MAC_DESKTOP_WEBKIT_AB_FAILED_NOT_IPHONE';exit 1;fi
+          python3 - <<'PY'
+          import json,os,pathlib
+          evidence=pathlib.Path('evidence')
+          eager=json.loads((evidence/'eager/report.json').read_text())
+          lazy=json.loads((evidence/'deferred/report.json').read_text())
+          identity=json.loads(pathlib.Path('qa-site/same-bundle/release-identity.json').read_text())
+          assert identity['source_sha']==os.environ['GITHUB_SHA']
+          assert eager['passed'] is True and lazy['passed'] is True
+          assert eager.get('eagerWorldInstalledVerified') is True
+          assert lazy.get('lazyWorldDeferredToFirstEntryVerified') is True
+          assert lazy.get('realWorldEntryVerified') is False
+          assert eager['identity']['source_sha']==lazy['identity']['source_sha']==identity['source_sha']
+          assert eager['identity']['revision']==lazy['identity']['revision']==identity['revision']
+          assert eager['identity']['candidate_bundle_sha256']==lazy['identity']['candidate_bundle_sha256']
+          assert eager['entry']['reloaded'] is True and lazy['entry']['reloaded'] is True
+          assert not eager['errors'] and not lazy['errors']
+          def samples(report):
+            items=report.get('samples',[])+report.get('entrySamples',[])
+            rss=[p['rssKiB'] for s in items for p in s.get('processes',[])
+                 if 'WebContent' in p.get('name','') and isinstance(p.get('rssKiB'),(int,float))]
+            wasm=[s.get('wasmCapacityBytes') for s in items
+                  if isinstance(s.get('wasmCapacityBytes'),(int,float))]
+            assert len(items)>=90 and rss and wasm
+            return dict(samples=len(items),webcontent_peak_rss_kib=max(rss),
+                        wasm_peak_capacity_bytes=max(wasm),wasm_final_capacity_bytes=wasm[-1])
+          a,b=samples(eager),samples(lazy)
+          ratio=lambda a,b:round(100*(a-b)/a,2) if a else None
+          result={'scope':'real desktop macOS-15 Apple GPU Playwright WebKit, NOT physical iPhone',
+                  'source_head':identity['source_sha'],
+                  'revision':identity['revision'],'same_binary_verified':True,
+                  'only_browser_url_flag_different':True,
+                  'control':'eager original Region1 startup',
+                  'candidate':'lazy city startup; real world entrance NOT verified by Mac',
+                  'mac_eager':a,'mac_deferred':b,
+                  'rss_peak_reduction_percent':ratio(a['webcontent_peak_rss_kib'],b['webcontent_peak_rss_kib']),
+                  'wasm_peak_reduction_percent':ratio(a['wasm_peak_capacity_bytes'],b['wasm_peak_capacity_bytes']),
+                  'physical_iphone_30min_verified':False,
+                  'physical_android_30min_verified':False,
+                  'testers_authorized':False}
+          (evidence/'mac-same-bundle-ab.json').write_text(json.dumps(result,indent=2))
+          print('MAC_FULL_LAZY_SAME_BINARY_AB_REAL_WEBKIT_PASS_NOT_MOBILE',json.dumps(result))
+          PY
+      - name: Preserve real Mac WebKit process samples, logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-mac-same-bundle-ab-not-iphone-certificate
+          path: evidence/
+          if-no-files-found: warn
+          retention-days: 7
