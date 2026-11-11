@@ -142,6 +142,38 @@ namespace Eldoria.BetaMemory.Tests
                 Assert.That(world.transform.Cast<Transform>()
                     .Count(x=>x.name=="Region 1 canonical continuous geography"),Is.EqualTo(1));
                 Assert.That(Member(Member(host,"City"),"Gateway"),Is.SameAs(gateway));
+
+                // A full Region 1 is not usable by testers if its real saved
+                // population disappears after a reload. Reopen the disposable
+                // on-disk probe save, retaining this HUD, WorldRoot and clock.
+                var saved=gateway.Snapshot();
+                var clock=Member(city,"Clock");
+                Call(city,"ReloadForProbe");
+                yield return new WaitForSecondsRealtime(.45f);
+                var reloaded=(LocalGateway)Member(city,"Gateway");
+                Assert.That(reloaded,Is.Not.SameAs(gateway),
+                    "The reload must genuinely deserialize a fresh gateway");
+                Assert.That(Member(city,"Clock"),Is.SameAs(clock),
+                    "Construction deadlines cannot restart when the save is reopened");
+                var restored=reloaded.Snapshot();
+                Assert.That(restored.PlayerId,Is.EqualTo(saved.PlayerId));
+                Assert.That(restored.PlayerName,Is.EqualTo(saved.PlayerName));
+                Assert.That(restored.BastionLevel,Is.EqualTo(saved.BastionLevel));
+                Assert.That(restored.SawmillLevel,Is.EqualTo(saved.SawmillLevel));
+                Assert.That(restored.WorldResourceLocations.Count(x=>x.TargetId.StartsWith("region1:")),
+                    Is.EqualTo(48),"Region resources must survive actual on-disk reload");
+                Assert.That(restored.WorldCreatureLocations.Count,Is.EqualTo(36),
+                    "World enemies must survive actual on-disk reload");
+                Assert.That(Member(host,"Hud"),Is.SameAs(hud),
+                    "Rebinding the saved gateway must never replace the pretester HUD");
+                Assert.That(world.transform.Cast<Transform>()
+                    .Count(x=>x.name=="Region 1 canonical continuous geography"),Is.EqualTo(1),
+                    "Reopening the save cannot build another copy of the world");
+                Assert.That((bool)Call(host,"TrySetWorld",false),Is.True);
+                Assert.That((bool)Call(host,"TrySetWorld",true),Is.True,
+                    "Saved Region 1 must remain immediately accessible after reload");
+                Assert.That(Member(city,"Gateway"),Is.SameAs(reloaded));
+                Assert.That(camera.enabled,Is.True);
             }
             finally
             {
