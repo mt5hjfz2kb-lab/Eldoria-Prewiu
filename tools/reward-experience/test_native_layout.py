@@ -173,6 +173,26 @@ def verify():
         "pointer.gameObject.activeInHierarchy" in editor, \
         "UI art fixture must explicitly reject false-positive action completion"
     checks+=1
+    # A raycast list may contain a valid Button behind an intercepting
+    # Graphic. Searching all hits for that Button (instead of the first)
+    # gave a false "real tap" PASS. Demand a negative-control blocker and
+    # then a genuinely frontmost Claim Button hit on the same native canvas.
+    assert "hits.Find(" not in editor, \
+        "Searching any raycast hit can certify an occluded, untappable button"
+    checks+=1
+    assert re.search(r"blocker\.raycastTarget\s*=\s*true;[\s\S]{0,250}?raycaster\.Raycast\(pd,hits\);[\s\S]{0,180}?hits\[0\]\.gameObject==blocker\.gameObject",editor), \
+        "Native QA must first establish a topmost blocker at the real tap coordinates"
+    checks+=1
+    assert "Need(!action,\"Claim button clicked through the blocking overlay\")" in editor, \
+        "Occluded pointer dispatch must be proven not to call Claim"
+    checks+=1
+    assert re.search(r"blocker\.gameObject\.SetActive\(false\);[\s\S]{0,250}?raycaster\.Raycast\(pd,hits\);[\s\S]{0,180}?hits\[0\]\.gameObject==buttonRect\.gameObject",editor), \
+        "Native QA must re-test the frontmost real Button after removing the blocker"
+    checks+=1
+    assert "x.blockedUiClickRejected" in editor and \
+        "$shot.blockedUiClickRejected -ne $true" in workflow, \
+        "Four-viewpoint native report and Windows CI must require blocker rejection"
+    checks+=1
     print(f"ISSUE186_LAYOUT_MODEL_PASS checks={checks}; SOURCE ONLY, UNITY PIXELS PENDING")
 
 
