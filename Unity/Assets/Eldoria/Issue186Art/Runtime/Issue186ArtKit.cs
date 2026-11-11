@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Eldoria.Domain;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Eldoria.Issue186Art
@@ -112,6 +114,29 @@ namespace Eldoria.Issue186Art
             // does not make an arbitrary child a valid tutorial button.
             var selectable = actualControl.GetComponent<Selectable>();
             if (!selectable || !selectable.IsInteractable())
+            {
+                pointer.gameObject.SetActive(false);
+                if (targetHalo) targetHalo.gameObject.SetActive(false);
+                return false;
+            }
+            // A visible/interactable Selectable can still sit BEHIND a modal
+            // overlay. In that state a tutorial pointer is misleading: the
+            // action cannot be performed. Raycast through the active EventSystem
+            // (all canvases, not just this canvas) and only point when the
+            // first actual click handler is the specified control.
+            var eventSystem = EventSystem.current;
+            if (!eventSystem || !eventSystem.isActiveAndEnabled)
+            {
+                pointer.gameObject.SetActive(false);
+                if (targetHalo) targetHalo.gameObject.SetActive(false);
+                return false;
+            }
+            var pointerData = new PointerEventData(eventSystem) { position = screenPoint };
+            var pointerHits = new List<RaycastResult>();
+            eventSystem.RaycastAll(pointerData, pointerHits);
+            if (pointerHits.Count == 0 ||
+                ExecuteEvents.GetEventHandler<IPointerClickHandler>(
+                    pointerHits[0].gameObject) != actualControl.gameObject)
             {
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
