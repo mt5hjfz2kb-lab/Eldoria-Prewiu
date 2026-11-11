@@ -267,7 +267,11 @@ assert.match(native,/Original milestone text overlaps the real Skip finger targe
 assert.match(native,/RectTransformUtility\.CalculateRelativeRectTransformBounds\(/);
 assert.match(native,/VerifyGenuineSceneComposition\(/);
 assert.match(native,/panel\.ActiveMilestoneStage==expected\.Kind/);
-assert.match(native,/backdrop\.color\.a-expected\.BackdropOpacity/);
+// Native compares against the actual conditional opacity: built lens uses
+// full theatre, unavailable camera reveals original city behind the UI.
+assert.match(native,/backdrop\.color\.a-expectedBackdrop/);
+assert.match(native,/BastionWorldThroughBackdropOpacity/);
+assert.match(native,/BastionWorldThroughPlateOpacity/);
 // Countdown is never a second clock or a new claim rule: it translates the
 // same authoritative UTC-day rollover into useful mobile-facing time.
 assert.match(rules,/public static int MinutesUntilNextUtcDay\(long utcTicks\)/);
