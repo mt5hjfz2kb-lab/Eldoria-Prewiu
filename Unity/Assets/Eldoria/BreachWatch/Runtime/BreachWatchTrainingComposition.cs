@@ -56,6 +56,14 @@ namespace Eldoria.BreachWatch
             return null;
         }
 
+        static RectTransform FindDirect(RectTransform parent,string name)
+        {
+            if(!parent)return null;
+            foreach(Transform child in parent)
+                if(child.name==name)return child as RectTransform;
+            return null;
+        }
+
         public void Initialize(RoyalGoldV3ManagementScreens manager)
         {
             controller=manager;
@@ -88,7 +96,7 @@ namespace Eldoria.BreachWatch
             if(!left || !left.IsChildOf(root))
             {
                 left=Find(root,"V3 / Featured military unit");
-                hero=Find(left,"Approved source / training-archer-isolated-v1");
+                hero=FindDirect(left,"Approved source / training-archer-isolated-v1");
                 identity=Find(left,"Training / unit manuscript");
                 nameText=Find(left,"Unit or hero title");
                 detailText=Find(left,"Unit profile and composition");
