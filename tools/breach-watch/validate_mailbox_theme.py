@@ -21,6 +21,13 @@ def main():
     for name in ("BreachWatchMailboxTheme", "BreachWatchMailboxBridge"):
         check((R / (name + ".cs.meta")).exists(),
               "Mailbox code requires stable Unity meta: " + name)
+    seal=R/"BreachWatchEmptyMailSeal.cs"
+    check(seal.is_file() and seal.with_suffix(".cs.meta").is_file() and
+          "MaskableGraphic" in seal.read_text() and "OnPopulateMesh" in seal.read_text(),
+          "Native empty mail engraving must be a crisp reversible vector drawing")
+    check("BreachWatchEmptyMailSeal.Install" in S and
+          'text.name!="Mailbox / genuine empty state"' in S,
+          "Decorative wax seal must only follow the canonical empty-state label")
     check("mailbox.Open()" in B and "mailbox.SynchronizeLayout()" in B and
           "mailbox.Close()" in B,
           "Mailbox must reuse genuine page/command controller")
