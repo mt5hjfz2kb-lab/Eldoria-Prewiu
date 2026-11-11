@@ -140,3 +140,30 @@ assert.match(panel,/PaintMilestoneStageEntrance\(0f\)/);
 assert.match(panel,/milestoneStageRest\+new Vector2\(beat.ShiftX,beat.ShiftY\)/);
 assert.match(panel,/milestoneStageRestOpacity\*beat.Opacity/);
 console.log('PASS four original authored scene entrance motions; daily chest remains separate');
+
+
+// Real original shared_orna­ment was 1376x768 with 90px unpainted-safe
+// corner bands. Plain Image.Simple distorted those corner rivets 11.6%
+// horizontally at 740x370. Unity 6 CanvasScaler uses 100 reference PPU;
+// our art imports at 200 PPU so 90px SOURCE borders become 45 UI pixels
+// on both axes. Assert the same real geometry at short-phone and tablet.
+const metalSource=fs.readFileSync(importedRoot+'/shared_ornament.png');
+assert.equal(metalSource.toString('ascii',1,4),'PNG');
+const sourceW=metalSource.readUInt32BE(16),sourceH=metalSource.readUInt32BE(20);
+assert.equal(sourceW,1376);
+assert.equal(sourceH,768);
+const brassMeta=fs.readFileSync(importedRoot+'/shared_ornament.png.meta','utf8');
+assert.ok(brassMeta.includes('spritePixelsToUnits: 200'),
+  'Wrong pixels per unit: brass rivets would distort on Vigilia Canvas');
+assert.ok(brassMeta.includes('spriteBorder: {x: 90, y: 90, z: 90, w: 90}'),
+  'Imported frame must have 90px nine-slice corners on all four sides');
+assert.match(panel,/milestoneOrnament\.type=Image\.Type\.Sliced/,
+  'Runtime must actually render 9-sliced ornament, not stretched Simple');
+const uiBorder=90*100/200;
+for(const [w,h] of [[740,370],[643,355],[700,370]]){
+  assert.ok(w>2*uiBorder && h>2*uiBorder,'Sprite border overlaps itself');
+  const cornerX=uiBorder/90,cornerY=uiBorder/90;
+  assert.equal(cornerX,cornerY,'Real corner aspect must be unchanged');
+  assert.ok(Math.abs(cornerX-.5)<1e-10);
+}
+console.log('PASS original forged bronze 9-slice preserves square corners at all landscape sizes');

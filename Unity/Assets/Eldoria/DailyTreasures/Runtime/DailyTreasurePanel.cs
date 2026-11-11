@@ -382,6 +382,16 @@ namespace Eldoria.DailyTreasures
             milestoneOrnament=Plate(narrativeFrame,Color.white,false);
             milestoneOrnament.sprite=Resources.Load<Sprite>(
                 "DailyTreasureCeremonies/shared_ornament");
+            // The original 1376x768 bronze relief is framed into 740x370
+            // and 643x355 landscapes. Simple mode stretches the rivets
+            // unevenly (11.6% across axes). The genuine source has clear
+            // 90px corner bands, imported at 200 PPU: UI 9-slice retains
+            // 45px square corner geometry in Vigilia's 100px reference.
+            // Only the transparent middle may resize. No copied ornament,
+            // no overlaid second border and no new fictional art.
+            if(milestoneOrnament.sprite &&
+               milestoneOrnament.sprite.border.sqrMagnitude>0f)
+                milestoneOrnament.type=Image.Type.Sliced;
             milestoneOrnament.raycastTarget=false;
             Stretch(milestoneOrnament.rectTransform);
             narrativeFrame.SetAsFirstSibling();

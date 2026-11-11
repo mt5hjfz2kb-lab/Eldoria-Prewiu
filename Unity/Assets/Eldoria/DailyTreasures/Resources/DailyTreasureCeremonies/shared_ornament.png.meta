@@ -23,7 +23,7 @@ TextureImporter:
   textureType: 8
   spriteMode: 1
   spriteMeshType: 0
-  spritePixelsToUnits: 360
+  spritePixelsToUnits: 200
   spriteAlignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 90, y: 90, z: 90, w: 90}
