@@ -1,0 +1,51 @@
+name: Eldoria P0 city-only measured Mac memory deltas (no native build)
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-p0-city-memory-proof.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare-existing-certified-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42999782863
+          name: beta14-city-only-apple-gpu-not-iphone-certification
+          github-token: ${{ github.token }}
+          path: evidence
+      - name: Extract and compare actual Apple GPU process/heap samples
+        run: |
+          python - <<'PY'
+          import json,pathlib,math
+          arm={}
+          for key in ['control','candidate']:
+            path=pathlib.Path('evidence/evidence')/key/'report.json'
+            r=json.loads(path.read_text())
+            assert r['passed'] is True and not r['errors'] and r['entry']['reloaded'] is True,key
+            if key=='candidate':
+              assert r['cityOnlyDeferredWorldVerified'] is True,'City-only deferral absent'
+            samples=r.get('samples',[])+r.get('entrySamples',[])
+            assert len(samples)>=40,(key,len(samples))
+            rss=[p['rssKiB'] for s in samples for p in s.get('processes',[]) if 'WebContent' in p.get('name','') and isinstance(p.get('rssKiB'),(int,float))]
+            wasm=[s.get('wasmCapacityBytes') for s in samples if isinstance(s.get('wasmCapacityBytes'),(int,float))]
+            arm[key]={'samples':len(samples),'peak_webcontent_rss_kib':max(rss) if rss else None,'peak_wasm_capacity_bytes':max(wasm) if wasm else None,'final_wasm_capacity_bytes':wasm[-1] if wasm else None,'unity_ready':bool(r.get('entry')),'city_world_deferred_verified':r.get('cityOnlyDeferredWorldVerified',False)}
+            print('P0_APPLE_GPU_ARM',key,json.dumps(arm[key]))
+          a,b=arm['control'],arm['candidate']
+          compare={'scope':'macOS Apple GPU WebKit (NOT physical iPhone and NOT per-frame peak)','source_run':42999782863,'control':a,'candidate':b,'ratios':{}}
+          for field in ('peak_webcontent_rss_kib','peak_wasm_capacity_bytes'):
+            if a[field] and b[field]:
+              compare['ratios'][field+'_candidate_over_control']=round(b[field]/a[field],4)
+              compare['ratios'][field+'_saved_percent']=round(100*(a[field]-b[field])/a[field],2)
+          pathlib.Path('memory-compare.json').write_text(json.dumps(compare,indent=2))
+          print('P0_REAL_MAC_MEMORY_A_B',json.dumps(compare))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p0-city-memory-samples-only-not-iphone-proof
+          path: memory-compare.json
+          retention-days: 14
