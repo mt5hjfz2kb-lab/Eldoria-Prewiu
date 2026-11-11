@@ -7,11 +7,13 @@ proof of live PR173, saves, progression, audio or physical devices.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from PIL import Image
 
 SIZES = ((1600,900),(900,1600),(844,390),(390,844))
 MIN_VISIBLE_LUMINANCE = 0.27
+MIN_BASTION_STRUCTURE_CORRELATION = 0.68
 
 def require(ok, reason):
     if not ok:
@@ -45,6 +47,45 @@ def visibility(baseline, calendar):
     require(ratio >= MIN_VISIBLE_LUMINANCE,
         f'city almost disappears behind calendar: {w}x{h} visible={ratio:.3f} (<{MIN_VISIBLE_LUMINANCE:.2f})')
     return {'size':f'{w}x{h}','samples':bright,'visible_luminance_ratio':round(ratio,4)}
+
+def bastion_structure_retention(baseline, ceremony):
+    """Require the ACTUAL focused Bastion masonry to survive foreground painting.
+
+    Run 43005395878 had a valid camera, 20 PNGs and enough perimeter light,
+    yet its flattened arch obscured the building in the image center. A
+    fixed dark/bronze translucent veil preserves the original masonry's
+    spatial variation (high correlation); a pasted arch does not. This is
+    measured on the real Unity A/B pixels, never a fabricated mockup.
+    """
+    require(baseline.size == ceremony.size, 'Bastion camera A/B viewport differs')
+    w,h = baseline.size
+    old,new = baseline.convert('RGB').load(),ceremony.convert('RGB').load()
+    step = max(1,min(w,h)//130)
+    values = []
+    for y in range(round(h*.37),round(h*.63),step):
+        for x in range(round(w*.38),round(w*.62),step):
+            r,g,b = old[x,y]
+            a = r*.2126+g*.7152+b*.0722
+            if a < 45:
+                continue
+            r,g,b = new[x,y]
+            c = r*.2126+g*.7152+b*.0722
+            values.append((a,c))
+    n = len(values)
+    require(n >= 200,f'no usable real Bastion masonry samples: {w}x{h}, {n}')
+    mx = sum(a for a,_ in values)/n
+    my = sum(b for _,b in values)/n
+    vx = sum((a-mx)**2 for a,_ in values)
+    vy = sum((b-my)**2 for _,b in values)
+    cov = sum((a-mx)*(b-my) for a,b in values)
+    correlation = cov/math.sqrt(vx*vy) if vx>1e-9 and vy>1e-9 else 0.
+    require(correlation >= MIN_BASTION_STRUCTURE_CORRELATION,
+            f'actual Bastion architecture concealed by stage/ink: {w}x{h}, '
+            f'central native-pixel correlation={correlation:.3f} '
+            f'(<{MIN_BASTION_STRUCTURE_CORRELATION:.2f}). '
+            'Move/crop painted trim aside; do not invent a new building.')
+    return {'focused_bastion_pixels':n,
+            'focused_real_building_correlation':round(correlation,4)}
 
 def audit(folder,source_sha,output):
     root=Path(folder)
@@ -94,6 +135,8 @@ def audit(folder,source_sha,output):
         bastion_result['variant'] = 'bastion_visual_only'
         hero_result = visibility(focused_baseline, focused_bastion)
         hero_result['variant'] = 'canonical_bastion_camera_closeup'
+        hero_result.update(bastion_structure_retention(
+            focused_baseline,focused_bastion))
         results.extend((daily_result, bastion_result, hero_result))
     require(set(names)=={f'real-city-daily-{v}-{w}x{h}.png'
         for w,h in SIZES for v in ('actual-city-baseline','authored-calendar-context',
@@ -107,6 +150,7 @@ def audit(folder,source_sha,output):
         'visual_only_bastion_studies':8,
         'artApproved':False,'fullSceneVerified':False,'pr173Integrated':False,
         'minimum_relative_luminance':MIN_VISIBLE_LUMINANCE,
+        'minimum_real_bastion_correlation':MIN_BASTION_STRUCTURE_CORRELATION,
         'results':results},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print('PASS genuine-city visibility (technical minimum, NOT artistic approval):',results)
 
@@ -123,7 +167,31 @@ def selftest():
         require('almost disappears' in str(exc),'old dark synthetic rejected for wrong reason')
     else:
         raise AssertionError('old near-black screen must fail native visibility gate')
-    print('PASS city visibility selftest: deliberately dark overlay rejected')
+    # Regress the precise native failure: an arch can leave the perimeter
+    # bright while erasing the castle inside the focused camera aperture.
+    masonry=Image.new('RGB',(256,128))
+    preserved=Image.new('RGB',(256,128))
+    for yy in range(128):
+        for xx in range(256):
+            pattern=(xx*17+yy*13)%83
+            col=(85+pattern,72+pattern,68+pattern)
+            masonry.putpixel((xx,yy),col)
+            preserved.putpixel((xx,yy),tuple(round(v*.46) for v in col))
+    require(bastion_structure_retention(masonry,preserved)
+            ['focused_real_building_correlation']>.95,
+            'a transparent consistent bronze veil preserves real masonry')
+    replaced=preserved.copy()
+    for yy in range(round(128*.37),round(128*.63)):
+        for xx in range(round(256*.38),round(256*.62)):
+            replaced.putpixel((xx,yy),(31,26,21))
+    try:
+        bastion_structure_retention(masonry,replaced)
+    except ValueError as exc:
+        require('architecture concealed' in str(exc),
+                'obscured Bastion must fail because its structure is lost')
+    else:
+        raise AssertionError('painted arch must not replace real Bastion pixels')
+    print('PASS city visibility selftest: dark overlay AND fake arch rejected')
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
