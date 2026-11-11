@@ -123,7 +123,19 @@ namespace Eldoria.BreachWatch
             rect.SetParent(parent,false);
             rect.anchorMin=Vector2.zero; rect.anchorMax=Vector2.one;
             rect.offsetMin=Vector2.zero;rect.offsetMax=Vector2.zero;
-            rect.SetAsFirstSibling();
+            // Canonical mailbox Refresh() finds the FIRST Image under its
+            // category button and updates that old tab sprite. Keep the
+            // disabled original first, draw our replacement second, and
+            // leave real text above it. Otherwise each refresh would
+            // overwrite our new burgundy art with the old blue tab.
+            bool hasLegacyTabImage=false;
+            if(isAction)
+                foreach(var old in parent.GetComponentsInChildren<Image>(true))
+                    if(old && old.transform.parent==parent &&
+                       (old.name=="Approved source / tab-idle" ||
+                        old.name=="Approved source / mail-card"))
+                    {hasLegacyTabImage=true;break;}
+            rect.SetSiblingIndex(isAction && hasLegacyTabImage?1:0);
             var img=go.GetComponent<Image>();
             if(!isAction)
             {
