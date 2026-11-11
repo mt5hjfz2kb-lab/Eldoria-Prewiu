@@ -85,7 +85,21 @@ jobs:
               'PR179_HOT_UNITY_EXACT_FROZEN_BASE_AND_ALL_DIRTY_ASSETS_VERIFIED','InputAuditPath')){
             if(-not $code.Contains($marker)){throw "Native QA missing gate: $marker"}
           }
-          Write-Host 'LAZY_REGION_NATIVE_RUNNER_SOURCE_AND_PARSER_PASS; UNITY_NOT_RUN'
+          $others=@('tools/eldoria-private-beta/native/run_structural.ps1',
+                     'tools/eldoria-private-beta/native/run_warm_structural.ps1')
+          foreach($other in $others){
+            $tok=$null;$err=$null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $other),[ref]$tok,[ref]$err)|Out-Null
+            if($err.Count){$err|Format-List;throw "Full world PowerShell invalid: $other"}
+          }
+          $core=Get-Content $others[0] -Raw
+          $warm=Get-Content $others[1] -Raw
+          foreach($marker in @('FULL_REGION1_LAZY_OPTIN_OVER_EXACT_FROZEN_BETA10_UX19','Install-UxOverlay',
+             'EldoriaBetaCollisionBake.Enable','ValoriaIntegrationBuild.ValidateCurrent','ValoriaIntegratedWebBuild.Build')){
+            if(-not $core.Contains($marker)){throw "Full native I-V+WebGL missing: $marker"}
+          }
+          if(-not $warm.Contains('ELDORIA_P0_LAZY_WORLD_BUILD')){throw 'Pinned lazy host not admitted for exact restoration'}
+          Write-Host 'LAZY_REGION_AND_FULL_WORLD_WEBGL_SOURCE_PARSER_PASS; UNITY_NOT_RUN'
       - name: Verify complete frozen 19-file UX and mailbox dependencies before native test
         shell: bash
         run: |

@@ -89,7 +89,7 @@ try {
  $hashes=@()
  foreach($path in $overlays){
   $from=Join-Path $Tools $path;$to=Join-Path $Source $path
-  if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1' -and
+  if(($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1' -or $env:ELDORIA_P0_LAZY_WORLD_BUILD -eq '1') -and
      $path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
    # The frozen beta10 UX manifest expects EXACTLY the old native-PASS
    # host as input (SHA256 19e289...). The newer P0 engine file is not
@@ -122,6 +122,31 @@ try {
   $hashes+=@{path=$path;baseline=$before;candidate=(Get-FileHash $to -Algorithm SHA256).Hash}
  }
  Install-UxOverlay
+ # Exact archived UX19 first; then ONLY the reviewed PR179 additive lazy host.
+ # World is NOT disabled: WEBGL runtime URL opt-in controls deferred entry.
+ if($env:ELDORIA_P0_LAZY_WORLD_BUILD -eq '1'){
+  if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1'){throw 'Lazy world and city-only cannot share one build'}
+  $hostRel='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+  $hostTo=Join-Path $Source $hostRel
+  $ux=Join-Path $Tools 'tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt'
+  $candidateHost=Join-Path $Tools $hostRel
+  if(-not(Test-Path $candidateHost -PathType Leaf) -or
+     (Get-FileHash $hostTo -Algorithm SHA256).Hash -ne (Get-FileHash $ux -Algorithm SHA256).Hash){
+   throw 'Frozen 19-UX must be completely staged before additive lazy host'
+  }
+  $sourceText=Get-Content $candidateHost -Raw
+  foreach($name in 'P0LazyWorldProbe','EnterWorldAfterDeferredBuild','RoyalSection.Mailbox'){
+   if(-not $sourceText.Contains($name)){throw "Lazy full-world host missing: $name"}
+  }
+  Copy-Item $candidateHost $hostTo -Force
+  $lazyHash=(Get-FileHash $candidateHost -Algorithm SHA256).Hash
+  if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne $lazyHash){throw 'Lazy host copy SHA mismatch'}
+  $hostRows=@($hashes|Where-Object {$_.path -eq $hostRel})
+  if($hostRows.Count -ne 1){throw 'Multiple or absent lazy-world hosts'}
+  $hostRows[0].candidate=$lazyHash
+  $hostRows[0].mode='FULL_REGION1_LAZY_OPTIN_OVER_EXACT_FROZEN_BETA10_UX19'
+  Write-Host 'PR179_FULL_REGION1_LAZY_HOST_COMPOSED_WITH_FROZEN_UX19'
+ }
  # P0 composition uses exact 662-line archived beta10 UX from the 19-file
  # proof. Newer dev UX adds unrelated features and must NOT enter this A/B.
  if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1'){

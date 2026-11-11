@@ -15,7 +15,9 @@
     "tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1": "03f82ac88cf4da09dd4630fa3d30b425a37099c4",
     "tools/eldoria-private-beta/native/recover_isolated.ps1": "51b940c160ef107a8457b817b2ab4aacbb1eb01e",
     "tools/eldoria-private-beta/native/existing-input-audit.json": "7985cbc286c6354385aae4ddf67c3d34bba59e03",
-    "tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1": "30bdba1a639fbc8420de398e1ab301afd2165476"
+    "tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1": "30bdba1a639fbc8420de398e1ab301afd2165476",
+    "tools/eldoria-private-beta/native/run_structural.ps1": "f1fa30a0543b08dd410cc8ae8655b982c3636b2b",
+    "tools/eldoria-private-beta/native/run_warm_structural.ps1": "e2efdbb5eef34fe1eb620ae3f327865524a8381f"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
@@ -23,5 +25,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "Prove real native PlayMode against recovered original hot project: frozen 19 UX, one real lazy Region1, save reload, exact SHA restore; no WebGL or testers until full QA."
+  "next": "Only under exclusive PR179 Windows lease: genuine PlayMode including real disk reload, native population/route parity+Bastion I-V, then full WebGL owner artifact; Mac A/B and physical iPhone/Android before GO."
 }

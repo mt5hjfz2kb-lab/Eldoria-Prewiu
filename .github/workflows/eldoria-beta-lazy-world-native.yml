@@ -30,6 +30,8 @@ jobs:
             /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
             /tools/eldoria-private-beta/native/recover_isolated.ps1
             /tools/eldoria-private-beta/native/existing-input-audit.json
+            /tools/eldoria-private-beta/native/run_structural.ps1
+            /tools/eldoria-private-beta/native/run_warm_structural.ps1
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
@@ -80,18 +82,14 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.authorized == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 100
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
           path: pr179-source
           sparse-checkout-cone-mode: false
           sparse-checkout: |
-            /tools/eldoria-private-beta/native/lazy-world-request.json
-            /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
-            /tools/eldoria-private-beta/native/ux/
-            /tools/eldoria-private-beta/native/recover_isolated.ps1
-            /tools/eldoria-private-beta/native/existing-input-audit.json
+            /tools/eldoria-private-beta/native/
             /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
@@ -140,6 +138,47 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           & 'pr179-source/tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1' -Source $env:BETA_SOURCE -OverlaySource 'pr179-source' -Evidence "pr179-lazy-native-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -ExpectedHead $env:GITHUB_SHA -InputAuditPath $env:BETA_INPUT_AUDIT
+      - name: Real full-world terrain/collisions, Bastion I-V and isolated WebGL compilation
+        shell: powershell
+        env:
+          ELDORIA_P0_LAZY_WORLD_BUILD: '1'
+          ELDORIA_P0_CITY_ONLY_BUILD: '0'
+        run: |
+          $ErrorActionPreference='Stop'
+          $ev="pr179-lazy-full-native-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $web="pr179-lazy-full-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & 'pr179-source/tools/eldoria-private-beta/native/run_warm_structural.ps1' -Source $env:BETA_SOURCE -Tools 'pr179-source' -Evidence $ev -WebOutput $web -InputAuditPath $env:BETA_INPUT_AUDIT
+          if(-not(Test-Path (Join-Path $ev 'complete.txt') -PathType Leaf)){throw 'Native full world journey incomplete'}
+          $restored=Get-Content (Join-Path $ev 'warm-cache-restoration.json') -Raw|ConvertFrom-Json
+          if(-not $restored.restored){throw 'Unity hot project was not restored after full build'}
+          $sources=Get-Content (Join-Path $ev 'source-overlay.json') -Raw|ConvertFrom-Json
+          $hosts=@($sources.files|Where-Object {$_.mode -eq 'FULL_REGION1_LAZY_OPTIN_OVER_EXACT_FROZEN_BETA10_UX19'})
+          if($hosts.Count -ne 1){throw 'Native world build did not use the reviewed lazy host'}
+          $journey=Get-Content (Join-Path $ev 'native-journey/integration-result.json') -Raw|ConvertFrom-Json
+          if($journey.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Bastion I-V journey certificate missing'}
+          $compiled=Get-Content (Join-Path $ev 'web-build.json') -Raw|ConvertFrom-Json
+          if($compiled.status -ne 'WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED'){
+            throw 'Real full world WebGL build certificate missing'
+          }
+          if(-not(Test-Path (Join-Path $web 'index.html') -PathType Leaf)){throw 'Isolated WebGL site absent'}
+          Write-Host 'PR179_REAL_LAZY_WORLD_NATIVE_I_V_AND_WEBGL_COMPILED_RESTORED; NOT_IPHONE_PASS'
+      - name: Preserve exact native world, Bastion I-V and WebGL evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-world-i-v-native-evidence
+          path: pr179-lazy-full-native-*/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Preserve only isolated WebGL owner candidate for Mac A/B
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-world-webgl-owner-only-not-iphone-certified
+          path: pr179-lazy-full-webgl-*/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 2
       - name: Preserve native PlayMode logs and verified restoration, never distribute a build
         if: always()
         uses: actions/upload-artifact@v4

@@ -97,6 +97,12 @@ try {
    $candidate=(Get-FileHash (Get-UxCandidate $record.path) -Algorithm SHA256).Hash
    $uxBase=@($uxFiles|Where-Object {$_.path -eq $record.path}|ForEach-Object {$_.baseline_sha256})
    $allowedHashes=@($candidate,$record.sha256)+@($uxBase)
+   if($env:ELDORIA_P0_LAZY_WORLD_BUILD -eq '1' -and
+      $record.path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
+     $lazyCandidate=Join-Path $Tools $record.path
+     if(-not(Test-Path $lazyCandidate -PathType Leaf)){throw 'Pinned full-world lazy host absent'}
+     $allowedHashes+=@((Get-FileHash $lazyCandidate -Algorithm SHA256).Hash)
+   }
    if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1' -and
       $record.path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
      # The exact composed file is emitted inside this run's evidence only
