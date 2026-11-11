@@ -27,6 +27,7 @@ namespace Eldoria.BreachWatch
             public Image.Type Type;
             public float PixelMultiplier;
             public bool Enabled;
+            public bool FillCenter;
         }
 
         readonly Dictionary<Image,ImageState> oldImages=new Dictionary<Image,ImageState>();
@@ -77,7 +78,7 @@ namespace Eldoria.BreachWatch
                 oldImages[paper]=new ImageState{
                     Sprite=paper.sprite,Color=paper.color,Type=paper.type,
                     PixelMultiplier=paper.pixelsPerUnitMultiplier,
-                    Enabled=paper.enabled};
+                    Enabled=paper.enabled,FillCenter=paper.fillCenter};
                 paper.sprite=stoneSprite;
                 paper.type=Image.Type.Sliced;
                 paper.color=Color.white;
@@ -104,7 +105,7 @@ namespace Eldoria.BreachWatch
             return Installed;
         }
 
-        public bool NoOldParchementVisible
+        public bool NoOldParchmentVisible
         {
             get
             {
@@ -132,6 +133,7 @@ namespace Eldoria.BreachWatch
                 image.type=pair.Value.Type;
                 image.pixelsPerUnitMultiplier=pair.Value.PixelMultiplier;
                 image.enabled=pair.Value.Enabled;
+                image.fillCenter=pair.Value.FillCenter;
             }
             oldImages.Clear();
             foreach(var pair in oldGraphics)
