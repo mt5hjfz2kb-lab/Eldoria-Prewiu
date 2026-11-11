@@ -96,7 +96,10 @@ namespace Eldoria.BreachWatch
             root.SetAsLastSibling();
             Canvas.ForceUpdateCanvases();
             management.SynchronizeLayout();
-            return true;
+            // Source controller recalculates and may re-enable its original
+            // blue paintings. Turn those OFF again after the real reflow.
+            theme.ReassertSinglePainting();
+            return theme.NoLegacyBluePaintingVisible;
         }
 
         void LateUpdate()
@@ -116,6 +119,7 @@ namespace Eldoria.BreachWatch
                 Restore();
                 return;
             }
+            if(theme)theme.ReassertSinglePainting();
             // The canonical destination's own Update handles Back/Escape,
             // live counts, sliders and action delivery. No parallel UI logic.
         }
