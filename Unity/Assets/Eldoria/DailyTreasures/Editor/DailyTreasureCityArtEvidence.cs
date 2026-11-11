@@ -324,8 +324,11 @@ namespace Eldoria.DailyTreasures.Editor
                                 DailyTreasureStageKind.Bastion &&
                             panel.HasMilestoneScenery &&
                             panel.MilestoneSceneryKey==
-                                DailyTreasureBastionCamera.SceneKey,
-                            "Cinematic Bastion must show the actual live camera close-up, not a fake building");
+                                DailyTreasureBastionCamera.SceneKey &&
+                            !panel.HasDistinctMilestoneArt &&
+                            panel.MilestoneArtworkResourceKey==null,
+                            "Real built Bastion must be the only architecture; "+
+                            "a painted extra gate is forbidden");
                         Canvas.ForceUpdateCanvases();
                         var bastionStudy=Photograph(camera,target,folder,
                             width,height,"authored-bastion-visual-only",false);
