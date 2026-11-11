@@ -98,6 +98,19 @@ def crop_authentic_insignia(badge):
                       min(icon.width,x1+padding),min(icon.height,y1+padding)))
 
 
+def resample_authentic_insignia(badge,side):
+    """Scale ACTUAL imported heraldry by the visible alpha silhouette.
+    Pillow.thumbnail() never enlarges; the authentic 128px badge otherwise
+    stays tiny in large ceremonial shield art. No invented faction symbol.
+    """
+    icon=crop_authentic_insignia(badge)
+    longest=max(icon.size)
+    require(longest>0 and side>0,"Invalid official emblem dimensions")
+    k=side/longest
+    size=(max(1,round(icon.width*k)),max(1,round(icon.height*k)))
+    return icon.resize(size,Image.Resampling.LANCZOS)
+
+
 def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
     w,h=shape
     require(game_capture.width>=200 and game_capture.height>=200,
@@ -150,17 +163,16 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
                        (0,sill_y))
             dst.alpha_composite(sill,(x,y))
         if badge is not None and event=="vigilants":
-            icon=crop_authentic_insignia(badge)
-            side=max(26,min(round(focal.width*.48),round(focal.height*.43),240))
-            icon.thumbnail((side,side),Image.Resampling.LANCZOS)
+            side=max(36,min(round(focal.width*.54),
+                            round(focal.height*.55),380))
+            icon=resample_authentic_insignia(badge,side)
             dst.alpha_composite(icon,
                  (x+(focal.width-icon.width)//2,
                   y+round(focal.height*.47)-icon.height//2))
         if badge is not None and event=="explorers":
             # Authentic Scouts sigil only; no fabricated cartography.
-            icon=crop_authentic_insignia(badge)
-            side=max(24,min(round(focal.width*.25),150))
-            icon.thumbnail((side,side),Image.Resampling.LANCZOS)
+            side=max(24,min(round(focal.width*.25),170))
+            icon=resample_authentic_insignia(badge,side)
             dst.alpha_composite(icon,
                  (x+round(focal.width*.64),y+round(focal.height*.31)))
     if ornament is not None:
@@ -312,6 +324,10 @@ def selftest():
     real=crop_authentic_insignia(inset)
     require(max(real.size)<64 and min(real.size)>=44,
             "Transparent icon padding was not removed")
+    enlarged=resample_authentic_insignia(inset,240)
+    require(max(enlarged.size)==240 and
+            enlarged.getchannel("A").getbbox() is not None,
+            "Actual heraldry stayed tiny inside the large ceremony shield")
     print("PASS: four sizes, actor-depth, canonical insignia alpha bounds; pre-Unity only")
 
 if __name__=="__main__":
