@@ -37,10 +37,21 @@ namespace Eldoria.Issue186Art.Editor
                 return BitConverter.ToString(sha.ComputeHash(stream))
                     .Replace("-", "").ToLowerInvariant();
         }
+        // AssetDatabase requires "Assets/..." paths; System.IO requires
+        // absolute filesystem paths. Batch Editor launch directories vary
+        // between runner services and local Unity Hub. Never assume cwd
+        // equals -projectPath or report a false missing-art error.
+        static string OnDisk(string assetPath)
+        {
+            Need(assetPath.StartsWith("Assets/", StringComparison.Ordinal),
+                "Refuse path outside Unity Assets");
+            return Path.GetFullPath(Path.Combine(
+                Application.dataPath, assetPath.Substring("Assets/".Length)));
+        }
         public static void VerifyImportedArt()
         {
-            Need(File.Exists(Manifest), "Missing original source manifest");
-            var data = JsonUtility.FromJson<Package>(File.ReadAllText(Manifest));
+            Need(File.Exists(OnDisk(Manifest)), "Missing original source manifest");
+            var data = JsonUtility.FromJson<Package>(File.ReadAllText(OnDisk(Manifest)));
             Need(data != null && data.artifacts != null &&
                  data.artifacts.Length == 16 && data.assetCount == 16,
                  "Expected 12 packages, 2 badges, hand and halo");
@@ -54,8 +65,8 @@ namespace Eldoria.Issue186Art.Editor
                      !a.file.Contains("/") && !a.file.Contains("\\") &&
                      names.Add(a.file), "Filename duplicate or invalid");
                 string path = Dir + a.file;
-                Need(File.Exists(path), "Missing art: "+path);
-                Need(Hash(path) == a.sha256, "Unexpected original PNG bytes: "+a.file);
+                Need(File.Exists(OnDisk(path)), "Missing art: "+path);
+                Need(Hash(OnDisk(path)) == a.sha256, "Unexpected original PNG bytes: "+a.file);
                 var sprite = Resources.Load<Sprite>(a.key);
                 Need(sprite, "Missing imported Unity Sprite: "+a.key);
                 Need(Mathf.Abs(sprite.rect.width - a.width) < .01f &&
