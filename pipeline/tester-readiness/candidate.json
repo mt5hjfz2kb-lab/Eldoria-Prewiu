@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "OWNER_REPORTED_FAIL beta13 physical iPhone Safari 2026-11-11 08:17 CET: reached startup-ready 08:17:13, resize vertical, then new boot back_forward 08:17:20. Prior native/Mac WebKit PASS cannot certify iPhone. Root cause still unconfirmed; external testers disabled.",
+  "reason": "Beta13 physical owner iPhone FAIL; beta14 city-only isolated owner diagnostic published and Mac WebKit PASS, but no physical iPhone stability and no full-world gameplay in city-only opt-in. External tester invitations must remain disabled.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -75,14 +75,17 @@
     "isolated_clock_candidate_published": true,
     "isolated_clock_candidate_publish_run": 42781430767,
     "owner_candidate_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1",
-    "owner_candidate_revision": "native325-mobile13-prebaked-collision-qa"
+    "owner_candidate_revision": "native325-mobile13-prebaked-collision-qa",
+    "owner_diagnostic_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-city/?eldoria_p0_city_only=1&eldoria_diag=1",
+    "owner_diagnostic_run": 43006294342,
+    "owner_diagnostic_webkit_run": 42999782863
   },
   "final_review": null,
   "blockers": [
     "Physical Android Chrome 30-minute session and persistence test",
     "Third-party asset license rights and redistribution review #171",
     "Confirm genuine Bastion I–V gameplay telemetry with opt-in opt-out on exact hosted candidate, Supabase QA receipt and privacy gate before enable",
-    "P0 #96: previous candidates physically restart; new beta13 compiled collision/initialization candidate requires real iPhone 30-minute stability, persistence and anchored-clock verification. No physical PASS yet."
+    "P0 #96 beta13 physically failed; beta14 city-only owner QA passed Mac and is isolated/published. Await physical iPhone city-only A/B to isolate full Region 1 initialization; full-game 30min stable and tester gates still required."
   ],
   "telemetry": {
     "project": "Eldoria Playtest Feedback",
@@ -613,5 +616,32 @@
     "root_cause": "UNKNOWN",
     "evidence_pr_comment": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/179#issuecomment-6789662897",
     "evidence_issue_comment": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/96#issuecomment-6789663462"
+  },
+  "iphone_city_only_p0": {
+    "variant": "native325-mobile14-city-only-owner-qa",
+    "canonical_pr": 179,
+    "source_sha": "63fb2095412a3066e18f3a8a31c2a03f40ef4944",
+    "native_run": 42998206844,
+    "native_result": "SUCCESS",
+    "warm_project_restored": true,
+    "collision_payload_verified": true,
+    "package_and_mac_qa_run": 42999782863,
+    "package_and_mac_qa_result": "SUCCESS",
+    "mac_observation_scope": "Safari/WebKit Apple GPU desktop entry, nickname, viewport resize, reload, city-only world deferral marker observed; not iPhone physical memory proof",
+    "diagnostic_only": true,
+    "world_deliberately_disabled_only_under_opt_in": true,
+    "compiled_default_full_world_unchanged": true,
+    "github_pages_run": 43006294342,
+    "published": true,
+    "live_verified": true,
+    "public_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-city/?eldoria_p0_city_only=1&eldoria_diag=1",
+    "previous_beta10_preserved": true,
+    "preserved_existing_files_verified": true,
+    "previous_failed_beta13_bundle_not_republished": true,
+    "physical_iphone_result": "PENDING_DEVICE_RETEST",
+    "physical_30min_pass": false,
+    "external_testers_enabled": false,
+    "release_for_testers": false,
+    "root_cause": "UNKNOWN; hypothesis full-world eager initialization"
   }
 }
