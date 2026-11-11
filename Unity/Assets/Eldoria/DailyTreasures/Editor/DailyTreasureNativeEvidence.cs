@@ -426,6 +426,76 @@ namespace Eldoria.DailyTreasures.Editor
                      "A genuine painted paid item still clips its letters "+i);
             }
         }
+        // A sprite reference or enabled Image is NOT proof that Lyra is
+        // visible: a later, opaque alpha layer can hide the real actor.
+        // Compare TWO genuine Unity camera renders, changing ONLY the
+        // visual hero Image.enabled flag. This is a visual-only GPU readback,
+        // never a fake hero unlock or reward, and does not alter the save.
+        static Color32[] ReadNativePixels(Camera camera,RenderTexture rt,
+            int width,int height)
+        {
+            var previous=RenderTexture.active;
+            var frame=new Texture2D(width,height,TextureFormat.RGB24,false);
+            try
+            {
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+                camera.Render();
+                RenderTexture.active=rt;
+                frame.ReadPixels(new Rect(0,0,width,height),0,0);
+                frame.Apply(false);
+                return frame.GetPixels32();
+            }
+            finally
+            {
+                RenderTexture.active=previous;
+                Object.DestroyImmediate(frame);
+            }
+        }
+
+        static void VerifyActualLyraVisibleInNativePixels(
+            DailyTreasurePanel panel,Camera camera,RenderTexture rt,
+            int width,int height)
+        {
+            var hero=FindRect(panel,
+                "Canonical Lyra / actual recruited hero illustration")
+                .GetComponent<Image>();
+            Need(hero && hero.sprite && hero.isActiveAndEnabled &&
+                 hero.color.a>=.7f && hero.rectTransform.rect.width>=96f &&
+                 hero.rectTransform.rect.height>=96f,
+                 "Authentic Lyra sprite missing, transparent or postage-stamp sized");
+            var withHero=ReadNativePixels(camera,rt,width,height);
+            Color32[] withoutHero;
+            try
+            {
+                hero.enabled=false;
+                withoutHero=ReadNativePixels(camera,rt,width,height);
+            }
+            finally
+            {
+                hero.enabled=true;
+                Canvas.ForceUpdateCanvases();
+            }
+            Need(withHero.Length==withoutHero.Length,
+                "Native GPU portrait pixel comparison dimensions diverged");
+            int visible=0;
+            for(int i=0;i<withHero.Length;i++)
+            {
+                int d=Math.Abs(withHero[i].r-withoutHero[i].r)+
+                      Math.Abs(withHero[i].g-withoutHero[i].g)+
+                      Math.Abs(withHero[i].b-withoutHero[i].b);
+                if(d>36)visible++;
+            }
+            int minimum=Math.Max(350,Mathf.RoundToInt(width*height*.002f));
+            Need(visible>=minimum,
+                "Authentic Lyra was hidden behind ornamental layers or "+
+                "too faint in actual Unity GPU pixels: "+visible+
+                " changed pixels; minimum "+minimum+" at "+width+"x"+height);
+            Debug.Log("NATIVE_CANONICAL_LYRA_VISIBLE: "+visible+
+                " altered scene pixels at "+width+"x"+height+
+                " without changing hero identity or gameplay");
+        }
+
         static void VerifyGenuineSceneComposition(
             DailyTreasurePanel panel,string eventId,int width,int height)
         {
@@ -456,13 +526,14 @@ namespace Eldoria.DailyTreasures.Editor
                 Need(!trueLyra.gameObject.activeInHierarchy &&
                      !trueLyra.sprite,
                      "Lyra original character leaked into another ceremony");
-            else if(panel.DisplaysCanonicalLyraPortrait)
-                Need(trueLyra.sprite && trueLyra.sprite.rect.width>=256f &&
-                     trueLyra.sprite.rect.height>=256f,
-                     "Lyra original model portrait was replaced with a small fake thumbnail");
             else
-                Debug.LogWarning("LYRA_REAL_AUTHORITATIVE_PORTRAIT_ABSENT "+
-                    "in isolated fixture: the hall is not a certified hero unlock.");
+                Need(panel.DisplaysCanonicalLyraPortrait &&
+                     trueLyra.sprite && trueLyra.sprite.rect.width>=256f &&
+                     trueLyra.sprite.rect.height>=256f,
+                     "Native Lyra milestone has no visible authentic hero. "+
+                     "A hall background and transparent arch cannot replace "+
+                     "the canonical 3D character. Verify the original model "+
+                     "portrait/fallback importer before certifying art.");
             var chest=FindRect(panel,"Authored chest / opened");
             var closedChest=FindRect(panel,"Authored chest / closed");
             var fallbackChest=FindRect(panel,
@@ -1198,6 +1269,12 @@ namespace Eldoria.DailyTreasures.Editor
                             panel.SampleForNativeEvidence(
                                 DailyTreasureRevealTimeline.RevealPeakSeconds);
                             Canvas.ForceUpdateCanvases();
+                            // Prove that the actual hero contributes visible
+                            // GPU pixels; the previous native suite silently
+                            // accepted an EMPTY Lyra room as a passing scene.
+                            if(style==0)
+                                VerifyActualLyraVisibleInNativePixels(
+                                    panel,camera,rt,width,height);
                             pictures.Add(Render(camera,rt,output,width,height,
                                 "style-"+styleSuffixes[style]+"-opening",
                                 "Visual style preview ONLY, not an earned milestone: "+
