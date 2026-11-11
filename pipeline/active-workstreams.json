@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T08:18:00Z",
+  "updated_at": "2026-11-11T09:43:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6943,9 +6943,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-iphone-p0-physical-followup-20261111",
+      "owner": "chatgpt-pr179-iphone-repair-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 28,
+      "ownership_revision": 29,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6988,9 +6988,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "P0_CITY_ONLY_NATIVE_42985136961_RUNNING",
+      "phase": "P0_CITY_ONLY_WINDOWS_INPUT_EOL_GATE_REPAIR",
       "note": "Owner beta13 physically FAILED 2026-11-11: ready 08:17:13, resize vertical, new boot 08:17:20. Not cured by collision prebake. Workstream reclaimed for bounded investigation while preserving separate beta10.",
-      "next": "Native #42985136961 job 130404544598 genuinely RUNNING on Windows; recovery + live lease recheck PASS; exact Unity native startup/route/journey/WebGL underway. Do not duplicate/interrupt runner. After actual job terminates, inspect full evidence/compiled binary, release Windows CAS even on failure, then package and compare the new opt-in city-only A/B isolated from beta10. Mac P0 phase recorder was successfully staged/tested (42983418050,42984221120) but not published/phone certified.",
+      "next": "Latest run42993101501 failed before Unity at exact native-PASS engine-host SHA verification. Validate CRLF checkout hypothesis and apply fail-closed SHA256-verified LF normalization, update pinned workflow/engine request to owner rev29, rerun native once, inspect restoration and only then package; no tester release before physical PASS.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7239,13 +7239,13 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-iphone-p0-physical-followup-20261111",
-        "ownership_revision": 28,
-        "reason": "New opt-in memory A/B to isolate startup world construction from Safari city nickname; user instructed continue PR179, Windows currently free.",
+        "owner": "chatgpt-pr179-iphone-repair-20261111",
+        "ownership_revision": 29,
+        "reason": "Owner-authorized PR179 handoff; old native job completed with file-byte source gate failure. One controlled retry after source fix.",
         "planned_variant": "beta13-p0-city-only-v1",
-        "native_run": 42985136961,
-        "native_job": 130404544598,
-        "native_state": "in_progress",
+        "native_run": 42993101501,
+        "native_job": 130430644990,
+        "native_state": "FAILED_BEFORE_UNITY",
         "preflight_state": "success"
       },
       "ownership_history": [
@@ -7317,6 +7317,14 @@
           "to_revision": 27,
           "to_owner": "chatgpt-iphone-p0-physical-followup-20261111",
           "reason": "Owner explicitly directs continued executive repair of canonical PR179 after physical iPhone beta13 failed 2026-11-11 at 08:17 CET; preserve published beta10 and tester gates; do not repeat already certified packaging."
+        },
+        {
+          "previous_owner": "chatgpt-iphone-p0-physical-followup-20261111",
+          "from_revision": 28,
+          "to_revision": 29,
+          "to_owner": "chatgpt-pr179-iphone-repair-20261111",
+          "transferred_at": "2026-11-11T09:43:00Z",
+          "reason": "Owner explicitly requests this chat continue and fix PR179 to reach testers; previous P0 job 42993101501 completed failure before Unity, no running build found. Transfer same canonical PR and runner lease without cancelling jobs. Preserve beta10 and disabled testers."
         }
       ],
       "frozen_beta_ux_scope": {
