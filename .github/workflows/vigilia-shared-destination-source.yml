@@ -25,11 +25,7 @@ jobs:
             /tools/breach-watch/validate_shared_destination_theme.py
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
-            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs
-            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs
-            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs.meta
-            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs
-            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs.meta
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/**
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png
