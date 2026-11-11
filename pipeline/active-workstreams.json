@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T07:11:07.055Z",
+  "updated_at": "2026-11-11T07:33:16.802Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 88,
+      "ownership_revision": 89,
       "write_scope_released": false,
-      "phase": "FINAL_SECONDARY_TEXT_NATIVE_REVIEW",
-      "next": "Narrow text readability/margin pass only; preserve approved UI design and intervening autonomous changes, verify genuine screenshots before delivery.",
+      "phase": "FINAL_READABILITY_TOUCHES_NATIVE_CERTIFIED",
+      "next": "Requested small readability/margin pass complete and delivered; preserve current design. No additional redesign authorized by this pass. PR173 remains unmerged.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T07:11:07.055Z",
@@ -6797,11 +6795,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "8aa69a38a4b1a847d79c4133393cdda5c2ef2647",
-        "native_run": 42975318276,
+        "source_sha": "73d15578b0815a40f5f49af285c0ae929166ef7d",
+        "native_run": 42977646724,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13834678657,
+        "artifact": 13836976829,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6829,19 +6827,19 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Actual native terrain alphamap 256x256, 7 layers: layer-0 painted at 100%, other six (Bank, layer-1, layer-2, Meadow, Loam, ShelteredGrass) at 0% across 196 samples. Explains why earlier ShelterGrass remap had zero visible impact. No art applied on this run.",
-        "art_ab_artifact": 13835625251,
+        "notes": "Current pass verified in native Unity screenshots; historical terrain/roof measurements below belong to prior automation evidence.",
+        "art_ab_artifact": 13837400815,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13835305570,
+        "native_artifact": 13836976829,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
-        "owner_requested_polish": "Complete for current captured first-screen layouts; retained sharper original icons. Full900x1600 delivered as Eldoria_marcos_ampliados.png.",
+        "owner_requested_polish": "Final secondary text contrast, chapter progress and building timer font/margins completed. Baseline 8aa69a38 scene/art preserved; this pass changes no artwork.",
         "building_level_real_gpu_visible": true,
         "building_title_orientation_sequence": "PASS",
         "cost_heading_orientation_sequence": "PASS",
         "prechange_masonry_fraction": 0.2721,
-        "artistic_review": "NEAR_IDENTICAL_TO_B262_REJECT_MINOR_CAMERA_GUTTER_EXPERIMENT",
+        "artistic_review": "Final text/margins visually checked on current native captures; no new global artistic score or owner approval inferred.",
         "material_index_artifact": 13824376000,
         "roof_material_indices": [
           8,
@@ -6900,7 +6898,7 @@
         ],
         "source_gameplay_unchanged": true
       },
-      "runner_release_basis": "Native 42975318276 completed success on exact 8aa69a38; 8/8 PNG SHA-256 independently validated, 6 real navigation clicks, no foreign Canvas, same save. Material palette visually reviewed; resource released via current main file-SHA CAS.",
+      "runner_release_basis": "Native 42977646724 and visual A/B completed SUCCESS on exact 73d15578; eight screenshot hashes validated, six pointer clicks, save unchanged.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -6920,14 +6918,14 @@
         "delivered_image": "Eldoria_marcos_ampliados.png"
       },
       "pending_native_run": {
-        "run_id": 42922829351,
-        "source_sha": "b26231055ff76d2ca583bdb364127ea205e5e2e0",
+        "run_id": 42977646724,
+        "source_sha": "73d15578b0815a40f5f49af285c0ae929166ef7d",
         "native_status": "SUCCESS",
-        "art_review_pending": true,
-        "native_artifact": 13812488796,
-        "visual_ab_artifact": 13814395037
+        "art_review_pending": false,
+        "native_artifact": 13836976829,
+        "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-11T07:58:36+01:00"
+      "runner_released_at": "2026-11-11T07:33:16.802Z"
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
