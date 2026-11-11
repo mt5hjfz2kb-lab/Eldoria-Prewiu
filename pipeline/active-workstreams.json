@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T15:32:00Z",
+ "updated_at": "2026-11-11T16:38:00Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -22,12 +22,12 @@
   {
    "id": "eldoria-issue186-reward-attention-guidance-20261111",
    "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-   "owner": "chatgpt-issue186-art-20261111",
+   "owner": "chatgpt-issue186-art-import-recovery-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 2,
+   "ownership_revision": 3,
    "branch": "feature/issue186-reward-attention-guidance-20261111",
    "status": "active",
-   "phase": "ISSUE186_SOURCE_ART_IMPORT_V5_CANDIDATE_REVIEW_NATIVE_PENDING",
+   "phase": "ART_SOURCE_IMPORTED_NATIVE_GATE_DESIGN_AND_IMPORT_QA",
    "claimed_at": "2026-11-11T14:14:48Z",
    "art_production_routing": "required",
    "resources": [],
@@ -41,8 +41,19 @@
     "Unity/Assets/Eldoria/Issue186Art.meta",
     "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json"
    ],
-   "next": "Publish source art into isolated Issue186Art only when verified, validate 16 exact sprites and inspector/Canvas at 4 sizes in Unity after authorized Windows handoff. No merge, beta override or changes to PR173/PR181.",
-   "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json"
+   "next": "Verificar source art v5 ya subido, terminar comprobadores de importación y captura nativa en scope aislado; tratar v7 original separado sin falsificar integración. Sin editor hasta runner Windows libre por PR173.",
+   "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
+   "previous_owner": "chatgpt-issue186-art-20261111",
+   "ownership_history": [
+    {
+     "from": "chatgpt-issue186-art-20261111",
+     "to": "chatgpt-issue186-art-import-recovery-20261111",
+     "previous_revision": 2,
+     "revision": 3,
+     "transferred_at": "2026-11-11T16:38:00Z",
+     "reason": "El propietario ordena en este chat continuar sin interrumpirse la importación artística y QA de #186/#187. Mismo ID y rama, sin reservar Windows de #173 ni tocar rutas de #181/#179; último PR187 SHA b19b1a82 y CI dominio PASS."
+    }
+   ]
   },
   {
    "id": "valoria-master-plan-layered-construction-20261016",
