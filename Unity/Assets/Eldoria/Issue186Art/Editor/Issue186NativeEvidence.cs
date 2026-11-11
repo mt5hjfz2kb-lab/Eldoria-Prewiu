@@ -9,6 +9,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -104,10 +105,14 @@ namespace Eldoria.Issue186Art.Editor
             camera.targetTexture=rt;
             if(UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline!=null)
             {
-                var extra=Type.GetType(
-                    "UnityEngine.Rendering.Universal.UniversalAdditionalCameraData, Unity.RenderPipelines.Universal.Runtime");
-                Need(extra!=null,"URP package present but additional camera component type unavailable");
-                holder.AddComponent(extra);
+                // Unity 6000.3 / URP 17.3 requires StandardRequest on a BASE
+                // camera. Unity may already attach Additional Camera Data when
+                // a Camera component is created. Never add a duplicate.
+                var extra=camera.GetComponent<UniversalAdditionalCameraData>();
+                if(!extra)
+                    extra=holder.AddComponent<UniversalAdditionalCameraData>();
+                Need(extra!=null,"URP Additional Camera Data unavailable");
+                extra.renderType=CameraRenderType.Base;
             }
             return camera;
         }
