@@ -18,6 +18,13 @@ namespace Eldoria.BreachWatch
         readonly Dictionary<Graphic,bool> originals=new Dictionary<Graphic,bool>();
         readonly List<GameObject> surfaces=new List<GameObject>();
         Sprite stone,button,stoneSliced;
+        Material warmHall;
+        Image originalBackdrop;
+        Color backdropColor;
+        readonly Dictionary<RawImage,Material> originalHallMaterials =
+            new Dictionary<RawImage,Material>();
+        readonly Dictionary<Image,Color> originalAccentColors =
+            new Dictionary<Image,Color>();
         RectTransform content;
         int restyled;
         public int RestyledFrames=>restyled;
@@ -40,7 +47,17 @@ namespace Eldoria.BreachWatch
             if(!heroRoot)return false;
             stone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
             button=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
-            if(!stone || !button)return false;
+            var shader=Resources.Load<Shader>(
+                "VigiliaArt/BreachWatchHallWarmStone");
+            if(!stone || !button || !shader)return false;
+            if(!warmHall)
+            {
+                warmHall=new Material(shader){
+                    name="Vigilia / warm illustrated hero hall",
+                    hideFlags=HideFlags.DontSave};
+                warmHall.SetFloat("_Warmth",.72f);
+                warmHall.SetFloat("_ShadowFloor",.013f);
+            }
             return Refresh(heroRoot);
         }
 
@@ -61,6 +78,7 @@ namespace Eldoria.BreachWatch
             if(newContent==content)return restyled>0 && !VisibleOldRoyalFrame;
             ResetPresentation();
             content=newContent;
+            GradeActualHall(heroRoot);
             var frames=content.GetComponentsInChildren<RectTransform>(true);
             foreach(var rect in frames)
             {
@@ -83,6 +101,33 @@ namespace Eldoria.BreachWatch
                 restyled++;
             }
             return restyled>0&&!VisibleOldRoyalFrame;
+        }
+
+        void GradeActualHall(RectTransform heroRoot)
+        {
+            // A single *real* illustrated RawImage is graded in place, rather
+            // than hiding the environment with another opaque blue screen.
+            // Hero faces, 3D models, portraits and live controls stay intact.
+            originalBackdrop=heroRoot.GetComponent<Image>();
+            if(originalBackdrop)
+            {
+                backdropColor=originalBackdrop.color;
+                originalBackdrop.color=new Color(.071f,.062f,.055f,1f);
+            }
+            foreach(var photo in content.GetComponentsInChildren<RawImage>(true))
+            {
+                if(!photo || photo.name!="Hall / painterly architectural plate")
+                    continue;
+                originalHallMaterials[photo]=photo.material;
+                photo.material=warmHall;
+            }
+            foreach(var accent in content.GetComponentsInChildren<Image>(true))
+            {
+                if(!accent || accent.name!="Hall / layered royal banner")
+                    continue;
+                originalAccentColors[accent]=accent.color;
+                accent.color=new Color(.19f,.055f,.055f,.84f);
+            }
         }
 
         static bool IsOldRoyalFrame(string name)
@@ -129,6 +174,14 @@ namespace Eldoria.BreachWatch
             foreach(var p in originals)
                 if(p.Key)p.Key.enabled=p.Value;
             originals.Clear();
+            foreach(var item in originalHallMaterials)
+                if(item.Key)item.Key.material=item.Value;
+            originalHallMaterials.Clear();
+            foreach(var item in originalAccentColors)
+                if(item.Key)item.Key.color=item.Value;
+            originalAccentColors.Clear();
+            if(originalBackdrop)originalBackdrop.color=backdropColor;
+            originalBackdrop=null;
             foreach(var go in surfaces)
                 if(go)Destroy(go);
             surfaces.Clear();
@@ -141,6 +194,7 @@ namespace Eldoria.BreachWatch
         {
             ResetPresentation();
             if(stoneSliced)Destroy(stoneSliced);
+            if(warmHall)Destroy(warmHall);
         }
     }
 }
