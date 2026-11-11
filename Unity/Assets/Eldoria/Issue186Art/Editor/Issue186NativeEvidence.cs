@@ -29,7 +29,8 @@ namespace Eldoria.Issue186Art.Editor
             public int width, height, bytes, actualResourceSprites;
             public bool indicatorReady, newIndicatorReady, firstUsePointer,
                 firstUseCompleted, pointerLeavesCtaCenterClear, realUiClick,
-                visiblePixels, renderTargetCorrect, noOverlappingCards;
+                blockedUiClickRejected, visiblePixels, renderTargetCorrect,
+                noOverlappingCards;
         }
         [Serializable] sealed class Report
         {
@@ -304,19 +305,37 @@ namespace Eldoria.Issue186Art.Editor
                 var cursor=RectTransformUtility.WorldToScreenPoint(cam,actualCenter);
                 var pd=new PointerEventData(ev){position=cursor};
                 var hits=new List<RaycastResult>();
-                canvasGO.GetComponent<GraphicRaycaster>().Raycast(pd,hits);
-                var realHit=hits.Find(h=>h.gameObject==buttonRect.gameObject);
-                Need(realHit.gameObject==buttonRect.gameObject,
-                    "No real raycast hit on Claim button");
-                raycastHits++;
+                var raycaster=canvasGO.GetComponent<GraphicRaycaster>();
                 bool action=false;
                 button.onClick.AddListener(()=>action=true);
                 pd.button=PointerEventData.InputButton.Left;
-                // Drive the actual Button IPointerClickHandler using the hit
-                // returned by Unity GraphicRaycaster. Calling onClick.Invoke()
-                // would bypass the control and falsely pass a disabled button.
+                // Negative control: a visible UI image overlapping the claim
+                // button must receive the FRONTMOST raycast, never let Claim
+                // click through. An earlier test searched *any* hit, falsely
+                // passing even when another image covered the real control.
+                var blocker=Paint(root,"temporary claim hit blocker",
+                    buttonRect.anchoredPosition,new Vector2(32f,24f),
+                    new Color(.7f,.2f,.15f,.95f));
+                blocker.raycastTarget=true;
+                Canvas.ForceUpdateCanvases();
+                raycaster.Raycast(pd,hits);
+                Need(hits.Count>0 && hits[0].gameObject==blocker.gameObject,
+                    "Raycaster ignored a frontmost obstructing UI element");
                 ExecuteEvents.Execute<IPointerClickHandler>(
-                    realHit.gameObject,pd,ExecuteEvents.pointerClickHandler);
+                    hits[0].gameObject,pd,ExecuteEvents.pointerClickHandler);
+                Need(!action,"Claim button clicked through the blocking overlay");
+                bool blockedClickRejected=!action;
+                blocker.gameObject.SetActive(false);
+                hits.Clear();
+                Canvas.ForceUpdateCanvases();
+                raycaster.Raycast(pd,hits);
+                Need(hits.Count>0 && hits[0].gameObject==buttonRect.gameObject,
+                    "Claim button is not the FRONTMOST tappable UI element");
+                raycastHits++;
+                // Drive the actual Button IPointerClickHandler using the
+                // frontmost real Unity hit, not Button.onClick.Invoke().
+                ExecuteEvents.Execute<IPointerClickHandler>(
+                    hits[0].gameObject,pd,ExecuteEvents.pointerClickHandler);
                 Need(action,"Unity UI click was not dispatched by the hit Button");
                 // A successful Unity Button callback is NOT a successful
                 // gateway command. The #186 gameplay bridge is still pending
@@ -376,6 +395,7 @@ namespace Eldoria.Issue186Art.Editor
                     newIndicatorReady=newBadge.gameObject.activeInHierarchy,
                     firstUsePointer=pointed,firstUseCompleted=false,
                     pointerLeavesCtaCenterClear=pointerClear,realUiClick=action,
+                    blockedUiClickRejected=blockedClickRejected,
                     visiblePixels=interesting>width*height*.008f,
                     renderTargetCorrect=cam.targetTexture==rt,
                     noOverlappingCards=true};
@@ -430,7 +450,7 @@ namespace Eldoria.Issue186Art.Editor
                         x.indicatorReady && x.newIndicatorReady &&
                         x.firstUsePointer && !x.firstUseCompleted &&
                         x.pointerLeavesCtaCenterClear && x.realUiClick &&
-                        x.noOverlappingCards),
+                        x.blockedUiClickRejected && x.noOverlappingCards),
                     "At least one real Unity resolution lacks UX/asset proof");
                 report.status="UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING";
                 File.WriteAllText(Path.Combine(output,"report.json"),
