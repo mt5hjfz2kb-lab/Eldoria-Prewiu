@@ -30,6 +30,9 @@ namespace Eldoria.BreachWatch
         Sprite panel, action, nineSlicedPanel;
         Image backdrop;
         Color originalBackdropColor;
+        RoyalText realEmptySentence;
+        RoyalText realListSummary;
+        bool originalSummaryVisible;
         bool styled;
 
         public bool IsStyled => styled;
@@ -116,14 +119,22 @@ namespace Eldoria.BreachWatch
             // but ONLY under the existing canonical empty-state label.
             // That label is hidden whenever messages exist, so the art is
             // hidden too. Never manufacture rewards, reports or messages.
-            foreach(var text in realWindow.GetComponentsInChildren<Text>(true))
+            foreach(var text in realWindow.GetComponentsInChildren<RoyalText>(true))
             {
-                if(!text || text.name!="Mailbox / genuine empty state")
-                    continue;
-                var seal=BreachWatchEmptyMailSeal.Install(text.rectTransform);
-                if(seal)newArtwork.Add(seal.gameObject);
-                break;
+                if(!text)continue;
+                if(text.name=="Mailbox / real collection summary")
+                {
+                    realListSummary=text;
+                    originalSummaryVisible=text.enabled;
+                }
+                if(text.name=="Mailbox / genuine empty state")
+                {
+                    realEmptySentence=text;
+                    var seal=BreachWatchEmptyMailSeal.Install(text.rectTransform);
+                    if(seal)newArtwork.Add(seal.gameObject);
+                }
             }
+            RefreshEmptyComposition();
             styled=ReplacedOldPaintings>=4 && ReskinnedButtons>=3 &&
                 AllOldMailboxBackgroundsHidden();
             if(!styled) Restore();
@@ -185,7 +196,22 @@ namespace Eldoria.BreachWatch
 
         void LateUpdate()
         {
-            if(styled)RefreshInk();
+            if(!styled)return;
+            RefreshInk();
+            RefreshEmptyComposition();
+        }
+
+        void RefreshEmptyComposition()
+        {
+            if(!realListSummary)return;
+            // There used to be three overlapping labels all saying that
+            // the category was empty. Preserve the ONE real source message,
+            // and hide its duplicate collection summary only while the
+            // canonical empty-state object is active. If messages arrive
+            // on refresh, restore the live summary immediately.
+            bool actuallyEmpty=realEmptySentence &&
+                realEmptySentence.gameObject.activeInHierarchy;
+            realListSummary.enabled=originalSummaryVisible&&!actuallyEmpty;
         }
 
         void RefreshInk()
@@ -232,6 +258,9 @@ namespace Eldoria.BreachWatch
             foreach(var pair in originalInkColors)
                 if(pair.Key)pair.Key.color=pair.Value;
             originalInkColors.Clear();
+            if(realListSummary)realListSummary.enabled=originalSummaryVisible;
+            realListSummary=null;
+            realEmptySentence=null;
             if(backdrop)backdrop.color=originalBackdropColor;
             backdrop=null;
             foreach(var obj in newArtwork)
