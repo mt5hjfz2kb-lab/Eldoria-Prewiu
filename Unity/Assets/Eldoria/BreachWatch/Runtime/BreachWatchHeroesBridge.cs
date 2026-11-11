@@ -30,6 +30,10 @@ namespace Eldoria.BreachWatch
             root.parent==canvas.transform;
         public bool ReplacedOldFrames => IsShowing && theme &&
             theme.RestyledFrames>0 && !theme.VisibleOldRoyalFrame;
+        public bool HallGradeActive => IsShowing && theme &&
+            theme.HallGradeActive;
+        public string HallGradeDiagnostic => theme?
+            theme.HallGradeDiagnostic:"theme=null";
 
         public void Initialize(ValoriaIntegratedWorld source,Canvas presentation,
             BreachWatchDestinationBridge militaryDestination)
