@@ -4,6 +4,7 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs'
       - 'tools/reward-experience/**'
+      - 'Unity/Assets/Eldoria/Issue186Art/**'
       - '.github/workflows/reward-experience-domain.yml'
   workflow_dispatch:
 jobs:
@@ -24,6 +25,16 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - name: Verify actual 16 imported PNG hashes, sizes and Unity GUIDs without Windows
+        run: python3 tools/reward-experience/check_art_import.py
+      - name: Preserve deterministic source-art audit even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-source-art-audit
+          path: issue186_art_import_preflight.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Execute actual reward domain rules with source-linked smoke
         run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
       - name: Roslyn syntax check of real Unity runtime and editor art scripts
