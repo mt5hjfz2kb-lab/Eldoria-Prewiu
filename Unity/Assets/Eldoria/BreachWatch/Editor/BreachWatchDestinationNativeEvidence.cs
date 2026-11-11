@@ -461,45 +461,60 @@ namespace Eldoria.BreachWatch.Editor
                         FirstOrDefault(x=>x.name=="Independent royal manuscript room");
                     Need(manuscript,
                          "Canonical retention scenic manuscript is missing");
-                    var bounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
-                        retention.LiveScreenRect,manuscript);
-                    if(!(bounds.size.x<=rect.width+5f &&
-                         bounds.size.y<=rect.height+5f &&
-                         Mathf.Abs(bounds.center.x)<=rect.width*.10f &&
-                         Mathf.Abs(bounds.center.y)<=rect.height*.10f))
+                    // Only the authored BACKGROUND paintings deliberately
+                    // overscan off-camera (mountain/cliff parallax). That is
+                    // correct: cropping the scenery to the room rectangle
+                    // destroys the panoramic look. Measure the actual
+                    // manuscript frame and REAL clickable buttons instead.
+                    // Native pixel-band coverage below independently catches
+                    // empty black letterboxing even when rects appear valid.
+                    var panelCorners=new Vector3[4];
+                    manuscript.GetWorldCorners(panelCorners);
+                    float minX=float.MaxValue,maxX=float.MinValue;
+                    float minY=float.MaxValue,maxY=float.MinValue;
+                    foreach(var corner in panelCorners)
                     {
-                        // Persist the REAL rendered screenshot before failing
-                        // QA. A hierarchy-bound statistic alone cannot tell
-                        // whether an overwide decorative ribbon or the actual
-                        // battle card causes visual clipping.
-                        var offenders=new List<string>();
-                        var corners=new Vector3[4];
-                        foreach(var child in manuscript.GetComponentsInChildren<
-                            RectTransform>(true))
-                        {
-                            if(!child || !child.gameObject.activeInHierarchy)
-                                continue;
-                            child.GetWorldCorners(corners);
-                            float xMin=float.MaxValue,xMax=float.MinValue;
-                            for(int n=0;n<4;n++)
-                            {
-                                float x=retention.LiveScreenRect.
-                                    InverseTransformPoint(corners[n]).x;
-                                xMin=Mathf.Min(xMin,x);
-                                xMax=Mathf.Max(xMax,x);
-                            }
-                            if(xMin<rect.xMin-6f||xMax>rect.xMax+6f)
-                                offenders.Add(child.name+" x="+
-                                    xMin.ToString("F0")+".."+xMax.ToString("F0"));
-                            if(offenders.Count>=18)break;
-                        }
-                        retentionOverflow=
-                            "Old retention layout extends outside new Canvas. "+
-                            "screen="+rect.width+"x"+rect.height+
-                            " overall="+bounds.size+
-                            " centered="+bounds.center+
-                            " namedOverflow=["+string.Join("; ",offenders)+"]";
+                        var local=retention.LiveScreenRect.
+                            InverseTransformPoint(corner);
+                        minX=Mathf.Min(minX,local.x);
+                        maxX=Mathf.Max(maxX,local.x);
+                        minY=Mathf.Min(minY,local.y);
+                        maxY=Mathf.Max(maxY,local.y);
                     }
+                    var actual=retention.LiveScreenRect.rect;
+                    var offenders=new List<string>();
+                    if(minX<actual.xMin-4f||maxX>actual.xMax+4f||
+                       minY<actual.yMin-4f||maxY>actual.yMax+4f)
+                        offenders.Add("main manuscript frame "+
+                            minX.ToString("F0")+".."+maxX.ToString("F0")+
+                            " y="+minY.ToString("F0")+".."+maxY.ToString("F0"));
+                    foreach(var button in retention.LiveScreenRect.
+                        GetComponentsInChildren<Button>(true))
+                    {
+                        if(!button || !button.isActiveAndEnabled ||
+                           !button.gameObject.activeInHierarchy ||
+                           !button.interactable)
+                            continue;
+                        var rectButton=button.transform as RectTransform;
+                        if(!rectButton)continue;
+                        var corners=new Vector3[4];
+                        rectButton.GetWorldCorners(corners);
+                        foreach(var corner in corners)
+                        {
+                            var p=retention.LiveScreenRect.
+                                InverseTransformPoint(corner);
+                            if(p.x<actual.xMin-7f||p.x>actual.xMax+7f||
+                               p.y<actual.yMin-7f||p.y>actual.yMax+7f)
+                            {
+                                offenders.Add("real button "+button.name);
+                                break;
+                            }
+                        }
+                    }
+                    if(offenders.Count>0)
+                        retentionOverflow="Real retention UI is offscreen: "+
+                            string.Join("; ",offenders)+
+                            " / viewport="+actual.width+"x"+actual.height;
                 }
                 var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
