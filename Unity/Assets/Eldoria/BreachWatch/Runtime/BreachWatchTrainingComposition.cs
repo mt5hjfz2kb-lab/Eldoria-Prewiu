@@ -47,6 +47,28 @@ namespace Eldoria.BreachWatch
         float lastW=-1f,lastH=-1f;
         public bool IsCinematicPortrait { get; private set; }
         public int ChangedElements=>originals.Count;
+        // Native QA must distinguish a genuine portrait-layout failure from
+        // missing art, stale source controls, or wrong virtual display size.
+        public string NativeLayoutDiagnostic
+        {
+            get
+            {
+                var root=controller ? controller.VisibleRoot : null;
+                var state=controller?controller.CurrentDestination.ToString():"null";
+                return "state="+state+
+                    " open="+(controller&&controller.IsOpen)+
+                    " root="+(root?root.rect.width+"x"+root.rect.height:"null")+
+                    " left="+(left?left.rect.width+"x"+left.rect.height:"null")+
+                    " hero="+(hero!=null)+
+                    " identity="+(identity!=null)+
+                    " name="+(nameText!=null)+
+                    " subtitle="+(detailText!=null)+
+                    " t1="+(t1!=null)+" t2="+(t2!=null)+
+                    " p1="+(portraits[0]!=null)+" p2="+(portraits[1]!=null)+
+                    " l1="+(labels[0]!=null)+" l2="+(labels[1]!=null)+
+                    " cinematic="+IsCinematicPortrait;
+            }
+        }
 
         static RectTransform Find(RectTransform parent,string name)
         {
