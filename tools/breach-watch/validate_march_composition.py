@@ -39,6 +39,13 @@ def main():
             "Reversible canonical hero buttons and portrait layout required")
     require('heroSlots[2].gameObject.SetActive(thirdHeroWasActive);' in restore,
             "Restore third slot exactly when the destination closes")
+    require('label.horizontalOverflow=HorizontalWrapMode.Wrap;' in portraits and
+            'label.verticalOverflow=VerticalWrapMode.Truncate;' in portraits and
+            'label.resizeTextForBestFit=false;' in portraits,
+            "Compact landscape hero labels may not spill past the actual card")
+    require('originalLabels.Clear();' in restore and
+            'label.horizontalOverflow=old.Horizontal;' in restore,
+            "Original canonical hero typography must be restored on exit")
     native = QA.read_text(encoding="utf-8")
     require('RealMarchTwoCardRoster' in native,
             "Native QA must check the actual landscape and portrait roster")
