@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 35,
-  "state": "WAITING_FOR_WINDOWS_LEASE",
+  "ownership_revision": 36,
+  "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -30,5 +30,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "Formal Windows PR179 lease only: run real PlayMode, validate fail-closed nested lazy load, 12 map cycles, resources/routes, persist nickname+save and native I–V, WebGL, same-bundle Mac, physical device final; NO testers before PASS."
+  "next": "Owner-directed Windows lease transferred from PR173; execute one real native batch and restore inputs, then release Windows to PR181. No publication or mobile PASS inferred."
 }
