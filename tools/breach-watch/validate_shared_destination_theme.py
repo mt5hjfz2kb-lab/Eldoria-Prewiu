@@ -33,6 +33,12 @@ def main():
     require("source.border.sqrMagnitude" in theme and
             "SpriteMeshType.FullRect" in theme and "Image.Type.Sliced" in theme,
             "Reusable stone must use sliced borders, never full-frame stretching")
+    require("ReplaceLegacyPainting(destination)" in theme and
+            "RoyalGoldV3ManagementBackdrop" in theme and
+            "Approved source / blue-panel" in theme and
+            "ReplacedLegacyGraphics>=4" in theme and
+            "originalTextColors" in theme,
+            "Legacy blue artwork must be removed, not covered by a new image")
     require("originalButtonTargets" in theme and
             "originalTransitions" in theme and "Restore()" in theme,
             "Theme must preserve original Selectable behavior")
