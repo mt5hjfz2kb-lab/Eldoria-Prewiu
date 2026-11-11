@@ -50,6 +50,16 @@ namespace Eldoria.BreachWatch
             if(!backdrop)return false;
             originalBackdropColor=backdrop.color;
             backdrop.color=new Color(.082f,.075f,.068f,1f);
+            // A genuinely empty mailbox left almost 55% of the phone as
+            // featureless black. Replace its obsolete matte with ONE
+            // continuous mineral folio from the same Vigilia material kit.
+            // Keep the real list, messages and tab hit targets above it.
+            var folio=AddSurface(realWindow,panel,
+                "Vigilia / one continuous charcoal stone folio",false);
+            var folioRect=folio.rectTransform;
+            folioRect.offsetMin=new Vector2(9f,9f);
+            folioRect.offsetMax=new Vector2(-9f,-9f);
+            folio.raycastTarget=false;
             ReplacedOldPaintings=0;
             ReskinnedButtons=0;
 
