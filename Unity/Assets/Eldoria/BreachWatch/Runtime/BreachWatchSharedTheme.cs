@@ -291,6 +291,28 @@ namespace Eldoria.BreachWatch
                     ReplacedLegacyGraphics++;
                 }
             }
+            // The canonical layout moves its complete isolated archer art
+            // to the first sibling during Reflow. In Unity this put the
+            // character BEHIND our opaque stone panel, leaving an enormous
+            // empty block. Keep the ONE new panel behind its genuine content.
+            // Do this after each canonical layout, not by adding hero art twice.
+            foreach(var surface in createdSurfaces)
+                if(surface && surface.name=="Vigilia / one stone panel")
+                    surface.transform.SetAsFirstSibling();
+
+            // Old paper styling used dark-brown live unit ink. Reflow sets it
+            // again, making important titles literally near-black on the new
+            // dark stone. Enforce high contrast on the genuine labels, while
+            // keeping the authored gold labels and real text unchanged.
+            foreach(var entry in originalTextColors)
+            {
+                var label=entry.Key;
+                if(!label || !label.gameObject.activeInHierarchy)continue;
+                var c=label.color;
+                var brightness=.2126f*c.r+.7152f*c.g+.0722f*c.b;
+                if(brightness<.49f)
+                    label.color=new Color(.95f,.90f,.79f,c.a);
+            }
             if(originalBackdrop)
                 originalBackdrop.color=new Color(.080f,.071f,.064f,1f);
         }
