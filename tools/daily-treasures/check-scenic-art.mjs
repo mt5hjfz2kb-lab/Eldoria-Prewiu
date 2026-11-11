@@ -193,3 +193,22 @@ assert.match(panel,/DailyTreasureBastionCamera.Capture\(/);
 assert.match(panel,/DailyTreasureBastionCamera.Release\(/);
 assert.match(panel,/DailyTreasureBastionCamera.SceneKey/);
 console.log('PASS true camera-derived live Bastion presentation, never a zoomed PNG');
+
+// A real, committed Scout discovery uses its SAVED family Kind to select
+// authentic existing EldoriaRetention mission-vignette art. Shader feathers
+// ink into the blank original painting; no custom coast, hero, loot or map.
+const scoutInkShader=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies/DailyScoutDiscoveryInk.shader',
+ 'utf8');
+assert.match(scoutInkShader,/Shader "Eldoria\/DailyScoutDiscoveryInk"/);
+assert.match(scoutInkShader,/float matte=smoothstep\(/);
+assert.match(scoutInkShader,/_AtlasUv/);
+assert.match(panel,/FindActualCommittedScoutKind\(eventId\)/);
+assert.match(panel,/report.DiscoveryKind<0 \|\| report.DiscoveryKind>3/);
+assert.match(panel,/report.DiscoveryOrderId!=orderId/);
+assert.match(panel,/report.EventId!="exploration:"\+report.RewardReceiptId/);
+assert.match(panel,/EldoriaRetention\/scout-mission-vignettes-v4/);
+assert.match(panel,/milestoneDiscoveryIllustration\.uvRect=tile/);
+assert.match(panel,/milestoneDiscoveryIllustration\.raycastTarget=false/);
+assert.match(panel,/DestroyOwned\(ownedScoutInkMaterial\)/);
+console.log('PASS 4 true earned Scout family vignettes painted into parchment with GPU feather and no fake awards');

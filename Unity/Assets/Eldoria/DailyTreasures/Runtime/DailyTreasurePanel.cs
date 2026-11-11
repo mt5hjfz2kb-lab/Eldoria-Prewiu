@@ -104,6 +104,20 @@ namespace Eldoria.DailyTreasures
         Image milestoneInsignia;
         // Separately painted alpha layers, behind official scene/hero identity.
         Image milestoneStageArt,milestoneOrnament;
+        // The original EldoriaRetention atlas already represents four REAL
+        // scout mission families. An earned discovery may paint the matching
+        // actual persisted Kind on the existing blank parchment. Never use a
+        // made-up map, guessed kind, fake order or second reward.
+        RawImage milestoneDiscoveryIllustration;
+        Material ownedScoutInkMaterial;
+        int verifiedScoutKind=-1;
+        public int VerifiedScoutDiscoveryKind => verifiedScoutKind;
+        public bool HasCommittedScoutIllustration =>
+            currentStage==DailyTreasureStageKind.Explorers &&
+            verifiedScoutKind>=0 &&
+            milestoneDiscoveryIllustration &&
+            milestoneDiscoveryIllustration.texture &&
+            milestoneDiscoveryIllustration.gameObject.activeInHierarchy;
         Vector2 milestoneStageRest;
         float milestoneStageRestOpacity;
         Sprite dailyFrameSprite;
@@ -481,6 +495,31 @@ namespace Eldoria.DailyTreasures
             milestoneStageArt.preserveAspect=true;
             milestoneStageArt.raycastTarget=false;
             milestoneStageArt.gameObject.SetActive(false);
+            var authenticDiscovery=NewRect(
+                "Actual claimed Scout Kind / feathered ink on original parchment",
+                paintedStage);
+            milestoneDiscoveryIllustration=authenticDiscovery.gameObject
+                .AddComponent<RawImage>();
+            milestoneDiscoveryIllustration.raycastTarget=false;
+            // The source PNG contains an EMPTY parchment. Paint only in its
+            // interior, respecting the compass and burnt edges.
+            authenticDiscovery.anchorMin=new Vector2(.41f,.28f);
+            authenticDiscovery.anchorMax=new Vector2(.84f,.78f);
+            authenticDiscovery.offsetMin=authenticDiscovery.offsetMax=Vector2.zero;
+            milestoneDiscoveryIllustration.gameObject.SetActive(false);
+            // Authored source atlas uses four quadrants. The GPU shader
+            // feathers atlas pixels as actual parchment INK rather than a
+            // pasted opaque rectangular screenshot.
+            var scoutInkShader=Resources.Load<Shader>(
+                "DailyTreasureCeremonies/DailyScoutDiscoveryInk");
+            if(scoutInkShader && scoutInkShader.isSupported)
+            {
+                ownedScoutInkMaterial=new Material(scoutInkShader)
+                {
+                    name="Tesoros / disposable canonical Scout ink"
+                };
+                milestoneDiscoveryIllustration.material=ownedScoutInkMaterial;
+            }
             // Authentic original scouting / Vigilants crests already belong
             // to Eldoria; a restrained insignia strengthens each milestone
             // without inventing a new faction, reward, hero or building.
@@ -657,6 +696,7 @@ namespace Eldoria.DailyTreasures
             DestroyOwned(chestKnock);
             DestroyOwned(chestChime);
             DestroyOwned(chestGrandChime);
+            DestroyOwned(ownedScoutInkMaterial);
         }
         bool PresentNextCommittedMilestone()
         {
@@ -769,6 +809,12 @@ namespace Eldoria.DailyTreasures
                 milestoneArtworkResourceKey=null;
             }
             if(milestoneOrnament)milestoneOrnament.gameObject.SetActive(false);
+            if(milestoneDiscoveryIllustration)
+            {
+                milestoneDiscoveryIllustration.texture=null;
+                milestoneDiscoveryIllustration.gameObject.SetActive(false);
+                verifiedScoutKind=-1;
+            }
             if(mainFrameSurface)
             {
                 mainFrameSurface.sprite=dailyFrameSprite;
@@ -1110,6 +1156,30 @@ namespace Eldoria.DailyTreasures
             milestoneStageArt.sprite=stageSprite;
             milestoneStageArt.gameObject.SetActive(stageSprite!=null);
             milestoneArtworkResourceKey=stageSprite?stagePath:null;
+            // Confirmed first discovery ONLY. The authoritative mailbox
+            // already proves the precise family/order ID and award receipt.
+            // A concept or visual-only preview must never invent a Kind.
+            verifiedScoutKind=showChest &&
+                currentStage==DailyTreasureStageKind.Explorers?
+                    FindActualCommittedScoutKind(eventId):-1;
+            var scoutAtlas=verifiedScoutKind>=0 && ownedScoutInkMaterial?
+                Resources.Load<Texture2D>(
+                    "EldoriaRetention/scout-mission-vignettes-v4"):null;
+            if(milestoneDiscoveryIllustration)
+            {
+                milestoneDiscoveryIllustration.texture=scoutAtlas;
+                milestoneDiscoveryIllustration.gameObject.SetActive(scoutAtlas!=null);
+                if(scoutAtlas)
+                {
+                    int kind=verifiedScoutKind;
+                    var tile=new Rect((kind%2)*.5f+.01f,
+                        (kind<2?.5f:0f)+.01f,.48f,.48f);
+                    milestoneDiscoveryIllustration.uvRect=tile;
+                    ownedScoutInkMaterial.SetVector("_AtlasUv",
+                        new Vector4(tile.x,tile.y,tile.width,tile.height));
+                    milestoneDiscoveryIllustration.color=Color.white;
+                }
+            }
             if(milestoneLyraPortrait)
             {
                 // Pull the same owned sprite that the canonical Heroes room
@@ -1255,6 +1325,34 @@ namespace Eldoria.DailyTreasures
                 milestoneScenery.color=Color.white;
                 UpdateSceneryCrop();
             }
+        }
+        // Maps the ACTUAL claimed discovery to an existing painterly atlas
+        // family. This deliberately duplicates NO reward or economy logic:
+        // the only valid input is a committed mailbox report written by
+        // LocalGateway and belonging to an existing order receipt.
+        int FindActualCommittedScoutKind(string eventId)
+        {
+            const string prefix="scout:first:";
+            if(!eventId?.StartsWith(prefix,StringComparison.Ordinal) ?? true)
+                return -1;
+            string orderId=eventId.Substring(prefix.Length);
+            if(string.IsNullOrWhiteSpace(orderId))return -1;
+            var player=gateway?.Snapshot();
+            if(player?.Mailbox?.Messages==null ||
+               player.Retention==null)return -1;
+            foreach(var report in player.Mailbox.Messages)
+            {
+                if(report==null || report.Type!="exploration" ||
+                   report.Category!="informes" ||
+                   report.DiscoveryOrderId!=orderId ||
+                   report.DiscoveryKind<0 || report.DiscoveryKind>3 ||
+                   string.IsNullOrEmpty(report.RewardReceiptId) ||
+                   report.EventId!="exploration:"+report.RewardReceiptId ||
+                   (player.Retention.ScoutDiscoveryMask&
+                       (1<<report.DiscoveryKind))==0)continue;
+                return report.DiscoveryKind;
+            }
+            return -1;
         }
         // The actual game character/map/emblem/city is not baked into these
         // decorative aperture layers. Daily gifts never receive a stage.
