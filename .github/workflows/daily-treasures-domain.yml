@@ -272,7 +272,7 @@ jobs:
           content=original.read_bytes()
           expected=next(x['sha256'] for x in record['shots'] if x['file']==name)
           assert hashlib.sha256(content).hexdigest()==expected
-          assert content.startswith(b'\\x89PNG\\r\\n\\x1a\\n')
+          assert content[:8] == bytes([137,80,78,71,13,10,26,10])
           Path('tools/daily-treasures/real-city-source-verified.png').write_bytes(content)
           print('VERIFIED Unity original PlayerCamera SHA256. Not a gameplay run and not an art approval.')
           PY
