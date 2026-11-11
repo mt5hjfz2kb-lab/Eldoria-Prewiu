@@ -22,6 +22,7 @@ namespace Eldoria.BreachWatch
         static readonly Color Locked = new Color(.38f,.39f,.39f,1f);
         ValoriaIntegratedWorld host;
         Canvas canvas;
+        BreachWatchDestinationBridge destinationBridge;
         CanvasScaler scaler;
         GraphicRaycaster raycaster;
         Canvas legacyCanvas;
@@ -83,6 +84,9 @@ namespace Eldoria.BreachWatch
         public RoyalSnapshot CurrentSnapshot => snapshot;
         public bool HasRealSession => host && host.Read(selected,host.English)!=null;
         public Canvas NativeCanvas => canvas;
+        // Staged bridge: management routes remain hidden until native
+        // destination proof is accepted. No production-screen takeover.
+        public BreachWatchDestinationBridge RealDestinations => destinationBridge;
         public Button BuildingAction => actionButton;
         public Button BuildingClose => closeButton;
         public RectTransform BuildingPanel => panel;
@@ -305,6 +309,8 @@ namespace Eldoria.BreachWatch
             uiRoot=Rect("Safe composition",transform);
             Stretch(uiRoot);
             BuildIndependentComponents();
+            destinationBridge=gameObject.AddComponent<BreachWatchDestinationBridge>();
+            destinationBridge.Initialize(host,canvas);
             created=true;Reflow(Screen.width,Screen.height);RenderNow();
         }
 
