@@ -14,7 +14,13 @@ test('deferred real world is strictly opt-in and city-only never initiates regio
 
 test('the real staged map installs once and gates camera exposure',()=>{
   assert.match(world,/public bool BeginDeferredLoad\(\)[\s\S]*?if\(built\|\|building\)return true;/);
-  assert.match(world,/StartCoroutine\(BuildAndInstall\(\)\);/);
+  // A nested stage exception previously abandoned the live Unity coroutine,
+  // leaving IsLoading stuck and a partial world resident forever.
+  assert.match(world,/StartCoroutine\(GuardedDeferredBuild\(\)\);/);
+  assert.match(world,/stack.Push\(BuildAndInstall\(\)\);/);
+  assert.match(world,/if\(failed\)return false;/);
+  assert.match(world,/if\(yielded is IEnumerator inner\)/);
+  assert.match(world,/if\(failure!=null\)[\s\S]*?building=false;built=false;/);
   assert.match(world,/yield return RegionOneBlenderLandscape\.InstallStaged\(/);
   assert.match(world,/RegionOneCreaturePopulation\.Install\(/);
   assert.match(world,/REGION1_CANON_WORLD_INSTALLED/);
