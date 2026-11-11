@@ -1258,8 +1258,8 @@ namespace Eldoria.DailyTreasures
             }
             if(milestoneLyraPortrait)
             {
-                // Pull the same owned sprite that the canonical Heroes room
-                // displays. No generated face, no duplicated hero asset.
+                // Prefer the original canonical illustration for this 2D
+                // ceremony, then reuse an existing Heroes portrait if absent.
                 var portrait=currentStage==DailyTreasureStageKind.Lyra &&
                     showChest?TryCanonicalLyraPortrait():null;
                 // An isolated native fixture may not contain the Heroes UI
@@ -1316,6 +1316,13 @@ namespace Eldoria.DailyTreasures
         // destination; it never creates/unlocks a hero or changes a save.
         static Sprite TryCanonicalLyraPortrait()
         {
+            // Ceremony uses the original owner reference illustration. The
+            // hero detail keeps its interactive 3D model; no model is loaded
+            // or imported by this overlay. Transparent extraction provenance
+            // is recorded beside the candidate source, not assumed approved.
+            var illustration=Resources.Load<Sprite>(
+                "DailyTreasureCeremonies/canonical_lyra_illustration");
+            if(illustration)return illustration;
             var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
             foreach(var component in components)
@@ -1964,7 +1971,22 @@ namespace Eldoria.DailyTreasures
                         sourcePortrait.rect.height>=700f &&
                         sourcePortrait.rect.height/
                             Mathf.Max(1f,sourcePortrait.rect.width)>=1.2f;
-                    if(fullBody)
+                    bool originalIllustration=sourcePortrait &&
+                        sourcePortrait.name=="canonical_lyra_illustration";
+                    if(originalIllustration)
+                    {
+                        // This source has almost no empty space above the
+                        // hair. Align its head within the aperture instead
+                        // of reusing the old GLB render's empty-top crop.
+                        float imageHeight=portraitHeight*1.85f;
+                        float imageWidth=imageHeight*sourcePortrait.rect.width/
+                            Mathf.Max(1f,sourcePortrait.rect.height);
+                        Place(milestoneLyraPortrait.rectTransform,
+                            .5f,.5f,.5f,.5f,0f,
+                            portraitHeight*.46f-imageHeight*.5f,
+                            imageWidth,imageHeight);
+                    }
+                    else if(fullBody)
                     {
                         Place(milestoneLyraPortrait.rectTransform,
                             .5f,.5f,.5f,.5f,0f,
