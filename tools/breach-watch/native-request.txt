@@ -1,3 +1,5 @@
 Owner's last UI readability touch: slightly brighter secondary ink, portrait progress14/11pt with raised baseline51/40 and full row height; state/timer14/12pt with16u side inset. Preserve all artwork, scene and intervening automation changes. Source52geometry and realfont PASS. Live owner codex-pr173-completion-9eb868087db6 revision88.
 
 Owner-approved full UI migration native regression on current branch: verify complete eight-view first screen and no C# compilation errors from the staged canonical Training/March/Mail bridges and new reversible themes; visual approval remains independently pending. Resource claim rev 91.
+Native current-head regression: new canonical modal bridge, dark stone replacement, unchanged first-screen geometry and saved session; do not claim art approved.
+Head before request 07c38fedef4a658a9354075d7ccc39f72e29fa25; owner revision 91.
