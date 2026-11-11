@@ -1131,8 +1131,14 @@ namespace Eldoria.BreachWatch
                 // Source-measured new card: illustration well ends at 129.7u,
                 // description below it; one painted divider at 160.8u.
                 // Never include live description inside the portrait frame.
-                At(portraitFrame,15,61,pw-30,74);
-                At(buildingFunction.rectTransform,13,146,pw-26,22);
+                // Increase the authentic 3D Bastion viewport using nine unused
+                // authored units between image and description. Preserve the
+                // exact single sculpted plate and full real mesh silhouette:
+                // the camera UV fitter handles the new taller aperture.
+                At(portraitFrame,15,61,pw-30,83);
+                // Keep the real government description below the enlarged model
+                // and ABOVE the painted cost divider without covering either.
+                At(buildingFunction.rectTransform,13,148,pw-26,20);
                 descriptionDivider.gameObject.SetActive(false);
                 At(costHeader.rectTransform,13,174,pw-26,17);
                 At(buildingCosts.rectTransform,13,194,pw-26,20);
