@@ -59,7 +59,10 @@ namespace Eldoria.BetaMemory.Tests
             {
                 SceneManager.LoadScene("Valoria_City_World_UI");
                 MonoBehaviour host=null,adapter=null;
-                for(int i=0;i<240;i++)
+                float cityStartupStarted=Time.realtimeSinceStartup;
+                // Under batchmode, 240 rendered frames can elapse in a fraction of
+                // a second. Use wall-clock bounds, not an arbitrary frame count.
+                while(Time.realtimeSinceStartup-cityStartupStarted<45f)
                 {
                     yield return null;
                     host=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
@@ -109,11 +112,14 @@ namespace Eldoria.BetaMemory.Tests
                 Assert.That(world.activeInHierarchy,Is.False);
                 Assert.That(camera.enabled,Is.False);
 
-                for(int i=0;i<1200;i++)
+                float worldLoadStarted=Time.realtimeSinceStartup;
+                while(Time.realtimeSinceStartup-worldLoadStarted<120f)
                 {
                     yield return null;
                     if((bool)Member(adapter,"IsReady")&&(bool)Member(host,"InWorld"))break;
                 }
+                Debug.Log("ELDORIA_LAZY_REAL_WORLD_NATIVE_LOAD_ELAPSED_SECONDS="+
+                    (Time.realtimeSinceStartup-worldLoadStarted).ToString("F3",System.Globalization.CultureInfo.InvariantCulture));
                 Assert.That((bool)Member(adapter,"IsReady"),Is.True,
                     "Real staged terrain, resources and population must all finish");
                 Assert.That((bool)Member(host,"InWorld"),Is.True,
@@ -135,13 +141,26 @@ namespace Eldoria.BetaMemory.Tests
                     Is.EqualTo(48),"Canonical resources must be present, not an empty diagnostic map");
                 Assert.That(after.WorldCreatureLocations.Count,Is.EqualTo(36),
                     "Actual combat population must survive deferred installation");
-                Assert.That((bool)Call(host,"TrySetWorld",false),Is.True);
-                Assert.That((bool)Member(host,"InWorld"),Is.False);
-                Assert.That((bool)Call(host,"TrySetWorld",true),Is.True,
-                    "Second entry must reuse the already-built real world immediately");
-                Assert.That(world.transform.Cast<Transform>()
-                    .Count(x=>x.name=="Region 1 canonical continuous geography"),Is.EqualTo(1));
-                Assert.That(Member(Member(host,"City"),"Gateway"),Is.SameAs(gateway));
+                // Exercise the same camera/root repeatedly. This must not allocate
+                // a second Region 1, lose HUD/gateway or re-enter construction.
+                for(int cycle=0;cycle<12;cycle++)
+                {
+                    Assert.That((bool)Call(host,"TrySetWorld",false),Is.True);
+                    Assert.That((bool)Member(host,"InWorld"),Is.False);
+                    Assert.That(world.activeInHierarchy,Is.False);
+                    Assert.That(camera.enabled,Is.False);
+                    Assert.That((bool)Call(host,"TrySetWorld",true),Is.True,
+                        "Repeated entry must reuse existing world cycle "+cycle);
+                    Assert.That(world.activeInHierarchy,Is.True);
+                    Assert.That(camera.enabled,Is.True);
+                    Assert.That(world.transform.Cast<Transform>()
+                        .Count(x=>x.name=="Region 1 canonical continuous geography"),Is.EqualTo(1),
+                        "No duplicate scene across world navigation cycles");
+                    Assert.That(Member(host,"Hud"),Is.SameAs(hud));
+                    Assert.That(Member(Member(host,"City"),"Gateway"),Is.SameAs(gateway));
+                    yield return null;
+                }
+                Debug.Log("ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE");
 
                 // A full Region 1 is not usable by testers if its real saved
                 // population disappears after a reload. Reopen the disposable

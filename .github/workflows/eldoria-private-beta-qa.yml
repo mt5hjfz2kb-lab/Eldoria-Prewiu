@@ -75,7 +75,9 @@ jobs:
           assert 'if(!(before.SawmillLevel>0' in fixture,'Unlock cannot be faked'
           assert 'Is.SameAs(gateway)' in fixture and 'Is.SameAs(hud)' in fixture
           assert 'finally' in fixture and 'optIn.SetValue(null,previousFlag)' in fixture
-          for required in ['ReloadForProbe','WorldResourceLocations.Count','WorldCreatureLocations.Count','Is.Not.SameAs(gateway)','WaitForSecondsRealtime']:
+          for required in ['ReloadForProbe','WorldResourceLocations.Count','WorldCreatureLocations.Count','Is.Not.SameAs(gateway)','WaitForSecondsRealtime',
+                           'cityStartupStarted<45f','worldLoadStarted<120f',
+                           'cycle<12','ELDORIA_LAZY_REAL_WORLD_NATIVE_LOAD_ELAPSED_SECONDS']:
             assert required in fixture,'Missing real persistence regression: '+required
           print('P0_LAZY_WORLD_PLAYMODE_SOURCE_REGISTERED; UNITY_NOT_EXECUTED')
           PY
