@@ -960,12 +960,14 @@ namespace Eldoria.BreachWatch
                 // profile even though the live session supplies name and
                 // power: Unity's legacy Text silently paints zero glyphs
                 // when Truncate box is shorter than font line metrics.
-                // Give BOTH actual labels their full line heights inside the
-                // single hand-painted profile; no duplicated crest or card.
-                At(identityName.rectTransform,lionTextInset,smallPhone?10f:9f,
+                // Keep both live labels above the observed lower painted rim:
+                // genuine 900x1600 Unity d88903ba showed the PODER descenders
+                // touching it. Raise both rows by 4 authored units while
+                // preserving their original heights, spacing and one Canvas.
+                At(identityName.rectTransform,lionTextInset,smallPhone?6f:5f,
                     (smallPhone?174f:166f)-crestSize,smallPhone?21f:17f);
                 At(identityPower.rectTransform,lionTextInset,
-                    smallPhone?31f:27f,(smallPhone?174f:166f)-crestSize,
+                    smallPhone?27f:23f,(smallPhone?174f:166f)-crestSize,
                     smallPhone?18f:17f);
                 identityName.fontSize=smallPhone?14:12;
                 identityPower.fontSize=smallPhone?13:11;
