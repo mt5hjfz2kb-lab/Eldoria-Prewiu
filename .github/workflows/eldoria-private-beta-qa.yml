@@ -39,6 +39,12 @@ jobs:
             Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode
       - name: Node contract tests
         run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
+      - name: Validate owner-only genuine lazy-world WebGL package preflight (no build)
+        shell: bash
+        run: |
+          python3 -m py_compile tools/eldoria-private-beta/prepare_lazy_owner_site.py
+          python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_lazy_owner_site.py'
+          node --check tools/eldoria-private-beta/qa_webkit_residency.cjs
       - name: Validate first-party lazy-region PlayMode registration (source only)
         shell: bash
         run: |
