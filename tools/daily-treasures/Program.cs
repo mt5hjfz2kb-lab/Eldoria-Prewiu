@@ -459,6 +459,41 @@ internal static class Program
                 Eq(first.Scale,1f,"daily chest remains exclusively animated by chest timeline");
             else True(first.Opacity<1f,"new milestone reveal has its own measured staging");
         }
+        // Causal art fault: Image.preserveAspect letterboxes only rendered
+        // vertices, but an anchored child atlas draws across the full rect.
+        // In 390x844 the portrait illustration's square Scout painting was
+        // stretched >2x. Match parent rect to source aspect instead.
+        foreach(var (boxW,boxH) in new[]{
+            (246f,282f),  // 390x844 portrait original stage bounds
+            (358f,276f),  // 844x390 landscape original stage bounds
+            (328f,249f),  // intermediate phone
+            (470f,320f)   // large landscape
+        })
+        {
+            var fit=DailyTreasureStageDirection.ContainOriginalArtwork(
+                boxW,boxH,1376f,768f);
+            True(fit.Width<=boxW+.001f&&fit.Height<=boxH+.001f,
+                "original sprite never exceeds real art stage");
+            True(Math.Abs(fit.Width/fit.Height-1376f/768f)<.0001f,
+                "art child anchored to original parchment, not letterbox");
+            float originalTileW=.35f*fit.Width;
+            float originalTileH=.62f*fit.Height;
+            True(Math.Abs(originalTileW/originalTileH-1f)<.03f,
+                "real mission illustration remains square in the parchment");
+        }
+        var phone=DailyTreasureStageDirection.ContainOriginalArtwork(
+            246f,282f,1376f,768f);
+        True(phone.Height<140f,
+            "portrait parchment corrected from 282px stretch to true 137px");
+        var land=DailyTreasureStageDirection.ContainOriginalArtwork(
+            358f,276f,1376f,768f);
+        True(land.Height<205f,
+            "landscape parchment corrected from 276px stretch to true 200px");
+        bool invalidAspect=false;
+        try{DailyTreasureStageDirection.ContainOriginalArtwork(
+            float.NaN,500f,1376f,768f);}
+        catch(ArgumentOutOfRangeException){invalidAspect=true;}
+        True(invalidAspect,"invalid source geometry cannot corrupt mobile UI");
         bool refusedNaNEntrance=false;
         try{DailyTreasureStageDirection.SampleEntrance(
             DailyTreasureStageKind.Explorers,float.NaN);}

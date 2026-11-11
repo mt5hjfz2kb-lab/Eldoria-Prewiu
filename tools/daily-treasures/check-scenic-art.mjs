@@ -276,3 +276,20 @@ assert.match(realBuiltCity,/new\[\]\{"BastionTwo","BastionOne"\}/);
 assert.match(realBuiltCity,/building\.activeInHierarchy/);
 assert.doesNotMatch(realBuiltCity,/new\[\]\{"BastionFive","BastionFour","BastionThree"/);
 console.log('PASS real city class owns actual Bastion renderers and only displays built world levels');
+
+// Reproduced geometric root of the original Scout sticker: uGUI
+// Image.preserveAspect letterboxes vertices, NOT child RectTransforms.
+// Contain the parent itself to 1376:768 so real persisted atlas children
+// never stretch on narrow phone or 844x390 landscape.
+const directionSource=fs.readFileSync(
+    'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs','utf8');
+assert.match(directionSource,/ContainOriginalArtwork\(/);
+assert.match(panel,/currentStage==DailyTreasureStageKind\.Explorers\)[\s\S]*?ContainOriginalArtwork\(/);
+assert.match(panel,/original\.width,original\.height/);
+for(const [w,h] of [[246,282],[358,276],[328,249],[470,320]]){
+  const scale=Math.min(w/1376,h/768),rw=1376*scale,rh=768*scale;
+  assert.ok(rw<=w+1e-6&&rh<=h+1e-6);
+  assert.ok(Math.abs(rw/rh-1376/768)<1e-9);
+  assert.ok(Math.abs((.35*rw)/(.62*rh)-1)<.03);
+}
+console.log('PASS source-aligned Scout vignette geometry, no letterbox stickers');

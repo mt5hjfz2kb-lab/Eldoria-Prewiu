@@ -1832,6 +1832,21 @@ namespace Eldoria.DailyTreasures
                             artY+=stage.SceneH*.09f;
                             break;
                     }
+                    if(currentStage==DailyTreasureStageKind.Explorers)
+                    {
+                        // Unity Image.preserveAspect letterboxes VERTICES
+                        // but children retain the full container dimensions.
+                        // The true committed Scout vignette is a CHILD of
+                        // the original parchment: contain its parent to the
+                        // exact sprite aspect BEFORE anchoring the ink.
+                        // This fixes a 2x-tall sticker at 390x844 and a
+                        // 37%-tall sticker at 844x390, unlike tint changes.
+                        var original=milestoneStageArt.sprite.rect;
+                        var image=DailyTreasureStageDirection.ContainOriginalArtwork(
+                            artW,artH,original.width,original.height);
+                        artW=image.Width;
+                        artH=image.Height;
+                    }
                     Place(milestoneStageArt.rectTransform,
                         .5f,.5f,.5f,.5f,artX,artY,artW,artH);
                     milestoneStageRest=milestoneStageArt.rectTransform.anchoredPosition;

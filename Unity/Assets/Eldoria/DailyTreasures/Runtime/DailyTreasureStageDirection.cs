@@ -55,8 +55,38 @@ namespace Eldoria.DailyTreasures
         }
     }
 
+    // Raw Image.preserveAspect only shrinks the VERTICES; it does not
+    // shrink child RectTransforms. Anchoring genuine mission artwork to a
+    // letterboxed parent made the four real illustrations float and stretch
+    // vertically across the bronze parchment in a phone portrait.
+    // Parent and its child must occupy the SAME unletterboxed source quad.
+    public readonly struct DailyTreasureOriginalArtSize
+    {
+        public readonly float Width,Height;
+        public DailyTreasureOriginalArtSize(float width,float height)
+        {Width=width;Height=height;}
+    }
+
     public static class DailyTreasureStageDirection
     {
+        public static DailyTreasureOriginalArtSize ContainOriginalArtwork(
+            float availableWidth,float availableHeight,
+            float spritePixelWidth,float spritePixelHeight)
+        {
+            if(float.IsNaN(availableWidth)||float.IsInfinity(availableWidth)||
+               float.IsNaN(availableHeight)||float.IsInfinity(availableHeight)||
+               float.IsNaN(spritePixelWidth)||float.IsInfinity(spritePixelWidth)||
+               float.IsNaN(spritePixelHeight)||float.IsInfinity(spritePixelHeight)||
+               availableWidth<=0f||availableHeight<=0f||
+               spritePixelWidth<=0f||spritePixelHeight<=0f)
+                throw new ArgumentOutOfRangeException(nameof(availableWidth));
+            float scale=Math.Min(
+                availableWidth/spritePixelWidth,
+                availableHeight/spritePixelHeight);
+            return new DailyTreasureOriginalArtSize(
+                spritePixelWidth*scale,spritePixelHeight*scale);
+        }
+
         public static DailyTreasureStageEntrance SampleEntrance(
             DailyTreasureStageKind kind,float elapsed)
         {
