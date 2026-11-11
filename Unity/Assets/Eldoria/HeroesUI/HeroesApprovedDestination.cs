@@ -375,6 +375,13 @@ namespace Eldoria.HeroesUI
                     // complete Lyra portrait stranded on half of a wide stage.
                     Place(img.rectTransform,(modelW-imageW)*.5f,12+(modelH-62-imageH)*.5f,imageW,imageH);
                     img.sprite=hero.Portrait;img.preserveAspect=true;img.raycastTarget=false;
+                    // An approved illustrative fallback must not be pasted as
+                    // a bright photographic rectangle inside the physical
+                    // 2.5D hall. Dissolve its REAL source-rect edges with the
+                    // same existing painterly shader used for portraits,
+                    // keeping Lyra's face, armour, identity and silhouette.
+                    // The true 3D model still takes over asynchronously.
+                    FinishApprovedFallback(img,hero.Portrait);
                 }
                 else Label("Hero identity without substitute art",stage,hero.DisplayName,14,modelH*.35f,modelW-28,70,25,TextAnchor.MiddleCenter);
             }
@@ -497,7 +504,7 @@ namespace Eldoria.HeroesUI
             }
         }
         Texture2D hallArchitecture, hallIllustratedV2, hallLightTexture, hallPortraitTransition;
-        Material hallPaintMaterial, hallPortraitPaintMaterial, hallAldricMatteMaterial;
+        Material hallPaintMaterial, hallPortraitPaintMaterial, hallAldricMatteMaterial ,hallProfileFallbackMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
         {
@@ -540,7 +547,32 @@ namespace Eldoria.HeroesUI
             if(hallPaintMaterial)Destroy(hallPaintMaterial);
             if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);
             if(hallAldricMatteMaterial)Destroy(hallAldricMatteMaterial);
+            if(hallProfileFallbackMaterial)Destroy(hallProfileFallbackMaterial);
         }
+        void FinishApprovedFallback(Image image,Sprite source)
+        {
+            if(!image || !source || !source.texture)return;
+            var shader=Resources.Load<Shader>("EldoriaV41/HallPainterly");
+            if(!shader)return;
+            if(!hallProfileFallbackMaterial)
+            {
+                hallProfileFallbackMaterial=new Material(shader){
+                    name="Eldoria / approved heroine soft architecture blend",
+                    hideFlags=HideFlags.DontSave};
+            }
+            // The sprite can be a subregion of HeroesApprovedMaster.
+            // Normalize against that sprite's source pixels, NOT against
+            // the full atlas; otherwise only the atlas edges fade.
+            var r=source.rect;
+            var texture=source.texture;
+            hallProfileFallbackMaterial.SetVector("_PortraitUVRect",new Vector4(
+                r.xMin/texture.width,r.yMin/texture.height,
+                r.xMax/texture.width,r.yMax/texture.height));
+            hallProfileFallbackMaterial.SetFloat("_Strength",.34f);
+            hallProfileFallbackMaterial.SetFloat("_PortraitFeather",.20f);
+            image.material=hallProfileFallbackMaterial;
+        }
+
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
