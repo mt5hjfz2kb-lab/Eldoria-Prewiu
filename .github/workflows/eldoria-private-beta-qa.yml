@@ -6,12 +6,18 @@ on:
       - 'tools/eldoria-private-beta/**'
       - 'pipeline/eldoria-private-beta/**'
       - '.github/workflows/eldoria-private-beta-qa.yml'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
   pull_request:
     branches: [main]
     paths:
       - 'tools/eldoria-private-beta/**'
       - 'pipeline/eldoria-private-beta/**'
       - '.github/workflows/eldoria-private-beta-qa.yml'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
 permissions:
   contents: read
   actions: read
@@ -30,8 +36,102 @@ jobs:
             pipeline/eldoria-private-beta
             Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode
       - name: Node contract tests
         run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
+      - name: Validate first-party lazy-region PlayMode fixture and stable asset identity (source only)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, re
+          root=pathlib.Path('Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode')
+          assembly=json.loads((root/'Eldoria.BetaMemory.Tests.PlayMode.asmdef').read_text())
+          assert assembly['name']=='Eldoria.BetaMemory.Tests.PlayMode'
+          assert 'UNITY_INCLUDE_TESTS' in assembly['defineConstraints']
+          assert assembly['includePlatforms']==['Editor']
+          assert {'Eldoria.Domain','Eldoria.Application','Eldoria.Infrastructure','Eldoria.Presentation'}.issubset(assembly['references'])
+          assert assembly['precompiledReferences']==['nunit.framework.dll']
+          sources=[root/'LazyRegionStartupTests.cs']
+          guids=[]
+          for asset in [root/'Eldoria.BetaMemory.Tests.PlayMode.asmdef',*sources]:
+            meta=pathlib.Path(str(asset)+'.meta').read_text()
+            match=re.search(r'(?m)^guid:\\s*([0-9a-f]{32}) Never runs Unity or deploys
+      # Pages: compare immutable beta10 with an anchored clock-only variant.
+      - name: Pin and verify previous playable beta10 versus isolated timer candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --filter=blob:none --depth=1 origin \
+            be49d62e3daf490f41dba0bf8123a8e2eee64480 \
+            8dc875430241a49b4d417782dfeab2d4c7a4f315 \
+            485d7b1c7980b73fa6abac9dfad4a99ccc382ab8 \
+            e445a712b16f0bfc8196bdcb734492e780ef082c
+          python -m unittest discover -v -s tools/eldoria-private-beta/iphone_ab -p 'test_minimal_geometry.py'
+          python tools/eldoria-private-beta/iphone_ab/prepare.py --check
+          python tools/eldoria-private-beta/iphone_ab/prepare.py \
+            --out "$RUNNER_TEMP/eldoria-iphone-timer-ab"
+          python - <<'PY'
+          import json,os,pathlib
+          doc=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab/ab-evidence.json').read_text())
+          assert doc['only_changed_overlay']=='RoyalGoldV3ContextHud.cs.txt'
+          assert doc['overlays_verified_identical_other_than_timer']==18
+          assert doc['variants']==['beta10-control','anchored-gc0','beta10-minimal-anchor']
+          assert doc['one_file_differential_each'] is True
+          for variant in doc['variants']:
+            directory=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab'/variant
+            manifest=json.loads((directory/'manifest.json').read_text())
+            assert len(manifest['files'])==19, variant
+            assert all((directory/x['overlay']).exists() for x in manifest['files']), variant
+          assert doc['native_compiled'] is False
+          assert doc['external_distribution_approved'] is False
+          print('SOURCE_ONLY_ONE_FILE_IPHONE_AB_CHECK_PASS')
+          PY
+      - name: Preserve exact one-file A/B source pair for later Windows native QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta10-iphone-timer-ab-source-only
+          path: ${{ runner.temp }}/eldoria-iphone-timer-ab/
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14
+      - name: Fetch exact published-source archive
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42397405907
+          name: eldoria-pr163-web-preview-42397405907
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-native325
+      - name: Byte-level audit of native325 source ZIP and all 19 WebGL assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-private-beta/verify-freeze.mjs \
+            pipeline/eldoria-private-beta/native325-freeze.json \
+            "${{ runner.temp }}/eldoria-native325" > /tmp/freeze-verified.log
+          cat /tmp/freeze-verified.log
+          zip="$(find "${{ runner.temp }}/eldoria-native325" -type f -name '*.zip' | head -1)"
+          test -n "$zip"
+          mkdir -p "${{ runner.temp }}/eldoria-game"
+          unzip -q "$zip" -d "${{ runner.temp }}/eldoria-game"
+          node tools/eldoria-private-beta/verify-r2-files.mjs \
+            "${{ runner.temp }}/eldoria-game" \
+            pipeline/eldoria-private-beta/r2-upload-manifest.json
+          echo BETA_ORIGINAL_19_WEBGL_ASSETS_EXACT_SHA256_PASS
+,meta)
+            assert match,asset
+            guids.append(match.group(1))
+          assert len(set(guids))==len(guids),'Unity asset GUID collision'
+          test=sources[0].read_text()
+          assert '[UnityTest]' in test and 'SceneManager.LoadScene("Valoria_City_World_UI")' in test
+          for required in ['P0LazyWorldEditorTestOverride','VALORIA_GAMEPLAY_PROBE','BeginDeferredLoad',
+                           'IsLoading','IsReady','TrySetWorld','WorldResourceLocations',
+                           'WorldCreatureLocations','BastionLevel','PlayerName']:
+            assert required in test,required
+          assert 'if(!(before.SawmillLevel>0' in test,'Unlock cannot be faked'
+          assert 'Is.SameAs(gateway)' in test and 'Is.SameAs(hud)' in test
+          assert 'finally' in test and 'optIn.SetValue(null,previousFlag)' in test
+          print('P0_LAZY_WORLD_FIRST_PARTY_PLAYMODE_SOURCE_REGISTERED; UNITY_NOT_EXECUTED')
+          PY
       # Source-only iPhone regression experiment. Never runs Unity or deploys
       # Pages: compare immutable beta10 with an anchored clock-only variant.
       - name: Pin and verify previous playable beta10 versus isolated timer candidate
