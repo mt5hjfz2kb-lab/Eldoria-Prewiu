@@ -104,7 +104,7 @@ jobs:
           $code=Get-Content $path -Raw
           foreach($marker in @('runTests','LazyRegionStartupTests','lazy-world-native-result.json',
               'testers_authorized','if($issues.Count)','Get-Process Unity,blender','status --porcelain -- Unity',
-              'PR179_HOT_UNITY_EXACT_FROZEN_BASE_AND_ALL_DIRTY_ASSETS_VERIFIED','InputAuditPath')){
+              'PR179_HOT_UNITY_EXACT_FROZEN_BASE_AND_ALL_DIRTY_ASSETS_VERIFIED','InputAuditPath','PR179_AUDITED_ART_BYTES_UNCHANGED_AFTER_PLAYMODE','audited_input_byte_changes')){
             if(-not $code.Contains($marker)){throw "Native QA missing gate: $marker"}
           }
           $others=@('tools/eldoria-private-beta/native/run_structural.ps1',

@@ -246,11 +246,29 @@ try{
    $issues+='git status changed after test'
   }
   if($issues.Count){$failure="Restoration FAILED: $($issues -join ','); prior=$failure"}
+  # Git status cannot detect changes to contents of *already dirty* art.
+  # Without these SHA checks a PlayMode run could silently damage approved
+  # imported models or .meta while still reporting 'restored=true'.
+  $auditedInputChanges=@()
+  foreach($item in $audit.files){
+   $asset=Join-Path $Source $item.path
+   if(-not(Test-Path $asset -PathType Leaf) -or
+      (Get-FileHash -LiteralPath $asset -Algorithm SHA256).Hash -ne $item.sha256){
+    $auditedInputChanges+=@($item.path)
+   }
+  }
+  if($auditedInputChanges.Count -gt 0){
+   $issues+=@("Audited production art byte changes: $($auditedInputChanges -join ',')")
+   $failure="Restoration FAILED: $($issues -join ','); prior=$failure"
+  }else{
+   Write-Host 'PR179_AUDITED_ART_BYTES_UNCHANGED_AFTER_PLAYMODE'
+  }
   $restored=$issues.Count -eq 0
   $report=@{
    source_head=$head;unity_tests_passed=$verified;restored=$restored;frozen_ux_files=$uxPaths.Count;
    hot_source_base=$hotHead;audited_input_files=@($audit.files).Count;
    failed_reason=$failure;owned_files=$overlays.Count;original_unity_status_count=$trackedBefore.Count;
+   audited_input_byte_changes=$auditedInputChanges;
    tests_executed='Eldoria.BetaMemory.Tests.LazyRegionStartupTests';
    physical_iphone_verified=$false;testers_authorized=$false
   }

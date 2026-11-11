@@ -12,7 +12,7 @@
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs": "ea60cce6e7549ac2a8bceab9f83c64e9588a79d6",
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/Eldoria.BetaMemory.Tests.PlayMode.asmdef": "23007a85f8592885f4c98b51e1dcee6b37c75715",
     "tools/eldoria-private-beta/native/ux/manifest.json": "4ff4e6fbe9a194eebe5134df123d376b346c4d23",
-    "tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1": "03f82ac88cf4da09dd4630fa3d30b425a37099c4",
+    "tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1": "e77503a7f7442dd57422dca78d32c4bf456798b2",
     "tools/eldoria-private-beta/native/recover_isolated.ps1": "51b940c160ef107a8457b817b2ab4aacbb1eb01e",
     "tools/eldoria-private-beta/native/existing-input-audit.json": "7985cbc286c6354385aae4ddf67c3d34bba59e03",
     "tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1": "30bdba1a639fbc8420de398e1ab301afd2165476",
@@ -29,5 +29,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "Exclusive PR179 CAS Windows: actual Unity PlayMode with 45s city startup, 120s Region1 load bound, 12 map reentries, disk reload and full I-V; still no testers or WebGL Pages until physical QA"
+  "next": "Await PR179 exclusive Windows CAS. Real native PlayMode with 12 map re-entries, disk persistence and full SHA-256 restoration of imported art, then Bastion I-V WebGL and Mac A/B; no testers pending physical 30min."
 }
