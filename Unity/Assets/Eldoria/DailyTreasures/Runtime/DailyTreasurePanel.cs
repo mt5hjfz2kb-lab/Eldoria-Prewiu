@@ -113,6 +113,7 @@ namespace Eldoria.DailyTreasures
         // The hero is sourced only from the game's real hero inventory. Never
         // bake the imagined Lyra from a concept poster into a live milestone.
         Image milestoneLyraPortrait;
+        RectTransform milestoneLyraViewport;
         bool lyraFallbackActive;
         float nextLyraArtProbe,stopLyraArtProbe,lyraArtRevealAt;
         Image bastionStoryInk;
@@ -444,8 +445,17 @@ namespace Eldoria.DailyTreasures
             var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
             milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
             milestoneVignette.gameObject.SetActive(false);
+            // The real 3D Lyra render is full-height and contains a large
+            // transparent sky margin. Fitting the ENTIRE source into a 245px
+            // panel made her face a tiny dark thumbnail. A real uGUI clip
+            // viewport frames her upper body without editing or faking the
+            // canonical portrait pixels; painted architecture stays in front.
+            milestoneLyraViewport=NewRect(
+                "Canonical Lyra / cinematic scene aperture",ceremony);
+            milestoneLyraViewport.gameObject.AddComponent<RectMask2D>();
             var lyraPortraitRect=NewRect(
-                "Canonical Lyra / actual recruited hero illustration",ceremony);
+                "Canonical Lyra / actual recruited hero illustration",
+                milestoneLyraViewport);
             milestoneLyraPortrait=Plate(lyraPortraitRect,Color.white,false);
             milestoneLyraPortrait.preserveAspect=true;
             milestoneLyraPortrait.gameObject.SetActive(false);
@@ -1554,9 +1564,29 @@ namespace Eldoria.DailyTreasures
                     float portraitY=stage.SceneY-
                         (stage.SideBySide?stage.SceneH*.12f:
                             stage.SceneH*.23f);
-                    Place(milestoneLyraPortrait.rectTransform,
-                        .5f,.5f,.5f,.5f,portraitX,portraitY,
-                        portraitWidth,portraitHeight);
+                    Place(milestoneLyraViewport,.5f,.5f,.5f,.5f,
+                        portraitX,portraitY,portraitWidth,portraitHeight);
+                    // Use the source's real aspect to distinguish tall GLB
+                    // full-body portraits from already-tight Heroes UI busts.
+                    // The tall canonical texture has empty space above Lyra:
+                    // enlarge behind a RectMask2D and move the WHOLE image
+                    // down so the face becomes the emotional focal point.
+                    // No Texture2D duplication, Photoshop resize, new person,
+                    // unbounded frame allocations or pixel re-painting.
+                    var sourcePortrait=milestoneLyraPortrait.sprite;
+                    bool fullBody=sourcePortrait &&
+                        sourcePortrait.rect.height>=700f &&
+                        sourcePortrait.rect.height/
+                            Mathf.Max(1f,sourcePortrait.rect.width)>=1.2f;
+                    if(fullBody)
+                    {
+                        Place(milestoneLyraPortrait.rectTransform,
+                            .5f,.5f,.5f,.5f,0f,
+                            -portraitHeight*.22f,
+                            portraitWidth*1.60f,portraitHeight*2.05f);
+                    }
+                    else
+                        Stretch(milestoneLyraPortrait.rectTransform);
                     milestoneLyraPortrait.color=new Color(
                         1f,.97f,.90f,.96f);
                 }
