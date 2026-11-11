@@ -103,8 +103,8 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
     with Image.open(output) as pic:
         assert pic.mode == "RGBA", "No transparent native source image"
         min_a, max_a = pic.getchannel("A").getextrema()
-        bounds = pic.getchannel("A").getbbox()
-        if min_a != 0 or max_a < 250 or bounds is None:
+        alpha_bounds = pic.getchannel("A").getbbox()
+        if min_a != 0 or max_a < 250 or alpha_bounds is None:
             raise RuntimeError("Transparent authentic portrait unavailable")
         # Fail on a technically successful but visually empty / badly framed
         # raster, a real failure mode not caught by a mesh-count assertion.
@@ -128,7 +128,7 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         "output": str(output),
         "output_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
         "image_dimensions": size,
-        "alpha_bounds": list(bounds),
+        "alpha_bounds": list(alpha_bounds),
         "actor_count": count,
         "geometry_bounds": list(bounds),
         "geometry_diagonal": round(diagonal, 6),
