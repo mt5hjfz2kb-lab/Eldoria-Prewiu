@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T16:38:00Z",
+ "updated_at": "2026-11-11T16:48:00Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -24,7 +24,7 @@
    "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
    "owner": "chatgpt-issue186-art-import-recovery-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 3,
+   "ownership_revision": 4,
    "branch": "feature/issue186-reward-attention-guidance-20261111",
    "status": "active",
    "phase": "ART_SOURCE_IMPORTED_NATIVE_GATE_DESIGN_AND_IMPORT_QA",
@@ -39,9 +39,10 @@
     "docs/issue186/**",
     "Unity/Assets/Eldoria/Issue186Art/**",
     "Unity/Assets/Eldoria/Issue186Art.meta",
-    "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json"
+    "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
+    ".github/workflows/issue186-native.yml"
    ],
-   "next": "Verificar source art v5 ya subido, terminar comprobadores de importación y captura nativa en scope aislado; tratar v7 original separado sin falsificar integración. Sin editor hasta runner Windows libre por PR173.",
+   "next": "Independent native Unity capture workflow planned under own scope, exact Windows CAS claim required. PC remains #173; no dispatch until honest resource transfer.",
    "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
    "previous_owner": "chatgpt-issue186-art-20261111",
    "ownership_history": [
