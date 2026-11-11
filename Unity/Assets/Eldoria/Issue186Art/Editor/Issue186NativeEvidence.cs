@@ -240,8 +240,8 @@ namespace Eldoria.Issue186Art.Editor
                 // central action label or intercept the tap.
                 bool pointerClear =
                     pointer.rectTransform.anchoredPosition.x +
-                    pointer.rectTransform.rect.xMax <=
-                    buttonRect.anchoredPosition.x - buttonRect.rect.width*.20f;
+                    pointer.rectTransform.rect.xMin >=
+                    buttonRect.anchoredPosition.x + buttonRect.rect.width*.20f;
                 Need(pointerClear,
                     "Tutorial pointer obscures the central claim action");
                 // Test the browser/device-independent UI event flow using a
