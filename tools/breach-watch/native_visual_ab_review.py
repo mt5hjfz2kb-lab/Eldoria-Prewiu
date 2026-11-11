@@ -116,6 +116,7 @@ def run(args):
             "BreachWatchNativeEvidence.json",
             "BreachWatchDestinationEvidence.json",
             "BreachWatchHeroProfilesEvidence.json",
+            "BreachWatchAdvancedNavigationEvidence.json",
             "BreachWatchPopulatedMailEvidence.json",
             "BreachWatchRetentionEvidence.json",
         )
