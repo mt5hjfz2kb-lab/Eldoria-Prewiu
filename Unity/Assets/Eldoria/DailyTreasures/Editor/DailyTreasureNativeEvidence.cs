@@ -642,13 +642,19 @@ namespace Eldoria.DailyTreasures.Editor
                     "Original Vigilants compass still appears as a flat sticker");
             var uniqueStage=FindRect(panel,
                 "Unique Eldoria event stage / transparent foreground");
-            Need(panel.HasDistinctMilestoneArt &&
-                 panel.MilestoneArtworkResourceKey==
-                 "DailyTreasureCeremonies/"+
-                 expected.Kind.ToString().ToLowerInvariant()+"_stage" &&
-                 uniqueStage.GetComponent<Image>() &&
-                 !uniqueStage.GetComponent<Image>().raycastTarget,
-                 "Genuine category-specific layered art is missing");
+            if(expected.Kind==DailyTreasureStageKind.Bastion)
+                Need(!panel.HasDistinctMilestoneArt &&
+                     panel.MilestoneArtworkResourceKey==null &&
+                     !uniqueStage.gameObject.activeInHierarchy,
+                    "Painted fake arch blocks authentic Bastion close-up");
+            else
+                Need(panel.HasDistinctMilestoneArt &&
+                     panel.MilestoneArtworkResourceKey==
+                     "DailyTreasureCeremonies/"+
+                     expected.Kind.ToString().ToLowerInvariant()+"_stage" &&
+                     uniqueStage.GetComponent<Image>() &&
+                     !uniqueStage.GetComponent<Image>().raycastTarget,
+                    "Genuine category-specific layered art is missing");
             var ink=FindRect(panel,"Bastion / real-city milestone caption ink");
             var plate=FindRect(panel,
                 "Basalt and worn bronze reward parchment").GetComponent<Image>();
