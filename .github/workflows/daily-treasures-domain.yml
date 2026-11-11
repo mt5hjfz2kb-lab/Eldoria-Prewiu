@@ -467,10 +467,19 @@ jobs:
           print('Canonical Lyra geometry SHA-verified for independent pre-Unity evaluation; no invented portrait')
           PY
       - name: Render genuine Lyra geometry as isolated source-only portrait before Unity
+        id: canonical_studio
         if: steps.present.outputs.ready == 'yes'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
+          # GH-hosted Ubuntu DNS has intermittently failed to resolve both
+          # Ubuntu and PyPI (run 43036996899). Keep source QA progressing,
+          # but explicitly record missing portrait evidence, never PASS it.
+          if ! getent hosts security.ubuntu.com >/dev/null; then
+            echo "CANONICAL_STUDIO_BLOCKED_BY_DNS: not a portrait/art pass" >&2
+            exit 75
+          fi
           # Ubuntu hosted runners omit both EGL and OSMesa. VTK cannot load
           # genuine glTF geometry without a headless OpenGL backend.
           sudo apt-get update -qq
@@ -497,6 +506,27 @@ jobs:
           python3 tools/daily-treasures/render_canonical_lyra_pbr_studio.py \
             --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
             --out tools/daily-treasures/preunity-studies/lyra-PBR-STUDIO-CANDIDATE-NOT-APPROVED.png
+      - name: Record whether physically-lit source studio rendered actual pixels
+        if: always() && steps.present.outputs.ready == 'yes'
+        shell: bash
+        env:
+          RENDER_OUTCOME: ${{ steps.canonical_studio.outcome }}
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          study=Path('tools/daily-treasures/preunity-studies')
+          study.mkdir(parents=True,exist_ok=True)
+          image=study/'lyra-PBR-STUDIO-CANDIDATE-NOT-APPROVED.png'
+          complete=os.environ.get('RENDER_OUTCOME')=='success' and image.is_file()
+          report={'pbr_studio_result':'SOURCE_PIXELS_GENERATED' if complete else 'INFRASTRUCTURE_OR_RENDER_UNAVAILABLE',
+             'studio_step_outcome':os.environ.get('RENDER_OUTCOME'),
+             'actual_pbr_png_present':bool(complete),'art_approved':False,
+             'unity_native_verified':False,
+             'note':'DNS failures are not artistic success; do not promote missing portrait'}
+          (study/'studio-status.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report))
+          PY
       - name: Preserve actual independent stage paintings for source-level art review
         if: steps.present.outputs.ready == 'yes'
         shell: bash
