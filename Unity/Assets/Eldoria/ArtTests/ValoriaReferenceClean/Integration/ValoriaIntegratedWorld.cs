@@ -29,7 +29,18 @@ namespace Eldoria.ReferenceClean {
   internal void BindWorldPresentation(RegionOneCanonicalLandscape presentation){worldPresentation=presentation;}
   // All existing navigation/selection callers keep one readiness contract:
   // the map must be complete before any world camera or target can be exposed.
-  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady);
+  // Diagnostic-only experiment: isolate city startup from heavy Region 1 build.
+  // Do not affect default native/editor/playtest or production WebGL behavior.
+  public static bool P0CityOnlyProbe {
+   get {
+#if UNITY_WEBGL && !UNITY_EDITOR
+    return UnityEngine.Application.absoluteURL.Contains("eldoria_p0_city_only=1");
+#else
+    return false;
+#endif
+   }
+  }
+  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe);
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
   public ValoriaReferenceCleanGameplay City=>city;
@@ -293,6 +304,10 @@ namespace Eldoria.ReferenceClean {
   public void SetWorld(bool open){TrySetWorld(open);}
   public bool TrySetWorld(bool open){
    if(!Ready)return false;
+   if(open&&P0CityOnlyProbe){
+    if(Hud)Hud.Feedback.Put("Diagnóstico P0: mundo diferido; la partida sigue intacta.");
+    return false;
+   }
    if(open&&!CanEnterWorld(city.Gateway.Snapshot())){
     Hud.Feedback.Put(L("Construye primero el aserradero. Pulsa «Ir al objetivo» para encontrar la parcela.","Build the sawmill first. Choose Go to objective to find its plot."));
     Hud.SelectBuilding("sawmill");return false;
