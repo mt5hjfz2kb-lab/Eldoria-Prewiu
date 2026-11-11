@@ -99,6 +99,8 @@ jobs:
         run: node tools/daily-treasures/layout-smoke.mjs
       - name: Check category-specific illustrated milestones use real Eldoria scenic sources
         run: node tools/daily-treasures/check-scenic-art.mjs
+      - name: Enforce actual alpha-pixel Scout parchment visibility and readable real reports
+        run: python tools/daily-treasures/scout_visible_art_gate.py
       - name: Enforce authoritative save and non-paying mailbox wiring
         run: node tools/daily-treasures/check-integration.mjs
 
