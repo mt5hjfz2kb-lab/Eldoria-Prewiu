@@ -228,6 +228,8 @@ jobs:
             /tools/daily-treasures/
             /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg
             /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png.meta
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png.meta
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
@@ -289,6 +291,29 @@ jobs:
             --identity explorers=Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png \
             --identity vigilants=Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png \
             --identity bastion=tools/daily-treasures/real-city-source-verified.png
+      - name: Preserve the actual owner-approved Heroes reference for identity review
+        shell: bash
+        if: steps.present.outputs.ready == 'yes'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from PIL import Image
+          source=Path('Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png')
+          meta=Path(str(source)+'.meta')
+          assert source.is_file() and meta.is_file(), 'Official Heroes reference missing'
+          with Image.open(source) as artwork:
+              assert artwork.size==(1536,1024), 'Official master sheet changed'
+              artwork.convert('RGB').save(
+                  'tools/daily-treasures/preunity-studies/official-heroes-master-REFERENCE-ONLY.jpg',
+                  quality=90)
+          manifest={'source':str(source),'sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
+                    'classification':'CANONICAL_HEROES_REFERENCE_SHEET_NOT_LYRA_PORTRAIT',
+                    'art_approved':False,'unity_verified':False}
+          Path('tools/daily-treasures/preunity-studies/official-heroes-master-provenance.json').write_text(json.dumps(manifest,indent=2))
+          print('Prepared original Heroes reference for separate canonical character audit')
+          PY
       - name: Export 16 clearly labeled source-only studies for actual art comparison
         if: steps.present.outputs.ready == 'yes'
         uses: actions/upload-artifact@v4
