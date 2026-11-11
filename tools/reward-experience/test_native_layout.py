@@ -66,6 +66,60 @@ def layout(width, height):
     }
 
 
+
+def choose_hand(width, height, claim):
+    """Exact local-rect bounds for the Unity Image hand at 90/72px.
+
+    The authored PNG points left; its true pivot is (0.16, 0.61).
+    RenderTexture/mobile safe rectangle includes a six-pixel inset.
+    Try original right, then horizontal mirror, with center/bottom/top
+    fingertip contact to avoid clipping header/notch.
+    """
+    size=72.0 if width <= 480 else 90.0
+    px,py=.16,.61
+    safe=Box(-width*.5+6, -height*.5+6,
+             width*.5-6,height*.5-6)
+    inset_y=min(4.0,(claim.top-claim.bottom)*.12)
+    contacts=( (claim.bottom+claim.top)*.5,
+               claim.bottom+inset_y,claim.top-inset_y )
+    attempted=[]
+    for vertical, y in enumerate(contacts):
+        for mirrored in (False,True):
+            tip_x=claim.left-3 if mirrored else claim.right+3
+            if mirrored:
+                left,right=tip_x-(1-px)*size,tip_x+px*size
+            else:
+                left,right=tip_x-px*size,tip_x+(1-px)*size
+            box=Box(left,y-py*size,right,y+(1-py)*size)
+            fits=(box.left>=safe.left and box.right<=safe.right and
+                  box.bottom>=safe.bottom and box.top<=safe.top)
+            attempted.append((vertical,mirrored,fits,box))
+            if fits:
+                return vertical,mirrored,box,attempted
+    raise AssertionError(f"Tutorial hand cannot fit safe viewport {width}x{height}")
+
+
+def verify_hand_geometry(width,height,data):
+    contact,mirrored,hand,attempts=choose_hand(width,height,data["claim"])
+    claim=data["claim"]
+    # All four native fixtures deliberately put the action near the right
+    # edge. Center-right would clip BOTH right and top. Dynamic fallback is
+    # thus functional, not a decorative flipped version.
+    assert mirrored and contact==1, (width,height,contact,mirrored)
+    assert not attempts[0][2] and not attempts[1][2], (
+        width,height,"original center placement should not have fit")
+    center_width=(claim.right-claim.left)*.6
+    core_left=(claim.left+claim.right)*.5-center_width*.5
+    core_right=(claim.left+claim.right)*.5+center_width*.5
+    assert hand.right<=core_left or hand.left>=core_right, (
+        width,height,"pointer blocks central button label")
+    assert hand.left>=-width*.5+6 and hand.right<=width*.5-6
+    assert hand.bottom>=-height*.5+6 and hand.top<=height*.5-6
+    print(f"ISSUE186_POINTER_MODEL_PASS {width}x{height} "
+          f"mirrored={mirrored} contact={contact} hand={hand}")
+    return 6
+
+
 def verify():
     checks=0
     for width, height in SIZES:
@@ -95,6 +149,7 @@ def verify():
         # Target area must be large enough for mobile touch; probe CTA only.
         assert d["claim"].right-d["claim"].left>=92
         checks+=1
+        checks+=verify_hand_geometry(width,height,d)
         print(f"ISSUE186_LAYOUT_SOURCE_PASS {width}x{height} icon={d['icon']:.1f}px "
               f"4 tiers per resource row, safe CTA/title/alert boundaries")
     # Contract-crosscheck the genuine C# result/acceptance and the Windows
