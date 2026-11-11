@@ -237,7 +237,7 @@ const reliefCode=fs.readFileSync(
 assert.match(reliefCode,/Shader "Eldoria\/DailyHeraldicRelief"/);
 assert.match(reliefCode,/fixed4 src=tex2D\(_MainTex,i.uv\)/);
 assert.match(reliefCode,/float relief=saturate/);
-assert.match(scenic===undefined?panel:panel,/milestoneInsignia\.material=/);
+assert.match(panel,/milestoneInsignia\.material=/);
 assert.match(panel,/ownedVigilantsReliefMaterial:null/);
 assert.match(panel,/DestroyOwned\(ownedVigilantsReliefMaterial\)/);
 console.log('PASS real retained Vigilants compass rendered as source-derived bronze relief');
