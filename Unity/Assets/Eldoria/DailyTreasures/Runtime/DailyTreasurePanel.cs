@@ -1277,6 +1277,16 @@ namespace Eldoria.DailyTreasures
                 }
                 milestoneLyraPortrait.sprite=portrait;
                 milestoneLyraPortrait.gameObject.SetActive(portrait!=null);
+                // Actual native952a726f showed the old narrow portrait arch
+                // painted ACROSS the original heroine's face and chest.
+                // The original illustration and real hall now form the whole
+                // composition; the outer ceremonial frame already contains it.
+                if(portrait && portrait.name=="canonical_lyra_illustration")
+                {
+                    milestoneStageArt.sprite=null;
+                    milestoneStageArt.gameObject.SetActive(false);
+                    milestoneArtworkResourceKey=null;
+                }
                 lyraArtRevealAt=Time.unscaledTime;
                 nextLyraArtProbe=Time.unscaledTime+.7f;
                 stopLyraArtProbe=Time.unscaledTime+5.4f;

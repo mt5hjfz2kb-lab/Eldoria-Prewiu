@@ -188,7 +188,10 @@ namespace Eldoria.DailyTreasures.Editor
             Require(captured && captured.IsCreated() &&
                     captured.width>=500 && captured.height>=500,
                 "Bastion ceremony has no valid authentic URP render "+
-                width+"x"+height);
+                width+"x"+height+"; field="+(field!=null)+
+                "; texture="+(captured!=null)+
+                "; created="+(captured && captured.IsCreated())+
+                "; actual="+(captured?captured.width+"x"+captured.height:"none"));
             // Resolve MSAA before reading; never attempt ReadPixels from a
             // multisampled source and never assume the texture was painted.
             const int samples=192;

@@ -701,6 +701,12 @@ namespace Eldoria.DailyTreasures.Editor
                      panel.MilestoneArtworkResourceKey==null &&
                      !uniqueStage.gameObject.activeInHierarchy,
                     "Painted fake arch blocks authentic Bastion close-up");
+            else if(expected.Kind==DailyTreasureStageKind.Lyra)
+                Need(panel.DisplaysCanonicalLyraPortrait &&
+                     !panel.HasDistinctMilestoneArt &&
+                     panel.MilestoneArtworkResourceKey==null &&
+                     !uniqueStage.gameObject.activeInHierarchy,
+                    "Old portrait arch covers the original heroine; use her actual illustration and hall");
             else
                 Need(panel.HasDistinctMilestoneArt &&
                      panel.MilestoneArtworkResourceKey==
