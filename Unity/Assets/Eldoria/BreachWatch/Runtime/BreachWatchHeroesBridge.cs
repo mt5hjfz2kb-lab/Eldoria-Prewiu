@@ -80,6 +80,14 @@ namespace Eldoria.BreachWatch
             return true;
         }
 
+        public void SynchronizeVisual()
+        {
+            // Canonical hero pages are rebuilt on live selection and on
+            // offscreen orientation changes. Apply the replacement to the
+            // NEW authoritative content before accepting each screenshot.
+            if(IsShowing && theme && root)theme.Refresh(root);
+        }
+
         void LateUpdate()
         {
             if(!heroes || !canvas)return;
@@ -90,6 +98,7 @@ namespace Eldoria.BreachWatch
                 TryAdoptAlreadyOpen();
             }
             else if(root && !heroes.IsOpen)Restore();
+            if(IsShowing)SynchronizeVisual();
         }
 
         void OnCanonicalHeroesClosed()
