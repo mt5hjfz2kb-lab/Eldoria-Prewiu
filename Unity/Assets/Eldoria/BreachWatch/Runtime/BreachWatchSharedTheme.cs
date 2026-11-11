@@ -28,6 +28,9 @@ namespace Eldoria.BreachWatch
         readonly List<GameObject> createdSurfaces = new List<GameObject>();
         readonly Dictionary<Button, Graphic> originalButtonTargets =
             new Dictionary<Button, Graphic>();
+        readonly Dictionary<Button, Selectable.Transition> originalTransitions =
+            new Dictionary<Button, Selectable.Transition>();
+        Sprite slicedStone;
         Sprite stone, action;
         bool installed;
 
@@ -83,6 +86,7 @@ namespace Eldoria.BreachWatch
                 var older=rect.GetComponent<RoyalGoldV2FrameGraphic>();
                 if(!older)continue;
                 originalButtonTargets[button]=button.targetGraphic;
+                originalTransitions[button]=button.transition;
                 Hide(older);
                 var paint=AddSurface(rect,action,"Vigilia / burgundy action",true);
                 paint.raycastTarget=true;
@@ -120,11 +124,24 @@ namespace Eldoria.BreachWatch
             rt.offsetMax=Vector2.zero;
             rt.SetAsFirstSibling();
             var image=go.GetComponent<Image>();
-            image.sprite=source;
-            // Real nine-slice is required; scaling an entire square stone
-            // texture into a long card distorts bevels and produces fuzz.
-            image.type=source.border.sqrMagnitude>0f
-                ?Image.Type.Sliced:Image.Type.Simple;
+            // The approved blank square panel was imported without a slice
+            // border. Add a small, fixed pixel border at runtime instead of
+            // stretching its gilded bevel across wide management cards.
+            if(!isButton && source.border.sqrMagnitude<.1f)
+            {
+                if(!slicedStone)
+                {
+                    var r=source.rect;
+                    float edge=Mathf.Min(44f,Mathf.Min(r.width,r.height)*.12f);
+                    slicedStone=Sprite.Create(source.texture,r,
+                        new Vector2(.5f,.5f),source.pixelsPerUnit,0,
+                        SpriteMeshType.FullRect,new Vector4(edge,edge,edge,edge));
+                    slicedStone.name="Vigilia / runtime nine-slice stone";
+                }
+                image.sprite=slicedStone;
+            }
+            else image.sprite=source;
+            image.type=Image.Type.Sliced;
             image.preserveAspect=false;
             image.color=Color.white;
             image.raycastTarget=isButton;
@@ -137,6 +154,9 @@ namespace Eldoria.BreachWatch
             foreach(var pair in originalButtonTargets)
                 if(pair.Key)pair.Key.targetGraphic=pair.Value;
             originalButtonTargets.Clear();
+            foreach(var pair in originalTransitions)
+                if(pair.Key)pair.Key.transition=pair.Value;
+            originalTransitions.Clear();
             foreach(var entry in originalGraphics)
                 if(entry.Graphic)entry.Graphic.enabled=entry.Enabled;
             originalGraphics.Clear();
@@ -151,6 +171,7 @@ namespace Eldoria.BreachWatch
         void OnDestroy()
         {
             Restore();
+            if(slicedStone)Destroy(slicedStone);
         }
     }
 }
