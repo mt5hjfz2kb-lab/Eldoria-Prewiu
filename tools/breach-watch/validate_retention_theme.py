@@ -45,6 +45,24 @@ def main():
     need("theme.Apply(root,retention.OpenDestination ==" in B and
          "HasSingleGradedScoutsPainting" in B,
          "Only actual Scouts may receive this color grade")
+    contracts=R/"BreachWatchScoutStoneContracts.cs"
+    need(contracts.is_file() and contracts.with_suffix(".cs.meta").is_file(),
+         "Scouts carved contracts require stable Unity script and GUID")
+    C=contracts.read_text()
+    need("Reference parchment / visual only" in C and
+         "paper.sprite=stoneSprite" in C and
+         "paper.pixelsPerUnitMultiplier=1f" in C and
+         "paper.sprite=pair.Value.Sprite" not in C and
+         "image.sprite=pair.Value.Sprite" in C and
+         "scoutThumbnails" not in C and
+         "new Button(" not in C and
+         "NoOldParchmentVisible" in C,
+         "Scouts must replace genuine paper Image and restore it, not overlay or fake missions")
+    need("stoneContracts.Apply(canonicalScreen)" in T and
+         "stoneContracts.Restore()" in T and
+         "RealScoutsContractStoneReplaced" in T and
+         "RealScoutsContractStoneReplaced" in B,
+         "Only real Scouts navigation may acquire reversible stone contracts")
     need("retentionBridge.Initialize(host,canvas)" in H,
          "Independent Canvas must register the canonical retention bridge")
     nav=H.split("void Navigate(int index)",1)[1].split("void LateUpdate()",1)[0]
