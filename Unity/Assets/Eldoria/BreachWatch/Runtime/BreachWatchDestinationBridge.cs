@@ -25,6 +25,7 @@ namespace Eldoria.BreachWatch
         Transform originalParent;
         int originalSibling;
         BreachWatchSharedTheme theme;
+        BreachWatchTrainingComposition cinematicTraining;
 
         public bool IsShowing => destinationRoot &&
             destinationRoot.gameObject.activeInHierarchy &&
@@ -32,6 +33,8 @@ namespace Eldoria.BreachWatch
         public bool HasApprovedTheme => theme && theme.Installed &&
             theme.RestyledPanels==4 && theme.RestyledButtons>0 &&
             theme.NoLegacyBluePaintingVisible;
+        public bool RealTrainingCinematic => cinematicTraining &&
+            cinematicTraining.IsCinematicPortrait;
         public string NativeThemeDiagnostic => theme
             ? "installed="+theme.Installed+
               " panels="+theme.RestyledPanels+
@@ -99,6 +102,11 @@ namespace Eldoria.BreachWatch
             // Source controller recalculates and may re-enable its original
             // blue paintings. Turn those OFF again after the real reflow.
             theme.ReassertSinglePainting();
+            cinematicTraining=root.GetComponent<BreachWatchTrainingComposition>();
+            if(!cinematicTraining)
+                cinematicTraining=root.gameObject.AddComponent<BreachWatchTrainingComposition>();
+            cinematicTraining.Initialize(management);
+            cinematicTraining.RefreshPortrait();
             return theme.NoLegacyBluePaintingVisible;
         }
 
@@ -120,6 +128,7 @@ namespace Eldoria.BreachWatch
                 return;
             }
             if(theme)theme.ReassertSinglePainting();
+            if(cinematicTraining)cinematicTraining.RefreshPortrait();
             // The canonical destination's own Update handles Back/Escape,
             // live counts, sliders and action delivery. No parallel UI logic.
         }
@@ -132,6 +141,7 @@ namespace Eldoria.BreachWatch
 
         void Restore()
         {
+            if(cinematicTraining)cinematicTraining.Restore();
             if(theme)theme.Restore();
             if(destinationRoot && originalParent)
             {
