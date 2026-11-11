@@ -23,6 +23,7 @@ namespace Eldoria.BreachWatch
         ValoriaIntegratedWorld host;
         Canvas canvas;
         BreachWatchDestinationBridge destinationBridge;
+        BreachWatchMailboxBridge mailboxBridge;
         CanvasScaler scaler;
         GraphicRaycaster raycaster;
         Canvas legacyCanvas;
@@ -87,6 +88,7 @@ namespace Eldoria.BreachWatch
         // Staged bridge: management routes remain hidden until native
         // destination proof is accepted. No production-screen takeover.
         public BreachWatchDestinationBridge RealDestinations => destinationBridge;
+        public BreachWatchMailboxBridge RealMailbox => mailboxBridge;
         public Button BuildingAction => actionButton;
         public Button BuildingClose => closeButton;
         public RectTransform BuildingPanel => panel;
@@ -311,6 +313,8 @@ namespace Eldoria.BreachWatch
             BuildIndependentComponents();
             destinationBridge=gameObject.AddComponent<BreachWatchDestinationBridge>();
             destinationBridge.Initialize(host,canvas);
+            mailboxBridge=gameObject.AddComponent<BreachWatchMailboxBridge>();
+            mailboxBridge.Initialize(host,canvas);
             created=true;Reflow(Screen.width,Screen.height);RenderNow();
         }
 
