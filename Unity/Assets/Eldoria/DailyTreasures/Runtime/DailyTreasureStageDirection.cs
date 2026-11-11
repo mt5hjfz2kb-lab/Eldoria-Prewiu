@@ -163,6 +163,12 @@ namespace Eldoria.DailyTreasures
         // them to ~41% while preserving a dark forged frame and a separate
         // .82 basalt ink patch behind the real recorded story text.
         public const float BastionPlateOpacity=.34f;
+        // When the true building camera has not become available, keep its
+        // actual city visible THROUGH the frame rather than substitute an
+        // empty black picture. The .82-alpha ink protects factual text.
+        // Source-city light retained: (1-.19)*(1-.10)=72.9%.
+        public const float BastionWorldThroughPlateOpacity=.19f;
+        public const float BastionWorldThroughBackdropOpacity=.10f;
         public static DailyTreasureStageKind FromEvent(string eventId)
         {
             if(string.IsNullOrWhiteSpace(eventId))

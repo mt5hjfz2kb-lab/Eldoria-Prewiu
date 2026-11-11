@@ -397,3 +397,18 @@ for(const [w,h,fw,fh] of [[390,844,366,700],[844,390,740,370],
     'Original 3D Bastion footage would distort at '+w+'x'+h);
 }
 console.log('PASS real Bastion 3D render resolution follows portrait/landscape theatre');
+
+// Source causal art fallback: an unloaded/newly building Bastion must remain
+// the real visible CITY, not an empty black fake architecture. The existing
+// report has a separate dark ink field so text remains clear.
+const direction=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs','utf8');
+assert.match(direction,/BastionWorldThroughPlateOpacity=\.19f/);
+assert.match(direction,/BastionWorldThroughBackdropOpacity=\.10f/);
+assert.ok((1-.19)*(1-.10)>.72,'True city fallback must retain >72% of light');
+assert.match(panel,/bool liveBastionWorldThrough=eventStage/);
+assert.match(panel,/float bOpacity=liveBastionWorldThrough\?/);
+assert.match(panel,/bastionCameraPending=false;\s*Layout\(\);/);
+assert.match(nativeArt,/float liveLight=\(1f-backdrop\.color\.a\)/);
+assert.match(nativeArt,/worldThrough\?\.70f:\.40f/);
+console.log('PASS true city-through fallback, with frame restored after live 3D capture');

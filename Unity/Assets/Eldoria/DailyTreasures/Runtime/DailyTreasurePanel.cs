@@ -1800,8 +1800,13 @@ namespace Eldoria.DailyTreasures
                           panelH/(portrait?700f:370f)),
                 1f,1.5f):1f;
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
+            bool liveBastionWorldThrough=eventStage &&
+                currentStage==DailyTreasureStageKind.Bastion &&
+                !HasMilestoneScenery;
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
-                eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);
+                liveBastionWorldThrough?
+                    DailyTreasureStageDirection.BastionWorldThroughBackdropOpacity:
+                    eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);
             bool singleFrame=eventStage && !portrait &&
                 milestoneOrnament && milestoneOrnament.sprite;
             if(milestoneOrnament)
@@ -1811,15 +1816,17 @@ namespace Eldoria.DailyTreasures
                 mainFrameSurface.sprite=singleFrame?null:dailyFrameSprite;
                 mainFrameSurface.type=singleFrame?Image.Type.Simple:
                     dailyFrameSprite?Image.Type.Sliced:Image.Type.Simple;
+                float bOpacity=liveBastionWorldThrough?
+                    DailyTreasureStageDirection.BastionWorldThroughPlateOpacity:
+                    DailyTreasureStageDirection.BastionPlateOpacity;
                 if(singleFrame)
                     mainFrameSurface.color=new Color(Stone.r,Stone.g,Stone.b,
                         currentStage==DailyTreasureStageKind.Bastion?
-                        DailyTreasureStageDirection.BastionPlateOpacity:.96f);
+                            bOpacity:.96f);
                 else if(mainFrameSurface.sprite)
                     mainFrameSurface.color=eventStage &&
                         currentStage==DailyTreasureStageKind.Bastion?
-                            new Color(1f,1f,1f,
-                                 DailyTreasureStageDirection.BastionPlateOpacity):Color.white;
+                            new Color(1f,1f,1f,bOpacity):Color.white;
                 else mainFrameSurface.color=Stone;
             }
             if(eventStage)
@@ -2509,8 +2516,11 @@ namespace Eldoria.DailyTreasures
                     milestoneCinematicBackdrop.gameObject.SetActive(
                         ownedCinematicBackdropMaterial!=null);
                 }
-                UpdateSceneryCrop();
+                // The previous unloaded-city fallback was transparent.
+                // Once original camera pixels arrive, restore the actual
+                // planned frame, ink and cover UV for this orientation.
                 bastionCameraPending=false;
+                Layout();
                 return;
             }
             if(bastionCameraRetries>=3)

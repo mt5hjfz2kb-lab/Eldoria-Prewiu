@@ -597,8 +597,13 @@ namespace Eldoria.DailyTreasures.Editor
                  "Actual event report is not placed legibly beside the event art");
             var screen=FindRect(panel,"Tributo de los siete días / modal");
             var backdrop=screen.GetComponent<Image>();
+            bool worldThrough=expected.Kind==DailyTreasureStageKind.Bastion &&
+                !panel.HasMilestoneScenery;
+            float expectedBackdrop=worldThrough?
+                DailyTreasureStageDirection.BastionWorldThroughBackdropOpacity:
+                expected.BackdropOpacity;
             Need(backdrop &&
-                 Mathf.Abs(backdrop.color.a-expected.BackdropOpacity)<.03f,
+                 Mathf.Abs(backdrop.color.a-expectedBackdrop)<.03f,
                 "The Bastion city / event stage is too opaque or too faint");
             if(expected.SideBySide)
                 Need(painted.anchoredPosition.x+painted.rect.width*.5f<=
@@ -708,12 +713,15 @@ namespace Eldoria.DailyTreasures.Editor
                     "wide bronze artwork must not be distorted vertically");
             if(expected.Kind==DailyTreasureStageKind.Bastion)
             {
+                float expectedPlate=worldThrough?
+                    DailyTreasureStageDirection.BastionWorldThroughPlateOpacity:
+                    DailyTreasureStageDirection.BastionPlateOpacity;
                 Need(ink.gameObject.activeInHierarchy && plate &&
-                     Mathf.Abs(plate.color.a-
-                         DailyTreasureStageDirection.BastionPlateOpacity)<.015f,
-                     "Bastion real city is concealed by its own main frame");
-                Need((1f-backdrop.color.a)*(1f-plate.color.a)>.40f,
-                     "Less than 40% of the true built city remains visible");
+                     Mathf.Abs(plate.color.a-expectedPlate)<.015f,
+                     "Authentic Bastion hidden by wrong modal plate opacity");
+                float liveLight=(1f-backdrop.color.a)*(1f-plate.color.a);
+                Need(liveLight>(worldThrough?.70f:.40f),
+                     "The original true Bastion city is too dark");
                 Need(Mathf.Abs(ink.rect.width-expected.ReceiptW-16f)<1.1f &&
                      Mathf.Abs(ink.rect.height-expected.ReceiptH-12f)<1.1f &&
                      ink.GetComponent<Image>().color.a>.75f,
