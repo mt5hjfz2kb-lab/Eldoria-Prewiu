@@ -174,6 +174,29 @@ def source_audit(manifest):
             "Incomplete/invalid layer contract")
     return result
 
+def write_contact_sheet(out):
+    """Review four actual-source compositions together; NOT game captures."""
+    tile_w,tile_h=960,540
+    canvas=Image.new("RGB",(tile_w*2,tile_h*2),(13,15,20))
+    paint=ImageDraw.Draw(canvas)
+    for i,event in enumerate(EVENTS):
+        path=out/f"{event}-1600x900-PREVIEW-ONLY.png"
+        require(path.is_file(),"Missing 1600x900 event review: "+event)
+        with Image.open(path) as im:
+            tile=im.convert("RGB").resize((tile_w,tile_h),Image.Resampling.LANCZOS)
+        x=(i%2)*tile_w
+        y=(i//2)*tile_h
+        canvas.paste(tile,(x,y))
+        # The tag is ONLY on the review contact, never on the art source.
+        paint.rectangle((x+7,y+7,x+450,y+39),fill=(9,12,16))
+        paint.text((x+17,y+17),event.upper()+" / PRE-UNITY - NOT GAMEPLAY",
+                   fill=(236,219,182))
+    target=out/"four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg"
+    canvas.save(target,format="JPEG",quality=91,subsampling=0)
+    return {"path":target.name,"sha256":digest(target),
+            "classification":"SOURCE_STUDY_NOT_UNITY_SCREENSHOT"}
+
+
 def run(manifest,identities,out):
     require(set(identities)==set(EVENTS),"Provide ALL real Lyra/Scouts/Vigilants/Bastion source images")
     source_audit(manifest)
@@ -223,9 +246,11 @@ def run(manifest,identities,out):
                          "art_safety_note":("Generated gate omitted: not real game architecture"
                                             if event=="bastion" else "Stage is unapproved compositional candidate"),
                          "previews":shots}
+    contact=write_contact_sheet(out)
     result={"classification":"PREUNITY_STUDY_NOT_GAMEPLAY",
             "art_approved":False,"unity_native_verified":False,
-            "canonical_identity_required":True,"scenes":receipts}
+            "canonical_identity_required":True,"contact":contact,
+            "scenes":receipts}
     (out/"preview-provenance.json").write_text(json.dumps(result,indent=2),encoding="utf-8")
     return result
 
