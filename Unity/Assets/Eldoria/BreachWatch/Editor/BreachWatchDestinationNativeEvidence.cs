@@ -146,6 +146,7 @@ namespace Eldoria.BreachWatch.Editor
             // Do not call the gateway commit/save path or execute purchases.
             stateField.SetValue(gateway,fixture);
             var shots=new List<Screen>();
+            var profileShots=new List<Screen>();
             try
             {
                 host.City.Apply(fixture);
@@ -194,6 +195,42 @@ namespace Eldoria.BreachWatch.Editor
                     "Hero destination not adopted or still has old Royal frames");
                 CaptureMany(ui,folder,"heroes",shots,()=>heroes.IsShowing &&
                     heroes.ReplacedOldFrames);
+
+                // The Salon alone does NOT validate the rest of the game UI.
+                // Capture the four real interactive Aldric profile pages and
+                // Lyra's authentic profile under the same independent Canvas.
+                // Do not approve a good lobby if abilities, talents, gear or
+                // role details still use old frames, clip text or lose touch.
+                var canonicalHeroes=host.Hud.GetComponent<
+                    Eldoria.HeroesUI.HeroesApprovedDestination>();
+                Need(canonicalHeroes && canonicalHeroes.OpenHero("aldric"),
+                    "Cannot open real Sir Aldric profile in advanced fixture");
+                var pages=new[] {
+                    Eldoria.HeroesUI.HeroesApprovedDestination.Page.Resumen,
+                    Eldoria.HeroesUI.HeroesApprovedDestination.Page.Habilidades,
+                    Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos,
+                    Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento
+                };
+                foreach(var page in pages)
+                {
+                    canonicalHeroes.Select(page);
+                    Need(canonicalHeroes.IsOpen &&
+                         canonicalHeroes.CurrentPage==page,
+                        "Canonical hero tab was not selected: "+page);
+                    string name="hero-aldric-"+page.ToString().ToLowerInvariant();
+                    foreach(var size in new[]{(900,1600),(390,844)})
+                        profileShots.Add(Capture(ui,folder,name,
+                            size.Item1,size.Item2,
+                            ()=>heroes.IsShowing && heroes.ReplacedOldFrames &&
+                            canonicalHeroes.CurrentPage==page));
+                }
+                Need(canonicalHeroes.OpenHero("lyra"),
+                    "Genuine Lyra cannot open despite being recruited in fixture");
+                foreach(var size in new[]{(900,1600),(390,844)})
+                    profileShots.Add(Capture(ui,folder,"hero-lyra-resumen",
+                        size.Item1,size.Item2,
+                        ()=>heroes.IsShowing && heroes.ReplacedOldFrames &&
+                            canonicalHeroes.CurrentHeroId=="lyra"));
                 heroes.Close();
                 // Close heroes may return to a real management controller;
                 // the bridge must adopt and repaint it, not leave it hidden.
@@ -219,6 +256,8 @@ namespace Eldoria.BreachWatch.Editor
             var after=JsonUtility.ToJson(gateway.Snapshot());
             Need(before==after,"Migration fixture changed original player state");
             Need(shots.Count==16,"Expected sixteen real native destination captures");
+            Need(profileShots.Count==10,
+                "Expected ten additional real Unity hero profile/page captures");
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
@@ -228,6 +267,19 @@ namespace Eldoria.BreachWatch.Editor
             };
             File.WriteAllText(Path.Combine(folder,"BreachWatchDestinationEvidence.json"),
                 JsonUtility.ToJson(report,true));
+            // Separate, SHA256-labelled supplemental art audit. The canonical
+            // 16-image destination manifest stays unchanged for existing CI.
+            var heroReport=new Report {
+                status="VIGILIA_REAL_HERO_PROFILES_CAPTURED_ART_REVIEW_PENDING",
+                source=report.source,
+                notes="Real Aldric summary/abilities/talents/equipment and Lyra summary. Ten portrait/mobile screenshots, original gameplay state restored.",
+                probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                screenshotCount=profileShots.Count,
+                screens=profileShots.ToArray()
+            };
+            File.WriteAllText(Path.Combine(folder,
+                "BreachWatchHeroProfilesEvidence.json"),
+                JsonUtility.ToJson(heroReport,true));
         }
 
         static void CaptureMany(BreachWatchHud ui,string folder,string name,
