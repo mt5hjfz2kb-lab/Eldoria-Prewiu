@@ -1,0 +1,9 @@
+{
+  "scene": "bastion",
+  "stage": "PREUNITY_CANDIDATE_ONLY",
+  "art_approved": false,
+  "source_task_id": "42801f4e-fd08-4b40-8a1b-9a9d3f22f716",
+  "segmentation_task_id": "b87f13d7-1bc3-4ebe-bb1c-46eac1bacebe",
+  "temporary_download_url": "https://dnznrvs05pmza.cloudfront.net/sam3_image_segmentation/b87f13d7-1bc3-4ebe-bb1c-46eac1bacebe/7a435080-b184-4661-a840-7a6abd66c2c3.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjlhMDAyZTg1Yzg5YWEwYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDUwOTE2MH0.5G-_4PPBWvLQY1lxX5UJmYcsOUEZ1bg5BXK0r_y3iNI",
+  "temporary_source_caveat": "Temporary source URL; remove after source candidate is archived by verified SHA."
+}
