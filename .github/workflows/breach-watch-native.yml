@@ -823,6 +823,46 @@ jobs:
             if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
           }
           Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
+      - name: Capture four real destination screens in disposable Unity progression fixture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $folder=Join-Path $project 'BreachWatchDestinationEvidence'
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-destinations.log'
+          if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+          if(Test-Path $log){Remove-Item -LiteralPath $log -Force}
+          $start=[DateTime]::UtcNow
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchDestinationNativeEvidence.CaptureBatch',
+            '-logFile',('"'+$log+'"'))
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $limit=(Get-Date).AddMinutes(45)
+          while(-not $process.HasExited -and (Get-Date) -lt $limit){Start-Sleep 5;$process.Refresh()}
+          if(-not $process.HasExited){Stop-Process -Id $process.Id -Force;throw 'Own destination Unity process exceeded bound'}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 150}
+            throw "Real destination Unity preview failed: exit=$($process.ExitCode)"
+          }
+          $reportFile=Join-Path $folder 'BreachWatchDestinationEvidence.json'
+          if(-not(Test-Path $reportFile)){throw 'Missing genuine destinations report'}
+          $data=Get-Content $reportFile -Raw | ConvertFrom-Json
+          if($data.source -ne $env:GITHUB_SHA){throw 'Native destination report source SHA mismatch'}
+          if((Get-Item $reportFile).LastWriteTimeUtc -lt $start.AddSeconds(-3)){throw 'Destination evidence is stale'}
+          if($data.status -ne 'VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING' -or
+             $data.artworkApproved -or -not $data.probeOnly -or -not $data.saveUnchanged){throw 'Destination result claims unjustified artistic/gameplay PASS'}
+          if(@($data.screens).Count -ne 16 -or $data.screenshotCount -ne 16){throw 'Expected 4 destinations x 4 screen sizes'}
+          foreach($screen in $data.screens){
+            $file=Join-Path $folder $screen.file
+            if(-not(Test-Path $file)){throw "Missing native destination screenshot $($screen.file)"}
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen -or
+               $screen.interactiveButtons -lt 1){throw "Old UI visible or destination has no live controls: $($screen.file)"}
+            if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){throw "Modified destination screenshot $($screen.file)"}
+          }
+          if(-not(Select-String -Path $log -Pattern 'VIGILIA_REAL_DESTINATIONS_NATIVE_CAPTURED_ART_REVIEW_PENDING' -SimpleMatch -Quiet)){
+             throw 'Native Editor did not log actual destination capture PASS'
+          }
+          Write-Host 'VIGILIA_REAL_16_DESTINATION_SCREENSHOTS_CAPTURED_ART_PENDING'
       - name: Preserve real Unity screenshots and editor error logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -830,7 +870,9 @@ jobs:
           name: breachwatch-first-native-${{ github.sha }}-${{ github.run_id }}
           path: |
             ${{ env.BW_SOURCE }}/Unity/BreachWatchNativeEvidence/**
+            ${{ env.BW_SOURCE }}/Unity/BreachWatchDestinationEvidence/**
             ${{ runner.temp }}/breachwatch-native.log
+            ${{ runner.temp }}/breachwatch-destinations.log
           if-no-files-found: warn
           retention-days: 21
 
