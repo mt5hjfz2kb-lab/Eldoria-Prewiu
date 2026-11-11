@@ -302,3 +302,14 @@ for(const [w,h] of [[246,282],[358,276],[328,249],[470,320]]){
   assert.ok(Math.abs((.35*rw)/(.62*rh)-1)<.03);
 }
 console.log('PASS source-aligned Scout vignette geometry, no letterbox stickers');
+
+// Unity runtime compiles this code in an explicit asmdef, not Assembly-CSharp.
+// Add both URP 17.3 pipeline references; code can pass Ubuntu smoke but fail
+// the real Unity compiler without the URP assembly being referenced.
+const dailyUiAsmdef=JSON.parse(fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Eldoria.DailyTreasures.UI.asmdef','utf8'));
+for(const assembly of ['Unity.RenderPipelines.Universal.Runtime',
+                       'Unity.RenderPipelines.Core.Runtime'])
+  assert.ok(dailyUiAsmdef.references.includes(assembly),
+    'Missing explicit Unity6 URP dependency: '+assembly);
+console.log('PASS URP render-request assemblies explicitly referenced');
