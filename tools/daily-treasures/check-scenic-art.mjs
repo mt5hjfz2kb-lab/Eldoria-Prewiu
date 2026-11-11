@@ -433,3 +433,18 @@ assert.match(builtLens,/camera\.cullingMask&\(1<<r\.gameObject\.layer\)/);
 assert.match(builtLens,/item.GetType\(\).Name!="ValoriaReferenceCleanGameplay"/);
 assert.doesNotMatch(builtLens,/new\[\]\{"BastionFive","BastionFour","BastionThree"/);
 console.log('PASS active real Bastion I–V world/city models, not legacy tier-II in level-V');
+
+// Correct level-V identity requires the real saved BastionLevel, not just
+// whichever old I/II mesh briefly remains active. The legitimate V model
+// may arrive after city/region setup; the transparent real-world stage is
+// strictly preferable to a fake II-level hero photo.
+const tierProof=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
+assert.match(tierProof,/static int SavedBastionLevel\(object city\)/);
+assert.match(tierProof,/ReadMember\(snapshot,"BastionLevel"\)/);
+assert.match(tierProof,/if\(builtLevel>=5 && progression/);
+assert.match(tierProof,/if\(builtLevel>=5\)/);
+assert.match(tierProof,/pendingCanonicalTierFive=true/);
+assert.match(tierProof,/if\(pendingCanonicalTierFive\)return false/);
+assert.match(tierProof,/if\(SavedBastionLevel\(item\)>=5\)continue/);
+console.log('PASS exact saved Bastion V prevents old tier-II photo while V model loads');

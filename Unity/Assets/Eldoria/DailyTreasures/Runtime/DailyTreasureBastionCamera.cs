@@ -34,6 +34,19 @@ namespace Eldoria.DailyTreasures
                     BindingFlags.Public)?.GetValue(target);
         }
 
+        static int SavedBastionLevel(object city)
+        {
+            // A level-V achievement must never show the obsolete tier-II
+            // building during the single frame while the actual
+            // BastionIVVWorldPresentation is still instantiating.
+            var gateway=ReadMember(city,"Gateway");
+            var snapshot=gateway?.GetType().GetMethod("Snapshot",
+                BindingFlags.Public|BindingFlags.Instance)
+                ?.Invoke(gateway,null);
+            var level=ReadMember(snapshot,"BastionLevel");
+            return level is int committed ? committed : -1;
+        }
+
         static bool TryActiveBounds(GameObject root,Camera camera,
             out Bounds result)
         {
@@ -71,6 +84,7 @@ namespace Eldoria.DailyTreasures
             source=null;bounds=default;
             var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
+            bool pendingCanonicalTierFive=false;
             // FIRST: true playable owner. It chooses between city and region
             // and can display the real level-V Bastion via BastionIVVWorld-
             // Presentation, replacing WorldBastionTwo or City.BastionTwo.
@@ -85,12 +99,15 @@ namespace Eldoria.DailyTreasures
                 var camera=ReadMember(item,"PlayerCamera") as Camera;
                 if(!camera || !camera.gameObject.scene.isLoaded)continue;
                 bool inWorld=ReadMember(item,"InWorld") is bool value && value;
+                var city=ReadMember(item,"City");
+                int builtLevel=SavedBastionLevel(city);
                 MonoBehaviour progression=null;
                 foreach(var component in item.GetComponents<MonoBehaviour>())
                     if(component &&
                        component.GetType().Name=="BastionIVVWorldPresentation")
                     {progression=component;break;}
-                if(progression && progression.isActiveAndEnabled)
+                if(builtLevel>=5 && progression &&
+                   progression.isActiveAndEnabled)
                 {
                     // WorldModel is the genuine active tier-V render. In the
                     // city the real replacement is ModelFor("bastion").
@@ -107,6 +124,13 @@ namespace Eldoria.DailyTreasures
                     if(TryActiveBounds(tierFive,camera,out bounds))
                     {source=camera;return true;}
                 }
+                if(builtLevel>=5)
+                {
+                    // The authentic V replacement is not ready: do not
+                    // misrepresent this recorded milestone with old II art.
+                    pendingCanonicalTierFive=true;
+                    continue;
+                }
                 if(inWorld)
                 {
                     // Real owned world geometry, not invented fake castle.
@@ -116,12 +140,15 @@ namespace Eldoria.DailyTreasures
                 }
                 else
                 {
-                    var city=ReadMember(item,"City");
                     if(TryCaptureOwner(city,camera,
                        new[]{"BastionTwo","BastionOne"},out bounds))
                     {source=camera;return true;}
                 }
             }
+            // A loaded integrated game is tier V but its *authentic* model
+            // has not appeared: return false so the same CITY is shown
+            // through the transparent heritage frame until V loads.
+            if(pendingCanonicalTierFive)return false;
             // SECOND: native editor's genuine standalone city scene without
             // an initialized integrated world. Retain existing validated
             // test coverage and original active player camera.
@@ -130,6 +157,10 @@ namespace Eldoria.DailyTreasures
                 if(!item || !item.isActiveAndEnabled ||
                    item.GetType().Name!="ValoriaReferenceCleanGameplay" ||
                    !item.gameObject.scene.isLoaded)continue;
+                // The standalone test can also load a saved level V before
+                // the specialised progression class is initialised. Never
+                // disguise a level-V reward with the old tier-II mesh.
+                if(SavedBastionLevel(item)>=5)continue;
                 var camera=ReadMember(item,"PlayerCamera") as Camera;
                 if(TryCaptureOwner(item,camera,
                    new[]{"BastionTwo","BastionOne"},out bounds))
