@@ -1567,10 +1567,18 @@ namespace Eldoria.DailyTreasures
                             // The central city is real gameplay geometry.
                             // Move the original alpha stonework to the EDGE
                             // as a slender architectural side ornament.
-                            artW*=portrait?.80f:.57f;
-                            artH*=portrait?.60f:.60f;
-                            artX+=portrait?-stage.SceneW*.26f:
-                                stage.SceneW*.31f;
+                            // The verified 43005395878 true-city A/B showed
+                            // the enormous arch pasted OVER the actual
+                            // building. Make it a SIDE DETAIL instead:
+                            // reserve the central 38% of this scene for the
+                            // real Bastion, in both orientations. The narrow
+                            // ornament stays inside the panel (-.49..-.19w
+                            // portrait, +.19..+.49w landscape) and retains
+                            // its own fully original painted texture.
+                            artW*=.30f;
+                            artH*=portrait?.59f:.58f;
+                            artX+=portrait?-stage.SceneW*.34f:
+                                stage.SceneW*.34f;
                             artY+=stage.SceneH*.09f;
                             break;
                     }
