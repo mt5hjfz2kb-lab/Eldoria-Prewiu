@@ -80,15 +80,15 @@ class LazyOwnerSiteEvidenceTests(unittest.TestCase):
         root=Path(self.temp.name)
         orig=root/"source-webgl"
         (orig/"Build").mkdir(parents=True)
-        bundle=b"synthetic-original-data.unity3d\\x00" * 25
+        bundle=b"synthetic-original-data.unity3d\x00" * 25
         filename=b"data.unity3d"
         end=20+12+len(filename)
-        raw=(b"UnityWebData1.0\\x00"+struct.pack("<I",end)
+        raw=(b"UnityWebData1.0\x00"+struct.pack("<I",end)
              +struct.pack("<III",end,len(bundle),len(filename))
              +filename+bundle)
         (orig/"Build/demo.data.unityweb").write_bytes(gzip.compress(raw))
         (orig/"Build/demo.framework.js.unityweb").write_bytes(gzip.compress(b"synthetic framework"))
-        (orig/"Build/demo.wasm.unityweb").write_bytes(gzip.compress(b"\\x00asm\\x01\\x00\\x00\\x00"))
+        (orig/"Build/demo.wasm.unityweb").write_bytes(gzip.compress(b"\x00asm\x01\x00\x00\x00"))
         (orig/"Build/demo.loader.js").write_text("synthetic loader")
         (orig/"index.html").write_text("native synthetic index")
         shell=root/"frozen-beta14-shell"
@@ -96,7 +96,7 @@ class LazyOwnerSiteEvidenceTests(unittest.TestCase):
         (shell/"index.html").write_text('<html><script src="play.js"></script></html>')
         (shell/"style.css").write_text("body{}")
         (shell/"city.png").write_bytes(b"fake-png-not-rendered")
-        (shell/"play.js").write_text('window.__eldoriaDiagnosticRevision="frozen";\\nbutton.textContent = "Diagnóstico · beta 14";')
+        (shell/"play.js").write_text('window.__eldoriaDiagnosticRevision="frozen";\nbutton.textContent = "Diagnóstico · beta 14";')
         self.put(shell/"release-identity.json",{
             "revision":BETA14_REVISION,"source_sha":BETA14_SOURCE,
             "release_for_external_testers":False})
