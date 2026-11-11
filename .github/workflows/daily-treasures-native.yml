@@ -32,21 +32,18 @@ jobs:
           req=urllib.request.Request(url,headers=headers)
           with urllib.request.urlopen(req,timeout=20) as response:
               payload=json.load(response)
-          # Above 1 MiB the Contents API returns encoding=none and no body.
-          # Fetch its immutable exact SHA blob; missing/changed data MUST
-          # reject a lease, never be interpreted as an empty ownership claim.
+          # Large CAS registry: Contents API omits base64 above 1 MiB.
+          # Always require the exact immutable Git blob; never assume free.
           encoded=payload.get('content')
           if payload.get('encoding')!='base64' or not encoded:
-              blob_sha=payload.get('sha','')
-              if len(blob_sha)!=40:
-                  raise SystemExit('Oversized CAS registry SHA missing')
-              blob_url=f'https://api.github.com/repos/{repo}/git/blobs/{blob_sha}'
-              with urllib.request.urlopen(
-                      urllib.request.Request(blob_url,headers=headers),
-                      timeout=30) as response:
+              sha=payload.get('sha','')
+              if len(sha)!=40 or any(c not in '0123456789abcdef' for c in sha):
+                  raise SystemExit('Oversized CAS registry blob identity invalid')
+              blob_url=f'https://api.github.com/repos/{repo}/git/blobs/{sha}'
+              with urllib.request.urlopen(urllib.request.Request(blob_url,headers=headers),timeout=30) as response:
                   blob=json.load(response)
-              if blob.get('sha')!=blob_sha or blob.get('encoding')!='base64' or not blob.get('content'):
-                  raise SystemExit('Oversized CAS registry blob identity FAILED')
+              if blob.get('sha')!=sha or blob.get('encoding')!='base64' or not blob.get('content'):
+                  raise SystemExit('Oversized CAS registry Git blob mismatch')
               encoded=blob['content']
           registry=json.loads(base64.b64decode(encoded))
           holders=[x for x in registry['active']
@@ -163,17 +160,17 @@ jobs:
           if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Checkout is not the requested branch SHA'}
           $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='eldoria-daily-native-lease'}
           $file=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
-          # Same fail-closed immutable SHA fallback on self-hosted Windows.
+          # The Contents API leaves content empty for registry files >1 MiB.
           $leaseBase64=[string]$file.content
           if($file.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($leaseBase64)){
             if([string]$file.sha -notmatch '^[a-f0-9]{40}$'){
-              throw 'Unable to authenticate oversized lease registry Git blob'
+              throw 'Oversized Windows lease registry has invalid Git blob SHA'
             }
             $blobUrl="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/$($file.sha)"
             $blob=Invoke-RestMethod -Uri $blobUrl -Headers $headers
-            if($blob.sha -ne $file.sha -or $blob.encoding -ne 'base64' -or
+            if(($blob.sha -ne $file.sha) -or ($blob.encoding -ne 'base64') -or
                [string]::IsNullOrWhiteSpace([string]$blob.content)){
-              throw 'Oversized lease registry blob identity mismatch'
+              throw 'Oversized Windows lease registry Git blob mismatch'
             }
             $leaseBase64=[string]$blob.content
           }
