@@ -233,6 +233,69 @@ jobs:
             receipt.write_text(json.dumps(proof,indent=2)+chr(10))
             print('Staged the real approved-model GLB render ONLY: still needs visual QA')
           PY
+      - name: Retrieve genuine Lyra BUST and four-scene pre-Unity contact from immutable source run
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-preunity-ceremonies-927ba342f4cd29cfcdca2cee8a6fe04708a94ef5
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 42955378480
+          path: tools/daily-treasures/_lyra-bust-review-import
+      - name: Verify and preserve actual model bust plus explicitly non-gameplay art contact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          from PIL import Image
+          root=Path('tools/daily-treasures')
+          source=root/'_lyra-bust-review-import'
+          candidate=root/'art-candidates'
+          image=source/'lyra-canonical-bust-SOURCE-ONLY.png'
+          provenance=source/'lyra-canonical-bust-SOURCE-ONLY.provenance.json'
+          assert image.is_file() and provenance.is_file(),'SHA-backed bust render absent'
+          record=json.loads(provenance.read_text())
+          assert record['classification']=='CANONICAL_3D_LYRA_SOURCE_ONLY_NOT_UNITY'
+          assert record['source_sha256']=='a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725'
+          assert record['source_length']==4770000 and record['shot']=='bust'
+          assert record['generated_person'] is False and record['art_approved'] is False
+          assert record['unity_verified'] is False and record['actor_count']>0
+          assert hashlib.sha256(image.read_bytes()).hexdigest()==record['output_sha256']
+          with Image.open(image) as obj:
+            assert obj.mode=='RGBA' and obj.width>=1024 and obj.height>=512
+            a=obj.getchannel('A').histogram()
+            coverage=sum(a[160:])/(obj.width*obj.height)
+            assert .07<coverage<.93
+          candidate.mkdir(parents=True,exist_ok=True)
+          target=candidate/'lyra-canonical-bust-source.png'
+          receipt=candidate/'lyra-canonical-bust-source.provenance.json'
+          if target.exists() or receipt.exists():
+            assert target.is_file() and receipt.is_file()
+            assert hashlib.sha256(target.read_bytes()).hexdigest()==record['output_sha256']
+            assert json.loads(receipt.read_text())['source_sha256']==record['source_sha256']
+          else:
+            shutil.copyfile(image,target)
+            record['classification']='CANONICAL_LYRA_BUST_PREUNITY_CANDIDATE_NOT_APPROVED'
+            record['source_artifact_run']=42955378480
+            receipt.write_text(json.dumps(record,indent=2)+chr(10))
+          # This A/B contact is an immutable review study, NEVER a game UI
+          # resource or proof that a full game scene has run successfully.
+          comparison=source/'four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg'
+          ledger=json.loads((source/'preview-provenance.json').read_text())
+          assert ledger['classification']=='PREUNITY_STUDY_NOT_GAMEPLAY'
+          assert ledger['art_approved'] is False and ledger['unity_native_verified'] is False
+          assert set(ledger['scenes'])=={'lyra','explorers','vigilants','bastion'}
+          assert hashlib.sha256(comparison.read_bytes()).hexdigest()==ledger['contact']['sha256']
+          with Image.open(comparison) as sheet:
+            assert sheet.size==(1920,1080) and sheet.format=='JPEG'
+          contact=candidate/'four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg'
+          if contact.exists():
+            assert hashlib.sha256(contact.read_bytes()).hexdigest()==ledger['contact']['sha256']
+          else:
+            shutil.copyfile(comparison,contact)
+          print('Verified exact original 3D bust and non-gameplay contact; ART_APPROVED remains false')
+          PY
       - name: Preserve one unapproved source art candidate on the same PR only
         shell: bash
         run: |
@@ -242,6 +305,9 @@ jobs:
                   tools/daily-treasures/art-candidates/*_stage.provenance.json
                   tools/daily-treasures/art-candidates/lyra-canonical-portrait-source.png
                   tools/daily-treasures/art-candidates/lyra-canonical-portrait-source.provenance.json
+                  tools/daily-treasures/art-candidates/lyra-canonical-bust-source.png
+                  tools/daily-treasures/art-candidates/lyra-canonical-bust-source.provenance.json
+                  tools/daily-treasures/art-candidates/four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg
                   tools/daily-treasures/art-candidates/shared_ornament.png
                   tools/daily-treasures/art-candidates/ceremony-art-production.json)
           if (( ${#assets[@]} == 0 )); then
