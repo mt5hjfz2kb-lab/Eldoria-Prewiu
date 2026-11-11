@@ -147,11 +147,19 @@ namespace Eldoria.Domain
             // alone would wrongly grant the second payload. Existing receipt
             // tombstones cover this even after all items were spent/saved,
             // without introducing a second ledger or migrating old saves.
-            string bundlePrefix = rewardReceiptId + ":";
+            // Match all THREE possible component receipts exactly, even if
+            // the replay changes which resource amounts are nonzero. A raw
+            // prefix would also swallow distinct, valid colon-delimited IDs
+            // such as mission:c1 and mission:c1:bonus in either grant order.
+            string woodReceipt = rewardReceiptId + ":wood";
+            string stoneReceipt = rewardReceiptId + ":stone";
+            string foodReceipt = rewardReceiptId + ":food";
             foreach (var existing in inventory.Packets)
             {
-                if (existing != null && existing.ReceiptId != null &&
-                    existing.ReceiptId.StartsWith(bundlePrefix, StringComparison.Ordinal))
+                if (existing != null &&
+                    (existing.ReceiptId == woodReceipt ||
+                     existing.ReceiptId == stoneReceipt ||
+                     existing.ReceiptId == foodReceipt))
                     return false;
             }
             inventory.Packets.AddRange(candidate);
@@ -437,3 +445,4 @@ namespace Eldoria.Domain
         }
     }
 }
+

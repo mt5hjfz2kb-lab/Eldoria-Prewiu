@@ -253,6 +253,35 @@ internal static class Program
             restoredBundle.Packets.Count==3,
             "distinct reward event with a prefix-sharing ID is still allowed");
 
+        // Receipt IDs are structured gameplay IDs, so a colon can separate
+        // distinct events too. Granting a nested event must never suppress
+        // its parent (or conversely), while each event still rejects replay.
+        foreach (bool childFirst in new[] { true, false })
+        foreach (string suffix in new[] { "bonus", "wood", "stone", "food" })
+        {
+            var independent = new ResourceRewardInventory();
+            string parent = "mission:chapter1";
+            string child = parent + ":" + suffix;
+            string firstEvent = childFirst ? child : parent;
+            string secondEvent = childFirst ? parent : child;
+            Check(ResourceRewardRules.TryIssueBundle(independent,
+                firstEvent,"mission",100,0,0), "first structured reward event");
+            Check(ResourceRewardRules.TryIssueBundle(independent,
+                secondEvent,"mission",0,200,0),
+                "distinct colon-descendant reward must not be mistaken for replay");
+            var reloaded = JsonSerializer.Deserialize<ResourceRewardInventory>(
+                JsonSerializer.Serialize(independent,
+                    new JsonSerializerOptions { IncludeFields=true }),
+                new JsonSerializerOptions { IncludeFields=true });
+            Check(reloaded.Packets.Count==2 &&
+                !ResourceRewardRules.TryIssueBundle(reloaded,
+                    firstEvent,"mission",0,0,300) &&
+                !ResourceRewardRules.TryIssueBundle(reloaded,
+                    secondEvent,"mission",0,0,400) &&
+                reloaded.Packets.Count==2,
+                "both exact structured events survive reload without changed-payload replay");
+        }
+
         // Exact queued events, not a perpetual red dot on each menu button.
         var attentionLedger = new AttentionCueLedger();
         Check(!AttentionCueRules.Signal(attentionLedger,"","mail",AttentionLevel.New) &&
@@ -372,3 +401,4 @@ internal static class Program
         Console.WriteLine("ISSUE186_DOMAIN_PASS checks=" + checks);
     }
 }
+
