@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using Eldoria.ReferenceClean;
 
 namespace Eldoria.BreachWatch
@@ -22,6 +23,24 @@ namespace Eldoria.BreachWatch
         float originalZoom;
         Vector3 originalPosition;
         bool captured,portraitFramed;
+        // A user-approved cobalt roof is dramatically different from the
+        // grey source-material roof. The independent Unity GPU material atlas
+        // (native run 42948401195) proved original slots 8/9/10 and their
+        // exact names. This reversible presentation-only tint changes no
+        // mesh, prefab, shared material, texture, save or gameplay camera.
+        sealed class RoofRestore
+        {
+            public Renderer Renderer;
+            public int Index;
+            public MaterialPropertyBlock Before;
+            public bool HadBefore;
+        }
+        readonly List<RoofRestore> roofRestores=new List<RoofRestore>();
+        static readonly Color OwnerApprovedCobaltRoof=
+            new Color(.18f,1.10f,2.02f,1f);
+        static readonly string[] RoofSlotMaterials={
+            "material-3","material-4","material-5"
+        };
         float lastAspect;
 
         public bool PortraitFramed => portraitFramed;
@@ -37,6 +56,57 @@ namespace Eldoria.BreachWatch
                 originalPosition=cityCamera.transform.position;
                 captured=cityCamera.orthographic;
             }
+            // The ephemeral HUD owns its own palette. The world will be
+            // reverted on uninstall even if the user never opens the panel.
+            if(source && source.City)
+            {
+                ApplyReferenceRoofPresentation(source.City.BastionOne);
+                ApplyReferenceRoofPresentation(source.City.BastionTwo);
+            }
+        }
+
+        void ApplyReferenceRoofPresentation(GameObject building)
+        {
+            if(!building)return;
+            foreach(var renderer in building.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                if(!renderer || !renderer.enabled)continue;
+                var materials=renderer.sharedMaterials;
+                // Native original Bastion uses 19 entries. Do not tint any
+                // unknown level/model merely because it has a roof-like name.
+                if(materials==null || materials.Length!=19)continue;
+                if(renderer.name!="Bastion_I" &&
+                   renderer.name!="Reviewed roof geometry / persistent probe lighting")
+                    continue;
+                for(int slot=8;slot<=10;slot++)
+                {
+                    var originalMaterial=materials[slot];
+                    if(!originalMaterial ||
+                       originalMaterial.name!=RoofSlotMaterials[slot-8] ||
+                       !originalMaterial.HasProperty("_BaseColor"))continue;
+                    var oldBlock=new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(oldBlock,slot);
+                    var newBlock=new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(newBlock,slot);
+                    newBlock.SetColor("_BaseColor",OwnerApprovedCobaltRoof);
+                    roofRestores.Add(new RoofRestore {
+                        Renderer=renderer,Index=slot,Before=oldBlock,
+                        HadBefore=!oldBlock.isEmpty
+                    });
+                    renderer.SetPropertyBlock(newBlock,slot);
+                }
+            }
+        }
+        void RestoreOriginalRoofPresentation()
+        {
+            for(int i=roofRestores.Count-1;i>=0;i--)
+            {
+                var record=roofRestores[i];
+                if(record.Renderer)
+                    record.Renderer.SetPropertyBlock(
+                        record.HadBefore?record.Before:null,record.Index);
+            }
+            roofRestores.Clear();
         }
 
         static bool TryBounds(GameObject gameObject,out Bounds bounds)
@@ -173,6 +243,7 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            RestoreOriginalRoofPresentation();
             if(!captured || !portraitFramed || !cityCamera || !host || !host.City)return;
             cityCamera.orthographicSize=originalZoom;
             cityCamera.transform.position=originalPosition;
