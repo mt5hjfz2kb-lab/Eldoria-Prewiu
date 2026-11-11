@@ -2,6 +2,7 @@
 const fs = require('fs');
 const {execFileSync,spawn} = require('child_process');
 const {webkit, chromium} = require('playwright');
+const {verifyWorldStart} = require('./webkit-world-variant.cjs');
 const engine = process.env.QA_ENGINE || 'webkit';
 const variant = process.env.QA_VARIANT || 'unchanged';
 const out = process.env.QA_OUT || 'webkit-residency';
@@ -174,16 +175,15 @@ function processes() {
       report.p0LocalPhaseRecorderVerified=true;
     }
     const events=fs.readFileSync(out+'/events.jsonl','utf8');
-    // A city-only P0 experiment deliberately defers the massive Region 1
-    // build. Never give it a normal full-world certificate, or vice versa.
-    if(process.env.QA_CITY_ONLY==='1'){
-      const requested=new URL(process.env.QA_URL||'http://localhost/').searchParams.get('eldoria_p0_city_only')==='1';
-      if(!requested)throw Error('City-only QA requires the actual opt-in URL flag');
-      if(!events.includes('ELDORIA_P0_CITY_ONLY_WORLD_INITIALIZATION_SKIPPED'))throw Error('City-only world deferral was not executed');
-      if(events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('City-only experiment unexpectedly built full Region 1');
-      report.cityOnlyDeferredWorldVerified=true;
-      write();
-    }else if(!events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('World initialization incomplete');
+    // Validate genuine Unity logs for each URL variant. Lazy is a city-only
+    // readiness measurement until the separately gated real-world test runs.
+    Object.assign(report,verifyWorldStart({
+      cityOnly:process.env.QA_CITY_ONLY==='1',
+      lazyWorld:process.env.QA_LAZY_WORLD==='1',
+      url:process.env.QA_URL||page.url(),
+      events
+    }));
+    write();
     if(/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(events))throw Error('Unity runtime errors');
     await page.screenshot({path:out+'/game.png',timeout:15000});
     async function observeEntry(seconds,phase){
