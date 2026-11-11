@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 
 // Reuse actual commissioned/installed Eldoria scene art rather than inventing
 // a portrait of Lyra, an unbuilt Bastion, or non-existent loot. These are
@@ -58,3 +59,47 @@ assert.match(panel,/HasVisibleCanonicalHeroRoom\(\)/);
 assert.match(panel,/cachedCanonicalHeroRoom\.gameObject\.activeInHierarchy/);
 assert.doesNotMatch(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
 console.log('PASS three authentic reused painterly milestone scenes, original metadata, UV crop and non-blocking overlay');
+
+
+// Production imports must be exact copies of four independent preflighted
+// transparent illustrations and their shared engraving. A contact sheet is
+// not a Unity Sprite and must never substitute an actual source asset.
+const candidateRoot='tools/daily-treasures/art-candidates';
+const importedRoot='Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies';
+const candidateManifest=JSON.parse(fs.readFileSync(
+  candidateRoot+'/ceremony-art-production.json','utf8'));
+const importedManifest=JSON.parse(fs.readFileSync(
+  importedRoot+'/source-manifest.json','utf8'));
+assert.equal(importedManifest.art_approved,false);
+assert.equal(importedManifest.unity_native_verified,false);
+const authored={lyra:'lyra_stage.png',explorers:'explorers_stage.png',
+  vigilants:'vigilants_stage.png',bastion:'bastion_stage.png',
+  ornament:'shared_ornament.png'};
+const guids=new Set();
+for(const [key,file] of Object.entries(authored)){
+  const original=fs.readFileSync(candidateRoot+'/'+file);
+  const imported=fs.readFileSync(importedRoot+'/'+file);
+  assert.ok(original.equals(imported),'Corrupted original art: '+file);
+  const digest=createHash('sha256').update(imported).digest('hex');
+  const base=key==='ornament'?
+    candidateManifest.ceremonies.lyra.layers.find(x=>x.role==='ornament'):
+    candidateManifest.ceremonies[key].layers.find(x=>x.role==='stage');
+  assert.equal(digest,base.sha256,'Unexpected candidate art: '+file);
+  assert.equal(digest,importedManifest.assets[key].sha256,
+    'Unexpected Unity imported art: '+file);
+  const meta=fs.readFileSync(importedRoot+'/'+file+'.meta','utf8');
+  const guid=importedManifest.assets[key].guid;
+  assert.ok(meta.includes('guid: '+guid+'\\n'),'Wrong GUID: '+file);
+  for(const required of ['textureType: 8','spriteMode: 1',
+                          'alphaIsTransparency: 1','enableMipMap: 0'])
+    assert.ok(meta.includes(required),'Wrong Unity importer: '+file+' '+required);
+  assert.ok(!guids.has(guid),'Collision in imported art GUIDs');
+  guids.add(guid);
+}
+for(const scene of ['lyra','explorers','vigilants','bastion'])
+  assert.ok(panel.includes('"DailyTreasureCeremonies/'+scene+'_stage"'),
+    'Source asset not bound to runtime: '+scene);
+assert.match(panel,/milestoneStageArt\.raycastTarget=false/);
+assert.match(panel,/HasDistinctMilestoneArt/);
+assert.match(panel,/mainFrameSurface\.sprite=singleFrame\?null:dailyFrameSprite/);
+console.log('PASS unique original ceremony artwork in actual Unity Resources; pending Unity/human review');

@@ -101,6 +101,15 @@ namespace Eldoria.DailyTreasures
         RawImage milestoneScenery;
         Image milestoneVignette;
         Image milestoneInsignia;
+        // Separately painted alpha layers, behind official scene/hero identity.
+        Image milestoneStageArt,milestoneOrnament;
+        Sprite dailyFrameSprite;
+        string milestoneArtworkResourceKey;
+        public string MilestoneArtworkResourceKey => milestoneArtworkResourceKey;
+        public bool HasDistinctMilestoneArt =>
+            currentStage!=DailyTreasureStageKind.Daily &&
+            milestoneStageArt && milestoneStageArt.sprite &&
+            milestoneStageArt.gameObject.activeInHierarchy;
         // The hero is sourced only from the game's real hero inventory. Never
         // bake the imagined Lyra from a concept poster into a live milestone.
         Image milestoneLyraPortrait;
@@ -360,6 +369,19 @@ namespace Eldoria.DailyTreasures
             mainFrameSurface=Plate(cardSurface,Stone);
             if(!ApplyAuthoredFrame(cardSurface,"valoria_frame_main_512"))
                 Relief(cardSurface,true);
+            dailyFrameSprite=mainFrameSurface.sprite;
+            // One forged frame for a story event (landscape only). Tall
+            // layouts keep the genuine original nine-slice instead of
+            // distorting wide metalwork or stacking multiple ornate borders.
+            var narrativeFrame=NewRect(
+                "Authored narrative single-frame ornament / no hitbox",cardSurface);
+            milestoneOrnament=Plate(narrativeFrame,Color.white,false);
+            milestoneOrnament.sprite=Resources.Load<Sprite>(
+                "DailyTreasureCeremonies/shared_ornament");
+            milestoneOrnament.raycastTarget=false;
+            Stretch(milestoneOrnament.rectTransform);
+            narrativeFrame.SetAsFirstSibling();
+            milestoneOrnament.gameObject.SetActive(false);
             var edge=cardSurface.gameObject.AddComponent<Shadow>();
             edge.effectColor=new Color(0f,0f,0f,.82f);
             edge.effectDistance=new Vector2(4f,-6f);
@@ -426,6 +448,15 @@ namespace Eldoria.DailyTreasures
             milestoneLyraPortrait=Plate(lyraPortraitRect,Color.white,false);
             milestoneLyraPortrait.preserveAspect=true;
             milestoneLyraPortrait.gameObject.SetActive(false);
+            // Original 1376px transparent compositions, not flattened
+            // screenshots. Lyra's empty arch reveals the canonical figure;
+            // Scouts, Vigilants and Bastion show only actual in-game identity.
+            var paintedStage=NewRect(
+                "Unique Eldoria event stage / transparent foreground",ceremony);
+            milestoneStageArt=Plate(paintedStage,Color.white,false);
+            milestoneStageArt.preserveAspect=true;
+            milestoneStageArt.raycastTarget=false;
+            milestoneStageArt.gameObject.SetActive(false);
             // Authentic original scouting / Vigilants crests already belong
             // to Eldoria; a restrained insignia strengthens each milestone
             // without inventing a new faction, reward, hero or building.
@@ -700,6 +731,20 @@ namespace Eldoria.DailyTreasures
                 milestoneLyraPortrait.sprite=null;
                 milestoneLyraPortrait.gameObject.SetActive(false);
                 nextLyraArtProbe=stopLyraArtProbe=0f;
+            }
+            if(milestoneStageArt)
+            {
+                milestoneStageArt.sprite=null;
+                milestoneStageArt.gameObject.SetActive(false);
+                milestoneArtworkResourceKey=null;
+            }
+            if(milestoneOrnament)milestoneOrnament.gameObject.SetActive(false);
+            if(mainFrameSurface)
+            {
+                mainFrameSurface.sprite=dailyFrameSprite;
+                mainFrameSurface.type=dailyFrameSprite?
+                    Image.Type.Sliced:Image.Type.Simple;
+                mainFrameSurface.color=dailyFrameSprite?Color.white:Stone;
             }
             if(header)header.gameObject.SetActive(true);
             if(subhead)subhead.gameObject.SetActive(true);
@@ -1030,6 +1075,11 @@ namespace Eldoria.DailyTreasures
             glow.color=new Color(1f,.75f,.36f,dailyCoffer?0f:.16f);
             ambient.color=Color.clear;
             SetMilestoneScenery(eventId,showChest);
+            var stagePath=showChest?MilestoneArtResource(currentStage):null;
+            var stageSprite=stagePath==null?null:Resources.Load<Sprite>(stagePath);
+            milestoneStageArt.sprite=stageSprite;
+            milestoneStageArt.gameObject.SetActive(stageSprite!=null);
+            milestoneArtworkResourceKey=stageSprite?stagePath:null;
             if(milestoneLyraPortrait)
             {
                 // Pull the same owned sprite that the canonical Heroes room
@@ -1147,6 +1197,24 @@ namespace Eldoria.DailyTreasures
                 UpdateSceneryCrop();
             }
         }
+        // The actual game character/map/emblem/city is not baked into these
+        // decorative aperture layers. Daily gifts never receive a stage.
+        static string MilestoneArtResource(DailyTreasureStageKind kind)
+        {
+            switch(kind)
+            {
+                case DailyTreasureStageKind.Lyra:
+                    return "DailyTreasureCeremonies/lyra_stage";
+                case DailyTreasureStageKind.Explorers:
+                    return "DailyTreasureCeremonies/explorers_stage";
+                case DailyTreasureStageKind.Vigilants:
+                    return "DailyTreasureCeremonies/vigilants_stage";
+                case DailyTreasureStageKind.Bastion:
+                    return "DailyTreasureCeremonies/bastion_stage";
+                default:return null;
+            }
+        }
+
         void UpdateSceneryCrop()
         {
             if(!milestoneScenery || !milestoneScenery.texture)return;
@@ -1377,15 +1445,25 @@ namespace Eldoria.DailyTreasures
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
                 eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);
+            bool singleFrame=eventStage && !portrait &&
+                milestoneOrnament && milestoneOrnament.sprite;
+            if(milestoneOrnament)
+                milestoneOrnament.gameObject.SetActive(singleFrame);
             if(mainFrameSurface)
             {
-                if(mainFrameSurface.sprite)
+                mainFrameSurface.sprite=singleFrame?null:dailyFrameSprite;
+                mainFrameSurface.type=singleFrame?Image.Type.Simple:
+                    dailyFrameSprite?Image.Type.Sliced:Image.Type.Simple;
+                if(singleFrame)
+                    mainFrameSurface.color=new Color(Stone.r,Stone.g,Stone.b,
+                        currentStage==DailyTreasureStageKind.Bastion?
+                        DailyTreasureStageDirection.BastionPlateOpacity:.96f);
+                else if(mainFrameSurface.sprite)
                     mainFrameSurface.color=eventStage &&
                         currentStage==DailyTreasureStageKind.Bastion?
                             new Color(1f,1f,1f,
                                  DailyTreasureStageDirection.BastionPlateOpacity):Color.white;
-                else
-                    mainFrameSurface.color=Stone;
+                else mainFrameSurface.color=Stone;
             }
             if(eventStage)
             {
@@ -1396,6 +1474,17 @@ namespace Eldoria.DailyTreasures
                 milestoneScenery.color=MilestonePaintTint(stage);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
+                if(milestoneStageArt && milestoneStageArt.gameObject.activeSelf)
+                {
+                    // Painterly foreground is transparent and cannot invent
+                    // a different Lyra, reward, or future Bastion city.
+                    Place(milestoneStageArt.rectTransform,
+                        .5f,.5f,.5f,.5f,stage.SceneX,stage.SceneY,
+                        stage.SceneW*(portrait?1.72f:1.78f),
+                        stage.SceneH*(portrait?1.20f:1.16f));
+                    milestoneStageArt.color=new Color(1f,1f,1f,
+                        currentStage==DailyTreasureStageKind.Bastion?.83f:.96f);
+                }
                 // The authoritative hero portrait is the focal subject of
                 // Lyra's ceremony, with actual Eldoria hall as the depth layer.
                 // Portrait crops are independent of text/hitboxes. Keep its
@@ -1421,10 +1510,15 @@ namespace Eldoria.DailyTreasures
                 }
                 if(milestoneInsignia.gameObject.activeSelf)
                 {
-                    float insigniaSize=portrait?57f:65f;
+                    // Place the ACTUAL Vigiliants crest in the empty shield,
+                    // instead of floating a second icon below the painting.
+                    bool centerShield=currentStage==DailyTreasureStageKind.Vigilants &&
+                        milestoneStageArt && milestoneStageArt.sprite;
+                    float insigniaSize=centerShield?(portrait?82f:95f):
+                        portrait?57f:65f;
                     Place(milestoneInsignia.rectTransform,.5f,.5f,.5f,.5f,
-                        stage.SceneX+stage.SceneW*.33f,
-                        stage.SceneY-stage.SceneH*.31f,
+                        centerShield?stage.SceneX:stage.SceneX+stage.SceneW*.33f,
+                        centerShield?stage.SceneY:stage.SceneY-stage.SceneH*.31f,
                         insigniaSize,insigniaSize);
                     milestoneInsignia.color=new Color(1f,.95f,.87f,.87f);
                 }

@@ -539,6 +539,15 @@ namespace Eldoria.DailyTreasures.Editor
             else
                 Need(panel.HasMilestoneScenery,
                     "Original real Eldoria artwork is absent from the milestone");
+            var uniqueStage=FindRect(panel,
+                "Unique Eldoria event stage / transparent foreground");
+            Need(panel.HasDistinctMilestoneArt &&
+                 panel.MilestoneArtworkResourceKey==
+                 "DailyTreasureCeremonies/"+
+                 expected.Kind.ToString().ToLowerInvariant()+"_stage" &&
+                 uniqueStage.GetComponent<Image>() &&
+                 !uniqueStage.GetComponent<Image>().raycastTarget,
+                 "Genuine category-specific layered art is missing");
             var ink=FindRect(panel,"Bastion / real-city milestone caption ink");
             var plate=FindRect(panel,
                 "Basalt and worn bronze reward parchment").GetComponent<Image>();
