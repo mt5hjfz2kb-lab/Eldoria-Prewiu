@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T16:48:00Z",
+ "updated_at": "2026-11-11T19:46:18.308Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -6838,11 +6838,14 @@
     }
    ],
    "runner_priority_handoff": {
-    "status": "OWNER_CONFIRMED_RELEASE_TO_BETA_UX",
-    "at": "2026-11-09T08:26:10.917Z",
+    "status": "OWNER_DIRECTED_RELEASE_AFTER_CURRENT_NATIVE_BATCH",
+    "at": "2026-11-11T19:46:18.307Z",
     "to": "eldoria-private-beta-i-v-20261107",
-    "reason": "Current user: Sigue con el trabajo el chat de la interfaz ya liberó el PC",
-    "latest_completed_interface_run": 42582751853
+    "after_run_id": 43089450921,
+    "from_owner": "chatgpt-pr173-complete-ui-migration-20261111",
+    "from_revision": 91,
+    "reason": "El propietario pide en este chat mirar y forzar el relevo. Terminar el lote nativo en curso y preservar evidencias; liberar SOLO Windows por CAS y ceder a PR179; conservar titularidad de escritura, PR173 y trabajo artístico. No iniciar otro lote Windows antes de la cesión. Rotación posterior PR181, PR187, PR173.",
+    "transfer_completed": false
    },
    "last_verified": {
     "source_sha": "73d15578b0815a40f5f49af285c0ae929166ef7d",
