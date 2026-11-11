@@ -45,8 +45,13 @@ namespace Eldoria.BreachWatch
             // Canonical Open guards story introduction, modal and narrative.
             mailbox.Open();
             if(!mailbox.IsOpen)return false;
-            var real=host.Hud.transform.Find("V41 / Buzón destination")
-                as RectTransform;
+            // Transform.Find treats literal slashes in the name as path
+            // delimiters; this canonical destination uses a slash in its
+            // actual GameObject name. Compare direct children explicitly.
+            RectTransform real=null;
+            foreach(Transform child in host.Hud.transform)
+                if(child.name=="V41 / Buzón destination")
+                {real=child as RectTransform;break;}
             if(!real)
             {
                 mailbox.Close();
