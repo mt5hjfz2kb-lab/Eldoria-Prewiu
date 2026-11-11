@@ -241,3 +241,15 @@ assert.match(panel,/milestoneInsignia\.material=/);
 assert.match(panel,/ownedVigilantsReliefMaterial:null/);
 assert.match(panel,/DestroyOwned\(ownedVigilantsReliefMaterial\)/);
 console.log('PASS real retained Vigilants compass rendered as source-derived bronze relief');
+
+// Proven against canonical Unity source: ValoriaIntegratedWorld owns the
+// switching camera but NOT named BastionOne/Two fields. The real
+// ValoriaReferenceCleanGameplay owns the active built meshes and PlayerCamera.
+const realBuiltCity=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
+assert.match(realBuiltCity,/item.GetType\(\).Name!="ValoriaReferenceCleanGameplay"/);
+assert.match(realBuiltCity,/GetProperty\("PlayerCamera"/);
+assert.match(realBuiltCity,/new\[\]\{"BastionTwo","BastionOne"\}/);
+assert.match(realBuiltCity,/building\.activeInHierarchy/);
+assert.doesNotMatch(realBuiltCity,/new\[\]\{"BastionFive","BastionFour","BastionThree"/);
+console.log('PASS real city class owns actual Bastion renderers and only displays built world levels');
