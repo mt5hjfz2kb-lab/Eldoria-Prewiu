@@ -91,7 +91,12 @@ namespace Eldoria.Domain
         {
             if (inventory == null || string.IsNullOrWhiteSpace(receiptId) ||
                 string.IsNullOrWhiteSpace(origin) || DirectToWallet(origin) ||
-                !IsResource(kind) || amount <= 0) return false;
+                !IsResource(kind) || amount <= 0 ||
+                // A whitespace-only mail key would create an unclaimable
+                // locked packet: TryIssue used IsNullOrEmpty while ClaimMail
+                // rejects IsNullOrWhiteSpace. Fail closed before mutation.
+                (mailEventId != null && mailEventId.Length > 0 &&
+                    string.IsNullOrWhiteSpace(mailEventId))) return false;
             var packets = inventory.Packets;
             if (packets == null) return false;
             foreach (var p in packets)
