@@ -1,0 +1,163 @@
+{
+  "version": "issue186-art-v5-20261111",
+  "status": "ART_CANDIDATE_SOURCE_QA_PASS_UNITY_PENDING",
+  "reference": "approved Vigilia de la Brecha; Eldoria daily treasures dark gold art",
+  "resourceKinds": [
+    "wood",
+    "stone",
+    "food"
+  ],
+  "denominations": [
+    100,
+    1000,
+    10000,
+    100000
+  ],
+  "assetCount": 16,
+  "artifacts": [
+    {
+      "file": "badge_claimable.png",
+      "key": "Issue186ResourceArt/badge_claimable",
+      "sha256": "e2cba9ddc4e650f07c422386043d95e2ecbbb44afe56d53d7e73c67fc7ae7f43",
+      "bytes": 90980,
+      "width": 320,
+      "height": 175,
+      "guid": "a3379ea2c59d0f937fd414a900345ddb"
+    },
+    {
+      "file": "badge_new.png",
+      "key": "Issue186ResourceArt/badge_new",
+      "sha256": "a6548a7bea869be0c0b086905d569e2ab2b37d4e6e360db987397b11be28b550",
+      "bytes": 54337,
+      "width": 320,
+      "height": 175,
+      "guid": "6ddb39615a0a4574603690685108b7ed"
+    },
+    {
+      "file": "pack_food_100.png",
+      "key": "Issue186ResourceArt/pack_food_100",
+      "sha256": "059a7e984b1413d5221a5adf95d269d91cf6d57848ce74555a7113c99884d616",
+      "bytes": 166216,
+      "width": 320,
+      "height": 320,
+      "guid": "b4e80bd5dc2e16f2d4feb09b3edc8d8f"
+    },
+    {
+      "file": "pack_food_100k.png",
+      "key": "Issue186ResourceArt/pack_food_100k",
+      "sha256": "e647e1ad2827271f7a6210ea7a9ee8427151d24a201c800360bebbb73c6eb865",
+      "bytes": 185837,
+      "width": 320,
+      "height": 320,
+      "guid": "9079381e2eb7f8d8d23a7a426094d3c5"
+    },
+    {
+      "file": "pack_food_10k.png",
+      "key": "Issue186ResourceArt/pack_food_10k",
+      "sha256": "f4790061c074e087554d2954119cc48be289eaa65f7b6fb6039858e5f41de8f1",
+      "bytes": 178057,
+      "width": 320,
+      "height": 320,
+      "guid": "cd41feb25358ec30ee283b5a4c1a5fce"
+    },
+    {
+      "file": "pack_food_1k.png",
+      "key": "Issue186ResourceArt/pack_food_1k",
+      "sha256": "59704d8c8034defc44b22e5cd00d121ee1bbf85c08135d9ff2d56dcbf2c55a5c",
+      "bytes": 178870,
+      "width": 320,
+      "height": 320,
+      "guid": "968e5badd74a5bf246cc0552e588e6bf"
+    },
+    {
+      "file": "pack_stone_100.png",
+      "key": "Issue186ResourceArt/pack_stone_100",
+      "sha256": "108f42461e3c6e0a4a48bf7a0857b0d44bcbf25f4047baacbb8e30ca6ea2daa3",
+      "bytes": 125477,
+      "width": 320,
+      "height": 320,
+      "guid": "454422b0771bc4f4c80b28f97ea56343"
+    },
+    {
+      "file": "pack_stone_100k.png",
+      "key": "Issue186ResourceArt/pack_stone_100k",
+      "sha256": "f0340e01f49a7d79f8adcb4e63cdfe5610b51ccc6b8295d52f3f888ccda9f8c9",
+      "bytes": 170151,
+      "width": 320,
+      "height": 320,
+      "guid": "03639f03d9ffd38ff2df625950a6ef2f"
+    },
+    {
+      "file": "pack_stone_10k.png",
+      "key": "Issue186ResourceArt/pack_stone_10k",
+      "sha256": "600a0caae99295939c539c8c717f629955ed5528d7948e99c67a65c35c016a47",
+      "bytes": 173191,
+      "width": 320,
+      "height": 320,
+      "guid": "118ea998eeecf85dd894f72f10d25077"
+    },
+    {
+      "file": "pack_stone_1k.png",
+      "key": "Issue186ResourceArt/pack_stone_1k",
+      "sha256": "fa1bb06d2d0945eefc135edb88c1aaf8b63e3cddf0e0d9e1e8f883669568194b",
+      "bytes": 161540,
+      "width": 320,
+      "height": 320,
+      "guid": "04522ed931e7133e3c39155f586cf8d3"
+    },
+    {
+      "file": "pack_wood_100.png",
+      "key": "Issue186ResourceArt/pack_wood_100",
+      "sha256": "1779f1924da8b1de7d545698b15ca1eacf5ef96258818614aa710fc398d328f1",
+      "bytes": 121664,
+      "width": 320,
+      "height": 320,
+      "guid": "d2b4a3a39e45e5b77f2b78813adff748"
+    },
+    {
+      "file": "pack_wood_100k.png",
+      "key": "Issue186ResourceArt/pack_wood_100k",
+      "sha256": "c17e042b941b0459cc1debed3018222631c2affa2a5c8a564f5f8673f754e1eb",
+      "bytes": 160193,
+      "width": 320,
+      "height": 320,
+      "guid": "f198e86abc276f21877847a36096eca5"
+    },
+    {
+      "file": "pack_wood_10k.png",
+      "key": "Issue186ResourceArt/pack_wood_10k",
+      "sha256": "8927c178ff5c29bade7e789fe7c2286cc1a8ee56ed454b5ff0a349eb74dcdd24",
+      "bytes": 172360,
+      "width": 320,
+      "height": 320,
+      "guid": "7cd220cb87f6e4215e2348309047cf55"
+    },
+    {
+      "file": "pack_wood_1k.png",
+      "key": "Issue186ResourceArt/pack_wood_1k",
+      "sha256": "00138aeae093c3e462c5082a7e2b38b618e2915f7ea5da68ee92f7450848d145",
+      "bytes": 140510,
+      "width": 320,
+      "height": 320,
+      "guid": "5d42e3d406e59844a0260f8d1936df16"
+    },
+    {
+      "file": "tutorial_pointing_hand.png",
+      "key": "Issue186ResourceArt/tutorial_pointing_hand",
+      "sha256": "c6a723af69d57becc2608638d7a78ec4f98894ccf581d1251c8ca04c4b4f467f",
+      "bytes": 146623,
+      "width": 384,
+      "height": 384,
+      "guid": "6965a8ff3b4f7788db07b90c89509584"
+    },
+    {
+      "file": "tutorial_target_halo.png",
+      "key": "Issue186ResourceArt/tutorial_target_halo",
+      "sha256": "250205a81e5bf8b253ffb0a5fd62ca1572bb37ddefaf18c536fa8ed7c1518bc7",
+      "bytes": 21838,
+      "width": 256,
+      "height": 256,
+      "guid": "99a4eebe72db25709bcccbe9ebdf7a8c"
+    }
+  ]
+}
