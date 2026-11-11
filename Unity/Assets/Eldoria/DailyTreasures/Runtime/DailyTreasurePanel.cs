@@ -1761,6 +1761,10 @@ namespace Eldoria.DailyTreasures
                 prizeCount==0 && w>=275f && h>=300f;
             var stage=eventStage?DailyTreasureStageDirection.Compose(
                 activeMilestoneId,w,h):default(DailyTreasureStageLayout);
+            var earnedTheatre=eventStage?
+                DailyTreasureStageDirection.NarrativeTheatreFrame(w,h):
+                default(DailyTreasureNarrativeFrame);
+            if(eventStage)panelW=earnedTheatre.Width;
             // Orientation is also re-evaluated by the SAME native Editor
             // Layout() probe. A stale portrait source must never stand in
             // for the newly rotated view of the player's actual Bastion.
@@ -1786,6 +1790,7 @@ namespace Eldoria.DailyTreasures
                 (focusedQuiet?430f:openingChest?450f:700f):
                 (focusedQuiet?330f:openingChest?300f:
                     roomyCalendar?420f:370f));
+            if(eventStage)panelH=earnedTheatre.Height;
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
                 eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);

@@ -67,8 +67,37 @@ namespace Eldoria.DailyTreasures
         {Width=width;Height=height;}
     }
 
+    public readonly struct DailyTreasureNarrativeFrame
+    {
+        public readonly float Width,Height;
+        public DailyTreasureNarrativeFrame(float width,float height)
+        {Width=width;Height=height;}
+    }
+
     public static class DailyTreasureStageDirection
     {
+        // True premium cinema: actual authored landscapes should fill the
+        // desktop/tablet, while 390x844 and 844x390 retain safe layout.
+        public static DailyTreasureNarrativeFrame NarrativeTheatreFrame(
+            float width,float height)
+        {
+            if(float.IsNaN(width)||float.IsInfinity(width)||
+               float.IsNaN(height)||float.IsInfinity(height)||
+               width<275f||height<300f)
+                throw new ArgumentOutOfRangeException(nameof(width));
+            bool portrait=height>width;
+            if(portrait&&width>=650f&&height>=900f)
+                return new DailyTreasureNarrativeFrame(
+                    Math.Min(width-24f,620f),
+                    Math.Min(height-20f,1060f));
+            if(!portrait&&width>=950f&&height>=620f)
+                return new DailyTreasureNarrativeFrame(
+                    Math.Min(width-32f,Math.Min(1120f,width*.84f)),
+                    Math.Min(height-26f,Math.Min(640f,height*.76f)));
+            return new DailyTreasureNarrativeFrame(
+                Math.Min(width-24f,portrait?440f:740f),
+                Math.Min(height-20f,portrait?700f:370f));
+        }
         public static DailyTreasureOriginalArtSize ContainOriginalArtwork(
             float availableWidth,float availableHeight,
             float spritePixelWidth,float spritePixelHeight)
@@ -176,10 +205,13 @@ namespace Eldoria.DailyTreasures
                     "Need a real portrait/landscape canonical screen size");
             var kind=FromEvent(eventId);
             bool portrait=height>width;
-            // Panel itself is bounded to 440x700 portrait / 740x370
-            // landscape, as in the existing uGUI component.
-            float w=Math.Min(width-24f,portrait?440f:740f);
-            float h=Math.Min(height-20f,portrait?700f:370f);
+            // Daily loot retains its own verified compact frame. Milestones
+            // use the authored full-world theatre, NOT a small flat modal.
+            var frame=NarrativeTheatreFrame(width,height);
+            float w=kind==DailyTreasureStageKind.Daily?
+                Math.Min(width-24f,portrait?440f:740f):frame.Width;
+            float h=kind==DailyTreasureStageKind.Daily?
+                Math.Min(height-20f,portrait?700f:370f):frame.Height;
 
             if(kind==DailyTreasureStageKind.Daily)
                 return new DailyTreasureStageLayout(kind,

@@ -359,8 +359,11 @@ internal static class Program
             (375f,667f),(667f,375f),(1024f,768f),(768f,1024f)})
         {
             bool portrait=device.Item2>device.Item1;
-            float width=Math.Min(device.Item1-24f,portrait?440f:740f);
-            float height=Math.Min(device.Item2-20f,portrait?700f:370f);
+            var theatre=DailyTreasureStageDirection.NarrativeTheatreFrame(
+                device.Item1,device.Item2);
+            float width=theatre.Width,height=theatre.Height;
+            True(width<=device.Item1-24f && height<=device.Item2-20f,
+                "cinematic event must fit its real device safe frame");
             foreach(var target in stageTypes)
             {
                 var stage=DailyTreasureStageDirection.Compose(
@@ -494,6 +497,20 @@ internal static class Program
             float.NaN,500f,1376f,768f);}
         catch(ArgumentOutOfRangeException){invalidAspect=true;}
         True(invalidAspect,"invalid source geometry cannot corrupt mobile UI");
+        // Greater than 2.5x the former narrow poster on 1600x900;
+        // unchanged compact phone placement and physical hit areas.
+        var wide=DailyTreasureStageDirection.NarrativeTheatreFrame(1600f,900f);
+        True(wide.Width*wide.Height>740f*370f*2.5f,
+            "real premium landscape must fill meaningful desktop area");
+        var tall=DailyTreasureStageDirection.NarrativeTheatreFrame(900f,1600f);
+        True(tall.Width>=600f && tall.Height>=1000f,
+            "portrait hero fills meaningful tablet area");
+        var phone=DailyTreasureStageDirection.NarrativeTheatreFrame(390f,844f);
+        Eq(phone.Width,366f,"phone portrait safe area remains original");
+        Eq(phone.Height,700f,"phone portrait height remains original");
+        var shortPhone=DailyTreasureStageDirection.NarrativeTheatreFrame(844f,390f);
+        Eq(shortPhone.Width,740f,"phone landscape safe area unchanged");
+        Eq(shortPhone.Height,370f,"phone landscape height unchanged");
         bool refusedNaNEntrance=false;
         try{DailyTreasureStageDirection.SampleEntrance(
             DailyTreasureStageKind.Explorers,float.NaN);}

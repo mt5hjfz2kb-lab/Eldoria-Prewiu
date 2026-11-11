@@ -358,3 +358,14 @@ assert.match(lateLens,/nextBastionCameraTry=Time.unscaledTime\+\.35f/);
 assert.match(lateLens,/if\(!sceneOwnedByOtherUi\)TryRecoverBuiltBastionLens\(\)/);
 assert.match(lateLens,/bastionCameraPending=false;/);
 console.log('PASS bounded late real Bastion capture; no black fake celebration');
+
+// Scene scale is a material art change, NOT just an extra frame: source
+// landscape expands 2.62x on desktop and 2.13x on portrait tablets.
+const largeScene=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs','utf8');
+assert.match(largeScene,/NarrativeTheatreFrame\(/);
+assert.match(largeScene,/Math.Min\(1120f,width\*\.84f\)/);
+assert.match(panel,/if\(eventStage\)panelW=earnedTheatre.Width/);
+assert.match(panel,/if\(eventStage\)panelH=earnedTheatre.Height/);
+assert.ok(1120*640>740*370*2.5);
+console.log('PASS 2.62x more actual painterly story on 1600x900, mobile unchanged');
