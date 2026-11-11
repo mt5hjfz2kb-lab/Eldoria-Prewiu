@@ -464,6 +464,13 @@ namespace Eldoria.DailyTreasures.Editor
                  hero.color.a>=.7f && hero.rectTransform.rect.width>=96f &&
                  hero.rectTransform.rect.height>=96f,
                  "Authentic Lyra sprite missing, transparent or postage-stamp sized");
+            var original=Resources.Load<Sprite>(
+                "DailyTreasureCeremonies/canonical_lyra_illustration");
+            Need(original && hero.sprite==original,
+                "Lyra ceremony reverted to a model render instead of the original illustration");
+            Need(original.texture && !original.texture.isReadable &&
+                 original.texture.width<=1024 && original.texture.height<=1024,
+                "Original illustration import must remain bounded and non-readable");
             var withHero=ReadNativePixels(camera,rt,width,height);
             Color32[] withoutHero;
             try
@@ -532,8 +539,8 @@ namespace Eldoria.DailyTreasures.Editor
                      trueLyra.sprite.rect.height>=256f,
                      "Native Lyra milestone has no visible authentic hero. "+
                      "A hall background and transparent arch cannot replace "+
-                     "the canonical 3D character. Verify the original model "+
-                     "portrait/fallback importer before certifying art.");
+                     "the canonical illustrated character. Verify the original "+
+                     "reference extraction and native pixels before certifying art.");
             var chest=FindRect(panel,"Authored chest / opened");
             var closedChest=FindRect(panel,"Authored chest / closed");
             var fallbackChest=FindRect(panel,
