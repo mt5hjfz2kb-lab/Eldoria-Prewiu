@@ -18,3 +18,5 @@ VISUAL ART ITERATION: warm charcoal shader for real illustrated Heroes Hall; bac
 Native training art layout diagnosis after fail-closed 900x1600 test: check real root dimensions and every original canonical archer control. Preserve full portrait assertion. Commit 5b16e964bb6bc2cb96d880fbee2018aa4bf56213.
 
 Native actual gameplay QA: training title/paper reused and reparented from whole canonical military root into cinematic left, original parent/scale restored on close, no fake duplicates, FULL archer assert retained. Also native A/B warm Heroes and genuine empty mail seal. Source commit a8cf4086838e2b4d8ef4616f58eedec66b514be7.
+
+OWNER-APPROVED NATIVE ART REVIEW: high-impact first-screen consistency; confirm owner-approved Lyra illustration never falls to empty silhouette when Tripo portrait async, warm graded canonical heroes hall still preserves faces and textures, empty mailbox has readable single status caption/clear seal spacing, all 16 destination captures + 8 first screen, no overlapping former Canvas, preserve user save. Target source a70dc30ffa294ce06565462501b92a01faec4672; art not automatically accepted.
