@@ -310,10 +310,18 @@ namespace Eldoria.BreachWatch.Editor
                  "Canonical narrative/confirmation modal is stranded under hidden Royal HUD");
             var genuineModal=host.Hud.Modal;
             var modalFrame=genuineModal.transform.Find("SafeArea/Window");
-            Need(modalFrame && modalFrame.GetComponent<Graphic>() &&
-                 !modalFrame.GetComponent<Graphic>().enabled &&
-                 modalFrame.Find("Vigilia / one forged stone modal"),
-                 "Old modal painting remains or new modal stone is missing");
+            // Transform.Find treats '/' as hierarchy path delimiters, even
+            // when the literal child name contains '/'. Inspect the actual
+            // rendered Image components instead of querying that path.
+            var oldModalPaint=modalFrame?modalFrame.GetComponent<Graphic>():null;
+            var newModalStone=modalFrame?
+                modalFrame.GetComponentsInChildren<Image>(true).FirstOrDefault(x=>
+                    x.name=="Vigilia / one forged stone modal"):null;
+            Need(oldModalPaint && !oldModalPaint.enabled && newModalStone &&
+                 newModalStone.enabled && newModalStone.sprite,
+                 "Old modal painting remains or new modal stone is missing; "+
+                 "old="+(oldModalPaint?oldModalPaint.enabled.ToString():"null")+
+                 " stone="+(newModalStone?newModalStone.enabled.ToString():"null"));
             var preservedModalGame=JsonUtility.ToJson(host.City.Gateway.Snapshot());
             var currentChapter=host.Read("bastion",host.English);
             genuineModal.Show(currentChapter.Chapter,currentChapter.Objective);
