@@ -194,6 +194,123 @@ namespace Eldoria.Domain
             unseenPackets > 0 ? AttentionLevel.New : AttentionLevel.None;
     }
 
+
+    // Durable attention is separate from a decorative red dot. Every cue
+    // identifies an actual source event and access, not a permanent menu item.
+    // A new daily cycle/report uses a NEW stable ID; replay cannot revive one
+    // that was seen, completed or expired. Saved with PlayerState in the future.
+    [Serializable] public sealed class AttentionCueRecord
+    {
+        public string EventId = "";
+        public string Destination = "";
+        public AttentionLevel Level;
+        public bool Viewed;
+        public bool Resolved;
+        public AttentionCueRecord Copy() => (AttentionCueRecord)MemberwiseClone();
+    }
+
+    [Serializable] public sealed class AttentionCueLedger
+    {
+        public List<AttentionCueRecord> Records = new List<AttentionCueRecord>();
+        public AttentionCueLedger Copy()
+        {
+            var copy = new AttentionCueLedger();
+            foreach(var cue in Records ?? new List<AttentionCueRecord>())
+                if(cue != null) copy.Records.Add(cue.Copy());
+            return copy;
+        }
+    }
+
+    // This stores notification semantics, not visual layout. It never
+    // awards items and cannot call LocalGateway or clear a pending reward.
+    public static class AttentionCueRules
+    {
+        public static bool Signal(AttentionCueLedger ledger,
+            string eventId, string destination, AttentionLevel level)
+        {
+            if(ledger?.Records == null ||
+                string.IsNullOrWhiteSpace(eventId) ||
+                string.IsNullOrWhiteSpace(destination) ||
+                (level != AttentionLevel.New && level != AttentionLevel.ActionReady))
+                return false;
+            foreach(var cue in ledger.Records)
+            {
+                if(cue == null || cue.EventId != eventId) continue;
+                // ID reuse across destinations is a programming error.
+                // Never silently move a reward to a different menu.
+                if(cue.Destination != destination || cue.Resolved) return false;
+                // ActionReady may supersede informational New, never reverse.
+                if(cue.Level == AttentionLevel.New &&
+                   level == AttentionLevel.ActionReady)
+                {
+                    cue.Level = level;
+                    return true;
+                }
+                return false;
+            }
+            ledger.Records.Add(new AttentionCueRecord {
+                EventId = eventId, Destination = destination, Level = level
+            });
+            return true;
+        }
+
+        // Reading a letter dismisses "new" only. The unpaid envelope remains
+        // ActionReady until an actual authoritative Claim succeeds.
+        public static bool MarkViewed(AttentionCueLedger ledger, string eventId)
+        {
+            if(ledger?.Records == null) return false;
+            foreach(var cue in ledger.Records)
+                if(cue != null && cue.EventId == eventId &&
+                   !cue.Resolved && !cue.Viewed)
+                {
+                    cue.Viewed = true;
+                    return true;
+                }
+            return false;
+        }
+
+        // Caller must pass the result of the REAL gateway command. A pointer
+        // animation, opening a screen or marking a mail as read is not success.
+        public static bool Resolve(AttentionCueLedger ledger, string eventId,
+            bool authoritativeActionSucceeded)
+        {
+            if(ledger?.Records == null || !authoritativeActionSucceeded)
+                return false;
+            foreach(var cue in ledger.Records)
+                if(cue != null && cue.EventId == eventId && !cue.Resolved)
+                {
+                    cue.Resolved = true;
+                    return true;
+                }
+            return false;
+        }
+
+        // Expire only from a confirmed authoritative expiry/cancellation.
+        public static bool Expire(AttentionCueLedger ledger, string eventId,
+            bool authoritativeExpiry)
+            => Resolve(ledger, eventId, authoritativeExpiry);
+
+        // Aggregate nested notifications into a parent navigation access;
+        // the real UI decides how to paint one badge without duplication.
+        public static AttentionLevel At(AttentionCueLedger ledger,
+            string destination)
+        {
+            if(ledger?.Records == null || string.IsNullOrWhiteSpace(destination))
+                return AttentionLevel.None;
+            AttentionLevel current = AttentionLevel.None;
+            foreach(var cue in ledger.Records)
+            {
+                if(cue == null || cue.Resolved || cue.Destination != destination)
+                    continue;
+                if(cue.Level == AttentionLevel.ActionReady)
+                    return AttentionLevel.ActionReady;
+                if(cue.Level == AttentionLevel.New && !cue.Viewed)
+                    current = AttentionLevel.New;
+            }
+            return current;
+        }
+    }
+
     [Serializable] public sealed class GuidedTutorialProgress
     {
         public List<string> Completed = new List<string>();
