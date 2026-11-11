@@ -936,6 +936,9 @@ jobs:
             baseline-native current-native review-output \
             --baseline-sha 36f05a596e243c0eb52b20907187a925a9dab87d \
             --candidate-sha "${GITHUB_SHA}"
+      - name: Reject washed-out ink in actual 390x844 Unity mailbox report
+        shell: bash
+        run: python3 tools/breach-watch/verify_mail_report_contrast.py current-native
       - name: Upload real Unity A/B images and diagnostics (not artistic approval)
         uses: actions/upload-artifact@v4
         with:
