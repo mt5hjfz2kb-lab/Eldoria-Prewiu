@@ -287,9 +287,11 @@ console.log('PASS real retained Vigilants compass rendered as source-derived bro
 const realBuiltCity=fs.readFileSync(
  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
 assert.match(realBuiltCity,/item.GetType\(\).Name!="ValoriaReferenceCleanGameplay"/);
-assert.match(realBuiltCity,/GetProperty\("PlayerCamera"/);
+assert.match(realBuiltCity,/ReadMember\(item,"PlayerCamera"\)/);
+assert.match(realBuiltCity,/GetProperty\(member,/);
 assert.match(realBuiltCity,/new\[\]\{"BastionTwo","BastionOne"\}/);
-assert.match(realBuiltCity,/building\.activeInHierarchy/);
+assert.match(realBuiltCity,/!root\.activeInHierarchy/);
+assert.match(realBuiltCity,/TryActiveBounds\(building,camera,out bounds\)/);
 assert.doesNotMatch(realBuiltCity,/new\[\]\{"BastionFive","BastionFour","BastionThree"/);
 console.log('PASS real city class owns actual Bastion renderers and only displays built world levels');
 
