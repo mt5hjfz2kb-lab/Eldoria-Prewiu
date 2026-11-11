@@ -5,3 +5,4 @@ Native current-head regression: new canonical modal bridge, dark stone replaceme
 Head before request 07c38fedef4a658a9354075d7ccc39f72e29fa25; owner revision 91.
 Retry native after fixing slash-containing modal visual name lookup in QA; target head 33e0b1d2d6df6a5d7b1bb2c91c499e8317b30b1c; validate same actual modal and all 8 views.
 Capture 16 real post-B1 native previews of staged Training/March/Heroes/Mail with an in-memory-only disposable canonical fixture, verify old art disabled, original game save unchanged, and review against approved Vigilia first-screen. HEAD 2f9a4f2e134a2ff2aebd45557e906ff65d058241
+Native retry after fixing canonical integration fixture C# namespace: execute exact SHA a2c67856ee6a6e6225c5e84ffee3fb69acc7d795; 8 real HUD images plus 16 actual destination images with unchanged probe save.
