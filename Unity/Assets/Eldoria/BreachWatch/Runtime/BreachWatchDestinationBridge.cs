@@ -30,7 +30,8 @@ namespace Eldoria.BreachWatch
             destinationRoot.gameObject.activeInHierarchy &&
             destinationRoot.parent==vigilia.transform;
         public bool HasApprovedTheme => theme && theme.Installed &&
-            theme.RestyledPanels==4 && theme.RestyledButtons>0;
+            theme.RestyledPanels==4 && theme.RestyledButtons>0 &&
+            theme.NoLegacyBluePaintingVisible;
 
         public void Initialize(ValoriaIntegratedWorld source, Canvas canvas)
         {
@@ -58,7 +59,7 @@ namespace Eldoria.BreachWatch
             originalSibling=root.GetSiblingIndex();
             theme=root.GetComponent<BreachWatchSharedTheme>();
             if(!theme)theme=root.gameObject.AddComponent<BreachWatchSharedTheme>();
-            if(!theme.Apply(root))
+            if(!theme.Apply(root) || !theme.NoLegacyBluePaintingVisible)
             {
                 management.Close();
                 Restore();
