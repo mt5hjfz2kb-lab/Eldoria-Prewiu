@@ -1,0 +1,133 @@
+name: Eldoria PR179 real lazy-world native PlayMode (owner QA only)
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - '.github/workflows/eldoria-beta-lazy-world-native.yml'
+      - 'tools/eldoria-private-beta/native/lazy-world-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+concurrency:
+  group: eldoria-pr179-real-lazy-world-native-single-editor
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/lazy-world-request.json
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
+          persist-credentials: false
+      - name: Verify pinned lazy-world source and live CAS without touching Windows
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,subprocess,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY'];token=os.environ['GH_TOKEN']
+          def read_api(path):
+              url='https://api.github.com/repos/'+repo+'/'+path
+              req=urllib.request.Request(url,headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req,timeout=25) as resp:return json.load(resp)
+          request=json.load(open('candidate/tools/eldoria-private-beta/native/lazy-world-request.json'))
+          assert request['schema']==1
+          assert request['canonical_pr']==179 and request['workstream_id']=='eldoria-private-beta-i-v-20261107'
+          assert request['owner']=='chatgpt-pr179-iphone-automation-20261111'
+          assert request['external_testers_enabled'] is False and request['publish_allowed'] is False
+          for path,expected in request['source_blobs'].items():
+              found=subprocess.check_output(['git','-C','candidate','rev-parse','HEAD:'+path],text=True).strip()
+              assert found==expected,(path,found,expected)
+          live=read_api('contents/pipeline/active-workstreams.json?ref=main')
+          registry=json.loads(base64.b64decode(live['content']))
+          matches=[x for x in registry['active'] if x['id']==request['workstream_id']]
+          assert len(matches)==1
+          owner=matches[0]
+          holders=[x for x in registry['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          pr=read_api('pulls/179')
+          head_ok=pr['head']['sha']==os.environ['GITHUB_SHA']
+          allowed=(request['state']=='CLAIMED_FOR_NATIVE'
+                   and head_ok and owner['owner']==request['owner']
+                   and owner['ownership_revision']==request['ownership_revision']
+                   and owner['ownership_state']=='claimed' and owner['write_scope_released'] is False
+                   and len(holders)==1 and holders[0]['id']==owner['id']
+                   and holders[0]['owner']==owner['owner']
+                   and holders[0]['ownership_revision']==request['ownership_revision'])
+          with open(os.environ['GITHUB_OUTPUT'],'a') as fd:fd.write('authorized='+str(allowed).lower()+'\n')
+          print('LAZY_NATIVE_SOURCE_BLOBS_PINNED; WINDOWS_AUTHORIZED='+str(allowed))
+          if not allowed:
+              print('SAFE_SKIP: no exclusive PR179 CAS lease or stale PR head; no native Unity invoked')
+          PY
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pr179-source
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/lazy-world-request.json
+            /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
+            /Unity/Assets/Eldoria/BetaMemoryProbe.meta
+            /Unity/Assets/Eldoria/BetaMemoryProbe/
+          persist-credentials: false
+      - name: Recheck live owner-only Windows lease and no shared Unity processes
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY"
+          $response=Invoke-RestMethod -Uri "$url/contents/pipeline/active-workstreams.json?ref=main" -Headers $headers
+          $raw=[Convert]::FromBase64String([regex]::Replace($response.content,'\s',''))
+          $registry=[Text.Encoding]::UTF8.GetString($raw)|ConvertFrom-Json
+          $req=Get-Content 'pr179-source/tools/eldoria-private-beta/native/lazy-world-request.json' -Raw|ConvertFrom-Json
+          $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($req.state -ne 'CLAIMED_FOR_NATIVE' -or $holders.Count -ne 1 -or
+             $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or
+             $holders[0].owner -ne $req.owner -or
+             $holders[0].ownership_revision -ne [int]$req.ownership_revision){
+             throw 'Fresh live CAS Windows lease is not exclusively PR179; stop before Unity'
+          }
+          $pr=Invoke-RestMethod -Uri "$url/pulls/179" -Headers $headers
+          if($pr.head.sha -ne $env:GITHUB_SHA){throw 'PR head changed after preflight; cannot run stale native test'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared Unity/Blender process already active'}
+          if(-not $env:BETA_SOURCE -or -not(Test-Path $env:BETA_SOURCE)){throw 'Warm Unity source is unavailable'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH -PathType Leaf)){throw 'Unity editor unavailable'}
+          Write-Host 'PR179_LAZY_WORLD_EXCLUSIVE_WINDOWS_LEASE_VERIFIED'
+      - name: Real scene Unity PlayMode and exact warm-source restoration
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          & 'pr179-source/tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1' -Source $env:BETA_SOURCE -OverlaySource 'pr179-source' -Evidence "pr179-lazy-native-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -ExpectedHead $env:GITHUB_SHA
+      - name: Preserve native PlayMode logs and verified restoration, never distribute a build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-lazy-world-unity-playmode-owner-evidence
+          path: pr179-lazy-native-evidence-*/
+          if-no-files-found: warn
+          retention-days: 7
