@@ -1791,6 +1791,14 @@ namespace Eldoria.DailyTreasures
                 (focusedQuiet?330f:openingChest?300f:
                     roomyCalendar?420f:370f));
             if(eventStage)panelH=earnedTheatre.Height;
+            // Real story art has grown 2.62x on desktop; retaining 17px
+            // labels in a 1120px picture would feel cheap. Scale ONLY the
+            // narrative title, official insignia and confirmed story text.
+            // Daily buttons/rewards and all small phones remain unchanged.
+            float narrativeScale=eventStage?Mathf.Clamp(
+                Mathf.Min(panelW/(portrait?440f:740f),
+                          panelH/(portrait?700f:370f)),
+                1f,1.5f):1f;
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
                 eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);
@@ -1968,8 +1976,8 @@ namespace Eldoria.DailyTreasures
                     // Official 128px crest is still blue, not bronze:
                     // show it as a smaller heraldic inset on the real
                     // large forged shield, never an enlarged flat sticker.
-                    float insigniaSize=centerShield?(portrait?64f:78f):
-                        portrait?57f:65f;
+                    float insigniaSize=(centerShield?(portrait?64f:78f):
+                        portrait?57f:65f)*narrativeScale;
                     Place(milestoneInsignia.rectTransform,.5f,.5f,.5f,.5f,
                         centerShield?stage.SceneX:stage.SceneX+stage.SceneW*.33f,
                         centerShield?stage.SceneY:stage.SceneY-stage.SceneH*.31f,
@@ -1997,11 +2005,14 @@ namespace Eldoria.DailyTreasures
                 float headingY=cityStage?panelH*.405f:
                     portrait?panelH*.29f:panelH*.405f;
                 Place(milestoneBanner,.5f,.5f,.5f,.5f,
-                    headingX,headingY,headingWidth,40f);
+                    headingX,headingY,headingWidth,
+                    Mathf.Min(56f,40f*narrativeScale));
                 Place(milestoneRule.rectTransform,.5f,0f,.5f,0f,
                     0f,2f,headingWidth-30f,2f);
                 milestoneBannerCaption.fontSize=cityStage?
                     (portrait?17:16):portrait?18:19;
+                milestoneBannerCaption.fontSize=Mathf.RoundToInt(
+                    milestoneBannerCaption.fontSize*narrativeScale);
             }
             else
             {
@@ -2224,14 +2235,19 @@ namespace Eldoria.DailyTreasures
                 // the confirmed story (no made-up crystals or reward cards).
                 resultText.fontSize=eventStage?
                     (portrait?19:17):(portrait?20:19);
+                if(eventStage)
+                    resultText.fontSize=Mathf.RoundToInt(
+                        resultText.fontSize*narrativeScale);
                 resultText.resizeTextForBestFit=eventStage;
                 if(eventStage)
                 {
                     // A rare long narrative must adapt within its actual
                     // measured Unity box, not truncate the player's milestone
                     // to preserve an arbitrary font size. Never below 14 px.
-                    resultText.resizeTextMinSize=portrait?16:14;
-                    resultText.resizeTextMaxSize=portrait?19:17;
+                    resultText.resizeTextMinSize=Mathf.RoundToInt(
+                        (portrait?16:14)*narrativeScale);
+                    resultText.resizeTextMaxSize=Mathf.RoundToInt(
+                        (portrait?19:17)*narrativeScale);
                 }
                 if(eventStage)
                     Place(resultText.rectTransform,.5f,.5f,.5f,.5f,

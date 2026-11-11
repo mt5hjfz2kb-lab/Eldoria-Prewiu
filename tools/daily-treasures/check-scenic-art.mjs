@@ -369,3 +369,13 @@ assert.match(panel,/if\(eventStage\)panelW=earnedTheatre.Width/);
 assert.match(panel,/if\(eventStage\)panelH=earnedTheatre.Height/);
 assert.ok(1120*640>740*370*2.5);
 console.log('PASS 2.62x more actual painterly story on 1600x900, mobile unchanged');
+
+// Typography must follow the ACTUAL upscaled cinematic stage rather than
+// remaining a tiny 17px line on a 1120px metal frame. Small phones and
+// the entire daily coffer/calendar keep their original calibrated sizes.
+assert.match(panel,/float narrativeScale=eventStage\?Mathf.Clamp\(/);
+assert.match(panel,/if\(eventStage\)panelH=earnedTheatre.Height/);
+assert.match(panel,/milestoneBannerCaption\.fontSize\*narrativeScale/);
+assert.match(panel,/resultText\.fontSize\*narrativeScale/);
+assert.match(panel,/insigniaSize=\(centerShield\?/);
+console.log('PASS narrative typography and original heraldic art scale with source stage');
