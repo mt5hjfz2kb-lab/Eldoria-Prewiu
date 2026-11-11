@@ -27,6 +27,16 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Verify actual 16 imported PNG hashes, sizes and Unity GUIDs without Windows
         run: python3 tools/reward-experience/check_art_import.py
+      - name: Check twelve painted resource identities at genuine 48-pixel display size
+        run: python3 tools/reward-experience/check_art_readability.py
+      - name: Preserve read-only 48-pixel differentiation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-art-48px-audit
+          path: issue186_48px_readability.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Preserve deterministic source-art audit even on failure
         if: always()
         uses: actions/upload-artifact@v4
