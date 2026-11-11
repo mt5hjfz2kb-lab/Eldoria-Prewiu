@@ -181,8 +181,11 @@ namespace Eldoria.Issue186Art.Editor
                     Mathf.Max(48f,(height-(portrait?170f:100f))/rows-30f));
                 Need(icon>=48f && icon<=96f,
                     "Viewport cannot display reward items at the approved 48-96px study size");
-                float rowH=icon+23f;
-                float gapY=portrait?10f:7f;
+                // The imported PNG is already a complete gold-bordered
+                // cartridge WITH its own bottom denomination plaque. Do
+                // not add another dark tile or a second value below it.
+                float rowH=icon+8f;
+                float gapY=portrait?14f:11f;
                 float gridHeight=rows*rowH+(rows-1)*gapY;
                 // Align the entire comparison grid between the fixed header
                 // and mobile safe bottom. Old top-stacking left huge empty
@@ -208,19 +211,23 @@ namespace Eldoria.Issue186Art.Editor
                         Need(!area.Overlaps(old),
                             "Overlapping card geometry "+width+"x"+height);
                     rects.Add(area);
-                    Paint(root,"dark cartridge "+i,
-                        new Vector2(x,y),new Vector2(slotWidth-2,rowH-2),
-                        new Color(.14f,.094f,.092f,1));
                     var iconImage=Paint(root,"actual imported packet "+i,
-                        new Vector2(x,y+10),new Vector2(icon,icon),
-                        Color.white);
+                        new Vector2(x,y),new Vector2(icon,icon),Color.white);
                     string kind=kinds[i/sizes.Length];int amount=sizes[i%sizes.Length];
-                    var quantity=Caption(root,"authoritative value "+i,"",
-                        new Vector2(x,y-rowH*.5f+12),
-                        new Vector2(slotWidth-5,22),
-                        width<=480?12:16,Color.white,font);
+                    // All 12 painted sprites contain a BLANK gold-inlaid
+                    // label in the lower 16% of the card. The number is
+                    // authoritative live text INSIDE that original plaque,
+                    // not an extra caption below a visibly empty label.
+                    float plaqueWidth=icon*.70f;
+                    int plaqueFont=Mathf.Clamp(Mathf.RoundToInt(icon*.13f),9,13);
+                    var quantity=Caption(root,"value in painted plaque "+i,"",
+                        new Vector2(x,y-icon*.385f),
+                        new Vector2(plaqueWidth,icon*.17f),plaqueFont,
+                        new Color(.96f,.84f,.62f,1f),font);
                     Need(Issue186ArtKit.BindPacket(iconImage,quantity,kind,amount),
                         "Could not bind actual sprite "+kind+":"+amount);
+                    Need(quantity.preferredWidth<=plaqueWidth-2f,
+                        "Live amount text spills over the original painted plaque");
                     Need(iconImage.sprite!=null && iconImage.sprite.name==
                         "pack_"+kind+"_"+ResourceRewardRules.TierLabel(amount).ToLowerInvariant(),
                         "Incorrect actual sprite on " + kind);
