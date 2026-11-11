@@ -16,3 +16,5 @@ Art pivot native proof: cinematic premium Training controls, full character scal
 
 VISUAL ART ITERATION: warm charcoal shader for real illustrated Heroes Hall; background+flag grading, restored 2.5D portraits; wax-mail seal only when genuinely empty; page rebuild reapply + original 16 destination screenshots + first screen eight; run native at 0b1bb116a76b3f44cc0cebb486a17c6c3e36920c. No save mutations or art approval assumed.
 Native training art layout diagnosis after fail-closed 900x1600 test: check real root dimensions and every original canonical archer control. Preserve full portrait assertion. Commit 5b16e964bb6bc2cb96d880fbee2018aa4bf56213.
+
+Native actual gameplay QA: training title/paper reused and reparented from whole canonical military root into cinematic left, original parent/scale restored on close, no fake duplicates, FULL archer assert retained. Also native A/B warm Heroes and genuine empty mail seal. Source commit a8cf4086838e2b4d8ef4616f58eedec66b514be7.
