@@ -1,4 +1,4 @@
-VIGILIA_ART_NATIVE_20261111_0141_BASTION_PORTRAIT_APERTURE
-Source layout/test exact HEAD before request: 43ded9fb396b359fc64075620d5c64c9484af554
-Owner: chatgpt-vigilia-art-automation-20261111; ownership revision: 67; exclusive resource: windows-runner-heavy.
-Visual cause: real Bastion thumbnail too small inside approved single CleanRoom context card. Reallocate existing blank vertical aperture from 74 to 83 authored units without new layered artwork, retained 20u live description, original 2K sprite and original render camera. Check four true city+Bastion view pairs, raw 3D geometry cropping, 6 actual pointer hits, GPU text and save invariance; compare visual against 864x1536 approved image. Technical green is not ART_APPROVED. PR173 remains open, no merge and no build publish.
+VIGILIA_ART_NATIVE_20261111_0151_ISOLATED_PORTRAIT_CAMERA
+Source exact HEAD before request: a03b2f82d07b43ee111871701eef1f8d02d31528
+Owner: chatgpt-vigilia-art-automation-20261111, ownership revision 67, exclusive windows-runner-heavy.
+The 83u panel-expansion experiment was REJECTED by real 2K source-art integrity: the portrait would cover the engraved gold rim at y≈137. Reverted it and tightened the native layout gate instead of weakening QA. Corrected approach: keep the real one-piece panel (y61..135 photo), change ONLY isolated actual-mesh 3D portrait camera pitch toward the approved more frontal view and keep positive UV silhouette gutter. Recompute authentic mesh projections; demand four city and four Bastion Unity captures, legible live texts, pointer interactions, single independent Canvas and unchanged save. Compare genuine visual output to user-approved 864x1536 JPEG before artistic judgement. No merge/release/ART_APPROVED.
