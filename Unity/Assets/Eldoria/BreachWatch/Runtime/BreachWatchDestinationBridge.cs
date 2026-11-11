@@ -38,6 +38,8 @@ namespace Eldoria.BreachWatch
             cinematicMarch.UsesFullWidthMetrics;
         public bool RealTrainingCinematic => cinematicTraining &&
             cinematicTraining.IsCinematicPortrait;
+        public string NativeTrainingLayoutDiagnostic => cinematicTraining
+            ?cinematicTraining.NativeLayoutDiagnostic:"training-component=null";
         public string NativeThemeDiagnostic => theme
             ? "installed="+theme.Installed+
               " panels="+theme.RestyledPanels+
