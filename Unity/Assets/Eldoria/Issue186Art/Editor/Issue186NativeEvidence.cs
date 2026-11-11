@@ -271,6 +271,14 @@ namespace Eldoria.Issue186Art.Editor
                     new Vector2(width<=480?72:90,width<=480?72:90),Color.white);
                 var halo=Paint(root,"actual tutorial halo",Vector2.zero,
                     new Vector2(54,54),Color.white);
+                // A real EventSystem must exist BEFORE binding the pointer,
+                // so its visibility check can reject controls hidden by another
+                // raycasting canvas, not merely accept IsInteractable().
+                var evGO=new GameObject("Disposable event dispatch",
+                    typeof(EventSystem),typeof(StandaloneInputModule));
+                created.Add(evGO);
+                var ev=evGO.GetComponent<EventSystem>();
+                Canvas.ForceUpdateCanvases();
                 // Actual interactive control; never show pointer without one.
                 var progress=new GuidedTutorialProgress();
                 bool pointed=Issue186ArtKit.BindFirstUsePointer(progress,
@@ -308,10 +316,6 @@ namespace Eldoria.Issue186Art.Editor
                     "Near-edge mobile/desktop fixture did not mirror the hand");
                 // Test the browser/device-independent UI event flow using a
                 // real GraphicRaycaster, not an invented click coordinate.
-                var evGO=new GameObject("Disposable event dispatch",
-                    typeof(EventSystem),typeof(StandaloneInputModule));
-                created.Add(evGO);
-                var ev=evGO.GetComponent<EventSystem>();
                 Canvas.ForceUpdateCanvases();
                 var actualCenter=buttonRect.TransformPoint(buttonRect.rect.center);
                 var cursor=RectTransformUtility.WorldToScreenPoint(cam,actualCenter);
@@ -333,6 +337,10 @@ namespace Eldoria.Issue186Art.Editor
                 raycaster.Raycast(pd,hits);
                 Need(hits.Count>0 && hits[0].gameObject==blocker.gameObject,
                     "Raycaster ignored a frontmost obstructing UI element");
+                Need(!Issue186ArtKit.BindFirstUsePointer(progress,
+                         "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo) &&
+                     !pointer.gameObject.activeSelf && !halo.gameObject.activeSelf,
+                    "Runtime tutorial still points at a button hidden by a modal blocker");
                 ExecuteEvents.Execute<IPointerClickHandler>(
                     hits[0].gameObject,pd,ExecuteEvents.pointerClickHandler);
                 Need(!action,"Claim button clicked through the blocking overlay");
@@ -343,6 +351,11 @@ namespace Eldoria.Issue186Art.Editor
                 raycaster.Raycast(pd,hits);
                 Need(hits.Count>0 && hits[0].gameObject==buttonRect.gameObject,
                     "Claim button is not the FRONTMOST tappable UI element");
+                Need(Issue186ArtKit.BindFirstUsePointer(progress,
+                         "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo) &&
+                     pointer.gameObject.activeInHierarchy &&
+                     halo.gameObject.activeInHierarchy,
+                    "Runtime tutorial did not recover when modal obstruction disappeared");
                 raycastHits++;
                 // Drive the actual Button IPointerClickHandler using the
                 // frontmost real Unity hit, not Button.onClick.Invoke().
