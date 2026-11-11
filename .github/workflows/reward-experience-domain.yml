@@ -6,6 +6,7 @@ on:
       - 'tools/reward-experience/**'
       - 'Unity/Assets/Eldoria/Issue186Art/**'
       - '.github/workflows/reward-experience-domain.yml'
+      - 'pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json'
   workflow_dispatch:
 jobs:
   source-contract:
@@ -21,10 +22,13 @@ jobs:
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Issue186Art
             tools/reward-experience
+            pipeline/art-production-requests
           sparse-checkout-cone-mode: true
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - name: Enforce traceable original art routing and native-only approval
+        run: python3 tools/reward-experience/check_art_governance.py
       - name: Verify actual 16 imported PNG hashes, sizes and Unity GUIDs without Windows
         run: python3 tools/reward-experience/check_art_import.py
       - name: Check twelve painted resource identities at genuine 48-pixel display size
