@@ -126,6 +126,16 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
             hero_x=x+round((focal.width-ww)/2)
             hero_y=y+round(focal.height*.13)
             dst.alpha_composite(framed,(hero_x,hero_y))
+            # The same authentic stage has a carved front sill. Mask the
+            # actor's deliberate waist-up crop BEHIND that sill instead of
+            # leaving a visibly severed horizontal edge across her legs.
+            # It is a depth-separated REUSE of source stage pixels, not an
+            # AI-generated or fabricated piece of the hero's costume.
+            sill_y=round(focal.height*.76)
+            sill=Image.new("RGBA",focal.size)
+            sill.paste(focal.crop((0,sill_y,focal.width,focal.height)),
+                       (0,sill_y))
+            dst.alpha_composite(sill,(x,y))
         if badge is not None and event=="vigilants":
             icon=badge.convert("RGBA")
             side=max(26,min(round(focal.width*.48),round(focal.height*.43),240))
