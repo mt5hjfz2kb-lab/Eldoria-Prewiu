@@ -101,20 +101,24 @@ try {
   $hashes+=@{path=$path;baseline=$before;candidate=(Get-FileHash $to -Algorithm SHA256).Hash}
  }
  Install-UxOverlay
- # Preserve the 727-line canonical UX, mailbox and opt-in telemetry. Add only
- # the three audited P0 WebGL opt-in blocks, exactly once, after UX validation.
+ # P0 composition uses exact 662-line archived beta10 UX from the 19-file
+ # proof. Newer dev UX adds unrelated features and must NOT enter this A/B.
  if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1'){
   $hostRel='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
   $hostTo=Join-Path $Source $hostRel
   $ux=Join-Path $Tools 'tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt'
-  $composed=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.city-only-composed.cs.txt'
-  if(-not(Test-Path $composed) -or -not(Test-Path $ux)){throw 'P0 composition source missing'}
+  $composeTool=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/compose_city_only.ps1'
+  $composed=Join-Path $Evidence 'p0-city-only-composed-host.cs.txt'
+  if(-not(Test-Path $composeTool)){throw 'Missing P0 compositor'}
+  if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne (Get-FileHash $ux -Algorithm SHA256).Hash){throw 'P0 must compose after exact frozen UX stage'}
+  & $composeTool -UxSource $ux -OutputPath $composed
+  if(-not(Test-Path $composed)){throw 'Exact P0 composition missing'}
+  $env:ELDORIA_P0_COMPOSED_FILE=$composed
   $uxHash=(Get-FileHash $ux -Algorithm SHA256).Hash
-  if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne $uxHash){throw 'P0 must compose after exact UX stage'}
   Copy-Item $composed $hostTo -Force
   $composedHash=(Get-FileHash $composed -Algorithm SHA256).Hash
   if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne $composedHash){throw 'P0 staged composition hash mismatch'}
-  $hashes+=@{path=$hostRel;baseline=$uxHash;candidate=$composedHash;mode='OPT_IN_CITY_ONLY_OVER_COMPLETE_UX'}
+  $hashes+=@{path=$hostRel;baseline=$uxHash;candidate=$composedHash;mode='OPT_IN_CITY_ONLY_OVER_EXACT_FROZEN_BETA10_UX'}
  }
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
  # Prepare static collision structures in the build, preserving exact meshes.
