@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T07:33:16.802Z",
+  "updated_at": "2026-11-11T07:49:42Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6930,11 +6930,11 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 26,
-      "write_scope_released": true,
-      "status": "blocked",
+      "owner": "chatgpt-iphone-p0-physical-followup-20261111",
+      "ownership_state": "claimed",
+      "ownership_revision": 27,
+      "write_scope_released": false,
+      "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
       "scope": [
         "tools/eldoria-private-beta/**",
@@ -6973,9 +6973,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA13_PUBLISHED_BLOCKED_ON_REAL_IPHONE_RESULT",
-      "note": "Owner beta13 is implemented, built, published and desktop-tested, not certified on physical iPhone. Original beta10 and save origin preserved. Work is not marked complete; canonical ID and all evidence retained for continuation.",
-      "next": "Resume the SAME PR179/workstream after the owner's beta13 physical Safari result. If it still restarts, investigate exact initialization/real-device evidence without repeating rejected transport/JIT/canvas-only remedies. If stable, verify prolonged persistence/clock and remaining tester gates before invitations. No automation; no whole historical branch merge.",
+      "phase": "BETA13_PHYSICAL_RESTART_CONFIRMED_DIAGNOSTIC",
+      "note": "Owner beta13 physically FAILED 2026-11-11: ready 08:17:13, resize vertical, new boot 08:17:20. Not cured by collision prebake. Workstream reclaimed for bounded investigation while preserving separate beta10.",
+      "next": "Investigate physical post-ready restart with independently verified local instrumentation and source evidence, rule out repeated failed transport/collision-only mitigations. No release/tester promotion until physical stability proven.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7292,6 +7292,13 @@
           "to_revision": 26,
           "released_at": "2026-11-10T23:04:36.314Z",
           "reason": "Native227, exact collision data, texture/transport integrity, Mac A/B, all146 public file hashes and actual public nickname/reload PASS. All owned native/package/publication/browser jobs complete; Windows already released. Physical iPhone result is a genuine external dependency after repeated physical failures despite desktop PASS; do not mark P0 solved or retain exclusive write reservation while awaiting owner input."
+        },
+        {
+          "previous_owner": null,
+          "from_revision": 26,
+          "to_revision": 27,
+          "to_owner": "chatgpt-iphone-p0-physical-followup-20261111",
+          "reason": "Owner explicitly directs continued executive repair of canonical PR179 after physical iPhone beta13 failed 2026-11-11 at 08:17 CET; preserve published beta10 and tester gates; do not repeat already certified packaging."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7315,7 +7322,7 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-10T21:55:03.230Z",
+      "runner_claimed_at": null,
       "canonical_integration_request": {
         "requested_at": "2026-11-09T10:49:44.401Z",
         "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
