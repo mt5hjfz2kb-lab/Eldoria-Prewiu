@@ -33,6 +33,13 @@ namespace Eldoria.BreachWatch
         RoyalText realEmptySentence;
         RoyalText realListSummary;
         bool originalSummaryVisible;
+        RoyalText pageCaption;
+        bool originalPageCaptionVisible;
+        RectTransform emptyLabelRect;
+        Vector2 originalEmptyPosition,originalEmptySize;
+        bool emptyLabelMoved;
+        BreachWatchMailboxEmptyArtwork emptyIllustration;
+        RectTransform actualWindow;
         bool styled;
 
         public bool IsStyled => styled;
@@ -49,6 +56,7 @@ namespace Eldoria.BreachWatch
             panel=Resources.Load<Sprite>(Stone);
             action=Resources.Load<Sprite>(Burgundy);
             if(!panel || !action) return false;
+            actualWindow=realWindow;
             backdrop=realWindow.GetComponent<Image>();
             if(!backdrop)return false;
             originalBackdropColor=backdrop.color;
@@ -114,11 +122,11 @@ namespace Eldoria.BreachWatch
             foreach(var text in realWindow.GetComponentsInChildren<RoyalText>(true))
                 if(text)originalInkColors[text]=text.color;
             RefreshInk();
-            // Empty real mail categories were a vacant black slab. Add one
-            // procedural, resolution-independent heraldic letter seal,
-            // but ONLY under the existing canonical empty-state label.
-            // That label is hidden whenever messages exist, so the art is
-            // hidden too. Never manufacture rewards, reports or messages.
+            // A small stamp in a 1600px black void was not an art-directed
+            // layout. Change technique: replace the entire empty composition
+            // with ONE genuine vector manuscript vignette in the canonical
+            // stone hall. The source message, unread count and tabs remain
+            // untouched. When mail arrives the illustration vanishes.
             foreach(var text in realWindow.GetComponentsInChildren<RoyalText>(true))
             {
                 if(!text)continue;
@@ -130,10 +138,18 @@ namespace Eldoria.BreachWatch
                 if(text.name=="Mailbox / genuine empty state")
                 {
                     realEmptySentence=text;
-                    var seal=BreachWatchEmptyMailSeal.Install(text.rectTransform);
-                    if(seal)newArtwork.Add(seal.gameObject);
+                    emptyLabelRect=text.rectTransform;
+                    originalEmptyPosition=emptyLabelRect.anchoredPosition;
+                    originalEmptySize=emptyLabelRect.sizeDelta;
+                }
+                if(text.name=="Página")
+                {
+                    pageCaption=text;
+                    originalPageCaptionVisible=text.enabled;
                 }
             }
+            emptyIllustration=BreachWatchMailboxEmptyArtwork.Install(realWindow);
+            if(emptyIllustration)newArtwork.Add(emptyIllustration.gameObject);
             RefreshEmptyComposition();
             styled=ReplacedOldPaintings>=4 && ReskinnedButtons>=3 &&
                 AllOldMailboxBackgroundsHidden();
@@ -203,15 +219,46 @@ namespace Eldoria.BreachWatch
 
         void RefreshEmptyComposition()
         {
-            if(!realListSummary)return;
-            // There used to be three overlapping labels all saying that
-            // the category was empty. Preserve the ONE real source message,
-            // and hide its duplicate collection summary only while the
-            // canonical empty-state object is active. If messages arrive
-            // on refresh, restore the live summary immediately.
-            bool actuallyEmpty=realEmptySentence &&
-                realEmptySentence.gameObject.activeInHierarchy;
-            realListSummary.enabled=originalSummaryVisible&&!actuallyEmpty;
+            if(!realEmptySentence)return;
+            // The source layout is correct when mail exists. Only genuine
+            // empty categories get this separate high-impact composition.
+            // Never hide report rows, fabricated content, or actual actions.
+            bool actuallyEmpty=realEmptySentence.gameObject.activeInHierarchy;
+            if(realListSummary)
+                realListSummary.enabled=originalSummaryVisible&&!actuallyEmpty;
+            if(pageCaption)
+                pageCaption.enabled=originalPageCaptionVisible&&!actuallyEmpty;
+            if(emptyIllustration)
+                emptyIllustration.gameObject.SetActive(actuallyEmpty);
+            if(!emptyLabelRect || !actualWindow)return;
+            if(actuallyEmpty)
+            {
+                float w=actualWindow.rect.width,h=actualWindow.rect.height;
+                // Center the ONE real "No hay mensajes ..." sentence below
+                // the engraved envelope scene. A miniature empty-state label
+                // at the top with 65% dead space was the actual visual defect.
+                bool portrait=h>w&&h>=530f;
+                if(portrait)
+                {
+                    emptyLabelRect.anchorMin=emptyLabelRect.anchorMax=
+                        emptyLabelRect.pivot=new Vector2(0f,1f);
+                    emptyLabelRect.anchoredPosition=
+                        new Vector2(w*.10f,-h*.647f);
+                    emptyLabelRect.sizeDelta=
+                        new Vector2(w*.80f,Mathf.Clamp(h*.071f,42f,88f));
+                    emptyLabelMoved=true;
+                }
+                else if(emptyLabelMoved)RestoreEmptyLabel();
+            }
+            else if(emptyLabelMoved)RestoreEmptyLabel();
+        }
+
+        void RestoreEmptyLabel()
+        {
+            if(!emptyLabelRect)return;
+            emptyLabelRect.anchoredPosition=originalEmptyPosition;
+            emptyLabelRect.sizeDelta=originalEmptySize;
+            emptyLabelMoved=false;
         }
 
         void RefreshInk()
@@ -258,9 +305,15 @@ namespace Eldoria.BreachWatch
             foreach(var pair in originalInkColors)
                 if(pair.Key)pair.Key.color=pair.Value;
             originalInkColors.Clear();
+            RestoreEmptyLabel();
             if(realListSummary)realListSummary.enabled=originalSummaryVisible;
+            if(pageCaption)pageCaption.enabled=originalPageCaptionVisible;
             realListSummary=null;
             realEmptySentence=null;
+            pageCaption=null;
+            emptyIllustration=null;
+            emptyLabelRect=null;
+            actualWindow=null;
             if(backdrop)backdrop.color=originalBackdropColor;
             backdrop=null;
             foreach(var obj in newArtwork)
