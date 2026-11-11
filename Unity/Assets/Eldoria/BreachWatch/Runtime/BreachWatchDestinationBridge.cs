@@ -32,6 +32,13 @@ namespace Eldoria.BreachWatch
         public bool HasApprovedTheme => theme && theme.Installed &&
             theme.RestyledPanels==4 && theme.RestyledButtons>0 &&
             theme.NoLegacyBluePaintingVisible;
+        public string NativeThemeDiagnostic => theme
+            ? "installed="+theme.Installed+
+              " panels="+theme.RestyledPanels+
+              " buttons="+theme.RestyledButtons+
+              " replaced="+theme.ReplacedLegacyGraphics+
+              " firstOld="+theme.FirstVisibleOldPainting
+            : "theme=null";
 
         public void Initialize(ValoriaIntegratedWorld source, Canvas canvas)
         {
