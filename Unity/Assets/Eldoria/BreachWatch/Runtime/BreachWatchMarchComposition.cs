@@ -220,9 +220,19 @@ namespace Eldoria.BreachWatch
                 Remember(heroPictures[i]);
                 Remember(heroLabels[i]);
                 At(card,left+i*(cardW+gap),top,cardW,cardH);
-                float apertureW=cardW-18f;
-                float portraitH=Mathf.Max(52f,cardH*.67f);
-                At(heroViewports[i],9f,6f,apertureW,portraitH);
+                // A pair of enlarged VERTICAL picture cards simply
+                // stretched the old 3-slot composition and left 45% blank
+                // burgundy at 900x1600. The real leader portrait and real
+                // selection action belong in separate side-by-side wells.
+                // Use full-height horizontal scorecards on large phones;
+                // narrow physical phones retain the compact portrait flow.
+                bool horizontalCard=cardW>=275f && cardH>=160f;
+                float apertureW=horizontalCard
+                    ?Mathf.Min(cardW*.43f,cardH*.67f):cardW-18f;
+                float portraitH=horizontalCard?cardH-18f:
+                    Mathf.Max(52f,cardH*.67f);
+                At(heroViewports[i],9f,horizontalCard?9f:6f,
+                    apertureW,portraitH);
                 var image=heroPictures[i].GetComponent<Image>();
                 float ratio=image && image.sprite
                     ?image.sprite.rect.width/Mathf.Max(1f,image.sprite.rect.height)
@@ -231,14 +241,22 @@ namespace Eldoria.BreachWatch
                 float faceH=faceW/Mathf.Max(.1f,ratio);
                 At(heroPictures[i],(apertureW-faceW)*.5f,
                     (portraitH-faceH)*.5f,faceW,faceH);
-                At(heroLabels[i],9f,portraitH+8f,cardW-18f,
-                    Mathf.Max(28f,cardH-portraitH-14f));
+                if(horizontalCard)
+                    At(heroLabels[i],apertureW+19f,12f,
+                        cardW-apertureW-29f,cardH-24f);
+                else
+                    At(heroLabels[i],9f,portraitH+8f,cardW-18f,
+                        Mathf.Max(28f,cardH-portraitH-14f));
                 var label=heroLabels[i].GetComponent<Text>();
                 if(label)
                 {
                     label.fontSize=Mathf.RoundToInt(
-                        Mathf.Clamp(cardW*.071f,17f,25f));
+                        Mathf.Clamp(cardW*(horizontalCard?.068f:.071f),
+                            16f,25f));
                     label.alignment=TextAnchor.MiddleCenter;
+                    label.resizeTextForBestFit=true;
+                    label.resizeTextMinSize=14;
+                    label.resizeTextMaxSize=label.fontSize;
                 }
             }
             UsesTwoRelevantHeroCards=true;
