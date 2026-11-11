@@ -19,6 +19,16 @@ namespace Eldoria.BreachWatch
     {
         readonly Dictionary<RectTransform, Vector4> originals =
             new Dictionary<RectTransform, Vector4>();
+        struct LabelTypography
+        {
+            public int Size, Minimum, Maximum;
+            public bool BestFit;
+            public HorizontalWrapMode Horizontal;
+            public VerticalWrapMode Vertical;
+            public TextAnchor Alignment;
+        }
+        readonly Dictionary<Text,LabelTypography> originalLabels =
+            new Dictionary<Text,LabelTypography>();
         RoyalGoldV3ManagementScreens manager;
         RectTransform right,preview,titleCard,summary,status,statusCard;
         readonly RectTransform[] cards=new RectTransform[6];
@@ -266,13 +276,37 @@ namespace Eldoria.BreachWatch
                 var label=heroLabels[i].GetComponent<Text>();
                 if(label)
                 {
+                    if(!originalLabels.ContainsKey(label))
+                        originalLabels.Add(label,new LabelTypography {
+                            Size=label.fontSize, Minimum=label.resizeTextMinSize,
+                            Maximum=label.resizeTextMaxSize,
+                            BestFit=label.resizeTextForBestFit,
+                            Horizontal=label.horizontalOverflow,
+                            Vertical=label.verticalOverflow,
+                            Alignment=label.alignment
+                        });
                     label.fontSize=Mathf.RoundToInt(
                         Mathf.Clamp(cardW*(horizontalCard?.068f:.071f),
                             16f,25f));
                     label.alignment=TextAnchor.MiddleCenter;
-                    label.resizeTextForBestFit=true;
-                    label.resizeTextMinSize=14;
-                    label.resizeTextMaxSize=label.fontSize;
+                    if(landscape)
+                    {
+                        // Actual 844x390 Unity: source Text uses OVERFLOW and
+                        // paints "LÍDER · SIR ALDRIC" right across the second
+                        // card, despite correct RectTransform bounds. Wrap
+                        // original live labels inside each forged card.
+                        label.fontSize=Mathf.Min(label.fontSize,18);
+                        label.resizeTextForBestFit=false;
+                        label.horizontalOverflow=HorizontalWrapMode.Wrap;
+                        label.verticalOverflow=VerticalWrapMode.Truncate;
+                    }
+                    else
+                    {
+                        label.resizeTextForBestFit=true;
+                        label.resizeTextMinSize=14;
+                        label.resizeTextMaxSize=label.fontSize;
+                    }
+                    label.SetVerticesDirty();
                 }
             }
             UsesTwoRelevantHeroCards=true;
@@ -281,6 +315,21 @@ namespace Eldoria.BreachWatch
 
         public void Restore()
         {
+            foreach(var pair in originalLabels)
+            {
+                var label=pair.Key;
+                if(!label)continue;
+                var old=pair.Value;
+                label.fontSize=old.Size;
+                label.resizeTextMinSize=old.Minimum;
+                label.resizeTextMaxSize=old.Maximum;
+                label.resizeTextForBestFit=old.BestFit;
+                label.horizontalOverflow=old.Horizontal;
+                label.verticalOverflow=old.Vertical;
+                label.alignment=old.Alignment;
+                label.SetVerticesDirty();
+            }
+            originalLabels.Clear();
             foreach(var pair in originals)
             {
                 var rt=pair.Key; if(!rt)continue;
