@@ -115,24 +115,59 @@ jobs:
             throw 'Installed Git is too old for reliable sparse checkout'
           }
           Write-Host $version
-      - uses: actions/checkout@v4
+      # actions/checkout's 'filter' input disables its 'sparse-checkout'
+      # input; removing the filter downloads the ~16GB repository's blobs.
+      # Configure both directly in Git BEFORE checking out any files.
+      - name: Fetch pinned PR179 Git commit using sparse partial-clone, fail closed
+        shell: powershell
         timeout-minutes: 15
-        with:
-          path: pr179-source
-          fetch-depth: 1
-          filter: blob:none
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /tools/eldoria-private-beta/native/
-            /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
-            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
-            /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
-            /Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
-            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
-            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
-            /Unity/Assets/Eldoria/BetaMemoryProbe.meta
-            /Unity/Assets/Eldoria/BetaMemoryProbe/
-          persist-credentials: false
+        run: |
+          $ErrorActionPreference='Stop'
+          if([string]::IsNullOrWhiteSpace($env:GITHUB_WORKSPACE) -or
+             $env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$' -or
+             $env:GITHUB_REPOSITORY -ne 'mt5hjfz2kb-lab/Eldoria-Prewiu'){
+            throw 'Missing pinned GitHub source identity'
+          }
+          $src=Join-Path $env:GITHUB_WORKSPACE 'pr179-source'
+          # Only this PR's isolated checkout directory, never the warm Unity project.
+          if(Test-Path -LiteralPath $src){
+            $entry=Get-Item -LiteralPath $src -Force
+            if($entry.Attributes -band [IO.FileAttributes]::ReparsePoint){
+              throw 'PR179 checkout path is a link; refuse destructive cleanup'
+            }
+            Remove-Item -LiteralPath $src -Recurse -Force
+          }
+          & git init -q $src
+          if($LASTEXITCODE){throw 'Git init failed'}
+          & git -C $src remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'Git remote failed'}
+          # Configure sparse patterns FIRST. Fetch blob:none second. Checkout
+          # only after BOTH are active; Git fetches missing selected blobs on demand.
+          $patterns=@(
+            '/tools/eldoria-private-beta/native/'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'
+            '/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+            '/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
+            '/Unity/Assets/Eldoria/BetaMemoryProbe.meta'
+            '/Unity/Assets/Eldoria/BetaMemoryProbe/'
+          )
+          & git -C $src sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Cannot configure strict PR179 sparse checkout'}
+          & git -C $src fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned partial fetch failed; no REST archive fallback'}
+          & git -C $src checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Sparse checkout failed; refuse warm-project edits'}
+          $actual=(& git -C $src rev-parse HEAD).Trim()
+          if($LASTEXITCODE -or $actual -ne $env:GITHUB_SHA){
+            throw "Pinned PR179 checkout mismatch; expected $env:GITHUB_SHA got $actual"
+          }
+          if(-not(Test-Path -LiteralPath (Join-Path $src 'tools/eldoria-private-beta/native/lazy-world-request.json'))){
+            throw 'Pinned source manifest absent after sparse partial checkout'
+          }
+          Write-Host "PR179_PINNED_SPARSE_PARTIAL_FETCH=$actual; NO_ARCHIVE_FALLBACK; NO_UNITY_TOUCHED"
       - name: Recheck live owner-only Windows lease and no shared Unity processes
         shell: powershell
         env:
