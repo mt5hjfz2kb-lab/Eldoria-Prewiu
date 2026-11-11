@@ -75,6 +75,7 @@ jobs:
       - name: Checkout pinned source without full archive
         uses: actions/checkout@v4
         with:
+          path: issue186-source
           fetch-depth: 1
           lfs: false
           filter: blob:none
@@ -85,6 +86,7 @@ jobs:
             !/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-391*/**
       - name: Recheck exact SHA and Windows lease before Editor
         shell: powershell
+        working-directory: issue186-source
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -108,6 +110,7 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
       - name: Import actual sprites and render four sizes in Unity
         shell: powershell
+        working-directory: issue186-source
         run: |
           $ErrorActionPreference='Stop'
           New-Item -ItemType Directory -Force $env:OUT | Out-Null
