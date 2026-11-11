@@ -48,7 +48,7 @@ jobs:
           assembly=json.loads((root/'Eldoria.BetaMemory.Tests.PlayMode.asmdef').read_text())
           assert assembly['name']=='Eldoria.BetaMemory.Tests.PlayMode'
           assert 'UNITY_INCLUDE_TESTS' in assembly['defineConstraints']
-          assert assembly['includePlatforms']==['Editor']
+          assert assembly['includePlatforms']==[], 'A PlayMode-only fixture cannot target Editor-only EditMode assembly'
           assert {'Eldoria.Domain','Eldoria.Application','Eldoria.Infrastructure','Eldoria.Presentation'}.issubset(assembly['references'])
           assert assembly['precompiledReferences']==['nunit.framework.dll']
           sources=[root/'LazyRegionStartupTests.cs']
