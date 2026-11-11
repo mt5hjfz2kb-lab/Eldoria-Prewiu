@@ -727,8 +727,14 @@ namespace Eldoria.DailyTreasures.Editor
                      ink.GetComponent<Image>().color.a>.75f,
                      "City visible but the committed Bastion story is illegible");
             }
-            else Need(!ink.gameObject.activeInHierarchy,
-                "Non-city milestones must not gain a redundant dark panel");
+            else Need(ink.gameObject.activeInHierarchy &&
+                Mathf.Abs(ink.anchoredPosition.x-expected.ReceiptX)<1.1f &&
+                Mathf.Abs(ink.anchoredPosition.y-expected.ReceiptY)<1.1f &&
+                Mathf.Abs(ink.rect.width-expected.ReceiptW-16f)<1.1f &&
+                Mathf.Abs(ink.rect.height-expected.ReceiptH-12f)<1.1f &&
+                Mathf.Abs(ink.GetComponent<Image>().color.a-.67f)<.02f,
+                "Authentic painterly reading must use one bounded ink patch "+
+                "on the committed receipt, not globally black out artwork");
         }
         static void ClickAtNativeScreenPosition(Canvas canvas,EventSystem events,
             Camera camera,Button button,int width,int height)

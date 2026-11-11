@@ -448,3 +448,17 @@ assert.match(tierProof,/pendingCanonicalTierFive=true/);
 assert.match(tierProof,/if\(pendingCanonicalTierFive\)return false/);
 assert.match(tierProof,/if\(SavedBastionLevel\(item\)>=5\)continue/);
 console.log('PASS exact saved Bastion V prevents old tier-II photo while V model loads');
+
+// Root cause correction backed by original 390x844 Unity imagery:
+// no wide black reading half masquerading as a premium narrative. Retain
+// genuine landscape across the theatre and isolate text contrast to
+// exactly its committed receipt bounds (not a second ornate frame).
+const fullBleedShader=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies/DailyNarrativeBackdrop.shader',
+  'utf8');
+assert.match(fullBleedShader,/lerp\(\.66,\.38,readingInk\)\*vignette/);
+assert.match(panel,/bastionStoryInk\.gameObject\.SetActive\(eventStage\)/);
+assert.match(panel,/realCity\?\.82f:\.67f/);
+assert.match(nativeArt,/ink\.rect\.width-expected\.ReceiptW-16f/);
+assert.match(nativeArt,/ink\.rect\.height-expected\.ReceiptH-12f/);
+console.log('PASS genuine full-bleed 390px narrative pigment and local receipt contrast gate');

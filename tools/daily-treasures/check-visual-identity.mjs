@@ -91,6 +91,7 @@ assert.match(stage,/if\(kind==DailyTreasureStageKind\.Bastion\)/);
 assert.match(stage,/BastionPlateOpacity=\.34f/);
 assert.match(stage,/\.38f,0f,0f,false/);
 assert.match(panel,/Bastion \/ real-city milestone caption ink/);
-assert.match(panel,/bastionStoryInk\.gameObject\.SetActive\(realCity\)/);
+assert.match(panel,/bastionStoryInk\.gameObject\.SetActive\(eventStage\)/);
+assert.match(panel,/realCity\?\.82f:\.67f/);
 assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
 console.log('PASS Eldoria premium visual identity: matte charcoal, aged copper/gold, burgundy action, true source art, no mockup currency');

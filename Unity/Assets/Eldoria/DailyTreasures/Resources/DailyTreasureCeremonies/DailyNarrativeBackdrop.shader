@@ -55,7 +55,12 @@ Shader "Eldoria/DailyNarrativeBackdrop"
                     saturate(_PortraitReading));
                 float edge=length((local-.5)*float2(1.,1.12));
                 float vignette=1.-.31*smoothstep(.30,.76,edge);
-                src.rgb *= lerp(.57,.21,readingInk)*vignette;
+                // Keep the genuine painting legible in the reading field,
+                // rather than turning the whole lower mobile theatre black.
+                // The separate .67 basalt patch owns text contrast locally.
+                // At full reading ink this carries 81% more scenery light
+                // than the former .21 global multiplier (without new art).
+                src.rgb *= lerp(.66,.38,readingInk)*vignette;
                 src.a *= lerp(.80,.86,readingInk)*i.color.a;
                 return src;
             }

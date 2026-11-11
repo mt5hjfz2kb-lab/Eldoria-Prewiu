@@ -570,9 +570,11 @@ namespace Eldoria.DailyTreasures
                 ownedVigilantsReliefMaterial=new Material(heraldicShader)
                 {name="Tesoros / original emblem as forged-bronze relief"};
             milestoneInsignia.gameObject.SetActive(false);
-            // The real completed Bastion supplies the landscape. Only the
-            // genuine receipt receives a plain basalt legibility ink field;
-            // never add a false city, ornamental duplicate frame or hitbox.
+            // The real completed Bastion supplies the landscape. All FOUR
+            // milestones now use the SAME locally confined, unframed basalt
+            // reading ink for their committed mailbox text. The actual Eldoria
+            // painting stays visible outside that text field; daily gifts
+            // retain their distinct coffer and unchanged reward geometry.
             var cityInk=NewRect("Bastion / real-city milestone caption ink",ceremony);
             bastionStoryInk=Plate(cityInk,new Color(.045f,.049f,.052f,.82f),false);
             cityInk.gameObject.SetActive(false);
@@ -2031,11 +2033,18 @@ namespace Eldoria.DailyTreasures
             // Preserve the Bastion scene, while protecting the actual
             // recorded story with a discrete unframed shadowed ink area.
             bool realCity=eventStage && currentStage==DailyTreasureStageKind.Bastion;
-            bastionStoryInk.gameObject.SetActive(realCity);
-            if(realCity)
+            // A previous 390x844 native shot devoted half the frame to
+            // near-black emptiness. Keep REAL world pigments alive throughout
+            // the stage and put contrast only behind factual receipt text.
+            bastionStoryInk.gameObject.SetActive(eventStage);
+            if(eventStage)
+            {
+                bastionStoryInk.color=new Color(.045f,.049f,.052f,
+                    realCity?.82f:.67f);
                 Place(bastionStoryInk.rectTransform,.5f,.5f,.5f,.5f,
                     stage.ReceiptX,stage.ReceiptY,
                     stage.ReceiptW+16f,stage.ReceiptH+12f);
+            }
             UpdateSceneryCrop();
             // A real 390px portrait calendar asked the 27px title to
             // wrap to two 31px lines inside a 40px box. It also approached
