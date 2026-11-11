@@ -8,6 +8,7 @@ on:
       - 'tools/breach-watch/validate_mailbox_theme.py'
       - 'tools/breach-watch/validate_modal_bridge.py'
       - 'tools/breach-watch/validate_heroes_theme.py'
+      - 'tools/breach-watch/validate_retention_theme.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxTheme.cs'
@@ -15,6 +16,8 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchModalBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
   workflow_dispatch:
@@ -34,6 +37,7 @@ jobs:
             /tools/breach-watch/validate_mailbox_theme.py
             /tools/breach-watch/validate_modal_bridge.py
             /tools/breach-watch/validate_heroes_theme.py
+            /tools/breach-watch/validate_retention_theme.py
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
@@ -58,3 +62,4 @@ jobs:
           python3 tools/breach-watch/validate_mailbox_theme.py
           python3 tools/breach-watch/validate_modal_bridge.py
           python3 tools/breach-watch/validate_heroes_theme.py
+          python3 tools/breach-watch/validate_retention_theme.py
