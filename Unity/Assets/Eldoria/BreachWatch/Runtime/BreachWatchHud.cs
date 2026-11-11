@@ -445,7 +445,12 @@ namespace Eldoria.BreachWatch
             if(!finalProfile)throw new InvalidOperationException(
                 "Missing Vigilia's approved player profile art");
             identitySurface.ApplyIndependentArt(finalProfile,true);
-            identitySurface.color=Color.white;
+            // The new 2K lion profile carries a violet-magenta metal rim.
+            // The owner-approved crest is antique bronze/gold, not purple.
+            // Tint the SINGLE native profile sprite (not a second graphic)
+            // to warm its original painted metal while preserving its alpha,
+            // shading and all live text. Validate against a genuine Unity A/B.
+            identitySurface.color=new Color(1f,.91f,.68f,1f);
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
             identitySurface.raycastTarget=true;
