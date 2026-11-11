@@ -99,9 +99,12 @@ try {
    $allowedHashes=@($candidate,$record.sha256)+@($uxBase)
    if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1' -and
       $record.path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
-     $composed=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.city-only-composed.cs.txt'
-     if(-not(Test-Path $composed -PathType Leaf)){throw 'Missing exact composed P0 backup candidate; stop restoration'}
-     $allowedHashes+=@((Get-FileHash $composed -Algorithm SHA256).Hash)
+     # The exact composed file is emitted inside this run's evidence only
+     # AFTER its frozen 662-line UX source and all three changes are verified.
+     $composed=$env:ELDORIA_P0_COMPOSED_FILE
+     if($composed -and (Test-Path $composed -PathType Leaf)){
+       $allowedHashes+=@((Get-FileHash $composed -Algorithm SHA256).Hash)
+     }
    }
    if($allowedHashes -notcontains $current){$conflicts+=$record.path;continue}
   }
