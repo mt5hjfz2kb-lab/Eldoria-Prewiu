@@ -267,7 +267,8 @@ namespace Eldoria.BreachWatch.Editor
                     Need(ui.RealDestinations && 
                          ui.RealDestinations.RealTrainingCinematic,
                          "Full archer composition did not render in portrait "+
-                         width+"x"+height+"; reject decorative-only PASS");
+                         width+"x"+height+"; reject decorative-only PASS. "+
+                         ui.RealDestinations.NativeTrainingLayoutDiagnostic);
                 var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
                 var heroes=ui.RealHeroes;
