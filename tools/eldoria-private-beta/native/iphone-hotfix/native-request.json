@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "workstream_id": "eldoria-private-beta-i-v-20261107",
-  "owner": "codex-iphone-stability-6f75130e87ae",
-  "ownership_revision": 25,
+  "owner": "chatgpt-iphone-p0-physical-followup-20261111",
+  "ownership_revision": 28,
   "state": "CLAIMED_FOR_NATIVE",
-  "variant": "beta10-clock-prebaked-collisions-r1",
+  "variant": "beta13-p0-city-only-v1",
   "replay_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
   "minimal_source_blob": "144b1d6becec3055aac6a69cce07007cad1849a6",
@@ -18,18 +18,18 @@
     "offline owner iPhone A/B",
     "physical 30min proof before promotion"
   ],
-  "change_scope": "Preserve all19 frozen beta10 minimal-clock overlays; only RegionOneBlenderLandscape initialization arrays change; structural probe checks no retained normal copy; enable PlayerSettings.bakeCollisionMeshes only in isolated preserved build and verify actual cooked collision payload against original mesh hashes",
+  "change_scope": "A/B diagnostic only: leave default full world, Bastion I-V, saves, resources, textures and original terrain unchanged; WebGL opt-in URL eldoria_p0_city_only=1 skips RegionOneCanonicalLandscape bootstrap, allows city Ready and blocks world button, proving whether actual city boots without building large world. NO external tester use or promotion. Existing collision prebake retained.",
   "external_testers_enabled": false,
   "owner_ios_stability_proven": false,
-  "note": "This file is NOT a native test result. Change state to CLAIMED_FOR_NATIVE only after formal CAS workstream lease handoff and zero Unity/Blender process.",
+  "note": "Owner-reported beta13 physical restart 7sec after ready (2026-11-11). Isolated diagnostic A/B, NOT a fix. Native baseline must remain identical when flag absent. Release Windows after actual native workflow concludes.",
   "engine_source": "e6017e154f38e12f934907920064b77e5c371763",
   "engine_input_blobs": {
     "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "76425d914f71ec7c5d1ddbe416f6264b2c21dc18",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "2daa985a36df3599d49f00239a3774112c5651ee",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e00deaf7b3f2e31a4fd20ae91117b6ea329a8b60",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "6f28c164c42cfebe4337bf4ec02acca30373c42c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "7859f60566187ed0c1d35c6f78271914b978000e",
-    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "80f2293b19ac8e420bcf22908b2aed1bf2cbd667",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "cafad3c03d584a48eb8b3fe1523670636e3a0aee",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216"
   },
-  "activated_at_utc": "2026-11-10T21:55:14.562Z"
+  "activated_at_utc": "2026-11-11T08:14:00Z"
 }
