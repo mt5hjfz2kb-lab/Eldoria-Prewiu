@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T03:12:20.675Z",
+  "updated_at": "2026-11-11T03:46:30.000Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,11 +6665,13 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 74,
+      "ownership_revision": 75,
       "write_scope_released": false,
-      "phase": "Genuine_Unity_Roof_Reference_Median_Matched_Art_Target_Pending",
+      "phase": "Bronze_Profile_Direct_Sprite_Tint_Native_Proof_Requested",
       "next": "Native exact fb0d43 8 shots PASS and original roof color median ~[14,99,180] vs owner ~[12,100,180]; significant macro roof palette improvement but UI whole art still differs (world scene/portrait/typography); further 2D premium work and visual comparison before art approval. Do not merge or publish.",
       "art_approved": false,
       "physical_mobile_tested": false,
@@ -6858,7 +6860,9 @@
           10
         ],
         "roof_palette_euclidean_color_distance_approx_before": 22.2,
-        "roof_palette_euclidean_color_distance_approx_after": 2.2
+        "roof_palette_euclidean_color_distance_approx_after": 2.2,
+        "pending_native_head": "c0c397bf67af722b0f51e8a92b165372cff5a1ea",
+        "pending_art_hypothesis": "Direct antique-bronze profile tint of new single CleanRoom 2K profile Image; retain art authored, game state, one Canvas."
       },
       "runner_release_basis": "Native run42950761050 SUCCESS exact fb0d43c, eight PNGs verified SHA256, owner/reference roof RGB pixel A/B and working navigation/save. Only Windows released; PR173 owner remains canonical.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
