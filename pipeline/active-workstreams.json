@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T09:43:00Z",
+  "updated_at": "2026-11-11T09:51:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6988,9 +6988,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "P0_CITY_ONLY_WINDOWS_INPUT_EOL_GATE_REPAIR",
+      "phase": "P0_CITY_ONLY_NATIVE_42998206844_RUNNING",
       "note": "Owner beta13 physically FAILED 2026-11-11: ready 08:17:13, resize vertical, new boot 08:17:20. Not cured by collision prebake. Workstream reclaimed for bounded investigation while preserving separate beta10.",
-      "next": "Latest run42993101501 failed before Unity at exact native-PASS engine-host SHA verification. Validate CRLF checkout hypothesis and apply fail-closed SHA256-verified LF normalization, update pinned workflow/engine request to owner rev29, rerun native once, inspect restoration and only then package; no tester release before physical PASS.",
+      "next": "Wait for actual 42998206844 Unity job completion; inspect source-hash audit, native parity, restoration=true and fresh WebGL. On success run isolated package + Mac WebKit QA without Pages publication; on failure repair concrete gate and rerun only after recovery. Preserve beta10 and tester hold.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7243,10 +7243,11 @@
         "ownership_revision": 29,
         "reason": "Owner-authorized PR179 handoff; old native job completed with file-byte source gate failure. One controlled retry after source fix.",
         "planned_variant": "beta13-p0-city-only-v1",
-        "native_run": 42993101501,
-        "native_job": 130430644990,
-        "native_state": "FAILED_BEFORE_UNITY",
-        "preflight_state": "success"
+        "native_run": 42998206844,
+        "native_job": 130447628038,
+        "native_state": "in_progress",
+        "preflight_state": "success",
+        "note": "Run head 63fb2095412a3066e18f3a8a31c2a03f40ef4944; original immutable engine host LF SHA verified against Git blob in-process with CRLF-only fallback; full Unity native not yet certified."
       },
       "ownership_history": [
         {
