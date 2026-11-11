@@ -25,8 +25,8 @@ namespace Eldoria.BreachWatch
         readonly Dictionary<Button, Selectable.Transition> originalTransitions =
             new Dictionary<Button, Selectable.Transition>();
         readonly List<GameObject> newArtwork = new List<GameObject>();
-        readonly Dictionary<RectTransform, Sprite> paintedFrames =
-            new Dictionary<RectTransform, Sprite>();
+        readonly Dictionary<RoyalText, Color> originalInkColors =
+            new Dictionary<RoyalText, Color>();
         Sprite panel, action, nineSlicedPanel;
         Image backdrop;
         Color originalBackdropColor;
@@ -98,6 +98,9 @@ namespace Eldoria.BreachWatch
                 button.transition=Selectable.Transition.None;
                 ReskinnedButtons++;
             }
+            foreach(var text in realWindow.GetComponentsInChildren<RoyalText>(true))
+                if(text)originalInkColors[text]=text.color;
+            RefreshInk();
             styled=ReplacedOldPaintings>=4 && ReskinnedButtons>=3 &&
                 AllOldMailboxBackgroundsHidden();
             if(!styled) Restore();
@@ -145,6 +148,27 @@ namespace Eldoria.BreachWatch
             return img;
         }
 
+        void LateUpdate()
+        {
+            if(styled)RefreshInk();
+        }
+
+        void RefreshInk()
+        {
+            // The canonical mailbox Refresh() updates unread/read colors
+            // using ink designed for light blue parchment. Keep live
+            // category/status logic, but never let that ink disappear on
+            // charcoal stone after a paged refresh.
+            foreach(var pair in originalInkColors)
+            {
+                var text=pair.Key;
+                if(!text)continue;
+                Color c=text.color;
+                if(c.r<.44f && c.g<.44f && c.b<.44f && c.a>.2f)
+                    text.color=new Color(.94f,.89f,.78f,c.a);
+            }
+        }
+
         bool AllOldMailboxBackgroundsHidden()
         {
             foreach(var g in GetComponentsInChildren<Graphic>(true))
@@ -170,6 +194,9 @@ namespace Eldoria.BreachWatch
             foreach(var pair in originalEnabled)
                 if(pair.Key)pair.Key.enabled=pair.Value;
             originalEnabled.Clear();
+            foreach(var pair in originalInkColors)
+                if(pair.Key)pair.Key.color=pair.Value;
+            originalInkColors.Clear();
             if(backdrop)backdrop.color=originalBackdropColor;
             backdrop=null;
             foreach(var obj in newArtwork)
