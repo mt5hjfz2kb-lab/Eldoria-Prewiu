@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T13:17:00Z",
+ "updated_at": "2026-11-11T14:14:48Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -19,6 +19,26 @@
   "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
  },
  "active": [
+  {
+   "id": "eldoria-issue186-reward-attention-guidance-20261111",
+   "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
+   "owner": "chatgpt-issue186-reward-domain-20261111",
+   "ownership_state": "claimed",
+   "ownership_revision": 1,
+   "branch": "feature/issue186-reward-attention-guidance-20261111",
+   "status": "active",
+   "phase": "ISOLATED_DOMAIN_IMPLEMENTATION_CI_PENDING",
+   "claimed_at": "2026-11-11T14:14:48Z",
+   "resources": [],
+   "scope": [
+    "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
+    "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
+    "tools/reward-experience/**",
+    ".github/workflows/reward-experience-domain.yml",
+    "docs/issue186/**"
+   ],
+   "next": "PR187 source only. No changes to GameState/LocalGateway or concurrent PR181, UI PR173, beta PR179. No Windows, merge or release. Coordinate handoff before gameplay wiring."
+  },
   {
    "id": "valoria-master-plan-layered-construction-20261016",
    "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
