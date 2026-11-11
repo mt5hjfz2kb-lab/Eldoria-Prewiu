@@ -263,6 +263,12 @@ namespace Eldoria.BreachWatch.Editor
                 if(management && management.IsOpen)management.SynchronizeLayout();
                 if(ui.RealDestinations && ui.RealDestinations.IsShowing)
                     ui.RealDestinations.SynchronizeVisual();
+                if(name=="march" && height>width)
+                    Need(ui.RealDestinations &&
+                         ui.RealDestinations.RealMarchTwoCardRoster,
+                         "Actual portrait march still shows the permanently "+
+                         "disabled third hero or lacks the two enlarged real slots; "+
+                         width+"x"+height);
                 if(name=="training" && height>width)
                     Need(ui.RealDestinations && 
                          ui.RealDestinations.RealTrainingCinematic,
