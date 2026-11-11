@@ -96,7 +96,7 @@ try {
    # admissible: do not stage both and silently lose the UX.
    $from=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.beta13-engine-control.cs.txt'
    if(-not(Test-Path $from -PathType Leaf) -or
-      (Get-FileHash $from -Algorithm SHA256).Hash -ne '19E289FF881B483748EA627C0B570768498B798CB0CF684E8C2A45ECC D11CB88'.Replace(' ','')){
+      (Get-FileHash $from -Algorithm SHA256).Hash -ne '19E289FF881B483748EA627C0B570768498B798CB0CF684E8C2A45ECCD11CB88'){
      throw 'Immutable native-PASS engine host differs from frozen UX baseline'
    }
   }
