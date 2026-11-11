@@ -262,6 +262,24 @@ namespace Eldoria.BreachWatch.Editor
                 }
                 Need(canonicalHeroes.OpenHero("lyra"),
                     "Genuine Lyra cannot open despite being recruited in fixture");
+                Need(heroes.OriginalLyraIllustrationBound,
+                    "Lyra must reuse her original-reference identity, not the old silver-haired fallback");
+                var lyra=canonicalHeroes.ReadHeroes().First(hero=>hero.Id=="lyra");
+                Need(lyra.Portrait && lyra.Portrait.name==
+                    BreachWatchHeroesBridge.OriginalLyraBustName,
+                    "Hero list/profile data are not bound to the original Lyra bust");
+                var lyraPath=AssetDatabase.GetAssetPath(lyra.Portrait.texture);
+                Need(lyraPath=="Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Heroes/canonical_lyra_illustration.png" ||
+                     lyraPath=="Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies/canonical_lyra_illustration.png",
+                    "Lyra portrait is not the original approved-reference source texture");
+                var lyraImporter=AssetImporter.GetAtPath(lyraPath) as TextureImporter;
+                Need(lyraImporter && !lyraImporter.isReadable &&
+                     !lyraImporter.mipmapEnabled && lyraImporter.maxTextureSize<=1024 &&
+                     lyra.Portrait.texture.width<=1024 && lyra.Portrait.texture.height<=1024,
+                    "Original Lyra texture import must remain bounded, mipless and non-readable");
+                var lyraSourceFile=Path.Combine(UnityEngine.Application.dataPath,lyraPath.Substring(7));
+                Need(Hash(lyraSourceFile)=="58cca82816e86ab8ae70ee29b3b941db591e80ecc85148da55487beecb1a4fef",
+                    "Lyra source PNG changed from the actual original-reference extraction");
                 foreach(var size in new[]{(900,1600),(390,844)})
                     profileShots.Add(Capture(ui,folder,"hero-lyra-resumen",
                         size.Item1,size.Item2,
@@ -746,3 +764,4 @@ namespace Eldoria.BreachWatch.Editor
     }
 }
 #endif
+

@@ -26,6 +26,12 @@ namespace Eldoria.BreachWatch
         int siblingIndex;
         Action originalClosed;
         Action bridgeClosed;
+        Func<HeroesApprovedDestination.HeroState[]> originalReadHeroes;
+        Func<HeroesApprovedDestination.HeroState[]> presentationReadHeroes;
+        Sprite originalLyraBust;
+        public const string OriginalLyraBustName="canonical_lyra_original_bust";
+        public bool OriginalLyraIllustrationBound=>originalLyraBust && heroes &&
+            heroes.ReadHeroes==presentationReadHeroes;
         public bool IsShowing => heroes && heroes.IsOpen && root &&
             root.parent==canvas.transform;
         public bool ReplacedOldFrames => IsShowing && theme &&
@@ -70,6 +76,7 @@ namespace Eldoria.BreachWatch
             if(!theme)theme=root.gameObject.AddComponent<BreachWatchHeroesTheme>();
             // The canonical page rebuilds on a new parent Canvas so real
             // text, portrait and touch sizes use Vigilia's mobile scale.
+            InstallOriginalLyraIllustration();
             heroes.Refresh();
             Canvas.ForceUpdateCanvases();
             if(!theme.Initialize(root) || !theme.Refresh(root) ||
@@ -82,6 +89,50 @@ namespace Eldoria.BreachWatch
                 return false;
             }
             return true;
+        }
+
+        void InstallOriginalLyraIllustration()
+        {
+            if(!heroes || heroes.ReadHeroes==presentationReadHeroes)return;
+            if(!originalLyraBust)
+            {
+                // Reuse the same original-reference texture as the ceremony
+                // when both PRs are assembled. This branch-local fallback is
+                // byte-identical; never load another GLB or repaint a face.
+                var source=Resources.Load<Sprite>(
+                    "DailyTreasureCeremonies/canonical_lyra_illustration");
+                if(!source)source=Resources.Load<Sprite>(
+                    "VigiliaArt/Heroes/canonical_lyra_illustration");
+                if(!source)return;
+                var r=source.rect;
+                // Upper-body view of ORIGINAL pixels, with a FullRect sprite.
+                // No copied Texture2D, readback or readable texture required.
+                var bust=new Rect(r.x+r.width*.25f,r.y+r.height*.56f,
+                    r.width*.50f,r.height*.44f);
+                originalLyraBust=Sprite.Create(source.texture,bust,
+                    new Vector2(.5f,.5f),source.pixelsPerUnit,0,
+                    SpriteMeshType.FullRect,Vector4.zero,false);
+                originalLyraBust.name=OriginalLyraBustName;
+            }
+            originalReadHeroes=heroes.ReadHeroes;
+            if(originalReadHeroes==null)return;
+            if(presentationReadHeroes==null)
+                presentationReadHeroes=ReadHeroesWithOriginalLyra;
+            heroes.ReadHeroes=presentationReadHeroes;
+        }
+
+        HeroesApprovedDestination.HeroState[] ReadHeroesWithOriginalLyra()
+        {
+            var actual=originalReadHeroes?.Invoke();
+            if(actual==null || !originalLyraBust)return actual;
+            // HeroState is a value type. Clone the array and replace ONLY
+            // its portrait; all identity, stats, unlocks and model callbacks
+            // remain the actual authoritative values, never a parallel save.
+            var view=(HeroesApprovedDestination.HeroState[])actual.Clone();
+            for(int i=0;i<view.Length;i++)
+                if(string.Equals(view[i].Id,"lyra",StringComparison.OrdinalIgnoreCase))
+                    view[i].Portrait=originalLyraBust;
+            return view;
         }
 
         public void SynchronizeVisual()
@@ -129,6 +180,10 @@ namespace Eldoria.BreachWatch
                 root.SetSiblingIndex(Mathf.Clamp(siblingIndex,0,parent.childCount-1));
             }
             root=null;parent=null;
+            bool changed=heroes && heroes.ReadHeroes==presentationReadHeroes;
+            if(changed)heroes.ReadHeroes=originalReadHeroes;
+            originalReadHeroes=null;
+            if(changed && heroes.IsOpen)heroes.Refresh();
         }
 
         void OnDestroy()
@@ -136,6 +191,13 @@ namespace Eldoria.BreachWatch
             Restore();
             if(heroes && heroes.Closed==bridgeClosed)
                 heroes.Closed=originalClosed;
+            if(originalLyraBust)
+            {
+                if(UnityEngine.Application.isPlaying)Destroy(originalLyraBust);
+                else DestroyImmediate(originalLyraBust);
+                originalLyraBust=null;
+            }
         }
     }
 }
+

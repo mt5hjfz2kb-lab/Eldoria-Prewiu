@@ -129,6 +129,17 @@ namespace Eldoria.BreachWatch
                     isButton);
                 restyled++;
             }
+            // The legacy full-height 3D Lyra source had empty sky above.
+            // Its upward crop would shave the original 2D heroine's hair.
+            // Keep the new genuine bust's top inside its existing mask.
+            foreach(var photo in content.GetComponentsInChildren<Image>(true))
+                if(photo && photo.name=="Verified portrait" && photo.sprite &&
+                   photo.sprite.name==BreachWatchHeroesBridge.OriginalLyraBustName)
+                {
+                    var position=photo.rectTransform.anchoredPosition;
+                    position.y=Mathf.Min(0f,position.y);
+                    photo.rectTransform.anchoredPosition=position;
+                }
             return restyled>0&&!VisibleOldRoyalFrame;
         }
 
@@ -231,3 +242,4 @@ namespace Eldoria.BreachWatch
         }
     }
 }
+
