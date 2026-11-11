@@ -85,7 +85,7 @@ namespace Eldoria.BreachWatch.Editor
                 Need(host.City.Probe,"Refuse migration QA on a real player save");
                 if(phase==0)
                 {
-                    ValoriaIntegrationBuild.CompleteProbePlayerName(host);
+                    Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
                     afterName=EditorApplication.timeSinceStartup;
                     phase=1;return;
                 }
