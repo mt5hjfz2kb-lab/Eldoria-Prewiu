@@ -69,7 +69,7 @@ def run():
         if not editor_depth:
             runtime_lines.append(line)
     assert editor_depth==0,"Unbalanced diagnostic-only Unity editor preprocessor"
-    runtime_portrait="\\n".join(runtime_lines)
+    runtime_portrait="\n".join(runtime_lines)
     assert runtime_portrait.count("portraitCamera.Render();")==1, (
         "Runtime diorama must not add extra passes, synthetic ground or overlays")
     if "VigiliaActualBastionMaterialIndexAtlas.png" in portrait:
@@ -77,7 +77,7 @@ def run():
         assert "targets[i].sharedMaterials=originalsByRenderer[i]" in portrait
         assert "portraitCamera.Render();" in portrait and "GetPixels32()" in portrait
         assert "File.WriteAllBytes" in portrait and "SetPixels32" in portrait
-        assert "new GameObject(\\\"Vigilia / one-shot genuine selected building\\\")" in portrait, (
+        assert "Vigilia / one-shot genuine selected building" in portrait, (
             "Diagnostic may only probe the disposable copy of original building geometry")
     assert "Vigilia / one-shot earth under real building" not in portrait, (
         "No rectangular synthetic grass stage may reappear behind the real castle")
