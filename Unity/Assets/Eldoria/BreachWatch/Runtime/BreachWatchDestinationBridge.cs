@@ -94,7 +94,16 @@ namespace Eldoria.BreachWatch
 
         void LateUpdate()
         {
-            if(!destinationRoot)return;
+            if(!destinationRoot)
+            {
+                // Real building commands may open Training/March directly
+                // through the existing gameplay controller. Adopt that same
+                // screen; never leave it invisible on the disabled old HUD.
+                if(management && management.IsOpen && host &&
+                   host.CanOpen(RoyalSection.Army))
+                    TryAdoptAlreadyOpen();
+                return;
+            }
             if(!management || !management.IsOpen)
             {
                 Restore();
