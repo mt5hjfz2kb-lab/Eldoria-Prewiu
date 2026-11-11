@@ -6678,7 +6678,7 @@
   {
    "id": "eldoria-forja-oscura-visual-proof-20261107",
    "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-   "owner": "chatgpt-pr173-complete-ui-migration-20261111",
+   "owner": "chatgpt-central-art-execution-20261111",
    "branch": "feature/forja-oscura-native-proof-20261107",
    "status": "active",
    "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6707,10 +6707,10 @@
    ],
    "resources": [],
    "ownership_state": "claimed",
-   "ownership_revision": 92,
+   "ownership_revision": 93,
    "write_scope_released": false,
-   "phase": "STAGED_DESTINATION_MIGRATION_NATIVE_QA",
-   "next": "Test real canonical Training/March and mailbox adapters on exclusive Unity runner, preserve existing main HUD, remove old paintings instead of superimposing, validate native before activation.",
+   "phase": "MAILBOX_ART_TECHNIQUE_PIVOT_OFF_WINDOWS",
+   "next": "Replace flat procedural envelope/quill with genuine textured illustration; preserve authoritative empty-state routing, use same PR173 and queue after179/181/187; owner A/B before main.",
    "art_approved": false,
    "physical_mobile_tested": false,
    "runner_claimed_at": "2026-11-11T11:27:39.902Z",
@@ -6833,6 +6833,14 @@
      "to_owner": "chatgpt-pr173-complete-ui-migration-20261111",
      "transferred_at": "2026-11-11T11:27:39.902Z",
      "reason": "Owner explicitly orders this live chat to execute PR173 full visual replacement without stopping for interim reports; continue same canonical workstream, preserve previous changes, no duplicate PR."
+    },
+    {
+     "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
+     "from_revision": 92,
+     "to_revision": 93,
+     "to_owner": "chatgpt-central-art-execution-20261111",
+     "transferred_at": "2026-11-11T20:04:35.189Z",
+     "reason": "Propietario encarga en este chat asumir ejecución de los cuatro trabajos; relevo de fuente UI conservando PR173 y sin Windows beta. Corregir técnica fallida mailbox y comparar con referencia antes de main."
     }
    ],
    "runner_priority_handoff": {
@@ -6987,7 +6995,8 @@
     "at": "2026-11-11T08:04:54.688Z",
     "request": "Haz eso",
     "context": "Replace remaining interface with accepted Vigilia design maintaining quality; preserve rewards/cofres. Scope expansion beyond prior first-screen proof."
-   }
+   },
+   "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111"
   },
   {
    "id": "eldoria-private-beta-i-v-20261107",
