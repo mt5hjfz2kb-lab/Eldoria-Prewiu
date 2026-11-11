@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "workstream_id": "eldoria-private-beta-i-v-20261107",
+  "canonical_pr": 179,
+  "branch": "feature/eldoria-private-beta-i-v-20261107",
+  "owner": "chatgpt-pr179-iphone-automation-20261111",
+  "ownership_revision": 35,
+  "state": "WAITING_FOR_WINDOWS_LEASE",
+  "source_blobs": {
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "66a3e57d27fedef506fa21cff8b3d4f5bb3438ab",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "3261c4236d9a04cfa4f77c0bbe42769edc1432a1",
+    "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs": "cd8fcac4fd0b1ebcf2ab498c8515d2e4456cf7aa"
+  },
+  "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
+  "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
+  "full_world_iphone_verified": false,
+  "external_testers_enabled": false,
+  "publish_allowed": false,
+  "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
+  "next": "On PR173 release acquire formal CAS Windows lease, bump revision and change state to CLAIMED_FOR_NATIVE. Only then dispatch one exact-source job."
+}
