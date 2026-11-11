@@ -212,7 +212,50 @@ namespace Eldoria.BreachWatch.Editor
                 var data=terrain.terrainData;
                 entries.Add("TERRAIN path="+HierarchyPath(terrain.transform)+
                     " size="+(data?data.size.ToString("F2"):"missing")+
-                    " material="+(terrain.materialTemplate?terrain.materialTemplate.name:"default"));
+                    " material="+(terrain.materialTemplate?terrain.materialTemplate.name:"default")+
+                    " shader="+(terrain.materialTemplate && terrain.materialTemplate.shader
+                        ?terrain.materialTemplate.shader.name:"default"));
+                if(data)
+                {
+                    var layers=data.terrainLayers;
+                    var alphaLayers=data.alphamapLayers;
+                    entries.Add("TERRAIN_ALPHAMAP width="+data.alphamapWidth+
+                        " height="+data.alphamapHeight+
+                        " channelCount="+alphaLayers+
+                        " sourceLayers="+(layers==null?0:layers.Length));
+                    if(layers!=null && layers.Length>0 &&
+                       layers.Length==alphaLayers &&
+                       data.alphamapWidth>0 && data.alphamapHeight>0)
+                    {
+                        var sum=new double[layers.Length];
+                        var max=new float[layers.Length];
+                        int observations=0;
+                        int strideX=Mathf.Max(1,data.alphamapWidth/14);
+                        int strideY=Mathf.Max(1,data.alphamapHeight/14);
+                        for(int y=strideY/2;y<data.alphamapHeight;y+=strideY)
+                        for(int x=strideX/2;x<data.alphamapWidth;x+=strideX)
+                        {
+                            var weights=data.GetAlphamaps(x,y,1,1);
+                            for(int layer=0;layer<layers.Length;layer++)
+                            {
+                                float weight=weights[0,0,layer];
+                                sum[layer]+=weight;
+                                max[layer]=Mathf.Max(max[layer],weight);
+                            }
+                            observations++;
+                        }
+                        for(int i=0;i<layers.Length;i++)
+                        {
+                            var layer=layers[i];
+                            entries.Add("LAYER index="+i+
+                                " name="+(layer?layer.name:"missing")+
+                                " remapMax="+(layer?layer.diffuseRemapMax.ToString("F3"):"missing")+
+                                " meanAlphamap="+(sum[i]/Mathf.Max(1,observations)).ToString("F5")+
+                                " maxAlphamap="+max[i].ToString("F5")+
+                                " samples="+observations);
+                        }
+                    }
+                }
             }
             var large=Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None)
                 .Where(r=>r && r.gameObject.scene.isLoaded && r.enabled &&
