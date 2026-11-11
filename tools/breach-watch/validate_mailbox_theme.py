@@ -46,7 +46,7 @@ def main():
     check(hashlib.sha256(pixels).hexdigest()==
           "2fc1e38d18e68ab9f144f2742594ac4c1ca2fb6011659a3fbd78ddd26d84c1f1",
           "Original sealed-letter PNG changed without owner-approved art provenance")
-    check(pixels[:8]==b"\\x89PNG\\r\\n\\x1a\\n" and
+    check(pixels[:8]==bytes((137,80,78,71,13,10,26,10)) and
           len(pixels)>=29 and 
           struct.unpack(">IIBBBBB",pixels[16:29])[:4]==(1536,1024,8,6),
           "Sealed-letter source must stay authentic 1536x1024 RGBA PNG")
