@@ -1,0 +1,138 @@
+name: Issue 186 Unity native art evidence (exclusive Windows)
+on:
+  push:
+    branches: [feature/issue186-reward-attention-guidance-20261111]
+    paths: [tools/reward-experience/native-request.txt]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: issue186-native-art
+  cancel-in-progress: false
+
+jobs:
+  exclusive-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fail closed unless Issue186 owns the exact Windows CAS lease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          hdr={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+               "Accept":"application/vnd.github+json","User-Agent":"issue186-native-preflight"}
+          def get(u):
+              with urllib.request.urlopen(urllib.request.Request(u,headers=hdr),timeout=30) as r:return json.load(r)
+          p=get(f"https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main")
+          b64=p.get("content")
+          if p.get("encoding")!="base64" or not b64:
+              blob=get(f"https://api.github.com/repos/{repo}/git/blobs/{p['sha']}")
+              if blob.get("sha")!=p["sha"] or blob.get("encoding")!="base64":raise SystemExit("Registry blob mismatch")
+              b64=blob.get("content")
+          if not b64:raise SystemExit("CAS registry unreadable")
+          d=json.loads(base64.b64decode(b64))
+          hs=[x for x in d["active"] if "windows-runner-heavy" in x.get("resources",[])]
+          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!="chatgpt-issue186-art-import-recovery-20261111" or hs[0].get("ownership_state")!="claimed":
+              raise SystemExit("Another workstream owns Windows. Refuse native run.")
+          pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
+          if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
+          print("ISSUE186_CAS_LEASE_PASS")
+          PY
+
+  native:
+    needs: exclusive-preflight
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    env:
+      OUT: ${{ github.workspace }}\issue186-native-${{ github.run_id }}
+    steps:
+      - name: Verify installed Unity and idle computer
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender process already running. Refuse overlap.'}
+      - name: Checkout pinned source without full archive
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV*/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-391*/**
+      - name: Recheck exact SHA and Windows lease before Editor
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source is not exact requested HEAD'}
+          $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-native-leaserecheck'}
+          $repo='mt5hjfz2kb-lab/Eldoria-Prewiu'
+          $p=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/contents/pipeline/active-workstreams.json?ref=main" -Headers $hdr
+          $b64=[string]$p.content
+          if($p.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($b64)){
+            $blob=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/blobs/$($p.sha)" -Headers $hdr
+            if($blob.sha -ne $p.sha -or $blob.encoding -ne 'base64'){throw 'CAS blob mismatch'}
+            $b64=[string]$blob.content
+          }
+          if([string]::IsNullOrWhiteSpace($b64)){throw 'CAS data unavailable'}
+          $d=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)))|ConvertFrom-Json
+          $holders=@($d.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-issue186-art-import-recovery-20261111'){throw 'Issue186 lost Windows lease'}
+          $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
+          if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
+      - name: Import actual sprites and render four sizes in Unity
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force $env:OUT | Out-Null
+          $unityProject=Join-Path (Get-Location).Path 'Unity'
+          $log=Join-Path $env:OUT 'unity-editor.log'
+          $args='-batchmode -force-d3d11 -projectPath "'+$unityProject+
+            '" -executeMethod Eldoria.Issue186Art.Editor.Issue186NativeEvidence.Capture -logFile "'+$log+'"'
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $proof=Join-Path $unityProject 'Issue186NativeEvidence'
+          if(Test-Path $proof){Copy-Item (Join-Path $proof '*') $env:OUT -Force -Recurse}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 130}
+            throw "Unity import/capture failed with exit $($process.ExitCode)"
+          }
+          $file=Join-Path $env:OUT 'report.json'
+          if(-not(Test-Path $file)){throw 'No actual Unity proof report'}
+          $r=Get-Content $file -Raw|ConvertFrom-Json
+          if($r.status -ne 'UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING' -or
+            $r.allResourcesImported -ne $true -or $r.realImportedSprites -ne 16 -or
+            $r.captures -ne 4 -or $r.pointerRaycastHits -ne 4 -or
+            $r.artApproved -ne $false -or $r.actualCityTested -ne $false){
+            throw 'Native proof status did not match acceptance contract'
+          }
+          foreach($shot in @($r.images)){
+            if($shot.actualResourceSprites -ne 12 -or $shot.visiblePixels -ne $true -or
+               $shot.indicatorReady -ne $true -or $shot.firstUsePointer -ne $true -or
+               $shot.firstUseCompleted -ne $true -or $shot.noOverlappingCards -ne $true){
+              throw 'One mobile/desktop render is missing required content'
+            }
+            $p=Join-Path $env:OUT $shot.file
+            if(-not(Test-Path $p)){throw "Missing authentic PNG $p"}
+            if((Get-FileHash $p -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){
+              throw 'Tampered native Unity screenshot'
+            }
+          }
+          Write-Host 'ISSUE186_NATIVE_FOUR_VIEWPORTS_AND_POINTER_PASS'
+      - name: Preserve actual Unity screenshots and error log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-native-${{ github.sha }}
+          path: ${{ github.workspace }}\issue186-native-${{ github.run_id }}\
+          retention-days: 30
+          if-no-files-found: warn
