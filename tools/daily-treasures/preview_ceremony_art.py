@@ -106,18 +106,18 @@ def compose(game_capture,layers,shape,event="",badge=None):
         dst.alpha_composite(focal,(x,y))
         if badge is not None and event=="vigilants":
             icon=badge.convert("RGBA")
-            side=max(26,min(round(focal.width*.22),round(focal.height*.22),200))
+            side=max(26,min(round(focal.width*.48),round(focal.height*.43),240))
             icon.thumbnail((side,side),Image.Resampling.LANCZOS)
             dst.alpha_composite(icon,
                  (x+(focal.width-icon.width)//2,
-                  y+round(focal.height*.41)-icon.height//2))
+                  y+round(focal.height*.47)-icon.height//2))
         if badge is not None and event=="explorers":
             # Authentic Scouts sigil only; no fabricated cartography.
             icon=badge.convert("RGBA")
-            side=max(24,min(round(focal.width*.15),110))
+            side=max(24,min(round(focal.width*.25),150))
             icon.thumbnail((side,side),Image.Resampling.LANCZOS)
             dst.alpha_composite(icon,
-                 (x+round(focal.width*.70),y+round(focal.height*.30)))
+                 (x+round(focal.width*.64),y+round(focal.height*.31)))
     if ornament is not None:
         dst.alpha_composite(nine_slice_frame(ornament,shape))
     return dst
