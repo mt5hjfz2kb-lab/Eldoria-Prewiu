@@ -171,6 +171,20 @@ def verify():
     root=Path(__file__).resolve().parents[2]
     editor=(root/"Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs").read_text(encoding="utf-8")
     workflow=(root/".github/workflows/issue186-native.yml").read_text(encoding="utf-8")
+    runtime=(root/"Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186ArtKit.cs").read_text(encoding="utf-8")
+    assert "eventSystem.RaycastAll(pointerData, pointerHits)" in runtime and \
+        "ExecuteEvents.GetEventHandler<IPointerClickHandler>(" in runtime and \
+        "pointerHits[0].gameObject) != actualControl.gameObject" in runtime, \
+        "A tutorial must not point to a Selectable obscured by any modal raycaster"
+    checks+=1
+    assert editor.index('new GameObject("Disposable event dispatch"') < \
+        editor.index("bool pointed=Issue186ArtKit.BindFirstUsePointer"), \
+        "Native fixture must create the real EventSystem before binding the pointer"
+    checks+=1
+    assert "Runtime tutorial still points at a button hidden by a modal blocker" in editor and \
+        "Runtime tutorial did not recover when modal obstruction disappeared" in editor, \
+        "Native QA must test real pointer hiding and rediscovery across modal blocker"
+    checks+=1
     assert re.search(r"firstUseCompleted\s*=\s*false\s*[,}]",editor), \
         "Art-only tap may not masquerade as authoritative reward completion"
     checks+=1
