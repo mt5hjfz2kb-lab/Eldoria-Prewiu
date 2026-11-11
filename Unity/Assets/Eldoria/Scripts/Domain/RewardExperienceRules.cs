@@ -3,6 +3,16 @@ using System.Collections.Generic;
 
 namespace Eldoria.Domain
 {
+    public static class ResourceRewardCommands
+    {
+        public const string ClaimMail="ClaimResourceRewardMail";
+        public const string UsePacket="UseResourceRewardPacket";
+        public const string MarkBagSeen="MarkResourceBagSeen";
+        public const string DismissGuidance="DismissResourceGuidance";
+        public const string FirstUseStep="resource:first-use";
+        public const string FirstMailClaimStep="resource:first-mail-claim";
+    }
+
     // Issue #186 phase one. Kept separate from PlayerState/LocalGateway until
     // the PR #181 writer hands over those paths. All fields are Unity-serializable.
     [Serializable] public sealed class ResourceRewardPacket

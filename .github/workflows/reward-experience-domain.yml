@@ -1,8 +1,11 @@
-name: Issue 186 reward, attention and guidance (domain only)
+name: Issue 186 reward, attention and guidance (source and gateway)
 on:
   pull_request:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'tools/reward-experience/**'
       - 'Unity/Assets/Eldoria/Issue186Art/**'
       - '.github/workflows/reward-experience-domain.yml'
@@ -20,6 +23,7 @@ jobs:
           lfs: false
           sparse-checkout: |
             Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
             Unity/Assets/Eldoria/Issue186Art
             tools/reward-experience
             pipeline/art-production-requests
@@ -54,5 +58,8 @@ jobs:
         run: python3 tools/reward-experience/test_native_layout.py
       - name: Execute actual reward domain rules with source-linked smoke
         run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
+      - name: Exercise real saved gateway commands and JSON reload with reward feature enabled
+        run: dotnet run -c Release --project tools/reward-experience/Gateway.Smoke.csproj
       - name: Roslyn syntax check of real Unity runtime and editor art scripts
         run: dotnet run -c Release --project tools/reward-experience/ArtSyntaxAudit.csproj
+

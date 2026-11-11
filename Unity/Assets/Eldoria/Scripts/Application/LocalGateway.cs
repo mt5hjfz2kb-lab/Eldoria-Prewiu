@@ -220,6 +220,19 @@ namespace Eldoria.Application
             this.clock = clock; this.store = store; this.battleResolver=battleResolver;
             state = store.Load() ?? new PlayerState();
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Unsupported Eldoria save schema");
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            if(state.ResourceRewardsVersion<0 || state.ResourceRewardsVersion>1)
+                throw new InvalidOperationException("Unsupported resource reward save version");
+            state.ResourceRewardsVersion=1;
+            if(state.ResourceRewards==null)state.ResourceRewards=new ResourceRewardInventory();
+            if(state.ResourceRewards.Packets==null)
+                state.ResourceRewards.Packets=new System.Collections.Generic.List<ResourceRewardPacket>();
+            if(state.ResourceGuidance==null)state.ResourceGuidance=new GuidedTutorialProgress();
+            if(state.ResourceGuidance.Completed==null)state.ResourceGuidance.Completed=new System.Collections.Generic.List<string>();
+            if(state.ResourceGuidance.Dismissed==null)state.ResourceGuidance.Dismissed=new System.Collections.Generic.List<string>();
+            if(state.RewardAttention==null)state.RewardAttention=new AttentionCueLedger();
+            if(state.RewardAttention.Records==null)state.RewardAttention.Records=new System.Collections.Generic.List<AttentionCueRecord>();
+#endif
             // An absent nickname in schema-1 legacy saves is a normal first
             // entry. Never replace the stable save owner/player ID with it.
             if (state.PlayerName == null) state.PlayerName = "";
@@ -264,6 +277,9 @@ namespace Eldoria.Application
                     (battleResolver==null || existingMarch.VersionedBattle.RulesVersion!=battleResolver.RulesVersion))
                     throw new InvalidOperationException("The persisted march requires its original combat resolver");
             }
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
+            if(state.DailyTreasures==null)state.DailyTreasures=new DailyTreasureState();
+#endif
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.Mailbox==null)state.Mailbox=new EldoriaV41Mailbox();
@@ -324,9 +340,18 @@ namespace Eldoria.Application
                 SchemaVersion=s.SchemaVersion, RulesVersion=s.RulesVersion, Revision=s.Revision,
                 PlayerId=s.PlayerId, PlayerName=s.PlayerName, RealmId=s.RealmId, WorldId=s.WorldId,
                 Resources=new ResourceWallet { Wood=s.Resources.Wood, Stone=s.Resources.Stone, Food=s.Resources.Food },
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                ResourceRewardsVersion=s.ResourceRewardsVersion,
+                ResourceRewards=s.ResourceRewards?.Copy()??new ResourceRewardInventory(),
+                ResourceGuidance=s.ResourceGuidance?.Copy()??new GuidedTutorialProgress(),
+                RewardAttention=s.RewardAttention?.Copy()??new AttentionCueLedger(),
+#endif
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
                 MissionPower=s.MissionPower, ChapterThree=s.ChapterThree.Copy(),
                 Retention=s.Retention?.Copy()??new EarlyRetentionState(),
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
+                DailyTreasures=s.DailyTreasures?.Copy()??new DailyTreasureState(),
+#endif
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
@@ -466,16 +491,87 @@ namespace Eldoria.Application
             if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
             {
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
+                case "ClaimDailyTreasure":
+                    {
+                        // Award first, then persist an informational mailbox receipt in
+                        // the SAME gateway commit. Mail read/delete NEVER awards again.
+                        var preview=DailyTreasureRules.Preview(state.DailyTreasures,clock.UtcTicks);
+                        if(!preview.IsValid)return Fail("El tributo de hoy ya fue reclamado");
+                        if(state.Resources.Wood>int.MaxValue-preview.Wood ||
+                           state.Resources.Stone>int.MaxValue-preview.Stone ||
+                           state.Resources.Food>int.MaxValue-preview.Food ||
+                           state.SpeedupOneMinute>int.MaxValue-preview.SpeedupOneMinute ||
+                           state.SpeedupFiveMinutes>int.MaxValue-preview.SpeedupFiveMinutes)
+                            return Fail("No hay capacidad para recibir el tributo");
+                        if(!DailyTreasureRules.TryClaim(state.DailyTreasures,clock.UtcTicks,
+                            out var received))return Fail("El tributo ya no está disponible");
+                        state.Resources.Wood+=received.Wood;
+                        state.Resources.Stone+=received.Stone;
+                        state.Resources.Food+=received.Food;
+                        state.SpeedupOneMinute+=received.SpeedupOneMinute;
+                        state.SpeedupFiveMinutes+=received.SpeedupFiveMinutes;
+                        state.Mailbox.Receive(new EldoriaV41Message {
+                            EventId="daily-treasure:"+state.DailyTreasures.LastClaimUtcDay,
+                            Category="recompensas",Type="daily-treasure",
+                            Title="Tributo de Valoria · día "+received.CycleDay,
+                            Subtitle=DailyTreasureRules.Receipt(received),
+                            RewardReceiptId=command.Id,OccurredAtUtcTicks=clock.UtcTicks
+                        });
+                        break;
+                    }
+#endif
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                case ResourceRewardCommands.ClaimMail:
+                    if(!state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
+                        return Fail("Correo no encontrado");
+                    if(ResourceRewardRules.ClaimMail(state.ResourceRewards,command.TargetId)<=0)
+                        return Fail("Este correo no tiene paquetes pendientes");
+                    state.Mailbox.MarkRead(command.TargetId);
+                    AttentionCueRules.Resolve(state.RewardAttention,"mail-reward:"+command.TargetId,true);
+                    foreach(var packet in state.ResourceRewards.Packets)
+                        if(packet!=null&&packet.MailEventId==command.TargetId&&packet.Collected&&!packet.Used&&!packet.SeenInBag)
+                            AttentionCueRules.Signal(state.RewardAttention,"bag-reward:"+packet.ReceiptId,"bag",AttentionLevel.New);
+                    GuidedTutorialRules.ConfirmAction(state.ResourceGuidance,
+                        ResourceRewardCommands.FirstMailClaimStep,ResourceRewardCommands.ClaimMail,command.Kind,true);
+                    break;
+                case ResourceRewardCommands.UsePacket:
+                    if(!ResourceRewardRules.TryUse(state.ResourceRewards,state.Resources,command.TargetId,out var packetGranted))
+                        return Fail("Paquete no disponible o capacidad insuficiente");
+                    AttentionCueRules.Resolve(state.RewardAttention,"bag-reward:"+command.TargetId,true);
+                    GuidedTutorialRules.ConfirmAction(state.ResourceGuidance,
+                        ResourceRewardCommands.FirstUseStep,ResourceRewardCommands.UsePacket,command.Kind,true);
+                    break;
+                case ResourceRewardCommands.MarkBagSeen:
+                    if(!ResourceRewardRules.MarkBagSeen(state.ResourceRewards,command.TargetId))
+                        return Fail("Paquete nuevo no encontrado");
+                    AttentionCueRules.MarkViewed(state.RewardAttention,"bag-reward:"+command.TargetId);
+                    break;
+                case ResourceRewardCommands.DismissGuidance:
+                    if(command.TargetId!=ResourceRewardCommands.FirstUseStep&&
+                       command.TargetId!=ResourceRewardCommands.FirstMailClaimStep)
+                        return Fail("Paso de ayuda desconocido");
+                    GuidedTutorialRules.Dismiss(state.ResourceGuidance,command.TargetId);
+                    break;
+#endif
                 case "MailRead":
                     if(state.Mailbox.Messages==null ||
                        !state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
                         return Fail("Correo no encontrado");
                     state.Mailbox.MarkRead(command.TargetId);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                    AttentionCueRules.MarkViewed(state.RewardAttention,"mail-reward:"+command.TargetId);
+#endif
                     break;
                 case "MailDelete":
                     if(state.Mailbox.Messages==null ||
                        !state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
                         return Fail("Correo no encontrado");
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                    if(state.ResourceRewards.Packets.Exists(p=>p!=null&&p.MailEventId==command.TargetId&&!p.Collected))
+                        return Fail("Reclama los paquetes antes de eliminar el correo");
+                    AttentionCueRules.Resolve(state.RewardAttention,"mail-reward:"+command.TargetId,true);
+#endif
                     state.Mailbox.Delete(command.TargetId);
                     break;
                 case "Gather":
@@ -688,7 +784,12 @@ namespace Eldoria.Application
             EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             state.CompletedCommandIds.Add(command.Id);
             Commit();
-            return new CommandResult(true, "Acción iniciada", state.Revision);
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
+            return new CommandResult(true, command.Kind=="ClaimDailyTreasure" ?
+                "Tributo recibido" : "Acción iniciada", state.Revision);
+#else
+            return new CommandResult(true,"Acción iniciada",state.Revision);
+#endif
         }
         private bool MarchTargetActive(string targetId)
         {
@@ -772,6 +873,19 @@ namespace Eldoria.Application
                     if(prefix.StartsWith("bastion",StringComparison.Ordinal)&&int.TryParse(prefix.Substring(7),out var parsed)&&parsed>=2&&parsed<=5)targetLevel=parsed;
                     if(targetLevel>state.BastionLevel){
                         state.BastionLevel=targetLevel;
+                        // Only two meaningful reconstruction milestones deserve
+                        // an extra narrative letter. These DO NOT pay a reward:
+                        // the normal upgrade already settled all real effects.
+                        if(targetLevel==2 || targetLevel==5)
+                            state.Mailbox.Receive(new EldoriaV41Message {
+                                EventId="milestone:bastion:"+targetLevel,
+                                Category="narrativa",Type="milestone-bastion",
+                                Title="El Bastión alcanza el nivel "+targetLevel,
+                                Subtitle=targetLevel==2
+                                    ? "Valoria se fortalece. El Cuartel y el siguiente capítulo quedan a tu alcance."
+                                    : "La reconstrucción alcanza una nueva etapa. Valoria extiende sus fronteras.",
+                                OccurredAtUtcTicks=state.BastionUpgradeCompletesUtcTicks
+                            });
                         // TotalPower already awards 600 per Bastion level.
                         state.MissionPower+=BastionProgressionCatalog.ForLevel(targetLevel).PowerReward-600;
                         if(targetLevel==3)
@@ -1271,6 +1385,15 @@ namespace Eldoria.Application
             if(win&&m.TargetId=="fissure-valoria") {
                 c.FissureClosed=true;c.LyraRecruited=true;c.LyraXp+=80;state.MissionPower+=430;c.ClosingEndsUtcTicks=due+TimeSpan.FromMilliseconds(6500).Ticks;
                 if(!c.Inventory.Contains("breach-manuscript"))c.Inventory.Add("breach-manuscript");m.PendingStone=300;
+                // Distinct one-time narrative welcome for a genuine recruit.
+                // All combat loot and Lyra's acquisition stay in the existing
+                // battle contract; the mailbox letter never pays again.
+                state.Mailbox.Receive(new EldoriaV41Message {
+                    EventId="milestone:hero:lyra",Category="narrativa",
+                    Type="hero-unlocked",Title="Lyra se une a Valoria",
+                    Subtitle="La exploradora ha llegado tras el cierre de la fisura. Puede participar en nuevas marchas.",
+                    OccurredAtUtcTicks=due
+                });
             } else if(win) {
                 c.Hunts++;bool wolf=m.TargetId=="hunt-wolf";m.PendingFood=wolf?140:190;
                 if(wolf)c.WolfRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);else c.BoarRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);
