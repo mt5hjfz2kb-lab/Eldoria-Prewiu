@@ -1514,18 +1514,29 @@ namespace Eldoria.DailyTreasures
                     switch(currentStage)
                     {
                         case DailyTreasureStageKind.Explorers:
-                            // Shrink the authentic parchment enough that the
-                            // original surveyed country remains visible both
-                            // beside and above its unfilled discovery map.
-                            artW*=portrait?.88f:.96f;
-                            artH*=portrait?.74f:.90f;
-                            artY-=portrait?stage.SceneH*.04f:0f;
+                            // Original 1376x768 RGBA: the unfilled parchment
+                            // itself occupies ~70% of the source width. At
+                            // .96x it concealed most of the REAL surveyed
+                            // country in Unity 43005395878. Compose a smaller
+                            // movable document to the RIGHT of the actual
+                            // background, leaving geographic evidence at left
+                            // and open sky ABOVE. Do not paint invented roads,
+                            // settlements or reward tokens onto the scroll.
+                            artW*=portrait?.72f:.78f;
+                            artH*=portrait?.72f:.84f;
+                            artX+=stage.SceneW*(portrait?.13f:.11f);
+                            artY-=stage.SceneH*(portrait?.10f:.07f);
                             break;
                         case DailyTreasureStageKind.Vigilants:
-                            // Monumental ceremonial shield, contained within
-                            // the SAME left scenery rather than over narration.
-                            artW*=portrait?1.13f:.96f;
-                            artH*=portrait?.88f:.90f;
+                            // Original shield is only ~38% of its transparent
+                            // source canvas; a .96x rectangle made the true
+                            // forged metal tiny beside a 128px flat blue
+                            // insignia. Enlarge the actual painted SHIELD (not
+                            // a filtered/upscaled emblem), keeping its real
+                            // visible central silhouette inside the scenic
+                            // column even if alpha margins extend outside.
+                            artW*=portrait?1.40f:1.45f;
+                            artH*=portrait?1.03f:1.06f;
                             break;
                         case DailyTreasureStageKind.Lyra:
                             artW*=portrait?.92f:.98f;
@@ -1596,7 +1607,10 @@ namespace Eldoria.DailyTreasures
                     // instead of floating a second icon below the painting.
                     bool centerShield=currentStage==DailyTreasureStageKind.Vigilants &&
                         milestoneStageArt && milestoneStageArt.sprite;
-                    float insigniaSize=centerShield?(portrait?82f:95f):
+                    // Official 128px crest is still blue, not bronze:
+                    // show it as a smaller heraldic inset on the real
+                    // large forged shield, never an enlarged flat sticker.
+                    float insigniaSize=centerShield?(portrait?64f:78f):
                         portrait?57f:65f;
                     Place(milestoneInsignia.rectTransform,.5f,.5f,.5f,.5f,
                         centerShield?stage.SceneX:stage.SceneX+stage.SceneW*.33f,
