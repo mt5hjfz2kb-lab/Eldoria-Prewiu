@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T21:37:18.716Z",
+  "updated_at": "2026-11-11T22:11:23.072Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "WINDOWS_TURN_NATIVE_ART_VALIDATION_PENDING",
+      "phase": "COMPILE_FIX_AND_REAL_GATEWAY_OFF_WINDOWS",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -42,9 +40,13 @@
         "Unity/Assets/Eldoria/Issue186Art/**",
         "Unity/Assets/Eldoria/Issue186Art.meta",
         "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
-        ".github/workflows/issue186-native.yml"
+        ".github/workflows/issue186-native.yml",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs.meta"
       ],
-      "next": "PR187 resource icons: use one exact HEAD native Unity import/render batch after live registry/job/process safety checks; 16 authored sprites, portrait/landscape, genuine interaction and art A/B. Do not alter PR181/PR173/PR179 or merge.",
+      "next": "Fix five unqualified UnityEngine.Application calls in owned Issue186 Editor scripts, preserve error artifact. Shared GameState/LocalGateway/DailyTreasureRules write scope now yours after coordinated181 release; reconcile prepared candidate b38a1a7 onto freshHEAD, notforce/revert native fixes. Next Windows after173→179→181. Retain source writer.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -70,18 +72,29 @@
           "to_revision": 6,
           "transferred_at": "2026-11-11T21:37:18.716Z",
           "reason": "Exclusive Windows resource handoff from PR181 run 43102620742; same PR187 owner, source scope preserved."
+        },
+        {
+          "owner": "chatgpt-central-resource-art-20261111",
+          "from_revision": 6,
+          "to_revision": 7,
+          "transferred_at": "2026-11-11T22:11:23.072Z",
+          "reason": "Central four-task coordination: resource native43105242525 completed compiler failure and clean quit; artifact13893884188 saved, live queue zero. Windows187→173, source owners retained. Shared reward-domain paths explicitly181→187 for tested real-save integration. One previously unclaimed malformed DepthB10 meta repair assigned173, preserving GUID."
         }
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-central-resource-art-20261111",
-        "ownership_revision": 6,
-        "previous_workstream": "eldoria-daily-treasures-20261108",
-        "previous_run_id": 43102620742,
-        "reason": "Owner-approved bounded resource rotation PR179→PR181→PR187; exact Unity batch complete, artifacts saved, PR181 source remains owned."
+        "ownership_revision": 7,
+        "native_run": 43105242525,
+        "native_job": 130806789737,
+        "native_state": "failed_compile_Application_namespace_collision",
+        "unity_process_exited": true,
+        "artifact_id": 13893884188,
+        "runner_released_at": "2026-11-11T22:11:23.072Z"
       },
-      "runner_claimed_at": "2026-11-11T21:37:18.716Z"
+      "runner_claimed_at": "2026-11-11T21:37:18.716Z",
+      "runner_released_at": "2026-11-11T22:11:23.072Z"
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -6730,14 +6743,17 @@
         "docs/ui-v3/BREACH_WATCH_*.md",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 93,
+      "ownership_revision": 94,
       "write_scope_released": false,
-      "phase": "MAILBOX_ART_TECHNIQUE_PIVOT_OFF_WINDOWS",
-      "next": "Replace flat procedural envelope/quill with genuine textured illustration; preserve authoritative empty-state routing, use same PR173 and queue after179/181/187; owner A/B before main.",
+      "phase": "WINDOWS_TURN_CURRENT_SOURCE_NATIVE_CAPTURE_PENDING",
+      "next": "Fix the previously unclaimed malformed DepthB10 meta externalObjects double braces preserving GUID, then request exactHEAD native batch. Keep907f large-registry fallback and26af explicit mailbox512caps. One native batch, preserve48screens/source/saveproof, releaseWindows to179 before visual review. Source owner retained.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T11:27:39.902Z",
@@ -6868,6 +6884,13 @@
           "to_owner": "chatgpt-central-art-execution-20261111",
           "transferred_at": "2026-11-11T20:04:35.189Z",
           "reason": "Propietario encarga en este chat asumir ejecución de los cuatro trabajos; relevo de fuente UI conservando PR173 y sin Windows beta. Corregir técnica fallida mailbox y comparar con referencia antes de main."
+        },
+        {
+          "owner": "chatgpt-central-art-execution-20261111",
+          "from_revision": 93,
+          "to_revision": 94,
+          "transferred_at": "2026-11-11T22:11:23.072Z",
+          "reason": "Central four-task coordination: resource native43105242525 completed compiler failure and clean quit; artifact13893884188 saved, live queue zero. Windows187→173, source owners retained. Shared reward-domain paths explicitly181→187 for tested real-save integration. One previously unclaimed malformed DepthB10 meta repair assigned173, preserving GUID."
         }
       ],
       "runner_priority_handoff": {
@@ -7023,7 +7046,15 @@
         "request": "Haz eso",
         "context": "Replace remaining interface with accepted Vigilia design maintaining quality; preserve rewards/cofres. Scope expansion beyond prior first-screen proof."
       },
-      "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111"
+      "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "status": "claimed",
+        "owner": "chatgpt-central-art-execution-20261111",
+        "ownership_revision": 94,
+        "source_before_request": "907f31825039e7e03ba998e7b0a64c370faea440",
+        "reason": "Next prepared native area after187 cleanly ended; fix unclaimed meta then trigger one source-exact capture."
+      }
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
@@ -7846,7 +7877,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 44,
+      "ownership_revision": 45,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7855,14 +7886,10 @@
       "scope": [
         "Unity/Assets/Eldoria/DailyTreasures/**",
         "Unity/Assets/Eldoria/DailyTreasures.meta",
-        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
-        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
         "tools/daily-treasures/**",
         ".github/workflows/daily-treasures-domain.yml",
         "docs/daily-treasures/**",
-        "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs.meta",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
         "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
         ".github/workflows/daily-treasures-native.yml",
@@ -7872,9 +7899,9 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_EVIDENCE_FAILED_PARTIAL_PIXELS_ART_REVIEW_PENDING",
+      "phase": "ART_NATIVE_IMPORT_ASSERTION_FIXED_WAIT_ROTATION",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Review preserved real Unity partial captures and inspect imported original Lyra texture importer in source; correct root cause off Windows; schedule a new native batch only after PR187/PR173 rotation and legitimate CAS. Do not approve art or merge.",
+      "next": "HEADf8763edf fixes Editor readability to actual TextureImporter flags and original source hash; retain39f lossless1024platform imports. Next own turn after173/179. Shared GameState/LocalGateway/DailyTreasureRules now exclusive writer187; do not alter those paths, retain art/UI/camera and tests scope.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7966,6 +7993,13 @@
           "to_revision": 44,
           "transferred_at": "2026-11-11T21:37:18.716Z",
           "reason": "Resource-only release PR181→PR187 after complete native 43102620742 failure; preserved native and audit evidence; keep source PR181 owner."
+        },
+        {
+          "owner": "chatgpt-central-treasures-art-20261111",
+          "from_revision": 44,
+          "to_revision": 45,
+          "transferred_at": "2026-11-11T22:11:23.072Z",
+          "reason": "Central four-task coordination: resource native43105242525 completed compiler failure and clean quit; artifact13893884188 saved, live queue zero. Windows187→173, source owners retained. Shared reward-domain paths explicitly181→187 for tested real-save integration. One previously unclaimed malformed DepthB10 meta repair assigned173, preserving GUID."
         }
       ],
       "previous_owner": "chatgpt-daily-treasures-20261108",
