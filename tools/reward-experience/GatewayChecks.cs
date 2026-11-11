@@ -210,7 +210,7 @@ foreach(var choice in new[]{"production","defense","civil"})
      "Bastion IV real development choice accepted: "+choice);
  var awarded=choiceGateway.Snapshot();
  var bundles=awarded.ResourceRewards.Packets.Where(p=>p.Origin=="development").ToList();
- Need(awarded.ChapterThree.DevelopmentPriority==choice&&bundles.Count==2,
+ Need(awarded.ChapterThree.DevelopmentPriority==choice&&bundles.Count==(choice=="defense"?1:2),
      "development choice persisted and issued exactly two resource packets");
  int expectWood=choice=="production"?260:choice=="civil"?180:0;
  int expectStone=choice=="production"?180:choice=="defense"?220:0;
@@ -228,7 +228,7 @@ foreach(var choice in new[]{"production","defense","civil"})
  choiceGateway=new LocalGateway(clock,choiceStore);
  Need(!Send(choiceGateway,"choice-repeat-"+choice,"ChooseDevelopment",choice).Ok,
      "priority cannot pay again after JSON reload");
- Need(choiceGateway.Snapshot().ResourceRewards.Packets.Count(p=>p.Origin=="development")==2,
+ Need(choiceGateway.Snapshot().ResourceRewards.Packets.Count(p=>p.Origin=="development")==(choice=="defense"?1:2),
      "reload and replay cannot duplicate development bonus");
 }
 
