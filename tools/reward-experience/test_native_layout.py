@@ -230,6 +230,11 @@ def verify():
     assert "quantity.preferredWidth<=plaqueWidth-2f" in editor, \
         "Native Unity must measure text to prevent spill outside the real label plaque"
     checks+=1
+    # Native script exits on normal return, but not if compilation fails before
+    # executeMethod runs. Require an explicit batch quit to free the scarce PC.
+    assert "-batchmode -quit -force-d3d11" in workflow, (
+        "ISSUE186_NATIVE_QUIT_GUARD: Unity batch must exit on compile failure")
+    checks+=1
     print(f"ISSUE186_LAYOUT_MODEL_PASS checks={checks}; SOURCE ONLY, UNITY PIXELS PENDING")
 
 

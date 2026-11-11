@@ -113,7 +113,10 @@ jobs:
           New-Item -ItemType Directory -Force $env:OUT | Out-Null
           $unityProject=Join-Path (Get-Location).Path 'Unity'
           $log=Join-Path $env:OUT 'unity-editor.log'
-          $args='-batchmode -force-d3d11 -projectPath "'+$unityProject+
+          # Unity 6000.3 recommends -quit even if the executeMethod
+          # cannot start after a script compilation failure. This prevents
+          # holding the exclusive Windows runner until a timeout.
+          $args='-batchmode -quit -force-d3d11 -projectPath "'+$unityProject+
             '" -executeMethod Eldoria.Issue186Art.Editor.Issue186NativeEvidence.Capture -logFile "'+$log+'"'
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           $proof=Join-Path $unityProject 'Issue186NativeEvidence'
