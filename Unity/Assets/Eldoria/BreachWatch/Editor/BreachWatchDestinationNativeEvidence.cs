@@ -522,12 +522,27 @@ namespace Eldoria.BreachWatch.Editor
                 if(management && management.IsOpen)management.SynchronizeLayout();
                 if(ui.RealDestinations && ui.RealDestinations.IsShowing)
                     ui.RealDestinations.SynchronizeVisual();
-                if(name=="march" && height>width)
+                if(name=="march")
+                {
                     Need(ui.RealDestinations &&
                          ui.RealDestinations.RealMarchTwoCardRoster,
-                         "Actual portrait march still shows the permanently "+
-                         "disabled third hero or lacks the two enlarged real slots; "+
+                         "Actual march still has a dead third hero or lacks "+
+                         "two real source-bound enlarged choices at "+
                          width+"x"+height);
+                    var marchRoot=management ? management.VisibleRoot:null;
+                    Need(marchRoot,"Real canonical March layout missing");
+                    var realHeroSlots=marchRoot.
+                        GetComponentsInChildren<RectTransform>(true)
+                        .Where(x=>x && x.name.StartsWith("Hero slot "))
+                        .OrderBy(x=>x.name).ToArray();
+                    Need(realHeroSlots.Length==3 &&
+                         realHeroSlots[0].gameObject.activeInHierarchy &&
+                         realHeroSlots[1].gameObject.activeInHierarchy &&
+                         !realHeroSlots[2].gameObject.activeInHierarchy,
+                         "March has visible unavailable third slot or "+
+                         "missing selectable real hero cards at "+
+                         width+"x"+height);
+                }
                 if(name=="training" && height>width)
                     Need(ui.RealDestinations && 
                          ui.RealDestinations.RealTrainingCinematic,
