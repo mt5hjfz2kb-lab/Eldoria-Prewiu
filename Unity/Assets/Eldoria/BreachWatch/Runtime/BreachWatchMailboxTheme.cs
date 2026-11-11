@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
@@ -40,6 +41,9 @@ namespace Eldoria.BreachWatch
         bool emptyLabelMoved;
         BreachWatchMailboxEmptyArtwork emptyIllustration;
         RectTransform actualWindow;
+        // Unlike the red inbox rows, the real report is ink on LIGHT
+        // parchment. Never globally tint its dark text ivory.
+        RectTransform originalReportSheet;
         bool styled;
 
         public bool IsStyled => styled;
@@ -121,6 +125,9 @@ namespace Eldoria.BreachWatch
             }
             foreach(var text in realWindow.GetComponentsInChildren<RoyalText>(true))
                 if(text)originalInkColors[text]=text.color;
+            originalReportSheet=realWindow.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.name==
+                    "Mailbox / scrollable assembled report");
             RefreshInk();
             // A small stamp in a 1600px black void was not an art-directed
             // layout. Change technique: replace the entire empty composition
@@ -272,6 +279,13 @@ namespace Eldoria.BreachWatch
             {
                 var text=pair.Key;
                 if(!text)continue;
+                // Native Unity 390x844 proved the old global ink replacement
+                // made CONTENIDO RECIBIDO and full report body nearly white
+                // on cream. Different physical materials need different ink.
+                // Keep the canonical author's bronze/brown within the light
+                // scroll sheet; recolor ONLY labels on dark stone/burgundy.
+                if(originalReportSheet &&
+                   text.transform.IsChildOf(originalReportSheet))continue;
                 Color c=text.color;
                 if(c.r<.44f && c.g<.44f && c.b<.44f && c.a>.2f)
                     text.color=new Color(.94f,.89f,.78f,c.a);
@@ -315,6 +329,7 @@ namespace Eldoria.BreachWatch
             emptyIllustration=null;
             emptyLabelRect=null;
             actualWindow=null;
+            originalReportSheet=null;
             if(backdrop)backdrop.color=originalBackdropColor;
             backdrop=null;
             foreach(var obj in newArtwork)
