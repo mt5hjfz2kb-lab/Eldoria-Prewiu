@@ -33,11 +33,16 @@ function nativeProfile(sample,phase){
 }
 
 const log = event => fs.appendFileSync(out+'/events.jsonl', JSON.stringify({at:new Date().toISOString(),...event})+'\n');
-function processes() {
-  try {return execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:3000})
-    .split('\n').filter(s=>/WebKit|MiniBrowser|Chromium|Google Chrome|chrome-headless/.test(s))
-    .map(s=>{const m=s.trim().match(/^(\d+)\s+(\d+)\s+(\d+)\s+(.+)$/);return m?{pid:+m[1],ppid:+m[2],rssKiB:+m[3],name:m[4]}:null;}).filter(Boolean);
-  } catch(e) {return [{error:String(e)}];}
+// Baseline is captured BEFORE the Playwright browser is started. Exclude all
+// existing WebContent PIDs, especially residue from the prior A/B arm.
+const {parsePS,freshBrowserProcesses}=require('./webkit-process-isolation.cjs');
+function allProcesses(){return parsePS(execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:3000}));}
+const priorBrowserPids=new Set(allProcesses().map(p=>p.pid));
+report.processProvenance={method:'fresh browser PIDs since prelaunch ps baseline',
+  excludedPidCount:priorBrowserPids.size,samplesAreGlobal:false};
+function processes(){
+ try {return freshBrowserProcesses(allProcesses(),priorBrowserPids);}
+ catch(e) {report.errors.push('PID_ISOLATION_FAILED '+String(e));return [];}
 }
 (async()=>{
   let browser, page;
