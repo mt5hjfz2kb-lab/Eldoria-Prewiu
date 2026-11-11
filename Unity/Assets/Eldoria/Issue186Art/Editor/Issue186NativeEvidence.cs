@@ -428,7 +428,7 @@ namespace Eldoria.Issue186Art.Editor
                 Need(results.Count==4 && hits==4 &&
                     results.TrueForAll(x=>x.actualResourceSprites==12 &&
                         x.indicatorReady && x.newIndicatorReady &&
-                        x.firstUsePointer && x.firstUseCompleted &&
+                        x.firstUsePointer && !x.firstUseCompleted &&
                         x.pointerLeavesCtaCenterClear && x.realUiClick &&
                         x.noOverlappingCards),
                     "At least one real Unity resolution lacks UX/asset proof");
