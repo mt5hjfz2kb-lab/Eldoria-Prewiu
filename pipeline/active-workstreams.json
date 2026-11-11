@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T22:11:23.072Z",
+  "updated_at": "2026-11-11T22:24:43.142Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6746,14 +6746,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 94,
+      "ownership_revision": 95,
       "write_scope_released": false,
-      "phase": "WINDOWS_TURN_CURRENT_SOURCE_NATIVE_CAPTURE_PENDING",
-      "next": "Fix the previously unclaimed malformed DepthB10 meta externalObjects double braces preserving GUID, then request exactHEAD native batch. Keep907f large-registry fallback and26af explicit mailbox512caps. One native batch, preserve48screens/source/saveproof, releaseWindows to179 before visual review. Source owner retained.",
+      "phase": "CURRENT_HEAD_NATIVE_PASS_43109761153_ART_REVIEW_PENDING_OFF_WINDOWS",
+      "next": "Review genuine 48 Unity captures and original owner references, continue source-only art work; no merge, no relaunch native before next rotation.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T11:27:39.902Z",
@@ -6891,6 +6889,13 @@
           "to_revision": 94,
           "transferred_at": "2026-11-11T22:11:23.072Z",
           "reason": "Central four-task coordination: resource native43105242525 completed compiler failure and clean quit; artifact13893884188 saved, live queue zero. Windows187→173, source owners retained. Shared reward-domain paths explicitly181→187 for tested real-save integration. One previously unclaimed malformed DepthB10 meta repair assigned173, preserving GUID."
+        },
+        {
+          "owner": "chatgpt-central-art-execution-20261111",
+          "from_revision": 94,
+          "to_revision": 95,
+          "transferred_at": "2026-11-11T22:24:43.142Z",
+          "reason": "Release ONLY Windows after bounded current-head genuine Unity native success 43109761153; original writer/scope remain; shared rotation PR173→PR179."
         }
       ],
       "runner_priority_handoff": {
@@ -6905,10 +6910,10 @@
         "transferred_at": "2026-11-11T19:47:57.685Z"
       },
       "last_verified": {
-        "source_sha": "73d15578b0815a40f5f49af285c0ae929166ef7d",
-        "native_run": 42977646724,
+        "source_sha": "699c816e9b961fc232ae9818503c954c481d8afd",
+        "native_run": 43109761153,
         "native_status": "SUCCESS",
-        "screenshots": 8,
+        "screenshots": 48,
         "artifact": 13836976829,
         "independent_canvas": true,
         "old_canvas_hidden": true,
@@ -6938,10 +6943,10 @@
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
         "notes": "Current pass verified in native Unity screenshots; historical terrain/roof measurements below belong to prior automation evidence.",
-        "art_ab_artifact": 13837400815,
+        "art_ab_artifact": 13895917624,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13836976829,
+        "native_artifact": 13895209980,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
         "owner_requested_polish": "Final secondary text contrast, chapter progress and building timer font/margins completed. Baseline 8aa69a38 scene/art preserved; this pass changes no artwork.",
@@ -7006,9 +7011,12 @@
           92,
           28
         ],
-        "source_gameplay_unchanged": true
+        "source_gameplay_unchanged": true,
+        "mail_empty_raster_gpu_verified": true,
+        "mail_empty_changed_pixels_900x1600": 82403,
+        "mail_empty_changed_pixels_390x844": 16513
       },
-      "runner_release_basis": "Owner-directed resource-only handoff: native job130764183302 in run43089450921 completed success, exact source72d132cf789738278ca17d1580e472b29a0eadd8, isolated UI project, child Unity processes exited, artifacts13887684195 preserved. Live queue: only Ubuntu tester QA and planner; historical startup runs have no jobs. Retain UI writer and PR173.",
+      "runner_release_basis": "Native PR173 43109761153 job130824993202 SUCCESS exact 699c816e9b961fc232ae9818503c954c481d8afd; Unity processes exited by Start-Process HasExited checks, Actions orphan cleanup complete; 48 SHA256 native captures + empty-mail genuine GPU contribution 82403 px at 900x1600, 16513 px at 390x844; artifact13895209980 and QA A/B artifact13895917624 preserved. Source-only art work continues with owner chatgpt-central-art-execution-20261111. ART_APPROVED=false, MOBILE_PASS=false.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7035,7 +7043,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-11T19:47:57.685Z",
+      "runner_released_at": "2026-11-11T22:24:43.142Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7049,11 +7057,19 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_to_pr179",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 94,
-        "source_before_request": "907f31825039e7e03ba998e7b0a64c370faea440",
-        "reason": "Next prepared native area after187 cleanly ended; fix unclaimed meta then trigger one source-exact capture."
+        "from_revision": 94,
+        "to_revision": 95,
+        "source_sha": "699c816e9b961fc232ae9818503c954c481d8afd",
+        "native_run": 43109761153,
+        "native_job": 130824993202,
+        "artifact_id": 13895209980,
+        "ab_artifact_id": 13895917624,
+        "result": "success_48_native_capture_no_art_acceptance",
+        "native_process_exited": true,
+        "released_at": "2026-11-11T22:24:43.142Z",
+        "next": "eldoria-private-beta-i-v-20261107"
       }
     },
     {
@@ -7061,7 +7077,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-pr179-iphone-automation-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7102,14 +7118,16 @@
         "Unity/Assets/Eldoria/BetaMemoryProbe.meta",
         ".github/workflows/eldoria-beta-lazy-world-native.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "SOURCE_REPAIR_AFTER_CHECKOUT_FAILURE_WINDOWS_RELEASED",
+      "phase": "WINDOWS_TURN_RECEIVED_FROM_PR173_PREPARE_NEXT_PINNED_BETA_NATIVE",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-      "next": "Apply prepared commit eb5b1e51c44066b4cbf731e03a4155265111e6fb only by expected-head update from8ce; keep request WAITING_FOR_WINDOWS_TURN. Next Windows rotation181,187,173 then179. Source author retained; zero Unity/mobile PASS.",
+      "next": "Fix already committed sparse partial Git checkout candidate and launch ONE bounded beta native batch after live preflight; do not modify other writer scopes.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7373,16 +7391,19 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
+        "status": "handoff_received_prepare_native",
         "owner": "chatgpt-pr179-iphone-automation-20261111",
-        "ownership_revision": 37,
+        "ownership_revision": 38,
         "native_run": 43090546994,
         "native_job": 130766199765,
         "native_state": "failed_at_checkout_no_unity",
         "warm_source_touched": false,
         "runner_restoration_required": false,
         "runner_released_at": "2026-11-11T21:23:02.238Z",
-        "reason": "Completed job before recovery or Unity; archive fallback failed extraction. Live other job only Ubuntu; release actual Windows for next canonical area."
+        "reason": "Owner rotation PR173→PR179; actual last PR179 source fixed archive fallback with sparse pinned source. No active competing Unity process.",
+        "received_at": "2026-11-11T22:24:43.142Z",
+        "from": "eldoria-forja-oscura-visual-proof-20261107",
+        "after_native_run": 43109761153
       },
       "ownership_history": [
         {
@@ -7516,6 +7537,13 @@
           "to_revision": 37,
           "transferred_at": "2026-11-11T21:23:02.238Z",
           "reason": "Resource-only rotation after PR179 native job130766199765 completed checkout failure; all Unity/recovery steps skipped, no warm project touched. Live queue checked: only Ubuntu tester-qa active. Source writer retained; no art approval or publication."
+        },
+        {
+          "owner": "chatgpt-pr179-iphone-automation-20261111",
+          "from_revision": 37,
+          "to_revision": 38,
+          "transferred_at": "2026-11-11T22:24:43.142Z",
+          "reason": "Shared Windows runner only transfer from PR173 after native43109761153 success; source ownership unchanged."
         }
       ],
       "frozen_beta_ux_scope": {
