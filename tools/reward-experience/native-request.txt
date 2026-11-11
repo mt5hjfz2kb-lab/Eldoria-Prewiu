@@ -1,0 +1,17 @@
+state=REQUEST_EXCLUSIVE_NATIVE_ART_IMPORT
+workstream=eldoria-issue186-reward-attention-guidance-20261111
+owner=chatgpt-central-resource-art-20261111
+ownership_revision=6
+registry_blob_sha=087e87c4492a00685e0227100197176c9942c8bf
+source_before_request=7b93ed659cbe97b8811484d12aec810febc157b2
+native_source_directory=issue186-source
+expected_real_imported_sprites=16
+required_viewports=1600x900,900x1600,844x390,390x844
+required=real_import+real_GPU_pixels+real_pointer_raycast+modal_occlusion_control+real_button_click
+firstUseCompleted=false_until_real_gateway_action_is_connected
+next_windows_turn=PR173_after_native_work_and_clean_exit
+art_approved=false
+actual_city_tested=false
+physical_mobile_verified=false
+merge_or_publish=false
+request_time_utc=2026-11-11T21:41:16.833Z
