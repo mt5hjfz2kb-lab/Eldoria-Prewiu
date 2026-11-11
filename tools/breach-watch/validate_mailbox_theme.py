@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""Fail-closed source/asset gate for the STAGED (not yet native-certified) mailbox.
+Source checks are not Unity screenshots and never mean artistic sign-off.
+"""
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+BASE = ROOT / "Unity/Assets/Eldoria/BreachWatch"
+R = BASE / "Runtime"
+S = (R / "BreachWatchMailboxTheme.cs").read_text()
+B = (R / "BreachWatchMailboxBridge.cs").read_text()
+HUD = (R / "BreachWatchHud.cs").read_text()
+
+
+def check(condition, detail):
+    if not condition:
+        raise AssertionError(detail)
+
+
+def main():
+    for name in ("BreachWatchMailboxTheme", "BreachWatchMailboxBridge"):
+        check((R / (name + ".cs.meta")).exists(),
+              "Mailbox code requires stable Unity meta: " + name)
+    check("mailbox.Open()" in B and "mailbox.SynchronizeLayout()" in B and
+          "mailbox.Close()" in B,
+          "Mailbox must reuse genuine page/command controller")
+    check('Find("V41 / Buzón destination")' in B and
+          "window.SetParent(vigilia.transform,false)" in B and
+          "window.SetParent(canonicalParent,false)" in B,
+          "Mailbox must move the existing screen, then restore the parent")
+    check("RoyalGoldV41MailboxBackdrop" in S and
+          "Mailbox / passive manuscript watermark" in S and
+          "Approved source / mail-card" in S and
+          "Approved source / tab-idle" in S and
+          "independent metal nine-slice" in S,
+          "All legacy mailbox painting must be disabled, not overlaid")
+    check("originalTargets" in S and "originalEnabled" in S and
+          "originalInkColors" in S and "Restore()" in S,
+          "Visual replacement must restore controls and live ink")
+    check("BreachWatchMailboxBridge RealMailbox" in HUD and
+          "mailboxBridge.Initialize(host,canvas)" in HUD,
+          "Mailbox adapter must be available to native proof")
+    nav = HUD.split("void Navigate(int index)",1)[1].split("void LateUpdate()",1)[0]
+    check("mailboxBridge.TryOpen()" not in nav,
+          "Do not expose mailbox before full native QA")
+    check("new Button(" not in S and "new Button(" not in B,
+          "Never duplicate real mailbox commands")
+    print("VIGILIA_MAILBOX_STAGED_REPLACEMENT_SOURCE_PASS")
+    print("UNITY_COMPILE_AND_ARTISTIC_APPROVAL_PENDING")
+
+
+if __name__=="__main__":
+    main()
