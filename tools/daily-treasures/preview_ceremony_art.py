@@ -85,7 +85,7 @@ def nine_slice_frame(source, shape):
     return out
 
 
-def compose(game_capture,layers,shape,event="",badge=None):
+def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
     w,h=shape
     require(game_capture.width>=200 and game_capture.height>=200,
             "Genuine source too small for composition")
@@ -103,6 +103,24 @@ def compose(game_capture,layers,shape,event="",badge=None):
             # Never mistake it for the real Bastion. Original city is hero.
             continue
         focal,x,y=fit_focal(layer,shape,event)
+        if event=="lyra" and canonical_lyra is not None:
+            # The hero is an actual GLB SHA-verified mesh render, NOT a
+            # generated lookalike. Place the upper-body silhouette UNDER the
+            # ornate carved frame, preserving its intentional aperture.
+            alpha=canonical_lyra.getchannel("A")
+            box=alpha.getbbox()
+            require(box is not None,"Authentic 3D Lyra render is empty")
+            upper=canonical_lyra.crop((
+                box[0],box[1],box[2],
+                min(canonical_lyra.height,box[1]+round((box[3]-box[1])*.67))))
+            assert upper.getchannel("A").getbbox()
+            k=min(focal.width*.62/upper.width,
+                  focal.height*.81/upper.height)
+            ww,hh=max(1,round(upper.width*k)),max(1,round(upper.height*k))
+            framed=upper.resize((ww,hh),Image.Resampling.LANCZOS)
+            hero_x=x+round((focal.width-ww)/2)
+            hero_y=y+round(focal.height*.13)
+            dst.alpha_composite(framed,(hero_x,hero_y))
         dst.alpha_composite(focal,(x,y))
         if badge is not None and event=="vigilants":
             icon=badge.convert("RGBA")
@@ -123,6 +141,28 @@ def compose(game_capture,layers,shape,event="",badge=None):
     return dst
 
 
+def verified_canonical_lyra(manifest):
+    """Never treat an AI portrait as the exact source model hero."""
+    root=manifest.parent
+    path=root/"lyra-canonical-portrait-source.png"
+    receipt=root/"lyra-canonical-portrait-source.provenance.json"
+    require(path.is_file() and receipt.is_file(),
+            "Cannot preview Lyra without the approved original 3D model render")
+    data=json.loads(receipt.read_text(encoding="utf-8"))
+    require(data.get("source_sha256")==
+            "a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725"
+            and data.get("source_length")==4770000
+            and data.get("generated_person") is False
+            and data.get("art_approved") is False,
+            "Lyra portrait source identity is not the original model")
+    require(data.get("output_sha256")==digest(path),
+            "3D Lyra render modified after authentic provenance receipt")
+    with Image.open(path) as im:
+        require(im.mode=="RGBA" and im.width>=1024 and im.height>=512,
+                "Canonical transparent 3D portrait unavailable")
+        return im.copy(),data
+
+
 def source_audit(manifest):
     path=Path(__file__).with_name("preflight_ceremony_art.py")
     require(path.is_file(),"Missing canonical preflight source")
@@ -138,6 +178,7 @@ def run(manifest,identities,out):
     require(set(identities)==set(EVENTS),"Provide ALL real Lyra/Scouts/Vigilants/Bastion source images")
     source_audit(manifest)
     data=json.loads(manifest.read_text(encoding="utf-8"))
+    portrait,hero_receipt=verified_canonical_lyra(manifest)
     out.mkdir(parents=True,exist_ok=True)
     receipts={}
     for event in EVENTS:
@@ -171,9 +212,12 @@ def run(manifest,identities,out):
         for size in SIZES:
             name=f"{event}-{size[0]}x{size[1]}-PREVIEW-ONLY.png"
             target=out/name
-            compose(base,layers,size,event,badge).save(target,optimize=True)
+            compose(base,layers,size,event,badge,
+                    portrait if event=="lyra" else None).save(target,optimize=True)
             shots.append({"path":name,"sha256":digest(target),"size":size})
         receipts[event]={"authentic_source_sha256":digest(real),
+                         "authentic_lyra_portrait_sha256":
+                           hero_receipt["output_sha256"] if event=="lyra" else None,
                          "official_identity_source":data["ceremonies"][event]["identity_source"],
                          "original_stage_drawn":event!="bastion",
                          "art_safety_note":("Generated gate omitted: not real game architecture"
