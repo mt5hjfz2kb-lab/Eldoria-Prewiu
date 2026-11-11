@@ -117,8 +117,10 @@ jobs:
           }
           foreach($shot in @($r.images)){
             if($shot.actualResourceSprites -ne 12 -or $shot.visiblePixels -ne $true -or
-               $shot.indicatorReady -ne $true -or $shot.firstUsePointer -ne $true -or
-               $shot.firstUseCompleted -ne $true -or $shot.noOverlappingCards -ne $true){
+               $shot.indicatorReady -ne $true -or $shot.newIndicatorReady -ne $true -or
+               $shot.firstUsePointer -ne $true -or $shot.firstUseCompleted -ne $true -or
+               $shot.pointerLeavesCtaCenterClear -ne $true -or $shot.realUiClick -ne $true -or
+               $shot.noOverlappingCards -ne $true){
               throw 'One mobile/desktop render is missing required content'
             }
             $p=Join-Path $env:OUT $shot.file
