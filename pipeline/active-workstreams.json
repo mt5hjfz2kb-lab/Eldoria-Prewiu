@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 71,
+      "ownership_revision": 72,
       "write_scope_released": false,
-      "phase": "COBALT_REAL_ROOF_MACRO_ART_NATIVE_IN_PROGRESS",
-      "next": "Render exact PR173 cobalt roof proof in Unity 6000.3.23f1, 8 images + pointer/save, visually compare against owner approved 864x1536 JPEG. Decide retention by real visual change, no ART_APPROVED.",
+      "phase": "Genuine_Unity_Cobalt_Roof_Macro_Improvement_VERIFIED_Art_Target_Pending",
+      "next": "Real Unity before vs after proves original roof slots8-10 now cobalt on live castillo+real Bastion panel. Remaining differences in terrain architecture/scene, material richness, Bastion thumbnail composition, typography; preserve PR173, improve with visual reference, no code-only pseudo-approval, no merge/publish. Owner JPEG directly compared, ART_APPROVED false.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T03:02:00Z",
@@ -6784,8 +6782,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "54c516577f5c07c30f970d727ebeecbde99fbc08",
-        "native_run": 42948401195,
+        "source_sha": "f6cf192c1d0ad755606e56d9a9d8d09e55ff2d15",
+        "native_run": 42949444276,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13812488796,
@@ -6817,10 +6815,10 @@
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
         "notes": "2026-11-11 source-art gold-rim integrity correctly rejected 83u expanded aperture (first source CI failed, source reverted). Second native run exact fc20 passed; approved original 75B5D217-A914-4451-854D-AE54849E4A50(3).jpeg recovered and compared. Candidate did not yield significant visual improvement; macro art/scene approach needed. No Unity claim presently.",
-        "art_ab_artifact": 13819539278,
+        "art_ab_artifact": 13823733127,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13821175052,
+        "native_artifact": 13825100033,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
         "owner_requested_polish": "Complete for current captured first-screen layouts; retained sharper original icons. Full900x1600 delivered as Eldoria_marcos_ampliados.png.",
@@ -6834,9 +6832,12 @@
           8,
           9,
           10
-        ]
+        ],
+        "roof_portrait_and_world_tint": true,
+        "roof_roi_changed_pct": 30.83,
+        "original_canvas_hidden": true
       },
-      "runner_release_basis": "Completed exact-head Unity native run 42948401195 success; 8 genuine screenshots, GPU material-index atlas (roof slots 8-10), six real navigation raycasts, save unchanged. No ART_APPROVED; lease released before any further run.",
+      "runner_release_basis": "Unity 6000.3.23f1 run 42949444276 exact f6cf success, 8 genuine PNG hashes verified, six pointer events, independent Canvas/old hidden, original save unchanged, original approved JPEG comparison and blue roof evidence documented in PR173 comment 6785695458. No artistic approval.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -6863,7 +6864,7 @@
         "native_artifact": 13812488796,
         "visual_ab_artifact": 13814395037
       },
-      "runner_released_at": "2026-11-11T02:52:00Z"
+      "runner_released_at": "2026-11-11T03:00:00Z"
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
