@@ -27,6 +27,9 @@ jobs:
           sparse-checkout: |
             /tools/eldoria-private-beta/native/lazy-world-request.json
             /tools/eldoria-private-beta/native/ux/
+            /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
+            /tools/eldoria-private-beta/native/recover_isolated.ps1
+            /tools/eldoria-private-beta/native/existing-input-audit.json
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
@@ -87,6 +90,8 @@ jobs:
             /tools/eldoria-private-beta/native/lazy-world-request.json
             /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
             /tools/eldoria-private-beta/native/ux/
+            /tools/eldoria-private-beta/native/recover_isolated.ps1
+            /tools/eldoria-private-beta/native/existing-input-audit.json
             /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
@@ -118,19 +123,30 @@ jobs:
           $pr=Invoke-RestMethod -Uri "$url/pulls/179" -Headers $headers
           if($pr.head.sha -ne $env:GITHUB_SHA){throw 'PR head changed after preflight; cannot run stale native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared Unity/Blender process already active'}
-          if(-not $env:BETA_SOURCE -or -not(Test-Path $env:BETA_SOURCE)){throw 'Warm Unity source is unavailable'}
+          # Exact BETA_SOURCE is recovered and hash-audited in the next owned step.
           if(-not(Test-Path $env:UNITY_EDITOR_PATH -PathType Leaf)){throw 'Unity editor unavailable'}
           Write-Host 'PR179_LAZY_WORLD_EXCLUSIVE_WINDOWS_LEASE_VERIFIED'
+      - name: Recover only the prior audited warm source under PR179 exclusive lease
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $recover="pr179-hot-recovery-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & 'pr179-source/tools/eldoria-private-beta/native/recover_isolated.ps1' -Tools 'pr179-source' -Evidence $recover
+          if(-not(Test-Path (Join-Path $recover 'existing-input-audit.json') -PathType Leaf)){
+            throw 'No recovered immutable hot-input audit; refuse native PlayMode'
+          }
       - name: Real scene Unity PlayMode and exact warm-source restoration
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          & 'pr179-source/tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1' -Source $env:BETA_SOURCE -OverlaySource 'pr179-source' -Evidence "pr179-lazy-native-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -ExpectedHead $env:GITHUB_SHA
+          & 'pr179-source/tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1' -Source $env:BETA_SOURCE -OverlaySource 'pr179-source' -Evidence "pr179-lazy-native-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -ExpectedHead $env:GITHUB_SHA -InputAuditPath $env:BETA_INPUT_AUDIT
       - name: Preserve native PlayMode logs and verified restoration, never distribute a build
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pr179-lazy-world-unity-playmode-owner-evidence
-          path: pr179-lazy-native-evidence-*/
+          path: |
+            pr179-lazy-native-evidence-*/
+            pr179-hot-recovery-*/
           if-no-files-found: warn
           retention-days: 7

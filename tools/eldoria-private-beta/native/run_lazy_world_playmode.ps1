@@ -2,7 +2,8 @@ param(
  [Parameter(Mandatory=$true)][string]$Source,
  [Parameter(Mandatory=$true)][string]$OverlaySource,
  [Parameter(Mandatory=$true)][string]$Evidence,
- [Parameter(Mandatory=$true)][string]$ExpectedHead
+ [Parameter(Mandatory=$true)][string]$ExpectedHead,
+ [Parameter(Mandatory=$true)][string]$InputAuditPath
 )
 $ErrorActionPreference='Stop'
 $Source=(Resolve-Path $Source).Path
@@ -82,6 +83,39 @@ foreach($entry in $uxManifest.files){
 }
 if(@($uxPaths|Sort-Object -Unique).Count -ne 19){throw 'Frozen UX file membership not unique'}
 Write-Host 'PR179_FROZEN_PRETESTER_UX19_VERIFIED_BEFORE_HOT_PROJECT_MUTATION'
+
+
+# The warmed project has authored scene and imported art that MUST be an
+# exact, previously reviewed Unity source. PR173 may have used this machine;
+# no source SHA or unreviewed dirty asset is silently adopted by PR179.
+$baseline='948ffa9837168a0b68dab80be76b66350422b23a'
+$hotHead=(git -C $Source rev-parse HEAD).Trim()
+if($LASTEXITCODE -ne 0 -or $hotHead -ne $baseline){
+ throw 'Hot Unity source differs from exact reviewed frozen base; no mutation'
+}
+$InputAuditPath=(Resolve-Path $InputAuditPath).Path
+$audit=Get-Content $InputAuditPath -Raw|ConvertFrom-Json
+if($audit.base -ne $baseline){throw 'Hot native input audit base differs'}
+$actualStatus=@(git -C $Source status --porcelain -- Unity)
+if($LASTEXITCODE -ne 0 -or
+  @($actualStatus).Count -ne @($audit.status).Count -or
+  @((Compare-Object @($actualStatus) @($audit.status))).Count){
+ throw 'Hot Unity pending input inventory differs from approved source, no mutation'
+}
+$actualDirty=@(git -C $Source -c core.quotepath=false ls-files --modified --others --exclude-standard -- Unity)
+$expectedDirty=@($audit.files|ForEach-Object {$_.path})
+if($LASTEXITCODE -ne 0 -or $actualDirty.Count -ne $expectedDirty.Count -or
+   @((Compare-Object $actualDirty $expectedDirty)).Count){
+ throw 'Hot Unity dirty input membership diverged from audited production art'
+}
+foreach($item in $audit.files){
+ $file=Join-Path $Source $item.path
+ if(-not(Test-Path $file -PathType Leaf) -or
+    (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash -ne $item.sha256){
+  throw "Hot Unity audited input SHA mismatch: $($item.path)"
+ }
+}
+Write-Host 'PR179_HOT_UNITY_EXACT_FROZEN_BASE_AND_ALL_DIRTY_ASSETS_VERIFIED'
 
 $trackedBefore=@(git -C $Source status --porcelain -- Unity)
 if($LASTEXITCODE -ne 0){throw 'Unable to audit original Unity repository state'}
@@ -203,6 +237,7 @@ try{
   $restored=$issues.Count -eq 0
   $report=@{
    source_head=$head;unity_tests_passed=$verified;restored=$restored;frozen_ux_files=$uxPaths.Count;
+   hot_source_base=$hotHead;audited_input_files=@($audit.files).Count;
    failed_reason=$failure;owned_files=$overlays.Count;original_unity_status_count=$trackedBefore.Count;
    tests_executed='Eldoria.BetaMemory.Tests.LazyRegionStartupTests';
    physical_iphone_verified=$false;testers_authorized=$false
