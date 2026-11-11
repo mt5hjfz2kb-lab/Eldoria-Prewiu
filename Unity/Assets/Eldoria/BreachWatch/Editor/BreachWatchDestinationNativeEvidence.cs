@@ -317,7 +317,12 @@ namespace Eldoria.BreachWatch.Editor
                         ()=>mail.IsShowing &&
                             canonicalMailbox.VisibleMessageRows>0 &&
                             mail.ReplacedOldPainting));
-                var firstRow=canonicalMailbox.GetComponentsInChildren<Button>(true)
+                // The canonical controller is attached to the DISABLED old
+                // HUD but its actual window has been reparented to the
+                // independent Vigilia Canvas. Searching controller children
+                // falsely reports no row even when native captures show one.
+                // Assert on the REAL, VISIBLE canvas hierarchy instead.
+                var firstRow=ui.GetComponentsInChildren<Button>(true)
                     .FirstOrDefault(x=>x && x.name=="Buzón / mensaje 0");
                 Need(firstRow && firstRow.gameObject.activeInHierarchy &&
                      firstRow.interactable,
@@ -325,7 +330,7 @@ namespace Eldoria.BreachWatch.Editor
                 firstRow.onClick.Invoke();
                 canonicalMailbox.Refresh();
                 mail.SynchronizeVisual();
-                var actualDocument=canonicalMailbox
+                var actualDocument=ui
                     .GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.name=="Mailbox / report document");
                 Need(actualDocument && actualDocument.gameObject.activeInHierarchy,
