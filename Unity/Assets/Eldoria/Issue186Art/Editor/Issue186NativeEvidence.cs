@@ -318,20 +318,21 @@ namespace Eldoria.Issue186Art.Editor
                 ExecuteEvents.Execute<IPointerClickHandler>(
                     realHit.gameObject,pd,ExecuteEvents.pointerClickHandler);
                 Need(action,"Unity UI click was not dispatched by the hit Button");
-                Need(GuidedTutorialRules.ConfirmAction(progress,"issue186.claim",
-                        "ClaimReward","ClaimReward",action),
-                    "Gameplay confirmation did not persist first-use lesson");
-                Need(!Issue186ArtKit.BindFirstUsePointer(progress,
-                        "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo) &&
-                     !pointer.gameObject.activeInHierarchy && !halo.gameObject.activeInHierarchy,
-                    "Tutorial pointer still visible after confirmed action");
-                // Capture the BEFORE state so the user sees the tutorial and badge.
-                // Tests above use the same real Canvas, but restore ONLY a
-                // disposable pointer state (not game progression).
-                var pendingGuide=new GuidedTutorialProgress();
-                Need(Issue186ArtKit.BindFirstUsePointer(pendingGuide,
-                        "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo),
-                    "Failed to restore disposable art study");
+                // A successful Unity Button callback is NOT a successful
+                // gateway command. The #186 gameplay bridge is still pending
+                // while #181 owns LocalGateway. Never claim tutorial complete
+                // merely because our art-only fixture dispatched a click.
+                Need(!GuidedTutorialRules.ConfirmAction(progress,"issue186.claim",
+                        "ClaimReward","ClaimReward",false) &&
+                     !progress.Completed.Contains("issue186.claim"),
+                    "UI-only tap falsely completed an unimplemented claim");
+                Need(Issue186ArtKit.BindFirstUsePointer(progress,
+                        "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo)
+                     && pointer.gameObject.activeInHierarchy,
+                    "Tutorial must remain visible until an authoritative game result");
+                // Capture this honest pending state; source-only domain tests
+                // independently exercise completion with actual success=true.
+
                 Canvas.ForceUpdateCanvases();
                 // Camera.Render() is not supported for this project's URP.
                 // Unity 6 render requests render the full Base Camera stack to
@@ -373,7 +374,7 @@ namespace Eldoria.Issue186Art.Editor
                     width=width,height=height,bytes=bytes,actualResourceSprites=rendered,
                     indicatorReady=badge.gameObject.activeInHierarchy,
                     newIndicatorReady=newBadge.gameObject.activeInHierarchy,
-                    firstUsePointer=pointed,firstUseCompleted=true,
+                    firstUsePointer=pointed,firstUseCompleted=false,
                     pointerLeavesCtaCenterClear=pointerClear,realUiClick=action,
                     visiblePixels=interesting>width*height*.008f,
                     renderTargetCorrect=cam.targetTexture==rt,
