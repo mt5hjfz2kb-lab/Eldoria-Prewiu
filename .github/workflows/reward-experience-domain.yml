@@ -1,0 +1,20 @@
+name: Issue 186 reward, attention and guidance (domain only)
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs'
+      - 'tools/reward-experience/**'
+      - '.github/workflows/reward-experience-domain.yml'
+  workflow_dispatch:
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Execute actual reward domain rules with source-linked smoke
+        run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj

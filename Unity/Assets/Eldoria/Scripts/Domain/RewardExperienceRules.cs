@@ -1,0 +1,204 @@
+using System;
+using System.Collections.Generic;
+
+namespace Eldoria.Domain
+{
+    // Issue #186 phase one. Kept separate from PlayerState/LocalGateway until
+    // the PR #181 writer hands over those paths. All fields are Unity-serializable.
+    [Serializable] public sealed class ResourceRewardPacket
+    {
+        public string ReceiptId = "";
+        public string Origin = "";
+        public string Kind = "";
+        public string MailEventId = "";
+        public int Amount;
+        public bool Collected;
+        public bool SeenInBag;
+        public bool Used;
+        public ResourceRewardPacket Copy() => (ResourceRewardPacket)MemberwiseClone();
+    }
+
+    [Serializable] public sealed class ResourceRewardInventory
+    {
+        // Used packets remain as receipt tombstones. Never reissue a spent ID.
+        public List<ResourceRewardPacket> Packets = new List<ResourceRewardPacket>();
+        public ResourceRewardInventory Copy()
+        {
+            var copy = new ResourceRewardInventory();
+            foreach (var p in Packets ?? new List<ResourceRewardPacket>())
+                if (p != null) copy.Packets.Add(p.Copy());
+            return copy;
+        }
+    }
+
+    public static class ResourceRewardRules
+    {
+        // Only the three owner-approved production/collection origins may be
+        // credited directly by the existing authoritative gameplay systems.
+        // Combat rewards, missions, explorations and daily prizes are NOT hunts.
+        public static bool DirectToWallet(string origin) =>
+            origin == "node" || origin == "hunt" || origin == "building";
+
+        public static bool IsResource(string kind) =>
+            kind == "wood" || kind == "stone" || kind == "food";
+
+        // Receipt IDs must be stable and distinct per resource component:
+        // e.g. "mission:c1-route:wood" and "mission:c1-route:stone".
+        // mailEventId empty => collected directly into bag, never into wallet.
+        // mailEventId nonempty => locked until explicit Mail Claim.
+        public static bool TryIssue(ResourceRewardInventory inventory,
+            string receiptId, string origin, string kind, int amount,
+            string mailEventId = "")
+        {
+            if (inventory == null || string.IsNullOrWhiteSpace(receiptId) ||
+                string.IsNullOrWhiteSpace(origin) || DirectToWallet(origin) ||
+                !IsResource(kind) || amount <= 0) return false;
+            var packets = inventory.Packets;
+            if (packets == null) return false;
+            foreach (var p in packets)
+                if (p != null && p.ReceiptId == receiptId) return false;
+            packets.Add(new ResourceRewardPacket {
+                ReceiptId = receiptId, Origin = origin, Kind = kind,
+                Amount = amount, MailEventId = mailEventId ?? "",
+                Collected = string.IsNullOrEmpty(mailEventId)
+            });
+            return true;
+        }
+
+        // Reading/deleting a mail is intentionally NOT a claim. Caller must
+        // invoke this only after a real explicit Claim action for that mail.
+        public static int ClaimMail(ResourceRewardInventory inventory, string mailEventId)
+        {
+            if (inventory?.Packets == null || string.IsNullOrWhiteSpace(mailEventId))
+                return 0;
+            int count = 0;
+            foreach (var p in inventory.Packets)
+                if (p != null && p.MailEventId == mailEventId && !p.Collected)
+                {
+                    p.Collected = true;
+                    count++;
+                }
+            return count;
+        }
+
+        // The same authoritative saved transaction must persist both the wallet
+        // increment and the Used flag. No separate UI-side credit is allowed.
+        public static bool TryUse(ResourceRewardInventory inventory, ResourceWallet wallet,
+            string receiptId, out int granted)
+        {
+            granted = 0;
+            if (inventory?.Packets == null || wallet == null ||
+                string.IsNullOrWhiteSpace(receiptId)) return false;
+            ResourceRewardPacket item = null;
+            foreach (var p in inventory.Packets)
+                if (p != null && p.ReceiptId == receiptId) { item = p; break; }
+            if (item == null || !item.Collected || item.Used ||
+                !IsResource(item.Kind) || item.Amount <= 0) return false;
+
+            int current = item.Kind == "wood" ? wallet.Wood :
+                item.Kind == "stone" ? wallet.Stone : wallet.Food;
+            if (current < 0 || current > int.MaxValue - item.Amount) return false;
+            int updated = current + item.Amount;
+            if (item.Kind == "wood") wallet.Wood = updated;
+            else if (item.Kind == "stone") wallet.Stone = updated;
+            else wallet.Food = updated;
+            item.Used = true;
+            item.SeenInBag = true;
+            granted = item.Amount;
+            return true;
+        }
+
+        public static bool MarkBagSeen(ResourceRewardInventory inventory, string receiptId)
+        {
+            if (inventory?.Packets == null) return false;
+            foreach (var p in inventory.Packets)
+                if (p != null && p.ReceiptId == receiptId && p.Collected && !p.SeenInBag)
+                {
+                    p.SeenInBag = true;
+                    return true;
+                }
+            return false;
+        }
+
+        public static int UnseenBagItems(ResourceRewardInventory inventory)
+        {
+            int count = 0;
+            if (inventory?.Packets == null) return 0;
+            foreach (var p in inventory.Packets)
+                if (p != null && p.Collected && !p.SeenInBag && !p.Used) count++;
+            return count;
+        }
+
+        public static int ClaimableMailMessages(ResourceRewardInventory inventory)
+        {
+            if (inventory?.Packets == null) return 0;
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var p in inventory.Packets)
+                if (p != null && !p.Collected && !string.IsNullOrEmpty(p.MailEventId))
+                    ids.Add(p.MailEventId);
+            return ids.Count;
+        }
+    }
+
+    public enum AttentionLevel { None = 0, New = 1, ActionReady = 2 }
+
+    // Semantic signals only. PR #173 owns their visual representation.
+    public static class AttentionSignalRules
+    {
+        public static AttentionLevel Mail(int unreadMessages, int claimableMessages) =>
+            claimableMessages > 0 ? AttentionLevel.ActionReady :
+            unreadMessages > 0 ? AttentionLevel.New : AttentionLevel.None;
+        public static AttentionLevel DailyTreasure(bool canClaim) =>
+            canClaim ? AttentionLevel.ActionReady : AttentionLevel.None;
+        // A bag packet is optional, not an obligatory "todo" forever.
+        public static AttentionLevel Bag(int unseenPackets) =>
+            unseenPackets > 0 ? AttentionLevel.New : AttentionLevel.None;
+    }
+
+    [Serializable] public sealed class GuidedTutorialProgress
+    {
+        public List<string> Completed = new List<string>();
+        public List<string> Dismissed = new List<string>();
+        public GuidedTutorialProgress Copy() => new GuidedTutorialProgress {
+            Completed = new List<string>(Completed ?? new List<string>()),
+            Dismissed = new List<string>(Dismissed ?? new List<string>())
+        };
+    }
+
+    // A UI view must resolve controlId to an actual visible clickable control.
+    // A successful authoritative action, not a tap animation, completes a step.
+    public static class GuidedTutorialRules
+    {
+        public static bool ShouldPoint(GuidedTutorialProgress progress,
+            string stepId, string controlId, bool featureUnlocked, bool controlVisible)
+        {
+            if (progress == null || string.IsNullOrWhiteSpace(stepId) ||
+                string.IsNullOrWhiteSpace(controlId) || !featureUnlocked ||
+                !controlVisible) return false;
+            return !(progress.Completed?.Contains(stepId) ?? false) &&
+                   !(progress.Dismissed?.Contains(stepId) ?? false);
+        }
+
+        public static bool ConfirmAction(GuidedTutorialProgress progress,
+            string stepId, string requiredActionId, string actualActionId,
+            bool authoritativeSuccess)
+        {
+            if (progress?.Completed == null || string.IsNullOrWhiteSpace(stepId) ||
+                string.IsNullOrWhiteSpace(requiredActionId) || !authoritativeSuccess ||
+                requiredActionId != actualActionId ||
+                progress.Completed.Contains(stepId)) return false;
+            progress.Completed.Add(stepId);
+            return true;
+        }
+
+        // Explicit skip suppresses repetitive prompting but NEVER claims
+        // that the real action was learned or performed.
+        public static bool Dismiss(GuidedTutorialProgress progress, string stepId)
+        {
+            if (progress?.Dismissed == null || string.IsNullOrWhiteSpace(stepId) ||
+                progress.Dismissed.Contains(stepId)) return false;
+            progress.Dismissed.Add(stepId);
+            return true;
+        }
+    }
+}
