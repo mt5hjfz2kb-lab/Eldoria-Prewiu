@@ -17,6 +17,22 @@ if(Test-Path (Join-Path $previous 'warm-cache-restoration.json')){
  if((Get-FileHash $pinned -Algorithm SHA256).Hash -ne 'DB0DC33D00DFA620AF5EA2F8B26557C999731F871F85A67A5985E4ECCE866AF0'){throw 'Recovered input audit changed'}
  $auditPath=Join-Path ([IO.Path]::GetFullPath($Evidence)) 'existing-input-audit.json'
  Copy-Item $pinned $auditPath
+ # Diagnose a failed prior restoration against the IMMUTABLE original input,
+ # before any new PlayMode overlay. Never regenerate the approved baseline.
+ $original=Get-Content -LiteralPath $pinned -Raw|ConvertFrom-Json
+ $current=@(git -C $source status --porcelain -- Unity)
+ $statusExit=$LASTEXITCODE
+ $delta=@(Compare-Object @($original.status) $current)
+ if($statusExit -ne 0 -or $delta.Count){
+  @{
+   expected=@($original.status);actual=@($current);git_exit=$statusExit;
+   differences=@($delta|ForEach-Object {@{status=$_.InputObject;side=$_.SideIndicator}})
+  }|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $Evidence 'recovery-status-delta.json') -Encoding UTF8
+  foreach($entry in $delta){
+   Write-Host ("PR179_RECOVERY_STATUS_DELTA "+$entry.SideIndicator+" "+$entry.InputObject)
+  }
+  throw 'Original hot-input status mismatch; diagnostic preserved, no new Unity overlay allowed'
+ }
  Add-Content $env:GITHUB_ENV "BETA_SOURCE=$source"
  Add-Content $env:GITHUB_ENV "BETA_INPUT_AUDIT=$auditPath"
  Write-Host 'Reusing exact restored production input; wrapper will verify every current file before Unity'
