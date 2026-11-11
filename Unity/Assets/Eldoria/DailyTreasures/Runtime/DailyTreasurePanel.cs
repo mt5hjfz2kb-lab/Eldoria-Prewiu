@@ -503,8 +503,12 @@ namespace Eldoria.DailyTreasures
             milestoneDiscoveryIllustration.raycastTarget=false;
             // The source PNG contains an EMPTY parchment. Paint only in its
             // interior, respecting the compass and burnt edges.
-            authenticDiscovery.anchorMin=new Vector2(.41f,.28f);
-            authenticDiscovery.anchorMax=new Vector2(.84f,.78f);
+            // Preserve the atlas's TRUE square vignette proportions:
+            // art source ratio 1376/768, so .35 wide / .62 tall is ~= 1:1.
+            // Stretching a quadrant 1.5x made the new painting unconvincing.
+            // Remain inside original scroll and avoid its real brass compass.
+            authenticDiscovery.anchorMin=new Vector2(.43f,.18f);
+            authenticDiscovery.anchorMax=new Vector2(.78f,.80f);
             authenticDiscovery.offsetMin=authenticDiscovery.offsetMax=Vector2.zero;
             milestoneDiscoveryIllustration.gameObject.SetActive(false);
             // Authored source atlas uses four quadrants. The GPU shader
