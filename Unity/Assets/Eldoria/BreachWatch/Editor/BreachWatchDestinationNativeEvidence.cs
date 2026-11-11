@@ -278,6 +278,10 @@ namespace Eldoria.BreachWatch.Editor
                     heroes.SynchronizeVisual();
                 }
                 Canvas.ForceUpdateCanvases();
+                if(name=="heroes")
+                    Need(heroes && heroes.HallGradeActive,
+                        "Original blue Heroes Hall is not warmed by new scene material: "+
+                        (heroes?heroes.HallGradeDiagnostic:"heroes bridge null"));
                 Need(verify(),"Real destination visual replacement regressed: "+name);
                 camera.Render();Canvas.ForceUpdateCanvases();camera.Render();
                 RenderTexture.active=rt;
