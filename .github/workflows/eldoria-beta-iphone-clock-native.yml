@@ -126,6 +126,12 @@ jobs:
           assert candidate.count('P0CityOnlyProbe')==3
           assert 'RoyalGoldV41MailboxScreen' in candidate
           assert candidate.replace(prop,'').replace(ready,old).replace(guard,'')==baseline
+          control=pathlib.Path('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.beta13-engine-control.cs.txt').read_bytes()
+          assert hashlib.sha256(control).hexdigest()=='19e289ff881b483748ea627c0b570768498b798cb0cf684e8c2a45eccd11cb88'
+          native_manifest=__import__('json').loads(pathlib.Path('ab-source-preflight/beta10-control/manifest.json').read_text())
+          entry=next(x for x in native_manifest['files'] if x['overlay']=='ValoriaIntegratedWorld.cs.txt')
+          assert entry['baseline_sha256']==hashlib.sha256(control).hexdigest()
+          assert entry['candidate_sha256']==hashlib.sha256(baseline.encode()).hexdigest()
           print('FROZEN_BETA10_UX_662_LINES_COMPOSITION_3_REVERSED_PASS; NOT_NATIVE_OR_IPHONE')
           PY
       - name: Check current ownership without occupying Windows
