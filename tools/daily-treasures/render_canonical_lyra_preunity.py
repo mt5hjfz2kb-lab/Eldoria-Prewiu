@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import math
+import tempfile
 from pathlib import Path
 
 APPROVED_SHA = "a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725"
@@ -30,8 +31,13 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
     window.SetAlphaBitPlanes(1)
     window.SetSize(width, height)
     window.AddRenderer(scene)
+    # VTK dispatches glTF by extension: genuine Unity .bytes fails even
+    # though it is the exact same checked GLB. Render a temporary .glb copy.
+    temporary = tempfile.TemporaryDirectory(prefix="eldoria-canonical-lyra-")
+    verified_glb = Path(temporary.name) / "exact-approved-model.glb"
+    verified_glb.write_bytes(payload)
     importer = vtk.vtkGLTFImporter()
-    importer.SetFileName(str(model.resolve()))
+    importer.SetFileName(str(verified_glb.resolve()))
     importer.SetRenderWindow(window)
     importer.Update()
     actors = scene.GetActors()
