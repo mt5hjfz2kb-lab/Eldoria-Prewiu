@@ -322,8 +322,10 @@ namespace Eldoria.DailyTreasures.Editor
                             "milestone:bastion:visual-only");
                         Require(panel.ActiveMilestoneStage==
                                 DailyTreasureStageKind.Bastion &&
-                            !panel.HasMilestoneScenery,
-                            "Bastion scene must show the REAL city, not a painted substitute");
+                            panel.HasMilestoneScenery &&
+                            panel.MilestoneSceneryKey==
+                                DailyTreasureBastionCamera.SceneKey,
+                            "Cinematic Bastion must show the actual live camera close-up, not a fake building");
                         Canvas.ForceUpdateCanvases();
                         var bastionStudy=Photograph(camera,target,folder,
                             width,height,"authored-bastion-visual-only",false);

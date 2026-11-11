@@ -99,6 +99,7 @@ namespace Eldoria.DailyTreasures
             (chest.gameObject.activeSelf || illustratedClosed.gameObject.activeSelf ||
              illustratedOpen.gameObject.activeSelf);
         RawImage milestoneScenery;
+        RenderTexture capturedBastionScene;
         Image milestoneVignette;
         Image milestoneInsignia;
         // Separately painted alpha layers, behind official scene/hero identity.
@@ -742,6 +743,11 @@ namespace Eldoria.DailyTreasures
                 milestoneScenery.gameObject.SetActive(false);
                 milestoneSceneryKey=null;
             }
+            if(capturedBastionScene)
+            {
+                DailyTreasureBastionCamera.Release(capturedBastionScene);
+                capturedBastionScene=null;
+            }
             if(milestoneVignette)
                 milestoneVignette.gameObject.SetActive(false);
             if(milestoneInsignia)
@@ -1224,11 +1230,24 @@ namespace Eldoria.DailyTreasures
         {
             var path=showChest?MilestoneScenerySource(eventId):null;
             Texture2D source=path==null?null:Resources.Load<Texture2D>(path);
-            milestoneSceneryKey=source?path:null;
-            milestoneScenery.texture=source;
-            milestoneScenery.gameObject.SetActive(source!=null);
-            milestoneVignette.gameObject.SetActive(source!=null);
-            if(source)
+            if(capturedBastionScene)
+            {
+                milestoneScenery.texture=null;
+                DailyTreasureBastionCamera.Release(capturedBastionScene);
+                capturedBastionScene=null;
+            }
+            if(showChest && !string.IsNullOrEmpty(eventId) &&
+               eventId.StartsWith("milestone:bastion:",StringComparison.Ordinal))
+                capturedBastionScene=DailyTreasureBastionCamera.Capture(
+                    root.rect.width,root.rect.height);
+            milestoneSceneryKey=capturedBastionScene?
+                DailyTreasureBastionCamera.SceneKey:source?path:null;
+            milestoneScenery.texture=capturedBastionScene?
+                (Texture)capturedBastionScene:source;
+            bool hasImage=milestoneScenery.texture!=null;
+            milestoneScenery.gameObject.SetActive(hasImage);
+            milestoneVignette.gameObject.SetActive(hasImage);
+            if(hasImage)
             {
                 // Preserve the actual painting as the central illustration.
                 // A strong dark tint previously made the original hall/map
@@ -1283,6 +1302,10 @@ namespace Eldoria.DailyTreasures
         {
             bool hallPortrait=stage.Kind==DailyTreasureStageKind.Lyra &&
                 !stage.SideBySide;
+            // The genuine close-up already carries PBR/real city lighting.
+            // Do not crush the masonry and amber relief a second time.
+            if(stage.Kind==DailyTreasureStageKind.Bastion)
+                return new Color(.98f,.95f,.89f,.95f*intensity);
             return new Color(hallPortrait?.82f:.70f,
                 hallPortrait?.79f:.68f,hallPortrait?.74f:.65f,
                 stage.SceneryOpacity*intensity);

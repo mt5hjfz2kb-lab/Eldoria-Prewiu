@@ -178,3 +178,18 @@ assert.match(nativeArt,/Mathf\.Abs\(border\.x-90f\)/);
 assert.match(nativeArt,/Mathf\.Abs\(ornament\.sprite\.pixelsPerUnit-200f\)/);
 assert.match(nativeArt,/plate && !plate\.sprite/);
 console.log('PASS native gate requires true original nine-slice corner geometry in Unity');
+
+// New authentic camera method: only the real active built structure and real
+// PlayerCamera may feed a Bastion milestone. No baked future castle art.
+const liveBastion=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
+assert.match(liveBastion,/ValoriaIntegratedWorld/);
+assert.match(liveBastion,/BastionOne/);
+assert.match(liveBastion,/PlayerCamera/);
+assert.match(liveBastion,/camera.CopyFrom\(source\)/);
+assert.match(liveBastion,/camera.Render\(\)/);
+assert.match(liveBastion,/result.Release\(\)/);
+assert.match(panel,/DailyTreasureBastionCamera.Capture\(/);
+assert.match(panel,/DailyTreasureBastionCamera.Release\(/);
+assert.match(panel,/DailyTreasureBastionCamera.SceneKey/);
+console.log('PASS true camera-derived live Bastion presentation, never a zoomed PNG');
