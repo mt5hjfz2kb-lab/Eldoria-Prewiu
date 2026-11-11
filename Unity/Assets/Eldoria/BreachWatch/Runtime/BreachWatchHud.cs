@@ -1419,8 +1419,11 @@ namespace Eldoria.BreachWatch
                 (float)portraitView.texture.height;
             float uvRatio=(shown.width/shown.height)/textureRatio;
             uvRatio=Mathf.Clamp(uvRatio,.45f,2.8f);
-            float wantedWidth=bounds.width+.075f;
-            float wantedHeight=bounds.height+.07f;
+            // A tighter but strictly positive transparent gutter preserves the
+            // entire renderer silhouette while enlarging the actual Bastion
+            // within the painted gold rim. No texture stretching or masking.
+            float wantedWidth=bounds.width+.045f;
+            float wantedHeight=bounds.height+.045f;
             float cropHeight=Mathf.Max(wantedHeight,wantedWidth/uvRatio);
             float cropWidth=cropHeight*uvRatio;
             if(cropWidth>1f)
