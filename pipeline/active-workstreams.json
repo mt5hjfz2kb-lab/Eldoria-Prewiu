@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T05:32:42.328Z",
+  "updated_at": "2026-11-11T05:39:08.236Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,16 +6665,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 76,
+      "ownership_revision": 77,
       "write_scope_released": false,
-      "phase": "Profile_Tint_Rejected_Reverted_Native_PASS_Art_Still_Pending",
+      "phase": "Selective_Antique_Bronze_Shader_Original_Sprite_Native_Requested",
       "next": "Native 42965945720 restored Color.white after rejection; do not repeat whole-image profile tint. Compare original approved JPEG actual RGB and authored CleanRoom art, target next macro artistic delta with asset-side repaint/true 3D environmental provenance; no overlays or fake buttons. Not 7.5 proven, no merge/deploy.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-11T03:04:58.275Z",
-      "runner_claim_basis": "Source a2c02286 calibrated reversible ORIGINAL Bastion 3D roof MPB against approved JPEG: pixel medians Unity f6cf (17,76,176) vs reference (14,106,191). Exact-HEAD Unity eight images + cross resolution and real navigation; no world shared assets, saves, published builds changed.",
+      "runner_claimed_at": "2026-11-11T05:39:08.236Z",
+      "runner_claim_basis": "One reversible first-party source UI shader selective violet-to-antique bronze in original 2K profile; no second graphic, no game-save changes; compare true Unity owner JPEG and previous certified baseline. Prior global Image.color attempt was rejected and reverted, no weakened QA. No competing Windows owner or in-progress Unity job observed.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
