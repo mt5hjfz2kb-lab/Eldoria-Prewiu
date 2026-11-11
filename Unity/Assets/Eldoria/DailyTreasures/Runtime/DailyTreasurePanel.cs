@@ -730,6 +730,17 @@ namespace Eldoria.DailyTreasures
         }
         void OnDestroy()
         {
+            // The city can unload during a ceremony without calling Close().
+            // A native RenderTexture allocated by the authenticated Bastion
+            // camera must not survive that teardown on memory-limited iOS.
+            if(capturedBastionScene)
+            {
+                if(milestoneScenery)milestoneScenery.texture=null;
+                if(milestoneCinematicBackdrop)
+                    milestoneCinematicBackdrop.texture=null;
+                DailyTreasureBastionCamera.Release(capturedBastionScene);
+                capturedBastionScene=null;
+            }
             DestroyOwned(glowSprite);
             DestroyOwned(glowTexture);
             DestroyOwned(chestKnock);
@@ -1201,7 +1212,14 @@ namespace Eldoria.DailyTreasures
             glow.color=new Color(1f,.75f,.36f,dailyCoffer?0f:.16f);
             ambient.color=Color.clear;
             SetMilestoneScenery(eventId,showChest);
-            var stagePath=showChest?MilestoneArtResource(currentStage):null;
+            // Real Bastion geometry is the protagonist, not an old invented
+            // stone arch pasted on top. The previous Unity city screenshots
+            // showed that decorative gate covering the actual built castle.
+            // For this stage use ONLY the authenticated one-frame live camera;
+            // if it is unavailable, keep the truthful unobstructed city.
+            var stagePath=showChest &&
+                currentStage!=DailyTreasureStageKind.Bastion?
+                MilestoneArtResource(currentStage):null;
             var stageSprite=stagePath==null?null:Resources.Load<Sprite>(stagePath);
             milestoneStageArt.sprite=stageSprite;
             milestoneStageArt.gameObject.SetActive(stageSprite!=null);
@@ -1428,7 +1446,9 @@ namespace Eldoria.DailyTreasures
                 case DailyTreasureStageKind.Vigilants:
                     return "DailyTreasureCeremonies/vigilants_stage";
                 case DailyTreasureStageKind.Bastion:
-                    return "DailyTreasureCeremonies/bastion_stage";
+                    // Provenance-retained candidate remains on disk, but
+                    // cannot masquerade as the player's actual building.
+                    return null;
                 default:return null;
             }
         }
