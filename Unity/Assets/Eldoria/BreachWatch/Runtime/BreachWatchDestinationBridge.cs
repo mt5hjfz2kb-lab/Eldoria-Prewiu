@@ -52,6 +52,20 @@ namespace Eldoria.BreachWatch
             // remain owned by the existing destination controller.
             management.Open(destination);
             if(!management.IsOpen) return false;
+            return TryAdoptAlreadyOpen();
+        }
+
+        /// <summary>
+        /// The canonical Heroes.Close handler may reopen the real Training or
+        /// March controller itself. Adopt that EXISTING open destination rather
+        /// than running its command twice or leaving it on the hidden Canvas.
+        /// </summary>
+        public bool TryAdoptAlreadyOpen()
+        {
+            if(!host || !vigilia || !management ||
+               !management.IsOpen || IsShowing ||
+               !host.CanOpen(RoyalSection.Army))
+                return false;
             var root=management.VisibleRoot;
             if(!root) return false;
 
