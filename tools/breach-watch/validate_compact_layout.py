@@ -67,11 +67,12 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         painted_lion_right=round(2496*.35)*100/2000
         name_left=(45+8) if pw<600 else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,10 if pw<600 else 9,1,21 if pw<600 else 17)
-        profile_power=R(0,31 if pw<600 else 27,1,18 if pw<600 else 17)
+        profile_name=R(0,6 if pw<600 else 5,1,21 if pw<600 else 17)
+        profile_power=R(0,27 if pw<600 else 23,1,18 if pw<600 else 17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
-        # Real ink was touching the lower profile bevel, not a mere layout
-        # style issue: both dynamic lines must now have bottom inset and
+        # Real Unity d88903 showed power descenders touching the lower bevel.
+        # Lift both live rows 4 units and retain real line metrics, nominal
+        # bottom inset and
         # no overlapping nominal rows in the source contract.
         assert profile_power.y+profile_power.h<= (58 if pw<600 else 48)-4,size
         right=w-(m+182+9+m)
