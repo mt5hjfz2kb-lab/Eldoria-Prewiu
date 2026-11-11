@@ -244,6 +244,34 @@ namespace Eldoria.BreachWatch
             }
         }
 
+        // The authoritative Training/March controller legitimately recomputes
+        // its screen on every orientation and progress refresh. Its Reflow()
+        // can re-enable original blue paper Images AFTER our first swap.
+        // Enforce one visible painting before render instead of permanently
+        // copying or replacing the gameplay controller's layout logic.
+        public void ReassertSinglePainting()
+        {
+            if(!installed)return;
+            foreach(var item in originalGraphics)
+                if(item.Graphic && item.Graphic.enabled)
+                    item.Graphic.enabled=false;
+            if(originalBackdrop)
+                originalBackdrop.color=new Color(.080f,.071f,.064f,1f);
+        }
+
+        void OnEnable()
+        {
+            Canvas.willRenderCanvases += BeforeCanvasPaint;
+        }
+        void OnDisable()
+        {
+            Canvas.willRenderCanvases -= BeforeCanvasPaint;
+        }
+        void BeforeCanvasPaint()
+        {
+            ReassertSinglePainting();
+        }
+
         void Hide(Graphic graphic)
         {
             originalGraphics.Add(new Original{Graphic=graphic,Enabled=graphic.enabled});
