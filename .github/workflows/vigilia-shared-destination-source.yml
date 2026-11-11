@@ -6,6 +6,8 @@ on:
       - '.github/workflows/vigilia-shared-destination-source.yml'
       - 'tools/breach-watch/validate_shared_destination_theme.py'
       - 'tools/breach-watch/validate_mailbox_theme.py'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png.meta'
       - 'tools/breach-watch/validate_modal_bridge.py'
       - 'tools/breach-watch/validate_vigilia_web_optin.py'
       - 'tools/breach-watch/validate_heroes_theme.py'
@@ -66,6 +68,8 @@ jobs:
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png.meta
           persist-credentials: false
       - name: Parse real C-sharp syntax without occupying Windows Unity runner
         uses: actions/setup-dotnet@v4

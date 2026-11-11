@@ -3,6 +3,8 @@
 Source checks are not Unity screenshots and never mean artistic sign-off.
 """
 from pathlib import Path
+import hashlib
+import struct
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "Unity/Assets/Eldoria/BreachWatch"
@@ -25,10 +27,37 @@ def main():
     check(scene.is_file() and scene.with_suffix(".cs.meta").is_file(),
           "The original large illustrated empty-mail scene needs a stable Unity GUID")
     painting=scene.read_text()
-    check("MaskableGraphic" in painting and "OnPopulateMesh" in painting and
-          "Sprite" not in painting and "raycastTarget=false" in painting and
-          "if(width<285f||height<530f||width>height)return;" in painting,
-          "Large native vector manuscript illustration must be crisp, noninteractive and responsive")
+    check("MaskableGraphic" in painting and
+          "OnPopulateMesh" in painting and
+          'VigiliaArt/MailboxArtwork/sealed_letter' in painting and
+          "Resources.Load<Sprite>(ArtworkKey)" in painting and
+          "art.raycastTarget = false" in painting and
+          "if (!illustration) return" in painting and
+          "vh.AddTriangle(0, 1, 2)" in painting,
+          "Empty mail must render ONE genuine source-authored transparent raster via a non-interactive mesh, never the rejected procedural envelope")
+    # The previous validator required 'Sprite' to be ABSENT and the rejected
+    # vector drawing to be present. It was obsolete after 996deb9. Verify
+    # the actual immutable authored original and its bounded GPU importer.
+    image=BASE/"Resources/VigiliaArt/MailboxArtwork/sealed_letter.png"
+    meta=image.with_suffix(".png.meta")
+    check(image.is_file() and meta.is_file(), 
+          "Original sealed-letter art and Unity importer must be in this sparse checkout")
+    pixels=image.read_bytes()
+    check(hashlib.sha256(pixels).hexdigest()==
+          "2fc1e38d18e68ab9f144f2742594ac4c1ca2fb6011659a3fbd78ddd26d84c1f1",
+          "Original sealed-letter PNG changed without owner-approved art provenance")
+    check(pixels[:8]==b"\\x89PNG\\r\\n\\x1a\\n" and
+          len(pixels)>=29 and 
+          struct.unpack(">IIBBBBB",pixels[16:29])[:4]==(1536,1024,8,6),
+          "Sealed-letter source must stay authentic 1536x1024 RGBA PNG")
+    importer=meta.read_text()
+    check("guid: 46e84bddeab249449911cbd4ffef992e" in importer and
+          "isReadable: 0" in importer and "enableMipMap: 0" in importer and
+          "textureCompression: 0" in importer and
+          importer.count("maxTextureSize: 512")>=6 and
+          all("buildTarget: "+p in importer for p in
+              ("DefaultTexturePlatform","Standalone","iPhone","Android","WebGL")),
+          "Bound original mailbox artwork max512, non-readable, lossless on all platforms")
     check("BreachWatchMailboxEmptyArtwork.Install" in S and
           'text.name=="Mailbox / genuine empty state"' in S and
           "realEmptySentence.gameObject.activeInHierarchy" in S and
