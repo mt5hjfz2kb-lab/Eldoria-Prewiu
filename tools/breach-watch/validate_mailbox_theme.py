@@ -34,6 +34,9 @@ def main():
           "Approved source / tab-idle" in S and
           "independent metal nine-slice" in S,
           "All legacy mailbox painting must be disabled, not overlaid")
+    check('Vigilia / one continuous charcoal stone folio' in S and
+          'folio.raycastTarget=false' in S,
+          "Empty mailbox must use one noninteractive premium stone background")
     check("originalTargets" in S and "originalEnabled" in S and
           "originalInkColors" in S and "Restore()" in S,
           "Visual replacement must restore controls and live ink")
