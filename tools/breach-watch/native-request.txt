@@ -3,3 +3,4 @@ Owner's last UI readability touch: slightly brighter secondary ink, portrait pro
 Owner-approved full UI migration native regression on current branch: verify complete eight-view first screen and no C# compilation errors from the staged canonical Training/March/Mail bridges and new reversible themes; visual approval remains independently pending. Resource claim rev 91.
 Native current-head regression: new canonical modal bridge, dark stone replacement, unchanged first-screen geometry and saved session; do not claim art approved.
 Head before request 07c38fedef4a658a9354075d7ccc39f72e29fa25; owner revision 91.
+Retry native after fixing slash-containing modal visual name lookup in QA; target head 33e0b1d2d6df6a5d7b1bb2c91c499e8317b30b1c; validate same actual modal and all 8 views.
