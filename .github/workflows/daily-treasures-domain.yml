@@ -413,6 +413,12 @@ jobs:
           python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
             --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
             --out tools/daily-treasures/preunity-studies/lyra-canonical-portrait-SOURCE-ONLY.png
+          # Additional WAIST-UP composition of the SAME original GLB,
+          # for premium readable hero presentation at small mobile sizes.
+          python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --shot bust \
+            --out tools/daily-treasures/preunity-studies/lyra-canonical-bust-SOURCE-ONLY.png
       - name: Preserve actual independent stage paintings for source-level art review
         if: steps.present.outputs.ready == 'yes'
         shell: bash
