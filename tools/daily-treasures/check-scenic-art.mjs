@@ -30,7 +30,14 @@ assert.match(panel,/Resources\.Load<Texture2D>\(path\)/);
 assert.match(panel,/milestoneScenery\.raycastTarget=false/);
 assert.match(panel,/UpdateSceneryCrop\(\)/);
 assert.match(panel,/if\(target<source\)/);
-assert.match(panel,/return null;\s*}\s*void SetMilestoneScenery/);
+// Preserve the canonical empty Bastion scenery resolver. A preceding
+// orientation-reshoot helper may be added without turning a true city
+// building into a fabricated flat painting.
+const canonicalScenery=panel.match(
+  /static string MilestoneScenerySource\(string eventId\)([\s\S]*?)static Sprite TryCanonicalLyraPortrait/);
+assert.ok(canonicalScenery && /return null;\s*}\s*$/.test(canonicalScenery[1]),
+  'Unbuilt Bastion must return no synthetic scenic screenshot');
+assert.match(panel,/void RefreshBastionLensForRotation\(float width,float height\)/);
 // Four distinct event compositions use real source art and the live city,
 // not a static montage of invented characters and future Bastion levels.
 const stage=fs.readFileSync(
