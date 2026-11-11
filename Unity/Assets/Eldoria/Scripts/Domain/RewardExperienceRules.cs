@@ -109,6 +109,48 @@ namespace Eldoria.Domain
             return true;
         }
 
+        // A multi-resource mission/treasure prize is ONE logical grant.
+        // Validate the whole bundle before adding anything so an already
+        // consumed wood receipt cannot leave a newly duplicated stone item.
+        // The real gateway must persist all packets in its single state commit.
+        public static bool TryIssueBundle(ResourceRewardInventory inventory,
+            string rewardReceiptId, string origin, int wood, int stone, int food,
+            string mailEventId = "")
+        {
+            if (inventory?.Packets == null ||
+                string.IsNullOrWhiteSpace(rewardReceiptId) ||
+                string.IsNullOrWhiteSpace(origin) || DirectToWallet(origin) ||
+                wood < 0 || stone < 0 || food < 0 ||
+                (wood == 0 && stone == 0 && food == 0) ||
+                (mailEventId != null && mailEventId.Length > 0 &&
+                 string.IsNullOrWhiteSpace(mailEventId)))
+                return false;
+
+            var candidate = new List<ResourceRewardPacket>(3);
+            void Add(string kind, int amount)
+            {
+                if (amount <= 0) return;
+                candidate.Add(new ResourceRewardPacket {
+                    ReceiptId = rewardReceiptId + ":" + kind,
+                    Origin = origin, Kind = kind, Amount = amount,
+                    MailEventId = mailEventId ?? "",
+                    Collected = string.IsNullOrEmpty(mailEventId)
+                });
+            }
+            Add("wood", wood);
+            Add("stone", stone);
+            Add("food", food);
+            foreach (var existing in inventory.Packets)
+            {
+                if (existing == null) continue;
+                foreach (var packet in candidate)
+                    if (existing.ReceiptId == packet.ReceiptId)
+                        return false;
+            }
+            inventory.Packets.AddRange(candidate);
+            return true;
+        }
+
         // Reading/deleting a mail is intentionally NOT a claim. Caller must
         // invoke this only after a real explicit Claim action for that mail.
         public static int ClaimMail(ResourceRewardInventory inventory, string mailEventId)
