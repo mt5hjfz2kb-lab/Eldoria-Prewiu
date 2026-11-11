@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 const placement=readFileSync('Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs','utf8');
 const world=readFileSync('Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs','utf8');
+const routing=readFileSync('Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs','utf8');
 test('eager and opt-in deferred installation reuse ONE authoritative terrain scan',()=>{
  const eager=placement.match(/public static void Install\([\s\S]*?\n        }/);
  const staged=placement.match(/public static IEnumerator InstallStaged\([\s\S]*?\n        }/);
@@ -23,4 +24,16 @@ test('lazy opt-in yields real resources, while unflagged and original world stil
  assert.match(world,/else RegionOneResourcePlacement\.Install\(root,host,geography\);/);
  assert.match(world,/RegionOneCreaturePopulation\.Install\(root,host,placement\);/);
  assert.match(world,/REGION1_CANON_WORLD_INSTALLED/);
+});
+
+test('the full 449-row route-grid raycast tape also yields per row in lazy WebGL',()=>{
+ assert.match(routing,/public static IEnumerator CreateStaged\([\s\S]*?yield return result\.BuildGrid\(terrain\);[\s\S]*?onReady\?\.Invoke\(result\)/);
+ assert.match(routing,/IEnumerator BuildGrid\([\s\S]*?for\(int z=-224;z<=224;z\+\+\)\s*\{\s*for\(int x=-112;x<=112;x\+\+\)[\s\S]*?yield return null;\s*\}/);
+ assert.equal((routing.match(/var ray=new Ray\(host\.WorldHome\+new Vector3\(xx,250,zz\),Vector3\.down\);/g)||[]).length,1,
+   'do not fork or duplicate route-grid terrain queries');
+ assert.match(routing,/var stages=BuildGrid\(terrain\);[\s\S]*?while\(stages\.MoveNext\(\)\)/,
+   'eager route grid must drain the exact staged iterator synchronously');
+ assert.match(placement,/if\(ValoriaIntegratedWorld\.P0LazyWorldProbe\)\s+yield return RegionOneTerrainRoutes\.CreateStaged\(host,surface,faults,ready=>routes=ready\);\s+else\s+routes=new RegionOneTerrainRoutes\(host,surface,faults\)/);
+ assert.match(placement,/yield return RegionOneTerrainRoutes\.CreateStaged\([\s\S]*?tape\.Complete\(\)/,
+   'response tape must stay alive until the complete route lattice is sampled');
 });

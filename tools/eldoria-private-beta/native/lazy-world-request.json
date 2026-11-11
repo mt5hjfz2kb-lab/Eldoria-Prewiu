@@ -19,9 +19,10 @@
     "tools/eldoria-private-beta/native/run_structural.ps1": "f1fa30a0543b08dd410cc8ae8655b982c3636b2b",
     "tools/eldoria-private-beta/native/run_warm_structural.ps1": "e2efdbb5eef34fe1eb620ae3f327865524a8381f",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "76425d914f71ec7c5d1ddbe416f6264b2c21dc18",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "a7a8df940f3c1b7ec01b44e534d316d88b6693fa",
-    "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "7859f60566187ed0c1d35c6f78271914b978000e",
-    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216"
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "7a0c4d1ed094757927531a3f6659dab5f482a9e9",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "58fb92831f3d1a7fd7d242f25ad231d41d82adca",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216",
+    "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "85986e2bb862b327eac98088fd5732ffdb97657e"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
@@ -29,5 +30,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "PlayMode real scene and disposable save, native only; no WebGL deployment",
-  "next": "When exclusive PR179 Windows CAS lease is formally granted: Unity PlayMode verifies staged Region1 resource rows/terrain query parity, gateway, nickname, 12 reentries, persistence; then real I–V/WebGL+same-binary Mac A/B, physical iPhone/Android; NO testers until PASS."
+  "next": "Windows lease required before Unity. Staged site scan (98 rows) AND route lattice (449 rows) share unmodified eager query bodies; verify true PlayMode tape parity then WebGL same-bundle Mac A/B and physical mobile before testers."
 }

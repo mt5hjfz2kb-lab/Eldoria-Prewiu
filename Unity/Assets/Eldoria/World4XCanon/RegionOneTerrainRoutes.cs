@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Application;
@@ -22,9 +23,27 @@ namespace Eldoria.World4XCanon
         static readonly Vector2Int[] directions={Vector2Int.left,Vector2Int.right,Vector2Int.up,Vector2Int.down};
         public int WalkableCells=>cells.Count;
         public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain,RegionOneResourcePlacement.FaultSegment[] faults) : this(host,terrain.Raycast,faults) {}
-        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,RegionOneBlenderLandscape.SurfaceRaycast terrain,RegionOneResourcePlacement.FaultSegment[] faults)
+        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,RegionOneBlenderLandscape.SurfaceRaycast terrain,RegionOneResourcePlacement.FaultSegment[] faults) : this(host,faults)
+        {
+            // Production/eager still consumes the IDENTICAL iterator synchronously.
+            var stages=BuildGrid(terrain);
+            try {while(stages.MoveNext()) {}}
+            finally {(stages as IDisposable)?.Dispose();}
+        }
+        RegionOneTerrainRoutes(ValoriaIntegratedWorld host,RegionOneResourcePlacement.FaultSegment[] faults)
         {
             this.host=host;this.faults=faults;
+        }
+        // Opt-in WebGL only: the 100k-cell route lattice used to execute in one frame
+        // even after the site scan was staged. Preserve order, query tape and cells.
+        public static IEnumerator CreateStaged(ValoriaIntegratedWorld host,RegionOneBlenderLandscape.SurfaceRaycast terrain,RegionOneResourcePlacement.FaultSegment[] faults,Action<RegionOneTerrainRoutes> onReady)
+        {
+            var result=new RegionOneTerrainRoutes(host,faults);
+            yield return result.BuildGrid(terrain);
+            onReady?.Invoke(result);
+        }
+        IEnumerator BuildGrid(RegionOneBlenderLandscape.SurfaceRaycast terrain)
+        {
             var obstacles=host.WorldRoot.GetComponentsInChildren<Renderer>(true)
                 .Where(x=>x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)||x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).Select(x=>x.bounds).ToArray();
             // Index the SAME expanded bounds by exact grid coordinate. This avoids
@@ -37,8 +56,10 @@ namespace Eldoria.World4XCanon
                     var key=new Vector2Int(x,z);if(!obstacleCells.TryGetValue(key,out var bucket)){bucket=new List<Bounds>();obstacleCells[key]=bucket;}bucket.Add(bounds);
                 }
             }
-            for(int z=-224;z<=224;z++)for(int x=-112;x<=112;x++)
+            for(int z=-224;z<=224;z++)
             {
+             for(int x=-112;x<=112;x++)
+             {
                 float xx=x*8,zz=z*8;
                 if(RegionOneResourcePlacement.FaultExcluded(faults,xx,zz,2)||RegionOneBlenderLandscape.Shore(xx,zz)<4||RegionOneBlenderLandscape.Water(xx,zz)>.08f)continue;
                 var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
@@ -47,6 +68,8 @@ namespace Eldoria.World4XCanon
                 if(obstacleCells.TryGetValue(new Vector2Int(x,z),out var nearby))foreach(var bounds in nearby)
                     if(hit.point.x>bounds.min.x-1&&hit.point.x<bounds.max.x+1&&hit.point.z>bounds.min.z-1&&hit.point.z<bounds.max.z+1){blocked=true;break;}
                 if(!blocked)cells[new Vector2Int(x,z)]=hit.point;
+            }
+             yield return null;
             }
         }
         public bool FootprintClear(Vector3 point,float clearance)

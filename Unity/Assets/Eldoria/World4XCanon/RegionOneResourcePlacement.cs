@@ -110,7 +110,15 @@ namespace Eldoria.World4XCanon
                  yield return null;
                 }
             }
-            if(routes==null)routes=new RegionOneTerrainRoutes(host,surface,faults);
+            if(routes==null)
+            {
+                // Route-grid scans used to run ~100k cells in one WebGL frame,
+                // even with the 32 m site scan staged. Keep tape open across yields.
+                if(ValoriaIntegratedWorld.P0LazyWorldProbe)
+                    yield return RegionOneTerrainRoutes.CreateStaged(host,surface,faults,ready=>routes=ready);
+                else
+                    routes=new RegionOneTerrainRoutes(host,surface,faults);
+            }
             tape.Complete();
             }
             var snapshot=host.City.Gateway.Snapshot();
