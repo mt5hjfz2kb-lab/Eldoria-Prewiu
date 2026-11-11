@@ -10,6 +10,8 @@ on:
       - 'tools/breach-watch/validate_vigilia_web_optin.py'
       - 'tools/breach-watch/validate_heroes_theme.py'
       - 'tools/breach-watch/validate_retention_theme.py'
+      - 'tools/breach-watch/validate_march_composition.py'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMarchComposition.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxTheme.cs'
@@ -45,6 +47,8 @@ jobs:
             /tools/breach-watch/validate_vigilia_web_optin.py
             /tools/breach-watch/validate_heroes_theme.py
             /tools/breach-watch/validate_retention_theme.py
+            /tools/breach-watch/validate_march_composition.py
+            /Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
@@ -75,3 +79,4 @@ jobs:
           python3 tools/breach-watch/validate_vigilia_web_optin.py
           python3 tools/breach-watch/validate_heroes_theme.py
           python3 tools/breach-watch/validate_retention_theme.py
+          python3 tools/breach-watch/validate_march_composition.py
