@@ -25,7 +25,6 @@ namespace Eldoria.BreachWatch
         string lastKey;
 #if UNITY_EDITOR
         static bool materialInventoryLogged;
-        static bool bastionIndexProbeWritten;
 #endif
 
         public bool HasLiveBuilding => image && image.enabled && image.texture == texture && lastModel;
@@ -190,6 +189,19 @@ namespace Eldoria.BreachWatch
                     var properties=new MaterialPropertyBlock();
                     original.GetPropertyBlock(properties);
                     if(!properties.isEmpty)render.SetPropertyBlock(properties);
+                    // Unity material-index property blocks must be copied
+                    // individually: GetPropertyBlock(no index) does NOT return
+                    // the roof-only overrides of the live city renderer.
+                    // This makes the card a faithful view of the same genuine
+                    // building, not a hand-painted static castle.
+                    for(int materialIndex=0;materialIndex<render.sharedMaterials.Length;
+                        materialIndex++)
+                    {
+                        var perSubmesh=new MaterialPropertyBlock();
+                        original.GetPropertyBlock(perSubmesh,materialIndex);
+                        if(!perSubmesh.isEmpty)
+                            render.SetPropertyBlock(perSubmesh,materialIndex);
+                    }
                     if(rendered++==0)copiedBounds=render.bounds;
                     else copiedBounds.Encapsulate(render.bounds);
                 }
@@ -335,86 +347,6 @@ namespace Eldoria.BreachWatch
                 // Actual separately rendered meshes must be inside the current
                 // portrait frame. No synthetic values and no image generation.
                 portraitCamera.Render();
-#if UNITY_EDITOR
-                // A submesh-index atlas, drawn by the REAL Unity mesh camera.
-                // Each tile recolours only one disposable replica submesh;
-                // the original city renderer/material and final portrait
-                // remain exactly unchanged. This discovers whether the
-                // canonical grey roof is a distinct material at all.
-                // Never claim that a blue texture has been implemented
-                // just because source material names contain "roof".
-                if(!bastionIndexProbeWritten && model.name.IndexOf("Bastion",
-                    StringComparison.OrdinalIgnoreCase)>=0)
-                {
-                    bastionIndexProbeWritten=true;
-                    var targets=new List<MeshRenderer>();
-                    var originalsByRenderer=new List<Material[]>();
-                    int materialCount=0;
-                    foreach(var renderer in stage.GetComponentsInChildren<MeshRenderer>(true))
-                    {
-                        var materials=renderer.sharedMaterials;
-                        if(materials==null || materials.Length<12)continue;
-                        targets.Add(renderer);
-                        originalsByRenderer.Add(materials);
-                        materialCount=Mathf.Max(materialCount,materials.Length);
-                    }
-                    var diagnosticShader=Shader.Find("Universal Render Pipeline/Unlit");
-                    if(targets.Count>0 && diagnosticShader && materialCount<=32)
-                    {
-                        int columns=4, rows=(materialCount+columns-1)/columns;
-                        var atlas=new Texture2D(texture.width*columns,texture.height*rows,
-                            TextureFormat.RGBA32,false);
-                        var tile=new Texture2D(texture.width,texture.height,
-                            TextureFormat.RGBA32,false);
-                        var marker=new Material(diagnosticShader);
-                        marker.SetColor("_BaseColor",new Color(1f,.01f,.75f,1f));
-                        var priorActive=RenderTexture.active;
-                        try
-                        {
-                            for(int index=0;index<materialCount;index++)
-                            {
-                                for(int item=0;item<targets.Count;item++)
-                                {
-                                    var copies=(Material[])originalsByRenderer[item].Clone();
-                                    if(index<copies.Length)copies[index]=marker;
-                                    targets[item].sharedMaterials=copies;
-                                }
-                                portraitCamera.Render();
-                                RenderTexture.active=texture;
-                                tile.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);
-                                tile.Apply(false);
-                                atlas.SetPixels32((index%columns)*texture.width,
-                                    (index/columns)*texture.height,
-                                    texture.width,texture.height,tile.GetPixels32());
-                            }
-                            atlas.Apply(false);
-                            var dir=Path.GetFullPath(Path.Combine(
-                                UnityEngine.Application.dataPath,"../BreachWatchNativeEvidence"));
-                            Directory.CreateDirectory(dir);
-                            File.WriteAllBytes(Path.Combine(dir,
-                                "VigiliaActualBastionMaterialIndexAtlas.png"),
-                                atlas.EncodeToPNG());
-                            File.WriteAllText(Path.Combine(dir,
-                                "VigiliaActualBastionMaterialIndexAtlas.txt"),
-                                "Read left-to-right, bottom-to-top. Tile index=row*4+column; "
-                                +"each tile shows exact real mesh with ONLY this index coloured pink. "
-                                +"Source model and production materials are not changed. Count="
-                                +materialCount);
-                            Debug.Log("VIGILIA_REAL_MATERIAL_INDEX_ATLAS "+materialCount);
-                        }
-                        finally
-                        {
-                            for(int i=0;i<targets.Count;i++)
-                                targets[i].sharedMaterials=originalsByRenderer[i];
-                            RenderTexture.active=priorActive;
-                            portraitCamera.Render();
-                            UnityEngine.Object.DestroyImmediate(marker);
-                            UnityEngine.Object.DestroyImmediate(tile);
-                            UnityEngine.Object.DestroyImmediate(atlas);
-                        }
-                    }
-                }
-#endif
 #if UNITY_EDITOR
                 // A source mesh count does NOT prove the image looks like a
                 // building. Count genuinely rendered pixels after the camera.
