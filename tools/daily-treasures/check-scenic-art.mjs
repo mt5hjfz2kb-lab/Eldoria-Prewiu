@@ -338,3 +338,16 @@ assert.match(cityArtSource,/colors\.Count>=36/);
 assert.match(cityArtSource,/trueBastionPixelProofs==8/);
 assert.match(cityArtSource,/Object\.DestroyImmediate\(tex\)/);
 console.log('PASS editor readback verifies 8 real, nonblack 3D Bastion shots');
+
+// Genuine 3D Bastion can be built one frame after gateway event, so a
+// one-shot camera would silently leave the ceremony black. This is NOT
+// a per-frame GPU poll or fictitious placeholder: 3 bounded retries.
+const lateLens=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs','utf8');
+assert.match(lateLens,/bastionCameraPending=!capturedBastionScene/);
+assert.match(lateLens,/void TryRecoverBuiltBastionLens\(\)/);
+assert.match(lateLens,/bastionCameraRetries>=3/);
+assert.match(lateLens,/nextBastionCameraTry=Time.unscaledTime\+\.35f/);
+assert.match(lateLens,/if\(!sceneOwnedByOtherUi\)TryRecoverBuiltBastionLens\(\)/);
+assert.match(lateLens,/bastionCameraPending=false;/);
+console.log('PASS bounded late real Bastion capture; no black fake celebration');

@@ -103,6 +103,9 @@ namespace Eldoria.DailyTreasures
         Material ownedCinematicBackdropMaterial;
         Material ownedVigilantsReliefMaterial;
         RenderTexture capturedBastionScene;
+        bool bastionCameraPending;
+        int bastionCameraRetries;
+        float nextBastionCameraTry;
         Image milestoneVignette;
         Image milestoneInsignia;
         // Separately painted alpha layers, behind official scene/hero identity.
@@ -845,6 +848,9 @@ namespace Eldoria.DailyTreasures
                 DailyTreasureBastionCamera.Release(capturedBastionScene);
                 capturedBastionScene=null;
             }
+            bastionCameraPending=false;
+            bastionCameraRetries=0;
+            nextBastionCameraTry=0f;
             if(milestoneVignette)
                 milestoneVignette.gameObject.SetActive(false);
             if(milestoneInsignia)
@@ -1407,10 +1413,21 @@ namespace Eldoria.DailyTreasures
                 DailyTreasureBastionCamera.Release(capturedBastionScene);
                 capturedBastionScene=null;
             }
+            bastionCameraPending=false;
+            bastionCameraRetries=0;
             if(showChest && !string.IsNullOrEmpty(eventId) &&
                eventId.StartsWith("milestone:bastion:",StringComparison.Ordinal))
+            {
                 capturedBastionScene=DailyTreasureBastionCamera.Capture(
                     root.rect.width,root.rect.height);
+                // The gameplay owner may apply a newly built Bastion tier
+                // one frame AFTER the milestone arrives. Do not show a fake
+                // painting or abandon the actual 3D hero for a black box.
+                // Retry at most three times, only after scene setup and
+                // at most every .35 seconds (never per-frame on mobile).
+                bastionCameraPending=!capturedBastionScene;
+                nextBastionCameraTry=Time.unscaledTime+.35f;
+            }
             milestoneSceneryKey=capturedBastionScene?
                 DailyTreasureBastionCamera.SceneKey:source?path:null;
             milestoneScenery.texture=capturedBastionScene?
@@ -2448,6 +2465,44 @@ namespace Eldoria.DailyTreasures
         }
 #endif
 
+        void TryRecoverBuiltBastionLens()
+        {
+            if(!bastionCameraPending ||
+               currentStage!=DailyTreasureStageKind.Bastion ||
+               !IsOpen || Time.unscaledTime<nextBastionCameraTry)return;
+            nextBastionCameraTry=Time.unscaledTime+.35f;
+            bastionCameraRetries++;
+            var original=DailyTreasureBastionCamera.Capture(
+                root.rect.width,root.rect.height);
+            if(original)
+            {
+                capturedBastionScene=original;
+                milestoneScenery.texture=original;
+                milestoneSceneryKey=DailyTreasureBastionCamera.SceneKey;
+                milestoneScenery.gameObject.SetActive(true);
+                milestoneVignette.gameObject.SetActive(true);
+                milestoneScenery.color=Color.white;
+                if(milestoneCinematicBackdrop)
+                {
+                    milestoneCinematicBackdrop.texture=original;
+                    milestoneCinematicBackdrop.gameObject.SetActive(
+                        ownedCinematicBackdropMaterial!=null);
+                }
+                UpdateSceneryCrop();
+                bastionCameraPending=false;
+                return;
+            }
+            if(bastionCameraRetries>=3)
+            {
+                // On an unbuilt/unloaded city never manufacture a false
+                // monument. Its genuine original world remains visible
+                // behind the ceremony, not an AI painting or paid coffer.
+                bastionCameraPending=false;
+                Debug.LogWarning(
+                    "BASTION_REAL_LENS_STILL_UNAVAILABLE_AFTER_SCENE_SYNC");
+            }
+        }
+
         void Update()
         {
             if(!root)return;
@@ -2466,6 +2521,7 @@ namespace Eldoria.DailyTreasures
             if(Mathf.Abs(currentWidth-lastWidth)>1f ||
                Mathf.Abs(currentHeight-lastHeight)>1f)
                 Layout();
+            if(!sceneOwnedByOtherUi)TryRecoverBuiltBastionLens();
             if(gateway!=null && Time.unscaledTime>=nextMilestonePoll)
             {
                 nextMilestonePoll=Time.unscaledTime+.65f;
