@@ -103,10 +103,15 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
             # Never mistake it for the real Bastion. Original city is hero.
             continue
         focal,x,y=fit_focal(layer,shape,event)
+        # First place the empty architectural/ceremonial stage. It may be
+        # fully opaque under its aperture; therefore the verified 3D actor
+        # MUST be painted *after* it or Lyra disappears behind the scenery.
+        # The independent nine-slice ornament is still composited last.
+        dst.alpha_composite(focal,(x,y))
         if event=="lyra" and canonical_lyra is not None:
             # The hero is an actual GLB SHA-verified mesh render, NOT a
-            # generated lookalike. Place the upper-body silhouette UNDER the
-            # ornate carved frame, preserving its intentional aperture.
+            # generated lookalike. Place the upper-body silhouette IN FRONT
+            # of the stage but UNDER the carved ornamental frame.
             alpha=canonical_lyra.getchannel("A")
             box=alpha.getbbox()
             require(box is not None,"Authentic 3D Lyra render is empty")
@@ -121,7 +126,6 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
             hero_x=x+round((focal.width-ww)/2)
             hero_y=y+round(focal.height*.13)
             dst.alpha_composite(framed,(hero_x,hero_y))
-        dst.alpha_composite(focal,(x,y))
         if badge is not None and event=="vigilants":
             icon=badge.convert("RGBA")
             side=max(26,min(round(focal.width*.48),round(focal.height*.43),240))
@@ -264,7 +268,20 @@ def selftest():
         require(img.size==size,"Bad device layout")
         require(img.getpixel((size[0]//2,size[1]//2))[3]==255,
                 "Canonical capture disappeared")
-    print("PASS: four sizes retain real source; pre-Unity only")
+    # Regression: a fully opaque central stage can silently cover the
+    # canonical hero if stage and actor are painted in the wrong order.
+    # Test the actual compositing pixel, not only the presence of a GLB hash.
+    opaque_stage=Image.new("RGBA",(1024,576),(0,0,0,0))
+    ImageDraw.Draw(opaque_stage).rectangle((160,80,864,525),
+                                          fill=(165,20,20,255))
+    canonical_actor=Image.new("RGBA",(200,300),(9,242,27,255))
+    revealed=compose(sample,[("stage",opaque_stage)],(1600,900),
+                     event="lyra",canonical_lyra=canonical_actor)
+    visible_actor=sum(1 for red,green,blue,alpha in revealed.getdata()
+                      if green>=230 and red<=20 and blue<=40 and alpha==255)
+    require(visible_actor>500,
+            "Authentic Lyra was hidden by the front-painted stage")
+    print("PASS: four sizes retain real source; canonical hero above stage and below ornaments; pre-Unity only")
 
 if __name__=="__main__":
     p=argparse.ArgumentParser()
