@@ -46,7 +46,7 @@ namespace Eldoria.Issue186Art.Editor
             Need(assetPath.StartsWith("Assets/", StringComparison.Ordinal),
                 "Refuse path outside Unity Assets");
             return Path.GetFullPath(Path.Combine(
-                Application.dataPath, assetPath.Substring("Assets/".Length)));
+                UnityEngine.Application.dataPath, assetPath.Substring("Assets/".Length)));
         }
         public static void VerifyImportedArt()
         {

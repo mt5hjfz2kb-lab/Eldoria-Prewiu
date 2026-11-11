@@ -438,13 +438,13 @@ namespace Eldoria.Issue186Art.Editor
         [MenuItem("Eldoria/Issue 186/Captura nativa a cuatro resoluciones")]
         public static void Capture()
         {
-            var project=Path.GetFullPath(Path.Combine(Application.dataPath,".."));
+            var project=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,".."));
             var output=Path.GetFullPath(Path.Combine(project,Folder));
             Need(Path.GetDirectoryName(output)==project &&
                  Path.GetFileName(output)==Folder,
                 "Refuse output outside this isolated Unity proof directory");
             // Do not destroy an existing user's unsaved scene.
-            if(!Application.isBatchMode && EditorSceneManager.GetActiveScene().isDirty)
+            if(!UnityEngine.Application.isBatchMode && EditorSceneManager.GetActiveScene().isDirty)
                 throw new InvalidOperationException(
                     "Save or close the active modified scene before using disposable art preview");
             var report=new Report{
@@ -481,7 +481,7 @@ namespace Eldoria.Issue186Art.Editor
                 File.WriteAllText(Path.Combine(output,"report.json"),
                     JsonUtility.ToJson(report,true));
                 Debug.Log("ISSUE186_UNITY_ISOLATED_IMPORT_PASS: 4 actual GPU captures");
-                if(Application.isBatchMode)EditorApplication.Exit(0);
+                if(UnityEngine.Application.isBatchMode)EditorApplication.Exit(0);
             }
             catch(Exception e)
             {
@@ -492,7 +492,7 @@ namespace Eldoria.Issue186Art.Editor
                 File.WriteAllText(Path.Combine(output,"report.json"),
                     JsonUtility.ToJson(report,true));
                 Debug.LogException(e);
-                if(Application.isBatchMode)EditorApplication.Exit(1);
+                if(UnityEngine.Application.isBatchMode)EditorApplication.Exit(1);
                 else throw;
             }
         }
