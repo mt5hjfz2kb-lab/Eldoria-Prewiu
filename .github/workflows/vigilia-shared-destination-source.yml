@@ -19,6 +19,8 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxEmptyArtwork.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchModalBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesTheme.cs'
@@ -77,7 +79,7 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Roslyn compile-tree parse of new C-sharp runtime components
         shell: bash
-        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch/Runtime
+        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash
         run: |
