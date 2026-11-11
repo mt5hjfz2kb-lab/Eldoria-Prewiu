@@ -140,6 +140,7 @@ function processes() {
         let metrics=null;try{metrics=game?.GetMetricsInfo?.();}catch(e){metrics={error:String(e)};}
         return {at:performance.now(),ready:!!game,metrics,growth:window.__growth,preallocation:window.__preallocation,
           diagnostic:window.EldoriaLocalDiagnostic?.read?.(),
+          p0LocalPhaseProfile:window.__eldoriaP0Postready?.active ? window.__eldoriaP0Postready.report() : null,
           visible:!document.getElementById('game').hidden,
           error:document.getElementById('error')?.textContent,
           wasmCapacityBytes:game?.Module?.HEAPU8?.byteLength||0,canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height},stableCanvasChanges:window.__eldoriaStableCanvas?.changes};
@@ -164,6 +165,14 @@ function processes() {
       await page.waitForTimeout(1000);
     }
     if(!readyAt||Date.now()-readyAt<90000)throw Error('Did not survive 90s after ready');
+    if(new URL(process.env.QA_URL||'http://localhost/').searchParams.get('eldoria_p0')==='1'){
+      const last=report.samples.at(-1)?.p0LocalPhaseProfile;
+      if(!last)throw Error('P0 local diagnostics did not install');
+      const recorded=JSON.parse(last).events;
+      if(!recorded.some(e=>e[1]==='unity-log'&&e[2].startsWith('ELDORIA_MEMORY_PHASE phase=prefab-before')))
+        throw Error('P0 local diagnostics did not persist Unity memory phases');
+      report.p0LocalPhaseRecorderVerified=true;
+    }
     const events=fs.readFileSync(out+'/events.jsonl','utf8');
     if(!events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('World initialization incomplete');
     if(/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(events))throw Error('Unity runtime errors');
