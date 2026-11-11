@@ -95,9 +95,25 @@ try {
    # host as input (SHA256 19e289...). The newer P0 engine file is not
    # admissible: do not stage both and silently lose the UX.
    $from=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.beta13-engine-control.cs.txt'
-   if(-not(Test-Path $from -PathType Leaf) -or
-      (Get-FileHash $from -Algorithm SHA256).Hash -ne '19E289FF881B483748EA627C0B570768498B798CB0CF684E8C2A45ECCD11CB88'){
-     throw 'Immutable native-PASS engine host differs from frozen UX baseline'
+   $expectedHostSha='19E289FF881B483748EA627C0B570768498B798CB0CF684E8C2A45ECCD11CB88'
+   if(-not(Test-Path $from -PathType Leaf)){throw 'Frozen native-PASS engine host absent'}
+   $diskHostSha=(Get-FileHash $from -Algorithm SHA256).Hash
+   if($diskHostSha -ne $expectedHostSha){
+     # Git for Windows core.autocrlf=true can write a *.cs.txt as CRLF.
+     # Only the exact LF source SHA is acceptable; no semantic modifications.
+     $rawHost=[IO.File]::ReadAllBytes($from)
+     $strictUtf8=New-Object Text.UTF8Encoding($false,$true)
+     $hostText=$strictUtf8.GetString($rawHost)
+     $lfHost=$hostText.Replace("`r`n","`n")
+     if($lfHost -ceq $hostText -or $lfHost.Contains("`r")){throw "Immutable engine host differs: raw=$diskHostSha; not CRLF-only"}
+     $lfBytes=[Text.Encoding]::UTF8.GetBytes($lfHost)
+     $hasher=[Security.Cryptography.SHA256]::Create()
+     try{$lfHash=[BitConverter]::ToString($hasher.ComputeHash($lfBytes)).Replace('-','')}finally{$hasher.Dispose()}
+     Write-Host "Frozen host byte audit: raw=$diskHostSha normalized=$lfHash expected=$expectedHostSha"
+     if($lfHash -ne $expectedHostSha){throw 'Immutable engine-host bytes differ after CRLF-only normalization'}
+     [IO.File]::WriteAllBytes($from,$lfBytes)
+     if((Get-FileHash $from -Algorithm SHA256).Hash -ne $expectedHostSha){throw 'LF engine host write does not match frozen source'}
+     Write-Host 'Verified exact LF original engine host; continuing to UX overlay'
    }
   }
   if(-not(Test-Path $from) -or -not(Test-Path $to)){throw "Overlay absent: $path"}
