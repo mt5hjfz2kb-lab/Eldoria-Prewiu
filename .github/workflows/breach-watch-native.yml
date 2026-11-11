@@ -859,10 +859,32 @@ jobs:
                $screen.interactiveButtons -lt 1){throw "Old UI visible or destination has no live controls: $($screen.file)"}
             if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){throw "Modified destination screenshot $($screen.file)"}
           }
+          # Unlike the earlier empty-mail-only snapshots, the canonical
+          # list and report must be demonstrated with an isolated in-memory
+          # event. The report itself must explicitly say ART REVIEW PENDING.
+          $mailFile=Join-Path $folder 'BreachWatchPopulatedMailEvidence.json'
+          if(-not(Test-Path $mailFile)){throw 'Missing actual populated mail UI evidence'}
+          $mailReport=Get-Content $mailFile -Raw | ConvertFrom-Json
+          if($mailReport.source -ne $env:GITHUB_SHA -or
+             $mailReport.status -ne 'VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING' -or
+             $mailReport.artworkApproved -or -not $mailReport.probeOnly -or
+             -not $mailReport.saveUnchanged -or
+             @($mailReport.screens).Count -ne 4){
+             throw 'Populated mail report missing or falsely claims real saved message/art approval'
+          }
+          foreach($screen in $mailReport.screens){
+            $image=Join-Path $folder $screen.file
+            if(-not(Test-Path $image)){throw "Missing actual mail list/detail screenshot $($screen.file)"}
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen -or
+               $screen.interactiveButtons -lt 1){throw "Old mail art or no genuine buttons: $($screen.file)"}
+            if((Get-FileHash $image -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){
+               throw "Tampered or stale populated mail art screenshot: $($screen.file)"
+            }
+          }
           if(-not(Select-String -Path $log -Pattern 'VIGILIA_REAL_DESTINATIONS_NATIVE_CAPTURED_ART_REVIEW_PENDING' -SimpleMatch -Quiet)){
              throw 'Native Editor did not log actual destination capture PASS'
           }
-          Write-Host 'VIGILIA_REAL_16_DESTINATION_SCREENSHOTS_CAPTURED_ART_PENDING'
+          Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_4_POPULATED_MAIL_SCREENSHOTS_ART_PENDING'
       - name: Preserve real Unity screenshots and editor error logs
         if: always()
         uses: actions/upload-artifact@v4
