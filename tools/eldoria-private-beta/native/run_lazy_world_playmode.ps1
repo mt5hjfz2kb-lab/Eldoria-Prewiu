@@ -16,7 +16,7 @@ if(-not(Test-Path (Join-Path $Source 'Unity/Assets') -PathType Container)){throw
 if(Test-Path $Evidence){throw 'Refuse to overwrite existing native QA evidence'}
 
 # Reuse the six already-audited engine input paths from the PR179 native pipeline.
-# Test assets are an isolated Editor-only assembly. No player saves or scenes are edited.
+# Test assets are an isolated PlayMode test assembly. No player saves or scenes are edited.
 $overlays=@(
  'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs',
  'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs',
@@ -32,6 +32,57 @@ $overlays=@(
  'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs',
  'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs.meta'
 )
+
+# The canonical beta10 pretester UX consists of 19 interdependent files.
+# Without the whole set (notably RoyalContracts.Mailbox), the additive lazy
+# engine host cannot compile and the existing HUD, mail and gameplay regress.
+# Verify EVERY archived source and hot-project baseline BEFORE any mutation.
+$uxRoot=Join-Path $OverlaySource 'tools/eldoria-private-beta/native/ux'
+$uxManifestPath=Join-Path $uxRoot 'manifest.json'
+if(-not(Test-Path $uxManifestPath -PathType Leaf)){throw 'Frozen 19-file UX manifest unavailable'}
+$uxManifest=Get-Content $uxManifestPath -Raw|ConvertFrom-Json
+if(@($uxManifest.files).Count -ne 19){throw 'Frozen pretester UX must contain exactly 19 files'}
+$uxCandidateBytes=@{}
+$uxPaths=@()
+function Get-Sha256Bytes([byte[]]$data) {
+ $hasher=[Security.Cryptography.SHA256]::Create()
+ try {return [BitConverter]::ToString($hasher.ComputeHash($data)).Replace('-','').ToLowerInvariant()}
+ finally {$hasher.Dispose()}
+}
+$strictUtf8=New-Object Text.UTF8Encoding($false,$true)
+foreach($entry in $uxManifest.files){
+ $rel=[string]$entry.path
+ if(-not $rel.StartsWith('Unity/Assets/Eldoria/',[StringComparison]::Ordinal) -or
+    $rel.Contains('..') -or $rel.Contains([char]92) -or $uxCandidateBytes.ContainsKey($rel)){
+  throw "Unsafe or duplicate UX overlay: $rel"
+ }
+ $from=Join-Path $uxRoot ([string]$entry.overlay)
+ $to=Join-Path $Source $rel
+ if(-not(Test-Path $from -PathType Leaf) -or -not(Test-Path $to -PathType Leaf)){
+  throw "Frozen UX source/baseline missing: $rel"
+ }
+ $baseline=(Get-FileHash -LiteralPath $to -Algorithm SHA256).Hash.ToLowerInvariant()
+ if($baseline -ne ([string]$entry.baseline_sha256).ToLowerInvariant()){
+  throw "Hot Unity baseline differs from 19-file frozen UX: $rel"
+ }
+ $bytes=[IO.File]::ReadAllBytes($from)
+ if((Get-Sha256Bytes $bytes) -ne ([string]$entry.candidate_sha256).ToLowerInvariant()){
+  # Windows git checkouts may translate LF to CRLF. Only exact UTF-8
+  # CRLF-only normalization to the pinned, original byte hash is permitted.
+  $decoded=$strictUtf8.GetString($bytes)
+  $normalized=$decoded.Replace(([string][char]13+[string][char]10),[string][char]10)
+  if($normalized.Contains([char]13)){throw "Noncanonical CR in UX overlay: $rel"}
+  $bytes=[Text.Encoding]::UTF8.GetBytes($normalized)
+  if((Get-Sha256Bytes $bytes) -ne ([string]$entry.candidate_sha256).ToLowerInvariant()){
+   throw "Frozen UX overlay source SHA mismatch: $rel"
+  }
+ }
+ $uxPaths+=@($rel)
+ $uxCandidateBytes[$rel]=$bytes
+}
+if(@($uxPaths|Sort-Object -Unique).Count -ne 19){throw 'Frozen UX file membership not unique'}
+Write-Host 'PR179_FROZEN_PRETESTER_UX19_VERIFIED_BEFORE_HOT_PROJECT_MUTATION'
+
 $trackedBefore=@(git -C $Source status --porcelain -- Unity)
 if($LASTEXITCODE -ne 0){throw 'Unable to audit original Unity repository state'}
 $ownedDirty=@(git -C $Source status --porcelain -- $overlays)
@@ -39,7 +90,7 @@ if($LASTEXITCODE -ne 0 -or $ownedDirty.Count){throw "Foreign pending changes in 
 foreach($rel in $overlays){
  if(-not(Test-Path (Join-Path $OverlaySource $rel) -PathType Leaf)){throw "Candidate source missing: $rel"}
 }
-$preserve=@($overlays)+@(
+$preserve=@($overlays)+@($uxPaths)+@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset',
  'Unity/Assets/UniversalRenderPipelineGlobalSettings.asset'
 )
@@ -70,6 +121,19 @@ $failure=$null
 $process=$null
 $verified=$false
 try{
+ # Stage the exact 19-file frozen UX first, then the six engine files with
+ # the additive lazy-world host. This keeps mail, nickname, bastion, timers
+ # and the Mailbox enum compatible with the one real gameplay gateway.
+ foreach($entry in $uxManifest.files){
+  $rel=[string]$entry.path
+  $to=Join-Path $Source $rel
+  [IO.File]::WriteAllBytes($to,[byte[]]$uxCandidateBytes[$rel])
+  if((Get-FileHash -LiteralPath $to -Algorithm SHA256).Hash.ToLowerInvariant() -ne
+     ([string]$entry.candidate_sha256).ToLowerInvariant()){
+   throw "Frozen UX overlay failed in transit: $rel"
+  }
+ }
+ Write-Host 'PR179_FROZEN_PRETESTER_UX19_STAGED_BEFORE_LAZY_ENGINE'
  foreach($rel in $overlays){
   $to=Join-Path $Source $rel
   New-Item -ItemType Directory -Force (Split-Path $to)|Out-Null
@@ -138,7 +202,7 @@ try{
   if($issues.Count){$failure="Restoration FAILED: $($issues -join ','); prior=$failure"}
   $restored=$issues.Count -eq 0
   $report=@{
-   source_head=$head;unity_tests_passed=$verified;restored=$restored;
+   source_head=$head;unity_tests_passed=$verified;restored=$restored;frozen_ux_files=$uxPaths.Count;
    failed_reason=$failure;owned_files=$overlays.Count;original_unity_status_count=$trackedBefore.Count;
    tests_executed='Eldoria.BetaMemory.Tests.LazyRegionStartupTests';
    physical_iphone_verified=$false;testers_authorized=$false

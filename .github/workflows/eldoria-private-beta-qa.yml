@@ -83,6 +83,28 @@ jobs:
             if(-not $code.Contains($marker)){throw "Native QA missing gate: $marker"}
           }
           Write-Host 'LAZY_REGION_NATIVE_RUNNER_SOURCE_AND_PARSER_PASS; UNITY_NOT_RUN'
+      - name: Verify complete frozen 19-file UX and mailbox dependencies before native test
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          ux=pathlib.Path('tools/eldoria-private-beta/native/ux')
+          manifest=json.loads((ux/'manifest.json').read_text())
+          assert len(manifest['files'])==19
+          paths=[entry['path'] for entry in manifest['files']]
+          assert len(set(paths))==19
+          for entry in manifest['files']:
+            raw=(ux/entry['overlay']).read_bytes()
+            assert hashlib.sha256(raw).hexdigest()==entry['candidate_sha256'],entry['path']
+          contracts=(ux/'RoyalContracts.cs.txt').read_text()
+          assert 'Settings, Mailbox' in contracts,'The frozen HUD host requires the Mailbox enum'
+          host=pathlib.Path('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs').read_text()
+          assert 'RoyalSection.Mailbox' in host and 'P0LazyWorldProbe' in host
+          runner=(pathlib.Path('tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1')).read_text()
+          assert '$preserve=@($overlays)+@($uxPaths)+@(' in runner
+          assert 'PR179_FROZEN_PRETESTER_UX19_STAGED_BEFORE_LAZY_ENGINE' in runner
+          print('LAZY_WORLD_19_UX_SOURCE_DEPENDENCY_AND_TRANSACTION_PASS; UNITY_NOT_RUN')
+          PY
       # Source-only iPhone regression experiment. Never runs Unity or deploys
       # Pages: compare immutable beta10 with an anchored clock-only variant.
       - name: Pin and verify previous playable beta10 versus isolated timer candidate

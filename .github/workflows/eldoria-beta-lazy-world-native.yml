@@ -26,6 +26,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/eldoria-private-beta/native/lazy-world-request.json
+            /tools/eldoria-private-beta/native/ux/
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
@@ -85,6 +86,7 @@ jobs:
           sparse-checkout: |
             /tools/eldoria-private-beta/native/lazy-world-request.json
             /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
+            /tools/eldoria-private-beta/native/ux/
             /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
