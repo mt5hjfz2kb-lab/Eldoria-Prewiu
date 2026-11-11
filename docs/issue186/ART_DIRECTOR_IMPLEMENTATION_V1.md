@@ -10,7 +10,7 @@
 - Distintivos `badge_new.png` (correo/información sin leer) y `badge_claimable.png` (hay una acción real pendiente).
 - Guía formada por `tutorial_pointing_hand.png` y `tutorial_target_halo.png`, separables para anclar y animar sin interacción táctil falsa.
 
-**Los ZIP son artefactos entregados dentro de la conversación del propietario; no están aún incorporados al repositorio Git y NO se deben describir como disponibles en `main`.** Conservar los originales y obtener un origen persistente autorizado antes de ejecutar Unity. La PR #187 solo contiene reglas/contratos y estos documentos.
+**Actualización comprobada del repositorio:** los 16 sprites PNG de la variante Git candidata, sus 16 `.meta` y el manifiesto están ahora versionados en la **PR #187** bajo `Unity/Assets/Eldoria/Issue186Art/`. Esto NO los integra en `main` ni significa que Unity o iPhone los hayan probado. Los ZIP originales de las versiones de arte v5–v7 también siguen disponibles como entregables de esta conversación; no confundir sus bytes con la variante exacta Git sin comparar hashes.
 
 ## Nombres y cantidades canónicos
 
@@ -38,3 +38,14 @@ La revisión a 48px muestra que el objeto sigue reconocible, pero **el texto deb
 6. Aceptación final del propietario tras valorar la calidad sobre esas capturas; **CI verde no equivale a ART_APPROVED**.
 
 No se usó el PC Unity, no se publicó nada ni se modificaron partidas.
+
+## Evidencia nueva — 11/11/2026, etapa de importación verificable
+
+- GitHub Actions [run 43060768023](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43060768023) demostró un fallo de importación **real de datos**: 15/16 PNG de la rama tenían anchura, altura o tamaño diferentes de lo que aseguraba `issue186_manifest.json`. Era un riesgo directo de `ISSUE186_IMPORT_FAIL` en Unity, no una opinión artística.
+- Se corrigieron los **15 metadatos** para representar los 16 binarios ya incorporados sin reescribir ni regenerar originales ni cambiar GUID. La verificación de fuente Python `tools/reward-experience/check_art_import.py` comprueba CRC PNG, SHA-256, dimensiones, bytes, 16 GUID únicos, `TextureImporter`, clave de carga, denominaciones y ausencia de archivos duplicados.
+- [Run 43062799673](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43062799673): `ISSUE186_SOURCE_IMPORT_PASS checked=16 errors=0`, 69 pruebas de dominio y `ISSUE186_ROSLYN_SYNTAX_PASS` en **4 fuentes reales**; esto **no** es compilación ni representación gráfica de Unity.
+- Se implementó `Issue186NativeEvidence.Capture()` con cuatro capturas GPU auténticas desde Canvas Unity independiente, doce sprites y números dinámicos, badge de reclamación, puntero guiado y raycast al botón real. El código existe; **ejecución nativa pendiente**. No se fabrica una imagen o un aprobado nativo al revisar sintaxis.
+- Workflow nativo `.github/workflows/issue186-native.yml` preparado con preflight CAS dual, checkout exacto, artefacto PNG+informe y **bloqueo expreso si Windows sigue reservado por PR #173**. No solicita ni ocupa Windows mientras esa cesión no sea real.
+- Diferencia artística pendiente: algunas piezas de la rama corresponden al arte recortado para tarjeta 256×256, mientras la lámina de objetos independientes v7 de la conversación utiliza 320×320 y badges refinados. No promover una variante por nombre: seleccionar con **capturas de Unity**, no solo por un registro de origen.
+
+**Siguiente paso ejecutable sin intervención del jugador:** cuando el responsable de PR #173 libere formalmente Windows, reclamar recurso con CAS, actualizar el marcador `tools/reward-experience/native-request.txt` de la misma rama para disparar el workflow nativo de #187, inspeccionar cuatro PNG+reporte y corregir fallos sustanciales antes de considerar integración. El código de recompensas y la navegación de #181/#173 siguen siendo propiedad de sus titulares. La beta #179 no se modifica.
