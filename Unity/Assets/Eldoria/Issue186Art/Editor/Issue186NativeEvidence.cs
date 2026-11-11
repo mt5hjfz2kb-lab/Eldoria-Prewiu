@@ -26,7 +26,8 @@ namespace Eldoria.Issue186Art.Editor
         {
             public string file, sha256, description;
             public int width, height, bytes, actualResourceSprites;
-            public bool indicatorReady, firstUsePointer, firstUseCompleted,
+            public bool indicatorReady, newIndicatorReady, firstUsePointer,
+                firstUseCompleted, pointerLeavesCtaCenterClear, realUiClick,
                 visiblePixels, renderTargetCorrect, noOverlappingCards;
         }
         [Serializable] sealed class Report
@@ -206,6 +207,13 @@ namespace Eldoria.Issue186Art.Editor
                 Caption(buttonRect,"Actual button label","RECLAMAR",
                     Vector2.zero,new Vector2(90,28),
                     width<=480?10:12,Color.white,font);
+                var newBadge=Paint(root,"actual unread badge",
+                    new Vector2(-width*.5f+43f,height*.5f-30f),
+                    new Vector2(28f,28f),Color.white);
+                Need(Issue186ArtKit.BindAttention(newBadge,AttentionLevel.New) &&
+                    newBadge.gameObject.activeSelf &&
+                    newBadge.sprite.name=="badge_new" && !newBadge.raycastTarget,
+                    "Unread badge must be visually distinct and tap-through");
                 var badge=Paint(root,"actual claimable badge",
                     new Vector2(width*.5f-24f,height*.5f-30),new Vector2(30,30),
                     Color.white);
@@ -221,8 +229,16 @@ namespace Eldoria.Issue186Art.Editor
                 bool pointed=Issue186ArtKit.BindFirstUsePointer(progress,
                     "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo);
                 Need(pointed && pointer.gameObject.activeInHierarchy &&
-                     !pointer.raycastTarget,
+                     !pointer.raycastTarget && !halo.raycastTarget,
                     "Pointer not anchored to a real interactable button");
+                // The fingertip may graze the button edge; never cover the
+                // central action label or intercept the tap.
+                bool pointerClear =
+                    pointer.rectTransform.anchoredPosition.x +
+                    pointer.rectTransform.rect.xMax <=
+                    buttonRect.anchoredPosition.x - buttonRect.rect.width*.20f;
+                Need(pointerClear,
+                    "Tutorial pointer obscures the central claim action");
                 // Test the browser/device-independent UI event flow using a
                 // real GraphicRaycaster, not an invented click coordinate.
                 var evGO=new GameObject("Disposable event dispatch",
@@ -235,13 +251,19 @@ namespace Eldoria.Issue186Art.Editor
                 var pd=new PointerEventData(ev){position=cursor};
                 var hits=new List<RaycastResult>();
                 canvasGO.GetComponent<GraphicRaycaster>().Raycast(pd,hits);
-                Need(hits.Exists(h=>h.gameObject==buttonRect.gameObject),
+                var realHit=hits.Find(h=>h.gameObject==buttonRect.gameObject);
+                Need(realHit.gameObject==buttonRect.gameObject,
                     "No real raycast hit on Claim button");
                 raycastHits++;
                 bool action=false;
                 button.onClick.AddListener(()=>action=true);
-                button.onClick.Invoke();
-                Need(action,"Unity Button.onClick failed to dispatch");
+                pd.button=PointerEventData.InputButton.Left;
+                // Drive the actual Button IPointerClickHandler using the hit
+                // returned by Unity GraphicRaycaster. Calling onClick.Invoke()
+                // would bypass the control and falsely pass a disabled button.
+                ExecuteEvents.Execute<IPointerClickHandler>(
+                    realHit.gameObject,pd,ExecuteEvents.pointerClickHandler);
+                Need(action,"Unity UI click was not dispatched by the hit Button");
                 Need(GuidedTutorialRules.ConfirmAction(progress,"issue186.claim",
                         "ClaimReward","ClaimReward",action),
                     "Gameplay confirmation did not persist first-use lesson");
@@ -277,7 +299,9 @@ namespace Eldoria.Issue186Art.Editor
                     description="Actual Unity uGUI sprites, value text and pointer / NOT integrated city",
                     width=width,height=height,bytes=bytes,actualResourceSprites=rendered,
                     indicatorReady=badge.gameObject.activeInHierarchy,
+                    newIndicatorReady=newBadge.gameObject.activeInHierarchy,
                     firstUsePointer=pointed,firstUseCompleted=true,
+                    pointerLeavesCtaCenterClear=pointerClear,realUiClick=action,
                     visiblePixels=interesting>width*height*.008f,
                     renderTargetCorrect=cam.targetTexture==rt,
                     noOverlappingCards=true};
@@ -329,8 +353,10 @@ namespace Eldoria.Issue186Art.Editor
                 report.images=results.ToArray();
                 Need(results.Count==4 && hits==4 &&
                     results.TrueForAll(x=>x.actualResourceSprites==12 &&
-                        x.indicatorReady && x.firstUsePointer &&
-                        x.firstUseCompleted && x.noOverlappingCards),
+                        x.indicatorReady && x.newIndicatorReady &&
+                        x.firstUsePointer && x.firstUseCompleted &&
+                        x.pointerLeavesCtaCenterClear && x.realUiClick &&
+                        x.noOverlappingCards),
                     "At least one real Unity resolution lacks UX/asset proof");
                 report.status="UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING";
                 File.WriteAllText(Path.Combine(output,"report.json"),
