@@ -140,12 +140,19 @@ namespace Eldoria.Domain
             Add("wood", wood);
             Add("stone", stone);
             Add("food", food);
+            // Deduplicate by the logical reward event, not only by the
+            // currently nonzero resource components. A reconnection may
+            // replay the same event with a changed/reduced payload, e.g.
+            // wood-only first and stone-only later. Comparing candidates
+            // alone would wrongly grant the second payload. Existing receipt
+            // tombstones cover this even after all items were spent/saved,
+            // without introducing a second ledger or migrating old saves.
+            string bundlePrefix = rewardReceiptId + ":";
             foreach (var existing in inventory.Packets)
             {
-                if (existing == null) continue;
-                foreach (var packet in candidate)
-                    if (existing.ReceiptId == packet.ReceiptId)
-                        return false;
+                if (existing != null && existing.ReceiptId != null &&
+                    existing.ReceiptId.StartsWith(bundlePrefix, StringComparison.Ordinal))
+                    return false;
             }
             inventory.Packets.AddRange(candidate);
             return true;
