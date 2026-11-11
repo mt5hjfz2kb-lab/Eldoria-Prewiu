@@ -19,7 +19,7 @@ namespace Eldoria.BreachWatch
     {
         const string Stone="VigiliaArt/PremiumSurfaces/panel_fill";
         const string Burgundy="VigiliaArt/PremiumSurfaces/burgundy_action";
-        const string CloseMetal="VigiliaArt/PremiumSurfaces/brass_portrait";
+        const string CloseMetal="VigiliaArt/OwnerControls/close_medallion";
         readonly Dictionary<Graphic,bool> oldGraphics=new Dictionary<Graphic,bool>();
         readonly Dictionary<Button,Graphic> oldTargets=new Dictionary<Button,Graphic>();
         readonly Dictionary<Button,Selectable.Transition> oldTransitions=
@@ -75,6 +75,18 @@ namespace Eldoria.BreachWatch
                 if(!rect)continue;
                 var old=rect.GetComponent<Graphic>();
                 if(old)Hide(old);
+                if(button==realModal.Close)
+                {
+                    // The close medallion already paints its own X.
+                    // Suppress the obsolete vector glyph rather than
+                    // drawing two crosses on top of each other.
+                    var oldSymbol=rect.Find("Symbol");
+                    if(oldSymbol)
+                    {
+                        var text=oldSymbol.GetComponent<Graphic>();
+                        if(text)Hide(text);
+                    }
+                }
                 oldTargets[button]=button.targetGraphic;
                 oldTransitions[button]=button.transition;
                 var img=AddSurface(rect,button==realModal.Close?close:action,
