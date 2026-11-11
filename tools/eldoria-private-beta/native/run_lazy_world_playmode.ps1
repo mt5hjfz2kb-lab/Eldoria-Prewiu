@@ -242,7 +242,19 @@ try{
    }
   }
   $trackedAfter=@(git -C $Source status --porcelain -- Unity)
-  if($LASTEXITCODE -ne 0 -or (@(Compare-Object $trackedBefore $trackedAfter).Count -gt 0)){
+  $statusExit=$LASTEXITCODE
+  # Persist the exact delta even on failure. The original 60 dirty entries
+  # must never be adopted as restored merely because art hashes still match.
+  $statusDelta=@(Compare-Object $trackedBefore $trackedAfter)
+  @{
+   before=@($trackedBefore);after=@($trackedAfter);
+   differences=@($statusDelta|ForEach-Object {@{status=$_.InputObject;side=$_.SideIndicator}});
+   git_exit=$statusExit
+  }|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $Evidence 'restoration-status-delta.json') -Encoding UTF8
+  if($statusExit -ne 0 -or $statusDelta.Count -gt 0){
+   foreach($entry in $statusDelta){
+    Write-Host ("PR179_RESTORATION_STATUS_DELTA "+$entry.SideIndicator+" "+$entry.InputObject)
+   }
    $issues+='git status changed after test'
   }
   if($issues.Count){$failure="Restoration FAILED: $($issues -join ','); prior=$failure"}
