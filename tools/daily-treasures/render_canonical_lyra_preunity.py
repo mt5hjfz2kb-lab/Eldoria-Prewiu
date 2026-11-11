@@ -16,7 +16,8 @@ from pathlib import Path
 APPROVED_SHA = "a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725"
 APPROVED_BYTES = 4770000
 
-def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
+def render(model: Path, output: Path, yaw=147, width=1100, height=1500,
+           shot="full"):
     import vtk
     from PIL import Image
     payload = model.read_bytes()
@@ -62,16 +63,25 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
                              for k in (0, 2, 4)))
     if not 0.00001 < diagonal < 100000:
         raise RuntimeError("Canonical Lyra geometry has unreasonable scale")
+    if shot not in ("full","bust"):
+        raise ValueError("Camera shot must be full or bust")
+    # A genuine waist-up hero reveals original facial/armor detail at phone
+    # size. Only the CAMERA crops the EXACT GLB; no hallucinated portrait.
+    frame_bounds = bounds if shot=="full" else (
+        bounds[0],bounds[1],
+        bounds[2]+(bounds[3]-bounds[2])*.53,bounds[3],
+        bounds[4],bounds[5])
+    focus = tuple((frame_bounds[k]+frame_bounds[k+1])/2 for k in (0,2,4))
     angle = math.radians(yaw)
     camera = scene.GetActiveCamera()
     camera.ParallelProjectionOff()
-    camera.SetPosition(center[0] + 2.0 * diagonal * math.sin(angle),
-                       center[1] + 0.18 * diagonal,
-                       center[2] + 2.0 * diagonal * math.cos(angle))
-    camera.SetFocalPoint(*center)
+    camera.SetPosition(focus[0] + 2.0 * diagonal * math.sin(angle),
+                       focus[1] + 0.18 * diagonal,
+                       focus[2] + 2.0 * diagonal * math.cos(angle))
+    camera.SetFocalPoint(*focus)
     camera.SetViewUp(0.0, 1.0, 0.0)
     camera.SetViewAngle(39.0)
-    scene.ResetCamera(bounds)
+    scene.ResetCamera(frame_bounds)
     scene.ResetCameraClippingRange()
     scene.RemoveAllLights()
     # Original textured pixels remain the source of truth. These only light it.
@@ -83,10 +93,10 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         lamp = vtk.vtkLight()
         lamp.SetLightTypeToSceneLight()
         lamp.SetPositional(False)
-        lamp.SetPosition(center[0] + diagonal * (1.45 * math.sin(angle) + offset),
-                         center[1] + 1.25 * diagonal,
-                         center[2] + diagonal * (1.45 * math.cos(angle) + 0.25))
-        lamp.SetFocalPoint(*center)
+        lamp.SetPosition(focus[0] + diagonal * (1.45 * math.sin(angle) + offset),
+                         focus[1] + 1.25 * diagonal,
+                         focus[2] + diagonal * (1.45 * math.cos(angle) + 0.25))
+        lamp.SetFocalPoint(*focus)
         lamp.SetIntensity(strength)
         lamp.SetColor(*rgb)
         scene.AddLight(lamp)
@@ -132,6 +142,8 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500):
         "actor_count": count,
         "geometry_bounds": list(bounds),
         "geometry_diagonal": round(diagonal, 6),
+        "camera_framed_bounds": list(frame_bounds),
+        "shot": shot,
         "visible_pixel_ratio": round(visible_ratio, 4),
         "clear_pixel_ratio": round(clear_ratio, 4),
         "sampled_opaque_colors": len(colors),
@@ -150,6 +162,7 @@ if __name__ == "__main__":
     parser.add_argument("--glb", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--yaw", type=int, default=147)
+    parser.add_argument("--shot", choices=("full","bust"), default="full")
     args = parser.parse_args()
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    print(json.dumps(render(args.glb, args.out, args.yaw), indent=2))
+    print(json.dumps(render(args.glb,args.out,args.yaw,shot=args.shot), indent=2))
