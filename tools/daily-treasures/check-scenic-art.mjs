@@ -401,8 +401,8 @@ console.log('PASS real Bastion 3D render resolution follows portrait/landscape t
 // Source causal art fallback: an unloaded/newly building Bastion must remain
 // the real visible CITY, not an empty black fake architecture. The existing
 // report has a separate dark ink field so text remains clear.
-const direction=fs.readFileSync(
- 'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs','utf8');
+// Reuse the existing, already-read pure stage source. No redeclared
+// const/duplicate read: the complete JS gate must parse before visual QA.
 assert.match(direction,/BastionWorldThroughPlateOpacity=\.19f/);
 assert.match(direction,/BastionWorldThroughBackdropOpacity=\.10f/);
 assert.ok((1-.19)*(1-.10)>.72,'True city fallback must retain >72% of light');
