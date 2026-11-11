@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T21:23:02.238Z",
+  "updated_at": "2026-11-11T21:37:18.716Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "ART_SOURCE_IMPORTED_NATIVE_GATE_DESIGN_AND_IMPORT_QA",
+      "phase": "WINDOWS_TURN_NATIVE_ART_VALIDATION_PENDING",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -42,7 +44,7 @@
         "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
         ".github/workflows/issue186-native.yml"
       ],
-      "next": "PC belongs to PR179 rev36, then PR181, then this PR187. Prepare installed Git before checkout so no 26GB archive fallback; inspect 16 actual resource images and final Unity before owner art A/B approval.",
+      "next": "PR187 resource icons: use one exact HEAD native Unity import/render batch after live registry/job/process safety checks; 16 authored sprites, portrait/landscape, genuine interaction and art A/B. Do not alter PR181/PR173/PR179 or merge.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -61,8 +63,25 @@
           "to_owner": "chatgpt-central-resource-art-20261111",
           "transferred_at": "2026-11-11T20:14:10.493Z",
           "reason": "Owner assumes four projects in central execution. Prepare proven installed-Git sparse checkout before resource art native turn; preserve sixteen authored PNG and PR187."
+        },
+        {
+          "owner": "chatgpt-central-resource-art-20261111",
+          "from_revision": 5,
+          "to_revision": 6,
+          "transferred_at": "2026-11-11T21:37:18.716Z",
+          "reason": "Exclusive Windows resource handoff from PR181 run 43102620742; same PR187 owner, source scope preserved."
         }
-      ]
+      ],
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "status": "claimed",
+        "owner": "chatgpt-central-resource-art-20261111",
+        "ownership_revision": 6,
+        "previous_workstream": "eldoria-daily-treasures-20261108",
+        "previous_run_id": 43102620742,
+        "reason": "Owner-approved bounded resource rotation PR179→PR181→PR187; exact Unity batch complete, artifacts saved, PR181 source remains owned."
+      },
+      "runner_claimed_at": "2026-11-11T21:37:18.716Z"
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -7827,7 +7846,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 43,
+      "ownership_revision": 44,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7851,13 +7870,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "WINDOWS_TURN_NATIVE_ART_VALIDATION_PENDING",
+      "phase": "NATIVE_EVIDENCE_FAILED_PARTIAL_PIXELS_ART_REVIEW_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Trigger one exact current HEAD native-request batch on PR181; validate new original Lyra 2D portrait/landscape, cinematic Bastion and full-bleed report coherence against owner references. Keep zero city claims; no merge or art approval inferred. Release Windows to187 immediately after native work and restoration, retain source writer.",
+      "next": "Review preserved real Unity partial captures and inspect imported original Lyra texture importer in source; correct root cause off Windows; schedule a new native batch only after PR187/PR173 rotation and legitimate CAS. Do not approve art or merge.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7912,17 +7929,20 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-11T11:23:34.709Z",
-      "runner_release_basis": "Native run43011443376 completed preflight FAIL before Windows because GitHub contents API returns empty content for >1MiB CAS registry; no Unity was started. Must add /git/blobs SHA fallback in PR181 owned native workflow. Release exclusive resource after job, preserve PR181 workstream.",
+      "runner_released_at": "2026-11-11T21:37:18.716Z",
+      "runner_release_basis": "Run 43102620742 exact SHA 3f541b9d40664b097976d1b3dd32ceb42d7a32a3: Unity actually executed but failed art proof 'Original illustration import must remain bounded and non-readable' at DailyTreasureNativeEvidence.cs:504; native artifact 13893406616 and audit artifact 13893570946 preserved; Windows native job and dependent audit complete; release resource only.",
       "runner_claimed_at": "2026-11-11T11:22:13.314Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "After completing failing native43005395878 and inspecting 92 genuine screenshots, exact source fix 14eeb9a with CI green. One strict Unity retest of authentic Lyra backup, contained Scouts shield, Bastion city stage; no other live Windows owners or native jobs.",
       "last_native_execution": {
-        "run_id": 42906443088,
-        "sha": "9b86b7626b8d544f974c5395ad41f5f443d13f6b",
-        "conclusion": "success",
-        "artifact_review": "pending_original_image_inspection",
-        "timestamp": "2026-11-10T21:47:05.717Z"
+        "run_id": 43102620742,
+        "sha": "3f541b9d40664b097976d1b3dd32ceb42d7a32a3",
+        "conclusion": "failure",
+        "failure": "LYRA_ORIGINAL_SPRITE_BOUNDED_NON_READABLE_NATIVE_IMPORT_ASSERTION",
+        "partial_evidence_artifact_id": 13893406616,
+        "audit_artifact_id": 13893570946,
+        "art_approved": false,
+        "completed_at": "2026-11-11T21:37:18.716Z"
       },
       "ownership_history": [
         {
@@ -7939,16 +7959,25 @@
           "to_revision": 43,
           "transferred_at": "2026-11-11T21:23:02.238Z",
           "reason": "Resource-only rotation after PR179 native job130766199765 completed checkout failure; all Unity/recovery steps skipped, no warm project touched. Live queue checked: only Ubuntu tester-qa active. Source writer retained; no art approval or publication."
+        },
+        {
+          "owner": "chatgpt-central-treasures-art-20261111",
+          "from_revision": 43,
+          "to_revision": 44,
+          "transferred_at": "2026-11-11T21:37:18.716Z",
+          "reason": "Resource-only release PR181→PR187 after complete native 43102620742 failure; preserved native and audit evidence; keep source PR181 owner."
         }
       ],
       "previous_owner": "chatgpt-daily-treasures-20261108",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_to_pr187",
         "owner": "chatgpt-central-treasures-art-20261111",
-        "ownership_revision": 43,
-        "source_before_request": "2526093543dde99f678df568b4b03cafd891e5f8",
-        "reason": "Central owner-authorized resource rotation179→181 after checkout-only job completed; one native evidence batch, then187."
+        "ownership_revision": 44,
+        "last_native_run": 43102620742,
+        "native_result": "failed_art_gate_partial_Unity_evidence_preserved",
+        "next": "eldoria-issue186-reward-attention-guidance-20261111",
+        "reason": "One bounded PR181 Unity native batch ended, failed on original Lyra texture importer bounded/nonreadable assertion; no same-turn retry before PR187; source ownership retained."
       }
     },
     {
