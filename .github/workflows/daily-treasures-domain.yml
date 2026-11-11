@@ -550,6 +550,11 @@ jobs:
             'official-vigilant-compass':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png'),
             'real-hero-hall':Path('Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg'),
             'real-scout-landscape':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png'),
+            # Investigate EXISTING authored production imagery before building
+            # an expensive/fake replacement parchment. Copy originals only.
+            'real-scout-parchment-v3':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-parchment-v3.png'),
+            'real-scout-vignettes-v4':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-mission-vignettes-v4.png'),
+            'real-scout-action-v4':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-action-skin-v4.png'),
             'real-vigilant-landscape':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png'),
             'real-city':root/'real-city-source-verified.png',
             'real-scout-crest':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png'),
