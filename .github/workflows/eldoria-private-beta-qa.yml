@@ -28,6 +28,8 @@ jobs:
           sparse-checkout: |
             tools/eldoria-private-beta
             pipeline/eldoria-private-beta
+            Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
       - name: Node contract tests
         run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
       # Source-only iPhone regression experiment. Never runs Unity or deploys
