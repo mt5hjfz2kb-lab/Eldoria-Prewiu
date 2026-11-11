@@ -261,6 +261,8 @@ namespace Eldoria.BreachWatch.Editor
                 // Destination layouts get the actual changed Canvas bounds.
                 var management=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
                 if(management && management.IsOpen)management.SynchronizeLayout();
+                if(ui.RealDestinations && ui.RealDestinations.IsShowing)
+                    ui.RealDestinations.SynchronizeVisual();
                 var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
                 var heroes=ui.RealHeroes;
