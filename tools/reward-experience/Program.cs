@@ -179,6 +179,67 @@ internal static class Program
             "pending mail survives reload; claim and use each commit once");
 
 
+        // Multi-resource prizes must be all-or-nothing when reconnecting.
+        var bundleInventory = new ResourceRewardInventory();
+        var bundleWallet = new ResourceWallet { Wood=9, Stone=7, Food=5 };
+        Check(!ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:empty","daily",0,0,0) && bundleInventory.Packets.Count==0,
+            "a zero-value bundle creates no phantom inventory");
+        Check(!ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:negative","daily",100,-1,0) &&
+            !ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:hunt","hunt",100,100,0) &&
+            !ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:whitespace","daily",100,100,0,"   ") &&
+            bundleInventory.Packets.Count==0,
+            "invalid bundle input cannot partially grant a resource");
+        Check(ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:daily7","daily",120,250,0,"mail:day7") &&
+            bundleInventory.Packets.Count==2 &&
+            ResourceRewardRules.ClaimableMailMessages(bundleInventory)==1 &&
+            bundleWallet.Wood==9 && bundleWallet.Stone==7,
+            "mixed 120+250 reward is one unread mail, not wallet credit");
+        Check(!ResourceRewardRules.TryIssueBundle(bundleInventory,
+            "bundle:daily7","daily",120,250,0,"mail:day7") &&
+            bundleInventory.Packets.Count==2,
+            "replayed bundle cannot duplicate any of its component receipts");
+        Check(!ResourceRewardRules.TryUse(bundleInventory,bundleWallet,
+            "bundle:daily7:wood",out _) &&
+            ResourceRewardRules.ClaimMail(bundleInventory,"mail:wrong")==0 &&
+            ResourceRewardRules.ClaimableMailMessages(bundleInventory)==1,
+            "mail read/incorrect claim never unlocks bundle");
+        Check(ResourceRewardRules.ClaimMail(bundleInventory,"mail:day7")==2 &&
+            ResourceRewardRules.ClaimMail(bundleInventory,"mail:day7")==0 &&
+            bundleWallet.Wood==9 && bundleWallet.Stone==7,
+            "claim unlocks two packets without touching resource totals");
+        Check(ResourceRewardRules.TryUse(bundleInventory,bundleWallet,
+            "bundle:daily7:wood",out int bundleWood) && bundleWood==120 &&
+            ResourceRewardRules.TryUse(bundleInventory,bundleWallet,
+            "bundle:daily7:stone",out int bundleStone) && bundleStone==250 &&
+            bundleWallet.Wood==129 && bundleWallet.Stone==257,
+            "optional use credits exact amounts instead of artwork tiers");
+        Check(!ResourceRewardRules.TryUse(bundleInventory,bundleWallet,
+            "bundle:daily7:stone",out _) && bundleWallet.Stone==257,
+            "consumed mixed packet cannot repay on replay");
+        var partialInventory = new ResourceRewardInventory();
+        Check(ResourceRewardRules.TryIssue(partialInventory,
+            "bundle:partial:wood","mission","wood",50) &&
+            !ResourceRewardRules.TryIssueBundle(partialInventory,
+            "bundle:partial","mission",50,75,100) &&
+            partialInventory.Packets.Count==1 &&
+            !partialInventory.Packets.Exists(x=>x.Kind=="stone") &&
+            !partialInventory.Packets.Exists(x=>x.Kind=="food"),
+            "colliding first receipt blocks ALL remaining bundle components");
+        var restoredBundle = JsonSerializer.Deserialize<ResourceRewardInventory>(
+            JsonSerializer.Serialize(bundleInventory,
+                new JsonSerializerOptions{IncludeFields=true}),
+            new JsonSerializerOptions{IncludeFields=true});
+        Check(restoredBundle.Packets.Count==2 &&
+            !ResourceRewardRules.TryIssueBundle(restoredBundle,
+                "bundle:daily7","daily",120,250,0,"mail:day7") &&
+            ResourceRewardRules.ClaimMail(restoredBundle,"mail:day7")==0,
+            "reconnected saved bundle cannot be replayed or re-claimed");
+
         // Exact queued events, not a perpetual red dot on each menu button.
         var attentionLedger = new AttentionCueLedger();
         Check(!AttentionCueRules.Signal(attentionLedger,"","mail",AttentionLevel.New) &&
