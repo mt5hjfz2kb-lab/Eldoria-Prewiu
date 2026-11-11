@@ -43,6 +43,36 @@ namespace Eldoria.BreachWatch
         public int RestyledPanels { get; private set; }
         public int RestyledButtons { get; private set; }
         public int ReplacedLegacyGraphics { get; private set; }
+        // Read-only native QA signal; identify exactly which source graphic
+        // breaks replacement without weakening the visual acceptance gate.
+        public string FirstVisibleOldPainting
+        {
+            get
+            {
+                foreach(var graphic in GetComponentsInChildren<Graphic>(true))
+                {
+                    if(!graphic || !graphic.isActiveAndEnabled ||
+                       !graphic.gameObject.activeInHierarchy)continue;
+                    if(graphic is RoyalGoldV3ManagementBackdrop ||
+                       graphic is RoyalGoldV3ManagementBackdropGraphic ||
+                       graphic is RoyalGoldV3LayeredFinish)
+                        return graphic.name+" ("+graphic.GetType().Name+")";
+                    if(graphic is Image &&
+                       (graphic.name=="Approved source / blue-panel" ||
+                        graphic.name=="Approved source / gold-button" ||
+                        graphic.name=="Approved source / training-courtyard-layer-v1" ||
+                        graphic.name=="Approved source / HeroCardNineSliceGold" ||
+                        graphic.name.StartsWith("Training / genuine costs") ||
+                        graphic.name.StartsWith("Training / actual timer") ||
+                        graphic.name.StartsWith("Training / unit manuscript") ||
+                        graphic.name.StartsWith("Training / live quantity instruments") ||
+                        graphic.name.StartsWith("Training / one continuous military order") ||
+                        graphic.name.StartsWith("Training / framed transparent bust")))
+                        return graphic.name+" (Image)";
+                }
+                return "";
+            }
+        }
         public bool NoLegacyBluePaintingVisible
         {
             get
