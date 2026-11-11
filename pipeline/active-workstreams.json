@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T06:59:00Z",
+  "updated_at": "2026-11-11T07:08:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,16 +6665,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 82,
+      "ownership_revision": 83,
       "write_scope_released": false,
-      "phase": "GroundTintTrial_Rejected_NoPixelChange_Native",
-      "next": "Revert experimental tint because Unity ground unchanged. Native inventory confirms one terrain with seven layers; inspect layer names and alphamap weights before selecting an art treatment. No art approval, no publication.",
+      "phase": "Ground_AlphamapRootCause_Probe",
+      "next": "Capture Unity native actual layer paint ratios and determine which layer dominates. Do not assume name ShelteredGrass is majority grass. Validate all old UI gates and release runner CAS.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-11T06:52:00Z",
-      "runner_claim_basis": "PR173 owner-authorized isolated A/B hypothesis: original bright lime terrain true Unity Terrain diagnosed natively; clone TerrainData and ShelteredGrass layer to tint ground without mutating canonical game assets. Prior native completed and released; no competing Windows work.",
+      "runner_claimed_at": "2026-11-11T07:08:00Z",
+      "runner_claim_basis": "Previous Unity art trial with ShelteredGrass tint produced no pixel change despite successful clone (8/8), safely reverted. Read-only native diagnostic identifies actual 7 terrain layer names, CPU sampled splat weights, no game mutation; Windows currently free.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
