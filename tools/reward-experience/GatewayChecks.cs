@@ -196,6 +196,42 @@ try
 }
 finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
 
+// The player's irreversible Bastion IV priority also produces a durable
+// bag bonus. These three alternatives are not normal building production.
+foreach(var choice in new[]{"production","defense","civil"})
+{
+ var choiceSeed=new PlayerState{BastionLevel=4};
+ var choiceStore=new JsonStore(choiceSeed);
+ var choiceGateway=new LocalGateway(clock,choiceStore);
+ var before=choiceGateway.Snapshot();
+ int baseWood=before.Resources.Wood,baseStone=before.Resources.Stone,baseFood=before.Resources.Food;
+ int basePower=before.MissionPower;
+ Need(Send(choiceGateway,"choice-"+choice,"ChooseDevelopment",choice).Ok,
+     "Bastion IV real development choice accepted: "+choice);
+ var awarded=choiceGateway.Snapshot();
+ var bundles=awarded.ResourceRewards.Packets.Where(p=>p.Origin=="development").ToList();
+ Need(awarded.ChapterThree.DevelopmentPriority==choice&&bundles.Count==2,
+     "development choice persisted and issued exactly two resource packets");
+ int expectWood=choice=="production"?260:choice=="civil"?180:0;
+ int expectStone=choice=="production"?180:choice=="defense"?220:0;
+ int expectFood=choice=="civil"?280:0;
+ Need(bundles.All(p=>p.Collected&&!p.Used&&p.MailEventId=="") &&
+      bundles.Where(p=>p.Kind=="wood").Sum(p=>p.Amount)==expectWood &&
+      bundles.Where(p=>p.Kind=="stone").Sum(p=>p.Amount)==expectStone &&
+      bundles.Where(p=>p.Kind=="food").Sum(p=>p.Amount)==expectFood,
+     "development choice produces exact durable bonus components");
+ Need(awarded.Resources.Wood==baseWood&&awarded.Resources.Stone==baseStone&&
+      awarded.Resources.Food==baseFood,
+     "choosing development never invisibly credits wallet");
+ Need(awarded.MissionPower==basePower+(choice=="defense"?100:0),
+     "defense choice still grants immediate non-resource mission power");
+ choiceGateway=new LocalGateway(clock,choiceStore);
+ Need(!Send(choiceGateway,"choice-repeat-"+choice,"ChooseDevelopment",choice).Ok,
+     "priority cannot pay again after JSON reload");
+ Need(choiceGateway.Snapshot().ResourceRewards.Packets.Count(p=>p.Origin=="development")==2,
+     "reload and replay cannot duplicate development bonus");
+}
+
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{

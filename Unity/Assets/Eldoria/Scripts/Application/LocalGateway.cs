@@ -1273,10 +1273,39 @@ namespace Eldoria.Application
                 case "ChooseDevelopment":
                     if(state.BastionLevel<4||!string.IsNullOrEmpty(c.DevelopmentPriority))return Fail("Prioridad no disponible");
                     if(id!="production"&&id!="defense"&&id!="civil")return Fail("Prioridad desconocida");
+                    // A chapter development bonus is NOT building production.
+                    // One irreversible priority decision grants one persistent
+                    // multi-resource bundle to the bag, without immediate
+                    // wallet credit; power remains an immediate progression stat.
+                    int bonusWood=id=="production"?260:id=="civil"?180:0;
+                    int bonusStone=id=="production"?180:id=="defense"?220:0;
+                    int bonusFood=id=="civil"?280:0;
+                    int bonusPower=id=="defense"?100:0;
+                    if(state.MissionPower>int.MaxValue-bonusPower)
+                        return Fail("No hay capacidad para recibir el poder");
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                    if(!ResourceRewardRules.TryIssueBundle(state.ResourceRewards,
+                        "development:priority","development",
+                        bonusWood,bonusStone,bonusFood))
+                        return Fail("El bono de desarrollo ya fue registrado");
+                    foreach(var packet in state.ResourceRewards.Packets)
+                        if(packet!=null&&packet.Origin=="development"&&
+                            (packet.ReceiptId=="development:priority:wood"||
+                             packet.ReceiptId=="development:priority:stone"||
+                             packet.ReceiptId=="development:priority:food"))
+                            AttentionCueRules.Signal(state.RewardAttention,
+                                "bag-reward:"+packet.ReceiptId,"bag",AttentionLevel.New);
+#else
+                    if(state.Resources.Wood>int.MaxValue-bonusWood||
+                       state.Resources.Stone>int.MaxValue-bonusStone||
+                       state.Resources.Food>int.MaxValue-bonusFood)
+                        return Fail("No hay capacidad para recibir el bono");
+                    state.Resources.Wood+=bonusWood;
+                    state.Resources.Stone+=bonusStone;
+                    state.Resources.Food+=bonusFood;
+#endif
                     c.DevelopmentPriority=id;
-                    if(id=="production"){state.Resources.Wood+=260;state.Resources.Stone+=180;}
-                    else if(id=="defense"){state.Resources.Stone+=220;state.MissionPower+=100;}
-                    else {state.Resources.Wood+=180;state.Resources.Food+=280;}
+                    state.MissionPower+=bonusPower;
                     break;
                 case "InvestigateFissure":
                     if(id!="fissure-valoria"||c.FissureClosed||c.FissureExplored||c.InvestigationEndsUtcTicks>0)return Fail("Investigación no disponible");
