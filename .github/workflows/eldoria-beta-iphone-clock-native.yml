@@ -95,12 +95,15 @@ jobs:
         run: |
           python3 - <<'PY'
           import pathlib,subprocess
-          expected={"Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs":"76425d914f71ec7c5d1ddbe416f6264b2c21dc18","Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs":"2daa985a36df3599d49f00239a3774112c5651ee","Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs":"6f28c164c42cfebe4337bf4ec02acca30373c42c","Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs":"7859f60566187ed0c1d35c6f78271914b978000e","Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs":"80f2293b19ac8e420bcf22908b2aed1bf2cbd667","Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs":"960b7a51c383b6988f2e13118e200f5078d00216"}
+          import json
+          request=json.load(open('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json'))
+          expected=request['engine_input_blobs']
+          assert len(expected)==6 and request['variant']=='beta13-p0-city-only-v1' and request['ownership_revision']==28
           for path,want in expected.items():
             # Preflight's sparse checkout omits engine files; inspect pinned Git tree.
             got=subprocess.check_output(['git','-C','beta-tools','rev-parse','HEAD:'+path],text=True).strip()
             assert got==want,(path,got,want)
-          print('EXACT_ENGINE_INPUTS_VERIFIED; only terrain initialization differs from mobile12')
+          print('EXACT_ENGINE_INPUTS_VERIFIED_PINNED_REQUEST city-only opt-in changed two of six engine blobs')
           PY
       - name: Check current ownership without occupying Windows
         id: lease
