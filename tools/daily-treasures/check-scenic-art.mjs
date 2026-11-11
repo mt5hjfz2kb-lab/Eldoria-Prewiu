@@ -96,9 +96,17 @@ for(const [key,file] of Object.entries(authored)){
   assert.ok(!guids.has(guid),'Collision in imported art GUIDs');
   guids.add(guid);
 }
-for(const scene of ['lyra','explorers','vigilants','bastion'])
+// Lyra, Scouts and Vigilants use genuine layered source ornaments.
+// Bastion is fundamentally different: its only architecture is the actual
+// built 3D model seen through a one-frame authenticated live Unity camera.
+// The historic arch candidate stays hash-traced, but it must NOT be rendered.
+for(const scene of ['lyra','explorers','vigilants'])
   assert.ok(panel.includes('"DailyTreasureCeremonies/'+scene+'_stage"'),
     'Source asset not bound to runtime: '+scene);
+assert.ok(!panel.includes('"DailyTreasureCeremonies/bastion_stage"'),
+  'Fictional painted arch must never overlay the actual Bastion');
+assert.match(panel,/case DailyTreasureStageKind\.Bastion:\s*\/\/[^\n]*\n\s*\/\/[^\n]*\n\s*return null;/,
+  'Bastion stage must resolve genuine camera artwork exclusively');
 assert.match(panel,/milestoneStageArt\.raycastTarget=false/);
 assert.match(panel,/HasDistinctMilestoneArt/);
 assert.match(panel,/mainFrameSurface\.sprite=singleFrame\?null:dailyFrameSprite/);
