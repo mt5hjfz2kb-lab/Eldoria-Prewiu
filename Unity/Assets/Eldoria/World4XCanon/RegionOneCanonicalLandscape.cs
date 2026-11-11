@@ -196,7 +196,12 @@ namespace Eldoria.World4XCanon
    nodes=RegionOneReferenceNodes.Install(root,host);
    yield return null;
    RegionOneBlenderLandscape.TraceStartupMemory("placement-before");
-   RegionOneResourcePlacement.Install(root,host,geography);
+   // Full map stays identical, but the opt-in lazy path spreads the
+   // resource/city terrain scan across rendered frames to prevent a WebGL
+   // GC-starved, long main-thread build on memory-constrained iPhones.
+   if(ValoriaIntegratedWorld.P0LazyWorldProbe)
+    yield return RegionOneResourcePlacement.InstallStaged(root,host,geography);
+   else RegionOneResourcePlacement.Install(root,host,geography);
    RegionOneBlenderLandscape.TraceStartupMemory("placement-after");
    yield return null;
    RegionOneBlenderLandscape.TraceStartupMemory("resource-models-before");

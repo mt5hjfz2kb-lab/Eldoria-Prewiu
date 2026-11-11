@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -45,7 +46,23 @@ namespace Eldoria.World4XCanon
             service.Scan(landscape);
             service.Synchronize();
         }
+        // Eager and lazy must share the IDENTICAL coordinate/query/order algorithm.
+        // The eager wrapper consumes the iterator synchronously for native parity;
+        // only the owner-only deferred path lets WebGL reach the end of each frame.
+        public static IEnumerator InstallStaged(Transform root,ValoriaIntegratedWorld host,RegionOneBlenderLandscape landscape)
+        {
+            var service=root.gameObject.AddComponent<RegionOneResourcePlacement>();
+            service.host=host;
+            yield return service.ScanStaged(landscape);
+            service.Synchronize();
+        }
         void Scan(RegionOneBlenderLandscape landscape)
+        {
+            var stages=ScanStaged(landscape);
+            try { while(stages.MoveNext()) {} }
+            finally { (stages as IDisposable)?.Dispose(); }
+        }
+        IEnumerator ScanStaged(RegionOneBlenderLandscape landscape)
         {
             foreach(var id in new[]{"forest-valoria","quarry-valoria"})
             {
@@ -68,8 +85,10 @@ namespace Eldoria.World4XCanon
                     }
                     if(valid&&high-low<.5f){city.Validated=true;ValidatedCityCount++;}
                 }
-                for(int z=-1500;z<=1600;z+=32)for(int x=-750;x<=600;x+=32)
+                for(int z=-1500;z<=1600;z+=32)
                 {
+                 for(int x=-750;x<=600;x+=32)
+                 {
                     if(FaultExcluded(faults,x,z,8))continue;
                     bool safe=true;float low=float.MaxValue,high=float.MinValue;Vector3 centre=default;
                     for(int i=0;i<=8;i++)
@@ -84,6 +103,11 @@ namespace Eldoria.World4XCanon
                     bool wood=false;
                     for(int i=0;i<8;i++){float a=i*Mathf.PI/4;wood|=RegionOneBlenderLandscape.Forest(x+Mathf.Cos(a)*24,z+Mathf.Sin(a)*24)>.15f;}
                     sites.Add(new Site{Id="region1:"+x+":"+z,Point=centre,Wood=wood});
+                 }
+                 // At most one 32 m row of the SAME certified response tape
+                 // executes in a frame. On WebGL GC only runs between frames;
+                 // do not batch the entire 35k+ terrain-query scan into one.
+                 yield return null;
                 }
             }
             if(routes==null)routes=new RegionOneTerrainRoutes(host,surface,faults);
