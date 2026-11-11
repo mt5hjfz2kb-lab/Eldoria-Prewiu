@@ -31,6 +31,25 @@ internal static class Program
             "reject negative");
         Check(!ResourceRewardRules.TryIssue(p, "mission:ore", "mission", "ore", 100),
             "unsupported resource");
+        Check(!ResourceRewardRules.TryIssue(p, "mail:whitespace", "daily",
+                "wood", 100, "  ") &&
+              p.Packets.Count == 0,
+            "whitespace-only mail ID must not create permanently locked packet");
+        Check(ResourceRewardRules.TryIssue(p, "mail:null", "daily",
+                "wood", 100, null) &&
+              p.Packets[0].Collected &&
+              ResourceRewardRules.ClaimableMailMessages(p) == 0,
+            "null mail event means immediate bag packet, not an orphaned mail");
+        Check(ResourceRewardRules.TryUse(p, wallet, "mail:null", out int noMailGrant) &&
+              noMailGrant == 100,
+            "direct bag packet may be used once after explicit Use");
+        Check(!ResourceRewardRules.TryUse(p, wallet, "mail:null", out _),
+            "direct bag packet cannot be used twice");
+        // Subsequent historical wallet assertions are based on original
+        // baseline. Return to a fresh inventory and original wallet before
+        // running the existing full progression suite.
+        p = new ResourceRewardInventory();
+        wallet = new ResourceWallet { Wood = 250, Stone = 40, Food = 5 };
         foreach (var resource in new[] {"wood", "stone", "food"})
         foreach (var amount in new[] {100, 1000, 10000, 100000})
         {
