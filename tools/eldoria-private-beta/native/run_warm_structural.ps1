@@ -96,7 +96,14 @@ try {
   if($record.overlay){
    $candidate=(Get-FileHash (Get-UxCandidate $record.path) -Algorithm SHA256).Hash
    $uxBase=@($uxFiles|Where-Object {$_.path -eq $record.path}|ForEach-Object {$_.baseline_sha256})
-   if($current -ne $candidate -and $current -ne $record.sha256 -and $uxBase -notcontains $current){$conflicts+=$record.path;continue}
+   $allowedHashes=@($candidate,$record.sha256)+@($uxBase)
+   if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1' -and
+      $record.path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
+     $composed=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.city-only-composed.cs.txt'
+     if(-not(Test-Path $composed -PathType Leaf)){throw 'Missing exact composed P0 backup candidate; stop restoration'}
+     $allowedHashes+=@((Get-FileHash $composed -Algorithm SHA256).Hash)
+   }
+   if($allowedHashes -notcontains $current){$conflicts+=$record.path;continue}
   }
   if($current -ne $record.sha256){Copy-Item $record.backup $file -Force}
  }
