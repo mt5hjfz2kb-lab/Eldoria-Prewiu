@@ -505,9 +505,9 @@ internal static class Program
         var tall=DailyTreasureStageDirection.NarrativeTheatreFrame(900f,1600f);
         True(tall.Width>=600f && tall.Height>=1000f,
             "portrait hero fills meaningful tablet area");
-        var phone=DailyTreasureStageDirection.NarrativeTheatreFrame(390f,844f);
-        Eq(phone.Width,366f,"phone portrait safe area remains original");
-        Eq(phone.Height,700f,"phone portrait height remains original");
+        var stagePhone=DailyTreasureStageDirection.NarrativeTheatreFrame(390f,844f);
+        Eq(stagePhone.Width,366f,"phone portrait safe area remains original");
+        Eq(stagePhone.Height,700f,"phone portrait height remains original");
         var shortPhone=DailyTreasureStageDirection.NarrativeTheatreFrame(844f,390f);
         Eq(shortPhone.Width,740f,"phone landscape safe area unchanged");
         Eq(shortPhone.Height,370f,"phone landscape height unchanged");
