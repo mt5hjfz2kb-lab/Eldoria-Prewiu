@@ -89,11 +89,15 @@ namespace Eldoria.BreachWatch
             foreach(var c in cards)if(!c)return false;
             foreach(var v in values)if(!v)return false;
 
-            // Preserve the canonical authored landscape arrangement until
-            // its own A/B pass. The blank inset is a portrait-only defect.
+            // Full-width metric rearrangement is portrait-only. But the
+            // third permanently unavailable HERO card is a genuine landscape
+            // defect too: eliminate that dead slot at all orientations while
+            // preserving the original landscape stats and troop layout.
             if(root.rect.width>root.rect.height)
             {
-                UsesFullWidthMetrics=false;return false;
+                RefreshActualHeroCards(root);
+                UsesFullWidthMetrics=false;
+                return false;
             }
             float w=right.rect.width,h=right.rect.height;
             if(w<210||h<180)return false;
@@ -170,11 +174,12 @@ namespace Eldoria.BreachWatch
 
         bool RefreshActualHeroCards(RectTransform root)
         {
-            if(!root || root.rect.width>root.rect.height)
+            if(!root)
             {
                 UsesTwoRelevantHeroCards=false;
                 return false;
             }
+            bool landscape=root.rect.width>root.rect.height;
             if(!heroRow || !heroRow.IsChildOf(root))
             {
                 heroRow=Find(root,"V3 / Featured military unit");
@@ -205,13 +210,14 @@ namespace Eldoria.BreachWatch
             heroSlots[2].gameObject.SetActive(false);
 
             float space=heroRow.rect.width;
-            float left=13f, gap=12f;
+            float left=landscape?10f:13f, gap=landscape?8f:12f;
             float cardW=(space-2f*left-gap)*.5f;
             float top=-heroSlots[0].anchoredPosition.y;
             // Original stage owns the vertical composition. Keep its actual
             // height; only the useless third column is reclaimed.
             float cardH=heroSlots[0].rect.height;
-            if(top<2f || cardW<122f || cardH<95f)return false;
+            if(top<2f || cardW<122f || cardH<(landscape?78f:95f))
+                return false;
             for(int i=0;i<2;i++)
             {
                 var card=heroSlots[i];
@@ -226,12 +232,20 @@ namespace Eldoria.BreachWatch
                 // selection action belong in separate side-by-side wells.
                 // Use full-height horizontal scorecards on large phones;
                 // narrow physical phones retain the compact portrait flow.
-                bool horizontalCard=cardW>=275f && cardH>=160f;
+                // A real 844x390 phone has only ~90u card height.
+                // Horizontal hero artwork+label fits there, whereas three
+                // tiny cards produced a fake "No disponible" action.
+                bool horizontalCard=landscape
+                    ?cardW>=155f && cardH>=78f
+                    :cardW>=275f && cardH>=160f;
                 float apertureW=horizontalCard
-                    ?Mathf.Min(cardW*.43f,cardH*.67f):cardW-18f;
-                float portraitH=horizontalCard?cardH-18f:
-                    Mathf.Max(52f,cardH*.67f);
-                At(heroViewports[i],9f,horizontalCard?9f:6f,
+                    ?Mathf.Min(cardW*(landscape?.33f:.43f),
+                        cardH*(landscape?.78f:.67f)):cardW-18f;
+                float portraitH=horizontalCard
+                    ?cardH-(landscape?10f:18f)
+                    :Mathf.Max(52f,cardH*.67f);
+                At(heroViewports[i],landscape?5f:9f,
+                    horizontalCard?(landscape?5f:9f):6f,
                     apertureW,portraitH);
                 var image=heroPictures[i].GetComponent<Image>();
                 float ratio=image && image.sprite
@@ -242,8 +256,10 @@ namespace Eldoria.BreachWatch
                 At(heroPictures[i],(apertureW-faceW)*.5f,
                     (portraitH-faceH)*.5f,faceW,faceH);
                 if(horizontalCard)
-                    At(heroLabels[i],apertureW+19f,12f,
-                        cardW-apertureW-29f,cardH-24f);
+                    At(heroLabels[i],apertureW+(landscape?11f:19f),
+                        landscape?5f:12f,
+                        cardW-apertureW-(landscape?17f:29f),
+                        cardH-(landscape?10f:24f));
                 else
                     At(heroLabels[i],9f,portraitH+8f,cardW-18f,
                         Mathf.Max(28f,cardH-portraitH-14f));
