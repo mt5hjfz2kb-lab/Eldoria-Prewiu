@@ -479,9 +479,18 @@ namespace Eldoria.DailyTreasures.Editor
                 " importerReadable="+(sourceImporter?sourceImporter.isReadable.ToString():"missing")+
                 " defaultMax="+(sourceImporter?sourceImporter.maxTextureSize.ToString():"missing")+
                 " standaloneMax="+(sourceImporter?sourceImporter.GetPlatformTextureSettings("Standalone").maxTextureSize.ToString():"missing"));
-            Need(!texture.isReadable,
-                "Canonical original Lyra GPU texture is CPU-readable: "+
-                texture.width+"x"+texture.height);
+            // Editor textures remain CPU-accessible even when player Read/Write
+            // is disabled. Validate the actual importer, not Editor residency.
+            // Official explanation: unity.com/blog/engine-platform/accessing-texture-data-efficiently
+            Need(sourceImporter && !sourceImporter.isReadable &&
+                 !sourceImporter.mipmapEnabled && sourceImporter.maxTextureSize<=1024,
+                "Canonical original Lyra importer must be non-readable, mipless and bounded");
+            Need(sourcePath=="Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies/canonical_lyra_illustration.png",
+                "Native Lyra did not resolve the original-reference asset path");
+            Need(Sha(Path.Combine(UnityEngine.Application.dataPath,
+                sourcePath.Substring("Assets/".Length)))==
+                "58cca82816e86ab8ae70ee29b3b941db591e80ecc85148da55487beecb1a4fef",
+                "Native Lyra is not the exact original-reference extraction");
             Need(texture.width<=1024 && texture.height<=1024,
                 "Canonical original Lyra exceeded bounded 1024 import: "+
                 texture.width+"x"+texture.height);
