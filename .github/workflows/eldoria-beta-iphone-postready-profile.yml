@@ -8,6 +8,7 @@ on:
       - 'tools/eldoria-private-beta/iphone_ab/postready_profile.test.cjs'
       - 'tools/eldoria-private-beta/iphone_ab/stage_postready_profile.py'
       - 'tools/eldoria-private-beta/iphone_ab/test_postready_profile_stage.py'
+      - 'tools/eldoria-private-beta/qa_webkit_residency.cjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -88,6 +89,8 @@ jobs:
           QA_VARIANT: unchanged
           QA_ENTRY: '1'
           QA_SKIP_PREFLIGHT: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
         run: |
           npm install --prefix "$RUNNER_TEMP/compact-qa" --no-save playwright@1.55.0
           "$RUNNER_TEMP/compact-qa/node_modules/.bin/playwright" install webkit
