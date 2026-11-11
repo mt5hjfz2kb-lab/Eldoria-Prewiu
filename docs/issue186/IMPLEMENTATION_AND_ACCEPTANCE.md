@@ -37,3 +37,12 @@ Esta sección **complementa**, no sustituye, el contrato anterior. No hay merge 
 - **Seguridad económica**: las señales de aviso se guardan por \`EventId\`, no reaparecen tras reclamarse y abrir un mail no elimina el premio. Además, \`TryIssue\` rechaza \`MailEventId\` solo de espacios: antes almacenaba un premio bloqueado imposible de reclamar. Existe cobertura fuente de ese caso. Sigue pendiente la transacción autoritativa en el gateway propietario de #181.
 - **Prueba pendiente**: no despachar \`issue186-native.yml\` hasta CAS legítimo de \`windows-runner-heavy\`, sin trabajos Unity solapados. Solo las 4 capturas auténticas \`1600x900\`, \`900x1600\`, \`844x390\`, \`390x844\` y sus raycasts distinguen importación nativa de una composición pre-Unity. Incluso ese resultado sería \`UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING\`, NO \`ART_APPROVED\` ni \`MOBILE_PASS\`.
 - **Coordinación**: PR173 sigue titular del HUD/Windows; PR181 de \`GameState\`/\`LocalGateway\`; PR179 del iPhone beta. No reabrirlas ni editar rutas compartidas a ciegas. La migración de recompensas en la ciudad es una integración posterior verificable.
+
+
+## QA nativa reforzada — obstrucción real de botones (11/11/2026)
+
+Se detectó un **falso positivo de interacción** en el banco de prueba de `Issue186NativeEvidence`: buscaba el botón «Reclamar» en *cualquier* posición de la lista del `GraphicRaycaster`. Si otro gráfico interceptaba la pulsación por encima del botón, el ensayo podía seleccionar artificialmente el botón oculto y declarar `realUiClick=true`.
+
+La prueba aislada ahora monta **temporalmente una imagen interceptora real sobre el centro de «Reclamar»**. En cada una de las cuatro resoluciones debe confirmar que esa imagen es el primer impacto del raycaster y que dirigirle la pulsación **no dispara el botón**. Después la desactiva, vuelve a raycastear y exige que «Reclamar» sea el primer impacto, antes de generar un `IPointerClickHandler` auténtico. La imagen interceptora no aparece en las capturas. El resultado `blockedUiClickRejected=true` es obligatorio tanto en la aceptación C# como en el workflow Windows, y una regresión fuente impide volver a usar `hits.Find`.
+
+**Estado de evidencia:** cambio de prueba implementado en la PR #187; el contrato fuente no es una prueba Unity real. Los resultados gráficos y la ejecución del control deben revisarse en los artefactos de Unity cuando exista la cesión formal CAS de Windows por #173. Tampoco certifica el flujo económico de `LocalGateway` ni la experiencia en móvil.
