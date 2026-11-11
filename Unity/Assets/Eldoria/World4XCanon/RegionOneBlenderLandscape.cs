@@ -18,7 +18,15 @@ namespace Eldoria.World4XCanon
   static RegionOneBlenderLandscape activeSurface;
   Vector3[] contactVertices,contactNormals;int[] contactTriangles;
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
+  // Eager editor verification and deferred WebGL assembly consume the SAME triangle/cell algorithm.
+  // Draining synchronously preserves old entry points without maintaining a second contact index.
   void BuildContactSurface(Vector3 origin)
+  {
+   var stages=BuildContactSurfaceStaged(origin);
+   try {while(stages.MoveNext()) {}}
+   finally {(stages as IDisposable)?.Dispose();}
+  }
+  IEnumerator BuildContactSurfaceStaged(Vector3 origin)
   {
    // Mesh accessors return owned copies. Transform those copies in place;
    // never allocate the former local -> world -> relative intermediate arrays.
@@ -30,6 +38,9 @@ namespace Eldoria.World4XCanon
     int x0=Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))/16);
     int z0=Mathf.FloorToInt(Mathf.Min(a.z,Mathf.Min(b.z,c.z))/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,Mathf.Max(b.z,c.z))/16);
     for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){var k=new Vector2Int(x,z);if(!contactCells.TryGetValue(k,out var list)){list=new List<int>();contactCells[k]=list;}list.Add(i);}
+    // The 16 m contact spatial buckets can allocate many lists. Let WebGL GC breathe
+    // after 256 COMPLETE triangles, never halfway through a triangle's bucket updates.
+    if(((i/3)+1)%256==0)yield return null;
    }
    activeSurface=this;
   }
@@ -157,7 +168,10 @@ namespace Eldoria.World4XCanon
    finally {sourceVertices=null;sourceVertexCount=0;}
    TraceStartupMemory("verify-released");
    yield return null;
-   instance.BuildContactSurface(host.WorldHome);
+   // Lazy iPhone world builds subdivide contact bucketing; editor/eager keeps exact tape.
+   if(ValoriaIntegratedWorld.P0LazyWorldProbe)
+    yield return instance.BuildContactSurfaceStaged(host.WorldHome);
+   else instance.BuildContactSurface(host.WorldHome);
    TraceStartupMemory("contact-ready");
    yield return null;
    instance.FitImportedPigment(host.WorldHome);
