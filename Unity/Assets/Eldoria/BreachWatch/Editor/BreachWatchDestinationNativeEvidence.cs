@@ -272,7 +272,10 @@ namespace Eldoria.BreachWatch.Editor
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
                 var heroes=ui.RealHeroes;
                 if(heroes && heroes.IsShowing)
+                {
                     host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>().Refresh();
+                    heroes.SynchronizeVisual();
+                }
                 Canvas.ForceUpdateCanvases();
                 Need(verify(),"Real destination visual replacement regressed: "+name);
                 camera.Render();Canvas.ForceUpdateCanvases();camera.Render();
