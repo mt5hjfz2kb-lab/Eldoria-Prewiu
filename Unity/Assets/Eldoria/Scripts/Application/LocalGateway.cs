@@ -500,7 +500,10 @@ namespace Eldoria.Application
                         var preview=DailyTreasureRules.Preview(state.DailyTreasures,clock.UtcTicks);
                         if(!preview.IsValid)return Fail("El tributo de hoy ya fue reclamado");
                         var mailEventId="daily-treasure:"+DailyTreasureRules.UtcDay(clock.UtcTicks);
-                        if(state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==mailEventId))
+                        // Tombstones persist after mail deletion. Refuse a replay
+                        // even when the visible letter has disappeared.
+                        if(state.Mailbox.ReceivedEventIds.Contains(mailEventId) ||
+                           state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==mailEventId))
                             return Fail("El tributo de este día ya tiene un correo registrado");
 #if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
                         bool hasPackets=preview.Wood>0||preview.Stone>0||preview.Food>0;

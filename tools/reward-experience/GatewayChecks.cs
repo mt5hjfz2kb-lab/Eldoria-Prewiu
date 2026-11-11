@@ -119,6 +119,22 @@ Need(Send(fullGateway,"day1-full-mail",ResourceRewardCommands.ClaimMail,dailyLet
 Need(!Send(fullGateway,"day1-use-overflow",ResourceRewardCommands.UsePacket,fullPack.ReceiptId).Ok,"overflow rejects use only");
 Need(!fullGateway.Snapshot().ResourceRewards.Packets.Single().Used,"overflow keeps packet unspent");
 
+
+// Historical mail tombstones survive deletion. In a mismatched/imported
+// daily-cycle save, never issue packets with no visible letter to claim.
+var tombState=new PlayerState();
+tombState.Mailbox.ReceivedEventIds.Add(dailyLetter);
+var tombStore=new JsonStore(tombState);
+var tombGateway=new LocalGateway(clock,tombStore);tombGateway.Advance();
+int tombWrites=tombStore.Writes;
+Need(!Send(tombGateway,"daily-deleted-mail-tombstone","ClaimDailyTreasure","").Ok,
+    "deleted mail event tombstone blocks orphan daily packets");
+var tombResult=tombGateway.Snapshot();
+Need(tombStore.Writes==tombWrites&&tombResult.DailyTreasures.TotalClaims==0,
+    "rejected tombstone daily claim does not advance or save");
+Need(tombResult.ResourceRewards.Packets.Count==0,
+    "deleted mail tombstone cannot strand new unclaimable reward");
+
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{
