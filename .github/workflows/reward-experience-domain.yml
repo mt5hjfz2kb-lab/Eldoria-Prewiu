@@ -35,6 +35,8 @@ jobs:
           path: issue186_art_import_preflight.json
           if-no-files-found: warn
           retention-days: 14
+      - name: Source-only geometry regression for 4 real viewport specifications
+        run: python3 tools/reward-experience/test_native_layout.py
       - name: Execute actual reward domain rules with source-linked smoke
         run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
       - name: Roslyn syntax check of real Unity runtime and editor art scripts
