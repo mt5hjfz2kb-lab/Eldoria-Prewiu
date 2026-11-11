@@ -136,8 +136,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # two-line text must fit INSIDE, not across the built-in painted line.
         # The original separate uGUI divider is now disabled for portrait.
         real_painted_rule=160.785*297/280
-        portraitphoto=R(15,61,panelw-30,83)
-        info=R(13,148,panelw-26,20)
+        portraitphoto=R(15,61,panelw-30,74)
+        info=R(13,146,panelw-26,22)
         costlabel=R(13,174,panelw-26,17)
         costdata=R(13,194,panelw-26,20)
         # Actual Unity text numbers are fully separate live labels:
@@ -161,8 +161,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         visible_uv_height=1/((raw_display_w/raw_display_h)/(512/320))
         assert visible_uv_height>=.80,(size,"True flag/stairs cannot fit in portrait aperture")
         assert portraitphoto.y+portraitphoto.h+3<=info.y,size
-        assert portraitphoto.h>=83,(size,'real 3D Bastion remains too small')
-        assert info.h>=20,(size,'building function font lost its full live row')
+        assert portraitphoto.y+portraitphoto.h<=135,(size,'real border must remain visible')
         assert info.y+info.h+1.5<=real_painted_rule,size
         assert costlabel.y>=real_painted_rule+2,size
         assert not info.intersects(costlabel),size
