@@ -156,6 +156,7 @@ jobs:
     timeout-minutes: 8
     permissions:
       contents: write
+      actions: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -178,6 +179,60 @@ jobs:
           done
           echo "Processed $count independent non-approved art-source requests"
           python3 tools/daily-treasures/assemble_authored_ceremonies.py
+      # The previous READ-ONLY PR preview already rendered the exact
+      # SHA-verified ORIGINAL 3D Lyra, not an AI-invented heroine. Carry only
+      # that genuine PNG into the same PR as an UNAPPROVED candidate.
+      # This reuses a stable artifact; no second VTK run or Windows lease.
+      - name: Retrieve existing authentic Lyra source portrait from certified pre-Unity run
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-preunity-ceremonies-5a4487b4e789aa2aaf664b9e8ba90d62e83da769
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 42954067211
+          path: tools/daily-treasures/_lyra-source-import
+      - name: Stage ONLY a SHA-verified actual Lyra portrait, never claim art approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          from PIL import Image
+          root=Path('tools/daily-treasures')
+          source=root/'_lyra-source-import'/'lyra-canonical-portrait-SOURCE-ONLY.png'
+          original=root/'_lyra-source-import'/'lyra-canonical-portrait-SOURCE-ONLY.provenance.json'
+          assert source.is_file() and original.is_file(), 'Original model render or receipt absent'
+          proof=json.loads(original.read_text())
+          approved='a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725'
+          assert proof['classification']=='CANONICAL_3D_LYRA_SOURCE_ONLY_NOT_UNITY'
+          assert proof['source_sha256']==approved and proof['source_length']==4770000
+          assert proof['generated_person'] is False and proof['art_approved'] is False
+          assert proof['unity_verified'] is False and proof['actor_count']>0
+          assert hashlib.sha256(source.read_bytes()).hexdigest()==proof['output_sha256']
+          with Image.open(source) as im:
+            im.load()
+            assert im.mode=='RGBA' and im.width>=1024 and im.height>=512
+            alpha=im.getchannel('A')
+            hist=alpha.histogram()
+            clear=sum(hist[:17])/(im.width*im.height)
+            visible=sum(hist[160:])/(im.width*im.height)
+            assert clear>.04 and .07<visible<.93, 'Original GLB drawing not legible'
+          out=root/'art-candidates'/'lyra-canonical-portrait-source.png'
+          receipt=root/'art-candidates'/'lyra-canonical-portrait-source.provenance.json'
+          if out.exists() or receipt.exists():
+            assert out.is_file() and receipt.is_file(), 'Half-copied artist candidate'
+            assert hashlib.sha256(out.read_bytes()).hexdigest()==proof['output_sha256']
+            print('Exact Lyra original already staged; no overwrite')
+          else:
+            out.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(source,out)
+            proof['classification']='CANONICAL_3D_LYRA_PREUNITY_CANDIDATE_NOT_APPROVED'
+            proof['source_artifact_run']=42954067211
+            proof['source_artifact_name']='eldoria-preunity-ceremonies-5a4487b4e789aa2aaf664b9e8ba90d62e83da769'
+            receipt.write_text(json.dumps(proof,indent=2)+'\\n')
+            print('Staged the real approved-model GLB render ONLY: still needs visual QA')
+          PY
       - name: Preserve one unapproved source art candidate on the same PR only
         shell: bash
         run: |
@@ -185,6 +240,8 @@ jobs:
           shopt -s nullglob
           assets=(tools/daily-treasures/art-candidates/*_stage.png
                   tools/daily-treasures/art-candidates/*_stage.provenance.json
+                  tools/daily-treasures/art-candidates/lyra-canonical-portrait-source.png
+                  tools/daily-treasures/art-candidates/lyra-canonical-portrait-source.provenance.json
                   tools/daily-treasures/art-candidates/shared_ornament.png
                   tools/daily-treasures/art-candidates/ceremony-art-production.json)
           if (( ${#assets[@]} == 0 )); then
@@ -203,7 +260,7 @@ jobs:
           fi
           git -c user.name='Eldoria Art Intake' \
               -c user.email='eldoria-art-intake@users.noreply.github.com' \
-              commit -m 'Daily treasures: stage single original Exploradores candidate (PRE-UNITY, NOT APPROVED)'
+              commit -m 'Daily treasures: stage SHA-verified canonical Lyra portrait (PRE-UNITY, NOT APPROVED)'
           # Never force-push, rebase, or overwrite another agent's HEAD.
           git push origin HEAD:refs/heads/feature/eldoria-daily-treasures-20261108
 
