@@ -135,6 +135,67 @@ Need(tombStore.Writes==tombWrites&&tombResult.DailyTreasures.TotalClaims==0,
 Need(tombResult.ResourceRewards.Packets.Count==0,
     "deleted mail tombstone cannot strand new unclaimable reward");
 
+// Real chapter producers, not manually seeded packets. Owner-runtime mission
+// milestones grant to the saved BAG only, including legacy non-tier amounts.
+// The existing authoritative node/hunt/building paths remain direct wallets.
+SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+try
+{
+ var missionSeed=new PlayerState{BastionLevel=1,SawmillLevel=1};
+ int missionWood=missionSeed.Resources.Wood,missionStone=missionSeed.Resources.Stone;
+ var missionStore=new JsonStore(missionSeed);
+ var missionGateway=new LocalGateway(clock,missionStore);
+ var earned=missionGateway.Snapshot();
+ Need(earned.ChapterProgress.GrantedRewards.Contains("c1-sawmill"),
+     "real chapter milestone is durably recorded");
+ var woodPrize=earned.ResourceRewards.Packets.Single(x=>x.ReceiptId=="mission:c1-sawmill:wood");
+ Need(woodPrize.Origin=="mission"&&woodPrize.Kind=="wood"&&woodPrize.Amount==120&&woodPrize.Collected&&!woodPrize.Used,
+     "real owner chapter source emits exact saved 120-wood packet");
+ Need(earned.Resources.Wood==missionWood&&earned.Resources.Stone==missionStone,
+     "receiving real mission prize never deposits directly into wallet");
+ Need(AttentionCueRules.At(earned.RewardAttention,"bag")==AttentionLevel.New,
+     "real mission producer raises bag novelty, not forced consumption");
+ int missionWrites=missionStore.Writes;
+ missionGateway.Advance();
+ Need(missionStore.Writes==missionWrites&&missionGateway.Snapshot().ResourceRewards.Packets.Count==1,
+     "repeated mission advancement cannot duplicate packet or commit");
+ missionGateway=new LocalGateway(clock,missionStore);
+ Need(Send(missionGateway,"real-mission-use",ResourceRewardCommands.UsePacket,woodPrize.ReceiptId).Ok,
+     "real earned mission packet can be spent through the saved gateway");
+ Need(missionGateway.Snapshot().Resources.Wood==missionWood+120,
+     "mission wallet receives exactly 120 only after real Use");
+ Need(!Send(missionGateway,"real-mission-replay",ResourceRewardCommands.UsePacket,woodPrize.ReceiptId).Ok,
+     "earned mission packet cannot be re-used under another command ID");
+ missionGateway=new LocalGateway(clock,missionStore);
+ Need(missionGateway.Snapshot().Resources.Wood==missionWood+120 &&
+      missionGateway.Snapshot().ResourceRewards.Packets.Single().Used,
+     "mission reward and spent receipt survive authoritative JSON reload");
+ var routeSeed=new PlayerState();
+ routeSeed.ChapterProgress.RouteCleared=true;
+ int routeWood=routeSeed.Resources.Wood,routeStone=routeSeed.Resources.Stone;
+ var routeStore=new JsonStore(routeSeed);
+ var routeGateway=new LocalGateway(clock,routeStore);
+ var route=routeGateway.Snapshot();
+ Need(route.ChapterProgress.GrantedRewards.Contains("c1-route"),
+     "real two-resource route milestone paid once");
+ Need(route.ResourceRewards.Packets.Count(p=>p.Origin=="mission")==2 &&
+      route.ResourceRewards.Packets.Any(p=>p.ReceiptId=="mission:c1-route:wood"&&p.Amount==90) &&
+      route.ResourceRewards.Packets.Any(p=>p.ReceiptId=="mission:c1-route:stone"&&p.Amount==55),
+     "route milestone pays indivisible exact 90-wood and 55-stone bundle");
+ Need(route.Resources.Wood==routeWood&&route.Resources.Stone==routeStone,
+     "two-resource mission remains outside wallet until player uses each packet");
+ routeGateway=new LocalGateway(clock,routeStore);
+ Need(Send(routeGateway,"real-route-stone",ResourceRewardCommands.UsePacket,"mission:c1-route:stone").Ok,
+     "one mission bundle resource may be used independently");
+ Need(routeGateway.Snapshot().Resources.Stone==routeStone+55 &&
+      routeGateway.Snapshot().Resources.Wood==routeWood,
+     "using stone does not secretly consume wood");
+ Need(routeGateway.Snapshot().ResourceRewards.Packets.Count==2 &&
+      !routeGateway.Snapshot().ResourceRewards.Packets.Single(p=>p.Kind=="wood").Used,
+     "other mission packet remains available after partial player consumption");
+}
+finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
+
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{

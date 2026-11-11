@@ -1166,10 +1166,45 @@ namespace Eldoria.Application
             void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0, int speedup1=0, int speedup5=0)
             {
                 if (!complete || p.GrantedRewards.Contains(id)) return;
-                p.GrantedRewards.Add(id);
+                // Validate ALL effects before advancing the chapter receipt.
+                // In particular, a failed packet replay or numeric overflow
+                // must not mark a mission paid and strand a legitimate reward.
+                if (wood < 0 || stone < 0 || food < 0 ||
+                    power < 0 || speedup1 < 0 || speedup5 < 0 ||
+                    state.MissionPower > int.MaxValue-power ||
+                    state.SpeedupOneMinute > int.MaxValue-speedup1 ||
+                    state.SpeedupFiveMinutes > int.MaxValue-speedup5) return;
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                // Except for real nodes, hunts and productive buildings,
+                // mission resources are durable, voluntarily consumed BAG
+                // packets. No wallet credit on mission completion.
+                // Receipt identity is a stable chapter milestone, never a
+                // transient command ID or mutable UI message.
+                string receipt = "mission:" + id;
+                if (wood > 0 || stone > 0 || food > 0)
+                {
+                    if (!ResourceRewardRules.TryIssueBundle(state.ResourceRewards,
+                        receipt, "mission", wood, stone, food)) return;
+                    foreach (var packet in state.ResourceRewards.Packets)
+                        if (packet != null && packet.Origin == "mission" &&
+                            (packet.ReceiptId == receipt+":wood" ||
+                             packet.ReceiptId == receipt+":stone" ||
+                             packet.ReceiptId == receipt+":food"))
+                            AttentionCueRules.Signal(state.RewardAttention,
+                                "bag-reward:"+packet.ReceiptId,"bag",AttentionLevel.New);
+                }
+#else
+                // Historical non-reward module smoke retains its original
+                // wallet-only contract; Unity and the reward-enabled gateway
+                // compile the actual durable packet path above.
+                if (state.Resources.Wood > int.MaxValue-wood ||
+                    state.Resources.Stone > int.MaxValue-stone ||
+                    state.Resources.Food > int.MaxValue-food) return;
                 state.Resources.Wood += wood;
                 state.Resources.Stone += stone;
                 state.Resources.Food += food;
+#endif
+                p.GrantedRewards.Add(id);
                 state.MissionPower += power;
                 state.SpeedupOneMinute += speedup1;
                 state.SpeedupFiveMinutes += speedup5;
