@@ -146,3 +146,57 @@ jobs:
           path: tools/daily-treasures/mobile-source-art-contact.jpg
           retention-days: 14
           if-no-files-found: error
+
+  # SOURCE candidate only: Linux downloads a single independently painted
+  # illustration, not a mock UI or an official character/world identity.
+  # This does NOT require or claim the exclusive Windows Unity resource.
+  preunity-art-intake:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/eldoria-daily-treasures-20261108'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/daily-treasures/
+      - name: Validate isolated art candidate without touching gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet --disable-pip-version-check Pillow
+          python3 tools/daily-treasures/ingest_art_candidate.py --selftest
+          if [ ! -f tools/daily-treasures/art-source-intake-explorers.json ]; then
+            echo "No artwork ingestion request, safe no-op"
+            exit 0
+          fi
+          python3 tools/daily-treasures/ingest_art_candidate.py \
+            --request tools/daily-treasures/art-source-intake-explorers.json
+      - name: Preserve one unapproved source art candidate on the same PR only
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=tools/daily-treasures/art-candidates/explorers_stage.png
+          receipt=tools/daily-treasures/art-candidates/explorers_stage.provenance.json
+          if [ ! -s "$target" ] || [ ! -s "$receipt" ]; then
+            echo "No verified candidate; no commit"
+            exit 0
+          fi
+          git add -- "$target" "$receipt"
+          if git diff --cached --quiet; then
+            echo "Candidate already present with immutable hash"
+            exit 0
+          fi
+          current=$(git ls-remote origin refs/heads/feature/eldoria-daily-treasures-20261108 | cut -f1)
+          if [ "$current" != "$GITHUB_SHA" ]; then
+            echo "::error::PR HEAD changed; refuse concurrent overwrite"
+            exit 1
+          fi
+          git -c user.name='Eldoria Art Intake' \
+              -c user.email='eldoria-art-intake@users.noreply.github.com' \
+              commit -m 'Daily treasures: stage single original Exploradores candidate (PRE-UNITY, NOT APPROVED)'
+          # Never force-push, rebase, or overwrite another agent's HEAD.
+          git push origin HEAD:refs/heads/feature/eldoria-daily-treasures-20261108
