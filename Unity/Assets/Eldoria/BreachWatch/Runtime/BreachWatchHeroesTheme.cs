@@ -28,6 +28,35 @@ namespace Eldoria.BreachWatch
         RectTransform content;
         int restyled;
         public int RestyledFrames=>restyled;
+        public bool HallGradeActive
+        {
+            get
+            {
+                if(!content || !warmHall)return false;
+                foreach(var photo in content.GetComponentsInChildren<RawImage>(true))
+                    if(photo && photo.transform.parent==content && photo.texture &&
+                       photo.material==warmHall)
+                        return true;
+                return false;
+            }
+        }
+        public string HallGradeDiagnostic
+        {
+            get
+            {
+                if(!content)return "content=null";
+                string result="warm="+(warmHall!=null)+";";
+                foreach(var photo in content.GetComponentsInChildren<RawImage>(true))
+                {
+                    if(!photo || !photo.texture)continue;
+                    result+=photo.name+" parent="+
+                        (photo.transform.parent?photo.transform.parent.name:"null")+
+                        " material="+(photo.material?photo.material.name:"null")+";";
+                    if(result.Length>1100)break;
+                }
+                return result;
+            }
+        }
         public bool VisibleOldRoyalFrame
         {
             get
@@ -116,8 +145,12 @@ namespace Eldoria.BreachWatch
             }
             foreach(var photo in content.GetComponentsInChildren<RawImage>(true))
             {
-                if(!photo || photo.name!="Hall / painterly architectural plate")
-                    continue;
+                // RawImage.name has historically resolved to either the
+                // component or its painted-stage GameObject name. Select the
+                // ONLY full-screen illustrated RawImage directly below the
+                // authoritative live content, never nested hero portraits.
+                if(!photo || !photo.texture || photo.transform.parent!=content ||
+                   !photo.name.StartsWith("Hall /"))continue;
                 originalHallMaterials[photo]=photo.material;
                 photo.material=warmHall;
             }
