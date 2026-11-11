@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T11:04:26.512Z",
+  "updated_at": "2026-11-11T11:22:13.314Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7731,7 +7731,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 39,
+      "ownership_revision": 40,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7755,7 +7755,9 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "phase": "CAS39_WINDOWS_RELEASED_NATIVE_ART_QA_FAILED_POSTAUDIT",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
@@ -7816,9 +7818,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-11T11:04:26.512Z",
       "runner_release_basis": "Native GitHub run 43005395878 exact 293560f8 completed, native-ui SUCCESS + real city step SUCCESS; downstream screenshot audit FAILED. Artifacts preserved id13848459316. Freed Windows for others, keep daily PR181 code workstream claimed; ART_APPROVED=false.",
-      "runner_claimed_at": "2026-11-11T10:38:32.923Z",
-      "runner_lease_note": "Source SHA a6d2f5f58fe246d5a5600a503664d4db2efde743 plus new native request commit; 72 component PNG, 116 actual pointers, 28 claims, 12 genuine city captures, 4 distinct authored event Sprite layers. ART_APPROVED=false.",
-      "runner_claim_basis": "Exclusive CAS after registry FREE and global Actions no active self-hosted Unity/Windows/Blender jobs; PR179 native42998206844 restored/released; only one PR181 native84 exact-HEAD QA; never alter other workstreams.",
+      "runner_claimed_at": "2026-11-11T11:22:13.314Z",
+      "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
+      "runner_claim_basis": "After completing failing native43005395878 and inspecting 92 genuine screenshots, exact source fix 14eeb9a with CI green. One strict Unity retest of authentic Lyra backup, contained Scouts shield, Bastion city stage; no other live Windows owners or native jobs.",
       "last_native_execution": {
         "run_id": 42906443088,
         "sha": "9b86b7626b8d544f974c5395ad41f5f443d13f6b",
