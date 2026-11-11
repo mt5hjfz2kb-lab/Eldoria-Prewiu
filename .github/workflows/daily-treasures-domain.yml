@@ -230,7 +230,7 @@ jobs:
             proof['classification']='CANONICAL_3D_LYRA_PREUNITY_CANDIDATE_NOT_APPROVED'
             proof['source_artifact_run']=42954067211
             proof['source_artifact_name']='eldoria-preunity-ceremonies-5a4487b4e789aa2aaf664b9e8ba90d62e83da769'
-            receipt.write_text(json.dumps(proof,indent=2)+'\\n')
+            receipt.write_text(json.dumps(proof,indent=2)+chr(10))
             print('Staged the real approved-model GLB render ONLY: still needs visual QA')
           PY
       - name: Preserve one unapproved source art candidate on the same PR only
