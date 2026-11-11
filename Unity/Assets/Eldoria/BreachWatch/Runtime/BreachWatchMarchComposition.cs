@@ -25,6 +25,13 @@ namespace Eldoria.BreachWatch
         readonly RectTransform[] values=new RectTransform[6];
         bool originalPreviewActive;
         bool initializedPreview;
+        RectTransform heroRow;
+        readonly RectTransform[] heroSlots=new RectTransform[3];
+        readonly RectTransform[] heroViewports=new RectTransform[2];
+        readonly RectTransform[] heroPictures=new RectTransform[2];
+        readonly RectTransform[] heroLabels=new RectTransform[2];
+        bool thirdHeroWasActive, thirdHeroCaptured;
+        public bool UsesTwoRelevantHeroCards { get; private set; }
         float lastW=-1,lastH=-1;
         public bool UsesFullWidthMetrics { get; private set; }
 
@@ -90,6 +97,12 @@ namespace Eldoria.BreachWatch
             }
             float w=right.rect.width,h=right.rect.height;
             if(w<210||h<180)return false;
+            // Remove a permanently unavailable THIRD slot rather than
+            // presenting a giant empty "not in this version" image beside
+            // a real hero. Expand the two canonical, clickable existing
+            // slots; no new story or formation permission is introduced.
+            bool goodHeroComposition=RefreshActualHeroCards(root);
+            if(!goodHeroComposition)return false;
             if(UsesFullWidthMetrics && Mathf.Abs(lastW-w)<.5f &&
                Mathf.Abs(lastH-h)<.5f &&
                !preview.gameObject.activeSelf &&
@@ -145,6 +158,93 @@ namespace Eldoria.BreachWatch
             return true;
         }
 
+        static RectTransform FindPortrait(RectTransform hero)
+        {
+            if(!hero)return null;
+            foreach(var i in hero.GetComponentsInChildren<Image>(true))
+                if(i && i.transform.parent==hero &&
+                   i.name.StartsWith("Approved source /"))
+                    return i.rectTransform;
+            return null;
+        }
+
+        bool RefreshActualHeroCards(RectTransform root)
+        {
+            if(!root || root.rect.width>root.rect.height)
+            {
+                UsesTwoRelevantHeroCards=false;
+                return false;
+            }
+            if(!heroRow || !heroRow.IsChildOf(root))
+            {
+                heroRow=Find(root,"V3 / Featured military unit");
+                for(int i=0;i<3;i++)
+                    heroSlots[i]=Find(root,"Hero slot "+i);
+                for(int i=0;i<2;i++)
+                {
+                    heroViewports[i]=Find(heroSlots[i],"Hero portrait viewport");
+                    heroPictures[i]=FindPortrait(heroViewports[i]);
+                    heroLabels[i]=Find(heroSlots[i],"Button label");
+                }
+            }
+            if(!heroRow || heroRow.rect.width<280f ||
+               !heroSlots[0] || !heroSlots[1] || !heroSlots[2] ||
+               !heroViewports[0] || !heroViewports[1] ||
+               !heroPictures[0] || !heroPictures[1] ||
+               !heroLabels[0] || !heroLabels[1])
+                return false;
+            var third=heroSlots[2].GetComponent<Button>();
+            // Future software can legitimately enable a third member;
+            // never hide an actually interactable future hero.
+            if(third && third.interactable)return false;
+            if(!thirdHeroCaptured)
+            {
+                thirdHeroWasActive=heroSlots[2].gameObject.activeSelf;
+                thirdHeroCaptured=true;
+            }
+            heroSlots[2].gameObject.SetActive(false);
+
+            float space=heroRow.rect.width;
+            float left=13f, gap=12f;
+            float cardW=(space-2f*left-gap)*.5f;
+            float top=-heroSlots[0].anchoredPosition.y;
+            // Original stage owns the vertical composition. Keep its actual
+            // height; only the useless third column is reclaimed.
+            float cardH=heroSlots[0].rect.height;
+            if(top<2f || cardW<122f || cardH<95f)return false;
+            for(int i=0;i<2;i++)
+            {
+                var card=heroSlots[i];
+                Remember(card);
+                Remember(heroViewports[i]);
+                Remember(heroPictures[i]);
+                Remember(heroLabels[i]);
+                At(card,left+i*(cardW+gap),top,cardW,cardH);
+                float apertureW=cardW-18f;
+                float portraitH=Mathf.Max(52f,cardH*.67f);
+                At(heroViewports[i],9f,6f,apertureW,portraitH);
+                var image=heroPictures[i].GetComponent<Image>();
+                float ratio=image && image.sprite
+                    ?image.sprite.rect.width/Mathf.Max(1f,image.sprite.rect.height)
+                    :.82f;
+                float faceW=Mathf.Min(apertureW-8f,(portraitH-8f)*ratio);
+                float faceH=faceW/Mathf.Max(.1f,ratio);
+                At(heroPictures[i],(apertureW-faceW)*.5f,
+                    (portraitH-faceH)*.5f,faceW,faceH);
+                At(heroLabels[i],9f,portraitH+8f,cardW-18f,
+                    Mathf.Max(28f,cardH-portraitH-14f));
+                var label=heroLabels[i].GetComponent<Text>();
+                if(label)
+                {
+                    label.fontSize=Mathf.RoundToInt(
+                        Mathf.Clamp(cardW*.071f,17f,25f));
+                    label.alignment=TextAnchor.MiddleCenter;
+                }
+            }
+            UsesTwoRelevantHeroCards=true;
+            return true;
+        }
+
         public void Restore()
         {
             foreach(var pair in originals)
@@ -154,6 +254,14 @@ namespace Eldoria.BreachWatch
                 rt.sizeDelta=new Vector2(pair.Value.z,pair.Value.w);
             }
             originals.Clear();
+            if(heroSlots[2] && thirdHeroCaptured)
+                heroSlots[2].gameObject.SetActive(thirdHeroWasActive);
+            thirdHeroCaptured=false;
+            heroRow=null;
+            for(int i=0;i<3;i++)heroSlots[i]=null;
+            for(int i=0;i<2;i++)
+            {heroViewports[i]=null;heroPictures[i]=null;heroLabels[i]=null;}
+            UsesTwoRelevantHeroCards=false;
             if(preview && initializedPreview)
                 preview.gameObject.SetActive(originalPreviewActive);
             initializedPreview=false;right=preview=titleCard=summary=status=statusCard=null;
