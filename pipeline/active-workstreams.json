@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T07:58:36+01:00",
+  "updated_at": "2026-11-11T07:09:03.169Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-vigilia-art-automation-20261111",
+      "owner": "codex-pr173-completion-9eb868087db6",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 86,
+      "ownership_revision": 87,
       "write_scope_released": false,
-      "phase": "ACTUAL_PAINTED_TERRAIN_L0_NATIVE_42975318276_PASS_ART_REVIEW_PENDING",
-      "next": "Native SHA 8aa69a38 / run 42975318276 has 8/8 verified, 6 clicks and save unaffected. Ground source revised RGB median 123/129/47 -> 101/94/32 vs original owner JPEG ground local 100/92/28; preserve artistically promising reversible layer0 adjustment. Remaining macro reference differences: missing visual environmental building silhouettes/props and details, smaller Bastion art/card; seek in-scope reversible scene-safe art without altering main or locked UI functionality. Next Unity run must reacquire exclusive resource after checking main.",
+      "phase": "OWNER_FINAL_READABILITY_TOUCHES",
+      "next": "Narrow text readability/margin pass only; preserve approved UI design and intervening autonomous changes, verify genuine screenshots before delivery.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T07:22:00Z",
@@ -6778,6 +6778,13 @@
           "ownership_revision": 76,
           "reason": "Run 42965945720 SUCCESS on exact SHA 756891a; eight genuine PNG verified SHA256, 6 real navigation clicks, old Canvas off, save unchanged. Rejected profile tint rollback shown identical to earlier fb0d baseline. Release Windows only, retain PR173 canonical owner; ART_APPROVED remains false.",
           "transferred_at": "2026-11-11T05:32:42.328Z"
+        },
+        {
+          "owner": "chatgpt-vigilia-art-automation-20261111",
+          "revision": 86,
+          "phase": "ACTUAL_PAINTED_TERRAIN_L0_NATIVE_42975318276_PASS_ART_REVIEW_PENDING",
+          "transferred_at": "2026-11-11T07:09:03.166Z",
+          "reason": "Owner asks this conversation for last readability and spacing touches on accepted HUD; preserve automation's intervening source/evidence."
         }
       ],
       "runner_priority_handoff": {
