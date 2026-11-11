@@ -21,17 +21,28 @@ namespace Eldoria.BreachWatch
         {
             public readonly RectTransform Rect;
             public readonly Vector2 AnchorMin,AnchorMax,Pivot,Position,Size;
+            public readonly Transform Parent;
+            public readonly int SiblingIndex;
+            public readonly Vector3 Scale;
             public readonly int FontSize;
             public LayoutState(RectTransform r)
             {
                 Rect=r;AnchorMin=r.anchorMin;AnchorMax=r.anchorMax;Pivot=r.pivot;
                 Position=r.anchoredPosition;Size=r.sizeDelta;
+                Parent=r.parent;SiblingIndex=r.GetSiblingIndex();Scale=r.localScale;
                 var text=r.GetComponent<Text>();
                 FontSize=text?text.fontSize:0;
             }
             public void Restore()
             {
                 if(!Rect)return;
+                if(Parent)
+                {
+                    Rect.SetParent(Parent,false);
+                    Rect.SetSiblingIndex(Mathf.Clamp(SiblingIndex,0,
+                        Parent.childCount-1));
+                }
+                Rect.localScale=Scale;
                 Rect.anchorMin=AnchorMin;Rect.anchorMax=AnchorMax;Rect.pivot=Pivot;
                 Rect.anchoredPosition=Position;Rect.sizeDelta=Size;
                 var text=Rect.GetComponent<Text>();
@@ -119,9 +130,13 @@ namespace Eldoria.BreachWatch
             {
                 left=Find(root,"V3 / Featured military unit");
                 hero=FindDirect(left,"Approved source / training-archer-isolated-v1");
-                identity=Find(left,"Training / unit manuscript");
-                nameText=Find(left,"Unit or hero title");
-                detailText=Find(left,"Unit profile and composition");
+                // The authoritative controller reparents the real text
+                // under its WHOLE-room layout in some responsive states.
+                // Search the real root (not only left) and adopt those same
+                // text objects; never create replacement gameplay labels.
+                identity=Find(root,"Training / unit manuscript");
+                nameText=Find(root,"Unit or hero title");
+                detailText=Find(root,"Unit profile and composition");
                 t1=Find(left,"Training unit card T1");
                 t2=Find(left,"Training unit card T2");
                 portraits[0]=Find(t1,"Approved source / training-archer-isolated-v1");
@@ -149,13 +164,21 @@ namespace Eldoria.BreachWatch
             if(IsCinematicPortrait && Mathf.Abs(w-lastW)<.5f &&
                Mathf.Abs(h-lastH)<.5f &&
                Mathf.Abs(t1.anchoredPosition.x-15f)<.5f &&
-               Mathf.Abs(t1.anchoredPosition.y+firstY)<.5f)
+               Mathf.Abs(t1.anchoredPosition.y+firstY)<.5f &&
+               identity.parent==left && nameText.parent==left &&
+               detailText.parent==left)
                 return true;
 
             foreach(var rt in new[]{hero,identity,nameText,detailText,
                 t1,t2,portraits[0],portraits[1],labels[0],labels[1]})
                 Remember(rt);
 
+            // Capture exact canonical parent/sibling/scale before moving the
+            // genuine parchment and live text into the cinematic art pane.
+            // Restore() returns everything to source ownership without loss.
+            foreach(var rt in new[]{identity,nameText,detailText})
+                if(rt.parent!=left)rt.SetParent(left,false);
+            identity.SetAsFirstSibling();
             float contentLeft=cardW+29f;
             // One horizontal title and subtitle, seated in ONE new stone
             // plaque. The unmodified previous screen had illegible dark
