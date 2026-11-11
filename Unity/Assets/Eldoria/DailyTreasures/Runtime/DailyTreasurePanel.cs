@@ -1364,6 +1364,39 @@ namespace Eldoria.DailyTreasures
             return null;
         }
 
+
+        // A one-frame Bastion portrait is 600x900; an authenticated landscape
+        // lens is 960x540. RawImage Cover cannot turn one into the other:
+        // after a physical device rotation it crops MOST of the real
+        // building and makes genuine stonework appear blurred. Keep the
+        // painted event and committed report, but reshoot only when the
+        // orientation changes. Never rotate the gameplay camera or mint
+        // another milestone/reward; release the previous GPU texture.
+        void RefreshBastionLensForRotation(float width,float height)
+        {
+            if(currentStage!=DailyTreasureStageKind.Bastion ||
+               !ceremony || !ceremony.gameObject.activeSelf ||
+               !capturedBastionScene)return;
+            bool requiredPortrait=height>width;
+            bool renderedPortrait=
+                capturedBastionScene.height>capturedBastionScene.width;
+            if(requiredPortrait==renderedPortrait)return;
+            var replacement=DailyTreasureBastionCamera.Capture(width,height);
+            if(!replacement)
+            {
+                // Retain the actual previous image rather than inventing a
+                // fallback castle or allocating/retrying once per frame.
+                Debug.LogWarning("BASTION_ROTATION_RECAPTURE_UNAVAILABLE");
+                return;
+            }
+            var previous=capturedBastionScene;
+            capturedBastionScene=replacement;
+            if(milestoneScenery)milestoneScenery.texture=replacement;
+            if(milestoneCinematicBackdrop)
+                milestoneCinematicBackdrop.texture=replacement;
+            DailyTreasureBastionCamera.Release(previous);
+        }
+
         void SetMilestoneScenery(string eventId,bool showChest)
         {
             var path=showChest?MilestoneScenerySource(eventId):null;
@@ -1711,6 +1744,11 @@ namespace Eldoria.DailyTreasures
                 prizeCount==0 && w>=275f && h>=300f;
             var stage=eventStage?DailyTreasureStageDirection.Compose(
                 activeMilestoneId,w,h):default(DailyTreasureStageLayout);
+            // Orientation is also re-evaluated by the SAME native Editor
+            // Layout() probe. A stale portrait source must never stand in
+            // for the newly rotated view of the player's actual Bastion.
+            if(eventStage && currentStage==DailyTreasureStageKind.Bastion)
+                RefreshBastionLensForRotation(w,h);
             // Ordinary resources deserve the same illustrated materials but
             // not a giant EMPTY modal. An earned-item reveal uses a distinct,
             // compact luxury frame. The ceremonial coffer remains immersive.
