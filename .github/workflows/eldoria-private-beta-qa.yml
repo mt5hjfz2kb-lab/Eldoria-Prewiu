@@ -79,7 +79,7 @@ jobs:
           if($errors.Count){$errors|Format-List;throw 'PowerShell syntax errors in reversible native probe'}
           $code=Get-Content $path -Raw
           foreach($marker in @('runTests','LazyRegionStartupTests','lazy-world-native-result.json',
-              'Testers','if($issues.Count)','Get-Process Unity,blender','git status --porcelain')){
+              'testers_authorized','if($issues.Count)','Get-Process Unity,blender','git status --porcelain')){
             if(-not $code.Contains($marker)){throw "Native QA missing gate: $marker"}
           }
           Write-Host 'LAZY_REGION_NATIVE_RUNNER_SOURCE_AND_PARSER_PASS; UNITY_NOT_RUN'
