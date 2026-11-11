@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -279,7 +280,26 @@ namespace Eldoria.Issue186Art.Editor
                         "issue186.claim","ClaimReward",true,canvas,buttonRect,pointer,halo),
                     "Failed to restore disposable art study");
                 Canvas.ForceUpdateCanvases();
-                cam.Render();cam.Render();
+                // Camera.Render() is not supported for this project's URP.
+                // Unity 6 render requests render the full Base Camera stack to
+                // the exact target outside the frame loop. Fail closed if not
+                // supported instead of uploading a blank "evidence" screenshot.
+                if (GraphicsSettings.currentRenderPipeline != null)
+                {
+                    var request = new RenderPipeline.StandardRequest
+                    {
+                        destination = rt
+                    };
+                    Need(RenderPipeline.SupportsRenderRequest(cam, request),
+                        "URP camera does not support a StandardRequest");
+                    RenderPipeline.SubmitRenderRequest(cam, request);
+                    RenderPipeline.SubmitRenderRequest(cam, request);
+                }
+                else
+                {
+                    cam.Render();
+                    cam.Render();
+                }
                 RenderTexture.active=rt;
                 readback=new Texture2D(width,height,TextureFormat.RGB24,false);
                 readback.ReadPixels(new Rect(0,0,width,height),0,0);
