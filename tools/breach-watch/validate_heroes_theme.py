@@ -36,6 +36,11 @@ def main():
          'SetVector("_PortraitUVRect"' in genuine_profile and
          "hallProfileFallbackMaterial" in genuine_profile,
          "Lyra's genuine approved photo fallback must be feathered in the 2.5D hall")
+    need('navCell=(navWidth-navGap*2f)/3f' in genuine_profile and
+         'Hall / nav reliquary' not in genuine_profile and
+         'Hall / nav marches' in genuine_profile and
+         'Hall / nav return' in genuine_profile,
+         "Hero Salon must show exactly three genuine, wider destinations; no inert Relicario")
     need("Heroes / live controls" in H and
          "ResetPresentation()" in H and "originals" in H and
          "IsOldRoyalFrame" in H and "SpriteMeshType.FullRect" in H,
