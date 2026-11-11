@@ -154,12 +154,21 @@ namespace Eldoria.Issue186Art
             // in 390/844 mobile left only ~30px to the screen edge. A hand
             // extending right would be cut off. Mirror it from the LEFT when
             // the real render geometry does not fit on the right.
-            bool Place(bool mirror)
+            bool Place(bool mirror, int contact)
             {
+                // A top-edge header CTA may have space to the left, but
+                // not ABOVE the fingertip. Try its center first, then its
+                // lower/upper edge. Never squeeze or clip the painted hand.
+                float contactY = actualControl.rect.center.y;
+                float insetY = Mathf.Min(4f, actualControl.rect.height*.12f);
+                if (contact == 1)
+                    contactY = actualControl.rect.yMin + insetY;
+                else if (contact == 2)
+                    contactY = actualControl.rect.yMax - insetY;
                 var tip = actualControl.TransformPoint(new Vector3(
                     mirror ? actualControl.rect.xMin - 3f :
                              actualControl.rect.xMax + 3f,
-                    actualControl.rect.center.y, 0f));
+                    contactY, 0f));
                 var target = RectTransformUtility.WorldToScreenPoint(camera,tip);
                 if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     parent,target,camera,out var local))return false;
@@ -176,7 +185,12 @@ namespace Eldoria.Issue186Art
                 }
                 return true;
             }
-            if (!Place(false) && !Place(true))
+            bool fits = false;
+            for(int vertical = 0; vertical < 3 && !fits; vertical++)
+            {
+                fits = Place(false, vertical) || Place(true, vertical);
+            }
+            if (!fits)
             {
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
