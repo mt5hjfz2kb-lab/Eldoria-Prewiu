@@ -1,0 +1,17 @@
+{
+  "scene": "vigilants",
+  "status": "PREUNITY_UNREVIEWED_CANDIDATE",
+  "art_approved": false,
+  "unity_native_verified": false,
+  "identity": "canonical_event_insignia_overlay_required",
+  "generated_illustration_not_authentic_gameplay": true,
+  "source_task_id": "c4b9d670-280a-4173-bd27-3687cbf836cb",
+  "segmentation_task_id": "5e52aadb-b2d3-4414-8605-2f14acdce790",
+  "sha256": "f881aed36057181e72538985d5fd0dd05ce4a08c99cb7f297cd93283946d714b",
+  "size": [
+    1376,
+    768
+  ],
+  "transparent_ratio": 0.7347,
+  "visible_ratio": 0.2653
+}
