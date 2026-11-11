@@ -8,6 +8,7 @@ var paths = new[]
 {
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186ArtKit.cs",
     "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186ArtAudit.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs",
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs"
 };
 var opts = CSharpParseOptions.Default.WithPreprocessorSymbols("UNITY_EDITOR","UNITY_6000_3_OR_NEWER");
