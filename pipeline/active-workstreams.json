@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T14:14:48Z",
+ "updated_at": "2026-11-11T16:48:00Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -22,24 +22,39 @@
   {
    "id": "eldoria-issue186-reward-attention-guidance-20261111",
    "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-   "owner": "chatgpt-issue186-reward-domain-20261111",
+   "owner": "chatgpt-issue186-art-import-recovery-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 1,
+   "ownership_revision": 4,
    "branch": "feature/issue186-reward-attention-guidance-20261111",
    "status": "active",
-   "phase": "ISOLATED_DOMAIN_IMPLEMENTATION_CI_PENDING",
+   "phase": "ART_SOURCE_IMPORTED_NATIVE_GATE_DESIGN_AND_IMPORT_QA",
    "claimed_at": "2026-11-11T14:14:48Z",
-   "art_production_routing": "not_applicable",
-   "art_production_routing_reason": "Rules-only source with no generated art. Future visual badges and hand pointer belong to PR173 after actual Unity comparison.",
+   "art_production_routing": "required",
    "resources": [],
    "scope": [
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
     "tools/reward-experience/**",
     ".github/workflows/reward-experience-domain.yml",
-    "docs/issue186/**"
+    "docs/issue186/**",
+    "Unity/Assets/Eldoria/Issue186Art/**",
+    "Unity/Assets/Eldoria/Issue186Art.meta",
+    "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
+    ".github/workflows/issue186-native.yml"
    ],
-   "next": "PR187 source only. No changes to GameState/LocalGateway or concurrent PR181, UI PR173, beta PR179. No Windows, merge or release. Coordinate handoff before gameplay wiring."
+   "next": "Independent native Unity capture workflow planned under own scope, exact Windows CAS claim required. PC remains #173; no dispatch until honest resource transfer.",
+   "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
+   "previous_owner": "chatgpt-issue186-art-20261111",
+   "ownership_history": [
+    {
+     "from": "chatgpt-issue186-art-20261111",
+     "to": "chatgpt-issue186-art-import-recovery-20261111",
+     "previous_revision": 2,
+     "revision": 3,
+     "transferred_at": "2026-11-11T16:38:00Z",
+     "reason": "El propietario ordena en este chat continuar sin interrumpirse la importación artística y QA de #186/#187. Mismo ID y rama, sin reservar Windows de #173 ni tocar rutas de #181/#179; último PR187 SHA b19b1a82 y CI dominio PASS."
+    }
+   ]
   },
   {
    "id": "valoria-master-plan-layered-construction-20261016",
