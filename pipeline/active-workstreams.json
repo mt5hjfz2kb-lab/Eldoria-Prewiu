@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T09:51:00Z",
+  "updated_at": "2026-11-11T10:02:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6988,9 +6988,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "P0_CITY_ONLY_NATIVE_42998206844_RUNNING",
-      "note": "Owner beta13 physically FAILED 2026-11-11: ready 08:17:13, resize vertical, new boot 08:17:20. Not cured by collision prebake. Workstream reclaimed for bounded investigation while preserving separate beta10.",
-      "next": "Wait for actual 42998206844 Unity job completion; inspect source-hash audit, native parity, restoration=true and fresh WebGL. On success run isolated package + Mac WebKit QA without Pages publication; on failure repair concrete gate and rerun only after recovery. Preserve beta10 and tester hold.",
+      "phase": "P0_CITY_ONLY_NATIVE_RUN42998206844_ACTIVE",
+      "note": "Beta13 owner-reported physical failure remains P0; skip full world only in owner QA URL. Windows exact source CRLF-only guard repaired with SHA proof, branch 63fb2095; native job active, package workflow e9c861ac staged. No testers.",
+      "next": "DO NOT re-launch Windows: native run42998206844 (job130447628038) is active, preflight passed. Inspect outcome/evidence and restoration on completion, then use isolated owner-only city QA packaging workflow e9c861ac; physical iPhone full-world stability unverified.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
