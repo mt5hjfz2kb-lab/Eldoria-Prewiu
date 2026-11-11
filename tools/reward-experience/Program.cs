@@ -40,10 +40,20 @@ internal static class Program
                 "real package sprite address: " + expected);
         }
         Check(ResourceRewardRules.SpriteKey("invalid", 100) == null &&
-            ResourceRewardRules.SpriteKey("wood", 30) == null,
-            "no fabricated sprite for unsupported denomination");
-        Check(!ResourceRewardRules.TryIssue(p, "mission:99", "mission", "wood", 99),
-            "reject nonstandard resource denominations");
+            ResourceRewardRules.SpriteKey("wood", 0) == null,
+            "no sprite for invalid kind or nonpositive quantity");
+        Check(ResourceRewardRules.SpriteKey("wood", 30) ==
+                "Issue186ResourceArt/pack_wood_100" &&
+              ResourceRewardRules.SpriteKey("stone", 2500) ==
+                "Issue186ResourceArt/pack_stone_1k" &&
+              ResourceRewardRules.SpriteKey("food", int.MaxValue) ==
+                "Issue186ResourceArt/pack_food_100k" &&
+              ResourceRewardRules.AmountLabel(30) == "30" &&
+              ResourceRewardRules.AmountLabel(2500) == "2500" &&
+              ResourceRewardRules.AmountLabel(1000) == "1K",
+            "nonstandard legitimate amounts retain exact text with nearest available picture");
+        Check(!ResourceRewardRules.TryIssue(p, "mission:99", "mission", "wood", -99),
+            "reject invalid negative amount, not a valid 99-piece award");
         Check(ResourceRewardRules.IsStandardTier(100) &&
             ResourceRewardRules.IsStandardTier(1000) &&
             ResourceRewardRules.IsStandardTier(10000) &&
@@ -96,6 +106,14 @@ internal static class Program
             "daily ready badge");
         Check(AttentionSignalRules.DailyTreasure(false) == AttentionLevel.None,
             "daily empty badge");
+
+        Check(ResourceRewardRules.TryIssue(p, "mission:99", "mission", "wood", 99) &&
+            wallet.Wood == 1350, "valid odd-sized reward is kept in inventory without credit");
+        Check(ResourceRewardRules.TryUse(p, wallet, "mission:99", out int odd) &&
+            odd == 99 && wallet.Wood == 1449,
+            "99-wood packet credits exactly 99 only when explicitly used");
+        Check(!ResourceRewardRules.TryUse(p, wallet, "mission:99", out _) &&
+            wallet.Wood == 1449, "nonstandard packet cannot pay twice");
 
         Check(ResourceRewardRules.TryIssue(p, "overflow:food", "event", "food", 100),
             "overflow test package");
