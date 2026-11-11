@@ -301,6 +301,32 @@ namespace Eldoria.BreachWatch.Editor
             CaptureActualGroundMaterialInventory(dir);
             Need(ui != null && ui.IndependentCanvas && ui.LegacyPresentationHidden,
                 "This must be a new Canvas; the entire old HUD presentation must be OFF");
+            // A disabled legacy Canvas must NOT hide canonical story or
+            // confirmation dialogs. Verify the ONE existing ModalWindow is
+            // actually moved to Vigilia, its old frame switched off, and
+            // its real Show/Hide lifecycle still works with gameplay intact.
+            Need(ui.CanonicalModalVisibleOnIndependentCanvas &&
+                 host.Hud.Modal.transform.IsChildOf(ui.transform),
+                 "Canonical narrative/confirmation modal is stranded under hidden Royal HUD");
+            var genuineModal=host.Hud.Modal;
+            var modalFrame=genuineModal.transform.Find("SafeArea/Window");
+            Need(modalFrame && modalFrame.GetComponent<Graphic>() &&
+                 !modalFrame.GetComponent<Graphic>().enabled &&
+                 modalFrame.Find("Vigilia / one forged stone modal"),
+                 "Old modal painting remains or new modal stone is missing");
+            var preservedModalGame=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            var currentChapter=host.Read("bastion",host.English);
+            genuineModal.Show(currentChapter.Chapter,currentChapter.Objective);
+            Canvas.ForceUpdateCanvases();
+            Need(genuineModal.gameObject.activeInHierarchy &&
+                 genuineModal.Close &&
+                 genuineModal.Close.targetGraphic &&
+                 genuineModal.Close.targetGraphic.gameObject.activeInHierarchy,
+                 "Real modal open/close became invisible after old HUD disabled");
+            genuineModal.Hide();
+            Need(!genuineModal.gameObject.activeInHierarchy &&
+                 preservedModalGame==JsonUtility.ToJson(host.City.Gateway.Snapshot()),
+                 "Native modal lifecycle modified actual gameplay/save state");
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
             Need(ui.HasTrueResourceIllustrations,
                 "All three resource icons must be real, recognizable licensed independent sprites");
