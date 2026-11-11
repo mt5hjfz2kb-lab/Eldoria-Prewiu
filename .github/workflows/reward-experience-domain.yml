@@ -18,6 +18,7 @@ jobs:
           lfs: false
           sparse-checkout: |
             Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Issue186Art
             tools/reward-experience
           sparse-checkout-cone-mode: true
       - uses: actions/setup-dotnet@v4
@@ -25,3 +26,5 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Execute actual reward domain rules with source-linked smoke
         run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
+      - name: Roslyn syntax check of real Unity runtime and editor art scripts
+        run: dotnet run -c Release --project tools/reward-experience/ArtSyntaxAudit.csproj
