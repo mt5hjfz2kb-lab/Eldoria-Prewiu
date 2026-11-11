@@ -81,11 +81,16 @@ def main():
             "Native bridge must refresh cinematic composition after real layout")
     require("destinationBridge.Initialize(host,canvas)" in hud,
             "Native proof canvas must initialize destination bridge")
-    require("int mask=(1<<0)|(1<<1);" in hud,
-            "Unapproved Army/Heroes controls must remain hidden")
-    require("case 2:" not in hud.split("void Navigate(int index)",1)[1]
-            .split("void LateUpdate()",1)[0],
-            "Do not expose incomplete new Army navigation")
+    require("int mask=(1<<0)|(1<<1);" in hud and
+            "host.CanOpen(RoyalSection.Army)" in hud and
+            "hero.CanOpenDestination()" in hud,
+            "Hero/army icons must only unlock after real story requirements")
+    nav=hud.split("void Navigate(int index)",1)[1].split("void LateUpdate()",1)[0]
+    require("case 2:" in nav and "case 4:" in nav and
+            "destinationBridge.TryOpen(" in nav and
+            "heroesBridge.TryOpen()" in nav and
+            "SelectBuilding(\"\")" in nav,
+            "Navigation must reuse ONLY story-gated canonical new Canvas destinations")
     print("VIGILIA_SHARED_DESTINATION_SOURCE_PASS")
     print("VISUAL_APPROVAL_NOT_CLAIMED")
     print("UNITY_DESTINATION_SCREENSHOTS_PENDING")
