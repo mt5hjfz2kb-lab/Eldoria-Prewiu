@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Beta13 previously physically restarted. Owner now reports a session with no restart (11 Nov 12:23 CET), exact version/duration not yet attributed; beta14 city-only still disables world on opt-in. Physical full-world I-V, persistence and 30 min are unverified. External testers remain blocked.",
+  "reason": "Owner now confirms exact beta14 city-only URL and reports no restart on iPhone. Only startup in city with world deliberately disabled is observed; full-world load, 30min physical stability, nickname persistence, Android and Bastion I-V remain unverified. Do not authorize external testers.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -638,7 +638,7 @@
     "previous_beta10_preserved": true,
     "preserved_existing_files_verified": true,
     "previous_failed_beta13_bundle_not_republished": true,
-    "physical_iphone_result": "PENDING_DEVICE_RETEST",
+    "physical_iphone_result": "OWNER_REPORTED_NO_RESTART_BETA14_CITY_ONLY_DURATION_UNKNOWN",
     "physical_30min_pass": false,
     "external_testers_enabled": false,
     "release_for_testers": false,
@@ -647,13 +647,16 @@
       "status": "OWNER_REPORTED_NO_RESTART",
       "reported_local_time": "2026-11-11 12:23 Europe/Madrid",
       "source": "owner chat message 'Ya no se reinicia!'",
-      "version_attribution": "UNCONFIRMED_NOT_EXPLICITLY_NAMED_IN_MESSAGE",
+      "version_attribution": "CONFIRMED_BETA14_CITY_ONLY_BY_EXACT_OWNER_SUPPLIED_URL_2026_11_11_13_46_CET",
       "session_duration_minutes": null,
       "entered_world": null,
       "persistence_checked": null,
       "clock_anchor_checked": null,
-      "interpretation": "Promising physical observation; if beta14 city-only, world loading remains disabled by opt-in. Not a full game fix or 30-min certification.",
-      "tester_release_authorized": false
+      "interpretation": "Owner confirms the exact beta14 opt-in city-only URL as the no-restart test. The real world is deliberately not initialized, so absence of restart is strong isolation evidence, but no full-world fix or 30-minute stability certificate.",
+      "tester_release_authorized": false,
+      "owner_supplied_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-city/?eldoria_p0_city_only=1&eldoria_diag=1&utm_source=chatgpt.com",
+      "owner_url_attribution_verified": true,
+      "query_note": "utm_source=chatgpt.com is tracking attribution only; relevant diagnostic switch is eldoria_p0_city_only=1"
     }
   }
 }
