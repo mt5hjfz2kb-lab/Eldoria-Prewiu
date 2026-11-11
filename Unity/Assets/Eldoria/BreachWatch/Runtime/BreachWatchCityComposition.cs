@@ -49,79 +49,6 @@ namespace Eldoria.BreachWatch
         static readonly string[] RoofSlotMaterials={
             "material-3","material-4","material-5"
         };
-        // This is a bounded art experiment on the actual Unity Terrain that
-        // native run 42973492861 identified, not a screen-space color film.
-        // The canonical TerrainData and shared TerrainLayer assets must never
-        // be edited. Clone only the data/layer for the independent preview;
-        // restore the exact original references on uninstall. The terrain
-        // collider retains the same unmodified physical heightmap.
-        Terrain paletteTerrain;
-        TerrainData previousTerrainData;
-        TerrainData previewTerrainData;
-        readonly List<TerrainLayer> previewLayers=new List<TerrainLayer>();
-
-        void ApplyReferenceGroundPalette()
-        {
-            foreach(var terrain in FindObjectsByType<Terrain>(FindObjectsSortMode.None))
-            {
-                if(!terrain || !terrain.gameObject.scene.isLoaded ||
-                   terrain.name!="Valoria continuous sculpted terrain" ||
-                   !terrain.terrainData)continue;
-                var original=terrain.terrainData;
-                var layers=original.terrainLayers;
-                if(layers==null || layers.Length==0 || layers.Length>8)continue;
-                if(!System.Array.Exists(layers,x=>x && x.name=="ShelteredGrass"))
-                    continue;
-                var candidate=Instantiate(original);
-                candidate.name="Vigilia / private reversible ground data";
-                var candidates=new TerrainLayer[layers.Length];
-                int tinted=0;
-                for(int i=0;i<layers.Length;i++)
-                {
-                    if(!layers[i]){candidates[i]=null;continue;}
-                    if(layers[i].name!="ShelteredGrass")
-                    {
-                        candidates[i]=layers[i];
-                        continue;
-                    }
-                    var own=Instantiate(layers[i]);
-                    own.name="Vigilia / transient sheltered grass";
-                    var originalMax=own.diffuseRemapMax;
-                    // Owner JPEG uses darker, muted olive ground compared to
-                    // lime terrain in previous native 900x1600. These are
-                    // trial factors, not a certified RGB->GPU transfer curve.
-                    own.diffuseRemapMax=new Vector4(
-                        originalMax.x*.84f,originalMax.y*.74f,
-                        originalMax.z*.71f,originalMax.w);
-                    candidates[i]=own;
-                    previewLayers.Add(own);
-                    tinted++;
-                }
-                if(tinted==0){Destroy(candidate);continue;}
-                candidate.terrainLayers=candidates;
-                paletteTerrain=terrain;
-                previousTerrainData=original;
-                previewTerrainData=candidate;
-                terrain.terrainData=candidate;
-                Debug.Log("VIGILIA_GROUND_PALETTE_TRIAL originalLayers="+
-                    layers.Length+" changedGrass="+tinted+
-                    " isolatedTerrainData="+(previousTerrainData!=previewTerrainData));
-                return;
-            }
-            Debug.Log("VIGILIA_GROUND_PALETTE_NOT_APPLIED_NO_CANONICAL_GRASS_LAYER");
-        }
-        void RestoreReferenceGroundPalette()
-        {
-            if(paletteTerrain && previousTerrainData)
-                paletteTerrain.terrainData=previousTerrainData;
-            if(previewTerrainData)Destroy(previewTerrainData);
-            foreach(var owned in previewLayers)if(owned)Destroy(owned);
-            previewLayers.Clear();
-            paletteTerrain=null;
-            previousTerrainData=null;
-            previewTerrainData=null;
-        }
-
         float lastAspect;
 
         public bool PortraitFramed => portraitFramed;
@@ -137,7 +64,6 @@ namespace Eldoria.BreachWatch
                 originalPosition=cityCamera.transform.position;
                 captured=cityCamera.orthographic;
             }
-            ApplyReferenceGroundPalette();
             // The ephemeral HUD owns its own palette. The world will be
             // reverted on uninstall even if the user never opens the panel.
             if(source && source.City)
@@ -325,7 +251,6 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
-            RestoreReferenceGroundPalette();
             RestoreOriginalRoofPresentation();
             if(!captured || !portraitFramed || !cityCamera || !host || !host.City)return;
             cityCamera.orthographicSize=originalZoom;
