@@ -49,6 +49,71 @@ namespace Eldoria.BreachWatch
         static readonly string[] RoofSlotMaterials={
             "material-3","material-4","material-5"
         };
+        // Native #42974867562 proved the actual 256×256 terrain alphamap
+        // contains 7 layers, of which ONLY index 0 (layer-0) is painted:
+        // mean/max weight=1.000 in 196 spatial samples; all other six
+        // layers, including ShelteredGrass, have weight=0.000. The earlier
+        // ShelteredGrass trial changed zero screenshot pixels, was reverted.
+        // This attempt changes ONLY the genuine painted material. It cannot
+        // touch the shared TerrainData or TerrainLayer assets permanently.
+        Terrain paletteTerrain;
+        TerrainData originalTerrainData, privateTerrainData;
+        TerrainLayer privateGroundLayer;
+        void ApplyReferenceGroundPalette()
+        {
+            foreach(var terrain in FindObjectsByType<Terrain>(FindObjectsSortMode.None))
+            {
+                if(!terrain || !terrain.gameObject.scene.isLoaded ||
+                   terrain.name!="Valoria continuous sculpted terrain" ||
+                   !terrain.terrainData)continue;
+                var data=terrain.terrainData;
+                var layers=data.terrainLayers;
+                if(layers==null || layers.Length!=7 ||
+                   layers[0]==null || layers[0].name!="layer-0" ||
+                   data.alphamapLayers!=7)continue;
+                var sample=data.GetAlphamaps(data.alphamapWidth/2,
+                    data.alphamapHeight/2,1,1);
+                if(sample[0,0,0]<.99f)continue;
+                // A private copy is essential. TerrainLayer diffuse remaps
+                // are serialized shared assets; editing one in-place would
+                // alter the main player's world even after UI teardown.
+                var ownData=Instantiate(data);
+                ownData.name="Vigilia / reversible unshared terrain";
+                var ownLayer=Instantiate(layers[0]);
+                ownLayer.name="Vigilia / dominant ground palette sample";
+                var sourceMax=ownLayer.diffuseRemapMax;
+                // Experimental warm-olive signal, to be judged ONLY by an
+                // exact Unity before/after, not by shader color estimates.
+                ownLayer.diffuseRemapMax=new Vector4(
+                    sourceMax.x*.82f,sourceMax.y*.72f,
+                    sourceMax.z*.67f,sourceMax.w);
+                var privateLayers=(TerrainLayer[])layers.Clone();
+                privateLayers[0]=ownLayer;
+                ownData.terrainLayers=privateLayers;
+                paletteTerrain=terrain;
+                originalTerrainData=data;
+                privateTerrainData=ownData;
+                privateGroundLayer=ownLayer;
+                terrain.terrainData=ownData;
+                Debug.Log("VIGILIA_ACTUAL_GROUND_LAYER0_TRIAL "+
+                    "original="+layers[0].name+
+                    " sourceWeight="+sample[0,0,0].ToString("F3")+
+                    " privateData="+(privateTerrainData!=originalTerrainData)+
+                    " noSharedAssetMutation=true");
+                return;
+            }
+            Debug.Log("VIGILIA_ACTUAL_GROUND_PALETTE_SKIPPED_UNEXPECTED_LAYERS");
+        }
+        void RestoreReferenceGroundPalette()
+        {
+            if(paletteTerrain && originalTerrainData)
+                paletteTerrain.terrainData=originalTerrainData;
+            if(privateTerrainData)Destroy(privateTerrainData);
+            if(privateGroundLayer)Destroy(privateGroundLayer);
+            paletteTerrain=null;privateTerrainData=null;
+            originalTerrainData=null;privateGroundLayer=null;
+        }
+
         float lastAspect;
 
         public bool PortraitFramed => portraitFramed;
@@ -64,6 +129,7 @@ namespace Eldoria.BreachWatch
                 originalPosition=cityCamera.transform.position;
                 captured=cityCamera.orthographic;
             }
+            ApplyReferenceGroundPalette();
             // The ephemeral HUD owns its own palette. The world will be
             // reverted on uninstall even if the user never opens the panel.
             if(source && source.City)
@@ -251,6 +317,7 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            RestoreReferenceGroundPalette();
             RestoreOriginalRoofPresentation();
             if(!captured || !portraitFramed || !cityCamera || !host || !host.City)return;
             cityCamera.orthographicSize=originalZoom;
