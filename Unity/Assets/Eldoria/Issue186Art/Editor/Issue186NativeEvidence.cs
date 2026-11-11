@@ -265,14 +265,34 @@ namespace Eldoria.Issue186Art.Editor
                 Need(pointed && pointer.gameObject.activeInHierarchy &&
                      !pointer.raycastTarget && !halo.raycastTarget,
                     "Pointer not anchored to a real interactable button");
-                // The fingertip may graze the button edge; never cover the
-                // central action label or intercept the tap.
-                bool pointerClear =
-                    pointer.rectTransform.anchoredPosition.x +
-                    pointer.rectTransform.rect.xMin >=
-                    buttonRect.anchoredPosition.x + buttonRect.rect.width*.20f;
+                // Either the original RIGHT hand or a mirrored LEFT hand
+                // is valid. Measure genuine transformed geometry rather than
+                // assuming it always approaches from the right; that false
+                // assumption rejected every near-edge mobile CTA.
+                var handCorners=new Vector3[4];
+                pointer.rectTransform.GetWorldCorners(handCorners);
+                float handMinX=float.PositiveInfinity;
+                float handMaxX=float.NegativeInfinity;
+                foreach(var corner in handCorners)
+                {
+                    float x=root.InverseTransformPoint(corner).x;
+                    handMinX=Mathf.Min(handMinX,x);
+                    handMaxX=Mathf.Max(handMaxX,x);
+                }
+                float labelCoreLeft=buttonRect.anchoredPosition.x -
+                    buttonRect.rect.width*.30f;
+                float labelCoreRight=buttonRect.anchoredPosition.x +
+                    buttonRect.rect.width*.30f;
+                bool pointerClear=handMaxX<=labelCoreLeft ||
+                    handMinX>=labelCoreRight;
                 Need(pointerClear,
-                    "Tutorial pointer obscures the central claim action");
+                    "Tutorial pointer overlaps center 60% of claim label");
+                // This specific near-right-edge fixture MUST exercise the
+                // mirrored fallback. Otherwise its unmirrored gauntlet would
+                // be cropped by the device safe area, even if all images load.
+                bool actuallyMirrored=pointer.rectTransform.localScale.x<0f;
+                Need(actuallyMirrored,
+                    "Near-edge mobile/desktop fixture did not mirror the hand");
                 // Test the browser/device-independent UI event flow using a
                 // real GraphicRaycaster, not an invented click coordinate.
                 var evGO=new GameObject("Disposable event dispatch",
