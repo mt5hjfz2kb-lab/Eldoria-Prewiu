@@ -18,11 +18,24 @@ namespace Eldoria.Issue186Art
 
         public static bool BindPacket(Image icon, Text quantity, string kind, int amount)
         {
-            if (!icon || amount <= 0)
+            // Recycler slots can hold yesterday's icon. A missing/invalid
+            // reward must NEVER silently display the previous resource, even
+            // if its backing Sprite is valid. Do not disable the GameObject:
+            // the same slot may also own its Button and reusable layout.
+            Sprite sprite = icon && amount > 0 ? PacketSprite(kind, amount) : null;
+            if (!sprite)
+            {
+                if (icon)
+                {
+                    icon.sprite = null;
+                    icon.enabled = false;
+                    icon.raycastTarget = false;
+                }
+                if (quantity) quantity.text = string.Empty;
                 return false;
-            Sprite sprite = PacketSprite(kind, amount);
-            if (!sprite) return false; // Missing art is NOT an excuse for fake items.
+            }
             icon.sprite = sprite;
+            icon.enabled = true;
             icon.type = Image.Type.Simple;
             icon.preserveAspect = true;
             icon.raycastTarget = false;
