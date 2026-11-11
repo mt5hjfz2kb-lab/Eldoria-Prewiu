@@ -369,14 +369,26 @@ namespace Eldoria.BreachWatch.Editor
                         "Original illustrated world / decorative only");
                 Need(scenic && retention.HasSingleGradedScoutsPainting,
                     "Scouts violet-night palette was not applied to the REAL world image");
+                Need(retention.RealScoutsContractStoneReplaced,
+                    "Scouts art A/B did not REPLACE the 3 original paper images in-place");
+                var realPaper=retention.LiveScreenRect.GetComponentsInChildren<Image>(true)
+                    .Where(image=>image && image.name=="Reference parchment / visual only")
+                    .ToArray();
+                Need(realPaper.Length==3 && realPaper.All(image=>
+                    image.sprite && image.sprite.name=="Vigilia / real scouts carved slate"),
+                    "A contract still shows old pale parchment or has a layered copy");
                 CaptureMany(ui,folder,"scouts",retentionShots,
                     ()=>retention.IsShowing && retention.ReplacedOldChrome &&
-                        retention.HasSingleGradedScoutsPainting);
+                        retention.HasSingleGradedScoutsPainting &&
+                        retention.RealScoutsContractStoneReplaced);
                 retention.Close();
                 Need(!retention.IsShowing,
                     "Scouts did not return to new city Canvas");
                 Need(scenic && scenic.color==Color.white,
                     "Reversible Scouts grade leaked into the old canonical UI");
+                Need(realPaper.All(image=>image && image.sprite &&
+                    image.sprite.name!="Vigilia / real scouts carved slate"),
+                    "Carved stone material leaked into restored canonical parchment");
             }
             finally
             {
