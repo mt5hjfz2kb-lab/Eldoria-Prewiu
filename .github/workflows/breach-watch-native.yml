@@ -173,7 +173,19 @@ jobs:
           import base64
           with urllib.request.urlopen(request,timeout=20) as response:
               raw=json.load(response)
-          reg=json.loads(base64.b64decode(raw['content']))
+          encoded=raw.get('content')
+          if raw.get('encoding')!='base64' or not encoded:
+              blob_sha=raw.get('sha','')
+              if len(blob_sha)!=40 or any(c not in '0123456789abcdef' for c in blob_sha):
+                  raise SystemExit('Large registry identity invalid; refuse artwork write')
+              blob_url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+blob_sha
+              blob_request=urllib.request.Request(blob_url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(blob_request,timeout=30) as response:
+                  blob=json.load(response)
+              if blob.get('sha')!=blob_sha or blob.get('encoding')!='base64' or not blob.get('content'):
+                  raise SystemExit('Large registry immutable blob mismatch')
+              encoded=blob['content']
+          reg=json.loads(base64.b64decode(encoded))
           item=next((x for x in reg['active'] if x.get('id')=='eldoria-forja-oscura-visual-proof-20261107'),None)
           assert item and isinstance(item.get('owner'),str) and item['owner'] and item['ownership_state']=='claimed'
           assert any('BreachWatch/**' in x for x in item.get('scope',[]))
@@ -725,7 +737,20 @@ jobs:
           $ErrorActionPreference='Stop'
           $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Eldoria-BreachWatch'}
           $raw=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
-          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw.content -replace '\s',''))) | ConvertFrom-Json
+          $encoded=[string]$raw.content
+          if($raw.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($encoded)){
+            if([string]$raw.sha -notmatch '^[a-f0-9]{40}$'){
+              throw 'Large registry identity invalid; refuse native editor'
+            }
+            $blobUrl='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+$raw.sha
+            $blob=Invoke-RestMethod -Uri $blobUrl -Headers $headers
+            if($blob.sha -ne $raw.sha -or $blob.encoding -ne 'base64' -or
+               [string]::IsNullOrWhiteSpace([string]$blob.content)){
+              throw 'Large registry immutable blob mismatch'
+            }
+            $encoded=[string]$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\s',''))) | ConvertFrom-Json
           $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1 -or [string]::IsNullOrEmpty($env:LEASE_OWNER) -or
               $holders[0].owner -ne $env:LEASE_OWNER -or
@@ -948,3 +973,4 @@ jobs:
             review-output/vigilia_native_art_diff.json
             review-output/vigilia_review_manifest.json
           retention-days: 21
+
