@@ -147,6 +147,7 @@ namespace Eldoria.BreachWatch.Editor
             stateField.SetValue(gateway,fixture);
             var shots=new List<Screen>();
             var profileShots=new List<Screen>();
+            var unlockedNavShots=new List<Screen>();
             try
             {
                 host.City.Apply(fixture);
@@ -156,6 +157,32 @@ namespace Eldoria.BreachWatch.Editor
                     "Real destination previews must not show original HUD canvas");
                 var military=ui.RealDestinations;
                 Need(military!=null,"Missing staged canonical military bridge");
+                // Check the genuine Chapter III navigation, not merely
+                // source code. The 5 approved medallions must all fit after
+                // their own story unlock; Army/Heroes MUST use the new Canvas.
+                var navField=typeof(BreachWatchHud).GetField("navButtons",
+                    BindingFlags.Instance|BindingFlags.NonPublic);
+                var nav=navField?.GetValue(ui) as Button[];
+                ui.Reflow(900,1600);
+                ui.RenderNow();
+                Need(nav!=null && nav.Length==5 && nav[2] &&
+                     nav[4] && nav[2].interactable && nav[4].interactable,
+                     "Real army and heroine medallions missing after Chapter III unlock");
+                foreach(var size in new[]{(900,1600),(390,844)})
+                    unlockedNavShots.Add(Capture(ui,folder,"nav-advanced",
+                        size.Item1,size.Item2,
+                        ()=>nav[2].interactable && nav[4].interactable &&
+                            ui.LegacyPresentationHidden));
+                nav[2].onClick.Invoke();
+                Need(military.IsShowing && military.HasApprovedTheme,
+                     "Army navigation did not open the ONE real repainted march screen");
+                military.Close();
+                nav[4].onClick.Invoke();
+                Need(ui.RealHeroes && ui.RealHeroes.IsShowing &&
+                     ui.RealHeroes.ReplacedOldFrames,
+                     "Heroes navigation did not open the ONE real character screen");
+                ui.RealHeroes.Close();
+                if(military.IsShowing)military.Close();
                 var available=host.CanOpen(RoyalSection.Army);
                 var manager=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
                 Debug.Log("VIGILIA_TRAINING_PREVIEW_GATE available="+available+
@@ -258,6 +285,8 @@ namespace Eldoria.BreachWatch.Editor
             Need(shots.Count==16,"Expected sixteen real native destination captures");
             Need(profileShots.Count==10,
                 "Expected ten additional real Unity hero profile/page captures");
+            Need(unlockedNavShots.Count==2,
+                "Two genuinely unlocked city navigation captures required");
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
@@ -280,6 +309,17 @@ namespace Eldoria.BreachWatch.Editor
             File.WriteAllText(Path.Combine(folder,
                 "BreachWatchHeroProfilesEvidence.json"),
                 JsonUtility.ToJson(heroReport,true));
+            var navigationReport=new Report {
+                status="VIGILIA_ACTUAL_UNLOCKED_NAVIGATION_CAPTURED_ART_REVIEW_PENDING",
+                source=report.source,
+                notes="Two real 5-medallion Chapter III HUD renders and real Army/Heroes click routing, old Canvas disabled, no save mutation.",
+                probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                screenshotCount=unlockedNavShots.Count,
+                screens=unlockedNavShots.ToArray()
+            };
+            File.WriteAllText(Path.Combine(folder,
+                "BreachWatchAdvancedNavigationEvidence.json"),
+                JsonUtility.ToJson(navigationReport,true));
         }
 
         static void CaptureMany(BreachWatchHud ui,string folder,string name,
