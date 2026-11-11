@@ -1,4 +1,8 @@
 import json
+import gzip
+import struct
+from types import SimpleNamespace
+from prepare_lazy_owner_site import package_owner
 import tempfile
 import unittest
 from pathlib import Path
@@ -69,6 +73,57 @@ class LazyOwnerSiteEvidenceTests(unittest.TestCase):
         path=self.proof/"web-build.json"
         self.mutate(path,{"source_sha":"b"*40})
         with self.assertRaisesRegex(ValueError,"WebGL"):verify_source_proofs(self.proof,self.playmode,self.sha)
+    def test_synthetic_exact_webgl_bundle_packaging(self):
+        # Small fake UnityWebData container; this verifies ALL packaging I/O,
+        # manifests, source hashes, frozen shell and no texture substitutions.
+        # It is deliberately NOT a Unity build or iPhone gameplay test.
+        root=Path(self.temp.name)
+        orig=root/"source-webgl"
+        (orig/"Build").mkdir(parents=True)
+        bundle=b"synthetic-original-data.unity3d\\x00" * 25
+        filename=b"data.unity3d"
+        end=20+12+len(filename)
+        raw=(b"UnityWebData1.0\\x00"+struct.pack("<I",end)
+             +struct.pack("<III",end,len(bundle),len(filename))
+             +filename+bundle)
+        (orig/"Build/demo.data.unityweb").write_bytes(gzip.compress(raw))
+        (orig/"Build/demo.framework.js.unityweb").write_bytes(gzip.compress(b"synthetic framework"))
+        (orig/"Build/demo.wasm.unityweb").write_bytes(gzip.compress(b"\\x00asm\\x01\\x00\\x00\\x00"))
+        (orig/"Build/demo.loader.js").write_text("synthetic loader")
+        (orig/"index.html").write_text("native synthetic index")
+        shell=root/"frozen-beta14-shell"
+        shell.mkdir()
+        (shell/"index.html").write_text('<html><script src="play.js"></script></html>')
+        (shell/"style.css").write_text("body{}")
+        (shell/"city.png").write_bytes(b"fake-png-not-rendered")
+        (shell/"play.js").write_text('window.__eldoriaDiagnosticRevision="frozen";\\nbutton.textContent = "Diagnóstico · beta 14";')
+        self.put(shell/"release-identity.json",{
+            "revision":BETA14_REVISION,"source_sha":BETA14_SOURCE,
+            "release_for_external_testers":False})
+        compared=self.proof/"comparison.json"
+        self.mutate(compared,{"passes":[{
+            "baseline":{"inputAudit":"b"*64},"staged":{"inputAudit":"b"*64}},
+            {"baseline":{"inputAudit":"b"*64},"staged":{"inputAudit":"b"*64}}]})
+        output=root/"packaged-owner"
+        package_owner(SimpleNamespace(
+            native_artifact=str(self.proof),playmode_artifact=str(self.playmode),
+            webgl_artifact=str(orig),beta14_shell_artifact=str(shell),
+            output=str(output),work=str(root/"rebuild"),
+            source_head=self.sha,native_run="43000000000",
+            revision="native325-mobile15-full-lazy-owner-qa"))
+        identity=json.loads((output/"release-identity.json").read_text())
+        manifest=json.loads((output/"build-manifest.json").read_text())
+        self.assertFalse(identity["texture_payload_modified"])
+        self.assertFalse(identity["release_for_external_testers"])
+        self.assertFalse(identity["physical_iphone_30min_verified"])
+        self.assertFalse(identity["mac_same_binary_ab_verified"])
+        self.assertTrue(identity["full_region1_compiled"])
+        self.assertEqual(identity["source_sha"],self.sha)
+        self.assertTrue(manifest["decoded_parts"][manifest["data"]])
+        self.assertEqual(identity["candidate_bundle_sha256"],
+                         __import__("hashlib").sha256(bundle).hexdigest())
+        self.assertTrue((output/"owner-only-lazy-proof.json").exists())
+
     def test_reject_non_owner_confirmed_beta14_shell(self):
         shell=Path(self.temp.name)/"shell"
         shell.mkdir()
