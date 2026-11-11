@@ -29,6 +29,8 @@
    "status": "active",
    "phase": "ISOLATED_DOMAIN_IMPLEMENTATION_CI_PENDING",
    "claimed_at": "2026-11-11T14:14:48Z",
+   "art_production_routing": "not_applicable",
+   "art_production_routing_reason": "Rules-only source with no generated art. Future visual badges and hand pointer belong to PR173 after actual Unity comparison.",
    "resources": [],
    "scope": [
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
