@@ -111,6 +111,19 @@ namespace Eldoria.BreachWatch
             foreach(var text in realWindow.GetComponentsInChildren<RoyalText>(true))
                 if(text)originalInkColors[text]=text.color;
             RefreshInk();
+            // Empty real mail categories were a vacant black slab. Add one
+            // procedural, resolution-independent heraldic letter seal,
+            // but ONLY under the existing canonical empty-state label.
+            // That label is hidden whenever messages exist, so the art is
+            // hidden too. Never manufacture rewards, reports or messages.
+            foreach(var text in realWindow.GetComponentsInChildren<Text>(true))
+            {
+                if(!text || text.name!="Mailbox / genuine empty state")
+                    continue;
+                var seal=BreachWatchEmptyMailSeal.Install(text.rectTransform);
+                if(seal)newArtwork.Add(seal.gameObject);
+                break;
+            }
             styled=ReplacedOldPaintings>=4 && ReskinnedButtons>=3 &&
                 AllOldMailboxBackgroundsHidden();
             if(!styled) Restore();
