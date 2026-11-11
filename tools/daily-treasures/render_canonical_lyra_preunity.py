@@ -63,8 +63,8 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500,
                              for k in (0, 2, 4)))
     if not 0.00001 < diagonal < 100000:
         raise RuntimeError("Canonical Lyra geometry has unreasonable scale")
-    if shot not in ("full","bust"):
-        raise ValueError("Camera shot must be full or bust")
+    if shot not in ("full","bust","portrait"):
+        raise ValueError("Camera shot must be full, bust or portrait")
     # A genuine waist-up hero reveals original facial/armor detail at phone
     # size. Only the CAMERA crops the EXACT GLB; no hallucinated portrait.
     frame_bounds = bounds if shot=="full" else (
@@ -82,6 +82,19 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500,
     camera.SetViewUp(0.0, 1.0, 0.0)
     camera.SetViewAngle(39.0)
     scene.ResetCamera(frame_bounds)
+    if shot=="portrait":
+        # AUTHENTIC GLB, new camera only: a true shoulder-and-face close-up.
+        # The older 'bust' mode still framed much of the costume and hid
+        # original facial detail at 390px. Source geometry is unchanged.
+        body_height=bounds[3]-bounds[2]
+        close_focus=(focus[0],bounds[3]-.22*body_height,focus[2])
+        camera.ParallelProjectionOn()
+        camera.SetFocalPoint(*close_focus)
+        camera.SetPosition(close_focus[0]+2.0*diagonal*math.sin(angle),
+                           close_focus[1]+.20*diagonal,
+                           close_focus[2]+2.0*diagonal*math.cos(angle))
+        camera.SetParallelScale(.24*body_height)
+        focus=close_focus
     scene.ResetCameraClippingRange()
     scene.RemoveAllLights()
     # Original textured pixels remain the source of truth. These only light it.
@@ -144,6 +157,9 @@ def render(model: Path, output: Path, yaw=147, width=1100, height=1500,
         "geometry_diagonal": round(diagonal, 6),
         "camera_framed_bounds": list(frame_bounds),
         "shot": shot,
+        "portrait_camera_half_height_world":
+            round(.24*(bounds[3]-bounds[2]),6) if shot=="portrait" else None,
+        "identity_geometry_modified": False,
         "visible_pixel_ratio": round(visible_ratio, 4),
         "clear_pixel_ratio": round(clear_ratio, 4),
         "sampled_opaque_colors": len(colors),
@@ -162,7 +178,7 @@ if __name__ == "__main__":
     parser.add_argument("--glb", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--yaw", type=int, default=147)
-    parser.add_argument("--shot", choices=("full","bust"), default="full")
+    parser.add_argument("--shot", choices=("full","bust","portrait"), default="full")
     args = parser.parse_args()
     args.out.parent.mkdir(parents=True, exist_ok=True)
     print(json.dumps(render(args.glb,args.out,args.yaw,shot=args.shot), indent=2))
