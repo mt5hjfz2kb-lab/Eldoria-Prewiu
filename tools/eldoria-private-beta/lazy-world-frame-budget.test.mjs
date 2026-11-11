@@ -37,3 +37,14 @@ test('the full 449-row route-grid raycast tape also yields per row in lazy WebGL
  assert.match(placement,/yield return RegionOneTerrainRoutes\.CreateStaged\([\s\S]*?tape\.Complete\(\)/,
    'response tape must stay alive until the complete route lattice is sampled');
 });
+
+const blender=readFileSync('Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs','utf8');
+test('opt-in region contact surface uses one triangle bucketing algorithm staged every 256 complete triangles',()=>{
+ const shared=blender.match(/IEnumerator BuildContactSurfaceStaged\(Vector3 origin\)[\s\S]*?activeSurface=this;/);
+ assert.ok(shared,'a single authoritative contact-building loop must exist');
+ assert.match(shared[0],/for\(int i=0;i<contactTriangles.Length;i\+=3\)[\s\S]*?list.Add\(i\);[\s\S]*?if\(\(\(i\/3\)\+1\)%256==0\)yield return null;/);
+ assert.equal((blender.match(/for\(int i=0;i<contactTriangles.Length;i\+=3\)/g)||[]).length,1,'never fork triangle bucket construction');
+ assert.match(blender,/void BuildContactSurface\(Vector3 origin\)[\s\S]*?var stages=BuildContactSurfaceStaged\(origin\);[\s\S]*?while\(stages.MoveNext\(\)\)/);
+ assert.match(blender,/if\(ValoriaIntegratedWorld.P0LazyWorldProbe\)\s+yield return instance.BuildContactSurfaceStaged\(host.WorldHome\);\s+else instance.BuildContactSurface\(host.WorldHome\);/);
+ assert.match(shared[0],/activeSurface=this;/,'publish the query surface only after ALL contact buckets are ready');
+});
