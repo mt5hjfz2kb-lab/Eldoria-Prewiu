@@ -622,6 +622,35 @@ namespace Eldoria.DailyTreasures.Editor
             var ink=FindRect(panel,"Bastion / real-city milestone caption ink");
             var plate=FindRect(panel,
                 "Basalt and worn bronze reward parchment").GetComponent<Image>();
+            var ornament=FindRect(panel,
+                "Authored narrative single-frame ornament / no hitbox")
+                .GetComponent<Image>();
+            if(width>height)
+            {
+                // A previous non-sliced 1376x768 frame was squeezed into
+                // 740x370: real metal corners distorted ~11.6% across axes.
+                // The signed source has 90px borders at 200 source PPU:
+                // with reference PPU 100, all four corners remain 45x45 UI
+                // pixels regardless of landscape size. One border only.
+                var border=ornament && ornament.sprite?
+                    ornament.sprite.border:Vector4.zero;
+                Need(ornament && ornament.gameObject.activeInHierarchy &&
+                     ornament.type==Image.Type.Sliced &&
+                     ornament.sprite && !ornament.raycastTarget &&
+                     Mathf.Abs(ornament.sprite.pixelsPerUnit-200f)<.1f &&
+                     Mathf.Abs(border.x-90f)<.1f &&
+                     Mathf.Abs(border.y-90f)<.1f &&
+                     Mathf.Abs(border.z-90f)<.1f &&
+                     Mathf.Abs(border.w-90f)<.1f &&
+                     plate && !plate.sprite,
+                    "Real forged bronze UI corners are stretched or "+
+                    "two ornate metal frames overlap in landscape");
+            }
+            else
+                Need(ornament && !ornament.gameObject.activeInHierarchy &&
+                     plate && plate.sprite && plate.type==Image.Type.Sliced,
+                    "Portrait must retain original nine-slice framing; "+
+                    "wide bronze artwork must not be distorted vertically");
             if(expected.Kind==DailyTreasureStageKind.Bastion)
             {
                 Need(ink.gameObject.activeInHierarchy && plate &&

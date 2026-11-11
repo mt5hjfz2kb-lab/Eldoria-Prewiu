@@ -167,3 +167,14 @@ for(const [w,h] of [[740,370],[643,355],[700,370]]){
   assert.ok(Math.abs(cornerX-.5)<1e-10);
 }
 console.log('PASS original forged bronze 9-slice preserves square corners at all landscape sizes');
+
+
+// Actual Unity native assertion: screenshot rectangles are insufficient if
+// the ornament itself silently reverts to Simple or vertical frames overlap.
+const nativeArt=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureNativeEvidence.cs','utf8');
+assert.match(nativeArt,/ornament\.type==Image\.Type\.Sliced/);
+assert.match(nativeArt,/Mathf\.Abs\(border\.x-90f\)/);
+assert.match(nativeArt,/Mathf\.Abs\(ornament\.sprite\.pixelsPerUnit-200f\)/);
+assert.match(nativeArt,/plate && !plate\.sprite/);
+console.log('PASS native gate requires true original nine-slice corner geometry in Unity');
