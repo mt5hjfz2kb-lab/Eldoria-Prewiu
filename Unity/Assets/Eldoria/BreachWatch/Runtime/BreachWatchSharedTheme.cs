@@ -14,7 +14,7 @@ namespace Eldoria.BreachWatch
     /// cartouche as a generic panel (its crest and rulers are baked in).
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class BreachWatchSharedTheme : MonoBehaviour
+    public sealed class BreachWatchSharedTheme : MonoBehaviour
     {
         const string StonePath = "VigiliaArt/PremiumSurfaces/panel_fill";
         const string ActionPath = "VigiliaArt/PremiumSurfaces/burgundy_action";
