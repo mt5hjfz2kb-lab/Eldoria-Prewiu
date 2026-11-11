@@ -226,6 +226,11 @@ namespace Eldoria.DailyTreasures
         static void DestroyTemporary(UnityEngine.Object obj)
         {
             if(!obj)return;
+            // Destroy is deferred until the end of the frame in PlayMode.
+            // Several synchronous viewport captures would otherwise retain
+            // enabled amber lights from earlier shots and change the actual
+            // city lighting. Deactivate NOW, then safely destroy later.
+            if(obj is GameObject temporary)temporary.SetActive(false);
             if(UnityEngine.Application.isPlaying)
                 UnityEngine.Object.Destroy(obj);
             else UnityEngine.Object.DestroyImmediate(obj);
