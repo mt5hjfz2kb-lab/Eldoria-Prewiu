@@ -24,13 +24,10 @@ namespace Eldoria.BreachWatch
         // A true image-level color grade, not a second translucent panel over
         // the original scene. One RawImage = one painted material. Reversible.
         RawImage scenicPainting;
-        BreachWatchScoutStoneContracts stoneContracts;
         Color originalScenicColor;
         bool scenicGradeActive;
         bool installed;
         public bool Installed=>installed;
-        public bool RealScoutsContractStoneReplaced => stoneContracts &&
-            stoneContracts.Installed && stoneContracts.NoOldParchmentVisible;
         public bool HasIndependentScoutColorGrade => scenicGradeActive && scenicPainting &&
             scenicPainting.color.r<.80f && scenicPainting.color.b>.93f;
         public int ReplacedFrames { get; private set; }
@@ -107,24 +104,7 @@ namespace Eldoria.BreachWatch
                 }
                 else ReplacedFrames++;
             }
-            // High-impact ART A/B, Scouts only: materially replace three
-            // native parchment backgrounds in-place; keep each original
-            // painting, live title, reward, wax seal and real action.
-            if(scoutsDestination)
-            {
-                stoneContracts=canonicalScreen.GetComponent<BreachWatchScoutStoneContracts>();
-                if(!stoneContracts)
-                    stoneContracts=canonicalScreen.gameObject.AddComponent<
-                        BreachWatchScoutStoneContracts>();
-                if(!stoneContracts.Apply(canonicalScreen))
-                {
-                    Restore();
-                    Debug.LogWarning("VIGILIA_SCOUT_STONE_ART_MIGRATION_INCOMPLETE");
-                    return false;
-                }
-            }
-            installed=ReplacedFrames>0 && ReplacedActions>0 &&
-                (!scoutsDestination || RealScoutsContractStoneReplaced);
+            installed=ReplacedFrames>0 && ReplacedActions>0;
             if(!installed)Restore();
             return installed;
         }
@@ -169,7 +149,6 @@ namespace Eldoria.BreachWatch
 
         public void Restore()
         {
-            if(stoneContracts)stoneContracts.Restore();
             foreach(var pair in oldTargets)
                 if(pair.Key)pair.Key.targetGraphic=pair.Value;
             oldTargets.Clear();
