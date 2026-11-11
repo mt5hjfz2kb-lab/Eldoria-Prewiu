@@ -60,11 +60,22 @@ namespace Eldoria.Domain
             }
         }
 
-        // Unity drop-in ZIP contains these sixteen independently authored
-        // sprites under Resources/Issue186ResourceArt. Value text stays live.
+        // Rewards may be 75, 250 or 2,500, not just art denominations.
+        // NEVER discard a legitimate award because only four pictures exist.
+        // Pick a visual tier while retaining the exact authoritative amount.
+        public static int ArtworkTier(int amount) =>
+            amount <= 0 ? 0 : amount < 1000 ? 100 :
+            amount < 10000 ? 1000 : amount < 100000 ? 10000 : 100000;
+
+        public static string AmountLabel(int amount) =>
+            amount <= 0 ? null :
+            TierLabel(amount) ?? amount.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        // The sixteen authored resources contain 12 generic packet pictures,
+        // two badges and two pointers. Denomination is always LIVE text.
         public static string SpriteKey(string resourceKind, int amount)
         {
-            var tier = TierLabel(amount);
+            var tier = TierLabel(ArtworkTier(amount));
             return IsResource(resourceKind) && tier != null ?
                 "Issue186ResourceArt/pack_" + resourceKind + "_" + tier.ToLowerInvariant() :
                 null;
@@ -80,7 +91,7 @@ namespace Eldoria.Domain
         {
             if (inventory == null || string.IsNullOrWhiteSpace(receiptId) ||
                 string.IsNullOrWhiteSpace(origin) || DirectToWallet(origin) ||
-                !IsResource(kind) || !IsStandardTier(amount)) return false;
+                !IsResource(kind) || amount <= 0) return false;
             var packets = inventory.Packets;
             if (packets == null) return false;
             foreach (var p in packets)
