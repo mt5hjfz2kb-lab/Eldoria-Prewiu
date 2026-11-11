@@ -17,7 +17,7 @@ namespace Eldoria.BreachWatch
     {
         const string RootName = "VIGILIA / independent canvas";
         static readonly Color TextIvory = new Color(.98f,.94f,.84f,1f);
-        static readonly Color Muted = new Color(.83f,.81f,.76f,1f);
+        static readonly Color Muted = new Color(.88f,.85f,.79f,1f);
         static readonly Color Copper = new Color(.92f,.70f,.40f,1f);
         static readonly Color Locked = new Color(.38f,.39f,.39f,1f);
         ValoriaIntegratedWorld host;
@@ -1046,8 +1046,8 @@ namespace Eldoria.BreachWatch
                     smallPhone?37f:27f,missionWidth-(smallPhone?64f:44f),
                     fullObjective?51f:(smallPhone?12f:10f));
                 At(chapterProgress.rectTransform,smallPhone?54f:36f,
-                    fullObjective?87f:(smallPhone?53f:41f),
-                    missionWidth-(smallPhone?64f:44f),smallPhone?18f:12f);
+                    fullObjective?87f:(smallPhone?51f:40f),
+                    missionWidth-(smallPhone?64f:44f),smallPhone?18f:14f);
                 chapterName.fontSize=smallPhone?13:10;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:10;
@@ -1056,7 +1056,7 @@ namespace Eldoria.BreachWatch
                 chapterObjective.resizeTextForBestFit=true;
                 chapterObjective.resizeTextMinSize=smallPhone?12:11;
                 chapterObjective.resizeTextMaxSize=smallPhone?14:11;
-                chapterProgress.fontSize=smallPhone?13:10;
+                chapterProgress.fontSize=smallPhone?14:11;
 
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
@@ -1169,7 +1169,7 @@ namespace Eldoria.BreachWatch
                 At(costQuantities[1].rectTransform,114,194,pw-119,20);
                 costQuantities[0].fontSize=14;
                 costQuantities[1].fontSize=14;
-                At(buildingState.rectTransform,13,220,pw-26,17);
+                At(buildingState.rectTransform,16,220,pw-32,17);
                 // The full live Spanish action is 95px wide at 12pt: retain a
                 // 32.5% hammer well AND widen the actual painted action, rather
                 // than shrinking the gameplay text below legibility.
@@ -1182,7 +1182,7 @@ namespace Eldoria.BreachWatch
                 buildingLevel.fontSize=smallPhone?13:11;
                 buildingFunction.fontSize=smallPhone?14:11;
                 buildingCosts.fontSize=smallPhone?14:12;
-                buildingState.fontSize=smallPhone?13:11;
+                buildingState.fontSize=smallPhone?14:12;
                 costHeader.fontSize=smallPhone?13:10;
                 actionLabel.fontSize=smallPhone?16:13;
 

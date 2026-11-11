@@ -101,7 +101,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
         short_objective=R(54 if pw<600 else 36,37 if pw<600 else 27,missionw-(64 if pw<600 else 44),12 if pw<600 else 10)
-        progress=R(54 if pw<600 else 36,53 if pw<600 else 41,missionw-(64 if pw<600 else 44),18 if pw<600 else 12)
+        progress=R(54 if pw<600 else 36,51 if pw<600 else 40,missionw-(64 if pw<600 else 44),18 if pw<600 else 14)
         assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
         assert short_objective.y+short_objective.h+2<=progress.y,size
         assert progress.y+progress.h<= (88 if pw<600 else 68)-(8 if pw<600 else 5),size
@@ -151,7 +151,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert stone_icon.x+stone_icon.w+6<=stone_qty.x,size
         assert wood_qty.x-(wood_icon.x+wood_icon.w)==stone_qty.x-(stone_icon.x+stone_icon.w),size
         assert stone_qty.x+stone_qty.w<=panelw-4,size
-        state=R(13,220,panelw-26,17)
+        state=R(16,220,panelw-32,17)
         action=R(6,244,panelw-12,50)
         # A native 512x320 RGBA render of the genuine Bastion occupies
         # y=.12..85 and x=.24..78. The final raw displayed viewport

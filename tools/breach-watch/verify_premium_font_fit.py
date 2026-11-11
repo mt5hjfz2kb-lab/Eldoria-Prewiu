@@ -80,8 +80,13 @@ def verify():
     # 13 must fit the 152u budget and remain clearly legible.
     fits("COSTE DE LA MEJORA",SEMIBOLD,11,panel_width-26,
          "authentic upgrade cost heading")
-    fits("Operativo · 2:00",REGULAR,11,panel_width-26,
+    fits("Operativo · 2:00",REGULAR,14,panel_width-32,
          "real status/timer")
+    fits("0 / 1",BODY,14,147,"phone mission progress with bottom clearance")
+    fits("Operativo · 2:00",REGULAR,12,126,"large portrait timer inside padded well")
+    assert "chapterProgress.fontSize=smallPhone?14:11;" in hud
+    assert "buildingState.fontSize=smallPhone?14:12;" in hud
+    assert 14*.91>=12.5,"Phone secondary text must be readable at native scale"
     # Physically readable small-phone context despite the tighter panel.
     assert 14*.91>=12.5, "390px contextual text too small"
     assert "buildingFunction.fontSize=smallPhone?14:11;" in hud
