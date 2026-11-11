@@ -5,8 +5,11 @@ on:
     paths:
       - '.github/workflows/vigilia-shared-destination-source.yml'
       - 'tools/breach-watch/validate_shared_destination_theme.py'
+      - 'tools/breach-watch/validate_mailbox_theme.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
   workflow_dispatch:
@@ -23,6 +26,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/breach-watch/validate_shared_destination_theme.py
+            /tools/breach-watch/validate_mailbox_theme.py
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
@@ -40,4 +44,6 @@ jobs:
         run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch/Runtime
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash
-        run: python3 tools/breach-watch/validate_shared_destination_theme.py
+        run: |
+          python3 tools/breach-watch/validate_shared_destination_theme.py
+          python3 tools/breach-watch/validate_mailbox_theme.py
