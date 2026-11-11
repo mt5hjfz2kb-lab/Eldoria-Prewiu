@@ -101,6 +101,7 @@ namespace Eldoria.DailyTreasures
         RawImage milestoneScenery;
         RawImage milestoneCinematicBackdrop;
         Material ownedCinematicBackdropMaterial;
+        Material ownedVigilantsReliefMaterial;
         RenderTexture capturedBastionScene;
         Image milestoneVignette;
         Image milestoneInsignia;
@@ -558,6 +559,13 @@ namespace Eldoria.DailyTreasures
                 "Authentic Eldoria event insignia / visual only",ceremony);
             milestoneInsignia=Plate(insigniaRect,Color.white,false);
             milestoneInsignia.preserveAspect=true;
+            // Keep the EXACT original real compass mark; make its pixels
+            // forged rather than a blue sticker glued to painted iron.
+            var heraldicShader=Resources.Load<Shader>(
+                "DailyTreasureCeremonies/DailyHeraldicRelief");
+            if(heraldicShader && heraldicShader.isSupported)
+                ownedVigilantsReliefMaterial=new Material(heraldicShader)
+                {name="Tesoros / original emblem as forged-bronze relief"};
             milestoneInsignia.gameObject.SetActive(false);
             // The real completed Bastion supplies the landscape. Only the
             // genuine receipt receives a plain basalt legibility ink field;
@@ -729,6 +737,7 @@ namespace Eldoria.DailyTreasures
             DestroyOwned(chestGrandChime);
             DestroyOwned(ownedScoutInkMaterial);
             DestroyOwned(ownedCinematicBackdropMaterial);
+            DestroyOwned(ownedVigilantsReliefMaterial);
         }
         bool PresentNextCommittedMilestone()
         {
@@ -830,6 +839,7 @@ namespace Eldoria.DailyTreasures
             if(milestoneInsignia)
             {
                 milestoneInsignia.sprite=null;
+                milestoneInsignia.material=null;
                 milestoneInsignia.gameObject.SetActive(false);
             }
             if(milestoneLyraPortrait)
@@ -1121,6 +1131,9 @@ namespace Eldoria.DailyTreasures
                 "EldoriaRetention/vigilants-compass":null;
             milestoneInsignia.sprite=insigniaPath==null?null:
                 Resources.Load<Sprite>(insigniaPath);
+            milestoneInsignia.material=
+                currentStage==DailyTreasureStageKind.Vigilants?
+                    ownedVigilantsReliefMaterial:null;
             milestoneInsignia.gameObject.SetActive(milestoneInsignia.sprite!=null);
             if(milestoneBanner)
             {

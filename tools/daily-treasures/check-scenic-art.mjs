@@ -227,3 +227,17 @@ assert.match(panel,/milestoneCinematicBackdrop\.texture=milestoneScenery\.textur
 assert.match(panel,/DestroyOwned\(ownedCinematicBackdropMaterial\)/);
 assert.match(panel,/milestoneCinematicBackdrop\.texture=null/);
 console.log('PASS: canonical full-frame narrative atmosphere, real source and owned GPU material');
+
+// Genuine existing Eldoria Vigilants badge remains the authoritative shape
+// but its original 128px blue pixels are rendered as embossed antique
+// copper on original iron artwork. No generic fake badge or extra sticker.
+const reliefCode=fs.readFileSync(
+ 'Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies/DailyHeraldicRelief.shader',
+ 'utf8');
+assert.match(reliefCode,/Shader "Eldoria\/DailyHeraldicRelief"/);
+assert.match(reliefCode,/fixed4 src=tex2D\(_MainTex,i.uv\)/);
+assert.match(reliefCode,/float relief=saturate/);
+assert.match(scenic===undefined?panel:panel,/milestoneInsignia\.material=/);
+assert.match(panel,/ownedVigilantsReliefMaterial:null/);
+assert.match(panel,/DestroyOwned\(ownedVigilantsReliefMaterial\)/);
+console.log('PASS real retained Vigilants compass rendered as source-derived bronze relief');
