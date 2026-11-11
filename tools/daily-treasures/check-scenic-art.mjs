@@ -35,7 +35,7 @@ assert.match(panel,/if\(target<source\)/);
 // building into a fabricated flat painting.
 const canonicalScenery=panel.match(
   /static string MilestoneScenerySource\(string eventId\)([\s\S]*?)static Sprite TryCanonicalLyraPortrait/);
-assert.ok(canonicalScenery && /return null;\s*}\s*$/.test(canonicalScenery[1]),
+assert.ok(canonicalScenery && /\/\/ For Bastion,[\s\S]*?return null;\s*}/.test(canonicalScenery[1]),
   'Unbuilt Bastion must return no synthetic scenic screenshot');
 assert.match(panel,/void RefreshBastionLensForRotation\(float width,float height\)/);
 // Four distinct event compositions use real source art and the live city,
