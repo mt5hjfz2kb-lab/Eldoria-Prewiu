@@ -21,8 +21,15 @@ namespace Eldoria.BreachWatch
         Sprite stone,burgundy,slicedStone;
         Image curtain;
         Color originalCurtain;
+        // A true image-level color grade, not a second translucent panel over
+        // the original scene. One RawImage = one painted material. Reversible.
+        RawImage scenicPainting;
+        Color originalScenicColor;
+        bool scenicGradeActive;
         bool installed;
         public bool Installed=>installed;
+        public bool HasIndependentScoutColorGrade => scenicGradeActive && scenicPainting &&
+            scenicPainting.color.r<.80f && scenicPainting.color.b>.93f;
         public int ReplacedFrames { get; private set; }
         public int ReplacedActions { get; private set; }
         public bool OldRoyalChromeHidden
@@ -39,7 +46,7 @@ namespace Eldoria.BreachWatch
             }
         }
 
-        public bool Apply(RectTransform canonicalScreen)
+        public bool Apply(RectTransform canonicalScreen,bool scoutsDestination=false)
         {
             if(installed)return true;
             if(!canonicalScreen || canonicalScreen.name!=
@@ -52,6 +59,24 @@ namespace Eldoria.BreachWatch
             {
                 originalCurtain=curtain.color;
                 curtain.color=new Color(.073f,.064f,.057f,1f);
+            }
+            // On Scouts the inherited luminous yellow-green panorama fights
+            // Vigilia's dark mineral and violet Breach palette. Grade the
+            // ACTUAL original illustration at its source Graphic rather
+            // than adding a rectangular translucent overpainting on top.
+            // Native portrait/landscape A/B must decide whether to keep it.
+            scenicPainting=null;scenicGradeActive=false;
+            if(scoutsDestination)
+            {
+                foreach(var image in canonicalScreen.GetComponentsInChildren<RawImage>(true))
+                    if(image && image.name=="Original illustrated world / decorative only")
+                    {scenicPainting=image;break;}
+                if(scenicPainting)
+                {
+                    originalScenicColor=scenicPainting.color;
+                    scenicPainting.color=new Color(.78f,.77f,.95f,originalScenicColor.a);
+                    scenicGradeActive=true;
+                }
             }
             ReplacedFrames=0;ReplacedActions=0;
             foreach(var old in canonicalScreen.GetComponentsInChildren<Graphic>(true))
@@ -135,6 +160,9 @@ namespace Eldoria.BreachWatch
             oldGraphics.Clear();
             foreach(var obj in created)if(obj)Destroy(obj);
             created.Clear();
+            if(scenicGradeActive && scenicPainting)
+                scenicPainting.color=originalScenicColor;
+            scenicPainting=null;scenicGradeActive=false;
             if(curtain)curtain.color=originalCurtain;
             curtain=null;installed=false;ReplacedFrames=0;ReplacedActions=0;
         }
