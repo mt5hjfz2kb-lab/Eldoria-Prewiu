@@ -55,8 +55,10 @@ def main():
     need("heroesBridge.Initialize(host,canvas,destinationBridge)" in HUD,
          "Vigilia must register original Heroes bridge")
     navigation=HUD.split("void Navigate(int index)",1)[1].split("void LateUpdate()",1)[0]
-    need("heroesBridge.TryOpen()" not in navigation,
-         "No new Heroes icon before certified mobile screenshots")
+    need("heroesBridge.TryOpen()" in navigation and
+         "case 4:" in navigation and
+         "hero.CanOpenDestination()" in HUD,
+         "Heroes nav must route only to real source-bound portrait screen after Lyra unlock")
     print("VIGILIA_HERO_SCREEN_REPLACEMENT_SOURCE_PASS")
     print("NATIVE_HERO_PAGE_ART_REVIEW_AND_CLICK_QA_PENDING")
 if __name__=="__main__":main()
