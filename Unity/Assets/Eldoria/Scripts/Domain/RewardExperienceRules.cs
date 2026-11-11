@@ -60,6 +60,16 @@ namespace Eldoria.Domain
             }
         }
 
+        // Unity drop-in ZIP contains these sixteen independently authored
+        // sprites under Resources/Issue186ResourceArt. Value text stays live.
+        public static string SpriteKey(string resourceKind, int amount)
+        {
+            var tier = TierLabel(amount);
+            return IsResource(resourceKind) && tier != null ?
+                "Issue186ResourceArt/pack_" + resourceKind + "_" + tier.ToLowerInvariant() :
+                null;
+        }
+
         // Receipt IDs must be stable and distinct per resource component:
         // e.g. "mission:c1-route:wood" and "mission:c1-route:stone".
         // mailEventId empty => collected directly into bag, never into wallet.
