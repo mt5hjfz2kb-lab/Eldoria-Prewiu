@@ -120,20 +120,9 @@ namespace Eldoria.Issue186Art
             // The actual PNG points LEFT (fingertip in its upper-left).
             // Approach from the RIGHT side of a button, not its label center.
             // The halo independently stays centered on the real target.
-            Vector3 tipWorld = actualControl.TransformPoint(new Vector3(
-                actualControl.rect.xMax - Mathf.Min(6f, actualControl.rect.width * .08f),
-                actualControl.rect.center.y, 0f));
-            Vector2 tipScreen = RectTransformUtility.WorldToScreenPoint(camera, tipWorld);
             var parent = pointer.rectTransform.parent as RectTransform;
-            if (!parent || !RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parent, tipScreen, camera, out var local))
-            {
-                pointer.gameObject.SetActive(false);
-                if (targetHalo) targetHalo.gameObject.SetActive(false);
-                return false;
-            }
             var sprite = Resources.Load<Sprite>(Prefix + "tutorial_pointing_hand");
-            if (!sprite)
+            if (!parent || !sprite)
             {
                 pointer.gameObject.SetActive(false);
                 if (targetHalo) targetHalo.gameObject.SetActive(false);
@@ -141,31 +130,63 @@ namespace Eldoria.Issue186Art
             }
             var rect = pointer.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(.5f, .5f);
-            // The hand asset points LEFT: sleeve at right, glowing fingertip
-            // near x=16%, y=61% after preserveAspect letterboxing.
-            // A right-side sleeve must NEVER be mistaken for the fingertip.
+            // Original authored gauntlet points LEFT, with its fingertip at
+            // x=16%, y=61%. Preserve this actual image pivot in either mode.
             rect.pivot = new Vector2(.16f, .61f);
-            rect.anchoredPosition = local;
+            rect.localRotation = Quaternion.identity;
+            float originalScaleX = Mathf.Abs(rect.localScale.x);
+            if (originalScaleX <= .0001f)
+            {
+                pointer.gameObject.SetActive(false);
+                if (targetHalo) targetHalo.gameObject.SetActive(false);
+                return false;
+            }
+            // The game device safe area, not just the entire screen, limits
+            // tutorial art. In offscreen RenderTexture QA its own dimensions
+            // are authoritative; the host Editor safe area would be bogus.
+            Rect safe = camera && camera.targetTexture ?
+                new Rect(3f,3f,viewWidth-6f,viewHeight-6f) : Screen.safeArea;
+            if (safe.width < 6f || safe.height < 6f)
+                safe = new Rect(3f,3f,viewWidth-6f,viewHeight-6f);
+            safe.xMin += 3f; safe.yMin += 3f;
+            safe.xMax -= 3f; safe.yMax -= 3f;
+            // Do not assume buttons are centered: the upper-right claim CTA
+            // in 390/844 mobile left only ~30px to the screen edge. A hand
+            // extending right would be cut off. Mirror it from the LEFT when
+            // the real render geometry does not fit on the right.
+            bool Place(bool mirror)
+            {
+                var tip = actualControl.TransformPoint(new Vector3(
+                    mirror ? actualControl.rect.xMin - 3f :
+                             actualControl.rect.xMax + 3f,
+                    actualControl.rect.center.y, 0f));
+                var target = RectTransformUtility.WorldToScreenPoint(camera,tip);
+                if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    parent,target,camera,out var local))return false;
+                rect.localScale = new Vector3(
+                    (mirror?-1f:1f)*originalScaleX,
+                    rect.localScale.y,rect.localScale.z);
+                rect.anchoredPosition = local;
+                var corners = new Vector3[4];
+                rect.GetWorldCorners(corners);
+                foreach(var corner in corners)
+                {
+                    var screen = RectTransformUtility.WorldToScreenPoint(camera,corner);
+                    if (!safe.Contains(screen))return false;
+                }
+                return true;
+            }
+            if (!Place(false) && !Place(true))
+            {
+                pointer.gameObject.SetActive(false);
+                if (targetHalo) targetHalo.gameObject.SetActive(false);
+                return false;
+            }
             pointer.sprite = sprite;
             pointer.type = Image.Type.Simple;
             pointer.preserveAspect = true;
             pointer.raycastTarget = false;
             pointer.gameObject.SetActive(true);
-            // Account for the real Canvas scale/rotation, not a guessed size
-            // or host Editor resolution: never draw a half-clipped hand.
-            var corners = new Vector3[4];
-            rect.GetWorldCorners(corners);
-            foreach (var corner in corners)
-            {
-                Vector2 projected = RectTransformUtility.WorldToScreenPoint(camera, corner);
-                if (projected.x < 3f || projected.y < 3f ||
-                    projected.x > viewWidth - 3f || projected.y > viewHeight - 3f)
-                {
-                    pointer.gameObject.SetActive(false);
-                    if (targetHalo) targetHalo.gameObject.SetActive(false);
-                    return false;
-                }
-            }
 
             if (targetHalo)
             {
