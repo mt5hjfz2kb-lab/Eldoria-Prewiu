@@ -35,11 +35,24 @@ jobs:
             tools/eldoria-private-beta
             pipeline/eldoria-private-beta
             .github/workflows/eldoria-beta-lazy-world-native.yml
+            Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
             Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode
       - name: Node contract tests
         run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Reject malformed C-sharp in all six engine files, real PlayMode fixture and frozen UX19
+        shell: bash
+        run: |
+          dotnet run --project tools/eldoria-private-beta/csharp-syntax/SyntaxAudit.csproj --configuration Release -- --self-test
+          dotnet run --project tools/eldoria-private-beta/csharp-syntax/SyntaxAudit.csproj --configuration Release -- .
+          echo PR179_CSHARP_SYNTAX_ONLY_NO_UNITY_COMPILE_OR_IPHONE_CERTIFICATION
       - name: Validate owner-only genuine lazy-world WebGL package preflight (no build)
         shell: bash
         run: |
