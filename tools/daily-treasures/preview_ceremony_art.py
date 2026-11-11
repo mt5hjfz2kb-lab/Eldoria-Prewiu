@@ -85,6 +85,19 @@ def nine_slice_frame(source, shape):
     return out
 
 
+def crop_authentic_insignia(badge):
+    """Expand only the visible pixels of the REAL owned icon. The Unity PNG
+    importer often leaves large transparent canvas margins; directly
+    thumbnailing those margins turns a 240px emblem into a tiny dot."""
+    icon=badge.convert("RGBA")
+    visible=icon.getchannel("A").point(lambda a:255 if a>=24 else 0).getbbox()
+    require(visible is not None,"Empty official insignia")
+    padding=max(2,round(max(icon.size)*.012))
+    x0,y0,x1,y1=visible
+    return icon.crop((max(0,x0-padding),max(0,y0-padding),
+                      min(icon.width,x1+padding),min(icon.height,y1+padding)))
+
+
 def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
     w,h=shape
     require(game_capture.width>=200 and game_capture.height>=200,
@@ -137,7 +150,7 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
                        (0,sill_y))
             dst.alpha_composite(sill,(x,y))
         if badge is not None and event=="vigilants":
-            icon=badge.convert("RGBA")
+            icon=crop_authentic_insignia(badge)
             side=max(26,min(round(focal.width*.48),round(focal.height*.43),240))
             icon.thumbnail((side,side),Image.Resampling.LANCZOS)
             dst.alpha_composite(icon,
@@ -145,7 +158,7 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
                   y+round(focal.height*.47)-icon.height//2))
         if badge is not None and event=="explorers":
             # Authentic Scouts sigil only; no fabricated cartography.
-            icon=badge.convert("RGBA")
+            icon=crop_authentic_insignia(badge)
             side=max(24,min(round(focal.width*.25),150))
             icon.thumbnail((side,side),Image.Resampling.LANCZOS)
             dst.alpha_composite(icon,
@@ -291,7 +304,15 @@ def selftest():
                       if green>=230 and red<=20 and blue<=40 and alpha==255)
     require(visible_actor>500,
             "Authentic Lyra was hidden by the front-painted stage")
-    print("PASS: four sizes retain real source; canonical hero above stage and below ornaments; pre-Unity only")
+    # Regression: published Eldoria icons may have broad transparent margins.
+    # A 44px actual emblem must be expanded BEFORE measuring its target size.
+    inset=Image.new("RGBA",(256,256),(0,0,0,0))
+    ImageDraw.Draw(inset).ellipse((106,106,150,150),
+                                  fill=(12,235,42,255))
+    real=crop_authentic_insignia(inset)
+    require(max(real.size)<64 and min(real.size)>=44,
+            "Transparent icon padding was not removed")
+    print("PASS: four sizes, actor-depth, canonical insignia alpha bounds; pre-Unity only")
 
 if __name__=="__main__":
     p=argparse.ArgumentParser()
