@@ -136,6 +136,10 @@ namespace Eldoria.BreachWatch.Editor
             fixture.BastionLevel=2;
             fixture.SawmillLevel=1;
             fixture.BarracksLevel=1;
+            Need(fixture.ChapterProgress!=null,"In-memory chapter II progression missing");
+            // The Scouts destination is introduced ONLY after canonical
+            // march confirmation; this is an isolated QA state, never a save.
+            fixture.ChapterProgress.MarchConfirmed=true;
             if(fixture.ChapterThree==null)fixture.ChapterThree=new BastionThreeState();
             fixture.ChapterThree.LyraRecruited=true;
             if(fixture.Mailbox==null)fixture.Mailbox=new EldoriaV41Mailbox();
@@ -148,6 +152,7 @@ namespace Eldoria.BreachWatch.Editor
             var shots=new List<Screen>();
             var profileShots=new List<Screen>();
             var unlockedNavShots=new List<Screen>();
+            var retentionShots=new List<Screen>();
             try
             {
                 host.City.Apply(fixture);
@@ -271,6 +276,29 @@ namespace Eldoria.BreachWatch.Editor
                     mail.ReplacedOldPainting);
                 mail.Close();
                 Need(!mail.IsShowing,"Mailbox exit failed");
+                // Previously unverified canonical Vigilantes/Exploradores
+                // cannot remain invisible under the disabled original Canvas.
+                // Preserve actual saved progression, background, reports,
+                // encounter decisions and hotkeys. Test native UI only.
+                var retention=ui.RealRetention;
+                Need(retention!=null && retention.TryOpen(
+                    RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants) &&
+                    retention.ReplacedOldChrome,
+                    "Real unlocked Vigilants still opens old HUD chrome");
+                CaptureMany(ui,folder,"vigilants",retentionShots,
+                    ()=>retention.IsShowing && retention.ReplacedOldChrome);
+                retention.Close();
+                Need(!retention.IsShowing,
+                    "Vigilants did not return to new city Canvas");
+                Need(retention.TryOpen(
+                    RoyalGoldV3EarlyRetentionScreens.Destination.Scouts) &&
+                    retention.ReplacedOldChrome,
+                    "Real unlocked Scouts still opens old HUD chrome");
+                CaptureMany(ui,folder,"scouts",retentionShots,
+                    ()=>retention.IsShowing && retention.ReplacedOldChrome);
+                retention.Close();
+                Need(!retention.IsShowing,
+                    "Scouts did not return to new city Canvas");
             }
             finally
             {
@@ -287,6 +315,8 @@ namespace Eldoria.BreachWatch.Editor
                 "Expected ten additional real Unity hero profile/page captures");
             Need(unlockedNavShots.Count==2,
                 "Two genuinely unlocked city navigation captures required");
+            Need(retentionShots.Count==8,
+                "Expected four real Unity orientations for each retained destination");
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
@@ -320,6 +350,17 @@ namespace Eldoria.BreachWatch.Editor
             File.WriteAllText(Path.Combine(folder,
                 "BreachWatchAdvancedNavigationEvidence.json"),
                 JsonUtility.ToJson(navigationReport,true));
+            var retentionReport=new Report {
+                status="VIGILIA_RETENTION_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
+                source=report.source,
+                notes="Real unlocked Vigilants and Scouts, four orientations each, canonical frame replaced, temporary state restored, no reward claim or data mutation.",
+                probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                screenshotCount=retentionShots.Count,
+                screens=retentionShots.ToArray()
+            };
+            File.WriteAllText(Path.Combine(folder,
+                "BreachWatchRetentionEvidence.json"),
+                JsonUtility.ToJson(retentionReport,true));
         }
 
         static void CaptureMany(BreachWatchHud ui,string folder,string name,
