@@ -20,6 +20,12 @@ $overlays=@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
+# P0 must NOT stage a second, mutually incompatible copy of the host
+# before applying the complete hash-pinned UX overlay.
+if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1'){
+ $hostPath='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+ $overlays=@($overlays|Where-Object {$_ -ne $hostPath})
+}
 . (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/overlay.ps1')
 New-Item -ItemType Directory -Force $Evidence|Out-Null
 if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Wrong frozen source'}
@@ -95,6 +101,21 @@ try {
   $hashes+=@{path=$path;baseline=$before;candidate=(Get-FileHash $to -Algorithm SHA256).Hash}
  }
  Install-UxOverlay
+ # Preserve the 727-line canonical UX, mailbox and opt-in telemetry. Add only
+ # the three audited P0 WebGL opt-in blocks, exactly once, after UX validation.
+ if($env:ELDORIA_P0_CITY_ONLY_BUILD -eq '1'){
+  $hostRel='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+  $hostTo=Join-Path $Source $hostRel
+  $ux=Join-Path $Tools 'tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt'
+  $composed=Join-Path $Tools 'tools/eldoria-private-beta/native/iphone-hotfix/ValoriaIntegratedWorld.city-only-composed.cs.txt'
+  if(-not(Test-Path $composed) -or -not(Test-Path $ux)){throw 'P0 composition source missing'}
+  $uxHash=(Get-FileHash $ux -Algorithm SHA256).Hash
+  if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne $uxHash){throw 'P0 must compose after exact UX stage'}
+  Copy-Item $composed $hostTo -Force
+  $composedHash=(Get-FileHash $composed -Algorithm SHA256).Hash
+  if((Get-FileHash $hostTo -Algorithm SHA256).Hash -ne $composedHash){throw 'P0 staged composition hash mismatch'}
+  $hashes+=@{path=$hostRel;baseline=$uxHash;candidate=$composedHash;mode='OPT_IN_CITY_ONLY_OVER_COMPLETE_UX'}
+ }
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
  # Prepare static collision structures in the build, preserving exact meshes.
  # Enable before ALL candidate certificates; warm runner restores settings.
