@@ -1,0 +1,9 @@
+{
+  "scene": "lyra",
+  "stage": "PREUNITY_CANDIDATE_ONLY",
+  "art_approved": false,
+  "source_task_id": "62b46b1b-9172-4cb5-ade8-8faa46cea26e",
+  "segmentation_task_id": "fe3e26ae-81fd-427f-a626-edca6c7f98be",
+  "temporary_download_url": "https://dnznrvs05pmza.cloudfront.net/sam3_image_segmentation/fe3e26ae-81fd-427f-a626-edca6c7f98be/d833c012-c89b-4640-9895-150a6a807c73.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZWI3MWU4NDBkZWYzYzc0NiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDUxNzE4NH0.i2If55uwJ1Hg_sg2ER2-LlPouUFkgyIq7ron6hZTp3I",
+  "temporary_source_caveat": "Temporary source URL; remove after source candidate is archived by verified SHA."
+}
