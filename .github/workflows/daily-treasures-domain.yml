@@ -230,6 +230,8 @@ jobs:
             /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta
             /Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png
             /Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes.meta
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png.meta
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
@@ -317,6 +319,29 @@ jobs:
                     'art_approved':False,'unity_verified':False}
           Path('tools/daily-treasures/preunity-studies/official-heroes-master-provenance.json').write_text(json.dumps(manifest,indent=2))
           print('Prepared original Heroes reference for separate canonical character audit')
+          PY
+      - name: Verify actual Lyra 3D model identity for offline source portrait research
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          source=Path('Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes')
+          importer=Path(str(source)+'.meta')
+          assert source.is_file() and importer.is_file(), 'Canonical Lyra GLB absent'
+          data=source.read_bytes()
+          digest=hashlib.sha256(data).hexdigest()
+          expected='a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725'
+          assert len(data)==4770000 and digest==expected and data[:4]==b'glTF', 'Canonical model changed'
+          folder=Path('tools/daily-treasures/preunity-studies')
+          (folder/'lyra-approved-model-SOURCE-ONLY.glb').write_bytes(data)
+          receipt={'classification':'UNMODIFIED_CANONICAL_LYRA_GLTF_SOURCE_NOT_ILLUSTRATION',
+                   'source':str(source),'sha256':digest,'length_bytes':len(data),
+                   'art_approved':False,'unity_rendered':False}
+          (folder/'lyra-model-source-provenance.json').write_text(json.dumps(receipt,indent=2))
+          print('Canonical Lyra geometry SHA-verified for independent pre-Unity evaluation; no invented portrait')
           PY
       - name: Export 16 clearly labeled source-only studies for actual art comparison
         if: steps.present.outputs.ready == 'yes'
