@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T07:22:00Z",
+  "updated_at": "2026-11-11T07:58:36+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 85,
+      "ownership_revision": 86,
       "write_scope_released": false,
-      "phase": "Actual_Dominant_GroundLayer_Visual_Trial_UnsafeUntilNative",
-      "next": "Execute exact c7d30a2 Unity 8 captures with live gameplay QA. Compare grass/roof/world/GUI ROI to approved original JPEG and prior identical state; reject and revert candidate if not objectively better. Release Windows CAS.",
+      "phase": "ACTUAL_PAINTED_TERRAIN_L0_NATIVE_42975318276_PASS_ART_REVIEW_PENDING",
+      "next": "Native SHA 8aa69a38 / run 42975318276 has 8/8 verified, 6 clicks and save unaffected. Ground source revised RGB median 123/129/47 -> 101/94/32 vs original owner JPEG ground local 100/92/28; preserve artistically promising reversible layer0 adjustment. Remaining macro reference differences: missing visual environmental building silhouettes/props and details, smaller Bastion art/card; seek in-scope reversible scene-safe art without altering main or locked UI functionality. Next Unity run must reacquire exclusive resource after checking main.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T07:22:00Z",
@@ -6790,11 +6788,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "14854bbfd75e076b466d09dc13d48a01e77e3a6d",
-        "native_run": 42974867562,
+        "source_sha": "8aa69a38a4b1a847d79c4133393cdda5c2ef2647",
+        "native_run": 42975318276,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13812488796,
+        "artifact": 13834678657,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6823,7 +6821,7 @@
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
         "notes": "Actual native terrain alphamap 256x256, 7 layers: layer-0 painted at 100%, other six (Bank, layer-1, layer-2, Meadow, Loam, ShelteredGrass) at 0% across 196 samples. Explains why earlier ShelterGrass remap had zero visible impact. No art applied on this run.",
-        "art_ab_artifact": 13833230201,
+        "art_ab_artifact": 13835625251,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
         "native_artifact": 13835305570,
@@ -6874,9 +6872,26 @@
           "reverted_sha": "756891a89dda572bb7797b6abb289184b49f4fd9",
           "acceptance": "REJECTED",
           "artistic_improvement_proven": false
-        }
+        },
+        "ground_palette_reversible_private_terrain_layer": true,
+        "ground_palette_rgb_median_before": [
+          123,
+          129,
+          47
+        ],
+        "ground_palette_rgb_median_native": [
+          101,
+          94,
+          32
+        ],
+        "ground_palette_rgb_local_owner_ref": [
+          100,
+          92,
+          28
+        ],
+        "source_gameplay_unchanged": true
       },
-      "runner_release_basis": "Exact native Unity run 42974867562 8 captures success, ground inventory found layer-0 has alpha 1.0 everywhere in 196 spread samples while ShelteredGrass has alpha 0.0. Released after full job.",
+      "runner_release_basis": "Native 42975318276 completed success on exact 8aa69a38; 8/8 PNG SHA-256 independently validated, 6 real navigation clicks, no foreign Canvas, same save. Material palette visually reviewed; resource released via current main file-SHA CAS.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -6903,7 +6918,7 @@
         "native_artifact": 13812488796,
         "visual_ab_artifact": 13814395037
       },
-      "runner_released_at": "2026-11-11T07:18:00Z"
+      "runner_released_at": "2026-11-11T07:58:36+01:00"
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
