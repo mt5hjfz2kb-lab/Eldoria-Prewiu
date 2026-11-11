@@ -99,72 +99,46 @@ def crop_authentic_insignia(badge):
 
 
 def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
+    """Canonical identity first; quarantine AI-invented architecture and maps.
+
+    Source studios remain PRE-UNITY, never advertised as real gameplay.
+    The old opaque stage covered authentic backgrounds with fictional scenery.
+    """
     w,h=shape
     require(game_capture.width>=200 and game_capture.height>=200,
             "Genuine source too small for composition")
     dst=cover(game_capture.convert("RGBA"),w,h)
-    dst.alpha_composite(Image.new("RGBA",(w,h),(18,20,25,55)))
-    ornament=None
-    for role,layer in layers:
-        require(layer.mode=="RGBA","Art layer requires alpha, not a poster")
-        if role=="ornament":
-            ornament=layer
-            continue
-        require(role=="stage","Unknown source composition layer")
-        if event=="bastion":
-            # The generated stone gate is NOT the user's actual building.
-            # Never mistake it for the real Bastion. Original city is hero.
-            continue
-        focal,x,y=fit_focal(layer,shape,event)
-        # First place the empty architectural/ceremonial stage. It may be
-        # fully opaque under its aperture; therefore the verified 3D actor
-        # MUST be painted *after* it or Lyra disappears behind the scenery.
-        # The independent nine-slice ornament is still composited last.
-        dst.alpha_composite(focal,(x,y))
-        if event=="lyra" and canonical_lyra is not None:
-            # The hero is an actual GLB SHA-verified mesh render, NOT a
-            # generated lookalike. Place the upper-body silhouette IN FRONT
-            # of the stage but UNDER the carved ornamental frame.
-            alpha=canonical_lyra.getchannel("A")
-            box=alpha.getbbox()
-            require(box is not None,"Authentic 3D Lyra render is empty")
-            upper=canonical_lyra.crop((
-                box[0],box[1],box[2],
-                min(canonical_lyra.height,box[1]+round((box[3]-box[1])*.67))))
-            assert upper.getchannel("A").getbbox()
-            k=min(focal.width*.62/upper.width,
-                  focal.height*.81/upper.height)
-            ww,hh=max(1,round(upper.width*k)),max(1,round(upper.height*k))
-            framed=upper.resize((ww,hh),Image.Resampling.LANCZOS)
-            hero_x=x+round((focal.width-ww)/2)
-            hero_y=y+round(focal.height*.13)
-            dst.alpha_composite(framed,(hero_x,hero_y))
-            # The same authentic stage has a carved front sill. Mask the
-            # actor's deliberate waist-up crop BEHIND that sill instead of
-            # leaving a visibly severed horizontal edge across her legs.
-            # It is a depth-separated REUSE of source stage pixels, not an
-            # AI-generated or fabricated piece of the hero's costume.
-            sill_y=round(focal.height*.76)
-            sill=Image.new("RGBA",focal.size)
-            sill.paste(focal.crop((0,sill_y,focal.width,focal.height)),
-                       (0,sill_y))
-            dst.alpha_composite(sill,(x,y))
-        if badge is not None and event=="vigilants":
-            icon=crop_authentic_insignia(badge)
-            side=max(26,min(round(focal.width*.48),round(focal.height*.43),240))
-            icon.thumbnail((side,side),Image.Resampling.LANCZOS)
-            dst.alpha_composite(icon,
-                 (x+(focal.width-icon.width)//2,
-                  y+round(focal.height*.47)-icon.height//2))
-        if badge is not None and event=="explorers":
-            # Authentic Scouts sigil only; no fabricated cartography.
-            icon=crop_authentic_insignia(badge)
-            side=max(24,min(round(focal.width*.25),150))
-            icon.thumbnail((side,side),Image.Resampling.LANCZOS)
-            dst.alpha_composite(icon,
-                 (x+round(focal.width*.64),y+round(focal.height*.31)))
-    if ornament is not None:
-        dst.alpha_composite(nine_slice_frame(ornament,shape))
+    dst.alpha_composite(Image.new("RGBA",(w,h),(18,20,25,40)))
+    ornaments=[layer for role,layer in layers if role=="ornament"]
+    require(len(ornaments)<=1,"Multiple ornate frames overlap")
+    require(all(role in ("stage","ornament") for role,_ in layers),
+            "Unknown source composition layer")
+    # Stage candidates contain fictional coasts, emblems and buildings.
+    # Suppress them all rather than making a small retouch that preserves
+    # these inaccuracies. Real environment occupies the complete frame.
+    if event=="lyra":
+        require(canonical_lyra is not None,
+                "Lyra must come from authentic GLB, not an invented portrait")
+        bounds=canonical_lyra.getchannel("A").getbbox()
+        require(bounds is not None,"Empty real Lyra")
+        upper=canonical_lyra.crop((bounds[0],bounds[1],bounds[2],
+             min(canonical_lyra.height,bounds[1]+round((bounds[3]-bounds[1])*.88))))
+        k=min(w*(.74 if h>w else .39)/upper.width,
+              h*(.76 if h>w else .80)/upper.height)
+        ww,hh=max(1,round(upper.width*k)),max(1,round(upper.height*k))
+        figure=upper.resize((ww,hh),Image.Resampling.LANCZOS)
+        cx=round(w*(.50 if h>w else .36))
+        cy=round(h*(.48 if h>w else .50))
+        dst.alpha_composite(figure,(max(0,cx-ww//2),max(0,cy-hh//2)))
+    if badge is not None and event in ("explorers","vigilants"):
+        icon=crop_authentic_insignia(badge)
+        side=max(26,round(min(w*(.60 if h>w else .36),
+                              h*(.42 if h>w else .59),430)))
+        icon.thumbnail((side,side),Image.Resampling.LANCZOS)
+        cx,cy=round(w*.5),round(h*(.43 if h>w else .50))
+        dst.alpha_composite(icon,(cx-icon.width//2,cy-icon.height//2))
+    if ornaments:
+        dst.alpha_composite(nine_slice_frame(ornaments[0],shape))
     return dst
 
 
@@ -269,9 +243,8 @@ def run(manifest,identities,out):
                          "authentic_lyra_portrait_sha256":
                            hero_receipt["output_sha256"] if event=="lyra" else None,
                          "official_identity_source":data["ceremonies"][event]["identity_source"],
-                         "original_stage_drawn":event!="bastion",
-                         "art_safety_note":("Generated gate omitted: not real game architecture"
-                                            if event=="bastion" else "Stage is unapproved compositional candidate"),
+                         "original_stage_drawn":False,
+                         "art_safety_note":"All fictional stage candidates quarantined; authentic scene only",
                          "previews":shots}
     contact=write_contact_sheet(out)
     result={"classification":"PREUNITY_STUDY_NOT_GAMEPLAY",
@@ -291,19 +264,21 @@ def selftest():
         require(img.size==size,"Bad device layout")
         require(img.getpixel((size[0]//2,size[1]//2))[3]==255,
                 "Canonical capture disappeared")
-    # Regression: a fully opaque central stage can silently cover the
-    # canonical hero if stage and actor are painted in the wrong order.
-    # Test the actual compositing pixel, not only the presence of a GLB hash.
-    opaque_stage=Image.new("RGBA",(1024,576),(0,0,0,0))
-    ImageDraw.Draw(opaque_stage).rectangle((160,80,864,525),
-                                          fill=(165,20,20,255))
-    canonical_actor=Image.new("RGBA",(200,300),(9,242,27,255))
-    revealed=compose(sample,[("stage",opaque_stage)],(1600,900),
-                     event="lyra",canonical_lyra=canonical_actor)
-    visible_actor=sum(1 for red,green,blue,alpha in revealed.getdata()
-                      if green>=230 and red<=20 and blue<=40 and alpha==255)
-    require(visible_actor>500,
-            "Authentic Lyra was hidden by the front-painted stage")
+    # No fictional stage may alter real-world pixels, in ANY ceremony.
+    fake=Image.new("RGBA",(1024,576),(235,2,5,255))
+    for event in ("explorers","vigilants","bastion"):
+        baseline=compose(sample,[],(1600,900),event=event)
+        candidate=compose(sample,[("stage",fake)],(1600,900),event=event)
+        require(baseline.tobytes()==candidate.tobytes(),
+                "Fictional stage leaked into "+event)
+    actor=Image.new("RGBA",(200,300),(9,242,27,255))
+    portrait=compose(sample,[("stage",fake)],(1600,900),
+                     event="lyra",canonical_lyra=actor)
+    green=sum(1 for r,g,b,a in portrait.getdata()
+              if g>=230 and r<=20 and b<=40 and a==255)
+    require(green>500,"Canonical actor disappeared")
+    require(portrait.getpixel((30,30))[0]!=235,
+            "Fictional architecture visible beyond canonical actor")
     # Regression: published Eldoria icons may have broad transparent margins.
     # A 44px actual emblem must be expanded BEFORE measuring its target size.
     inset=Image.new("RGBA",(256,256),(0,0,0,0))
