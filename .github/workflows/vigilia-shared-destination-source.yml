@@ -1,0 +1,38 @@
+name: Vigilia reusable destination source guard
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths:
+      - '.github/workflows/vigilia-shared-destination-source.yml'
+      - 'tools/breach-watch/validate_shared_destination_theme.py'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  style-source-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/validate_shared_destination_theme.py
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs.meta
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png.meta
+          persist-credentials: false
+      - name: Check staged theme and gameplay boundaries (NOT visual approval)
+        shell: bash
+        run: python3 tools/breach-watch/validate_shared_destination_theme.py
