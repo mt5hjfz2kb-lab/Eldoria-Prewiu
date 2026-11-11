@@ -116,6 +116,69 @@ namespace Eldoria.DailyTreasures.Editor
             }
         }
 
+
+        // A visual-only Bastion ceremony needs an actual camera view of the
+        // already built canonical structure. Digitally zooming a flat PNG
+        // pixelates masonry; moving the genuine Unity camera does not.
+        // Never substitute a generated future castle or modify the scene.
+        static Bounds FindVisibleRealBastion(MonoBehaviour city)
+        {
+            foreach(var slot in new[]{"BastionOne","BastionTwo"})
+            {
+                var type=city.GetType();
+                var property=type.GetProperty(slot);
+                var field=type.GetField(slot);
+                var gameObject=property!=null
+                    ?property.GetValue(city,null) as GameObject
+                    :field!=null?field.GetValue(city) as GameObject:null;
+                if(!gameObject || !gameObject.activeInHierarchy)continue;
+                var visible=gameObject.GetComponentsInChildren<Renderer>(true)
+                    .Where(r=>r && r.enabled && r.gameObject.activeInHierarchy)
+                    .ToArray();
+                if(visible.Length==0)continue;
+                var bounds=visible[0].bounds;
+                for(int i=1;i<visible.Length;i++)
+                    bounds.Encapsulate(visible[i].bounds);
+                Require(bounds.size.sqrMagnitude>.01f,
+                    "Authentic "+slot+" has invalid renderer bounds");
+                return bounds;
+            }
+            throw new InvalidOperationException(
+                "No active canonical BastionOne/BastionTwo mesh in the real city; "+
+                "do not substitute a screenshot, a fake building or an inactive future tier");
+        }
+
+        static void FrameRealBastion(Camera camera,Bounds bounds)
+        {
+            // Keep the player's genuine camera orientation. Only its position
+            // and lens vary for this disposable illustration-only capture.
+            var right=camera.transform.right;
+            var up=camera.transform.up;
+            var forward=camera.transform.forward;
+            var e=bounds.extents;
+            float dx=Mathf.Abs(right.x)*e.x+Mathf.Abs(right.y)*e.y+
+                Mathf.Abs(right.z)*e.z;
+            float dy=Mathf.Abs(up.x)*e.x+Mathf.Abs(up.y)*e.y+
+                Mathf.Abs(up.z)*e.z;
+            float dz=Mathf.Abs(forward.x)*e.x+Mathf.Abs(forward.y)*e.y+
+                Mathf.Abs(forward.z)*e.z;
+            float aspect=Mathf.Max(.25f,camera.aspect);
+            if(camera.orthographic)
+            {
+                camera.orthographicSize=Mathf.Max(1f,
+                    Mathf.Max(dy/.63f,dx/(aspect*.74f)));
+                float depth=Mathf.Max(12f,dz*3f);
+                camera.transform.position=bounds.center-forward*depth;
+            }
+            else
+            {
+                float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
+                float distance=Mathf.Max(dy/(tanY*.63f),
+                    dx/(tanY*aspect*.74f))+dz*1.5f;
+                camera.transform.position=bounds.center-forward*Mathf.Max(12f,distance);
+            }
+        }
+
         public static void Capture()
         {
             string project=Path.GetFullPath(
@@ -139,6 +202,10 @@ namespace Eldoria.DailyTreasures.Editor
             RenderTexture originalTarget=null;
             int originalMask=0;
             float originalAspect=1;
+            Vector3 originalPosition=Vector3.zero;
+            Quaternion originalRotation=Quaternion.identity;
+            float originalOrthographicSize=1f;
+            float originalFieldOfView=60f;
             GameObject canvasObject=null;
             try
             {
@@ -176,6 +243,13 @@ namespace Eldoria.DailyTreasures.Editor
                 originalTarget=camera.targetTexture;
                 originalAspect=camera.aspect;
                 originalMask=camera.cullingMask;
+                originalPosition=camera.transform.position;
+                originalRotation=camera.transform.rotation;
+                originalOrthographicSize=camera.orthographicSize;
+                originalFieldOfView=camera.fieldOfView;
+                // This must resolve actual visible Bastion renderers in the
+                // already opened canonical city scene, not an artist proxy.
+                var bastionBounds=FindVisibleRealBastion(city);
                 camera.cullingMask|=1<<5;
                 canvasObject=new GameObject("TEMP / City daily art-context only",
                     typeof(RectTransform),typeof(Canvas),
@@ -209,6 +283,10 @@ namespace Eldoria.DailyTreasures.Editor
                     var root=(RectTransform)canvasObject.transform;
                     root.sizeDelta=new Vector2(width,height);
                     camera.aspect=width/(float)height;
+                    camera.transform.position=originalPosition;
+                    camera.transform.rotation=originalRotation;
+                    camera.orthographicSize=originalOrthographicSize;
+                    camera.fieldOfView=originalFieldOfView;
                     var target=new RenderTexture(width,height,24,
                         RenderTextureFormat.ARGB32);
                     try
@@ -254,6 +332,30 @@ namespace Eldoria.DailyTreasures.Editor
                             "Bastion stage was absent above real city camera");
                         panel.Close();
                         panel.Suppressed=true;
+                        // High-resolution genuine camera framing, NOT raster
+                        // scaling of a city screenshot. Keep a paired baseline
+                        // from the same lens so visual reviewers can judge
+                        // both architecture and whether the overlay hides it.
+                        FrameRealBastion(camera,bastionBounds);
+                        var heroBaseline=Photograph(camera,target,folder,
+                            width,height,"real-bastion-camera-baseline",true);
+                        pictures.Add(heroBaseline);
+                        panel.Suppressed=false;
+                        panel.Open();
+                        Require(panel.IsOpen,
+                            "Focused real Bastion visual-only stage did not open");
+                        panel.Present("BASTIÓN · ESTUDIO VISUAL",
+                            "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
+                            true,DailyTreasureCeremonyTier.Special,
+                            "milestone:bastion:visual-only");
+                        Canvas.ForceUpdateCanvases();
+                        var heroStage=Photograph(camera,target,folder,
+                            width,height,"real-bastion-camera-ceremony",false);
+                        pictures.Add(heroStage);
+                        Require(heroBaseline.sha256!=heroStage.sha256,
+                            "Actual-camera Bastion ceremony was never drawn");
+                        panel.Close();
+                        panel.Suppressed=true;
                     }
                     finally
                     {
@@ -269,8 +371,8 @@ namespace Eldoria.DailyTreasures.Editor
                     before.Resources.Food==after.Resources.Food &&
                     before.Mailbox.Messages.Count==after.Mailbox.Messages.Count,
                     "An ART-ONLY city preview unexpectedly changed real rewards");
-                Require(pictures.Count==12,
-                    "Expected four genuine city baselines, calendars AND non-paying Bastion stages");
+                Require(pictures.Count==20,
+                    "Expected 20 genuine city, Bastion context AND canonical camera-framed PNGs");
                 report.pngCount=pictures.Count;
                 report.status="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED";
             }
@@ -288,6 +390,10 @@ namespace Eldoria.DailyTreasures.Editor
                     camera.targetTexture=originalTarget;
                     camera.cullingMask=originalMask;
                     camera.aspect=originalAspect;
+                    camera.transform.position=originalPosition;
+                    camera.transform.rotation=originalRotation;
+                    camera.orthographicSize=originalOrthographicSize;
+                    camera.fieldOfView=originalFieldOfView;
                 }
                 if(canvasObject)Object.DestroyImmediate(canvasObject);
                 File.WriteAllText(Path.Combine(folder,"city-art-report.json"),
