@@ -159,6 +159,73 @@ internal static class Program
                 "gift:pending",out _),
             "pending mail survives reload; claim and use each commit once");
 
+
+        // Exact queued events, not a perpetual red dot on each menu button.
+        var attentionLedger = new AttentionCueLedger();
+        Check(!AttentionCueRules.Signal(attentionLedger,"","mail",AttentionLevel.New) &&
+              !AttentionCueRules.Signal(attentionLedger,"mail:none","",AttentionLevel.New) &&
+              !AttentionCueRules.Signal(attentionLedger,"mail:none","mail",AttentionLevel.None),
+              "invalid/empty notification cannot create a phantom badge");
+        Check(AttentionCueRules.Signal(attentionLedger,"mail:7","mail",AttentionLevel.New),
+              "real new mail event activates unread cue");
+        Check(AttentionCueRules.At(attentionLedger,"mail")==AttentionLevel.New,
+              "new mail badge shown");
+        Check(AttentionCueRules.MarkViewed(attentionLedger,"mail:7") &&
+              AttentionCueRules.At(attentionLedger,"mail")==AttentionLevel.None,
+              "reading information clears only the new badge");
+        Check(!AttentionCueRules.Signal(attentionLedger,"mail:7","mail",AttentionLevel.New),
+              "reloading a read mail does not create an unread badge");
+        Check(AttentionCueRules.Signal(attentionLedger,"reward:mail7","mail",
+                AttentionLevel.ActionReady),
+              "actual pending reward produces action-required badge");
+        Check(AttentionCueRules.At(attentionLedger,"mail")==AttentionLevel.ActionReady,
+              "claim outranks read notifications");
+        Check(AttentionCueRules.MarkViewed(attentionLedger,"reward:mail7") &&
+              AttentionCueRules.At(attentionLedger,"mail")==AttentionLevel.ActionReady,
+              "viewing or opening claimable mail does not clear pending claim");
+        Check(!AttentionCueRules.Resolve(attentionLedger,"reward:mail7",false) &&
+              AttentionCueRules.At(attentionLedger,"mail")==AttentionLevel.ActionReady,
+              "failed or simulated claim does not clear pending award");
+        Check(!AttentionCueRules.Signal(attentionLedger,"reward:mail7","daily",
+                AttentionLevel.New),
+              "event IDs cannot be reused across different destinations");
+        Check(AttentionCueRules.Resolve(attentionLedger,"reward:mail7",true) &&
+              AttentionCueRules.At(attentionLedger,"mail")==AttentionLevel.None,
+              "successful authority claim clears pending badge");
+        Check(!AttentionCueRules.Resolve(attentionLedger,"reward:mail7",true) &&
+              !AttentionCueRules.Signal(attentionLedger,"reward:mail7","mail",
+                AttentionLevel.ActionReady),
+              "replay cannot reactivate claimed reward");
+        Check(AttentionCueRules.Signal(attentionLedger,"daily:20261111","daily",
+                AttentionLevel.New) &&
+              AttentionCueRules.Signal(attentionLedger,"daily:20261111","daily",
+                AttentionLevel.ActionReady),
+              "new daily reward upgrades from information to action state");
+        Check(!AttentionCueRules.Signal(attentionLedger,"daily:20261111","daily",
+                AttentionLevel.New) &&
+              AttentionCueRules.At(attentionLedger,"daily")==AttentionLevel.ActionReady,
+              "daily claimable cannot be silently downgraded to informational");
+        Check(AttentionCueRules.Expire(attentionLedger,"daily:20261111",true) &&
+              AttentionCueRules.At(attentionLedger,"daily")==AttentionLevel.None,
+              "authoritative expired event cannot remain red forever");
+        Check(AttentionCueRules.Signal(attentionLedger,"daily:20261112","daily",
+                AttentionLevel.ActionReady) &&
+              AttentionCueRules.At(attentionLedger,"daily")==AttentionLevel.ActionReady,
+              "new day uses its own unique event and displays new claim");
+        var attentionSnapshot=attentionLedger.Copy();
+        Check(AttentionCueRules.Resolve(attentionSnapshot,"daily:20261112",true) &&
+              AttentionCueRules.At(attentionLedger,"daily")==AttentionLevel.ActionReady,
+              "notification snapshots are deep copied");
+        var attentionJson=JsonSerializer.Serialize(attentionLedger,
+            new JsonSerializerOptions { IncludeFields=true });
+        var restoredAttention=JsonSerializer.Deserialize<AttentionCueLedger>(
+            attentionJson,new JsonSerializerOptions { IncludeFields=true });
+        Check(AttentionCueRules.At(restoredAttention,"daily")==AttentionLevel.ActionReady &&
+              AttentionCueRules.At(restoredAttention,"mail")==AttentionLevel.None &&
+              !AttentionCueRules.Signal(restoredAttention,"reward:mail7","mail",
+                AttentionLevel.ActionReady),
+              "notification save/load retains pending actions and resolved receipts");
+
         var guide = new GuidedTutorialProgress();
         Check(!GuidedTutorialRules.ShouldPoint(guide, "first-mail", "mail-button", false, true),
             "locked features cannot point");
