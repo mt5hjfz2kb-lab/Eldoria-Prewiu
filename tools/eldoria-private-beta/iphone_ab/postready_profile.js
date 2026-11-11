@@ -55,6 +55,24 @@
    mark,dispose(){if(disposed)return;
     for(const [target,type,fn,opt] of listeners)target.removeEventListener?.(type,fn,opt);
     for(const level of Object.keys(old))win.console[level]=old[level];disposed=true;}};
+  // Show persisted phase breadcrumbs after an involuntary reload without
+  // interrupting the game or disclosing them to any server.
+  if(doc?.body&&typeof doc.createElement==='function'){
+   const button=doc.createElement('button');button.type='button';button.textContent='Perfil P0';
+   Object.assign(button.style,{position:'fixed',right:'8px',top:'8px',zIndex:'999997',
+    font:'12px monospace',padding:'5px',background:'#14212c',color:'#fff',
+    border:'1px solid #b9a476',borderRadius:'4px'});
+   const panel=doc.createElement('div');
+   Object.assign(panel.style,{display:'none',position:'fixed',right:'8px',top:'42px',
+    width:'min(92vw,440px)',maxHeight:'55vh',zIndex:'999997',background:'#14212c',
+    color:'#fff',border:'1px solid #b9a476',padding:'8px'});
+   const note=doc.createElement('p');
+   note.textContent='Registro local y privado. No prueba jetsam. No se envía automáticamente.';
+   const output=doc.createElement('textarea');output.readOnly=true;
+   Object.assign(output.style,{width:'100%',height:'190px',font:'11px monospace'});
+   button.addEventListener('click',()=>{panel.style.display=panel.style.display==='none'?'block':'none';output.value=api.report();});
+   panel.append(note,output);doc.body.append(button,panel);
+  }
   win.__eldoriaP0Postready=api;
   return api;
  }
