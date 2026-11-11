@@ -50,6 +50,7 @@ namespace Eldoria.BreachWatch
         BreachWatchCityComposition cityComposition;
         BreachWatchPlate actionPlate;
         Image exactOwnerGoldBorder;
+        Material singleCrestPaletteMaterial;
         BreachWatchNavFiligree navFiligree;
         readonly BreachWatchPlate[] approvedUtilitySeals = new BreachWatchPlate[3];
         readonly Button[] navButtons = new Button[5];
@@ -445,11 +446,20 @@ namespace Eldoria.BreachWatch
             if(!finalProfile)throw new InvalidOperationException(
                 "Missing Vigilia's approved player profile art");
             identitySurface.ApplyIndependentArt(finalProfile,true);
-            // Keep the authored 2K profile at its true source colors.
-            // Native run 42954979987 rejected the yellow-overlay tint: its
-            // reduced green channel broke the independently checked shared
-            // warm-material palette. Recolor the sprite in art production,
-            // not via a whole-panel tint or a second graphic.
+            // A whole-image Image.color tint failed real native QA in
+            // run 42954979987. Keep the original source sprite and white
+            // UI vertex colors; only the painted violet pixels of its single
+            // 2K image may be selectively shifted toward antique bronze.
+            // One source Image, no added border/crest/control behind it.
+            var crestShader=Resources.Load<Shader>(
+                "VigiliaArt/CleanRoom/VigiliaAntiqueCrest");
+            if(!crestShader || !crestShader.isSupported)
+                throw new InvalidOperationException(
+                    "Missing or unsupported original-image bronze crest shader");
+            singleCrestPaletteMaterial=new Material(crestShader);
+            singleCrestPaletteMaterial.name="Vigilia / one painted crest, local palette";
+            singleCrestPaletteMaterial.hideFlags=HideFlags.DontSave;
+            identitySurface.material=singleCrestPaletteMaterial;
             identitySurface.color=Color.white;
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
@@ -1705,6 +1715,7 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            if(singleCrestPaletteMaterial)Destroy(singleCrestPaletteMaterial);
             if(host && host.Hud)host.Hud.SelectionChanged-=OnCanonicalSelection;
             foreach(var entry in originalCameraMasks)
                 if(entry.Key && (entry.Value & (1<<5))==0)
