@@ -43,6 +43,28 @@ namespace Eldoria.BreachWatch
         public int RestyledPanels { get; private set; }
         public int RestyledButtons { get; private set; }
         public int ReplacedLegacyGraphics { get; private set; }
+        public bool NoLegacyBluePaintingVisible
+        {
+            get
+            {
+                if(!installed)return false;
+                var graphics=GetComponentsInChildren<Graphic>(true);
+                foreach(var item in graphics)
+                {
+                    if(!item || !item.isActiveAndEnabled ||
+                       !item.gameObject.activeInHierarchy)continue;
+                    if(item is RoyalGoldV3ManagementBackdrop ||
+                       item is RoyalGoldV3ManagementBackdropGraphic ||
+                       item is RoyalGoldV3LayeredFinish)return false;
+                    if(item is Image &&
+                       (item.name=="Approved source / blue-panel" ||
+                        item.name=="Approved source / gold-button" ||
+                        item.name=="Approved source / training-courtyard-layer-v1"))
+                        return false;
+                }
+                return true;
+            }
+        }
 
         public bool Apply(RectTransform destination)
         {
