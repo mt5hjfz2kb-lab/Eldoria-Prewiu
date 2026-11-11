@@ -21,6 +21,7 @@ def require(value, explanation):
 def main():
     theme = (R / "BreachWatchSharedTheme.cs").read_text()
     composition = (R / "BreachWatchTrainingComposition.cs").read_text()
+    march = (R / "BreachWatchMarchComposition.cs").read_text()
     bridge = (R / "BreachWatchDestinationBridge.cs").read_text()
     hud = (R / "BreachWatchHud.cs").read_text()
     for path in ["PremiumSurfaces/panel_fill.png",
@@ -29,7 +30,8 @@ def main():
         require((A / (path + ".meta")).is_file(), "Missing import settings: " + path)
     for source in [R / "BreachWatchSharedTheme.cs",
                    R / "BreachWatchDestinationBridge.cs",
-                   R / "BreachWatchTrainingComposition.cs"]:
+                   R / "BreachWatchTrainingComposition.cs",
+                   R / "BreachWatchMarchComposition.cs"]:
         require(source.with_suffix(".cs.meta").is_file(),
                 "Missing stable script GUID: " + source.name)
     require("source.border.sqrMagnitude" in theme and
@@ -52,6 +54,12 @@ def main():
             "FindDirect" in composition and
             "Vigilia" not in composition.split("new Button",1)[-1],
             "Cinematic destination must reuse true unit art and controls")
+    require("March / reference scene inset" in march and
+            "preview.gameObject.SetActive(false)" in march and
+            "March / real metric card " in march and
+            "UsesFullWidthMetrics=true" in march and
+            "cinematicMarch.RefreshScorecard()" in bridge,
+            "March visual migration must replace dead inset with real full-width metrics")
     require("originalButtonTargets" in theme and
             "originalTransitions" in theme and "Restore()" in theme,
             "Theme must preserve original Selectable behavior")
