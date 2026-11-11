@@ -66,7 +66,9 @@ namespace Eldoria.BreachWatch
             root=rect;
             theme=root.GetComponent<BreachWatchRetentionTheme>();
             if(!theme)theme=root.gameObject.AddComponent<BreachWatchRetentionTheme>();
-            if(!theme.Apply(root) || !theme.OldRoyalChromeHidden)
+            if(!theme.Apply(root,retention.OpenDestination ==
+                RoyalGoldV3EarlyRetentionScreens.Destination.Scouts) ||
+               !theme.OldRoyalChromeHidden)
             {
                 retention.Close();
                 Restore();
