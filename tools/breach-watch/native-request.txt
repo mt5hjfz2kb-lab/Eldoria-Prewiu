@@ -1,5 +1,4 @@
-VIGILIA_ART_NATIVE_20261111_0246_REAL_BASTION_MATERIAL_INDEX_ATLAS
-Source exact HEAD before this request: a30358c14fc88eb89488464d9de36ed6f6c8f64d
-Owner: chatgpt-vigilia-art-automation-20261111; ownership revision 69; exclusive windows-runner-heavy.
-RATIONALE: Previous isolated camera and UV changes had <1 percent effect in real portrait. The approved original depicts blue roofs while the actual Bastion uses greys. Do NOT guess a material index or retexture the canonical world. This editor-only proof renders each ORIGINAL mesh submesh with a distinct pink diagnostic in the disposable UI portrait camera and restores all materials before final screenshots. Preserve original scene, no asset replacement, no legacy UI overlays, no changed save.
-Request Unity 6000.3.23f1 8 real city/Bastion PNG across four resolutions, pointer events, readable live GPU texts, and Unity GPU-generated VigiliaActualBastionMaterialIndexAtlas.png plus log. Do not call atlas a user-facing artistic improvement: source-level diagnostic only. Compare to approved image before choosing a production approach. Do not merge/publish or assert ART_APPROVED.
+VIGILIA_ART_NATIVE_20261111_0248_REAL_BASTION_MATERIAL_PROVENANCE
+Source exact HEAD: e9e0bdb3654961cf91c360d4ba335636576702b4
+PR173 canonical owner chatgpt-vigilia-art-automation-20261111, main claim revision69, exclusive windows-runner-heavy.
+Required 8 genuine Unity 6000.3.23f1 city/Bastion screenshots + six real raycasts/navigation, GPU text, old Canvas hidden and original save unchanged. Additional strictly EDITOR-only diagnostic "VigiliaActualBastionMaterialIndexAtlas.png": one true original Bastion submesh marked magenta per tile on a disposable clone; all materials restored after diagnostic, production render exactly one. Resolve roof material provenance before any macro palette recommendation. No fake grass or overlays, no gameplay material editing, no publication and no ART_APPROVED.
