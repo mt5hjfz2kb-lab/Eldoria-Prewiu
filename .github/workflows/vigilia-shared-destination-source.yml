@@ -23,6 +23,8 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/breach-watch/validate_shared_destination_theme.py
+            /tools/breach-watch/SyntaxAudit.csproj
+            /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs.meta
@@ -33,6 +35,13 @@ jobs:
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png.meta
           persist-credentials: false
+      - name: Parse real C-sharp syntax without occupying Windows Unity runner
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Roslyn compile-tree parse of new C-sharp runtime components
+        shell: bash
+        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch/Runtime
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash
         run: python3 tools/breach-watch/validate_shared_destination_theme.py
