@@ -233,7 +233,15 @@ namespace Eldoria.BreachWatch
                 portraitCamera.aspect=texture.width/(float)texture.height;
                 portraitCamera.orthographic=true;
                 portraitCamera.targetTexture=texture;
-                portraitCamera.transform.rotation=source.transform.rotation;
+                // Isolated thumbnail ONLY: ease the city's steep overhead pitch
+                // toward the approved more frontal stone facade. Preserve
+                // real model/yaw, lighting and the gameplay camera untouched;
+                // projection and GPU clipping checks recompute from this axis.
+                float sourcePitch=source.transform.eulerAngles.x;
+                float portraitPitch=Mathf.LerpAngle(sourcePitch,35f,.55f);
+                portraitCamera.transform.rotation=Quaternion.Euler(
+                    portraitPitch,source.transform.eulerAngles.y,
+                    source.transform.eulerAngles.z);
 
                 Vector3 right=portraitCamera.transform.right;
                 Vector3 up=portraitCamera.transform.up;
