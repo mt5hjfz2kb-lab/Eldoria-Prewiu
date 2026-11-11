@@ -60,6 +60,13 @@ namespace Eldoria.World4XCanon
         {
             if (!host) yield break;
             host.BindWorldPresentation(this);
+            // P0 A/B only: avoid loading region meshes/resources while the
+            // owner validates whether CITY bootstrap itself survives on iOS.
+            // Normal production route and canonical Editor journeys are unchanged.
+            if (ValoriaIntegratedWorld.P0CityOnlyProbe) {
+                Debug.Log("ELDORIA_P0_CITY_ONLY_WORLD_INITIALIZATION_SKIPPED");
+                yield break;
+            }
             while (host && !host.PresentationBindingsReady) yield return null;
             if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera) yield break;
             navigation = host.WorldNavigation;
