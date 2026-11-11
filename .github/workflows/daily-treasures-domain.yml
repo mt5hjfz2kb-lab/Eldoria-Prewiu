@@ -242,35 +242,39 @@ jobs:
             echo "ready=no" >> "$GITHUB_OUTPUT"
             echo "No four real isolated sources yet; skip study without faking artwork"
           fi
-      - name: Retrieve authentic read-only Unity city baseline from past certified capture
+      # Use the official artifact client for cross-workflow downloads. The
+      # previous urllib redirect incorrectly forwarded its Authorization to
+      # Azure blob storage and failed 401. This is READ ONLY and requires no
+      # Windows reservation. A missing source fails CLOSED: no fake city.
+      - name: Download certified genuine city artifact from exact earlier Unity run
+        if: steps.present.outputs.ready == 'yes'
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-daily-treasures-native-9b86b7626b8d544f974c5395ad41f5f443d13f6b
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 42906443088
+          path: tools/daily-treasures/_verified-city-import
+      - name: Verify original real Unity city render and transfer to preview only
         if: steps.present.outputs.ready == 'yes'
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import hashlib,io,json,os,urllib.request,zipfile
+          import hashlib,json
           from pathlib import Path
-          repo=os.environ['GITHUB_REPOSITORY']
-          uri=f'https://api.github.com/repos/{repo}/actions/artifacts/13805842501/zip'
-          req=urllib.request.Request(uri,headers={
-              'Authorization':'Bearer '+os.environ['GH_TOKEN'],
-              'Accept':'application/vnd.github+json',
-              'User-Agent':'Eldoria-Read-Only-Actual-City-Baseline'})
-          with urllib.request.urlopen(req,timeout=90) as response:
-              data=response.read()
-          with zipfile.ZipFile(io.BytesIO(data)) as z:
-              proof=json.loads(z.read('city/city-art-report.json'))
-              assert proof['source']=='9b86b7626b8d544f974c5395ad41f5f443d13f6b'
-              assert proof['camera']=='PlayerCamera' and proof['cityRenderers']>=95
-              path='city/real-city-daily-actual-city-baseline-1600x900.png'
-              frame=z.read(path)
-              expected=next(x['sha256'] for x in proof['shots']
-                            if x['file']==path.split('/')[-1])
-              assert hashlib.sha256(frame).hexdigest()==expected
-              Path('tools/daily-treasures/real-city-source-verified.png').write_bytes(frame)
-              print('SHA-256 verified true Unity city baseline; NOT a full game run')
+          archive=Path('tools/daily-treasures/_verified-city-import')
+          record=json.loads((archive/'city/city-art-report.json').read_text())
+          assert record['source']=='9b86b7626b8d544f974c5395ad41f5f443d13f6b'
+          assert record['camera']=='PlayerCamera' and record['cityRenderers']>=95
+          name='real-city-daily-actual-city-baseline-1600x900.png'
+          original=archive/'city'/name
+          content=original.read_bytes()
+          expected=next(x['sha256'] for x in record['shots'] if x['file']==name)
+          assert hashlib.sha256(content).hexdigest()==expected
+          assert content.startswith(b'\\x89PNG\\r\\n\\x1a\\n')
+          Path('tools/daily-treasures/real-city-source-verified.png').write_bytes(content)
+          print('VERIFIED Unity original PlayerCamera SHA256. Not a gameplay run and not an art approval.')
           PY
       - name: Compose four real-identity studies at four resolutions BEFORE Unity
         if: steps.present.outputs.ready == 'yes'
