@@ -71,6 +71,9 @@ namespace Eldoria.BreachWatch
             if(!theme.Initialize(root) || !theme.Refresh(root) ||
                theme.VisibleOldRoyalFrame)
             {
+                // A failed visual migration must never leave an otherwise
+                // valid canonical hero dialog invisible on the old Canvas.
+                heroes.Suspend();
                 Restore();
                 return false;
             }
