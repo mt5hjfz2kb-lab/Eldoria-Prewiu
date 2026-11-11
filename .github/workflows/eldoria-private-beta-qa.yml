@@ -105,6 +105,13 @@ jobs:
           assert 'RoyalSection.Mailbox' in host and 'P0LazyWorldProbe' in host
           runner=(pathlib.Path('tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1')).read_text()
           assert '$preserve=@($overlays)+@($uxPaths)+@(' in runner
+          # Two inputs are normalized to intermediate engine baselines by the
+          # OLD native pipeline. The recovered warm project has their audited
+          # originals; otherwise a correct PlayMode test would be blocked.
+          recover=(ux/'recover_first_attempt.ps1').read_text()
+          for original in ('85533B5441B2F63D6E89A41C0561DC3689793A76A1D71375970241E4361E444C','4D84DC082FA107BCBD9B0DE03E1AD24D6CF0154F01A73150B9B9815846693478'):
+            assert original in recover and original in runner,'Recovery and native QA disagree about the frozen engine original'
+
           assert 'PR179_FROZEN_PRETESTER_UX19_STAGED_BEFORE_LAZY_ENGINE' in runner
           print('LAZY_WORLD_19_UX_SOURCE_DEPENDENCY_AND_TRANSACTION_PASS; UNITY_NOT_RUN')
           PY

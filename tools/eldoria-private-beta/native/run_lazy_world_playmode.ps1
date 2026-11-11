@@ -45,6 +45,15 @@ $uxManifest=Get-Content $uxManifestPath -Raw|ConvertFrom-Json
 if(@($uxManifest.files).Count -ne 19){throw 'Frozen pretester UX must contain exactly 19 files'}
 $uxCandidateBytes=@{}
 $uxPaths=@()
+# recover_first_attempt.ps1 certifies the exact originally warmed source.
+# The old native core applied the six engine overlays BEFORE its UX manifest,
+# so two manifest baselines are staged intermediate files, not hot-source HEAD.
+# Accept ONLY these frozen original hashes for these two files; every other
+# UX baseline must match the immutable manifest, before any mutation.
+$warmFrozenBaselines=@{
+ 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'='85533B5441B2F63D6E89A41C0561DC3689793A76A1D71375970241E4361E444C'
+ 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'='4D84DC082FA107BCBD9B0DE03E1AD24D6CF0154F01A73150B9B9815846693478'
+}
 function Get-Sha256Bytes([byte[]]$data) {
  $hasher=[Security.Cryptography.SHA256]::Create()
  try {return [BitConverter]::ToString($hasher.ComputeHash($data)).Replace('-','').ToLowerInvariant()}
@@ -63,8 +72,11 @@ foreach($entry in $uxManifest.files){
   throw "Frozen UX source/baseline missing: $rel"
  }
  $baseline=(Get-FileHash -LiteralPath $to -Algorithm SHA256).Hash.ToLowerInvariant()
- if($baseline -ne ([string]$entry.baseline_sha256).ToLowerInvariant()){
-  throw "Hot Unity baseline differs from 19-file frozen UX: $rel"
+ $expectedBaseline=if($warmFrozenBaselines.ContainsKey($rel)){
+  $warmFrozenBaselines[$rel].ToLowerInvariant()
+ }else{([string]$entry.baseline_sha256).ToLowerInvariant()}
+ if($baseline -ne $expectedBaseline){
+  throw "Hot Unity base differs from the recovered original or UX manifest: $rel"
  }
  $bytes=[IO.File]::ReadAllBytes($from)
  if((Get-Sha256Bytes $bytes) -ne ([string]$entry.candidate_sha256).ToLowerInvariant()){
