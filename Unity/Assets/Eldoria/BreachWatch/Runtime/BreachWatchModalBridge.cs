@@ -34,6 +34,7 @@ namespace Eldoria.BreachWatch
         Vector3 originalWindowScale;
         Sprite slicedStone;
         int lastWidth=-1,lastHeight=-1;
+        float lastCanvasScale=-1f;
         bool installed;
         public bool Installed => installed && realModal && visualCanvas &&
             realModal.transform.IsChildOf(visualCanvas.transform);
@@ -147,7 +148,8 @@ namespace Eldoria.BreachWatch
         void LateUpdate()
         {
             if(installed && realModal && realModal.gameObject.activeInHierarchy &&
-               (lastWidth!=Screen.width || lastHeight!=Screen.height))
+               (lastWidth!=Screen.width || lastHeight!=Screen.height ||
+                Mathf.Abs(lastCanvasScale-visualCanvas.scaleFactor)>.001f))
                 Reflow();
         }
 
@@ -155,6 +157,7 @@ namespace Eldoria.BreachWatch
         {
             if(!window || !visualCanvas)return;
             lastWidth=Screen.width;lastHeight=Screen.height;
+            lastCanvasScale=visualCanvas.scaleFactor;
             var scale=visualCanvas.scaleFactor;
             if(scale<=0f)scale=1f;
             float availableW=Mathf.Max(210f,Screen.width/scale-24f);
