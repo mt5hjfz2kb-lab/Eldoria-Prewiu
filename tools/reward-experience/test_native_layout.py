@@ -5,6 +5,8 @@ Not an artistic approval, and not a substitute for actual Unity GPU pixels.
 The model guards the mobile clipping/overlap failure previously found in PR187.
 """
 from dataclasses import dataclass
+from pathlib import Path
+import re
 
 SIZES = [(1600, 900), (900, 1600), (844, 390), (390, 844)]
 RESOURCES = ["wood", "stone", "food"]
@@ -95,6 +97,21 @@ def verify():
         checks+=1
         print(f"ISSUE186_LAYOUT_SOURCE_PASS {width}x{height} icon={d['icon']:.1f}px "
               f"4 tiers per resource row, safe CTA/title/alert boundaries")
+    # Contract-crosscheck the genuine C# result/acceptance and the Windows
+    # workflow. A prior version returned firstUseCompleted=true and then
+    # demanded !x.firstUseCompleted, making ANY native Unity capture fail
+    # even after a real successful button click. Pure geometry missed it.
+    root=Path(__file__).resolve().parents[2]
+    editor=(root/"Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs").read_text(encoding="utf-8")
+    workflow=(root/".github/workflows/issue186-native.yml").read_text(encoding="utf-8")
+    assert re.search(r"firstUseCompleted\s*=\s*true\s*[,}]",editor), "Capture must record a successful action"
+    checks+=1
+    assert re.search(r"results\.TrueForAll\([\s\S]*?x\.firstUsePointer\s*&&\s*x\.firstUseCompleted\s*&&",editor), \
+        "Native acceptance cannot invert a completed first-use click"
+    checks+=1
+    assert re.search(r"\$shot\.firstUseCompleted\s+-ne\s+\$true",workflow), \
+        "Native Windows workflow must require the completed click, not an absent action"
+    checks+=1
     print(f"ISSUE186_LAYOUT_MODEL_PASS checks={checks}; SOURCE ONLY, UNITY PIXELS PENDING")
 
 
