@@ -598,6 +598,10 @@ namespace Eldoria.BreachWatch.Editor
                 }
                 Canvas.ForceUpdateCanvases();
                 if(name=="heroes")
+                    Need(!ui.GetComponentsInChildren<Button>(true).Any(x=>
+                         x && x.name=="Hall / nav reliquary"),
+                         "Inert, unimplemented Relicario UI still exposed in Hero salon");
+                if(name=="heroes")
                     Need(heroes && heroes.HallGradeActive,
                         "Original blue Heroes Hall is not warmed by new scene material: "+
                         (heroes?heroes.HallGradeDiagnostic:"heroes bridge null"));
