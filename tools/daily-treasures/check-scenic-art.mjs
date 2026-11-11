@@ -212,3 +212,18 @@ assert.match(panel,/milestoneDiscoveryIllustration\.uvRect=tile/);
 assert.match(panel,/milestoneDiscoveryIllustration\.raycastTarget=false/);
 assert.match(panel,/DestroyOwned\(ownedScoutInkMaterial\)/);
 console.log('PASS 4 true earned Scout family vignettes painted into parchment with GPU feather and no fake awards');
+
+// Coherent REAL painted world around the whole narrative, replacing the
+// obsolete black/right void with original-world ambient layers only.
+// No duplicate camera readback or fictional reward/hero/city art.
+const narrativeMaterial=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureCeremonies/DailyNarrativeBackdrop.shader',
+  'utf8');
+assert.match(narrativeMaterial,/Shader "Eldoria\/DailyNarrativeBackdrop"/);
+assert.match(narrativeMaterial,/fixed4 src=tex2D\(_MainTex,i.uv\)/);
+assert.match(narrativeMaterial,/float rightInk=smoothstep/);
+assert.match(panel,/milestoneCinematicBackdrop\.raycastTarget=false/);
+assert.match(panel,/milestoneCinematicBackdrop\.texture=milestoneScenery\.texture/);
+assert.match(panel,/DestroyOwned\(ownedCinematicBackdropMaterial\)/);
+assert.match(panel,/milestoneCinematicBackdrop\.texture=null/);
+console.log('PASS: canonical full-frame narrative atmosphere, real source and owned GPU material');

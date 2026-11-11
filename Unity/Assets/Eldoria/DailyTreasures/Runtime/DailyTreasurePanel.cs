@@ -99,6 +99,8 @@ namespace Eldoria.DailyTreasures
             (chest.gameObject.activeSelf || illustratedClosed.gameObject.activeSelf ||
              illustratedOpen.gameObject.activeSelf);
         RawImage milestoneScenery;
+        RawImage milestoneCinematicBackdrop;
+        Material ownedCinematicBackdropMaterial;
         RenderTexture capturedBastionScene;
         Image milestoneVignette;
         Image milestoneInsignia;
@@ -411,6 +413,31 @@ namespace Eldoria.DailyTreasures
             Stretch(milestoneOrnament.rectTransform);
             narrativeFrame.SetAsFirstSibling();
             milestoneOrnament.gameObject.SetActive(false);
+            // ART DIRECTION: instead of a generic black right half, carry the
+            // SAME genuine landscape through the whole ceremonial frame. A
+            // subdued cinematic material protects the existing live text.
+            // This only paints original assets, never alters any player scene.
+            var atmosphere=NewRect(
+                "Genuine story world / cinematic full-bleed atmosphere",
+                cardSurface);
+            milestoneCinematicBackdrop=atmosphere.gameObject
+                .AddComponent<RawImage>();
+            milestoneCinematicBackdrop.raycastTarget=false;
+            var atmosphereShader=Resources.Load<Shader>(
+                "DailyTreasureCeremonies/DailyNarrativeBackdrop");
+            if(atmosphereShader && atmosphereShader.isSupported)
+            {
+                ownedCinematicBackdropMaterial=new Material(atmosphereShader)
+                {name="Tesoros / one owned cinematic atmosphere"};
+                milestoneCinematicBackdrop.material=ownedCinematicBackdropMaterial;
+            }
+            Stretch(atmosphere);
+            atmosphere.offsetMin=new Vector2(12f,12f);
+            atmosphere.offsetMax=new Vector2(-12f,-12f);
+            // The SINGLE original bronze frame must paint ON TOP of the
+            // atmosphere, no new decorative border or double rim.
+            atmosphere.SetAsFirstSibling();
+            milestoneCinematicBackdrop.gameObject.SetActive(false);
             var edge=cardSurface.gameObject.AddComponent<Shadow>();
             edge.effectColor=new Color(0f,0f,0f,.82f);
             edge.effectDistance=new Vector2(4f,-6f);
@@ -701,6 +728,7 @@ namespace Eldoria.DailyTreasures
             DestroyOwned(chestChime);
             DestroyOwned(chestGrandChime);
             DestroyOwned(ownedScoutInkMaterial);
+            DestroyOwned(ownedCinematicBackdropMaterial);
         }
         bool PresentNextCommittedMilestone()
         {
@@ -786,6 +814,11 @@ namespace Eldoria.DailyTreasures
                 milestoneScenery.texture=null;
                 milestoneScenery.gameObject.SetActive(false);
                 milestoneSceneryKey=null;
+            }
+            if(milestoneCinematicBackdrop)
+            {
+                milestoneCinematicBackdrop.texture=null;
+                milestoneCinematicBackdrop.gameObject.SetActive(false);
             }
             if(capturedBastionScene)
             {
@@ -1319,6 +1352,17 @@ namespace Eldoria.DailyTreasures
             milestoneScenery.texture=capturedBastionScene?
                 (Texture)capturedBastionScene:source;
             bool hasImage=milestoneScenery.texture!=null;
+            // The real city MUST be visible behind the temporary event,
+            // never replace it with an old flat screenshot if capture fails.
+            // Its same live camera preview is permitted as a muted
+            // atmospheric layer; no extra render or duplicate texture.
+            if(milestoneCinematicBackdrop)
+            {
+                milestoneCinematicBackdrop.texture=milestoneScenery.texture;
+                milestoneCinematicBackdrop.gameObject.SetActive(
+                    hasImage && ownedCinematicBackdropMaterial);
+                milestoneCinematicBackdrop.uvRect=new Rect(0f,0f,1f,1f);
+            }
             milestoneScenery.gameObject.SetActive(hasImage);
             milestoneVignette.gameObject.SetActive(hasImage);
             if(hasImage)
