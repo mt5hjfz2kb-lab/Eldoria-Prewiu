@@ -7,7 +7,7 @@ acceptable substitutes. These are *previews*, NOT Unity screenshots.
 """
 import argparse, hashlib, importlib.util, json
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 EVENTS=("lyra","explorers","vigilants","bastion")
 SIZES=((1600,900),(900,1600),(844,390),(390,844))
@@ -98,65 +98,6 @@ def crop_authentic_insignia(badge):
                       min(icon.width,x1+padding),min(icon.height,y1+padding)))
 
 
-def forged_authentic_insignia(original, max_side):
-    """Give an AUTHENTIC 128px in-game emblem the same mineral/bronze material
-    grammar as the coffer; keep EXACT alpha silhouette, no synthetic heraldry.
-
-    This pre-Unity painterly trial uses the original pixels to identify forged
-    gold versus blue enamel. The new dark slate/aged-bronze finish is a visual
-    CANDIDATE, not an approved replacement or a Unity screenshot.
-    """
-    badge=crop_authentic_insignia(original)
-    badge.thumbnail((max_side,max_side),Image.Resampling.LANCZOS)
-    source=badge.convert("RGBA")
-    width,height=source.size
-    painted=Image.new("RGBA",(width,height))
-    src=source.load()
-    dst=painted.load()
-    for y in range(height):
-        for x in range(width):
-            r,g,b,a=src[x,y]
-            if a<1:
-                continue
-            # Illumination from high left and microscopic forged surface wear.
-            key=.66+.21*(1-x/max(1,width))+.13*(1-y/max(1,height))
-            grain=((
-                (x*1315423911 ^ y*2654435761 ^ x*y*97531) & 255
-               )/255.0-.5)*.16
-            key=max(.47,min(1.14,key+grain))
-            # Exact original gold pixels become aged brass, blues become
-            # basalt-painted iron. There is no new symbol or story geometry.
-            if r>g*1.10 and g>b*1.16 and r>65:
-                material=(194,147,77)
-                metal=.94
-            elif b>r*1.13 and b>g*.92:
-                material=(42,49,50)
-                metal=.74
-            else:
-                material=(108,91,72)
-                metal=.85
-            tint=(.18*r+.82*material[0],
-                  .18*g+.82*material[1],
-                  .18*b+.82*material[2])
-            dst[x,y]=tuple(max(0,min(255,round(c*key*metal))) for c in tint)+(a,)
-    # A carved highlight is derived ONLY from actual alpha pixels.
-    mask=painted.getchannel("A")
-    bounds=mask.filter(ImageFilter.FIND_EDGES)
-    gloss=Image.new("RGBA",painted.size,(0,0,0,0))
-    gl=gloss.load()
-    ed=bounds.load()
-    for y in range(1,height-1):
-        for x in range(1,width-1):
-            e=ed[x,y]
-            if e>35 and mask.getpixel((x,y))>24:
-                # Short, very thin silversmith light; never a second badge.
-                gl[x,y]=(224,171,91,min(76,round(e*.28)))
-    painted=Image.alpha_composite(painted,gloss)
-    # Alpha preserved exactly: no invented crest contours.
-    painted.putalpha(mask)
-    return painted
-
-
 def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
     """Canonical identity first; quarantine AI-invented architecture and maps.
 
@@ -210,7 +151,8 @@ def compose(game_capture,layers,shape,event="",badge=None,canonical_lyra=None):
     if badge is not None and event in ("explorers","vigilants"):
         side=max(26,round(min(w*(.60 if h>w else .36),
                               h*(.42 if h>w else .59),430)))
-        icon=forged_authentic_insignia(badge,side)
+        icon=crop_authentic_insignia(badge)
+        icon.thumbnail((side,side),Image.Resampling.LANCZOS)
         cx,cy=round(w*.5),round(h*(.43 if h>w else .50))
         dst.alpha_composite(icon,(cx-icon.width//2,cy-icon.height//2))
     if ornaments:
@@ -355,22 +297,6 @@ def selftest():
     require(green>500,"Canonical actor disappeared")
     require(portrait.getpixel((30,30))[0]!=235,
             "Fictional architecture visible beyond canonical actor")
-    # Metallization MUST preserve every alpha silhouette pixel of the
-    # original heraldry. Silversmithing may not invent a new faction badge.
-    raw_icon=Image.new("RGBA",(128,128),(0,0,0,0))
-    ImageDraw.Draw(raw_icon).ellipse((20,20,108,108),
-        fill=(34,70,128,255))
-    ImageDraw.Draw(raw_icon).line((25,65,103,65),
-        fill=(221,173,80,255),width=9)
-    actual=crop_authentic_insignia(raw_icon)
-    forged=forged_authentic_insignia(raw_icon,512)
-    reference=actual.copy()
-    reference.thumbnail((512,512),Image.Resampling.LANCZOS)
-    require(forged.getchannel("A").tobytes()==
-            reference.getchannel("A").tobytes(),
-            "Forging modified the authentic heraldry silhouette")
-    require(forged.tobytes()!=reference.tobytes(),
-            "No actual mineral/metallic artist material was painted")
     # Regression: published Eldoria icons may have broad transparent margins.
     # A 44px actual emblem must be expanded BEFORE measuring its target size.
     inset=Image.new("RGBA",(256,256),(0,0,0,0))
