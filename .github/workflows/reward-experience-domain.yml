@@ -23,6 +23,7 @@ jobs:
             Unity/Assets/Eldoria/Issue186Art
             tools/reward-experience
             pipeline/art-production-requests
+            .github/workflows
           sparse-checkout-cone-mode: true
       - uses: actions/setup-dotnet@v4
         with:
