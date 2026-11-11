@@ -6,6 +6,7 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs'
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs'
       - 'tools/reward-experience/**'
       - 'Unity/Assets/Eldoria/Issue186Art/**'
       - '.github/workflows/reward-experience-domain.yml'
@@ -25,6 +26,7 @@ jobs:
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Scripts/Application
             Unity/Assets/Eldoria/Issue186Art
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs
             tools/reward-experience
             pipeline/art-production-requests
             .github/workflows

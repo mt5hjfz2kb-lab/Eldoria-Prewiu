@@ -116,6 +116,24 @@ namespace Eldoria.Issue186Art.Editor
             }
             return camera;
         }
+        // Real editor batches have no player frame between synchronous input
+        // probes. uGUI graphic depth remains -1 until actually rendered; a
+        // forced Canvas layout alone cannot make its hit physically valid.
+        // This follows the already validated PR173/181 native input method.
+        static void DrawActualUi(Camera camera,RenderTexture target)
+        {
+            Canvas.ForceUpdateCanvases();
+            if(GraphicsSettings.currentRenderPipeline!=null)
+            {
+                var request=new RenderPipeline.StandardRequest{destination=target};
+                Need(RenderPipeline.SupportsRenderRequest(camera,request),
+                    "URP camera cannot draw actual input target");
+                RenderPipeline.SubmitRenderRequest(camera,request);
+                RenderPipeline.SubmitRenderRequest(camera,request);
+            }
+            else {camera.Render();camera.Render();}
+            Canvas.ForceUpdateCanvases();
+        }
         // Even if assets import correctly, their use must be evident on
         // actual Unity-rendered cards and the two real attention states.
         static CaptureInfo CaptureOne(string folder,int width,int height,Font font,
@@ -278,7 +296,11 @@ namespace Eldoria.Issue186Art.Editor
                     typeof(EventSystem),typeof(StandaloneInputModule));
                 created.Add(evGO);
                 var ev=evGO.GetComponent<EventSystem>();
-                Canvas.ForceUpdateCanvases();
+                DrawActualUi(cam,rt);
+                Need(EventSystem.current==ev && ev.isActiveAndEnabled,
+                    "Disposable real EventSystem is not the current active system");
+                Need(button.targetGraphic.depth>=0 && !button.targetGraphic.canvasRenderer.cull,
+                    "Claim target has not been drawn by real Unity before tutorial input");
                 // Actual interactive control; never show pointer without one.
                 var progress=new GuidedTutorialProgress();
                 bool pointed=Issue186ArtKit.BindFirstUsePointer(progress,
@@ -333,7 +355,7 @@ namespace Eldoria.Issue186Art.Editor
                     buttonRect.anchoredPosition,new Vector2(32f,24f),
                     new Color(.7f,.2f,.15f,.95f));
                 blocker.raycastTarget=true;
-                Canvas.ForceUpdateCanvases();
+                DrawActualUi(cam,rt);
                 raycaster.Raycast(pd,hits);
                 Need(hits.Count>0 && hits[0].gameObject==blocker.gameObject,
                     "Raycaster ignored a frontmost obstructing UI element");
@@ -347,7 +369,7 @@ namespace Eldoria.Issue186Art.Editor
                 bool blockedClickRejected=!action;
                 blocker.gameObject.SetActive(false);
                 hits.Clear();
-                Canvas.ForceUpdateCanvases();
+                DrawActualUi(cam,rt);
                 raycaster.Raycast(pd,hits);
                 Need(hits.Count>0 && hits[0].gameObject==buttonRect.gameObject,
                     "Claim button is not the FRONTMOST tappable UI element");

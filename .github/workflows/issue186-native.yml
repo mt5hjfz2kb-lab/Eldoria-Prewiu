@@ -72,18 +72,47 @@ jobs:
           }
           git --version
           if($LASTEXITCODE){throw 'Installed Git failed; refuse archive fallback'}
-      - name: Checkout pinned source without full archive
-        uses: actions/checkout@v4
-        with:
-          path: issue186-source
-          fetch-depth: 1
-          lfs: false
-          filter: blob:none
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /Unity/**
-            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV*/**
-            !/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-391*/**
+      - name: Fetch pinned Unity-only source and retain owned import cache
+        shell: powershell
+        timeout-minutes: 15
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before checkout'}
+          $src=Join-Path $env:GITHUB_WORKSPACE 'issue186-source'
+          if(Test-Path -LiteralPath $src){
+            $item=Get-Item -LiteralPath $src -Force
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse reparse-point source'}
+            if(-not(Test-Path -LiteralPath (Join-Path $src '.git') -PathType Container)){throw 'Owned source is not an existing Git worktree'}
+            if((Get-Item -LiteralPath (Join-Path $src '.git') -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse redirected Git metadata'}
+            $origin=(& git -C $src remote get-url origin).Trim()
+            if($LASTEXITCODE -or $origin -notin @('https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu','https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git')){throw 'Owned checkout origin mismatch'}
+          }else{
+            New-Item -ItemType Directory -Path $src|Out-Null
+            & git -C $src init
+            if($LASTEXITCODE){throw 'Cannot initialize isolated source'}
+            & git -C $src remote add origin 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu'
+            if($LASTEXITCODE){throw 'Cannot set isolated origin'}
+          }
+          # actions/checkout filter overrides sparse-checkout. Configure both
+          # in Git itself; never clean Unity/Library or any other warm project.
+          & git -C $src config remote.origin.promisor true
+          & git -C $src config remote.origin.partialclonefilter blob:none
+          & git -C $src sparse-checkout init --no-cone
+          if($LASTEXITCODE){throw 'Cannot initialize real sparse checkout'}
+          $patterns=@(
+            '/Unity/**'
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV*/**'
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-391*/**'
+          )
+          & git -C $src sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Cannot set Unity-only source membership'}
+          & git -C $src fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned partial fetch failed; refuse archive fallback'}
+          & git -C $src checkout --force --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Pinned checkout failed'}
+          $actual=(& git -C $src rev-parse HEAD).Trim()
+          if($LASTEXITCODE -or $actual -ne $env:GITHUB_SHA){throw 'Exact native source mismatch'}
+          Write-Host "ISSUE186_PINNED_UNITY_ONLY_SOURCE=$actual; NO_GIT_CLEAN; LIBRARY_PRESERVED"
       - name: Recheck exact SHA and Windows lease before Editor
         shell: powershell
         working-directory: issue186-source

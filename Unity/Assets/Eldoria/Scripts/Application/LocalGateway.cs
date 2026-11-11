@@ -497,9 +497,11 @@ namespace Eldoria.Application
                         // Claim daily progress, but never credit resource wallet yet.
                         // Packages are attached to a claimable letter, then bag use
                         // separately credits the actual amount exactly once.
-                        var preview=DailyTreasureRules.Preview(state.DailyTreasures,clock.UtcTicks);
+                        // One instant defines this saved claim across UTC midnight.
+                        var claimUtcTicks=clock.UtcTicks;
+                        var preview=DailyTreasureRules.Preview(state.DailyTreasures,claimUtcTicks);
                         if(!preview.IsValid)return Fail("El tributo de hoy ya fue reclamado");
-                        var mailEventId="daily-treasure:"+DailyTreasureRules.UtcDay(clock.UtcTicks);
+                        var mailEventId="daily-treasure:"+DailyTreasureRules.UtcDay(claimUtcTicks);
                         // Tombstones persist after mail deletion. Refuse a replay
                         // even when the visible letter has disappeared.
                         if(state.Mailbox.ReceivedEventIds.Contains(mailEventId) ||
@@ -528,7 +530,7 @@ namespace Eldoria.Application
                         if(state.SpeedupOneMinute>int.MaxValue-preview.SpeedupOneMinute ||
                            state.SpeedupFiveMinutes>int.MaxValue-preview.SpeedupFiveMinutes)
                             return Fail("No hay capacidad para recibir el tributo");
-                        if(!DailyTreasureRules.TryClaim(state.DailyTreasures,clock.UtcTicks,
+                        if(!DailyTreasureRules.TryClaim(state.DailyTreasures,claimUtcTicks,
                             out var received))return Fail("El tributo ya no está disponible");
 #if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
                         if(pendingInventory!=null)state.ResourceRewards=pendingInventory;
@@ -549,7 +551,7 @@ namespace Eldoria.Application
                             EventId=mailEventId,Category="recompensas",Type="daily-treasure",
                             Title="Tributo de Valoria · día "+received.CycleDay,
                             Subtitle=summary,RewardReceiptId=command.Id,
-                            OccurredAtUtcTicks=clock.UtcTicks
+                            OccurredAtUtcTicks=claimUtcTicks
                         });
 #if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
                         if(hasPackets)
@@ -1525,4 +1527,5 @@ namespace Eldoria.Application
         private CommandResult Fail(string reason) => new CommandResult(false, reason, state.Revision);
     }
 }
+
 

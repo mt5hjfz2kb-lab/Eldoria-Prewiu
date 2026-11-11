@@ -211,7 +211,7 @@ foreach(var choice in new[]{"production","defense","civil"})
  var awarded=choiceGateway.Snapshot();
  var bundles=awarded.ResourceRewards.Packets.Where(p=>p.Origin=="development").ToList();
  Need(awarded.ChapterThree.DevelopmentPriority==choice&&bundles.Count==(choice=="defense"?1:2),
-     "development choice persisted and issued exactly two resource packets");
+     "development choice persisted with the actual nonzero resource components");
  int expectWood=choice=="production"?260:choice=="civil"?180:0;
  int expectStone=choice=="production"?180:choice=="defense"?220:0;
  int expectFood=choice=="civil"?280:0;
@@ -228,7 +228,7 @@ foreach(var choice in new[]{"production","defense","civil"})
  choiceGateway=new LocalGateway(clock,choiceStore);
  Need(!Send(choiceGateway,"choice-repeat-"+choice,"ChooseDevelopment",choice).Ok,
      "priority cannot pay again after JSON reload");
- Need(choiceGateway.Snapshot().ResourceRewards.Packets.Count(p=>p.Origin=="development")==(choice=="defense"?1:2),
+ Need(choiceGateway.Snapshot().ResourceRewards.Packets.Count(p=>p.Origin=="development")== (choice=="defense"?1:2),
      "reload and replay cannot duplicate development bonus");
 }
 
@@ -282,10 +282,40 @@ view=new Eldoria.Issue186Art.ResourceExperienceUiBridge(uiGateway).Refresh();
 Need(view.Bag.Count==1&&uiGateway.Snapshot().Resources.Wood==uiBaseWood+75,
      "real UI bridge projection survives JSON save/reload and tombstone");
 
+// Sweep UTC rollover across every clock read of one real command.
+for(int threshold=1;threshold<=80;threshold++){
+ var midnight=(utcDay+1)*TimeSpan.TicksPerDay;
+ var rollover=new RolloverClock(midnight-1,midnight,threshold);
+ var rolloverState=new PlayerState{DailyTreasures=new DailyTreasureState{
+  LastClaimUtcDay=utcDay-1,CycleDay=6,ConsecutiveDays=6,TotalClaims=6}};
+ var rolloverStore=new JsonStore(rolloverState);
+ var rolloverGateway=new LocalGateway(rollover,rolloverStore);
+ var beforeRollover=rolloverGateway.Snapshot();
+ var accepted=rolloverGateway.Execute(new GameCommand("rollover",beforeRollover.PlayerId,
+  "ClaimDailyTreasure","",beforeRollover.Revision));
+ Need(accepted.Ok,"UTC-boundary daily claim accepts at threshold "+threshold);
+ var settled=rolloverGateway.Snapshot();var ledger=settled.DailyTreasures;
+ var expected=DailyTreasureRules.ForDay(ledger.CycleDay,ledger.ConsecutiveDays);
+ string eventId="daily-treasure:"+ledger.LastClaimUtcDay;
+ Need(settled.Mailbox.Messages.Any(m=>m.EventId==eventId &&
+  DailyTreasureRules.UtcDay(m.OccurredAtUtcTicks)==ledger.LastClaimUtcDay),
+  "UTC receipt, event ID and claimed day agree at threshold "+threshold);
+ Need(settled.ResourceRewards.Packets.Where(p=>p.Kind=="wood").Sum(p=>p.Amount)==expected.Wood &&
+      settled.ResourceRewards.Packets.Where(p=>p.Kind=="stone").Sum(p=>p.Amount)==expected.Stone &&
+      settled.ResourceRewards.Packets.Where(p=>p.Kind=="food").Sum(p=>p.Amount)==expected.Food,
+  "UTC packet amounts match actually claimed streak at threshold "+threshold);
+}
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{
  static readonly JsonSerializerOptions options=new JsonSerializerOptions{IncludeFields=true};string json;public int Writes;
  public JsonStore(PlayerState state){json=JsonSerializer.Serialize(state,options);}public PlayerState Load()=>JsonSerializer.Deserialize<PlayerState>(json,options);
  public void Save(PlayerState state){json=JsonSerializer.Serialize(state,options);Writes++;}
+}
+
+
+sealed class RolloverClock:IClock{
+ readonly long before,after;readonly int threshold;int reads;
+ public RolloverClock(long before,long after,int threshold){this.before=before;this.after=after;this.threshold=threshold;}
+ public long UtcTicks=>++reads<=threshold?before:after;
 }

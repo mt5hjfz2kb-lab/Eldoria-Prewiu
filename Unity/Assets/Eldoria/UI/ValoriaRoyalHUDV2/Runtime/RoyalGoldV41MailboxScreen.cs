@@ -325,7 +325,7 @@ namespace Eldoria.UI.RoyalGold.V2
             reportFooter=Label("Mailbox / original record and receipt",detailSheet,16);
             reportFooter.verticalOverflow=VerticalWrapMode.Overflow;
             detailScroll.content=detailSheet;
-            MakeButton("Leer",w,"MARCAR LEÍDO",()=>ExecuteMail("MailRead"),out _);
+            MakeButton("Leer",w,"MARCAR LEÍDO",ReadOrClaimSelectedMail,out _);
             MakeButton("Eliminar",w,"ELIMINAR",()=>ExecuteMail("MailDelete"),out _);
             w.gameObject.SetActive(false);
             Layout();
@@ -702,6 +702,27 @@ namespace Eldoria.UI.RoyalGold.V2
             if(detailScroll!=null)detailScroll.verticalNormalizedPosition=1f;
             ExecuteMail("MailRead");
         }
+        static bool HasPendingResourcePackets(PlayerState snapshot,string eventId)
+        {
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            return snapshot?.ResourceRewards?.Packets?.Any(packet=>packet!=null &&
+                packet.MailEventId==eventId && !packet.Collected)==true;
+#else
+            return false;
+#endif
+        }
+        void ReadOrClaimSelectedMail()
+        {
+            if(string.IsNullOrEmpty(selectedId)||gateway==null)return;
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            if(HasPendingResourcePackets(gateway.Snapshot(),selectedId))
+            {
+                ExecuteMail(ResourceRewardCommands.ClaimMail);
+                return;
+            }
+#endif
+            ExecuteMail("MailRead");
+        }
         void ExecuteMail(string kind)
         {
             if(string.IsNullOrEmpty(selectedId)||gateway==null)return;
@@ -710,6 +731,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 kind,selectedId,s.Revision));
             if(result.Ok && kind=="MailDelete")selectedId=null;
             Refresh();
+            // A refused claim/delete is visible; refreshing never pretends
+            // the resource transaction succeeded or completes a guide step.
+            if(!result.Ok && navLabel)navLabel.Put(result.Message);
         }
         static string HeroName(string id)=>id=="aldric+lyra"?"Sir Aldric y Lyra":id=="lyra"?"Lyra":id=="aldric"?"Sir Aldric":"—";
         static string TargetName(string id)
@@ -922,6 +946,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             PresentReport(selected);
+            bool pendingPackets=HasPendingResourcePackets(s,selected.EventId);
+            var readAction=window.GetComponentsInChildren<Button>(true)
+                .First(button=>button.name=="Leer");
+            readAction.GetComponentInChildren<RoyalText>(true)
+                .Put(pendingPackets?"RECLAMAR":"MARCAR LEÍDO");
+            var deleteAction=window.GetComponentsInChildren<Button>(true)
+                .First(button=>button.name=="Eliminar");
+            deleteAction.interactable=!pendingPackets;
+            if(pendingPackets)
+                reportFooter.Put(reportFooter.text+
+                    "\nPAQUETES PENDIENTES · Reclamar los lleva a tu bolsa sin gastarlos.");
             navLabel.Put("DESLIZA PARA LEER EL INFORME");
             if(!detailVisible)
                 detailScroll.verticalNormalizedPosition=1f;
@@ -983,4 +1018,5 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+
 
