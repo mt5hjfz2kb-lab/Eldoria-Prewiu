@@ -70,7 +70,10 @@ for(const token of [
 assert.doesNotMatch(grants,/\b(PremiumGems|FrostStars|Diamonds|GoldCoins|LootCrate|Lootbox)\b/i);
 assert.doesNotMatch(receipt,/\b(PremiumGems|FrostStars|Diamonds|GoldCoins|LootCrate|Lootbox)\b/i);
 assert.match(panel,/milestoneScenery\.raycastTarget=false/);
-assert.match(panel,/milestoneVignette\.gameObject\.SetActive\(source!=null\)/);
+assert.match(panel,/bool hasImage=milestoneScenery\.texture!=null/);
+assert.match(panel,/milestoneScenery\.gameObject\.SetActive\(hasImage\)/);
+assert.match(panel,/milestoneVignette\.gameObject\.SetActive\(hasImage\)/);
+assert.match(panel,/DailyTreasureBastionCamera\.Capture\(/);
 
 // Preserve game ownership, rather than painting an imaginary Bastion city.
 // Lyra/scout/Vigilant scenery is original project source, not a pasted fake HUD.
