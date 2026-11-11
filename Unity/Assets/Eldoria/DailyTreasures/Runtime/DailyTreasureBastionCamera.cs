@@ -69,8 +69,33 @@ namespace Eldoria.DailyTreasures
             return false;
         }
 
+        // The original city camera is a useful gameplay isometric view,
+        // but its near-vertical angle produced a tiny, emotionally flat
+        // building in the REAL 43005395878 captures. This ceremonial camera
+        // should reveal the already-constructed facade and depth: a 38-degree
+        // perspective 3/4 portrait lit by actual scene geometry. No invented
+        // mesh, replacement asset, panorama or altered player camera.
         static void Frame(Camera camera,Bounds b)
         {
+            var originalHeading=Vector3.ProjectOnPlane(
+                -camera.transform.forward,Vector3.up);
+            // A straight top-down gameplay camera has no reliable azimuth.
+            // Preserve the same player-facing quadrant when possible,
+            // otherwise use one deterministic forward direction.
+            if(originalHeading.sqrMagnitude<.0001f)
+                originalHeading=Vector3.forward;
+            originalHeading.Normalize();
+            var stageHeading=Quaternion.AngleAxis(18f,Vector3.up)*
+                originalHeading;
+            const float elevationDegrees=36f;
+            float elevation=elevationDegrees*Mathf.Deg2Rad;
+            var away=stageHeading*Mathf.Cos(elevation)+
+                Vector3.up*Mathf.Sin(elevation);
+            camera.orthographic=false;
+            camera.usePhysicalProperties=false;
+            camera.fieldOfView=38f;
+            camera.transform.rotation=Quaternion.LookRotation(
+                -away,Vector3.up);
             var right=camera.transform.right;
             var up=camera.transform.up;
             var f=camera.transform.forward;
@@ -81,20 +106,19 @@ namespace Eldoria.DailyTreasures
                 Mathf.Abs(up.z)*ext.z;
             float dz=Mathf.Abs(f.x)*ext.x+Mathf.Abs(f.y)*ext.y+
                 Mathf.Abs(f.z)*ext.z;
-            float aspect=Mathf.Max(.3f,camera.aspect);
-            if(camera.orthographic)
-            {
-                camera.orthographicSize=Mathf.Max(1f,
-                    Mathf.Max(dy/.66f,dx/(aspect*.72f)));
-                camera.transform.position=b.center-f*Mathf.Max(12f,dz*3f);
-            }
-            else
-            {
-                float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
-                float distance=Mathf.Max(dy/(tanY*.66f),
-                    dx/(tanY*aspect*.72f))+dz*1.5f;
-                camera.transform.position=b.center-f*Mathf.Max(12f,distance);
-            }
+            float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
+            float tanX=tanY*Mathf.Max(.3f,camera.aspect);
+            // The genuine facade and its silhouette must fit even on the
+            // narrowest 390px mobile: a generous 70% cinema-safe margin
+            // plus depth, no digital zoom / pixelated fake improvement.
+            float distance=Mathf.Max(
+                dy/(Mathf.Max(.01f,tanY)*.73f),
+                dx/(Mathf.Max(.01f,tanX)*.73f))+dz*1.5f;
+            distance=Mathf.Max(distance,8f);
+            camera.transform.position=b.center+away*distance;
+            camera.nearClipPlane=.12f;
+            camera.farClipPlane=Mathf.Max(
+                camera.farClipPlane,distance+ext.magnitude*7f);
         }
 
         static void DestroyTemporary(UnityEngine.Object obj)
@@ -167,9 +191,12 @@ namespace Eldoria.DailyTreasures
                 light.intensity=.82f;
                 light.shadows=LightShadows.None;
                 light.cullingMask=camera.cullingMask;
+                // A single amber key from the camera's front-left
+                // reveals original masonry relief, not imaginary VFX.
                 lightObject.transform.position=bounds.center+
-                    source.transform.up*bounds.extents.magnitude*.8f-
-                    source.transform.forward*bounds.extents.magnitude*.9f;
+                    camera.transform.right*(-bounds.extents.magnitude*.72f)+
+                    Vector3.up*(bounds.extents.magnitude*.95f)-
+                    camera.transform.forward*(bounds.extents.magnitude*.86f);
                 // Unity 6000.3 URP manual explicitly requires a supported
                 // SingleCameraRequest for an outside-loop snapshot. A live
                 // camera.Render call may compile yet never paint a frame in
