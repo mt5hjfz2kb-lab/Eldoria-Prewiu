@@ -36,7 +36,7 @@ jobs:
           if not b64:raise SystemExit("CAS registry unreadable")
           d=json.loads(base64.b64decode(b64))
           hs=[x for x in d["active"] if "windows-runner-heavy" in x.get("resources",[])]
-          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!="chatgpt-issue186-art-import-recovery-20261111" or hs[0].get("ownership_state")!="claimed":
+          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!="chatgpt-central-resource-art-20261111" or hs[0].get("ownership_state")!="claimed":
               raise SystemExit("Another workstream owns Windows. Refuse native run.")
           pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
           if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
@@ -56,6 +56,22 @@ jobs:
           $ErrorActionPreference='Stop'
           if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender process already running. Refuse overlap.'}
+      - name: Resolve already installed Git before checkout; forbid archive fallback
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Installed Git unavailable; refuse full 26GB archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Installed Git failed; refuse archive fallback'}
       - name: Checkout pinned source without full archive
         uses: actions/checkout@v4
         with:
@@ -86,7 +102,7 @@ jobs:
           if([string]::IsNullOrWhiteSpace($b64)){throw 'CAS data unavailable'}
           $d=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)))|ConvertFrom-Json
           $holders=@($d.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-issue186-art-import-recovery-20261111'){throw 'Issue186 lost Windows lease'}
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-central-resource-art-20261111'){throw 'Issue186 lost Windows lease'}
           $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
           if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
