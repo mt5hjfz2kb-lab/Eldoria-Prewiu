@@ -24,7 +24,7 @@ def main():
     check("mailbox.Open()" in B and "mailbox.SynchronizeLayout()" in B and
           "mailbox.Close()" in B,
           "Mailbox must reuse genuine page/command controller")
-    check('Find("V41 / Buzón destination")' in B and
+    check('child.name=="V41 / Buzón destination"' in B and
           "window.SetParent(vigilia.transform,false)" in B and
           "window.SetParent(canonicalParent,false)" in B,
           "Mailbox must move the existing screen, then restore the parent")
