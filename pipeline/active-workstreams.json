@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T05:39:08.236Z",
+  "updated_at": "2026-11-11T05:57:56Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 77,
+      "ownership_revision": 78,
       "write_scope_released": false,
-      "phase": "Selective_Antique_Bronze_Shader_Original_Sprite_Native_Requested",
-      "next": "Native 42965945720 restored Color.white after rejection; do not repeat whole-image profile tint. Compare original approved JPEG actual RGB and authored CleanRoom art, target next macro artistic delta with asset-side repaint/true 3D environmental provenance; no overlays or fake buttons. Not 7.5 proven, no merge/deploy.",
+      "phase": "Native_Profile_Power_Engraving_Clearance_Verified_Art_Approval_Pending",
+      "next": "Unity exact SHA30e404445a0400c55eb4847169faf21882d0f210 passed 8 captures SHA, 6 clicks, save untouched. Power/name now 4u above profile lower gold rim. Compare real reference vs former d889. Next is honest premium art refinement, especially original lion profile silhouette and scene art outside UI scope, without false medallions or overlays. Do NOT claim global 7.5/10, no release.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T05:39:08.236Z",
@@ -6790,8 +6788,8 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "756891a89dda572bb7797b6abb289184b49f4fd9",
-        "native_run": 42965945720,
+        "source_sha": "30e404445a0400c55eb4847169faf21882d0f210",
+        "native_run": 42968976145,
         "native_status": "SUCCESS",
         "screenshots": 8,
         "artifact": 13812488796,
@@ -6822,11 +6820,11 @@
         "upgrade_one_line": true,
         "player_name_real_gpu_visible": true,
         "player_power_real_gpu_visible": true,
-        "notes": "Exact Unity 6000.3.23f1 run42965945720: 8/8 PNG SHA-256 matches and six real clicks, old Canvas hidden, same original save. Compared all eight views with fb0d43c original: only 0.002-0.003% pixels above max RGB 6 (render noise), no new art improvement. Rejected run42954979987 failed profile palette gate; reverted full-sprite tint without weakening guard.",
-        "art_ab_artifact": 13824399074,
+        "notes": "Native 42968976145 8/8 SHA verified, 6 clicks, save unchanged, oldCanvas=0, foreign Canvas=0; restored full profile art and moved real name and PODER 4 source units up to eliminate visible lower-rim collision at 900/390 portrait. Comparison with owner original: localized typographic improvement only, global target 7.5 not certified.",
+        "art_ab_artifact": 13833230201,
         "painted_medal_min_px_gate": 38,
         "source_52_layout_states": "PASS",
-        "native_artifact": 13831336636,
+        "native_artifact": 13832496956,
         "functioning_navigation_clicks": 6,
         "physical_mobile_tested": false,
         "owner_requested_polish": "Complete for current captured first-screen layouts; retained sharper original icons. Full900x1600 delivered as Eldoria_marcos_ampliados.png.",
@@ -6876,7 +6874,7 @@
           "artistic_improvement_proven": false
         }
       },
-      "runner_release_basis": "Run 42965945720 SUCCESS SHA756891a; eight genuine city/Bastion × 4 images verified SHA256, six real clicks, original save unchanged. Direct profile tint in run 42954979987 rejected by strict palette guard and reverted. New source visually matches approved baseline fb0d within 0.003% pixels; NO new artistic score. Windows released.",
+      "runner_release_basis": "Native 42968976145 SUCCESS SHA 30e404445a0400c55eb4847169faf21882d0f210, eight PNG SHA256 individually verified, real six clicks, old and foreign Canvas disabled, save unchanged; portrait text moved four source units and visually separated from bottom engraved rim. No other live Windows job. Release Windows only; owner remains canonical PR173.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -6903,7 +6901,7 @@
         "native_artifact": 13812488796,
         "visual_ab_artifact": 13814395037
       },
-      "runner_released_at": "2026-11-11T03:12:20.675Z"
+      "runner_released_at": "2026-11-11T05:57:56Z"
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
