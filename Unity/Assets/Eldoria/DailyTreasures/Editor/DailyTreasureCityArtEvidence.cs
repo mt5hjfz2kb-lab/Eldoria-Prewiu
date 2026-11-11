@@ -50,7 +50,7 @@ namespace Eldoria.DailyTreasures.Editor
             public int cityRenderers,pngCount,realGatewayClaims;
             public int trueBastionPixelProofs,minimumOriginalColorBins;
             public float minimumLitSourceFraction;
-            public int bastionSnapshotsVerified;
+            public int bastionSnapshotsVerified,bastionRotationProofs;
             public bool citySceneOpened,cityCameraUsed,artApproved;
             public bool fullSceneVerified,pr173Integrated,iosVerified;
             public Shot[] shots;
@@ -227,6 +227,51 @@ namespace Eldoria.DailyTreasures.Editor
                 Object.DestroyImmediate(scan);
                 RenderTexture.ReleaseTemporary(resolved);
             }
+        }
+
+        // Verify the same OPEN milestone across a physical portrait/landscape
+        // transition. The approved camera is a real RenderTexture, not a
+        // stretched screenshot: after rotation it must have a NEW aspect,
+        // actual nonblank masonry pixels, and preserve the existing receipt.
+        // This does not change gateway state, claim gifts or add output PNGs.
+        static void VerifyBastionOrientationRecapture(
+            DailyTreasurePanel panel,RectTransform root,int width,int height)
+        {
+            var story=panel.GetComponentsInChildren<RawImage>(true)
+                .FirstOrDefault(image=>image && image.gameObject.name==
+                    "Genuine Eldoria milestone scenery / visual only");
+            Require(story && story.texture is RenderTexture,
+                "Native Bastion rotation requires the live 3D source");
+            var initial=story.texture;
+            Require((initial.height>initial.width)==(height>width),
+                "Initial Bastion camera aspect does not match screen");
+            var original=root.sizeDelta;
+            try
+            {
+                root.sizeDelta=new Vector2(height,width);
+                Canvas.ForceUpdateCanvases();
+                panel.ProbeOrientationLayoutForNativeEvidence();
+                Canvas.ForceUpdateCanvases();
+                Require(story.texture is RenderTexture &&
+                        !ReferenceEquals(story.texture,initial),
+                    "Rotating device reused stale cropped 3D Bastion image");
+                var rotated=(RenderTexture)story.texture;
+                Require((rotated.height>rotated.width)==(width>height),
+                    "Bastion camera output did not change orientation");
+                VerifyLiveBastionTexture(panel,height,width);
+            }
+            finally
+            {
+                root.sizeDelta=original;
+                Canvas.ForceUpdateCanvases();
+                panel.ProbeOrientationLayoutForNativeEvidence();
+                Canvas.ForceUpdateCanvases();
+            }
+            Require(story.texture is RenderTexture &&
+                    (story.texture.height>story.texture.width)==
+                    (height>width),
+                "Restored screen retained wrong Bastion capture orientation");
+            VerifyLiveBastionTexture(panel,width,height);
         }
 
         // A visual-only Bastion ceremony needs an actual camera view of the
@@ -447,6 +492,9 @@ namespace Eldoria.DailyTreasures.Editor
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         ProveNativeBastionSilhouette(panel,report);
+                        VerifyBastionOrientationRecapture(
+                            panel,root,width,height);
+                        report.bastionRotationProofs++;
                         var bastionStudy=Photograph(camera,target,folder,
                             width,height,"authored-bastion-visual-only",false);
                         pictures.Add(bastionStudy);
@@ -505,6 +553,9 @@ namespace Eldoria.DailyTreasures.Editor
                     "Expected 20 genuine city, Bastion context AND canonical camera-framed PNGs");
                 Require(report.bastionSnapshotsVerified==8,
                     "All four orientations must have TWO real nonblank URP Bastion snapshots");
+                Require(report.bastionRotationProofs==4,
+                    "The four genuine city screen sizes must survive changing "+
+                    "device orientation without reusing a cropped 3D snapshot");
                 report.pngCount=pictures.Count;
                 report.status="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED";
             }
