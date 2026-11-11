@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-11T07:49:42Z",
+  "updated_at": "2026-11-11T08:04:54.688Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6663,14 +6663,17 @@
         "Unity/Assets/Eldoria/BreachWatch.meta",
         "tools/breach-watch/**",
         ".github/workflows/breach-watch-native.yml",
-        "docs/ui-v3/BREACH_WATCH_*.md"
+        "docs/ui-v3/BREACH_WATCH_*.md",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta"
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 89,
+      "ownership_revision": 90,
       "write_scope_released": false,
-      "phase": "FINAL_READABILITY_TOUCHES_NATIVE_CERTIFIED",
-      "next": "Requested small readability/margin pass complete and delivered; preserve current design. No additional redesign authorized by this pass. PR173 remains unmerged.",
+      "phase": "APPROVED_VIGILIA_FULL_INTERFACE_MIGRATION",
+      "next": "Build shared approved surfaces and destination integration; retain PR181 rewards and beta-owned scene files. Verify actual destinations before claiming completion.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-11T07:11:07.055Z",
@@ -6925,7 +6928,17 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-11T07:33:16.802Z"
+      "runner_released_at": "2026-11-11T07:33:16.802Z",
+      "delivery_definition": {
+        "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
+        "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
+        "handoff": "Same PR173, source SHA, genuine captures, tested scope and explicit unverified destinations. No publishing inferred."
+      },
+      "owner_full_ui_authorization": {
+        "at": "2026-11-11T08:04:54.688Z",
+        "request": "Haz eso",
+        "context": "Replace remaining interface with accepted Vigilia design maintaining quality; preserve rewards/cofres. Scope expansion beyond prior first-screen proof."
+      }
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
