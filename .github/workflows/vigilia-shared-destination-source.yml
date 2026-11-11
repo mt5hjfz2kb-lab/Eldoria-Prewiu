@@ -20,6 +20,8 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader.meta'
   workflow_dispatch:
 permissions:
   contents: read
@@ -41,6 +43,8 @@ jobs:
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png
