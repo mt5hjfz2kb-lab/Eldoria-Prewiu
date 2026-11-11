@@ -1,57 +1,22 @@
-Owner's last UI readability touch: slightly brighter secondary ink, portrait progress14/11pt with raised baseline51/40 and full row height; state/timer14/12pt with16u side inset. Preserve all artwork, scene and intervening automation changes. Source52geometry and realfont PASS. Live owner codex-pr173-completion-9eb868087db6 revision88.
-
-Owner-approved full UI migration native regression on current branch: verify complete eight-view first screen and no C# compilation errors from the staged canonical Training/March/Mail bridges and new reversible themes; visual approval remains independently pending. Resource claim rev 91.
-Native current-head regression: new canonical modal bridge, dark stone replacement, unchanged first-screen geometry and saved session; do not claim art approved.
-Head before request 07c38fedef4a658a9354075d7ccc39f72e29fa25; owner revision 91.
-Retry native after fixing slash-containing modal visual name lookup in QA; target head 33e0b1d2d6df6a5d7b1bb2c91c499e8317b30b1c; validate same actual modal and all 8 views.
-Capture 16 real post-B1 native previews of staged Training/March/Heroes/Mail with an in-memory-only disposable canonical fixture, verify old art disabled, original game save unchanged, and review against approved Vigilia first-screen. HEAD 2f9a4f2e134a2ff2aebd45557e906ff65d058241
-Native retry after fixing canonical integration fixture C# namespace: execute exact SHA a2c67856ee6a6e6225c5e84ffee3fb69acc7d795; 8 real HUD images plus 16 actual destination images with unchanged probe save.
-Diagnose and rerun exact native training/march/hero/mail preview after logging canonical unlock gate, modal visibility and theme replacement; head 6d20bd6c0c8a89b608fe3db718f96050dc658a3c
-Native QA diagnosis of actual Training theme: report exact visible legacy art, count replaced panels/buttons, all original 8 captures and destination acceptance. HEAD de95c9847f4a3355a9b06ec67065f08cf2f2db9e.
-Prove improved replacement approach (not micro alignment): old blue source is disabled after canonical Training/March Update+Reflow and before Canvas render. Check 16 destination views and user-approved artistic baseline. Source 56b148fb130166cc1fb2d5fac0b37ea6630f8ef3.
-Actual native test for reflow blue-paper removal: verified 4 premium panels, 14 controls, old blue-panel surviving after Refresh on previous run; assert restored single art before display. Source fed518d647737af59527620a54d740a7084261fa.
-New macro ART test: restore cinematic real archer above stone, readable all Training labels, verify four real destination screenshots portrait/landscape and old Canvas absent. Head dc8be1be5d5b367d0c98d7c7488dca2eedc4edce
-Major ART pivot: test real cinematic Training large-body archer, independent unit roster and premium readable ink at all four actual resolutions. Compare real screenshot against previous huge-blank version; no artistic approval inferred. SHA 022a02039e74948d866874f9ffc43a063aac008c
-Art pivot native proof: cinematic premium Training controls, full character scale in landscape/portrait, updated nonblack stone mailbox folio, no old blue source overlay. Force migration visual sync after native canvas reflow. Source 52cda4b9259474f7219aed30cb3f9f544f3b7c1d
-
-VISUAL ART ITERATION: warm charcoal shader for real illustrated Heroes Hall; background+flag grading, restored 2.5D portraits; wax-mail seal only when genuinely empty; page rebuild reapply + original 16 destination screenshots + first screen eight; run native at 0b1bb116a76b3f44cc0cebb486a17c6c3e36920c. No save mutations or art approval assumed.
-Native training art layout diagnosis after fail-closed 900x1600 test: check real root dimensions and every original canonical archer control. Preserve full portrait assertion. Commit 5b16e964bb6bc2cb96d880fbee2018aa4bf56213.
-
-Native actual gameplay QA: training title/paper reused and reparented from whole canonical military root into cinematic left, original parent/scale restored on close, no fake duplicates, FULL archer assert retained. Also native A/B warm Heroes and genuine empty mail seal. Source commit a8cf4086838e2b4d8ef4616f58eedec66b514be7.
-
-OWNER-APPROVED NATIVE ART REVIEW: high-impact first-screen consistency; confirm owner-approved Lyra illustration never falls to empty silhouette when Tripo portrait async, warm graded canonical heroes hall still preserves faces and textures, empty mailbox has readable single status caption/clear seal spacing, all 16 destination captures + 8 first screen, no overlapping former Canvas, preserve user save. Target source a70dc30ffa294ce06565462501b92a01faec4672; art not automatically accepted.
-
-Native macro-art pass at 21d2da68970612b15b1bdf5661a2204a2d9cb7fb: full 16 real destinations and 8 HUD snapshots; March portrait must show two enlarged original interactive hero cards and hide a permanently unavailable third, retain all canonical hero selection, march counts, interactions and save. Reject if full-width metrics or new two-card visual is absent. No artistic sign-off implied.
-
-Native complete artistic pass on HEAD 108da36d7d5383225c265628c3ee4a5b7805eb09: two canonically interactive marching cards composed horizontally on larger portrait while small phones retain compact; old third disabled slot absent; supplemental 10 genuine portrait/mobile captures of Aldric summary, abilities, talents, equipment and Lyra summary; original 16 destination photos, all 8 first HUD; no save mutation, no artistic acceptance without review.
-
-Owner-directed native ART QA 02cf9d132d8fc04eedb51ea0f5d68879bfa8214c: re-render real Lyra profile with existing shader soft silhouette-edge integration into painterly 2.5D hall, verify no rectangular pasted-photo outline or loss of face and UI attributes, plus all 16 destinations and 10 real profile screenshots, preserve first HUD and gameplay save. Full ART review needed.
-
-Owner-approved real navigation + art QA: latest 0dc4a453e4b9dbf9f611c818e3d8a68fe5209e3c. Chapter III fixture must reveal and click actual Army and Heroes medallions; both must reparent canonical source-bound screens into Vigilia with old UI hidden, no save mutations. Capture 2 unlocked city screenshots plus 16 destinations, 10 hero profiles and 8 first-screen views. No visual approval inferred from CI.
-
-Native re-run after updating source geometry validator to dynamic narrative-gated Army/Heroes routes. Verify both clickable chapter III medallions open canonical new UI, 2 advanced nav images, 16 destination images, 10 hero tab images, 8 first HUD images. Target 3293d5826c355bb16a98234b7cec20d6039c6278; no real save mutation; visual review separate.
-
-NATIVE STAGED UI ART + RETENTION QA SOURCE 57af9e8b5b1f50995d9266a2cd328e33490718b3. Use actual Unity Editor under PR173 lease. Run 8 first-screen captures, 16 training/march/heroes/mail, 10 Aldric/Lyra profiles, 2 unlocked navigation, PLUS 8 genuine Vigilants/Scouts in four orientations. Require old Canvas absent, real source-bound controls and save unchanged. Capture artifacts; source-only gate is NOT art acceptance.
-
-NATIVE 900x1600 RETENTION ART REPAIR on source e8053a3ad6f05373a55078b7b04e5b66c2f001e7: original Vigilantes and Scouts now use the new independent Canvas viewport for canonical layout rather than hidden legacy 1600x900 safe area; require strict bounds/centering and all 8 retention captures, plus 8 first screen, 16 destinations, 10 hero profiles, 2 unlocked navigation. Real mail bell only after received event ledger. No game saves changed; this is not art approval until screenshots reviewed.
-
-Native retention art blocker diagnosis on exact 2a59171cec10fa6556f2d4e8454a2499ac254525: new Canvas viewport redirect active; preserve real failing 900x1600 picture before rejecting oversize; enumerate which actual Royal canvas children spill outside viewport, no lowering visual assertion. Screenshot will be attached even on failure. Ensure no save mutation.
-
-Native retention ART second approach on SHA 9db07e9a8b2c331b3770e628ed82f3c062bfc502: canonical Vigilants/Scouts use true new 900x1600 viewport, intentional original background cliff paint may overscan but actual manuscript and tappable buttons must stay within screen; native PNG coverage checks reject black letterboxing. Verify true eight retention screenshots, no old visual overlay, first screen unchanged, save identical. Not art-approved until image inspection.
-
-OWNER-APPROVED NATIVE ART REVIEW: macro redesign of truly empty canonical mailbox using one vector illuminated manuscript vignette instead of 65% blank, centered actual source text, hide bottom duplicate; after disposable in-memory lab-only report arrival hide all empty decorations and restore list/pagination; click actual report to verify full document. Preserve old Canvas inactive, 16 original real destinations, 8 first HUD, 10 heroes, 8 retention, 2 advanced navigation, and 4 new populated list/detail snapshots; verify original save unchanged. HEAD 774652ad89d06bb4aa88daa1ccf0ec4f48c938e1; no claim of artistic approval.
-2026-11-11 native rerun: QA failure at 20a6a008 was an incorrect hierarchy lookup in the EDITOR PROBE (canonical controller is on the disabled old HUD while the live mailbox RectTransform has moved to the independent Vigilia Canvas); commit cc649087 now queries the actual Canvas for first message row and report document. Require a genuine clicked MailRead, real report document and screenshot, no save mutation, no art approval. Do not treat a prior green native artifact as evidence for this HEAD.
-Native UI QA after MAIL CONTRAST fix + hero navigation cleanup: head d883d170e260b6c011f675c2b0ce7333d51be2c1. Must capture real 390x844 report body with canonical dark ink on light parchment, photograph real report with temporary message, satisfy pixel legibility guard and old Canvas disabled; do not grant ART_APPROVED or release.
-Native Scouts ART grade A/B on exact head 2e2559eefb4304b39c29f1c2beca5b671846522e, one real source RawImage recolored to cooler twilight (.78/.77/.95), NO overlay, no added fake gameplay UI. Require four native Scouts images, 8 retention screenshots, all current HUD/destinations/hero/mail captures and unchanged canonical state; assert the tint is restored on Close. Compare actual 390x844 and 900x1600 against preceding ca587094f0fd9405c72f97ce848d6d774e6ddde4. REJECT the change if readability, naturalness, or painterly fidelity worsens. This remains a visual experiment, NOT approved.
-
-2026-11-11 20:20 Europe/Madrid | owner rev 91: Real Unity A/B proof of PR173 Scouts single RawImage tint (.78,.77,.95) introduced by c58b79df, source current 8d5ad9395e08752fa3136ed8edfb84ba5bb24309. Capture all retention + all first HUD/Training/March/Heroes/Mail current-head. Compare native source Scouts scene in 390x844,900x1600,844x390,1600x900 to ca587094 baseline. Treat source green as technical PASS only; keep art approval false, iOS/Android untested, no main/deploy. If native doesn't show a meaningful improvement or obscures original detail, revert the source tint (not gameplay) and switch artistic technique.
-ART DIRECTOR MACRO A/B QA, 2026-11-11: verify source 45ecbda8ca97d503eebc874540a495ec9aca2975; replace ORIGINAL THREE Scouts parchment Images IN PLACE with single nine-sliced premium dark forged stone, preserve vignette paintings, wax seals, canonical titles, genuine reward/timer numbers and burgundy action. Strict fail-closed Unity assert on 3 original sprites, on restore after close, 390x844 and 900x1600 visual legibility and all 4 orientations. Retain original approved first HUD and test 16+10+8 destination/hero/retention screenshots, no gameplay-save mutations. A source/Roslyn PASS is not aesthetic proof. Reject if text vanishes or the new result looks materially worse; switch artistic technique rather than micro-tuning.
-
-NATIVE UI LANDSCAPE IMPACT QA — source dee4a1420707e29d7191acca4095be670fe6f2f6, lease 91: after PR173's two-real-hero March composition, verify actual 844x390 and 1600x900 (also 390x844 and 900x1600) contain exactly TWO genuine, visible source-bound hero cards, third permanently inaccessible slot hidden, no blank blue painting; no card text cropped, source texture/hero selection unchanged. Keep full original first-screen and destination/Retention 48+ native capture suite, save unchanged. Green compiler is not visual acceptance. Do not release to main/publish.
-
-SECOND NATIVE LANDSCAPE QA — ea768bd0927cf98560dcaf2bacc2378189fbdb25. First actual Unity run 43088126080 technically PASS but its captured 844x390 card labels visibly BLEED across adjacent cards after two-card expansion. NOT ART ACCEPTED. New HEAD forces Text wrap within original real hero card bounds, truncation and reversible original typography. Re-run native at 844x390 + 1600x900 and 390x844 + 900x1600, REQUIRE real third hero hidden, both live hero buttons, no overflowing letterforms/cross-card text, existing stats/training preserved, old Canvas off, save unchanged. Reject if pixel-level visual overlap remains despite green source. Do not publish or merge.
-2026-11-11 ART QA AFTER REJECTED SCOUTS A/B AND MARCH MACRO-FIX. Exact HEAD 6f33ea0b0df07a76494526a60f99ca4cfbc33875. Unity must prove first HUD, original three rich golden Scout manuscripts (not flat rejected dark stone), 4 physical-target scout sizes, genuine 16 destinations, 10 hero pages, 2 unlocked navigation and 8 Vigilant/Scout screens; March landscape portrait/label bounds and click/return in both orientations; gameplay save untouched. Do not merge/publish because TEST PASS does not equal art approval.
-
-OFF-WINDOWS SOURCE VALIDATION ONLY 11 NOV: authored mailbox raster pivot996deb9acfb8faeaa21635882d4076f6efb90434 replaces rejected geometric envelope/quill. PR173 has NO Windows lease; native MUST SKIP while PR179 holds it. Run approved-art integrity, real Roslyn syntax and pure layout checks without Windows. Later native four sizes empty/populated must check exact authored sprite texture, no old procedural shape, alpha/materials and no raycast, with owner reference A/B before main.
-
-SOURCE-ONLY VALIDATION of4e10567d22db77c71df722cb9ca9401b98c4afae: new authored mailbox GPU-proof code and bounded imported sprite. No PR173 Windows lease; native must skip. Roslyn/editor syntax and pure geometry only until rotation returns. Native acceptance later: actual authored texture bound, >1% changed GPU pixels when hidden, zero input interception, artwork inactive over real messages. No art approval or merge.
+EXACT CURRENT-HEAD NATIVE UI ART CAPTURE — NOT ART APPROVAL
+workstream=eldoria-forja-oscura-visual-proof-20261107
+owner=chatgpt-central-art-execution-20261111
+ownership_revision=94
+registry_main_handoff=4fb5e240e2f73e608d492d66d4d5032751c5701d
+source_before_request=3b944b02c4ae0f81c94cdb09f7eada4dddf9b399
+macro_change=actual_authored_transparent_mail_envelope_parchment_burgundy_wax_raven_quill
+mail_source_sha256=2fc1e38d18e68ab9f144f2742594ac4c1ca2fb6011659a3fbd78ddd26d84c1f1
+mail_import=explicit_lossless512_all_platforms_original_GUID
+source_repairs=immutable_large_registry_CAS_fallback+valid_DepthB10_meta_original_GUID
+required=8HUD+16destinations+10heroProfiles+8retention+2unlockedNavigation+4populatedMail
+viewports=390x844,900x1600,844x390,1600x900
+empty_mail=actual_authored_texture_bounded+GPU_hidden_comparison_above1percent+raycast_off
+populated_mail=authored_empty_art_inactive+actual_canonical_read_command_and_report+contrast390x844
+preserve=canonical_gameplay+original_save+original_heroes_hall+three_golden_scout_manuscripts+two_real_march_cards
+freeze_source_head_during_native=true
+compare=approved_original_reference_vs_real_Unity_not_previous_version_only
+art_approved=false
+physical_mobile_verified=false
+merge_or_publish=false
+next_windows_turn=PR179_immediately_after_native_clean_exit_and_evidence
+request_time_utc=2026-11-11T22:12:16.533Z
