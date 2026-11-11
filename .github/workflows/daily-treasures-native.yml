@@ -167,9 +167,21 @@ jobs:
           # GitHub Contents API sets content='' and encoding='none' when
           # this active workstream registry grows above 1MiB. Obtain its
           # immutable blob by verified SHA, never default to an empty lease.
-          $leaseBase64=$file.content
+          $leaseBase64=[string]$file.content
           if($file.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($leaseBase64)){
-            if($file.sha -notmatch '^[a-f0-9]{40}
+            if([string]$file.sha -notmatch '^[a-f0-9]{40}$'){
+              throw 'Unable to authenticate oversized lease registry Git blob'
+            }
+            $blobUrl="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/$($file.sha)"
+            $blob=Invoke-RestMethod -Uri $blobUrl -Headers $headers
+            if($blob.sha -ne $file.sha -or $blob.encoding -ne 'base64' -or
+               [string]::IsNullOrWhiteSpace([string]$blob.content)){
+              throw 'Oversized lease registry blob identity mismatch'
+            }
+            $leaseBase64=[string]$blob.content
+          }
+          $registry=([Text.Encoding]::UTF8.GetString(
+            [Convert]::FromBase64String($leaseBase64)))|ConvertFrom-Json
           $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne 'chatgpt-daily-treasures-20261108'){
             throw 'Windows lease lost; refusing Unity execution'
