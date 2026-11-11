@@ -134,6 +134,30 @@ internal static class Program
         Check(restored.Packets.Count == p.Packets.Count &&
             !ResourceRewardRules.TryIssue(restored, "mission:wood", "mission", "wood", 100),
             "persisted receipts survive serialize/load");
+        var walletSaved = JsonSerializer.Serialize(wallet,
+            new JsonSerializerOptions { IncludeFields=true });
+        var walletRestored = JsonSerializer.Deserialize<ResourceWallet>(walletSaved,
+            new JsonSerializerOptions { IncludeFields=true });
+        int replayWood = walletRestored.Wood;
+        Check(!ResourceRewardRules.TryUse(restored, walletRestored, "mission:wood", out _) &&
+            !ResourceRewardRules.TryUse(restored, walletRestored, "mission:99", out _) &&
+            ResourceRewardRules.ClaimMail(restored, "mail:daily") == 0 &&
+            !ResourceRewardRules.TryUse(restored, walletRestored, "daily:wood", out _) &&
+            walletRestored.Wood == replayWood,
+            "reload/reconnect cannot replay previously spent packets or claimed mail");
+        Check(ResourceRewardRules.TryIssue(restored, "gift:pending", "gift", "stone",
+              275, "mail:pending") && ResourceRewardRules.ClaimMail(restored,"mail:other")==0,
+            "unclaimed gift remains locked until matching explicit mail action");
+        var secondLoad = JsonSerializer.Deserialize<ResourceRewardInventory>(
+            JsonSerializer.Serialize(restored,new JsonSerializerOptions { IncludeFields=true }),
+            new JsonSerializerOptions { IncludeFields=true });
+        Check(!ResourceRewardRules.TryUse(secondLoad,walletRestored,"gift:pending",out _) &&
+            ResourceRewardRules.ClaimMail(secondLoad,"mail:pending")==1 &&
+            ResourceRewardRules.ClaimMail(secondLoad,"mail:pending")==0 &&
+            ResourceRewardRules.TryUse(secondLoad,walletRestored,"gift:pending",out int gift) &&
+            gift==275 && !ResourceRewardRules.TryUse(secondLoad,walletRestored,
+                "gift:pending",out _),
+            "pending mail survives reload; claim and use each commit once");
 
         var guide = new GuidedTutorialProgress();
         Check(!GuidedTutorialRules.ShouldPoint(guide, "first-mail", "mail-button", false, true),
