@@ -104,8 +104,8 @@ namespace Eldoria.BreachWatch
                 t2=Find(left,"Training unit card T2");
                 portraits[0]=Find(t1,"Approved source / training-archer-isolated-v1");
                 portraits[1]=Find(t2,"Approved source / training-archer-isolated-v1");
-                labels[0]=Find(t1,"Training unit card T1 label");
-                labels[1]=Find(t2,"Training unit card T2 label");
+                labels[0]=Find(t1,"Button label");
+                labels[1]=Find(t2,"Button label");
             }
             if(!left || !hero || !identity || !nameText || !detailText ||
                !t1 || !t2 || !portraits[0] || !portraits[1] ||
