@@ -42,6 +42,24 @@ namespace Eldoria.Domain
         public static bool IsResource(string kind) =>
             kind == "wood" || kind == "stone" || kind == "food";
 
+        // Owner-approved generic denominations. The game is free to adjust
+        // reward tables later, but packets cannot promise unavailable art.
+        public static bool IsStandardTier(int amount) =>
+            amount == 100 || amount == 1000 ||
+            amount == 10000 || amount == 100000;
+
+        public static string TierLabel(int amount)
+        {
+            switch(amount)
+            {
+                case 100: return "100";
+                case 1000: return "1K";
+                case 10000: return "10K";
+                case 100000: return "100K";
+                default: return null;
+            }
+        }
+
         // Receipt IDs must be stable and distinct per resource component:
         // e.g. "mission:c1-route:wood" and "mission:c1-route:stone".
         // mailEventId empty => collected directly into bag, never into wallet.
@@ -52,7 +70,7 @@ namespace Eldoria.Domain
         {
             if (inventory == null || string.IsNullOrWhiteSpace(receiptId) ||
                 string.IsNullOrWhiteSpace(origin) || DirectToWallet(origin) ||
-                !IsResource(kind) || amount <= 0) return false;
+                !IsResource(kind) || !IsStandardTier(amount)) return false;
             var packets = inventory.Packets;
             if (packets == null) return false;
             foreach (var p in packets)
