@@ -392,6 +392,7 @@ namespace Eldoria.BreachWatch.Editor
             var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
             var texture=new Texture2D(width,height,TextureFormat.RGB24,false);
             var file="real-unity-"+name+"-"+width+"x"+height+".png";
+            string retentionOverflow=null;
             try
             {
                 camera.targetTexture=rt;
@@ -440,14 +441,43 @@ namespace Eldoria.BreachWatch.Editor
                          "Canonical retention scenic manuscript is missing");
                     var bounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
                         retention.LiveScreenRect,manuscript);
-                    Need(bounds.size.x<=rect.width+5f &&
+                    if(!(bounds.size.x<=rect.width+5f &&
                          bounds.size.y<=rect.height+5f &&
                          Mathf.Abs(bounds.center.x)<=rect.width*.10f &&
-                         Mathf.Abs(bounds.center.y)<=rect.height*.10f,
-                         "Old retention landscape 2.5D card is still offscreen "+
-                         "screen="+rect.width+"x"+rect.height+
-                         " content="+bounds.size+
-                         " centered="+bounds.center);
+                         Mathf.Abs(bounds.center.y)<=rect.height*.10f))
+                    {
+                        // Persist the REAL rendered screenshot before failing
+                        // QA. A hierarchy-bound statistic alone cannot tell
+                        // whether an overwide decorative ribbon or the actual
+                        // battle card causes visual clipping.
+                        var offenders=new List<string>();
+                        var corners=new Vector3[4];
+                        foreach(var child in manuscript.GetComponentsInChildren<
+                            RectTransform>(true))
+                        {
+                            if(!child || !child.gameObject.activeInHierarchy)
+                                continue;
+                            child.GetWorldCorners(corners);
+                            float xMin=float.MaxValue,xMax=float.MinValue;
+                            for(int n=0;n<4;n++)
+                            {
+                                float x=retention.LiveScreenRect.
+                                    InverseTransformPoint(corners[n]).x;
+                                xMin=Mathf.Min(xMin,x);
+                                xMax=Mathf.Max(xMax,x);
+                            }
+                            if(xMin<rect.xMin-6f||xMax>rect.xMax+6f)
+                                offenders.Add(child.name+" x="+
+                                    xMin.ToString("F0")+".."+xMax.ToString("F0"));
+                            if(offenders.Count>=18)break;
+                        }
+                        retentionOverflow=
+                            "Old retention layout extends outside new Canvas. "+
+                            "screen="+rect.width+"x"+rect.height+
+                            " overall="+bounds.size+
+                            " centered="+bounds.center+
+                            " namedOverflow=["+string.Join("; ",offenders)+"]";
+                    }
                 }
                 var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(mailbox && mailbox.IsOpen)mailbox.SynchronizeLayout();
@@ -469,6 +499,8 @@ namespace Eldoria.BreachWatch.Editor
                 texture.Apply();
                 string full=Path.Combine(folder,file);
                 File.WriteAllBytes(full,texture.EncodeToPNG());
+                Need(retentionOverflow==null,
+                     retentionOverflow+" / actual native screenshot="+file);
                 int buttons=ui.GetComponentsInChildren<Button>(true)
                     .Count(b=>b && b.IsActive() && b.interactable);
                 Need(buttons>0,"Real destination has no interactive controls: "+name);
