@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Eldoria.DailyTreasures
 {
@@ -130,12 +131,23 @@ namespace Eldoria.DailyTreasures
                 camera.allowHDR=true;
                 camera.allowMSAA=true;
                 Frame(camera,bounds);
-                // Keep existing URP camera semantics without creating a
-                // dependency on a foreign workstream or new Unity package.
-                foreach(var component in source.GetComponents<Behaviour>())
-                    if(component && component.GetType().Name==
-                        "UniversalAdditionalCameraData")
-                        cameraObject.AddComponent(component.GetType());
+                // The entire Eldoria project runs URP 17.3.0. Unity's
+                // Camera.Render() is NOT the supported out-of-loop route in
+                // the Scriptable Render Pipeline. Use the official Unity 6
+                // SingleCameraRequest API and a detached Base Camera.
+                // Preserve the real world camera's physical scene settings,
+                // but never modify that active camera or its gameplay stack.
+                var originalData=source.GetComponent<UniversalAdditionalCameraData>();
+                var renderData=camera.GetUniversalAdditionalCameraData();
+                renderData.renderType=CameraRenderType.Base;
+                if(originalData)
+                {
+                    renderData.renderPostProcessing=originalData.renderPostProcessing;
+                    renderData.renderShadows=originalData.renderShadows;
+                    renderData.volumeLayerMask=originalData.volumeLayerMask;
+                    renderData.antialiasing=originalData.antialiasing;
+                }
+                camera.targetTexture=null;
                 result=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32)
                 {
                     name="TRUE Bastion / one-frame authenticated milestone",
@@ -158,8 +170,16 @@ namespace Eldoria.DailyTreasures
                 lightObject.transform.position=bounds.center+
                     source.transform.up*bounds.extents.magnitude*.8f-
                     source.transform.forward*bounds.extents.magnitude*.9f;
-                camera.Render();
-                camera.targetTexture=null;
+                // Unity 6000.3 URP manual explicitly requires a supported
+                // SingleCameraRequest for an outside-loop snapshot. A live
+                // camera.Render call may compile yet never paint a frame in
+                // SRP; that explains the old black/empty premium Bastion.
+                var request=new UniversalRenderPipeline.SingleCameraRequest();
+                if(!RenderPipeline.SupportsRenderRequest(camera,request))
+                    throw new InvalidOperationException(
+                        "URP_SNAPSHOT_UNSUPPORTED: genuine Bastion not captured");
+                request.destination=result;
+                RenderPipeline.SubmitRenderRequest(camera,request);
                 return result;
             }
             catch(Exception error)

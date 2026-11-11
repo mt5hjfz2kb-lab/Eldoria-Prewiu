@@ -195,7 +195,16 @@ assert.match(liveBastion,/ValoriaIntegratedWorld/);
 assert.match(liveBastion,/BastionOne/);
 assert.match(liveBastion,/PlayerCamera/);
 assert.match(liveBastion,/camera.CopyFrom\(source\)/);
-assert.match(liveBastion,/camera.Render\(\)/);
+// Exact Unity 6 URP 17.3 manual: single-camera request outside the
+// pipeline. The old camera.Render() compiled but did not certify a real
+// full-frame RenderTexture in URP.
+assert.match(liveBastion,/using UnityEngine.Rendering.Universal/);
+assert.match(liveBastion,/renderData.renderType=CameraRenderType.Base/);
+assert.match(liveBastion,/new UniversalRenderPipeline.SingleCameraRequest\(\)/);
+assert.match(liveBastion,/RenderPipeline.SupportsRenderRequest\(camera,request\)/);
+assert.match(liveBastion,/request.destination=result/);
+assert.match(liveBastion,/RenderPipeline.SubmitRenderRequest\(camera,request\)/);
+assert.doesNotMatch(liveBastion, /camera.Render\(\)/);
 assert.match(liveBastion,/result.Release\(\)/);
 assert.match(panel,/DailyTreasureBastionCamera.Capture\(/);
 assert.match(panel,/DailyTreasureBastionCamera.Release\(/);
