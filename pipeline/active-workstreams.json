@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
- "updated_at": "2026-11-11T12:09:00Z",
+ "updated_at": "2026-11-11T13:17:00Z",
  "owner_production_pause": {
   "active": true,
   "requested_on": "2026-10-18",
@@ -6955,7 +6955,7 @@
    "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
    "owner": "chatgpt-pr179-iphone-automation-20261111",
    "ownership_state": "claimed",
-   "ownership_revision": 34,
+   "ownership_revision": 35,
    "write_scope_released": false,
    "status": "active",
    "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6993,16 +6993,17 @@
     ".github/workflows/eldoria-beta-p0-city-owner-pages.yml",
     ".github/workflows/eldoria-beta-p0-city-memory-proof.yml",
     "Unity/Assets/Eldoria/BetaMemoryProbe/**",
-    "Unity/Assets/Eldoria/BetaMemoryProbe.meta"
+    "Unity/Assets/Eldoria/BetaMemoryProbe.meta",
+    ".github/workflows/eldoria-beta-lazy-world-native.yml"
    ],
    "resources": [],
    "claimed_at": "2026-11-09T22:42:54.852Z",
    "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
    "budget_eur": 0,
    "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-   "phase": "REAL_LAZY_WORLD_SOURCE_AND_FIRST_PARTY_NATIVE_PLAYMODE_TESTS_PENDING",
+   "phase": "REAL_LAZY_WORLD_NATIVE_PLAYMODE_WORKFLOW_PREP_AWAIT_WINDOWS",
    "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-   "next": "Finish source gate and native PlayMode proof under PR179; Windows reserved by PR173. Keep iPhone owner-reported no-restart and testers NO-GO.",
+   "next": "One unique owner-only workflow .github/workflows/eldoria-beta-lazy-world-native.yml, frozen-UX parity source checked, native Unity PlayMode pending CAS Windows release PR173. No testers until full-world iPhone/Android long session.",
    "last_verified": {
     "frozen_release_id": 437784073,
     "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7397,6 +7398,13 @@
      "to_revision": 34,
      "transferred_at": "2026-11-11T12:09:00Z",
      "reason": "Move newly authored disposable Unity PlayMode tests under first-party Eldoria asset root to obey provenance gate; expand this PR's exact scope, no Windows claim. Also compact CAS JSON to restore GitHub 1MiB contents API and fail-closed governance checks."
+    },
+    {
+     "owner": "chatgpt-pr179-iphone-automation-20261111",
+     "from_revision": 34,
+     "to_revision": 35,
+     "transferred_at": "2026-11-11T13:17:00Z",
+     "reason": "Owner requests continuous execution; stage isolated real Unity lazy-region native PlayMode workflow only; Windows stays owned by PR173 and no release/CI runner consumed."
     }
    ],
    "frozen_beta_ux_scope": {
