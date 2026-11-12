@@ -2,7 +2,7 @@
   "nativeRun": 43155182543,
   "auditRun": 43156972822,
   "artifact": 13913127003,
-  "uiSource": "af658a6cc1a02d45d7efc9c57dafef24e8512564",
+  "uiSource": "92596b1550fcb2722fb582639bc05c24a7c6a7a8",
   "role": "EXACT_REVIEWED_TEMPORARY_UI_METADATA_RESTORE_ONLY",
   "files": [
     {
@@ -389,5 +389,7 @@
       "installed": "570c541d00f329831bd4db77efe5cb47f8ee84ef435b4d3b27406048cdef73b1",
       "original": null
     }
-  ]
+  ],
+  "previousReviewedUiSource": "af658a6cc1a02d45d7efc9c57dafef24e8512564",
+  "review_basis": "Native43175152232 preserved overlay manifest: all64 installed/original SHA256 tuples exactly equal the prior imported-metadata allowlist; no changed source or generic importer normalization accepted. Restore still requires actual current SHA equality per entry and archives before any mutation."
 }

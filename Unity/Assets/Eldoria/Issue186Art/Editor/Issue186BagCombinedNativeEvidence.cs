@@ -80,6 +80,15 @@ namespace Eldoria.Issue186Art.Editor
                         nativeRun=Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"",
                         nativeAttempt=Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT")??"",
                         limitation="Actual saved bag and complete letter-row read/claim/back UI on combined Vigilia probe; no art or physical device approval"};
+                    // A failed prior run can leave PNGs that do not belong
+                    // to this source. Preserve its complete output separately;
+                    // never let stale pictures enter the current artifact.
+                    if(Directory.Exists(Output))
+                    {
+                        Need((new DirectoryInfo(Output).Attributes&FileAttributes.ReparsePoint)==0,
+                            "Refuse to move a linked native evidence directory");
+                        Directory.Move(Output,Output+".prior-"+Guid.NewGuid().ToString("N"));
+                    }
                     Directory.CreateDirectory(Output);routine=Run();
                 }
                 if(routine.MoveNext())return;
@@ -273,12 +282,19 @@ namespace Eldoria.Issue186Art.Editor
                     Need(panel.parent==canvas.transform&&!host.Hud.GetComponent<Canvas>().enabled,
                         "Bag is still under the disabled legacy canvas");
                     report.actualBagOnVigilia=true;bag.Refresh();
+                    // In this detached offscreen batch the disabled player
+                    // camera does not render newly opened Graphics by itself.
+                    // Submit the actual open panel before checking its real
+                    // GraphicRaycaster depth, as a player frame would do.
+                    Draw(camera,rt);
                     // Let the real component's 160ms guide cadence run. A
                     // custom Editor iterator does not execute WaitForSeconds.
                     double guideReady=EditorApplication.timeSinceStartup+.30;
                     while(EditorApplication.timeSinceStartup<guideReady)yield return null;
                     var actualHand=panel.GetComponentsInChildren<Image>(true)
                         .Single(t=>t.name=="Issue186 authentic tutorial hand");
+                    if(!actualHand.gameObject.activeInHierarchy)
+                        Photograph(camera,rt,"FAILED-guide-target",width,height);
                     Need(actualHand.gameObject.activeInHierarchy,
                         "Actual combined first-use guide did not become visible on its real target; "+
                         Eldoria.Issue186Art.Issue186ArtKit.LastPointerRejectReason);
