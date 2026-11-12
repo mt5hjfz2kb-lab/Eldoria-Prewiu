@@ -1,9 +1,5 @@
 name: Eldoria P0 recover one preserved Unity source after native 42985136961
 on:
-  push:
-    branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths:
-      - .github/workflows/eldoria-beta-recover-429851.yml
   workflow_dispatch:
 permissions:
   contents: read

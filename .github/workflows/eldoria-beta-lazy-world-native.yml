@@ -3,7 +3,6 @@ on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
     paths:
-      - '.github/workflows/eldoria-beta-lazy-world-native.yml'
       - 'tools/eldoria-private-beta/native/lazy-world-request.json'
   workflow_dispatch:
 permissions:

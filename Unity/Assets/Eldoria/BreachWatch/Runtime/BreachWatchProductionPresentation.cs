@@ -32,6 +32,16 @@ namespace Eldoria.BreachWatch
             action=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
             if(!retired || !stone || !action)
                 throw new InvalidOperationException("Production Vigilia source artwork missing");
+            // Keep the authoritative world-position projection and existing
+            // construction clocks on the new Canvas. This transparent layer
+            // owns no artwork; its retired controls are replaced by Enforce.
+            var labels=retired.transform.Find("World and construction labels") as RectTransform;
+            if(labels)
+            {
+                labels.SetParent(transform,false);labels.SetAsFirstSibling();
+                labels.anchorMin=Vector2.zero;labels.anchorMax=Vector2.one;
+                labels.offsetMin=labels.offsetMax=Vector2.zero;
+            }
             Canvas.willRenderCanvases+=Enforce;
             Enforce();
         }

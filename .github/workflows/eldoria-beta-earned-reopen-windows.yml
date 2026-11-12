@@ -3,7 +3,6 @@ on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
     paths:
-      - '.github/workflows/eldoria-beta-earned-reopen-windows.yml'
       - 'tools/eldoria-private-beta/qa_public_earned_windows.cjs'
 permissions:
   contents: read

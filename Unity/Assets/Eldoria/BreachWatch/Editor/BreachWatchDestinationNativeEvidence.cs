@@ -258,6 +258,11 @@ namespace Eldoria.BreachWatch.Editor
             // The Scouts destination is introduced ONLY after canonical
             // march confirmation; this is an isolated QA state, never a save.
             fixture.ChapterProgress.MarchConfirmed=true;
+            // This disposable advanced fixture must satisfy the same earned
+            // introductions as the integrated production narrative gate.
+            foreach(var beat in new[]{"march-preparation","vigilants-introduction","scouts-introduction"})
+                if(!fixture.ChapterProgress.SeenNarrative.Contains(beat))
+                    fixture.ChapterProgress.SeenNarrative.Add(beat);
             if(fixture.ChapterThree==null)fixture.ChapterThree=new BastionThreeState();
             fixture.ChapterThree.LyraRecruited=true;
             if(fixture.Mailbox==null)fixture.Mailbox=new EldoriaV41Mailbox();
@@ -300,7 +305,7 @@ namespace Eldoria.BreachWatch.Editor
                             ui.LegacyPresentationHidden));
                 nav[2].onClick.Invoke();
                 Need(military.IsShowing && military.HasApprovedTheme,
-                     "Army navigation did not open the ONE real repainted march screen");
+                     "Army navigation did not open the ONE real repainted march screen: "+military.NativeThemeDiagnostic);
                 military.Close();
                 nav[4].onClick.Invoke();
                 Need(ui.RealHeroes && ui.RealHeroes.IsShowing &&

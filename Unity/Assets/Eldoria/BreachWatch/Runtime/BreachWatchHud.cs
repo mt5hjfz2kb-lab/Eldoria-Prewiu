@@ -10,8 +10,8 @@ using UnityEngine.EventSystems;
 namespace Eldoria.BreachWatch
 {
     // New, independent presentation object. The canonical game/session is reused,
-    // but none of the old HUD's UI hierarchy, graphic assets or layout is reused.
-    // Opt-in native proof only; it is NOT installed in the production scene/build.
+    // with exclusive Vigilia artwork in production. Canonical gameplay
+    // controllers and their live input bindings remain authoritative.
     [DisallowMultipleComponent]
     public sealed class BreachWatchHud : MonoBehaviour
     {
@@ -888,7 +888,8 @@ namespace Eldoria.BreachWatch
         {
             int mask=(1<<0)|(1<<1);
             if(!host)return mask;
-            if(destinationBridge && host.CanOpen(RoyalSection.Army))
+            if(destinationBridge && host.CanOpen(RoyalSection.Army) &&
+               Eldoria.Domain.NarrativeCoherenceRules.Seen(host.City.Gateway.Snapshot(),"march-preparation"))
                 mask|=1<<2;
             if(host.CanOpen(RoyalSection.World))
                 mask|=1<<3;
@@ -1204,9 +1205,9 @@ namespace Eldoria.BreachWatch
                 // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?54f:36f,
                     smallPhone?37f:27f,missionWidth-(smallPhone?64f:44f),
-                    fullObjective?51f:(smallPhone?12f:10f));
+                    fullObjective?51f:(smallPhone?12f:15f));
                 At(chapterProgress.rectTransform,smallPhone?54f:36f,
-                    fullObjective?87f:(smallPhone?51f:40f),
+                    fullObjective?87f:(smallPhone?51f:43f),
                     missionWidth-(smallPhone?64f:44f),smallPhone?18f:14f);
                 chapterName.fontSize=smallPhone?13:10;
                 chapterName.resizeTextForBestFit=true;

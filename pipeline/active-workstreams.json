@@ -7337,7 +7337,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 62,
+      "ownership_revision": 63,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7380,7 +7380,9 @@
         ".github/workflows/eldoria-beta-earned-reopen-windows.yml",
         ".github/workflows/eldoria-beta-profile-browser-retry.yml",
         ".github/workflows/eldoria-beta18-preserved-owner-stage.yml",
-        ".github/workflows/eldoria-beta-integrated-ui-native.yml"
+        ".github/workflows/eldoria-beta-integrated-ui-native.yml",
+        ".github/workflows/eldoria-beta-recover-429851.yml",
+        ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -7662,7 +7664,7 @@
         "resource": "windows-runner-heavy",
         "status": "claimed",
         "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
-        "ownership_revision": 62,
+        "ownership_revision": 63,
         "updated_at": "2026-11-12T20:42:04.091Z"
       },
       "ownership_history": [
@@ -8334,7 +8336,7 @@
           "alternative": "Linux immutable input/site verified; browser launch denied by OS socket policy. Prepare isolated Windows Edge reopen on now-free PC; no owner save or source modified."
         }
       },
-      "scope_extension_reason": "Exact canonical JourneyGuidance caller must use the same target-preserving host navigation as the already owned frozen UX overlay; no art, rewards or balance change.",
+      "scope_extension_reason": "Integrated CI correction: remove historical self-triggering recovery workflow; admit current exact PR179 reservation in existing full gameplay native gate, preserving all tests and exclusive process checks.",
       "native_navigation_correction": {
         "source": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "run": 43246088947,
@@ -8515,6 +8517,15 @@
         "integration_pr": 179,
         "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
+      },
+      "last_integrated_native": {
+        "source": "2a26eb1a17445947dfa154682b5d7f37f2d9838f",
+        "run": 43304061550,
+        "artifact": 13982068853,
+        "sha256": "8edfa46607479a540139ea9a1031ca842721b3e832dbb0496ecb14d1a7b74e1b",
+        "city": "8 genuine native captures PASS",
+        "destinations": "FAIL advanced fixture missing production narrative introduction",
+        "typography": "2 objective rows GPU overflow at 900x1600; fix queued, not artistic approval"
       }
     },
     {
