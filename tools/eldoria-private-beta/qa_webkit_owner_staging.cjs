@@ -351,22 +351,74 @@ function processes(){
             // Actual original run43192581903 shows "Recoger madera"
             // at194,747 after the real objective arrow, and its9-second
             // roundtrip. Read every new visible state; no command injection.
-            const allowed=new Set(['RECOGER MADERA','RECOGER PIEDRA']);
-            for(let step=0;step<6;step++){
+            const allowed=new Set(['RECOGER MADERA','RECOGER PIEDRA',
+              'ATACAR EXPLORADOR','MEJORAR A BASTION II']);
+            const reachedTwo=()=>report.telemetry?.receipts.some(r=>r.status===202&&
+              r.eventName==='bastion_reached'&&r.payload?.bastion===2);
+            for(let step=0;step<16;step++){
+              if(reachedTwo()){
+                report.nextObjectiveExploration.actualBastionTwoReached=true;
+                report.nextObjectiveExploration.stopReason='actual_native_bastion_two_signal';break;
+              }
               if(step>0){
                 await page.mouse.click(211,69,{delay:150});
-                await observeEntry(2,'gather-objective-focus-'+step);
+                await observeEntry(2,'ordinary-objective-focus-'+step);
               }
               const phase='next-objective-'+step,rows=await readUi(phase);
-              const matches=rows.filter(r=>r.confidence>=.5&&allowed.has(normalized(r.text)));
-              if(matches.length!==1){report.nextObjectiveExploration.stopReason=matches.length?'ambiguous_visible_actions':'no_known_visible_action';break;}
-              const hit=matches[0];
+              const mission=rows.filter(r=>r.y>=50&&r.y<=130&&r.x<195)
+                .sort((a,b)=>a.y-b.y).map(r=>normalized(r.text)).join(' ');
+              if(/REGRESA A.{0,24}VALORIA/.test(mission)){
+                // Original exposed CITY compass already completed the exact
+                // normal return in both43179910727 and43196662146.
+                await page.mouse.click(152,799,{delay:150});
+                report.nextObjectiveExploration.actions.push({control:'actual CITY compass',
+                  x:152,y:799,evidence:phase+'.png',purpose:'ordinary return objective'});
+                write();await observeEntry(4,phase+'-normal-return');continue;
+              }
+              const nodeMatches=rows.filter(r=>r.confidence>=.5&&r.y>730&&r.y<780&&
+                allowed.has(normalized(r.text)));
+              const continues=rows.filter(r=>r.confidence>=.5&&normalized(r.text)==='CONTINUAR');
+              const matches=continues.length?continues:nodeMatches;
+              if(matches.length!==1){report.nextObjectiveExploration.stopReason=
+                matches.length?'ambiguous_visible_actions':'no_known_visible_action';break;}
+              const hit=matches[0],label=normalized(hit.text);
               await page.mouse.click(hit.x,hit.y,{delay:150});
-              report.nextObjectiveExploration.actions.push({text:hit.text,x:hit.x,y:hit.y,evidence:phase+'.png'});
-              write();await observeEntry(12,phase+'-after-action');
+              report.nextObjectiveExploration.actions.push({text:hit.text,x:hit.x,y:hit.y,
+                evidence:phase+'.png',ordinaryUiOnly:true});
+              write();
+              // Exact shipped4fd economy catalog authors120seconds for II.
+              // Observe real elapsed time and native emission; never set a clock.
+              await observeEntry(label==='MEJORAR A BASTION II'?130:
+                label==='CONTINUAR'?3:12,phase+'-after-action');
             }
+            report.nextObjectiveExploration.actualBastionTwoReached=!!reachedTwo();
+            report.nextObjectiveExploration.actualRouteVictory=!!report.telemetry?.receipts.some(
+              r=>r.status===202&&r.eventName==='battle_resolved'&&r.payload?.outcome_code==='win');
             await observeEntry(25,'next-objective-observation');
             await readUi('next-objective-final');write();
+            if(process.env.QA_COMPLETE_CHAPTER_ONE==='1'&&
+               (!report.nextObjectiveExploration.actualBastionTwoReached||
+                !report.nextObjectiveExploration.actualRouteVictory))
+              throw Error('ACTUAL_CHAPTER_ONE_NOT_COMPLETED '+JSON.stringify(report.nextObjectiveExploration));
+            // Optional export of this DISPOSABLE ordinary QA browser only.
+            // Never touch owner saves or serialize a potentially huge asset DB.
+            const dbs=await page.evaluate(async()=>typeof indexedDB.databases==='function'?
+              (await indexedDB.databases()).map(d=>d.name).filter(Boolean):null);
+            report.ordinaryQaCheckpoint={databaseNames:dbs,exported:false,
+              fakeStateCreated:false,ownerSaveAccessed:false};
+            if(dbs?.length&&dbs.every(n=>n==='/idbfs'||n.startsWith('/idbfs/')||n==='UnityPlayerPrefs')){
+              const state=await page.context().storageState({indexedDB:true});
+              if(state.cookies.length||state.origins.some(o=>o.origin!=='https://mt5hjfz2kb-lab.github.io'))
+                throw Error('CHECKPOINT_CONTAINS_UNEXPECTED_ORIGIN_OR_COOKIE');
+              const bytes=JSON.stringify(state);
+              if(Buffer.byteLength(bytes)>4000000)throw Error('QA_SAVE_CHECKPOINT_UNEXPECTEDLY_LARGE');
+              fs.writeFileSync(out+'/ordinary-qa-storage-state.json',bytes);
+              report.ordinaryQaCheckpoint.exported=true;
+              report.ordinaryQaCheckpoint.bytes=Buffer.byteLength(bytes);
+              report.ordinaryQaCheckpoint.sha256=require('crypto').createHash('sha256').update(bytes).digest('hex');
+            }else report.ordinaryQaCheckpoint.reason='unknown_or_asset_cache_database_not_exported';
+            write();
+
           }
 
         }

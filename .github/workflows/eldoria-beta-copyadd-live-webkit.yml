@@ -1,4 +1,3 @@
-# Actual run43192581903 proved the focused Bosque offer says Recoger madera; advance actual9-second gathering objectives.
 name: Eldoria actual public owner journey and opt-in telemetry — desktop WebKit, no deployment
 on:
   push:
@@ -13,7 +12,7 @@ concurrency:
 jobs:
   staged-desktop-webkit:
     runs-on: macos-15
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,7 +52,8 @@ jobs:
           QA_ADVANCE_STORY: '1'
           QA_ACTUAL_WORLD_UI: '1'
           QA_NEXT_OBJECTIVE: '1'
-          QA_GLOBAL_DEADLINE_MS: '900000'
+          QA_COMPLETE_CHAPTER_ONE: '1'
+          QA_GLOBAL_DEADLINE_MS: '1200000'
           QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
           QA_OUT: evidence/deferred
           QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
