@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 21,
-  "action": "click_point",
-  "proof_sha256": "82d65991a66a348eca3cd0563de257859f50b55880c8bc990ff421bd76e5f770",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN III • 2/5",
-    "Completa dos cacerías"
-  ],
-  "reason": "Original frame020 records first hunt1/2 and actual victory; use mission navigation for the second authored hunt."
+  "sequence": 22,
+  "action": "click_text",
+  "label": "Enviar expedición",
+  "proof_sha256": "fe506252bc299b41360f4a96edbc86eb482622047d3be8bf7803c4ff17a5daee",
+  "reason": "Fresh frame021 selects the actual2050power rock boar for second hunt; dispatch the confirmed2716power army."
 }
