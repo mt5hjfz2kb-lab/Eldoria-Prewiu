@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T06:22:00.403Z",
+  "updated_at": "2026-11-12T07:06:25.977Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6808,16 +6808,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 105,
+      "ownership_revision": 106,
       "write_scope_released": false,
-      "phase": "OFF_PC_SOURCE_PASS_HALL_STALE_SUBTREE_ROOT_FIX_PENDING_FAIR_NATIVE",
-      "next": "After fair rotation and formal CAS Windows claim, rerun native on source a2f3fc59: 48 real PNG, zero Hall 14px GPU glyph overlap, two genuine EventSystem mailbox first hits, immutable save/inputs, old Canvas off, approved reference A/B. The immediate successor PR179 has no prepared lot (its latest full world/native success awaits offline review); PR181 is diagnosing actual GPU scene and has no prepared lot; PR187 waits corrected UI Unity certificate. No main/art/phone approval.",
+      "phase": "EXCLUSIVE_NATIVE_LATEST_ACTIVE_HALL_AND_REAL_MAIL_PROOF",
+      "next": "Freeze exact requested head; verify48actualPNGs, zeroHallglyphGPUgutter, 2actualmailfirsthits andgenuineAB. Release aftercleanexit to readyT181d558, thenR187whenUIcertificateavailable. No art/main approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T05:53:52.678Z",
-      "runner_claim_basis": "Fairnextturn afterTstudiofailurecleanexit. UI6ccd source43163056324PASS actualHallcanonicalRefreshlayoutlifecyclefixed,69 pointerintent retained, safe87inputpreservation; stillzeroGPUgutter and2realmailfirsthitrequired.",
+      "runner_claimed_at": "2026-11-12T07:06:25.977Z",
+      "runner_claim_basis": "Actual global native inventory has no Windows run or holder. Sourcea2f3fc59 CI43167261876SUCCESS; new causal fix selects latest ACTIVE hero subtree instead of retired same-name child. Next prepared turn UI, beta active on Mac only, treasures next source d558 CI43164737378/43164731128 ready.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -7154,15 +7156,12 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_native_failure_source_fix_pending_native",
+        "status": "claimed",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 105,
+        "ownership_revision": 106,
         "source": "a2f3fc59f1d6516efd925dd788bf7056e7be8603",
         "source_ci_run": 43167261876,
-        "last_native_run": 43164446160,
-        "last_native_artifact": 13919456713,
-        "released_at": "2026-11-12T06:22:00.403Z",
-        "next_fair": "PR179 beta→PR181 treasures→PR187 resources→PR173 UI, skip only with registered absence of prepared native lot; none of PR179/181/187 currently ready and no Windows claim is assigned."
+        "claimed_at": "2026-11-12T07:06:25.977Z"
       }
     },
     {
@@ -8090,7 +8089,7 @@
       "budget_eur": 0,
       "phase": "OFF_PC_STUDIO_GPU_VISIBILITY_DIAGNOSIS_NO_ART_PASS",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Preserve exactfailedstudioGPUbeforepixelassert and inspect originalprojectedmodel ROI; investigate coverage/lighting cause. No falsequality/pass or repeatblindcolorsteps.",
+      "next": "Ready bounded studio lot afterUI cleanexit: d558 has actual sourceCI success and retains failed original GPU readback before assertions. No loweredpixelthreshold/approval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8250,10 +8249,15 @@
       "previous_owner": "chatgpt-daily-treasures-20261108",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_native_failure",
+        "status": "ready_waiting_current_owner",
         "owner": "chatgpt-central-treasures-art-20261111",
         "ownership_revision": 67,
-        "last_native_run": 43162955876
+        "source": "d558fddc2842c6175662f8bc189619a9ac1a00bc",
+        "source_ci_runs": [
+          43164737378,
+          43164731128
+        ],
+        "method": "excludeReservedPreviewLayer31+actualFailedGPUReadback+unchangedpixelgates"
       }
     },
     {
@@ -18457,6 +18461,12 @@
       "to": "eldoria-forja-oscura-visual-proof-20261107",
       "prior_native_run": 43162955876,
       "original_threshold_preserved": true
+    },
+    {
+      "at": "2026-11-12T07:06:25.977Z",
+      "event": "central_resume_real_ready_UI_native_then_reserved_layer_studio",
+      "id": "eldoria-forja-oscura-visual-proof-20261107",
+      "source": "a2f3fc59f1d6516efd925dd788bf7056e7be8603"
     }
   ],
   "owner_specific_pauses": [
