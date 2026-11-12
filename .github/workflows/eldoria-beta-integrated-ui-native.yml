@@ -165,7 +165,7 @@ jobs:
           & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
           & git -C $root config core.sparseCheckout true
           & git -C $root config core.sparseCheckoutCone false
-          $patterns=@('/Unity/**','/tools/breach-watch/**','/tools/daily-treasures/**','/tools/reward-experience/**','/tools/eldoria-private-beta/native/StructuralStartupProbe.cs','/tools/eldoria-private-beta/native/CollisionBake.cs')
+          $patterns=@('/Unity/**','/tools/breach-watch/**','/tools/daily-treasures/**','/tools/reward-experience/**','/tools/eldoria-private-beta/native/StructuralStartupProbe.cs','/tools/eldoria-private-beta/native/CollisionBake.cs','/tools/eldoria-private-beta/native/existing-input-audit.json')
           for($i=1;$i -le 17;$i++){$patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')}
           foreach($n in @('39131782550','39132144937','39132392803','39132807199','39133202399','39136444844','39137079921','39138143327')){
             $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
@@ -187,6 +187,45 @@ jobs:
           }
           Add-Content $env:GITHUB_ENV "BW_SOURCE=$root"
           Write-Host "BREACHWATCH_EXACT_BRANCH_SOURCE_READY $env:GITHUB_SHA"
+      - name: Hydrate exact previously audited Bastion III production art
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools active; no art hydration'}
+          $auditPath=Join-Path $env:BW_SOURCE 'tools/eldoria-private-beta/native/existing-input-audit.json'
+          $audit=Get-Content -LiteralPath $auditPath -Raw|ConvertFrom-Json
+          if($audit.base -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw 'Original production-art inventory changed'}
+          $prefix='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/'
+          $art=@($audit.files|Where-Object {$_.path.StartsWith($prefix)})
+          if($art.Count -ne 51 -or ($art|Measure-Object bytes -Sum).Sum -ne 108788643){throw 'Incomplete original production-art inventory'}
+          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source')
+          $copies=@()
+          foreach($item in $art){
+            $rel=[string]$item.path
+            if($rel.Contains('..') -or $rel.Contains(':') -or $rel -match '\.(cs|dll|asmdef|exe)$'){throw 'Invalid art-only input'}
+            $dest=Join-Path $env:BW_SOURCE $rel
+            if(Test-Path -LiteralPath $dest){
+              if((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $item.sha256){throw ('Existing art differs; preserve it: '+$rel)}
+              continue
+            }
+            $from=$null
+            foreach($name in $origins){
+              $candidate=Join-Path (Join-Path $env:GITHUB_WORKSPACE $name) $rel
+              if((Test-Path -LiteralPath $candidate -PathType Leaf) -and
+                 -not ((Get-Item -LiteralPath $candidate).Attributes -band [IO.FileAttributes]::ReparsePoint) -and
+                 (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash -eq $item.sha256){$from=$candidate;break}
+            }
+            if(-not $from){throw ('Exact audited production art unavailable: '+$rel)}
+            $copies+=@{source=$from;destination=$dest;sha256=$item.sha256;path=$rel}
+          }
+          foreach($item in $copies){
+            New-Item -ItemType Directory -Force (Split-Path $item.destination)|Out-Null
+            Copy-Item -LiteralPath $item.source -Destination $item.destination
+            if((Get-FileHash -LiteralPath $item.destination -Algorithm SHA256).Hash -ne $item.sha256){throw 'Production art copy differs'}
+          }
+          @{source_sha=$env:GITHUB_SHA;audit_sha256=(Get-FileHash $auditPath).Hash;files=$art;copied=$copies.Count;originals_modified=$false}|
+            ConvertTo-Json -Depth 8|Set-Content (Join-Path $env:RUNNER_TEMP ('integrated-production-art-'+$env:GITHUB_RUN_ID+'.json')) -Encoding UTF8
+          Write-Host ('EXACT_ORIGINAL_BASTION_III_ART_AVAILABLE count='+$art.Count+' copied='+$copies.Count)
       - name: Run real Unity city and independent UI capture
         shell: powershell
         run: |
@@ -546,6 +585,7 @@ jobs:
             ${{ runner.temp }}/integrated-build-proof*
             ${{ runner.temp }}/integrated-build-inputs-*/**
             ${{ runner.temp }}/integrated-terrain-*/**
+            ${{ runner.temp }}/integrated-production-art-*.json
             ${{ runner.temp }}/integrated-campaign.log
             ${{ runner.temp }}/integrated-web-build.log
           retention-days: 21

@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 24,
-  "previous_run": 43327554020,
-  "correction": "Archive23 independently verified; URP diff only clears m_RuntimeSettings.m_List. Permit only exact reviewed blob/raw hashes, preserve originals and restore two build-generated render inputs in finally. Add existing canonical terrain bake and collider replay probe before fresh I-V and WebGL; compare topology, route population, geometry, two reloads, saved-state integrity and tape hashes. Keep native UI clipping gates and stable public18.",
+  "attempt": 25,
+  "previous_run": 43328122042,
+  "correction": "Native24 passes latest city bounds, retention return/footer glyphs, all destinations/fonts and rewards. Strict terrain probe rejects missing original BastionIII Granary/stock/fissure assets; old I-V run also logged these errors without failing. Hydrate only exact 51 audited original production-art files (108788643 bytes) read-only from the known prior native/warm checkout, checking every SHA256 before copying and refusing changed existing files. Reuse existing recovery technique; do not bypass runtime error or terrain parity gates.",
   "build_candidate": true
 }
