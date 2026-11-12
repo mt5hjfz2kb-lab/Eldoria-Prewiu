@@ -307,7 +307,7 @@ for(int threshold=1;threshold<=80;threshold++){
 }
 // Real offline march-return saves: only nodes and actual animal hunts
 // credit directly. Combat packages require explicit claim, then use.
-foreach(var target in new[]{"forest-valoria","quarry-valoria","meat-valoria","hunt-boar","hunt-wolf","region1:boar:1","engendro-valoria","corrupt-scout","ash-stalker","region1:spawnling:1"})
+foreach(var target in new[]{"forest-valoria","quarry-valoria","meat-valoria","hunt-boar","hunt-wolf","region1:boar:1","engendro-valoria","corrupt-scout","ash-stalker-valoria","region1:spawnling:1"})
 {
  bool direct=target=="forest-valoria"||target=="quarry-valoria"||target=="meat-valoria"||target.StartsWith("hunt-")||target=="region1:boar:1";
  long due=clock.UtcTicks-TimeSpan.FromMinutes(5).Ticks;
@@ -338,6 +338,76 @@ foreach(var target in new[]{"forest-valoria","quarry-valoria","meat-valoria","hu
   Need(!Send(g,"reuse-"+target,ResourceRewardCommands.UsePacket,receipt+":wood").Ok,target+" no reused combat packet");
  }
 }
+// Actual saved exploration claims use all four established reward tables.
+for(int family=0;family<4;family++)
+{
+ string orderId=(EarlyRetentionRules.Period(clock.UtcTicks)-1)+":"+family;
+ var seed=new PlayerState{BastionLevel=3,BarracksLevel=1};
+ seed.ChapterProgress.MarchConfirmed=true;
+ seed.ChapterProgress.SeenNarrative.Add("scouts-introduction");
+ seed.Retention.Orders.Add(new ScoutOrder{Id=orderId,Kind=family,Period=(int)EarlyRetentionRules.Period(clock.UtcTicks)-1,StartedUtcTicks=clock.UtcTicks-TimeSpan.FromMinutes(10).Ticks,EndsUtcTicks=clock.UtcTicks-TimeSpan.FromMinutes(1).Ticks,TroopsReturned=true});
+ int w=seed.Resources.Wood,st=seed.Resources.Stone,f=seed.Resources.Food;
+ var save=new JsonStore(seed);var g=new LocalGateway(clock,save);g.Advance();
+ int beforeXp=g.Snapshot().Retention.AldricExperience;
+ Need(Send(g,"scout-packet-"+family,"ScoutClaim",orderId).Ok,"actual exploration claim family "+family);
+ var claimedScout=g.Snapshot();var packets=claimedScout.ResourceRewards.Packets.Where(x=>x.Origin=="exploration").ToList();
+ int ew=family==0?45:family==1?35:family==2?60:0;
+ int es=family==0?20:family==2||family==3?25:0;
+ int ef=family==1?30:family==3?45:0;
+ Need(packets.Count==2&&packets.All(x=>x.Collected&&!x.Used&&x.MailEventId==""),"scout claim produces two actual bag components, not another claim gate");
+ Need(packets.Where(x=>x.Kind=="wood").Sum(x=>x.Amount)==ew&&packets.Where(x=>x.Kind=="stone").Sum(x=>x.Amount)==es&&packets.Where(x=>x.Kind=="food").Sum(x=>x.Amount)==ef,"scout exact family reward table preserved");
+ Need(claimedScout.Resources.Wood==w&&claimedScout.Resources.Stone==st&&claimedScout.Resources.Food==f,"scout explicit claim never spends its new bag contents");
+ Need(claimedScout.Retention.AldricExperience==beforeXp+20&&claimedScout.Retention.Orders.Single(x=>x.Id==orderId).Claimed,"scout actual discovery and non-resource XP remain immediate");
+ Need(claimedScout.Mailbox.Messages.Single(x=>x.DiscoveryOrderId==orderId).DiscoveryKind==family,"existing actual discovery report preserves family");
+ Need(AttentionCueRules.At(claimedScout.RewardAttention,"bag")==AttentionLevel.New,"scout bag informational novelty");
+ g=new LocalGateway(clock,save);
+ Need(!Send(g,"scout-again-"+family,"ScoutClaim",orderId).Ok,"scout cannot reissue after reload with a new command ID");
+ Need(g.Snapshot().ResourceRewards.Packets.Count(x=>x.Origin=="exploration")==2,"scout durable exactly-once two-component bundle");
+ foreach(var packet in packets)Need(Send(g,"scout-use-"+packet.Kind,ResourceRewardCommands.UsePacket,packet.ReceiptId).Ok,"actual voluntary use of scout "+packet.Kind);
+ Need(g.Snapshot().Resources.Wood==w+ew&&g.Snapshot().Resources.Stone==st+es&&g.Snapshot().Resources.Food==f+ef,"scout exact quantities credited only through actual uses");
+}
+var vigilantSeed=new PlayerState{BastionLevel=3};
+vigilantSeed.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+vigilantSeed.Available=new ArmyRoster();vigilantSeed.Available.Set(0,5,100);
+int vigilantWood=vigilantSeed.Resources.Wood,vigilantStone=vigilantSeed.Resources.Stone;
+var vigilantStore=new JsonStore(vigilantSeed);var vigilantGateway=new LocalGateway(clock,vigilantStore);vigilantGateway.Advance();
+Need(Send(vigilantGateway,"real-vigilant-packets","VigilantBattle","1").Ok,"actual resolved stage-one battle command");
+var wonStage=vigilantGateway.Snapshot();
+Need(wonStage.Retention.LastClearedStage==1&&wonStage.LastBattleReport.Won,"actual strong T5 army wins stage one");
+var stagePackets=wonStage.ResourceRewards.Packets.Where(x=>x.Origin=="vigilants").ToList();
+Need(stagePackets.Count==2&&stagePackets.All(x=>x.Collected&&!x.Used&&x.MailEventId==""),"won Vigilant stage issues real collected bag packets");
+Need(stagePackets.Single(x=>x.Kind=="wood").Amount==32&&stagePackets.Single(x=>x.Kind=="stone").Amount==11,"stage-one reward balance preserved");
+Need(wonStage.Resources.Wood==vigilantWood&&wonStage.Resources.Stone==vigilantStone,"Vigilant victory does not spend packet rewards");
+Need(wonStage.Retention.AldricExperience==20,"Vigilant non-resource mastery XP remains immediate");
+Need(wonStage.Mailbox.Messages.Any(x=>x.Type=="battle"),"actual Vigilant battle report still generated");
+vigilantGateway=new LocalGateway(clock,vigilantStore);
+Need(!Send(vigilantGateway,"vigilant-stage-replay","VigilantBattle","1").Ok,"same won stage cannot mint more after reload");
+Need(vigilantGateway.Snapshot().ResourceRewards.Packets.Count(x=>x.Origin=="vigilants")==2,"Vigilant stage stable two-component receipt");
+Need(Send(vigilantGateway,"vigilant-use",ResourceRewardCommands.UsePacket,"vigilant:stage:1:wood").Ok,"Vigilant actual packet USE accepted");
+Need(vigilantGateway.Snapshot().Resources.Wood==vigilantWood+32&&vigilantGateway.Snapshot().Resources.Stone==vigilantStone,"Vigilant packet credits its exact amount independently");
+// A loss must not accidentally commit the prevalidated potential prize.
+var losingSeed=new PlayerState{BastionLevel=3};losingSeed.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+losingSeed.Available=new ArmyRoster();losingSeed.Available.Set(0,1,1);losingSeed.Retention.LastClearedStage=24;
+var losingStore=new JsonStore(losingSeed);var losing=new LocalGateway(clock,losingStore);losing.Advance();
+Need(Send(losing,"actual-vigilant-defeat","VigilantBattle","25").Ok,"real failed battle is still a recorded accepted encounter");
+Need(!losing.Snapshot().LastBattleReport.Won&&losing.Snapshot().Retention.LastClearedStage==24,"weak actual army does not clear the stage");
+Need(losing.Snapshot().ResourceRewards.Packets.Count==0&&losing.Snapshot().Retention.AldricExperience==0,"defeat grants neither packets nor victory XP");
+Need(losing.Snapshot().Resources.Wood==losingSeed.Resources.Wood,"defeat cannot credit wallet");
+// Loading already-awarded historical discoveries/stages cannot mint packages.
+var historical=new PlayerState{BastionLevel=3,BarracksLevel=1};historical.ChapterProgress.MarchConfirmed=true;
+historical.ChapterProgress.SeenNarrative.Add("vigilants-introduction");historical.ChapterProgress.SeenNarrative.Add("scouts-introduction");
+historical.Retention.LastClearedStage=1;historical.Retention.Orders.Add(new ScoutOrder{Id="legacy-paid",Kind=2,Claimed=true});
+var historicalStore=new JsonStore(historical);var historicalGateway=new LocalGateway(clock,historicalStore);historicalGateway.Advance();
+Need(historicalGateway.Snapshot().ResourceRewards.Packets.Count==0,"legacy already-paid history creates no retrospective bag award");
+Need(!Send(historicalGateway,"legacy-stage","VigilantBattle","1").Ok,"legacy cleared stage cannot pay again");
+Need(!Send(historicalGateway,"legacy-order","ScoutClaim","legacy-paid").Ok,"legacy claimed exploration cannot pay again");
+// Counter capacity refusal precedes new progress, report and inventory mutation.
+var xpFull=new PlayerState{BastionLevel=3};xpFull.ChapterProgress.SeenNarrative.Add("vigilants-introduction");xpFull.Retention.AldricExperience=int.MaxValue;
+xpFull.Available=new ArmyRoster();xpFull.Available.Set(0,5,100);
+var xpStore=new JsonStore(xpFull);var xpGateway=new LocalGateway(clock,xpStore);xpGateway.Advance();int xpWrites=xpStore.Writes;var xpBefore=xpGateway.Snapshot();
+Need(!Send(xpGateway,"vigilant-xp-capacity","VigilantBattle","1").Ok,"Vigilant XP overflow refuses without throwing or awarding");
+Need(xpGateway.Snapshot().Retention.LastClearedStage==0&&xpGateway.Snapshot().ResourceRewards.Packets.Count==0&&xpGateway.Snapshot().LastBattleReport?.TargetId==xpBefore.LastBattleReport?.TargetId,"XP refusal leaves victory and inventory untouched");
+Need(xpStore.Writes==xpWrites,"XP capacity refusal has no saved partial transaction");
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{

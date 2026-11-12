@@ -352,6 +352,16 @@ namespace Eldoria.Domain
                     MarchCapacityRules.AutoSelect(s.Available,MarchCapacityRules.Capacity(s,hero));
                 if(!MarchCapacityRules.Fits(available,s.Available,MarchCapacityRules.Capacity(s,hero)))
                 {message="La composición supera la capacidad de marcha o no está disponible";return false;}
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                int rewardXp=20+stage/5*3;
+                if((hero=="lyra"?p.LyraExperience:p.AldricExperience)>int.MaxValue-rewardXp)
+                {message="No hay capacidad para recibir la experiencia";return false;}
+                string stageReceipt="vigilant:stage:"+stage;
+                var stageInventory=s.ResourceRewards.Copy();
+                if(!ResourceRewardRules.TryIssueBundle(stageInventory,
+                    stageReceipt,"vigilants",30+stage*2,10+stage,0))
+                {message="La recompensa de esta etapa ya está registrada";return false;}
+#endif
                 var enemy=Stage(stage);
                 var army=ExpeditionWithMastery(s,available,hero);
                 EldoriaV41CombatRecord evolved=null;
@@ -384,9 +394,18 @@ namespace Eldoria.Domain
                 int xp=20+stage/5*3;
                 if(hero=="lyra")p.LyraExperience=checked(p.LyraExperience+xp);
                 else p.AldricExperience=checked(p.AldricExperience+xp);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                s.ResourceRewards=stageInventory;
+                AttentionCueRules.Signal(s.RewardAttention,
+                    "bag-reward:"+stageReceipt,"bag",AttentionLevel.New);
+                s.LastBattleReport.RewardWood=30+stage*2;
+                s.LastBattleReport.RewardStone=10+stage;
+                message="Etapa "+stage+" superada · "+xp+" XP · paquetes en la mochila";
+#else
                 s.Resources.Wood=checked(s.Resources.Wood+30+stage*2);
                 s.Resources.Stone=checked(s.Resources.Stone+10+stage);
                 message="Etapa "+stage+" superada · "+xp+" XP · recompensa entregada";
+#endif
                 return true;
             }
             if(kind=="ClaimVigilantXp")
@@ -467,10 +486,26 @@ namespace Eldoria.Domain
                 return true;
             }
             if(order.StartedUtcTicks<=0||order.EndsUtcTicks>utcNow){message="Los exploradores aún están en camino";return false;}
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            string scoutReceipt="scout:"+order.Id;
+            int wood=order.Kind==0?45:order.Kind==1?35:order.Kind==2?60:0;
+            int stone=order.Kind==0?20:order.Kind==2?25:order.Kind==3?25:0;
+            int food=order.Kind==1?30:order.Kind==3?45:0;
+            var scoutInventory=s.ResourceRewards.Copy();
+            if(order.Kind<0||order.Kind>3 ||
+               p.AldricExperience>int.MaxValue-20 || p.TotalScoutReports==int.MaxValue ||
+               !ResourceRewardRules.TryIssueBundle(scoutInventory,
+                   scoutReceipt,"exploration",wood,stone,food))
+            {message="La recompensa de este encargo no está disponible";return false;}
+            s.ResourceRewards=scoutInventory;
+            AttentionCueRules.Signal(s.RewardAttention,
+                "bag-reward:"+scoutReceipt,"bag",AttentionLevel.New);
+#else
             if(order.Kind==0){s.Resources.Wood=checked(s.Resources.Wood+45);s.Resources.Stone=checked(s.Resources.Stone+20);}
             else if(order.Kind==1){s.Resources.Wood=checked(s.Resources.Wood+35);s.Resources.Food=checked(s.Resources.Food+30);}
             else if(order.Kind==2){s.Resources.Wood=checked(s.Resources.Wood+60);s.Resources.Stone=checked(s.Resources.Stone+25);}
             else{s.Resources.Stone=checked(s.Resources.Stone+25);s.Resources.Food=checked(s.Resources.Food+45);}
+#endif
             p.AldricExperience=checked(p.AldricExperience+20);
             order.Claimed=true;
             p.TotalScoutReports=checked(p.TotalScoutReports+1);
@@ -478,7 +513,11 @@ namespace Eldoria.Domain
             p.LatestDiscoveryTitle=ScoutDiscoveryTitle(order);
             p.LatestDiscoveryText=ScoutDiscoveryText(order);
             message="Encargo completado · "+ScoutRewardText(order.Kind);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            message+=" · paquetes en la mochila";
+#endif
             return true;
         }
     }
 }
+
