@@ -46,6 +46,7 @@ namespace Eldoria.BreachWatch
         public bool CompactPortraitApplied { get; private set; }
         string thirdHeroOriginalLabel;
         Text thirdHeroLabel;
+        Text quantityCaption;
         RectTransform detailSheet,detailCard;
         Button detailReturn;
         Text detailHeading,detailReturnText;
@@ -116,6 +117,7 @@ namespace Eldoria.BreachWatch
 
             // Keep all three canonical hero spaces at every orientation.
             CompactPortraitApplied=false;
+            FitQuantityCaption(root);
             if(root.rect.width>root.rect.height)
             {
                 RefreshActualHeroCards(root);
@@ -273,6 +275,31 @@ namespace Eldoria.BreachWatch
                 Mathf.Max(36f,quantityW-2f*buttonW-6f),selectorsH);
             At(compactParts[12],orderX+8f,selectorsY+selectorsH+11f,orderW-16f,22f);
             return true;
+        }
+
+        void FitQuantityCaption(RectTransform root)
+        {
+            if(!quantityCaption || !quantityCaption.transform.IsChildOf(root))
+            {
+                var control=Find(root,"Edit march by percent");
+                quantityCaption=control ? control.GetComponentInChildren<Text>(true):null;
+            }
+            if(!quantityCaption)return;
+            if(!originalLabels.ContainsKey(quantityCaption))
+                originalLabels.Add(quantityCaption,new LabelTypography {
+                    Size=quantityCaption.fontSize,Minimum=quantityCaption.resizeTextMinSize,
+                    Maximum=quantityCaption.resizeTextMaxSize,BestFit=quantityCaption.resizeTextForBestFit,
+                    Horizontal=quantityCaption.horizontalOverflow,Vertical=quantityCaption.verticalOverflow,
+                    Alignment=quantityCaption.alignment });
+            Remember(quantityCaption.rectTransform);
+            // Source button uses stretch anchors. Keep those anchors, reduce
+            // only the excessive vertical inset which clipped the real caption.
+            quantityCaption.rectTransform.sizeDelta=new Vector2(-16f,-4f);
+            quantityCaption.rectTransform.anchoredPosition=Vector2.zero;
+            quantityCaption.fontSize=20;
+            quantityCaption.resizeTextForBestFit=false;
+            quantityCaption.horizontalOverflow=HorizontalWrapMode.Wrap;
+            quantityCaption.verticalOverflow=VerticalWrapMode.Truncate;
         }
 
         static RectTransform FindPortrait(RectTransform hero)
