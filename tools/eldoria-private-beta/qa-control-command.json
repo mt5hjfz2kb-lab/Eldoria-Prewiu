@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 7,
-  "action": "click_text",
-  "proof_sha256": "cf6fbb7987219ef5e7b4cf7610379302bf9099a9f0a056619a49ce3b988cef09",
-  "label": "ENTRAR EN VALORIA"
+  "sequence": 8,
+  "action": "click_point",
+  "proof_sha256": "c20880f4930dbe4d22036219f3b095b9219e2ef9ebb153e8117db51e5243eb9b",
+  "x": 360,
+  "y": 500,
+  "guard_texts": [
+    "Valoria asegurada •",
+    "Recorrido completado"
+  ],
+  "reason": "Frame007 matches the city camera and the visible straw-roof building at the right edge; inspect that actual building to exercise post-campaign management."
 }
