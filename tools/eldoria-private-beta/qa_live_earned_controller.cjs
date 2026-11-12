@@ -65,8 +65,12 @@ function processes(){
     const digest=require('crypto').createHash('sha256').update(stateBytes).digest('hex');
     const inputProof=JSON.parse(fs.readFileSync(process.env.QA_CONTROL_INPUT_REPORT,'utf8'));
     const cp=inputProof.ordinaryQaCheckpoint;
-    if(!inputProof.passed||!cp?.exported||cp.sourceEngine!=='4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71'||
-       cp.sourceBundle!=='49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a'||
+    const provenInputEngine=cp&&(
+      (cp.sourceEngine==='4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71'&&
+       cp.sourceBundle==='49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a')||
+      (cp.sourceEngine==='a8b0ee4febf85d20eff3280133a37cac17fae967'&&
+       cp.sourceBundle==='ee8eb5ab636ddc7381b9a8a355580b509a9f9f79a442f1b4987140bb58a25ad5'));
+    if(!inputProof.passed||!cp?.exported||!provenInputEngine||
        !/^[a-f0-9]{64}$/.test(cp.sha256)||cp.ownerSaveAccessed!==false||cp.fakeStateCreated!==false)
       throw Error('UNPROVEN_EARNED_CAMPAIGN_INPUT');
     if(digest!==cp.sha256)
