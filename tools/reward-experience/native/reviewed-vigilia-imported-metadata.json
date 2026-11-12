@@ -2,7 +2,7 @@
   "nativeRun": 43155182543,
   "auditRun": 43156972822,
   "artifact": 13913127003,
-  "uiSource": "25e893fb9f6245d813e8dceb03865a8b703b8bd2",
+  "uiSource": "36fb5775858f332d231a45b9cad5043bbb7aaf63",
   "role": "EXACT_REVIEWED_TEMPORARY_UI_METADATA_RESTORE_ONLY",
   "files": [
     {
@@ -390,6 +390,6 @@
       "original": null
     }
   ],
-  "previousReviewedUiSource": "92596b1550fcb2722fb582639bc05c24a7c6a7a8",
-  "review_basis": "UI25e native43185167905 passed48screens+mail2+Hall0+independentAB. Git compare925...25e contains only resource bridge code,source-CI workflow,documentation,native request: no sprite/meta/GUID changes. Exact64 installed/current/original hashes stay unchanged; restore still archives before any source mutation."
+  "previousReviewedUiSource": "25e893fb9f6245d813e8dceb03865a8b703b8bd2",
+  "review_basis": "UI36fb native43195548484 passed48+mail2+Hall0+independentAB. Actual March390 original visually confirms larger portrait above name and neutralstone. Git compare25e...36fb changes3CSharp+doc+request ONLY, no PNG/meta/GUID changes. Exact64 metadata tuples unchanged; archive-before-restore and pending-overlay guards remain."
 }
