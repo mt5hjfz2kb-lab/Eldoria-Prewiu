@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 3,
+  "sequence": 4,
   "action": "click_point",
-  "proof_sha256": "4ff178b9699b38e1638e8672a12980e462f101eb2bdac7442b652143148bdaff",
+  "proof_sha256": "51544c584444871e6203e510693375ffc1a420aa77e9a03900d4d458b535b877",
   "x": 32,
   "y": 45,
   "guard_texts": [
     "BUZÓN",
-    "Victoria en batalla"
+    "6 MENSATES REALES • Informes"
   ],
-  "reason": "Frame002 confirms unchanged saved56archers,5rounds83percentlife and the top-left back arrow; return through that actual mailbox control."
+  "reason": "Frame003 shows the report list after returning from detail; use the same visible top-left back arrow to leave the mailbox."
 }
