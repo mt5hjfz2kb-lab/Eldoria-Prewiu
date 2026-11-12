@@ -140,7 +140,8 @@ jobs:
           host=pathlib.Path('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs').read_text()
           assert 'RoyalSection.Mailbox' in host and 'P0LazyWorldProbe' in host
           runner=(pathlib.Path('tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1')).read_text()
-          assert '$preserve=@($overlays)+@($uxPaths)+@(' in runner
+          assert '$preserve=@(Get-PR179NativeMaterialPaths)+@($overlays)+@($uxPaths)+@(' in runner
+          assert 'preserve_native_materials.ps1' in runner, 'Native material preservation helper must remain active'
           # Two inputs are normalized to intermediate engine baselines by the
           # OLD native pipeline. The recovered warm project has their audited
           # originals; otherwise a correct PlayMode test would be blocked.
