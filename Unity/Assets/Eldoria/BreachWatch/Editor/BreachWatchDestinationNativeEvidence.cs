@@ -687,7 +687,12 @@ namespace Eldoria.BreachWatch.Editor
                 bool authoredMailTextureVerified=false;
                 int authoredMailChangedPixels=0;
                 int authoredMailUpperChangedPixels=0;
-                if(name=="mail" && height>width)
+                // Desktop 1600x900 must now show the same genuine painted
+                // parchment as portrait, not the prior 70%-empty dark wall.
+                // Keep very short 844x390 landscape unpainted for usability.
+                bool spaciousMailLandscape=width>=1100 && height>=650 &&
+                    width>height;
+                if(name=="mail" && (height>width || spaciousMailLandscape))
                 {
                     var art=ui.GetComponentsInChildren<BreachWatchMailboxEmptyArtwork>(true)
                         .FirstOrDefault(x=>x && x.gameObject.activeInHierarchy);
@@ -723,7 +728,8 @@ namespace Eldoria.BreachWatch.Editor
                         Need(authoredMailChangedPixels>width*height*.01f,
                             "Authored mail imported but not genuinely visible in GPU output");
                         Need(authoredMailUpperChangedPixels>width*height*.0005f,
-                            "Mail art still clipped behind the existing collection board");
+                            "Mail art still clipped behind the existing collection board "+
+                            "at "+width+"x"+height);
                         authoredMailTextureVerified=true;
                     }
                     finally

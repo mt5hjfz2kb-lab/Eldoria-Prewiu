@@ -59,12 +59,22 @@ namespace Eldoria.BreachWatch
             LoadIllustration();
             if (!illustration) return; // honest empty state remains; no fake fallback
             var r = GetPixelAdjustedRect();
-            if (r.width < 285f || r.height < 530f || r.width > r.height) return;
+            // A genuine 1600x900 desktop mailbox had over half the visible
+            // surface empty: portrait-only painting was NOT good composition.
+            // Use the SAME approved sealed-letter texture at desktop scale;
+            // compact landscape (844x390) still has no room under the tabs.
+            bool portrait = r.width >= 285f && r.height >= 530f &&
+                r.height > r.width;
+            bool spaciousLandscape = r.width >= 1100f &&
+                r.height >= 650f && r.width > r.height;
+            if (!portrait && !spaciousLandscape) return;
 
-            // Preserve the original aspect, including its transparent margin.
-            // Below real tabs and above the single authoritative empty sentence.
+            // Fit within the actual canonical mailbox window; no stretching,
+            // new panel, extra message, click target or different art.
             float aspect = illustration.rect.width / illustration.rect.height;
-            float width = Mathf.Min(r.width * .78f, r.height * .30f * aspect);
+            float width = portrait
+                ? Mathf.Min(r.width * .78f, r.height * .30f * aspect)
+                : Mathf.Min(r.width * .32f, r.height * .41f * aspect);
             float height = width / aspect;
             Vector2 center = new Vector2(r.center.x, r.yMin + r.height * .51f);
             Vector2 min = center - new Vector2(width, height) * .5f;

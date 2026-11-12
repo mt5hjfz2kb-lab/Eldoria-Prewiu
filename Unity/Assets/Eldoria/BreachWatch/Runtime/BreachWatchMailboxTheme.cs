@@ -38,6 +38,7 @@ namespace Eldoria.BreachWatch
         bool originalPageCaptionVisible;
         RectTransform emptyLabelRect;
         Vector2 originalEmptyPosition,originalEmptySize;
+        Vector2 originalEmptyAnchorMin,originalEmptyAnchorMax,originalEmptyPivot;
         bool emptyLabelMoved;
         BreachWatchMailboxEmptyArtwork emptyIllustration;
         RectTransform actualWindow;
@@ -148,6 +149,9 @@ namespace Eldoria.BreachWatch
                     emptyLabelRect=text.rectTransform;
                     originalEmptyPosition=emptyLabelRect.anchoredPosition;
                     originalEmptySize=emptyLabelRect.sizeDelta;
+                    originalEmptyAnchorMin=emptyLabelRect.anchorMin;
+                    originalEmptyAnchorMax=emptyLabelRect.anchorMax;
+                    originalEmptyPivot=emptyLabelRect.pivot;
                 }
                 if(text.name=="Página")
                 {
@@ -246,14 +250,21 @@ namespace Eldoria.BreachWatch
                 // the engraved envelope scene. A miniature empty-state label
                 // at the top with 65% dead space was the actual visual defect.
                 bool portrait=h>w&&h>=530f;
-                if(portrait)
+                bool spaciousLandscape=w>=1100f&&h>=650f&&w>h;
+                if(portrait || spaciousLandscape)
                 {
                     emptyLabelRect.anchorMin=emptyLabelRect.anchorMax=
                         emptyLabelRect.pivot=new Vector2(0f,1f);
-                    emptyLabelRect.anchoredPosition=
-                        new Vector2(w*.10f,-h*.647f);
-                    emptyLabelRect.sizeDelta=
-                        new Vector2(w*.80f,Mathf.Clamp(h*.071f,42f,88f));
+                    // Desktop: real heading and tabs end at ~22% of height.
+                    // The original authored letter occupies the centre;
+                    // its one genuine empty-category label belongs BELOW,
+                    // never across the wax seal or behind the tab rail.
+                    emptyLabelRect.anchoredPosition=portrait
+                        ? new Vector2(w*.10f,-h*.647f)
+                        : new Vector2(w*.19f,-h*.755f);
+                    emptyLabelRect.sizeDelta=portrait
+                        ? new Vector2(w*.80f,Mathf.Clamp(h*.071f,42f,88f))
+                        : new Vector2(w*.62f,Mathf.Clamp(h*.066f,42f,70f));
                     emptyLabelMoved=true;
                 }
                 else if(emptyLabelMoved)RestoreEmptyLabel();
@@ -264,6 +275,9 @@ namespace Eldoria.BreachWatch
         void RestoreEmptyLabel()
         {
             if(!emptyLabelRect)return;
+            emptyLabelRect.anchorMin=originalEmptyAnchorMin;
+            emptyLabelRect.anchorMax=originalEmptyAnchorMax;
+            emptyLabelRect.pivot=originalEmptyPivot;
             emptyLabelRect.anchoredPosition=originalEmptyPosition;
             emptyLabelRect.sizeDelta=originalEmptySize;
             emptyLabelMoved=false;

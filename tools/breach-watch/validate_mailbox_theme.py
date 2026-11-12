@@ -35,6 +35,16 @@ def main():
           "if (!illustration) return" in painting and
           "vh.AddTriangle(0, 1, 2)" in painting,
           "Empty mail must render ONE genuine source-authored transparent raster via a non-interactive mesh, never the rejected procedural envelope")
+    check("bool spaciousLandscape = r.width >= 1100f" in painting and
+          "r.height >= 650f && r.width > r.height" in painting and
+          "if (!portrait && !spaciousLandscape) return" in painting and
+          "Mathf.Min(r.width * .32f" in painting and
+          "bool spaciousLandscape=w>=1100f&&h>=650f&&w>h;" in S and
+          "new Vector2(w*.19f,-h*.755f)" in S and
+          "originalEmptyAnchorMin" in S and
+          "emptyLabelRect.pivot=originalEmptyPivot" in S,
+          "Spacious desktop must show SAME original letter and a reversible "
+          "caption below it; compact landscape stays clear of tabs")
     # The previous validator required 'Sprite' to be ABSENT and the rejected
     # vector drawing to be present. It was obsolete after 996deb9. Verify
     # the actual immutable authored original and its bounded GPU importer.
