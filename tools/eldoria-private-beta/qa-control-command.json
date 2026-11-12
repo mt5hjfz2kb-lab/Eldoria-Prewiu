@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 24,
-  "action": "click_point",
-  "proof_sha256": "9d03bc53a9e099530f026cd1f6f15f2fac87f7a841d25c38c722437f69dea4d4",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "Investiga la fisura",
-    "Misiones"
-  ],
-  "reason": "Current original frame023 shows the mission arrow; use two clear current labels rather than the unstable OCR punctuation in the chapter badge."
+  "sequence": 25,
+  "action": "click_text",
+  "label": "Investigar • 20 min",
+  "proof_sha256": "9b0aaed60efba7d5d8d85f027089d8cddcbef86de798045e2d32df0b994061b1",
+  "reason": "Fresh frame024 shows the authentic twenty-minute fissure investigation; start its real clock while other work proceeds."
 }
