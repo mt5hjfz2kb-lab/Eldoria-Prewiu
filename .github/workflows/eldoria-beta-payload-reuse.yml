@@ -101,11 +101,11 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43150932880
-          name: mobile16-staged-delivery-actual-desktop-webkit-not-physical-iphone
+          run-id: 43158802987
+          name: mobile16-actual-player-world-journey-not-physical-iphone
           github-token: ${{ github.token }}
           path: actual-mac
       - name: Preserve actual staged-route screenshots and bounded read segments
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 tools/eldoria-private-beta/copy_actual_staged_mac_review.py
+        run: python3 tools/eldoria-private-beta/copy_actual_world_ui_review.py
