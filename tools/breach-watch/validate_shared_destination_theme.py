@@ -61,11 +61,11 @@ def main():
             "cinematicMarch.RefreshScorecard()" in bridge,
             "March visual migration must replace dead inset with real full-width metrics")
     require("RefreshActualHeroCards(root)" in march and
-            "heroSlots[2].gameObject.SetActive(false)" in march and
-            "if(third && third.interactable)return false" in march and
-            "UsesTwoRelevantHeroCards=true" in march and
-            "RealMarchTwoCardRoster" in bridge,
-            "A permanently unavailable third hero must not displace two real march cards")
+            "heroSlots[2].gameObject.SetActive(true)" in march and
+            "third.interactable=" not in march and
+            "UsesThreeHeroSpaces=true" in march and
+            "RealMarchThreeSpaceRoster" in bridge,
+            "Owner-reviewed third hero space must preserve actual availability")
     require("originalButtonTargets" in theme and
             "originalTransitions" in theme and "Restore()" in theme,
             "Theme must preserve original Selectable behavior")
