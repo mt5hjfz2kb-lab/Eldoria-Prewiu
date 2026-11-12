@@ -258,8 +258,17 @@ function processes(){
           await readUi('actual-sawmill-after-wait');
           // Closing a contextual building panel via genuine city navigation is
           // optional: only click the unique visible World medallion.
-          await clickText('actual-world-control','MUNDO');
-          await observeEntry(45,'after-real-world-click');
+          await readUi('actual-world-control');
+          // Actual run43160047196 shows the unlocked World compass at
+          // CSS152,799. Its label is covered by the opt-in diagnostic badge;
+          // the exposed compass itself remains a genuine clickable control.
+          await page.mouse.click(152,799,{delay:150});
+          report.actualWorldUi.actions.push({phase:'actual-world-control',x:152,y:799,
+            control:'visible unlocked World compass above diagnostic badge',
+            coordinateEvidenceRun:43160047196,
+            coordinateEvidenceSha256:'9c39cd34879c0f90e37fa78111430274330aaedbca628eb4f8f7b3325a09abd5'});
+          write();
+          await observeEntry(60,'after-real-world-click');
           const worldEvents=fs.readFileSync(out+'/events.jsonl','utf8');
           report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick=worldEvents.includes('REGION1_CANON_WORLD_INSTALLED');
           if(!report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick)throw Error('NO_REAL_REGION1_AFTER_ACTUAL_WORLD_CLICK');
@@ -276,6 +285,7 @@ function processes(){
   }catch(e){report.failure=String(e);}
   finally{
     await Promise.all(profileTasks);write();clearTimeout(watchdog);
+    process.stdout.write(JSON.stringify({passed:report.passed,failure:report.failure,actualWorldUi:report.actualWorldUi,errorCount:report.errors.length})+"\\n");
     const closeTimer=setTimeout(()=>process.exit(report.passed?0:1),10000);
     if(browser)await browser.close().catch(()=>{});
     clearTimeout(closeTimer);

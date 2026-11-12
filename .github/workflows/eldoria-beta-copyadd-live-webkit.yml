@@ -1,4 +1,4 @@
-name: Eldoria actual UX19 objective arrow to lazy Region1 — desktop WebKit, no deployment
+name: Eldoria reviewed visible objective and World controls — actual desktop WebKit, no deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
