@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 20,
-  "action": "click_point",
-  "proof_sha256": "a7943c575105532eec33e76d23b97d32cad6a35b1dde224e403210e07cf3abfb",
-  "x": 210,
-  "y": 70,
-  "guard_texts": [
-    "Diagnóstico local",
-    "Misiones"
-  ],
-  "reason": "Frame019 proves the built quarry and422/1200stone objective; follow the visible quest arrow after the real world-entry transition."
+  "sequence": 21,
+  "action": "click_text",
+  "proof_sha256": "118d44d72cb489b98d706e85d05471a64af6b326925219c1a7da7c63592a7761",
+  "label": "CONTINUAR",
+  "reason": "Fresh original frame020 shows the Bastion V productive-city chronicle; finish its actual observed dialogue before navigating the stone objective."
 }
