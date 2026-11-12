@@ -1,0 +1,31 @@
+{
+  "actual_native_run": 43161203990,
+  "native_source": "2c1d70fb2a1e6271e4853f7f7eabcd6d84aa4a4c",
+  "native_result": "FAILURE_HALL_GLYPH_GUTTER_2219_PIXELS",
+  "original_reference_source": "af658a6cc1a02d45d7efc9c57dafef24e8512564",
+  "art_approved": false,
+  "full_mailbox_verified": false,
+  "images": [
+    {
+      "file": "real-unity-heroes-1600x900.png",
+      "width": 1600,
+      "height": 900,
+      "bytes": 1805282,
+      "sha256": "fa875de4247d442dbfa92ef75fab910f7aaa30579d6936c03fc0190905a316a0"
+    },
+    {
+      "file": "original-approved-panel.png",
+      "width": 965,
+      "height": 1630,
+      "bytes": 2542583,
+      "sha256": "d7556228f58cc7ae4930a684f2b108246fe9c9c4178096cade9fe8c267c8627b"
+    },
+    {
+      "file": "original-approved-resource.png",
+      "width": 2593,
+      "height": 651,
+      "bytes": 1546209,
+      "sha256": "f16faacbba20137b9a96b02dd2a613d323a1e14c339d6df9c5ac6e240e0fb60b"
+    }
+  ]
+}
