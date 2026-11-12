@@ -1,0 +1,5 @@
+Mobile16 owner telemetry preparation, 2026-11-12
+
+The opt-in staging tool now accepts only the exact verified mobile16 engine 4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71 / bundle49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a, with all144 preserved prior files and a strictly positive integer site size below980000000 bytes. The staged client uses a dedicated mobile16 QA endpoint so the legacy mobile11 server cannot misattribute this release. Original client source, default game HTML and engine bytes stay identical.
+
+Implemented: profile-specific stage, dedicated QA-only server source, rejection of absent/invalid proof, identity spoofing and absent consent. Tested locally:18/18 Node tests covering current and legacy clients, server and staging. Tests include wrong bundle/source and null, missing, zero, negative, fractional or oversized site sizes. No deployment, real server receipt, device stability or full hosted I–V event chain is implied. Backend current-profile verification remains false in the manifest. External testers remain disabled. The separate mobile16 endpoint must be deployed and checked before using the optional telemetry entry.
