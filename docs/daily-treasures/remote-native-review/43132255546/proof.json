@@ -1,0 +1,76 @@
+{
+  "source": "7174964d22f5526c73f29f63a1d857787030c69d",
+  "native_run": 43132255546,
+  "artifact_id": 13906142961,
+  "artifact_digest": "sha256:188dc76da7e362bbc7fd410694d8d7f31774026576f98531b155506ba6837b2c",
+  "method": "BYTE_IDENTICAL_NATIVE_PNG_NO_RETOUCH",
+  "artApproved": false,
+  "fullSceneVerified": false,
+  "physicalMobileVerified": false,
+  "files": [
+    {
+      "file": "real-city-daily-real-bastion-camera-baseline-390x844.png",
+      "git_blob": "23442d33896eb9075696d345079bc01711555c03",
+      "native": {
+        "file": "real-city-daily-real-bastion-camera-baseline-390x844.png",
+        "sha256": "62ef8e7c6035a24b33761aff78e999cc261316109e22aaffee488b4a3ce7aa2e",
+        "variant": "real-bastion-camera-baseline",
+        "width": 390,
+        "height": 844,
+        "bytes": 558845,
+        "subjectX": 24.500003814697266,
+        "subjectY": 177.0,
+        "subjectW": 340.9999694824219,
+        "subjectH": 364.0
+      }
+    },
+    {
+      "file": "real-city-daily-real-bastion-camera-ceremony-390x844.png",
+      "git_blob": "ea6d65c0ceec5514727246931ba9063c530254ff",
+      "native": {
+        "file": "real-city-daily-real-bastion-camera-ceremony-390x844.png",
+        "sha256": "ea203727858fb28090a7fd7e7afabf87c5556704db6bb6973cf4de2876b1a571",
+        "variant": "real-bastion-camera-ceremony",
+        "width": 390,
+        "height": 844,
+        "bytes": 499595,
+        "subjectX": 24.500003814697266,
+        "subjectY": 177.0,
+        "subjectW": 340.9999694824219,
+        "subjectH": 364.0
+      }
+    },
+    {
+      "file": "real-city-daily-real-bastion-camera-baseline-844x390.png",
+      "git_blob": "0218b270a3c9e715f3bcd1fabb2e008f07a37066",
+      "native": {
+        "file": "real-city-daily-real-bastion-camera-baseline-844x390.png",
+        "sha256": "0e6b6eb0cb19963c7677e5d6baf112e5cfb9be589e76085890b2fd6cb8792eaa",
+        "variant": "real-bastion-camera-baseline",
+        "width": 844,
+        "height": 390,
+        "bytes": 547033,
+        "subjectX": 66.79998016357422,
+        "subjectY": 72.89999389648438,
+        "subjectW": 429.20001220703125,
+        "subjectH": 244.2000274658203
+      }
+    },
+    {
+      "file": "real-city-daily-real-bastion-camera-ceremony-844x390.png",
+      "git_blob": "f827787bc1922b1a1b5195d80f13633d26813a4b",
+      "native": {
+        "file": "real-city-daily-real-bastion-camera-ceremony-844x390.png",
+        "sha256": "e985941f52dcc2a56d6f422f539a4d48b07921c8813ab5c354105f9f516534a6",
+        "variant": "real-bastion-camera-ceremony",
+        "width": 844,
+        "height": 390,
+        "bytes": 476655,
+        "subjectX": 66.79998016357422,
+        "subjectY": 72.89999389648438,
+        "subjectW": 429.20001220703125,
+        "subjectH": 244.2000274658203
+      }
+    }
+  ]
+}
