@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "readonly-native-source-recovery-audit",
+      "phase": "reviewed-original-source-recovery-then-actual-combined-bag-and-letter-ui",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -52,7 +54,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Implement exact reviewed importer metadata allowlist + archival BEFORE restoring prior245 exact originalbytes. No forcedsourcecheckout untilrestoration. OffPC whileT59 nextnative.",
+      "next": "Freeze nextnative exactsource; recover245originalfile states fromR19 with64currentchanges archived andnooutside4GUIDreferences, requirecleantrackedGitdiff; thenactualfullmailrowReadvsClaim+bagUseonce+savedskip+reload+Back across4viewports. IfnewdriftpreservebyteexactandinspectoffPC afterrelease.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -151,10 +153,10 @@
         "claimed_at": "2026-11-12T02:53:57.045Z",
         "previous_native_run": 43144616466
       },
-      "runner_claimed_at": "2026-11-12T03:37:26.571Z",
+      "runner_claimed_at": "2026-11-12T04:11:29.360Z",
       "runner_released_at": "2026-11-12T03:43:10.479Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
-      "runner_claim_basis": "T181rev58 actualnative43147990392 completed and clean shutdown. Short READONLY archived metadata recovery audit BEFORE forcecheckout. Unknown R19 metadata remains preserved; no Unity build until reviewed.",
+      "runner_claim_basis": "Tcity-only43151618910completed SUCCESS/normalcleanup. Sourcee5de14fa full actualMailboxUI probe ready, sourceCI43152965499 PASS544gateway+21realFS+allPSsyntax+10Roslyn. First recover actualR19metadata with exact64current/installed/original hashes, originalbackups, additionalGUIDrefscan beforeANYsourcecheckout; then currentcomponent4+combined16PNG52realclicks/JSONBack.",
       "runner_release_basis": "Readonly native43149686136 completed; NO Unity launch/source mutation. Archived64 actualchanged metadata out of245 beforecheckout (artifact13913127003), exact hashes available for guarded reviewed restoration. Source e4f6341 sourceCI16FS+544gateway pendingfreshcheck."
     },
     {
@@ -8030,14 +8032,31 @@
         "external_testers_enabled": false
       },
       "previous_owner": "codex-iphone-stability-6f75130e87ae",
-      "released_at": "2026-11-10T23:04:36.314Z"
+      "released_at": "2026-11-10T23:04:36.314Z",
+      "owner_only_lazy16": {
+        "published": true,
+        "pages_run": 43152671564,
+        "workflow_main_commit": "60e21bd8541bb5e53b8fc9f5281552c73384a9f1",
+        "native_source": "4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71",
+        "native_run": 43135567923,
+        "original_profile_mac_run": 43140354002,
+        "staged_apple_gpu_run": 43150932880,
+        "stage_run": 43150432049,
+        "all_original_live_files_sha_verified": 144,
+        "original_beta10_and_beta14_preserved": true,
+        "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1&eldoria_diag=1",
+        "physical_iphone_verified": false,
+        "world_entry_verified": false,
+        "external_testers_enabled": false,
+        "art_approved": false
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 60,
+      "ownership_revision": 61,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8057,13 +8076,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
       "phase": "WINDOWS_FULL_VIEWPORT_ONE_REAL_BASTION_NOT_INNER_PHOTO",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Run source-pinned actual city fullviewport proof after correcting stale minimumshortedge assertion; actual473x1024 portrait texture is valid1024longedge. Keep aspect/fullviewportcoverage/masonryPixel/subjectprojection gates, no lowered art metric. Priorcomponent72nativePASS341aa, priorcityFAILED notapproved.",
+      "next": "CPU export/read exact20city native artifact13913704583 SHA281039cc5c3c8c9947109b471f2cfb322ac3f6de8b964551133f1b1c37d42a7a; compare originalapprovedreference and previous8c1 seams. NO art approval untilactualimageinspection, noartmain.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8118,8 +8135,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-12T03:37:26.571Z",
-      "runner_release_basis": "Actual native43147990392 ended 03:35 UTC; component72PASS, actualcity fails stale proof dimension gate (authentic texture473x1024, revised fullviewportcamera). ProcessExited1 normalUnityshutdown and jobcleanup; no native process retained. New fullviewport art NOT accepted.",
+      "runner_released_at": "2026-11-12T04:11:29.360Z",
+      "runner_release_basis": "Actualcity-only native43151618910 source2418d3d COMPLETE SUCCESS native130961925147 andCPUaudit130965658036SUCCESS;20currentactualcityPNG+8nonblankbuiltBastion+4rotation+truefullviewportaperture;0claims;previous72component source85 remains separate. Jobcleanexit;releaseWindows immediately for R.",
       "runner_claimed_at": "2026-11-12T03:43:10.479Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "R21 audit43149686136completednoUnityprocess/sourcewrites; next T59 existing isolateddailyproject. Correct only obsolete>=500px viewport assertion; runtimefullviewportmethodunchanged.",
