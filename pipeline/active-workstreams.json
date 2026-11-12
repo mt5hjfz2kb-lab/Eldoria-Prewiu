@@ -6838,13 +6838,11 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 118,
+      "ownership_revision": 119,
       "write_scope_released": false,
-      "phase": "OWNER_COMPACT_PRIMARY_MARCH_ACTUAL_NATIVE_PENDING",
+      "phase": "OWNER_ART_REVIEW_READY_COMPACT_MARCH_GPU_VERIFIED_OFF_PC_CONTINUES",
       "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
       "art_approved": false,
       "physical_mobile_tested": false,
@@ -7039,8 +7037,8 @@
         "transferred_at": "2026-11-11T19:47:57.685Z"
       },
       "last_verified": {
-        "source_sha": "699c816e9b961fc232ae9818503c954c481d8afd",
-        "native_run": 43109761153,
+        "source_sha": "a5f2c9d9afe841979c0bf7a59a7aba2911637af5",
+        "native_run": 43225134079,
         "native_status": "SUCCESS",
         "screenshots": 48,
         "artifact": 13836976829,
@@ -7143,9 +7141,10 @@
         "source_gameplay_unchanged": true,
         "mail_empty_raster_gpu_verified": true,
         "mail_empty_changed_pixels_900x1600": 82403,
-        "mail_empty_changed_pixels_390x844": 16513
+        "mail_empty_changed_pixels_390x844": 16513,
+        "gpu_caption_outside_pixels": 0
       },
-      "runner_release_basis": "Exactd372 native43209540596 and independentAB SUCCESS,48+1originalPNGs and real informationopen/returninputs. Shared stone material+originalburgundyreturn verified. No mainartmerge orownerapproval.",
+      "runner_release_basis": "Native43225134079 and independentAB SUCCESS; four-view actual GPU caption ink proof0outside,48originalPNG+informationfirsthits+mailfirsthits+HallGPU0overlap. Exactsourcea5f2c9d9afe841979c0bf7a59a7aba2911637af5. Sourceownershipretained; artunapproved/mainunchanged. Resolved canonicalcompactlandscape inverse text scale; oldpreferredHeightPASS rejected artistically.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7172,7 +7171,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T11:41:33.624Z",
+      "runner_released_at": "2026-11-12T13:17:59.298Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
