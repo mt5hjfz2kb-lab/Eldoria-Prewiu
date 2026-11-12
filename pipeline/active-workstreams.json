@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T04:59:36.010Z",
+  "updated_at": "2026-11-12T05:11:44.563Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 25,
+      "ownership_revision": 26,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "exclusive combined-only saved bag plus genuine mailbox first-hit evidence",
+      "phase": "off-PC narrow real mailbox input lifecycle fix and art review",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -54,7 +52,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Freeze exact request source while active; recover exact recent245 overlay with64 reviewed metadata, run16PNG52 real clicks and save reload; release Windows after clean exit. Art and physical phone remain unapproved.",
+      "next": "Preserve UI worker c6acdef Hall fix; repair deferred Plate Awake input state, source-check, then get genuine UI native plus combined mail proof; no art approval.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -154,10 +152,10 @@
         "previous_native_run": 43144616466
       },
       "runner_claimed_at": "2026-11-12T04:59:36.010Z",
-      "runner_released_at": "2026-11-12T04:52:23.647Z",
+      "runner_released_at": "2026-11-12T05:11:44.563Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
       "runner_claim_basis": "Fair handoff after T62 failed before Unity and clean job exit. Combined-only actual bag/mail first-hit follow-up, source2530cf compiled/544gateway/21FS+5Git pass; new metadata4 exact pins; normal player-frame mailbox wait; four component PNG already passed source134.",
-      "runner_release_basis": "ActualR25native43155182543completedcleanUnityexit:4componentPASS+5realbagcontrolsPASS; mailentryfirsthitNONE; overlay64preserved. ReadonlyR26audit43156972822completednoUnity/no sourcewrites, all64archived;60triplesunchanged,4minimalmetadataexpandedwithsameoriginalGUIDs. Source2530cfab newexact4pins+normalplayerframeprobe+combined-onlymode readyoffPC; no currentlyactiveWindowsrun."
+      "runner_release_basis": "Native43158384727 completed failure on mail first-hit none at in-viewport28.67,659.72 depth23 after normal player frame. First5bag controls PASS again; all245UIoverlay files restored successfully. Source debugging found utilityRail inactive before creating BreachWatchPlate; its deferred Awake resets raycastTarget=false after BuildButton=true. Fix on canonicalUI branch, not synthetic click bypass."
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -8056,7 +8054,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 63,
+      "ownership_revision": 64,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8076,11 +8074,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "off-PC exact preserved source audit before next artistic native",
+      "phase": "exclusive actual cinematic city art-context capture after exact input preservation",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Inspect original/working package and quality diffs, preserve complete original Git state, then recover only justified source inputs; no art approval.",
+      "next": "One20PNGcity-onlylot; inspect actual cinematic grade/horizon and original singlebronze perimeter; no art acceptance from CI.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8137,9 +8137,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T04:59:36.010Z",
       "runner_release_basis": "Native43157612284 all jobs completed; refused source switch before Unity because packages-lock.json and QualitySettings.asset differ. Raw bytes archived in artifact13916990677. Off-PC exact Git-blob diff audit now running on6c43b09. No reset of unknown inputs.",
-      "runner_claimed_at": "2026-11-12T04:52:23.647Z",
+      "runner_claimed_at": "2026-11-12T05:11:44.563Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "R25native+R26readonlydone/clean noUnity. NewTsourceab2f4b869b1f12b5ecd47798323c18cdf2beaa66 sourceCI43157190892+43157185417SUCCESS including6realGitpreservationcases+all domain247+153406+20Roslyn. Change methodafteractualraw2418 rejectedhorizon/plainworld: one-shotdepthfog+isolatedURP17profile+oneoriginalbronzeperimeter; sameactualbuiltmodel/protectedgeometry.",
+      "runner_claim_basis": "Fair turn after R27 cleanexit/245restored. Exact recovery66356eb sourceCI43158571821PASS10actualGitcases+domain/gateway/Roslyn. Archiveand fullworkingGitref before restoring only2exactreviewed nativeinputs.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
@@ -18415,6 +18415,15 @@
       "to": "eldoria-issue186-reward-attention-guidance-20261111",
       "previous_native_run": 43157612284,
       "partial_bag_evidence": "43155182543 first5 controls PASS mailbox failed; exact PNG preserved dabcc3af"
+    },
+    {
+      "at": "2026-11-12T05:11:44.563Z",
+      "event": "central_fair_R27_clean_restoration_to_T63_exact_recovery_cinematic",
+      "from": "eldoria-issue186-reward-attention-guidance-20261111",
+      "to": "eldoria-daily-treasures-20261108",
+      "native_run": 43158384727,
+      "restored_ui_files": 245,
+      "mail_firsthit": "none depth23 point28.67,659.72"
     }
   ],
   "owner_specific_pauses": [
