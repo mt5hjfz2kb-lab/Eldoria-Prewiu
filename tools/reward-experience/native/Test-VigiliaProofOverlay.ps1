@@ -88,6 +88,36 @@ try{
  $refused=$false;try{Restore}catch{$refused=$true}
  Need $refused 'Unowned path was accepted'
  Need (Same $before (Snapshot $project)) 'Unowned path rejection modified project'
+
+ # Exercise exact reviewed metadata acceptance, archival and one-byte refusal.
+ $p2=Join-Path $root 'reviewed-project';$u2=Join-Path $root 'reviewed-ui'
+ $m2=Join-Path $root 'reviewed-proof/overlay.json'
+ $rp=Join-Path $root 'exact-reviewed.json';$rel='Assets/Eldoria/BreachWatch/Resources/test.png.meta'
+ Put (Join-Path $p2 $rel) 'ORIGINAL METADATA'
+ Put (Join-Path $p2 'Assets/Eldoria/BreachWatch/Resources/retained.png.meta') 'ORIGINAL GUID RETAINED'
+ Put (Join-Path $u2 'Assets/Eldoria/BreachWatch/Resources/retained.png') 'EXACT IMAGE FIXTURE'
+ Put (Join-Path $u2 'Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs') 'pinned HUD'
+ Put (Join-Path $u2 'Assets/Eldoria/BreachWatch/Runtime/BreachWatchResourceBagBridge.cs') 'pinned bridge'
+ Put (Join-Path $u2 $rel) 'PINNED METADATA'
+ $before2=Snapshot $p2
+ & $scriptPath -Operation Install -Project $p2 -UiProject $u2 -UiSource ('a'*40) -Manifest $m2
+ Need (([IO.File]::ReadAllText((Join-Path $p2 'Assets/Eldoria/BreachWatch/Resources/retained.png.meta'))) -eq 'ORIGINAL GUID RETAINED') 'Omitted corresponding-asset metadata lost its original GUID'
+ $e=(Get-Content -LiteralPath $m2 -Raw|ConvertFrom-Json).files|Where-Object {$_.path -eq $rel}
+ Put (Join-Path $p2 $rel) 'IMPORTED EXACT REVIEWED METADATA'
+ $acceptedHash=(Get-FileHash -LiteralPath (Join-Path $p2 $rel) -Algorithm SHA256).Hash.ToLowerInvariant()
+ $review=@{uiSource=('a'*40);role='EXACT_REVIEWED_TEMPORARY_UI_METADATA_RESTORE_ONLY'
+   files=@(@{path=$rel;current=$acceptedHash;installed=$e.installed;original=$e.original})}
+ [IO.File]::WriteAllText($rp,($review|ConvertTo-Json -Depth 8))
+ Put (Join-Path $p2 $rel) 'IMPORTED EXACT REVIEWED METADATA!'
+ $unfamiliar=Snapshot $p2;$refused=$false
+ try{& $scriptPath -Operation Restore -Project $p2 -Manifest $m2 -ReviewedMetadata $rp}catch{$refused=$true}
+ Need $refused 'A one-byte change bypassed the exact reviewed SHA'
+ Need (Same $unfamiliar (Snapshot $p2)) 'Rejected reviewed drift partially changed the project'
+ Put (Join-Path $p2 $rel) 'IMPORTED EXACT REVIEWED METADATA'
+ & $scriptPath -Operation Restore -Project $p2 -Manifest $m2 -ReviewedMetadata $rp
+ Need (Same $before2 (Snapshot $p2)) 'Reviewed exact metadata did not restore all original project bytes'
+ Need (([IO.File]::ReadAllText((Join-Path ($m2+'.reviewed-importer-files') $rel))) -eq 'IMPORTED EXACT REVIEWED METADATA') 'Reviewed changed bytes were not archived before restoration'
+
  [IO.File]::WriteAllText((Join-Path (Get-Location).Path 'issue186-overlay-source-guards.json'),
   (@{checks=$checks;status='PASS';actual_filesystem=$true;unity_verified=$false}|ConvertTo-Json))
  Write-Host "ISSUE186_REAL_FILESYSTEM_OVERLAY_GUARDS_PASS checks=$checks; NOT UNITY OR ART"

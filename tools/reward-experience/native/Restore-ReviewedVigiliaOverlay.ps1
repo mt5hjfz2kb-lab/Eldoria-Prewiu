@@ -27,13 +27,7 @@ foreach($entry in @($review.files)){
  if(-not $entry.installed){
   $p=Join-Path $project $entry.path
   if((Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.current){throw 'Generated metadata changed after actual review'}
-  $match=[regex]::Match([IO.File]::ReadAllText($p),'(?m)^guid: ([a-f0-9]{32})\r? -Operation Restore -Project $project -Manifest $manifest
-$r=Get-Content -LiteralPath ($manifest+'.restored.json') -Raw|ConvertFrom-Json
-if(-not $r.restored -or $r.files -ne 245){throw 'Prior exact original245-file restoration missing'}
-$dirty=@(& git -C $source diff --name-only)
-if($LASTEXITCODE -or $dirty.Count){Write-Host ($dirty|Out-String);throw 'Tracked source remains changed after exact restoration; no checkout'}
-Write-Host 'ISSUE186_REVIEWED_R19_EXACT245_RESTORED_WITH_UNKNOWN64_ARCHIVED; SOURCE_CLEAN_BEFORE_CHECKOUT'
-)
+  $match=[regex]::Match([IO.File]::ReadAllText($p),'(?m)^guid: ([a-f0-9]{32})\r?$')
   if(-not $match.Success){throw 'Generated metadata GUID is not explicit'}
   $generated+=$match.Groups[1].Value
  }

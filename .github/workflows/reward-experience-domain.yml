@@ -65,9 +65,14 @@ jobs:
       - name: Verify real filesystem overlay rollback and unknown-edit rejection without Windows
         shell: pwsh
         run: |
+          Get-ChildItem tools/reward-experience/native -Filter '*.ps1' -File | ForEach-Object {
+            $parseProblems=$null;$parseTokens=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$parseTokens,[ref]$parseProblems)|Out-Null
+            if(@($parseProblems).Count){throw ($parseProblems|Out-String)}
+          }
           & tools/reward-experience/native/Test-VigiliaProofOverlay.ps1
           $p=Get-Content 'issue186-overlay-source-guards.json' -Raw|ConvertFrom-Json
-          if($p.status -ne 'PASS' -or $p.checks -lt 16 -or -not $p.actual_filesystem){throw 'Overlay rollback checks did not execute'}
+          if($p.status -ne 'PASS' -or $p.checks -lt 21 -or -not $p.actual_filesystem){throw 'Overlay rollback checks did not execute'}
       - name: Roslyn syntax check of real Unity runtime and editor art scripts
         run: dotnet run -c Release --project tools/reward-experience/ArtSyntaxAudit.csproj
 
