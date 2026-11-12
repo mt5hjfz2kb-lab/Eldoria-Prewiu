@@ -25,7 +25,7 @@ assert.equal(proof.physical_iphone_verified,false);
 assert.ok(proof.combined_bytes<980000000);
 assert.equal(info.target_parts.length,31);
 const markup=fs.readFileSync(path.join(candidate,'index.html'),'utf8');
-assert.match(markup,/<script src="\.\/copy-transport-[a-f0-9]{20}\.js"><\/script>\s*<script src="play-[^"]+\.js"><\/script>/);
+assert.match(markup,/<script src="\.\/copy-transport-[a-f0-9]{20}\.js"><\/script>\s*<script src="\.\/code-transport-[a-f0-9]{20}\.js"><\/script>\s*<script src="play-[^"]+\.js"><\/script>/);
 const play=fs.readFileSync(path.join(candidate,'play.js'),'utf8');
 assert.match(play,/installEldoriaCopyTransport\(build\.data,build\.clock_copy_delta\)/);
 const transportFile=markup.match(/src="\.\/(copy-transport-[a-f0-9]{20}\.js)"/)[1];
@@ -59,6 +59,11 @@ try{
                 Response,URL,Uint8Array,AbortController,console};
  vm.createContext(context);
  vm.runInContext(browserCode,context);
+ const codeBrowser=fs.readFileSync(path.join(candidate,proof.code_transport_file),'utf8');
+ assert.equal(proof.code_transport_file,'code-transport-'+digest(Buffer.from(codeBrowser)).slice(0,20)+'.js');
+ assert.doesNotMatch(codeBrowser,/localStorage|sessionStorage|indexedDB|serviceWorker/);
+ vm.runInContext(codeBrowser,context);
+ assert.equal(window.installEldoriaCodeTransport(proof.code_asset,manifest.owner_code_delta).active,true);
  assert.equal(typeof window.installEldoriaCopyTransport,'function');
  const result=window.installEldoriaCopyTransport(manifest.data,info);
  assert.equal(result.active,true);
@@ -101,10 +106,28 @@ try{
  assert.equal(total,513657613);
  assert.ok(frameCount>7000, 'Expected genuinely small streamed memory frames');
  console.log('ELDORIA_SMALL_FRAMES_VERIFIED',frameCount,'max',maxFrame);
+
+ const codeResponse=await window.fetch(new URL(proof.code_asset,base).href);
+ assert.equal(codeResponse.headers.get('Content-Type'),'application/wasm');
+ const codeReader=codeResponse.body.getReader();let ci=0,cb=0,ct=0,ch=createHash('sha256');
+ while(true){
+  const r=await codeReader.read();if(r.done)break;
+  assert.ok(r.value.byteLength>0&&r.value.byteLength<=65536);ct+=r.value.byteLength;
+  let off=0;
+  while(off<r.value.byteLength){
+   const part=manifest.owner_code_delta.target_parts[ci];
+   assert.ok(part,'Unexpected extra native WASM bytes');
+   const n=Math.min(part.decoded_bytes-cb,r.value.byteLength-off);
+   ch.update(r.value.subarray(off,off+n));off+=n;cb+=n;
+   if(cb===part.decoded_bytes){assert.equal(ch.digest('hex'),part.decoded_sha256);ci++;cb=0;ch=createHash('sha256');}
+  }
+ }
+ assert.equal(ci,proof.wasm_parts);assert.equal(cb,0);assert.equal(ct,proof.wasm_verified_bytes);
+ console.log('ELDORIA_ACTUAL_HTTP_WASM_SMALL_FRAME_SHA_PASS',ci,ct);
  const unknown=await window.fetch(origin+'/Eldoria-Prewiu/unknown-id');
  assert.equal(unknown.status,404);
  console.log('ELDORIA_OWNER_AB_BROWSER_STREAM_31_PARTS_PASS',total,
-             'all existing owner routes unchanged; iPhone physical QA not performed');
+             'stable beta10 unchanged; iPhone physical QA not performed');
 }finally{
  await new Promise(resolve=>server.close(resolve));
 }

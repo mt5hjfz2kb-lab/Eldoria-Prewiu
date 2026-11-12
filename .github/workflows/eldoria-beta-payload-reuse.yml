@@ -46,7 +46,7 @@ jobs:
       - name: Preserve every live byte and stage exact small-frame owner route
         run: |
           python3 tools/eldoria-private-beta/stage_lazy_profile_owner_site.py --pages existing-pages/artifact.tar --candidate candidate --mac actual-mac --output site --transport tools/eldoria-private-beta/iphone_ab/copyadd_transport.js
-      - name: Verify all 31 actual native parts through real browser HTTP streaming
+      - name: Verify every native data and WASM part through real browser HTTP streaming
         run: node --max-old-space-size=3072 tools/eldoria-private-beta/verify_lazy_profile_http.mjs site
       - name: Retain unpublished complete owner site
         uses: actions/upload-artifact@v4
@@ -64,3 +64,25 @@ jobs:
             site/beta-lazy-world-owner-proof.json
             actual-mac/**/report.json
           retention-days: 14
+
+  export-actual-original-mac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43140354002
+          name: mobile16-full-lazy-desktop-apple-gpu-not-iphone-certificate
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Preserve actual four photographs for direct visual inspection
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/eldoria-private-beta/copy_actual_mac_profile_review.py

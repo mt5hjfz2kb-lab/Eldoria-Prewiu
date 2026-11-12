@@ -16,8 +16,8 @@ def filehash(p):
     with Path(p).open("rb") as f:return hashlib.file_digest(f,"sha256").hexdigest()
 def tree(root):
     return {p.relative_to(root).as_posix():(p.stat().st_size,filehash(p)) for p in files(root)}
-def derive(old,new):
-    minimum=65536;block=1048576;cursor=scan=start=literal_bytes=0;ops=[]
+def derive(old,new,minimum=65536):
+    block=1048576;cursor=scan=start=literal_bytes=0;ops=[]
     while scan+minimum<=len(new):
         at=old.find(new[scan:scan+minimum],cursor)
         if at<0:
@@ -43,6 +43,37 @@ def derive(old,new):
     need(sum(n for k,p,n in ops)==len(new),"Incomplete derived reconstruction")
     print("FORWARD_ONLY_MATCH_PROGRAM",len(ops),"literal_bytes",sum(n for k,p,n in ops if k=="literal"),flush=True)
     return ops
+
+def stage_stream(base,candidate,dest,oldparts,newparts,expected_size,prefix="",minimum=65536):
+    with tempfile.TemporaryDirectory(prefix="eldoria-lazy-stream-") as tmp:
+        tmp=Path(tmp)
+        oldsize=verified_stream(base,oldparts,tmp/"old.bin")
+        newsize=verified_stream(candidate,newparts,tmp/"new.bin")
+        need(newsize==expected_size,"Fresh native stream size changed")
+        with (tmp/"old.bin").open("rb") as f,(tmp/"new.bin").open("rb") as g:
+            with mmap.mmap(f.fileno(),0,access=mmap.ACCESS_READ) as old,mmap.mmap(g.fileno(),0,access=mmap.ACCESS_READ) as new:
+                operations=derive(old,new,minimum);parts=[];position=op_index=offset=0
+                for index,metadata in enumerate(newparts):
+                    end=position+metadata["decoded_bytes"];literal=bytearray();ops=[];sha=hashlib.sha256()
+                    while position<end:
+                        kind,at,n=operations[op_index];take=min(n-offset,end-position)
+                        need(take>0,"Invalid operation span")
+                        if kind=="copy":
+                            fragment=old[at+offset:at+offset+take];ops.append(["C",at+offset,take])
+                        else:
+                            need(at+offset==position,"Literal is not from genuine target")
+                            fragment=new[position:position+take];ops.append(["A",len(literal),take]);literal.extend(fragment)
+                        need(fragment==new[position:position+take],"Source reconstruction differs from native build")
+                        sha.update(fragment);position+=take;offset+=take
+                        if offset==n:op_index+=1;offset=0
+                    need(sha.hexdigest()==metadata["decoded_sha256"],"Native target part SHA mismatch")
+                    name="copy-literals/"+prefix+"part-%02d.bin"%index;(dest/name).write_bytes(literal)
+                    parts.append(dict(index=index,decoded_bytes=metadata["decoded_bytes"],
+                        decoded_sha256=metadata["decoded_sha256"],literal_url=name,
+                        literal_bytes=len(literal),literal_sha256=digest(literal),ops=ops))
+                need(position==newsize and op_index==len(operations) and offset==0,"Truncated native data program")
+
+    return oldsize,newsize,parts,operations
 
 def run(a):
     root=Path(a.output);candidate=Path(a.candidate);mac=Path(a.mac)
@@ -74,38 +105,26 @@ def run(a):
         if rel.as_posix() in exclude:continue
         target=dest/rel;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,target)
     (dest/"copy-literals").mkdir()
-    with tempfile.TemporaryDirectory(prefix="eldoria-lazy-stream-") as tmp:
-        tmp=Path(tmp)
-        oldsize=verified_stream(base,oldparts,tmp/"old.bin")
-        newsize=verified_stream(candidate,newparts,tmp/"new.bin")
-        need(newsize==NEW_SIZE,"Fresh native data size changed")
-        with (tmp/"old.bin").open("rb") as f,(tmp/"new.bin").open("rb") as g:
-            with mmap.mmap(f.fileno(),0,access=mmap.ACCESS_READ) as old,mmap.mmap(g.fileno(),0,access=mmap.ACCESS_READ) as new:
-                operations=derive(old,new);parts=[];position=op_index=offset=0
-                for index,metadata in enumerate(newparts):
-                    end=position+metadata["decoded_bytes"];literal=bytearray();ops=[];sha=hashlib.sha256()
-                    while position<end:
-                        kind,at,n=operations[op_index];take=min(n-offset,end-position)
-                        need(take>0,"Invalid operation span")
-                        if kind=="copy":
-                            fragment=old[at+offset:at+offset+take];ops.append(["C",at+offset,take])
-                        else:
-                            need(at+offset==position,"Literal is not from genuine target")
-                            fragment=new[position:position+take];ops.append(["A",len(literal),take]);literal.extend(fragment)
-                        need(fragment==new[position:position+take],"Source reconstruction differs from native build")
-                        sha.update(fragment);position+=take;offset+=take
-                        if offset==n:op_index+=1;offset=0
-                    need(sha.hexdigest()==metadata["decoded_sha256"],"Native target part SHA mismatch")
-                    name="copy-literals/part-%02d.bin"%index;(dest/name).write_bytes(literal)
-                    parts.append(dict(index=index,decoded_bytes=metadata["decoded_bytes"],
-                        decoded_sha256=metadata["decoded_sha256"],literal_url=name,
-                        literal_bytes=len(literal),literal_sha256=digest(literal),ops=ops))
-                need(position==newsize and op_index==len(operations) and offset==0,"Truncated native data program")
+    oldsize,newsize,parts,operations=stage_stream(base,candidate,dest,oldparts,newparts,NEW_SIZE)
+    oldcode=[k for k in oldman["decoded_parts"] if ".wasm" in k]
+    newcode=[k for k in newman["decoded_parts"] if ".wasm" in k]
+    need(len(oldcode)==len(newcode)==1,"Need exact previous and native WASM identities")
+    codekey=newcode[0];codeparts=newman["decoded_parts"][codekey]
+    oldcodeparts=oldman["decoded_parts"][oldcode[0]]
+    oldcodesize,codesize,codeout,codeops=stage_stream(base,candidate,dest,oldcodeparts,codeparts,
+        sum(x["decoded_bytes"] for x in codeparts),"wasm-",4096)
+    for part in codeparts:(dest/safe_path(part["url"])).unlink()
+    print("WASM_EXACT_REUSE",oldcodesize,codesize,"literal_bytes",sum(p["literal_bytes"] for p in codeout),flush=True)
     newman["clock_copy_delta"]=dict(format="ELDORIA_COPY_ADD_V1",stable_revision=BASE_REVISION,
         stable_source_sha=BASE_SOURCE,candidate_source_sha=NEW_SOURCE,stable_part_size=16777216,
         stable_size=oldsize,candidate_size=newsize,
         stable_parts=[dict(url="../"+BASE_ROUTE+"/"+x["url"],decoded_bytes=x["decoded_bytes"],
             decoded_sha256=x["decoded_sha256"]) for x in oldparts],target_parts=parts)
+    newman["owner_code_delta"]=dict(format="ELDORIA_COPY_ADD_V1",stable_revision=BASE_REVISION,
+        stable_source_sha=BASE_SOURCE,candidate_source_sha=NEW_SOURCE,stable_part_size=16777216,
+        stable_size=oldcodesize,candidate_size=codesize,
+        stable_parts=[dict(url="../"+BASE_ROUTE+"/"+x["url"],decoded_bytes=x["decoded_bytes"],
+            decoded_sha256=x["decoded_sha256"]) for x in oldcodeparts],target_parts=codeout)
     (dest/"build-manifest.json").write_text(json.dumps(newman,indent=2)+"\n")
     transport=Path(a.transport).read_text()
     for oldvalue,newvalue in [
@@ -117,6 +136,18 @@ def run(a):
         ("p.literal_bytes>6000000","p.literal_bytes>16777216")]:
         need(oldvalue in transport,"Verified transport template changed: "+oldvalue)
         transport=transport.replace(oldvalue,newvalue)
+    code_transport=transport.replace("installEldoriaCopyTransport","installEldoriaCodeTransport")
+    code_transport=code_transport.replace("info.stable_size!=="+str(oldsize),
+        "info.stable_size!=="+str(oldcodesize)).replace("info.candidate_size!=="+str(newsize),
+        "info.candidate_size!=="+str(codesize))
+    for oldtext,newtext in [("stable_parts.length!==31","stable_parts.length!=="+str(len(oldcodeparts))),
+        ("target_parts.length!==31","target_parts.length!=="+str(len(codeparts))),
+        ("i<31","i<"+str(len(codeparts))),("partIndex===31","partIndex==="+str(len(codeparts))),
+        ("parts:31","parts:"+str(len(codeparts))),("application/octet-stream","application/wasm")]:
+        need(oldtext in code_transport,"WASM transport template changed: "+oldtext)
+        code_transport=code_transport.replace(oldtext,newtext)
+    code_name="code-transport-"+digest(code_transport.encode())[:20]+".js"
+    (dest/code_name).write_text(code_transport)
     name="copy-transport-"+digest(transport.encode())[:20]+".js"
     (dest/name).write_text(transport)
     html=(dest/"index.html").read_text();match=re.search(r'<script src="(play-[^"/]+\.js)"></script>',html)
@@ -125,12 +156,13 @@ def run(a):
     need(play==(dest/oldscript).read_text(),"Versioned/native bootstrap mismatch")
     call="installExactDecodedTransport(build.decoded_sizes,build.decoded_parts);"
     need(play.count(call)==1 and "installEldoriaCopyTransport" not in play,"Unknown real transport hook")
-    play=play.replace(call,call+"installEldoriaCopyTransport(build.data,build.clock_copy_delta);")
+    play=play.replace(call,call+"installEldoriaCopyTransport(build.data,build.clock_copy_delta);"+
+        "installEldoriaCodeTransport("+json.dumps(codekey)+",build.owner_code_delta);")
     newscript="play-"+digest(play.encode())[:16]+".js"
     (dest/"play.js").write_text(play);(dest/newscript).write_text(play)
     (dest/oldscript).unlink()
     html=html.replace('<script src="'+oldscript+'"></script>',
-        '<script src="./'+name+'"></script>\n<script src="'+newscript+'"></script>',1)
+        '<script src="./'+name+'"></script>\n<script src="./'+code_name+'"></script>\n<script src="'+newscript+'"></script>',1)
     (dest/"index.html").write_text(html)
     identity["owner_delivery"]={"format":"ELDORIA_COPY_ADD_V1","native_input_provenance_retained":True,
         "all_native_data_bytes_verified":True,"published":False,"physical_iphone_verified":False}
@@ -142,6 +174,8 @@ def run(a):
         base_pages_run=BASE_PAGES_RUN,source_sha=NEW_SOURCE,revision=NEW_REVISION,
         native_bundle_sha256=NEW_BUNDLE,data_verified_bytes=newsize,base_data_bytes=oldsize,
         target_parts=31,operations=len(operations),literal_bytes=sum(p["literal_bytes"] for p in parts),
+        wasm_literal_bytes=sum(p["literal_bytes"] for p in codeout),wasm_verified_bytes=codesize,
+        wasm_parts=len(codeparts),code_transport_file=code_name,code_asset=codekey,
         original_files_preserved=len(before),combined_bytes=size,
         published=False,art_approved=False,world_entry_verified=False,
         physical_iphone_verified=False,external_testers_enabled=False,
