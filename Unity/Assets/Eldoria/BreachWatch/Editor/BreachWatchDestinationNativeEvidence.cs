@@ -510,6 +510,9 @@ namespace Eldoria.BreachWatch.Editor
                 // campaign. Advance only the disposable in-memory QA fixture;
                 // the production gate and original player save stay intact.
                 fixture.BastionLevel=3;
+                // Produce the disposable orders through the real UTC domain
+                // rule; an empty board cannot certify readable live contracts.
+                EarlyRetentionRules.Synchronize(fixture,DateTime.UtcNow.Ticks);
                 stateField.SetValue(gateway,fixture);
                 Need(EarlyRetentionRules.VigilantsUnlocked(gateway.Snapshot()) &&
                      EarlyRetentionRules.ScoutsUnlocked(gateway.Snapshot()),
@@ -545,6 +548,13 @@ namespace Eldoria.BreachWatch.Editor
                 if(BreachWatchProductionPresentation.Required)
                 {
                     AuditExclusivePresentation();
+                    Need(fixture.Retention.Orders.Any(order=>!order.Claimed),
+                        "Scout destination evidence requires real generated orders");
+                    var ink=retention.LiveScreenRect.GetComponentsInChildren<Text>(true)
+                        .Where(label=>label.name=="Readable contract heading" ||
+                            label.name=="Real scout order reward and status").ToArray();
+                    Need(ink.Length==6 && ink.All(label=>label.color.r>.85f && label.color.g>.70f),
+                        "Scout contract text retained dark parchment ink on new stone");
                     var newPaper=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
                     Need(realPaper.Length==3 && realPaper.All(image=>
                         image.sprite==newPaper && image.isActiveAndEnabled),

@@ -21,6 +21,8 @@ namespace Eldoria.BreachWatch
         readonly List<Canvas> oldCanvases=new List<Canvas>();
         readonly Dictionary<Graphic,Graphic> iconReplacements=new Dictionary<Graphic,Graphic>();
         readonly Dictionary<Graphic,int> iconKinds=new Dictionary<Graphic,int>();
+        readonly Dictionary<Graphic,BreachWatchRetentionRoute> retentionRoutes=
+            new Dictionary<Graphic,BreachWatchRetentionRoute>();
         Canvas retired;
         Sprite stone,action,emptyHero;
         readonly Sprite[] resources=new Sprite[3];
@@ -90,6 +92,7 @@ namespace Eldoria.BreachWatch
         public static bool IsRetiredPainter(Graphic graphic)
         {
             if(!graphic || graphic is Text)return false;
+            if(graphic.name.StartsWith("Vigilants / original paint plane / "))return true;
             if(graphic.name.StartsWith("March art / "))return true;
             string type=graphic.GetType().Name;
             if(graphic is RawImage content)
@@ -128,8 +131,39 @@ namespace Eldoria.BreachWatch
                 GetComponentsInChildren<Graphic>(true,graphics);
                 foreach(var graphic in graphics)
                 {
+                    // The old parchment used dark ink. Its replacement is
+                    // stone, so retain live text but restore readable contrast.
+                    if(graphic is Text contract)
+                    {
+                        if(contract.name=="Readable contract heading")
+                            contract.color=new Color(.95f,.78f,.47f,1f);
+                        else if(contract.name=="Real scout order reward and status")
+                            contract.color=new Color(.96f,.91f,.80f,1f);
+                    }
                     if(!graphic || !graphic.gameObject.activeInHierarchy ||
                        !IsRetiredPainter(graphic))continue;
+                    // Parallax children contain independent original PNGs;
+                    // disabling their parent Graphic does not hide them.
+                    // Never replace clipped cut-outs with clipped stone tiles.
+                    if(graphic.name.StartsWith("Vigilants / original paint plane / "))
+                    {graphic.enabled=false;continue;}
+                    if(graphic is Eldoria.UI.RoyalGold.V2.RoyalGoldV3StageTrailGraphic trail)
+                    {
+                        if(!retentionRoutes.TryGetValue(trail,out var route) || !route)
+                        {
+                            var go=new GameObject("Vigilia / live chapter route",
+                                typeof(RectTransform),typeof(CanvasRenderer),typeof(BreachWatchRetentionRoute));
+                            go.layer=trail.gameObject.layer;
+                            var rect=go.GetComponent<RectTransform>();
+                            rect.SetParent(trail.transform,false);rect.SetAsFirstSibling();
+                            rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;
+                            rect.offsetMin=rect.offsetMax=Vector2.zero;
+                            route=go.GetComponent<BreachWatchRetentionRoute>();
+                            route.Source=trail;route.raycastTarget=false;
+                            retentionRoutes[trail]=route;
+                        }
+                        route.Synchronize();trail.enabled=false;continue;
+                    }
                     // Existing Vigilia bridges already replace disabled old
                     // frame painters. Do not add a second surface underneath
                     // their authored replacement. Only our own retained

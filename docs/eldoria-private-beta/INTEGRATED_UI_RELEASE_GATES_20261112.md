@@ -54,3 +54,11 @@ A production first-entry check must test the actual nickname prompt after presen
 - No main gameplay merge, replacement public beta, or tester invitation has occurred in these attempts. New binary/device verification is outstanding.
 
 - Attempt 17 run `43319301153` passed city, all destinations and production glyph checks on `c7c42cbca87c10fbf2e249998243d576da8bdaaf`. Daily native rehearsal then correctly rejected its stale direct-wallet expectation for day four. Update all seven daily native claims to require exact pending mailbox packets, the saved receipt/tombstone, unchanged resource wallet and exact direct accelerators. Adjust the chest receipt to point to the mailbox instead of claiming the packages are already in the bag. New native verification is required.
+
+## Authorized recovery, attempts 19–20
+
+Owner explicitly authorized the four-PR ownership registry transfer; main metadata commit `0398d01cddcb5b75ab44d1ce6318400be33fe029`. Public beta18 remains unchanged.
+
+Run `43323601356`, source `3a9e5511c1c69238197342e4aefc2f4c63ecc98e`: source, city, destinations and production font checks passed. Native reward cards now retain the loyalty suffix and accelerator duration; actual 900x1600 image inspected. Artifact `13992061471`, independently verified ZIP SHA256 `e15bf423e976c7860d375645716149abc4f0f3d8fe8e8895e7d0df607fba13c6`. Daily native later failed in earned Scout fixture because it still staged Bastion II without the required introduction. No WebGL build was reached.
+
+Next exact source repairs the disposable fixture, not production unlock rules; requires actual domain-generated mission orders. Visual review also found independently rendered old parallax PNG children and dark parchment ink on the new Scout stone. Replacement hides those children and supplies a new texture-free route drawing from the unchanged authoritative stage coordinates/progress; contract text uses high contrast. Native tests and screenshots remain required. No artistic or device approval claimed.

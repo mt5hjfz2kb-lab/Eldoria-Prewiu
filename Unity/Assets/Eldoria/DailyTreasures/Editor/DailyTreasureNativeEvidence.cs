@@ -39,14 +39,20 @@ namespace Eldoria.DailyTreasures.Editor
             // return, receipt and discovery kind must be produced by the real
             // gateway; never insert an earned message or guessed map quadrant.
             var seed=new LocalGateway(clock,new TransientStore()).Snapshot();
-            seed.BastionLevel=2;seed.BarracksLevel=1;
+            seed.BastionLevel=3;seed.BarracksLevel=1;
             seed.ChapterProgress.MarchConfirmed=true;
+            foreach(var beat in new[]{"march-preparation","scouts-introduction"})
+                if(!seed.ChapterProgress.SeenNarrative.Contains(beat))
+                    seed.ChapterProgress.SeenNarrative.Add(beat);
+            Need(EarlyRetentionRules.ScoutsUnlocked(seed),
+                "Earned Scout fixture must satisfy production unlock prerequisites");
             seed.Available=new ArmyRoster();seed.Available.Set(0,1,60);
             var store=new TransientStore{State=seed};
             var gateway=new LocalGateway(clock,store);
             gateway.Advance();
             var state=gateway.Snapshot();
-            var order=state.Retention.Orders.First(x=>!x.Claimed&&x.Kind!=0);
+            var order=state.Retention.Orders.FirstOrDefault(x=>!x.Claimed&&x.Kind!=0);
+            Need(order!=null,"Real Scout generation produced no discoverable mission after unlock");
             var dispatch=new GameCommand("native-earned-scout-dispatch",state.PlayerId,
                 "ScoutDispatch",order.Id,state.Revision);
             Need(gateway.Execute(dispatch).Ok,"Actual Scout dispatch failed");
