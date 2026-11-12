@@ -165,9 +165,14 @@ namespace Eldoria.Issue186Art
             }
             var rect = pointer.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(.5f, .5f);
-            // Original authored gauntlet points LEFT, with its fingertip at
-            // x=16%, y=61%. Preserve this actual image pivot in either mode.
-            rect.pivot = new Vector2(.16f, .61f);
+            // Preserve the ORIGINAL PNG's native aspect, not a square
+            // letterbox. Its actual opaque left fingertip is x62/386,
+            // y72..77/245 from the top (alpha>=200), hence this normalized
+            // lower-left pivot. No authored pixels are cropped or repainted.
+            float pointerWidth=Mathf.Max(1f,rect.sizeDelta.x);
+            rect.sizeDelta=new Vector2(pointerWidth,
+                pointerWidth*sprite.rect.height/Mathf.Max(1f,sprite.rect.width));
+            rect.pivot = new Vector2(.16f, .696f);
             rect.localRotation = Quaternion.identity;
             float originalScaleX = Mathf.Abs(rect.localScale.x);
             if (originalScaleX <= .0001f)

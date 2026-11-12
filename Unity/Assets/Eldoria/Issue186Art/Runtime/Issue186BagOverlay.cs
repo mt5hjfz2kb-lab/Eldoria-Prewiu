@@ -241,7 +241,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 "OMITIR AYUDA",DismissGuide,out _);
             hand=Art(Rect("Issue186 authentic tutorial hand",panel),Color.white);
             halo=Art(Rect("Issue186 authentic tutorial halo",panel),Color.white);
-            hand.rectTransform.sizeDelta=new Vector2(72f,72f);
+            hand.rectTransform.sizeDelta=new Vector2(92f,92f);
             halo.rectTransform.sizeDelta=new Vector2(54f,54f);
             hand.raycastTarget=halo.raycastTarget=false;
             hand.gameObject.SetActive(false);halo.gameObject.SetActive(false);
@@ -320,7 +320,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 At(item.Icon.rectTransform,10f,iconY,icon,icon);
                 At(item.Quantity.rectTransform,10f+icon*.15f,iconY+icon*.73f,
                     icon*.70f,icon*.18f);
-                At(item.New.rectTransform,10f+icon-2f,
+                At(item.New.rectTransform,10f+icon-24f,
                     Mathf.Max(0f,iconY-8f),27f,27f);
                 float useW=Mathf.Clamp(width*.245f,86f,122f);
                 float useX=width-useW-12f;

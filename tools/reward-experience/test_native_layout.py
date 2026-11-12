@@ -71,13 +71,14 @@ def layout(width, height):
 def choose_hand(width, height, claim):
     """Exact local-rect bounds for the Unity Image hand at 90/72px.
 
-    The authored PNG points left; its true pivot is (0.16, 0.61).
+    The ORIGINAL 386x245 PNG points left; opaque fingertip x62, y72..77.
     RenderTexture/mobile safe rectangle includes a six-pixel inset.
     Try original right, then horizontal mirror, with center/bottom/top
     fingertip contact to avoid clipping header/notch.
     """
     size=72.0 if width <= 480 else 90.0
-    px,py=.16,.61
+    hand_height=size*245.0/386.0
+    px,py=.16,.696
     safe=Box(-width*.5+6, -height*.5+6,
              width*.5-6,height*.5-6)
     inset_y=min(4.0,(claim.top-claim.bottom)*.12)
@@ -91,7 +92,7 @@ def choose_hand(width, height, claim):
                 left,right=tip_x-(1-px)*size,tip_x+px*size
             else:
                 left,right=tip_x-px*size,tip_x+(1-px)*size
-            box=Box(left,y-py*size,right,y+(1-py)*size)
+            box=Box(left,y-py*hand_height,right,y+(1-py)*hand_height)
             fits=(box.left>=safe.left and box.right<=safe.right and
                   box.bottom>=safe.bottom and box.top<=safe.top)
             attempted.append((vertical,mirrored,fits,box))
@@ -103,12 +104,16 @@ def choose_hand(width, height, claim):
 def verify_hand_geometry(width,height,data):
     contact,mirrored,hand,attempts=choose_hand(width,height,data["claim"])
     claim=data["claim"]
-    # All four native fixtures deliberately put the action near the right
-    # edge. Center-right would clip BOTH right and top. Dynamic fallback is
-    # thus functional, not a decorative flipped version.
-    assert mirrored and contact==1, (width,height,contact,mirrored)
-    assert not attempts[0][2] and not attempts[1][2], (
-        width,height,"original center placement should not have fit")
+    # All four component fixtures put the action near the right edge.
+    # Mirroring is required, while native-aspect height can legitimately
+    # allow the first central contact instead of the former square fallback.
+    assert mirrored, (width,height,contact,mirrored)
+    # A native-aspect hand is shorter than the former square box: center
+    # contact can now fit. Require the FIRST safe placement, not a forced
+    # old fallback chosen for the obsolete square geometry.
+    chosen=next(a for a in attempts if a[2])
+    assert chosen[0]==contact and chosen[1]==mirrored
+    assert all(not a[2] for a in attempts[:-1]), "Skipped a safe earlier placement"
     center_width=(claim.right-claim.left)*.6
     core_left=(claim.left+claim.right)*.5-center_width*.5
     core_right=(claim.left+claim.right)*.5+center_width*.5
