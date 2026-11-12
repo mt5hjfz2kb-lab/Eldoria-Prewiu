@@ -643,7 +643,13 @@ namespace Eldoria.DailyTreasures.Editor
             Need(backdrop &&
                  Mathf.Abs(backdrop.color.a-expectedBackdrop)<.03f,
                 "The Bastion city / event stage is too opaque or too faint");
-            if(expected.SideBySide)
+            // The Bastion is ONE full-theatre 3D image, with its masonry
+            // fitted to the protected subject region BEFORE rendering. Its
+            // full background intentionally extends behind the report. This
+            // isolated fixture has no city, so it cannot certify projected
+            // masonry bounds; the real-city fixture must do that separately.
+            // Painterly scene categories retain this exact non-overlap guard.
+            if(expected.SideBySide && expected.Kind!=DailyTreasureStageKind.Bastion)
                 Need(painted.anchoredPosition.x+painted.rect.width*.5f<=
                      receipt.anchoredPosition.x-receipt.rect.width*.5f+18f,
                      "True Eldoria scenery overlaps the event report");
