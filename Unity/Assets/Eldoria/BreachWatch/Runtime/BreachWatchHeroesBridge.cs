@@ -38,6 +38,8 @@ namespace Eldoria.BreachWatch
             theme.RestyledFrames>0 && !theme.VisibleOldRoyalFrame;
         public bool HallGradeActive => IsShowing && theme &&
             theme.HallGradeActive;
+        public bool DesktopHallIntroductionUnobstructed => IsShowing &&
+            theme && theme.DesktopHallIntroductionUnobstructed;
         public string HallGradeDiagnostic => theme?
             theme.HallGradeDiagnostic:"theme=null";
 

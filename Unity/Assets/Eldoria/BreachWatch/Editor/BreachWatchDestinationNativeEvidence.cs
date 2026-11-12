@@ -661,6 +661,9 @@ namespace Eldoria.BreachWatch.Editor
                     Need(heroes && heroes.HallGradeActive,
                         "Original blue Heroes Hall is not warmed by new scene material: "+
                         (heroes?heroes.HallGradeDiagnostic:"heroes bridge null"));
+                if(name=="heroes" && width==1600 && height==900)
+                    Need(heroes && heroes.DesktopHallIntroductionUnobstructed,
+                        "Hall title/intro must stay above four real category tabs");
                 Need(verify(),"Real destination visual replacement regressed: "+name);
                 camera.Render();Canvas.ForceUpdateCanvases();camera.Render();
                 RenderTexture.active=rt;

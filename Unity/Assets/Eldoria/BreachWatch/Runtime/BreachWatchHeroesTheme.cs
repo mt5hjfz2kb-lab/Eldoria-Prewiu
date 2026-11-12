@@ -27,6 +27,16 @@ namespace Eldoria.BreachWatch
             new Dictionary<Image,Color>();
         RectTransform content;
         int restyled;
+        // Native 1600x900 evidence shows introduction glyphs behind the
+        // category tabs. Reserve and measure the real exclusive reading band.
+        Text hallIntro;
+        TextAnchor hallIntroAlignment;
+        HorizontalWrapMode hallIntroHorizontal;
+        VerticalWrapMode hallIntroVertical;
+        bool hallIntroBestFit;
+        int hallIntroFontSize;
+        Vector2 hallIntroSize;
+        public bool DesktopHallIntroductionUnobstructed { get; private set; } = true;
         public int RestyledFrames=>restyled;
         public bool HallGradeActive
         {
@@ -108,6 +118,7 @@ namespace Eldoria.BreachWatch
             ResetPresentation();
             content=newContent;
             GradeActualHall(heroRoot);
+            RecomposeDesktopHallHeader();
             var frames=content.GetComponentsInChildren<RectTransform>(true);
             foreach(var rect in frames)
             {
@@ -141,6 +152,57 @@ namespace Eldoria.BreachWatch
                     photo.rectTransform.anchoredPosition=position;
                 }
             return restyled>0&&!VisibleOldRoyalFrame;
+        }
+
+        // Fix the source Text overflow rather than painting over it with
+        // another decorative layer. The sentence and passive categories
+        // stay identical to the authoritative reference.
+        void RecomposeDesktopHallHeader()
+        {
+            DesktopHallIntroductionUnobstructed=true;
+            if(!content || content.rect.width<=content.rect.height ||
+               content.rect.height<600f)return;
+            Text intro=null;
+            RectTransform tabs=null;
+            foreach(var t in content.GetComponentsInChildren<Text>(true))
+                if(t && t.name=="Heroes hall introduction") {intro=t;break;}
+            foreach(var r in content.GetComponentsInChildren<RectTransform>(true))
+                if(r && r.name=="Hall / category TODOS") {tabs=r;break;}
+            if(!intro || !tabs)
+            {
+                DesktopHallIntroductionUnobstructed=false;
+                return;
+            }
+            var rt=intro.rectTransform;
+            float top=-rt.anchoredPosition.y;
+            float categoryTop=-tabs.anchoredPosition.y;
+            float available=categoryTop-top-12f;
+            if(available<40f)
+            {
+                DesktopHallIntroductionUnobstructed=false;
+                return;
+            }
+            hallIntro=intro;
+            hallIntroAlignment=intro.alignment;
+            hallIntroHorizontal=intro.horizontalOverflow;
+            hallIntroVertical=intro.verticalOverflow;
+            hallIntroBestFit=intro.resizeTextForBestFit;
+            hallIntroFontSize=intro.fontSize;
+            hallIntroSize=rt.sizeDelta;
+            intro.alignment=TextAnchor.UpperLeft;
+            intro.horizontalOverflow=HorizontalWrapMode.Wrap;
+            intro.verticalOverflow=VerticalWrapMode.Truncate;
+            intro.resizeTextForBestFit=false;
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                Mathf.Min(rt.rect.height,available));
+            for(int size=intro.fontSize;size>=16;--size)
+            {
+                intro.fontSize=size;
+                if(intro.preferredHeight<=rt.rect.height-2f)break;
+            }
+            DesktopHallIntroductionUnobstructed=
+                intro.preferredHeight<=rt.rect.height-2f &&
+                top+rt.rect.height+9f<categoryTop;
         }
 
         void GradeActualHall(RectTransform heroRoot)
@@ -215,6 +277,17 @@ namespace Eldoria.BreachWatch
 
         void ResetPresentation()
         {
+            if(hallIntro)
+            {
+                hallIntro.alignment=hallIntroAlignment;
+                hallIntro.horizontalOverflow=hallIntroHorizontal;
+                hallIntro.verticalOverflow=hallIntroVertical;
+                hallIntro.resizeTextForBestFit=hallIntroBestFit;
+                hallIntro.fontSize=hallIntroFontSize;
+                hallIntro.rectTransform.sizeDelta=hallIntroSize;
+            }
+            hallIntro=null;
+            DesktopHallIntroductionUnobstructed=true;
             foreach(var p in originals)
                 if(p.Key)p.Key.enabled=p.Value;
             originals.Clear();
