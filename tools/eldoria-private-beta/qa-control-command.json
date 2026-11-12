@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 37,
+  "sequence": 38,
   "action": "click_text",
-  "proof_sha256": "c88761037637d7a0680d7d74c66faa56384f2c1cff295f5f85f8662681da98a0",
+  "proof_sha256": "cfe7fda329862e56516eb8852f417e171d1385b6d53d52d6b4c63997448c136a",
   "label": "CONTINUAR",
-  "reason": "Original frame036 contains the complete Aldric reply and one visible Continuar button."
+  "reason": "Frame037 shows Lyra offering aid and the actual unique Continuar control; advance ordinary narrative."
 }
