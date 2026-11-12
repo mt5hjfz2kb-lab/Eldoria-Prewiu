@@ -633,6 +633,19 @@ namespace Eldoria.BreachWatch.Editor
                          "March is missing its reserved third hero space or "+
                          "missing selectable real hero cards at "+
                          width+"x"+height);
+                    Canvas.ForceUpdateCanvases();
+                    foreach(var heroSlot in realHeroSlots)
+                    {
+                        var caption=heroSlot.GetComponentsInChildren<Text>(true)
+                            .FirstOrDefault(x=>x.name=="Button label");
+                        Need(caption && caption.preferredHeight<=caption.rectTransform.rect.height+1f,
+                            "Actual hero caption exceeds its name band at "+width+"x"+height);
+                    }
+                    var edit= marchRoot.GetComponentsInChildren<RectTransform>(true)
+                        .FirstOrDefault(x=>x.name=="Edit march by percent");
+                    var editText=edit ? edit.GetComponentInChildren<Text>(true):null;
+                    Need(editText && editText.preferredHeight<=editText.rectTransform.rect.height+1f,
+                        "Actual quantity caption exceeds its button at "+width+"x"+height);
                 }
                 if(name=="training" && height>width)
                     Need(ui.RealDestinations && 
@@ -917,4 +930,3 @@ namespace Eldoria.BreachWatch.Editor
     }
 }
 #endif
-

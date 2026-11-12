@@ -251,6 +251,20 @@ namespace Eldoria.BreachWatch
             float selectorsH=Mathf.Clamp(orderH*.26f,56f,83f);
             float quantityW=orderW*.53f,percentW=orderW-quantityW-8f;
             At(compactParts[10],orderX,selectorsY,percentW,selectorsH);
+            var editCaption=compactParts[10].GetComponentInChildren<Text>(true);
+            if(editCaption)
+            {
+                if(!originalLabels.ContainsKey(editCaption))
+                    originalLabels.Add(editCaption,new LabelTypography {
+                        Size=editCaption.fontSize,Minimum=editCaption.resizeTextMinSize,
+                        Maximum=editCaption.resizeTextMaxSize,BestFit=editCaption.resizeTextForBestFit,
+                        Horizontal=editCaption.horizontalOverflow,Vertical=editCaption.verticalOverflow,
+                        Alignment=editCaption.alignment });
+                editCaption.fontSize=20;
+                editCaption.resizeTextForBestFit=false;
+                editCaption.horizontalOverflow=HorizontalWrapMode.Wrap;
+                editCaption.verticalOverflow=VerticalWrapMode.Truncate;
+            }
             At(compactParts[11],orderX+percentW+8f,selectorsY,quantityW,selectorsH);
             float buttonW=Mathf.Min(selectorsH*.85f,quantityW*.29f);
             At(compactParts[13],0f,0f,buttonW,selectorsH);
@@ -331,14 +345,15 @@ namespace Eldoria.BreachWatch
                 Remember(heroLabels[i]);
                 At(card,left+i*(cardW+gap),top,cardW,cardH);
                 // Compact landscape uses horizontal portraits; portrait keeps names below art.
-                bool horizontalCard=landscape &&
-                    cardW>=155f && cardH>=78f;
+                // Three narrow landscape cells need a portrait above their
+                // names; a side portrait leaves too little width for live labels.
+                bool horizontalCard=false;
                 float apertureW=horizontalCard
                     ?Mathf.Min(cardW*(landscape?.33f:.43f),
                         cardH*(landscape?.78f:.67f)):cardW-18f;
                 float portraitH=horizontalCard
                     ?cardH-(landscape?10f:18f)
-                    :Mathf.Max(52f,cardH*.67f);
+                    :Mathf.Max(42f,cardH*(landscape?.54f:.67f));
                 At(heroViewports[i],landscape?5f:9f,
                     horizontalCard?(landscape?5f:9f):6f,
                     apertureW,portraitH);
@@ -380,7 +395,7 @@ namespace Eldoria.BreachWatch
                         // paints "LÍDER · SIR ALDRIC" right across the second
                         // card, despite correct RectTransform bounds. Wrap
                         // original live labels inside each forged card.
-                        label.fontSize=Mathf.Min(label.fontSize,18);
+                        label.fontSize=Mathf.Min(label.fontSize,14);
                         label.resizeTextForBestFit=false;
                         label.horizontalOverflow=HorizontalWrapMode.Wrap;
                         label.verticalOverflow=VerticalWrapMode.Truncate;
