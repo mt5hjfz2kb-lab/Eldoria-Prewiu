@@ -267,7 +267,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pr179-full-lazy-world-webgl-owner-only-not-iphone-certified
-          path: pr179-lazy-full-webgl-*/
+          path: pr179-lazy-full-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: error
           compression-level: 0
           retention-days: 2
