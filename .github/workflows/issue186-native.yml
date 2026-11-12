@@ -289,13 +289,13 @@ jobs:
              -not $r.temporaryProbeOnly -or -not $r.actualBagOnVigilia -or -not $r.seenDoesNotUse -or
              -not $r.skipDoesNotComplete -or -not $r.useCreditsOnce -or -not $r.jsonReloadVerified -or
              -not $r.mailReadDoesNotClaim -or -not $r.mailClaimDoesNotCredit -or
-             $r.artApproved -or $r.physicalIphoneVerified -or $r.fullMailboxUiFlowVerified -or
-             @($r.images).Count -ne 8 -or $r.realFirstHitClicks -ne 20){throw 'Actual combined bag proof contract missing'}
+             $r.artApproved -or $r.physicalIphoneVerified -or -not $r.fullMailboxUiFlowVerified -or
+             @($r.images).Count -ne 16 -or $r.realFirstHitClicks -ne 52){throw 'Actual combined bag proof contract missing'}
           foreach($shot in @($r.images)){
             $file=Join-Path $dest $shot.file
             if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){throw 'Actual combined bag PNG mismatch'}
           }
-          Write-Host 'ISSUE186_ACTUAL_SAVED_BAG_ON_VIGILIA_8PNG_20_FIRST_HIT_CLICKS_AND_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
+          Write-Host 'ISSUE186_ACTUAL_SAVED_BAG_ON_VIGILIA_16PNG_52_FIRST_HIT_CLICKS_FULL_MAIL_UI_AND_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
       - name: Restore the exact pre-overlay UI source and preserve any unfamiliar edit
         if: always() && needs.exclusive-preflight.outputs.combined_source != ''
         shell: powershell

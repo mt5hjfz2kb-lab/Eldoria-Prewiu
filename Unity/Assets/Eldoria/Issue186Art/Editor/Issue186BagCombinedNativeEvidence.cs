@@ -79,7 +79,7 @@ namespace Eldoria.Issue186Art.Editor
                         uiSource=Environment.GetEnvironmentVariable("ISSUE186_VIGILIA_SOURCE")??"",
                         nativeRun=Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"",
                         nativeAttempt=Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT")??"",
-                        limitation="Actual saved bag on combined Vigilia probe; mail read/claim commands, not full letter-row UI flow; no art or device approval"};
+                        limitation="Actual saved bag and complete letter-row read/claim/back UI on combined Vigilia probe; no art or physical device approval"};
                     Directory.CreateDirectory(Output);routine=Run();
                 }
                 if(routine.MoveNext())return;
@@ -227,6 +227,7 @@ namespace Eldoria.Issue186Art.Editor
                         "frontier-open","march-preparation","vigilants-introduction","scouts-introduction"})
                         if(!state.ChapterProgress.SeenNarrative.Contains(beat))
                             state.ChapterProgress.SeenNarrative.Add(beat);
+                    state.Mailbox.Messages.Clear(); // Isolated fixture only; original file restored finally.
                     state.ResourceRewards=new ResourceRewardInventory();
                     state.ResourceGuidance=new GuidedTutorialProgress();
                     state.RewardAttention=new AttentionCueLedger();
@@ -295,18 +296,46 @@ namespace Eldoria.Issue186Art.Editor
                     Need(!Send(gateway,ResourceRewardCommands.UsePacket,prefix+":wood").Ok&&
                         gateway.Snapshot().Revision==revision,"Used receipt was paid or saved twice");
                     report.useCreditsOnce=true;
-                    Need(Send(gateway,"MailRead",letter).Ok,"Actual read command failed");
+                    Click(panel.GetComponentsInChildren<Button>(true)
+                        .Single(b=>b.name=="Issue186 bag close"&&b.gameObject.activeInHierarchy),camera,rt);
+                    RenderUi(ui,width,height);
+                    var mailboxEntry=type.GetProperty("ActualMailboxEntry").GetValue(ui) as Button;
+                    Click(mailboxEntry,camera,rt);RenderUi(ui,width,height);
+                    var mailWindow=ui.GetComponentsInChildren<RectTransform>(true)
+                        .Single(t=>t.name=="V41 / Buzón destination"&&t.gameObject.activeInHierarchy);
+                    Click(ButtonNamed(mailWindow,"Buzón recompensas"),camera,rt);
+                    RenderUi(ui,width,height);
+                    Click(ButtonNamed(mailWindow,"Buzón / mensaje 0"),camera,rt);
+                    bag.Refresh();RenderUi(ui,width,height);
+                    Need(gateway.Snapshot().Mailbox.Messages.Single(m=>m.EventId==letter).Read,
+                        "Actual letter row did not mark its own message read");
                     Need(gateway.Snapshot().ResourceRewards.Packets
                         .Where(p=>p.MailEventId==letter).All(p=>!p.Collected),
-                        "Reading claimed locked mail packets");
+                        "Opening the actual letter claimed locked mail packets");
+                    Need(bag.ClaimableMailCount()==1,
+                        "Reading erased actual claimable rewards before collection");
                     report.mailReadDoesNotClaim=true;
+                    Photograph(camera,rt,"mail-read-unclaimed",width,height);
                     int beforeClaim=gateway.Snapshot().Resources.Wood;
-                    Need(Send(gateway,ResourceRewardCommands.ClaimMail,letter).Ok&&
-                        gateway.Snapshot().Resources.Wood==beforeClaim&&
+                    Click(ButtonNamed(mailWindow,"Leer"),camera,rt);
+                    bag.Refresh();RenderUi(ui,width,height);
+                    Need(gateway.Snapshot().Resources.Wood==beforeClaim&&
                         gateway.Snapshot().ResourceRewards.Packets
                             .Where(p=>p.MailEventId==letter).All(p=>p.Collected&&!p.Used),
-                        "Mail claim failed to move exact components to the bag without credit");
+                        "Actual mailbox claim did not move exact components to bag without credit");
+                    Need(bag.ClaimableMailCount()==0,
+                        "Actual claimed mail still has a pending reward badge");
                     report.mailClaimDoesNotCredit=true;
+                    Photograph(camera,rt,"mail-claimed-no-credit",width,height);
+                    Click(ButtonNamed(mailWindow,"Volver"),camera,rt);
+                    RenderUi(ui,width,height);
+                    Click(ButtonNamed(mailWindow,"Volver"),camera,rt);
+                    Need(!host.Hud.GetComponent<RoyalGoldV41MailboxScreen>().IsOpen,
+                        "Actual mailbox Back did not close the letter destination");
+                    RenderUi(ui,width,height);
+                    Click(ButtonNamed(ui,"Resource 0"),camera,rt);
+                    Need(bag.IsOpen,"Actual resource capsule could not reopen after mailbox claim");
+                    report.fullMailboxUiFlowVerified=true;
                     host.City.ReloadForProbe();yield return null;
                     while(!SessionRebound(host))yield return null;
                     gateway=host.City.Gateway;bag=host.Hud.GetComponent<Issue186BagOverlay>();
