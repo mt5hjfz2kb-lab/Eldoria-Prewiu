@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:22:00Z",
+  "updated_at": "2026-11-12T19:24:10Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -8409,7 +8409,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 83,
+      "ownership_revision": 84,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8430,9 +8430,9 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "OWNER_SCOUTS90_AUTHORED_FRAMES_NATIVE_PASS_AUDIT_PENDING",
+      "phase": "EXACT_NATIVE182_FRAMES_AUDIT_VERIFIED_SCOUTS_SIX_SECOND_SEQUENCE_PREPARED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Prepare byte-identical original ceremony/coffer ownerreview offPC. No tinyfurtherpaintingloops; sourcecoherence/controlfixes nowrealnativeverified. No mainart untilownerreview; currentcityBastioncontextactualbuiltgeometry preserved.",
+      "next": "Review actual original ceremonial coffer and current native composition; use actual six-second authored Scouts sequence to evaluate motion. Keep art/main activation gated; source typography173 stays separate pending dedicated A/B.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8608,13 +8608,36 @@
         "claimed_at": "2026-11-12T08:27:48.855Z"
       },
       "last_native": {
-        "run": 43197044742,
-        "head": "f081dedb3941375294303c2da840f406632767dd",
-        "artifact": 13934085792,
-        "sha256": "d18271b1bbf9e11dfc19e70135e9225a1225b03634556abafa315bf29d252650",
-        "png": 92,
+        "run": 43207284828,
+        "head": "0875d8d1dc740c41924f3ebfb9b33c700e36040b",
+        "artifact": 13940310497,
+        "sha256": "b96402cdf621fa02f44bf1dcccae8486c3a12670fd71ccff3bfb8c56daf1c5f5",
+        "png": 182,
+        "baseline_png": 92,
+        "supplemental_scout_frames": 90,
         "real_claims": 28,
         "art_approved": false
+      },
+      "last_independent_audit": {
+        "artifact": 13940005647,
+        "sha256": "d2fa22eb26cd238aec2f878b41fed02a77fe30bec15c83bf630eee8b428ac44a",
+        "native_original_zip_sha_verified": true,
+        "all_90_frame_hashes_order_and_dimensions_verified": true,
+        "source": "0875d8d1dc740c41924f3ebfb9b33c700e36040b",
+        "video": {
+          "file": "Eldoria_Exploradores_Secuencia_Unity_20261112.mp4",
+          "sha256": "a6da48022d0e84449120d093ed323ae518f773e5d4d8b83efd3fdefbaaeebd9c",
+          "seconds": 6,
+          "fps": 15,
+          "width": 390,
+          "height": 844,
+          "audio": false,
+          "recorded_gameplay": false
+        },
+        "art_approved": false,
+        "full_scene_verified": false,
+        "pr173_integrated": false,
+        "physical_iphone": false
       }
     },
     {
