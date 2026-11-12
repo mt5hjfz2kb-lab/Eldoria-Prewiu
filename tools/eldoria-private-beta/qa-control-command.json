@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 12,
-  "action": "wait",
-  "seconds": 45,
-  "proof_sha256": "ffacbfcb93a95945f3f7fc0f3f36a6d1bcc53827980c108b066ef091f9abc122",
-  "reason": "Observe the remaining genuine Bastion III construction time while native and packaging verification continue."
+  "sequence": 13,
+  "action": "click_point",
+  "proof_sha256": "db946eb292dd4488e5512e954d732f4d5d88fbc7489ad4dae70e3a567a27ab45",
+  "x": 211,
+  "y": 69,
+  "guard_texts": [
+    "BASTIÓN III • 0/5",
+    "Construye el Granero"
+  ],
+  "reason": "Original frame012 confirms genuinely completed Bastion III and its first actual Granary mission."
 }
