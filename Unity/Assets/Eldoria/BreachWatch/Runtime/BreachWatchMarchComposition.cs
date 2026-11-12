@@ -43,12 +43,14 @@ namespace Eldoria.BreachWatch
         bool thirdHeroWasActive, thirdHeroCaptured;
         string thirdHeroOriginalLabel;
         Text thirdHeroLabel;
-        RectTransform detailSheet;
+        RectTransform detailSheet,detailCard;
+        Button detailReturn;
+        Text detailHeading,detailReturnText;
         Text detailText;
         Button information;
         bool statusWasActive,statusCardWasActive,statusCaptured;
         public Button InformationButton => information;
-        public Button InformationReturnButton => detailSheet?detailSheet.GetComponent<Button>():null;
+        public Button InformationReturnButton => detailReturn;
         public bool SecondaryDetailsOpen => detailSheet && detailSheet.gameObject.activeSelf;
         public bool SecondaryDetailsBehindInformation => information && information.gameObject.activeInHierarchy && !status.gameObject.activeSelf;
         public bool UsesThreeHeroSpaces { get; private set; }
@@ -337,6 +339,20 @@ namespace Eldoria.BreachWatch
         }
 
 
+        string LiveArmyDetails()
+        {
+            var current=status?status.GetComponent<Text>():null;
+            return current?current.text.Replace(" · ","\n"):"";
+        }
+        Text OwnedLabel(string name,Transform parent,Font font,int size)
+        {
+            var go=new GameObject(name,typeof(RectTransform),typeof(Text));
+            go.layer=parent.gameObject.layer;go.transform.SetParent(parent,false);
+            var text=go.GetComponent<Text>();text.font=font;text.fontSize=size;
+            text.color=new Color(.96f,.90f,.79f);text.raycastTarget=false;
+            text.horizontalOverflow=HorizontalWrapMode.Wrap;
+            return text;
+        }
         void RefreshSecondaryInformation(RectTransform root)
         {
             if(!status || !statusCard)return;
@@ -346,45 +362,74 @@ namespace Eldoria.BreachWatch
                 statusCardWasActive=statusCard.gameObject.activeSelf;
                 statusCaptured=true;
             }
+            var stone=heroSlots[0]?heroSlots[0].GetComponent<Button>()?.targetGraphic as Image:null;
+            var font=status.GetComponent<Text>().font;
             if(!information)
             {
                 var go=new GameObject("March / secondary information",typeof(RectTransform),typeof(Image),typeof(Button));
-                go.transform.SetParent(right,false);
+                go.layer=right.gameObject.layer;go.transform.SetParent(right,false);
                 information=go.GetComponent<Button>();
                 var face=go.GetComponent<Image>();
-                var original=heroSlots[0]?heroSlots[0].GetComponent<Image>():statusCard.GetComponent<Image>();
-                if(original){face.sprite=original.sprite;face.type=original.type;}
-                face.color=new Color(.55f,.43f,.29f,1f);
-                information.targetGraphic=face;
-                var labelGo=new GameObject("Information label",typeof(RectTransform),typeof(Text));
-                labelGo.transform.SetParent(go.transform,false);
-                var label=labelGo.GetComponent<Text>();var source=status.GetComponent<Text>();
-                label.font=source.font;label.fontSize=26;label.color=new Color(.96f,.88f,.69f);
+                if(stone){face.sprite=stone.sprite;face.type=Image.Type.Sliced;}
+                face.color=Color.white;information.targetGraphic=face;
+                var label=OwnedLabel("Information label",go.transform,font,26);
                 label.alignment=TextAnchor.MiddleCenter;label.text="i  ·  Detalles del ejército";
-                label.raycastTarget=false;
-                var lr=label.rectTransform;lr.anchorMin=Vector2.zero;lr.anchorMax=Vector2.one;lr.offsetMin=lr.offsetMax=Vector2.zero;
+                label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;
+                label.rectTransform.offsetMin=label.rectTransform.offsetMax=Vector2.zero;
 
                 var sheetGo=new GameObject("March / army information sheet",typeof(RectTransform),typeof(Image),typeof(Button));
-                sheetGo.transform.SetParent(root,false);detailSheet=sheetGo.GetComponent<RectTransform>();
+                sheetGo.layer=root.gameObject.layer;sheetGo.transform.SetParent(root,false);
+                detailSheet=sheetGo.GetComponent<RectTransform>();
                 detailSheet.anchorMin=Vector2.zero;detailSheet.anchorMax=Vector2.one;
                 detailSheet.offsetMin=detailSheet.offsetMax=Vector2.zero;
-                sheetGo.GetComponent<Image>().color=new Color(.025f,.018f,.022f,.97f);
+                var shade=sheetGo.GetComponent<Image>();shade.color=new Color(.018f,.014f,.018f,.94f);
+                sheetGo.GetComponent<Button>().targetGraphic=shade;
                 sheetGo.GetComponent<Button>().onClick.AddListener(()=>detailSheet.gameObject.SetActive(false));
-                var textGo=new GameObject("Live army details and return",typeof(RectTransform),typeof(Text));
-                textGo.transform.SetParent(detailSheet,false);detailText=textGo.GetComponent<Text>();
-                detailText.font=source.font;detailText.fontSize=25;detailText.color=new Color(.96f,.90f,.79f);
-                detailText.alignment=TextAnchor.MiddleCenter;detailText.horizontalOverflow=HorizontalWrapMode.Wrap;
-                detailText.raycastTarget=false;
-                var tr=detailText.rectTransform;tr.anchorMin=new Vector2(.08f,.12f);tr.anchorMax=new Vector2(.92f,.88f);
-                tr.offsetMin=tr.offsetMax=Vector2.zero;
-                information.onClick.AddListener(()=>{detailText.text="DETALLES DEL EJÉRCITO\n\n"+status.GetComponent<Text>().text+"\n\n‹ Volver a la preparación";detailSheet.SetAsLastSibling();detailSheet.gameObject.SetActive(true);});
+
+                var cardGo=new GameObject("March / shared carved stone details",typeof(RectTransform),typeof(Image));
+                cardGo.layer=root.gameObject.layer;cardGo.transform.SetParent(detailSheet,false);
+                detailCard=cardGo.GetComponent<RectTransform>();
+                detailCard.anchorMin=detailCard.anchorMax=detailCard.pivot=new Vector2(.5f,.5f);
+                detailCard.anchoredPosition=Vector2.zero;
+                var cardFace=cardGo.GetComponent<Image>();
+                if(stone){cardFace.sprite=stone.sprite;cardFace.type=Image.Type.Sliced;}
+                cardFace.color=Color.white;
+                detailHeading=OwnedLabel("Army details heading",detailCard,font,22);
+                detailHeading.text="DETALLES DEL EJÉRCITO";
+                detailHeading.color=new Color(.94f,.78f,.48f);
+                detailHeading.alignment=TextAnchor.MiddleCenter;
+                detailText=OwnedLabel("Live saved army details",detailCard,font,19);
+                detailText.alignment=TextAnchor.MiddleLeft;
+
+                var returnGo=new GameObject("March / return to preparation",typeof(RectTransform),typeof(Image),typeof(Button));
+                returnGo.layer=root.gameObject.layer;returnGo.transform.SetParent(detailCard,false);
+                detailReturn=returnGo.GetComponent<Button>();var returnFace=returnGo.GetComponent<Image>();
+                returnFace.sprite=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
+                returnFace.type=Image.Type.Sliced;detailReturn.targetGraphic=returnFace;
+                detailReturn.onClick.AddListener(()=>detailSheet.gameObject.SetActive(false));
+                detailReturnText=OwnedLabel("Return label",returnGo.transform,font,18);
+                detailReturnText.text="VOLVER A LA MARCHA";detailReturnText.alignment=TextAnchor.MiddleCenter;
+                detailReturnText.rectTransform.anchorMin=Vector2.zero;detailReturnText.rectTransform.anchorMax=Vector2.one;
+                detailReturnText.rectTransform.offsetMin=detailReturnText.rectTransform.offsetMax=Vector2.zero;
+                information.onClick.AddListener(()=>{
+                    detailText.text=LiveArmyDetails();detailSheet.SetAsLastSibling();detailSheet.gameObject.SetActive(true);
+                });
                 detailSheet.gameObject.SetActive(false);
             }
+            // The existing manager resets descendant button typography during
+            // orientation reflow. Reapply only these owned presentation labels.
             information.GetComponentInChildren<Text>().fontSize=26;
-            detailText.fontSize=25;
+            detailHeading.fontSize=22;detailText.fontSize=root.rect.width>root.rect.height?16:19;
+            detailReturnText.fontSize=18;
+            float cw=Mathf.Min(root.rect.width*.90f,640f);
+            float ch=Mathf.Min(root.rect.height*.86f,500f);
+            detailCard.sizeDelta=new Vector2(cw,ch);
+            At(detailHeading.rectTransform,20f,20f,cw-40f,42f);
+            At(detailText.rectTransform,28f,74f,cw-56f,Mathf.Max(80f,ch-156f));
+            At((RectTransform)detailReturn.transform,24f,ch-67f,cw-48f,43f);
             var rect=(RectTransform)information.transform;
-            At(rect,12f,Mathf.Max(0,right.rect.height-39f),Mathf.Max(1,right.rect.width-24f),34f);
-            if(SecondaryDetailsOpen)detailText.text="DETALLES DEL EJÉRCITO\n\n"+status.GetComponent<Text>().text+"\n\n‹ Volver a la preparación";
+            At(rect,12f,Mathf.Max(0,right.rect.height-43f),Mathf.Max(1,right.rect.width-24f),38f);
+            if(SecondaryDetailsOpen)detailText.text=LiveArmyDetails();
             status.gameObject.SetActive(false);statusCard.gameObject.SetActive(false);
         }
 
@@ -411,7 +456,7 @@ namespace Eldoria.BreachWatch
             statusCaptured=false;
             if(information)Destroy(information.gameObject);
             if(detailSheet)Destroy(detailSheet.gameObject);
-            information=null;detailSheet=null;detailText=null;
+            information=null;detailSheet=detailCard=null;detailText=detailHeading=detailReturnText=null;detailReturn=null;
             foreach(var pair in originals)
             {
                 var rt=pair.Key; if(!rt)continue;
