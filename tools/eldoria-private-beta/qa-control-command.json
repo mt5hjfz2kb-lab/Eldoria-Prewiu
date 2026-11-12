@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 35,
-  "action": "wait",
-  "proof_sha256": "0ddf0276ead1377b06927387635a1008e3be9e31c4c17c0f9a971f31a9d26ed1",
-  "seconds": 45
+  "sequence": 36,
+  "action": "click_point",
+  "proof_sha256": "0b98753354dd97d9ebfd4d140cba49c3f90098e38a4c4bf24d68dd99c79c0ef0",
+  "x": 210,
+  "y": 70,
+  "guard_texts": [
+    "Derrota al Acechador",
+    "de Ceniza"
+  ],
+  "reason": "Frame035 now shows BastionV3/4 after four archers completed normally; use the visible quest-arrow position to locate the final enemy."
 }
