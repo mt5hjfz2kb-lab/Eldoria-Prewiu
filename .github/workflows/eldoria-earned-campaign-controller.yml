@@ -1,4 +1,4 @@
-name: Eldoria engine17 earned-save compatibility — optional telemetry fixed
+name: Eldoria engine17 actual earned checkpoint reopening — no deployment
 on:
   push:
     branches: [qa/eldoria-earned-campaign-20261112]
@@ -28,13 +28,13 @@ jobs:
               q=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
               with urllib.request.urlopen(q,timeout=25) as r:return json.load(r)
           for attempt in range(80):
-              run=get('actions/runs/43231463013')
-              assert run['head_sha']=='1091aed9d42a375e9041b2aec7803aacaec12f76' and run['head_branch']=='qa/eldoria-earned-campaign-20261112'
+              run=get('actions/runs/43245541625')
+              assert run['head_sha']=='d21f21c7abb2e004b4892404404e7a7b48d2d795' and run['head_branch']=='qa/eldoria-earned-campaign-20261112'
               if run['status']=='completed':break
               time.sleep(15)
           else:raise SystemExit('Existing earned-training run has not completed; no Mac game started')
           assert run['conclusion']=='success', 'Latest earned checkpoint must complete successfully; refuse fallback to an older campaign'
-          chosen=(43231463013,'1091aed9d42a375e9041b2aec7803aacaec12f76')
+          chosen=(43245541625,'d21f21c7abb2e004b4892404404e7a7b48d2d795')
           exact=get('actions/runs/'+str(chosen[0]))
           assert exact['status']=='completed' and exact['conclusion']=='success' and exact['head_sha']==chosen[1]
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('run='+str(chosen[0])+'\nsource='+chosen[1]+'\n')
@@ -60,7 +60,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           run-id: ${{ needs.choose-earned.outputs.run }}
-          name: earned-campaign-controlled-session-not-physical-iphone
+          name: candidate17-earned-save-compatibility-not-physical-iphone
           github-token: ${{ github.token }}
           path: earned
       - uses: actions/setup-node@v4
@@ -121,6 +121,18 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: candidate17-earned-save-compatibility-not-physical-iphone
+          name: candidate17-reopened-earned-state-not-physical-iphone
           path: evidence/
+          retention-days: 14
+      - name: Retain small exact checkpoint and final verification separately
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate17-reopened-small-proof-not-physical-iphone
+          path: |
+            evidence/deferred/report.json
+            evidence/deferred/ordinary-qa-storage-state.json
+            evidence/deferred/game.png
+            evidence/deferred/after-name.png
+          if-no-files-found: error
           retention-days: 14
