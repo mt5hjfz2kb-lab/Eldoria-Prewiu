@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 3,
-  "action": "wait",
-  "proof_sha256": "c9538da9b798277321a0d5bd542f3f484e365074c3f118b8c3ef91087aea0a81",
-  "seconds": 3,
-  "reason": "Allow the actual recruitment chronicle to finish its typewriter before selecting its next observed action."
+  "sequence": 4,
+  "action": "click_text",
+  "proof_sha256": "55f10f8d9f5c18e9d49529a57d27324307f3f3808da00abe797a6b62d58d43f6",
+  "label": "CONTINUAR",
+  "reason": "Frame003 shows the complete Lyra recruitment chronicle and the visible unique Continuar action."
 }
