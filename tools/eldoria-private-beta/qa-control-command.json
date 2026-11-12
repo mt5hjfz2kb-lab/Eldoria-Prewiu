@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 25,
+  "sequence": 26,
   "action": "wait",
-  "proof_sha256": "92ffda990499333ca1e44ae23e885af7ef255f1de8447f02382ac44e96d753d8",
-  "seconds": 30
+  "proof_sha256": "5ac396c11b63733c5953d4342df33d5df4262674ddbcb07c900cb64f9c5557da",
+  "seconds": 35
 }
