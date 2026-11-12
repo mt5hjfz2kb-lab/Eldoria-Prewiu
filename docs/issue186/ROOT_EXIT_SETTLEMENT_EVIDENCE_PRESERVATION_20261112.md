@@ -1,0 +1,7 @@
+Actual native root-exit settlement and always-preserved evidence, 2026-11-12
+
+In run43187290401 Unity completed all52 genuine first-hit interactions. The root process exited after44.2 seconds, but the immediate process-list check saw a transient remaining native process and rejected the wrapper. The next cleanup step, less than two seconds later, observed no Unity and restored all245 overlay files successfully. The job exported logs but skipped its usual screenshot copy because that copy was after the wrapper check. Thus the small artifact is not evidence that rendering or gameplay failed; the captured files remain in the isolated source-output folder. No full new-source native certificate is claimed from that failed wrapper.
+
+The wrapper now polls the global Unity/Blender list for up to30 seconds after the root exits. It still requires actual process absence before cleanup/handoff and never terminates a running native process. A separate always-step retains only reports whose exact resource SHA and native run match this invocation and whose image hashes match all declared files. Stale output is refused. This preserves truthful partial or complete evidence if an orchestration check fails, without promoting failed status to success.
+
+The new exact source must still run and verify its complete report,20images,52interactions and rollback. Original packet art, layout, gameplay and declared UI25 certificate are unchanged by this procedural correction.

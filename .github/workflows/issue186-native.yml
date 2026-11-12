@@ -246,7 +246,9 @@ jobs:
           Write-Host "UNITY_ROOT_STARTED pid=$($process.Id); waiting for actual Editor, not unrelated descendants"
           while(-not $process.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$process.Refresh()}
           if(-not $process.HasExited){throw 'Actual Unity Editor still active at hard bound; preserve process and evidence'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another native process remains; refuse to infer resource is free'}
+          $nativeSettleLimit=(Get-Date).AddSeconds(30)
+          while(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -and (Get-Date) -lt $nativeSettleLimit){Start-Sleep 2}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process remains after bounded exit settlement; preserve it and refuse resource handoff'}
           Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($process.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($process.ExitCode)"
           $proof=Join-Path $unityProject 'Issue186NativeEvidence'
           if(Test-Path $proof){Copy-Item (Join-Path $proof '*') $env:OUT -Force -Recurse}
@@ -294,7 +296,9 @@ jobs:
           Write-Host "UNITY_ROOT_STARTED pid=$($p.Id); waiting for actual Editor, not unrelated descendants"
           while(-not $p.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$p.Refresh()}
           if(-not $p.HasExited){throw 'Actual Unity Editor still active at hard bound; preserve process and evidence'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another native process remains; refuse to infer resource is free'}
+          $nativeSettleLimit=(Get-Date).AddSeconds(30)
+          while(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -and (Get-Date) -lt $nativeSettleLimit){Start-Sleep 2}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process remains after bounded exit settlement; preserve it and refuse resource handoff'}
           Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($p.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($p.ExitCode)"
           $proof=Join-Path $project 'Issue186BagCombinedNativeEvidence'
           $dest=Join-Path $env:OUT 'combined-bag'
@@ -314,6 +318,25 @@ jobs:
             if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){throw 'Actual combined bag PNG mismatch'}
           }
           Write-Host 'ISSUE186_ACTUAL_INTEGRATED_CITY4_BAG_MAIL16_20PNG_52_FIRST_HIT_CLICKS_FULL_MAIL_UI_AND_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
+      - name: Preserve exact fresh combined screenshots even if a wrapper check fails
+        if: always() && needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $source=Join-Path $env:GITHUB_WORKSPACE 'issue186-source/Unity/Issue186BagCombinedNativeEvidence'
+          $reportPath=Join-Path $source 'report.json'
+          if(-not(Test-Path -LiteralPath $reportPath -PathType Leaf)){Write-Host 'NO_FRESH_COMBINED_REPORT';exit 0}
+          $report=Get-Content -LiteralPath $reportPath -Raw|ConvertFrom-Json
+          if($report.resourceSource -ne $env:GITHUB_SHA -or $report.nativeRun -ne $env:GITHUB_RUN_ID){
+            Write-Host 'OLDER_COMBINED_REPORT_NOT_EXPORTED';exit 0
+          }
+          foreach($image in @($report.images)){
+            if($image.file -notmatch '^real-vigilia-bag-[a-z-]+-[0-9]+x[0-9]+\.png$'){throw 'Unexpected actual native image name'}
+            $path=Join-Path $source $image.file
+            if(-not(Test-Path -LiteralPath $path -PathType Leaf) -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $image.sha256){throw 'Fresh native image bytes differ from actual report'}
+          }
+          Copy-Item -LiteralPath $source -Destination (Join-Path $env:OUT 'combined-bag') -Recurse -Force
+          Write-Host "EXACT_FRESH_COMBINED_EVIDENCE_RETAINED status=$($report.status) images=$(@($report.images).Count); NOT_ART_APPROVAL"
       - name: Restore the exact pre-overlay UI source and preserve any unfamiliar edit
         if: always() && needs.exclusive-preflight.outputs.combined_source != ''
         shell: powershell
