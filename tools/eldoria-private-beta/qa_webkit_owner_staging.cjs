@@ -217,7 +217,7 @@ function processes(){
       report.entry={nickname:'Beta QA',typed:true,reloaded:true,observationSeconds:45,visualNameVerification:'pending image inspection'};
       if(process.env.QA_ADVANCE_STORY==='1'){
         report.storyAdvanceAttempt={actualCanvasClicks:[],realWorldEntryVerified:false};
-        for(let step=0;step<4;step++){
+        for(let step=0;step<5;step++){
           // Actual 390x844 canvas position from the original Mac screenshot.
           // A click attempt is not proof of completing a narrative or a quest.
           await page.mouse.click(300,735,{delay:120});await page.waitForTimeout(700);
@@ -226,7 +226,38 @@ function processes(){
           report.storyAdvanceAttempt.actualCanvasClicks.push({step,x:300,y:735,file});
           write();
         }
-        await observeEntry(20,"after-story-clicks");
+        await observeEntry(3,"after-story-clicks");
+        if(process.env.QA_ACTUAL_WORLD_UI==='1'){
+          report.actualWorldUi={method:'Apple Vision reads original browser pixels; clicks actual visible controls only',actions:[],realWorldEntryVerified:false,physicalIphoneVerified:false};
+          const normalized=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+          async function readUi(phase){
+            const file=out+'/'+phase+'.png';await page.screenshot({path:file,timeout:15000});
+            const p=require('child_process').spawnSync(process.env.QA_OCR_EXECUTABLE,[file],{encoding:'utf8',timeout:20000});
+            if(p.status!==0)throw Error('ACTUAL_UI_OCR_FAILED '+p.stderr);
+            const rows=JSON.parse(p.stdout);fs.writeFileSync(out+'/'+phase+'-ocr.json',JSON.stringify(rows,null,2));return rows;
+          }
+          async function clickText(phase,label,filter=()=>true){
+            const rows=await readUi(phase);const hits=rows.filter(r=>normalized(r.text)===label&&r.confidence>=.35&&filter(r));
+            if(hits.length!==1)throw Error('VISIBLE_CONTROL_NOT_UNIQUE '+label+' '+JSON.stringify(hits));
+            const hit=hits[0];await page.mouse.click(hit.x,hit.y,{delay:150});
+            report.actualWorldUi.actions.push({phase,text:hit.text,x:hit.x,y:hit.y,fromActualScreenshot:phase+'.png'});write();await observeEntry(2,phase);
+          }
+          await clickText('city-intro-complete','IR AL OBJETIVO');
+          // Mission action selects the canonical sawmill. Exclude the bottom
+          // navigation Build medallion when locating its real paid offer.
+          await clickText('actual-sawmill-offer','CONSTRUIR',r=>r.y<750);
+          await observeEntry(120,'actual-sawmill-construction');
+          await readUi('actual-sawmill-after-wait');
+          // Closing a contextual building panel via genuine city navigation is
+          // optional: only click the unique visible World medallion.
+          await clickText('actual-world-control','MUNDO');
+          await observeEntry(45,'after-real-world-click');
+          const worldEvents=fs.readFileSync(out+'/events.jsonl','utf8');
+          report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick=worldEvents.includes('REGION1_CANON_WORLD_INSTALLED');
+          if(!report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick)throw Error('NO_REAL_REGION1_AFTER_ACTUAL_WORLD_CLICK');
+          await readUi('actual-world-after-entry');
+          report.actualWorldUi.visualWorldVerification='pending exact screenshot inspection';write();
+        }
       }
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
       if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))throw Error('Entry/reload runtime errors');

@@ -1,4 +1,4 @@
-name: Eldoria staged lazy owner route — actual desktop Apple GPU, no deployment
+name: Eldoria normal player UI to lazy Region1 — actual desktop WebKit, no deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -50,6 +50,8 @@ jobs:
           QA_SKIP_PREFLIGHT: '1'
           QA_LAZY_WORLD: '1'
           QA_ADVANCE_STORY: '1'
+          QA_ACTUAL_WORLD_UI: '1'
+          QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
           QA_OUT: evidence/deferred
           QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
           QA_EXPECT_ORIGIN: http://127.0.0.1:18765
@@ -63,11 +65,12 @@ jobs:
           node tools/eldoria-private-beta/qa_static_server.cjs site 18765 >evidence/server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -framework Vision -framework ImageIO -o /tmp/eldoria-actual-ui-ocr
           node tools/eldoria-private-beta/qa_webkit_owner_staging.cjs
       - name: Preserve actual browser evidence even if the new delivery fails
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile16-staged-delivery-actual-desktop-webkit-not-physical-iphone
+          name: mobile16-actual-player-world-journey-not-physical-iphone
           path: evidence/
           retention-days: 14
