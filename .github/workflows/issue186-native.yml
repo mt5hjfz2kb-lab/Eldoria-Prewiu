@@ -59,7 +59,7 @@ jobs:
           if not b64:raise SystemExit("CAS registry unreadable")
           d=json.loads(base64.b64decode(b64))
           hs=[x for x in d["active"] if "windows-runner-heavy" in x.get("resources",[])]
-          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!="chatgpt-central-resource-art-20261111" or hs[0].get("ownership_state")!="claimed":
+          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!="chatgpt-central-art-execution-20261111" or hs[0].get("ownership_state")!="claimed":
               raise SystemExit("Another workstream owns Windows. Refuse native run.")
           pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
           if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
@@ -186,7 +186,7 @@ jobs:
           if([string]::IsNullOrWhiteSpace($b64)){throw 'CAS data unavailable'}
           $d=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)))|ConvertFrom-Json
           $holders=@($d.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-central-resource-art-20261111'){throw 'Issue186 lost Windows lease'}
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-central-art-execution-20261111'){throw 'Issue186 lost Windows lease'}
           $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
           if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
