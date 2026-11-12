@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 13,
-  "action": "click_point",
-  "proof_sha256": "db946eb292dd4488e5512e954d732f4d5d88fbc7489ad4dae70e3a567a27ab45",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN III • 0/5",
-    "Construye el Granero"
-  ],
-  "reason": "Original frame012 confirms genuinely completed Bastion III and its first actual Granary mission."
+  "sequence": 14,
+  "action": "click_text",
+  "label": "Construir",
+  "proof_sha256": "6d00268e77b3c16cd61abf9f7ac04cf1312c9b51e7021fcd9105d968066363f1",
+  "reason": "Fresh frame013 shows the actual Granary construction button and affordable earned cost240wood180stone."
 }
