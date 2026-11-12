@@ -334,12 +334,12 @@ for(const assembly of ['Unity.RenderPipelines.Universal.Runtime',
 console.log('PASS URP render-request assemblies explicitly referenced');
 
 // Source-only cinematic lens proof: original 3D scene, deliberate 3/4 facade
-// and 38° physical perspective rather than enlarging gameplay screenshots.
+// and the declared 32° studio perspective rather than enlarging gameplay screenshots.
 const cinematicSource=fs.readFileSync(
  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
-assert.match(cinematicSource,/const float elevationDegrees=36f/);
-assert.match(cinematicSource,/Quaternion.AngleAxis\(18f,Vector3.up\)/);
-assert.match(cinematicSource,/camera\.fieldOfView=38f/);
+assert.match(cinematicSource,/const float elevationDegrees=24f/);
+assert.match(cinematicSource,/Quaternion.AngleAxis\(35f,Vector3.up\)/);
+assert.match(cinematicSource,/camera\.fieldOfView=32f/);
 assert.match(cinematicSource,/camera\.orthographic=false/);
 assert.match(cinematicSource,/camera\.transform\.position=b.center\+away\*distance/);
 assert.match(cinematicSource,/camera\.farClipPlane=Mathf.Max/);
