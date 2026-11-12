@@ -231,13 +231,18 @@ namespace Eldoria.UI.RoyalGold.V2
             float w=panel.rect.width,h=panel.rect.height;
             if(w<200f||h<200f)return;
             priorWidth=w;priorHeight=h;
-            float scale=panel.GetComponentInParent<Canvas>()?.scaleFactor??1f;
-            var safe=Screen.safeArea;
+            var activeCanvas=panel.GetComponentInParent<Canvas>();
+            float scale=activeCanvas?activeCanvas.scaleFactor:1f;
+            var renderCamera=activeCanvas?activeCanvas.worldCamera:null;
+            bool offscreen=renderCamera&&renderCamera.targetTexture;
+            float viewW=offscreen?renderCamera.targetTexture.width:Screen.width;
+            float viewH=offscreen?renderCamera.targetTexture.height:Screen.height;
+            var safe=offscreen?new UnityEngine.Rect(0f,0f,viewW,viewH):Screen.safeArea;
             float l=Mathf.Max(12f,w*.026f+safe.xMin/Mathf.Max(.01f,scale));
             float r=Mathf.Max(12f,w*.026f+
-                (Screen.width-safe.xMax)/Mathf.Max(.01f,scale));
+                (viewW-safe.xMax)/Mathf.Max(.01f,scale));
             float t=Mathf.Max(12f,h*.018f+
-                (Screen.height-safe.yMax)/Mathf.Max(.01f,scale));
+                (viewH-safe.yMax)/Mathf.Max(.01f,scale));
             float b=Mathf.Max(12f,h*.018f+safe.yMin/Mathf.Max(.01f,scale));
             bool shortWide=w>h&&h*scale<600f;
             float entryW=Mathf.Clamp(w*.20f,90f,150f);

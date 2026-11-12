@@ -1,18 +1,9 @@
-# Real Unity attachment and art batch; no artistic approval
-state=REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION
-workstream=eldoria-issue186-reward-attention-guidance-20261111
-owner=chatgpt-central-resource-art-20261111
-ownership_revision=16
-runner_lease_revision=16
-registry_main_commit_claim=c9019fc57206c4711103a4c15472e4759d7f4472
-source_before_request=74d225459238cd047ebd18b223ddd3f1d8aa2a05
-previous_native_run=43134015062
-method=Runtime_editor_guarded_helpers_original_GUID_same_V2_assembly+genuine_first_hit_modal_rejection+four_actual_GPU_PNG
-source_additions=actual_active_canvas_bag_API+IL2CPP_Preserve+saved_skip+real_NarrativeCoherenceRules_in_both_existing_V41_harnesses
-required=16_import_hash_GUID+12_packet_sprites_per_size+real_click+modal_negative_control+pointer_safe_area
-combined_Vigilia_bag_runtime_verified=false
+# Byte-identical actual resource Unity images for visual review; no Windows
+state=REVIEW_EXISTING_NATIVE_ARTIFACT
+review_kind=issue186_components
+review_run_id=43140520652
+review_artifact_id=13910600234
+review_source_sha=f10753af14c87d0aa293c6d96b25158878896f61
 art_approved=false
-physical_iphone_verified=false
 merge_or_publish=false
-next_windows_turn=PR173_after_clean_exit_before_CPU_review
-request_time_utc=2026-11-12T02:18:34.368Z
+request_time_utc=2026-11-12T02:33:38.664Z
