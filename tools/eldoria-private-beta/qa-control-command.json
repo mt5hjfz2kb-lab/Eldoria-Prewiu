@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 19,
+  "sequence": 20,
   "action": "click_point",
-  "proof_sha256": "927a22c4cde4873f22daaa2e16e73f418be8bf0cb897c2e4780699f2fb954ecb",
+  "proof_sha256": "a7943c575105532eec33e76d23b97d32cad6a35b1dde224e403210e07cf3abfb",
   "x": 210,
   "y": 70,
   "guard_texts": [
     "Diagnóstico local",
     "Misiones"
   ],
-  "reason": "Frame018 records genuine Cantera construction; after its ordinary12seconds, use the visible quest arrow to inspect the next authored objective."
+  "reason": "Frame019 proves the built quarry and422/1200stone objective; follow the visible quest arrow after the real world-entry transition."
 }
