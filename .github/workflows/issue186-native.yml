@@ -107,7 +107,7 @@ jobs:
           }
           git --version
           if($LASTEXITCODE){throw 'Installed Git failed; refuse archive fallback'}
-      - name: Audit and archive preserved previous overlay before any checkout
+      - name: Restore only exact reviewed archived overlay bytes before any checkout
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
@@ -115,10 +115,10 @@ jobs:
           $ErrorActionPreference='Stop'
           [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
           $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-preserved-source-audit'}
-          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/Audit-PreservedVigiliaOverlay.ps1?ref=$env:GITHUB_SHA"
+          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/Restore-ReviewedVigiliaOverlay.ps1?ref=$env:GITHUB_SHA"
           $file=Invoke-RestMethod -Uri $url -Headers $hdr
           if($file.encoding -ne 'base64' -or -not $file.content){throw 'Pinned source audit script missing'}
-          $script=Join-Path $env:OUT 'Audit-PreservedVigiliaOverlay.ps1'
+          $script=Join-Path $env:OUT 'Restore-ReviewedVigiliaOverlay.ps1'
           [IO.File]::WriteAllBytes($script,[Convert]::FromBase64String($file.content))
           & $script -Workspace $env:GITHUB_WORKSPACE -Output $env:OUT
       - name: Fetch pinned Unity-only source and retain owned import cache
