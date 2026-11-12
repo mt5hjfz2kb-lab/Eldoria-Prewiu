@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T12:16:24.253Z",
+  "updated_at": "2026-11-12T13:42:35.087Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 43,
+      "ownership_revision": 44,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "LATEST_VERIFIED_UI_WITH_OWNER_SQUARE_BAG_AND_MAIL_ATTACHMENTS_COMBINED_NATIVE",
+      "phase": "COMBINED_NATIVE_VERIFIED_ART_REVIEW_PENDING_OFF_PC_SUITE_REPAIR",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -52,9 +50,11 @@
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
         "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
         "tools/eldoria-v41/GatewaySmoke.csproj",
-        "tools/eldoria-v41/GatewayEvolutionChecks.cs"
+        "tools/eldoria-v41/GatewayEvolutionChecks.cs",
+        "tools/march-capacity/Smoke.csproj",
+        "tools/narrative-unity/**"
       ],
-      "next": "Originalselectednativeimageproofs are saved forownerreview. Preserve currentcandidate; do notmicropatch whileawaitingreview ormergeartmain. Beta realgathering test continues onMac independently.",
+      "next": "Preserve the exact native art candidate for owner A/B. Repair isolated test project dependency omissions outside Windows; continue the actual earned Chapter I campaign on Mac. No art merge or publication.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -163,15 +163,15 @@
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
       "runner_claimed_at": "2026-11-12T13:21:19.132Z",
-      "runner_released_at": "2026-11-12T11:28:57.646Z",
-      "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
+      "runner_released_at": "2026-11-12T13:42:35.087Z",
+      "scope_extension_reason": "One central coordinator owns the four authorized tasks. Reconcile only isolated March/Narrative test project compilation paths from inactive main/treasure scopes; no runtime rules or test expectations changed.",
       "runner_claim_basis": "UI finalnative43225134079 and independentAB verified; all4captionGPU0outside. RepinR6338 presentation source to exact UIa5f2 only, preserve64importedtuples. Run actual20PNGs/52firsthits+city coherence, no mainart or publication.",
-      "runner_release_basis": "Exact6338 native43208980109 success20PNG52firsthitclicks and245restore; actual mail no emptybody, pending75wood50stone icons and receipt above claim. Review pending.",
+      "runner_release_basis": "Exact source 7a9cda13 native run 43226508340 completed success; genuine Unity exit 33508 exit0, 20 original PNG digests verified, 52 first-hit clicks, receipt/save flow passed, 245 overlay paths restored. Live in-progress queue contains only independent Mac earned campaign; no heavy process interrupted.",
       "last_native": {
-        "run": 43197702980,
-        "head": "12feb16d60d2e464e7954cd34c56efafd7f8e321",
-        "artifact": 13934325714,
-        "sha256": "1ba5a02e99450773c17c08649589a1947c1559441d38df90a49e0ca9d680bbab",
+        "run": 43226508340,
+        "head": "7a9cda13ca7edf5790b884ae49051d7a7e3492ee",
+        "artifact": 13948092559,
+        "sha256": "10059608b393e2bab0994ff7782fea800ba0d50e726fd178ce7ab08879209e6f",
         "png": 20,
         "real_first_hits": 52,
         "source_overlay_restored": true,
@@ -210,7 +210,6 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/**",
         "tools/valoria-reference-clean/**",
         "tools/ui-v3-domain-smoke/**",
-        "tools/narrative-unity/**",
         ".github/workflows/narrative-unity-domain.yml",
         ".github/workflows/valoria-windows-chromium-qa.yml",
         "docs/ui-v3/PLAYER_EXPERIENCE_FIXES_20261106.md",
@@ -8144,7 +8143,6 @@
         "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
         ".github/workflows/daily-treasures-native.yml",
         "Unity/Assets/Eldoria/DailyTreasures/Editor/**",
-        "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
       "resources": [],
