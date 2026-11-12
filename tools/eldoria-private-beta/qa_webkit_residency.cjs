@@ -115,7 +115,12 @@ function processes(){
       };
     },{variant,traceGL:process.env.QA_TRACE_GL==='1'});
     page=await context.newPage();
-    page.on('console',m=>log({type:'console',level:m.type(),text:m.text()}));
+    page.on('console',m=>{
+      const text=m.text();
+      if(text.includes('VIGILIA_PRODUCTION_ONLY_LIVE_SESSION'))
+        report.vigiliaProductionInstallations=(report.vigiliaProductionInstallations||0)+1;
+      log({type:'console',level:m.type(),text});
+    });
     page.on('pageerror',e=>{report.errors.push(String(e));log({type:'pageerror',text:String(e)});write();});
     page.on('crash',()=>{report.errors.push('PAGE_CRASH');log({type:'crash'});write();});
     page.on('requestfailed',r=>log({type:'requestfailed',url:r.url(),error:r.failure()}));
@@ -220,6 +225,9 @@ function processes(){
     }
     if(/^preallocated-(640|1024)$/.test(variant)&&!report.samples.some(s=>s.preallocation?.some(p=>p.after===Number(variant.split('-')[1])*1024*1024)))throw Error('Preallocation intervention not observed');
     if(process.env.QA_NATIVE_PROFILE==='1')nativeProfile({processes:processes(),at:Date.now()},'final');
+    if(process.env.QA_EXPECT_VIGILIA==='1' &&
+       (report.vigiliaProductionInstallations||0)<(process.env.QA_ENTRY==='1'?2:1))
+      throw Error('Exclusive Vigilia installation was not observed on each live session');
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
