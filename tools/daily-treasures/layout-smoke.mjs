@@ -12,7 +12,7 @@ assert.match(code,/stage\.SideBySide\?stage\.SceneX:-panelW\*\.10f/,
 assert.match(code,/Bastion \/ real-city milestone caption ink/);
 assert.match(code,/DailyTreasureStageDirection\.BastionPlateOpacity/);
 assert.match(stageCode,/BastionPlateOpacity=\.34f/);
-assert.match(stageCode,/\.38f,0f,0f,false/);
+assert.match(stageCode,/\.38f,0f,0f,!portrait/);
 assert.match(code,/void AnimateDailyCeremonyReflow\(float progress\)/,
   'The premium coffer-to-inventory layout must move smoothly');
 assert.match(code,/AnimateDailyCeremonyReflow\(frame\.Text\)/,
