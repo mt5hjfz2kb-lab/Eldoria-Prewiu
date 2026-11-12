@@ -201,7 +201,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 int index=i;
                 var r=new Row();
                 r.Root=Rect("Issue186 saved packet row "+i,panel);
-                if(!sharedTheme)Art(r.Root,new Color(.105f,.066f,.070f,.98f));
+                Art(r.Root,sharedTheme?new Color(.18f,.085f,.076f,.16f):
+                    new Color(.105f,.066f,.070f,.98f));
                 r.Frame=Rect("Issue186 aged metal",r.Root);
                 if(sharedTheme)
                     Art(r.Frame,new Color(.52f,.38f,.22f,.40f));
@@ -289,62 +290,87 @@ namespace Eldoria.UI.RoyalGold.V2
             At(entryBadge.rectTransform,entryW-24f,-7f,26f,26f);
             At(header,0f,0f,w,Mathf.Clamp(h*.105f,64f,92f));
             At(rim,7f,7f,w-14f,h-14f);
-            float backW=Mathf.Clamp(w*.16f,70f,118f);
-            At((RectTransform)back.transform,l,t,backW,46f);
-            At(title.rectTransform,l+backW+10f,t,
-                w-l-r-backW-10f,46f);
+            // Desktop full-width rows previously spread each 96px icon,
+            // amount and USAR across 1,500px of empty black space.
+            // Two balanced columns share the original full-screen Canvas.
+            // Tall tablets instead use larger one-column rows.
+            bool wideDesktop=!shortWide&&w>=1150f&&h>=650f&&w>h*1.35f;
+            bool tallTablet=!shortWide&&h>=1150f&&w>=650f;
+            float safeWidth=w-l-r;
+            float width=wideDesktop?Mathf.Min(1120f,safeWidth):
+                tallTablet?Mathf.Min(800f,safeWidth):safeWidth;
+            float x0=l+(safeWidth-width)*.5f;
+            float backW=Mathf.Clamp(width*.16f,70f,118f);
+            At((RectTransform)back.transform,x0,t,backW,46f);
+            At(title.rectTransform,x0+backW+10f,t,width-backW-10f,46f);
             title.fontSize=shortWide?23:w<500f?21:29;
             float y0=t+Mathf.Clamp(h*.105f,64f,92f);
-            At(count.rectTransform,l,y0,w-l-r,30f);
-            count.fontSize=shortWide?14:17;
+            At(count.rectTransform,x0,y0,width,30f);
+            count.fontSize=shortWide?14:tallTablet?21:wideDesktop?20:17;
             float cardsTop=y0+37f,footer=h-b-58f;
             perPage=shortWide?2:4;
-            float gap=shortWide?7f:11f;
-            float rowH=Mathf.Max(52f,Mathf.Min(shortWide?122f:146f,
-                (Mathf.Max(95f,footer-52f-cardsTop)-gap*(perPage-1))/perPage));
-            float width=w-l-r;
-            float icon=Mathf.Min(96f,rowH-13f,Mathf.Max(48f,w*.21f));
+            float gap=wideDesktop?24f:tallTablet?17f:shortWide?7f:11f;
+            int visualRows=wideDesktop?2:perPage;
+            float maxRowH=wideDesktop?240f:tallTablet?270f:
+                shortWide?122f:146f;
+            float usableH=Mathf.Max(95f,footer-52f-cardsTop);
+            float rowH=Mathf.Max(52f,Mathf.Min(maxRowH,
+                (usableH-gap*(visualRows-1))/visualRows));
+            float leftover=Mathf.Max(0f,usableH-rowH*visualRows-
+                gap*(visualRows-1));
+            if(wideDesktop||tallTablet)
+                cardsTop+=Mathf.Min(wideDesktop?68f:90f,leftover*.5f);
+            float cardW=wideDesktop?(width-gap)*.5f:width;
+            float icon=Mathf.Min(wideDesktop?136f:tallTablet?150f:96f,
+                rowH-13f,Mathf.Max(48f,cardW*.23f));
             for(int i=0;i<rows.Count;i++)
             {
                 var item=rows[i];
                 if(i>=perPage){item.Root.gameObject.SetActive(false);continue;}
-                At(item.Root,l,cardsTop+i*(rowH+gap),width,rowH);
+                int column=wideDesktop?i%2:0;
+                int line=wideDesktop?i/2:i;
+                At(item.Root,x0+column*(cardW+gap),
+                    cardsTop+line*(rowH+gap),cardW,rowH);
                 if(sharedTheme)
-                    At(item.Frame,icon+22f,rowH-2f,width-icon-34f,1.3f);
-                else At(item.Frame,3f,3f,width-6f,rowH-6f);
+                    At(item.Frame,icon+22f,rowH-2f,cardW-icon-34f,1.3f);
+                else At(item.Frame,3f,3f,cardW-6f,rowH-6f);
                 // The visible CARD, rather than its tiny picture alone, is
                 // the genuine non-consuming seen target. USE stays later
                 // in drawing/input order and is the only consuming command.
-                At((RectTransform)item.Seen.transform,0f,0f,width,rowH);
+                At((RectTransform)item.Seen.transform,0f,0f,cardW,rowH);
                 float iconY=(rowH-icon)*.5f;
                 At(item.Icon.rectTransform,10f,iconY,icon,icon);
                 At(item.Quantity.rectTransform,10f+icon*.15f,iconY+icon*.73f,
                     icon*.70f,icon*.18f);
                 At(item.New.rectTransform,10f+icon-24f,
                     Mathf.Max(0f,iconY-8f),27f,27f);
-                float useW=Mathf.Clamp(width*.245f,86f,122f);
-                float useX=width-useW-12f;
+                float useW=Mathf.Clamp(cardW*.245f,86f,134f);
+                float useX=cardW-useW-12f;
                 At((RectTransform)item.Use.transform,useX,
                     (rowH-46f)*.5f,useW,46f);
                 float textX=icon+22f,textW=Mathf.Max(58f,useX-textX-9f);
-                At(item.Name.rectTransform,textX,rowH*.12f,textW,29f);
-                item.Name.fontSize=shortWide?17:width<400f?20:23;
-                At(item.Amount.rectTransform,textX,rowH*.39f,textW,30f);
-                item.Amount.fontSize=shortWide?17:22;
-                At(item.Detail.rectTransform,textX,rowH*.72f,textW,rowH*.23f);
-                item.Detail.fontSize=shortWide?11:13;
+                At(item.Name.rectTransform,textX,rowH*.17f,textW,34f);
+                item.Name.fontSize=shortWide?17:
+                    wideDesktop||tallTablet?25:cardW<400f?20:23;
+                At(item.Amount.rectTransform,textX,rowH*.40f,textW,35f);
+                item.Amount.fontSize=shortWide?17:
+                    wideDesktop||tallTablet?29:22;
+                At(item.Detail.rectTransform,textX,rowH*.72f,
+                    textW,Mathf.Max(17f,rowH*.23f));
+                item.Detail.fontSize=shortWide?11:
+                    wideDesktop||tallTablet?16:13;
                 item.UseText.fontSize=shortWide?14:16;
                 var skin=item.Use.targetGraphic as Image;
                 if(skin&&skin.sprite)
                     skin.pixelsPerUnitMultiplier=Mathf.Max(.01f,
                         skin.sprite.rect.height/(46f*Mathf.Max(.01f,skin.pixelsPerUnit)));
             }
-            At(feedback.rectTransform,l,footer-47f,w-l-r,43f);
+            At(feedback.rectTransform,x0,footer-47f,width,43f);
             float navW=Mathf.Clamp(width*.25f,92f,160f);
-            At((RectTransform)prev.transform,l,footer,navW,48f);
-            At((RectTransform)next.transform,w-r-navW,footer,navW,48f);
+            At((RectTransform)prev.transform,x0,footer,navW,48f);
+            At((RectTransform)next.transform,x0+width-navW,footer,navW,48f);
             float guideW=Mathf.Max(1f,width-2f*navW-12f);
-            At((RectTransform)skipGuide.transform,l+navW+6f,footer,
+            At((RectTransform)skipGuide.transform,x0+navW+6f,footer,
                 guideW,48f);
         }
         public void Open()
