@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 13,
+  "sequence": 14,
   "action": "snapshot",
-  "proof_sha256": "d412c632a071fe076bac37de71fbd95197dab864700da972bfcd1f0d5423eed1",
-  "reason": "Read the actual Bastion V construction countdown while the corrected shared native regression starts; preserve all normal timers."
+  "proof_sha256": "4fa0edb60038c928b6739fc52942358f5e40a1dbf3ea62b6f479683660e35247",
+  "reason": "Observe the naturally elapsed ten-minute construction, without spending the optional speed-up or changing the game clock."
 }
