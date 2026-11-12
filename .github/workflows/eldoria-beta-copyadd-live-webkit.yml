@@ -1,123 +1,73 @@
-name: Eldoria P0 — sampled iOS engine phases and shader failure
+name: Eldoria staged lazy owner route — actual desktop Apple GPU, no deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
     paths: ['.github/workflows/eldoria-beta-copyadd-live-webkit.yml']
-  workflow_dispatch:
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: eldoria-beta-lowmem-mac-webkit-ab
+  group: eldoria-staged-mobile16-actual-mac
   cancel-in-progress: false
 jobs:
-  ios-safari:
-    runs-on: macos-26
-    timeout-minutes: 45
+  staged-desktop-webkit:
+    runs-on: macos-15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: |
-            tools/eldoria-private-beta
+          sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42785047968
-          name: beta10-clock-copyadd-owner-only-site
+          run-id: 43150432049
+          name: mobile16-unpublished-preserved-owner-site
           github-token: ${{ github.token }}
           path: site
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42812046053
-          name: eldoria-immediate-entry-canvas-ab-not-iphone
-          github-token: ${{ github.token }}
-          path: browser-proof
-      - name: Stage exact control and physically rejected canvas candidate; no publication
-        run: |
-          python3 - <<'PY'
-          import json,pathlib,hashlib,shutil,importlib.util
-          root=pathlib.Path('site')
-          old=json.loads((root/'beta-native325/release-identity.json').read_text())
-          new=json.loads((root/'beta-iphone-clock-ab/release-identity.json').read_text())
-          assert old['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
-          assert new['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
-          assert not new['release_for_external_testers']
-          assert hashlib.sha256((root/'beta-iphone-clock-ab/copy-transport.js').read_bytes()).hexdigest()=='7b0717a4e4b655861084cf33f9c3df07e1e3c70660d2b8a6600d0c6a2ca98725'
-          code=pathlib.Path('tools/eldoria-private-beta/iphone_ab')
-          shutil.copyfile(code/'control-beta10-entry.html',root/'beta-native325/index.html')
-          spec=importlib.util.spec_from_file_location('stage',code/'stage_stable_canvas.py')
-          stage=importlib.util.module_from_spec(spec);spec.loader.exec_module(stage)
-          stage.stage(root,code/'stable_canvas.js','browser-proof/evidence/canvas-shell-proof.json')
-          PY
-          python3 tools/eldoria-private-beta/iphone_ab/stage_direct_control.py site
-          python3 - <<'PY'
-          print('All three same-origin routes staged; no publication')
-          PY
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Inventory installed iOS runtimes and enable native SafariDriver
-        env:
-          APPIUM_HOME: ${{ runner.temp }}/eldoria-appium
+      - name: Verify exact native identity and preserved owner publication guard
         run: |
-          mkdir -p evidence
-          xcodebuild -version > evidence/xcode.txt
-          xcrun simctl list -j > evidence/simulators.json
           python3 - <<'PY'
           import json,pathlib
-          data=json.loads(pathlib.Path('evidence/simulators.json').read_text())
-          runs=[r for r in data['runtimes'] if r.get('isAvailable') and r['name'].startswith('iOS 26')]
-          assert runs,'No iOS 26 runtime available; do not substitute desktop Safari'
-          runtime=max(runs,key=lambda r:tuple(int(x) for x in r['version'].split('.')))
-          pathlib.Path('evidence/runtime.json').write_text(json.dumps(runtime,indent=2))
-          print(runtime)
+          r=pathlib.Path('site')
+          p=json.loads((r/'beta-lazy-world-owner-proof.json').read_text())
+          assert p['combined_bytes']==972044910 and p['original_files_preserved']==144
+          assert p['source_sha']=='4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71' and p['shared_exact_streaming_assets']
+          assert p['native_bundle_sha256']=='49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a'
+          assert not p['published'] and not p['physical_iphone_verified'] and not p['external_testers_enabled']
+          print('EXACT_UNPUBLISHED_144_ORIGINAL_FILES_NATIVE_STREAM_VERIFIED')
           PY
-          sudo /usr/bin/safaridriver --enable
-      - name: Initialize Safari once and compare isolated automation sessions
+      - name: Run actual WebKit entry, resize, reload and visible story interaction
         env:
-          APPIUM_HOME: ${{ runner.temp }}/eldoria-appium
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_LAZY_WORLD: '1'
+          QA_ADVANCE_STORY: '1'
+          QA_OUT: evidence/deferred
+          QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+          QA_URL: http://127.0.0.1:18765/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1
         run: |
-          node tools/eldoria-private-beta/qa_static_server.cjs site 18975 >evidence/server.log 2>&1 &
+          set -euo pipefail
+          mkdir -p evidence
+          npm install --prefix "$RUNNER_TEMP/eldoria-stage-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-stage-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-stage-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs site 18765 >evidence/server.log 2>&1 &
           server_pid=$!
-          /usr/bin/safaridriver --port 4723 --diagnose >evidence/safaridriver.log 2>&1 &
-          appium_pid=$!
-          trap 'kill "$server_pid" "$appium_pid" || true' EXIT
-          python3 - <<'PY'
-          import urllib.request,time
-          for n in range(60):
-            try:
-              urllib.request.urlopen('http://127.0.0.1:4723/status',timeout=2);break
-            except Exception:
-              if n==59: raise
-              time.sleep(1)
-          PY
-          runtime_id=$(python3 -c "import json;print(json.load(open('evidence/runtime.json'))['identifier'])")
-          export QA_IOS_VERSION=$(python3 -c "import json;print(json.load(open('evidence/runtime.json'))['version'])")
-          export QA_SIM_UDID=$(xcrun simctl create "Eldoria-warm-safari" com.apple.CoreSimulator.SimDeviceType.iPhone-16 "$runtime_id")
-          xcrun simctl boot "$QA_SIM_UDID"
-          xcrun simctl bootstatus "$QA_SIM_UDID" -b
-          xcrun simctl launch "$QA_SIM_UDID" com.apple.mobilesafari
-          # A fresh Safari took >60s to start inspector services in the previous log.
-          # Initialize once; SafariDriver gives each test a separate storage session.
-          python3 -c 'import time;time.sleep(45)'
-          failed=0
-          for variant in beta-native325 beta-iphone-clock-direct; do
-            export QA_OUT="evidence/$variant"
-            mkdir -p "$QA_OUT"
-            export QA_URL="http://127.0.0.1:18975/$variant/?eldoria_diag=1&eldoria_profile=1"
-            python3 tools/eldoria-private-beta/qa_ios_simulator.py || failed=1
-            xcrun simctl spawn "$QA_SIM_UDID" log show --last 5m --style compact --predicate 'process CONTAINS "WebKit" OR process == "MobileSafari"' >"$QA_OUT/system.log" 2>&1 || true
-            if python3 -c 'import json,os,sys;d=json.load(open(os.environ["QA_OUT"]+"/report.json"));sys.exit(0 if d.get("phase")=="create_session" and not d["passed"] else 1)'; then
-              echo "Infrastructure unavailable; do not repeat cold launches or claim a game test."
-              break
-            fi
-          done
-          xcrun simctl shutdown "$QA_SIM_UDID" || true
-          xcrun simctl delete "$QA_SIM_UDID" || true
-          exit "$failed"
-      - uses: actions/upload-artifact@v4
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          node tools/eldoria-private-beta/qa_webkit_owner_staging.cjs
+      - name: Preserve actual browser evidence even if the new delivery fails
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: eldoria-ios-simulator-safari-not-physical-device
+          name: mobile16-staged-delivery-actual-desktop-webkit-not-physical-iphone
           path: evidence/
           retention-days: 14
