@@ -36,7 +36,7 @@ namespace Eldoria.BreachWatch
         bool hallIntroBestFit;
         int hallIntroFontSize;
         Vector2 hallIntroSize;
-        Vector2 hallIntroPosition;
+        Vector2 hallIntroPosition,hallIntroPivot;
         float hallIntroLineSpacing;
         public bool DesktopHallIntroductionUnobstructed { get; private set; } = true;
         public int RestyledFrames=>restyled;
@@ -120,7 +120,7 @@ namespace Eldoria.BreachWatch
             {
                 // The canonical layout can settle one frame after adoption.
                 // Retry a missing reading band without cloning another UI.
-                if(!hallIntro)RecomposeDesktopHallHeader();
+                RecomposeDesktopHallHeader();
                 return restyled>0 && !VisibleOldRoyalFrame;
             }
             ResetPresentation();
@@ -190,36 +190,48 @@ namespace Eldoria.BreachWatch
                 DesktopHallIntroductionUnobstructed=false;
                 return;
             }
-            if(hallIntro==intro)return;
-            float titleBottom=-title.anchoredPosition.y+title.rect.height;
-            float tabTop=-tabs.anchoredPosition.y;
+            // Canonical Refresh may lay out the SAME Text again. Caching only
+            // its identity let the native GPU draw the old two-line position.
+            // Read both boundaries in their actual common-parent coordinates.
+            var titleCorners=new Vector3[4];var tabCorners=new Vector3[4];
+            title.GetWorldCorners(titleCorners);tabs.GetWorldCorners(tabCorners);
+            float titleBottom=content.InverseTransformPoint(titleCorners[0]).y;
+            float tabTop=content.InverseTransformPoint(tabCorners[1]).y;
             // The 1600x900 canonical stage has a notably SMALLER logical
             // height than 900 due to its scale factor. Never exclude it
             // with a hard-coded content.rect.height>=600 check.
-            float bandTop=Mathf.Max(titleBottom+9f,tabTop-57f);
-            float bandBottom=tabTop-12f;
-            float available=bandBottom-bandTop;
+            float bandTop=Mathf.Min(titleBottom-9f,tabTop+57f);
+            float bandBottom=tabTop+12f;
+            var parent=intro.rectTransform.parent;
+            var parentTop=parent.InverseTransformPoint(content.TransformPoint(new Vector3(0f,bandTop,0f)));
+            var parentBottom=parent.InverseTransformPoint(content.TransformPoint(new Vector3(0f,bandBottom,0f)));
+            float available=parentTop.y-parentBottom.y;
             if(available<34f)
             {
                 DesktopHallIntroductionUnobstructed=false;
                 return;
             }
-            hallIntro=intro;
-            hallIntroAlignment=intro.alignment;
-            hallIntroHorizontal=intro.horizontalOverflow;
-            hallIntroVertical=intro.verticalOverflow;
-            hallIntroBestFit=intro.resizeTextForBestFit;
-            hallIntroFontSize=intro.fontSize;
-            hallIntroSize=intro.rectTransform.sizeDelta;
-            hallIntroPosition=intro.rectTransform.anchoredPosition;
-            hallIntroLineSpacing=intro.lineSpacing;
+            if(hallIntro!=intro)
+            {
+                hallIntro=intro;
+                hallIntroAlignment=intro.alignment;
+                hallIntroHorizontal=intro.horizontalOverflow;
+                hallIntroVertical=intro.verticalOverflow;
+                hallIntroBestFit=intro.resizeTextForBestFit;
+                hallIntroFontSize=intro.fontSize;
+                hallIntroSize=intro.rectTransform.sizeDelta;
+                hallIntroPosition=intro.rectTransform.anchoredPosition;
+                hallIntroPivot=intro.rectTransform.pivot;
+                hallIntroLineSpacing=intro.lineSpacing;
+            }
             intro.alignment=TextAnchor.UpperLeft;
             intro.horizontalOverflow=HorizontalWrapMode.Wrap;
             intro.verticalOverflow=VerticalWrapMode.Truncate;
             intro.resizeTextForBestFit=false;
             intro.lineSpacing=.88f;
             var rt=intro.rectTransform;
-            rt.anchoredPosition=new Vector2(rt.anchoredPosition.x,-bandTop);
+            rt.pivot=new Vector2(rt.pivot.x,1f);
+            var local=rt.localPosition;local.y=parentTop.y;rt.localPosition=local;
             rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,available);
             bool fits=false;
             for(int size=Mathf.Min(hallIntroFontSize,21);size>=14;--size)
@@ -228,8 +240,8 @@ namespace Eldoria.BreachWatch
                 if(intro.preferredHeight<=available-2f){fits=true;break;}
             }
             DesktopHallIntroductionUnobstructed=fits &&
-                bandTop>=titleBottom+7f &&
-                bandTop+rt.rect.height<=tabTop-11f;
+                bandTop<=titleBottom-7f &&
+                bandBottom>=tabTop+11f;
         }
 
         void GradeActualHall(RectTransform heroRoot)
@@ -312,6 +324,7 @@ namespace Eldoria.BreachWatch
                 hallIntro.resizeTextForBestFit=hallIntroBestFit;
                 hallIntro.fontSize=hallIntroFontSize;
                 hallIntro.lineSpacing=hallIntroLineSpacing;
+                hallIntro.rectTransform.pivot=hallIntroPivot;
                 hallIntro.rectTransform.anchoredPosition=hallIntroPosition;
                 hallIntro.rectTransform.sizeDelta=hallIntroSize;
             }
