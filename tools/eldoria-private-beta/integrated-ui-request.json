@@ -7,7 +7,7 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 7,
+  "attempt": 8,
   "previous_run": 43305163643,
-  "correction": "Remove retired foreground march rims instead of replacing their transparent centers with opaque stone; preserve actual hero portraits and live captions. GPU caption visibility gate remains unchanged."
+  "correction": "Remove retired foreground march rims instead of replacing their transparent centers with opaque stone; preserve actual hero portraits and live captions. GPU caption visibility gate remains unchanged. Native camera captures explicitly synchronize imported production fonts before text geometry and pixel assertions (camera.Render alone does not run LateUpdate)."
 }

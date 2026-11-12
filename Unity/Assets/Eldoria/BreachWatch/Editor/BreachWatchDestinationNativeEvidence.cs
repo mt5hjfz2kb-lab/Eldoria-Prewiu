@@ -761,6 +761,9 @@ namespace Eldoria.BreachWatch.Editor
                 if(management && management.IsOpen)management.SynchronizeLayout();
                 if(ui.RealDestinations && ui.RealDestinations.IsShowing)
                     ui.RealDestinations.SynchronizeVisual();
+                // Editor camera.Render does not execute the normal LateUpdate
+                // font pass. Measure the same imported fonts as the real player.
+                ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
                 if(name=="march")
                 {
                     Need(ui.RealDestinations &&
@@ -902,6 +905,7 @@ namespace Eldoria.BreachWatch.Editor
                     treasure.ProbeOrientationLayoutForNativeEvidence();
                     ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
                 }
+                ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();
                 if(name=="heroes")
                     Need(!ui.GetComponentsInChildren<Button>(true).Any(x=>
