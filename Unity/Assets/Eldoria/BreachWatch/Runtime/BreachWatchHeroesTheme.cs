@@ -40,14 +40,33 @@ namespace Eldoria.BreachWatch
         float hallIntroLineSpacing;
         public bool DesktopHallIntroductionUnobstructed { get; private set; } = true;
         public int RestyledFrames=>restyled;
+        // Canonical RebuildContent defers destruction of an inactive prior
+        // identically named subtree. Only the latest active child can be themed.
+        public bool ActiveContentIsLatest
+        {
+            get
+            {
+                if(!content || !content.gameObject.activeInHierarchy)return false;
+                var root=transform as RectTransform;
+                if(!root)return false;
+                for(int i=root.childCount-1;i>=0;--i)
+                {
+                    var child=root.GetChild(i) as RectTransform;
+                    if(child && child.name=="Heroes / live controls" &&
+                       child.gameObject.activeInHierarchy)
+                        return child==content;
+                }
+                return false;
+            }
+        }
         public bool HallGradeActive
         {
             get
             {
-                if(!content || !warmHall)return false;
+                if(!ActiveContentIsLatest || !warmHall)return false;
                 foreach(var photo in content.GetComponentsInChildren<RawImage>(true))
                     if(photo && photo.transform.parent==content && photo.texture &&
-                       photo.material==warmHall)
+                       photo.gameObject.activeInHierarchy && photo.material==warmHall)
                         return true;
                 return false;
             }
@@ -57,7 +76,7 @@ namespace Eldoria.BreachWatch
             get
             {
                 if(!content)return "content=null";
-                string result="warm="+(warmHall!=null)+";";
+                string result="warm="+(warmHall!=null)+";activeLatest="+ActiveContentIsLatest+";";
                 foreach(var photo in content.GetComponentsInChildren<RawImage>(true))
                 {
                     if(!photo || !photo.texture)continue;
@@ -112,9 +131,15 @@ namespace Eldoria.BreachWatch
         {
             if(!heroRoot)return false;
             RectTransform newContent=null;
-            foreach(Transform child in heroRoot)
-                if(child.name=="Heroes / live controls")
-                {newContent=child as RectTransform;break;}
+            // Deferred Destroy() leaves old inactive siblings. Never style
+            // the first name match if the real live child is newer.
+            for(int i=heroRoot.childCount-1;i>=0;--i)
+            {
+                var child=heroRoot.GetChild(i) as RectTransform;
+                if(child && child.name=="Heroes / live controls" &&
+                   child.gameObject.activeInHierarchy)
+                {newContent=child;break;}
+            }
             if(!newContent)return false;
             if(newContent==content)
             {
@@ -173,7 +198,7 @@ namespace Eldoria.BreachWatch
         void RecomposeDesktopHallHeader()
         {
             DesktopHallIntroductionUnobstructed=true;
-            if(!content || content.rect.width<=content.rect.height)return;
+            if(!ActiveContentIsLatest || content.rect.width<=content.rect.height)return;
             Text intro=null;
             RectTransform tabs=null,title=null;
             foreach(var t in content.GetComponentsInChildren<Text>(true))
@@ -200,7 +225,9 @@ namespace Eldoria.BreachWatch
             // The 1600x900 canonical stage has a notably SMALLER logical
             // height than 900 due to its scale factor. Never exclude it
             // with a hard-coded content.rect.height>=600 check.
-            float bandTop=Mathf.Min(titleBottom-9f,tabTop+57f);
+            // Unity local +Y points UP. Use the upper reading interval,
+            // not the short lower strip that cut the two complete sentences.
+            float bandTop=Mathf.Max(titleBottom-9f,tabTop+57f);
             float bandBottom=tabTop+12f;
             var parent=intro.rectTransform.parent;
             var parentTop=parent.InverseTransformPoint(content.TransformPoint(new Vector3(0f,bandTop,0f)));
