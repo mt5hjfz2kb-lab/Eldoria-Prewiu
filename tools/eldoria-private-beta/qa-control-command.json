@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 41,
-  "action": "click_text",
-  "proof_sha256": "66bb4e0fe6da6f0b7634cd24f428d4e9e413ad870a8093d77d4e4ece04e8bc63",
-  "label": "MEJORAR",
-  "reason": "Frame040 shows selected level1 Aserradero, costs120wood78stone and10second timer; execute the unique real Mejorar control."
+  "sequence": 42,
+  "action": "click_point",
+  "proof_sha256": "90732ad00f2c8142d8faedf8dea58a9959fbc0fe4b717553685ccdc8e61b277a",
+  "x": 210,
+  "y": 70,
+  "guard_texts": [
+    "Diagnóstico local",
+    "Misiones"
+  ],
+  "reason": "Frame041 records the genuine sawmill upgrade started; after normal elapsed time, follow the objective arrow to the next required building."
 }
