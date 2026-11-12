@@ -202,21 +202,31 @@ assert.match(liveBastion,/ValoriaIntegratedWorld/);
 assert.match(liveBastion,/BastionOne/);
 assert.match(liveBastion,/PlayerCamera/);
 assert.match(liveBastion,/camera.CopyFrom\(source\)/);
-// Exact Unity 6 URP 17.3 manual: single-camera request outside the
-// pipeline. The old camera.Render() compiled but did not certify a real
-// full-frame RenderTexture in URP.
+// Unity 6 URP supports StandardRequest for a detached BASE camera with
+// no overlay stack. Native 43121785648 failed GPU IsCreated() AFTER the
+// previous single-camera request: certify the NEW storage ownership method,
+// not the obsolete request string. This source guard is NOT a Unity GPU pass.
 assert.match(liveBastion,/using UnityEngine.Rendering.Universal/);
 assert.match(liveBastion,/renderData.renderType=CameraRenderType.Base/);
-assert.match(liveBastion,/new UniversalRenderPipeline.SingleCameraRequest\(\)/);
+assert.match(liveBastion,/camera.allowMSAA=false/);
+assert.match(liveBastion,/new RenderPipeline.StandardRequest\(\)/);
 assert.match(liveBastion,/RenderPipeline.SupportsRenderRequest\(camera,request\)/);
-assert.match(liveBastion,/request.destination=result/);
+assert.match(liveBastion,/request.destination=working/);
 assert.match(liveBastion,/RenderPipeline.SubmitRenderRequest\(camera,request\)/);
+assert.match(liveBastion,/if\(!working.Create\(\) \|\| !working.IsCreated\(\)\)/);
+assert.match(liveBastion,/if\(!working.IsCreated\(\)\)/);
+assert.match(liveBastion,/result=new RenderTexture\(width,height,0,RenderTextureFormat.ARGB32\)/);
+assert.match(liveBastion,/Graphics.Blit\(working,result\)/);
+assert.match(liveBastion,/if\(!result.Create\(\) \|\| !result.IsCreated\(\)\)/);
+assert.match(liveBastion,/camera.targetTexture=null;\s*return result/);
+assert.match(liveBastion,/if\(working\)\{working.Release\(\);DestroyTemporary\(working\);\}/);
+assert.doesNotMatch(liveBastion,/request.destination=result/);
 assert.doesNotMatch(liveBastion, /^\s*camera\.Render\(\);/m);
 assert.match(liveBastion,/result.Release\(\)/);
 assert.match(panel,/DailyTreasureBastionCamera.Capture\(/);
 assert.match(panel,/DailyTreasureBastionCamera.Release\(/);
 assert.match(panel,/DailyTreasureBastionCamera.SceneKey/);
-console.log('PASS true camera-derived live Bastion presentation, never a zoomed PNG');
+console.log('PASS source guard for independent authentic Bastion GPU snapshot; native Unity pixels still required');
 
 // A real, committed Scout discovery uses its SAVED family Kind to select
 // authentic existing EldoriaRetention mission-vignette art. Shader feathers
