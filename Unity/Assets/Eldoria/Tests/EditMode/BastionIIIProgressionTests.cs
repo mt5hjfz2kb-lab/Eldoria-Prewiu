@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Eldoria.Application;
 using Eldoria.Domain;
 using NUnit.Framework;
@@ -13,7 +14,20 @@ namespace Eldoria.Tests {
   static CommandResult Do(LocalGateway g,string kind,string target,string id=null){var s=g.Snapshot();return g.Execute(new GameCommand(id??Guid.NewGuid().ToString(),s.PlayerId,kind,target,s.Revision));}
   static Store Ready(int level=3)=>new Store{Value=new PlayerState{BastionLevel=level,SawmillLevel=1,BarracksLevel=1,JourneyComplete=true,EngendroDefeated=true,Available=new ArmyRoster{ArcherT1=56},Resources=new ResourceWallet{Wood=5000,Stone=5000}}};
   [TestCase(40,false)][TestCase(41,true)]public void AscensionHonorsOriginalTroopBoundaryWithoutSpendingOnFailure(int troops,bool allowed){var c=new Clock();var st=Ready(2);st.Value.Available.ArcherT1=troops;var g=new LocalGateway(c,st);var before=g.Snapshot();Assert.That(Do(g,"AdvanceBastion","bastion").Ok,Is.EqualTo(allowed));Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before.Resources.Wood-(allowed?650:0)));Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(before.Resources.Stone-(allowed?500:0)));}
-  [Test]public void Code16SaveAscendsOnceAfterFourMinutes(){var c=new Clock();var st=Ready(2);st.Value.ChapterThree=null;var g=new LocalGateway(c,st);int wood=g.Snapshot().Resources.Wood;Assert.That(Do(g,"AdvanceBastion","bastion","same").Ok);Assert.That(Do(g,"AdvanceBastion","bastion","same").Ok);Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(wood-650));c.Add(239);g.Advance();Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));c.Add(1);g=new LocalGateway(c,st);Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(3));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(400));}
+  [Test]public void Code16SaveAscendsOnceAfterFourMinutes(){var c=new Clock();var st=Ready(2);st.Value.ChapterThree=null;var g=new LocalGateway(c,st);int wood=g.Snapshot().Resources.Wood;Assert.That(Do(g,"AdvanceBastion","bastion","same").Ok);Assert.That(Do(g,"AdvanceBastion","bastion","same").Ok);Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(wood-650));c.Add(239);g.Advance();Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));c.Add(1);g=new LocalGateway(c,st);Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(3));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+   Assert.That(g.Snapshot().Resources.Food,Is.Zero,"Chapter rewards stay in the bag until used");
+   var food=g.Snapshot().ResourceRewards.Packets.Where(p=>p.Kind=="food").ToArray();
+   Assert.That(food.Sum(p=>p.Amount),Is.EqualTo(400));
+   Assert.That(food.All(p=>p.Collected&&!p.Used),Is.True);
+   foreach(var packet in food)Assert.That(Do(g,ResourceRewardCommands.UsePacket,packet.ReceiptId).Ok,Is.True);
+   Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(400));
+   g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(400),"Reload never repeats consumed chapter rewards");
+#else
+   Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(400));
+#endif
+  }
   [Test]public void InvestigationPersistsAndNeverRecruitsBeforeVictory(){
    var c=new Clock();var st=Ready();st.Value.Available.ArcherT1=190;var g=new LocalGateway(c,st);
    Assert.That(Do(g,"InvestigateFissure","fissure-valoria").Ok);
@@ -32,6 +46,18 @@ namespace Eldoria.Tests {
    Assert.That(Do(g,"Fight","fissure-valoria").Ok);
    c.Add(4);g=new LocalGateway(c,st);
    Assert.That(g.Snapshot().ChapterThree.LyraRecruited);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+   Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(stone),"Victory alone never spends the reward packets");
+   var loot=g.Snapshot().ResourceRewards.Packets.Single(p=>p.Origin=="combat"&&p.Kind=="stone"&&!p.Used);
+   var mission=g.Snapshot().ResourceRewards.Packets.Single(p=>p.ReceiptId=="mission:c3-fissure:stone");
+   Assert.That(loot.Amount+mission.Amount,Is.EqualTo(560));
+   Assert.That(loot.Collected,Is.False,"Combat return awaits its explicit mail claim");
+   Assert.That(mission.Collected&&!mission.Used,Is.True);
+   Assert.That(Do(g,ResourceRewardCommands.ClaimMail,loot.MailEventId).Ok,Is.True);
+   Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(stone),"Mail claim only transfers the packet to the bag");
+   Assert.That(Do(g,ResourceRewardCommands.UsePacket,loot.ReceiptId).Ok,Is.True);
+   Assert.That(Do(g,ResourceRewardCommands.UsePacket,mission.ReceiptId).Ok,Is.True);
+#endif
    Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(stone+560));
    Assert.That(Do(g,"Fight","fissure-valoria").Ok,Is.False);
    g=new LocalGateway(c,st);
