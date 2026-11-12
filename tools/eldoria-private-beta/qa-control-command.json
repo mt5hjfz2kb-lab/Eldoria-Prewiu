@@ -1,8 +1,9 @@
 {
   "schema": 1,
-  "run_id": 43216879249,
-  "sequence": 46,
-  "action": "finish",
-  "proof_sha256": "9f2bed718261bdab7f23749e11e357864721a0c089d11716b685f3fba0245c5f",
-  "reason": "Export this actually earned campaign before the bounded foreground session expires; Lyra assault and real infrastructure upgrades are preserved, not full I-V certification."
+  "run_id": 43231463013,
+  "sequence": 1,
+  "action": "click_text",
+  "proof_sha256": "d5e585f7e30078f8a81e4203aa53169e159a0a3877dd676343ae8033465191e2",
+  "label": "CONTINUAR",
+  "reason": "Resumed original frame000 proves exact exported checkpoint bytes and the genuine Lyra conclusion; continue the visible dialogue."
 }
