@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 15,
-  "previous_run": 43315303175,
-  "correction": "Modal/first-entry correction now passed far enough to render city and discover an actual 10.32px treasury medallion caption in 844x390. Raise its Vigilia font to 14 source points and synchronize the real treasury layout in native city capture; keep original 11.75px readability gate.",
+  "attempt": 16,
+  "previous_run": 43317518890,
+  "correction": "Real native city and first-entry gates now pass; building action full caption measured 89.7 source units in an 88.2-unit field. Use available painted space by reducing only its right inset from fourteen to eight, preserving hammer clearance, sprite aspect, font minimum and original glyph-fit gate.",
   "build_candidate": true
 }

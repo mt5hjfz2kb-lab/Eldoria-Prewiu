@@ -1558,7 +1558,10 @@ namespace Eldoria.BreachWatch
                 // Extra clearance after native GPU test showed the new 2K hammer
                 // relief extends beyond 28% of the painted button.
                 float captionLeft=paintedLeft+paintedWidth*.30f;
-                float captionRight=paintedLeft+paintedWidth-14f;
+                // Keep eight source units clear of the right gilded edge.
+                // The prior fourteen-unit inset truncated Bastion II with the
+                // production font despite spare painted space on its right.
+                float captionRight=paintedLeft+paintedWidth-8f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
                     Mathf.Max(20f,captionRight-captionLeft),
