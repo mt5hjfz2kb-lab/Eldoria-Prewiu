@@ -1,0 +1,185 @@
+name: Eldoria engine18 preserved owner stage and actual WebKit — no deployment
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta18-preserved-owner-stage.yml']
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+concurrency:
+  group: eldoria-engine18-preserved-owner-stage
+  cancel-in-progress: false
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - name: Require exact owner, immutable inputs and disabled tester distribution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def get(path):
+              req=urllib.request.Request(root+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              return json.load(urllib.request.urlopen(req,timeout=40))
+          def contents(path):
+              meta=get('contents/'+path+'?ref=main')
+              data=meta.get('content') or get('git/blobs/'+meta['sha'])['content']
+              return json.loads(base64.b64decode(data))
+          registry=contents('pipeline/active-workstreams.json')
+          owner=next(x for x in registry['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
+          assert owner['owner']=='chatgpt-central-art-execution-20261111' and owner['ownership_revision']==56
+          assert owner['ownership_state']=='claimed' and not owner['write_scope_released']
+          assert get('pulls/179')['head']['sha']==os.environ['GITHUB_SHA']
+          gate=contents('pipeline/tester-readiness/release-request.json')
+          assert not gate['enabled'] and gate['status']=='BLOCKED'
+          inputs=[
+              (13914905593,43152671564,'31a9caee72f5c1ec9456b1a83f76baff1fb3f93e7c46f5d34abaec6d7eb10ff0'),
+              (13963365509,43257126363,'36e5dcf79e650e372beb82756987ad25f085a4d6d62dae62c9ce7ba75aee8875'),
+              (13970076893,43273591340,'1f71375895f4c5b2ee93539367b467037599adf9c860a021e2541dcd39c235e3'),
+              (13962589902,43260864457,'d28c9a1da8527ca4abdb7a7483a944f827315bc3d0191465b91e7306da6f99aa')]
+          for artifact,run,digest in inputs:
+              item=get('actions/artifacts/'+str(artifact))
+              assert item['workflow_run']['id']==run and item['digest']=='sha256:'+digest and not item['expired']
+          native=get('actions/runs/43246088947')
+          assert native['head_sha']=='de63660d25bee9a32d7b804d6245744ed1f0dbca'
+          jobs=get('actions/runs/43246088947/jobs')['jobs']
+          assert any(x['name']=='native' and x['conclusion']=='success' for x in jobs)
+          for run in (43152671564,43273591340,43260864457):
+              result=get('actions/runs/'+str(run))
+              assert result['status']=='completed' and result['conclusion']=='success'
+          package=get('actions/runs/43257126363/jobs')['jobs']
+          assert any(x['name']=='package' and x['conclusion']=='success' for x in package)
+          print('EXACT_OWNER56_NATIVE18_PACKAGE_ARM_AND_EARNED_SAVE_PROOFS_PINNED_NO_DEPLOYMENT')
+          PY
+      - name: Verify safe replacement and existing forward-only reconstruction
+        run: |
+          python3 -m unittest discover -s tools/eldoria-private-beta -p test_engine18_owner_stage.py
+          python3 tools/eldoria-private-beta/test_lazy_profile_reconstruction.py
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43152671564
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: previous-pages
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43257126363
+          name: mobile18-full-lazy-owner-only-site-not-iphone-pass
+          github-token: ${{ github.token }}
+          path: candidate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43273591340
+          name: mobile18-full-lazy-desktop-arm-control-webkit-not-iphone-certificate
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43260864457
+          name: earned-candidate18-migration-windows-not-iphone
+          github-token: ${{ github.token }}
+          path: actual-migration
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare exact owner18 bytes, retain all other routes and version binary cache keys
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          reports=list(pathlib.Path('actual-migration').rglob('report.json'))
+          assert len(reports)==1
+          r=json.loads(reports[0].read_text())
+          assert r['passed'] and not r['errors'] and r['inputBytesUnchanged']
+          assert r['sourceEngine']=='de63660d25bee9a32d7b804d6245744ed1f0dbca'
+          assert not r['ownerSaveAccessed'] and not r['fakeStateCreated']
+          PY
+          python3 tools/eldoria-private-beta/stage_engine18_owner_site.py --pages previous-pages/artifact.tar --candidate candidate --mac actual-mac --output site --transport tools/eldoria-private-beta/iphone_ab/copyadd_transport.js
+          node --max-old-space-size=3072 tools/eldoria-private-beta/verify_engine18_owner_http.mjs site
+          python3 tools/eldoria-private-beta/verify_engine18_preservation.py --site site --baseline previous-pages-verified --archive previous-pages/artifact.tar --proof preservation-live-proof.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile18-unpublished-preserved-owner-site
+          path: site/
+          include-hidden-files: true
+          compression-level: 0
+          retention-days: 14
+      - name: Preserve original input identities, staging evidence and failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile18-preserved-owner-stage-proof-not-publication
+          path: |
+            site/beta-mobile18-owner-stage-proof.json
+            preservation-live-proof.json
+            actual-migration/report.json
+          retention-days: 14
+  staged-webkit:
+    needs: stage
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile18-unpublished-preserved-owner-site
+          path: site
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Play exact staged transport, real nickname, reload and story controls
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_LAZY_WORLD: '1'
+          QA_ADVANCE_STORY: '1'
+          QA_REVISION: native325-mobile18-objective-profile-owner-qa
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+          QA_URL: http://127.0.0.1:18765/beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1&eldoria_diag=1
+          QA_OUT: staged-proof/deferred
+        run: |
+          set -euo pipefail
+          mkdir -p staged-proof
+          npm install --prefix "$RUNNER_TEMP/eldoria-staged18" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-staged18/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-staged18/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs site 18765 >staged-proof/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..40}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18765/beta-iphone-p0-lazy-world/release-identity.json; then break;fi
+            sleep 1
+          done
+          node tools/eldoria-private-beta/qa_webkit_owner_staging.cjs
+          python3 - <<'PY'
+          import json,pathlib
+          r=json.loads(pathlib.Path('staged-proof/deferred/report.json').read_text())
+          assert r['passed'] and not r['errors'] and r['entry']['reloaded']
+          assert r['lazyWorldDeferredToFirstEntryVerified']
+          assert r['identity']['source_sha']=='de63660d25bee9a32d7b804d6245744ed1f0dbca'
+          assert r['identity']['candidate_bundle_sha256']=='43e2b883d8667c455b5cc9be37ff3fb5abddc6815776e2c7d01ea47c7f87da5a'
+          assert len(r['storyAdvanceAttempt']['actualCanvasClicks'])==5
+          print('EXACT_STAGED_OWNER18_DESKTOP_WEBKIT_PASS_NOT_PHYSICAL_IPHONE_OR_TESTER_RELEASE')
+          PY
+      - name: Preserve actual staged browser screenshots, errors and samples
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile18-staged-delivery-actual-desktop-webkit-not-physical-iphone
+          path: staged-proof/
+          retention-days: 14
