@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:32:00Z",
+  "updated_at": "2026-11-12T19:43:20.347Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -22,9 +22,9 @@
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-      "owner": "chatgpt-central-art-execution-20261111",
+      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 50,
+      "ownership_revision": 51,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "REQUESTED_COMPACT_BAG_ATTACHMENT_MAIL_ART_CAPTURED_AND_FULL_NATIVE_REGRESSION_PASS",
@@ -63,7 +63,7 @@
       ],
       "next": "Preserve approved-source art and actual captures outside main for owner's A/B review; continue cross-area integration only after review. Native packet regression repaired and certified; no reserved Windows resources.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
-      "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
+      "previous_owner": "chatgpt-central-art-execution-20261111",
       "ownership_history": [
         {
           "from": "chatgpt-issue186-art-20261111",
@@ -158,6 +158,14 @@
           "revision": 29,
           "transferred_at": "2026-11-12T07:52:02.352Z",
           "reason": "Owner explicitly assigned all four canonical tasks to one independent coordinator; reconcile role aliases with the same actual source writer without merging task scopes or granting art/main approval."
+        },
+        {
+          "from": "chatgpt-central-art-execution-20261111",
+          "to": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "previous_revision": 50,
+          "revision": 51,
+          "transferred_at": "2026-11-12T19:43:20.347Z",
+          "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
         }
       ],
       "resource_request": {
@@ -219,6 +227,19 @@
         "sha256": "714694051bdeb4772a372eabe4d79edcdfb5efb7710e5ad9850b3b48ee94558f",
         "ordinary_serialized_ci": true,
         "art_approved": false
+      },
+      "write_scope_released": false,
+      "recovery_handoff": {
+        "at": "2026-11-12T19:43:20.347Z",
+        "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+        "instructions_preserved": [
+          "March preparation: three hero slots, compact richer composition; secondary details behind information control",
+          "Bag: compact item slots; mail: richer presentation with actual claimable attachments",
+          "Evaluate Scouts actual motion and preserve approved treasure art",
+          "PR173 typography: reversible roles and actual native A/B before activation",
+          "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
+        ],
+        "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
       }
     },
     {
@@ -6841,7 +6862,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-central-art-execution-20261111",
+      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6871,7 +6892,7 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 121,
+      "ownership_revision": 122,
       "write_scope_released": false,
       "phase": "TYPOGRAPHY_NATIVE_AB_VERIFIED_OWNER_VISUAL_REVIEW_READY",
       "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
@@ -7054,6 +7075,14 @@
           "to_revision": 105,
           "transferred_at": "2026-11-12T06:22:00.403Z",
           "reason": "Windows-only formal release after bounded UI native43164446160 failed real Hall collision, Unity exited and 87 inputs preserved. Writer/scope stay on PR173; next fair Windows request requires CAS, while new active-subtree source a2f3fc has only source CI pass."
+        },
+        {
+          "from": "chatgpt-central-art-execution-20261111",
+          "to": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "previous_revision": 121,
+          "revision": 122,
+          "transferred_at": "2026-11-12T19:43:20.347Z",
+          "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
         }
       ],
       "runner_priority_handoff": {
@@ -7213,7 +7242,7 @@
         "request": "Haz eso",
         "context": "Replace remaining interface with accepted Vigilia design maintaining quality; preserve rewards/cofres. Scope expansion beyond prior first-screen proof."
       },
-      "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
+      "previous_owner": "chatgpt-central-art-execution-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
@@ -7255,14 +7284,26 @@
           "BreachWatchRetentionTheme"
         ],
         "review_deliverable": "libfile_fde3_f-cbe8a7e12138819199ebb339c4a36330_d1c014344dc081918fc6ba9b846892c0"
+      },
+      "recovery_handoff": {
+        "at": "2026-11-12T19:43:20.347Z",
+        "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+        "instructions_preserved": [
+          "March preparation: three hero slots, compact richer composition; secondary details behind information control",
+          "Bag: compact item slots; mail: richer presentation with actual claimable attachments",
+          "Evaluate Scouts actual motion and preserve approved treasure art",
+          "PR173 typography: reversible roles and actual native A/B before activation",
+          "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
+        ],
+        "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
       }
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-central-art-execution-20261111",
+      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 60,
+      "ownership_revision": 61,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7791,6 +7832,14 @@
           "revision": 48,
           "transferred_at": "2026-11-12T07:52:02.352Z",
           "reason": "Owner explicitly assigned all four canonical tasks to one independent coordinator; reconcile role aliases with the same actual source writer without merging task scopes or granting art/main approval."
+        },
+        {
+          "from": "chatgpt-central-art-execution-20261111",
+          "to": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "previous_revision": 60,
+          "revision": 61,
+          "transferred_at": "2026-11-12T19:43:20.347Z",
+          "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -8144,7 +8193,7 @@
         "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1",
         "external_testers_enabled": false
       },
-      "previous_owner": "codex-iphone-stability-6f75130e87ae",
+      "previous_owner": "chatgpt-central-art-execution-20261111",
       "released_at": "2026-11-10T23:04:36.314Z",
       "owner_only_lazy16": {
         "published": true,
@@ -8411,14 +8460,26 @@
         "errors": [],
         "context_lost": false,
         "owner_save_accessed": false
+      },
+      "recovery_handoff": {
+        "at": "2026-11-12T19:43:20.347Z",
+        "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+        "instructions_preserved": [
+          "March preparation: three hero slots, compact richer composition; secondary details behind information control",
+          "Bag: compact item slots; mail: richer presentation with actual claimable attachments",
+          "Evaluate Scouts actual motion and preserve approved treasure art",
+          "PR173 typography: reversible roles and actual native A/B before activation",
+          "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
+        ],
+        "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
       }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
-      "owner": "chatgpt-central-art-execution-20261111",
+      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 84,
+      "ownership_revision": 85,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8604,9 +8665,17 @@
           "revision": 71,
           "transferred_at": "2026-11-12T07:52:02.352Z",
           "reason": "Owner explicitly assigned all four canonical tasks to one independent coordinator; reconcile role aliases with the same actual source writer without merging task scopes or granting art/main approval."
+        },
+        {
+          "from": "chatgpt-central-art-execution-20261111",
+          "to": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "previous_revision": 84,
+          "revision": 85,
+          "transferred_at": "2026-11-12T19:43:20.347Z",
+          "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
         }
       ],
-      "previous_owner": "chatgpt-daily-treasures-20261108",
+      "previous_owner": "chatgpt-central-art-execution-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
@@ -8647,6 +8716,18 @@
         "full_scene_verified": false,
         "pr173_integrated": false,
         "physical_iphone": false
+      },
+      "recovery_handoff": {
+        "at": "2026-11-12T19:43:20.347Z",
+        "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+        "instructions_preserved": [
+          "March preparation: three hero slots, compact richer composition; secondary details behind information control",
+          "Bag: compact item slots; mail: richer presentation with actual claimable attachments",
+          "Evaluate Scouts actual motion and preserve approved treasure art",
+          "PR173 typography: reversible roles and actual native A/B before activation",
+          "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
+        ],
+        "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
       }
     },
     {
