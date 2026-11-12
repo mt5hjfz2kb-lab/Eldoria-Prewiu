@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 18,
-  "action": "click_text",
-  "proof_sha256": "d1269badee105dcd3e574e177c25d8cbe89d011111fc1b9fb6f7715de7b017d9",
-  "label": "CONSTRUIR",
-  "reason": "Original frame017 shows real Cantera500wood200food cost and12second duration; build through the unique visible Construir action."
+  "sequence": 19,
+  "action": "click_point",
+  "proof_sha256": "927a22c4cde4873f22daaa2e16e73f418be8bf0cb897c2e4780699f2fb954ecb",
+  "x": 210,
+  "y": 70,
+  "guard_texts": [
+    "Diagnóstico local",
+    "Misiones"
+  ],
+  "reason": "Frame018 records genuine Cantera construction; after its ordinary12seconds, use the visible quest arrow to inspect the next authored objective."
 }
