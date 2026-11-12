@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T22:49:59.866Z",
+  "updated_at": "2026-11-13T00:18:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,6 +19,25 @@
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
   "active": [
+    {
+      "id": "eldoria-relicario-premium-master-v2-20261113",
+      "title": "Relicario — plantilla visual V2 premium modular 5:8, lista para integración futura",
+      "owner": "chatgpt-relicario-premium-v2-20261113",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "feature/relicario-premium-master-v2-20261113",
+      "status": "active",
+      "phase": "REFERENCE_ART_ASSET_AUTHORING_NO_UNITY",
+      "claimed_at": "2026-11-13T00:18:00+01:00",
+      "art_production_routing": "isolated_reference_no_unity",
+      "resources": [],
+      "scope": [
+        "tools/relicario-premium-v2/**",
+        "docs/relicario-premium-v2/**"
+      ],
+      "base_main_sha": "0398d01cddcb5b75ab44d1ce6318400be33fe029",
+      "reason": "Owner explicitly requests bounded artistic uplift of previously approved card frame plus future PR; isolation from active beta I-V and Unity. No runner or paid tools."
+    },
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
