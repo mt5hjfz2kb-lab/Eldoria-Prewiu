@@ -16,6 +16,8 @@ jobs:
         with:
           sparse-checkout: |
             Unity/Assets/Eldoria/Scripts
+            Unity/Assets/Eldoria/Issue186Art/Runtime
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1
             Unity/Assets/Eldoria/BreachWatch
             tools/breach-watch
             tools/reward-experience
