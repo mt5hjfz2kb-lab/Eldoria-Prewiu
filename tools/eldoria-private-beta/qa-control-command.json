@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 17,
-  "action": "click_text",
-  "label": "Enviar expedición",
-  "proof_sha256": "1c27a116a477154b3c0c1e8aa83b1ff42ba5557ef3756d073993efc545e4366d",
-  "reason": "Frame016 shows actual selected meat reserve with1100availablefood and its real expedition action."
+  "sequence": 18,
+  "action": "wait",
+  "seconds": 20,
+  "proof_sha256": "009537939419b190b04854a1fdee734a9e12579b2211db8d08f2a6b09b61feaf",
+  "reason": "Let the real food expedition travel and gather; inspect its actual resulting phase and objective."
 }
