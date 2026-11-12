@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T16:17:51.870Z",
+  "updated_at": "2026-11-12T16:27:20.433Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7236,7 +7236,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 52,
+      "ownership_revision": 53,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7275,14 +7275,17 @@
         "Unity/Assets/Eldoria/BetaMemoryProbe/**",
         "Unity/Assets/Eldoria/BetaMemoryProbe.meta",
         ".github/workflows/eldoria-beta-lazy-world-native.yml",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
+        ".github/workflows/eldoria-beta-earned-reopen-windows.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "NATIVE18_COMPLETE_PROFILE18_PACKAGING_AND_REOPEN_PENDING",
+      "phase": "SOURCE18_PROFILE_PACKAGED_ACTUAL_EARNED_BROWSER_MIGRATION_PREPARING",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
       "next": "Actual public603 firstloop+52SQLpreviousproof preserved. New1316810 nextgathering objective follows real objectivearrow and unique OCRcontrols only, newMac43192581903 currentlyrunning independently ofWindows. Inspect actualframes then continue ordinaryprogression; never claimfullI-V/physicalphone fromattempts.",
       "last_verified": {
@@ -7785,7 +7788,7 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-12T15:14:26.933Z",
+      "runner_claimed_at": "2026-11-12T16:27:20.433Z",
       "canonical_integration_request": {
         "requested_at": "2026-11-09T10:49:44.401Z",
         "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
@@ -7871,7 +7874,7 @@
         "issue": 96,
         "release_allowed": false
       },
-      "runner_claim_basis": "Previous resources native43240154870 finished SUCCESS with Unity closed,218/218EditMode78/78PlayMode and preferences restored; no other registry holder. Next bounded beta batch repairs observed first deferred-objective loss, pins frozen overlay and tests cancel/reselect without changing gameplay clocks. Actual older generic documentation recert43244601242 finished SUCCESS before queued beta job began; editors were never interrupted or overlapped.",
+      "runner_claim_basis": "Separate bounded20minute Windows Edge migration/reopen batch after clean released native18 job. Mac reopen cancelled before browser; Linux browser launch denied by OS sockets. Existing Edge uses a fresh isolated profile and exact candidate18 artifact plus unmodified earned17 checkpoint; no Unity invocation, personal browser profile, art integration or publication.",
       "native_candidate": {
         "run_id": 42682071151,
         "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
@@ -8261,6 +8264,23 @@
           "resident_memory_measured": false
         },
         "profile18": "same prepared tree pins real18native source/run; exact candidate label guard added; wait for actual native success"
+      },
+      "profile18": {
+        "native_source": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "native_run": 43246088947,
+        "package_run": 43257126363,
+        "package_source": "6ad8836ca9319a39e5daba180884ed9a23a88420",
+        "package_result": "success",
+        "apple_gpu": "queued",
+        "bundle": "43e2b883d8667c455b5cc9be37ff3fb5abddc6815776e2c7d01ea47c7f87da5a",
+        "site_artifact": 13963365509,
+        "site_artifact_sha256": "36e5dcf79e650e372beb82756987ad25f085a4d6d62dae62c9ce7ba75aee8875",
+        "proof_artifact": 13962531213,
+        "proof_artifact_sha256": "644ec8e9099460cd915fa67a24b3bd71af311f4513d7d0dbeceda4cbac9fbfa5",
+        "small_proof_independently_verified": true,
+        "physical_iphone": false,
+        "external_testers_enabled": false,
+        "public_deployment": false
       }
     },
     {
