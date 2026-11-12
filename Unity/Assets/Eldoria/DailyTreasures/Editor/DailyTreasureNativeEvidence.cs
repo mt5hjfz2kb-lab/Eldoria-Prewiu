@@ -526,6 +526,44 @@ namespace Eldoria.DailyTreasures.Editor
                 " without changing hero identity or gameplay");
         }
 
+        static void VerifyActualControlVisible(DailyTreasurePanel panel,
+            Camera camera,RenderTexture rt,int width,int height,string name)
+        {
+            var button=FindButton(panel,name);
+            Need(button && button.gameObject.activeInHierarchy,
+                "Actual narrative action is absent: "+name);
+            var before=ReadNativePixels(camera,rt,width,height);
+            Color32[] without;
+            try { button.gameObject.SetActive(false);
+                without=ReadNativePixels(camera,rt,width,height); }
+            finally { button.gameObject.SetActive(true);
+                Canvas.ForceUpdateCanvases(); }
+            var corners=new Vector3[4];
+            ((RectTransform)button.transform).GetWorldCorners(corners);
+            float minX=width,minY=height,maxX=0f,maxY=0f;
+            foreach(var corner in corners)
+            {
+                var v=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                minX=Mathf.Min(minX,v.x);maxX=Mathf.Max(maxX,v.x);
+                minY=Mathf.Min(minY,v.y);maxY=Mathf.Max(maxY,v.y);
+            }
+            int left=Mathf.Clamp(Mathf.FloorToInt(minX),0,width-1);
+            int right=Mathf.Clamp(Mathf.CeilToInt(maxX),left+1,width);
+            int bottom=Mathf.Clamp(Mathf.FloorToInt(minY),0,height-1);
+            int top=Mathf.Clamp(Mathf.CeilToInt(maxY),bottom+1,height);
+            int changed=0,area=(right-left)*(top-bottom);
+            for(int y=bottom;y<top;y++)for(int x=left;x<right;x++)
+            {
+                int i=y*width+x;
+                var a=before[i];var b=without[i];
+                if(Mathf.Abs(a.r-b.r)+Mathf.Abs(a.g-b.g)+Mathf.Abs(a.b-b.b)>30)
+                    changed++;
+            }
+            Need(changed>=Mathf.Max(24,Mathf.RoundToInt(area*.05f)),
+                "Actual action is clickable but visually covered by scenery: "+
+                name+" visiblePixels="+changed+" area="+area);
+        }
+
         static void VerifyGenuineSceneComposition(
             DailyTreasurePanel panel,string eventId,int width,int height)
         {
@@ -1397,6 +1435,8 @@ namespace Eldoria.DailyTreasures.Editor
                             if(style==0)
                                 VerifyActualLyraVisibleInNativePixels(
                                     panel,camera,rt,width,height);
+                            VerifyActualControlVisible(panel,camera,rt,width,height,
+                                "Close tributes");
                             pictures.Add(Render(camera,rt,output,width,height,
                                 "style-"+styleSuffixes[style]+"-opening",
                                 "Visual style preview ONLY, not an earned milestone: "+
@@ -1408,6 +1448,10 @@ namespace Eldoria.DailyTreasures.Editor
                             Canvas.ForceUpdateCanvases();
                             VerifyCriticalTypography(panel,
                                 "authentic milestone "+styleSuffixes[style]);
+                            VerifyActualControlVisible(panel,camera,rt,width,height,
+                                "Claim exact daily reward");
+                            VerifyActualControlVisible(panel,camera,rt,width,height,
+                                "Close tributes");
                             pictures.Add(Render(camera,rt,output,width,height,
                                 "style-"+styleSuffixes[style]+"-result",
                                 "Visual result layout ONLY, with no milestone command executed: "+

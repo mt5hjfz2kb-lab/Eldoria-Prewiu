@@ -2441,6 +2441,11 @@ namespace Eldoria.DailyTreasures
             else
                 Place((RectTransform)skipButton.transform,
                     1f,1f,1f,1f,-10f,-60f,100f,45f);
+            // One continuous scenery now reaches the full theatre. The real
+            // actions were authored before ceremony and must paint AFTER it,
+            // not remain clickable but visually buried under its RawImage.
+            claimButton.transform.SetAsLastSibling();
+            closeButton.transform.SetAsLastSibling();
         }
         // PR173's approved Vigilia runs in a separate ScreenSpaceCamera
         // Canvas and deliberately disables the old Royal HUD's Canvas.
