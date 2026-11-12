@@ -19,6 +19,7 @@ jobs:
       review: ${{ steps.mode.outputs.review }}
       inspect: ${{ steps.mode.outputs.inspect }}
       combined_source: ${{ steps.mode.outputs.combined_source }}
+      combined_only: ${{ steps.mode.outputs.combined_only }}
       review_run: ${{ steps.mode.outputs.review_run }}
       review_artifact: ${{ steps.mode.outputs.review_artifact }}
     steps:
@@ -72,8 +73,10 @@ jobs:
               ui_jobs=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}/jobs")["jobs"]
               for name in ("native","genuine-visual-ab"):
                   if not any(j["name"]==name and j["status"]=="completed" and j["conclusion"]=="success" for j in ui_jobs):raise SystemExit("Unverified UI native/A-B certificate")
+          combined_only=request.get("state")=="REQUEST_ACTUAL_COMBINED_UI_ONLY"
+          if combined_only and not combined:raise SystemExit("Combined-only evidence requires exact verified UI source")
           print("ISSUE186_CAS_LEASE_PASS")
-          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nreview=false\ncombined_source={combined}\n")
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nreview=false\ncombined_source={combined}\ncombined_only={str(combined_only).lower()}\n")
           PY
 
   native:
@@ -158,7 +161,7 @@ jobs:
           if($LASTEXITCODE){throw 'Cannot set Unity-only source membership'}
           & git -C $src fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
           if($LASTEXITCODE){throw 'Pinned partial fetch failed; refuse archive fallback'}
-          & git -C $src checkout --force --detach FETCH_HEAD
+          & git -C $src checkout --detach FETCH_HEAD
           if($LASTEXITCODE){throw 'Pinned checkout failed'}
           $actual=(& git -C $src rev-parse HEAD).Trim()
           if($LASTEXITCODE -or $actual -ne $env:GITHUB_SHA){throw 'Exact native source mismatch'}
@@ -209,7 +212,7 @@ jobs:
           $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
           git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:ISSUE186_VIGILIA_SOURCE
           if($LASTEXITCODE){throw 'Pinned UI source fetch failed'}
-          git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) checkout --detach --force FETCH_HEAD
+          git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) checkout --detach FETCH_HEAD
           if($LASTEXITCODE -or (git -C $src rev-parse HEAD).Trim() -ne $env:ISSUE186_VIGILIA_SOURCE){throw 'Optional UI source mismatch'}
           & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Install -Project 'issue186-source/Unity' -UiProject (Join-Path $src 'Unity') -UiSource $env:ISSUE186_VIGILIA_SOURCE -Manifest (Join-Path $env:OUT 'vigilia-overlay.json')
       - name: Export installed managed API metadata for off-PC semantic compilation
@@ -224,6 +227,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
       - name: Import actual sprites and render four sizes in Unity
+        if: needs.exclusive-preflight.outputs.combined_only != 'true'
         shell: powershell
         working-directory: issue186-source
         run: |

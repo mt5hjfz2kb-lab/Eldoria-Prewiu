@@ -5,28 +5,18 @@ $source=Join-Path $Workspace 'issue186-source'
 $project=Join-Path $source 'Unity'
 $recent=Join-Path $Workspace 'issue186-native-43155182543/vigilia-overlay.json'
 if((Test-Path -LiteralPath $recent) -and -not(Test-Path -LiteralPath ($recent+'.restored.json'))){
- $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-recent-overlay-readonly-audit'}
- $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/Get-VigiliaProofOverlayDrift.ps1?ref=$env:GITHUB_SHA"
- $file=Invoke-RestMethod -Uri $url -Headers $hdr
- $script=Join-Path $Output 'Get-VigiliaProofOverlayDrift.ps1'
- [IO.File]::WriteAllBytes($script,[Convert]::FromBase64String($file.content))
- $drift=Join-Path $Output 'recent-r25-overlay-drift'
- & $script -Project $project -Manifest $recent -Output $drift
- $report=Get-Content (Join-Path $drift 'report.json') -Raw|ConvertFrom-Json
- $record=Get-Content -LiteralPath $recent -Raw|ConvertFrom-Json
- $review=@()
- foreach($change in @($report.changedPaths)){
-  $e=@($record.files)|Where-Object {$_.path -eq $change.path}
-  $current=Join-Path $project $change.path;$original=Join-Path $record.backup $change.path
-  $row=@{path=$change.path;current=$change.currentSha256;installed=$e.installed;original=$e.original}
-  if($change.path.EndsWith('.meta') -and (Get-Item $current).Length -lt 20000){$row.current_text=[IO.File]::ReadAllText($current)}
-  if(Test-Path -LiteralPath $original){$row.original_text=[IO.File]::ReadAllText($original)}
-  $review+=$row
+ $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-recent-exact-reviewed-restoration'}
+ $tools=Join-Path $Output 'recent-reviewed-restore-tools';[IO.Directory]::CreateDirectory($tools)|Out-Null
+ foreach($name in @('Set-VigiliaProofOverlay.ps1','reviewed-vigilia-imported-metadata.json')){
+  $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/${name}?ref=$env:GITHUB_SHA"
+  $file=Invoke-RestMethod -Uri $url -Headers $hdr
+  if($file.encoding -ne 'base64' -or -not $file.content){throw 'Pinned recent-overlay recovery input missing'}
+  [IO.File]::WriteAllBytes((Join-Path $tools $name),[Convert]::FromBase64String($file.content))
  }
- $json=@{status='RECENT_R25_OVERLAY_DRIFT_ARCHIVED_NO_RESTORE';count=$review.Count;files=$review;projectModified=$false}|ConvertTo-Json -Depth 12
- [IO.File]::WriteAllText((Join-Path $drift 'review.json'),$json,(New-Object Text.UTF8Encoding($false)))
- Write-Host $json
- throw 'RECENT_R25_OVERLAY_UNKNOWN_BYTES_PRESERVED; EXACT_REVIEW_REQUIRED_BEFORE_CHECKOUT'
+ & (Join-Path $tools 'Set-VigiliaProofOverlay.ps1') -Operation Restore -Project $project -Manifest $recent
+ $proof=Get-Content -LiteralPath ($recent+'.restored.json') -Raw|ConvertFrom-Json
+ if(-not $proof.restored -or $proof.files -ne 245){throw 'Actual recent245-file original restoration missing'}
+ Write-Host 'ISSUE186_RECENT_R25_EXACT245_RESTORED_UNKNOWN64_ARCHIVED'
 }
 $manifest=Join-Path $Workspace 'issue186-native-43146245415/vigilia-overlay.json'
 function Audit-TrackedSourceBeforeCheckout {
