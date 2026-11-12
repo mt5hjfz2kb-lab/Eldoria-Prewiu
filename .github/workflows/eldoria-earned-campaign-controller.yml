@@ -1,4 +1,4 @@
-name: Eldoria engine17 earned-save compatibility — unpublished observed UI
+name: Eldoria engine17 earned-save compatibility — optional telemetry fixed
 on:
   push:
     branches: [qa/eldoria-earned-campaign-20261112]
