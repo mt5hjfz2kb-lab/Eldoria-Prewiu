@@ -32,7 +32,9 @@ test('the real staged map installs once and gates camera exposure',()=>{
     'sawmill progression and full readiness must precede activating world camera');
   assert.match(host,/EnterWorldAfterDeferredBuild\(\+\+deferredWorldEpoch\)/);
   assert.match(host,/!worldPresentation\.IsReady/);
-  assert.match(host,/if\(!open&&deferredWorldEntryQueued\)/);
+  assert.match(host,/if\(!open\)\{\s+deferredWorldObjective=null;\s+if\(deferredWorldEntryQueued\)\{deferredWorldEntryQueued=false;deferredWorldEpoch\+\+;/);
+  assert.match(host,/if\(deferredWorldEntryQueued\)deferredWorldObjective=id;/);
+  assert.match(host,/if\(TrySetWorld\(true\)&&!string\.IsNullOrEmpty\(objective\)\)Select\(objective\);/);
 });
 
 test('the launch path preserves gameplay authority, HUD and save schemas',()=>{

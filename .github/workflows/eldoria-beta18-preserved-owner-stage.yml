@@ -90,7 +90,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Prepare exact owner18 bytes, retain all other routes and version binary cache keys
+      - name: Prepare exact owner18 bytes, retain all other routes and verify native versioned cache keys
         run: |
           python3 - <<'PY'
           import json,pathlib

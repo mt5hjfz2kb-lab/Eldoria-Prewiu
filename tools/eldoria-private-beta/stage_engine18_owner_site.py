@@ -76,27 +76,24 @@ def replace_only_prior_candidate(root):
     shutil.rmtree(dest)
     return protected,replaced
 
-def version_binary_urls(dest,manifest):
-    aliases=[]
+def verify_binary_urls(dest,manifest):
+    # The native package already versions binary URLs with their encoded
+    # content hash. Preserve the FULL URL as the decoded-size lookup key;
+    # only filesystem access strips its query string.
+    from urllib.parse import urlsplit,parse_qs
+    versions=[]
     for key in ("code","framework"):
-        original=safe_path(manifest[key]).as_posix()
+        url=manifest[key]
+        original=safe_path(url).as_posix()
         source=dest/original
         need(source.is_file(),"Native binary absent: "+original)
         raw_sha=filehash(source)
-        rel=Path(original)
-        delivery=(rel.parent/(raw_sha[:20]+"-"+rel.name)).as_posix()
-        need(not (dest/delivery).exists(),"Binary alias already exists")
-        source.rename(dest/delivery)
-        manifest[key]=delivery
-        need(original in manifest["decoded_sizes"],"Decoded native size missing")
-        manifest["decoded_sizes"][delivery]=manifest["decoded_sizes"].pop(original)
-        if original in manifest.get("decoded_parts",{}):
-            manifest["decoded_parts"][delivery]=manifest["decoded_parts"].pop(original)
-            for part in manifest["decoded_parts"][delivery]:
-                if part["url"]==original:part["url"]=delivery
-        aliases.append(dict(role=key,native_path=original,delivery_path=delivery,
-            encoded_sha256=raw_sha,encoded_bytes=(dest/delivery).stat().st_size))
-    return aliases
+        need(parse_qs(urlsplit(url).query).get("v")==[raw_sha[:16]],
+             "Native binary cache version differs from its bytes")
+        need(url in manifest["decoded_sizes"],"Full versioned native size key missing")
+        versions.append(dict(role=key,native_path=original,delivery_path=original,
+            delivery_url=url,encoded_sha256=raw_sha,encoded_bytes=source.stat().st_size))
+    return versions
 
 def run(a):
     root=Path(a.output);candidate=Path(a.candidate);mac=Path(a.mac)
@@ -169,7 +166,7 @@ def run(a):
         stable_size=oldsize,candidate_size=newsize,
         stable_parts=[dict(url="../"+BASE_ROUTE+"/"+x["url"],decoded_bytes=x["decoded_bytes"],
             decoded_sha256=x["decoded_sha256"]) for x in oldparts],target_parts=parts)
-    aliases=version_binary_urls(dest,newman)
+    aliases=verify_binary_urls(dest,newman)
     for alias in aliases:
         entry=next(x for x in identity["decoded_files"] if
             x.get("url",x.get("path"))==alias["native_path"])
@@ -220,7 +217,7 @@ def run(a):
     (dest/"index.html").write_text(html)
     identity["owner_delivery"]={"format":"ELDORIA_COPY_ADD_V1","native_input_provenance_retained":True,
         "all_native_data_bytes_verified":True,"published":False,"physical_iphone_verified":False,
-        "binary_url_aliases":aliases,"same_owner_page_path_preserves_save_origin":True}
+        "binary_url_versions":aliases,"same_owner_page_path_preserves_save_origin":True}
     (dest/"release-identity.json").write_text(json.dumps(identity,indent=2))
     for path,(size,sha) in before.items():
         need((root/path).stat().st_size==size and filehash(root/path)==sha,"An existing owner-playable file changed: "+path)
@@ -233,7 +230,7 @@ def run(a):
         shared_exact_streaming_assets=shared_streaming,shared_exact_city_background=shared_city,
         original_files_preserved=len(before),combined_bytes=size,
         previous_source_sha=PREVIOUS_SOURCE,previous_pages_run=BASE_PAGES_RUN,
-        replaced_owner_files=len(replaced),binary_url_aliases=aliases,
+        replaced_owner_files=len(replaced),binary_url_versions=aliases,
         preserved_fingerprints={k:dict(bytes=v[0],sha256=v[1]) for k,v in before.items()},
         previous_owner_fingerprints={k:dict(bytes=v[0],sha256=v[1]) for k,v in replaced.items()},
         published=False,art_approved=False,world_entry_verified=False,

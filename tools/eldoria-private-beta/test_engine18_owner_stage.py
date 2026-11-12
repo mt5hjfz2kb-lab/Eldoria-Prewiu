@@ -1,10 +1,11 @@
 import json
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
 from stage_engine18_owner_site import (
     NEW_ROUTE, PREVIOUS_SOURCE, PREVIOUS_BUNDLE, replace_only_prior_candidate,
-    tree, version_binary_urls,
+    tree, verify_binary_urls,
 )
 
 
@@ -55,20 +56,28 @@ class OwnerReplacementContract(unittest.TestCase):
             replace_only_prior_candidate(self.root)
         self.assertEqual(tree(self.root), before)
 
-    def test_binary_cache_keys_change_while_exact_native_bytes_remain(self):
-        manifest = dict(code='engine.unityweb', framework='framework.unityweb',
-                        decoded_sizes={'engine.unityweb': 10, 'framework.unityweb': 20},
-                        decoded_parts={'engine.unityweb': [dict(url='engine.unityweb')]})
-        original = {name: name.encode() for name in manifest['decoded_sizes']}
-        for name, data in original.items():
-            (self.root / name).write_bytes(data)
-        aliases = version_binary_urls(self.root, manifest)
-        for alias in aliases:
-            self.assertNotEqual(alias['native_path'], alias['delivery_path'])
-            self.assertEqual((self.root / alias['delivery_path']).read_bytes(),
-                             original[alias['native_path']])
-            self.assertNotIn(alias['native_path'], manifest['decoded_sizes'])
-        self.assertEqual(manifest['decoded_parts'][manifest['code']][0]['url'], manifest['code'])
+    def test_native_versioned_urls_and_full_size_keys_are_preserved(self):
+        manifest = dict(decoded_sizes={},decoded_parts={})
+        for key,name in [('code','engine.unityweb'),('framework','framework.unityweb')]:
+            data=name.encode()
+            (self.root/name).write_bytes(data)
+            url=name+'?v='+hashlib.sha256(data).hexdigest()[:16]
+            manifest[key]=url
+            manifest['decoded_sizes'][url]=len(data)
+        before=json.loads(json.dumps(manifest))
+        records=verify_binary_urls(self.root,manifest)
+        self.assertEqual(manifest,before)
+        for record in records:
+            self.assertEqual(record['delivery_url'],manifest[record['role']])
+            self.assertEqual(record['native_path'],record['delivery_path'])
+            self.assertTrue((self.root/record['native_path']).is_file())
+
+    def test_rejects_stale_cache_version_instead_of_rewriting_native_manifest(self):
+        (self.root/'engine.unityweb').write_bytes(b'new native bytes')
+        manifest=dict(code='engine.unityweb?v=0000000000000000',decoded_sizes={})
+        with self.assertRaisesRegex(RuntimeError,'cache version'):
+            verify_binary_urls(self.root,manifest)
+        self.assertEqual((self.root/'engine.unityweb').read_bytes(),b'new native bytes')
 
 
 if __name__ == '__main__':

@@ -28,10 +28,19 @@ test('lazy-world game host restores exactly to unchanged 19-overlay UX baseline'
   assert.match(front,/public static bool P0LazyWorldProbe/);
   assert.match(front,/IEnumerator EnterWorldAfterDeferredBuild\(int epoch\)/);
   const city=between(host,'   if(open&&P0CityOnlyProbe){','   if(open&&!CanEnterWorld');
-  const defer=between(host,'   if(!open&&deferredWorldEntryQueued){','   if(InWorld==open)return true;');
+  const defer=between(host,'   if(!open){\n    deferredWorldObjective=null;','   if(InWorld==open)return true;');
+  const navigation=between(host,'  // A quest may request a target while the first real Region 1 is still loading.',
+    '  public bool Select(string id){');
+  assert.match(navigation,/public bool NavigateToObjective\(string id\)/);
+  assert.match(navigation,/if\(deferredWorldEntryQueued\)deferredWorldObjective=id;/);
+  assert.doesNotMatch(navigation,/PlayerPrefs|Commit\(|Save\(|new LocalGateway/);
+  const selectionCancel='   if(deferredWorldEntryQueued&&id!="gate"&&!IsWorldTarget(id)){\n'+
+    '    deferredWorldEntryQueued=false;deferredWorldEpoch++;deferredWorldObjective=null;\n   }\n';
+  exactlyOne(host,selectionCancel);
   const marker='   if(open&&P0LazyWorldProbe)Debug.Log("ELDORIA_P0_LAZY_WORLD_ENTERED");\n';
   exactlyOne(host,marker);
-  let back=host.replace(front,oldReady).replace(city,'').replace(defer,'').replace(marker,'');
+  let back=host.replace(front,oldReady).replace(city,'').replace(defer,'').replace(marker,'')
+    .replace(navigation,'').replace(selectionCancel,'');
   assert.equal(back,frozen,'Unrelated UX, telemetry, progress, mailbox or save behavior changed');
 });
 
