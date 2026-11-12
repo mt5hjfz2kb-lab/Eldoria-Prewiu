@@ -101,6 +101,7 @@ jobs:
           if($LASTEXITCODE){throw 'Cannot initialize real sparse checkout'}
           $patterns=@(
             '/Unity/**'
+            '/tools/reward-experience/native/**'
             '!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV*/**'
             '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-391*/**'
           )
@@ -137,6 +138,17 @@ jobs:
           $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
           if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
+      - name: Export installed managed API metadata for off-PC semantic compilation
+        shell: powershell
+        run: |
+          & 'issue186-source/tools/reward-experience/native/Export-UnityManagedReferences.ps1' -Project 'issue186-source/Unity' -Output "issue186-managed-refs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - name: Make actual compiler references available while Unity captures
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-installed-managed-api-${{ github.sha }}
+          path: issue186-managed-refs-${{ github.run_id }}-${{ github.run_attempt }}/
+          retention-days: 7
+          if-no-files-found: error
       - name: Import actual sprites and render four sizes in Unity
         shell: powershell
         working-directory: issue186-source
@@ -189,3 +201,4 @@ jobs:
           path: ${{ github.workspace }}\issue186-native-${{ github.run_id }}\
           retention-days: 30
           if-no-files-found: warn
+
