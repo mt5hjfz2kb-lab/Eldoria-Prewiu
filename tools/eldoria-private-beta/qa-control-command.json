@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 23,
+  "sequence": 24,
   "action": "click_point",
-  "proof_sha256": "9d34c42569f403a8d1ea02334b9cacec4b3360d941fa0dfe9455e57cf49fb544",
+  "proof_sha256": "9d03bc53a9e099530f026cd1f6f15f2fac87f7a841d25c38c722437f69dea4d4",
   "x": 211,
   "y": 69,
   "guard_texts": [
-    "BASTIÓN III • 3/5",
-    "Investiga la fisura"
+    "Investiga la fisura",
+    "Misiones"
   ],
-  "reason": "Fresh frame022 records the second real victory and advances to the actual fissure investigation objective."
+  "reason": "Current original frame023 shows the mission arrow; use two clear current labels rather than the unstable OCR punctuation in the chapter badge."
 }
