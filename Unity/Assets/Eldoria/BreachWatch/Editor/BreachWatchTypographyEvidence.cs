@@ -12,6 +12,7 @@ namespace Eldoria.BreachWatch.Editor
 {
     public static class BreachWatchTypographyEvidence
     {
+        static bool inkMaskCalibrated;
         [Serializable] public sealed class Metric
         {
             public string path,text,role,font;
@@ -29,6 +30,7 @@ namespace Eldoria.BreachWatch.Editor
             public string baselineFile,baselineSha256,candidateFile,candidateSha256;
             public int width,height;
             public bool restored,artApproved=false;
+            public bool isolatedInkMaskCalibrated;
             public List<Metric> before,after;
             public List<string> violations=new List<string>();
         }
@@ -56,10 +58,13 @@ namespace Eldoria.BreachWatch.Editor
         // isolated from every other Graphic and world Renderer. Black drop
         // shadows are retained but excluded from the bright-glyph mask.
         static void VisibleInk(Text text,Canvas canvas,Camera camera,RenderTexture target,
-            int width,int height,out int visible,out int outside)
+            int width,int height,out int visible,out int outside,bool displacedBounds=false)
         {
             visible=outside=0;
-            var graphics=canvas.GetComponentsInChildren<Graphic>(true);
+            // World-space building labels live on other Canvases. Disabling
+            // only the Vigilia descendants leaves their pixels in the mask.
+            var graphics=UnityEngine.Object.FindObjectsByType<Graphic>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
             var enabled=graphics.Select(x=>x.enabled).ToArray();
             var renderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None);
             var rendered=renderers.Select(x=>x.enabled).ToArray();
@@ -70,6 +75,7 @@ namespace Eldoria.BreachWatch.Editor
             var points=corners.Select(x=>camera.WorldToViewportPoint(x)).ToArray();
             var bounds=Rect.MinMaxRect(points.Min(x=>x.x)*width-2f,points.Min(x=>x.y)*height-2f,
                 points.Max(x=>x.x)*width+2f,points.Max(x=>x.y)*height+2f);
+            if(displacedBounds)bounds.x-=width*2f;
             try
             {
                 for(int i=0;i<graphics.Length;i++)graphics[i].enabled=graphics[i]==text;
@@ -150,6 +156,18 @@ namespace Eldoria.BreachWatch.Editor
             string baselineFile,int width,int height)
         {
             if(Environment.GetEnvironmentVariable("VIGILIA_TYPOGRAPHY_AB")!="1")return;
+            if(!inkMaskCalibrated)
+            {
+                var probe=canvas.GetComponentsInChildren<Text>(false).FirstOrDefault(x=>
+                    x.isActiveAndEnabled&&x.name=="Actual quantity"&&!string.IsNullOrWhiteSpace(x.text));
+                if(!probe)throw new InvalidOperationException("No genuine visible resource text to calibrate glyph mask");
+                VisibleInk(probe,canvas,camera,target,width,height,out int visible,out int outside);
+                VisibleInk(probe,canvas,camera,target,width,height,out int negativeVisible,out int negativeOutside,true);
+                if(visible<8||outside>6||negativeVisible<8||negativeOutside!=negativeVisible)
+                    throw new InvalidOperationException("GPU glyph mask calibration failed: positive="+visible+"/"+outside+
+                        " negative="+negativeVisible+"/"+negativeOutside);
+                inkMaskCalibrated=true;
+            }
             if(!BreachWatchTypography.IsOptedIn("https://qa.invalid/?x=1&"+BreachWatchTypography.QueryFlag)||
                BreachWatchTypography.IsOptedIn("https://qa.invalid/#?"+BreachWatchTypography.QueryFlag)||
                BreachWatchTypography.IsOptedIn("https://qa.invalid/?eldoria_typography=source-sans30")||
@@ -159,7 +177,7 @@ namespace Eldoria.BreachWatch.Editor
             var component=canvas.GetComponent<BreachWatchTypography>();
             bool created=!component;if(created)component=canvas.gameObject.AddComponent<BreachWatchTypography>();
             if(component.CandidateEnabled)throw new InvalidOperationException("A/B baseline is already opted in");
-            var proof=new Proof {baselineFile=Path.GetFileName(baselineFile),
+            var proof=new Proof {isolatedInkMaskCalibrated=inkMaskCalibrated,baselineFile=Path.GetFileName(baselineFile),
                 baselineSha256=Digest(File.ReadAllBytes(baselineFile)),width=width,height=height,
                 before=Measure(canvas,camera,target,width,height)};
             var image=new Texture2D(width,height,TextureFormat.RGB24,false);
@@ -178,7 +196,7 @@ namespace Eldoria.BreachWatch.Editor
                 foreach(var item in proof.after)
                 {
                     if(!item.glyphsPresent)proof.violations.Add(item.path+": missing imported glyph");
-                    if(item.inkOutside)proof.violations.Add(item.path+": generated glyph ink outside own rectangle");
+                    if(item.inkOutside)proof.violations.Add(item.path+": actual GPU glyph ink outside own rectangle");
                 }
             }
             finally

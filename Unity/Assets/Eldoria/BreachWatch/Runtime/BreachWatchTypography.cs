@@ -66,7 +66,15 @@ namespace Eldoria.BreachWatch
             // still a title. Do not turn every descendant of it into data.
             if(name=="player name"||name=="real building name"||
                name=="actual chapter"||name=="actual objective"||
-               name=="compact engraved cost heading"||name=="reserved talent availability")return Role.Inscription;
+               name=="compact engraved cost heading"||name=="reserved talent availability"||
+               name=="hero card name"||name.Contains("eldoria heraldry"))return Role.Inscription;
+            if(name.Contains("category label")||name=="training or expedition breakdown")
+                return Role.Instrument;
+            if(name=="unit profile and composition")
+                foreach(char character in text.text??"")
+                    if(char.IsDigit(character))return Role.Instrument;
+            // A mailbox row is clickable, but its preview remains prose.
+            if(name.StartsWith("mensaje resumen"))return Role.Narrative;
             for(Transform p=text.transform;p!=null;p=p.parent)
             {
                 if(p.GetComponent<Selectable>())return Role.Instrument;

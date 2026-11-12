@@ -934,7 +934,7 @@ jobs:
           $bad=@()
           foreach($f in $files){
             $p=Get-Content $f.FullName -Raw|ConvertFrom-Json
-            if($p.source -ne $env:GITHUB_SHA -or -not $p.restored -or $p.artApproved -or @($p.before).Count -ne @($p.after).Count){throw "Stale or non-comparable typography A/B $($f.Name)"}
+            if($p.source -ne $env:GITHUB_SHA -or -not $p.isolatedInkMaskCalibrated -or -not $p.restored -or $p.artApproved -or @($p.before).Count -ne @($p.after).Count){throw "Stale or non-comparable typography A/B $($f.Name)"}
             $candidate=Join-Path $f.DirectoryName $p.candidateFile
             $baseline=Join-Path (Split-Path $f.DirectoryName -Parent) $p.baselineFile
             if((Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.candidateSha256 -or
