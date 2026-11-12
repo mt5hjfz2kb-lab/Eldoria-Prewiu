@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Application;
+using Eldoria.Issue186Art;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public int UnreadCount=>gateway?.Snapshot()?.Mailbox?.Unread()??0;
         public Func<bool> CanShowEntry { get; set; }
         RoyalHUD hud;ICommandGateway gateway;
+        Issue186BagOverlay resourceBag;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
         RectTransform detailSheet;
@@ -75,7 +77,13 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Initialize(RoyalHUD owner,ICommandGateway authority)
         {
             hud=owner;gateway=authority;
-            if(hud!=null && gateway!=null)Ensure();
+            if(hud!=null && gateway!=null)
+            {
+                Ensure();
+                if(!resourceBag)resourceBag=hud.GetComponent<Issue186BagOverlay>() ??
+                    hud.gameObject.AddComponent<Issue186BagOverlay>();
+                resourceBag.Initialize(hud,gateway,()=>{if(IsOpen)Close();});
+            }
             Refresh();
         }
         void OnEnable(){Canvas.willRenderCanvases+=BeforeCanvasRender;}
@@ -112,12 +120,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
                 !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false)&&
-                (CanShowEntry==null||CanShowEntry())&&string.IsNullOrEmpty(hud.SelectedBuildingId));
+                (CanShowEntry==null||CanShowEntry())&&!(resourceBag&&resourceBag.IsOpen)&&
+                string.IsNullOrEmpty(hud.SelectedBuildingId));
         }
         public void Open()
         {
             if(hud==null||gateway==null || hud.NarrativeOpen ||
                (hud.Modal!=null&&hud.Modal.gameObject.activeSelf))return;
+            if(resourceBag&&resourceBag.IsOpen)resourceBag.Close();
             Ensure();window.gameObject.SetActive(true);
             window.SetAsLastSibling();offset=0;selectedId=null;
             Layout();Refresh();
@@ -913,7 +923,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageLabels[i].color=msg.Read?
                         new Color(.26f,.22f,.18f):new Color(.11f,.08f,.045f);
                     messageLabels[i].Put(msg.Battle!=null?TargetName(msg.Battle.TargetId):msg.Title);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                    Issue186ArtKit.BindAttention(messageUnreadDots[i],
+                        HasPendingResourcePackets(s,msg.EventId)?AttentionLevel.ActionReady:
+                        !msg.Read?AttentionLevel.New:AttentionLevel.None);
+#else
                     messageUnreadDots[i].gameObject.SetActive(!msg.Read);
+#endif
                     messageSurfaces[i].color=msg.Read?
                         new Color(.84f,.84f,.83f,.92f):Color.white;
                     // Ink belongs on the pale parchment; the inherited ivory

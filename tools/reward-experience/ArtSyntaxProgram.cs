@@ -14,6 +14,7 @@ var paths = new[]
     "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeRaycaster.cs",
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/ResourceExperienceUiBridge.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs",
     "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs"
 };
 var opts = CSharpParseOptions.Default.WithPreprocessorSymbols("UNITY_EDITOR","UNITY_6000_0_OR_NEWER","UNITY_6000_3_OR_NEWER");
