@@ -366,6 +366,8 @@ namespace Eldoria.Issue186Art.Editor
                          !visibleMailText.Any(t=>t=="RONDAS" || t=="VIDA RESTANTE" ||
                              t.StartsWith("ENCUENTRO · ")),
                         "An empty deserialized battle shell turned genuine reward mail into a fabricated combat report");
+                    Need(host.Hud.GetComponent<RoyalGoldV41MailboxScreen>().VisibleRewardAttachments==2,
+                        "Actual unclaimed reward mail must show both saved original item attachments");
                     report.mailReadDoesNotClaim=true;
                     Photograph(camera,rt,"mail-read-unclaimed",width,height);
                     int beforeClaim=gateway.Snapshot().Resources.Wood;

@@ -196,7 +196,7 @@ namespace Eldoria.UI.RoyalGold.V2
             count=TextAt("Issue186 available count",panel,17,Ivory);
             feedback=TextAt("Issue186 real command feedback",panel,14,Gold);
             back=Action("Issue186 bag close",panel,"VOLVER",Close,out _);
-            for(int i=0;i<4;i++)
+            for(int i=0;i<12;i++)
             {
                 int index=i;
                 var r=new Row();
@@ -290,15 +290,10 @@ namespace Eldoria.UI.RoyalGold.V2
             At(entryBadge.rectTransform,entryW-24f,-7f,26f,26f);
             At(header,0f,0f,w,Mathf.Clamp(h*.105f,64f,92f));
             At(rim,7f,7f,w-14f,h-14f);
-            // Desktop full-width rows previously spread each 96px icon,
-            // amount and USAR across 1,500px of empty black space.
-            // Two balanced columns share the original full-screen Canvas.
-            // Tall tablets instead use larger one-column rows.
-            bool wideDesktop=!shortWide&&w>=1150f&&h>=650f&&w>h*1.35f;
-            bool tallTablet=!shortWide&&h>=1150f&&w>=650f;
+            // One saved object owns one compact square cell. Original item
+            // art distinguishes resource families; no inflated full-width rows.
             float safeWidth=w-l-r;
-            float width=wideDesktop?Mathf.Min(1120f,safeWidth):
-                tallTablet?Mathf.Min(800f,safeWidth):safeWidth;
+            float width=Mathf.Min(w>h?1120f:800f,safeWidth);
             float x0=l+(safeWidth-width)*.5f;
             float backW=Mathf.Clamp(width*.16f,70f,118f);
             At((RectTransform)back.transform,x0,t,backW,46f);
@@ -306,68 +301,47 @@ namespace Eldoria.UI.RoyalGold.V2
             title.fontSize=shortWide?23:w<500f?21:29;
             float y0=t+Mathf.Clamp(h*.105f,64f,92f);
             At(count.rectTransform,x0,y0,width,30f);
-            count.fontSize=shortWide?14:tallTablet?21:wideDesktop?20:17;
+            count.fontSize=shortWide?14:17;
             float cardsTop=y0+37f,footer=h-b-58f;
-            perPage=shortWide?2:4;
-            float gap=wideDesktop?24f:tallTablet?17f:shortWide?7f:11f;
-            int visualRows=wideDesktop?2:perPage;
-            float maxRowH=wideDesktop?240f:tallTablet?270f:
-                shortWide?122f:146f;
-            float usableH=Mathf.Max(95f,footer-52f-cardsTop);
-            float rowH=Mathf.Max(52f,Mathf.Min(maxRowH,
-                (usableH-gap*(visualRows-1))/visualRows));
-            float leftover=Mathf.Max(0f,usableH-rowH*visualRows-
-                gap*(visualRows-1));
-            if(wideDesktop||tallTablet)
-                cardsTop+=Mathf.Min(wideDesktop?68f:90f,leftover*.5f);
-            float cardW=wideDesktop?(width-gap)*.5f:width;
-            float icon=Mathf.Min(wideDesktop?136f:tallTablet?150f:96f,
-                rowH-13f,Mathf.Max(48f,cardW*.23f));
+            int columns=w>h?(w>=1150f?6:4):3;
+            float gap=shortWide?7f:10f;
+            float cell=Mathf.Min((width-gap*(columns-1))/columns,
+                Mathf.Max(80f,footer-52f-cardsTop));
+            int lines=Mathf.Clamp(Mathf.FloorToInt(
+                (footer-52f-cardsTop+gap)/(cell+gap)),1,12/columns);
+            perPage=columns*lines;
+            float gridW=columns*cell+(columns-1)*gap;
+            float gridLeft=x0+(width-gridW)*.5f;
             for(int i=0;i<rows.Count;i++)
             {
                 var item=rows[i];
                 if(i>=perPage){item.Root.gameObject.SetActive(false);continue;}
-                int column=wideDesktop?i%2:0;
-                int line=wideDesktop?i/2:i;
-                At(item.Root,x0+column*(cardW+gap),
-                    cardsTop+line*(rowH+gap),cardW,rowH);
-                if(sharedTheme)
-                    At(item.Frame,icon+22f,rowH-2f,cardW-icon-34f,1.3f);
-                else At(item.Frame,3f,3f,cardW-6f,rowH-6f);
-                // The visible CARD, rather than its tiny picture alone, is
-                // the genuine non-consuming seen target. USE stays later
-                // in drawing/input order and is the only consuming command.
-                At((RectTransform)item.Seen.transform,0f,0f,cardW,rowH);
-                float iconY=(rowH-icon)*.5f;
-                At(item.Icon.rectTransform,10f,iconY,icon,icon);
-                At(item.Quantity.rectTransform,10f+icon*.15f,iconY+icon*.73f,
-                    icon*.70f,icon*.18f);
-                At(item.New.rectTransform,10f+icon-24f,
-                    Mathf.Max(0f,iconY-8f),27f,27f);
-                float useW=Mathf.Clamp(cardW*.245f,86f,134f);
-                float useX=cardW-useW-12f;
-                At((RectTransform)item.Use.transform,useX,
-                    (rowH-46f)*.5f,useW,46f);
-                float textX=icon+22f,textW=Mathf.Max(58f,useX-textX-9f);
-                At(item.Name.rectTransform,textX,rowH*.17f,textW,34f);
-                item.Name.fontSize=shortWide?17:
-                    wideDesktop||tallTablet?25:cardW<400f?20:23;
-                // Enlarged29px quantities need their full imported-font
-                // line height. A35px box truncated every glyph in the
-                // actual1600x900 native grid despite a valid saved amount.
-                At(item.Amount.rectTransform,textX,rowH*.40f,textW,
-                    wideDesktop||tallTablet?46f:35f);
-                item.Amount.fontSize=shortWide?17:
-                    wideDesktop||tallTablet?29:22;
-                At(item.Detail.rectTransform,textX,rowH*.72f,
-                    textW,Mathf.Max(17f,rowH*.23f));
-                item.Detail.fontSize=shortWide?11:
-                    wideDesktop||tallTablet?16:13;
-                item.UseText.fontSize=shortWide?14:16;
+                int column=i%columns,line=i/columns;
+                At(item.Root,gridLeft+column*(cell+gap),
+                    cardsTop+line*(cell+gap),cell,cell);
+                At(item.Frame,2f,2f,cell-4f,cell-4f);
+                At((RectTransform)item.Seen.transform,0f,0f,cell,cell);
+                float icon=cell*.53f,iconY=cell*.13f;
+                At(item.Icon.rectTransform,(cell-icon)*.5f,iconY,icon,icon);
+                At(item.Quantity.rectTransform,(cell-icon)*.5f+icon*.15f,
+                    iconY+icon*.73f,icon*.70f,icon*.18f);
+                At(item.New.rectTransform,cell-25f,-5f,27f,27f);
+                At(item.Amount.rectTransform,6f,2f,cell-12f,Mathf.Max(26f,cell*.19f));
+                item.Amount.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.13f,13f,24f));
+                item.Amount.alignment=TextAnchor.MiddleLeft;
+                At(item.Name.rectTransform,5f,cell*.63f,cell-10f,cell*.15f);
+                item.Name.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.09f,10f,17f));
+                item.Name.alignment=TextAnchor.MiddleCenter;
+                // Novelty is already represented by the original badge.
+                // Keep source state available without duplicating a text line.
+                item.Detail.gameObject.SetActive(false);
+                float useH=Mathf.Max(22f,cell*.20f);
+                At((RectTransform)item.Use.transform,6f,cell-useH-5f,cell-12f,useH);
+                item.UseText.fontSize=Mathf.RoundToInt(Mathf.Clamp(cell*.10f,11f,17f));
                 var skin=item.Use.targetGraphic as Image;
                 if(skin&&skin.sprite)
                     skin.pixelsPerUnitMultiplier=Mathf.Max(.01f,
-                        skin.sprite.rect.height/(46f*Mathf.Max(.01f,skin.pixelsPerUnit)));
+                        skin.sprite.rect.height/(useH*Mathf.Max(.01f,skin.pixelsPerUnit)));
             }
             At(feedback.rectTransform,x0,footer-47f,width,43f);
             float navW=Mathf.Clamp(width*.25f,92f,160f);
@@ -383,7 +357,7 @@ namespace Eldoria.UI.RoyalGold.V2
             closeMail?.Invoke();
             panel.gameObject.SetActive(true);panel.SetAsLastSibling();
             page=0;
-            feedback.text="Solo USAR añade recursos. Toca una tarjeta para marcarla vista.";
+            feedback.text="Solo USAR añade recursos. Toca una casilla para marcarla vista.";
             Layout();Refresh();
         }
         public void Close()

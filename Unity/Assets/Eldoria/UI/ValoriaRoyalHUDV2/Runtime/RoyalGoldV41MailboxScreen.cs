@@ -27,6 +27,16 @@ namespace Eldoria.UI.RoyalGold.V2
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
         RectTransform detailSheet;
+        sealed class RewardAttachment
+        {
+            public RectTransform Root;
+            public Image Icon;
+            public RoyalText Amount,State;
+        }
+        readonly List<RewardAttachment> rewardAttachments=new List<RewardAttachment>();
+        RoyalText attachmentsHeading;
+        int attachmentCount;
+        public int VisibleRewardAttachments=>rewardAttachments.Count(a=>a.Root&&a.Root.gameObject.activeInHierarchy);
         RoyalGoldV41ReportArtwork reportArtwork;
         RawImage scoutVignette;
         Texture2D scoutVignettesAtlas;
@@ -547,6 +557,69 @@ namespace Eldoria.UI.RoyalGold.V2
             Position((RectTransform)next.transform,left+usable-44f,navY,44f,navH);
             visibleRowCount=count;detailVisible=selected;
         }
+
+        void RefreshRewardAttachments(PlayerState snapshot,string eventId)
+        {
+            attachmentCount=0;
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            var packets=snapshot?.ResourceRewards?.Packets?.Where(p=>p!=null&&p.MailEventId==eventId).ToList();
+            if(packets!=null)
+                for(int i=0;i<packets.Count;i++)
+                {
+                    if(i>=rewardAttachments.Count)
+                    {
+                        var a=new RewardAttachment();
+                        a.Root=Node("Mailbox / genuine reward attachment "+i,detailSheet);
+                        var frame=a.Root.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                        frame.DecorativeCorners=true;frame.Primary=false;frame.raycastTarget=false;
+                        a.Icon=Node("Mailbox / original resource packet "+i,a.Root).gameObject.AddComponent<Image>();
+                        a.Icon.preserveAspect=true;a.Icon.raycastTarget=false;
+                        a.Amount=Label("Mailbox / saved attachment amount "+i,a.Root,19,true);
+                        a.Amount.alignment=TextAnchor.MiddleCenter;
+                        a.State=Label("Mailbox / saved attachment state "+i,a.Root,12);
+                        a.State.alignment=TextAnchor.MiddleCenter;
+                        rewardAttachments.Add(a);
+                    }
+                    var item=rewardAttachments[i];var packet=packets[i];
+                    item.Root.gameObject.SetActive(true);
+                    // Bind the exact saved family and amount to the same
+                    // imported object art as the inventory, with no issuance.
+                    Issue186ArtKit.BindPacket(item.Icon,null,packet.Kind,packet.Amount);
+                    item.Amount.Put(packet.Amount.ToString("N0"));
+                    item.State.Put(packet.Used?"UTILIZADO":packet.Collected?"EN BOLSA":"POR RECLAMAR");
+                    attachmentCount++;
+                }
+#endif
+            for(int i=attachmentCount;i<rewardAttachments.Count;i++)
+                rewardAttachments[i].Root.gameObject.SetActive(false);
+            if(!attachmentsHeading)
+            {
+                attachmentsHeading=Label("Mailbox / genuine attached rewards heading",detailSheet,17,true);
+                attachmentsHeading.color=new Color(.94f,.80f,.54f);
+            }
+            attachmentsHeading.Put("OBJETOS ADJUNTOS");
+            attachmentsHeading.gameObject.SetActive(attachmentCount>0);
+        }
+        float LayoutRewardAttachments(float width,float top)
+        {
+            if(attachmentCount==0)return 0f;
+            Position(attachmentsHeading.rectTransform,24f,top,width-48f,28f);
+            attachmentsHeading.fontSize=Pixels(16);
+            int columns=Mathf.Max(1,Mathf.Min(4,Mathf.FloorToInt((width-48f)/100f)));
+            float gap=9f,cell=Mathf.Min(132f,(width-48f-gap*(columns-1))/columns);
+            for(int i=0;i<attachmentCount;i++)
+            {
+                var a=rewardAttachments[i];
+                Position(a.Root,24f+(i%columns)*(cell+gap),top+33f+(i/columns)*(cell+gap),cell,cell);
+                Position(a.Icon.rectTransform,cell*.19f,5f,cell*.62f,cell*.62f);
+                Position(a.Amount.rectTransform,5f,cell*.61f,cell-10f,cell*.23f);
+                a.Amount.fontSize=Pixels(19);a.Amount.color=new Color(.97f,.86f,.65f);
+                Position(a.State.rectTransform,4f,cell*.84f,cell-8f,cell*.15f);
+                a.State.fontSize=Pixels(10);a.State.color=new Color(.87f,.77f,.61f);
+            }
+            return 38f+Mathf.Ceil(attachmentCount/(float)columns)*(cell+gap);
+        }
+
         void LayoutReport(float width,float viewportHeight)
         {
             if(detailSheet==null||width<100f)return;
@@ -581,6 +654,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float cardH=narrow?104f:94f;
             float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
             float metricTop=headerH+19f;
+            metricTop+=LayoutRewardAttachments(width,metricTop);
             float captionH=24f,valueH=0f;
             // Measure the real saved names at the final column width. At
             // 900x1600 four columns can wrap both heroes onto several lines.
@@ -988,6 +1062,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             PresentReport(selected);
+            RefreshRewardAttachments(s,selected.EventId);
             bool pendingPackets=HasPendingResourcePackets(s,selected.EventId);
             var readAction=window.GetComponentsInChildren<Button>(true)
                 .First(button=>button.name=="Leer");
