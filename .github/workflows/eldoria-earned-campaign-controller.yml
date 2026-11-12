@@ -17,7 +17,7 @@ jobs:
       run: ${{ steps.choose.outputs.run }}
       source: ${{ steps.choose.outputs.source }}
     steps:
-      - name: Wait for the currently running genuine training proof; never create a save
+      - name: Wait for the completed genuine Lyra/infrastructure checkpoint; never create a save
         id: choose
         env:
           GH_TOKEN: ${{ github.token }}
@@ -28,12 +28,13 @@ jobs:
               q=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
               with urllib.request.urlopen(q,timeout=25) as r:return json.load(r)
           for attempt in range(80):
-              run=get('actions/runs/43212071356')
-              assert run['head_sha']=='b64fc2e81b2fd84d6084c88bf555d48a606e2425' and run['head_branch']=='qa/eldoria-earned-campaign-20261112'
+              run=get('actions/runs/43216879249')
+              assert run['head_sha']=='6d8049ac12bcb5ee02e91417e1e4ff64f06ca5b6' and run['head_branch']=='qa/eldoria-earned-campaign-20261112'
               if run['status']=='completed':break
               time.sleep(15)
           else:raise SystemExit('Existing earned-training run has not completed; no Mac game started')
-          chosen=(43212071356,'b64fc2e81b2fd84d6084c88bf555d48a606e2425') if run['conclusion']=='success' else (43203180584,'70b4269c2cdbe1042716442718cc8fef70187d36')
+          assert run['conclusion']=='success', 'Latest earned checkpoint must complete successfully; refuse fallback to an older campaign'
+          chosen=(43216879249,'6d8049ac12bcb5ee02e91417e1e4ff64f06ca5b6')
           exact=get('actions/runs/'+str(chosen[0]))
           assert exact['status']=='completed' and exact['conclusion']=='success' and exact['head_sha']==chosen[1]
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('run='+str(chosen[0])+'\nsource='+chosen[1]+'\n')
