@@ -248,7 +248,12 @@ namespace Eldoria.Issue186Art.Editor
                     canvas.worldCamera=camera;RenderUi(ui,width,height);
                     var wallet=gateway.Snapshot().Resources;
                     Click(ButtonNamed(ui,"Resource 0"),camera,rt);
-                    Need(bag.IsOpen,"Actual resource capsule did not open saved bag");
+                    Need(bag.IsOpen,"Actual resource capsule did not open saved bag; "+
+                        "V2Chronicle="+(host.Hud.Navigation&&host.Hud.Navigation.ChronicleLayout)+
+                        "; selected="+(host.Hud.SelectedBuildingId??"<null>")+
+                        "; modal="+(host.Hud.Modal&&host.Hud.Modal.gameObject.activeSelf)+
+                        "; narrative="+host.Hud.NarrativeOpen+
+                        "; activeIndependent="+canvas.isActiveAndEnabled);
                     var panel=ui.GetComponentsInChildren<RectTransform>(true)
                         .Single(t=>t.name=="Issue186 saved resource bag");
                     Need(panel.parent==canvas.transform&&!host.Hud.GetComponent<Canvas>().enabled,

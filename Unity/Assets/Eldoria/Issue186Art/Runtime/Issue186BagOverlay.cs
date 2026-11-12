@@ -63,7 +63,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool OpenOnCanvas(Canvas target)
         {
             if(!target||!target.isActiveAndEnabled||!panel||gateway==null||
-                !Unobstructed())return false;
+                !Unobstructed(true))return false;
             presentationCanvas=target;
             panel.SetParent(target.transform,false);
             panel.localScale=Vector3.one;
@@ -219,10 +219,14 @@ namespace Eldoria.UI.RoyalGold.V2
             hand.gameObject.SetActive(false);halo.gameObject.SetActive(false);
             panel.gameObject.SetActive(false);entry.gameObject.SetActive(false);
         }
-        bool Unobstructed()
+        bool Unobstructed(bool independentCanvas=false)
         {
+            // ChronicleLayout is the V2 footer geometry flag, not a modal.
+            // V2 sets it on startup even when Vigilia disables its Canvas;
+            // only the legacy bag entry should obey that layout restriction.
+            // Independent presentation still rejects every real modal/sheet.
             return hud && !hud.NarrativeOpen &&
-                !(hud.Navigation&&hud.Navigation.ChronicleLayout) &&
+                (independentCanvas || !(hud.Navigation&&hud.Navigation.ChronicleLayout)) &&
                 !(hud.Modal&&hud.Modal.gameObject.activeSelf) &&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) &&
                 !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false) &&
@@ -304,7 +308,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         public void Open()
         {
-            if(!panel||gateway==null||!Unobstructed())return;
+            if(!panel||gateway==null||!Unobstructed(presentationCanvas!=null))return;
             closeMail?.Invoke();
             panel.gameObject.SetActive(true);panel.SetAsLastSibling();
             page=0;
@@ -391,7 +395,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void Update()
         {
             if(!panel||!hud||bridge==null)return;
-            if(IsOpen&&(!Unobstructed()||
+            if(IsOpen&&(!Unobstructed(presentationCanvas!=null)||
                 (presentationCanvas&&!presentationCanvas.isActiveAndEnabled)))
                 {Close();return;}
             if(IsOpen&&(Mathf.Abs(panel.rect.width-priorWidth)>.5f||
