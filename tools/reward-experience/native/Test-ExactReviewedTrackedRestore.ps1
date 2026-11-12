@@ -33,4 +33,4 @@ try{
  Need (([IO.File]::ReadAllText((Join-Path $repo $settings))) -eq 'ORIGINAL PLAYER SETTINGS') 'Original PlayerSettings not recovered exactly'
  Need ((([IO.File]::ReadAllText((Join-Path $repo 'Unity/Library/preserved.txt'))) -eq 'DO NOT CLEAN THE IMPORT CACHE') -and (Test-Path -LiteralPath (Join-Path (Join-Path $out 'current') $meta))) 'Cache or archived unfamiliar bytes lost'
  Write-Host "ISSUE186_REAL_GIT_TRACKED_RECOVERY_PASS checks=$checks; NOT UNITY OR ART"
-}finally{if(Test-Path -LiteralPath $root){Remove-Item -LiteralPath $root -Recurse}}
+}finally{if(Test-Path -LiteralPath $root){Remove-Item -LiteralPath $root -Recurse -Force}}
