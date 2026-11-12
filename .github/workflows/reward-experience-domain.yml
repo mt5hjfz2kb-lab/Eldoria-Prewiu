@@ -68,7 +68,7 @@ jobs:
           Get-ChildItem tools/reward-experience/native -Filter '*.ps1' -File | ForEach-Object {
             $parseProblems=$null;$parseTokens=$null
             [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$parseTokens,[ref]$parseProblems)|Out-Null
-            if(@($parseProblems).Count){throw ($parseProblems|Out-String)}
+            if(@($parseProblems).Count){throw ($_.FullName+': '+(($parseProblems|ForEach-Object {$_.Message+' at '+$_.Extent.StartLineNumber}) -join '; '))}
           }
           & tools/reward-experience/native/Test-VigiliaProofOverlay.ps1
           $p=Get-Content 'issue186-overlay-source-guards.json' -Raw|ConvertFrom-Json
