@@ -12,9 +12,9 @@ if not reg.get("content"):reg=api("git/blobs/"+reg["sha"])
 reg=json.loads(base64.b64decode(reg["content"]))
 owner=[x for x in reg["active"] if x["id"]=="eldoria-private-beta-i-v-20261107"]
 assert len(owner)==1 and owner[0]["ownership_state"]=="claimed" and "windows-runner-heavy" not in owner[0].get("resources",[])
-run=api("actions/runs/43158802987");assert run["status"]=="completed" and run["conclusion"] in ("success","failure") and run["head_sha"]=="c47e75eb712c27724e52cd9e491730941f4a6e3d"
-base="docs/eldoria-private-beta/remote-native-review/43158802987/"
-entries=[];proof={"source_sha":"4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71","native_mac_run":43158802987,"physical_iphone_verified":False,"world_entry_verified":False,"visual_name_verification":"pending image inspection","art_approved":False,"images":[],"arms":{}}
+run=api("actions/runs/43160047196");assert run["status"]=="completed" and run["conclusion"] in ("success","failure") and run["head_sha"]=="206a8a65a450ac1f143d4a175b239ae55dcc32eb"
+base="docs/eldoria-private-beta/remote-native-review/43160047196/"
+entries=[];proof={"source_sha":"4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71","native_mac_run":43160047196,"physical_iphone_verified":False,"world_entry_verified":False,"visual_name_verification":"pending image inspection","art_approved":False,"images":[],"arms":{}}
 for mode in ("deferred",):
  reports=[p for p in Path("actual-mac").rglob("report.json") if p.parent.name==mode];assert len(reports)==1
  r=json.loads(reports[0].read_text());assert r["identity"]["source_sha"]==proof["source_sha"] and r["identity"]["candidate_bundle_sha256"]=="49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a"
