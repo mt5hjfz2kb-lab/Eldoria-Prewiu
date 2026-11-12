@@ -44,6 +44,8 @@ namespace Eldoria.BreachWatch.Editor
             public bool oldCanvasOff,newCanvasOwnsScreen;
             public int interactiveButtons;
             public bool authoredMailTextureVerified;
+            public bool heroIntroGpuClear;
+            public int heroIntroVisiblePixels,heroIntroOverlapPixels;
             public int authoredMailChangedPixels;
             public int authoredMailUpperChangedPixels;
         }
@@ -684,6 +686,74 @@ namespace Eldoria.BreachWatch.Editor
                         " bottom="+bottom.ToString("F2")+
                         " saved="+file);
                 }
+                // Previous native screenshot showed actual legible glyphs
+                // above/behind the category plaques even though a purely
+                // logical RectTransform check declared PASS. Render the
+                // SAME real Hall with its introduction disabled for ONE
+                // diagnostic frame. Count ONLY glyph pixels whose removal
+                // changes GPU output; a correct layout has no such pixels
+                // in the 14px safety gutter just above the tab artwork.
+                bool heroIntroGpuClear=false;
+                int heroIntroVisiblePixels=0,heroIntroOverlapPixels=0;
+                if(name=="heroes" && width==1600 && height==900)
+                {
+                    var intro=ui.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(x=>x && x.name=="Heroes hall introduction" &&
+                            x.isActiveAndEnabled && x.gameObject.activeInHierarchy);
+                    var tab=ui.GetComponentsInChildren<RectTransform>(true)
+                        .FirstOrDefault(x=>x && x.name=="Hall / category TODOS" &&
+                            x.gameObject.activeInHierarchy);
+                    Need(intro && tab,
+                        "Native Hall title/band/category controls must be real and visible");
+                    var tc=new Vector3[4];
+                    tab.GetWorldCorners(tc);
+                    // Viewport coordinates are relative to the ACTUAL native
+                    // render target, not editor monitor resolution.
+                    float tabTop=camera.WorldToViewportPoint(tc[1]).y*height;
+                    var ic=new Vector3[4];
+                    intro.rectTransform.GetWorldCorners(ic);
+                    int startX=Mathf.Clamp(Mathf.FloorToInt(
+                        camera.WorldToViewportPoint(ic[0]).x*width),0,width-1);
+                    int endX=Mathf.Clamp(Mathf.CeilToInt(
+                        camera.WorldToViewportPoint(ic[2]).x*width),startX+1,width);
+                    int lowY=Mathf.Clamp(Mathf.FloorToInt(tabTop-3f),0,height-1);
+                    int highY=Mathf.Clamp(Mathf.CeilToInt(tabTop+110f),lowY+1,height);
+                    var withIntro=texture.GetPixels32();
+                    var withoutIntro=new Texture2D(width,height,TextureFormat.RGB24,false);
+                    try
+                    {
+                        intro.enabled=false;
+                        Canvas.ForceUpdateCanvases();camera.Render();
+                        RenderTexture.active=rt;
+                        withoutIntro.ReadPixels(new Rect(0,0,width,height),0,0);
+                        withoutIntro.Apply();
+                        var hidden=withoutIntro.GetPixels32();
+                        for(int y=lowY;y<highY;y++)
+                        for(int x=startX;x<endX;x++)
+                        {
+                            int i=y*width+x;
+                            var a=withIntro[i];var b=hidden[i];
+                            int diff=Mathf.Abs(a.r-b.r)+Mathf.Abs(a.g-b.g)+
+                                Mathf.Abs(a.b-b.b);
+                            if(diff<=80)continue; // ignore animated torch lighting
+                            heroIntroVisiblePixels++;
+                            if(y<=tabTop+14f)
+                                heroIntroOverlapPixels++;
+                        }
+                        Need(heroIntroVisiblePixels>90,
+                            "Hall intro was not visibly rasterized in the native GPU test");
+                        Need(heroIntroOverlapPixels<=6,
+                            "Actual Hall introduction still touches/overlaps category art: "+
+                            heroIntroOverlapPixels+" glyph pixels inside the 14px gutter");
+                        heroIntroGpuClear=true;
+                    }
+                    finally
+                    {
+                        intro.enabled=true;
+                        Canvas.ForceUpdateCanvases();camera.Render();
+                        Object.DestroyImmediate(withoutIntro);
+                    }
+                }
                 bool authoredMailTextureVerified=false;
                 int authoredMailChangedPixels=0;
                 int authoredMailUpperChangedPixels=0;
@@ -750,6 +820,9 @@ namespace Eldoria.BreachWatch.Editor
                     oldCanvasOff=ui.LegacyPresentationHidden,
                     newCanvasOwnsScreen=verify(),interactiveButtons=buttons,
                     authoredMailTextureVerified=authoredMailTextureVerified,
+                    heroIntroGpuClear=heroIntroGpuClear,
+                    heroIntroVisiblePixels=heroIntroVisiblePixels,
+                    heroIntroOverlapPixels=heroIntroOverlapPixels,
                     authoredMailChangedPixels=authoredMailChangedPixels,
                     authoredMailUpperChangedPixels=authoredMailUpperChangedPixels
                 };

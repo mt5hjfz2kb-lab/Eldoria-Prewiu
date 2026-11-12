@@ -36,6 +36,8 @@ namespace Eldoria.BreachWatch
         bool hallIntroBestFit;
         int hallIntroFontSize;
         Vector2 hallIntroSize;
+        Vector2 hallIntroPosition;
+        float hallIntroLineSpacing;
         public bool DesktopHallIntroductionUnobstructed { get; private set; } = true;
         public int RestyledFrames=>restyled;
         public bool HallGradeActive
@@ -114,7 +116,13 @@ namespace Eldoria.BreachWatch
                 if(child.name=="Heroes / live controls")
                 {newContent=child as RectTransform;break;}
             if(!newContent)return false;
-            if(newContent==content)return restyled>0 && !VisibleOldRoyalFrame;
+            if(newContent==content)
+            {
+                // The canonical layout can settle one frame after adoption.
+                // Retry a missing reading band without cloning another UI.
+                if(!hallIntro)RecomposeDesktopHallHeader();
+                return restyled>0 && !VisibleOldRoyalFrame;
+            }
             ResetPresentation();
             content=newContent;
             GradeActualHall(heroRoot);
@@ -154,30 +162,44 @@ namespace Eldoria.BreachWatch
             return restyled>0&&!VisibleOldRoyalFrame;
         }
 
-        // Fix the source Text overflow rather than painting over it with
-        // another decorative layer. The sentence and passive categories
-        // stay identical to the authoritative reference.
+        // Native 43142184165 still shows the second sentence crossing the
+        // top of four real tabs at 1600x900, despite a source-only font-fit
+        // check passing. The prior method used anchoredPosition from the
+        // original centered, BestFit Text as though it were rendered glyph
+        // bounds. The hall is scaled and Unity centers those glyphs LOWER.
+        // Change technique: reserve an actual bounded reading band BETWEEN
+        // the title and tabs, top-align all glyphs and measure both lines.
+        // No cover-up panel, fabricated command or changed narrative text.
         void RecomposeDesktopHallHeader()
         {
             DesktopHallIntroductionUnobstructed=true;
-            if(!content || content.rect.width<=content.rect.height ||
-               content.rect.height<600f)return;
+            if(!content || content.rect.width<=content.rect.height)return;
             Text intro=null;
-            RectTransform tabs=null;
+            RectTransform tabs=null,title=null;
             foreach(var t in content.GetComponentsInChildren<Text>(true))
                 if(t && t.name=="Heroes hall introduction") {intro=t;break;}
+            // Compact landscape has NO introduction; don't add one.
+            if(!intro)return;
             foreach(var r in content.GetComponentsInChildren<RectTransform>(true))
-                if(r && r.name=="Hall / category TODOS") {tabs=r;break;}
-            if(!intro || !tabs)
+            {
+                if(r && r.name=="Hall / category TODOS")tabs=r;
+                else if(r && r.name=="Heroes hall title")title=r;
+            }
+            if(!tabs || !title)
             {
                 DesktopHallIntroductionUnobstructed=false;
                 return;
             }
-            var rt=intro.rectTransform;
-            float top=-rt.anchoredPosition.y;
-            float categoryTop=-tabs.anchoredPosition.y;
-            float available=categoryTop-top-12f;
-            if(available<40f)
+            if(hallIntro==intro)return;
+            float titleBottom=-title.anchoredPosition.y+title.rect.height;
+            float tabTop=-tabs.anchoredPosition.y;
+            // The 1600x900 canonical stage has a notably SMALLER logical
+            // height than 900 due to its scale factor. Never exclude it
+            // with a hard-coded content.rect.height>=600 check.
+            float bandTop=Mathf.Max(titleBottom+9f,tabTop-57f);
+            float bandBottom=tabTop-12f;
+            float available=bandBottom-bandTop;
+            if(available<34f)
             {
                 DesktopHallIntroductionUnobstructed=false;
                 return;
@@ -188,21 +210,26 @@ namespace Eldoria.BreachWatch
             hallIntroVertical=intro.verticalOverflow;
             hallIntroBestFit=intro.resizeTextForBestFit;
             hallIntroFontSize=intro.fontSize;
-            hallIntroSize=rt.sizeDelta;
+            hallIntroSize=intro.rectTransform.sizeDelta;
+            hallIntroPosition=intro.rectTransform.anchoredPosition;
+            hallIntroLineSpacing=intro.lineSpacing;
             intro.alignment=TextAnchor.UpperLeft;
             intro.horizontalOverflow=HorizontalWrapMode.Wrap;
             intro.verticalOverflow=VerticalWrapMode.Truncate;
             intro.resizeTextForBestFit=false;
-            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
-                Mathf.Min(rt.rect.height,available));
-            for(int size=intro.fontSize;size>=16;--size)
+            intro.lineSpacing=.88f;
+            var rt=intro.rectTransform;
+            rt.anchoredPosition=new Vector2(rt.anchoredPosition.x,-bandTop);
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,available);
+            bool fits=false;
+            for(int size=Mathf.Min(hallIntroFontSize,21);size>=14;--size)
             {
                 intro.fontSize=size;
-                if(intro.preferredHeight<=rt.rect.height-2f)break;
+                if(intro.preferredHeight<=available-2f){fits=true;break;}
             }
-            DesktopHallIntroductionUnobstructed=
-                intro.preferredHeight<=rt.rect.height-2f &&
-                top+rt.rect.height+9f<categoryTop;
+            DesktopHallIntroductionUnobstructed=fits &&
+                bandTop>=titleBottom+7f &&
+                bandTop+rt.rect.height<=tabTop-11f;
         }
 
         void GradeActualHall(RectTransform heroRoot)
@@ -284,6 +311,8 @@ namespace Eldoria.BreachWatch
                 hallIntro.verticalOverflow=hallIntroVertical;
                 hallIntro.resizeTextForBestFit=hallIntroBestFit;
                 hallIntro.fontSize=hallIntroFontSize;
+                hallIntro.lineSpacing=hallIntroLineSpacing;
+                hallIntro.rectTransform.anchoredPosition=hallIntroPosition;
                 hallIntro.rectTransform.sizeDelta=hallIntroSize;
             }
             hallIntro=null;
