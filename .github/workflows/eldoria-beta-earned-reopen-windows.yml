@@ -1,10 +1,10 @@
-name: Eldoria earned checkpoint reopening in isolated Windows Edge
+name: Eldoria actual public18 earned continuation in isolated Windows Edge
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
     paths:
       - '.github/workflows/eldoria-beta-earned-reopen-windows.yml'
-      - 'tools/eldoria-private-beta/qa_earned_reopen_windows.cjs'
+      - 'tools/eldoria-private-beta/qa_public_earned_windows.cjs'
 permissions:
   contents: read
   actions: read
@@ -33,12 +33,12 @@ jobs:
           $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1){throw 'No single Windows reservation'}
           $owner=$holders[0]
-          if($owner.id -ne 'eldoria-private-beta-i-v-20261107' -or $owner.owner -ne 'chatgpt-central-art-execution-20261111' -or $owner.ownership_revision -ne 53 -or $owner.ownership_state -ne 'claimed' -or $owner.write_scope_released -ne $false){throw 'Browser reservation is stale'}
+          if($owner.id -ne 'eldoria-private-beta-i-v-20261107' -or $owner.owner -ne 'chatgpt-central-art-execution-20261111' -or $owner.ownership_revision -ne 59 -or $owner.ownership_state -ne 'claimed' -or $owner.write_scope_released -ne $false){throw 'Browser reservation is stale'}
           $pr=Invoke-RestMethod -Headers $headers -Uri "$api/pulls/179"
           if($pr.head.sha -ne $env:GITHUB_SHA){throw 'Requested PR179 source changed'}
           $editors=@(Get-Process -Name Unity,UnityShaderCompiler -ErrorAction SilentlyContinue)
           if($editors.Count){throw 'Existing Unity process must finish; never interrupt it'}
-          Write-Host 'EXACT_PR179_BROWSER_LEASE53_VERIFIED; NO_UNITY_EDITOR_INVOKED'
+          Write-Host 'EXACT_PR179_BROWSER_LEASE59_VERIFIED; NO_UNITY_EDITOR_INVOKED'
       - name: Resolve installed Git before scoped checkout; refuse repository archive fallback
         shell: powershell
         run: |
@@ -64,16 +64,8 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
-          $a=Invoke-RestMethod -Headers $h -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/13963365509"
           $b=Invoke-RestMethod -Headers $h -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/13958304643"
-          if($a.workflow_run.id -ne 43257126363 -or $a.digest -ne 'sha256:36e5dcf79e650e372beb82756987ad25f085a4d6d62dae62c9ce7ba75aee8875' -or $a.expired){throw 'Candidate artifact differs'}
           if($b.workflow_run.id -ne 43245541625 -or $b.digest -ne 'sha256:9a30b683538e70e9ca71056d8c586fb977d4f5c08f6bcf478bbc4ba030164c22' -or $b.expired){throw 'Earned checkpoint artifact differs'}
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43257126363
-          name: mobile18-full-lazy-owner-only-site-not-iphone-pass
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/eldoria-earned-reopen-${{ github.run_id }}/site
       - uses: actions/download-artifact@v4
         with:
           run-id: 43245541625
@@ -92,7 +84,7 @@ jobs:
           $prefix=Split-Path $env:NODE_PATH -Parent
           npm install --prefix $prefix --no-save playwright@1.55.0
           if($LASTEXITCODE -ne 0){throw 'Browser driver installation failed'}
-          node --check reopen-tools/tools/eldoria-private-beta/qa_earned_reopen_windows.cjs
+          node --check reopen-tools/tools/eldoria-private-beta/qa_public_earned_windows.cjs
           if($LASTEXITCODE -ne 0){throw 'Browser probe syntax failed'}
       - name: Recheck live reservation immediately before browser launch
         shell: powershell
@@ -110,13 +102,13 @@ jobs:
           $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1){throw 'No single Windows reservation'}
           $owner=$holders[0]
-          if($owner.id -ne 'eldoria-private-beta-i-v-20261107' -or $owner.owner -ne 'chatgpt-central-art-execution-20261111' -or $owner.ownership_revision -ne 53 -or $owner.ownership_state -ne 'claimed' -or $owner.write_scope_released -ne $false){throw 'Browser reservation is stale'}
+          if($owner.id -ne 'eldoria-private-beta-i-v-20261107' -or $owner.owner -ne 'chatgpt-central-art-execution-20261111' -or $owner.ownership_revision -ne 59 -or $owner.ownership_state -ne 'claimed' -or $owner.write_scope_released -ne $false){throw 'Browser reservation is stale'}
           $pr=Invoke-RestMethod -Headers $headers -Uri "$api/pulls/179"
           if($pr.head.sha -ne $env:GITHUB_SHA){throw 'Requested PR179 source changed'}
           $editors=@(Get-Process -Name Unity,UnityShaderCompiler -ErrorAction SilentlyContinue)
           if($editors.Count){throw 'Existing Unity process must finish; never interrupt it'}
-          Write-Host 'EXACT_PR179_BROWSER_LEASE53_VERIFIED; NO_UNITY_EDITOR_INVOKED'
-      - name: Verify exact transport and reopen genuine earned state in fresh Edge
+          Write-Host 'EXACT_PR179_BROWSER_LEASE59_VERIFIED; NO_UNITY_EDITOR_INVOKED'
+      - name: Open actual public route with immutable earned checkpoint in fresh Edge
         shell: powershell
         env:
           NODE_PATH: ${{ runner.temp }}/eldoria-earned-reopen-node-${{ github.run_id }}/node_modules
@@ -127,16 +119,13 @@ jobs:
           $edge=@($candidates|Where-Object {Test-Path $_ -PathType Leaf}|Select-Object -First 1)
           if($edge.Count -ne 1){throw 'Existing Edge executable unavailable; no personal profile is used'}
           $env:ELDORIA_QA_EDGE=$edge[0]
-          node reopen-tools/tools/delivery/test-exact-decoded-transport.mjs "$env:ELDORIA_QA_ROOT/site"
-          if($LASTEXITCODE -ne 0){throw 'Exact decoded candidate transport failed'}
-          $env:ELDORIA_QA_TRANSPORT_VERIFIED='1'
-          node reopen-tools/tools/eldoria-private-beta/qa_earned_reopen_windows.cjs
+          node reopen-tools/tools/eldoria-private-beta/qa_public_earned_windows.cjs
           if($LASTEXITCODE -ne 0){throw 'Actual earned browser reopen failed; inspect genuine report and screenshot'}
       - name: Preserve original browser proof and errors without publication
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: earned-candidate18-migration-windows-not-iphone
+          name: public18-earned-continuation-windows-not-iphone
           path: ${{ runner.temp }}/eldoria-earned-reopen-${{ github.run_id }}/browser-proof/
           if-no-files-found: warn
           retention-days: 14
