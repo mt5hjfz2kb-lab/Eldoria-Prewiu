@@ -2,7 +2,7 @@
   "nativeRun": 43155182543,
   "auditRun": 43156972822,
   "artifact": 13913127003,
-  "uiSource": "445a99b97145f7355d7ad1b5de47a6b6685e4072",
+  "uiSource": "d6c78d96aeea27f2c0d64e50e477104b9a81512d",
   "role": "EXACT_REVIEWED_TEMPORARY_UI_METADATA_RESTORE_ONLY",
   "files": [
     {
@@ -390,6 +390,6 @@
       "original": null
     }
   ],
-  "previousReviewedUiSource": "36fb5775858f332d231a45b9cad5043bbb7aaf63",
-  "review_basis": "UI445a actual native43205758489 and independent AB SUCCESS; only presentation CSharp/guards/docs/request changed from36fb, all64 imported metadata tuples preserved byte-for-byte."
+  "previousReviewedUiSource": "445a99b97145f7355d7ad1b5de47a6b6685e4072",
+  "review_basis": "Exactd6c native43208162651+independentAB success; only presentation CSharp/docs/guards/request changed; all64 raw imported tuples unchanged."
 }
