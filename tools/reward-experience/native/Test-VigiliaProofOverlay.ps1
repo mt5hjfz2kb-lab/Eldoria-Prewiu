@@ -58,6 +58,15 @@ try{
  try{Restore}catch{$refused=$true}
  Need $refused 'Unknown edit was not rejected'
  Need (Same $conflicted (Snapshot $project)) 'Conflict rejection partially overwrote source'
+ # Preserve the EXACT unfamiliar bytes for review, without relaxing refusal
+ # or allowing a cleanup routine to alter the project.
+ $drift=Join-Path $root 'drift-evidence'
+ & (Join-Path $PSScriptRoot 'Get-VigiliaProofOverlayDrift.ps1') -Project $project -Manifest $manifest -Output $drift
+ $audit=Get-Content (Join-Path $drift 'report.json') -Raw|ConvertFrom-Json
+ Need ($audit.status -eq 'REVIEW_REQUIRED' -and $audit.changed -eq 1) 'Unknown drift not reported explicitly'
+ Need (([IO.File]::ReadAllText((Join-Path $drift 'changed-files/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'))) -eq 'UNFAMILIAR NEW BYTES') 'Archived unknown source differs'
+ Need (-not $audit.restorePerformed -and -not $audit.projectModified) 'Audit falsely claimed restoration'
+ Need (Same $conflicted (Snapshot $project)) 'Audit mutated protected isolated project'
  Put $file 'pinned HUD'
  Restore
  Need (Same $before (Snapshot $project)) 'Known source could not be restored after conflict removal'
