@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 40,
-  "action": "click_point",
-  "proof_sha256": "9696d49347ace062ed3ed4398f3f927515ec7b81ec7a1b9825089fbfcfe12dc7",
-  "x": 210,
-  "y": 70,
-  "guard_texts": [
-    "Diagnóstico local",
-    "Misiones"
-  ],
-  "reason": "Frame039 shows the quest arrow beside the earned level2 production objective; return using actual navigation after the completed Lyra assault."
+  "sequence": 41,
+  "action": "click_text",
+  "proof_sha256": "66bb4e0fe6da6f0b7634cd24f428d4e9e413ad870a8093d77d4e4ece04e8bc63",
+  "label": "MEJORAR",
+  "reason": "Frame040 shows selected level1 Aserradero, costs120wood78stone and10second timer; execute the unique real Mejorar control."
 }
