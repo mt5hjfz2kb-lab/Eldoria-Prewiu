@@ -139,7 +139,10 @@ namespace Eldoria.Issue186Art.Editor
             var hits=new List<RaycastResult>();system.RaycastAll(data,hits);
             Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(
                 hits[0].gameObject)==button.gameObject,"Actual target is not frontmost: "+button.name+
-                "; first="+(hits.Count>0?hits[0].gameObject.name:"none"));
+                "; first="+(hits.Count>0?hits[0].gameObject.name:"none")+
+                "; point="+data.position+"; rect="+r.rect+
+                "; depth="+(button.targetGraphic?button.targetGraphic.depth:-999)+
+                "; graphic="+(button.targetGraphic?button.targetGraphic.name:"none"));
             // Match EventSystem routing to the first hit\'s click-handler ancestor.
             var handler=ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject);
             Need(ExecuteEvents.Execute<IPointerClickHandler>(
@@ -298,15 +301,18 @@ namespace Eldoria.Issue186Art.Editor
                     report.useCreditsOnce=true;
                     Click(panel.GetComponentsInChildren<Button>(true)
                         .Single(b=>b.name=="Issue186 bag close"&&b.gameObject.activeInHierarchy),camera,rt);
-                    RenderUi(ui,width,height);
+                    // Re-enabling the real utility Graphic needs one normal
+                    // player frame, not repeated same-tick synthetic renders.
+                    RenderUi(ui,width,height);yield return null;RenderUi(ui,width,height);
                     var mailboxEntry=type.GetProperty("ActualMailboxEntry").GetValue(ui) as Button;
                     Click(mailboxEntry,camera,rt);RenderUi(ui,width,height);
+                    yield return null;RenderUi(ui,width,height);
                     var mailWindow=ui.GetComponentsInChildren<RectTransform>(true)
                         .Single(t=>t.name=="V41 / Buzón destination"&&t.gameObject.activeInHierarchy);
                     Click(ButtonNamed(mailWindow,"Buzón recompensas"),camera,rt);
-                    RenderUi(ui,width,height);
+                    RenderUi(ui,width,height);yield return null;RenderUi(ui,width,height);
                     Click(ButtonNamed(mailWindow,"Buzón / mensaje 0"),camera,rt);
-                    bag.Refresh();RenderUi(ui,width,height);
+                    bag.Refresh();RenderUi(ui,width,height);yield return null;RenderUi(ui,width,height);
                     Need(gateway.Snapshot().Mailbox.Messages.Single(m=>m.EventId==letter).Read,
                         "Actual letter row did not mark its own message read");
                     Need(gateway.Snapshot().ResourceRewards.Packets
@@ -318,7 +324,7 @@ namespace Eldoria.Issue186Art.Editor
                     Photograph(camera,rt,"mail-read-unclaimed",width,height);
                     int beforeClaim=gateway.Snapshot().Resources.Wood;
                     Click(ButtonNamed(mailWindow,"Leer"),camera,rt);
-                    bag.Refresh();RenderUi(ui,width,height);
+                    bag.Refresh();RenderUi(ui,width,height);yield return null;RenderUi(ui,width,height);
                     Need(gateway.Snapshot().Resources.Wood==beforeClaim&&
                         gateway.Snapshot().ResourceRewards.Packets
                             .Where(p=>p.MailEventId==letter).All(p=>p.Collected&&!p.Used),
@@ -328,7 +334,7 @@ namespace Eldoria.Issue186Art.Editor
                     report.mailClaimDoesNotCredit=true;
                     Photograph(camera,rt,"mail-claimed-no-credit",width,height);
                     Click(ButtonNamed(mailWindow,"Volver"),camera,rt);
-                    RenderUi(ui,width,height);
+                    RenderUi(ui,width,height);yield return null;RenderUi(ui,width,height);
                     Click(ButtonNamed(mailWindow,"Volver"),camera,rt);
                     Need(!host.Hud.GetComponent<RoyalGoldV41MailboxScreen>().IsOpen,
                         "Actual mailbox Back did not close the letter destination");
