@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 31,
-  "action": "type_digits",
+  "sequence": 32,
+  "action": "click_point",
   "proof_sha256": "01278a17f2088e32a2facb9e9be1b8469814973b2c81dd4d00bf006db3e5e121",
-  "text": "4"
+  "x": 56,
+  "y": 608,
+  "guard_texts": [
+    "ORDEN DE ENTRENAMIENTO",
+    "ENTRENAR 20 ARQUEROS T1"
+  ],
+  "reason": "Frames028-031 show a visible quantity slider below20; keyboard typing did not alter it. Use the real slider near its low end and verify the resulting count."
 }
