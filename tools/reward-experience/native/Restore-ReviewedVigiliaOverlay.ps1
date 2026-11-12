@@ -4,10 +4,46 @@ if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Nati
 $source=Join-Path $Workspace 'issue186-source'
 $project=Join-Path $source 'Unity'
 $manifest=Join-Path $Workspace 'issue186-native-43146245415/vigilia-overlay.json'
+function Audit-TrackedSourceBeforeCheckout {
+ $head=(& git -C $source rev-parse HEAD).Trim()
+ if($LASTEXITCODE -or $head -ne '256117b03987216c4a100bfb607d3113c5e74f96'){throw 'Preserved source HEAD changed; refuse automatic checkout'}
+ $dirty=@(& git -C $source diff --name-only)
+ if($LASTEXITCODE){throw 'Cannot inspect actual tracked source'}
+ if(-not $dirty.Count){Write-Host 'EXACT_ORIGINAL_TRACKED_SOURCE_CLEAN';return}
+ $archive=Join-Path $Output 'tracked-source-drift';[IO.Directory]::CreateDirectory($archive)|Out-Null
+ $records=@()
+ foreach($rel in $dirty){
+  if($rel.Contains('..') -or $rel.Contains(':') -or [IO.Path]::IsPathRooted($rel)){throw 'Unsafe tracked source path'}
+  $p=Join-Path $source $rel;$copy=Join-Path (Join-Path $archive 'current') $rel
+  if(-not(Test-Path -LiteralPath $p -PathType Leaf)){throw 'Tracked source is missing; preserve project'}
+  if((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Redirected tracked source'}
+  [IO.Directory]::CreateDirectory((Split-Path $copy))|Out-Null;[IO.File]::Copy($p,$copy,$false)
+  $hash=(Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLowerInvariant()
+  if((Get-FileHash -LiteralPath $copy -Algorithm SHA256).Hash.ToLowerInvariant() -ne $hash){throw 'Tracked unknown bytes not archived exactly'}
+  $gitBlob=(& git -C $source rev-parse ('HEAD:'+$rel)).Trim()
+  if($LASTEXITCODE){throw 'Cannot bind expected original Git blob'}
+  $record=@{path=$rel;currentSha256=$hash;headGitBlob=$gitBlob}
+  if($rel.EndsWith('.meta') -and (Get-Item -LiteralPath $p).Length -lt 20000){
+   $record.current_text=[IO.File]::ReadAllText($p)
+   $record.original_text=((& git -C $source show ('HEAD:'+$rel)) -join "`n")
+   if($LASTEXITCODE){throw 'Cannot inspect actual original metadata'}
+  }
+  if($rel -eq 'Unity/ProjectSettings/ProjectSettings.asset'){
+   $record.project_settings_diff=((& git -C $source diff --no-ext-diff --no-color -- $rel) -join "`n")
+  }
+  $records+=$record
+ }
+ $report=@{status='TRACKED_SOURCE_DRIFT_ARCHIVED_NOT_RESTORED';source=$head;count=$records.Count;files=$records;source_mutated=$false}
+ $json=$report|ConvertTo-Json -Depth 10
+ [IO.File]::WriteAllText((Join-Path $archive 'report.json'),$json,(New-Object Text.UTF8Encoding($false)))
+ Write-Host $json
+ throw 'TRACKED_SOURCE_DRIFT_EXACT_BYTES_ARCHIVED; REVIEW BEFORE ANY CHECKOUT'
+}
 if(-not(Test-Path -LiteralPath $manifest)){Write-Host 'NO_PRIOR_R19_OVERLAY';exit 0}
 if(Test-Path -LiteralPath ($manifest+'.restored.json')){
  $r=Get-Content -LiteralPath ($manifest+'.restored.json') -Raw|ConvertFrom-Json
  if(-not $r.restored){throw 'Previous exact restoration marker invalid'}
+ Audit-TrackedSourceBeforeCheckout
  Write-Host 'EXACT_PRIOR_OVERLAY_ALREADY_RESTORED';exit 0
 }
 $head=(& git -C $source rev-parse HEAD).Trim()
@@ -51,6 +87,5 @@ Write-Host "ISSUE186_GENERATED4_GUIDS_NO_OUTSIDE_OVERLAY_REFERENCES scanned=$che
 & (Join-Path $tools 'Set-VigiliaProofOverlay.ps1') -Operation Restore -Project $project -Manifest $manifest
 $r=Get-Content -LiteralPath ($manifest+'.restored.json') -Raw|ConvertFrom-Json
 if(-not $r.restored -or $r.files -ne 245){throw 'Prior exact original245-file restoration missing'}
-$dirty=@(& git -C $source diff --name-only)
-if($LASTEXITCODE -or $dirty.Count){Write-Host ($dirty|Out-String);throw 'Tracked source remains changed after exact restoration; no checkout'}
+Audit-TrackedSourceBeforeCheckout
 Write-Host 'ISSUE186_REVIEWED_R19_EXACT245_RESTORED_WITH_UNKNOWN64_ARCHIVED; SOURCE_CLEAN_BEFORE_CHECKOUT'
