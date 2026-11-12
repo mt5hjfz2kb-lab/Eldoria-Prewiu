@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 39,
-  "action": "click_text",
-  "proof_sha256": "32abe4c57cafa0d3dfb7f482208cc5be1723fa0b7139ce1fc9fe56afedf5616f",
-  "label": "ASALTAR CON LYRA",
-  "reason": "Original frame038 shows the actual Asaltar con Lyra encounter control; test the ordinary narrative combat entry."
+  "sequence": 40,
+  "action": "click_point",
+  "proof_sha256": "9696d49347ace062ed3ed4398f3f927515ec7b81ec7a1b9825089fbfcfe12dc7",
+  "x": 210,
+  "y": 70,
+  "guard_texts": [
+    "Diagnóstico local",
+    "Misiones"
+  ],
+  "reason": "Frame039 shows the quest arrow beside the earned level2 production objective; return using actual navigation after the completed Lyra assault."
 }
