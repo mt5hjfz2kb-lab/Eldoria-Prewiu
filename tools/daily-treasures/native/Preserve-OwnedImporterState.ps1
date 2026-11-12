@@ -1,5 +1,13 @@
-param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Output,[string]$SnapshotId='')
+param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Output,[string]$SnapshotId='',[string]$ReviewedNonImporter='')
 $ErrorActionPreference='Stop'
+# These two exact working states were independently diffed against original Git
+# blobs in CPU job130983331098/run43158308069. No general settings exception.
+$reviewed=@(
+ @{path='Unity/Packages/packages-lock.json';originalGitBlob='d508a7542c3e6b2b652163dc50cfbf5d3c0a0ed3';workingGitBlob='9b341e129fd1ba45f24d46b9afec83d6f1430929';rawSha256='5a853a6a4a3bcaa16b8a1201b56ec7c7d17c8c3cba217fa6ab347ea260e31a49'},
+ @{path='Unity/ProjectSettings/QualitySettings.asset';originalGitBlob='890e4e5aab0956513f5472ce46ae6b74a456ff04';workingGitBlob='475d43ec7ee7f6689839ee52c840cda2fab4b611';rawSha256='2c8b2653f611eb42dc1b4158b9f48b867db016b2a4cfafe99610440bf64be948'}
+)
+# Tests supply their own exact fixture hashes; native workflow uses only above.
+if($ReviewedNonImporter){$reviewed=@(Get-Content -LiteralPath $ReviewedNonImporter -Raw|ConvertFrom-Json)}
 function Hash([string]$p){(Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLowerInvariant()}
 $root=[IO.Path]::GetFullPath($Source).TrimEnd([IO.Path]::DirectorySeparatorChar)
 $out=[IO.Path]::GetFullPath($Output)
@@ -17,7 +25,10 @@ foreach($rel in $dirty){
  $original=(& git -C $root rev-parse ('HEAD:'+$rel)).Trim();if($LASTEXITCODE){throw 'Original Git blob unavailable'}
  $working=(& git -C $root hash-object ('--path='+$rel) $p).Trim();if($LASTEXITCODE){throw 'Working Git blob unavailable'}
  $rows+=@{path=$rel;rawSha256=$raw;originalGitBlob=$original;workingGitBlob=$working}
- if($rel -ne 'Unity/ProjectSettings/ProjectSettings.asset' -and (-not $rel.StartsWith('Unity/Assets/') -or -not $rel.EndsWith('.meta'))){$unowned+=$rel}
+ if($rel -ne 'Unity/ProjectSettings/ProjectSettings.asset' -and (-not $rel.StartsWith('Unity/Assets/') -or -not $rel.EndsWith('.meta'))){
+  $exact=@($reviewed|Where-Object {$_.path -eq $rel -and $_.originalGitBlob -eq $original -and $_.workingGitBlob -eq $working -and $_.rawSha256 -eq $raw})
+  if($exact.Count -ne 1){$unowned+=$rel}
+ }
 }
 $record=@{status='CURRENT_BYTES_ARCHIVED_NOT_RESET';originalHead=$head;files=$rows;canonicalMainModified=$false;libraryCleaned=$false}
 $report=Join-Path $out 'report.json';[IO.File]::WriteAllText($report,($record|ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false)))

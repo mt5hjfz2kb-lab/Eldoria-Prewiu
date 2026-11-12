@@ -22,5 +22,25 @@ try{
  Put (Join-Path $repo $code) 'UNFAMILIAR CODE MUST REMAIN';$refused=$false
  try{& $Script -Source $repo -Output (Join-Path $root 'refused') -SnapshotId 'refused'}catch{$refused=$true}
  Need ($refused -and (([IO.File]::ReadAllText((Join-Path $repo $code))) -eq 'UNFAMILIAR CODE MUST REMAIN')) 'Unknown source code was reset or not refused'
+ # Return fixture code to its actual original blob before exact settings tests.
+ & git -C $repo restore --source=HEAD --worktree -- $code
+ $quality='Unity/ProjectSettings/QualitySettings.asset';$lock='Unity/Packages/packages-lock.json'
+ Put (Join-Path $repo $quality) 'ORIGINAL QUALITY';Put (Join-Path $repo $lock) 'ORIGINAL PACKAGES'
+ & git -C $repo add -- $quality $lock;& git -C $repo commit --quiet -m 'Two exact original native inputs';if($LASTEXITCODE){throw 'Fixture inputs commit failed'}
+ Put (Join-Path $repo $quality) 'KNOWN QUALITY DIFFERENCE';Put (Join-Path $repo $lock) 'KNOWN PACKAGE DIFFERENCE'
+ $pins=@()
+ foreach($rel in @($quality,$lock)){
+  $fp=Join-Path $repo $rel
+  $pins+=@{path=$rel;originalGitBlob=(& git -C $repo rev-parse ('HEAD:'+$rel)).Trim();workingGitBlob=(& git -C $repo hash-object ('--path='+$rel) $fp).Trim();rawSha256=(Get-FileHash -LiteralPath $fp -Algorithm SHA256).Hash.ToLowerInvariant()}
+ }
+ $approved=Join-Path $root 'exact-fixture-pins.json';Put $approved ($pins|ConvertTo-Json -Depth 6)
+ $exactOut=Join-Path $root 'exact-settings';& $Script -Source $repo -Output $exactOut -SnapshotId 'exact-settings' -ReviewedNonImporter $approved
+ $ep=Get-Content (Join-Path $exactOut 'report.json') -Raw|ConvertFrom-Json
+ Need ($ep.originalGitBlobsVerified -and $ep.files.Count -eq 2) 'Exact reviewed input pair not preserved and restored'
+ Need (((& git -C $repo show ($ep.preservationRef+':'+$quality)) -join "`n") -eq 'KNOWN QUALITY DIFFERENCE') 'Original working quality lost from Git backup'
+ Need (([IO.File]::ReadAllText((Join-Path $repo $lock))) -eq 'ORIGINAL PACKAGES') 'Exact original package Git blob not restored'
+ Put (Join-Path $repo $quality) 'NEW UNKNOWN QUALITY EDIT';$refused=$false
+ try{& $Script -Source $repo -Output (Join-Path $root 'unknown-quality') -SnapshotId 'unknown-quality' -ReviewedNonImporter $approved}catch{$refused=$true}
+ Need ($refused -and (([IO.File]::ReadAllText((Join-Path $repo $quality))) -eq 'NEW UNKNOWN QUALITY EDIT')) 'Changed quality hash bypassed exact approval'
  Write-Host "DAILY_REAL_GIT_SOURCE_PRESERVATION_PASS checks=$checks; NO UNITY OR ART CLAIM"
 }finally{if(Test-Path -LiteralPath $root){Remove-Item -LiteralPath $root -Recurse -Force}}
