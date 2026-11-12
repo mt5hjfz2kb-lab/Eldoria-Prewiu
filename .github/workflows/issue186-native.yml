@@ -331,11 +331,16 @@ jobs:
             Write-Host 'OLDER_COMBINED_REPORT_NOT_EXPORTED';exit 0
           }
           foreach($image in @($report.images)){
-            if($image.file -notmatch '^real-vigilia-bag-[a-z-]+-[0-9]+x[0-9]+\.png$'){throw 'Unexpected actual native image name'}
+            if($image.file -notmatch '^real-vigilia-bag-[A-Za-z-]+-[0-9]+x[0-9]+\.png$'){throw 'Unexpected actual native image name'}
             $path=Join-Path $source $image.file
             if(-not(Test-Path -LiteralPath $path -PathType Leaf) -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $image.sha256){throw 'Fresh native image bytes differ from actual report'}
           }
-          Copy-Item -LiteralPath $source -Destination (Join-Path $env:OUT 'combined-bag') -Recurse -Force
+          $destination=Join-Path $env:OUT 'combined-bag'
+          [IO.Directory]::CreateDirectory($destination)|Out-Null
+          Copy-Item -LiteralPath $reportPath -Destination (Join-Path $destination 'report.json') -Force
+          foreach($image in @($report.images)){
+            Copy-Item -LiteralPath (Join-Path $source $image.file) -Destination (Join-Path $destination $image.file) -Force
+          }
           Write-Host "EXACT_FRESH_COMBINED_EVIDENCE_RETAINED status=$($report.status) images=$(@($report.images).Count); NOT_ART_APPROVAL"
       - name: Restore the exact pre-overlay UI source and preserve any unfamiliar edit
         if: always() && needs.exclusive-preflight.outputs.combined_source != ''
