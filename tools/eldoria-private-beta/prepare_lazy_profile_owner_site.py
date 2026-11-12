@@ -42,16 +42,18 @@ def extract_reference(root,output):
     assembled.unlink()
 
 def run(a):
-    lazy.require(a.revision=="native325-mobile16-full-lazy-profile-owner-qa","Unexpected candidate label")
+    lazy.require(a.revision in ("native325-mobile16-full-lazy-profile-owner-qa",
+        "native325-mobile17-caption-profile-owner-qa"),"Unexpected candidate label")
     work=Path(a.work);work.mkdir(parents=True,exist_ok=False)
     native=lazy.sole_dir(a.native_artifact,"comparison.json",(
         "warm-cache-restoration.json","source-overlay.json","ux-source-overlay.json",
         "web-build.json","native-journey/integration-result.json"))
     play=lazy.sole_dir(a.playmode_artifact,"lazy-world-native-result.json")
-    build=lazy.sole_dir(a.webgl_artifact,"index.html",("Build",))
     shell=lazy.sole_dir(a.beta14_shell_artifact,"release-identity.json",
         ("index.html","style.css","city.png","play.js"))
-    lazy.verify_source_proofs(native,play,a.source_head)
+    proofs=lazy.verify_source_proofs(native,play,a.source_head)
+    build=lazy.exact_build_dir(a.webgl_artifact,proofs["web"],a.native_run,
+        a.source_head,getattr(a,"native_attempt",1),work/"exact-build-selection.json")
     shell_hashes=lazy.verify_beta14_shell(shell)
     parent=lazy.sole_dir(a.reference_parent,"data.unity3d")/"data.unity3d"
     lazy.require(digest(parent)==profile.SOURCE,"Wrong reference parent")

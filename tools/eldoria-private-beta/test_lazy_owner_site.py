@@ -91,6 +91,10 @@ class LazyOwnerSiteEvidenceTests(unittest.TestCase):
         (orig/"Build/demo.wasm.unityweb").write_bytes(gzip.compress(b"\x00asm\x01\x00\x00\x00"))
         (orig/"Build/demo.loader.js").write_text("synthetic loader")
         (orig/"index.html").write_text("native synthetic index")
+        members=[p for p in orig.rglob("*") if p.is_file()]
+        self.mutate(self.proof/"web-build.json", {
+            "files":["Builds/ValoriaWebPlaytest/"+p.relative_to(orig).as_posix() for p in members],
+            "bytes":sum(p.stat().st_size for p in members)})
         shell=root/"frozen-beta14-shell"
         shell.mkdir()
         (shell/"index.html").write_text('<html><script src="play.js"></script></html>')

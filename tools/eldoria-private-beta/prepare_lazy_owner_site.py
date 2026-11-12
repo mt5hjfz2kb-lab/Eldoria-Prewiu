@@ -28,7 +28,55 @@ def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8-sig"))
 
 def digest(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+def exact_build_dir(root, web, native_run, source_head, native_attempt=1, proof_path=None):
+    """Select the recorded run, then verify every compiled file without altering siblings."""
+    require(str(native_run).isdigit() and str(native_attempt).isdigit(), "Invalid native run/attempt")
+    require(web.get("source_sha") == source_head and web.get("status") == WEB_STATUS,
+            "Build selection source/status mismatch")
+    root = Path(root).resolve()
+    expected_name = f"pr179-lazy-full-webgl-{native_run}-{native_attempt}"
+    candidates = []
+    for index in root.rglob("index.html"):
+        candidate = index.parent
+        require(not index.is_symlink(), "Symlink index is forbidden")
+        if index.is_file() and (candidate / "Build").is_dir():
+            require(candidate.resolve().is_relative_to(root), "Build escaped artifact root")
+            candidates.append(candidate)
+    exact = [p for p in candidates if p.name == expected_name]
+    if len(candidates) == 1 and candidates[0] == root:
+        selected = root  # Correct future producer uploads its contents directly.
+    else:
+        require(len(exact) == 1, "Missing or ambiguous exact native run/attempt build")
+        selected = exact[0]
+    expected = []
+    prefix = "Builds/ValoriaWebPlaytest/"
+    for raw in web.get("files", []):
+        require(isinstance(raw, str), "Invalid compiled file entry")
+        normalized = raw.replace("\\", "/")
+        require(normalized.startswith(prefix), "Unexpected compiled manifest prefix")
+        rel = normalized[len(prefix):]
+        require(rel and all(p not in ("", ".", "..") for p in rel.split("/")), "Unsafe compiled manifest path")
+        expected.append(rel)
+    require(expected and len(expected) == len(set(expected)), "Empty or duplicate compiled manifest")
+    actual = []
+    for path in selected.rglob("*"):
+        require(not path.is_symlink(), "Symlink in compiled build is forbidden")
+        if path.is_file():
+            actual.append(path.relative_to(selected).as_posix())
+    require(set(actual) == set(expected), "Compiled file membership mismatch")
+    total = sum((selected / rel).stat().st_size for rel in actual)
+    require(type(web.get("bytes")) is int and total == web["bytes"], "Compiled total byte count mismatch")
+    result = dict(source_sha=source_head, native_run=str(native_run), native_attempt=str(native_attempt),
+                  selected_root=str(selected.relative_to(root)),
+                  ignored_siblings=[str(p.relative_to(root)) for p in candidates if p != selected],
+                  bytes=total, files=[dict(path=rel, bytes=(selected/rel).stat().st_size,
+                      sha256=digest(selected/rel)) for rel in sorted(actual)])
+    if proof_path is not None:
+        Path(proof_path).write_text(json.dumps(result, indent=2))
+    return selected
 
 def sole_dir(root, marker, required=()):
     root = Path(root)
@@ -108,7 +156,6 @@ def package_owner(a):
         "warm-cache-restoration.json", "source-overlay.json", "ux-source-overlay.json",
         "web-build.json", "native-journey/integration-result.json"))
     playmode = sole_dir(a.playmode_artifact, "lazy-world-native-result.json")
-    build = sole_dir(a.webgl_artifact, "index.html", ("Build",))
     shell = sole_dir(a.beta14_shell_artifact, "release-identity.json", (
         "index.html", "style.css", "city.png", "play.js"))
     proofs = verify_source_proofs(evidence, playmode, a.source_head)
@@ -117,6 +164,9 @@ def package_owner(a):
     work = Path(a.work)
     require(not out.exists() and not work.exists(), "Owner QA artifact or scratch would be overwritten")
     work.mkdir(parents=True)
+    build = exact_build_dir(a.webgl_artifact, proofs["web"], a.native_run,
+                            a.source_head, getattr(a, "native_attempt", 1),
+                            work / "exact-build-selection.json")
     decoded = work / "original"
     structural.extract(build, decoded)
     original_sha = digest(decoded / "data.unity3d")
