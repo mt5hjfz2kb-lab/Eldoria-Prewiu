@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 32,
+  "sequence": 33,
   "action": "click_point",
-  "proof_sha256": "324f9129a2dffee2c067902d5819a21f3c5f1152c79334113360f5b170d7d1be",
+  "proof_sha256": "8cb19c7a13d1c1307100983c1d6735caf52b2e9eb9bc627ee65cae8847894f37",
   "x": 210,
   "y": 70,
   "guard_texts": [
     "BASTIÓN III - 3/5",
-    "Investiga la fisura"
+    "Diagnóstico local"
   ],
-  "reason": "Original frame031 shows quest navigation arrow at210,70 beside Investiga la fisura; follow the actual earned objective without modifying game state."
+  "reason": "Fresh frame032 shows the quest navigation arrow at210,70; follow the visible objective after its narrative caption refreshed naturally."
 }
