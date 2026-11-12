@@ -17,8 +17,12 @@ namespace Eldoria.BreachWatch
     [DisallowMultipleComponent]
     public sealed class BreachWatchMarchComposition : MonoBehaviour
     {
-        readonly Dictionary<RectTransform, Vector4> originals =
-            new Dictionary<RectTransform, Vector4>();
+        struct RectLayout
+        {
+            public Vector2 AnchorMin, AnchorMax, Pivot, Position, Size;
+        }
+        readonly Dictionary<RectTransform, RectLayout> originals =
+            new Dictionary<RectTransform, RectLayout>();
         struct LabelTypography
         {
             public int Size, Minimum, Maximum;
@@ -81,8 +85,10 @@ namespace Eldoria.BreachWatch
         {
             if(rt && !originals.ContainsKey(rt))
             {
-                var p=rt.anchoredPosition;var z=rt.sizeDelta;
-                originals.Add(rt,new Vector4(p.x,p.y,z.x,z.y));
+                originals.Add(rt,new RectLayout {
+                    AnchorMin=rt.anchorMin, AnchorMax=rt.anchorMax,
+                    Pivot=rt.pivot, Position=rt.anchoredPosition, Size=rt.sizeDelta
+                });
             }
         }
 
@@ -613,8 +619,14 @@ namespace Eldoria.BreachWatch
             foreach(var pair in originals)
             {
                 var rt=pair.Key; if(!rt)continue;
-                rt.anchoredPosition=new Vector2(pair.Value.x,pair.Value.y);
-                rt.sizeDelta=new Vector2(pair.Value.z,pair.Value.w);
+                // At() also replaces anchors and pivot. Restoring only offsets
+                // leaves stretched canonical controls pinned to the top left.
+                var old=pair.Value;
+                rt.anchorMin=old.AnchorMin;
+                rt.anchorMax=old.AnchorMax;
+                rt.pivot=old.Pivot;
+                rt.anchoredPosition=old.Position;
+                rt.sizeDelta=old.Size;
             }
             originals.Clear();
             if(heroSlots[2] && thirdHeroCaptured)

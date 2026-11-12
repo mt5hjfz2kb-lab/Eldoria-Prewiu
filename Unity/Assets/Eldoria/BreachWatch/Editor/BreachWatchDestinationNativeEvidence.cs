@@ -38,6 +38,41 @@ namespace Eldoria.BreachWatch.Editor
         static bool busy;
         static int mailboxFirstHitClicks;
 
+        static void VerifyMarchLayoutRestoration(RoyalGoldV3ManagementScreens manager,
+            BreachWatchMarchComposition composition)
+        {
+            composition.Restore();
+            manager.SynchronizeLayout();
+            var root=manager.VisibleRoot;
+            // Snapshot actual controller geometry independently of the adapter.
+            // Two cycles detect accumulated drift after reopening the screen.
+            for(int cycle=0;cycle<2;cycle++)
+            {
+                var controls=root.GetComponentsInChildren<RectTransform>(true)
+                    .Where(x=>x && !x.name.Contains("information") &&
+                        !x.GetComponentsInParent<RectTransform>(true)
+                            .Any(p=>p.name=="March / army information sheet"))
+                    .ToArray();
+                var before=controls.Select(x=>new[] {x.anchorMin,x.anchorMax,
+                    x.pivot,x.anchoredPosition,x.sizeDelta}).ToArray();
+                composition.RefreshScorecard();
+                Need(composition.UsesThreeHeroSpaces,
+                    "March restore probe did not exercise actual hero layout");
+                composition.Restore();
+                for(int i=0;i<controls.Length;i++)
+                {
+                    var x=controls[i];if(!x)continue;
+                    var after=new[] {x.anchorMin,x.anchorMax,x.pivot,
+                        x.anchoredPosition,x.sizeDelta};
+                    for(int j=0;j<after.Length;j++)
+                        Need(Vector2.Distance(before[i][j],after[j])<.01f,
+                            "March layout restore drift: "+x.name+
+                            " field="+j+" cycle="+cycle);
+                }
+            }
+            Debug.Log("VIGILIA_REAL_MARCH_LAYOUT_RESTORED_TWO_CYCLES");
+        }
+
         [Serializable] sealed class CaptionInkProof
         {
             public string control,text;
@@ -304,6 +339,7 @@ namespace Eldoria.BreachWatch.Editor
                 ClickActualMailControl(ui,marchComposition.InformationReturnButton,false);
                 Need(!marchComposition.SecondaryDetailsOpen && military.IsShowing,
                     "Genuine details return did not preserve preparation");
+                VerifyMarchLayoutRestoration(marchManager,marchComposition);
                 military.Close();
 
                 var heroes=ui.RealHeroes;
