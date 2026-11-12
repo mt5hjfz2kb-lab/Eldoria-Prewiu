@@ -521,8 +521,26 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(training&&training.interactable,"Barracks training choice absent");
     Capture(h,"pretest-barracks-choice-portrait.png",390,844);
     Capture(h,"pretest-barracks-choice-landscape.png",844,390);
+    // Mission rewards are now collected consumables, never automatic wallet
+    // credits. This disposable player deliberately uses its already-earned
+    // packets before budgeting the complete first-training objective.
+    int required=Math.Max(1,SliceContentProfiles.Active.Chapter2TrainArchers-
+      city.Gateway.Snapshot().ChapterProgress.TrainedArchers);
+    foreach(var packet in city.Gateway.Snapshot().ResourceRewards.Packets
+      .Where(p=>p!=null&&p.Collected&&!p.Used&&(p.Kind=="wood"||p.Kind=="stone")).ToArray())
+    {
+     if(SliceRules.MaxAffordableArchers(city.Gateway.Snapshot())>=required)break;
+     var beforeUse=city.Gateway.Snapshot();
+     var used=city.Gateway.Execute(new GameCommand(Guid.NewGuid().ToString(),
+       beforeUse.PlayerId,ResourceRewardCommands.UsePacket,packet.ReceiptId,beforeUse.Revision));
+     Need(used.Ok,"Explicit use of an earned training-budget packet failed: "+packet.ReceiptId);
+     Need(city.Gateway.Snapshot().ResourceRewards.Packets.Any(p=>
+       p.ReceiptId==packet.ReceiptId&&p.Used),"Used training-budget packet not persisted");
+    }
+    Need(SliceRules.MaxAffordableArchers(city.Gateway.Snapshot())>=required,
+      "Earned resources must fund the complete first-training objective");
     Click(training);
-   },"barracks shows upgrade and training choices");
+   },"barracks shows upgrade and training choices after deliberate packet use");
    yield return new WaitForSecondsRealtime(.2f);
    Check(()=>{
     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
@@ -533,6 +551,10 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(train&&train.interactable,"Real V3 train button unavailable");
     Click(train);
     Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");
+    Need(city.Gateway.Snapshot().PendingRecruitArchers+
+      city.Gateway.Snapshot().ChapterProgress.TrainedArchers>=
+      SliceContentProfiles.Active.Chapter2TrainArchers,
+      "Visible training command must queue the complete first-training objective");
     Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");
     Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");
     Capture(h,"integration-training.png",1600,900);
