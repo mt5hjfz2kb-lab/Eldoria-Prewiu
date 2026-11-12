@@ -19,7 +19,9 @@ assert len(r["images"])==1 and r["images"][0]["phase"]=="new" and r["realFirstHi
 shot=r["images"][0];data=(paths[0].parent/shot["file"]).read_bytes()
 assert len(data)==shot["bytes"] and hashlib.sha256(data).hexdigest()==shot["sha256"] and data[:8]==b"\x89PNG\r\n\x1a\n" and struct.unpack(">II",data[16:24])==(390,844)
 reg=json.loads(contents("pipeline/active-workstreams.json","main"));owners=[x for x in reg["active"] if x["id"]=="eldoria-issue186-reward-attention-guidance-20261111"]
-assert len(owners)==1 and owners[0]["owner"]=="chatgpt-central-resource-art-20261111" and "windows-runner-heavy" not in owners[0].get("resources",[])
+assert len(owners)==1 and owners[0]["owner"]=="chatgpt-central-resource-art-20261111"
+if "windows-runner-heavy" in owners[0].get("resources",[]):
+ print("PARTIAL_REVIEW_DEFERRED_WHILE_NATIVE_SOURCE_FROZEN");raise SystemExit(0)
 branch="feature/issue186-reward-attention-guidance-20261111";head=api("git/ref/heads/"+branch)["object"]["sha"]
 prefix="docs/issue186/remote-native-review/"+str(runid)+"/"
 try:

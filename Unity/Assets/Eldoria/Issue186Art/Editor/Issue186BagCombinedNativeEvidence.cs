@@ -267,7 +267,16 @@ namespace Eldoria.Issue186Art.Editor
                         .Single(t=>t.name=="Issue186 saved resource bag");
                     Need(panel.parent==canvas.transform&&!host.Hud.GetComponent<Canvas>().enabled,
                         "Bag is still under the disabled legacy canvas");
-                    report.actualBagOnVigilia=true;bag.Refresh();yield return null;
+                    report.actualBagOnVigilia=true;bag.Refresh();
+                    // Let the real component's 160ms guide cadence run. A
+                    // custom Editor iterator does not execute WaitForSeconds.
+                    double guideReady=EditorApplication.timeSinceStartup+.30;
+                    while(EditorApplication.timeSinceStartup<guideReady)yield return null;
+                    var actualHand=panel.GetComponentsInChildren<Image>(true)
+                        .Single(t=>t.name=="Issue186 authentic tutorial hand");
+                    Need(actualHand.gameObject.activeInHierarchy,
+                        "Actual combined first-use guide did not become visible on its real target; "+
+                        Eldoria.Issue186Art.Issue186ArtKit.LastPointerRejectReason);
                     Photograph(camera,rt,"new",width,height);
                     Click(panel.GetComponentsInChildren<Button>(true)
                         .First(b=>b.name=="Issue186 card - mark seen only"&&b.gameObject.activeInHierarchy),
