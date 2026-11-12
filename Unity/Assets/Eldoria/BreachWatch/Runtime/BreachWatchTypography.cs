@@ -104,19 +104,33 @@ namespace Eldoria.BreachWatch
             state.LineSpacing=text.lineSpacing;
         }
 
+        static bool InScope(Text text)
+        {
+            for(Transform parent=text.transform;parent;parent=parent.parent)
+            {
+                // Their owners must opt into a later, separately certified
+                // font adaptation. Do not silently style PR181/PR187 screens.
+                if(parent.name=="Issue186 saved resource bag"||
+                   parent.GetComponent("DailyTreasurePanel")||
+                   parent.GetComponent<BreachWatchRetentionTheme>())return false;
+                if(parent.GetComponent<Canvas>())break;
+            }
+            return true;
+        }
+
         public void SynchronizeNow()
         {
             if(!CandidateEnabled)return;
             stale.Clear();
             foreach(var pair in originals)
                 if(!pair.Key||!pair.Key.isActiveAndEnabled||!pair.Key.gameObject.activeInHierarchy||
-                   !pair.Key.transform.IsChildOf(transform))
+                   !pair.Key.transform.IsChildOf(transform)||!InScope(pair.Key))
                     stale.Add(pair.Key);
             foreach(var text in stale)
             {if(text)RestoreOne(text,originals[text]);originals.Remove(text);}
             foreach(var text in GetComponentsInChildren<Text>(false))
             {
-                if(!text||!text.isActiveAndEnabled)continue;
+                if(!text||!text.isActiveAndEnabled||!InScope(text))continue;
                 if(!originals.TryGetValue(text,out var state))
                 {
                     state=new Original {Font=text.font,Style=text.fontStyle};

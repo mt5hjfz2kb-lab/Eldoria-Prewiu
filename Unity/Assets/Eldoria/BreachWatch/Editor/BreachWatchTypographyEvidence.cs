@@ -71,6 +71,9 @@ namespace Eldoria.BreachWatch.Editor
             var oldFlags=camera.clearFlags;var oldColor=camera.backgroundColor;
             var oldActive=RenderTexture.active;
             var image=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            var hidden=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            var shadows=text.GetComponents<Shadow>();
+            var shadowEnabled=shadows.Select(x=>x.enabled).ToArray();
             var corners=new Vector3[4];text.rectTransform.GetWorldCorners(corners);
             var points=corners.Select(x=>camera.WorldToViewportPoint(x)).ToArray();
             var bounds=Rect.MinMaxRect(points.Min(x=>x.x)*width-2f,points.Min(x=>x.y)*height-2f,
@@ -80,14 +83,23 @@ namespace Eldoria.BreachWatch.Editor
             {
                 for(int i=0;i<graphics.Length;i++)graphics[i].enabled=graphics[i]==text;
                 foreach(var renderer in renderers)renderer.enabled=false;
+                foreach(var shadow in shadows)shadow.enabled=false;
                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;
                 Canvas.ForceUpdateCanvases();camera.Render();RenderTexture.active=target;
                 image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();
                 var pixels=image.GetPixels32();
+                // URP/procedural passes can paint even with transparent
+                // clear and Renderer components disabled. Subtract the
+                // identical frame without this Text, rather than assuming
+                // that every bright pixel belongs to the glyph.
+                text.enabled=false;Canvas.ForceUpdateCanvases();camera.Render();
+                RenderTexture.active=target;
+                hidden.ReadPixels(new Rect(0,0,width,height),0,0);hidden.Apply();
+                var background=hidden.GetPixels32();
                 for(int y=0;y<height;y++)for(int x=0;x<width;x++)
                 {
-                    var pixel=pixels[y*width+x];
-                    if(pixel.a<24||pixel.r+pixel.g+pixel.b<100)continue;
+                    int index=y*width+x;var pixel=pixels[index];var back=background[index];
+                    if(Mathf.Abs(pixel.r-back.r)+Mathf.Abs(pixel.g-back.g)+Mathf.Abs(pixel.b-back.b)<=80)continue;
                     visible++;if(!bounds.Contains(new Vector2(x+.5f,y+.5f)))outside++;
                 }
             }
@@ -95,9 +107,11 @@ namespace Eldoria.BreachWatch.Editor
             {
                 for(int i=0;i<graphics.Length;i++)if(graphics[i])graphics[i].enabled=enabled[i];
                 for(int i=0;i<renderers.Length;i++)if(renderers[i])renderers[i].enabled=rendered[i];
+                for(int i=0;i<shadows.Length;i++)if(shadows[i])shadows[i].enabled=shadowEnabled[i];
                 camera.clearFlags=oldFlags;camera.backgroundColor=oldColor;
                 Canvas.ForceUpdateCanvases();camera.Render();RenderTexture.active=oldActive;
                 UnityEngine.Object.DestroyImmediate(image);
+                UnityEngine.Object.DestroyImmediate(hidden);
             }
         }
 
