@@ -258,9 +258,47 @@ jobs:
           }catch(error){console.warn('Cannot prove identical full native inputs; run complete gate: '+error.message);}
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'heavy_required='+heavy+'\n');
           JS
-  certify:
+  integrated_ui_ready:
     needs: shared_scope
-    if: always() && vars.UNITY_RUNNER_READY == 'true' && needs.shared_scope.outputs.heavy_required != 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: For PR179 wait off Windows until the exact integrated visual gate passes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr=context.payload.pull_request;
+            if(pr?.number!==179 || pr.head.ref!=='feature/eldoria-private-beta-i-v-20261107' ||
+               pr.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo) return;
+            if('${{ needs.shared_scope.outputs.heavy_required }}'==='false') return;
+            const sha=pr.head.sha;
+            const until=Date.now()+85*60*1000;
+            while(Date.now()<until){
+              const ref=await github.rest.git.getRef({...context.repo,ref:'heads/'+pr.head.ref});
+              if(ref.data.object.sha!==sha){core.setFailed('Superseded integration source; do not reserve Windows for an obsolete full certificate');return;}
+              const runs=await github.rest.actions.listWorkflowRuns({...context.repo,
+                workflow_id:'eldoria-beta-integrated-ui-native.yml',head_sha:sha,per_page:10});
+              const run=runs.data.workflow_runs.find(x=>x.head_sha===sha && x.head_branch===pr.head.ref);
+              if(run){
+                const jobs=await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,filter:'latest',per_page:100});
+                const native=jobs.data.jobs.find(x=>x.name==='native');
+                if(native?.status==='completed'){
+                  if(native.conclusion!=='success'){core.setFailed('Exact integrated UI/native gate failed; full gameplay certificate remains required after correction');return;}
+                  core.info('Exact native UI/build passed on '+sha+' in run '+run.id+'; now run the unchanged complete gameplay certificate');return;
+                }
+                if(run.status==='completed' && run.conclusion!=='success'){
+                  core.setFailed('Integrated source/ownership/native checks failed; no Windows reservation');return;
+                }
+              }
+              await new Promise(resolve=>setTimeout(resolve,20000));
+            }
+            core.setFailed('Exact integrated native gate did not complete within the bounded wait');
+  certify:
+    needs: [shared_scope, integrated_ui_ready]
+    if: always() && needs.integrated_ui_ready.result == 'success' && vars.UNITY_RUNNER_READY == 'true' && needs.shared_scope.outputs.heavy_required != 'false'
     # Use disposable probe-only saves for EVERY native UI test on the owner's PC.
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
