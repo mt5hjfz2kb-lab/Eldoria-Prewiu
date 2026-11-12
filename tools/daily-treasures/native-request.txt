@@ -1,8 +1,8 @@
 # One full-viewport actual 3D take, no competing camera at edges
-state=REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION
+state=REQUEST_EXCLUSIVE_CITY_ART_CONTEXT
 workstream=eldoria-daily-treasures-20261108
 branch=feature/eldoria-daily-treasures-20261108
-source_before_request=341aa36ccf00bd98a2ae33df8798a44b0f3df761
+source_before_request=85f680b3fc871f16df097a3314085566b6abfb3f
 registry_main_commit_claim=09768c883accd24eb527ebc53776ca4fc0071c9f
 runner_lease_revision=60
 runner_owner=chatgpt-central-treasures-art-20261111
@@ -18,6 +18,7 @@ city_claims=0
 art_approved=false
 physical_iphone_verified=false
 merge_or_publish=false
-request_time_utc=2026-11-12T03:43:46.161Z
+request_time_utc=2026-11-12T03:57:33.569Z
 
-city_resolution_guard=shortedge64_longedge1000_correct_aspect_fullviewport_coverage_and_all_original_pixel_gates
+current_lot=20_actual_city_context_PNG_only_NO_repeated_component_capture
+prior_component_native=43150131899_source85f680b3_72componentPASS_runtime_unchanged

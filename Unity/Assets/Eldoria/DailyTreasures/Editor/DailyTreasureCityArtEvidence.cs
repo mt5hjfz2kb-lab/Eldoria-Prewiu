@@ -80,7 +80,7 @@ namespace Eldoria.DailyTreasures.Editor
             Require(raw && raw.texture is RenderTexture,
                 "No true URP RenderTexture backing the Bastion ceremony");
             var rt=(RenderTexture)raw.texture;
-            Require(rt.IsCreated() && rt.width>=500 && rt.height>=500,
+            Require(rt.IsCreated() && rt.width>=64 && rt.height>=64 && Mathf.Max(rt.width,rt.height)>=1000,
                 "Bastion hero shot is not an actual GPU render");
             int rx=rt.width/5,ry=rt.height/5;
             int w=rt.width-rx*2,h=rt.height-ry*2;

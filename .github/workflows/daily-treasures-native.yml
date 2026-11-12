@@ -15,8 +15,11 @@ jobs:
   verify-exclusive-lease:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      city_only: ${{ steps.mode.outputs.city_only }}
     steps:
       - name: Check canonical main registry before acquiring a Windows runner
+        id: mode
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -58,6 +61,14 @@ jobs:
               remote=json.load(response)
           if remote['object']['sha']!=os.environ['GITHUB_SHA']:
               raise SystemExit('Refuse Windows: native source was superseded by a newer PR HEAD')
+          req_url=f"https://api.github.com/repos/{repo}/contents/tools/daily-treasures/native-request.txt?ref={os.environ['GITHUB_SHA']}"
+          with urllib.request.urlopen(urllib.request.Request(req_url,headers=headers),timeout=20) as response:
+              source_request=base64.b64decode(json.load(response)['content']).decode()
+          mode=dict(line.split('=',1) for line in source_request.splitlines() if '=' in line and not line.startswith('#')).get('state')
+          if mode not in ('REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION','REQUEST_EXCLUSIVE_CITY_ART_CONTEXT'):
+              raise SystemExit('Unrecognized explicit native evidence mode')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+              output.write('city_only='+str(mode=='REQUEST_EXCLUSIVE_CITY_ART_CONTEXT').lower()+'\n')
           print('Exclusive Windows lease and current exact PR HEAD verified')
           PY
   native-ui:
@@ -257,6 +268,7 @@ jobs:
           }
           Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: thirteen exact SHA256 files'
       - name: Compile Unity and render genuine day-four/day-seven and Vigilia UI evidence
+        if: needs.verify-exclusive-lease.outputs.city_only != 'true'
         shell: powershell
         working-directory: daily-source
         timeout-minutes: 50
@@ -525,7 +537,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ ! -f native-originals/report.json ]; then
-            echo 'No Unity report was produced; cannot claim native proof'
+            echo 'No component capture in this lot; current component certification is not asserted by this run'
             exit 0
           fi
           status=$(python -c "import json; print(json.load(open('native-originals/report.json',encoding='utf-8-sig'))['status'])")
