@@ -126,6 +126,11 @@ namespace Eldoria.BreachWatch
                 {
                     if(!graphic || !graphic.gameObject.activeInHierarchy ||
                        !IsRetiredPainter(graphic))continue;
+                    // Existing Vigilia bridges already replace disabled old
+                    // frame painters. Do not add a second surface underneath
+                    // their authored replacement. Only our own retained
+                    // replacements need synchronization after disabling.
+                    if(!graphic.enabled && !replacements.ContainsKey(graphic))continue;
                     var button=graphic.GetComponent<Button>();
                     if(graphic is RawImage raw)
                     {

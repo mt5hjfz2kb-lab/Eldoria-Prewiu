@@ -293,6 +293,12 @@ jobs:
           if(-not(Select-String -Path $log -Pattern 'VIGILIA_REAL_DESTINATIONS_NATIVE_CAPTURED_ART_REVIEW_PENDING' -SimpleMatch -Quiet)){
              throw 'Native Editor did not log actual destination capture PASS'
           }
+          $treasure=Get-Content (Join-Path $folder 'BreachWatchIntegratedTreasureEvidence.json') -Raw|ConvertFrom-Json
+          if($treasure.source -ne $env:GITHUB_SHA -or $treasure.status -ne 'COMBINED_TREASURE_ENTRY_CALENDAR_TWO_TOUCHES_PASS' -or -not $treasure.saveUnchanged -or $treasure.screenshotCount -ne 4 -or $treasure.artworkApproved){throw 'Combined treasure presentation was not verified'}
+          foreach($screen in $treasure.screens){
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen){throw 'Treasure uses retired presentation'}
+            if((Get-FileHash (Join-Path $folder $screen.file) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){throw 'Combined treasure screenshot hash mismatch'}
+          }
           Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_4_POPULATED_MAIL_SCREENSHOTS_ART_PENDING'
       - name: Verify actual production glyphs without restoring retired fonts
         shell: powershell

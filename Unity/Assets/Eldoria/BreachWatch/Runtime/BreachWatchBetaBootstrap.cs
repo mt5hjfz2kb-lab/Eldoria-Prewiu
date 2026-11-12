@@ -48,10 +48,25 @@ namespace Eldoria.BreachWatch
             return false;
         }
 
+        void OnEnable(){Canvas.willRenderCanvases+=SuppressRetiredDuringStartup;}
+        void OnDisable(){Canvas.willRenderCanvases-=SuppressRetiredDuringStartup;}
+        void SuppressRetiredDuringStartup()
+        {
+            // Async scene initialization can create the old controller after
+            // this watcher's Update. Suppress its Canvas before that very
+            // first render, including slow devices still loading after 45s.
+            var host=FindFirstObjectByType<ValoriaIntegratedWorld>();
+            if(host && host.Hud)
+            {
+                var canvas=host.Hud.GetComponent<Canvas>();
+                if(canvas)canvas.enabled=false;
+            }
+        }
+
         IEnumerator Start()
         {
             float deadline=Time.realtimeSinceStartup+MaximumWaitSeconds;
-            while(Time.realtimeSinceStartup<deadline)
+            while(true)
             {
                 var host=FindFirstObjectByType<ValoriaIntegratedWorld>();
                 if(host && host.Hud)
@@ -85,10 +100,13 @@ namespace Eldoria.BreachWatch
                     Destroy(gameObject);
                     yield break;
                 }
+                if(Time.realtimeSinceStartup>=deadline)
+                {
+                    Debug.LogError("VIGILIA_PRODUCTION_CANONICAL_SESSION_NOT_READY");
+                    deadline=float.PositiveInfinity;
+                }
                 yield return null;
             }
-            Debug.LogWarning("VIGILIA_PRODUCTION_CANONICAL_SESSION_NOT_READY");
-            Destroy(gameObject);
         }
     }
 }

@@ -278,6 +278,7 @@ namespace Eldoria.BreachWatch.Editor
             var unlockedNavShots=new List<Screen>();
             var retentionShots=new List<Screen>();
             var mailContentShots=new List<Screen>();
+            var treasureShots=new List<Screen>();
             try
             {
                 host.City.Apply(fixture);
@@ -550,6 +551,25 @@ namespace Eldoria.BreachWatch.Editor
                     "Scouts did not return to new city Canvas");
                 Need(scenic && scenic.color==Color.white,
                     "Reversible Scouts grade leaked into the old canonical UI");
+                ui.SelectBuilding("");
+                var treasures=Object.FindObjectsByType<Eldoria.DailyTreasures.DailyTreasurePanel>(
+                    FindObjectsInactive.Include,FindObjectsSortMode.None);
+                Need(treasures.Length==1,"Combined session must have one authoritative treasure panel");
+                var treasure=treasures[0];
+                treasure.ProbePresentationCanvasForNativeEvidence();
+                treasure.Suppressed=false;
+                Need(treasure.UsesVigiliaCanvas && treasure.transform.IsChildOf(ui.transform),
+                    "Treasure entry stranded on the retired Canvas");
+                var treasureEntry=treasure.GetComponentsInChildren<Button>(true)
+                    .Single(x=>x.name=="Daily reward / optional medallion");
+                ClickActualMailControl(ui,treasureEntry,false);
+                Need(treasure.IsOpen,"Real treasure medallion failed to open the calendar");
+                CaptureMany(ui,folder,"treasures",treasureShots,
+                    ()=>treasure.IsOpen && treasure.UsesVigiliaCanvas);
+                var treasureClose=treasure.GetComponentsInChildren<Button>(true)
+                    .Single(x=>x.name=="Close tributes");
+                ClickActualMailControl(ui,treasureClose,false);
+                Need(!treasure.IsOpen,"Real treasure close did not return to new HUD");
             }
             finally
             {
@@ -579,6 +599,14 @@ namespace Eldoria.BreachWatch.Editor
             };
             File.WriteAllText(Path.Combine(folder,"BreachWatchDestinationEvidence.json"),
                 JsonUtility.ToJson(report,true));
+            Need(treasureShots.Count==4,"Four combined treasure calendar views required");
+            File.WriteAllText(Path.Combine(folder,"BreachWatchIntegratedTreasureEvidence.json"),
+                JsonUtility.ToJson(new Report {
+                    source=report.source,status="COMBINED_TREASURE_ENTRY_CALENDAR_TWO_TOUCHES_PASS",
+                    notes="Actual single live treasure panel on Vigilia: real entry/close touches, four viewports, production font audit. Claims are verified by the separate native gateway fixture.",
+                    probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                    screenshotCount=treasureShots.Count,screens=treasureShots.ToArray()
+                },true));
             var mailReport=new Report {
                 status="VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING",
                 source=report.source,
@@ -679,6 +707,9 @@ namespace Eldoria.BreachWatch.Editor
                 var canonical=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(canonical && canonical.IsOpen)canonical.SynchronizeLayout();
                 if(ui.RealMailbox && ui.RealMailbox.IsShowing)ui.RealMailbox.SynchronizeVisual();
+                var treasureControl=button.GetComponentInParent<Eldoria.DailyTreasures.DailyTreasurePanel>();
+                if(treasureControl)treasureControl.ProbeOrientationLayoutForNativeEvidence();
+                ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();AuditExclusivePresentation();camera.Render();Canvas.ForceUpdateCanvases();AuditExclusivePresentation();camera.Render();
                 var system=EventSystem.current;
                 Need(system && system.isActiveAndEnabled,"Real mail EventSystem unavailable");
@@ -864,6 +895,13 @@ namespace Eldoria.BreachWatch.Editor
                     host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>().Refresh();
                     heroes.SynchronizeVisual();
                 }
+                if(name=="treasures")
+                {
+                    var treasure=ui.GetComponentInChildren<Eldoria.DailyTreasures.DailyTreasurePanel>(true);
+                    Need(treasure && treasure.IsOpen,"Combined treasure disappeared during reflow");
+                    treasure.ProbeOrientationLayoutForNativeEvidence();
+                    ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
+                }
                 Canvas.ForceUpdateCanvases();
                 if(name=="heroes")
                     Need(!ui.GetComponentsInChildren<Button>(true).Any(x=>
@@ -1030,7 +1068,7 @@ namespace Eldoria.BreachWatch.Editor
                 // Existing baseline GPU subtraction must finish before an
                 // A/B render can rebuild dynamic font atlases or advance effects.
                 if(name=="training"||name=="march"||name=="heroes"||
-                   name.StartsWith("hero-")||name.Contains("mail"))
+                   name.StartsWith("hero-")||name.Contains("mail")||name=="treasures")
                     BreachWatchTypographyEvidence.Capture(ui.NativeCanvas,camera,rt,full,width,height);
                 return new Screen{
                     destination=name,file=file,sha256=Hash(full),width=width,height=height,
