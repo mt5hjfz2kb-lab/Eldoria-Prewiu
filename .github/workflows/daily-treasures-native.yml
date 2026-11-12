@@ -17,6 +17,8 @@ jobs:
     timeout-minutes: 5
     outputs:
       city_only: ${{ steps.mode.outputs.city_only }}
+      owner: ${{ steps.mode.outputs.owner }}
+      revision: ${{ steps.mode.outputs.revision }}
     steps:
       - name: Check canonical main registry before acquiring a Windows runner
         id: mode
@@ -26,7 +28,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import base64,json,os,urllib.request
+          import base64,json,os,urllib.request,re
           repo=os.environ['GITHUB_REPOSITORY']
           headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
                    'Accept':'application/vnd.github+json',
@@ -54,7 +56,7 @@ jobs:
           required='eldoria-daily-treasures-20261108'
           if len(holders)!=1 or holders[0].get('id')!=required:
               raise SystemExit('Windows reserved by another Eldoria workstream; no Unity run')
-          if holders[0].get('owner')!='chatgpt-central-art-execution-20261111' or holders[0].get('ownership_state')!='claimed':
+          if holders[0].get('ownership_state')!='claimed':
               raise SystemExit('Daily treasures workstream lease not valid')
           source=f'https://api.github.com/repos/{repo}/git/ref/heads/feature/eldoria-daily-treasures-20261108'
           with urllib.request.urlopen(urllib.request.Request(source,headers=headers),timeout=20) as response:
@@ -64,11 +66,16 @@ jobs:
           req_url=f"https://api.github.com/repos/{repo}/contents/tools/daily-treasures/native-request.txt?ref={os.environ['GITHUB_SHA']}"
           with urllib.request.urlopen(urllib.request.Request(req_url,headers=headers),timeout=20) as response:
               source_request=base64.b64decode(json.load(response)['content']).decode()
-          mode=dict(line.split('=',1) for line in source_request.splitlines() if '=' in line and not line.startswith('#')).get('state')
+          request=dict(line.split('=',1) for line in source_request.splitlines() if '=' in line and not line.startswith('#'))
+          owner=request.get('owner','');revision=request.get('ownership_revision','')
+          if not re.fullmatch(r'[A-Za-z0-9_.-]+',owner) or not revision.isdecimal():raise SystemExit('Missing exact requested lease')
+          if holders[0].get('owner')!=owner or holders[0].get('ownership_revision')!=int(revision):raise SystemExit('Requested owner or revision no longer holds Windows')
+          mode=request.get('state')
           if mode not in ('REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION','REQUEST_EXCLUSIVE_CITY_ART_CONTEXT'):
               raise SystemExit('Unrecognized explicit native evidence mode')
           with open(os.environ['GITHUB_OUTPUT'],'a') as output:
               output.write('city_only='+str(mode=='REQUEST_EXCLUSIVE_CITY_ART_CONTEXT').lower()+'\n')
+              output.write('owner='+owner+'\nrevision='+revision+'\n')
           print('Exclusive Windows lease and current exact PR HEAD verified')
           PY
   native-ui:
@@ -77,6 +84,8 @@ jobs:
     timeout-minutes: 65
     env:
       OUT: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}
+      LEASE_OWNER: ${{ needs.verify-exclusive-lease.outputs.owner }}
+      LEASE_REVISION: ${{ needs.verify-exclusive-lease.outputs.revision }}
     steps:
       - name: Assert Unity is available and another workstream is not running
         shell: powershell
@@ -201,7 +210,7 @@ jobs:
           $registry=([Text.Encoding]::UTF8.GetString(
             [Convert]::FromBase64String($leaseBase64)))|ConvertFrom-Json
           $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne 'chatgpt-central-art-execution-20261111'){
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne $env:LEASE_OWNER -or [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION -or $holders[0].ownership_state -ne 'claimed'){
             throw 'Windows lease lost; refusing Unity execution'
           }
           $latest=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/ref/heads/feature/eldoria-daily-treasures-20261108' -Headers $headers

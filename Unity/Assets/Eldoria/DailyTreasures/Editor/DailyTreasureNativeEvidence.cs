@@ -30,6 +30,69 @@ namespace Eldoria.DailyTreasures.Editor
             public PlayerState Load()=>State;
             public void Save(PlayerState state){State=state;}
         }
+        static void CaptureEarnedScoutDiscovery(DailyTreasurePanel panel,
+            SimulatedClock clock,Camera camera,RenderTexture rt,Canvas canvas,
+            EventSystem eventSystem,string output,int width,int height,string source)
+        {
+            long savedTime=clock.UtcTicks;
+            // Only prerequisites are staged in an isolated player. The order,
+            // return, receipt and discovery kind must be produced by the real
+            // gateway; never insert an earned message or guessed map quadrant.
+            var seed=new LocalGateway(clock,new TransientStore()).Snapshot();
+            seed.BastionLevel=2;seed.BarracksLevel=1;
+            seed.ChapterProgress.MarchConfirmed=true;
+            seed.Available=new ArmyRoster();seed.Available.Set(0,1,60);
+            var store=new TransientStore{State=seed};
+            var gateway=new LocalGateway(clock,store);
+            gateway.Advance();
+            var state=gateway.Snapshot();
+            var order=state.Retention.Orders.First(x=>!x.Claimed&&x.Kind!=0);
+            var dispatch=new GameCommand("native-earned-scout-dispatch",state.PlayerId,
+                "ScoutDispatch",order.Id,state.Revision);
+            Need(gateway.Execute(dispatch).Ok,"Actual Scout dispatch failed");
+            clock.UtcTicks=gateway.Snapshot().Retention.Orders.Single(x=>x.Id==order.Id).EndsUtcTicks+1;
+            gateway.Advance();state=gateway.Snapshot();
+            var claim=new GameCommand("native-earned-scout-claim",state.PlayerId,
+                "ScoutClaim",order.Id,state.Revision);
+            Need(gateway.Execute(claim).Ok,"Actual returned Scout claim failed");
+            state=gateway.Snapshot();
+            var letter=state.Mailbox.Messages.Single(x=>x.DiscoveryOrderId==order.Id);
+            Need(letter.DiscoveryKind==order.Kind&&letter.RewardReceiptId==claim.Id,
+                "Scout receipt does not identify the dispatched mission");
+            panel.Bind(gateway,()=>clock.UtcTicks,()=>{});
+            Need(panel.PresentCommittedMilestone(letter.Subtitle,letter.DiscoveryText,
+                legendary:false,eventId:"scout:first:"+order.Id),"Earned Scout ceremony failed");
+            Need(panel.HasCommittedScoutIllustration&&panel.VerifiedScoutDiscoveryKind==order.Kind,
+                "Earned discovery still presents an empty parchment");
+            string folder=Path.Combine(output,"scouts-earned-discovery");
+            Directory.CreateDirectory(folder);
+            var frames=new List<Shot>();
+            int count=width==390&&height==844?90:1;
+            for(int frame=0;frame<count;frame++)
+            {
+                panel.SampleForNativeEvidence(count==1?
+                    DailyTreasureRevealTimeline.RevealPeakSeconds:frame/15f);
+                Canvas.ForceUpdateCanvases();
+                frames.Add(Render(camera,rt,folder,width,height,
+                    "earned-scout-frame-"+frame.ToString("D3"),
+                    "Actual dispatch, simulated-clock return and gateway claim in disposable prerequisite fixture; not physical-device or full-campaign proof",true,false));
+            }
+            File.WriteAllText(Path.Combine(folder,"motion-"+width+"x"+height+".json"),
+                JsonUtility.ToJson(new AuthoredMotion {framesPerSecond=15,frames=frames.ToArray(),
+                    source=source,note="Earned Scout receipt; original atlas quadrant Kind="+order.Kind+
+                    "; actual gateway dispatch/claim; prerequisites staged; no owner save accessed."},true));
+            ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                FindButton(panel,"Close tributes"),width,height);
+            var after=gateway.Snapshot();
+            Need(!panel.IsOpen&&state.Resources.Wood==after.Resources.Wood&&
+                state.Resources.Stone==after.Resources.Stone&&state.Resources.Food==after.Resources.Food&&
+                state.Mailbox.Messages.Count==after.Mailbox.Messages.Count,
+                "Scout presentation changed the already committed award");
+            Need(!gateway.Execute(new GameCommand("native-earned-scout-duplicate",after.PlayerId,
+                "ScoutClaim",order.Id,after.Revision)).Ok,"Scout ceremony allowed a duplicate reward");
+            clock.UtcTicks=savedTime;
+            Debug.Log("DAILY_EARNED_SCOUT_DISCOVERY_NATIVE_PASS kind="+order.Kind+" frames="+count);
+        }
         [Serializable] sealed class AuthoredMotion { public int framesPerSecond; public string source,note; public Shot[] frames; }
         [Serializable] sealed class Shot
         {
@@ -1500,6 +1563,12 @@ namespace Eldoria.DailyTreasures.Editor
                         }
                     }
 
+                    if((width==390&&height==844)||(width==844&&height==390))
+                    {
+                        CaptureEarnedScoutDiscovery(panel,clock,camera,rt,canvas,eventSystem,
+                            output,width,height,report.source);
+                        panel.Bind(specialGateway,()=>clock.UtcTicks,()=>{});
+                    }
                     // Narrative priority can arrive after a daily modal
                     // was ALREADY opened, not just before the initial tap.
                     // This must preempt the overlay and stop its Foley, while
