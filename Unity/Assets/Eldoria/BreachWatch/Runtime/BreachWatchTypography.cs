@@ -32,6 +32,7 @@ namespace Eldoria.BreachWatch
         {
             if(string.IsNullOrEmpty(url))return false;
             int q=url.IndexOf('?');if(q<0)return false;
+            int fragment=url.IndexOf('#');if(fragment>=0&&fragment<q)return false;
             int end=url.IndexOf('#',q);
             string query=end<0?url.Substring(q+1):url.Substring(q+1,end-q-1);
             foreach(string item in query.Split('&'))if(item==QueryFlag)return true;
@@ -58,12 +59,17 @@ namespace Eldoria.BreachWatch
         // All actual Selectables are instruments, including navigation/actions.
         public static Role ResolveRole(Text text)
         {
+            string name=text.name.ToLowerInvariant();
+            // The quest tablet itself is a Button, but its inscription is
+            // still a title. Do not turn every descendant of it into data.
+            if(name=="player name"||name=="real building name"||
+               name=="actual chapter"||name=="actual objective"||
+               name=="compact engraved cost heading")return Role.Inscription;
             for(Transform p=text.transform;p!=null;p=p.parent)
             {
                 if(p.GetComponent<Selectable>())return Role.Instrument;
                 if(p.GetComponent<Canvas>())break;
             }
-            string name=text.name.ToLowerInvariant();
             if(name.Contains("quantity")||name.Contains("amount")||name.Contains("cost")||
                name.Contains("metric")||name.Contains("pending troops")||name.Contains("event date")||
                name.Contains("historical composition")||name=="recursos actuales"||name=="página"||

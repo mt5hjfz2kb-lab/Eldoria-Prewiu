@@ -15,7 +15,7 @@ namespace Eldoria.BreachWatch.Editor
         [Serializable] public sealed class Metric
         {
             public string path,text,role,font;
-            public int size,visibleCharacters,expectedCharacters;
+            public int size,configuredSize,visibleCharacters,expectedCharacters;
             public float preferredWidth,preferredHeight,pixelsPerUnit;
             public Rect box,ink;
             public Vector3 localScale;
@@ -24,6 +24,7 @@ namespace Eldoria.BreachWatch.Editor
         [Serializable] sealed class Proof
         {
             public string method="SAME_FRAME_IMPORTED_UGUI_FONT_AB_NOT_ART_APPROVAL";
+            public string source=Environment.GetEnvironmentVariable("GITHUB_SHA");
             public string baselineFile,baselineSha256,candidateFile,candidateSha256;
             public int width,height;
             public bool restored,artApproved=false;
@@ -56,7 +57,11 @@ namespace Eldoria.BreachWatch.Editor
             {
                 if(!text.isActiveAndEnabled||string.IsNullOrEmpty(text.text)||text.color.a<.01f)continue;
                 string plain=text.supportRichText?Regex.Replace(text.text,"<[^>]*>",""):text.text;
-                int size=text.resizeTextForBestFit?text.cachedTextGenerator.fontSizeUsedForBestFit:text.fontSize;
+                // fontSizeUsedForBestFit is the generator's scaled pixel
+                // size. Feeding it back as logical fontSize scales it twice
+                // on Retina/portrait canvases and invents clipping.
+                int size=text.resizeTextForBestFit?Mathf.RoundToInt(
+                    text.cachedTextGenerator.fontSizeUsedForBestFit/text.pixelsPerUnit):text.fontSize;
                 if(size<=0)size=text.fontSize;
                 bool present=text.font;
                 if(text.font)
@@ -91,7 +96,7 @@ namespace Eldoria.BreachWatch.Editor
                 const float tolerance=1.5f;
                 result.Add(new Metric {path=PathOf(text.transform,canvas.transform),text=text.text,
                     role=BreachWatchTypography.ResolveRole(text).ToString(),font=text.font?text.font.name:"MISSING",
-                    size=size,box=box,ink=bounds,pixelsPerUnit=ppu,localScale=text.rectTransform.localScale,
+                    size=size,configuredSize=text.fontSize,box=box,ink=bounds,pixelsPerUnit=ppu,localScale=text.rectTransform.localScale,
                     preferredWidth=text.preferredWidth,preferredHeight=text.preferredHeight,
                     visibleCharacters=text.cachedTextGenerator.characterCountVisible,
                     expectedCharacters=plain.Length,glyphsPresent=present,
@@ -106,6 +111,11 @@ namespace Eldoria.BreachWatch.Editor
             string baselineFile,int width,int height)
         {
             if(Environment.GetEnvironmentVariable("VIGILIA_TYPOGRAPHY_AB")!="1")return;
+            if(!BreachWatchTypography.IsOptedIn("https://qa.invalid/?x=1&"+BreachWatchTypography.QueryFlag)||
+               BreachWatchTypography.IsOptedIn("https://qa.invalid/#?"+BreachWatchTypography.QueryFlag)||
+               BreachWatchTypography.IsOptedIn("https://qa.invalid/?eldoria_typography=source-sans30")||
+               BreachWatchTypography.IsOptedIn("https://qa.invalid/"))
+                throw new InvalidOperationException("Typography opt-in must require the exact query parameter");
             var snapshots=canvas.GetComponentsInChildren<Text>(true).Select(x=>new State(x)).ToArray();
             var component=canvas.GetComponent<BreachWatchTypography>();
             bool created=!component;if(created)component=canvas.gameObject.AddComponent<BreachWatchTypography>();

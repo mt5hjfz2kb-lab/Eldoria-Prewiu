@@ -821,9 +821,6 @@ namespace Eldoria.BreachWatch.Editor
                 texture.Apply();
                 string full=Path.Combine(folder,file);
                 File.WriteAllBytes(full,texture.EncodeToPNG());
-                if(name=="training"||name=="march"||name=="heroes"||
-                   name.StartsWith("hero-")||name.Contains("mail"))
-                    BreachWatchTypographyEvidence.Capture(ui.NativeCanvas,camera,rt,full,width,height);
                 if(name=="march")
                     VerifyMarchCaptionInk(management.VisibleRoot,camera,rt,texture,folder,width,height);
                 Need(retentionOverflow==null,
@@ -968,6 +965,11 @@ namespace Eldoria.BreachWatch.Editor
                 int buttons=ui.GetComponentsInChildren<Button>(true)
                     .Count(b=>b && b.IsActive() && b.interactable);
                 Need(buttons>0,"Real destination has no interactive controls: "+name);
+                // Existing baseline GPU subtraction must finish before an
+                // A/B render can rebuild dynamic font atlases or advance effects.
+                if(name=="training"||name=="march"||name=="heroes"||
+                   name.StartsWith("hero-")||name.Contains("mail"))
+                    BreachWatchTypographyEvidence.Capture(ui.NativeCanvas,camera,rt,full,width,height);
                 return new Screen{
                     destination=name,file=file,sha256=Hash(full),width=width,height=height,
                     oldCanvasOff=ui.LegacyPresentationHidden,
