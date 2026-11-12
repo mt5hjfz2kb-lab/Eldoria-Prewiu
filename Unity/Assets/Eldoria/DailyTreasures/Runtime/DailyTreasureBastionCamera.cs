@@ -232,6 +232,57 @@ namespace Eldoria.DailyTreasures
                 throw new InvalidOperationException("REAL_BASTION_CROSSES_COMMITTED_STORY_AREA");
         }
 
+
+        readonly struct FogSnapshot
+        {
+            readonly bool enabled;
+            readonly FogMode mode;
+            readonly Color color;
+            readonly float density,start,end;
+            public FogSnapshot(bool capture)
+            {
+                enabled=RenderSettings.fog;mode=RenderSettings.fogMode;
+                color=RenderSettings.fogColor;density=RenderSettings.fogDensity;
+                start=RenderSettings.fogStartDistance;end=RenderSettings.fogEndDistance;
+            }
+            public void Restore()
+            {
+                RenderSettings.fog=enabled;RenderSettings.fogMode=mode;
+                RenderSettings.fogColor=color;RenderSettings.fogDensity=density;
+                RenderSettings.fogStartDistance=start;RenderSettings.fogEndDistance=end;
+            }
+        }
+
+        static int UnusedVolumeLayer()
+        {
+            var volumes=UnityEngine.Object.FindObjectsByType<Volume>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
+            for(int layer=31;layer>=8;layer--)
+            {
+                bool occupied=false;
+                foreach(var volume in volumes)
+                    if(volume && volume.gameObject.layer==layer){occupied=true;break;}
+                if(!occupied)return layer;
+            }
+            throw new InvalidOperationException("NO_ISOLATED_CEREMONY_VOLUME_LAYER");
+        }
+
+        // One-shot optical treatment of the SAME real world. It begins beyond
+        // the complete built masonry bounds, hiding the finite terrain/clear
+        // colour discontinuity rather than painting invented architecture.
+        static void BeginCeremonialEnvironment(Camera camera,Bounds bounds)
+        {
+            var horizon=new Color(.045f,.041f,.051f,1f);
+            float radius=Mathf.Max(1f,bounds.extents.magnitude);
+            float distance=Vector3.Distance(camera.transform.position,bounds.center);
+            RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=horizon;
+            RenderSettings.fogStartDistance=distance+radius*1.15f;
+            RenderSettings.fogEndDistance=distance+radius*3.65f;
+            camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.backgroundColor=horizon;
+        }
+
         static void DestroyTemporary(UnityEngine.Object obj)
         {
             if(!obj)return;
@@ -272,7 +323,9 @@ namespace Eldoria.DailyTreasures
             height=Mathf.Clamp(Mathf.RoundToInt(width/screenAspect),64,1152);
             RenderTexture result=null,working=null;
             Camera camera=null;
-            GameObject cameraObject=null,lightObject=null;
+            GameObject cameraObject=null,lightObject=null,volumeObject=null;
+            VolumeProfile ceremonyProfile=null;
+            var environmentBefore=new FogSnapshot(true);
             var previous=RenderTexture.active;
             try
             {
@@ -307,6 +360,30 @@ namespace Eldoria.DailyTreasures
                     renderData.volumeLayerMask=originalData.volumeLayerMask;
                     renderData.antialiasing=originalData.antialiasing;
                 }
+                // Dedicated, transient URP volume: no source camera/volume is
+                // edited and the profile is not kept on the player scene.
+                int gradeLayer=UnusedVolumeLayer();
+                volumeObject=new GameObject("Daily treasure / temporary ceremony grade");
+                volumeObject.layer=gradeLayer;
+                volumeObject.hideFlags=HideFlags.HideAndDontSave;
+                var volume=volumeObject.AddComponent<Volume>();
+                volume.isGlobal=true;volume.priority=10000f;volume.weight=1f;
+                ceremonyProfile=ScriptableObject.CreateInstance<VolumeProfile>();
+                ceremonyProfile.hideFlags=HideFlags.HideAndDontSave;
+                volume.sharedProfile=ceremonyProfile;
+                var grade=ceremonyProfile.Add<ColorAdjustments>(true);
+                grade.postExposure.Override(-.15f);
+                grade.contrast.Override(9f);
+                grade.saturation.Override(-20f);
+                var tone=ceremonyProfile.Add<Tonemapping>(true);
+                tone.mode.Override(TonemappingMode.ACES);
+                var vignette=ceremonyProfile.Add<Vignette>(true);
+                vignette.intensity.Override(.22f);
+                vignette.smoothness.Override(.55f);
+                renderData.volumeLayerMask=1<<gradeLayer;
+                renderData.volumeTrigger=camera.transform;
+                renderData.renderPostProcessing=true;
+                BeginCeremonialEnvironment(camera,bounds);
                 camera.targetTexture=null;
                 // The old camera-owned MSAA target existed as an object but
                 // had no hardware storage after capture (native81111cb4).
@@ -376,6 +453,18 @@ namespace Eldoria.DailyTreasures
             finally
             {
                 RenderTexture.active=previous;
+                environmentBefore.Restore();
+                // Deactivate the global volume before deferred PlayMode
+                // destruction; subsequent real player cameras keep their
+                // exact original fog and post-processing environment.
+                DestroyTemporary(volumeObject);
+                if(ceremonyProfile)
+                {
+                    foreach(var component in ceremonyProfile.components)
+                        DestroyTemporary(component);
+                    ceremonyProfile.components.Clear();
+                    DestroyTemporary(ceremonyProfile);
+                }
                 if(camera)camera.targetTexture=null;
                 DestroyTemporary(cameraObject);
                 DestroyTemporary(lightObject);

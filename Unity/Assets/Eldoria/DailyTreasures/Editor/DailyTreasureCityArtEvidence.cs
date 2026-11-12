@@ -52,7 +52,8 @@ namespace Eldoria.DailyTreasures.Editor
             public int cityRenderers,pngCount,realGatewayClaims;
             public int trueBastionPixelProofs,minimumOriginalColorBins;
             public float minimumLitSourceFraction;
-            public int bastionSnapshotsVerified,bastionRotationProofs;
+            public int bastionSnapshotsVerified,bastionRotationProofs,bastionPerimeterProofs;
+            public bool sceneEnvironmentRestored;
             public bool citySceneOpened,cityCameraUsed,artApproved;
             public bool fullSceneVerified,pr173Integrated,iosVerified;
             public Shot[] shots;
@@ -405,6 +406,37 @@ namespace Eldoria.DailyTreasures.Editor
             }
         }
 
+
+        static string EnvironmentSignature()
+        {
+            return string.Join("|",new[]{
+                RenderSettings.fog.ToString(),RenderSettings.fogMode.ToString(),
+                JsonUtility.ToJson(RenderSettings.fogColor),
+                RenderSettings.fogDensity.ToString("R",System.Globalization.CultureInfo.InvariantCulture),
+                RenderSettings.fogStartDistance.ToString("R",System.Globalization.CultureInfo.InvariantCulture),
+                RenderSettings.fogEndDistance.ToString("R",System.Globalization.CultureInfo.InvariantCulture)});
+        }
+        static void VerifySingleBastionPerimeter(DailyTreasurePanel panel,
+            int width,int height,Report report)
+        {
+            bool portrait=height>width;
+            var rim=panel.GetComponentsInChildren<Image>(true).Single(
+                image=>image.name=="Bastion / one original bronze perimeter");
+            var ornament=panel.GetComponentsInChildren<Image>(true).Single(
+                image=>image.name=="Authored narrative single-frame ornament / no hitbox");
+            if(portrait)
+                Require(rim.gameObject.activeInHierarchy && rim.sprite &&
+                    rim.type==Image.Type.Sliced && !rim.fillCenter &&
+                    !rim.raycastTarget && !ornament.gameObject.activeInHierarchy,
+                    "Tall Bastion scene lacks its one original border-only frame");
+            else
+                Require(!rim.gameObject.activeInHierarchy &&
+                    ornament.gameObject.activeInHierarchy && ornament.sprite &&
+                    ornament.type==Image.Type.Sliced && !ornament.raycastTarget,
+                    "Wide Bastion scene lacks its one original narrative frame");
+            report.bastionPerimeterProofs++;
+        }
+
         public static void Capture()
         {
             string project=Path.GetFullPath(
@@ -435,12 +467,14 @@ namespace Eldoria.DailyTreasures.Editor
             float originalOrthographicSize=1f;
             float originalFieldOfView=60f;
             GameObject canvasObject=null;
+            string environmentBefore=null;
             try
             {
                 var scene=EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
                 Require(scene.IsValid() && scene.path==Scene,
                     "The exact canonical Valoria city scene was not opened");
                 report.citySceneOpened=true;
+                environmentBefore=EnvironmentSignature();
                 var components=Object.FindObjectsByType<MonoBehaviour>(
                     FindObjectsInactive.Include,FindObjectsSortMode.None);
                 var host=components.FirstOrDefault(x=>x &&
@@ -558,6 +592,9 @@ namespace Eldoria.DailyTreasures.Editor
                             "Real built Bastion must be the only architecture; "+
                             "a painted extra gate is forbidden");
                         VerifyLiveBastionTexture(panel,width,height);
+                        VerifySingleBastionPerimeter(panel,width,height,report);
+                        Require(EnvironmentSignature()==environmentBefore,
+                            "One-shot cinema leaked fog into the actual source world");
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         ProveNativeBastionSilhouette(panel,report);
@@ -585,6 +622,9 @@ namespace Eldoria.DailyTreasures.Editor
                             true,DailyTreasureCeremonyTier.Special,
                             "milestone:bastion:visual-only");
                         VerifyLiveBastionTexture(panel,width,height);
+                        VerifySingleBastionPerimeter(panel,width,height,report);
+                        Require(EnvironmentSignature()==environmentBefore,
+                            "One-shot cinema leaked fog into the actual source world");
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         ProveNativeBastionSilhouette(panel,report);
@@ -626,6 +666,9 @@ namespace Eldoria.DailyTreasures.Editor
                 Require(report.bastionRotationProofs==4,
                     "The four genuine city screen sizes must survive changing "+
                     "device orientation without reusing a cropped 3D snapshot");
+                Require(report.bastionPerimeterProofs==8 && EnvironmentSignature()==environmentBefore,
+                    "Actual 8-frame cinematic source environment or single perimeter proof incomplete");
+                report.sceneEnvironmentRestored=true;
                 report.pngCount=pictures.Count;
                 report.status="CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED";
             }

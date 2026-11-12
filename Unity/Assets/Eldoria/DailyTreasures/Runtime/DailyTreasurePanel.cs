@@ -110,7 +110,7 @@ namespace Eldoria.DailyTreasures
         Image milestoneVignette;
         Image milestoneInsignia;
         // Separately painted alpha layers, behind official scene/hero identity.
-        Image milestoneStageArt,milestoneOrnament;
+        Image milestoneStageArt,milestoneOrnament,bastionPerimeter;
         // The original EldoriaRetention atlas already represents four REAL
         // scout mission families. An earned discovery may paint the matching
         // actual persisted Kind on the existing blank parchment. Never use a
@@ -504,6 +504,17 @@ namespace Eldoria.DailyTreasures
             var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
             milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
             milestoneVignette.gameObject.SetActive(false);
+            // The previous full-viewport image correctly removed the double
+            // camera, but painted over the real bronze perimeter as well.
+            // Draw ONLY the original nine-slice border, never its filled
+            // centre, above the one genuine camera image in tall layouts.
+            var bastionRim=NewRect("Bastion / one original bronze perimeter",ceremony);
+            bastionPerimeter=Plate(bastionRim,Color.white,false);
+            bastionPerimeter.sprite=dailyFrameSprite;
+            bastionPerimeter.type=Image.Type.Sliced;
+            bastionPerimeter.fillCenter=false;
+            bastionPerimeter.pixelsPerUnitMultiplier=2f;
+            bastionPerimeter.gameObject.SetActive(false);
             // The real 3D Lyra render is full-height and contains a large
             // transparent sky margin. Fitting the ENTIRE source into a 245px
             // panel made her face a tiny dark thumbnail. A real uGUI clip
@@ -1830,6 +1841,28 @@ namespace Eldoria.DailyTreasures
                     eventStage?stage.BackdropOpacity:CalendarBackdropOpacity);
             bool singleFrame=eventStage && !portrait &&
                 milestoneOrnament && milestoneOrnament.sprite;
+            bool genuineBastion=eventStage &&
+                currentStage==DailyTreasureStageKind.Bastion && HasMilestoneScenery;
+            if(bastionPerimeter)
+            {
+                bastionPerimeter.gameObject.SetActive(genuineBastion&&portrait);
+                Place(bastionPerimeter.rectTransform,.5f,.5f,.5f,.5f,
+                    0f,0f,w-16f,h-16f);
+            }
+            if(milestoneOrnament)
+            {
+                // One source bronze frame ABOVE the continuous camera,
+                // instead of another plate or a competing background view.
+                var decoration=milestoneOrnament.rectTransform;
+                var parent=genuineBastion?ceremony:cardSurface;
+                if(decoration.parent!=parent)
+                    decoration.SetParent(parent,false);
+                Stretch(decoration);
+                if(genuineBastion)
+                    decoration.SetSiblingIndex(milestoneVignette.transform.GetSiblingIndex()+1);
+                else if(milestoneCinematicBackdrop)
+                    decoration.SetSiblingIndex(milestoneCinematicBackdrop.transform.GetSiblingIndex()+1);
+            }
             if(milestoneOrnament)
                 milestoneOrnament.gameObject.SetActive(singleFrame);
             if(mainFrameSurface)
