@@ -77,3 +77,26 @@ jobs:
       - name: Roslyn syntax check of real Unity runtime and editor art scripts
         run: dotnet run -c Release --project tools/reward-experience/ArtSyntaxAudit.csproj
 
+  review-partial-real-bag:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/reward-experience
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43155182543
+          artifact-ids: 13915329220
+          github-token: ${{ github.token }}
+          path: partial-native
+          merge-multiple: true
+      - name: Preserve the exact partial bag image with failed mailbox verdict intact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/reward-experience/native/copy_partial_bag_review.py
