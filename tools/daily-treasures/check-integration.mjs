@@ -257,7 +257,11 @@ assert.match(panel,/Place\(milestoneRule\.rectTransform/);
 assert.match(panel,/bool cityStage=currentStage==DailyTreasureStageKind\.Bastion/);
 assert.match(panel,/float headingY=cityStage\?panelH\*\.405f:/);
 assert.match(panel,/milestoneBannerCaption\.fontSize=cityStage\?/);
-assert.match(native,/True Eldoria scenery overlaps the event report/);
+// A single full-card setting intentionally continues behind the local
+// factual ink plate. Reject duplicated scenic layers instead; native still
+// verifies exact receipt layout, text fit and foreground identities.
+assert.match(native,/Duplicate scenic crop would repeat architecture and map boundaries/);
+assert.match(native,/Actual event report is not placed legibly beside the event art/);
 assert.match(panel,/Authentic Eldoria event insignia \/ visual only/);
 const milestoneBannerSource=panel.split('milestoneBanner=NewRect(')[1]
   .split('milestoneBanner.gameObject.SetActive(false);')[0];
