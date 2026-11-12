@@ -96,6 +96,7 @@ namespace Eldoria.BreachWatch
                 img.raycastTarget=true;
                 button.targetGraphic=img;
                 button.transition=Selectable.Transition.None;
+                productionTargets[button]=img;
             }
             // Unmodified authoritative modal, same fields, same callbacks.
             root.SetParent(visualCanvas.transform,false);
@@ -145,8 +146,23 @@ namespace Eldoria.BreachWatch
             return image;
         }
 
+        readonly Dictionary<Button,Graphic> productionTargets=new Dictionary<Button,Graphic>();
+        void OnEnable(){Canvas.willRenderCanvases+=EnforcePresentation;}
+        void OnDisable(){Canvas.willRenderCanvases-=EnforcePresentation;}
+        void EnforcePresentation()
+        {
+            if(!installed)return;
+            // Narrative show/hide restores its canonical painters. Keep the
+            // real modal lifecycle while reasserting the one new skin,
+            // including inactive dialogs before their next activation.
+            foreach(var pair in oldGraphics)if(pair.Key)pair.Key.enabled=false;
+            foreach(var pair in productionTargets)
+                if(pair.Key && pair.Value)
+                {pair.Key.targetGraphic=pair.Value;pair.Key.transition=Selectable.Transition.None;}
+        }
         void LateUpdate()
         {
+            EnforcePresentation();
             if(installed && realModal && realModal.gameObject.activeInHierarchy &&
                (lastWidth!=Screen.width || lastHeight!=Screen.height ||
                 Mathf.Abs(lastCanvasScale-visualCanvas.scaleFactor)>.001f))
@@ -174,7 +190,7 @@ namespace Eldoria.BreachWatch
             if(!root)return;
             foreach(var pair in oldTargets)
                 if(pair.Key)pair.Key.targetGraphic=pair.Value;
-            oldTargets.Clear();
+            oldTargets.Clear();productionTargets.Clear();
             foreach(var pair in oldTransitions)
                 if(pair.Key)pair.Key.transition=pair.Value;
             oldTransitions.Clear();
@@ -195,6 +211,7 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            Canvas.willRenderCanvases-=EnforcePresentation;
             Restore();
             if(slicedStone)Destroy(slicedStone);
         }

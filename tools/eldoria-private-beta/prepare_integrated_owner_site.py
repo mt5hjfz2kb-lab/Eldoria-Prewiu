@@ -53,7 +53,40 @@ def package(a):
                             proof_path=work / "exact-build-selection.json")
     decoded = work / "original"
     extract(build, decoded)
+    profile_proof = None
+    data = decoded / "data.bin"
+    bundle = decoded / "data.unity3d"
+    parent = getattr(a, "reference_parent", None)
+    reference_site = getattr(a, "reference_site", None)
+    require(bool(parent) == bool(reference_site), "Both stable texture profile inputs are required")
+    if parent:
+        # Reuse only byte-exact pre-existing texture transformations used by
+        # stable mobile18; never choose new compression or alter gameplay.
+        from types import SimpleNamespace
+        from prepare_lazy_profile_owner_site import extract_reference
+        import deduplicate_exact_textures as dedup
+        import reuse_mobile6_profile as profile
+        from mobile_site import pack_data
+        reference = work / "mobile6.unity3d"
+        extract_reference(reference_site, reference)
+        exact = work / "deduplicated"
+        dedup.apply(bundle, exact, digest(bundle))
+        exact_proof = read_json(exact / "integrity.json")
+        transformed = work / "profile"
+        profile.run(SimpleNamespace(parent=str(parent), reference=str(reference),
+            fresh=str(exact / "data.unity3d"), expected_fresh_sha256=exact_proof["candidate_sha256"],
+            output=str(transformed)))
+        profile_proof = read_json(transformed / "integrity.json")
+        require(profile_proof.get("exact_serialized_matches_only") is True and
+                profile_proof["all_objects_verified"] == exact_proof["all_objects_verified"],
+                "Stable texture profile verification chain broken")
+        bundle = transformed / "data.unity3d"
+        data = work / "profiled-data.bin"
+        pack_data(decoded / "data.bin", bundle, data)
     out.mkdir(parents=True)
+    if profile_proof:
+        shutil.copyfile(work / "deduplicated/integrity.json", out / "exact-dedup-integrity.json")
+        shutil.copyfile(work / "profile/integrity.json", out / "stable-texture-profile-integrity.json")
     shell_hashes = {}
     for name in ("index.html", "style.css", "city.png", "play.js"):
         require(not (shell / name).is_symlink(), "Symlink wrapper input")
@@ -96,11 +129,11 @@ def package(a):
             manifest["decoded_parts"][manifest[key]] = [dict(url=relative, encoding="gzip",
                 decoded_bytes=len(raw), decoded_sha256=hashlib.sha256(raw).hexdigest())]
     manifest["data"] = "Build/"+only(build, "*.data.unityweb").name+"?revision="+a.revision
-    data = decoded / "data.bin"
     manifest["decoded_sizes"][manifest["data"]] = data.stat().st_size
     parts = []
     (out / "payload-decoded").mkdir()
-    # Chunk the exact original WebGL data bytes; no repacking or asset edits.
+    # Chunk verified data. With a profile, only the independently verified
+    # existing texture transformations differ; engine files remain exact.
     with data.open("rb") as stream:
         while block := stream.read(16 * 1024 * 1024):
             relative = "payload-decoded/"+a.revision+"-"+str(len(parts))+".gz"
@@ -116,8 +149,11 @@ def package(a):
     identity = dict(revision=a.revision, source_sha=a.source_head, native_run=a.native_run,
         source_composition="Exact integrated Git source; no historical source overlays",
         stable_shell_sha256=shell_hashes, native_journey_verified=True,
-        native_destination_captures_verified=True, candidate_bundle_sha256=digest(decoded / "data.unity3d"),
-        original_data_sha256=digest(data), texture_payload_modified=False,
+        native_destination_captures_verified=True, candidate_bundle_sha256=digest(bundle),
+        original_data_sha256=digest(decoded / "data.bin"), delivered_data_sha256=digest(data),
+        texture_payload_modified=profile_proof is not None,
+        preexisting_mobile6_profile_reused=profile_proof is not None,
+        no_new_texture_compression_decisions=True,
         artwork_approved=False, physical_mobile_tested=False, runtime_verified=False,
         release_for_external_testers=False, owner_only=True, published=False)
     (out / "release-identity.json").write_text(json.dumps(identity, indent=2))
@@ -129,4 +165,6 @@ if __name__ == "__main__":
     for name in ("source-head", "revision", "build-proof", "ui-proof", "stable-shell",
                  "stable-identity-sha256", "webgl-artifact", "native-run", "output", "work"):
         parser.add_argument("--"+name, required=True)
+    parser.add_argument("--reference-parent")
+    parser.add_argument("--reference-site")
     package(parser.parse_args())
