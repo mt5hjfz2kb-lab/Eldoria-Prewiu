@@ -243,25 +243,17 @@ namespace Eldoria.DailyTreasures
             readonly FogMode mode;
             readonly Color color;
             readonly float density,start,end;
-            readonly AmbientMode ambientMode;
-            readonly Color ambientLight;
-            readonly float ambientIntensity;
-            readonly SphericalHarmonicsL2 ambientProbe;
             public FogSnapshot(bool capture)
             {
                 enabled=RenderSettings.fog;mode=RenderSettings.fogMode;
                 color=RenderSettings.fogColor;density=RenderSettings.fogDensity;
                 start=RenderSettings.fogStartDistance;end=RenderSettings.fogEndDistance;
-                ambientMode=RenderSettings.ambientMode;ambientLight=RenderSettings.ambientLight;
-                ambientIntensity=RenderSettings.ambientIntensity;ambientProbe=RenderSettings.ambientProbe;
             }
             public void Restore()
             {
                 RenderSettings.fog=enabled;RenderSettings.fogMode=mode;
                 RenderSettings.fogColor=color;RenderSettings.fogDensity=density;
                 RenderSettings.fogStartDistance=start;RenderSettings.fogEndDistance=end;
-                RenderSettings.ambientMode=ambientMode;RenderSettings.ambientLight=ambientLight;
-                RenderSettings.ambientIntensity=ambientIntensity;RenderSettings.ambientProbe=ambientProbe;
             }
         }
 
@@ -311,12 +303,11 @@ namespace Eldoria.DailyTreasures
                 foreach(var item in lights)
                     if(item.Key && !item.Key.transform.IsChildOf(root.transform))
                         item.Key.enabled=false;
-                RenderSettings.ambientMode=AmbientMode.Flat;
-                RenderSettings.ambientLight=new Color(.16f,.18f,.23f,1f);
-                RenderSettings.ambientIntensity=.65f;
-                var sh=new SphericalHarmonicsL2();
-                sh.AddAmbientLight(new Color(.16f,.18f,.23f,1f));
-                RenderSettings.ambientProbe=sh;
+                // Preserve the source scene's ambient lighting verbatim.
+                // Snapshot/restore of its generated SH probe rescaled all27
+                // coefficients in actual native43180652528. Studio key/fill
+                // are already scoped physical lights; global ambient writes
+                // are unnecessary and must never affect the player's city.
                 BuildPlinth(bounds);
                 float radius=Mathf.Max(1f,bounds.extents.magnitude);
                 key=new GameObject("Bastion studio / scoped warm physical key");

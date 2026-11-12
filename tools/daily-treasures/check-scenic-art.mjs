@@ -217,6 +217,9 @@ assert.match(liveBastion,/if\(!working.Create\(\) \|\| !working.IsCreated\(\)\)/
 assert.match(liveBastion,/if\(!working.IsCreated\(\)\)/);
 assert.match(liveBastion,/result=new RenderTexture\(width,height,0,RenderTextureFormat.ARGB32\)/);
 assert.match(liveBastion,/Graphics.Blit\(working,result\)/);
+// Actual27-coefficient drift in43180652528: ceremonial light must stay local.
+assert.doesNotMatch(liveBastion,/RenderSettings\.(?:ambientMode|ambientLight|ambientIntensity|ambientProbe)\s*=/,
+    'Studio must not mutate shared source-scene ambient lighting or SH coefficients');
 assert.match(liveBastion,/if\(!result.Create\(\) \|\| !result.IsCreated\(\)\)/);
 assert.match(liveBastion,/camera.targetTexture=null;\s*return result/);
 assert.match(liveBastion,/if\(working\)\{working.Release\(\);DestroyTemporary\(working\);\}/);
