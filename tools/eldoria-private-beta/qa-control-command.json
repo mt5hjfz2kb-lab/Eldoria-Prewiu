@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 34,
-  "action": "click_text",
-  "proof_sha256": "aceb056051ac0c666bb7124f55c7b08c32a9efdc6d56e89500e96e619b3b191d",
-  "label": "ACERCARSE A LA ARQUERA",
-  "reason": "The fresh original frame033 exposes the actual story interaction; continue the earned Chapter I route using the visible control."
+  "sequence": 35,
+  "action": "wait",
+  "proof_sha256": "d5ec26547df5e27ab7b7d4174882200ba291b372275571d217950db2a6fdfa87",
+  "seconds": 8,
+  "reason": "Allow the real Lyra typewriter dialogue to complete without skipping narrative or altering game timing."
 }
