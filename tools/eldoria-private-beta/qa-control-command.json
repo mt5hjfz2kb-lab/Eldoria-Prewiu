@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 28,
+  "sequence": 29,
   "action": "click_point",
-  "proof_sha256": "035151edbb7c6c8ae8e6888e69720bd79f0076a63fbe113890a111649e245c0f",
-  "x": 103,
-  "y": 746,
+  "proof_sha256": "1ef4a7429fcc97769f36c6ddabbdb6e8f89f3bca92e1ceca753f006f36dde085",
+  "x": 195,
+  "y": 581,
   "guard_texts": [
-    "Cuartel",
-    "Mejorar"
+    "ORDEN DE ENTRENAMIENTO",
+    "20"
   ],
-  "reason": "Frame027 contains the left barracks action button opposite Mejorar; the blank-caption defect is already recorded for engine17."
+  "reason": "Frame028 shows actual numeric20 input at the centre of the training quantity control; focus to request four earned archers."
 }
