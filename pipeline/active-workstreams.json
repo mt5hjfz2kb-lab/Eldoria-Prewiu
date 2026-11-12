@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T02:17:52.690Z",
+  "updated_at": "2026-11-12T02:31:37.443Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "WINDOWS_RUNTIME_HELPER_ATTACHMENT_AND_FOUR_VIEWPORT_ART",
+      "phase": "UNITY_ISOLATED_FOUR_VIEWPORTS_NATIVE_PASS_ART_REVIEW_PENDING",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -53,7 +51,7 @@
         "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
         "tools/eldoria-v41/GatewaySmoke.csproj"
       ],
-      "next": "Bounded native batch for corrected Runtime UNITY_EDITOR helpers with originalGUIDs and actual sameassembly attachment/playerexclusion, current bagcanvasprotocol. Require real4GPU PNG+firsthit/modal rejection. CombinedVigilia bag flow still pending separately. ReleaseWindows to173 aftercleanup before CPUreview.",
+      "next": "Review four actual f107 native Unity GPU PNG + topmost click/modal artifacts 13910600234 off-PC; compare same-scale approved reference, do not imply ART_APPROVED. Real PR173-presented bag, saved mail/packet/use tutorial, I-V/game, device and A/B remain pending. Windows transferred to PR173 after clean native run 43140520652.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -146,14 +144,14 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_to_pr173",
         "owner": "chatgpt-central-resource-art-20261111",
-        "ownership_revision": 16,
-        "claimed_at": "2026-11-12T02:17:52.690Z",
-        "previous_native_run": 43139049808
+        "ownership_revision": 17,
+        "last_native_run": 43140520652,
+        "released_at": "2026-11-12T02:31:37.443Z"
       },
       "runner_claimed_at": "2026-11-12T02:17:52.690Z",
-      "runner_released_at": "2026-11-11T22:11:23.072Z",
+      "runner_released_at": "2026-11-12T02:31:37.443Z",
       "scope_extension_reason": "Both existing actual V4.1 harnesses require retained real NarrativeCoherenceRules dependency; no test assertion removal."
     },
     {
@@ -6806,15 +6804,17 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 99,
+      "ownership_revision": 100,
       "write_scope_released": false,
       "phase": "ORIGINAL_LYRA_IDENTITY_NATIVE_PASS_REAL_AB_ART_REVIEW",
       "next": "Review actualnew48captures with originalreference; verifyLyraface/crops/controls againstceremony and approvedHall. Sourcee2fe cannotclaimmodel3Dqualityfrom2Dfallbackphotos. No artmainwithoutownerreview.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-11T11:27:39.902Z",
+      "runner_claimed_at": "2026-11-12T02:31:37.443Z",
       "runner_claim_basis": "Current owner authorizes continuation of entire PR173; no active heavy holder at read; reserve for actual native UI destination QA.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
@@ -7145,11 +7145,11 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_to_pr179",
+        "status": "claimed",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 99,
-        "last_native_run": 43125809314,
-        "released_at": "2026-11-12T00:27:41.748Z"
+        "ownership_revision": 100,
+        "claimed_at": "2026-11-12T02:31:37.443Z",
+        "previous_native_run": 43140520652
       }
     },
     {
@@ -18325,6 +18325,19 @@
       "native_job": 130921328518,
       "result": "failure",
       "cause": "True Eldoria scenery overlaps event report in old component guard; Unity compiled. Off-PC repair; no repeated monopoly."
+    },
+    {
+      "at": "2026-11-12T02:31:37.443Z",
+      "event": "central_pc_handoff_after_issue186_four_viewport_native_success",
+      "from": "eldoria-issue186-reward-attention-guidance-20261111",
+      "to": "eldoria-forja-oscura-visual-proof-20261107",
+      "source_sha": "f10753af14c87d0aa293c6d96b25158878896f61",
+      "source_native_run": 43140520652,
+      "source_native_job": 130926145696,
+      "source_artifact": 13910600234,
+      "source_metadata_artifact": 13908918178,
+      "result": "success",
+      "note": "Unity Editor returned success after actual four PNG and first-hit/button blocker proof; artifacts uploaded and job clean. Source writer #187 retained; only Windows passes to PR173. Isolated candidate is not real campaign integration, A/B art approval, player/mobile QA or merge."
     }
   ],
   "owner_specific_pauses": [
