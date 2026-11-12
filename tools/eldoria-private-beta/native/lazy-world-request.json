@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 44,
-  "state": "CLAIMED_FOR_NATIVE",
+  "ownership_revision": 45,
+  "state": "WAITING_EXCLUSIVE_WINDOWS",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -25,8 +25,8 @@
     "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "15d7ad201a3b0ca0031c07ce6d2c73a0a94da6bd",
     "tools/eldoria-private-beta/native/preserve_native_materials.ps1": "d72af85afb5b89e66030826aec70ef9305e0ac73",
     "tools/eldoria-private-beta/native/test_material_restore.py": "fab701c840829782cd0b49359536971eac7f33c0",
-    "tools/eldoria-private-beta/native/recover_route_intermediate.ps1": "78bda6ca2d913cac17a7c044952db4d1b6a31c82",
-    "tools/eldoria-private-beta/native/test_route_restore.py": "41eb61dc6a8e76f3c7e0330d4aead1dd37b3340c",
+    "tools/eldoria-private-beta/native/recover_route_intermediate.ps1": "4960b3ef3995544a7e2e4a4d53157231eda8c9eb",
+    "tools/eldoria-private-beta/native/test_route_restore.py": "dcd8080fa5daf6cb4f83bd9b1cadd7be7a6f778f",
     "tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt": "276dae624d10ff0554becdf1557dae378df573d6",
     "tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt": "61c79f507a10b6b4ae1b177a43805b7b332938c8"
   },
@@ -36,5 +36,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
-  "next": "Exclusive revision44 main daef59c5: recordedrouteintermediate recovery+coherentstagedAPIcomparison84guardsPASS; actualPlayMode+fullWorldI-V/WebGL+strictoriginal115inputrestoration. Release181afterWindowsnativecleanup beforeMac; no publictester/phone/artapproval."
+  "next": "Native43131672590 stopped BEFORE Unity: recordedknownfile path was relative; no warmfilemutation. Helper nowresolvespath beforegit-C; actualrelative-known fixturePASS32routechecks+58materialchecks. Artifactuploads exactcurrentrun/attempt only, no stalepreviousfulljourney globs. Wait181→187then179fullWorldbatch undernewlease; strict115originaldirtyinputaudit retained."
 }

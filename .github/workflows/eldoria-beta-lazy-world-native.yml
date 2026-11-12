@@ -259,7 +259,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pr179-full-lazy-world-i-v-native-evidence
-          path: pr179-lazy-full-native-*/
+          path: pr179-lazy-full-native-${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: warn
           retention-days: 7
       - name: Preserve only isolated WebGL owner candidate for Mac A/B
@@ -277,8 +277,8 @@ jobs:
         with:
           name: pr179-lazy-world-unity-playmode-owner-evidence
           path: |
-            pr179-lazy-native-evidence-*/
-            pr179-hot-recovery-*/
+            pr179-lazy-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
+            pr179-hot-recovery-${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: warn
           retention-days: 7
 

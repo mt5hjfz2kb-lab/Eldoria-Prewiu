@@ -1,6 +1,9 @@
 function Repair-PR179RecordedRouteIntermediate {
  param([string]$Source,[object]$Audit,[string]$Evidence,[string]$ExpectedHead,[string]$KnownIntermediate)
  $ErrorActionPreference='Stop'
+ # Resolve BEFORE git -C changes its own input path base. Production tools
+ # are passed relative to the Actions workspace, not to the warm project.
+ $KnownIntermediate=(Resolve-Path -LiteralPath $KnownIntermediate).Path
  $path='Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'
  if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools active: refuse route recovery'}
  if($ExpectedHead -notmatch '^[a-f0-9]{40}$' -or (git -C $Source rev-parse HEAD).Trim() -ne $ExpectedHead -or $LASTEXITCODE){throw 'Route recovery source identity differs'}

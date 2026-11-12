@@ -14,7 +14,7 @@ def git(root,*args):
 def status(root):
  return subprocess.check_output(['git','-C',str(root),'status','--porcelain','--','Unity']).decode().splitlines()
 with tempfile.TemporaryDirectory(prefix='eldoria-route-recovery-') as temp:
- for case in ['recorded','crlf','already_clean','unknown_route','foreign_change','staged','dirty_changed','wrong_head']:
+ for case in ['recorded','relative_known','crlf','already_clean','unknown_route','foreign_change','staged','dirty_changed','wrong_head']:
   root=pathlib.Path(temp)/case;root.mkdir()
   git(root,'init');git(root,'config','user.email','native-fixture@example.invalid');git(root,'config','user.name','Route recovery fixture');git(root,'config','core.autocrlf','false')
   dirty='Unity/Assets/owned-pending.txt';extra='Unity/Assets/unexpected.cs'
@@ -40,8 +40,8 @@ $audit=Get-Content -LiteralPath $AuditPath -Raw|ConvertFrom-Json
 $count=Repair-PR179RecordedRouteIntermediate -Source $Source -Audit $audit -Evidence $Evidence -ExpectedHead $ExpectedHead -KnownIntermediate $Known
 Write-Host "ROUTE_RESTORED=$count"
 ''')
-  r=subprocess.run([PWSH,'-NoLogo','-NoProfile','-File',str(runner),str(HERE/'recover_route_intermediate.ps1'),str(root),str(audit_path),str(evidence),'0'*40 if case=='wrong_head' else head,str(known)],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
-  allowed=case in ['recorded','crlf','already_clean']
+  r=subprocess.run([PWSH,'-NoLogo','-NoProfile','-File',str(runner),str(HERE/'recover_route_intermediate.ps1'),str(root),str(audit_path),str(evidence),'0'*40 if case=='wrong_head' else head,os.path.relpath(known,HERE) if case=='relative_known' else str(known)],cwd=HERE,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+  allowed=case in ['recorded','relative_known','crlf','already_clean']
   need((r.returncode==0)==allowed,case+' execution: '+r.stdout)
   if allowed:
    need(status(root)==audit['status'],case+' original exact status')
