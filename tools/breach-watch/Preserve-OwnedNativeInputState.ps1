@@ -1,8 +1,11 @@
 param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Output,[string]$SnapshotId='',[string]$ReviewedNonImporter='')
 $ErrorActionPreference='Stop'
-# These two exact working states were independently diffed against original Git
-# blobs in CPU job130983331098/run43158308069. No general settings exception.
+# Exact reviewed states only. Package/quality inputs were independently diffed
+# in job130983331098/run43158308069; URP provenance is recorded below.
 $reviewed=@(
+ # Run43327554020 archived this exact state after our failed WebGL20.
+ # Independent diff: Unity emptied only m_RuntimeSettings.m_List on exit.
+ @{path='Unity/Assets/UniversalRenderPipelineGlobalSettings.asset';originalGitBlob='45d50df6435105cf460ab7fe7a7e07f881a29074';workingGitBlob='376ce06f5d5bba2c873e88bcafbf42b88a353f49';rawSha256='3f65a0df3c2d427588f5b7b4e842c5f46b0d2bea79e9fbe18152b8bb5a963df7'},
  @{path='Unity/Packages/packages-lock.json';originalGitBlob='d508a7542c3e6b2b652163dc50cfbf5d3c0a0ed3';workingGitBlob='9b341e129fd1ba45f24d46b9afec83d6f1430929';rawSha256='5a853a6a4a3bcaa16b8a1201b56ec7c7d17c8c3cba217fa6ab347ea260e31a49'},
  @{path='Unity/ProjectSettings/QualitySettings.asset';originalGitBlob='890e4e5aab0956513f5472ce46ae6b74a456ff04';workingGitBlob='475d43ec7ee7f6689839ee52c840cda2fab4b611';rawSha256='2c8b2653f611eb42dc1b4158b9f48b867db016b2a4cfafe99610440bf64be948'}
 )

@@ -165,7 +165,7 @@ jobs:
           & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
           & git -C $root config core.sparseCheckout true
           & git -C $root config core.sparseCheckoutCone false
-          $patterns=@('/Unity/**','/tools/breach-watch/**','/tools/daily-treasures/**','/tools/reward-experience/**')
+          $patterns=@('/Unity/**','/tools/breach-watch/**','/tools/daily-treasures/**','/tools/reward-experience/**','/tools/eldoria-private-beta/native/StructuralStartupProbe.cs','/tools/eldoria-private-beta/native/CollisionBake.cs')
           for($i=1;$i -le 17;$i++){$patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')}
           foreach($n in @('39131782550','39132144937','39132392803','39132807199','39133202399','39136444844','39137079921','39138143327')){
             $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
@@ -406,6 +406,19 @@ jobs:
           New-Item -ItemType Directory -Path $backup | Out-Null
           $settings=Join-Path $project 'ProjectSettings'
           Copy-Item -LiteralPath $settings -Destination (Join-Path $backup 'ProjectSettings') -Recurse
+          $renderInputs=@('Assets/UniversalRenderPipelineGlobalSettings.asset','Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset')
+          foreach($rel in $renderInputs){
+            $original=Join-Path $project $rel
+            if(-not(Test-Path $original)){throw ('Missing original render input '+$rel)}
+            $saved=Join-Path $backup $rel
+            New-Item -ItemType Directory -Force (Split-Path $saved)|Out-Null
+            Copy-Item -LiteralPath $original -Destination $saved
+          }
+          $terrainProof=Join-Path $env:RUNNER_TEMP ('integrated-terrain-'+$env:GITHUB_RUN_ID)
+          $probe=Join-Path $project 'Assets/EldoriaIntegratedTerrainProof'
+          $queryAsset=Join-Path $project 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes'
+          if((Test-Path $probe) -or (Test-Path ($probe+'.meta')) -or (Test-Path $queryAsset) -or (Test-Path ($queryAsset+'.meta'))){throw 'Refuse replacing existing terrain proof inputs'}
+          New-Item -ItemType Directory -Path $terrainProof|Out-Null
           $priorProof=Test-Path $proof;$priorWeb=Test-Path $web
           if($priorProof){Move-Item -LiteralPath $proof -Destination (Join-Path $backup 'prior-proof')}
           if($priorWeb){Move-Item -LiteralPath $web -Destination (Join-Path $backup 'prior-web')}
@@ -421,9 +434,36 @@ jobs:
             if($process.ExitCode -ne 0){Get-Content $log -Tail 150;throw ('Candidate phase failed: '+$method)}
           }
           try {
+            New-Item -ItemType Directory -Path (Join-Path $probe 'Editor')|Out-Null
+            foreach($name in @('StructuralStartupProbe.cs','CollisionBake.cs')){
+              Copy-Item (Join-Path $env:BW_SOURCE ('tools/eldoria-private-beta/native/'+$name)) (Join-Path $probe ('Editor/'+$name))
+            }
+            $env:ELDORIA_COLLISION_BAKE_OUT=$terrainProof
+            Invoke-IntegratedNative 'EldoriaBetaCollisionBake.Enable' 'Win64' (Join-Path $terrainProof 'collision.log')
+            $env:ELDORIA_EXPECT_STAGED='1';$env:ELDORIA_MEMORY_SOURCE=$env:GITHUB_SHA
+            foreach($mode in @('bake','validate')){
+              $env:ELDORIA_BAKE_TERRAIN_QUERIES=if($mode -eq 'bake'){'1'}else{'0'}
+              $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($mode -eq 'validate'){'1'}else{'0'}
+              $env:ELDORIA_MEMORY_OUT=Join-Path $terrainProof $mode
+              New-Item -ItemType Directory -Path $env:ELDORIA_MEMORY_OUT|Out-Null
+              Invoke-IntegratedNative 'EldoriaBetaStructuralStartupProbe.Run' 'Win64' (Join-Path $env:ELDORIA_MEMORY_OUT 'unity.log')
+              if(-not(Test-Path (Join-Path $env:ELDORIA_MEMORY_OUT 'complete.txt'))){throw ('Terrain phase incomplete '+$mode)}
+              if($mode -eq 'bake'){$queryHash=(Get-FileHash $queryAsset -Algorithm SHA256).Hash}
+              if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Derived terrain changed during validation'}
+            }
+            foreach($pass in @(0,1)){
+              $b=Get-Content (Join-Path $terrainProof ('bake/startup-'+$pass+'.json')) -Raw|ConvertFrom-Json
+              $v=Get-Content (Join-Path $terrainProof ('validate/startup-'+$pass+'.json')) -Raw|ConvertFrom-Json
+              foreach($key in @('geometryHash','queryHash','topologyHash','populationRouteHash','verifiedSites','validatedCities')){
+                if(-not $v.$key -or $v.$key -ne $b.$key){throw ('Terrain parity failed '+$key)}
+              }
+              if($v.source -ne $env:GITHUB_SHA -or $v.terrainParityCheckedQueries -le 10000 -or -not $v.canonicalSavesUnchanged){throw 'Exact terrain collider/save proof missing'}
+            }
+            $env:ELDORIA_BAKE_TERRAIN_QUERIES='0';$env:ELDORIA_VALIDATE_TERRAIN_RAYCAST='0'
             Invoke-IntegratedNative 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' 'Win64' (Join-Path $env:RUNNER_TEMP 'integrated-campaign.log')
             $journey=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
             if($journey.source -ne $env:GITHUB_SHA -or $journey.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or $journey.checks -notcontains 'continuous native I-V authored objectives complete' -or $journey.checks -notcontains 'continuous I-V final saved state exact'){throw 'Exact campaign I-V source or save checks failed'}
+            if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Derived terrain changed after campaign'}
             Invoke-IntegratedNative 'Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build' 'WebGL' (Join-Path $env:RUNNER_TEMP 'integrated-web-build.log')
             $built=Get-Content (Join-Path $proof 'web-build.json') -Raw|ConvertFrom-Json
             if($built.source_sha -ne $env:GITHUB_SHA -or $built.status -ne 'WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED' -or -not(Test-Path (Join-Path $web 'index.html'))){throw 'Exact fresh WebGL certificate missing'}
@@ -432,6 +472,19 @@ jobs:
             Write-Host 'INTEGRATED_WEBGL_COMPILED_UNPUBLISHED_BROWSER_AND_IPHONE_UNVERIFIED'
           } finally {
             if(@(Get-Process Unity -ErrorAction SilentlyContinue).Count){throw 'Live Unity remains; preserve original backups without restoring under Editor'}
+            foreach($rel in $renderInputs){
+              $saved=Join-Path $backup $rel;$dest=Join-Path $project $rel
+              Copy-Item -LiteralPath $dest -Destination (Join-Path $terrainProof ((Split-Path $rel -Leaf)+'.after-build'))
+              Copy-Item -LiteralPath $saved -Destination $dest -Force
+              if((Get-FileHash $dest).Hash -ne (Get-FileHash $saved).Hash){throw 'Original render input restoration failed'}
+            }
+            if(Test-Path $queryAsset){
+              if($queryHash -and (Get-FileHash $queryAsset).Hash -ne $queryHash){throw 'Unexpected derived tape change; preserve working file'}
+              Move-Item -LiteralPath $queryAsset -Destination (Join-Path $terrainProof 'RuntimeTerrainQueries.bytes')
+            }
+            if(Test-Path ($queryAsset+'.meta')){Move-Item -LiteralPath ($queryAsset+'.meta') -Destination (Join-Path $terrainProof 'RuntimeTerrainQueries.bytes.meta')}
+            if(Test-Path $probe){Move-Item -LiteralPath $probe -Destination (Join-Path $terrainProof 'EditorProbe')}
+            if(Test-Path ($probe+'.meta')){Move-Item -LiteralPath ($probe+'.meta') -Destination (Join-Path $terrainProof 'EditorProbe.meta')}
             if(Test-Path $proof){
               $exitProof=Join-Path $env:RUNNER_TEMP 'integrated-build-proof-at-exit'
               Move-Item -LiteralPath $proof -Destination $exitProof
@@ -491,7 +544,8 @@ jobs:
           name: integrated-build-proof-${{ github.sha }}
           path: |
             ${{ runner.temp }}/integrated-build-proof*
-            ${{ runner.temp }}/integrated-build-inputs-*/ProjectSettings
+            ${{ runner.temp }}/integrated-build-inputs-*/**
+            ${{ runner.temp }}/integrated-terrain-*/**
             ${{ runner.temp }}/integrated-campaign.log
             ${{ runner.temp }}/integrated-web-build.log
           retention-days: 21
