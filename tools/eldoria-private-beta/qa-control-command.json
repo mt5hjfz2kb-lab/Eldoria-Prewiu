@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 26,
+  "sequence": 27,
   "action": "click_point",
-  "proof_sha256": "f51ec7eb0833bbeb7da74c22ee625ade5712adc26859640c4e17022a62a54966",
-  "x": 156,
-  "y": 799,
+  "proof_sha256": "5bddb3b1a7f3a2131c09383b872ce110ae24058d3aa7c6257d8709d2072d7fe8",
+  "x": 293,
+  "y": 735,
   "guard_texts": [
-    "Investiga la fisura",
-    "Misiones"
+    "SIR ALDRIC",
+    "Guardián de Valoria"
   ],
-  "reason": "Original frame025 shows the actual castle navigation icon at156,799; return to city and build infrastructure during the twenty-minute investigation."
+  "reason": "Original frame026 shows the real Aldric narrative action at293,735; acknowledge or reveal its actual text before city management."
 }
