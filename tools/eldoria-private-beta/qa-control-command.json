@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 16,
-  "action": "click_point",
-  "proof_sha256": "9389196f0a0ba6704633ffbb8ac13cca0554b48d6f343242f0ba3f7fdcad26e7",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN III • 1/5",
-    "Reúne 500 comida"
-  ],
-  "reason": "Fresh frame015 shows genuinely built Granary and real404/500food; follow the food-gathering mission."
+  "sequence": 17,
+  "action": "click_text",
+  "label": "Enviar expedición",
+  "proof_sha256": "1c27a116a477154b3c0c1e8aa83b1ff42ba5557ef3756d073993efc545e4366d",
+  "reason": "Frame016 shows actual selected meat reserve with1100availablefood and its real expedition action."
 }
