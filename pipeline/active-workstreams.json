@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:57:53.743Z",
+  "updated_at": "2026-11-12T22:49:59.866Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -22,9 +22,9 @@
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 53,
+      "ownership_revision": 54,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "REQUESTED_COMPACT_BAG_ATTACHMENT_MAIL_ART_CAPTURED_AND_FULL_NATIVE_REGRESSION_PASS",
@@ -167,6 +167,14 @@
           "revision": 51,
           "transferred_at": "2026-11-12T19:43:20.347Z",
           "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
+        },
+        {
+          "from": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "to": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "previous_revision": 53,
+          "revision": 54,
+          "transferred_at": "2026-11-12T22:49:59.866Z",
+          "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
         }
       ],
       "resource_request": {
@@ -6876,7 +6884,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6908,7 +6916,7 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 124,
+      "ownership_revision": 125,
       "write_scope_released": false,
       "phase": "TYPOGRAPHY_NATIVE_AB_VERIFIED_OWNER_VISUAL_REVIEW_READY",
       "next": "Preserve verified compact three-slot March and reversible typography. Continue coherent destination integration with PR187/181; no public beta modification.",
@@ -7099,6 +7107,14 @@
           "revision": 122,
           "transferred_at": "2026-11-12T19:43:20.347Z",
           "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
+        },
+        {
+          "from": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "to": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "previous_revision": 124,
+          "revision": 125,
+          "transferred_at": "2026-11-12T22:49:59.866Z",
+          "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
         }
       ],
       "runner_priority_handoff": {
@@ -7262,11 +7278,12 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 108,
+        "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+        "ownership_revision": 125,
         "source": "8ba0805716f047140de6691e640b415ab00cd948",
         "source_ci_run": 43184195235,
-        "claimed_at": "2026-11-12T08:42:23.684Z"
+        "claimed_at": "2026-11-12T08:42:23.684Z",
+        "updated_at": "2026-11-12T22:49:59.866Z"
       },
       "last_native": {
         "run": 43195548484,
@@ -7335,9 +7352,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 63,
+      "ownership_revision": 64,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7663,9 +7680,9 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
-        "ownership_revision": 63,
-        "updated_at": "2026-11-12T20:42:04.091Z"
+        "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+        "ownership_revision": 64,
+        "updated_at": "2026-11-12T22:49:59.866Z"
       },
       "ownership_history": [
         {
@@ -7878,6 +7895,14 @@
           "revision": 61,
           "transferred_at": "2026-11-12T19:43:20.347Z",
           "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
+        },
+        {
+          "from": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "to": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "previous_revision": 63,
+          "revision": 64,
+          "transferred_at": "2026-11-12T22:49:59.866Z",
+          "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -8531,9 +8556,9 @@
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
-      "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 87,
+      "ownership_revision": 88,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8727,6 +8752,14 @@
           "revision": 85,
           "transferred_at": "2026-11-12T19:43:20.347Z",
           "reason": "Owner explicitly asks this Work chat to recover all ongoing work from frozen central chat with prior instructions. Same four canonical IDs and PRs, all evidence/scopes preserved. No runner claimed, no queued job cancelled, no product merge or publication."
+        },
+        {
+          "from": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+          "to": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "previous_revision": 87,
+          "revision": 88,
+          "transferred_at": "2026-11-12T22:49:59.866Z",
+          "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
         }
       ],
       "previous_owner": "chatgpt-central-art-execution-20261111",

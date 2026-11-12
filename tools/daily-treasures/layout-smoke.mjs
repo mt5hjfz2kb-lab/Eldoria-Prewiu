@@ -253,11 +253,11 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       // Precisely mirror Unity's independent icon, item title and actual
       // amount. Enlarged 18px quantities require 26px high rects; the
       // previous 23px rect would fail the genuine native typography gate.
-      const icon=rect(-cardW/2+27,0,43,43);
+      const icon=rect(-cardW/2+27,-14,32,32);
       const labelWidth=cardW-62;
       const labelX=cardW/2-labelWidth/2-7;
-      const title=rect(labelX,12,labelWidth,27);
-      const amount=rect(labelX,-16,labelWidth,26);
+      const title=rect(0,18,cardW-16,27);
+      const amount=rect(labelX,-14,labelWidth,26);
       const cardBounds=rect(0,0,cardW,cardH);
       for(const [name,box] of [['icon',icon],['name',title],['amount',amount]])
         assert.ok(box.x0>=cardBounds.x0+1 && box.x1<=cardBounds.x1-1 &&

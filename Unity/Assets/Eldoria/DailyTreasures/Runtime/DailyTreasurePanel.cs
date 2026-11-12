@@ -2425,14 +2425,17 @@ namespace Eldoria.DailyTreasures
                 }
                 else
                 {
+                    // Full-width heading preserves both the loyalty suffix
+                    // and the accelerator duration. The former narrow right
+                    // column wrapped them beyond its fixed height in Unity.
                     float labelWidth=cardW-62f;
                     float labelX=cardW*.5f-labelWidth*.5f-7f;
                     Place(prizeIcons[i].rectTransform,.5f,.5f,.5f,.5f,
-                        -cardW*.5f+27f,0f,43f,43f);
+                        -cardW*.5f+27f,-14f,32f,32f);
                     Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
-                        labelX,12f,labelWidth,27f);
+                        0f,18f,cardW-16f,27f);
                     Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
-                        labelX,-16f,labelWidth,26f);
+                        labelX,-14f,labelWidth,26f);
                     prizeNames[i].fontSize=cardW>=170f?12:11;
                     prizeAmounts[i].fontSize=18;
                 }

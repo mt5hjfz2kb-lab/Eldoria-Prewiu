@@ -513,7 +513,11 @@ namespace Eldoria.DailyTreasures.Editor
                      "The claimed resource icon/name/quantity overlap in Unity "+i);
                 Need(title.preferredHeight<=title.rectTransform.rect.height+2f &&
                      amount.preferredHeight<=amount.rectTransform.rect.height+2f,
-                     "A genuine painted paid item still clips its letters "+i);
+                     "A genuine painted paid item still clips its letters "+i+
+                     " title="+title.text+" titleRequired="+title.preferredHeight+
+                     " titleBox="+title.rectTransform.rect.size+
+                     " amount="+amount.text+" amountRequired="+amount.preferredHeight+
+                     " amountBox="+amount.rectTransform.rect.size);
             }
         }
         // A sprite reference or enabled Image is NOT proof that Lyra is
