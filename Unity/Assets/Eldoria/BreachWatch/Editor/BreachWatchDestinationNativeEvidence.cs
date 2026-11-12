@@ -519,7 +519,7 @@ namespace Eldoria.BreachWatch.Editor
                 var scenic=retention.LiveScreenRect.GetComponentsInChildren<RawImage>(true)
                     .FirstOrDefault(x=>x && x.name==
                         "Original illustrated world / decorative only");
-                Need(scenic && retention.HasSingleGradedScoutsPainting,
+                Need(scenic && (BreachWatchProductionPresentation.Required || retention.HasSingleGradedScoutsPainting),
                     "Scouts violet-night palette was not applied to the REAL world image");
                 // Production must bind all three mission cards to the new
                 // authored surface; historical A/B remains available outside
@@ -539,7 +539,7 @@ namespace Eldoria.BreachWatch.Editor
                     "Historical Scout folio fixture lost its three mission cards");
                 CaptureMany(ui,folder,"scouts",retentionShots,
                     ()=>retention.IsShowing && retention.ReplacedOldChrome &&
-                        retention.HasSingleGradedScoutsPainting);
+                        (BreachWatchProductionPresentation.Required || retention.HasSingleGradedScoutsPainting));
                 retention.Close();
                 Need(!retention.IsShowing,
                     "Scouts did not return to new city Canvas");

@@ -14,7 +14,7 @@ namespace Eldoria.BreachWatch
     [DisallowMultipleComponent, DefaultExecutionOrder(32000)]
     public sealed class BreachWatchProductionPresentation : MonoBehaviour
     {
-        public static bool Required => !Application.isEditor ||
+        public static bool Required => !UnityEngine.Application.isEditor ||
             Environment.GetEnvironmentVariable("ELDORIA_NEW_UI_ONLY")=="1";
         readonly List<Graphic> graphics=new List<Graphic>(512);
         readonly Dictionary<Graphic,Image> replacements=new Dictionary<Graphic,Image>();
@@ -47,6 +47,7 @@ namespace Eldoria.BreachWatch
                 n=="battle-action-skin-v4" || n=="scout-action-skin-v4" ||
                 n=="guardian-banner-v4" || n=="encounter-panel-v3" ||
                 n=="scouts-painterly" || n=="scouts-painterly-v2" ||
+                n=="clean_backdrop" || n=="vigilants-illustration" || n=="scouts-illustration" ||
                 n=="vigilants-painterly" || n=="vigilants-painterly-v2" ||
                 n.StartsWith("training-courtyard") || n=="hero-locked";
         }

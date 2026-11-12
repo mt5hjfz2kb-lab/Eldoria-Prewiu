@@ -182,6 +182,32 @@ namespace Eldoria.BreachWatch.Editor
                         " negative="+negativeVisible+"/"+negativeOutside);
                 inkMaskCalibrated=true;
             }
+            if(BreachWatchProductionPresentation.Required)
+            {
+                var live=canvas.GetComponent<BreachWatchTypography>();
+                if(!live || !live.CandidateEnabled || !live.AllDestinations)
+                    throw new InvalidOperationException("Production typography not active across all destinations");
+                var state=canvas.GetComponentsInChildren<Text>(true).Select(x=>new State(x)).ToArray();
+                var current=new Proof {
+                    method="PRODUCTION_IMPORTED_FONT_GPU_AUDIT_NOT_AB",
+                    isolatedInkMaskCalibrated=inkMaskCalibrated,
+                    baselineFile=Path.GetFileName(baselineFile),
+                    baselineSha256=Digest(File.ReadAllBytes(baselineFile)),
+                    width=width,height=height,after=Measure(canvas,camera,target,width,height)
+                };
+                foreach(var item in current.after)
+                {
+                    if(!item.glyphsPresent)current.violations.Add(item.path+": missing imported glyph");
+                    if(item.inkOutside)current.violations.Add(item.path+": actual GPU glyph ink outside own rectangle");
+                }
+                current.restored=state.All(x=>x.Same());
+                string productionOutput=Path.Combine(Path.GetDirectoryName(baselineFile),"typography-production");
+                Directory.CreateDirectory(productionOutput);
+                File.WriteAllText(Path.Combine(productionOutput,Path.GetFileNameWithoutExtension(baselineFile)+".json"),
+                    JsonUtility.ToJson(current,true));
+                if(!current.restored)throw new InvalidOperationException("Production font audit mutated the live presentation");
+                return;
+            }
             if(!BreachWatchTypography.IsOptedIn("https://qa.invalid/?x=1&"+BreachWatchTypography.QueryFlag)||
                BreachWatchTypography.IsOptedIn("https://qa.invalid/#?"+BreachWatchTypography.QueryFlag)||
                BreachWatchTypography.IsOptedIn("https://qa.invalid/?eldoria_typography=source-sans30")||
