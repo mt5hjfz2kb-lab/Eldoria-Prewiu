@@ -189,6 +189,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 outline.raycastTarget=false;
                 var seenRect=Rect("Issue186 card - mark seen only",r.Root);
                 var hit=Art(seenRect,new Color(1f,1f,1f,0f),true);
+                // A transparent input surface still needs real uGUI depth;
+                // keep its mesh registered while its art remains invisible.
+                hit.canvasRenderer.cullTransparentMesh=false;
                 r.Seen=seenRect.gameObject.AddComponent<Button>();
                 r.Seen.targetGraphic=hit;
                 r.Seen.onClick.AddListener(()=>MarkSeen(index));

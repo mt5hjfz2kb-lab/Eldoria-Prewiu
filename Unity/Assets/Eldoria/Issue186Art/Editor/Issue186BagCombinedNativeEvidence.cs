@@ -1,0 +1,325 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using Eldoria.Application;
+using Eldoria.Domain;
+using Eldoria.ReferenceClean;
+using Eldoria.UI.RoyalGold.V2;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
+using Object=UnityEngine.Object;
+
+namespace Eldoria.Issue186Art.Editor
+{
+    // Uses an isolated, GUID-named gameplay-probe save in the OS temp folder.
+    // All consuming UI taps go through the real first EventSystem hit.
+    // Optional Vigilia is resolved at runtime, never a production dependency.
+    [InitializeOnLoad]
+    public static class Issue186BagCombinedNativeEvidence
+    {
+        const string Flag="Issue186.CombinedSavedBag.Native";
+        const string Scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
+        const string Folder="Issue186BagCombinedNativeEvidence";
+        static IEnumerator routine;
+        static double deadline;
+        static readonly List<Shot> shots=new List<Shot>();
+        static int clicks;
+        [Serializable] sealed class Shot
+        {
+            public string file,sha256,phase;
+            public int width,height,bytes;
+        }
+        [Serializable] sealed class Report
+        {
+            public string status,resourceSource,uiSource,error,limitation;
+            public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
+                skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
+                mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
+                physicalIphoneVerified,fullMailboxUiFlowVerified;
+            public int realFirstHitClicks;
+            public Shot[] images;
+        }
+        static Report report;
+        static string Output=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+Folder));
+        static Issue186BagCombinedNativeEvidence()
+        {
+            EditorApplication.update-=Tick;EditorApplication.update+=Tick;
+        }
+        static void Need(bool ok,string message)
+        {if(!ok)throw new InvalidOperationException("ISSUE186_COMBINED_BAG "+message);}
+        public static void Capture()
+        {
+            Need(!EditorApplication.isPlaying,"Start from a fresh isolated Editor");
+            Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+            EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
+            SessionState.SetBool(Flag,true);routine=null;deadline=0;
+            EditorApplication.EnterPlaymode();
+        }
+        static void Tick()
+        {
+            if(!SessionState.GetBool(Flag,false)||!EditorApplication.isPlaying)return;
+            try
+            {
+                if(deadline==0)deadline=EditorApplication.timeSinceStartup+360;
+                Need(EditorApplication.timeSinceStartup<deadline,"Native probe timed out");
+                if(routine==null)
+                {
+                    shots.Clear();clicks=0;
+                    report=new Report{status="RUNNING",
+                        resourceSource=Environment.GetEnvironmentVariable("GITHUB_SHA")??"",
+                        uiSource=Environment.GetEnvironmentVariable("ISSUE186_VIGILIA_SOURCE")??"",
+                        limitation="Actual saved bag on combined Vigilia probe; mail read/claim commands, not full letter-row UI flow; no art or device approval"};
+                    Directory.CreateDirectory(Output);routine=Run();
+                }
+                if(routine.MoveNext())return;
+                report.status="REAL_VIGILIA_SAVED_BAG_PASS_ART_REVIEW_PENDING";
+                Write();SessionState.SetBool(Flag,false);
+                EditorApplication.Exit(0);
+            }
+            catch(Exception e)
+            {
+                SessionState.SetBool(Flag,false);
+                try{(routine as IDisposable)?.Dispose();}catch(Exception cleanup){Debug.LogException(cleanup);}
+                if(report==null)report=new Report();
+                report.status="REAL_VIGILIA_SAVED_BAG_FAIL";report.error=e.ToString();
+                Write();Debug.LogException(e);EditorApplication.Exit(1);
+            }
+        }
+        static void Write()
+        {
+            report.images=shots.ToArray();report.realFirstHitClicks=clicks;
+            Directory.CreateDirectory(Output);
+            File.WriteAllText(Path.Combine(Output,"report.json"),JsonUtility.ToJson(report,true));
+        }
+        static Type VigiliaType()=>AppDomain.CurrentDomain.GetAssemblies()
+            .Select(a=>a.GetType("Eldoria.BreachWatch.BreachWatchHud",false))
+            .FirstOrDefault(t=>t!=null);
+        static void RenderUi(Component ui,int width,int height)
+        {
+            ui.GetType().GetMethod("Reflow").Invoke(ui,new object[]{width,height});
+            ui.GetType().GetMethod("RenderNow").Invoke(ui,null);
+            Canvas.ForceUpdateCanvases();
+        }
+        static void Draw(Camera camera,RenderTexture target)
+        {
+            Canvas.ForceUpdateCanvases();
+            if(GraphicsSettings.currentRenderPipeline!=null)
+            {
+                var request=new RenderPipeline.StandardRequest{destination=target};
+                Need(RenderPipeline.SupportsRenderRequest(camera,request),"Actual camera render unsupported");
+                RenderPipeline.SubmitRenderRequest(camera,request);
+                RenderPipeline.SubmitRenderRequest(camera,request);
+            }
+            else {camera.Render();camera.Render();}
+            Canvas.ForceUpdateCanvases();
+        }
+        static Button ButtonNamed(Component parent,string name)=>parent
+            .GetComponentsInChildren<Button>(true)
+            .Single(b=>b&&b.name==name&&b.gameObject.activeInHierarchy);
+        static void Click(Button button,Camera camera,RenderTexture target)
+        {
+            Need(button&&button.isActiveAndEnabled&&button.IsInteractable(),"Actual button unavailable");
+            Draw(camera,target);
+            var system=EventSystem.current;
+            Need(system&&system.isActiveAndEnabled,"Actual scene EventSystem unavailable");
+            var r=(RectTransform)button.transform;
+            var data=new PointerEventData(system){position=
+                RectTransformUtility.WorldToScreenPoint(camera,r.TransformPoint(r.rect.center))};
+            var hits=new List<RaycastResult>();system.RaycastAll(data,hits);
+            Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(
+                hits[0].gameObject)==button.gameObject,"Actual target is not frontmost: "+button.name+
+                "; first="+(hits.Count>0?hits[0].gameObject.name:"none"));
+            ExecuteEvents.Execute<IPointerClickHandler>(
+                hits[0].gameObject,data,ExecuteEvents.pointerClickHandler);clicks++;
+        }
+        static bool SessionRebound(ValoriaIntegratedWorld host)
+        {
+            var field=typeof(ValoriaIntegratedWorld).GetField("boundGateway",
+                BindingFlags.Instance|BindingFlags.NonPublic);
+            Need(field!=null,"Canonical session authority field missing");
+            var bag=host.Hud.GetComponent<Issue186BagOverlay>();
+            var authority=typeof(Issue186BagOverlay).GetField("gateway",
+                BindingFlags.Instance|BindingFlags.NonPublic);
+            Need(authority!=null,"Saved bag authority identity missing");
+            return ReferenceEquals(field.GetValue(host),host.City.Gateway)&&
+                bag&&ReferenceEquals(authority.GetValue(bag),host.City.Gateway);
+        }
+        static CommandResult Send(ICommandGateway gateway,string kind,string target)
+        {
+            var s=gateway.Snapshot();
+            return gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+                s.PlayerId,kind,target,s.Revision));
+        }
+        static void Photograph(Camera camera,RenderTexture target,string phase,int width,int height)
+        {
+            Draw(camera,target);
+            var prior=RenderTexture.active;
+            var texture=new Texture2D(width,height,TextureFormat.RGB24,false);
+            try
+            {
+                RenderTexture.active=target;texture.ReadPixels(new Rect(0,0,width,height),0,0);
+                texture.Apply(false);var bytes=texture.EncodeToPNG();
+                Need(bytes.Length>12000,"Actual bag picture is suspiciously blank");
+                string file="real-vigilia-bag-"+phase+"-"+width+"x"+height+".png";
+                File.WriteAllBytes(Path.Combine(Output,file),bytes);
+                using(var hash=SHA256.Create())
+                    shots.Add(new Shot{file=file,phase=phase,width=width,height=height,
+                        bytes=bytes.Length,sha256=BitConverter.ToString(hash.ComputeHash(bytes))
+                            .Replace("-","").ToLowerInvariant()});
+            }
+            finally{RenderTexture.active=prior;Object.DestroyImmediate(texture);}
+        }
+        static IEnumerator Run()
+        {
+            ValoriaIntegratedWorld host=null;
+            while(!host||!host.Ready||!host.City||!host.Hud)
+            {host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();yield return null;}
+            Need(host.City.Probe,"Refuse actual player campaign");
+            Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
+            int pages=0;
+            while(host.Hud.NarrativeOpen)
+            {
+                Need(pages++<30,"Canonical introductory setup cannot finish");
+                // Setup only, excluded from all recorded UI-input proofs.
+                // No resource claim/use can be driven through onClick.Invoke.
+                host.Hud.Modal.Extra.onClick.Invoke();yield return null;
+            }
+            var file=Path.GetFullPath(host.City.SaveFile);
+            Need(Path.GetDirectoryName(file).TrimEnd(Path.DirectorySeparatorChar)==
+                Path.GetFullPath(Path.GetTempPath()).TrimEnd(Path.DirectorySeparatorChar)&&
+                Path.GetFileName(file).StartsWith("eldoria-valoria-gameplay-")&&File.Exists(file),
+                "Save is not the isolated GUID-named OS-temp probe file");
+            var originalBytes=File.ReadAllBytes(file);
+            var originalState=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            report.temporaryProbeOnly=true;
+            var type=VigiliaType();Need(type!=null,"Exact owned Vigilia source overlay missing");
+            var ui=(Component)type.GetMethod("Install",BindingFlags.Public|BindingFlags.Static)
+                .Invoke(null,new object[]{host});
+            var canvas=(Canvas)type.GetProperty("NativeCanvas").GetValue(ui);
+            Need(canvas&&canvas!=host.Hud.GetComponent<Canvas>(),"Bag requires the actual independent canvas");
+            var camera=host.PlayerCamera;Need(camera,"Canonical camera absent");
+            var oldTarget=camera.targetTexture;float oldAspect=camera.aspect;int oldMask=camera.cullingMask;
+            RenderTexture rt=null;
+            try
+            {
+                foreach(var size in new[]{(390,844),(900,1600),(844,390),(1600,900)})
+                {
+                    int width=size.Item1,height=size.Item2;
+                    var state=JsonUtility.FromJson<PlayerState>(originalState);
+                    state.BastionLevel=3;state.SawmillLevel=1;state.BarracksLevel=1;
+                    state.ChapterProgress.MarchConfirmed=true;
+                    foreach(var beat in new[]{"start","world","mark","barracks","secured",
+                        "frontier-open","march-preparation","vigilants-introduction","scouts-introduction"})
+                        if(!state.ChapterProgress.SeenNarrative.Contains(beat))
+                            state.ChapterProgress.SeenNarrative.Add(beat);
+                    state.ResourceRewards=new ResourceRewardInventory();
+                    state.ResourceGuidance=new GuidedTutorialProgress();
+                    state.RewardAttention=new AttentionCueLedger();
+                    string prefix="native-bag:"+width+"x"+height;
+                    Need(ResourceRewardRules.TryIssue(state.ResourceRewards,prefix+":wood","mission","wood",100)&&
+                        ResourceRewardRules.TryIssue(state.ResourceRewards,prefix+":stone","mission","stone",1000)&&
+                        ResourceRewardRules.TryIssue(state.ResourceRewards,prefix+":food","mission","food",10000),
+                        "Cannot seed the isolated package study");
+                    string letter=prefix+":letter";
+                    Need(ResourceRewardRules.TryIssueBundle(state.ResourceRewards,prefix+":mail","mission",
+                        75,50,0,letter),"Cannot seed isolated actual pending mail");
+                    state.Mailbox.Receive(new EldoriaV41Message{EventId=letter,Category="recompensas",
+                        Type="mission",Title="Recompensa de la prueba aislada"});
+                    new FileStateStore(file).Save(state);host.City.ReloadForProbe();
+                    yield return null;
+                    while(!SessionRebound(host))yield return null;
+                    var gateway=host.City.Gateway;host.City.Apply(gateway.Snapshot());
+                    var bag=host.Hud.GetComponent<Issue186BagOverlay>();
+                    Need(bag,"Canonical saved bag component missing");
+                    if(rt){camera.targetTexture=oldTarget;rt.Release();Object.DestroyImmediate(rt);}
+                    rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);rt.Create();
+                    camera.targetTexture=rt;camera.aspect=width/(float)height;camera.cullingMask|=1<<5;
+                    canvas.worldCamera=camera;RenderUi(ui,width,height);
+                    var wallet=gateway.Snapshot().Resources;
+                    Click(ButtonNamed(ui,"Resource 0"),camera,rt);
+                    Need(bag.IsOpen,"Actual resource capsule did not open saved bag");
+                    var panel=ui.GetComponentsInChildren<RectTransform>(true)
+                        .Single(t=>t.name=="Issue186 saved resource bag");
+                    Need(panel.parent==canvas.transform&&!host.Hud.GetComponent<Canvas>().enabled,
+                        "Bag is still under the disabled legacy canvas");
+                    report.actualBagOnVigilia=true;bag.Refresh();yield return null;
+                    Photograph(camera,rt,"new",width,height);
+                    Click(panel.GetComponentsInChildren<Button>(true)
+                        .First(b=>b.name=="Issue186 card - mark seen only"&&b.gameObject.activeInHierarchy),
+                        camera,rt);
+                    // Bag component stays on RoyalHUD while its panel belongs
+                    // to Vigilia: locate actual controls from the owning panel.
+                    bag.Refresh();
+                    var seen=gateway.Snapshot();
+                    Need(seen.ResourceRewards.Packets.Single(p=>p.ReceiptId==prefix+":wood").SeenInBag&&
+                        !seen.ResourceRewards.Packets.Single(p=>p.ReceiptId==prefix+":wood").Used&&
+                        seen.Resources.Wood==wallet.Wood,"Seeing a card consumed its reward");
+                    report.seenDoesNotUse=true;
+                    Click(panel.GetComponentsInChildren<Button>(true)
+                        .Single(b=>b.name=="Issue186 dismiss first-use guidance"&&b.gameObject.activeInHierarchy),
+                        camera,rt);
+                    var skipped=gateway.Snapshot();
+                    Need(skipped.ResourceGuidance.Dismissed.Contains(ResourceRewardCommands.FirstUseStep)&&
+                        !skipped.ResourceGuidance.Completed.Contains(ResourceRewardCommands.FirstUseStep)&&
+                        skipped.Resources.Wood==wallet.Wood,"Skip falsely completed or consumed first use");
+                    report.skipDoesNotComplete=true;
+                    Click(panel.GetComponentsInChildren<Button>(true)
+                        .Single(b=>b.name=="Issue186 saved packet USE 0"&&b.gameObject.activeInHierarchy),
+                        camera,rt);
+                    var used=gateway.Snapshot();
+                    Need(used.Resources.Wood==wallet.Wood+100&&
+                        used.ResourceRewards.Packets.Single(p=>p.ReceiptId==prefix+":wood").Used,
+                        "Actual USE did not credit the exact packet once");
+                    long revision=used.Revision;
+                    Need(!Send(gateway,ResourceRewardCommands.UsePacket,prefix+":wood").Ok&&
+                        gateway.Snapshot().Revision==revision,"Used receipt was paid or saved twice");
+                    report.useCreditsOnce=true;
+                    Need(Send(gateway,"MailRead",letter).Ok,"Actual read command failed");
+                    Need(gateway.Snapshot().ResourceRewards.Packets
+                        .Where(p=>p.MailEventId==letter).All(p=>!p.Collected),
+                        "Reading claimed locked mail packets");
+                    report.mailReadDoesNotClaim=true;
+                    int beforeClaim=gateway.Snapshot().Resources.Wood;
+                    Need(Send(gateway,ResourceRewardCommands.ClaimMail,letter).Ok&&
+                        gateway.Snapshot().Resources.Wood==beforeClaim&&
+                        gateway.Snapshot().ResourceRewards.Packets
+                            .Where(p=>p.MailEventId==letter).All(p=>p.Collected&&!p.Used),
+                        "Mail claim failed to move exact components to the bag without credit");
+                    report.mailClaimDoesNotCredit=true;
+                    host.City.ReloadForProbe();yield return null;
+                    while(!SessionRebound(host))yield return null;
+                    gateway=host.City.Gateway;bag=host.Hud.GetComponent<Issue186BagOverlay>();
+                    bag.Refresh();RenderUi(ui,width,height);
+                    Need(gateway.Snapshot().Resources.Wood==wallet.Wood+100&&
+                        gateway.Snapshot().ResourceRewards.Packets.Single(p=>p.ReceiptId==prefix+":wood").Used&&
+                        gateway.Snapshot().ResourceGuidance.Dismissed.Contains(ResourceRewardCommands.FirstUseStep),
+                        "Actual JSON reload lost wallet, tombstone or saved help dismissal");
+                    report.jsonReloadVerified=true;
+                    Photograph(camera,rt,"used-reloaded",width,height);
+                    Click(panel.GetComponentsInChildren<Button>(true)
+                        .Single(b=>b.name=="Issue186 bag close"&&b.gameObject.activeInHierarchy),camera,rt);
+                    Need(!bag.IsOpen,"Actual bag Back button failed");
+                }
+            }
+            finally
+            {
+                camera.targetTexture=oldTarget;camera.aspect=oldAspect;camera.cullingMask=oldMask;
+                if(rt){rt.Release();Object.DestroyImmediate(rt);}
+                if(ui)Object.DestroyImmediate(ui.gameObject);
+                File.WriteAllBytes(file,originalBytes);
+                Need(File.ReadAllBytes(file).SequenceEqual(originalBytes),"Original isolated probe bytes were not restored");
+                host.City.ReloadForProbe();
+            }
+        }
+    }
+}
+#endif

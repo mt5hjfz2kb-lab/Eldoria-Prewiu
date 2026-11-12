@@ -62,6 +62,12 @@ jobs:
         run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
       - name: Exercise real saved gateway commands and JSON reload with reward feature enabled
         run: dotnet run -c Release --project tools/reward-experience/Gateway.Smoke.csproj
+      - name: Verify real filesystem overlay rollback and unknown-edit rejection without Windows
+        shell: pwsh
+        run: |
+          & tools/reward-experience/native/Test-VigiliaProofOverlay.ps1
+          $p=Get-Content 'issue186-overlay-source-guards.json' -Raw|ConvertFrom-Json
+          if($p.status -ne 'PASS' -or $p.checks -lt 12 -or -not $p.actual_filesystem){throw 'Overlay rollback checks did not execute'}
       - name: Roslyn syntax check of real Unity runtime and editor art scripts
         run: dotnet run -c Release --project tools/reward-experience/ArtSyntaxAudit.csproj
 

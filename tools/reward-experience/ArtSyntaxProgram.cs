@@ -10,6 +10,7 @@ var paths = new[]
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186ArtKit.cs",
     "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186ArtAudit.cs",
     "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186NativeEventSystem.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186NativeRaycaster.cs",
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
