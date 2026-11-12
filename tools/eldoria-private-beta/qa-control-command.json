@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 14,
+  "sequence": 15,
   "action": "snapshot",
-  "proof_sha256": "4fa0edb60038c928b6739fc52942358f5e40a1dbf3ea62b6f479683660e35247",
-  "reason": "Observe the naturally elapsed ten-minute construction, without spending the optional speed-up or changing the game clock."
+  "proof_sha256": "8d09fbeb0b7bd15f180885f9695d656691b89170f2cb9bb7ecdae9636ef80692",
+  "reason": "Record actual elapsed Bastion V progress while native QA runs; no accelerated game time or shortcut state."
 }
