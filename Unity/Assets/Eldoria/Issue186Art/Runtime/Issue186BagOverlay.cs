@@ -352,7 +352,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 At(item.Name.rectTransform,textX,rowH*.17f,textW,34f);
                 item.Name.fontSize=shortWide?17:
                     wideDesktop||tallTablet?25:cardW<400f?20:23;
-                At(item.Amount.rectTransform,textX,rowH*.40f,textW,35f);
+                // Enlarged29px quantities need their full imported-font
+                // line height. A35px box truncated every glyph in the
+                // actual1600x900 native grid despite a valid saved amount.
+                At(item.Amount.rectTransform,textX,rowH*.40f,textW,
+                    wideDesktop||tallTablet?46f:35f);
                 item.Amount.fontSize=shortWide?17:
                     wideDesktop||tallTablet?29:22;
                 At(item.Detail.rectTransform,textX,rowH*.72f,

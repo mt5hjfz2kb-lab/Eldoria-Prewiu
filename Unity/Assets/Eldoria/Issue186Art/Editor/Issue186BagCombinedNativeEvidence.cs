@@ -298,6 +298,16 @@ namespace Eldoria.Issue186Art.Editor
                     Need(actualHand.gameObject.activeInHierarchy,
                         "Actual combined first-use guide did not become visible on its real target; "+
                         Eldoria.Issue186Art.Issue186ArtKit.LastPointerRejectReason);
+                    var renderedAmounts=panel.GetComponentsInChildren<Text>(false)
+                        .Where(t=>t && t.isActiveAndEnabled &&
+                            t.name=="Issue186 readable saved amount").ToArray();
+                    Need(renderedAmounts.Length>=2,
+                        "Actual saved amount labels are absent");
+                    foreach(var amount in renderedAmounts)
+                        Need(!string.IsNullOrEmpty(amount.text) &&
+                             amount.cachedTextGenerator.characterCountVisible>=amount.text.Length,
+                            "Actual saved amount glyphs are truncated or invisible: "+
+                            amount.text+" in "+width+"x"+height);
                     Photograph(camera,rt,"new",width,height);
                     Click(panel.GetComponentsInChildren<Button>(true)
                         .First(b=>b.name=="Issue186 card - mark seen only"&&b.gameObject.activeInHierarchy),
