@@ -262,7 +262,22 @@ function processes(){
             report.actualWorldUi.actions.push({phase,text:hit.text,x:hit.x,y:hit.y,fromActualScreenshot:phase+'.png'});write();await observeEntry(2,phase);
           }
 
-    const restored=await readUi('earned-campaign-restored');
+    async function drainVisibleNarrative(prefix){
+      for(let step=0;step<16;step++){
+        const phase=prefix+'-'+step,rows=await readUi(phase);
+        const hits=rows.filter(r=>r.confidence>=.5&&normalized(r.text)==='CONTINUAR');
+        if(!hits.length)return rows;
+        if(hits.length!==1)throw Error('PENDING_NARRATIVE_CONTINUE_NOT_UNIQUE');
+        await page.mouse.click(hits[0].x,hits[0].y,{delay:150});
+        report.actualWorldUi.actions.push({text:hits[0].text,x:hits[0].x,y:hits[0].y,
+          proof:phase+'.png',ordinaryUiOnly:true,purpose:'acknowledge genuine pending narrative'});
+        await observeEntry(3,phase+'-acknowledged');write();
+      }
+      throw Error('PENDING_NARRATIVE_LIMIT_REACHED_NO_BLIND_CLICKING');
+    }
+    const restored=await drainVisibleNarrative('earned-campaign-restored');
+    if(!report.telemetry.receipts.some(r=>r.status===202&&r.eventName==='bastion_reached'&&r.payload?.bastion===2))
+      throw Error('NATIVE_EARNED_BASTION_TWO_SIGNAL_MISSING');
     const restoredText=restored.map(r=>normalized(r.text)).join(' ');
     if(!/BASTION II/.test(restoredText)||!/ENTRENA ARQUEROS/.test(restoredText))
       throw Error('EARNED_BARRACKS_CAMPAIGN_NOT_ACTUALLY_RESTORED');
@@ -277,7 +292,7 @@ function processes(){
       proof:'actual-training-twenty-offer.png',ordinaryUiOnly:true});write();
     const trainingStart=Date.now();
     await observeEntry(610,'actual-twenty-archers-normal-ten-minute-timer');
-    const completed=await readUi('actual-training-twenty-after-normal-wait');
+    const completed=await drainVisibleNarrative('actual-training-twenty-after-normal-wait');
     const completedText=completed.map(r=>normalized(r.text)).join(' ');
     if(!/PREPARA|COMPOSICION|PREPARAR/.test(completedText))
       throw Error('ORDINARY_TWENTY_ARCHER_COMPLETION_NOT_VISIBLE '+completedText);
