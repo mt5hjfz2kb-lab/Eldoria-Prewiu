@@ -24,6 +24,9 @@ for mode in ("eager","deferred"):
   w,h=struct.unpack(">II",data[16:24]);name=mode+"-"+phase+".png"
   sha=api("git/blobs",{"content":base64.b64encode(data).decode(),"encoding":"base64"})["sha"]
   entries.append({"path":base+name,"mode":"100644","type":"blob","sha":sha})
+  for index,start in enumerate(range(0,len(data),600000)):
+   chunk=data[start:start+600000];part=api("git/blobs",{"content":base64.b64encode(chunk).decode(),"encoding":"base64"})["sha"]
+   entries.append({"path":base+name+".bin-%02d"%index,"mode":"100644","type":"blob","sha":part})
   proof["images"].append({"file":name,"bytes":len(data),"width":w,"height":h,"sha256":hashlib.sha256(data).hexdigest()})
 sha=api("git/blobs",{"content":json.dumps(proof,indent=2)+"\n","encoding":"utf-8"})["sha"]
 entries.append({"path":base+"proof.json","mode":"100644","type":"blob","sha":sha})

@@ -1,4 +1,4 @@
-name: Eldoria owner lazy world staging — preserve live Pages, no deployment
+name: Eldoria owner lazy world staging — exact shared assets, no deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -46,7 +46,7 @@ jobs:
       - name: Preserve every live byte and stage exact small-frame owner route
         run: |
           python3 tools/eldoria-private-beta/stage_lazy_profile_owner_site.py --pages existing-pages/artifact.tar --candidate candidate --mac actual-mac --output site --transport tools/eldoria-private-beta/iphone_ab/copyadd_transport.js
-      - name: Verify every native data and WASM part through real browser HTTP streaming
+      - name: Verify all native data parts through small-frame browser transport through real browser HTTP streaming
         run: node --max-old-space-size=3072 tools/eldoria-private-beta/verify_lazy_profile_http.mjs site
       - name: Retain unpublished complete owner site
         uses: actions/upload-artifact@v4
