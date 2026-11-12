@@ -1,4 +1,4 @@
-name: Eldoria owner lazy world staging — exact shared assets, no deployment
+name: Eldoria owner staging evidence review — no build or deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,6 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   stage-unpublished-owner-route:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 65
     steps:
@@ -66,6 +67,7 @@ jobs:
           retention-days: 14
 
   export-actual-original-mac:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -86,3 +88,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 tools/eldoria-private-beta/copy_actual_mac_profile_review.py
+  export-staged-owner-mac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43150932880
+          name: mobile16-staged-delivery-actual-desktop-webkit-not-physical-iphone
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Preserve actual staged-route screenshots and bounded read segments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/eldoria-private-beta/copy_actual_staged_mac_review.py
