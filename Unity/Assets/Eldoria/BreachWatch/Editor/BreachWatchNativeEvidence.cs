@@ -134,7 +134,8 @@ namespace Eldoria.BreachWatch.Editor
                 Need(host.City.Probe, "Refuse to capture or change an actual player save");
                 if (phase == 0)
                 {
-                    Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
+                    if(BreachWatchProductionPresentation.Required)VerifyProductionFirstEntry();
+                    else Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
                     afterNaming = EditorApplication.timeSinceStartup;
                     phase = 1;
                     return;
@@ -303,6 +304,70 @@ namespace Eldoria.BreachWatch.Editor
             Debug.Log("VIGILIA_GROUND_INVENTORY_READ_ONLY "+
                 "terrain="+Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Length+
                 " largeRenderers="+large.Length);
+        }
+
+        static void VerifyProductionFirstEntry()
+        {
+            var before=host.City.Gateway.Snapshot();
+            Need(string.IsNullOrEmpty(before.PlayerName),"Fresh entry fixture must start unnamed");
+            var ui=BreachWatchHud.Install(host);
+            var coordinator=host.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+            coordinator.Refresh();
+            var prompt=ui.GetComponentInChildren<Eldoria.PlayerClarity.RoyalPlayerNamePrompt>(true);
+            Need(prompt && prompt.IsOpen && coordinator.IsBlockingNarrative,
+                "Canonical nickname prompt stranded under retired Canvas");
+            var input=prompt.GetComponentInChildren<InputField>(true);
+            var confirm=prompt.GetComponentInChildren<Button>(true);
+            Need(input && confirm,"Production nickname input or confirmation missing");
+            var camera=host.PlayerCamera;var previous=camera.targetTexture;
+            float aspect=camera.aspect;int mask=camera.cullingMask;
+            var active=RenderTexture.active;
+            var target=new RenderTexture(390,844,24);
+            var pixels=new Texture2D(390,844,TextureFormat.RGB24,false);
+            var folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+ArtifactDir+"/FirstEntry"));
+            Directory.CreateDirectory(folder);
+            try
+            {
+                camera.targetTexture=target;camera.aspect=390f/844f;camera.cullingMask|=1<<5;
+                ui.Reflow(390,844);ui.RenderNow();
+                ui.GetComponent<BreachWatchTypography>().SynchronizeNow();
+                Canvas.ForceUpdateCanvases();AuditExclusivePresentation();camera.Render();
+                void Click()
+                {
+                    Canvas.ForceUpdateCanvases();camera.Render();
+                    var rect=(RectTransform)confirm.transform;
+                    var point=RectTransformUtility.WorldToScreenPoint(camera,rect.TransformPoint(rect.rect.center));
+                    var pointer=new PointerEventData(EventSystem.current){position=point,pointerId=-1,button=PointerEventData.InputButton.Left};
+                    var hits=new List<RaycastResult>();
+                    EventSystem.current.RaycastAll(pointer,hits);
+                    Need(hits.Count>0 && hits[0].gameObject.GetComponentInParent<Button>()==confirm,
+                        "Nickname confirmation is not the actual first touch target");
+                    ExecuteEvents.Execute(confirm.gameObject,pointer,ExecuteEvents.pointerDownHandler);
+                    ExecuteEvents.Execute(confirm.gameObject,pointer,ExecuteEvents.pointerUpHandler);
+                    ExecuteEvents.Execute(confirm.gameObject,pointer,ExecuteEvents.pointerClickHandler);
+                }
+                input.text="";Click();
+                Need(prompt.IsOpen && string.IsNullOrEmpty(host.City.Gateway.Snapshot().PlayerName),
+                    "Invalid nickname committed or dismissed first entry");
+                input.text="Prueba Valoria";
+                Canvas.ForceUpdateCanvases();camera.Render();RenderTexture.active=target;
+                pixels.ReadPixels(new Rect(0,0,390,844),0,0);pixels.Apply();
+                File.WriteAllBytes(Path.Combine(folder,"nickname-390x844.png"),pixels.EncodeToPNG());
+                Click();coordinator.Refresh();
+                var after=host.City.Gateway.Snapshot();
+                Need(after.PlayerName=="Prueba Valoria" && !coordinator.IsBlockingNarrative,
+                    "New Canvas did not commit and reread canonical nickname");
+                Need(after.PlayerId==before.PlayerId && JsonUtility.ToJson(after.Resources)==JsonUtility.ToJson(before.Resources),
+                    "First entry altered identity or resources");
+                File.WriteAllText(Path.Combine(folder,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
+                File.WriteAllText(Path.Combine(folder,"complete.txt"),"PRODUCTION_FIRST_ENTRY_TWO_REAL_TOUCHES_PASS");
+                Debug.Log("PRODUCTION_FIRST_ENTRY_TWO_REAL_TOUCHES_PASS");
+            }
+            finally
+            {
+                camera.targetTexture=previous;camera.aspect=aspect;camera.cullingMask=mask;RenderTexture.active=active;
+                target.Release();Object.DestroyImmediate(target);Object.DestroyImmediate(pixels);
+            }
         }
 
         static void CaptureRealCity()

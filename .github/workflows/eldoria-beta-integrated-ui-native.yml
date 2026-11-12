@@ -227,6 +227,9 @@ jobs:
             }
             if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
           }
+          $identity=Join-Path $folder 'FirstEntry/complete.txt'
+          $identitySource=Join-Path $folder 'FirstEntry/source.txt'
+          if(-not(Test-Path $identity) -or (Get-Content $identity -Raw) -ne 'PRODUCTION_FIRST_ENTRY_TWO_REAL_TOUCHES_PASS' -or (Get-Content $identitySource -Raw) -ne $env:GITHUB_SHA){throw 'Fresh production entry was not proven on this source'}
           Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
       - name: Capture four real destination screens in disposable Unity progression fixture
         shell: powershell

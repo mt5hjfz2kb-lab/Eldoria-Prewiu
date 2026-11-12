@@ -21,6 +21,7 @@ namespace Eldoria.BreachWatch
         readonly List<Canvas> oldCanvases=new List<Canvas>();
         Canvas retired;
         Sprite stone,action;
+        readonly Sprite[] resources=new Sprite[3];
         bool applying;
         public int ReplacedDecorations { get; private set; }
         public bool RetiredCanvasDisabled => retired && !retired.enabled;
@@ -30,7 +31,8 @@ namespace Eldoria.BreachWatch
             retired=oldCanvas;
             stone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
             action=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
-            if(!retired || !stone || !action)
+            for(int i=0;i<3;i++)resources[i]=Resources.Load<Sprite>("VigiliaArt/FreshArt/"+(i==0?"wood":i==1?"stone":"food"));
+            if(!retired || !stone || !action || !resources[0] || !resources[1] || !resources[2])
                 throw new InvalidOperationException("Production Vigilia source artwork missing");
             // Keep the authoritative world-position projection and existing
             // construction clocks on the new Canvas. This transparent layer
@@ -41,6 +43,27 @@ namespace Eldoria.BreachWatch
                 labels.SetParent(transform,false);labels.SetAsFirstSibling();
                 labels.anchorMin=Vector2.zero;labels.anchorMax=Vector2.one;
                 labels.offsetMin=labels.offsetMax=Vector2.zero;
+            }
+            var identity=retired.GetComponentInChildren<Eldoria.PlayerClarity.RoyalPlayerNamePrompt>(true);
+            if(identity)
+            {
+                var root=(RectTransform)identity.transform;
+                root.SetParent(transform,false);root.SetAsLastSibling();
+                root.anchorMin=Vector2.zero;root.anchorMax=Vector2.one;
+                root.offsetMin=root.offsetMax=Vector2.zero;
+                foreach(var border in root.GetComponentsInChildren<Outline>(true))border.enabled=false;
+                foreach(var plate in root.GetComponentsInChildren<Image>(true))
+                {
+                    if(plate.transform==root){plate.color=new Color(.025f,.022f,.025f,.90f);continue;}
+                    if(plate.name=="Inner vellum" || plate.name=="Thin golden divider")
+                    {plate.enabled=false;continue;}
+                    plate.sprite=plate.GetComponent<Button>()?action:stone;
+                    plate.type=Image.Type.Sliced;plate.color=Color.white;
+                    var control=plate.GetComponent<Selectable>();
+                    if(control){control.targetGraphic=plate;control.transition=Selectable.Transition.None;}
+                }
+                foreach(var label in root.GetComponentsInChildren<Text>(true))
+                    label.color=label.name=="Validation"?new Color(1f,.58f,.42f):new Color(.96f,.91f,.80f);
             }
             Canvas.willRenderCanvases+=Enforce;
             Enforce();
@@ -68,6 +91,8 @@ namespace Eldoria.BreachWatch
             if(graphic is RawImage content)
                 return IsRetiredTexture(content.texture);
             // Old procedural UI paint is not a valid fallback in production.
+            if(type=="RoyalResourcePictogram")return true;
+            if(graphic is Image marker && graphic.name.StartsWith("Clarity / ") && !marker.sprite)return true;
             if(type.StartsWith("RoyalGold") || type=="RoyalPanel" ||
                type=="RoyalFrame" || type=="RoyalButtonGraphic")return true;
             if(graphic is Image image)return IsRetiredTexture(image.sprite?image.sprite.texture:null);
@@ -80,6 +105,16 @@ namespace Eldoria.BreachWatch
             applying=true;
             try
             {
+                // The clarity adapter can bind after the HUD on a later frame.
+                // Reparent its one live projection layer, preserving its own
+                // camera/collision placement, tier values and visibility rules.
+                var clarity=retired.transform.Find("Player clarity / non-interactive projected labels") as RectTransform;
+                if(clarity)
+                {
+                    clarity.SetParent(transform,false);clarity.SetAsFirstSibling();
+                    clarity.anchorMin=Vector2.zero;clarity.anchorMax=Vector2.one;
+                    clarity.offsetMin=clarity.offsetMax=Vector2.zero;
+                }
                 retired.GetComponentsInChildren<Canvas>(true,oldCanvases);
                 foreach(var canvas in oldCanvases)
                     if(canvas && !canvas.transform.IsChildOf(transform))canvas.enabled=false;
@@ -104,11 +139,14 @@ namespace Eldoria.BreachWatch
                         image.overrideSprite=null;
                         image.type=Image.Type.Sliced;
                         image.color=Color.white;
+                        if(image.name.StartsWith("Clarity / "))
+                            foreach(var outline in image.GetComponents<Outline>())outline.enabled=false;
                     }
                     else
                     {
                         string type=graphic.GetType().Name;
-                        bool structural=button || type=="RoyalGoldV2FrameGraphic" ||
+                        var pictogram=graphic as Eldoria.PlayerClarity.RoyalResourcePictogram;
+                        bool structural=pictogram || button || type=="RoyalGoldV2FrameGraphic" ||
                             type=="RoyalGoldV41ReportArtwork" ||
                             type.Contains("Parchment") || type.Contains("Contract") ||
                             type=="RoyalPanel" || type=="RoyalFrame";
@@ -131,6 +169,12 @@ namespace Eldoria.BreachWatch
                             foreach(var text in graphic.GetComponentsInChildren<Text>(true))
                                 if(text.color.r<.65f && text.color.g<.65f && text.color.b<.65f)
                                     text.color=new Color(.94f,.89f,.77f,text.color.a);
+                        }
+                        if(pictogram)
+                        {
+                            surface.sprite=resources[(int)pictogram.Kind];
+                            surface.type=Image.Type.Simple;surface.preserveAspect=true;
+                            surface.raycastTarget=false;
                         }
                         graphic.enabled=false;
                         if(button){button.targetGraphic=surface;button.transition=Selectable.Transition.None;}
