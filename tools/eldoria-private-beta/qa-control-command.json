@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 11,
+  "sequence": 12,
   "action": "click_point",
-  "proof_sha256": "3a7248be5d544342f20ffb7ee154e9e7f0f169096d248b2097e5529ea766b55d",
-  "x": 366,
-  "y": 642,
+  "proof_sha256": "246f8435ffbce4f61b14d824bc2b7944f098e43c3cf8eda066ce0726bc0b23ac",
+  "x": 155,
+  "y": 798,
   "guard_texts": [
-    "Cantera",
-    "0,15 piedra/s → Al mejorar: 0,25 piedra/s"
+    "Poder • 10.389",
+    "Recorrido completado"
   ],
-  "reason": "Frame010 confirms normal quarry upgrade completion through its increased0.15stone per second and next240wood156stone offer; close its sheet without another upgrade."
+  "reason": "Frame011 confirms the real level2quarry and completedB5; re-enter World through the visible dock compass to verify already-loaded Region1 reuse."
 }
