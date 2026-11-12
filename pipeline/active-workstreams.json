@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T08:42:23.684Z",
+  "updated_at": "2026-11-12T08:57:50.046Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 32,
+      "ownership_revision": 33,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "ACTUAL_FULL_FLOW_AND_EXACT_SOURCE_RECOVERY_PASS_ART_REFINEMENT_OFF_PC",
+      "phase": "EXCLUSIVE_ACTUAL_READABLE_ITEM_ART_HAND_AND_VERIFIED_UI25",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -52,7 +54,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Runtime20PNG52actualclicks/mail/save and source-only two-layer restore all verified. Refine visible NEW badge/name collision against actual screenshots; preserve all original PNGs and semantic differences. Do not rerun merely to repeat known passing behavior.",
+      "next": "One exact8f source bounded native20/52 proof pinnedUI25/native43185167905. OriginalNEWbadge19unitsleft avoidsname; originalhand92wide naturalaspect/fingertip. Exact64metadatarepin unchangedassets verified925→25; originalsourceoverlayguard preventsstacking. ProvenUIactualRootExitpoll replaces-Wait wholeprocess-tree; measureactualduration withoutweakeningproof.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -155,12 +157,12 @@
         "resource": "windows-runner-heavy",
         "status": "claimed",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 31,
-        "source": "2d94ab1238e42a3647faa1161ea81c022288a404",
-        "source_ci_run": 43181952247,
-        "claimed_at": "2026-11-12T08:22:37.545Z"
+        "ownership_revision": 33,
+        "source": "8f01802efac50813678870469dd1b58a379efa37",
+        "source_ci_run": 43187001609,
+        "claimed_at": "2026-11-12T08:57:50.046Z"
       },
-      "runner_claimed_at": "2026-11-12T08:22:37.545Z",
+      "runner_claimed_at": "2026-11-12T08:57:50.046Z",
       "runner_released_at": "2026-11-12T08:27:48.855Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
       "runner_claim_basis": "Fairturn afteractualstudiofailedcleanexit. R7150177sourceCI43173973003SUCCESS; UI92596b actualnative43172857546+genuineAB success48PNG,2realmailfirsthits,Hallemptygutter0. Need20PNG4integratedcity+16bag/mail52realclicksactualhandJSONreload.",
@@ -6839,14 +6841,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 108,
+      "ownership_revision": 109,
       "write_scope_released": false,
-      "phase": "EXCLUSIVE_VERIFIED_RESOURCE_BADGE_RIM_READABILITY_NATIVE_PROOF",
-      "next": "OneexactUI8ba native48+AB/mail2/Hall0overlap certificate for resource-badge upper-rim positioning. Then Rnewactualcombined20 must pinthisexactnewcert and verify originalitem/name/handgeometry; avoidstaleUI925artclaim.",
+      "phase": "ACTUAL_READABILITY_UI48_MAIL2_HALL0_AB_PASS_COMBINED_ART_CHECK_PENDING",
+      "next": "Exact25e source native48+AB passed; preserve. Rnextfullcombinedproof must verify actual header alerts clear quantity text and native original hand/name legibility before artisticacceptance.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T08:42:23.684Z",
@@ -7173,7 +7173,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T07:11:29.998Z",
+      "runner_released_at": "2026-11-12T08:57:50.046Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7193,6 +7193,16 @@
         "source": "8ba0805716f047140de6691e640b415ab00cd948",
         "source_ci_run": 43184195235,
         "claimed_at": "2026-11-12T08:42:23.684Z"
+      },
+      "last_native": {
+        "run": 43185167905,
+        "head": "25e893fb9f6245d813e8dceb03865a8b703b8bd2",
+        "result": "success",
+        "png": 48,
+        "actual_mail_firsthits": 2,
+        "hall_intro_overlap_pixels": 0,
+        "independent_visual_ab": "success",
+        "art_approved": false
       }
     },
     {
@@ -18617,6 +18627,16 @@
       "source": "8ba0805716f047140de6691e640b415ab00cd948",
       "ci": 43184195235,
       "note": "Technicalproof isnotartquality; inspectapprovedreference offPC whileUI native cert runs."
+    },
+    {
+      "at": "2026-11-12T08:57:50.046Z",
+      "event": "central_UI48_AB_pass_to_actual_original_resource_art_legibility",
+      "from": "eldoria-forja-oscura-visual-proof-20261107",
+      "to": "eldoria-issue186-reward-attention-guidance-20261111",
+      "ui_run": 43185167905,
+      "ui_source": "25e893fb9f6245d813e8dceb03865a8b703b8bd2",
+      "r_source": "8f01802efac50813678870469dd1b58a379efa37",
+      "r_ci": 43187001609
     }
   ],
   "owner_specific_pauses": [
