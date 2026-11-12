@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 39,
-  "action": "key",
-  "proof_sha256": "3af8a41eb3ab51a4277ff54732c24b4094cebbbbd435bc396899a05c4c3d9f54",
-  "key": "ArrowRight"
+  "sequence": 40,
+  "action": "click_point",
+  "proof_sha256": "9e260d6aac8088094559e8fd5566924fa63123daf1aa1bf6bdf12996676dc645",
+  "x": 366,
+  "y": 642,
+  "guard_texts": [
+    "Acechador de Ceniza",
+    "El Acechador aún no ha regresado."
+  ],
+  "reason": "Frame039 confirms final enemy defeated and unavailable for respawn; close its visible top-right sheet control to access mailbox."
 }
