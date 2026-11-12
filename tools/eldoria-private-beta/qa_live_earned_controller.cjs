@@ -340,7 +340,7 @@ function processes(){
       const state={schema:1,runId,snapshot:number,proofSha256:sha256,reason,
         commandError:error||null,lastCommandSequence:report.controlledSession.lastCommandSequence,
         url:page.url(),identity:report.identity,actualEarnedInput:report.resumedEarnedCampaign,
-        acceptedNativeEvents:report.telemetry.receipts.filter(r=>r.status===202),
+        acceptedNativeEvents:(report.telemetry?.receipts||[]).filter(r=>r.status===202),
         browserErrors:report.errors,physicalIphoneVerified:false,
         source:process.env.GITHUB_SHA,artOrReleaseApproval:false,at:new Date().toISOString()};
       fs.writeFileSync(folder+'/state.json',JSON.stringify(state,null,2));
