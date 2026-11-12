@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 20,
-  "action": "click_text",
-  "label": "Enviar expedición",
-  "proof_sha256": "11eee22efe10aaaa22cac891c7db035db718939637f338838bc2f282a3e767b7",
-  "reason": "Original frame019 selects actual Lobo ceniciento with1450requiredpower; send the existing confirmed army."
+  "sequence": 21,
+  "action": "click_point",
+  "proof_sha256": "82d65991a66a348eca3cd0563de257859f50b55880c8bc990ff421bd76e5f770",
+  "x": 211,
+  "y": 69,
+  "guard_texts": [
+    "BASTIÓN III • 2/5",
+    "Completa dos cacerías"
+  ],
+  "reason": "Original frame020 records first hunt1/2 and actual victory; use mission navigation for the second authored hunt."
 }
