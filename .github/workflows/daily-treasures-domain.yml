@@ -635,3 +635,39 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 tools/daily-treasures/copy_native_review.py
+
+  inspect-preserved-native-inputs:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43157612284
+          artifact-ids: 13916990677
+          github-token: ${{ github.token }}
+          path: preserved-native
+          merge-multiple: true
+      - name: Compare only the two preserved non-importer inputs with their actual original Git blobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,hashlib,difflib,urllib.request
+          from pathlib import Path
+          reports=list(Path('preserved-native').rglob('preserved-inputs/report.json'));assert len(reports)==1
+          p=reports[0];r=json.loads(p.read_text(encoding='utf-8-sig'))
+          assert r['status']=='CURRENT_BYTES_ARCHIVED_NOT_RESET'
+          allowed={'Unity/Packages/packages-lock.json','Unity/ProjectSettings/QualitySettings.asset'}
+          for row in r['files']:
+              if row['path'] not in allowed:continue
+              current=(p.parent/'current'/row['path']).read_bytes();assert hashlib.sha256(current).hexdigest()==row['rawSha256']
+              req=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/git/blobs/'+row['originalGitBlob'],headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req) as response:b=json.load(response)
+              assert b['sha']==row['originalGitBlob'];original=base64.b64decode(b['content'])
+              print('EXACT_NATIVE_INPUT_DIFF',json.dumps(row))
+              print(''.join(difflib.unified_diff(original.decode().splitlines(True),current.decode().splitlines(True),fromfile='Git HEAD/'+row['path'],tofile='Preserved native/'+row['path'])))
+          print('READ_ONLY_AUDIT_NO_WINDOWS_NO_RESTORATION')
+          PY
