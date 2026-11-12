@@ -352,13 +352,17 @@ function processes(){
             // at194,747 after the real objective arrow, and its9-second
             // roundtrip. Read every new visible state; no command injection.
             const allowed=new Set(['RECOGER MADERA','RECOGER PIEDRA',
-              'ATACAR EXPLORADOR','MEJORAR A BASTION II']);
+              'ATACAR EXPLORADOR','MEJORAR A BASTION II','CONSTRUIR']);
             const reachedTwo=()=>report.telemetry?.receipts.some(r=>r.status===202&&
               r.eventName==='bastion_reached'&&r.payload?.bastion===2);
+            const builtBarracks=()=>report.telemetry?.receipts.some(r=>r.status===202&&
+              r.eventName==='build_completed'&&r.payload?.building_code==='barracks'&&r.payload?.level===1);
             for(let step=0;step<16;step++){
-              if(reachedTwo()){
+              if(reachedTwo()&&(process.env.QA_BUILD_BARRACKS!=='1'||builtBarracks())){
                 report.nextObjectiveExploration.actualBastionTwoReached=true;
-                report.nextObjectiveExploration.stopReason='actual_native_bastion_two_signal';break;
+                report.nextObjectiveExploration.actualBarracksBuilt=!!builtBarracks();
+                report.nextObjectiveExploration.stopReason=builtBarracks()?
+                  'actual_native_barracks_one_signal':'actual_native_bastion_two_signal';break;
               }
               if(step>0){
                 await page.mouse.click(211,69,{delay:150});
@@ -400,23 +404,8 @@ function processes(){
                (!report.nextObjectiveExploration.actualBastionTwoReached||
                 !report.nextObjectiveExploration.actualRouteVictory))
               throw Error('ACTUAL_CHAPTER_ONE_NOT_COMPLETED '+JSON.stringify(report.nextObjectiveExploration));
-            // Optional export of this DISPOSABLE ordinary QA browser only.
-            // Never touch owner saves or serialize a potentially huge asset DB.
-            const dbs=await page.evaluate(async()=>typeof indexedDB.databases==='function'?
-              (await indexedDB.databases()).map(d=>d.name).filter(Boolean):null);
-            report.ordinaryQaCheckpoint={databaseNames:dbs,exported:false,
-              fakeStateCreated:false,ownerSaveAccessed:false};
-            if(dbs?.length&&dbs.every(n=>n==='/idbfs'||n.startsWith('/idbfs/')||n==='UnityPlayerPrefs')){
-              const state=await page.context().storageState({indexedDB:true});
-              if(state.cookies.length||state.origins.some(o=>o.origin!=='https://mt5hjfz2kb-lab.github.io'))
-                throw Error('CHECKPOINT_CONTAINS_UNEXPECTED_ORIGIN_OR_COOKIE');
-              const bytes=JSON.stringify(state);
-              if(Buffer.byteLength(bytes)>4000000)throw Error('QA_SAVE_CHECKPOINT_UNEXPECTEDLY_LARGE');
-              fs.writeFileSync(out+'/ordinary-qa-storage-state.json',bytes);
-              report.ordinaryQaCheckpoint.exported=true;
-              report.ordinaryQaCheckpoint.bytes=Buffer.byteLength(bytes);
-              report.ordinaryQaCheckpoint.sha256=require('crypto').createHash('sha256').update(bytes).digest('hex');
-            }else report.ordinaryQaCheckpoint.reason='unknown_or_asset_cache_database_not_exported';
+            if(process.env.QA_BUILD_BARRACKS==='1'&&!builtBarracks())
+              throw Error('ACTUAL_BARRACKS_NOT_BUILT_THROUGH_VISIBLE_UI');
             write();
 
           }
@@ -439,6 +428,51 @@ function processes(){
         throw Error('ACTUAL_UNITY_TELEMETRY_CHAIN_INCOMPLETE '+JSON.stringify(report.telemetry));
       report.telemetry.actualJourneyBrowserReceiptsVerified=true;
       report.telemetry.databaseReceiptsVerified=false;
+    }
+    if(process.env.QA_EXPORT_ORDINARY_STATE==='1'){
+      // Gameplay proof is already complete. End only THIS fresh disposable
+      // QA game's document before discarding its regenerable UnityCache.
+      // The actual earned /idbfs campaign database is never modified.
+      report.gameplayPassed=true;
+      const before=await page.evaluate(async()=>(await indexedDB.databases()).map(d=>({name:d.name,version:d.version})));
+      if(!before.some(d=>d.name==='/idbfs')||
+         before.some(d=>!['/idbfs','UnityCache','UnityPlayerPrefs'].includes(d.name)))
+        throw Error('UNKNOWN_QA_DATABASE_DO_NOT_TOUCH');
+      const origin=new URL(page.url()).origin;
+      if(origin!=='https://mt5hjfz2kb-lab.github.io')throw Error('QA_SAVE_ORIGIN_MISMATCH');
+      const identityUrl=new URL('./release-identity.json',page.url()).href;
+      await page.evaluate(()=>window.valoriaGame.Quit());
+      await page.goto(identityUrl,{waitUntil:'domcontentloaded',timeout:30000});
+      const shown=JSON.parse(await page.locator('body').innerText());
+      if(shown.source_sha!==report.identity.source_sha||shown.revision!==report.identity.revision)
+        throw Error('QA_CHECKPOINT_GAME_IDENTITY_CHANGED');
+      const deleted=await page.evaluate(()=>new Promise((resolve,reject)=>{
+        const request=indexedDB.deleteDatabase('UnityCache');
+        const timer=setTimeout(()=>reject(Error('QA_ASSET_CACHE_CLOSE_TIMEOUT')),15000);
+        request.onerror=()=>{clearTimeout(timer);reject(Error('QA_ASSET_CACHE_DELETE_FAILED'));};
+        request.onblocked=()=>{clearTimeout(timer);reject(Error('QA_ASSET_CACHE_CONNECTION_STILL_OPEN'));};
+        request.onsuccess=()=>{clearTimeout(timer);resolve(true);};
+      }));
+      const after=await page.evaluate(async()=>(await indexedDB.databases()).map(d=>({name:d.name,version:d.version})));
+      const savedBefore=before.find(d=>d.name==='/idbfs'),savedAfter=after.find(d=>d.name==='/idbfs');
+      if(!savedAfter||savedAfter.version!==savedBefore.version||
+         after.some(d=>!['/idbfs','UnityPlayerPrefs'].includes(d.name)))
+        throw Error('EARNED_QA_SAVE_DATABASE_NOT_PRESERVED');
+      // Official API since1.51; current runner is pinned1.55.
+      const state=await page.context().storageState({indexedDB:true});
+      if(state.cookies.length||state.origins.some(o=>o.origin!==origin))
+        throw Error('QA_CHECKPOINT_UNEXPECTED_COOKIE_OR_ORIGIN');
+      const bytes=JSON.stringify(state);
+      if(Buffer.byteLength(bytes)>4000000)throw Error('QA_CHECKPOINT_UNEXPECTEDLY_LARGE');
+      fs.writeFileSync(out+'/ordinary-qa-storage-state.json',bytes);
+      report.ordinaryQaCheckpoint={exported:true,method:'PLAYWRIGHT_OFFICIAL_INDEXEDDB_SNAPSHOT_AFTER_QA_GAME_CLOSED',
+        sourceEngine:report.identity.source_sha,sourceBundle:report.identity.candidate_bundle_sha256,
+        origin,bytes:Buffer.byteLength(bytes),databaseBefore:before,databaseAfter:after,
+        disposableAssetCacheDiscardedAfterGameClosed:deleted,earnedSaveDatabaseModified:false,
+        ownerSaveAccessed:false,fakeStateCreated:false,
+        sha256:require('crypto').createHash('sha256').update(bytes).digest('hex')};
+      write();
+      if(report.errors.length)throw Error('ERROR_DURING_ORDINARY_QA_SAVE_EXPORT');
     }
     report.passed=true;
   }catch(e){report.failure=String(e);}
