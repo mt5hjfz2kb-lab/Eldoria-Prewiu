@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T05:24:18.947Z",
+  "updated_at": "2026-11-12T05:40:02.286Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6808,14 +6808,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 102,
+      "ownership_revision": 103,
       "write_scope_released": false,
-      "phase": "EXCLUSIVE_NATIVE_REAL_MAIL_POINTER_AND_HALL_GLYPH_PROOF",
-      "next": "Freeze requestexactsource; preserve originalGitworkinginputs, normalcheckout, actual48PNGtwofirsthitmailcontrols+HallglyphGPUtest, thenreleasefairlyR187combined-only. No mainart/deviceapproval.",
+      "phase": "OFF_PC_HALL_REFRESH_LIFECYCLE_FIX_FROM_ACTUAL_GPU_FAILURE",
+      "next": "Repair cached intro layout after canonicalRefresh using actual common-parent title/tab coordinates, preserve allactualmailfirsthit assertions, sourceCI thennextfairnative.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T05:24:18.947Z",
@@ -7108,7 +7106,7 @@
         "mail_empty_changed_pixels_900x1600": 82403,
         "mail_empty_changed_pixels_390x844": 16513
       },
-      "runner_release_basis": "Native PR173 43109761153 job130824993202 SUCCESS exact 699c816e9b961fc232ae9818503c954c481d8afd; Unity processes exited by Start-Process HasExited checks, Actions orphan cleanup complete; 48 SHA256 native captures + empty-mail genuine GPU contribution 82403 px at 900x1600, 16513 px at 390x844; artifact13895209980 and QA A/B artifact13895917624 preserved. Source-only art work continues with owner chatgpt-central-art-execution-20261111. ART_APPROVED=false, MOBILE_PASS=false.",
+      "runner_release_basis": "Native43161203990 exited failure on actual1600x900Hall glyph overlap2219pixels. Original87trackedinputs reallypreservedandnormalcheckout. First8HUD capturesPASS; destinationsstoppedbeforemail, so mailfix not yetverified. Nativeartifact13917529325SHA5cce... exactfailedHallPNG now0bcb8236 docs reviewed: secondintroline behindtabs.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7135,7 +7133,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T02:36:46.310Z",
+      "runner_released_at": "2026-11-12T05:40:02.286Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7149,12 +7147,10 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_pending_Hall_source_fix",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 102,
-        "ready_source": "0b500b0340007398b0815dffec241377a37c168a",
-        "source_ci_run": 43160433996,
-        "claimed_at": "2026-11-12T05:24:18.947Z"
+        "ownership_revision": 103,
+        "last_native_run": 43161203990
       }
     },
     {
@@ -8058,7 +8054,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 65,
+      "ownership_revision": 66,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8078,11 +8074,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "ACTUAL_CINEMATIC_CITY_NATIVE_PASS_AWAIT_UNTOUCHED_VISUAL_REVIEW",
+      "phase": "EXCLUSIVE_ACTUAL_BUILT_STUDIO_NATIVE_METHOD_COMPARISON",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "CPUexportexact4PNGfrom43159772550 thencompareprior2418 andapprovedreference; source/nativepassnotartapproval.",
+      "next": "One20city-onlylot incl8studioimages, exact8protectedgeometry8sceneRestore8singleframeproofs; releaseWindowsfairlyUIreadythenR. Need directactualimagecritique, no art/mainapproval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8139,9 +8137,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T05:24:18.947Z",
       "runner_release_basis": "Native43159772550 source6930da30 PASS20actualcity8genuineBastion4rotation8singleperimeter+exactenvironmentrestored; independently audited success.50priorinputfiles preservedwithfullGitref. Artifact13917847860 SHA933f5ca9f385ad7539031c8f9efffe7965659d3a80d3607a52387235a5dabe36. No artapproval; export untouched actualimages forhumancritique.",
-      "runner_claimed_at": "2026-11-12T05:11:44.563Z",
+      "runner_claimed_at": "2026-11-12T05:40:02.286Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "Fair turn after R27 cleanexit/245restored. Exact recovery66356eb sourceCI43158571821PASS10actualGitcases+domain/gateway/Roslyn. Archiveand fullworkingGitref before restoring only2exactreviewed nativeinputs.",
+      "runner_claim_basis": "NextfairturnafterUIrealHallfailurecleanexit. Source4e9052ba36ea208b5b8696e87acd42c84a57811f CI43162697051/43162692252SUCCESS153406rules247gateway20Roslyn10realGitpreservation. Majorartmethodpivot:actualbuiltmesh isolatedstudio with source layers/lights/ambient/fogrestored, no replacementarchitecture.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
@@ -8242,10 +8240,15 @@
       "previous_owner": "chatgpt-daily-treasures-20261108",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_clean_exit",
+        "status": "claimed",
         "owner": "chatgpt-central-treasures-art-20261111",
-        "ownership_revision": 65,
-        "last_native_run": 43159772550
+        "ownership_revision": 66,
+        "ready_source": "4e9052ba36ea208b5b8696e87acd42c84a57811f",
+        "source_ci_runs": [
+          43162697051,
+          43162692252
+        ],
+        "claimed_at": "2026-11-12T05:40:02.286Z"
       }
     },
     {
@@ -18433,6 +18436,14 @@
       "to": "eldoria-forja-oscura-visual-proof-20261107",
       "native_run": 43159772550,
       "preserved_original_inputs": 50
+    },
+    {
+      "at": "2026-11-12T05:40:02.286Z",
+      "event": "central_fair_failed_Hall_to_source_verified_actual_built_studio",
+      "from": "eldoria-forja-oscura-visual-proof-20261107",
+      "to": "eldoria-daily-treasures-20261108",
+      "prior_native_run": 43161203990,
+      "preserved_original_inputs": 87
     }
   ],
   "owner_specific_pauses": [
