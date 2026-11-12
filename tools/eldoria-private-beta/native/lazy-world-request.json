@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-central-art-execution-20261111",
-  "ownership_revision": 48,
-  "state": "PREPARED_REQUIRES_FRESH_EXCLUSIVE_LEASE",
+  "ownership_revision": 49,
+  "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -38,5 +38,7 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "Unpublished same lazy-world engine with actual barracks training caption line-box correction and native glyph/input proof; no art integration, no deployment or tester invitation.",
-  "next": "Source/preflight only until fresh sole Windows lease49. Native pretest must render actual selected barracks at390x844+844x390, require every authored Entrenar glyph and genuine training-choice pointer. Keep original115 dirty inputs strict restoration. Existing published4fd untouched."
+  "next": "Exclusive49 mainf10b5ce1a05aad76a0921eae48a4bf9300803639. Existing115inputsha preserved. Actual PretestUXProbe requires entire Entrenar glyphs at390x844+844x390 and genuine existing training-choice click, alongside standard real lazy PlayMode/terrain/BastionI-V/WebGL. Unpublished owner-onlyartifact; no release, mainart, externaltesters orphysicalphone claims. Release Windows only after clean native exit while Mac/site proof can continue.",
+  "source_before_request": "d7d2e9301e3bba6227811d05e361deb73205dd4b",
+  "request_time_utc": "2026-11-12T11:41:38.502Z"
 }
