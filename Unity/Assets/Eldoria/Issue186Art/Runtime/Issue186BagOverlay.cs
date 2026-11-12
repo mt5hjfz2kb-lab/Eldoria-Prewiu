@@ -17,7 +17,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             public RectTransform Root, Frame;
             public Image Icon, New;
-            public Text Quantity, Name, Detail, UseText;
+            public Text Quantity, Name, Amount, Detail, UseText;
             public Button Seen, Use;
         }
         static readonly Color Wine=new Color(.13f,.055f,.062f,.98f);
@@ -36,6 +36,7 @@ namespace Eldoria.UI.RoyalGold.V2
         Canvas presentationCanvas;
         ResourceUiSnapshot view;
         int page, perPage=4;
+        bool sharedTheme;
         float priorWidth,priorHeight,nextRefresh,nextGuide;
         public bool IsOpen=>panel&&panel.gameObject.activeSelf;
         public int PendingCount=>view?.Bag?.Count??0;
@@ -114,7 +115,11 @@ namespace Eldoria.UI.RoyalGold.V2
             var rect=Rect(name,parent);
             rect.gameObject.AddComponent<CanvasRenderer>();
             var label=rect.gameObject.AddComponent<Text>();
-            label.font=RoyalGoldV41SourceArt.Serif;
+            bool heading=name=="Issue186 bag title"||name=="Issue186 saved kind";
+            var sharedFont=Resources.Load<Font>(heading?
+                "VigiliaArt/Fonts/CormorantGaramond-SemiBold":
+                "VigiliaArt/Fonts/LibreBaskerville-Regular");
+            label.font=sharedFont?sharedFont:RoyalGoldV41SourceArt.Serif;
             label.fontSize=size;label.color=color;label.alignment=alignment;
             label.horizontalOverflow=HorizontalWrapMode.Wrap;
             label.verticalOverflow=VerticalWrapMode.Truncate;
@@ -126,10 +131,22 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var rect=Rect(name,parent);
             rect.gameObject.AddComponent<CanvasRenderer>();
-            var frame=rect.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
-            frame.AntiqueGoldAction=true;frame.DecorativeCorners=true;
-            frame.color=new Color(.96f,.78f,.67f,1f);
-            frame.raycastTarget=true;
+            var authored=caption=="USAR"?Resources.Load<Sprite>(
+                "VigiliaArt/PremiumSurfaces/burgundy_action"):null;
+            Graphic frame;
+            if(authored)
+            {
+                var skin=rect.gameObject.AddComponent<Image>();
+                skin.sprite=authored;skin.type=Image.Type.Sliced;
+                skin.color=Color.white;skin.raycastTarget=true;frame=skin;
+            }
+            else
+            {
+                var fallback=rect.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                fallback.AntiqueGoldAction=true;fallback.DecorativeCorners=true;
+                fallback.color=new Color(.96f,.78f,.67f,1f);
+                fallback.raycastTarget=true;frame=fallback;
+            }
             var button=rect.gameObject.AddComponent<Button>();
             button.targetGraphic=frame;
             label=TextAt(name+" caption",rect,16,Ivory,TextAnchor.MiddleCenter);
@@ -164,9 +181,12 @@ namespace Eldoria.UI.RoyalGold.V2
             panel=Rect("Issue186 saved resource bag",hud.transform);
             panel.anchorMin=Vector2.zero;panel.anchorMax=Vector2.one;
             panel.offsetMin=panel.offsetMax=Vector2.zero;
-            Art(panel,Slate,true);
+            var sharedStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
+            sharedTheme=sharedStone;
+            var paper=Art(panel,sharedTheme?Color.white:Slate,true);
+            if(sharedTheme){paper.sprite=sharedStone;paper.type=Image.Type.Simple;paper.preserveAspect=false;}
             header=Rect("Issue186 burgundy title panel",panel);
-            Art(header,Wine);
+            Art(header,sharedTheme?Color.clear:Wine);
             rim=Rect("Issue186 antique outer trim",panel);
             rim.gameObject.AddComponent<CanvasRenderer>();
             var frame=rim.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
@@ -181,12 +201,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 int index=i;
                 var r=new Row();
                 r.Root=Rect("Issue186 saved packet row "+i,panel);
-                Art(r.Root,new Color(.105f,.066f,.070f,.98f));
+                if(!sharedTheme)Art(r.Root,new Color(.105f,.066f,.070f,.98f));
                 r.Frame=Rect("Issue186 aged metal",r.Root);
-                r.Frame.gameObject.AddComponent<CanvasRenderer>();
-                var outline=r.Frame.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
-                outline.color=new Color(.62f,.41f,.33f,.68f);
-                outline.raycastTarget=false;
+                if(sharedTheme)
+                    Art(r.Frame,new Color(.52f,.38f,.22f,.40f));
+                else
+                {
+                    r.Frame.gameObject.AddComponent<CanvasRenderer>();
+                    var outline=r.Frame.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                    outline.color=new Color(.62f,.41f,.33f,.68f);
+                    outline.raycastTarget=false;
+                }
                 var seenRect=Rect("Issue186 card - mark seen only",r.Root);
                 var hit=Art(seenRect,new Color(1f,1f,1f,0f),true);
                 // A transparent input surface still needs real uGUI depth;
@@ -199,6 +224,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.Quantity=TextAt("Issue186 quantity IN painted plaque",seenRect,
                     12,Gold,TextAnchor.MiddleCenter);
                 r.Name=TextAt("Issue186 saved kind",r.Root,20,Ivory);
+                r.Amount=TextAt("Issue186 readable saved amount",r.Root,22,Gold);
+                var amountFace=Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
+                if(amountFace)r.Amount.font=amountFace;
                 r.Detail=TextAt("Issue186 nonconsuming state",r.Root,13,Gold);
                 r.New=Art(Rect("Issue186 authentic novelty badge",r.Root),Color.white);
                 r.Use=Action("Issue186 saved packet USE "+i,r.Root,"USAR",
@@ -273,7 +301,7 @@ namespace Eldoria.UI.RoyalGold.V2
             perPage=shortWide?2:4;
             float gap=shortWide?7f:11f;
             float rowH=Mathf.Max(52f,Mathf.Min(shortWide?122f:146f,
-                (Mathf.Max(95f,footer-cardsTop)-gap*(perPage-1))/perPage));
+                (Mathf.Max(95f,footer-52f-cardsTop)-gap*(perPage-1))/perPage));
             float width=w-l-r;
             float icon=Mathf.Min(96f,rowH-13f,Mathf.Max(48f,w*.21f));
             for(int i=0;i<rows.Count;i++)
@@ -281,26 +309,37 @@ namespace Eldoria.UI.RoyalGold.V2
                 var item=rows[i];
                 if(i>=perPage){item.Root.gameObject.SetActive(false);continue;}
                 At(item.Root,l,cardsTop+i*(rowH+gap),width,rowH);
-                At(item.Frame,3f,3f,width-6f,rowH-6f);
-                At((RectTransform)item.Seen.transform,10f,
-                    (rowH-icon)*.5f,icon,icon);
-                At(item.Icon.rectTransform,0f,0f,icon,icon);
-                At(item.Quantity.rectTransform,icon*.15f,icon*.73f,
+                if(sharedTheme)
+                    At(item.Frame,icon+22f,rowH-2f,width-icon-34f,1.3f);
+                else At(item.Frame,3f,3f,width-6f,rowH-6f);
+                // The visible CARD, rather than its tiny picture alone, is
+                // the genuine non-consuming seen target. USE stays later
+                // in drawing/input order and is the only consuming command.
+                At((RectTransform)item.Seen.transform,0f,0f,width,rowH);
+                float iconY=(rowH-icon)*.5f;
+                At(item.Icon.rectTransform,10f,iconY,icon,icon);
+                At(item.Quantity.rectTransform,10f+icon*.15f,iconY+icon*.73f,
                     icon*.70f,icon*.18f);
-                At(item.New.rectTransform,icon-2f,
-                    Mathf.Max(0f,(rowH-icon)*.5f-8f),27f,27f);
+                At(item.New.rectTransform,10f+icon-2f,
+                    Mathf.Max(0f,iconY-8f),27f,27f);
                 float useW=Mathf.Clamp(width*.245f,86f,122f);
                 float useX=width-useW-12f;
                 At((RectTransform)item.Use.transform,useX,
                     (rowH-46f)*.5f,useW,46f);
                 float textX=icon+22f,textW=Mathf.Max(58f,useX-textX-9f);
-                At(item.Name.rectTransform,textX,rowH*.17f,textW,32f);
-                item.Name.fontSize=shortWide?16:width<400f?18:21;
-                At(item.Detail.rectTransform,textX,rowH*.52f,textW,rowH*.36f);
+                At(item.Name.rectTransform,textX,rowH*.12f,textW,29f);
+                item.Name.fontSize=shortWide?17:width<400f?20:23;
+                At(item.Amount.rectTransform,textX,rowH*.39f,textW,30f);
+                item.Amount.fontSize=shortWide?17:22;
+                At(item.Detail.rectTransform,textX,rowH*.72f,textW,rowH*.23f);
                 item.Detail.fontSize=shortWide?11:13;
                 item.UseText.fontSize=shortWide?14:16;
+                var skin=item.Use.targetGraphic as Image;
+                if(skin&&skin.sprite)
+                    skin.pixelsPerUnitMultiplier=Mathf.Max(.01f,
+                        skin.sprite.rect.height/(46f*Mathf.Max(.01f,skin.pixelsPerUnit)));
             }
-            At(feedback.rectTransform,l,footer-34f,w-l-r,31f);
+            At(feedback.rectTransform,l,footer-47f,w-l-r,43f);
             float navW=Mathf.Clamp(width*.25f,92f,160f);
             At((RectTransform)prev.transform,l,footer,navW,48f);
             At((RectTransform)next.transform,w-r-navW,footer,navW,48f);
@@ -314,7 +353,7 @@ namespace Eldoria.UI.RoyalGold.V2
             closeMail?.Invoke();
             panel.gameObject.SetActive(true);panel.SetAsLastSibling();
             page=0;
-            feedback.text="Toca una tarjeta para marcarla vista. Solo USAR añade recursos.";
+            feedback.text="Solo USAR añade recursos. Toca una tarjeta para marcarla vista.";
             Layout();Refresh();
         }
         public void Close()
@@ -386,8 +425,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     &&slot.Quantity.fontSize>8)slot.Quantity.fontSize--;
                 slot.Name.text=packet.Kind=="wood"?"MADERA":
                     packet.Kind=="stone"?"PIEDRA":"COMIDA";
-                slot.Detail.text=packet.New?"NUEVO · toca para marcar visto":
-                    "Guardado · "+packet.AmountText;
+                slot.Amount.text=packet.AmountText;
+                slot.Detail.text=packet.New?"NUEVO":"Guardado";
                 slot.Use.interactable=packet.CanUse;
                 slot.UseText.text=packet.CanUse?"USAR":"SIN ESPACIO";
                 Issue186ArtKit.BindAttention(slot.New,
