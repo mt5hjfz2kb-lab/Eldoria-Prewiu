@@ -36,8 +36,8 @@ namespace Eldoria.BreachWatch
             theme.NoLegacyBluePaintingVisible;
         public bool RealMarchFullWidthScorecard => cinematicMarch &&
             cinematicMarch.UsesFullWidthMetrics;
-        public bool RealMarchTwoCardRoster => cinematicMarch &&
-            cinematicMarch.UsesTwoRelevantHeroCards;
+        public bool RealMarchThreeSpaceRoster => cinematicMarch &&
+            cinematicMarch.UsesThreeHeroSpaces;
         public bool RealTrainingCinematic => cinematicTraining &&
             cinematicTraining.IsCinematicPortrait;
         public string NativeTrainingLayoutDiagnostic => cinematicTraining

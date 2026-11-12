@@ -591,12 +591,15 @@ namespace Eldoria.BreachWatch.Editor
                 if(name=="march")
                 {
                     Need(ui.RealDestinations &&
-                         ui.RealDestinations.RealMarchTwoCardRoster,
-                         "Actual march still has a dead third hero or lacks "+
-                         "two real source-bound enlarged choices at "+
+                         ui.RealDestinations.RealMarchThreeSpaceRoster,
+                         "Actual march lacks three reserved hero spaces or "+
+                         "the original selectable source-bound choices at "+
                          width+"x"+height);
                     var marchRoot=management ? management.VisibleRoot:null;
                     Need(marchRoot,"Real canonical March layout missing");
+                    var composition=marchRoot.GetComponent<BreachWatchMarchComposition>();
+                    Need(composition && composition.SecondaryDetailsBehindInformation && !composition.SecondaryDetailsOpen,
+                        "Secondary army information saturates the initial preparation screen");
                     var realHeroSlots=marchRoot.
                         GetComponentsInChildren<RectTransform>(true)
                         .Where(x=>x && x.name.StartsWith("Hero slot "))
@@ -604,28 +607,10 @@ namespace Eldoria.BreachWatch.Editor
                     Need(realHeroSlots.Length==3 &&
                          realHeroSlots[0].gameObject.activeInHierarchy &&
                          realHeroSlots[1].gameObject.activeInHierarchy &&
-                         !realHeroSlots[2].gameObject.activeInHierarchy,
-                         "March has visible unavailable third slot or "+
+                         realHeroSlots[2].gameObject.activeInHierarchy,
+                         "March is missing its reserved third hero space or "+
                          "missing selectable real hero cards at "+
                          width+"x"+height);
-                    if(height>width)
-                        foreach(var slot in realHeroSlots.Take(2))
-                        {
-                            var nodes=slot.GetComponentsInChildren<RectTransform>(true);
-                            var portrait=nodes.FirstOrDefault(x=>x.name=="Hero portrait viewport");
-                            var label=nodes.FirstOrDefault(x=>x.name=="Button label");
-                            Need(portrait && label &&
-                                 portrait.rect.width>=slot.rect.width*.75f &&
-                                 -label.anchoredPosition.y>=
-                                    -portrait.anchoredPosition.y+portrait.rect.height-2f,
-                                "Portrait March must place the real hero above its readable name, not shrink both into horizontal wells");
-                            var stone=nodes.FirstOrDefault(x=>x.name=="Vigilia / hero selection stone");
-                            Need(stone && stone.GetComponent<Image>() &&
-                                 stone.GetComponent<Image>().type==Image.Type.Sliced &&
-                                 slot.GetComponent<Button>() &&
-                                 slot.GetComponent<Button>().targetGraphic==stone.GetComponent<Image>(),
-                                "Actual hero choice must keep a nine-sliced stone Button target");
-                        }
                 }
                 if(name=="training" && height>width)
                     Need(ui.RealDestinations && 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Protect real two-hero March composition at both mobile orientations.
+"""Protect real three-space March composition at both mobile orientations.
 
 Source contract only. Unity native render and pointer QA are separate.
 """
@@ -26,13 +26,13 @@ def main():
     restore = text.split("public void Restore()", 1)[1]
     require('if(root.rect.width>root.rect.height)' in scorecard and
             'RefreshActualHeroCards(root);' in scorecard,
-            "Landscape layout must reclaim the same real two hero cards")
+            "Landscape layout must reclaim the same real three hero spaces")
     require('bool landscape=root.rect.width>root.rect.height;' in portraits,
             "Hero composition must adapt without portrait-only gate")
-    require('if(third && third.interactable)return false;' in portraits,
-            "Do not hide a genuinely unlocked third hero in the future")
-    require('heroSlots[2].gameObject.SetActive(false);' in portraits,
-            "Permanently disabled third choice must be absent, not decorative")
+    require('third.interactable=' not in portraits,
+            "Presentation must never change actual third-slot availability")
+    require('heroSlots[2].gameObject.SetActive(true);' in portraits,
+            "Owner requests a visible third hero space")
     require('Remember(card);' in portraits and
             'Remember(heroViewports[i]);' in portraits and
             'Remember(heroLabels[i]);' in portraits,
@@ -47,9 +47,9 @@ def main():
             'label.horizontalOverflow=old.Horizontal;' in restore,
             "Original canonical hero typography must be restored on exit")
     native = QA.read_text(encoding="utf-8")
-    require('RealMarchTwoCardRoster' in native,
+    require('RealMarchThreeSpaceRoster' in native,
             "Native QA must check the actual landscape and portrait roster")
-    print("VIGILIA_MARCH_TWO_REAL_HEROES_ALL_ORIENTATIONS_SOURCE_PASS")
+    print("VIGILIA_MARCH_THREE_HERO_SPACES_ALL_ORIENTATIONS_SOURCE_PASS")
     print("Native 390x844, 900x1600, 844x390 and 1600x900 still required")
 
 

@@ -41,7 +41,15 @@ namespace Eldoria.BreachWatch
         readonly RectTransform[] heroPictures=new RectTransform[2];
         readonly RectTransform[] heroLabels=new RectTransform[2];
         bool thirdHeroWasActive, thirdHeroCaptured;
-        public bool UsesTwoRelevantHeroCards { get; private set; }
+        string thirdHeroOriginalLabel;
+        Text thirdHeroLabel;
+        RectTransform detailSheet;
+        Text detailText;
+        Button information;
+        bool statusWasActive,statusCardWasActive,statusCaptured;
+        public bool SecondaryDetailsOpen => detailSheet && detailSheet.gameObject.activeSelf;
+        public bool SecondaryDetailsBehindInformation => information && information.gameObject.activeInHierarchy && !status.gameObject.activeSelf;
+        public bool UsesThreeHeroSpaces { get; private set; }
         float lastW=-1,lastH=-1;
         public bool UsesFullWidthMetrics { get; private set; }
 
@@ -99,24 +107,20 @@ namespace Eldoria.BreachWatch
             foreach(var c in cards)if(!c)return false;
             foreach(var v in values)if(!v)return false;
 
-            // Full-width metric rearrangement is portrait-only. But the
-            // third permanently unavailable HERO card is a genuine landscape
-            // defect too: eliminate that dead slot at all orientations while
-            // preserving the original landscape stats and troop layout.
+            // Keep all three canonical hero spaces at every orientation.
             if(root.rect.width>root.rect.height)
             {
                 RefreshActualHeroCards(root);
+                RefreshSecondaryInformation(root);
                 UsesFullWidthMetrics=false;
                 return false;
             }
             float w=right.rect.width,h=right.rect.height;
             if(w<210||h<180)return false;
-            // Remove a permanently unavailable THIRD slot rather than
-            // presenting a giant empty "not in this version" image beside
-            // a real hero. Expand the two canonical, clickable existing
-            // slots; no new story or formation permission is introduced.
+            // A locked third space remains visible without granting formation permission.
             bool goodHeroComposition=RefreshActualHeroCards(root);
             if(!goodHeroComposition)return false;
+            RefreshSecondaryInformation(root);
             if(UsesFullWidthMetrics && Mathf.Abs(lastW-w)<.5f &&
                Mathf.Abs(lastH-h)<.5f &&
                !preview.gameObject.activeSelf &&
@@ -136,7 +140,7 @@ namespace Eldoria.BreachWatch
 
             float margin=12f;
             float captionH=Mathf.Clamp(h*.11f,40f,52f);
-            float bottomH=Mathf.Clamp(h*.29f,86f,150f);
+            float bottomH=42f;
             float tileTop=captionH+5f;
             float gap=6f;
             float tileH=Mathf.Max(30f,(h-tileTop-bottomH-12f-2f*gap)/3f);
@@ -168,6 +172,7 @@ namespace Eldoria.BreachWatch
             var statusText=status.GetComponent<Text>();
             if(statusText){statusText.fontSize=19;statusText.color=
                 new Color(.90f,.86f,.78f,1f);}
+            RefreshSecondaryInformation(root);
             lastW=w;lastH=h;UsesFullWidthMetrics=true;
             return true;
         }
@@ -186,7 +191,7 @@ namespace Eldoria.BreachWatch
         {
             if(!root)
             {
-                UsesTwoRelevantHeroCards=false;
+                UsesThreeHeroSpaces=false;
                 return false;
             }
             bool landscape=root.rect.width>root.rect.height;
@@ -211,23 +216,28 @@ namespace Eldoria.BreachWatch
             var third=heroSlots[2].GetComponent<Button>();
             // Future software can legitimately enable a third member;
             // never hide an actually interactable future hero.
-            if(third && third.interactable)return false;
+            // Preserve actual third-slot availability; presentation never unlocks it.
             if(!thirdHeroCaptured)
             {
                 thirdHeroWasActive=heroSlots[2].gameObject.activeSelf;
                 thirdHeroCaptured=true;
             }
-            heroSlots[2].gameObject.SetActive(false);
+            heroSlots[2].gameObject.SetActive(true);
+            thirdHeroLabel=Find(heroSlots[2],"Button label")?.GetComponent<Text>();
+            if(thirdHeroLabel && thirdHeroOriginalLabel==null)thirdHeroOriginalLabel=thirdHeroLabel.text;
+            if(thirdHeroLabel && third && !third.interactable)
+                thirdHeroLabel.text="III\nEspacio de héroe";
 
             float space=heroRow.rect.width;
             float left=landscape?10f:13f, gap=landscape?8f:12f;
-            float cardW=(space-2f*left-gap)*.5f;
+            float cardW=(space-2f*left-2f*gap)/3f;
             float top=-heroSlots[0].anchoredPosition.y;
-            // Original stage owns the vertical composition. Keep its actual
-            // height; only the useless third column is reclaimed.
+            // Retain the actual stage height while reserving three equal hero cells.
             float cardH=heroSlots[0].rect.height;
-            if(top<2f || cardW<122f || cardH<(landscape?78f:95f))
+            if(top<2f || cardW<78f || cardH<(landscape?78f:95f))
                 return false;
+            Remember(heroSlots[2]);
+            At(heroSlots[2],left+2f*(cardW+gap),top,cardW,cardH);
             for(int i=0;i<2;i++)
             {
                 var card=heroSlots[i];
@@ -236,18 +246,7 @@ namespace Eldoria.BreachWatch
                 Remember(heroPictures[i]);
                 Remember(heroLabels[i]);
                 At(card,left+i*(cardW+gap),top,cardW,cardH);
-                // A pair of enlarged VERTICAL picture cards simply
-                // stretched the old 3-slot composition and left 45% blank
-                // burgundy at 900x1600. The real leader portrait and real
-                // selection action belong in separate side-by-side wells.
-                // Use full-height horizontal scorecards on large phones;
-                // narrow physical phones retain the compact portrait flow.
-                // A real 844x390 phone has only ~90u card height.
-                // Horizontal hero artwork+label fits there, whereas three
-                // tiny cards produced a fake "No disponible" action.
-                // Portrait canvases can use900 reference units even on a
-                // physical390px phone. Never infer a horizontal card from
-                // that virtual width: portrait uses portrait-first cards.
+                // Compact landscape uses horizontal portraits; portrait keeps names below art.
                 bool horizontalCard=landscape &&
                     cardW>=155f && cardH>=78f;
                 float apertureW=horizontalCard
@@ -273,7 +272,7 @@ namespace Eldoria.BreachWatch
                         cardW-apertureW-(landscape?17f:29f),
                         cardH-(landscape?10f:24f));
                 else
-                    At(heroLabels[i],9f,portraitH+8f,cardW-18f,
+                    At(heroLabels[i],9f,portraitH+5f,cardW-18f,
                         Mathf.Max(28f,cardH-portraitH-14f));
                 var label=heroLabels[i].GetComponent<Text>();
                 if(label)
@@ -289,7 +288,7 @@ namespace Eldoria.BreachWatch
                         });
                     label.fontSize=Mathf.RoundToInt(
                         Mathf.Clamp(cardW*(horizontalCard?.068f:.071f),
-                            16f,25f));
+                            14f,22f));
                     label.alignment=TextAnchor.MiddleCenter;
                     if(landscape)
                     {
@@ -311,8 +310,58 @@ namespace Eldoria.BreachWatch
                     label.SetVerticesDirty();
                 }
             }
-            UsesTwoRelevantHeroCards=true;
+            UsesThreeHeroSpaces=true;
             return true;
+        }
+
+
+        void RefreshSecondaryInformation(RectTransform root)
+        {
+            if(!status || !statusCard)return;
+            if(!statusCaptured)
+            {
+                statusWasActive=status.gameObject.activeSelf;
+                statusCardWasActive=statusCard.gameObject.activeSelf;
+                statusCaptured=true;
+            }
+            if(!information)
+            {
+                var go=new GameObject("March / secondary information",typeof(RectTransform),typeof(Image),typeof(Button));
+                go.transform.SetParent(right,false);
+                information=go.GetComponent<Button>();
+                var face=go.GetComponent<Image>();
+                var original=statusCard.GetComponent<Image>();
+                if(original){face.sprite=original.sprite;face.type=original.type;}
+                face.color=new Color(.23f,.18f,.14f,1f);
+                information.targetGraphic=face;
+                var labelGo=new GameObject("Information label",typeof(RectTransform),typeof(Text));
+                labelGo.transform.SetParent(go.transform,false);
+                var label=labelGo.GetComponent<Text>();var source=status.GetComponent<Text>();
+                label.font=source.font;label.fontSize=19;label.color=new Color(.96f,.88f,.69f);
+                label.alignment=TextAnchor.MiddleCenter;label.text="i  ·  Detalles del ejército";
+                label.raycastTarget=false;
+                var lr=label.rectTransform;lr.anchorMin=Vector2.zero;lr.anchorMax=Vector2.one;lr.offsetMin=lr.offsetMax=Vector2.zero;
+
+                var sheetGo=new GameObject("March / army information sheet",typeof(RectTransform),typeof(Image),typeof(Button));
+                sheetGo.transform.SetParent(root,false);detailSheet=sheetGo.GetComponent<RectTransform>();
+                detailSheet.anchorMin=Vector2.zero;detailSheet.anchorMax=Vector2.one;
+                detailSheet.offsetMin=detailSheet.offsetMax=Vector2.zero;
+                sheetGo.GetComponent<Image>().color=new Color(.025f,.018f,.022f,.97f);
+                sheetGo.GetComponent<Button>().onClick.AddListener(()=>detailSheet.gameObject.SetActive(false));
+                var textGo=new GameObject("Live army details and return",typeof(RectTransform),typeof(Text));
+                textGo.transform.SetParent(detailSheet,false);detailText=textGo.GetComponent<Text>();
+                detailText.font=source.font;detailText.fontSize=25;detailText.color=new Color(.96f,.90f,.79f);
+                detailText.alignment=TextAnchor.MiddleCenter;detailText.horizontalOverflow=HorizontalWrapMode.Wrap;
+                detailText.raycastTarget=false;
+                var tr=detailText.rectTransform;tr.anchorMin=new Vector2(.08f,.12f);tr.anchorMax=new Vector2(.92f,.88f);
+                tr.offsetMin=tr.offsetMax=Vector2.zero;
+                information.onClick.AddListener(()=>{detailText.text="DETALLES DEL EJÉRCITO\n\n"+status.GetComponent<Text>().text+"\n\n‹ Volver a la preparación";detailSheet.SetAsLastSibling();detailSheet.gameObject.SetActive(true);});
+                detailSheet.gameObject.SetActive(false);
+            }
+            var rect=(RectTransform)information.transform;
+            At(rect,12f,Mathf.Max(0,right.rect.height-39f),Mathf.Max(1,right.rect.width-24f),34f);
+            if(SecondaryDetailsOpen)detailText.text="DETALLES DEL EJÉRCITO\n\n"+status.GetComponent<Text>().text+"\n\n‹ Volver a la preparación";
+            status.gameObject.SetActive(false);statusCard.gameObject.SetActive(false);
         }
 
         public void Restore()
@@ -332,6 +381,13 @@ namespace Eldoria.BreachWatch
                 label.SetVerticesDirty();
             }
             originalLabels.Clear();
+            if(thirdHeroLabel && thirdHeroOriginalLabel!=null)thirdHeroLabel.text=thirdHeroOriginalLabel;
+            thirdHeroOriginalLabel=null;thirdHeroLabel=null;
+            if(statusCaptured){if(status)status.gameObject.SetActive(statusWasActive);if(statusCard)statusCard.gameObject.SetActive(statusCardWasActive);}
+            statusCaptured=false;
+            if(information)Destroy(information.gameObject);
+            if(detailSheet)Destroy(detailSheet.gameObject);
+            information=null;detailSheet=null;detailText=null;
             foreach(var pair in originals)
             {
                 var rt=pair.Key; if(!rt)continue;
@@ -346,7 +402,7 @@ namespace Eldoria.BreachWatch
             for(int i=0;i<3;i++)heroSlots[i]=null;
             for(int i=0;i<2;i++)
             {heroViewports[i]=null;heroPictures[i]=null;heroLabels[i]=null;}
-            UsesTwoRelevantHeroCards=false;
+            UsesThreeHeroSpaces=false;
             if(preview && initializedPreview)
                 preview.gameObject.SetActive(originalPreviewActive);
             initializedPreview=false;right=preview=titleCard=summary=status=statusCard=null;
