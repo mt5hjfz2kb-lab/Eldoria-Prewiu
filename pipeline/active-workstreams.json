@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T14:13:45.319Z",
+  "updated_at": "2026-11-12T14:42:50.322Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,7 +24,7 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 49,
+      "ownership_revision": 50,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "NATIVE_STARTER_PROBE_EXPLICIT_RESOURCE_PACKET_BUDGET",
@@ -57,7 +57,9 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs"
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs"
       ],
       "next": "Current native4ce07 remains frozen while executing. Prepared off-PC three reproduced old direct-wallet assertions for actual bag→Use flow;62 NUnit diagnostic cases pass with .NET JSON adapter (not Unity JsonUtility certification). Publish only after native clean exit, then execute real EditMode/PlayMode. Earned WebKit campaign43231463013 is naturally completing IV; preserve all art outside main.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
@@ -169,7 +171,7 @@
       },
       "runner_claimed_at": "2026-11-12T13:51:41.205Z",
       "runner_released_at": "2026-11-12T13:53:41.591Z",
-      "scope_extension_reason": "One central coordinator owns the four authorized tasks. Reconcile only isolated March/Narrative test project compilation paths from inactive main/treasure scopes; no runtime rules or test expectations changed.",
+      "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
       "runner_claim_basis": "UI finalnative43225134079 and independentAB verified; all4captionGPU0outside. RepinR6338 presentation source to exact UIa5f2 only, preserve64importedtuples. Run actual20PNGs/52firsthits+city coherence, no mainart or publication.",
       "runner_release_basis": "Generic shared UI certification intentionally accepts only its historical UI claims or its documented no-reservations ordinary CI path. Source50cab native retry stopped before Unity, job131227355092; release resource-only reservation and rerun exact ordinary serialized CI with native process guard intact. No gate weakened or native process interrupted.",
       "last_native": {
