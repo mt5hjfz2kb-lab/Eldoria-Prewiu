@@ -7,6 +7,7 @@ on:
       - 'tools/breach-watch/*OwnedNativeInput*.ps1'
       - '.github/workflows/breach-watch-native.yml'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchResourceBagBridge.cs'
       - 'tools/breach-watch/validate_shared_destination_theme.py'
       - 'tools/breach-watch/validate_mailbox_theme.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png'
