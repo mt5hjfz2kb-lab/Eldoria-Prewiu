@@ -38,6 +38,66 @@ namespace Eldoria.BreachWatch.Editor
         static bool busy;
         static int mailboxFirstHitClicks;
 
+        [Serializable] sealed class CaptionInkProof
+        {
+            public string control,text;
+            public int fontSize,visibleCharacters,outsidePixels,changedPixels;
+            public float preferredWidth,preferredHeight;
+            public Rect textRect,ownerScreenRect;
+            public bool wrap,bestFit;
+        }
+        [Serializable] sealed class CaptionInkProofSet
+        { public List<CaptionInkProof> captions=new List<CaptionInkProof>(); }
+
+        static void VerifyMarchCaptionInk(RectTransform root,Camera camera,
+            RenderTexture rt,Texture2D original,string folder,int width,int height)
+        {
+            var proof=new CaptionInkProofSet();
+            var originals=original.GetPixels32();
+            var owners=root.GetComponentsInChildren<RectTransform>(true)
+                .Where(x=>x && (x.name.StartsWith("Hero slot ") ||
+                    x.name=="Edit march by percent")).ToArray();
+            foreach(var owner in owners)
+            {
+                var label=owner.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(x=>x && x.name=="Button label");
+                Need(label,"Missing actual caption for "+owner.name);
+                var corners=new Vector3[4];owner.GetWorldCorners(corners);
+                var points=corners.Select(x=>camera.WorldToScreenPoint(x)).ToArray();
+                var bounds=Rect.MinMaxRect(points.Min(x=>x.x)-2f,points.Min(x=>x.y)-2f,
+                    points.Max(x=>x.x)+2f,points.Max(x=>x.y)+2f);
+                var item=new CaptionInkProof { control=owner.name,text=label.text,
+                    fontSize=label.fontSize,visibleCharacters=label.cachedTextGenerator.characterCountVisible,
+                    preferredWidth=label.preferredWidth,preferredHeight=label.preferredHeight,
+                    textRect=label.rectTransform.rect,ownerScreenRect=bounds,
+                    wrap=label.horizontalOverflow==HorizontalWrapMode.Wrap,bestFit=label.resizeTextForBestFit };
+                bool enabled=label.enabled;
+                var hidden=new Texture2D(width,height,TextureFormat.RGB24,false);
+                try
+                {
+                    label.enabled=false;Canvas.ForceUpdateCanvases();camera.Render();
+                    RenderTexture.active=rt;hidden.ReadPixels(new Rect(0,0,width,height),0,0);hidden.Apply();
+                    var pixels=hidden.GetPixels32();
+                    for(int y=0;y<height;y++)for(int x=0;x<width;x++)
+                    {
+                        int index=y*width+x;var a=originals[index];var b=pixels[index];
+                        if(Mathf.Abs(a.r-b.r)+Mathf.Abs(a.g-b.g)+Mathf.Abs(a.b-b.b)<=80)continue;
+                        item.changedPixels++;
+                        if(!bounds.Contains(new Vector2(x,y)))item.outsidePixels++;
+                    }
+                }
+                finally
+                { label.enabled=enabled;Canvas.ForceUpdateCanvases();camera.Render();Object.DestroyImmediate(hidden); }
+                proof.captions.Add(item);
+            }
+            File.WriteAllText(Path.Combine(folder,"march-caption-ink-"+width+"x"+height+".json"),
+                JsonUtility.ToJson(proof,true));
+            Need(proof.captions.Count==4 && proof.captions.All(x=>x.changedPixels>8 && x.outsidePixels<=6),
+                "Actual GPU caption ink spills beyond its own control: "+
+                string.Join("; ",proof.captions.Select(x=>x.control+" font="+x.fontSize+
+                    " outside="+x.outsidePixels+" visible="+x.changedPixels)));
+        }
+
         [Serializable] public sealed class Screen
         {
             public string destination,file,sha256;
@@ -759,6 +819,8 @@ namespace Eldoria.BreachWatch.Editor
                 texture.Apply();
                 string full=Path.Combine(folder,file);
                 File.WriteAllBytes(full,texture.EncodeToPNG());
+                if(name=="march")
+                    VerifyMarchCaptionInk(management.VisibleRoot,camera,rt,texture,folder,width,height);
                 Need(retentionOverflow==null,
                      retentionOverflow+" / actual native screenshot="+file);
                 if((name=="vigilants"||name=="scouts") && height>width)
