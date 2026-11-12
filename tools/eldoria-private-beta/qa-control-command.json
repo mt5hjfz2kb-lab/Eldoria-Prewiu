@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 36,
+  "sequence": 37,
   "action": "click_text",
-  "proof_sha256": "85ee8a577e1d89fbe0f8004e7fb0bbf4a635383aecbaa87c47f4b911d3bb06bf",
+  "proof_sha256": "c88761037637d7a0680d7d74c66faa56384f2c1cff295f5f85f8662681da98a0",
   "label": "CONTINUAR",
-  "reason": "The complete original Lyra narrative and unique Continuar button are visible in frame035."
+  "reason": "Original frame036 contains the complete Aldric reply and one visible Continuar button."
 }
