@@ -1,14 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 22,
-  "action": "click_point",
-  "proof_sha256": "13eab0de5e1e07eeb1134a9abc27cd88a2f36f7f7b203664ca61f27e4bde3a1b",
-  "x": 210,
-  "y": 70,
-  "guard_texts": [
-    "Diagnóstico local",
-    "Misiones"
-  ],
-  "reason": "Original frame021 shows the closed narrative and439/1200stone objective; follow the actual quest arrow on the ready world."
+  "sequence": 23,
+  "action": "click_text",
+  "proof_sha256": "5a685a9fa03fa7b20eb1aab778ed5347d331af0dd1643095b847214630258e78",
+  "label": "RECOGER PIEDRA"
 }
