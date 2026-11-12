@@ -821,6 +821,9 @@ namespace Eldoria.BreachWatch.Editor
                 texture.Apply();
                 string full=Path.Combine(folder,file);
                 File.WriteAllBytes(full,texture.EncodeToPNG());
+                if(name=="training"||name=="march"||name=="heroes"||
+                   name.StartsWith("hero-")||name.Contains("mail"))
+                    BreachWatchTypographyEvidence.Capture(ui.NativeCanvas,camera,rt,full,width,height);
                 if(name=="march")
                     VerifyMarchCaptionInk(management.VisibleRoot,camera,rt,texture,folder,width,height);
                 Need(retentionOverflow==null,

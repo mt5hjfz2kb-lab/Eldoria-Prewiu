@@ -339,6 +339,9 @@ namespace Eldoria.BreachWatch
             resourceBagBridge=gameObject.AddComponent<BreachWatchResourceBagBridge>();
             resourceBagBridge.Initialize(host,canvas,resourceChips,mailUtilityButton);
             created=true;Reflow(Screen.width,Screen.height);RenderNow();
+            // Explicit candidate only; the ordinary UI keeps its exact fonts.
+            if(BreachWatchTypography.IsOptedIn(Application.absoluteURL))
+                canvas.gameObject.AddComponent<BreachWatchTypography>().SetCandidate(true);
         }
 
         static RectTransform Rect(string name,Transform parent)

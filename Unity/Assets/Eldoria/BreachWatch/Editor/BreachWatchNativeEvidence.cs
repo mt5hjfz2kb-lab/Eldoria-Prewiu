@@ -648,6 +648,7 @@ namespace Eldoria.BreachWatch.Editor
                 // Always archive the exact real screenshot even when a following
                 // visual/text gate fails. Previous FAILs hid the actual cause.
                 File.WriteAllBytes(file,image.EncodeToPNG());
+                BreachWatchTypographyEvidence.Capture(ui.NativeCanvas,camera,rt,file,w,h);
                 CheckLiveSlicedGeometry(ui,name);
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 // Do not accept a visually blank upper-left player plate

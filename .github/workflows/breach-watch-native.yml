@@ -667,8 +667,9 @@ jobs:
       - name: Validate real original premium font outlines versus phone geometry
         shell: bash
         run: |
-          python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+          python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0 fonttools==4.61.1
           python3 tools/breach-watch/verify_premium_font_fit.py
+          python3 tools/breach-watch/verify_typography_candidate.py
       - name: Verify one consistent real-art surface instead of doubled overlay relief
         run: python3 tools/breach-watch/verify_single_surface_composition.py
       - name: Verify owner-source mission plate and authored center (no baked game text)
@@ -712,6 +713,8 @@ jobs:
     if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 120
+    env:
+      VIGILIA_TYPOGRAPHY_AB: '1'
     steps:
       - name: Use installed Git without machine mutation
         shell: powershell
@@ -921,6 +924,25 @@ jobs:
              throw 'Native Editor did not log actual destination capture PASS'
           }
           Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_4_POPULATED_MAIL_SCREENSHOTS_ART_PENDING'
+      - name: Reject imported-font clipping and verify genuine reversible typography A/B
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:BW_SOURCE 'Unity'
+          $files=@(Get-ChildItem "$root/BreachWatch*Evidence/typography-ab/*.json" -File)
+          if($files.Count -lt 20){throw "Missing native typography A/B cases: $($files.Count)"}
+          $bad=@()
+          foreach($f in $files){
+            $p=Get-Content $f.FullName -Raw|ConvertFrom-Json
+            if(-not $p.restored -or $p.artApproved -or @($p.before).Count -ne @($p.after).Count){throw "Non-comparable typography A/B $($f.Name)"}
+            $candidate=Join-Path $f.DirectoryName $p.candidateFile
+            $baseline=Join-Path (Split-Path $f.DirectoryName -Parent) $p.baselineFile
+            if((Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.candidateSha256 -or
+               (Get-FileHash $baseline -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.baselineSha256){throw 'A/B PNG byte identity mismatch'}
+            if(@($p.violations).Count){$bad+=@($p.violations|ForEach-Object {"$($f.Name): $_"})}
+          }
+          if($bad.Count){throw ("Candidate font/layout rejected; genuine PNGs retained: "+($bad -join '; '))}
+          Write-Host "GENUINE_TYPOGRAPHY_AB_IMPORTED_FONTS_RESTORED $($files.Count); ART_APPROVAL_PENDING"
       - name: Preserve real Unity screenshots and editor error logs
         if: always()
         uses: actions/upload-artifact@v4
