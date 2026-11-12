@@ -107,3 +107,27 @@ jobs:
             if($errors.Count){throw ($errors|Out-String)}
           }
           & ./tools/breach-watch/Test-OwnedNativeInputPreservation.ps1
+
+  review-actual-failed-hall:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/breach-watch
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43161203990
+          artifact-ids: 13917529325
+          github-token: ${{ github.token }}
+          path: actual-failed-ui
+          merge-multiple: true
+      - name: Preserve exact actual failed Hall image and original source panels without retouching
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/breach-watch/copy_actual_failed_hall_review.py
