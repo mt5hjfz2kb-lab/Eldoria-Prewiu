@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 29,
+  "sequence": 30,
   "action": "click_point",
-  "proof_sha256": "abf88e454aa6bb6e4de0afce8da4a5dfef6bf4334e0678ef63468da4fcdc87e3",
-  "x": 293,
-  "y": 735,
+  "proof_sha256": "ec4b9072e16dc6ce1ecd4845c948bc7122540a40cde55037f2ebc36a51f23873",
+  "x": 369,
+  "y": 20,
   "guard_texts": [
-    "SIR ALDRIC",
-    "Guardián de Valoria"
+    "VIGILANTES",
+    "EXPLORADORE"
   ],
-  "reason": "Fresh frame028 shows actual Exploradores introduction and its continuation button, while investigation continues naturally."
+  "reason": "Original frame029 shows the actual top-right council/menu gear; inspect available city management while the fissure clock continues."
 }
