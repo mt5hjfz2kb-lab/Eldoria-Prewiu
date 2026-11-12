@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Keep one actual earned browser alive for observed UI commands
+      - name: Prepare the actual earned browser and original OCR dependencies
         env:
           GH_TOKEN: ${{ github.token }}
           QA_ENGINE: webkit
@@ -92,7 +92,27 @@ jobs:
           "$RUNNER_TEMP/eldoria-control-qa/node_modules/.bin/esbuild" site/beta-iphone-p0-lazy-world/pilot-bootstrap.mjs --bundle --format=iife --platform=browser --outfile=evidence/current-mobile16-pilot-qa.js
           swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -framework Vision -framework ImageIO -o /tmp/eldoria-actual-ui-ocr
           node --check tools/eldoria-private-beta/qa_live_earned_controller.cjs
-          node tools/eldoria-private-beta/qa_live_earned_controller.cjs
+      - name: Keep one actual earned browser alive through the first-party action runtime
+        uses: ./tools/eldoria-private-beta/actions/observed-controller
+        env:
+          NODE_PATH: ${{ runner.temp }}/eldoria-control-qa/node_modules
+          GH_TOKEN: ${{ github.token }}
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_EARLY_ENTRY: '0'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_LAZY_WORLD: '1'
+          QA_GLOBAL_DEADLINE_MS: '5400000'
+          QA_EARNED_STATE: earned/deferred/ordinary-qa-storage-state.json
+          QA_CONTROL_INPUT_REPORT: earned/deferred/report.json
+          QA_EARNED_RUN: ${{ needs.choose-earned.outputs.run }}
+          QA_EARNED_SOURCE: ${{ needs.choose-earned.outputs.source }}
+          QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
+          QA_OUT: evidence/deferred
+          QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
+          QA_TELEMETRY_BUNDLE: evidence/current-mobile16-pilot-qa.js
+          QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
+          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1&eldoriaBetaTelemetry=1
       - name: Preserve the actually earned checkpoint even after a UI assertion or command rejection
         if: always()
         uses: actions/upload-artifact@v4

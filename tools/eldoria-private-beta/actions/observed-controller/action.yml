@@ -1,0 +1,5 @@
+name: Eldoria observed QA foreground session
+description: Run the existing observed UI controller inside the first-party JavaScript action runtime.
+runs:
+  using: node24
+  main: index.js
