@@ -27,6 +27,7 @@ namespace Eldoria.BreachWatch
         BreachWatchModalBridge modalBridge;
         BreachWatchHeroesBridge heroesBridge;
         BreachWatchRetentionBridge retentionBridge;
+        BreachWatchResourceBagBridge resourceBagBridge;
         CanvasScaler scaler;
         GraphicRaycaster raycaster;
         Canvas legacyCanvas;
@@ -335,6 +336,8 @@ namespace Eldoria.BreachWatch
             if(!modalBridge.Initialize(host,canvas))
                 throw new InvalidOperationException(
                     "Canonical narrative/modal bridge missing for independent HUD");
+            resourceBagBridge=gameObject.AddComponent<BreachWatchResourceBagBridge>();
+            resourceBagBridge.Initialize(host,canvas,resourceChips,mailUtilityButton);
             created=true;Reflow(Screen.width,Screen.height);RenderNow();
         }
 
@@ -1775,6 +1778,7 @@ namespace Eldoria.BreachWatch
                         :new Color(.70f,.68f,.65f,.88f);
                 }
                 UpdateMailSeal();
+                if(resourceBagBridge)resourceBagBridge.Synchronize();
             }
             catch(Exception e)
             {
@@ -1862,6 +1866,7 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            if(resourceBagBridge)resourceBagBridge.Restore();
             if(singleCrestPaletteMaterial)Destroy(singleCrestPaletteMaterial);
             if(host && host.Hud)host.Hud.SelectionChanged-=OnCanonicalSelection;
             foreach(var entry in originalCameraMasks)
