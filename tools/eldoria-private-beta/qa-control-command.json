@@ -1,11 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 8,
-  "action": "click_text",
-  "label": "Atacar Engendro",
-  "min_y": 730,
-  "max_y": 780,
-  "proof_sha256": "807b4ed9a885e4cc1e178e5523055036036edbf0218b1420d007010c9864eedf",
-  "reason": "The original frame007 has the actual enabled primary Engendro action at y746, separate from its subtitle."
+  "sequence": 9,
+  "action": "click_point",
+  "proof_sha256": "1caf267cadbaac78bc21809531494f44c6977ff15627c26c3b5c407ba0dcfacf",
+  "x": 211,
+  "y": 69,
+  "guard_texts": [
+    "BASTIÓN II • 5/5",
+    "Eleva el Bastión a nivel"
+  ],
+  "reason": "Fresh original frame008 records the genuine victory and now shows the mission arrow for Bastion III."
 }
