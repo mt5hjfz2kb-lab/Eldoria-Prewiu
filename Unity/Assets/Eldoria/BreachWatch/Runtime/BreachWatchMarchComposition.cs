@@ -226,7 +226,7 @@ namespace Eldoria.BreachWatch
             thirdHeroLabel=Find(heroSlots[2],"Button label")?.GetComponent<Text>();
             if(thirdHeroLabel && thirdHeroOriginalLabel==null)thirdHeroOriginalLabel=thirdHeroLabel.text;
             if(thirdHeroLabel && third && !third.interactable)
-                thirdHeroLabel.text="III\nEspacio de héroe";
+                thirdHeroLabel.text="HÉROE 3 · +";
 
             float space=heroRow.rect.width;
             float left=landscape?10f:13f, gap=landscape?8f:12f;
@@ -310,6 +310,26 @@ namespace Eldoria.BreachWatch
                     label.SetVerticesDirty();
                 }
             }
+            if(thirdHeroLabel && heroLabels[1])
+            {
+                var matched=heroLabels[1].GetComponent<Text>();
+                if(matched)
+                {
+                    if(!originalLabels.ContainsKey(thirdHeroLabel))
+                        originalLabels.Add(thirdHeroLabel,new LabelTypography {
+                            Size=thirdHeroLabel.fontSize,Minimum=thirdHeroLabel.resizeTextMinSize,
+                            Maximum=thirdHeroLabel.resizeTextMaxSize,BestFit=thirdHeroLabel.resizeTextForBestFit,
+                            Horizontal=thirdHeroLabel.horizontalOverflow,Vertical=thirdHeroLabel.verticalOverflow,
+                            Alignment=thirdHeroLabel.alignment
+                        });
+                    thirdHeroLabel.fontSize=matched.fontSize;
+                    thirdHeroLabel.resizeTextForBestFit=matched.resizeTextForBestFit;
+                    thirdHeroLabel.resizeTextMinSize=matched.resizeTextMinSize;
+                    thirdHeroLabel.resizeTextMaxSize=matched.resizeTextMaxSize;
+                    thirdHeroLabel.alignment=TextAnchor.MiddleCenter;
+                    thirdHeroLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
+                }
+            }
             UsesThreeHeroSpaces=true;
             return true;
         }
@@ -330,14 +350,14 @@ namespace Eldoria.BreachWatch
                 go.transform.SetParent(right,false);
                 information=go.GetComponent<Button>();
                 var face=go.GetComponent<Image>();
-                var original=statusCard.GetComponent<Image>();
+                var original=heroSlots[0]?heroSlots[0].GetComponent<Image>():statusCard.GetComponent<Image>();
                 if(original){face.sprite=original.sprite;face.type=original.type;}
-                face.color=new Color(.23f,.18f,.14f,1f);
+                face.color=new Color(.55f,.43f,.29f,1f);
                 information.targetGraphic=face;
                 var labelGo=new GameObject("Information label",typeof(RectTransform),typeof(Text));
                 labelGo.transform.SetParent(go.transform,false);
                 var label=labelGo.GetComponent<Text>();var source=status.GetComponent<Text>();
-                label.font=source.font;label.fontSize=19;label.color=new Color(.96f,.88f,.69f);
+                label.font=source.font;label.fontSize=26;label.color=new Color(.96f,.88f,.69f);
                 label.alignment=TextAnchor.MiddleCenter;label.text="i  ·  Detalles del ejército";
                 label.raycastTarget=false;
                 var lr=label.rectTransform;lr.anchorMin=Vector2.zero;lr.anchorMax=Vector2.one;lr.offsetMin=lr.offsetMax=Vector2.zero;
