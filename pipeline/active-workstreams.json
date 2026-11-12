@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T13:42:35.087Z",
+  "updated_at": "2026-11-12T13:45:28.803Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,7 +24,7 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 44,
+      "ownership_revision": 45,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "COMBINED_NATIVE_VERIFIED_ART_REVIEW_PENDING_OFF_PC_SUITE_REPAIR",
@@ -52,7 +52,8 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs",
         "tools/march-capacity/Smoke.csproj",
-        "tools/narrative-unity/**"
+        "tools/narrative-unity/**",
+        "tools/march-capacity/Program.cs"
       ],
       "next": "Preserve the exact native art candidate for owner A/B. Repair isolated test project dependency omissions outside Windows; continue the actual earned Chapter I campaign on Mac. No art merge or publication.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
