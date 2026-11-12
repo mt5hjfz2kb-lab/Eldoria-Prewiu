@@ -615,6 +615,10 @@ namespace Eldoria.BreachWatch.Editor
                          width+"x"+height);
                     var marchRoot=management ? management.VisibleRoot:null;
                     Need(marchRoot,"Real canonical March layout missing");
+                    if(height>width && height>=700)
+                        Need(marchRoot.GetComponent<BreachWatchMarchComposition>().CompactPortraitApplied,
+                            "Owner-requested compact portrait military sheet not actually applied");
+
                     var composition=marchRoot.GetComponent<BreachWatchMarchComposition>();
                     Need(composition && composition.SecondaryDetailsBehindInformation && !composition.SecondaryDetailsOpen,
                         "Secondary army information saturates the initial preparation screen");

@@ -37,10 +37,13 @@ namespace Eldoria.BreachWatch
         bool initializedPreview;
         RectTransform heroRow;
         readonly RectTransform[] heroSlots=new RectTransform[3];
-        readonly RectTransform[] heroViewports=new RectTransform[2];
-        readonly RectTransform[] heroPictures=new RectTransform[2];
-        readonly RectTransform[] heroLabels=new RectTransform[2];
+        readonly RectTransform[] heroViewports=new RectTransform[3];
+        readonly RectTransform[] heroPictures=new RectTransform[3];
+        readonly RectTransform[] heroLabels=new RectTransform[3];
         bool thirdHeroWasActive, thirdHeroCaptured;
+        RectTransform compactOwner;
+        readonly RectTransform[] compactParts=new RectTransform[16];
+        public bool CompactPortraitApplied { get; private set; }
         string thirdHeroOriginalLabel;
         Text thirdHeroLabel;
         RectTransform detailSheet,detailCard;
@@ -89,7 +92,7 @@ namespace Eldoria.BreachWatch
             if(!manager || !manager.IsOpen ||
                manager.CurrentDestination!=RoyalGoldV3ManagementScreens.Destination.March)
             {
-                UsesFullWidthMetrics=false;return false;
+                UsesFullWidthMetrics=false;CompactPortraitApplied=false;return false;
             }
             var root=manager.VisibleRoot;
             if(!right || !right.IsChildOf(root))
@@ -112,6 +115,7 @@ namespace Eldoria.BreachWatch
             foreach(var v in values)if(!v)return false;
 
             // Keep all three canonical hero spaces at every orientation.
+            CompactPortraitApplied=false;
             if(root.rect.width>root.rect.height)
             {
                 RefreshActualHeroCards(root);
@@ -119,6 +123,7 @@ namespace Eldoria.BreachWatch
                 UsesFullWidthMetrics=false;
                 return false;
             }
+            CompactPortraitApplied=ReflowCompactPortrait(root);
             float w=right.rect.width,h=right.rect.height;
             if(w<210||h<180)return false;
             // A locked third space remains visible without granting formation permission.
@@ -147,8 +152,10 @@ namespace Eldoria.BreachWatch
             float bottomH=42f;
             float tileTop=captionH+5f;
             float gap=6f;
-            float tileH=Mathf.Max(30f,(h-tileTop-bottomH-12f-2f*gap)/3f);
-            float tileW=(w-2f*margin-gap)*.5f;
+            int metricColumns=CompactPortraitApplied?3:2;
+            int metricRows=CompactPortraitApplied?2:3;
+            float tileH=Mathf.Max(30f,(h-tileTop-bottomH-12f-(metricRows-1)*gap)/metricRows);
+            float tileW=(w-2f*margin-(metricColumns-1)*gap)/metricColumns;
             At(titleCard,margin-7f,3f,w-2f*margin+14f,captionH);
             At(summary,margin,7f,w-2f*margin,captionH-8f);
             var title=summary.GetComponent<Text>();
@@ -156,8 +163,8 @@ namespace Eldoria.BreachWatch
 
             for(int i=0;i<6;i++)
             {
-                float x=margin+(i%2)*(tileW+gap);
-                float y=tileTop+(i/2)*(tileH+gap);
+                float x=margin+(i%metricColumns)*(tileW+gap);
+                float y=tileTop+(i/metricColumns)*(tileH+gap);
                 At(cards[i],x,y,tileW,tileH);
                 At(values[i],7f,3f,tileW-14f,tileH-6f);
                 var text=values[i].GetComponent<Text>();
@@ -168,7 +175,7 @@ namespace Eldoria.BreachWatch
                     text.alignment=TextAnchor.MiddleLeft;
                 }
             }
-            float statusY=tileTop+3f*tileH+2f*gap+7f;
+            float statusY=tileTop+metricRows*tileH+(metricRows-1)*gap+7f;
             At(statusCard,margin-6f,statusY-3f,w-2f*margin+12f,
                 Mathf.Max(30f,h-statusY));
             At(status,margin,statusY,w-2f*margin,
@@ -178,6 +185,79 @@ namespace Eldoria.BreachWatch
                 new Color(.90f,.86f,.78f,1f);}
             RefreshSecondaryInformation(root);
             lastW=w;lastH=h;UsesFullWidthMetrics=true;
+            return true;
+        }
+
+
+        bool ReflowCompactPortrait(RectTransform root)
+        {
+            // Recompose the actual existing controls into a content-sized
+            // military sheet. A third hero must not inherit the old two-card
+            // vertical stretch, and six metrics need only two rows.
+            if(compactOwner!=root || !compactParts[0])
+            {
+                var names=new[]{
+                    "V3 / Responsive military layout","V3 / Destination header",
+                    "V3 / Featured military unit","V3 / Destination actions",
+                    "March / hero section cartouche","March / live troop order cartouche",
+                    "March / reference troop chapter","Approved source / archer-row",
+                    "Unit profile and composition","Select archer tier",
+                    "Edit march by percent","Quantity controls","Quantity slider",
+                    "Reduce quantity","Increase quantity","Authoritative quantity"};
+                var all=root.GetComponentsInChildren<RectTransform>(true);
+                for(int i=0;i<names.Length;i++)
+                {
+                    compactParts[i]=null;
+                    foreach(var candidate in all)
+                        if(candidate.name==names[i]){compactParts[i]=candidate;break;}
+                    if(!compactParts[i]){compactOwner=null;return false;}
+                }
+                compactOwner=root;
+            }
+            var layout=compactParts[0];var header=compactParts[1];
+            var left=compactParts[2];var footer=compactParts[3];
+            float width=right.rect.width,x=right.anchoredPosition.x;
+            float available=root.rect.height/Mathf.Max(.01f,layout.localScale.y);
+            float heroCardH=Mathf.Clamp(width*.36f,230f,320f);
+            float heroH=98f+heroCardH,troopH=260f,summaryH=280f;
+            float totalH=12f+110f+8f+heroH+troopH+12f+summaryH+8f+100f+12f;
+            if(width<330f || available<totalH)return false;
+            Remember(layout);Remember(header);Remember(left);Remember(right);Remember(footer);
+            layout.sizeDelta=new Vector2(layout.sizeDelta.x,totalH);
+            float bodyY=130f;
+            At(header,x,12f,width,110f);
+            At(left,x,bodyY,width,heroH+troopH);
+            At(right,x,bodyY+heroH+troopH+12f,width,summaryH);
+            At(footer,x,totalH-112f,width,100f);
+            for(int i=0;i<3;i++)
+            {
+                var slot=heroSlots[i]?heroSlots[i]:Find(left,"Hero slot "+i);
+                if(!slot)return false;
+                Remember(slot);slot.sizeDelta=new Vector2(slot.sizeDelta.x,heroCardH);
+            }
+            for(int i=4;i<compactParts.Length;i++)Remember(compactParts[i]);
+            At(compactParts[4],7f,2f,width-14f,85f);
+            float troopTop=heroH+4f;
+            At(compactParts[5],7f,troopTop,width-14f,troopH-9f);
+            At(compactParts[6],19f,troopTop+5f,width-38f,43f);
+            float pictureW=width*.26f,orderX=pictureW+23f;
+            float orderW=Mathf.Max(120f,width-orderX-14f);
+            At(compactParts[7],13f,troopTop+53f,pictureW,troopH-62f);
+            float orderY=troopTop+52f,orderH=troopH-58f;
+            float descH=Mathf.Clamp(orderH*.20f,30f,65f);
+            At(compactParts[8],orderX,orderY,orderW,descH);
+            At(compactParts[9],orderX,orderY+descH+4f,orderW,Mathf.Min(60f,orderH*.20f));
+            float selectorsY=orderY+descH+9f+Mathf.Min(64f,orderH*.20f);
+            float selectorsH=Mathf.Clamp(orderH*.26f,56f,83f);
+            float quantityW=orderW*.53f,percentW=orderW-quantityW-8f;
+            At(compactParts[10],orderX,selectorsY,percentW,selectorsH);
+            At(compactParts[11],orderX+percentW+8f,selectorsY,quantityW,selectorsH);
+            float buttonW=Mathf.Min(selectorsH*.85f,quantityW*.29f);
+            At(compactParts[13],0f,0f,buttonW,selectorsH);
+            At(compactParts[14],quantityW-buttonW,0f,buttonW,selectorsH);
+            At(compactParts[15],buttonW+3f,0f,
+                Mathf.Max(36f,quantityW-2f*buttonW-6f),selectorsH);
+            At(compactParts[12],orderX+8f,selectorsY+selectorsH+11f,orderW-16f,22f);
             return true;
         }
 
@@ -204,7 +284,7 @@ namespace Eldoria.BreachWatch
                 heroRow=Find(root,"V3 / Featured military unit");
                 for(int i=0;i<3;i++)
                     heroSlots[i]=Find(root,"Hero slot "+i);
-                for(int i=0;i<2;i++)
+                for(int i=0;i<3;i++)
                 {
                     heroViewports[i]=Find(heroSlots[i],"Hero portrait viewport");
                     heroPictures[i]=FindPortrait(heroViewports[i]);
@@ -213,9 +293,9 @@ namespace Eldoria.BreachWatch
             }
             if(!heroRow || heroRow.rect.width<280f ||
                !heroSlots[0] || !heroSlots[1] || !heroSlots[2] ||
-               !heroViewports[0] || !heroViewports[1] ||
-               !heroPictures[0] || !heroPictures[1] ||
-               !heroLabels[0] || !heroLabels[1])
+               !heroViewports[0] || !heroViewports[1] || !heroViewports[2] ||
+               !heroPictures[0] || !heroPictures[1] || !heroPictures[2] ||
+               !heroLabels[0] || !heroLabels[1] || !heroLabels[2])
                 return false;
             var third=heroSlots[2].GetComponent<Button>();
             // Future software can legitimately enable a third member;
@@ -242,7 +322,7 @@ namespace Eldoria.BreachWatch
                 return false;
             Remember(heroSlots[2]);
             At(heroSlots[2],left+2f*(cardW+gap),top,cardW,cardH);
-            for(int i=0;i<2;i++)
+            for(int i=0;i<3;i++)
             {
                 var card=heroSlots[i];
                 Remember(card);
@@ -450,6 +530,8 @@ namespace Eldoria.BreachWatch
                 label.SetVerticesDirty();
             }
             originalLabels.Clear();
+            compactOwner=null;for(int i=0;i<compactParts.Length;i++)compactParts[i]=null;
+            CompactPortraitApplied=false;
             if(thirdHeroLabel && thirdHeroOriginalLabel!=null)thirdHeroLabel.text=thirdHeroOriginalLabel;
             thirdHeroOriginalLabel=null;thirdHeroLabel=null;
             if(statusCaptured){if(status)status.gameObject.SetActive(statusWasActive);if(statusCard)statusCard.gameObject.SetActive(statusCardWasActive);}
@@ -469,7 +551,7 @@ namespace Eldoria.BreachWatch
             thirdHeroCaptured=false;
             heroRow=null;
             for(int i=0;i<3;i++)heroSlots[i]=null;
-            for(int i=0;i<2;i++)
+            for(int i=0;i<3;i++)
             {heroViewports[i]=null;heroPictures[i]=null;heroLabels[i]=null;}
             UsesThreeHeroSpaces=false;
             if(preview && initializedPreview)
