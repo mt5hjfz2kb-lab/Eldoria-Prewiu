@@ -58,6 +58,8 @@ jobs:
         run: |
           python3 -m py_compile tools/eldoria-private-beta/prepare_lazy_owner_site.py
           python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_lazy_owner_site.py'
+          python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_integrated_owner_site.py'
+          python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_exact_build_selection.py'
           node --check tools/eldoria-private-beta/qa_webkit_residency.cjs
       - name: Validate first-party lazy-region PlayMode registration (source only)
         shell: bash

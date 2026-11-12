@@ -31,3 +31,12 @@ A production first-entry check must test the actual nickname prompt after presen
 3. Full shared gameplay regression and campaign progression on the same integrated source.
 4. Fresh WebGL build, build-input identity, browser gameplay and memory/residency checks. Preserve the public mobile18 route until the replacement candidate is verified.
 5. Merge/promote only verified source and publish an identifiable candidate. Physical iPhone stability of the new combined candidate remains a separate observation.
+
+## Follow-up native evidence and fixes
+
+- Full shared certificate run `43305178087` on `6f88347370ab6bb84d81668d60488bbd0b2cffa6` succeeded: campaign I–V, three simultaneous marches, Aldric, 218 EditMode and 79 PlayMode tests. Artifact `13984916897`, SHA256 `de58b4e9bdb0f1a40b6bae6a01f273089cc0c3e0f346f3814f0b4be06fddb0d6`. This does not certify subsequent UI edits.
+- Integrated native run `43305163643` on that same source passed city/Bastion but failed March caption pixel visibility. Verified artifact `13985805622`, ZIP SHA256 `bd3d4a18bd64537913ab1b3917fb1842cf352be8ec043264b6a8800da4d8a48e`. Actual screenshot showed all three portrait/name cards obscured. The retired foreground `HeroCardNineSliceGold` rim was replaced with opaque stone. Fix retires foreground March decorative layers entirely; the shared Vigilia theme already provides backgrounds. Keep the caption pixel gate unchanged.
+- Editor destination captures now explicitly run the production font synchronization before layout/pixel checks. A direct camera render does not run the runtime LateUpdate pass; prior base screenshots could therefore contain pre-font-swap captions.
+- Latest runtime correction is `bb59f1dc89b13e2c7cc6ecd7a986a9f064d615a5`; font evidence correction is `236bff28180a7366820ff18c3c005afd7fb97d3a`. Roslyn syntax passed. Their native visual results remain pending.
+- Prepared an optional, unpublished WebGL build phase after all integrated UI gates and a fresh exact campaign run, with prior inputs preserved and restored. It remains disabled until `build_candidate: true` is explicitly set in the request.
+- New integrated packager accepts exact integrated source certificates without inventing historical overlay/parity records. It chunks unchanged native data, takes loader/framework/WASM only from that build and marks all browser/device/art/publication approvals false. Nine local synthetic packaging/selection tests passed; these are transport tests, not a built or tested beta.

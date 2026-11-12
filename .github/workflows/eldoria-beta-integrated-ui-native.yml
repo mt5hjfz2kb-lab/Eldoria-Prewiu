@@ -42,6 +42,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       authorized: ${{ steps.check.outputs.authorized }}
+      build_candidate: ${{ steps.check.outputs.build_candidate }}
       revision: ${{ steps.check.outputs.revision }}
       owner: ${{ steps.check.outputs.owner }}
     steps:
@@ -70,6 +71,7 @@ jobs:
           const holders=d.active.filter(x=>x.ownership_state==='claimed'&&(x.resources||[]).includes('windows-runner-heavy'));
           const ok=!!w&&holders.length===1&&holders[0]===w&&typeof w.owner==='string'&&w.owner.length>0&&w.ownership_revision===request.ownership_revision&&w.owner===request.owner&&w.ownership_state==='claimed'&&w.branch==='feature/eldoria-private-beta-i-v-20261107' && w.integration_authorization?.integration_pr===179;
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\nowner='+(ok?w.owner:'')+'\n');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'build_candidate='+(request.build_candidate===true?'true':'false')+'\n');
           if(!ok)throw new Error('Exact integration owner/lease mismatch');
           console.log('BREACHWATCH_EXCLUSIVE_OWNER_PASS');
           JS
@@ -339,6 +341,156 @@ jobs:
             if($source -ne $env:GITHUB_SHA){throw 'Integrated fixture source mismatch'}
             if([string]$data.status -match 'FAIL'){throw 'Integrated fixture reports failure'}
           }
+      - name: Work around verified Unity 6.3 Search-index startup corruption without changing art
+        if: needs.owner-preflight.outputs.build_candidate == 'true'
+        shell: powershell
+        run: |
+          # Reuse the proven valoria-reference-clean native-editor recovery:
+          # UnityEditor.Search.SearchDatabase.IndexationOnStartup threw
+          # ArgumentOutOfRangeException on the exact V3 candidate in run 39564761151.
+          # This alters only temporary editor preferences/cache, never assets,
+          # gameplay, scene bytes, source, progression, or owner saves.
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-created-$env:GITHUB_RUN_ID.flag"
+          if((Test-Path $backup) -or (Test-Path $created)){
+            throw 'Existing current-run Search-index backup must be reconciled before rerun'
+          }
+          if(Test-Path $settings){
+            Copy-Item -LiteralPath $settings -Destination $backup
+            try{$config=Get-Content -LiteralPath $settings -Raw -Encoding UTF8|ConvertFrom-Json -ErrorAction Stop}
+            catch{throw 'Original Unity Editor Search.index malformed; preserve original and refuse blind replacement'}
+            if($config.PSObject.Properties['roots']){
+              $config.roots=@()
+              $config|ConvertTo-Json -Depth 32|Set-Content $settings -Encoding UTF8
+            }
+          }else{
+            New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null
+            $config=[ordered]@{
+              name='Assets';type='asset';roots=@();includes=@();
+              excludes=@('Assets/Temp/','Assets/External/','Temp/')
+              options=@{disabled=$false;types=$true;properties=$true;extended=$true;dependencies=$true}
+              baseScore=999
+            }
+            $config|ConvertTo-Json -Depth 16|Set-Content $settings -Encoding UTF8
+            'created only for V3 CI'|Set-Content $created -Encoding ASCII
+          }
+          $current=Get-Content $settings -Raw -Encoding UTF8|ConvertFrom-Json
+          if($current.PSObject.Properties['roots'] -and @($current.roots).Count -ne 0){
+            throw 'Editor-only search index roots must be empty during V3 validation'
+          }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){throw 'Existing same-run Search cache backup must not be overwritten'}
+          if(Test-Path $cache){
+            Move-Item -LiteralPath $cache -Destination $cacheBackup -ErrorAction Stop
+            Write-Host "ELDORIA_V3_SEARCH_CACHE_ISOLATED $cacheBackup"
+          }
+          Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
+
+      - name: Compile an exact unpublished WebGL after native UI and campaign checks
+        if: needs.owner-preflight.outputs.build_candidate == 'true'
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $proof=Join-Path $env:BW_SOURCE 'docs/evidence/valoria-reference-clean'
+          $web=Join-Path $project 'Builds/ValoriaWebPlaytest'
+          $backup=Join-Path $env:RUNNER_TEMP ('integrated-build-inputs-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          if(Test-Path $backup){throw 'Preserved build inputs already exist'}
+          New-Item -ItemType Directory -Path $backup | Out-Null
+          $settings=Join-Path $project 'ProjectSettings'
+          Copy-Item -LiteralPath $settings -Destination (Join-Path $backup 'ProjectSettings') -Recurse
+          $priorProof=Test-Path $proof;$priorWeb=Test-Path $web
+          if($priorProof){Move-Item -LiteralPath $proof -Destination (Join-Path $backup 'prior-proof')}
+          if($priorWeb){Move-Item -LiteralPath $web -Destination (Join-Path $backup 'prior-web')}
+          function Invoke-IntegratedNative([string]$method,[string]$target,[string]$log){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process occupied before candidate phase'}
+            $args=@('-batchmode','-force-d3d11','-buildTarget',$target,'-projectPath',('"'+$project+'"'),'-executeMethod',$method,'-logFile',('"'+$log+'"'))
+            $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $process.WaitForExit(2400000)){
+              & taskkill.exe /PID $process.Id /T /F | Out-Null
+              $null=$process.WaitForExit(15000)
+              throw 'Owned candidate process exceeded 40-minute bound'
+            }
+            if($process.ExitCode -ne 0){Get-Content $log -Tail 150;throw ('Candidate phase failed: '+$method)}
+          }
+          try {
+            Invoke-IntegratedNative 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' 'Win64' (Join-Path $env:RUNNER_TEMP 'integrated-campaign.log')
+            $journey=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
+            if($journey.source -ne $env:GITHUB_SHA -or $journey.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or $journey.checks -notcontains 'continuous native I-V authored objectives complete' -or $journey.checks -notcontains 'continuous I-V final saved state exact'){throw 'Exact campaign I-V source or save checks failed'}
+            Invoke-IntegratedNative 'Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build' 'WebGL' (Join-Path $env:RUNNER_TEMP 'integrated-web-build.log')
+            $built=Get-Content (Join-Path $proof 'web-build.json') -Raw|ConvertFrom-Json
+            if($built.source_sha -ne $env:GITHUB_SHA -or $built.status -ne 'WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED' -or -not(Test-Path (Join-Path $web 'index.html'))){throw 'Exact fresh WebGL certificate missing'}
+            Copy-Item -LiteralPath $proof -Destination (Join-Path $env:RUNNER_TEMP 'integrated-build-proof') -Recurse
+            Move-Item -LiteralPath $web -Destination (Join-Path $env:RUNNER_TEMP 'integrated-webgl')
+            Write-Host 'INTEGRATED_WEBGL_COMPILED_UNPUBLISHED_BROWSER_AND_IPHONE_UNVERIFIED'
+          } finally {
+            if(@(Get-Process Unity -ErrorAction SilentlyContinue).Count){throw 'Live Unity remains; preserve original backups without restoring under Editor'}
+            if(Test-Path $proof){
+              $exitProof=Join-Path $env:RUNNER_TEMP 'integrated-build-proof-at-exit'
+              Move-Item -LiteralPath $proof -Destination $exitProof
+            }
+            if(Test-Path $web){Move-Item -LiteralPath $web -Destination (Join-Path $env:RUNNER_TEMP 'integrated-webgl-at-exit')}
+            if($priorProof){Move-Item -LiteralPath (Join-Path $backup 'prior-proof') -Destination $proof}
+            if($priorWeb){Move-Item -LiteralPath (Join-Path $backup 'prior-web') -Destination $web}
+            foreach($file in Get-ChildItem (Join-Path $backup 'ProjectSettings') -Recurse -File){
+              $rel=$file.FullName.Substring((Join-Path $backup 'ProjectSettings').Length+1)
+              $dest=Join-Path $settings $rel
+              Copy-Item -LiteralPath $file.FullName -Destination $dest -Force
+              if((Get-FileHash $dest).Hash -ne (Get-FileHash $file.FullName).Hash){throw 'Original project settings restoration failed'}
+            }
+          }
+      - name: Restore original Unity Editor Search preferences and cache after native checks
+        if: needs.owner-preflight.outputs.build_candidate == 'true' && always()
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity -ErrorAction SilentlyContinue).Count){throw 'Live Unity remains; retain Search backups until Editor exits'}
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $backup){
+            Copy-Item -LiteralPath $backup -Destination $settings -Force
+            Write-Host 'Original Unity Search.index restored without rewriting source'
+          }elseif(Test-Path $created){
+            if(Test-Path $settings){Remove-Item -LiteralPath $settings -Force}
+            Write-Host 'Temporary Unity Search.index removed; original did not exist'
+          }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){
+            if(Test-Path $cache){
+              $post=Join-Path $env:RUNNER_TEMP "eldoria-integrated-build-search-new-$env:GITHUB_RUN_ID"
+              if(Test-Path $post){throw 'Refuse overwriting an existing post-validation Search cache'}
+              Move-Item -LiteralPath $cache -Destination $post -ErrorAction Stop
+            }
+            Move-Item -LiteralPath $cacheBackup -Destination $cache -ErrorAction Stop
+            Write-Host 'Existing Editor Search cache restored; temporary new index isolated'
+          }
+          Write-Host 'ELDORIA_V3_EDITOR_SEARCH_RECOVERY_RESTORED'
+
+      - name: Retain unpublished exact compiled candidate
+        if: needs.owner-preflight.outputs.build_candidate == 'true' && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrated-owner-webgl-${{ github.sha }}
+          path: ${{ runner.temp }}/integrated-webgl
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 21
+      - name: Retain candidate build provenance and original inputs
+        if: needs.owner-preflight.outputs.build_candidate == 'true' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integrated-build-proof-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/integrated-build-proof*
+            ${{ runner.temp }}/integrated-build-inputs-*/ProjectSettings
+            ${{ runner.temp }}/integrated-campaign.log
+            ${{ runner.temp }}/integrated-web-build.log
+          retention-days: 21
       - name: Preserve real Unity screenshots and editor error logs
         if: always()
         uses: actions/upload-artifact@v4
