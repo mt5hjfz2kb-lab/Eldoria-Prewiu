@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 42,
+      "ownership_revision": 43,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "OWNER_COMPACT_MAIL_SQUARE_INVENTORY_NATIVE20_52CLICKS_PASS",
+      "phase": "LATEST_VERIFIED_UI_WITH_OWNER_SQUARE_BAG_AND_MAIL_ATTACHMENTS_COMBINED_NATIVE",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -160,10 +162,10 @@
         "source_ci_run": 43187001609,
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
-      "runner_claimed_at": "2026-11-12T11:24:55.757Z",
+      "runner_claimed_at": "2026-11-12T13:21:19.132Z",
       "runner_released_at": "2026-11-12T11:28:57.646Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
-      "runner_claim_basis": "UI43208162651 clean native and AB completed; R source43207455069 pass; verify compact genuine mail receipt and legible back label, pin exact UI d6c.",
+      "runner_claim_basis": "UI finalnative43225134079 and independentAB verified; all4captionGPU0outside. RepinR6338 presentation source to exact UIa5f2 only, preserve64importedtuples. Run actual20PNGs/52firsthits+city coherence, no mainart or publication.",
       "runner_release_basis": "Exact6338 native43208980109 success20PNG52firsthitclicks and245restore; actual mail no emptybody, pending75wood50stone icons and receipt above claim. Review pending.",
       "last_native": {
         "run": 43197702980,
