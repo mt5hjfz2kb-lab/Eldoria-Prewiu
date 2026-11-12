@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 4,
+  "sequence": 5,
   "action": "click_point",
-  "proof_sha256": "51544c584444871e6203e510693375ffc1a420aa77e9a03900d4d458b535b877",
-  "x": 32,
-  "y": 45,
+  "proof_sha256": "55f706d6870b91df15c8f7ebd0ca788ca7fb2965951e3e4879c0ca9584e8b51f",
+  "x": 155,
+  "y": 798,
   "guard_texts": [
-    "BUZÓN",
-    "6 MENSATES REALES • Informes"
+    "Valoria asegurada •",
+    "Recorrido completado"
   ],
-  "reason": "Frame003 shows the report list after returning from detail; use the same visible top-left back arrow to leave the mailbox."
+  "reason": "Frame004 shows completed city and the fixed lower-left compass world control; enter the real deferred Region1 using that observed button."
 }
