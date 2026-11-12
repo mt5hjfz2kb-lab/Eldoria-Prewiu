@@ -247,6 +247,13 @@
         "native_gameplay": "20 PNG / 52 first hits PASS; painted receipt binding assertion passed",
         "restoration": "SUCCESS exact restoration run43296125081 after read-only audit43295518264",
         "next": "Read-only exact overlay audit before restoration; do not repeat Unity or alter baseline"
+      },
+      "integration_authorization": {
+        "at": "2026-11-12T20:24:36.745Z",
+        "instruction": "Owner authorizes all work needed to integrate PR173/187/181 with stable beta18 into main and beta. New interface must entirely replace old presentation and share no legacy UI artwork.",
+        "integration_pr": 179,
+        "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       }
     },
     {
@@ -6895,7 +6902,9 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
-        "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta"
       ],
       "resources": [],
       "ownership_state": "claimed",
@@ -7314,6 +7323,13 @@
         "visual_ab": "success",
         "phone_march_image_reviewed": true,
         "physical_iphone": false
+      },
+      "integration_authorization": {
+        "at": "2026-11-12T20:24:36.745Z",
+        "instruction": "Owner authorizes all work needed to integrate PR173/187/181 with stable beta18 into main and beta. New interface must entirely replace old presentation and share no legacy UI artwork.",
+        "integration_pr": 179,
+        "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       }
     },
     {
@@ -8490,6 +8506,13 @@
           "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
         ],
         "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
+      },
+      "integration_authorization": {
+        "at": "2026-11-12T20:24:36.745Z",
+        "instruction": "Owner authorizes all work needed to integrate PR173/187/181 with stable beta18 into main and beta. New interface must entirely replace old presentation and share no legacy UI artwork.",
+        "integration_pr": 179,
+        "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       }
     },
     {
@@ -8763,6 +8786,13 @@
         "physical_iphone": false,
         "full_campaign": false,
         "video_library_id": "libfile_fde3_f-cac78e5667ec8191bb6be0903506ad42_d1c014344dc081918fc6ba9b846892c0"
+      },
+      "integration_authorization": {
+        "at": "2026-11-12T20:24:36.746Z",
+        "instruction": "Owner authorizes all work needed to integrate PR173/187/181 with stable beta18 into main and beta. New interface must entirely replace old presentation and share no legacy UI artwork.",
+        "integration_pr": 179,
+        "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       }
     },
     {
