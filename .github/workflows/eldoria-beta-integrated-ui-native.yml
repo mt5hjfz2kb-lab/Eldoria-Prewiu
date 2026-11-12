@@ -150,6 +150,9 @@ jobs:
             & git -C $root remote add origin $url
           }
           if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
+          # Keep preservation evidence addressable even if the source switch
+          # correctly refuses an unreviewed Unity-generated working change.
+          Add-Content $env:GITHUB_ENV ("BW_SOURCE="+$root)
           # Preserve existing private Unity inputs before any source switch.
           # Unknown code/settings are archived and refused; never force checkout.
           $preserved=Join-Path $env:RUNNER_TEMP ('breachwatch-preserved-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
