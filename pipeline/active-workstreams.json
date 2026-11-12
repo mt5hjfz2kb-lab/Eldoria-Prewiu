@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T09:50:40.572Z",
+  "updated_at": "2026-11-12T09:53:59.485Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6838,16 +6838,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 109,
+      "ownership_revision": 110,
       "write_scope_released": false,
-      "phase": "ACTUAL_READABILITY_UI48_MAIL2_HALL0_AB_PASS_COMBINED_ART_CHECK_PENDING",
+      "phase": "EXCLUSIVE_PORTRAIT_FIRST_MARCH_HERO_NATIVE_PROOF",
       "next": "Actual March390 original25e has undersized side-by-side hero/name inside tall command cards. Implemented b60c782 portrait-first stone hero choices + actual native regression; source43193329720 SUCCESS. Native48+A/B pending after T clean run; no mainart. Keep25e original48 baseline.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T08:42:23.684Z",
-      "runner_claim_basis": "Actual global native inventory has no Windows run or holder. Sourcea2f3fc59 CI43167261876SUCCESS; new causal fix selects latest ACTIVE hero subtree instead of retired same-name child. Next prepared turn UI, beta active on Mac only, treasures next source d558 CI43164737378/43164731128 ready.",
+      "runner_claimed_at": "2026-11-12T09:53:59.485Z",
+      "runner_claim_basis": "T nativejobcleancomplete43192664265; UIb60source43193329720success; need actualportraitMarch48/A-B.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -8126,7 +8128,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 78,
+      "ownership_revision": 79,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8146,13 +8148,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "EXCLUSIVE_SINGLE_CONTINUOUS_SCENERY_NATIVE_AB",
+      "phase": "SINGLE_SCENERY92_NATIVE_PASS_ACTUAL_ART_AB_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "FROZENa5226fa4 genuinefullnative43192664265 waiting forWindows assignment; verifiedleasepreflight passed. Sourcea164sourceCIbothPASS. No Tsource/docs mutation. OffPC UI/R actualcomposition andmail fixes now ready. After cleanT native actualartcompare, rotate toUI newportrait48 thenR newresponsive/mail20/52.",
+      "next": "Download/hash original92 and visuallycompare scouts/Lyra singlecrop vs43191078889; awaitindependentaudit while UI usesPC. Do notmerge.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8207,8 +8207,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-12T09:28:08.236Z",
-      "runner_release_basis": "Full native43191078889 and independent audit SUCCESS;92 original PNG independently byte/hash/dimension verified; original scene restored; native-exit zero-process guard passed.",
+      "runner_released_at": "2026-11-12T09:53:59.485Z",
+      "runner_release_basis": "Actual native43192664265 job131095688179 SUCCESS; two actual Editor roots exited0 after26/18seconds; zero-native-process guards passed. Independent pixel audit runs offPC.",
       "runner_claimed_at": "2026-11-12T09:34:30.240Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "Single continuous narrative source a164dfb sourceCI43192357678/43192365925 both success; prior92 original evidence preserved; actual native A/B required.",
@@ -8328,12 +8328,11 @@
         "claimed_at": "2026-11-12T08:27:48.855Z"
       },
       "last_native": {
-        "run": 43191078889,
-        "head": "1c6fd9d868c2fdc24117999cb35fc0935f3e9afe",
-        "artifact": 13930592240,
-        "sha256": "31849d83dc39437e599d351e1fd40261467cce279ac892f47444381c3a67b51a",
+        "run": 43192664265,
+        "head": "a5226fa40a6045a7bba8ed23899f57b954cfe18a",
+        "artifact": 13931764505,
+        "sha256": "a7a25746bc167a68d36ed2c27afff4760019e72c4d66a9354b92cce7d5fcb091",
         "png": 92,
-        "real_claims": 28,
         "art_approved": false
       }
     },
@@ -18667,6 +18666,14 @@
       "beta_source": "1316810ea3894166611eeb4562fb2b9627785a88",
       "treasure_frozen_source": "a5226fa40a6045a7bba8ed23899f57b954cfe18a",
       "note": "No new scheduled supervision or hourly chat. User explicitly requires continued direct work and offPC progress during resource waits. No art/main approval."
+    },
+    {
+      "at": "2026-11-12T09:53:59.485Z",
+      "event": "central_T_singlecrop_native_clean_to_UI_portrait_hero48",
+      "from": "eldoria-daily-treasures-20261108",
+      "to": "eldoria-forja-oscura-visual-proof-20261107",
+      "native": 43192664265,
+      "ui_source": "b60c7824c13908d6a3d94c68b3bc3b2efe972b5e"
     }
   ],
   "owner_specific_pauses": [
