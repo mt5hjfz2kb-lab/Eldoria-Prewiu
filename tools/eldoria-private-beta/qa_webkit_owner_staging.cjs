@@ -54,6 +54,9 @@ function processes(){
   const watchdog=setTimeout(()=>{report.errors.push('GLOBAL_DEADLINE');write();process.exit(1);},globalDeadlineMs);
   try {
     if(!['webkit','chromium'].includes(engine))throw Error('Unknown engine');
+    if(process.env.QA_TELEMETRY_BUNDLE &&
+       new URL(process.env.QA_URL).searchParams.get('eldoriaBetaTelemetry')!=='1')
+      throw Error('ACTUAL_TELEMETRY_REQUIRES_EXPLICIT_NATIVE_OPT_IN_QUERY');
     browser=await ({webkit,chromium}[engine]).launch({headless:true});
     report.version=browser.version();
     report.perDrawTracing=process.env.QA_TRACE_GL==='1';
