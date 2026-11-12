@@ -273,7 +273,8 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844]]){
     'Authentic panorama would distort in '+w+'x'+h);
 }
 assert.match(nativeArt,/paintedAspect-screenAspect/);
-assert.match(nativeArt,/Native cinematic ink darkens wrong reading side/);
+assert.match(nativeArt,/Duplicate scenic crop would repeat architecture and map boundaries/);
+assert.match(nativeArt,/Single full-bleed scenery stretches or repeats real source/);
 assert.match(panel,/milestoneCinematicBackdrop\.raycastTarget=false/);
 assert.match(panel,/milestoneCinematicBackdrop\.texture=milestoneScenery\.texture/);
 assert.match(panel,/DestroyOwned\(ownedCinematicBackdropMaterial\)/);

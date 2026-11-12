@@ -614,6 +614,7 @@ namespace Eldoria.DailyTreasures.Editor
                 (titleBounds.size.y+skipBounds.size.y)*.5f;
             Need(!(xOverlap&&yOverlap),
                 "Original milestone text overlaps the real Skip finger target");
+            var theatre=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
             if(expected.Kind==DailyTreasureStageKind.Bastion)
             {
                 Need(painted.anchoredPosition.sqrMagnitude<1.21f &&
@@ -622,11 +623,10 @@ namespace Eldoria.DailyTreasures.Editor
                      "Real Bastion must cover the whole active viewport without a second camera at its edges");
             }
             else
-                Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
-                     Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
-                     Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
-                     Mathf.Abs(painted.rect.height-expected.SceneH)<1.1f,
-                     "Wrong native painterly scene size/position for "+expected.Kind);
+                Need(painted.anchoredPosition.sqrMagnitude<1.21f &&
+                     Mathf.Abs(painted.rect.width-theatre.Width+24f)<1.1f &&
+                     Mathf.Abs(painted.rect.height-theatre.Height+24f)<1.1f,
+                     "Single original setting must fill the native theatre interior for "+expected.Kind);
             Need(Mathf.Abs(receipt.anchoredPosition.x-expected.ReceiptX)<1.1f &&
                  Mathf.Abs(receipt.anchoredPosition.y-expected.ReceiptY)<1.1f &&
                  Mathf.Abs(receipt.rect.width-expected.ReceiptW)<1.1f &&
@@ -647,60 +647,35 @@ namespace Eldoria.DailyTreasures.Editor
             // full background intentionally extends behind the report. This
             // isolated fixture has no city, so it cannot certify projected
             // masonry bounds; the real-city fixture must do that separately.
-            // Painterly scene categories retain this exact non-overlap guard.
-            if(expected.SideBySide && expected.Kind!=DailyTreasureStageKind.Bastion)
-                Need(painted.anchoredPosition.x+painted.rect.width*.5f<=
-                     receipt.anchoredPosition.x-receipt.rect.width*.5f+18f,
-                     "True Eldoria scenery overlaps the event report");
-            else if(expected.Kind==DailyTreasureStageKind.Bastion)
+            // Foreground reservations and factual receipt remain separate;
+            // the single scenic setting intentionally continues behind both.
+            if(expected.Kind==DailyTreasureStageKind.Bastion)
                 Need(!panel.HasMilestoneScenery,
                     "Do not disguise a Bastion level by painting a fake city");
             else
                 Need(panel.HasMilestoneScenery,
                     "Original real Eldoria artwork is absent from the milestone");
-            // Native test must check the ARTISTIC METHOD actually rendered:
-            // premium scenes wrap original game scenery across the full
-            // ceremony, not a generic empty black right half. The shader
-            // is not a fake UI screenshot; it shades the SAME real texture.
             var fullWorld=FindRect(panel,
                 "Genuine story world / cinematic full-bleed atmosphere")
                 .GetComponent<RawImage>();
             var originalWorld=painted.GetComponent<RawImage>();
-            if(expected.Kind==DailyTreasureStageKind.Bastion)
-            {
-                // Isolated fixture has no city, so black is the truthful
-                // fallback. The separate real-city fixture MUST verify the
-                // actual one-frame 3D camera instead.
-                Need(!fullWorld.gameObject.activeInHierarchy,
-                    "No false Bastion city may be shown in isolated fixture");
-            }
-            else
-                Need(fullWorld.gameObject.activeInHierarchy &&
-                     fullWorld.texture==originalWorld.texture &&
-                     fullWorld.material &&
-                     fullWorld.material.shader &&
-                     fullWorld.material.shader.name==
-                        "Eldoria/DailyNarrativeBackdrop" &&
-                     !fullWorld.raycastTarget,
-                    "Native ceremony lacks genuine full-world painterly backdrop");
+            Need(!fullWorld.gameObject.activeInHierarchy,
+                "Duplicate scenic crop would repeat architecture and map boundaries");
             if(expected.Kind!=DailyTreasureStageKind.Bastion)
             {
-                // The actual Unity RawImage must not stretch genuine 16:9
-                // architecture to a 390px portrait reading column.
-                var uv=fullWorld.uvRect;
-                float paintedAspect=fullWorld.texture.width*uv.width/
-                    (fullWorld.texture.height*uv.height);
-                float screenAspect=fullWorld.rectTransform.rect.width/
-                    fullWorld.rectTransform.rect.height;
+                Need(originalWorld.gameObject.activeInHierarchy &&
+                     originalWorld.texture && !originalWorld.raycastTarget,
+                    "Single genuine narrative setting is missing or blocks input");
+                var uv=originalWorld.uvRect;
+                float paintedAspect=originalWorld.texture.width*uv.width/
+                    (originalWorld.texture.height*uv.height);
+                float screenAspect=originalWorld.rectTransform.rect.width/
+                    originalWorld.rectTransform.rect.height;
                 Need(Mathf.Abs(paintedAspect-screenAspect)<.02f &&
                      uv.width>0f && uv.height>0f &&
                      uv.x>=0f && uv.y>=0f &&
                      uv.xMax<=1.001f && uv.yMax<=1.001f,
-                     "Full-bleed scenery stretches real source aspect");
-                Need(Mathf.Abs(fullWorld.material.GetFloat(
-                         "_PortraitReading")-
-                         (expected.SideBySide?0f:1f))<.01f,
-                     "Native cinematic ink darkens wrong reading side");
+                     "Single full-bleed scenery stretches or repeats real source");
             }
             if(expected.Kind==DailyTreasureStageKind.Vigilants)
                 Need(insignia.material && insignia.material.shader &&
