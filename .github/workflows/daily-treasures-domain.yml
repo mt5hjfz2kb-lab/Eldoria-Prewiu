@@ -584,3 +584,33 @@ jobs:
           path: tools/daily-treasures/preunity-studies/
           retention-days: 14
           if-no-files-found: error
+
+  review-actual-native-art:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    concurrency:
+      group: daily-treasures-byte-identical-native-review
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/daily-treasures
+          persist-credentials: false
+      - name: Compile read-only native evidence verifier
+        run: python3 -m py_compile tools/daily-treasures/copy_native_review.py
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: 13910173251
+          run-id: 43142677773
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          path: reviewed-native
+          merge-multiple: true
+      - name: Preserve exact four actual Unity images in released owned review docs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/daily-treasures/copy_native_review.py

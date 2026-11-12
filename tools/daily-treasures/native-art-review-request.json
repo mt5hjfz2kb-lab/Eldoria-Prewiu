@@ -1,0 +1,8 @@
+{
+  "state": "REVIEW_EXISTING_NATIVE_ARTIFACT",
+  "review_run_id": 43142677773,
+  "review_artifact_id": 13910173251,
+  "review_source_sha": "8c1f9074ec045cde746dcec4f8c9160db01ba520",
+  "art_approved": false,
+  "merge_or_publish": false
+}
