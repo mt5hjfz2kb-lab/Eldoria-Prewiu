@@ -1,9 +1,8 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 10,
-  "action": "click_text",
-  "label": "Elevar a Bastión III",
-  "proof_sha256": "3754ac94574c0385448b584ec465088e892260f4bb2bbb316a1b4e407e66ecdf",
-  "reason": "Start the genuine four-minute upgrade using the actual earned resources and visible primary button."
+  "sequence": 11,
+  "action": "snapshot",
+  "proof_sha256": "babef2447525ff5d7d1799602a1d795ab50ab750b19fa463d239acbc63adb33f",
+  "reason": "Read actual elapsed Bastion III construction and any naturally completed chapter transition."
 }
