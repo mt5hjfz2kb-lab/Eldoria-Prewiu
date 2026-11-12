@@ -263,9 +263,9 @@ function processes(){
           }
 
     async function drainVisibleNarrative(prefix){
-      for(let step=0;step<16;step++){
+      for(let step=0;step<32;step++){
         const phase=prefix+'-'+step,rows=await readUi(phase);
-        const hits=rows.filter(r=>r.confidence>=.5&&normalized(r.text)==='CONTINUAR');
+        const hits=rows.filter(r=>r.confidence>=.5&&['CONTINUAR','MOSTRAR TEXTO'].includes(normalized(r.text)));
         if(!hits.length)return rows;
         if(hits.length!==1)throw Error('PENDING_NARRATIVE_CONTINUE_NOT_UNIQUE');
         await page.mouse.click(hits[0].x,hits[0].y,{delay:150});
