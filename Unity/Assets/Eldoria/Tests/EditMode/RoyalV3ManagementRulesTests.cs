@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Eldoria.Application;
 using Eldoria.Domain;
 using NUnit.Framework;
@@ -137,6 +138,15 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().CompletedTaskIds,Does.Contain("recruit:legacy"));
             // OWNER_I_II awards its Chapter-II training mission once when the
             // old in-flight 20-archer task completes; this is NOT a second debit.
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(9000),"Legacy completion grants a bag packet, not wallet credit");
+            var packet=g.Snapshot().ResourceRewards.Packets.Single(p=>p.ReceiptId=="mission:c2-train:wood");
+            Assert.That(packet.Amount,Is.EqualTo(220));
+            Assert.That(packet.Collected&&!packet.Used,Is.True);
+            Assert.That(g.Execute(Command(g,"legacy-training-use",ResourceRewardCommands.UsePacket,
+                packet.ReceiptId)).Ok,Is.True);
+#endif
+
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(9220));
             g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(56));
