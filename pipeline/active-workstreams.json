@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:49:05.773Z",
+  "updated_at": "2026-11-12T19:54:12.808Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 51,
+      "ownership_revision": 52,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "REQUESTED_COMPACT_BAG_ATTACHMENT_MAIL_ART_CAPTURED_AND_FULL_NATIVE_REGRESSION_PASS",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -177,10 +179,10 @@
         "source_ci_run": 43187001609,
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
-      "runner_claimed_at": "2026-11-12T13:51:41.205Z",
+      "runner_claimed_at": "2026-11-12T19:54:12.808Z",
       "runner_released_at": "2026-11-12T13:53:41.591Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
-      "runner_claim_basis": "UI finalnative43225134079 and independentAB verified; all4captionGPU0outside. RepinR6338 presentation source to exact UIa5f2 only, preserve64importedtuples. Run actual20PNGs/52firsthits+city coherence, no mainart or publication.",
+      "runner_claim_basis": "Exact March native/A-B completed, original artifact independently hash verified; next bounded native bag binding rotation regression. Same owner and source, no cancellation.",
       "runner_release_basis": "Generic shared UI certification intentionally accepts only its historical UI claims or its documented no-reservations ordinary CI path. Source50cab native retry stopped before Unity, job131227355092; release resource-only reservation and rerun exact ordinary serialized CI with native process guard intact. No gate weakened or native process interrupted.",
       "last_native": {
         "run": 43226508340,
@@ -6890,14 +6892,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 123,
+      "ownership_revision": 124,
       "write_scope_released": false,
       "phase": "TYPOGRAPHY_NATIVE_AB_VERIFIED_OWNER_VISUAL_REVIEW_READY",
-      "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
+      "next": "Preserve verified compact three-slot March and reversible typography. Continue coherent destination integration with PR187/181; no public beta modification.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T19:49:05.773Z",
@@ -7233,7 +7233,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T18:10:42.818Z",
+      "runner_released_at": "2026-11-12T19:54:12.808Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7298,6 +7298,17 @@
           "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
         ],
         "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
+      },
+      "last_restoration_regression": {
+        "source": "d868f9860f3607dbacc406a290f8e8bb623dea74",
+        "run": 43294080321,
+        "artifact": 13977568912,
+        "sha256": "9c167c6e54a5871296f5d63dcab89b29d4c6a21df6d2332cb299c1c91db90f12",
+        "native": "success",
+        "real_two_cycle_restore": true,
+        "visual_ab": "success",
+        "phone_march_image_reviewed": true,
+        "physical_iphone": false
       }
     },
     {
