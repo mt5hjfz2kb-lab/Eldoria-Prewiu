@@ -1,8 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 9,
-  "action": "snapshot",
-  "proof_sha256": "3f2e65f6c3124dae0174665f4edd13491d00e606d9b44164e5bb4c9455b8d01e",
-  "reason": "Read the current actual city after the seven-minute construction progressed naturally alongside independent QA."
+  "sequence": 10,
+  "action": "wait",
+  "proof_sha256": "3a8c360e57763ec41277c43d95fcf435fb3b0b1743dfd4a8849ed65a7cc965ba",
+  "seconds": 45,
+  "reason": "The original frame009 shows47seconds remaining; allow ordinary real time to finish the actual Bastion IV construction."
 }
