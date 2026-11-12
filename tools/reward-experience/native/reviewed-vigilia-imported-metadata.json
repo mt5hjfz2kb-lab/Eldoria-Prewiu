@@ -2,7 +2,7 @@
   "nativeRun": 43155182543,
   "auditRun": 43156972822,
   "artifact": 13913127003,
-  "uiSource": "d6c78d96aeea27f2c0d64e50e477104b9a81512d",
+  "uiSource": "a5f2c9d9afe841979c0bf7a59a7aba2911637af5",
   "role": "EXACT_REVIEWED_TEMPORARY_UI_METADATA_RESTORE_ONLY",
   "files": [
     {
@@ -390,6 +390,7 @@
       "original": null
     }
   ],
-  "previousReviewedUiSource": "445a99b97145f7355d7ad1b5de47a6b6685e4072",
-  "review_basis": "Exactd6c native43208162651+independentAB success; only presentation CSharp/docs/guards/request changed; all64 raw imported tuples unchanged."
+  "previousReviewedUiSource": "d6c78d96aeea27f2c0d64e50e477104b9a81512d",
+  "review_basis": "Exact UI native43225134079 plus independentAB SUCCESS and actual GPU caption ink0outside at four viewports. Git compare d6c78..a5f2 proves only2CSharp,2docs,1request changed; all64 raw imported metadata/art tuples remain byte-identical. Preserve original importer provenance.",
+  "reviewed_ui_native_run": 43225134079
 }
