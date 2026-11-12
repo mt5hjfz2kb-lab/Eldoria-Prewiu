@@ -645,7 +645,9 @@ namespace Eldoria.BreachWatch.Editor
                         .FirstOrDefault(x=>x.name=="Edit march by percent");
                     var editText=edit ? edit.GetComponentInChildren<Text>(true):null;
                     Need(editText && editText.preferredHeight<=editText.rectTransform.rect.height+1f,
-                        "Actual quantity caption exceeds its button at "+width+"x"+height);
+                        "Actual quantity caption exceeds its button at "+width+"x"+height+
+                        (editText ? " font="+editText.fontSize+" rect="+editText.rectTransform.rect+
+                            " preferred="+editText.preferredWidth+"x"+editText.preferredHeight:" missing"));
                 }
                 if(name=="training" && height>width)
                     Need(ui.RealDestinations && 
