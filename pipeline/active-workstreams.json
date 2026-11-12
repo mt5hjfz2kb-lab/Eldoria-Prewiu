@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "readonly-native-source-recovery-audit",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -54,7 +52,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "First next requested R native workflow audits R19 preserved245file overlay before anycheckout, archives exactunknown current+installed .meta and logsboundedfielddiff, deliberately stops without source mutation. Then investigate/recover known importer normalization before combined real bag run.",
+      "next": "Implement exact reviewed importer metadata allowlist + archival BEFORE restoring prior245 exact originalbytes. No forcedsourcecheckout untilrestoration. OffPC whileT59 nextnative.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -154,9 +152,10 @@
         "previous_native_run": 43144616466
       },
       "runner_claimed_at": "2026-11-12T03:37:26.571Z",
-      "runner_released_at": "2026-11-12T03:23:41.246Z",
+      "runner_released_at": "2026-11-12T03:43:10.479Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
-      "runner_claim_basis": "T181rev58 actualnative43147990392 completed and clean shutdown. Short READONLY archived metadata recovery audit BEFORE forcecheckout. Unknown R19 metadata remains preserved; no Unity build until reviewed."
+      "runner_claim_basis": "T181rev58 actualnative43147990392 completed and clean shutdown. Short READONLY archived metadata recovery audit BEFORE forcecheckout. Unknown R19 metadata remains preserved; no Unity build until reviewed.",
+      "runner_release_basis": "Readonly native43149686136 completed; NO Unity launch/source mutation. Archived64 actualchanged metadata out of245 beforecheckout (artifact13913127003), exact hashes available for guarded reviewed restoration. Source e4f6341 sourceCI16FS+544gateway pendingfreshcheck."
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -8038,7 +8037,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 59,
+      "ownership_revision": 60,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8058,11 +8057,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "phase": "WINDOWS_FULL_VIEWPORT_ONE_REAL_BASTION_NOT_INNER_PHOTO",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Fix old actualcity camera target-size guard for aspect-preserving473x1024 actualRT while maintaining full viewport aperture and subjectprojection gates. Source341aa remains failedactualcity; no art approval. R187 gets next short read-only recovery turn.",
+      "next": "Run source-pinned actual city fullviewport proof after correcting stale minimumshortedge assertion; actual473x1024 portrait texture is valid1024longedge. Keep aspect/fullviewportcoverage/masonryPixel/subjectprojection gates, no lowered art metric. Priorcomponent72nativePASS341aa, priorcityFAILED notapproved.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8119,9 +8120,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T03:37:26.571Z",
       "runner_release_basis": "Actual native43147990392 ended 03:35 UTC; component72PASS, actualcity fails stale proof dimension gate (authentic texture473x1024, revised fullviewportcamera). ProcessExited1 normalUnityshutdown and jobcleanup; no native process retained. New fullviewport art NOT accepted.",
-      "runner_claimed_at": "2026-11-12T03:23:41.246Z",
+      "runner_claimed_at": "2026-11-12T03:43:10.479Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "After completing failing native43005395878 and inspecting 92 genuine screenshots, exact source fix 14eeb9a with CI green. One strict Unity retest of authentic Lyra backup, contained Scouts shield, Bastion city stage; no other live Windows owners or native jobs.",
+      "runner_claim_basis": "R21 audit43149686136completednoUnityprocess/sourcewrites; next T59 existing isolateddailyproject. Correct only obsolete>=500px viewport assertion; runtimefullviewportmethodunchanged.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
