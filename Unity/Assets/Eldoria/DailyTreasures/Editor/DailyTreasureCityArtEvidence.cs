@@ -74,6 +74,32 @@ namespace Eldoria.DailyTreasures.Editor
                     .Replace("-","").ToLowerInvariant();
         }
 
+        // The studio deliberately contains dark negative space. Measure the
+        // actual eight-corner projected masonry bounds, not a fixed viewport
+        // center. Bounds come from the live 3D camera, never a bright-pixel
+        // search (which could accidentally certify a decorative gold frame).
+        static RectInt BuiltMasonryPixelRect(DailyTreasurePanel panel,int width,int height)
+        {
+            var field=typeof(DailyTreasurePanel).GetField(
+                "capturedBastionSubjectViewport",
+                System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Require(field!=null,"Missing actual projected masonry bounds");
+            var subject=(Rect)field.GetValue(panel);
+            Require(!float.IsNaN(subject.xMin) && !float.IsNaN(subject.yMin) &&
+                !float.IsNaN(subject.xMax) && !float.IsNaN(subject.yMax) &&
+                subject.xMin>=0f && subject.yMin>=0f &&
+                subject.xMax<=1f && subject.yMax<=1f &&
+                subject.width>0f && subject.height>0f,
+                "Actual projected masonry bounds are invalid");
+            int x=Mathf.FloorToInt(subject.xMin*width);
+            int y=Mathf.FloorToInt(subject.yMin*height);
+            int right=Mathf.Min(width,Mathf.CeilToInt(subject.xMax*width));
+            int top=Mathf.Min(height,Mathf.CeilToInt(subject.yMax*height));
+            Require(right-x>=32 && top-y>=32,
+                "Actual masonry is too small for a native visibility proof");
+            return new RectInt(x,y,right-x,top-y);
+        }
+
         static void ProveNativeBastionSilhouette(
             DailyTreasurePanel panel,Report report)
         {
@@ -85,8 +111,9 @@ namespace Eldoria.DailyTreasures.Editor
             var rt=(RenderTexture)raw.texture;
             Require(rt.IsCreated() && rt.width>=64 && rt.height>=64 && Mathf.Max(rt.width,rt.height)>=1000,
                 "Bastion hero shot is not an actual GPU render");
-            int rx=rt.width/5,ry=rt.height/5;
-            int w=rt.width-rx*2,h=rt.height-ry*2;
+            var masonry=BuiltMasonryPixelRect(panel,rt.width,rt.height);
+            int rx=masonry.x,ry=masonry.y;
+            int w=masonry.width,h=masonry.height;
             var tex=new Texture2D(w,h,TextureFormat.RGB24,false);
             var previous=RenderTexture.active;
             try
@@ -235,7 +262,10 @@ namespace Eldoria.DailyTreasures.Editor
             var previous=RenderTexture.active;
             try
             {
-                Graphics.Blit(captured,resolved);
+                var masonry=BuiltMasonryPixelRect(panel,captured.width,captured.height);
+                Graphics.Blit(captured,resolved,
+                    new Vector2((float)masonry.width/captured.width,(float)masonry.height/captured.height),
+                    new Vector2((float)masonry.x/captured.width,(float)masonry.y/captured.height));
                 RenderTexture.active=resolved;
                 scan.ReadPixels(new Rect(0,0,samples,samples),0,0);
                 scan.Apply(false);
@@ -364,7 +394,7 @@ namespace Eldoria.DailyTreasures.Editor
             {
                 foreach(var graphic in enabled)graphic.enabled=false;
                 var shot=Photograph(camera,target,folder,width,height,
-                    "real-bastion-camera-baseline",true);
+                    "real-bastion-camera-baseline",false);
                 RecordPictureAperture(shot,picture,camera,panel);
                 return shot;
             }
@@ -642,6 +672,7 @@ namespace Eldoria.DailyTreasures.Editor
                         report.bastionRotationProofs++;
                         var bastionStudy=Photograph(camera,target,folder,
                             width,height,"authored-bastion-visual-only",false);
+                        RecordPictureAperture(bastionStudy,BastionPicture(panel),camera,panel);
                         pictures.Add(bastionStudy);
                         Require(baseline.sha256!=bastionStudy.sha256,
                             "Bastion stage was absent above real city camera");

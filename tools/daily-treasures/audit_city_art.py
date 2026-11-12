@@ -48,6 +48,41 @@ def visibility(baseline, calendar):
         f'city almost disappears behind calendar: {w}x{h} visible={ratio:.3f} (<{MIN_VISIBLE_LUMINANCE:.2f})')
     return {'size':f'{w}x{h}','samples':bright,'visible_luminance_ratio':round(ratio,4)}
 
+def masonry_visibility(image, aperture):
+    """Native studio subject check; never discover a convenient bright region."""
+    ox,oy,aw,ah=aperture
+    w,h=image.size
+    require(all(isinstance(v,(int,float)) and math.isfinite(v) for v in aperture)
+            and aw>100 and ah>100 and ox>=0 and oy>=0 and ox+aw<=w+1 and oy+ah<=h+1,
+            'actual projected masonry aperture is invalid')
+    p=image.convert('RGB').load()
+    step=max(1,int(min(aw,ah)//55))
+    pixels=[p[x,y] for y in range(max(0,round(oy)),min(h,round(oy+ah)),step)
+            for x in range(max(0,round(ox)),min(w,round(ox+aw)),step)]
+    lit=sum(sum(c)>=48 for c in pixels)
+    bins=len({tuple(v>>4 for v in c) for c in pixels})
+    require(len(pixels)>=150 and lit>len(pixels)/6 and bins>=36,
+            f'actual studio masonry absent, dark or flat: {lit}/{len(pixels)} lit, {bins} bins')
+    return {'native_masonry_samples':len(pixels),'native_masonry_lit_fraction':round(lit/len(pixels),4),
+            'native_masonry_color_bins':bins}
+
+def masonry_luminance_retention(baseline, ceremony, aperture):
+    require(baseline.size==ceremony.size,'studio A/B viewport mismatch')
+    ox,oy,aw,ah=aperture
+    a,b=baseline.convert('RGB').load(),ceremony.convert('RGB').load()
+    samples=[]
+    step=max(1,int(min(aw,ah)//55))
+    for y in range(round(oy),round(oy+ah),step):
+        for x in range(round(ox),round(ox+aw),step):
+            r,g,blue=a[x,y];old=r*.2126+g*.7152+blue*.0722
+            if old<=40:continue
+            r,g,blue=b[x,y];new=r*.2126+g*.7152+blue*.0722
+            samples.append((old,new))
+    require(len(samples)>=150,'studio has too few actual baseline masonry pixels')
+    ratio=sum(n for _,n in samples)/sum(o for o,_ in samples)
+    require(ratio>=MIN_VISIBLE_LUMINANCE,'studio masonry concealed by ceremony')
+    return {'masonry_visible_luminance_ratio':round(ratio,4)}
+
 def bastion_structure_retention(baseline, ceremony, aperture=None):
     """Require the ACTUAL focused Bastion masonry to survive foreground painting.
 
@@ -136,9 +171,14 @@ def audit(folder,source_sha,output):
                 f'genuine Bastion camera did not move: {w}x{h}')
         daily_result = visibility(baseline, calendar)
         daily_result['variant'] = 'calendar'
-        bastion_result = visibility(baseline, bastion)
+        require(report.get('bastionPresentationMethod')=='ACTUAL_BUILT_GEOMETRY_SCOPED_STUDIO'
+                and report.get('actualBuiltStudioProofs')==8 and report.get('sceneEnvironmentRestored') is True,
+                'studio requires eight restored actual-built source captures')
+        metadata=names[f'real-city-daily-authored-bastion-visual-only-{w}x{h}.png']
+        subject=tuple(metadata.get(k,0) for k in ('subjectX','subjectY','subjectW','subjectH'))
+        bastion_result = {'size':f'{w}x{h}',**masonry_visibility(bastion,subject)}
         bastion_result['variant'] = 'bastion_visual_only'
-        hero_result = visibility(focused_baseline, focused_bastion)
+        hero_result = {'size':f'{w}x{h}'}
         hero_result['variant'] = 'canonical_bastion_camera_closeup'
         aligned=[]
         for variant in ('real-bastion-camera-baseline','real-bastion-camera-ceremony'):
@@ -150,6 +190,9 @@ def audit(folder,source_sha,output):
             aligned.append(rect)
         require(all(abs(a-b)<.1 for a,b in zip(*aligned)),
                 f'Bastion A/B picture aperture moved: {w}x{h}')
+        masonry_visibility(focused_baseline,aligned[0])
+        hero_result.update(masonry_visibility(focused_bastion,aligned[0]))
+        hero_result.update(masonry_luminance_retention(focused_baseline,focused_bastion,aligned[0]))
         hero_result.update(bastion_structure_retention(
             focused_baseline,focused_bastion,aligned[0]))
         hero_result['actual_unity_aperture']=aligned[0]
@@ -207,6 +250,21 @@ def selftest():
                 'obscured Bastion must fail because its structure is lost')
     else:
         raise AssertionError('painted arch must not replace real Bastion pixels')
+    for color in ((0,0,0),(190,140,90)):
+        try:
+            masonry_visibility(Image.new('RGB',(256,256),color),(10,10,220,220))
+        except ValueError:pass
+        else:raise AssertionError('blank or flat studio must fail')
+    studio=Image.new('RGB',(256,256),(0,0,0))
+    for y in range(20,240):
+        for x in range(20,240):
+            studio.putpixel((x,y),(48+(x%13)*16,40+(y%13)*16,32+((x+y)%13)*16))
+    require(masonry_visibility(studio,(20,20,220,220))['native_masonry_color_bins']>=36,
+            'actual masonry ROI cannot be rejected for intentional surrounding negative space')
+    dark=Image.new('RGB',(256,256),(0,0,0))
+    try:masonry_luminance_retention(studio,dark,(20,20,220,220))
+    except ValueError:pass
+    else:raise AssertionError('ceremony concealing masonry must fail')
     print('PASS city visibility selftest: dark overlay AND fake arch rejected')
 
 if __name__=='__main__':
