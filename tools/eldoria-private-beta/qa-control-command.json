@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 4,
-  "action": "click_text",
-  "proof_sha256": "55f10f8d9f5c18e9d49529a57d27324307f3f3808da00abe797a6b62d58d43f6",
-  "label": "CONTINUAR",
-  "reason": "Frame003 shows the complete Lyra recruitment chronicle and the visible unique Continuar action."
+  "sequence": 5,
+  "action": "click_point",
+  "proof_sha256": "487887a6ebb9955df82c7d666bdf7b0a6c92a35b07dbad362e44e8d589267251",
+  "x": 360,
+  "y": 25,
+  "guard_texts": [
+    "PODER DEL HÉROE",
+    "ATRIBUTOS DE COMBATE"
+  ],
+  "reason": "Original frame004 shows the actual close cross in the hero presentation at360,25; return to the earned city."
 }
