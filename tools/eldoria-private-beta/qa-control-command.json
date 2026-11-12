@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 44,
-  "action": "click_point",
-  "proof_sha256": "62bc81a53462010439df60d336ce95bc4d7eadc1648c4bebadb24998e7a41b56",
-  "x": 210,
-  "y": 70,
-  "guard_texts": [
-    "Diagnóstico local",
-    "Misiones"
-  ],
-  "reason": "Frame043 verifies the actual Cuartel upgrade started; normal elapsed time has passed, so use the quest arrow to select the remaining required building."
+  "sequence": 45,
+  "action": "click_text",
+  "proof_sha256": "14cbcbda8ad733af9a1c79def46773435105661bad830c519252e866b764e638",
+  "label": "MEJORAR",
+  "reason": "Frame044 shows selected Granero and unique Mejorar with120wood78stone10seconds; execute the ordinary last infrastructure upgrade."
 }
