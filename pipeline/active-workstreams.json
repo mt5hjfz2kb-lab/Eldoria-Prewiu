@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T09:59:41.625Z",
+  "updated_at": "2026-11-12T10:04:03.679Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 35,
+      "ownership_revision": 36,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "EXCLUSIVE_RESPONSIVE_BAG_AND_TRUTHFUL_MAIL_WITH_VERIFIED_UI36",
+      "phase": "RESPONSIVE20_TRUTHFUL_MAIL_NATIVE_PASS_VISUAL_REVIEW",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -163,16 +161,16 @@
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
       "runner_claimed_at": "2026-11-12T09:59:41.625Z",
-      "runner_released_at": "2026-11-12T09:19:28.883Z",
+      "runner_released_at": "2026-11-12T10:04:03.679Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
       "runner_claim_basis": "UI exact36fb native+AB successful andclean; R109 mail+responsive source43194025897success;64 unchangedmetadatarepinned noassetdiff.",
-      "runner_release_basis": "Native43189305862 success;20 PNG/52 real clicks;245 originals restored; zero native processes.",
+      "runner_release_basis": "Exact010f native43196427281 success20PNG52actualhits, new truthfularchive guard passed,245 originals restored, no nativeprocesses.",
       "last_native": {
-        "run": 43189305862,
-        "head": "9bf06a1438014dbc973753636b4ac71ca92ea96f",
-        "artifact": 13930465228,
-        "sha256": "d26af2db74439c0d51308194c1ffa73b17ea289df9f5d4e33bae1df6737b6814",
-        "actual_png": 20,
+        "run": 43196427281,
+        "head": "010f21787da6919eba263f26b07dda6a89de37f0",
+        "artifact": 13933407021,
+        "sha256": "b387e1b02069cf030db1e3a3c1e050cad836d382acbe7f0f1acb4e6e312c6632",
+        "png": 20,
         "real_first_hits": 52,
         "source_overlay_restored": true,
         "art_approved": false
@@ -8125,7 +8123,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 79,
+      "ownership_revision": 80,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8145,11 +8143,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "SINGLE_SCENERY92_NATIVE_PASS_ACTUAL_ART_AB_PENDING",
+      "phase": "EXCLUSIVE_COHERENT_SCENERY_WITH_VISIBLE_REAL_ACTIONS",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Download/hash original92 and visuallycompare scouts/Lyra singlecrop vs43191078889; awaitindependentaudit while UI usesPC. Do notmerge.",
+      "next": "Exactfull92 native, actualwith/withoutbuttonGPU visibility, existingrealclaims/inputs/masonry/scene gates. Source2ef preservesonecontinuousoriginalsetting; compareoriginal92from43192664265. Noartmain.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8206,9 +8206,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T09:53:59.485Z",
       "runner_release_basis": "Actual native43192664265 job131095688179 SUCCESS; two actual Editor roots exited0 after26/18seconds; zero-native-process guards passed. Independent pixel audit runs offPC.",
-      "runner_claimed_at": "2026-11-12T09:34:30.240Z",
+      "runner_claimed_at": "2026-11-12T10:04:03.679Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "Single continuous narrative source a164dfb sourceCI43192357678/43192365925 both success; prior92 original evidence preserved; actual native A/B required.",
+      "runner_claim_basis": "R010f native43196427281 clean245 restored; T2ef sourceCI43195917821/43195910171 bothsuccess. Actualsinglecropimages revealedburiedbuttons, nowexistingactionsraised andactualGPUcontrolvisibilitychecks added.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
@@ -18679,6 +18679,14 @@
       "to": "eldoria-issue186-reward-attention-guidance-20261111",
       "ui_run": 43195548484,
       "r_source": "1dd9c54491188b18fe9ed8f4ef55340080338c8a"
+    },
+    {
+      "at": "2026-11-12T10:04:03.679Z",
+      "event": "central_R_truthful20_clean_to_T_visible_real_controls",
+      "from": "eldoria-issue186-reward-attention-guidance-20261111",
+      "to": "eldoria-daily-treasures-20261108",
+      "run": 43196427281,
+      "source": "2ef20898d246f1f969f52a7fb3657252719ad29a"
     }
   ],
   "owner_specific_pauses": [
