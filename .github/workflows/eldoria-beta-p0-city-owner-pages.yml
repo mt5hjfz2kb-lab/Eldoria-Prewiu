@@ -1,0 +1,103 @@
+name: Eldoria owner-only lazy world Pages — preserve all working routes
+on:
+  push:
+    branches: [main, feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-p0-city-owner-pages.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-pages-p0-owner-recovery
+  cancel-in-progress: false
+jobs:
+  verify-preserved-owner-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0a5e8640dfa6e2a8d9d0e5fc6335694757b33898
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43150432049
+          name: mobile16-unpublished-preserved-owner-site
+          github-token: ${{ github.token }}
+          path: site
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43006294342
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: previous-pages
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43150932880
+          name: mobile16-staged-delivery-actual-desktop-webkit-not-physical-iphone
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Verify every preceding live file, recovered hidden files and exact actual runtime proof
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 -m py_compile tools/eldoria-private-beta/verify_preserved_owner_publication.py
+          python3 tools/eldoria-private-beta/verify_preserved_owner_publication.py --site site --baseline exact-previous-site --mac actual-mac --archive previous-pages/artifact.tar
+      - name: Retain concrete verified owner site including every original hidden file
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-verified-owner-pages-input
+          path: site/
+          include-hidden-files: true
+          compression-level: 0
+          retention-days: 14
+      - name: Preserve verification evidence on any result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-owner-publication-verification
+          path: site/beta-mobile16-owner-publication-proof.json
+          retention-days: 14
+  publish-owner-qa:
+    needs: verify-preserved-owner-site
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile16-verified-owner-pages-input
+          path: site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+          retention-days: 14
+      - name: Deploy isolated owner QA route while preserving beta10 and working beta14
+        id: deploy
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
+      - name: Confirm live native identity and the two preceding working routes
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request
+          root='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          def get(path):
+              req=urllib.request.Request(root+path,headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-owner-qa-live'})
+              with urllib.request.urlopen(req,timeout=40) as response:return json.load(response)
+          for route,source in [('beta-native325','be49d62e3daf490f41dba0bf8123a8e2eee64480'),('beta-iphone-p0-city','63fb2095412a3066e18f3a8a31c2a03f40ef4944'),('beta-iphone-p0-lazy-world','4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71')]:
+              identity=get(route+'/release-identity.json')
+              assert identity['source_sha']==source and identity['release_for_external_testers'] is False
+          p=get('beta-mobile16-owner-publication-proof.json')
+          assert p['original_files_preserved']==144 and not p['external_testers_enabled'] and not p['physical_iphone_verified']
+          print('LIVE_OWNER_ONLY_LAZY_ROUTE_AND_PREVIOUS_TWO_IDENTITIES_VERIFIED_NOT_TESTER_RELEASE')
+          PY
