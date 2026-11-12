@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 23,
-  "action": "click_text",
-  "proof_sha256": "5a685a9fa03fa7b20eb1aab778ed5347d331af0dd1643095b847214630258e78",
-  "label": "RECOGER PIEDRA"
+  "sequence": 24,
+  "action": "wait",
+  "proof_sha256": "ff0eedfd0a8422b2c423cf8191ec3fb48fb1467874d946515e19f46a730d9893",
+  "seconds": 12
 }
