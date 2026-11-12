@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T02:53:57.045Z",
+  "updated_at": "2026-11-12T03:08:37.863Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,10 +24,10 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 18,
+      "ownership_revision": 19,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "WINDOWS_ACTUAL_COMBINED_VIGILIA_SAVED_BAG",
+      "phase": "WINDOWS_BAG_PROBE_VERIFIED_INFRASTRUCTURE_NAMESPACE_FOLLOWUP",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
       "resources": [
@@ -54,7 +54,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "E76sourceCI43144007783 PASS all544gateway and real12filesystem rollback/conflict cases,10Roslynfiles. Oneboundedcombined native with source-pinnedUIaf658a6c actual48pass,8bagPNG+20firsthits+seen/skip/use/reload,exactsourceoverlayrestore. SeparatefullletterUI andphysicalphone/artapprovalremainpending. FreezeR18requestsource duringnative; oldCPUreviewb6b397 writesTbranchonly fromimmutableoldrequest.",
+      "next": "PreviousR18 compilefailedCS0246unqualifiedFileStateStore; actual existingInfrastructure/LocalServices.cs verifiednamespaceEldoria.Infrastructure. ALL241UIoverlayfilesrestoredexactly onrealWindows. One bounded19 follow-up fullyqualifiesactualstore, nootherreadyPCwaiters (TfullviewportsourcepreparingoffPC;UI48alreadyPASS;betaMacprofilePASS). Needactualbagruntime; no inferredpass.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -149,9 +149,9 @@
         "resource": "windows-runner-heavy",
         "status": "claimed",
         "owner": "chatgpt-central-resource-art-20261111",
-        "ownership_revision": 18,
+        "ownership_revision": 19,
         "claimed_at": "2026-11-12T02:53:57.045Z",
-        "previous_native_run": 43142677773
+        "previous_native_run": 43144616466
       },
       "runner_claimed_at": "2026-11-12T02:53:57.045Z",
       "runner_released_at": "2026-11-12T02:31:37.443Z",
@@ -18366,6 +18366,17 @@
       "result": "success",
       "source": "8c1f9074ec045cde746dcec4f8c9160db01ba520",
       "note": "CPU image review remains independent; source restoration guard exercised12actualfilesystem assertions. No artmain/publication/deviceapproval."
+    },
+    {
+      "at": "2026-11-12T03:08:37.863Z",
+      "event": "central_bounded_combined_bag_followup_after_exact_cleanup",
+      "id": "eldoria-issue186-reward-attention-guidance-20261111",
+      "previous_native_run": 43144616466,
+      "previous_native_job": 130939437108,
+      "previous_result": "compilefailure",
+      "restored_ui_files": 241,
+      "fix": "Fully qualify existing verified Eldoria.Infrastructure.FileStateStore",
+      "ready_pc_waiters": []
     }
   ],
   "owner_specific_pauses": [
