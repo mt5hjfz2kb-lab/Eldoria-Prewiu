@@ -502,6 +502,40 @@ namespace Eldoria.DailyTreasures.Editor
             report.bastionPerimeterProofs++;
         }
 
+        static void VerifyStudioRestoration(DailyTreasurePanel panel,string before,
+            int width,int height)
+        {
+            var after=EnvironmentSignature();
+            bool restored=DailyTreasureBastionCamera.LastSceneStateRestored;
+            int count=DailyTreasureBastionCamera.LastStudioRendererCount;
+            if(before!=after || !restored || count<1)
+            {
+                var names=new List<string>{"fog","fogMode","fogColor","fogDensity",
+                    "fogStart","fogEnd","ambientMode","ambientLight","ambientIntensity"};
+                for(int c=0;c<3;c++)for(int coefficient=0;coefficient<9;coefficient++)
+                    names.Add("ambientProbe["+c+","+coefficient+"]");
+                var a=before.Split('|');var b=after.Split('|');
+                var differences=new List<string>();
+                for(int i=0;i<Math.Max(a.Length,b.Length);i++)
+                    if(i>=a.Length||i>=b.Length||a[i]!=b[i])
+                        differences.Add((i<names.Count?names[i]:"field"+i)+
+                            ": "+(i<a.Length?a[i]:"MISSING")+" -> "+
+                            (i<b.Length?b[i]:"MISSING"));
+                var folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+Folder));
+                Directory.CreateDirectory(folder);
+                File.WriteAllText(Path.Combine(folder,"scene-environment-diff-"+width+"x"+height+".txt"),
+                    "layersAndLightsRestored="+restored+"; rendererCount="+count+"\n"+
+                    string.Join("\n",differences));
+                var picture=BastionPicture(panel);
+                if(picture&&picture.texture is RenderTexture texture)
+                    PreserveFailedOriginalGpu(texture,width,height);
+                Debug.LogError("STUDIO_RESTORE_DIFFERENCES "+string.Join("; ",differences)+
+                    "; layersAndLights="+restored+"; rendererCount="+count);
+            }
+            Require(before==after && restored && count>0,
+                "Studio capture failed exact scoped environment restoration; see original GPU and field differences");
+        }
+
         public static void Capture()
         {
             string project=Path.GetFullPath(
@@ -623,6 +657,10 @@ namespace Eldoria.DailyTreasures.Editor
                         var baseline=Photograph(camera,target,folder,width,height,
                             "actual-city-baseline",true);
                         pictures.Add(baseline);
+                        // URP may initialize the scene's ambient probe on its
+                        // first real render. This is the actual source-city
+                        // baseline from which the studio must restore exactly.
+                        if(pictures.Count==1)environmentBefore=EnvironmentSignature();
                         panel.Suppressed=false;
                         panel.Open();
                         Require(panel.IsOpen,
@@ -643,6 +681,7 @@ namespace Eldoria.DailyTreasures.Editor
                         panel.Open();
                         Require(panel.IsOpen,
                             "Visual-only Bastion theatre did not open");
+                        var beforeStudio=EnvironmentSignature();
                         panel.Present("BASTIÓN · ESTUDIO VISUAL",
                             "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
                             true,DailyTreasureCeremonyTier.Special,
@@ -658,10 +697,7 @@ namespace Eldoria.DailyTreasures.Editor
                             "a painted extra gate is forbidden");
                         VerifyLiveBastionTexture(panel,width,height);
                         VerifySingleBastionPerimeter(panel,width,height,report);
-                        Require(EnvironmentSignature()==environmentBefore &&
-                            DailyTreasureBastionCamera.LastSceneStateRestored &&
-                            DailyTreasureBastionCamera.LastStudioRendererCount>0,
-                            "Studio capture failed to restore actual source renderer layers, lights or ambient/fog state");
+                        VerifyStudioRestoration(panel,beforeStudio,width,height);
                         report.actualBuiltStudioProofs++;
                         report.bastionPresentationMethod=DailyTreasureBastionCamera.PresentationMethod;
                         report.bastionSnapshotsVerified++;
@@ -687,16 +723,14 @@ namespace Eldoria.DailyTreasures.Editor
                         panel.Open();
                         Require(panel.IsOpen,
                             "Focused real Bastion visual-only stage did not open");
+                        beforeStudio=EnvironmentSignature();
                         panel.Present("BASTIÓN · ESTUDIO VISUAL",
                             "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
                             true,DailyTreasureCeremonyTier.Special,
                             "milestone:bastion:visual-only");
                         VerifyLiveBastionTexture(panel,width,height);
                         VerifySingleBastionPerimeter(panel,width,height,report);
-                        Require(EnvironmentSignature()==environmentBefore &&
-                            DailyTreasureBastionCamera.LastSceneStateRestored &&
-                            DailyTreasureBastionCamera.LastStudioRendererCount>0,
-                            "Studio capture failed to restore actual source renderer layers, lights or ambient/fog state");
+                        VerifyStudioRestoration(panel,beforeStudio,width,height);
                         report.actualBuiltStudioProofs++;
                         report.bastionPresentationMethod=DailyTreasureBastionCamera.PresentationMethod;
                         report.bastionSnapshotsVerified++;

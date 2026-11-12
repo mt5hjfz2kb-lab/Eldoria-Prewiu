@@ -54,7 +54,7 @@ jobs:
           required='eldoria-daily-treasures-20261108'
           if len(holders)!=1 or holders[0].get('id')!=required:
               raise SystemExit('Windows reserved by another Eldoria workstream; no Unity run')
-          if holders[0].get('owner')!='chatgpt-central-treasures-art-20261111' or holders[0].get('ownership_state')!='claimed':
+          if holders[0].get('owner')!='chatgpt-central-art-execution-20261111' or holders[0].get('ownership_state')!='claimed':
               raise SystemExit('Daily treasures workstream lease not valid')
           source=f'https://api.github.com/repos/{repo}/git/ref/heads/feature/eldoria-daily-treasures-20261108'
           with urllib.request.urlopen(urllib.request.Request(source,headers=headers),timeout=20) as response:
@@ -201,7 +201,7 @@ jobs:
           $registry=([Text.Encoding]::UTF8.GetString(
             [Convert]::FromBase64String($leaseBase64)))|ConvertFrom-Json
           $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne 'chatgpt-central-treasures-art-20261111'){
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne 'chatgpt-central-art-execution-20261111'){
             throw 'Windows lease lost; refusing Unity execution'
           }
           $latest=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/ref/heads/feature/eldoria-daily-treasures-20261108' -Headers $headers
