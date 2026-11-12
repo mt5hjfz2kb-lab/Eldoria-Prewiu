@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 9,
-  "action": "click_point",
-  "proof_sha256": "1caf267cadbaac78bc21809531494f44c6977ff15627c26c3b5c407ba0dcfacf",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN II • 5/5",
-    "Eleva el Bastión a nivel"
-  ],
-  "reason": "Fresh original frame008 records the genuine victory and now shows the mission arrow for Bastion III."
+  "sequence": 10,
+  "action": "click_text",
+  "label": "Elevar a Bastión III",
+  "proof_sha256": "3754ac94574c0385448b584ec465088e892260f4bb2bbb316a1b4e407e66ecdf",
+  "reason": "Start the genuine four-minute upgrade using the actual earned resources and visible primary button."
 }
