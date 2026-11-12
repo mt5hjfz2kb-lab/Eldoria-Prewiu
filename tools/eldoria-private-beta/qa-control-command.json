@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 42,
-  "action": "click_point",
-  "proof_sha256": "90732ad00f2c8142d8faedf8dea58a9959fbc0fe4b717553685ccdc8e61b277a",
-  "x": 210,
-  "y": 70,
-  "guard_texts": [
-    "Diagnóstico local",
-    "Misiones"
-  ],
-  "reason": "Frame041 records the genuine sawmill upgrade started; after normal elapsed time, follow the objective arrow to the next required building."
+  "sequence": 43,
+  "action": "click_text",
+  "proof_sha256": "d8aa19220f0d85f8b13e7bb764f58a3da7762f7b73e71d3627ecc7d1fc818e4e",
+  "label": "MEJORAR",
+  "reason": "Original frame042 shows selected level1 Cuartel and unique Mejorar action with140wood90stone cost; upgrade normally."
 }
