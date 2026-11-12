@@ -1,14 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 29,
-  "action": "click_point",
-  "proof_sha256": "1ef4a7429fcc97769f36c6ddabbdb6e8f89f3bca92e1ceca753f006f36dde085",
-  "x": 195,
-  "y": 581,
-  "guard_texts": [
-    "ORDEN DE ENTRENAMIENTO",
-    "20"
-  ],
-  "reason": "Frame028 shows actual numeric20 input at the centre of the training quantity control; focus to request four earned archers."
+  "sequence": 30,
+  "action": "key",
+  "proof_sha256": "a3ddb55acfca1aec7919c22e5e349e309b5c72b86d658d02c7f51542d45494cf",
+  "key": "Meta+A"
 }
