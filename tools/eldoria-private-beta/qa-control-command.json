@@ -1,9 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 12,
-  "action": "click_text",
-  "proof_sha256": "a01c21da8b90dc430e482941c263293a82e434c3887f88460c9a0b76bcd7e752",
-  "label": "ELEVAR A BASTION V",
-  "reason": "Original frame011 shows actual Bastion IV,1100wood900stone500food cost and10minute duration; start the normal earned levelV upgrade."
+  "sequence": 13,
+  "action": "snapshot",
+  "proof_sha256": "d412c632a071fe076bac37de71fbd95197dab864700da972bfcd1f0d5423eed1",
+  "reason": "Read the actual Bastion V construction countdown while the corrected shared native regression starts; preserve all normal timers."
 }
