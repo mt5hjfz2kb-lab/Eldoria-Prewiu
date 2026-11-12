@@ -342,6 +342,29 @@ function processes(){
           report.actualWorldUi.actualCityReturnAttempted=true;write();
           await observeEntry(30,'actual-city-return');
           await readUi('actual-city-return');
+          if(process.env.QA_NEXT_OBJECTIVE==='1'){
+            report.nextObjectiveExploration={method:'Visible objective arrow and unique OCR-confirmed controls only; no save/time injection',actions:[],progressionCertified:false};
+            // Same original canonical objective arrow already verified above.
+            await page.mouse.click(211,69,{delay:150});
+            report.nextObjectiveExploration.actions.push({control:'canonical objective arrow',x:211,y:69,coordinateEvidenceRun:43158802987});
+            await observeEntry(3,'next-objective-focused');
+            const allowed=new Set(['RECOLECTAR','REUNIR','ENVIAR','ENVIAR MARCHA','MARCHAR','CONFIRMAR MARCHA']);
+            const clicked=new Set();
+            for(let step=0;step<4;step++){
+              const phase='next-objective-'+step,rows=await readUi(phase);
+              const matches=rows.filter(r=>r.confidence>=.5&&allowed.has(normalized(r.text)));
+              if(matches.length!==1){report.nextObjectiveExploration.stopReason=matches.length?'ambiguous_visible_actions':'no_known_visible_action';break;}
+              const hit=matches[0],key=normalized(hit.text)+':'+Math.round(hit.x)+':'+Math.round(hit.y);
+              if(clicked.has(key)){report.nextObjectiveExploration.stopReason='same_control_remains_after_click';break;}
+              clicked.add(key);
+              await page.mouse.click(hit.x,hit.y,{delay:150});
+              report.nextObjectiveExploration.actions.push({text:hit.text,x:hit.x,y:hit.y,evidence:phase+'.png'});
+              write();await observeEntry(8,phase+'-after-action');
+            }
+            await observeEntry(25,'next-objective-observation');
+            await readUi('next-objective-final');write();
+          }
+
         }
       }
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
