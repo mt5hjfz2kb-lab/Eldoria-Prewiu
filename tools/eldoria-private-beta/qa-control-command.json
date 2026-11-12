@@ -1,14 +1,11 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 1,
-  "action": "click_point",
-  "proof_sha256": "ab1f1d2fe0513d1bcb64813b31a94197035025dbd8887b26a3c0a686bada3e73",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN II - 2/5",
-    "Prepara y confirma la"
-  ],
-  "reason": "Fresh original000 shows the canonical objective arrow beside the actual preparation mission; open its genuine destination."
+  "sequence": 2,
+  "action": "click_text",
+  "proof_sha256": "a5350229e77ff75685d3ce72ae9ef902546af8f432fa15f1dc38405f2164ae55",
+  "label": "CONFIRMAR COM",
+  "min_y": 780,
+  "max_y": 815,
+  "reason": "Fresh actual001 shows the visible prefix of the canonical composition confirmation above the diagnostic overlay; confirm the real56-archer army."
 }
