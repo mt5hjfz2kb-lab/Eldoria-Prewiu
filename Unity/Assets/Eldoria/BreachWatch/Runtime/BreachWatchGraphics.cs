@@ -14,6 +14,15 @@ namespace Eldoria.BreachWatch
         PlateType plateType = PlateType.Basalt;
         Sprite approvedIndependentArt;
         bool useIndependentNineSlice;
+        bool acceptsPointer;
+        // Some authored controls are built below a deliberately inactive rail.
+        // Their Awake runs only at first real unlock; retain the input intent
+        // configured by the owning button before that activation.
+        public void SetPointerInput(bool enabled)
+        {
+            acceptsPointer=enabled;
+            raycastTarget=enabled;
+        }
         public new PlateType Type
         {
             get => plateType;
@@ -66,7 +75,7 @@ namespace Eldoria.BreachWatch
         protected override void Awake()
         {
             base.Awake();
-            raycastTarget = false;
+            raycastTarget = acceptsPointer;
             RefreshMaterial();
         }
         public void RefreshMaterial()

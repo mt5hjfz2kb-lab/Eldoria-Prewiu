@@ -36,6 +36,7 @@ namespace Eldoria.BreachWatch.Editor
         static int phase,storyPages;
         static double deadline,afterName;
         static bool busy;
+        static int mailboxFirstHitClicks;
 
         [Serializable] public sealed class Screen
         {
@@ -54,6 +55,7 @@ namespace Eldoria.BreachWatch.Editor
             public string status,source,notes;
             public bool probeOnly,saveUnchanged,artworkApproved;
             public int screenshotCount;
+            public int actualMailboxFirstHitClicks;
             public Screen[] screens;
         }
         static BreachWatchDestinationNativeEvidence()
@@ -154,6 +156,7 @@ namespace Eldoria.BreachWatch.Editor
             // Test-only in-memory injection of an advanced progression state.
             // Do not call the gateway commit/save path or execute purchases.
             stateField.SetValue(gateway,fixture);
+            mailboxFirstHitClicks=0;
             var shots=new List<Screen>();
             var profileShots=new List<Screen>();
             var unlockedNavShots=new List<Screen>();
@@ -302,7 +305,7 @@ namespace Eldoria.BreachWatch.Editor
                 Need(mailButton && mailButton.gameObject.activeInHierarchy &&
                      mailButton.interactable,
                      "Genuine mail entry medallion not shown after first delivery");
-                mailButton.onClick.Invoke();
+                ClickActualMailControl(ui,mailButton);
                 Need(mail!=null && mail.IsShowing && mail.ReplacedOldPainting &&
                      !mailButton.gameObject.activeInHierarchy,
                      "Mail medallion did not open canonical new UI or stayed over its panel");
@@ -350,7 +353,7 @@ namespace Eldoria.BreachWatch.Editor
                 Need(firstRow && firstRow.gameObject.activeInHierarchy &&
                      firstRow.interactable,
                     "First actual report row is not clickable");
-                firstRow.onClick.Invoke();
+                ClickActualMailControl(ui,firstRow);
                 canonicalMailbox.Refresh();
                 mail.SynchronizeVisual();
                 var actualDocument=ui
@@ -443,6 +446,7 @@ namespace Eldoria.BreachWatch.Editor
                 source=report.source,
                 notes="Only in-memory, explicitly labelled synthetic report for canonical message list/report UI QA. No player messages or save were modified.",
                 probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                actualMailboxFirstHitClicks=mailboxFirstHitClicks,
                 screenshotCount=mailContentShots.Count,
                 screens=mailContentShots.ToArray()
             };
@@ -515,6 +519,48 @@ namespace Eldoria.BreachWatch.Editor
             return total>0?good/(float)total:0f;
         }
 
+        static void ClickActualMailControl(BreachWatchHud ui,Button button)
+        {
+            Need(button && button.isActiveAndEnabled && button.IsInteractable(),
+                "Actual canonical mail control is unavailable");
+            Need(button.targetGraphic && button.targetGraphic.raycastTarget,
+                "Actual mail control lost its configured pointer input after activation: "+button.name);
+            var camera=host.PlayerCamera;Need(camera,"Canonical input camera missing");
+            var priorTarget=camera.targetTexture;var priorAspect=camera.aspect;
+            int priorMask=camera.cullingMask;
+            var target=new RenderTexture(390,844,24,RenderTextureFormat.ARGB32);
+            target.Create();
+            try
+            {
+                camera.targetTexture=target;camera.aspect=390f/844f;camera.cullingMask|=1<<5;
+                ui.NativeCanvas.worldCamera=camera;ui.Reflow(390,844);ui.RenderNow();
+                var canonical=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
+                if(canonical && canonical.IsOpen)canonical.SynchronizeLayout();
+                if(ui.RealMailbox && ui.RealMailbox.IsShowing)ui.RealMailbox.SynchronizeVisual();
+                Canvas.ForceUpdateCanvases();camera.Render();Canvas.ForceUpdateCanvases();camera.Render();
+                var system=EventSystem.current;
+                Need(system && system.isActiveAndEnabled,"Real mail EventSystem unavailable");
+                var rect=(RectTransform)button.transform;
+                var data=new PointerEventData(system) { position=
+                    RectTransformUtility.WorldToScreenPoint(camera,rect.TransformPoint(rect.rect.center)) };
+                var hits=new List<RaycastResult>();system.RaycastAll(data,hits);
+                Need(hits.Count>0 && ExecuteEvents.GetEventHandler<IPointerClickHandler>(
+                    hits[0].gameObject)==button.gameObject,
+                    "Actual mail first pointer hit is not its control: "+button.name+
+                    "; first="+(hits.Count>0?hits[0].gameObject.name:"none"));
+                var handler=ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject);
+                Need(ExecuteEvents.Execute<IPointerClickHandler>(handler,data,
+                    ExecuteEvents.pointerClickHandler),"Actual mail first hit has no click handler");
+                mailboxFirstHitClicks++;
+                Debug.Log("VIGILIA_ACTUAL_MAIL_FIRST_HIT control="+button.name+
+                    "; hit="+hits[0].gameObject.name+"; handler="+handler.name);
+            }
+            finally
+            {
+                camera.targetTexture=priorTarget;camera.aspect=priorAspect;camera.cullingMask=priorMask;
+                target.Release();Object.DestroyImmediate(target);
+            }
+        }
         static Screen Capture(BreachWatchHud ui,string folder,string name,
             int width,int height,Func<bool> verify)
         {

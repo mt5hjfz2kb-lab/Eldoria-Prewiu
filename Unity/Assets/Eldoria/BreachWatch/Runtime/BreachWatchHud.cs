@@ -460,7 +460,7 @@ namespace Eldoria.BreachWatch
             var rt=Rect(name,parent);var hitSurface=Plate(rt,kind);
             // A visible Graphic must accept the pointer for Unity's GraphicRaycaster.
             // The parent Button then receives the normal pointerClick event.
-            hitSurface.raycastTarget=true;
+            hitSurface.SetPointerInput(true);
             var b=Button(rt,action);
             b.targetGraphic=hitSurface;
             var glyph=Glyph(rt,"Carved sigil",icon);
