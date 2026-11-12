@@ -29,14 +29,15 @@
       "status": "active",
       "phase": "REFERENCE_ART_ASSET_AUTHORING_NO_UNITY",
       "claimed_at": "2026-11-13T00:18:00+01:00",
-      "art_production_routing": "isolated_reference_no_unity",
+      "art_production_routing": "required",
       "resources": [],
       "scope": [
         "tools/relicario-premium-v2/**",
         "docs/relicario-premium-v2/**"
       ],
       "base_main_sha": "0398d01cddcb5b75ab44d1ce6318400be33fe029",
-      "reason": "Owner explicitly requests bounded artistic uplift of previously approved card frame plus future PR; isolation from active beta I-V and Unity. No runner or paid tools."
+      "reason": "Owner explicitly requests bounded artistic uplift of previously approved card frame plus future PR; isolation from active beta I-V and Unity. No runner or paid tools.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-relicario-premium-master-v2-20261113.json"
     },
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",

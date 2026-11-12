@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-relicario-premium-master-v2-20261113",
+  "workstream_id": "eldoria-relicario-premium-master-v2-20261113",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Relicario — plantilla visual V2 premium modular 5:8 para integración futura",
+  "profile": "environment_composition",
+  "visual_gate_state": "REFERENCE_ART_ASSET_AUTHORING_NO_UNITY",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Schema reconciliation for the existing isolated 2D card-reference workstream. Preserve the owner's recorded bounded artistic uplift and modular 5:8 target. No Unity execution, game integration, runner claim or paid tooling is authorized by this metadata repair.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "original_2d_card_composition": true,
+    "unity_native_uGUI": false,
+    "existing_3d_assets_modified": false
+  },
+  "validation": {
+    "source_gate": "Reference authoring only in tools/relicario-premium-v2/** and docs/relicario-premium-v2/**. Keep current workstream owner, revision, branch and empty resource claim.",
+    "final_gate": "Review actual modular card assets under the existing owner. Future Unity integration and release require their own evidence; this record grants neither."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "Administrative schema repair only: replace unsupported isolated_reference_no_unity routing with the existing required art contract. environment_composition is the existing composition catalog profile; generated planner stages are advisory and do not authorize Unity execution or change the recorded isolated scope."
+}
