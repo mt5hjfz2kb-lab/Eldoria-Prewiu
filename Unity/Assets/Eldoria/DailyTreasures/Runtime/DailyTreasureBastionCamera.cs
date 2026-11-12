@@ -252,7 +252,8 @@ namespace Eldoria.DailyTreasures
                 (panelWidth>=950f?720:540);
             int width=Mathf.Clamp(Mathf.RoundToInt(
                 height*screenAspect),500,1360);
-            RenderTexture result=null;
+            RenderTexture result=null,working=null;
+            Camera camera=null;
             GameObject cameraObject=null,lightObject=null;
             var previous=RenderTexture.active;
             try
@@ -261,7 +262,7 @@ namespace Eldoria.DailyTreasures
                 // PNG. Copy the ACTUAL player camera but never move that
                 // camera, touch the player's construction state or save.
                 cameraObject=new GameObject("Daily treasure / temporary genuine Bastion lens");
-                var camera=cameraObject.AddComponent<Camera>();
+                camera=cameraObject.AddComponent<Camera>();
                 camera.CopyFrom(source);
                 camera.transform.SetPositionAndRotation(
                     source.transform.position,source.transform.rotation);
@@ -270,12 +271,12 @@ namespace Eldoria.DailyTreasures
                 camera.aspect=(float)width/height;
                 camera.cullingMask=source.cullingMask & ~(1<<5);
                 camera.allowHDR=true;
-                camera.allowMSAA=true;
+                camera.allowMSAA=false;
                 Frame(camera,bounds);
                 // The entire Eldoria project runs URP 17.3.0. Unity's
                 // Camera.Render() is NOT the supported out-of-loop route in
                 // the Scriptable Render Pipeline. Use the official Unity 6
-                // SingleCameraRequest API and a detached Base Camera.
+                // render-request API and a detached Base Camera.
                 // Preserve the real world camera's physical scene settings,
                 // but never modify that active camera or its gameplay stack.
                 var originalData=source.GetComponent<UniversalAdditionalCameraData>();
@@ -289,15 +290,20 @@ namespace Eldoria.DailyTreasures
                     renderData.antialiasing=originalData.antialiasing;
                 }
                 camera.targetTexture=null;
-                result=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32)
+                // The old camera-owned MSAA target existed as an object but
+                // had no hardware storage after capture (native81111cb4).
+                // Render into a checked single-sample working target, then
+                // copy actual GPU pixels into a separately owned snapshot.
+                working=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32)
                 {
-                    name="TRUE Bastion / one-frame authenticated milestone",
+                    name="TRUE Bastion / temporary render working target",
                     filterMode=FilterMode.Bilinear,
                     wrapMode=TextureWrapMode.Clamp,
-                    antiAliasing=2
+                    antiAliasing=1
                 };
-                result.Create();
-                camera.targetTexture=result;
+                if(!working.Create() || !working.IsCreated())
+                    throw new InvalidOperationException("URP_WORKING_TEXTURE_ALLOCATION_FAILED");
+                camera.targetTexture=working;
                 // One broad warm bounce, never a globally applied light or
                 // violet/neon firework. Created/destroyed synchronously.
                 lightObject=new GameObject("Daily treasure / temporary amber relief");
@@ -314,16 +320,32 @@ namespace Eldoria.DailyTreasures
                     camera.transform.right*(-bounds.extents.magnitude*.72f)+
                     Vector3.up*(bounds.extents.magnitude*.95f)-
                     camera.transform.forward*(bounds.extents.magnitude*.86f);
-                // Unity 6000.3 URP manual explicitly requires a supported
-                // SingleCameraRequest for an outside-loop snapshot. A live
-                // camera.Render call may compile yet never paint a frame in
-                // SRP; that explains the old black/empty premium Bastion.
-                var request=new UniversalRenderPipeline.SingleCameraRequest();
+                // A detached Base Camera has no overlay stack. Use the
+                // supported full URP request so render-context initialization
+                // is explicit, then retain a snapshot never bound to a camera.
+                var request=new RenderPipeline.StandardRequest();
                 if(!RenderPipeline.SupportsRenderRequest(camera,request))
                     throw new InvalidOperationException(
                         "URP_SNAPSHOT_UNSUPPORTED: genuine Bastion not captured");
-                request.destination=result;
+                request.destination=working;
                 RenderPipeline.SubmitRenderRequest(camera,request);
+                if(!working.IsCreated())
+                    throw new InvalidOperationException("URP_WORKING_TEXTURE_LOST_AFTER_RENDER");
+                result=new RenderTexture(width,height,0,RenderTextureFormat.ARGB32)
+                {
+                    name="TRUE Bastion / one-frame authenticated milestone",
+                    filterMode=FilterMode.Bilinear,
+                    wrapMode=TextureWrapMode.Clamp,
+                    antiAliasing=1
+                };
+                if(!result.Create() || !result.IsCreated())
+                    throw new InvalidOperationException("URP_PERSISTENT_SNAPSHOT_ALLOCATION_FAILED");
+                Graphics.Blit(working,result);
+                if(!result.IsCreated())
+                    throw new InvalidOperationException("URP_PERSISTENT_SNAPSHOT_LOST_AFTER_COPY");
+                // Detach BEFORE camera cleanup; the returned texture belongs
+                // exclusively to DailyTreasurePanel, until its actual Close.
+                camera.targetTexture=null;
                 return result;
             }
             catch(Exception error)
@@ -335,8 +357,10 @@ namespace Eldoria.DailyTreasures
             finally
             {
                 RenderTexture.active=previous;
+                if(camera)camera.targetTexture=null;
                 DestroyTemporary(cameraObject);
                 DestroyTemporary(lightObject);
+                if(working){working.Release();DestroyTemporary(working);}
             }
         }
         public static void Release(RenderTexture texture)
@@ -348,3 +372,4 @@ namespace Eldoria.DailyTreasures
         }
     }
 }
+
