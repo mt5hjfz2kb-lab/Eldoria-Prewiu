@@ -59,7 +59,7 @@ jobs:
           request=json.load(open('candidate/tools/eldoria-private-beta/native/lazy-world-request.json'))
           assert request['schema']==1
           assert request['canonical_pr']==179 and request['workstream_id']=='eldoria-private-beta-i-v-20261107'
-          assert request['owner']=='chatgpt-pr179-iphone-automation-20261111'
+          assert request['owner']=='chatgpt-central-art-execution-20261111'
           assert request['external_testers_enabled'] is False and request['publish_allowed'] is False
           for path,expected in request['source_blobs'].items():
               found=subprocess.check_output(['git','-C','candidate','rev-parse','HEAD:'+path],text=True).strip()
