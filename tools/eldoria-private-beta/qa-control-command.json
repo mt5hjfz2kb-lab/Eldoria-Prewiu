@@ -1,14 +1,11 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 7,
-  "action": "click_point",
-  "proof_sha256": "d29c2604b62a90b20e391c8a12795d76a9898812b190e746cb3ad44f23eb30de",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN II • 4 /5",
-    "Derrota al Engendro"
-  ],
-  "reason": "Original frame006 shows city after the world-entry acknowledgement; follow the still-active Engendro mission arrow."
+  "sequence": 8,
+  "action": "click_text",
+  "label": "Atacar Engendro",
+  "min_y": 730,
+  "max_y": 780,
+  "proof_sha256": "807b4ed9a885e4cc1e178e5523055036036edbf0218b1420d007010c9864eedf",
+  "reason": "The original frame007 has the actual enabled primary Engendro action at y746, separate from its subtitle."
 }
