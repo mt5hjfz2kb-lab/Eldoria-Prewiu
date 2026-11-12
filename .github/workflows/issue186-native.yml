@@ -16,6 +16,8 @@ jobs:
     timeout-minutes: 5
     outputs:
       native: ${{ steps.mode.outputs.native }}
+      owner: ${{ steps.mode.outputs.owner }}
+      revision: ${{ steps.mode.outputs.revision }}
       review: ${{ steps.mode.outputs.review }}
       inspect: ${{ steps.mode.outputs.inspect }}
       combined_source: ${{ steps.mode.outputs.combined_source }}
@@ -30,7 +32,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
-          import os,json,base64,urllib.request
+          import os,json,base64,urllib.request,re
           repo=os.environ["GITHUB_REPOSITORY"]
           hdr={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
                "Accept":"application/vnd.github+json","User-Agent":"issue186-native-preflight"}
@@ -59,7 +61,9 @@ jobs:
           if not b64:raise SystemExit("CAS registry unreadable")
           d=json.loads(base64.b64decode(b64))
           hs=[x for x in d["active"] if "windows-runner-heavy" in x.get("resources",[])]
-          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!="chatgpt-central-art-execution-20261111" or hs[0].get("ownership_state")!="claimed":
+          owner=request.get("owner","");revision=request.get("ownership_revision","")
+          if not re.fullmatch(r"[A-Za-z0-9_.-]+",owner) or not revision.isdecimal():raise SystemExit("Missing exact requested lease")
+          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!=owner or hs[0].get("ownership_revision")!=int(revision) or hs[0].get("ownership_state")!="claimed":
               raise SystemExit("Another workstream owns Windows. Refuse native run.")
           pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
           if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
@@ -76,7 +80,7 @@ jobs:
           combined_only=request.get("state")=="REQUEST_ACTUAL_COMBINED_UI_ONLY"
           if combined_only and not combined:raise SystemExit("Combined-only evidence requires exact verified UI source")
           print("ISSUE186_CAS_LEASE_PASS")
-          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nreview=false\ncombined_source={combined}\ncombined_only={str(combined_only).lower()}\n")
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nowner={owner}\nrevision={revision}\nreview=false\ncombined_source={combined}\ncombined_only={str(combined_only).lower()}\n")
           PY
 
   native:
@@ -87,6 +91,8 @@ jobs:
     env:
       OUT: ${{ github.workspace }}\issue186-native-${{ github.run_id }}
       ISSUE186_VIGILIA_SOURCE: ${{ needs.exclusive-preflight.outputs.combined_source }}
+      LEASE_OWNER: ${{ needs.exclusive-preflight.outputs.owner }}
+      LEASE_REVISION: ${{ needs.exclusive-preflight.outputs.revision }}
     steps:
       - name: Verify installed Unity and idle computer
         shell: powershell
@@ -186,7 +192,7 @@ jobs:
           if([string]::IsNullOrWhiteSpace($b64)){throw 'CAS data unavailable'}
           $d=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)))|ConvertFrom-Json
           $holders=@($d.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-central-art-execution-20261111'){throw 'Issue186 lost Windows lease'}
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne $env:LEASE_OWNER -or [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION -or $holders[0].ownership_state -ne 'claimed'){throw 'Issue186 lost Windows lease'}
           $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
           if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}

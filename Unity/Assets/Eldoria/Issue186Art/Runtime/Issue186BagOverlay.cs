@@ -19,6 +19,7 @@ namespace Eldoria.UI.RoyalGold.V2
             public Image Icon, New;
             public Text Quantity, Name, Amount, Detail, UseText;
             public Button Seen, Use;
+            public ResourceUiPacketRow PresentedPacket;
         }
         static readonly Color Wine=new Color(.13f,.055f,.062f,.98f);
         static readonly Color Slate=new Color(.06f,.045f,.052f,1f);
@@ -384,7 +385,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void MarkSeen(int index)
         {
-            var packet=Packet(index);
+            var packet=PresentedPacket(index);
             if(packet==null||!packet.New)return;
             var result=bridge.MarkBagSeen(packet.ReceiptId);
             feedback.text=result.Ok?"Visto: el paquete permanece en la bolsa.":result.Message;
@@ -392,11 +393,19 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void Use(int index)
         {
-            var packet=Packet(index);
+            var packet=PresentedPacket(index);
             if(packet==null||!packet.CanUse)return;
             var result=bridge.UsePacket(packet.ReceiptId);
             feedback.text=result.Ok?"Recursos añadidos a tu reino.":result.Message;
             Refresh();
+        }
+        ResourceUiPacketRow PresentedPacket(int index)
+        {
+            // The action belongs to the item actually painted in this cell,
+            // not to a newly computed page offset during orientation changes.
+            if(index<0||index>=rows.Count||!rows[index].Root.gameObject.activeInHierarchy)
+                return null;
+            return rows[index].PresentedPacket;
         }
         [UnityEngine.Scripting.Preserve]
         public void Refresh()
@@ -421,6 +430,7 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var slot=rows[i];
                 var packet=Packet(i);
+                slot.PresentedPacket=packet;
                 slot.Root.gameObject.SetActive(packet!=null);
                 if(packet==null)continue;
                 Issue186ArtKit.BindPacket(slot.Icon,slot.Quantity,packet.Kind,packet.Amount);
@@ -444,7 +454,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 (presentationCanvas&&!presentationCanvas.isActiveAndEnabled)))
                 {Close();return;}
             if(IsOpen&&(Mathf.Abs(panel.rect.width-priorWidth)>.5f||
-                Mathf.Abs(panel.rect.height-priorHeight)>.5f))Layout();
+                Mathf.Abs(panel.rect.height-priorHeight)>.5f))Refresh();
             if(Time.unscaledTime>=nextRefresh)
             {
                 nextRefresh=Time.unscaledTime+.6f;Refresh();

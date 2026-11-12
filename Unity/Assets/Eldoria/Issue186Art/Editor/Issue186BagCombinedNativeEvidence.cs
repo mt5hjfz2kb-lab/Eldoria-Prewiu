@@ -56,6 +56,28 @@ namespace Eldoria.Issue186Art.Editor
         }
         static void Need(bool ok,string message)
         {if(!ok)throw new InvalidOperationException("ISSUE186_COMBINED_BAG "+message);}
+        static void VerifyPaintedReceiptBinding(Issue186BagOverlay bag)
+        {
+            const BindingFlags flags=BindingFlags.Instance|BindingFlags.NonPublic;
+            var type=bag.GetType();
+            var pageField=type.GetField("page",flags);
+            var sizeField=type.GetField("perPage",flags);
+            var action=type.GetMethod("PresentedPacket",flags);
+            Need(action!=null,"Bag actions have no stable painted receipt binding");
+            var painted=action.Invoke(bag,new object[]{0}) as ResourceUiPacketRow;
+            Need(painted!=null,"First visible real saved receipt missing");
+            int oldPage=(int)pageField.GetValue(bag),oldSize=(int)sizeField.GetValue(bag);
+            try
+            {
+                // Reproduce the intermediate offset change made by Layout on
+                // rotation, before the next paint. No gameplay command is sent.
+                pageField.SetValue(bag,1);sizeField.SetValue(bag,1);
+                var bound=action.Invoke(bag,new object[]{0}) as ResourceUiPacketRow;
+                Need(bound!=null&&bound.ReceiptId==painted.ReceiptId,
+                    "Resize redirected a painted cell to another saved reward");
+            }
+            finally {pageField.SetValue(bag,oldPage);sizeField.SetValue(bag,oldSize);}
+        }
         public static void Capture()
         {
             Need(!EditorApplication.isPlaying,"Start from a fresh isolated Editor");
@@ -282,6 +304,7 @@ namespace Eldoria.Issue186Art.Editor
                     Need(panel.parent==canvas.transform&&!host.Hud.GetComponent<Canvas>().enabled,
                         "Bag is still under the disabled legacy canvas");
                     report.actualBagOnVigilia=true;bag.Refresh();
+                    VerifyPaintedReceiptBinding(bag);
                     // In this detached offscreen batch the disabled player
                     // camera does not render newly opened Graphics by itself.
                     // Submit the actual open panel before checking its real
