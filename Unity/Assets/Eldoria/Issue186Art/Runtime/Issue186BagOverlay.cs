@@ -42,6 +42,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         // Public presentation protocol: PR173 can host the existing saved bag
         // on its actual canvas without referencing this optional assembly type.
+        [UnityEngine.Scripting.Preserve]
         public int NewPacketCount(string kind)
         {
             if(view?.Bag==null)return 0;
@@ -50,6 +51,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(item.New&&(string.IsNullOrEmpty(kind)||item.Kind==kind))total++;
             return total;
         }
+        [UnityEngine.Scripting.Preserve]
         public int ClaimableMailCount()
         {
             if(view?.Mail==null)return 0;
@@ -57,6 +59,7 @@ namespace Eldoria.UI.RoyalGold.V2
             foreach(var item in view.Mail)if(item.CanClaim)total++;
             return total;
         }
+        [UnityEngine.Scripting.Preserve]
         public bool OpenOnCanvas(Canvas target)
         {
             if(!target||!target.isActiveAndEnabled||!panel||gateway==null||
@@ -69,6 +72,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Open();
             return IsOpen;
         }
+        [UnityEngine.Scripting.Preserve]
         public void RestorePresentation()
         {
             if(!panel)return;
@@ -337,6 +341,7 @@ namespace Eldoria.UI.RoyalGold.V2
             feedback.text=result.Ok?"Recursos añadidos a tu reino.":result.Message;
             Refresh();
         }
+        [UnityEngine.Scripting.Preserve]
         public void Refresh()
         {
             if(!panel||bridge==null||!hud)return;
