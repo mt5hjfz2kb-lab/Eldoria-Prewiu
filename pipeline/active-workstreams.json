@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:43:20.347Z",
+  "updated_at": "2026-11-12T19:49:05.773Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6890,16 +6890,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 122,
+      "ownership_revision": 123,
       "write_scope_released": false,
       "phase": "TYPOGRAPHY_NATIVE_AB_VERIFIED_OWNER_VISUAL_REVIEW_READY",
       "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T12:16:24.253Z",
-      "runner_claim_basis": "Owner explicitly requests implementing PR173 comment6830414780. Source0acf60fb contains original OFL SourceSans3 bytes and reversible role candidate, baseline unchanged. Prior Windows Edge migration completed clean; no Unity running workflow found. Single native A/B batch; no beta or PR181/187 source edits.",
+      "runner_claimed_at": "2026-11-12T19:49:05.773Z",
+      "runner_claim_basis": "Owner asks ongoing execution while testing published beta18. Real March geometry restoration fix and two-cycle native regression; existing A/B and first-hit checks retained. No running Actions found; no prior claim. Do not modify or republish beta.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
