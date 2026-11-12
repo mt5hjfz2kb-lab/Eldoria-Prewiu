@@ -134,6 +134,28 @@ namespace Eldoria.Issue186Art.Editor
             else {camera.Render();camera.Render();}
             Canvas.ForceUpdateCanvases();
         }
+        // The public EventSystem.current setter only selects a previously
+        // OnEnable-registered system; it cannot register an unknown instance.
+        // Real Editor lifecycle is required before genuine raycast tests.
+        static void RequireRegisteredEventSystem(GameObject holder,
+            Issue186NativeEventSystem system,string checkpoint)
+        {
+            Need(holder && system && holder.activeInHierarchy &&
+                 system.isActiveAndEnabled,
+                "Real EventSystem inactive at "+checkpoint);
+            if(EventSystem.current!=system)
+            {
+                // Trigger public Unity OnDisable/OnEnable, never touch uGUI
+                // internals and never bypass the first-raycast-hit guard.
+                holder.SetActive(false);
+                holder.SetActive(true);
+                Debug.Log("ISSUE186_EDITOR_EVENT_SYSTEM_REACTIVATED:"+checkpoint);
+            }
+            Need(system.isActiveAndEnabled && EventSystem.current==system,
+                "Real EventSystem.OnEnable registration failed at "+checkpoint+
+                ";current="+(EventSystem.current
+                    ? EventSystem.current.gameObject.name:"null"));
+        }
         // Even if assets import correctly, their use must be evident on
         // actual Unity-rendered cards and the two real attention states.
         static CaptureInfo CaptureOne(string folder,int width,int height,Font font,
@@ -289,24 +311,25 @@ namespace Eldoria.Issue186Art.Editor
                     new Vector2(width<=480?72:90,width<=480?72:90),Color.white);
                 var halo=Paint(root,"actual tutorial halo",Vector2.zero,
                     new Vector2(54,54),Color.white);
-                // A real EventSystem must exist BEFORE binding the pointer,
-                // so its visibility check can reject controls hidden by another
-                // raycasting canvas, not merely accept IsInteractable().
+                // First draw genuine uGUI depth. In 43123810935, 16 sprites
+                // imported but EventSystem.current became invalid after the
+                // synchronous URP request (outside the Player frame).
+                DrawActualUi(cam,rt);
+                // Input does not affect the first render: create its REAL
+                // Editor EventSystem afterwards, before any pointer query.
                 var evGO=new GameObject("Disposable event dispatch",
                     typeof(Issue186NativeEventSystem));
                 created.Add(evGO);
-                var ev=evGO.GetComponent<EventSystem>();
+                var ev=evGO.GetComponent<Issue186NativeEventSystem>();
                 int liveEventSystems=0;
                 foreach(var actual in UnityEngine.Object.FindObjectsByType<EventSystem>(
                     FindObjectsInactive.Exclude,FindObjectsSortMode.None))
                     if(actual && actual.isActiveAndEnabled)liveEventSystems++;
-                Need(liveEventSystems==1,"Disposable proof must own exactly one active real EventSystem");
-                EventSystem.current=ev;
+                Need(liveEventSystems==1,
+                    "Disposable proof must own exactly one active real EventSystem");
+                RequireRegisteredEventSystem(evGO,ev,"first-pointer-check");
                 Need(canvasGO.GetComponent<GraphicRaycaster>().isActiveAndEnabled,
                     "Actual GraphicRaycaster lifecycle did not activate in the Editor fixture");
-                DrawActualUi(cam,rt);
-                Need(EventSystem.current==ev && ev.isActiveAndEnabled,
-                    "Disposable real EventSystem is not the current active system");
                 Need(button.targetGraphic.depth>=0 && !button.targetGraphic.canvasRenderer.cull,
                     "Claim target has not been drawn by real Unity before tutorial input");
                 // Actual interactive control; never show pointer without one.
@@ -364,6 +387,7 @@ namespace Eldoria.Issue186Art.Editor
                     new Color(.7f,.2f,.15f,.95f));
                 blocker.raycastTarget=true;
                 DrawActualUi(cam,rt);
+                RequireRegisteredEventSystem(evGO,ev,"blocked-ui-check");
                 raycaster.Raycast(pd,hits);
                 Need(hits.Count>0 && hits[0].gameObject==blocker.gameObject,
                     "Raycaster ignored a frontmost obstructing UI element");
@@ -378,6 +402,7 @@ namespace Eldoria.Issue186Art.Editor
                 blocker.gameObject.SetActive(false);
                 hits.Clear();
                 DrawActualUi(cam,rt);
+                RequireRegisteredEventSystem(evGO,ev,"unblocked-ui-check");
                 raycaster.Raycast(pd,hits);
                 Need(hits.Count>0 && hits[0].gameObject==buttonRect.gameObject,
                     "Claim button is not the FRONTMOST tappable UI element");
@@ -459,9 +484,11 @@ namespace Eldoria.Issue186Art.Editor
             {
                 RenderTexture.active=previous;
                 if(readback)Object.DestroyImmediate(readback);
+                // Do not release a RenderTexture while the camera still
+                // holds it as target (observed warning in 43123810935).
+                for(int i=created.Count-1;i>=0;i--)
+                    if(created[i])Object.DestroyImmediate(created[i]);
                 if(rt){rt.Release();Object.DestroyImmediate(rt);}
-                foreach(var obj in created)
-                    if(obj)Object.DestroyImmediate(obj);
             }
         }
 
