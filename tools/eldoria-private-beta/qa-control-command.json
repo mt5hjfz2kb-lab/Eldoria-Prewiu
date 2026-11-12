@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 10,
-  "action": "wait",
-  "proof_sha256": "3a8c360e57763ec41277c43d95fcf435fb3b0b1743dfd4a8849ed65a7cc965ba",
-  "seconds": 45,
-  "reason": "The original frame009 shows47seconds remaining; allow ordinary real time to finish the actual Bastion IV construction."
+  "sequence": 11,
+  "action": "click_text",
+  "proof_sha256": "c09e04cfc16adfcd4e0ce0c62b90c3174ce45f82119ee6d048d6a731235e7708",
+  "label": "PRODUCCION",
+  "reason": "Original frame010 shows the actual Bastion IV council alternatives; choose Production within this disposable QA campaign to test the normal progression."
 }
