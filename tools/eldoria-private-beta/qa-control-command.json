@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 1,
+  "sequence": 2,
   "action": "click_text",
-  "proof_sha256": "d5e585f7e30078f8a81e4203aa53169e159a0a3877dd676343ae8033465191e2",
+  "proof_sha256": "09af0bfae1ef53a051babdabdfad59ebd280bbbd1e80ceae23c19eee5468905b",
   "label": "CONTINUAR",
-  "reason": "Resumed original frame000 proves exact exported checkpoint bytes and the genuine Lyra conclusion; continue the visible dialogue."
+  "reason": "Original resumed frame001 shows Aldric concluding Lyra's recruitment and a unique Continuar button."
 }
