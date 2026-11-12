@@ -45,7 +45,7 @@ namespace Eldoria.Issue186Art.Editor
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
                 physicalIphoneVerified,fullMailboxUiFlowVerified;
-            public int realFirstHitClicks;
+            public int realFirstHitClicks,actualIntegratedCityFrames;
             public Shot[] images;
         }
         static Report report;
@@ -254,6 +254,11 @@ namespace Eldoria.Issue186Art.Editor
                     rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);rt.Create();
                     camera.targetTexture=rt;camera.aspect=width/(float)height;camera.cullingMask|=1<<5;
                     canvas.worldCamera=camera;RenderUi(ui,width,height);
+                    yield return null;RenderUi(ui,width,height);
+                    Need(canvas.isActiveAndEnabled && !host.Hud.GetComponent<Canvas>().enabled,
+                        "Integrated city still exposes the obsolete HUD canvas");
+                    Photograph(camera,rt,"actual-integrated-city",width,height);
+                    report.actualIntegratedCityFrames++;
                     var wallet=gateway.Snapshot().Resources;
                     Click(ButtonNamed(ui,"Resource 0"),camera,rt);
                     Need(bag.IsOpen,"Actual resource capsule did not open saved bag; chronicle="+
