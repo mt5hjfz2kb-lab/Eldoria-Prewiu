@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T10:04:03.679Z",
+  "updated_at": "2026-11-12T10:08:23.771Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 36,
+      "ownership_revision": 37,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "RESPONSIVE20_TRUTHFUL_MAIL_NATIVE_PASS_VISUAL_REVIEW",
+      "phase": "EXCLUSIVE_REAL_SAVED_AMOUNT_GLYPH_VISIBILITY_IN_RESPONSIVE_GRID",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -160,10 +162,10 @@
         "source_ci_run": 43187001609,
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
-      "runner_claimed_at": "2026-11-12T09:59:41.625Z",
+      "runner_claimed_at": "2026-11-12T10:08:23.771Z",
       "runner_released_at": "2026-11-12T10:04:03.679Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
-      "runner_claim_basis": "UI exact36fb native+AB successful andclean; R109 mail+responsive source43194025897success;64 unchangedmetadatarepinned noassetdiff.",
+      "runner_claim_basis": "T43197044742 allnative+audit doneclean. R d0source43197323189success. Priorreal1600grid revealed29pxsavedamountblank in35pxbox;46pxheight+actualTextGenerator glyph completeness guard nowmustverify.",
       "runner_release_basis": "Exact010f native43196427281 success20PNG52actualhits, new truthfularchive guard passed,245 originals restored, no nativeprocesses.",
       "last_native": {
         "run": 43196427281,
@@ -8123,7 +8125,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 80,
+      "ownership_revision": 81,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8143,13 +8145,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "EXCLUSIVE_COHERENT_SCENERY_WITH_VISIBLE_REAL_ACTIONS",
+      "phase": "COHERENT_SCENERY_VISIBLE_CONTROLS92_REVIEWABLE_ART_CANDIDATE",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Exactfull92 native, actualwith/withoutbuttonGPU visibility, existingrealclaims/inputs/masonry/scene gates. Source2ef preservesonecontinuousoriginalsetting; compareoriginal92from43192664265. Noartmain.",
+      "next": "Prepare byte-identical original ceremony/coffer ownerreview offPC. No tinyfurtherpaintingloops; sourcecoherence/controlfixes nowrealnativeverified. No mainart untilownerreview; currentcityBastioncontextactualbuiltgeometry preserved.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8204,8 +8204,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-12T09:53:59.485Z",
-      "runner_release_basis": "Actual native43192664265 job131095688179 SUCCESS; two actual Editor roots exited0 after26/18seconds; zero-native-process guards passed. Independent pixel audit runs offPC.",
+      "runner_released_at": "2026-11-12T10:08:23.771Z",
+      "runner_release_basis": "Actualf081 native43197044742+independentaudit success92PNG; all92downloadedhashverified. Lyra/scouts390 visually inspected: singlecontinuoussetting and visibleContinue/Close; actualGPUcontrolsproof passed.",
       "runner_claimed_at": "2026-11-12T10:04:03.679Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "R010f native43196427281 clean245 restored; T2ef sourceCI43195917821/43195910171 bothsuccess. Actualsinglecropimages revealedburiedbuttons, nowexistingactionsraised andactualGPUcontrolvisibilitychecks added.",
@@ -8325,11 +8325,12 @@
         "claimed_at": "2026-11-12T08:27:48.855Z"
       },
       "last_native": {
-        "run": 43192664265,
-        "head": "a5226fa40a6045a7bba8ed23899f57b954cfe18a",
-        "artifact": 13931764505,
-        "sha256": "a7a25746bc167a68d36ed2c27afff4760019e72c4d66a9354b92cce7d5fcb091",
+        "run": 43197044742,
+        "head": "f081dedb3941375294303c2da840f406632767dd",
+        "artifact": 13934085792,
+        "sha256": "d18271b1bbf9e11dfc19e70135e9225a1225b03634556abafa315bf29d252650",
         "png": 92,
+        "real_claims": 28,
         "art_approved": false
       }
     },
@@ -18687,6 +18688,14 @@
       "to": "eldoria-daily-treasures-20261108",
       "run": 43196427281,
       "source": "2ef20898d246f1f969f52a7fb3657252719ad29a"
+    },
+    {
+      "at": "2026-11-12T10:08:23.771Z",
+      "event": "central_T_coherent92_and_visibleGPUactions_to_R_saved_amount_glyph_proof",
+      "from": "eldoria-daily-treasures-20261108",
+      "to": "eldoria-issue186-reward-attention-guidance-20261111",
+      "run": 43197044742,
+      "r_source": "d0b5c8d060ec36f8695cff0d1d1fc994c36b9bd0"
     }
   ],
   "owner_specific_pauses": [
