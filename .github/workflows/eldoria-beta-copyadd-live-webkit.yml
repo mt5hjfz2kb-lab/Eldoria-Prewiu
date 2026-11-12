@@ -64,7 +64,7 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/eldoria-stage-qa" --no-save playwright@1.55.0 esbuild@0.25.12
           "$RUNNER_TEMP/eldoria-stage-qa/node_modules/.bin/playwright" install webkit
           export NODE_PATH="$RUNNER_TEMP/eldoria-stage-qa/node_modules"
-          node tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-iphone-p0-lazy-world
+          node tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-iphone-p0-lazy-world tools/eldoria-private-beta/pages
           "$RUNNER_TEMP/eldoria-stage-qa/node_modules/.bin/esbuild" site/beta-iphone-p0-lazy-world/pilot-bootstrap.mjs --bundle --format=iife --platform=browser --outfile=evidence/current-mobile16-pilot-qa.js
           node --check evidence/current-mobile16-pilot-qa.js
           swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -framework Vision -framework ImageIO -o /tmp/eldoria-actual-ui-ocr
