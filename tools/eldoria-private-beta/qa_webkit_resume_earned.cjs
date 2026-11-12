@@ -284,21 +284,51 @@ function processes(){
     report.resumedEarnedCampaign.actualBastionTwoTrainingObjectiveVisible=true;write();
     await page.mouse.click(211,69,{delay:150});await observeEntry(3,'actual-training-objective-focus');
     const offer=await readUi('actual-training-twenty-offer');
-    const hits=offer.filter(r=>r.confidence>=.5&&r.y>730&&r.y<780&&
-      normalized(r.text)==='ENTRENAR 20 ARQUEROS');
-    if(hits.length!==1)throw Error('REAL_TWENTY_ARCHER_OFFER_NOT_UNIQUE '+JSON.stringify(hits));
+    let commandRows=offer;
+    const trainingLabels=new Set(['ENTRENAR 20 ARQUEROS','ENTRENAR 20 ARQUEROS T1']);
+    let hits=commandRows.filter(r=>r.confidence>=.5&&trainingLabels.has(normalized(r.text)));
+    if(!hits.length){
+      const actualOffer=offer.map(r=>normalized(r.text)).join(' ');
+      if(!/CUARTEL/.test(actualOffer)||!/MEJORAR/.test(actualOffer)||!/ENTRENA ARQUEROS/.test(actualOffer))
+        throw Error('UNKNOWN_TRAINING_ENTRY_DO_NOT_GUESS '+actualOffer);
+      // Actual original43208869008 shows the existing left military action
+      // at104,746 with its painted button visible but its caption missing.
+      // Exact frozen RoyalGoldV2Hud wires it to ManagementScreens.Training.
+      // This is a documented RELEASE DEFECT, not tester-ready presentation.
+      await page.mouse.click(104,746,{delay:150});
+      report.actualWorldUi.actions.push({x:104,y:746,
+        control:'actual visible unlabelled left barracks training button',
+        coordinateEvidenceRun:43208869008,
+        coordinateEvidenceSha256:'4fb7e7d2d64b6fabe9971eae4ecce4ae2a8a16bf46ca7290b1b5a2fbe9875026',
+        defect:'existing training caption missing; requires product fix before testers'});
+      report.publishedBarracksTrainingLabelMissing=true;write();
+      await observeEntry(3,'actual-existing-barracks-training-click');
+      commandRows=await readUi('actual-existing-training-destination');
+      if(!commandRows.some(r=>normalized(r.text)==='ENTRENAMIENTO'))
+        throw Error('EXISTING_BARRACKS_CONTROL_DID_NOT_OPEN_TRAINING');
+      hits=commandRows.filter(r=>r.confidence>=.5&&trainingLabels.has(normalized(r.text)));
+    }
+    if(hits.length!==1)throw Error('REAL_TWENTY_ARCHER_COMMAND_NOT_UNIQUE '+JSON.stringify(hits));
     await page.mouse.click(hits[0].x,hits[0].y,{delay:150});
     report.actualWorldUi.actions.push({text:hits[0].text,x:hits[0].x,y:hits[0].y,
-      proof:'actual-training-twenty-offer.png',ordinaryUiOnly:true});write();
+      proof:'actual-existing-training-destination.png',ordinaryUiOnly:true});write();
+    await observeEntry(3,'actual-training-command-started');
+    const active=await readUi('actual-training-active-countdown');
+    if(!/ENTRENANDO/.test(active.map(r=>normalized(r.text)).join(' ')))
+      throw Error('REAL_TRAINING_DID_NOT_START');
     const trainingStart=Date.now();
     await observeEntry(610,'actual-twenty-archers-normal-ten-minute-timer');
     const completed=await drainVisibleNarrative('actual-training-twenty-after-normal-wait');
     const completedText=completed.map(r=>normalized(r.text)).join(' ');
-    if(!/PREPARA|COMPOSICION|PREPARAR/.test(completedText))
+    if(!/SIN ENTRENAMIENTO ACTIVO/.test(completedText)||!(/DISPONIBLES T1\s+56/.test(completedText)))
       throw Error('ORDINARY_TWENTY_ARCHER_COMPLETION_NOT_VISIBLE '+completedText);
     report.actualTraining={normalElapsedSeconds:(Date.now()-trainingStart)/1000,
       accelerated:false,stateInjected:false,proof:'actual-training-twenty-after-normal-wait.png'};
-    await page.mouse.click(211,69,{delay:150});await observeEntry(4,'actual-preparation-objective-focus');
+    const prepare=completed.filter(r=>r.confidence>=.5&&normalized(r.text)==='PREPARAR MARCHA');
+    if(prepare.length!==1)throw Error('ACTUAL_TRAINING_TO_MARCH_SWITCH_NOT_UNIQUE');
+    await page.mouse.click(prepare[0].x,prepare[0].y,{delay:150});
+    report.actualWorldUi.actions.push({text:prepare[0].text,x:prepare[0].x,y:prepare[0].y,ordinaryUiOnly:true});
+    await observeEntry(4,'actual-preparation-objective-focus');
     await readUi('actual-preparation-next-screen');
     const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
     if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))

@@ -1,0 +1,7 @@
+# Actual barracks training route and missing-caption release defect
+
+Actual43208869008 completed the pending visible chronicles and proved native BastionII plus its training objective. The objective arrow then selected the built barracks' two-action contextual card, rather than the earlier full-width inline recruit offer. The original frame shows MEJORAR on the right and a painted but unlabelled button on the left. Frozen RoyalGoldV2Hud.cs.txt wires that existing left button to ManagementScreens.Training. Do not treat the old release as tester ready.
+
+Continue QA through that actual screenshot-backed visible button, then require ENTRENAMIENTO and the unique genuinely visible ENTRENAR20ARQUEROST1 command. Observe its actual started countdown and the full normal610-second interval; completion must show both SIN ENTRENAMIENTO ACTIVO and DISPONIBLES T1 56, instead of accepting the always-present PREPARAR MARCHA switch as a completion signal. Use that real switch to continue into preparation. No state, currency, timer or native-command injection.
+
+Product diagnosis: the original training caption retains Stretch8, a24-unit text box in the40-unit action row, while the visible canonical primary caption is reflowed with Stretch4. A separate effective-UX overlay correction and current native glyph/input proof are required before a new unpublished engine or testers. Public engine4fd remains unchanged.

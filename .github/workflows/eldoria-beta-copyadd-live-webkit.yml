@@ -46,7 +46,7 @@ jobs:
           assert not p['published'] and not p['physical_iphone_verified'] and not p['external_testers_enabled']
           print('EXACT_UNPUBLISHED_144_ORIGINAL_FILES_NATIVE_STREAM_VERIFIED')
           PY
-      - name: Continue actual earned campaign through visible show-text and continue controls
+      - name: Follow actual barracks training control and verify twenty normal timed recruits
         env:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged
