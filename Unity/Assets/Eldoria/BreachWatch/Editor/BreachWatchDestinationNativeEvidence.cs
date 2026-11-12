@@ -944,6 +944,20 @@ namespace Eldoria.BreachWatch.Editor
                 texture.Apply();
                 string full=Path.Combine(folder,file);
                 File.WriteAllBytes(full,texture.EncodeToPNG());
+                if(name=="vigilants" || name=="scouts")
+                {
+                    var realRoom=ui.RealRetention.LiveScreenRect;
+                    var backCaption=realRoom.GetComponentsInChildren<Text>(true)
+                        .Single(label=>label.transform.parent.name=="Return to actual kingdom");
+                    var footerCaption=realRoom.GetComponentsInChildren<Text>(true)
+                        .Single(label=>label.name=="No artificial notifications");
+                    foreach(var caption in new[]{backCaption,footerCaption})
+                        Need(caption.cachedTextGenerator.vertexCount>=4 &&
+                             caption.preferredHeight<=caption.rectTransform.rect.height+2f,
+                            "Retention caption clipped or invisible: "+caption.name+
+                            " required="+caption.preferredHeight+" box="+caption.rectTransform.rect.size+
+                            " screenshot="+file);
+                }
                 if(name=="march")
                     VerifyMarchCaptionInk(management.VisibleRoot,camera,rt,texture,folder,width,height);
                 Need(retentionOverflow==null,
@@ -1091,7 +1105,8 @@ namespace Eldoria.BreachWatch.Editor
                 // Existing baseline GPU subtraction must finish before an
                 // A/B render can rebuild dynamic font atlases or advance effects.
                 if(name=="training"||name=="march"||name=="heroes"||
-                   name.StartsWith("hero-")||name.Contains("mail")||name=="treasures")
+                   name.StartsWith("hero-")||name.Contains("mail")||name=="treasures"||
+                   name=="vigilants"||name=="scouts")
                     BreachWatchTypographyEvidence.Capture(ui.NativeCanvas,camera,rt,full,width,height);
                 return new Screen{
                     destination=name,file=file,sha256=Hash(full),width=width,height=height,

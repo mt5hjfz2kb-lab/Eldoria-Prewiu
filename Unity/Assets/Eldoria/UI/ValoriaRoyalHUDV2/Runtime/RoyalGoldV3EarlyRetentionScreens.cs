@@ -1002,7 +1002,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
                 backLabel.Put("<");
-                backLabel.fontSize=64;
+                backLabel.fontSize=48;
             }
             else
             {
@@ -1011,7 +1011,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
                 backLabel.Put("<");
-                backLabel.fontSize=compactLandscape?48:30;
+                backLabel.fontSize=compactLandscape?36:30;
             }
             TL((RectTransform)scoutStrategyButton.transform,
                 pw-198f,14f,
@@ -1718,10 +1718,10 @@ namespace Eldoria.UI.RoyalGold.V2
                         previous.TargetId=="vigilant:"+stage?stage:stage-1)):
                     "RASGO OBSERVADO · "+EarlyRetentionRules.CombatAdvice(info));
                 footer.Put(hasPrevious?
-                    "ÚLTIMA MARCHA · "+(previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":previous.Won?"VICTORIA":"DERROTA")+
+                    (previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":previous.Won?"VICTORIA":"DERROTA")+
                         " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:
                     firstUse==FirstUseTutorialPhase.FirstAction?
-                     "PRIMERA PRUEBA · Pulsa Combatir y revisa el resultado.":
+                     "PRIMERA PRUEBA · Combate y revisa el informe.":
                      "Cada victoria ilumina el siguiente tramo del camino.");
             }
             else
