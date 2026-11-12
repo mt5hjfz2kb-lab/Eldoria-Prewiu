@@ -25,6 +25,24 @@ Two old source guards expected the previous deferred-world cancellation syntax. 
 
 ## Publication and remaining limits
 
-Publication verifier tools pinned at `22aaf65b66ebdd835a26ea3fffe5fcbc6a43bb6f`; branch verification run 43286378941 must pass before promoting only the existing Pages workflow to main. The workflow preserves the main-only deploy gate and checks the actual public route afterward in desktop WebKit.
+Publication verifier tools pinned at `22aaf65b66ebdd835a26ea3fffe5fcbc6a43bb6f`; branch verification run 43286378941 passed before promoting only the existing Pages workflow to main. The workflow preserves the main-only deploy gate and checks the actual public route afterward in desktop WebKit.
 
-At the time of this note, public publication is not yet certified by this document. Its separate publication proof and public workflow result are authoritative. Physical iPhone/world-entry stability, physical Android, external tester release, and art approval remain false/pending. The owner route keeps its existing path and save origin. This does not merge the historical PR179 or the new opt-in PR173 interface.
+The actual public deployment and desktop fallback are verified below. Its separate publication proof and individual job results are authoritative. Physical iPhone/world-entry stability, physical Android, external tester release, and art approval remain false/pending. The owner route keeps its existing path and save origin. This does not merge the historical PR179 or the new opt-in PR173 interface.
+
+## Actual public deployment and earned continuation
+
+Only the Pages workflow was promoted to main at `1cfd64f5064b12546a7ea504ba382670b80ab189`. Run [43286895185](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43286895185) verified inputs and deployed successfully at 19:10 UTC. Pages artifact `13975981075`, ZIP SHA256 `beeb0964b468b433c7c7d01668d884df43cc3221834fb10ec17c61b557327b50`.
+
+Independent HTTP checks after deployment confirmed all three route identities, the exact compressed native18 WASM/framework hashes and every one of the other 146 public file hashes. City14 and beta10 remain unchanged. Browser saves were not touched.
+
+The additional public Mac job `131424695929` was **cancelled before any runner was allocated**, after fifteen minutes. GitHub reports that no hosted runner acquired it and cites macOS ARM capacity constraints. The overall publication workflow therefore is not an all-jobs SUCCESS, despite verified deployment. This is not a tested game crash. The earlier exact staged WebKit run43283946677 remains a genuine PASS; no public WebKit PASS is claimed.
+
+A real public Edge fallback [43290448094](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43290448094), QA source `1de0f02e049093c908b3fa79f3ada391033f92c5`, **passed**. It loaded the real public URLs with no request routing, local asset fulfilment or personal browser profile. The unchanged officially exported earned17 checkpoint (`6b1df345a48681145ecde90ea8ce94b7cc4f4b8909531c8dfed5196b2c65434d`, 130908 bytes) retained Bastion V complete, 60 troops and power10389. No page errors or context loss were observed. The input checkpoint stayed unchanged.
+
+The two actual taps were checked with read-only `elementFromPoint` to ensure the game Canvas received them. Original `after-world-control.png` shows the world, bridge, Enter Valoria and City control; `after-return-control.png` shows the level5 city again. Both images were inspected independently after downloading and verifying artifact `13975239739`, ZIP SHA256 `c7c495fafe373b02536e176767d498ac2e7498f07837c8531c12c06c9d21c67b`. The machine report intentionally leaves `worldEntryVerified=false` until that separate visual inspection; its original bytes were not modified.
+
+Screenshot hashes: world `a4943933fa0578b310ae9646597272545dcece611f6bb63a18624ff8de8512fd`; return `2f725f0f4ea8eb7d68c2dffe68ac6c16e7a6ea1aac95ed367f5cde881da412ca`.
+
+Retained harness lesson: the first public Edge run43289610287 genuinely proved earned-save continuity, but its y815 taps opened the diagnostic HTML overlay. Those images did not prove world entry. The corrected y790 taps target the observed native icon above that overlay, and the explicit Canvas-hit guard prevents the same false interpretation. No published game code changed during this correction.
+
+Windows lease released after the browser job completed. **Physical iPhone, physical Android, long device sessions, art approval and external tester release remain pending/false.** Public owner trial: `beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1&eldoria_diag=1&build=mobile18`.
