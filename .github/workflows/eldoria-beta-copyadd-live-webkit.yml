@@ -12,7 +12,7 @@ concurrency:
 jobs:
   staged-desktop-webkit:
     runs-on: macos-15
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,6 +24,13 @@ jobs:
           name: mobile16-unpublished-preserved-owner-site
           github-token: ${{ github.token }}
           path: site
+      - name: Download byte-identical genuinely earned Bastion II barracks campaign
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43203180584
+          name: mobile16-actual-public-owner-telemetry-journey-not-physical-iphone
+          github-token: ${{ github.token }}
+          path: earned
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -44,7 +51,7 @@ jobs:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged
           QA_ENTRY: '1'
-          QA_EARLY_ENTRY: '1'
+          QA_EARLY_ENTRY: '0'
           QA_EARLY_NO_SCREENSHOT: '1'
           QA_RESIZE_STRESS: '1'
           QA_SKIP_PREFLIGHT: '1'
@@ -57,6 +64,7 @@ jobs:
           QA_EXPORT_ORDINARY_STATE: '1'
           QA_GLOBAL_DEADLINE_MS: '1200000'
           QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
+          QA_EARNED_STATE: earned/deferred/ordinary-qa-storage-state.json
           QA_OUT: evidence/deferred
           QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
           QA_TELEMETRY_BUNDLE: evidence/current-mobile16-pilot-qa.js
@@ -73,7 +81,7 @@ jobs:
           "$RUNNER_TEMP/eldoria-stage-qa/node_modules/.bin/esbuild" site/beta-iphone-p0-lazy-world/pilot-bootstrap.mjs --bundle --format=iife --platform=browser --outfile=evidence/current-mobile16-pilot-qa.js
           node --check evidence/current-mobile16-pilot-qa.js
           swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -framework Vision -framework ImageIO -o /tmp/eldoria-actual-ui-ocr
-          node tools/eldoria-private-beta/qa_webkit_owner_staging.cjs
+          node tools/eldoria-private-beta/qa_webkit_resume_earned.cjs
       - name: Preserve actual browser evidence even if the new delivery fails
         if: always()
         uses: actions/upload-artifact@v4
