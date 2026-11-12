@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 4,
-  "action": "click_point",
-  "proof_sha256": "fb84138b6cb580bd53c473f42b1ee9d7a73dcf7682025a5d5c7db73d5c23de9b",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN II • 4 /5",
-    "Derrota al Engendro"
-  ],
-  "reason": "Fresh original frame003 shows the mission Ir arrow at211,69 for the actual Engendro objective."
+  "sequence": 5,
+  "action": "wait",
+  "seconds": 35,
+  "proof_sha256": "aa215c5a3f2be22dcc12abc6f8e10e9b03d901aefd6155840285ab232fcced49",
+  "reason": "Allow the real lazy Region1 scene loading to finish without altering game time."
 }
