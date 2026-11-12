@@ -48,6 +48,8 @@ namespace Eldoria.BreachWatch
         Text thirdHeroLabel;
         Text quantityCaption;
         readonly TextGenerator quantityMeasure=new TextGenerator();
+        readonly Dictionary<RectTransform,Vector3> originalTextScales=
+            new Dictionary<RectTransform,Vector3>();
         RectTransform detailSheet,detailCard;
         Button detailReturn;
         Text detailHeading,detailReturnText;
@@ -173,7 +175,7 @@ namespace Eldoria.BreachWatch
                 var text=values[i].GetComponent<Text>();
                 if(text)
                 {
-                    text.fontSize=23;
+                    text.fontSize=26;
                     text.color=new Color(.96f,.91f,.79f,1f);
                     text.alignment=TextAnchor.MiddleLeft;
                 }
@@ -286,6 +288,7 @@ namespace Eldoria.BreachWatch
                 quantityCaption=control ? control.GetComponentInChildren<Text>(true):null;
             }
             if(!quantityCaption)return;
+            OwnTextScale(quantityCaption.rectTransform);
             if(!originalLabels.ContainsKey(quantityCaption))
                 originalLabels.Add(quantityCaption,new LabelTypography {
                     Size=quantityCaption.fontSize,Minimum=quantityCaption.resizeTextMinSize,
@@ -312,6 +315,16 @@ namespace Eldoria.BreachWatch
             float fit=Mathf.Min(1f,Mathf.Min(available.width/Mathf.Max(1f,measuredW),
                 available.height/Mathf.Max(1f,measuredH)));
             quantityCaption.fontSize=Mathf.Max(10,Mathf.FloorToInt(20f*fit));
+        }
+
+        void OwnTextScale(RectTransform text)
+        {
+            // Canonical compact-landscape Reflow inversely scales Text to
+            // preserve ink density. Our replacement rectangles use full local
+            // dimensions, so retaining that inverse scale paints outside them.
+            if(!originalTextScales.ContainsKey(text))
+                originalTextScales.Add(text,text.localScale);
+            text.localScale=Vector3.one;
         }
 
         static RectTransform FindPortrait(RectTransform hero)
@@ -382,6 +395,7 @@ namespace Eldoria.BreachWatch
                 Remember(heroViewports[i]);
                 Remember(heroPictures[i]);
                 Remember(heroLabels[i]);
+                OwnTextScale(heroLabels[i]);
                 At(card,left+i*(cardW+gap),top,cardW,cardH);
                 // Compact landscape uses horizontal portraits; portrait keeps names below art.
                 // Three narrow landscape cells need a portrait above their
@@ -425,8 +439,8 @@ namespace Eldoria.BreachWatch
                             Alignment=label.alignment
                         });
                     label.fontSize=Mathf.RoundToInt(
-                        Mathf.Clamp(cardW*(horizontalCard?.068f:.071f),
-                            14f,22f));
+                        Mathf.Clamp(cardW*(horizontalCard?.068f:.10f),
+                            18f,26f));
                     label.alignment=TextAnchor.MiddleCenter;
                     if(landscape)
                     {
@@ -434,7 +448,7 @@ namespace Eldoria.BreachWatch
                         // paints "LÍDER · SIR ALDRIC" right across the second
                         // card, despite correct RectTransform bounds. Wrap
                         // original live labels inside each forged card.
-                        label.fontSize=Mathf.Min(label.fontSize,14);
+                        label.fontSize=20;
                         label.resizeTextForBestFit=false;
                         label.horizontalOverflow=HorizontalWrapMode.Wrap;
                         label.verticalOverflow=VerticalWrapMode.Truncate;
@@ -584,6 +598,9 @@ namespace Eldoria.BreachWatch
                 label.SetVerticesDirty();
             }
             originalLabels.Clear();
+            foreach(var pair in originalTextScales)
+                if(pair.Key)pair.Key.localScale=pair.Value;
+            originalTextScales.Clear();
             compactOwner=null;for(int i=0;i<compactParts.Length;i++)compactParts[i]=null;
             CompactPortraitApplied=false;
             if(thirdHeroLabel && thirdHeroOriginalLabel!=null)thirdHeroLabel.text=thirdHeroOriginalLabel;
