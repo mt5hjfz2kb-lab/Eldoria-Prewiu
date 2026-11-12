@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:06:30Z",
+  "updated_at": "2026-11-12T19:14:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7262,7 +7262,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 57,
+      "ownership_revision": 58,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7311,9 +7311,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "EXACT_ENGINE18_STAGE_WEBKIT_PASS_OWNER_PUBLICATION_INPUT_VERIFY_RUNNING",
+      "phase": "ENGINE18_OWNER_PAGE_PUBLIC_IDENTITIES_BINARY_SHA_PASS_WAIT_ACTUAL_PUBLIC_WEBKIT",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-      "next": "Complete branch input verification43286378941, promote only Pages workflow, verify actual public WebKit; physical iPhone remains pending.",
+      "next": "Finish queued actual public desktop WebKit131424695929, inspect actual public images; physical iPhone remains pending and external testers disabled.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8383,6 +8383,23 @@
         "native_data_verified_bytes": 513656003,
         "protected_live_files_sha_verified": 146,
         "publication_input_run": 43286378941
+      },
+      "owner18_publication": {
+        "main_commit": "1cfd64f5064b12546a7ea504ba382670b80ab189",
+        "run": 43286895185,
+        "input_verification": "PASS",
+        "deployment": "PASS",
+        "public_source": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "pages_artifact": 13975981075,
+        "pages_zip_sha256": "beeb0964b468b433c7c7d01668d884df43cc3221834fb10ec17c61b557327b50",
+        "public_three_identities_independently_verified": true,
+        "public_wasm_framework_encoded_sha256_independently_verified": true,
+        "public_webkit_job": 131424695929,
+        "public_webkit_state": "QUEUED",
+        "phone_verified": false,
+        "external_testers_enabled": false,
+        "previous_routes_preserved": 146,
+        "art_approved": false
       }
     },
     {
