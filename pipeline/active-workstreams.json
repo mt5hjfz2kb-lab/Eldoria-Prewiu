@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T10:08:23.771Z",
+  "updated_at": "2026-11-12T10:12:42.285Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "EXCLUSIVE_REAL_SAVED_AMOUNT_GLYPH_VISIBILITY_IN_RESPONSIVE_GRID",
+      "phase": "NATIVE20_RESPONSIVE_VISIBLE_AMOUNTS_TRUTHFUL_MAIL_OWNER_REVIEW_READY",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -54,7 +52,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Freeze exactnewrequest;20originalPNG52actualclicks, truearchive rewardmail no inventedcombat, responsive2x2/tablet composition, actualguide, read≠claim≠credit, JSONonce, exact245restore. PinUI36 native43195548484. Tvisiblecontrolsource2efCIpassedreadyafterthis turn.",
+      "next": "Originalselectednativeimageproofs are saved forownerreview. Preserve currentcandidate; do notmicropatch whileawaitingreview ormergeartmain. Beta realgathering test continues onMac independently.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -163,15 +161,15 @@
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
       "runner_claimed_at": "2026-11-12T10:08:23.771Z",
-      "runner_released_at": "2026-11-12T10:04:03.679Z",
+      "runner_released_at": "2026-11-12T10:12:42.285Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
       "runner_claim_basis": "T43197044742 allnative+audit doneclean. R d0source43197323189success. Priorreal1600grid revealed29pxsavedamountblank in35pxbox;46pxheight+actualTextGenerator glyph completeness guard nowmustverify.",
-      "runner_release_basis": "Exact010f native43196427281 success20PNG52actualhits, new truthfularchive guard passed,245 originals restored, no nativeprocesses.",
+      "runner_release_basis": "Actual12feb native43197702980SUCCESS20/52 with everyquantityglyph rendered, truthful rewardarchive, exact245originalsrestored. All20PNGdownloadhashdimensionverified; desktopactualamount100/1K/10K/120 visuallyvisible.",
       "last_native": {
-        "run": 43196427281,
-        "head": "010f21787da6919eba263f26b07dda6a89de37f0",
-        "artifact": 13933407021,
-        "sha256": "b387e1b02069cf030db1e3a3c1e050cad836d382acbe7f0f1acb4e6e312c6632",
+        "run": 43197702980,
+        "head": "12feb16d60d2e464e7954cd34c56efafd7f8e321",
+        "artifact": 13934325714,
+        "sha256": "1ba5a02e99450773c17c08649589a1947c1559441d38df90a49e0ca9d680bbab",
         "png": 20,
         "real_first_hits": 52,
         "source_overlay_restored": true,
@@ -18696,6 +18694,15 @@
       "to": "eldoria-issue186-reward-attention-guidance-20261111",
       "run": 43197044742,
       "r_source": "d0b5c8d060ec36f8695cff0d1d1fc994c36b9bd0"
+    },
+    {
+      "at": "2026-11-12T10:12:42.285Z",
+      "event": "central_all_three_art_native_lots_reviewable_release_PC_continue_actual_beta",
+      "from": "eldoria-issue186-reward-attention-guidance-20261111",
+      "to": null,
+      "run": 43197702980,
+      "supervisions_enabled": false,
+      "saved_original_review_images": 6
     }
   ],
   "owner_specific_pauses": [
