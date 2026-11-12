@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T14:42:50.322Z",
+  "updated_at": "2026-11-12T15:09:13.865Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -27,7 +27,7 @@
       "ownership_revision": 50,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "NATIVE_STARTER_PROBE_EXPLICIT_RESOURCE_PACKET_BUDGET",
+      "phase": "REQUESTED_COMPACT_BAG_ATTACHMENT_MAIL_ART_CAPTURED_AND_FULL_NATIVE_REGRESSION_PASS",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
       "resources": [],
@@ -61,7 +61,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs"
       ],
-      "next": "Current native4ce07 remains frozen while executing. Prepared off-PC three reproduced old direct-wallet assertions for actual bag→Use flow;62 NUnit diagnostic cases pass with .NET JSON adapter (not Unity JsonUtility certification). Publish only after native clean exit, then execute real EditMode/PlayMode. Earned WebKit campaign43231463013 is naturally completing IV; preserve all art outside main.",
+      "next": "Preserve approved-source art and actual captures outside main for owner's A/B review; continue cross-area integration only after review. Native packet regression repaired and certified; no reserved Windows resources.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -195,6 +195,30 @@
         "oldest_original_paths_verified": 245,
         "unknown_overwrites": 0,
         "unity_executed": false
+      },
+      "last_native_regression": {
+        "source": "4babdfafc32565bb6f4a99e22be62c5fa5d262f0",
+        "run": 43240154870,
+        "job": 131258281916,
+        "conclusion": "success",
+        "editmode": {
+          "total": 218,
+          "passed": 218,
+          "failed": 0
+        },
+        "playmode": {
+          "total": 78,
+          "passed": 78,
+          "failed": 0
+        },
+        "integrated_journey": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+        "aldric_twelve_views": true,
+        "editor_search_preferences_restored": true,
+        "windows_executable_build": "skipped by canonical PR conditions; no new playable release",
+        "artifact": 13954659550,
+        "sha256": "714694051bdeb4772a372eabe4d79edcdfb5efb7710e5ad9850b3b48ee94558f",
+        "ordinary_serialized_ci": true,
+        "art_approved": false
       }
     },
     {
@@ -8124,7 +8148,51 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "Native43211338159 job131159647505 cleanSUCCESS: exactUXcaptionglyph+realtrainingchoice, nativePlayMode/fullterrain/I-V/WebGL and strictwarm source restoration. PackagingUbuntu/Mac next do not needWindows. Rawunprofiledengine notiPhone-certified. Existingactualhosted20trained/56archers source4fd confirmed separately43212071356."
+      "runner_release_basis": "Native43211338159 job131159647505 cleanSUCCESS: exactUXcaptionglyph+realtrainingchoice, nativePlayMode/fullterrain/I-V/WebGL and strictwarm source restoration. PackagingUbuntu/Mac next do not needWindows. Rawunprofiledengine notiPhone-certified. Existingactualhosted20trained/56archers source4fd confirmed separately43212071356.",
+      "last_completed_earned_campaign": {
+        "run": 43231463013,
+        "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
+        "engine_source": "4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71",
+        "bundle": "49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a",
+        "input_earned_run": 43216879249,
+        "completed": "Bastion V4/4 and actual Ash Stalker victory report",
+        "mode": "foreground WebKit26 actions; continuation of byte-identical earlier earned checkpoint, not a single uninterrupted I-V session",
+        "successful_actions": 45,
+        "browser_errors": 0,
+        "telemetry_receipts": 363,
+        "real_upgrade_seconds": [
+          420,
+          600
+        ],
+        "real_final_training_seconds": 120,
+        "accelerators_used": false,
+        "optional_final_survey_displayed": true,
+        "simulated_player_opinions_submitted": false,
+        "checkpoint": {
+          "bytes": 130745,
+          "sha256": "a2724c709dc8c7d05113408ff0e124c0ba834d2c8b185d80301be368dd51cb7d",
+          "official_browser_export_after_quit": true,
+          "owner_save_accessed": false,
+          "fake_state_created": false,
+          "earned_save_database_modified": false
+        },
+        "artifact": 13954908347,
+        "artifact_sha256": "5609271fc9f5baa562e17a368d5f72beef3223896a5094a783cdb4ec4d22e5d3",
+        "physical_iphone": false,
+        "public_build_changed": false
+      },
+      "engine17_earned_save_compatibility": {
+        "run": 43243720284,
+        "source": "5a5e7de32959317a11c46744b1d172003d3da10a",
+        "state": "running after exact completed checkpoint",
+        "unpublished": true,
+        "source_engine": "a8b0ee4febf85d20eff3280133a37cac17fae967",
+        "bundle": "ee8eb5ab636ddc7381b9a8a355580b509a9f9f79a442f1b4987140bb58a25ad5",
+        "checkpoint_bytes_modified": false,
+        "source_artifact": 13944774610,
+        "source_artifact_run": 43220783570,
+        "external_testers_enabled": false
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
