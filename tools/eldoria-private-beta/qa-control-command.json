@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 16,
-  "action": "wait",
-  "proof_sha256": "a3d73e92bcdfc9a0b5011f5b611d5dbaf0bebb8ec004d9452af644c93e24a7ab",
-  "seconds": 45,
-  "reason": "Frame015 shows the final ordinary construction minutes; continue observing real elapsed time while independent QA proceeds."
+  "sequence": 17,
+  "action": "click_point",
+  "proof_sha256": "bb3212d9c7848299b0e0bc9dc9fc0579e7aca5aa36c826ef93e4487ef9f95e5f",
+  "x": 210,
+  "y": 70,
+  "guard_texts": [
+    "Diagnóstico local",
+    "Misiones"
+  ],
+  "reason": "Original frame016 proves actual earned Bastion V0/4 and the quarry objective; follow the visible quest arrow to its real building."
 }
