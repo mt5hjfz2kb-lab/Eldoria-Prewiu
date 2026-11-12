@@ -8,8 +8,8 @@ namespace Eldoria.Domain
     /// </summary>
     public static class NarrativeCoherenceRules
     {
-        static bool Seen(PlayerState s, string beat) =>
-            s.ChapterProgress?.SeenNarrative != null &&
+        public static bool Seen(PlayerState s, string beat) =>
+            s?.ChapterProgress?.SeenNarrative != null &&
             s.ChapterProgress.SeenNarrative.Contains(beat);
 
         public static int FissureKnowledgeStage(PlayerState s)
@@ -64,6 +64,9 @@ namespace Eldoria.Domain
                 if(!Seen(s,"productive-valoria"))return "productive-valoria";
                 if(c?.ExtractionOddity==true&&!Seen(s,"extraction-oddity"))return "extraction-oddity";
             }
+            if(s.BarracksLevel>0&&((p?.TrainedArchers??0)>0||s.MarchConfigured)&&!Seen(s,"march-preparation"))return "march-preparation";
+            if((s.EngendroDefeated||level>=3)&&!Seen(s,"vigilants-introduction"))return "vigilants-introduction";
+            if(level>=3&&p?.MarchConfirmed==true&&!Seen(s,"scouts-introduction"))return "scouts-introduction";
             return "";
         }
 

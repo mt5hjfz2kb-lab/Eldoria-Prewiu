@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "project": "Eldoria Tesoros de Valoria",
+  "status": "IMPORTED_ORIGINAL_ART_NOT_YET_NATIVE_UNITY_APPROVED",
+  "provenance": "Original user-directed generated concept in ChatGPT task, not downloaded stock art",
+  "assets": [
+    {
+      "file": "treasure_closed_512.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "313c17d35dcb6f44129a143fabc0448e5a20bc3fb7d00f700394bb73b2d0a0dd"
+    },
+    {
+      "file": "treasure_opened_512.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb"
+    }
+  ],
+  "note": "13 image files versioned as real binary Git blobs: 2 original chest poses, 3 black-bronze nine-slice UI frames, 4 historical resource icons as safety fallback and 4 new alpha-clean standalone resource icon candidates. All hashes and unique Unity GUIDs are in this manifest. Native visual review is mandatory.",
+  "quality_gate": "Binary PNG exact hashes and Unity sprite import configuration are source-verified. Still mandatory before approval: Unity 6000.3.23f1 native compile, rendered 4 resolutions, realistic animation and sound, safe-area and raycast test, quality review against Vigilia de la Brecha, full city and I–V gameplay, real devices.",
+  "ui_frames": [
+    {
+      "file": "valoria_frame_main_512.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "d64b9fa2966754a043d621a0eb4d1791730522eca175278d7172214389a241a3",
+      "guid": "7d83c4a0bde24b1294af7b7a9a0cbf16",
+      "nine_slice": 46
+    },
+    {
+      "file": "valoria_frame_card_256.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "02323b005e0443cfe8932f06cdbfcf6a55d09d92c369efcae2e7068b155b18db",
+      "guid": "2a2d99e827704dc2a6d53685fb8a2cb0",
+      "nine_slice": 31
+    },
+    {
+      "file": "valoria_frame_button_512x128.png",
+      "width": 512,
+      "height": 128,
+      "sha256": "d80eedac1b6979a85f8b9dc303681bd1b8aaddcfad7a22f62d5a8eb8011ed09e",
+      "guid": "fa361e4253fb4ec692a0094f65c2d13e",
+      "nine_slice": 24
+    }
+  ],
+  "resource_icons": [
+    {
+      "file": "resource_wood.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "2c2742910bc060fa92aca70320a6065057a20203860c9a6746af0a719925ae49",
+      "guid": "901173673deb4bec81e8ed823ee0a008"
+    },
+    {
+      "file": "resource_stone.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "b54e47ac45d0f19a2498f2ca18a2181d9aac70af35b0aa96bd838b2c234c2c13",
+      "guid": "e2d7bf5d5b424fc4af43b1f59348fb82"
+    },
+    {
+      "file": "resource_hourglass.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "bac16f011734aaabd148159ae91f23d115451e09c62cbd3127b4d60f1769e322",
+      "guid": "812ad675096e416ab0619337ce87198a"
+    },
+    {
+      "file": "resource_food.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "2800b834e8372813e7a634146fcea00f3591d858ca2d0db4c7d2c8e99d8783cb",
+      "guid": "d759e07c439f4ad3af8d9bdc9b0d3f0d"
+    }
+  ],
+  "clean_resource_icons": [
+    {
+      "file": "resource_wood_clean_256.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "1d4cfe4abfc2185710c02f407c4b3db0125359174c352c704090cf8f590152bf",
+      "guid": "8f740a3bb10f4de49b6d30d82ceeb7aa"
+    },
+    {
+      "file": "resource_stone_clean_256.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "c3c74c02095babfc4fabd93e87dea4348d35fb89475c0c5f841311746ed07cdc",
+      "guid": "c369be2874204cbfaac68c457bb3c214"
+    },
+    {
+      "file": "resource_food_clean_256.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "35b2f0a9e232af3ed0dc3a6a61013a67c72bebbf1af770ce259722e1866f64f8",
+      "guid": "d584ba6e33e447bda4c0cfa21129a765"
+    },
+    {
+      "file": "resource_hourglass_clean_256.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "4e54dcda2580a20bd1efb86102ad26723595ddb1196f5c5e9020a79c48b41e59",
+      "guid": "e72b6b4872e4475caa1351a0b120f237"
+    }
+  ],
+  "quality_note": "Four source-painted 256px candidate icons (wood/stone/food/hourglass) replace flat low-poly versions. Their exact SHA256 now binds the actual committed Git blobs, not the earlier rejected flat mock-ups. Mobile preflight and genuine Unity render still require review; not an art approval."
+}

@@ -1,0 +1,17 @@
+{
+  "scene": "explorers",
+  "status": "PREUNITY_UNREVIEWED_CANDIDATE",
+  "art_approved": false,
+  "unity_native_verified": false,
+  "identity": "canonical_world_overlay_required",
+  "generated_illustration_not_authentic_gameplay": true,
+  "source_task_id": "3cb83eb0-dce0-4cb1-a268-246a702d40e6",
+  "segmentation_task_id": "88ab26bc-66f7-4dee-8d52-0234cb7c9348",
+  "sha256": "8a35f42c4b5be397f9954b3d2e659555b8fafdc443e710353d1073bcb95fb735",
+  "size": [
+    1376,
+    768
+  ],
+  "transparent_ratio": 0.6092,
+  "visible_ratio": 0.3908
+}

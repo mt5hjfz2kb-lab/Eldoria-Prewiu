@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "art_approved": false,
+  "unity_native_verified": false,
+  "ceremonies": {
+    "lyra": {
+      "identity_source": "HeroesApprovedDestination",
+      "identity_slot": "canonical_hero",
+      "baked_text": false,
+      "contains_fake_rewards": false,
+      "renders_real_identity": false,
+      "layers": [
+        {
+          "role": "stage",
+          "path": "lyra_stage.png",
+          "sha256": "bd1cbe785554b71b0666b12011a0909a8e4431f1bb067d9b8f34d741fd96d2b6"
+        },
+        {
+          "role": "ornament",
+          "path": "shared_ornament.png",
+          "sha256": "03f8bc5de48fc71be35c6cd14bbf1fd3464ac274c0eb4b9a7f859c3d86629ad0"
+        }
+      ]
+    },
+    "explorers": {
+      "identity_source": "EldoriaRetention/scouts-crest",
+      "identity_slot": "canonical_discovery",
+      "baked_text": false,
+      "contains_fake_rewards": false,
+      "renders_real_identity": false,
+      "layers": [
+        {
+          "role": "stage",
+          "path": "explorers_stage.png",
+          "sha256": "8a35f42c4b5be397f9954b3d2e659555b8fafdc443e710353d1073bcb95fb735"
+        },
+        {
+          "role": "ornament",
+          "path": "shared_ornament.png",
+          "sha256": "03f8bc5de48fc71be35c6cd14bbf1fd3464ac274c0eb4b9a7f859c3d86629ad0"
+        }
+      ]
+    },
+    "vigilants": {
+      "identity_source": "EldoriaRetention/vigilants-compass",
+      "identity_slot": "canonical_insignia",
+      "baked_text": false,
+      "contains_fake_rewards": false,
+      "renders_real_identity": false,
+      "layers": [
+        {
+          "role": "stage",
+          "path": "vigilants_stage.png",
+          "sha256": "f881aed36057181e72538985d5fd0dd05ce4a08c99cb7f297cd93283946d714b"
+        },
+        {
+          "role": "ornament",
+          "path": "shared_ornament.png",
+          "sha256": "03f8bc5de48fc71be35c6cd14bbf1fd3464ac274c0eb4b9a7f859c3d86629ad0"
+        }
+      ]
+    },
+    "bastion": {
+      "identity_source": "Valoria_City_World_UI.unity",
+      "identity_slot": "actual_city",
+      "baked_text": false,
+      "contains_fake_rewards": false,
+      "renders_real_identity": false,
+      "layers": [
+        {
+          "role": "stage",
+          "path": "bastion_stage.png",
+          "sha256": "6bb27240ea5f28d1a7993267509de145a6a834cc3b5c9ded123f75b047d2709f"
+        },
+        {
+          "role": "ornament",
+          "path": "shared_ornament.png",
+          "sha256": "03f8bc5de48fc71be35c6cd14bbf1fd3464ac274c0eb4b9a7f859c3d86629ad0"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-daily-treasures-20261108",
+  "workstream_id": "eldoria-daily-treasures-20261108",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Tesoros de Valoria — dark iron/aged copper/wood chest and seven-day reward calendar on real native Unity HUD",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_UI_WIP",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Owner requests a visibly gratifying but low-complexity daily reward chest. Current branch contains original procedural editable Unity chest mesh and radial glow; baseline is not approved art. Need original authored polish, exact native capture and adaptation to Vigilia de la Brecha. No paid services, no sourced stock art, no gameplay simulation; animation never grants a second reward.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": false,
+    "unity_native_uGUI": true,
+    "original_2d_chest_composition": true,
+    "existing_3d_assets_modified": false
+  },
+  "artist": {
+    "design": "Dark adult medieval wood, black iron and restrained worn bronze, warm inner light and sparse embers. Visual ceremony for days 4/7 only.",
+    "source": "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureChestGraphic.cs",
+    "reference": "Owner Eldoria chest/treasure visual direction 2026-11-08; Vigilia de la Brecha styling"
+  },
+  "validation": {
+    "source_gate": "Preserve gameplay and native325 beta; all real resources credited by gateway idempotently, mailbox reports only. Animated presentation is optional and skippable.",
+    "final_gate": "Exact-head Unity same-session 1600x900,900x1600,844x390,390x844, safe-area/hit tests, final art review independent from technical pass, I-V preservation, no double grant across save/reload, WebGL and device QA."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "Draft PR181. Initial procedural art is a proof-of-capability, NOT equivalent to professional illustration. No future hero/card rewards are being invented. Windows/Unity runner is held by beta and not claimed here."
+}

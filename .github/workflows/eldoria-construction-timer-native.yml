@@ -1,0 +1,208 @@
+name: Eldoria construction countdown — native world anchor
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/eldoria-construction-timer-anchor-20261109]
+    paths: ['tools/ui-v3-domain-smoke/native-request.json']
+permissions:
+  contents: read
+  pull-requests: read
+concurrency:
+  group: eldoria-construction-timer-native-single-editor
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    outputs:
+      eligible: ${{ steps.lease.outputs.eligible }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/ui-v3-domain-smoke/native-request.json
+          sparse-checkout-cone-mode: false
+      - name: Verify exact candidate and live exclusive Windows lease before queuing Unity
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,pathlib,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          branch=os.environ['GITHUB_REF_NAME']
+          sha=os.environ['GITHUB_SHA']
+          source=json.loads(pathlib.Path('tools/ui-v3-domain-smoke/native-request.json').read_text())
+          assert source['pr']==183 and source['workstream_id']=='eldoria-ui-v3-management-completion-20261021'
+          assert source['owner']=='chatgpt-v3-building-timer-anchor-20261109'
+          assert source['revision']==31
+          headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          def get(path):
+              req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=headers)
+              with urllib.request.urlopen(req,timeout=25) as response:return json.load(response)
+          pr=get('pulls/183')
+          data=get('contents/pipeline/active-workstreams.json?ref=main')
+          registry=json.loads(base64.b64decode(data['content']))
+          current=next(x for x in registry['active'] if x['id']==source['workstream_id'])
+          holders=[x for x in registry['active'] if 'windows-runner-heavy' in (x.get('resources') or [])]
+          owner=current.get('owner')==source['owner'] and current.get('ownership_revision')==source['revision'] and current.get('ownership_state')=='claimed'
+          identity=pr['state']=='open' and not pr['merged'] and pr['head']['sha']==sha and pr['head']['ref']==branch
+          lease=len(holders)==1 and holders[0]['id']==current['id']
+          allowed=owner and identity and lease
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('eligible='+str(allowed).lower()+'\n')
+          if not allowed:
+              print('TIMER_NATIVE_DEFERRED: source-owner='+str(owner)+' current-PR='+str(identity)+' exclusive-lease='+str([x['id'] for x in holders]))
+          else:print('TIMER_EXACT_HEAD_AND_WINDOWS_LEASE_PREFLIGHT_PASS')
+          PY
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.eligible == 'true' && vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 90
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+      ELDORIA_TIMER_NATIVE_OUT: ${{ github.workspace }}/construction-timer-native-${{ github.run_id }}
+    steps:
+      - name: Recheck live owner, exact branch and free Unity/Blender before checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='EldoriaTimerNative'}
+          $json=Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($json.content))|ConvertFrom-Json
+          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-ui-v3-management-completion-20261021' -or
+             $claims[0].owner -ne 'chatgpt-v3-building-timer-anchor-20261109' -or
+             $claims[0].ownership_revision -ne 31 -or $claims[0].ownership_state -ne 'claimed'){
+             throw "TIMER_NATIVE_WINDOWS_LEASE_DENIED: $($claims.id -join ',')"
+          }
+          $pr=Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/pulls/183"
+          if($pr.head.sha -ne $env:GITHUB_SHA -or $pr.head.ref -ne 'fix/eldoria-construction-timer-anchor-20261109'){
+             throw 'TIMER_NATIVE_STALE_PR_HEAD'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+             throw 'Windows has another Unity/Blender process; do not interrupt.'
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not configured'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity Editor $version"}
+      - name: Recover installed Git safely if PATH lacks it
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git unavailable; refuse full repository ZIP fallback'}
+            $dir=Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: timer-source
+          clean: false
+          fetch-depth: 1
+          filter: blob:none
+          lfs: false
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+            docs/evidence/valoria-reference-clean
+      - name: Validate exact tracked Unity files and canonical timer source
+        shell: powershell
+        working-directory: timer-source
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Stale checkout'}
+          $target='Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs'
+          if((git rev-parse "HEAD:$target").Trim() -ne '0d9cb29fa9198d8a87011cc554b6247bb63a9e30'){
+            throw 'Unexpected timer C# blob; update native contract when the source changes'
+          }
+          $tracked=@(git ls-tree -r --name-only HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings)
+          if($tracked.Count -lt 500){throw "Truncated Unity checkout: $($tracked.Count) files"}
+          $missing=@($tracked | Where-Object {-not(Test-Path -LiteralPath $_)})
+          if($missing.Count){
+            git checkout --ignore-skip-worktree-bits HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+            if($LASTEXITCODE){throw 'Tracked source restoration failed'}
+          }
+          $remaining=@($tracked|Where-Object {-not(Test-Path -LiteralPath $_)})
+          if($remaining.Count){throw "Missing $($remaining.Count) exact Unity inputs"}
+          New-Item -ItemType Directory -Force $env:ELDORIA_TIMER_NATIVE_OUT|Out-Null
+          @{source_sha=$env:GITHUB_SHA;timer_blob='0d9cb29fa9198d8a87011cc554b6247bb63a9e30';art_approved=$false;iphone_physical_certified=$false} |
+            ConvertTo-Json | Set-Content (Join-Path $env:ELDORIA_TIMER_NATIVE_OUT 'provenance.json') -Encoding UTF8
+      - name: Preserve Unity Search index transactionally
+        shell: powershell
+        working-directory: timer-source
+        run: |
+          $ErrorActionPreference='Stop'
+          $settings='Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "timer-search-original-$env:GITHUB_RUN_ID"
+          $missing=Join-Path $env:RUNNER_TEMP "timer-search-new-$env:GITHUB_RUN_ID"
+          if(Test-Path $settings){Copy-Item $settings $backup -ErrorAction Stop}
+          else{New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null;New-Item -ItemType File $missing|Out-Null}
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' |
+            Set-Content $settings -Encoding UTF8
+      - name: Prepare existing Bastion III runtime resources; no art or save mutation
+        shell: powershell
+        working-directory: timer-source
+        timeout-minutes: 35
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another 3D process occupies the PC'}
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){
+             $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+               Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $blender){throw 'Bastion III build-safe Blender prerequisite missing'}
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Native Bastion III resource preparation failed'}
+          $evidence=Join-Path $env:ELDORIA_TIMER_NATIVE_OUT 'bastion-bake.log'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"' + $project + '"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"' + $evidence + '"'))
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($proc.ExitCode -ne 0){if(Test-Path $evidence){Get-Content $evidence -Tail 80};throw "Bastion bake failed: $($proc.ExitCode)"}
+      - name: Execute exact real paid-construction Unity PlayMode regression
+        shell: powershell
+        working-directory: timer-source
+        timeout-minutes: 35
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $out=$env:ELDORIA_TIMER_NATIVE_OUT
+          $xml=Join-Path $out 'timer-playmode.xml'
+          $log=Join-Path $out 'timer-playmode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"' + $project + '"'),
+            '-runTests','-testPlatform','PlayMode',
+            '-testFilter','Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame',
+            '-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($proc.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Real Unity test failed ($($proc.ExitCode))"}
+          if(-not(Test-Path $xml)){throw 'Missing real Unity test XML'}
+          [xml]$report=Get-Content $xml -Raw
+          $cases=@($report.SelectNodes("//test-case[contains(@fullname,'RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame')]"))
+          if([int]$report.'test-run'.failed -ne 0 -or $cases.Count -ne 1 -or $cases[0].result -ne 'Passed'){
+            throw 'Paid Sawmill camera-pan/offscreen test was not truly executed and passed'
+          }
+          Write-Host 'TIMER_NATIVE_WORLD_ANCHOR_REAL_UNITY_PASS'
+      - name: Restore original isolated Search index
+        if: always()
+        shell: powershell
+        working-directory: timer-source
+        run: |
+          $settings='Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "timer-search-original-$env:GITHUB_RUN_ID"
+          $missing=Join-Path $env:RUNNER_TEMP "timer-search-new-$env:GITHUB_RUN_ID"
+          if(Test-Path $backup){Copy-Item $backup $settings -Force;Remove-Item $backup -Force}
+          elseif(Test-Path $missing){Remove-Item $settings -Force -ErrorAction SilentlyContinue;Remove-Item $missing -Force}
+      - name: Preserve exact native XML, logs and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-construction-timer-native-${{ github.sha }}
+          path: ${{ github.workspace }}/construction-timer-native-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 30

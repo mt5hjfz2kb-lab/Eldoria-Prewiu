@@ -1,0 +1,228 @@
+{
+  "source": "256117b03987216c4a100bfb607d3113c5e74f96",
+  "auditRun": 43154155443,
+  "artifactId": 13915141266,
+  "role": "EXACT_ARCHIVED_ISOLATED_R19_TRACKED_RESTORE",
+  "files": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/aserradero-v.jpeg.meta",
+      "currentSha256": "4c056d1e4ae9bf72b5b1854f810530b0c6e21f5a96372c19e286e4eeec023852",
+      "headGitBlob": "77935e7b0d810bb0b871fc0b13eb4c8043a6d5f0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/bastion-v.jpeg.meta",
+      "currentSha256": "e083c8471dcc3d24b47fe8b7333449122f30f7fcf7332514464cf4e34f2c2cc0",
+      "headGitBlob": "1d1d9a131cfbfb18d76dfce74f83cccf5a205a21"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cantera-v.jpeg.meta",
+      "currentSha256": "a45c1895168cccedebb79284039aa18b2257109729a8b09b3cf1c77562687a88",
+      "headGitBlob": "f5fb20a4aa908576329b655faf07509436e1b12f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cuartel-v.jpeg.meta",
+      "currentSha256": "5082f33005249c8627fd810680f42dcc5e01f2729fa34c9712ae3fffaa04983a",
+      "headGitBlob": "36c9679f895198b7bf77671c582855cb38f88f3a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/granero-v.jpeg.meta",
+      "currentSha256": "5e8f3af3b701e2d6cacea2cde9b64e489c405731f62660b47afa8d76015d43f7",
+      "headGitBlob": "57e078f46a4ade192932a5b7818932a97fd12d52"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/badge_claimable.png.meta",
+      "currentSha256": "5850867cf445b09e3bd895fd299c942ec0d79dc2c48470be65d816eeb67e7c19",
+      "headGitBlob": "9a79ae3c21ae2ce3b8643005e946c8e0889aaf17"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/badge_new.png.meta",
+      "currentSha256": "383bea3d7ae40ae22d961214b06706da2ec52ab01de3ced73062c8af7e924ddc",
+      "headGitBlob": "bd2e1e89e9e352d09ae6402d75dc76c468aed4a1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_food_100.png.meta",
+      "currentSha256": "401ea573a9edca762981bec019836b2d585a35b24c3f2d32395edaa64a54ec9e",
+      "headGitBlob": "4f23308c583af41aeaebbcf7281c5c4a9a25d4a4"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_food_100k.png.meta",
+      "currentSha256": "0180ed4721e81b444395775f42739002be5e8bdf3d909f88a03a22996a8458ad",
+      "headGitBlob": "ec01b480048c0c0775e213560f75c2719a77244e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_food_10k.png.meta",
+      "currentSha256": "2dbcaf38d19c9b887f4f2f1076429148df192a5e3eb1ee4af87a3ef9de134a64",
+      "headGitBlob": "5628f7f40df1bb425b4f9b34d4305a4e17a05cd6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_food_1k.png.meta",
+      "currentSha256": "b0af2987e203f58bc0894a20b6bfb5be917f706ebac30a14a39a5adc11bc6bd7",
+      "headGitBlob": "0738078fa275d83f87bb6d2b0af8626a366c4ce9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_stone_100.png.meta",
+      "currentSha256": "ff858ebdfe4b7dfc57cf00682fe43b2101f56aec8551bdb62590e339a41a5e94",
+      "headGitBlob": "105d7cbbbcc6f4f368590617b638714d8afa78f2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_stone_100k.png.meta",
+      "currentSha256": "e911993155479e7cc8e9835305dfaf0dfbb701812c48f885f8064445963531af",
+      "headGitBlob": "3cc28c8a6e165437b79e8b999105b39e17bddd56"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_stone_10k.png.meta",
+      "currentSha256": "1760bec8d073ccb961091a5c72b7b4b17cdbc8e080be04519650cc1e88ede9ba",
+      "headGitBlob": "1e8377306a855517f40a4d7bd45117fe181f3f2a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_stone_1k.png.meta",
+      "currentSha256": "e451b0c5f67b02f08cf0aafb475295843fd165a142e8c827535e74434639a490",
+      "headGitBlob": "de02b324a6acf0089c7002ec9ee1e510344431fe"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_wood_100.png.meta",
+      "currentSha256": "bbc72bdb3c9309fd8d4dbf263a58870315f42d93f6c32d56e779b99a4a141899",
+      "headGitBlob": "565389850082defc19b2c48c991c1e206cca0f89"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_wood_100k.png.meta",
+      "currentSha256": "2aecd44e571df99d0df755b11390635fd9758fcba0789f1618604fd138bff839",
+      "headGitBlob": "fb70c5ed6e383bb5ceb9081079774676778c50fa"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_wood_10k.png.meta",
+      "currentSha256": "b3443782bc3bd0589151caec2016618a0ebe27167114fe84cf4ac0797f2cd39a",
+      "headGitBlob": "0ac45c54234b9b39bac69b7d4118458aab8b1634"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/pack_wood_1k.png.meta",
+      "currentSha256": "95c4575950349664136aaea83bcc75f14a08a7b3f96168bb44248872684794b0",
+      "headGitBlob": "053d3472c1ca51a9390ebeb69ebc33fbef6414bb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/tutorial_pointing_hand.png.meta",
+      "currentSha256": "f2cae2993c38bb4355845441bed61efdde8b4b1cf6ee98dc2f64da26049fa131",
+      "headGitBlob": "1b67966e760711fe3fa3c9bdeeafd3bafd2acfe7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/tutorial_target_halo.png.meta",
+      "currentSha256": "e54b327fd7cd57c54fe2721c1685bd54e6f056718b57b2dfa1a68694c53a43db",
+      "headGitBlob": "4b48ad6d809069e52c4f617fb07302636f54a3f7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png.meta",
+      "currentSha256": "b0e29f6828d14bfb821f1a59b1e8261df5ce3f4039c88c95d72372d87b4a5557",
+      "headGitBlob": "bd46f3185faaa6f5bfc0af8d72ac4ebbc14afe53"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png.meta",
+      "currentSha256": "cafc2c681b3cc4e4731c11a4b2d3e93a7b215d17106b28daa3436531be1ad3b7",
+      "headGitBlob": "ee5f9c476a43c6a98cab47e103dcd61da3db2635"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png.meta",
+      "currentSha256": "eb082cd1d64e26db28839bd1e86d4706a59cb1c123d39811f2ca7e903e5ed80b",
+      "headGitBlob": "c79440988064659d2feb572eefed7a70d29986c5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png.meta",
+      "currentSha256": "f0af3b6fae1fbdb8d6aeeaa7e347733c25d99f836c3dc76b4f6c5214ba6d50ea",
+      "headGitBlob": "985d2c1dafe6c2f2bde50c26efd4d66877315d1b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png.meta",
+      "currentSha256": "7c79ec4feca6fdb5f576fb63a64e7628d0970474e3527c8b55492cd572aceda7",
+      "headGitBlob": "32847ff0c5c8445d18fc2a2f034b571a606c6967"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png.meta",
+      "currentSha256": "9e61574823c93e01bfaf85cdc96ba38bf296dc960cc00486f211c9185af4f030",
+      "headGitBlob": "dcdd7a596c02dafd39ee30b4f33031e472a73024"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png.meta",
+      "currentSha256": "0c769d461f87ff27639daff1da97a82eef100000bcec387942377405a27ba771",
+      "headGitBlob": "2285fa72c4bc73fb85ff2b8fd573aab1c127123e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png.meta",
+      "currentSha256": "97a63a4038a1405d32eac4fc48e2c3b15e98de29b14f2ea3e50a601aee1d781a",
+      "headGitBlob": "8323c9585f23ba427dd1e44f8a1c9f4e377ec6bd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png.meta",
+      "currentSha256": "45e3de4c6cfd6e5d4f7c0e0dba3978ac0a8626f44ec9f8ea89eb43258201f028",
+      "headGitBlob": "ed0edd646d78cfeace6f78b080557df0e50bed52"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png.meta",
+      "currentSha256": "7dcc8442bfcf8f94de4b5b7da86746424e2e046d59683d96d3071cb82eae40a2",
+      "headGitBlob": "ec1a354f8b131e1f760b3fb1091e98898b8f8ef8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png.meta",
+      "currentSha256": "e3a71a2abfa2665a2856c62cc5088d9c3c745f1f920a70414235cdc39abaed9d",
+      "headGitBlob": "68930258e94302a51ea0a194e46e67609bd95070"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png.meta",
+      "currentSha256": "17ae934365fc9b1ef2202e94fbb0913d5ecfd5a540190169265c20e4d55d4450",
+      "headGitBlob": "824882d91d3355186e25d48a9b40830a4664ce91"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png.meta",
+      "currentSha256": "44ac8d3ac966574c58e7e330859181ada2af9d5468d684ee60fb3dd85aa4ee0f",
+      "headGitBlob": "bab3f2e3e959ec91b1a31c3eed22b847020c3e6b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png.meta",
+      "currentSha256": "50d3b0486b23c827bba2c2964a98677b4353a0c2a07daf292e4fd9e47c3d8cf7",
+      "headGitBlob": "609647c27823595768dbcf7d34bde1a3d5dab3f9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png.meta",
+      "currentSha256": "a38a087528933f9462ce8efca93fbe714f051ad2b3654744ed7304786256d833",
+      "headGitBlob": "100e02448c385c8005d5aa48f8a3dbad7f9f98e1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png.meta",
+      "currentSha256": "2aad6acc654dce2f82a1ea15def8ecbf77adbf253b20f8acd7f679d38848f93e",
+      "headGitBlob": "2a3fa2106bb80e9a4722579ad28059058e6ebac4"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png.meta",
+      "currentSha256": "d02dbd6ae87f7afa56c61d6af357fc97421b401d8f67a11d2ea2c4227e92d088",
+      "headGitBlob": "db2ede64ed45b0e28b09b0a40ccaf33bc765769c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png.meta",
+      "currentSha256": "e8605336f395fed61b62d9cb8e0a6e30076cc681aca461a1f24390199319c331",
+      "headGitBlob": "b37ddca70839de196f29da2f5c8b3e6c436854d6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png.meta",
+      "currentSha256": "da1c79912c23f3d19d6fd62b33a8a5916eb92d6c610ad164a3f2d71082641d38",
+      "headGitBlob": "d7cac56416febb63b81ca7f07cf38d29e9fa0126"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png.meta",
+      "currentSha256": "5d459505d845fa3fb2c91b6ead91157274450a1738f7b9199e533fa1d97939ae",
+      "headGitBlob": "9f392bfa0834d66ad8f64cbc0ebacd70ed0b245f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png.meta",
+      "currentSha256": "eba5d5c656d082c272e5712c1d5ff96bfe0ecdeb6213e1510aabce59c6874b62",
+      "headGitBlob": "7743b7d20882dbd3b1beab3c4c66eaec44c379c0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png.meta",
+      "currentSha256": "98bb3240a9fc555f8398cd08324cb389c82fee02995da2ec4d10faa8a13aa71e",
+      "headGitBlob": "4b5aedbf486a48a7a3d76e57ecbbef80b19abd34"
+    },
+    {
+      "path": "Unity/ProjectSettings/ProjectSettings.asset",
+      "currentSha256": "4f0268ee77f0e27cf1d2c82db0c327f7b4eed36a0c2c9d3f61898e7e605a8504",
+      "headGitBlob": "6572d1bfaa08cab97cdddc648d90bed24b42c7b8"
+    }
+  ]
+}

@@ -24,7 +24,11 @@ static class Program
         Require(!EarlyRetentionRules.VigilantsUnlocked(bare),"No premature B1 shortcut");
         Require(!EarlyRetentionRules.ScoutsUnlocked(bare),"No premature B2 shortcut");
         bare.SawmillLevel=1;
-        Require(EarlyRetentionRules.VigilantsUnlocked(bare),"B1 trial opens after real sawmill");
+        Require(!EarlyRetentionRules.VigilantsUnlocked(bare),"B1 sawmill does not prematurely open Vigilants");
+        bare.EngendroDefeated=true;
+        Require(!EarlyRetentionRules.VigilantsUnlocked(bare),"Defeating Engendro alone does not skip the introduction");
+        bare.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+        Require(EarlyRetentionRules.VigilantsUnlocked(bare),"Vigilants unlock only after real victory and explanation");
         Require(!EarlyRetentionRules.StageUnlocked(bare,2),"B1 trial does not grant chapter progression");
         for(int i=1;i<=100;i++){
             var stage=EarlyRetentionRules.Stage(i);
@@ -84,8 +88,8 @@ static class Program
             "No scout cards before first real configured March");
         var firstMarch=Command(firstGateway,"first-march","ConfigureMarch","march-main");
         Require(firstGateway.Execute(firstMarch).Ok,"First march prepares normally");
-        Require(firstGateway.Snapshot().Retention.Orders.Count==3,
-            "Scout unlock is atomically part of the first march revision");
+        Require(firstGateway.Snapshot().Retention.Orders.Count==0,
+            "B2 first march cannot create unexplained B3 Scout Board orders");
         var nextFight=Command(firstGateway,"fight-after-first-march","Fight","corrupt-scout");
         var nextResult=firstGateway.Execute(nextFight);
         Require(nextResult.Ok,"First fight cannot fail after unlock: "+nextResult.Message);
@@ -94,15 +98,18 @@ static class Program
 
         var clock=new Clock();
         var state=new PlayerState{
-            BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+            BastionLevel=3,SawmillLevel=1,BarracksLevel=1,
             Available=new ArmyRoster{ArcherT1=60},
             ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
             Resources=new ResourceWallet{Wood=200,Stone=250,Food=50}
         };
+        // Only an introduced B3 journey can enter Vigilants/Scouts: B2 is
+        // intentionally still locked in the current real tutorial.
+        state.ChapterProgress.SeenNarrative.AddRange(new[]{"vigilants-introduction","scouts-introduction"});
         var store=new Store{State=state};
         var g=new LocalGateway(clock,store);
         Require(g.Snapshot().Retention.Orders.Count==3,"Three board orders at new period");
-        Require(EarlyRetentionRules.ScoutsUnlocked(g.Snapshot()),"Scout unlock after first March");
+        Require(EarlyRetentionRules.ScoutsUnlocked(g.Snapshot()),"Scouts unlock at B3 after March and introduction");
         var battle=Command(g,"v1","VigilantBattle","1");
         Require(g.Execute(battle).Ok,"Real battle wins first stage");
         Require(g.Snapshot().Retention.LastClearedStage==1,"Stage advances");
@@ -156,8 +163,9 @@ static class Program
                 migrated.Snapshot().Retention.ScoutDiscoveryMask==10,
                 "Migration itself is idempotent on reload");
         var backlogClock=new Clock();
-        var backlogStore=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=180}}};
+        var backlogStore=new Store{State=new PlayerState{BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},Available=new ArmyRoster{ArcherT1=180}}};
         var backlog=new LocalGateway(backlogClock,backlogStore);
         backlogClock.Add(12*3600);backlog.Advance();
         Require(backlog.Snapshot().Retention.Orders.Count(x=>!x.Claimed)==6,"Actual two-period backlog reaches six orders");
@@ -184,8 +192,9 @@ static class Program
                 "Strategy must reserve actual distinct detachment sizes");
         var strategyClock=new Clock();
         var strategyStore=new Store{State=new PlayerState{
-            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},
             Available=new ArmyRoster{ArcherT1=80}}};
         var strategyGateway=new LocalGateway(strategyClock,strategyStore);
         var scoutTarget=strategyGateway.Snapshot().Retention.Orders
@@ -220,8 +229,9 @@ static class Program
             "A second claim never duplicates scouting rewards");
         var fastClock=new Clock();
         var fastStore=new Store{State=new PlayerState{
-            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},
             Available=new ArmyRoster{ArcherT1=80}}};
         var fastGateway=new LocalGateway(fastClock,fastStore);
         var fastTarget=fastGateway.Snapshot().Retention.Orders.First(o=>o.Kind!=0).Id;

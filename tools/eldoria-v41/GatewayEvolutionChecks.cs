@@ -16,7 +16,14 @@ static class GatewayEvolutionChecks
         var resolver=new EldoriaV41GatewayResolver(new[]{definition});
         definition.EnemyTroops.ArcherT1=10000;
         var store=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=150}}};
+        // Real Vigilant eligibility includes the already completed Engendro
+        // and its actual taught narrative beat. Otherwise a busy-hero test
+        // could pass merely because the entire destination was still locked.
+        store.State.EngendroDefeated=true;
+        store.State.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
         var clock=new Clock();var gateway=new LocalGateway(clock,store,resolver);
+        Check(EarlyRetentionRules.StageUnlocked(gateway.Snapshot(),1),
+            "busy-hero fixture has the genuine introduced guardian unlocked");
         Check(Send(gateway,"v41-prepare","ConfigureMarch","march-main:40:0:0:aldric::").Ok,"prepare real march");
         Check(Send(gateway,"v41-launch","Fight","corrupt-scout").Ok,"launch real command");
         Check(!Send(gateway,"busy-guardian","VigilantBattle","1").Ok,"guardian cannot reuse hero already marching");
@@ -45,6 +52,8 @@ static class GatewayEvolutionChecks
         var campaign=EldoriaV41GatewayResolver.Campaign();
         var veteran=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=5,SawmillLevel=1,
             ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=200}}};
+        veteran.State.EngendroDefeated=true;
+        veteran.State.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
         var journey=new LocalGateway(clock,veteran,campaign);
         for(int stage=1;stage<=25;stage++)
         {
@@ -62,6 +71,51 @@ static class GatewayEvolutionChecks
         var high=low.Copy();high.OwnMasteryLevel=20;
         Check(campaign.Resolve(high).RemainingHealth>=campaign.Resolve(low).RemainingHealth,"earned mastery retains benefit");
         Check(high.OwnTroops.ArcherT1==36 && low.OwnMasteryLevel==0,"mastery does not invent troops or mutate snapshot");
+        // Regression for the exact Guardian 25 failure discovered during the
+        // pre-tester audit: Aldric won with 36 T2 and 560 XP, but adding a
+        // newly recruited Lyra could reduce mastery and reverse that victory.
+        var veteranPairState=new PlayerState {
+            BastionLevel=5,BarracksLevel=5,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            Available=new ArmyRoster{ArcherT2=36},
+            Retention=new EarlyRetentionState{LastClearedStage=24,AldricExperience=560,LyraExperience=0},
+            ChapterThree=new BastionThreeState{LyraRecruited=true}
+        };
+        veteranPairState.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+        var pairStore=new Store{State=veteranPairState};
+        var pairGateway=new LocalGateway(clock,pairStore,campaign);
+        Check(Send(pairGateway,"pair-prepare","ConfigureMarch",
+            "march-main:0:36:0:aldric:lyra:").Ok,"canonical pair march prepared with 36 T2");
+        Check(pairGateway.Snapshot().PreparedHeroId=="aldric+lyra",
+            "canonical gateway selects both real heroes");
+        Check(EarlyRetentionRules.HeroMasteryLevel(pairGateway.Snapshot(),"aldric+lyra")==7,
+            "pair retains its best earned mastery, not an average with new Lyra");
+        var soloInput=campaign.PrepareCreature(new ArmyRoster{ArcherT2=36},
+            new[]{"aldric",null,null},"vigilant:25",EarlyRetentionRules.Stage(25).Enemy);
+        soloInput.OwnMasteryLevel=7;
+        var soloReport=campaign.Resolve(soloInput);
+        Check(soloReport.Won,"Aldric solo Guardian 25 is the verified winning control");
+        Check(Send(pairGateway,"pair-vigilant-25","VigilantBattle","25").Ok,
+            "pair Guardian 25 is a valid real gateway command");
+        var pairAfter=pairGateway.Snapshot();
+        Check(pairAfter.Retention.LastClearedStage==25 && pairAfter.LastBattleReport.Won,
+            "adding Lyra never reverses earned Guardian 25 victory");
+        Check(pairAfter.LastBattleReport.VersionedOutcome?.Outcome=="victory" &&
+              pairAfter.LastBattleReport.RemainingHealth>=soloReport.RemainingHealth,
+            "versioned combat report retains mastery and a non-regressed result");
+        Check(pairAfter.Retention.AldricExperience==595 && pairAfter.Retention.LyraExperience==0,
+            "normal victory XP remains credited once to original leading hero");
+        int pairWood=pairAfter.Resources.Wood;
+        pairGateway=new LocalGateway(clock,pairStore,campaign);
+        Check(pairGateway.Snapshot().Retention.LastClearedStage==25 &&
+              pairGateway.Snapshot().Resources.Wood==pairWood,
+              "paired victory, report and rewards survive real gateway reload");
+        Check(Send(pairGateway,"pair-vigilant-25","VigilantBattle","25").Ok &&
+              pairGateway.Snapshot().Resources.Wood==pairWood,
+              "repeating original battle ID cannot pay rewards twice");
+        Check(!Send(pairGateway,"pair-vigilant-25-again","VigilantBattle","25").Ok,
+              "new command cannot repeat the completed guardian");
+
         foreach(var target in new[]{"corrupt-scout","ash-stalker-valoria"})
         {
             // Saved controlled mirror battle exercises both real gateway report routes.

@@ -1,0 +1,7 @@
+# Actual bag and mail continuation
+
+Native43158384727 on cca92d8f4f04fb35907273695ab3ac74fab69933 recovered the exact245UIoverlay files plus44recorded tracked inputs before checkout. It repeated five real first-hit bag controls successfully, then failed at CORREO: no raycast result, point28.67,659.72 inside390x844, actual graphic depth23. One normal player frame did not repair it. The job exited and restored all245overlay files exactly. Artifact13916633887 SHA2c3065a7319e53149a01cbc43ba2624b0471efd486d34ea3b91764271f780c10 preserves the failure. No full mailbox pass is claimed.
+
+Canonical UI source creates the utility rail inactive before building buttons. BreachWatchPlate.Awake then runs on first activation and resets previously configured raycastTarget=true to false. Canonical UI fix69a7be80 preserves explicit pointer intent across Awake and replaces the former mailbox and message-row onClick.Invoke evidence with genuine first-hit routing. It preserves the concurrent Hall glyph-overlap correction c6acdef. Native verification and full combined rerun still pending; do not pin the new UI as certified until its native and visual A/B jobs pass.
+
+The combined first-use picture now waits through the actual160ms pointer cadence, using a real Editor time loop rather than ineffective WaitForSeconds in a manual iterator. It requires the real tutorial hand to appear through the existing obstruction/first-hit checks. This is pending genuine native verification. No forcing of guide visibility, bypass of mail routing, art approval, or main merge.

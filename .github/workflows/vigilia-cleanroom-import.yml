@@ -1,0 +1,68 @@
+name: Vigilia Cleanroom — import generated original UI art
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths:
+      - tools/breach-watch/cleanroom-source-links.json
+      - tools/breach-watch/import_cleanroom_art.py
+      - .github/workflows/vigilia-cleanroom-import.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: vigilia-cleanroom-asset-import
+  cancel-in-progress: false
+jobs:
+  import-original-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/import_cleanroom_art.py
+            /tools/breach-watch/cleanroom-source-links.json
+            /Unity/Assets/Eldoria/BreachWatch/Resources/**
+      - name: Install bounded image decoder
+        run: python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0 numpy==2.3.4 opencv-python-headless==4.13.0.92
+      - name: Verify exclusive canonical owner before any GitHub write
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,urllib.request,json,base64
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(req,timeout=20) as r: raw=json.load(r)
+          reg=json.loads(base64.b64decode(raw['content']))
+          w=next(x for x in reg['active'] if x['id']=='eldoria-forja-oscura-visual-proof-20261107')
+          assert w['owner']=='chatgpt-vigilia-reference-fidelity-20261109' and w['ownership_revision']==30
+          assert 'Unity/Assets/Eldoria/BreachWatch/**' in w['scope']
+          print('CLEANROOM_EXCLUSIVE_OWNER_VALID')
+          PY
+      - name: Fetch new generator output, isolate true alpha, verify asset kit
+        run: python3 tools/breach-watch/import_cleanroom_art.py
+      - name: Keep audit-only image and generated original sprites
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleanroom-first-party-art-preview-${{ github.sha }}
+          path: Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/**
+          retention-days: 30
+          if-no-files-found: error
+      - name: Commit only NEW complete sprite art, never prior UI or gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Eldoria VisualKit CI"
+          git config user.email "visualkit-ci@users.noreply.github.com"
+          git add Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/
+          git diff --cached --quiet && echo 'Already imported' && exit 0
+          git commit -m 'art(vigilia): import fresh independently generated premium HUD sprite kit'
+          # Rebase only onto the same canonical fast-forward branch. Never
+          # force-push, override assets or alter another workstream's files.
+          git fetch origin "${GITHUB_REF#refs/heads/}" --depth=80
+          git rebase FETCH_HEAD
+          git push origin HEAD:"$GITHUB_REF"

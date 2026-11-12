@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Eldoria.Domain;
 using Eldoria.Application;
 using Eldoria.Infrastructure;
@@ -15,6 +16,33 @@ namespace Eldoria.Tests
             public PlayerState Load()=>Value; public void Save(PlayerState state){Value=state;} }
         static GameCommand Cmd(LocalGateway g,string id,string kind,string target)
         {var s=g.Snapshot();return new GameCommand(id,s.PlayerId,kind,target,s.Revision);}
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+        static void ClaimAndUsePackets(LocalGateway gateway,ResourceRewardPacket[] packets)
+        {
+            foreach(var packet in packets)
+            {
+                var before=gateway.Snapshot().Resources;
+                if(!gateway.Snapshot().ResourceRewards.Packets.Single(p=>p.ReceiptId==packet.ReceiptId).Collected)
+                {
+                    Assert.That(gateway.Execute(Cmd(gateway,Guid.NewGuid().ToString(),
+                        ResourceRewardCommands.ClaimMail,packet.MailEventId)).Ok,Is.True);
+                    var claimed=gateway.Snapshot().Resources;
+                    Assert.That(claimed.Wood,Is.EqualTo(before.Wood),"Claim is not use");
+                    Assert.That(claimed.Stone,Is.EqualTo(before.Stone),"Claim is not use");
+                    Assert.That(claimed.Food,Is.EqualTo(before.Food),"Claim is not use");
+                }
+                Assert.That(gateway.Execute(Cmd(gateway,Guid.NewGuid().ToString(),
+                    ResourceRewardCommands.UsePacket,packet.ReceiptId)).Ok,Is.True);
+                var used=gateway.Snapshot().Resources;
+                Assert.That(used.Wood,Is.EqualTo(before.Wood+(packet.Kind=="wood"?packet.Amount:0)));
+                Assert.That(used.Stone,Is.EqualTo(before.Stone+(packet.Kind=="stone"?packet.Amount:0)));
+                Assert.That(used.Food,Is.EqualTo(before.Food+(packet.Kind=="food"?packet.Amount:0)));
+                Assert.That(gateway.Execute(Cmd(gateway,Guid.NewGuid().ToString(),
+                    ResourceRewardCommands.UsePacket,packet.ReceiptId)).Ok,Is.False);
+            }
+        }
+#endif
+
         [Test] public void ThreeSimultaneousWorldMarchesHaveIndependentTroopsAndOfflineReturns()
         {
             var clock=new Clock();var store=new Memory {
@@ -57,10 +85,11 @@ namespace Eldoria.Tests
         [Test] public void ScoutsShareThreeMarchSlotsAndReturnRealTroopsBeforeClaims()
         {
             var clock=new Clock();var store=new Memory {
-                Value=new PlayerState{BastionLevel=2,BarracksLevel=1,
+                Value=new PlayerState{BastionLevel=3,BarracksLevel=1,
                     ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                     Available=new ArmyRoster{ArcherT1=90}}
             };
+            store.Value.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             var g=new LocalGateway(clock,store);
             var ids=g.Snapshot().Retention.Orders.ConvertAll(x=>x.Id);
             Assert.That(ids.Count,Is.EqualTo(3));
@@ -120,6 +149,11 @@ namespace Eldoria.Tests
             clock.Add(4);g.Advance();
             Assert.That(g.Snapshot().ScoutDefeated,Is.True);
             Assert.That(g.Snapshot().Available.Total,Is.EqualTo(36));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(30),"Victory does not spend its packets");
+            Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(150));
+            ClaimAndUsePackets(g,g.Snapshot().ResourceRewards.Packets.Where(p=>p.Origin=="combat"&&!p.Used).ToArray());
+#endif
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(110));
             Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(220));
             Assert.That(g.Snapshot().Wounded.Total,Is.Zero);
@@ -203,6 +237,11 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().EngendroDefeated,Is.True);
             Assert.That(g.Snapshot().ChapterProgress.EngendroDefeated,Is.True);
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(48));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(120),"Boss loot awaits claim and use");
+            ClaimAndUsePackets(g,g.Snapshot().ResourceRewards.Packets.Where(p=>
+                p.Origin=="combat"&&!p.Used).ToArray());
+#endif
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(320));
             Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(930));
         }
@@ -412,6 +451,15 @@ namespace Eldoria.Tests
                 var clock=new Clock();
                 var gateway=new LocalGateway(clock,store);
                 var awarded=gateway.Snapshot();
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                Assert.That(awarded.Resources.Wood,Is.EqualTo(230),"Mission completion leaves the wallet untouched");
+                Assert.That(awarded.Resources.Stone,Is.EqualTo(150));
+                var missionPackets=awarded.ResourceRewards.Packets.Where(p=>p.Origin=="mission"&&!p.Used).ToArray();
+                Assert.That(missionPackets.Where(p=>p.Kind=="wood").Sum(p=>p.Amount),Is.EqualTo(990));
+                Assert.That(missionPackets.Where(p=>p.Kind=="stone").Sum(p=>p.Amount),Is.EqualTo(635));
+                ClaimAndUsePackets(gateway,missionPackets);
+                awarded=gateway.Snapshot();
+#endif
                 Assert.That(awarded.Resources.Wood,Is.EqualTo(230+120+120+90+180+140+220+120));
                 Assert.That(awarded.Resources.Stone,Is.EqualTo(150+80+55+140+90+150+120));
                 Assert.That(awarded.MissionPower,Is.EqualTo(80+120+100));

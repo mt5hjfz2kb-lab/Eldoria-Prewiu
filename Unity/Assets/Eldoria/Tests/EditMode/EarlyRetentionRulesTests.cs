@@ -23,15 +23,19 @@ namespace Eldoria.Tests
         {
             var s=g.Snapshot();return new GameCommand(id,s.PlayerId,kind,target,s.Revision);
         }
+        // A gameplay-ready save is already eligible and has seen the system introductions.
+        // The lock-state tests below deliberately use an unintroduced PlayerState.
         static PlayerState Ready()
         {
-            return new PlayerState
+            var ready=new PlayerState
             {
-                BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+                BastionLevel=3,SawmillLevel=1,BarracksLevel=1,
                 ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                 Available=new ArmyRoster{ArcherT1=60},
                 Resources=new ResourceWallet{Wood=300,Stone=250,Food=100}
             };
+            ready.ChapterProgress.SeenNarrative.AddRange(new[]{"march-preparation","vigilants-introduction","scouts-introduction"});
+            return ready;
         }
         [Test] public void UnlockingScoutsDoesNotInvalidateNextCanonicalFightCommand()
         {
@@ -61,6 +65,12 @@ namespace Eldoria.Tests
             Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.False);
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False);
             a.SawmillLevel=1;
+            Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.False,
+                "Sawmill alone cannot expose unexplained Vigilants");
+            a.EngendroDefeated=true;
+            Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.False,
+                "Eligibility still requires its contextual introduction");
+            a.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
             Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,1),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,2),Is.False);
@@ -68,9 +78,18 @@ namespace Eldoria.Tests
             a.BastionLevel=2;a.BarracksLevel=1;
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False);
             a.ChapterProgress.MarchConfirmed=true;
+            Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.False,
+                "Bastion II cannot access the second chapter");
+            Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False,
+                "A march alone cannot unlock Scouts before Bastion III");
+            a.BastionLevel=3;
+            Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False,
+                "Scouts need their explanation before their interface button");
+            a.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,2),Is.True);
-            Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.False);
+            Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.True,
+                "Bastion III opens the next chapter after the player learns the system");
         }
         [Test] public void TwentyFiveStagesPerChapterHaveAuthoredDistinctScenesAndBoss()
         {
@@ -104,7 +123,17 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().LastBattleReport.OwnRoster,Is.Not.Null);
             Assert.That(g.Snapshot().LastBattleReport.OwnRoster.Total,
                 Is.EqualTo(g.Snapshot().LastBattleReport.Troops));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before),
+                "Vigilant rewards remain consumables until explicitly used");
+            var packet=g.Snapshot().ResourceRewards.Packets.Single(p=>
+                p.ReceiptId=="vigilant:stage:1:wood");
+            Assert.That(packet.Amount,Is.EqualTo(32));
+            Assert.That(packet.Collected&&!packet.Used,Is.True);
+            int packets=g.Snapshot().ResourceRewards.Packets.Count;
+#else
             Assert.That(g.Snapshot().Resources.Wood,Is.GreaterThan(before));
+#endif
             long revision=g.Snapshot().Revision;
             int loot=g.Snapshot().Resources.Wood;
             Assert.That(g.Execute(cmd).Ok,Is.True);
@@ -113,6 +142,16 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(Cmd(g,"repeat","VigilantBattle","1")).Ok,Is.False);
             g=new LocalGateway(time,save);
             Assert.That(g.Snapshot().Retention.LastClearedStage,Is.EqualTo(1));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().ResourceRewards.Packets.Count,Is.EqualTo(packets));
+            Assert.That(g.Execute(Cmd(g,"use-vigilant-wood",ResourceRewardCommands.UsePacket,
+                packet.ReceiptId)).Ok,Is.True);
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before+32));
+            g=new LocalGateway(time,save);
+            Assert.That(g.Execute(Cmd(g,"reuse-vigilant-wood",ResourceRewardCommands.UsePacket,
+                packet.ReceiptId)).Ok,Is.False);
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before+32));
+#endif
         }
         [TestCase(8)]
         [TestCase(9)]
@@ -217,10 +256,11 @@ namespace Eldoria.Tests
         [Test] public void ScoutDiscoveriesAreDeterministicAndPersistAfterReloadWithoutDoubleClaim()
         {
             var time=new Clock();var store=new MemoryStateStore{
-                Value=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+                Value=new PlayerState{BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
                     ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                     Available=new ArmyRoster{ArcherT1=100}}
             };
+            store.Value.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             var gateway=new LocalGateway(time,store);
             var order=gateway.Snapshot().Retention.Orders.First(x=>x.Kind!=0);
             var expected=EarlyRetentionRules.ScoutDiscoveryText(order);
@@ -278,6 +318,29 @@ namespace Eldoria.Tests
                 Is.EqualTo(original.Power),"The historic battle engine must retain the old baseline");
             state.Retention.AldricExperience=999999;
             Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(20));
+        }
+
+        [Test] public void PairingLyraUsesEarnedBestMasteryWithoutReducingSoloLevels()
+        {
+            var state=Ready();
+            state.ChapterThree.LyraRecruited=true;
+            state.Retention.AldricExperience=560; // Aldric mastery 7
+            state.Retention.LyraExperience=0;      // newly recruited Lyra
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(7));
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"lyra"),Is.Zero);
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra"),Is.EqualTo(7),
+                "A newly recruited support hero must not halve mastery already earned by the leader");
+
+            // A more experienced Lyra can contribute her earned mastery, but
+            // neither hero's individual experience or combat rules are rewritten.
+            state.Retention.LyraExperience=960;
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra"),Is.EqualTo(12));
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(7));
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"lyra"),Is.EqualTo(12));
+            state.Retention.AldricExperience=int.MaxValue;
+            state.Retention.LyraExperience=int.MaxValue;
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra"),Is.EqualTo(20),
+                "Paired mastery must stay capped and never overflow saved XP");
         }
 
         [Test] public void LegacyScoutClaimsKeepCountAndFamiliesAfterUtcCleanupAndReload()

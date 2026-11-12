@@ -568,8 +568,12 @@ namespace Eldoria.Tests
             var caption = objective.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(x => x.name == "Label");
             if (caption != null)
-                Assert.That(caption.enabled, Is.False,
-                    "Rotating the device must not resurrect the old rectangular CTA label");
+            {
+                Assert.That(caption.enabled, Is.True,
+                    "The beta10 objective must now have a readable, intentional caption");
+                Assert.That(caption.text, Is.Not.Empty,
+                    "The compact manuscript action must not be a mystery icon");
+            }
             Assert.That(DirectChild(objective.transform, "V3 / original Valoria heraldic sigil"),
                 Is.Not.Null, "Reuse Valoria's actual established crest");
 
@@ -601,27 +605,31 @@ namespace Eldoria.Tests
             Assert.That(entries, Is.Not.Null);
             Assert.That((bool)Member(nav, "ChronicleLayout"), Is.True,
                 "The original five-entry Crónica Real art must be active");
-            // Five genuine destinations at the safe-bottom edge. Locked
-            // actions can be visible but must never become interactable.
+            // The beta10 owner explicitly rejected premature Army/Build/Chronicles
+            // buttons. An initially locked control must be absent, not a disabled
+            // placeholder competing for scarce phone navigation space.
             var visible = entries.Cast<object>().Where(entry =>
             {
                 var liveButton = Member(entry, "Button") as Button;
                 return liveButton && liveButton.gameObject.activeSelf;
             }).ToArray();
-            const int expectedVisible = 5; // Stable approved navigation; locks remain real
+            Assert.That(visible.Length, Is.InRange(1, 2),
+                "Beta10 footer shows only currently useful World/City and Mail controls");
+            Assert.That(visible.Any(entry =>
+                Member(entry, "Section").ToString() == "Mailbox"), Is.True,
+                "Mail must be a working bottom-navigation destination");
             foreach (var entry in entries)
             {
-                string category = Member(entry, "Section").ToString();
-                if(category != "Army" && category != "World") continue;
-                bool trulyUnlocked = (bool)Call(host, "CanOpen", Member(entry, "Section"));
-                var entryButton=Member(entry, "Button") as Button;
-                Assert.That(entryButton.gameObject.activeSelf, Is.True,
-                    "All five approved destinations remain visible");
-                Assert.That(entryButton.interactable, Is.EqualTo(trulyUnlocked),
-                    "Visible locked Army/World controls must not bypass narrative unlocks");
+                var section = Member(entry, "Section");
+                string category = section.ToString();
+                var button = Member(entry, "Button") as Button;
+                bool allowed = category == "World" || category == "Mailbox";
+                bool enabled = allowed && (bool)Call(host, "CanOpen", section);
+                Assert.That(button.gameObject.activeSelf, Is.EqualTo(enabled),
+                    "Only taught and unlocked destinations may appear: " + category);
+                Assert.That(button.interactable, Is.EqualTo(enabled),
+                    "Never enable a hidden or premature command: " + category);
             }
-            Assert.That(visible.Length, Is.EqualTo(expectedVisible),
-                "Only coherent Crónica Real destinations may appear at this Bastion level");
             foreach (var entry in visible)
             {
                 var navigationCaption = Member(entry, "Label") as Text;
@@ -631,10 +639,10 @@ namespace Eldoria.Tests
                 Assert.That(navigationCaption.preferredHeight, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.height + 1f),
                     "Readable navigation type must have enough line height to render");
                 string section = Member(entry, "Section").ToString();
-                if (section == "Army" || section == "World") continue;
+                if (section == "World") continue;
                 var button = Member(entry, "Button") as Button;
                 Assert.That(button.interactable, Is.True,
-                    "Only an existing real kingdom, build or chapter destination can be enabled");
+                    "The visible Mail destination must be a working mailbox command");
             }
             int active = 0;
             foreach (var entry in entries)
@@ -818,6 +826,17 @@ namespace Eldoria.Tests
 
             Component host = null, hud = null;
             yield return Boot((h, v) => { host = h; hud = v; });
+            // Beyond the environment flag, the actual runtime must confirm
+            // it is using the system temp directory before any paid command.
+            var cityForProbe=Member(host, "City");
+            Assert.That(Member(cityForProbe, "Probe"), Is.EqualTo(true),
+                "Construction timer must never run against a canonical player save");
+            var saveFile=Member(cityForProbe, "SaveFile") as string;
+            Assert.That(saveFile, Is.Not.Null.And.Not.Empty);
+            Assert.That(System.IO.Path.GetFullPath(saveFile).StartsWith(
+                System.IO.Path.GetFullPath(System.IO.Path.GetTempPath()),
+                StringComparison.OrdinalIgnoreCase),Is.True,
+                "Native construction test requires an isolated disposable save path");
 
             var guidance = Member(host, "Guidance") as Behaviour;
             if (guidance) guidance.enabled = false;
@@ -854,22 +873,127 @@ namespace Eldoria.Tests
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
             Assert.That(Member(management, "IsOpen"), Is.EqualTo(false));
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "The paid work must show one anchored timer immediately");
+            // The existing illustrated building cartouche already owns the
+            // selected site's progress; V3 intentionally suppresses a duplicate
+            // floating timer until the player deselects that building. The
+            // previous native test mistakenly required both at once.
+            // This integration assembly intentionally accesses HUD V2 through
+            // the established reflection adapter rather than a missing using.
+            var illustrated = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            bool selectedIllustrationVisible = illustrated &&
+                (bool)Member(illustrated, "ChronicleIllustratedBuildingVisible");
+            Assert.That(selectedIllustrationVisible, Is.True,
+                "Selected paid sawmill retains its genuine beta10 illustrated operation sheet");
+            Assert.That(Member(v3, "ActiveTimers"),
+                Is.EqualTo(0),
+                "A selected illustrated construction must have no second timer");
             Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
                 "The paid offer is never duplicated while work is active");
             Assert.That(command.interactable, Is.False,
                 "Paid construction cannot be purchased twice");
             var operationTime = Member(operation, "Time") as string;
             Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
+                x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
+                Is.True, "The illustrated selected sheet must display the gateway countdown");
+            Call(hud, "SelectBuilding", "");
+            // The illustrated V2 cartouche and the V3 clock are synchronized
+            // from two distinct LateUpdate callbacks. Wait for the real
+            // unselected viewport and camera layout instead of demanding that
+            // both presentation layers finish before the very next frame.
+            yield return null;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            Call(v3, "SynchronizeNow");
+            var siteForDiagnostic = (Member(v3, "FindAnchor") as Delegate)
+                ?.DynamicInvoke("sawmill") as Transform;
+            var sceneCamForDiagnostic = Member(host, "PlayerCamera") as Camera;
+            var projectedSite = siteForDiagnostic && sceneCamForDiagnostic
+                ? sceneCamForDiagnostic.WorldToScreenPoint(siteForDiagnostic.position)
+                : Vector3.zero;
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "Visible paid work must expose one attached timer after normal V2/V3 frame synchronization. " +
+                "selected=" + Member(hud, "SelectedBuildingId") +
+                " siteScreen=" + projectedSite +
+                " cameraSize=" + (sceneCamForDiagnostic
+                    ? sceneCamForDiagnostic.pixelRect.ToString() : "null"));
+            Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
                 x.gameObject.name=="Live remaining time" &&
                 x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
                 Is.True,"The genuine city timer must show the gateway countdown");
-            Call(hud, "SelectBuilding", "");
-            Call(v3, "SynchronizeNow");
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "Closing the contextual selection must preserve the real timer");
 
+            // Owner-reported regression: the previous compact countdown was
+            // docked at the right screen edge, independent of its building.
+            // Measure genuine projected pixels on the real canonical camera.
+            var timer = hud.GetComponentsInChildren<CanvasGroup>(true)
+                .Single(x => x.name == "V3 / real-time operation / sawmill");
+            Assert.That(timer.alpha, Is.GreaterThan(.5f));
+            var timerCanvas = timer.GetComponentInParent<Canvas>();
+            Assert.That(timerCanvas, Is.Not.Null);
+            var timerCamera = timerCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+                ? null : timerCanvas.worldCamera;
+            var camera = Member(host, "PlayerCamera") as Camera;
+            Assert.That(camera, Is.Not.Null);
+            var find = Member(v3, "FindAnchor") as Delegate;
+            Assert.That(find, Is.Not.Null);
+            var target = find.DynamicInvoke("sawmill") as Transform;
+            Assert.That(target, Is.Not.Null);
+            var collider = target.GetComponent<Collider>() ??
+                target.GetComponentInChildren<Collider>();
+            Func<float> projectedBuildingX = () =>
+            {
+                if (!collider || !collider.enabled)
+                    return camera.WorldToScreenPoint(target.position).x;
+                var b = collider.bounds;
+                float left=float.PositiveInfinity, right=float.NegativeInfinity;
+                for(int i=0;i<8;++i)
+                {
+                    var corner=new Vector3((i&1)==0?b.min.x:b.max.x,
+                        (i&2)==0?b.min.y:b.max.y,
+                        (i&4)==0?b.min.z:b.max.z);
+                    var screen=camera.WorldToScreenPoint(corner);
+                    if(screen.z<=camera.nearClipPlane || screen.z>=camera.farClipPlane)continue;
+                    left=Mathf.Min(left,screen.x);
+                    right=Mathf.Max(right,screen.x);
+                }
+                Assert.That(float.IsInfinity(left), Is.False, "Building must project on screen");
+                return (left+right)*.5f;
+            };
+            Func<Vector2> projectedTimer = () =>
+                RectTransformUtility.WorldToScreenPoint(timerCamera,timer.transform.position);
+            var beforeTimer=projectedTimer();
+            var beforeBuilding=projectedBuildingX();
+            Assert.That(Mathf.Abs(beforeTimer.x-beforeBuilding),
+                Is.LessThanOrEqualTo(42f*timerCanvas.scaleFactor),
+                "The paid construction timer must initially sit beside the real building");
+
+            var cameraBefore=camera.transform.position;
+            // Synchronize in the same frame so focus easing cannot hide a
+            // fixed-HUD countdown error behind unrelated camera animation.
+            camera.transform.position+=new Vector3(2f,0f,0f);
+            Call(v3,"SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            var afterTimer=projectedTimer();
+            var afterBuilding=projectedBuildingX();
+            Assert.That(timer.alpha, Is.GreaterThan(.5f));
+            Assert.That(Mathf.Abs(afterBuilding-beforeBuilding),Is.GreaterThan(2f),
+                "Camera must actually move the world target in screen pixels");
+            Assert.That(Mathf.Abs(afterTimer.x-beforeTimer.x),Is.GreaterThan(1f),
+                "Construction countdown must follow the building, not remain fixed to HUD");
+            Assert.That(Mathf.Abs((afterTimer.x-beforeTimer.x)-
+                (afterBuilding-beforeBuilding)),Is.LessThanOrEqualTo(
+                    12f*timerCanvas.scaleFactor),
+                "Countdown and world building must follow the same camera displacement");
+
+            camera.transform.position+=new Vector3(2000f,0f,0f);
+            Call(v3,"SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(timer.alpha, Is.LessThan(.5f),
+                "When the building leaves the camera the countdown must not park at a side");
+            camera.transform.position=cameraBefore;
+            Call(v3,"SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(timer.alpha, Is.GreaterThan(.5f),
+                "When the building returns, its countdown must reappear next to it");
         }
 
         [UnityTest]

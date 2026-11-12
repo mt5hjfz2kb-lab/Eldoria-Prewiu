@@ -1,0 +1,350 @@
+name: Integrated beta — exclusive Vigilia, treasures and saved rewards
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: [tools/eldoria-private-beta/integrated-ui-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-pr179-integrated-ui-native
+  cancel-in-progress: false
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts
+            Unity/Assets/Eldoria/BreachWatch
+            tools/breach-watch
+            tools/reward-experience
+            tools/eldoria-v41
+            tools/march-capacity
+            tools/narrative-unity
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Compile and test integrated gameplay, save and UI sources
+        run: |
+          dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
+          dotnet run -c Release --project tools/reward-experience/Gateway.Smoke.csproj
+          dotnet run -c Release --project tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj
+          dotnet run -c Release --project tools/march-capacity/Smoke.csproj
+          dotnet run -c Release --project tools/narrative-unity/NarrativeProbe.csproj
+          dotnet run -c Release --project tools/breach-watch/SyntaxAudit.csproj -- Unity/Assets/Eldoria/BreachWatch
+  owner-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.check.outputs.authorized }}
+      revision: ${{ steps.check.outputs.revision }}
+      owner: ${{ steps.check.outputs.owner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: request-source
+          sparse-checkout: tools/eldoria-private-beta/integrated-ui-request.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify exact claim without consuming Windows
+        id: check
+        shell: bash
+        run: |
+          node <<'JS'
+          const fs=require('fs');
+          const request=JSON.parse(fs.readFileSync('request-source/tools/eldoria-private-beta/integrated-ui-request.json','utf8'));
+          const d=JSON.parse(fs.readFileSync('live-main/pipeline/active-workstreams.json','utf8'));
+          const w=d.active.find(x=>x.id==='eldoria-private-beta-i-v-20261107');
+          const holders=d.active.filter(x=>x.ownership_state==='claimed'&&(x.resources||[]).includes('windows-runner-heavy'));
+          const ok=!!w&&holders.length===1&&holders[0]===w&&typeof w.owner==='string'&&w.owner.length>0&&w.ownership_revision===request.ownership_revision&&w.owner===request.owner&&w.ownership_state==='claimed'&&w.branch==='feature/eldoria-private-beta-i-v-20261107' && w.integration_authorization?.integration_pr===179;
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\nowner='+(ok?w.owner:'')+'\n');
+          if(!ok)throw new Error('Exact integration owner/lease mismatch');
+          console.log('BREACHWATCH_EXCLUSIVE_OWNER_PASS');
+          JS
+  native:
+    needs: [owner-preflight, source-contract]
+    if: needs.owner-preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 120
+    env:
+      VIGILIA_TYPOGRAPHY_AB: '1'
+      ELDORIA_NEW_UI_ONLY: '1'
+      ISSUE186_VIGILIA_SOURCE: ${{ github.sha }}
+    steps:
+      - name: Use installed Git without machine mutation
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Installed Git is unavailable'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH";Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - name: Check live claim and exclusive editor access
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+          LEASE_OWNER: ${{ needs.owner-preflight.outputs.owner }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Eldoria-BreachWatch'}
+          $raw=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
+          $encoded=[string]$raw.content
+          if($raw.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($encoded)){
+            if([string]$raw.sha -notmatch '^[a-f0-9]{40}$'){
+              throw 'Large registry identity invalid; refuse native editor'
+            }
+            $blobUrl='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+$raw.sha
+            $blob=Invoke-RestMethod -Uri $blobUrl -Headers $headers
+            if($blob.sha -ne $raw.sha -or $blob.encoding -ne 'base64' -or
+               [string]::IsNullOrWhiteSpace([string]$blob.content)){
+              throw 'Large registry immutable blob mismatch'
+            }
+            $encoded=[string]$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or [string]::IsNullOrEmpty($env:LEASE_OWNER) -or
+              $holders[0].owner -ne $env:LEASE_OWNER -or
+             $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or
+             [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Native lease moved; fail closed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied; do not interfere'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not found'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity Editor $version"}
+          Write-Host "BREACHWATCH_NATIVE_EDITOR_READY $version"
+      - name: Fetch exact PR source safely with sparse Unity checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'forja-thin-native-source-42408083695'
+          $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+          if(-not(Test-Path (Join-Path $root '.git'))){
+            $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-native-source-"+$env:GITHUB_RUN_ID)
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            & git -C $root init
+            if($LASTEXITCODE){throw 'Git init failed'}
+            & git -C $root remote add origin $url
+          }
+          if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
+          # Preserve existing private Unity inputs before any source switch.
+          # Unknown code/settings are archived and refused; never force checkout.
+          $preserved=Join-Path $env:RUNNER_TEMP ('breachwatch-preserved-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          $helper=Join-Path $env:RUNNER_TEMP ('breachwatch-preserve-helper-'+$env:GITHUB_RUN_ID+'.ps1')
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='vigilia-native-input-preservation'}
+          $pinned="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/breach-watch/Preserve-OwnedNativeInputState.ps1?ref=$env:GITHUB_SHA"
+          $saved=Invoke-RestMethod -Uri $pinned -Headers $headers
+          if($saved.encoding -ne 'base64' -or -not $saved.content){throw 'Pinned input-preservation helper unavailable'}
+          [IO.File]::WriteAllBytes($helper,[Convert]::FromBase64String($saved.content))
+          & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          & git -C $root config core.sparseCheckout true
+          & git -C $root config core.sparseCheckoutCone false
+          $patterns=@('/Unity/**','/tools/breach-watch/**','/tools/daily-treasures/**','/tools/reward-experience/**')
+          for($i=1;$i -le 17;$i++){$patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')}
+          foreach($n in @('39131782550','39132144937','39132392803','39132807199','39133202399','39136444844','39137079921','39138143327')){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
+          }
+          [IO.File]::WriteAllLines((Join-Path $root '.git/info/sparse-checkout'),[string[]]$patterns,(New-Object Text.UTF8Encoding($false)))
+          $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git source fetch failed'}
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Git source checkout failed'}
+          if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){throw 'Source commit mismatch'}
+          foreach($required in @(
+            'Unity/ProjectSettings/ProjectVersion.txt',
+            'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs',
+            'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs',
+            'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity')){
+            if(-not(Test-Path (Join-Path $root $required))){throw "Missing exact proof input: $required"}
+          }
+          Add-Content $env:GITHUB_ENV "BW_SOURCE=$root"
+          Write-Host "BREACHWATCH_EXACT_BRANCH_SOURCE_READY $env:GITHUB_SHA"
+      - name: Run real Unity city and independent UI capture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-native.log'
+          # Previous CI mistakenly accepted an old report when Unity failed
+          # during runtime. Delete ONLY our isolated evidence folder before
+          # capture, and require exact-sha fresh outputs plus a Unity PASS log.
+          $folder=Join-Path $project 'BreachWatchNativeEvidence'
+          if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+          if(Test-Path $log){Remove-Item -LiteralPath $log -Force}
+          $captureStart=[DateTime]::UtcNow
+          $params=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+             '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchNativeEvidence.CaptureBatch',
+             '-logFile',('"'+$log+'"'))
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $params -PassThru
+          $limit=(Get-Date).AddMinutes(66)
+          while(-not $process.HasExited -and (Get-Date) -lt $limit){Start-Sleep 5;$process.Refresh()}
+          if(-not $process.HasExited){Stop-Process -Id $process.Id -Force;throw 'Own Unity process exceeded hard bound'}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 130}
+            throw "Unity native failed: exit=$($process.ExitCode)"
+          }
+          $reportFile=Join-Path $folder 'BreachWatchNativeEvidence.json'
+          if(-not(Test-Path $reportFile)){throw 'Unity native report missing'}
+          $report=Get-Content $reportFile -Raw|ConvertFrom-Json
+          if($report.source -ne $env:GITHUB_SHA){
+            throw "Stale native report expected=$env:GITHUB_SHA actual=$($report.source)"
+          }
+          if((Get-Item $reportFile).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+            throw "Old pre-existing native report was reused"
+          }
+          if(-not(Test-Path $log) -or -not(Select-String -Path $log -Pattern 'BREACH_WATCH_NATIVE_CAPTURE_PASS' -SimpleMatch -Quiet)){
+            throw "Unity did not emit a genuine native capture PASS; stale artifacts or runtime errors cannot count as success"
+          }
+          if(@($report.shots).Count -ne 8 -or $report.screenshotCount -ne 8){throw 'Expected 8 native standalone city/Bastion screenshots'}
+          if($report.status -ne 'UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING' -or $report.artworkApproved){throw 'Evidence falsely claims artistic approval'}
+          foreach($s in $report.shots){
+            $file=Join-Path $folder $s.file
+            if(-not(Test-Path $file)){throw "Missing screenshot $($s.file)"}
+            if((Get-Item $file).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+              throw "Stale output image not from current Unity process: $($s.file)"
+            }
+            if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
+          }
+          Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
+      - name: Capture four real destination screens in disposable Unity progression fixture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $folder=Join-Path $project 'BreachWatchDestinationEvidence'
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-destinations.log'
+          if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+          if(Test-Path $log){Remove-Item -LiteralPath $log -Force}
+          $start=[DateTime]::UtcNow
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchDestinationNativeEvidence.CaptureBatch',
+            '-logFile',('"'+$log+'"'))
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $limit=(Get-Date).AddMinutes(45)
+          while(-not $process.HasExited -and (Get-Date) -lt $limit){Start-Sleep 5;$process.Refresh()}
+          if(-not $process.HasExited){Stop-Process -Id $process.Id -Force;throw 'Own destination Unity process exceeded bound'}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 150}
+            throw "Real destination Unity preview failed: exit=$($process.ExitCode)"
+          }
+          $reportFile=Join-Path $folder 'BreachWatchDestinationEvidence.json'
+          if(-not(Test-Path $reportFile)){throw 'Missing genuine destinations report'}
+          $data=Get-Content $reportFile -Raw | ConvertFrom-Json
+          if($data.source -ne $env:GITHUB_SHA){throw 'Native destination report source SHA mismatch'}
+          if((Get-Item $reportFile).LastWriteTimeUtc -lt $start.AddSeconds(-3)){throw 'Destination evidence is stale'}
+          if($data.status -ne 'VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING' -or
+             $data.artworkApproved -or -not $data.probeOnly -or -not $data.saveUnchanged){throw 'Destination result claims unjustified artistic/gameplay PASS'}
+          if(@($data.screens).Count -ne 16 -or $data.screenshotCount -ne 16){throw 'Expected 4 destinations x 4 screen sizes'}
+          foreach($screen in $data.screens){
+            $file=Join-Path $folder $screen.file
+            if(-not(Test-Path $file)){throw "Missing native destination screenshot $($screen.file)"}
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen -or
+               $screen.interactiveButtons -lt 1){throw "Old UI visible or destination has no live controls: $($screen.file)"}
+            if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){throw "Modified destination screenshot $($screen.file)"}
+          }
+          # Unlike the earlier empty-mail-only snapshots, the canonical
+          # list and report must be demonstrated with an isolated in-memory
+          # event. The report itself must explicitly say ART REVIEW PENDING.
+          $mailFile=Join-Path $folder 'BreachWatchPopulatedMailEvidence.json'
+          if(-not(Test-Path $mailFile)){throw 'Missing actual populated mail UI evidence'}
+          $mailReport=Get-Content $mailFile -Raw | ConvertFrom-Json
+          if($mailReport.source -ne $env:GITHUB_SHA -or
+             $mailReport.status -ne 'VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING' -or
+             $mailReport.artworkApproved -or -not $mailReport.probeOnly -or
+             -not $mailReport.saveUnchanged -or
+             $mailReport.actualMailboxFirstHitClicks -ne 2 -or
+             @($mailReport.screens).Count -ne 4){
+             throw 'Populated mail report missing or falsely claims real saved message/art approval'
+          }
+          foreach($screen in $mailReport.screens){
+            $image=Join-Path $folder $screen.file
+            if(-not(Test-Path $image)){throw "Missing actual mail list/detail screenshot $($screen.file)"}
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen -or
+               $screen.interactiveButtons -lt 1){throw "Old mail art or no genuine buttons: $($screen.file)"}
+            if((Get-FileHash $image -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){
+               throw "Tampered or stale populated mail art screenshot: $($screen.file)"
+            }
+          }
+          if(-not(Select-String -Path $log -Pattern 'VIGILIA_REAL_DESTINATIONS_NATIVE_CAPTURED_ART_REVIEW_PENDING' -SimpleMatch -Quiet)){
+             throw 'Native Editor did not log actual destination capture PASS'
+          }
+          Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_4_POPULATED_MAIL_SCREENSHOTS_ART_PENDING'
+      - name: Reject imported-font clipping and verify genuine reversible typography A/B
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:BW_SOURCE 'Unity'
+          $files=@(Get-ChildItem "$root/BreachWatch*Evidence/typography-ab/*.json" -File)
+          if($files.Count -lt 20){throw "Missing native typography A/B cases: $($files.Count)"}
+          $bad=@()
+          foreach($f in $files){
+            $p=Get-Content $f.FullName -Raw|ConvertFrom-Json
+            if($p.source -ne $env:GITHUB_SHA -or -not $p.isolatedInkMaskCalibrated -or -not $p.restored -or $p.artApproved -or @($p.before).Count -ne @($p.after).Count){throw "Stale or non-comparable typography A/B $($f.Name)"}
+            $candidate=Join-Path $f.DirectoryName $p.candidateFile
+            $baseline=Join-Path (Split-Path $f.DirectoryName -Parent) $p.baselineFile
+            if((Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.candidateSha256 -or
+               (Get-FileHash $baseline -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.baselineSha256){throw 'A/B PNG byte identity mismatch'}
+            if(@($p.violations).Count){$bad+=@($p.violations|ForEach-Object {"$($f.Name): $_"})}
+          }
+          if($bad.Count){throw ("Candidate font/layout rejected; genuine PNGs retained: "+($bad -join '; '))}
+          Write-Host "GENUINE_TYPOGRAPHY_AB_IMPORTED_FONTS_RESTORED $($files.Count); ART_APPROVAL_PENDING"
+      - name: Verify real treasure and bag rewards on the same integrated source
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          foreach($fixture in @(
+            @{method='Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture';folder='DailyTreasureNativeEvidence'},
+            @{method='Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Capture';folder='Issue186BagCombinedNativeEvidence'})){
+            $folder=Join-Path $project $fixture.folder
+            if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+            $log=Join-Path $env:RUNNER_TEMP ($fixture.folder+'.log')
+            $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod',$fixture.method,'-logFile',('"'+$log+'"'))
+            $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $process.WaitForExit(2400000)){Stop-Process -Id $process.Id -Force;throw 'Own integrated fixture exceeded bound'}
+            if($process.ExitCode -ne 0){Get-Content $log -Tail 100;throw ('Integrated fixture failed: '+$fixture.method)}
+            $report=Join-Path $folder 'report.json'
+            if(-not(Test-Path $report)){throw 'Current integrated fixture report missing'}
+            $data=Get-Content $report -Raw|ConvertFrom-Json
+            $source=if($data.source){$data.source}else{$data.resourceSource}
+            if($source -ne $env:GITHUB_SHA){throw 'Integrated fixture source mismatch'}
+            if([string]$data.status -match 'FAIL'){throw 'Integrated fixture reports failure'}
+          }
+      - name: Preserve real Unity screenshots and editor error logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-first-native-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            ${{ env.BW_SOURCE }}/Unity/BreachWatchNativeEvidence/**
+            ${{ env.BW_SOURCE }}/Unity/BreachWatchDestinationEvidence/**
+            ${{ env.BW_SOURCE }}/Unity/DailyTreasureNativeEvidence/**
+            ${{ env.BW_SOURCE }}/Unity/Issue186BagCombinedNativeEvidence/**
+            ${{ runner.temp }}/DailyTreasureNativeEvidence.log
+            ${{ runner.temp }}/Issue186BagCombinedNativeEvidence.log
+            ${{ runner.temp }}/breachwatch-native.log
+            ${{ runner.temp }}/breachwatch-destinations.log
+            ${{ runner.temp }}/breachwatch-preserved-*/**
+          if-no-files-found: warn
+          retention-days: 21
+

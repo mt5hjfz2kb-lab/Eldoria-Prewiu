@@ -22,7 +22,10 @@ env:
   CANDIDATE_REVISION: native325-mobile10-pretest-ux
 jobs:
   publish:
-    if: github.event_name == 'workflow_dispatch'
+    # P0 owner playability lock: this historical one-route deployment would
+    # replace the restored playable beta10 and discard its legacy routes.
+    # Never use a legacy workflow for a new A/B, even via manual dispatch.
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
@@ -95,7 +98,14 @@ jobs:
               time.sleep(5)
           PY
   publish-mobile11-world-anchored:
-    if: github.event_name == 'push'
+    # P0 owner iPhone restart: never replace restored beta10 just because
+    # a workflow file changes. Future newer builds require an explicit,
+    # reviewed [publish-mobile11] commit and fresh physical-device gates.
+    # P0: mobile11 is physically owner-reported to restart Safari. Its
+    # previously verified desktop CI cannot override the recovered beta10.
+    # Future iPhone candidates must use a distinct immutable A/B route with
+    # physical-device QA, not this legacy single-route publisher.
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 115
     environment:
@@ -160,6 +170,23 @@ jobs:
           name: mobile11-desktop-apple-gpu-not-iphone-certification
           github-token: ${{ github.token }}
           path: apple-evidence
+      - name: Checkout audited, frozen opt-in Pages pilot scripts
+        uses: actions/checkout@v4
+        with:
+          ref: a3ef98d3a3685c509576479f4da2aab2331dd94d
+          sparse-checkout: |
+            tools/eldoria-private-beta/pages
+            tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt
+          sparse-checkout-cone-mode: false
+          path: pilot-source
+          persist-credentials: false
+      - name: Restore prior approved Pages routes from immutable owner artifact
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42600463889
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: prior-site-archive
       - name: Verify playable files, identity and Safari/WebKit baseline comparison
         run: |
           python - <<'PY'
@@ -176,22 +203,55 @@ jobs:
           assert not identity['physical_mobile_tested']
           for name in ('index.html','play.js','build-manifest.json'):
             assert (site/name).is_file(), f'Missing playable entry {name}'
-          report=json.loads(Path('apple-evidence/candidate/report.json').read_text())
-          control=json.loads(Path('apple-evidence/control/report.json').read_text())
+          report=json.loads(Path('apple-evidence/evidence/candidate/report.json').read_text())
+          control=json.loads(Path('apple-evidence/evidence/control/report.json').read_text())
           assert report['passed'] and control['passed'], 'Desktop WebKit A/B failed'
           assert report['identity']['source_sha']=='8dc875430241a49b4d417782dfeab2d4c7a4f315', 'WebKit source mismatch'
           assert report['identity']['revision']=='native325-mobile11-building-anchor', 'WebKit revision mismatch'
-          output=Path('site/beta-native325')
+          # A Pages deployment REPLACES every file, not only beta-native325.
+          # Recover non-beta public routes from the exact earlier approved
+          # github-pages artifact, so that this release cannot erase the
+          # already-live unity-owner game or home entry.
+          import tarfile
+          from pathlib import PurePosixPath
+          output_root=Path('site')
+          old=Path('prior-site-archive/artifact.tar')
+          assert old.is_file() and old.stat().st_size>100_000_000, 'Missing exact prior Pages restore artifact'
+          recovered=[]
+          with tarfile.open(old,'r:*') as archive:
+            for member in archive:
+              path=PurePosixPath(member.name)
+              parts=path.parts
+              if path.is_absolute() or '..' in parts or '\\' in member.name:
+                raise RuntimeError('Unsafe prior Pages archive path: '+member.name)
+              if not parts or parts[0]=='beta-native325':continue
+              if member.isdir():continue
+              if not member.isfile():raise RuntimeError('Prior Pages archive has non-regular file')
+              destination=output_root.joinpath(*parts)
+              destination.parent.mkdir(parents=True,exist_ok=True)
+              with archive.extractfile(member) as original, destination.open('wb') as restored:
+                shutil.copyfileobj(original,restored,length=1024*1024)
+              recovered.append(str(path))
+          assert (output_root/'unity-owner/index.html').is_file(), 'Live legacy Unity route not preserved'
+          assert (output_root/'unity-owner/release-identity.json').is_file(), 'Previous owner identity missing'
+          assert (output_root/'index.html').is_file(), 'Existing root route missing'
+          output=output_root/'beta-native325'
           shutil.copytree(site,output)
-          Path('site/.nojekyll').touch()
-          Path('site/index.html').write_text(
-            '<!doctype html><html lang="es"><meta charset="utf-8">'
-            '<meta http-equiv="refresh" content="0;url=./beta-native325/">'
-            '<title>Eldoria</title><a href="./beta-native325/">Abrir beta Eldoria</a></html>')
-          size=sum(p.stat().st_size for p in Path('site').rglob('*') if p.is_file())
-          assert size<950_000_000, 'Pages asset exceeds safe 950 MB budget'
-          print('PAGES_MOBILE11_VERIFIED_STAGE',len(list(output.rglob('*'))),size)
+          (output_root/'.nojekyll').touch()
+          size=sum(p.stat().st_size for p in output_root.rglob('*') if p.is_file())
+          assert size<1_073_741_824, 'Combined certified Pages exceeds official 1GiB; refuse destructive release'
+          print('PAGES_MOBILE11_VERIFIED_STAGE',len(list(output.rglob('*'))),size,'preserved_previous_files',len(recovered))
           PY
+          # Separate opt-in QA entry; exact certified game index remains untouched.
+          # No invitations, QA events only, and no Unity progress claim until
+          # an exact native build of the source-defined signal emitter passes.
+          # Freeze the tested opt-in preview scripts. Never substitute a
+          # moving branch or unreviewed beta source during a Pages release.
+          # P0 iPhone restart breadcrumbs are opt-in/local to pilot only;
+          # no change to shipped Unity, no claim of physical mobile fix.
+          test "$(git -C pilot-source rev-parse HEAD)" = a3ef98d3a3685c509576479f4da2aab2331dd94d
+          node --test pilot-source/tools/eldoria-private-beta/pages/*.test.mjs
+          node pilot-source/tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-native325 pilot-source/tools/eldoria-private-beta/pages
           node --check site/beta-native325/play.js
           node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
       - name: Configure existing GitHub Pages route
@@ -217,7 +277,23 @@ jobs:
               with urllib.request.urlopen(url+'index.html?verify='+str(attempt),timeout=20) as response:
                 html=response.read()
               assert b'play.js' in html or b'unity' in html.lower(), 'Not a playable WebGL page'
+              with urllib.request.urlopen(url+'pilot-preview-manifest.json?verify='+str(attempt),timeout=20) as response:
+                pilot=json.load(response)
+              assert pilot['source_sha']==identity['source_sha'] and pilot['external_testers_enabled'] is False
+              assert pilot['telemetry_backend']=='supabase_edge_qa_only'
+              with urllib.request.urlopen(url+'pilot.html?verify='+str(attempt),timeout=20) as response:
+                preview=response.read()
+              assert b'pilot-bootstrap.mjs' in preview and b'ELDORIA_PILOT_QA' in preview
+              assert b'pilot-bootstrap.mjs' not in html, 'Default certified game must not be instrumented'
+              # The first public deployment must preserve previously live
+              # routes. Do not claim a successful release if it erased the
+              # existing owner game while introducing the QA-only pilot.
+              legacy_url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html?verify='+str(attempt)
+              with urllib.request.urlopen(legacy_url,timeout=20) as response:
+                legacy=response.read()
+              assert b'<html' in legacy.lower(), 'Legacy owner route missing after deployment'
               print('LIVE_OWNER_BETA11_TIMER_ATTACHED_RELEASE_PASS',url)
+              print('LIVE_OPTIONAL_GITHUB_PAGES_QA_PILOT_PRESENT_NOT_TESTER_RELEASE')
               break
             except Exception:
               if attempt==17:raise

@@ -578,75 +578,151 @@ namespace Eldoria.UI.RoyalGold.V2
             Visible(closeGroup, true, true);
         }
 
+        // Only city construction/upgrade clocks follow buildings. Expedition and
+        // gathering summaries can still use the separate compact operation dock.
+        private static bool IsConstructionTimer(string id)
+        {
+            return id == "sawmill" || id == "barracks" || id == "upgrade-barracks" ||
+                   id == "granary" || id == "stoneworks" || id == "bastion";
+        }
+
+        private bool TryPlaceConstructionTimer(string id, Camera camera, float width,
+            float height, out Vector2 center, out Vector2 projectedRoof)
+        {
+            center = projectedRoof = Vector2.zero;
+            // The timer must have a live world target. Never fall back to a
+            // screen-edge HUD dock when the building leaves the camera.
+            var target = FindAnchor(id == "upgrade-barracks" ? "barracks" : id);
+            // A building can be partially onscreen even when its roof
+            // projects outside the safe area. Keep the lower silhouette as
+            // a genuine world anchor instead of hiding a visible build site.
+            bool roofVisible = CanProject(target, camera, safe, true, out projectedRoof);
+            bool footVisible = CanProject(target, camera, safe, false, out var bottomEdge);
+            if (!roofVisible && !footVisible) return false;
+            var projectedAnchor = roofVisible ? projectedRoof : bottomEdge;
+
+            var bounds = safe.rect;
+            float inset = 8f;
+            float minX = bounds.xMin + width * .5f + inset;
+            float maxX = bounds.xMax - width * .5f - inset;
+            if (maxX < minX) return false;
+            float x = Mathf.Clamp(projectedAnchor.x, minX, maxX);
+            // A small edge adjustment is fine; a detached timer at the side
+            // of the display is not. Hide when its building is too far away.
+            if (Mathf.Abs(x - projectedAnchor.x) > Mathf.Min(32f, width * .18f))
+                return false;
+
+            var chronicle = Chronicle;
+            var free = chronicle ? chronicle.GetFreeSceneViewport() :
+                Source.GetVisibleSceneViewport();
+            float lowerLimit = bounds.yMin + Mathf.Max(88f,
+                Mathf.Clamp01(free.yMin) * bounds.height + 8f);
+            float upperLimit = bounds.yMax - Mathf.Max(86f, bounds.height * .11f);
+
+            // The objectives manuscript occupies the upper left, not a
+            // full-width band. Only exclude it when it overlaps this timer.
+            if (chronicle && chronicle.ChronicleObjectiveVisible &&
+                chronicle.ChronicleObjectiveRect)
+            {
+                var corners = new Vector3[4];
+                chronicle.ChronicleObjectiveRect.GetWorldCorners(corners);
+                float left = float.PositiveInfinity;
+                float right = float.NegativeInfinity;
+                float bottom = float.PositiveInfinity;
+                foreach (var corner in corners)
+                {
+                    var local = safe.InverseTransformPoint(corner);
+                    left = Mathf.Min(left, local.x);
+                    right = Mathf.Max(right, local.x);
+                    bottom = Mathf.Min(bottom, local.y);
+                }
+                if (x + width * .5f >= left - 8f &&
+                    x - width * .5f <= right + 8f)
+                    upperLimit = Mathf.Min(upperLimit, bottom - 12f);
+            }
+
+            // Preserve a genuine world-space relationship: directly over the
+            // roof if free, otherwise directly below the building silhouette.
+            // Do not clamp Y onto a HUD edge; that was the observed defect.
+            float aboveY = projectedRoof.y + height * .5f + 12f;
+            if (roofVisible && aboveY - height * .5f >= lowerLimit &&
+                aboveY + height * .5f <= upperLimit)
+            {
+                center = new Vector2(x, aboveY);
+                return true;
+            }
+            if (footVisible)
+            {
+                float belowY = bottomEdge.y - height * .5f - 12f;
+                if (belowY - height * .5f >= lowerLimit &&
+                    belowY + height * .5f <= upperLimit)
+                {
+                    center = new Vector2(x, belowY);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void RenderTimer(string id, Camera camera, bool blocked)
         {
             var timer = timers[id];
-            if (blocked || !live.TryGetValue(id, out var data) ||
-                !data.OperationActive || string.IsNullOrWhiteSpace(data.Time))
+            if (blocked || ((Source.SelectedBuildingId == id ||
+                Source.SelectedBuildingId == "upgrade-" + id) &&
+                Chronicle && Chronicle.ChronicleIllustratedBuildingVisible) ||
+                !live.TryGetValue(id, out var data) || !data.OperationActive ||
+                string.IsNullOrWhiteSpace(data.Time))
             {
                 Visible(timer.Visibility, false, false);
                 if (Source && Source.Building && Source.Building.OperationActive)
                     ProbeTimerState(id, "NO_LIVE_OPERATION_OR_BLOCKED", timer, Vector2.zero);
                 return;
             }
-            var target = FindAnchor(id);
-            if (!CanProject(target, camera, safe, true, out var screen))
+
+            bool construction = IsConstructionTimer(id);
+            float width = Mathf.Min(220f, safe.rect.width - 26f);
+            float height = 46f;
+            Vector2 center;
+            Vector2 projectedRoof = Vector2.zero;
+            if (construction)
             {
-                Visible(timer.Visibility, false, false);
-                ProbeTimerState(id, "ANCHOR_NOT_PROJECTABLE", timer, Vector2.zero);
-                return;
-            }
-            float width = Mathf.Min(254f, safe.rect.width - 26f);
-            float height = 70f;
-            timer.Root.sizeDelta = new Vector2(width, height);
-            timer.Label.Put(data.Time);
-            timer.Label.fontSize = 18;
-            Place(timer.Label.rectTransform, 8f, 7f, width - 16f, 42f);
-            Place(timer.Progress, 10f, 57f, width - 20f, 6f);
-            timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
-            // The original 421-unit portrait top exclusion belonged to an
-            // obsolete full-height quest window. Native 390×844 screenshots
-            // showed it pushing the genuine timer DOWN across the Sawmill's
-            // roof even though the current quest occupies only a small
-            // upper-left manuscript. Use the current HUD geometry instead:
-            // place above the model when it fits, and stay clear of both
-            // the live objective and the actual bottom cartouche.
-            var chronicle=Source?Source.GetComponent<RoyalGoldV2Hud>():null;
-            Rect free=chronicle?chronicle.GetFreeSceneViewport():
-                Source?Source.GetVisibleSceneViewport():new Rect(.06f,.14f,.88f,.72f);
-            // Horizontal-conditional exclusion: a small upper-left quest
-            // never forbids an unrelated countdown above a right-hand roof.
-            // Read the live manuscript's four corners in the SAME safe-local
-            // coordinate space as the actual projected building hotspot.
-            float topMargin=Mathf.Max(105f,safe.rect.height*.12f);
-            if(chronicle&&chronicle.ChronicleObjectiveVisible&&
-                chronicle.ChronicleObjectiveRect)
-            {
-                var mission=chronicle.ChronicleObjectiveRect;
-                var worldCorners=new Vector3[4];mission.GetWorldCorners(worldCorners);
-                float left=float.PositiveInfinity,right=float.NegativeInfinity;
-                float bottom=float.PositiveInfinity;
-                foreach(var corner in worldCorners)
+                if (!TryPlaceConstructionTimer(id, camera, width, height,
+                    out center, out projectedRoof))
                 {
-                    var local=safe.InverseTransformPoint(corner);
-                    left=Mathf.Min(left,local.x);right=Mathf.Max(right,local.x);
-                    bottom=Mathf.Min(bottom,local.y);
+                    Visible(timer.Visibility, false, false);
+                    ProbeTimerState(id, "BUILDING_NOT_VISIBLE_OR_NO_ROOM", timer,
+                        projectedRoof);
+                    return;
                 }
-                if(screen.x+width*.5f>=left-8f&&
-                    screen.x-width*.5f<=right+8f)
-                    topMargin=Mathf.Max(topMargin,safe.rect.yMax-bottom+12f);
             }
-            float bottomMargin=Mathf.Max(88f,
-                Mathf.Clamp01(free.yMin)*safe.rect.height+10f);
-            Vector2 lowerEdge;
-            Vector2? oppositeEdge=CanProject(target,camera,safe,false,out lowerEdge)
-                ? lowerEdge : (Vector2?)null;
-            var center=FitToSafe(screen,width,height,safe,
-                topMargin,bottomMargin,true,oppositeEdge);
-            timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
+            else
+            {
+                // Non-building jobs keep a readable compact operation dock.
+                // City construction never contributes a dock slot.
+                int slot = 0;
+                foreach (var candidate in TimedTargets)
+                {
+                    if (candidate == id) break;
+                    if (!IsConstructionTimer(candidate) &&
+                        live.TryGetValue(candidate, out var operation) &&
+                        operation.OperationActive && !string.IsNullOrWhiteSpace(operation.Time))
+                        slot++;
+                }
+                center = new Vector2(safe.rect.xMax - width * .5f - 12f,
+                    safe.rect.yMin + 150f + height * .5f + slot * (height + 6f));
+            }
+
+            timer.Root.sizeDelta = new Vector2(width, height);
+            timer.Label.Put(construction ? data.Time : data.Name + " · " + data.Time);
+            timer.Label.fontSize = construction ? 18 : 16;
+            Place(timer.Label.rectTransform, 8f, 3f, width - 16f, 31f);
+            Place(timer.Progress, 10f, 37f, width - 20f, 5f);
+            timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
+            timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot =
+                new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);
-            ProbeTimerState(id, "VISIBLE", timer, screen);
+            ProbeTimerState(id, "VISIBLE", timer, construction ? projectedRoof : center);
         }
     }
 }

@@ -152,7 +152,9 @@ namespace Eldoria.UI.RoyalGold {
   RoyalBuilding ChapterThreeBuilding(PlayerState s,string id,bool en){
    var c=s.ChapterThree;
    bool ascend=id=="bastion"&&s.BastionLevel>=2&&s.BastionLevel<5;
-   bool building=s.BastionLevel>=3&&(id=="granary"||id=="sawmill"||id=="upgrade-barracks"||id=="stoneworks");
+   bool building=(s.BastionLevel>=1&&id=="sawmill"&&s.SawmillLevel>0)||
+    (s.BastionLevel>=2&&id=="upgrade-barracks"&&s.BarracksLevel>0)||
+    s.BastionLevel>=3&&(id=="granary"||id=="stoneworks");
    bool world=s.BastionLevel>=3&&LocalGateway.IsChapterThreeTarget(id);
    if(!ascend&&!building&&!world)return null;
    var b=new RoyalBuilding{Id=id};string kind="",target=id,label="",reason="";int wood=0,stone=0,food=0,seconds=0;long deadline=0;

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The real gameplay catalogue; never duplicate actual reward amounts. -->
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs" Link="DailyTreasureRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs" Link="SliceContentProfiles.cs" />
+    <Compile Include="EconomyCandidate.cs" />
+  </ItemGroup>
+</Project>

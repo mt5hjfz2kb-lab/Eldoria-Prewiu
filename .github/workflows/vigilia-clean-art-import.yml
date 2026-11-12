@@ -1,0 +1,80 @@
+name: Vigilia clean high-resolution art source review
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths:
+      - 'tools/breach-watch/fresh-art-sources.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout: |
+            tools/breach-watch
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt.meta
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install --quiet Pillow==12.3.0 numpy==2.3.4
+      - name: Validate new generated sources before touching any UI
+        run: python tools/breach-watch/inspect_fresh_atlases.py
+      - name: Build 13 clean independent high resolution alpha sprites (no old game art)
+        run: python tools/breach-watch/build_fresh_art.py
+      - name: Verify all 13 original textures and transparent edges
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt')
+          files=json.loads((folder/'manifest.json').read_text())['files']
+          assert len(files)==13
+          assert len(list(folder.glob('*.png')))==13
+          assert len(list(folder.glob('*.png.meta')))==13
+          for name,meta in files.items():
+              assert meta['dimensions'][0]>=290 and meta['dimensions'][1]>=190,name
+              assert meta['opaque_fraction']>.08 and meta['transparent_fraction']>.04,name
+          print('VIGILIA_CLEAN_ART_13_SOURCE_ASSETS_PASS')
+          PY
+      - name: Protect owner and exact source commit before writing original art assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import urllib.request,json,base64,os
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          r=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(r,timeout=20) as f:data=json.loads(base64.b64decode(json.load(f)['content']))
+          work=next((x for x in data['active'] if x.get('id')=='eldoria-forja-oscura-visual-proof-20261107'),None)
+          assert work and work['owner']=='chatgpt-vigilia-reference-fidelity-20261109' and work['ownership_state']=='claimed'
+          assert any('BreachWatch/**' in q for q in work.get('scope',[]))
+          print('VIGILIA_OWNER_FRESH_ART_PASS',work['ownership_revision'])
+          PY
+          remote=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
+          test "$remote" = "$GITHUB_SHA" || { echo 'HEAD changed during art generation; refuse stale push'; exit 1; }
+      - name: Integrate ONLY the 13 clean sprite files into existing isolated PR
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Eldoria Independent Art CI"
+          git config user.email "eldoria-art-ci@users.noreply.github.com"
+          git add --sparse Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt.meta
+          test "$(git diff --cached --name-only | wc -l)" -eq 28
+          git commit -m "art(vigilia): integrate 13 original 2K premium Unity UI sprites and alpha imports"
+          git push origin HEAD:"$GITHUB_REF"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-clean-13-sprite-candidate-${{ github.sha }}
+          path: |
+            tools/breach-watch/fresh-art-inbox/**
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/**
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt.meta
+          if-no-files-found: error
+          retention-days: 14

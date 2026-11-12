@@ -1,0 +1,12 @@
+{
+  "name": "Eldoria.DailyTreasures.UI",
+  "rootNamespace": "Eldoria.DailyTreasures",
+  "references": [
+    "Eldoria.Domain",
+    "Eldoria.Application",
+    "Unity.ugui",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Core.Runtime"
+  ],
+  "autoReferenced": true
+}

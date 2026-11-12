@@ -1,0 +1,38 @@
+{
+  "classification": "CANONICAL_3D_LYRA_PREUNITY_CANDIDATE_NOT_APPROVED",
+  "model_source": "Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes",
+  "source_sha256": "a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725",
+  "source_length": 4770000,
+  "output": "tools/daily-treasures/preunity-studies/lyra-canonical-portrait-SOURCE-ONLY.png",
+  "output_sha256": "71638a6785b9d9d6c90d694936a13e66781c4453588142409fbd2d5e5f9cf625",
+  "image_dimensions": [
+    1100,
+    1500
+  ],
+  "alpha_bounds": [
+    384,
+    272,
+    744,
+    1246
+  ],
+  "actor_count": 1,
+  "geometry_bounds": [
+    -0.16339924931526184,
+    0.16954991221427917,
+    -0.4996795952320099,
+    0.5000466108322144,
+    -0.22513343393802643,
+    0.23679611086845398
+  ],
+  "geometry_diagonal": 1.150516,
+  "visible_pixel_ratio": 0.1195,
+  "clear_pixel_ratio": 0.8788,
+  "sampled_opaque_colors": 503,
+  "view_yaw": 147,
+  "generated_person": false,
+  "art_approved": false,
+  "unity_verified": false,
+  "limitation": "True canonical model but offline VTK lighting, not actual Unity scene",
+  "source_artifact_run": 42954067211,
+  "source_artifact_name": "eldoria-preunity-ceremonies-5a4487b4e789aa2aaf664b9e8ba90d62e83da769"
+}

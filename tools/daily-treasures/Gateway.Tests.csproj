@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Only the canonical daily integration suite enables the optional
+         Unity-only save/gateway extension. Other workstreams retain their
+         original exact core sources and need no foreign-owned edits. -->
+    <DefineConstants>$(DefineConstants);DAILY_TREASURE_FEATURE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Compile the exact authoritative Unity domain/application source; no copied rules. -->
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/GameState.cs" Link="GameState.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs" Link="DailyTreasureRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs" Link="GameState.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs" Link="EldoriaV41Contracts.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs" Link="EarlyRetentionRules.cs" />
+    <!-- The authoritative early-retention unlocks now depend on the
+         narrative coherence policy. Include its REAL shared source in the
+         owned daily integration suite; do not modify foreign smoke projects. -->
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs" Link="NarrativeCoherenceRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs" Link="SliceContentProfiles.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs" Link="PlayerIdentityPolicy.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs" Link="ResourceNodeTierPolicy.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs" Link="RenewablePopulationPolicy.cs" />
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs" Link="LocalGateway.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureMilestoneRules.cs" Link="DailyTreasureMilestoneRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureMilestoneQueue.cs" Link="DailyTreasureMilestoneQueue.cs" />
+    <Compile Include="GatewayChecks.cs" />
+  </ItemGroup>
+</Project>

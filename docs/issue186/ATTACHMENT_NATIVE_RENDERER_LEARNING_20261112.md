@@ -1,0 +1,3 @@
+# Native attachment rendering correction
+
+Actual combined run43206518891 reached two original images but failed while creating the real mail attachments: RoyalGoldV2FrameGraphic accesses a CanvasRenderer which Node() does not create. Add CanvasRenderer explicitly before that existing custom graphic, matching the established manuscript factory. No claim, wallet or receipt logic changes. Source parsing alone did not prove this Unity lifecycle requirement. The failed artifact13938370386 is preserved, and all245 original source files were restored after zero native processes before the next attempt.

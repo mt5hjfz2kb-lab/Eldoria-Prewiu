@@ -25,7 +25,13 @@ namespace Eldoria.ReferenceClean.Editor {
   const string Scene=Root+"/Valoria_City_World_UI.unity";
   const string Flag="Valoria.IntegrationProbe";
   static string Ev=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
-  static bool probeQueued;static double probeDeadline=-1;
+  static bool probeQueued;static double probeDeadline=-1,probeHardDeadline=-1;
+  static string probeLastProgress="startup";
+  static void VerifiedProbeProgress(string step){
+   if(probeDeadline<0)return;
+   probeLastProgress=step;
+   probeDeadline=Math.Min(probeHardDeadline,EditorApplication.timeSinceStartup+90);
+  }
   static ValoriaIntegrationBuild(){EditorApplication.playModeStateChanged+=Entered;EditorApplication.update+=StartQueuedProbe;}
   static void Need(bool pass,string why){if(!pass)throw new InvalidOperationException(why);}
   // Advanced native fixtures still pass through the real first-entry UI.
@@ -184,14 +190,19 @@ namespace Eldoria.ReferenceClean.Editor {
   }
   static void Entered(PlayModeStateChange state){
    if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;
-   SessionState.SetBool(Flag,false);probeQueued=true;probeDeadline=EditorApplication.timeSinceStartup+300;
+   SessionState.SetBool(Flag,false);probeQueued=true;probeLastProgress="startup";
+   probeHardDeadline=EditorApplication.timeSinceStartup+900;
+   probeDeadline=EditorApplication.timeSinceStartup+90;
   }
   // Editor Search can throw in delayCall before later callbacks execute. Use the
   // independent update path verified by the structural startup probe instead.
   static void StartQueuedProbe(){
    if(probeDeadline<0||!EditorApplication.isPlaying)return;
    try{
-    Need(EditorApplication.timeSinceStartup<probeDeadline,"Canonical journey exceeded 300-second runtime deadline");
+    Need(EditorApplication.timeSinceStartup<probeHardDeadline,
+     "Canonical journey exceeded the bounded 900-second capture budget; last verified step: "+probeLastProgress);
+    Need(EditorApplication.timeSinceStartup<probeDeadline,
+     "Canonical journey stalled for 90 seconds; last verified step: "+probeLastProgress);
     if(!probeQueued)return;
     probeQueued=false;
     var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
@@ -228,7 +239,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(h&&h.Ready,"Integrated world initialization did not finish before journey validation");
    yield return null;yield return new WaitForSecondsRealtime(1);
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
-   bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);Debug.Log("VALORIA_INTEGRATION_CHECK_PASS "+name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
+   bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);VerifiedProbeProgress(name);Debug.Log("VALORIA_INTEGRATION_CHECK_PASS "+name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
    Check(()=>{
     // Real first-entry on the original RoyalHUD, before the narrator.
     // Capture both orientations at the very first visible interaction.
@@ -516,6 +527,34 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.18f);
    Check(()=>{
     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    Need(management!=null&&!management.IsOpen&&h.Selected=="upgrade-barracks","Barracks must offer a choice before entering training");
+    var training=GameObject.Find("Barracks / enter training")?.GetComponent<RoyalButton>();
+    Need(training&&training.interactable,"Barracks training choice absent");
+    Capture(h,"pretest-barracks-choice-portrait.png",390,844);
+    Capture(h,"pretest-barracks-choice-landscape.png",844,390);
+    // Mission rewards are now collected consumables, never automatic wallet
+    // credits. This disposable player deliberately uses its already-earned
+    // packets before budgeting the complete first-training objective.
+    int required=Math.Max(1,SliceContentProfiles.Active.Chapter2TrainArchers-
+      city.Gateway.Snapshot().ChapterProgress.TrainedArchers);
+    foreach(var packet in city.Gateway.Snapshot().ResourceRewards.Packets
+      .Where(p=>p!=null&&p.Collected&&!p.Used&&(p.Kind=="wood"||p.Kind=="stone")).ToArray())
+    {
+     if(SliceRules.MaxAffordableArchers(city.Gateway.Snapshot())>=required)break;
+     var beforeUse=city.Gateway.Snapshot();
+     var used=city.Gateway.Execute(new GameCommand(Guid.NewGuid().ToString(),
+       beforeUse.PlayerId,ResourceRewardCommands.UsePacket,packet.ReceiptId,beforeUse.Revision));
+     Need(used.Ok,"Explicit use of an earned training-budget packet failed: "+packet.ReceiptId);
+     Need(city.Gateway.Snapshot().ResourceRewards.Packets.Any(p=>
+       p.ReceiptId==packet.ReceiptId&&p.Used),"Used training-budget packet not persisted");
+    }
+    Need(SliceRules.MaxAffordableArchers(city.Gateway.Snapshot())>=required,
+      "Earned resources must fund the complete first-training objective");
+    Click(training);
+   },"barracks shows upgrade and training choices after deliberate packet use");
+   yield return new WaitForSecondsRealtime(.2f);
+   Check(()=>{
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
     Need(management!=null&&management.IsOpen&&
       management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,
       "Built Barracks did not open the independent V3 training destination");
@@ -523,6 +562,10 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(train&&train.interactable,"Real V3 train button unavailable");
     Click(train);
     Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");
+    Need(city.Gateway.Snapshot().PendingRecruitArchers+
+      city.Gateway.Snapshot().ChapterProgress.TrainedArchers>=
+      SliceContentProfiles.Active.Chapter2TrainArchers,
+      "Visible training command must queue the complete first-training objective");
     Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");
     Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");
     Capture(h,"integration-training.png",1600,900);
@@ -532,25 +575,24 @@ namespace Eldoria.ReferenceClean.Editor {
    },"Royal recruitment via visible V3 primary button");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{
-    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(
-      SliceRules.RecruitSecondsFor(SliceRules.RecruitArchers)+1);
+    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.RecruitSecondsFor(SliceRules.RecruitArchers)+1);
     city.Gateway.Advance();city.Presenter.RefreshState();
     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
-    if(management!=null && management.IsOpen){
-      if(management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training){
-        var switchButton=GameObject.Find("Switch destination")?.GetComponent<RoyalButton>();
-        Need(switchButton&&switchButton.interactable,"V3 march navigation button unavailable");
-        Click(switchButton);
-      }
-      Need(management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March,
-        "Visible V3 destination did not navigate to March");
-      var confirm=GameObject.Find("Confirm military command")?.GetComponent<RoyalButton>();
-      Need(confirm&&confirm.interactable,"Visible V3 march confirmation unavailable");
-    }else{
-      h.Select("march-main");
-      Need(h.Hud.Building.Primary.Button.interactable,"Configured march action not enabled");
-    }
-   },"Royal march action becomes available");
+    management.Close();h.Hud.SelectBuilding("");
+    h.Guidance.FollowObjective();
+    Need(h.Hud.NarrativeOpen,"First march needs its contextual explanation");
+   },"march explanation precedes preparation");
+   // Let the newly activated narrative canvas register its raycast graphics.
+   yield return new WaitForSecondsRealtime(.2f);
+   for(int page=0;page<12&&h.Hud.NarrativeOpen;page++){
+    Click(h.Hud.Modal.Extra);yield return new WaitForSecondsRealtime(.18f);
+   }
+   yield return new WaitForSecondsRealtime(.3f);
+   Check(()=>{
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    Need(NarrativeCoherenceRules.Seen(city.Gateway.Snapshot(),"march-preparation"),"March introduction not saved");
+    Need(management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March,"March did not open after explanation");
+   },"Royal march action becomes available after introduction");
    // Canvas GraphicsRegistry must render its first active frame after the
    // recruitment panel was hidden. An immediate synthetic pointer in the same
    // call-stack cannot occur for a human finger and may have graphic.depth=-1.
@@ -839,17 +881,10 @@ namespace Eldoria.ReferenceClean.Editor {
    },"continuous Bastion "+level+" actual city in both orientations");
   }
   IEnumerator OpenJourneyTraining(ValoriaIntegratedWorld h){
-   // A physical chapter III+ barracks now correctly selects its city upgrade.
-   // Exercise the user's explicit UNIDADES > Abrir cuartel route instead.
    h.SetWorld(false);h.Hud.SelectBuilding("");yield return null;
-   Check(()=>Click(h.Hud.Navigation.Items.First(i=>i.Section==RoyalSection.Army).Button),
-    "continuous journey opens actual UNIDADES navigation");
-   if(Failed())yield break;
-   yield return null;
-   Check(()=>{
-    Need(h.Hud.Modal.gameObject.activeInHierarchy,"Actual army destination missing");
-    Click(h.Hud.Modal.Extra);
-   },"continuous journey explicitly opens training from the army destination");
+   h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+   Check(()=>Click(GameObject.Find("Barracks / enter training")?.GetComponent<RoyalButton>()),
+    "continuous journey opens training through actual barracks choice");
    yield return new WaitForSecondsRealtime(.3f);
   }
   IEnumerator VerifyHeroDestinations(ValoriaIntegratedWorld h){
@@ -901,7 +936,7 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return OpenJourneyTraining(h);if(Failed())yield break;
    Check(()=>{
     var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
-    Need(!GameObject.Find("Open canonical heroes").GetComponent<Button>().interactable,"Hero hall prematurely enabled before Lyra recruitment");
+    Need(GameObject.Find("Open canonical heroes")==null,"Hero shortcut must stay hidden before Lyra recruitment");
     heroes.Open();
     Need(!heroes.IsOpen&&!heroes.OpenHero("lyra"),"Hero destination bypassed Bastion III narrative lock");
     h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();

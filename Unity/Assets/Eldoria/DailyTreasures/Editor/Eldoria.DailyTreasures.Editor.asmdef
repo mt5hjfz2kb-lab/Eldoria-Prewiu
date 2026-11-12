@@ -1,0 +1,21 @@
+{
+  "name": "Eldoria.DailyTreasures.Editor",
+  "rootNamespace": "Eldoria.DailyTreasures.Editor",
+  "references": [
+    "Eldoria.DailyTreasures.UI",
+    "Eldoria.Domain",
+    "Eldoria.Application",
+    "Unity.ugui"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

@@ -36,6 +36,9 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs
             /Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs
             /Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs
+            /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs
+            /tools/ui-v3-domain-smoke/verify-construction-anchor.mjs
             /Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs
             /Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs
             /Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs
@@ -43,6 +46,8 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
             /tools/ui-v3-domain-smoke/Smoke.csproj
             /tools/ui-v3-domain-smoke/Program.cs
+      - name: Check real building-timer source geometry contract without Unity
+        run: node tools/ui-v3-domain-smoke/verify-construction-anchor.mjs
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'

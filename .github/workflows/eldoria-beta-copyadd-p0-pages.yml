@@ -1,0 +1,325 @@
+name: Eldoria P0 — publish prebaked-collision owner candidate
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-beta-copyadd-p0-pages.yml'
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: eldoria-pages-p0-owner-recovery
+  cancel-in-progress: false
+jobs:
+  publish-compact-owner-clock-ab:
+    name: Publish old playable beta10 plus SHA-certified separate clock build
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    environment:
+      name: github-pages
+      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/
+    steps:
+      - name: Verify frozen exact runner source and tester invitations BLOCKED
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,base64,os,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def read(path):
+            request=urllib.request.Request(root+path,headers={
+              'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+              'Accept':'application/vnd.github+json',
+              'User-Agent':'Eldoria-P0-verified-compact-owner'})
+            with urllib.request.urlopen(request,timeout=30) as response:
+              return json.load(response)
+          source=read('actions/runs/42785047968')
+          assert source['head_sha']=='836fce54e33e0c3c5cc87ea4ca480da5eb44835a'
+          assert source['status']=='completed' and source['conclusion']=='success'
+          qa=read('actions/runs/42812046053')
+          assert qa['head_sha']=='79b9fdf8862a502a2452be88571d6d42658b532d'
+          assert qa['status']=='completed' and qa['conclusion']=='success', 'Actual published transport + immediate entry resize QA must pass'
+          direct=read('actions/runs/42893674666')
+          assert direct['head_sha']=='d369dea58c8b67e90969b67a57ca36bdb9066ca1'
+          assert direct['status']=='completed' and direct['conclusion']=='success'
+          items=read('actions/runs/42785047968/artifacts')['artifacts']
+          artifact=[a for a in items if a['id']==13749626125
+                  and a['name']=='beta10-clock-copyadd-owner-only-site'
+                  and a['size_in_bytes']==490403680 and not a['expired']]
+          assert len(artifact)==1, 'Exact certified 490 MB owner site artifact unavailable'
+          latest=read('contents/pipeline/tester-readiness/release-request.json?ref=main')
+          gate=json.loads(base64.b64decode(latest['content']))
+          assert gate['enabled'] is False and gate['status']=='BLOCKED', 'Testers must remain disabled'
+          print('ELDORIA_COMPACT_PAGES_EXACT_ARTIFACT_490MB_PASS_TESTERS_BLOCKED')
+          PY
+      - name: Download frozen owner-friendly dual-build site from previous passed QA
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42785047968
+          name: beta10-clock-copyadd-owner-only-site
+          github-token: ${{ github.token }}
+          path: site
+      - name: Protect previously owner-playable beta10 and verify candidate binary contract
+        run: |
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          root=Path('site')
+          stable=root/'beta-native325'
+          candidate=root/'beta-iphone-clock-ab'
+          proof=json.loads((root/'beta-iphone-clock-ab-proof.json').read_text())
+          old=json.loads((stable/'release-identity.json').read_text())
+          new=json.loads((candidate/'release-identity.json').read_text())
+          man=json.loads((candidate/'build-manifest.json').read_text())
+          delta=man['clock_copy_delta']
+          assert old['revision']=='native325-mobile10-pretest-ux'
+          assert old['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert old['candidate_bundle_sha256']=='57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2'
+          assert new['revision']=='native325-mobile12-minimal-world-clock-qa'
+          assert new['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+          assert new['native_journey_verified'] is True and new['physical_mobile_tested'] is False
+          assert new['release_for_external_testers'] is False
+          assert delta['format']=='ELDORIA_COPY_ADD_V1'
+          assert delta['stable_source_sha']==old['source_sha']
+          assert delta['candidate_source_sha']==new['source_sha']
+          assert len(delta['target_parts'])==len(delta['stable_parts'])==31
+          assert sum(p['literal_bytes'] for p in delta['target_parts'])==8000096
+          assert sum(p['decoded_bytes'] for p in delta['target_parts'])==503831429
+          for part in delta['target_parts']:
+            payload=candidate/part['literal_url']
+            assert payload.is_file() and payload.stat().st_size==part['literal_bytes']
+            assert hashlib.sha256(payload.read_bytes()).hexdigest()==part['literal_sha256']
+          assert (root/'unity-owner/index.html').is_file() and (root/'index.html').is_file()
+          assert (stable/'index.html').is_file() and (candidate/'index.html').is_file()
+          html=(candidate/'index.html').read_text()
+          assert '<script src="./copy-transport.js"></script>' in html
+          assert 'installEldoriaCopyTransport(build.data,build.clock_copy_delta)' in (candidate/'play.js').read_text()
+          transport=(candidate/'copy-transport.js').read_text()
+          assert 'MAX_OUTPUT=262144' in transport and 'stable_cache_parts:1' in transport
+          assert 'new Uint8Array(part.decoded_bytes)' not in transport
+          assert 'localStorage' not in transport and 'indexedDB' not in transport
+          assert 'sessionStorage' not in transport
+          assert len(transport)<12000, 'Unexpected growth in loader footprint'
+          assert proof['role']=='OWNER_AB_IOS_QA_ONLY'
+          assert proof['external_testers_enabled'] is False
+          assert proof['physical_iphone_stability_verified'] is False
+          assert proof['stable_game_sha256_unchanged'] is True
+          size=sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+          assert size<650000000,'Refuse overlarge Pages staging and 10-minute upload failure'
+          print('ELDORIA_OWNER_AB_OLD_AND_CLOCK_HASH_BUNDLE_PASS',size)
+          PY
+          node --check site/beta-iphone-clock-ab/copy-transport.js
+          node --check site/beta-iphone-clock-ab/play.js
+      - name: Checkout exact wrapper staging and tested module
+        uses: actions/checkout@v4
+        with:
+          ref: 5555c2b3fed6b6b5c644679d42272254bffeedec
+          path: wrapper-source
+          sparse-checkout: |
+            tools/eldoria-private-beta/iphone_ab/stable_canvas.js
+            tools/eldoria-private-beta/iphone_ab/stage_stable_canvas.py
+            tools/eldoria-private-beta/iphone_ab/stage_direct_control.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Download exact successful immediate-entry comparison
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42812046053
+          name: eldoria-immediate-entry-canvas-ab-not-iphone
+          github-token: ${{ github.token }}
+          path: browser-proof
+      - name: Apply only byte-identical browser-tested wrapper, preserve all other routes
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,importlib.util,json
+          root=pathlib.Path('site')
+          before={p.relative_to(root).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file()}
+          code=pathlib.Path('wrapper-source/tools/eldoria-private-beta/iphone_ab')
+          result=json.loads(pathlib.Path('browser-proof/evidence/immediate-resize-ab.json').read_text())
+          assert result['control']['passed'] and result['candidate']['passed']
+          assert result['candidate']['early']['attempted']
+          seq=result['candidate']['resize']
+          assert len(seq)==4 and len({(x['canvas']['width'],x['canvas']['height']) for x in seq})==1
+          spec=importlib.util.spec_from_file_location('stage',code/'stage_stable_canvas.py')
+          stage=importlib.util.module_from_spec(spec);spec.loader.exec_module(stage)
+          proof_path=pathlib.Path('browser-proof/evidence/canvas-shell-proof.json')
+          proof=json.loads(proof_path.read_text())
+          assert proof['source']=='052d8c65edf0191fa819d7d08438c6ab172ccf83'
+          stage.stage(root,code/'stable_canvas.js',proof_path)
+          allowed={'beta-iphone-clock-ab/'+x['file'] for x in proof['shell_changes']}
+          allowed.update({'beta-iphone-clock-ab/index.html','beta-iphone-clock-ab/release-identity.json'})
+          for name,digest in before.items():
+            assert (root/name).is_file()
+            if name not in allowed:
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest, 'Unrelated file changed: '+name
+          print('ALL_UNITY_BYTES_BETA10_AND_OTHER_ROUTES_UNCHANGED_TESTED_CANVAS_WRAPPER_ONLY')
+          PY
+          node --check site/beta-iphone-clock-ab/play.js
+      - name: Require completed exact collision build and Mac WebKit QA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,os
+          req=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42916816001',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          import time
+          for attempt in range(150):
+            with urllib.request.urlopen(req,timeout=30) as response:run=json.load(response)
+            assert run['head_sha']=='a6c2d7837584ac7d826c60c3389ac950316b450e'
+            if run['status']=='completed':
+              assert run['conclusion']=='success','Actual package and Mac WebKit gate failed; publication blocked'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Actual Mac WebKit gate did not finish; publication blocked')
+          PY
+      - name: Download exact tested collision candidate to isolated owner route
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42916816001
+          name: beta13-prebaked-collision-candidate-site
+          github-token: ${{ github.token }}
+          path: collision-candidate
+      - name: Add owner candidate without changing beta10 or other routes
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,shutil
+          root=pathlib.Path('site');source=pathlib.Path('collision-candidate');dest=root/'beta-iphone-clock-direct'
+          assert not dest.exists()
+          before={p.relative_to(root).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file()}
+          identity=json.loads((source/'release-identity.json').read_text())
+          assert identity['source_sha']=='7ae5416613480ba526a839b429459d53629041e5'
+          assert identity['revision']=='native325-mobile13-prebaked-collision-qa'
+          assert identity['static_castle_collisions_prebaked'] is True
+          assert identity['collision_payload_proof']['status']=='REAL_WEBGL_COLLISIONS_PREBAKED_ORIGINAL_MESH_BYTES_VERIFIED'
+          assert identity['physical_iphone_verified'] is False and identity['release_for_external_testers'] is False
+          shutil.copytree(source,dest)
+          for name,digest in before.items():assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest,name
+          for p in source.rglob('*'):
+            if p.is_file():assert (dest/p.relative_to(source)).read_bytes()==p.read_bytes()
+          size=sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+          assert size<980000000,('Pages size cap',size)
+          print('EXACT_COLLISION_CANDIDATE_BETA10_AND_OTHER_ROUTES_PRESERVED',size)
+          PY
+      - name: Reuse an already byte-identical publication instead of redeploying
+        id: existing
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,urllib.request,urllib.parse,concurrent.futures,os
+          root=pathlib.Path('site')
+          files=[p for p in root.rglob('*') if p.is_file() and p.name!='.nojekyll']
+          def identical(p):
+            name=p.relative_to(root).as_posix()
+            try:
+              request=urllib.request.Request('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'+urllib.parse.quote(name),headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-exact-publication-reuse'})
+              sha=hashlib.sha256();size=0
+              with urllib.request.urlopen(request,timeout=45) as response:
+                while chunk:=response.read(1024*1024):
+                  sha.update(chunk);size+=len(chunk)
+              with p.open('rb') as local: expected=hashlib.file_digest(local,'sha256').hexdigest()
+              return size==p.stat().st_size and sha.hexdigest()==expected
+            except Exception as e:
+              print('LIVE_DIFF_OR_UNAVAILABLE',name,str(e)[:120],flush=True)
+              return False
+          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            results=list(pool.map(identical,files))
+          same=all(results) and bool(files)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('same='+str(same).lower()+'\n')
+          print('LIVE_FILE_HASHES',sum(results),'OF',len(files),'EXACT_SITE',same)
+          PY
+      - uses: actions/configure-pages@v5
+        if: steps.existing.outputs.same != 'true'
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.existing.outputs.same != 'true'
+        with:
+          path: site
+      - name: Deploy protected old beta10 and isolated clock candidate
+        id: deploy
+        if: steps.existing.outputs.same != 'true'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
+      - name: Confirm both real live build identities and binary routes; no external invites
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,time
+          root='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          def read(path,method='GET'):
+            req=urllib.request.Request(root+path,method=method,headers={
+              'Cache-Control':'no-cache','User-Agent':'Eldoria-P0-A-B-proof'})
+            with urllib.request.urlopen(req,timeout=30) as response:
+              return response.status if method=='HEAD' else response.read()
+          for attempt in range(24):
+            try:
+              stable=json.loads(read('beta-native325/release-identity.json?ab='+str(attempt)))
+              clock=json.loads(read('beta-iphone-clock-ab/release-identity.json?ab='+str(attempt)))
+              proof=json.loads(read('beta-iphone-clock-ab-proof.json?ab='+str(attempt)))
+              assert stable['revision']=='native325-mobile10-pretest-ux'
+              assert stable['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+              assert clock['revision']=='native325-mobile12-minimal-world-clock-qa'
+              assert clock['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+              assert clock['shell_revision']=='stable-canvas-r1'
+              import hashlib,re
+              html=read('beta-iphone-clock-ab/index.html?canvas='+str(attempt)).decode()
+              filename=re.search(r'src="(play-[a-f0-9]+\.js)"',html).group(1)
+              payload=read('beta-iphone-clock-ab/'+filename)
+              assert hashlib.sha256(payload).hexdigest()==clock['shell_script_sha256']
+              assert b'matchWebGLToCanvasSize:false' in payload
+              assert b'installEldoriaStableCanvas(canvas)' in payload
+              assert proof['external_testers_enabled'] is False
+              assert proof['stable_source_sha']==stable['source_sha']
+              assert proof['candidate_source_sha']==clock['source_sha']
+              for path in ('beta-native325/index.html',
+                'beta-native325/payload-decoded/native325-mobile10-pretest-ux-0.gz',
+                'beta-iphone-clock-ab/index.html',
+                'beta-iphone-clock-ab/copy-transport.js',
+                'beta-iphone-clock-ab/copy-literals/part-28.bin',
+                'unity-owner/index.html'):
+                assert read(path,method='HEAD')==200, 'Unreachable static asset: '+path
+              direct=json.loads(read('beta-iphone-clock-direct/release-identity.json?direct='+str(attempt)))
+              assert direct['revision']=='native325-mobile13-prebaked-collision-qa'
+              assert direct['source_sha']=='7ae5416613480ba526a839b429459d53629041e5'
+              assert direct['static_castle_collisions_prebaked'] is True
+              assert direct['physical_mobile_tested'] is False and direct['release_for_external_testers'] is False
+              dh=read('beta-iphone-clock-direct/index.html?collision='+str(attempt)).decode()
+              df=re.search(r'src="(play-[a-f0-9]+\.js)"',dh).group(1)
+              dp=read('beta-iphone-clock-direct/'+df)
+              import pathlib
+              assert dp==pathlib.Path('site/beta-iphone-clock-direct',df).read_bytes()
+              dm=json.loads(read('beta-iphone-clock-direct/build-manifest.json'))
+              assert 'clock_copy_delta' not in dm
+              for part in [dm['decoded_parts'][dm['data']][0],dm['decoded_parts'][dm['data']][-1]]:
+                assert read('beta-iphone-clock-direct/'+part['url'],method='HEAD')==200
+              print('COLLISION_CANDIDATE_LIVE_BETA10_PRESERVED_NOT_PHYSICAL_IPHONE_CERTIFIED')
+              break
+            except Exception as error:
+              if attempt==23: raise
+              time.sleep(8)
+          PY
+      - name: Verify every public file against the exact staged candidate and preserved routes
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,urllib.request,urllib.parse,concurrent.futures,os
+          root=pathlib.Path('site')
+          files=[p for p in root.rglob('*') if p.is_file() and p.name!='.nojekyll']
+          def identical(p):
+            name=p.relative_to(root).as_posix()
+            try:
+              request=urllib.request.Request('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'+urllib.parse.quote(name),headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-exact-publication-reuse'})
+              sha=hashlib.sha256();size=0
+              with urllib.request.urlopen(request,timeout=45) as response:
+                while chunk:=response.read(1024*1024):
+                  sha.update(chunk);size+=len(chunk)
+              with p.open('rb') as local: expected=hashlib.file_digest(local,'sha256').hexdigest()
+              return size==p.stat().st_size and sha.hexdigest()==expected
+            except Exception as e:
+              print('LIVE_DIFF_OR_UNAVAILABLE',name,str(e)[:120],flush=True)
+              return False
+          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            results=list(pool.map(identical,files))
+          same=all(results) and bool(files)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('same='+str(same).lower()+'\n')
+          print('LIVE_FILE_HASHES',sum(results),'OF',len(files),'EXACT_SITE',same)
+          assert same,'Published bytes differ from reviewed staging'
+          PY

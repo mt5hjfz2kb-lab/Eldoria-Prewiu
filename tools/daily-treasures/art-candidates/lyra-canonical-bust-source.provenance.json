@@ -1,0 +1,46 @@
+{
+  "classification": "CANONICAL_LYRA_BUST_PREUNITY_CANDIDATE_NOT_APPROVED",
+  "model_source": "Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes",
+  "source_sha256": "a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725",
+  "source_length": 4770000,
+  "output": "tools/daily-treasures/preunity-studies/lyra-canonical-bust-SOURCE-ONLY.png",
+  "output_sha256": "68fca9f1ac070a03a1c03dbc03b9e4ed6a374526892d7598f2f4a518d8284eea",
+  "image_dimensions": [
+    1100,
+    1500
+  ],
+  "alpha_bounds": [
+    313,
+    402,
+    851,
+    1500
+  ],
+  "actor_count": 1,
+  "geometry_bounds": [
+    -0.16339924931526184,
+    0.16954991221427917,
+    -0.4996795952320099,
+    0.5000466108322144,
+    -0.22513343393802643,
+    0.23679611086845398
+  ],
+  "geometry_diagonal": 1.150516,
+  "camera_framed_bounds": [
+    -0.16339924931526184,
+    0.16954991221427917,
+    0.030175293982029006,
+    0.5000466108322144,
+    -0.22513343393802643,
+    0.23679611086845398
+  ],
+  "shot": "bust",
+  "visible_pixel_ratio": 0.2374,
+  "clear_pixel_ratio": 0.7608,
+  "sampled_opaque_colors": 962,
+  "view_yaw": 147,
+  "generated_person": false,
+  "art_approved": false,
+  "unity_verified": false,
+  "limitation": "True canonical model but offline VTK lighting, not actual Unity scene",
+  "source_artifact_run": 42955378480
+}

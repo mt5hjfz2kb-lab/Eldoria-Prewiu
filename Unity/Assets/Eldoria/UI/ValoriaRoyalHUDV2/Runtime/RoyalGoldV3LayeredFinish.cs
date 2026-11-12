@@ -48,7 +48,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             // Soft atmospheric movement, throttled; no expensive texture copies,
             // shadow casters, camera changes or new graphic allocations per frame.
-            if (scene == Scene.Panel || !isActiveAndEnabled ||
+            if (scene == Scene.Panel || scene == Scene.Vigilants || !isActiveAndEnabled ||
                 !gameObject.activeInHierarchy || Time.unscaledTime < nextRepaint) return;
             nextRepaint = Time.unscaledTime + .12f;
             SetVerticesDirty();
@@ -116,7 +116,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=GetPixelAdjustedRect();
             float x=r.xMin,y=r.yMin,w=r.width,h=r.height;
             if(w<12f || h<12f) return;
-            float t=Time.unscaledTime;
+            float t=scene==Scene.Vigilants?0f:Time.unscaledTime;
             float breath=.5f+.5f*Mathf.Sin(t*.68f);
             bool landscape=scene==Scene.Vigilants || scene==Scene.Scouts;
             var clear=RGBA(0f,0f,0f,0f);

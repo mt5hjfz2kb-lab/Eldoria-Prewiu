@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {claimId,evaluate,globMatch} from './pr-ownership-gate.mjs';
+import {createHash} from 'node:crypto';
+import {readLiveRegistry,claimId,evaluate,globMatch} from './pr-ownership-gate.mjs';
 const ui='eldoria-ui-v3-management-completion-20261021';
 const art='eldoria-tripo-art-brain-phase2-20261021';
 const registry={active:[
@@ -59,4 +60,40 @@ test('exact and wildcard scopes match only intended paths',()=>{
 test('missing live registry/PR observation fails closed',()=>{
  assert.equal(evaluate({current:original,openPulls:null,registry}).ok,false);
  assert.equal(evaluate({current:null,openPulls:[],registry}).ok,false);
+});
+
+const liveBlob=(value)=>{
+ const bytes=Buffer.from(typeof value==='string'?value:JSON.stringify(value));
+ const sha=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex');
+ return {sha,size:bytes.length,encoding:'base64',content:bytes.toString('base64')};
+};
+test('inline main registry is verified without extra API calls',async()=>{
+ const blob=liveBlob(registry),calls=[];
+ assert.deepEqual(await readLiveRegistry('/repos/a/b','fixture',async path=>{calls.push(path);return blob}),registry);
+ assert.equal(calls.length,1);
+});
+test('registry above Contents inline limit uses exact observed blob, even if main moves',async()=>{
+ const value={...registry,history:['x'.repeat(1100000)]},blob=liveBlob(value),calls=[];
+ const result=await readLiveRegistry('/repos/a/b','fixture',async path=>{
+  calls.push(path);
+  if(calls.length===1)return {sha:blob.sha,size:blob.size,encoding:'none',content:''};
+  assert.equal(path,'/repos/a/b/git/blobs/'+blob.sha);
+  return blob;
+ });
+ assert.deepEqual(result,value);assert.equal(calls.length,2);
+});
+test('missing or corrupted ownership bytes and mismatched blob IDs fail closed',async()=>{
+ const blob=liveBlob(registry);
+ for(const wrong of [
+  {...blob,sha:'0'.repeat(40)},
+  {...blob,content:Buffer.from('{"active":[]}').toString('base64')},
+  {...blob,size:1},
+  {...blob,content:'',encoding:'none'}
+ ]){
+  await assert.rejects(readLiveRegistry('/repos/a/b','fixture',async path=>
+   path.includes('/contents/')?{sha:blob.sha,size:blob.size,encoding:'none',content:''}:wrong));
+ }
+ await assert.rejects(readLiveRegistry('/repos/a/b','fixture',async()=>{throw Error('HTTP503')}));
+ await assert.rejects(readLiveRegistry('/repos/a/b','fixture',async()=>liveBlob('{invalid')));
+ await assert.rejects(readLiveRegistry('/repos/a/b','fixture',async()=>liveBlob({history:[]})));
 });

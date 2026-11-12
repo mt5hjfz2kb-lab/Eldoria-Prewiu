@@ -1,0 +1,619 @@
+name: Tesoros de Valoria — Unity native verification (exclusive workstream)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/eldoria-daily-treasures-20261108
+    paths:
+      - tools/daily-treasures/native-request.txt
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-daily-treasures-native
+  cancel-in-progress: false
+jobs:
+  verify-exclusive-lease:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      city_only: ${{ steps.mode.outputs.city_only }}
+      owner: ${{ steps.mode.outputs.owner }}
+      revision: ${{ steps.mode.outputs.revision }}
+    steps:
+      - name: Check canonical main registry before acquiring a Windows runner
+        id: mode
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,json,os,urllib.request,re
+          repo=os.environ['GITHUB_REPOSITORY']
+          headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                   'Accept':'application/vnd.github+json',
+                   'User-Agent':'eldoria-daily-native-lease'}
+          url=f'https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main'
+          req=urllib.request.Request(url,headers=headers)
+          with urllib.request.urlopen(req,timeout=20) as response:
+              payload=json.load(response)
+          # Large CAS registry: Contents API omits base64 above 1 MiB.
+          # Always require the exact immutable Git blob; never assume free.
+          encoded=payload.get('content')
+          if payload.get('encoding')!='base64' or not encoded:
+              sha=payload.get('sha','')
+              if len(sha)!=40 or any(c not in '0123456789abcdef' for c in sha):
+                  raise SystemExit('Oversized CAS registry blob identity invalid')
+              blob_url=f'https://api.github.com/repos/{repo}/git/blobs/{sha}'
+              with urllib.request.urlopen(urllib.request.Request(blob_url,headers=headers),timeout=30) as response:
+                  blob=json.load(response)
+              if blob.get('sha')!=sha or blob.get('encoding')!='base64' or not blob.get('content'):
+                  raise SystemExit('Oversized CAS registry Git blob mismatch')
+              encoded=blob['content']
+          registry=json.loads(base64.b64decode(encoded))
+          holders=[x for x in registry['active']
+                   if 'windows-runner-heavy' in x.get('resources',[])]
+          required='eldoria-daily-treasures-20261108'
+          if len(holders)!=1 or holders[0].get('id')!=required:
+              raise SystemExit('Windows reserved by another Eldoria workstream; no Unity run')
+          if holders[0].get('ownership_state')!='claimed':
+              raise SystemExit('Daily treasures workstream lease not valid')
+          source=f'https://api.github.com/repos/{repo}/git/ref/heads/feature/eldoria-daily-treasures-20261108'
+          with urllib.request.urlopen(urllib.request.Request(source,headers=headers),timeout=20) as response:
+              remote=json.load(response)
+          if remote['object']['sha']!=os.environ['GITHUB_SHA']:
+              raise SystemExit('Refuse Windows: native source was superseded by a newer PR HEAD')
+          req_url=f"https://api.github.com/repos/{repo}/contents/tools/daily-treasures/native-request.txt?ref={os.environ['GITHUB_SHA']}"
+          with urllib.request.urlopen(urllib.request.Request(req_url,headers=headers),timeout=20) as response:
+              source_request=base64.b64decode(json.load(response)['content']).decode()
+          request=dict(line.split('=',1) for line in source_request.splitlines() if '=' in line and not line.startswith('#'))
+          owner=request.get('owner','');revision=request.get('ownership_revision','')
+          if not re.fullmatch(r'[A-Za-z0-9_.-]+',owner) or not revision.isdecimal():raise SystemExit('Missing exact requested lease')
+          if holders[0].get('owner')!=owner or holders[0].get('ownership_revision')!=int(revision):raise SystemExit('Requested owner or revision no longer holds Windows')
+          mode=request.get('state')
+          if mode not in ('REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION','REQUEST_EXCLUSIVE_CITY_ART_CONTEXT'):
+              raise SystemExit('Unrecognized explicit native evidence mode')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+              output.write('city_only='+str(mode=='REQUEST_EXCLUSIVE_CITY_ART_CONTEXT').lower()+'\n')
+              output.write('owner='+owner+'\nrevision='+revision+'\n')
+          print('Exclusive Windows lease and current exact PR HEAD verified')
+          PY
+  native-ui:
+    needs: verify-exclusive-lease
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    env:
+      OUT: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}
+      LEASE_OWNER: ${{ needs.verify-exclusive-lease.outputs.owner }}
+      LEASE_REVISION: ${{ needs.verify-exclusive-lease.outputs.revision }}
+    steps:
+      - name: Assert Unity is available and another workstream is not running
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'UNITY_EDITOR_PATH unavailable'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Windows currently has an active native process; do not interrupt'
+          }
+      - name: Use installed Git without changing the Windows machine
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'No installed Git found; refuse a 26GB archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - name: Fetch exact PR SHA by safe sparse blob-less Git, never a full Unity archive
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'daily-source'
+          $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+          if(-not (Test-Path (Join-Path $root '.git'))){
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            & git -C $root init
+            if($LASTEXITCODE){throw 'Git init failed'}
+            & git -C $root remote add origin $url
+            if($LASTEXITCODE){throw 'Git remote setup failed'}
+          }
+          if(((& git -C $root remote get-url origin).Trim()) -ne $url){
+            throw 'Untrusted remote; refuse source checkout'
+          }
+          # Preserve every pre-existing importer byte before switching the
+          # OWN isolated QA checkout. Never clean Library or force over notes.
+          $previous=(& git -C $root rev-parse --verify HEAD 2>$null)
+          if($LASTEXITCODE -eq 0){
+            [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
+            $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='daily-native-source-preservation'}
+            $scriptUrl="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/daily-treasures/native/Preserve-OwnedImporterState.ps1?ref=$env:GITHUB_SHA"
+            $file=Invoke-RestMethod -Uri $scriptUrl -Headers $hdr
+            if($file.encoding -ne 'base64' -or -not $file.content){throw 'Pinned source preservation helper missing'}
+            $script=Join-Path $env:OUT 'Preserve-OwnedImporterState.ps1'
+            [IO.File]::WriteAllBytes($script,[Convert]::FromBase64String($file.content))
+            & $script -Source $root -Output (Join-Path $env:OUT 'preserved-inputs') -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          }
+          & git -C $root config core.sparseCheckout true
+          & git -C $root config core.sparseCheckoutCone false
+          $patterns=@('/Unity/**')
+          # Same source-preserving exclusions as Vigilia's existing proven
+          # Windows checkout, preventing huge historical/generated review art
+          # from eclipsing actual gameplay/Resources/Editor compilation.
+          for($i=1;$i -le 17;$i++){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')
+          }
+          foreach($n in @('39131782550','39132144937','39132392803',
+              '39132807199','39133202399','39136444844',
+              '39137079921','39138143327')){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
+          }
+          [IO.File]::WriteAllLines(
+            (Join-Path $root '.git/info/sparse-checkout'),
+            [string[]]$patterns,(New-Object Text.UTF8Encoding($false)))
+          $auth=[Convert]::ToBase64String(
+            [Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Sparse source fetch failed'}
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Exact PR source checkout failed'}
+          if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){
+            throw 'Source commit mismatch; never test outdated art'
+          }
+          foreach($required in @(
+            'Unity/ProjectSettings/ProjectVersion.txt',
+            'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs',
+            'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs',
+            'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureNativeEvidence.cs',
+            'Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/treasure_opened_512.png',
+            'Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg',
+            'Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png',
+            'Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png')){
+            if(-not (Test-Path (Join-Path $root $required))){
+              throw "Canonical original source asset missing: $required"
+            }
+          }
+          Write-Host "DAILY_TREASURE_EXACT_HEAD_SPARSE_GAME_SOURCE_READY $env:GITHUB_SHA"
+      - name: Verify branch and lease again before Unity launch
+        shell: powershell
+        working-directory: daily-source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Checkout is not the requested branch SHA'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='eldoria-daily-native-lease'}
+          $file=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
+          # The Contents API leaves content empty for registry files >1 MiB.
+          $leaseBase64=[string]$file.content
+          if($file.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($leaseBase64)){
+            if([string]$file.sha -notmatch '^[a-f0-9]{40}$'){
+              throw 'Oversized Windows lease registry has invalid Git blob SHA'
+            }
+            $blobUrl="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/$($file.sha)"
+            $blob=Invoke-RestMethod -Uri $blobUrl -Headers $headers
+            if(($blob.sha -ne $file.sha) -or ($blob.encoding -ne 'base64') -or
+               [string]::IsNullOrWhiteSpace([string]$blob.content)){
+              throw 'Oversized Windows lease registry Git blob mismatch'
+            }
+            $leaseBase64=[string]$blob.content
+          }
+          $registry=([Text.Encoding]::UTF8.GetString(
+            [Convert]::FromBase64String($leaseBase64)))|ConvertFrom-Json
+          $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne $env:LEASE_OWNER -or [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION -or $holders[0].ownership_state -ne 'claimed'){
+            throw 'Windows lease lost; refusing Unity execution'
+          }
+          $latest=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/ref/heads/feature/eldoria-daily-treasures-20261108' -Headers $headers
+          if($latest.object.sha -ne $env:GITHUB_SHA){throw 'PR branch advanced after native request'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Unity or Blender is active; do not interrupt it'
+          }
+      - name: Ensure Unity built-in AudioModule enabled for authentic chest Foley
+        shell: powershell
+        working-directory: daily-source
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Get-Content 'Unity/Packages/manifest.json' -Raw | ConvertFrom-Json
+          if($project.dependencies.'com.unity.modules.audio' -ne '1.0.0'){
+            throw 'Unity AudioModule disabled: AudioClip/AudioSource cannot compile; must preserve physical chest sound'
+          }
+          Write-Host 'DAILY_TREASURE_AUDIO_MODULE_ENABLED'
+      - name: Verify all thirteen original source PNGs and their Unity importers
+        shell: powershell
+        working-directory: daily-source
+        run: |
+          $ErrorActionPreference='Stop'
+          $dir='Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt'
+          $manifest=Get-Content (Join-Path $dir 'source-manifest.json') -Raw | ConvertFrom-Json
+          $items=@($manifest.assets)+@($manifest.ui_frames)+@($manifest.resource_icons)+@($manifest.clean_resource_icons)
+          $expected=@{
+            'treasure_closed_512.png'='313c17d35dcb6f44129a143fabc0448e5a20bc3fb7d00f700394bb73b2d0a0dd'
+            'treasure_opened_512.png'='a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb'
+            'valoria_frame_main_512.png'='d64b9fa2966754a043d621a0eb4d1791730522eca175278d7172214389a241a3'
+            'valoria_frame_card_256.png'='02323b005e0443cfe8932f06cdbfcf6a55d09d92c369efcae2e7068b155b18db'
+            'valoria_frame_button_512x128.png'='d80eedac1b6979a85f8b9dc303681bd1b8aaddcfad7a22f62d5a8eb8011ed09e'
+            'resource_wood.png'='2c2742910bc060fa92aca70320a6065057a20203860c9a6746af0a719925ae49'
+            'resource_stone.png'='b54e47ac45d0f19a2498f2ca18a2181d9aac70af35b0aa96bd838b2c234c2c13'
+            'resource_hourglass.png'='bac16f011734aaabd148159ae91f23d115451e09c62cbd3127b4d60f1769e322'
+            'resource_food.png'='2800b834e8372813e7a634146fcea00f3591d858ca2d0db4c7d2c8e99d8783cb'
+            'resource_wood_clean_256.png'='1d4cfe4abfc2185710c02f407c4b3db0125359174c352c704090cf8f590152bf'
+            'resource_stone_clean_256.png'='c3c74c02095babfc4fabd93e87dea4348d35fb89475c0c5f841311746ed07cdc'
+            'resource_food_clean_256.png'='35b2f0a9e232af3ed0dc3a6a61013a67c72bebbf1af770ce259722e1866f64f8'
+            'resource_hourglass_clean_256.png'='4e54dcda2580a20bd1efb86102ad26723595ddb1196f5c5e9020a79c48b41e59'
+          }
+          if($items.Count -ne 13 -or $expected.Count -ne 13){throw 'Required thirteen original source PNGs missing'}
+          $guids=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+          $names=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+          foreach($item in $items){
+            $name=[string]$item.file
+            if(-not $expected.ContainsKey($name) -or -not $names.Add($name)){throw "Unknown or repeated original art: $name"}
+            $png=Join-Path $dir $name
+            if(-not(Test-Path $png)){throw "Missing source PNG $png"}
+            git ls-files --error-unmatch $png | Out-Null
+            if($LASTEXITCODE -ne 0){throw "Unversioned source PNG $png"}
+            $hash=(Get-FileHash $png -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($hash -ne $expected[$name] -or $hash -ne [string]$item.sha256){throw "Wrong original SHA256 $name"}
+            $meta=$png+'.meta'
+            if(-not(Test-Path $meta)){throw "Missing .meta for $name"}
+            $info=Get-Content $meta -Raw
+            foreach($setting in @('textureType: 8','spriteMode: 1','alphaIsTransparency: 1','enableMipMap: 0')){
+              if(-not $info.Contains($setting)){throw "Wrong Sprite importer $setting for $name"}
+            }
+            $match=[regex]::Match($info,'(?m)^guid: ([0-9a-f]{32})\r?$')
+            if(-not $match.Success -or -not $guids.Add($match.Groups[1].Value)){
+              throw "Missing or duplicate Unity Sprite GUID: $name"
+            }
+            if($item.PSObject.Properties.Name -contains 'guid'){
+              if([string]$item.guid -ne $match.Groups[1].Value){
+                throw "Source GUID mismatch: $name"
+              }
+            }
+            if($item.PSObject.Properties.Name -contains 'nine_slice'){
+              $border=[int]$item.nine_slice
+              if(-not $info.Contains("spriteBorder: {x: $border, y: $border, z: $border, w: $border}")){
+                throw "Nine-slice art not configured: $name"
+              }
+            }
+          }
+          if($guids.Count -ne 13 -or $names.Count -ne 13){
+            throw 'Thirteen independent original PNG files and GUIDs are required'
+          }
+          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: thirteen exact SHA256 files'
+      - name: Compile Unity and render genuine day-four/day-seven and Vigilia UI evidence
+        if: needs.verify-exclusive-lease.outputs.city_only != 'true'
+        shell: powershell
+        working-directory: daily-source
+        timeout-minutes: 50
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force $env:OUT | Out-Null
+          $log=Join-Path $env:OUT 'unity-editor.log'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $unityArgs='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture -logFile "'+$log+'"'
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArgs -PassThru
+          $nativeRootStarted=Get-Date
+          $nativeRootLimit=$nativeRootStarted.AddMinutes(55)
+          Write-Host "UNITY_ROOT_STARTED pid=$($process.Id); no process-tree wait"
+          while(-not $process.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$process.Refresh()}
+          if(-not $process.HasExited){throw 'Actual Unity still active at hard bound; preserve process and evidence'}
+          $settle=(Get-Date).AddSeconds(30)
+          while(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -and (Get-Date) -lt $settle){Start-Sleep 2}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process remains; refuse source or resource handoff'}
+          Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($process.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($process.ExitCode)"
+          $capture=Join-Path $project 'DailyTreasureNativeEvidence'
+          if(Test-Path $capture){Copy-Item (Join-Path $capture '*') $env:OUT -Force -Recurse}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw "Unity returned exit code $($process.ExitCode)"
+          }
+          $reportFile=Join-Path $env:OUT 'report.json'
+          if(-not(Test-Path $reportFile)){throw 'Missing actual Unity native report'}
+          $report=Get-Content $reportFile -Raw | ConvertFrom-Json
+          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
+            throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
+          }
+          if($report.images -ne 52 -or $report.realGatewayClaims -ne 8 -or
+             $report.graphicalPointerHits -ne 56 -or
+             $report.visualOnlyMilestoneCaptures -ne 16){
+            throw 'Actual Unity or player-interaction proof is incomplete'
+          }
+          if($report.source -ne $env:GITHUB_SHA){throw 'Native evidence was not rendered at the requested PR SHA'}
+          if($report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or $report.iosVerified -ne $false){
+            throw 'Component test may not claim artistic, gameplay or physical-device approval'
+          }
+          if(@($report.shots).Count -ne 52){throw 'Native evidence missing four unclaimed HUD entries, eight pre-claim calendars, 20 paid reward frames, four loot flights and 16 visual-only styles'}
+          $seen=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+          foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
+            $width=[int]$size[0];$height=[int]$size[1]
+            $variants=@('hud-entry','calendar','closed','opening','opened',
+              'special-day4-calendar','special-day4-opening','special-day4-received')
+            if(($width -eq 844 -and $height -eq 390) -or
+               ($width -eq 390 -and $height -eq 844)){
+              $variants+=@('day7-prize-flight','special-day4-prize-flight')
+            }
+            foreach($variant in $variants){
+              $name="real-unity-daily-$variant-${width}x$height.png"
+              $matches=@($report.shots | Where-Object {$_.file -ceq $name})
+              if($matches.Count -ne 1 -or -not $seen.Add($name)){
+                throw "Missing/duplicate screenshot in native report: $name"
+              }
+              $item=$matches[0]
+              $unclaimed=($variant -eq 'hud-entry' -or $variant -eq 'calendar' -or
+                $variant -eq 'special-day4-calendar')
+              $claimCalendar=($variant -eq 'calendar' -or
+                $variant -eq 'special-day4-calendar')
+              if($item.width -ne $width -or $item.height -ne $height -or
+                 $item.nativeCanvas -ne $true -or
+                 $item.coversReward -ne (!$unclaimed) -or
+                 $item.preserved -ne (!$unclaimed) -or
+                 $item.readyToClaim -ne $claimCalendar){
+                 throw "Incorrect native HUD or paid reward screenshot metadata: $name"
+              }
+              $path=Join-Path $env:OUT $name
+              if(-not(Test-Path $path)){throw "Missing Unity PNG $name"}
+              $data=[IO.File]::ReadAllBytes($path)
+              if($data.Length -le 7000 -or $item.bytes -ne $data.Length){
+                throw "Truncated native screenshot: $name"
+              }
+              $sig=[byte[]](137,80,78,71,13,10,26,10)
+              for($i=0;$i -lt $sig.Length;$i++){
+                if($sig[$i] -ne $data[$i]){throw "Not a genuine PNG: $name"}
+              }
+              $pngWidth=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,16))
+              $pngHeight=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,20))
+              if($pngWidth -ne $width -or $pngHeight -ne $height){
+                throw "PNG IHDR viewport mismatch: $name"
+              }
+              $digest=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($digest -ne [string]$item.sha256){throw "Native screenshot hash mismatch: $name"}
+            }
+          }
+          # These are ART style-only snapshots, never game progression or
+          # paid rewards. The C# report explicitly sets coversReward=false.
+          foreach($size in @(@(844,390),@(390,844))){
+            $width=[int]$size[0];$height=[int]$size[1]
+            foreach($style in @('lyra','bastion','vigilants','scouts')){
+              foreach($state in @('opening','result')){
+                $name="real-unity-daily-style-$style-$state-${width}x$height.png"
+                $matches=@($report.shots | Where-Object {$_.file -ceq $name})
+                if($matches.Count -ne 1 -or -not $seen.Add($name)){
+                  throw "Missing or duplicate visual-only milestone style: $name"
+                }
+                $item=$matches[0]
+                if($item.width -ne $width -or $item.height -ne $height -or
+                   $item.nativeCanvas -ne $true -or $item.coversReward -ne $false -or
+                   $item.preserved -ne $false -or $item.readyToClaim -ne $false){
+                  throw "Visual-only style incorrectly claims earned items: $name"
+                }
+                $path=Join-Path $env:OUT $name
+                if(-not(Test-Path $path)){throw "Missing actual Unity style image: $name"}
+                $data=[IO.File]::ReadAllBytes($path)
+                if($data.Length -le 7000 -or $item.bytes -ne $data.Length){
+                  throw "Empty or truncated Unity style image: $name"
+                }
+                $magic=[byte[]](137,80,78,71,13,10,26,10)
+                for($i=0;$i -lt $magic.Length;$i++){
+                  if($data[$i] -ne $magic[$i]){throw "Not a PNG: $name"}
+                }
+                $imageWidth=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,16))
+                $imageHeight=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,20))
+                if($imageWidth -ne $width -or $imageHeight -ne $height){
+                  throw "Wrong style viewport: $name"
+                }
+                $digest=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+                if($digest -ne [string]$item.sha256){
+                  throw "Visual style image hash mismatch: $name"
+                }
+              }
+            }
+          }
+          if($seen.Count -ne 52 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 52){
+            throw 'Required four unclaimed HUD + eight unpaid calendars + 20 paid reward + four loot flights + 16 visual-only milestone PNGs'
+          }
+          # The original 52 render contract omitted the five ordinary days.
+          # Every quiet-day image below comes from one genuine, persisted
+          # LocalGateway claim; stage-only visuals are not credited.
+          if($report.quietGatewayClaims -ne 20 -or
+             $report.quietPointerHits -ne 60 -or
+             $report.quietImages -ne 20 -or
+             @($report.quietShots).Count -ne 20){
+            throw 'Missing genuine ordinary-day reward or native touch proof'
+          }
+          $quietDir=Join-Path $env:OUT 'quiet'
+          if(-not(Test-Path $quietDir)){throw 'Native ordinary reward directory missing'}
+          $quietNames=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+          foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
+            $width=[int]$size[0];$height=[int]$size[1]
+            foreach($day in @(1,2,3,5,6)){
+              $name="real-unity-daily-quiet-day${day}-received-${width}x$height.png"
+              $items=@($report.quietShots | Where-Object {$_.file -ceq $name})
+              if($items.Count -ne 1 -or -not $quietNames.Add($name)){
+                throw "Missing or duplicate real ordinary reward: $name"
+              }
+              $item=$items[0]
+              if($item.width -ne $width -or $item.height -ne $height -or
+                 $item.nativeCanvas -ne $true -or $item.coversReward -ne $true -or
+                 $item.preserved -ne $true -or $item.readyToClaim -ne $false){
+                throw "Ordinary reward not verified as actually paid: $name"
+              }
+              $file=Join-Path $quietDir $name
+              if(-not(Test-Path $file)){throw "No Unity quiet screenshot: $name"}
+              $data=[IO.File]::ReadAllBytes($file)
+              if($data.Length -le 7000 -or $item.bytes -ne $data.Length){
+                throw "Truncated ordinary native screenshot: $name"
+              }
+              $sig=[byte[]](137,80,78,71,13,10,26,10)
+              for($i=0;$i -lt $sig.Length;$i++){
+                if($sig[$i] -ne $data[$i]){throw "Not a PNG: $name"}
+              }
+              $imageWidth=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,16))
+              $imageHeight=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,20))
+              if($imageWidth -ne $width -or $imageHeight -ne $height){
+                throw "Ordinary reward viewport mismatch: $name"
+              }
+              $digest=(Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($digest -ne [string]$item.sha256){throw "Quiet screenshot hash mismatch: $name"}
+            }
+          }
+          if($quietNames.Count -ne 20 -or
+             @(Get-ChildItem -Path $quietDir -File -Filter '*.png').Count -ne 20){
+            throw 'Expected 20 independently paid quiet-day Unity originals'
+          }
+          Write-Host 'PASS 52 contracted PNG + 20 independent paid quiet-day PNG; ART REVIEW PENDING'
+      - name: Read-only actual Valoria city art-context render (NOT gameplay certification)
+        shell: powershell
+        working-directory: daily-source
+        timeout-minutes: 20
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Another native process started; never interrupt it'
+          }
+          $cityOut=Join-Path $env:OUT 'city'
+          New-Item -ItemType Directory -Path $cityOut -Force | Out-Null
+          $log=Join-Path $cityOut 'unity-city-editor.log'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $arguments='-batchmode -force-d3d11 -projectPath "'+$project+
+            '" -executeMethod Eldoria.DailyTreasures.Editor.DailyTreasureCityArtEvidence.Capture -logFile "'+$log+'"'
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
+          $nativeRootStarted=Get-Date
+          $nativeRootLimit=$nativeRootStarted.AddMinutes(55)
+          Write-Host "UNITY_ROOT_STARTED pid=$($process.Id); no process-tree wait"
+          while(-not $process.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$process.Refresh()}
+          if(-not $process.HasExited){throw 'Actual Unity still active at hard bound; preserve process and evidence'}
+          $settle=(Get-Date).AddSeconds(30)
+          while(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -and (Get-Date) -lt $settle){Start-Sleep 2}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process remains; refuse source or resource handoff'}
+          Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($process.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($process.ExitCode)"
+          $native=Join-Path $project 'DailyTreasureCityArtEvidence'
+          if(Test-Path $native){Copy-Item (Join-Path $native '*') $cityOut -Force -Recurse}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw "Read-only canonical city art-context Unity proof failed: $($process.ExitCode)"
+          }
+          $reportFile=Join-Path $cityOut 'city-art-report.json'
+          if(-not(Test-Path $reportFile)){throw 'No actual canonical city report'}
+          $report=Get-Content $reportFile -Raw | ConvertFrom-Json
+          if($report.status -ne 'CITY_ART_CONTEXT_RENDERED_NOT_GAMEPLAY_CERTIFIED' -or
+             $report.source -ne $env:GITHUB_SHA -or $report.pngCount -ne 20 -or
+             $report.cityRenderers -lt 30 -or
+             $report.citySceneOpened -ne $true -or $report.cityCameraUsed -ne $true -or
+             $report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or
+             $report.pr173Integrated -ne $false -or $report.iosVerified -ne $false -or
+             $report.sceneEnvironmentRestored -ne $true -or $report.bastionPerimeterProofs -ne 8 -or
+             $report.actualBuiltContextProofs -ne 8 -or $report.actualCityContextPixelProofs -ne 8 -or
+             $report.bastionPresentationMethod -ne 'ACTUAL_BUILT_CITY_CINEMATIC_CONTEXT' -or
+             $report.realGatewayClaims -ne 0){
+            throw 'Actual city art proof missing or falsely claims live game/PR173/earned reward'
+          }
+          if(@($report.shots).Count -ne 20){throw 'Missing city baselines, calendar and genuine Bastion visual-only context'}
+          foreach($shot in $report.shots){
+            $name=[string]$shot.file
+            if($name -notmatch '^real-city-daily-(actual-city-baseline|authored-calendar-context|authored-bastion-visual-only|real-bastion-camera-baseline|real-bastion-camera-ceremony)-(1600x900|900x1600|844x390|390x844)\.png$'){
+              throw "Unexpected city art screenshot: $name"
+            }
+            $path=Join-Path $cityOut $name
+            if(-not(Test-Path $path) -or (Get-Item $path).Length -ne [int]$shot.bytes){
+              throw "Incomplete real city art screenshot: $name"
+            }
+            $hash=(Get-FileHash $path -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($hash -ne [string]$shot.sha256){throw "City art photo SHA mismatch: $name"}
+          }
+          if(@(Get-ChildItem $cityOut -File -Filter '*.png').Count -ne 20){
+            throw 'Unexpected extra/stale city art screenshot'
+          }
+          Write-Host 'ACTUAL_CITY_ART_CONTEXT_PROOF: 20 native images including 8 genuine-camera Bastion studies; NO gameplay, PR173, device or art approval'
+      - name: Preserve real Unity screenshots and error log even when test fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-daily-treasures-native-${{ github.sha }}
+          path: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}\
+          retention-days: 30
+          if-no-files-found: warn
+
+  analyze-original-native-screenshots:
+    name: Inspect genuine Unity screenshots, including partial FAILED evidence
+    needs: native-ui
+    # A genuine Unity failure often leaves valuable PNGs (8 in the earlier
+    # PR181 run). Analyze and retain their hashes/contact sheets without
+    # treating the component as certified or taking a second Windows lease.
+    if: ${{ always() && (needs.native-ui.result == 'success' || needs.native-ui.result == 'failure') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout pixel audit source from exact SHA
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/daily-treasures/audit_native_art.py
+            /tools/daily-treasures/audit_city_art.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install independent image validation dependency
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Run known-positive/known-distinct pixel preflight
+        run: python tools/daily-treasures/audit_native_art.py --selftest
+      - name: Confirm the real-city visibility gate detects the old black overlay
+        run: python tools/daily-treasures/audit_city_art.py --selftest
+      - name: Fetch exact native evidence, if Unity reached the camera
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: eldoria-daily-treasures-native-${{ github.sha }}
+          path: native-originals
+      - name: Preserve authentic failed frames or audit full 52+20 images
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f native-originals/report.json ]; then
+            echo 'No component capture in this lot; current component certification is not asserted by this run'
+            exit 0
+          fi
+          status=$(python -c "import json; print(json.load(open('native-originals/report.json',encoding='utf-8-sig'))['status'])")
+          if [ "$status" = NATIVE_COMPONENT_FAILED ]; then
+            python tools/daily-treasures/audit_native_art.py \
+              --partial \
+              --input native-originals \
+              --source-sha ${{ github.sha }} \
+              --output native-art-qa
+            echo 'INCOMPLETE: saved verified partial originals, no native pass'
+          else
+            python tools/daily-treasures/audit_native_art.py \
+              --input native-originals \
+              --source-sha ${{ github.sha }} \
+              --output native-art-qa
+          fi
+      - name: Audit native city visibility outside the real slate/calendar frame
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f native-originals/city/city-art-report.json ]; then
+            python tools/daily-treasures/audit_city_art.py \
+              --input native-originals \
+              --source-sha ${{ github.sha }} \
+              --output native-art-qa
+          else
+            echo 'No city evidence to audit: incomplete native run; do not certify integration'
+          fi
+      - name: Keep both human review contact sheets and machine report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-treasure-native-visual-audit-${{ github.sha }}
+          path: native-art-qa/
+          retention-days: 30
+          if-no-files-found: warn

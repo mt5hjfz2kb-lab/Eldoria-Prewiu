@@ -1,0 +1,9 @@
+# Remove the last competing perspective at the edge of the Bastion ceremony
+
+Actual native43142677773 passed92images and strict8real-Bastion geometry/rotation checks. Direct inspection of the new portrait and landscape PNGs shows a remaining artistic discontinuity: the one continuous castle view stops at the inner gold frame while the different gameplay-camera view remains visible around its edge. The image is larger and coherent inside, but this remaining camera boundary is not accepted as finished art.
+
+The next source candidate makes that same ONE opaque GPU view cover the entire active viewport. It draws beyond the unmasked inner ceremony frame, covering the older frame background and every competing outer gameplay perspective. The original built castle remains composed inside the same protected scene region before rendering; captions, actual receipt, input controls and their normal story layout are preserved. Other painterly scenes and all daily paid rewards retain their existing layouts. If an actual built castle is unavailable, the existing truthful city-through fallback remains; no invented future castle is substituted.
+
+The camera and rotation use the actual viewport aspect. Its two bounded render-target dimensions are fitted together so the former500px minimum cannot stretch a narrow phone view. The real-city fixture additionally measures the actual RawImage screen corners and requires full viewport coverage. All8real model bounds corners must still stay outside the committed story region. Same-texture/UV/tint A/B, nonblank masonry, rotation and unchanged0.68masonry correlation remain required.
+
+Implemented source candidate only. Existing native92 certifies the preceding inner-theatre method, not this change. Need full source CI and a new bounded genuine Unity batch, then original-reference/actual-image review. No main merge, art approval or physical-device claim.

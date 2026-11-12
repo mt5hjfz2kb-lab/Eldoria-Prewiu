@@ -1,0 +1,218 @@
+{
+  "source": "fresh 2K generated atlas, NOT any original screenshot crop",
+  "files": {
+    "building_panel": {
+      "origin": "panels",
+      "rect": [
+        120,
+        58,
+        1080,
+        1292
+      ],
+      "dimensions": [
+        960,
+        1234
+      ],
+      "sha256": "3cc1a3ae17edbdedc3079fc668befe86013a963f118a2fdc4db4d1a6ddda904a",
+      "opaque_fraction": 0.908,
+      "transparent_fraction": 0.087
+    },
+    "quest_panel": {
+      "origin": "panels",
+      "rect": [
+        1184,
+        470,
+        2352,
+        814
+      ],
+      "dimensions": [
+        1168,
+        344
+      ],
+      "sha256": "885b9931635701b81737ceecdfb1d384a5912ccf7e50bed0bc0e00ff89f97990",
+      "opaque_fraction": 0.741,
+      "transparent_fraction": 0.251
+    },
+    "profile_panel": {
+      "origin": "panels",
+      "rect": [
+        39,
+        1384,
+        1177,
+        1696
+      ],
+      "dimensions": [
+        1138,
+        312
+      ],
+      "sha256": "92d7e7c4d820fe66402d9c3d4118e44ef3e39e3aaa43949b17143227b03d7749",
+      "opaque_fraction": 0.8,
+      "transparent_fraction": 0.19
+    },
+    "upgrade_button": {
+      "origin": "panels",
+      "rect": [
+        1286,
+        1394,
+        2298,
+        1687
+      ],
+      "dimensions": [
+        1012,
+        293
+      ],
+      "sha256": "77595809131590c2f34adf9a99458a6d2e666d28ff59361f3e8148651765a3c4",
+      "opaque_fraction": 0.886,
+      "transparent_fraction": 0.105
+    },
+    "castle": {
+      "origin": "medallions",
+      "rect": [
+        48,
+        98,
+        827,
+        900
+      ],
+      "dimensions": [
+        779,
+        802
+      ],
+      "sha256": "3de72e6029134cd6a4bb0543220d3c2408c14b50cba818c61c082cbf79d98c4d",
+      "opaque_fraction": 0.709,
+      "transparent_fraction": 0.285
+    },
+    "provisions": {
+      "origin": "medallions",
+      "rect": [
+        810,
+        98,
+        1588,
+        900
+      ],
+      "dimensions": [
+        778,
+        802
+      ],
+      "sha256": "e5ad995856a26829271fae1e6cedbadb0710a10e7eaa8477568faa0fe3095946",
+      "opaque_fraction": 0.71,
+      "transparent_fraction": 0.284
+    },
+    "swords": {
+      "origin": "medallions",
+      "rect": [
+        1572,
+        98,
+        2352,
+        900
+      ],
+      "dimensions": [
+        780,
+        802
+      ],
+      "sha256": "866e9056169fe773120fc800df24958b8ca804e885fd68d0425cefc332eef38f",
+      "opaque_fraction": 0.709,
+      "transparent_fraction": 0.285
+    },
+    "raven": {
+      "origin": "medallions",
+      "rect": [
+        362,
+        884,
+        1128,
+        1648
+      ],
+      "dimensions": [
+        766,
+        764
+      ],
+      "sha256": "e589c5277750aad7a5cb327d7f42b0df0ced5bb98744cd61b745ca0b7b01d416",
+      "opaque_fraction": 0.706,
+      "transparent_fraction": 0.288
+    },
+    "helm": {
+      "origin": "medallions",
+      "rect": [
+        1243,
+        884,
+        2009,
+        1648
+      ],
+      "dimensions": [
+        766,
+        764
+      ],
+      "sha256": "f60817a4b15f48d48c25ddb4e905d4f1bd3cec090b718afb8833802548a86736",
+      "opaque_fraction": 0.706,
+      "transparent_fraction": 0.288
+    },
+    "resource_chip": {
+      "origin": "resources",
+      "rect": [
+        826,
+        354,
+        1574,
+        622
+      ],
+      "dimensions": [
+        748,
+        268
+      ],
+      "sha256": "8fbff2acb627ac187441643dd9e7c93f9999e54c07871898bfe564ae373d3679",
+      "opaque_fraction": 0.777,
+      "transparent_fraction": 0.208
+    },
+    "wood": {
+      "origin": "resources",
+      "rect": [
+        69,
+        1039,
+        776,
+        1606
+      ],
+      "dimensions": [
+        707,
+        567
+      ],
+      "sha256": "4eba4141a5cb78523c84cca095804f5071cd1e18714847a15405d591e067d563",
+      "opaque_fraction": 0.53,
+      "transparent_fraction": 0.462
+    },
+    "stone": {
+      "origin": "resources",
+      "rect": [
+        857,
+        1031,
+        1542,
+        1584
+      ],
+      "dimensions": [
+        685,
+        553
+      ],
+      "sha256": "0ea853c30e42279ecc3671dc936a4bbe705f9191c5a9076822c421e14cc3b970",
+      "opaque_fraction": 0.578,
+      "transparent_fraction": 0.413
+    },
+    "food": {
+      "origin": "resources",
+      "rect": [
+        1673,
+        1030,
+        2306,
+        1604
+      ],
+      "dimensions": [
+        633,
+        574
+      ],
+      "sha256": "0eeda0b91d5d0ba92635276a22c53d585e9f8e17ccf2df3da0196abfba8010a1",
+      "opaque_fraction": 0.642,
+      "transparent_fraction": 0.35
+    }
+  },
+  "models": {
+    "panels": "8afbb6c1-8133-4473-856d-8b2f5944228a",
+    "medallions": "b133e50e-7165-418d-a56e-04c1ddd702d4",
+    "resources": "a35de76d-4053-4c34-82e8-053e02e02fd7"
+  }
+}

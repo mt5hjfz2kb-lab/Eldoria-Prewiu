@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 namespace Eldoria.UI.RoyalGold {
- public enum RoyalSection { Realm, Heroes, Army, Missions, Inventory, World, Bastion, Settings }
+ public enum RoyalSection { Realm, Heroes, Army, Missions, Inventory, World, Bastion, Settings, Mailbox }
  public sealed class RoyalAction {
   public readonly string Id, Kind, Target, Label, Reason; public readonly long Revision; public readonly bool Enabled;
   public RoyalAction(string kind,string target,string label,string reason,long revision,bool enabled) { Id=Guid.NewGuid().ToString("N");Kind=kind??"";Target=target??"";Label=label??"";Reason=reason??"";Revision=revision;Enabled=enabled; }

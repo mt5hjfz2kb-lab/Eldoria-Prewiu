@@ -1,0 +1,524 @@
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+namespace Eldoria.DailyTreasures
+{
+    /// <summary>
+    /// One-frame cinematic close-up of the ACTUAL active Bastion in the
+    /// player's own loaded city. No invented building, future tier, loot,
+    /// screenshot upscaling or mutation of gameplay camera/state.
+    /// The optional GPU texture is owned and destroyed by DailyTreasurePanel.
+    /// </summary>
+    public static class DailyTreasureBastionCamera
+    {
+        public const string SceneKey="RealBastion/LiveAuthenticatedCamera";
+        public const string PresentationMethod="ACTUAL_BUILT_CITY_CINEMATIC_CONTEXT";
+        public static bool LastSceneStateRestored { get; private set; }
+        public static int LastBuiltRendererCount { get; private set; }
+
+        // The saved city supports TWO genuine views, and tier V has a
+        // different ACTIVE real model, not BastionTwo! The old resolver
+        // found the tier-I/II city owner only; at Bastion V the progressive
+        // world presentation explicitly disables those legacy renderers,
+        // leading to a black stage. Read only LIVE existing meshes.
+        // These scene hosts are in the foreign Assembly-CSharp; reflection
+        // is necessary from the isolated DailyTreasures asmdef.
+        static object ReadMember(object target,string member)
+        {
+            if(target==null)return null;
+            var type=target.GetType();
+            return type.GetProperty(member,
+                BindingFlags.Instance|BindingFlags.Public)
+                ?.GetValue(target,null) ??
+                type.GetField(member,BindingFlags.Instance|
+                    BindingFlags.Public)?.GetValue(target);
+        }
+
+        static int SavedBastionLevel(object city)
+        {
+            // A level-V achievement must never show the obsolete tier-II
+            // building during the single frame while the actual
+            // BastionIVVWorldPresentation is still instantiating.
+            var gateway=ReadMember(city,"Gateway");
+            var snapshot=gateway?.GetType().GetMethod("Snapshot",
+                BindingFlags.Public|BindingFlags.Instance)
+                ?.Invoke(gateway,null);
+            var level=ReadMember(snapshot,"BastionLevel");
+            return level is int committed ? committed : -1;
+        }
+
+        static bool TryActiveBounds(GameObject root,Camera camera,
+            out Bounds result)
+        {
+            result=default;
+            if(!root || !root.activeInHierarchy || !camera ||
+                root.scene!=camera.gameObject.scene)return false;
+            bool any=false;
+            foreach(var r in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if(!r || !r.enabled || !r.gameObject.activeInHierarchy)
+                    continue;
+                if((camera.cullingMask&(1<<r.gameObject.layer))==0)
+                    continue;
+                if(!any){result=r.bounds;any=true;}
+                else result.Encapsulate(r.bounds);
+            }
+            return any && result.size.sqrMagnitude>.01f;
+        }
+
+        static bool TryCaptureOwner(object owner,Camera camera,
+            string[] slots,out Bounds bounds,out GameObject root)
+        {
+            bounds=default;root=null;
+            if(owner==null||!camera)return false;
+            foreach(var name in slots)
+            {
+                var building=ReadMember(owner,name) as GameObject;
+                if(TryActiveBounds(building,camera,out bounds)){root=building;return true;}
+            }
+            return false;
+        }
+
+        static bool Resolve(out Camera source,out Bounds bounds,out GameObject root)
+        {
+            source=null;bounds=default;root=null;
+            var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
+            bool pendingCanonicalTierFive=false;
+            // FIRST: true playable owner. It chooses between city and region
+            // and can display the real level-V Bastion via BastionIVVWorld-
+            // Presentation, replacing WorldBastionTwo or City.BastionTwo.
+            // Never show a tier-II building as the milestone for level V.
+            foreach(var item in components)
+            {
+                if(!item || !item.isActiveAndEnabled ||
+                   item.GetType().Name!="ValoriaIntegratedWorld" ||
+                   !item.gameObject.scene.isLoaded)continue;
+                var ready=ReadMember(item,"Ready");
+                if(!(ready is bool) || !(bool)ready)continue;
+                var camera=ReadMember(item,"PlayerCamera") as Camera;
+                if(!camera || !camera.gameObject.scene.isLoaded)continue;
+                bool inWorld=ReadMember(item,"InWorld") is bool value && value;
+                var city=ReadMember(item,"City");
+                int builtLevel=SavedBastionLevel(city);
+                MonoBehaviour progression=null;
+                foreach(var component in item.GetComponents<MonoBehaviour>())
+                    if(component &&
+                       component.GetType().Name=="BastionIVVWorldPresentation")
+                    {progression=component;break;}
+                if(builtLevel>=5 && progression &&
+                   progression.isActiveAndEnabled)
+                {
+                    // WorldModel is the genuine active tier-V render. In the
+                    // city the real replacement is ModelFor("bastion").
+                    GameObject tierFive=null;
+                    if(inWorld)
+                        tierFive=ReadMember(progression,"WorldModel") as GameObject;
+                    else
+                    {
+                        var method=progression.GetType().GetMethod("ModelFor",
+                            BindingFlags.Instance|BindingFlags.Public);
+                        tierFive=method?.Invoke(progression,
+                            new object[]{"bastion"}) as GameObject;
+                    }
+                    if(TryActiveBounds(tierFive,camera,out bounds))
+                    {source=camera;root=tierFive;return true;}
+                }
+                if(builtLevel>=5)
+                {
+                    // The authentic V replacement is not ready: do not
+                    // misrepresent this recorded milestone with old II art.
+                    pendingCanonicalTierFive=true;
+                    continue;
+                }
+                if(inWorld)
+                {
+                    // Real owned world geometry, not invented fake castle.
+                    if(TryCaptureOwner(item,camera,
+                       new[]{"WorldBastionTwo","WorldBastionOne"},out bounds,out root))
+                    {source=camera;return true;}
+                }
+                else
+                {
+                    if(TryCaptureOwner(city,camera,
+                       new[]{"BastionTwo","BastionOne"},out bounds,out root))
+                    {source=camera;return true;}
+                }
+            }
+            // A loaded integrated game is tier V but its *authentic* model
+            // has not appeared: return false so the same CITY is shown
+            // through the transparent heritage frame until V loads.
+            if(pendingCanonicalTierFive)return false;
+            // SECOND: native editor's genuine standalone city scene without
+            // an initialized integrated world. Retain existing validated
+            // test coverage and original active player camera.
+            foreach(var item in components)
+            {
+                if(!item || !item.isActiveAndEnabled ||
+                   item.GetType().Name!="ValoriaReferenceCleanGameplay" ||
+                   !item.gameObject.scene.isLoaded)continue;
+                // The standalone test can also load a saved level V before
+                // the specialised progression class is initialised. Never
+                // disguise a level-V reward with the old tier-II mesh.
+                if(SavedBastionLevel(item)>=5)continue;
+                var camera=ReadMember(item,"PlayerCamera") as Camera;
+                if(TryCaptureOwner(item,camera,
+                   new[]{"BastionTwo","BastionOne"},out bounds,out root))
+                {source=camera;return true;}
+            }
+            Debug.LogWarning(
+                "TRUE_BASTION_NOT_ACTIVE: cannot manufacture ceremonial architecture");
+            return false;
+        }
+
+        // The original city camera is a useful gameplay isometric view,
+        // but the isolated studio still felt like an asset preview in
+        // actual0990e7f captures. A 48-degree contextual city lens keeps ALL
+        // rays at least32 degrees below the horizon (32-degree verticalFOV),
+        // retaining real ground/trees instead of a black oval display. No invented
+        // mesh, replacement asset, panorama or altered player camera.
+        static void Frame(Camera camera,Bounds b,DailyTreasureStageLayout stage,
+            float photoWidth,float photoHeight,out Rect subjectViewport)
+        {
+            var heading=Vector3.ProjectOnPlane(-camera.transform.forward,Vector3.up);
+            if(heading.sqrMagnitude<.0001f)heading=Vector3.forward;
+            heading.Normalize();
+            heading=Quaternion.AngleAxis(35f,Vector3.up)*heading;
+            const float elevationDegrees=48f;
+            float elevation=elevationDegrees*Mathf.Deg2Rad;
+            var away=heading*Mathf.Cos(elevation)+Vector3.up*Mathf.Sin(elevation);
+            camera.orthographic=false;camera.usePhysicalProperties=false;
+            camera.fieldOfView=32f;
+            camera.ResetProjectionMatrix();camera.ResetWorldToCameraMatrix();
+            camera.transform.rotation=Quaternion.LookRotation(-away,Vector3.up);
+            float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
+            float tanX=tanY*camera.aspect;
+            var right=camera.transform.right;var up=camera.transform.up;
+            var forward=camera.transform.forward;
+            var points=new Vector3[8];var corners=new DailyTreasureFrustumPoint[8];
+            int index=0;
+            for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)for(int z=-1;z<=1;z+=2)
+            {
+                var p=new Vector3(b.extents.x*x,b.extents.y*y,b.extents.z*z);
+                points[index]=b.center+p;
+                corners[index++]=new DailyTreasureFrustumPoint(
+                    Vector3.Dot(right,p),Vector3.Dot(up,p),Vector3.Dot(forward,p));
+            }
+            var placement=DailyTreasureStageDirection.FitBuiltBastion(
+                stage,photoWidth,photoHeight,tanX,tanY,corners);
+            float distance=placement.Distance;
+            camera.transform.position=b.center+away*distance+
+                right*placement.RightOffset+up*placement.UpOffset;
+            camera.nearClipPlane=.12f;
+            camera.farClipPlane=Mathf.Max(camera.farClipPlane,
+                distance+b.extents.magnitude*7f);
+            float minX=1f,minY=1f,maxX=0f,maxY=0f;
+            foreach(var point in points)
+            {
+                var v=camera.WorldToViewportPoint(point);
+                if(v.z<=camera.nearClipPlane || v.x<0f || v.x>1f || v.y<0f || v.y>1f)
+                    throw new InvalidOperationException("REAL_BASTION_OUTSIDE_CONTINUOUS_LENS");
+                minX=Mathf.Min(minX,v.x);minY=Mathf.Min(minY,v.y);
+                maxX=Mathf.Max(maxX,v.x);maxY=Mathf.Max(maxY,v.y);
+            }
+            subjectViewport=Rect.MinMaxRect(minX,minY,maxX,maxY);
+            var reserved=new Rect(.5f+(stage.SceneX-stage.SceneW*.5f)/photoWidth,
+                .5f+(stage.SceneY-stage.SceneH*.5f)/photoHeight,
+                stage.SceneW/photoWidth,stage.SceneH/photoHeight);
+            if(subjectViewport.xMin<reserved.xMin-.002f ||
+               subjectViewport.xMax>reserved.xMax+.002f ||
+               subjectViewport.yMin<reserved.yMin-.002f ||
+               subjectViewport.yMax>reserved.yMax+.002f)
+                throw new InvalidOperationException("REAL_BASTION_CROSSES_COMMITTED_STORY_AREA");
+        }
+
+
+        readonly struct FogSnapshot
+        {
+            readonly bool enabled;
+            readonly FogMode mode;
+            readonly Color color;
+            readonly float density,start,end;
+            public FogSnapshot(bool capture)
+            {
+                enabled=RenderSettings.fog;mode=RenderSettings.fogMode;
+                color=RenderSettings.fogColor;density=RenderSettings.fogDensity;
+                start=RenderSettings.fogStartDistance;end=RenderSettings.fogEndDistance;
+            }
+            public void Restore()
+            {
+                RenderSettings.fog=enabled;RenderSettings.fogMode=mode;
+                RenderSettings.fogColor=color;RenderSettings.fogDensity=density;
+                RenderSettings.fogStartDistance=start;RenderSettings.fogEndDistance=end;
+            }
+        }
+
+        // The actual constructed building remains in its actual city. Keep
+        // source renderer/light state read-only and verify it after the one
+        // synchronous capture; there is no isolated asset-preview plinth.
+        sealed class ActualCityState
+        {
+            readonly Dictionary<GameObject,int> layers=new Dictionary<GameObject,int>();
+            readonly Dictionary<Light,bool> lights=new Dictionary<Light,bool>();
+            public int RendererCount { get; private set; }
+            public ActualCityState(GameObject built)
+            {
+                foreach(var r in built.GetComponentsInChildren<Renderer>(true))
+                    if(r && r.enabled && r.gameObject.activeInHierarchy)
+                    {layers[r.gameObject]=r.gameObject.layer;RendererCount++;}
+                if(RendererCount<1)throw new InvalidOperationException("NO_ACTUAL_BUILT_CITY_GEOMETRY");
+                foreach(var light in UnityEngine.Object.FindObjectsByType<Light>(
+                    FindObjectsInactive.Include,FindObjectsSortMode.None))
+                    if(light)lights[light]=light.enabled;
+            }
+            public bool Unchanged
+            {
+                get
+                {
+                    foreach(var entry in layers)
+                        if(!entry.Key||entry.Key.layer!=entry.Value)return false;
+                    foreach(var entry in lights)
+                        if(!entry.Key||entry.Key.enabled!=entry.Value)return false;
+                    return true;
+                }
+            }
+        }
+
+        static int UnusedVolumeLayer()
+        {
+            var volumes=UnityEngine.Object.FindObjectsByType<Volume>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
+            for(int layer=30;layer>=8;layer--)
+            {
+                bool occupied=false;
+                foreach(var volume in volumes)
+                    if(volume && volume.gameObject.layer==layer){occupied=true;break;}
+                if(!occupied)return layer;
+            }
+            throw new InvalidOperationException("NO_ISOLATED_CEREMONY_VOLUME_LAYER");
+        }
+
+        // One-shot optical treatment of the SAME real world. It begins beyond
+        // the complete built masonry bounds, hiding the finite terrain/clear
+        // colour discontinuity rather than painting invented architecture.
+        static void BeginCeremonialEnvironment(Camera camera,Bounds bounds)
+        {
+            var horizon=new Color(.045f,.041f,.051f,1f);
+            float radius=Mathf.Max(1f,bounds.extents.magnitude);
+            float distance=Vector3.Distance(camera.transform.position,bounds.center);
+            RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;
+            RenderSettings.fogColor=horizon;
+            RenderSettings.fogStartDistance=distance+radius*1.15f;
+            RenderSettings.fogEndDistance=distance+radius*3.65f;
+            camera.clearFlags=CameraClearFlags.SolidColor;
+            camera.backgroundColor=horizon;
+        }
+
+        static void DestroyTemporary(UnityEngine.Object obj)
+        {
+            if(!obj)return;
+            // Destroy is deferred until the end of the frame in PlayMode.
+            // Several synchronous viewport captures would otherwise retain
+            // enabled amber lights from earlier shots and change the actual
+            // city lighting. Deactivate NOW, then safely destroy later.
+            if(obj is GameObject temporary)temporary.SetActive(false);
+            if(UnityEngine.Application.isPlaying)
+                UnityEngine.Object.Destroy(obj);
+            else UnityEngine.Object.DestroyImmediate(obj);
+        }
+
+        public static RenderTexture Capture(float panelWidth,float panelHeight)
+        {return Capture(panelWidth,panelHeight,out _);}
+
+        public static RenderTexture Capture(float panelWidth,float panelHeight,out Rect subjectViewport)
+        {
+            subjectViewport=default;
+            LastSceneStateRestored=false;LastBuiltRendererCount=0;
+            if(!Resolve(out var source,out var bounds,out var builtRoot))return null;
+            bool portrait=panelHeight>panelWidth;
+            // Render the ACTUAL city at the same shape as the visible
+            // cathedral-sized ceremony, not a 3:2 fixed photo cropped again
+            // inside a 1:2 portrait. This also prevents GPU upscale blur
+            // after expanding the genuine full-world modal on desktop.
+            // One continuous theatre uses a genuine full-frame lens. The actual
+            // built subject is placed inside the protected caption-free area.
+            var stage=DailyTreasureStageDirection.Compose(
+                "milestone:bastion:camera",panelWidth,panelHeight);
+            float photoWidth=panelWidth,photoHeight=panelHeight;
+            float screenAspect=photoWidth/Mathf.Max(1f,photoHeight);
+            int height=portrait?(panelWidth>=650f?1152:1024):
+                (panelWidth>=950f?720:540);
+            int width=Mathf.Clamp(Mathf.RoundToInt(
+                height*screenAspect),64,1360);
+            // Bound both RT dimensions as a pair, preserving the actual
+            // full-viewport lens after the previous minimum width is removed.
+            height=Mathf.Clamp(Mathf.RoundToInt(width/screenAspect),64,1152);
+            RenderTexture result=null,working=null;
+            Camera camera=null;
+            GameObject cameraObject=null,lightObject=null,volumeObject=null;
+            VolumeProfile ceremonyProfile=null;
+            ActualCityState sourceState=null;
+            var environmentBefore=new FogSnapshot(true);
+            var previous=RenderTexture.active;
+            try
+            {
+                // One original-source render, not an enlarged low-resolution
+                // PNG. Copy the ACTUAL player camera but never move that
+                // camera, touch the player's construction state or save.
+                cameraObject=new GameObject("Daily treasure / temporary genuine Bastion lens");
+                camera=cameraObject.AddComponent<Camera>();
+                camera.CopyFrom(source);
+                camera.transform.SetPositionAndRotation(
+                    source.transform.position,source.transform.rotation);
+                camera.enabled=false;
+                camera.rect=new Rect(0f,0f,1f,1f);
+                camera.aspect=(float)width/height;
+                camera.cullingMask=source.cullingMask & ~(1<<5);
+                camera.allowHDR=true;
+                camera.allowMSAA=false;
+                Frame(camera,bounds,stage,photoWidth,photoHeight,out subjectViewport);
+                sourceState=new ActualCityState(builtRoot);
+                LastBuiltRendererCount=sourceState.RendererCount;
+                // The entire Eldoria project runs URP 17.3.0. Unity's
+                // Camera.Render() is NOT the supported out-of-loop route in
+                // the Scriptable Render Pipeline. Use the official Unity 6
+                // render-request API and a detached Base Camera.
+                // Preserve the real world camera's physical scene settings,
+                // but never modify that active camera or its gameplay stack.
+                var originalData=source.GetComponent<UniversalAdditionalCameraData>();
+                var renderData=camera.GetUniversalAdditionalCameraData();
+                renderData.renderType=CameraRenderType.Base;
+                if(originalData)
+                {
+                    renderData.renderPostProcessing=originalData.renderPostProcessing;
+                    renderData.renderShadows=originalData.renderShadows;
+                    renderData.volumeLayerMask=originalData.volumeLayerMask;
+                    renderData.antialiasing=originalData.antialiasing;
+                }
+                // Dedicated, transient URP volume: no source camera/volume is
+                // edited and the profile is not kept on the player scene.
+                int gradeLayer=UnusedVolumeLayer();
+                volumeObject=new GameObject("Daily treasure / temporary ceremony grade");
+                volumeObject.layer=gradeLayer;
+                volumeObject.hideFlags=HideFlags.HideAndDontSave;
+                var volume=volumeObject.AddComponent<Volume>();
+                volume.isGlobal=true;volume.priority=10000f;volume.weight=1f;
+                ceremonyProfile=ScriptableObject.CreateInstance<VolumeProfile>();
+                ceremonyProfile.hideFlags=HideFlags.HideAndDontSave;
+                volume.sharedProfile=ceremonyProfile;
+                var grade=ceremonyProfile.Add<ColorAdjustments>(true);
+                grade.postExposure.Override(-.15f);
+                grade.contrast.Override(9f);
+                grade.saturation.Override(-20f);
+                var tone=ceremonyProfile.Add<Tonemapping>(true);
+                tone.mode.Override(TonemappingMode.ACES);
+                var vignette=ceremonyProfile.Add<Vignette>(true);
+                vignette.intensity.Override(.22f);
+                vignette.smoothness.Override(.55f);
+                renderData.volumeLayerMask=1<<gradeLayer;
+                renderData.volumeTrigger=camera.transform;
+                renderData.renderPostProcessing=true;
+                BeginCeremonialEnvironment(camera,bounds);
+                camera.targetTexture=null;
+                // The old camera-owned MSAA target existed as an object but
+                // had no hardware storage after capture (native81111cb4).
+                // Render into a checked single-sample working target, then
+                // copy actual GPU pixels into a separately owned snapshot.
+                working=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32)
+                {
+                    name="TRUE Bastion / temporary render working target",
+                    filterMode=FilterMode.Bilinear,
+                    wrapMode=TextureWrapMode.Clamp,
+                    antiAliasing=1
+                };
+                if(!working.Create() || !working.IsCreated())
+                    throw new InvalidOperationException("URP_WORKING_TEXTURE_ALLOCATION_FAILED");
+                camera.targetTexture=working;
+                // One broad warm bounce, never a globally applied light or
+                // violet/neon firework. Created/destroyed synchronously.
+                lightObject=new GameObject("Daily treasure / temporary amber relief");
+                var light=lightObject.AddComponent<Light>();
+                light.type=LightType.Point;
+                light.color=new Color(1f,.81f,.57f);
+                light.range=Mathf.Max(8f,bounds.size.magnitude*2.2f);
+                light.intensity=.82f;
+                light.shadows=LightShadows.None;
+                light.cullingMask=camera.cullingMask;
+                // A single amber key from the camera's front-left
+                // reveals original masonry relief, not imaginary VFX.
+                lightObject.transform.position=bounds.center+
+                    camera.transform.right*(-bounds.extents.magnitude*.72f)+
+                    Vector3.up*(bounds.extents.magnitude*.95f)-
+                    camera.transform.forward*(bounds.extents.magnitude*.86f);
+                // A detached Base Camera has no overlay stack. Use the
+                // supported full URP request so render-context initialization
+                // is explicit, then retain a snapshot never bound to a camera.
+                var request=new RenderPipeline.StandardRequest();
+                if(!RenderPipeline.SupportsRenderRequest(camera,request))
+                    throw new InvalidOperationException(
+                        "URP_SNAPSHOT_UNSUPPORTED: genuine Bastion not captured");
+                request.destination=working;
+                RenderPipeline.SubmitRenderRequest(camera,request);
+                if(!working.IsCreated())
+                    throw new InvalidOperationException("URP_WORKING_TEXTURE_LOST_AFTER_RENDER");
+                result=new RenderTexture(width,height,0,RenderTextureFormat.ARGB32)
+                {
+                    name="TRUE Bastion / one-frame authenticated milestone",
+                    filterMode=FilterMode.Bilinear,
+                    wrapMode=TextureWrapMode.Clamp,
+                    antiAliasing=1
+                };
+                if(!result.Create() || !result.IsCreated())
+                    throw new InvalidOperationException("URP_PERSISTENT_SNAPSHOT_ALLOCATION_FAILED");
+                Graphics.Blit(working,result);
+                if(!result.IsCreated())
+                    throw new InvalidOperationException("URP_PERSISTENT_SNAPSHOT_LOST_AFTER_COPY");
+                // Detach BEFORE camera cleanup; the returned texture belongs
+                // exclusively to DailyTreasurePanel, until its actual Close.
+                camera.targetTexture=null;
+                return result;
+            }
+            catch(Exception error)
+            {
+                subjectViewport=default;
+                Debug.LogWarning("REAL_BASTION_CAMERA_UNAVAILABLE "+error.Message);
+                if(result){result.Release();DestroyTemporary(result);}
+                return null;
+            }
+            finally
+            {
+                RenderTexture.active=previous;
+                if(sourceState!=null)LastSceneStateRestored=sourceState.Unchanged;
+                environmentBefore.Restore();
+                // Deactivate the global volume before deferred PlayMode
+                // destruction; subsequent real player cameras keep their
+                // exact original fog and post-processing environment.
+                DestroyTemporary(volumeObject);
+                if(ceremonyProfile)
+                {
+                    foreach(var component in ceremonyProfile.components)
+                        DestroyTemporary(component);
+                    ceremonyProfile.components.Clear();
+                    DestroyTemporary(ceremonyProfile);
+                }
+                if(camera)camera.targetTexture=null;
+                DestroyTemporary(cameraObject);
+                DestroyTemporary(lightObject);
+                if(working){working.Release();DestroyTemporary(working);}
+            }
+        }
+        public static void Release(RenderTexture texture)
+        {
+            if(!texture)return;
+            if(RenderTexture.active==texture)RenderTexture.active=null;
+            texture.Release();
+            DestroyTemporary(texture);
+        }
+    }
+}
+
+

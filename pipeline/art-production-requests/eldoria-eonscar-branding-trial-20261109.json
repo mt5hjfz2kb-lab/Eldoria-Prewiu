@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-eonscar-branding-trial-20261109",
+  "workstream_id": "eldoria-eonscar-branding-trial-20261109",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "EONSCAR — isolated owner-selected video game logo and reversible welcome title screen; PNG for internal Unity QA only",
+  "profile": "environment_composition",
+  "visual_gate_state": "OWNER_SELECTED_DIRECTION_SOURCE_QA_PASS_UNITY_NOT_TESTED",
+  "ai_authorship_policy": "required",
+  "diagnosis": "The owner favors metallic silver/aged gold and a restrained purple Breach for EONSCAR. Source is generated in ChatGPT and owner selected the visual direction. The 512x384 palette-quantized transparent QA PNG is a verifiable derivative of the 1448x1086 original; this reduced image is NOT final commercial-quality art. Its Unity appearance, safe area, narrative/tap-through and player-entry preservation need genuine native evidence; no marketing publication is approved.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": false,
+    "unity_native_uGUI": true,
+    "original_AI_illustrated_logo": true,
+    "existing_3d_assets_modified": false
+  },
+  "artist": {
+    "design": "Sharp engraved weathered silver and aged gold title with one central supernatural violet Breach fissure; legible at launch screen, no duplicate HUD, no purple monochrome",
+    "source": "Original owner-reviewed generated PNG 1448x1086 sha256=0fa78eda784cacc85755be36c3df3748605d617e1a24d7f33ffecc9a4a74fba2; exact GitHub QA derivative Unity/Assets/Eldoria/Branding/EonscarTrial/Resources/EonscarTrial/eonscar-logo.png sha256=c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72",
+    "reference": "User's EONSCAR logo choice in current conversation; image used as visual reference not a verified Unity screenshot"
+  },
+  "validation": {
+    "source_gate": "PR184 owner-only workstream/branch. Source sanity and 9-viewport geometric tests, curated SHA256 image metadata, Unity GUIDs, no changes to progress/saves, package ID, current build or screenshots.",
+    "final_gate": "Unity Editor native exact commit asset import and UI hierarchy proof followed by genuine same-scene A/B PlayMode screenshots (1920x1080, 844x390, 390x844), no input leak, tutorial persistence, PNG edges/commercial visual inspection. No publish or art-approved claim until owner quality acceptance. Actual Android/WebGL testing to follow if promoted."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "Owner authorizes reversible internal proof, not release. Art was generated for the user, not third-party game asset. No paid models or Tripo. Windows runner used only with exclusive registry claim after current timer task releases."
+}

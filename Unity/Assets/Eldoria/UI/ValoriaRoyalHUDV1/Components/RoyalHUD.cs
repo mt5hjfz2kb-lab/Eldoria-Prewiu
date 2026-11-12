@@ -145,7 +145,7 @@ namespace Eldoria.UI.RoyalGold {
      SelectBuilding(barracks!=null&&barracks.Level==0?"barracks":
       current.BastionLevel>=3?"upgrade-barracks":"bastion");
      return;
-    }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
+    }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Mailbox||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
   void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){resetArmed=false;resetArmedUntil=0f;SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
    if(current==null)return;narrative=false;Modal.Body.fontSize=26;shown=section;string body="";string title=BottomNavigation.Name(section,english);

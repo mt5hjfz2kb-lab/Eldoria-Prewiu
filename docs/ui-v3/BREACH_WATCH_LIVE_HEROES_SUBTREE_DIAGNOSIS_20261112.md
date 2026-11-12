@@ -1,0 +1,9 @@
+# Salón de héroes — diagnóstico de contenido inactivo (12/11/2026)
+
+Las dos capturas auténticas Unity de 1600×900 en los runs [43161203990](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43161203990) (artefacto 13917529325) y [43164446160](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43164446160) (artefacto 13919456713) conservan **2219 píxeles de texto en los 14 px junto a las pestañas**. La comparación de PNG originales en la región de cabecera x470..1169,y185..269 detecta **cero píxeles cambiados >12 por canal**: la corrección de anclajes no llegó al render, aunque la sintaxis pasó.
+
+**Raíz de la ausencia de efecto:** `HeroesApprovedDestination.RebuildContent()` primero desactiva y llama a `Destroy()` sobre el viejo objeto `Heroes / live controls`, y después crea otro hijo con el mismo nombre. El adaptador `BreachWatchHeroesTheme.Refresh()` buscaba el **primer hijo que coincidiese por nombre**, incluso si estaba desactivado y pendiente de destrucción. `HallGradeActive` podía declarar éxito sobre material aplicado a un `RawImage` inactivo. Esta discrepancia entre los elementos modificados y los realmente rasterizados explica por qué dos intentos geométricos no tuvieron impacto.
+
+**Cambio de técnica:** ahora se elige desde el último hijo solo la instancia `activeInHierarchy`; `ActiveContentIsLatest` y `HallGradeActive` impiden acreditar un lienzo retirado. Se reserva la franja superior real de texto mediante `Mathf.Max` en coordenadas Y positivas hacia arriba (el `Min` anterior la comprimía junto a las pestañas). No se introduce un nuevo Canvas ni se alteran datos, guardados, historia, pestañas, funciones, héroes ni el arte original.
+
+**Pendiente y no certificado:** hace falta un nuevo lote legítimo de Unity, con 48 PNG, prueba de glifos GPU=0 en la banda, dos clics reales de correo, guardado inmutable y A/B con la imagen aprobada. No ART_APPROVED, móvil físico, merge ni publicación.

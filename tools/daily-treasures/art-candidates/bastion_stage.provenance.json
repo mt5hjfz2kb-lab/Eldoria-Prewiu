@@ -1,0 +1,17 @@
+{
+  "scene": "bastion",
+  "status": "PREUNITY_UNREVIEWED_CANDIDATE",
+  "art_approved": false,
+  "unity_native_verified": false,
+  "identity": "actual_city_capture_overlay_required",
+  "generated_illustration_not_authentic_gameplay": true,
+  "source_task_id": "42801f4e-fd08-4b40-8a1b-9a9d3f22f716",
+  "segmentation_task_id": "b87f13d7-1bc3-4ebe-bb1c-46eac1bacebe",
+  "sha256": "6bb27240ea5f28d1a7993267509de145a6a834cc3b5c9ded123f75b047d2709f",
+  "size": [
+    1376,
+    768
+  ],
+  "transparent_ratio": 0.7003,
+  "visible_ratio": 0.2997
+}

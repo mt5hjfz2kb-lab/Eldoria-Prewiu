@@ -375,6 +375,13 @@ namespace Eldoria.HeroesUI
                     // complete Lyra portrait stranded on half of a wide stage.
                     Place(img.rectTransform,(modelW-imageW)*.5f,12+(modelH-62-imageH)*.5f,imageW,imageH);
                     img.sprite=hero.Portrait;img.preserveAspect=true;img.raycastTarget=false;
+                    // An approved illustrative fallback must not be pasted as
+                    // a bright photographic rectangle inside the physical
+                    // 2.5D hall. Dissolve its REAL source-rect edges with the
+                    // same existing painterly shader used for portraits,
+                    // keeping Lyra's face, armour, identity and silhouette.
+                    // The true 3D model still takes over asynchronously.
+                    FinishApprovedFallback(img,hero.Portrait);
                 }
                 else Label("Hero identity without substitute art",stage,hero.DisplayName,14,modelH*.35f,modelW-28,70,25,TextAnchor.MiddleCenter);
             }
@@ -497,7 +504,7 @@ namespace Eldoria.HeroesUI
             }
         }
         Texture2D hallArchitecture, hallIllustratedV2, hallLightTexture, hallPortraitTransition;
-        Material hallPaintMaterial, hallPortraitPaintMaterial, hallAldricMatteMaterial;
+        Material hallPaintMaterial, hallPortraitPaintMaterial, hallAldricMatteMaterial ,hallProfileFallbackMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
         {
@@ -540,7 +547,32 @@ namespace Eldoria.HeroesUI
             if(hallPaintMaterial)Destroy(hallPaintMaterial);
             if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);
             if(hallAldricMatteMaterial)Destroy(hallAldricMatteMaterial);
+            if(hallProfileFallbackMaterial)Destroy(hallProfileFallbackMaterial);
         }
+        void FinishApprovedFallback(Image image,Sprite source)
+        {
+            if(!image || !source || !source.texture)return;
+            var shader=Resources.Load<Shader>("EldoriaV41/HallPainterly");
+            if(!shader)return;
+            if(!hallProfileFallbackMaterial)
+            {
+                hallProfileFallbackMaterial=new Material(shader){
+                    name="Eldoria / approved heroine soft architecture blend",
+                    hideFlags=HideFlags.DontSave};
+            }
+            // The sprite can be a subregion of HeroesApprovedMaster.
+            // Normalize against that sprite's source pixels, NOT against
+            // the full atlas; otherwise only the atlas edges fade.
+            var r=source.rect;
+            var texture=source.texture;
+            hallProfileFallbackMaterial.SetVector("_PortraitUVRect",new Vector4(
+                r.xMin/texture.width,r.yMin/texture.height,
+                r.xMax/texture.width,r.yMax/texture.height));
+            hallProfileFallbackMaterial.SetFloat("_Strength",.34f);
+            hallProfileFallbackMaterial.SetFloat("_PortraitFeather",.20f);
+            image.material=hallProfileFallbackMaterial;
+        }
+
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -1493,14 +1525,15 @@ namespace Eldoria.HeroesUI
                     button.onClick.AddListener(()=>OpenHero(hero.Id));
                 }
             }
-            // Canonical bottom action bar follows the approved four-destination
-            // grammar. VOLVER and MARCHAS are REAL, HEROES stays on this live
-            // view, and RELICARIO is genuinely disabled by progression.
-            // No fake clickable pixels, no additional scene or canvas.
+            // Every bottom medallion must open a REAL destination.
+            // The former fourth "RELICARIO PRÓXIMO" was a dead, disabled
+            // promise of a system not yet implemented. It consumed 25% of
+            // the mobile toolbar and reduced three useful touch targets.
+            // Do not render it until Relicario has its own real controller.
             float navGap=portraitLayout&&w<600f?4f:phoneLandscape?6f:10f;
             float navWidth=Mathf.Min(w-(portraitLayout&&w<600f?12f:22f),illustratedDesktop?
                 referenceStageWidth:portraitLayout?540f:820f);
-            float navCell=(navWidth-navGap*3f)/4f;
+            float navCell=(navWidth-navGap*2f)/3f;
             float navLeft=(w-navWidth)*.5f;
             float navHeight=phoneLandscape?44f:illustratedDesktop?58f:
                 portraitLayout&&w<600f?76f:47f;
@@ -1528,10 +1561,7 @@ namespace Eldoria.HeroesUI
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navMarches,5,navCell,navHeight,false);
-            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMO",
-                navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
-            HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
-            HallNavIcon(navRelicary,7,navCell,navHeight,false);
+
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {

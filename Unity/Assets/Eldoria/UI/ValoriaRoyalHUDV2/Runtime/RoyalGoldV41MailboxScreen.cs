@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Application;
+using Eldoria.Issue186Art;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
@@ -22,9 +23,20 @@ namespace Eldoria.UI.RoyalGold.V2
         public int UnreadCount=>gateway?.Snapshot()?.Mailbox?.Unread()??0;
         public Func<bool> CanShowEntry { get; set; }
         RoyalHUD hud;ICommandGateway gateway;
+        Issue186BagOverlay resourceBag;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
         RectTransform detailSheet;
+        sealed class RewardAttachment
+        {
+            public RectTransform Root;
+            public Image Icon;
+            public RoyalText Amount,State;
+        }
+        readonly List<RewardAttachment> rewardAttachments=new List<RewardAttachment>();
+        RoyalText attachmentsHeading;
+        int attachmentCount;
+        public int VisibleRewardAttachments=>rewardAttachments.Count(a=>a.Root&&a.Root.gameObject.activeInHierarchy);
         RoyalGoldV41ReportArtwork reportArtwork;
         RawImage scoutVignette;
         Texture2D scoutVignettesAtlas;
@@ -75,7 +87,13 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Initialize(RoyalHUD owner,ICommandGateway authority)
         {
             hud=owner;gateway=authority;
-            if(hud!=null && gateway!=null)Ensure();
+            if(hud!=null && gateway!=null)
+            {
+                Ensure();
+                if(!resourceBag)resourceBag=hud.GetComponent<Issue186BagOverlay>() ??
+                    hud.gameObject.AddComponent<Issue186BagOverlay>();
+                resourceBag.Initialize(hud,gateway,()=>{if(IsOpen)Close();});
+            }
             Refresh();
         }
         void OnEnable(){Canvas.willRenderCanvases+=BeforeCanvasRender;}
@@ -108,16 +126,18 @@ namespace Eldoria.UI.RoyalGold.V2
         void RefreshEntryVisibility()
         {
             if(!entry||!hud)return;
-            entry.gameObject.SetActive(MailboxIntroduced&&!IsOpen&&!hud.NarrativeOpen&&
+            entry.gameObject.SetActive(!(hud.Navigation&&hud.Navigation.ChronicleLayout)&&MailboxIntroduced&&!IsOpen&&!hud.NarrativeOpen&&
                 !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
                 !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false)&&
-                (CanShowEntry==null||CanShowEntry())&&string.IsNullOrEmpty(hud.SelectedBuildingId));
+                (CanShowEntry==null||CanShowEntry())&&!(resourceBag&&resourceBag.IsOpen)&&
+                string.IsNullOrEmpty(hud.SelectedBuildingId));
         }
         public void Open()
         {
-            if(hud==null||gateway==null || !MailboxIntroduced || hud.NarrativeOpen ||
+            if(hud==null||gateway==null || hud.NarrativeOpen ||
                (hud.Modal!=null&&hud.Modal.gameObject.activeSelf))return;
+            if(resourceBag&&resourceBag.IsOpen)resourceBag.Close();
             Ensure();window.gameObject.SetActive(true);
             window.SetAsLastSibling();offset=0;selectedId=null;
             Layout();Refresh();
@@ -325,7 +345,7 @@ namespace Eldoria.UI.RoyalGold.V2
             reportFooter=Label("Mailbox / original record and receipt",detailSheet,16);
             reportFooter.verticalOverflow=VerticalWrapMode.Overflow;
             detailScroll.content=detailSheet;
-            MakeButton("Leer",w,"MARCAR LEÍDO",()=>ExecuteMail("MailRead"),out _);
+            MakeButton("Leer",w,"MARCAR LEÍDO",ReadOrClaimSelectedMail,out _);
             MakeButton("Eliminar",w,"ELIMINAR",()=>ExecuteMail("MailDelete"),out _);
             w.gameObject.SetActive(false);
             Layout();
@@ -537,6 +557,70 @@ namespace Eldoria.UI.RoyalGold.V2
             Position((RectTransform)next.transform,left+usable-44f,navY,44f,navH);
             visibleRowCount=count;detailVisible=selected;
         }
+
+        void RefreshRewardAttachments(PlayerState snapshot,string eventId)
+        {
+            attachmentCount=0;
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            var packets=snapshot?.ResourceRewards?.Packets?.Where(p=>p!=null&&p.MailEventId==eventId).ToList();
+            if(packets!=null)
+                for(int i=0;i<packets.Count;i++)
+                {
+                    if(i>=rewardAttachments.Count)
+                    {
+                        var a=new RewardAttachment();
+                        a.Root=Node("Mailbox / genuine reward attachment "+i,detailSheet);
+                        a.Root.gameObject.AddComponent<CanvasRenderer>();
+                        var frame=a.Root.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                        frame.DecorativeCorners=true;frame.Primary=false;frame.raycastTarget=false;
+                        a.Icon=Node("Mailbox / original resource packet "+i,a.Root).gameObject.AddComponent<Image>();
+                        a.Icon.preserveAspect=true;a.Icon.raycastTarget=false;
+                        a.Amount=Label("Mailbox / saved attachment amount "+i,a.Root,19,true);
+                        a.Amount.alignment=TextAnchor.MiddleCenter;
+                        a.State=Label("Mailbox / saved attachment state "+i,a.Root,12);
+                        a.State.alignment=TextAnchor.MiddleCenter;
+                        rewardAttachments.Add(a);
+                    }
+                    var item=rewardAttachments[i];var packet=packets[i];
+                    item.Root.gameObject.SetActive(true);
+                    // Bind the exact saved family and amount to the same
+                    // imported object art as the inventory, with no issuance.
+                    Issue186ArtKit.BindPacket(item.Icon,null,packet.Kind,packet.Amount);
+                    item.Amount.Put(packet.Amount.ToString("N0"));
+                    item.State.Put(packet.Used?"UTILIZADO":packet.Collected?"EN BOLSA":"POR RECLAMAR");
+                    attachmentCount++;
+                }
+#endif
+            for(int i=attachmentCount;i<rewardAttachments.Count;i++)
+                rewardAttachments[i].Root.gameObject.SetActive(false);
+            if(!attachmentsHeading)
+            {
+                attachmentsHeading=Label("Mailbox / genuine attached rewards heading",detailSheet,17,true);
+                attachmentsHeading.color=new Color(.94f,.80f,.54f);
+            }
+            attachmentsHeading.Put("OBJETOS ADJUNTOS");
+            attachmentsHeading.gameObject.SetActive(attachmentCount>0);
+        }
+        float LayoutRewardAttachments(float width,float top)
+        {
+            if(attachmentCount==0)return 0f;
+            Position(attachmentsHeading.rectTransform,24f,top,width-48f,28f);
+            attachmentsHeading.fontSize=Pixels(16);
+            int columns=Mathf.Max(1,Mathf.Min(4,Mathf.FloorToInt((width-48f)/100f)));
+            float gap=9f,cell=Mathf.Min(132f,(width-48f-gap*(columns-1))/columns);
+            for(int i=0;i<attachmentCount;i++)
+            {
+                var a=rewardAttachments[i];
+                Position(a.Root,24f+(i%columns)*(cell+gap),top+33f+(i/columns)*(cell+gap),cell,cell);
+                Position(a.Icon.rectTransform,cell*.19f,5f,cell*.62f,cell*.62f);
+                Position(a.Amount.rectTransform,5f,cell*.61f,cell-10f,cell*.23f);
+                a.Amount.fontSize=Pixels(19);a.Amount.color=new Color(.97f,.86f,.65f);
+                Position(a.State.rectTransform,4f,cell*.84f,cell-8f,cell*.15f);
+                a.State.fontSize=Pixels(10);a.State.color=new Color(.87f,.77f,.61f);
+            }
+            return 38f+Mathf.Ceil(attachmentCount/(float)columns)*(cell+gap);
+        }
+
         void LayoutReport(float width,float viewportHeight)
         {
             if(detailSheet==null||width<100f)return;
@@ -571,6 +655,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float cardH=narrow?104f:94f;
             float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
             float metricTop=headerH+19f;
+            metricTop+=LayoutRewardAttachments(width,metricTop);
             float captionH=24f,valueH=0f;
             // Measure the real saved names at the final column width. At
             // 900x1600 four columns can wrap both heroes onto several lines.
@@ -646,6 +731,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 artPicture=new Rect(imageX,imageY,imageWidth,imageHeight);
                 storyTop=imageY+imageHeight+29f;
             }
+            bool hasBody=!string.IsNullOrWhiteSpace(detail.text);
+            reportSection.gameObject.SetActive(hasBody);
             reportSection.color=new Color(.35f,.225f,.105f);
             reportSection.fontSize=Pixels(narrow?16:19);
             Position(reportSection.rectTransform,38f,storyTop+18f,
@@ -656,16 +743,16 @@ namespace Eldoria.UI.RoyalGold.V2
             reportToggleText.Put(reportExpanded?"OCULTAR":"DESPLEGAR");
             detail.fontSize=Pixels(narrow?19:23);
             detail.color=new Color(.25f,.175f,.115f);
-            detail.gameObject.SetActive(reportExpanded);
+            detail.gameObject.SetActive(reportExpanded && hasBody);
             float textH=0f;
             float storyContentTop=narrow?111f:59f;
-            if(reportExpanded)
+            if(reportExpanded && hasBody)
             {
                 Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,40f);
                 textH=Mathf.Max(40f,detail.preferredHeight/layoutUnit+12f);
                 Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,textH);
             }
-            float storyHeight=reportExpanded?
+            float storyHeight=!hasBody?0f:reportExpanded?
                 Mathf.Max(storyContentTop+textH+25f,narrow?169f:111f):
                 (narrow?111f:69f);
             float footerTop=storyTop+storyHeight+20f;
@@ -702,6 +789,27 @@ namespace Eldoria.UI.RoyalGold.V2
             if(detailScroll!=null)detailScroll.verticalNormalizedPosition=1f;
             ExecuteMail("MailRead");
         }
+        static bool HasPendingResourcePackets(PlayerState snapshot,string eventId)
+        {
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            return snapshot?.ResourceRewards?.Packets?.Any(packet=>packet!=null &&
+                packet.MailEventId==eventId && !packet.Collected)==true;
+#else
+            return false;
+#endif
+        }
+        void ReadOrClaimSelectedMail()
+        {
+            if(string.IsNullOrEmpty(selectedId)||gateway==null)return;
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            if(HasPendingResourcePackets(gateway.Snapshot(),selectedId))
+            {
+                ExecuteMail(ResourceRewardCommands.ClaimMail);
+                return;
+            }
+#endif
+            ExecuteMail("MailRead");
+        }
         void ExecuteMail(string kind)
         {
             if(string.IsNullOrEmpty(selectedId)||gateway==null)return;
@@ -710,6 +818,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 kind,selectedId,s.Revision));
             if(result.Ok && kind=="MailDelete")selectedId=null;
             Refresh();
+            // A refused claim/delete is visible; refreshing never pretends
+            // the resource transaction succeeded or completes a guide step.
+            if(!result.Ok && navLabel)navLabel.Put(result.Message);
         }
         static string HeroName(string id)=>id=="aldric+lyra"?"Sir Aldric y Lyra":id=="lyra"?"Lyra":id=="aldric"?"Sir Aldric":"—";
         static string TargetName(string id)
@@ -746,9 +857,34 @@ namespace Eldoria.UI.RoyalGold.V2
             return !string.IsNullOrEmpty(reason)?reason:
                 battle!=null&&battle.Won?"Encuentro superado.":"No se registró victoria.";
         }
+        // JsonUtility can rehydrate an absent optional class as an entirely
+        // empty shell. Such a shell is not evidence of a battle: render the
+        // original message and reward receipt instead of inventing an enemy,
+        // defeat, zero troops/rounds or health. Preserve ANY recorded signal.
+        static EldoriaV41CombatRecord RecordedBattle(EldoriaV41Message message)
+        {
+            var b=message?.Battle;
+            if(b==null)return null;
+            bool empty=string.IsNullOrEmpty(b.TargetId) &&
+                string.IsNullOrEmpty(b.HeroId) && string.IsNullOrEmpty(b.Reason) &&
+                b.Troops==0 && b.PlayerPower==0 && b.EnemyPower==0 &&
+                b.Rounds==0 && b.RemainingHealth==0 && !b.Won &&
+                b.RewardWood==0 && b.RewardStone==0 && b.RewardFood==0 &&
+                (b.OwnRoster==null || b.OwnRoster.IsNonNegative && b.OwnRoster.Total==0) &&
+                string.IsNullOrEmpty(b.Outcome) && string.IsNullOrEmpty(b.PlayerComposition) &&
+                string.IsNullOrEmpty(b.ObservedAttrition) &&
+                string.IsNullOrEmpty(b.EnemyObservedResistance) &&
+                string.IsNullOrEmpty(b.ObservedTotalDamageDealt) &&
+                string.IsNullOrEmpty(b.ObservedTotalDamageReceived) &&
+                string.IsNullOrEmpty(b.OwnDamageByFamily) &&
+                string.IsNullOrEmpty(b.OwnReceivedByFamily) &&
+                string.IsNullOrEmpty(b.OwnRemainingByFamily);
+            return empty?null:b;
+        }
+
         void PresentReport(EldoriaV41Message selected)
         {
-            var battle=selected.Battle;
+            var battle=RecordedBattle(selected);
             bool scouting=battle==null&&selected.Type=="exploration";
             // Hunting records have no combat rounds/health. Showing 0 rounds
             // and 0% life under a victory heading falsely implies a battle.
@@ -888,8 +1024,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     var msg=list[i];
                     messageLabels[i].color=msg.Read?
                         new Color(.26f,.22f,.18f):new Color(.11f,.08f,.045f);
-                    messageLabels[i].Put(msg.Battle!=null?TargetName(msg.Battle.TargetId):msg.Title);
+                    var recordedBattle=RecordedBattle(msg);
+                    messageLabels[i].Put(recordedBattle!=null?TargetName(recordedBattle.TargetId):msg.Title);
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                    Issue186ArtKit.BindAttention(messageUnreadDots[i],
+                        HasPendingResourcePackets(s,msg.EventId)?AttentionLevel.ActionReady:
+                        !msg.Read?AttentionLevel.New:AttentionLevel.None);
+#else
                     messageUnreadDots[i].gameObject.SetActive(!msg.Read);
+#endif
                     messageSurfaces[i].color=msg.Read?
                         new Color(.84f,.84f,.83f,.92f):Color.white;
                     // Ink belongs on the pale parchment; the inherited ivory
@@ -897,8 +1040,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageSubtitles[i].color=msg.Read?
                         new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
                     messageDates[i].color=new Color(.38f,.31f,.24f);
-                    string preview=msg.Battle==null?msg.Subtitle:
-                        (msg.Battle.EffectiveOutcome=="draw"?"Empate ante ":msg.Battle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
+                    string preview=recordedBattle==null?msg.Subtitle:
+                        (recordedBattle.EffectiveOutcome=="draw"?"Empate ante ":recordedBattle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(recordedBattle.TargetId);
                     // Let the measured two-line row wrap; a fixed 22-character
                     // cut hid the encounter/stage on every narrow phone.
                     messageSubtitles[i].Put(preview);
@@ -922,7 +1065,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             PresentReport(selected);
-            navLabel.Put("DESLIZA PARA LEER EL INFORME");
+            RefreshRewardAttachments(s,selected.EventId);
+            bool pendingPackets=HasPendingResourcePackets(s,selected.EventId);
+            var readAction=window.GetComponentsInChildren<Button>(true)
+                .First(button=>button.name=="Leer");
+            readAction.GetComponentInChildren<RoyalText>(true)
+                .Put(pendingPackets?"RECLAMAR":"MARCAR LEÍDO");
+            var deleteAction=window.GetComponentsInChildren<Button>(true)
+                .First(button=>button.name=="Eliminar");
+            deleteAction.interactable=!pendingPackets;
+            if(pendingPackets)
+                reportFooter.Put(reportFooter.text+
+                    "\nPAQUETES PENDIENTES · Reclamar los lleva a tu bolsa sin gastarlos.");
+            navLabel.Put(string.IsNullOrWhiteSpace(detail.text)?
+                (pendingPackets?"Los objetos reclamados pasan a tu bolsa.":"Objetos registrados en tu correo."):
+                "DESLIZA PARA LEER EL INFORME");
             if(!detailVisible)
                 detailScroll.verticalNormalizedPosition=1f;
             Layout();
@@ -983,4 +1140,5 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+
 

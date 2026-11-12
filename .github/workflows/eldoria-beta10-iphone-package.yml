@@ -1,0 +1,386 @@
+name: Eldoria prebaked-collision WebGL packaging and Apple GPU QA — owner only
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/eldoria-beta10-iphone-package.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-beta10-iphone-package
+  cancel-in-progress: true
+env:
+  NATIVE_RUN: '42909656581'
+  NATIVE_SOURCE: 7ae5416613480ba526a839b429459d53629041e5
+  CANDIDATE_REVISION: native325-mobile13-prebaked-collision-qa
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 7ae5416613480ba526a839b429459d53629041e5
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42481331350
+          name: deduplicated-bundle-unverified
+          github-token: ${{ github.token }}
+          path: reference-parent
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42493894120
+          name: mobile6-candidate-site
+          github-token: ${{ github.token }}
+          path: reference-site
+      - name: Extract exact existing mobile6 profile
+        run: |
+          python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+          python - <<'PY'
+          import pathlib,json,gzip,hashlib,struct
+          p=pathlib.Path('reference-site');m=json.loads((p/'build-manifest.json').read_text());data=bytearray()
+          for part in m['decoded_parts'][m['data']]:
+            block=gzip.decompress((p/part['url']).read_bytes())
+            assert len(block)==part['decoded_bytes'] and hashlib.sha256(block).hexdigest()==part['decoded_sha256']
+            data.extend(block)
+          assert data[:16]==b'UnityWebData1.0\0'
+          pos=20;end=struct.unpack_from('<I',data,16)[0];found=[]
+          while pos<end:
+            offset,size,n=struct.unpack_from('<III',data,pos);pos+=12
+            name=data[pos:pos+n];pos+=n
+            if name==b'data.unity3d':found.append(bytes(data[offset:offset+size]))
+          assert len(found)==1 and hashlib.sha256(found[0]).hexdigest()=='e54d547487e0d915f5a8c3fbbd0354a79672041dd201b3e63672de5e740ea6c1'
+          pathlib.Path('mobile6.unity3d').write_bytes(found[0])
+          PY
+      - name: Verify profile independently before waiting for native build
+        run: |
+          sudo fallocate -l 8G /tmp/eldoria-profile.swap
+          sudo chmod 600 /tmp/eldoria-profile.swap
+          sudo mkswap /tmp/eldoria-profile.swap
+          sudo swapon /tmp/eldoria-profile.swap
+          python - <<'PY'
+          import sys
+          sys.path.insert(0,'tools/eldoria-private-beta')
+          from reuse_mobile6_profile import catalog
+          catalog('reference-parent/data.unity3d','mobile6.unity3d')
+          PY
+      - name: Require the exact native parity, journey and build result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,time,urllib.request
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['NATIVE_RUN']
+          for _ in range(360):
+            req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req,timeout=30) as r:run=json.load(r)
+            assert run['head_sha']==os.environ['NATIVE_SOURCE'],'Native source mismatch'
+            jobs_req=urllib.request.Request(url+'/jobs',headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(jobs_req,timeout=30) as r:jobs=json.load(r)['jobs']
+            native=[j for j in jobs if j['name']=='native']
+            preflight=[j for j in jobs if j['name']=='preflight']
+            if native and native[0]['status']=='completed':
+              assert len(native)==len(preflight)==1
+              assert native[0]['conclusion']==preflight[0]['conclusion']=='success','Native gates failed; stop packaging'
+              break
+            if run['status']=='completed':
+              raise RuntimeError('No successful native build job; stop packaging')
+            time.sleep(10)
+          else:raise RuntimeError('Native still incomplete; no certification')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: beta10-minimal-clock-webgl-unverified
+          github-token: ${{ github.token }}
+          path: fresh-build
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: beta10-minimal-clock-native-evidence
+          github-token: ${{ github.token }}
+          path: native-evidence
+      - name: Independently verify exact baked meshes in Unity unityweb output
+        run: |
+          mkdir collision-proof
+          # The original native follow-up missed Unity's .data.unityweb filename.
+          # Execute the same byte-identity verifier with all canonical data suffixes.
+          cat > collision-proof/verify.py <<'PY'
+          """Verify real WebGL collision data and unchanged Bastion mesh bytes; read-only."""
+          import argparse, gzip, hashlib, json, pathlib, struct
+          import UnityPy
+          
+          EXPECTED = {
+           "Bastion_I": "5fa376ac44869b90935ae3f6b63652c3671a815f0a695e43ac731111e6913b1b",
+           "Bastion_II_GI": "30e4ec63d249c9657fa7dfb01b6cb71c937a8794b2956af64efd7e9a96f79605",
+          }
+          def sha(data): return hashlib.sha256(data).hexdigest()
+          def verify(root, output):
+           root=pathlib.Path(root)
+           candidates=sorted({p for pattern in ("*.data.gz","*.data","*.data.unityweb")
+                              for p in root.rglob(pattern)})
+           assert len(candidates)==1,("Expected exactly one Unity data payload",candidates)
+           payload=candidates[0].read_bytes()
+           if payload[:2]==b"\x1f\x8b": payload=gzip.decompress(payload)
+           assert payload[:16]==b"UnityWebData1.0\0"
+           end=struct.unpack_from("<I",payload,16)[0];pos=20;bundle=None
+           while pos<end:
+            offset,size,n=struct.unpack_from("<III",payload,pos);pos+=12
+            name=payload[pos:pos+n].decode();pos+=n
+            assert offset+size<=len(payload)
+            if name=="data.unity3d":
+             assert bundle is None
+             bundle=payload[offset:offset+size]
+           assert bundle is not None
+           payload_hash=sha(payload);bundle_hash=sha(bundle);del payload
+           env=UnityPy.load(bundle);del bundle
+           rows={}
+           for obj in env.objects:
+            if obj.type.name!="Mesh":continue
+            tree=obj.read_typetree();name=tree["m_Name"]
+            if name not in EXPECTED:continue
+            assert name not in rows,("Ambiguous target mesh",name)
+            triangle_bytes=len(tree["m_BakedTriangleCollisionMesh"])
+            assert triangle_bytes>0,("Static mesh still requires runtime cooking",name)
+            assert tree["m_CookingOptions"]==30,("Changed cooking options",name)
+            # In-memory serialization only. Never save or mutate the build.
+            # Remove baked acceleration data and prove EVERY remaining byte is original.
+            tree["m_BakedTriangleCollisionMesh"]=[]
+            tree["m_BakedConvexCollisionMesh"]=[]
+            obj.save_typetree(tree)
+            normalized_hash=sha(obj.data)
+            assert normalized_hash==EXPECTED[name],("Mesh changed beyond cooked collision data",name,normalized_hash)
+            rows[name]={"baked_triangle_bytes":triangle_bytes,"non_collision_bytes_sha256":normalized_hash}
+           assert set(rows)==set(EXPECTED),("Missing Bastion meshes",rows.keys())
+           result={"data_sha256":payload_hash,"bundle_sha256":bundle_hash,
+            "meshes":rows,"status":"REAL_WEBGL_COLLISIONS_PREBAKED_ORIGINAL_MESH_BYTES_VERIFIED",
+            "physical_iphone_verified":False,"external_testers_enabled":False}
+           pathlib.Path(output).write_text(json.dumps(result,indent=2)+"\n")
+           print(json.dumps(result,indent=2))
+          if __name__=="__main__":
+           p=argparse.ArgumentParser();p.add_argument("web_root");p.add_argument("output")
+           a=p.parse_args();verify(a.web_root,a.output)
+          
+          PY
+          python collision-proof/verify.py fresh-build collision-proof/collision-payload-proof.json
+      - name: Retrieve immutable beta10 source-only A/B proof (separate from actual Unity)
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42692715252
+          name: beta10-iphone-timer-ab-source-only
+          github-token: ${{ github.token }}
+          path: ab-source
+      - name: Preserve native engine and apply only exact verified asset transformations
+        run: |
+          python tools/eldoria-private-beta/prepare_structural_site.py extract --build fresh-build --output extracted
+          HASH=$(python -c "import json;print(json.load(open('extracted/extraction.json'))['bundle_sha256'])")
+          python tools/eldoria-private-beta/deduplicate_exact_textures.py --source extracted/data.unity3d --destination deduplicated --expected-sha256 "$HASH"
+          HASH=$(python -c "import json;print(json.load(open('deduplicated/integrity.json'))['candidate_sha256'])")
+          python tools/eldoria-private-beta/reuse_mobile6_profile.py --parent reference-parent/data.unity3d --reference mobile6.unity3d --fresh deduplicated/data.unity3d --expected-fresh-sha256 "$HASH" --output transformed
+          python - <<'PY'
+          import json,pathlib,os,hashlib
+          collision=json.load(open('collision-proof/collision-payload-proof.json'))
+          extraction=json.load(open('extracted/extraction.json'))
+          assert collision['status']=='REAL_WEBGL_COLLISIONS_PREBAKED_ORIGINAL_MESH_BYTES_VERIFIED'
+          assert collision['data_sha256']==extraction['data_sha256']
+          assert collision['bundle_sha256']==extraction['bundle_sha256']
+          assert set(collision['meshes'])=={'Bastion_I','Bastion_II_GI'}
+          assert all(m['baked_triangle_bytes']>0 for m in collision['meshes'].values())
+          setting=json.load(open('native-evidence/collision-bake-setting.json',encoding='utf-8-sig'))
+          assert setting['after'] is True and setting['source']==os.environ['NATIVE_SOURCE']
+          restored=json.load(open('native-evidence/warm-cache-restoration.json',encoding='utf-8-sig'))
+          assert restored['restored'] and not restored['conflicts'] and not restored['existing_input_changes']
+          parity=json.load(open('native-evidence/comparison.json',encoding='utf-8-sig'))
+          for row in parity['passes']:
+            assert row['parity'] and row['baseline']['topologyHash']==row['staged']['topologyHash']
+            assert row['staged']['terrainParityCheckedQueries']>10000
+          web=json.load(open('native-evidence/web-build.json',encoding='utf-8-sig'))
+          assert web['source_sha']==os.environ['NATIVE_SOURCE']
+          files=[p for p in pathlib.Path('fresh-build').rglob('*') if p.is_file()]
+          assert len(files)==len(web['files']) and sum(p.stat().st_size for p in files)==web['bytes']
+          routes=json.load(open('native-evidence/route-buffer-comparison.json',encoding='utf-8-sig'))
+          assert routes['status']=='EXACT_POPULATION_AND_ROUTE_PARITY'
+          assert len(routes['passes'])==2 and all(x['parity'] and x['before']['populationRouteHash']==x['after']['populationRouteHash'] for x in routes['passes'])
+          cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
+          assert cache['source']==os.environ['NATIVE_SOURCE'] and cache['bytes']>100000
+          expected_cache=pathlib.Path('native-evidence/terrain-query-cache.bytes').read_bytes()
+          assert hashlib.sha256(expected_cache).hexdigest()==cache['sha256'].lower()
+          import UnityPy
+          bundle=UnityPy.load('transformed/data.unity3d')
+          matches=[]
+          for obj in bundle.objects:
+            if obj.type.name=='TextAsset':
+              tree=obj.read_typetree()
+              if tree['m_Name']=='RuntimeTerrainQueries':
+                value=tree['m_Script']
+                if isinstance(value,str):value=value.encode('utf-8','surrogateescape')
+                matches.append(bytes(value))
+          assert matches==[expected_cache],'Certified tape missing or modified in fresh player data'
+          del bundle,matches,expected_cache
+          native=json.load(open('native-evidence/native-journey/integration-result.json',encoding='utf-8-sig'))
+          assert native['source']==os.environ['NATIVE_SOURCE'] and native['status']=='INTEGRATION_PASS_ART_REVIEW_REQUIRED'
+          assert len(native['checks'])==227
+          ux=pathlib.Path('native-evidence/pretest-ux')
+          assert (ux/'complete.txt').read_text().strip()=='PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW'
+          assert (ux/'source.txt').read_text().strip()==os.environ['NATIVE_SOURCE']
+          assert not (ux/'failure.txt').exists()
+          expected=json.load(open('ab-source/beta10-minimal-anchor/manifest.json'))
+          installed=json.load(open('native-evidence/ux-source-overlay.json',encoding='utf-8-sig'))
+          assert installed==expected,'Native Unity overlay is not the exact beta10 single-clock source'
+          source_proof=json.load(open('ab-source/ab-evidence.json'))
+          owner_native=json.load(open('native-evidence/iphone-minimal-provenance.json',encoding='utf-8-sig'))
+          clock=next(x for x in expected['files'] if x['overlay']=='RoyalGoldV3ContextHud.cs.txt')
+          assert len(expected['files'])==19 and source_proof['only_changed_overlay']=='RoyalGoldV3ContextHud.cs.txt'
+          assert source_proof['overlays_verified_identical_other_than_timer']==18
+          assert source_proof['minimal_timer_sha256']==clock['candidate_sha256']
+          assert owner_native['clock_sha256']==clock['candidate_sha256']
+          assert owner_native['source_pair_qa_run']==42692715252
+          assert owner_native['immutable_beta10_source']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert owner_native['variant']=='beta10-minimal-anchor'
+          assert owner_native['default_pages_not_modified'] is True
+          assert owner_native['physical_iphone_stability_certified'] is False
+          assert owner_native['external_testers_enabled'] is False
+          dedup=json.load(open('deduplicated/integrity.json'));profile=json.load(open('transformed/integrity.json'));extract=json.load(open('extracted/extraction.json'))
+          assert dedup['source_sha256']==extract['bundle_sha256'] and profile['source_sha256']==dedup['candidate_sha256']
+          assert profile['all_objects_verified']==dedup['all_objects_verified']
+          profile.update(source_sha256=dedup['source_sha256'],verification_chain=[dedup['candidate_sha256'],profile['candidate_sha256']],removed_exact_texture_objects=dedup['removed_exact_texture_objects'])
+          pathlib.Path('transformed/composed-integrity.json').write_text(json.dumps(profile,indent=2))
+          PY
+          python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper reference-site --output site --data extracted/data.bin --bundle transformed/data.unity3d --texture-proof transformed/composed-integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_RUN"
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('site/release-identity.json');r=json.loads(p.read_text());cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
+          r['route_buffers_reused']=True;r['exact_population_and_routes_verified']=True
+          r['tutorial_unchanged']=False
+          r['source_composition']='Frozen beta10 UX and minimal anchored clock; initialization-array cleanup and exact static castle collision prebake'
+          r['static_castle_collisions_prebaked']=True
+          r['collision_payload_proof']=json.load(open('collision-proof/collision-payload-proof.json'))
+          r['initialization_normal_copy_released']=True
+          r['pretest_ux_native_verified']=True
+          r['owner_only_iphone_timer_ab']=True
+          r['external_testers_enabled']=False
+          r['physical_mobile_tested']=False
+          r['physical_iphone_verified']=False
+          r['prior_playable_beta10_source_sha']='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          r['pretest_ux_overlay_count']=len(__import__('json').load(open('native-evidence/ux-source-overlay.json',encoding='utf-8-sig'))['files'])
+          r['pretest_ux_overlay_sha256']=__import__('hashlib').sha256(pathlib.Path('native-evidence/ux-source-overlay.json').read_bytes()).hexdigest()
+          r['terrain_query_cache_sha256']=cache['sha256'].lower();r['terrain_query_runtime_cooking']=False;r['terrain_query_source']='original PhysX responses, full native replay certified'
+          p.write_text(json.dumps(r,indent=2))
+          PY
+          python - <<'PY'
+          import pathlib,hashlib,json,re
+          root=pathlib.Path('site')
+          module=pathlib.Path('tools/eldoria-private-beta/iphone_ab/stable_canvas.js').read_text()
+          before=(root/'play.js').read_text()
+          assert before.count('matchWebGLToCanvasSize:true')==1
+          assert before.count('const instance=await createUnityInstance(canvas,{')==1
+          after=module+'\n'+before.replace('matchWebGLToCanvasSize:true','matchWebGLToCanvasSize:false').replace(
+            'const instance=await createUnityInstance(canvas,{',
+            'window.__eldoriaStableCanvas=installEldoriaStableCanvas(canvas);\n  const instance=await createUnityInstance(canvas,{')
+          digest=hashlib.sha256(after.encode()).hexdigest()
+          name='play-'+digest[:16]+'.js'
+          html,count=re.subn(r'src="play(?:-[a-f0-9]+)?\.js(?:\?[^"]*)?"','src="'+name+'"',(root/'index.html').read_text())
+          assert count==1
+          (root/'play.js').write_text(after);(root/name).write_text(after);(root/'index.html').write_text(html)
+          p=root/'release-identity.json';identity=json.loads(p.read_text())
+          identity.update(shell_revision='stable-canvas-r1',shell_script_sha256=digest,
+            stable_canvas_module_sha256=hashlib.sha256(module.encode()).hexdigest())
+          p.write_text(json.dumps(identity,indent=2))
+          PY
+          node --check site/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs site
+          python - <<'PY'
+          import pathlib
+          size=sum(p.stat().st_size for p in pathlib.Path('site').rglob('*') if p.is_file())
+          print('Packaged bytes',size);assert size<565000000,'Profile incomplete or unexpected payload growth'
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta13-prebaked-collision-packaging-evidence
+          path: |
+            collision-proof/
+            extracted/extraction.json
+            deduplicated/integrity.json
+            transformed/*.json
+            native-evidence/
+            site/release-identity.json
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: beta13-prebaked-collision-candidate-site
+          path: site/
+          compression-level: 0
+          retention-days: 14
+  apple-gpu:
+    needs: package
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 7ae5416613480ba526a839b429459d53629041e5
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: beta13-prebaked-collision-candidate-site
+          path: qa-sites/candidate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42596176998
+          name: mobile10-candidate-site
+          github-token: ${{ github.token }}
+          path: qa-sites/control
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare control and candidate through the same host and Apple GPU
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_SKIP_PREFLIGHT: '1'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/compact-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/compact-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/compact-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-sites 18765 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          failed=0
+          QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile10-pretest-ux QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION="$CANDIDATE_REVISION" QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          if [ "$failed" -ne 0 ]; then exit "$failed"; fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          def load(folder):
+            report=json.loads(Path(folder,'report.json').read_text())
+            assert report['passed'] and report['identity']['revision'] in (
+              'native325-mobile10-pretest-ux','native325-mobile13-prebaked-collision-qa'), 'WebKit session did not pass'
+            samples=report.get('samples',[])+report.get('entrySamples',[])
+            return max((process.get('rssKiB',0)
+                for sample in samples for process in sample.get('processes',[])
+                if 'WebContent' in process.get('name','')),default=0)
+          old=load('evidence/control')
+          new=load('evidence/candidate')
+          assert old>0 and new>0, 'Missing real WebKit process memory evidence'
+          assert new<=old*1.10, 'Owner A/B WebContent memory rose >10%; fail closed'
+          print('MAC_WEBKIT_A_B_PASS_NOT_PHYSICAL_IPHONE',old,new)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta13-prebaked-collision-apple-gpu-not-iphone
+          path: |
+            evidence/
+            server.log
+          retention-days: 14
+

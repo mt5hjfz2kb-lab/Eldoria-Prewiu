@@ -1,0 +1,11 @@
+# Actual saved bag on the independent Vigilia canvas
+
+Existing isolated resource-native run43140520652 passed four real GPU images,16 imported sprites, first-hit Button dispatch and modal rejection. It does not prove the actual saved bag in the playable campaign. The exact four native images are preserved byte-identically in remote-native-review/43140520652; the source pointing-hand matte still requires visual evaluation.
+
+The next bounded scene probe uses the actual canonical Valoria scene and actual PR173 canvas, source-pinned to its own successful native48 run. All bag input proof uses the first real EventSystem hit. It verifies resource-capsule entry, the panel leaving the disabled legacy canvas, seeing without consuming, saved help dismissal without fake completion, Use crediting exactly once, real JSON reload, duplicate rejection and actual Back. Mail read/claim are authoritative gateway command checks, explicitly not a full letter-row UI input proof.
+
+The probe refuses any save except the GUID-named Valoria gameplay-probe file directly in the OS temp directory, saves its original bytes and restores them in finally. Normal ReloadForProbe and host rebind run between actual frames; readonly reflection verifies the HUD and bag share the current saved authority. No player campaign or production scene is edited.
+
+The temporary native UI overlay is limited to Assets/Eldoria/BreachWatch and its folder metadata. It records every original and pinned installed SHA256 before mutation, leaves the import cache untouched, rejects any unfamiliar concurrent edit before restoring any path, and restores exact original bytes/new-file membership in finally. Source CI exercises real filesystem normal restore, unknown-edit atomic rejection, interrupted installation rollback and path-scope corruption. This is source/rollback verification, not Unity or art approval.
+
+A transparent MarkSeen hit surface must retain its uGUI mesh to be eligible for actual raycasting; cullTransparentMesh is disabled only on that invisible owned hit surface. Actual combined native screenshots and input remain pending until the bounded combined batch executes. No main merge, publication, art approval or physical-phone claim.

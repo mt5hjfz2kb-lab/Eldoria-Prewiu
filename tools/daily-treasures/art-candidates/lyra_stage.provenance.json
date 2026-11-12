@@ -1,0 +1,17 @@
+{
+  "scene": "lyra",
+  "status": "PREUNITY_UNREVIEWED_CANDIDATE",
+  "art_approved": false,
+  "unity_native_verified": false,
+  "identity": "canonical_hero_sprite_overlay_required",
+  "generated_illustration_not_authentic_gameplay": true,
+  "source_task_id": "62b46b1b-9172-4cb5-ade8-8faa46cea26e",
+  "segmentation_task_id": "fe3e26ae-81fd-427f-a626-edca6c7f98be",
+  "sha256": "bd1cbe785554b71b0666b12011a0909a8e4431f1bb067d9b8f34d741fd96d2b6",
+  "size": [
+    1376,
+    768
+  ],
+  "transparent_ratio": 0.818,
+  "visible_ratio": 0.182
+}

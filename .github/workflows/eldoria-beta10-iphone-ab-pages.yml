@@ -1,0 +1,170 @@
+name: Eldoria P0 — owner-only immutable beta10 and corrected clock A/B Pages
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/eldoria-beta10-iphone-ab-pages.yml']
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: eldoria-pages-p0-owner-recovery
+  cancel-in-progress: false
+jobs:
+  stage-and-publish-owner-ab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}beta-iphone-clock-ab/
+    steps:
+      - name: Confirm exact native Unity, Apple GPU and frozen tester NO-GO
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,time,urllib.request,base64
+          base='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def get(path):
+            q=urllib.request.Request(base+path,headers={
+                'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                'Accept':'application/vnd.github+json','User-Agent':'Eldoria-P0-owner-AB'})
+            with urllib.request.urlopen(q,timeout=30) as r:return json.load(r)
+          expected_native='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+          expected_pack='5af92f0fe64f65280b9a57816aafaa32d2cb7d47'
+          for n in range(540):
+            nrun=get('actions/runs/42714385780')
+            package=get('actions/runs/42716414385')
+            assert nrun['head_sha']==expected_native and package['head_sha']==expected_pack, 'Wrong candidate source; fail closed'
+            assert nrun['conclusion'] in (None,'success') and package['conclusion'] in (None,'success'), 'One native or Apple GPU QA failed; never touch the live site'
+            if nrun['status']=='completed' and package['status']=='completed':
+              assert nrun['conclusion']=='success' and package['conclusion']=='success'
+              break
+            time.sleep(10)
+          else: raise RuntimeError('Native and Apple GPU QA not finished in gate window')
+          request=get('contents/pipeline/tester-readiness/release-request.json?ref=main')
+          gate=json.loads(base64.b64decode(request['content']))
+          assert gate['enabled'] is False and gate['status']=='BLOCKED','External testers cannot be active during owner iPhone A/B'
+          archived=get('actions/runs/42687093695')
+          assert archived['status']=='completed' and archived['conclusion']=='success', 'Old restored beta10 is not an approved source'
+          print('P0_OWNER_AB_EXACT_NATIVE_AND_APPLE_GPU_PASS_TESTERS_BLOCKED')
+          PY
+      - name: Download prior LIVE owner-playable beta10 snapshot, not an assumed mutable site
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42687093695
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: stable-archive
+      - name: Download native-certified, Apple GPU tested independent clock WebGL
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42716414385
+          name: beta10-minimal-clock-candidate-site
+          github-token: ${{ github.token }}
+          path: candidate-site
+      - name: Checkout the exact reviewed isolated A/B assembler
+        uses: actions/checkout@v4
+        with:
+          # Exact frozen transport stage; Unity candidate remains native SHA 004d.
+          ref: f5281e4630de6bdaad70e264bd1549aaf8ee0c6d
+          sparse-checkout: tools/eldoria-private-beta/iphone_ab
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          path: source-tools
+      - name: Restore and independently verify the immutable beta10 old Pages snapshot
+        run: |
+          python - <<'PY'
+          import json,tarfile,shutil
+          from pathlib import Path,PurePosixPath
+          tar=Path('stable-archive/artifact.tar')
+          assert tar.is_file() and tar.stat().st_size>400_000_000, 'Old owner-playable beta10 snapshot missing or truncated'
+          root=Path('stable-site'); count=0
+          with tarfile.open(tar,'r:*') as t:
+            for m in t:
+              rel=PurePosixPath(m.name)
+              if rel.is_absolute() or '..' in rel.parts or '\\' in m.name:
+                raise RuntimeError('Unsafe archived path')
+              if m.isdir():continue
+              if not m.isfile():raise RuntimeError('Non-regular archived member')
+              dest=root.joinpath(*rel.parts)
+              dest.parent.mkdir(parents=True,exist_ok=True)
+              with t.extractfile(m) as source,dest.open('wb') as output:
+                shutil.copyfileobj(source,output,1024*1024)
+              count+=1
+          r=json.loads((root/'beta-native325/release-identity.json').read_text(encoding='utf-8-sig'))
+          assert r['revision']=='native325-mobile10-pretest-ux'
+          assert r['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert r['candidate_bundle_sha256']=='57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2'
+          assert (root/'unity-owner/index.html').is_file() and (root/'index.html').is_file()
+          assert count>35, 'Original Pages snapshot incomplete'
+          print('P0_FROZEN_OLD_BETA10_ROUTES_RESTORED',count)
+          PY
+      - name: Run ten preservation/streamed-data tests and fail-closed A/B staging
+        run: |
+          python3 -m unittest discover -s source-tools/tools/eldoria-private-beta/iphone_ab -p 'test_stage_isolated_iphone_preview.py' -v
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          identity=json.loads(Path('candidate-site/release-identity.json').read_text())
+          assert identity['revision']=='native325-mobile12-minimal-world-clock-qa'
+          assert identity['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+          assert identity['native_journey_verified'] is True
+          assert identity['release_for_external_testers'] is False
+          assert identity['physical_mobile_tested'] is False
+          assert identity['owner_only_iphone_timer_ab'] is True
+          cmd=[
+            'python3','source-tools/tools/eldoria-private-beta/iphone_ab/stage_isolated_iphone_preview.py',
+            '--stable','stable-site','--candidate','candidate-site','--out','site',
+            '--candidate-revision',identity['revision'],'--candidate-source',identity['source_sha'],
+            '--candidate-bundle',identity['candidate_bundle_sha256'],
+            '--max-bytes','980000000']
+          subprocess.run(cmd,check=True)
+          proof=json.loads(Path('site/beta-iphone-clock-ab-proof.json').read_text())
+          assert proof['role']=='OWNER_AB_IOS_QA_ONLY'
+          assert proof['external_testers_enabled'] is False and proof['physical_iphone_stability_verified'] is False
+          assert proof['stable_source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert proof['candidate_source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+          assert 0<proof['combined_bytes']<980000000
+          assert Path('site/beta-native325/index.html').is_file() and Path('site/beta-iphone-clock-ab/index.html').is_file()
+          print('P0_OWNER_AB_TWO_INDEPENDENT_BUILDS_STAGED',proof['combined_bytes'])
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Publish stable beta10 plus isolated clock candidate without any save mutation
+        id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Check live old beta and new candidate binary routes, no tester distribution
+        run: |
+          python - <<'PY'
+          import json,time,urllib.request
+          base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          def get(path,method='GET'):
+            q=urllib.request.Request(base+path,method=method,
+               headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-owner-P0-AB'})
+            with urllib.request.urlopen(q,timeout=28) as r:
+              return r.status if method=='HEAD' else r.read()
+          for attempt in range(18):
+            try:
+              old=json.loads(get('beta-native325/release-identity.json?ab='+str(attempt)))
+              new=json.loads(get('beta-iphone-clock-ab/release-identity.json?ab='+str(attempt)))
+              proof=json.loads(get('beta-iphone-clock-ab-proof.json?ab='+str(attempt)))
+              assert old['revision']=='native325-mobile10-pretest-ux'
+              assert old['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+              assert new['revision']=='native325-mobile12-minimal-world-clock-qa'
+              assert new['source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
+              assert new['owner_only_iphone_timer_ab'] is True and new['physical_mobile_tested'] is False
+              assert proof['external_testers_enabled'] is False
+              assert proof['stable_source_sha']==old['source_sha'] and proof['candidate_source_sha']==new['source_sha']
+              assert get('beta-native325/index.html',method='HEAD')==200
+              assert get('beta-iphone-clock-ab/index.html',method='HEAD')==200
+              assert get('unity-owner/index.html',method='HEAD')==200
+              print('OWNER_ONLY_IPHONE_AB_LIVE_STABLE_BETA10_UNCHANGED_CANDIDATE_UNCERTIFIED')
+              break
+            except Exception as e:
+              if attempt==17:raise
+              time.sleep(9)
+          PY

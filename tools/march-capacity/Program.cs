@@ -66,9 +66,12 @@ static class Program
         Assert(Run(legacy,"legacy-boss","Fight","engendro-valoria").Ok,"Migrated save can launch original boss encounter");
         Assert(legacy.Snapshot().March.Troops.Total==60&&legacy.Snapshot().Available.Total==40,"Migrated encounter reserves exactly its capped army");
 
-        var scoutState=new PlayerState{BastionLevel=2,BarracksLevel=1,
+        var scoutState=new PlayerState{BastionLevel=3,BarracksLevel=1,
             Available=new ArmyRoster{ArcherT1=90},
             ChapterProgress=new ChapterProgressState{MarchConfirmed=true}};
+        Assert(!EarlyRetentionRules.ScoutsUnlocked(scoutState),
+            "Confirmed march alone cannot bypass the unread Scout introduction");
+        scoutState.ChapterProgress.SeenNarrative.Add("scouts-introduction");
         var scoutStore=new Store{State=scoutState};var scoutClock=new Clock();
         var scouts=new LocalGateway(scoutClock,scoutStore);
         var orders=scouts.Snapshot().Retention.Orders.Take(3).Select(x=>x.Id).ToArray();
@@ -85,8 +88,9 @@ static class Program
         Assert(scouts.Snapshot().Available.Total==90,"Claims do not return troops twice");
         var combinedClock=new Clock();
         var combinedStore=new Store{State=new PlayerState{
-            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},
             Available=new ArmyRoster{ArcherT1=150}
         }};
         var combined=new LocalGateway(combinedClock,combinedStore);

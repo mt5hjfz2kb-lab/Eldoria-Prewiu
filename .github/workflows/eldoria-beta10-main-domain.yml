@@ -1,0 +1,41 @@
+name: Eldoria beta10 main integration - domain regression (Ubuntu only)
+on:
+  push:
+    branches:
+      - integration/pr179-beta10-main-20261109
+      - main
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/**'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/**'
+      - 'tools/eldoria-private-beta/native/ux/PretestDomainChecks.cs'
+      - 'tools/eldoria-private-beta/native/ux/test_domain.ps1'
+      - '.github/workflows/eldoria-beta10-main-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pretester-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1
+            tools/eldoria-private-beta/native/ux/PretestDomainChecks.cs
+            tools/eldoria-private-beta/native/ux/test_domain.ps1
+      - name: Compile authoritative C# domain plus actual UI binding; run pretester regression
+        shell: pwsh
+        run: ./tools/eldoria-private-beta/native/ux/test_domain.ps1 -Source .
+      - name: Guard canonical paired-hero XP fix and beta10 unlock introduction
+        shell: bash
+        run: |
+          grep -Fq 'Math.Max(p.AldricExperience,p.LyraExperience)' Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs
+          grep -Fq 'NarrativeCoherenceRules.Seen(s,"vigilants-introduction")' Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs
+          grep -Fq 'NarrativeCoherenceRules.Seen(s,"scouts-introduction")' Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs

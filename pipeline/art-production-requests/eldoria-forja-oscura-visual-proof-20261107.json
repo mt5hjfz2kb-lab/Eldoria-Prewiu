@@ -4,11 +4,11 @@
   "status": "ACTIVE",
   "request_id": "eldoria-forja-oscura-visual-proof-20261107",
   "workstream_id": "eldoria-forja-oscura-visual-proof-20261107",
-  "asset_or_sector": "Forja Oscura: modular illustrated 2D uGUI HUD on real Eldoria city; independent 9-slice and glyph assets",
+  "asset_or_sector": "Vigilia de la Brecha: an entirely new independent uGUI Canvas; no RoyalHUD/Forja visual hierarchy, sprites, layouts or skinned controls",
   "profile": "environment_composition",
-  "visual_gate_state": "NATIVE_UI_WIP",
+  "visual_gate_state": "GENUINE_UNITY_48_SCREENS_VERIFIED_OWNER_VISUAL_APPROVAL_PENDING",
   "ai_authorship_policy": "required",
-  "diagnosis": "User rejected flat simple HUD and baroque copies, approved dark premium reference conditionally. 21 original procedural panel sprites plus 20 originally AI-generated isolated icon illustrations require actual Unity scene A/B and a documented professional art cycle. Do not equate mockup with Unity runtime.",
+  "diagnosis": "Native Unity 6000.3.23f1 run 43089450921 succeeded at frozen SHA 72d132cf789738278ca17d1580e472b29a0eadd8; all 48 original PNG hashes checked off Windows against signed run evidence. Original owner-approved 864x1536 JPEG compared at matching 9:16 against 900x1600 Unity Bastion. Main first-screen structure approaches owner concept, but blank/locked navigation intentionally reflects actual save. Destination QA remains art-review pending: standard illustrated enemy in Vigilants is visibly flat geometric geometry against a premium world painting; previous B1-B4 photo inserts and charcoal Scout slate failed visual comparison. Do not repeat them. No 8/10 whole-UI or owner approval claimed.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -23,16 +23,38 @@
     "original_AI_illustrated_icons": true
   },
   "artist": {
-    "design": "Dark, adult, cinema-inspired polished metal and amber, illustration-level richness without huge classical trim",
-    "source": "Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/",
-    "reference": "Owner-picked Eldoria reference image, conversation 2026-11-06"
+    "design": "Vigilia de la Brecha — adult, severe, dark medieval city interface: carved basalt, blackened iron, aged copper, sparse burgundy, independently illustrated physical materials and deep sculptural components; city remains central, no neon, no baroque gold, no fake 3D city",
+    "source": "Unity/Assets/Eldoria/BreachWatch/ (independent Canvas and Resources/VigiliaArt); first-party authored material code plus explicit CC0 source manifests and pinned byte hashes",
+    "reference": "User selected Vigilia de la Brecha from the three concept alternatives in this chat; illustration is an artistic target, never gameplay data or a screenshot"
   },
   "validation": {
-    "source_gate": "41 PNG unbundled, 55 original Unity GUIDs verified, provenance statement, no third party paid UI kit, no edits to game rules or incumbent PR163 HUD files. Pixel-exact match NOT assumed.",
-    "final_gate": "Exact-head genuine Unity four pairs A/B, compare reference against actual screenshot for quality, verify navigation and all original inputs, keep resources/progression/persistence, both orientations, Android/WebGL, no visual or gameplay regression. Artist review separated from technical gates."
+    "source_gate": "Canonical UI branch retains source code; new tools/breach-watch/native_visual_ab_review.py validates the SHA256 identities for 48 genuine native screenshots from six evidence reports and generates owner reference vs Unity sheets without occupying Windows. Source gate does not certify art.",
+    "final_gate": "Next candidate: real canonical enemy portrait with verifiable first-party provenance/integrated alpha, never fake patrol photos. After formal Windows rotation, capture same authentic 900x1600/390x844/1600x900/844x390 states plus real interactions and persistence. Review whole-frame A/B against owner-approved 864x1536 and current 72d132cf Unity; reject if fidelity not plainly better. Full Government/Inventory destinations require real canonical API rather than fake controls. Art owner must approve before activation/main merge/publishing; physical iPhone/Android perf/stability separate."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "PR173 Draft. Preserve sole native Unity runner reservation held by PR163 until official release. AI-generated icon assets are not external asset-store materials. Production candidates have not passed mobile profile or approval."
+  "notes": "11 Nov 2026: Windows ownership formally ceded PR173 rev91→92 to PR179; PR179 owns exclusive runner. Rotation PR179→181→187→173, work on source/art/review only until new verified CAS handoff. 48 exact native screenshots and approved-reference A/B verified offline; see docs/ui-v3/BREACH_WATCH_OWNER_REFERENCE_NATIVE_AUDIT_20261111.md. PR173 remains draft. Current source commits after 72d... are audit tools/docs only; native rendering is NOT certified at newer source SHAs.",
+  "visual_review": {
+    "reference_filename": "75B5D217-A914-4451-854D-AE54849E4A50(3).jpeg",
+    "reference_dimensions": [
+      864,
+      1536
+    ],
+    "reference_sha256": "f57f1250951c906777e52d5a2e3524d9a6dfea3b64f283da82ad44a4a50e6e13",
+    "native_source_sha": "72d132cf789738278ca17d1580e472b29a0eadd8",
+    "native_run_id": 43089450921,
+    "native_artifact_id": 13887684195,
+    "verified_native_screenshots": 48,
+    "reference_vs_real_comparison_produced": true,
+    "native_art_approved": false,
+    "physical_mobile_tested": false,
+    "first_screen_composition_preserved": true,
+    "rejected_techniques": [
+      "B1-B4 rectangular patrol photos",
+      "single-dark-slate Scouts contracts",
+      "repetitive tiny tint/margin adjustments"
+    ],
+    "next_technical_prerequisite": "Confirm licensed canonical 3D creature portrait source with real alpha, then reversible source-only candidate."
+  }
 }

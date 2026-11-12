@@ -78,6 +78,9 @@ public static class NarrativeProbe {
   c3.ChapterProgress.SeenNarrative.Add("productive-valoria");
   Check(NarrativeCoherenceRules.NextUnseenBeat(c3)=="extraction-oddity","Anomaly is revealed after actual stone discovery");
   c3.ChapterProgress.SeenNarrative.Add("extraction-oddity");
+  Check(NarrativeCoherenceRules.NextUnseenBeat(c3)=="vigilants-introduction",
+        "Unread feature introduction survives acknowledgment of the main story");
+  c3.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
   Check(NarrativeCoherenceRules.NextUnseenBeat(c3)=="","No repeated automatic lore after acknowledgment");
 
   long clockTicks=new DateTime(2026,11,5,12,0,0,DateTimeKind.Utc).Ticks;
@@ -85,6 +88,12 @@ public static class NarrativeProbe {
   Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.Locked,
         "Vigilants lesson is locked before sawmill");
   firstV.SawmillLevel=1;
+  Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.Locked,
+        "Sawmill alone cannot reveal Vigilants before the creature victory");
+  firstV.EngendroDefeated=true;
+  Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.Locked,
+        "Vigilants stay locked until their introduction is read");
+  firstV.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
   Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.FirstAction,
         "Vigilants first battle remains visible before a win");
   firstV.Retention.LastClearedStage=1;
@@ -95,6 +104,12 @@ public static class NarrativeProbe {
   Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Locked,
         "Scouts are not introduced until the first March is confirmed");
   firstS.ChapterProgress.MarchConfirmed=true;
+  Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Locked,
+        "A confirmed march does not reveal Scouts before Bastion III");
+  firstS.BastionLevel=3;
+  Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Locked,
+        "Scouts stay locked until their introduction is read");
+  firstS.ChapterProgress.SeenNarrative.Add("scouts-introduction");
   Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.FirstAction,
         "Scouts teach how to send the first real order");
   firstS.Retention.Orders.Add(new ScoutOrder{Id="first",StartedUtcTicks=clockTicks,EndsUtcTicks=clockTicks+TimeSpan.FromMinutes(3).Ticks});

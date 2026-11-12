@@ -1,0 +1,104 @@
+{
+  "source": "f10753af14c87d0aa293c6d96b25158878896f61",
+  "native_run": 43140520652,
+  "artifact_id": 13910600234,
+  "artifact_digest": "sha256:011dd6cfae58b8f8b12cca5ed2056978275867e2c209df56e80d177b58cc18ef",
+  "method": "BYTE_IDENTICAL_NATIVE_PNG_NO_RETOUCH",
+  "artApproved": false,
+  "fullSceneVerified": false,
+  "physicalMobileVerified": false,
+  "files": [
+    {
+      "file": "issue186-real-unity-1600x900.png",
+      "git_blob": "282ca4243bafb054cb8d4c878137493c3484bbc5",
+      "native": {
+        "file": "issue186-real-unity-1600x900.png",
+        "sha256": "0014801538f77cce572022017be6779f2ad74373b8b16d51ad8a1ea361368657",
+        "description": "Actual Unity uGUI sprites, value text and pointer / NOT integrated city",
+        "width": 1600,
+        "height": 900,
+        "bytes": 249434,
+        "actualResourceSprites": 12,
+        "indicatorReady": true,
+        "newIndicatorReady": true,
+        "firstUsePointer": true,
+        "firstUseCompleted": false,
+        "pointerLeavesCtaCenterClear": true,
+        "realUiClick": true,
+        "blockedUiClickRejected": true,
+        "visiblePixels": true,
+        "renderTargetCorrect": true,
+        "noOverlappingCards": true
+      }
+    },
+    {
+      "file": "issue186-real-unity-900x1600.png",
+      "git_blob": "4b979c84d84c6afb19c3202a29163587b786e20e",
+      "native": {
+        "file": "issue186-real-unity-900x1600.png",
+        "sha256": "551873e45cb368d04441e297be5918a32dde182494235feb09a914f9c6e5e50f",
+        "description": "Actual Unity uGUI sprites, value text and pointer / NOT integrated city",
+        "width": 900,
+        "height": 1600,
+        "bytes": 246441,
+        "actualResourceSprites": 12,
+        "indicatorReady": true,
+        "newIndicatorReady": true,
+        "firstUsePointer": true,
+        "firstUseCompleted": false,
+        "pointerLeavesCtaCenterClear": true,
+        "realUiClick": true,
+        "blockedUiClickRejected": true,
+        "visiblePixels": true,
+        "renderTargetCorrect": true,
+        "noOverlappingCards": true
+      }
+    },
+    {
+      "file": "issue186-real-unity-844x390.png",
+      "git_blob": "6d1db5618d64b654bda8b8d67af11fec529fe85f",
+      "native": {
+        "file": "issue186-real-unity-844x390.png",
+        "sha256": "983659b879d7284fcfd6f978bcf947a9cdd025c0b2fe557627f4f93587b65da3",
+        "description": "Actual Unity uGUI sprites, value text and pointer / NOT integrated city",
+        "width": 844,
+        "height": 390,
+        "bytes": 129357,
+        "actualResourceSprites": 12,
+        "indicatorReady": true,
+        "newIndicatorReady": true,
+        "firstUsePointer": true,
+        "firstUseCompleted": false,
+        "pointerLeavesCtaCenterClear": true,
+        "realUiClick": true,
+        "blockedUiClickRejected": true,
+        "visiblePixels": true,
+        "renderTargetCorrect": true,
+        "noOverlappingCards": true
+      }
+    },
+    {
+      "file": "issue186-real-unity-390x844.png",
+      "git_blob": "150782738de771969ab672afbd55aedaee39af62",
+      "native": {
+        "file": "issue186-real-unity-390x844.png",
+        "sha256": "0a8b3a4f95b0cb4eb4f338b4914a077349221d8bf00e554ee8fa64f9f9e00d18",
+        "description": "Actual Unity uGUI sprites, value text and pointer / NOT integrated city",
+        "width": 390,
+        "height": 844,
+        "bytes": 157653,
+        "actualResourceSprites": 12,
+        "indicatorReady": true,
+        "newIndicatorReady": true,
+        "firstUsePointer": true,
+        "firstUseCompleted": false,
+        "pointerLeavesCtaCenterClear": true,
+        "realUiClick": true,
+        "blockedUiClickRejected": true,
+        "visiblePixels": true,
+        "renderTargetCorrect": true,
+        "noOverlappingCards": true
+      }
+    }
+  ]
+}

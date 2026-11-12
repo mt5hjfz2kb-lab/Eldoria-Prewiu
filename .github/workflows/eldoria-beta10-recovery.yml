@@ -1,0 +1,189 @@
+name: Eldoria P0 - restore exactly previous owner-playable beta10
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-beta10-recovery.yml'
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: eldoria-pages-p0-owner-recovery
+  cancel-in-progress: false
+jobs:
+  restore-beta10:
+    name: Restore archived beta10 exact page and verify WASM/data
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}beta-native325/
+    steps:
+      - name: Fail closed on tester release or wrong historical artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request,base64
+          repo=os.environ['GITHUB_REPOSITORY']
+          def get(path):
+            req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers={
+              'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json',
+              'User-Agent':'eldoria-exact-p0-rollback'})
+            with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
+          gate=json.loads(base64.b64decode(get('contents/pipeline/tester-readiness/release-request.json?ref=main')['content']))
+          assert gate['enabled'] is False and gate['status']=='BLOCKED','External tester release is not blocked'
+          run=get('actions/runs/42600463889')
+          assert run['conclusion']=='success' and run['head_sha']=='18f889fb85cf2ea2a900975b2d7a4f6958df0a72','Previous beta10 source mismatch'
+          archives=get('actions/runs/42600463889/artifacts')['artifacts']
+          candidates=[x for x in archives if x['name']=='github-pages' and x['id']==13665746986 and not x['expired']]
+          assert len(candidates)==1 and candidates[0]['size_in_bytes']>900_000_000,'Approved archived complete Pages missing'
+          print('ELDORIA_P0_BETA10_EXACT_RUN_AND_RELEASE_GATE_VERIFIED')
+          PY
+      - name: Download original immutable Pages site from successful beta10 run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42600463889
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: old-approved-pages
+      - name: Verify exact original game files and safely restore site
+        run: |
+          python - <<'PY'
+          import json,tarfile,hashlib,gzip,shutil
+          from pathlib import Path,PurePosixPath
+          archived=Path('old-approved-pages/artifact.tar')
+          assert archived.is_file() and archived.stat().st_size>800_000_000,'Original Pages archive missing'
+          root=Path('restored-site');number=0
+          with tarfile.open(archived,'r:*') as archive:
+            for member in archive:
+              name=PurePosixPath(member.name)
+              assert not name.is_absolute() and '..' not in name.parts and chr(92) not in member.name,'Unsafe archived path'
+              if member.isdir():continue
+              assert member.isfile(),'Unexpected archive link or special file'
+              if not name.parts:continue
+              dest=root.joinpath(*name.parts);dest.parent.mkdir(parents=True,exist_ok=True)
+              with archive.extractfile(member) as source,dest.open('wb') as target:
+                shutil.copyfileobj(source,target,1024*1024)
+              number+=1
+          assert number>45,'Missing complete previous Pages site'
+          site=root/'beta-native325'
+          identity=json.loads((site/'release-identity.json').read_text())
+          assert identity['revision']=='native325-mobile10-pretest-ux'
+          assert identity['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert identity['candidate_bundle_sha256']=='57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2'
+          assert identity.get('release_for_external_testers') is False
+          assert (site/'index.html').is_file() and (root/'index.html').is_file()
+          assert (root/'unity-owner/index.html').is_file()
+          manifest=json.loads((site/'build-manifest.json').read_text())
+          chunks=next((v for v in manifest['decoded_parts'].values() if len(v)==31),None)
+          assert chunks is not None,'Original old streaming payload not intact'
+          total=0
+          for index,chunk in enumerate(chunks):
+            filename=chunk['url'].split('?')[0].split('/Eldoria-Prewiu/beta-native325/')[-1]
+            assert 'native325-mobile10-pretest-ux-' in filename
+            item=site/filename
+            assert item.is_file(),'Old beta10 data part missing: '+filename
+            checksum=hashlib.sha256();size=0
+            with gzip.open(item,'rb') as stream:
+              while True:
+                piece=stream.read(1024*1024)
+                if not piece:break
+                checksum.update(piece);size+=len(piece)
+            assert size==chunk['decoded_bytes'] and checksum.hexdigest()==chunk['decoded_sha256'],'Old data corrupt at '+str(index)
+            total+=size
+          assert total==503830840,'Old data size mismatch'
+          oldwasm=site/'Build/75e43a78f1c256176104-ValoriaWebPlaytest.wasm.unityweb'
+          assert oldwasm.is_file(),'Old version-specific WASM missing'
+          checksum=hashlib.sha256()
+          with gzip.open(oldwasm,'rb') as stream:
+            while True:
+              piece=stream.read(1024*1024)
+              if not piece:break
+              checksum.update(piece)
+          assert checksum.hexdigest()=='720dfe4a791b79a7d0f8cd801977ac6de91db04c117bf4d9dadaefeb898f7a3e'
+          # Exact full source archive has been verified above, but a 961MB
+          # Pages backend sync hit GitHub's HARD 10-minute service timeout.
+          # An iPhone owner P0 must not be blocked by a second, independent
+          # ~500MB Unity owner build on this same site. Keep every byte of
+          # the beta10 game, original root and playable old ChatGPT Sites
+          # dependencies; serve a reversible fallback for the parallel owner
+          # landing route until it can be hosted independently again.
+          original_site_bytes=sum(x.stat().st_size for x in root.rglob('*') if x.is_file())
+          owner_folder=root/'unity-owner'
+          assert owner_folder.is_dir(),'Missing historical owner route'
+          former_owner_bytes=sum(p.stat().st_size for p in owner_folder.rglob('*') if p.is_file())
+          assert former_owner_bytes>300_000_000,'Owner route unexpectedly small; do not mutate without audit'
+          shutil.rmtree(owner_folder)
+          owner_folder.mkdir()
+          (owner_folder/'index.html').write_text(
+            '<!doctype html><html lang="es"><meta charset="utf-8">'
+            '<meta name="robots" content="noindex,nofollow">'
+            '<meta http-equiv="refresh" content="0;url=../beta-native325/index.html">'
+            '<title>Eldoria · recuperación P0</title>'
+            '<a href="../beta-native325/index.html">Abrir la versión recuperada de Eldoria</a></html>')
+          # Archived root's historical redirect may still target the old owner
+          # build. After the compact P0 restore it must lead to an EXISTING
+          # entry, not to a removed Unity asset or absent direct-beta.html.
+          (root/'index.html').write_text(
+            '<!doctype html><html lang="es"><meta charset="utf-8">'
+            '<meta name="robots" content="noindex,nofollow">'
+            '<meta http-equiv="refresh" content="0;url=./beta-native325/index.html">'
+            '<title>Eldoria · versión recuperada</title>'
+            '<a href="./beta-native325/index.html">Abrir beta 10 de Eldoria</a></html>')
+          (owner_folder/'recovery.json').write_text(json.dumps({
+            'status':'P0_TEMPORARY_ALIAS_TO_PREVIOUS_BETA10',
+            'full_owner_snapshot_preserved_at':13692621676,
+            'original_beta10_archive':13665746986,
+            'external_testers_enabled':False},indent=2))
+          site_bytes=sum(x.stat().st_size for x in root.rglob('*') if x.is_file())
+          assert site_bytes<650_000_000,'Reduced P0 site still too large for safe Pages deployment'
+          assert original_site_bytes-site_bytes>300_000_000,'P0 reduction not material'
+          print('ELDORIA_P0_SAFE_REDUCED_PAGES',original_site_bytes,site_bytes,'removed_owner_bytes',former_owner_bytes)
+          (root/'beta10-owner-recovery.json').write_text(json.dumps({
+            'revision':identity['revision'],'source_sha':identity['source_sha'],
+            'bundle':identity['candidate_bundle_sha256'],'original_pages_run':42600463889,
+            'original_artifact':13665746986,'external_testers_enabled':False,
+            'full_pre_rollback_owner_snapshot':13692621676,
+            'temporary_parallel_owner_route':'/unity-owner/ redirects to recovered beta10 during P0',
+            'protection':'Unmodified original saved-game schema, owner rollback only; not physically iPhone certified'
+          },indent=2)+'\n')
+          print('ELDORIA_P0_BETA10_ARCHIVE_SHA256_VERIFIED',number,'files',len(chunks),'chunks',total,'bytes',site_bytes,'compressed_site')
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: restored-site
+      - name: Restore exact previous owner playable beta10 on GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Verify live old WASM, old data and owner routes (no tester GO)
+        run: |
+          python - <<'PY'
+          import json,time,urllib.request
+          base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          def get(path,method='GET'):
+            request=urllib.request.Request(base+path,method=method,headers={'Cache-Control':'no-cache','User-Agent':'eldoria-P0-verify'})
+            with urllib.request.urlopen(request,timeout=30) as response:
+              return response.status if method=='HEAD' else response.read()
+          for attempt in range(24):
+            try:
+              identity=json.loads(get('beta-native325/release-identity.json?rollback='+str(attempt)))
+              assert identity['revision']=='native325-mobile10-pretest-ux'
+              assert identity['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+              recovery=json.loads(get('beta10-owner-recovery.json?rollback='+str(attempt)))
+              assert recovery['original_pages_run']==42600463889 and recovery['external_testers_enabled'] is False
+              assert get('beta-native325/Build/75e43a78f1c256176104-ValoriaWebPlaytest.wasm.unityweb','HEAD')==200
+              assert get('beta-native325/payload-decoded/native325-mobile10-pretest-ux-0.gz','HEAD')==200
+              assert get('unity-owner/index.html','HEAD')==200
+              assert get('beta-native325/index.html','HEAD')==200
+              assert b'../beta-native325/index.html' in get('unity-owner/index.html')
+              assert b'./beta-native325/index.html' in get('index.html')
+              print('ELDORIA_P0_OLD_BETA10_RESTORED_LIVE_PENDING_PHYSICAL_IPHONE')
+              break
+            except Exception as e:
+              if attempt==23:raise
+              time.sleep(8)
+          PY

@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "request_id": "eldoria-issue186-reward-attention-guidance-20261111",
+  "workstream_id": "eldoria-issue186-reward-attention-guidance-20261111",
+  "asset_or_sector": "Eldoria #186 — 12 illustrated resource packet icons (wood/stone/food × 100/1K/10K/100K), informational and claimable badge, first-use gauntlet and halo",
+  "profile": "environment_composition",
+  "visual_gate_state": "SOURCE_VERIFIED_NATIVE_UI_PENDING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "16 imported PNG candidates at Unity/Assets/Eldoria/Issue186Art/ were SHA256/CRC/GUID/alpha-validated. 12 packet icons are differentiated in a source-only 48px test, but this does not certify native Unity appearance, artist approval or mobile UX. The imported SHA files match conversation's Eldoria_Issue186_Unity_Import_v2.zip (source package v3); no assertion they equal unrelated purported v7 artwork without comparing all SHA256 hashes. The registry had referred to this production request but the JSON was missing; this file restores traceable routing.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true,
+    "original_AI_illustrated_icons": true,
+    "original_2d_badges_and_pointer": true,
+    "existing_3d_assets_modified": false,
+    "zero_paid_assets": true
+  },
+  "artist": {
+    "design": "Adult medieval dark slate and charcoal surfaces, restrained oxblood leather, worn aged gold rims. At actual 48–96px icons show distinct resources and distinguish the four quantity tiers without embedding a misleading amount; render text is live. Small unobtrusive badges: unread versus genuinely claimable; tutorial hand must point to an actual tappable target without masking its CTA or violating device safe area.",
+    "source": "Unity/Assets/Eldoria/Issue186Art/Resources/Issue186ResourceArt/",
+    "reference": "Owner approved Vigilia de la Brecha UI direction and Eldoria treasure dark-gold style, 2026-11-08/11; independent conversation demo is not Unity evidence."
+  },
+  "validation": {
+    "source_gate": "Main-line governance and PR #187 source CI must validate 16/16 actual PNG SHA256, CRC, size, .meta GUID, 48px resource distinction, idempotent receipts and no double-credit plus Roslyn syntax. Provenance from locally available Unity import v2.zip corresponds to v3 sources, not v7.",
+    "final_gate": "Acquire Windows runner only after CAS transfer from PR173 and ensure no live Unity process/jobs. Trigger issue186-native.yml at exact current PR HEAD. Verify actual Unity 6000.3.23f1 four screenshots 390x844, 844x390, 900x1600, 1600x900, imported sprites, real GraphicRaycaster tap, CTA unobstructed, right/left pointer safe area, 48–96px icon hierarchy. Inspect image quality manually before ART_APPROVED. Integration with GameState/LocalGateway, HUD #173, Tesoros #181 and physical iPhone/WebGL remain separate coordinated gates."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "PR187 remains DRAFT. No gameplay files of #181, no #173 HUD modifications, no #179 beta/testers. No paid credits. The source validator and polished preUnity comps cannot substitute for Unity native test."
+}

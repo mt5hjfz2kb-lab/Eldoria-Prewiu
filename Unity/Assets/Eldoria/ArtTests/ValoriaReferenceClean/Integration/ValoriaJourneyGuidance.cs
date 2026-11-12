@@ -28,6 +28,9 @@ namespace Eldoria.ReferenceClean {
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
    switch(beat){
+    case "march-preparation":return new[]{L("Sir Aldric","Ya tienes tropas entrenadas. En el Cuartel puedes preparar una marcha: elige los héroes y cuántas tropas llevarás. Después selecciona un objetivo en el mundo; el combate se resuelve automáticamente.","Your troops are trained. Prepare a march in the Barracks: choose its heroes and troop count. Then select a world target; combat resolves automatically.")};
+    case "vigilants-introduction":return new[]{L("Sir Aldric","Los Vigilantes custodian una ruta de desafíos. Avanza etapa a etapa con tus héroes y tropas; si una etapa te supera, fortalece tu ejército antes de volver. Encontrarás su acceso en la interfaz.","The Vigilants guard a route of challenges. Advance stage by stage with your heroes and troops; if a stage defeats you, strengthen your army before returning. Their entrance is now available on the interface.")};
+    case "scouts-introduction":return new[]{L("Sir Aldric","Los Exploradores ofrecen expediciones con sus propios requisitos y recompensas. Abre su nuevo acceso para revisar cada encargo antes de enviarlos.","Scouts offer expeditions with their own requirements and rewards. Open their new entrance to review each assignment before sending them.")};
     case "extraction-oddity":return new[]{L("Sir Aldric","Detened los picos. Esa veta no refleja la luz como la piedra de Valoria. Guardad cualquier fragmento extraño. Si la tierra está cambiando cerca de la Brecha, necesitaremos saber por qué.","Stop the picks. That vein does not reflect light like Valoria's stone. Keep any unusual fragments. If the ground is changing near the Breach, we must learn why.")};
     case "consolidate-valoria":return new[]{
      L("Sir Aldric",string.IsNullOrEmpty(city.Gateway.Snapshot().ChapterThree.DevelopmentPriority)?
@@ -209,7 +212,7 @@ namespace Eldoria.ReferenceClean {
    if(s.March.Phase!="idle")return host.MarchStatus(s)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,en)+"\n"+(s.March.Phase=="returning"?host.Reward(s.March.PendingWood,s.March.PendingStone)+(en?" on arrival":" al llegar"):(en?"The route marker follows your expedition.":"El estandarte señala a tu expedición."));
    if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates · ":"Aldric investiga · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en)+(en?"\nMeanwhile, upgrade the Sawmill, Barracks and Granary to II.":"\nMientras, mejora Aserradero, Cuartel y Granero a II.");
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
-   if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+s.PendingRecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en)+(en?"\nImprove your city or visit Vigilants with available troops.":"\nMejora la ciudad o visita Vigilantes con las tropas disponibles.");
+   if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+s.PendingRecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en)+(EarlyRetentionRules.VigilantsUnlocked(s)?(en?"\nImprove your city or visit Vigilants with available troops.":"\nMejora la ciudad o visita Vigilantes con las tropas disponibles."):(en?"\nYou can review your city while training finishes.":"\nPuedes revisar tu ciudad mientras termina el entrenamiento."));
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    // Teach the real first delivery in the existing contextual hint.
    if(UnityContextTutorial.NeedsMailboxOpening(s))
@@ -265,6 +268,13 @@ namespace Eldoria.ReferenceClean {
   }
   public void FollowObjective(){
    string id=ObjectiveTarget();if(id==""){ShowStory();return;}
+   if(id=="march-main"&&!NarrativeCoherenceRules.Seen(city.Gateway.Snapshot(),"march-preparation")){
+    host.Hud.ShowNarrativeSequence(Lines("march-preparation"),()=>{
+     city.Gateway.AcknowledgeNarrative("march-preparation");
+     nextNarrativeAt=Time.unscaledTime+1.5f;
+     if(host.TrySetWorld(false)){host.Select("march-main");Refresh();}
+    });return;
+   }
    if(id=="valoria-map-city"){host.SetWorld(false);city.Home();return;}
    if(!host.NavigateToObjective(id))return;
    Refresh();

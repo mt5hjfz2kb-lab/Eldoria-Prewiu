@@ -31,6 +31,10 @@ namespace Eldoria
             public string Id;
             public bool Touched;
             public float LastSizeMultiplier;
+            public Transform Target;
+            public Camera Camera;
+            public Vector3 AnchorOffset;
+            public bool Building;
         }
 
         private static readonly TimeSpan RenewableDelay = RenewableRespawnRules.Delay;
@@ -66,6 +70,29 @@ namespace Eldoria
             go.AddComponent<PlayerClarityRuntime>();
         }
 
+        private void OnEnable() => Canvas.willRenderCanvases += RefreshMarkerPositions;
+        private void OnDisable() => Canvas.willRenderCanvases -= RefreshMarkerPositions;
+
+        private void RefreshMarkerPositions()
+        {
+            if (!layer) return;
+            var canvas = layer.GetComponentInParent<Canvas>();
+            var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+            foreach (var marker in markers.Values)
+            {
+                if (!marker.Rect || !marker.Rect.gameObject.activeSelf || !marker.Target || !marker.Camera) continue;
+                var point = marker.Camera.WorldToScreenPoint(marker.Target.position + marker.AnchorOffset);
+                if (marker.Building) point.y -= 32f;
+                if (point.z <= marker.Camera.nearClipPlane || !marker.Camera.pixelRect.Contains(point))
+                { marker.Rect.gameObject.SetActive(false); continue; }
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(layer, point, uiCamera, out var local))
+                {
+                    local += marker.Building ? new Vector2(24f, -2f) : Vector2.zero;
+                    marker.Rect.localPosition = new Vector3(local.x, local.y, 0f);
+                }
+            }
+        }
+
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= SceneLoaded;
@@ -84,6 +111,8 @@ namespace Eldoria
 
         private void LateUpdate()
         {
+            // Reproject cached labels every frame; keep world/state scans at 5 Hz.
+            RefreshMarkerPositions();
             if (Time.unscaledTime < nextUpdate) return;
             nextUpdate = Time.unscaledTime + .20f;
             var candidate = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
@@ -369,7 +398,8 @@ namespace Eldoria
         {
             var go = model ? model : hot ? hot.gameObject : null;
             if (!go) return;
-            var point = camera.WorldToScreenPoint(LabelAnchor(go, building));
+            var anchor = LabelAnchor(go, building);
+            var point = camera.WorldToScreenPoint(anchor);
             // The operation timer occupies the space above the roof. Keep
             // the level beside the upper facade, with a physical-pixel gap.
             if(building)point.y-=32f;
@@ -410,6 +440,10 @@ namespace Eldoria
                 marker = CreateMarker(id, icon.HasValue, building);
                 markers.Add(id, marker);
             }
+            marker.Target = go.transform;
+            marker.Camera = camera;
+            marker.AnchorOffset = anchor - go.transform.position;
+            marker.Building = building;
             marker.Touched = true;
             marker.Rect.gameObject.SetActive(true);
             // Compensate Canvas scale in logical dimensions, not Transform
@@ -436,7 +470,10 @@ namespace Eldoria
             var uiCam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 layer, point, uiCam, out var local))
-                marker.Rect.anchoredPosition = local + (building ? new Vector2(24f, -2f) : Vector2.zero);
+            {
+                local += building ? new Vector2(24f, -2f) : Vector2.zero;
+                marker.Rect.localPosition = new Vector3(local.x, local.y, 0f);
+            }
         }
 
         private Marker CreateMarker(string id, bool icon, bool building)

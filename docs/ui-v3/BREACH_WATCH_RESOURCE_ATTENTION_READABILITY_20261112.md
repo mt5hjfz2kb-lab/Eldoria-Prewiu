@@ -1,0 +1,5 @@
+Resource attention readability from actual combined evidence, 2026-11-12
+
+The original integrated-city PNG in R run43178513272 shows the new resource alert circle over the final resource-quantity digit. The quantity must remain readable when a saved resource packet is new. The original20-unit authored badge is now attached to the upper rim with its center6 units above the capsule top, rather than down inside its numeric band. With existing17/18-unit header top margins the entire badge stays within the UI safe area; its colored lower edge clears the quantity glyph band. The mailbox alert keeps its existing position. Source PNGs, number formatting, controls, claim/new semantics and gameplay are unchanged.
+
+This is a visible interoperability defect discovered by actual product review after UI92548-frame/mail/Hall technical verification. Implemented geometry is pending exact source CI and native48/A-B, then the same source must be pinned into the actual saved-bag proof before accepting the combined visuals. No art/main or physical-device approval is implied.

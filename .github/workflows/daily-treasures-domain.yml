@@ -1,0 +1,673 @@
+name: Daily treasures domain
+on:
+  pull_request:
+    paths:
+      - "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs"
+      - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
+      - "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
+      - "Unity/Assets/Eldoria/DailyTreasures/**"
+      - "tools/daily-treasures/**"
+      - ".github/workflows/daily-treasures-domain.yml"
+      - ".github/workflows/daily-treasures-native.yml"
+      - "Unity/Packages/manifest.json"
+  push:
+    branches:
+      - feature/eldoria-daily-treasures-20261108
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  pure-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Packages/manifest.json
+            /Unity/Assets/Eldoria/Scripts/Domain/
+            /Unity/Assets/Eldoria/Scripts/Application/
+            /Unity/Assets/Eldoria/DailyTreasures/
+            /Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png.meta
+            /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
+            /tools/daily-treasures/
+            /tools/march-capacity/
+            /tools/early-retention/
+            /tools/ui-v3-domain-smoke/
+            /.github/workflows/daily-treasures-native.yml
+            /.github/workflows/daily-treasures-domain.yml
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Inventory canonical source art identities for Lyra, never generated portraits
+        shell: bash
+        run: |
+          git ls-files Unity/Assets/Eldoria |
+            grep -Ei 'lyra|hero.{0,40}(portrait|master)|portrait.{0,40}hero' |
+            head -100 || true
+      - name: Prove the pre-Unity ceremony art source gate rejects duplicates and fictional loot
+        shell: bash
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check Pillow
+          python3 tools/daily-treasures/preflight_ceremony_art.py --selftest
+          python3 tools/daily-treasures/preview_ceremony_art.py --selftest
+          # Do not run a non-existent production manifest here: until genuine
+          # event-specific artworks exist, ART_APPROVED remains false.
+      - name: Verify built-in Unity Audio module required by actual chest audio
+        run: node tools/daily-treasures/check-audio-module.mjs
+      - name: Compile and test original C# reward rules (no Unity mocks)
+        run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
+      - name: Compile and test the real authoritative LocalGateway (no Unity)
+        run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
+      # The owned Gateway.Tests suite above now executes real three-scout
+      # reservations, a rejected fourth march and exactly-once offline troop
+      # returns on a story-valid player. The separate, foreign-owned
+      # march-capacity smoke has an obsolete pre-introduction Scout fixture
+      # and must be corrected by its owner, NOT bypassed through old unlocks.
+      - name: Preserve the exact original early-retention and V3 management domain contracts
+        shell: bash
+        run: |
+          # These two source-only projects are owned by OTHER workstreams.
+          # Never edit their .csproj to hide the new DailyTreasureState.
+          # They must still build with the exact same source list as main.
+          dotnet run --project tools/early-retention/Smoke.csproj --configuration Release
+          dotnet run --project tools/ui-v3-domain-smoke/Smoke.csproj --configuration Release
+      - name: Check actual OWNER_I_II economic impact of seven-day and fourteen-day rewards
+        run: dotnet run --project tools/daily-treasures/EconomyCandidate.csproj --configuration Release
+      - name: Verify reversible isolated native source preservation using real Git
+        shell: pwsh
+        run: |
+          Get-ChildItem tools/daily-treasures/native -Filter '*.ps1' -File | ForEach-Object {
+            $parseProblems=$null;$parseTokens=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$parseTokens,[ref]$parseProblems)|Out-Null
+            if(@($parseProblems).Count){throw ($_.FullName+': '+(($parseProblems|ForEach-Object {$_.Message}) -join '; '))}
+          }
+          & tools/daily-treasures/native/Test-OwnedImporterPreservation.ps1
+      - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
+        run: dotnet run --project tools/daily-treasures/SyntaxAudit.csproj --configuration Release
+      - name: Verify actual current Vigilia PR173 Canvas contract without borrowing Windows
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/daily-treasures/check-vigilia-compat.mjs
+      - name: Enforce the exact dark forged-iron and burgundy visual language of Eldoria/Vigilia
+        run: node tools/daily-treasures/check-visual-identity.mjs
+      - name: Enforce Unity 6 editor-only art capture assembly and safe Android/WebGL gameplay DLL
+        run: node tools/daily-treasures/check-assembly-isolation.mjs
+      - name: Check actual calendar placement arithmetic on eight mobile and desktop geometries
+        run: node tools/daily-treasures/layout-smoke.mjs
+      - name: Check category-specific illustrated milestones use real Eldoria scenic sources
+        run: node tools/daily-treasures/check-scenic-art.mjs
+      - name: Enforce actual alpha-pixel Scout parchment visibility and readable real reports
+        run: python tools/daily-treasures/scout_visible_art_gate.py
+      - name: Enforce authoritative save and non-paying mailbox wiring
+        run: node tools/daily-treasures/check-integration.mjs
+
+      - name: Validate artwork importer and immutable PNG manifest without transferring private assets
+        shell: bash
+        run: |
+          python - <<'PY'
+          import ast,json
+          from pathlib import Path
+          importer=Path('tools/daily-treasures/import_chest_art.py')
+          tree=ast.parse(importer.read_text(encoding='utf-8'))
+          assigned=next(n for n in tree.body if isinstance(n,ast.Assign)
+                        and any(isinstance(t,ast.Name) and t.id=='EXPECTED' for t in n.targets))
+          declared=ast.literal_eval(assigned.value)
+          manifest=json.loads(Path('Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/source-manifest.json').read_text())
+          for asset in manifest['assets']:
+              name=asset['file']
+              assert name in declared, f'Missing source art: {name}'
+              assert declared[name][0]==asset['sha256'], f'Hash mismatch: {name}'
+              assert len(declared[name][1])==32, f'Invalid import GUID: {name}'
+          assert len(declared)==2
+          assert len({v[1] for v in declared.values()})==2
+          print('PASS authored asset importer, two immutable PNG hashes and independent GUIDs')
+          PY
+
+      - name: Verify the actual original chest PNGs committed to the PR
+        run: python tools/daily-treasures/verify_imported_art.py
+
+      - name: Parse native Windows Unity YAML and fail closed on unsafe checkout or missing art proof
+        run: |
+          python -m pip install --disable-pip-version-check PyYAML==6.0.2
+          python tools/daily-treasures/validate_native_workflow.py
+      - name: Confirm native screenshot quality reviewer parses and distinguishes source frames
+        run: |
+          python -m pip install --disable-pip-version-check Pillow==11.3.0
+          python tools/daily-treasures/audit_native_art.py --selftest
+          python tools/daily-treasures/audit_city_art.py --selftest
+          python tools/daily-treasures/check_clean_icon_quality.py
+      - name: Render source-only 32-48-64px art contact and verify legibility
+        run: python tools/daily-treasures/mobile_visual_preflight.py
+      - name: Preserve independently inspectable source visual contact
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-mobile-source-art-${{ github.sha }}
+          path: tools/daily-treasures/mobile-source-art-contact.jpg
+          retention-days: 14
+          if-no-files-found: error
+
+  # SOURCE candidate only: Linux downloads a single independently painted
+  # illustration, not a mock UI or an official character/world identity.
+  # This does NOT require or claim the exclusive Windows Unity resource.
+  preunity-art-intake:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feature/eldoria-daily-treasures-20261108'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/daily-treasures/
+            /Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/valoria_frame_main_512.png
+      - name: Validate isolated art candidate without touching gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet --disable-pip-version-check Pillow
+          python3 tools/daily-treasures/ingest_art_candidate.py --selftest
+          count=0
+          for request in tools/daily-treasures/art-source-intake-*.json; do
+            if [ ! -f "$request" ]; then continue; fi
+            python3 tools/daily-treasures/ingest_art_candidate.py --request "$request"
+            count=$((count+1))
+          done
+          echo "Processed $count independent non-approved art-source requests"
+          python3 tools/daily-treasures/assemble_authored_ceremonies.py
+      # The previous READ-ONLY PR preview already rendered the exact
+      # SHA-verified ORIGINAL 3D Lyra, not an AI-invented heroine. Carry only
+      # that genuine PNG into the same PR as an UNAPPROVED candidate.
+      # This reuses a stable artifact; no second VTK run or Windows lease.
+      - name: Retrieve existing authentic Lyra source portrait from certified pre-Unity run
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-preunity-ceremonies-5a4487b4e789aa2aaf664b9e8ba90d62e83da769
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 42954067211
+          path: tools/daily-treasures/_lyra-source-import
+      - name: Stage ONLY a SHA-verified actual Lyra portrait, never claim art approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          from PIL import Image
+          root=Path('tools/daily-treasures')
+          source=root/'_lyra-source-import'/'lyra-canonical-portrait-SOURCE-ONLY.png'
+          original=root/'_lyra-source-import'/'lyra-canonical-portrait-SOURCE-ONLY.provenance.json'
+          assert source.is_file() and original.is_file(), 'Original model render or receipt absent'
+          proof=json.loads(original.read_text())
+          approved='a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725'
+          assert proof['classification']=='CANONICAL_3D_LYRA_SOURCE_ONLY_NOT_UNITY'
+          assert proof['source_sha256']==approved and proof['source_length']==4770000
+          assert proof['generated_person'] is False and proof['art_approved'] is False
+          assert proof['unity_verified'] is False and proof['actor_count']>0
+          assert hashlib.sha256(source.read_bytes()).hexdigest()==proof['output_sha256']
+          with Image.open(source) as im:
+            im.load()
+            assert im.mode=='RGBA' and im.width>=1024 and im.height>=512
+            alpha=im.getchannel('A')
+            hist=alpha.histogram()
+            clear=sum(hist[:17])/(im.width*im.height)
+            visible=sum(hist[160:])/(im.width*im.height)
+            assert clear>.04 and .07<visible<.93, 'Original GLB drawing not legible'
+          out=root/'art-candidates'/'lyra-canonical-portrait-source.png'
+          receipt=root/'art-candidates'/'lyra-canonical-portrait-source.provenance.json'
+          if out.exists() or receipt.exists():
+            assert out.is_file() and receipt.is_file(), 'Half-copied artist candidate'
+            assert hashlib.sha256(out.read_bytes()).hexdigest()==proof['output_sha256']
+            print('Exact Lyra original already staged; no overwrite')
+          else:
+            out.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(source,out)
+            proof['classification']='CANONICAL_3D_LYRA_PREUNITY_CANDIDATE_NOT_APPROVED'
+            proof['source_artifact_run']=42954067211
+            proof['source_artifact_name']='eldoria-preunity-ceremonies-5a4487b4e789aa2aaf664b9e8ba90d62e83da769'
+            receipt.write_text(json.dumps(proof,indent=2)+chr(10))
+            print('Staged the real approved-model GLB render ONLY: still needs visual QA')
+          PY
+      - name: Retrieve genuine Lyra BUST and four-scene pre-Unity contact from immutable source run
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-preunity-ceremonies-927ba342f4cd29cfcdca2cee8a6fe04708a94ef5
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 42955378480
+          path: tools/daily-treasures/_lyra-bust-review-import
+      - name: Verify and preserve actual model bust plus explicitly non-gameplay art contact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          from PIL import Image
+          root=Path('tools/daily-treasures')
+          source=root/'_lyra-bust-review-import'
+          candidate=root/'art-candidates'
+          image=source/'lyra-canonical-bust-SOURCE-ONLY.png'
+          provenance=source/'lyra-canonical-bust-SOURCE-ONLY.provenance.json'
+          assert image.is_file() and provenance.is_file(),'SHA-backed bust render absent'
+          record=json.loads(provenance.read_text())
+          assert record['classification']=='CANONICAL_3D_LYRA_SOURCE_ONLY_NOT_UNITY'
+          assert record['source_sha256']=='a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725'
+          assert record['source_length']==4770000 and record['shot']=='bust'
+          assert record['generated_person'] is False and record['art_approved'] is False
+          assert record['unity_verified'] is False and record['actor_count']>0
+          assert hashlib.sha256(image.read_bytes()).hexdigest()==record['output_sha256']
+          with Image.open(image) as obj:
+            assert obj.mode=='RGBA' and obj.width>=1024 and obj.height>=512
+            a=obj.getchannel('A').histogram()
+            coverage=sum(a[160:])/(obj.width*obj.height)
+            assert .07<coverage<.93
+          candidate.mkdir(parents=True,exist_ok=True)
+          target=candidate/'lyra-canonical-bust-source.png'
+          receipt=candidate/'lyra-canonical-bust-source.provenance.json'
+          if target.exists() or receipt.exists():
+            assert target.is_file() and receipt.is_file()
+            assert hashlib.sha256(target.read_bytes()).hexdigest()==record['output_sha256']
+            assert json.loads(receipt.read_text())['source_sha256']==record['source_sha256']
+          else:
+            shutil.copyfile(image,target)
+            record['classification']='CANONICAL_LYRA_BUST_PREUNITY_CANDIDATE_NOT_APPROVED'
+            record['source_artifact_run']=42955378480
+            receipt.write_text(json.dumps(record,indent=2)+chr(10))
+          # This A/B contact is an immutable review study, NEVER a game UI
+          # resource or proof that a full game scene has run successfully.
+          comparison=source/'four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg'
+          ledger=json.loads((source/'preview-provenance.json').read_text())
+          assert ledger['classification']=='PREUNITY_STUDY_NOT_GAMEPLAY'
+          assert ledger['art_approved'] is False and ledger['unity_native_verified'] is False
+          assert set(ledger['scenes'])=={'lyra','explorers','vigilants','bastion'}
+          assert hashlib.sha256(comparison.read_bytes()).hexdigest()==ledger['contact']['sha256']
+          with Image.open(comparison) as sheet:
+            assert sheet.size==(1920,1080) and sheet.format=='JPEG'
+          contact=candidate/'four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg'
+          if contact.exists():
+            assert hashlib.sha256(contact.read_bytes()).hexdigest()==ledger['contact']['sha256']
+          else:
+            shutil.copyfile(comparison,contact)
+          print('Verified exact original 3D bust and non-gameplay contact; ART_APPROVED remains false')
+          PY
+      - name: Preserve one unapproved source art candidate on the same PR only
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          assets=(tools/daily-treasures/art-candidates/*_stage.png
+                  tools/daily-treasures/art-candidates/*_stage.provenance.json
+                  tools/daily-treasures/art-candidates/lyra-canonical-portrait-source.png
+                  tools/daily-treasures/art-candidates/lyra-canonical-portrait-source.provenance.json
+                  tools/daily-treasures/art-candidates/lyra-canonical-bust-source.png
+                  tools/daily-treasures/art-candidates/lyra-canonical-bust-source.provenance.json
+                  tools/daily-treasures/art-candidates/four-ceremonies-CONTACT-PREUNITY-NOT-GAMEPLAY.jpg
+                  tools/daily-treasures/art-candidates/shared_ornament.png
+                  tools/daily-treasures/art-candidates/ceremony-art-production.json)
+          if (( ${#assets[@]} == 0 )); then
+            echo "No verified candidates; no commit"
+            exit 0
+          fi
+          git add -- "${assets[@]}"
+          if git diff --cached --quiet; then
+            echo "Candidate already present with immutable hash"
+            exit 0
+          fi
+          current=$(git ls-remote origin refs/heads/feature/eldoria-daily-treasures-20261108 | cut -f1)
+          if [ "$current" != "$GITHUB_SHA" ]; then
+            echo "::error::PR HEAD changed; refuse concurrent overwrite"
+            exit 1
+          fi
+          git -c user.name='Eldoria Art Intake' \
+              -c user.email='eldoria-art-intake@users.noreply.github.com' \
+              commit -m 'Daily treasures: stage SHA-verified canonical Lyra portrait (PRE-UNITY, NOT APPROVED)'
+          # Never force-push, rebase, or overwrite another agent's HEAD.
+          git push origin HEAD:refs/heads/feature/eldoria-daily-treasures-20261108
+
+  # PRE-UNITY aesthetic comparison with actual original Lyra hall,
+  # Scouts/Vigilants painterly scenes and a SHA-verified true Unity city.
+  # Never labels a synthetic contact image as gameplay evidence.
+  preunity-authored-visual-preview:
+    # Read-only review also runs on same-repository PR #181 so its real
+    # artefacts can be inspected without requiring Windows or write tokens.
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/feature/eldoria-daily-treasures-20261108') || (github.event_name == 'pull_request' && github.event.pull_request.number == 181 && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/daily-treasures/
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-parchment-v3.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-mission-vignettes-v4.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-action-skin-v4.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png.meta
+      - name: Check actual four source illustrations are staged
+        id: present
+        shell: bash
+        run: |
+          if [ -f tools/daily-treasures/art-candidates/ceremony-art-production.json ]; then
+            echo "ready=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=no" >> "$GITHUB_OUTPUT"
+            echo "No four real isolated sources yet; skip study without faking artwork"
+          fi
+      # Use the official artifact client for cross-workflow downloads. The
+      # previous urllib redirect incorrectly forwarded its Authorization to
+      # Azure blob storage and failed 401. This is READ ONLY and requires no
+      # Windows reservation. A missing source fails CLOSED: no fake city.
+      - name: Download certified genuine city artifact from exact earlier Unity run
+        if: steps.present.outputs.ready == 'yes'
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-daily-treasures-native-9b86b7626b8d544f974c5395ad41f5f443d13f6b
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 42906443088
+          path: tools/daily-treasures/_verified-city-import
+      - name: Verify original real Unity city render and transfer to preview only
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          archive=Path('tools/daily-treasures/_verified-city-import')
+          record=json.loads((archive/'city/city-art-report.json').read_text())
+          assert record['source']=='9b86b7626b8d544f974c5395ad41f5f443d13f6b'
+          assert record['camera']=='PlayerCamera' and record['cityRenderers']>=95
+          name='real-city-daily-actual-city-baseline-1600x900.png'
+          original=archive/'city'/name
+          content=original.read_bytes()
+          expected=next(x['sha256'] for x in record['shots'] if x['file']==name)
+          assert hashlib.sha256(content).hexdigest()==expected
+          assert content[:8] == bytes([137,80,78,71,13,10,26,10])
+          Path('tools/daily-treasures/real-city-source-verified.png').write_bytes(content)
+          print('VERIFIED Unity original PlayerCamera SHA256. Not a gameplay run and not an art approval.')
+          PY
+      - name: Compose four real-identity studies at four resolutions BEFORE Unity
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet --disable-pip-version-check Pillow
+          python3 tools/daily-treasures/preview_ceremony_art.py \
+            --manifest tools/daily-treasures/art-candidates/ceremony-art-production.json \
+            --out tools/daily-treasures/preunity-studies \
+            --identity lyra=Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg \
+            --identity explorers=Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png \
+            --identity vigilants=Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png \
+            --identity bastion=tools/daily-treasures/real-city-source-verified.png
+      - name: Preserve the actual owner-approved Heroes reference for identity review
+        shell: bash
+        if: steps.present.outputs.ready == 'yes'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from PIL import Image
+          source=Path('Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png')
+          meta=Path(str(source)+'.meta')
+          assert source.is_file() and meta.is_file(), 'Official Heroes reference missing'
+          with Image.open(source) as artwork:
+              assert artwork.size==(1536,1024), 'Official master sheet changed'
+              artwork.convert('RGB').save(
+                  'tools/daily-treasures/preunity-studies/official-heroes-master-REFERENCE-ONLY.jpg',
+                  quality=90)
+          manifest={'source':str(source),'sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
+                    'classification':'CANONICAL_HEROES_REFERENCE_SHEET_NOT_LYRA_PORTRAIT',
+                    'art_approved':False,'unity_verified':False}
+          Path('tools/daily-treasures/preunity-studies/official-heroes-master-provenance.json').write_text(json.dumps(manifest,indent=2))
+          print('Prepared original Heroes reference for separate canonical character audit')
+          PY
+      - name: Verify actual Lyra 3D model identity for offline source portrait research
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          source=Path('Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes')
+          importer=Path(str(source)+'.meta')
+          assert source.is_file() and importer.is_file(), 'Canonical Lyra GLB absent'
+          data=source.read_bytes()
+          digest=hashlib.sha256(data).hexdigest()
+          expected='a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725'
+          assert len(data)==4770000 and digest==expected and data[:4]==b'glTF', 'Canonical model changed'
+          folder=Path('tools/daily-treasures/preunity-studies')
+          (folder/'lyra-approved-model-SOURCE-ONLY.glb').write_bytes(data)
+          receipt={'classification':'UNMODIFIED_CANONICAL_LYRA_GLTF_SOURCE_NOT_ILLUSTRATION',
+                   'source':str(source),'sha256':digest,'length_bytes':len(data),
+                   'art_approved':False,'unity_rendered':False}
+          (folder/'lyra-model-source-provenance.json').write_text(json.dumps(receipt,indent=2))
+          print('Canonical Lyra geometry SHA-verified for independent pre-Unity evaluation; no invented portrait')
+          PY
+      - name: Render genuine Lyra geometry as isolated source-only portrait before Unity
+        id: canonical_studio
+        if: steps.present.outputs.ready == 'yes'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          # GH-hosted Ubuntu DNS has intermittently failed to resolve both
+          # Ubuntu and PyPI (run 43036996899). Keep source QA progressing,
+          # but explicitly record missing portrait evidence, never PASS it.
+          if ! getent hosts security.ubuntu.com >/dev/null; then
+            echo "CANONICAL_STUDIO_BLOCKED_BY_DNS: not a portrait/art pass" >&2
+            exit 75
+          fi
+          # Ubuntu hosted runners omit both EGL and OSMesa. VTK cannot load
+          # genuine glTF geometry without a headless OpenGL backend.
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends libosmesa6 libegl1 libgl1-mesa-dri
+          python3 -m pip install --quiet --disable-pip-version-check vtk==9.5.2
+          python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --out tools/daily-treasures/preunity-studies/lyra-canonical-portrait-SOURCE-ONLY.png
+          # Additional WAIST-UP composition of the SAME original GLB,
+          # for premium readable hero presentation at small mobile sizes.
+          python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --shot bust \
+            --out tools/daily-treasures/preunity-studies/lyra-canonical-bust-SOURCE-ONLY.png
+          # A/B source-only portrait with the actual GLB facial materials.
+          # 125-degree camera avoids the distant/stiff incumbent frontal pose.
+          # Human art review is required: this is NOT an approved heroine sprite.
+          python3 tools/daily-treasures/render_canonical_lyra_preunity.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --shot portrait --yaw 125 \
+            --out tools/daily-treasures/preunity-studies/lyra-canonical-closeup-CANDIDATE-NOT-APPROVED.png
+          # Change of technique, not another upscale/filter: compare a true
+          # source-preserving PBR IBL studio render against rejected unlit GLB.
+          python3 tools/daily-treasures/render_canonical_lyra_pbr_studio.py \
+            --glb Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes \
+            --out tools/daily-treasures/preunity-studies/lyra-PBR-STUDIO-CANDIDATE-NOT-APPROVED.png
+      - name: Record whether physically-lit source studio rendered actual pixels
+        if: always() && steps.present.outputs.ready == 'yes'
+        shell: bash
+        env:
+          RENDER_OUTCOME: ${{ steps.canonical_studio.outcome }}
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          study=Path('tools/daily-treasures/preunity-studies')
+          study.mkdir(parents=True,exist_ok=True)
+          image=study/'lyra-PBR-STUDIO-CANDIDATE-NOT-APPROVED.png'
+          complete=os.environ.get('RENDER_OUTCOME')=='success' and image.is_file()
+          report={'pbr_studio_result':'SOURCE_PIXELS_GENERATED' if complete else 'INFRASTRUCTURE_OR_RENDER_UNAVAILABLE',
+             'studio_step_outcome':os.environ.get('RENDER_OUTCOME'),
+             'actual_pbr_png_present':bool(complete),'art_approved':False,
+             'unity_native_verified':False,
+             'note':'DNS failures are not artistic success; do not promote missing portrait'}
+          (study/'studio-status.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report))
+          PY
+      - name: Preserve actual independent stage paintings for source-level art review
+        if: steps.present.outputs.ready == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          root=Path('tools/daily-treasures')
+          staged=root/'preunity-studies'/'source-plates'
+          staged.mkdir(parents=True,exist_ok=True)
+          files={
+            'lyra':root/'art-candidates/lyra_stage.png',
+            'explorers':root/'art-candidates/explorers_stage.png',
+            'vigilants':root/'art-candidates/vigilants_stage.png',
+            'bastion':root/'art-candidates/bastion_stage.png',
+            'original-ornament':root/'art-candidates/shared_ornament.png',
+            # Original 128px identities for independently derived relief trials.
+            # Preserve unmodified alpha/source pixels; no new fake insignia.
+            'official-scout-crest':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png'),
+            'official-vigilant-compass':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png'),
+            'real-hero-hall':Path('Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg'),
+            'real-scout-landscape':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png'),
+            # Investigate EXISTING authored production imagery before building
+            # an expensive/fake replacement parchment. Copy originals only.
+            'real-scout-parchment-v3':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-parchment-v3.png'),
+            'real-scout-vignettes-v4':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-mission-vignettes-v4.png'),
+            'real-scout-action-v4':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-action-skin-v4.png'),
+            'real-vigilant-landscape':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png'),
+            'real-city':root/'real-city-source-verified.png',
+            'real-scout-crest':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png'),
+            'real-vigilants-compass':Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png'),
+          }
+          proof={}
+          for name,p in files.items():
+              assert p.is_file(),f'Missing isolated source {name}: {p}'
+              target=staged/(name+p.suffix)
+              shutil.copyfile(p,target)
+              proof[name]={'source':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
+                           'export':str(target),'source_not_gameplay':True}
+          (staged/'source-provenance.json').write_text(json.dumps({
+              'classification':'ORIGINAL_PREUNITY_INPUTS_NOT_UNITY_SCREENSHOTS',
+              'art_approved':False,'images':proof},indent=2))
+          PY
+      - name: Export 16 clearly labeled source-only studies for actual art comparison
+        if: steps.present.outputs.ready == 'yes'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-preunity-ceremonies-${{ github.sha }}
+          path: tools/daily-treasures/preunity-studies/
+          retention-days: 14
+          if-no-files-found: error
+
+  review-actual-native-art:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    concurrency:
+      group: daily-treasures-byte-identical-native-review
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/daily-treasures
+          persist-credentials: false
+      - name: Compile read-only native evidence verifier
+        run: python3 -m py_compile tools/daily-treasures/copy_native_review.py
+      - name: Read immutable native review identity from the owned request
+        id: recorded
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p=json.load(open('tools/daily-treasures/native-art-review-request.json'))
+          assert p['state']=='REVIEW_EXISTING_NATIVE_ARTIFACT'
+          assert isinstance(p['review_run_id'],int) and isinstance(p['review_artifact_id'],int)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('run='+str(p['review_run_id'])+'\nartifact='+str(p['review_artifact_id'])+'\n')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ steps.recorded.outputs.artifact }}
+          run-id: ${{ steps.recorded.outputs.run }}
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          path: reviewed-native
+          merge-multiple: true
+      - name: Preserve exact four actual Unity images in released owned review docs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/daily-treasures/copy_native_review.py
+
+  inspect-preserved-native-inputs:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43157612284
+          artifact-ids: 13916990677
+          github-token: ${{ github.token }}
+          path: preserved-native
+          merge-multiple: true
+      - name: Compare only the two preserved non-importer inputs with their actual original Git blobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,hashlib,difflib,urllib.request
+          from pathlib import Path
+          reports=list(Path('preserved-native').rglob('preserved-inputs/report.json'));assert len(reports)==1
+          p=reports[0];r=json.loads(p.read_text(encoding='utf-8-sig'))
+          assert r['status']=='CURRENT_BYTES_ARCHIVED_NOT_RESET'
+          allowed={'Unity/Packages/packages-lock.json','Unity/ProjectSettings/QualitySettings.asset'}
+          for row in r['files']:
+              if row['path'] not in allowed:continue
+              current=(p.parent/'current'/row['path']).read_bytes();assert hashlib.sha256(current).hexdigest()==row['rawSha256']
+              req=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/git/blobs/'+row['originalGitBlob'],headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req) as response:b=json.load(response)
+              assert b['sha']==row['originalGitBlob'];original=base64.b64decode(b['content'])
+              print('EXACT_NATIVE_INPUT_DIFF',json.dumps(row))
+              print(''.join(difflib.unified_diff(original.decode().splitlines(True),current.decode().splitlines(True),fromfile='Git HEAD/'+row['path'],tofile='Preserved native/'+row['path'])))
+          print('READ_ONLY_AUDIT_NO_WINDOWS_NO_RESTORATION')
+          PY
