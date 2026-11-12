@@ -14,8 +14,14 @@ jobs:
   exclusive-preflight:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      native: ${{ steps.mode.outputs.native }}
+      review: ${{ steps.mode.outputs.review }}
+      review_run: ${{ steps.mode.outputs.review_run }}
+      review_artifact: ${{ steps.mode.outputs.review_artifact }}
     steps:
       - name: Fail closed unless Issue186 owns the exact Windows CAS lease
+        id: mode
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -27,6 +33,16 @@ jobs:
                "Accept":"application/vnd.github+json","User-Agent":"issue186-native-preflight"}
           def get(u):
               with urllib.request.urlopen(urllib.request.Request(u,headers=hdr),timeout=30) as r:return json.load(r)
+          saved=get(f"https://api.github.com/repos/{repo}/contents/tools/reward-experience/native-request.txt?ref={os.environ['GITHUB_SHA']}")
+          lines=base64.b64decode(saved["content"]).decode().splitlines()
+          request=dict(line.split("=",1) for line in lines if "=" in line and not line.startswith("#"))
+          if request.get("state")=="REVIEW_EXISTING_NATIVE_ARTIFACT":
+              run=request["review_run_id"];artifact=request["review_artifact_id"]
+              if not run.isdecimal() or not artifact.isdecimal():raise SystemExit("Invalid native artifact identity")
+              with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+                  f.write(f"native=false\nreview=true\nreview_run={run}\nreview_artifact={artifact}\n")
+              print("EXISTING_NATIVE_ARTIFACT_REVIEW_ONLY; NO_WINDOWS_OR_UNITY")
+              raise SystemExit(0)
           p=get(f"https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main")
           b64=p.get("content")
           if p.get("encoding")!="base64" or not b64:
@@ -41,10 +57,12 @@ jobs:
           pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
           if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
           print("ISSUE186_CAS_LEASE_PASS")
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("native=true\nreview=false\n")
           PY
 
   native:
     needs: exclusive-preflight
+    if: needs.exclusive-preflight.outputs.native == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     env:
@@ -202,3 +220,31 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
+
+  review-existing-native:
+    needs: exclusive-preflight
+    if: needs.exclusive-preflight.outputs.review == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/reward-experience
+          persist-credentials: false
+      - name: Compile the strict review helper before reading evidence
+        run: python3 -m py_compile tools/reward-experience/native/copy_native_review.py
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.exclusive-preflight.outputs.review_artifact }}
+          run-id: ${{ needs.exclusive-preflight.outputs.review_run }}
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          path: reviewed-native
+          merge-multiple: true
+      - name: Preserve exact native images only in released owned review branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/reward-experience/native/copy_native_review.py
