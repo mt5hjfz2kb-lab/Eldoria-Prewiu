@@ -15,11 +15,12 @@ namespace Eldoria.BreachWatch.Editor
         [Serializable] public sealed class Metric
         {
             public string path,text,role,font;
-            public int size,configuredSize,visibleCharacters,expectedCharacters;
+            public int size,configuredSize,generatorFontSizeUsed,visibleCharacters,expectedCharacters;
+            public int gpuVisiblePixels,gpuOutsidePixels;
             public float preferredWidth,preferredHeight,pixelsPerUnit;
             public Rect box,ink;
             public Vector3 localScale;
-            public bool glyphsPresent,inkOutside;
+            public bool glyphsPresent,generatedQuadOutside,inkOutside;
         }
         [Serializable] sealed class Proof
         {
@@ -35,14 +36,14 @@ namespace Eldoria.BreachWatch.Editor
         {
             public Text Text;public Font Font;public int Size,Min,Max;
             public FontStyle Style;public TextAnchor Alignment;
-            public Vector3 Scale;public bool BestFit;public string Value;
+            public Vector3 Scale;public Vector2 Room;public bool BestFit;public string Value;
             public State(Text t){Text=t;Font=t.font;Size=t.fontSize;Style=t.fontStyle;
                 Alignment=t.alignment;Scale=t.rectTransform.localScale;
-                BestFit=t.resizeTextForBestFit;Min=t.resizeTextMinSize;
+                Room=t.rectTransform.sizeDelta;BestFit=t.resizeTextForBestFit;Min=t.resizeTextMinSize;
                 Max=t.resizeTextMaxSize;Value=t.text;}
             public bool Same()=>!Text||(Text.font==Font&&Text.fontSize==Size&&
                 Text.fontStyle==Style&&Text.alignment==Alignment&&
-                Text.rectTransform.localScale==Scale&&Text.resizeTextForBestFit==BestFit&&
+                Text.rectTransform.localScale==Scale&&Text.rectTransform.sizeDelta==Room&&Text.resizeTextForBestFit==BestFit&&
                 Text.resizeTextMinSize==Min&&Text.resizeTextMaxSize==Max&&Text.text==Value);
         }
         static string Digest(byte[] bytes)
@@ -50,35 +51,69 @@ namespace Eldoria.BreachWatch.Editor
         static string PathOf(Transform item,Transform root)
         {string path=item.name;while(item.parent&&item.parent!=root){item=item.parent;path=item.name+"/"+path;}return path;}
 
-        static List<Metric> Measure(Canvas canvas)
+        // Font atlas quads include transparent padding and are not visible
+        // ink. Confirm suspicious bounds using the original GPU Text mesh,
+        // isolated from every other Graphic and world Renderer. Black drop
+        // shadows are retained but excluded from the bright-glyph mask.
+        static void VisibleInk(Text text,Canvas canvas,Camera camera,RenderTexture target,
+            int width,int height,out int visible,out int outside)
+        {
+            visible=outside=0;
+            var graphics=canvas.GetComponentsInChildren<Graphic>(true);
+            var enabled=graphics.Select(x=>x.enabled).ToArray();
+            var renderers=UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+            var rendered=renderers.Select(x=>x.enabled).ToArray();
+            var oldFlags=camera.clearFlags;var oldColor=camera.backgroundColor;
+            var oldActive=RenderTexture.active;
+            var image=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            var corners=new Vector3[4];text.rectTransform.GetWorldCorners(corners);
+            var points=corners.Select(x=>camera.WorldToViewportPoint(x)).ToArray();
+            var bounds=Rect.MinMaxRect(points.Min(x=>x.x)*width-2f,points.Min(x=>x.y)*height-2f,
+                points.Max(x=>x.x)*width+2f,points.Max(x=>x.y)*height+2f);
+            try
+            {
+                for(int i=0;i<graphics.Length;i++)graphics[i].enabled=graphics[i]==text;
+                foreach(var renderer in renderers)renderer.enabled=false;
+                camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;
+                Canvas.ForceUpdateCanvases();camera.Render();RenderTexture.active=target;
+                image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();
+                var pixels=image.GetPixels32();
+                for(int y=0;y<height;y++)for(int x=0;x<width;x++)
+                {
+                    var pixel=pixels[y*width+x];
+                    if(pixel.a<24||pixel.r+pixel.g+pixel.b<100)continue;
+                    visible++;if(!bounds.Contains(new Vector2(x+.5f,y+.5f)))outside++;
+                }
+            }
+            finally
+            {
+                for(int i=0;i<graphics.Length;i++)if(graphics[i])graphics[i].enabled=enabled[i];
+                for(int i=0;i<renderers.Length;i++)if(renderers[i])renderers[i].enabled=rendered[i];
+                camera.clearFlags=oldFlags;camera.backgroundColor=oldColor;
+                Canvas.ForceUpdateCanvases();camera.Render();RenderTexture.active=oldActive;
+                UnityEngine.Object.DestroyImmediate(image);
+            }
+        }
+
+        static List<Metric> Measure(Canvas canvas,Camera camera,RenderTexture target,int width,int height)
         {
             var result=new List<Metric>();
             foreach(var text in canvas.GetComponentsInChildren<Text>(false))
             {
                 if(!text.isActiveAndEnabled||string.IsNullOrEmpty(text.text)||text.color.a<.01f)continue;
                 string plain=text.supportRichText?Regex.Replace(text.text,"<[^>]*>",""):text.text;
-                // fontSizeUsedForBestFit is the generator's scaled pixel
-                // size. Feeding it back as logical fontSize scales it twice
-                // on Retina/portrait canvases and invents clipping.
-                int size=text.resizeTextForBestFit?Mathf.RoundToInt(
-                    text.cachedTextGenerator.fontSizeUsedForBestFit/text.pixelsPerUnit):text.fontSize;
-                if(size<=0)size=text.fontSize;
+                int size=text.fontSize;
                 bool present=text.font;
                 if(text.font)
                 {
-                    text.font.RequestCharactersInTexture(plain,size,text.fontStyle);
                     foreach(char c in plain)
-                        if(!char.IsWhiteSpace(c)&&!text.font.GetCharacterInfo(c,out var unused,size,text.fontStyle))
+                        if(!char.IsWhiteSpace(c)&&!text.font.HasCharacter(c))
                             present=false;
                 }
                 var box=text.rectTransform.rect;
-                var settings=text.GetGenerationSettings(box.size);
-                settings.verticalOverflow=VerticalWrapMode.Overflow;
-                // Use the actual imported font and the actual BestFit size,
-                // but do not permit the measurement to hide truncated lines.
-                settings.resizeTextForBestFit=false;settings.fontSize=size;
-                var generator=new TextGenerator();generator.Populate(text.text,settings);
-                var verts=generator.verts;
+                // Inspect the exact cached mesh used by uGUI, without
+                // regenerating BestFit at a guessed logical/pixel size.
+                var verts=text.cachedTextGenerator.verts;
                 float ppu=text.pixelsPerUnit;
                 float x0=float.PositiveInfinity,y0=float.PositiveInfinity;
                 float x1=float.NegativeInfinity,y1=float.NegativeInfinity;
@@ -94,15 +129,19 @@ namespace Eldoria.BreachWatch.Editor
                 bool ink= !float.IsInfinity(x0);
                 var bounds=ink?Rect.MinMaxRect(x0,y0,x1,y1):Rect.zero;
                 const float tolerance=1.5f;
+                bool suspect=ink&&(bounds.xMin<box.xMin-tolerance||bounds.xMax>box.xMax+tolerance||
+                    bounds.yMin<box.yMin-tolerance||bounds.yMax>box.yMax+tolerance);
+                int visible=0,outside=0;
+                if(suspect)VisibleInk(text,canvas,camera,target,width,height,out visible,out outside);
                 result.Add(new Metric {path=PathOf(text.transform,canvas.transform),text=text.text,
                     role=BreachWatchTypography.ResolveRole(text).ToString(),font=text.font?text.font.name:"MISSING",
-                    size=size,configuredSize=text.fontSize,box=box,ink=bounds,pixelsPerUnit=ppu,localScale=text.rectTransform.localScale,
+                    size=size,configuredSize=text.fontSize,generatorFontSizeUsed=text.cachedTextGenerator.fontSizeUsedForBestFit,
+                    box=box,ink=bounds,pixelsPerUnit=ppu,localScale=text.rectTransform.localScale,
                     preferredWidth=text.preferredWidth,preferredHeight=text.preferredHeight,
                     visibleCharacters=text.cachedTextGenerator.characterCountVisible,
                     expectedCharacters=plain.Length,glyphsPresent=present,
-                    inkOutside=ink&&(bounds.xMin<box.xMin-tolerance||bounds.xMax>box.xMax+tolerance||
-                        bounds.yMin<box.yMin-tolerance||bounds.yMax>box.yMax+tolerance)});
-                ((IDisposable)generator).Dispose();
+                    generatedQuadOutside=suspect,gpuVisiblePixels=visible,gpuOutsidePixels=outside,
+                    inkOutside=outside>6});
             }
             return result;
         }
@@ -122,7 +161,7 @@ namespace Eldoria.BreachWatch.Editor
             if(component.CandidateEnabled)throw new InvalidOperationException("A/B baseline is already opted in");
             var proof=new Proof {baselineFile=Path.GetFileName(baselineFile),
                 baselineSha256=Digest(File.ReadAllBytes(baselineFile)),width=width,height=height,
-                before=Measure(canvas)};
+                before=Measure(canvas,camera,target,width,height)};
             var image=new Texture2D(width,height,TextureFormat.RGB24,false);
             var oldActive=RenderTexture.active;
             string output=Path.Combine(Path.GetDirectoryName(baselineFile),"typography-ab");
@@ -131,7 +170,7 @@ namespace Eldoria.BreachWatch.Editor
             {
                 if(!component.SetCandidate(true))throw new InvalidOperationException("Required imported font absent");
                 Canvas.ForceUpdateCanvases();camera.Render();Canvas.ForceUpdateCanvases();camera.Render();
-                proof.after=Measure(canvas);
+                proof.after=Measure(canvas,camera,target,width,height);
                 RenderTexture.active=target;image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();
                 proof.candidateFile=Path.GetFileNameWithoutExtension(baselineFile)+"-source-sans3.png";
                 byte[] bytes=image.EncodeToPNG();File.WriteAllBytes(Path.Combine(output,proof.candidateFile),bytes);

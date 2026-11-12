@@ -21,6 +21,8 @@ namespace Eldoria.BreachWatch
             public TextAnchor Alignment;
             public Vector3 Scale;
             public float LineSpacing;
+            public bool OwnRoom;
+            public Vector2 OriginalRoom,AppliedRoom;
         }
         readonly Dictionary<Text, Original> originals = new Dictionary<Text, Original>();
         readonly List<Text> stale = new List<Text>();
@@ -64,7 +66,7 @@ namespace Eldoria.BreachWatch
             // still a title. Do not turn every descendant of it into data.
             if(name=="player name"||name=="real building name"||
                name=="actual chapter"||name=="actual objective"||
-               name=="compact engraved cost heading")return Role.Inscription;
+               name=="compact engraved cost heading"||name=="reserved talent availability")return Role.Inscription;
             for(Transform p=text.transform;p!=null;p=p.parent)
             {
                 if(p.GetComponent<Selectable>())return Role.Instrument;
@@ -73,6 +75,7 @@ namespace Eldoria.BreachWatch
             if(name.Contains("quantity")||name.Contains("amount")||name.Contains("cost")||
                name.Contains("metric")||name.Contains("pending troops")||name.Contains("event date")||
                name.Contains("historical composition")||name=="recursos actuales"||name=="página"||
+               name=="vida"||name=="ataque"||name=="defensa"||name=="poder"||
                name.Contains("progress")||name.Contains("power")||name.Contains("timer")||
                name.Contains("stat")||name.Contains("level")||name.Contains("count")||
                name.Contains("value")||name.Contains("capacity")||name.Contains("duration"))
@@ -118,6 +121,8 @@ namespace Eldoria.BreachWatch
                     if(text.fontStyle!=state.AppliedStyle)state.Style=text.fontStyle;
                 }
                 RememberLayout(text,state);
+                if(state.OwnRoom&&text.rectTransform.sizeDelta!=state.AppliedRoom)
+                    state.OwnRoom=false; // canonical reflow supplies the new baseline
                 bool heavy=state.Style==FontStyle.Bold||state.Style==FontStyle.BoldAndItalic||
                     (state.Font&&state.Font.name.IndexOf("bold",StringComparison.OrdinalIgnoreCase)>=0);
                 var role=ResolveRole(text);
@@ -127,6 +132,17 @@ namespace Eldoria.BreachWatch
                 bool italic=state.Style==FontStyle.Italic||state.Style==FontStyle.BoldAndItalic;
                 state.AppliedStyle=italic?FontStyle.Italic:FontStyle.Normal;
                 text.font=state.AppliedFont;text.fontStyle=state.AppliedStyle;
+                if(text.name=="Actual objective")
+                {
+                    var rect=text.rectTransform;
+                    float needed=text.preferredHeight+2f;
+                    if(needed>rect.rect.height)
+                    {
+                        if(!state.OwnRoom)state.OriginalRoom=rect.sizeDelta;
+                        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,needed);
+                        state.AppliedRoom=rect.sizeDelta;state.OwnRoom=true;
+                    }
+                }
             }
         }
 
@@ -135,6 +151,8 @@ namespace Eldoria.BreachWatch
             // Do not overwrite a canonical owner's subsequent restoration.
             if(text.font==state.AppliedFont)text.font=state.Font;
             if(text.fontStyle==state.AppliedStyle)text.fontStyle=state.Style;
+            if(state.OwnRoom&&text.rectTransform.sizeDelta==state.AppliedRoom)
+                text.rectTransform.sizeDelta=state.OriginalRoom;
             // Size, best-fit, alignment, spacing and scale were never mutated.
         }
         public void Restore()
