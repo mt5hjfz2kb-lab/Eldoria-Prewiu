@@ -602,10 +602,22 @@ jobs:
           persist-credentials: false
       - name: Compile read-only native evidence verifier
         run: python3 -m py_compile tools/daily-treasures/copy_native_review.py
+      - name: Read immutable native review identity from the owned request
+        id: recorded
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,os
+          p=json.load(open('tools/daily-treasures/native-art-review-request.json'))
+          assert p['state']=='REVIEW_EXISTING_NATIVE_ARTIFACT'
+          assert isinstance(p['review_run_id'],int) and isinstance(p['review_artifact_id'],int)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('run='+str(p['review_run_id'])+'\nartifact='+str(p['review_artifact_id'])+'\n')
+          PY
       - uses: actions/download-artifact@v4
         with:
-          artifact-ids: 13910173251
-          run-id: 43142677773
+          artifact-ids: ${{ steps.recorded.outputs.artifact }}
+          run-id: ${{ steps.recorded.outputs.run }}
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           path: reviewed-native
