@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T09:53:59.485Z",
+  "updated_at": "2026-11-12T09:59:41.625Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 34,
+      "ownership_revision": 35,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "READABLE_RESOURCE20_NATIVE_PASS_VISUAL_REVIEW_PENDING",
+      "phase": "EXCLUSIVE_RESPONSIVE_BAG_AND_TRUTHFUL_MAIL_WITH_VERIFIED_UI36",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -52,7 +54,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Preserved concurrent e644 bag responsive macrogrid. Exact10928295 additionally classifies only entirelyempty optional combat shell as absent: actual reward mail mustnot invent enemy/0rounds/health; native checksARCHIVOREAL plus20/52 oldgates. SourceCI43194025897 SUCCESS. Nativepending after UI; pin only independently verified UI/source/importermetadata; no staleoverlay.",
+      "next": "Freeze exactnewrequest;20originalPNG52actualclicks, truearchive rewardmail no inventedcombat, responsive2x2/tablet composition, actualguide, read≠claim≠credit, JSONonce, exact245restore. PinUI36 native43195548484. Tvisiblecontrolsource2efCIpassedreadyafterthis turn.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -160,10 +162,10 @@
         "source_ci_run": 43187001609,
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
-      "runner_claimed_at": "2026-11-12T08:57:50.046Z",
+      "runner_claimed_at": "2026-11-12T09:59:41.625Z",
       "runner_released_at": "2026-11-12T09:19:28.883Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
-      "runner_claim_basis": "Fairturn afteractualstudiofailedcleanexit. R7150177sourceCI43173973003SUCCESS; UI92596b actualnative43172857546+genuineAB success48PNG,2realmailfirsthits,Hallemptygutter0. Need20PNG4integratedcity+16bag/mail52realclicksactualhandJSONreload.",
+      "runner_claim_basis": "UI exact36fb native+AB successful andclean; R109 mail+responsive source43194025897success;64 unchangedmetadatarepinned noassetdiff.",
       "runner_release_basis": "Native43189305862 success;20 PNG/52 real clicks;245 originals restored; zero native processes.",
       "last_native": {
         "run": 43189305862,
@@ -6838,13 +6840,11 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 110,
+      "ownership_revision": 111,
       "write_scope_released": false,
-      "phase": "EXCLUSIVE_PORTRAIT_FIRST_MARCH_HERO_NATIVE_PROOF",
+      "phase": "PORTRAIT_MARCH48_NATIVE_AB_PASS_OWNER_REVIEW_PENDING",
       "next": "Actual March390 original25e has undersized side-by-side hero/name inside tall command cards. Implemented b60c782 portrait-first stone hero choices + actual native regression; source43193329720 SUCCESS. Native48+A/B pending after T clean run; no mainart. Keep25e original48 baseline.",
       "art_approved": false,
       "physical_mobile_tested": false,
@@ -7145,7 +7145,7 @@
         "mail_empty_changed_pixels_900x1600": 82403,
         "mail_empty_changed_pixels_390x844": 16513
       },
-      "runner_release_basis": "Exactnative43172857546 on92596b PASS48currentPNGs,2realmailfirsthit controls, HallGPUgutter check, immutableinputs/save, genuinevisualABsuccess. Artifact13922469493SHA5059cc9bcf551a58938cc65144b241f1017bf92098077bcf4b694fe16298b301. Humanartreviewpending/no main.",
+      "runner_release_basis": "Exact36fb native43195548484 success48+independentAB success; actualMarch390 reviewed, improvedportrait/name hierarchy; native exit guard completed.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7172,7 +7172,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T08:57:50.046Z",
+      "runner_released_at": "2026-11-12T09:59:41.625Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7194,13 +7194,10 @@
         "claimed_at": "2026-11-12T08:42:23.684Z"
       },
       "last_native": {
-        "run": 43185167905,
-        "head": "25e893fb9f6245d813e8dceb03865a8b703b8bd2",
-        "result": "success",
+        "run": 43195548484,
+        "head": "36fb5775858f332d231a45b9cad5043bbb7aaf63",
+        "artifact": 13933311409,
         "png": 48,
-        "actual_mail_firsthits": 2,
-        "hall_intro_overlap_pixels": 0,
-        "independent_visual_ab": "success",
         "art_approved": false
       }
     },
@@ -18674,6 +18671,14 @@
       "to": "eldoria-forja-oscura-visual-proof-20261107",
       "native": 43192664265,
       "ui_source": "b60c7824c13908d6a3d94c68b3bc3b2efe972b5e"
+    },
+    {
+      "at": "2026-11-12T09:59:41.625Z",
+      "event": "central_UI48_improved_actual_portrait_to_R_truthful_mail_and_responsive_bag",
+      "from": "eldoria-forja-oscura-visual-proof-20261107",
+      "to": "eldoria-issue186-reward-attention-guidance-20261111",
+      "ui_run": 43195548484,
+      "r_source": "1dd9c54491188b18fe9ed8f4ef55340080338c8a"
     }
   ],
   "owner_specific_pauses": [
