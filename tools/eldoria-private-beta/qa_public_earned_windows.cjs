@@ -41,12 +41,14 @@ async function fileHash(file){const h=crypto.createHash('sha256');for await(cons
   await page.screenshot({path:path.join(out,'game.png'),timeout:15000});
   report.actualCanvasClicks=[];
   if(stateSeen&&!report.errors.length){
-    await page.mouse.click(153,815,{delay:150});
-    report.actualCanvasClicks.push({x:153,y:815,purpose:'Observed bottom World control',at:new Date().toISOString()});
+    {const hit=await page.evaluate(()=>{const e=document.elementFromPoint(153,790);return {tag:e?.tagName,id:e?.id};});(report.canvasHitChecks??=[]).push(hit);if(hit.tag!=='CANVAS')throw Error('World/city tap intercepted by HTML '+JSON.stringify(hit));}
+    await page.mouse.click(153,790,{delay:150});
+    report.actualCanvasClicks.push({x:153,y:790,purpose:'Observed World icon above diagnostic overlay',at:new Date().toISOString()});
     await page.waitForTimeout(45000);
     await page.screenshot({path:path.join(out,'after-world-control.png'),timeout:15000});
-    await page.mouse.click(153,815,{delay:150});
-    report.actualCanvasClicks.push({x:153,y:815,purpose:'Same alternating world/city control',at:new Date().toISOString()});
+    {const hit=await page.evaluate(()=>{const e=document.elementFromPoint(153,790);return {tag:e?.tagName,id:e?.id};});(report.canvasHitChecks??=[]).push(hit);if(hit.tag!=='CANVAS')throw Error('World/city tap intercepted by HTML '+JSON.stringify(hit));}
+    await page.mouse.click(153,790,{delay:150});
+    report.actualCanvasClicks.push({x:153,y:790,purpose:'Same alternating world/city control',at:new Date().toISOString()});
     await page.waitForTimeout(15000);
     await page.screenshot({path:path.join(out,'after-return-control.png'),timeout:15000});
     report.worldAndReturnImagesRequireVisualReview=true;
