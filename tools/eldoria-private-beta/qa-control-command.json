@@ -1,9 +1,8 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 45,
-  "action": "click_text",
-  "proof_sha256": "14cbcbda8ad733af9a1c79def46773435105661bad830c519252e866b764e638",
-  "label": "MEJORAR",
-  "reason": "Frame044 shows selected Granero and unique Mejorar with120wood78stone10seconds; execute the ordinary last infrastructure upgrade."
+  "sequence": 46,
+  "action": "finish",
+  "proof_sha256": "9f2bed718261bdab7f23749e11e357864721a0c089d11716b685f3fba0245c5f",
+  "reason": "Export this actually earned campaign before the bounded foreground session expires; Lyra assault and real infrastructure upgrades are preserved, not full I-V certification."
 }
