@@ -1,14 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 41,
-  "action": "click_point",
-  "proof_sha256": "a30fee6b215731e073b3bef9508d0aa1c1d333ba4114e92545b9ee3e93969329",
-  "x": 235,
-  "y": 797,
-  "guard_texts": [
-    "Valoria asegurada •",
-    "Recorrido completado"
-  ],
-  "reason": "Frame040 has no selected enemy sheet and the fixed envelope control in the bottom dock; open the actual mailbox to inspect the final battle report."
+  "sequence": 42,
+  "action": "click_text",
+  "proof_sha256": "2d41205e47eef244e6993e51add4fbd2b6e2e76aea64013d1f8b793eab60aa46",
+  "label": "DESACTIVAR ESTADÍSTICAS"
 }
