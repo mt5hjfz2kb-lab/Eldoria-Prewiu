@@ -348,18 +348,22 @@ function processes(){
             await page.mouse.click(211,69,{delay:150});
             report.nextObjectiveExploration.actions.push({control:'canonical objective arrow',x:211,y:69,coordinateEvidenceRun:43158802987});
             await observeEntry(3,'next-objective-focused');
-            const allowed=new Set(['RECOLECTAR','REUNIR','ENVIAR','ENVIAR MARCHA','MARCHAR','CONFIRMAR MARCHA']);
-            const clicked=new Set();
-            for(let step=0;step<4;step++){
+            // Actual original run43192581903 shows "Recoger madera"
+            // at194,747 after the real objective arrow, and its9-second
+            // roundtrip. Read every new visible state; no command injection.
+            const allowed=new Set(['RECOGER MADERA','RECOGER PIEDRA']);
+            for(let step=0;step<6;step++){
+              if(step>0){
+                await page.mouse.click(211,69,{delay:150});
+                await observeEntry(2,'gather-objective-focus-'+step);
+              }
               const phase='next-objective-'+step,rows=await readUi(phase);
               const matches=rows.filter(r=>r.confidence>=.5&&allowed.has(normalized(r.text)));
               if(matches.length!==1){report.nextObjectiveExploration.stopReason=matches.length?'ambiguous_visible_actions':'no_known_visible_action';break;}
-              const hit=matches[0],key=normalized(hit.text)+':'+Math.round(hit.x)+':'+Math.round(hit.y);
-              if(clicked.has(key)){report.nextObjectiveExploration.stopReason='same_control_remains_after_click';break;}
-              clicked.add(key);
+              const hit=matches[0];
               await page.mouse.click(hit.x,hit.y,{delay:150});
               report.nextObjectiveExploration.actions.push({text:hit.text,x:hit.x,y:hit.y,evidence:phase+'.png'});
-              write();await observeEntry(8,phase+'-after-action');
+              write();await observeEntry(12,phase+'-after-action');
             }
             await observeEntry(25,'next-objective-observation');
             await readUi('next-objective-final');write();
