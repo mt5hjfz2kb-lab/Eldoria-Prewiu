@@ -718,6 +718,10 @@ namespace Eldoria.BreachWatch.Editor
                 ui.Reflow(w,h);
                 ui.RenderNow();
                 Canvas.ForceUpdateCanvases();
+                // Direct camera captures must execute the same responsive
+                // treasury layout that its normal frame update applies.
+                var treasure=ui.GetComponentInChildren<Eldoria.DailyTreasures.DailyTreasurePanel>(true);
+                if(treasure)treasure.ProbeOrientationLayoutForNativeEvidence();
                 AuditExclusivePresentation();camera.Render();
                 Canvas.ForceUpdateCanvases();
                 AuditExclusivePresentation();camera.Render();

@@ -1765,6 +1765,9 @@ namespace Eldoria.DailyTreasures
                 0f,10f,68f,58f);
             Place(entryNotice.rectTransform,1f,1f,.5f,.5f,
                 -1f,-2f,24f,24f);
+            // The new landscape Canvas scales this medallion to 0.86x.
+            // Twelve source points became 10.32 pixels on an 844x390 view.
+            entryCaption.fontSize=onVigiliaCanvas?14:12;
             Place(entryCaption.rectTransform,.5f,0f,.5f,0f,
                 0f,3f,72f,18f);
             // The approved authored chest looked small inside a 740x370
