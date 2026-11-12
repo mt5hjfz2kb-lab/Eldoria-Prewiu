@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T05:53:52.678Z",
+  "updated_at": "2026-11-12T06:22:00.403Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6808,14 +6808,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 104,
+      "ownership_revision": 105,
       "write_scope_released": false,
-      "phase": "EXCLUSIVE_HALL_LIFECYCLE_AND_REAL_MAIL_NATIVE_FOLLOWUP",
-      "next": "Freezeexactrequestsource, get48actualPNG+zeroHallglyphoverlap+2realmailfirsthits+AB, thenreleaseR187 combined52realclicks/hand/newauthoredbag ifready.",
+      "phase": "OFF_PC_SOURCE_PASS_HALL_STALE_SUBTREE_ROOT_FIX_PENDING_FAIR_NATIVE",
+      "next": "After fair turn formally acquired, exact a2f3fc59 source must capture48real PNG 390x844/900x1600/844x390/1600x900, zero 14px Hall GPU glyph overlap, two genuine EventSystem mailbox first-hit clicks, unchanged save/inputs+Canvas off, and owner reference A/B. Current PR187 waiting corrected UI true-native; PR181 actualGPU diagnosis; PR179 native successful, no prepared competing lot. No main, global art activation, publish or device-pass before owner A/B.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T05:53:52.678Z",
@@ -6988,6 +6986,13 @@
           "to_revision": 99,
           "transferred_at": "2026-11-12T00:27:41.748Z",
           "reason": "UI43125809314 exacte2fe75b1 completedSUCCESS including actual new original-reference Lyra guards and full native/A-B batch. Release only Windows173→179, preserve source writers; beta recovery fixture58checks alreadyCIpassed, actual Windows material rollback/Unity stillmustverify. No art/main/phone approval."
+        },
+        {
+          "owner": "chatgpt-central-art-execution-20261111",
+          "from_revision": 104,
+          "to_revision": 105,
+          "transferred_at": "2026-11-12T06:22:00.403Z",
+          "reason": "Windows-only formal release after bounded UI native43164446160 failed real Hall collision, Unity exited and 87 inputs preserved. Writer/scope stay on PR173; next fair Windows request requires CAS, while new active-subtree source a2f3fc has only source CI pass."
         }
       ],
       "runner_priority_handoff": {
@@ -7108,7 +7113,7 @@
         "mail_empty_changed_pixels_900x1600": 82403,
         "mail_empty_changed_pixels_390x844": 16513
       },
-      "runner_release_basis": "Native43161203990 exited failure on actual1600x900Hall glyph overlap2219pixels. Original87trackedinputs reallypreservedandnormalcheckout. First8HUD capturesPASS; destinationsstoppedbeforemail, so mailfix not yetverified. Nativeartifact13917529325SHA5cce... exactfailedHallPNG now0bcb8236 docs reviewed: secondintroline behindtabs.",
+      "runner_release_basis": "Exclusive native43164446160 exact37db157d2a3bad4d994425c980885fc5bd488d72 failed at actual1600x900 Hall intro 2219 GPU glyph pixels inside 14px tabs gutter; 8 authentic HUD shots PASS, destination aborted before 2 real mailbox clicks, not a full Unity PASS. 87 tracked inputs preserved refs/eldoria-native-preserved/43164446160-1 via Git, editor clean exit and artifact13919456713 retained. Two failed native images proved unchanged visible Hall; root cause old inactive canonical subtree targeted due deferred Destroy. New source a2f3fc59f1d6516efd925dd788bf7056e7be8603 fixes active-subtree selection and band orientation; source CI43167261876 SUCCESS, Unity NOT yet verified. Release only Windows after one bounded failed native; no automatic relaunch, no art/main/phone approval.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7135,7 +7140,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T05:40:02.286Z",
+      "runner_released_at": "2026-11-12T06:22:00.403Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7149,12 +7154,15 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_after_native_failure_source_fix_pending_native",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 104,
-        "ready_source": "6ccd287ec45f9035253b81a19bf2d0aaf733a786",
-        "source_ci_run": 43163056324,
-        "claimed_at": "2026-11-12T05:53:52.678Z"
+        "ownership_revision": 105,
+        "source": "a2f3fc59f1d6516efd925dd788bf7056e7be8603",
+        "source_ci_run": 43167261876,
+        "last_native_run": 43164446160,
+        "last_native_artifact": 13919456713,
+        "released_at": "2026-11-12T06:22:00.403Z",
+        "next_fair": "PR187 when ready, otherwise prepared next following existing fair rotation; PR173 needs new formal CAS claim"
       }
     },
     {
