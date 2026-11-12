@@ -67,6 +67,18 @@ namespace Eldoria.DailyTreasures
         {Width=width;Height=height;}
     }
 
+    public readonly struct DailyTreasureFrustumPoint
+    {
+        public readonly float X,Y,Z;
+        public DailyTreasureFrustumPoint(float x,float y,float z){X=x;Y=y;Z=z;}
+    }
+    public readonly struct DailyTreasureBastionView
+    {
+        public readonly float Distance,RightOffset,UpOffset;
+        public DailyTreasureBastionView(float distance,float right,float up)
+        {Distance=distance;RightOffset=right;UpOffset=up;}
+    }
+
     public readonly struct DailyTreasureNarrativeFrame
     {
         public readonly float Width,Height;
@@ -200,6 +212,40 @@ namespace Eldoria.DailyTreasures
             return (float)Math.Sin(seconds*(vertical?.38f:.53f)+phase)*
                 availableUv*.13f;
         }
+
+        // Standard perspective camera, one continuous scene. Place the REAL
+        // bounds inside the reserved story-free area BEFORE rendering; never
+        // paste a smaller picture over a second view of the same building.
+        public static DailyTreasureBastionView FitBuiltBastion(
+            DailyTreasureStageLayout stage,float photoWidth,float photoHeight,
+            float tanX,float tanY,DailyTreasureFrustumPoint[] corners)
+        {
+            if(stage.Kind!=DailyTreasureStageKind.Bastion || corners==null ||
+               corners.Length!=8 || !FiniteFrustum(photoWidth) || !FiniteFrustum(photoHeight) ||
+               !FiniteFrustum(tanX) || !FiniteFrustum(tanY) ||
+               photoWidth<=0f || photoHeight<=0f || tanX<=0f || tanY<=0f)
+                throw new ArgumentOutOfRangeException(nameof(corners));
+            float cx=2f*stage.SceneX/photoWidth,cy=2f*stage.SceneY/photoHeight;
+            float hx=.88f*stage.SceneW/photoWidth,hy=.88f*stage.SceneH/photoHeight;
+            float left=cx-hx,right=cx+hx,bottom=cy-hy,top=cy+hy;
+            if(hx<=0f || hy<=0f || left< -1f || right>1f || bottom< -1f || top>1f)
+                throw new ArgumentOutOfRangeException(nameof(stage));
+            float distance=.5f;
+            foreach(var p in corners)
+            {
+                if(!FiniteFrustum(p.X)||!FiniteFrustum(p.Y)||!FiniteFrustum(p.Z))
+                    throw new ArgumentOutOfRangeException(nameof(corners));
+                distance=Math.Max(distance,(left*p.Z-p.X/tanX)/(cx-left));
+                distance=Math.Max(distance,(p.X/tanX-right*p.Z)/(right-cx));
+                distance=Math.Max(distance,(bottom*p.Z-p.Y/tanY)/(cy-bottom));
+                distance=Math.Max(distance,(p.Y/tanY-top*p.Z)/(top-cy));
+                distance=Math.Max(distance,.5f-p.Z);
+            }
+            return new DailyTreasureBastionView(distance,
+                -cx*distance*tanX,-cy*distance*tanY);
+        }
+        static bool FiniteFrustum(float value)=>
+            !float.IsNaN(value)&&!float.IsInfinity(value);
 
         public static DailyTreasureStageLayout Compose(string eventId,
             float width,float height)

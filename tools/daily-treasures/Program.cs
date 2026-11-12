@@ -402,7 +402,36 @@ internal static class Program
                     else
                         True(stage.SceneY-stage.SceneH/2>=
                              stage.ReceiptY+stage.ReceiptH/2+8f,
-                             "portrait Bastion photo stays above factual receipt");
+                             "portrait real Bastion stays above factual receipt");
+                    foreach(var size in new[]{(4f,3f,5f),(12f,16f,8f)})
+                    {
+                        var corners=new DailyTreasureFrustumPoint[8];int ci=0;
+                        for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)for(int z=-1;z<=1;z+=2)
+                            corners[ci++]=new DailyTreasureFrustumPoint(size.Item1*x,size.Item2*y,size.Item3*z);
+                        float photoW=width-25f,photoH=height-28f;
+                        float ty=(float)Math.Tan(38f*Math.PI/360f),tx=ty*photoW/photoH;
+                        var placement=DailyTreasureStageDirection.FitBuiltBastion(
+                            stage,photoW,photoH,tx,ty,corners);
+                        float left=2f*(stage.SceneX-stage.SceneW*.5f)/photoW;
+                        float right=2f*(stage.SceneX+stage.SceneW*.5f)/photoW;
+                        float bottom=2f*(stage.SceneY-stage.SceneH*.5f)/photoH;
+                        float top=2f*(stage.SceneY+stage.SceneH*.5f)/photoH;
+                        foreach(var corner in corners)
+                        {
+                            float depth=placement.Distance+corner.Z;
+                            float px=(corner.X-placement.RightOffset)/(depth*tx);
+                            float py=(corner.Y-placement.UpOffset)/(depth*ty);
+                            True(depth>=.499f && px>=left-.0001f && px<=right+.0001f &&
+                                 py>=bottom-.0001f && py<=top+.0001f,
+                                 "actual shared perspective solution keeps every real bounds corner outside story ink");
+                        }
+                        float centerX=-placement.RightOffset/(placement.Distance*tx);
+                        float centerY=-placement.UpOffset/(placement.Distance*ty);
+                        True(Math.Abs(centerX-2f*stage.SceneX/photoW)<.0001f &&
+                             Math.Abs(centerY-2f*stage.SceneY/photoH)<.0001f,
+                             "continuous camera actually places built subject in protected composition");
+                    }
+
                 }
                 else
                 {

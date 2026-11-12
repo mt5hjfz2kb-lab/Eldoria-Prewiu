@@ -1,0 +1,11 @@
+# Reject the inset photograph: one continuous actual 3D theatre
+
+Actual7174964d/native43132255546 produced72component+20cityPNG and passed aligned pixel tests. Four original PNGs were independently validated and copied byte-identically to docs/daily-treasures/remote-native-review/43132255546 by Ubuntu-only review43133972325. On seeing them I REJECTED the art: a rectangular photograph was pasted over a second view of the same castle. Technical correlation was not aesthetic quality.
+
+The new method renders ONE opaque continuous actual 3D city image across the whole framed theatre. The real built-tier subject is composed into a reserved text-free region BEFORE capture using a normal perspective camera translated horizontally/vertically. Eight real bounds corners constrain distance and offset in the exact same pure helper used by the camera and compiled domain tests. No image resize/warping, new building, changed mesh/material/reward, player-camera mutation or invented backdrop.
+
+Disable the second cinematic backdrop for Bastion and retain alpha1 even during light variation. The original completed facade remains the sole subject. Actual Unity WorldToViewportPoint must place every corner within the protected story-free area; otherwise capture refuses. Record the actual projected masonry rectangle, mapped through the real RawImage UV/transform into screenshot pixels, for the unchanged0.68aligned A/B gate. Native must observe exactlyONEactiveRawImage referencing the actual GPU snapshot and alpha>=0.999; an inset, ghost or second copy is rejected.
+
+Existing portrait-above/landscape-beside receipt reservations remain, but now describe the subject region inside a continuous view. Other approved original Lyra/Scouts/Vigilants art is unchanged. The authentic baseline hides foreground graphics only, preserving the same texture/UV/tint/camera; no generated control pixels.
+
+Prepared through connected GitHub after local execution disconnected. Additional pure perspective cases exercise the SAME production fitting helper over eight device sizes and two bounds shapes, independently projecting every corner and center. Syntax/domain/source CI and new actual Unity visual proof remain REQUIRED; no result is invented for this new revision. Beta46 owns the PC while this source work proceeds. Owner review before any art to main.

@@ -103,6 +103,7 @@ namespace Eldoria.DailyTreasures
         Material ownedCinematicBackdropMaterial;
         Material ownedVigilantsReliefMaterial;
         RenderTexture capturedBastionScene;
+        Rect capturedBastionSubjectViewport;
         bool bastionCameraPending;
         int bastionCameraRetries;
         float nextBastionCameraTry;
@@ -1402,13 +1403,12 @@ namespace Eldoria.DailyTreasures
             if(currentStage!=DailyTreasureStageKind.Bastion ||
                !ceremony || !ceremony.gameObject.activeSelf ||
                !capturedBastionScene)return;
-            var layout=DailyTreasureStageDirection.Compose(
-                activeMilestoneId,width,height);
-            float requiredAspect=layout.SceneW/Mathf.Max(1f,layout.SceneH);
+            var layout=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
+            float requiredAspect=(layout.Width-25f)/Mathf.Max(1f,layout.Height-28f);
             float renderedAspect=(float)capturedBastionScene.width/
                 Mathf.Max(1,capturedBastionScene.height);
             if(Mathf.Abs(requiredAspect-renderedAspect)<.01f)return;
-            var replacement=DailyTreasureBastionCamera.Capture(width,height);
+            var replacement=DailyTreasureBastionCamera.Capture(width,height,out capturedBastionSubjectViewport);
             if(!replacement)
             {
                 // Retain the actual previous image rather than inventing a
@@ -1440,7 +1440,7 @@ namespace Eldoria.DailyTreasures
                eventId.StartsWith("milestone:bastion:",StringComparison.Ordinal))
             {
                 capturedBastionScene=DailyTreasureBastionCamera.Capture(
-                    root.rect.width,root.rect.height);
+                    root.rect.width,root.rect.height,out capturedBastionSubjectViewport);
                 // The gameplay owner may apply a newly built Bastion tier
                 // one frame AFTER the milestone arrives. Do not show a fake
                 // painting or abandon the actual 3D hero for a black box.
@@ -1462,7 +1462,8 @@ namespace Eldoria.DailyTreasures
             {
                 milestoneCinematicBackdrop.texture=milestoneScenery.texture;
                 milestoneCinematicBackdrop.gameObject.SetActive(
-                    hasImage && ownedCinematicBackdropMaterial);
+                    hasImage && ownedCinematicBackdropMaterial &&
+                    currentStage!=DailyTreasureStageKind.Bastion);
                 // Final cover UV is set by UpdateSceneryCrop/ Layout().
             }
             milestoneScenery.gameObject.SetActive(hasImage);
@@ -1586,7 +1587,7 @@ namespace Eldoria.DailyTreasures
             // The genuine close-up already carries PBR/real city lighting.
             // Do not crush the masonry and amber relief a second time.
             if(stage.Kind==DailyTreasureStageKind.Bastion)
-                return new Color(.98f,.95f,.89f,.95f*intensity);
+                return new Color(.98f*intensity,.95f*intensity,.89f*intensity,1f);
             return new Color(hallPortrait?.82f:.70f,
                 hallPortrait?.79f:.68f,hallPortrait?.74f:.65f,
                 stage.SceneryOpacity*intensity);
@@ -1852,10 +1853,23 @@ namespace Eldoria.DailyTreasures
             }
             if(eventStage)
             {
-                Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
-                    stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
-                Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
-                    stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                if(currentStage==DailyTreasureStageKind.Bastion)
+                {
+                    // A SINGLE authentic 3D take fills the theatre. The lens
+                    // already placed its original building inside stage.Scene;
+                    // no inset picture or duplicate city behind its caption.
+                    Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
+                        0f,0f,panelW-25f,panelH-28f);
+                    Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
+                        0f,0f,panelW-25f,panelH-28f);
+                }
+                else
+                {
+                    Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
+                        stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                    Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
+                        stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                }
                 milestoneScenery.color=MilestonePaintTint(stage);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
@@ -2544,7 +2558,7 @@ namespace Eldoria.DailyTreasures
             nextBastionCameraTry=Time.unscaledTime+.35f;
             bastionCameraRetries++;
             var original=DailyTreasureBastionCamera.Capture(
-                root.rect.width,root.rect.height);
+                    root.rect.width,root.rect.height,out capturedBastionSubjectViewport);
             if(original)
             {
                 capturedBastionScene=original;
@@ -2557,7 +2571,7 @@ namespace Eldoria.DailyTreasures
                 {
                     milestoneCinematicBackdrop.texture=original;
                     milestoneCinematicBackdrop.gameObject.SetActive(
-                        ownedCinematicBackdropMaterial!=null);
+                        false); // One continuous Bastion scene, never a second city copy.
                 }
                 // The previous unloaded-city fallback was transparent.
                 // Once original camera pixels arrive, restore the actual

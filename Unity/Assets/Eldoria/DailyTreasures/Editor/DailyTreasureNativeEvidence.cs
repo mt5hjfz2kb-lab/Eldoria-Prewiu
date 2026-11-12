@@ -614,12 +614,20 @@ namespace Eldoria.DailyTreasures.Editor
                 (titleBounds.size.y+skipBounds.size.y)*.5f;
             Need(!(xOverlap&&yOverlap),
                 "Original milestone text overlaps the real Skip finger target");
-            Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
-                 Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
-                 Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
-                 Mathf.Abs(painted.rect.height-expected.SceneH)<1.1f,
-                 "Wrong native painterly scene size/position for "+
-                 expected.Kind);
+            if(expected.Kind==DailyTreasureStageKind.Bastion)
+            {
+                var theatre=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
+                Need(painted.anchoredPosition.sqrMagnitude<1.21f &&
+                     Mathf.Abs(painted.rect.width-(theatre.Width-25f))<1.1f &&
+                     Mathf.Abs(painted.rect.height-(theatre.Height-28f))<1.1f,
+                     "Real Bastion must fill one continuous theatre, never an inset photo");
+            }
+            else
+                Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
+                     Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
+                     Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
+                     Mathf.Abs(painted.rect.height-expected.SceneH)<1.1f,
+                     "Wrong native painterly scene size/position for "+expected.Kind);
             Need(Mathf.Abs(receipt.anchoredPosition.x-expected.ReceiptX)<1.1f &&
                  Mathf.Abs(receipt.anchoredPosition.y-expected.ReceiptY)<1.1f &&
                  Mathf.Abs(receipt.rect.width-expected.ReceiptW)<1.1f &&

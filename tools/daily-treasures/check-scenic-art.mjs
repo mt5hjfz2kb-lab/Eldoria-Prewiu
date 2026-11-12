@@ -397,8 +397,9 @@ console.log('PASS narrative typography and original heraldic art scale with sour
 const realCamera=fs.readFileSync(
  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
 assert.match(realCamera,/DailyTreasureStageDirection.Compose\(/);
-assert.match(realCamera,/stage.SceneW\/Mathf.Max\(1f,stage.SceneH\)/);
-assert.match(realCamera,/float screenAspect=Mathf.Max\(/);
+assert.match(realCamera,/DailyTreasureStageDirection.FitBuiltBastion\(/);
+assert.match(realCamera,/camera.WorldToViewportPoint\(point\)/);
+assert.match(realCamera,/REAL_BASTION_CROSSES_COMMITTED_STORY_AREA/);
 assert.match(realCamera,/height\*screenAspect/);
 assert.match(realCamera,/Mathf.Clamp\(Mathf.RoundToInt/);
 for(const [w,h,fw,fh] of [[390,844,366,700],[844,390,740,370],

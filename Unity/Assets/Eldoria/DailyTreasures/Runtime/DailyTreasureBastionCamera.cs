@@ -177,50 +177,59 @@ namespace Eldoria.DailyTreasures
         // should reveal the already-constructed facade and depth: a 38-degree
         // perspective 3/4 portrait lit by actual scene geometry. No invented
         // mesh, replacement asset, panorama or altered player camera.
-        static void Frame(Camera camera,Bounds b)
+        static void Frame(Camera camera,Bounds b,DailyTreasureStageLayout stage,
+            float photoWidth,float photoHeight,out Rect subjectViewport)
         {
-            var originalHeading=Vector3.ProjectOnPlane(
-                -camera.transform.forward,Vector3.up);
-            // A straight top-down gameplay camera has no reliable azimuth.
-            // Preserve the same player-facing quadrant when possible,
-            // otherwise use one deterministic forward direction.
-            if(originalHeading.sqrMagnitude<.0001f)
-                originalHeading=Vector3.forward;
-            originalHeading.Normalize();
-            var stageHeading=Quaternion.AngleAxis(18f,Vector3.up)*
-                originalHeading;
+            var heading=Vector3.ProjectOnPlane(-camera.transform.forward,Vector3.up);
+            if(heading.sqrMagnitude<.0001f)heading=Vector3.forward;
+            heading.Normalize();
+            heading=Quaternion.AngleAxis(18f,Vector3.up)*heading;
             const float elevationDegrees=36f;
             float elevation=elevationDegrees*Mathf.Deg2Rad;
-            var away=stageHeading*Mathf.Cos(elevation)+
-                Vector3.up*Mathf.Sin(elevation);
-            camera.orthographic=false;
-            camera.usePhysicalProperties=false;
+            var away=heading*Mathf.Cos(elevation)+Vector3.up*Mathf.Sin(elevation);
+            camera.orthographic=false;camera.usePhysicalProperties=false;
             camera.fieldOfView=38f;
-            camera.transform.rotation=Quaternion.LookRotation(
-                -away,Vector3.up);
+            camera.ResetProjectionMatrix();camera.ResetWorldToCameraMatrix();
+            camera.transform.rotation=Quaternion.LookRotation(-away,Vector3.up);
             float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
-            float tanX=tanY*Mathf.Max(.3f,camera.aspect);
-            var ext=b.extents;
-            // Fit all eight real bounds corners to the actual photo window.
-            // The previous separate maxima plus1.5depth overestimated distance,
-            // wasting most of the ceremony on grass. This exact frustum fit
-            // retains the WHOLE built model with a fixed12% safety margin.
-            float distance=.5f;
-            for(int ix=-1;ix<=1;ix+=2)
-             for(int iy=-1;iy<=1;iy+=2)
-              for(int iz=-1;iz<=1;iz+=2)
-              {
-               var offset=new Vector3(ext.x*ix,ext.y*iy,ext.z*iz);
-               float x=Vector3.Dot(camera.transform.right,offset);
-               float y=Vector3.Dot(camera.transform.up,offset);
-               float z=Vector3.Dot(camera.transform.forward,offset);
-               distance=Mathf.Max(distance,Mathf.Abs(x)/(tanX*.88f)-z,
-                   Mathf.Abs(y)/(tanY*.88f)-z,.5f-z);
-              }
-            camera.transform.position=b.center+away*distance;
+            float tanX=tanY*camera.aspect;
+            var right=camera.transform.right;var up=camera.transform.up;
+            var forward=camera.transform.forward;
+            var points=new Vector3[8];var corners=new DailyTreasureFrustumPoint[8];
+            int index=0;
+            for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)for(int z=-1;z<=1;z+=2)
+            {
+                var p=new Vector3(b.extents.x*x,b.extents.y*y,b.extents.z*z);
+                points[index]=b.center+p;
+                corners[index++]=new DailyTreasureFrustumPoint(
+                    Vector3.Dot(right,p),Vector3.Dot(up,p),Vector3.Dot(forward,p));
+            }
+            var placement=DailyTreasureStageDirection.FitBuiltBastion(
+                stage,photoWidth,photoHeight,tanX,tanY,corners);
+            float distance=placement.Distance;
+            camera.transform.position=b.center+away*distance+
+                right*placement.RightOffset+up*placement.UpOffset;
             camera.nearClipPlane=.12f;
-            camera.farClipPlane=Mathf.Max(
-                camera.farClipPlane,distance+ext.magnitude*7f);
+            camera.farClipPlane=Mathf.Max(camera.farClipPlane,
+                distance+b.extents.magnitude*7f);
+            float minX=1f,minY=1f,maxX=0f,maxY=0f;
+            foreach(var point in points)
+            {
+                var v=camera.WorldToViewportPoint(point);
+                if(v.z<=camera.nearClipPlane || v.x<0f || v.x>1f || v.y<0f || v.y>1f)
+                    throw new InvalidOperationException("REAL_BASTION_OUTSIDE_CONTINUOUS_LENS");
+                minX=Mathf.Min(minX,v.x);minY=Mathf.Min(minY,v.y);
+                maxX=Mathf.Max(maxX,v.x);maxY=Mathf.Max(maxY,v.y);
+            }
+            subjectViewport=Rect.MinMaxRect(minX,minY,maxX,maxY);
+            var reserved=new Rect(.5f+(stage.SceneX-stage.SceneW*.5f)/photoWidth,
+                .5f+(stage.SceneY-stage.SceneH*.5f)/photoHeight,
+                stage.SceneW/photoWidth,stage.SceneH/photoHeight);
+            if(subjectViewport.xMin<reserved.xMin-.002f ||
+               subjectViewport.xMax>reserved.xMax+.002f ||
+               subjectViewport.yMin<reserved.yMin-.002f ||
+               subjectViewport.yMax>reserved.yMax+.002f)
+                throw new InvalidOperationException("REAL_BASTION_CROSSES_COMMITTED_STORY_AREA");
         }
 
         static void DestroyTemporary(UnityEngine.Object obj)
@@ -237,18 +246,24 @@ namespace Eldoria.DailyTreasures
         }
 
         public static RenderTexture Capture(float panelWidth,float panelHeight)
+        {return Capture(panelWidth,panelHeight,out _);}
+
+        public static RenderTexture Capture(float panelWidth,float panelHeight,out Rect subjectViewport)
         {
+            subjectViewport=default;
             if(!Resolve(out var source,out var bounds))return null;
             bool portrait=panelHeight>panelWidth;
             // Render the ACTUAL city at the same shape as the visible
             // cathedral-sized ceremony, not a 3:2 fixed photo cropped again
             // inside a 1:2 portrait. This also prevents GPU upscale blur
             // after expanding the genuine full-world modal on desktop.
-            // Match the reserved image aperture, not the entire caption/frame.
-            // No subsequent cover-crop may hide the real built-tier silhouette.
+            // One continuous theatre uses a genuine full-frame lens. The actual
+            // built subject is placed inside the protected caption-free area.
             var stage=DailyTreasureStageDirection.Compose(
                 "milestone:bastion:camera",panelWidth,panelHeight);
-            float screenAspect=stage.SceneW/Mathf.Max(1f,stage.SceneH);
+            var frame=DailyTreasureStageDirection.NarrativeTheatreFrame(panelWidth,panelHeight);
+            float photoWidth=frame.Width-25f,photoHeight=frame.Height-28f;
+            float screenAspect=photoWidth/Mathf.Max(1f,photoHeight);
             int height=portrait?(panelWidth>=650f?1152:1024):
                 (panelWidth>=950f?720:540);
             int width=Mathf.Clamp(Mathf.RoundToInt(
@@ -273,7 +288,7 @@ namespace Eldoria.DailyTreasures
                 camera.cullingMask=source.cullingMask & ~(1<<5);
                 camera.allowHDR=true;
                 camera.allowMSAA=false;
-                Frame(camera,bounds);
+                Frame(camera,bounds,stage,photoWidth,photoHeight,out subjectViewport);
                 // The entire Eldoria project runs URP 17.3.0. Unity's
                 // Camera.Render() is NOT the supported out-of-loop route in
                 // the Scriptable Render Pipeline. Use the official Unity 6
@@ -351,6 +366,7 @@ namespace Eldoria.DailyTreasures
             }
             catch(Exception error)
             {
+                subjectViewport=default;
                 Debug.LogWarning("REAL_BASTION_CAMERA_UNAVAILABLE "+error.Message);
                 if(result){result.Release();DestroyTemporary(result);}
                 return null;

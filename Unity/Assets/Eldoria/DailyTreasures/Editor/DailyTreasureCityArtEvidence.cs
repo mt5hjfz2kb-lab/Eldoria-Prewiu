@@ -194,6 +194,11 @@ namespace Eldoria.DailyTreasures.Editor
                 "; texture="+(captured!=null)+
                 "; created="+(captured && captured.IsCreated())+
                 "; actual="+(captured?captured.width+"x"+captured.height:"none"));
+            var actualPictures=panel.GetComponentsInChildren<RawImage>(true)
+                .Where(image=>image && image.gameObject.activeInHierarchy &&
+                    image.enabled && image.texture==captured).ToArray();
+            Require(actualPictures.Length==1 && actualPictures[0].color.a>=.999f,
+                "Bastion camera is duplicated or transparent over a second city");
             // Resolve MSAA before reading; never attempt ReadPixels from a
             // multisampled source and never assume the texture was painted.
             const int samples=192;
@@ -279,9 +284,8 @@ namespace Eldoria.DailyTreasures.Editor
         static void RequireBastionApertureAspect(Texture texture,
             int width,int height,string phase)
         {
-            var stage=DailyTreasureStageDirection.Compose(
-                "milestone:bastion:visual-only",width,height);
-            float expected=stage.SceneW/stage.SceneH;
+            var frame=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
+            float expected=(frame.Width-25f)/(frame.Height-28f);
             Require(texture && Mathf.Abs((float)texture.width/texture.height-expected)<.01f,
                 "Bastion GPU lens mismatches actual reserved picture aperture: "+phase);
         }
@@ -291,13 +295,25 @@ namespace Eldoria.DailyTreasures.Editor
                 image=>image && image.gameObject.name==
                     "Genuine Eldoria milestone scenery / visual only");
         }
-        static void RecordPictureAperture(Shot shot,RawImage picture,Camera camera)
+        static void RecordPictureAperture(Shot shot,RawImage picture,Camera camera,DailyTreasurePanel panel)
         {
             var corners=new Vector3[4];picture.rectTransform.GetWorldCorners(corners);
             var a=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
             var b=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
-            shot.subjectX=Mathf.Min(a.x,b.x);shot.subjectY=shot.height-Mathf.Max(a.y,b.y);
-            shot.subjectW=Mathf.Abs(b.x-a.x);shot.subjectH=Mathf.Abs(b.y-a.y);
+            var field=typeof(DailyTreasurePanel).GetField(
+                "capturedBastionSubjectViewport",
+                System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+            Require(field!=null,"True camera projected masonry bounds are missing");
+            var projected=(Rect)field.GetValue(panel);
+            Require(projected.width>0f&&projected.height>0f,
+                "No actual projected built-tier masonry");
+            var uv=picture.uvRect;
+            float imageX=Mathf.Min(a.x,b.x),imageY=shot.height-Mathf.Max(a.y,b.y);
+            float imageW=Mathf.Abs(b.x-a.x),imageH=Mathf.Abs(b.y-a.y);
+            shot.subjectX=imageX+(projected.xMin-uv.x)/uv.width*imageW;
+            shot.subjectY=imageY+(1f-(projected.yMax-uv.y)/uv.height)*imageH;
+            shot.subjectW=projected.width/uv.width*imageW;
+            shot.subjectH=projected.height/uv.height*imageH;
             Require(shot.subjectW>100f && shot.subjectH>100f,
                 "Actual Bastion aperture has no measurable pixel area");
         }
@@ -318,7 +334,7 @@ namespace Eldoria.DailyTreasures.Editor
                 foreach(var graphic in enabled)graphic.enabled=false;
                 var shot=Photograph(camera,target,folder,width,height,
                     "real-bastion-camera-baseline",true);
-                RecordPictureAperture(shot,picture,camera);
+                RecordPictureAperture(shot,picture,camera,panel);
                 return shot;
             }
             finally {foreach(var graphic in enabled)if(graphic)graphic.enabled=true;}
@@ -574,7 +590,7 @@ namespace Eldoria.DailyTreasures.Editor
                         pictures.Add(heroBaseline);
                         var heroStage=Photograph(camera,target,folder,
                             width,height,"real-bastion-camera-ceremony",false);
-                        RecordPictureAperture(heroStage,BastionPicture(panel),camera);
+                        RecordPictureAperture(heroStage,BastionPicture(panel),camera,panel);
                         pictures.Add(heroStage);
                         Require(heroBaseline.sha256!=heroStage.sha256,
                             "Actual-camera Bastion ceremony was never drawn");
