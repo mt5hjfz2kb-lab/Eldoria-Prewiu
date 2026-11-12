@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 27,
+  "sequence": 28,
   "action": "click_point",
-  "proof_sha256": "f7a24ca4050d93b42273250a5b176c471ba8081558d2ae4797f22715cc73d49b",
-  "x": 210,
-  "y": 70,
+  "proof_sha256": "035151edbb7c6c8ae8e6888e69720bd79f0076a63fbe113890a111649e245c0f",
+  "x": 103,
+  "y": 746,
   "guard_texts": [
-    "Diagnóstico local",
-    "Misiones"
+    "Cuartel",
+    "Mejorar"
   ],
-  "reason": "Frame026 shows1198stone and passive quarry production; follow current actual objective using the visible quest arrow."
+  "reason": "Frame027 contains the left barracks action button opposite Mejorar; the blank-caption defect is already recorded for engine17."
 }
