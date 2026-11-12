@@ -1,0 +1,7 @@
+Actual public-owner telemetry journey request, 2026-11-12
+
+The existing exact mobile16 engine is now checked on its actual published owner URL. The source-pinned opt-in pilot modules are bundled locally and injected into this disposable QA browser only; no public HTML, WebAssembly, loader, data, assets or saved game is deployed or altered. The runner clicks the genuine consent button and repeats the already verified normal nickname/resize/reload/story/sawmill/world/return path. Existing consent must resume after reload. Real Supabase POST responses are captured and must include accepted session_start, game_ready, return_visit, build_completed and world_opened without rejections. No Unity command, fabricated console event or manual telemetry.track call is used. Each acknowledged event UUID is preserved for independent database verification.
+
+The 35-test source/transport workflow43177481406 already passed. Its actual current-profile event644f1fd4-aa75-456f-a7a3-f93e28df4e6a was independently queried: one QA row, correct4fd engine source and mobile16 build, reason TRANSPORT_FIXTURE_NOT_UNITY. That synthetic check does not prove this new actual Unity chain.
+
+Implemented and syntax/YAML checked; actual public-browser journey and its SQL receipt verification remain pending. This is desktop WebKit, not a physical iPhone, and does not certify a full I–V player session or approve external invitations.

@@ -120,6 +120,28 @@ function processes(){
       };
     },{variant,traceGL:process.env.QA_TRACE_GL==='1'});
     page=await context.newPage();
+    if(process.env.QA_TELEMETRY_BUNDLE){
+      report.telemetry={method:'QA-only exact pilot script injection into actual public owner HTML; no HTML or engine deployment',
+        endpoint:'eldoria-mobile16-events-qa',installations:0,receipts:[],notPhysicalDevice:true};
+      page.on('response',response=>{
+        if(response.url()!=='https://eavaxwpxxcrwibooiimb.supabase.co/functions/v1/eldoria-mobile16-events-qa' ||
+           response.request().method()!=='POST')return;
+        try{
+          const event=response.request().postDataJSON();
+          report.telemetry.receipts.push({eventId:event.client_event_id,eventName:event.event_name,
+            payload:event.payload,status:response.status()});write();
+        }catch(error){report.errors.push('TELEMETRY_RECEIPT_PARSE '+String(error));}
+      });
+    }
+    async function installOptInTelemetry(){
+      if(!process.env.QA_TELEMETRY_BUNDLE)return;
+      await page.addScriptTag({content:fs.readFileSync(process.env.QA_TELEMETRY_BUNDLE,'utf8')});
+      if(report.telemetry.installations===0){
+        await page.getByRole('button',{name:'Sí, compartir',exact:true}).click({timeout:15000});
+      }
+      await page.getByRole('button',{name:'Desactivar estadísticas',exact:true}).waitFor({state:'visible',timeout:15000});
+      report.telemetry.installations++;write();
+    }
     page.on('console',m=>log({type:'console',level:m.type(),text:m.text()}));
     page.on('pageerror',e=>{report.errors.push(String(e));log({type:'pageerror',text:String(e)});write();});
     page.on('crash',()=>{report.errors.push('PAGE_CRASH');log({type:'crash'});write();});
@@ -140,6 +162,7 @@ function processes(){
     const expectedOrigin=process.env.QA_EXPECT_ORIGIN;
     const verifyOrigin=()=>{if(expectedOrigin&&new URL(page.url()).origin!==expectedOrigin)throw Error('QA_UNEXPECTED_ORIGIN '+page.url());};
     verifyOrigin();
+    await installOptInTelemetry();
     await page.locator('#play').click();
     let readyAt=0,earlyEntry=false;
     const started=Date.now();
@@ -213,7 +236,7 @@ function processes(){
       if(!earlyEntry){await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});}
       await observeEntry(30,"after-name");await page.screenshot({path:out+'/after-name.png',timeout:15000});
       await page.evaluate(()=>window.valoriaGame.Quit());
-      await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
+      await page.reload({waitUntil:'domcontentloaded'});await installOptInTelemetry();await page.locator('#play').click();
       await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:120000});await observeEntry(45,"reloaded");
       await page.screenshot({path:out+'/reloaded.png',timeout:15000});
       const loadedIdentity=await page.evaluate(()=>fetch('release-identity.json',{cache:'no-store'}).then(r=>r.json()));
@@ -323,6 +346,18 @@ function processes(){
     }
     if(/^preallocated-(640|1024)$/.test(variant)&&!report.samples.some(s=>s.preallocation?.some(p=>p.after===Number(variant.split('-')[1])*1024*1024)))throw Error('Preallocation intervention not observed');
     if(process.env.QA_NATIVE_PROFILE==='1')nativeProfile({processes:processes(),at:Date.now()},'final');
+    if(report.telemetry){
+      await page.waitForTimeout(3000);
+      const accepted=new Set(report.telemetry.receipts.filter(r=>r.status===202).map(r=>r.eventName));
+      const required=['session_start','game_ready','return_visit','build_completed','world_opened'];
+      report.telemetry.requiredActualJourneyEvents=required;
+      report.telemetry.missing=required.filter(name=>!accepted.has(name));
+      report.telemetry.rejected=report.telemetry.receipts.filter(r=>r.status!==202);
+      if(report.telemetry.installations!==2 || report.telemetry.missing.length || report.telemetry.rejected.length)
+        throw Error('ACTUAL_UNITY_TELEMETRY_CHAIN_INCOMPLETE '+JSON.stringify(report.telemetry));
+      report.telemetry.actualJourneyBrowserReceiptsVerified=true;
+      report.telemetry.databaseReceiptsVerified=false;
+    }
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
