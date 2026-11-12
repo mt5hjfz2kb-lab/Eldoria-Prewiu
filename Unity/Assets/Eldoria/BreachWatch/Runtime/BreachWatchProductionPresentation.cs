@@ -22,7 +22,7 @@ namespace Eldoria.BreachWatch
         readonly Dictionary<Graphic,Graphic> iconReplacements=new Dictionary<Graphic,Graphic>();
         readonly Dictionary<Graphic,int> iconKinds=new Dictionary<Graphic,int>();
         Canvas retired;
-        Sprite stone,action;
+        Sprite stone,action,emptyHero;
         readonly Sprite[] resources=new Sprite[3];
         bool applying;
         public int ReplacedDecorations { get; private set; }
@@ -33,8 +33,9 @@ namespace Eldoria.BreachWatch
             retired=oldCanvas;
             stone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
             action=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
+            emptyHero=Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_helm");
             for(int i=0;i<3;i++)resources[i]=Resources.Load<Sprite>("VigiliaArt/FreshArt/"+(i==0?"wood":i==1?"stone":"food"));
-            if(!retired || !stone || !action || !resources[0] || !resources[1] || !resources[2])
+            if(!retired || !stone || !action || !emptyHero || !resources[0] || !resources[1] || !resources[2])
                 throw new InvalidOperationException("Production Vigilia source artwork missing");
             // Keep the authoritative world-position projection and existing
             // construction clocks on the new Canvas. This transparent layer
@@ -84,7 +85,7 @@ namespace Eldoria.BreachWatch
                 n=="scouts-painterly" || n=="scouts-painterly-v2" ||
                 n=="clean_backdrop" || n=="vigilants-illustration" || n=="scouts-illustration" ||
                 n=="vigilants-painterly" || n=="vigilants-painterly-v2" ||
-                n.StartsWith("training-courtyard") || n=="hero-locked";
+                n.StartsWith("training-courtyard") || n=="hero-locked" || n=="hero-support";
         }
         public static bool IsRetiredPainter(Graphic graphic)
         {
@@ -158,9 +159,17 @@ namespace Eldoria.BreachWatch
                     }
                     else if(graphic is Image image)
                     {
-                        image.sprite=button?action:stone;
+                        // Empty hero slots are controls, not hero portraits.
+                        // Use the new helm emblem for both slots rather than
+                        // retaining the retired blue support silhouette or
+                        // replacing the locked slot with a blank stone tile.
+                        string donor=image.sprite && image.sprite.texture
+                            ?image.sprite.texture.name.ToLowerInvariant():"";
+                        bool emptySlot=donor=="hero-locked" || donor=="hero-support";
+                        image.sprite=emptySlot?emptyHero:button?action:stone;
                         image.overrideSprite=null;
-                        image.type=Image.Type.Sliced;
+                        image.type=emptySlot?Image.Type.Simple:Image.Type.Sliced;
+                        if(emptySlot)image.preserveAspect=true;
                         image.color=Color.white;
                         if(image.name.StartsWith("Clarity / "))
                             foreach(var outline in image.GetComponents<Outline>())outline.enabled=false;

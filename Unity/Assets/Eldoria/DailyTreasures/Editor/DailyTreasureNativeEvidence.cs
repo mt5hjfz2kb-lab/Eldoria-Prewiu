@@ -119,6 +119,32 @@ namespace Eldoria.DailyTreasures.Editor
         {
             if(!ok)throw new InvalidOperationException(reason);
         }
+        static void VerifyDailyDelivery(PlayerState before,PlayerState after,
+            DailyTreasureReward expected,long utcTicks)
+        {
+            string mail="daily-treasure:"+DailyTreasureRules.UtcDay(utcTicks);
+            var packets=after.ResourceRewards.Packets.Where(p=>p.MailEventId==mail).ToArray();
+            Need(after.Resources.Wood==before.Resources.Wood &&
+                 after.Resources.Stone==before.Resources.Stone &&
+                 after.Resources.Food==before.Resources.Food,
+                "Daily claim bypassed the mailbox and bag into the wallet");
+            var kinds=new[]{"wood","stone","food"};
+            var amounts=new[]{expected.Wood,expected.Stone,expected.Food};
+            Need(packets.Length==amounts.Count(n=>n>0),
+                "Daily mailbox has missing or extra resource packets");
+            for(int i=0;i<kinds.Length;i++)
+                if(amounts[i]>0)
+                    Need(packets.Count(p=>p.Kind==kinds[i] && p.Amount==amounts[i] &&
+                         !p.Collected && !p.Used)==1,
+                        "Daily mailbox packet has wrong quantity or was collected early: "+kinds[i]);
+            Need(after.Mailbox.Messages.Count==before.Mailbox.Messages.Count+1 &&
+                 after.Mailbox.Messages.Count(m=>m.EventId==mail)==1 &&
+                 after.Mailbox.ReceivedEventIds.Contains(mail),
+                "Daily delivery lacks its unique saved mailbox receipt");
+            Need(after.SpeedupOneMinute==before.SpeedupOneMinute+expected.SpeedupOneMinute &&
+                 after.SpeedupFiveMinutes==before.SpeedupFiveMinutes+expected.SpeedupFiveMinutes,
+                "Daily accelerator delivery differs from its earned reward");
+        }
         // Source integrity checks run on Ubuntu. This second gate validates
         // what Unity actually imported, not merely the nine .meta texts.
         // Native art is still UNAPPROVED until the resulting images are seen.
@@ -1081,8 +1107,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Need(after.DailyTreasures.CycleDay==7 &&
                         after.SpeedupFiveMinutes==before.SpeedupFiveMinutes+1,
                         "Native button failed to pay actual day-seven reward");
-                    Need(after.Mailbox.Messages.Count==before.Mailbox.Messages.Count+1,
-                        "Day-seven native button did not write the mailbox receipt");
+                    VerifyDailyDelivery(before,after,DailyTreasureRules.ForDay(7,7),clock.UtcTicks);
                     Need(!DailyTreasureRules.CanClaim(after.DailyTreasures,clock.UtcTicks),
                         "Duplicate seven-day claim still available");
                     var beforeReplay=after.Resources.Wood;
@@ -1143,7 +1168,7 @@ namespace Eldoria.DailyTreasures.Editor
                     bool becamePortrait=width>height;
                     Need(rotatedLabel &&
                          (becamePortrait?
-                            rotatedLabel.text.Contains("\nGuardado en tu inventario"):
+                            rotatedLabel.text.Contains("\nConsulta tu recompensa en el buzón"):
                             rotatedLabel.text.Contains(" · GUARDADO")),
                          "Paid reward caption did not adapt to phone rotation");
                     VerifyCriticalTypography(panel,"paid chest after orientation change");
@@ -1219,11 +1244,10 @@ namespace Eldoria.DailyTreasures.Editor
                         width,height);
                     inputChecks++;
                     var specialAfter=specialGateway.Snapshot();
-                    Need(specialAfter.DailyTreasures.CycleDay==4 &&
-                         specialAfter.Resources.Wood==specialBefore.Resources.Wood+90 &&
-                         specialAfter.Resources.Stone==specialBefore.Resources.Stone+60 &&
-                         specialAfter.Mailbox.Messages.Count==specialBefore.Mailbox.Messages.Count+1,
-                        "Day-four chest must represent its exact earned resource contents");
+                    Need(specialAfter.DailyTreasures.CycleDay==4,
+                        "Day-four claim did not advance its daily progress");
+                    VerifyDailyDelivery(specialBefore,specialAfter,
+                        DailyTreasureRules.ForDay(4,4),clock.UtcTicks);
                     report.realGatewayClaims++;
                     VerifyPremiumDailyComposition(panel,width,height,true);
                     panel.SampleForNativeEvidence(
@@ -1721,16 +1745,9 @@ namespace Eldoria.DailyTreasures.Editor
                         quietInputChecks++;
                         var credited=quietGateway.Snapshot();
                         Need(credited.DailyTreasures.CycleDay==quietDay &&
-                             credited.DailyTreasures.TotalClaims==quietDay &&
-                             credited.Resources.Wood==beforeQuiet.Resources.Wood+expectedQuiet.Wood &&
-                             credited.Resources.Stone==beforeQuiet.Resources.Stone+expectedQuiet.Stone &&
-                             credited.Resources.Food==beforeQuiet.Resources.Food+expectedQuiet.Food &&
-                             credited.SpeedupOneMinute==beforeQuiet.SpeedupOneMinute+
-                                expectedQuiet.SpeedupOneMinute &&
-                             credited.SpeedupFiveMinutes==beforeQuiet.SpeedupFiveMinutes+
-                                expectedQuiet.SpeedupFiveMinutes &&
-                             credited.Mailbox.Messages.Count==beforeQuiet.Mailbox.Messages.Count+1,
-                             "Non-chest day "+quietDay+" actual receipt differs from gateway");
+                             credited.DailyTreasures.TotalClaims==quietDay,
+                             "Non-chest day did not persist its daily progress");
+                        VerifyDailyDelivery(beforeQuiet,credited,expectedQuiet,clock.UtcTicks);
                         Need(!DailyTreasureRules.CanClaim(
                                 credited.DailyTreasures,clock.UtcTicks),
                             "Non-chest day "+quietDay+" permits a second grant");

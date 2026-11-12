@@ -1710,7 +1710,7 @@ namespace Eldoria.DailyTreasures
                 // The full claim details live in the mailbox and icon cards.
                 bool portrait=root.rect.height>root.rect.width;
                 resultText.text=portrait?
-                    ceremonialTitle+"\nGuardado en tu inventario y buzón":
+                    ceremonialTitle+"\nConsulta tu recompensa en el buzón":
                     ceremonialTitle+" · GUARDADO";
                 prizeShelf.gameObject.SetActive(true);
                 prizeAnimating=!immediate;
@@ -1815,7 +1815,7 @@ namespace Eldoria.DailyTreasures
             if(prizeCount>0 && ceremony.gameObject.activeSelf && !playing &&
                claimButton.gameObject.activeSelf)
                 resultText.text=portrait?
-                    ceremonialTitle+"\nGuardado en tu inventario y buzón":
+                    ceremonialTitle+"\nConsulta tu recompensa en el buzón":
                     ceremonialTitle+" · GUARDADO";
             // Expand only the actual calendar where the viewport permits.
             // This gives seven real rewards a calmer hierarchy on desktops
