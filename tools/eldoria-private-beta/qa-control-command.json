@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 38,
-  "action": "click_text",
-  "proof_sha256": "4d521ece734a4c39fb3fbbc7f887de496491d5081d9d9cf607f6f6ae81deb4a8",
-  "label": "CERRAR"
+  "sequence": 39,
+  "action": "key",
+  "proof_sha256": "3af8a41eb3ab51a4277ff54732c24b4094cebbbbd435bc396899a05c4c3d9f54",
+  "key": "ArrowRight"
 }
