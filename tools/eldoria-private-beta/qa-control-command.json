@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 38,
+  "sequence": 39,
   "action": "click_text",
-  "proof_sha256": "cfe7fda329862e56516eb8852f417e171d1385b6d53d52d6b4c63997448c136a",
-  "label": "CONTINUAR",
-  "reason": "Frame037 shows Lyra offering aid and the actual unique Continuar control; advance ordinary narrative."
+  "proof_sha256": "32abe4c57cafa0d3dfb7f482208cc5be1723fa0b7139ce1fc9fe56afedf5616f",
+  "label": "ASALTAR CON LYRA",
+  "reason": "Original frame038 shows the actual Asaltar con Lyra encounter control; test the ordinary narrative combat entry."
 }
