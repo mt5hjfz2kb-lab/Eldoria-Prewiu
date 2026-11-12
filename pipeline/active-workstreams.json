@@ -8497,7 +8497,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 86,
+      "ownership_revision": 87,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8516,13 +8516,11 @@
         "Unity/Assets/Eldoria/DailyTreasures/Editor/**",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
       "phase": "EXACT_NATIVE182_FRAMES_AUDIT_VERIFIED_SCOUTS_SIX_SECOND_SEQUENCE_PREPARED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Verify actual ScoutDispatch/ScoutClaim receipt illustration and motion with staged prerequisites and simulated clock, then inspect native frames.",
+      "next": "Preserve actual earned Scout and chest evidence. Fix recovered-owner review task guard; broader historical V4.1 compile include and narrative acknowledgment CI failures remain separate integration work, not caused by this editor-only proof.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8577,8 +8575,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-12T11:16:09.645Z",
-      "runner_release_basis": "Actual native-ui43207284828 SUCCESS;92 original static +90 authored scout sequence supplemental, clean native exit, independent audit remains off-PC.",
+      "runner_released_at": "2026-11-12T20:07:33.180Z",
+      "runner_release_basis": "Native43296350295 and independent visual audit both SUCCESS; original artifact SHA verified, all91 supplemental earned frame hashes verified.",
       "runner_claimed_at": "2026-11-12T20:02:24.096Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "PR187 recovery43296125081 completed successfully without Unity; next bounded authentic earned Scout evidence in isolated PR181.",
@@ -8698,10 +8696,9 @@
       "previous_owner": "chatgpt-central-art-execution-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
-        "ownership_revision": 86,
-        "updated_at": "2026-11-12T20:02:24.096Z"
+        "ownership_revision": 87
       },
       "last_native": {
         "run": 43207284828,
@@ -8746,6 +8743,26 @@
           "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
         ],
         "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
+      },
+      "last_earned_scout_native": {
+        "source": "c18ca4579fdbb458a56e8a1caeafc3a3c2e81c97",
+        "run": 43296350295,
+        "artifact": 13978424898,
+        "sha256": "565c675f3681834e5246fe1e70cd23c40120c999d5d8f52e87e743a818591e4e",
+        "real_dispatch_claim": true,
+        "staged_prerequisites": true,
+        "simulated_clock": true,
+        "scout_kind": 3,
+        "portrait_frames": 90,
+        "landscape_frames": 1,
+        "duplicate_claim_rejected": true,
+        "presentation_preserves_award": true,
+        "original_png_hashes_verified": true,
+        "visual_review": "Actual earned atlas visible on original parchment in both orientations; original chest and composition retained",
+        "art_approved": false,
+        "physical_iphone": false,
+        "full_campaign": false,
+        "video_library_id": "libfile_fde3_f-cac78e5667ec8191bb6be0903506ad42_d1c014344dc081918fc6ba9b846892c0"
       }
     },
     {
