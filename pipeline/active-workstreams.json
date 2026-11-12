@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T15:14:26.933Z",
+  "updated_at": "2026-11-12T15:56:34.245Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7284,7 +7284,7 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "FIRST_DEFERRED_WORLD_OBJECTIVE_FIX_PREPARING_NATIVE",
+      "phase": "LAZY_OBJECTIVE_NATIVE_PLAYMODE_PASS_FULL_WORLD_WEBGL_IN_PROGRESS",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
       "next": "Actual public603 firstloop+52SQLpreviousproof preserved. New1316810 nextgathering objective follows real objectivearrow and unique OCRcontrols only, newMac43192581903 currentlyrunning independently ofWindows. Inspect actualframes then continue ordinaryprogression; never claimfullI-V/physicalphone fromattempts.",
       "last_verified": {
@@ -7873,7 +7873,7 @@
         "issue": 96,
         "release_allowed": false
       },
-      "runner_claim_basis": "Previous resources native43240154870 finished SUCCESS with Unity closed,218/218EditMode78/78PlayMode and preferences restored; no other registry holder. Next bounded beta batch repairs observed first deferred-objective loss, pins frozen overlay and tests cancel/reselect without changing gameplay clocks.",
+      "runner_claim_basis": "Previous resources native43240154870 finished SUCCESS with Unity closed,218/218EditMode78/78PlayMode and preferences restored; no other registry holder. Next bounded beta batch repairs observed first deferred-objective loss, pins frozen overlay and tests cancel/reselect without changing gameplay clocks. Actual older generic documentation recert43244601242 finished SUCCESS before queued beta job began; editors were never interrupted or overlapped.",
       "native_candidate": {
         "run_id": 42682071151,
         "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
@@ -8185,21 +8185,74 @@
         "public_build_changed": false
       },
       "engine17_earned_save_compatibility": {
-        "run": 43243720284,
-        "source": "5a5e7de32959317a11c46744b1d172003d3da10a",
-        "state": "retry queued with optional telemetry snapshot repair",
+        "first_run": 43243720284,
+        "first_run_result": "QA_HARNESS_FAILED_OPTIONAL_TELEMETRY_RECEIPTS; failure retained, not a game crash",
+        "run": 43245541625,
+        "source": "d21f21c7abb2e004b4892404404e7a7b48d2d795",
+        "state": "SUCCESS",
         "unpublished": true,
         "source_engine": "a8b0ee4febf85d20eff3280133a37cac17fae967",
         "bundle": "ee8eb5ab636ddc7381b9a8a355580b509a9f9f79a442f1b4987140bb58a25ad5",
-        "checkpoint_bytes_modified": false,
-        "source_artifact": 13944774610,
-        "source_artifact_run": 43220783570,
+        "original_frame0_time": "2026-11-12T15:17:28Z",
+        "official_quit_time": "2026-11-12T15:48:43Z",
+        "observed_ui_minutes_over": 30,
+        "physical_iphone": false,
+        "results": [
+          "BastionVcomplete60troops retained from unchanged earned input",
+          "saved final victory report56T1/5rounds/83percent retained",
+          "two genuine Region1 entries and two city returns",
+          "ordinary paid quarry1to2upgrade; production0.15; no accelerators"
+        ],
+        "checkpoint": {
+          "bytes": 130908,
+          "sha256": "6b1df345a48681145ecde90ea8ce94b7cc4f4b8909531c8dfed5196b2c65434d",
+          "method": "OFFICIAL_PLAYWRIGHT_EARNED_STATE_AFTER_ACTUAL_QA_GAME_CLOSED",
+          "owner_save_accessed": false,
+          "fake_state_created": false,
+          "earned_save_database_modified": false
+        },
+        "artifact": 13958304643,
+        "artifact_sha256": "9a30b683538e70e9ca71056d8c586fb977d4f5c08f6bcf478bbc4ba030164c22",
+        "public_build_changed": false,
         "external_testers_enabled": false,
-        "first_run": 43243720284,
-        "first_run_result": "QA_HARNESS_FAILED_OPTIONAL_TELEMETRY_RECEIPTS; authentic engine17 loaded B5complete60troops; not compatibilityPASS",
-        "next_source": "d21f21c7abb2e004b4892404404e7a7b48d2d795"
+        "reopen": {
+          "run": 43251704856,
+          "source": "f42f44f8036a9694af6e675581b2bbf0372ad659",
+          "state": "queued"
+        }
       },
-      "scope_extension_reason": "Exact canonical JourneyGuidance caller must use the same target-preserving host navigation as the already owned frozen UX overlay; no art, rewards or balance change."
+      "scope_extension_reason": "Exact canonical JourneyGuidance caller must use the same target-preserving host navigation as the already owned frozen UX overlay; no art, rewards or balance change.",
+      "native_navigation_correction": {
+        "source": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
+        "run": 43246088947,
+        "job": 131279338533,
+        "preflight": "PASS",
+        "real_lazy_playmode_and_warm_restoration": "PASS",
+        "asserted": "latest quest target preserved; cancellation and reselect; quarry selected without extra tap;12reentries;actual disk reload",
+        "full_world_and_webgl": "in_progress; no compiled18candidate claimed",
+        "source_inputs_preserved_until_step6": true,
+        "overall_cleanup": "pending end of current native batch",
+        "ownership_revision": 51
+      },
+      "prepared_off_pc_ui_reuse": {
+        "tree": "4b48fea1ac52c117fe717ffe3815b685bd3b1ba5",
+        "state": "uncommitted Git tree only; no beta branch movement before current native job completes",
+        "ui_source": "a5f2c9d9afe841979c0bf7a59a7aba2911637af5",
+        "ui_source_tree": "6af142bed0321e8eeb93a5f66a041cfb077fea74",
+        "snapshot_path": "tools/eldoria-private-beta/native/approved-vigilia/BreachWatch",
+        "active_in_unity": false,
+        "art_approved": false,
+        "budget": {
+          "pngs": 60,
+          "encoded_bytes": 25092350,
+          "source_rgba32_upper_bound_bytes": 89614268,
+          "readable": 0,
+          "mipmapped": 8,
+          "explicit_webgl_overrides": 2,
+          "resident_memory_measured": false
+        },
+        "profile18": "same prepared tree pins real18native source/run; exact candidate label guard added; wait for actual native success"
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
