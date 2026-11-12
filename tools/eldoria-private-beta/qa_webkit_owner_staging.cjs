@@ -46,7 +46,12 @@ function processes(){
 }
 (async()=>{
   let browser, page;
-  const watchdog=setTimeout(()=>{report.errors.push('GLOBAL_DEADLINE');write();process.exit(1);},420000);
+  // Longer genuine gameplay journeys must not be cut off by the 7-minute startup A/B watchdog.
+  const globalDeadlineMs=Number(process.env.QA_GLOBAL_DEADLINE_MS||420000);
+  if(!Number.isSafeInteger(globalDeadlineMs)||globalDeadlineMs<420000||globalDeadlineMs>1200000)
+    throw Error('INVALID_QA_GLOBAL_DEADLINE_MS');
+  report.globalDeadlineMs=globalDeadlineMs;
+  const watchdog=setTimeout(()=>{report.errors.push('GLOBAL_DEADLINE');write();process.exit(1);},globalDeadlineMs);
   try {
     if(!['webkit','chromium'].includes(engine))throw Error('Unknown engine');
     browser=await ({webkit,chromium}[engine]).launch({headless:true});
@@ -254,14 +259,27 @@ function processes(){
           // Mission action selects the canonical sawmill. Exclude the bottom
           // navigation Build medallion when locating its real paid offer.
           await clickText('actual-sawmill-offer','CONSTRUIR',r=>r.y<750);
-          await observeEntry(120,'actual-sawmill-construction');
-          await readUi('actual-sawmill-after-wait');
+          // Stop the wait only when genuine on-screen NIVEL 1 is visible; still
+          // fail closed if construction has not completed within 120 seconds.
+          const sawmillStartedAt=Date.now();
+          let sawmillLevelOne=false;
+          for(let attempt=0;Date.now()-sawmillStartedAt<120000;attempt++){
+            await observeEntry(4,'actual-sawmill-construction-'+attempt);
+            const labels=await readUi('actual-sawmill-after-wait');
+            if(labels.some(r=>normalized(r.text)==='NIVEL 1'&&r.confidence>=.35)){
+              sawmillLevelOne=true;
+              report.actualWorldUi.sawmillLevelOne={visible:true,elapsedSeconds:(Date.now()-sawmillStartedAt)/1000,proof:'actual-sawmill-after-wait.png'};
+              write();break;
+            }
+          }
+          if(!sawmillLevelOne)throw Error('SAWMILL_LEVEL1_NOT_VISIBLE_WITHIN_120S');
           // Closing a contextual building panel via genuine city navigation is
           // optional: only click the unique visible World medallion.
           await readUi('actual-world-control');
           // Actual run43160047196 shows the unlocked World compass at
           // CSS152,799. Its label is covered by the opt-in diagnostic badge;
           // the exposed compass itself remains a genuine clickable control.
+          const worldEventCursor=fs.statSync(out+'/events.jsonl').size;
           await page.mouse.click(152,799,{delay:150});
           report.actualWorldUi.actions.push({phase:'actual-world-control',x:152,y:799,
             control:'visible unlocked World compass above diagnostic badge',
@@ -269,10 +287,13 @@ function processes(){
             coordinateEvidenceSha256:'9c39cd34879c0f90e37fa78111430274330aaedbca628eb4f8f7b3325a09abd5'});
           write();
           await observeEntry(60,'after-real-world-click');
-          const worldEvents=fs.readFileSync(out+'/events.jsonl','utf8');
-          report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick=worldEvents.includes('REGION1_CANON_WORLD_INSTALLED');
+          const worldEvents=fs.readFileSync(out+'/events.jsonl').subarray(worldEventCursor).toString('utf8');
+          report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick=worldEvents.includes('REGION1_CANON_WORLD_INSTALLED')&&worldEvents.includes('ELDORIA_P0_LAZY_WORLD_ENTERED');
           if(!report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick)throw Error('NO_REAL_REGION1_AFTER_ACTUAL_WORLD_CLICK');
           await readUi('actual-world-after-entry');
+          report.realWorldEntryVerified=true;
+          report.storyAdvanceAttempt.realWorldEntryVerified=true;
+          report.actualWorldUi.realWorldEntryVerified=true;
           report.actualWorldUi.visualWorldVerification='pending exact screenshot inspection';write();
           report.actualWorldUi.worldIntroductionClicks=[];
           for(let step=0;step<8;step++){

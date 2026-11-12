@@ -51,6 +51,7 @@ jobs:
           QA_LAZY_WORLD: '1'
           QA_ADVANCE_STORY: '1'
           QA_ACTUAL_WORLD_UI: '1'
+          QA_GLOBAL_DEADLINE_MS: '900000'
           QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
           QA_OUT: evidence/deferred
           QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
