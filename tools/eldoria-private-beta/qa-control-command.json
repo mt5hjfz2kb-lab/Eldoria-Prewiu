@@ -1,11 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 2,
-  "action": "click_text",
-  "proof_sha256": "a5350229e77ff75685d3ce72ae9ef902546af8f432fa15f1dc38405f2164ae55",
-  "label": "CONFIRMAR COM",
-  "min_y": 780,
-  "max_y": 815,
-  "reason": "Fresh actual001 shows the visible prefix of the canonical composition confirmation above the diagnostic overlay; confirm the real56-archer army."
+  "sequence": 3,
+  "action": "click_point",
+  "proof_sha256": "0006da83341893cdf77cc751f99cfbe7256b236dbb909be9201f8d23d8deea3c",
+  "x": 30,
+  "y": 48,
+  "guard_texts": [
+    "VALORIA • EXPEDICIONES",
+    "HÉROES DE LA MARCHA"
+  ],
+  "reason": "Original frame002 shows the canonical back arrow at the lower visible part of the top left button."
 }
