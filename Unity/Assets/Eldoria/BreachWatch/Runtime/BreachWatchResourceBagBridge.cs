@@ -50,7 +50,7 @@ namespace Eldoria.BreachWatch
                 listeners[i]=TryOpen;
                 buttons[i].onClick.AddListener(listeners[i]);
                 novelty[i]=Badge(capsules[i],"Saved bag NEW",
-                    "Issue186ResourceArt/badge_new",20f);
+                    "Issue186ResourceArt/badge_new",20f,true);
             }
             if(actualMailbox)
                 claimable=Badge((RectTransform)actualMailbox.transform,
@@ -59,7 +59,8 @@ namespace Eldoria.BreachWatch
             installed=true;
             Synchronize();
         }
-        static Image Badge(RectTransform parent,string name,string asset,float size)
+        static Image Badge(RectTransform parent,string name,string asset,float size,
+            bool clearQuantity=false)
         {
             var sprite=Resources.Load<Sprite>(asset);
             if(!sprite)return null;
@@ -68,8 +69,11 @@ namespace Eldoria.BreachWatch
             obj.layer=5;obj.transform.SetParent(parent,false);
             var r=(RectTransform)obj.transform;
             r.anchorMin=r.anchorMax=new Vector2(1f,1f);
-            r.pivot=new Vector2(1f,1f);
-            r.anchoredPosition=new Vector2(-3f,-2f);
+            // Resource values occupy the capsule's middle band. Attach the
+            // unchanged authored alert to its upper rim instead of painting
+            // over the final digit. Header top margins retain the full circle.
+            r.pivot=clearQuantity?new Vector2(1f,.5f):new Vector2(1f,1f);
+            r.anchoredPosition=clearQuantity?new Vector2(-3f,6f):new Vector2(-3f,-2f);
             r.sizeDelta=new Vector2(size,size);
             var image=obj.GetComponent<Image>();
             image.sprite=sprite;image.preserveAspect=true;image.raycastTarget=false;
