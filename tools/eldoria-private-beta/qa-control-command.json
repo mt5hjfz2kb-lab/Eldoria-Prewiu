@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 6,
-  "action": "click_text",
-  "label": "Entrar en Valoria",
-  "proof_sha256": "7f8f6a3bba6510ac7da1c387d705f1b95b38a4c7e18214feef62cc9093e71f93",
-  "reason": "Click the actual loaded world entry visible in original frame005."
+  "sequence": 7,
+  "action": "click_point",
+  "proof_sha256": "d29c2604b62a90b20e391c8a12795d76a9898812b190e746cb3ad44f23eb30de",
+  "x": 211,
+  "y": 69,
+  "guard_texts": [
+    "BASTIÓN II • 4 /5",
+    "Derrota al Engendro"
+  ],
+  "reason": "Original frame006 shows city after the world-entry acknowledgement; follow the still-active Engendro mission arrow."
 }
