@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 16,
-  "previous_run": 43317518890,
-  "correction": "Real native city and first-entry gates now pass; building action full caption measured 89.7 source units in an 88.2-unit field. Use available painted space by reducing only its right inset from fourteen to eight, preserving hammer clearance, sprite aspect, font minimum and original glyph-fit gate.",
+  "attempt": 17,
+  "previous_run": 43318468656,
+  "correction": "Eight city/building native captures now pass. Destination capture reached retention but its historical Bastion-II fixture cannot enter current Vigilants/Scouts (Bastion III plus introductions). Advance only the disposable retention fixture to III and explicitly assert both real unlock predicates; leave production progression unchanged.",
   "build_candidate": true
 }

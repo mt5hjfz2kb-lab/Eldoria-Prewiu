@@ -506,6 +506,14 @@ namespace Eldoria.BreachWatch.Editor
                 // cannot remain invisible under the disabled original Canvas.
                 // Preserve actual saved progression, background, reports,
                 // encounter decisions and hotkeys. Test native UI only.
+                // These real destinations unlock at Bastion III in the current
+                // campaign. Advance only the disposable in-memory QA fixture;
+                // the production gate and original player save stay intact.
+                fixture.BastionLevel=3;
+                stateField.SetValue(gateway,fixture);
+                Need(EarlyRetentionRules.VigilantsUnlocked(gateway.Snapshot()) &&
+                     EarlyRetentionRules.ScoutsUnlocked(gateway.Snapshot()),
+                    "Retention QA fixture does not satisfy real progression gates");
                 var retention=ui.RealRetention;
                 Need(retention!=null && retention.TryOpen(
                     RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants) &&
