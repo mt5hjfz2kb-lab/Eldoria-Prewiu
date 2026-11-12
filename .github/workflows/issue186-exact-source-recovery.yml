@@ -31,15 +31,24 @@ jobs:
           $ref=Invoke-RestMethod -Headers $headers -Uri ($api+'/git/ref/heads/feature/issue186-reward-attention-guidance-20261111')
           if($ref.object.sha -ne $env:GITHUB_SHA){throw 'Recovery branch moved after dispatch'}
           $request=ReadPinned 'tools/reward-experience/native-recovery-request.json'|ConvertFrom-Json
-          if($request.state -ne 'RECOVER_EXACT_PENDING_OVERLAYS'){throw 'Recovery not requested'}
+          if($request.state -notin @('RECOVER_EXACT_PENDING_OVERLAYS','INSPECT_EXACT_OVERLAY')){throw 'Recovery not requested'}
           $p=Invoke-RestMethod -Headers $headers -Uri ($api+'/contents/pipeline/active-workstreams.json?ref=main')
           if($p.encoding -ne 'base64' -or -not $p.content){$p=Invoke-RestMethod -Headers $headers -Uri ($api+'/git/blobs/'+$p.sha)}
           $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($p.content))|ConvertFrom-Json
           $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne 'chatgpt-central-art-execution-20261111' -or $holders[0].ownership_revision -ne $request.ownership_revision){throw 'Exact central recovery lease absent'}
+          if([string]::IsNullOrWhiteSpace($request.owner) -or $holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne $request.owner -or $holders[0].ownership_revision -ne $request.ownership_revision -or $holders[0].ownership_state -ne 'claimed'){throw 'Exact central recovery lease absent'}
           [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
           $scripts=Join-Path $env:OUT 'pinned-tools'
           [IO.Directory]::CreateDirectory($scripts)|Out-Null
+          if($request.state -eq 'INSPECT_EXACT_OVERLAY'){
+            if([string]$request.run -notmatch '^[0-9]+$'){throw 'Invalid recorded overlay run'}
+            $script=Join-Path $scripts 'Get-VigiliaProofOverlayDrift.ps1'
+            [IO.File]::WriteAllText($script,(ReadPinned 'tools/reward-experience/native/Get-VigiliaProofOverlayDrift.ps1'),(New-Object Text.UTF8Encoding($false)))
+            $manifest=Join-Path $env:GITHUB_WORKSPACE ('issue186-native-'+$request.run+'/vigilia-overlay.json')
+            & $script -Project (Join-Path $env:GITHUB_WORKSPACE 'issue186-source/Unity') -Manifest $manifest -Output (Join-Path $env:OUT 'drift')
+            Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:OUT 'original-overlay.json')
+            exit 0
+          }
           foreach($file in @('Restore-ExactPendingOverlays.ps1','Set-VigiliaProofOverlay.ps1','reviewed-vigilia-imported-metadata-nested-925.json','reviewed-vigilia-imported-metadata.json')){
             [IO.File]::WriteAllText((Join-Path $scripts $file),(ReadPinned ('tools/reward-experience/native/'+$file)),(New-Object Text.UTF8Encoding($false)))
           }

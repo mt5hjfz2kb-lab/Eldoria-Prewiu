@@ -1,19 +1,6 @@
 {
-  "state": "RECOVER_EXACT_PENDING_OVERLAYS",
-  "owner": "chatgpt-central-art-execution-20261111",
-  "ownership_revision": 31,
-  "registry_main": "cc4436598d8b2f7951107fc8be47d5c7fda6a0d8",
-  "ui_source": "92596b1550fcb2722fb582639bc05c24a7c6a7a8",
-  "layers": [
-    {
-      "run": "43178513272"
-    },
-    {
-      "run": "43175152232"
-    }
-  ],
-  "runtime_repeat": false,
-  "source": "2d94ab1238e42a3647faa1161ea81c022288a404",
-  "source_ci": 43181952247,
-  "requested_at": "2026-11-12T08:22:37.545Z"
+  "state": "INSPECT_EXACT_OVERLAY",
+  "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
+  "ownership_revision": 52,
+  "run": "43294906405"
 }
