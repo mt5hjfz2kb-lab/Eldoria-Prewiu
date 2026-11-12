@@ -54,6 +54,8 @@ namespace Eldoria.DailyTreasures.Editor
             public float minimumLitSourceFraction;
             public int bastionSnapshotsVerified,bastionRotationProofs,bastionPerimeterProofs;
             public bool sceneEnvironmentRestored;
+            public int actualBuiltStudioProofs;
+            public string bastionPresentationMethod;
             public bool citySceneOpened,cityCameraUsed,artApproved;
             public bool fullSceneVerified,pr173Integrated,iosVerified;
             public Shot[] shots;
@@ -409,12 +411,20 @@ namespace Eldoria.DailyTreasures.Editor
 
         static string EnvironmentSignature()
         {
-            return string.Join("|",new[]{
+            var invariant=System.Globalization.CultureInfo.InvariantCulture;
+            var values=new List<string>{
                 RenderSettings.fog.ToString(),RenderSettings.fogMode.ToString(),
                 JsonUtility.ToJson(RenderSettings.fogColor),
-                RenderSettings.fogDensity.ToString("R",System.Globalization.CultureInfo.InvariantCulture),
-                RenderSettings.fogStartDistance.ToString("R",System.Globalization.CultureInfo.InvariantCulture),
-                RenderSettings.fogEndDistance.ToString("R",System.Globalization.CultureInfo.InvariantCulture)});
+                RenderSettings.fogDensity.ToString("R",invariant),
+                RenderSettings.fogStartDistance.ToString("R",invariant),
+                RenderSettings.fogEndDistance.ToString("R",invariant),
+                RenderSettings.ambientMode.ToString(),JsonUtility.ToJson(RenderSettings.ambientLight),
+                RenderSettings.ambientIntensity.ToString("R",invariant)};
+            var probe=RenderSettings.ambientProbe;
+            for(int channel=0;channel<3;channel++)
+                for(int coefficient=0;coefficient<9;coefficient++)
+                    values.Add(probe[channel,coefficient].ToString("R",invariant));
+            return string.Join("|",values);
         }
         static void VerifySingleBastionPerimeter(DailyTreasurePanel panel,
             int width,int height,Report report)
@@ -593,8 +603,12 @@ namespace Eldoria.DailyTreasures.Editor
                             "a painted extra gate is forbidden");
                         VerifyLiveBastionTexture(panel,width,height);
                         VerifySingleBastionPerimeter(panel,width,height,report);
-                        Require(EnvironmentSignature()==environmentBefore,
-                            "One-shot cinema leaked fog into the actual source world");
+                        Require(EnvironmentSignature()==environmentBefore &&
+                            DailyTreasureBastionCamera.LastSceneStateRestored &&
+                            DailyTreasureBastionCamera.LastStudioRendererCount>0,
+                            "Studio capture failed to restore actual source renderer layers, lights or ambient/fog state");
+                        report.actualBuiltStudioProofs++;
+                        report.bastionPresentationMethod=DailyTreasureBastionCamera.PresentationMethod;
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         ProveNativeBastionSilhouette(panel,report);
@@ -623,8 +637,12 @@ namespace Eldoria.DailyTreasures.Editor
                             "milestone:bastion:visual-only");
                         VerifyLiveBastionTexture(panel,width,height);
                         VerifySingleBastionPerimeter(panel,width,height,report);
-                        Require(EnvironmentSignature()==environmentBefore,
-                            "One-shot cinema leaked fog into the actual source world");
+                        Require(EnvironmentSignature()==environmentBefore &&
+                            DailyTreasureBastionCamera.LastSceneStateRestored &&
+                            DailyTreasureBastionCamera.LastStudioRendererCount>0,
+                            "Studio capture failed to restore actual source renderer layers, lights or ambient/fog state");
+                        report.actualBuiltStudioProofs++;
+                        report.bastionPresentationMethod=DailyTreasureBastionCamera.PresentationMethod;
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
                         ProveNativeBastionSilhouette(panel,report);

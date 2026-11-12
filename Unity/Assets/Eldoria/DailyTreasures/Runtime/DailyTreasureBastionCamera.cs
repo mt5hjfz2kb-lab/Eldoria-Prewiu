@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -15,6 +16,9 @@ namespace Eldoria.DailyTreasures
     public static class DailyTreasureBastionCamera
     {
         public const string SceneKey="RealBastion/LiveAuthenticatedCamera";
+        public const string PresentationMethod="ACTUAL_BUILT_GEOMETRY_SCOPED_STUDIO";
+        public static bool LastSceneStateRestored { get; private set; }
+        public static int LastStudioRendererCount { get; private set; }
 
         // The saved city supports TWO genuine views, and tier V has a
         // different ACTIVE real model, not BastionTwo! The old resolver
@@ -67,21 +71,21 @@ namespace Eldoria.DailyTreasures
         }
 
         static bool TryCaptureOwner(object owner,Camera camera,
-            string[] slots,out Bounds bounds)
+            string[] slots,out Bounds bounds,out GameObject root)
         {
-            bounds=default;
+            bounds=default;root=null;
             if(owner==null||!camera)return false;
             foreach(var name in slots)
             {
                 var building=ReadMember(owner,name) as GameObject;
-                if(TryActiveBounds(building,camera,out bounds))return true;
+                if(TryActiveBounds(building,camera,out bounds)){root=building;return true;}
             }
             return false;
         }
 
-        static bool Resolve(out Camera source,out Bounds bounds)
+        static bool Resolve(out Camera source,out Bounds bounds,out GameObject root)
         {
-            source=null;bounds=default;
+            source=null;bounds=default;root=null;
             var components=UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
             bool pendingCanonicalTierFive=false;
@@ -122,7 +126,7 @@ namespace Eldoria.DailyTreasures
                             new object[]{"bastion"}) as GameObject;
                     }
                     if(TryActiveBounds(tierFive,camera,out bounds))
-                    {source=camera;return true;}
+                    {source=camera;root=tierFive;return true;}
                 }
                 if(builtLevel>=5)
                 {
@@ -135,13 +139,13 @@ namespace Eldoria.DailyTreasures
                 {
                     // Real owned world geometry, not invented fake castle.
                     if(TryCaptureOwner(item,camera,
-                       new[]{"WorldBastionTwo","WorldBastionOne"},out bounds))
+                       new[]{"WorldBastionTwo","WorldBastionOne"},out bounds,out root))
                     {source=camera;return true;}
                 }
                 else
                 {
                     if(TryCaptureOwner(city,camera,
-                       new[]{"BastionTwo","BastionOne"},out bounds))
+                       new[]{"BastionTwo","BastionOne"},out bounds,out root))
                     {source=camera;return true;}
                 }
             }
@@ -163,7 +167,7 @@ namespace Eldoria.DailyTreasures
                 if(SavedBastionLevel(item)>=5)continue;
                 var camera=ReadMember(item,"PlayerCamera") as Camera;
                 if(TryCaptureOwner(item,camera,
-                   new[]{"BastionTwo","BastionOne"},out bounds))
+                   new[]{"BastionTwo","BastionOne"},out bounds,out root))
                 {source=camera;return true;}
             }
             Debug.LogWarning(
@@ -183,12 +187,12 @@ namespace Eldoria.DailyTreasures
             var heading=Vector3.ProjectOnPlane(-camera.transform.forward,Vector3.up);
             if(heading.sqrMagnitude<.0001f)heading=Vector3.forward;
             heading.Normalize();
-            heading=Quaternion.AngleAxis(18f,Vector3.up)*heading;
-            const float elevationDegrees=36f;
+            heading=Quaternion.AngleAxis(35f,Vector3.up)*heading;
+            const float elevationDegrees=24f;
             float elevation=elevationDegrees*Mathf.Deg2Rad;
             var away=heading*Mathf.Cos(elevation)+Vector3.up*Mathf.Sin(elevation);
             camera.orthographic=false;camera.usePhysicalProperties=false;
-            camera.fieldOfView=38f;
+            camera.fieldOfView=32f;
             camera.ResetProjectionMatrix();camera.ResetWorldToCameraMatrix();
             camera.transform.rotation=Quaternion.LookRotation(-away,Vector3.up);
             float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
@@ -239,17 +243,161 @@ namespace Eldoria.DailyTreasures
             readonly FogMode mode;
             readonly Color color;
             readonly float density,start,end;
+            readonly AmbientMode ambientMode;
+            readonly Color ambientLight;
+            readonly float ambientIntensity;
+            readonly SphericalHarmonicsL2 ambientProbe;
             public FogSnapshot(bool capture)
             {
                 enabled=RenderSettings.fog;mode=RenderSettings.fogMode;
                 color=RenderSettings.fogColor;density=RenderSettings.fogDensity;
                 start=RenderSettings.fogStartDistance;end=RenderSettings.fogEndDistance;
+                ambientMode=RenderSettings.ambientMode;ambientLight=RenderSettings.ambientLight;
+                ambientIntensity=RenderSettings.ambientIntensity;ambientProbe=RenderSettings.ambientProbe;
             }
             public void Restore()
             {
                 RenderSettings.fog=enabled;RenderSettings.fogMode=mode;
                 RenderSettings.fogColor=color;RenderSettings.fogDensity=density;
                 RenderSettings.fogStartDistance=start;RenderSettings.fogEndDistance=end;
+                RenderSettings.ambientMode=ambientMode;RenderSettings.ambientLight=ambientLight;
+                RenderSettings.ambientIntensity=ambientIntensity;RenderSettings.ambientProbe=ambientProbe;
+            }
+        }
+
+        // A presentation of the CURRENT constructed mesh, not another castle
+        // or a photograph. No source mesh, material, transform or player state
+        // is changed. Re-layer only the live renderers for this synchronous GPU
+        // request, then restore every original layer and source light state.
+        sealed class ActualBuiltStudio : IDisposable
+        {
+            readonly Dictionary<GameObject,int> layers=new Dictionary<GameObject,int>();
+            readonly Dictionary<Light,bool> lights=new Dictionary<Light,bool>();
+            readonly GameObject root;
+            readonly int layer;
+            GameObject plinth,key,fill;
+            Mesh mesh;
+            Material material;
+            public int RendererCount { get; private set; }
+            public int Mask=>1<<layer;
+            public bool Restored { get; private set; }
+            public ActualBuiltStudio(GameObject built)
+            {
+                root=built;
+                var occupied=new HashSet<int>();
+                foreach(var t in UnityEngine.Object.FindObjectsByType<Transform>(
+                    FindObjectsInactive.Include,FindObjectsSortMode.None))
+                    if(t)occupied.Add(t.gameObject.layer);
+                int chosen=-1;
+                for(int candidate=31;candidate>=8;candidate--)
+                    if(!occupied.Contains(candidate)){chosen=candidate;break;}
+                if(chosen<0)throw new InvalidOperationException("NO_PRIVATE_STUDIO_RENDER_LAYER");
+                layer=chosen;
+                foreach(var r in built.GetComponentsInChildren<Renderer>(true))
+                    if(r && r.enabled && r.gameObject.activeInHierarchy)
+                    {layers[r.gameObject]=r.gameObject.layer;RendererCount++;}
+                if(RendererCount<1)throw new InvalidOperationException("NO_ACTUAL_BUILT_STUDIO_GEOMETRY");
+                foreach(var light in UnityEngine.Object.FindObjectsByType<Light>(
+                    FindObjectsInactive.Include,FindObjectsSortMode.None))
+                    if(light)lights[light]=light.enabled;
+            }
+            public void Begin(Bounds bounds,Camera camera)
+            {
+                foreach(var item in layers)item.Key.layer=layer;
+                // Exclude the broad gameplay sun from this one snapshot.
+                // Real torch lights owned by this actual building stay real.
+                foreach(var item in lights)
+                    if(item.Key && !item.Key.transform.IsChildOf(root.transform))
+                        item.Key.enabled=false;
+                RenderSettings.ambientMode=AmbientMode.Flat;
+                RenderSettings.ambientLight=new Color(.16f,.18f,.23f,1f);
+                RenderSettings.ambientIntensity=.65f;
+                var sh=new SphericalHarmonicsL2();
+                sh.AddAmbientLight(new Color(.16f,.18f,.23f,1f));
+                RenderSettings.ambientProbe=sh;
+                BuildPlinth(bounds);
+                float radius=Mathf.Max(1f,bounds.extents.magnitude);
+                key=new GameObject("Bastion studio / scoped warm physical key");
+                key.layer=layer;var main=key.AddComponent<Light>();
+                main.type=LightType.Directional;main.color=new Color(1f,.89f,.72f);
+                main.intensity=1.65f;main.cullingMask=Mask;
+                main.shadows=LightShadows.Soft;main.shadowStrength=.72f;
+                main.shadowBias=.04f;main.shadowNormalBias=.20f;
+                var keyPosition=bounds.center-camera.transform.forward*radius+
+                    camera.transform.right*(-radius*.9f)+Vector3.up*radius*1.4f;
+                key.transform.rotation=Quaternion.LookRotation(bounds.center-keyPosition,Vector3.up);
+                fill=new GameObject("Bastion studio / scoped cool edge reflection");
+                fill.layer=layer;var edge=fill.AddComponent<Light>();
+                edge.type=LightType.Point;edge.color=new Color(.48f,.61f,.82f);
+                edge.intensity=1.15f;edge.range=radius*4f;
+                edge.cullingMask=Mask;edge.shadows=LightShadows.None;
+                fill.transform.position=bounds.center+camera.transform.right*radius+
+                    Vector3.up*radius*.55f+camera.transform.forward*radius*.25f;
+                camera.cullingMask=Mask;
+            }
+            void BuildPlinth(Bounds bounds)
+            {
+                // Neutral ceremonial display geometry, not a city building.
+                // The current real foundation and all source details remain.
+                const int segments=80;
+                float radius=Mathf.Max(bounds.extents.x,bounds.extents.z)*1.18f;
+                float depth=Mathf.Max(.12f,bounds.size.y*.045f);
+                var vertices=new List<Vector3>();var normals=new List<Vector3>();
+                var uv=new List<Vector2>();var triangles=new List<int>();
+                float top=bounds.min.y-.025f;
+                Vector3 center=new Vector3(bounds.center.x,top,bounds.center.z);
+                for(int i=0;i<segments;i++)
+                {
+                    float a=i*Mathf.PI*2f/segments,b=(i+1)*Mathf.PI*2f/segments;
+                    var na=new Vector3(Mathf.Cos(a),0f,Mathf.Sin(a));
+                    var nb=new Vector3(Mathf.Cos(b),0f,Mathf.Sin(b));
+                    var ta=center+na*radius;var tb=center+nb*radius;
+                    int n=vertices.Count;
+                    vertices.Add(center);vertices.Add(tb);vertices.Add(ta);
+                    normals.Add(Vector3.up);normals.Add(Vector3.up);normals.Add(Vector3.up);
+                    uv.Add(new Vector2(.5f,.5f));uv.Add(new Vector2(nb.x*.5f+.5f,nb.z*.5f+.5f));
+                    uv.Add(new Vector2(na.x*.5f+.5f,na.z*.5f+.5f));
+                    triangles.Add(n);triangles.Add(n+1);triangles.Add(n+2);
+                    n=vertices.Count;
+                    vertices.Add(ta);vertices.Add(tb);vertices.Add(ta-Vector3.up*depth);vertices.Add(tb-Vector3.up*depth);
+                    normals.Add(na);normals.Add(nb);normals.Add(na);normals.Add(nb);
+                    uv.Add(new Vector2(0,1));uv.Add(new Vector2(1,1));uv.Add(Vector2.zero);uv.Add(Vector2.right);
+                    triangles.Add(n);triangles.Add(n+1);triangles.Add(n+2);
+                    triangles.Add(n+1);triangles.Add(n+3);triangles.Add(n+2);
+                }
+                mesh=new Mesh{name="Bastion studio / neutral display plinth only"};
+                mesh.SetVertices(vertices);mesh.SetNormals(normals);mesh.SetUVs(0,uv);mesh.SetTriangles(triangles,0);
+                mesh.RecalculateBounds();
+                var shader=Shader.Find("Universal Render Pipeline/Lit");
+                if(!shader)throw new InvalidOperationException("STUDIO_LIT_SHADER_UNAVAILABLE");
+                material=new Material(shader){name="Bastion studio / transient matte charcoal"};
+                material.SetColor("_BaseColor",new Color(.075f,.067f,.060f,1f));
+                material.SetFloat("_Metallic",.12f);material.SetFloat("_Smoothness",.22f);
+                plinth=new GameObject("Bastion studio / temporary ceremonial display");
+                plinth.layer=layer;plinth.hideFlags=HideFlags.HideAndDontSave;
+                plinth.AddComponent<MeshFilter>().sharedMesh=mesh;
+                var renderer=plinth.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial=material;renderer.receiveShadows=true;
+                renderer.shadowCastingMode=ShadowCastingMode.On;
+            }
+            public void Dispose()
+            {
+                bool exact=true;
+                foreach(var item in layers)
+                {
+                    if(!item.Key){exact=false;continue;}
+                    item.Key.layer=item.Value;
+                    exact&=item.Key.layer==item.Value;
+                }
+                foreach(var item in lights)
+                {
+                    if(!item.Key){exact=false;continue;}
+                    item.Key.enabled=item.Value;
+                    exact&=item.Key.enabled==item.Value;
+                }
+                DestroyTemporary(plinth);DestroyTemporary(key);DestroyTemporary(fill);
+                DestroyTemporary(mesh);DestroyTemporary(material);
+                Restored=exact;
             }
         }
 
@@ -302,7 +450,8 @@ namespace Eldoria.DailyTreasures
         public static RenderTexture Capture(float panelWidth,float panelHeight,out Rect subjectViewport)
         {
             subjectViewport=default;
-            if(!Resolve(out var source,out var bounds))return null;
+            LastSceneStateRestored=false;LastStudioRendererCount=0;
+            if(!Resolve(out var source,out var bounds,out var builtRoot))return null;
             bool portrait=panelHeight>panelWidth;
             // Render the ACTUAL city at the same shape as the visible
             // cathedral-sized ceremony, not a 3:2 fixed photo cropped again
@@ -325,6 +474,7 @@ namespace Eldoria.DailyTreasures
             Camera camera=null;
             GameObject cameraObject=null,lightObject=null,volumeObject=null;
             VolumeProfile ceremonyProfile=null;
+            ActualBuiltStudio studio=null;
             var environmentBefore=new FogSnapshot(true);
             var previous=RenderTexture.active;
             try
@@ -344,6 +494,8 @@ namespace Eldoria.DailyTreasures
                 camera.allowHDR=true;
                 camera.allowMSAA=false;
                 Frame(camera,bounds,stage,photoWidth,photoHeight,out subjectViewport);
+                studio=new ActualBuiltStudio(builtRoot);
+                studio.Begin(bounds,camera);LastStudioRendererCount=studio.RendererCount;
                 // The entire Eldoria project runs URP 17.3.0. Unity's
                 // Camera.Render() is NOT the supported out-of-loop route in
                 // the Scriptable Render Pipeline. Use the official Unity 6
@@ -453,6 +605,7 @@ namespace Eldoria.DailyTreasures
             finally
             {
                 RenderTexture.active=previous;
+                if(studio!=null){studio.Dispose();LastSceneStateRestored=studio.Restored;}
                 environmentBefore.Restore();
                 // Deactivate the global volume before deferred PlayMode
                 // destruction; subsequent real player cameras keep their

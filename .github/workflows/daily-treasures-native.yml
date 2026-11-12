@@ -484,6 +484,8 @@ jobs:
              $report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or
              $report.pr173Integrated -ne $false -or $report.iosVerified -ne $false -or
              $report.sceneEnvironmentRestored -ne $true -or $report.bastionPerimeterProofs -ne 8 -or
+             $report.actualBuiltStudioProofs -ne 8 -or
+             $report.bastionPresentationMethod -ne 'ACTUAL_BUILT_GEOMETRY_SCOPED_STUDIO' -or
              $report.realGatewayClaims -ne 0){
             throw 'Actual city art proof missing or falsely claims live game/PR173/earned reward'
           }
