@@ -1,9 +1,9 @@
-# Byte-identical actual resource Unity images for visual review; no Windows
+# Immutable CPU-only review of completed continuous genuine Bastion batch
 state=REVIEW_EXISTING_NATIVE_ARTIFACT
-review_kind=issue186_components
-review_run_id=43140520652
-review_artifact_id=13910600234
-review_source_sha=f10753af14c87d0aa293c6d96b25158878896f61
+review_kind=daily_bastion
+review_run_id=43142677773
+review_artifact_id=13910173251
+review_source_sha=8c1f9074ec045cde746dcec4f8c9160db01ba520
 art_approved=false
 merge_or_publish=false
-request_time_utc=2026-11-12T02:33:38.664Z
+request_time_utc=2026-11-12T02:53:31.153Z
