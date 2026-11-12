@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 33,
-  "action": "click_text",
-  "proof_sha256": "a9552c740f7c24ad327af895feabb2b1c290953466cbb05ca63dbc5942d47d88",
-  "label": "ENTRENAR 4 ARQUEROS T1"
+  "sequence": 34,
+  "action": "click_point",
+  "proof_sha256": "45918e356405f5cb8c95a8ce0a8cd69443dfeb48fc4ae569ea24b1e67d29ec3b",
+  "x": 80,
+  "y": 797,
+  "guard_texts": [
+    "VOLVER A LA",
+    "Disponibles T1 56 • Entrenando 4"
+  ],
+  "reason": "Frame033 verifies the paid four-archer training with01:59 remaining; return through the observed city button while its real UTC deadline continues."
 }
