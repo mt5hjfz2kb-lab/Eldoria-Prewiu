@@ -35,6 +35,7 @@ jobs:
           node-version: '22'
       - name: Validate exact GitHub Pages QA Edge source without Unity or paid services
         run: |
+          node --check tools/eldoria-private-beta/pages/edge-mobile16-qa.mjs
           node --check tools/eldoria-private-beta/pages/edge-function.mjs
           node --check tools/eldoria-private-beta/pages/client.mjs
           node --check tools/eldoria-private-beta/pages/signal-parser.mjs
@@ -61,3 +62,42 @@ jobs:
           if(response.status!==202)throw Error('Supabase QA edge did not persist event, status '+response.status+': '+(await response.text()).slice(0,120));
           console.log('ELDORIA_PAGES_SUPABASE_REAL_QA_202',event.client_event_id);
           JS
+
+      - name: Verify dedicated current Mobile16 QA transport without claiming a Unity journey
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import {randomUUID,createHash} from 'node:crypto';
+          const client=fs.readFileSync('tools/eldoria-private-beta/pages/client.mjs','utf8');
+          const key=client.match(/export const PUBLISHABLE='([^']+)'/)?.[1];
+          if(!key)throw Error('Existing public client key missing');
+          const source=fs.readFileSync('tools/eldoria-private-beta/pages/edge-mobile16-qa.mjs','utf8');
+          const event={client_event_id:randomUUID(),tester_id:randomUUID(),session_id:randomUUID(),
+            event_name:'world_opened',device_type:'other',elapsed_ms:0,
+            payload:{reason_code:'TRANSPORT_FIXTURE_NOT_UNITY'},consent_given:true};
+          const origin='https://mt5hjfz2kb-lab.github.io';
+          const checks=[];
+          async function send(label,body,expected,requestOrigin=origin){
+            const r=await fetch('https://eavaxwpxxcrwibooiimb.supabase.co/functions/v1/eldoria-mobile16-events-qa',{
+              method:'POST',headers:{Origin:requestOrigin,apikey:key,'Content-Type':'application/json'},
+              body:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(20000)});
+            checks.push({case:label,status:r.status,expected});
+            if(r.status!==expected)throw Error('Mobile16 QA transport '+label+' status '+r.status);
+          }
+          await send('no_consent',{...event,consent_given:false},422);
+          await send('spoofed_source',{...event,source_sha:'forged'},422);
+          await send('wrong_origin',event,403,'https://example.invalid');
+          await send('accepted',event,202);
+          await send('same_uuid_retry',event,202);
+          fs.writeFileSync('mobile16-qa-transport.json',JSON.stringify({
+            synthetic_transport_only:true,not_unity_journey:true,source_sha:process.env.GITHUB_SHA,
+            edge_source_sha256:createHash('sha256').update(source).digest('hex'),event,checks
+          },null,2));
+          console.log('ELDORIA_MOBILE16_QA_REAL_202_AND_REJECTIONS',event.client_event_id);
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile16-qa-transport-${{ github.sha }}
+          path: mobile16-qa-transport.json
+          if-no-files-found: warn
