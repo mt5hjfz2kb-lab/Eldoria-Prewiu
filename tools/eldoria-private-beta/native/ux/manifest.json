@@ -20,7 +20,7 @@
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
       "overlay": "ValoriaJourneyGuidance.cs.txt",
       "baseline_sha256": "882b6170c3bdda74f4bfd9c47632f7d9c61914f2f0f5c5b4cb577610000a183e",
-      "candidate_sha256": "2b6925d8d4d8af986f7beda0c0997bda0b37eb368ab326bbc04fd7b36cb48de8"
+      "candidate_sha256": "8ef6aadd66462c193614ae4fe5f3cff7a7c11b59fd542d8bf1292b8cde301e83"
     },
     {
       "path": "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",

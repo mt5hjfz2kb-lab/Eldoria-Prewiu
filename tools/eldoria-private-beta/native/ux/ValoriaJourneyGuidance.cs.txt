@@ -276,9 +276,8 @@ namespace Eldoria.ReferenceClean {
     });return;
    }
    if(id=="valoria-map-city"){host.SetWorld(false);city.Home();return;}
-   bool town=!ValoriaIntegratedWorld.IsWorldTarget(id);
-   if(!host.TrySetWorld(!town))return;
-   host.Select(id);Refresh();
+   if(!host.NavigateToObjective(id))return;
+   Refresh();
   }
   public void ShowStory(){
    if(host?.Hud?.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>()?.IsBlockingNarrative==true)return;

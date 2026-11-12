@@ -116,11 +116,19 @@ namespace Eldoria.BetaMemory.Tests
                     Call(gateway,"Advance");
                     yield return null;
                 }
-                Assert.That((bool)Call(host,"TrySetWorld",true),Is.False,
-                    "Incomplete Region 1 must never appear through the world camera");
+                Assert.That((bool)Call(host,"NavigateToObjective","forest-valoria"),Is.False,
+                    "The actual quest navigation cannot expose an incomplete world");
                 Assert.That((bool)Member(adapter,"IsLoading"),Is.True);
-                Assert.That((bool)Call(host,"TrySetWorld",true),Is.False,
-                    "Repeated tap must join the same in-flight load, not install twice");
+                Assert.That((bool)Call(host,"NavigateToObjective","quarry-valoria"),Is.False,
+                    "A second objective must replace the target in the same in-flight load");
+                Assert.That((bool)Call(host,"TrySetWorld",false),Is.True,
+                    "Returning to the city must cancel the pending entry and target");
+                yield return null;
+                Assert.That((bool)Member(host,"InWorld"),Is.False,
+                    "A cancelled coroutine must never force the world open");
+                Assert.That((bool)Call(host,"NavigateToObjective","forest-valoria"),Is.False);
+                Assert.That((bool)Call(host,"NavigateToObjective","quarry-valoria"),Is.False,
+                    "A new request can rejoin the same background load after cancellation");
                 Assert.That((bool)Member(host,"InWorld"),Is.False);
                 Assert.That(world.activeInHierarchy,Is.False);
                 Assert.That(camera.enabled,Is.False);
@@ -139,6 +147,8 @@ namespace Eldoria.BetaMemory.Tests
                     "Eligible first request must enter full world automatically");
                 Assert.That(world.activeInHierarchy,Is.True);
                 Assert.That(camera.enabled,Is.True);
+                Assert.That((string)Member(host,"Selected"),Is.EqualTo("quarry-valoria"),
+                    "First deferred quest entry must select its latest target without another tap");
                 Assert.That(world.transform.Find("Region 1 canonical continuous geography"),Is.Not.Null);
                 Assert.That(world.transform.Cast<Transform>()
                     .Count(x=>x.name=="Region 1 canonical continuous geography"),Is.EqualTo(1),

@@ -58,6 +58,7 @@ namespace Eldoria.ReferenceClean {
 #endif
   public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe||P0LazyWorldProbe);
   bool deferredWorldEntryQueued;
+  string deferredWorldObjective;
   int deferredWorldEpoch;
   IEnumerator EnterWorldAfterDeferredBuild(int epoch)
   {
@@ -68,9 +69,10 @@ namespace Eldoria.ReferenceClean {
     yield return null;
    if(!this||!deferredWorldEntryQueued||epoch!=deferredWorldEpoch)yield break;
    deferredWorldEntryQueued=false;
+   var objective=deferredWorldObjective;deferredWorldObjective=null;
    if(worldPresentation&&worldPresentation.IsReady){
     Debug.Log("ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY");
-    TrySetWorld(true);
+    if(TrySetWorld(true)&&!string.IsNullOrEmpty(objective))Select(objective);
    }else if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
   }
   public bool English=>englishInterface;
@@ -382,8 +384,27 @@ namespace Eldoria.ReferenceClean {
   void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2&&state.BastionLevel<5);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
   void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;city.Presenter.ExternalNavigationOwned=false;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public static bool CanEnterWorld(PlayerState s)=>s!=null&&(s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost);
+  // A quest may request a target while the first real Region 1 is still loading.
+  // Keep only the most recent request; city navigation cancels its epoch.
+  public bool NavigateToObjective(string id){
+   if(!Ready||string.IsNullOrEmpty(id))return false;
+   if(!IsWorldTarget(id)){
+    deferredWorldObjective=null;
+    if(!TrySetWorld(false))return false;
+    return Select(id);
+   }
+   if(TrySetWorld(true)){
+    deferredWorldObjective=null;
+    return Select(id);
+   }
+   if(deferredWorldEntryQueued)deferredWorldObjective=id;
+   return false;
+  }
   public bool Select(string id){
    if(!Ready)return false;
+   if(deferredWorldEntryQueued&&id!="gate"&&!IsWorldTarget(id)){
+    deferredWorldEntryQueued=false;deferredWorldEpoch++;deferredWorldObjective=null;
+   }
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
@@ -407,7 +428,10 @@ namespace Eldoria.ReferenceClean {
     Hud.Feedback.Put(L("Construye primero el aserradero. Pulsa «Ir al objetivo» para encontrar la parcela.","Build the sawmill first. Choose Go to objective to find its plot."));
     Hud.SelectBuilding("sawmill");return false;
    }
-   if(!open&&deferredWorldEntryQueued){deferredWorldEntryQueued=false;deferredWorldEpoch++;}
+   if(!open){
+    deferredWorldObjective=null;
+    if(deferredWorldEntryQueued){deferredWorldEntryQueued=false;deferredWorldEpoch++;}
+   }
    if(open&&P0LazyWorldProbe){
     // Never expose camera or enemy targets before complete canonical installation.
     if(!worldPresentation){if(Hud)Hud.Feedback.Put("Preparando el acceso al mundo.");return false;}

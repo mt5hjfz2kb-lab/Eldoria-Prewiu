@@ -4,14 +4,14 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-central-art-execution-20261111",
-  "ownership_revision": 49,
+  "ownership_revision": 51,
   "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
-    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "1aaacfb5a3338f67f24bcaf12558a3abe8f36382",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
-    "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs": "528f7d43f5b1a6ef75823ef2f2863439e50799bc",
+    "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs": "980345eb2d92dea2b2d05f543c0170ed1fd460ee",
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/Eldoria.BetaMemory.Tests.PlayMode.asmdef": "23007a85f8592885f4c98b51e1dcee6b37c75715",
-    "tools/eldoria-private-beta/native/ux/manifest.json": "9271f232179b22d53cba053823a746faae62a53f",
+    "tools/eldoria-private-beta/native/ux/manifest.json": "e03d5e1c268bead9760dd5b4a10c812bb0848f0e",
     "tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1": "eb0a02bcb46aaa5e83f324c77c040521ab8a4091",
     "tools/eldoria-private-beta/native/recover_isolated.ps1": "0010d6ce9e6de0b7abc62f492da4edccd7369762",
     "tools/eldoria-private-beta/native/existing-input-audit.json": "7985cbc286c6354385aae4ddf67c3d34bba59e03",
@@ -30,15 +30,17 @@
     "tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt": "276dae624d10ff0554becdf1557dae378df573d6",
     "tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt": "61c79f507a10b6b4ae1b177a43805b7b332938c8",
     "tools/eldoria-private-beta/native/ux/RoyalGoldV2Hud.cs.txt": "f0842121c0980bd25e966fdd84dfdfa9b048f91f",
-    "tools/eldoria-private-beta/native/ux/PretestUXProbe.cs": "5a24412d7105240bd452462dbfadd63f4e955361"
+    "tools/eldoria-private-beta/native/ux/PretestUXProbe.cs": "5a24412d7105240bd452462dbfadd63f4e955361",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs": "407f5a87cc07f5c7f4ba3617fb8a6e3dbcda5f10",
+    "tools/eldoria-private-beta/native/ux/ValoriaJourneyGuidance.cs.txt": "15429aa8e37c68c6dbd08d14e9f6aac5b51e2794"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
   "full_world_iphone_verified": false,
   "external_testers_enabled": false,
   "publish_allowed": false,
-  "scope": "Unpublished same lazy-world engine with actual barracks training caption line-box correction and native glyph/input proof; no art integration, no deployment or tester invitation.",
-  "next": "Exclusive49 mainf10b5ce1a05aad76a0921eae48a4bf9300803639. Existing115inputsha preserved. Actual PretestUXProbe requires entire Entrenar glyphs at390x844+844x390 and genuine existing training-choice click, alongside standard real lazy PlayMode/terrain/BastionI-V/WebGL. Unpublished owner-onlyartifact; no release, mainart, externaltesters orphysicalphone claims. Release Windows only after clean native exit while Mac/site proof can continue.",
-  "source_before_request": "d7d2e9301e3bba6227811d05e361deb73205dd4b",
-  "request_time_utc": "2026-11-12T11:41:38.502Z"
+  "scope": "Unpublished correction for observed first deferred quest selection loss: preserve latest target, cancel on city navigation, real lazy-world native cancellation/reselection/single-HUD test; preserve clocks, art and save schema.",
+  "next": "Exclusive51 main181f272c16b3fd7f9953db140e70df78ebdf2f28 after completed resources native218/21878/78. Run actual lazy quest target/cancel/reselect, existing12reentry and real disk reload, original115input restoration, normal terrain/BastionI-V/WebGL. No public deployment, art main or tester invitation. Release Windows after clean native batch.",
+  "source_before_request": "f85ea1ef4a774b06e083bdee8a65c2ca7fe41e81",
+  "request_time_utc": "2026-11-12T15:16:42.036Z"
 }
