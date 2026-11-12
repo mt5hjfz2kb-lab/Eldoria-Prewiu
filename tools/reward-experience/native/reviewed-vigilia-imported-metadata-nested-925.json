@@ -1,0 +1,395 @@
+{
+  "nativeRun": 43155182543,
+  "auditRun": 43156972822,
+  "artifact": 13913127003,
+  "uiSource": "92596b1550fcb2722fb582639bc05c24a7c6a7a8",
+  "role": "EXACT_REVIEWED_TEMPORARY_UI_METADATA_RESTORE_ONLY",
+  "files": [
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/action_antique_bronze.png.meta",
+      "current": "ede21f365fe26a7403ff963536df3b610b9bd42f3c72e411343b679065786c95",
+      "installed": "601b0eaad080719b72676b27e9f8db2839cce5b7e3e4d6ce13374c17a0658a27",
+      "original": "ede21f365fe26a7403ff963536df3b610b9bd42f3c72e411343b679065786c95"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ApprovedContour/owner_gold_border.png.meta",
+      "current": "48a6c6bbfbc9ce4e61c8deef8888b2f49b1db855c4de062a9804f99dfcd25f77",
+      "installed": "7f79e45ce9ccfef31d26b4d776d2d92176ed12bb6c5fd901163c2f2a22f15d66",
+      "original": "48a6c6bbfbc9ce4e61c8deef8888b2f49b1db855c4de062a9804f99dfcd25f77"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom.meta",
+      "current": "ea92ac019270da57b311e471d30c90e69da74b75be4adb7ddc3d435e88f13338",
+      "installed": "ea92ac019270da57b311e471d30c90e69da74b75be4adb7ddc3d435e88f13338",
+      "original": "ea92ac019270da57b311e471d30c90e69da74b75be4adb7ddc3d435e88f13338"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/cleanroom_preview.jpg.meta",
+      "current": "063a86ce5d45d36105013e89e8db1f99dd62d46cff7dc9573ce5578c14881e85",
+      "installed": "063a86ce5d45d36105013e89e8db1f99dd62d46cff7dc9573ce5578c14881e85",
+      "original": "063a86ce5d45d36105013e89e8db1f99dd62d46cff7dc9573ce5578c14881e85"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/manifest.json.meta",
+      "current": "e6cf46f7a856f51f431afc545284ab51935fc66b0f6e3ba5a837cc042cf71823",
+      "installed": "e6cf46f7a856f51f431afc545284ab51935fc66b0f6e3ba5a837cc042cf71823",
+      "original": "e6cf46f7a856f51f431afc545284ab51935fc66b0f6e3ba5a837cc042cf71823"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/mission.png.meta",
+      "current": "56d2dad31feb1c65ee64a79bdc16c1b20d526b0f4ccfda1dcdfbcdfc18bbb0be",
+      "installed": "2f37bdcf4bec1bf7db94cfc0bafa03515796701e98b3049d0d30f07b24c4cb7a",
+      "original": "56d2dad31feb1c65ee64a79bdc16c1b20d526b0f4ccfda1dcdfbcdfc18bbb0be"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_castle.png.meta",
+      "current": "8e555ffec8f6df44bfb5acf1f45f0c1f999189a4c39f6c0e8c7943bb0684424e",
+      "installed": "b51d81de6520a50c72b40c4a4a06dcf0ff391bdefbf6b0550eb740b44fa3bb39",
+      "original": "8e555ffec8f6df44bfb5acf1f45f0c1f999189a4c39f6c0e8c7943bb0684424e"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_helm.png.meta",
+      "current": "d8229a31c8aa8147a12c6220f3166c4a939ad93b65382e7f88ddb40f40f8b064",
+      "installed": "c538ef3bf3cb80048b8cc3b442232d5cd26c1609420d2cf01f0bb3bbc2ee8267",
+      "original": "d8229a31c8aa8147a12c6220f3166c4a939ad93b65382e7f88ddb40f40f8b064"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_provisions.png.meta",
+      "current": "dae94dfc0732970784bce983903584d8fb62e9b1ce00e152c851dc44ddd8b8ce",
+      "installed": "b9a6ee0e719c354a75ac6279b02d3003d706307677f294c372bda42dc8aaa3c6",
+      "original": "dae94dfc0732970784bce983903584d8fb62e9b1ce00e152c851dc44ddd8b8ce"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_raven.png.meta",
+      "current": "66914cb553e1c91a029db326a7456d4cd5f0a5f54fd3d56655a8f025ed04bae0",
+      "installed": "8addc224f3bc103534d1e9d378f907b9c2a8b0c7fa946b4c85fb5f026a2ce79b",
+      "original": "66914cb553e1c91a029db326a7456d4cd5f0a5f54fd3d56655a8f025ed04bae0"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_swords.png.meta",
+      "current": "ce9b8c27769404a9f2158c0f1331f2e4186527c9e8eec7dd30514c616e4e2e66",
+      "installed": "75da2ffcc857697b609faa6cb31388732deea1f0f5ec66e137a69d5f04d4e541",
+      "original": "ce9b8c27769404a9f2158c0f1331f2e4186527c9e8eec7dd30514c616e4e2e66"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/panel.png.meta",
+      "current": "96a58c1d2f654ec1b59ef168095e63cd19b65f807fe99aafc264467eec7cb909",
+      "installed": "23af301576ada1ab4fd0a6aabf78c572b5961dd260ab812346e1f7b800e2dc34",
+      "original": "96a58c1d2f654ec1b59ef168095e63cd19b65f807fe99aafc264467eec7cb909"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/profile.png.meta",
+      "current": "9a99b6b6ed4a57cd7e8bdff19b0aadb2a7e128b80495d0fb437d3cd8c6061f79",
+      "installed": "f805e331516b5c89e0939e7199af30ab0898e35aefc14c92202aaa9d864097fb",
+      "original": "9a99b6b6ed4a57cd7e8bdff19b0aadb2a7e128b80495d0fb437d3cd8c6061f79"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/resource.png.meta",
+      "current": "2b7d52e8406a2731ccea3769776aa72194dd865bb2b931cf5fff0105aaad0d22",
+      "installed": "b9f384c7f926d420b8e295c52cea7258b7338c2ade763bc7c0fa04b578c4247b",
+      "original": "2b7d52e8406a2731ccea3769776aa72194dd865bb2b931cf5fff0105aaad0d22"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png.meta",
+      "current": "bdddfe7c5cc036f8662582074403c61df6655faf85b4572f749d9347f1950abc",
+      "installed": "7a8d7804ecea8884f6d21e9c0ab6a8c97c0dc6bcc5a732fda630fe9a854c7317",
+      "original": "bdddfe7c5cc036f8662582074403c61df6655faf85b4572f749d9347f1950abc"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/building_panel.png.meta",
+      "current": "302ab7e7ab4ebc94634007d20b312063b2f64fc28d5b0ba52450e8ae298fa740",
+      "installed": "ad6865824b643ac9c404f41523c3358ca94161d5035eedf9b44468ac08fd0b5f",
+      "original": "302ab7e7ab4ebc94634007d20b312063b2f64fc28d5b0ba52450e8ae298fa740"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/castle.png.meta",
+      "current": "09ebd579a80cbc0e79cfb3d0bc067e14cd8d7ed6d6248055eb79b61478105e0a",
+      "installed": "9467a9ae3ed588e26d1824918cee307ef2a955dd9f4570574327a6aa40db60c4",
+      "original": "09ebd579a80cbc0e79cfb3d0bc067e14cd8d7ed6d6248055eb79b61478105e0a"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/food.png.meta",
+      "current": "6eceb169fbd671c82308803f2eef36859b903b13359833f4cf6d2ce9c1397312",
+      "installed": "73f38f528a445ca6572d8d861683c204990dd604c0078b64ded312652bf4616c",
+      "original": "6eceb169fbd671c82308803f2eef36859b903b13359833f4cf6d2ce9c1397312"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/helm.png.meta",
+      "current": "28a8d3d0f61976d716aa4d1de3867cbfccf663d11ae09f3d06e580511217a4a5",
+      "installed": "d08960d0fc15ed9e714700c80ae5cbafd2ba3110ab2b761d7e7d47c1b5217475",
+      "original": "28a8d3d0f61976d716aa4d1de3867cbfccf663d11ae09f3d06e580511217a4a5"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/manifest.json.meta",
+      "current": "7fbf25f0974b2d2f0b5576bf81f05b9e9c795c1cf2c8abdcda35a143922a5eef",
+      "installed": "7fbf25f0974b2d2f0b5576bf81f05b9e9c795c1cf2c8abdcda35a143922a5eef",
+      "original": "7fbf25f0974b2d2f0b5576bf81f05b9e9c795c1cf2c8abdcda35a143922a5eef"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/profile_panel.png.meta",
+      "current": "012205270ca7d8a767cf25489fb7dddb161b4ba7e91123f36b883d3e06659ae3",
+      "installed": "a685ca0415c6e5116735cc35769d35f8441bc168a2510290fb300f6212721294",
+      "original": "012205270ca7d8a767cf25489fb7dddb161b4ba7e91123f36b883d3e06659ae3"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/provisions.png.meta",
+      "current": "1009c346ac404ffce24d9de45ff3257211d3bcfe9070cb593e459a28aebe3987",
+      "installed": "1187f118be08ee2960d2feb5446d92b68a759ddd84642a20d2f825f842aaae41",
+      "original": "1009c346ac404ffce24d9de45ff3257211d3bcfe9070cb593e459a28aebe3987"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/quest_panel.png.meta",
+      "current": "5a382fe90f019c90b6614bcb43b83cc38b402fdb08ab5f5c0557a0b0ffec8c9f",
+      "installed": "94d020eff96a47f1369dbf5bf8d66904e6f1bc189e97e9ea70e85ba986ae9f29",
+      "original": "5a382fe90f019c90b6614bcb43b83cc38b402fdb08ab5f5c0557a0b0ffec8c9f"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/raven.png.meta",
+      "current": "1680ccf85d3eefba8b3637772572d29a406d8df123e9017b5d2dc8fd42d6e025",
+      "installed": "739d4fab91a1b9104e743cfbfe2721ffb6e894bdc66730904779440bef94f302",
+      "original": "1680ccf85d3eefba8b3637772572d29a406d8df123e9017b5d2dc8fd42d6e025"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/resource_chip.png.meta",
+      "current": "9ff3512acee40966b1f4a5ebbb559f2a1be3cc46d164bdd619c3fb32e77a6b47",
+      "installed": "a8fbe04965e777cede04620a0d5a3a78e2794a6ea8361c3a32531e7475bf0b2a",
+      "original": "9ff3512acee40966b1f4a5ebbb559f2a1be3cc46d164bdd619c3fb32e77a6b47"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/stone.png.meta",
+      "current": "e512a97675ecfcbf44c55d6b0bbc14420b3c75d7d8698c2b076251fc02078305",
+      "installed": "9d42a3783fd4925a7fe063ddebd4822072333a2e57c103a9fce69eb0fcf1902e",
+      "original": "e512a97675ecfcbf44c55d6b0bbc14420b3c75d7d8698c2b076251fc02078305"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/swords.png.meta",
+      "current": "652964bb8d4cdc34f49586b37a3babf8a2d3a33a4de49baa9cfff29b7173d6c6",
+      "installed": "826c9e926f91e695c99f019f4d86946ee9ab145375a5d830d85f16d8ec5f0c38",
+      "original": "652964bb8d4cdc34f49586b37a3babf8a2d3a33a4de49baa9cfff29b7173d6c6"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/upgrade_button.png.meta",
+      "current": "db677774da6a0f63b8e1fcbad73b5cb164bdf6156bed2c61a628b72ed95cea0d",
+      "installed": "912f69dac9223d81edd48089f6f29c2bdff8fcac606eecf21fc1291f8f2ccf03",
+      "original": "db677774da6a0f63b8e1fcbad73b5cb164bdf6156bed2c61a628b72ed95cea0d"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/wood.png.meta",
+      "current": "c5cc35614eb2dd474e5c3684431a29da2842a96823bec2aea8053a0eab786486",
+      "installed": "6da51d399a82a90b2f144181fb7cd910187bc19e582805bfe5aa408998fbf832",
+      "original": "c5cc35614eb2dd474e5c3684431a29da2842a96823bec2aea8053a0eab786486"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Heroes/canonical_lyra_illustration.png.meta",
+      "current": "fa04b122513b4cd5034cc917c8adedb7acfbde82a36e9bca0bc0cfd24f903d0b",
+      "installed": "f61c709b0a5b89c963e1401b2d3ae3dd3b4451f238f5c998847c628543964a5a",
+      "original": "fa04b122513b4cd5034cc917c8adedb7acfbde82a36e9bca0bc0cfd24f903d0b"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png.meta",
+      "current": "f909421c2d67683093db04a250f2192bb32cba5ef80d72f3050b52143782502c",
+      "installed": "3022a1f97e3f8acb517c955530537608c75c472eed92369915dee991558b30af",
+      "original": "f909421c2d67683093db04a250f2192bb32cba5ef80d72f3050b52143782502c"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/nav_sculpted_medallion.png.meta",
+      "current": "fe56b379fe317181595b4acbba812f0de30fe65986e443f6d57e21e65ffa6ff6",
+      "installed": "8c07c68ce52d36150697027db01b7f99e416ccd3ae4ca2096523147084384f79",
+      "original": "fe56b379fe317181595b4acbba812f0de30fe65986e443f6d57e21e65ffa6ff6"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/breach_signal.png.meta",
+      "current": "5d74e65cc8b0487e116e6a840a1be1cd26c4daecbc00fee98e4938b2aeb9accf",
+      "installed": "df7d0a29c6d641188c90fa8feff2394df5904eae9e6c9ca46a00b9baae429d5f",
+      "original": "5d74e65cc8b0487e116e6a840a1be1cd26c4daecbc00fee98e4938b2aeb9accf"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png.meta",
+      "current": "17cb59765927ecba966082949552ec29f7807c7b50b8abed920aac95452fa267",
+      "installed": "579881155bcf99c40225007c4558cdc74d30ea370a18d73e7876443d09fa03a1",
+      "original": "17cb59765927ecba966082949552ec29f7807c7b50b8abed920aac95452fa267"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/mission_plate.png.meta",
+      "current": "15306df09ded6709147412c95c8f28d6a86e8edb7a2048cd1ba5d055130fe885",
+      "installed": "5c5d37314086f49d9454be18bed6b46e619ffce5be190e11e5f1e6616c04ff00",
+      "original": "15306df09ded6709147412c95c8f28d6a86e8edb7a2048cd1ba5d055130fe885"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/profile_bar.png.meta",
+      "current": "296f80196d82a6e909cd300e8b8111eeb3ef15c414a7937c06c9a516d61b3a9b",
+      "installed": "8b77c7fb32111a690c14a471f7e8bb52f9ba56fba2a90e039a3d1aacb1eca90e",
+      "original": "296f80196d82a6e909cd300e8b8111eeb3ef15c414a7937c06c9a516d61b3a9b"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/resource_capsule.png.meta",
+      "current": "f1c215c5fca636e934a603da5e31b49c7a2d93b9f62337ec0d64796e5538cb94",
+      "installed": "831d47638d29f9f2f92a4dce82d398dc9dbbe202a4eba2a4a5e66cc1a32652c6",
+      "original": "f1c215c5fca636e934a603da5e31b49c7a2d93b9f62337ec0d64796e5538cb94"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/upgrade_button.png.meta",
+      "current": "b3a3396eb4cce2e812bff62b6508304e516045cd67717bfc78bdd7fe8c865d6f",
+      "installed": "656f816914a7e339bf8c7ef695865c8cf219a2aa275cccebb2faacad1afd7a02",
+      "original": "b3a3396eb4cce2e812bff62b6508304e516045cd67717bfc78bdd7fe8c865d6f"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/carved_context.png.meta",
+      "current": "03eaac8c0f289c5118f9f26395076e7991d1761d6451511eb1c6a0cec5fd8719",
+      "installed": "a7da7d096b3cbf1f47b81960596da4a6a66b6b3d1872bff36bf2121ae19e4ff9",
+      "original": "03eaac8c0f289c5118f9f26395076e7991d1761d6451511eb1c6a0cec5fd8719"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/castle.png.meta",
+      "current": "6ddead937d029a31332faab9c3c341e28de63612ee1b4f27721e167be3cb9f0c",
+      "installed": "f43c25c40a9579a87c72cd9755f31a1ac14e40ad7c1a53e210d4b65d11919bd9",
+      "original": "6ddead937d029a31332faab9c3c341e28de63612ee1b4f27721e167be3cb9f0c"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/helm.png.meta",
+      "current": "332cfa05209fedb8a098d7efbe61c6e08a4a2be0879bd5e2c83ade4eea581dd6",
+      "installed": "16fd634fe3fcaadd38a126deedfc9c5a634198c3c786a06b1b0c0ca9bfd93ea5",
+      "original": "332cfa05209fedb8a098d7efbe61c6e08a4a2be0879bd5e2c83ade4eea581dd6"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/lion_crest.png.meta",
+      "current": "91027fa4042337078b6d91caebd3e93d09f969884a832986104cdb003aa6213a",
+      "installed": "fcb484ca7fdd54678986d0a2d12591e7efcfbed310d1a47b5b203dcb8aa6444a",
+      "original": "91027fa4042337078b6d91caebd3e93d09f969884a832986104cdb003aa6213a"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/provisions.png.meta",
+      "current": "13ff002ced9bf66d641b3d455c6fad64c294a31d2a8e280357661a1f3b354924",
+      "installed": "737b0d3df88de0552badaf08a1aee9a00a9f697cce4f368ed616cf32742a4ff0",
+      "original": "13ff002ced9bf66d641b3d455c6fad64c294a31d2a8e280357661a1f3b354924"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/raven.png.meta",
+      "current": "1eb7f7964b57e74fbd9567770d75e01245576ff2066b359e95ab6ae2c8631395",
+      "installed": "a1cf2a877d62e1779e27babb944a97e3f13efc6138170f22d70c6e66681689d2",
+      "original": "1eb7f7964b57e74fbd9567770d75e01245576ff2066b359e95ab6ae2c8631395"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference/swords.png.meta",
+      "current": "2a0b1cf243bacd008c820a0d0edffc21b9bc9c49ecc4186dbd1651b3977308d2",
+      "installed": "c43f27e6c16f6173c7cb3a5bcd3e57fc4ea6eec54576111a3729cfd1f3ecba35",
+      "original": "2a0b1cf243bacd008c820a0d0edffc21b9bc9c49ecc4186dbd1651b3977308d2"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerUtilities/bell.png.meta",
+      "current": "2d5f0f2eac558ce3e257ecce00afe018c9a4833539cf7105be67a43542ea0393",
+      "installed": "c14220fba4ed6185ae08379522a7b29a3c476c9f49fa5af19b84754eaea6c71b",
+      "original": "2d5f0f2eac558ce3e257ecce00afe018c9a4833539cf7105be67a43542ea0393"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerUtilities/breach.png.meta",
+      "current": "a51a07979193bf8727396c81a7426643620dd40404279d3e64bfd5d76aacb280",
+      "installed": "c9469d0e429839b7e8672f4ae0ee1a9b1911b888498b8d608105c88cc202276e",
+      "original": "a51a07979193bf8727396c81a7426643620dd40404279d3e64bfd5d76aacb280"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerUtilities/settings.png.meta",
+      "current": "2d5aeb274d043ea4da52f51a1b2ec27cb55c5dc43acfb22b4ab792e57ab861b0",
+      "installed": "2e2879a2e55619d3d5949434bec9625ae93217db1098bd02276ef222c2c90f19",
+      "original": "2d5aeb274d043ea4da52f51a1b2ec27cb55c5dc43acfb22b4ab792e57ab861b0"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/portrait_forged_iron.png.meta",
+      "current": "f88992e9580a3eb67f5f3e3d54d37f96109a4008e1fc67ae14065d5667ecfbae",
+      "installed": "b160376ae43e53b814bf321f3b3132584da43685743f7d59ab3906473cd96863",
+      "original": "f88992e9580a3eb67f5f3e3d54d37f96109a4008e1fc67ae14065d5667ecfbae"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumMedallions/castle.png.meta",
+      "current": "2cdd1caee7087140688e2cb804c65026f5c017ee567347fc7847e5589b95ffff",
+      "installed": "c08ba19d4d7718673cb08837119b5e272ae923408a8766c3c860f0886a1f31c2",
+      "original": "2cdd1caee7087140688e2cb804c65026f5c017ee567347fc7847e5589b95ffff"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumMedallions/helm.png.meta",
+      "current": "da8585825f335415465d51127522741d6f82f9bec2d75d7a1d1da3aee4f0bb59",
+      "installed": "da39b57f72b499a488be9d6e82b4dfca48ab7ab2fb2db5c3b59174fe4d09257a",
+      "original": "da8585825f335415465d51127522741d6f82f9bec2d75d7a1d1da3aee4f0bb59"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumMedallions/provisions.png.meta",
+      "current": "e14aad0502b519263404ba0ffcd40e81975b10008ab2e96c45172cbd56e1d6ad",
+      "installed": "165879832867d0355c60bb6830af0e2cd86222d2f94f0ac8ac38e4c2da9e1ed9",
+      "original": "e14aad0502b519263404ba0ffcd40e81975b10008ab2e96c45172cbd56e1d6ad"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumMedallions/raven.png.meta",
+      "current": "10de455f47db2b45927b6a822a7a1a10c424b0c6ded61572a45694c341877bfa",
+      "installed": "7c46e47be1f9e34db6a0efbe716a705c0eeb04e782acef210c82961c31fc64dd",
+      "original": "10de455f47db2b45927b6a822a7a1a10c424b0c6ded61572a45694c341877bfa"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumMedallions/swords.png.meta",
+      "current": "1e9a651eaa930d467a523c4f79aa7aa5ace535f05b2a05e877d8493ae84b8b74",
+      "installed": "7ae3d05d4b92157a5ecea77dd5ab4f2e44ddc4664846538571925113b24748d4",
+      "original": "1e9a651eaa930d467a523c4f79aa7aa5ace535f05b2a05e877d8493ae84b8b74"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/brass_portrait.png.meta",
+      "current": "e03458e7c28fccd4518c875204aa9ff254e9566efc6c642ca6b468bc898aec3d",
+      "installed": "4d1ac5f9d08befdb0e7e02133800e2697a2b7a091ee264cb676bb2d7dabb40e4",
+      "original": "e03458e7c28fccd4518c875204aa9ff254e9566efc6c642ca6b468bc898aec3d"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png.meta",
+      "current": "26cc66062f24e723b1a604aa17559ba1593b13404b19539c654275eb99332618",
+      "installed": "381bfc7affcb3febf55e2eeca9695de61ccf5f80cc322a95387a7a86ee74b5b2",
+      "original": "26cc66062f24e723b1a604aa17559ba1593b13404b19539c654275eb99332618"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/chiseled_quest.png.meta",
+      "current": "e2d7d51df4770c497cfb3e7b34c6d0fece2f2ef97911e5fde84e86556c800e08",
+      "installed": "3b0596085061af142b76a844fbbafc471ff868ab8b5ac198c51e0a3d60fd31cb",
+      "original": "e2d7d51df4770c497cfb3e7b34c6d0fece2f2ef97911e5fde84e86556c800e08"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta",
+      "current": "f3e5ebd113c85dcba70068897bd51ce047462d3810ea3287027ca3a9dc4fb8b3",
+      "installed": "f44aa66b6d63262b6ecdb31c6f66eef3f38ef866d07deaae2c92b188a206c3a9",
+      "original": "f3e5ebd113c85dcba70068897bd51ce047462d3810ea3287027ca3a9dc4fb8b3"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/profile_plate.png.meta",
+      "current": "1ffa6b637cb414828cf3810bab5ce2a4fbad13f86bb2d946d5ad67b05c4a2de4",
+      "installed": "8c7fb49870c32526336d8ec0d92fea77f3e375cbe7fc15c3cf6ef1bb33b0606c",
+      "original": "1ffa6b637cb414828cf3810bab5ce2a4fbad13f86bb2d946d5ad67b05c4a2de4"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/slate_resource.png.meta",
+      "current": "0907a6b2d0bb620c29663b382826f926702bacadf36a9d281fdb6e2c92d649d6",
+      "installed": "582ebb3f3b81466d584d0699de1c8fc9f35b3297bc45ee995d1201bf1c76ef6e",
+      "original": "0907a6b2d0bb620c29663b382826f926702bacadf36a9d281fdb6e2c92d649d6"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/food.png.meta",
+      "current": "184bda850a53fa30713e443c7c76637e24f8d3faa254113671539a74ecb890f1",
+      "installed": "4d5cc0da1bcc4167395b273fd1d6e15049463c60341b0677cfc6c1ed0abd17ad",
+      "original": "184bda850a53fa30713e443c7c76637e24f8d3faa254113671539a74ecb890f1"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/stone.png.meta",
+      "current": "6a022d2b8c497e9b1bcf0ad7a87f8a77e769675999fa261a20fafa20213c7f0e",
+      "installed": "2cd6b320c9f6ded6aa9722bf1176b4bea24c3dd93516627d366e19c9315d918f",
+      "original": "6a022d2b8c497e9b1bcf0ad7a87f8a77e769675999fa261a20fafa20213c7f0e"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/wood.png.meta",
+      "current": "997af30e5e9c7e7878bf59d644fe31cab690cdd05f4e3a4bf5837d5a0f13639a",
+      "installed": "468400cdc160379d76588d2f494d9440f46a7b31c93c2ecf2bc5fe866f99dbee",
+      "original": "997af30e5e9c7e7878bf59d644fe31cab690cdd05f4e3a4bf5837d5a0f13639a"
+    },
+    {
+      "path": "Assets/Eldoria/BreachWatch/Resources/VigiliaArt/valoria_burgundy_banner.png.meta",
+      "current": "634b151fdb5f4cfb38a805ad7f5aa65f820ef8d66e37257af455cdc56714686c",
+      "installed": "570c541d00f329831bd4db77efe5cb47f8ee84ef435b4d3b27406048cdef73b1",
+      "original": "634b151fdb5f4cfb38a805ad7f5aa65f820ef8d66e37257af455cdc56714686c"
+    }
+  ],
+  "previousReviewedUiSource": "af658a6cc1a02d45d7efc9c57dafef24e8512564",
+  "review_basis": "Exact nested43178513272 manifest68a2ef283c86e233fd385edcaafbeb1d5ce0c70785ca2be004d6e9d8d3022e25: all64 originals equal previously reviewed imported-current SHA.60 installed SHA unchanged;4 omitted corresponding-asset metadata intentionally retained that same exact imported SHA. No unknown bytes or generic normalization accepted."
+}

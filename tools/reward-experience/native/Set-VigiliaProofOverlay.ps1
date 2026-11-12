@@ -110,6 +110,28 @@ if($Operation -eq 'Restore'){
  Write-Host "ISSUE186_EXACT_VIGILIA_OVERLAY_RESTORED $(@($saved.files).Count)"
  exit 0
 }
+# A previous failed restore is a separate layer, never a new baseline.
+# Refuse to stack another installed overlay over any un-restored manifest
+# for this exact private project. No source/cache mutation has happened yet.
+$manifestDirectory=Split-Path $manifestPath -Parent
+if((Split-Path $manifestDirectory -Leaf) -match '^issue186-native-[0-9]+$'){
+ $workspace=Split-Path $manifestDirectory -Parent
+ foreach($directory in @(Get-ChildItem -LiteralPath $workspace -Directory -Filter 'issue186-native-*')){
+  NoLinks $directory.FullName
+  $other=Join-Path $directory.FullName 'vigilia-overlay.json'
+  if($other -eq $manifestPath -or -not(Test-Path -LiteralPath $other -PathType Leaf)){continue}
+  NoLinks $other
+  $prior=Get-Content -LiteralPath $other -Raw|ConvertFrom-Json
+  if($prior.project -ne $projectRoot){continue}
+  $done=$false;$receipt=$other+'.restored.json'
+  if(Test-Path -LiteralPath $receipt -PathType Leaf){
+   NoLinks $receipt
+   $record=Get-Content -LiteralPath $receipt -Raw|ConvertFrom-Json
+   $done=$record.restored -eq $true -and $record.project -eq $projectRoot -and $record.ui_source -eq $prior.ui_source
+  }
+  if(-not $done){throw "Pending earlier UI overlay must be restored first: $other"}
+ }
+}
 if($UiSource -notmatch '^[a-f0-9]{40}$'){throw 'Pinned original UI source SHA required'}
 if(Test-Path -LiteralPath $manifestPath){throw 'Never replace an existing restoration manifest'}
 $uiRoot=Full $UiProject

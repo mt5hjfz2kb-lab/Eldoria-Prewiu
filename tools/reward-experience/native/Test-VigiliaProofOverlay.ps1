@@ -118,6 +118,31 @@ try{
  Need (Same $before2 (Snapshot $p2)) 'Reviewed exact metadata did not restore all original project bytes'
  Need (([IO.File]::ReadAllText((Join-Path ($m2+'.reviewed-importer-files') $rel))) -eq 'IMPORTED EXACT REVIEWED METADATA') 'Reviewed changed bytes were not archived before restoration'
 
+ # Reproduce actual sibling-run layout: never adopt a pending overlay's
+ # imported bytes as the originals of a new proof.
+ $nw=Join-Path $root 'nested-guard';$np=Join-Path $nw 'project';$nu=Join-Path $nw 'ui'
+ Put (Join-Path $np 'Assets/Eldoria/original.txt') 'original project'
+ Put (Join-Path $np 'Library/protected.txt') 'protected cache'
+ Put (Join-Path $nu 'Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs') 'pinned HUD'
+ Put (Join-Path $nu 'Assets/Eldoria/BreachWatch/Runtime/BreachWatchResourceBagBridge.cs') 'pinned bridge'
+ $m1=Join-Path $nw 'issue186-native-101/vigilia-overlay.json'
+ $mNext=Join-Path $nw 'issue186-native-102/vigilia-overlay.json'
+ & $scriptPath -Operation Install -Project $np -UiProject $nu -UiSource ('a'*40) -Manifest $m1
+ $first=Snapshot $np;$blocked=$false
+ try{& $scriptPath -Operation Install -Project $np -UiProject $nu -UiSource ('a'*40) -Manifest $mNext}catch{$blocked=$true}
+ Need $blocked 'A second overlay accepted a pending overlay as its original baseline'
+ Need (Same $first (Snapshot $np)) 'Refused nested installation changed current source bytes'
+ Need (-not(Test-Path -LiteralPath $mNext)) 'Refused nested installation created a new manifest'
+ Put ($m1+'.restored.json') '{"restored":true,"project":"wrong-project","ui_source":"wrong"}'
+ $blocked=$false
+ try{& $scriptPath -Operation Install -Project $np -UiProject $nu -UiSource ('a'*40) -Manifest $mNext}catch{$blocked=$true}
+ Need $blocked 'A forged restored marker bypassed pending-overlay protection'
+ Remove-Item -LiteralPath ($m1+'.restored.json')
+ & $scriptPath -Operation Restore -Project $np -Manifest $m1
+ & $scriptPath -Operation Install -Project $np -UiProject $nu -UiSource ('a'*40) -Manifest $mNext
+ & $scriptPath -Operation Restore -Project $np -Manifest $mNext
+ Need (([IO.File]::ReadAllText((Join-Path $np 'Library/protected.txt'))) -eq 'protected cache') 'Nested guard touched the import cache'
+
  [IO.File]::WriteAllText((Join-Path (Get-Location).Path 'issue186-overlay-source-guards.json'),
   (@{checks=$checks;status='PASS';actual_filesystem=$true;unity_verified=$false}|ConvertTo-Json))
  Write-Host "ISSUE186_REAL_FILESYSTEM_OVERLAY_GUARDS_PASS checks=$checks; NOT UNITY OR ART"
