@@ -70,6 +70,23 @@ foreach (var file in paths)
         return 1;
     }
 }
+foreach(var file in paths.Where(p=>p.EndsWith("Issue186NativeEventSystem.cs")||
+                                   p.EndsWith("Issue186NativeRaycaster.cs")))
+{
+    var source=File.ReadAllText(file);
+    var player=CSharpSyntaxTree.ParseText(source,CSharpParseOptions.Default
+        .WithPreprocessorSymbols("UNITY_6000_0_OR_NEWER","UNITY_6000_3_OR_NEWER"));
+    var editor=CSharpSyntaxTree.ParseText(source,opts);
+    string name=Path.GetFileNameWithoutExtension(file);
+    if(player.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>()
+        .Any(n=>n.Identifier.ValueText==name) ||
+       editor.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>()
+        .Count(n=>n.Identifier.ValueText==name)!=1)
+    {
+        Console.Error.WriteLine("ISSUE186_NATIVE_HELPER_MUST_BE_EDITOR_ONLY "+file);
+        return 1;
+    }
+}
 Console.WriteLine("ISSUE186_ROSLYN_SYNTAX_PASS: " + paths.Length +
     " actual domain, Unity runtime and UNITY_EDITOR sources; explicit Application namespace guard; NOT an actual Unity compilation");
 return 0;

@@ -321,12 +321,20 @@ namespace Eldoria.Issue186Art.Editor
                     typeof(Issue186NativeEventSystem));
                 created.Add(evGO);
                 var ev=evGO.GetComponent<Issue186NativeEventSystem>();
+                Need(ev && canvasGO.GetComponent<Issue186NativeRaycaster>(),
+                    "Runtime-folder editor-only fixture behaviours failed to attach");
+                Need(typeof(Issue186NativeEventSystem).Assembly==
+                     typeof(Eldoria.UI.RoyalGold.V2.RoyalGoldV41MailboxScreen).Assembly &&
+                     typeof(Issue186NativeRaycaster).Assembly==
+                     typeof(Eldoria.UI.RoyalGold.V2.RoyalGoldV41MailboxScreen).Assembly,
+                    "Fixture behaviour compiled into an Editor-only assembly");
+
                 int liveEventSystems=0;
                 foreach(var actual in UnityEngine.Object.FindObjectsByType<EventSystem>(
                     FindObjectsInactive.Exclude,FindObjectsSortMode.None))
                     if(actual && actual.isActiveAndEnabled)liveEventSystems++;
                 Need(liveEventSystems==1,
-                    "Disposable proof must own exactly one active real EventSystem");
+                    "Disposable proof must own exactly one active real EventSystem; actual="+liveEventSystems);
                 RequireRegisteredEventSystem(evGO,ev,"first-pointer-check");
                 Need(canvasGO.GetComponent<GraphicRaycaster>().isActiveAndEnabled,
                     "Actual GraphicRaycaster lifecycle did not activate in the Editor fixture");
