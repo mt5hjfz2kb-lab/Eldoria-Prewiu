@@ -732,6 +732,20 @@ namespace Eldoria.BreachWatch.Editor
                 // Always archive the exact real screenshot even when a following
                 // visual/text gate fails. Previous FAILs hid the actual cause.
                 File.WriteAllBytes(file,image.EncodeToPNG());
+                foreach(var projected in ui.NativeCanvas.GetComponentsInChildren<BuildingLabel>(false))
+                {
+                    if(!projected.Select || !projected.Select.gameObject.activeInHierarchy)continue;
+                    var corners=new Vector3[4];
+                    ((RectTransform)projected.transform).GetWorldCorners(corners);
+                    var bounds=projected.Layer.rect;
+                    foreach(var corner in corners)
+                    {
+                        var p=projected.Layer.InverseTransformPoint(corner);
+                        Need(p.x>=bounds.xMin-1f && p.x<=bounds.xMax+1f &&
+                             p.y>=bounds.yMin-1f && p.y<=bounds.yMax+1f,
+                            "Projected guidance clipped at viewport edge: "+projected.name+" / "+name);
+                    }
+                }
                 CheckLiveSlicedGeometry(ui,name);
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 // Do not accept a visually blank upper-left player plate

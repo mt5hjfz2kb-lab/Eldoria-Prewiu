@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 21,
+  "attempt": 22,
   "previous_run": 43324420776,
-  "correction": "Native20 passes cities, destinations, production fonts, earned scout discovery and all treasure/bag reward checks; exact campaign/build still executing. Reduce back arrow to fit real portrait/compact button height; shorten Vigilants footer without removing outcome or power. Extend actual retention glyph clipping checks to return arrow/footer and typography capture. Preserve baseline18 publication.",
+  "correction": "Native20 passes cities, destinations, production fonts, earned scout discovery and all treasure/bag reward checks; exact campaign/build still executing. Reduce back arrow to fit real portrait/compact button height; shorten Vigilants footer without removing outcome or power. Extend actual retention glyph clipping checks to return arrow/footer and typography capture. Preserve baseline18 publication. Also fix actual portrait city screenshot clipping: keep visible-target guidance caption within its projection layer, preserve target command/offscreen hiding, and assert its rendered corners stay inside viewport.",
   "build_candidate": true
 }
