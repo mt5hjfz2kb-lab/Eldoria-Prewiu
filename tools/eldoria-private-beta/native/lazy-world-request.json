@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 41,
-  "state": "WAITING_FOR_WINDOWS",
+  "ownership_revision": 42,
+  "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -32,5 +32,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
-  "next": "Source and real Git/PowerShell recovery checks on Ubuntu only until next legitimate Windows turn. Restore only the nine identified initially-clean tracked materials to frozen source while retaining original115dirty input hashes; include all nine in exact before/after native backups. Never adopt changed baseline; no deployment."
+  "next": "One bounded native batch under exclusive revision42: guarded9materialrollback, actualPlaymode/fullWorldI-V/WebGL, exactoriginalinputrestoration; releaseWindows181aftercomplete native beforeUbuntu/Mac. Do not claim physicalphone/ART/main readiness."
 }
