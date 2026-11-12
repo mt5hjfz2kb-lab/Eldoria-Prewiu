@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 26,
-  "action": "wait",
-  "proof_sha256": "5ac396c11b63733c5953d4342df33d5df4262674ddbcb07c900cb64f9c5557da",
-  "seconds": 35
+  "sequence": 27,
+  "action": "click_point",
+  "proof_sha256": "f7a24ca4050d93b42273250a5b176c471ba8081558d2ae4797f22715cc73d49b",
+  "x": 210,
+  "y": 70,
+  "guard_texts": [
+    "Diagnóstico local",
+    "Misiones"
+  ],
+  "reason": "Frame026 shows1198stone and passive quarry production; follow current actual objective using the visible quest arrow."
 }
