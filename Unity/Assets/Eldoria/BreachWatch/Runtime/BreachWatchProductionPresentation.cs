@@ -19,6 +19,8 @@ namespace Eldoria.BreachWatch
         readonly List<Graphic> graphics=new List<Graphic>(512);
         readonly Dictionary<Graphic,Image> replacements=new Dictionary<Graphic,Image>();
         readonly List<Canvas> oldCanvases=new List<Canvas>();
+        readonly Dictionary<Graphic,Graphic> iconReplacements=new Dictionary<Graphic,Graphic>();
+        readonly Dictionary<Graphic,int> iconKinds=new Dictionary<Graphic,int>();
         Canvas retired;
         Sprite stone,action;
         readonly Sprite[] resources=new Sprite[3];
@@ -92,10 +94,10 @@ namespace Eldoria.BreachWatch
             if(graphic is RawImage content)
                 return IsRetiredTexture(content.texture);
             // Old procedural UI paint is not a valid fallback in production.
-            if(type=="RoyalResourcePictogram")return true;
+            if(type=="RoyalResourcePictogram" || type=="RoyalIconGraphic")return true;
             if(graphic is Image marker && graphic.name.StartsWith("Clarity / ") && !marker.sprite)return true;
             if(type.StartsWith("RoyalGold") || type=="RoyalPanel" ||
-               type=="RoyalFrame" || type=="RoyalButtonGraphic")return true;
+               type=="RoyalFrame" || type=="RoyalFrameGraphic" || type=="RoyalButtonGraphic")return true;
             if(graphic is Image image)return IsRetiredTexture(image.sprite?image.sprite.texture:null);
             if(graphic is RawImage raw)return IsRetiredTexture(raw.texture);
             return false;
@@ -131,7 +133,16 @@ namespace Eldoria.BreachWatch
                     // frame painters. Do not add a second surface underneath
                     // their authored replacement. Only our own retained
                     // replacements need synchronization after disabling.
-                    if(!graphic.enabled && !replacements.ContainsKey(graphic))continue;
+                    if(!graphic.enabled && !replacements.ContainsKey(graphic) && !iconReplacements.ContainsKey(graphic))continue;
+                    if(graphic is Eldoria.UI.RoyalGold.RoyalIconGraphic icon)
+                    {
+                        if(!iconReplacements.TryGetValue(icon,out var replacement) || !replacement || iconKinds[icon]!=icon.Icon)
+                        {
+                            if(replacement){replacement.gameObject.SetActive(false);Destroy(replacement.gameObject);}
+                            iconReplacements[icon]=ReplaceIcon(icon);iconKinds[icon]=icon.Icon;
+                        }
+                        icon.enabled=false;continue;
+                    }
                     // Canonical rim-only overlays sit AFTER portraits and labels.
                     // Replacing their atlas with an opaque panel hides live content.
                     // The new shared theme already owns the card background.
@@ -161,7 +172,7 @@ namespace Eldoria.BreachWatch
                         bool structural=pictogram || button || type=="RoyalGoldV2FrameGraphic" ||
                             type=="RoyalGoldV41ReportArtwork" ||
                             type.Contains("Parchment") || type.Contains("Contract") ||
-                            type=="RoyalPanel" || type=="RoyalFrame";
+                            type=="RoyalPanel" || type=="RoyalFrame" || type=="RoyalFrameGraphic";
                         if(!structural){graphic.enabled=false;continue;}
                         if(!replacements.TryGetValue(graphic,out var surface) || !surface)
                         {
@@ -195,6 +206,39 @@ namespace Eldoria.BreachWatch
             }
             finally{applying=false;}
         }
+        Graphic ReplaceIcon(Eldoria.UI.RoyalGold.RoyalIconGraphic original)
+        {
+            var go=new GameObject("Vigilia / exclusive functional icon",typeof(RectTransform),typeof(CanvasRenderer));
+            go.layer=original.gameObject.layer;
+            var rect=go.GetComponent<RectTransform>();rect.SetParent(original.transform,false);
+            rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.offsetMin=rect.offsetMax=Vector2.zero;
+            int kind=original.Icon;
+            if(kind==13 || kind==14)
+            {
+                var text=go.AddComponent<Text>();text.text=kind==13?"−":"+";
+                text.font=Resources.Load<Font>("VigiliaArt/Fonts/SourceSans3-Semibold");
+                text.fontSize=24;text.alignment=TextAnchor.MiddleCenter;
+                text.resizeTextForBestFit=true;text.resizeTextMinSize=10;text.resizeTextMaxSize=24;
+                text.color=new Color(.96f,.91f,.80f);text.raycastTarget=false;return text;
+            }
+            string asset=kind==0?"CleanRoom/profile":kind==4?"CleanRoom/nav_helm":
+                kind==5?"CleanRoom/nav_swords":kind==6?"CleanRoom/mission":
+                kind==7?"CleanRoom/nav_provisions":kind==9?"CleanRoom/nav_castle":
+                kind==11?"OwnerControls/close_medallion":kind==17?"CleanRoom/nav_raven":null;
+            var sprite=kind>=1 && kind<=3?resources[kind-1]:
+                asset!=null?Resources.Load<Sprite>("VigiliaArt/"+asset):null;
+            if(sprite)
+            {
+                var image=go.AddComponent<Image>();image.sprite=sprite;
+                image.preserveAspect=true;image.raycastTarget=false;return image;
+            }
+            var glyph=go.AddComponent<BreachWatchGlyph>();
+            glyph.Type=kind==8||kind==16?BreachWatchGlyph.Sigil.World:
+                kind==10?BreachWatchGlyph.Sigil.Settings:kind==15?BreachWatchGlyph.Sigil.Hammer:
+                BreachWatchGlyph.Sigil.Arrow;
+            glyph.raycastTarget=false;return glyph;
+        }
+
         public string FirstVisibleRetiredPainting()
         {
             GetComponentsInChildren<Graphic>(true,graphics);
