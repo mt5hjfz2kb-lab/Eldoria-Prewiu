@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 43,
-  "state": "WAITING_EXCLUSIVE_WINDOWS",
+  "ownership_revision": 44,
+  "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -36,5 +36,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
-  "next": "Coherent route comparison and exact historical intermediate recovery84guardchecks pass off-PC. Wait until181GPUbatch then187inputbatch finish; acquire one exclusive native batch anew, then actualfullworldI-V/WebGL and immutableinputrestoration. No native while anotherleaseholder exists."
+  "next": "Exclusive revision44 main daef59c5: recordedrouteintermediate recovery+coherentstagedAPIcomparison84guardsPASS; actualPlayMode+fullWorldI-V/WebGL+strictoriginal115inputrestoration. Release181afterWindowsnativecleanup beforeMac; no publictester/phone/artapproval."
 }
