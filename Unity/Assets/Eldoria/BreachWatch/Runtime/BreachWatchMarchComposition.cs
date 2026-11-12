@@ -47,6 +47,7 @@ namespace Eldoria.BreachWatch
         string thirdHeroOriginalLabel;
         Text thirdHeroLabel;
         Text quantityCaption;
+        readonly TextGenerator quantityMeasure=new TextGenerator();
         RectTransform detailSheet,detailCard;
         Button detailReturn;
         Text detailHeading,detailReturnText;
@@ -300,6 +301,17 @@ namespace Eldoria.BreachWatch
             quantityCaption.resizeTextForBestFit=false;
             quantityCaption.horizontalOverflow=HorizontalWrapMode.Wrap;
             quantityCaption.verticalOverflow=VerticalWrapMode.Truncate;
+            var settings=quantityCaption.GetGenerationSettings(new Vector2(10000f,10000f));
+            settings.resizeTextForBestFit=false;
+            settings.horizontalOverflow=HorizontalWrapMode.Overflow;
+            settings.verticalOverflow=VerticalWrapMode.Overflow;
+            float units=Mathf.Max(.01f,quantityCaption.pixelsPerUnit);
+            float measuredW=quantityMeasure.GetPreferredWidth(quantityCaption.text,settings)/units;
+            float measuredH=quantityMeasure.GetPreferredHeight(quantityCaption.text,settings)/units;
+            var available=quantityCaption.rectTransform.rect;
+            float fit=Mathf.Min(1f,Mathf.Min(available.width/Mathf.Max(1f,measuredW),
+                available.height/Mathf.Max(1f,measuredH)));
+            quantityCaption.fontSize=Mathf.Max(10,Mathf.FloorToInt(20f*fit));
         }
 
         static RectTransform FindPortrait(RectTransform hero)
