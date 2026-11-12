@@ -11,7 +11,7 @@
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs": "528f7d43f5b1a6ef75823ef2f2863439e50799bc",
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/Eldoria.BetaMemory.Tests.PlayMode.asmdef": "23007a85f8592885f4c98b51e1dcee6b37c75715",
-    "tools/eldoria-private-beta/native/ux/manifest.json": "4ff4e6fbe9a194eebe5134df123d376b346c4d23",
+    "tools/eldoria-private-beta/native/ux/manifest.json": "9271f232179b22d53cba053823a746faae62a53f",
     "tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1": "eb0a02bcb46aaa5e83f324c77c040521ab8a4091",
     "tools/eldoria-private-beta/native/recover_isolated.ps1": "0010d6ce9e6de0b7abc62f492da4edccd7369762",
     "tools/eldoria-private-beta/native/existing-input-audit.json": "7985cbc286c6354385aae4ddf67c3d34bba59e03",
@@ -28,13 +28,15 @@
     "tools/eldoria-private-beta/native/recover_route_intermediate.ps1": "4960b3ef3995544a7e2e4a4d53157231eda8c9eb",
     "tools/eldoria-private-beta/native/test_route_restore.py": "dcd8080fa5daf6cb4f83bd9b1cadd7be7a6f778f",
     "tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt": "276dae624d10ff0554becdf1557dae378df573d6",
-    "tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt": "61c79f507a10b6b4ae1b177a43805b7b332938c8"
+    "tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt": "61c79f507a10b6b4ae1b177a43805b7b332938c8",
+    "tools/eldoria-private-beta/native/ux/RoyalGoldV2Hud.cs.txt": "f0842121c0980bd25e966fdd84dfdfa9b048f91f",
+    "tools/eldoria-private-beta/native/ux/PretestUXProbe.cs": "5a24412d7105240bd452462dbfadd63f4e955361"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
   "full_world_iphone_verified": false,
   "external_testers_enabled": false,
   "publish_allowed": false,
-  "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
-  "next": "Central owner is the actual owner for all four jobs. No hourly supervision remains enabled. This prepared request grants no Windows use: require a future exact CAS claim/revision and explicit CLAIMED_FOR_NATIVE request before native startup. All source blob, head, process, restoration and unpublished-only guards stay intact."
+  "scope": "Unpublished same lazy-world engine with actual barracks training caption line-box correction and native glyph/input proof; no art integration, no deployment or tester invitation.",
+  "next": "Source/preflight only until fresh sole Windows lease49. Native pretest must render actual selected barracks at390x844+844x390, require every authored Entrenar glyph and genuine training-choice pointer. Keep original115 dirty inputs strict restoration. Existing published4fd untouched."
 }

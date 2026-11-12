@@ -132,7 +132,20 @@ public static class EldoriaPretestUXProbe
   }
   h.Select("barracks");yield return new WaitForSecondsRealtime(.5f);
   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
-  Need(h.Selected=="upgrade-barracks"&&!management.IsOpen,"barracks selection offers choice");Capture(h,"barracks-choice");yield return null;
+  Need(h.Selected=="upgrade-barracks"&&!management.IsOpen,"barracks selection offers choice");
+  var realTrainingButton=GameObject.Find("Barracks / enter training")?.GetComponent<Button>();
+  Need(realTrainingButton,"actual barracks training button exists");
+  var realTrainingCaption=realTrainingButton.GetComponentInChildren<RoyalText>(true);
+  Need(realTrainingCaption && realTrainingCaption.text=="Entrenar","actual training caption retains its authored label");
+  foreach(var viewport in new[]{new Vector2Int(390,844),new Vector2Int(844,390)}){
+   ValoriaIntegrationBuild.Capture(h,"pretest-barracks-caption-"+viewport.x+"x"+viewport.y+".png",viewport.x,viewport.y);
+   Canvas.ForceUpdateCanvases();
+   Need(realTrainingCaption.enabled &&
+        realTrainingCaption.cachedTextGenerator.characterCountVisible>=realTrainingCaption.text.Length &&
+        realTrainingCaption.preferredHeight<=realTrainingCaption.rectTransform.rect.height+1f,
+        "actual rendered barracks training caption fits every glyph at"+viewport.x+"x"+viewport.y);
+  }
+  Capture(h,"barracks-choice");yield return null;
   Click(GameObject.Find("Barracks / enter training")?.GetComponent<Button>());yield return new WaitForSecondsRealtime(.4f);
   Need(management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,"training choice opens training");
   Need(GameObject.Find("Switch destination")==null&&GameObject.Find("Open canonical heroes")==null,"training hides unexplained march and locked heroes");Capture(h,"training-initial");

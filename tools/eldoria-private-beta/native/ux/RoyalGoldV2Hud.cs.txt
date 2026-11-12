@@ -397,6 +397,8 @@ namespace Eldoria.UI.RoyalGold.V2
             });
             buildingTraining=Button("Barracks / enter training",buildingCard,out var trainingLabel,true);
             trainingLabel.Put("Entrenar");
+            // Match the existing visible primary caption in the40-unit action row.
+            Stretch(trainingLabel.rectTransform,4f);
             buildingTraining.onClick.AddListener(()=>GetComponent<RoyalGoldV3ManagementScreens>()?.Open(RoyalGoldV3ManagementScreens.Destination.Training));
             buildingTrainingGroup=buildingTraining.gameObject.AddComponent<CanvasGroup>();
             SetVisible(buildingTrainingGroup,false);

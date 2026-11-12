@@ -86,7 +86,7 @@
       "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
       "overlay": "RoyalGoldV2Hud.cs.txt",
       "baseline_sha256": "a8b0403add245996e85eae912de87fdd90dccd94fa21a420f11a41d4765dc60e",
-      "candidate_sha256": "c482c7cb34cb143081857e719f921ea4b333f14cdd2a2e44a38a2a1f113839c7"
+      "candidate_sha256": "2368b57307d4d486f16a21ba7ac19a848a8a01993652c1352f37177a34d3f001"
     },
     {
       "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
