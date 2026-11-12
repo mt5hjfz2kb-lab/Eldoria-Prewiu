@@ -1,141 +1,66 @@
-name: Eldoria P0 — lossless compact two-build clock QA without Pages mutation
+name: Eldoria owner lazy world staging — preserve live Pages, no deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths:
-      - '.github/workflows/eldoria-beta-payload-reuse.yml'
+    paths: ['.github/workflows/eldoria-beta-payload-reuse.yml']
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: eldoria-beta-p0-payload-delta-readonly
+  group: eldoria-beta-owner-lazy-stage
   cancel-in-progress: false
 jobs:
-  verify-xor-reuse:
-    name: Test 31 exact Unity chunks, browser decoder and compact A/B staging
+  stage-unpublished-owner-route:
     runs-on: ubuntu-latest
     timeout-minutes: 65
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 501035c6dd2997b98feca1010281bb7544fccba3
-          sparse-checkout: tools/eldoria-private-beta/iphone_ab
-          sparse-checkout-cone-mode: false
+          sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - name: Verify both original source runs passed and remained exact
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Compile delivery preparation and verify bounded forward reconstruction
         run: |
-          python3 - <<'PY'
-          import json,os,urllib.request
-          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
-          def get(path):
-              request=urllib.request.Request(root+path,headers={
-                  'Authorization':'Bearer '+os.environ['GH_TOKEN'],
-                  'Accept':'application/vnd.github+json','User-Agent':'Eldoria-ReadOnly-Delta-QA'})
-              with urllib.request.urlopen(request,timeout=35) as response:return json.load(response)
-          for run in (42687093695,42716414385):
-              x=get('actions/runs/'+str(run))
-              assert x['status']=='completed' and x['conclusion']=='success', 'Run did not pass: '+str(run)
-              if run==42716414385:
-                  assert x['head_sha']=='5af92f0fe64f65280b9a57816aafaa32d2cb7d47', 'Wrong clock candidate'
-          print('EXACT_VERIFIED_RUNS_PASSED_NO_LIVE_PAGES_MODIFICATIONS')
-          PY
-      - name: Fetch immutable previously iPhone-playable beta10 Pages archive
+          python3 -m py_compile tools/eldoria-private-beta/stage_lazy_profile_owner_site.py
+          python3 tools/eldoria-private-beta/test_lazy_profile_reconstruction.py
+      - name: Download existing complete owner Pages without changing it
         uses: actions/download-artifact@v4
         with:
-          run-id: 42687093695
+          run-id: 43006294342
           name: github-pages
           github-token: ${{ github.token }}
-          path: old-pages
-      - name: Fetch exact native-tested candidate clock WebGL site
+          path: existing-pages
+      - name: Download exact fresh native profiled candidate
         uses: actions/download-artifact@v4
         with:
-          run-id: 42716414385
-          name: beta10-minimal-clock-candidate-site
+          run-id: 43140354002
+          name: mobile16-full-lazy-owner-only-site-not-iphone-pass
           github-token: ${{ github.token }}
-          path: new-site
-      - name: SHA-check all 31 real Unity chunks and compute reversible compression feasibility
+          path: candidate
+      - name: Download actual two-arm Apple GPU QA
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43140354002
+          name: mobile16-full-lazy-desktop-apple-gpu-not-iphone-certificate
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Preserve every live byte and stage exact small-frame owner route
         run: |
-          python3 tools/eldoria-private-beta/iphone_ab/analyze_stream_reuse.py --stable-pages-artifact-tar old-pages/artifact.tar --candidate-root new-site --output payload-reuse-result.json
-          python3 - <<'PY'
-          import json
-          x=json.load(open('payload-reuse-result.json'))
-          assert len(x['parts'])==31
-          t=x['totals']
-          assert t['stable_decoded_bytes']>500_000_000 and t['candidate_decoded_bytes']>500_000_000
-          assert t['candidate_not_live'] and not t['iphone_stability_tested']
-          print('BETA10_VS_WORLD_CLOCK_STREAM_DELTA_SHA_VERIFIED',t)
-          PY
-      - name: Install standard VCDIFF decoder for read-only source alignment checks
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq xdelta3
-          xdelta3 -V | head -2
-      - name: Verify alignment-aware exact VCDIFF patches for all 31 chunks
-        run: |
-          python3 tools/eldoria-private-beta/iphone_ab/analyze_xdelta_reuse.py --stable-pages-artifact-tar old-pages/artifact.tar --candidate-root new-site --output payload-vcdiff-result.json
-          python3 - <<'PY'
-          import json
-          d=json.load(open('payload-vcdiff-result.json'))
-          assert len(d['rows'])==31
-          assert d['totals']['decoded_sha_verified']
-          assert d['totals']['physical_iphone_tested'] is False
-          print('ELDORIA_READONLY_ALIGNMENT_AWARE_DELTA_VALIDATED',d['totals'])
-          PY
-      - name: Build pinned Apache-2.0 browser VCDIFF decoder entirely locally
-        run: |
-          node --version
-          npm install --prefix vendor --no-audit --no-fund --ignore-scripts --no-save @ably/vcdiff-decoder@1.0.6 esbuild@0.25.12
-          node - <<'NODE'
-          const pkg=require('./vendor/node_modules/@ably/vcdiff-decoder/package.json');
-          if(pkg.version!=='1.0.6'||pkg.license!=='Apache-2.0')throw Error('Unapproved decoder dependency');
-          const decoder=require('./vendor/node_modules/@ably/vcdiff-decoder');
-          if(typeof decoder.decode!=='function')throw Error('Decoder API not supported');
-          console.log('PINNED_BROWSER_VCDIFF_APACHE_LICENSE_AND_API_PASS',pkg.version,pkg.license);
-          NODE
-          ln -s vendor/node_modules node_modules
-          vendor/node_modules/.bin/esbuild tools/eldoria-private-beta/iphone_ab/browser_decoder_entry.js --bundle --format=iife --platform=browser --target=es2020 --outfile=vcdiff-browser.bundle.js
-          find vendor/node_modules/@ably/vcdiff-decoder -maxdepth 2 -iname 'LICENSE*' -type f -print
-          LICENSE="$(find vendor/node_modules/@ably/vcdiff-decoder -maxdepth 2 -iname 'LICENSE*' -type f | head -1)"
-          test -n "$LICENSE"
-          cp "$LICENSE" vcdiff-license.txt
-      - name: Build compact candidate from archived stable SHA and verify every patch
-        run: |
-          python3 tools/eldoria-private-beta/iphone_ab/stage_compact_delta_ab.py --stable-pages-artifact old-pages/artifact.tar --candidate-site new-site --output-site site --decoder-bundle vcdiff-browser.bundle.js --decoder-license vcdiff-license.txt --transport-source tools/eldoria-private-beta/iphone_ab/clock_delta_transport.js --max-bytes 650000000
-          node --check site/beta-iphone-clock-ab/vcdiff-browser.bundle.js
-          node --check site/beta-iphone-clock-ab/clock_delta_transport.js
-          node --check site/beta-iphone-clock-ab/play.js
-      - name: Decode and SHA-certify all 31 chunks using the ACTUAL browser JS dependency and transport
-        run: |
-          node --max-old-space-size=3072 tools/eldoria-private-beta/iphone_ab/verify_compact_delta.mjs site vendor
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          p=json.loads(Path('site/beta-iphone-clock-ab-proof.json').read_text())
-          assert p['external_testers_enabled'] is False
-          assert p['physical_iphone_stability_verified'] is False
-          assert p['delta_patch_bytes']<20_000_000 and p['combined_bytes']<650_000_000
-          assert p['stable_source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
-          assert p['candidate_source_sha']=='004d3ef9c26e9070762e9e38ce84d69d525efd4f'
-          print('OWNER_IOS_AB_COMPACT_BUILD_TESTED_NOT_PUBLISHED',p['combined_bytes'],p['delta_patch_bytes'])
-          PY
-      - name: Preserve compact complete A/B site as build artifact, not public tester release
+          python3 tools/eldoria-private-beta/stage_lazy_profile_owner_site.py --pages existing-pages/artifact.tar --candidate candidate --mac actual-mac --output site --transport tools/eldoria-private-beta/iphone_ab/copyadd_transport.js
+      - name: Verify all 31 actual native parts through real browser HTTP streaming
+        run: node --max-old-space-size=3072 tools/eldoria-private-beta/verify_lazy_profile_http.mjs site
+      - name: Retain unpublished complete owner site
         uses: actions/upload-artifact@v4
         with:
-          name: beta10-clock-compact-ab-owner-site
+          name: mobile16-unpublished-preserved-owner-site
           path: site/
           compression-level: 0
           retention-days: 14
-      - name: Retain small exact VCDIFF report, not public QA release
+      - name: Retain staging and failure evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: beta10-minimal-clock-readonly-vcdiff-report
-          path: payload-vcdiff-result.json
-          retention-days: 14
-      - name: Retain small exact feasibility report; never publish binary data or invite testers
-        uses: actions/upload-artifact@v4
-        with:
-          name: beta10-minimal-clock-readonly-delta-report
-          path: payload-reuse-result.json
+          name: mobile16-owner-staging-proof-no-publication
+          path: |
+            site/beta-lazy-world-owner-proof.json
+            actual-mac/**/report.json
           retention-days: 14
