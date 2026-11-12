@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "state": "PREPARED_FROZEN_REUSE_NOT_IMPORTED_NOT_CERTIFIED",
+  "source_ui_commit": "a5f2c9d9afe841979c0bf7a59a7aba2911637af5",
+  "source_ui_native_run": 43225134079,
+  "source_tree": "6af142bed0321e8eeb93a5f66a041cfb077fea74",
+  "canonical_ui_pr": 173,
+  "canonical_beta_pr": 179,
+  "scope": "Consume certified UI output in an isolated browser opt-in beta candidate before any main or public-art rollout. The frozen snapshot is outside Unity/Assets and therefore is not imported or active.",
+  "relative_snapshot": "BreachWatch",
+  "unity_destination": "Unity/Assets/Eldoria/BreachWatch",
+  "webgl_optin": "eldoria_vigilia=1",
+  "status": {
+    "canonical_ui_changed": false,
+    "main_art_changed": false,
+    "beta_runtime_changed": false,
+    "compiled_with_beta": false,
+    "phone_profile_measured": false,
+    "art_approved": false
+  },
+  "source_budget": {
+    "pngs": 60,
+    "encoded_png_bytes": 25092350,
+    "source_rgba32_upper_bound_bytes": 89614268,
+    "readable_pngs": 0,
+    "mipmapped_pngs": 8,
+    "explicit_webgl_import_overrides": 2,
+    "note": "Immutable PNG headers and importer metadata. Source RGBA32 upper bound is not measured resident or GPU memory; caps and compression alter actual usage. An additional research preview JPEG is not part of the PNG estimate."
+  },
+  "pending": [
+    "Compile against exact beta18 frozen UX19 interfaces before installation",
+    "Use scoped reversible staging with original115input byte verification",
+    "Measure the referenced textures in actual target WebGL; do not infer phone memory from PNG file size",
+    "Review real WebGL opt-in captures against the approved Unity/reference A/B before main"
+  ]
+}

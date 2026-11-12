@@ -1,0 +1,13 @@
+{
+  "name": "close_medallion",
+  "size": [
+    64,
+    64
+  ],
+  "source_sha256": "12df8c23f94ac7610cbb2e90849e6ed88009bfd20618cf91aba9dc407f099f3c",
+  "png_sha256": "b2716abdaa1775ac7a8d5b758920ab270ca974a3f8419c522e737929b2086d21",
+  "guid": "8e6ca219e4f54716a8210db545179f0c",
+  "source": "Owner-approved 864x1536 first-screen circle / one isolated close X",
+  "transparent_hit_region_required": true,
+  "not_native_screenshot": true
+}

@@ -1,0 +1,83 @@
+{
+  "origin": "Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
+  "independent": "All five nine-slice sprites are new and no old HUD graphics are reused",
+  "not_native_screenshot": true,
+  "art_approved": false,
+  "sources": [
+    {
+      "name": "burgundy_action",
+      "sha256": "d9227d2740dfc7d5567440b13dbbea8c5caf51ff594911a0edc90ca00fc88879",
+      "size": [
+        512,
+        148
+      ],
+      "guid": "a6f0f34c42fd494f92a72d201e0aaf9c",
+      "border": [
+        22,
+        14,
+        22,
+        14
+      ]
+    },
+    {
+      "name": "brass_portrait",
+      "sha256": "fcda5e3f9b93da2ffd1f71477c0ddd66b2b990e2c7e485c9db0b902962c6668a",
+      "size": [
+        512,
+        288
+      ],
+      "guid": "9a20dba5e3aa4bff94654d1e8b0e9a32",
+      "border": [
+        17,
+        15,
+        17,
+        15
+      ]
+    },
+    {
+      "name": "slate_resource",
+      "sha256": "f788f2a65dc838943df3ffd6a97c14ad616f780a03ce6f24eb6e6a4d2030bb82",
+      "size": [
+        512,
+        148
+      ],
+      "guid": "90ec0b5c9a2b463194f198a623e5e36c",
+      "border": [
+        12,
+        8,
+        12,
+        8
+      ]
+    },
+    {
+      "name": "chiseled_quest",
+      "sha256": "92062bbc20c14a12b74bc4875e6f66b19cc96f0115dd68dbb5065df809755ab1",
+      "size": [
+        512,
+        220
+      ],
+      "guid": "1138e4a0b67b480a89ce751bd2fb370c",
+      "border": [
+        48,
+        32,
+        66,
+        32
+      ]
+    },
+    {
+      "name": "profile_plate",
+      "sha256": "1be0991675f9b88e482e4984014c4ae56439dbd6894de33affbd18633b3f3836",
+      "size": [
+        512,
+        148
+      ],
+      "guid": "3f29a67de3ee436a83ba9a64e1b98242",
+      "border": [
+        16,
+        11,
+        16,
+        11
+      ]
+    }
+  ]
+}

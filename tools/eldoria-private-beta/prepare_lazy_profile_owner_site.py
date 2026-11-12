@@ -42,8 +42,12 @@ def extract_reference(root,output):
     assembled.unlink()
 
 def run(a):
-    lazy.require(a.revision in ("native325-mobile16-full-lazy-profile-owner-qa",
-        "native325-mobile17-caption-profile-owner-qa"),"Unexpected candidate label")
+    legacy_label=a.revision in ("native325-mobile16-full-lazy-profile-owner-qa",
+        "native325-mobile17-caption-profile-owner-qa")
+    objective_label=(a.revision=="native325-mobile18-objective-profile-owner-qa" and
+        a.source_head=="de63660d25bee9a32d7b804d6245744ed1f0dbca" and
+        str(a.native_run)=="43246088947")
+    lazy.require(legacy_label or objective_label,"Unexpected candidate label/source/run")
     work=Path(a.work);work.mkdir(parents=True,exist_ok=False)
     native=lazy.sole_dir(a.native_artifact,"comparison.json",(
         "warm-cache-restoration.json","source-overlay.json","ux-source-overlay.json",

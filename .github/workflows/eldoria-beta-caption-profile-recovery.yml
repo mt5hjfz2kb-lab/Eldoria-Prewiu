@@ -11,9 +11,9 @@ concurrency:
   group: eldoria-beta-caption-profile-recovery
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '43211338159'
-  NATIVE_SOURCE: a8b0ee4febf85d20eff3280133a37cac17fae967
-  CANDIDATE_REVISION: native325-mobile17-caption-profile-owner-qa
+  NATIVE_RUN: '43246088947'
+  NATIVE_SOURCE: de63660d25bee9a32d7b804d6245744ed1f0dbca
+  CANDIDATE_REVISION: native325-mobile18-objective-profile-owner-qa
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -109,7 +109,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile17-full-lazy-existing-profile-proof-not-runtime
+          name: mobile18-full-lazy-existing-profile-proof-not-runtime
           path: |
             profile-work/exact-build-selection.json
             profile-work/original/extraction.json
@@ -122,7 +122,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: mobile17-full-lazy-owner-only-site-not-iphone-pass
+          name: mobile18-full-lazy-owner-only-site-not-iphone-pass
           path: owner-only-site/
           compression-level: 0
           retention-days: 7
@@ -137,7 +137,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: mobile17-full-lazy-owner-only-site-not-iphone-pass
+          name: mobile18-full-lazy-owner-only-site-not-iphone-pass
           path: qa-site/same-bundle
       - uses: actions/setup-node@v4
         with:
@@ -199,6 +199,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile17-full-lazy-desktop-apple-gpu-not-iphone-certificate
+          name: mobile18-full-lazy-desktop-apple-gpu-not-iphone-certificate
           path: evidence/
           retention-days: 14
