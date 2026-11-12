@@ -1,4 +1,4 @@
-name: Eldoria foreground earned campaign — observed UI control, no deployment
+name: Eldoria engine17 earned-save compatibility — unpublished observed UI
 on:
   push:
     branches: [qa/eldoria-earned-campaign-20261112]
@@ -17,7 +17,7 @@ jobs:
       run: ${{ steps.choose.outputs.run }}
       source: ${{ steps.choose.outputs.source }}
     steps:
-      - name: Wait for the completed genuine Lyra/infrastructure checkpoint; never create a save
+      - name: Wait for the completed genuine Bastion V checkpoint; never create a save
         id: choose
         env:
           GH_TOKEN: ${{ github.token }}
@@ -28,13 +28,13 @@ jobs:
               q=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
               with urllib.request.urlopen(q,timeout=25) as r:return json.load(r)
           for attempt in range(80):
-              run=get('actions/runs/43216879249')
-              assert run['head_sha']=='6d8049ac12bcb5ee02e91417e1e4ff64f06ca5b6' and run['head_branch']=='qa/eldoria-earned-campaign-20261112'
+              run=get('actions/runs/43231463013')
+              assert run['head_sha']=='1091aed9d42a375e9041b2aec7803aacaec12f76' and run['head_branch']=='qa/eldoria-earned-campaign-20261112'
               if run['status']=='completed':break
               time.sleep(15)
           else:raise SystemExit('Existing earned-training run has not completed; no Mac game started')
           assert run['conclusion']=='success', 'Latest earned checkpoint must complete successfully; refuse fallback to an older campaign'
-          chosen=(43216879249,'6d8049ac12bcb5ee02e91417e1e4ff64f06ca5b6')
+          chosen=(43231463013,'1091aed9d42a375e9041b2aec7803aacaec12f76')
           exact=get('actions/runs/'+str(chosen[0]))
           assert exact['status']=='completed' and exact['conclusion']=='success' and exact['head_sha']==chosen[1]
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('run='+str(chosen[0])+'\nsource='+chosen[1]+'\n')
@@ -47,14 +47,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/eldoria-private-beta
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43150432049
-          name: mobile16-unpublished-preserved-owner-site
+          run-id: 43220783570
+          name: mobile17-full-lazy-owner-only-site-not-iphone-pass
           github-token: ${{ github.token }}
-          path: site
+          path: candidate-site
       - uses: actions/download-artifact@v4
         with:
           run-id: ${{ needs.choose-earned.outputs.run }}
@@ -79,18 +81,18 @@ jobs:
           QA_EARNED_SOURCE: ${{ needs.choose-earned.outputs.source }}
           QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
           QA_OUT: evidence/deferred
-          QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
-          QA_TELEMETRY_BUNDLE: evidence/current-mobile16-pilot-qa.js
+          QA_REVISION: native325-mobile17-caption-profile-owner-qa
+          QA_CANDIDATE_MODE: engine17-save-compat
+          QA_CANDIDATE_ROOT: candidate-site
           QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
-          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1&eldoriaBetaTelemetry=1
+          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1
         run: |
           set -euo pipefail
           mkdir -p evidence
           npm install --prefix "$RUNNER_TEMP/eldoria-control-qa" --no-save playwright@1.55.0 esbuild@0.25.12 @actions/artifact@2.3.2
           "$RUNNER_TEMP/eldoria-control-qa/node_modules/.bin/playwright" install webkit
           export NODE_PATH="$RUNNER_TEMP/eldoria-control-qa/node_modules"
-          node tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-iphone-p0-lazy-world tools/eldoria-private-beta/pages
-          "$RUNNER_TEMP/eldoria-control-qa/node_modules/.bin/esbuild" site/beta-iphone-p0-lazy-world/pilot-bootstrap.mjs --bundle --format=iife --platform=browser --outfile=evidence/current-mobile16-pilot-qa.js
+          node tools/delivery/test-exact-decoded-transport.mjs candidate-site
           swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -framework Vision -framework ImageIO -o /tmp/eldoria-actual-ui-ocr
           node --check tools/eldoria-private-beta/qa_live_earned_controller.cjs
       - name: Keep one actual earned browser alive through the first-party action runtime
@@ -110,14 +112,15 @@ jobs:
           QA_EARNED_SOURCE: ${{ needs.choose-earned.outputs.source }}
           QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
           QA_OUT: evidence/deferred
-          QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
-          QA_TELEMETRY_BUNDLE: evidence/current-mobile16-pilot-qa.js
+          QA_REVISION: native325-mobile17-caption-profile-owner-qa
+          QA_CANDIDATE_MODE: engine17-save-compat
+          QA_CANDIDATE_ROOT: candidate-site
           QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
-          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1&eldoriaBetaTelemetry=1
+          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1
       - name: Preserve the actually earned checkpoint even after a UI assertion or command rejection
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: earned-campaign-controlled-session-not-physical-iphone
+          name: candidate17-earned-save-compatibility-not-physical-iphone
           path: evidence/
           retention-days: 14
