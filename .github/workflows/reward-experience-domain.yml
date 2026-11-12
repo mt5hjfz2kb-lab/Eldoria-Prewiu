@@ -71,6 +71,7 @@ jobs:
             if(@($parseProblems).Count){throw ($_.FullName+': '+(($parseProblems|ForEach-Object {$_.Message+' at '+$_.Extent.StartLineNumber}) -join '; '))}
           }
           & tools/reward-experience/native/Test-VigiliaProofOverlay.ps1
+          & tools/reward-experience/native/Test-ExactReviewedTrackedRestore.ps1
           $p=Get-Content 'issue186-overlay-source-guards.json' -Raw|ConvertFrom-Json
           if($p.status -ne 'PASS' -or $p.checks -lt 21 -or -not $p.actual_filesystem){throw 'Overlay rollback checks did not execute'}
       - name: Roslyn syntax check of real Unity runtime and editor art scripts

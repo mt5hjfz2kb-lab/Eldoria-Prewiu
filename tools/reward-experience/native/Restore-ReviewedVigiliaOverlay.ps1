@@ -6,10 +6,27 @@ $project=Join-Path $source 'Unity'
 $manifest=Join-Path $Workspace 'issue186-native-43146245415/vigilia-overlay.json'
 function Audit-TrackedSourceBeforeCheckout {
  $head=(& git -C $source rev-parse HEAD).Trim()
- if($LASTEXITCODE -or $head -ne '256117b03987216c4a100bfb607d3113c5e74f96'){throw 'Preserved source HEAD changed; refuse automatic checkout'}
+ if($LASTEXITCODE){throw 'Cannot identify preserved source HEAD'}
+ $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-reviewed-tracked-source'}
+ if($head -ne '256117b03987216c4a100bfb607d3113c5e74f96'){
+  $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/compare/${head}...$env:GITHUB_SHA"
+  $ancestry=Invoke-RestMethod -Uri $url -Headers $hdr
+  if($ancestry.status -notin @('identical','ahead')){throw 'Preserved HEAD is not an ancestor of the requested owned source'}
+ }
  $dirty=@(& git -C $source diff --name-only)
  if($LASTEXITCODE){throw 'Cannot inspect actual tracked source'}
  if(-not $dirty.Count){Write-Host 'EXACT_ORIGINAL_TRACKED_SOURCE_CLEAN';return}
+ $tools=Join-Path $Output 'reviewed-tracked-tools';[IO.Directory]::CreateDirectory($tools)|Out-Null
+ foreach($name in @('Restore-ExactReviewedTrackedFiles.ps1','reviewed-r19-tracked-import-metadata.json')){
+  $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/${name}?ref=$env:GITHUB_SHA"
+  $file=Invoke-RestMethod -Uri $url -Headers $hdr
+  if($file.encoding -ne 'base64' -or -not $file.content){throw 'Exact reviewed tracked source recovery input missing'}
+  [IO.File]::WriteAllBytes((Join-Path $tools $name),[Convert]::FromBase64String($file.content))
+ }
+ try {
+  & (Join-Path $tools 'Restore-ExactReviewedTrackedFiles.ps1') -Source $source -Manifest (Join-Path $tools 'reviewed-r19-tracked-import-metadata.json') -Output (Join-Path $Output 'reviewed-tracked-restoration') -ExpectedCurrentHead $head
+  Write-Host 'TRACKED_SOURCE_RESTORED_AFTER_EXACT_SHA_AND_ANCESTRY_VERIFICATION';return
+ }catch{Write-Host ('EXACT_RESTORE_REFUSED_PRESERVING_AND_ARCHIVING: '+$_.Exception.Message)}
  $archive=Join-Path $Output 'tracked-source-drift';[IO.Directory]::CreateDirectory($archive)|Out-Null
  $records=@()
  foreach($rel in $dirty){
