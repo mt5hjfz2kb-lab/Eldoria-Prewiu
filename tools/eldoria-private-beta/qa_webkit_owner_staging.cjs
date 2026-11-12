@@ -274,6 +274,27 @@ function processes(){
           if(!report.actualWorldUi.realRegion1ConstructedAfterUserWorldClick)throw Error('NO_REAL_REGION1_AFTER_ACTUAL_WORLD_CLICK');
           await readUi('actual-world-after-entry');
           report.actualWorldUi.visualWorldVerification='pending exact screenshot inspection';write();
+          report.actualWorldUi.worldIntroductionClicks=[];
+          for(let step=0;step<8;step++){
+            const phase='world-story-'+step,rows=await readUi(phase);
+            const matches=rows.filter(r=>normalized(r.text)==='CONTINUAR'&&r.confidence>=.35);
+            if(matches.length===0){report.actualWorldUi.worldIntroNoVisibleContinue=true;break;}
+            if(matches.length!==1)throw Error('WORLD_CONTINUE_NOT_UNIQUE '+JSON.stringify(matches));
+            const hit=matches[0];await page.mouse.click(hit.x,hit.y,{delay:150});
+            report.actualWorldUi.worldIntroductionClicks.push({step,text:hit.text,x:hit.x,y:hit.y});
+            write();await observeEntry(3,'world-story-'+step);
+          }
+          if(!report.actualWorldUi.worldIntroductionClicks.length ||
+             !report.actualWorldUi.worldIntroNoVisibleContinue)
+            throw Error('WORLD_INTRODUCTION_NOT_COMPLETED_THROUGH_VISIBLE_UI');
+          await observeEntry(90,'world-after-introduction');
+          await readUi('actual-world-ready');
+          // The same exposed genuine navigation medallion is now CITY:
+          // actual world screenshot43161378432 shows its castle at152,799.
+          await page.mouse.click(152,799,{delay:150});
+          report.actualWorldUi.actualCityReturnAttempted=true;write();
+          await observeEntry(30,'actual-city-return');
+          await readUi('actual-city-return');
         }
       }
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');

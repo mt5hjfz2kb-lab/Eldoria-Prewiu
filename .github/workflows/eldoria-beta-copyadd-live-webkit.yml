@@ -1,4 +1,4 @@
-name: Eldoria reviewed visible objective and World controls — actual desktop WebKit, no deployment
+name: Eldoria actual world introduction and return journey — desktop WebKit, no deployment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
