@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 19,
-  "action": "click_point",
-  "proof_sha256": "02564180c7cccbcfc82044c0b33fdae72c5e5dd1086835a0d559d1daa8386440",
-  "x": 211,
-  "y": 69,
-  "guard_texts": [
-    "BASTIÓN III • 2/5",
-    "Completa dos cacerías"
-  ],
-  "reason": "Actual frame018 confirms food collected and the next genuine two-hunts mission."
+  "sequence": 20,
+  "action": "click_text",
+  "label": "Enviar expedición",
+  "proof_sha256": "11eee22efe10aaaa22cac891c7db035db718939637f338838bc2f282a3e767b7",
+  "reason": "Original frame019 selects actual Lobo ceniciento with1450requiredpower; send the existing confirmed army."
 }
