@@ -388,8 +388,21 @@ internal static class Program
                          (1f-stage.BackdropOpacity)*
                          (1f-DailyTreasureStageDirection.BastionPlateOpacity)>.40f,
                          "completed Bastion visibly preserves actual city behind a single bronze frame");
-                    True(!stage.SideBySide,
-                         "actual-city Bastion must not imitate unrelated landmark artwork");
+                    Eq(stage.SideBySide,!portrait,
+                         "real Bastion photo and factual story use reserved landscape columns");
+                    True(stage.SceneX-stage.SceneW/2>=-width/2 &&
+                         stage.SceneX+stage.SceneW/2<=width/2 &&
+                         stage.SceneY-stage.SceneH/2>=-height/2 &&
+                         stage.SceneY+stage.SceneH/2<=height/2,
+                         "actual Bastion photo stays inside authentic theatre");
+                    if(stage.SideBySide)
+                        True(stage.SceneX+stage.SceneW/2+8f<=
+                             stage.ReceiptX-stage.ReceiptW/2,
+                             "Bastion masonry can never sit under the story ink");
+                    else
+                        True(stage.SceneY-stage.SceneH/2>=
+                             stage.ReceiptY+stage.ReceiptH/2+8f,
+                             "portrait Bastion photo stays above factual receipt");
                 }
                 else
                 {

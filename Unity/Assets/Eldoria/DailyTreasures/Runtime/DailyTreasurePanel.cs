@@ -1402,10 +1402,12 @@ namespace Eldoria.DailyTreasures
             if(currentStage!=DailyTreasureStageKind.Bastion ||
                !ceremony || !ceremony.gameObject.activeSelf ||
                !capturedBastionScene)return;
-            bool requiredPortrait=height>width;
-            bool renderedPortrait=
-                capturedBastionScene.height>capturedBastionScene.width;
-            if(requiredPortrait==renderedPortrait)return;
+            var layout=DailyTreasureStageDirection.Compose(
+                activeMilestoneId,width,height);
+            float requiredAspect=layout.SceneW/Mathf.Max(1f,layout.SceneH);
+            float renderedAspect=(float)capturedBastionScene.width/
+                Mathf.Max(1,capturedBastionScene.height);
+            if(Mathf.Abs(requiredAspect-renderedAspect)<.01f)return;
             var replacement=DailyTreasureBastionCamera.Capture(width,height);
             if(!replacement)
             {
@@ -2846,3 +2848,4 @@ namespace Eldoria.DailyTreasures
         }
     }
 }
+

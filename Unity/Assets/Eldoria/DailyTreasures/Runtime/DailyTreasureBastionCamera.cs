@@ -198,25 +198,25 @@ namespace Eldoria.DailyTreasures
             camera.fieldOfView=38f;
             camera.transform.rotation=Quaternion.LookRotation(
                 -away,Vector3.up);
-            var right=camera.transform.right;
-            var up=camera.transform.up;
-            var f=camera.transform.forward;
-            var ext=b.extents;
-            float dx=Mathf.Abs(right.x)*ext.x+Mathf.Abs(right.y)*ext.y+
-                Mathf.Abs(right.z)*ext.z;
-            float dy=Mathf.Abs(up.x)*ext.x+Mathf.Abs(up.y)*ext.y+
-                Mathf.Abs(up.z)*ext.z;
-            float dz=Mathf.Abs(f.x)*ext.x+Mathf.Abs(f.y)*ext.y+
-                Mathf.Abs(f.z)*ext.z;
             float tanY=Mathf.Tan(camera.fieldOfView*Mathf.Deg2Rad*.5f);
             float tanX=tanY*Mathf.Max(.3f,camera.aspect);
-            // The genuine facade and its silhouette must fit even on the
-            // narrowest 390px mobile: a generous 70% cinema-safe margin
-            // plus depth, no digital zoom / pixelated fake improvement.
-            float distance=Mathf.Max(
-                dy/(Mathf.Max(.01f,tanY)*.73f),
-                dx/(Mathf.Max(.01f,tanX)*.73f))+dz*1.5f;
-            distance=Mathf.Max(distance,8f);
+            var ext=b.extents;
+            // Fit all eight real bounds corners to the actual photo window.
+            // The previous separate maxima plus1.5depth overestimated distance,
+            // wasting most of the ceremony on grass. This exact frustum fit
+            // retains the WHOLE built model with a fixed12% safety margin.
+            float distance=.5f;
+            for(int ix=-1;ix<=1;ix+=2)
+             for(int iy=-1;iy<=1;iy+=2)
+              for(int iz=-1;iz<=1;iz+=2)
+              {
+               var offset=new Vector3(ext.x*ix,ext.y*iy,ext.z*iz);
+               float x=Vector3.Dot(camera.transform.right,offset);
+               float y=Vector3.Dot(camera.transform.up,offset);
+               float z=Vector3.Dot(camera.transform.forward,offset);
+               distance=Mathf.Max(distance,Mathf.Abs(x)/(tanX*.88f)-z,
+                   Mathf.Abs(y)/(tanY*.88f)-z,.5f-z);
+              }
             camera.transform.position=b.center+away*distance;
             camera.nearClipPlane=.12f;
             camera.farClipPlane=Mathf.Max(
@@ -244,10 +244,11 @@ namespace Eldoria.DailyTreasures
             // cathedral-sized ceremony, not a 3:2 fixed photo cropped again
             // inside a 1:2 portrait. This also prevents GPU upscale blur
             // after expanding the genuine full-world modal on desktop.
-            var frame=DailyTreasureStageDirection.NarrativeTheatreFrame(
-                panelWidth,panelHeight);
-            float screenAspect=Mathf.Max(.35f,
-                (frame.Width-25f)/Mathf.Max(1f,frame.Height-28f));
+            // Match the reserved image aperture, not the entire caption/frame.
+            // No subsequent cover-crop may hide the real built-tier silhouette.
+            var stage=DailyTreasureStageDirection.Compose(
+                "milestone:bastion:camera",panelWidth,panelHeight);
+            float screenAspect=stage.SceneW/Mathf.Max(1f,stage.SceneH);
             int height=portrait?(panelWidth>=650f?1152:1024):
                 (panelWidth>=950f?720:540);
             int width=Mathf.Clamp(Mathf.RoundToInt(
@@ -372,4 +373,5 @@ namespace Eldoria.DailyTreasures
         }
     }
 }
+
 

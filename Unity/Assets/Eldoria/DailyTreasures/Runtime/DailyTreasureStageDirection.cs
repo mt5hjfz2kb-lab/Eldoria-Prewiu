@@ -232,14 +232,15 @@ namespace Eldoria.DailyTreasures
             // An invented painted city would risk depicting an incorrect level.
             if(kind==DailyTreasureStageKind.Bastion)
                 return new DailyTreasureStageLayout(kind,
-                    0,0,w-25,h-28,
+                    portrait?0f:-.19f*w,portrait?.09f*h:0f,
+                    portrait?w-25f:.58f*w,portrait?.52f*h:.66f*h,
                     0,portrait?103f:85f,portrait?302f:296f,
                     portrait?269f:176f,
-                    portrait?0f:-.24f*w,
-                    portrait?-.28f*h:-.08f*h,
-                    portrait?w-48:.40f*w,
+                    portrait?0f:.315f*w,
+                    portrait?-.29f*h:.07f*h,
+                    portrait?w-48:.30f*w,
                     portrait?.16f*h:.31f*h,
-                    .38f,0f,0f,false);
+                    .38f,0f,0f,!portrait);
 
             // Lyra, Scouts and Vigilants each use existing original Eldoria
             // scenery, not an imaginary character/map/building from a
@@ -270,3 +271,4 @@ namespace Eldoria.DailyTreasures
         }
     }
 }
+

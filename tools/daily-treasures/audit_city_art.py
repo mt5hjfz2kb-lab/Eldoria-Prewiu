@@ -48,7 +48,7 @@ def visibility(baseline, calendar):
         f'city almost disappears behind calendar: {w}x{h} visible={ratio:.3f} (<{MIN_VISIBLE_LUMINANCE:.2f})')
     return {'size':f'{w}x{h}','samples':bright,'visible_luminance_ratio':round(ratio,4)}
 
-def bastion_structure_retention(baseline, ceremony):
+def bastion_structure_retention(baseline, ceremony, aperture=None):
     """Require the ACTUAL focused Bastion masonry to survive foreground painting.
 
     Run 43005395878 had a valid camera, 20 PNGs and enough perimeter light,
@@ -62,8 +62,13 @@ def bastion_structure_retention(baseline, ceremony):
     old,new = baseline.convert('RGB').load(),ceremony.convert('RGB').load()
     step = max(1,min(w,h)//130)
     values = []
-    for y in range(round(h*.37),round(h*.63),step):
-        for x in range(round(w*.38),round(w*.62),step):
+    # The picture may occupy a reserved left column. Both frames must use
+    # its actual measured Unity rectangle and IDENTICAL projection/texture.
+    ox,oy,aw,ah = aperture if aperture is not None else (0,0,w,h)
+    require(aw>0 and ah>0 and ox>=0 and oy>=0 and ox+aw<=w+1 and oy+ah<=h+1,
+            'Bastion measured aperture lies outside actual viewport')
+    for y in range(round(oy+ah*.37),round(oy+ah*.63),step):
+        for x in range(round(ox+aw*.38),round(ox+aw*.62),step):
             r,g,b = old[x,y]
             a = r*.2126+g*.7152+b*.0722
             if a < 45:
@@ -135,8 +140,19 @@ def audit(folder,source_sha,output):
         bastion_result['variant'] = 'bastion_visual_only'
         hero_result = visibility(focused_baseline, focused_bastion)
         hero_result['variant'] = 'canonical_bastion_camera_closeup'
+        aligned=[]
+        for variant in ('real-bastion-camera-baseline','real-bastion-camera-ceremony'):
+            metadata=names[f'real-city-daily-{variant}-{w}x{h}.png']
+            rect=tuple(metadata.get(k,0) for k in ('subjectX','subjectY','subjectW','subjectH'))
+            require(all(isinstance(v,(int,float)) and math.isfinite(v) for v in rect)
+                    and rect[2]>100 and rect[3]>100,
+                    f'actual Unity Bastion aperture metadata missing: {w}x{h}')
+            aligned.append(rect)
+        require(all(abs(a-b)<.1 for a,b in zip(*aligned)),
+                f'Bastion A/B picture aperture moved: {w}x{h}')
         hero_result.update(bastion_structure_retention(
-            focused_baseline,focused_bastion))
+            focused_baseline,focused_bastion,aligned[0]))
+        hero_result['actual_unity_aperture']=aligned[0]
         results.extend((daily_result, bastion_result, hero_result))
     require(set(names)=={f'real-city-daily-{v}-{w}x{h}.png'
         for w,h in SIZES for v in ('actual-city-baseline','authored-calendar-context',
@@ -205,3 +221,4 @@ if __name__=='__main__':
     else:
         require(bool(opt.source_sha),'exact source SHA required')
         audit(opt.input,opt.source_sha,opt.output)
+
