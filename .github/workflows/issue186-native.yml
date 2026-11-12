@@ -18,6 +18,7 @@ jobs:
       native: ${{ steps.mode.outputs.native }}
       review: ${{ steps.mode.outputs.review }}
       inspect: ${{ steps.mode.outputs.inspect }}
+      combined_source: ${{ steps.mode.outputs.combined_source }}
       review_run: ${{ steps.mode.outputs.review_run }}
       review_artifact: ${{ steps.mode.outputs.review_artifact }}
     steps:
@@ -61,8 +62,18 @@ jobs:
               raise SystemExit("Another workstream owns Windows. Refuse native run.")
           pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
           if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
+          combined=request.get("combined_vigilia_source","")
+          if combined:
+              if len(combined)!=40 or any(c not in "0123456789abcdef" for c in combined):raise SystemExit("Invalid pinned UI source")
+              ui_run=request.get("combined_ui_native_run","")
+              if not ui_run.isdecimal():raise SystemExit("UI native certificate missing")
+              ui=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}")
+              if ui["head_sha"]!=combined or ui["head_branch"]!="feature/forja-oscura-native-proof-20261107":raise SystemExit("Wrong UI native source")
+              ui_jobs=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}/jobs")["jobs"]
+              for name in ("native","genuine-visual-ab"):
+                  if not any(j["name"]==name and j["status"]=="completed" and j["conclusion"]=="success" for j in ui_jobs):raise SystemExit("Unverified UI native/A-B certificate")
           print("ISSUE186_CAS_LEASE_PASS")
-          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("native=true\nreview=false\n")
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nreview=false\ncombined_source={combined}\n")
           PY
 
   native:
@@ -72,6 +83,7 @@ jobs:
     timeout-minutes: 65
     env:
       OUT: ${{ github.workspace }}\issue186-native-${{ github.run_id }}
+      ISSUE186_VIGILIA_SOURCE: ${{ needs.exclusive-preflight.outputs.combined_source }}
     steps:
       - name: Verify installed Unity and idle computer
         shell: powershell
@@ -161,6 +173,31 @@ jobs:
           $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
           if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
+      - name: Fetch and install only source-pinned verified optional Vigilia for the isolated combined proof
+        if: needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before optional source overlay'}
+          $src=Join-Path $env:GITHUB_WORKSPACE 'issue186-vigilia-proof-source'
+          if(-not(Test-Path -LiteralPath $src)){New-Item -ItemType Directory -Path $src|Out-Null;git -C $src init;git -C $src remote add origin 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'}
+          if((Get-Item -LiteralPath $src -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse redirected optional source'}
+          $gitMetadata=Join-Path $src '.git'
+          if(-not(Test-Path -LiteralPath $gitMetadata -PathType Container) -or ((Get-Item -LiteralPath $gitMetadata -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Optional source must have owned non-redirected Git metadata'}
+          if((git -C $src remote get-url origin).Trim() -ne 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'){throw 'Optional source origin mismatch'}
+          git -C $src config remote.origin.promisor true
+          git -C $src config remote.origin.partialclonefilter blob:none
+          git -C $src sparse-checkout init --no-cone
+          git -C $src sparse-checkout set --no-cone '/Unity/Assets/Eldoria/BreachWatch/**' '/Unity/Assets/Eldoria/BreachWatch.meta'
+          if($LASTEXITCODE){throw 'Optional UI sparse membership failed'}
+          $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:ISSUE186_VIGILIA_SOURCE
+          if($LASTEXITCODE){throw 'Pinned UI source fetch failed'}
+          git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) checkout --detach --force FETCH_HEAD
+          if($LASTEXITCODE -or (git -C $src rev-parse HEAD).Trim() -ne $env:ISSUE186_VIGILIA_SOURCE){throw 'Optional UI source mismatch'}
+          & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Install -Project 'issue186-source/Unity' -UiProject (Join-Path $src 'Unity') -UiSource $env:ISSUE186_VIGILIA_SOURCE -Manifest (Join-Path $env:OUT 'vigilia-overlay.json')
       - name: Export installed managed API metadata for off-PC semantic compilation
         shell: powershell
         run: |
@@ -183,9 +220,9 @@ jobs:
           # Unity 6000.3 recommends -quit even if the executeMethod
           # cannot start after a script compilation failure. This prevents
           # holding the exclusive Windows runner until a timeout.
-          $args='-batchmode -quit -force-d3d11 -projectPath "'+$unityProject+
+          $unityArguments='-batchmode -quit -force-d3d11 -projectPath "'+$unityProject+
             '" -executeMethod Eldoria.Issue186Art.Editor.Issue186NativeEvidence.Capture -logFile "'+$log+'"'
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -Wait -PassThru
           $proof=Join-Path $unityProject 'Issue186NativeEvidence'
           if(Test-Path $proof){Copy-Item (Join-Path $proof '*') $env:OUT -Force -Recurse}
           if($process.ExitCode -ne 0){
@@ -195,7 +232,8 @@ jobs:
           $file=Join-Path $env:OUT 'report.json'
           if(-not(Test-Path $file)){throw 'No actual Unity proof report'}
           $r=Get-Content $file -Raw|ConvertFrom-Json
-          if($r.status -ne 'UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING' -or
+          if($r.sourceSha -ne $env:GITHUB_SHA -or $r.nativeRun -ne $env:GITHUB_RUN_ID -or $r.nativeAttempt -ne $env:GITHUB_RUN_ATTEMPT -or
+            $r.status -ne 'UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING' -or
             $r.allResourcesImported -ne $true -or $r.realImportedSprites -ne 16 -or
             $r.captures -ne 4 -or $r.pointerRaycastHits -ne 4 -or
             $r.artApproved -ne $false -or $r.actualCityTested -ne $false){
@@ -216,6 +254,44 @@ jobs:
             }
           }
           Write-Host 'ISSUE186_NATIVE_FOUR_VIEWPORTS_AND_POINTER_PASS'
+      - name: Exercise actual saved bag and real input on the verified independent Vigilia canvas
+        if: needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        working-directory: issue186-source
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $log=Join-Path $env:OUT 'combined-bag-unity.log'
+          $unityArguments='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Capture -logFile "'+$log+'"'
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -Wait -PassThru
+          $proof=Join-Path $project 'Issue186BagCombinedNativeEvidence'
+          $dest=Join-Path $env:OUT 'combined-bag'
+          if(Test-Path $proof){New-Item -ItemType Directory -Force $dest|Out-Null;Copy-Item (Join-Path $proof '*') $dest -Recurse -Force}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 150};throw 'Actual combined bag Unity probe failed'}
+          $r=Get-Content (Join-Path $dest 'report.json') -Raw|ConvertFrom-Json
+          if($r.status -ne 'REAL_VIGILIA_SAVED_BAG_PASS_ART_REVIEW_PENDING' -or
+             $r.resourceSource -ne $env:GITHUB_SHA -or $r.uiSource -ne $env:ISSUE186_VIGILIA_SOURCE -or
+             $r.nativeRun -ne $env:GITHUB_RUN_ID -or $r.nativeAttempt -ne $env:GITHUB_RUN_ATTEMPT -or
+             -not $r.temporaryProbeOnly -or -not $r.actualBagOnVigilia -or -not $r.seenDoesNotUse -or
+             -not $r.skipDoesNotComplete -or -not $r.useCreditsOnce -or -not $r.jsonReloadVerified -or
+             -not $r.mailReadDoesNotClaim -or -not $r.mailClaimDoesNotCredit -or
+             $r.artApproved -or $r.physicalIphoneVerified -or $r.fullMailboxUiFlowVerified -or
+             @($r.images).Count -ne 8 -or $r.realFirstHitClicks -ne 20){throw 'Actual combined bag proof contract missing'}
+          foreach($shot in @($r.images)){
+            $file=Join-Path $dest $shot.file
+            if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){throw 'Actual combined bag PNG mismatch'}
+          }
+          Write-Host 'ISSUE186_ACTUAL_SAVED_BAG_ON_VIGILIA_8PNG_20_FIRST_HIT_CLICKS_AND_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
+      - name: Restore the exact pre-overlay UI source and preserve any unfamiliar edit
+        if: always() && needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        run: |
+          $manifest=Join-Path $env:OUT 'vigilia-overlay.json'
+          if(Test-Path -LiteralPath $manifest){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Refuse restoration while native process is still active'}
+            & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Restore -Project 'issue186-source/Unity' -Manifest $manifest
+            if(-not((Get-Content ($manifest+'.restored.json') -Raw|ConvertFrom-Json).restored)){throw 'Exact optional-source restoration missing'}
+          }
       - name: Preserve actual Unity screenshots and error log
         if: always()
         uses: actions/upload-artifact@v4

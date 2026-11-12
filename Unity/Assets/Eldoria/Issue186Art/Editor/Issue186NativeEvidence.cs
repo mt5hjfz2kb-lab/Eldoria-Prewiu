@@ -35,7 +35,7 @@ namespace Eldoria.Issue186Art.Editor
         }
         [Serializable] sealed class Report
         {
-            public string status, sourceSha, limitation, error;
+            public string status, sourceSha, limitation, error, nativeRun, nativeAttempt;
             public int captures, realImportedSprites, pointerRaycastHits;
             public bool allResourcesImported, artApproved, actualCityTested, physicalIphoneTested;
             public CaptureInfo[] images;
@@ -514,6 +514,8 @@ namespace Eldoria.Issue186Art.Editor
                     "Save or close the active modified scene before using disposable art preview");
             var report=new Report{
                 sourceSha=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
+                nativeRun=Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local",
+                nativeAttempt=Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT")??"local",
                 limitation="Isolated imported art render only; no campaign, save, phone or final art approval",
                 status="RUNNING",artApproved=false,actualCityTested=false,
                 physicalIphoneTested=false

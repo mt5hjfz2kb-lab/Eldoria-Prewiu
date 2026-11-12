@@ -40,7 +40,7 @@ namespace Eldoria.Issue186Art.Editor
         }
         [Serializable] sealed class Report
         {
-            public string status,resourceSource,uiSource,error,limitation;
+            public string status,resourceSource,uiSource,error,limitation,nativeRun,nativeAttempt;
             public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
@@ -77,6 +77,8 @@ namespace Eldoria.Issue186Art.Editor
                     report=new Report{status="RUNNING",
                         resourceSource=Environment.GetEnvironmentVariable("GITHUB_SHA")??"",
                         uiSource=Environment.GetEnvironmentVariable("ISSUE186_VIGILIA_SOURCE")??"",
+                        nativeRun=Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"",
+                        nativeAttempt=Environment.GetEnvironmentVariable("GITHUB_RUN_ATTEMPT")??"",
                         limitation="Actual saved bag on combined Vigilia probe; mail read/claim commands, not full letter-row UI flow; no art or device approval"};
                     Directory.CreateDirectory(Output);routine=Run();
                 }
