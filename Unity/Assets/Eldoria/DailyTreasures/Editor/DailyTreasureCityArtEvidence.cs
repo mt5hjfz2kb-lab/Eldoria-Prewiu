@@ -110,6 +110,8 @@ namespace Eldoria.DailyTreasures.Editor
                             ((int)color.b>>4));
                     }
                 var fraction=sampled>0?(float)lit/sampled:0f;
+                if(!(sampled>=150 && lit>sampled/6 && colors.Count>=36))
+                    PreserveFailedOriginalGpu(rt,rt.width,rt.height);
                 Require(sampled>=150 && lit>sampled/6 &&
                         colors.Count>=36,
                     "True Bastion camera contains no meaningful geometry: "+
@@ -182,6 +184,27 @@ namespace Eldoria.DailyTreasures.Editor
         // masonry pixels. The new isolated URP SingleCameraRequest can return
         // a valid yet BLACK texture on a broken render route. Sample the real
         // GPU output in EDITOR ONLY; never stall the player's mobile GPU.
+        static void PreserveFailedOriginalGpu(RenderTexture texture,int width,int height)
+        {
+            var prior=RenderTexture.active;
+            var original=new Texture2D(texture.width,texture.height,TextureFormat.RGB24,false);
+            try
+            {
+                RenderTexture.active=texture;
+                original.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);
+                original.Apply(false);
+                string folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
+                    "../"+Folder+"/FailedGpuReadback"));
+                Directory.CreateDirectory(folder);
+                string file=Path.Combine(folder,"FAILED-actual-bastion-rt-"+width+"x"+height+".png");
+                File.WriteAllBytes(file,original.EncodeToPNG());
+                Debug.Log("FAILED_ORIGINAL_BASTION_GPU_PRESERVED "+file+
+                    "; actual="+texture.width+"x"+texture.height+
+                    "; sha256="+Hash(file)+"; NOT_ART_APPROVAL");
+            }
+            finally{RenderTexture.active=prior;Object.DestroyImmediate(original);}
+        }
+
         static void VerifyLiveBastionTexture(DailyTreasurePanel panel,
             int width,int height)
         {
@@ -229,6 +252,8 @@ namespace Eldoria.DailyTreasures.Editor
                         colors.Add(((int)pixel.r>>4)*256+
                             ((int)pixel.g>>4)*16+(pixel.b>>4));
                     }
+                if(!(tested>700 && lit>tested/6 && colors.Count>=35))
+                    PreserveFailedOriginalGpu(captured,width,height);
                 Require(tested>700 && lit>tested/6 && colors.Count>=35,
                     "Real Bastion GPU texture is dark/flat/unrendered at "+
                     width+"x"+height+": lit "+lit+"/"+tested+

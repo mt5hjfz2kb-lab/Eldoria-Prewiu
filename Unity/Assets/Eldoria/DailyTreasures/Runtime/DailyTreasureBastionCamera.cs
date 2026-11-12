@@ -178,7 +178,7 @@ namespace Eldoria.DailyTreasures
         // The original city camera is a useful gameplay isometric view,
         // but its near-vertical angle produced a tiny, emotionally flat
         // building in the REAL 43005395878 captures. This ceremonial camera
-        // should reveal the already-constructed facade and depth: a 38-degree
+        // should reveal the already-constructed facade and depth: a 32-degree
         // perspective 3/4 portrait lit by actual scene geometry. No invented
         // mesh, replacement asset, panorama or altered player camera.
         static void Frame(Camera camera,Bounds b,DailyTreasureStageLayout stage,
@@ -288,8 +288,10 @@ namespace Eldoria.DailyTreasures
                 foreach(var t in UnityEngine.Object.FindObjectsByType<Transform>(
                     FindObjectsInactive.Include,FindObjectsSortMode.None))
                     if(t)occupied.Add(t.gameObject.layer);
+                // Unity reserves layer31 for Editor Preview. It is never a
+                // candidate for either actual geometry or the volume mask.
                 int chosen=-1;
-                for(int candidate=31;candidate>=8;candidate--)
+                for(int candidate=30;candidate>=8;candidate--)
                     if(!occupied.Contains(candidate)){chosen=candidate;break;}
                 if(chosen<0)throw new InvalidOperationException("NO_PRIVATE_STUDIO_RENDER_LAYER");
                 layer=chosen;
@@ -319,6 +321,7 @@ namespace Eldoria.DailyTreasures
                 float radius=Mathf.Max(1f,bounds.extents.magnitude);
                 key=new GameObject("Bastion studio / scoped warm physical key");
                 key.layer=layer;var main=key.AddComponent<Light>();
+                main.GetUniversalAdditionalLightData();
                 main.type=LightType.Directional;main.color=new Color(1f,.89f,.72f);
                 main.intensity=1.65f;main.cullingMask=Mask;
                 main.shadows=LightShadows.Soft;main.shadowStrength=.72f;
@@ -328,6 +331,7 @@ namespace Eldoria.DailyTreasures
                 key.transform.rotation=Quaternion.LookRotation(bounds.center-keyPosition,Vector3.up);
                 fill=new GameObject("Bastion studio / scoped cool edge reflection");
                 fill.layer=layer;var edge=fill.AddComponent<Light>();
+                edge.GetUniversalAdditionalLightData();
                 edge.type=LightType.Point;edge.color=new Color(.48f,.61f,.82f);
                 edge.intensity=1.15f;edge.range=radius*4f;
                 edge.cullingMask=Mask;edge.shadows=LightShadows.None;
@@ -405,7 +409,7 @@ namespace Eldoria.DailyTreasures
         {
             var volumes=UnityEngine.Object.FindObjectsByType<Volume>(
                 FindObjectsInactive.Include,FindObjectsSortMode.None);
-            for(int layer=31;layer>=8;layer--)
+            for(int layer=30;layer>=8;layer--)
             {
                 bool occupied=false;
                 foreach(var volume in volumes)
