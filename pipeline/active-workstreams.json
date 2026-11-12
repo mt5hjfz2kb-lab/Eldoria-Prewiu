@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T09:28:08.236Z",
+  "updated_at": "2026-11-12T09:34:30.240Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -8126,7 +8126,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 77,
+      "ownership_revision": 78,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8146,11 +8146,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "FULL92_NATIVE_PASS_MACRO_COHERENCE_REVIEW",
+      "phase": "EXCLUSIVE_SINGLE_CONTINUOUS_SCENERY_NATIVE_AB",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Fix repeated scenery bands observed in actual scouts/Lyra portraits as one coherent composition; review actual originals before source changes. No main merge.",
+      "next": "Full original native lot against43191078889; reject duplicated activecrop, verify actual aspect/interior and genuine reward/input/receipt gates. Beta nextobjective Mac runs independently. Scheduled supervisions all disabled by explicit owner instruction; never reenable.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8207,9 +8209,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T09:28:08.236Z",
       "runner_release_basis": "Full native43191078889 and independent audit SUCCESS;92 original PNG independently byte/hash/dimension verified; original scene restored; native-exit zero-process guard passed.",
-      "runner_claimed_at": "2026-11-12T09:19:28.883Z",
+      "runner_claimed_at": "2026-11-12T09:34:30.240Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "R43189305862 successful, all245 originals restored; contextual city source fd6ab5b sourceCI43189321570 success.",
+      "runner_claim_basis": "Single continuous narrative source a164dfb sourceCI43192357678/43192365925 both success; prior92 original evidence preserved; actual native A/B required.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
@@ -18648,6 +18650,13 @@
       "from": "eldoria-daily-treasures-20261108",
       "to": null,
       "run": 43191078889
+    },
+    {
+      "at": "2026-11-12T09:34:30.240Z",
+      "event": "central_claim_single_continuous_scenery_AB_after_exact_source_success",
+      "to": "eldoria-daily-treasures-20261108",
+      "source": "a164dfbac7077eab60fe4bc2f040fefa009a8dbf",
+      "owner_disabled_all_supervisions": true
     }
   ],
   "owner_specific_pauses": [
