@@ -1,9 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 7,
-  "action": "click_text",
-  "proof_sha256": "226bd89d46efa357b49c3213ceba4fafb5261bc44812960df65e5538c20b39ae",
-  "label": "ELEVAR A BASTION IV",
-  "reason": "Original frame006 proves actual850wood700stone300food cost and7minute duration; start the real earned Bastion IV upgrade without clock edits."
+  "sequence": 8,
+  "action": "snapshot",
+  "proof_sha256": "28a2dc3fbfb41010657cc6a1d231e8c4a06013f65563529ebe58a9fe8a7df31d",
+  "reason": "Observe real elapsed Bastion IV upgrade progress while independent native and domain QA continue; no timer shortcut."
 }
