@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 42,
+  "sequence": 43,
   "action": "click_text",
-  "proof_sha256": "2d41205e47eef244e6993e51add4fbd2b6e2e76aea64013d1f8b793eab60aa46",
-  "label": "DESACTIVAR ESTADÍSTICAS"
+  "proof_sha256": "afeb3ef1f47e0f9d8dec92dca2ed5a8f4ba13257f303b8e25643a3ad6b9f1340",
+  "label": "CORREO."
 }
