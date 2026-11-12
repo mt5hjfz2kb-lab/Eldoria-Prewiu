@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T15:56:34.245Z",
+  "updated_at": "2026-11-12T16:17:51.870Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7236,7 +7236,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 51,
+      "ownership_revision": 52,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7277,14 +7277,12 @@
         ".github/workflows/eldoria-beta-lazy-world-native.yml",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "LAZY_OBJECTIVE_NATIVE_PLAYMODE_PASS_FULL_WORLD_WEBGL_IN_PROGRESS",
+      "phase": "NATIVE18_COMPLETE_PROFILE18_PACKAGING_AND_REOPEN_PENDING",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
       "next": "Actual public603 firstloop+52SQLpreviousproof preserved. New1316810 nextgathering objective follows real objectivearrow and unique OCRcontrols only, newMac43192581903 currentlyrunning independently ofWindows. Inspect actualframes then continue ordinaryprogression; never claimfullI-V/physicalphone fromattempts.",
       "last_verified": {
@@ -7923,7 +7921,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-12T12:16:24.253Z",
+      "runner_released_at": "2026-11-12T16:17:51.870Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -8151,7 +8149,7 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "Native43211338159 job131159647505 cleanSUCCESS: exactUXcaptionglyph+realtrainingchoice, nativePlayMode/fullterrain/I-V/WebGL and strictwarm source restoration. PackagingUbuntu/Mac next do not needWindows. Rawunprofiledengine notiPhone-certified. Existingactualhosted20trained/56archers source4fd confirmed separately43212071356.",
+      "runner_release_basis": "Actual native job131279338533 completed SUCCESS; original-input recovery checked before Unity, lazyPlayMode result independently verified from hashed artifact13960228216: restored=true,115auditedinputs, zero bytechanges. Full-world I-V/WebGL wrapper reports COMPILED_RESTORED and process exited. Ubuntu/Mac packaging does not retain Windows.",
       "last_completed_earned_campaign": {
         "run": 43231463013,
         "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
@@ -8218,7 +8216,8 @@
         "reopen": {
           "run": 43251704856,
           "source": "f42f44f8036a9694af6e675581b2bbf0372ad659",
-          "state": "queued"
+          "state": "CANCELLED_BEFORE_BROWSER; no reopen PASS",
+          "alternative": "Linux immutable input/site verified; browser launch denied by OS socket policy. Prepare isolated Windows Edge reopen on now-free PC; no owner save or source modified."
         }
       },
       "scope_extension_reason": "Exact canonical JourneyGuidance caller must use the same target-preserving host navigation as the already owned frozen UX overlay; no art, rewards or balance change.",
@@ -8229,10 +8228,20 @@
         "preflight": "PASS",
         "real_lazy_playmode_and_warm_restoration": "PASS",
         "asserted": "latest quest target preserved; cancellation and reselect; quarry selected without extra tap;12reentries;actual disk reload",
-        "full_world_and_webgl": "in_progress; no compiled18candidate claimed",
+        "full_world_and_webgl": "SUCCESS; compiled exactde636 native18, not physical iPhone",
         "source_inputs_preserved_until_step6": true,
-        "overall_cleanup": "pending end of current native batch",
-        "ownership_revision": 51
+        "overall_cleanup": "native wrapper reports restored; job completed",
+        "ownership_revision": 51,
+        "native_job_conclusion": "success",
+        "playmode_archive_independently_verified": true,
+        "audited_input_files": 115,
+        "audited_input_byte_changes": [],
+        "playmode_artifact": 13960228216,
+        "playmode_artifact_sha256": "6f0c1bcf7cc14567e4f52ec990aefbc47739515301786f4966738e449aec01a5",
+        "native_artifact": 13961517222,
+        "native_artifact_sha256": "68ece3d73a68a33fb3084923ac0cfd19173dc54506d22fee2154471c61deae7b",
+        "webgl_artifact": 13961517280,
+        "webgl_artifact_sha256": "1ceaa511ce072f6f7982a832f4a8a8386381f507ff8a31ac8bfae3c79ba7a4de"
       },
       "prepared_off_pc_ui_reuse": {
         "tree": "4b48fea1ac52c117fe717ffe3815b685bd3b1ba5",
