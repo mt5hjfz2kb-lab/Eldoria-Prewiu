@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T11:13:09.868Z",
+  "updated_at": "2026-11-12T11:16:09.645Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6838,16 +6838,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 113,
+      "ownership_revision": 114,
       "write_scope_released": false,
-      "phase": "OWNER_THREE_SPACE_MARCH_NATIVE48_AB_PASS_VISUAL_REVIEW",
+      "phase": "OWNER_THIRD_SLOT_COHERENCE_AND_REAL_INFORMATION_INPUT_NATIVE_PENDING",
       "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T11:02:53.627Z",
-      "runner_claim_basis": "All prior Windows jobs clean completed; owner review source guard43205394059 SUCCESS; beta actual WebKit uses independent Mac.",
+      "runner_claimed_at": "2026-11-12T11:16:09.645Z",
+      "runner_claim_basis": "T43207284828 native completed; UI source43207544104 SUCCESS; verify real information/return first hits and matched third-slot typography.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -8123,7 +8125,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 82,
+      "ownership_revision": 83,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8143,11 +8145,9 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "OWNER_SCOUTS_AUTHORED_MOTION_NATIVE_PENDING",
+      "phase": "OWNER_SCOUTS90_AUTHORED_FRAMES_NATIVE_PASS_AUDIT_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
       "next": "Prepare byte-identical original ceremony/coffer ownerreview offPC. No tinyfurtherpaintingloops; sourcecoherence/controlfixes nowrealnativeverified. No mainart untilownerreview; currentcityBastioncontextactualbuiltgeometry preserved.",
       "art_production_routing": "required",
@@ -8204,8 +8204,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-12T10:08:23.771Z",
-      "runner_release_basis": "Actualf081 native43197044742+independentaudit success92PNG; all92downloadedhashverified. Lyra/scouts390 visually inspected: singlecontinuoussetting and visibleContinue/Close; actualGPUcontrolsproof passed.",
+      "runner_released_at": "2026-11-12T11:16:09.645Z",
+      "runner_release_basis": "Actual native-ui43207284828 SUCCESS;92 original static +90 authored scout sequence supplemental, clean native exit, independent audit remains off-PC.",
       "runner_claimed_at": "2026-11-12T11:13:09.868Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "R43206918009 clean complete; T source43206259413/43206249576 pass; owner requests evaluating scouts in motion. Capture original15fps timeline samples without awarding new events.",
