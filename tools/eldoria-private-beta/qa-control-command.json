@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 27,
+  "sequence": 28,
   "action": "click_point",
-  "proof_sha256": "5bddb3b1a7f3a2131c09383b872ce110ae24058d3aa7c6257d8709d2072d7fe8",
+  "proof_sha256": "37c79510ed135d23fb321bf880a9d3bd50662f794834d043af2886f46ebd9266",
   "x": 293,
   "y": 735,
   "guard_texts": [
     "SIR ALDRIC",
     "Guardián de Valoria"
   ],
-  "reason": "Original frame026 shows the real Aldric narrative action at293,735; acknowledge or reveal its actual text before city management."
+  "reason": "Fresh original frame027 shows the next authored Aldric narrative page and the same actual continuation control."
 }
