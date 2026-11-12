@@ -38,3 +38,14 @@ La última imagen conceptual creada dentro del chat **NO representa el lenguaje 
 El resultado de PR181 continúa **NO-GO artístico** hasta compilar y capturar el verdadero Canvas de Unity 6000.3.23f1 con PR173 y el juego, revisar sus 52 PNG originales y comprobar en dispositivos la sensación de relieve, contraste, iconografía, encuadre, sonido, animación y rendimiento. La prueba automática detecta desviaciones groseras, pero **no puede sustituir el juicio visual humano**. No fusionar ni publicar sin ese umbral.
 
 **Estado: concepto desviado rechazado, dirección artística corregida en código y contrato, CI fuente pendiente de última SHA, nativeUnityPassed=false, artApproved=false.**
+
+
+## Verificación posterior — 12 de noviembre de 2026
+
+La ejecución nativa [43207284828](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43207284828) terminó con éxito sobre `0875d8d1dc740c41924f3ebfb9b33c700e36040b`. Sustituye el estado técnico pendiente del 8 de noviembre para esa fuente; no convierte el contrato artístico en una aprobación.
+
+El lote contiene 52 imágenes contractuales, 20 de días ordinarios, 20 de contexto de ciudad y 90 fotogramas suplementarios de Exploradores: 182 PNG en total. Hubo 28 cobros sobre gateways temporales y 116 verificaciones de puntero. Las imágenes de ciudad certifican composición y restauración del entorno, no una partida integrada con PR173.
+
+El ZIP nativo `13940310497` (`b96402cdf621fa02f44bf1dcccae8486c3a12670fd71ccff3bfb8c56daf1c5f5`) y el ZIP auditor `13940005647` (`d2fa22eb26cd238aec2f878b41fed02a77fe30bec15c83bf630eee8b428ac44a`) se descargaron y cotejaron independientemente. También se verificaron los 90 hashes, dimensiones y orden de la secuencia de Exploradores antes de codificar sus seis segundos originales a 15 fps. Esta secuencia silenciosa es un muestreo del componente, no una grabación de juego ni prueba de un hito ganado.
+
+**Estado técnico de esa fuente: PASS. Estado artístico, audio en juego, integración con PR173 y dispositivos físicos: PENDIENTES.** La tipografía candidata de PR173 no se activa en Tesoros sin su A/B separado. Se mantiene la prohibición del concepto floral violeta rechazado y de inventar recursos, escenarios de progreso o cobros.
