@@ -1,14 +1,8 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 5,
-  "action": "click_point",
-  "proof_sha256": "55f706d6870b91df15c8f7ebd0ca788ca7fb2965951e3e4879c0ca9584e8b51f",
-  "x": 155,
-  "y": 798,
-  "guard_texts": [
-    "Valoria asegurada •",
-    "Recorrido completado"
-  ],
-  "reason": "Frame004 shows completed city and the fixed lower-left compass world control; enter the real deferred Region1 using that observed button."
+  "sequence": 6,
+  "action": "wait",
+  "proof_sha256": "c3294b1a627725e7f3addf9253779affb5546cd76011922e43ac366cd9da9451",
+  "seconds": 20
 }
