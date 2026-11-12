@@ -30,6 +30,7 @@ namespace Eldoria.DailyTreasures.Editor
             public PlayerState Load()=>State;
             public void Save(PlayerState state){State=state;}
         }
+        [Serializable] sealed class AuthoredMotion { public int framesPerSecond; public string source,note; public Shot[] frames; }
         [Serializable] sealed class Shot
         {
             public string file,sha256,view;
@@ -1437,6 +1438,29 @@ namespace Eldoria.DailyTreasures.Editor
                                     panel,camera,rt,width,height);
                             VerifyActualControlVisible(panel,camera,rt,width,height,
                                 "Close tributes");
+                            if(style==3 && width==390 && height==844)
+                            {
+                                string motionOutput=Path.Combine(output,"scouts-authored-motion");
+                                Directory.CreateDirectory(motionOutput);
+                                var frames=new List<Shot>();
+                                for(int frame=0;frame<90;frame++)
+                                {
+                                    panel.SampleForNativeEvidence(frame/15f);
+                                    Canvas.ForceUpdateCanvases();
+                                    frames.Add(Render(camera,rt,motionOutput,width,height,
+                                        "scouts-frame-"+frame.ToString("D3"),
+                                        "Actual component authored timeline sampled at15fps; visual-only fixture, no earned event or live player-loop certification",
+                                        true,false));
+                                }
+                                File.WriteAllText(Path.Combine(motionOutput,"motion.json"),
+                                    JsonUtility.ToJson(new AuthoredMotion {
+                                        framesPerSecond=15,frames=frames.ToArray(),
+                                        source=report.source,
+                                        note="Unretouched actual Unity component frames sampled from its authored reveal; silent visual-only preview, not a recorded player session."
+                                    },true));
+                                panel.SampleForNativeEvidence(DailyTreasureRevealTimeline.RevealPeakSeconds);
+                                Canvas.ForceUpdateCanvases();
+                            }
                             pictures.Add(Render(camera,rt,output,width,height,
                                 "style-"+styleSuffixes[style]+"-opening",
                                 "Visual style preview ONLY, not an earned milestone: "+
