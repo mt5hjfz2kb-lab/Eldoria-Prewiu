@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 44,
+  "sequence": 45,
   "action": "click_text",
-  "proof_sha256": "099f7ab7766cdb7e4ccf67172195b4b50a68fe7bf7e3fbbd3c18d60f8e82b2a9",
-  "label": "ACECHADOR DE CENIZA"
+  "proof_sha256": "5cc4f4a60fb6129ffca04ecc54140f320f35696adb3631f89ced7c9029168999",
+  "label": "MARCAR LEÍDO"
 }
