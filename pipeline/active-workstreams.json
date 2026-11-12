@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T05:19:32.594Z",
+  "updated_at": "2026-11-12T05:24:18.947Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6808,16 +6808,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 101,
+      "ownership_revision": 102,
       "write_scope_released": false,
-      "phase": "SOURCE_PASS_REAL_MAIL_POINTER_LIFECYCLE_PLUS_HALL_GLYPH_FIX_AWAIT_NATIVE",
-      "next": "Ready for next bounded Windows turn after T43159772550 clean exit. Source0b500b0340007398b0815dffec241377a37c168a includes c6acdef actual Hall glyph correction,69a7be80 real mailbox input Awake fix, safe reversible owned source preservation. Source43160433996PASS10realGitcases+Roslyn/style. Need48actualPNGs+2actual mailbox first-hit clicks+genuineAB; then give R187 combined fullflow turn. No art/main/phone approval.",
+      "phase": "EXCLUSIVE_NATIVE_REAL_MAIL_POINTER_AND_HALL_GLYPH_PROOF",
+      "next": "Freeze requestexactsource; preserve originalGitworkinginputs, normalcheckout, actual48PNGtwofirsthitmailcontrols+HallglyphGPUtest, thenreleasefairlyR187combined-only. No mainart/deviceapproval.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T02:31:37.443Z",
-      "runner_claim_basis": "Current owner authorizes continuation of entire PR173; no active heavy holder at read; reserve for actual native UI destination QA.",
+      "runner_claimed_at": "2026-11-12T05:24:18.947Z",
+      "runner_claim_basis": "FairturnafterT63realcinematiccleanexit. UI0b500b sourceCI43160433996PASS10realGitcases+Roslyn/style; genuine48PNGplus2actualmailfirsthits and HallglyphGPUoverlap, originalAB.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -7147,12 +7149,12 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "ready_waiting_current_owner",
+        "status": "claimed",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 101,
+        "ownership_revision": 102,
         "ready_source": "0b500b0340007398b0815dffec241377a37c168a",
         "source_ci_run": 43160433996,
-        "next_after_native_run": 43159772550
+        "claimed_at": "2026-11-12T05:24:18.947Z"
       }
     },
     {
@@ -8056,7 +8058,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 64,
+      "ownership_revision": 65,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8076,13 +8078,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "exclusive actual cinematic city art-context capture after exact input preservation",
+      "phase": "ACTUAL_CINEMATIC_CITY_NATIVE_PASS_AWAIT_UNTOUCHED_VISUAL_REVIEW",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "One20PNGcity-onlylot; inspect actual cinematic grade/horizon and original singlebronze perimeter; no art acceptance from CI.",
+      "next": "CPUexportexact4PNGfrom43159772550 thencompareprior2418 andapprovedreference; source/nativepassnotartapproval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8137,8 +8137,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-12T04:59:36.010Z",
-      "runner_release_basis": "Native43157612284 all jobs completed; refused source switch before Unity because packages-lock.json and QualitySettings.asset differ. Raw bytes archived in artifact13916990677. Off-PC exact Git-blob diff audit now running on6c43b09. No reset of unknown inputs.",
+      "runner_released_at": "2026-11-12T05:24:18.947Z",
+      "runner_release_basis": "Native43159772550 source6930da30 PASS20actualcity8genuineBastion4rotation8singleperimeter+exactenvironmentrestored; independently audited success.50priorinputfiles preservedwithfullGitref. Artifact13917847860 SHA933f5ca9f385ad7539031c8f9efffe7965659d3a80d3607a52387235a5dabe36. No artapproval; export untouched actualimages forhumancritique.",
       "runner_claimed_at": "2026-11-12T05:11:44.563Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "Fair turn after R27 cleanexit/245restored. Exact recovery66356eb sourceCI43158571821PASS10actualGitcases+domain/gateway/Roslyn. Archiveand fullworkingGitref before restoring only2exactreviewed nativeinputs.",
@@ -8242,12 +8242,10 @@
       "previous_owner": "chatgpt-daily-treasures-20261108",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_after_clean_exit",
         "owner": "chatgpt-central-treasures-art-20261111",
-        "ownership_revision": 64,
-        "source": "6930da30cc869f67ca0eba28caad40efb2868951",
-        "native_run": 43159772550,
-        "claimed_at": "2026-11-12T05:11:44.563Z"
+        "ownership_revision": 65,
+        "last_native_run": 43159772550
       }
     },
     {
@@ -18427,6 +18425,14 @@
       "native_run": 43158384727,
       "restored_ui_files": 245,
       "mail_firsthit": "none depth23 point28.67,659.72"
+    },
+    {
+      "at": "2026-11-12T05:24:18.947Z",
+      "event": "central_fair_cinematic_T63_PASS20_to_UI_real_mail_input_and_Hall",
+      "from": "eldoria-daily-treasures-20261108",
+      "to": "eldoria-forja-oscura-visual-proof-20261107",
+      "native_run": 43159772550,
+      "preserved_original_inputs": 50
     }
   ],
   "owner_specific_pauses": [
