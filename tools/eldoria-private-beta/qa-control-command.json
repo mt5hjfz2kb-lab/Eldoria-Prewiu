@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 5,
+  "sequence": 6,
   "action": "click_point",
-  "proof_sha256": "487887a6ebb9955df82c7d666bdf7b0a6c92a35b07dbad362e44e8d589267251",
-  "x": 360,
-  "y": 25,
+  "proof_sha256": "ea1d6fdcc83eb44fba861c5aab9c24627ff51ab42ee3dc75526be3f5ec868010",
+  "x": 210,
+  "y": 70,
   "guard_texts": [
-    "PODER DEL HÉROE",
-    "ATRIBUTOS DE COMBATE"
+    "Diagnóstico local",
+    "VIGILANTES"
   ],
-  "reason": "Original frame004 shows the actual close cross in the hero presentation at360,25; return to the earned city."
+  "reason": "Original frame005 shows Bastion III5/5 and Eleva el Bastión a nivel IV; select its actual quest arrow."
 }
