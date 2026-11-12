@@ -1,4 +1,4 @@
-name: Eldoria immutable engine18 desktop WebKit fallback
+name: Eldoria immutable engine17 and engine18 ARM WebKit comparison
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -15,7 +15,7 @@ env:
   CANDIDATE_REVISION: native325-mobile18-objective-profile-owner-qa
 jobs:
   desktop-webkit:
-    runs-on: macos-15-intel
+    runs-on: macos-26
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run same profiled binary in eager and lazy city modes on real desktop WebKit on Intel fallback
+      - name: Run same profiled binary in eager and lazy city modes on real desktop WebKit on ARM comparison
         env:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged
@@ -119,7 +119,7 @@ jobs:
           assert a['eagerWorldInstalledVerified'] and b['lazyWorldDeferredToFirstEntryVerified']
           assert a['identity']['source_sha']==b['identity']['source_sha']==os.environ['NATIVE_SOURCE']
           assert a['identity']['candidate_bundle_sha256']==b['identity']['candidate_bundle_sha256']
-          result={'status':'DESKTOP_MAC_INTEL_PROFILE_AND_LAZY_CITY_PASS_NOT_PHYSICAL_PHONE','source_sha':os.environ['NATIVE_SOURCE'],'revision':os.environ['CANDIDATE_REVISION'],'world_entry_verified':False,'physical_iphone_verified':False,'art_approved':False,'testers_authorized':False}
+          result={'status':'DESKTOP_MAC_ARM_PROFILE_AND_LAZY_CITY_PASS_NOT_PHYSICAL_PHONE','source_sha':os.environ['NATIVE_SOURCE'],'revision':os.environ['CANDIDATE_REVISION'],'world_entry_verified':False,'physical_iphone_verified':False,'art_approved':False,'testers_authorized':False}
           (root/'mac-profile-ab.json').write_text(json.dumps(result,indent=2))
           print(json.dumps(result))
           PY
@@ -127,6 +127,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile18-full-lazy-desktop-intel-webkit-not-iphone-certificate
+          name: mobile18-full-lazy-desktop-arm-control-webkit-not-iphone-certificate
           path: evidence/
           retention-days: 14
