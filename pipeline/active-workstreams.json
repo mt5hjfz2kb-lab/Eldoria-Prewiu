@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T02:05:38.260Z",
+  "updated_at": "2026-11-12T02:11:08.633Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -47,7 +47,8 @@
         "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs.meta",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta"
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
+        "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj"
       ],
       "next": "MoveNativeEventSystem/NativeRaycaster helperfileswithGUIDstoRuntime #ifUNITY_EDITOR; preserveactualbaseOnEnable andtopmost/modalguards, checkplayerexclusion. Realmetadata146DLL artifactenablesUbuntu semanticcompile withoutlocalenv.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
@@ -149,7 +150,8 @@
         "last_native_run": 43134015062
       },
       "runner_claimed_at": "2026-11-11T21:37:18.716Z",
-      "runner_released_at": "2026-11-11T22:11:23.072Z"
+      "runner_released_at": "2026-11-11T22:11:23.072Z",
+      "scope_extension_reason": "Repair actual V4.1 contract harness dependency exposed by EarlyRetentionRules narrative guards: include real NarrativeCoherenceRules source; no mocks or assertion removal. CI43138737681 CS0103."
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -18305,6 +18307,13 @@
       "source_native_job": 130910110026,
       "native_conclusion": "success",
       "note": "Mac-only next job does not hold Windows. Continuous real Bastion art candidate replaces rejected inset photo; no art/main/device approval."
+    },
+    {
+      "at": "2026-11-12T02:11:08.633Z",
+      "event": "central_resource_contract_dependency_scope",
+      "id": "eldoria-issue186-reward-attention-guidance-20261111",
+      "path": "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
+      "reason": "Repair actual V4.1 contract harness dependency exposed by EarlyRetentionRules narrative guards: include real NarrativeCoherenceRules source; no mocks or assertion removal. CI43138737681 CS0103."
     }
   ],
   "owner_specific_pauses": [
