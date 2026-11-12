@@ -1471,9 +1471,10 @@ namespace Eldoria.DailyTreasures
             if(milestoneCinematicBackdrop)
             {
                 milestoneCinematicBackdrop.texture=milestoneScenery.texture;
-                milestoneCinematicBackdrop.gameObject.SetActive(
-                    hasImage && ownedCinematicBackdropMaterial &&
-                    currentStage!=DailyTreasureStageKind.Bastion);
+                milestoneCinematicBackdrop.gameObject.SetActive(false);
+                // Native43191078889 showed repeated architecture/map bands:
+                // one original painting must have one continuous viewport.
+                // Retain the dormant owned material for safe disposal only.
                 // Final cover UV is set by UpdateSceneryCrop/ Layout().
             }
             milestoneScenery.gameObject.SetActive(hasImage);
@@ -1898,10 +1899,13 @@ namespace Eldoria.DailyTreasures
                 }
                 else
                 {
+                    // A SINGLE continuous original setting fills the theatre.
+                    // Stage.Scene still reserves the foreground subject and
+                    // genuine inscriptions, not a second scenic crop.
                     Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
-                        stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                        0f,0f,panelW-24f,panelH-24f);
                     Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
-                        stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                        0f,0f,panelW-24f,panelH-24f);
                 }
                 milestoneScenery.color=MilestonePaintTint(stage);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
