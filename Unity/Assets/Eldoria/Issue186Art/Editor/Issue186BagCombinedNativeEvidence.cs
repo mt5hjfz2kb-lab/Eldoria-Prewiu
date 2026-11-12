@@ -236,7 +236,7 @@ namespace Eldoria.Issue186Art.Editor
                         75,50,0,letter),"Cannot seed isolated actual pending mail");
                     state.Mailbox.Receive(new EldoriaV41Message{EventId=letter,Category="recompensas",
                         Type="mission",Title="Recompensa de la prueba aislada"});
-                    new FileStateStore(file).Save(state);host.City.ReloadForProbe();
+                    new Eldoria.Infrastructure.FileStateStore(file).Save(state);host.City.ReloadForProbe();
                     yield return null;
                     while(!SessionRebound(host))yield return null;
                     var gateway=host.City.Gateway;host.City.Apply(gateway.Snapshot());
