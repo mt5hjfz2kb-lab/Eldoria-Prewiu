@@ -54,7 +54,7 @@ namespace Eldoria.DailyTreasures.Editor
             public float minimumLitSourceFraction;
             public int bastionSnapshotsVerified,bastionRotationProofs,bastionPerimeterProofs;
             public bool sceneEnvironmentRestored;
-            public int actualBuiltStudioProofs;
+            public int actualBuiltContextProofs,actualCityContextPixelProofs;
             public string bastionPresentationMethod;
             public bool citySceneOpened,cityCameraUsed,artApproved;
             public bool fullSceneVerified,pr173Integrated,iosVerified;
@@ -74,7 +74,7 @@ namespace Eldoria.DailyTreasures.Editor
                     .Replace("-","").ToLowerInvariant();
         }
 
-        // The studio deliberately contains dark negative space. Measure the
+        // The actual story composition reserves text space. Measure the
         // actual eight-corner projected masonry bounds, not a fixed viewport
         // center. Bounds come from the live 3D camera, never a bright-pixel
         // search (which could accidentally certify a decorative gold frame).
@@ -502,12 +502,50 @@ namespace Eldoria.DailyTreasures.Editor
             report.bastionPerimeterProofs++;
         }
 
-        static void VerifyStudioRestoration(DailyTreasurePanel panel,string before,
+        static void VerifyActualCityContext(DailyTreasurePanel panel,Report report)
+        {
+            var picture=BastionPicture(panel);
+            Require(picture&&picture.texture is RenderTexture,"No actual city-context texture");
+            var rt=(RenderTexture)picture.texture;
+            const int side=192;
+            var target=RenderTexture.GetTemporary(side,side,0,RenderTextureFormat.ARGB32);
+            var scan=new Texture2D(side,side,TextureFormat.RGB24,false);
+            var previous=RenderTexture.active;
+            try
+            {
+                Graphics.Blit(rt,target);RenderTexture.active=target;
+                scan.ReadPixels(new Rect(0,0,side,side),0,0);scan.Apply(false);
+                var masonry=BuiltMasonryPixelRect(panel,side,side);
+                var pixels=scan.GetPixels32();var colors=new HashSet<int>();
+                int sampled=0,lit=0;
+                for(int y=side/16;y<side*15/16;y+=3)
+                    for(int x=side/16;x<side*15/16;x+=3)
+                    {
+                        if(masonry.Contains(new Vector2Int(x,y)))continue;
+                        var p=pixels[y*side+x];sampled++;
+                        if(p.r+p.g+p.b>=48)lit++;
+                        colors.Add(((int)p.r>>4)*256+((int)p.g>>4)*16+(p.b>>4));
+                    }
+                if(!(sampled>700&&lit>sampled/6&&colors.Count>=36))
+                    PreserveFailedOriginalGpu(rt,rt.width,rt.height);
+                Require(sampled>700&&lit>sampled/6&&colors.Count>=36,
+                    "Actual city must remain visible OUTSIDE built masonry; no isolated black display: "+
+                    lit+"/"+sampled+" lit, "+colors.Count+" colors");
+                report.actualCityContextPixelProofs++;
+            }
+            finally
+            {
+                RenderTexture.active=previous;Object.DestroyImmediate(scan);
+                RenderTexture.ReleaseTemporary(target);
+            }
+        }
+
+        static void VerifySourceRestoration(DailyTreasurePanel panel,string before,
             int width,int height)
         {
             var after=EnvironmentSignature();
             bool restored=DailyTreasureBastionCamera.LastSceneStateRestored;
-            int count=DailyTreasureBastionCamera.LastStudioRendererCount;
+            int count=DailyTreasureBastionCamera.LastBuiltRendererCount;
             if(before!=after || !restored || count<1)
             {
                 var names=new List<string>{"fog","fogMode","fogColor","fogDensity",
@@ -533,7 +571,7 @@ namespace Eldoria.DailyTreasures.Editor
                     "; layersAndLights="+restored+"; rendererCount="+count);
             }
             Require(before==after && restored && count>0,
-                "Studio capture failed exact scoped environment restoration; see original GPU and field differences");
+                "Actual city capture failed exact source environment restoration; see original GPU and field differences");
         }
 
         public static void Capture()
@@ -659,7 +697,7 @@ namespace Eldoria.DailyTreasures.Editor
                         pictures.Add(baseline);
                         // URP may initialize the scene's ambient probe on its
                         // first real render. This is the actual source-city
-                        // baseline from which the studio must restore exactly.
+                        // baseline from which every actual source capture must restore exactly.
                         if(pictures.Count==1)environmentBefore=EnvironmentSignature();
                         panel.Suppressed=false;
                         panel.Open();
@@ -681,7 +719,7 @@ namespace Eldoria.DailyTreasures.Editor
                         panel.Open();
                         Require(panel.IsOpen,
                             "Visual-only Bastion theatre did not open");
-                        var beforeStudio=EnvironmentSignature();
+                        var beforeSourceCapture=EnvironmentSignature();
                         panel.Present("BASTIÓN · ESTUDIO VISUAL",
                             "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
                             true,DailyTreasureCeremonyTier.Special,
@@ -697,8 +735,9 @@ namespace Eldoria.DailyTreasures.Editor
                             "a painted extra gate is forbidden");
                         VerifyLiveBastionTexture(panel,width,height);
                         VerifySingleBastionPerimeter(panel,width,height,report);
-                        VerifyStudioRestoration(panel,beforeStudio,width,height);
-                        report.actualBuiltStudioProofs++;
+                        VerifySourceRestoration(panel,beforeSourceCapture,width,height);
+                        VerifyActualCityContext(panel,report);
+                        report.actualBuiltContextProofs++;
                         report.bastionPresentationMethod=DailyTreasureBastionCamera.PresentationMethod;
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
@@ -723,15 +762,16 @@ namespace Eldoria.DailyTreasures.Editor
                         panel.Open();
                         Require(panel.IsOpen,
                             "Focused real Bastion visual-only stage did not open");
-                        beforeStudio=EnvironmentSignature();
+                        beforeSourceCapture=EnvironmentSignature();
                         panel.Present("BASTIÓN · ESTUDIO VISUAL",
                             "PREVISUALIZACIÓN SIN HITO NI RECOMPENSA",
                             true,DailyTreasureCeremonyTier.Special,
                             "milestone:bastion:visual-only");
                         VerifyLiveBastionTexture(panel,width,height);
                         VerifySingleBastionPerimeter(panel,width,height,report);
-                        VerifyStudioRestoration(panel,beforeStudio,width,height);
-                        report.actualBuiltStudioProofs++;
+                        VerifySourceRestoration(panel,beforeSourceCapture,width,height);
+                        VerifyActualCityContext(panel,report);
+                        report.actualBuiltContextProofs++;
                         report.bastionPresentationMethod=DailyTreasureBastionCamera.PresentationMethod;
                         report.bastionSnapshotsVerified++;
                         Canvas.ForceUpdateCanvases();
@@ -774,7 +814,7 @@ namespace Eldoria.DailyTreasures.Editor
                 Require(report.bastionRotationProofs==4,
                     "The four genuine city screen sizes must survive changing "+
                     "device orientation without reusing a cropped 3D snapshot");
-                Require(report.bastionPerimeterProofs==8 && EnvironmentSignature()==environmentBefore,
+                Require(report.bastionPerimeterProofs==8 && report.actualCityContextPixelProofs==8 && EnvironmentSignature()==environmentBefore,
                     "Actual 8-frame cinematic source environment or single perimeter proof incomplete");
                 report.sceneEnvironmentRestored=true;
                 report.pngCount=pictures.Count;

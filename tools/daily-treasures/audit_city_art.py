@@ -171,8 +171,8 @@ def audit(folder,source_sha,output):
                 f'genuine Bastion camera did not move: {w}x{h}')
         daily_result = visibility(baseline, calendar)
         daily_result['variant'] = 'calendar'
-        require(report.get('bastionPresentationMethod')=='ACTUAL_BUILT_GEOMETRY_SCOPED_STUDIO'
-                and report.get('actualBuiltStudioProofs')==8 and report.get('sceneEnvironmentRestored') is True,
+        require(report.get('bastionPresentationMethod')=='ACTUAL_BUILT_CITY_CINEMATIC_CONTEXT'
+                and report.get('actualBuiltContextProofs')==8 and report.get('actualCityContextPixelProofs')==8 and report.get('sceneEnvironmentRestored') is True,
                 'studio requires eight restored actual-built source captures')
         metadata=names[f'real-city-daily-authored-bastion-visual-only-{w}x{h}.png']
         subject=tuple(metadata.get(k,0) for k in ('subjectX','subjectY','subjectW','subjectH'))
