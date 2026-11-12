@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T05:11:44.563Z",
+  "updated_at": "2026-11-12T05:19:32.594Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -27,7 +27,7 @@
       "ownership_revision": 26,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "off-PC narrow real mailbox input lifecycle fix and art review",
+      "phase": "SOURCE_PASS_ACTUAL_GUIDE_AWAIT_CORRECTED_UI_NATIVE_CERTIFICATE",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
       "resources": [],
@@ -52,7 +52,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Preserve UI worker c6acdef Hall fix; repair deferred Plate Awake input state, source-check, then get genuine UI native plus combined mail proof; no art approval.",
+      "next": "Sourcefb4914988a98bf2d6a2726384bf02352b867a7c9 CI43160176974SUCCESS. After UI new actual native+AB pass, pin exactUI corrected source and execute combined-only16PNG52click realmail read/claim/back, actualfirstusehand300mscadence and JSONreload. Do not rerun known-broken AF or add syntheticclick bypass.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -145,11 +145,12 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "waiting_corrected_UI_native_certificate",
         "owner": "chatgpt-central-resource-art-20261111",
-        "ownership_revision": 19,
-        "claimed_at": "2026-11-12T02:53:57.045Z",
-        "previous_native_run": 43144616466
+        "ownership_revision": 26,
+        "source": "fb4914988a98bf2d6a2726384bf02352b867a7c9",
+        "source_ci_run": 43160176974,
+        "previous_native_run": 43158384727
       },
       "runner_claimed_at": "2026-11-12T04:59:36.010Z",
       "runner_released_at": "2026-11-12T05:11:44.563Z",
@@ -6811,8 +6812,8 @@
       "ownership_state": "claimed",
       "ownership_revision": 101,
       "write_scope_released": false,
-      "phase": "CURRENT_NATIVE48_AND_ART_AB_SUCCESS_OWNER_REVIEW_REQUIRED",
-      "next": "Actual run43142184165 af658a6c native130931698786 SUCCESS plus genuinevisualAB SUCCESS. Includes corrected1600x900Hall intro, originalbrownLyra/mail and optionalbagcapabilitybridge syntax/API. No combined187bagproof or art/main/deviceapproval inferred.",
+      "phase": "SOURCE_PASS_REAL_MAIL_POINTER_LIFECYCLE_PLUS_HALL_GLYPH_FIX_AWAIT_NATIVE",
+      "next": "Ready for next bounded Windows turn after T43159772550 clean exit. Source0b500b0340007398b0815dffec241377a37c168a includes c6acdef actual Hall glyph correction,69a7be80 real mailbox input Awake fix, safe reversible owned source preservation. Source43160433996PASS10realGitcases+Roslyn/style. Need48actualPNGs+2actual mailbox first-hit clicks+genuineAB; then give R187 combined fullflow turn. No art/main/phone approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T02:31:37.443Z",
@@ -7146,11 +7147,12 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "ready_waiting_current_owner",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 100,
-        "claimed_at": "2026-11-12T02:31:37.443Z",
-        "previous_native_run": 43140520652
+        "ownership_revision": 101,
+        "ready_source": "0b500b0340007398b0815dffec241377a37c168a",
+        "source_ci_run": 43160433996,
+        "next_after_native_run": 43159772550
       }
     },
     {
@@ -8242,9 +8244,10 @@
         "resource": "windows-runner-heavy",
         "status": "claimed",
         "owner": "chatgpt-central-treasures-art-20261111",
-        "ownership_revision": 58,
-        "claimed_at": "2026-11-12T03:23:41.246Z",
-        "previous_native_run": 43146245415
+        "ownership_revision": 64,
+        "source": "6930da30cc869f67ca0eba28caad40efb2868951",
+        "native_run": 43159772550,
+        "claimed_at": "2026-11-12T05:11:44.563Z"
       }
     },
     {
