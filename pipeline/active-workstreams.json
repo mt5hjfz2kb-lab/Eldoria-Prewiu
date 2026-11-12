@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:54:12.808Z",
+  "updated_at": "2026-11-12T19:57:53.743Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -61,7 +61,8 @@
         "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs"
+        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
+        ".github/workflows/issue186-exact-source-recovery.yml"
       ],
       "next": "Preserve approved-source art and actual captures outside main for owner's A/B review; continue cross-area integration only after review. Native packet regression repaired and certified; no reserved Windows resources.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
@@ -242,6 +243,14 @@
           "Continue same PRs, sequential shared Windows use; preserve beta14 and published18"
         ],
         "status": "RECOVERED_EXISTING_SOURCE_AND_EVIDENCE_NOT_NEW_PRODUCT_VALIDATION"
+      },
+      "last_binding_native": {
+        "source": "4a52c645d26b8d1bc6515deee6e51e74b8bb589a",
+        "run": 43294906405,
+        "artifact": 13979785030,
+        "native_gameplay": "20 PNG / 52 first hits PASS; painted receipt binding assertion passed",
+        "restoration": "FAILED closed on changed action_antique_bronze.png.meta; no overwrites",
+        "next": "Read-only exact overlay audit before restoration; do not repeat Unity or alter baseline"
       }
     },
     {
