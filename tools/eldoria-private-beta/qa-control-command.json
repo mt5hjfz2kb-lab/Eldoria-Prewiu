@@ -1,8 +1,7 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 45,
-  "action": "click_text",
-  "proof_sha256": "5cc4f4a60fb6129ffca04ecc54140f320f35696adb3631f89ced7c9029168999",
-  "label": "MARCAR LEÍDO"
+  "sequence": 46,
+  "action": "finish",
+  "proof_sha256": "548161219205406cc379165a94b42a82f653bbc63936fec3e7ca056b0d1c5870"
 }
