@@ -58,7 +58,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           run-id: ${{ needs.choose-earned.outputs.run }}
-          name: mobile16-actual-public-owner-telemetry-journey-not-physical-iphone
+          name: earned-campaign-controlled-session-not-physical-iphone
           github-token: ${{ github.token }}
           path: earned
       - uses: actions/setup-node@v4
