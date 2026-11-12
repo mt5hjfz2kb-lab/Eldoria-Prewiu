@@ -396,7 +396,8 @@ console.log('PASS narrative typography and original heraldic art scale with sour
 // 600x900 image stretched into a 390x844 phone; one bounded render only.
 const realCamera=fs.readFileSync(
  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureBastionCamera.cs','utf8');
-assert.match(realCamera,/NarrativeTheatreFrame\(/);
+assert.match(realCamera,/DailyTreasureStageDirection.Compose\(/);
+assert.match(realCamera,/stage.SceneW\/Mathf.Max\(1f,stage.SceneH\)/);
 assert.match(realCamera,/float screenAspect=Mathf.Max\(/);
 assert.match(realCamera,/height\*screenAspect/);
 assert.match(realCamera,/Mathf.Clamp\(Mathf.RoundToInt/);
@@ -472,3 +473,4 @@ assert.match(panel,/realCity\?\.82f:\.67f/);
 assert.match(nativeArt,/ink\.rect\.width-expected\.ReceiptW-16f/);
 assert.match(nativeArt,/ink\.rect\.height-expected\.ReceiptH-12f/);
 console.log('PASS genuine full-bleed 390px narrative pigment and local receipt contrast gate');
+
