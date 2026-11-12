@@ -12,9 +12,9 @@ if not reg.get("content"):reg=api("git/blobs/"+reg["sha"])
 reg=json.loads(base64.b64decode(reg["content"]))
 owner=[x for x in reg["active"] if x["id"]=="eldoria-private-beta-i-v-20261107"]
 assert len(owner)==1 and owner[0]["ownership_state"]=="claimed" and "windows-runner-heavy" not in owner[0].get("resources",[])
-run=api("actions/runs/43161378432");assert run["status"]=="completed" and run["conclusion"] in ("success","failure") and run["head_sha"]=="8af717cdeb1f47ab77081f1b6a3330ec29495d0d"
-base="docs/eldoria-private-beta/remote-native-review/43161378432/"
-entries=[];proof={"source_sha":"4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71","native_mac_run":43161378432,"physical_iphone_verified":False,"world_entry_verified":False,"visual_name_verification":"pending image inspection","art_approved":False,"images":[],"arms":{}}
+run=api("actions/runs/43171823166");assert run["status"]=="completed" and run["conclusion"] in ("success","failure") and run["head_sha"]=="a74dc1ac7a5ddc43fd5950ebc90d905ceafd53c7"
+base="docs/eldoria-private-beta/remote-native-review/43171823166/"
+entries=[];proof={"source_sha":"4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71","native_mac_run":43171823166,"physical_iphone_verified":False,"world_entry_verified":False,"visual_name_verification":"pending image inspection","art_approved":False,"images":[],"arms":{}}
 for mode in ("deferred",):
  reports=[p for p in Path("actual-mac").rglob("report.json") if p.parent.name==mode];assert len(reports)==1
  r=json.loads(reports[0].read_text());assert r["identity"]["source_sha"]==proof["source_sha"] and r["identity"]["candidate_bundle_sha256"]=="49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a"
@@ -22,7 +22,7 @@ for mode in ("deferred",):
  # A failed OCR or map click remains a failure; screenshots are not a pass.
  proof["workflow_conclusion"]=run["conclusion"]
  proof["actual_ui_journey_passed"]=bool(r.get("passed"))
- for phase in ("story-step-4","city-intro-complete","actual-sawmill-offer","actual-sawmill-after-wait","actual-world-control","actual-world-after-entry"):
+ for phase in ("story-step-4","city-intro-complete","actual-sawmill-offer","actual-sawmill-after-wait","actual-world-control","actual-world-after-entry","actual-world-ready","actual-city-return"):
   if not (reports[0].parent/(phase+".png")).is_file():continue
   p=reports[0].parent/(phase+".png");data=p.read_bytes();assert data[:8]==b"\x89PNG\r\n\x1a\n" and len(data)>10000
   w,h=struct.unpack(">II",data[16:24]);name=mode+"-"+phase+".png"
