@@ -86,7 +86,11 @@ export function createTelemetry({send,storage,uuid,clock,device='other',release=
  };
 }
 export async function sendToQA(event,fetchImpl=fetch){
- return fetchImpl(API,{method:'POST',mode:'cors',cache:'no-store',
+ // A pagehide/reload must not cancel the one bounded event in flight.
+ // Keep normal CORS and the public API key; no beacon/auth shortcut.
+ const body=JSON.stringify(event);
+ if(new TextEncoder().encode(body).byteLength>4000)throw Error('QA event body exceeds transport bound');
+ return fetchImpl(API,{method:'POST',mode:'cors',cache:'no-store',keepalive:true,
   headers:{'Content-Type':'application/json',apikey:PUBLISHABLE},
-  body:JSON.stringify(event),credentials:'omit',redirect:'error'});
+  body,credentials:'omit',redirect:'error'});
 }

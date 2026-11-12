@@ -56,6 +56,13 @@ test('public browser client sends to Supabase Edge QA without private credential
  assert.equal(r.status,202);assert.equal(called.url,API);
  assert.equal(called.opts.headers.apikey,PUBLISHABLE);
  assert.equal(called.opts.credentials,'omit');
+ assert.equal(new Request(called.url,called.opts).keepalive,true);
  assert.ok(!JSON.stringify(called).includes('service_role'));
  assert.ok(!JSON.stringify(called).includes('CLOUDFLARE'));
+});
+
+test('oversized direct transport cannot consume the unload keepalive budget',async()=>{
+ let calls=0;
+ await assert.rejects(sendToQA({payload:'x'.repeat(5000)},async()=>{calls++;return {status:202}}),/transport bound/);
+ assert.equal(calls,0);
 });
