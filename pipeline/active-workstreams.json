@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T14:05:47.287Z",
+  "updated_at": "2026-11-12T14:13:45.319Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,7 +24,7 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 48,
+      "ownership_revision": 49,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
       "phase": "NATIVE_STARTER_PROBE_EXPLICIT_RESOURCE_PACKET_BUDGET",
@@ -55,9 +55,11 @@
         "tools/narrative-unity/**",
         "tools/march-capacity/Program.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs"
       ],
-      "next": "Actual training screenshot proves12 queued while owner objective requires20; prior UI fixture relied on direct mission credits superseded by consumable packets. Exercise explicit UseResourceRewardPacket only on already-earned collected mission packets before training; require affordable full chapter batch and actual queued count. Do not alter runtime economy, timers or objectives. Beta actual progression continues independently.",
+      "next": "Current native4ce07 remains frozen while executing. Prepared off-PC three reproduced old direct-wallet assertions for actual bag→Use flow;62 NUnit diagnostic cases pass with .NET JSON adapter (not Unity JsonUtility certification). Publish only after native clean exit, then execute real EditMode/PlayMode. Earned WebKit campaign43231463013 is naturally completing IV; preserve all art outside main.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
