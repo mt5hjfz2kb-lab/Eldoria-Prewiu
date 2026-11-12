@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 2,
-  "action": "click_text",
-  "proof_sha256": "25ec6094eee46ce6c06c78ca4f227d36423915e304929b47f1c5346640f0b939",
-  "label": "ACECHADOR DE CENIZA"
+  "sequence": 3,
+  "action": "click_point",
+  "proof_sha256": "4ff178b9699b38e1638e8672a12980e462f101eb2bdac7442b652143148bdaff",
+  "x": 32,
+  "y": 45,
+  "guard_texts": [
+    "BUZÓN",
+    "Victoria en batalla"
+  ],
+  "reason": "Frame002 confirms unchanged saved56archers,5rounds83percentlife and the top-left back arrow; return through that actual mailbox control."
 }
