@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 42,
-  "state": "CLAIMED_FOR_NATIVE",
+  "ownership_revision": 43,
+  "state": "WAITING_EXCLUSIVE_WINDOWS",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -13,18 +13,22 @@
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/Eldoria.BetaMemory.Tests.PlayMode.asmdef": "23007a85f8592885f4c98b51e1dcee6b37c75715",
     "tools/eldoria-private-beta/native/ux/manifest.json": "4ff4e6fbe9a194eebe5134df123d376b346c4d23",
     "tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1": "eb0a02bcb46aaa5e83f324c77c040521ab8a4091",
-    "tools/eldoria-private-beta/native/recover_isolated.ps1": "fd023071f5c21dda791ff4af7703885f12955367",
+    "tools/eldoria-private-beta/native/recover_isolated.ps1": "0010d6ce9e6de0b7abc62f492da4edccd7369762",
     "tools/eldoria-private-beta/native/existing-input-audit.json": "7985cbc286c6354385aae4ddf67c3d34bba59e03",
     "tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1": "30bdba1a639fbc8420de398e1ab301afd2165476",
-    "tools/eldoria-private-beta/native/run_structural.ps1": "f1fa30a0543b08dd410cc8ae8655b982c3636b2b",
-    "tools/eldoria-private-beta/native/run_warm_structural.ps1": "3f5d798afcd497a185520830909dd70109935e9a",
+    "tools/eldoria-private-beta/native/run_structural.ps1": "746766c3159e313681f888c43ccb5292bfffd44c",
+    "tools/eldoria-private-beta/native/run_warm_structural.ps1": "4c23b71e4b4971c0ac9e11be29667f24cec60009",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs": "a67557f22642b2aa8b8904e6b073a6a92233a538",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs": "0e005cedfa10aa1b4cb75a543430b9cdc7e5d1ca",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs": "c2d8614a358908ca5341e2e1772b001340012c90",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs": "960b7a51c383b6988f2e13118e200f5078d00216",
     "tools/eldoria-private-beta/lazy-world-frame-budget.test.mjs": "15d7ad201a3b0ca0031c07ce6d2c73a0a94da6bd",
     "tools/eldoria-private-beta/native/preserve_native_materials.ps1": "d72af85afb5b89e66030826aec70ef9305e0ac73",
-    "tools/eldoria-private-beta/native/test_material_restore.py": "fab701c840829782cd0b49359536971eac7f33c0"
+    "tools/eldoria-private-beta/native/test_material_restore.py": "fab701c840829782cd0b49359536971eac7f33c0",
+    "tools/eldoria-private-beta/native/recover_route_intermediate.ps1": "78bda6ca2d913cac17a7c044952db4d1b6a31c82",
+    "tools/eldoria-private-beta/native/test_route_restore.py": "41eb61dc6a8e76f3c7e0330d4aead1dd37b3340c",
+    "tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt": "276dae624d10ff0554becdf1557dae378df573d6",
+    "tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt": "61c79f507a10b6b4ae1b177a43805b7b332938c8"
   },
   "playmode_fixture": "Eldoria.BetaMemory.Tests.LazyRegionStartupTests",
   "owner_no_restart_result": "BETA14_CITY_ONLY_PHYSICAL_REPORTED_NO_RESTART",
@@ -32,5 +36,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
-  "next": "One bounded native batch under exclusive revision42: guarded9materialrollback, actualPlaymode/fullWorldI-V/WebGL, exactoriginalinputrestoration; releaseWindows181aftercomplete native beforeUbuntu/Mac. Do not claim physicalphone/ART/main readiness."
+  "next": "Coherent route comparison and exact historical intermediate recovery84guardchecks pass off-PC. Wait until181GPUbatch then187inputbatch finish; acquire one exclusive native batch anew, then actualfullworldI-V/WebGL and immutableinputrestoration. No native while anotherleaseholder exists."
 }

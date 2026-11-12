@@ -181,7 +181,7 @@ try {
  # A/B the exact same tape, collider validation, imported assets and saves.
  # Only the route-buffer implementation differs; no art/profile changes.
  $routePath='Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'
- Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt') (Join-Path $Source $routePath) -Force
+ Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt') (Join-Path $Source $routePath) -Force
  Run-Probe 'route-baseline'
  Copy-Item (Join-Path $Tools $routePath) (Join-Path $Source $routePath) -Force
  Run-Probe 'staged'
@@ -255,3 +255,4 @@ try {
   if(Test-Path ($probe+'.meta')){Remove-Item ($probe+'.meta') -Force}
  }
 }
+

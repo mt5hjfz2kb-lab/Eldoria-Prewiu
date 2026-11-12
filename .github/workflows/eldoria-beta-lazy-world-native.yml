@@ -34,6 +34,10 @@ jobs:
             /tools/eldoria-private-beta/native/run_warm_structural.ps1
             /tools/eldoria-private-beta/native/preserve_native_materials.ps1
             /tools/eldoria-private-beta/native/test_material_restore.py
+            /tools/eldoria-private-beta/native/recover_route_intermediate.ps1
+            /tools/eldoria-private-beta/native/test_route_restore.py
+            /tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt
+            /tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
@@ -91,7 +95,9 @@ jobs:
           PY
       - name: Verify guarded material recovery with real Git and PowerShell, no Unity
         shell: bash
-        run: python3 candidate/tools/eldoria-private-beta/native/test_material_restore.py
+        run: |
+          python3 candidate/tools/eldoria-private-beta/native/test_material_restore.py
+          python3 candidate/tools/eldoria-private-beta/native/test_route_restore.py
   native:
     needs: preflight
     if: needs.preflight.outputs.authorized == 'true'
@@ -463,4 +469,5 @@ jobs:
           path: evidence/
           if-no-files-found: warn
           retention-days: 7
+
 

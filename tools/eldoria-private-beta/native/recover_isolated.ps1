@@ -31,6 +31,11 @@ if(Test-Path (Join-Path $previous 'warm-cache-restoration.json')){
   foreach($entry in $delta){
    Write-Host ("PR179_RECOVERY_STATUS_DELTA "+$entry.SideIndicator+" "+$entry.InputObject)
   }
+  if(@($delta|Where-Object {$_.InputObject -ceq ' M Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'}).Count){
+   . (Join-Path $Tools 'tools/eldoria-private-beta/native/recover_route_intermediate.ps1')
+   $route=Repair-PR179RecordedRouteIntermediate -Source $source -Audit $original -Evidence $Evidence -ExpectedHead $frozen -KnownIntermediate (Join-Path $Tools 'tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt')
+   Write-Host "PR179_RECORDED_FAILED_COMPARISON_RECOVERY count=$route"
+  }
   . (Join-Path $Tools 'tools/eldoria-private-beta/native/preserve_native_materials.ps1')
   $repaired=Repair-PR179KnownMaterialDrift -Source $source -Audit $original -Evidence $Evidence -ExpectedHead $frozen
   Write-Host "PR179_TARGETED_MATERIAL_RECOVERY count=$repaired; immutable baseline retained"
@@ -72,4 +77,5 @@ $auditPath=Join-Path ([IO.Path]::GetFullPath($Evidence)) 'existing-input-audit.j
 Add-Content $env:GITHUB_ENV "BETA_SOURCE=$source"
 Add-Content $env:GITHUB_ENV "BETA_INPUT_AUDIT=$auditPath"
 Write-Host "RECOVERED_PRODUCTION_ART_VERIFIED count=$($art.Count); importer input files=$($files.Count)"
+
 

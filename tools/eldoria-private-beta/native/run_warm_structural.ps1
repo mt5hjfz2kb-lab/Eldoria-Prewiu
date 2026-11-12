@@ -98,6 +98,12 @@ try {
    $candidate=(Get-FileHash (Get-UxCandidate $record.path) -Algorithm SHA256).Hash
    $uxBase=@($uxFiles|Where-Object {$_.path -eq $record.path}|ForEach-Object {$_.baseline_sha256})
    $allowedHashes=@($candidate,$record.sha256)+@($uxBase)
+   if($record.path -eq 'Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'){
+    # This exact comparison intermediate is authored by this core. Preserve
+    # strict rejection of unknown source edits, including on a failed phase.
+    $comparison=Join-Path $Tools 'tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt'
+    $allowedHashes+=@((Get-FileHash $comparison -Algorithm SHA256).Hash)
+   }
    if($env:ELDORIA_P0_LAZY_WORLD_BUILD -eq '1' -and
       $record.path -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'){
      $lazyCandidate=Join-Path $Tools $record.path
