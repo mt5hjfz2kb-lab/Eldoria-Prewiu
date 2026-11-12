@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 30,
-  "action": "key",
-  "proof_sha256": "a3ddb55acfca1aec7919c22e5e349e309b5c72b86d658d02c7f51542d45494cf",
-  "key": "Meta+A"
+  "sequence": 31,
+  "action": "type_digits",
+  "proof_sha256": "01278a17f2088e32a2facb9e9be1b8469814973b2c81dd4d00bf006db3e5e121",
+  "text": "4"
 }
