@@ -44,6 +44,7 @@ namespace Eldoria.BreachWatch.Editor
             public int fontSize,visibleCharacters,outsidePixels,changedPixels;
             public float preferredWidth,preferredHeight;
             public Rect textRect,ownerScreenRect;
+            public Vector3 localScale;
             public bool wrap,bestFit;
         }
         [Serializable] sealed class CaptionInkProofSet
@@ -70,6 +71,7 @@ namespace Eldoria.BreachWatch.Editor
                     fontSize=label.fontSize,visibleCharacters=label.cachedTextGenerator.characterCountVisible,
                     preferredWidth=label.preferredWidth,preferredHeight=label.preferredHeight,
                     textRect=label.rectTransform.rect,ownerScreenRect=bounds,
+                    localScale=label.rectTransform.localScale,
                     wrap=label.horizontalOverflow==HorizontalWrapMode.Wrap,bestFit=label.resizeTextForBestFit };
                 bool enabled=label.enabled;
                 var hidden=new Texture2D(width,height,TextureFormat.RGB24,false);
