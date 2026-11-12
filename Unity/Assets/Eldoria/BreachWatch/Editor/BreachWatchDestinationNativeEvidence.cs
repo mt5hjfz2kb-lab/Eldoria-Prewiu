@@ -608,6 +608,24 @@ namespace Eldoria.BreachWatch.Editor
                          "March has visible unavailable third slot or "+
                          "missing selectable real hero cards at "+
                          width+"x"+height);
+                    if(height>width)
+                        foreach(var slot in realHeroSlots.Take(2))
+                        {
+                            var nodes=slot.GetComponentsInChildren<RectTransform>(true);
+                            var portrait=nodes.FirstOrDefault(x=>x.name=="Hero portrait viewport");
+                            var label=nodes.FirstOrDefault(x=>x.name=="Button label");
+                            Need(portrait && label &&
+                                 portrait.rect.width>=slot.rect.width*.75f &&
+                                 -label.anchoredPosition.y>=
+                                    -portrait.anchoredPosition.y+portrait.rect.height-2f,
+                                "Portrait March must place the real hero above its readable name, not shrink both into horizontal wells");
+                            var stone=nodes.FirstOrDefault(x=>x.name=="Vigilia / hero selection stone");
+                            Need(stone && stone.GetComponent<Image>() &&
+                                 stone.GetComponent<Image>().type==Image.Type.Sliced &&
+                                 slot.GetComponent<Button>() &&
+                                 slot.GetComponent<Button>().targetGraphic==stone.GetComponent<Image>(),
+                                "Actual hero choice must keep a nine-sliced stone Button target");
+                        }
                 }
                 if(name=="training" && height>width)
                     Need(ui.RealDestinations && 

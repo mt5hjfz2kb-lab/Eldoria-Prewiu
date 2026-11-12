@@ -245,9 +245,11 @@ namespace Eldoria.BreachWatch
                 // A real 844x390 phone has only ~90u card height.
                 // Horizontal hero artwork+label fits there, whereas three
                 // tiny cards produced a fake "No disponible" action.
-                bool horizontalCard=landscape
-                    ?cardW>=155f && cardH>=78f
-                    :cardW>=275f && cardH>=160f;
+                // Portrait canvases can use900 reference units even on a
+                // physical390px phone. Never infer a horizontal card from
+                // that virtual width: portrait uses portrait-first cards.
+                bool horizontalCard=landscape &&
+                    cardW>=155f && cardH>=78f;
                 float apertureW=horizontalCard
                     ?Mathf.Min(cardW*(landscape?.33f:.43f),
                         cardH*(landscape?.78f:.67f)):cardW-18f;

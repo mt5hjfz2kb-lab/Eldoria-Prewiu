@@ -164,7 +164,12 @@ namespace Eldoria.BreachWatch
                 originalButtonTargets[button]=button.targetGraphic;
                 originalTransitions[button]=button.transition;
                 Hide(older);
-                var paint=AddSurface(rect,action,"Vigilia / burgundy action",true);
+                // A hero roster choice is a portrait card, not a giant
+                // stretched red command. Keep its real Button/callback.
+                bool heroChoice=rect.name.StartsWith("Hero slot ");
+                var paint=AddSurface(rect,heroChoice?stone:action,
+                    heroChoice?"Vigilia / hero selection stone":
+                    "Vigilia / burgundy action",true);
                 paint.raycastTarget=true;
                 button.targetGraphic=paint;
                 // No ColorTint that changes the color of this approved
@@ -352,7 +357,7 @@ namespace Eldoria.BreachWatch
             // The approved blank square panel was imported without a slice
             // border. Add a small, fixed pixel border at runtime instead of
             // stretching its gilded bevel across wide management cards.
-            if(!isButton && source.border.sqrMagnitude<.1f)
+            if(source==stone && source.border.sqrMagnitude<.1f)
             {
                 if(!slicedStone)
                 {
