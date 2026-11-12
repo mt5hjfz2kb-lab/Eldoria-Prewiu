@@ -105,6 +105,7 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui && ui.ProductionPresentation,"Production new UI was not installed");
             var isolation=ui.GetComponent<BreachWatchProductionPresentation>();
             Need(isolation,"Production art isolation boundary missing");
+            ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
             isolation.Enforce();
             Need(isolation.RetiredCanvasDisabled,"Retired UI Canvas reactivated");
             string old=isolation.FirstVisibleRetiredPainting();

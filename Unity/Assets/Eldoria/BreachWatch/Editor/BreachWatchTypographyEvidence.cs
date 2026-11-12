@@ -197,6 +197,10 @@ namespace Eldoria.BreachWatch.Editor
                 };
                 foreach(var item in current.after)
                 {
+                    if(item.font!="CormorantGaramond-Regular" && item.font!="CormorantGaramond-SemiBold" &&
+                       item.font!="LibreBaskerville-Regular" && item.font!="LibreBaskerville-Bold" &&
+                       item.font!="SourceSans3-Regular" && item.font!="SourceSans3-Semibold")
+                        current.violations.Add(item.path+": retired font still active: "+item.font);
                     if(!item.glyphsPresent)current.violations.Add(item.path+": missing imported glyph");
                     if(item.inkOutside)current.violations.Add(item.path+": actual GPU glyph ink outside own rectangle");
                 }
