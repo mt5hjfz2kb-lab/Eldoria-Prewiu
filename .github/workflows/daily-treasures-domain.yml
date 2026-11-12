@@ -85,6 +85,15 @@ jobs:
           dotnet run --project tools/ui-v3-domain-smoke/Smoke.csproj --configuration Release
       - name: Check actual OWNER_I_II economic impact of seven-day and fourteen-day rewards
         run: dotnet run --project tools/daily-treasures/EconomyCandidate.csproj --configuration Release
+      - name: Verify reversible isolated native source preservation using real Git
+        shell: pwsh
+        run: |
+          Get-ChildItem tools/daily-treasures/native -Filter '*.ps1' -File | ForEach-Object {
+            $parseProblems=$null;$parseTokens=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$parseTokens,[ref]$parseProblems)|Out-Null
+            if(@($parseProblems).Count){throw ($_.FullName+': '+(($parseProblems|ForEach-Object {$_.Message}) -join '; '))}
+          }
+          & tools/daily-treasures/native/Test-OwnedImporterPreservation.ps1
       - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
         run: dotnet run --project tools/daily-treasures/SyntaxAudit.csproj --configuration Release
       - name: Verify actual current Vigilia PR173 Canvas contract without borrowing Windows

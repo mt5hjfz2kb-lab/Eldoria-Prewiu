@@ -121,6 +121,19 @@ jobs:
           if(((& git -C $root remote get-url origin).Trim()) -ne $url){
             throw 'Untrusted remote; refuse source checkout'
           }
+          # Preserve every pre-existing importer byte before switching the
+          # OWN isolated QA checkout. Never clean Library or force over notes.
+          $previous=(& git -C $root rev-parse --verify HEAD 2>$null)
+          if($LASTEXITCODE -eq 0){
+            [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
+            $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='daily-native-source-preservation'}
+            $scriptUrl="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/daily-treasures/native/Preserve-OwnedImporterState.ps1?ref=$env:GITHUB_SHA"
+            $file=Invoke-RestMethod -Uri $scriptUrl -Headers $hdr
+            if($file.encoding -ne 'base64' -or -not $file.content){throw 'Pinned source preservation helper missing'}
+            $script=Join-Path $env:OUT 'Preserve-OwnedImporterState.ps1'
+            [IO.File]::WriteAllBytes($script,[Convert]::FromBase64String($file.content))
+            & $script -Source $root -Output (Join-Path $env:OUT 'preserved-inputs') -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          }
           & git -C $root config core.sparseCheckout true
           & git -C $root config core.sparseCheckoutCone false
           $patterns=@('/Unity/**')
@@ -142,7 +155,7 @@ jobs:
             [Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
           & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
           if($LASTEXITCODE){throw 'Sparse source fetch failed'}
-          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --force FETCH_HEAD
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
           if($LASTEXITCODE){throw 'Exact PR source checkout failed'}
           if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){
             throw 'Source commit mismatch; never test outdated art'
@@ -470,6 +483,7 @@ jobs:
              $report.citySceneOpened -ne $true -or $report.cityCameraUsed -ne $true -or
              $report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or
              $report.pr173Integrated -ne $false -or $report.iosVerified -ne $false -or
+             $report.sceneEnvironmentRestored -ne $true -or $report.bastionPerimeterProofs -ne 8 -or
              $report.realGatewayClaims -ne 0){
             throw 'Actual city art proof missing or falsely claims live game/PR173/earned reward'
           }
