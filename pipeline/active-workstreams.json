@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T13:53:41.591Z",
+  "updated_at": "2026-11-12T14:05:47.287Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,10 +24,10 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 47,
+      "ownership_revision": 48,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "REPAIR_NATIVE_MARCH_FIXTURE_FOR_EXISTING_NARRATIVE_GATE",
+      "phase": "NATIVE_STARTER_PROBE_EXPLICIT_RESOURCE_PACKET_BUDGET",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
       "resources": [],
@@ -54,9 +54,10 @@
         "tools/march-capacity/Smoke.csproj",
         "tools/narrative-unity/**",
         "tools/march-capacity/Program.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
-      "next": "Native shared regression43230477777 booted and passed actual3routes/returns, then correctly refused composer because fixture omitted march-preparation acknowledgement. Repair only this disposable capture fixture with blocked-before/opens-after assertions; preserve runtime/art sources. Latest bag/mail native43226508340 remains genuine art-review-pending evidence.",
+      "next": "Actual training screenshot proves12 queued while owner objective requires20; prior UI fixture relied on direct mission credits superseded by consumable packets. Exercise explicit UseResourceRewardPacket only on already-earned collected mission packets before training; require affordable full chapter batch and actual queued count. Do not alter runtime economy, timers or objectives. Beta actual progression continues independently.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -3340,7 +3341,6 @@
         ".github/workflows/ui-v3-domain-smoke.yml",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs.meta",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
         ".github/workflows/early-retention-native.yml",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs.meta",
@@ -7225,7 +7225,6 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
