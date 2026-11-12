@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T02:31:37.443Z",
+  "updated_at": "2026-11-12T02:33:24.391Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -49,7 +49,8 @@
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
         "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
-        "tools/eldoria-v41/GatewaySmoke.csproj"
+        "tools/eldoria-v41/GatewaySmoke.csproj",
+        "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
       "next": "Review four actual f107 native Unity GPU PNG + topmost click/modal artifacts 13910600234 off-PC; compare same-scale approved reference, do not imply ART_APPROVED. Real PR173-presented bag, saved mail/packet/use tutorial, I-V/game, device and A/B remain pending. Windows transferred to PR173 after clean native run 43140520652.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
@@ -152,7 +153,7 @@
       },
       "runner_claimed_at": "2026-11-12T02:17:52.690Z",
       "runner_released_at": "2026-11-12T02:31:37.443Z",
-      "scope_extension_reason": "Both existing actual V4.1 harnesses require retained real NarrativeCoherenceRules dependency; no test assertion removal."
+      "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion."
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -18338,6 +18339,13 @@
       "source_metadata_artifact": 13908918178,
       "result": "success",
       "note": "Unity Editor returned success after actual four PNG and first-hit/button blocker proof; artifacts uploaded and job clean. Source writer #187 retained; only Windows passes to PR173. Isolated candidate is not real campaign integration, A/B art approval, player/mobile QA or merge."
+    },
+    {
+      "at": "2026-11-12T02:33:24.391Z",
+      "event": "central_v41_valid_progression_fixture_scope",
+      "id": "eldoria-issue186-reward-attention-guidance-20261111",
+      "path": "tools/eldoria-v41/GatewayEvolutionChecks.cs",
+      "reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion."
     }
   ],
   "owner_specific_pauses": [
