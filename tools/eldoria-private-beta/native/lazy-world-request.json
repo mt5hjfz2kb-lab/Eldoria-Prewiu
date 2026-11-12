@@ -4,8 +4,8 @@
   "canonical_pr": 179,
   "branch": "feature/eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-pr179-iphone-automation-20261111",
-  "ownership_revision": 45,
-  "state": "WAITING_EXCLUSIVE_WINDOWS",
+  "ownership_revision": 46,
+  "state": "CLAIMED_FOR_NATIVE",
   "source_blobs": {
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs": "17f03acbd0a523853bcadc40d103b8e719b8a12c",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs": "e4cfc797510f8d9ce1a82f795dc32f00471b5eb7",
@@ -36,5 +36,5 @@
   "external_testers_enabled": false,
   "publish_allowed": false,
   "scope": "One real lazy-region PlayMode plus full-world terrain/collisions/BastionI-V and exact WebGL owner candidate; strict restoration; no deployment",
-  "next": "Native43131672590 stopped BEFORE Unity: recordedknownfile path was relative; no warmfilemutation. Helper nowresolvespath beforegit-C; actualrelative-known fixturePASS32routechecks+58materialchecks. Artifactuploads exactcurrentrun/attempt only, no stalepreviousfulljourney globs. Wait181→187then179fullWorldbatch undernewlease; strict115originaldirtyinputaudit retained."
+  "next": "Exclusive46 maind745fe8c. Resolve exactrecordedknownfileABSOLUTE beforegit-C;90realGit/PowerShellguardsPASS, coherentstagedrouteAPI retained. ActualPlayMode/fullI-V/WebGL and original115dirtybytes exactrestore. UploadONLYcurrentrun/attempt; no staleproof. ReleaseWindowsafterownnative beforeMac/artreview, no phone/main/testerclaims."
 }
