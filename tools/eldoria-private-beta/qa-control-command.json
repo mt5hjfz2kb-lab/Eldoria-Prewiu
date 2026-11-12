@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 9,
-  "action": "click_text",
-  "proof_sha256": "364c950b88ffb2973f7fd2c26f5ce484c71d2cad9c0acad1bb039d446402a3c6",
-  "label": "MEJORAR"
+  "sequence": 10,
+  "action": "snapshot",
+  "proof_sha256": "a67f6bc5021f74aed63c7ce10eec6fdadd5361ade10181b8f2c3c1a02ffd7f02",
+  "reason": "Frame009 proves the actual paid quarry upgrade with08seconds remaining; observe natural completion and continued B5complete state without accelerators."
 }
