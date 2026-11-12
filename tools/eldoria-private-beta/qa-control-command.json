@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 11,
+  "sequence": 12,
   "action": "click_text",
-  "proof_sha256": "c09e04cfc16adfcd4e0ce0c62b90c3174ce45f82119ee6d048d6a731235e7708",
-  "label": "PRODUCCION",
-  "reason": "Original frame010 shows the actual Bastion IV council alternatives; choose Production within this disposable QA campaign to test the normal progression."
+  "proof_sha256": "a01c21da8b90dc430e482941c263293a82e434c3887f88460c9a0b76bcd7e752",
+  "label": "ELEVAR A BASTION V",
+  "reason": "Original frame011 shows actual Bastion IV,1100wood900stone500food cost and10minute duration; start the normal earned levelV upgrade."
 }
