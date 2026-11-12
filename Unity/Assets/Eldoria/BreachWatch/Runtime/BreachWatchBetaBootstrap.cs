@@ -23,7 +23,7 @@ namespace Eldoria.BreachWatch
         static void Begin()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            if(!IsOptedIn(Application.absoluteURL))
+            if(!IsOptedIn(UnityEngine.Application.absoluteURL))
                 return;
             if(FindFirstObjectByType<BreachWatchHud>())
                 return;

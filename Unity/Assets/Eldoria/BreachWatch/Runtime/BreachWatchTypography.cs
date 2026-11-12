@@ -65,6 +65,8 @@ namespace Eldoria.BreachWatch
             }
             string name=text.name.ToLowerInvariant();
             if(name.Contains("quantity")||name.Contains("amount")||name.Contains("cost")||
+               name.Contains("metric")||name.Contains("pending troops")||name.Contains("event date")||
+               name.Contains("historical composition")||name=="recursos actuales"||name=="página"||
                name.Contains("progress")||name.Contains("power")||name.Contains("timer")||
                name.Contains("stat")||name.Contains("level")||name.Contains("count")||
                name.Contains("value")||name.Contains("capacity")||name.Contains("duration"))
