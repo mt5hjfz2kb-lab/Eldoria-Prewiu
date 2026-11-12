@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 13,
-  "action": "click_text",
-  "proof_sha256": "79cb4f153ef142adbc287688c72fec127cef267ad1953901e86163ffa468f56c",
-  "label": "ENTRAR EN VALORIA"
+  "sequence": 14,
+  "action": "finish",
+  "proof_sha256": "53f1e109c1889fc4ac3d5abfab5b6a7a02c2d66a26a3dfda49368dd19ea104e2",
+  "reason": "Observed candidate17 persistedB5complete and finalvictory, loaded actualRegion1 twice, returnedcity twice and paidquarryupgrade1to2; official close/export for a separate real reopening test."
 }
