@@ -1,0 +1,15 @@
+{
+  "source": "134cf1a029800481510f1784cf30393dbd0806f6",
+  "native_run": 43155182543,
+  "artifact": 13915329220,
+  "combined_status": "REAL_VIGILIA_SAVED_BAG_FAIL",
+  "error": "System.InvalidOperationException: ISSUE186_COMBINED_BAG Actual target is not frontmost: CORREO / real introduced mailbox; first=none\r\n  at Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Need (System.Boolean ok, System.String message) [0x00014] in C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\issue186-source\\Unity\\Assets\\Eldoria\\Issue186Art\\Editor\\Issue186BagCombinedNativeEvidence.cs:58 \r\n  at Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Click (UnityEngine.UI.Button button, UnityEngine.Camera camera, UnityEngine.RenderTexture target) [0x00092] in C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\issue186-source\\Unity\\Assets\\Eldoria\\Issue186Art\\Editor\\Issue186BagCombinedNativeEvidence.cs:140 \r\n  at Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence+<Run>d__25.MoveNext () [0x00d01] in C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\issue186-source\\Unity\\Assets\\Eldoria\\Issue186Art\\Editor\\Issue186BagCombinedNativeEvidence.cs:303 \r\n  at Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Tick () [0x00103] in C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\issue186-source\\Unity\\Assets\\Eldoria\\Issue186Art\\Editor\\Issue186BagCombinedNativeEvidence.cs:85 ",
+  "real_first_hit_bag_clicks": 5,
+  "bag_seen_skip_use_back_proven": true,
+  "full_mailbox_ui_verified": false,
+  "art_approved": false,
+  "physical_iphone_verified": false,
+  "file": "real-vigilia-bag-new-390x844.png",
+  "sha256": "b548c772783aa02e3753b42c9713224f12274d7ef01db1d9b51033fb3efe3150",
+  "git_blob": "8e1ad4b33a7107c5e29fc306a47da20e636996f5"
+}
