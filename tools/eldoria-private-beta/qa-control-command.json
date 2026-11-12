@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 15,
-  "action": "snapshot",
-  "proof_sha256": "fffab76d40f47eca42d5b1570237a527f8e92903efdadb8c57f96d399f79b056",
-  "reason": "Read naturally completed nine-second Granary and the next authentic chapter objective."
+  "sequence": 16,
+  "action": "click_point",
+  "proof_sha256": "9389196f0a0ba6704633ffbb8ac13cca0554b48d6f343242f0ba3f7fdcad26e7",
+  "x": 211,
+  "y": 69,
+  "guard_texts": [
+    "BASTIÓN III • 1/5",
+    "Reúne 500 comida"
+  ],
+  "reason": "Fresh frame015 shows genuinely built Granary and real404/500food; follow the food-gathering mission."
 }
