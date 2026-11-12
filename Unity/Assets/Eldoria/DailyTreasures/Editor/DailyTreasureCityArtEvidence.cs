@@ -188,7 +188,8 @@ namespace Eldoria.DailyTreasures.Editor
                 System.Reflection.BindingFlags.NonPublic);
             var captured=field?.GetValue(panel) as RenderTexture;
             Require(captured && captured.IsCreated() &&
-                    captured.width>=500 && captured.height>=500,
+                    captured.width>=64 && captured.height>=64 &&
+                    Mathf.Max(captured.width,captured.height)>=1000,
                 "Bastion ceremony has no valid authentic URP render "+
                 width+"x"+height+"; field="+(field!=null)+
                 "; texture="+(captured!=null)+
