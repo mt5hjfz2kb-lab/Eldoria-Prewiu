@@ -78,6 +78,47 @@ function processes(){
       throw Error('EARNED_CHECKPOINT_SCHEMA_CHANGED');
     report.resumedEarnedCampaign={sourceRun:Number(process.env.QA_EARNED_RUN),sourceSha:process.env.QA_EARNED_SOURCE,sha256:digest,modified:false};
     const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3,storageState:statePath});
+    // Isolated candidate compatibility test: preserve the public-origin IDBFS
+    // database bytes while serving only the exact unpublished engine17 artifact.
+    // This changes no public file, save, gameplay clock or owner session.
+    const candidate17=process.env.QA_CANDIDATE_MODE==='engine17-save-compat';
+    if(process.env.QA_CANDIDATE_MODE&&!candidate17)throw Error('UNKNOWN_CANDIDATE_MODE');
+    if(candidate17){
+      if(process.env.QA_TELEMETRY_BUNDLE||new URL(process.env.QA_URL).searchParams.has('eldoriaBetaTelemetry'))
+        throw Error('CANDIDATE_COMPATIBILITY_MUST_NOT_SEND_TELEMETRY');
+      const path=require('path'),root=path.resolve(process.env.QA_CANDIDATE_ROOT||'');
+      if(!process.env.QA_CANDIDATE_ROOT)throw Error('MISSING_CANDIDATE_ROOT');
+      const identity=JSON.parse(fs.readFileSync(path.join(root,'release-identity.json'),'utf8'));
+      if(identity.source_sha!=='a8b0ee4febf85d20eff3280133a37cac17fae967'||
+         identity.candidate_bundle_sha256!=='ee8eb5ab636ddc7381b9a8a355580b509a9f9f79a442f1b4987140bb58a25ad5'||
+         identity.revision!=='native325-mobile17-caption-profile-owner-qa')
+        throw Error('UNPINNED_UNPUBLISHED_CANDIDATE');
+      const prefix='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/';
+      if(!process.env.QA_URL.startsWith(prefix))throw Error('CANDIDATE_ORIGIN_PATH_CHANGED');
+      report.unpublishedCandidateCompatibility={publicDeploymentChanged:false,
+        earnedInputModified:false,sourceEngine:cp.sourceEngine,sourceBundle:cp.sourceBundle,
+        candidateEngine:identity.source_sha,candidateBundle:identity.candidate_bundle_sha256,
+        sourceArtifactRun:43220783570,sourceArtifactId:13944774610,
+        sourceArtifactSha256:'276f4c7a9f5cbd2c0b7d520063fa06b33dc5174d0dc4e376cecd25619eb089ad',
+        physicalIphone:false,routeFiles:[]};
+      await context.route(prefix+'**',async route=>{
+        const requested=route.request().url();
+        const relative=decodeURIComponent(new URL(requested).pathname.slice(new URL(prefix).pathname.length))||'index.html';
+        const file=path.resolve(root,relative);
+        if(!file.startsWith(root+path.sep)||!fs.existsSync(file)||!fs.statSync(file).isFile()){
+          report.errors.push('CANDIDATE_ASSET_NOT_FOUND '+relative);
+          await route.fulfill({status:404,body:'Unpublished QA candidate asset missing'});return;
+        }
+        const body=fs.readFileSync(file);
+        const sha256=require('crypto').createHash('sha256').update(body).digest('hex');
+        report.unpublishedCandidateCompatibility.routeFiles.push({path:relative,bytes:body.length,sha256});
+        const mime=file.endsWith('.html')?'text/html':file.endsWith('.js')||file.endsWith('.mjs')?'application/javascript':
+          file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':'application/octet-stream';
+        await route.fulfill({status:200,body,headers:{'content-type':mime,'cache-control':'no-store',
+          'cross-origin-opener-policy':'same-origin','cross-origin-embedder-policy':'require-corp'}});
+      });
+    }
+
     await context.addInitScript(({variant,traceGL})=>{
       window.__growth=[];
       window.__preallocation=[];
@@ -169,8 +210,10 @@ function processes(){
     page.on('framenavigated',f=>{if(f===page.mainFrame()){report.navigations.push({at:Date.now(),url:f.url()});write();}});
     await page.goto(process.env.QA_URL||'https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5',{waitUntil:'domcontentloaded',timeout:30000});
     report.identity=await page.evaluate(()=>fetch('release-identity.json',{cache:'no-store'}).then(r=>r.json()));
-    if(report.identity.source_sha!==cp.sourceEngine||report.identity.candidate_bundle_sha256!==cp.sourceBundle)
-      throw Error('PUBLIC_ENGINE_DIFFERS_FROM_EARNED_SAVE_PROVENANCE');
+    const expectedEngine=candidate17?'a8b0ee4febf85d20eff3280133a37cac17fae967':cp.sourceEngine;
+    const expectedBundle=candidate17?'ee8eb5ab636ddc7381b9a8a355580b509a9f9f79a442f1b4987140bb58a25ad5':cp.sourceBundle;
+    if(report.identity.source_sha!==expectedEngine||report.identity.candidate_bundle_sha256!==expectedBundle)
+      throw Error('ENGINE_DIFFERS_FROM_PINNED_EARNED_OR_COMPATIBILITY_PROVENANCE');
     if(report.identity.revision!==(process.env.QA_REVISION||'native325-mobile5'))throw Error('Candidate identity changed');
     report.capabilities=process.env.QA_SKIP_PREFLIGHT==='1'?{webgl2:'not-probed',note:'Observe actual Unity context only'}:await page.evaluate(()=>{
       const c=document.createElement('canvas'),g=c.getContext('webgl2');
