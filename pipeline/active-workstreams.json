@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T09:34:30.240Z",
+  "updated_at": "2026-11-12T09:50:40.572Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -52,7 +52,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "Review native original images offPC; no merge before owner review.",
+      "next": "Preserved concurrent e644 bag responsive macrogrid. Exact10928295 additionally classifies only entirelyempty optional combat shell as absent: actual reward mail mustnot invent enemy/0rounds/health; native checksARCHIVOREAL plus20/52 oldgates. SourceCI43194025897 SUCCESS. Nativepending after UI; pin only independently verified UI/source/importermetadata; no staleoverlay.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -6843,7 +6843,7 @@
       "ownership_revision": 109,
       "write_scope_released": false,
       "phase": "ACTUAL_READABILITY_UI48_MAIL2_HALL0_AB_PASS_COMBINED_ART_CHECK_PENDING",
-      "next": "Exact25e source native48+AB passed; preserve. Rnextfullcombinedproof must verify actual header alerts clear quantity text and native original hand/name legibility before artisticacceptance.",
+      "next": "Actual March390 original25e has undersized side-by-side hero/name inside tall command cards. Implemented b60c782 portrait-first stone hero choices + actual native regression; source43193329720 SUCCESS. Native48+A/B pending after T clean run; no mainart. Keep25e original48 baseline.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T08:42:23.684Z",
@@ -7255,7 +7255,7 @@
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "NATIVE_FULL_WORLD_AND_WEBGL_SUCCESS_MAC_AB_OFF_PC",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-      "next": "Actualpubliccity/world+reload+optional52eventSQLchain verified on4fd/mobile16. Preserveproof1d9950d4. No redundantMacrerun; remainingfullhostedI-V/physicalphone/newUIintegration/pilotsettingsplacement beforeexternaltesters.",
+      "next": "Actual public603 firstloop+52SQLpreviousproof preserved. New1316810 nextgathering objective follows real objectivearrow and unique OCRcontrols only, newMac43192581903 currentlyrunning independently ofWindows. Inspect actualframes then continue ordinaryprogression; never claimfullI-V/physicalphone fromattempts.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8152,7 +8152,7 @@
       "budget_eur": 0,
       "phase": "EXCLUSIVE_SINGLE_CONTINUOUS_SCENERY_NATIVE_AB",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Full original native lot against43191078889; reject duplicated activecrop, verify actual aspect/interior and genuine reward/input/receipt gates. Beta nextobjective Mac runs independently. Scheduled supervisions all disabled by explicit owner instruction; never reenable.",
+      "next": "FROZENa5226fa4 genuinefullnative43192664265 waiting forWindows assignment; verifiedleasepreflight passed. Sourcea164sourceCIbothPASS. No Tsource/docs mutation. OffPC UI/R actualcomposition andmail fixes now ready. After cleanT native actualartcompare, rotate toUI newportrait48 thenR newresponsive/mail20/52.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -18657,6 +18657,16 @@
       "to": "eldoria-daily-treasures-20261108",
       "source": "a164dfbac7077eab60fe4bc2f040fefa009a8dbf",
       "owner_disabled_all_supervisions": true
+    },
+    {
+      "at": "2026-11-12T09:50:40.572Z",
+      "event": "owner_disabled_all_scheduled_supervisions_direct_execution_continues_four_workstreams",
+      "all_scheduled_supervisions_enabled": false,
+      "ui_source": "b60c7824c13908d6a3d94c68b3bc3b2efe972b5e",
+      "resource_source": "10928295b8afe7014e0b30145871150e816315c1",
+      "beta_source": "1316810ea3894166611eeb4562fb2b9627785a88",
+      "treasure_frozen_source": "a5226fa40a6045a7bba8ed23899f57b954cfe18a",
+      "note": "No new scheduled supervision or hourly chat. User explicitly requires continued direct work and offPC progress during resource waits. No art/main approval."
     }
   ],
   "owner_specific_pauses": [
