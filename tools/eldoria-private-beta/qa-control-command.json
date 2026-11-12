@@ -1,14 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 6,
-  "action": "click_point",
-  "proof_sha256": "ea1d6fdcc83eb44fba861c5aab9c24627ff51ab42ee3dc75526be3f5ec868010",
-  "x": 210,
-  "y": 70,
-  "guard_texts": [
-    "Diagnóstico local",
-    "VIGILANTES"
-  ],
-  "reason": "Original frame005 shows Bastion III5/5 and Eleva el Bastión a nivel IV; select its actual quest arrow."
+  "sequence": 7,
+  "action": "click_text",
+  "proof_sha256": "226bd89d46efa357b49c3213ceba4fafb5261bc44812960df65e5538c20b39ae",
+  "label": "ELEVAR A BASTION IV",
+  "reason": "Original frame006 proves actual850wood700stone300food cost and7minute duration; start the real earned Bastion IV upgrade without clock edits."
 }
