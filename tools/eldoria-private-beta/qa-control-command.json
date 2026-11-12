@@ -1,7 +1,8 @@
 {
   "schema": 1,
-  "run_id": 43231463013,
-  "sequence": 46,
-  "action": "finish",
-  "proof_sha256": "548161219205406cc379165a94b42a82f653bbc63936fec3e7ca056b0d1c5870"
+  "run_id": 43245541625,
+  "sequence": 1,
+  "action": "click_text",
+  "proof_sha256": "b8679aa699d821e3ce65f562e6f0f7e1952bd736711aff837f8429321727d608",
+  "label": "CORREO."
 }
