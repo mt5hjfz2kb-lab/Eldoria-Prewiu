@@ -87,6 +87,7 @@ namespace Eldoria.BreachWatch
         public static bool IsRetiredPainter(Graphic graphic)
         {
             if(!graphic || graphic is Text)return false;
+            if(graphic.name.StartsWith("March art / "))return true;
             string type=graphic.GetType().Name;
             if(graphic is RawImage content)
                 return IsRetiredTexture(content.texture);
@@ -131,6 +132,12 @@ namespace Eldoria.BreachWatch
                     // their authored replacement. Only our own retained
                     // replacements need synchronization after disabling.
                     if(!graphic.enabled && !replacements.ContainsKey(graphic))continue;
+                    // Canonical rim-only overlays sit AFTER portraits and labels.
+                    // Replacing their atlas with an opaque panel hides live content.
+                    // The new shared theme already owns the card background.
+                    if(graphic.name.StartsWith("March art / ") ||
+                       (graphic is Image rim && !rim.fillCenter && IsRetiredTexture(rim.sprite?rim.sprite.texture:null)))
+                    {graphic.enabled=false;continue;}
                     var button=graphic.GetComponent<Button>();
                     if(graphic is RawImage raw)
                     {
