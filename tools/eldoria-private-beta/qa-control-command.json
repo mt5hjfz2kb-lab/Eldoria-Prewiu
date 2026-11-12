@@ -1,14 +1,8 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 12,
-  "action": "click_point",
-  "proof_sha256": "246f8435ffbce4f61b14d824bc2b7944f098e43c3cf8eda066ce0726bc0b23ac",
-  "x": 155,
-  "y": 798,
-  "guard_texts": [
-    "Poder • 10.389",
-    "Recorrido completado"
-  ],
-  "reason": "Frame011 confirms the real level2quarry and completedB5; re-enter World through the visible dock compass to verify already-loaded Region1 reuse."
+  "sequence": 13,
+  "action": "click_text",
+  "proof_sha256": "79cb4f153ef142adbc287688c72fec127cef267ad1953901e86163ffa468f56c",
+  "label": "ENTRAR EN VALORIA"
 }
