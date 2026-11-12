@@ -242,7 +242,15 @@ function processes(){
             const hit=hits[0];await page.mouse.click(hit.x,hit.y,{delay:150});
             report.actualWorldUi.actions.push({phase,text:hit.text,x:hit.x,y:hit.y,fromActualScreenshot:phase+'.png'});write();await observeEntry(2,phase);
           }
-          await clickText('city-intro-complete','IR AL OBJETIVO');
+          await readUi('city-intro-complete');
+          // Reviewed untouched 1170x2532 image from actual run43158802987:
+          // the shipped UX19 uses a circular arrow at CSS211,69 with "Ir",
+          // rather than the longer label in the underlying vanilla binding.
+          await page.mouse.click(211,69,{delay:150});
+          report.actualWorldUi.actions.push({phase:'city-intro-complete',x:211,y:69,
+            control:'visible canonical objective arrow',coordinateEvidenceRun:43158802987,
+            coordinateEvidenceSha256:'bc6df280e6b396e88839ca30330f61f387a89e7cbe9a34232e67cd4a02d48901'});
+          write();await observeEntry(3,'actual-objective-arrow');
           // Mission action selects the canonical sawmill. Exclude the bottom
           // navigation Build medallion when locating its real paid offer.
           await clickText('actual-sawmill-offer','CONSTRUIR',r=>r.y<750);
