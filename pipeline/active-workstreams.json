@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T11:28:57.646Z",
+  "updated_at": "2026-11-12T11:41:33.624Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6838,13 +6838,11 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 116,
+      "ownership_revision": 117,
       "write_scope_released": false,
-      "phase": "OWNER_SHARED_STONE_ARMY_DETAILS_NATIVE_PENDING",
+      "phase": "OWNER_BRANDED_ARMY_INFORMATION_NATIVE49_AB_PASS_REVIEW_PENDING",
       "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
       "art_approved": false,
       "physical_mobile_tested": false,
@@ -7145,7 +7143,7 @@
         "mail_empty_changed_pixels_900x1600": 82403,
         "mail_empty_changed_pixels_390x844": 16513
       },
-      "runner_release_basis": "Exactd6c native43208162651 and independentAB success.48original+1info capture,2actualinformationopen-returnhits plus2mailhits. No art approval. Continue richer branded details off-PC.",
+      "runner_release_basis": "Exactd372 native43209540596 and independentAB SUCCESS,48+1originalPNGs and real informationopen/returninputs. Shared stone material+originalburgundyreturn verified. No mainartmerge orownerapproval.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7172,7 +7170,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T11:24:55.757Z",
+      "runner_released_at": "2026-11-12T11:41:33.624Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7206,7 +7204,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 48,
+      "ownership_revision": 49,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7247,12 +7245,14 @@
         "Unity/Assets/Eldoria/BetaMemoryProbe.meta",
         ".github/workflows/eldoria-beta-lazy-world-native.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "NATIVE_FULL_WORLD_AND_WEBGL_SUCCESS_MAC_AB_OFF_PC",
+      "phase": "ACTUAL_BARRACKS_CAPTION_EFFECTIVE_UX_NATIVE_ENGINE_PROOF_PENDING",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
       "next": "Actual public603 firstloop+52SQLpreviousproof preserved. New1316810 nextgathering objective follows real objectivearrow and unique OCRcontrols only, newMac43192581903 currentlyrunning independently ofWindows. Inspect actualframes then continue ordinaryprogression; never claimfullI-V/physicalphone fromattempts.",
       "last_verified": {
@@ -7755,7 +7755,7 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-11T19:47:57.685Z",
+      "runner_claimed_at": "2026-11-12T11:41:33.624Z",
       "canonical_integration_request": {
         "requested_at": "2026-11-09T10:49:44.401Z",
         "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
@@ -7841,7 +7841,7 @@
         "issue": 96,
         "release_allowed": false
       },
-      "runner_claim_basis": "Explicit owner-directed handoff from PR173 after completed native43089450921. One bounded PR179 lazy-world PlayMode/I-V/WebGL batch; no publication; release to PR181 after completion and verified restoration.",
+      "runner_claim_basis": "All art Windows jobs cleancomplete; actualpublished4fd hasunlabelledTrainingbutton. Exact frozenUXpadding correction+nativeglyphsource verified by43210967103 preflight andlegacyUXdomain tests. Nativeunpublishedonly, ownerpublicengineunchanged; usefullstandard preservation/PlayMode/terrain/I-V/WebGLchecks.",
       "native_candidate": {
         "run_id": 42682071151,
         "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
