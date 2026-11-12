@@ -97,7 +97,7 @@ namespace Eldoria.BreachWatch.Editor
                     expectedCharacters=plain.Length,glyphsPresent=present,
                     inkOutside=ink&&(bounds.xMin<box.xMin-tolerance||bounds.xMax>box.xMax+tolerance||
                         bounds.yMin<box.yMin-tolerance||bounds.yMax>box.yMax+tolerance)});
-                generator.Dispose();
+                ((IDisposable)generator).Dispose();
             }
             return result;
         }

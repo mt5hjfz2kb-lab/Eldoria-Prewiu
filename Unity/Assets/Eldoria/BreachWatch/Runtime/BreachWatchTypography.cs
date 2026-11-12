@@ -72,7 +72,7 @@ namespace Eldoria.BreachWatch
                name.Contains("value")||name.Contains("capacity")||name.Contains("duration"))
                 return Role.Instrument;
             if(name.Contains("title")||name.Contains("heading")||name.Contains("chapter")||
-               name=="player name"||name=="real building name"||name.Contains("hero name"))
+               name=="player name"||name=="real building name"||name=="actual objective"||name.Contains("hero name"))
                 return Role.Inscription;
             return Role.Narrative;
         }

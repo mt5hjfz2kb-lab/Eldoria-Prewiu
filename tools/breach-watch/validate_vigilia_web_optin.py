@@ -25,7 +25,7 @@ def main():
          "Explicit preview URL flag is required")
     need('key==Flag && val=="1"' in bootstrap,
          "Only the exact URL query opt-in may activate new UI")
-    need('if(!IsOptedIn(Application.absoluteURL))' in bootstrap,
+    need('if(!IsOptedIn(UnityEngine.Application.absoluteURL))' in bootstrap,
          "Normal web gameplay must retain its previous UI")
     need("host && host.Ready && host.Hud" in bootstrap and
          "BreachWatchHud.Install(host)" in bootstrap,
