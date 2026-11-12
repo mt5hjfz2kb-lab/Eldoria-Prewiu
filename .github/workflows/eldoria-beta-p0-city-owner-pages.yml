@@ -16,37 +16,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 0a5e8640dfa6e2a8d9d0e5fc6335694757b33898
+          ref: 22aaf65b66ebdd835a26ea3fffe5fcbc6a43bb6f
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43150432049
-          name: mobile16-unpublished-preserved-owner-site
+          run-id: 43283946677
+          name: mobile18-unpublished-preserved-owner-site
           github-token: ${{ github.token }}
           path: site
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43006294342
+          run-id: 43152671564
           name: github-pages
           github-token: ${{ github.token }}
           path: previous-pages
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43150932880
-          name: mobile16-staged-delivery-actual-desktop-webkit-not-physical-iphone
+          run-id: 43283946677
+          name: mobile18-staged-delivery-actual-desktop-webkit-not-physical-iphone
           github-token: ${{ github.token }}
           path: actual-mac
       - name: Verify every preceding live file, recovered hidden files and exact actual runtime proof
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python3 -m py_compile tools/eldoria-private-beta/verify_preserved_owner_publication.py
-          python3 tools/eldoria-private-beta/verify_preserved_owner_publication.py --site site --baseline exact-previous-site --mac actual-mac --archive previous-pages/artifact.tar
+          python3 -m unittest discover -s tools/eldoria-private-beta -p test_engine18_publication.py
+          python3 -m py_compile tools/eldoria-private-beta/verify_engine18_owner_publication.py
+          python3 tools/eldoria-private-beta/verify_engine18_owner_publication.py --site site --baseline exact-previous-site --mac actual-mac --archive previous-pages/artifact.tar --live-proof preservation-live-proof.json
       - name: Retain concrete verified owner site including every original hidden file
         uses: actions/upload-artifact@v4
         with:
-          name: mobile16-verified-owner-pages-input
+          name: mobile18-verified-owner-pages-input
           path: site/
           include-hidden-files: true
           compression-level: 0
@@ -55,8 +56,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile16-owner-publication-verification
-          path: site/beta-mobile16-owner-publication-proof.json
+          name: mobile18-owner-publication-verification
+          path: |
+            site/beta-mobile18-owner-publication-proof.json
+            preservation-live-proof.json
           retention-days: 14
   publish-owner-qa:
     needs: verify-preserved-owner-site
@@ -74,7 +77,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: mobile16-verified-owner-pages-input
+          name: mobile18-verified-owner-pages-input
           path: site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -94,10 +97,60 @@ jobs:
           def get(path):
               req=urllib.request.Request(root+path,headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-owner-qa-live'})
               with urllib.request.urlopen(req,timeout=40) as response:return json.load(response)
-          for route,source in [('beta-native325','be49d62e3daf490f41dba0bf8123a8e2eee64480'),('beta-iphone-p0-city','63fb2095412a3066e18f3a8a31c2a03f40ef4944'),('beta-iphone-p0-lazy-world','4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71')]:
+          for route,source in [('beta-native325','be49d62e3daf490f41dba0bf8123a8e2eee64480'),('beta-iphone-p0-city','63fb2095412a3066e18f3a8a31c2a03f40ef4944'),('beta-iphone-p0-lazy-world','de63660d25bee9a32d7b804d6245744ed1f0dbca')]:
               identity=get(route+'/release-identity.json')
               assert identity['source_sha']==source and identity['release_for_external_testers'] is False
-          p=get('beta-mobile16-owner-publication-proof.json')
-          assert p['original_files_preserved']==144 and not p['external_testers_enabled'] and not p['physical_iphone_verified']
+          p=get('beta-mobile18-owner-publication-proof.json')
+          assert p['source_sha']=='de63660d25bee9a32d7b804d6245744ed1f0dbca'
+          assert p['preserved_files']==146 and not p['external_testers_enabled'] and not p['physical_iphone_verified']
           print('LIVE_OWNER_ONLY_LAZY_ROUTE_AND_PREVIOUS_TWO_IDENTITIES_VERIFIED_NOT_TESTER_RELEASE')
           PY
+  actual-public-webkit:
+    needs: publish-owner-qa
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 22aaf65b66ebdd835a26ea3fffe5fcbc6a43bb6f
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Open the actual public owner route and verify reload on desktop WebKit
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_LAZY_WORLD: '1'
+          QA_ADVANCE_STORY: '1'
+          QA_REVISION: native325-mobile18-objective-profile-owner-qa
+          QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
+          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1&eldoria_diag=1
+          QA_OUT: public-proof/deferred
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/eldoria-public18" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-public18/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-public18/node_modules"
+          node tools/eldoria-private-beta/qa_webkit_owner_staging.cjs
+          python3 - <<'PYPROOF'
+          import json,pathlib,sys
+          sys.path.insert(0,'tools/eldoria-private-beta')
+          from verify_engine18_owner_publication import validate_desktop
+          r=json.loads(pathlib.Path('public-proof/deferred/report.json').read_text())
+          validate_desktop(r)
+          print('ACTUAL_PUBLIC_ENGINE18_WEBKIT_PASS_NOT_PHYSICAL_IPHONE_OR_TESTER_RELEASE')
+          PYPROOF
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile18-public-owner-actual-webkit-not-physical-iphone
+          path: public-proof/
+          retention-days: 14
