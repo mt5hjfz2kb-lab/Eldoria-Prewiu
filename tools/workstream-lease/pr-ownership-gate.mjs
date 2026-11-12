@@ -1,6 +1,7 @@
 // Read-only PR admission guard. Runs from trusted main on pull_request_target.
 // Never executes, merges, closes or checks out source from a proposed PR.
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 const LEGACY_LAST_PR=116;
 const LEGACY_UI='eldoria-ui-v3-management-completion-20261021';
 export function claimId(pr){
@@ -82,16 +83,34 @@ async function paginate(path,token,limit=10){
   }
   throw Error('GitHub PR list truncated after '+limit*100+' items; refuse incomplete decision');
 }
+// Contents API omits inline data above 1 MiB. Read the exact observed
+// main blob instead of treating a large valid registry as unavailable.
+// Verify Git object identity; never substitute cached ownership or PR data.
+export async function readLiveRegistry(base,token,read=api){
+  const file=await read(base+'/contents/pipeline/active-workstreams.json?ref=main',token);
+  if(!/^[0-9a-f]{40}$/.test(file?.sha||''))throw Error('Live registry blob identity missing');
+  let blob=file;
+  if(file.encoding==='none' && !file.content)
+    blob=await read(base+'/git/blobs/'+file.sha,token);
+  if(blob?.encoding!=='base64'||!blob.content||blob.sha!==file.sha)
+    throw Error('Live registry content unavailable or mismatched');
+  const bytes=Buffer.from(blob.content.replace(/\s/g,''),'base64');
+  const identity=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex');
+  if(identity!==file.sha || (Number.isSafeInteger(file.size)&&bytes.length!==file.size) ||
+     (Number.isSafeInteger(blob.size)&&bytes.length!==blob.size))
+    throw Error('Live registry bytes do not match observed main blob');
+  const registry=JSON.parse(bytes.toString('utf8'));
+  if(!Array.isArray(registry?.active))throw Error('Live ownership registry missing active list');
+  return registry;
+}
 async function main(){
   const n=Number(process.env.GUARD_PR_NUMBER),token=process.env.GH_TOKEN,repo=process.env.GITHUB_REPOSITORY;
   if(!Number.isSafeInteger(n)||n<1||!token||!/^[-\w.]+\/[-\w.]+$/.test(repo||''))
     throw Error('PR number, token or repository invalid/missing');
   const base='/repos/'+repo;
-  const [current,openPulls,registryFile]=await Promise.all([
+  const [current,openPulls,registry]=await Promise.all([
     api(base+'/pulls/'+n,token),paginate(base+'/pulls?state=open',token),
-    api(base+'/contents/pipeline/active-workstreams.json?ref=main',token)]);
-  if(registryFile.encoding!=='base64'||!registryFile.content)throw Error('Live registry unavailable');
-  const registry=JSON.parse(Buffer.from(registryFile.content.replace(/\s/g,''),'base64').toString('utf8'));
+    readLiveRegistry(base,token)]);
   const changedFiles=n>LEGACY_LAST_PR?
     (await paginate(base+'/pulls/'+n+'/files',token,30)).map(f=>f.filename):[];
   const result=evaluate({current,openPulls,registry,changedFiles});
