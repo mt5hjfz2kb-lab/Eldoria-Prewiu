@@ -5,6 +5,7 @@ on:
     paths: [tools/eldoria-private-beta/integrated-ui-request.json]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: eldoria-pr179-integrated-ui-native
   cancel-in-progress: false
