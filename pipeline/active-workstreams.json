@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T11:41:33.624Z",
+  "updated_at": "2026-11-12T12:16:24.253Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6838,16 +6838,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 117,
+      "ownership_revision": 118,
       "write_scope_released": false,
-      "phase": "OWNER_BRANDED_ARMY_INFORMATION_NATIVE49_AB_PASS_REVIEW_PENDING",
+      "phase": "OWNER_COMPACT_PRIMARY_MARCH_ACTUAL_NATIVE_PENDING",
       "next": "Owner asks three hero spaces +compact primary composition, secondary details behind information. Source current eeba064dced363fc4a2a1bbc58dd8487ff05c60c CI43205394059 SUCCESS; actual Unity pending. Other three execute without Windows.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T11:28:57.646Z",
-      "runner_claim_basis": "R43208980109 cleancomplete; new brandedinfo source43209222797success; retain strict information open-returnfirsthit and all48 originalscreens.",
+      "runner_claimed_at": "2026-11-12T12:16:24.253Z",
+      "runner_claim_basis": "Beta43211338159 native cleancompleted; UI compactsource43212826360 SUCCESS. Needactual portrait centeredcontent-sized military sheet,3hero spaces+6metrics2rows+realinfo firsthits. KeepbetaQAcontrolMac separate.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -7204,7 +7206,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 49,
+      "ownership_revision": 50,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7245,14 +7247,12 @@
         "Unity/Assets/Eldoria/BetaMemoryProbe.meta",
         ".github/workflows/eldoria-beta-lazy-world-native.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "ACTUAL_BARRACKS_CAPTION_EFFECTIVE_UX_NATIVE_ENGINE_PROOF_PENDING",
+      "phase": "CAPTION_NATIVE_PLAYMODE_I_V_WEBGL_PASS_UNPUBLISHED_PACKAGING_PENDING",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
       "next": "Actual public603 firstloop+52SQLpreviousproof preserved. New1316810 nextgathering objective follows real objectivearrow and unique OCRcontrols only, newMac43192581903 currentlyrunning independently ofWindows. Inspect actualframes then continue ordinaryprogression; never claimfullI-V/physicalphone fromattempts.",
       "last_verified": {
@@ -7891,7 +7891,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-12T02:05:38.260Z",
+      "runner_released_at": "2026-11-12T12:16:24.253Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -8118,7 +8118,8 @@
         "all_sql_exact_engine": true,
         "physical_iphone": false,
         "full_hosted_i_v": false
-      }
+      },
+      "runner_release_basis": "Native43211338159 job131159647505 cleanSUCCESS: exactUXcaptionglyph+realtrainingchoice, nativePlayMode/fullterrain/I-V/WebGL and strictwarm source restoration. PackagingUbuntu/Mac next do not needWindows. Rawunprofiledengine notiPhone-certified. Existingactualhosted20trained/56archers source4fd confirmed separately43212071356."
     },
     {
       "id": "eldoria-daily-treasures-20261108",
