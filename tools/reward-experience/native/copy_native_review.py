@@ -1,4 +1,4 @@
-"""Copy four exact validated native PNGs to owned review docs; no Unity/mutation of art."""
+"""Preserve exact validated native PNGs in released owned review docs; no Unity or art mutation."""
 import base64,hashlib,json,os,pathlib,struct,urllib.request
 REPO="mt5hjfz2kb-lab/Eldoria-Prewiu"
 assert os.environ["GITHUB_REPOSITORY"]==REPO
@@ -20,14 +20,14 @@ run_id=int(request["review_run_id"]); artifact_id=int(request["review_artifact_i
 source=request["review_source_sha"]
 assert len(source)==40 and all(c in "0123456789abcdef" for c in source)
 kind=request.get("review_kind","daily_bastion")
-assert kind in ("daily_bastion","issue186_components")
-resource=kind=="issue186_components"
+assert kind in ("daily_bastion","issue186_components","issue186_combined")
+combined=kind=="issue186_combined"
+resource=kind.startswith("issue186_")
 target=("feature/issue186-reward-attention-guidance-20261111" if resource else
         "feature/eldoria-daily-treasures-20261108")
 workstream=("eldoria-issue186-reward-attention-guidance-20261111" if resource else
             "eldoria-daily-treasures-20261108")
-owner=("chatgpt-central-resource-art-20261111" if resource else
-       "chatgpt-central-treasures-art-20261111")
+owner="chatgpt-central-art-execution-20261111"
 pr_number=187 if resource else 181
 run=api("actions/runs/"+str(run_id))
 assert run["head_sha"]==source and run["head_branch"]==target
@@ -38,7 +38,8 @@ artifact=api("actions/artifacts/"+str(artifact_id))
 assert not artifact["expired"]
 assert artifact["workflow_run"]["id"]==run_id and artifact["workflow_run"]["head_sha"]==source
 root=pathlib.Path("reviewed-native").resolve()
-reports=list(root.rglob("report.json" if resource else "city-art-report.json"))
+reports=([root/"combined-bag"/"report.json"] if combined else list(root.rglob("report.json" if resource else "city-art-report.json")))
+assert all(p.is_file() for p in reports)
 assert len(reports)==1,"Require one exact actual native report"
 report=json.loads(reports[0].read_text(encoding="utf-8-sig"))
 selected=[]
@@ -49,7 +50,27 @@ def verified(name,shot,width,height):
     assert len(data)==shot["bytes"] and hashlib.sha256(data).hexdigest()==shot["sha256"]
     assert data[:8]==b"\x89PNG\r\n\x1a\n" and struct.unpack(">II",data[16:24])==(width,height)
     selected.append((name,data,shot))
-if resource:
+if combined:
+    assert report["resourceSource"]==source and str(report["nativeRun"])==str(run_id)
+    assert report["status"]=="REAL_VIGILIA_SAVED_BAG_PASS_ART_REVIEW_PENDING"
+    assert report["uiSource"]==request["review_ui_source_sha"]
+    assert report["actualIntegratedCityFrames"]==4 and report["realFirstHitClicks"]==52
+    for flag in ("actualBagOnVigilia","seenDoesNotUse","skipDoesNotComplete","useCreditsOnce",
+                 "jsonReloadVerified","mailReadDoesNotClaim","mailClaimDoesNotCredit","fullMailboxUiFlowVerified"):
+        assert report[flag] is True,flag
+    assert report["artApproved"] is False and report["physicalIphoneVerified"] is False
+    restoration=json.loads((root/"vigilia-overlay.json.restored.json").read_text(encoding="utf-8-sig"))
+    assert restoration["restored"] is True and restoration["files"]==245
+    assert restoration["ui_source"]==report["uiSource"]
+    shots={shot["file"]:shot for shot in report["images"]}
+    assert len(shots)==20 and len(report["images"])==20
+    for width,height in [(390,844),(844,390),(900,1600),(1600,900)]:
+        for phase in ("actual-integrated-city","new","mail-read-unclaimed","mail-claimed-no-credit","used-reloaded"):
+            name=f"real-vigilia-bag-{phase}-{width}x{height}.png"
+            shot=shots[name]
+            assert shot["phase"]==phase and (shot["width"],shot["height"])==(width,height)
+            verified(name,shot,width,height)
+elif resource:
     assert report["sourceSha"]==source and report["status"]=="UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING"
     assert report["captures"]==4 and report["realImportedSprites"]==16
     assert report["pointerRaycastHits"]==4 and report["allResourcesImported"] is True
@@ -91,12 +112,13 @@ for name,data,shot in selected:
     elements.append({"path":prefix+name,"mode":"100644","type":"blob","sha":blob["sha"]})
     records.append({"file":name,"git_blob":blob["sha"],"native":shot})
 proof={"source":source,"native_run":run_id,"artifact_id":artifact_id,"artifact_digest":artifact.get("digest"),
-       "method":"BYTE_IDENTICAL_NATIVE_PNG_NO_RETOUCH","artApproved":False,"fullSceneVerified":False,
+       "method":"BYTE_IDENTICAL_NATIVE_PNG_NO_RETOUCH","artApproved":False,"fullSceneVerified":False,"actualIntegratedCityFrames":4 if combined else 0,
+       "realFirstHitClicks":52 if combined else 0,"sourceOverlayRestored":combined,
        "physicalMobileVerified":False,"files":records}
 proof_blob=api("git/blobs",{"content":json.dumps(proof,indent=2)+"\n","encoding":"utf-8"})
 elements.append({"path":prefix+"proof.json","mode":"100644","type":"blob","sha":proof_blob["sha"]})
 tree=api("git/trees",{"base_tree":api("git/commits/"+head)["tree"]["sha"],"tree":elements})
-commit=api("git/commits",{"message":"Preserve four byte-identical actual Unity captures for owner visual review",
+commit=api("git/commits",{"message":"Preserve byte-identical actual Unity captures for owner visual review",
     "tree":tree["sha"],"parents":[head]})
 # Non-force plus exact old parent rejects concurrent advancement.
 api("git/refs/heads/"+target,{"sha":commit["sha"],"force":False},"PATCH")
