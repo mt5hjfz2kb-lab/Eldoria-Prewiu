@@ -240,7 +240,14 @@ jobs:
           # holding the exclusive Windows runner until a timeout.
           $unityArguments='-batchmode -quit -force-d3d11 -projectPath "'+$unityProject+
             '" -executeMethod Eldoria.Issue186Art.Editor.Issue186NativeEvidence.Capture -logFile "'+$log+'"'
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -Wait -PassThru
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          $nativeRootStarted=Get-Date
+          $nativeRootLimit=$nativeRootStarted.AddMinutes(55)
+          Write-Host "UNITY_ROOT_STARTED pid=$($process.Id); waiting for actual Editor, not unrelated descendants"
+          while(-not $process.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$process.Refresh()}
+          if(-not $process.HasExited){throw 'Actual Unity Editor still active at hard bound; preserve process and evidence'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another native process remains; refuse to infer resource is free'}
+          Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($process.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($process.ExitCode)"
           $proof=Join-Path $unityProject 'Issue186NativeEvidence'
           if(Test-Path $proof){Copy-Item (Join-Path $proof '*') $env:OUT -Force -Recurse}
           if($process.ExitCode -ne 0){
@@ -281,7 +288,14 @@ jobs:
           $project=Join-Path (Get-Location).Path 'Unity'
           $log=Join-Path $env:OUT 'combined-bag-unity.log'
           $unityArguments='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Capture -logFile "'+$log+'"'
-          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -Wait -PassThru
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          $nativeRootStarted=Get-Date
+          $nativeRootLimit=$nativeRootStarted.AddMinutes(55)
+          Write-Host "UNITY_ROOT_STARTED pid=$($p.Id); waiting for actual Editor, not unrelated descendants"
+          while(-not $p.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){throw 'Actual Unity Editor still active at hard bound; preserve process and evidence'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another native process remains; refuse to infer resource is free'}
+          Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($p.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($p.ExitCode)"
           $proof=Join-Path $project 'Issue186BagCombinedNativeEvidence'
           $dest=Join-Path $env:OUT 'combined-bag'
           if(Test-Path $proof){New-Item -ItemType Directory -Force $dest|Out-Null;Copy-Item (Join-Path $proof '*') $dest -Recurse -Force}
