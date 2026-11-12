@@ -295,7 +295,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float safeWidth=w-l-r;
             float width=Mathf.Min(w>h?1120f:800f,safeWidth);
             float x0=l+(safeWidth-width)*.5f;
-            float backW=Mathf.Clamp(width*.16f,70f,118f);
+            float backW=Mathf.Clamp(width*.21f,96f,128f);
             At((RectTransform)back.transform,x0,t,backW,46f);
             At(title.rectTransform,x0+backW+10f,t,width-backW-10f,46f);
             title.fontSize=shortWide?23:w<500f?21:29;

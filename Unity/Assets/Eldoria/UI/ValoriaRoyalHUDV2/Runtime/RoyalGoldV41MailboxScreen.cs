@@ -731,6 +731,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 artPicture=new Rect(imageX,imageY,imageWidth,imageHeight);
                 storyTop=imageY+imageHeight+29f;
             }
+            bool hasBody=!string.IsNullOrWhiteSpace(detail.text);
+            reportSection.gameObject.SetActive(hasBody);
             reportSection.color=new Color(.35f,.225f,.105f);
             reportSection.fontSize=Pixels(narrow?16:19);
             Position(reportSection.rectTransform,38f,storyTop+18f,
@@ -741,16 +743,16 @@ namespace Eldoria.UI.RoyalGold.V2
             reportToggleText.Put(reportExpanded?"OCULTAR":"DESPLEGAR");
             detail.fontSize=Pixels(narrow?19:23);
             detail.color=new Color(.25f,.175f,.115f);
-            detail.gameObject.SetActive(reportExpanded);
+            detail.gameObject.SetActive(reportExpanded && hasBody);
             float textH=0f;
             float storyContentTop=narrow?111f:59f;
-            if(reportExpanded)
+            if(reportExpanded && hasBody)
             {
                 Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,40f);
                 textH=Mathf.Max(40f,detail.preferredHeight/layoutUnit+12f);
                 Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,textH);
             }
-            float storyHeight=reportExpanded?
+            float storyHeight=!hasBody?0f:reportExpanded?
                 Mathf.Max(storyContentTop+textH+25f,narrow?169f:111f):
                 (narrow?111f:69f);
             float footerTop=storyTop+storyHeight+20f;
@@ -1075,7 +1077,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(pendingPackets)
                 reportFooter.Put(reportFooter.text+
                     "\nPAQUETES PENDIENTES · Reclamar los lleva a tu bolsa sin gastarlos.");
-            navLabel.Put("DESLIZA PARA LEER EL INFORME");
+            navLabel.Put(string.IsNullOrWhiteSpace(detail.text)?
+                (pendingPackets?"Los objetos reclamados pasan a tu bolsa.":"Objetos registrados en tu correo."):
+                "DESLIZA PARA LEER EL INFORME");
             if(!detailVisible)
                 detailScroll.verticalNormalizedPosition=1f;
             Layout();
