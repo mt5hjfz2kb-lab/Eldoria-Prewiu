@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 5,
-  "action": "wait",
-  "seconds": 35,
-  "proof_sha256": "aa215c5a3f2be22dcc12abc6f8e10e9b03d901aefd6155840285ab232fcced49",
-  "reason": "Allow the real lazy Region1 scene loading to finish without altering game time."
+  "sequence": 6,
+  "action": "click_text",
+  "label": "Entrar en Valoria",
+  "proof_sha256": "7f8f6a3bba6510ac7da1c387d705f1b95b38a4c7e18214feef62cc9093e71f93",
+  "reason": "Click the actual loaded world entry visible in original frame005."
 }
