@@ -47,6 +47,8 @@ namespace Eldoria.BreachWatch
         Text detailText;
         Button information;
         bool statusWasActive,statusCardWasActive,statusCaptured;
+        public Button InformationButton => information;
+        public Button InformationReturnButton => detailSheet?detailSheet.GetComponent<Button>():null;
         public bool SecondaryDetailsOpen => detailSheet && detailSheet.gameObject.activeSelf;
         public bool SecondaryDetailsBehindInformation => information && information.gameObject.activeInHierarchy && !status.gameObject.activeSelf;
         public bool UsesThreeHeroSpaces { get; private set; }

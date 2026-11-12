@@ -228,6 +228,20 @@ namespace Eldoria.BreachWatch.Editor
                     "March displayed original blue UI or failed to open");
                 CaptureMany(ui,folder,"march",shots,()=>military.IsShowing &&
                     military.HasApprovedTheme);
+                var marchManager=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+                var marchComposition=marchManager.VisibleRoot.GetComponent<BreachWatchMarchComposition>();
+                Need(marchComposition && !marchComposition.SecondaryDetailsOpen,
+                    "March must open with secondary details closed");
+                ClickActualMailControl(ui,marchComposition.InformationButton,false);
+                Need(marchComposition.SecondaryDetailsOpen,
+                    "Genuine information first-hit did not open actual army details");
+                string informationFolder=Path.Combine(folder,"MarchInformationEvidence");
+                Directory.CreateDirectory(informationFolder);
+                Capture(ui,informationFolder,"march-information",390,844,
+                    ()=>military.IsShowing && marchComposition.SecondaryDetailsOpen);
+                ClickActualMailControl(ui,marchComposition.InformationReturnButton,false);
+                Need(!marchComposition.SecondaryDetailsOpen && military.IsShowing,
+                    "Genuine details return did not preserve preparation");
                 military.Close();
 
                 var heroes=ui.RealHeroes;
@@ -519,7 +533,7 @@ namespace Eldoria.BreachWatch.Editor
             return total>0?good/(float)total:0f;
         }
 
-        static void ClickActualMailControl(BreachWatchHud ui,Button button)
+        static void ClickActualMailControl(BreachWatchHud ui,Button button,bool countMail=true)
         {
             Need(button && button.isActiveAndEnabled && button.IsInteractable(),
                 "Actual canonical mail control is unavailable");
@@ -551,7 +565,7 @@ namespace Eldoria.BreachWatch.Editor
                 var handler=ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject);
                 Need(ExecuteEvents.Execute<IPointerClickHandler>(handler,data,
                     ExecuteEvents.pointerClickHandler),"Actual mail first hit has no click handler");
-                mailboxFirstHitClicks++;
+                if(countMail)mailboxFirstHitClicks++;
                 Debug.Log("VIGILIA_ACTUAL_MAIL_FIRST_HIT control="+button.name+
                     "; hit="+hits[0].gameObject.name+"; handler="+handler.name);
             }
