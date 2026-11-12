@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T07:06:25.977Z",
+  "updated_at": "2026-11-12T07:11:29.998Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6808,14 +6808,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 106,
+      "ownership_revision": 107,
       "write_scope_released": false,
-      "phase": "EXCLUSIVE_NATIVE_LATEST_ACTIVE_HALL_AND_REAL_MAIL_PROOF",
-      "next": "Freeze exact requested head; verify48actualPNGs, zeroHallglyphGPUgutter, 2actualmailfirsthits andgenuineAB. Release aftercleanexit to readyT181d558, thenR187whenUIcertificateavailable. No art/main approval.",
+      "phase": "ACTUAL_NATIVE48_REAL_MAIL_AND_HALL_PASS_VISUAL_REVIEW_PENDING",
+      "next": "CPUinspectactualnewHall/phoneHUD thenownerreviewbeforemain. R187nowmaypinexact92596b+43172857546 afterTnextturn, notAF.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T07:06:25.977Z",
@@ -7115,7 +7113,7 @@
         "mail_empty_changed_pixels_900x1600": 82403,
         "mail_empty_changed_pixels_390x844": 16513
       },
-      "runner_release_basis": "Exclusive native43164446160 exact37db157d2a3bad4d994425c980885fc5bd488d72 failed at actual1600x900 Hall intro 2219 GPU glyph pixels inside 14px tabs gutter; 8 authentic HUD shots PASS, destination aborted before 2 real mailbox clicks, not a full Unity PASS. 87 tracked inputs preserved refs/eldoria-native-preserved/43164446160-1 via Git, editor clean exit and artifact13919456713 retained. Two failed native images proved unchanged visible Hall; root cause old inactive canonical subtree targeted due deferred Destroy. New source a2f3fc59f1d6516efd925dd788bf7056e7be8603 fixes active-subtree selection and band orientation; source CI43167261876 SUCCESS, Unity NOT yet verified. Release only Windows after one bounded failed native; no automatic relaunch, no art/main/phone approval.",
+      "runner_release_basis": "Exactnative43172857546 on92596b PASS48currentPNGs,2realmailfirsthit controls, HallGPUgutter check, immutableinputs/save, genuinevisualABsuccess. Artifact13922469493SHA5059cc9bcf551a58938cc65144b241f1017bf92098077bcf4b694fe16298b301. Humanartreviewpending/no main.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7142,7 +7140,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T06:22:00.403Z",
+      "runner_released_at": "2026-11-12T07:11:29.998Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7156,12 +7154,10 @@
       "previous_owner": "chatgpt-pr173-complete-ui-migration-20261111",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_after_clean_native_success",
         "owner": "chatgpt-central-art-execution-20261111",
-        "ownership_revision": 106,
-        "source": "a2f3fc59f1d6516efd925dd788bf7056e7be8603",
-        "source_ci_run": 43167261876,
-        "claimed_at": "2026-11-12T07:06:25.977Z"
+        "ownership_revision": 107,
+        "last_native_run": 43172857546
       }
     },
     {
@@ -8065,7 +8061,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 67,
+      "ownership_revision": 68,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8085,11 +8081,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "OFF_PC_STUDIO_GPU_VISIBILITY_DIAGNOSIS_NO_ART_PASS",
+      "phase": "EXCLUSIVE_RESERVED_LAYER_FIXED_ACTUAL_STUDIO_NATIVE",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Ready bounded studio lot afterUI cleanexit: d558 has actual sourceCI success and retains failed original GPU readback before assertions. No loweredpixelthreshold/approval.",
+      "next": "Onebounded20citylot, actualBastion8protected+sceneRestore+perimeterproofs; releaseR187aftercleanexit. RetainfailedGPUfullpixelsbeforeassertifstillfailing.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8146,9 +8144,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T05:53:52.678Z",
       "runner_release_basis": "Native43162955876 source0a7b completedfailurefirst1600x900realGPUlitgate198/2304=8.6%,60originalcolorbins. Actualstudio first source-layers/lights/ambient/fogrestoration checks passed beforepixelgate, no artapproval. Preserveartifact13918554048 SHA77ddf103462f881f4c03d486d8a91f1aeccd171c6e7fb25bc1d2bb100dd45d8d. InspectactualGPUreadback and original ROI before changing method/lighting; do notlowerthreshold.",
-      "runner_claimed_at": "2026-11-12T05:40:02.286Z",
+      "runner_claimed_at": "2026-11-12T07:11:29.998Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "NextfairturnafterUIrealHallfailurecleanexit. Source4e9052ba36ea208b5b8696e87acd42c84a57811f CI43162697051/43162692252SUCCESS153406rules247gateway20Roslyn10realGitpreservation. Majorartmethodpivot:actualbuiltmesh isolatedstudio with source layers/lights/ambient/fogrestored, no replacementarchitecture.",
+      "runner_claim_basis": "Fairpreparedsuccessor afterUI48+ABcleanexit. d558reservedLayer31fix/additionalURPlightData andexactfailedGPUreadback validatedsource43164737378/43164731128. No thresholds lowered.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
@@ -8249,15 +8247,11 @@
       "previous_owner": "chatgpt-daily-treasures-20261108",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "ready_waiting_current_owner",
+        "status": "claimed",
         "owner": "chatgpt-central-treasures-art-20261111",
-        "ownership_revision": 67,
+        "ownership_revision": 68,
         "source": "d558fddc2842c6175662f8bc189619a9ac1a00bc",
-        "source_ci_runs": [
-          43164737378,
-          43164731128
-        ],
-        "method": "excludeReservedPreviewLayer31+actualFailedGPUReadback+unchangedpixelgates"
+        "claimed_at": "2026-11-12T07:11:29.998Z"
       }
     },
     {
@@ -18467,6 +18461,14 @@
       "event": "central_resume_real_ready_UI_native_then_reserved_layer_studio",
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "source": "a2f3fc59f1d6516efd925dd788bf7056e7be8603"
+    },
+    {
+      "at": "2026-11-12T07:11:29.998Z",
+      "event": "central_UI_actual48_mailHall_AB_PASS_to_reserved_layer_studio",
+      "from": "eldoria-forja-oscura-visual-proof-20261107",
+      "to": "eldoria-daily-treasures-20261108",
+      "verified_ui_source": "92596b1550fcb2722fb582639bc05c24a7c6a7a8",
+      "verified_ui_run": 43172857546
     }
   ],
   "owner_specific_pauses": [
