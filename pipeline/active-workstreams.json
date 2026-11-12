@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T11:07:29.404Z",
+  "updated_at": "2026-11-12T11:13:09.868Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 39,
+      "ownership_revision": 40,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "OWNER_SQUARE_INVENTORY_REAL_MAIL_ATTACHMENTS_NATIVE_PENDING",
+      "phase": "OWNER_SQUARE_CELLS_REAL_ATTACHMENTS_NATIVE20_52CLICKS_PASS",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -163,10 +161,10 @@
         "claimed_at": "2026-11-12T08:57:50.046Z"
       },
       "runner_claimed_at": "2026-11-12T11:07:29.404Z",
-      "runner_released_at": "2026-11-12T10:12:42.285Z",
+      "runner_released_at": "2026-11-12T11:13:09.868Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion.",
       "runner_claim_basis": "Native17343205758489 clean complete; source R43206022041 SUCCESS. Pin verified UI445a; no competing Windows holder.",
-      "runner_release_basis": "Actual12feb native43197702980SUCCESS20/52 with everyquantityglyph rendered, truthful rewardarchive, exact245originalsrestored. All20PNGdownloadhashdimensionverified; desktopactualamount100/1K/10K/120 visuallyvisible.",
+      "runner_release_basis": "Actual3164a native43206918009 SUCCESS20 images52 genuineclicks; explicit renderer fixed actual attachment lifecycle. All245 originals restored with no nativeprocess. Artownerreview pending.",
       "last_native": {
         "run": 43197702980,
         "head": "12feb16d60d2e464e7954cd34c56efafd7f8e321",
@@ -8125,7 +8123,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 81,
+      "ownership_revision": 82,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8145,9 +8143,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "COHERENT_SCENERY_VISIBLE_CONTROLS92_REVIEWABLE_ART_CANDIDATE",
+      "phase": "OWNER_SCOUTS_AUTHORED_MOTION_NATIVE_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
       "next": "Prepare byte-identical original ceremony/coffer ownerreview offPC. No tinyfurtherpaintingloops; sourcecoherence/controlfixes nowrealnativeverified. No mainart untilownerreview; currentcityBastioncontextactualbuiltgeometry preserved.",
       "art_production_routing": "required",
@@ -8206,9 +8206,9 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T10:08:23.771Z",
       "runner_release_basis": "Actualf081 native43197044742+independentaudit success92PNG; all92downloadedhashverified. Lyra/scouts390 visually inspected: singlecontinuoussetting and visibleContinue/Close; actualGPUcontrolsproof passed.",
-      "runner_claimed_at": "2026-11-12T10:04:03.679Z",
+      "runner_claimed_at": "2026-11-12T11:13:09.868Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
-      "runner_claim_basis": "R010f native43196427281 clean245 restored; T2ef sourceCI43195917821/43195910171 bothsuccess. Actualsinglecropimages revealedburiedbuttons, nowexistingactionsraised andactualGPUcontrolvisibilitychecks added.",
+      "runner_claim_basis": "R43206918009 clean complete; T source43206259413/43206249576 pass; owner requests evaluating scouts in motion. Capture original15fps timeline samples without awarding new events.",
       "last_native_execution": {
         "run_id": 43113140040,
         "sha": "952a726fa7e0c23cfdc64e5def302ccdd38298f7",
