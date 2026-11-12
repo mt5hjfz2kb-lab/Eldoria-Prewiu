@@ -235,7 +235,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         public void Open()
         {
-            if(!panel||!gateway||!Unobstructed())return;
+            if(!panel||gateway==null||!Unobstructed())return;
             closeMail?.Invoke();
             panel.gameObject.SetActive(true);panel.SetAsLastSibling();
             page=0;
@@ -346,3 +346,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

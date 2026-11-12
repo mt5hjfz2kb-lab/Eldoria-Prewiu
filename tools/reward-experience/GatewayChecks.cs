@@ -305,6 +305,39 @@ for(int threshold=1;threshold<=80;threshold++){
       settled.ResourceRewards.Packets.Where(p=>p.Kind=="food").Sum(p=>p.Amount)==expected.Food,
   "UTC packet amounts match actually claimed streak at threshold "+threshold);
 }
+// Real offline march-return saves: only nodes and actual animal hunts
+// credit directly. Combat packages require explicit claim, then use.
+foreach(var target in new[]{"forest-valoria","quarry-valoria","meat-valoria","hunt-boar","hunt-wolf","region1:boar:1","engendro-valoria","corrupt-scout","ash-stalker","region1:spawnling:1"})
+{
+ bool direct=target=="forest-valoria"||target=="quarry-valoria"||target=="meat-valoria"||target.StartsWith("hunt-")||target=="region1:boar:1";
+ long due=clock.UtcTicks-TimeSpan.FromMinutes(5).Ticks;
+ string receipt="return:march-main:"+due;
+ var seed=new PlayerState();
+ seed.March=new MarchState{TargetId=target,Phase="returning",PhaseEndsUtcTicks=due,PendingWood=17,PendingStone=13,PendingFood=11};
+ if(target.StartsWith("region1:"))seed.WorldCreatureLocations.Add(new WorldCreatureLocation{TargetId=target,CreatureKind=target.Contains("boar")?"boar":"spawnling",Generation=1,Level=1,DefeatedUtcTicks=due-TimeSpan.FromSeconds(10).Ticks,RespawnUtcTicks=clock.UtcTicks+TimeSpan.FromHours(1).Ticks});
+ int w=seed.Resources.Wood,st=seed.Resources.Stone,f=seed.Resources.Food;
+ var saved=new JsonStore(seed);var g=new LocalGateway(clock,saved);g.Advance();var returned=g.Snapshot();
+ Need(returned.March.Phase=="idle"&&returned.CompletedTaskIds.Contains(receipt),target+" actual offline return completed");
+ Need(returned.Resources.Wood==w+(direct?17:0)&&returned.Resources.Stone==st+(direct?13:0)&&returned.Resources.Food==f+(direct?11:0),target+" exact approved direct-versus-packet routing");
+ var packets=returned.ResourceRewards.Packets.Where(x=>x.MailEventId==receipt).ToList();
+ Need(packets.Count==(direct?0:3),target+" exact return reward components");
+ Need(returned.Mailbox.Messages.Count(x=>x.EventId==receipt)==1,target+" one real return letter");
+ g=new LocalGateway(clock,saved);g.Advance();
+ Need(g.Snapshot().ResourceRewards.Packets.Count(x=>x.MailEventId==receipt)==packets.Count,target+" JSON reload no duplicate receipt");
+ if(!direct)
+ {
+  Need(packets.All(x=>!x.Collected&&!x.Used&&x.Origin=="combat"),target+" combat packets locked, no premature collection");
+  Need(AttentionCueRules.At(returned.RewardAttention,"mail")==AttentionLevel.ActionReady,target+" actual pending claim attention");
+  Need(Send(g,"read-"+target,"MailRead",receipt).Ok,target+" real mail read accepted");
+  Need(g.Snapshot().Resources.Wood==w&&!g.Snapshot().ResourceRewards.Packets.First(x=>x.MailEventId==receipt).Collected,target+" reading is not reward collection");
+  Need(Send(g,"claim-"+target,ResourceRewardCommands.ClaimMail,receipt).Ok,target+" actual combat reward claim");
+  Need(g.Snapshot().Resources.Wood==w&&g.Snapshot().ResourceRewards.Packets.Where(x=>x.MailEventId==receipt).All(x=>x.Collected&&!x.Used),target+" claim moves to bag without spending");
+  g=new LocalGateway(clock,saved);
+  Need(Send(g,"use-"+target,ResourceRewardCommands.UsePacket,receipt+":wood").Ok,target+" actual one packet use after reload");
+  Need(g.Snapshot().Resources.Wood==w+17&&g.Snapshot().Resources.Stone==st&&g.Snapshot().Resources.Food==f,target+" use credits only exact wood amount");
+  Need(!Send(g,"reuse-"+target,ResourceRewardCommands.UsePacket,receipt+":wood").Ok,target+" no reused combat packet");
+ }
+}
 Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
 sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
 sealed class JsonStore:IStateStore{
@@ -319,3 +352,4 @@ sealed class RolloverClock:IClock{
  public RolloverClock(long before,long after,int threshold){this.before=before;this.after=after;this.threshold=threshold;}
  public long UtcTicks=>++reads<=threshold?before:after;
 }
+

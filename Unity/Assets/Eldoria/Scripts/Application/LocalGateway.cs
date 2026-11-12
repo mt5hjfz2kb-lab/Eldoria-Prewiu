@@ -155,6 +155,18 @@ namespace Eldoria.Application
         }
         bool IsWoodTarget(string id)=>ResourceKind(state,id)=="wood";
         bool IsStoneTarget(string id)=>ResourceKind(state,id)=="stone";
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+        bool DirectResourceReturn(string targetId)
+        {
+            if(IsWoodTarget(targetId)||IsStoneTarget(targetId)||targetId=="meat-valoria"||
+               targetId=="hunt-boar"||targetId=="hunt-wolf")return true;
+            // Identify the actual saved creature family, never infer "hunt"
+            // from an enemy's name or from whether its battle was automatic.
+            var creature=Creature(state,targetId);
+            return creature!=null && creature.CreatureKind=="boar";
+        }
+#endif
+
         void SetResourceRemaining(string id,int amount)
         {
             if(id=="forest-valoria")state.ForestRemaining=amount;
@@ -1107,17 +1119,49 @@ namespace Eldoria.Application
                     string id = "return:" + m.MarchId + ":" + due;
                     if (!state.CompletedTaskIds.Contains(id))
                     {
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                        // Nodes and actual animal hunts remain direct collection.
+                        // Enemy battles are consumables, even when the march
+                        // completed offline. Receive/read/claim never spend them.
+                        bool hasReward=m.PendingFood>0||m.PendingWood>0||m.PendingStone>0;
+                        bool packetReward=hasReward && !DirectResourceReturn(m.TargetId);
+                        ResourceRewardInventory returnedInventory=null;
+                        if(packetReward)
+                        {
+                            returnedInventory=state.ResourceRewards.Copy();
+                            if(state.Mailbox.ReceivedEventIds.Contains(id) ||
+                               state.Mailbox.Messages.Exists(x=>x!=null&&x.EventId==id) ||
+                               !ResourceRewardRules.TryIssueBundle(returnedInventory,
+                                  id,"combat",m.PendingWood,m.PendingStone,m.PendingFood,id))
+                                throw new InvalidOperationException("March reward receipt conflicts with pending return: "+id);
+                        }
+                        if(returnedInventory!=null)state.ResourceRewards=returnedInventory;
+                        else
+#endif
+                        {
+                            state.Resources.Food += m.PendingFood;
+                            state.Resources.Wood += m.PendingWood;
+                            state.Resources.Stone += m.PendingStone;
+                        }
                         state.CompletedTaskIds.Add(id);
-                        state.Resources.Food += m.PendingFood;
-                        state.Resources.Wood += m.PendingWood;
-                        state.Resources.Stone += m.PendingStone;
                         if(m.PendingFood>0 || m.PendingWood>0 || m.PendingStone>0)
                             state.Mailbox.Receive(new EldoriaV41Message {
                                 EventId=id,Category="recompensas",Type="march",
                                 Title="Regreso de "+ReceiptOrigin(m.TargetId),
-                                Subtitle="Ya recibidos: "+m.PendingWood+" madera · "+m.PendingStone+" piedra · "+m.PendingFood+" comida",
+                                Subtitle=
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                                    (packetReward?"Paquetes por reclamar para tu mochila: ":"Ya recibidos: ")+
+#else
+                                    "Ya recibidos: "+
+#endif
+                                    m.PendingWood+" madera · "+m.PendingStone+" piedra · "+m.PendingFood+" comida",
                                 RewardReceiptId=id,OccurredAtUtcTicks=due
                             });
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+                        if(packetReward)
+                            AttentionCueRules.Signal(state.RewardAttention,
+                                "mail-reward:"+id,"mail",AttentionLevel.ActionReady);
+#endif
                         if (IsWoodTarget(m.TargetId) && m.PendingWood > 0)
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
@@ -1527,5 +1571,6 @@ namespace Eldoria.Application
         private CommandResult Fail(string reason) => new CommandResult(false, reason, state.Revision);
     }
 }
+
 
 

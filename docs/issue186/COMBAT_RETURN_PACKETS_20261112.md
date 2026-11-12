@@ -1,0 +1,9 @@
+# Combat return rewards follow actual mail → bag → use
+
+Observed in the real LocalGateway: every returning march directly credited pending resources, including non-hunting enemy battles. This contradicted #186. Node collection, animal hunting and building production are the only direct-credit sources.
+
+Implemented under the existing resource feature gate: identify actual node targets and saved boar creature family plus the established hunt-boar/hunt-wolf/meat-valoria targets. Preserve their direct collection. Other rewarded returns issue a copied, atomic resource bundle linked to the existing stable return event. The existing real return letter becomes claimable; its summary distinguishes pending packets from resources already received. Claiming collects into bag; using independently credits the exact packet amount. Actual pending-claim attention is retained. No extra message, Canvas, save field or receipt timing is invented. Pending return tasks and resource bundles save through the original gateway commit.
+
+Before state mutation, refuse a pre-existing conflicting return letter/receipt. Original source feature-disabled semantics remain; no reward amount or battle result changes.
+
+Validation: real compiled Gateway.Smoke with the exact current canonical domain sources passes475checks (389existing +86new). Ten actual overdue-return fixtures cover original wood/stone nodes, meat, two chapter hunts, saved renewable boar, story scout/engendro, ash-stalker and renewable spawnling. Verify exact wallet routing, one real return letter, locked component amounts, actual mail read/claim/use commands, JSON reload and used-item refusal. This is real domain/save execution, not Unity rendering, mobile gameplay or artistic approval. Existing remaining producers and actual bag/HUD/tutorial controls still require completion and native evidence.
