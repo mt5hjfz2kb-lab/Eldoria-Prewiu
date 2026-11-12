@@ -616,11 +616,10 @@ namespace Eldoria.DailyTreasures.Editor
                 "Original milestone text overlaps the real Skip finger target");
             if(expected.Kind==DailyTreasureStageKind.Bastion)
             {
-                var theatre=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
                 Need(painted.anchoredPosition.sqrMagnitude<1.21f &&
-                     Mathf.Abs(painted.rect.width-(theatre.Width-25f))<1.1f &&
-                     Mathf.Abs(painted.rect.height-(theatre.Height-28f))<1.1f,
-                     "Real Bastion must fill one continuous theatre, never an inset photo");
+                     Mathf.Abs(painted.rect.width-width)<1.1f &&
+                     Mathf.Abs(painted.rect.height-height)<1.1f,
+                     "Real Bastion must cover the whole active viewport without a second camera at its edges");
             }
             else
                 Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&

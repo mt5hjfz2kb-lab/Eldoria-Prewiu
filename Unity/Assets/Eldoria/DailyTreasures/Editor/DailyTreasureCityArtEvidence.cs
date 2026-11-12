@@ -284,8 +284,7 @@ namespace Eldoria.DailyTreasures.Editor
         static void RequireBastionApertureAspect(Texture texture,
             int width,int height,string phase)
         {
-            var frame=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
-            float expected=(frame.Width-25f)/(frame.Height-28f);
+            float expected=width/(float)height;
             Require(texture && Mathf.Abs((float)texture.width/texture.height-expected)<.01f,
                 "Bastion GPU lens mismatches actual reserved picture aperture: "+phase);
         }
@@ -310,6 +309,9 @@ namespace Eldoria.DailyTreasures.Editor
             var uv=picture.uvRect;
             float imageX=Mathf.Min(a.x,b.x),imageY=shot.height-Mathf.Max(a.y,b.y);
             float imageW=Mathf.Abs(b.x-a.x),imageH=Mathf.Abs(b.y-a.y);
+            Require(Mathf.Abs(imageX)<1.5f && Mathf.Abs(imageY)<1.5f &&
+                Mathf.Abs(imageW-shot.width)<1.5f && Mathf.Abs(imageH-shot.height)<1.5f,
+                "Actual single Bastion picture does not cover the full captured viewport");
             shot.subjectX=imageX+(projected.xMin-uv.x)/uv.width*imageW;
             shot.subjectY=imageY+(1f-(projected.yMax-uv.y)/uv.height)*imageH;
             shot.subjectW=projected.width/uv.width*imageW;

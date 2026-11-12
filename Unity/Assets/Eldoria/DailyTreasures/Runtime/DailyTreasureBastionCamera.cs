@@ -261,13 +261,15 @@ namespace Eldoria.DailyTreasures
             // built subject is placed inside the protected caption-free area.
             var stage=DailyTreasureStageDirection.Compose(
                 "milestone:bastion:camera",panelWidth,panelHeight);
-            var frame=DailyTreasureStageDirection.NarrativeTheatreFrame(panelWidth,panelHeight);
-            float photoWidth=frame.Width-25f,photoHeight=frame.Height-28f;
+            float photoWidth=panelWidth,photoHeight=panelHeight;
             float screenAspect=photoWidth/Mathf.Max(1f,photoHeight);
             int height=portrait?(panelWidth>=650f?1152:1024):
                 (panelWidth>=950f?720:540);
             int width=Mathf.Clamp(Mathf.RoundToInt(
-                height*screenAspect),500,1360);
+                height*screenAspect),64,1360);
+            // Bound both RT dimensions as a pair, preserving the actual
+            // full-viewport lens after the previous minimum width is removed.
+            height=Mathf.Clamp(Mathf.RoundToInt(width/screenAspect),64,1152);
             RenderTexture result=null,working=null;
             Camera camera=null;
             GameObject cameraObject=null,lightObject=null;

@@ -404,13 +404,16 @@ assert.match(realCamera,/height\*screenAspect/);
 assert.match(realCamera,/Mathf.Clamp\(Mathf.RoundToInt/);
 for(const [w,h,fw,fh] of [[390,844,366,700],[844,390,740,370],
                            [900,1600,620,1060],[1600,900,1120,640]]){
-  const aspect=(fw-25)/(fh-28),portrait=h>w;
-  const outH=portrait?(w>=650?1152:1024):(w>=950?720:540);
-  const outW=Math.max(500,Math.min(1360,Math.round(outH*aspect)));
+  const aspect=w/h,portrait=h>w;
+  let outH=portrait?(w>=650?1152:1024):(w>=950?720:540);
+  const outW=Math.max(64,Math.min(1360,Math.round(outH*aspect)));
+  outH=Math.max(64,Math.min(1152,Math.round(outW/aspect)));
   assert.ok(Math.abs(outW/outH-aspect)<.025,
     'Original 3D Bastion footage would distort at '+w+'x'+h);
 }
-console.log('PASS real Bastion 3D render resolution follows portrait/landscape theatre');
+assert.match(realCamera,/float photoWidth=panelWidth,photoHeight=panelHeight/);
+assert.match(panel,/0f,0f,w,h\);/);
+console.log('PASS single real Bastion lens covers the full viewport without a competing outer city view');
 
 // Source causal art fallback: an unloaded/newly building Bastion must remain
 // the real visible CITY, not an empty black fake architecture. The existing

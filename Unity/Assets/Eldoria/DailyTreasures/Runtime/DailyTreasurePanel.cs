@@ -1403,8 +1403,7 @@ namespace Eldoria.DailyTreasures
             if(currentStage!=DailyTreasureStageKind.Bastion ||
                !ceremony || !ceremony.gameObject.activeSelf ||
                !capturedBastionScene)return;
-            var layout=DailyTreasureStageDirection.NarrativeTheatreFrame(width,height);
-            float requiredAspect=(layout.Width-25f)/Mathf.Max(1f,layout.Height-28f);
+            float requiredAspect=width/Mathf.Max(1f,height);
             float renderedAspect=(float)capturedBastionScene.width/
                 Mathf.Max(1,capturedBastionScene.height);
             if(Mathf.Abs(requiredAspect-renderedAspect)<.01f)return;
@@ -1855,13 +1854,14 @@ namespace Eldoria.DailyTreasures
             {
                 if(currentStage==DailyTreasureStageKind.Bastion)
                 {
-                    // A SINGLE authentic 3D take fills the theatre. The lens
-                    // already placed its original building inside stage.Scene;
-                    // no inset picture or duplicate city behind its caption.
+                    // ONE authentic 3D take fills the entire active viewport.
+                    // Drawing beyond the unmasked ceremony's inner frame
+                    // covers its old border and every competing city view.
+                    // The original built subject still stays in stage.Scene.
                     Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
-                        0f,0f,panelW-25f,panelH-28f);
+                        0f,0f,w,h);
                     Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
-                        0f,0f,panelW-25f,panelH-28f);
+                        0f,0f,w,h);
                 }
                 else
                 {

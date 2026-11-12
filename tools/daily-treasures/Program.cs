@@ -408,7 +408,7 @@ internal static class Program
                         var corners=new DailyTreasureFrustumPoint[8];int ci=0;
                         for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)for(int z=-1;z<=1;z+=2)
                             corners[ci++]=new DailyTreasureFrustumPoint(size.Item1*x,size.Item2*y,size.Item3*z);
-                        float photoW=width-25f,photoH=height-28f;
+                        float photoW=device.Item1,photoH=device.Item2;
                         float ty=(float)Math.Tan(38f*Math.PI/360f),tx=ty*photoW/photoH;
                         var placement=DailyTreasureStageDirection.FitBuiltBastion(
                             stage,photoW,photoH,tx,ty,corners);
