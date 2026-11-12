@@ -777,6 +777,16 @@ jobs:
             & git -C $root remote add origin $url
           }
           if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
+          # Preserve existing private Unity inputs before any source switch.
+          # Unknown code/settings are archived and refused; never force checkout.
+          $preserved=Join-Path $env:RUNNER_TEMP ('breachwatch-preserved-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          $helper=Join-Path $env:RUNNER_TEMP ('breachwatch-preserve-helper-'+$env:GITHUB_RUN_ID+'.ps1')
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='vigilia-native-input-preservation'}
+          $pinned="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/breach-watch/Preserve-OwnedNativeInputState.ps1?ref=$env:GITHUB_SHA"
+          $saved=Invoke-RestMethod -Uri $pinned -Headers $headers
+          if($saved.encoding -ne 'base64' -or -not $saved.content){throw 'Pinned input-preservation helper unavailable'}
+          [IO.File]::WriteAllBytes($helper,[Convert]::FromBase64String($saved.content))
+          & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
           & git -C $root config core.sparseCheckout true
           & git -C $root config core.sparseCheckoutCone false
           $patterns=@('/Unity/**','/tools/breach-watch/**')
@@ -788,7 +798,7 @@ jobs:
           $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
           & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
           if($LASTEXITCODE){throw 'Git source fetch failed'}
-          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --force FETCH_HEAD
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
           if($LASTEXITCODE){throw 'Git source checkout failed'}
           if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){throw 'Source commit mismatch'}
           foreach($required in @(
@@ -894,6 +904,7 @@ jobs:
              $mailReport.status -ne 'VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING' -or
              $mailReport.artworkApproved -or -not $mailReport.probeOnly -or
              -not $mailReport.saveUnchanged -or
+             $mailReport.actualMailboxFirstHitClicks -ne 2 -or
              @($mailReport.screens).Count -ne 4){
              throw 'Populated mail report missing or falsely claims real saved message/art approval'
           }
@@ -920,6 +931,7 @@ jobs:
             ${{ env.BW_SOURCE }}/Unity/BreachWatchDestinationEvidence/**
             ${{ runner.temp }}/breachwatch-native.log
             ${{ runner.temp }}/breachwatch-destinations.log
+            ${{ runner.temp }}/breachwatch-preserved-*/**
           if-no-files-found: warn
           retention-days: 21
 

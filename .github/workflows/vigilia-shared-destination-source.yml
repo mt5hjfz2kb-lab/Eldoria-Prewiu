@@ -4,6 +4,9 @@ on:
     branches: [feature/forja-oscura-native-proof-20261107]
     paths:
       - '.github/workflows/vigilia-shared-destination-source.yml'
+      - 'tools/breach-watch/*OwnedNativeInput*.ps1'
+      - '.github/workflows/breach-watch-native.yml'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs'
       - 'tools/breach-watch/validate_shared_destination_theme.py'
       - 'tools/breach-watch/validate_mailbox_theme.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png'
@@ -57,6 +60,7 @@ jobs:
             /tools/breach-watch/native_visual_ab_review.py
             /pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json
             /Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs
+            /tools/breach-watch/*OwnedNativeInput*.ps1
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
@@ -92,3 +96,14 @@ jobs:
           python3 tools/breach-watch/validate_march_composition.py
           python3 -m py_compile tools/breach-watch/native_visual_ab_review.py
           python3 -m json.tool pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json >/dev/null
+
+      - name: Verify real Git preservation, exact settings pins and unknown-edit refusal
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          foreach($script in @('tools/breach-watch/Preserve-OwnedNativeInputState.ps1','tools/breach-watch/Test-OwnedNativeInputPreservation.ps1')){
+            $tokens=$null;$errors=$null
+            [Management.Automation.Language.Parser]::ParseFile((Resolve-Path $script),[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count){throw ($errors|Out-String)}
+          }
+          & ./tools/breach-watch/Test-OwnedNativeInputPreservation.ps1
