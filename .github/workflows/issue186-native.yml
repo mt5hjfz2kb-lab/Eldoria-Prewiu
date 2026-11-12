@@ -17,6 +17,7 @@ jobs:
     outputs:
       native: ${{ steps.mode.outputs.native }}
       review: ${{ steps.mode.outputs.review }}
+      inspect: ${{ steps.mode.outputs.inspect }}
       review_run: ${{ steps.mode.outputs.review_run }}
       review_artifact: ${{ steps.mode.outputs.review_artifact }}
     steps:
@@ -36,11 +37,15 @@ jobs:
           saved=get(f"https://api.github.com/repos/{repo}/contents/tools/reward-experience/native-request.txt?ref={os.environ['GITHUB_SHA']}")
           lines=base64.b64decode(saved["content"]).decode().splitlines()
           request=dict(line.split("=",1) for line in lines if "=" in line and not line.startswith("#"))
-          if request.get("state")=="REVIEW_EXISTING_NATIVE_ARTIFACT":
+          if request.get("state") in ("REVIEW_EXISTING_NATIVE_ARTIFACT","INSPECT_EXISTING_NATIVE_ARTIFACT"):
               run=request["review_run_id"];artifact=request["review_artifact_id"]
               if not run.isdecimal() or not artifact.isdecimal():raise SystemExit("Invalid native artifact identity")
+              saved_artifact=get(f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact}")
+              if saved_artifact.get("workflow_run",{}).get("id")!=int(run) or saved_artifact.get("expired"):
+                  raise SystemExit("Artifact does not belong to the requested recorded run")
+              inspect=str(request.get("state")=="INSPECT_EXISTING_NATIVE_ARTIFACT").lower()
               with open(os.environ["GITHUB_OUTPUT"],"a") as f:
-                  f.write(f"native=false\nreview=true\nreview_run={run}\nreview_artifact={artifact}\n")
+                  f.write(f"native=false\nreview=true\ninspect={inspect}\nreview_run={run}\nreview_artifact={artifact}\n")
               print("EXISTING_NATIVE_ARTIFACT_REVIEW_ONLY; NO_WINDOWS_OR_UNITY")
               raise SystemExit(0)
           p=get(f"https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main")
@@ -244,7 +249,32 @@ jobs:
           repository: ${{ github.repository }}
           path: reviewed-native
           merge-multiple: true
+      - name: Inspect bounded existing reports without Windows or repository writes
+        if: needs.exclusive-preflight.outputs.inspect == 'true'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('reviewed-native')
+          for p in sorted(root.rglob('*')):
+              if not p.is_file() or p.suffix.lower() not in ('.json','.jsonl','.log','.txt'):continue
+              if p.stat().st_size>4000000:continue
+              text=p.read_text(errors='replace')
+              print('RECORDED_ARTIFACT_FILE',p.relative_to(root),'BYTES',p.stat().st_size)
+              if p.suffix=='.json':
+                  data=json.loads(text)
+                  if isinstance(data,dict):
+                      for key in ('samples','entrySamples'):
+                          if isinstance(data.get(key),list):
+                              items=data[key];data[key+'_count']=len(items)
+                              data[key]=items[-2:]
+                  print(json.dumps(data,ensure_ascii=False,indent=2)[:60000])
+              else:
+                  lines=text.splitlines()
+                  print('\n'.join(lines[-100:])[-30000:])
+          PY
       - name: Preserve exact native images only in released owned review branch
+        if: needs.exclusive-preflight.outputs.inspect != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 tools/reward-experience/native/copy_native_review.py
