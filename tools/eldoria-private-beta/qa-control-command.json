@@ -1,9 +1,14 @@
 {
   "schema": 1,
   "run_id": 43216879249,
-  "sequence": 22,
-  "action": "click_text",
-  "label": "Enviar expedición",
-  "proof_sha256": "fe506252bc299b41360f4a96edbc86eb482622047d3be8bf7803c4ff17a5daee",
-  "reason": "Fresh frame021 selects the actual2050power rock boar for second hunt; dispatch the confirmed2716power army."
+  "sequence": 23,
+  "action": "click_point",
+  "proof_sha256": "9d34c42569f403a8d1ea02334b9cacec4b3360d941fa0dfe9455e57cf49fb544",
+  "x": 211,
+  "y": 69,
+  "guard_texts": [
+    "BASTIÓN III • 3/5",
+    "Investiga la fisura"
+  ],
+  "reason": "Fresh frame022 records the second real victory and advances to the actual fissure investigation objective."
 }
