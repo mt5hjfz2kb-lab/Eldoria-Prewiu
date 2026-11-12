@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 8,
+  "sequence": 9,
   "action": "snapshot",
-  "proof_sha256": "28a2dc3fbfb41010657cc6a1d231e8c4a06013f65563529ebe58a9fe8a7df31d",
-  "reason": "Observe real elapsed Bastion IV upgrade progress while independent native and domain QA continue; no timer shortcut."
+  "proof_sha256": "3f2e65f6c3124dae0174665f4edd13491d00e606d9b44164e5bb4c9455b8d01e",
+  "reason": "Read the current actual city after the seven-minute construction progressed naturally alongside independent QA."
 }
