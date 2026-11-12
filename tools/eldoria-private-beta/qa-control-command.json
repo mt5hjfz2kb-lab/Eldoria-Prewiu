@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "run_id": 43245541625,
-  "sequence": 10,
-  "action": "snapshot",
-  "proof_sha256": "a67f6bc5021f74aed63c7ce10eec6fdadd5361ade10181b8f2c3c1a02ffd7f02",
-  "reason": "Frame009 proves the actual paid quarry upgrade with08seconds remaining; observe natural completion and continued B5complete state without accelerators."
+  "sequence": 11,
+  "action": "click_point",
+  "proof_sha256": "3a7248be5d544342f20ffb7ee154e9e7f0f169096d248b2097e5529ea766b55d",
+  "x": 366,
+  "y": 642,
+  "guard_texts": [
+    "Cantera",
+    "0,15 piedra/s → Al mejorar: 0,25 piedra/s"
+  ],
+  "reason": "Frame010 confirms normal quarry upgrade completion through its increased0.15stone per second and next240wood156stone offer; close its sheet without another upgrade."
 }
