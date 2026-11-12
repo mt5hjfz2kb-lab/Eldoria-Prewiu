@@ -1,7 +1,7 @@
 name: Eldoria actual public owner journey and opt-in telemetry — desktop WebKit, no deployment
 on:
   push:
-    branches: [feature/eldoria-private-beta-i-v-20261107]
+    branches: [qa/eldoria-earned-campaign-20261112]
     paths: ['.github/workflows/eldoria-beta-copyadd-live-webkit.yml']
 permissions:
   contents: read
@@ -46,7 +46,7 @@ jobs:
           assert not p['published'] and not p['physical_iphone_verified'] and not p['external_testers_enabled']
           print('EXACT_UNPUBLISHED_144_ORIGINAL_FILES_NATIVE_STREAM_VERIFIED')
           PY
-      - name: Follow actual barracks training control and verify twenty normal timed recruits
+      - name: Continue exact earned campaign using visible unoccluded training labels
         env:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged

@@ -304,7 +304,8 @@ function processes(){
       report.publishedBarracksTrainingLabelMissing=true;write();
       await observeEntry(3,'actual-existing-barracks-training-click');
       commandRows=await readUi('actual-existing-training-destination');
-      if(!commandRows.some(r=>normalized(r.text)==='ENTRENAMIENTO'))
+      if(!commandRows.some(r=>normalized(r.text)==='ORDEN DE ENTRENAMIENTO')||
+         !commandRows.some(r=>normalized(r.text).includes('RECLUTAMIENTO DE TROPAS')))
         throw Error('EXISTING_BARRACKS_CONTROL_DID_NOT_OPEN_TRAINING');
       hits=commandRows.filter(r=>r.confidence>=.5&&trainingLabels.has(normalized(r.text)));
     }
@@ -322,12 +323,21 @@ function processes(){
     const completedText=completed.map(r=>normalized(r.text)).join(' ');
     if(!/SIN ENTRENAMIENTO ACTIVO/.test(completedText)||!(/DISPONIBLES T1\s+56/.test(completedText)))
       throw Error('ORDINARY_TWENTY_ARCHER_COMPLETION_NOT_VISIBLE '+completedText);
+    await readUi('actual-training-twenty-completed-visible');
     report.actualTraining={normalElapsedSeconds:(Date.now()-trainingStart)/1000,
-      accelerated:false,stateInjected:false,proof:'actual-training-twenty-after-normal-wait.png'};
-    const prepare=completed.filter(r=>r.confidence>=.5&&normalized(r.text)==='PREPARAR MARCHA');
-    if(prepare.length!==1)throw Error('ACTUAL_TRAINING_TO_MARCH_SWITCH_NOT_UNIQUE');
-    await page.mouse.click(prepare[0].x,prepare[0].y,{delay:150});
-    report.actualWorldUi.actions.push({text:prepare[0].text,x:prepare[0].x,y:prepare[0].y,ordinaryUiOnly:true});
+      accelerated:false,stateInjected:false,proof:'actual-training-twenty-completed-visible.png'};
+    const back=completed.filter(r=>r.confidence>=.5&&
+      ['VOLVER A LA CIUDAD','VOLVER A LA'].includes(normalized(r.text)));
+    if(back.length!==1)throw Error('ACTUAL_TRAINING_CITY_RETURN_NOT_UNIQUE '+JSON.stringify(back));
+    await page.mouse.click(back[0].x,back[0].y,{delay:150});
+    report.actualWorldUi.actions.push({text:back[0].text,x:back[0].x,y:back[0].y,
+      ordinaryUiOnly:true,source:'canonical visible two-line city return control'});
+    await observeEntry(4,'actual-training-city-return');
+    const cityRows=await drainVisibleNarrative('after-earned-training-real-city-return');
+    const cityText=cityRows.map(r=>normalized(r.text)).join(' ');
+    if(!/BASTION II/.test(cityText)||!/PREPARA.*CONFIRMA.*MARCHA/.test(cityText))
+      throw Error('ACTUAL_TRAINED_CITY_PREPARATION_OBJECTIVE_NOT_VISIBLE '+cityText);
+    await page.mouse.click(211,69,{delay:150});
     await observeEntry(4,'actual-preparation-objective-focus');
     await readUi('actual-preparation-next-screen');
     const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
