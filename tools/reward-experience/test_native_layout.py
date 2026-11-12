@@ -164,8 +164,8 @@ def verify():
         print(f"ISSUE186_LAYOUT_SOURCE_PASS {width}x{height} icon={d['icon']:.1f}px "
               f"4 tiers per resource row, safe CTA/title/alert boundaries")
     # A real UGUI raycast/click tests tap routing, NOT a completed gameplay
-    # claim. PR181 still owns LocalGateway: no genuine ClaimReward result is
-    # produced in this disposable art-only scene. The tutorial must therefore
+    # claim. Canonical gateway claims are tested separately: no real reward
+    # result is produced by this disposable art-only callback. Its guide must
     # remain pending until a REAL gateway command succeeds. Do not let source
     # gates contradict that contract or certify fake completion.
     root=Path(__file__).resolve().parents[2]
@@ -240,3 +240,4 @@ def verify():
 
 if __name__ == "__main__":
     verify()
+

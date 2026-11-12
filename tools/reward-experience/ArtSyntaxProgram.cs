@@ -10,6 +10,8 @@ var paths = new[]
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186ArtKit.cs",
     "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186ArtAudit.cs",
     "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEvidence.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeEventSystem.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Editor/Issue186NativeRaycaster.cs",
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/ResourceExperienceUiBridge.cs",
     "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs"
@@ -48,3 +50,4 @@ foreach (var file in paths)
 Console.WriteLine("ISSUE186_ROSLYN_SYNTAX_PASS: " + paths.Length +
     " actual domain, Unity runtime and UNITY_EDITOR sources; explicit Application namespace guard; NOT an actual Unity compilation");
 return 0;
+

@@ -152,7 +152,7 @@ namespace Eldoria.Issue186Art.Editor
                 var cam=SetupCamera(cameraGO,width,height,rt);
                 var canvasGO=new GameObject("Issue186 disposable Canvas",
                     typeof(RectTransform),typeof(Canvas),
-                    typeof(CanvasScaler),typeof(GraphicRaycaster));
+                    typeof(CanvasScaler),typeof(Issue186NativeRaycaster));
                 created.Add(canvasGO);
                 canvasGO.layer=UiLayer;
                 var canvas=canvasGO.GetComponent<Canvas>();
@@ -293,9 +293,17 @@ namespace Eldoria.Issue186Art.Editor
                 // so its visibility check can reject controls hidden by another
                 // raycasting canvas, not merely accept IsInteractable().
                 var evGO=new GameObject("Disposable event dispatch",
-                    typeof(EventSystem),typeof(StandaloneInputModule));
+                    typeof(Issue186NativeEventSystem));
                 created.Add(evGO);
                 var ev=evGO.GetComponent<EventSystem>();
+                int liveEventSystems=0;
+                foreach(var actual in UnityEngine.Object.FindObjectsByType<EventSystem>(
+                    FindObjectsInactive.Exclude,FindObjectsSortMode.None))
+                    if(actual && actual.isActiveAndEnabled)liveEventSystems++;
+                Need(liveEventSystems==1,"Disposable proof must own exactly one active real EventSystem");
+                EventSystem.current=ev;
+                Need(canvasGO.GetComponent<GraphicRaycaster>().isActiveAndEnabled,
+                    "Actual GraphicRaycaster lifecycle did not activate in the Editor fixture");
                 DrawActualUi(cam,rt);
                 Need(EventSystem.current==ev && ev.isActiveAndEnabled,
                     "Disposable real EventSystem is not the current active system");
@@ -521,3 +529,4 @@ namespace Eldoria.Issue186Art.Editor
     }
 }
 #endif
+
