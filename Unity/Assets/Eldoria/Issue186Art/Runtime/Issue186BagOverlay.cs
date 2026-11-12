@@ -63,7 +63,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool OpenOnCanvas(Canvas target)
         {
             if(!target||!target.isActiveAndEnabled||!panel||gateway==null||
-                !Unobstructed(true))return false;
+                target==hud.GetComponent<Canvas>()||!Unobstructed(true))return false;
             presentationCanvas=target;
             panel.SetParent(target.transform,false);
             panel.localScale=Vector3.one;
@@ -219,14 +219,16 @@ namespace Eldoria.UI.RoyalGold.V2
             hand.gameObject.SetActive(false);halo.gameObject.SetActive(false);
             panel.gameObject.SetActive(false);entry.gameObject.SetActive(false);
         }
-        bool Unobstructed(bool independentCanvas=false)
+        bool Unobstructed(bool externalRequest=false)
         {
-            // ChronicleLayout is the V2 footer geometry flag, not a modal.
-            // V2 sets it on startup even when Vigilia disables its Canvas;
-            // only the legacy bag entry should obey that layout restriction.
-            // Independent presentation still rejects every real modal/sheet.
+            // ChronicleLayout belongs to the suppressed legacy navigation.
+            // The optional host owns a separate, active canvas. Retain every
+            // real modal, narrative and destination gate on that presentation.
+            bool external=externalRequest||(presentationCanvas&&
+                presentationCanvas.isActiveAndEnabled&&hud&&
+                presentationCanvas!=hud.GetComponent<Canvas>());
             return hud && !hud.NarrativeOpen &&
-                (independentCanvas || !(hud.Navigation&&hud.Navigation.ChronicleLayout)) &&
+                !(hud.Navigation&&hud.Navigation.ChronicleLayout&&!external) &&
                 !(hud.Modal&&hud.Modal.gameObject.activeSelf) &&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) &&
                 !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false) &&
@@ -308,7 +310,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         public void Open()
         {
-            if(!panel||gateway==null||!Unobstructed(presentationCanvas!=null))return;
+            if(!panel||gateway==null||!Unobstructed())return;
             closeMail?.Invoke();
             panel.gameObject.SetActive(true);panel.SetAsLastSibling();
             page=0;
@@ -395,7 +397,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void Update()
         {
             if(!panel||!hud||bridge==null)return;
-            if(IsOpen&&(!Unobstructed(presentationCanvas!=null)||
+            if(IsOpen&&(!Unobstructed()||
                 (presentationCanvas&&!presentationCanvas.isActiveAndEnabled)))
                 {Close();return;}
             if(IsOpen&&(Mathf.Abs(panel.rect.width-priorWidth)>.5f||

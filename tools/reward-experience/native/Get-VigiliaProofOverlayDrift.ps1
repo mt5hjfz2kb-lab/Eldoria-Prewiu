@@ -15,7 +15,7 @@ function NoLinks([string]$p){
   }
 }
 function Owned([string]$rel){
-  if($rel -notmatch '^Assets/Eldoria/BreachWatch(/[^:..\\]+)*$' -and
+  if(-not $rel.StartsWith('Assets/Eldoria/BreachWatch/') -and
      $rel -ne 'Assets/Eldoria/BreachWatch.meta'){throw "Unowned drift path: $rel"}
   if($rel -match '(^|/)\.\.(/|$)|:|\\'){throw "Unsafe drift path: $rel"}
 }

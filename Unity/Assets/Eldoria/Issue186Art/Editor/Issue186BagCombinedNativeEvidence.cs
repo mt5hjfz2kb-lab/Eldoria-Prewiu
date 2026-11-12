@@ -140,8 +140,12 @@ namespace Eldoria.Issue186Art.Editor
             Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(
                 hits[0].gameObject)==button.gameObject,"Actual target is not frontmost: "+button.name+
                 "; first="+(hits.Count>0?hits[0].gameObject.name:"none"));
-            ExecuteEvents.Execute<IPointerClickHandler>(
-                hits[0].gameObject,data,ExecuteEvents.pointerClickHandler);clicks++;
+            // Match EventSystem routing to the first hit\'s click-handler ancestor.
+            var handler=ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject);
+            Need(ExecuteEvents.Execute<IPointerClickHandler>(
+                handler,data,ExecuteEvents.pointerClickHandler),"First hit has no click handler");clicks++;
+            Debug.Log("ISSUE186_ACTUAL_FIRST_HIT_CLICK target="+button.name+
+                "; hit="+hits[0].gameObject.name+"; handler="+handler.name);
         }
         static bool SessionRebound(ValoriaIntegratedWorld host)
         {
@@ -248,12 +252,13 @@ namespace Eldoria.Issue186Art.Editor
                     canvas.worldCamera=camera;RenderUi(ui,width,height);
                     var wallet=gateway.Snapshot().Resources;
                     Click(ButtonNamed(ui,"Resource 0"),camera,rt);
-                    Need(bag.IsOpen,"Actual resource capsule did not open saved bag; "+
-                        "V2Chronicle="+(host.Hud.Navigation&&host.Hud.Navigation.ChronicleLayout)+
-                        "; selected="+(host.Hud.SelectedBuildingId??"<null>")+
-                        "; modal="+(host.Hud.Modal&&host.Hud.Modal.gameObject.activeSelf)+
+                    Need(bag.IsOpen,"Actual resource capsule did not open saved bag; chronicle="+
+                        (host.Hud.Navigation&&host.Hud.Navigation.ChronicleLayout)+
+                        "; selected="+host.Hud.SelectedBuildingId+
                         "; narrative="+host.Hud.NarrativeOpen+
-                        "; activeIndependent="+canvas.isActiveAndEnabled);
+                        "; modal="+(host.Hud.Modal&&host.Hud.Modal.gameObject.activeSelf)+
+                        "; management="+(host.Hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)+
+                        "; retention="+(host.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false));
                     var panel=ui.GetComponentsInChildren<RectTransform>(true)
                         .Single(t=>t.name=="Issue186 saved resource bag");
                     Need(panel.parent==canvas.transform&&!host.Hud.GetComponent<Canvas>().enabled,
