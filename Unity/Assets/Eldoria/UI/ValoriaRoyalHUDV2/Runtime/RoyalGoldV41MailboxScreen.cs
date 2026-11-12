@@ -570,6 +570,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     {
                         var a=new RewardAttachment();
                         a.Root=Node("Mailbox / genuine reward attachment "+i,detailSheet);
+                        a.Root.gameObject.AddComponent<CanvasRenderer>();
                         var frame=a.Root.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
                         frame.DecorativeCorners=true;frame.Primary=false;frame.raycastTarget=false;
                         a.Icon=Node("Mailbox / original resource packet "+i,a.Root).gameObject.AddComponent<Image>();
