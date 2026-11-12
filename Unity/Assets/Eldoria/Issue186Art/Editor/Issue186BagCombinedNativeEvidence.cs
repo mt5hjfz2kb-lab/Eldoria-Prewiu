@@ -350,6 +350,12 @@ namespace Eldoria.Issue186Art.Editor
                         "Opening the actual letter claimed locked mail packets");
                     Need(bag.ClaimableMailCount()==1,
                         "Reading erased actual claimable rewards before collection");
+                    var visibleMailText=mailWindow.GetComponentsInChildren<Text>(false)
+                        .Where(t=>t && t.isActiveAndEnabled).Select(t=>t.text??"").ToArray();
+                    Need(visibleMailText.Any(t=>t.Contains("ARCHIVO REAL")) &&
+                         !visibleMailText.Any(t=>t=="RONDAS" || t=="VIDA RESTANTE" ||
+                             t.StartsWith("ENCUENTRO · ")),
+                        "An empty deserialized battle shell turned genuine reward mail into a fabricated combat report");
                     report.mailReadDoesNotClaim=true;
                     Photograph(camera,rt,"mail-read-unclaimed",width,height);
                     int beforeClaim=gateway.Snapshot().Resources.Wood;

@@ -780,9 +780,34 @@ namespace Eldoria.UI.RoyalGold.V2
             return !string.IsNullOrEmpty(reason)?reason:
                 battle!=null&&battle.Won?"Encuentro superado.":"No se registró victoria.";
         }
+        // JsonUtility can rehydrate an absent optional class as an entirely
+        // empty shell. Such a shell is not evidence of a battle: render the
+        // original message and reward receipt instead of inventing an enemy,
+        // defeat, zero troops/rounds or health. Preserve ANY recorded signal.
+        static EldoriaV41CombatRecord RecordedBattle(EldoriaV41Message message)
+        {
+            var b=message?.Battle;
+            if(b==null)return null;
+            bool empty=string.IsNullOrEmpty(b.TargetId) &&
+                string.IsNullOrEmpty(b.HeroId) && string.IsNullOrEmpty(b.Reason) &&
+                b.Troops==0 && b.PlayerPower==0 && b.EnemyPower==0 &&
+                b.Rounds==0 && b.RemainingHealth==0 && !b.Won &&
+                b.RewardWood==0 && b.RewardStone==0 && b.RewardFood==0 &&
+                (b.OwnRoster==null || b.OwnRoster.IsNonNegative && b.OwnRoster.Total==0) &&
+                string.IsNullOrEmpty(b.Outcome) && string.IsNullOrEmpty(b.PlayerComposition) &&
+                string.IsNullOrEmpty(b.ObservedAttrition) &&
+                string.IsNullOrEmpty(b.EnemyObservedResistance) &&
+                string.IsNullOrEmpty(b.ObservedTotalDamageDealt) &&
+                string.IsNullOrEmpty(b.ObservedTotalDamageReceived) &&
+                string.IsNullOrEmpty(b.OwnDamageByFamily) &&
+                string.IsNullOrEmpty(b.OwnReceivedByFamily) &&
+                string.IsNullOrEmpty(b.OwnRemainingByFamily);
+            return empty?null:b;
+        }
+
         void PresentReport(EldoriaV41Message selected)
         {
-            var battle=selected.Battle;
+            var battle=RecordedBattle(selected);
             bool scouting=battle==null&&selected.Type=="exploration";
             // Hunting records have no combat rounds/health. Showing 0 rounds
             // and 0% life under a victory heading falsely implies a battle.
@@ -922,7 +947,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     var msg=list[i];
                     messageLabels[i].color=msg.Read?
                         new Color(.26f,.22f,.18f):new Color(.11f,.08f,.045f);
-                    messageLabels[i].Put(msg.Battle!=null?TargetName(msg.Battle.TargetId):msg.Title);
+                    var recordedBattle=RecordedBattle(msg);
+                    messageLabels[i].Put(recordedBattle!=null?TargetName(recordedBattle.TargetId):msg.Title);
 #if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
                     Issue186ArtKit.BindAttention(messageUnreadDots[i],
                         HasPendingResourcePackets(s,msg.EventId)?AttentionLevel.ActionReady:
@@ -937,8 +963,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageSubtitles[i].color=msg.Read?
                         new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
                     messageDates[i].color=new Color(.38f,.31f,.24f);
-                    string preview=msg.Battle==null?msg.Subtitle:
-                        (msg.Battle.EffectiveOutcome=="draw"?"Empate ante ":msg.Battle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
+                    string preview=recordedBattle==null?msg.Subtitle:
+                        (recordedBattle.EffectiveOutcome=="draw"?"Empate ante ":recordedBattle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(recordedBattle.TargetId);
                     // Let the measured two-line row wrap; a fixed 22-character
                     // cut hid the encounter/stage on every narrow phone.
                     messageSubtitles[i].Put(preview);
