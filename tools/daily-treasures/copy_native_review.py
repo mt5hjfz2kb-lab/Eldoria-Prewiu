@@ -46,7 +46,9 @@ registry=json.loads(contents("pipeline/active-workstreams.json","main"))
 target="feature/eldoria-daily-treasures-20261108"
 owners=[w for w in registry["active"] if w["id"]=="eldoria-daily-treasures-20261108"]
 assert len(owners)==1 and owners[0]["owner"]=="chatgpt-central-treasures-art-20261111"
-assert "windows-runner-heavy" not in owners[0].get("resources",[]),"Target source remains frozen during native work"
+if "windows-runner-heavy" in owners[0].get("resources",[]):
+    print("NATIVE_ART_REVIEW_DEFERRED_TARGET_SOURCE_FROZEN; NO_WRITE_NO_APPROVAL")
+    raise SystemExit(0)
 pr=api("pulls/181")
 assert pr["state"]=="open" and pr["head"]["ref"]==target
 head=api("git/ref/heads/"+target)["object"]["sha"]
