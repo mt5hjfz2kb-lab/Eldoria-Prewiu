@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "run_id": 43231463013,
-  "sequence": 2,
-  "action": "click_text",
-  "proof_sha256": "09af0bfae1ef53a051babdabdfad59ebd280bbbd1e80ceae23c19eee5468905b",
-  "label": "CONTINUAR",
-  "reason": "Original resumed frame001 shows Aldric concluding Lyra's recruitment and a unique Continuar button."
+  "sequence": 3,
+  "action": "wait",
+  "proof_sha256": "c9538da9b798277321a0d5bd542f3f484e365074c3f118b8c3ef91087aea0a81",
+  "seconds": 3,
+  "reason": "Allow the actual recruitment chronicle to finish its typewriter before selecting its next observed action."
 }
