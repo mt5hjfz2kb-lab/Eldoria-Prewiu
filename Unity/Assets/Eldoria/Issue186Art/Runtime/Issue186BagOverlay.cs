@@ -32,16 +32,68 @@ namespace Eldoria.UI.RoyalGold.V2
         RectTransform entry, panel, header, rim;
         Text entryLabel, title, count, feedback;
         Image entryBadge, hand, halo;
-        Button back, prev, next;
+        Button back, prev, next, skipGuide;
+        Canvas presentationCanvas;
         ResourceUiSnapshot view;
         int page, perPage=4;
         float priorWidth,priorHeight,nextRefresh,nextGuide;
         public bool IsOpen=>panel&&panel.gameObject.activeSelf;
         public int PendingCount=>view?.Bag?.Count??0;
 
+        // Public presentation protocol: PR173 can host the existing saved bag
+        // on its actual canvas without referencing this optional assembly type.
+        public int NewPacketCount(string kind)
+        {
+            if(view?.Bag==null)return 0;
+            int total=0;
+            foreach(var item in view.Bag)
+                if(item.New&&(string.IsNullOrEmpty(kind)||item.Kind==kind))total++;
+            return total;
+        }
+        public int ClaimableMailCount()
+        {
+            if(view?.Mail==null)return 0;
+            int total=0;
+            foreach(var item in view.Mail)if(item.CanClaim)total++;
+            return total;
+        }
+        public bool OpenOnCanvas(Canvas target)
+        {
+            if(!target||!target.isActiveAndEnabled||!panel||gateway==null||
+                !Unobstructed())return false;
+            presentationCanvas=target;
+            panel.SetParent(target.transform,false);
+            panel.localScale=Vector3.one;
+            panel.anchorMin=Vector2.zero;panel.anchorMax=Vector2.one;
+            panel.offsetMin=panel.offsetMax=Vector2.zero;
+            Open();
+            return IsOpen;
+        }
+        public void RestorePresentation()
+        {
+            if(!panel)return;
+            panel.gameObject.SetActive(false);
+            if(hand)hand.gameObject.SetActive(false);
+            if(halo)halo.gameObject.SetActive(false);
+            presentationCanvas=null;
+            if(hud)
+            {
+                panel.SetParent(hud.transform,false);
+                panel.localScale=Vector3.one;
+                panel.anchorMin=Vector2.zero;panel.anchorMax=Vector2.one;
+                panel.offsetMin=panel.offsetMax=Vector2.zero;
+            }
+            Refresh();
+        }
+        void OnDestroy()
+        {
+            // The external host does not own this optional component's panel.
+            if(panel&&panel.parent!=transform)Destroy(panel.gameObject);
+        }
         static RectTransform Rect(string name,Transform parent)
         {
             var obj=new GameObject(name,typeof(RectTransform));
+            obj.layer=5; // UI camera culling must include every owned child.
             obj.transform.SetParent(parent,false);
             return (RectTransform)obj.transform;
         }
@@ -150,6 +202,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 ()=>Page(-1),out _);
             next=Action("Issue186 bag next",panel,"SIGUIENTE",
                 ()=>Page(1),out _);
+            skipGuide=Action("Issue186 dismiss first-use guidance",panel,
+                "OMITIR AYUDA",DismissGuide,out _);
             hand=Art(Rect("Issue186 authentic tutorial hand",panel),Color.white);
             halo=Art(Rect("Issue186 authentic tutorial halo",panel),Color.white);
             hand.rectTransform.sizeDelta=new Vector2(72f,72f);
@@ -173,7 +227,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float w=panel.rect.width,h=panel.rect.height;
             if(w<200f||h<200f)return;
             priorWidth=w;priorHeight=h;
-            float scale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            float scale=panel.GetComponentInParent<Canvas>()?.scaleFactor??1f;
             var safe=Screen.safeArea;
             float l=Mathf.Max(12f,w*.026f+safe.xMin/Mathf.Max(.01f,scale));
             float r=Mathf.Max(12f,w*.026f+
@@ -232,6 +286,9 @@ namespace Eldoria.UI.RoyalGold.V2
             float navW=Mathf.Clamp(width*.25f,92f,160f);
             At((RectTransform)prev.transform,l,footer,navW,48f);
             At((RectTransform)next.transform,w-r-navW,footer,navW,48f);
+            float guideW=Mathf.Max(1f,width-2f*navW-12f);
+            At((RectTransform)skipGuide.transform,l+navW+6f,footer,
+                guideW,48f);
         }
         public void Open()
         {
@@ -247,6 +304,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if(panel)panel.gameObject.SetActive(false);
             if(hand)hand.gameObject.SetActive(false);
             if(halo)halo.gameObject.SetActive(false);
+            Refresh();
+        }
+        void DismissGuide()
+        {
+            if(bridge==null||view==null||!view.UseTutorialPending)return;
+            var result=bridge.DismissTutorial(ResourceRewardCommands.FirstUseStep);
+            feedback.text=result.Ok?"Ayuda omitida. Puedes usar los paquetes cuando quieras.":
+                result.Message;
             Refresh();
         }
         void Page(int delta){page=Mathf.Max(0,page+delta);Refresh();}
@@ -269,7 +334,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var packet=Packet(index);
             if(packet==null||!packet.CanUse)return;
             var result=bridge.UsePacket(packet.ReceiptId);
-            feedback.text=result.Ok?"Recursos añadidos mediante el guardado real.":result.Message;
+            feedback.text=result.Ok?"Recursos añadidos a tu reino.":result.Message;
             Refresh();
         }
         public void Refresh()
@@ -278,7 +343,7 @@ namespace Eldoria.UI.RoyalGold.V2
             view=bridge.Refresh();
             int available=view.Bag.Count,newCount=0;
             foreach(var item in view.Bag)if(item.New)newCount++;
-            entry.gameObject.SetActive(available>0&&Unobstructed()&&!IsOpen);
+            entry.gameObject.SetActive(!presentationCanvas&&available>0&&Unobstructed()&&!IsOpen);
             entryLabel.text=newCount>0?"BOLSA ("+newCount+")":"BOLSA";
             Issue186ArtKit.BindAttention(entryBadge,
                 newCount>0?AttentionLevel.New:AttentionLevel.None);
@@ -287,6 +352,7 @@ namespace Eldoria.UI.RoyalGold.V2
             page=Mathf.Clamp(page,0,Mathf.Max(0,(available-1)/perPage));
             count.text=available==0?"Sin paquetes por utilizar":
                 available+" paquetes · "+newCount+" nuevos · uso voluntario";
+            skipGuide.gameObject.SetActive(view.UseTutorialPending);
             prev.interactable=page>0;
             next.interactable=(page+1)*perPage<available;
             for(int i=0;i<rows.Count;i++)
@@ -312,7 +378,9 @@ namespace Eldoria.UI.RoyalGold.V2
         void Update()
         {
             if(!panel||!hud||bridge==null)return;
-            if(IsOpen&&!Unobstructed()){Close();return;}
+            if(IsOpen&&(!Unobstructed()||
+                (presentationCanvas&&!presentationCanvas.isActiveAndEnabled)))
+                {Close();return;}
             if(IsOpen&&(Mathf.Abs(panel.rect.width-priorWidth)>.5f||
                 Mathf.Abs(panel.rect.height-priorHeight)>.5f))Layout();
             if(Time.unscaledTime>=nextRefresh)
@@ -326,7 +394,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(view!=null&&view.UseTutorialPending)
                     for(int i=0;i<perPage;i++)
                         if(Packet(i)?.CanUse==true){target=i;break;}
-                var canvas=hud.GetComponentInParent<Canvas>();
+                var canvas=panel.GetComponentInParent<Canvas>();
                 if(target<0||!canvas)
                 {
                     hand.gameObject.SetActive(false);
