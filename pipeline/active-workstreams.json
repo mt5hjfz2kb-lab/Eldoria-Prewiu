@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T02:11:08.633Z",
+  "updated_at": "2026-11-12T02:17:52.690Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,13 +24,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "ACTUAL_COMPILE16IMPORTS_PASS_HELPER_EDITOR_FOLDER_ATTACHMENT_CAUSE",
+      "phase": "WINDOWS_RUNTIME_HELPER_ATTACHMENT_AND_FOUR_VIEWPORT_ART",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -48,9 +50,10 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
-        "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj"
+        "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
+        "tools/eldoria-v41/GatewaySmoke.csproj"
       ],
-      "next": "MoveNativeEventSystem/NativeRaycaster helperfileswithGUIDstoRuntime #ifUNITY_EDITOR; preserveactualbaseOnEnable andtopmost/modalguards, checkplayerexclusion. Realmetadata146DLL artifactenablesUbuntu semanticcompile withoutlocalenv.",
+      "next": "Bounded native batch for corrected Runtime UNITY_EDITOR helpers with originalGUIDs and actual sameassembly attachment/playerexclusion, current bagcanvasprotocol. Require real4GPU PNG+firsthit/modal rejection. CombinedVigilia bag flow still pending separately. ReleaseWindows to173 aftercleanup before CPUreview.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -143,15 +146,15 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_to_pr179",
+        "status": "claimed",
         "owner": "chatgpt-central-resource-art-20261111",
-        "ownership_revision": 15,
-        "released_at": "2026-11-12T01:35:18.609Z",
-        "last_native_run": 43134015062
+        "ownership_revision": 16,
+        "claimed_at": "2026-11-12T02:17:52.690Z",
+        "previous_native_run": 43139049808
       },
-      "runner_claimed_at": "2026-11-11T21:37:18.716Z",
+      "runner_claimed_at": "2026-11-12T02:17:52.690Z",
       "runner_released_at": "2026-11-11T22:11:23.072Z",
-      "scope_extension_reason": "Repair actual V4.1 contract harness dependency exposed by EarlyRetentionRules narrative guards: include real NarrativeCoherenceRules source; no mocks or assertion removal. CI43138737681 CS0103."
+      "scope_extension_reason": "Both existing actual V4.1 harnesses require retained real NarrativeCoherenceRules dependency; no test assertion removal."
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -8033,7 +8036,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 54,
+      "ownership_revision": 55,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8053,13 +8056,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "WINDOWS_CONTINUOUS_REAL_BASTION_THEATRE_NATIVE",
+      "phase": "CONTINUOUS_THEATRE_COMPILED_OLD_COMPONENT_SCENERY_GUARD_REJECTED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Run one bounded actual Unity batch for continuous single real Bastion theatre from 28a0f034 (153406 domain assertions,247 gateway checks,20 Roslyn files and full source CI43137437786 PASS). Old 717 inset-photo art rejected despite successful pixels. Need actual PNG A/B and visual review, then release PC to PR187 before CPU audit.",
+      "next": "Inspect actual native43139049808 failure True Eldoria scenery overlaps event report. Continuous fulltheatre method compiled; component fixture still compares fullscene rectangle rather than actual projected Bastion subject. Repair guard to actual subject reservation, keep real visible geometry/overlap thresholds strict, then fair next turn after187/173. Actualcitystep skipped; no visual pass.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8114,7 +8115,7 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-11T21:37:18.716Z",
+      "runner_released_at": "2026-11-12T02:17:52.690Z",
       "runner_release_basis": "Run 43102620742 exact SHA 3f541b9d40664b097976d1b3dd32ceb42d7a32a3: Unity actually executed but failed art proof 'Original illustration import must remain bounded and non-readable' at DailyTreasureNativeEvidence.cs:504; native artifact 13893406616 and audit artifact 13893570946 preserved; Windows native job and dependent audit complete; release resource only.",
       "runner_claimed_at": "2026-11-12T02:05:38.260Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
@@ -18314,6 +18315,16 @@
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "path": "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
       "reason": "Repair actual V4.1 contract harness dependency exposed by EarlyRetentionRules narrative guards: include real NarrativeCoherenceRules source; no mocks or assertion removal. CI43138737681 CS0103."
+    },
+    {
+      "at": "2026-11-12T02:17:52.690Z",
+      "event": "central_windows_fair_handoff_after_bounded_treasures_failure",
+      "from": "eldoria-daily-treasures-20261108",
+      "to": "eldoria-issue186-reward-attention-guidance-20261111",
+      "native_run": 43139049808,
+      "native_job": 130921328518,
+      "result": "failure",
+      "cause": "True Eldoria scenery overlaps event report in old component guard; Unity compiled. Off-PC repair; no repeated monopoly."
     }
   ],
   "owner_specific_pauses": [
