@@ -548,6 +548,10 @@ namespace Eldoria.BreachWatch.Editor
             {
                 camera.targetTexture=target;camera.aspect=390f/844f;camera.cullingMask|=1<<5;
                 ui.NativeCanvas.worldCamera=camera;ui.Reflow(390,844);ui.RenderNow();
+                var management=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+                if(management && management.IsOpen)management.SynchronizeLayout();
+                if(ui.RealDestinations && ui.RealDestinations.IsShowing)
+                    ui.RealDestinations.SynchronizeVisual();
                 var canonical=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
                 if(canonical && canonical.IsOpen)canonical.SynchronizeLayout();
                 if(ui.RealMailbox && ui.RealMailbox.IsShowing)ui.RealMailbox.SynchronizeVisual();

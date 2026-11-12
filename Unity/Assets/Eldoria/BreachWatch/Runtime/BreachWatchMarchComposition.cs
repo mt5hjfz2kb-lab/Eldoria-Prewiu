@@ -380,6 +380,8 @@ namespace Eldoria.BreachWatch
                 information.onClick.AddListener(()=>{detailText.text="DETALLES DEL EJÉRCITO\n\n"+status.GetComponent<Text>().text+"\n\n‹ Volver a la preparación";detailSheet.SetAsLastSibling();detailSheet.gameObject.SetActive(true);});
                 detailSheet.gameObject.SetActive(false);
             }
+            information.GetComponentInChildren<Text>().fontSize=26;
+            detailText.fontSize=25;
             var rect=(RectTransform)information.transform;
             At(rect,12f,Mathf.Max(0,right.rect.height-39f),Mathf.Max(1,right.rect.width-24f),34f);
             if(SecondaryDetailsOpen)detailText.text="DETALLES DEL EJÉRCITO\n\n"+status.GetComponent<Text>().text+"\n\n‹ Volver a la preparación";
