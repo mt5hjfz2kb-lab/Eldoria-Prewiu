@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T19:24:10Z",
+  "updated_at": "2026-11-12T19:32:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7262,7 +7262,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-central-art-execution-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 59,
+      "ownership_revision": 60,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7306,16 +7306,14 @@
         ".github/workflows/eldoria-beta-profile-browser-retry.yml",
         ".github/workflows/eldoria-beta18-preserved-owner-stage.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PUBLIC_ENGINE18_EARNED_BROWSER_CONTINUATION_WINDOWS_WHILE_MAC_QUEUED",
+      "phase": "PUBLIC_ENGINE18_EARNED_B5_WORLD_CITY_DESKTOP_PASS_PHYSICAL_IPHONE_PENDING",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-      "next": "Run installed Edge on actual public18, retain B5 earned progress, capture actual world/city taps; finish/release PC. Mac public WebKit remains queued, not certified.",
+      "next": "Owner physical iPhone trial at public18; prepare integrated visual/art candidates separately without main activation. No tester release or art approval claimed.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7952,7 +7950,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-12T16:44:47.557Z",
+      "runner_released_at": "2026-11-12T19:32:00Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -8180,7 +8178,7 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "Bounded Windows Edge job131331448812 completed SUCCESS and full cleanup. Browser helper closes isolated context/browser in finally; no Unity invocation. Exact artifact proof independently SHA256 verified.",
+      "runner_release_basis": "Actual public Edge run43290448094 completed successfully; original ZIP and actual world/city screenshots independently verified. No Unity invoked. Mac public job cancelled before allocation due hosted ARM capacity.",
       "last_completed_earned_campaign": {
         "run": 43231463013,
         "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
@@ -8397,11 +8395,22 @@
         "public_three_identities_independently_verified": true,
         "public_wasm_framework_encoded_sha256_independently_verified": true,
         "public_webkit_job": 131424695929,
-        "public_webkit_state": "QUEUED",
+        "public_webkit_state": "CANCELLED_BEFORE_RUNNER_ALLOCATION",
         "phone_verified": false,
         "external_testers_enabled": false,
         "previous_routes_preserved": 146,
-        "art_approved": false
+        "art_approved": false,
+        "protected_all146_public_hashes_after_deploy": "PASS",
+        "public_webkit_reason": "The job was not acquired by Runner of type hosted even after multiple attempts; macOS arm64 capacity constraints",
+        "public_earned_edge_run": 43290448094,
+        "public_earned_edge_source": "1de0f02e049093c908b3fa79f3ada391033f92c5",
+        "public_earned_edge_artifact": 13975239739,
+        "public_earned_edge_zip_sha256": "c7c495fafe373b02536e176767d498ac2e7498f07837c8531c12c06c9d21c67b",
+        "public_earned_b5_complete_60_troops_retained": true,
+        "public_world_entry_and_city_return_assistant_image_review": true,
+        "errors": [],
+        "context_lost": false,
+        "owner_save_accessed": false
       }
     },
     {
