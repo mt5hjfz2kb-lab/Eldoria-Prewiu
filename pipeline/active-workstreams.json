@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-12T03:08:37.863Z",
+  "updated_at": "2026-11-12T03:23:41.246Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -24,15 +24,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-central-resource-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 19,
+      "ownership_revision": 20,
       "branch": "feature/issue186-reward-attention-guidance-20261111",
       "status": "active",
-      "phase": "WINDOWS_BAG_PROBE_VERIFIED_INFRASTRUCTURE_NAMESPACE_FOLLOWUP",
+      "phase": "ACTUAL_COMBINED_CLICK_FOUND_BAG_OPEN_FAILURE_GUARDED_META_DRIFT_PRESERVED",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -54,7 +52,7 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/eldoria-v41/GatewayEvolutionChecks.cs"
       ],
-      "next": "PreviousR18 compilefailedCS0246unqualifiedFileStateStore; actual existingInfrastructure/LocalServices.cs verifiednamespaceEldoria.Infrastructure. ALL241UIoverlayfilesrestoredexactly onrealWindows. One bounded19 follow-up fullyqualifiesactualstore, nootherreadyPCwaiters (TfullviewportsourcepreparingoffPC;UI48alreadyPASS;betaMacprofilePASS). Needactualbagruntime; no inferredpass.",
+      "next": "ActualR19run43146245415 component4PNG/PointersPASS withcurrentrunID; actualcombinedfirstresourcecapsulehit succeeds but bagdoesnotopen. InvestigateactualUIgate/deselection notfakeonClick. Cleanupguardpreservedunfamiliar action_antique_bronze.png.meta drift in isolatedissue186-source,245overlayentries; restoreNOTclaimed. NoUnityprocessafterjob. Otherworkstreamsusedifferentownprojects soPCreleasedfairly. NextownedWindowsmustaudit+archiveexactdriftbeforecleanup, preserveunknownbytes.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-issue186-art-import-recovery-20261111",
       "ownership_history": [
@@ -154,7 +152,7 @@
         "previous_native_run": 43144616466
       },
       "runner_claimed_at": "2026-11-12T02:53:57.045Z",
-      "runner_released_at": "2026-11-12T02:31:37.443Z",
+      "runner_released_at": "2026-11-12T03:23:41.246Z",
       "scope_extension_reason": "Repair existing V4.1 tests to seed the actual already-introduced Vigilants; production narrative gate is unchanged from main. Strengthen busy-hero test eligibility assertion."
     },
     {
@@ -8037,7 +8035,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-central-treasures-art-20261111",
       "ownership_state": "claimed",
-      "ownership_revision": 57,
+      "ownership_revision": 58,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -8057,11 +8055,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "CONTINUOUS_ACTUAL_BASTION_NATIVE92_PASS_VISUAL_REVIEW_PENDING",
+      "phase": "WINDOWS_FULL_VIEWPORT_ONE_REAL_BASTION_NOT_INNER_PHOTO",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Actual43142677773 native130933166641 SUCCESS on8c1f9074 including72component+20actualcityPNG. Artifact13910173251 SHA c5b92c4c2c0b53492685386d98c9242dd7da0a055884e083d94c2e5e467d42e4. CPUaudit+raw4PNGreview via immutableRmode may continue while187usesPC. No artapproval fromgreen; inspectONEcontinuousrealcastle notphoto/photo.",
+      "next": "Fullviewportmacro5b58 sourceCI43146717424+43146712267PASS. Actual8c1previous92passstillartrejectedoutercameraseam; newgenuineimagecoversentireviewport andpairfitRTaspect. Neednew72+20+actualcornercoverage/A-B noartinference. UsesOWNdaily-source independentofRcachemetadrift. ReleaseaftercleanupbeforeCPUreview.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -8118,7 +8118,7 @@
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
       "runner_released_at": "2026-11-12T02:53:57.045Z",
       "runner_release_basis": "Run 43102620742 exact SHA 3f541b9d40664b097976d1b3dd32ceb42d7a32a3: Unity actually executed but failed art proof 'Original illustration import must remain bounded and non-readable' at DailyTreasureNativeEvidence.cs:504; native artifact 13893406616 and audit artifact 13893570946 preserved; Windows native job and dependent audit complete; release resource only.",
-      "runner_claimed_at": "2026-11-12T02:36:46.310Z",
+      "runner_claimed_at": "2026-11-12T03:23:41.246Z",
       "runner_lease_note": "Re-render exactly HEAD PR181 with four independently illustrated ceremonies, canonical Lyra GLB bust fallback, authentic real Bastion scene. No art approval, no merge/publication.",
       "runner_claim_basis": "After completing failing native43005395878 and inspecting 92 genuine screenshots, exact source fix 14eeb9a with CI green. One strict Unity retest of authentic Lyra backup, contained Scouts shield, Bastion city stage; no other live Windows owners or native jobs.",
       "last_native_execution": {
@@ -8223,9 +8223,9 @@
         "resource": "windows-runner-heavy",
         "status": "claimed",
         "owner": "chatgpt-central-treasures-art-20261111",
-        "ownership_revision": 56,
-        "claimed_at": "2026-11-12T02:36:46.310Z",
-        "previous_native_run": 43142184165
+        "ownership_revision": 58,
+        "claimed_at": "2026-11-12T03:23:41.246Z",
+        "previous_native_run": 43146245415
       }
     },
     {
@@ -18377,6 +18377,17 @@
       "restored_ui_files": 241,
       "fix": "Fully qualify existing verified Eldoria.Infrastructure.FileStateStore",
       "ready_pc_waiters": []
+    },
+    {
+      "at": "2026-11-12T03:23:41.246Z",
+      "event": "central_fair_pc_handoff_actual_bag_failure_to_ready_fullviewport_bastion",
+      "from": "eldoria-issue186-reward-attention-guidance-20261111",
+      "to": "eldoria-daily-treasures-20261108",
+      "native_run": 43146245415,
+      "native_job": 130944658661,
+      "result": "actualbagopenfailure",
+      "restoration_status": "UNKNOWN_META_PRESERVED_NOT_RESTORED",
+      "note": "No active native process; worktrees isolated: nextT usesdaily-source, Rissue186-source leftuntouchedforownedrecovery. No falsebagpass/cleanupclaim."
     }
   ],
   "owner_specific_pauses": [
