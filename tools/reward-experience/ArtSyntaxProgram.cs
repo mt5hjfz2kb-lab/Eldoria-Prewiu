@@ -64,13 +64,18 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("ShowFirstNamePrompt()") ||
    !coachSource.Contains("nickname-input") ||
    !coachSource.Contains("nickname-confirm") ||
+   !coachSource.Contains("TryGuideGenuineCityLabel(target,key)") ||
+   !coachSource.Contains("label.Select,key") ||
    !coachSource.Contains("narrative-continue") ||
    !firstEntryFixture.Contains("firstNicknameInputOnRealHit=true") ||
    !firstEntryFixture.Contains("firstNicknameConfirmOnRealHit=true") ||
    !firstEntryFixture.Contains("firstStoryContinueOnRealHit=true") ||
    !firstEntryFixture.Contains("Click(confirm,camera,target)") ||
-   !firstEntryGate.Contains("@($r.images).Count -ne 24") ||
-   !firstEntryGate.Contains("$r.realFirstHitClicks -ne 53") ||
+   !firstEntryFixture.Contains("TouchRealWorldGuidance(realLabel.Select,camera,rt)") ||
+   !firstEntryFixture.Contains("firstBuildingActionHandOnRealHit=true") ||
+   !firstEntryFixture.Contains("firstSawmillLabelSelected=true") ||
+   !firstEntryGate.Contains("@($r.images).Count -ne 25") ||
+   !firstEntryGate.Contains("$r.realFirstHitClicks -ne 54") ||
    !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
        .Contains("firstSawmillHandOnRealHit") ||
    !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
