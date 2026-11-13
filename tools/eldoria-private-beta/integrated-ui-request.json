@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 35,
-  "previous_run": 43406898887,
-  "correction": "Search recovery works; actual probe now starts/exits cleanly. Its first coroutine continuation ran before canonical host LateUpdate rebind, so the advanced room still read the initial gateway. Wait the real rebind frame and assert reference identity, earned unlock and no overlay. Run this new focal proof before existing expensive city/destination/reward checks; keep every later gate and runtime byte unchanged.",
+  "attempt": 36,
+  "previous_run": 43407950276,
+  "correction": "Actual post-reload probe now confirms correct gateway, earned unlock and opening. It exposed RoyalHUD.SetBound(true) restoring the retired CanvasGroup during session rebind; canonical Canvas/raycaster were disabled but group alpha/input flags violated exclusive presentation. Enforce the existing retired-group zero-alpha/noninteractive contract after every rebind. Keep all first-hit and progression assertions; execute focal proof first, then full native/build/browser.",
   "build_candidate": true
 }

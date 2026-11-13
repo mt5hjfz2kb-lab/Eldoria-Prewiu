@@ -133,6 +133,11 @@ namespace Eldoria.BreachWatch
                 foreach(var canvas in oldCanvases)
                     if(canvas && !canvas.transform.IsChildOf(transform))canvas.enabled=false;
                 retired.enabled=false;
+                // Canonical session rebinding calls RoyalHUD.SetBound(true).
+                // Keep its data/presenter alive, but never restore retired
+                // presentation/input after a load or playtest reset.
+                var oldGroup=retired.GetComponent<CanvasGroup>();
+                if(oldGroup){oldGroup.alpha=0f;oldGroup.blocksRaycasts=false;oldGroup.interactable=false;}
                 var oldInput=retired.GetComponent<GraphicRaycaster>();
                 if(oldInput)oldInput.enabled=false;
                 GetComponentsInChildren<Graphic>(true,graphics);
