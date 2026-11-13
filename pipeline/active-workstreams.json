@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T20:21:59.884Z",
+  "updated_at": "2026-11-13T21:46:10.789Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -46,7 +46,7 @@
       "last_handoff_at": "2026-11-13T19:00:00+01:00",
       "art_approved": false
     },
-{
+    {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
@@ -6954,7 +6954,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+      "owner": "chatgpt-vigilia-visual-kit-20261113",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6986,10 +6986,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 125,
+      "ownership_revision": 126,
       "write_scope_released": false,
-      "phase": "TYPOGRAPHY_NATIVE_AB_VERIFIED_OWNER_VISUAL_REVIEW_READY",
-      "next": "Preserve verified compact three-slot March and reversible typography. Continue coherent destination integration with PR187/181; no public beta modification.",
+      "phase": "PHASE1_VIGILIA_UNIFIED_KIT_RECONCILE_MAIN_SOURCE_NO_WINDOWS",
+      "next": "Unificar visualmente solo BreachWatch y temas, preservar estado/gameplay. Obtener comparativa Unity 390x844,844x390,900x1600 a 3x tras reserva Windows segura. No declarar ART_APPROVED por CI.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T19:49:05.773Z",
@@ -7185,6 +7185,14 @@
           "revision": 125,
           "transferred_at": "2026-11-12T22:49:59.866Z",
           "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
+        },
+        {
+          "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "from_revision": 125,
+          "to_revision": 126,
+          "to_owner": "chatgpt-vigilia-visual-kit-20261113",
+          "transferred_at": "2026-11-13T21:46:10.789Z",
+          "reason": "Orden expresa del propietario 2026-11-13: relevo del workstream canónico de Vigilia para FASE 1 (kit uniforme ciudad/Bastión/Buzón/Bolsa, nitidez y capturas Unity A/B); conservar #173 fusionada y rama histórica, no abrir PR duplicada, no tocar beta ni Windows/Issue186, 0 €. Rama fuente a reconciliar con main sin reactivar UI antigua."
         }
       ],
       "runner_priority_handoff": {
@@ -7344,7 +7352,7 @@
         "request": "Haz eso",
         "context": "Replace remaining interface with accepted Vigilia design maintaining quality; preserve rewards/cofres. Scope expansion beyond prior first-screen proof."
       },
-      "previous_owner": "chatgpt-central-art-execution-20261111",
+      "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
