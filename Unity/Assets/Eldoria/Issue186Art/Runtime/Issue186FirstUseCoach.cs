@@ -328,7 +328,20 @@ namespace Eldoria.UI.RoyalGold.V2
             var screen=RectTransformUtility.WorldToScreenPoint(camera,
                 ((RectTransform)control.transform).TransformPoint(
                     ((RectTransform)control.transform).rect.center));
-            SetCaption(screen,caption);
+            // The real first-name modal, story Continue control, city label
+            // and building CTA already explain their actions. An extra 240x50
+            // plaque covered the nickname question and story ink in genuine
+            // 390x844 Unity captures. Keep the approved native hand/halo only
+            // for these self-explanatory targets, never obscure their text.
+            bool hasActualCaption=id.StartsWith("nickname-",StringComparison.Ordinal) ||
+                id=="narrative-continue" || id=="building-action" ||
+                id=="sawmill" || id=="barracks" || id=="granary" ||
+                id=="stoneworks";
+            if(hasActualCaption)
+            {
+                if(noteBack)noteBack.gameObject.SetActive(false);
+            }
+            else SetCaption(screen,caption);
             TargetId=id;Rejection="";
         }
         Rect ViewSafeArea()
