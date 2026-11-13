@@ -124,27 +124,34 @@ jobs:
           }
           git --version
           if($LASTEXITCODE){throw 'Installed Git failed; refuse archive fallback'}
-      - name: Restore only exact reviewed archived overlay bytes before any checkout
+      - name: Preserve old imported worktree and isolate this run's exact Unity source
         shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
-          $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-preserved-source-audit'}
-          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/Restore-ReviewedVigiliaOverlay.ps1?ref=$env:GITHUB_SHA"
-          $file=Invoke-RestMethod -Uri $url -Headers $hdr
-          if($file.encoding -ne 'base64' -or -not $file.content){throw 'Pinned source audit script missing'}
-          $script=Join-Path $env:OUT 'Restore-ReviewedVigiliaOverlay.ps1'
-          [IO.File]::WriteAllBytes($script,[Convert]::FromBase64String($file.content))
-          & $script -Workspace $env:GITHUB_WORKSPACE -Output $env:OUT
+          # The previous Unity import changed tracked .meta bytes outside the
+          # reviewed restoration set. 43502727378 correctly archived/refused.
+          # Preserve that worktree untouched and use a clean per-run Git source.
+          $historic=Join-Path $env:GITHUB_WORKSPACE 'issue186-source'
+          if(Test-Path -LiteralPath $historic){
+            $legacy=Get-Item -LiteralPath $historic -Force
+            if($legacy.Attributes -band [IO.FileAttributes]::ReparsePoint){
+              throw 'Preserved legacy worktree has unexpected redirect'
+            }
+            Write-Host 'ISSUE186_OLD_TRACKED_IMPORT_DRIFT_UNTOUCHED'
+          }
+          $fresh=Join-Path $env:GITHUB_WORKSPACE 'issue186-fresh-source-${{ github.run_id }}'
+          if(Test-Path -LiteralPath $fresh){
+            throw 'Unique native checkout already exists; refuse overwrite'
+          }
+          Write-Host 'ISSUE186_FRESH_RUN_SCOPED_UNITY_CHECKOUT'
       - name: Fetch pinned Unity-only source and retain owned import cache
         shell: powershell
         timeout-minutes: 15
         run: |
           $ErrorActionPreference='Stop'
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before checkout'}
-          $src=Join-Path $env:GITHUB_WORKSPACE 'issue186-source'
+          $src=Join-Path $env:GITHUB_WORKSPACE 'issue186-fresh-source-${{ github.run_id }}'
           if(Test-Path -LiteralPath $src){
             $item=Get-Item -LiteralPath $src -Force
             if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse reparse-point source'}
@@ -182,7 +189,7 @@ jobs:
           Write-Host "ISSUE186_PINNED_UNITY_ONLY_SOURCE=$actual; NO_GIT_CLEAN; LIBRARY_PRESERVED"
       - name: Recheck exact SHA and Windows lease before Editor
         shell: powershell
-        working-directory: issue186-source
+        working-directory: issue186-fresh-source-${{ github.run_id }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -228,11 +235,11 @@ jobs:
           if($LASTEXITCODE){throw 'Pinned UI source fetch failed'}
           git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) checkout --detach FETCH_HEAD
           if($LASTEXITCODE -or (git -C $src rev-parse HEAD).Trim() -ne $env:ISSUE186_VIGILIA_SOURCE){throw 'Optional UI source mismatch'}
-          & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Install -Project 'issue186-source/Unity' -UiProject (Join-Path $src 'Unity') -UiSource $env:ISSUE186_VIGILIA_SOURCE -Manifest (Join-Path $env:OUT 'vigilia-overlay.json')
+          & 'issue186-fresh-source-${{ github.run_id }}/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Install -Project 'issue186-fresh-source-${{ github.run_id }}/Unity' -UiProject (Join-Path $src 'Unity') -UiSource $env:ISSUE186_VIGILIA_SOURCE -Manifest (Join-Path $env:OUT 'vigilia-overlay.json')
       - name: Export installed managed API metadata for off-PC semantic compilation
         shell: powershell
         run: |
-          & 'issue186-source/tools/reward-experience/native/Export-UnityManagedReferences.ps1' -Project 'issue186-source/Unity' -Output "issue186-managed-refs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & 'issue186-fresh-source-${{ github.run_id }}/tools/reward-experience/native/Export-UnityManagedReferences.ps1' -Project 'issue186-fresh-source-${{ github.run_id }}/Unity' -Output "issue186-managed-refs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - name: Make actual compiler references available while Unity captures
         uses: actions/upload-artifact@v4
         with:
@@ -243,7 +250,7 @@ jobs:
       - name: Import actual sprites and render four sizes in Unity
         if: needs.exclusive-preflight.outputs.combined_only != 'true'
         shell: powershell
-        working-directory: issue186-source
+        working-directory: issue186-fresh-source-${{ github.run_id }}
         run: |
           $ErrorActionPreference='Stop'
           New-Item -ItemType Directory -Force $env:OUT | Out-Null
@@ -298,7 +305,7 @@ jobs:
       - name: Exercise actual saved bag and real input on the verified independent Vigilia canvas
         if: needs.exclusive-preflight.outputs.combined_source != ''
         shell: powershell
-        working-directory: issue186-source
+        working-directory: issue186-fresh-source-${{ github.run_id }}
         run: |
           $ErrorActionPreference='Stop'
           $project=Join-Path (Get-Location).Path 'Unity'
@@ -340,7 +347,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $source=Join-Path $env:GITHUB_WORKSPACE 'issue186-source/Unity/Issue186BagCombinedNativeEvidence'
+          $source=Join-Path $env:GITHUB_WORKSPACE 'issue186-fresh-source-${{ github.run_id }}/Unity/Issue186BagCombinedNativeEvidence'
           $reportPath=Join-Path $source 'report.json'
           if(-not(Test-Path -LiteralPath $reportPath -PathType Leaf)){Write-Host 'NO_FRESH_COMBINED_REPORT';exit 0}
           $report=Get-Content -LiteralPath $reportPath -Raw|ConvertFrom-Json
@@ -366,7 +373,7 @@ jobs:
           $manifest=Join-Path $env:OUT 'vigilia-overlay.json'
           if(Test-Path -LiteralPath $manifest){
             if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Refuse restoration while native process is still active'}
-            & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Restore -Project 'issue186-source/Unity' -Manifest $manifest
+            & 'issue186-fresh-source-${{ github.run_id }}/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Restore -Project 'issue186-fresh-source-${{ github.run_id }}/Unity' -Manifest $manifest
             if(-not((Get-Content ($manifest+'.restored.json') -Raw|ConvertFrom-Json).restored)){throw 'Exact optional-source restoration missing'}
           }
       - name: Preserve actual Unity screenshots and error log
