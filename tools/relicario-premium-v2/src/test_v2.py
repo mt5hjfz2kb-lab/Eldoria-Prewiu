@@ -8,7 +8,7 @@ with sync_playwright() as p:
  def setup(view,wh):
   print('setup',view,wh,flush=True);page=browser.new_page(viewport={'width':wh[0],'height':wh[1]},is_mobile=wh[0]==390,has_touch=wh[0]==390)
   page.on('pageerror',lambda x:errs.append(str(x)))
-  print('set content',flush=True);page.set_content('<!DOCTYPE html><html lang=es><head><meta name=viewport content="width=device-width,initial-scale=1"><style>'+(r/'styles.css').read_text()+'</style></head><body><div id=app></div></body></html>')
+  print('set content',flush=True);page.set_content('<!DOCTYPE html><html lang=es><head><meta name=viewport content="width=device-width,initial-scale=1"><style>'+(r/'styles.css').read_text()+(r/'polish.css').read_text()+'</style></head><body><div id=app></div></body></html>')
   assets={}
   for fn,mime in [('frame_common.webp','image/webp'),('frame_rare.webp','image/webp'),('frame_epic.webp','image/webp'),('frame_legendary.webp','image/webp'),('bosque_valoria_art.jpg','image/jpeg'),('icon_wood.svg','image/svg+xml'),('overlay_indestructible.svg','image/svg+xml')]:
    assets['assets/'+fn]='data:'+mime+';base64,'+base64.b64encode((r/'assets'/fn).read_bytes()).decode()

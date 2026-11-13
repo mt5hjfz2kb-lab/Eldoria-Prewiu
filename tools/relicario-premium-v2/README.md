@@ -41,3 +41,7 @@ Para QA, `python src/test_v2.py` usa Chromium y recursos autocontenidos de **ent
 - Sin publicación, sin CI pesada, sin consumo de créditos de pago ni cambios en `main` fuera del registro de titularidades.
 
 **Estado al 13/11/2026:** `IMPLEMENTADO` como prototipo artístico aislado; `PROBADO` en Chromium 390×844; `PENDIENTE` de revisión final del propietario e importación Unity y QA dispositivo. No afirmar `ART_APPROVED` ni `GAME_READY`.
+
+## V2.1 — revisión de tipografía y solapamientos (13/11/2026)
+Se añadió polish.css, una capa reversible de fuentes del sistema (serif medieval para rareza/nombre/cifras; sans para efecto), panel inferior más aireado y etiqueta de rareza sobre fondo protegido. La propiedad indestructible mantiene el texto AL USARLA, RECIBES y deja el icono ∞ por separado. Cifras de dos dígitos y títulos largos disponen de tamaños adaptativos. No se modificaron sprites, reglas, cantidades, proporciones 5:8 ni beta.
+Pruebas locales en Chromium: galería 1440/768/390; carta móvil 320/390/430; tablero 390, sin colisiones o texto cortado en el DOM. Ejecutar python src/test_typography_v21.py para repetirlas y producir capturas. Pendientes: Unity, iPhone físico y aprobación artística final.
