@@ -868,7 +868,7 @@ namespace Eldoria.BreachWatch
             if(host && host.InWorld)selectedTab=3;
             else if(selected=="sawmill" || selected=="barracks" ||
                     selected=="upgrade-barracks" || selected=="granary" ||
-                    selected=="stoneworks")selectedTab=1;
+                    selected=="stoneworks")selectedTab=0;
             else if(selected=="bastion")selectedTab=0;
             if(created)RenderNow();
         }
@@ -920,8 +920,10 @@ namespace Eldoria.BreachWatch
         int NavigationMask()
         {
             int mask=(1<<1);
-            // Exactly one castle return control while in the world.
-            if(!host || !host.InWorld)mask|=1<<0;
+            // Exactly one castle return control, including while the deferred
+            // world is loading: during loading the travel emblem becomes
+            // the sole visible city/cancel action.
+            if(!host || (!host.InWorld && !host.WorldEntryPending))mask|=1<<0;
             if(!host)return mask;
             if(destinationBridge && host.CanOpen(RoyalSection.Army) &&
                Eldoria.Domain.NarrativeCoherenceRules.Seen(host.City.Gateway.Snapshot(),"march-preparation"))
@@ -1051,6 +1053,14 @@ namespace Eldoria.BreachWatch
                         selectedTab=openWorld?3:0;
                         SelectBuilding("");
                         SyncLiveCamera();
+                    }
+                    else if(host.WorldEntryPending)
+                    {
+                        // A deferred entry can legitimately return false while
+                        // starting Region 1. Reflow now, not 250 ms later, so
+                        // two castle emblems never coexist during that interval.
+                        selectedTab=3;
+                        RenderNow();
                     }
                     break;
             }
