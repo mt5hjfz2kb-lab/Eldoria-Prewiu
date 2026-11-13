@@ -103,6 +103,22 @@ namespace Eldoria.BreachWatch
             room.SetSiblingIndex(Mathf.Min(1,art.childCount-1));
             backdrop=Painting(room,"Vigilia / authored landscape backplate",texture);
             for(int i=0;i<separated.Length;i++)pieces.Add(Painting(room,"Vigilia / separate authored mass / "+Pieces[i],separated[i]));
+            if(!scouts)
+            {
+                // The canonical node owns earned-stage placement and visibility.
+                // Retire its painter before generic UI replacement can flatten
+                // the transparent skull standard into an opaque stone tile.
+                foreach(var donor in screen.GetComponentsInChildren<RawImage>(true))
+                {
+                    if(donor.name!="Current guardian / reference skull banner")continue;
+                    var banner=Resources.Load<Texture2D>("EldoriaRetention/guardian-banner-v4");
+                    if(!banner){Restore();return false;}
+                    Hide(donor);
+                    var marker=Painting(donor.transform,"Vigilia / current guardian standard",banner);
+                    marker.uvRect=donor.uvRect;
+                    break;
+                }
+            }
             // The approved blank paper is a material, not a flattened UI.
             // Existing headings, thumbnails, states and Vigilia buttons remain live.
             if(scouts)

@@ -176,6 +176,9 @@ namespace Eldoria.BreachWatch.Editor
                     Need(ui.RealRetention.TryOpen(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants),"Real guardian composition opens: "+stage);
                     yield return null;Render(host,ui,"vigilants-guardian-"+stage);
                     var portraits=ui.RealRetention.LiveScreenRect.GetComponentsInChildren<RawImage>(true);
+                    Need(portraits.Any(x=>x.isActiveAndEnabled&&x.name=="Vigilia / current guardian standard"&&x.texture&&x.texture.name=="guardian-banner-v4")&&
+                        portraits.Where(x=>x.name=="Current guardian / reference skull banner").All(x=>!x.enabled),
+                        "Current guardian has transparent Vigilia standard and no retired stone replacement: "+stage);
                     Need(portraits.Any(x=>x.isActiveAndEnabled&&x.texture&&
                         x.texture.name==(stage==5?"vigilant-guardian-coraza-v5":"engendro-reference-v3")),"Actual canonical guardian portrait is visible: "+stage);
                     ui.RealRetention.Close();

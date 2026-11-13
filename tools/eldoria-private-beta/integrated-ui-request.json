@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 36,
-  "previous_run": 43407950276,
-  "correction": "Actual post-reload probe now confirms correct gateway, earned unlock and opening. It exposed RoyalHUD.SetBound(true) restoring the retired CanvasGroup during session rebind; canonical Canvas/raycaster were disabled but group alpha/input flags violated exclusive presentation. Enforce the existing retired-group zero-alpha/noninteractive contract after every rebind. Keep all first-hit and progression assertions; execute focal proof first, then full native/build/browser.",
+  "attempt": 37,
+  "previous_run": 43408299571,
+  "correction": "All final native, browser, construction and full certificates passed, but real guardian-5/15 screenshot review caught the retired transparent skull banner replaced with opaque stone. Recover original standard artwork in a new owned Vigilia child under canonical earned-stage positioning; disable donor before generic replacement. Add actual native assertion for visible correct texture and disabled donor. Rebuild and certify exact source before publication.",
   "build_candidate": true
 }
