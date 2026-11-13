@@ -326,13 +326,14 @@ jobs:
              -not $r.skipDoesNotComplete -or -not $r.useCreditsOnce -or -not $r.jsonReloadVerified -or
              -not $r.mailReadDoesNotClaim -or -not $r.mailClaimDoesNotCredit -or
              -not $r.productionVigiliaInstalled -or -not $r.firstUseCoachPresent -or -not $r.firstSawmillHandOnRealHit -or
+              -not $r.firstNicknameInputOnRealHit -or -not $r.firstNicknameConfirmOnRealHit -or -not $r.firstStoryContinueOnRealHit -or
              $r.artApproved -or $r.physicalIphoneVerified -or -not $r.fullMailboxUiFlowVerified -or
-             @($r.images).Count -ne 21 -or $r.actualIntegratedCityFrames -ne 4 -or $r.realFirstHitClicks -ne 52){throw 'Actual combined bag proof contract missing'}
+             @($r.images).Count -ne 24 -or $r.actualIntegratedCityFrames -ne 4 -or $r.realFirstHitClicks -ne 53){throw 'Actual combined bag proof contract missing'}
           foreach($shot in @($r.images)){
             $file=Join-Path $dest $shot.file
             if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){throw 'Actual combined bag PNG mismatch'}
           }
-          Write-Host 'ISSUE186_ACTUAL_FIRST_SAWMILL_HAND_CITY4_BAG_MAIL16_21PNG_52_FIRST_HIT_CLICKS_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
+          Write-Host 'ISSUE186_REAL_NICKNAME_CONFIRM_STORY_AND_SAWMILL_HAND_CITY4_BAG_MAIL16_24PNG_53_FIRST_HITS_PASS_NOT_ART_APPROVAL'
       - name: Preserve exact fresh combined screenshots even if a wrapper check fails
         if: always() && needs.exclusive-preflight.outputs.combined_source != ''
         shell: powershell
