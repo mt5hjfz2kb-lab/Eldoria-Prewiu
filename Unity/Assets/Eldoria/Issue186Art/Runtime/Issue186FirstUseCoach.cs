@@ -248,9 +248,38 @@ namespace Eldoria.UI.RoyalGold.V2
                         "Pulsa el botón del edificio para continuar.","building-action");
                 return;
             }
+            // City construction sites have a genuine, world-anchored UI Button
+            // ("Guidance sawmill", etc.) on the sole production Vigilia Canvas.
+            // Its actual first pointer hit is the player's usable target.
+            // Physics behind that large label can be correctly occluded, so
+            // requiring a bare collider hit previously hid the approved hand.
+            // Reuse the existing selection listener; do not create a fake
+            // button, invoke an action or change a save.
+            if(!inWorld && (target=="sawmill"||target=="barracks"||
+                            target=="granary"||target=="stoneworks") &&
+                TryGuideGenuineCityLabel(target,key))
+                return;
             ShowWorldTarget(target,key,
                 worldTarget?"Toca el objetivo señalado en el mundo.":
                 "Toca el edificio señalado para abrir sus acciones.");
+        }
+        bool TryGuideGenuineCityLabel(string target,string key)
+        {
+            if(!canvas || !canvas.isActiveAndEnabled)return false;
+            foreach(var label in canvas.GetComponentsInChildren<BuildingLabel>(true))
+            {
+                if(!label || label.name!="Guidance "+target ||
+                    !label.Select || !label.gameObject.activeInHierarchy ||
+                    !label.Select.gameObject.activeInHierarchy)
+                    continue;
+                // ShowSelectable validates the true EventSystem first-hit on
+                // RoyalButton.Select. A hidden/covered label is not an
+                // acceptable substitute for a real touch.
+                ShowSelectable(label.Select,key,
+                    "Toca la señal del edificio para abrir sus acciones.",target);
+                return true;
+            }
+            return false;
         }
         void ShowFirstNamePrompt()
         {
