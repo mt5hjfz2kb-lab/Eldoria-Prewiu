@@ -201,10 +201,10 @@ jobs:
             const body=[
               marker,
               '### Enlace de prueba del propietario — navegación corregida',
-              'Publicación comprobada tras Unity, WebGL, WebKit, partida guardada y dos entradas/regresos al mundo en QA. Fuente exacta: \`4718c12295b66da54ead69fc71a6fa392d3cc83e\`.',
+              'Publicación comprobada tras Unity, WebGL, WebKit, partida guardada y dos entradas/regresos al mundo en QA. Fuente exacta: `4718c12295b66da54ead69fc71a6fa392d3cc83e`.',
               '**Abrir en iPhone (Safari):** '+url,
               'Incluye acceso real a Bolsa, Ciudad, Ejército, Héroes, entrenamiento de Cuartel y Buzón; un solo icono de castillo durante carga. No borra el progreso ni modifica las otras rutas de Pages.',
               '**No certifica estabilidad física del iPhone ni autoriza todavía invitaciones a testers.** Verificar 30 min, entrada/salida del mundo y recarga del nick/guardado en el dispositivo.',
               'CI de origen: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43483165131'
-            ].join('\\n\\n');
+            ].join('\n\n');
             await github.rest.issues.createComment({...context.repo,issue_number:172,body});
