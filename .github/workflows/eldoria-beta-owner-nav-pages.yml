@@ -13,24 +13,24 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish-owner-preview:
-    if: ${{ github.event.workflow_run.id == 43481923633 && github.event.workflow_run.head_sha == '008498e6dfc34c67f9f6d52defcf5f7c60634811' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.id == 43483165131 && github.event.workflow_run.head_sha == '4718c12295b66da54ead69fc71a6fa392d3cc83e' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 110
     environment:
       name: github-pages
       url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1
     env:
-      EXPECTED_SOURCE: 008498e6dfc34c67f9f6d52defcf5f7c60634811
-      SOURCE_RUN: '43481923633'
+      EXPECTED_SOURCE: 4718c12295b66da54ead69fc71a6fa392d3cc83e
+      SOURCE_RUN: '43483165131'
       PREVIOUS_RUN: '43439686229'
       PREVIOUS_SOURCE: a2e956e11bc837a081c3eab1eb05c8ff094f4e05
-      STAGE_SHA: 247bc642be844fefd4c2ef8c03822235522f2f7d
+      STAGE_SHA: 4718c12295b66da54ead69fc71a6fa392d3cc83e
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout independently reviewed, exact owner Pages staging code
         uses: actions/checkout@v4
         with:
-          ref: 247bc642be844fefd4c2ef8c03822235522f2f7d
+          ref: 4718c12295b66da54ead69fc71a6fa392d3cc83e
           fetch-depth: 5
           filter: blob:none
           sparse-checkout: |
@@ -68,15 +68,15 @@ jobs:
       - name: Download SHA-pinned, source-certified player candidate
         uses: actions/download-artifact@v4
         with:
-          run-id: 43481923633
-          name: integrated-mobile19-owner-site-008498e6dfc34c67f9f6d52defcf5f7c60634811
+          run-id: 43483165131
+          name: integrated-mobile19-owner-site-4718c12295b66da54ead69fc71a6fa392d3cc83e
           github-token: ${{ github.token }}
           path: candidate
       - name: Download exact browser nickname, saved-build and two-world-entry proof
         uses: actions/download-artifact@v4
         with:
-          run-id: 43481923633
-          name: integrated-desktop-webkit-008498e6dfc34c67f9f6d52defcf5f7c60634811
+          run-id: 43483165131
+          name: integrated-desktop-webkit-4718c12295b66da54ead69fc71a6fa392d3cc83e
           github-token: ${{ github.token }}
           path: browser
       - name: Restore complete previous published Pages archive, never a partial site
@@ -113,12 +113,12 @@ jobs:
             --replace-source "$PREVIOUS_SOURCE" \
             --expected-source-sha "$EXPECTED_SOURCE" \
             --expected-bundle-sha256 "$BUNDLE" --expected-data-sha256 "$DATA" \
-            --native-run 43481923633 --full-certificate-run 43481923633 \
+            --native-run 43483165131 --full-certificate-run 43483165131 \
             --require-world-entry
           python3 - <<'PY'
           import json,pathlib
           proof=json.loads(pathlib.Path('site/integrated-owner-stage-proof.json').read_text())
-          assert proof['source_sha']=='008498e6dfc34c67f9f6d52defcf5f7c60634811'
+          assert proof['source_sha']=='4718c12295b66da54ead69fc71a6fa392d3cc83e'
           assert proof['replaced_source_sha']=='a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
           assert proof['combined_bytes']<980000000
           assert not proof['external_testers_enabled'] and not proof['physical_iphone_verified']
@@ -131,7 +131,7 @@ jobs:
           TAG=archive-pages-before-nav-owner-preview-20261113
           test -s previous-pages/artifact.tar
           sha256sum previous-pages/artifact.tar > previous-pages-sha256.txt
-          printf 'Original full Pages tar from publication 43439686229, source a2e956. Owner-only navigation successor 008498. Restore from this draft release if necessary.\n' > previous-pages-note.md
+          printf 'Original full Pages tar from publication 43439686229, source a2e956. Owner-only navigation successor 4718c122. Restore from this draft release if necessary.\n' > previous-pages-note.md
           if ! gh release view "$TAG" --json tagName >/dev/null 2>&1; then
             gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Archived Pages snapshot before navigation owner preview' --notes-file previous-pages-note.md
           fi
@@ -178,7 +178,7 @@ jobs:
                       ('beta-iphone-p0-lazy-world','de63660d25bee9a32d7b804d6245744ed1f0dbca')):
                       assert json.loads(get(route+'/release-identity.json',attempt))['source_sha']==source
                   assert hashlib.sha256(get('beta-integrated-vigilia/index.html',attempt)).hexdigest()==hashlib.sha256(pathlib.Path('site/beta-integrated-vigilia/index.html').read_bytes()).hexdigest()
-                  print('PUBLIC_OWNER_NAV_008498_IDENTITY_AND_PROTECTED_ROUTES_PASS')
+                  print('PUBLIC_OWNER_NAV_4718_IDENTITY_AND_PROTECTED_ROUTES_PASS')
                   break
               except Exception as e:
                   if attempt==17:raise
