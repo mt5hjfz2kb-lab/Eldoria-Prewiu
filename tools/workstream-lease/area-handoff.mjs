@@ -1,6 +1,7 @@
 // Eldoria area handoff: opt-in, fail-closed. Does not cancel work, run Unity,
 // infer human approval, merge a PR, or touch a production artifact.
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 
 const BUSY = ['queued', 'in_progress', 'pending', 'waiting', 'requested'];
 const ID_PATTERN = /^[a-z0-9][a-z0-9_-]+$/;
@@ -80,10 +81,19 @@ async function api(url, token, options={}) {
   if(!resp.ok)throw Error('GitHub HTTP '+resp.status+' '+url);
   return resp.json();
 }
-async function readRegistry(repo,token) {
-  const body=await api('/repos/'+repo+'/contents/pipeline/active-workstreams.json?ref=main',token);
-  if(body.encoding!=='base64'||!body.sha)throw Error('Missing canonical JSON with blob SHA');
-  return {sha:body.sha,registry:JSON.parse(Buffer.from(body.content.replace(/\s/g,''),'base64').toString('utf8'))};
+export async function readRegistry(repo,token,request=api) {
+  const body=await request('/repos/'+repo+'/contents/pipeline/active-workstreams.json?ref=main',token);
+  if(!SHA_PATTERN.test(body.sha||''))throw Error('Missing canonical JSON blob SHA');
+  // Contents omits inline base64 above 1 MB. Read the immutable blob
+  // identified by that response, retaining the same SHA for the later CAS.
+  const blob=body.encoding==='base64'&&body.content?body:
+    await request('/repos/'+repo+'/git/blobs/'+body.sha,token);
+  if(blob.sha!==body.sha||blob.encoding!=='base64'||typeof blob.content!=='string')
+    throw Error('Canonical registry blob missing or mismatched');
+  const bytes=Buffer.from(blob.content.replace(/\s/g,''),'base64');
+  const actual=createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex');
+  if(actual!==body.sha)throw Error('Canonical registry blob digest mismatch');
+  return {sha:body.sha,registry:JSON.parse(bytes.toString('utf8'))};
 }
 async function activeRuns(repo,token,branch) {
   const runs = new Map();

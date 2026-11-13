@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {decideAreaRelease,applyAreaRelease} from './area-handoff.mjs';
+import {decideAreaRelease,applyAreaRelease,readRegistry} from './area-handoff.mjs';
 import fs from 'node:fs';
 
 const id='valoria-master-plan-layered-construction-20261016';
@@ -84,4 +84,23 @@ test('workflow remains hosted and only runs for authorized push, completion or d
   assert.match(y,/contents: write/);
   assert.doesNotMatch(y,/cancel-in-progress:\s*true/);
   assert.doesNotMatch(y,/runs-on: \[self-hosted/);
+});
+
+test('large canonical registry uses immutable blob and preserves CAS identity',async()=>{
+  const {createHash}=await import('node:crypto');
+  const bytes=Buffer.from(JSON.stringify({active:[],history:'x'.repeat(1100000)}));
+  const sha=createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex');
+  const calls=[];
+  const value=await readRegistry('owner/repo','test',async(path)=>{
+    calls.push(path);
+    return calls.length===1?{sha,encoding:'none',content:''}:
+      {sha,encoding:'base64',content:bytes.toString('base64')};
+  });
+  assert.equal(value.sha,sha);
+  assert.equal(value.registry.history.length,1100000);
+  assert.equal(calls[1],'/repos/owner/repo/git/blobs/'+sha);
+  await assert.rejects(readRegistry('owner/repo','test',async()=>({sha,encoding:'base64',content:'e30='})),/digest mismatch/);
+  let count=0;
+  await assert.rejects(readRegistry('owner/repo','test',async()=>++count===1?
+    {sha,encoding:'none'}:{sha:'a'.repeat(40),encoding:'base64',content:bytes.toString('base64')}),/mismatched/);
 });
