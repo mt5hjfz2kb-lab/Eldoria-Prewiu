@@ -47,6 +47,8 @@ string coachFile="Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186FirstUseCoach
 string bagFile="Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs";
 string coachSource=File.ReadAllText(coachFile);
 string bagSource=File.ReadAllText(bagFile);
+string firstEntryFixture=File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs");
+string firstEntryGate=File.ReadAllText(".github/workflows/issue186-native.yml");
 if(!File.Exists(coachFile+".meta") ||
    !File.ReadAllText(coachFile+".meta").Contains("MonoImporter:") ||
    !bagSource.Contains("coach.Initialize(owner,authority)") ||
@@ -63,6 +65,12 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("nickname-input") ||
    !coachSource.Contains("nickname-confirm") ||
    !coachSource.Contains("narrative-continue") ||
+   !firstEntryFixture.Contains("firstNicknameInputOnRealHit=true") ||
+   !firstEntryFixture.Contains("firstNicknameConfirmOnRealHit=true") ||
+   !firstEntryFixture.Contains("firstStoryContinueOnRealHit=true") ||
+   !firstEntryFixture.Contains("Click(confirm,camera,target)") ||
+   !firstEntryGate.Contains("@($r.images).Count -ne 24") ||
+   !firstEntryGate.Contains("$r.realFirstHitClicks -ne 53") ||
    !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
        .Contains("firstSawmillHandOnRealHit") ||
    !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
