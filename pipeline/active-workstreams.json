@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T15:00:32.621Z",
+  "updated_at": "2026-11-13T15:09:16.597Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7381,7 +7381,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 70,
+      "ownership_revision": 71,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7429,7 +7429,9 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/eldoria-beta-postmerge-queue.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
@@ -7705,11 +7707,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
+        "status": "claimed",
         "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 70,
-        "updated_at": "2026-11-13T14:11:42.826Z",
-        "reason": "All native certification and normal main Unity tests/build/benchmark completed successfully; only hosted publication remains."
+        "ownership_revision": 71,
+        "updated_at": "2026-11-13T15:09:16.597Z",
+        "reason": "Owner reported physical navigation/world regression; certify semantic navigation fix and exact current saved-game world entry."
       },
       "ownership_history": [
         {
