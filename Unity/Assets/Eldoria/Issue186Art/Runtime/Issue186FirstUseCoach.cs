@@ -136,6 +136,12 @@ namespace Eldoria.UI.RoyalGold.V2
                         {host=candidate;break;}
             }
             if(!host){Hide("canonical-world-host-not-ready");return;}
+            // The real session gateway may be replaced after a saved-game
+            // reload. Always follow the canonical city authority; never keep
+            // teaching from a stale, disconnected probe state.
+            var activeGateway=Property(Property(host,"City"),"Gateway") as ICommandGateway;
+            if(activeGateway==null){Hide("canonical-gateway-not-ready");return;}
+            if(!ReferenceEquals(gateway,activeGateway))gateway=activeGateway;
             var state=gateway.Snapshot();
             if(state==null){Hide("canonical-save-not-ready");return;}
             if(string.IsNullOrWhiteSpace(state.PlayerName))
