@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T14:25:00+01:00",
+  "updated_at": "2026-11-13T14:11:42.826Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7381,7 +7381,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 69,
+      "ownership_revision": 70,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7429,14 +7429,12 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/eldoria-beta-postmerge-queue.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA19_POST_NICKNAME_MODAL_REPAIR_NATIVE_VERIFICATION",
+      "phase": "VIGILIA_MAIN_CERTIFIED_HOSTED_PUBLICATION_IN_PROGRESS",
       "note": "Public WebKit43382127078 reproduced saved nickname plus unresponsive sawmill clicks with live render metrics. Candidate modal safe-area repair and real Continue raycast regression; no corrected beta published yet.",
       "next": "Run integrated native candidate26, inspect actual story screenshots and continuation; require real browser construction before republishing.",
       "last_verified": {
@@ -7707,10 +7705,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 69,
-        "updated_at": "2026-11-13T07:01:28.328Z"
+        "ownership_revision": 70,
+        "updated_at": "2026-11-13T14:11:42.826Z",
+        "reason": "All native certification and normal main Unity tests/build/benchmark completed successfully; only hosted publication remains."
       },
       "ownership_history": [
         {
@@ -8580,9 +8579,9 @@
         "destinations": "FAIL advanced fixture missing production narrative introduction",
         "typography": "2 objective rows GPU overflow at 900x1600; fix queued, not artistic approval"
       },
-      "last_verified_source_sha": "fb8727d3ac45e31e61ab8ba244fa395477eff16e",
-      "last_verified_native_run": 43329543960,
-      "last_verified_full_certificate_run": 43329553450,
+      "last_verified_source_sha": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
+      "last_verified_native_run": 43428539668,
+      "last_verified_full_certificate_run": 43433023729,
       "beta19_publication": {
         "source_sha": "fb8727d3ac45e31e61ab8ba244fa395477eff16e",
         "merge_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
@@ -8606,6 +8605,29 @@
         "qa_repair_implemented": false,
         "environment_block": "Local execution environment unavailable; GitHub connector remained usable",
         "physical_iphone_result": "OWNER_REPORTED_POST_NICKNAME_BLOCK_20261113"
+      },
+      "last_verified_main_gate_run": 43436862892,
+      "last_area_delivery": {
+        "at": "2026-11-13T14:11:42.826Z",
+        "source": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
+        "merge": "da87e7d2b0ba03b3a9e6b8a521e1efbb38f286af",
+        "native_run": 43428539668,
+        "construction_run": 43429097245,
+        "full_certificate_run": 43433023729,
+        "main_gate_run": 43436862892,
+        "windows_released": true,
+        "artistic_approval": "provisional_not_formal",
+        "pending": "Hosted public delivery, physical iPhone acceptance; nonblocking browser narrative title truncation documented."
+      },
+      "beta19_nickname_repair_publication": {
+        "source_sha": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
+        "merge_sha": "da87e7d2b0ba03b3a9e6b8a521e1efbb38f286af",
+        "delivery_head": "c47ccdc02ac594043ee51915590d7f6023692e34",
+        "run": 43439686229,
+        "status": "IN_PROGRESS_NOT_PUBLISHED",
+        "stable_beta18_preserved_in_verified_stage": true,
+        "physical_iphone_verified": false,
+        "external_testers_enabled": false
       }
     },
     {
