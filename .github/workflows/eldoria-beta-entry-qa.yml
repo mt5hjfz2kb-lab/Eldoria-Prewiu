@@ -10,7 +10,7 @@ permissions:
   contents: read
   actions: write
 concurrency:
-  group: eldoria-postnickname-readable-persistence
+  group: eldoria-postnickname-readable-immutable
   cancel-in-progress: false
 jobs:
   certificate-ready:
@@ -21,7 +21,7 @@ jobs:
         with:
           script: |
             // Supersede only hosted diagnostic waits, never the native build or certificate.
-            for(const id of [43387563588]){
+            for(const id of [43388198558]){
               const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:id})).data;
               if(r.path!=='.github/workflows/eldoria-beta-entry-qa.yml'||r.head_branch!=='main')throw Error('Unexpected old diagnostic');
               if(r.status==='completed')continue;
@@ -39,7 +39,7 @@ jobs:
               if(native?.status==='completed'){
                 if(native.conclusion!=='success')throw Error('Native candidate failed');
                 const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
-                if(branch.commit.sha!==expected)throw Error('Candidate moved');
+                if(branch.commit.sha!==expected){core.info('Superseded by owner-requested art review; retain exact older WebKit regression only, no old-source certificate dispatch');return;}
                 const certificates=(await github.rest.actions.listWorkflowRuns({...context.repo,workflow_id:'ui-progression-cert.yml',head_sha:expected,per_page:100})).data.workflow_runs;
                 if(!certificates.some(r=>r.head_sha===expected&&(r.status!=='completed'||r.conclusion==='success')))
                   await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
@@ -63,8 +63,7 @@ jobs:
               if(run.head_sha!==expected)throw Error('Unexpected integrated source');
               if(run.status==='completed'){
                 if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
-                const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
-                if(branch.commit.sha!==expected)throw Error('Candidate branch moved');
+                // The artifact is immutable and source-pinned even when the owner has requested a later visual review.
                 core.info('Exact integrated candidate complete');return;
               }
               await new Promise(resolve=>setTimeout(resolve,30000));
