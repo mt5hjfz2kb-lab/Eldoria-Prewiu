@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T19:43:59.968Z",
+  "updated_at": "2026-11-13T20:09:41.179Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -54,7 +54,7 @@
       "ownership_revision": 56,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "FIRST_ONBOARDING_GUIDED_POINTER_NOT_IN_PLAYER_BUILD",
+      "phase": "FIRST_ENTRY_NICKNAME_STORY_SAWMILL_NATIVE_ASSERTIONS_SOURCE_PASS_WAIT_WINDOWS",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
       "resources": [],
@@ -89,7 +89,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Connect the existing pointer/halo sprites to actual Vigilia first-use onboarding targets after nickname, nonblocking, authoritative objective-driven and raycast verified. Source and native QA before beta merge; do not use Windows while PR179 owns it.",
+      "next": "Existing source 8533c64d: first-hand native QA now requires 24 real Unity captures and 53 actual pointer hits (nickname input, real confirm, first narrative, Aserradero, saved bag/mail/reload). Source CI 43497996113 SUCCESS, NOT Unity. Wait until beta #179 native run43489752868 has completed and the Windows claim is safely released. Then reserve Windows with a new CAS revision, update native-request.txt REQUEST_FIRST_GUIDED_HAND_NATIVE pinned to that same branch SHA and run native; inspect screenshots/rejection reasons, fix and rerun before integrating with tested beta source. Do not publish/invite testers from source-only proof.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-eldoria-first-guided-hand-20261113",
       "ownership_history": [
@@ -311,6 +311,16 @@
         "deliverable": "Visible, actionable first-use hand in real Vigilia onboarding after nickname (sawmill selection then construction and unlocked steps) without blocking interaction or repeating after completion",
         "evidence": "Source tests followed by exact Unity real raycasts at phone and desktop sizes, browser saved-flow; first tap and save preserved",
         "handoff": "New exact first-use branch and candidate evidence, integrate only after beta runner lease releases; no tester invite from source-only checks"
+      },
+      "latest_source_qa": {
+        "head": "8533c64dbbe7d58a3bf5ff2f36883b201e360aee",
+        "run": 43497996113,
+        "result": "success",
+        "unity_native_tested": false,
+        "physical_iphone_tested": false,
+        "real_first_entry_screenshots": 0,
+        "required_photos": 24,
+        "required_first_hits": 53
       }
     },
     {
