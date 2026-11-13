@@ -137,6 +137,34 @@ class IntegratedStageTests(unittest.TestCase):
             stage.stage(self.args)
         self.assertFalse(self.args.output.exists())
 
+    def test_new_owner_candidate_requires_real_saved_world_entry_and_return(self):
+        self.prepare_replacement()
+        self.args.replace_source = 'prior-source'
+        self.args.require_world_entry = True
+        with patch.object(stage, 'DATA', self.data_hash), self.assertRaisesRegex(
+                ValueError, 'world-entry browser proof missing'):
+            stage.stage(self.args)
+        report = dict(source=stage.SOURCE, passed=True, worldEntryAndReentryVerified=True,
+            constructionVerified=True, constructionReloadVerified=True, errors=[],
+            worldEntries=[dict(entered=True, returned=True), dict(entered=True, returned=True)])
+        self.write(self.root / 'browser/world-entry/report.json', report)
+        with patch.object(stage, 'DATA', self.data_hash):
+            stage.stage(self.args)
+        proof = stage.read(self.args.output / 'integrated-owner-stage-proof.json')
+        self.assertEqual(proof['replaced_source_sha'], 'prior-source')
+        self.assertFalse(proof['external_testers_enabled'])
+        self.assertFalse(proof['physical_iphone_verified'])
+
+    def test_new_owner_candidate_rejects_mismatched_source_without_mutating_site(self):
+        self.prepare_replacement()
+        self.args.replace_source = 'prior-source'
+        self.args.expected_source_sha = 'a' * 40
+        with patch.object(stage, 'DATA', self.data_hash), self.assertRaisesRegex(
+                ValueError, 'different build'):
+            stage.stage(self.args)
+        self.assertFalse(self.args.output.exists())
+        self.assertEqual(stage.sha(self.args.pages), self.archive_sha)
+
     def test_reused_part_filename_gets_a_new_http_cache_key_without_changing_bytes(self):
         candidate = self.args.candidate
         before = stage.tree(candidate)
