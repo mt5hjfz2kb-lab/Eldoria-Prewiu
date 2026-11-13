@@ -63,6 +63,10 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("nickname-input") ||
    !coachSource.Contains("nickname-confirm") ||
    !coachSource.Contains("narrative-continue") ||
+   !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
+       .Contains("firstSawmillHandOnRealHit") ||
+   !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
+       .Contains("Actual Aserradero tutorial hand did not find a frontmost hit") ||
    coachSource.Contains("new GameObject(\"Canvas\"") ||
    coachSource.Contains("gateway.Execute("))
 {
