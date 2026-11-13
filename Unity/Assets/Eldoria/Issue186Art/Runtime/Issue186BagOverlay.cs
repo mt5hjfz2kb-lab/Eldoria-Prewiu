@@ -171,6 +171,11 @@ namespace Eldoria.UI.RoyalGold.V2
             hud=owner;gateway=authority;closeMail=closeMailbox;
             bridge=new ResourceExperienceUiBridge(gateway);
             if(!panel)Build();
+            // The same canonical HUD also owns first-journey coaching.
+            // No extra Canvas, save writer, or independent input controller.
+            var coach=GetComponent<Issue186FirstUseCoach>();
+            if(!coach)coach=gameObject.AddComponent<Issue186FirstUseCoach>();
+            coach.Initialize(owner,authority);
             Refresh();
         }
         void Build()
