@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T19:00:00+01:00",
+  "updated_at": "2026-11-13T18:42:50.858Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -49,12 +49,12 @@
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+      "owner": "chatgpt-eldoria-first-guided-hand-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 54,
-      "branch": "feature/issue186-reward-attention-guidance-20261111",
+      "ownership_revision": 55,
+      "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "REQUESTED_COMPACT_BAG_ATTACHMENT_MAIL_ART_CAPTURED_AND_FULL_NATIVE_REGRESSION_PASS",
+      "phase": "FIRST_ONBOARDING_GUIDED_POINTER_NOT_IN_PLAYER_BUILD",
       "claimed_at": "2026-11-11T14:14:48Z",
       "art_production_routing": "required",
       "resources": [],
@@ -89,7 +89,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Native painted receipt binding PASS; restored isolated project. Preserve original bag/mail art and review actual evidence.",
+      "next": "Connect the existing pointer/halo sprites to actual Vigilia first-use onboarding targets after nickname, nonblocking, authoritative objective-driven and raycast verified. Source and native QA before beta merge; do not use Windows while PR179 owns it.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-central-art-execution-20261111",
       "ownership_history": [
@@ -202,6 +202,14 @@
           "revision": 54,
           "transferred_at": "2026-11-12T22:49:59.866Z",
           "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
+        },
+        {
+          "from": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "to": "chatgpt-eldoria-first-guided-hand-20261113",
+          "previous_revision": 54,
+          "revision": 55,
+          "transferred_at": "2026-11-13T18:42:50.858Z",
+          "reason": "Owner explicitly requests continuation and reports first-entry tutorial hand missing; transfer existing #186 workstream to fix actual product, respecting active PR179 runner and reserving no Windows."
         }
       ],
       "resource_request": {
@@ -289,6 +297,12 @@
         "integration_pr": 179,
         "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
+      },
+      "note": "Owner reports no pointer when entering published Vigilia. Main binds hand only on Issue186BagOverlay first resource packet use, not first city/world/construction interaction; actual post-name guidance absent. Transfer owner-directed to this chat; preserve PR179 runner and source.",
+      "delivery_definition": {
+        "deliverable": "Visible, actionable first-use hand in real Vigilia onboarding after nickname (sawmill selection then construction and unlocked steps) without blocking interaction or repeating after completion",
+        "evidence": "Source tests followed by exact Unity real raycasts at phone and desktop sizes, browser saved-flow; first tap and save preserved",
+        "handoff": "New exact first-use branch and candidate evidence, integrate only after beta runner lease releases; no tester invite from source-only checks"
       }
     },
     {
