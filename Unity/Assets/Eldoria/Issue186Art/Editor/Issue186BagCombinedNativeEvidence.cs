@@ -41,7 +41,7 @@ namespace Eldoria.Issue186Art.Editor
         [Serializable] sealed class Report
         {
             public string status,resourceSource,uiSource,error,limitation,nativeRun,nativeAttempt;
-            public bool firstUseCoachPresent, firstSawmillHandOnRealHit;
+            public bool productionVigiliaInstalled, firstUseCoachPresent, firstSawmillHandOnRealHit;
             public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
@@ -83,6 +83,7 @@ namespace Eldoria.Issue186Art.Editor
         {
             Need(!EditorApplication.isPlaying,"Start from a fresh isolated Editor");
             Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+            Environment.SetEnvironmentVariable("ELDORIA_NEW_UI_ONLY","1");
             EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
             SessionState.SetBool(Flag,true);routine=null;deadline=0;
             EditorApplication.EnterPlaymode();
@@ -246,6 +247,9 @@ namespace Eldoria.Issue186Art.Editor
             var ui=(Component)type.GetMethod("Install",BindingFlags.Public|BindingFlags.Static)
                 .Invoke(null,new object[]{host});
             var canvas=(Canvas)type.GetProperty("NativeCanvas").GetValue(ui);
+            Need(type.GetProperty("ProductionPresentation")?.GetValue(ui) is bool exclusive && exclusive,
+                "The first-use test must run the real replacement presentation, never Editor legacy paint");
+            report.productionVigiliaInstalled=true;
             Need(canvas&&canvas!=host.Hud.GetComponent<Canvas>(),"Bag requires the actual independent canvas");
             var camera=host.PlayerCamera;Need(camera,"Canonical camera absent");
             var oldTarget=camera.targetTexture;float oldAspect=camera.aspect;int oldMask=camera.cullingMask;
