@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T14:11:42.826Z",
+  "updated_at": "2026-11-13T14:23:52.417Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7434,9 +7434,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "VIGILIA_MAIN_CERTIFIED_HOSTED_PUBLICATION_IN_PROGRESS",
-      "note": "Public WebKit43382127078 reproduced saved nickname plus unresponsive sawmill clicks with live render metrics. Candidate modal safe-area repair and real Continue raycast regression; no corrected beta published yet.",
-      "next": "Run integrated native candidate26, inspect actual story screenshots and continuation; require real browser construction before republishing.",
+      "phase": "VIGILIA_MAIN_AND_PUBLIC_WEBKIT_VERIFIED_PHYSICAL_IPHONE_PENDING",
+      "note": "Nickname freeze repair and approved retention art recovery are merged in main and published. Actual final public WebKit proves nickname persistence, readable story, construction and second reload; zero browser errors. Physical iPhone acceptance pending.",
+      "next": "Owner physical iPhone check on the published a2e956 build; then first 2-3 pilot testers before widening. Nonblocking initial title truncation remains documented.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8617,17 +8617,35 @@
         "main_gate_run": 43436862892,
         "windows_released": true,
         "artistic_approval": "provisional_not_formal",
-        "pending": "Hosted public delivery, physical iPhone acceptance; nonblocking browser narrative title truncation documented."
+        "pending": "Physical iPhone acceptance before first tester cohort; nonblocking browser narrative title truncation documented.",
+        "publication_run": 43439686229,
+        "public_webkit_verified": true
       },
       "beta19_nickname_repair_publication": {
         "source_sha": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
         "merge_sha": "da87e7d2b0ba03b3a9e6b8a521e1efbb38f286af",
         "delivery_head": "c47ccdc02ac594043ee51915590d7f6023692e34",
         "run": 43439686229,
-        "status": "IN_PROGRESS_NOT_PUBLISHED",
+        "status": "SUCCESS",
         "stable_beta18_preserved_in_verified_stage": true,
         "physical_iphone_verified": false,
-        "external_testers_enabled": false
+        "external_testers_enabled": false,
+        "published": true,
+        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&build=a2e956",
+        "public_webkit_job": 131936704425,
+        "public_webkit_artifact": 14045943514,
+        "public_webkit_sha256": "6bca2961fbddeb44f28b47fcc02a9bd8405c5d9e878144a408dfafb4ec5cf45b",
+        "public_webkit_verified": true,
+        "nickname_reload_verified": true,
+        "story_rendered_ink_verified": true,
+        "construction_and_second_reload_verified": true,
+        "errors": [],
+        "stable_beta18_preserved": true,
+        "previous_site_archive_release": 444306779,
+        "previous_site_archive_asset": 743890002,
+        "previous_site_tar_sha256": "421927fb72b1a920b63e1f32bea9e237b4770f293e15317cf2a04b6046c3fff5",
+        "art_approved": false,
+        "known_nonblocking_visual_issue": "Browser initial story title clips Valoria; body and Continue legible."
       }
     },
     {
