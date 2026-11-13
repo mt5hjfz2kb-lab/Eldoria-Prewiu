@@ -94,3 +94,12 @@ Request37 native/build completed successfully. Artifact14035627699 SHA2568bedc0a
 Full regression43425131794, package/browser43420580200 and construction43420644768 remain pending at this checkpoint. No changed engine has been merged or publicly deployed yet.
 
 Delivery audit inspected the actual stable wrapper and Unity loader from the SHA256-verified0b4 packaged artifact14030137330. Unity cacheControl=no-store bypasses UnityCache but is passed as custom control, not HTTP RequestInit.cache; segmented fetches reuse plain decoded_parts paths. New staging versions every actual decoded HTTP URL by its encoded-file SHA256, without touching payload bytes or player storage. Six preservation/cache-key tests pass, including same filename/new content, and applying it to the actual prior package verifies34 content-addressed requests with every payload and decoded-size/hash entry unchanged. This is not a claim that stale cache caused the original nickname defect or that final-source browser verification has completed.
+
+
+## Actual browser pixel regression — publication withheld
+
+Although source d274 completed integrated43420580200, construction43420644768 and full certification43425131794, its actual WebKit screenshot showed dark brown story ink on stone. The sampled body crop has luminance p90=0.190282 and zero bright pixels; the ivory title control passes the same measurement. Text.color assertions and successful clicks had not certified rendered legibility.
+
+Request39 source a2e956e11bc837a081c3eab1eb05c8ff094f4e05 binds a guarded dirty-vertices callback so legacy cinematic painters cannot submit brown vertices before Vigilia's late canvas callback. Restoration unregisters callbacks first. The native fixture invokes both legacy painters and checks the immediate color before another canvas update; actual browser QA now checks rendered story pixels, in addition to construction and two saved reloads. Integrated43428539668 has passed source compilation/contracts and actual retention interaction; remaining native/build/browser results are pending. No publication or final-source success is claimed.
+
+Request38 fc11 failed before native execution because a large Editor fixture was transferred from truncated command output. Corrected request39 transfers bounded chunks and compares the Git blob digest to the complete local file (c7c8cfb233ad84fe48aec90ceea39c8454bde92a). Never create repository content from potentially truncated tool output. The failed source was not merged or published.
