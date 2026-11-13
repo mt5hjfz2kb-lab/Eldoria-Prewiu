@@ -59,6 +59,10 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("NoUiBlocker") ||
    !coachSource.Contains("no-real-physical-hit") ||
    !coachSource.Contains("state.PlayerName") ||
+   !coachSource.Contains("ShowFirstNamePrompt()") ||
+   !coachSource.Contains("nickname-input") ||
+   !coachSource.Contains("nickname-confirm") ||
+   !coachSource.Contains("narrative-continue") ||
    coachSource.Contains("new GameObject(\"Canvas\"") ||
    coachSource.Contains("gateway.Execute("))
 {
