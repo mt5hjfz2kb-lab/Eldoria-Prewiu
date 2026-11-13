@@ -55,6 +55,19 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
   await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:150000});
   await page.waitForTimeout(4000);await screen('reloaded-built-city');
+  // The saved sawmill legitimately unlocks Aldric's next story beat on return.
+  // Finish that visible canonical dialogue before touching city navigation.
+  // The earlier probe clicked behind it and falsely called this save loss.
+  for(let beat=0;beat<12;beat++){
+   const rows=await screen('returning-built-story-'+beat);
+   const next=rows.filter(r=>r.confidence>.4&&/^(CONTINUAR|CONTINUE|SIGUIENTE|NEXT|ENTENDIDO|COMENZAR|MOSTRAR TEXTO|REVEAL TEXT)$/.test(norm(r.text)));
+   if(next.length===0)break;
+   if(next.length!==1)throw Error('Ambiguous visible returning-player narrative control');
+   await page.mouse.click(next[0].x,next[0].y,{delay:150});
+   report.actions.push({kind:'returning-built-visible-dialogue',beat,...next[0]});save();
+   await page.waitForTimeout(2500);
+   if(beat===11)throw Error('Returning-player story failed to finish');
+  }
   // Reviewed actual three-control navigation after the first sawmill unlock.
   await page.mouse.click(195,776,{delay:150});await page.waitForTimeout(1500);
   const persisted=await screen('reloaded-sawmill');
