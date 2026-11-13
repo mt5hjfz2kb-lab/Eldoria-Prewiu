@@ -41,6 +41,7 @@ namespace Eldoria.Issue186Art.Editor
         [Serializable] sealed class Report
         {
             public string status,resourceSource,uiSource,error,limitation,nativeRun,nativeAttempt;
+            public bool firstUseCoachPresent, firstSawmillHandOnRealHit;
             public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
@@ -251,6 +252,35 @@ namespace Eldoria.Issue186Art.Editor
             RenderTexture rt=null;
             try
             {
+                // Real FIRST journey in the same disposable, named and
+                // narratively acknowledged player, BEFORE advanced bag seeds.
+                // This rejects the original defect where the approved hand
+                // existed only for first packet USE and never appeared beside
+                // the opening Aserradero interaction.
+                var firstStep=SliceRules.CurrentObjectiveKey(host.City.Gateway.Snapshot());
+                Need(firstStep=="b1.build-sawmill",
+                    "Starting onboarding objective changed: "+firstStep);
+                var firstCoach=host.Hud.GetComponent<Issue186FirstUseCoach>();
+                Need(firstCoach!=null,"No actual first-journey hand installed on canonical HUD");
+                report.firstUseCoachPresent=true;
+                rt=new RenderTexture(390,844,24,RenderTextureFormat.ARGB32);rt.Create();
+                camera.targetTexture=rt;camera.aspect=390f/844f;
+                camera.cullingMask|=1<<5;canvas.worldCamera=camera;
+                RenderUi(ui,390,844);
+                // Let the real MonoBehaviour Update and EventSystem run, not
+                // a synthetic onClick or our own direct pointer callback.
+                double pointerDeadline=EditorApplication.timeSinceStartup+1.2;
+                while(EditorApplication.timeSinceStartup<pointerDeadline)
+                    {yield return null;}
+                RenderUi(ui,390,844);
+                if(!firstCoach.Visible)
+                    Photograph(camera,rt,"FAILED-first-sawmill-guide",390,844);
+                Need(firstCoach.Visible && firstCoach.TargetId=="sawmill",
+                    "Actual Aserradero tutorial hand did not find a frontmost hit: "+
+                    firstCoach.Rejection+"; target="+firstCoach.TargetId);
+                Photograph(camera,rt,"first-sawmill-guide",390,844);
+                report.firstSawmillHandOnRealHit=true;
+                camera.targetTexture=oldTarget;rt.Release();Object.DestroyImmediate(rt);rt=null;
                 foreach(var size in new[]{(390,844),(900,1600),(844,390),(1600,900)})
                 {
                     int width=size.Item1,height=size.Item2;
