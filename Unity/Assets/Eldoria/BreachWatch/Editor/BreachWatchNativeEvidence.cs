@@ -147,7 +147,8 @@ namespace Eldoria.BreachWatch.Editor
                     if (host.Hud.NarrativeOpen)
                     {
                         Need(storyPages++ < 30, "Cannot complete authentic first-entry narrative");
-                        host.Hud.Modal.Extra.onClick.Invoke();
+                        if(BreachWatchProductionPresentation.Required)TouchVisibleProductionNarrative();
+                        else host.Hud.Modal.Extra.onClick.Invoke();
                         return;
                     }
                     if (EditorApplication.timeSinceStartup - afterNaming < .9) return;
@@ -320,6 +321,11 @@ namespace Eldoria.BreachWatch.Editor
             var input=prompt.GetComponentInChildren<InputField>(true);
             var confirm=prompt.GetComponentInChildren<Button>(true);
             Need(input && confirm,"Production nickname input or confirmation missing");
+            var identityArt=prompt.GetComponent<BreachWatchIdentityPresentation>();
+            Need(identityArt && identityArt.Installed &&
+                prompt.GetComponentsInChildren<InputField>(true).Length==1 &&
+                prompt.GetComponentsInChildren<Button>(true).Length==1,
+                "Nickname must have the engraved Vigilia presentation and one real input/confirmation");
             var camera=host.PlayerCamera;var previous=camera.targetTexture;
             float aspect=camera.aspect;int mask=camera.cullingMask;
             var active=RenderTexture.active;
@@ -368,6 +374,70 @@ namespace Eldoria.BreachWatch.Editor
             {
                 camera.targetTexture=previous;camera.aspect=aspect;camera.cullingMask=mask;RenderTexture.active=active;
                 target.Release();Object.DestroyImmediate(target);Object.DestroyImmediate(pixels);
+            }
+        }
+
+        // A callback invocation can pass with a dialog outside the viewport.
+        // This regression requires the real visible button to be the first
+        // GraphicRaycaster target on a 390x844 production Canvas after naming.
+        static void TouchVisibleProductionNarrative()
+        {
+            var ui=Object.FindFirstObjectByType<BreachWatchHud>();
+            Need(ui && ui.ProductionPresentation,"Production narrative fixture missing");
+            var camera=host.PlayerCamera;var previous=camera.targetTexture;
+            float aspect=camera.aspect;int mask=camera.cullingMask;
+            var active=RenderTexture.active;
+            var target=new RenderTexture(390,844,24);
+            var pixels=new Texture2D(390,844,TextureFormat.RGB24,false);
+            var folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+ArtifactDir+"/FirstEntry"));
+            Directory.CreateDirectory(folder);
+            try
+            {
+                camera.targetTexture=target;camera.aspect=390f/844f;camera.cullingMask|=1<<5;
+                ui.Reflow(390,844);ui.RenderNow();
+                host.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3CinematicFinish>()?.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();camera.Render();
+                // A late color property correction can pass while the browser
+                // still draws a mesh built with legacy brown. Require the
+                // color invariant immediately when the actual painter runs,
+                // before another canvas update can conceal that ordering bug.
+                host.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3CinematicFinish>()?.SynchronizeNow();
+                host.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV4DialogueArt>()?.SynchronizeNow();
+                Need(host.Hud.Modal.Body && host.Hud.Modal.Body.color.grayscale>.7f,
+                    "Legacy narrative painter can dirty a brown mesh before Vigilia renders");
+                Canvas.ForceUpdateCanvases();camera.Render();
+                Need(host.Hud.Modal.Body && host.Hud.Modal.Body.color.grayscale>.7f &&
+                     host.Hud.Modal.Body.color.a>.9f,
+                    "Canonical parchment ink made the Vigilia story unreadable");
+                var button=host.Hud.Modal.Extra;
+                Need(button && button.IsInteractable(),"Narrative Continue is not interactable");
+                var rect=(RectTransform)button.transform;
+                var corners=new Vector3[4];rect.GetWorldCorners(corners);
+                foreach(var corner in corners)
+                {
+                    var screen=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                    Need(screen.x>=0 && screen.x<=390 && screen.y>=0 && screen.y<=844,
+                        "Production Continue is offscreen after nickname: "+screen);
+                }
+                RenderTexture.active=target;pixels.ReadPixels(new Rect(0,0,390,844),0,0);pixels.Apply();
+                File.WriteAllBytes(Path.Combine(folder,"story-visible-"+storyPages+".png"),pixels.EncodeToPNG());
+                var point=RectTransformUtility.WorldToScreenPoint(camera,rect.TransformPoint(rect.rect.center));
+                var pointer=new PointerEventData(EventSystem.current){position=point,pointerId=-1,button=PointerEventData.InputButton.Left};
+                var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
+                Need(hits.Count>0 && hits[0].gameObject.GetComponentInParent<Button>()==button,
+                    "Production Continue is not first touch target after nickname");
+                ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerDownHandler);
+                ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerUpHandler);
+                ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerClickHandler);
+                File.AppendAllText(Path.Combine(folder,"visible-narrative-touches.txt"),
+                    "PRODUCTION_VISIBLE_NARRATIVE_TOUCH "+storyPages+" at "+point+"\n");
+                Debug.Log("PRODUCTION_VISIBLE_NARRATIVE_TOUCH "+storyPages);
+            }
+            finally
+            {
+                camera.targetTexture=previous;camera.aspect=aspect;camera.cullingMask=mask;
+                RenderTexture.active=active;target.Release();
+                Object.DestroyImmediate(target);Object.DestroyImmediate(pixels);
             }
         }
 
@@ -810,8 +880,10 @@ namespace Eldoria.BreachWatch.Editor
                          x && x.sprite && x.sprite.name=="breach_signal")==1,
                      "Owner's approved glowing fissure must be ONE native transparent "+
                      "painted sprite, never the generic procedural X: "+name);
-                Need(ui.GetComponentsInChildren<BreachWatchFrameEngraving>(true).Length==0,
-                     "Procedural fallback trim stacked under approved gold contour: "+name);
+                Need(ui.GetComponentsInChildren<BreachWatchFrameEngraving>(true).All(trim=>
+                         trim.GetComponentInParent<BreachWatchIdentityPresentation>(true) &&
+                         !trim.isActiveAndEnabled),
+                     "City contains visible fallback trim or trim outside the closed identity modal: "+name);
                 Need(ui.HasSinglePremiumIdentity,
                     "Superseded player plate or second bevel stacked over the one definitive premium profile");
                 Need(!ui.GetComponentsInChildren<Transform>(true).Any(t=>

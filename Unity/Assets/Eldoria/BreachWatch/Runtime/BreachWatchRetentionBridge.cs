@@ -35,9 +35,10 @@ namespace Eldoria.BreachWatch
         public bool ReplacedOldChrome => theme && theme.Installed &&
             theme.OldRoyalChromeHidden && IsShowing && viewportRedirected;
         public RectTransform LiveScreenRect => IsShowing?root:null;
-        public bool HasSingleGradedScoutsPainting => IsShowing &&
+        public bool HasSingleRestoredScoutsPainting => IsShowing &&
             retention.OpenDestination == RoyalGoldV3EarlyRetentionScreens.Destination.Scouts &&
-            theme && theme.HasIndependentScoutColorGrade;
+            theme && theme.HasRestoredScoutPainting;
+        public int RestoredPlaneCount=>theme?theme.RestoredPlaneCount:0;
         public bool OwnsActualSafeViewport => viewportRedirected &&
             actualSafeField!=null && retention &&
             ReferenceEquals(actualSafeField.GetValue(retention),root);
@@ -103,6 +104,7 @@ namespace Eldoria.BreachWatch
             viewportRedirected=true;
             Canvas.ForceUpdateCanvases();
             retention.SynchronizeLayout();
+            theme.SynchronizeRecovered();
             return OwnsActualSafeViewport && theme.OldRoyalChromeHidden;
         }
 
@@ -114,6 +116,7 @@ namespace Eldoria.BreachWatch
             // The canonical Update() does this normally on real devices.
             Canvas.ForceUpdateCanvases();
             retention.SynchronizeLayout();
+            theme.SynchronizeRecovered();
         }
 
         void LateUpdate()

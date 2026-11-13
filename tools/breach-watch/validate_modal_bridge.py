@@ -25,7 +25,11 @@ def main():
           "root.SetParent(originalParent,false)" in b,
           "Must migrate and restore one existing ModalWindow")
     check("originalWindowScale" in b and
-          "window.localScale=originalWindowScale*fit" in b,
+          "window.localScale=new Vector3(fit,fit,originalWindowScale.z)" in b and
+          "var actualSafeArea=window.parent as RectTransform;" in b and
+          "window.anchorMin=window.anchorMax=new Vector2(.5f,0f);" in b and
+          "window.anchoredPosition=new Vector2(0f,12f);" in b and
+          "window.anchorMin=originalAnchorMin;window.anchorMax=originalAnchorMax;" in b,
           "Phone layout must be responsive without changing gameplay")
     check("if(old)Hide(old)" in b and
           "oldTargets" in b and "oldTransitions" in b and

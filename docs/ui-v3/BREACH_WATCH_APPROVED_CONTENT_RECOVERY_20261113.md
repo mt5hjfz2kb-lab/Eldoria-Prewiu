@@ -1,5 +1,9 @@
 # Vigilia: recovered approved content — 13 November 2026
 
+## Latest verified delivery checkpoint
+
+Source a2e956e11bc837a081c3eab1eb05c8ff094f4e05 passed integrated native/WebGL/package/browser43428539668, actual OCR contrast/story/construction/two-reload gate43429097245, and full production regression43433023729. Primary and independent native/browser image reviews are complete. Main integration and publication follow these exact certificates; physical iPhone and tester invitations remain unverified. Known nonblocking browser title truncation is recorded below.
+
 Owner request: restore nickname presentation and recover approved Vigilants/Scouts visual components on Vigilia, without reactivating the retired interface. Compare genuine Unity A/B before beta and tester launch.
 
 ## Evidence and cause
@@ -103,3 +107,18 @@ Although source d274 completed integrated43420580200, construction43420644768 an
 Request39 source a2e956e11bc837a081c3eab1eb05c8ff094f4e05 binds a guarded dirty-vertices callback so legacy cinematic painters cannot submit brown vertices before Vigilia's late canvas callback. Restoration unregisters callbacks first. The native fixture invokes both legacy painters and checks the immediate color before another canvas update; actual browser QA now checks rendered story pixels, in addition to construction and two saved reloads. Integrated43428539668 has passed source compilation/contracts and actual retention interaction; remaining native/build/browser results are pending. No publication or final-source success is claimed.
 
 Request38 fc11 failed before native execution because a large Editor fixture was transferred from truncated command output. Corrected request39 transfers bounded chunks and compares the Git blob digest to the complete local file (c7c8cfb233ad84fe48aec90ceea39c8454bde92a). Never create repository content from potentially truncated tool output. The failed source was not merged or published.
+
+
+## Exact request39 native and package review
+
+Native a2e956e11bc837a081c3eab1eb05c8ff094f4e05 run43428539668 completed successfully. Archive14039804707 SHA256 fd736fb0f92eea5949ba1bdd51fe7cb3952ebd0f7c1e626e19bbabf5540873d9 was downloaded and verified. New source-matched A/Bs and guardian5/15 captures were inspected by primary and independent reviewers: the recovery remains substantial, with no new material native pilot blocker. FirstEntry/story-visible-2 and4 show readable body and role text. Small narrative typography and path-label contrast remain polish considerations. Scout A/B contracts differ between disposable fixture states; comparison demonstrates presentation, not identical mission state.
+
+Package proof14042066275 SHA2565bb20684351be33160c1e12f255376e905a6da4980d18775009e96bae7402a0f pins bundle384f029c5dba1aa46b0cd1d324eb77dec73d5b833b83049b7bf0f68fffe9392c and delivered datacc337ac74d1c356619c3697166bb981e427bdc454094859729ad1bedce492ece. Exact-source browser, construction43429097245 and full regression43433023729 are pending at this checkpoint. Native captures alone do not close the observed WebKit ink defect.
+
+
+Actual WebKit run43428539668 now PASSED on sourcea2. Archive14043052275 SHA25653c9ac35fa18c21569c6136b0fd5edcb140493982bffabffe15dfe9a593a6337 was downloaded and verified. Candidate report errors=[], nickname Beta QA visibly survives reload, and the exact package identity matches. Primary and independent image reviews confirm body and role are now visibly ivory. The former OCR crop measured on this genuine new PNG passes p90=0.725648, bright fraction0.130406; the separate current-OCR construction gate is still pending. Desktop peak WebContent RSS: baseline18 2676544 KiB, candidate2418368 KiB. This is not physical iPhone memory certification.
+
+Known remaining presentation defect: the browser narrative title truncates VALORIA and displays LAS CENIZAS DE. Independent review classifies it as nonblocking for a small pilot because body and continuation are readable and actionable. Retain it as a follow-up; do not describe this screen as artistically finished. Native title is complete; native success alone did not expose this browser difference.
+
+
+Final construction archive14043098006 SHA256987e2917bd4b81ceaa14ad769b901635f40426a7b3b7a1e612a9b8046ea6a42c verifies current-source OCR pixel gate, nicknameReloadVerified, constructionVerified and constructionReloadVerified, with errors[]. Primary image review confirms Entrada QA and actual Aserradero NIVEL1 after the final reload. Complete exact-source certification43433023729 is SUCCESS.

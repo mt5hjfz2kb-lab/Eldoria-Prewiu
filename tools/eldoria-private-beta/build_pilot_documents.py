@@ -97,6 +97,7 @@ def main():
         p("Dispositivo y lanzamiento", "h"),
         p("iPhone físico: "+("confirmado para esta entrega." if phone else "pendiente en esta entrega. Comprobar entrada, ciudad/mundo, orientación, volver desde segundo plano y conservación del progreso.")),
         p("Tras esa comprobación, enviar a 2-3 personas. Revisar bloqueos y guardado antes de ampliar a 5 y después a 10-15."),
+        p("Pendiente visual no bloqueante: en navegador, el título inicial recorta la palabra Valoria. El cuerpo del relato y la acción son legibles; la pantalla no se considera artísticamente terminada.", "small"),
         p("Seguimiento", "h"),
         p("Utilizar los códigos P01-P15 y la hoja de seguimiento existente. Registrar versión, dispositivo, punto de abandono y respuesta. La guía recoge opinión manual; no presupone que haya telemetría o encuestas automáticas activas."),
         p("Un bloqueo que impida avanzar o una pérdida de progreso detiene la ampliación. Las observaciones visuales y de comprensión alimentan la siguiente mejora.", "small")]

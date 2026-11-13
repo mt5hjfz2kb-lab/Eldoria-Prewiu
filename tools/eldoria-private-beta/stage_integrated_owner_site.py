@@ -16,9 +16,9 @@ sys.path.insert(0, str(Path(__file__).with_name('iphone_ab')))
 from stage_compact_delta_ab import restore_tar
 from stage_copyadd_owner_ab import safe_path, verified_stream
 
-SOURCE = 'd274883786d84ee467d4ec94afff7e3d466fd64d'
-BUNDLE = '0c89250d3e08a066cbb4b8eecdaf78aabba31d2ce81b47cf9bc01391f444a8ec'
-DATA = '4c47047b6890e9e2f36441d7b32a904f3faa2d0350a452e3730615ef8c9e031d'
+SOURCE = 'a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
+BUNDLE = '384f029c5dba1aa46b0cd1d324eb77dec73d5b833b83049b7bf0f68fffe9392c'
+DATA = 'cc337ac74d1c356619c3697166bb981e427bdc454094859729ad1bedce492ece'
 ROUTE = 'beta-integrated-vigilia'
 RETIRED = ('beta-native325', 'beta-iphone-clock-ab')
 STABLE = {
@@ -150,7 +150,7 @@ def stage(a):
     proof = dict(status='STAGED_NOT_PUBLISHED_NOT_PHYSICAL_IPHONE', source_sha=SOURCE,
         bundle_sha256=BUNDLE, candidate_route=ROUTE, original_pages_tar_sha256=sha(a.pages),
         original_pages_tar_bytes=Path(a.pages).stat().st_size, required_durable_archive=True,
-        native_run=43420580200, full_certificate_run=43425131794,
+        native_run=43428539668, full_certificate_run=43433023729,
         stable_routes_preserved=list(STABLE), preserved_fingerprints=protected,
         archived_fingerprints=retired, archived_routes=list(RETIRED) if not replacement_source else [],
         replaced_source_sha=replacement_source, replaced_fingerprints=replaced,

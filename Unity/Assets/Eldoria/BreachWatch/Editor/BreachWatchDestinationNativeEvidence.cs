@@ -523,7 +523,7 @@ namespace Eldoria.BreachWatch.Editor
                     retention.ReplacedOldChrome,
                     "Real unlocked Vigilants still opens old HUD chrome");
                 CaptureMany(ui,folder,"vigilants",retentionShots,
-                    ()=>retention.IsShowing && retention.ReplacedOldChrome);
+                    ()=>retention.IsShowing && retention.ReplacedOldChrome && retention.RestoredPlaneCount==7);
                 retention.Close();
                 Need(!retention.IsShowing,
                     "Vigilants did not return to new city Canvas");
@@ -531,45 +531,31 @@ namespace Eldoria.BreachWatch.Editor
                     RoyalGoldV3EarlyRetentionScreens.Destination.Scouts) &&
                     retention.ReplacedOldChrome,
                     "Real unlocked Scouts still opens old HUD chrome");
-                // Artistic material hypothesis: source image is color graded
-                // directly, without an extra full-screen rectangle/Canvas.
-                // Validate genuine renderer and explicit restoration on exit.
-                var scenic=retention.LiveScreenRect.GetComponentsInChildren<RawImage>(true)
-                    .FirstOrDefault(x=>x && x.name==
-                        "Original illustrated world / decorative only");
-                Need(scenic && (BreachWatchProductionPresentation.Required || retention.HasSingleGradedScoutsPainting),
-                    "Scouts violet-night palette was not applied to the REAL world image");
-                // Production must bind all three mission cards to the new
-                // authored surface; historical A/B remains available outside
-                // the production-only fixture.
-                var realPaper=retention.LiveScreenRect.GetComponentsInChildren<Image>(true)
-                    .Where(image=>image && image.name=="Reference parchment / visual only")
-                    .ToArray();
-                if(BreachWatchProductionPresentation.Required)
-                {
-                    AuditExclusivePresentation();
-                    Need(fixture.Retention.Orders.Any(order=>!order.Claimed),
-                        "Scout destination evidence requires real generated orders");
-                    var ink=retention.LiveScreenRect.GetComponentsInChildren<Text>(true)
-                        .Where(label=>label.name=="Readable contract heading" ||
-                            label.name=="Real scout order reward and status").ToArray();
-                    Need(ink.Length==6 && ink.All(label=>label.color.r>.85f && label.color.g>.70f),
-                        "Scout contract text retained dark parchment ink on new stone");
-                    var newPaper=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
-                    Need(realPaper.Length==3 && realPaper.All(image=>
-                        image.sprite==newPaper && image.isActiveAndEnabled),
-                        "Scout cards retained retired paper or lost a visible mission surface");
-                }
-                else Need(realPaper.Length==3 && realPaper.All(image=>image.sprite),
-                    "Historical Scout folio fixture lost its three mission cards");
+                // Assert the recovered authored composition, even in production.
+                // A disabled canonical painter is not evidence of visible artwork.
+                Need(retention.HasSingleRestoredScoutsPainting && retention.RestoredPlaneCount==1,
+                    "Scouts lost the actual approved illustration on Vigilia");
+                AuditExclusivePresentation();
+                Need(fixture.Retention.Orders.Any(order=>!order.Claimed),
+                    "Scout destination evidence requires real generated orders");
+                var ink=retention.LiveScreenRect.GetComponentsInChildren<Text>(true)
+                    .Where(label=>label.name=="Readable contract heading" ||
+                        label.name=="Real scout order reward and status").ToArray();
+                Need(ink.Length==6 && ink.All(label=>label.color.grayscale<.35f),
+                    "Scout contract text must remain readable on recovered light paper");
+                var paper=retention.LiveScreenRect.GetComponentsInChildren<Image>(true)
+                    .Where(image=>image && image.name=="Vigilia / recovered blank cartographer paper").ToArray();
+                Need(paper.Length==3 && paper.All(image=>image.isActiveAndEnabled &&
+                    image.sprite && image.sprite.texture.name=="scout-parchment-v3" && !image.raycastTarget),
+                    "Scouts require three visible live paper contracts, without intercepting input");
+                var oldPaper=retention.LiveScreenRect.GetComponentsInChildren<Image>(true)
+                    .Where(image=>image && image.name=="Reference parchment / visual only").ToArray();
+                Need(oldPaper.All(image=>!image.enabled),"Retired Scout material renderer was reactivated");
                 CaptureMany(ui,folder,"scouts",retentionShots,
                     ()=>retention.IsShowing && retention.ReplacedOldChrome &&
-                        (BreachWatchProductionPresentation.Required || retention.HasSingleGradedScoutsPainting));
+                        retention.HasSingleRestoredScoutsPainting);
                 retention.Close();
-                Need(!retention.IsShowing,
-                    "Scouts did not return to new city Canvas");
-                Need(scenic && scenic.color==Color.white,
-                    "Reversible Scouts grade leaked into the old canonical UI");
+                Need(!retention.IsShowing,"Scouts did not return to new city Canvas");
                 ui.SelectBuilding("");
                 var treasures=Object.FindObjectsByType<Eldoria.DailyTreasures.DailyTreasurePanel>(
                     FindObjectsInactive.Include,FindObjectsSortMode.None);
