@@ -32,6 +32,7 @@ namespace Eldoria.BreachWatch
         Transform originalParent;
         int originalSibling;
         Vector3 originalWindowScale;
+        Vector2 originalAnchorMin,originalAnchorMax,originalPivot,originalPosition;
         Sprite slicedStone;
         int lastWidth=-1,lastHeight=-1;
         float lastCanvasScale=-1f;
@@ -64,6 +65,8 @@ namespace Eldoria.BreachWatch
             originalParent=root.parent;
             originalSibling=root.GetSiblingIndex();
             originalWindowScale=window.localScale;
+            originalAnchorMin=window.anchorMin;originalAnchorMax=window.anchorMax;
+            originalPivot=window.pivot;originalPosition=window.anchoredPosition;
             var oldWindow=window.GetComponent<Graphic>();
             if(oldWindow)Hide(oldWindow);
             AddSurface(window,stone,"Vigilia / one forged stone modal",false,false);
@@ -159,6 +162,12 @@ namespace Eldoria.BreachWatch
             foreach(var pair in productionTargets)
                 if(pair.Key && pair.Value)
                 {pair.Key.targetGraphic=pair.Value;pair.Key.transition=Selectable.Transition.None;}
+            // Canonical narrative layout runs before this bridge and still
+            // measures the retired Canvas. Its world coordinates cannot be
+            // used in the independent camera Canvas. Resolve presentation
+            // against the modal's actual safe-area parent on every render,
+            // including the first story immediately after nickname commit.
+            if(realModal && realModal.gameObject.activeInHierarchy)Reflow();
         }
         void LateUpdate()
         {
@@ -174,15 +183,18 @@ namespace Eldoria.BreachWatch
             if(!window || !visualCanvas)return;
             lastWidth=Screen.width;lastHeight=Screen.height;
             lastCanvasScale=visualCanvas.scaleFactor;
-            var scale=visualCanvas.scaleFactor;
-            if(scale<=0f)scale=1f;
-            float availableW=Mathf.Max(210f,Screen.width/scale-24f);
-            float availableH=Mathf.Max(175f,Screen.height/scale-24f);
+            var actualSafeArea=window.parent as RectTransform;
+            if(!actualSafeArea)return;
+            float availableW=Mathf.Max(1f,actualSafeArea.rect.width-24f);
+            float availableH=Mathf.Max(1f,actualSafeArea.rect.height-24f);
             var size=window.rect.size;
             if(size.x<1f||size.y<1f)return;
             float fit=Mathf.Min(1f,Mathf.Min(availableW/size.x,
                 availableH/size.y));
-            window.localScale=originalWindowScale*fit;
+            window.localScale=new Vector3(fit,fit,originalWindowScale.z);
+            window.anchorMin=window.anchorMax=new Vector2(.5f,0f);
+            window.pivot=new Vector2(.5f,0f);
+            window.anchoredPosition=new Vector2(0f,12f);
         }
 
         public void Restore()
@@ -199,7 +211,9 @@ namespace Eldoria.BreachWatch
             oldGraphics.Clear();
             foreach(var go in replacements)if(go)Destroy(go);
             replacements.Clear();
-            if(window)window.localScale=originalWindowScale;
+            if(window){window.localScale=originalWindowScale;
+                window.anchorMin=originalAnchorMin;window.anchorMax=originalAnchorMax;
+                window.pivot=originalPivot;window.anchoredPosition=originalPosition;}
             if(root && originalParent)
             {
                 root.SetParent(originalParent,false);

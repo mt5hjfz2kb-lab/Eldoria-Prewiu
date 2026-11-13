@@ -1,14 +1,14 @@
 {
   "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-  "ownership_revision": 64,
+  "ownership_revision": 69,
   "integration_pr": 179,
   "baseline": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
   "ui": "d868f9860f3607dbacc406a290f8e8bb623dea74",
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 25,
-  "previous_run": 43328122042,
-  "correction": "Native24 passes latest city bounds, retention return/footer glyphs, all destinations/fonts and rewards. Strict terrain probe rejects missing original BastionIII Granary/stock/fissure assets; old I-V run also logged these errors without failing. Hydrate only exact 51 audited original production-art files (108788643 bytes) read-only from the known prior native/warm checkout, checking every SHA256 before copying and refusing changed existing files. Reuse existing recovery technique; do not bypass runtime error or terrain parity gates.",
+  "attempt": 26,
+  "previous_run": 43329543960,
+  "correction": "Owner beta19 post-nickname block reproduced in public WebKit43382127078: saved name, 12 actual sawmill clicks with no response, live ~26fps. Canonical cinematic converts retired Canvas world coordinates into moved independent modal parent; clamp modal using its actual safe-area parent on every render. Add actual visible in-viewport Continue raycast and pointer-event regression after nickname, replacing callback-only narrative bypass. Retain all source/UI/reward/terrain/campaign/WebGL checks.",
   "build_candidate": true
 }
