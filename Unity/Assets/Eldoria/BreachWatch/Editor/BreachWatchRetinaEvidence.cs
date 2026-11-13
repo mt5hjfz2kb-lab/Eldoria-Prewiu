@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using Eldoria.ReferenceClean;
+using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -79,6 +80,54 @@ namespace Eldoria.BreachWatch.Editor
             File.WriteAllText(Path.Combine(retinaFolder,"retina-native-report.json"),
                 JsonUtility.ToJson(report,true));
         }
+        // Additional real destinations are captured while their canonical
+        // controller is already showing; neither ownership nor save changes.
+        public static void CaptureVisibleUi(BreachWatchHud ui,
+            ValoriaIntegratedWorld host,string output,string label)
+        {
+            Need(ui && host,"No live Vigilia Canvas / probe game");
+            if(label=="bag")
+            {
+                var bag=host.Hud.GetComponent("Issue186BagOverlay");
+                var open=bag?.GetType().GetProperty("IsOpen");
+                Need(open!=null && (bool)open.GetValue(bag,null),
+                    "No genuinely opened resource bag for 3x evidence");
+            }
+            else
+            {
+                Need(ui.RealMailbox && ui.RealMailbox.IsShowing,
+                    "Retina mailbox evidence requires the real open mailbox");
+                Need(label=="mail" || label=="mail-report-document",
+                    "Only genuine mailbox surfaces may use this capture route");
+            }
+            var folder=Path.Combine(output,"retina-3x",label);
+            Directory.CreateDirectory(folder);
+            string before=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            var samples=new List<RetinaShot>();
+            try
+            {
+                foreach(var logical in new[]{(390,844),(844,390),(900,1600)})
+                    samples.Add(Shoot(ui,host,host.PlayerCamera,folder,label,
+                        logical.Item1,logical.Item2,before));
+            }
+            finally
+            {
+                ui.SetNativeCaptureDensity(1f);
+                ui.Reflow(390,844);
+                ui.RenderNow();
+            }
+            Need(before==JsonUtility.ToJson(host.City.Gateway.Snapshot()),
+                "Mailbox high-DPI review unexpectedly changed a saved message");
+            var report=new RetinaReport {
+                status="UNITY_RETINA_3X_CAPTURED_ART_REVIEW_PENDING",
+                source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
+                notice="Actual native 3x destination, matched logical layout and disposable saved-state probe; not physical iPhone, WebGL DPR proof or owner approval.",
+                artworkApproved=false,physicalIphoneTested=false,
+                changedWebGLPixelRatio=false,shots=samples.ToArray()
+            };
+            File.WriteAllText(Path.Combine(folder,"retina-native-report.json"),
+                JsonUtility.ToJson(report,true));
+        }
         static RetinaShot Shoot(BreachWatchHud ui,ValoriaIntegratedWorld host,
             Camera camera,string output,string selection,int logicalWidth,
             int logicalHeight,string initialSave)
@@ -91,7 +140,7 @@ namespace Eldoria.BreachWatch.Editor
             var aspect=camera.aspect;
             var mask=camera.cullingMask;
             var active=RenderTexture.active;
-            string label=selection==""?"city":"bastion";
+            string label=selection==""?"city":selection;
             string filename="real-unity-"+label+"-"+logicalWidth+"x"+
                 logicalHeight+"-at-3x.png";
             string path=Path.Combine(output,filename);
@@ -104,6 +153,21 @@ namespace Eldoria.BreachWatch.Editor
                 ui.SetNativeCaptureDensity(density);
                 ui.Reflow(pxWidth,pxHeight);
                 ui.RenderNow();
+                Canvas.ForceUpdateCanvases();
+                if(label.StartsWith("mail"))
+                {
+                    var canonical=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
+                    if(canonical)canonical.SynchronizeLayout();
+                    if(ui.RealMailbox)ui.RealMailbox.SynchronizeVisual();
+                    ui.GetComponent<BreachWatchTypography>()?.SynchronizeNow();
+                }
+                if(label=="bag")
+                {
+                    var bag=host.Hud.GetComponent("Issue186BagOverlay");
+                    var refresh=bag?.GetType().GetMethod("Refresh");
+                    if(refresh!=null)refresh.Invoke(bag,null);
+                    ui.GetComponent<BreachWatchResourceBagBridge>()?.Synchronize();
+                }
                 Canvas.ForceUpdateCanvases();
                 camera.Render();
                 Canvas.ForceUpdateCanvases();

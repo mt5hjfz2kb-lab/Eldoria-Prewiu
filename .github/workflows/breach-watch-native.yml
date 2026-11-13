@@ -947,10 +947,84 @@ jobs:
                throw "Tampered or stale populated mail art screenshot: $($screen.file)"
             }
           }
+          # Require true native Retina screenshots of the empty mailbox and
+          # populated real document. They are not 1x screenshots upsampled.
+          foreach($surface in @('mail','mail-report-document')){
+            $retinaFolder=Join-Path $folder ('retina-3x/'+$surface)
+            $retinaFile=Join-Path $retinaFolder 'retina-native-report.json'
+            if(-not(Test-Path $retinaFile)){throw "No native 3x mailbox QA: $surface"}
+            $retina=Get-Content $retinaFile -Raw|ConvertFrom-Json
+            if($retina.source -ne $env:GITHUB_SHA -or
+               $retina.status -ne 'UNITY_RETINA_3X_CAPTURED_ART_REVIEW_PENDING' -or
+               $retina.artworkApproved -or $retina.physicalIphoneTested -or
+               @($retina.shots).Count -ne 3){
+              throw "Retina mailbox proof is stale/invalid: $surface"
+            }
+            foreach($shot in $retina.shots){
+              if($shot.physicalWidth -ne $shot.logicalWidth*3 -or
+                 $shot.physicalHeight -ne $shot.logicalHeight*3 -or
+                 $shot.density -ne 3 -or
+                 [math]::Abs($shot.retinaScale-$shot.authoredScale*3) -gt .08 -or
+                 -not $shot.noUserSaveChanges){
+                 throw "True mailbox 3x geometry or state mismatch: $($shot.file)"
+              }
+              $png=Join-Path $retinaFolder $shot.file
+              if(-not(Test-Path $png)){throw "Missing high-DPI mailbox PNG $($shot.file)"}
+              if((Get-Item $png).LastWriteTimeUtc -lt $start.AddSeconds(-3)){
+                 throw "Stale high-DPI mailbox evidence $($shot.file)"
+              }
+              if((Get-FileHash $png -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){
+                 throw "High-DPI mail pixels do not match evidence: $($shot.file)"
+              }
+            }
+          }
           if(-not(Select-String -Path $log -Pattern 'VIGILIA_REAL_DESTINATIONS_NATIVE_CAPTURED_ART_REVIEW_PENDING' -SimpleMatch -Quiet)){
              throw 'Native Editor did not log actual destination capture PASS'
           }
-          Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_4_POPULATED_MAIL_SCREENSHOTS_ART_PENDING'
+          $bagFile=Join-Path $folder 'BreachWatchBagEvidence.json'
+          if(-not(Test-Path $bagFile)){throw 'Missing genuine four-viewport resource bag QA'}
+          $bag=Get-Content $bagFile -Raw|ConvertFrom-Json
+          if($bag.source -ne $env:GITHUB_SHA -or
+             $bag.status -ne 'VIGILIA_REAL_BAG_CAPTURED_ART_REVIEW_PENDING' -or
+             $bag.artworkApproved -or -not $bag.probeOnly -or
+             -not $bag.saveUnchanged -or @($bag.screens).Count -ne 4){
+            throw 'Genuine in-memory bag QA report invalid'
+          }
+          foreach($screen in $bag.screens){
+            $image=Join-Path $folder $screen.file
+            if(-not(Test-Path $image)){throw "Missing real bag PNG $($screen.file)"}
+            if((Get-FileHash $image -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){
+              throw "Modified real bag screenshot $($screen.file)"
+            }
+          }
+          $bag3x=Join-Path $folder 'retina-3x/bag'
+          $bag3xFile=Join-Path $bag3x 'retina-native-report.json'
+          if(-not(Test-Path $bag3xFile)){throw 'Missing real 3x bag report'}
+          $retina=Get-Content $bag3xFile -Raw|ConvertFrom-Json
+          if($retina.source -ne $env:GITHUB_SHA -or
+             $retina.status -ne 'UNITY_RETINA_3X_CAPTURED_ART_REVIEW_PENDING' -or
+             $retina.artworkApproved -or $retina.physicalIphoneTested -or
+             @($retina.shots).Count -ne 3){
+            throw 'Incorrect 3x bag certification or missing shots'
+          }
+          foreach($shot in $retina.shots){
+            if($shot.density -ne 3 -or
+               $shot.physicalWidth -ne 3*$shot.logicalWidth -or
+               $shot.physicalHeight -ne 3*$shot.logicalHeight -or
+               [math]::Abs(3*$shot.authoredScale-$shot.retinaScale) -gt .08 -or
+               -not $shot.noUserSaveChanges){
+              throw "3x bag scale or game save mismatch $($shot.file)"
+            }
+            $png=Join-Path $bag3x $shot.file
+            if(-not(Test-Path $png)){throw "Missing 3x bag PNG $($shot.file)"}
+            if((Get-Item $png).LastWriteTimeUtc -lt $start.AddSeconds(-3)){
+               throw "Stale 3x bag image $($shot.file)"
+            }
+            if((Get-FileHash $png -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){
+               throw "3x bag hash mismatch $($shot.file)"
+            }
+          }
+          Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_BAG_MAIL_AND_3X_ART_PENDING'
       - name: Reject imported-font clipping and verify genuine reversible typography A/B
         shell: powershell
         run: |

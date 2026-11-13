@@ -279,6 +279,7 @@ namespace Eldoria.BreachWatch.Editor
             var unlockedNavShots=new List<Screen>();
             var retentionShots=new List<Screen>();
             var mailContentShots=new List<Screen>();
+            var bagShots=new List<Screen>();
             var treasureShots=new List<Screen>();
             try
             {
@@ -444,6 +445,7 @@ namespace Eldoria.BreachWatch.Editor
                      "Mail medallion did not open canonical new UI or stayed over its panel");
                 CaptureMany(ui,folder,"mail",shots,()=>mail.IsShowing &&
                     mail.ReplacedOldPainting);
+                BreachWatchRetinaEvidence.CaptureVisibleUi(ui,host,folder,"mail");
 
                 // Art QA of the POPULATED mailbox is indispensable. The
                 // original 16 screenshots exercised only empty categories.
@@ -500,8 +502,52 @@ namespace Eldoria.BreachWatch.Editor
                         ()=>mail.IsShowing &&
                             actualDocument.gameObject.activeInHierarchy &&
                             mail.ReplacedOldPainting));
+                BreachWatchRetinaEvidence.CaptureVisibleUi(ui,host,folder,
+                    "mail-report-document");
                 mail.Close();
                 Need(!mail.IsShowing,"Mailbox exit failed");
+                // Capture the real resource BAG UI using a disposable
+                // inventory; never issue an actual gateway command or
+                // persist a receipt to the owner's saved session.
+                if(fixture.ResourceRewards==null)
+                    fixture.ResourceRewards=new ResourceRewardInventory();
+                int bagCount=0;
+                foreach(var kind in new[]{"wood","stone","food"})
+                    foreach(int amount in new[]{100,1000,10000,100000})
+                    {
+                        string receipt="VIGILIA_NATIVE_BAG_TEST_ONLY_"+
+                            kind+"_"+amount;
+                        Need(ResourceRewardRules.TryIssue(fixture.ResourceRewards,
+                            receipt,"mission",kind,amount),
+                            "Unable to create disposable, exact tier bag packet "+
+                            receipt);
+                        bagCount++;
+                    }
+                Need(bagCount==12,"Must test 100 / 1K / 10K / 100K for all resources");
+                stateField.SetValue(gateway,fixture);
+                host.City.Apply(fixture);
+                host.Hud.Refresh();
+                ui.SelectBuilding("");
+                ui.RenderNow();
+                var bag=host.Hud.GetComponent("Issue186BagOverlay");
+                Need(bag!=null,"Canonical saved bag UI missing in integrated Vigilia");
+                var firstBagRoute=ui.GetComponentsInChildren<Button>(true)
+                    .FirstOrDefault(b=>b && b.name=="Resource 0" &&
+                        b.gameObject.activeInHierarchy);
+                Need(firstBagRoute && firstBagRoute.interactable,
+                    "Actual resource capsule must open canonical bag");
+                ClickActualMailControl(ui,firstBagRoute,false);
+                var bagOpen=bag.GetType().GetProperty("IsOpen");
+                Need(bagOpen!=null && (bool)bagOpen.GetValue(bag,null),
+                    "Native first-hit resource capsule did not open the real bag");
+                CaptureMany(ui,folder,"bag",bagShots,
+                    ()=>(bool)bagOpen.GetValue(bag,null));
+                BreachWatchRetinaEvidence.CaptureVisibleUi(ui,host,folder,"bag");
+                var closeBag=bag.GetType().GetMethod("Close");
+                Need(closeBag!=null,"Canonical bag cannot close");
+                closeBag.Invoke(bag,null);
+                Need(!(bool)bagOpen.GetValue(bag,null),
+                    "Native bag remained blocking gameplay after closing");
                 // Previously unverified canonical Vigilantes/Exploradores
                 // cannot remain invisible under the disabled original Canvas.
                 // Preserve actual saved progression, background, reports,
@@ -595,6 +641,8 @@ namespace Eldoria.BreachWatch.Editor
                 "Expected four real Unity orientations for each retained destination");
             Need(mailContentShots.Count==4,
                 "Expected two real-populated category and report images each");
+            Need(bagShots.Count==4,
+                "Expected one four-viewport genuine bag result");
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
@@ -611,6 +659,14 @@ namespace Eldoria.BreachWatch.Editor
                     notes="Actual single live treasure panel on Vigilia: real entry/close touches, four viewports, production font audit. Claims are verified by the separate native gateway fixture.",
                     probeOnly=true,saveUnchanged=true,artworkApproved=false,
                     screenshotCount=treasureShots.Count,screens=treasureShots.ToArray()
+                },true));
+            File.WriteAllText(Path.Combine(folder,"BreachWatchBagEvidence.json"),
+                JsonUtility.ToJson(new Report {
+                    source=report.source,
+                    status="VIGILIA_REAL_BAG_CAPTURED_ART_REVIEW_PENDING",
+                    notes="Exactly 12 temporary in-memory 100/1K/10K/100K resource packets. The real bag, existing buttons and saved UI were exercised. No commands, real grants or actual save mutations.",
+                    probeOnly=true,saveUnchanged=true,artworkApproved=false,
+                    screenshotCount=bagShots.Count,screens=bagShots.ToArray()
                 },true));
             var mailReport=new Report {
                 status="VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING",
