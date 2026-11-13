@@ -29,10 +29,10 @@ jobs:
               if(jobs.some(j=>!['certificate-ready','candidate-ready','public-interaction','prior-repair-interaction'].includes(j.name)))throw Error('Unknown diagnostic job');
               await github.rest.actions.cancelWorkflowRun({...context.repo,run_id:id});
             }
-            const expected='77cd948ab83caaf8bbe5dd4b153895ea96007254';
+            const expected='cba20ee1ee5968e442276a78f7c79c7d1620d6e3';
             const deadline=Date.now()+90*60*1000;
             while(Date.now()<deadline){
-              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43401580080})).data;
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43406898887})).data;
               if(run.head_sha!==expected)throw Error('Unexpected candidate');
               const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
               const native=jobs.find(j=>j.name==='native');
@@ -56,10 +56,10 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const expected='77cd948ab83caaf8bbe5dd4b153895ea96007254';
+            const expected='cba20ee1ee5968e442276a78f7c79c7d1620d6e3';
             const deadline=Date.now()+90*60*1000;
             while(Date.now()<deadline){
-              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43401580080})).data;
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43406898887})).data;
               if(run.head_sha!==expected)throw Error('Unexpected integrated source');
               if(run.status==='completed'){
                 if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
@@ -80,8 +80,8 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43401580080
-          name: integrated-mobile19-owner-site-77cd948ab83caaf8bbe5dd4b153895ea96007254
+          run-id: 43406898887
+          name: integrated-mobile19-owner-site-cba20ee1ee5968e442276a78f7c79c7d1620d6e3
           github-token: ${{ github.token }}
           path: candidate-site
       - uses: actions/setup-node@v4
@@ -89,7 +89,7 @@ jobs:
           node-version: '22'
       - name: Require visible narrative continuation and actual construction before release
         env:
-          QA_EXPECT_SOURCE: 77cd948ab83caaf8bbe5dd4b153895ea96007254
+          QA_EXPECT_SOURCE: cba20ee1ee5968e442276a78f7c79c7d1620d6e3
           QA_URL: http://127.0.0.1:18766/?eldoria_p0_lazy_world=1&eldoria_diag=1
           QA_REQUIRE_CONSTRUCTION: '1'
           QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-postnick-ocr
