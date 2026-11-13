@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T23:09:05.737Z",
+  "updated_at": "2026-11-13T23:26:02.335Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6989,8 +6989,8 @@
       "ownership_state": "claimed",
       "ownership_revision": 127,
       "write_scope_released": false,
-      "phase": "PHASE1_RETINA_SOURCE_GUARD_HARDENING_UNITY_NATIVE_PENDING_WINDOWS",
-      "next": "Un solo lote de Unity nativo sobre SHA 7eddd804f8658430b3c6c16b0e38fc941b4042f5 tras liberar legítimamente windows-runner-heavy (Issue186). Capturar ciudad/Bastión/mail vacío+informe/bolsa con 1x y 15 PNG 3x de 390x844,844x390,900x1600; comparar A/B mismo encuadre, ampliar botones 300%, revisar nitidez legibilidad solapes bordes y 100/1K/10K, no aceptar sin prueba; registrar reject/pass visual independiente. No tocar main beta ni fase2.",
+      "phase": "PHASE1_REFERENCE_AND_REAL_BASELINE_VERIFIED_SOURCE_QA_PASS_NATIVE_BLOCKED_BY_ISSUE186",
+      "next": "Source tested SHA1332a95f1a3ad36a6c0b425fef84014269edc685, doc-only HEAD7c65a557d33ef03dd71f2a6823b6c88ca0fb60c1. Obtain formal Windows lease after Issue186 release, not from idle jobs. Run exactly one authentic Unity capture on the same source: 15 PNG Retina 3x (6 city/Bastion, 6 mail/report, 3 bag) plus normal views, SHA/hash check, compare with approved reference JPEG and 12 verified BEFORE Unity captures. 300%-zoom genuine after pixels; verify real button first hits, no overlap and saved state. Zero budget; do not publish beta, change gameplay or enter phase2. Declare RECHAZADO until actual visual quality verified.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T19:49:05.773Z",
@@ -7428,9 +7428,9 @@
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       },
       "phase1_qa_20261113": {
-        "sha": "7eddd804f8658430b3c6c16b0e38fc941b4042f5",
+        "sha": "1332a95f1a3ad36a6c0b425fef84014269edc685",
         "branch": "feature/forja-oscura-native-proof-20261107",
-        "source_ci_run": 43521215631,
+        "source_ci_run": 43526553331,
         "source_ci_result": "success",
         "unity_executed_on_sha": false,
         "visual_approval": false,
@@ -7451,7 +7451,19 @@
           "eldoria-issue186-reward-attention-guidance-20261111"
         ],
         "save_mutation_intended": false,
-        "save_integrity_native_verified": false
+        "save_integrity_native_verified": false,
+        "docsHead": "7c65a557d33ef03dd71f2a6823b6c88ca0fb60c1",
+        "source_ci_verified_on_exact_code_sha": true,
+        "native_3x_completed": 0,
+        "base1x_files_hash_checked": 12,
+        "reference_sha256": "f57f1250951c906777e52d5a2e3524d9a6dfea3b64f283da82ad44a4a50e6e13",
+        "reference_dimensions": [
+          864,
+          1536
+        ],
+        "before_manifest_zip_sha256": "87d422a47c800e693139cea4d9f614dbfe7d93caa518bbdb3a9b231d498a1b2b",
+        "source_doc": "docs/ui-v3/BREACH_WATCH_PHASE1_UNIFIED_KIT_20261114.md",
+        "brief": "13 files original kit + Retina capture, 4 high-quality compressed UI surfaces and mailbox resolution cap 1024, source generator updated; 0€"
       },
       "source_guard_extension": {
         "purpose": "Roslyn parse ALL true 3x Editor source, verify exact UI import settings without licensed Windows runtime",
