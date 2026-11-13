@@ -51,7 +51,7 @@ def tree(root):
     return result
 
 
-def browser_gate(root):
+def browser_gate(root, source=SOURCE, bundle=BUNDLE, require_world=False):
     reports = list(Path(root).rglob('candidate/report.json'))
     need(len(reports) == 1, 'Exact candidate browser report missing')
     report = read(reports[0])
@@ -59,8 +59,20 @@ def browser_gate(root):
     need(report.get('entry', {}).get('reloaded') is True, 'Actual reload missing')
     need(report.get('vigiliaProductionInstallations', 0) >= 2, 'Vigilia missing after reload')
     identity = report.get('identity', {})
-    need(identity.get('source_sha') == SOURCE and identity.get('candidate_bundle_sha256') == BUNDLE,
+    need(identity.get('source_sha') == source and identity.get('candidate_bundle_sha256') == bundle,
          'Browser proof identifies a different build')
+    if require_world:
+        world_reports = list(Path(root).rglob('world-entry/report.json'))
+        need(len(world_reports) == 1, 'Exact real-control world-entry browser proof missing')
+        world = read(world_reports[0])
+        entries = world.get('worldEntries', [])
+        need(world.get('source') == source and world.get('passed') is True
+             and world.get('worldEntryAndReentryVerified') is True
+             and world.get('constructionVerified') is True
+             and world.get('constructionReloadVerified') is True
+             and not world.get('errors') and len(entries) == 2
+             and all(e.get('entered') and e.get('returned') for e in entries),
+             'Saved-game real-control world entry/reentry is not certified')
 
 
 def version_decoded_fetches(root):
@@ -88,10 +100,15 @@ def version_decoded_fetches(root):
 def stage(a):
     root, candidate, work = Path(a.output), Path(a.candidate), Path(a.work)
     need(not root.exists() and not work.exists(), 'Refuse replacing a local stage')
-    browser_gate(a.browser)
+    expected_source = getattr(a, 'expected_source_sha', None) or SOURCE
+    expected_bundle = getattr(a, 'expected_bundle_sha256', None) or BUNDLE
+    expected_data = getattr(a, 'expected_data_sha256', None) or DATA
+    browser_gate(a.browser, expected_source, expected_bundle,
+                 bool(getattr(a, 'require_world_entry', False)))
     identity = read(candidate / 'release-identity.json')
-    need(identity.get('source_sha') == SOURCE and identity.get('candidate_bundle_sha256') == BUNDLE
-         and identity.get('delivered_data_sha256') == DATA, 'Wrong native candidate')
+    need(identity.get('source_sha') == expected_source and
+         identity.get('candidate_bundle_sha256') == expected_bundle
+         and identity.get('delivered_data_sha256') == expected_data, 'Wrong native candidate')
     need(identity.get('native_journey_verified') is True
          and identity.get('native_destination_captures_verified') is True
          and identity.get('release_for_external_testers') is False
@@ -100,7 +117,7 @@ def stage(a):
     manifest = read(candidate / 'build-manifest.json')
     data = work / 'verified-candidate.bin'
     verified_stream(candidate, manifest['decoded_parts'][manifest['data']], data)
-    need(sha(data) == DATA, 'Delivered native data changed')
+    need(sha(data) == expected_data, 'Delivered native data changed')
     need(data.stat().st_size == manifest['decoded_sizes'][manifest['data']], 'Native data extent changed')
     data.unlink()
     for key in ('framework', 'code'):
@@ -150,10 +167,11 @@ def stage(a):
     versioned_fetches = version_decoded_fetches(root / ROUTE)
     after = tree(root)
     need(all(after.get(k) == v for k, v in protected.items()), 'A retained public file changed')
-    proof = dict(status='STAGED_NOT_PUBLISHED_NOT_PHYSICAL_IPHONE', source_sha=SOURCE,
-        bundle_sha256=BUNDLE, candidate_route=ROUTE, original_pages_tar_sha256=sha(a.pages),
+    proof = dict(status='STAGED_NOT_PUBLISHED_NOT_PHYSICAL_IPHONE', source_sha=expected_source,
+        bundle_sha256=expected_bundle, candidate_route=ROUTE, original_pages_tar_sha256=sha(a.pages),
         original_pages_tar_bytes=Path(a.pages).stat().st_size, required_durable_archive=True,
-        native_run=43428539668, full_certificate_run=43433023729,
+        native_run=getattr(a, 'native_run', 43428539668),
+        full_certificate_run=getattr(a, 'full_certificate_run', 43433023729),
         stable_routes_preserved=list(STABLE), preserved_fingerprints=protected,
         archived_fingerprints=retired, archived_routes=list(RETIRED) if not replacement_source else [],
         replaced_source_sha=replacement_source, replaced_fingerprints=replaced,
@@ -175,4 +193,11 @@ if __name__ == '__main__':
     for name in ('pages', 'candidate', 'browser', 'output', 'work'):
         parser.add_argument('--' + name, required=True)
     parser.add_argument('--replace-source', help='Exact source in the previous full Pages snapshot; replace only its Vigilia route')
+    parser.add_argument('--expected-source-sha', help='Pinned candidate source SHA')
+    parser.add_argument('--expected-bundle-sha256', help='Pinned candidate Unity bundle hash')
+    parser.add_argument('--expected-data-sha256', help='Pinned candidate delivered data hash')
+    parser.add_argument('--native-run', type=int, default=43428539668)
+    parser.add_argument('--full-certificate-run', type=int, default=43433023729)
+    parser.add_argument('--require-world-entry', action='store_true',
+                        help='Require real browser saved-game world entry and return twice')
     stage(parser.parse_args())
