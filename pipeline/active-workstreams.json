@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T07:25:09.725Z",
+  "updated_at": "2026-11-13T11:05:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -22,13 +22,13 @@
     {
       "id": "eldoria-relicario-premium-master-v2-20261113",
       "title": "Relicario — plantilla visual V2 premium modular 5:8, lista para integración futura",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 2,
+      "owner": "chatgpt-relicario-stat-plaques-v22-20261113",
+      "ownership_state": "claimed",
+      "ownership_revision": 3,
       "branch": "feature/relicario-premium-master-v2-20261113",
       "status": "active",
-      "phase": "DRAFT_PR_189_SOURCE_AND_CHROMIUM_QA_COMPLETE_UNITY_INTEGRATION_FUTURE",
-      "claimed_at": "2026-11-13T00:18:00+01:00",
+      "phase": "V22_STAT_PLAQUES_GEOMETRY_QA",
+      "claimed_at": "2026-11-13T11:05:00+01:00",
       "art_production_routing": "required",
       "resources": [],
       "scope": [
@@ -39,7 +39,7 @@
       "reason": "Owner explicitly requests bounded artistic uplift of previously approved card frame plus future PR; isolation from active beta I-V and Unity. No runner or paid tools.",
       "art_production_request": "pipeline/art-production-requests/eldoria-relicario-premium-master-v2-20261113.json",
       "previous_owner": "chatgpt-relicario-premium-v2-20261113",
-      "write_scope_released": true,
+      "write_scope_released": false,
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/189",
       "final_source_sha": "c15aec8c98b1fa11b24ffaaae6626eebf57a7c86",
       "final_evidence": "27 files match SHA, 8 variants same 5:8, 390x844 Chrome PASS, original art generator exactly reproducible, future Unity and owner ART approval pending.",
