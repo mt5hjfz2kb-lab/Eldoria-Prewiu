@@ -39,7 +39,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  const {measureStoryInk}=await import('./story_pixel_readability.mjs');
  report.storyInk=measureStoryInk(out+'/returning-nickname.png',storyLine);save();
  if(!report.storyInk.passed)throw Error('Rendered story ink remains dark on Vigilia stone');
- let provisionsClicked=false;
+ let constructionSiteClicked=false;
  for(let step=0;step<35;step++){
   const rows=await screen('after-name-'+step);
   const next=rows.filter(r=>r.confidence>.4&&/^(CONTINUAR|CONTINUE|SIGUIENTE|NEXT|ENTENDIDO|COMENZAR|MOSTRAR TEXTO|REVEAL TEXT)$/.test(norm(r.text)));
@@ -48,7 +48,12 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    const build=rows.filter(r=>r.confidence>.4&&norm(r.text)==='CONSTRUIR');
    const target=build.length===1?build[0]:null;
    if(target){await page.mouse.click(target.x,target.y,{delay:150});report.actions.push({step,kind:'visible-build-control',...target});}
-   else if(!provisionsClicked){await page.mouse.click(221,776,{delay:150});provisionsClicked=true;report.actions.push({step,kind:'reviewed-beta19-provisions-navigation',x:221,y:776});}
+   else if(!constructionSiteClicked){
+    const sites=rows.filter(r=>r.confidence>.4&&/^CONSTRUIR AQUI:\s*ASERRADERO$/.test(norm(r.text)));
+    if(sites.length!==1)throw Error('Expected one visible sawmill construction site');
+    await page.mouse.click(sites[0].x,sites[0].y,{delay:150});constructionSiteClicked=true;
+    report.actions.push({step,kind:'visible-sawmill-construction-site',...sites[0]});
+   }
    else if(rows.some(r=>/^(ASERRADERO|SAWMILL)$/.test(norm(r.text))) && rows.some(r=>/^(NIVEL|LEVEL)\s*1$/.test(norm(r.text)))){
     report.constructionVerified=report.actions.some(a=>norm(a.text||'')==='CONSTRUIR');break;
    }
@@ -73,8 +78,10 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    await page.waitForTimeout(2500);
    if(beat===11)throw Error('Returning-player story failed to finish');
   }
-  // Reviewed actual three-control navigation after the first sawmill unlock.
-  await page.mouse.click(195,776,{delay:150});await page.waitForTimeout(1500);
+  // Actual sawmill roof in reviewed returning-built-story-1 at 390x844.
+  // The bag medallion belongs to inventory and must never select a building.
+  await page.mouse.click(26,282,{delay:150});await page.waitForTimeout(1500);
+  report.actions.push({kind:'visible-built-sawmill',x:26,y:282});
   const persisted=await screen('reloaded-sawmill');
   report.constructionReloadVerified=persisted.some(r=>/^(ASERRADERO|SAWMILL)$/.test(norm(r.text))) &&
     persisted.some(r=>/^(NIVEL|LEVEL)\s*1$/.test(norm(r.text))) &&
