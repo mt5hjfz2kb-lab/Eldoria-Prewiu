@@ -323,8 +323,16 @@ namespace Eldoria.BreachWatch.Editor
                     " narrative="+host.Hud.NarrativeOpen+
                     " b="+gateway.Snapshot().BastionLevel+
                     " barracks="+gateway.Snapshot().BarracksLevel);
-                bool opened=military.TryOpen(
-                    RoyalGoldV3ManagementScreens.Destination.Training);
+                Need(host.Select("barracks"),"Built barracks cannot be selected in city");
+                ui.RenderNow();
+                var trainingEntry=ui.ActualBarracksTrainingEntry;
+                Need(trainingEntry && trainingEntry.gameObject.activeInHierarchy &&
+                     trainingEntry.interactable,"Built barracks has no actual Training access");
+                CaptureMany(ui,folder,"barracks-entry",shots,()=>
+                    trainingEntry.gameObject.activeInHierarchy && !military.IsShowing);
+                ClickActualMailControl(ui,trainingEntry,false);
+                bool opened=military.IsShowing && manager.CurrentDestination==
+                    RoyalGoldV3ManagementScreens.Destination.Training;
                 Debug.Log("VIGILIA_TRAINING_PREVIEW_STATE opened="+opened+
                     " canonical="+(manager!=null&&manager.IsOpen)+
                     " showing="+military.IsShowing+

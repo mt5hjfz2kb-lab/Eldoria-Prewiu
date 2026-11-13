@@ -278,10 +278,16 @@ namespace Eldoria.BreachWatch
                 text.resizeTextForBestFit=true;text.resizeTextMinSize=10;text.resizeTextMaxSize=24;
                 text.color=new Color(.96f,.91f,.80f);text.raycastTarget=false;return text;
             }
+            // Canonical icon 17 is an envelope, never the exploration raven.
+            if(kind==17)
+            {
+                var envelope=go.AddComponent<BreachWatchEmptyMailSeal>();
+                envelope.Compact=true;envelope.raycastTarget=false;return envelope;
+            }
             string asset=kind==0?"CleanRoom/profile":kind==4?"CleanRoom/nav_helm":
                 kind==5?"CleanRoom/nav_swords":kind==6?"CleanRoom/mission":
                 kind==7?"CleanRoom/nav_provisions":kind==9?"CleanRoom/nav_castle":
-                kind==11?"OwnerControls/close_medallion":kind==17?"CleanRoom/nav_raven":null;
+                kind==11?"OwnerControls/close_medallion":null;
             var sprite=kind>=1 && kind<=3?resources[kind-1]:
                 asset!=null?Resources.Load<Sprite>("VigiliaArt/"+asset):null;
             if(sprite)

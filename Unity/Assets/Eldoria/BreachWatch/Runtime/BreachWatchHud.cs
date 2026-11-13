@@ -53,7 +53,7 @@ namespace Eldoria.BreachWatch
         Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback, costHeader;
         readonly Image[] costIcons = new Image[2];
         readonly Text[] costQuantities = new Text[2];
-        Button actionButton, closeButton;
+        Button actionButton, closeButton, barracksTrainingButton;
         RawImage portraitView;
         BreachWatchBuildingPortrait buildingPortrait;
         BreachWatchCityComposition cityComposition;
@@ -98,6 +98,7 @@ namespace Eldoria.BreachWatch
         public BreachWatchDestinationBridge RealDestinations => destinationBridge;
         public BreachWatchMailboxBridge RealMailbox => mailboxBridge;
         public Button ActualMailboxEntry => mailUtilityButton;
+        public Button ActualBarracksTrainingEntry=>barracksTrainingButton;
         public BreachWatchHeroesBridge RealHeroes => heroesBridge;
         public BreachWatchRetentionBridge RealRetention => retentionBridge;
         public bool CanonicalModalVisibleOnIndependentCanvas => modalBridge &&
@@ -779,6 +780,14 @@ namespace Eldoria.BreachWatch
             actionLabel=Label(actionButton.transform,"Real action title",17,
                 TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
+            var trainingEntry=BuildButton(panel,"Barracks training",BreachWatchGlyph.Sigil.Army,
+                OpenBarracksTraining,BreachWatchPlate.PlateType.Navigation);
+            barracksTrainingButton=trainingEntry.GetComponent<Button>();
+            var trainingArt=trainingEntry.GetComponent<BreachWatchPlate>();
+            trainingArt.ApplyIndependentArt(Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_swords"));
+            trainingArt.VisualScale=.94f;
+            trainingEntry.GetComponentInChildren<BreachWatchGlyph>().enabled=false;
+            trainingEntry.gameObject.SetActive(false);
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
             var navLine=Rect("Subtle sculpted copper linkwork / no bottom HUD bar",buttonRow);
             Fill(navLine);
@@ -886,6 +895,16 @@ namespace Eldoria.BreachWatch
             // Reuse ONLY the existing real selection command and route, not UI.
             host.Hud.SelectBuilding(selected);
             RenderNow();
+        }
+        void OpenBarracksTraining()
+        {
+            if(!host || !barracksTrainingButton || !barracksTrainingButton.gameObject.activeInHierarchy ||
+               !destinationBridge || !host.TrySetWorld(false))return;
+            var previous=selected;SelectBuilding("");
+            if(destinationBridge.TryOpen(
+                Eldoria.UI.RoyalGold.V2.RoyalGoldV3ManagementScreens.Destination.Training))
+                selectedTab=2;
+            else SelectBuilding(previous);
         }
         void SubmitSelectedBuilding()
         {
@@ -1042,6 +1061,8 @@ namespace Eldoria.BreachWatch
             // A canonical modal handles its own Back/Close. When the actual
             // destination closes, restore the city navigation highlight;
             // never leave a selected emblem pointing at a hidden panel.
+            if(selectedTab==1 && resourceBagBridge &&
+               !resourceBagBridge.IsShowing)selectedTab=0;
             if(selectedTab==2 && destinationBridge &&
                !destinationBridge.IsShowing)selectedTab=0;
             if(selectedTab==4 && heroesBridge &&
@@ -1592,6 +1613,9 @@ namespace Eldoria.BreachWatch
                     (full.rect.height-disk)*.5f,disk,disk);
             }
 
+            if(barracksTrainingButton)
+                At((RectTransform)barracksTrainingButton.transform,-62f,8f,56f,56f);
+
             // The viewport matches the single illustration well painted into
             // the new panel. Do not letterbox it into a second smaller box.
             // CropPortraitToTrueGeometry preserves the model's proportions.
@@ -1703,6 +1727,14 @@ namespace Eldoria.BreachWatch
                         ?Color.white:new Color(.5f,.48f,.45f,.70f);
                 var b=snapshot.Building;
                 bool show=b!=null&&!string.IsNullOrEmpty(selected);
+                if(barracksTrainingButton)
+                {
+                    var state=host.City.Gateway.Snapshot();
+                    bool training=show && !host.InWorld && state.BastionLevel>=2 &&
+                        state.BarracksLevel>0 && (selected=="barracks" || selected=="upgrade-barracks");
+                    barracksTrainingButton.gameObject.SetActive(training);
+                    barracksTrainingButton.interactable=training;
+                }
                 panel.gameObject.SetActive(show);
                 if(show)
                 {

@@ -16,6 +16,7 @@ namespace Eldoria.BreachWatch
         Canvas canvas;
         Component bag;
         MethodInfo open, restore, refresh, countNew, countClaimable;
+        PropertyInfo visible;
         readonly Button[] buttons=new Button[3];
         readonly UnityAction[] listeners=new UnityAction[3];
         readonly Image[] novelty=new Image[3];
@@ -24,6 +25,7 @@ namespace Eldoria.BreachWatch
         bool installed,failed;
 
         public bool Installed=>installed&&bag;
+        public bool IsShowing=>Installed && !failed && visible!=null && (bool)visible.GetValue(bag);
         public void Initialize(ValoriaIntegratedWorld source,Canvas active,
             RectTransform[] capsules,Button actualMailbox)
         {
@@ -33,11 +35,12 @@ namespace Eldoria.BreachWatch
             if(!bag)return;
             var type=bag.GetType();
             open=type.GetMethod("OpenOnCanvas",new[]{typeof(Canvas)});
+            visible=type.GetProperty("IsOpen");
             restore=type.GetMethod("RestorePresentation",Type.EmptyTypes);
             refresh=type.GetMethod("Refresh",Type.EmptyTypes);
             countNew=type.GetMethod("NewPacketCount",new[]{typeof(string)});
             countClaimable=type.GetMethod("ClaimableMailCount",Type.EmptyTypes);
-            if(open==null||restore==null||refresh==null||countNew==null||
+            if(visible==null||open==null||restore==null||refresh==null||countNew==null||
                 countClaimable==null)return;
             for(int i=0;i<buttons.Length;i++)
             {
