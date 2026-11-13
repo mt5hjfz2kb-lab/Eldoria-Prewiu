@@ -10,7 +10,7 @@ permissions:
   contents: read
   actions: write
 concurrency:
-  group: eldoria-postnickname-repair-construction
+  group: eldoria-postnickname-readable-repair
   cancel-in-progress: false
 jobs:
   certificate-ready:
@@ -21,18 +21,18 @@ jobs:
         with:
           script: |
             // Supersede only hosted diagnostic waits, never the native build or certificate.
-            for(const id of [43383505422,43383706599]){
+            for(const id of [43385402224]){
               const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:id})).data;
               if(r.path!=='.github/workflows/eldoria-beta-entry-qa.yml'||r.head_branch!=='main')throw Error('Unexpected old diagnostic');
               if(r.status==='completed')continue;
               const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:id,per_page:100})).data.jobs;
-              if(jobs.some(j=>!['candidate-ready','public-interaction'].includes(j.name)))throw Error('Unknown diagnostic job');
+              if(jobs.some(j=>!['certificate-ready','candidate-ready','public-interaction'].includes(j.name)))throw Error('Unknown diagnostic job');
               await github.rest.actions.cancelWorkflowRun({...context.repo,run_id:id});
             }
-            const expected='1a73e962d9fdc2a6c3177195f845860474cde95c';
+            const expected='cf5a9f8c814e829b84664807e48f27a0068322f3';
             const deadline=Date.now()+90*60*1000;
             while(Date.now()<deadline){
-              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43382792518})).data;
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43387431116})).data;
               if(run.head_sha!==expected)throw Error('Unexpected candidate');
               const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
               const native=jobs.find(j=>j.name==='native');
@@ -56,10 +56,10 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const expected='1a73e962d9fdc2a6c3177195f845860474cde95c';
+            const expected='cf5a9f8c814e829b84664807e48f27a0068322f3';
             const deadline=Date.now()+90*60*1000;
             while(Date.now()<deadline){
-              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43382792518})).data;
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43387431116})).data;
               if(run.head_sha!==expected)throw Error('Unexpected integrated source');
               if(run.status==='completed'){
                 if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
@@ -81,8 +81,8 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 43382792518
-          name: integrated-mobile19-owner-site-1a73e962d9fdc2a6c3177195f845860474cde95c
+          run-id: 43387431116
+          name: integrated-mobile19-owner-site-cf5a9f8c814e829b84664807e48f27a0068322f3
           github-token: ${{ github.token }}
           path: candidate-site
       - uses: actions/setup-node@v4
@@ -90,7 +90,7 @@ jobs:
           node-version: '22'
       - name: Require visible narrative continuation and actual construction before release
         env:
-          QA_EXPECT_SOURCE: 1a73e962d9fdc2a6c3177195f845860474cde95c
+          QA_EXPECT_SOURCE: cf5a9f8c814e829b84664807e48f27a0068322f3
           QA_URL: http://127.0.0.1:18766/?eldoria_p0_lazy_world=1&eldoria_diag=1
           QA_REQUIRE_CONSTRUCTION: '1'
           QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-postnick-ocr
@@ -113,4 +113,50 @@ jobs:
         with:
           name: beta19-postnickname-diagnostic
           path: postnickname-evidence/
+          retention-days: 30
+
+  prior-repair-interaction:
+    continue-on-error: true
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43382792518
+          name: integrated-mobile19-owner-site-1a73e962d9fdc2a6c3177195f845860474cde95c
+          github-token: ${{ github.token }}
+          path: candidate-site
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Require visible narrative continuation and actual construction before release
+        env:
+          QA_OUT: prior-repair-evidence
+          QA_EXPECT_SOURCE: 1a73e962d9fdc2a6c3177195f845860474cde95c
+          QA_URL: http://127.0.0.1:18766/?eldoria_p0_lazy_world=1&eldoria_diag=1
+          QA_REQUIRE_CONSTRUCTION: '1'
+          QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-postnick-ocr
+        run: |
+          npm install --prefix "$RUNNER_TEMP/postnick-node" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/postnick-node/node_modules/.bin/playwright" install webkit
+          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+          export NODE_PATH="$RUNNER_TEMP/postnick-node/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs candidate-site 18766 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18766/release-identity.json; then break; fi
+            sleep 1
+          done
+          node --check tools/eldoria-private-beta/qa_postnickname.cjs
+          node tools/eldoria-private-beta/qa_postnickname.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prior-repair-postnickname-diagnostic
+          path: prior-repair-evidence/
           retention-days: 30
