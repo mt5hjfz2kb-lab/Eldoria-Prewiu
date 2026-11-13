@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T20:09:41.179Z",
+  "updated_at": "2026-11-13T20:21:59.884Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -51,13 +51,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 56,
+      "ownership_revision": 57,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "FIRST_ENTRY_NICKNAME_STORY_SAWMILL_NATIVE_ASSERTIONS_SOURCE_PASS_WAIT_WINDOWS",
+      "phase": "FIRST_USE_NATIVE_EXCLUSIVE_RUNNER_ACQUIRED",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -89,7 +91,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Existing source 8533c64d: first-hand native QA now requires 24 real Unity captures and 53 actual pointer hits (nickname input, real confirm, first narrative, Aserradero, saved bag/mail/reload). Source CI 43497996113 SUCCESS, NOT Unity. Wait until beta #179 native run43489752868 has completed and the Windows claim is safely released. Then reserve Windows with a new CAS revision, update native-request.txt REQUEST_FIRST_GUIDED_HAND_NATIVE pinned to that same branch SHA and run native; inspect screenshots/rejection reasons, fix and rerun before integrating with tested beta source. Do not publish/invite testers from source-only proof.",
+      "next": "Commit PR190/tools/reward-experience/native-request.txt with state=REQUEST_FIRST_GUIDED_HAND_NATIVE, owner/revision57 and no historical external overlay; this single-path push launches exact-source Unity native gate on the now-available Windows runner. Inspect screenshots and runtime result; keep beta preview owner-only until publication/physical verification.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-eldoria-first-guided-hand-20261113",
       "ownership_history": [
@@ -222,12 +224,13 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
-        "owner": "chatgpt-work-recovery-8b37e8b1eab0-20261112",
-        "ownership_revision": 53,
-        "updated_at": "2026-11-12T20:02:24.096Z"
+        "status": "claimed",
+        "owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
+        "ownership_revision": 57,
+        "updated_at": "2026-11-13T20:21:59.884Z",
+        "reason": "Owner-directed continuation of same canonical PR190; beta/native clean exit run43489752868, exact source CI43497996113 SUCCESS. Native fixture requires first nickname input/confirm, first story, sawmill, 24 shots, 53 real first hits. No other active Windows owner."
       },
-      "runner_claimed_at": "2026-11-12T19:54:12.808Z",
+      "runner_claimed_at": "2026-11-13T20:21:59.884Z",
       "runner_released_at": "2026-11-12T20:02:24.096Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
       "runner_claim_basis": "Exact March native/A-B completed, original artifact independently hash verified; next bounded native bag binding rotation regression. Same owner and source, no cancellation.",
@@ -7413,7 +7416,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 76,
+      "ownership_revision": 77,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7462,16 +7465,14 @@
         ".github/workflows/eldoria-beta-postmerge-queue.yml",
         ".github/workflows/eldoria-beta-owner-nav-pages.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "EXACT_NATIVE_QA_RERUN_AFTER_POINTER_FIX",
+      "phase": "NATIVE_AND_WEBGL_PASS_OWNER_PACKAGING_BROWSER_PAGES_PENDING",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Complete run43489752868 (exact controls/20 destination screenshots, saved reward, world reentry, WebGL packaging+browser) and auto-publish owner-only preview via pinned main workflow only on full PASS; verify published identity. Preserve prior deployed a2e956 and all saves. iPhone stability still requires device test, P0 #96 open.",
+      "next": "Preserve package-owner/browser-owner jobs of run43489752868 and source-pinned owner Pages workflow; verify actual published identity before reporting an owner-playable link. Do not cancel/change the active workflow or overwrite stable beta18. Physical iPhone and external testers remain unverified.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7740,11 +7741,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
-        "ownership_revision": 76,
-        "updated_at": "2026-11-13T18:18:31.751Z",
-        "reason": "Prepare exact corrected visual-navigation candidate and release proof after existing WebKit completes; no concurrent Windows run."
+        "ownership_revision": 77,
+        "updated_at": "2026-11-13T20:21:59.884Z",
+        "reason": "Successful native job 132108138117 completed on SHA 90465a9a after real Unity captures, saved gameplay, fresh WebGL and clean Editor/input restoration; package/browser/Pages remain independent hosted steps; release only the Windows resource, retain beta source author."
       },
       "ownership_history": [
         {
@@ -8148,7 +8149,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-13T15:19:11.279Z",
+      "runner_released_at": "2026-11-13T20:21:59.884Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
