@@ -93,7 +93,7 @@ namespace Eldoria.BreachWatch
         void TryOpen(){TryOpenDestination();}
         public bool TryOpenDestination()
         {
-            if(!CanOpen())return false;
+            if(!CanOpen() || !host.TrySetWorld(false))return false;
             try
             {
                 // Use the normal selection route to close building context.

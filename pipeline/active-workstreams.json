@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T15:09:16.597Z",
+  "updated_at": "2026-11-13T15:33:54.078Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7381,7 +7381,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 71,
+      "ownership_revision": 73,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7709,9 +7709,9 @@
         "resource": "windows-runner-heavy",
         "status": "claimed",
         "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 71,
-        "updated_at": "2026-11-13T15:09:16.597Z",
-        "reason": "Owner reported physical navigation/world regression; certify semantic navigation fix and exact current saved-game world entry."
+        "ownership_revision": 73,
+        "updated_at": "2026-11-13T15:33:54.078Z",
+        "reason": "Owner requests full icon/action audit and world-entry regression repair; certify grouped navigation cancellation, readable mail seal, unique world return and measured pre-world unused-assets release."
       },
       "ownership_history": [
         {
@@ -8091,7 +8091,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-13T00:59:42.812Z",
+      "runner_released_at": "2026-11-13T15:19:11.279Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -8319,7 +8319,7 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "All owned native jobs completed; main slice43337524622 SUCCESS, additional main certificate43338146170 FAILED in legacy fixture and completed cleanup. No currently in_progress Actions runs. Source ownership retained; no area approval or tester release.",
+      "runner_release_basis": "Native run43449861957 completed SUCCESS including cleanup and artifact; no WebGL build requested. Retain source workstream for world restart investigation and unpublished navigation candidate.",
       "last_completed_earned_campaign": {
         "run": 43231463013,
         "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
@@ -8654,6 +8654,33 @@
         "deliverable": "Coherent city/world, bag and mail navigation plus stable world entry on existing saved game",
         "evidence": "Native actual raycasts of every visible control; full browser world-entry/reentry and saved progress; physical iPhone outcome distinguished",
         "handoff": "Exact candidate, actual reports/screenshots, preserved save and open physical-device limitations"
+      },
+      "icon_navigation_candidate": {
+        "source": "bf1f35c09545be646d081ef27ec555e62dbc36cb",
+        "native_run": 43449861957,
+        "native_result": "success",
+        "artifact": 14050376507,
+        "artifact_sha256": "0f11197e285bcf57a9a39bf65659289fe19c1170846a68248750a63ad4530f63",
+        "visible_button_labels": false,
+        "bag_opens_saved_inventory": true,
+        "city_does_not_select_building": true,
+        "mail_icon": "sealed_letter",
+        "published": false,
+        "physical_iphone_verified": false,
+        "art_approved": false
+      },
+      "world_entry_baseline": {
+        "source": "a2e956e11bc837a081c3eab1eb05c8ff094f4e05",
+        "run": 43449196470,
+        "artifact": 14049472918,
+        "artifact_sha256": "ae9cbe1223c89d8e852aaf88e7241383329c85150e8349ab6698d01674cde33b",
+        "browser": "macOS WebKit26",
+        "two_world_entries_and_returns": true,
+        "errors": [],
+        "physical_iphone_verified": false,
+        "root_cause_confirmed": false,
+        "peak_sampled_webcontent_rss_mib": 2050,
+        "peak_sampled_gpu_rss_mib": 548
       }
     },
     {

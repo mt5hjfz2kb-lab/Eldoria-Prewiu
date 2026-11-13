@@ -56,6 +56,7 @@ namespace Eldoria.BreachWatch
         public bool TryOpen(RoyalGoldV3EarlyRetentionScreens.Destination destination)
         {
             if(!retention || !canvas || !host || IsShowing)return false;
+            if(host && host.WorldEntryPending && !host.TrySetWorld(false))return false;
             retention.Open(destination); // canonical Chapter I/II gate
             return retention.IsOpen && TryAdoptAlreadyOpen();
         }

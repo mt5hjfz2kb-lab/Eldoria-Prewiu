@@ -50,7 +50,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: request-source
-          sparse-checkout: tools/eldoria-private-beta/integrated-ui-request.json
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/art-direction/ai-authoring/integrated-ui-request.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - uses: actions/checkout@v4
@@ -450,6 +452,23 @@ jobs:
             if($source -ne $env:GITHUB_SHA){throw 'Integrated fixture source mismatch'}
             if([string]$data.status -match 'FAIL'){throw 'Integrated fixture reports failure'}
           }
+      - name: Verify actual deferred world load, cancellation, reentry and saved progress
+        if: needs.owner-preflight.outputs.build_candidate == 'true'
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
+          $env:VALORIA_GAMEPLAY_PROBE='1'
+          $env:ELDORIA_MEMORY_PHASES='1'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $xml=Join-Path $env:RUNNER_TEMP 'icon-navigation-world-playmode.xml'
+          $log=Join-Path $env:RUNNER_TEMP 'icon-navigation-world-playmode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1200000)){Stop-Process -Id $p.Id -Force;throw 'Owned world PlayMode test timed out'}
+          if($p.ExitCode -ne 0 -or -not(Test-Path $xml)){throw 'World PlayMode failed'}
+          [xml]$result=Get-Content $xml -Raw
+          if($result.'test-run'.result -ne 'Passed' -or [int]$result.'test-run'.passed -ne 1 -or [int]$result.'test-run'.failed -ne 0){throw 'Exact real world test did not pass'}
       - name: Compile an exact unpublished WebGL after native UI and campaign checks
         if: needs.owner-preflight.outputs.build_candidate == 'true'
         shell: powershell
@@ -621,6 +640,8 @@ jobs:
             ${{ runner.temp }}/breachwatch-retention-interaction.log
             ${{ runner.temp }}/DailyTreasureNativeEvidence.log
             ${{ runner.temp }}/Issue186BagCombinedNativeEvidence.log
+            ${{ runner.temp }}/icon-navigation-world-playmode.xml
+            ${{ runner.temp }}/icon-navigation-world-playmode.log
             ${{ runner.temp }}/breachwatch-native.log
             ${{ runner.temp }}/breachwatch-destinations.log
             ${{ runner.temp }}/breachwatch-preserved-*/**
@@ -635,7 +656,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/eldoria-private-beta
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/art-direction/ai-authoring
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
@@ -718,7 +741,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/eldoria-private-beta
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/art-direction/ai-authoring
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
@@ -787,6 +812,11 @@ jobs:
           assert candidate['identity']['source_sha']==os.environ['GITHUB_SHA']
           assert candidate.get('vigiliaProductionInstallations',0)>=2
           PY
+          export QA_OCR_EXECUTABLE="$RUNNER_TEMP/icon-navigation-ocr"
+          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+          QA_EXPECT_SOURCE="$GITHUB_SHA" QA_ICON_NAVIGATION=1 \
+            QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1' \
+            QA_OUT=browser-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
           if [ "$failed" != 0 ]; then exit 1;fi
       - name: Preserve real WebKit screenshots, logs and process memory measurements
         if: always()

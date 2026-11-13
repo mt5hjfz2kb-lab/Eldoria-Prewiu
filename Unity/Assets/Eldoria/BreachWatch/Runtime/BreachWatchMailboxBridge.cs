@@ -43,6 +43,7 @@ namespace Eldoria.BreachWatch
             if(!host || !host.Hud || !vigilia || !mailbox || IsShowing)
                 return false;
             // Canonical Open guards story introduction, modal and narrative.
+            if(host && host.WorldEntryPending && !host.TrySetWorld(false))return false;
             mailbox.Open();
             if(!mailbox.IsOpen)return false;
             // Transform.Find treats literal slashes in the name as path

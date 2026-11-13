@@ -240,6 +240,13 @@ namespace Eldoria.World4XCanon
   }
   IEnumerator BuildStaged(Transform existingWorld)
   {
+   // First-entry boundary: release assets no longer referenced after city/UI
+   // startup before allocating the region. Live scene fields retain their
+   // meshes, textures and save gateway; no asset or game object is destroyed.
+   RegionOneBlenderLandscape.TraceStartupMemory("entry-before-unused-release");
+   yield return Resources.UnloadUnusedAssets();
+   yield return null;
+   RegionOneBlenderLandscape.TraceStartupMemory("entry-after-unused-release");
    // Capture existing scene integration state ONCE, before creating the clean presentation.
    foreach(var r in existingWorld.GetComponentsInChildren<Renderer>(true))
    {

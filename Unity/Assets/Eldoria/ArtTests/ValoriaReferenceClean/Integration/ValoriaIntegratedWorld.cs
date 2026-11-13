@@ -58,6 +58,7 @@ namespace Eldoria.ReferenceClean {
 #endif
   public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe||P0LazyWorldProbe);
   bool deferredWorldEntryQueued;
+  public bool WorldEntryPending=>deferredWorldEntryQueued;
   string deferredWorldObjective;
   int deferredWorldEpoch;
   IEnumerator EnterWorldAfterDeferredBuild(int epoch)

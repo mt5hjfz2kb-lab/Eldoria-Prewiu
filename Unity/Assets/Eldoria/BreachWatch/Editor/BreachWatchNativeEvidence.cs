@@ -493,6 +493,9 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.HasNativePremiumTypography,
                 "Vigilia must use its own legally bundled Garamond text on all devices");
             var expectedDestinations=new []{"CIUDAD","BOLSA","EJÉRCITO","MUNDO","HÉROES"};
+            Need(!ui.NavButtons.Any(b=>b.GetComponentsInChildren<Text>(true).Any(t=>
+                     t && !string.IsNullOrWhiteSpace(t.text))),
+                 "Navigation must remain icon-only, without visible names");
             Need(ui.NavButtons.Count==5 &&
                  ui.NavButtons.Select(x=>x.name).SequenceEqual(expectedDestinations),
                  "The five sculpted medallions have misleading destination labels");
@@ -623,7 +626,14 @@ namespace Eldoria.BreachWatch.Editor
                     pointerClicks++;
                 }
 
+                // Reproduce an in-flight entry without creating another world:
+                // a city or bag selection must invalidate the queued request.
+                var pendingField=typeof(ValoriaIntegratedWorld).GetField("deferredWorldEntryQueued",
+                    System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+                Need(pendingField!=null,"Deferred world-entry contract missing");
+                pendingField.SetValue(host,true);
                 ClickAsPlayer(target,"CIUDAD");
+                Need(!host.WorldEntryPending,"City icon did not cancel queued world entry");
                 Need(ui.SelectedBuildingId=="" && !ui.BuildingPanel.gameObject.activeInHierarchy,
                     "REAL city pointer selected a construction target");
                 Need(host.Select("bastion"),"Actual city Bastion selection failed");
@@ -647,7 +657,9 @@ namespace Eldoria.BreachWatch.Editor
                 Need(ui.SelectedBuildingId=="" &&
                      !ui.BuildingPanel.gameObject.activeInHierarchy,
                      "Real native close touch did not dismiss the live Bastion card");
+                pendingField.SetValue(host,true);
                 ClickAsPlayer(ui.NavButtons[1],"BOLSA");
+                Need(!host.WorldEntryPending,"Bag icon did not cancel queued world entry");
                 Need(savedBag.IsOpen && ui.SelectedBuildingId=="",
                      "BOLSA medallion failed to open real saved inventory");
                 savedBag.RestorePresentation();

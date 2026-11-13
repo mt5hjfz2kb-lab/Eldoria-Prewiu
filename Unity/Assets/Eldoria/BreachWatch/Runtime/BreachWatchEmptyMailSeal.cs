@@ -11,6 +11,7 @@ namespace Eldoria.BreachWatch
     [DisallowMultipleComponent]
     public sealed class BreachWatchEmptyMailSeal : MaskableGraphic
     {
+        public bool Compact {get;set;}
         static readonly Color Gold=new Color(.82f,.60f,.31f,.89f);
         static readonly Color Bright=new Color(.96f,.79f,.48f,.90f);
         static readonly Color Shadow=new Color(.16f,.12f,.10f,.93f);
@@ -89,6 +90,25 @@ namespace Eldoria.BreachWatch
         {
             vh.Clear();
             var rect=GetPixelAdjustedRect();
+            if(Compact)
+            {
+                // Designed for the 37-unit mailbox entry: broad envelope,
+                // solid metal rim and readable folds without miniature text.
+                float unit=Mathf.Min(rect.width,rect.height)/40f;
+                Vector2 Q(float x,float y)=>rect.center+new Vector2(x,y)*unit;
+                Circle(vh,Q(0,0),8f*unit,16f*unit,Slate);
+                Circle(vh,Q(0,0),18f*unit,2f*unit,Gold);
+                Circle(vh,Q(0,0),16.3f*unit,.8f*unit,Bright);
+                Quad(vh,Q(-13,-8),Q(13,9),Gold);
+                Quad(vh,Q(-11.5f,-6.5f),Q(11.5f,7.5f),Shadow);
+                Line(vh,Q(-11.5f,7.5f),Q(0,-1),1.2f*unit,Bright);
+                Line(vh,Q(11.5f,7.5f),Q(0,-1),1.2f*unit,Bright);
+                Line(vh,Q(-11.5f,-6.5f),Q(-3,0),1f*unit,Gold);
+                Line(vh,Q(11.5f,-6.5f),Q(3,0),1f*unit,Gold);
+                Circle(vh,Q(0,-1),2.6f*unit,4f*unit,Burgundy);
+                Circle(vh,Q(0,-1),2.6f*unit,.8f*unit,Bright);
+                return;
+            }
             float s=Mathf.Min(rect.width/146f,rect.height/108f);
             float px=rect.center.x,py=rect.center.y;
             Vector2 P(float x,float y)=>new Vector2(px+x*s,py+y*s);

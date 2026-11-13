@@ -1,14 +1,14 @@
 {
   "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-  "ownership_revision": 71,
+  "ownership_revision": 73,
   "integration_pr": 179,
   "baseline": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
   "ui": "d868f9860f3607dbacc406a290f8e8bb623dea74",
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 40,
-  "previous_run": 43427972792,
-  "correction": "Owner physical report: icon-only navigation must match destination. Bag opens canonical saved inventory, castle clears building context and returns city, world route toggles return destination, mail uses existing sealed-letter artwork. No text labels added. Native actual-raycast assertions now test intended inventory/city behavior instead of the old provisions-to-sawmill mapping. Full public old-source world-entry probe runs independently; no claim of iPhone repair until evidence.",
-  "build_candidate": false
+  "attempt": 41,
+  "previous_run": 43449861957,
+  "correction": "Icon-only semantic audit: cancel queued world transitions on city/bag/other screens; one world return castle; clear compact engraved mail control. Native interaction assertions plus full deferred-world saved-game PlayMode and actual WebKit world reentry. Before first world assembly release unused assets, with opt-in measured before/after texture/mesh inventories. Not a physical iPhone fix claim. No save reset.",
+  "build_candidate": true
 }

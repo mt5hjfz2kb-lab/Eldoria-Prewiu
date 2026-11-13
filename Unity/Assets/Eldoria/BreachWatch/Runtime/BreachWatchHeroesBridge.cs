@@ -58,6 +58,7 @@ namespace Eldoria.BreachWatch
         public bool TryOpen()
         {
             if(!heroes || !canvas || IsShowing)return false;
+            if(host && host.WorldEntryPending && !host.TrySetWorld(false))return false;
             if(!heroes.IsOpen)heroes.Open(); // canonical story unlock guard
             return heroes.IsOpen && TryAdoptAlreadyOpen();
         }

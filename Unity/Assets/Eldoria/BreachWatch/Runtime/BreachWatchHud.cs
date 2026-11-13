@@ -24,6 +24,7 @@ namespace Eldoria.BreachWatch
         Canvas canvas;
         BreachWatchDestinationBridge destinationBridge;
         BreachWatchMailboxBridge mailboxBridge;
+        BreachWatchEmptyMailSeal mailEntryArt;
         BreachWatchModalBridge modalBridge;
         BreachWatchHeroesBridge heroesBridge;
         BreachWatchRetentionBridge retentionBridge;
@@ -133,8 +134,9 @@ namespace Eldoria.BreachWatch
         {
             get
             {
-                string[] names={"MailboxArtwork/sealed_letter","OwnerUtilities/settings","OwnerUtilities/breach"};
-                for(int i=0;i<names.Length;i++)
+                if(!mailEntryArt || !mailEntryArt.Compact || !mailEntryArt.raycastTarget)return false;
+                string[] names={"","OwnerUtilities/settings","OwnerUtilities/breach"};
+                for(int i=1;i<names.Length;i++)
                 {
                     var image=approvedUtilitySeals[i];
                     if(!image || !image.sprite ||
@@ -203,7 +205,7 @@ namespace Eldoria.BreachWatch
                 for(int i=0;i<navPlates.Length;i++)
                 {
                     var requested=Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_"+
-                        (i==3 && host && host.InWorld?"castle":ReferenceNavArt[i]));
+                        (i==3 && host && (host.InWorld || host.WorldEntryPending)?"castle":ReferenceNavArt[i]));
                     if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
                         return false;
                 }
@@ -222,7 +224,7 @@ namespace Eldoria.BreachWatch
                     if(!navPlates[i] || !navPlates[i].UsesOwnerReference ||
                        !navPlates[i].sprite ||
                        navPlates[i].sprite.name!="nav_"+
-                           (i==3 && host && host.InWorld?"castle":ReferenceNavArt[i]))
+                           (i==3 && host && (host.InWorld || host.WorldEntryPending)?"castle":ReferenceNavArt[i]))
                         return false;
                 return true;
             }
@@ -632,9 +634,18 @@ namespace Eldoria.BreachWatch
                     seal.name="CORREO / real introduced mailbox";
                 }
                 var utilityPlate=seal.GetComponent<BreachWatchPlate>();
-                var genuineArt=Resources.Load<Sprite>(design.art=="bell"
-                    ?"VigiliaArt/MailboxArtwork/sealed_letter"
-                    :"VigiliaArt/OwnerUtilities/"+design.art);
+                var genuineArt=design.art=="bell"?null:
+                    Resources.Load<Sprite>("VigiliaArt/OwnerUtilities/"+design.art);
+                if(design.art=="bell")
+                {
+                    // Reuse our engraved envelope as a true small control,
+                    // not a reduced rectangular mailbox illustration.
+                    utilityPlate.enabled=false;
+                    var artRect=Rect("Engraved envelope",seal);Stretch(artRect);
+                    mailEntryArt=artRect.gameObject.AddComponent<BreachWatchEmptyMailSeal>();
+                    mailEntryArt.Compact=true;mailEntryArt.raycastTarget=true;
+                    disabled.targetGraphic=mailEntryArt;
+                }
                 if(utilityPlate)
                 {
                     utilityPlate.Type=BreachWatchPlate.PlateType.Navigation;
@@ -649,7 +660,7 @@ namespace Eldoria.BreachWatch
                     // The uploaded approved artwork already includes the
                     // fully engraved icon. Do not draw a cheap secondary
                     // vector Bell/Gear/Breach on top of it.
-                    glyph.enabled=!genuineArt;
+                    glyph.enabled=design.art!="bell" && !genuineArt;
                     if(!genuineArt)
                     {
                         glyph.Ink=new Color(.72f,.52f,.32f,1f);
@@ -889,7 +900,9 @@ namespace Eldoria.BreachWatch
         // Canvas, never the older blue screen and never a fake placeholder.
         int NavigationMask()
         {
-            int mask=(1<<0)|(1<<1);
+            int mask=(1<<1);
+            // Exactly one castle return control while in the world.
+            if(!host || !host.InWorld)mask|=1<<0;
             if(!host)return mask;
             if(destinationBridge && host.CanOpen(RoyalSection.Army) &&
                Eldoria.Domain.NarrativeCoherenceRules.Seen(host.City.Gateway.Snapshot(),"march-preparation"))
@@ -930,8 +943,7 @@ namespace Eldoria.BreachWatch
         {
             if(!utilityRail || !mailUtilityButton)return;
             bool show=CanShowCanonicalMailbox();
-            // This pre-existing original bell medallion is now the one real
-            // introduced-mail route. Gear and breach designs remain hidden,
+            // The envelope opens introduced mail. Gear and breach designs remain hidden,
             // not inert fake promises or overlapping lower nav controls.
             utilityRail.gameObject.SetActive(show);
             mailUtilityButton.gameObject.SetActive(show);
@@ -942,7 +954,7 @@ namespace Eldoria.BreachWatch
 
         void OpenActualMailbox()
         {
-            if(!CanShowCanonicalMailbox())return;
+            if(!CanShowCanonicalMailbox() || !host.TrySetWorld(false))return;
             if(mailboxBridge.TryOpen())
             {
                 SetFeedback("");
@@ -958,7 +970,7 @@ namespace Eldoria.BreachWatch
                 case 0:
                     // City/Realm is a destination, not a tab label on the world.
                     // Return the canonical city camera without selecting a building.
-                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    if(!host.TrySetWorld(false))return;
                     selectedTab=0;
                     SelectBuilding("");
                     SyncLiveCamera();
@@ -966,7 +978,7 @@ namespace Eldoria.BreachWatch
                 case 1:
                     // A bag icon opens the actual saved inventory, never a
                     // resource building or the current construction objective.
-                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    if(!host.TrySetWorld(false))return;
                     SelectBuilding("");
                     if(resourceBagBridge && resourceBagBridge.TryOpenDestination())selectedTab=1;
                     else SetFeedback("La bolsa todavía no está disponible.");
@@ -977,7 +989,7 @@ namespace Eldoria.BreachWatch
                     // It cannot appear before Bastion/Barracks narrative
                     // unlock, and has no independent army save or mock troops.
                     if((NavigationMask()&(1<<2))==0)return;
-                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    if(!host.TrySetWorld(false))return;
                     string lastBuilding=selected;
                     SelectBuilding("");
                     if(destinationBridge && destinationBridge.TryOpen(
@@ -997,7 +1009,7 @@ namespace Eldoria.BreachWatch
                     // The canonical heroine recruitment gate is stronger than
                     // a static level check; no premature, hollow Heroes button.
                     if((NavigationMask()&(1<<4))==0)return;
-                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    if(!host.TrySetWorld(false))return;
                     string returnBuilding=selected;
                     SelectBuilding("");
                     if(heroesBridge && heroesBridge.TryOpen())
@@ -1014,7 +1026,7 @@ namespace Eldoria.BreachWatch
                     break;
                 case 3:
                     // The relief changes to the actual next destination; no text labels.
-                    bool openWorld=!host.InWorld;
+                    bool openWorld=!host.InWorld && !host.WorldEntryPending;
                     if((!openWorld || host.CanOpen(RoyalSection.World)) && host.TrySetWorld(openWorld))
                     {
                         selectedTab=openWorld?3:0;
@@ -1784,7 +1796,7 @@ namespace Eldoria.BreachWatch
                 // army/swords, world/raven and heroes/helm. Only the genuine
                 // first-screen routes are enabled; we never dispatch old panels.
                 var travelArt=Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_"+
-                    (host.InWorld?"castle":"raven"));
+                    (host.InWorld || host.WorldEntryPending?"castle":"raven"));
                 if(navPlates[3] && travelArt && navPlates[3].sprite!=travelArt)
                     navPlates[3].ApplyIndependentArt(travelArt);
                 int activeTab=Mathf.Clamp(host.InWorld?3:selectedTab,0,navButtons.Length-1);

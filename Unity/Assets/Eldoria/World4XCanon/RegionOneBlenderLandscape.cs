@@ -159,6 +159,22 @@ namespace Eldoria.World4XCanon
     " allocated="+UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong()+
     " reserved="+UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong()+
     " managed="+GC.GetTotalMemory(false));
+   if(phase=="entry-before-unused-release" || phase=="entry-after-unused-release" ||
+      phase=="creatures-after")
+   {
+    // Opt-in diagnostics only. Names/types/sizes, never player/save data.
+    foreach(var group in Resources.FindObjectsOfTypeAll<UnityEngine.Object>()
+     .Where(o=>o && (o is Texture || o is Mesh))
+     .Select(o=>new {item=o,bytes=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(o)})
+     .GroupBy(o=>o.item is Texture?"Texture":"Mesh"))
+    {
+     Debug.Log("ELDORIA_MEMORY_ASSETS phase="+phase+" type="+group.Key+
+      " count="+group.Count()+" bytes="+group.Sum(o=>o.bytes));
+     foreach(var entry in group.OrderByDescending(o=>o.bytes).Take(12))
+      Debug.Log("ELDORIA_MEMORY_ASSET phase="+phase+" type="+group.Key+
+       " name="+entry.item.name+" bytes="+entry.bytes);
+    }
+   }
   }
   public static IEnumerator InstallStaged(Transform parent,ValoriaIntegratedWorld host,Action<RegionOneBlenderLandscape> completed)
   {
