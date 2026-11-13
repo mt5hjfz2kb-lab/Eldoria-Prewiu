@@ -50,10 +50,17 @@ namespace Eldoria.UI.RoyalGold.V2
             if(canvas && canvas.isActiveAndEnabled && vigilia && surface)return true;
             if(surface)Destroy(surface.gameObject);
             surface=null;canvas=null;vigilia=null;hand=null;halo=null;note=null;noteBack=null;
-            var objectRoot=GameObject.Find("VIGILIA / independent canvas");
-            if(!objectRoot)return false;
-            var candidate=objectRoot.GetComponent<Canvas>();
-            if(!candidate || !candidate.isActiveAndEnabled)return false;
+            // GameObject.Find interprets slash as a hierarchy separator, but
+            // the actual independent Vigilia GameObject name contains a slash.
+            // Inspect live Canvases instead of an invalid name/path lookup.
+            GameObject objectRoot=null;
+            Canvas candidate=null;
+            foreach(var item in UnityEngine.Object.FindObjectsByType<Canvas>(
+                FindObjectsInactive.Exclude,FindObjectsSortMode.None))
+                if(item && item.isActiveAndEnabled &&
+                    item.gameObject.name=="VIGILIA / independent canvas")
+                    {candidate=item;objectRoot=item.gameObject;break;}
+            if(!objectRoot || !candidate)return false;
             foreach(var component in objectRoot.GetComponents<MonoBehaviour>())
                 if(component && component.GetType().Name=="BreachWatchHud")
                     {vigilia=component;break;}
