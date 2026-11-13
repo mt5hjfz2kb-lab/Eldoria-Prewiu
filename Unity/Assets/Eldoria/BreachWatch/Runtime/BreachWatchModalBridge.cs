@@ -20,6 +20,7 @@ namespace Eldoria.BreachWatch
         const string Stone="VigiliaArt/PremiumSurfaces/panel_fill";
         const string Burgundy="VigiliaArt/PremiumSurfaces/burgundy_action";
         const string CloseMetal="VigiliaArt/OwnerControls/close_medallion";
+        readonly Dictionary<Text,Color> oldTextColors=new Dictionary<Text,Color>();
         readonly Dictionary<Graphic,bool> oldGraphics=new Dictionary<Graphic,bool>();
         readonly Dictionary<Button,Graphic> oldTargets=new Dictionary<Button,Graphic>();
         readonly Dictionary<Button,Selectable.Transition> oldTransitions=
@@ -162,12 +163,27 @@ namespace Eldoria.BreachWatch
             foreach(var pair in productionTargets)
                 if(pair.Key && pair.Value)
                 {pair.Key.targetGraphic=pair.Value;pair.Key.transition=Selectable.Transition.None;}
+            // The canonical cinematic painter still applies parchment-brown
+            // ink. The replacement is dark stone, so retain readable Vigilia
+            // ivory after that painter runs, without changing story text/font.
+            if(realModal && realModal.gameObject.activeInHierarchy)
+            {
+                ReadableInk(realModal.Body,new Color(.98f,.94f,.84f,1f));
+                var role=window?window.Find("Narrative character role"):null;
+                if(role)ReadableInk(role.GetComponent<Text>(),new Color(.88f,.85f,.79f,1f));
+            }
             // Canonical narrative layout runs before this bridge and still
             // measures the retired Canvas. Its world coordinates cannot be
             // used in the independent camera Canvas. Resolve presentation
             // against the modal's actual safe-area parent on every render,
             // including the first story immediately after nickname commit.
             if(realModal && realModal.gameObject.activeInHierarchy)Reflow();
+        }
+        void ReadableInk(Text text,Color ink)
+        {
+            if(!text)return;
+            if(!oldTextColors.ContainsKey(text))oldTextColors.Add(text,text.color);
+            text.color=ink;
         }
         void LateUpdate()
         {
@@ -200,6 +216,8 @@ namespace Eldoria.BreachWatch
         public void Restore()
         {
             if(!root)return;
+            foreach(var pair in oldTextColors)if(pair.Key)pair.Key.color=pair.Value;
+            oldTextColors.Clear();
             foreach(var pair in oldTargets)
                 if(pair.Key)pair.Key.targetGraphic=pair.Value;
             oldTargets.Clear();productionTargets.Clear();

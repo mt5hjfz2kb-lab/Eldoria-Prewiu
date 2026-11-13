@@ -392,6 +392,9 @@ namespace Eldoria.BreachWatch.Editor
                 ui.Reflow(390,844);ui.RenderNow();
                 host.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3CinematicFinish>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();camera.Render();
+                Need(host.Hud.Modal.Body && host.Hud.Modal.Body.color.grayscale>.7f &&
+                     host.Hud.Modal.Body.color.a>.9f,
+                    "Canonical parchment ink made the Vigilia story unreadable");
                 var button=host.Hud.Modal.Extra;
                 Need(button && button.IsInteractable(),"Narrative Continue is not interactable");
                 var rect=(RectTransform)button.transform;
