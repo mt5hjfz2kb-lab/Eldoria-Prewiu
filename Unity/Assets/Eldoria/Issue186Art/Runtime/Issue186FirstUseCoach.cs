@@ -136,11 +136,26 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             if(!host){Hide("canonical-world-host-not-ready");return;}
             var state=gateway.Snapshot();
-            if(state==null || string.IsNullOrWhiteSpace(state.PlayerName))
-                {Hide("nickname-not-confirmed");return;}
-            if(hud.NarrativeOpen ||
-                (hud.Modal && hud.Modal.gameObject.activeInHierarchy))
-                {Hide("canonical-story-or-modal-active");return;}
+            if(state==null){Hide("canonical-save-not-ready");return;}
+            if(string.IsNullOrWhiteSpace(state.PlayerName))
+            {
+                ShowFirstNamePrompt();
+                return;
+            }
+            if(hud.NarrativeOpen)
+            {
+                // The real first story uses ONE canonical Continue/Reveal
+                // button, inside the reparented modal. It is a first-use
+                // interaction too, not a reason to suppress the whole guide.
+                if(!NarrativeCoherenceRules.Seen(state,"start"))
+                    ShowButton(hud.Modal?hud.Modal.Extra:null,
+                        "entry:first-story","Pulsa para leer y continuar.",
+                        "narrative-continue");
+                else Hide("later-story-already-learned");
+                return;
+            }
+            if(hud.Modal && hud.Modal.gameObject.activeInHierarchy)
+                {Hide("other-canonical-modal-active");return;}
             var bag=hud.GetComponent<Issue186BagOverlay>();
             if(bag && bag.IsOpen){Hide("saved-bag-owns-its-first-use-hand");return;}
             if(Property(vigilia,"RealMailbox") is object mail &&
@@ -222,6 +237,30 @@ namespace Eldoria.UI.RoyalGold.V2
                 worldTarget?"Toca el objetivo señalado en el mundo.":
                 "Toca el edificio señalado para abrir sus acciones.");
         }
+        void ShowFirstNamePrompt()
+        {
+            // The actual RoyalPlayerNamePrompt is moved into Vigilia by the
+            // production presentation. Read its ORIGINAL InputField and
+            // confirmation Button; do not create a fake input or submit a name.
+            var coordinator=hud.GetComponent("RoyalPlayerEntryCoordinator");
+            var prompt=coordinator?.GetType().GetField("prompt",
+                BindingFlags.NonPublic|BindingFlags.Instance)
+                ?.GetValue(coordinator) as Component;
+            if(!prompt || Property(prompt,"IsOpen") is not bool open || !open)
+                {Hide("canonical-first-name-prompt-not-ready");return;}
+            var type=prompt.GetType();
+            var input=type.GetField("editor",BindingFlags.NonPublic|BindingFlags.Instance)
+                ?.GetValue(prompt) as InputField;
+            var confirm=type.GetField("confirm",BindingFlags.NonPublic|BindingFlags.Instance)
+                ?.GetValue(prompt) as Button;
+            if(!input || !confirm){Hide("canonical-first-name-input-missing");return;}
+            if(string.IsNullOrWhiteSpace(input.text))
+                ShowSelectable(input,"entry:first-name",
+                    "Escribe el nombre de tu reino para empezar.","nickname-input");
+            else ShowSelectable(confirm,"entry:first-name",
+                    "Confirma tu nombre para empezar.","nickname-confirm");
+        }
+
         Button Nav(int index)
         {
             var list=Property(vigilia,"NavButtons") as IEnumerable;
@@ -230,12 +269,15 @@ namespace Eldoria.UI.RoyalGold.V2
             return null;
         }
         void ShowButton(Button control,string key,string caption,string id)
+            => ShowSelectable(control,key,caption,id);
+        void ShowSelectable(Selectable control,string key,string caption,string id)
         {
             if(!control || !control.isActiveAndEnabled ||
                 !control.gameObject.activeInHierarchy || !control.interactable)
                 {Hide("real-button-not-available:"+id);return;}
             if(!Issue186ArtKit.BindFirstUsePointer(
-                gateway.Snapshot().ResourceGuidance,"journey:"+key,id,
+                gateway.Snapshot().ResourceGuidance??new GuidedTutorialProgress(),
+                "journey:"+key,id,
                 true,canvas,(RectTransform)control.transform,hand,halo))
                 {Hide("real-first-hit:"+Issue186ArtKit.LastPointerRejectReason);return;}
             var camera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
