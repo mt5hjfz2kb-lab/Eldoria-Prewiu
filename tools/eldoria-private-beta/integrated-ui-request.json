@@ -1,14 +1,14 @@
 {
-  "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-  "ownership_revision": 73,
+  "owner": "chatgpt-eldoria-beta-navigation-20261113",
+  "ownership_revision": 74,
   "integration_pr": 179,
   "baseline": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
   "ui": "d868f9860f3607dbacc406a290f8e8bb623dea74",
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 42,
-  "previous_run": 43454132345,
-  "correction": "Icon-only semantic audit: cancel queued world transitions on city/bag/other screens; one world return castle; clear compact engraved mail control. Native interaction assertions plus full deferred-world saved-game PlayMode and actual WebKit world reentry. Before first world assembly release unused assets, with opt-in measured before/after texture/mesh inventories. Not a physical iPhone fix claim. No save reset. Complete audit follow-up: generic envelope icon17 no longer becomes raven; built-barracks swords opens canonical Training through actual pointer-tested control; bag highlight follows actual open state. Retain exact world-memory candidate for comparison.",
+  "attempt": 43,
+  "previous_run": 43455510898,
+  "correction": "Icon-only semantic audit: cancel queued world transitions on city/bag/other screens; one world return castle; clear compact engraved mail control. Native interaction assertions plus full deferred-world saved-game PlayMode and actual WebKit world reentry. Before first world assembly release unused assets, with opt-in measured before/after texture/mesh inventories. Not a physical iPhone fix claim. No save reset. Complete audit follow-up: generic envelope icon17 no longer becomes raven; built-barracks swords opens canonical Training through actual pointer-tested control; bag highlight follows actual open state. Retain exact world-memory candidate for comparison. Follow-up after run43455510898: safe checkout refused to change reused Holotna/MegaFantasy material sources. Isolate new SHA-specific native project in a never-reused path, retain all old files and preservation artifacts, rerun full real controls/memory/world/reload before any promotion. No publication, no save reset, no physical-iPhone PASS claim.",
   "build_candidate": true
 }

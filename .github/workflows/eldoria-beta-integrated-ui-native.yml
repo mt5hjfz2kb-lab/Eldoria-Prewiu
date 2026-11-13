@@ -142,15 +142,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          $root=Join-Path $env:GITHUB_WORKSPACE 'forja-thin-native-source-42408083695'
+          # Never switch the reused source while Unity/third-party materials
+          # differ. A fresh per-run checkout preserves the entire previous tree
+          # and the preservation helper still fails closed for unexpected edits.
+          $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-native-source-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
           $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
-          if(-not(Test-Path (Join-Path $root '.git'))){
-            $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-native-source-"+$env:GITHUB_RUN_ID)
-            New-Item -ItemType Directory -Path $root -Force | Out-Null
-            & git -C $root init
-            if($LASTEXITCODE){throw 'Git init failed'}
-            & git -C $root remote add origin $url
-          }
+          if(Test-Path -LiteralPath $root){throw ("Isolated native source already exists; preserve it: "+$root)}
+          New-Item -ItemType Directory -Path $root | Out-Null
+          & git -C $root init
+          if($LASTEXITCODE){throw 'Git init failed'}
+          & git -C $root remote add origin $url
           if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
           # Keep preservation evidence addressable even if the source switch
           # correctly refuses an unreviewed Unity-generated working change.
