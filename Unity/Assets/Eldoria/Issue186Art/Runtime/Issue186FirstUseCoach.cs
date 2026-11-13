@@ -291,6 +291,17 @@ namespace Eldoria.UI.RoyalGold.V2
             SetCaption(screen,caption);
             TargetId=id;Rejection="";
         }
+        Rect ViewSafeArea()
+        {
+            // Editor capture may render a true 390x844 phone-sized target
+            // while Screen.safeArea still describes the host 1600x900 window.
+            // Match the actual camera render target for defensible native QA.
+            var cam=canvas && canvas.renderMode!=RenderMode.ScreenSpaceOverlay
+                ?canvas.worldCamera:null;
+            if(cam && cam.targetTexture)
+                return new Rect(0f,0f,cam.targetTexture.width,cam.targetTexture.height);
+            return Screen.safeArea;
+        }
         bool NoUiBlocker(Vector2 screen)
         {
             var events=EventSystem.current;
@@ -331,7 +342,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     foreach(float dy in new float[]{0f,-.20f,.20f,-.42f,.42f})
                     {
                         var test=new Vector2(middle.x+span*dx,middle.y+span*dy);
-                        if(!Screen.safeArea.Contains(test)||!NoUiBlocker(test))continue;
+                        if(!ViewSafeArea().Contains(test)||!NoUiBlocker(test))continue;
                         object picked=null;
                         try{picked=picker.Invoke(host,new object[]{test});}
                         catch(TargetInvocationException){continue;}
@@ -359,7 +370,7 @@ namespace Eldoria.UI.RoyalGold.V2
             rect.sizeDelta=new Vector2(76f,76f*hand.sprite.rect.height/
                 Mathf.Max(1f,hand.sprite.rect.width));
             rect.localRotation=Quaternion.identity;
-            var safe=Screen.safeArea;
+            var safe=ViewSafeArea();
             safe.xMin+=6;safe.xMax-=6;safe.yMin+=6;safe.yMax-=6;
             bool fit=false;
             foreach(var sign in new[]{1f,-1f})
@@ -394,13 +405,14 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(!noteBack || !note || !surface)return;
             var camera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
-            float width=Mathf.Min(240f,Mathf.Max(140f,Screen.safeArea.width-24f));
+            var safe=ViewSafeArea();
+            float width=Mathf.Min(240f,Mathf.Max(140f,safe.width-24f));
             float y=target.y+86f;
-            if(y+30f>Screen.safeArea.yMax-8f)y=target.y-86f;
+            if(y+30f>safe.yMax-8f)y=target.y-86f;
             var point=new Vector2(
-                Mathf.Clamp(target.x,Screen.safeArea.xMin+width*.5f+5f,
-                    Screen.safeArea.xMax-width*.5f-5f),
-                Mathf.Clamp(y,Screen.safeArea.yMin+35f,Screen.safeArea.yMax-35f));
+                Mathf.Clamp(target.x,safe.xMin+width*.5f+5f,
+                    safe.xMax-width*.5f-5f),
+                Mathf.Clamp(y,safe.yMin+35f,safe.yMax-35f));
             var r=noteBack.rectTransform;
             r.anchorMin=r.anchorMax=new Vector2(.5f,.5f);
             r.pivot=new Vector2(.5f,.5f);
