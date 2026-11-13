@@ -125,7 +125,11 @@ namespace Eldoria.UI.RoyalGold.V2
         void Update()
         {
             if(Time.unscaledTime<nextRefresh)return;
-            nextRefresh=Time.unscaledTime+.18f;
+            // First-use assistance is not combat UI. Avoid dozens of
+            // Physics.RaycastAll/EventSystem allocations per second on Safari;
+            // a bounded 350 ms recheck follows camera/scene changes without
+            // imposing an extra steady-state 60 Hz pointer probe.
+            nextRefresh=Time.unscaledTime+.35f;
             if(!hud || gateway==null || !FindLiveSurface())
                 {Hide("no-independent-vigilia-canvas");return;}
             if(!host)
