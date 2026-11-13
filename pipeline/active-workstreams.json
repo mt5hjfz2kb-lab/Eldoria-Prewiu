@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T06:55:50.680Z",
+  "updated_at": "2026-11-13T07:01:28.328Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7374,10 +7374,10 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 68,
+      "ownership_revision": 69,
       "write_scope_released": false,
       "status": "active",
-      "branch": "main",
+      "branch": "feature/eldoria-private-beta-i-v-20261107",
       "scope": [
         "tools/eldoria-private-beta/**",
         ".github/workflows/eldoria-private-beta-freeze.yml",
@@ -7422,14 +7422,16 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/eldoria-beta-postmerge-queue.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA19_OWNER_REPORTED_POST_NICKNAME_INPUT_BLOCK_DIAGNOSIS",
-      "note": "Owner reports beta19 appears frozen after nickname on physical iPhone. Public startup/reload checks did not prove continuation. Hosted Mac WebKit diagnostic now exercises actual visible dialogue/objective/build controls. No Windows lease or deployment changes.",
-      "next": "Inspect postnickname diagnostic actual screenshots; distinguish invisible modal/input capture from player stall; repair runtime with meaningful native/browser continuation regression.",
+      "phase": "BETA19_POST_NICKNAME_MODAL_REPAIR_NATIVE_VERIFICATION",
+      "note": "Public WebKit43382127078 reproduced saved nickname plus unresponsive sawmill clicks with live render metrics. Candidate modal safe-area repair and real Continue raycast regression; no corrected beta published yet.",
+      "next": "Run integrated native candidate26, inspect actual story screenshots and continuation; require real browser construction before republishing.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7698,10 +7700,10 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
+        "status": "claimed",
         "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 67,
-        "updated_at": "2026-11-13T00:59:42.812Z"
+        "ownership_revision": 69,
+        "updated_at": "2026-11-13T07:01:28.328Z"
       },
       "ownership_history": [
         {
