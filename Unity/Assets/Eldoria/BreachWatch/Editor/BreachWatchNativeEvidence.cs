@@ -321,6 +321,11 @@ namespace Eldoria.BreachWatch.Editor
             var input=prompt.GetComponentInChildren<InputField>(true);
             var confirm=prompt.GetComponentInChildren<Button>(true);
             Need(input && confirm,"Production nickname input or confirmation missing");
+            var identityArt=prompt.GetComponent<BreachWatchIdentityPresentation>();
+            Need(identityArt && identityArt.Installed &&
+                prompt.GetComponentsInChildren<InputField>(true).Length==1 &&
+                prompt.GetComponentsInChildren<Button>(true).Length==1,
+                "Nickname must have the engraved Vigilia presentation and one real input/confirmation");
             var camera=host.PlayerCamera;var previous=camera.targetTexture;
             float aspect=camera.aspect;int mask=camera.cullingMask;
             var active=RenderTexture.active;

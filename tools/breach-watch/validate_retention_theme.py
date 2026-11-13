@@ -33,18 +33,21 @@ def main():
          "actualSafeField.SetValue(retention,canonicalSafe)" in B and
          "OwnsActualSafeViewport" in B and "SynchronizeVisual()" in B,
          "Canonical retention safe rect must be temporarily redirected to actual new Canvas; never cropped from old landscape viewport")
-    # The grading changes the SAME original illustrated source RawImage;
-    # a full-screen extra Image/Canvas would visually resurrect the
-    # old pasted-on layer and could obscure real hit targets.
-    need("scenicPainting.color=new Color(.78f,.77f,.95f" in T and
-         "scenicPainting.color=originalScenicColor" in T and
-         "if(scoutsDestination)" in T and
-         "Original illustrated world / decorative only" in T and
-         "HasIndependentScoutColorGrade" in T,
-         "Scouts must use a reversible per-material palette, never a second overlay")
-    need("theme.Apply(root,retention.OpenDestination ==" in B and
-         "HasSingleGradedScoutsPainting" in B,
-         "Only actual Scouts may receive this color grade")
+    A=(R/"BreachWatchRecoveredRetentionArt.cs").read_text()
+    need((R/"BreachWatchRecoveredRetentionArt.cs.meta").exists(),"Recovered artwork import metadata missing")
+    need("EldoriaRetention/DepthB11/clean_backdrop" in A and
+         '"left_castle","bridge","right_castle","left_rock","right_cliff","near_cliff"' in A and
+         "EldoriaRetention/scouts-painterly-v2" in A and
+         "EldoriaRetention/scout-parchment-v3" in A,
+         "Recovery must preserve the authored B11 layers, Scout illustration and blank paper")
+    need("owned.Contains(graphic)" in A and "graphic.enabled=false" in A and
+         "image.raycastTarget=false" in A and "pair.Key.enabled=pair.Value" in A and
+         "source.uvRect" in A and "theme.SynchronizeRecovered()" in B,
+         "Recovery needs explicit new ownership, reversible retired painters and authoritative crop")
+    need("HasSingleRestoredScoutsPainting" in B and "RestoredPlaneCount" in B,
+         "Native QA must inspect actual visible restored components")
+    need("AddComponent<Canvas>" not in A and "onClick" not in A and "Save(" not in A,
+         "Visual recovery must not create a second Canvas, command or save")
     # Rejected native dark-stone A/B: genuine painted parchment with its
     # contact bevel and wax medallion was richer and better contrasted.
     # Do not keep an unused layered substitute on top of it.

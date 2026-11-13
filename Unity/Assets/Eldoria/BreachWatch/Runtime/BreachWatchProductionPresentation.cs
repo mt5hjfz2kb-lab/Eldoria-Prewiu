@@ -69,6 +69,9 @@ namespace Eldoria.BreachWatch
                 }
                 foreach(var label in root.GetComponentsInChildren<Text>(true))
                     label.color=label.name=="Validation"?new Color(1f,.58f,.42f):new Color(.96f,.91f,.80f);
+                var presentation=root.GetComponent<BreachWatchIdentityPresentation>();
+                if(!presentation)presentation=root.gameObject.AddComponent<BreachWatchIdentityPresentation>();
+                if(!presentation.Install(root))throw new InvalidOperationException("Vigilia identity artwork missing");
             }
             Canvas.willRenderCanvases+=Enforce;
             Enforce();
@@ -92,6 +95,10 @@ namespace Eldoria.BreachWatch
         public static bool IsRetiredPainter(Graphic graphic)
         {
             if(!graphic || graphic is Text)return false;
+            // Explicit owner-authorized recovery: only new Vigilia-owned
+            // illustration/material nodes qualify. Old painters stay retired.
+            var recovered=graphic.GetComponentInParent<BreachWatchRecoveredRetentionArt>();
+            if(recovered && recovered.Owns(graphic))return false;
             if(graphic.name.StartsWith("Vigilants / original paint plane / "))return true;
             if(graphic.name.StartsWith("March art / "))return true;
             string type=graphic.GetType().Name;
@@ -135,6 +142,8 @@ namespace Eldoria.BreachWatch
                     // stone, so retain live text but restore readable contrast.
                     if(graphic is Text contract)
                     {
+                        var recovered=contract.GetComponentInParent<BreachWatchRecoveredRetentionArt>();
+                        if(recovered && recovered.TryStyleText(contract))continue;
                         if(contract.name=="Readable contract heading")
                             contract.color=new Color(.95f,.78f,.47f,1f);
                         else if(contract.name=="Real scout order reward and status")
