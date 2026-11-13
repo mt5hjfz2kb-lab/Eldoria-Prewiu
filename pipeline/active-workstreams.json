@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T18:25:20.498Z",
+  "updated_at": "2026-11-13T19:00:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -22,12 +22,12 @@
     {
       "id": "eldoria-relicario-premium-master-v2-20261113",
       "title": "Relicario — plantilla visual V2 premium modular 5:8, lista para integración futura",
-      "owner": "chatgpt-relicario-v25-mobile-audit-20261113",
-      "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 10,
       "branch": "feature/relicario-premium-master-v2-20261113",
       "status": "active",
-      "phase": "V25_MOBILE_FOUR_RARITIES_AUDIT",
+      "phase": "DRAFT_PR_189_V25_FOUR_RARITIES_MOBILE_AUDITED_UNITY_FUTURE",
       "claimed_at": "2026-11-13T19:00:00+01:00",
       "art_production_routing": "required",
       "resources": [],
@@ -39,11 +39,11 @@
       "reason": "Owner explicitly requests bounded artistic uplift of previously approved card frame plus future PR; isolation from active beta I-V and Unity. No runner or paid tools.",
       "art_production_request": "pipeline/art-production-requests/eldoria-relicario-premium-master-v2-20261113.json",
       "previous_owner": "chatgpt-relicario-premium-v2-20261113",
-      "write_scope_released": false,
+      "write_scope_released": true,
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/189",
-      "final_source_sha": "72c18f06ef12caf1646737cff6abccc381da502d",
-      "final_evidence": "V2.4 real art modules in PR #189; distinct material palettes, recessed metal inlays, inset infinity 88%, mobile effect text responsive; 48 numeric plaque checks, 10 effect widths and SVG alpha 320x512 local PASS; Unity and visual 9/10 approval pending.",
-      "last_handoff_at": "2026-11-13T14:25:00+01:00",
+      "final_source_sha": "6c2357c943c247510eea18d84c2b8908ef7f8456",
+      "final_evidence": "Four rarities normal/indestructible inspected in Chromium local reconstructed assets: 24 viewport cases 390/320/430, 5:8, no DOM clipping, max stat center offset .67; legendaries label and effect font improved; PR source and repeatable repo QA script present. Unity, iPhone and final art approval pending.",
+      "last_handoff_at": "2026-11-13T19:00:00+01:00",
       "art_approved": false
     },
     {
