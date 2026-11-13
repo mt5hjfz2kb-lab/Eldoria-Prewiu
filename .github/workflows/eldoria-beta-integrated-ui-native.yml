@@ -384,24 +384,6 @@ jobs:
             if($source -ne $env:GITHUB_SHA){throw 'Integrated fixture source mismatch'}
             if([string]$data.status -match 'FAIL'){throw 'Integrated fixture reports failure'}
           }
-      - name: Verify actual Vigilia battle, strategy, discovered families and saved claims
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          $project=Join-Path $env:BW_SOURCE 'Unity'
-          $env:EARLY_RETENTION_EVIDENCE=Join-Path $project 'BreachWatchRetentionInteractionEvidence'
-          if(Test-Path $env:EARLY_RETENTION_EVIDENCE){Remove-Item -LiteralPath $env:EARLY_RETENTION_EVIDENCE -Recurse -Force}
-          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-retention-interaction.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod',
-            'Eldoria.BreachWatch.Editor.BreachWatchRetentionInteractionEvidence.Capture','-logFile',('"'+$log+'"'))
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $process.WaitForExit(1200000)){throw 'Actual retention proof incomplete; leave owned native process intact'}
-          $result=Join-Path $env:EARLY_RETENTION_EVIDENCE 'result.txt'
-          if($process.ExitCode -ne 0 -or -not(Test-Path $result)){
-            Get-Content $log -Tail 100;throw 'Actual production retention interaction failed'
-          }
-          if(-not (Get-Content $result -Raw).Contains('VIGILIA_RETENTION_INTERACTION_PASS')){throw 'Real retention interaction did not pass'}
-          if((Get-Content (Join-Path $env:EARLY_RETENTION_EVIDENCE 'source.txt') -Raw) -ne $env:GITHUB_SHA){throw 'Wrong retention proof source'}
       - name: Work around verified Unity 6.3 Search-index startup corruption without changing art
         if: needs.owner-preflight.outputs.build_candidate == 'true'
         shell: powershell
@@ -450,6 +432,24 @@ jobs:
           }
           Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
 
+      - name: Verify actual Vigilia battle, strategy, discovered families and saved claims
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $env:EARLY_RETENTION_EVIDENCE=Join-Path $project 'BreachWatchRetentionInteractionEvidence'
+          if(Test-Path $env:EARLY_RETENTION_EVIDENCE){Remove-Item -LiteralPath $env:EARLY_RETENTION_EVIDENCE -Recurse -Force}
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-retention-interaction.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod',
+            'Eldoria.BreachWatch.Editor.BreachWatchRetentionInteractionEvidence.Capture','-logFile',('"'+$log+'"'))
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $process.WaitForExit(1200000)){Get-Content $log -Tail 100;throw 'Actual retention proof incomplete; leave owned native process intact'}
+          $result=Join-Path $env:EARLY_RETENTION_EVIDENCE 'result.txt'
+          if($process.ExitCode -ne 0 -or -not(Test-Path $result)){
+            Get-Content $log -Tail 100;throw 'Actual production retention interaction failed'
+          }
+          if(-not (Get-Content $result -Raw).Contains('VIGILIA_RETENTION_INTERACTION_PASS')){throw 'Real retention interaction did not pass'}
+          if((Get-Content (Join-Path $env:EARLY_RETENTION_EVIDENCE 'source.txt') -Raw) -ne $env:GITHUB_SHA){throw 'Wrong retention proof source'}
       - name: Compile an exact unpublished WebGL after native UI and campaign checks
         if: needs.owner-preflight.outputs.build_candidate == 'true'
         shell: powershell

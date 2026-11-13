@@ -29,29 +29,38 @@ namespace Eldoria.BreachWatch.Editor
         static string Output=>Path.GetFullPath(Environment.GetEnvironmentVariable("EARLY_RETENTION_EVIDENCE")??
             Path.Combine(UnityEngine.Application.dataPath,"../BreachWatchRetentionInteractionEvidence"));
         static readonly List<string> checks=new List<string>();
-        static BreachWatchRetentionInteractionEvidence()=>EditorApplication.playModeStateChanged+=Entered;
+        static bool started;
+        static BreachWatchRetentionInteractionEvidence()=>EditorApplication.update+=Tick;
         static void Need(bool value,string message)
         {
             if(!value)throw new InvalidOperationException("VIGILIA_RETENTION_INTERACTION_FAIL: "+message);
-            checks.Add(message);
+            checks.Add(message);Debug.Log("VIGILIA_RETENTION_CHECK: "+message);
+            File.AppendAllText(Path.Combine(Output,"progress.txt"),message+"\n");
         }
         public static void Capture()
         {
-            Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
-            Environment.SetEnvironmentVariable("ELDORIA_NEW_UI_ONLY","1");
-            Directory.CreateDirectory(Output);checks.Clear();
-            EditorSceneManager.OpenScene(Scene);SessionState.SetBool(Flag,true);
-            EditorApplication.EnterPlaymode();
+            try
+            {
+                Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+                Environment.SetEnvironmentVariable("ELDORIA_NEW_UI_ONLY","1");
+                Directory.CreateDirectory(Output);checks.Clear();started=false;
+                EditorSceneManager.OpenScene(Scene);SessionState.SetBool(Flag,true);
+                SessionState.SetFloat(Flag+".Deadline",(float)EditorApplication.timeSinceStartup+300f);
+                EditorApplication.EnterPlaymode();
+            }catch(Exception e){Fail(e);}
         }
-        static void Entered(PlayModeStateChange state)
+        static void Tick()
         {
-            if(state!=PlayModeStateChange.EnteredPlayMode || !SessionState.GetBool(Flag,false))return;
-            SessionState.SetBool(Flag,false);
-            EditorApplication.delayCall+=()=>{
-                var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
-                if(!host){Fail(new Exception("Integrated host missing"));return;}
-                host.StartCoroutine(Guard(host));
-            };
+            if(!SessionState.GetBool(Flag,false))return;
+            // Editor.update survives another package throwing from delayCall.
+            // The previous run lost its delayed callback to SearchDatabase startup.
+            if(EditorApplication.timeSinceStartup>SessionState.GetFloat(Flag+".Deadline",0f))
+            {Fail(new Exception("Production retention probe exceeded its 300-second diagnostic deadline"));return;}
+            if(started||!EditorApplication.isPlaying)return;
+            var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+            if(!host||!host.Ready)return;
+            started=true;
+            try{host.StartCoroutine(Guard(host));}catch(Exception e){Fail(e);}
         }
         static IEnumerator Guard(ValoriaIntegratedWorld host)
         {
@@ -61,7 +70,7 @@ namespace Eldoria.BreachWatch.Editor
                 bool more;object current=null;
                 try{more=steps.MoveNext();if(more)current=steps.Current;}
                 catch(Exception e){Fail(e);yield break;}
-                if(!more){File.WriteAllText(Path.Combine(Output,"result.txt"),
+                if(!more){SessionState.SetBool(Flag,false);File.WriteAllText(Path.Combine(Output,"result.txt"),
                     "VIGILIA_RETENTION_INTERACTION_PASS\n"+string.Join("\n",checks)+"\nART_APPROVED=false\n");
                     File.WriteAllText(Path.Combine(Output,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
                     Debug.Log("VIGILIA_RETENTION_INTERACTION_PASS");EditorApplication.Exit(0);yield break;}
@@ -70,6 +79,7 @@ namespace Eldoria.BreachWatch.Editor
         }
         static void Fail(Exception e)
         {
+            SessionState.SetBool(Flag,false);
             Directory.CreateDirectory(Output);File.WriteAllText(Path.Combine(Output,"error.txt"),e.ToString());
             Debug.LogException(e);EditorApplication.Exit(1);
         }
@@ -127,6 +137,9 @@ namespace Eldoria.BreachWatch.Editor
             Need(!host.Hud.NarrativeOpen,"Probe setup introduction completed");
             byte[] original=File.ReadAllBytes(host.City.SaveFile);
             var ui=BreachWatchHud.Install(host);
+            var clock=host.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
+            Need(clock!=null,"Only disposable clock is advanced");
+            long originalTicks=clock.UtcTicks;
             try
             {
                 var state=host.City.Gateway.Snapshot();state.BastionLevel=3;state.BarracksLevel=3;state.SawmillLevel=1;
@@ -138,8 +151,6 @@ namespace Eldoria.BreachWatch.Editor
                 state.Retention.LastClearedStage=0;state.Retention.Orders.Clear();
                 state.Retention.TotalScoutReports=0;state.Retention.ScoutDiscoveryMask=0;
                 state.Retention.LatestDiscoveryTitle="";state.Retention.LatestDiscoveryText="";
-                var clock=host.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
-                Need(clock!=null,"Only disposable clock is advanced");
                 EarlyRetentionRules.Synchronize(state,clock.UtcTicks);Save(host,state);yield return null;
                 Need(ui.RealRetention.TryOpen(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants),"Actual earned Vigilants destination opens");
                 yield return null;
@@ -238,7 +249,9 @@ namespace Eldoria.BreachWatch.Editor
             }
             finally
             {
-                ui.RealRetention.Close();File.WriteAllBytes(host.City.SaveFile,original);host.City.ReloadForProbe();
+                ui.RealRetention.Close();
+                clock.Step(checked((int)((originalTicks-clock.UtcTicks)/TimeSpan.TicksPerSecond)));
+                File.WriteAllBytes(host.City.SaveFile,original);host.City.ReloadForProbe();
                 Need(File.ReadAllBytes(host.City.SaveFile).SequenceEqual(original),"Original disposable file restored byte-for-byte");
             }
         }
