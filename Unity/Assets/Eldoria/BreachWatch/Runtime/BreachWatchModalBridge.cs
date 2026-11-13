@@ -21,6 +21,8 @@ namespace Eldoria.BreachWatch
         const string Burgundy="VigiliaArt/PremiumSurfaces/burgundy_action";
         const string CloseMetal="VigiliaArt/OwnerControls/close_medallion";
         readonly Dictionary<Text,Color> oldTextColors=new Dictionary<Text,Color>();
+        readonly Dictionary<Text,UnityEngine.Events.UnityAction> inkCallbacks=
+            new Dictionary<Text,UnityEngine.Events.UnityAction>();
         readonly Dictionary<Graphic,bool> oldGraphics=new Dictionary<Graphic,bool>();
         readonly Dictionary<Button,Graphic> oldTargets=new Dictionary<Button,Graphic>();
         readonly Dictionary<Button,Selectable.Transition> oldTransitions=
@@ -183,6 +185,19 @@ namespace Eldoria.BreachWatch
         {
             if(!text)return;
             if(!oldTextColors.ContainsKey(text))oldTextColors.Add(text,text.color);
+            if(!inkCallbacks.ContainsKey(text))
+            {
+                // willRenderCanvases can run after CanvasUpdateRegistry has
+                // already built the mesh. Enforce when a legacy painter dirties
+                // the text, so the actual browser vertex colors cannot remain
+                // brown while a later property-only assertion reports ivory.
+                UnityEngine.Events.UnityAction restoreInk=()=>
+                {
+                    if(text && text.color!=ink)text.color=ink;
+                };
+                inkCallbacks.Add(text,restoreInk);
+                text.RegisterDirtyVerticesCallback(restoreInk);
+            }
             text.color=ink;
         }
         void LateUpdate()
@@ -216,6 +231,9 @@ namespace Eldoria.BreachWatch
         public void Restore()
         {
             if(!root)return;
+            foreach(var pair in inkCallbacks)
+                if(pair.Key)pair.Key.UnregisterDirtyVerticesCallback(pair.Value);
+            inkCallbacks.Clear();
             foreach(var pair in oldTextColors)if(pair.Key)pair.Key.color=pair.Value;
             oldTextColors.Clear();
             foreach(var pair in oldTargets)
