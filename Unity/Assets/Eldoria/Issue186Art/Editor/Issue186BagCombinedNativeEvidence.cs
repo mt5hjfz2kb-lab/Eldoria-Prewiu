@@ -187,6 +187,13 @@ namespace Eldoria.Issue186Art.Editor
             Debug.Log("ISSUE186_ACTUAL_FIRST_HIT_CLICK target="+button.name+
                 "; hit="+hits[0].gameObject.name+"; handler="+handler.name);
         }
+        static void RequireCleanSelfExplainingGuide(Canvas canvas,string state)
+        {
+            var plate=canvas.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(r=>r&&r.name=="First-use caption plate");
+            Need(plate&&!plate.gameObject.activeInHierarchy,
+                "The redundant coach caption covers the real "+state+" text");
+        }
         static void TouchRealWorldGuidance(RoyalButton actual,
             Camera camera,RenderTexture target)
         {
@@ -302,6 +309,7 @@ namespace Eldoria.Issue186Art.Editor
                     {RenderUi(ui,390,844);yield return null;}
                 Need(coach.Visible&&coach.TargetId=="nickname-input",
                     "First name input hand misses actual UI hit: "+coach.Rejection);
+                RequireCleanSelfExplainingGuide(canvas,"nickname input");
                 Photograph(camera,target,"first-nickname-input-guide",390,844);
                 report.firstNicknameInputOnRealHit=true;
                 input.text="Prueba Valoria";
@@ -311,6 +319,7 @@ namespace Eldoria.Issue186Art.Editor
                     {RenderUi(ui,390,844);yield return null;}
                 Need(coach.Visible&&coach.TargetId=="nickname-confirm",
                     "Name confirmation hand misses actual UI hit: "+coach.Rejection);
+                RequireCleanSelfExplainingGuide(canvas,"nickname confirmation");
                 Photograph(camera,target,"first-nickname-confirm-guide",390,844);
                 report.firstNicknameConfirmOnRealHit=true;
                 // Physical hit testing and real Button handler, not Invoke().
@@ -325,6 +334,7 @@ namespace Eldoria.Issue186Art.Editor
                 Need(host.Hud.NarrativeOpen&&coach.Visible&&
                      coach.TargetId=="narrative-continue",
                     "Opening narrative hand misses actual continue hit: "+coach.Rejection);
+                RequireCleanSelfExplainingGuide(canvas,"first narrative");
                 Photograph(camera,target,"first-story-continue-guide",390,844);
                 report.firstStoryContinueOnRealHit=true;
             }
@@ -399,6 +409,7 @@ namespace Eldoria.Issue186Art.Editor
                 Need(firstCoach.Visible && firstCoach.TargetId=="sawmill",
                     "Actual Aserradero tutorial hand did not find a frontmost hit: "+
                     firstCoach.Rejection+"; target="+firstCoach.TargetId);
+                RequireCleanSelfExplainingGuide(canvas,"Aserradero label");
                 Photograph(camera,rt,"first-sawmill-guide",390,844);
                 report.firstSawmillHandOnRealHit=true;
                 var realLabel=canvas.GetComponentsInChildren<BuildingLabel>(true)
