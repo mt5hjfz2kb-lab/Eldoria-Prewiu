@@ -1,7 +1,7 @@
 name: Issue 186 Unity native art evidence (exclusive Windows)
 on:
   push:
-    branches: [feature/issue186-reward-attention-guidance-20261111]
+    branches: [feature/issue186-first-guided-hand-20261113]
     paths: [tools/reward-experience/native-request.txt]
   workflow_dispatch:
 permissions:
@@ -65,19 +65,27 @@ jobs:
           if not re.fullmatch(r"[A-Za-z0-9_.-]+",owner) or not revision.isdecimal():raise SystemExit("Missing exact requested lease")
           if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!=owner or hs[0].get("ownership_revision")!=int(revision) or hs[0].get("ownership_state")!="claimed":
               raise SystemExit("Another workstream owns Windows. Refuse native run.")
-          pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
+          pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-first-guided-hand-20261113")
           if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
-          combined=request.get("combined_vigilia_source","")
-          if combined:
-              if len(combined)!=40 or any(c not in "0123456789abcdef" for c in combined):raise SystemExit("Invalid pinned UI source")
-              ui_run=request.get("combined_ui_native_run","")
-              if not ui_run.isdecimal():raise SystemExit("UI native certificate missing")
-              ui=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}")
-              if ui["head_sha"]!=combined or ui["head_branch"]!="feature/forja-oscura-native-proof-20261107":raise SystemExit("Wrong UI native source")
-              ui_jobs=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}/jobs")["jobs"]
-              for name in ("native","genuine-visual-ab"):
-                  if not any(j["name"]==name and j["status"]=="completed" and j["conclusion"]=="success" for j in ui_jobs):raise SystemExit("Unverified UI native/A-B certificate")
-          combined_only=request.get("state")=="REQUEST_ACTUAL_COMBINED_UI_ONLY"
+          # Current first-use proof tests the integrated source itself.
+          # It must NOT replay historical UI overlays or prior Unity runs.
+          first_use=request.get("state")=="REQUEST_FIRST_GUIDED_HAND_NATIVE"
+          if first_use:
+              if request.get("workstream")!="eldoria-issue186-reward-attention-guidance-20261111" or request.get("merge_or_publish")!="false":
+                  raise SystemExit("First-use request must remain isolated and unpublished")
+              combined=os.environ["GITHUB_SHA"]
+          else:
+              combined=request.get("combined_vigilia_source","")
+              if combined:
+                  if len(combined)!=40 or any(c not in "0123456789abcdef" for c in combined):raise SystemExit("Invalid pinned UI source")
+                  ui_run=request.get("combined_ui_native_run","")
+                  if not ui_run.isdecimal():raise SystemExit("UI native certificate missing")
+                  ui=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}")
+                  if ui["head_sha"]!=combined or ui["head_branch"]!="feature/forja-oscura-native-proof-20261107":raise SystemExit("Wrong UI native source")
+                  ui_jobs=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}/jobs")["jobs"]
+                  for name in ("native","genuine-visual-ab"):
+                      if not any(j["name"]==name and j["status"]=="completed" and j["conclusion"]=="success" for j in ui_jobs):raise SystemExit("Unverified UI native/A-B certificate")
+          combined_only=first_use or request.get("state")=="REQUEST_ACTUAL_COMBINED_UI_ONLY"
           if combined_only and not combined:raise SystemExit("Combined-only evidence requires exact verified UI source")
           print("ISSUE186_CAS_LEASE_PASS")
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nowner={owner}\nrevision={revision}\nreview=false\ncombined_source={combined}\ncombined_only={str(combined_only).lower()}\n")
@@ -193,11 +201,11 @@ jobs:
           $d=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)))|ConvertFrom-Json
           $holders=@($d.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne $env:LEASE_OWNER -or [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION -or $holders[0].ownership_state -ne 'claimed'){throw 'Issue186 lost Windows lease'}
-          $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
+          $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-first-guided-hand-20261113" -Headers $hdr
           if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
       - name: Fetch and install only source-pinned verified optional Vigilia for the isolated combined proof
-        if: needs.exclusive-preflight.outputs.combined_source != ''
+        if: ${{ needs.exclusive-preflight.outputs.combined_source != '' && needs.exclusive-preflight.outputs.combined_source != github.sha }}
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
@@ -317,13 +325,14 @@ jobs:
              -not $r.temporaryProbeOnly -or -not $r.actualBagOnVigilia -or -not $r.seenDoesNotUse -or
              -not $r.skipDoesNotComplete -or -not $r.useCreditsOnce -or -not $r.jsonReloadVerified -or
              -not $r.mailReadDoesNotClaim -or -not $r.mailClaimDoesNotCredit -or
+             -not $r.firstUseCoachPresent -or -not $r.firstSawmillHandOnRealHit -or
              $r.artApproved -or $r.physicalIphoneVerified -or -not $r.fullMailboxUiFlowVerified -or
-             @($r.images).Count -ne 20 -or $r.actualIntegratedCityFrames -ne 4 -or $r.realFirstHitClicks -ne 52){throw 'Actual combined bag proof contract missing'}
+             @($r.images).Count -ne 21 -or $r.actualIntegratedCityFrames -ne 4 -or $r.realFirstHitClicks -ne 52){throw 'Actual combined bag proof contract missing'}
           foreach($shot in @($r.images)){
             $file=Join-Path $dest $shot.file
             if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){throw 'Actual combined bag PNG mismatch'}
           }
-          Write-Host 'ISSUE186_ACTUAL_INTEGRATED_CITY4_BAG_MAIL16_20PNG_52_FIRST_HIT_CLICKS_FULL_MAIL_UI_AND_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
+          Write-Host 'ISSUE186_ACTUAL_FIRST_SAWMILL_HAND_CITY4_BAG_MAIL16_21PNG_52_FIRST_HIT_CLICKS_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
       - name: Preserve exact fresh combined screenshots even if a wrapper check fails
         if: always() && needs.exclusive-preflight.outputs.combined_source != ''
         shell: powershell
