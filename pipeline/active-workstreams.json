@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T23:26:02.335Z",
+  "updated_at": "2026-11-13T23:54:59.802Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -51,15 +51,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 58,
+      "ownership_revision": 59,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
       "phase": "FIRST_USE_REAL_FIRST_HIT_REPAIR_AND_NATIVE_GATE",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -232,14 +230,14 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
-        "owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
-        "ownership_revision": 57,
-        "updated_at": "2026-11-13T20:21:59.884Z",
-        "reason": "Owner-directed continuation of same canonical PR190; beta/native clean exit run43489752868, exact source CI43497996113 SUCCESS. Native fixture requires first nickname input/confirm, first story, sawmill, 24 shots, 53 real first hits. No other active Windows owner."
+        "status": "released",
+        "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
+        "ownership_revision": 59,
+        "updated_at": "2026-11-13T23:54:59.802Z",
+        "reason": "Temporary safe owner-directed lending to Vigilia after native 43520031645 clean exit; native scope/writer remains Issue186. Future Issue186 native runs must reacquire Windows lease; do not overtake Vigilia."
       },
       "runner_claimed_at": "2026-11-13T20:21:59.884Z",
-      "runner_released_at": "2026-11-12T20:02:24.096Z",
+      "runner_released_at": "2026-11-13T23:54:59.802Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
       "runner_claim_basis": "Exact March native/A-B completed, original artifact independently hash verified; next bounded native bag binding rotation regression. Same owner and source, no cancellation.",
       "runner_release_basis": "Exact audited overlay restored successfully in run43296125081; 64 metadata hash triples identical to prior review, all257 original paths checked by restoration. No Unity rerun or unknown overwrite.",
@@ -317,7 +315,7 @@
         "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       },
-      "note": "Owner reports no pointer when entering published Vigilia. Main binds hand only on Issue186BagOverlay first resource packet use, not first city/world/construction interaction; actual post-name guidance absent. Transfer owner-directed to this chat; preserve PR179 runner and source.",
+      "note": "Owner reports no pointer when entering published Vigilia. Main binds hand only on Issue186BagOverlay first resource packet use, not first city/world/construction interaction; actual post-name guidance absent. Transfer owner-directed to this chat; preserve PR179 runner and source. | 2026-11-13T23:54:59.802Z Windows only lent to Vigilia per conditional user authorization; Issue186 PR190 remains claimed and source unchanged.",
       "delivery_definition": {
         "deliverable": "Visible, actionable first-use hand in real Vigilia onboarding after nickname (sawmill selection then construction and unlocked steps) without blocking interaction or repeating after completion",
         "evidence": "Source tests followed by exact Unity real raycasts at phone and desktop sizes, browser saved-flow; first tap and save preserved",
@@ -332,7 +330,16 @@
         "real_first_entry_screenshots": 0,
         "required_photos": 24,
         "required_first_hits": 53
-      }
+      },
+      "resource_release_history": [
+        {
+          "from_revision": 58,
+          "to_revision": 59,
+          "at": "2026-11-13T23:54:59.802Z",
+          "to": "eldoria-forja-oscura-visual-proof-20261107",
+          "reason": "Propietario 2026-11-14 autoriza usar PC SI no hay trabajo; Issue186 native run 43520031645 SUCCESS, Unity PID 45352 clean exit 0 and reporter artifacts retained; GitHub 0 in_progress/0 waiting. Rotate only Windows, leave PR190 owner, code and scopes unchanged. PC process reverified by native probe before Unity."
+        }
+      ]
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -6985,15 +6992,17 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 127,
+      "ownership_revision": 128,
       "write_scope_released": false,
-      "phase": "PHASE1_REFERENCE_AND_REAL_BASELINE_VERIFIED_SOURCE_QA_PASS_NATIVE_BLOCKED_BY_ISSUE186",
-      "next": "Source tested SHA1332a95f1a3ad36a6c0b425fef84014269edc685, doc-only HEAD7c65a557d33ef03dd71f2a6823b6c88ca0fb60c1. Obtain formal Windows lease after Issue186 release, not from idle jobs. Run exactly one authentic Unity capture on the same source: 15 PNG Retina 3x (6 city/Bastion, 6 mail/report, 3 bag) plus normal views, SHA/hash check, compare with approved reference JPEG and 12 verified BEFORE Unity captures. 300%-zoom genuine after pixels; verify real button first hits, no overlap and saved state. Zero budget; do not publish beta, change gameplay or enter phase2. Declare RECHAZADO until actual visual quality verified.",
+      "phase": "PHASE1_NATIVE_EXCLUSIVE_WINDOWS_LOAN_AUTHORIZED_CAPTURE_NEXT",
+      "next": "Launch single exact-head Vigilia Unity 3x capture on current branch; fail closed on PC process and source state, inspect 1x+3x images; release Windows on clean exit; no merge/publication/art approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-12T19:49:05.773Z",
+      "runner_claimed_at": "2026-11-13T23:54:59.802Z",
       "runner_claim_basis": "Owner asks ongoing execution while testing published beta18. Real March geometry restoration fix and two-cycle native regression; existing A/B and first-hit checks retained. No running Actions found; no prior claim. Do not modify or republish beta.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
       "art_production_routing": "required",
@@ -7197,15 +7206,12 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "TRANSFERRED_TO_PR179",
-        "at": "2026-11-11T19:46:18.307Z",
-        "to": "eldoria-private-beta-i-v-20261107",
-        "after_run_id": 43089450921,
-        "from_owner": "chatgpt-pr173-complete-ui-migration-20261111",
-        "from_revision": 91,
-        "reason": "El propietario pide en este chat mirar y forzar el relevo. Terminar el lote nativo en curso y preservar evidencias; liberar SOLO Windows por CAS y ceder a PR179; conservar titularidad de escritura, PR173 y trabajo artístico. No iniciar otro lote Windows antes de la cesión. Rotación posterior PR181, PR187, PR173.",
-        "transfer_completed": true,
-        "transferred_at": "2026-11-11T19:47:57.685Z"
+        "to": "eldoria-forja-oscura-visual-proof-20261107",
+        "from": "eldoria-issue186-reward-attention-guidance-20261111",
+        "sha": "7c65a557d33ef03dd71f2a6823b6c88ca0fb60c1",
+        "predecessor_run": 43520031645,
+        "temporary": true,
+        "reason": "Owner explicit no-PC-work condition, Windows runner only; Issue186 retains source owner"
       },
       "last_verified": {
         "source_sha": "a5f2c9d9afe841979c0bf7a59a7aba2911637af5",
@@ -7357,12 +7363,10 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 125,
-        "source": "8ba0805716f047140de6691e640b415ab00cd948",
-        "source_ci_run": 43184195235,
-        "claimed_at": "2026-11-12T08:42:23.684Z",
-        "updated_at": "2026-11-12T22:49:59.866Z"
+        "owner": "chatgpt-vigilia-visual-kit-20261113",
+        "ownership_revision": 128,
+        "updated_at": "2026-11-13T23:54:59.802Z",
+        "reason": "Explicit owner conditional authorization 2026-11-14 ('Si no hay trabajo en el PC usa el recurso'); last Issue186 native 43520031645 SUCCESS, process clean exit, Actions currently in_progress=0 and waiting=0; temporary single native capture only, 0 EUR; fail if local Unity/Blender process busy; preserve beta and release resource on exit."
       },
       "last_native": {
         "run": 43195548484,
