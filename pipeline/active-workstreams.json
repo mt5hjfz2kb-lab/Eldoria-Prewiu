@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T18:42:50.858Z",
+  "updated_at": "2026-11-13T18:50:27.724Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7451,9 +7451,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_NAVIGATION_LAST_FIX_AND_NEW_WEBGL_PREVIEW",
-      "note": "Owner explicitly requests a new testable build with icon/access corrections and physical Safari world-entry regression addressed. Unity exact ec4d664 passed; package candidate passed. Desktop WebKit 43469529824 still executing; preserve exact SHA and assets, do not restart or cancel. Pending two icon visual defects and owner-only Pages staging, no tester release.",
-      "next": "Finish current WebKit run, fix double castle during deferred loading and bag highlight on selecting buildings with real-input native regression; package and publish an identifiable owner preview, verify origin and preserve saves/routes.",
+      "phase": "EXACT_OWNER_NAVIGATION_CANDIDATE_NATIVE_QA_AND_AUTOPUBLISH",
+      "note": "Code fixed: real city/bag/world/army/heroes/mail routes, Cuartel Training, one-castle deferred state and immediate BOLSA dehighlight. Native 43481923633 on old SHA008498 failed as expected solely on same-frame bag-close assertion; source ed161dd fixes it, exact candidate 4718c12295b66da54ead69fc71a6fa392d3cc83e is now running 43483165131 with source-contract and preflight PASS; Windows exclusive claim retained. Earlier ec4d664 full Unity, packaging and desktop WebKit PASS including saved sawmill and two real world entries/returns, not physical iPhone. No external testers. Public a2e956 remains old until exact new candidate passes.",
+      "next": "Observe exact run 43483165131 (new Unity job). If all source/native/package/WebKit and two-world-entry gates pass, main workflow .github/workflows/eldoria-beta-owner-nav-pages.yml auto-stages and publishes only the corrected owner preview after byte/hash/old-route/archive checks, then records HTTP identity and issue172 notification. If any gate fails, diagnose actual logs and fix same workstream; never promote a failed SHA. Physical Safari 30-minute stable city/world/return and user save verification remains required before testers.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
