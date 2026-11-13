@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T08:00:00+01:00",
+  "updated_at": "2026-11-13T07:25:09.725Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -26,7 +26,7 @@
       "ownership_state": "available",
       "ownership_revision": 2,
       "branch": "feature/relicario-premium-master-v2-20261113",
-      "status": "available",
+      "status": "active",
       "phase": "DRAFT_PR_189_SOURCE_AND_CHROMIUM_QA_COMPLETE_UNITY_INTEGRATION_FUTURE",
       "claimed_at": "2026-11-13T00:18:00+01:00",
       "art_production_routing": "required",
