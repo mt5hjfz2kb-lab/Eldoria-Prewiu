@@ -135,7 +135,7 @@ jobs:
           if ! gh release view "$TAG" --json tagName >/dev/null 2>&1; then
             gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Archived Pages snapshot before navigation owner preview' --notes-file previous-pages-note.md
           fi
-          if ! gh release view "$TAG" --json assets | grep -q '"name": "artifact.tar"'; then
+          if ! gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq 'artifact.tar'; then
             gh release upload "$TAG" previous-pages/artifact.tar
           fi
           mkdir -p verified-archive
