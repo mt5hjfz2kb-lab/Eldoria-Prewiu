@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T00:34:01.736Z",
+  "updated_at": "2026-11-13T00:41:06.970Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7374,7 +7374,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 65,
+      "ownership_revision": 66,
       "write_scope_released": false,
       "status": "active",
       "branch": "main",
@@ -7419,7 +7419,8 @@
         ".github/workflows/eldoria-beta18-preserved-owner-stage.yml",
         ".github/workflows/eldoria-beta-integrated-ui-native.yml",
         ".github/workflows/eldoria-beta-recover-429851.yml",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        ".github/workflows/eldoria-beta-postmerge-queue.yml"
       ],
       "resources": [
         "windows-runner-heavy"
