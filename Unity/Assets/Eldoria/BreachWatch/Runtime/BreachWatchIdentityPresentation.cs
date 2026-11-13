@@ -34,7 +34,7 @@ namespace Eldoria.BreachWatch
             root.GetComponent<Image>().color=new Color(.014f,.012f,.018f,.82f);
             var frame=Node(panel,"Vigilia / identity engraved bronze",Vector2.zero,Vector2.one);
             frame.gameObject.AddComponent<BreachWatchFrameEngraving>();
-            var emblem=Node(panel,"Vigilia / identity lion seal",new Vector2(.39f,.815f),new Vector2(.61f,.955f));
+            var emblem=Node(panel,"Vigilia / identity lion seal",new Vector2(.41f,.825f),new Vector2(.59f,.935f));
             var picture=emblem.gameObject.AddComponent<Image>();picture.sprite=crest;
             picture.preserveAspect=true;picture.raycastTarget=false;
             title.anchorMin=new Vector2(.09f,.70f);title.anchorMax=new Vector2(.91f,.80f);

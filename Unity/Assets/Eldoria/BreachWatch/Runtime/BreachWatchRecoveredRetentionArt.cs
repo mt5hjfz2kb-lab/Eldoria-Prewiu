@@ -79,6 +79,21 @@ namespace Eldoria.BreachWatch
                    (!(graphic is RawImage) && graphic.GetType().Name.StartsWith("RoyalGold") &&
                     !(graphic is Eldoria.UI.RoyalGold.V2.RoyalGoldV3StageTrailGraphic)))Hide(graphic);
             }
+            // Progress/discovery text is live data; replace the remaining
+            // blue Royal plaque material without changing its label or pulse.
+            var stone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
+            if(!stone){Restore();return false;}
+            foreach(var old in screen.GetComponentsInChildren<Image>(true))
+            {
+                if(old.name!="Gilded map progress / real stages and discoveries" &&
+                   old.name!="Cartographer / last discovered report")continue;
+                Hide(old);
+                var plate=RectNode(old.transform,"Vigilia / live landscape progress material");
+                created.Add(plate.gameObject);plate.SetAsFirstSibling();
+                var image=plate.gameObject.AddComponent<Image>();
+                image.sprite=stone;image.type=Image.Type.Sliced;image.color=Color.white;
+                image.raycastTarget=false;owned.Add(image);
+            }
             var room=RectNode(art,"Vigilia / recovered source composition");created.Add(room.gameObject);
             room.offsetMin=new Vector2(5,5);room.offsetMax=new Vector2(-5,-5);
             room.SetSiblingIndex(Mathf.Min(1,art.childCount-1));

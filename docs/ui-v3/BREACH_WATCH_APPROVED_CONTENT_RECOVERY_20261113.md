@@ -20,7 +20,15 @@ Native assertions require seven Vigilant planes, one Scout landscape, three ligh
 
 ## Status
 
-Implemented, not yet Unity-compiled or visually accepted. Native-only request 28 is intentionally not a public build. Final candidate still requires real A/B inspection, gameplay regression, exact-source WebGL, WebKit persistence/construction and full certificate before main/public replacement. Physical iPhone validation remains distinct.
+Native review 43396364091, source 1610d322fecf1bd45675cd215c183d0c15677f45: PASS for first entry, visible narrative touches, city, destinations, glyphs and saved treasure/bag rewards. Reviewed actual 390x844 and 844x390 Vigilants/Scouts captures: authored landscapes, paper, mission vignettes and family medallions are visibly restored. Nickname frame/entry hierarchy is visibly improved. This is a reviewed recovery candidate, not a claim of final visual parity with every historical reference.
+
+Final request 31 additionally removes the remaining blue progress/discovery material and reduces the 56px nickname seal to near-native display size. These exact final pixels still require the repeated native review during the fresh WebGL build. Publication remains pending final-source browser and complete regression certificate.
+
+The prior freeze/ink source cf5a9f8c814e829b84664807e48f27a0068322f3 passed native/build/package and WebKit memory/reload comparison 43387431116. Independent real browser interaction 43396166713 proves saved nickname, visible narrative continuation, actual sawmill construction and level-one persistence after another real reload, with no browser errors. This older-source result must not substitute for final-source verification.
+
+Lessons: the city-only trim audit must inspect inactive ancestry explicitly with Unity GetComponentInParent<T>(true), while still rejecting every active or unrelated fallback. Default search excludes a closed modal. Documentation: https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/component/getcomponentinparent . Failed runs 43392139699 and 43395846418 did not validate destination images; always check each artifact report's source because failure uploads may contain untouched previous-stage folders.
+
+WebKit regression must finish the legitimate post-sawmill Aldric beat on return before clicking city navigation. A click behind that narrative was an invalid test, not evidence of lost progress; the unchanged final nickname + sawmill level-one assertion now passes.
 
 Source-only retention guard passes. Legacy unrelated static guards (web opt-in, old modal signature, compact navigation) remain incompatible with already-integrated production changes; missing Heroes source is a sparse-checkout limitation. These are not claimed passing.
 
