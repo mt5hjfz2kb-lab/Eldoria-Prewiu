@@ -38,6 +38,7 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchRetinaEvidence.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/*.png.meta'
+      - 'tools/breach-watch/import_cleanroom_art.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchBetaBootstrap.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader'
@@ -55,6 +56,7 @@ jobs:
           filter: blob:none
           sparse-checkout-cone-mode: false
           sparse-checkout: |
+            /tools/breach-watch/import_cleanroom_art.py
             /tools/breach-watch/validate_shared_destination_theme.py
             /tools/breach-watch/validate_mailbox_theme.py
             /tools/breach-watch/validate_modal_bridge.py
@@ -65,6 +67,10 @@ jobs:
             /tools/breach-watch/native_visual_ab_review.py
             /pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json
             /Unity/Assets/Eldoria/BreachWatch/Editor/**
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/panel.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/profile.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/mission.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/resource.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_castle.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_provisions.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_swords.png.meta
@@ -127,6 +133,20 @@ jobs:
           upgrade=(art/'upgrade.png.meta').read_text()
           assert 'enableMipMap: 0' in upgrade
           assert 'textureCompression: 0' in upgrade
+          for name in ('panel','profile','mission','resource'):
+              meta=(art/(name+'.png.meta')).read_text()
+              assert 'enableMipMap: 0' in meta,name
+              assert 'textureCompression: 1' in meta,name
+              assert 'compressionQuality: 100' in meta,name
+              assert 'filterMode: 1' in meta,name
+          mail=(root/'Resources/VigiliaArt/MailboxArtwork/sealed_letter.png.meta').read_text()
+          assert mail.count('maxTextureSize: 1024')==6
+          assert 'enableMipMap: 0' in mail
+          assert 'textureCompression: 0' in mail
+          generator=Path('tools/breach-watch/import_cleanroom_art.py').read_text()
+          assert '"mission":1400,"resource":2200' in generator
+          assert 'max_size=1024 if navigation else 4096' in generator
+          assert 'compression=0 if navigation or name=="upgrade" else 1' in generator
           print('VIGILIA_READONLY_RETINA_EDITOR_AND_SPRITE_SOURCE_CHECK_PASS')
           print('NOT A UNITY COMPILE, A 3X GPU SCREENSHOT, WEBGL DPR OR ART APPROVAL')
           PY

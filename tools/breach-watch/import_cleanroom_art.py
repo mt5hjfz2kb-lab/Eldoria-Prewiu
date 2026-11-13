@@ -238,7 +238,7 @@ def store(name,image,sourcehash,task,source_label):
         # the right side stretch into the name area. Preserve the ENTIRE
         # heraldic ring inside the non-stretching left-side source region.
         border=(round(w*.35),round(h*.18),round(w*.10),round(h*.18))
-    elif name=="mission":border=(round(w*.21),round(h*.18),round(w*.10),round(h*.18))
+    elif name=="mission":border=(round(w*.206),0,round(w*.1105),0)
     elif name=="resource":border=(round(w*.20),round(h*.18),round(w*.10),round(h*.18))
     else:border=(0,0,0,0)
     left,bottom,right,top=border
@@ -250,7 +250,15 @@ def store(name,image,sourcehash,task,source_label):
     # to 3900 UI units and Unity squeezed the center of the 182u plate to 0.
     # Author these 2K ornaments to their real on-screen border widths:
     # profile 39u, mission 26.2u and resource 19.96u respectively.
-    pixels_per_unit={"profile":2000,"mission":2000,"resource":2600}.get(name,100)
+    # Preserve exact approved production font/corner geometry. Do not reset
+    # mission or resource PPU to the older generator trial values.
+    pixels_per_unit={"profile":2000,"mission":1400,"resource":2200}.get(name,100)
+    # Navigation is intentionally lossless, 1024 max and no mipmaps.
+    # Full-size soft illustrated panels retain compression to protect the
+    # mobile memory budget, using higher encoder quality instead of RGBA32.
+    navigation=name.startswith("nav_")
+    max_size=1024 if navigation else 4096
+    compression=0 if navigation or name=="upgrade" else 1
     meta=f"""fileFormatVersion: 2
 guid: {guid}
 TextureImporter:
@@ -267,7 +275,7 @@ TextureImporter:
   spritePixelsToUnits: {pixels_per_unit}
   alphaIsTransparency: 1
   textureShape: 1
-  maxTextureSize: 4096
+  maxTextureSize: {max_size}
   textureSettings:
     serializedVersion: 2
     filterMode: 1
@@ -291,10 +299,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: {max_size}
     resizeAlgorithm: 0
-    textureCompression: 1
-    compressionQuality: 50
+    textureCompression: {compression}
+    compressionQuality: 100
   spritePackingTag:
   userData:
   assetBundleName:
