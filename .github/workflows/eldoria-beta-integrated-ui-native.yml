@@ -340,7 +340,7 @@ jobs:
           $identitySource=Join-Path $folder 'FirstEntry/source.txt'
           if(-not(Test-Path $identity) -or (Get-Content $identity -Raw) -ne 'PRODUCTION_FIRST_ENTRY_TWO_REAL_TOUCHES_PASS' -or (Get-Content $identitySource -Raw) -ne $env:GITHUB_SHA){throw 'Fresh production entry was not proven on this source'}
           Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
-      - name: Capture four real destination screens in disposable Unity progression fixture
+      - name: Capture five real destination surfaces including Cuartel Training entry in Unity fixture
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
@@ -368,7 +368,7 @@ jobs:
           if((Get-Item $reportFile).LastWriteTimeUtc -lt $start.AddSeconds(-3)){throw 'Destination evidence is stale'}
           if($data.status -ne 'VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING' -or
              $data.artworkApproved -or -not $data.probeOnly -or -not $data.saveUnchanged){throw 'Destination result claims unjustified artistic/gameplay PASS'}
-          if(@($data.screens).Count -ne 16 -or $data.screenshotCount -ne 16){throw 'Expected 4 destinations x 4 screen sizes'}
+          if(@($data.screens).Count -ne 20 -or $data.screenshotCount -ne 20){throw 'Expected 5 destinations x 4 screen sizes including actual Barracks Training control'}
           foreach($screen in $data.screens){
             $file=Join-Path $folder $screen.file
             if(-not(Test-Path $file)){throw "Missing native destination screenshot $($screen.file)"}
