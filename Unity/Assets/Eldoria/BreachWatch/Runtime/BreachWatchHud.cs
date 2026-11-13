@@ -1211,16 +1211,16 @@ namespace Eldoria.BreachWatch
                 // Keep live chapter, objective and progress editable on top.
                 // The owner's carved quest plaque is wide and shallow. The
                 // original 78u height made the illustration look like a poster.
-                float missionWidth=Mathf.Min(smallPhone?225f:184f,
-                    w*(smallPhone?.52f:.40f));
+                float missionWidth=Mathf.Min(smallPhone?248f:184f,
+                    w*(smallPhone?.59f:.40f));
                 float missionTop=smallPhone?80f:82f;
-                float missionHeight=smallPhone?88f:68f;
+                float missionHeight=smallPhone?110f:68f;
                 // The NEW independently illustrated mission asset has an
                 // alpha-trimmed painted silhouette, unlike the older cropped
                 // reference with 12u transparent padding. Align its true
                 // pixels with the 13u profile inset; never clip the bevel.
                 At(objective,margin,missionTop,missionWidth,
-                    fullObjective?112f:missionHeight);
+                    fullObjective?(smallPhone?130f:112f):missionHeight);
                 // A genuine 390x844 phone showed 12*.91=10.92px, below
                 // the minimum readable physical text. Use a 13u authored
                 // serif chapter and reclaim a little space right of the
@@ -1234,8 +1234,8 @@ namespace Eldoria.BreachWatch
                 // Move the same live text 1u UP and make the row 1u taller,
                 // preserving a full 2u gap to the actual objective at y21u.
                 At(chapterName.rectTransform,smallPhone?54f:36f,
-                    smallPhone?18f:13f,missionWidth-(smallPhone?64f:44f),
-                    smallPhone?17f:15f);
+                    smallPhone?16f:13f,missionWidth-(smallPhone?64f:44f),
+                    smallPhone?20f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
@@ -1245,20 +1245,23 @@ namespace Eldoria.BreachWatch
                 // spacing. Move ONLY live ink upward, with 2u minimum row
                 // separation; keep the genuine 2K source and active button.
                 At(chapterObjective.rectTransform,smallPhone?54f:36f,
-                    smallPhone?37f:27f,missionWidth-(smallPhone?64f:44f),
-                    fullObjective?51f:(smallPhone?12f:15f));
+                    smallPhone?40f:27f,missionWidth-(smallPhone?64f:44f),
+                    fullObjective?51f:(smallPhone?36f:15f));
                 At(chapterProgress.rectTransform,smallPhone?54f:36f,
-                    fullObjective?87f:(smallPhone?51f:43f),
-                    missionWidth-(smallPhone?64f:44f),smallPhone?18f:14f);
-                chapterName.fontSize=smallPhone?13:10;
+                    fullObjective?(smallPhone?94f:87f):
+                        (smallPhone?82f:43f),
+                    missionWidth-(smallPhone?64f:44f),smallPhone?19f:14f);
+                // Larger physical lettering and a genuine two-line task well
+                // replace the ~10px objective visible on the native 390px run.
+                chapterName.fontSize=smallPhone?15:11;
                 chapterName.resizeTextForBestFit=true;
-                chapterName.resizeTextMinSize=smallPhone?13:10;
-                chapterName.resizeTextMaxSize=smallPhone?13:10;
-                chapterObjective.fontSize=smallPhone?14:11;
+                chapterName.resizeTextMinSize=smallPhone?13:11;
+                chapterName.resizeTextMaxSize=smallPhone?15:11;
+                chapterObjective.fontSize=smallPhone?16:13;
                 chapterObjective.resizeTextForBestFit=true;
-                chapterObjective.resizeTextMinSize=smallPhone?12:11;
-                chapterObjective.resizeTextMaxSize=smallPhone?14:11;
-                chapterProgress.fontSize=smallPhone?14:11;
+                chapterObjective.resizeTextMinSize=smallPhone?14:12;
+                chapterObjective.resizeTextMaxSize=smallPhone?16:13;
+                chapterProgress.fontSize=smallPhone?15:12;
 
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
@@ -1266,7 +1269,8 @@ namespace Eldoria.BreachWatch
                 // One introduced-mail seal near the mission (not an extra
                 // row of stacked lower buttons). Chapter-I remains untouched
                 // until the real first delivery creates its event ledger.
-                At(utilityRail,margin,missionTop+missionHeight+16f,44f,49f);
+                At(utilityRail,margin,missionTop+
+                    (fullObjective&&smallPhone?130f:missionHeight)+16f,44f,49f);
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
