@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T00:18:00+01:00",
+  "updated_at": "2026-11-13T00:34:01.736Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7374,10 +7374,10 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 64,
+      "ownership_revision": 65,
       "write_scope_released": false,
       "status": "active",
-      "branch": "feature/eldoria-private-beta-i-v-20261107",
+      "branch": "main",
       "scope": [
         "tools/eldoria-private-beta/**",
         ".github/workflows/eldoria-private-beta-freeze.yml",
@@ -7425,10 +7425,10 @@
         "windows-runner-heavy"
       ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
-      "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
+      "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PUBLIC_ENGINE18_EARNED_B5_WORLD_CITY_DESKTOP_PASS_PHYSICAL_IPHONE_PENDING",
+      "phase": "INTEGRATED_BETA_POSTMERGE_RELEASE",
       "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
       "next": "Owner physical iPhone trial at public18; prepare integrated visual/art candidates separately without main activation. No tester release or art approval claimed.",
       "last_verified": {
@@ -8571,7 +8571,10 @@
         "city": "8 genuine native captures PASS",
         "destinations": "FAIL advanced fixture missing production narrative introduction",
         "typography": "2 objective rows GPU overflow at 900x1600; fix queued, not artistic approval"
-      }
+      },
+      "last_verified_source_sha": "fb8727d3ac45e31e61ab8ba244fa395477eff16e",
+      "last_verified_native_run": 43329543960,
+      "last_verified_full_certificate_run": 43329553450
     },
     {
       "id": "eldoria-daily-treasures-20261108",

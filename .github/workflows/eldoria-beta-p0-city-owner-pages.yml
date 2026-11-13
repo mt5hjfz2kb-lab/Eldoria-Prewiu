@@ -1,7 +1,7 @@
-name: Eldoria owner-only lazy world Pages — preserve all working routes
+name: Integrated Vigilia owner beta — archive diagnostics and preserve beta18
 on:
   push:
-    branches: [main, feature/eldoria-private-beta-i-v-20261107]
+    branches: [main]
     paths: ['.github/workflows/eldoria-beta-p0-city-owner-pages.yml']
 permissions:
   contents: read
@@ -10,116 +10,111 @@ concurrency:
   group: eldoria-pages-p0-owner-recovery
   cancel-in-progress: false
 jobs:
-  verify-preserved-owner-site:
+  stage:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: read
+      actions: write
     steps:
+      - name: Replace only the obsolete pre-editor lease wait with the postmerge gate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const id=43337524782;
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:id})).data;
+            if(run.status==='completed')return;
+            if(run.head_sha!=='f1c8dd673ee74072d4bcf646da1413cd551ebaf6'||
+               run.path!=='.github/workflows/ui-progression-cert.yml')throw Error('Unexpected old gate');
+            const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:id,per_page:100})).data.jobs;
+            const native=jobs.find(j=>j.name==='certify');
+            if(native&&native.status!=='queued'){
+              const steps=native.steps||[];
+              const lease=steps.find(s=>s.name==='Check live native-editor lease before downloading the Unity project');
+              if(!lease||lease.status!=='in_progress'||steps.some(s=>s.number>lease.number&&s.status!=='queued'&&s.status!=='pending'))
+                throw Error('Refuse cancellation after editor preflight; no live Unity may be interrupted');
+            }
+            await github.rest.actions.cancelWorkflowRun({...context.repo,run_id:id});
+            core.info('Obsolete main branch lease wait cancelled before Unity; replacement main gate retains all native tests.');
       - uses: actions/checkout@v4
         with:
-          ref: 22aaf65b66ebdd835a26ea3fffe5fcbc6a43bb6f
+          fetch-depth: 0
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43283946677
-          name: mobile18-unpublished-preserved-owner-site
-          github-token: ${{ github.token }}
-          path: site
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43152671564
-          name: github-pages
-          github-token: ${{ github.token }}
-          path: previous-pages
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43283946677
-          name: mobile18-staged-delivery-actual-desktop-webkit-not-physical-iphone
-          github-token: ${{ github.token }}
-          path: actual-mac
-      - name: Verify every preceding live file, recovered hidden files and exact actual runtime proof
+      - name: Require exact completed native, browser and full gameplay certificates
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python3 -m unittest discover -s tools/eldoria-private-beta -p test_engine18_publication.py
-          python3 -m py_compile tools/eldoria-private-beta/verify_engine18_owner_publication.py
-          python3 tools/eldoria-private-beta/verify_engine18_owner_publication.py --site site --baseline exact-previous-site --mac actual-mac --archive previous-pages/artifact.tar --live-proof preservation-live-proof.json
-      - name: Retain concrete verified owner site including every original hidden file
-        uses: actions/upload-artifact@v4
+          set -euo pipefail
+          repo='mt5hjfz2kb-lab/Eldoria-Prewiu'
+          source='fb8727d3ac45e31e61ab8ba244fa395477eff16e'
+          git merge-base --is-ancestor "$source" HEAD
+          git diff --exit-code "$source" HEAD -- Unity/
+          for run in 43329543960 43329553450; do
+            gh api "repos/$repo/actions/runs/$run" > "run-$run.json"
+          done
+          gh api "repos/$repo/actions/artifacts/13975981075" > previous-artifact.json
+          python3 - <<'PY'
+          import json
+          for run in (43329543960,43329553450):
+              d=json.load(open(f'run-{run}.json'))
+              assert d['head_sha']=='fb8727d3ac45e31e61ab8ba244fa395477eff16e'
+              assert d['status']=='completed' and d['conclusion']=='success'
+          a=json.load(open('previous-artifact.json'))
+          assert a['id']==13975981075 and not a['expired'] and a['name']=='github-pages'
+          assert a['digest']=='sha256:beeb0964b468b433c7c7d01668d884df43cc3221834fb10ec17c61b557327b50'
+          PY
+      - uses: actions/download-artifact@v4
         with:
-          name: mobile18-verified-owner-pages-input
+          run-id: 43286895185
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: original-pages
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43329543960
+          name: integrated-mobile19-owner-site-fb8727d3ac45e31e61ab8ba244fa395477eff16e
+          github-token: ${{ github.token }}
+          path: candidate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43329543960
+          name: integrated-desktop-webkit-fb8727d3ac45e31e61ab8ba244fa395477eff16e
+          github-token: ${{ github.token }}
+          path: browser
+      - name: Verify exact payload and preserve stable routes before staging
+        run: |
+          python3 -m unittest discover -s tools/eldoria-private-beta -p test_integrated_owner_stage.py
+          python3 tools/eldoria-private-beta/stage_integrated_owner_site.py --pages original-pages/artifact.tar --candidate candidate --browser browser --output site --work stage-work
+      - uses: actions/upload-artifact@v4
+        with:
+          name: integrated-verified-owner-stage
           path: site/
           include-hidden-files: true
           compression-level: 0
-          retention-days: 14
-      - name: Preserve verification evidence on any result
-        if: always()
-        uses: actions/upload-artifact@v4
+          retention-days: 21
+      - uses: actions/upload-artifact@v4
         with:
-          name: mobile18-owner-publication-verification
-          path: |
-            site/beta-mobile18-owner-publication-proof.json
-            preservation-live-proof.json
-          retention-days: 14
-  publish-owner-qa:
-    needs: verify-preserved-owner-site
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+          name: integrated-owner-stage-proof
+          path: site/integrated-owner-stage-proof.json
+          retention-days: 90
+  staged-webkit:
+    needs: stage
+    runs-on: macos-15
     timeout-minutes: 20
-    environment:
-      name: github-pages
-      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/
-    permissions:
-      contents: read
-      actions: read
-      pages: write
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: mobile18-verified-owner-pages-input
-          path: site
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-          retention-days: 14
-      - name: Deploy isolated owner QA route while preserving beta10 and working beta14
-        id: deploy
-        uses: actions/deploy-pages@v4
-        with:
-          timeout: 600000
-      - name: Confirm live native identity and the two preceding working routes
-        run: |
-          python3 - <<'PY'
-          import json,urllib.request
-          root='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
-          def get(path):
-              req=urllib.request.Request(root+path,headers={'Cache-Control':'no-cache','User-Agent':'Eldoria-owner-qa-live'})
-              with urllib.request.urlopen(req,timeout=40) as response:return json.load(response)
-          for route,source in [('beta-native325','be49d62e3daf490f41dba0bf8123a8e2eee64480'),('beta-iphone-p0-city','63fb2095412a3066e18f3a8a31c2a03f40ef4944'),('beta-iphone-p0-lazy-world','de63660d25bee9a32d7b804d6245744ed1f0dbca')]:
-              identity=get(route+'/release-identity.json')
-              assert identity['source_sha']==source and identity['release_for_external_testers'] is False
-          p=get('beta-mobile18-owner-publication-proof.json')
-          assert p['source_sha']=='de63660d25bee9a32d7b804d6245744ed1f0dbca'
-          assert p['preserved_files']==146 and not p['external_testers_enabled'] and not p['physical_iphone_verified']
-          print('LIVE_OWNER_ONLY_LAZY_ROUTE_AND_PREVIOUS_TWO_IDENTITIES_VERIFIED_NOT_TESTER_RELEASE')
-          PY
-  actual-public-webkit:
-    needs: publish-owner-qa
-    if: github.ref == 'refs/heads/main'
-    runs-on: macos-26
-    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 22aaf65b66ebdd835a26ea3fffe5fcbc6a43bb6f
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: integrated-verified-owner-stage
+          path: site
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Open the actual public owner route and verify reload on desktop WebKit
+          node-version: '22'
+      - name: Test exact final route through actual WebKit before publication
         env:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged
@@ -129,28 +124,168 @@ jobs:
           QA_RESIZE_STRESS: '1'
           QA_SKIP_PREFLIGHT: '1'
           QA_LAZY_WORLD: '1'
-          QA_ADVANCE_STORY: '1'
-          QA_REVISION: native325-mobile18-objective-profile-owner-qa
-          QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
-          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1&eldoria_diag=1
-          QA_OUT: public-proof/deferred
+          QA_EXPECT_VIGILIA: '1'
+          QA_REVISION: integrated-mobile19-owner-qa
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+          QA_URL: http://127.0.0.1:18765/beta-integrated-vigilia/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1
+          QA_OUT: staged-webkit-proof
         run: |
           set -euo pipefail
-          npm install --prefix "$RUNNER_TEMP/eldoria-public18" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/eldoria-public18/node_modules/.bin/playwright" install webkit
-          export NODE_PATH="$RUNNER_TEMP/eldoria-public18/node_modules"
-          node tools/eldoria-private-beta/qa_webkit_owner_staging.cjs
-          python3 - <<'PYPROOF'
-          import json,pathlib,sys
-          sys.path.insert(0,'tools/eldoria-private-beta')
-          from verify_engine18_owner_publication import validate_desktop
-          r=json.loads(pathlib.Path('public-proof/deferred/report.json').read_text())
-          validate_desktop(r)
-          print('ACTUAL_PUBLIC_ENGINE18_WEBKIT_PASS_NOT_PHYSICAL_IPHONE_OR_TESTER_RELEASE')
-          PYPROOF
+          npm install --prefix "$RUNNER_TEMP/integrated-browser-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/integrated-browser-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/integrated-browser-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs site 18765 > server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..40}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18765/beta-integrated-vigilia/release-identity.json; then break; fi
+            sleep 1
+          done
+          node tools/eldoria-private-beta/qa_webkit_residency.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile18-public-owner-actual-webkit-not-physical-iphone
-          path: public-proof/
-          retention-days: 14
+          name: integrated-final-route-webkit
+          path: staged-webkit-proof
+          retention-days: 21
+  archive:
+    needs: staged-webkit
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43286895185
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: original-pages
+      - uses: actions/download-artifact@v4
+        with:
+          name: integrated-owner-stage-proof
+          path: proof
+      - name: Retain and re-download the complete original site before any deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: mt5hjfz2kb-lab/Eldoria-Prewiu
+        run: |
+          set -euo pipefail
+          tag='archive-pages-before-vigilia-20261113'
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          p=pathlib.Path('original-pages/artifact.tar');d=json.load(open('proof/integrated-owner-stage-proof.json'))
+          assert p.stat().st_size==d['original_pages_tar_bytes']
+          with p.open('rb') as f: assert hashlib.file_digest(f,'sha256').hexdigest()==d['original_pages_tar_sha256']
+          pathlib.Path('archive-notes.md').write_text('Complete original published Pages snapshot from run 43286895185, before Vigilia. Retains beta10, clock diagnostic, beta14 and beta18 for exact rollback. Archive only; no new game release or device certification.\nSHA256: '+d['original_pages_tar_sha256']+'\n')
+          PY
+          if ! gh release view "$tag" --json tagName >/dev/null 2>&1; then
+            gh release create "$tag" --draft --target 874eb50be38a181735414cf629a5fc92ee462b89 --title 'Archived Pages snapshot before Vigilia' --notes-file archive-notes.md
+          fi
+          mkdir recovered
+          if ! gh release download "$tag" --pattern artifact.tar --dir recovered; then
+            gh release upload "$tag" original-pages/artifact.tar
+            gh release download "$tag" --pattern artifact.tar --dir recovered
+          fi
+          cmp original-pages/artifact.tar recovered/artifact.tar
+          sha256sum recovered/artifact.tar > archive-verified.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: integrated-durable-archive-verification
+          path: archive-verified.txt
+          retention-days: 90
+  publish:
+    needs: [stage, staged-webkit, archive]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: integrated-verified-owner-stage
+          path: site
+      - name: Check stable public identities have not moved since staging
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,pathlib,hashlib
+          base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          proof=json.load(open('site/integrated-owner-stage-proof.json'))
+          for route in proof['stable_routes_preserved']:
+              for name in ('release-identity.json','build-manifest.json','index.html'):
+                  path=route+'/'+name
+                  with urllib.request.urlopen(base+path,timeout=60) as r: raw=r.read()
+                  assert hashlib.sha256(raw).hexdigest()==proof['preserved_fingerprints'][path]['sha256'],path
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+          retention-days: 21
+      - uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
+      - name: Verify live candidate, unchanged stable identities and staged file proof
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,hashlib
+          base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+          def get(path):
+              with urllib.request.urlopen(base+path,timeout=60) as r:return r.read()
+          proof=json.load(open('site/integrated-owner-stage-proof.json'))
+          assert get('integrated-owner-stage-proof.json')==open('site/integrated-owner-stage-proof.json','rb').read()
+          for route in proof['stable_routes_preserved']:
+              for name in ('release-identity.json','build-manifest.json','index.html'):
+                  path=route+'/'+name
+                  assert hashlib.sha256(get(path)).hexdigest()==proof['preserved_fingerprints'][path]['sha256'],path
+          identity=json.loads(get('beta-integrated-vigilia/release-identity.json'))
+          assert identity['source_sha']==proof['source_sha'] and identity['candidate_bundle_sha256']==proof['bundle_sha256']
+          assert not identity['release_for_external_testers'] and not identity['physical_mobile_tested']
+          print('LIVE_VIGILIA_AND_UNCHANGED_BETA18_VERIFIED_NOT_PHYSICAL_IPHONE')
+          PY
+  public-webkit:
+    needs: publish
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test the deployed public route with actual WebKit and reload
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_LAZY_WORLD: '1'
+          QA_EXPECT_VIGILIA: '1'
+          QA_REVISION: integrated-mobile19-owner-qa
+          QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
+          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1
+          QA_OUT: public-webkit-proof
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/integrated-browser-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/integrated-browser-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/integrated-browser-qa/node_modules"
+          node tools/eldoria-private-beta/qa_webkit_residency.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integrated-public-webkit
+          path: public-webkit-proof
+          retention-days: 21
