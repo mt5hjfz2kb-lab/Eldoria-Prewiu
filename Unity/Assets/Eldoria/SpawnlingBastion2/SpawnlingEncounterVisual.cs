@@ -27,6 +27,11 @@ namespace Eldoria.SpawnlingBastion2
         [Range(2f, 6f)] public float StrategicPresence = 4.5f;
         [Min(1f)] public float NearOrthographicZoom = 14f;
         [Min(2f)] public float FarOrthographicZoom = 70f;
+        // Art-only proof: avoid editing serialized prefab defaults, which Unity
+        // preserves from older scenes. The nonserialized per-instance multiplier
+        // is applied to the actual skinned silhouette in LateUpdate.
+        // 1.0 is the controlled baseline; 1.5 is candidate, NOT ART_APPROVED.
+        [NonSerialized] public float ArtProofPresenceMultiplier = 1.50f;
 
         Vector3 restPosition, restScale;
         Quaternion restRotation;
@@ -193,7 +198,8 @@ namespace Eldoria.SpawnlingBastion2
             float denominator = Mathf.Max(1f, FarOrthographicZoom - NearOrthographicZoom);
             float fraction = Mathf.Clamp01((zoom - NearOrthographicZoom) / denominator);
             float smooth = fraction * fraction * (3f - 2f * fraction);
-            return Mathf.Lerp(NearPresence, StrategicPresence, smooth);
+            return Mathf.Lerp(NearPresence, StrategicPresence, smooth) *
+                Mathf.Max(.1f, ArtProofPresenceMultiplier);
         }
 
         // The original gateway resolves combat directly from outbound to returning.
