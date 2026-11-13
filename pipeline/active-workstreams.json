@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T18:18:31.751Z",
+  "updated_at": "2026-11-13T18:25:20.498Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7427,7 +7427,8 @@
         ".github/workflows/eldoria-beta-integrated-ui-native.yml",
         ".github/workflows/eldoria-beta-recover-429851.yml",
         ".github/workflows/ui-progression-cert.yml",
-        ".github/workflows/eldoria-beta-postmerge-queue.yml"
+        ".github/workflows/eldoria-beta-postmerge-queue.yml",
+        ".github/workflows/eldoria-beta-owner-nav-pages.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -8675,9 +8676,9 @@
         "physical_iphone_result": "OWNER_REPORTED_FAIL_WORLD_ENTRY_RESTART_AND_CONFUSING_NAVIGATION"
       },
       "delivery_definition": {
-        "deliverable": "Coherent city/world, bag and mail navigation plus stable world entry on existing saved game",
-        "evidence": "Native actual raycasts of every visible control; full browser world-entry/reentry and saved progress; physical iPhone outcome distinguished",
-        "handoff": "Exact candidate, actual reports/screenshots, preserved save and open physical-device limitations"
+        "deliverable": "New independent owner-playable WebGL beta with correct city/bag/mail/barracks/world navigation, preserved saves and stable previous routes",
+        "evidence": "Exact native gameplay and pointer-UI screenshots, browser persisted nickname/construction/world reentry, SHA-pinned restored Pages site and public-origin proof; owner iPhone acceptance separate",
+        "handoff": "New direct owner QA URL and immutable source/size/proof; external testers remain explicitly disabled"
       },
       "icon_navigation_candidate": {
         "source": "bf1f35c09545be646d081ef27ec555e62dbc36cb",
