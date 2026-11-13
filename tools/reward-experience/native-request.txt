@@ -1,10 +1,9 @@
-state=REQUEST_ACTUAL_COMBINED_UI_ONLY
+# Native QA for the canonical PR190 current source, not a legacy Vigilia overlay.
+state=REQUEST_FIRST_GUIDED_HAND_NATIVE
 workstream=eldoria-issue186-reward-attention-guidance-20261111
-owner=chatgpt-work-recovery-8b37e8b1eab0-20261112
-ownership_revision=52
-combined_vigilia_source=d868f9860f3607dbacc406a290f8e8bb623dea74
-combined_ui_native_run=43294080321
-required=actual_painted_receipt_binding_during_offset_change;20PNG52realclicks;read_claim_use_idempotency;original_input_restoration
+owner=chatgpt-eldoria-first-use-qa-recovery-20261113
+ownership_revision=57
+required=production_only_real_vigilia;actual_nickname_input_first_hit;actual_name_confirmation_pointer_click_and_save;actual_first_story_continue_first_hit;actual_sawmill_physics_pointer;24PNG53realclicks;real_saved_bag_mail_reload;clean_Unity_exit
 art_approved=false
 physical_iphone_verified=false
 merge_or_publish=false
