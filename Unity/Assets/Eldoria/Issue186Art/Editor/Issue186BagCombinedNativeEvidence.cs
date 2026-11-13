@@ -303,10 +303,17 @@ namespace Eldoria.Issue186Art.Editor
                 Need(input&&confirm,"Actual first-entry input/confirmation button missing");
                 Need(string.IsNullOrWhiteSpace(host.City.Gateway.Snapshot().PlayerName),
                     "First-entry fixture unexpectedly already named");
+                // Headless native evidence has no automatic GameView render.
+                // A Graphic's depth and GraphicRaycaster registry become live
+                // only after the real independent Camera/Canvas has drawn.
+                // Do not bypass EventSystem or grant a fake tutorial hit:
+                // use the same GPU Draw that every subsequent real click uses.
+                RenderUi(ui,390,844);
+                Draw(camera,target);
                 double limit=EditorApplication.timeSinceStartup+3.0;
                 while(EditorApplication.timeSinceStartup<limit &&
                       !(coach.Visible&&coach.TargetId=="nickname-input"))
-                    {RenderUi(ui,390,844);yield return null;}
+                    {RenderUi(ui,390,844);Draw(camera,target);yield return null;}
                 Need(coach.Visible&&coach.TargetId=="nickname-input",
                     "First name input hand misses actual UI hit: "+coach.Rejection);
                 RequireCleanSelfExplainingGuide(canvas,"nickname input");
@@ -316,7 +323,7 @@ namespace Eldoria.Issue186Art.Editor
                 limit=EditorApplication.timeSinceStartup+3.0;
                 while(EditorApplication.timeSinceStartup<limit &&
                       !(coach.Visible&&coach.TargetId=="nickname-confirm"))
-                    {RenderUi(ui,390,844);yield return null;}
+                    {RenderUi(ui,390,844);Draw(camera,target);yield return null;}
                 Need(coach.Visible&&coach.TargetId=="nickname-confirm",
                     "Name confirmation hand misses actual UI hit: "+coach.Rejection);
                 RequireCleanSelfExplainingGuide(canvas,"nickname confirmation");
@@ -330,7 +337,7 @@ namespace Eldoria.Issue186Art.Editor
                 while(EditorApplication.timeSinceStartup<limit &&
                       !(host.Hud.NarrativeOpen&&coach.Visible&&
                         coach.TargetId=="narrative-continue"))
-                    {RenderUi(ui,390,844);yield return null;}
+                    {RenderUi(ui,390,844);Draw(camera,target);yield return null;}
                 Need(host.Hud.NarrativeOpen&&coach.Visible&&
                      coach.TargetId=="narrative-continue",
                     "Opening narrative hand misses actual continue hit: "+coach.Rejection);
