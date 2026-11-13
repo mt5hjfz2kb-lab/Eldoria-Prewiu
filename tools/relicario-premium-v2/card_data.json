@@ -6,7 +6,7 @@
   "values": {"N": 6, "E": 4, "S": 3, "O": 2},
   "effectKey": "wood20m",
   "effect": "Obtiene inmediatamente madera equivalente a 20 minutos de tu producción actual.",
-  "effectShort": "Recibes madera equivalente a 20 min de producción.",
+  "effectShort": "Madera equivalente a 20 min de producción.",
   "effectIcon": "assets/icon_wood.svg",
   "illustration": "assets/bosque_valoria_art.jpg"
 }

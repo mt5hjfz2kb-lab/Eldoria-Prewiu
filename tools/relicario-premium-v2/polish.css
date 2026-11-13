@@ -1,0 +1,43 @@
+/* V2.1: font, spacing and collision polish. No external fonts. No change to card ratio. */
+:root {
+ --relic-serif:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;
+ --relic-ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+}
+.relic-rarity {
+ display:flex;align-items:center;justify-content:center;
+ top:5.4%;left:6%;width:31%;height:4.15%;
+ padding:0 1.5%;background:linear-gradient(90deg,#090b10fa,#15161df7 70%,#090a0de8);
+ border:1px solid #b3a38766;border-radius:2px;
+ box-shadow:0 1px 3px #000a,inset 0 1px 0 #ffffff0b;
+ font:700 3.8cqw/1 var(--relic-serif);
+ letter-spacing:.045em;text-align:center;white-space:nowrap;
+ font-variant-caps:small-caps;text-transform:uppercase;
+}
+.relic-stat {font-family:var(--relic-serif);font-weight:500;font-variant-numeric:lining-nums tabular-nums;}
+.relic-stat .compass {font-family:var(--relic-ui);font-weight:750;letter-spacing:0;line-height:1;}
+.relic-stat .value {line-height:1.04;}
+.relic-stat.two-digit .value {font-size:.79em;letter-spacing:-.06em;}
+.relic-title {
+ left:11%;right:11%;top:68.25%;height:7.1%;
+ display:flex;align-items:center;justify-content:center;
+ font:700 5.65cqw/1.07 var(--relic-serif);font-variant-caps:small-caps;
+ letter-spacing:.017em;text-transform:uppercase;
+ white-space:normal;overflow-wrap:normal;text-wrap:balance;text-align:center;
+}
+.relic-title.long-name {font-size:4.65cqw;line-height:1.06;letter-spacing:0;}
+.relic-effect {left:10%;width:80%;top:79.1%;height:12.2%;gap:3.5%;overflow:hidden;}
+.relic-effect img {width:17%;flex-basis:17%;max-height:88%;}
+.relic-effect div {gap:1px;min-width:0;max-height:100%;justify-content:center;}
+.relic-effect strong {
+ font:750 3.7cqw/1.12 var(--relic-ui);letter-spacing:.045em;
+ white-space:nowrap;color:#d9bd8f;
+}
+.relic-effect span {
+ display:block;font:500 4.1cqw/1.2 var(--relic-ui);
+ color:#f6eee1;text-wrap:pretty;overflow-wrap:normal;
+}
+.is-indestructible .relic-effect strong {color:#c9fce0;}
+.board-cell .relic-title {font-size:5.35cqw;top:67.85%;}
+.board-cell .relic-title.long-name {font-size:4.35cqw;}
+.board-cell .relic-stat {font-size:11.7cqw;}
+.board-cell .relic-stat .compass {font-size:3.7cqw;}

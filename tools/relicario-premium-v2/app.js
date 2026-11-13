@@ -14,9 +14,9 @@ function cardHTML(card=CARD,rarity=card.rarity,indestructible=false,compact=fals
  <div class="relic-art"><img src="${image}" alt="" loading="eager"></div>
  <img class="relic-chrome" src="${asset('assets/frame_'+rarity+'.webp')}" alt="" aria-hidden="true">
  <span class="relic-rarity">${safe(r.label)}</span>
- ${[['N','n'],['E','e'],['S','s'],['O','o']].map(([dir,c])=>`<b class="relic-stat stat-${c}"><span class="compass">${dir}</span><span class="value">${card.values[dir]}</span></b>`).join('')}
- <div class="relic-title">${name}</div>
- <div class="relic-effect"><img src="${asset(card.effectIcon)}" alt="" aria-hidden="true"><div><strong>${indestructible?'∞ INDESTRUCTIBLE':'AL USARLA'}</strong><span>${safe(card.effectShort)}</span></div></div>
+ ${[['N','n'],['E','e'],['S','s'],['O','o']].map(([dir,c])=>`<b class="relic-stat stat-${c} ${card.values[dir]>=10?'two-digit':''}"><span class="compass">${dir}</span><span class="value">${card.values[dir]}</span></b>`).join('')}
+ <div class="relic-title ${card.name.length>24?'long-name':''}">${name}</div>
+ <div class="relic-effect"><img src="${asset(card.effectIcon)}" alt="" aria-hidden="true"><div><strong>AL USARLA, RECIBES</strong><span>${safe(card.effectShort)}</span></div></div>
  ${indestructible?`<img class="relic-indestructible" src="${asset('assets/overlay_indestructible.svg')}" alt="" aria-hidden="true">`:''}
  </article>`;
 }
@@ -31,4 +31,4 @@ function mobile(){document.getElementById('app').innerHTML=`<div class="mobile-s
 }
 function board(){document.getElementById('app').innerHTML=`<div class="mobile-shell board-shell"><p class="eyebrow">ELDORIA · PRÁCTICA DE ORIN</p><h1>Tablero 3 × 3</h1><p class="mobile-explain">Prueba de escala: solo ilustración y valores, sin panel descriptivo.</p><div class="board-grid">${Array.from({length:9},(_,i)=>`<div class="board-cell" data-cell="${i}">${i===4||i===8?'':cardHTML(CARD,RARITIES[i%4].id,i%3===1,true)}</div>`).join('')}</div></div>`}
 const view=new URLSearchParams(location.search).get('view')||'gallery';({gallery,mobile,board}[view]||gallery)();
-window.ELDORIA_RELICARIO_V2={CARD,RARITIES,cardHTML,view,version:'2.0.0-artist-candidate'};
+window.ELDORIA_RELICARIO_V2={CARD,RARITIES,cardHTML,view,version:'2.1.0-typography-polish'};
