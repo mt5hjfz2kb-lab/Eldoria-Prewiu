@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T14:25:00+01:00",
+  "updated_at": "2026-11-13T15:00:32.621Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7434,9 +7434,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "VIGILIA_MAIN_AND_PUBLIC_WEBKIT_VERIFIED_PHYSICAL_IPHONE_PENDING",
-      "note": "Nickname freeze repair and approved retention art recovery are merged in main and published. Actual final public WebKit proves nickname persistence, readable story, construction and second reload; zero browser errors. Physical iPhone acceptance pending.",
-      "next": "Owner physical iPhone check on the published a2e956 build; then first 2-3 pilot testers before widening. Nonblocking initial title truncation remains documented.",
+      "phase": "PHYSICAL_IPHONE_WORLD_RESTART_AND_NAVIGATION_SEMANTICS_REPAIR",
+      "note": "Owner reports existing save loads, world entry restarts iPhone, provisions-looking bag selects sawmill, city-looking control selects barracks, bell opens mail. Previous desktop WebKit success is not physical acceptance; pilot blocked.",
+      "next": "Repair semantic navigation and reproduce world entry from existing save with full entry/reentry memory proof; preserve all saves.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8645,7 +8645,13 @@
         "previous_site_archive_asset": 743890002,
         "previous_site_tar_sha256": "421927fb72b1a920b63e1f32bea9e237b4770f293e15317cf2a04b6046c3fff5",
         "art_approved": false,
-        "known_nonblocking_visual_issue": "Browser initial story title clips Valoria; body and Continue legible."
+        "known_nonblocking_visual_issue": "Browser initial story title clips Valoria; body and Continue legible.",
+        "physical_iphone_result": "OWNER_REPORTED_FAIL_WORLD_ENTRY_RESTART_AND_CONFUSING_NAVIGATION"
+      },
+      "delivery_definition": {
+        "deliverable": "Coherent city/world, bag and mail navigation plus stable world entry on existing saved game",
+        "evidence": "Native actual raycasts of every visible control; full browser world-entry/reentry and saved progress; physical iPhone outcome distinguished",
+        "handoff": "Exact candidate, actual reports/screenshots, preserved save and open physical-device limitations"
       }
     },
     {
