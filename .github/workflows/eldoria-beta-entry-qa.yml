@@ -29,7 +29,9 @@ jobs:
                 if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
                 const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
                 if(branch.commit.sha!==expected)throw Error('Candidate branch moved');
-                await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
+                const certificates=(await github.rest.actions.listWorkflowRuns({...context.repo,workflow_id:'ui-progression-cert.yml',head_sha:expected,per_page:100})).data.workflow_runs;
+                if(!certificates.some(r=>r.head_sha===expected && (r.status!=='completed'||r.conclusion==='success')))
+                  await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
                 core.info('Exact candidate complete; full regression dispatched without changing runtime or publication');return;
               }
               await new Promise(resolve=>setTimeout(resolve,30000));

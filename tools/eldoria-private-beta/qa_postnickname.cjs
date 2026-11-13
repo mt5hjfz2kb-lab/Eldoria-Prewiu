@@ -27,18 +27,17 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  await page.mouse.click(195,490,{delay:150});await page.keyboard.type('Entrada QA',{delay:100});
  await screen('typed-name');await page.mouse.click(195,614,{delay:150});
  await page.waitForTimeout(3000);
- let objectiveClicked=false;
+ let provisionsClicked=false;
  for(let step=0;step<35;step++){
   const rows=await screen('after-name-'+step);
   const next=rows.filter(r=>r.confidence>.4&&/^(CONTINUAR|CONTINUE|SIGUIENTE|NEXT|ENTENDIDO|COMENZAR|MOSTRAR TEXTO|REVEAL TEXT)$/.test(norm(r.text)));
   if(next.length===1){await page.mouse.click(next[0].x,next[0].y,{delay:150});report.actions.push({step,kind:'visible-dialogue',...next[0]});}
   else{
-   const sawmill=rows.filter(r=>r.confidence>.4&&/CONSTRUIR AQUI.*ASERRADERO/.test(norm(r.text)));
    const build=rows.filter(r=>r.confidence>.4&&norm(r.text)==='CONSTRUIR');
    const target=build.length===1?build[0]:null;
    if(target){await page.mouse.click(target.x,target.y,{delay:150});report.actions.push({step,kind:'visible-build-control',...target});}
-   else if(!objectiveClicked){await page.mouse.click(100,90,{delay:150});objectiveClicked=true;report.actions.push({step,kind:'reviewed-beta19-objective',x:100,y:90});}
-   else if(rows.some(r=>/NIVEL\s*1|LEVEL\s*1/.test(norm(r.text)))){
+   else if(!provisionsClicked){await page.mouse.click(221,776,{delay:150});provisionsClicked=true;report.actions.push({step,kind:'reviewed-beta19-provisions-navigation',x:221,y:776});}
+   else if(rows.some(r=>/^(ASERRADERO|SAWMILL)$/.test(norm(r.text))) && rows.some(r=>/^(NIVEL|LEVEL)\s*1$/.test(norm(r.text)))){
     report.constructionVerified=report.actions.some(a=>norm(a.text||'')==='CONSTRUIR');break;
    }
   }
