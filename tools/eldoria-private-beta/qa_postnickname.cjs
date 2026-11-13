@@ -26,7 +26,14 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  // Exact nickname control coordinates from reviewed beta19 startup at 390x844.
  await page.mouse.click(195,490,{delay:150});await page.keyboard.type('Entrada QA',{delay:100});
  await screen('typed-name');await page.mouse.click(195,614,{delay:150});
- await page.waitForTimeout(3000);
+ await page.waitForTimeout(3000);await screen('saved-nickname-before-reload');
+ // Reproduce a returning player whose nickname was saved before story advancement.
+ await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
+ await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:150000});
+ await page.waitForTimeout(4000);
+ const returning=await screen('returning-nickname');
+ report.nicknameReloadVerified=returning.some(r=>norm(r.text)==='ENTRADA QA');
+ if(!report.nicknameReloadVerified)throw Error('Saved nickname did not survive real reload');
  let provisionsClicked=false;
  for(let step=0;step<35;step++){
   const rows=await screen('after-name-'+step);
@@ -44,6 +51,18 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   save();await page.waitForTimeout(2500);
  }
  await page.waitForTimeout(10000);await screen('final');
+ if(report.constructionVerified){
+  await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
+  await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:150000});
+  await page.waitForTimeout(4000);await screen('reloaded-built-city');
+  // Reviewed actual three-control navigation after the first sawmill unlock.
+  await page.mouse.click(195,776,{delay:150});await page.waitForTimeout(1500);
+  const persisted=await screen('reloaded-sawmill');
+  report.constructionReloadVerified=persisted.some(r=>/^(ASERRADERO|SAWMILL)$/.test(norm(r.text))) &&
+    persisted.some(r=>/^(NIVEL|LEVEL)\s*1$/.test(norm(r.text))) &&
+    persisted.some(r=>norm(r.text)==='ENTRADA QA');
+  if(!report.constructionReloadVerified)throw Error('Built sawmill did not survive real reload');
+ }
  report.metrics=await page.evaluate(()=>window.valoriaGame?.GetMetricsInfo?.());
  report.completed=true;report.scope='Actual browser controls; screenshot review required, NOT physical iPhone';
  if(process.env.QA_REQUIRE_CONSTRUCTION==='1'&&!report.constructionVerified)throw Error('Actual post-nickname construction was not proven');
