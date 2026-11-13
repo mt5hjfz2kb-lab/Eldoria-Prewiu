@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T22:42:50.646Z",
+  "updated_at": "2026-11-13T23:09:05.737Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6982,13 +6982,14 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaDestinationTheme.cs.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
+        ".github/workflows/vigilia-shared-destination-source.yml"
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 126,
+      "ownership_revision": 127,
       "write_scope_released": false,
-      "phase": "PHASE1_KIT_SOURCE_QA_PASSED_3X_NATIVE_EVIDENCE_PREPARED_WINDOWS_RESERVED_BY_ISSUE186",
+      "phase": "PHASE1_RETINA_SOURCE_GUARD_HARDENING_UNITY_NATIVE_PENDING_WINDOWS",
       "next": "Un solo lote de Unity nativo sobre SHA 7eddd804f8658430b3c6c16b0e38fc941b4042f5 tras liberar legítimamente windows-runner-heavy (Issue186). Capturar ciudad/Bastión/mail vacío+informe/bolsa con 1x y 15 PNG 3x de 390x844,844x390,900x1600; comparar A/B mismo encuadre, ampliar botones 300%, revisar nitidez legibilidad solapes bordes y 100/1K/10K, no aceptar sin prueba; registrar reject/pass visual independiente. No tocar main beta ni fase2.",
       "art_approved": false,
       "physical_mobile_tested": false,
@@ -7451,6 +7452,12 @@
         ],
         "save_mutation_intended": false,
         "save_integrity_native_verified": false
+      },
+      "source_guard_extension": {
+        "purpose": "Roslyn parse ALL true 3x Editor source, verify exact UI import settings without licensed Windows runtime",
+        "file": ".github/workflows/vigilia-shared-destination-source.yml",
+        "runner_reserved": false,
+        "owner_authorization": "Sigue; continue existing Vigilia phase1 workstream"
       }
     },
     {
