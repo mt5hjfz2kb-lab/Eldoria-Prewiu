@@ -533,6 +533,9 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.SelectedBuildingId=="sawmill" &&
                  ui.CurrentSnapshot?.Building?.Id=="sawmill",
                  "Real city selection did not reach the independent Vigilia panel");
+            var bagPlate=ui.NavButtons[1].GetComponentInChildren<BreachWatchPlate>(true);
+            Need(bagPlate && bagPlate.Type!=BreachWatchPlate.PlateType.Selected,
+                 "Selecting the real Sawmill incorrectly highlights BOLSA");
             // Navigation semantics: city must clear building context without
             // dispatching construction or selecting a tutorial objective.
             ui.NavButtons[0].onClick.Invoke();
@@ -543,7 +546,13 @@ namespace Eldoria.BreachWatch.Editor
             ui.NavButtons[1].onClick.Invoke();
             Need(savedBag.IsOpen && ui.SelectedBuildingId=="",
                  "BOLSA failed to open saved inventory or selected a building");
+            ui.RenderNow();
+            Need(bagPlate.Type==BreachWatchPlate.PlateType.Selected,
+                 "BOLSA should highlight only while the saved inventory is actually open");
             savedBag.RestorePresentation();
+            ui.RenderNow();
+            Need(bagPlate.Type!=BreachWatchPlate.PlateType.Selected,
+                 "BOLSA remained selected after closing the actual inventory");
             // Inspect both real destinations through repeated orientations.
             // The Bastion-only screenshots cannot detect a clipped Aserradero
             // title or BestFit bounds inherited from the preceding layout.
@@ -632,8 +641,18 @@ namespace Eldoria.BreachWatch.Editor
                     System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
                 Need(pendingField!=null,"Deferred world-entry contract missing");
                 pendingField.SetValue(host,true);
+                ui.RenderNow();
+                Need(!ui.NavButtons[0].gameObject.activeInHierarchy,
+                    "Pending world entry duplicates the return castle icon");
+                // Synthetic pending state before Chapter I world unlock:
+                // the actual deferred return icon is gated until the story
+                // unlock. Test cancel here via the canonical host, and the
+                // visible travel medallion in advanced unlocked QA below.
+                Need(host.TrySetWorld(false),
+                    "Canonical city return failed to cancel synthetic deferred entry");
+                ui.RenderNow();
                 ClickAsPlayer(target,"CIUDAD");
-                Need(!host.WorldEntryPending,"City icon did not cancel queued world entry");
+                Need(!host.WorldEntryPending,"City return left queued world entry");
                 Need(ui.SelectedBuildingId=="" && !ui.BuildingPanel.gameObject.activeInHierarchy,
                     "REAL city pointer selected a construction target");
                 Need(host.Select("bastion"),"Actual city Bastion selection failed");
