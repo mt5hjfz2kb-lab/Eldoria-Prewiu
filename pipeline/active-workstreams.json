@@ -46,15 +46,15 @@
       "last_handoff_at": "2026-11-13T19:00:00+01:00",
       "art_approved": false
     },
-    {
+{
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-      "owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
+      "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 57,
+      "ownership_revision": 58,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "FIRST_USE_NATIVE_EXCLUSIVE_RUNNER_ACQUIRED",
+      "phase": "FIRST_USE_REAL_FIRST_HIT_REPAIR_AND_NATIVE_GATE",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
       "resources": [
@@ -91,9 +91,9 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Commit PR190/tools/reward-experience/native-request.txt with state=REQUEST_FIRST_GUIDED_HAND_NATIVE, owner/revision57 and no historical external overlay; this single-path push launches exact-source Unity native gate on the now-available Windows runner. Inspect screenshots and runtime result; keep beta preview owner-only until publication/physical verification.",
+      "next": "Reproduce actual first nickname input raycast failure in run43503266427; ensure a truly rendered GPU frame before asserting first EventSystem hit (no disabled checks), rerun exact PR190 native on the existing Windows lease; inspect all 24 real images and real touch sequence before any merge or external release.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
-      "previous_owner": "chatgpt-eldoria-first-guided-hand-20261113",
+      "previous_owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_history": [
         {
           "from": "chatgpt-issue186-art-20261111",
@@ -220,6 +220,14 @@
           "revision": 56,
           "transferred_at": "2026-11-13T19:43:59.968Z",
           "reason": "Owner explicitly requested this chat to continue iPhone beta, icon/access and introductory hand work. Reuse the unique canonical PR190 and its existing source; native heavy Windows run43489752868 remains exclusively reserved by beta PR179. Read-only preflight complete; no other UI, gameplay or shared-runner ownership changes."
+        },
+        {
+          "from": "chatgpt-eldoria-first-use-qa-recovery-20261113",
+          "to": "chatgpt-eldoria-player-ux-recovery-20261113",
+          "previous_revision": 57,
+          "revision": 58,
+          "transferred_at": "2026-11-13T21:28:29.340Z",
+          "reason": "Owner explicitly requests professional repair rather than abandon Eldoria on 13 Nov 2026. Continue existing PR190 after Unity native failure 43503266427 at first nickname pointer; preserve published beta19 and all other workstreams. Same Windows lease, all previous evidence and source scope retained."
         }
       ],
       "resource_request": {
