@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T22:11:11.837Z",
+  "updated_at": "2026-11-13T22:42:06.842Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6988,8 +6988,8 @@
       "ownership_state": "claimed",
       "ownership_revision": 126,
       "write_scope_released": false,
-      "phase": "PHASE1_KIT_CANDIDATE_AND_REVIEW_FIX_SOURCE_GUARD_PASS_NATIVE_VISUAL_BLOCKED_WINDOWS_ISSUE186",
-      "next": "Fase 1 implementada en rama canónica feature/forja-oscura-native-proof-20261107, SHA 106dd3d5160a7072235c12d83a70c22b6bcdc748. Source guards Ubuntu 43515770780 (candidato), 43516369425 (ajuste legibilidad) y 43517064365 (fix pestaña activa) PASS; NO son Unity nativo ni aprobación artística. Históricos 43294080321 (ciudad/Bastión) y 43189305862 (Bolsa/Buzón) sirven solo de ANTES. Renderizar A/B real 390x844 844x390 900x1600 a DPR 3 y zoom300% al liberarse el Windows runner exclusivo Issue186. Validar bordes, dimensiones, solapes, iconos, sello rojo y tutorial pluma; aceptación visual RECHAZADA/PENDIENTE hasta la prueba. No main/beta ni fase2.",
+      "phase": "PHASE1_KIT_SOURCE_QA_PASSED_3X_NATIVE_EVIDENCE_PREPARED_WINDOWS_RESERVED_BY_ISSUE186",
+      "next": "Un solo lote de Unity nativo sobre SHA 7eddd804f8658430b3c6c16b0e38fc941b4042f5 tras liberar legítimamente windows-runner-heavy (Issue186). Capturar ciudad/Bastión/mail vacío+informe/bolsa con 1x y 15 PNG 3x de 390x844,844x390,900x1600; comparar A/B mismo encuadre, ampliar botones 300%, revisar nitidez legibilidad solapes bordes y 100/1K/10K, no aceptar sin prueba; registrar reject/pass visual independiente. No tocar main beta ni fase2.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-12T19:49:05.773Z",
@@ -7425,6 +7425,31 @@
         "integration_pr": 179,
         "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
+      },
+      "phase1_qa_20261113": {
+        "sha": "7eddd804f8658430b3c6c16b0e38fc941b4042f5",
+        "branch": "feature/forja-oscura-native-proof-20261107",
+        "source_ci_run": 43521215631,
+        "source_ci_result": "success",
+        "unity_executed_on_sha": false,
+        "visual_approval": false,
+        "native_hires_3x_required": 15,
+        "retina_city_bastion": 6,
+        "retina_mail_and_report": 6,
+        "retina_bag": 3,
+        "bag_in_memory_packet_tiers": [
+          100,
+          1000,
+          10000,
+          100000
+        ],
+        "real_saved_game_mutated": false,
+        "release_allowed": false,
+        "latest_native_before_run": 43294080321,
+        "issue186_before_run": 43189305862,
+        "runner_holder": [
+          "eldoria-issue186-reward-attention-guidance-20261111"
+        ]
       }
     },
     {
