@@ -1,4 +1,4 @@
-name: Eldoria beta19 actual post-nickname interaction diagnostic
+name: Eldoria repaired post-nickname actual construction gate
 on:
   push:
     branches: [main]
@@ -8,11 +8,35 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: write
 concurrency:
   group: eldoria-postnickname-public-diagnostic
   cancel-in-progress: false
 jobs:
+  candidate-ready:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const expected='1a73e962d9fdc2a6c3177195f845860474cde95c';
+            const deadline=Date.now()+90*60*1000;
+            while(Date.now()<deadline){
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43382792518})).data;
+              if(run.head_sha!==expected)throw Error('Unexpected integrated source');
+              if(run.status==='completed'){
+                if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
+                const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
+                if(branch.commit.sha!==expected)throw Error('Candidate branch moved');
+                await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
+                core.info('Exact candidate complete; full regression dispatched without changing runtime or publication');return;
+              }
+              await new Promise(resolve=>setTimeout(resolve,30000));
+            }
+            throw Error('Candidate still incomplete; no automatic publication');
   public-interaction:
+    needs: candidate-ready
     runs-on: macos-15
     timeout-minutes: 15
     steps:
@@ -20,17 +44,33 @@ jobs:
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43382792518
+          name: integrated-mobile19-owner-site-1a73e962d9fdc2a6c3177195f845860474cde95c
+          github-token: ${{ github.token }}
+          path: candidate-site
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Observe actual public post-name interactions without changing player or deployment
+      - name: Require visible narrative continuation and actual construction before release
         env:
+          QA_EXPECT_SOURCE: 1a73e962d9fdc2a6c3177195f845860474cde95c
+          QA_URL: http://127.0.0.1:18766/?eldoria_p0_lazy_world=1&eldoria_diag=1
+          QA_REQUIRE_CONSTRUCTION: '1'
           QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-postnick-ocr
         run: |
           npm install --prefix "$RUNNER_TEMP/postnick-node" --no-save playwright@1.55.0
           "$RUNNER_TEMP/postnick-node/node_modules/.bin/playwright" install webkit
           swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
           export NODE_PATH="$RUNNER_TEMP/postnick-node/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs candidate-site 18766 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18766/release-identity.json; then break; fi
+            sleep 1
+          done
           node --check tools/eldoria-private-beta/qa_postnickname.cjs
           node tools/eldoria-private-beta/qa_postnickname.cjs
       - uses: actions/upload-artifact@v4
