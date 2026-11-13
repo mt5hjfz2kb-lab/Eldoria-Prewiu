@@ -5,7 +5,7 @@ import base64, json
 
 root=Path(__file__).resolve().parent.parent
 css=(root/'styles.css').read_text()+'\n'+(root/'polish.css').read_text()
-scripts=(root/'card-data.js').read_text()+'\n'+(root/'app.js').read_text()
+scripts=(root/'card-data.js').read_text()+'\n'+(root/'stat-plaques.js').read_text()+'\n'+(root/'app.js').read_text()
 sources=[('frame_common.webp','image/webp'),('frame_rare.webp','image/webp'),('frame_epic.webp','image/webp'),('frame_legendary.webp','image/webp'),('bosque_valoria_art.jpg','image/jpeg'),('icon_wood.svg','image/svg+xml'),('overlay_indestructible.svg','image/svg+xml')]
 assets={'assets/'+n:'data:'+mime+';base64,'+base64.b64encode((root/'assets'/n).read_bytes()).decode() for n,mime in sources}
 cases=[('gallery',1440,1120),('gallery',768,1024),('gallery',390,844),('mobile',390,844),('mobile',320,720),('mobile',430,932),('board',390,844)]

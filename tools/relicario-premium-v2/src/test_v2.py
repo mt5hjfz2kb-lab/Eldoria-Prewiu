@@ -13,7 +13,7 @@ with sync_playwright() as p:
   for fn,mime in [('frame_common.webp','image/webp'),('frame_rare.webp','image/webp'),('frame_epic.webp','image/webp'),('frame_legendary.webp','image/webp'),('bosque_valoria_art.jpg','image/jpeg'),('icon_wood.svg','image/svg+xml'),('overlay_indestructible.svg','image/svg+xml')]:
    assets['assets/'+fn]='data:'+mime+';base64,'+base64.b64encode((r/'assets'/fn).read_bytes()).decode()
   print('assets loaded',sum(len(x) for x in assets.values()),flush=True);page.evaluate('(assets)=>{window.__ELDORIA_ASSETS__=assets}',assets);print('injected',flush=True)
-  js=(r/'card-data.js').read_text()+'\n'+(r/'app.js').read_text().replace("const view=new URLSearchParams(location.search).get('view')||'gallery';",f"const view='{view}';")
+  js=(r/'card-data.js').read_text()+'\n'+(r/'stat-plaques.js').read_text()+'\n'+(r/'app.js').read_text().replace("const view=new URLSearchParams(location.search).get('view')||'gallery';",f"const view='{view}';")
   print('add js',flush=True);page.add_script_tag(content=js);print('added',flush=True)
   print('cards',page.locator('.relic-card').count(),'errs',errs,'html',page.locator('#app').inner_html()[:320],flush=True)
   page.locator('.relic-card').first.wait_for(timeout=2500)
