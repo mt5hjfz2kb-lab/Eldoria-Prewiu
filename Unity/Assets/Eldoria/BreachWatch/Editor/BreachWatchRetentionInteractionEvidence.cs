@@ -151,7 +151,16 @@ namespace Eldoria.BreachWatch.Editor
                 state.Retention.LastClearedStage=0;state.Retention.Orders.Clear();
                 state.Retention.TotalScoutReports=0;state.Retention.ScoutDiscoveryMask=0;
                 state.Retention.LatestDiscoveryTitle="";state.Retention.LatestDiscoveryText="";
-                EarlyRetentionRules.Synchronize(state,clock.UtcTicks);Save(host,state);yield return null;
+                EarlyRetentionRules.Synchronize(state,clock.UtcTicks);Save(host,state);
+                // Started from Editor.update: the first coroutine continuation can
+                // precede the first player LateUpdate. Give the canonical host its
+                // rebind frame; never open a room still bound to the prior save.
+                yield return null;yield return null;
+                var canonical=host.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+                var gatewayField=typeof(RoyalGoldV3EarlyRetentionScreens).GetField("gateway",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+                Need(gatewayField!=null&&ReferenceEquals(gatewayField.GetValue(canonical),host.City.Gateway),"Canonical destination rebound to the reloaded disposable gateway");
+                Need(EarlyRetentionRules.VigilantsUnlocked(host.City.Gateway.Snapshot()),"Reloaded save satisfies the actual earned Vigilants gate");
+                Need(!host.Hud.NarrativeOpen&&!host.Hud.Modal.gameObject.activeSelf,"No narrative or modal blocks the advanced fixture");
                 Need(ui.RealRetention.TryOpen(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants),"Actual earned Vigilants destination opens");
                 yield return null;
                 Render(host,ui,"vigilants-before-real-battle",Command(ui,"Battle against next unique stage"));yield return null;
