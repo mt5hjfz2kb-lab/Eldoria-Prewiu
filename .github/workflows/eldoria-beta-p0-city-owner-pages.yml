@@ -7,7 +7,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: eldoria-pages-p0-owner-recovery-repair-20261113
+  group: eldoria-pages-p0-owner-recovery-archive-20261113
   cancel-in-progress: false
 jobs:
   main-source-tests:
@@ -33,66 +33,60 @@ jobs:
   stage:
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    permissions:
-      contents: read
-      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          sparse-checkout: |
-            tools/eldoria-private-beta
-            tools/art-direction/ai-authoring
+          sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - name: Require exact completed native, browser and full gameplay certificates
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Require the completed immutable stage and its actual browser proof
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43437420122})).data;
+            if(run.head_sha!=='d0413956ab4e95c430682356f9794cac816a1492')throw Error('Wrong stage source');
+            const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
+            for(const name of ['stage','staged-webkit'])if(!jobs.some(j=>j.name===name&&j.status==='completed'&&j.conclusion==='success'))throw Error('Stage/browser proof incomplete');
+            for(const [id,name,digest] of [
+              [14044505500,'integrated-verified-owner-stage','7d205893eac790f21949c01a2fd9c31b01fdd545f29bba3f63369e1584bb3639'],
+              [14044105646,'integrated-owner-stage-proof','f6c504c6645f1fb03c7b005ea1dee5633e1a107595a79e39e982a575428bbf38'],
+              [14045760494,'integrated-final-route-webkit','f3f31342047c28588e9e7c7ee737484366ea616f349c7c4f30939012d545cd08']]){
+              const a=(await github.rest.actions.getArtifact({...context.repo,artifact_id:id})).data;
+              if(a.expired||a.name!==name||a.digest!=='sha256:'+digest||a.workflow_run.id!==run.id)throw Error('Artifact identity changed');
+            }
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43437420122
+          name: integrated-verified-owner-stage
+          github-token: ${{ github.token }}
+          path: site
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43437420122
+          name: integrated-owner-stage-proof
+          github-token: ${{ github.token }}
+          path: proof
+      - name: Verify unchanged game tree and every file in the already tested site
         run: |
-          set -euo pipefail
-          repo='mt5hjfz2kb-lab/Eldoria-Prewiu'
-          source='a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
-          git merge-base --is-ancestor "$source" HEAD
-          git diff --exit-code "$source" HEAD -- Unity/
-          for run in 43428539668 43433023729; do
-            gh api "repos/$repo/actions/runs/$run" > "run-$run.json"
-          done
-          gh api "repos/$repo/actions/runs/43429097245" > actual-construction-run.json
-          gh api "repos/$repo/actions/artifacts/13997924580" > previous-artifact.json
-          python3 - <<'PY'
-          import json
-          for run in (43428539668,43433023729):
-              d=json.load(open(f'run-{run}.json'))
-              assert d['head_sha']=='a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
-              assert d['status']=='completed' and d['conclusion']=='success'
-          gate=json.load(open('actual-construction-run.json'))
-          assert gate['head_sha']=='6baf11c083e8fce926e1e2d13415b93f4d474dc1'
-          assert gate['status']=='completed' and gate['conclusion']=='success'
-          a=json.load(open('previous-artifact.json'))
-          assert a['id']==13997924580 and not a['expired'] and a['name']=='github-pages'
-          assert a['digest']=='sha256:2ebc8658bf2866de1883eaf41437d908be86bc1246a67cab03b5ac83728cd7ac'
-          PY
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43338146206
-          name: github-pages
-          github-token: ${{ github.token }}
-          path: original-pages
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43428539668
-          name: integrated-mobile19-owner-site-a2e956e11bc837a081c3eab1eb05c8ff094f4e05
-          github-token: ${{ github.token }}
-          path: candidate
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 43428539668
-          name: integrated-desktop-webkit-a2e956e11bc837a081c3eab1eb05c8ff094f4e05
-          github-token: ${{ github.token }}
-          path: browser
-      - name: Verify exact payload and preserve stable routes before staging
-        run: |
-          python3 -m unittest discover -s tools/eldoria-private-beta -p test_integrated_owner_stage.py
-          python3 tools/eldoria-private-beta/stage_integrated_owner_site.py --pages original-pages/artifact.tar --candidate candidate --browser browser --output site --work stage-work --replace-source fb8727d3ac45e31e61ab8ba244fa395477eff16e
+          git merge-base --is-ancestor a2e956e11bc837a081c3eab1eb05c8ff094f4e05 HEAD
+          git diff --exit-code a2e956e11bc837a081c3eab1eb05c8ff094f4e05 HEAD -- Unity/
+          python3 - <<'PYCODE'
+          import json,pathlib,hashlib
+          root=pathlib.Path('site'); proof=pathlib.Path('proof/integrated-owner-stage-proof.json')
+          assert (root/proof.name).read_bytes()==proof.read_bytes()
+          d=json.loads(proof.read_text())
+          assert d['source_sha']=='a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
+          assert d['bundle_sha256']=='384f029c5dba1aa46b0cd1d324eb77dec73d5b833b83049b7bf0f68fffe9392c'
+          expected=dict(d['preserved_fingerprints'])
+          expected.update({d['candidate_route']+'/'+k:v for k,v in d['candidate_fingerprints'].items()})
+          actual={p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()}
+          assert actual==set(expected)|{proof.name}
+          for name,v in expected.items():
+              p=root/name; assert not p.is_symlink() and p.stat().st_size==v['bytes'],name
+              with p.open('rb') as f: assert hashlib.file_digest(f,'sha256').hexdigest()==v['sha256'],name
+          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file())==d['combined_bytes']<980000000
+          print('EXACT_PREVIOUSLY_WEBKIT_TESTED_STAGE_REUSED_WITH_ALL_FILE_HASHES')
+          PYCODE
       - uses: actions/upload-artifact@v4
         with:
           name: integrated-verified-owner-stage
@@ -103,64 +97,34 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: integrated-owner-stage-proof
-          path: site/integrated-owner-stage-proof.json
+          path: proof/integrated-owner-stage-proof.json
           retention-days: 90
   staged-webkit:
     needs: stage
-    runs-on: macos-15
-    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            tools/eldoria-private-beta
-            tools/art-direction/ai-authoring
-          persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: integrated-verified-owner-stage
-          path: site
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Test exact final route through actual WebKit before publication
-        env:
-          QA_ENGINE: webkit
-          QA_VARIANT: unchanged
-          QA_ENTRY: '1'
-          QA_EARLY_ENTRY: '1'
-          QA_EARLY_NO_SCREENSHOT: '1'
-          QA_RESIZE_STRESS: '1'
-          QA_SKIP_PREFLIGHT: '1'
-          QA_LAZY_WORLD: '1'
-          QA_EXPECT_VIGILIA: '1'
-          QA_REVISION: integrated-mobile19-owner-qa
-          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
-          QA_URL: http://127.0.0.1:18765/beta-integrated-vigilia/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1
-          QA_OUT: staged-webkit-proof
-        run: |
-          set -euo pipefail
-          npm install --prefix "$RUNNER_TEMP/integrated-browser-qa" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/integrated-browser-qa/node_modules/.bin/playwright" install webkit
-          export NODE_PATH="$RUNNER_TEMP/integrated-browser-qa/node_modules"
-          node tools/eldoria-private-beta/qa_static_server.cjs site 18765 > server.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          for i in {1..40}; do
-            if curl -fsS -o /dev/null http://127.0.0.1:18765/beta-integrated-vigilia/release-identity.json; then break; fi
-            sleep 1
-          done
-          node tools/eldoria-private-beta/qa_webkit_residency.cjs
-          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$RUNNER_TEMP/eldoria-release-ocr"
-          QA_EXPECT_SOURCE=a2e956e11bc837a081c3eab1eb05c8ff094f4e05 QA_REQUIRE_CONSTRUCTION=1 \
-            QA_OCR_EXECUTABLE="$RUNNER_TEMP/eldoria-release-ocr" QA_OUT="$QA_OUT/construction" \
-            node tools/eldoria-private-beta/qa_postnickname.cjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
+          run-id: 43437420122
           name: integrated-final-route-webkit
-          path: staged-webkit-proof
-          retention-days: 21
+          github-token: ${{ github.token }}
+          path: browser
+      - name: Reuse completed actual WebKit and construction proof for the identical stage
+        run: |
+          python3 - <<'PYCODE'
+          import json,pathlib
+          root=pathlib.Path('browser')
+          d=json.loads((root/'report.json').read_text())
+          assert d['passed'] and not d['errors']
+          assert d['identity']['source_sha']=='a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
+          assert d['identity']['candidate_bundle_sha256']=='384f029c5dba1aa46b0cd1d324eb77dec73d5b833b83049b7bf0f68fffe9392c'
+          assert d['entry']['reloaded']
+          q=json.loads((root/'construction/report.json').read_text())
+          assert q['source']==d['identity']['source_sha'] and q['passed'] and not q['errors']
+          assert q['nicknameReloadVerified'] and q['constructionVerified'] and q['constructionReloadVerified'] and q['storyInk']['passed']
+          print('REUSED_EXACT_IMMUTABLE_STAGE_BROWSER_PROOF_43437420122_NOT_NEW_BROWSER_RUN')
+          PYCODE
   archive:
     needs: staged-webkit
     runs-on: ubuntu-latest
@@ -191,10 +155,10 @@ jobs:
           p=pathlib.Path('original-pages/artifact.tar');d=json.load(open('proof/integrated-owner-stage-proof.json'))
           assert p.stat().st_size==d['original_pages_tar_bytes']
           with p.open('rb') as f: assert hashlib.file_digest(f,'sha256').hexdigest()==d['original_pages_tar_sha256']
-          pathlib.Path('archive-notes.md').write_text('Complete original published Pages snapshot from run 43338146206, before nickname repair. Retains the original beta19 and every unrelated route for exact rollback. Archive only; no new game release or device certification.\nSHA256: '+d['original_pages_tar_sha256']+'\n')
+          pathlib.Path('archive-notes.md').write_text('Complete original published Pages snapshot from run 43338146206, before nickname repair. Retains the original beta19 and every unrelated route for exact rollback. The tag anchors this archive operation on current main; the attached tar is the original published snapshot. Archive only; no new game release or device certification.\nSHA256: '+d['original_pages_tar_sha256']+'\n')
           PY
           if ! gh release view "$tag" --json tagName >/dev/null 2>&1; then
-            gh release create "$tag" --draft --target c9088d95d20c8a5cec9585dec56f20683bc0b12a --title 'Archived Pages snapshot before nickname repair' --notes-file archive-notes.md
+            gh release create "$tag" --draft --title 'Archived Pages snapshot before nickname repair' --notes-file archive-notes.md
           fi
           mkdir recovered
           if ! gh release download "$tag" --pattern artifact.tar --dir recovered; then
