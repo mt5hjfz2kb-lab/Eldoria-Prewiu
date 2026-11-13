@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T15:33:54.078Z",
+  "updated_at": "2026-11-13T16:39:29.463Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7379,9 +7379,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+      "owner": "chatgpt-eldoria-beta-navigation-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 73,
+      "ownership_revision": 74,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7708,10 +7708,10 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 73,
-        "updated_at": "2026-11-13T15:33:54.078Z",
-        "reason": "Owner requests full icon/action audit and world-entry regression repair; certify grouped navigation cancellation, readable mail seal, unique world return and measured pre-world unused-assets release."
+        "owner": "chatgpt-eldoria-beta-navigation-20261113",
+        "ownership_revision": 74,
+        "updated_at": "2026-11-13T16:39:29.463Z",
+        "reason": "Owner-directed transfer: resume exact beta icon/navigation candidate; keep prior native folder and its unreviewed non-importer material edits untouched; verify in isolated checkout."
       },
       "ownership_history": [
         {
@@ -7932,6 +7932,14 @@
           "revision": 64,
           "transferred_at": "2026-11-12T22:49:59.866Z",
           "reason": "Owner explicitly approved updating main ownership registry for these four PRs after the exact action was presented. Same canonical PRs, preserved scopes, evidence and stable published beta18. No running Actions observed; no processes cancelled."
+        },
+        {
+          "from": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+          "to": "chatgpt-eldoria-beta-navigation-20261113",
+          "previous_revision": 73,
+          "revision": 74,
+          "transferred_at": "2026-11-13T16:39:29.463Z",
+          "reason": "Owner explicitly requests another chat to continue beta navigation and button corrections. Last native run 43455510898 was safely blocked by existing modified material sources in reused Unity checkout. No running beta workflows observed; retain existing evidence and same canonical branch, preserve old files, run only in a separate checkout. No publish, no save reset."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -8285,7 +8293,7 @@
         "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1",
         "external_testers_enabled": false
       },
-      "previous_owner": "chatgpt-central-art-execution-20261111",
+      "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "released_at": "2026-11-10T23:04:36.314Z",
       "owner_only_lazy16": {
         "published": true,
