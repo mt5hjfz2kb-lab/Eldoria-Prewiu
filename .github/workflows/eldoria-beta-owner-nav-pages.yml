@@ -14,24 +14,24 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish-owner-preview:
-    if: ${{ github.event.workflow_run.id == 43483165131 && github.event.workflow_run.head_sha == '4718c12295b66da54ead69fc71a6fa392d3cc83e' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.id == 43489752868 && github.event.workflow_run.head_sha == '90465a9a910b89a8a8b74e4b33a9bbc88578e00e' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 110
     environment:
       name: github-pages
       url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1
     env:
-      EXPECTED_SOURCE: 4718c12295b66da54ead69fc71a6fa392d3cc83e
-      SOURCE_RUN: '43483165131'
+      EXPECTED_SOURCE: 90465a9a910b89a8a8b74e4b33a9bbc88578e00e
+      SOURCE_RUN: '43489752868'
       PREVIOUS_RUN: '43439686229'
       PREVIOUS_SOURCE: a2e956e11bc837a081c3eab1eb05c8ff094f4e05
-      STAGE_SHA: 4718c12295b66da54ead69fc71a6fa392d3cc83e
+      STAGE_SHA: 90465a9a910b89a8a8b74e4b33a9bbc88578e00e
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout independently reviewed, exact owner Pages staging code
         uses: actions/checkout@v4
         with:
-          ref: 4718c12295b66da54ead69fc71a6fa392d3cc83e
+          ref: 90465a9a910b89a8a8b74e4b33a9bbc88578e00e
           fetch-depth: 5
           filter: blob:none
           sparse-checkout: |
@@ -69,15 +69,15 @@ jobs:
       - name: Download SHA-pinned, source-certified player candidate
         uses: actions/download-artifact@v4
         with:
-          run-id: 43483165131
-          name: integrated-mobile19-owner-site-4718c12295b66da54ead69fc71a6fa392d3cc83e
+          run-id: 43489752868
+          name: integrated-mobile19-owner-site-90465a9a910b89a8a8b74e4b33a9bbc88578e00e
           github-token: ${{ github.token }}
           path: candidate
       - name: Download exact browser nickname, saved-build and two-world-entry proof
         uses: actions/download-artifact@v4
         with:
-          run-id: 43483165131
-          name: integrated-desktop-webkit-4718c12295b66da54ead69fc71a6fa392d3cc83e
+          run-id: 43489752868
+          name: integrated-desktop-webkit-90465a9a910b89a8a8b74e4b33a9bbc88578e00e
           github-token: ${{ github.token }}
           path: browser
       - name: Restore complete previous published Pages archive, never a partial site
@@ -114,12 +114,12 @@ jobs:
             --replace-source "$PREVIOUS_SOURCE" \
             --expected-source-sha "$EXPECTED_SOURCE" \
             --expected-bundle-sha256 "$BUNDLE" --expected-data-sha256 "$DATA" \
-            --native-run 43483165131 --full-certificate-run 43483165131 \
+            --native-run 43489752868 --full-certificate-run 43489752868 \
             --require-world-entry
           python3 - <<'PY'
           import json,pathlib
           proof=json.loads(pathlib.Path('site/integrated-owner-stage-proof.json').read_text())
-          assert proof['source_sha']=='4718c12295b66da54ead69fc71a6fa392d3cc83e'
+          assert proof['source_sha']=='90465a9a910b89a8a8b74e4b33a9bbc88578e00e'
           assert proof['replaced_source_sha']=='a2e956e11bc837a081c3eab1eb05c8ff094f4e05'
           assert proof['combined_bytes']<980000000
           assert not proof['external_testers_enabled'] and not proof['physical_iphone_verified']
@@ -179,7 +179,7 @@ jobs:
                       ('beta-iphone-p0-lazy-world','de63660d25bee9a32d7b804d6245744ed1f0dbca')):
                       assert json.loads(get(route+'/release-identity.json',attempt))['source_sha']==source
                   assert hashlib.sha256(get('beta-integrated-vigilia/index.html',attempt)).hexdigest()==hashlib.sha256(pathlib.Path('site/beta-integrated-vigilia/index.html').read_bytes()).hexdigest()
-                  print('PUBLIC_OWNER_NAV_4718_IDENTITY_AND_PROTECTED_ROUTES_PASS')
+                  print('PUBLIC_OWNER_NAV_90465_IDENTITY_AND_PROTECTED_ROUTES_PASS')
                   break
               except Exception as e:
                   if attempt==17:raise
@@ -201,10 +201,10 @@ jobs:
             const body=[
               marker,
               '### Enlace de prueba del propietario — navegación corregida',
-              'Publicación comprobada tras Unity, WebGL, WebKit, partida guardada y dos entradas/regresos al mundo en QA. Fuente exacta: `4718c12295b66da54ead69fc71a6fa392d3cc83e`.',
+              'Publicación comprobada tras Unity, WebGL, WebKit, partida guardada y dos entradas/regresos al mundo en QA. Fuente exacta: `90465a9a910b89a8a8b74e4b33a9bbc88578e00e`.',
               '**Abrir en iPhone (Safari):** '+url,
               'Incluye acceso real a Bolsa, Ciudad, Ejército, Héroes, entrenamiento de Cuartel y Buzón; un solo icono de castillo durante carga. No borra el progreso ni modifica las otras rutas de Pages.',
               '**No certifica estabilidad física del iPhone ni autoriza todavía invitaciones a testers.** Verificar 30 min, entrada/salida del mundo y recarga del nick/guardado en el dispositivo.',
-              'CI de origen: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43483165131'
+              'CI de origen: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43489752868'
             ].join('\n\n');
             await github.rest.issues.createComment({...context.repo,issue_number:172,body});
