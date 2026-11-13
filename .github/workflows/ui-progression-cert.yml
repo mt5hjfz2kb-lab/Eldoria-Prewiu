@@ -692,7 +692,7 @@ jobs:
           retention-days: 30
 
       - name: V4.1 real controls, persistent mailbox and approved-source captures
-        if: (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/pr163-postmerge-v41-capture-scale-20261107' || (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
+        if: (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/pr163-postmerge-v41-capture-scale-20261107' || (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')) || github.ref_name == 'feature/eldoria-private-beta-i-v-20261107'
         shell: powershell
         env:
           ELDORIA_V41_EVIDENCE: ${{ github.workspace }}/v41-native-${{ github.run_id }}
@@ -704,7 +704,7 @@ jobs:
           # Inventory shortcuts and Royal parchment painters. Verify the real
           # replacement instead, retaining all earlier domain/EditMode/PlayMode
           # and I-V campaign checks in this certificate.
-          if($env:GITHUB_REF_NAME -eq 'main'){
+          if($env:GITHUB_REF_NAME -in @('main','feature/eldoria-private-beta-i-v-20261107')){
             & ./tools/breach-watch/verify_production_native.ps1 -Evidence $env:ELDORIA_V41_EVIDENCE
             if($LASTEXITCODE -and $LASTEXITCODE -ne 0){throw 'Vigilia native acceptance failed'}
             exit 0
@@ -716,7 +716,7 @@ jobs:
           if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'ELDORIA_V41_NATIVE_PASS' -Quiet)){Get-Content $log -Tail 120;throw 'V41 native acceptance failed'}
 
       - uses: actions/upload-artifact@v4
-        if: always() && (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/pr163-postmerge-v41-capture-scale-20261107' || (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
+        if: always() && (github.ref_name == 'feature/eldoria-private-beta-i-v-20261107' || github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/pr163-postmerge-v41-capture-scale-20261107' || (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
         with:
           name: eldoria-v41-native-${{ github.run_id }}
           path: v41-native-${{ github.run_id }}
@@ -724,7 +724,7 @@ jobs:
           retention-days: 30
 
       - name: Real Diálogo 1 before/after — original HUD, three speakers, four formats
-        if: github.event.pull_request.number == 134 || github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'
+        if: github.event.pull_request.number == 134 || github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main' || github.ref_name == 'feature/eldoria-private-beta-i-v-20261107'
         shell: powershell
         env:
           ALDRIC_NATIVE_OUTPUT: ${{ github.workspace }}/dialogue-v4-native-${{ github.run_id }}
@@ -733,7 +733,7 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor busy'}
           $e=$env:ALDRIC_NATIVE_OUTPUT
           New-Item -ItemType Directory -Force $e|Out-Null
-          if($env:GITHUB_REF_NAME -eq 'main'){
+          if($env:GITHUB_REF_NAME -in @('main','feature/eldoria-private-beta-i-v-20261107')){
             # Main no longer renders Royal dialogue. Verify the current-run
             # real canonical nickname/story touch evidence from the production probe.
             $source=Join-Path $env:GITHUB_WORKSPACE ('v41-native-'+$env:GITHUB_RUN_ID+'/BreachWatchNativeEvidence/FirstEntry')
@@ -765,7 +765,7 @@ jobs:
           Write-Host "ELDORIA_DIALOGUE_V4_AB_NATIVE_PASS images=$($imgs.Count)"
 
       - uses: actions/upload-artifact@v4
-        if: always() && (github.event.pull_request.number == 134 || github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
+        if: always() && (github.ref_name == 'feature/eldoria-private-beta-i-v-20261107' || github.event.pull_request.number == 134 || github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
         with:
           name: eldoria-dialogue-v4-native-${{ github.run_id }}
           path: dialogue-v4-native-${{ github.run_id }}
@@ -811,7 +811,7 @@ jobs:
 
       - name: Verify retention reference composition and real guardian/discovery interaction
         id: retention_preflight
-        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 134 || github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
+        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 134 || github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main') || github.ref_name == 'feature/eldoria-private-beta-i-v-20261107'
         shell: powershell
         env:
           EARLY_RETENTION_EVIDENCE: ${{ github.workspace }}/retention-reference-${{ github.run_id }}
@@ -821,7 +821,7 @@ jobs:
           $cases=@(
             @('Eldoria.ReferenceClean.Editor.EarlyRetentionNativeCapture.Capture',$env:EARLY_RETENTION_EVIDENCE,'EARLY_RETENTION_NATIVE_PASS'),
             @('Eldoria.ReferenceClean.Editor.EarlyRetentionEngagementNativeCapture.Capture',$env:ENGAGEMENT_EVIDENCE,'RETENTION_ENGAGEMENT_NATIVE_PASS'))
-          if($env:GITHUB_REF_NAME -eq 'main'){
+          if($env:GITHUB_REF_NAME -in @('main','feature/eldoria-private-beta-i-v-20261107')){
             # Preserve real battle/loss, strategy, orders, discoveries, claims
             # and reload coverage using current production controls and art.
             $cases=@(,@('Eldoria.BreachWatch.Editor.BreachWatchRetentionInteractionEvidence.Capture',$env:EARLY_RETENTION_EVIDENCE,'VIGILIA_RETENTION_INTERACTION_PASS'))
@@ -851,7 +851,7 @@ jobs:
           }
 
       - uses: actions/upload-artifact@v4
-        if: always() && (github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 134 || github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
+        if: always() && (github.ref_name == 'feature/eldoria-private-beta-i-v-20261107' || github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 134 || github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
         with:
           name: eldoria-retention-evolution-native-${{ github.run_id }}
           if-no-files-found: error

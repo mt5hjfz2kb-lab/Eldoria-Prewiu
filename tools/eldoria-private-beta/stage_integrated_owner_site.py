@@ -92,23 +92,35 @@ def stage(a):
     before = tree(root)
     for route, source in STABLE.items():
         need(read(root / route / 'release-identity.json')['source_sha'] == source, 'Stable public route changed')
-    need(read(root / 'beta-native325/release-identity.json')['source_sha'] ==
-         'be49d62e3daf490f41dba0bf8123a8e2eee64480', 'Unknown historical beta10')
-    need(not (root / ROUTE).exists(), 'New route already exists')
-    retired = {k: v for k, v in before.items() if k.split('/')[0] in RETIRED}
-    protected = {k: v for k, v in before.items() if k not in retired}
-    need(len(retired) > 60 and len(protected) > 60, 'Incomplete original site')
-    for route in RETIRED:
-        need((root / route).is_dir(), 'Historical route missing')
-        shutil.rmtree(root / route)
-        (root / route).mkdir()
-        (root / route / 'index.html').write_text('''<!doctype html><html lang="es"><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Eldoria · versión archivada</title>
-<body style="background:#14110e;color:#ead6ad;font:20px system-ui;max-width:38rem;margin:12vh auto;padding:24px">
-<h1>Versión de diagnóstico archivada</h1><p>La copia original se conserva para recuperación.</p>
-<p><a style="color:#f4ce79" href="../beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1">Abrir beta18 estable</a></p>
-<p><a style="color:#f4ce79" href="../beta-integrated-vigilia/?eldoria_p0_lazy_world=1">Probar la interfaz integrada</a></p>
-</body></html>''')
+    replacement_source = getattr(a, 'replace_source', None)
+    replaced = {}
+    if replacement_source:
+        need(read(root / ROUTE / 'release-identity.json')['source_sha'] == replacement_source,
+             'Unexpected previously published candidate')
+        replaced = {k: v for k, v in before.items()
+                    if k.startswith(ROUTE + '/') or k == 'integrated-owner-stage-proof.json'}
+        protected = {k: v for k, v in before.items() if k not in replaced}
+        retired = {}
+        need(len(protected) > 60 and len(replaced) > 10, 'Incomplete replacement snapshot')
+        shutil.rmtree(root / ROUTE)
+    else:
+        need(read(root / 'beta-native325/release-identity.json')['source_sha'] ==
+             'be49d62e3daf490f41dba0bf8123a8e2eee64480', 'Unknown historical beta10')
+        need(not (root / ROUTE).exists(), 'New route already exists')
+        retired = {k: v for k, v in before.items() if k.split('/')[0] in RETIRED}
+        protected = {k: v for k, v in before.items() if k not in retired}
+        need(len(retired) > 60 and len(protected) > 60, 'Incomplete original site')
+        for route in RETIRED:
+            need((root / route).is_dir(), 'Historical route missing')
+            shutil.rmtree(root / route)
+            (root / route).mkdir()
+            (root / route / 'index.html').write_text('''<!doctype html><html lang="es"><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><title>Eldoria · versión archivada</title>
+    <body style="background:#14110e;color:#ead6ad;font:20px system-ui;max-width:38rem;margin:12vh auto;padding:24px">
+    <h1>Versión de diagnóstico archivada</h1><p>La copia original se conserva para recuperación.</p>
+    <p><a style="color:#f4ce79" href="../beta-iphone-p0-lazy-world/?eldoria_p0_lazy_world=1">Abrir beta18 estable</a></p>
+    <p><a style="color:#f4ce79" href="../beta-integrated-vigilia/?eldoria_p0_lazy_world=1">Probar la interfaz integrada</a></p>
+    </body></html>''')
     shutil.copytree(candidate, root / ROUTE)
     after = tree(root)
     need(all(after.get(k) == v for k, v in protected.items()), 'A retained public file changed')
@@ -117,7 +129,8 @@ def stage(a):
         original_pages_tar_bytes=Path(a.pages).stat().st_size, required_durable_archive=True,
         native_run=43329543960, full_certificate_run=43329553450,
         stable_routes_preserved=list(STABLE), preserved_fingerprints=protected,
-        archived_fingerprints=retired, archived_routes=list(RETIRED),
+        archived_fingerprints=retired, archived_routes=list(RETIRED) if not replacement_source else [],
+        replaced_source_sha=replacement_source, replaced_fingerprints=replaced,
         candidate_fingerprints=tree(root / ROUTE), physical_iphone_verified=False,
         art_approved=False, external_testers_enabled=False, published=False)
     target = root / 'integrated-owner-stage-proof.json'
@@ -134,4 +147,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('pages', 'candidate', 'browser', 'output', 'work'):
         parser.add_argument('--' + name, required=True)
+    parser.add_argument('--replace-source', help='Exact source in the previous full Pages snapshot; replace only its Vigilia route')
     stage(parser.parse_args())

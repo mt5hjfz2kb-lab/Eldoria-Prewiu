@@ -1,4 +1,4 @@
-name: Eldoria beta19 actual post-nickname interaction diagnostic
+name: Eldoria repaired post-nickname actual construction gate
 on:
   push:
     branches: [main]
@@ -8,11 +8,69 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: write
 concurrency:
-  group: eldoria-postnickname-public-diagnostic
+  group: eldoria-postnickname-readable-immutable
   cancel-in-progress: false
 jobs:
+  certificate-ready:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            // Supersede only hosted diagnostic waits, never the native build or certificate.
+            for(const id of [43388198558]){
+              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:id})).data;
+              if(r.path!=='.github/workflows/eldoria-beta-entry-qa.yml'||r.head_branch!=='main')throw Error('Unexpected old diagnostic');
+              if(r.status==='completed')continue;
+              const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:id,per_page:100})).data.jobs;
+              if(jobs.some(j=>!['certificate-ready','candidate-ready','public-interaction','prior-repair-interaction'].includes(j.name)))throw Error('Unknown diagnostic job');
+              await github.rest.actions.cancelWorkflowRun({...context.repo,run_id:id});
+            }
+            const expected='bc0d3410fca9c1dfe28bb232ae16652cff650037';
+            const deadline=Date.now()+90*60*1000;
+            while(Date.now()<deadline){
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43399731130})).data;
+              if(run.head_sha!==expected)throw Error('Unexpected candidate');
+              const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
+              const native=jobs.find(j=>j.name==='native');
+              if(native?.status==='completed'){
+                if(native.conclusion!=='success')throw Error('Native candidate failed');
+                const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
+                if(branch.commit.sha!==expected){core.info('Superseded by owner-requested art review; retain exact older WebKit regression only, no old-source certificate dispatch');return;}
+                const certificates=(await github.rest.actions.listWorkflowRuns({...context.repo,workflow_id:'ui-progression-cert.yml',head_sha:expected,per_page:100})).data.workflow_runs;
+                if(!certificates.some(r=>r.head_sha===expected&&(r.status!=='completed'||r.conclusion==='success')))
+                  await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
+                return;
+              }
+              if(run.status==='completed')throw Error('No successful native job');
+              await new Promise(resolve=>setTimeout(resolve,30000));
+            }
+            throw Error('Native candidate incomplete');
+  candidate-ready:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const expected='bc0d3410fca9c1dfe28bb232ae16652cff650037';
+            const deadline=Date.now()+90*60*1000;
+            while(Date.now()<deadline){
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43399731130})).data;
+              if(run.head_sha!==expected)throw Error('Unexpected integrated source');
+              if(run.status==='completed'){
+                if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
+                // The artifact is immutable and source-pinned even when the owner has requested a later visual review.
+                core.info('Exact integrated candidate complete');return;
+              }
+              await new Promise(resolve=>setTimeout(resolve,30000));
+            }
+            throw Error('Candidate still incomplete; no automatic publication');
   public-interaction:
+    needs: candidate-ready
     runs-on: macos-15
     timeout-minutes: 15
     steps:
@@ -20,17 +78,33 @@ jobs:
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43399731130
+          name: integrated-mobile19-owner-site-bc0d3410fca9c1dfe28bb232ae16652cff650037
+          github-token: ${{ github.token }}
+          path: candidate-site
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Observe actual public post-name interactions without changing player or deployment
+      - name: Require visible narrative continuation and actual construction before release
         env:
+          QA_EXPECT_SOURCE: bc0d3410fca9c1dfe28bb232ae16652cff650037
+          QA_URL: http://127.0.0.1:18766/?eldoria_p0_lazy_world=1&eldoria_diag=1
+          QA_REQUIRE_CONSTRUCTION: '1'
           QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-postnick-ocr
         run: |
           npm install --prefix "$RUNNER_TEMP/postnick-node" --no-save playwright@1.55.0
           "$RUNNER_TEMP/postnick-node/node_modules/.bin/playwright" install webkit
           swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
           export NODE_PATH="$RUNNER_TEMP/postnick-node/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs candidate-site 18766 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18766/release-identity.json; then break; fi
+            sleep 1
+          done
           node --check tools/eldoria-private-beta/qa_postnickname.cjs
           node tools/eldoria-private-beta/qa_postnickname.cjs
       - uses: actions/upload-artifact@v4

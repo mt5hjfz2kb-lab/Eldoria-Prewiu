@@ -76,6 +76,44 @@ class IntegratedStageTests(unittest.TestCase):
             self.assertEqual(list((self.args.output / route).iterdir()),
                              [self.args.output / route / 'index.html'])
 
+    def prepare_replacement(self):
+        old = self.root / 'old'
+        self.write(old / stage.ROUTE / 'release-identity.json', {'source_sha': 'prior-source'})
+        for i in range(12):
+            (old / stage.ROUTE / (str(i) + '.bin')).write_bytes(b'previous beta19')
+        self.write(old / 'integrated-owner-stage-proof.json', {'source_sha': 'prior-source'})
+        (old / 'unrelated-new-route').mkdir()
+        (old / 'unrelated-new-route/index.html').write_text('Retain concurrent publication')
+        with tarfile.open(self.args.pages, 'w') as out:
+            out.add(old, arcname='.')
+        self.before = stage.tree(old)
+        self.archive_sha = stage.sha(self.args.pages)
+        self.args.replace_source = 'prior-source'
+
+    def test_repair_replaces_only_vigilia_and_preserves_all_other_routes(self):
+        self.prepare_replacement()
+        with patch.object(stage, 'DATA', self.data_hash):
+            stage.stage(self.args)
+        after = stage.tree(self.args.output)
+        for path, value in self.before.items():
+            if not path.startswith(stage.ROUTE + '/') and path != 'integrated-owner-stage-proof.json':
+                self.assertEqual(after[path], value)
+        self.assertEqual(stage.sha(self.args.pages), self.archive_sha)
+        proof = stage.read(self.args.output / 'integrated-owner-stage-proof.json')
+        self.assertEqual(proof['archived_routes'], [])
+        self.assertEqual(proof['replaced_source_sha'], 'prior-source')
+        self.assertEqual(proof['replaced_fingerprints'][stage.ROUTE + '/0.bin'],
+                         self.before[stage.ROUTE + '/0.bin'])
+        self.assertNotIn(stage.ROUTE + '/0.bin', after)
+
+    def test_repair_refuses_a_different_public_source(self):
+        self.prepare_replacement()
+        self.args.replace_source = 'unexpected-source'
+        with patch.object(stage, 'DATA', self.data_hash), self.assertRaisesRegex(ValueError, 'Unexpected previously'):
+            stage.stage(self.args)
+        self.assertEqual(stage.sha(self.args.pages), self.archive_sha)
+        self.assertEqual(stage.tree(self.args.output), self.before)
+
     def test_corrupted_candidate_never_changes_original_or_creates_site(self):
         (self.args.candidate / 'data.gz').write_bytes(gzip.compress(b'changed'))
         with patch.object(stage, 'DATA', self.data_hash), self.assertRaises(RuntimeError):

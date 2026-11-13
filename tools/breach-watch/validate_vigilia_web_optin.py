@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Only explicit WebGL opt-in may replace the legacy Canvas before release.
+"""Exclusive approved Vigilia must replace retired UI in every player build.
 
 PASS is source protection, not a WebGL build or iPhone runtime test.
 """
@@ -19,24 +19,24 @@ def need(ok, explanation):
 def main():
     need((RUNTIME / "BreachWatchBetaBootstrap.cs.meta").is_file(),
          "New bootstrap must have a stable Unity GUID")
-    need("#if UNITY_WEBGL && !UNITY_EDITOR" in bootstrap,
-         "Beta bootstrap must not silently activate in Unity Editor or APK")
-    need('const string Flag = "eldoria_vigilia";' in bootstrap,
-         "Explicit preview URL flag is required")
-    need('key==Flag && val=="1"' in bootstrap,
-         "Only the exact URL query opt-in may activate new UI")
-    need('if(!IsOptedIn(UnityEngine.Application.absoluteURL))' in bootstrap,
-         "Normal web gameplay must retain its previous UI")
+    need("#if !UNITY_EDITOR" in bootstrap,
+         "Production installs in every player while native evidence installs explicitly")
+    need('if(!IsOptedIn(UnityEngine.Application.absoluteURL))' not in bootstrap,
+         "Approved exclusive presentation must not depend on a preview flag")
     need("host && host.Ready && host.Hud" in bootstrap and
          "BreachWatchHud.Install(host)" in bootstrap,
-         "Only a real fully initialized canonical game session may be presented")
-    need("VIGILIA_OPT_IN_ROLLED_BACK_TO_CANONICAL_HUD" in bootstrap and
-         "Destroy(partial.gameObject)" in bootstrap,
-         "Failed beta opt-in must restore the old Canvas")
-    need("if(legacyCanvas)legacyCanvas.enabled=originalCanvas;" in hud and
-         "if(legacyRaycaster)legacyRaycaster.enabled=originalRaycaster;" in hud,
-         "OnDestroy must undo temporary native UI takeover")
-    print("VIGILIA_WEBGL_PREVIEW_EXPLICIT_OPT_IN_SOURCE_PASS")
+         "Only the initialized canonical game session may be presented")
+    need("Canvas.willRenderCanvases+=SuppressRetiredDuringStartup" in bootstrap and
+         "if(retired)retired.enabled=false;" in bootstrap,
+         "The retired Canvas must stay hidden before initial production rendering")
+    need("VIGILIA_PRODUCTION_PRESENTATION_FAILED_NO_LEGACY_FALLBACK" in bootstrap and
+         "if(oldCanvas)oldCanvas.enabled=false;" in bootstrap and
+         "VIGILIA_OPT_IN_ROLLED_BACK_TO_CANONICAL_HUD" not in bootstrap,
+         "Installation failure must remain observable without restoring old UI")
+    need("if(legacyCanvas)legacyCanvas.enabled=!productionPresentation && originalCanvas;" in hud and
+         "if(legacyRaycaster)legacyRaycaster.enabled=!productionPresentation && originalRaycaster;" in hud,
+         "Production destruction must never re-enable old rendering or input")
+    print("VIGILIA_EXCLUSIVE_PRODUCTION_BOOTSTRAP_SOURCE_PASS")
     print("NOT A WEBGL BUILD OR IOS RUNTIME CERTIFICATION")
 
 
