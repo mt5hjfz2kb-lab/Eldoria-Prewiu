@@ -64,10 +64,10 @@ def main():
     check("guid: 46e84bddeab249449911cbd4ffef992e" in importer and
           "isReadable: 0" in importer and "enableMipMap: 0" in importer and
           "textureCompression: 0" in importer and
-          importer.count("maxTextureSize: 512")>=6 and
+          importer.count("maxTextureSize: 1024")==6 and
           all("buildTarget: "+p in importer for p in
               ("DefaultTexturePlatform","Standalone","iPhone","Android","WebGL")),
-          "Bound original mailbox artwork max512, non-readable, lossless on all platforms")
+          "Exact original mailbox source, 1024 cap, non-readable, lossless on all 5 platforms")
     check("BreachWatchMailboxEmptyArtwork.Install" in S and
           'text.name=="Mailbox / genuine empty state"' in S and
           "realEmptySentence.gameObject.activeInHierarchy" in S and
