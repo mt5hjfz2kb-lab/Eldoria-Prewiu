@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 46,
-  "previous_run": 43469529824,
-  "correction": "Owner-requested final icon state correction on top of exact Unity-pass ec4d664: (1) one visible castle icon while world deferred entry is pending, with instant UI reflow and first-hit return/cancel; (2) city building selection never highlights inventory/BOLSA; (3) real bag highlights only while its canonical overlay IsOpen; real native tests on Chapter I and test-only advanced unlocked session. Keep prior native/gameplay, WebKit, physical iPhone memory, save-preservation and art guards. Build in isolated Windows checkout without touching preserved material files. Rebuild exact candidate after proof; owner-only publication and genuine mobile tests remain separate; no external tester invitations.",
+  "attempt": 47,
+  "previous_run": 43481923633,
+  "correction": "Final owner candidate: prior navigation fixes and real first-hit source gates plus same-frame closing of saved bag selection. The canonical inventory IsOpen state is checked at the start of every RenderNow; BOLSA loses selected plate instantly after closing, not only after LateUpdate, without changing save, economy or world. Build exact ed161dd+ source after old 008498 run, in isolated native checkout; require real source-contract, Unity, campaign, package and WebKit full nickname/sawmill/world reentry before any owner-only publication. Do not merge or invite testers, preserve old Pages routes.",
   "build_candidate": true
 }
