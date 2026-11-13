@@ -195,7 +195,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 default:Hide("objective-has-no-first-use-route");return;
             }
             var guide=state.ResourceGuidance;
-            if(!GuidedTutorialRules.ShouldPoint(guide,"journey:"+key,target,true,true))
+            // Older saves can predate ResourceGuidance entirely. Their real
+            // current objective still decides what has not been completed;
+            // do not suppress all introductory help on a null optional ledger.
+            if(guide!=null && !GuidedTutorialRules.ShouldPoint(
+                guide,"journey:"+key,target,true,true))
                 {Hide("first-use-dismissed-or-completed");return;}
 
             if(key=="b2.prepare-march")
