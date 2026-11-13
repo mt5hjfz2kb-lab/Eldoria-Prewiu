@@ -5,6 +5,8 @@ import json
 import re
 from pathlib import Path
 from xml.sax.saxutils import escape
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
@@ -25,17 +27,19 @@ def main():
     if e["published"] is not True or not e["published_url"].startswith("https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/"):
         raise ValueError("Do not generate a launch guide for an unpublished candidate")
     args.output.mkdir(parents=True, exist_ok=True)
+    pdfmetrics.registerFont(TTFont("PilotSans", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"))
+    pdfmetrics.registerFont(TTFont("PilotSans-Bold", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"))
     ink = colors.HexColor("#25212c")
     muted = colors.HexColor("#615a69")
     purple = colors.HexColor("#382947")
     gold = colors.HexColor("#b89251")
     styles = {
-        "title": ParagraphStyle("title", fontName="Helvetica-Bold", fontSize=25, leading=29, textColor=purple, spaceAfter=13),
-        "lead": ParagraphStyle("lead", fontName="Helvetica", fontSize=11.5, leading=17, textColor=muted, spaceAfter=16),
-        "h": ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=12, leading=16, textColor=purple, spaceBefore=13, spaceAfter=6),
-        "body": ParagraphStyle("body", fontName="Helvetica", fontSize=10.5, leading=15, textColor=ink, spaceAfter=7),
-        "small": ParagraphStyle("small", fontName="Helvetica", fontSize=9, leading=12.5, textColor=muted, spaceAfter=6),
-        "q": ParagraphStyle("q", fontName="Helvetica-Bold", fontSize=11, leading=15, textColor=ink, spaceBefore=14, spaceAfter=5),
+        "title": ParagraphStyle("title", fontName="PilotSans-Bold", fontSize=25, leading=29, textColor=purple, spaceAfter=13),
+        "lead": ParagraphStyle("lead", fontName="PilotSans", fontSize=11.5, leading=17, textColor=muted, spaceAfter=16),
+        "h": ParagraphStyle("h", fontName="PilotSans-Bold", fontSize=12, leading=16, textColor=purple, spaceBefore=13, spaceAfter=6),
+        "body": ParagraphStyle("body", fontName="PilotSans", fontSize=10.5, leading=15, textColor=ink, spaceAfter=7),
+        "small": ParagraphStyle("small", fontName="PilotSans", fontSize=9, leading=12.5, textColor=muted, spaceAfter=6),
+        "q": ParagraphStyle("q", fontName="PilotSans-Bold", fontSize=11, leading=15, textColor=ink, spaceBefore=14, spaceAfter=5),
     }
     def p(text, role="body"):
         return Paragraph(text, styles[role])
@@ -44,7 +48,7 @@ def main():
         canvas.setFillColor(purple); canvas.rect(0, h-21, w, 21, fill=1, stroke=0)
         canvas.setFillColor(gold); canvas.rect(42, h-44, 34, 3, fill=1, stroke=0)
         canvas.setStrokeColor(colors.HexColor("#ded8e4"));canvas.line(42, 40, w-42, 40)
-        canvas.setFillColor(muted);canvas.setFont("Helvetica", 8)
+        canvas.setFillColor(muted);canvas.setFont("PilotSans", 8)
         canvas.drawString(42, 26, "ELDORIA  |  Piloto Bastión I-V  |  "+e["date"])
         canvas.drawRightString(w-42, 26, str(doc.page))
     def build(name, flow):
