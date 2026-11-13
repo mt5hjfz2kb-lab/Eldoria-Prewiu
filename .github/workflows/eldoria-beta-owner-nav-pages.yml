@@ -5,6 +5,7 @@ on:
     types: [completed]
 permissions:
   contents: write
+  issues: write
   actions: read
   pages: write
   id-token: write
@@ -184,3 +185,26 @@ jobs:
                   if attempt==17:raise
                   time.sleep(6)
           PY
+
+      - name: Post verified owner-only preview to issue 172
+        if: success()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker='ELDORIA_OWNER_NAV_PREVIEW_4718C122';
+            const existing=(await github.rest.issues.listComments({...context.repo,issue_number:172,per_page:100})).data;
+            if(existing.some(c=>(c.body||'').includes(marker))){
+              core.info('Already notified verified owner preview');return;
+            }
+            const url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&build=4718c122';
+            const body=[
+              marker,
+              '### Enlace de prueba del propietario — navegación corregida',
+              'Publicación comprobada tras Unity, WebGL, WebKit, partida guardada y dos entradas/regresos al mundo en QA. Fuente exacta: \`4718c12295b66da54ead69fc71a6fa392d3cc83e\`.',
+              '**Abrir en iPhone (Safari):** '+url,
+              'Incluye acceso real a Bolsa, Ciudad, Ejército, Héroes, entrenamiento de Cuartel y Buzón; un solo icono de castillo durante carga. No borra el progreso ni modifica las otras rutas de Pages.',
+              '**No certifica estabilidad física del iPhone ni autoriza todavía invitaciones a testers.** Verificar 30 min, entrada/salida del mundo y recarga del nick/guardado en el dispositivo.',
+              'CI de origen: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43483165131'
+            ].join('\\n\\n');
+            await github.rest.issues.createComment({...context.repo,issue_number:172,body});
