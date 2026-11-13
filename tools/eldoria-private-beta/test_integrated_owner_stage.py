@@ -130,6 +130,24 @@ class IntegratedStageTests(unittest.TestCase):
             stage.stage(self.args)
         self.assertFalse(self.args.output.exists())
 
+    def test_reused_part_filename_gets_a_new_http_cache_key_without_changing_bytes(self):
+        candidate = self.args.candidate
+        before = stage.tree(candidate)
+        stage.version_decoded_fetches(candidate)
+        first = stage.read(candidate / 'build-manifest.json')['decoded_parts']['native-data'][0]['url']
+        for path, value in before.items():
+            if path != 'build-manifest.json':
+                self.assertEqual(stage.tree(candidate)[path], value)
+        # Same published filename, different subsequent build: old cached HTTP
+        # response must not be addressed by the new manifest.
+        (candidate / 'data.gz').write_bytes(gzip.compress(b'next native build'))
+        payload = (candidate / 'data.gz').read_bytes()
+        stage.version_decoded_fetches(candidate)
+        second = stage.read(candidate / 'build-manifest.json')['decoded_parts']['native-data'][0]['url']
+        self.assertNotEqual(first, second)
+        self.assertEqual(stage.safe_path(first), stage.safe_path(second))
+        self.assertEqual((candidate / 'data.gz').read_bytes(), payload)
+
 
 if __name__ == '__main__':
     unittest.main()

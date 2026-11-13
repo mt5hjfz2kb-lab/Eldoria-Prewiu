@@ -16,9 +16,9 @@ sys.path.insert(0, str(Path(__file__).with_name('iphone_ab')))
 from stage_compact_delta_ab import restore_tar
 from stage_copyadd_owner_ab import safe_path, verified_stream
 
-SOURCE = 'fb8727d3ac45e31e61ab8ba244fa395477eff16e'
-BUNDLE = 'eb9192488a6cc34dd38309f48cdd7fdb3dc3ea5a2d6fb7dc23a023d8e23b0048'
-DATA = '38d389c5f2895988a7ee6dac2dda1bdeda57c7b6dd0cd1a46d6b751b84fa844f'
+SOURCE = 'd274883786d84ee467d4ec94afff7e3d466fd64d'
+BUNDLE = '0c89250d3e08a066cbb4b8eecdaf78aabba31d2ce81b47cf9bc01391f444a8ec'
+DATA = '4c47047b6890e9e2f36441d7b32a904f3faa2d0350a452e3730615ef8c9e031d'
 ROUTE = 'beta-integrated-vigilia'
 RETIRED = ('beta-native325', 'beta-iphone-clock-ab')
 STABLE = {
@@ -61,6 +61,28 @@ def browser_gate(root):
     identity = report.get('identity', {})
     need(identity.get('source_sha') == SOURCE and identity.get('candidate_bundle_sha256') == BUNDLE,
          'Browser proof identifies a different build')
+
+
+def version_decoded_fetches(root):
+    """Give actual segmented HTTP requests content identities, keeping bytes intact.
+
+    Unity's cacheControl disables UnityCache, not the browser HTTP cache. The
+    stable transport fetches each decoded_parts URL, rather than the versioned
+    outer engine URL. Reusing those filenames across beta19 repairs can otherwise
+    mix an old cached part with a new engine. Do not clear any player storage.
+    """
+    root = Path(root)
+    path = root / 'build-manifest.json'
+    manifest = read(path)
+    versions = {}
+    for parts in manifest['decoded_parts'].values():
+        for part in parts:
+            relative = safe_path(part['url']).as_posix()
+            content_hash = sha(root / relative)
+            part['url'] = relative + '?v=' + content_hash
+            versions[relative] = content_hash
+    path.write_text(json.dumps(manifest, indent=2) + '\n')
+    return versions
 
 
 def stage(a):
@@ -122,16 +144,18 @@ def stage(a):
     <p><a style="color:#f4ce79" href="../beta-integrated-vigilia/?eldoria_p0_lazy_world=1">Probar la interfaz integrada</a></p>
     </body></html>''')
     shutil.copytree(candidate, root / ROUTE)
+    versioned_fetches = version_decoded_fetches(root / ROUTE)
     after = tree(root)
     need(all(after.get(k) == v for k, v in protected.items()), 'A retained public file changed')
     proof = dict(status='STAGED_NOT_PUBLISHED_NOT_PHYSICAL_IPHONE', source_sha=SOURCE,
         bundle_sha256=BUNDLE, candidate_route=ROUTE, original_pages_tar_sha256=sha(a.pages),
         original_pages_tar_bytes=Path(a.pages).stat().st_size, required_durable_archive=True,
-        native_run=43329543960, full_certificate_run=43329553450,
+        native_run=43420580200, full_certificate_run=43425131794,
         stable_routes_preserved=list(STABLE), preserved_fingerprints=protected,
         archived_fingerprints=retired, archived_routes=list(RETIRED) if not replacement_source else [],
         replaced_source_sha=replacement_source, replaced_fingerprints=replaced,
         candidate_fingerprints=tree(root / ROUTE), physical_iphone_verified=False,
+        versioned_decoded_fetches=versioned_fetches,
         art_approved=False, external_testers_enabled=False, published=False)
     target = root / 'integrated-owner-stage-proof.json'
     for _ in range(4):
