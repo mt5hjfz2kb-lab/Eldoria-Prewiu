@@ -20,9 +20,28 @@ Native assertions require seven Vigilant planes, one Scout landscape, three ligh
 
 ## Status
 
-Implemented, not yet Unity-compiled or visually accepted. Native-only request 28 is intentionally not a public build. Final candidate still requires real A/B inspection, gameplay regression, exact-source WebGL, WebKit persistence/construction and full certificate before main/public replacement. Physical iPhone validation remains distinct.
+Native review 43396364091, source 1610d322fecf1bd45675cd215c183d0c15677f45: PASS for first entry, visible narrative touches, city, destinations, glyphs and saved treasure/bag rewards. Reviewed actual 390x844 and 844x390 Vigilants/Scouts captures: authored landscapes, paper, mission vignettes and family medallions are visibly restored. Nickname frame/entry hierarchy is visibly improved. This is a reviewed recovery candidate, not a claim of final visual parity with every historical reference.
 
-Source-only retention guard passes. Legacy unrelated static guards (web opt-in, old modal signature, compact navigation) remain incompatible with already-integrated production changes; missing Heroes source is a sparse-checkout limitation. These are not claimed passing.
+Request 31, source `f24b4a1575e3a786af72475bd09246307d061e29`, native/build run 43397456551: all native city/entry/destination/glyph/reward steps passed; exact WebGL compilation still running at this checkpoint. It replaces the blue progress/discovery plaque material and reduces the 56px nickname seal to near-native display size.
+
+Progressed-state inspection then found the retired discovery painter had no Vigilia replacement for earned map family seals. Request 32, source `bc0d3410fca9c1dfe28bb232ae16652cff650037`, run 43399731130 is queued behind the uninterrupted build. New owned medallions track only the canonical saved mask. The new native production interaction probe requires actual raycast battle/win/loss, route selection and troop reservation, six claims/four families, XP and reload; not yet executed at this checkpoint. Main's legacy visual fixtures are migrated in that candidate to production entry/destination/retention probes, preserving gameplay and save checks. Exact-source browser gate is main run 43400011255.
+
+The genuine, unscaled review-30 A/B images are saved:
+- Nick: https://chatgpt.com/library?file_id=libfile_fde3_f-37b569a72d608191ad10100de2c151d6_d1c014344dc081918fc6ba9b846892c0&account_id=personal
+- Vigilants: https://chatgpt.com/library?file_id=libfile_fde3_f-541741e872a08191ad8da61038625cda_d1c014344dc081918fc6ba9b846892c0&account_id=personal
+- Scouts: https://chatgpt.com/library?file_id=libfile_fde3_f-6a914ed707bc81919fc2a1d25e38d812_d1c014344dc081918fc6ba9b846892c0&account_id=personal
+
+Public beta19 remains `fb8727d3ac45e31e61ab8ba244fa395477eff16e`; no recovered source has been published and no new physical iPhone acceptance or external tester launch is claimed. Beta18 remains unchanged. Publication must preserve every unrelated route and durably archive the previous site.
+
+The prior freeze/ink source cf5a9f8c814e829b84664807e48f27a0068322f3 passed native/build/package and WebKit memory/reload comparison 43387431116. Independent real browser interaction 43396166713 proves saved nickname, visible narrative continuation, actual sawmill construction and level-one persistence after another real reload, with no browser errors. This older-source result must not substitute for final-source verification.
+
+Lessons: the city-only trim audit must inspect inactive ancestry explicitly with Unity GetComponentInParent<T>(true), while still rejecting every active or unrelated fallback. Default search excludes a closed modal. Documentation: https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/component/getcomponentinparent . Failed runs 43392139699 and 43395846418 did not validate destination images; always check each artifact report's source because failure uploads may contain untouched previous-stage folders.
+
+WebKit regression must finish the legitimate post-sawmill Aldric beat on return before clicking city navigation. A click behind that narrative was an invalid test, not evidence of lost progress; the unchanged final nickname + sawmill level-one assertion now passes.
+
+All eight local source guards now pass: retention, march, shared destinations, mailbox, heroes, modal, compact layout (52 cases) and production bootstrap. Three stale guards were corrected locally to assert current production contracts: actual-parent modal geometry, March narrative unlock, and mandatory Vigilia without old-UI fallback. These three test-file changes are staged for final integration; they do not change runtime code or substitute for native proof.
+
+Main coordination failure on registry >1MB was repaired separately in `53bcb580d2cd40f7a9199c94021e2ad3622c5152`: immutable Git blob fallback retains the exact SHA for CAS and verifies its digest. Ten tests and real hosted handoff run 43400011096 pass; no ownership release requested. Main architecture/governance checks also pass on that commit.
 
 ## Unchanged source pixel hashes
 
