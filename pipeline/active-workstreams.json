@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T19:11:35.893Z",
+  "updated_at": "2026-11-13T19:43:59.968Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -49,13 +49,13 @@
     {
       "id": "eldoria-issue186-reward-attention-guidance-20261111",
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
-      "owner": "chatgpt-eldoria-first-guided-hand-20261113",
+      "owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 55,
+      "ownership_revision": 56,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
       "phase": "FIRST_ONBOARDING_GUIDED_POINTER_NOT_IN_PLAYER_BUILD",
-      "claimed_at": "2026-11-11T14:14:48Z",
+      "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
       "resources": [],
       "scope": [
@@ -91,7 +91,7 @@
       ],
       "next": "Connect the existing pointer/halo sprites to actual Vigilia first-use onboarding targets after nickname, nonblocking, authoritative objective-driven and raycast verified. Source and native QA before beta merge; do not use Windows while PR179 owns it.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
-      "previous_owner": "chatgpt-central-art-execution-20261111",
+      "previous_owner": "chatgpt-eldoria-first-guided-hand-20261113",
       "ownership_history": [
         {
           "from": "chatgpt-issue186-art-20261111",
@@ -210,6 +210,14 @@
           "revision": 55,
           "transferred_at": "2026-11-13T18:42:50.858Z",
           "reason": "Owner explicitly requests continuation and reports first-entry tutorial hand missing; transfer existing #186 workstream to fix actual product, respecting active PR179 runner and reserving no Windows."
+        },
+        {
+          "from": "chatgpt-eldoria-first-guided-hand-20261113",
+          "to": "chatgpt-eldoria-first-use-qa-recovery-20261113",
+          "previous_revision": 55,
+          "revision": 56,
+          "transferred_at": "2026-11-13T19:43:59.968Z",
+          "reason": "Owner explicitly requested this chat to continue iPhone beta, icon/access and introductory hand work. Reuse the unique canonical PR190 and its existing source; native heavy Windows run43489752868 remains exclusively reserved by beta PR179. Read-only preflight complete; no other UI, gameplay or shared-runner ownership changes."
         }
       ],
       "resource_request": {
