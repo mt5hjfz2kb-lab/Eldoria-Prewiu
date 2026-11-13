@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T00:41:06.970Z",
+  "updated_at": "2026-11-13T00:59:42.812Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7374,7 +7374,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 66,
+      "ownership_revision": 67,
       "write_scope_released": false,
       "status": "active",
       "branch": "main",
@@ -7422,16 +7422,14 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/eldoria-beta-postmerge-queue.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "INTEGRATED_BETA_POSTMERGE_RELEASE",
-      "note": "Build native42998206844 PASS and restored=true; Mac42999782863 PASS; owner Pages43006294342 PASS verified identities; measured 7.05% peak Mac RSS lower, still >2.5GB. Physical status PENDING; no external tester release.",
-      "next": "Owner physical iPhone trial at public18; prepare integrated visual/art candidates separately without main activation. No tester release or art approval claimed.",
+      "phase": "BETA19_PUBLISHED_LEGACY_MAIN_QA_REPAIR_PENDING",
+      "note": "PR179/173/181/187 merged; beta19 published and actual public WebKit PASS. Main native297 tests and desktop build PASS. Additional legacy UI fixture fails at missing Inventory navigation item; correction not implemented. Physical beta19 iPhone and art approval pending.",
+      "next": "Recover execution environment; diagnose/adapt EldoriaV41NativeCapture.cs:1095 to actual navigation contract without skipping meaningful checks; rerun main UI certification. See docs/eldoria-private-beta/VIGILIA_BETA19_DELIVERY_20261113.md. No unchanged beta republish.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7700,10 +7698,10 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
-        "ownership_revision": 64,
-        "updated_at": "2026-11-12T22:49:59.866Z"
+        "ownership_revision": 67,
+        "updated_at": "2026-11-13T00:59:42.812Z"
       },
       "ownership_history": [
         {
@@ -8083,7 +8081,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-12T19:32:00Z",
+      "runner_released_at": "2026-11-13T00:59:42.812Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -8311,7 +8309,7 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "Actual public Edge run43290448094 completed successfully; original ZIP and actual world/city screenshots independently verified. No Unity invoked. Mac public job cancelled before allocation due hosted ARM capacity.",
+      "runner_release_basis": "All owned native jobs completed; main slice43337524622 SUCCESS, additional main certificate43338146170 FAILED in legacy fixture and completed cleanup. No currently in_progress Actions runs. Source ownership retained; no area approval or tester release.",
       "last_completed_earned_campaign": {
         "run": 43231463013,
         "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
@@ -8575,7 +8573,30 @@
       },
       "last_verified_source_sha": "fb8727d3ac45e31e61ab8ba244fa395477eff16e",
       "last_verified_native_run": 43329543960,
-      "last_verified_full_certificate_run": 43329553450
+      "last_verified_full_certificate_run": 43329553450,
+      "beta19_publication": {
+        "source_sha": "fb8727d3ac45e31e61ab8ba244fa395477eff16e",
+        "merge_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
+        "run": 43338146206,
+        "status": "SUCCESS",
+        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1",
+        "public_webkit_artifact": 13999166130,
+        "public_webkit_sha256": "f2b7e05c05ce287e1175a55fb0131b0e42d806926ec97caab4b1d69e38858a1b",
+        "public_reload_image_reviewed": true,
+        "errors": [],
+        "stable_beta18_preserved": true,
+        "separate_save_storage": true,
+        "physical_iphone_verified": false,
+        "art_approved": false,
+        "external_testers_enabled": false,
+        "main_slice_run": 43337524622,
+        "main_editmode_passed": 218,
+        "main_playmode_passed": 79,
+        "additional_main_ui_run": 43338146170,
+        "additional_main_ui_result": "FAILED_LEGACY_NAVIGATION_FIXTURE",
+        "qa_repair_implemented": false,
+        "environment_block": "Local execution environment unavailable; GitHub connector remained usable"
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
