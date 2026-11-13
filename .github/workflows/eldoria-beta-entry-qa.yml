@@ -1,13 +1,18 @@
-name: Eldoria live pretester UX owner entry and reload WebKit
+name: Eldoria beta19 actual post-nickname interaction diagnostic
 on:
   push:
-    branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths: ['.github/workflows/eldoria-beta-entry-qa.yml']
+    branches: [main]
+    paths:
+      - 'tools/eldoria-private-beta/qa_postnickname.cjs'
+      - '.github/workflows/eldoria-beta-entry-qa.yml'
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: eldoria-postnickname-public-diagnostic
+  cancel-in-progress: false
 jobs:
-  live-owner-entry:
+  public-interaction:
     runs-on: macos-15
     timeout-minutes: 15
     steps:
@@ -18,37 +23,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify publicly served exact source and exercise entry persistence
+      - name: Observe actual public post-name interactions without changing player or deployment
         env:
-          QA_ENGINE: webkit
-          QA_VARIANT: unchanged
-          QA_ENTRY: '1'
-          QA_EARLY_ENTRY: '1'
-          QA_SKIP_PREFLIGHT: '1'
-          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&eldoria_profile=1&build=native325-mobile10-pretest-ux
-          QA_REVISION: native325-mobile10-pretest-ux
-          QA_OUT: evidence/live
+          QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-postnick-ocr
         run: |
-          npm install --prefix "$RUNNER_TEMP/live-qa" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/live-qa/node_modules/.bin/playwright" install webkit
-          export NODE_PATH="$RUNNER_TEMP/live-qa/node_modules"
-          node tools/eldoria-private-beta/qa_webkit_residency.cjs
-          python - <<'PY'
-          import json,pathlib
-          p=pathlib.Path('evidence/live');r=json.loads((p/'report.json').read_text());i=r['identity'];e=(p/'events.jsonl').read_text()
-          assert r['passed'] and i['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
-          assert i['terrain_query_cache_sha256'].lower()=='013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986'
-          assert 'ELDORIA_TERRAIN_QUERY_TAPE' in e and 'Source mesh has over 2,097,152 triangles' not in e
-          assert e.count('REGION1_CANON_WORLD_INSTALLED')>=2
-          assert i['pretest_ux_native_verified'] and i['pretest_ux_overlay_count']==19 and not i['tutorial_unchanged']
-          assert i['native_input_restoration_run']==42595057735
-          assert i['physical_iphone_verified'] is False and not i['release_for_external_testers']
-          print('LIVE_OWNER_WEBKIT_ENTRY_RELOAD_PASS_NOT_PHYSICAL_IPHONE')
-          PY
+          npm install --prefix "$RUNNER_TEMP/postnick-node" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/postnick-node/node_modules/.bin/playwright" install webkit
+          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+          export NODE_PATH="$RUNNER_TEMP/postnick-node/node_modules"
+          node --check tools/eldoria-private-beta/qa_postnickname.cjs
+          node tools/eldoria-private-beta/qa_postnickname.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile10-live-owner-webkit-not-physical-iphone
-          path: evidence/
-          retention-days: 14
-
+          name: beta19-postnickname-diagnostic
+          path: postnickname-evidence/
+          retention-days: 30

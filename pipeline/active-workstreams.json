@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T00:59:42.812Z",
+  "updated_at": "2026-11-13T06:55:50.680Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7374,7 +7374,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "ownership_state": "claimed",
-      "ownership_revision": 67,
+      "ownership_revision": 68,
       "write_scope_released": false,
       "status": "active",
       "branch": "main",
@@ -7427,9 +7427,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA19_PUBLISHED_LEGACY_MAIN_QA_REPAIR_PENDING",
-      "note": "PR179/173/181/187 merged; beta19 published and actual public WebKit PASS. Main native297 tests and desktop build PASS. Additional legacy UI fixture fails at missing Inventory navigation item; correction not implemented. Physical beta19 iPhone and art approval pending.",
-      "next": "Recover execution environment; diagnose/adapt EldoriaV41NativeCapture.cs:1095 to actual navigation contract without skipping meaningful checks; rerun main UI certification. See docs/eldoria-private-beta/VIGILIA_BETA19_DELIVERY_20261113.md. No unchanged beta republish.",
+      "phase": "BETA19_OWNER_REPORTED_POST_NICKNAME_INPUT_BLOCK_DIAGNOSIS",
+      "note": "Owner reports beta19 appears frozen after nickname on physical iPhone. Public startup/reload checks did not prove continuation. Hosted Mac WebKit diagnostic now exercises actual visible dialogue/objective/build controls. No Windows lease or deployment changes.",
+      "next": "Inspect postnickname diagnostic actual screenshots; distinguish invisible modal/input capture from player stall; repair runtime with meaningful native/browser continuation regression.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8595,7 +8595,8 @@
         "additional_main_ui_run": 43338146170,
         "additional_main_ui_result": "FAILED_LEGACY_NAVIGATION_FIXTURE",
         "qa_repair_implemented": false,
-        "environment_block": "Local execution environment unavailable; GitHub connector remained usable"
+        "environment_block": "Local execution environment unavailable; GitHub connector remained usable",
+        "physical_iphone_result": "OWNER_REPORTED_POST_NICKNAME_BLOCK_20261113"
       }
     },
     {
