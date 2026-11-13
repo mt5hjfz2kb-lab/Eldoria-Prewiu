@@ -64,6 +64,8 @@ namespace Eldoria.BreachWatch
         readonly Button[] navButtons = new Button[5];
         Button mailUtilityButton;
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
+        readonly Text[] navCaptions = new Text[5];
+        readonly Outline[] navActiveOutlines = new Outline[5];
         static readonly string[] ReferenceNavArt = {
             "castle", "provisions", "swords", "raven", "helm"
         };
@@ -804,6 +806,16 @@ namespace Eldoria.BreachWatch
                 surface.VisualScale=.86f;
                 surface.raycastTarget=false;
                 UseSourceArtInteraction(button,surface);
+                var glow=surface.gameObject.AddComponent<Outline>();
+                glow.effectColor=new Color(.98f,.78f,.41f,.48f);
+                glow.effectDistance=new Vector2(1.35f,-1.35f);
+                glow.useGraphicAlpha=true;
+                glow.enabled=false;
+                navActiveOutlines[i]=glow;
+                var caption=Label(root,"Navigation / "+navLabels[i],13,
+                    TextAnchor.MiddleCenter,TextIvory,true);
+                caption.resizeTextForBestFit=false;
+                navCaptions[i]=caption;
                 navButtons[i]=button;
                 navPlates[i]=surface;
             }
@@ -1020,6 +1032,34 @@ namespace Eldoria.BreachWatch
                     break;
             }
         }
+        void RefreshNavigationAppearance()
+        {
+            if(!created || !host)return;
+            // The actual scene and destination controllers own active state.
+            int current=host.InWorld?3:selectedTab;
+            if(!host.InWorld)
+            {
+                if(destinationBridge && destinationBridge.IsShowing)current=2;
+                else if(heroesBridge && heroesBridge.IsShowing)current=4;
+                else if(selected=="bastion")current=0;
+                else if(selected=="sawmill" || selected=="stoneworks" ||
+                    selected=="granary" || selected=="barracks" ||
+                    selected=="upgrade-barracks")current=1;
+            }
+            for(int i=0;i<navButtons.Length;i++)
+            {
+                bool active=i==current && navButtons[i] &&
+                    navButtons[i].gameObject.activeInHierarchy;
+                if(navActiveOutlines[i] && navActiveOutlines[i].enabled!=active)
+                    navActiveOutlines[i].enabled=active;
+                if(navCaptions[i])
+                {
+                    var ink=active?BreachWatchControlKit.Gold:
+                        BreachWatchControlKit.Ivory;
+                    if(navCaptions[i].color!=ink)navCaptions[i].color=ink;
+                }
+            }
+        }
         void LateUpdate()
         {
             if(!created||!host)return;
@@ -1038,6 +1078,7 @@ namespace Eldoria.BreachWatch
             if(lastWorldMode && !host.InWorld && cityComposition)
                 cityComposition.OnCityReentered(Screen.width,Screen.height);
             lastWorldMode=host.InWorld;
+            RefreshNavigationAppearance();
             SyncLiveCamera();
             if(lastWidth!=Screen.width||lastHeight!=Screen.height||
                lastSafeArea!=Screen.safeArea)
@@ -1248,9 +1289,9 @@ namespace Eldoria.BreachWatch
                 // Larger original medallions, safe-area clearance and all five slots still fit.
                 float navSize=75f,navGap=6f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-(smallPhone?130f:111f);
+                float navTop=h-(smallPhone?146f:127f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    84f);
+                    100f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1259,10 +1300,14 @@ namespace Eldoria.BreachWatch
                     navButtons[i].gameObject.SetActive(visible);
                     if(visible)
                     {
-                        Fill(navPlates[i].rectTransform,smallPhone?4f:5f);
-                        navPlates[i].VisualScale=smallPhone?.92f:.90f;
                         At((RectTransform)navButtons[i].transform,
-                            navColumn++*(navSize+navGap),3,navSize,navSize);
+                            navColumn++*(navSize+navGap),3,navSize,navSize+17f);
+                        At(navPlates[i].rectTransform,smallPhone?4f:5f,0f,
+                            navSize-(smallPhone?8f:10f),navSize-(smallPhone?8f:10f));
+                        At(navCaptions[i].rectTransform,0f,navSize-1f,
+                            navSize,16f);
+                        navCaptions[i].fontSize=smallPhone?13:12;
+                        navPlates[i].VisualScale=smallPhone?.92f:.90f;
                     }
                 }
 
@@ -1427,9 +1472,9 @@ namespace Eldoria.BreachWatch
                 float navSize=compactLandscape?75f:55f,
                     navGap=compactLandscape?10f:15f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-(compactLandscape?88f:78f);
+                float navTop=h-(compactLandscape?104f:94f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    compactLandscape?85f:69f);
+                    compactLandscape?101f:85f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1438,10 +1483,15 @@ namespace Eldoria.BreachWatch
                     navButtons[i].gameObject.SetActive(visible);
                     if(visible)
                     {
-                        Fill(navPlates[i].rectTransform,compactLandscape?4f:6f);
-                        navPlates[i].VisualScale=compactLandscape?.92f:.86f;
                         At((RectTransform)navButtons[i].transform,
-                            navColumn++*(navSize+navGap),3,navSize,navSize);
+                            navColumn++*(navSize+navGap),3,navSize,navSize+17f);
+                        At(navPlates[i].rectTransform,compactLandscape?4f:6f,0f,
+                            navSize-(compactLandscape?8f:12f),
+                            navSize-(compactLandscape?8f:12f));
+                        At(navCaptions[i].rectTransform,0f,navSize-1f,
+                            navSize,16f);
+                        navCaptions[i].fontSize=compactLandscape?13:12;
+                        navPlates[i].VisualScale=compactLandscape?.92f:.86f;
                     }
                 }
 
@@ -1650,6 +1700,7 @@ namespace Eldoria.BreachWatch
             try
             {
                 snapshot=host.Read(selected,host.English);
+                RefreshNavigationAppearance();
                 // Re-layout only at a genuine unlock boundary. Do not leave a
                 // grey ghost medallion or empty food capsule on the first screen.
                 if(lastNavigationMask!=NavigationMask() ||

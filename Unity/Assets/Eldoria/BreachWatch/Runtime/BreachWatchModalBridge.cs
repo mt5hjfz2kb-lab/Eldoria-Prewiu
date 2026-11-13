@@ -99,7 +99,9 @@ namespace Eldoria.BreachWatch
                 var img=AddSurface(rect,button==realModal.Close?close:action,
                     "Vigilia / canonical modal control",true,
                     button==realModal.Close);
-                img.raycastTarget=true;
+                BreachWatchControlKit.Paint(img,
+                    button==realModal.Close?BreachWatchControlKit.Role.Icon:
+                        BreachWatchControlKit.Role.Primary);
                 button.targetGraphic=img;
                 button.transition=Selectable.Transition.None;
                 productionTargets[button]=img;

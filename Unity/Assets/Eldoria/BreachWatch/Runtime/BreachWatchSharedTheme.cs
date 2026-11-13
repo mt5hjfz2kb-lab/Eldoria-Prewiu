@@ -170,7 +170,9 @@ namespace Eldoria.BreachWatch
                 var paint=AddSurface(rect,heroChoice?stone:action,
                     heroChoice?"Vigilia / hero selection stone":
                     "Vigilia / burgundy action",true);
-                paint.raycastTarget=true;
+                BreachWatchControlKit.Paint(paint,
+                    heroChoice?BreachWatchControlKit.Role.Secondary:
+                        BreachWatchControlKit.Role.Primary);
                 button.targetGraphic=paint;
                 // No ColorTint that changes the color of this approved
                 // burgundy artwork when its canonical interactable state updates.

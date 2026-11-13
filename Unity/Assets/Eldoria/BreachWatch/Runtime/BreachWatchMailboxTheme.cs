@@ -26,6 +26,12 @@ namespace Eldoria.BreachWatch
         readonly Dictionary<Button, Selectable.Transition> originalTransitions =
             new Dictionary<Button, Selectable.Transition>();
         readonly List<GameObject> newArtwork = new List<GameObject>();
+        readonly Dictionary<Button,Image> buttonPaintings =
+            new Dictionary<Button,Image>();
+        readonly Dictionary<RoyalText,string> originalCaptions =
+            new Dictionary<RoyalText,string>();
+        ScrollRect realReportScroll;
+        RectTransform scrollTrack,scrollThumb;
         readonly Dictionary<RoyalText, Color> originalInkColors =
             new Dictionary<RoyalText, Color>();
         Sprite panel, action, nineSlicedPanel;
@@ -118,8 +124,14 @@ namespace Eldoria.BreachWatch
                     Hide(button.targetGraphic);
                 originalTargets[button]=button.targetGraphic;
                 originalTransitions[button]=button.transition;
-                var paint=AddSurface(rect,action,"Vigilia / real mailbox button",true);
-                paint.raycastTarget=true;
+                bool secondary=button.name=="Volver";
+                bool tab=BreachWatchControlKit.IsMailboxTab(button.name);
+                var paint=AddSurface(rect,secondary||tab?panel:action,
+                    "Vigilia / unified "+(secondary?"back":tab?"tab":"action"),true);
+                BreachWatchControlKit.Paint(paint,secondary||tab
+                    ?BreachWatchControlKit.Role.Secondary
+                    :BreachWatchControlKit.Role.Primary);
+                buttonPaintings.Add(button,paint);
                 button.targetGraphic=paint;
                 button.transition=Selectable.Transition.None;
                 ReskinnedButtons++;
@@ -161,7 +173,9 @@ namespace Eldoria.BreachWatch
             }
             emptyIllustration=BreachWatchMailboxEmptyArtwork.Install(realWindow);
             if(emptyIllustration)newArtwork.Add(emptyIllustration.gameObject);
+            InstallRealScrollIndicator(realWindow);
             RefreshEmptyComposition();
+            RefreshControlStyles();
             styled=ReplacedOldPaintings>=4 && ReskinnedButtons>=3 &&
                 AllOldMailboxBackgroundsHidden();
             if(!styled) Restore();
@@ -226,6 +240,8 @@ namespace Eldoria.BreachWatch
             if(!styled)return;
             RefreshInk();
             RefreshEmptyComposition();
+            RefreshControlStyles();
+            RefreshRealScrollIndicator();
         }
         void LateUpdate() { SynchronizeVisual(); }
 
@@ -306,6 +322,98 @@ namespace Eldoria.BreachWatch
             }
         }
 
+        void RefreshControlStyles()
+        {
+            // The canonical mailbox updates this genuine Image each refresh.
+            // A new tab never creates or changes the category selection.
+            foreach(var pair in buttonPaintings)
+            {
+                var button=pair.Key;var painting=pair.Value;
+                if(!button || !painting)continue;
+                if(!BreachWatchControlKit.IsMailboxTab(button.name))
+                {
+                    BreachWatchControlKit.Paint(painting,
+                        button.name=="Volver"
+                            ?BreachWatchControlKit.Role.Secondary
+                            :BreachWatchControlKit.Role.Primary);
+                    continue;
+                }
+                bool actualSelected=false;
+                foreach(var original in button.GetComponentsInChildren<Image>(true))
+                {
+                    if(!original || original==painting ||
+                        original.name!="Approved source / tab-idle")continue;
+                    actualSelected=original.sprite && original.sprite.name=="tab-active";
+                    break;
+                }
+                BreachWatchControlKit.Paint(painting,
+                    actualSelected?BreachWatchControlKit.Role.TabActive
+                        :BreachWatchControlKit.Role.TabInactive);
+                // Portrait and landscape share ONE caption. Category IDs,
+                // unread counters and persisted mail are never changed.
+                if(button.name=="Buzón recompensas")
+                {
+                    var caption=button.GetComponentInChildren<RoyalText>(true);
+                    if(caption && caption.text!="Premios")
+                    {
+                        if(!originalCaptions.ContainsKey(caption))
+                            originalCaptions.Add(caption,caption.text);
+                        caption.Put("Premios");
+                    }
+                }
+            }
+        }
+        void InstallRealScrollIndicator(RectTransform window)
+        {
+            realReportScroll=window.GetComponentsInChildren<ScrollRect>(true)
+                .FirstOrDefault(x=>x && x.name==
+                    "Mailbox / report scroll viewport");
+            if(!realReportScroll || !realReportScroll.viewport)return;
+            var viewport=realReportScroll.viewport;
+            var track=new GameObject("Vigilia / actual report scroll indicator",
+                typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));
+            track.layer=viewport.gameObject.layer;
+            track.transform.SetParent(viewport,false);
+            scrollTrack=(RectTransform)track.transform;
+            scrollTrack.anchorMin=new Vector2(1f,0f);
+            scrollTrack.anchorMax=new Vector2(1f,1f);
+            scrollTrack.pivot=new Vector2(1f,.5f);
+            scrollTrack.offsetMin=new Vector2(-8f,10f);
+            scrollTrack.offsetMax=new Vector2(-4f,-10f);
+            var background=track.GetComponent<Image>();
+            background.color=new Color(.42f,.33f,.20f,.27f);
+            background.raycastTarget=false;
+            var thumb=new GameObject("Vigilia / true scroll position",
+                typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));
+            thumb.layer=track.layer;thumb.transform.SetParent(track.transform,false);
+            scrollThumb=(RectTransform)thumb.transform;
+            scrollThumb.anchorMin=scrollThumb.anchorMax=new Vector2(.5f,1f);
+            scrollThumb.pivot=new Vector2(.5f,1f);
+            var ink=thumb.GetComponent<Image>();
+            ink.color=new Color(.94f,.75f,.45f,.92f);
+            ink.raycastTarget=false;
+            newArtwork.Add(track);
+            track.SetActive(false);
+        }
+        void RefreshRealScrollIndicator()
+        {
+            if(!scrollTrack || !scrollThumb || !realReportScroll ||
+                !realReportScroll.content || !realReportScroll.viewport)return;
+            float viewportHeight=realReportScroll.viewport.rect.height;
+            float contentHeight=realReportScroll.content.rect.height;
+            bool active=realReportScroll.gameObject.activeInHierarchy &&
+                contentHeight>viewportHeight+3f && viewportHeight>22f;
+            if(scrollTrack.gameObject.activeSelf!=active)
+                scrollTrack.gameObject.SetActive(active);
+            if(!active)return;
+            float trackHeight=scrollTrack.rect.height;
+            float thumbHeight=Mathf.Clamp(trackHeight*viewportHeight/contentHeight,
+                18f,trackHeight);
+            scrollThumb.sizeDelta=new Vector2(4f,thumbHeight);
+            float travel=Mathf.Max(0f,trackHeight-thumbHeight);
+            scrollThumb.anchoredPosition=new Vector2(0f,
+                -travel*(1f-Mathf.Clamp01(realReportScroll.verticalNormalizedPosition)));
+        }
         bool AllOldMailboxBackgroundsHidden()
         {
             foreach(var g in GetComponentsInChildren<Graphic>(true))
@@ -322,6 +430,11 @@ namespace Eldoria.BreachWatch
 
         public void Restore()
         {
+            foreach(var entry in originalCaptions)
+                if(entry.Key)entry.Key.Put(entry.Value);
+            originalCaptions.Clear();
+            buttonPaintings.Clear();
+            realReportScroll=null;scrollThumb=null;scrollTrack=null;
             foreach(var pair in originalTargets)
                 if(pair.Key)pair.Key.targetGraphic=pair.Value;
             originalTargets.Clear();
