@@ -2,7 +2,9 @@
 
 ## Latest verified delivery checkpoint
 
-Source a2e956e11bc837a081c3eab1eb05c8ff094f4e05 passed integrated native/WebGL/package/browser43428539668, actual OCR contrast/story/construction/two-reload gate43429097245, and full production regression43433023729. Primary and independent native/browser image reviews are complete. Main integration and publication follow these exact certificates; physical iPhone and tester invitations remain unverified. Known nonblocking browser title truncation is recorded below.
+Source `a2e956e11bc837a081c3eab1eb05c8ff094f4e05` is integrated in main (merge `da87e7d2b0ba03b3a9e6b8a521e1efbb38f286af`) and publicly deployed by run `43439686229`. Native/WebGL/package/browser `43428539668`, OCR/story/construction/two-reload `43429097245`, full production regression `43433023729` (218 EditMode and 79 PlayMode), and normal main Unity/build gate `43436862892` passed. Primary and independent native/browser image reviews are complete. Final public-route browser result is recorded below; physical iPhone acceptance and tester invitations are not claimed. Known nonblocking browser title truncation remains disclosed.
+
+All following checkpoints are chronological history, not the current publication status.
 
 Owner request: restore nickname presentation and recover approved Vigilants/Scouts visual components on Vigilia, without reactivating the retired interface. Compare genuine Unity A/B before beta and tester launch.
 
@@ -22,7 +24,7 @@ Identity uses Vigilia bronze engraving and owner lion seal, revised title spacin
 
 Native assertions require seven Vigilant planes, one Scout landscape, three light live paper cards with dark readable ink and retired controls disabled. First-entry verifies presentation presence, one canonical input/button, invalid-name rejection and real confirmation raycast.
 
-## Status
+## Historical checkpoints
 
 Native review 43396364091, source 1610d322fecf1bd45675cd215c183d0c15677f45: PASS for first entry, visible narrative touches, city, destinations, glyphs and saved treasure/bag rewards. Reviewed actual 390x844 and 844x390 Vigilants/Scouts captures: authored landscapes, paper, mission vignettes and family medallions are visibly restored. Nickname frame/entry hierarchy is visibly improved. This is a reviewed recovery candidate, not a claim of final visual parity with every historical reference.
 
@@ -128,3 +130,18 @@ Integrated exact-source tree into main da87e7d2b0ba03b3a9e6b8a521e1efbb38f286af,
 
 
 Publication43437420122 successfully prepared the real prior Pages snapshot, preserving all98 unrelated files, and passed actual final-route WebKit including OCR ink/construction/reload. Immutable stage artifact14044505500 SHA2567d205893eac790f21949c01a2fd9c31b01fdd545f29bba3f63369e1584bb3639; stage proof14044105646 SHA256f6c504c6645f1fb03c7b005ea1dee5633e1a107595a79e39e982a575428bbf38; actual browser proof14045760494 SHA256f3f31342047c28588e9e7c7ee737484366ea616f349c7c4f30939012d545cd08. Combined site961098244bytes. No deployment: archive creation returned403 because its tag targeted old c908 workflow content. GitHub documents the additional Workflows-write permission for release targets whose workflow files differ from default branch; Actions GITHUB_TOKEN cannot receive that permission (https://docs.github.com/en/rest/releases/releases#create-a-release). The archive now anchors its operation on current default branch while its notes/hash explicitly retain the actual old tar provenance. This does not change game code or archive payload. The corrected delivery reuses the verified immutable stage and completed actual browser proof, checks every published file hash, and does not repeat native/staged-browser execution.
+
+
+## Final public delivery — 13 November 2026
+
+Publication run `43439686229` completed SUCCESS at 14:22:21Z, including actual public WebKit job `131936704425`. Public evidence artifact `14045943514` ZIP SHA256 `6bca2961fbddeb44f28b47fcc02a9bd8405c5d9e878144a408dfafb4ec5cf45b` was independently downloaded, digest-verified and inspected. Both reports pass with zero browser errors. The public identity is exact source `a2e956e11bc837a081c3eab1eb05c8ff094f4e05`, bundle `384f029c5dba1aa46b0cd1d324eb77dec73d5b833b83049b7bf0f68fffe9392c`. Nickname persists; actual story ink passes (p90 0.749177, bright fraction 0.143446); actual sawmill construction and a second reload pass. Public `reloaded.png` and `construction/reloaded-sawmill.png` were visually inspected: readable story/Continue, saved nickname and sawmill level 1. The initial title still clips Valoria in browser; nonblocking for the small pilot, not final artistic approval.
+
+Published link: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&build=a2e956
+
+The immutable package identity retains pre-publication booleans; these describe packaging-time state. Publication is proven by the deployment job, public origin browser execution and matching immutable source/bundle, not by changing provenance in the tested payload.
+
+Previous Pages tar is durably preserved in draft release `444306779`, asset `743890002`, 961239040 bytes, SHA256 `421927fb72b1a920b63e1f32bea9e237b4770f293e15317cf2a04b6046c3fff5`; archive re-download compared byte-identically. Beta18 and unrelated stage routes were preserved and live identities checked. No user save was changed.
+
+Final native A/Bs are Library version 3 (same stable links above), exact a2e956 against the disclosed before source. Player guide and internal checklist version 2 are saved with embedded readable fonts. Guide: https://chatgpt.com/library?file_id=libfile_fde3_f-126533aa8450819193e6a62fc405e6a1_d1c014344dc081918fc6ba9b846892c0&account_id=personal . Checklist: https://chatgpt.com/library?file_id=libfile_fde3_f-6aef3fd2db2c8191b4c7b2b3d9bb987c_d1c014344dc081918fc6ba9b846892c0&account_id=personal .
+
+Physical Safari/iPhone acceptance for this exact build remains pending. No tester invitations have been sent. Start with 2–3 after that check, then 5 and 10–15. Windows was already released at ownership revision 70; no running native process was cancelled.
