@@ -60,3 +60,11 @@ QA local con rasterizado SVG: el tramo central del perímetro permanece totalmen
 - Texto del efecto: aumento moderado de tamaño únicamente cuando la carta mide al menos 245 px de ancho; el panel mantiene altura y posición.
 - PR de referencia: no modifica Unity, el vertical slice activo ni la beta. No hay una certificación artística automática de 9/10.
 - Pruebas reproducibles: QA local Chromium (48 comprobaciones de centrado de números para 4 rarezas y valores 1, 6 y 10; diez anchuras de panel sin recortes), CairoSVG a 320×512 (sin contorno exterior, 4 placas y efecto libres, sello visible). Las regresiones V2.2/V2.3 siguen en src/. Faltan evaluación artística del propietario, Unity y prueba real iPhone.
+
+## V2.5 — revisión de las cuatro rarezas a escala móvil (13/11/2026)
+
+- Común, Rara, Épica y Legendaria verificadas en formato normal e Indestructible mediante Chromium a 390×844. Comprobaciones adicionales a 320×720 y 430×932: **24 renders**, 5:8 constante, cero desbordes o cifras fuera de sus placas en la reconstrucción local del diseño.
+- **Correcciones justificadas por la lectura móvil:** texto del efecto ampliado un 5,6% (de 4.5cqw a 4.75cqw para cartas >=245 px), alcanzando unos 12,6 px a 265 px de ancho; etiqueta Legendaria más aireada (3.65cqw e interletrado menor; aproximadamente 8 px de margen por lado en esa escala).
+- Sin retocar la imagen central, las cuatro texturas premium, geometría de placas N/E/S/O, sello Indestructible, efecto real de madera ni proporción 5:8.
+- Prueba automatizada añadida: `python src/test_mobile_four_rarities_v25.py`. Crea ocho capturas móviles con **los recursos versionados** y una lámina comparativa, además del reporte JSON. La prueba local realizada usó una reconstrucción equivalente desde la referencia de arte; el nuevo script de la PR aún deberá ejecutarse sobre un checkout del repositorio antes de tratar sus capturas como evidencia exacta del commit.
+- **Calidad:** evaluación artística provisional, no una certificación de 9/10 por CI. Pendientes: capturas y rendimiento Unity/WebGL en dispositivo físico; aprobación del propietario en el contexto de la interfaz del juego.
