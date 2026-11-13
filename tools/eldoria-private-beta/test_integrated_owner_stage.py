@@ -2,6 +2,7 @@
 import gzip
 import hashlib
 import json
+import shutil
 import tarfile
 import tempfile
 import unittest
@@ -78,6 +79,12 @@ class IntegratedStageTests(unittest.TestCase):
 
     def prepare_replacement(self):
         old = self.root / 'old'
+        # A real beta19 publication has archived beta10 and the clock route:
+        # neither retains its old engine or release-identity.json.
+        for route in stage.RETIRED:
+            shutil.rmtree(old / route)
+            (old / route).mkdir()
+            (old / route / 'index.html').write_text('Archived diagnostic; use beta18')
         self.write(old / stage.ROUTE / 'release-identity.json', {'source_sha': 'prior-source'})
         for i in range(12):
             (old / stage.ROUTE / (str(i) + '.bin')).write_bytes(b'previous beta19')

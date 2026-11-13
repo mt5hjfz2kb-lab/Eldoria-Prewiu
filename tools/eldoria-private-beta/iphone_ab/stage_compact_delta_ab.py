@@ -37,7 +37,7 @@ def decoded(binary,item):
     need(len(data)==item["decoded_bytes"] and digest(data)==item["decoded_sha256"],
          "A streamed original or candidate chunk is corrupted")
     return data
-def restore_tar(tarpath,output):
+def restore_tar(tarpath,output,required_route=STABLE_ROUTE):
     need(not output.exists(),"Never overwrite existing old Pages directory")
     with tarfile.open(tarpath,"r:*") as archive:
         for m in archive:
@@ -50,7 +50,7 @@ def restore_tar(tarpath,output):
             dest.parent.mkdir(parents=True,exist_ok=True)
             with archive.extractfile(m) as src,dest.open("wb") as dst:
                 shutil.copyfileobj(src,dst,1024*1024)
-    need((output/STABLE_ROUTE/"release-identity.json").is_file(),
+    need((output/required_route/"release-identity.json").is_file(),
          "Archived Pages is not the stable game")
 def exact_parts(root,man):
     data=man["data"]

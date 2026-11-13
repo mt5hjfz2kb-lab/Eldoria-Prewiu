@@ -110,7 +110,10 @@ def stage(a):
         with gzip.open(path, 'rb') as source:
             size = sum(len(block) for block in iter(lambda: source.read(1048576), b''))
         need(size == manifest['decoded_sizes'][url], 'Native binary decoded size changed')
-    restore_tar(a.pages, root)
+    # The original beta10 route is already archived in beta19 snapshots.
+    # Restore against the preserved beta18 identity; verify both live stable
+    # sources below before any candidate route can be replaced.
+    restore_tar(a.pages, root, required_route='beta-iphone-p0-lazy-world')
     before = tree(root)
     for route, source in STABLE.items():
         need(read(root / route / 'release-identity.json')['source_sha'] == source, 'Stable public route changed')
