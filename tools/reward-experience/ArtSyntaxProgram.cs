@@ -16,6 +16,7 @@ var paths = new[]
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/ResourceExperienceUiBridge.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186FirstUseCoach.cs",
     "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs"
 };
 // Unity 6000.3.23f1 REAL attachment failure 43134015062: MonoBehaviours
@@ -39,6 +40,30 @@ foreach (var fixture in new[]
         Console.Error.WriteLine("ISSUE186_UNATTACHABLE_EDITOR_FIXTURE_OR_GUID_MISMATCH " + fixture.Name);
         return 2;
     }
+}
+// Product regression: the introductory coach is installed into the ONE saved
+// RoyalHUD. Source guards do not pretend to certify real Unity pointer hits.
+string coachFile="Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186FirstUseCoach.cs";
+string bagFile="Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs";
+string coachSource=File.ReadAllText(coachFile);
+string bagSource=File.ReadAllText(bagFile);
+if(!File.Exists(coachFile+".meta") ||
+   !File.ReadAllText(coachFile+".meta").Contains("MonoImporter:") ||
+   !bagSource.Contains("coach.Initialize(owner,authority)") ||
+   !bagSource.Contains("gameObject.AddComponent<Issue186FirstUseCoach>()") ||
+   !coachSource.Contains("NarrativeCoherenceRules.Seen(state,\"start\")") ||
+   !coachSource.Contains("SliceRules.CurrentObjectiveKey(state)") ||
+   !coachSource.Contains("GuidedTutorialRules.ShouldPoint") ||
+   !coachSource.Contains("Issue186ArtKit.BindFirstUsePointer") ||
+   !coachSource.Contains("EventSystem.current") ||
+   !coachSource.Contains("NoUiBlocker") ||
+   !coachSource.Contains("no-real-physical-hit") ||
+   !coachSource.Contains("state.PlayerName") ||
+   coachSource.Contains("new GameObject(\"Canvas\"") ||
+   coachSource.Contains("gateway.Execute("))
+{
+    Console.Error.WriteLine("ISSUE186_FIRST_USE_REAL_UI_SOURCE_CONTRACT_FAILED");
+    return 1;
 }
 var opts = CSharpParseOptions.Default.WithPreprocessorSymbols("UNITY_EDITOR","UNITY_6000_0_OR_NEWER","UNITY_6000_3_OR_NEWER");
 foreach (var file in paths)
