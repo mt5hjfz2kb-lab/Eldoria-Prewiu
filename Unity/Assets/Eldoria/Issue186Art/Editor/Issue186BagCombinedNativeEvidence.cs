@@ -42,6 +42,8 @@ namespace Eldoria.Issue186Art.Editor
         {
             public string status,resourceSource,uiSource,error,limitation,nativeRun,nativeAttempt;
             public bool productionVigiliaInstalled, firstUseCoachPresent, firstSawmillHandOnRealHit;
+            public bool firstNicknameInputOnRealHit, firstNicknameConfirmOnRealHit,
+                firstStoryContinueOnRealHit;
             public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
@@ -220,13 +222,90 @@ namespace Eldoria.Issue186Art.Editor
             }
             finally{RenderTexture.active=prior;Object.DestroyImmediate(texture);}
         }
+        // First entry is tested BEFORE fixture helpers auto-complete it.
+        // Three production pointer hits are verified against the first real
+        // EventSystem target; the nickname is committed by the genuine Button.
+        static IEnumerator VerifyInitialEntryHand(ValoriaIntegratedWorld host)
+        {
+            var type=VigiliaType();Need(type!=null,"Vigilia type missing at first entry");
+            var ui=(Component)type.GetMethod("Install",BindingFlags.Public|BindingFlags.Static)
+                .Invoke(null,new object[]{host});
+            Need(type.GetProperty("ProductionPresentation")?.GetValue(ui) is bool prod && prod,
+                "First entry is not the real production-only Vigilia UI");
+            var canvas=(Canvas)type.GetProperty("NativeCanvas").GetValue(ui);
+            var coach=host.Hud.GetComponent<Issue186FirstUseCoach>();
+            Need(canvas&&coach,"First entry has no live tutorial coach/canvas");
+            var camera=host.PlayerCamera;Need(camera,"First entry has no player camera");
+            var oldTarget=camera.targetTexture;
+            float oldAspect=camera.aspect;int oldMask=camera.cullingMask;
+            var oldCanvasCamera=canvas.worldCamera;
+            var target=new RenderTexture(390,844,24,RenderTextureFormat.ARGB32);
+            target.Create();
+            try
+            {
+                camera.targetTexture=target;camera.aspect=390f/844f;
+                camera.cullingMask|=1<<5;canvas.worldCamera=camera;
+                var coordinator=host.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+                Need(coordinator,"Canonical first-entry coordinator missing");
+                coordinator.Refresh();
+                var field=coordinator.GetType().GetField("prompt",
+                    BindingFlags.Instance|BindingFlags.NonPublic);
+                var prompt=field?.GetValue(coordinator) as Eldoria.PlayerClarity.RoyalPlayerNamePrompt;
+                Need(prompt&&prompt.IsOpen,"Real first name prompt absent before tutorial");
+                var input=prompt.GetComponentInChildren<InputField>(true);
+                var confirm=prompt.GetComponentsInChildren<Button>(true)
+                    .SingleOrDefault(b=>b.name=="Confirm your name");
+                Need(input&&confirm,"Actual first-entry input/confirmation button missing");
+                Need(string.IsNullOrWhiteSpace(host.City.Gateway.Snapshot().PlayerName),
+                    "First-entry fixture unexpectedly already named");
+                double limit=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<limit &&
+                      !(coach.Visible&&coach.TargetId=="nickname-input"))
+                    {RenderUi(ui,390,844);yield return null;}
+                Need(coach.Visible&&coach.TargetId=="nickname-input",
+                    "First name input hand misses actual UI hit: "+coach.Rejection);
+                Photograph(camera,target,"first-nickname-input-guide",390,844);
+                report.firstNicknameInputOnRealHit=true;
+                input.text="Prueba Valoria";
+                limit=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<limit &&
+                      !(coach.Visible&&coach.TargetId=="nickname-confirm"))
+                    {RenderUi(ui,390,844);yield return null;}
+                Need(coach.Visible&&coach.TargetId=="nickname-confirm",
+                    "Name confirmation hand misses actual UI hit: "+coach.Rejection);
+                Photograph(camera,target,"first-nickname-confirm-guide",390,844);
+                report.firstNicknameConfirmOnRealHit=true;
+                // Physical hit testing and real Button handler, not Invoke().
+                Click(confirm,camera,target);
+                Need(host.City.Gateway.Snapshot().PlayerName=="Prueba Valoria",
+                    "Real name confirmation did not persist canonical player name");
+                limit=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<limit &&
+                      !(host.Hud.NarrativeOpen&&coach.Visible&&
+                        coach.TargetId=="narrative-continue"))
+                    {RenderUi(ui,390,844);yield return null;}
+                Need(host.Hud.NarrativeOpen&&coach.Visible&&
+                     coach.TargetId=="narrative-continue",
+                    "Opening narrative hand misses actual continue hit: "+coach.Rejection);
+                Photograph(camera,target,"first-story-continue-guide",390,844);
+                report.firstStoryContinueOnRealHit=true;
+            }
+            finally
+            {
+                camera.targetTexture=oldTarget;camera.aspect=oldAspect;
+                camera.cullingMask=oldMask;canvas.worldCamera=oldCanvasCamera;
+                target.Release();Object.DestroyImmediate(target);
+            }
+        }
         static IEnumerator Run()
         {
             ValoriaIntegratedWorld host=null;
             while(!host||!host.Ready||!host.City||!host.Hud)
             {host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();yield return null;}
             Need(host.City.Probe,"Refuse actual player campaign");
-            Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
+            // Actual input, confirmation and story targets are checked first.
+            var firstEntry=VerifyInitialEntryHand(host);
+            while(firstEntry.MoveNext())yield return firstEntry.Current;
             int pages=0;
             while(host.Hud.NarrativeOpen)
             {
