@@ -34,6 +34,10 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionTheme.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionBridge.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchControlKit.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchRetinaEvidence.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/*.png.meta'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchBetaBootstrap.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader'
@@ -60,7 +64,13 @@ jobs:
             /tools/breach-watch/validate_march_composition.py
             /tools/breach-watch/native_visual_ab_review.py
             /pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json
-            /Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs
+            /Unity/Assets/Eldoria/BreachWatch/Editor/**
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_castle.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_provisions.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_swords.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_raven.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_helm.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png.meta
             /tools/breach-watch/*OwnedNativeInput*.ps1
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
@@ -85,6 +95,41 @@ jobs:
       - name: Roslyn compile-tree parse of new C-sharp runtime components
         shell: bash
         run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Verify Retina editor coverage and lossless nav sprite import (NOT Unity)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('Unity/Assets/Eldoria/BreachWatch')
+          runtime=(root/'Runtime/BreachWatchHud.cs').read_text()
+          native=(root/'Editor/BreachWatchNativeEvidence.cs').read_text()
+          dest=(root/'Editor/BreachWatchDestinationNativeEvidence.cs').read_text()
+          retina=(root/'Editor/BreachWatchRetinaEvidence.cs').read_text()
+          skin=(root/'Runtime/BreachWatchControlKit.cs').read_text()
+          assert '#if UNITY_EDITOR' in retina and 'SetNativeCaptureDensity' in runtime
+          assert 'BreachWatchRetinaEvidence.Capture(ui,host,dir)' in native
+          assert 'CaptureVisibleUi(ui,host,folder,"mail")' in dest
+          assert 'CaptureVisibleUi(ui,host,folder,"bag")' in dest
+          assert '"mail-report-document"' in dest
+          assert 'new[]{(390,844),(844,390),(900,1600)}' in retina
+          assert 'changedWebGLPixelRatio=false' in retina
+          assert 'artworkApproved=false' in retina
+          assert 'physicalIphoneTested=false' in retina
+          assert 'public enum Role { Primary, Secondary, TabActive, TabInactive, Icon }' in skin
+          art=root/'Resources/VigiliaArt/CleanRoom'
+          for item in ('castle','provisions','swords','raven','helm'):
+              meta=(art/('nav_'+item+'.png.meta')).read_text()
+              assert 'enableMipMap: 0' in meta,item
+              assert 'filterMode: 1' in meta,item
+              assert 'textureCompression: 0' in meta,item
+              assert meta.count('maxTextureSize: 1024')>=2,item
+              assert 'textureType: 8' in meta,item
+          upgrade=(art/'upgrade.png.meta').read_text()
+          assert 'enableMipMap: 0' in upgrade
+          assert 'textureCompression: 0' in upgrade
+          print('VIGILIA_READONLY_RETINA_EDITOR_AND_SPRITE_SOURCE_CHECK_PASS')
+          print('NOT A UNITY COMPILE, A 3X GPU SCREENSHOT, WEBGL DPR OR ART APPROVAL')
+          PY
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash
         run: |
