@@ -71,3 +71,8 @@
 .board-cell .relic-stats-svg .value {font-size:29px}
 .board-cell .relic-stats-svg .two-digit .value {font-size:23px}
 .board-cell .relic-stats-svg .compass {font-size:10px}
+
+/* V2.3 — no green rectangle, no colored halo across the rarity's outer frame.
+   Indestructibility is an inlaid localized seal + isolated engraved accents only. */
+.relic-card.is-indestructible { filter:none; }
+.relic-card .relic-indestructible { filter:none; }

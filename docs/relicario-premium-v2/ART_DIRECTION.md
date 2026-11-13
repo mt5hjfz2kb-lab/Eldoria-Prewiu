@@ -39,3 +39,7 @@ Fuentes técnicas oficiales de Unity que fundamentan la importación posterior:
 - https://docs.unity3d.com/Manual/class-SpriteAtlas.html
 
 No se sostiene que la extracción fotográfica por sí sola complete la producción: necesita aprobación visual e integración comprobada.
+
+## V2.3 — Indestructibles sin contorno verde (13/11/2026)
+El antiguo SVG tenía dos contornos verdes **continuos** que convertían el estado Indestructible en un quinto marco y producían un recuadro artificial. Se han eliminado ambos y la sombra verde global de `.is-indestructible`. El nuevo `assets/overlay_indestructible.svg` de 320×512 contiene únicamente cuatro pequeñas marcas rúnicas en esquinas y un sello ∞ incrustado (∞ trazado como vector para evitar fallos tipográficos). **No cambia** dimensiones 5:8, rareza, marcos materiales, placas de N/E/S/O, ilustración ni valor/efecto. El sello conserva su posición superior derecha y es un overlay independiente reutilizable.
+QA local con rasterizado SVG: el tramo central del perímetro permanece totalmente transparente, no hay píxeles sobre las cuatro placas de valor ni en el texto/efecto; sello visible. La comparación de arte se realizó sobre capturas reales preexistentes de la V2.2, sin fingir una captura de Unity o del juego. `python src/test_indestructible_v23.py` permite reproducir la geometría/transparencia. La integración Unity/WebGL e inspección artística final siguen pendientes.
