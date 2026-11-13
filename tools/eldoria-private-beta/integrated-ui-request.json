@@ -7,8 +7,8 @@
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 28,
-  "previous_run": 43387431116,
-  "correction": "Owner 13 Nov: restore visual quality of nickname, Vigilants and Scouts before beta/testers. Preserve post-nickname geometry and readable narrative fix. New Vigilia-owned identity engraving and seal retain canonical input/save. Restore seven approved B11 landscape layers and Scout landscape/paper/mission-family medallions on explicit new Vigilia render nodes; retired Royal painters and canvases remain disabled. Actual source-data crop/mission kind and authoritative actions remain unchanged. Require visible recovered illustrations in native assertions, remove production-only bypass of art visibility. First native-only review captures for A/B; no new public build until real images reviewed.",
+  "attempt": 29,
+  "previous_run": 43392139699,
+  "correction": "Owner 13 Nov: restore visual quality of nickname, Vigilants and Scouts before beta/testers. Preserve post-nickname geometry and readable narrative fix. New Vigilia-owned identity engraving and seal retain canonical input/save. Restore seven approved B11 landscape layers and Scout landscape/paper/mission-family medallions on explicit new Vigilia render nodes; retired Royal painters and canvases remain disabled. Actual source-data crop/mission kind and authoritative actions remain unchanged. Require visible recovered illustrations in native assertions, remove production-only bypass of art visibility. First native-only review captures for A/B; no new public build until real images reviewed. Native review 43392139699 compiled and passed first-entry touches, then the city audit counted the inactive new identity engraving as a city fallback. Scope the city exclusion precisely: only engraving owned by the CLOSED identity modal may exist; any visible engraving or unrelated fallback remains forbidden. Repeat full native-only capture; no art approval or public overwrite.",
   "build_candidate": false
 }
