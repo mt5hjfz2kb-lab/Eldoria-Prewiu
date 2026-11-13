@@ -594,7 +594,7 @@ namespace Eldoria.BreachWatch.Editor
             }
             var after=JsonUtility.ToJson(gateway.Snapshot());
             Need(before==after,"Migration fixture changed original player state");
-            Need(shots.Count==16,"Expected sixteen real native destination captures");
+            Need(shots.Count==20,"Expected twenty real native destination captures (five surfaces x four sizes)");
             Need(profileShots.Count==10,
                 "Expected ten additional real Unity hero profile/page captures");
             Need(unlockedNavShots.Count==2,
@@ -606,7 +606,7 @@ namespace Eldoria.BreachWatch.Editor
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
-                notes="Four real authoritative destinations in test-only injected advanced state. Native phone/desktop images; no player save mutation, no real purchase and NO visual approval.",
+                notes="Five real destination surfaces including built barracks Training entry in test-only injected advanced state. Native phone/desktop images; no player save mutation, no real purchase and NO visual approval.",
                 probeOnly=true,saveUnchanged=true,artworkApproved=false,
                 screenshotCount=shots.Count,screens=shots.ToArray()
             };
@@ -633,7 +633,7 @@ namespace Eldoria.BreachWatch.Editor
                 "BreachWatchPopulatedMailEvidence.json"),
                 JsonUtility.ToJson(mailReport,true));
             // Separate, SHA256-labelled supplemental art audit. The canonical
-            // 16-image destination manifest stays unchanged for existing CI.
+            // Five destination surfaces include the actual contextual barracks Training entry (20 images).
             var heroReport=new Report {
                 status="VIGILIA_REAL_HERO_PROFILES_CAPTURED_ART_REVIEW_PENDING",
                 source=report.source,
