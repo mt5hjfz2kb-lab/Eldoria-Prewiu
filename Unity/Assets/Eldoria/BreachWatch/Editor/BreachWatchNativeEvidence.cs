@@ -872,7 +872,7 @@ namespace Eldoria.BreachWatch.Editor
                      "Owner's approved glowing fissure must be ONE native transparent "+
                      "painted sprite, never the generic procedural X: "+name);
                 Need(ui.GetComponentsInChildren<BreachWatchFrameEngraving>(true).All(trim=>
-                         trim.GetComponentInParent<BreachWatchIdentityPresentation>() &&
+                         trim.GetComponentInParent<BreachWatchIdentityPresentation>(true) &&
                          !trim.isActiveAndEnabled),
                      "City contains visible fallback trim or trim outside the closed identity modal: "+name);
                 Need(ui.HasSinglePremiumIdentity,
