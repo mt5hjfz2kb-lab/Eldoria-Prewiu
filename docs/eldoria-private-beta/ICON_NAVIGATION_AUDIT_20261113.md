@@ -40,3 +40,13 @@ Unity6000.3 references: [Web memory](https://docs.unity.com/en-us/engine/6000.3/
 - 0577b6: grouped native/browser run43454132345 in progress; no result claimed in this document.
 - Additional generic-envelope, contextual-training and closed-bag highlight changes: implemented, awaiting the next exact candidate gate.
 - Physical iPhone acceptance and tester release remain pending. No owner save reset and no tester invitations.
+
+## 13 Nov — final icon-state repair and owner preview pipeline
+
+**Implemented:** commit `d3c9c7f2c92a32d179d9cf556c13410519ea5895` removes the second castle while deferred world entry is pending. The world/travel medallion itself becomes the sole castle/cancel route and the transition refreshes immediately rather than relying on the 0.25-second HUD tick. Selecting Aserradero, Cuartel, Granero or Cantera no longer paints BOLSA as selected; BOLSA highlights only while the actual inventory is open.
+
+**New regression:** commits `c012455e075424cf8b126fb9c8a01b4dd610a80f` and `3a7724787c9e8ec7d1b4eb95f0a3bae10a7e7c28` add selected-plate state assertions and real first-raycast deferred-return cancellation in a *test-only* unlocked Unity session. The previous SHA `ec4d664e8765` completed Unity, full gameplay and actual desktop WebKit certification in run `43469529824`, but does **not** cover these last three commits. New exact candidate `008498e6dfc34c67f9f6d52defcf5f7c60634811` is undergoing new full native+browser verification in run `43481923633`. Do not transfer PASS between those SHAs.
+
+**Evidence-driven performance limit:** native run `43454132345` measured `Resources.UnloadUnusedAssets()` removing ~5.6 MB allocated without removing any of 497 referenced textures. Desktop WebKit `0577b6` peaked at 2,790,336 KiB vs 2,656,320 KiB of baseline beta18. Neither measurement certifies nor rules out an iPhone jetsam termination; avoid declaring a memory fix. Investigate real retained allocations or data segmentation if the owner preview still restarts on a physical device.
+
+**Delivery guard:** the default-branch owner-preview workflow `.github/workflows/eldoria-beta-owner-nav-pages.yml` is pinned to successful native, package and two-world-entry browser evidence for source `008498e6`; it replaces only the existing Vigilia Pages route after preserving an exact full-site archive and stable beta18/city hashes. It marks `owner_only=true`, `external_testers_enabled=false`. This is an automated *conditional* delivery route, not evidence that it has completed or a physical iPhone pass.
