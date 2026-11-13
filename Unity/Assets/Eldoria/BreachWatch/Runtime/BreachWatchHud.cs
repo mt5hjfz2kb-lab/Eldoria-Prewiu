@@ -1699,6 +1699,11 @@ namespace Eldoria.BreachWatch
             if(!created||!host)return;
             try
             {
+                // The saved bag can close via its own canonical Close/Restore control
+                // without calling our LateUpdate first. Never paint BOLSA as selected
+                // in that same frame after its actual inventory is already closed.
+                if(selectedTab==1 && resourceBagBridge && !resourceBagBridge.IsShowing)
+                    selectedTab=0;
                 snapshot=host.Read(selected,host.English);
                 // Re-layout only at a genuine unlock boundary. Do not leave a
                 // grey ghost medallion or empty food capsule on the first screen.
