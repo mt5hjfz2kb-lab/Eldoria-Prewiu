@@ -343,7 +343,10 @@ namespace Eldoria.BreachWatch
                 {
                     if(!original || original==painting ||
                         original.name!="Approved source / tab-idle")continue;
-                    actualSelected=original.sprite && original.sprite.name=="tab-active";
+                    // SourceArt.Get creates anonymous Sprite objects; its
+                    // cached reference, not Sprite.name, is authoritative.
+                    var selectedSprite=RoyalGoldV41SourceArt.Get("tab-active",18);
+                    actualSelected=selectedSprite && original.sprite==selectedSprite;
                     break;
                 }
                 BreachWatchControlKit.Paint(painting,
