@@ -860,7 +860,34 @@ jobs:
             }
             if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
           }
-          Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
+          $retinaFolder=Join-Path $folder 'retina-3x'
+          $retinaReportPath=Join-Path $retinaFolder 'retina-native-report.json'
+          if(-not(Test-Path $retinaReportPath)){throw 'Real 3x Unity report missing'}
+          $retina=Get-Content $retinaReportPath -Raw|ConvertFrom-Json
+          if($retina.source -ne $env:GITHUB_SHA -or
+             $retina.status -ne 'UNITY_RETINA_3X_CAPTURED_ART_REVIEW_PENDING' -or
+             @($retina.shots).Count -ne 6 -or $retina.artworkApproved -or
+             $retina.physicalIphoneTested -or $retina.changedWebGLPixelRatio){
+            throw '3x certification source, count or device flags invalid'
+          }
+          foreach($shot in $retina.shots){
+            if($shot.physicalWidth -ne 3*$shot.logicalWidth -or
+               $shot.physicalHeight -ne 3*$shot.logicalHeight -or
+               $shot.density -ne 3 -or
+               [math]::Abs($shot.authoredScale*3-$shot.retinaScale) -gt .08 -or
+               -not $shot.realUnity -or -not $shot.noUserSaveChanges){
+              throw "3x screenshot geometry or saved gameplay mismatch: $($shot.file)"
+            }
+            $png=Join-Path $retinaFolder $shot.file
+            if(-not(Test-Path $png)){throw "Missing real Unity Retina image $($shot.file)"}
+            if((Get-Item $png).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+              throw "Stale Retina capture from older Unity process: $($shot.file)"
+            }
+            if((Get-FileHash $png -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){
+              throw "Tampered high-DPI Unity PNG: $($shot.file)"
+            }
+          }
+          Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_PLUS_6_RETINA_3X_NO_ART_APPROVAL"
       - name: Capture four real destination screens in disposable Unity progression fixture
         shell: powershell
         run: |

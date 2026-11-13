@@ -701,6 +701,11 @@ namespace Eldoria.BreachWatch.Editor
                 shots = shots.ToArray()
             };
             File.WriteAllText(Path.Combine(dir,"BreachWatchNativeEvidence.json"),JsonUtility.ToJson(report,true));
+            // Six additional native images at 3x, with the exact same
+            // logical camera composition and UI scale as the six phone 1x
+            // captures. This is evidence, NOT an art approval or a change
+            // to the physical iPhone WebGL render resolution.
+            BreachWatchRetinaEvidence.Capture(ui,host,dir);
         }
         // Conservative union of visible actual native plate bounds. This is
         // an upper estimate (rounded silhouettes have transparent corners),

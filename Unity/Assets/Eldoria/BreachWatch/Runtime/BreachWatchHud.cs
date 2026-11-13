@@ -79,6 +79,15 @@ namespace Eldoria.BreachWatch
         bool lastWorldMode;
         float nextRefresh;
         float feedbackUntil;
+#if UNITY_EDITOR
+        // Disposable Unity evidence only: screenshot density must NOT alter
+        // actual WebGL player DPI or iPhone memory/render resolution.
+        float nativeCaptureDensity=1f;
+        public void SetNativeCaptureDensity(float density)
+        {
+            nativeCaptureDensity=Mathf.Clamp(density,1f,3f);
+        }
+#endif
         bool created;
         RoyalSnapshot snapshot;
         readonly string[] navLabels = {"REINO", "RECURSOS", "EJÉRCITO", "EXPLORAR", "HÉROES"};
@@ -1133,9 +1142,20 @@ namespace Eldoria.BreachWatch
             // portrait screenshots looked right. Keep the approved 900px
             // design proportions across *physical* mobile resolutions.
             // The .91 floor preserves tappable 44px nav on 390px captures.
-            float scale=portrait
-                ?Mathf.Clamp(pixelWidth/514f,.91f,3.00f)
-                :Mathf.Clamp(Mathf.Min(pixelWidth/1250f,pixelHeight/680f),.86f,1.30f);
+            // Keep physical 3x editor captures geometry-identical to their
+            // logical 1x viewports. The live player stays at density=1 until
+            // the actual browser's DPR and iPhone memory budget are measured.
+            float density=1f;
+#if UNITY_EDITOR
+            density=nativeCaptureDensity;
+#endif
+            float logicalWidth=pixelWidth/density;
+            float logicalHeight=pixelHeight/density;
+            float authoredScale=portrait
+                ?Mathf.Clamp(logicalWidth/514f,.91f,3.00f)
+                :Mathf.Clamp(Mathf.Min(logicalWidth/1250f,
+                    logicalHeight/680f),.86f,1.30f);
+            float scale=authoredScale*density;
             scaler.scaleFactor=scale;
             float w=pixelWidth/scale,h=pixelHeight/scale;
             float margin=portrait?13f:18f;
@@ -1148,7 +1168,7 @@ namespace Eldoria.BreachWatch
                 // The owner's reference is a lightweight TOP band, not
                 // two tall rectangular headers. Compact at 900px, but
                 // preserve comfortable actual phone lettering at 390px.
-                bool smallPhone=pixelWidth<600;
+                bool smallPhone=logicalWidth<600f;
                 float identityHeight=smallPhone?58f:48f;
                 At(identity,margin,smallPhone?11f:14f,182,identityHeight);
                 float crestSize=smallPhone?45f:37f;
