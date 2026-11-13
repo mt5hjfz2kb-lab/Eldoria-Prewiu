@@ -18,7 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/eldoria-private-beta
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/art-direction/ai-authoring
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
