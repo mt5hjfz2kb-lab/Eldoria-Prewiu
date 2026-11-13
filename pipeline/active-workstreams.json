@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T18:50:27.724Z",
+  "updated_at": "2026-11-13T19:11:35.893Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7451,9 +7451,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "EXACT_OWNER_NAVIGATION_CANDIDATE_NATIVE_QA_AND_AUTOPUBLISH",
-      "note": "Code fixed: real city/bag/world/army/heroes/mail routes, Cuartel Training, one-castle deferred state and immediate BOLSA dehighlight. Native 43481923633 on old SHA008498 failed as expected solely on same-frame bag-close assertion; source ed161dd fixes it, exact candidate 4718c12295b66da54ead69fc71a6fa392d3cc83e is now running 43483165131 with source-contract and preflight PASS; Windows exclusive claim retained. Earlier ec4d664 full Unity, packaging and desktop WebKit PASS including saved sawmill and two real world entries/returns, not physical iPhone. No external testers. Public a2e956 remains old until exact new candidate passes.",
-      "next": "Observe exact run 43483165131 (new Unity job). If all source/native/package/WebKit and two-world-entry gates pass, main workflow .github/workflows/eldoria-beta-owner-nav-pages.yml auto-stages and publishes only the corrected owner preview after byte/hash/old-route/archive checks, then records HTTP identity and issue172 notification. If any gate fails, diagnose actual logs and fix same workstream; never promote a failed SHA. Physical Safari 30-minute stable city/world/return and user save verification remains required before testers.",
+      "phase": "EXACT_NATIVE_QA_RERUN_AFTER_POINTER_FIX",
+      "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
+      "next": "Complete run43489752868 (exact controls/20 destination screenshots, saved reward, world reentry, WebGL packaging+browser) and auto-publish owner-only preview via pinned main workflow only on full PASS; verify published identity. Preserve prior deployed a2e956 and all saves. iPhone stability still requires device test, P0 #96 open.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
