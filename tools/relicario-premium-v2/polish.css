@@ -41,3 +41,33 @@
 .board-cell .relic-title.long-name {font-size:4.35cqw;}
 .board-cell .relic-stat {font-size:11.7cqw;}
 .board-cell .relic-stat .compass {font-size:3.7cqw;}
+
+
+/* V2.2: correct cause instead of moving separate CSS glyphs.
+   Numbers and their metallic plates share one SVG coordinate system. */
+.relic-stats-svg {
+ position:absolute;inset:0;width:100%;height:100%;z-index:5;
+ display:block;pointer-events:none;overflow:visible;
+ filter:drop-shadow(0 1px 1.5px #000b);
+}
+.relic-stats-svg .relic-stat {
+ display:block;position:static;margin:0;padding:0;
+ font-variant-numeric:lining-nums tabular-nums;text-shadow:none;
+}
+.relic-stats-svg .plaque-outer {filter:drop-shadow(0 1.5px 1.3px #050507aa)}
+.relic-stats-svg .plaque-inner {filter:drop-shadow(0 0 1px #060608)}
+.relic-stats-svg .compass {
+ font:700 10px/1 Arial,sans-serif;letter-spacing:0;
+ fill:#d4c5a7;stroke:none;opacity:.96;transform:none;
+}
+.relic-stats-svg .value {
+ font:600 29px/1 Georgia,'Times New Roman',serif;
+ fill:#fff0d4;stroke:none;letter-spacing:-.35px;
+ paint-order:stroke fill;transform:none;
+}
+.relic-stats-svg .two-digit .value {font-size:23px;letter-spacing:-1.4px}
+.relic-stats-svg .stat-n,.relic-stats-svg .stat-s,
+.relic-stats-svg .stat-o,.relic-stats-svg .stat-e {top:auto;left:auto;right:auto;width:auto;height:auto}
+.board-cell .relic-stats-svg .value {font-size:29px}
+.board-cell .relic-stats-svg .two-digit .value {font-size:23px}
+.board-cell .relic-stats-svg .compass {font-size:10px}
