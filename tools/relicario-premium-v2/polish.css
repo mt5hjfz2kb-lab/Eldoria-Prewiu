@@ -62,7 +62,7 @@
 }
 .relic-stats-svg .value {
  font:600 29px/1 Georgia,'Times New Roman',serif;
- fill:#fff0d4;stroke:none;letter-spacing:-.35px;
+ fill:var(--stat-text,#fff0d4);stroke:none;letter-spacing:-.35px;
  paint-order:stroke fill;transform:none;
 }
 .relic-stats-svg .two-digit .value {font-size:23px;letter-spacing:-1.4px}
@@ -76,3 +76,15 @@
    Indestructibility is an inlaid localized seal + isolated engraved accents only. */
 .relic-card.is-indestructible { filter:none; }
 .relic-card .relic-indestructible { filter:none; }
+
+/* V2.4 — finer relic-metal integration and readable mobile effect, without resizing the panel. */
+.relic-effect strong{font-size:3.8cqw;letter-spacing:.035em;}
+.relic-effect span{font-size:4.2cqw;font-weight:560;line-height:1.16;}
+.relic-effect div{gap:1.5px;}
+.relic-stats-svg .plaque-outer{filter:drop-shadow(0 1px 1.15px #0304059c);}
+.relic-stats-svg .plaque-inner{filter:none;}
+.relic-stats-svg .plaque-engraving{mix-blend-mode:screen;}
+@container (min-width:245px){
+  .relic-effect strong{font-size:4cqw;}
+  .relic-effect span{font-size:4.5cqw;line-height:1.16;}
+}
