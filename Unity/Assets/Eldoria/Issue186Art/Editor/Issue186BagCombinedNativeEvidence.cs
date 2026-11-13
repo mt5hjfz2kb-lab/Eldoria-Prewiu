@@ -405,12 +405,18 @@ namespace Eldoria.Issue186Art.Editor
                 camera.targetTexture=rt;camera.aspect=390f/844f;
                 camera.cullingMask|=1<<5;canvas.worldCamera=camera;
                 RenderUi(ui,390,844);
-                // Let the real MonoBehaviour Update and EventSystem run, not
-                // a synthetic onClick or our own direct pointer callback.
-                double pointerDeadline=EditorApplication.timeSinceStartup+1.2;
-                while(EditorApplication.timeSinceStartup<pointerDeadline)
-                    {yield return null;}
+                // The original native probe failed before the first actual
+                // camera draw but its failure Photograph showed the live,
+                // player-visible "Construir aqui: Aserradero" label. Match
+                // real player timing: render the production Canvas before
+                // querying its first EventSystem hit, never fake the hit.
+                Draw(camera,rt);
+                double pointerDeadline=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<pointerDeadline &&
+                      !(firstCoach.Visible&&firstCoach.TargetId=="sawmill"))
+                    {RenderUi(ui,390,844);Draw(camera,rt);yield return null;}
                 RenderUi(ui,390,844);
+                Draw(camera,rt);
                 if(!firstCoach.Visible)
                     Photograph(camera,rt,"FAILED-first-sawmill-guide",390,844);
                 Need(firstCoach.Visible && firstCoach.TargetId=="sawmill",
@@ -432,7 +438,7 @@ namespace Eldoria.Issue186Art.Editor
                 double actionDeadline=EditorApplication.timeSinceStartup+3.0;
                 while(EditorApplication.timeSinceStartup<actionDeadline &&
                       !(firstCoach.Visible&&firstCoach.TargetId=="building-action"))
-                    {RenderUi(ui,390,844);yield return null;}
+                    {RenderUi(ui,390,844);Draw(camera,rt);yield return null;}
                 Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
                     "The hand did not move to the real CONSTRUIR action: "+
                     firstCoach.Rejection);
