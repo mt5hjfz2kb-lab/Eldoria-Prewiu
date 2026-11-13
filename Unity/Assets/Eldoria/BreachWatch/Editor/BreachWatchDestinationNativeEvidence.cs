@@ -726,8 +726,15 @@ namespace Eldoria.BreachWatch.Editor
         {
             Need(button && button.isActiveAndEnabled && button.IsInteractable(),
                 "Actual canonical mail control is unavailable");
-            Need(button.targetGraphic && button.targetGraphic.raycastTarget,
-                "Actual mail control lost its configured pointer input after activation: "+button.name);
+            // targetGraphic is the painted plate used for tint/press feedback,
+            // NOT necessarily the GraphicRaycaster hit area. Sculpted nav
+            // buttons intentionally have a non-raycast art child and a real
+            // transparent 44px+ Image on the Button root. Require that input
+            // surface and then verify the actual first EventSystem hit below.
+            Need(button.targetGraphic &&
+                 button.GetComponentsInChildren<Graphic>(true).Any(g=>
+                    g && g.gameObject.activeInHierarchy && g.raycastTarget),
+                "Actual control has no raycastable pointer surface: "+button.name);
             var camera=host.PlayerCamera;Need(camera,"Canonical input camera missing");
             var priorTarget=camera.targetTexture;var priorAspect=camera.aspect;
             int priorMask=camera.cullingMask;
