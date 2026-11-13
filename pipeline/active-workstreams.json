@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T22:42:06.842Z",
+  "updated_at": "2026-11-13T22:42:50.646Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7443,13 +7443,14 @@
           10000,
           100000
         ],
-        "real_saved_game_mutated": false,
         "release_allowed": false,
         "latest_native_before_run": 43294080321,
         "issue186_before_run": 43189305862,
         "runner_holder": [
           "eldoria-issue186-reward-attention-guidance-20261111"
-        ]
+        ],
+        "save_mutation_intended": false,
+        "save_integrity_native_verified": false
       }
     },
     {
