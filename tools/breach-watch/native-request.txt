@@ -1,9 +1,14 @@
-MARCH CANONICAL LAYOUT RESTORATION REGRESSION
+VIGILIA PHASE1 EXACT-NATIVE 3X SCREENSHOT CERTIFICATION
 workstream=eldoria-forja-oscura-visual-proof-20261107
-owner=chatgpt-work-recovery-8b37e8b1eab0-20261112
-ownership_revision=123
-required=two_real_controller_refresh_restore_cycles_all_RectTransform_anchors_pivot_position_size;existing_38_typography_AB_pairs_and_real_first_hits
-viewports=390x844,900x1600,844x390,1600x900
+owner=chatgpt-vigilia-visual-kit-20261113
+ownership_revision=128
+source_parent_sha=7c65a557d33ef03dd71f2a6823b6c88ca0fb60c1
+owner_authorization=2026-11-14: Si no hay trabajo en el PC usa el recurso
+native_test=Genuine Unity disposable city/Bastion/mail/report/bag 1x plus 15 real Retina 3x PNG
+viewports=390x844,844x390,900x1600
+source_qa=43526553331 PASS; source docs 7c65a557
+run_once=fail closed if remote Windows process or CAS owner changed
+no_main_merge=true
+no_beta_publish=true
+no_credits_eur=0
 art_approved=false
-physical_mobile_verified=false
-merge_or_publish=false
