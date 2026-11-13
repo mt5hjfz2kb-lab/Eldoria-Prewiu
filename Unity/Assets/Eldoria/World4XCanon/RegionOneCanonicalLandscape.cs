@@ -20,8 +20,85 @@ namespace Eldoria.World4XCanon
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
-  bool built;
+  bool built,building,failed;
+  Transform partialWorldRoot;
   public bool IsReady=>built;
+  public bool IsLoading=>building&&!built;
+  public bool HasFailed=>failed;
+  // Lazy-world is an opt-in diagnostic. The normal startup path is unchanged.
+  public bool BeginDeferredLoad()
+  {
+   if(failed)return false; // Fail closed: never retry atop partially built assets.
+   if(built||building)return true;
+   if(!ValoriaIntegratedWorld.P0LazyWorldProbe||!host||!host.PresentationBindingsReady)return false;
+   building=true;
+   Debug.Log("ELDORIA_P0_LAZY_WORLD_REQUESTED");
+   StartCoroutine(GuardedDeferredBuild());
+   return true;
+  }
+  // Unity stops an IEnumerator after a nested MoveNext exception, which used
+  // to leave building=true indefinitely and a half-loaded terrain retained.
+  // Drive nested stages explicitly ONLY for the opt-in lazy experiment, so
+  // we can dispose the certified query tape and restore the original city.
+  IEnumerator GuardedDeferredBuild()
+  {
+   var stack=new Stack<IEnumerator>();
+   stack.Push(BuildAndInstall());
+   Exception failure=null;
+   float deadline=Time.realtimeSinceStartup+120f;
+   try
+   {
+    while(stack.Count>0)
+    {
+     if(Time.realtimeSinceStartup>deadline)
+     {
+      failure=new TimeoutException("Lazy Region 1 exceeded the 120s load budget");
+      break;
+     }
+     IEnumerator active=stack.Peek();
+     bool advanced=false;
+     object yielded=null;
+     try
+     {
+      advanced=active.MoveNext();
+      if(advanced)yielded=active.Current;
+     }
+     catch(Exception ex){failure=ex;break;}
+     if(!advanced)
+     {
+      stack.Pop();
+      try{(active as IDisposable)?.Dispose();}catch(Exception ex){failure=ex;break;}
+      continue;
+     }
+     if(yielded is IEnumerator inner){stack.Push(inner);continue;}
+     yield return yielded;
+    }
+   }
+   finally
+   {
+    while(stack.Count>0)
+    {
+     try{(stack.Pop() as IDisposable)?.Dispose();}
+     catch(Exception ex){Debug.LogError("REGION1_P0_LAZY_STAGE_DISPOSAL "+ex.GetType().Name);}
+    }
+   }
+   if(failure==null&&!built)failure=new InvalidOperationException("Region 1 stage did not reach ready");
+   if(failure!=null)
+   {
+    Debug.LogError("REGION1_P0_LAZY_BUILD_FAILED "+failure.GetType().Name);
+    // Leave the authoritative gateway, HUD, construction clock and save
+    // untouched. Only presentation objects from THIS attempt are discarded.
+    failed=true;building=false;built=false;
+    if(partialWorldRoot)Destroy(partialWorldRoot.gameObject);
+    partialWorldRoot=null;
+    for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i];
+    for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];
+    originals.Clear();states.Clear();lods.Clear();lodStates.Clear();background.Clear();
+    geography=null;nodes=null;placement=null;resourceModels=null;
+    creaturePopulation=null;lookDevelopment=null;
+   }
+   else partialWorldRoot=null;
+  }
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
   RegionOneCreaturePopulation creaturePopulation;RegionOneLookDevelopment lookDevelopment;
@@ -60,27 +137,53 @@ namespace Eldoria.World4XCanon
         {
             if (!host) yield break;
             host.BindWorldPresentation(this);
+            // P0 A/B only: avoid loading region meshes/resources while the
+            // owner validates whether CITY bootstrap itself survives on iOS.
+            // Normal production route and canonical Editor journeys are unchanged.
+            if (ValoriaIntegratedWorld.P0CityOnlyProbe) {
+                Debug.Log("ELDORIA_P0_CITY_ONLY_WORLD_INITIALIZATION_SKIPPED");
+                yield break;
+            }
+            if (ValoriaIntegratedWorld.P0LazyWorldProbe) {
+                Debug.Log("ELDORIA_P0_LAZY_WORLD_WAITING_FOR_ENTRY");
+                yield break;
+            }
+            yield return BuildAndInstall();
+        }
+
+        IEnumerator BuildAndInstall()
+        {
+            building=true;
             while (host && !host.PresentationBindingsReady) yield return null;
-            if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera) yield break;
+            if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera)
+            {
+                // An aborted coroutine must never leave the lazy-load gate permanently busy.
+                building=false;
+                Debug.LogError("REGION1_CANON_WORLD_MISSING_BINDINGS");
+                yield break;
+            }
             navigation = host.WorldNavigation;
             origin = host.WorldHome;
             if (host.WorldRoot.transform.Find("Region 1 canonical continuous geography"))
             {
                 Debug.LogWarning("REGION1_CANON_LAYER_ALREADY_PRESENT");
-                // Keep the original ready adapter as the authority if bootstrap duplicated it.
+                // A duplicate adapter is not authoritative. Never expose a partial world.
                 var existing=UnityEngine.Object.FindObjectsByType<RegionOneCanonicalLandscape>(FindObjectsSortMode.None)
                     .FirstOrDefault(other=>other!=this&&other.host==host&&other.IsReady);
                 if(existing)host.BindWorldPresentation(existing);
+                else Debug.LogError("REGION1_CANON_WORLD_EXISTING_LAYER_NOT_READY");
+                building=false;
                 yield break;
             }
             InstallCameraLimits();
-            Build(host.WorldRoot.transform);
+            yield return BuildStaged(host.WorldRoot.transform);
             foreach(var renderer in host.WorldRoot.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
             host.WorldRoot.layer=29;
             host.WorldCamera.cullingMask=1<<29;
             host.WorldCamera.backgroundColor=new Color(.48f,.53f,.35f,1); // continental boundary haze, never implied surrounding sea
             ConfigureRegionCoverage();
             built = true;
+            building=false;
             UpdateLevelOfDetail(true);
             Debug.Log("REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState");
         }
@@ -135,7 +238,7 @@ namespace Eldoria.World4XCanon
    }
    return Mathf.Max(horizontal/Mathf.Max(.1f,aspect),vertical)*1.04f;
   }
-  void Build(Transform existingWorld)
+  IEnumerator BuildStaged(Transform existingWorld)
   {
    // Capture existing scene integration state ONCE, before creating the clean presentation.
    foreach(var r in existingWorld.GetComponentsInChildren<Renderer>(true))
@@ -152,14 +255,33 @@ namespace Eldoria.World4XCanon
     if(lod.GetComponentsInChildren<Renderer>(true).Any(background.Contains))
     {lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}
    var root=new GameObject("Region 1 canonical continuous geography").transform;root.SetParent(existingWorld,true);
-   geography=RegionOneBlenderLandscape.Install(root,host);lookDevelopment=root.GetComponentInChildren<RegionOneLookDevelopment>();
+   if(ValoriaIntegratedWorld.P0LazyWorldProbe)partialWorldRoot=root;
+   yield return null;
+   yield return RegionOneBlenderLandscape.InstallStaged(root,host,value=>geography=value);
+   lookDevelopment=root.GetComponentInChildren<RegionOneLookDevelopment>();
+   yield return null;
    nodes=RegionOneReferenceNodes.Install(root,host);
-   RegionOneResourcePlacement.Install(root,host,geography);
+   yield return null;
+   RegionOneBlenderLandscape.TraceStartupMemory("placement-before");
+   // Full map stays identical, but the opt-in lazy path spreads the
+   // resource/city terrain scan across rendered frames to prevent a WebGL
+   // GC-starved, long main-thread build on memory-constrained iPhones.
+   if(ValoriaIntegratedWorld.P0LazyWorldProbe)
+    yield return RegionOneResourcePlacement.InstallStaged(root,host,geography);
+   else RegionOneResourcePlacement.Install(root,host,geography);
+   RegionOneBlenderLandscape.TraceStartupMemory("placement-after");
+   yield return null;
+   RegionOneBlenderLandscape.TraceStartupMemory("resource-models-before");
    RegionOneResourceModels.Install(root,host);
+   RegionOneBlenderLandscape.TraceStartupMemory("resource-models-after");
+   yield return null;
    placement=root.GetComponent<RegionOneResourcePlacement>();
    resourceModels=root.GetComponent<RegionOneResourceModels>();
+   RegionOneBlenderLandscape.TraceStartupMemory("creatures-before");
    RegionOneCreaturePopulation.Install(root,host,placement);
+   RegionOneBlenderLandscape.TraceStartupMemory("creatures-after");
    creaturePopulation=root.GetComponent<RegionOneCreaturePopulation>();
+   yield return null;
    originalTripoActor=existingWorld.GetComponentInChildren<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>(true);
   }
   void UpdateLevelOfDetail(bool force)

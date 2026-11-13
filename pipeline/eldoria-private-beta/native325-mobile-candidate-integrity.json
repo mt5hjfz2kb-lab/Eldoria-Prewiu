@@ -1,0 +1,10 @@
+{
+  "source_sha256": "6efe4b1f1eeedd33727ec8f24d4d25075b516478d3bb80ea61a6bdbb12528ca0",
+  "candidate_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
+  "changed_textures": 58,
+  "all_objects_verified": 54338,
+  "saved_serialized_bytes": 314268436,
+  "candidate_bundle_bytes": 455610281,
+  "runtime_verified": false,
+  "physical_iphone_verified": false
+}

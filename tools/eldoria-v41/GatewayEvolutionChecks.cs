@@ -16,7 +16,14 @@ static class GatewayEvolutionChecks
         var resolver=new EldoriaV41GatewayResolver(new[]{definition});
         definition.EnemyTroops.ArcherT1=10000;
         var store=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=150}}};
+        // Real Vigilant eligibility includes the already completed Engendro
+        // and its actual taught narrative beat. Otherwise a busy-hero test
+        // could pass merely because the entire destination was still locked.
+        store.State.EngendroDefeated=true;
+        store.State.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
         var clock=new Clock();var gateway=new LocalGateway(clock,store,resolver);
+        Check(EarlyRetentionRules.StageUnlocked(gateway.Snapshot(),1),
+            "busy-hero fixture has the genuine introduced guardian unlocked");
         Check(Send(gateway,"v41-prepare","ConfigureMarch","march-main:40:0:0:aldric::").Ok,"prepare real march");
         Check(Send(gateway,"v41-launch","Fight","corrupt-scout").Ok,"launch real command");
         Check(!Send(gateway,"busy-guardian","VigilantBattle","1").Ok,"guardian cannot reuse hero already marching");
@@ -45,6 +52,8 @@ static class GatewayEvolutionChecks
         var campaign=EldoriaV41GatewayResolver.Campaign();
         var veteran=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=5,SawmillLevel=1,
             ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=200}}};
+        veteran.State.EngendroDefeated=true;
+        veteran.State.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
         var journey=new LocalGateway(clock,veteran,campaign);
         for(int stage=1;stage<=25;stage++)
         {
@@ -72,6 +81,7 @@ static class GatewayEvolutionChecks
             Retention=new EarlyRetentionState{LastClearedStage=24,AldricExperience=560,LyraExperience=0},
             ChapterThree=new BastionThreeState{LyraRecruited=true}
         };
+        veteranPairState.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
         var pairStore=new Store{State=veteranPairState};
         var pairGateway=new LocalGateway(clock,pairStore,campaign);
         Check(Send(pairGateway,"pair-prepare","ConfigureMarch",

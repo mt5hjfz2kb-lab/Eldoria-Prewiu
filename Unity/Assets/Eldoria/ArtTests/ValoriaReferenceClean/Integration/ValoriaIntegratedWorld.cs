@@ -29,7 +29,52 @@ namespace Eldoria.ReferenceClean {
   internal void BindWorldPresentation(RegionOneCanonicalLandscape presentation){worldPresentation=presentation;}
   // All existing navigation/selection callers keep one readiness contract:
   // the map must be complete before any world camera or target can be exposed.
-  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady);
+  // Diagnostic-only experiment: isolate city startup from heavy Region 1 build.
+  // Do not affect default native/editor/playtest or production WebGL behavior.
+  public static bool P0CityOnlyProbe {
+   get {
+#if UNITY_WEBGL && !UNITY_EDITOR
+    return UnityEngine.Application.absoluteURL.Contains("eldoria_p0_city_only=1");
+#else
+    return false;
+#endif
+   }
+  }
+  // The real world may be constructed on first entry without blocking city HUD.
+  // This is separate from the city-only diagnostic, which NEVER constructs the map.
+  public static bool P0LazyWorldProbe {
+   get {
+#if UNITY_EDITOR
+    return P0LazyWorldEditorTestOverride;
+#elif UNITY_WEBGL
+    return !P0CityOnlyProbe && UnityEngine.Application.absoluteURL.Contains("eldoria_p0_lazy_world=1");
+#else
+    return false;
+#endif
+   }
+  }
+#if UNITY_EDITOR
+  public static bool P0LazyWorldEditorTestOverride {get;set;}
+#endif
+  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe||P0LazyWorldProbe);
+  bool deferredWorldEntryQueued;
+  string deferredWorldObjective;
+  int deferredWorldEpoch;
+  IEnumerator EnterWorldAfterDeferredBuild(int epoch)
+  {
+   float started=Time.realtimeSinceStartup;
+   while(this&&deferredWorldEntryQueued&&epoch==deferredWorldEpoch&&worldPresentation&&
+         !worldPresentation.IsReady&&!worldPresentation.HasFailed&&
+         Time.realtimeSinceStartup-started<120f)
+    yield return null;
+   if(!this||!deferredWorldEntryQueued||epoch!=deferredWorldEpoch)yield break;
+   deferredWorldEntryQueued=false;
+   var objective=deferredWorldObjective;deferredWorldObjective=null;
+   if(worldPresentation&&worldPresentation.IsReady){
+    Debug.Log("ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY");
+    if(TrySetWorld(true)&&!string.IsNullOrEmpty(objective))Select(objective);
+   }else if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+  }
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
   public ValoriaReferenceCleanGameplay City=>city;
@@ -37,6 +82,11 @@ namespace Eldoria.ReferenceClean {
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
   bool cityFog,englishInterface; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
   float nextVisualSync;
+  // Read-only private beta instrument; never records names or full saves.
+  bool betaMetricsEnabled,betaBaseline,betaWorldSeen,betaEndSeen,betaLyraSeen,betaFissureSeen;
+  float nextBetaSignal;
+  int betaLastBastion=-1,betaLastSawmill,betaLastBarracks,betaLastGranary,betaLastStoneworks,betaLastMarches;
+  string betaLastBattle="";
   // Motion is measured in screen pixels, so easing is consistent in both camera modes.
   Vector2 unappliedDragPixels;
   const float DragResponse=20f;
@@ -157,6 +207,11 @@ namespace Eldoria.ReferenceClean {
    presentationBindingsReady=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
+   // Only a signed and consented beta invitation adds this marker. Never
+   // enable the existing full-save eldoriaPlaytest=1 diagnostics here.
+   var betaUrl=UnityEngine.Application.absoluteURL??"";
+   betaMetricsEnabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer &&
+    (betaUrl.Contains("?eldoriaBetaTelemetry=1")||betaUrl.Contains("&eldoriaBetaTelemetry=1"));
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);
    var buildings=Hud.GetComponent<RoyalGoldV3BuildingScreens>();if(!buildings)buildings=Hud.gameObject.AddComponent<RoyalGoldV3BuildingScreens>();
@@ -254,6 +309,10 @@ namespace Eldoria.ReferenceClean {
   void LateUpdate(){
    if(!Ready)return;
    SmoothCameraDrag();
+   if(betaMetricsEnabled&&Time.unscaledTime>=nextBetaSignal){
+    nextBetaSignal=Time.unscaledTime+.75f;
+    ScanBetaMilestones();
+   }
    if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
@@ -272,11 +331,80 @@ namespace Eldoria.ReferenceClean {
     SelectionChanged(Selected);
    }
   }
+  void EmitBetaSignal(string name,string codes){
+   Debug.Log("ELDORIA_BETA_SIGNAL|"+name+"|"+codes);
+  }
+  void ScanBetaMilestones(){
+   if(!Ready||city==null||city.Gateway==null)return;
+   var state=city.Gateway.Snapshot(); // authoritative read-only state
+   int level=Mathf.Clamp(state.BastionLevel,1,5);
+   if(level!=betaLastBastion){
+    betaLastBastion=level;
+    EmitBetaSignal("bastion_reached","bastion="+level);
+   }
+   // Level 5 alone is NOT chapter V completion.
+   if(!betaEndSeen&&SliceRules.CurrentObjectiveKey(state)=="b5.complete"){
+    betaEndSeen=true;EmitBetaSignal("end_of_slice","bastion=5");
+   }
+   if(InWorld&&!betaWorldSeen){
+    betaWorldSeen=true;EmitBetaSignal("world_opened","bastion="+level);
+   }
+   var c=state.ChapterThree;
+   int sawmill=state.SawmillLevel,barracks=state.BarracksLevel;
+   int granary=c!=null?c.GranaryLevel:0,stoneworks=c!=null?c.StoneworksLevel:0;
+   int active=MarchCapacityRules.ActiveWorldCount(state);
+   var report=state.LastBattleReport;
+   string reportKey=report==null||string.IsNullOrEmpty(report.TargetId)?""
+    :report.TargetId+"|"+report.Won+"|"+report.Rounds+"|"+report.RemainingHealth+
+     "|"+report.RewardWood+"|"+report.RewardStone;
+   bool lyra=c!=null&&c.LyraRecruited,fissure=c!=null&&c.FissureClosed;
+   if(betaBaseline){
+    if(sawmill>betaLastSawmill&&sawmill<=5)
+     EmitBetaSignal("build_completed","building_code=sawmill|level="+sawmill);
+    if(barracks>betaLastBarracks&&barracks<=5)
+     EmitBetaSignal("build_completed","building_code=barracks|level="+barracks);
+    if(granary>betaLastGranary&&granary<=5)
+     EmitBetaSignal("build_completed","building_code=granary|level="+granary);
+    if(stoneworks>betaLastStoneworks&&stoneworks<=5)
+     EmitBetaSignal("build_completed","building_code=stoneworks|level="+stoneworks);
+    if(active>betaLastMarches&&active<=3)
+     EmitBetaSignal("march_sent","march_slots_used="+active);
+    if(!string.IsNullOrEmpty(reportKey)&&reportKey!=betaLastBattle)
+     EmitBetaSignal("battle_resolved","outcome_code="+
+      (report.VersionedOutcome!=null&&report.VersionedOutcome.Outcome=="draw"?"draw":report.Won?"win":"loss"));
+    if(lyra&&!betaLyraSeen)EmitBetaSignal("lyra_state","state_code=recruited");
+    if(fissure&&!betaFissureSeen)EmitBetaSignal("fissure_state","state_code=closed");
+   }
+   betaBaseline=true;
+   betaLastSawmill=sawmill;betaLastBarracks=barracks;
+   betaLastGranary=granary;betaLastStoneworks=stoneworks;
+   betaLastMarches=active;betaLastBattle=reportKey;
+   betaLyraSeen=lyra;betaFissureSeen=fissure;
+  }
   void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2&&state.BastionLevel<5);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
   void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;city.Presenter.ExternalNavigationOwned=false;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public static bool CanEnterWorld(PlayerState s)=>s!=null&&(s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost);
+  // A quest may request a target while the first real Region 1 is still loading.
+  // Keep only the most recent request; city navigation cancels its epoch.
+  public bool NavigateToObjective(string id){
+   if(!Ready||string.IsNullOrEmpty(id))return false;
+   if(!IsWorldTarget(id)){
+    deferredWorldObjective=null;
+    if(!TrySetWorld(false))return false;
+    return Select(id);
+   }
+   if(TrySetWorld(true)){
+    deferredWorldObjective=null;
+    return Select(id);
+   }
+   if(deferredWorldEntryQueued)deferredWorldObjective=id;
+   return false;
+  }
   public bool Select(string id){
    if(!Ready)return false;
+   if(deferredWorldEntryQueued&&id!="gate"&&!IsWorldTarget(id)){
+    deferredWorldEntryQueued=false;deferredWorldEpoch++;deferredWorldObjective=null;
+   }
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
@@ -292,14 +420,39 @@ namespace Eldoria.ReferenceClean {
   public void SetWorld(bool open){TrySetWorld(open);}
   public bool TrySetWorld(bool open){
    if(!Ready)return false;
+   if(open&&P0CityOnlyProbe){
+    if(Hud)Hud.Feedback.Put("Diagnóstico P0: mundo diferido; la partida sigue intacta.");
+    return false;
+   }
    if(open&&!CanEnterWorld(city.Gateway.Snapshot())){
     Hud.Feedback.Put(L("Construye primero el aserradero. Pulsa «Ir al objetivo» para encontrar la parcela.","Build the sawmill first. Choose Go to objective to find its plot."));
     Hud.SelectBuilding("sawmill");return false;
+   }
+   if(!open){
+    deferredWorldObjective=null;
+    if(deferredWorldEntryQueued){deferredWorldEntryQueued=false;deferredWorldEpoch++;}
+   }
+   if(open&&P0LazyWorldProbe){
+    // Never expose camera or enemy targets before complete canonical installation.
+    if(!worldPresentation){if(Hud)Hud.Feedback.Put("Preparando el acceso al mundo.");return false;}
+    if(!worldPresentation.IsReady){
+     if(worldPresentation.HasFailed){
+      if(Hud)Hud.Feedback.Put("La Región 1 no ha podido cargarse. La ciudad y tu progreso están a salvo.");
+      return false;
+     }
+     if(worldPresentation.BeginDeferredLoad()&&!deferredWorldEntryQueued){
+      deferredWorldEntryQueued=true;
+      StartCoroutine(EnterWorldAfterDeferredBuild(++deferredWorldEpoch));
+     }
+     if(Hud)Hud.Feedback.Put("Preparando Región 1. La ciudad y tu progreso permanecen disponibles.");
+     return false;
+    }
    }
    if(InWorld==open)return true;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    unappliedDragPixels=Vector2.zero;
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
+   if(open&&P0LazyWorldProbe)Debug.Log("ELDORIA_P0_LAZY_WORLD_ENTERED");
    if(!open)city.Controls.ResetView();
    RenderSettings.fog=open?false:cityFog;
    if(open){

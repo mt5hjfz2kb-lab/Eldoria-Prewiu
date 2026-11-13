@@ -1,0 +1,12 @@
+{
+  "guid": "4acf13e685a74fd9b930b46e7fb580b3",
+  "source_sha256": "667e10d1270b30946f2c2252e05aa14519b9098a0f4e28b2bbf6b3741549bffb",
+  "sha256": "dda2c871b42a1004d1cad88d048e57f70bdc7b019f53068360addb7d3600e8f6",
+  "size": [
+    512,
+    736
+  ],
+  "source": "user-approved blank context interior",
+  "no_baked_player_content": true,
+  "art_approved": false
+}

@@ -123,7 +123,17 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().LastBattleReport.OwnRoster,Is.Not.Null);
             Assert.That(g.Snapshot().LastBattleReport.OwnRoster.Total,
                 Is.EqualTo(g.Snapshot().LastBattleReport.Troops));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before),
+                "Vigilant rewards remain consumables until explicitly used");
+            var packet=g.Snapshot().ResourceRewards.Packets.Single(p=>
+                p.ReceiptId=="vigilant:stage:1:wood");
+            Assert.That(packet.Amount,Is.EqualTo(32));
+            Assert.That(packet.Collected&&!packet.Used,Is.True);
+            int packets=g.Snapshot().ResourceRewards.Packets.Count;
+#else
             Assert.That(g.Snapshot().Resources.Wood,Is.GreaterThan(before));
+#endif
             long revision=g.Snapshot().Revision;
             int loot=g.Snapshot().Resources.Wood;
             Assert.That(g.Execute(cmd).Ok,Is.True);
@@ -132,6 +142,16 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(Cmd(g,"repeat","VigilantBattle","1")).Ok,Is.False);
             g=new LocalGateway(time,save);
             Assert.That(g.Snapshot().Retention.LastClearedStage,Is.EqualTo(1));
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+            Assert.That(g.Snapshot().ResourceRewards.Packets.Count,Is.EqualTo(packets));
+            Assert.That(g.Execute(Cmd(g,"use-vigilant-wood",ResourceRewardCommands.UsePacket,
+                packet.ReceiptId)).Ok,Is.True);
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before+32));
+            g=new LocalGateway(time,save);
+            Assert.That(g.Execute(Cmd(g,"reuse-vigilant-wood",ResourceRewardCommands.UsePacket,
+                packet.ReceiptId)).Ok,Is.False);
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before+32));
+#endif
         }
         [TestCase(8)]
         [TestCase(9)]

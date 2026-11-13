@@ -1,0 +1,11 @@
+# Lyra ceremony: actual method change, 11 November 2026
+
+The previous full-body VTK image and a new Cycles PBR portrait both retain visible facial facets, texture discontinuities and weak eyes in the approved 30k-triangle GLB. Blender 4.3.2 successfully imported its unchanged glTF materials (2048 color/normal, 1024 ORM, custom normals, 29999 smooth polygons). A 128-sample 1100x1500 render did not solve those visible issues; its tighter frame also clipped the hair. It is rejected as final artwork. Do not spend further cycles tweaking lights or upscaling this face.
+
+Recovered the actual original owner reference from Library, rather than the unrelated silver-haired woman in the six-screen Heroes master. The canonical brown-haired scout has the olive cloak, braid, bow and leather equipment of the approved original. Source file ID/hash and extracted output are recorded in the adjacent provenance JSON. The only requested edit was removal of the grey background/floor, preserving identity and details. Result inspected visually and by alpha: 1086x1448 RGBA, about 70.8% transparent.
+
+The ceremony now prefers this original 2D illustration. The interactive 3D hero detail is unchanged. The overlay does not import another GLB. The new illustrated head starts near the top of the texture, so it uses a distinct head-aligned aperture; the old GLB crop would cut it off. One bounded non-readable, mipless max1024 sprite is added, with no Canvas/input/timer or reward-logic changes.
+
+Implemented in this PR only; local Roslyn syntax audit passes all 20 sources after the change. NOT a Unity API compile, native screenshot, owner approval or main integration. Next native batch must show Lyra in portrait and landscape, compare against the exact original reference, verify hair/face stay in the aperture, heading/report/button remain visible and touchable, and confirm no later asynchronous swap back to the rejected model portrait. Do not mark art approved from a source check.
+
+Other executed source checks before this art-only change: domain 153246 assertions; actual LocalGateway 247 assertions/5 store writes; economy candidate 469 arithmetic checks. They do not establish player retention/economy acceptance, physical phone stability or visual quality.

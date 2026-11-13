@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.ReferenceClean;
@@ -44,7 +46,23 @@ namespace Eldoria.World4XCanon
             service.Scan(landscape);
             service.Synchronize();
         }
+        // Eager and lazy must share the IDENTICAL coordinate/query/order algorithm.
+        // The eager wrapper consumes the iterator synchronously for native parity;
+        // only the owner-only deferred path lets WebGL reach the end of each frame.
+        public static IEnumerator InstallStaged(Transform root,ValoriaIntegratedWorld host,RegionOneBlenderLandscape landscape)
+        {
+            var service=root.gameObject.AddComponent<RegionOneResourcePlacement>();
+            service.host=host;
+            yield return service.ScanStaged(landscape);
+            service.Synchronize();
+        }
         void Scan(RegionOneBlenderLandscape landscape)
+        {
+            var stages=ScanStaged(landscape);
+            try { while(stages.MoveNext()) {} }
+            finally { (stages as IDisposable)?.Dispose(); }
+        }
+        IEnumerator ScanStaged(RegionOneBlenderLandscape landscape)
         {
             foreach(var id in new[]{"forest-valoria","quarry-valoria"})
             {
@@ -53,26 +71,25 @@ namespace Eldoria.World4XCanon
             }
             var layout=Resources.Load<TextAsset>("World4X/Blender/production-region");
             if(layout){var data=JsonUtility.FromJson<RegionLayout>(layout.text);cities=data.cities??Array.Empty<CityReserve>();faults=data.faults??Array.Empty<FaultSegment>();}
-            var floor=landscape.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
-            var query=new GameObject("Temporary exact resource surface validation");
-            query.layer=2; query.transform.SetPositionAndRotation(floor.transform.position,floor.transform.rotation);
-            query.transform.localScale=floor.transform.lossyScale;
-            var collider=query.AddComponent<MeshCollider>();collider.sharedMesh=floor.sharedMesh;
-            Physics.SyncTransforms();
-            try
+            using(var tape=new TerrainQueryTape(host,landscape))
+            {
+            RegionOneBlenderLandscape.SurfaceRaycast surface=tape.Raycast;
             {
                 foreach(var city in cities)
                 {
                     float low=float.MaxValue,high=float.MinValue;bool valid=!FaultExcluded(faults,city.x,city.z,city.radius);
                     for(int i=0;i<=16;i++){
                         float a=i*Mathf.PI/8;float x=city.x+(i==16?0:Mathf.Cos(a)*city.radius),z=city.z+(i==16?0:Mathf.Sin(a)*city.radius);
-                        if(!collider.Raycast(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
+                        if(!surface(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
                         low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);
                     }
                     if(valid&&high-low<.5f){city.Validated=true;ValidatedCityCount++;}
                 }
-                for(int z=-1500;z<=1600;z+=32)for(int x=-750;x<=600;x+=32)
+                var slice=new RegionOneFrameSlice(8);
+                for(int z=-1500;z<=1600;z+=32)
                 {
+                 for(int x=-750;x<=600;x+=32)
+                 {
                     if(FaultExcluded(faults,x,z,8))continue;
                     bool safe=true;float low=float.MaxValue,high=float.MinValue;Vector3 centre=default;
                     for(int i=0;i<=8;i++)
@@ -80,18 +97,120 @@ namespace Eldoria.World4XCanon
                         float a=i*Mathf.PI/4;float xx=x+(i==8?0:Mathf.Cos(a)*8),zz=z+(i==8?0:Mathf.Sin(a)*8);
                         if(RegionOneBlenderLandscape.Shore(xx,zz)<12||RegionOneBlenderLandscape.Water(xx,zz)>.01f||RegionOneBlenderLandscape.Road(xx,zz)>.05f){safe=false;break;}
                         var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
-                        if(!collider.Raycast(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.94f){safe=false;break;}
+                        if(!surface(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.94f){safe=false;break;}
                         low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);if(i==8)centre=hit.point;
                     }
                     if(!safe||high-low>1.6f)continue;
                     bool wood=false;
                     for(int i=0;i<8;i++){float a=i*Mathf.PI/4;wood|=RegionOneBlenderLandscape.Forest(x+Mathf.Cos(a)*24,z+Mathf.Sin(a)*24)>.15f;}
                     sites.Add(new Site{Id="region1:"+x+":"+z,Point=centre,Wood=wood});
+                 }
+                 // Preserve complete row/query order and the SAME tape;
+                 // yield on elapsed work or at most eight rows, never all rows.
+                 if(slice.ShouldYield()){yield return null;slice.Resume();}
                 }
             }
-            finally {if(routes==null)routes=new RegionOneTerrainRoutes(host,collider,faults);DestroyImmediate(query);}
+            if(routes==null)
+            {
+                // Route-grid scans used to run ~100k cells in one WebGL frame,
+                // even with the 32 m site scan staged. Keep tape open across yields.
+                if(ValoriaIntegratedWorld.P0LazyWorldProbe)
+                    yield return RegionOneTerrainRoutes.CreateStaged(host,surface,faults,ready=>routes=ready);
+                else
+                    routes=new RegionOneTerrainRoutes(host,surface,faults);
+            }
+            tape.Complete();
+            }
             var snapshot=host.City.Gateway.Snapshot();
             foreach(var city in cities)if(city.Validated&&routes.TryRouteTo(snapshot,host.WorldHome+new Vector3(city.x,0,city.z),out var route))AccessibleCityCount++;
+        }
+        public static byte[] CapturedTerrainQueries {get;private set;}
+        sealed class TerrainQueryTape : IDisposable
+        {
+            const uint Magic=0x45545131;
+            readonly MemoryStream stream;readonly BinaryReader reader;readonly BinaryWriter writer;
+            readonly int expectedCount;readonly bool legacy;int count,compared;
+#if !UNITY_WEBGL || UNITY_EDITOR
+            readonly GameObject query;readonly MeshCollider collider;
+#endif
+            public TerrainQueryTape(ValoriaIntegratedWorld host,RegionOneBlenderLandscape landscape)
+            {
+                bool bake=false,validate=false;
+                var asset=Resources.Load<TextAsset>("World4X/Blender/RuntimeTerrainQueries");
+#if UNITY_EDITOR
+                bake=Environment.GetEnvironmentVariable("ELDORIA_BAKE_TERRAIN_QUERIES")=="1";
+                validate=Environment.GetEnvironmentVariable("ELDORIA_VALIDATE_TERRAIN_RAYCAST")=="1";
+#endif
+#if !UNITY_WEBGL || UNITY_EDITOR
+                legacy=!asset&&!bake&&!validate;
+                if(bake||validate||legacy){
+                    var floor=landscape.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
+                    query=new GameObject("Editor only exact resource surface certification");query.layer=2;
+                    query.transform.SetPositionAndRotation(floor.transform.position,floor.transform.rotation);query.transform.localScale=floor.transform.lossyScale;
+                    collider=query.AddComponent<MeshCollider>();collider.sharedMesh=floor.sharedMesh;Physics.SyncTransforms();
+                }
+#endif
+                if(legacy)return;
+                var mesh=landscape.DirectedTerrain;ulong indices=0;for(int i=0;i<mesh.subMeshCount;i++)indices+=mesh.GetIndexCount(i);
+                if(bake){
+                    CapturedTerrainQueries=null;stream=new MemoryStream();writer=new BinaryWriter(stream);
+                    writer.Write(Magic);writer.Write(mesh.vertexCount);writer.Write(indices);Write(host.WorldHome);writer.Write(0);
+                }else{
+                    if(!asset)throw new InvalidOperationException("Certified terrain queries are missing; rebuild this frozen scene");
+                    stream=new MemoryStream(asset.bytes,false);reader=new BinaryReader(stream);
+                    if(reader.ReadUInt32()!=Magic||reader.ReadInt32()!=mesh.vertexCount||reader.ReadUInt64()!=indices||Read()!=host.WorldHome)
+                        throw new InvalidOperationException("Certified terrain input signature differs");
+                    expectedCount=reader.ReadInt32();if(expectedCount<10000||expectedCount>200000)throw new InvalidOperationException("Certified terrain query count invalid");
+                }
+            }
+            void Write(Vector3 v){writer.Write(v.x);writer.Write(v.y);writer.Write(v.z);}
+            Vector3 Read()=>new Vector3(reader.ReadSingle(),reader.ReadSingle(),reader.ReadSingle());
+            public bool Raycast(Ray ray,out RaycastHit hit,float distance)
+            {
+                if(ray.direction!=Vector3.down)throw new InvalidOperationException("Certified query must be vertical");
+                bool found;hit=default;
+#if !UNITY_WEBGL || UNITY_EDITOR
+                if(legacy)return collider.Raycast(ray,out hit,distance);
+                if(writer!=null){
+                    found=collider.Raycast(ray,out hit,distance);Write(ray.origin);writer.Write(distance);writer.Write(found);
+                    if(found){Write(hit.point);Write(hit.normal);}count++;return found;
+                }
+#endif
+                if(count>=expectedCount)throw new InvalidOperationException("Certified terrain query overflow");
+                var origin=Read();float limit=reader.ReadSingle();found=reader.ReadBoolean();
+                // Transcendental float rounding can differ across native/Web engines.
+                // Less than one millimetre is accepted; the certified result itself is exact.
+                if((origin-ray.origin).sqrMagnitude>.000001f||limit!=distance)
+                    throw new InvalidOperationException("Certified terrain query sequence differs at "+count+" expected="+origin+" actual="+ray.origin);
+                if(found){hit.point=Read();hit.normal=Read();hit.distance=ray.origin.y-hit.point.y;}
+                count++;
+#if UNITY_EDITOR
+                if(collider){
+                    bool reference=collider.Raycast(ray,out var original,distance);compared++;
+                    if(reference!=found||(found&&((original.point-hit.point).sqrMagnitude>.000001f||(original.normal-hit.normal).sqrMagnitude>.000001f||
+                       (original.normal.y>=.94f)!=(hit.normal.y>=.94f)||(original.normal.y>=.9f)!=(hit.normal.y>=.9f))))
+                        throw new InvalidOperationException("Certified terrain response differs from original collider at "+ray.origin);
+                }
+#endif
+                return found;
+            }
+            public void Complete()
+            {
+                if(legacy)return;
+                if(writer!=null){
+                    long end=stream.Position;stream.Position=28;writer.Write(count);stream.Position=end;writer.Flush();CapturedTerrainQueries=stream.ToArray();
+                    Debug.Log("ELDORIA_TERRAIN_QUERY_BAKED count="+count+" bytes="+CapturedTerrainQueries.Length);
+                }else{
+                    if(count!=expectedCount||stream.Position!=stream.Length)throw new InvalidOperationException("Certified terrain queries not fully consumed");
+                    Debug.Log("ELDORIA_TERRAIN_QUERY_TAPE count="+count+" runtime_cooking=0");
+                    if(compared>0)Debug.Log("ELDORIA_TERRAIN_QUERY_PARITY count="+compared+" exact_source_responses=1");
+                }
+            }
+            public void Dispose(){reader?.Dispose();writer?.Dispose();stream?.Dispose();
+#if !UNITY_WEBGL || UNITY_EDITOR
+                if(query)DestroyImmediate(query);
+#endif
+            }
         }
         // Enemy and resource sites share this single physical land/road/rivers
         // verifier. No secondary map or client-side save authority is created.
@@ -268,4 +387,16 @@ namespace Eldoria.World4XCanon
             }
         }
     }
+#if UNITY_EDITOR
+    public sealed class RegionOneTerrainCacheBuildGuard : UnityEditor.Build.IPreprocessBuildWithReport
+    {
+        public int callbackOrder=>0;
+        public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        {
+            if(report.summary.platform==UnityEditor.BuildTarget.WebGL&&!Resources.Load<TextAsset>("World4X/Blender/RuntimeTerrainQueries"))
+                throw new UnityEditor.Build.BuildFailedException("Bake and validate the frozen terrain query tape before building WebGL; see tools/eldoria-private-beta/native/run_structural.ps1");
+        }
+    }
+#endif
+
 }

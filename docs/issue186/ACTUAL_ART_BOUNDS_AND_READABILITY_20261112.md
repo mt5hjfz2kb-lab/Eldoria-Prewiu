@@ -1,0 +1,9 @@
+Actual source art bounds and readable attention placement, 2026-11-12
+
+The full real saved-bag run43178513272 is functionally verified at20 current images and52 real first-hit interactions; its exact two-layer source restoration43182442619 also passed. Artistic inspection of portrait390×844 and landscape844×390 found the NEW circle crossing the first letter of each resource name, and the original gauntlet becoming too thin to read.
+
+The NEW badge now sits19 layout units further left on the original packet frame's upper-right corner, leaving a9-unit horizontal gap before the name. The original27-unit authored badge is retained. The bag hand is92 units wide instead of72. Its actual original386×245 PNG is now displayed at its native aspect; alpha>=200 identifies the left fingertip at x62 and y72..77 from the top. A normalized(.16,.696) pivot aligns that fingertip to the real target without square letterboxing. Source PNG pixels, GUIDs and hashes are unchanged; there is no generated replacement or crop.
+
+The safe-placement model now uses the native245/386 height and requires the first actual safe mirrored placement. Its four tested component viewports fit at central contact, clear the button's text, and keep the entire original image inside the six-pixel safe inset. An offscreen target is rejected. Runtime raycast/interactability/consent-to-use/dismiss/save rules are unchanged; visibility is never forced. Larger and naturally proportioned art still must pass the actual runtime guide check.
+
+Implemented and local four-viewport geometry/negative case verified. Full source CI, exact new combined native images and artistic comparison remain pending. The canonical UI branch separately fixes its resource-header badge/number collision; new combined evidence must pin that exact natively certified UI source. No art/main approval, deployment or physical-device result is asserted.

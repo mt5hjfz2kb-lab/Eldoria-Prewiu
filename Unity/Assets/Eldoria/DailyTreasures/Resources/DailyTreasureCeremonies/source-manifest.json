@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "art_approved": false,
+  "unity_native_verified": false,
+  "source": "tools/daily-treasures/art-candidates/ceremony-art-production.json",
+  "notes": "Four transparent ceremonial frames plus one shared bronze border. Hero and city identity are never baked in. This is not Unity or artistic certification.",
+  "assets": {
+    "lyra": {
+      "file": "lyra_stage.png",
+      "sha256": "bd1cbe785554b71b0666b12011a0909a8e4431f1bb067d9b8f34d741fd96d2b6",
+      "guid": "7facb1da09db44cfb2f86995c6f9d341",
+      "blob_source": "tools/daily-treasures/art-candidates/lyra_stage.png"
+    },
+    "explorers": {
+      "file": "explorers_stage.png",
+      "sha256": "8a35f42c4b5be397f9954b3d2e659555b8fafdc443e710353d1073bcb95fb735",
+      "guid": "e32f120afd904d12b1394d9e0c44b714",
+      "blob_source": "tools/daily-treasures/art-candidates/explorers_stage.png"
+    },
+    "vigilants": {
+      "file": "vigilants_stage.png",
+      "sha256": "f881aed36057181e72538985d5fd0dd05ce4a08c99cb7f297cd93283946d714b",
+      "guid": "3a9812c8d7f44174916f25ac907b55f1",
+      "blob_source": "tools/daily-treasures/art-candidates/vigilants_stage.png"
+    },
+    "bastion": {
+      "file": "bastion_stage.png",
+      "sha256": "6bb27240ea5f28d1a7993267509de145a6a834cc3b5c9ded123f75b047d2709f",
+      "guid": "c87139e9f93242a8ac1964895f733cf0",
+      "blob_source": "tools/daily-treasures/art-candidates/bastion_stage.png"
+    },
+    "ornament": {
+      "file": "shared_ornament.png",
+      "sha256": "03f8bc5de48fc71be35c6cd14bbf1fd3464ac274c0eb4b9a7f859c3d86629ad0",
+      "guid": "638d5ee78b5e4c3d9da9ee88ef663849",
+      "blob_source": "tools/daily-treasures/art-candidates/shared_ornament.png"
+    },
+    "canonical_lyra_bust": {
+      "file": "canonical_lyra_bust.png",
+      "sha256": "68fca9f1ac070a03a1c03dbc03b9e4ed6a374526892d7598f2f4a518d8284eea",
+      "guid": "ea108ab975f448e59e2b73a305a34ad7",
+      "blob_source": "tools/daily-treasures/art-candidates/lyra-canonical-bust-source.png",
+      "authentic": "Approved PR127 Lyra GLB SHA256 a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725 rendered offline as actual model, not invented person",
+      "art_approved": false
+    }
+  }
+}

@@ -256,9 +256,16 @@ namespace Eldoria.ReferenceClean.Editor
             Need(host.TrySetWorld(false),"Player can return safely to the canonical city");
             var manager=hud.GetComponent<RoyalGoldV3ManagementScreens>();
             Need(manager!=null,"Actual March Room management panel attached");
+            Need(!NarrativeCoherenceRules.Seen(host.City.Gateway.Snapshot(),"march-preparation"),
+                "Disposable fixture has not acknowledged the March introduction");
             manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
             yield return new WaitForSecondsRealtime(.2f);
-            Need(manager.IsOpen,"Actual capacity-limited march composer opens");
+            Need(!manager.IsOpen,"Unread March introduction prevents opening the composer");
+            Need(host.City.Gateway.AcknowledgeNarrative("march-preparation"),
+                "Disposable fixture records the completed March introduction through the real gateway");
+            manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
+            yield return new WaitForSecondsRealtime(.2f);
+            Need(manager.IsOpen,"Actual capacity-limited march composer opens after introduction");
             Need(hud.GetComponentsInChildren<RoyalText>(true).Any(t=>
                 t.text!=null&&t.text.Contains("MARCHAS ACTIVAS")),
                 "Actual visible March Room shows global active-slot count");

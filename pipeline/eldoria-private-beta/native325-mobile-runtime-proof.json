@@ -1,0 +1,34 @@
+{
+  "run": 42418416629,
+  "source": "966955bcd43fd5000bef9ef0aa3fffbbb56aaaaa",
+  "conclusion": "success",
+  "evidence_artifact": 13593015073,
+  "candidate_artifact": 13592467764,
+  "candidate_artifact_sha256": "b34079f24eaa3a32c27280f30f498c7411a559e986d46e8e0bf2817cc7858552",
+  "candidate_bundle_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
+  "environment": {
+    "browser": "Chromium",
+    "renderer": "SwiftShader",
+    "viewport": "390x844",
+    "device_scale": 0.5,
+    "physical_iphone": false
+  },
+  "observations": {
+    "original_ready": true,
+    "candidate_ready": true,
+    "uncaught_javascript_errors": 0,
+    "original_wasm_heap_capacity_bytes": 1675624448,
+    "candidate_wasm_heap_capacity_bytes": 1580924928,
+    "normal_nickname_welcome_visible_in_both": true,
+    "original_engine_startup_ms": 6280,
+    "candidate_engine_startup_ms": 6186,
+    "window_ready_timing_source": "first run 42417656424; second independent run confirms readiness and screenshot"
+  },
+  "limits": [
+    "Heap capacity is not total process RAM or allocated live object memory",
+    "Low-DPR screenshot proves matching welcome and rendering, not final artwork quality or full campaign playability",
+    "No actual iPhone/Android validation; involuntary mobile return not yet proven fixed",
+    "Gameplay telemetry not connected"
+  ],
+  "publishing_workflow_commit": "572f92a7754c8902c17e838c87b1bdcea9050f1e"
+}

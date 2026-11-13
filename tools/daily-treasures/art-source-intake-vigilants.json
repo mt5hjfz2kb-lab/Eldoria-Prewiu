@@ -1,0 +1,9 @@
+{
+  "scene": "vigilants",
+  "stage": "PREUNITY_CANDIDATE_ONLY",
+  "art_approved": false,
+  "source_task_id": "c4b9d670-280a-4173-bd27-3687cbf836cb",
+  "segmentation_task_id": "5e52aadb-b2d3-4414-8605-2f14acdce790",
+  "temporary_download_url": "https://dnznrvs05pmza.cloudfront.net/sam3_image_segmentation/5e52aadb-b2d3-4414-8605-2f14acdce790/0f8f50ac-6939-440c-9c1f-5fc846fde9d4.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzc1YmFjZTliM2VmZmY0NyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDQ4MjkyMX0.5KSyZfY6S2IScUliDR9XkwoA35h2NSwhiLR6i-hFCkY",
+  "temporary_source_caveat": "Temporary source URL; remove after source candidate is archived by verified SHA."
+}

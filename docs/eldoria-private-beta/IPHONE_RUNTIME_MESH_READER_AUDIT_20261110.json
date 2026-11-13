@@ -1,0 +1,1462 @@
+{
+  "source": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
+  "files": [
+    {
+      "path": "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
+      "sha": "7360d65043397ee2a7f3386fc0e85f0d8ed94c3b",
+      "matches": [
+        {
+          "line": 435,
+          "text": "                    skin.BakeMesh(snapshot, true);"
+        },
+        {
+          "line": 436,
+          "text": "                    foreach (var vertex in snapshot.vertices)"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Bastion1AssemblyCamera.cs",
+      "sha": "3b03852aeb2875b46551de2af7727ec87ff03512",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/BastionSelectionProbe.cs",
+      "sha": "bb77df8909054cdf190fd412ee5d562c9fce0367",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntime.cs",
+      "sha": "0bb2df6ed7da3ca4135d2f012446dfcbd55bf986",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntimeV2.cs",
+      "sha": "bb1704ad8d67aab50dab4efaa242e327ef4ca697",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaEntryExperimentalRuntimeV3.cs",
+      "sha": "7ddbdbde1714a7dfd699ed062548703668777748",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/ValoriaUprightViewBridge.cs",
+      "sha": "f40b2d9246b8c889cda815f58a0852e8694f3423",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/EldoriaAndroidAutoUpdater.cs",
+      "sha": "66663cc3999bcc21946dd29eedfdb1639328dfd4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs",
+      "sha": "d596e96995fe6da799fceff7b23cb20227c162ef",
+      "matches": [
+        {
+          "line": 162,
+          "text": "    var mesh=Instantiate(filter.sharedMesh);terrainMeshes.Add(mesh);var vertices=mesh.vertices;"
+        },
+        {
+          "line": 168,
+          "text": "    mesh.vertices=vertices;mesh.RecalculateNormals();mesh.RecalculateBounds();filter.sharedMesh=mesh;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIVVWorldPresentation.cs",
+      "sha": "8e7b0afbda0e0180f629b472aec19d91ba3086dc",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+      "sha": "80f2293b19ac8e420bcf22908b2aed1bf2cbd667",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
+      "sha": "e34de06f3dcabe77665a26fddb24b12cc48f9741",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs",
+      "sha": "4d36e4208a245bbb9a3105ffa43bc4038ab38de8",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs",
+      "sha": "e1020116135fa21a978a8d50e3c7eb9beefa6486",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaContentUpdate.cs",
+      "sha": "a73b5427c51cbd200ec808dcf7fa5295170f330a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaReferenceCleanGameplay.cs",
+      "sha": "1d3b8c0dbbe7d6f8e86e312e011ecf21b6b73bd0",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaReferenceCleanInteraction.cs",
+      "sha": "0d572a7808af51c02f732cf3b4402e1d67e57e82",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaReferenceCleanRenderSettings.cs",
+      "sha": "8d4d6be414774a7083d9b57f9d459b63bbf294bf",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneGatewayHost.cs",
+      "sha": "66c8e0b0adc8e32f7c57ec9f48cb19d003e2cc80",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs",
+      "sha": "01ba8e5aa2674448618a578bf2f474e12d67e007",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneStrategicCamera.cs",
+      "sha": "bf5acce0104764f986a0f73386b5aa582c064b8d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorld.cs",
+      "sha": "55a062d6e87f0970e0412c6c8aedfdf308256a93",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneWorldTests.cs",
+      "sha": "552b1125d7333ec579278b4adb0cd56a42ee0409",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs",
+      "sha": "d9bb1fc35a3d175c55989b39ba3f66d871caff9c",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesEquipmentArt.cs",
+      "sha": "4b333aec1c32ccb3719f07eb49709763dd5de26a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs",
+      "sha": "8ce9cb51b4bf3a5376ac5e39d9c4c4dbd5c29c2a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesHallParallaxFinish.cs",
+      "sha": "765377e5b00574f667d5716cd010a3b5a47f7ee8",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesHallScenicGraphic.cs",
+      "sha": "bb5026b6b46339f835cda5133b3fed7a6582b92e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesLyraModel.cs",
+      "sha": "9a44125b1ae460e6d3789f8448f9939756687827",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesModelSnapshot.cs",
+      "sha": "aa3de43dcc826554453b1e7fa1a8eceb591db311",
+      "matches": [
+        {
+          "line": 88,
+          "text": "            groundMesh.vertices=new[]{new Vector3(-extent,0,-extent),new Vector3(-extent,0,extent),new Vector3(extent,0,extent),new Vector3(extent,0,-extent)};"
+        },
+        {
+          "line": 89,
+          "text": "            groundMesh.triangles=new[]{0,1,2,0,2,3};groundMesh.RecalculateNormals();groundMesh.RecalculateBounds();"
+        },
+        {
+          "line": 122,
+          "text": "                    var mesh=new Mesh();try{skin.BakeMesh(mesh,false);"
+        },
+        {
+          "line": 123,
+          "text": "                        foreach(var vertex in mesh.vertices){var p=skin.transform.TransformPoint(vertex);"
+        },
+        {
+          "line": 260,
+          "text": "            var mesh=new Mesh{name=name};mesh.vertices=vertices;mesh.triangles=triangles;"
+        },
+        {
+          "line": 294,
+          "text": "            mesh.vertices=vertices;mesh.triangles=triangles;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesSkillCards.cs",
+      "sha": "0f76f50e95d01bdee17614cfa6c200ecda1fe488",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesTalentArt.cs",
+      "sha": "dae310c7127cf575881d77045ca43beb133f44b7",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/ChapterThreeRenewableSitePolicy.cs",
+      "sha": "278975f863a34536d4efa8344fedfbd37cffff70",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/DistributedSiteOrder.cs",
+      "sha": "613873239a47e333199a9a65a79c01ec9d1cba31",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/PlayerNameHeader.cs",
+      "sha": "3d5d3b75905f42c0813988bbe7ea91c84f60ba86",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/PlayerNameRules.cs",
+      "sha": "86e0df09fa47396e329478e151a55efe1ab9f655",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/RenewableRespawnRules.cs",
+      "sha": "efbfb2c9234d3cfa7a34c216952704a002943fc4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/RoyalPlayerEntryCoordinator.cs",
+      "sha": "37216bdb9822255d794381945b3057824602f07a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/RoyalPlayerNamePrompt.cs",
+      "sha": "45de9f5419d484a39c951f1e0bf604dc1c495850",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/RoyalPlayerNameplate.cs",
+      "sha": "ca51aed90310c8362195aef670bbdafba3e9b844",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/RoyalResourcePictogram.cs",
+      "sha": "7daeecf3b7e87bd6f9b7fae996ebaaa516852115",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarity/RoyalResourcePictogramInstaller.cs",
+      "sha": "7d496df95085cce375877a20b6cbd6bd17d36aa7",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
+      "sha": "8bea063bd185783267b693db8d9a0e14752bba24",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs",
+      "sha": "4dec590c86d4449d61f5b389c8d4095b1fc81234",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+      "sha": "fa5afae34d9bd68f908e934aca1a4512f538e243",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs",
+      "sha": "98d35683af4b515192764ac7914ca0035b4dd1cd",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionFirstUseTutorial.cs",
+      "sha": "12d6156079bdf81f921c55c9e7f791b9fbf4d765",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+      "sha": "cd12ca51e7076f0dd933e03d936509b62218914c",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs",
+      "sha": "f51366ff88dfaadc866072cd9ab745ac76550c78",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs",
+      "sha": "f5ea32a5590b04bf91dd0a96dbdcf60871b0bb33",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41CombatEvolution.cs",
+      "sha": "3e78936edf29edb48ddb883b590fb273dd53120d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs",
+      "sha": "fa45e758cf5ec07335ae8823b20bcdf0e17de7f2",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41GatewayResolver.cs",
+      "sha": "6b198c504c6f5808178349d6caa61820e0ad5985",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Medical.cs",
+      "sha": "2f8b7f959656e5f56331c64b4d7edd85a823ab3d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+      "sha": "5d0a5516699e84f63ed6722f6a61daf6c80bbfd9",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs",
+      "sha": "4ba72f6b272b7f0e48db21d082b6918da7772496",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/ParcelBuildingState.cs",
+      "sha": "4fe63c6d56103ccf86fdb530f610c42de42560b5",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs",
+      "sha": "d1b305aba68f59b2a604483ab3fa9c2f373c1c5f",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs",
+      "sha": "1225a4c5ed398ef7e856b2462156e097b03f7bd2",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs",
+      "sha": "01cba3ef9e44b1456d2b52b7276733857dfa8c32",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs",
+      "sha": "8767bd75b373c474c034508dc6695734f86d15e5",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/UnityContextTutorial.cs",
+      "sha": "bd2fa6fc3826c3f8bf88abc98452c22e3618ef59",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Infrastructure/LocalServices.cs",
+      "sha": "2f74a1a094bbd98cb689d13bc7233956bccd6e4d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
+      "sha": "35599446649e4f40283ab558898f4729d5ca5647",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/AssetVisualUpliftPassV1.cs",
+      "sha": "2b92dd006b93bc32f0d12482e66910f68c69b61b",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/IPlayableSceneHost.cs",
+      "sha": "1bc068463df793c611b5cc5587515a77ac37ded6",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/LayeredValoriaArtTest.cs",
+      "sha": "87d52f6489228006c2803401e22c0d48a079bebc",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/MidTierDistrictProduction.cs",
+      "sha": "93636db6c63670fb3d0efd39dacaf372d0ec6846",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs",
+      "sha": "351d7ff83c0939f19d0094d0b562962bd0ed660a",
+      "matches": [
+        {
+          "line": 1078,
+          "text": "                var v=mesh.vertices;var uv=new Vector2[v.Length];"
+        },
+        {
+          "line": 1083,
+          "text": "                    mesh.vertices=v;mesh.RecalculateBounds();"
+        },
+        {
+          "line": 1386,
+          "text": "            mesh.vertices=vertices;mesh.uv=uv;mesh.triangles=triangles;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
+      "sha": "9b730d1af995211b045bcf9e31929d43b6f0bb27",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs",
+      "sha": "24a14c803f091d17c09041ca4f9403b0e694daa4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+      "sha": "01424f10b03f2a7b533ef6d216704c7990b130d1",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaAdaptiveMobileHomePoseV1.cs",
+      "sha": "317fcb49d8433189bb5e390ecfa6227dd9f192ef",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaArchitectureCoherenceV1.cs",
+      "sha": "4525f3e7f9971212259a480bc6da27ea7261144e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBackplateCandidateV1.cs",
+      "sha": "0dc8c93bec099363fa9cd3cad90f40b5262e92fc",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBenchmarkCompositeV1.cs",
+      "sha": "129574dab54cc7134144686f8099df17518ffc92",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBenchmarkCompositeV2.cs",
+      "sha": "35264cc7b9a1d7a66bc2aa12b0e2f188efc22796",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV1.cs",
+      "sha": "c0a7b700e3c8a2995f73eb1c1be2fc23614d7443",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV2.cs",
+      "sha": "ce836245ef3dba9d6b066fba6ee844f045c1cdbd",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV3.cs",
+      "sha": "2a175d51d467b91d55e632c5b1196db524809ac3",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV4.cs",
+      "sha": "a10804e1f6cb007880352de8d472bedeb7610bfc",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraFirstFunctionalSourceV1.cs",
+      "sha": "1244243ad4f2ec12c8481c7ad8b2f364a6359011",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs",
+      "sha": "6ac96ac6ef951c4d69bf7874290c20e2fb6d900c",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandCleanupV2.cs",
+      "sha": "1aab899918713d177c7930278c92ad313d76688e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandReframeV1.cs",
+      "sha": "a457ce35643aa75e33648478ec2149faad832a55",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCliffSubstrateV1.cs",
+      "sha": "0e6a7944b55a709b558bc39e88ada05608265cc2",
+      "matches": [
+        {
+          "line": 131,
+          "text": "                mesh.vertices=verts;"
+        },
+        {
+          "line": 133,
+          "text": "                mesh.triangles=new[]{0,2,1,1,2,3};"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCoherencePruneV1.cs",
+      "sha": "68c8c8b2a07fdfd8e14161a8869804ecb9149c37",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCompactStairMeshV1.cs",
+      "sha": "6a012b533aad2d91760ffa942ee872398cfa4402",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaDistantWorldCompositeV1.cs",
+      "sha": "9f6dc6b52f81452ad0a3c5042d3ad716bc268fc0",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaEnvironmentUpliftV1.cs",
+      "sha": "5c4cb945e553d37aa920403b887c7830d33d6dc8",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaExternalAssetLibrary.cs",
+      "sha": "384ed97ffa3bb3bc8f942831d01ffc64cf2ffc16",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFirstProductionDistrictV1.cs",
+      "sha": "0c1ffafb8aed96e94bff3981b6509de1851cca64",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameArchitectureBatchV1.cs",
+      "sha": "99c80839314f14bb3e7a378d48152ee504df7877",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameArtifactCleanupV1.cs",
+      "sha": "d5d290fbe2e9951e719e53e0eefd215c33530876",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameConvergenceIteration1.cs",
+      "sha": "d940a9404c3a92133313a404e1e7413012c9adb0",
+      "matches": [
+        {
+          "line": 161,
+          "text": "            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;"
+        },
+        {
+          "line": 176,
+          "text": "            mesh.vertices=new[]{"
+        },
+        {
+          "line": 181,
+          "text": "            mesh.triangles=new[]{0,2,1};"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameConvergenceIteration2.cs",
+      "sha": "b5f3b37971559455a412b4e691959e28ecc5fb67",
+      "matches": [
+        {
+          "line": 136,
+          "text": "            mesh.vertices=verts;"
+        },
+        {
+          "line": 138,
+          "text": "            mesh.triangles=tris;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameFinishV1.cs",
+      "sha": "23a4b8705803d547cc6c097ef310465b3dec6fad",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameForegroundEdgePassV1.cs",
+      "sha": "5411a1f5f16dc004742a95d22410c748fb2c1c17",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameHorizonAssetPassV1.cs",
+      "sha": "f7432bf733d76046e48406d1abffe86f2633067e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameRuinFrameV1.cs",
+      "sha": "f200cbe9c91d62c749d8d08641c88e961e7ef145",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameSurfaceLifeBatchV1.cs",
+      "sha": "412b5e4a3da0cfda304a903ef7e0a63c08ea38ad",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameTerrainContinuityV1.cs",
+      "sha": "13e83b2a405311251b48ae60095965248a1a42c2",
+      "matches": [
+        {
+          "line": 118,
+          "text": "            mesh.vertices=vertices;"
+        },
+        {
+          "line": 120,
+          "text": "            mesh.triangles=triangles;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameValueHierarchyV1.cs",
+      "sha": "cb762e33b527565ae554bb0b513da15d73372a5e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameWorldSurroundV1.cs",
+      "sha": "83002e8d469afcbef96b0f48741a5865f997c514",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameWorldSurroundV2.cs",
+      "sha": "07d2402b4017f449e15bceee9b79f56ac2ad35a1",
+      "matches": [
+        {
+          "line": 248,
+          "text": "            mesh.vertices=verts;mesh.uv=uv;mesh.triangles=tris;mesh.RecalculateNormals();mesh.RecalculateBounds();"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFunctionalScreenReadabilityV1.cs",
+      "sha": "49ec40b942241a53dedbec3c15cabaceb56ffa28",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGraneroCuartelSourceUpgradeV1.cs",
+      "sha": "a95813bd6d12cbf5b5a913a4f0cf5cfb96195e6a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs",
+      "sha": "35f69ba61ec2c67b3fb6a7370ba6efb82597fb6a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundMaterialHarmonizationV1.cs",
+      "sha": "836a53cf34ef83e531934b6263138cdda2bc19a5",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaInCitySurfacePassV1.cs",
+      "sha": "8b85703eba32b4f485d2439da55c5cef015ee533",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaJaggedBackdropV1.cs",
+      "sha": "544a52b6d015b14e1cc68cd681c7c60e91c76802",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaKit.cs",
+      "sha": "5c2195b3a6f4606b9263226cb1f47f45dc042be5",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityPlateauV1.cs",
+      "sha": "9862f7215b049d252fa084cd9136ad44f10661ec",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityTerracedMeshV1.cs",
+      "sha": "985662bcab0eaf6fd14b7dea33e43b8fae1a5bcf",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityTerrainV1.cs",
+      "sha": "a350e1e01e3a08704cff00279658552390e51e1a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityUrbanMassingReauthoringV1.cs",
+      "sha": "a3ea2ed675cc93d026edff70eb317e28b03c58ad",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMaterialResidueCleanupV2.cs",
+      "sha": "aa31b79b92ebeec179e095d36396898c444c7085",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMatteBackdropV1.cs",
+      "sha": "080c2b3ce6a1943da341b1b0c889d7954f80d42c",
+      "matches": [
+        {
+          "line": 39,
+          "text": "            mesh.vertices=new[]{"
+        },
+        {
+          "line": 50,
+          "text": "            mesh.triangles=new[]{0,2,1,1,2,3};"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMobileNavigableCityV1.cs",
+      "sha": "131724e0729494006fe3b26a533e522f33352091",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaMonumentalArchFrameV2.cs",
+      "sha": "1d2b0aeb02dacfe747d874ac9a03d607dd65d6a3",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaOpenValleyCompositionV1.cs",
+      "sha": "8cb9f6b836d988d259d5b1e2407c930ad1f469cb",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPairedFunctionalSourceV1.cs",
+      "sha": "5af77bb50ebfc3c3152d52838a9dc3608c5365c4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV1.cs",
+      "sha": "ad57b897b3ba764236f2249cac2e9d032f59bb4b",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV2.cs",
+      "sha": "5c2754f125ed220afb2774526a9f512ef98cd779",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaParcelPresentation.cs",
+      "sha": "bd2519f805312f44d1e504767be5a7c5bec6a0f2",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProductionArtResetV1.cs",
+      "sha": "06afdaaeff54001653735334414daac50cbaefa4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProductionDensityLifeV1.cs",
+      "sha": "ff211bffa2c209127e28062c2786a40fceab519d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProductionFinalLookV1.cs",
+      "sha": "2a246d3db9ffba42920337e2b31d57d7cf31c7c8",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProgressionVisualGuard.cs",
+      "sha": "c38782461b0ffb26152c57733523227b19b8cf3e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaReferenceConvergencePassV2.cs",
+      "sha": "b77e1bcd67abb82ea10cde01ab6664d4cea7b281",
+      "matches": [
+        {
+          "line": 126,
+          "text": "                        var verts=mesh.vertices;"
+        },
+        {
+          "line": 138,
+          "text": "                        mesh.vertices=verts;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaResidualCleanupV1.cs",
+      "sha": "5340e4e7d617cc4c04a19c72e82b6dce04e91137",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaScreenSpaceBreakpointV1.cs",
+      "sha": "ee4270b4872cb16dc87fca94a62f54ba07fa5267",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaSecondarySupportFormReplacementV1.cs",
+      "sha": "f249d600ef10eeddd78388531f615f30130df3f3",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaStairLandingIntegrationV1.cs",
+      "sha": "1e658fd339d5b800a12c404d8f73008467ee16f0",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaStructuralFrameUrbanSupportIntegrationV1.cs",
+      "sha": "bacc9c743c8c84d1e8d814234103ce08ec55333f",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisibleFrameCohesionV1.cs",
+      "sha": "083a53cbc5eea86acda2b24f41bd9bde89d3cfed",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaVisibleFrameRebalanceV1.cs",
+      "sha": "165add6ba34b72a30663b5ca85a648251d9eb8b0",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
+      "sha": "f56c728a106a5a01985f9dd0fb78b551555d07fb",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWorldFrameMountainTerrainV1.cs",
+      "sha": "6d08aea6438409273067fcd3ce4fa1750bc64487",
+      "matches": [
+        {
+          "line": 262,
+          "text": "            mesh.vertices=verts;"
+        },
+        {
+          "line": 264,
+          "text": "            mesh.triangles=tris;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/VisualWorld.cs",
+      "sha": "740275c96c977ac3adf94d2070ef51bd4dcaeed7",
+      "matches": [
+        {
+          "line": 916,
+          "text": "            mesh.vertices=new[]{"
+        },
+        {
+          "line": 920,
+          "text": "            mesh.triangles=new[]{"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/WorldHotspot.cs",
+      "sha": "e0c0315f9e97bda901a1e10adaaee668612029ac",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
+      "sha": "864ad77293b8eba15a09d9921012f33579a8f959",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/WorldResourceKit.cs",
+      "sha": "ef1814f4f1a7cb03fb1a444ca1ffd7f689448d24",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/WorldRouteKit.cs",
+      "sha": "484f49457b165e9bf6b8d2a52fd0e4c5d32c8735",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs",
+      "sha": "3d2807142ddea042e8a86eeab8ee4f0c982838aa",
+      "matches": [
+        {
+          "line": 60,
+          "text": "                var vertices = mesh.vertices;"
+        },
+        {
+          "line": 109,
+          "text": "                var vertices = filter.sharedMesh.vertices;"
+        },
+        {
+          "line": 110,
+          "text": "                var triangles = filter.sharedMesh.triangles;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/BastionTiming.cs",
+      "sha": "2d4998f2aec728737d714582128ea060e037c94d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs",
+      "sha": "be398be6a2720cf85ac864757578944250984b75",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs",
+      "sha": "6381684326589b0ed576b12d0d60d6ec0ebcca6a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BuildingDetailsPanel.cs",
+      "sha": "f773f20035e46e99cbb4b048bae7575c9f6ae951",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BuildingLabel.cs",
+      "sha": "ee18726d6ffb6c92b4887f009df73ed528d07924",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/MissionPanel.cs",
+      "sha": "3e7e9e86210096d37fb3814f5edbbb44a996fe5f",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/ModalWindow.cs",
+      "sha": "f558a9976eeff35ed04f5637cb49b87021ce3a76",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/NotificationIndicator.cs",
+      "sha": "d3a8a8260b37dcd03088c0bd8cfa34562157e4a4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/PrimaryActionButton.cs",
+      "sha": "0d7d06eded93a22928eb42e1133bc24bd7c81081",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs",
+      "sha": "7db1f9edafa4d2173aa032caa840c79eae738211",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/ResourceBar.cs",
+      "sha": "a19365e0ee0e43a247fd70791d42ef4bf30c01df",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalButton.cs",
+      "sha": "8117a6c055fa844f237908b4599275020cf1ce76",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalFrameGraphic.cs",
+      "sha": "cf942a7143e78f4da4e466cad9212fd3d9a783ae",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+      "sha": "4cc86572d3bd585c508954d1534f0216bdee1f0a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHudLayout.cs",
+      "sha": "8e36dc2dd6a6ef4898ebb1ac994b5e30c1963e28",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalIconGraphic.cs",
+      "sha": "2854215f19e42ab73e1034d5b92784f97a376734",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalInputGate.cs",
+      "sha": "870bedd91b7432bd61958027287b7d889d6ff9fd",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalNarrativePresentation.cs",
+      "sha": "0baa100967bb67b3b6a2df9786e339043ba57d79",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalRaycaster.cs",
+      "sha": "09d451e49ebbb8b75db261594276f41e43e3c0c5",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalSafeArea.cs",
+      "sha": "a0e8aafb4e2f4f4cc089a43418438ac822380398",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalScaler.cs",
+      "sha": "eccd4936a1c0b6f55b761d2f0838ab80b4a06fda",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalSolidGraphic.cs",
+      "sha": "51505ff7e5c11e74ecbd2b6deef51ce94c3a1864",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalSpriteGraphic.cs",
+      "sha": "2af8b4054c39cc91860071dc4713c30bc1a94631",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalText.cs",
+      "sha": "9c0eae7cd284957470249515228d11f24f399271",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/UITheme.cs",
+      "sha": "7534ebe6a37a2777dfaa21018215cbf777051383",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core/RoyalContracts.cs",
+      "sha": "ca88f627931ba2ac973e6b6b2d12046229d580b7",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Preview/RoyalPreviewDriver.cs",
+      "sha": "a508566ab1f3bd72bf54b791a642865ddce7bf1e",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/EldoriaV3VisualDirection.cs",
+      "sha": "c64b97825af11d4e8084048a6ac081351f33aca4",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs",
+      "sha": "b8fc0a62be21bacaeb57f34e19f74a680d37be12",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+      "sha": "512d3d20e3c2a44bc662df7879a5f0d5fd9682d2",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
+      "sha": "7364dc7c8b18c184701fbe5d63fcfb46087e6c36",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingCartoucheFinish.cs",
+      "sha": "07e3012a59dd7e071e2724c1e3f92b294aa7ea30",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingEngravingGraphic.cs",
+      "sha": "ec46c04d02e38e5222e6ac561587a5cee74184c0",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs",
+      "sha": "64b3bd8d7660c376a438fc784656e621c330433d",
+      "matches": [
+        {
+          "line": 61,
+          "text": "                    var mesh=new Mesh();source.BakeMesh(mesh);posedMeshes.Add(mesh);"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingScreens.cs",
+      "sha": "77fcb95c5308fefee9f3cd8dd493cf693759e57d",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
+      "sha": "8f669f21e82bc726d1a8c3ce9fa4a2989bd8e202",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
+      "sha": "39b976d42b77f4d7781256c212118fdf1c68cafb",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs",
+      "sha": "eda398363dd32cc124eaea11627177187753fd72",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+      "sha": "6834d9be1cf28e4fb51a8e2fd0933a372f791e79",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EncounterGrounding.cs",
+      "sha": "f47d385c20cfc5a770b43cd3375ca1dc58326a58",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3GuardianReliefGraphic.cs",
+      "sha": "1602bfe79b06e4424fbf1c32cf8124cc51553f41",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3HeraldicBannerGraphic.cs",
+      "sha": "d2fbfb4f7144f8f5f2b3dc8838b8d6ebf15af566",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs",
+      "sha": "e108255fe3d4725a2ed39a9bd3db862803cf297f",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementBackdrop.cs",
+      "sha": "e689070c051a1622708016ff4ffb4ff8525c6af1",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementBackdropGraphic.cs",
+      "sha": "fd301a59a9d2b758c0ed20fe5d9e000913bfba20",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+      "sha": "04ba99062f3b2501b3518842b0b5cb2141da80bd",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ObjectiveParchmentGraphic.cs",
+      "sha": "888ac6ac5eb1ec76122ba6c19883575d692df415",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
+      "sha": "59f531e831d0253ae2049cc4407170f35857d869",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RankingScreen.cs",
+      "sha": "edecda70d2e39e2d301265d347fcc69b0af68317",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs",
+      "sha": "e75661013416aa6d15543bbde0b120911c2829d6",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs",
+      "sha": "3a5ea997d5a94fa01bc752c42d709ef009cd0e80",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutPaperDepth.cs",
+      "sha": "d3d067ef41f7f329a17c499247608b47665789ae",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsParallax.cs",
+      "sha": "518dceecbbb87338cc18c7ed6f172c10b2a96a52",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsPortraitGraphic.cs",
+      "sha": "4207050894349658863e5f3007e767fa32b96771",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsRoadFoundation.cs",
+      "sha": "22ea0a76b5661f7e28a68d7d183e3b8760b1d426",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsTerrainOcclusion.cs",
+      "sha": "14a07be3587c8250fe465963edbe08d069225452",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsWorldLight.cs",
+      "sha": "eb04e8b568ecae0eead5ec78dec9e71f3cc3c7b6",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs",
+      "sha": "51f47126af7e6ceb81a2a7e3e7ebf9912cd9c14a",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MarchArt.cs",
+      "sha": "38474d6847d14e94207798a1d8923ecfcaea29a9",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41ReportArtwork.cs",
+      "sha": "095f5a83c4aaa3ba84b316bdf5f1f25375bb45e0",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs",
+      "sha": "ebb7e60031e08222a3f67b7c0375d53740dc304c",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueArt.cs",
+      "sha": "491e2edecdd22bf8f5b111e6ea3ea7948c7bbcbd",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueParchment.cs",
+      "sha": "53e8f7e49c7c8632a9d1172e70e869324a413e12",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneAuthoredComposition.cs",
+      "sha": "346cb5a597c50d5b5122b90aab6897b18c659be8",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
+      "sha": "39b49ca9867e19c9150e8a5977ad57a59ce58e47",
+      "matches": [
+        {
+          "line": 25,
+          "text": "   contactVertices=terrain.sharedMesh.vertices;contactTriangles=terrain.sharedMesh.triangles;"
+        },
+        {
+          "line": 27,
+          "text": "   contactNormals=terrain.sharedMesh.normals;"
+        },
+        {
+          "line": 66,
+          "text": "    var vertices=floor.sharedMesh.vertices;var normals=floor.sharedMesh.normals;float maximum=0;int corrected=0,normalMatches=0;"
+        },
+        {
+          "line": 80,
+          "text": "    fitted.vertices=vertices;fitted.normals=normals;fitted.RecalculateBounds();floor.sharedMesh=fitted;fittedPigments.Add(fitted);"
+        },
+        {
+          "line": 87,
+          "text": "  public Vector3[] WorldVertices=>terrain.sharedMesh.vertices.Select(terrain.transform.TransformPoint).ToArray();"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
+      "sha": "2daa985a36df3599d49f00239a3774112c5651ee",
+      "matches": [
+        {
+          "line": 281,
+          "text": "   System.IO.File.WriteAllText(file,JsonUtility.ToJson(new AuthoringSnapshot{origin=origin,vertices=positions,uv=mesh.uv,triangles=mesh.triangles,protectedWater=water,context=\"Imported Blender GLB mesh transformed to actual Unity world coordinates. Semantic masks exported by Blender. This is verification, not authorship.\"}));"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
+      "sha": "b57e14996015e7cddb51baba1fc902375753f708",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneDirectedGeography.cs",
+      "sha": "e15ec4a9fce51b468fafba49dafa4a42a7058191",
+      "matches": [
+        {
+          "line": 197,
+          "text": "    var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;var vertices=mesh.vertices;var offsets=mesh.uv2;"
+        },
+        {
+          "line": 212,
+          "text": "   var mesh=new Mesh{name=name,indexFormat=v.Length>65535?IndexFormat.UInt32:IndexFormat.UInt16};mesh.vertices=v;mesh.uv=uv;if(offsets!=null)mesh.uv2=offsets;mesh.triangles=t;mesh.RecalculateNormals();mesh.RecalculateBounds();if(offsets!=null){var b=mesh.bounds;b.Expand(40);mesh.bounds=b;}meshes.Add(mesh);"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneGeographicDressing.cs",
+      "sha": "956eef315879d8cd6923a0816aa7a825dd1d7574",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneHybridForestImpostors.cs",
+      "sha": "ae93c0096a5d4a2faef3260cc7659d92b6daac50",
+      "matches": [
+        {
+          "line": 254,
+          "text": "                result.triangles+=triangles.Count/3;"
+        },
+        {
+          "line": 266,
+          "text": "                      \" meshes=\"+result.meshes.Count+\" triangles=\"+result.triangles+"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneHybridTerrainArt.cs",
+      "sha": "523f4eca4990821fbe4e916ae816be37c78b90e3",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneLookDevelopment.cs",
+      "sha": "7e311b5a1f0bfeac80c5127c762a079fc997aa01",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
+      "sha": "fdbbd41366232ca5e226de2a45ccf7e0d16c3712",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneReferenceNodes.cs",
+      "sha": "6409840adaaf02dbeb5da91f7c030828f0f7aed3",
+      "matches": [
+        {
+          "line": 125,
+          "text": "     var mesh=current[i].GetComponent<MeshFilter>().sharedMesh;var foot=mesh.vertices[0];"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
+      "sha": "ffb73013373d033e8c898e62563953b93134934a",
+      "matches": [
+        {
+          "line": 29,
+          "text": "                if(part.sharedMesh)foreach(var vertex in part.sharedMesh.vertices){"
+        },
+        {
+          "line": 34,
+          "text": "                if(part.sharedMesh)foreach(var vertex in part.sharedMesh.vertices){"
+        },
+        {
+          "line": 68,
+          "text": "                var vertices=source.vertices;"
+        },
+        {
+          "line": 77,
+          "text": "                    var fitted=floor.vertices;"
+        },
+        {
+          "line": 90,
+          "text": "                    floor.vertices=fitted;floor.RecalculateBounds();floor.RecalculateNormals();"
+        },
+        {
+          "line": 122,
+          "text": "                    var moved=copy.vertices;"
+        },
+        {
+          "line": 136,
+          "text": "                    copy.vertices=moved;"
+        },
+        {
+          "line": 185,
+          "text": "                mesh.vertices=new[]{Vector3.zero,Vector3.zero,Vector3.zero,Vector3.zero};mesh.uv=new[]{new Vector2(u,0),new Vector2(u+.5f,0),new Vector2(u+.5f,1),new Vector2(u,1)};"
+        },
+        {
+          "line": 186,
+          "text": "                mesh.uv2=new[]{new Vector2(-16,-1),new Vector2(16,-1),new Vector2(16,25),new Vector2(-16,25)};mesh.triangles=new[]{0,1,2,0,2,3};mesh.bounds=new Bounds(Vector3.up*12,Vector3.one*40);impostorMeshes[tile]=mesh;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
+      "sha": "6f28c164c42cfebe4337bf4ec02acca30373c42c",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneRiberaPilot.cs",
+      "sha": "bdd1fa1a64ecf31cb2ab38235b2b40b7bd01f61e",
+      "matches": [
+        {
+          "line": 113,
+          "text": "     var mesh=new Mesh();mesh.vertices=new[]{new Vector3(-extent,-extent,0),new Vector3(extent,-extent,0),new Vector3(extent,extent,0),new Vector3(-extent,extent,0)};mesh.triangles=new[]{0,2,1,0,3,2};"
+        },
+        {
+          "line": 195,
+          "text": "     var sourceFoot=donor.transform.TransformPoint(mf.sharedMesh.vertices[0]);"
+        },
+        {
+          "line": 202,
+          "text": "     var mesh=UnityEngine.Object.Instantiate(mf.sharedMesh);ownedMarkerMeshes.Add(mesh);var vertices=mesh.vertices;float firstGround=0,maxError=0;int anchors=0;"
+        },
+        {
+          "line": 210,
+          "text": "     mesh.vertices=vertices;proxy.AddComponent<MeshFilter>().sharedMesh=mesh;proxy.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;"
+        },
+        {
+          "line": 211,
+          "text": "     float measuredFoot=proxy.transform.TransformPoint(mesh.vertices[0]).y;float error=measuredFoot-(firstGround+.08f);"
+        },
+        {
+          "line": 271,
+          "text": "   stats.submittedMeshTriangles=meshes.Sum(m=>m.sharedMesh.triangles.Length/3);stats.editorAllocatedBytes=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong();"
+        },
+        {
+          "line": 282,
+          "text": "        visibleRenderers=rendered.Length,visibleTriangles=rendered.Sum(r=>{var f=r.GetComponent<MeshFilter>();return f&&f.sharedMesh?f.sharedMesh.triangles.Length/3:0;})});"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneSectorCapacity.cs",
+      "sha": "3e388d5044bb4f76cf7555c53719903a591da203",
+      "matches": [
+        {
+          "line": 77,
+          "text": "    float MarkerRadius(string prefix){var renderer=world.GetComponentsInChildren<MeshRenderer>(true).First(r=>r.name.StartsWith(prefix,StringComparison.Ordinal));var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;var foot=renderer.transform.TransformPoint(mesh.vertices[0]);return mesh.vertices.Max(v=>{var p=renderer.transform.TransformPoint(v)-foot;return new Vector2(p.x,p.z).magnitude;})+mesh.uv2.Max(v=>Mathf.Abs(v.x))+.5f;}"
+        },
+        {
+          "line": 78,
+          "text": "    report.woodRadius=MarkerRadius(\"Reference existing wood grove\");report.stoneRadius=MarkerRadius(\"Reference existing quarry\");report.enemyRadius=Mathf.Max(enemyMesh.vertices.Max(v=>new Vector2(v.x,v.z).magnitude),enemyFarMesh.vertices.Max(v=>new Vector2(v.x,v.z).magnitude))+.5f;"
+        },
+        {
+          "line": 149,
+          "text": "      var mf=donor.GetComponent<MeshFilter>();var foot=donor.transform.TransformPoint(mf.sharedMesh.vertices[0]);"
+        },
+        {
+          "line": 151,
+          "text": "      go.transform.position+=sites[i.site].position+Vector3.up*.08f-go.transform.TransformPoint(mf.sharedMesh.vertices[0]);"
+        },
+        {
+          "line": 153,
+          "text": "      var vertices=markerMesh.vertices;"
+        },
+        {
+          "line": 160,
+          "text": "      markerMesh.vertices=vertices;go.AddComponent<MeshFilter>().sharedMesh=markerMesh;go.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;"
+        },
+        {
+          "line": 163,
+          "text": "      // BakeMesh on an arbitrary renderer included a flattened non-model donor in the rejected trial."
+        },
+        {
+          "line": 166,
+          "text": "      foreach(var vertex in enemyMesh.vertices.Where(v=>v.y<enemyMesh.bounds.min.y+.25f)){var foot=go.transform.TransformPoint(vertex);if(!Sample(foot.x-home.x,foot.z-home.z,out var ground))throw new InvalidOperationException(\"Enemy foot outside terrain\");required=Mathf.Max(required,ground.point.y+.08f-foot.y);}"
+        },
+        {
+          "line": 168,
+          "text": "      float contact=float.PositiveInfinity;foreach(var vertex in enemyMesh.vertices.Where(v=>v.y<enemyMesh.bounds.min.y+.25f)){var foot=go.transform.TransformPoint(vertex);Sample(foot.x-home.x,foot.z-home.z,out var ground);contact=Mathf.Min(contact,foot.y-ground.point.y-.08f);}report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(contact));"
+        },
+        {
+          "line": 171,
+          "text": "    report.dynamicNearTriangles=displays.Sum(go=>go.GetComponent<MeshFilter>()?go.GetComponent<MeshFilter>().sharedMesh.triangles.Length/3:0);report.dynamicFarTriangles=report.dynamicNearTriangles-enemyDisplays.Count*(enemyMesh.triangles.Length-enemyFarMesh.triangles.Length)/3;"
+        },
+        {
+          "line": 182,
+          "text": "      float lift=float.NegativeInfinity;foreach(var v in mesh.vertices.Where(v=>v.y<mesh.bounds.min.y+.25f)){var p=enemy.transform.TransformPoint(v);if(!Sample(p.x-home.x,p.z-home.z,out var ground))throw new InvalidOperationException(\"LOD foot outside terrain\");lift=Mathf.Max(lift,ground.point.y+.08f-p.y);}enemy.transform.position+=Vector3.up*lift;"
+        },
+        {
+          "line": 183,
+          "text": "      float contact=float.PositiveInfinity;foreach(var v in mesh.vertices.Where(v=>v.y<mesh.bounds.min.y+.25f)){var p=enemy.transform.TransformPoint(v);Sample(p.x-home.x,p.z-home.z,out var ground);contact=Mathf.Min(contact,p.y-ground.point.y-.08f);}report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(contact));"
+        },
+        {
+          "line": 211,
+          "text": "     var skin=renderer as SkinnedMeshRenderer;var source=skin?skin.sharedMesh:renderer.GetComponent<MeshFilter>().sharedMesh;var clone=UnityEngine.Object.Instantiate(source);pieces.Add(clone);var points=source.vertices;"
+        },
+        {
+          "line": 214,
+          "text": "     clone.vertices=points;vertices.AddRange(points);"
+        },
+        {
+          "line": 218,
+          "text": "    var result=new Mesh{indexFormat=UnityEngine.Rendering.IndexFormat.UInt32};result.CombineMeshes(combines.ToArray(),false,true);result.vertices=result.vertices.Select(v=>v-foot).ToArray();result.RecalculateBounds();result.RecalculateNormals();materials=mats.ToArray();return result;"
+        }
+      ]
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs",
+      "sha": "e0d76467119be607fc1672a7793976aae8f4b575",
+      "matches": []
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs",
+      "sha": "7859f60566187ed0c1d35c6f78271914b978000e",
+      "matches": []
+    }
+  ],
+  "limitations": "C# textual read/write inventory of runtime paths under Assets/Eldoria, excludes Editor/Tests. Imported native/package consumers not exhaustively proven. No blanket mesh CPU discard authorized by this inventory."
+}

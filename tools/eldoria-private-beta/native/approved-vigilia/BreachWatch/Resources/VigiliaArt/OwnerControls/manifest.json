@@ -1,0 +1,64 @@
+{
+  "origin": "User-selected owner reference image, not an old Eldoria HUD",
+  "usage": "three independent live Unity UI pieces, not a fake screenshot",
+  "art_approved": false,
+  "controls": [
+    {
+      "control": "profile",
+      "name": "profile_bar",
+      "source_sha256": "19f4e3be74818f7c773521e4a0cc490570b6d6313ce278ca6c355a5ce3fbbc8e",
+      "png_sha256": "8bb5812d653d165b5682689bc7286870d8acc4d369973c210bc8524207c3d299",
+      "dimensions": [
+        257,
+        66
+      ],
+      "border": [
+        15,
+        10,
+        32,
+        11
+      ],
+      "guid": "a12e48665c36425f8fe3baa01e8c3967",
+      "origin": "owner-provided 864x1536 Vigilia concept, independently extracted text-free detail",
+      "no_baked_gameplay_text": true
+    },
+    {
+      "control": "resource",
+      "name": "resource_capsule",
+      "source_sha256": "67807c607d61717493af032b5333c9af3c95fa2354a19eaeb8748f4266535133",
+      "png_sha256": "a7c9c80d265230a4f754aad102df96a11f1b90cacbcf7d78b49a9875f11a70c0",
+      "dimensions": [
+        135,
+        52
+      ],
+      "border": [
+        20,
+        9,
+        20,
+        9
+      ],
+      "guid": "ccb5b1b76e774a508f0cd3abf77312a2",
+      "origin": "owner-provided 864x1536 Vigilia concept, independently extracted text-free detail",
+      "no_baked_gameplay_text": true
+    },
+    {
+      "control": "action",
+      "name": "upgrade_button",
+      "source_sha256": "099c9c4684d00183367899c5c0ebccc85f036f6d37004a1f787dc551af201a58",
+      "png_sha256": "45812c616ff7ce1b59af48b8e877bf661ac04134933021fa47c8030f0fad1109",
+      "dimensions": [
+        246,
+        60
+      ],
+      "border": [
+        78,
+        11,
+        22,
+        9
+      ],
+      "guid": "9c3913dbbcb043bd8ef494a3ef7f443a",
+      "origin": "owner-provided 864x1536 Vigilia concept, independently extracted text-free detail",
+      "no_baked_gameplay_text": true
+    }
+  ]
+}

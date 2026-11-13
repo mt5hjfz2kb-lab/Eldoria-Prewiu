@@ -1,0 +1,11 @@
+{
+  "revision": "native325-mobile-candidate1",
+  "bundle_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
+  "public_first_last_data_parts_verified": [
+    "payload-decoded/mobile-0.gz",
+    "payload-decoded/mobile-27.gz"
+  ],
+  "decoded_data_bytes": 463394398,
+  "runtime_qa_run": 42418416629,
+  "physical_iphone_verified": false
+}

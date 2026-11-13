@@ -1,0 +1,472 @@
+name: Eldoria PR179 real lazy-world native PlayMode (owner QA only)
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - 'tools/eldoria-private-beta/native/lazy-world-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+concurrency:
+  group: eldoria-pr179-real-lazy-world-native-single-editor
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/lazy-world-request.json
+            /tools/eldoria-private-beta/native/ux/
+            /tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1
+            /tools/eldoria-private-beta/native/recover_isolated.ps1
+            /tools/eldoria-private-beta/native/existing-input-audit.json
+            /tools/eldoria-private-beta/native/run_structural.ps1
+            /tools/eldoria-private-beta/native/run_warm_structural.ps1
+            /tools/eldoria-private-beta/native/preserve_native_materials.ps1
+            /tools/eldoria-private-beta/native/test_material_restore.py
+            /tools/eldoria-private-beta/native/recover_route_intermediate.ps1
+            /tools/eldoria-private-beta/native/test_route_restore.py
+            /tools/eldoria-private-beta/native/TerrainRoutesWithoutBufferReuse.cs.txt
+            /tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs
+            /Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/Eldoria.BetaMemory.Tests.PlayMode.asmdef
+          persist-credentials: false
+      - name: Verify pinned lazy-world source and live CAS without touching Windows
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,subprocess,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY'];token=os.environ['GH_TOKEN']
+          def read_api(path):
+              url='https://api.github.com/repos/'+repo+'/'+path
+              req=urllib.request.Request(url,headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req,timeout=25) as resp:return json.load(resp)
+          request=json.load(open('candidate/tools/eldoria-private-beta/native/lazy-world-request.json'))
+          assert request['schema']==1
+          assert request['canonical_pr']==179 and request['workstream_id']=='eldoria-private-beta-i-v-20261107'
+          assert request['owner']=='chatgpt-central-art-execution-20261111'
+          assert request['external_testers_enabled'] is False and request['publish_allowed'] is False
+          for path,expected in request['source_blobs'].items():
+              found=subprocess.check_output(['git','-C','candidate','rev-parse','HEAD:'+path],text=True).strip()
+              assert found==expected,(path,found,expected)
+          live=read_api('contents/pipeline/active-workstreams.json?ref=main')
+          encoded=live.get('content')
+          if live.get('encoding')!='base64' or not encoded:
+              blob_sha=live.get('sha','')
+              if len(blob_sha)!=40 or any(c not in '0123456789abcdef' for c in blob_sha):
+                  raise SystemExit('Large registry identity is invalid; refuse Windows')
+              blob=read_api('git/blobs/'+blob_sha)
+              if blob.get('sha')!=blob_sha or blob.get('encoding')!='base64' or not blob.get('content'):
+                  raise SystemExit('Large registry immutable blob mismatch')
+              encoded=blob['content']
+          registry=json.loads(base64.b64decode(encoded))
+          matches=[x for x in registry['active'] if x['id']==request['workstream_id']]
+          assert len(matches)==1
+          owner=matches[0]
+          holders=[x for x in registry['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          pr=read_api('pulls/179')
+          head_ok=pr['head']['sha']==os.environ['GITHUB_SHA']
+          allowed=(request['state']=='CLAIMED_FOR_NATIVE'
+                   and head_ok and owner['owner']==request['owner']
+                   and owner['ownership_revision']==request['ownership_revision']
+                   and owner['ownership_state']=='claimed' and owner['write_scope_released'] is False
+                   and len(holders)==1 and holders[0]['id']==owner['id']
+                   and holders[0]['owner']==owner['owner']
+                   and holders[0]['ownership_revision']==request['ownership_revision'])
+          with open(os.environ['GITHUB_OUTPUT'],'a') as fd:fd.write('authorized='+str(allowed).lower()+'\n')
+          print('LAZY_NATIVE_SOURCE_BLOBS_PINNED; WINDOWS_AUTHORIZED='+str(allowed))
+          if not allowed:
+              print('SAFE_SKIP: no exclusive PR179 CAS lease or stale PR head; no native Unity invoked')
+          PY
+      - name: Verify guarded material recovery with real Git and PowerShell, no Unity
+        shell: bash
+        run: |
+          python3 candidate/tools/eldoria-private-beta/native/test_material_restore.py
+          python3 candidate/tools/eldoria-private-beta/native/test_route_restore.py
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 240
+    steps:
+      - name: Resolve installed Git before checkout; refuse archive fallback
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'No installed Git found; refuse large archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          $version=(& git --version)
+          if($LASTEXITCODE -or $version -notmatch '(\d+\.\d+\.\d+)'){
+            throw 'Installed Git version could not be verified'
+          }
+          if([Version]$Matches[1] -lt [Version]'2.25.0'){
+            throw 'Installed Git is too old for reliable sparse checkout'
+          }
+          Write-Host $version
+      # actions/checkout's 'filter' input disables its 'sparse-checkout'
+      # input; removing the filter downloads the ~16GB repository's blobs.
+      # Configure both directly in Git BEFORE checking out any files.
+      - name: Fetch pinned PR179 Git commit using sparse partial-clone, fail closed
+        shell: powershell
+        timeout-minutes: 15
+        run: |
+          $ErrorActionPreference='Stop'
+          if([string]::IsNullOrWhiteSpace($env:GITHUB_WORKSPACE) -or
+             $env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$' -or
+             $env:GITHUB_REPOSITORY -ne 'mt5hjfz2kb-lab/Eldoria-Prewiu'){
+            throw 'Missing pinned GitHub source identity'
+          }
+          $src=Join-Path $env:GITHUB_WORKSPACE 'pr179-source'
+          # Only this PR's isolated checkout directory, never the warm Unity project.
+          if(Test-Path -LiteralPath $src){
+            $entry=Get-Item -LiteralPath $src -Force
+            if($entry.Attributes -band [IO.FileAttributes]::ReparsePoint){
+              throw 'PR179 checkout path is a link; refuse destructive cleanup'
+            }
+            Remove-Item -LiteralPath $src -Recurse -Force
+          }
+          & git init -q $src
+          if($LASTEXITCODE){throw 'Git init failed'}
+          & git -C $src remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'Git remote failed'}
+          # Configure sparse patterns FIRST. Fetch blob:none second. Checkout
+          # only after BOTH are active; Git fetches missing selected blobs on demand.
+          $patterns=@(
+            '/tools/eldoria-private-beta/native/'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs'
+            '/Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'
+            '/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+            '/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
+            '/Unity/Assets/Eldoria/BetaMemoryProbe.meta'
+            '/Unity/Assets/Eldoria/BetaMemoryProbe/'
+          )
+          & git -C $src sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Cannot configure strict PR179 sparse checkout'}
+          & git -C $src fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned partial fetch failed; no REST archive fallback'}
+          & git -C $src checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Sparse checkout failed; refuse warm-project edits'}
+          $actual=(& git -C $src rev-parse HEAD).Trim()
+          if($LASTEXITCODE -or $actual -ne $env:GITHUB_SHA){
+            throw "Pinned PR179 checkout mismatch; expected $env:GITHUB_SHA got $actual"
+          }
+          if(-not(Test-Path -LiteralPath (Join-Path $src 'tools/eldoria-private-beta/native/lazy-world-request.json'))){
+            throw 'Pinned source manifest absent after sparse partial checkout'
+          }
+          Write-Host "PR179_PINNED_SPARSE_PARTIAL_FETCH=$actual; NO_ARCHIVE_FALLBACK; NO_UNITY_TOUCHED"
+      - name: Recheck live owner-only Windows lease and no shared Unity processes
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY"
+          $response=Invoke-RestMethod -Uri "$url/contents/pipeline/active-workstreams.json?ref=main" -Headers $headers
+          $encoded=[string]$response.content
+          if($response.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($encoded)){
+            if([string]$response.sha -notmatch '^[a-f0-9]{40}$'){
+              throw 'Large registry identity is invalid; refuse Windows'
+            }
+            $blob=Invoke-RestMethod -Uri "$url/git/blobs/$($response.sha)" -Headers $headers
+            if($blob.sha -ne $response.sha -or $blob.encoding -ne 'base64' -or
+               [string]::IsNullOrWhiteSpace([string]$blob.content)){
+              throw 'Large registry immutable blob mismatch'
+            }
+            $encoded=[string]$blob.content
+          }
+          $raw=[Convert]::FromBase64String([regex]::Replace($encoded,'\s',''))
+          $registry=[Text.Encoding]::UTF8.GetString($raw)|ConvertFrom-Json
+          $req=Get-Content 'pr179-source/tools/eldoria-private-beta/native/lazy-world-request.json' -Raw|ConvertFrom-Json
+          $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($req.state -ne 'CLAIMED_FOR_NATIVE' -or $holders.Count -ne 1 -or
+             $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or
+             $holders[0].owner -ne $req.owner -or
+             $holders[0].ownership_revision -ne [int]$req.ownership_revision){
+             throw 'Fresh live CAS Windows lease is not exclusively PR179; stop before Unity'
+          }
+          $pr=Invoke-RestMethod -Uri "$url/pulls/179" -Headers $headers
+          if($pr.head.sha -ne $env:GITHUB_SHA){throw 'PR head changed after preflight; cannot run stale native test'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared Unity/Blender process already active'}
+          # Exact BETA_SOURCE is recovered and hash-audited in the next owned step.
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH -PathType Leaf)){throw 'Unity editor unavailable'}
+          Write-Host 'PR179_LAZY_WORLD_EXCLUSIVE_WINDOWS_LEASE_VERIFIED'
+      - name: Recover only the prior audited warm source under PR179 exclusive lease
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $recover="pr179-hot-recovery-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & 'pr179-source/tools/eldoria-private-beta/native/recover_isolated.ps1' -Tools 'pr179-source' -Evidence $recover
+          if(-not(Test-Path (Join-Path $recover 'existing-input-audit.json') -PathType Leaf)){
+            throw 'No recovered immutable hot-input audit; refuse native PlayMode'
+          }
+      - name: Real scene Unity PlayMode and exact warm-source restoration
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          & 'pr179-source/tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1' -Source $env:BETA_SOURCE -OverlaySource 'pr179-source' -Evidence "pr179-lazy-native-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -ExpectedHead $env:GITHUB_SHA -InputAuditPath $env:BETA_INPUT_AUDIT
+      - name: Real full-world terrain/collisions, Bastion I-V and isolated WebGL compilation
+        shell: powershell
+        env:
+          ELDORIA_P0_LAZY_WORLD_BUILD: '1'
+          ELDORIA_P0_CITY_ONLY_BUILD: '0'
+        run: |
+          $ErrorActionPreference='Stop'
+          $ev="pr179-lazy-full-native-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $web="pr179-lazy-full-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & 'pr179-source/tools/eldoria-private-beta/native/run_warm_structural.ps1' -Source $env:BETA_SOURCE -Tools 'pr179-source' -Evidence $ev -WebOutput $web -InputAuditPath $env:BETA_INPUT_AUDIT
+          if(-not(Test-Path (Join-Path $ev 'complete.txt') -PathType Leaf)){throw 'Native full world journey incomplete'}
+          $restored=Get-Content (Join-Path $ev 'warm-cache-restoration.json') -Raw|ConvertFrom-Json
+          if(-not $restored.restored){throw 'Unity hot project was not restored after full build'}
+          $sources=Get-Content (Join-Path $ev 'source-overlay.json') -Raw|ConvertFrom-Json
+          $hosts=@($sources.files|Where-Object {$_.mode -eq 'FULL_REGION1_LAZY_OPTIN_OVER_EXACT_FROZEN_BETA10_UX19'})
+          if($hosts.Count -ne 1){throw 'Native world build did not use the reviewed lazy host'}
+          $journey=Get-Content (Join-Path $ev 'native-journey/integration-result.json') -Raw|ConvertFrom-Json
+          if($journey.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Bastion I-V journey certificate missing'}
+          $compiled=Get-Content (Join-Path $ev 'web-build.json') -Raw|ConvertFrom-Json
+          if($compiled.status -ne 'WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED'){
+            throw 'Real full world WebGL build certificate missing'
+          }
+          if(-not(Test-Path (Join-Path $web 'index.html') -PathType Leaf)){throw 'Isolated WebGL site absent'}
+          Write-Host 'PR179_REAL_LAZY_WORLD_NATIVE_I_V_AND_WEBGL_COMPILED_RESTORED; NOT_IPHONE_PASS'
+      - name: Preserve exact native world, Bastion I-V and WebGL evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-world-i-v-native-evidence
+          path: pr179-lazy-full-native-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Preserve only isolated WebGL owner candidate for Mac A/B
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-world-webgl-owner-only-not-iphone-certified
+          path: pr179-lazy-full-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 2
+      - name: Preserve native PlayMode logs and verified restoration, never distribute a build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-lazy-world-unity-playmode-owner-evidence
+          path: |
+            pr179-lazy-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
+            pr179-hot-recovery-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: warn
+          retention-days: 7
+
+  # Only after the ONE authorised Windows run passed actual Unity PlayMode,
+  # real Region 1, native I-V and byte-exact project restoration.
+  package-owner:
+    needs: native
+    if: needs.native.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-full-lazy-world-i-v-native-evidence
+          path: native-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-lazy-world-unity-playmode-owner-evidence
+          path: playmode-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-full-lazy-world-webgl-owner-only-not-iphone-certified
+          path: compiled-webgl
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42999782863
+          name: beta14-city-only-candidate-site
+          github-token: ${{ github.token }}
+          path: immutable-beta14-owner-shell
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Package only exact current Unity build with frozen owner-confirmed beta14 shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/eldoria-private-beta/prepare_lazy_owner_site.py \
+            --native-artifact native-evidence \
+            --playmode-artifact playmode-evidence \
+            --webgl-artifact compiled-webgl \
+            --beta14-shell-artifact immutable-beta14-owner-shell \
+            --output owner-only-site --work isolated-packaging-source \
+            --source-head "$GITHUB_SHA" --native-run "$GITHUB_RUN_ID" \
+            --revision native325-mobile15-full-lazy-owner-qa
+          node tools/delivery/test-exact-decoded-transport.mjs owner-only-site
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('owner-only-site')
+          identity=json.loads((root/'release-identity.json').read_text())
+          proof=json.loads((root/'owner-only-lazy-proof.json').read_text())
+          assert identity['source_sha']==proof['source_head']
+          assert identity['candidate_bundle_sha256']==proof['unchanged_original_bundle_sha256']
+          assert identity['texture_payload_modified'] is False
+          assert identity['release_for_external_testers'] is False
+          assert identity['physical_iphone_30min_verified'] is False
+          assert identity['physical_android_30min_verified'] is False
+          assert identity['mac_same_binary_ab_verified'] is False
+          assert identity['owner_only'] is True
+          assert proof['same_compiled_binary_for_both_mac_ab_arms'] is True
+          print('PR179_VERIFIED_FULL_WORLD_OWNER_SITE_PACKAGED_UNPUBLISHED_AND_UNTESTED_ON_PHYSICAL_PHONE')
+          PY
+      - name: Retain provenance and exact identity, not a tester invitation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-owner-packaging-proof-not-mobile-pass
+          path: |
+            owner-only-site/release-identity.json
+            owner-only-site/owner-only-lazy-proof.json
+            isolated-packaging-source/original/extraction.json
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Retain immutable owner-only same-bundle Mac A/B source, never deploy Pages
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-owner-only-packaged-site-not-iphone-pass
+          path: owner-only-site/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 3
+
+  # Both arms use ONE native bundle and ONE shell, differing solely in URL flag.
+  # This is real desktop Apple GPU/WebKit evidence, never a physical iPhone pass.
+  mac-same-bundle-ab:
+    needs: package-owner
+    if: needs.package-owner.result == 'success'
+    runs-on: macos-15
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr179-full-lazy-owner-only-packaged-site-not-iphone-pass
+          path: qa-site/same-bundle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exercise eager versus deferred authentic Unity game in desktop Apple GPU WebKit
+        shell: bash
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_REVISION: native325-mobile15-full-lazy-owner-qa
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+        run: |
+          set -uo pipefail
+          mkdir -p evidence
+          npm install --prefix "$RUNNER_TEMP/eldoria-owner-webkit" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-owner-webkit/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-owner-webkit/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >evidence/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in {1..40}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18765/same-bundle/release-identity.json; then ready=1;break;fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then echo "Owner-only local WebGL server not ready";exit 1;fi
+          failed=0
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1' \
+            QA_OUT=evidence/eager node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1' \
+            QA_LAZY_WORLD=1 QA_OUT=evidence/deferred node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          if [ "$failed" != 0 ]; then echo 'MAC_DESKTOP_WEBKIT_AB_FAILED_NOT_IPHONE';exit 1;fi
+          python3 - <<'PY'
+          import json,os,pathlib
+          evidence=pathlib.Path('evidence')
+          eager=json.loads((evidence/'eager/report.json').read_text())
+          lazy=json.loads((evidence/'deferred/report.json').read_text())
+          identity=json.loads(pathlib.Path('qa-site/same-bundle/release-identity.json').read_text())
+          assert identity['source_sha']==os.environ['GITHUB_SHA']
+          assert eager['passed'] is True and lazy['passed'] is True
+          assert eager.get('eagerWorldInstalledVerified') is True
+          assert lazy.get('lazyWorldDeferredToFirstEntryVerified') is True
+          assert lazy.get('realWorldEntryVerified') is False
+          assert eager['identity']['source_sha']==lazy['identity']['source_sha']==identity['source_sha']
+          assert eager['identity']['revision']==lazy['identity']['revision']==identity['revision']
+          assert eager['identity']['candidate_bundle_sha256']==lazy['identity']['candidate_bundle_sha256']
+          assert eager['entry']['reloaded'] is True and lazy['entry']['reloaded'] is True
+          assert not eager['errors'] and not lazy['errors']
+          def samples(report):
+            items=report.get('samples',[])+report.get('entrySamples',[])
+            rss=[p['rssKiB'] for s in items for p in s.get('processes',[])
+                 if 'WebContent' in p.get('name','') and isinstance(p.get('rssKiB'),(int,float))]
+            wasm=[s.get('wasmCapacityBytes') for s in items
+                  if isinstance(s.get('wasmCapacityBytes'),(int,float))]
+            assert len(items)>=90 and rss and wasm
+            return dict(samples=len(items),webcontent_peak_rss_kib=max(rss),
+                        wasm_peak_capacity_bytes=max(wasm),wasm_final_capacity_bytes=wasm[-1])
+          a,b=samples(eager),samples(lazy)
+          ratio=lambda a,b:round(100*(a-b)/a,2) if a else None
+          result={'scope':'real desktop macOS-15 Apple GPU Playwright WebKit, NOT physical iPhone',
+                  'source_head':identity['source_sha'],
+                  'revision':identity['revision'],'same_binary_verified':True,
+                  'only_browser_url_flag_different':True,
+                  'control':'eager original Region1 startup',
+                  'candidate':'lazy city startup; real world entrance NOT verified by Mac',
+                  'mac_eager':a,'mac_deferred':b,
+                  'rss_peak_reduction_percent':ratio(a['webcontent_peak_rss_kib'],b['webcontent_peak_rss_kib']),
+                  'wasm_peak_reduction_percent':ratio(a['wasm_peak_capacity_bytes'],b['wasm_peak_capacity_bytes']),
+                  'physical_iphone_30min_verified':False,
+                  'physical_android_30min_verified':False,
+                  'testers_authorized':False}
+          (evidence/'mac-same-bundle-ab.json').write_text(json.dumps(result,indent=2))
+          print('MAC_FULL_LAZY_SAME_BINARY_AB_REAL_WEBKIT_PASS_NOT_MOBILE',json.dumps(result))
+          PY
+      - name: Preserve real Mac WebKit process samples, logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-full-lazy-mac-same-bundle-ab-not-iphone-certificate
+          path: evidence/
+          if-no-files-found: warn
+          retention-days: 7
+
+

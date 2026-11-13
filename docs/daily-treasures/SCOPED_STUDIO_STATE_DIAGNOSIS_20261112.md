@@ -1,0 +1,7 @@
+Scoped studio state restoration follow-up, 2026-11-12
+
+Run43176908441 passed the corrected actual projected-masonry texture check and one original perimeter proof, then failed the exact environment-restoration assertion. No complete20-frame, state restoration or artistic pass is claimed. Artifact13924957588 and all50 original input files remain preserved.
+
+The fixture previously compared the studio's returned ambient state with a signature taken immediately after opening the scene, before the first real URP render could initialize its ambient probe. It now records the initialized actual-city baseline after the first real photograph and compares each studio call with the state immediately before that same call. Exact field equality and layer/light restoration remain required; the final initialized source-city signature is still checked. It also preserves the original full GPU texture and names every differing fog/ambient/SH field when restoration fails, rather than reporting an undifferentiated message. This allows a true restoration defect to be diagnosed without another blind lighting change. The runtime capture and all lighting/material restoration code remain unchanged.
+
+This causal hypothesis is implemented, not yet natively verified. The native workflow also recognizes the unified central owner explicitly authorized to coordinate all four unchanged workstreams. No art/main merge or player release is included.

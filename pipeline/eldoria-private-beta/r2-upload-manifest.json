@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "release": "native325-fb1292b3d9ce",
+  "gameplay_source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
+  "original_web_zip_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
+  "r2_prefix": "releases/native325-fb1292b3d9ce/",
+  "storage_class": "Standard",
+  "access": "private-r2-only",
+  "deployment_status": "NOT_DEPLOYED",
+  "total_bytes": 490317080,
+  "files": [
+    {
+      "path": "Build/ValoriaWebPlaytest.framework.js.unityweb",
+      "bytes": 85478,
+      "sha256": "ba3c85664b611e8e049ec1ed865d780bc9132a2954752b81eaf08b254f72a888",
+      "content_type": "application/javascript",
+      "content_encoding": "gzip"
+    },
+    {
+      "path": "Build/ValoriaWebPlaytest.loader.js",
+      "bytes": 47867,
+      "sha256": "b9007e289fdc397d00a395cbd358334482ce2f585989468b7bfd896499dd1a89",
+      "content_type": "application/javascript",
+      "content_encoding": null
+    },
+    {
+      "path": "Build/ValoriaWebPlaytest.wasm.unityweb",
+      "bytes": 11067222,
+      "sha256": "9502bf8ea483832e8965819c2239920bcc8568112760331125bda2d191e66cad",
+      "content_type": "application/wasm",
+      "content_encoding": "gzip"
+    },
+    {
+      "path": "StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb",
+      "bytes": 10140372,
+      "sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+      "content_type": "model/gltf-binary",
+      "content_encoding": null
+    },
+    {
+      "path": "TemplateData/webmemd-icon.png",
+      "bytes": 1670,
+      "sha256": "c56f5494640cedda273aad38d58e6ab9da625d5b3f4d875c0ff92c6192a569c2",
+      "content_type": "image/png",
+      "content_encoding": null
+    },
+    {
+      "path": "build-manifest.json",
+      "bytes": 2718,
+      "sha256": "2d5399619c931b3d39d1f5dd52ba5c3f46c6678b8745f07da32add17d6f8034c",
+      "content_type": "application/json",
+      "content_encoding": null
+    },
+    {
+      "path": "city.png",
+      "bytes": 2776267,
+      "sha256": "0a9b861a266f87dc8d8d44541f22d8ed5ea8e386a8b7ad4eec8955839b814768",
+      "content_type": "image/png",
+      "content_encoding": null
+    },
+    {
+      "path": "index.html",
+      "bytes": 1874,
+      "sha256": "6d7fd199051ddd25019e3ac12659a505711550496dc28b1f806f74384b634f35",
+      "content_type": "text/html; charset=utf-8",
+      "content_encoding": null
+    },
+    {
+      "path": "payload-decoded/data-0.bin.br",
+      "bytes": 53975442,
+      "sha256": "f1084701867e1feff281afa938be76801587bd7ee7a92f257da8c6430206d3d2",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-1.bin.br",
+      "bytes": 56107411,
+      "sha256": "967a6fb8c32622442edb3221c20a060bcc1cffab0fbf8a793bd0ac6c3eb7ffd3",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-2.bin.br",
+      "bytes": 41991193,
+      "sha256": "bbf2d7514107db8ccdef0903b71ece17b4581518d606182b838b6a7be4a5876c",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-3.bin.br",
+      "bytes": 49722026,
+      "sha256": "c3462e998aa8187ea2e7d7413b9fbba04138ba86dd76196554b288e77c7f2404",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-4.bin.br",
+      "bytes": 57302843,
+      "sha256": "a0d857a0a7f2c3bb85dffd53bec6cd6fbe97c62e862d71b5342f52dfa6e2b4a4",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-5.bin.br",
+      "bytes": 58794083,
+      "sha256": "82f94961d8139c7bfb021c2b088bb51cca37b3ad173663c162c8b953aaca0970",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-6.bin.br",
+      "bytes": 57954393,
+      "sha256": "69be6530ddec53f2775bf26f882843cd891c27428a4601f48ebdd0e4e31e7995",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-7.bin.br",
+      "bytes": 56235838,
+      "sha256": "1f2265174bb647a629e4069d36454aa883e7d4988ff773993dcffa7828d1240c",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "payload-decoded/data-8.bin.br",
+      "bytes": 34094780,
+      "sha256": "51b31bd15f3d60e29d04aba3ad26b20884b5a562a3299b2408537ff01266beba",
+      "content_type": "application/octet-stream",
+      "content_encoding": "br"
+    },
+    {
+      "path": "play.js",
+      "bytes": 12698,
+      "sha256": "021e76d2432edf0691a6d42a6e9ccd82bdc251d1fa6277fe1340300dafbf2413",
+      "content_type": "application/javascript",
+      "content_encoding": null
+    },
+    {
+      "path": "style.css",
+      "bytes": 2905,
+      "sha256": "437e657f48e96bc04bfa25c8f10901cd715ba8289361340456196291a45f9a7f",
+      "content_type": "text/css",
+      "content_encoding": null
+    }
+  ]
+}

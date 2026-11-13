@@ -1,0 +1,132 @@
+name: Eldoria immutable engine17 and engine18 ARM WebKit comparison
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-profile-browser-retry.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-profile18-intel-webkit-bounded
+  cancel-in-progress: false
+env:
+  NATIVE_SOURCE: de63660d25bee9a32d7b804d6245744ed1f0dbca
+  NATIVE_RUN: '43246088947'
+  CANDIDATE_REVISION: native325-mobile18-objective-profile-owner-qa
+jobs:
+  desktop-webkit:
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 6ad8836ca9319a39e5daba180884ed9a23a88420
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - name: Verify exact existing site artifact identity before download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          u='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/13963365509'
+          req=urllib.request.Request(u,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          r=json.load(urllib.request.urlopen(req))
+          assert r['workflow_run']['id']==43257126363
+          assert r['digest']=='sha256:36e5dcf79e650e372beb82756987ad25f085a4d6d62dae62c9ce7ba75aee8875'
+          assert r['name']=='mobile18-full-lazy-owner-only-site-not-iphone-pass' and not r['expired']
+          u='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/13944774610'
+          req=urllib.request.Request(u,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          old=json.load(urllib.request.urlopen(req))
+          assert old['workflow_run']['id']==43220783570 and old['digest']=='sha256:276f4c7a9f5cbd2c0b7d520063fa06b33dc5174d0dc4e376cecd25619eb089ad'
+          print('EXACT_ENGINE17_CONTROL_AND_ENGINE18_CANDIDATE_ARTIFACTS_VERIFIED_NO_REBUILD')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile18-full-lazy-owner-only-site-not-iphone-pass
+          run-id: 43257126363
+          github-token: ${{ github.token }}
+          path: qa-site/same-bundle
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile17-full-lazy-owner-only-site-not-iphone-pass
+          run-id: 43220783570
+          github-token: ${{ github.token }}
+          path: qa-site/baseline-bundle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run same profiled binary in eager and lazy city modes on real desktop WebKit on ARM comparison
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_REVISION: ${{ env.CANDIDATE_REVISION }}
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+        run: |
+          set -uo pipefail
+          mkdir -p evidence
+          npm install --prefix "$RUNNER_TEMP/eldoria-profile-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-profile-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-profile-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >evidence/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in {1..40}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18765/same-bundle/release-identity.json; then ready=1;break;fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then echo 'Local owner-only server did not start';exit 1;fi
+          failed=0
+          QA_REVISION='native325-mobile17-caption-profile-owner-qa' \
+            QA_URL='http://127.0.0.1:18765/baseline-bundle/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1' \
+            QA_LAZY_WORLD=1 QA_OUT=evidence/baseline17 node tools/eldoria-private-beta/qa_webkit_residency.cjs || true
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1' \
+            QA_OUT=evidence/eager node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1' \
+            QA_LAZY_WORLD=1 QA_OUT=evidence/deferred node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          python3 - <<'PY'
+          import json,pathlib
+          for mode in ('baseline17','eager','deferred'):
+              p=pathlib.Path('evidence')/mode/'report.json'
+              if p.exists():
+                  r=json.loads(p.read_text());samples=r.get('samples',[])+r.get('entrySamples',[])
+                  rss=[x['rssKiB'] for s in samples for x in s.get('processes',[]) if 'WebContent' in x.get('name','')]
+                  print('ACTUAL_MAC_PROFILE_ARM',mode,json.dumps({'passed':r.get('passed'),'failure':r.get('failure'),'errors':r.get('errors'),'sample_count':len(samples),'peak_webcontent_rss_kib':max(rss) if rss else None,'lazy_deferred':r.get('lazyWorldDeferredToFirstEntryVerified'),'eager_installed':r.get('eagerWorldInstalledVerified'),'entry':r.get('entry'),'physical_iphone_verified':False}))
+          PY
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('evidence')
+          comparison={}
+          for name in ('baseline17','eager','deferred'):
+              p=root/name/'report.json'
+              r=json.loads(p.read_text()) if p.exists() else {}
+              comparison[name]={'passed':r.get('passed',False),'failure':r.get('failure'),'errors':r.get('errors',[]),'source':r.get('identity',{}).get('source_sha'),'platform':r.get('platform'),'arch':r.get('arch')}
+          (root/'same-runner-baseline-comparison.json').write_text(json.dumps(comparison,indent=2))
+          print(json.dumps(comparison))
+          PY
+          if [ "$failed" != 0 ]; then exit 1;fi
+          python3 - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path('evidence')
+          a=json.loads((root/'eager/report.json').read_text());b=json.loads((root/'deferred/report.json').read_text())
+          assert a['passed'] and b['passed'] and a['entry']['reloaded'] and b['entry']['reloaded']
+          assert a['eagerWorldInstalledVerified'] and b['lazyWorldDeferredToFirstEntryVerified']
+          assert a['identity']['source_sha']==b['identity']['source_sha']==os.environ['NATIVE_SOURCE']
+          assert a['identity']['candidate_bundle_sha256']==b['identity']['candidate_bundle_sha256']
+          result={'status':'DESKTOP_MAC_ARM_PROFILE_AND_LAZY_CITY_PASS_NOT_PHYSICAL_PHONE','source_sha':os.environ['NATIVE_SOURCE'],'revision':os.environ['CANDIDATE_REVISION'],'world_entry_verified':False,'physical_iphone_verified':False,'art_approved':False,'testers_authorized':False}
+          (root/'mac-profile-ab.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result))
+          PY
+      - name: Retain real desktop WebKit screenshots, process samples and failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile18-full-lazy-desktop-arm-control-webkit-not-iphone-certificate
+          path: evidence/
+          retention-days: 14

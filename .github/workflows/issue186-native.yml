@@ -1,0 +1,422 @@
+name: Issue 186 Unity native art evidence (exclusive Windows)
+on:
+  push:
+    branches: [feature/issue186-reward-attention-guidance-20261111]
+    paths: [tools/reward-experience/native-request.txt]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: issue186-native-art
+  cancel-in-progress: false
+
+jobs:
+  exclusive-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      native: ${{ steps.mode.outputs.native }}
+      owner: ${{ steps.mode.outputs.owner }}
+      revision: ${{ steps.mode.outputs.revision }}
+      review: ${{ steps.mode.outputs.review }}
+      inspect: ${{ steps.mode.outputs.inspect }}
+      combined_source: ${{ steps.mode.outputs.combined_source }}
+      combined_only: ${{ steps.mode.outputs.combined_only }}
+      review_run: ${{ steps.mode.outputs.review_run }}
+      review_artifact: ${{ steps.mode.outputs.review_artifact }}
+    steps:
+      - name: Fail closed unless Issue186 owns the exact Windows CAS lease
+        id: mode
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request,re
+          repo=os.environ["GITHUB_REPOSITORY"]
+          hdr={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+               "Accept":"application/vnd.github+json","User-Agent":"issue186-native-preflight"}
+          def get(u):
+              with urllib.request.urlopen(urllib.request.Request(u,headers=hdr),timeout=30) as r:return json.load(r)
+          saved=get(f"https://api.github.com/repos/{repo}/contents/tools/reward-experience/native-request.txt?ref={os.environ['GITHUB_SHA']}")
+          lines=base64.b64decode(saved["content"]).decode().splitlines()
+          request=dict(line.split("=",1) for line in lines if "=" in line and not line.startswith("#"))
+          if request.get("state") in ("REVIEW_EXISTING_NATIVE_ARTIFACT","INSPECT_EXISTING_NATIVE_ARTIFACT"):
+              run=request["review_run_id"];artifact=request["review_artifact_id"]
+              if not run.isdecimal() or not artifact.isdecimal():raise SystemExit("Invalid native artifact identity")
+              saved_artifact=get(f"https://api.github.com/repos/{repo}/actions/artifacts/{artifact}")
+              if saved_artifact.get("workflow_run",{}).get("id")!=int(run) or saved_artifact.get("expired"):
+                  raise SystemExit("Artifact does not belong to the requested recorded run")
+              inspect=str(request.get("state")=="INSPECT_EXISTING_NATIVE_ARTIFACT").lower()
+              with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+                  f.write(f"native=false\nreview=true\ninspect={inspect}\nreview_run={run}\nreview_artifact={artifact}\n")
+              print("EXISTING_NATIVE_ARTIFACT_REVIEW_ONLY; NO_WINDOWS_OR_UNITY")
+              raise SystemExit(0)
+          p=get(f"https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main")
+          b64=p.get("content")
+          if p.get("encoding")!="base64" or not b64:
+              blob=get(f"https://api.github.com/repos/{repo}/git/blobs/{p['sha']}")
+              if blob.get("sha")!=p["sha"] or blob.get("encoding")!="base64":raise SystemExit("Registry blob mismatch")
+              b64=blob.get("content")
+          if not b64:raise SystemExit("CAS registry unreadable")
+          d=json.loads(base64.b64decode(b64))
+          hs=[x for x in d["active"] if "windows-runner-heavy" in x.get("resources",[])]
+          owner=request.get("owner","");revision=request.get("ownership_revision","")
+          if not re.fullmatch(r"[A-Za-z0-9_.-]+",owner) or not revision.isdecimal():raise SystemExit("Missing exact requested lease")
+          if len(hs)!=1 or hs[0].get("id")!="eldoria-issue186-reward-attention-guidance-20261111" or hs[0].get("owner")!=owner or hs[0].get("ownership_revision")!=int(revision) or hs[0].get("ownership_state")!="claimed":
+              raise SystemExit("Another workstream owns Windows. Refuse native run.")
+          pr=get(f"https://api.github.com/repos/{repo}/git/ref/heads/feature/issue186-reward-attention-guidance-20261111")
+          if pr["object"]["sha"]!=os.environ["GITHUB_SHA"]:raise SystemExit("PR HEAD changed after dispatch")
+          combined=request.get("combined_vigilia_source","")
+          if combined:
+              if len(combined)!=40 or any(c not in "0123456789abcdef" for c in combined):raise SystemExit("Invalid pinned UI source")
+              ui_run=request.get("combined_ui_native_run","")
+              if not ui_run.isdecimal():raise SystemExit("UI native certificate missing")
+              ui=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}")
+              if ui["head_sha"]!=combined or ui["head_branch"]!="feature/forja-oscura-native-proof-20261107":raise SystemExit("Wrong UI native source")
+              ui_jobs=get(f"https://api.github.com/repos/{repo}/actions/runs/{ui_run}/jobs")["jobs"]
+              for name in ("native","genuine-visual-ab"):
+                  if not any(j["name"]==name and j["status"]=="completed" and j["conclusion"]=="success" for j in ui_jobs):raise SystemExit("Unverified UI native/A-B certificate")
+          combined_only=request.get("state")=="REQUEST_ACTUAL_COMBINED_UI_ONLY"
+          if combined_only and not combined:raise SystemExit("Combined-only evidence requires exact verified UI source")
+          print("ISSUE186_CAS_LEASE_PASS")
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write(f"native=true\nowner={owner}\nrevision={revision}\nreview=false\ncombined_source={combined}\ncombined_only={str(combined_only).lower()}\n")
+          PY
+
+  native:
+    needs: exclusive-preflight
+    if: needs.exclusive-preflight.outputs.native == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    env:
+      OUT: ${{ github.workspace }}\issue186-native-${{ github.run_id }}
+      ISSUE186_VIGILIA_SOURCE: ${{ needs.exclusive-preflight.outputs.combined_source }}
+      LEASE_OWNER: ${{ needs.exclusive-preflight.outputs.owner }}
+      LEASE_REVISION: ${{ needs.exclusive-preflight.outputs.revision }}
+    steps:
+      - name: Verify installed Unity and idle computer
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender process already running. Refuse overlap.'}
+      - name: Resolve already installed Git before checkout; forbid archive fallback
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Installed Git unavailable; refuse full 26GB archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Installed Git failed; refuse archive fallback'}
+      - name: Restore only exact reviewed archived overlay bytes before any checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
+          $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-preserved-source-audit'}
+          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/reward-experience/native/Restore-ReviewedVigiliaOverlay.ps1?ref=$env:GITHUB_SHA"
+          $file=Invoke-RestMethod -Uri $url -Headers $hdr
+          if($file.encoding -ne 'base64' -or -not $file.content){throw 'Pinned source audit script missing'}
+          $script=Join-Path $env:OUT 'Restore-ReviewedVigiliaOverlay.ps1'
+          [IO.File]::WriteAllBytes($script,[Convert]::FromBase64String($file.content))
+          & $script -Workspace $env:GITHUB_WORKSPACE -Output $env:OUT
+      - name: Fetch pinned Unity-only source and retain owned import cache
+        shell: powershell
+        timeout-minutes: 15
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before checkout'}
+          $src=Join-Path $env:GITHUB_WORKSPACE 'issue186-source'
+          if(Test-Path -LiteralPath $src){
+            $item=Get-Item -LiteralPath $src -Force
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse reparse-point source'}
+            if(-not(Test-Path -LiteralPath (Join-Path $src '.git') -PathType Container)){throw 'Owned source is not an existing Git worktree'}
+            if((Get-Item -LiteralPath (Join-Path $src '.git') -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse redirected Git metadata'}
+            $origin=(& git -C $src remote get-url origin).Trim()
+            if($LASTEXITCODE -or $origin -notin @('https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu','https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git')){throw 'Owned checkout origin mismatch'}
+          }else{
+            New-Item -ItemType Directory -Path $src|Out-Null
+            & git -C $src init
+            if($LASTEXITCODE){throw 'Cannot initialize isolated source'}
+            & git -C $src remote add origin 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu'
+            if($LASTEXITCODE){throw 'Cannot set isolated origin'}
+          }
+          # actions/checkout filter overrides sparse-checkout. Configure both
+          # in Git itself; never clean Unity/Library or any other warm project.
+          & git -C $src config remote.origin.promisor true
+          & git -C $src config remote.origin.partialclonefilter blob:none
+          & git -C $src sparse-checkout init --no-cone
+          if($LASTEXITCODE){throw 'Cannot initialize real sparse checkout'}
+          $patterns=@(
+            '/Unity/**'
+            '/tools/reward-experience/native/**'
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV*/**'
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-391*/**'
+          )
+          & git -C $src sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Cannot set Unity-only source membership'}
+          & git -C $src fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned partial fetch failed; refuse archive fallback'}
+          & git -C $src checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Pinned checkout failed'}
+          $actual=(& git -C $src rev-parse HEAD).Trim()
+          if($LASTEXITCODE -or $actual -ne $env:GITHUB_SHA){throw 'Exact native source mismatch'}
+          Write-Host "ISSUE186_PINNED_UNITY_ONLY_SOURCE=$actual; NO_GIT_CLEAN; LIBRARY_PRESERVED"
+      - name: Recheck exact SHA and Windows lease before Editor
+        shell: powershell
+        working-directory: issue186-source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source is not exact requested HEAD'}
+          $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-native-leaserecheck'}
+          $repo='mt5hjfz2kb-lab/Eldoria-Prewiu'
+          $p=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/contents/pipeline/active-workstreams.json?ref=main" -Headers $hdr
+          $b64=[string]$p.content
+          if($p.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($b64)){
+            $blob=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/blobs/$($p.sha)" -Headers $hdr
+            if($blob.sha -ne $p.sha -or $blob.encoding -ne 'base64'){throw 'CAS blob mismatch'}
+            $b64=[string]$blob.content
+          }
+          if([string]::IsNullOrWhiteSpace($b64)){throw 'CAS data unavailable'}
+          $d=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)))|ConvertFrom-Json
+          $holders=@($d.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne $env:LEASE_OWNER -or [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION -or $holders[0].ownership_state -ne 'claimed'){throw 'Issue186 lost Windows lease'}
+          $pr=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-reward-attention-guidance-20261111" -Headers $hdr
+          if($pr.object.sha -ne $env:GITHUB_SHA){throw 'Ref changed; refuse old native test'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor still active from another workstream'}
+      - name: Fetch and install only source-pinned verified optional Vigilia for the isolated combined proof
+        if: needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before optional source overlay'}
+          $src=Join-Path $env:GITHUB_WORKSPACE 'issue186-vigilia-proof-source'
+          if(-not(Test-Path -LiteralPath $src)){New-Item -ItemType Directory -Path $src|Out-Null;git -C $src init;git -C $src remote add origin 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'}
+          if((Get-Item -LiteralPath $src -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse redirected optional source'}
+          $gitMetadata=Join-Path $src '.git'
+          if(-not(Test-Path -LiteralPath $gitMetadata -PathType Container) -or ((Get-Item -LiteralPath $gitMetadata -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Optional source must have owned non-redirected Git metadata'}
+          if((git -C $src remote get-url origin).Trim() -ne 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'){throw 'Optional source origin mismatch'}
+          git -C $src config remote.origin.promisor true
+          git -C $src config remote.origin.partialclonefilter blob:none
+          git -C $src sparse-checkout init --no-cone
+          git -C $src sparse-checkout set --no-cone '/Unity/Assets/Eldoria/BreachWatch/**' '/Unity/Assets/Eldoria/BreachWatch.meta'
+          if($LASTEXITCODE){throw 'Optional UI sparse membership failed'}
+          $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:ISSUE186_VIGILIA_SOURCE
+          if($LASTEXITCODE){throw 'Pinned UI source fetch failed'}
+          git -C $src -c ('http.extraheader=AUTHORIZATION: basic '+$auth) checkout --detach FETCH_HEAD
+          if($LASTEXITCODE -or (git -C $src rev-parse HEAD).Trim() -ne $env:ISSUE186_VIGILIA_SOURCE){throw 'Optional UI source mismatch'}
+          & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Install -Project 'issue186-source/Unity' -UiProject (Join-Path $src 'Unity') -UiSource $env:ISSUE186_VIGILIA_SOURCE -Manifest (Join-Path $env:OUT 'vigilia-overlay.json')
+      - name: Export installed managed API metadata for off-PC semantic compilation
+        shell: powershell
+        run: |
+          & 'issue186-source/tools/reward-experience/native/Export-UnityManagedReferences.ps1' -Project 'issue186-source/Unity' -Output "issue186-managed-refs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - name: Make actual compiler references available while Unity captures
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-installed-managed-api-${{ github.sha }}
+          path: issue186-managed-refs-${{ github.run_id }}-${{ github.run_attempt }}/
+          retention-days: 7
+          if-no-files-found: error
+      - name: Import actual sprites and render four sizes in Unity
+        if: needs.exclusive-preflight.outputs.combined_only != 'true'
+        shell: powershell
+        working-directory: issue186-source
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force $env:OUT | Out-Null
+          $unityProject=Join-Path (Get-Location).Path 'Unity'
+          $log=Join-Path $env:OUT 'unity-editor.log'
+          # Unity 6000.3 recommends -quit even if the executeMethod
+          # cannot start after a script compilation failure. This prevents
+          # holding the exclusive Windows runner until a timeout.
+          $unityArguments='-batchmode -quit -force-d3d11 -projectPath "'+$unityProject+
+            '" -executeMethod Eldoria.Issue186Art.Editor.Issue186NativeEvidence.Capture -logFile "'+$log+'"'
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          $nativeRootStarted=Get-Date
+          $nativeRootLimit=$nativeRootStarted.AddMinutes(55)
+          Write-Host "UNITY_ROOT_STARTED pid=$($process.Id); waiting for actual Editor, not unrelated descendants"
+          while(-not $process.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$process.Refresh()}
+          if(-not $process.HasExited){throw 'Actual Unity Editor still active at hard bound; preserve process and evidence'}
+          $nativeSettleLimit=(Get-Date).AddSeconds(30)
+          while(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -and (Get-Date) -lt $nativeSettleLimit){Start-Sleep 2}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process remains after bounded exit settlement; preserve it and refuse resource handoff'}
+          Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($process.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($process.ExitCode)"
+          $proof=Join-Path $unityProject 'Issue186NativeEvidence'
+          if(Test-Path $proof){Copy-Item (Join-Path $proof '*') $env:OUT -Force -Recurse}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 130}
+            throw "Unity import/capture failed with exit $($process.ExitCode)"
+          }
+          $file=Join-Path $env:OUT 'report.json'
+          if(-not(Test-Path $file)){throw 'No actual Unity proof report'}
+          $r=Get-Content $file -Raw|ConvertFrom-Json
+          if($r.sourceSha -ne $env:GITHUB_SHA -or $r.nativeRun -ne $env:GITHUB_RUN_ID -or $r.nativeAttempt -ne $env:GITHUB_RUN_ATTEMPT -or
+            $r.status -ne 'UNITY_ISOLATED_IMPORT_PASS_ART_REVIEW_PENDING' -or
+            $r.allResourcesImported -ne $true -or $r.realImportedSprites -ne 16 -or
+            $r.captures -ne 4 -or $r.pointerRaycastHits -ne 4 -or
+            $r.artApproved -ne $false -or $r.actualCityTested -ne $false){
+            throw 'Native proof status did not match acceptance contract'
+          }
+          foreach($shot in @($r.images)){
+            if($shot.actualResourceSprites -ne 12 -or $shot.visiblePixels -ne $true -or
+               $shot.indicatorReady -ne $true -or $shot.newIndicatorReady -ne $true -or
+               $shot.firstUsePointer -ne $true -or $shot.firstUseCompleted -ne $false -or
+               $shot.pointerLeavesCtaCenterClear -ne $true -or $shot.realUiClick -ne $true -or
+               $shot.blockedUiClickRejected -ne $true -or $shot.noOverlappingCards -ne $true){
+              throw 'One mobile/desktop render is missing required content'
+            }
+            $p=Join-Path $env:OUT $shot.file
+            if(-not(Test-Path $p)){throw "Missing authentic PNG $p"}
+            if((Get-FileHash $p -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){
+              throw 'Tampered native Unity screenshot'
+            }
+          }
+          Write-Host 'ISSUE186_NATIVE_FOUR_VIEWPORTS_AND_POINTER_PASS'
+      - name: Exercise actual saved bag and real input on the verified independent Vigilia canvas
+        if: needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        working-directory: issue186-source
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $log=Join-Path $env:OUT 'combined-bag-unity.log'
+          $unityArguments='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.Issue186Art.Editor.Issue186BagCombinedNativeEvidence.Capture -logFile "'+$log+'"'
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArguments -PassThru
+          $nativeRootStarted=Get-Date
+          $nativeRootLimit=$nativeRootStarted.AddMinutes(55)
+          Write-Host "UNITY_ROOT_STARTED pid=$($p.Id); waiting for actual Editor, not unrelated descendants"
+          while(-not $p.HasExited -and (Get-Date) -lt $nativeRootLimit){Start-Sleep 2;$p.Refresh()}
+          if(-not $p.HasExited){throw 'Actual Unity Editor still active at hard bound; preserve process and evidence'}
+          $nativeSettleLimit=(Get-Date).AddSeconds(30)
+          while(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -and (Get-Date) -lt $nativeSettleLimit){Start-Sleep 2}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process remains after bounded exit settlement; preserve it and refuse resource handoff'}
+          Write-Host "UNITY_ROOT_EXIT_OBSERVED pid=$($p.Id) seconds=$([Math]::Round(((Get-Date)-$nativeRootStarted).TotalSeconds,2)) exit=$($p.ExitCode)"
+          $proof=Join-Path $project 'Issue186BagCombinedNativeEvidence'
+          $dest=Join-Path $env:OUT 'combined-bag'
+          if(Test-Path $proof){New-Item -ItemType Directory -Force $dest|Out-Null;Copy-Item (Join-Path $proof '*') $dest -Recurse -Force}
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 150};throw 'Actual combined bag Unity probe failed'}
+          $r=Get-Content (Join-Path $dest 'report.json') -Raw|ConvertFrom-Json
+          if($r.status -ne 'REAL_VIGILIA_SAVED_BAG_PASS_ART_REVIEW_PENDING' -or
+             $r.resourceSource -ne $env:GITHUB_SHA -or $r.uiSource -ne $env:ISSUE186_VIGILIA_SOURCE -or
+             $r.nativeRun -ne $env:GITHUB_RUN_ID -or $r.nativeAttempt -ne $env:GITHUB_RUN_ATTEMPT -or
+             -not $r.temporaryProbeOnly -or -not $r.actualBagOnVigilia -or -not $r.seenDoesNotUse -or
+             -not $r.skipDoesNotComplete -or -not $r.useCreditsOnce -or -not $r.jsonReloadVerified -or
+             -not $r.mailReadDoesNotClaim -or -not $r.mailClaimDoesNotCredit -or
+             $r.artApproved -or $r.physicalIphoneVerified -or -not $r.fullMailboxUiFlowVerified -or
+             @($r.images).Count -ne 20 -or $r.actualIntegratedCityFrames -ne 4 -or $r.realFirstHitClicks -ne 52){throw 'Actual combined bag proof contract missing'}
+          foreach($shot in @($r.images)){
+            $file=Join-Path $dest $shot.file
+            if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $shot.sha256){throw 'Actual combined bag PNG mismatch'}
+          }
+          Write-Host 'ISSUE186_ACTUAL_INTEGRATED_CITY4_BAG_MAIL16_20PNG_52_FIRST_HIT_CLICKS_FULL_MAIL_UI_AND_JSON_RELOAD_PASS_NOT_ART_APPROVAL'
+      - name: Preserve exact fresh combined screenshots even if a wrapper check fails
+        if: always() && needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $source=Join-Path $env:GITHUB_WORKSPACE 'issue186-source/Unity/Issue186BagCombinedNativeEvidence'
+          $reportPath=Join-Path $source 'report.json'
+          if(-not(Test-Path -LiteralPath $reportPath -PathType Leaf)){Write-Host 'NO_FRESH_COMBINED_REPORT';exit 0}
+          $report=Get-Content -LiteralPath $reportPath -Raw|ConvertFrom-Json
+          if($report.resourceSource -ne $env:GITHUB_SHA -or $report.nativeRun -ne $env:GITHUB_RUN_ID){
+            Write-Host 'OLDER_COMBINED_REPORT_NOT_EXPORTED';exit 0
+          }
+          foreach($image in @($report.images)){
+            if($image.file -notmatch '^real-vigilia-bag-[A-Za-z-]+-[0-9]+x[0-9]+\.png$'){throw 'Unexpected actual native image name'}
+            $path=Join-Path $source $image.file
+            if(-not(Test-Path -LiteralPath $path -PathType Leaf) -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $image.sha256){throw 'Fresh native image bytes differ from actual report'}
+          }
+          $destination=Join-Path $env:OUT 'combined-bag'
+          [IO.Directory]::CreateDirectory($destination)|Out-Null
+          Copy-Item -LiteralPath $reportPath -Destination (Join-Path $destination 'report.json') -Force
+          foreach($image in @($report.images)){
+            Copy-Item -LiteralPath (Join-Path $source $image.file) -Destination (Join-Path $destination $image.file) -Force
+          }
+          Write-Host "EXACT_FRESH_COMBINED_EVIDENCE_RETAINED status=$($report.status) images=$(@($report.images).Count); NOT_ART_APPROVAL"
+      - name: Restore the exact pre-overlay UI source and preserve any unfamiliar edit
+        if: always() && needs.exclusive-preflight.outputs.combined_source != ''
+        shell: powershell
+        run: |
+          $manifest=Join-Path $env:OUT 'vigilia-overlay.json'
+          if(Test-Path -LiteralPath $manifest){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Refuse restoration while native process is still active'}
+            & 'issue186-source/tools/reward-experience/native/Set-VigiliaProofOverlay.ps1' -Operation Restore -Project 'issue186-source/Unity' -Manifest $manifest
+            if(-not((Get-Content ($manifest+'.restored.json') -Raw|ConvertFrom-Json).restored)){throw 'Exact optional-source restoration missing'}
+          }
+      - name: Preserve actual Unity screenshots and error log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-native-${{ github.sha }}
+          path: ${{ github.workspace }}\issue186-native-${{ github.run_id }}\
+          retention-days: 30
+          if-no-files-found: warn
+
+
+  review-existing-native:
+    needs: exclusive-preflight
+    if: needs.exclusive-preflight.outputs.review == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/reward-experience
+          persist-credentials: false
+      - name: Compile the strict review helper before reading evidence
+        run: python3 -m py_compile tools/reward-experience/native/copy_native_review.py
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.exclusive-preflight.outputs.review_artifact }}
+          run-id: ${{ needs.exclusive-preflight.outputs.review_run }}
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          path: reviewed-native
+          merge-multiple: true
+      - name: Inspect bounded existing reports without Windows or repository writes
+        if: needs.exclusive-preflight.outputs.inspect == 'true'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('reviewed-native')
+          for p in sorted(root.rglob('*')):
+              if not p.is_file() or p.suffix.lower() not in ('.json','.jsonl','.log','.txt'):continue
+              if p.stat().st_size>4000000:continue
+              text=p.read_text(errors='replace')
+              print('RECORDED_ARTIFACT_FILE',p.relative_to(root),'BYTES',p.stat().st_size)
+              if p.suffix=='.json':
+                  data=json.loads(text)
+                  if isinstance(data,dict):
+                      for key in ('samples','entrySamples'):
+                          if isinstance(data.get(key),list):
+                              items=data[key];data[key+'_count']=len(items)
+                              data[key]=items[-2:]
+                  print(json.dumps(data,ensure_ascii=False,indent=2)[:60000])
+              else:
+                  lines=text.splitlines()
+                  print('\n'.join(lines[-100:])[-30000:])
+          PY
+      - name: Preserve exact native images only in released owned review branch
+        if: needs.exclusive-preflight.outputs.inspect != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/reward-experience/native/copy_native_review.py

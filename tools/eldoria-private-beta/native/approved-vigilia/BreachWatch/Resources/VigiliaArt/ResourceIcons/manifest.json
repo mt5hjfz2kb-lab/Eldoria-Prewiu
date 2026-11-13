@@ -1,0 +1,39 @@
+{
+  "origin": "https://annomotion.studio/packs/fantasy-rpg-item-icons/download",
+  "source_sha256": "20f324feb652b2a5959c634a95c694512d21193d346d2204bddd0e0d350bbe75",
+  "license": "CC0 1.0",
+  "original_file": "am_free_rpg_icons.psd",
+  "sources": [
+    {
+      "name": "food",
+      "sha256": "7576409ddf64e9efe62a94802376f3022a38b6446df5544fe8b00a6f47ce2c46",
+      "source_cell_rgba": "3510b17fa8ab660346343b1c6ec7cf6b6abc9db49bc9f1b76e34209823ab55f2",
+      "guid": "1b740a65de65461494ac685afef8c0f1",
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "name": "stone",
+      "sha256": "d060ead3ad918317f256a0b9363e23a710ec0cc019947c8dcb6bf192f44aedf1",
+      "source_cell_rgba": "05d760420c88ccb216768088a4e12616f263715f53d1777a4db61e83d93f90e4",
+      "guid": "252920a7416d45479d45f302a1e8d620",
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "name": "wood",
+      "sha256": "f416cd25d82aa37271f1afa7b0bb8aa069a2ac77474ae9e876a6259c568e6745",
+      "source_cell_rgba": "da04372901d424859224edaaf80098b190b43f0404910589dc1cd7f213b38e57",
+      "guid": "988748ef59b74ca19ed47754f47f0a22",
+      "size": [
+        256,
+        256
+      ]
+    }
+  ],
+  "scope": "Vigilia independent new HUD only; no HUD skin/reused control"
+}

@@ -21,7 +21,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 sprites[aldricKey]=approved;return approved;
             }
             if(id!="lyra")return null;
-            if(LyraPortraitProvider!=null)return LyraPortraitProvider();
+            // The live 3D Lyra portrait is loaded asynchronously. During
+            // that first second the provider may legitimately return null.
+            // Do not replace an approved heroine with an empty silhouette:
+            // display the exact owner-approved illustration until the
+            // canonical model render becomes available, then switch over.
+            if(LyraPortraitProvider!=null)
+            {
+                var realModelPortrait=LyraPortraitProvider();
+                if(realModelPortrait)return realModelPortrait;
+            }
             const string key="approved-lyra-portrait";
             if(sprites.TryGetValue(key,out var cached))return cached;
             var source=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");

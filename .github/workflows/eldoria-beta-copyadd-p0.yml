@@ -1,0 +1,65 @@
+name: Eldoria P0 — live beta13 collision entry and persistence
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-copyadd-p0.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-p0-copyadd-verified-no-pages-mutation
+  cancel-in-progress: false
+jobs:
+  wait-for-publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Require exact owner publication and all public file hashes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,time,urllib.request
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42917944631'
+          request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          for attempt in range(210):
+            with urllib.request.urlopen(request,timeout=30) as response:run=json.load(response)
+            assert run['head_sha']=='49f1ed41faff53b27a0f611156fcca84f1655f17'
+            if run['status']=='completed':
+              assert run['conclusion']=='success','Owner publication did not verify; public gameplay test blocked'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Publication incomplete')
+          request=urllib.request.Request('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/release-identity.json?qa=collision-r1',headers={'Cache-Control':'no-cache'})
+          with urllib.request.urlopen(request,timeout=30) as response:identity=json.load(response)
+          assert identity['revision']=='native325-mobile13-prebaked-collision-qa'
+          assert identity['source_sha']=='7ae5416613480ba526a839b429459d53629041e5'
+          assert identity['static_castle_collisions_prebaked'] is True
+          assert identity['release_for_external_testers'] is False and identity['physical_iphone_verified'] is False
+          PY
+  direct-browser:
+    needs: wait-for-publication
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 8a2dbc345a74d0e4bd4b9ae44bc464632a549607
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Actual Mac WebKit entry, nickname, persistence and reload; not physical iPhone
+        run: |
+          npm install --prefix "$RUNNER_TEMP/direct-webkit" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/direct-webkit/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/direct-webkit/node_modules"
+          QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_SKIP_PREFLIGHT=1 QA_EXPECT_ORIGIN=https://mt5hjfz2kb-lab.github.io QA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1' QA_REVISION=native325-mobile13-prebaked-collision-qa QA_OUT=evidence/direct node tools/eldoria-private-beta/qa_webkit_residency.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-beta13-collision-live-proof-not-iphone
+          path: |
+            evidence/
+          retention-days: 14

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Application;
+using Eldoria.DailyTreasures;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
@@ -134,6 +135,7 @@ namespace Eldoria.UI.RoyalGold.V2
         static readonly Color Ink=new Color(.13f,.18f,.23f,1);
         static readonly Color Muted=new Color(.76f,.76f,.73f,1);
         bool ready;
+        DailyTreasurePanel dailyTreasures;
 
         public void Initialize(RoyalHUD canonicalHud,ICommandGateway commands,
             Func<long> utcTicks,Action onStateChanged)
@@ -147,6 +149,7 @@ namespace Eldoria.UI.RoyalGold.V2
             gateway=commands;
             now=utcTicks;
             refreshed=onStateChanged;
+            if(dailyTreasures)dailyTreasures.Bind(commands,utcTicks,onStateChanged);
             nextUpdate=0;
         }
         void OnDestroy()
@@ -697,6 +700,10 @@ namespace Eldoria.UI.RoyalGold.V2
             kicker.alignment=TextAnchor.MiddleCenter;
             chapter.alignment=TextAnchor.MiddleCenter;
             screen.SetActive(false);
+            // Optional daily entry shares the same safe area, player gateway and
+            // EventSystem; it never creates a second game or reward wallet.
+            dailyTreasures=DailyTreasurePanel.Install(safe);
+            dailyTreasures.Bind(gateway,now,refreshed);
             ready=true;
         }
         public void Open(Destination destination)
@@ -707,6 +714,11 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             if(destination==Destination.Vigilants&&!EarlyRetentionRules.VigilantsUnlocked(s))return;
             if(destination==Destination.Scouts&&!EarlyRetentionRules.ScoutsUnlocked(s))return;
+            // Only one full-screen interaction at a time. Any earned
+            // reward stays saved if an incoming kingdom room closes its
+            // optional ceremony.
+            if(dailyTreasures!=null && dailyTreasures.IsOpen)
+                dailyTreasures.Close();
             OpenDestination=destination;
             scenicDepth?.SetScene(destination==Destination.Scouts?
                 RoyalGoldV3LayeredFinish.Scene.Scouts:
@@ -724,6 +736,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Close()
         {
             if(screen&&screen.activeSelf)screen.SetActive(false);
+            // Narratives must always outrank an optional reward ceremony.
+            if(Hud!=null && Hud.NarrativeOpen && dailyTreasures!=null)
+                dailyTreasures.Close();
         }
         void Submit(string kind,string target)
         {
@@ -732,6 +747,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var cmd=new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision);
             var result=gateway.Execute(cmd);
             notice=result.Message;
+            string ceremonyTitle=null,ceremonyResult=null;
             if(kind=="VigilantBattle" && result.Ok && IsOpen &&
                OpenDestination==Destination.Vigilants)
             {
@@ -747,8 +763,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     int masteryBefore=EarlyRetentionRules.HeroMasteryLevel(s,"aldric");
                     int masteryAfter=EarlyRetentionRules.HeroMasteryLevel(after,"aldric");
                     string progress=masteryAfter>masteryBefore?"\nMaestría de Aldric: "+masteryBefore+" → "+masteryAfter:"";
+                    var battleSummary=EarlyRetentionRules.BattleReview(report,challenge);
                     victoryDetail.Put((chapterCompleted?"25 etapas superadas. Se abre el siguiente capítulo.\n":"")+
-                        EarlyRetentionRules.BattleReview(report,challenge)+progress);
+                        battleSummary+progress);
+                    if(chapterCompleted)
+                    {
+                        ceremonyTitle="CAPÍTULO "+challenge.Chapter+" COMPLETADO";
+                        // The existing battle/report already credited every real
+                        // amount. Do not add an invented victory chest reward.
+                        ceremonyResult=challenge.Name+"\n"+battleSummary+progress;
+                    }
                     victoryStarted=Time.unscaledTime;
                     victoryUntil=victoryStarted+(chapterCompleted?7f:3.2f);
                     victoryGroup.alpha=1f;
@@ -763,6 +787,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 var updated=gateway.Snapshot();
                 var order=updated.Retention?.Orders?.FirstOrDefault(x=>x.Id==target);
                 bool discovered=kind=="ScoutClaim" && order!=null&&order.Claimed;
+                if(discovered && DailyTreasureMilestoneRules.FirstScoutFamily(s,updated,target))
+                {
+                    // Rare only: one ceremony per FIRST discovery family, not
+                    // for every claim or periodically repeating scout report.
+                    // The authoritative ScoutClaim has already paid and added
+                    // its own exploration mail before this presentation.
+                    ceremonyTitle=EarlyRetentionRules.ScoutDiscoveryTitle(order);
+                    ceremonyResult=EarlyRetentionRules.ScoutDiscoveryText(order)+"\n"+
+                        EarlyRetentionRules.ScoutRewardText(order.Kind);
+                }
                 victoryTitle.Put(discovered?"HALLAZGO REGISTRADO":
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
@@ -776,6 +810,17 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             refreshed?.Invoke();
             Render(true);
+            // Only the REAL already-persisted command report can enqueue a
+            // ceremony. Never overlay the currently visible victory or scouting
+            // narrative: the optional chest appears after that room closes.
+            if(ceremonyTitle!=null && dailyTreasures!=null)
+                dailyTreasures.QueueCommittedMilestone(
+                    ceremonyTitle,ceremonyResult,
+                    kind=="VigilantBattle"?"vigilant:"+cmd.Id:"exploration:"+cmd.Id,
+                    kind=="VigilantBattle"?"battle":"exploration",
+                    legendary:kind=="VigilantBattle",
+                    eventId:kind=="VigilantBattle"?
+                        "vigilant:chapter:"+target:"scout:first:"+target);
         }
         void ExecuteStage()
         {
@@ -835,6 +880,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if(Hud==null||gateway==null||now==null)return;
             EnsureView();
             if(!ready)return;
+            // Vigilia's experimental standalone Canvas can be unloaded while
+            // the canonical gameplay session continues. If the treasure UI
+            // was parented there, restore it through a new live component.
+            if(!dailyTreasures && safe)
+            {
+                dailyTreasures=DailyTreasurePanel.Install(safe);
+                dailyTreasures.Bind(gateway,now,refreshed);
+            }
             if(victoryGroup && victoryGroup.alpha>0f)
             {
                 float remaining=victoryUntil-Time.unscaledTime;
@@ -856,10 +909,21 @@ namespace Eldoria.UI.RoyalGold.V2
                     if(discoveryPins[i])discoveryPins[i].rectTransform.localScale=
                         Vector3.one*(1f+.12f*pulse);
             }
+            // Priority changes must apply THIS frame, not at the slower
+            // 300 ms economy/shortcut refresh. Otherwise a treasure entry
+            // may flash over a just-opened tutorial or a building/hero room,
+            // and a previously paid ceremony could obscure the scene.
+            // This branch reads only current UI state; no Snapshot() or
+            // allocation occurs on the intervening frames.
+            bool overlay=Blocked || !string.IsNullOrEmpty(Hud.SelectedBuildingId);
+            if(dailyTreasures)
+            {
+                if(overlay && dailyTreasures.IsOpen)dailyTreasures.Close();
+                dailyTreasures.Suppressed=overlay || IsOpen;
+            }
             if(Time.unscaledTime<nextUpdate)return;
             nextUpdate=Time.unscaledTime+.3f;
             var s=gateway.Snapshot();
-            bool overlay=Blocked || !string.IsNullOrEmpty(Hud.SelectedBuildingId);
             bool allowV=EarlyRetentionRules.VigilantsUnlocked(s);
             bool allowS=EarlyRetentionRules.ScoutsUnlocked(s);
             if(vigilantShortcut.gameObject.activeSelf!=(!overlay&&allowV))
@@ -938,7 +1002,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
                 backLabel.Put("<");
-                backLabel.fontSize=64;
+                backLabel.fontSize=48;
             }
             else
             {
@@ -947,7 +1011,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
                 backLabel.Put("<");
-                backLabel.fontSize=compactLandscape?48:30;
+                backLabel.fontSize=compactLandscape?36:30;
             }
             TL((RectTransform)scoutStrategyButton.transform,
                 pw-198f,14f,
@@ -1654,10 +1718,10 @@ namespace Eldoria.UI.RoyalGold.V2
                         previous.TargetId=="vigilant:"+stage?stage:stage-1)):
                     "RASGO OBSERVADO · "+EarlyRetentionRules.CombatAdvice(info));
                 footer.Put(hasPrevious?
-                    "ÚLTIMA MARCHA · "+(previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":previous.Won?"VICTORIA":"DERROTA")+
+                    (previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":previous.Won?"VICTORIA":"DERROTA")+
                         " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:
                     firstUse==FirstUseTutorialPhase.FirstAction?
-                     "PRIMERA PRUEBA · Pulsa Combatir y revisa el resultado.":
+                     "PRIMERA PRUEBA · Combate y revisa el informe.":
                      "Cada victoria ilumina el siguiente tramo del camino.");
             }
             else

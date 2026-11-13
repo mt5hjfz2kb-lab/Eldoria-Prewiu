@@ -1,0 +1,19 @@
+{
+  // No cloud account connected. This configuration stays closed by default.
+  "name": "eldoria-beta-privada",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-07",
+  "workers_dev": true,
+  "vars": {
+    "ACTIVE_RELEASE": "",
+    "QA_MODE": "true",
+    "OBSERVER_ENABLED": "false",
+    "CONSENTED_TESTER_IDS": "",
+    "REVOKED_TESTER_IDS": "",
+    "SUPABASE_URL": ""
+  },
+  "r2_buckets": [{
+    "binding": "ELDORIA_BUCKET",
+    "bucket_name": "eldoria-beta-privada"
+  }]
+}

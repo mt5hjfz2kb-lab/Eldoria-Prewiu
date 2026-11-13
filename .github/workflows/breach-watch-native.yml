@@ -1,0 +1,1010 @@
+name: Vigilia de la Brecha genuine Unity first screen
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths: [tools/breach-watch/native-request.txt]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-breachwatch-native-first-screen
+  cancel-in-progress: false
+jobs:
+  alternative-unity-licensing-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check whether an alternative hosted Unity runner can be licensed legally
+        shell: bash
+        env:
+          UNITY_LICENSE_CANDIDATE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL_CANDIDATE: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD_CANDIDATE: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          if [ -n "$UNITY_LICENSE_CANDIDATE" ] &&
+             [ -n "$UNITY_EMAIL_CANDIDATE" ] &&
+             [ -n "$UNITY_PASSWORD_CANDIDATE" ]; then
+            echo 'VIGILIA_ALTERNATE_HOSTED_UNITY_LICENSE_INPUTS_AVAILABLE'
+          else
+            echo 'VIGILIA_ALTERNATE_HOSTED_UNITY_NOT_CONFIGURED'
+            echo 'No secret content or account identity is printed or retained.'
+          fi
+  export-reference-for-design-qa:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[vigilia-design-qa]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/BreachWatch/Resources/**
+            /docs/evidence/valoria-reference-clean/chapter2-city-built.png
+            /docs/evidence/valoria-reference-clean/integration-city-art.png
+          persist-credentials: false
+      - name: Validate actual approved separate medallions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference')
+          data=json.loads((root/'source-manifest.json').read_text())
+          assert len(data['sprites'])==5
+          for item in data['sprites']:
+              p=root/(item['name']+'.png')
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==item['sha256']
+          context=data['context_frame']
+          assert hashlib.sha256((root/'carved_context.png').read_bytes()).hexdigest()==context['sha256']
+          print('VERIFIED_APPROVED_REFERENCE_SEPARATE_SPRITES',len(data['sprites'])+1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-independent-visual-resources-${{ github.run_id }}
+          path: |
+            Unity/Assets/Eldoria/BreachWatch/Resources/**
+            docs/evidence/valoria-reference-clean/chapter2-city-built.png
+            docs/evidence/valoria-reference-clean/integration-city-art.png
+          if-no-files-found: error
+          retention-days: 7
+  evaluate-cc0-resource-icons:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[vigilia-resource-research]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Inspect real AnnoMotion resource-icon package, source and CC0 text
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import io,os,pathlib,urllib.request,json,hashlib,zipfile
+          url='https://annomotion.studio/packs/fantasy-rpg-item-icons/download'
+          out=pathlib.Path(os.environ['RUNNER_TEMP'])/'breachwatch-resource-review'
+          out.mkdir(exist_ok=True)
+          req=urllib.request.Request(url,headers={'User-Agent':'Eldoria-breachwatch-resource-inspection'})
+          with urllib.request.urlopen(req,timeout=50) as response:
+              raw=response.read(19_000_000)
+          assert raw[:4]==b'PK\x03\x04' and 100_000<len(raw)<19_000_000
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              info=z.infolist()
+              assert len(info)<250 and sum(x.file_size for x in info)<230_000_000
+              for i in info:
+                  p=pathlib.PurePosixPath(i.filename.replace('\\','/'))
+                  assert not p.is_absolute() and '..' not in p.parts
+              paths=[i.filename for i in info]
+              texts={p:z.read(p).decode('utf-8','replace')[:4000] for p in paths if p.lower().endswith(('.txt','.md'))}
+          (out/'source.zip').write_bytes(raw)
+          (out/'inventory.json').write_text(json.dumps({
+            'origin':url,'sha256':hashlib.sha256(raw).hexdigest(),
+            'paths':paths,'license_documents':texts,'no_game_changes':True
+          },ensure_ascii=False,indent=2))
+          print('BREACHWATCH_RESOURCE_INSPECTED',len(paths),hashlib.sha256(raw).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-resource-inspection-${{ github.run_id }}
+          path: ${{ runner.temp }}/breachwatch-resource-review/**
+          retention-days: 7
+          if-no-files-found: error
+  commit-verified-cc0-art:
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]') || contains(github.event.head_commit.message, '[vigilia-owner-controls]') || contains(github.event.head_commit.message, '[vigilia-owner-close]') || contains(github.event.head_commit.message, '[vigilia-owner-rift]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+            /Unity/Assets/Eldoria/BreachWatch/**
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install bounded raster PSD reader
+        run: python -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+      - name: Generate only verified CC0 painted components
+        if: contains(github.event.head_commit.message, '[breach-art-import]')
+        run: python tools/breach-watch/import_cc0_donor.py
+      - name: Generate only exact SHA and CC0 verified real resource icons
+        if: contains(github.event.head_commit.message, '[vigilia-import-resources]')
+        run: python tools/breach-watch/import_resource_icons.py
+      - name: Extract five independently selectable medallions from the approved user concept
+        if: contains(github.event.head_commit.message, '[vigilia-owner-reference]')
+        run: python tools/breach-watch/import_reference_medallions.py
+      - name: Extract owner-selected empty carved contextual art as a native nine-slice
+        if: contains(github.event.head_commit.message, '[vigilia-context-frame]')
+        run: python tools/breach-watch/import_reference_context.py
+      - name: Create refined independent sculpted medallions from approved reference
+        if: contains(github.event.head_commit.message, '[vigilia-premium-art]')
+        run: python tools/breach-watch/polish_owner_medallions.py
+      - name: Author original dark basalt, burgundy metal and gilded portrait surfaces
+        if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
+        run: python tools/breach-watch/author_premium_surfaces.py
+      - name: Build transparent nine-slice from exact owner-approved gold border
+        if: contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
+        run: python tools/breach-watch/author_owner_approved_gold_border.py
+      - name: Isolate three owner-approved original gold utility medallions
+        if: contains(github.event.head_commit.message, '[vigilia-owner-utilities]')
+        run: python tools/breach-watch/import_owner_utilities.py
+      - name: Import separately extracted owner reference profile, resources and CTA as dynamic UI assets
+        if: contains(github.event.head_commit.message, '[vigilia-owner-controls]')
+        run: python tools/breach-watch/import_owner_controls.py
+      - name: Import singular authentic owner-reference circular close X
+        if: contains(github.event.head_commit.message, '[vigilia-owner-close]')
+        run: python tools/breach-watch/import_owner_close.py
+      - name: Extract one authentic orange crack and bronze lines from owner reference
+        if: contains(github.event.head_commit.message, '[vigilia-owner-rift]')
+        run: python tools/breach-watch/import_owner_rift.py
+      - name: Paint source-faithful single dark material from approved empty panel
+        if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
+        run: python tools/breach-watch/author_material_from_owner_reference.py
+      - name: Protect canonical workstream ownership and source HEAD before push
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          import base64
+          with urllib.request.urlopen(request,timeout=20) as response:
+              raw=json.load(response)
+          encoded=raw.get('content')
+          if raw.get('encoding')!='base64' or not encoded:
+              blob_sha=raw.get('sha','')
+              if len(blob_sha)!=40 or any(c not in '0123456789abcdef' for c in blob_sha):
+                  raise SystemExit('Large registry identity invalid; refuse artwork write')
+              blob_url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+blob_sha
+              blob_request=urllib.request.Request(blob_url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(blob_request,timeout=30) as response:
+                  blob=json.load(response)
+              if blob.get('sha')!=blob_sha or blob.get('encoding')!='base64' or not blob.get('content'):
+                  raise SystemExit('Large registry immutable blob mismatch')
+              encoded=blob['content']
+          reg=json.loads(base64.b64decode(encoded))
+          item=next((x for x in reg['active'] if x.get('id')=='eldoria-forja-oscura-visual-proof-20261107'),None)
+          assert item and isinstance(item.get('owner'),str) and item['owner'] and item['ownership_state']=='claimed'
+          assert any('BreachWatch/**' in x for x in item.get('scope',[]))
+          print('BREACHWATCH_ART_CLAIM_PASS',item['ownership_revision'])
+          PY
+          remote=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
+          if [ "$remote" != "$GITHUB_SHA" ]; then
+            echo "BREACHWATCH_ART_IMPORT_HEAD_CHANGED: refusing stale push"
+            exit 1
+          fi
+      - name: Commit standalone licence-checked artwork only to the existing PR
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Eldoria Artwork CI"
+          git config user.email "artwork-ci@users.noreply.github.com"
+          git add Unity/Assets/Eldoria/BreachWatch/Resources Unity/Assets/Eldoria/BreachWatch/Resources.meta
+          if git diff --cached --quiet; then
+            echo "BREACHWATCH_ART_ALREADY_AT_EXACT_SOURCE"
+          else
+            git commit -m 'art(breach-watch): integrate licence-pinned original independent UI illustrations'
+            git push origin HEAD:"$GITHUB_REF"
+          fi
+      - name: Preserve independent original art asset candidate for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-art-sprites-${{ github.run_id }}
+          path: |
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/**
+          retention-days: 30
+          if-no-files-found: error
+  discover-cc0-donor:
+    # Original source audited and pinned; do not download the 8MB pack on every proof.
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[breach-donor-review]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Download and inventory isolated CC0 dark fantasy panel candidate
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,io,json,os,pathlib,urllib.request,zipfile
+          u='https://annomotion.studio/public/packs/dark-fantasy-ui-hud-kit/download'
+          out=pathlib.Path(os.environ['RUNNER_TEMP'])/'breachwatch-cc0-donor'
+          out.mkdir(exist_ok=True)
+          req=urllib.request.Request(u,headers={'User-Agent':'Eldoria-art-research/1.0'})
+          with urllib.request.urlopen(req,timeout=40) as response:
+              assert response.headers.get('Content-Type','').split(';')[0] in ('application/zip','application/octet-stream')
+              data=response.read(20*1024*1024+1)
+          assert 10000<len(data)<20*1024*1024, 'Donor download size invalid'
+          (out/'source.zip').write_bytes(data)
+          with zipfile.ZipFile(io.BytesIO(data)) as z:
+              entries=z.infolist()
+              assert 1<=len(entries)<=600
+              assert sum(i.file_size for i in entries)<180*1024*1024
+              for i in entries:
+                  n=pathlib.PurePosixPath(i.filename.replace('\\','/'))
+                  assert not n.is_absolute() and '..' not in n.parts, 'unsafe archive name'
+              listing=[{'path':i.filename,'bytes':i.file_size} for i in entries]
+          manifest={'source_url':u,'source_license_claim':'CC0 1.0 on publisher page; verify license inside archive before promotion',
+             'source_sha256':hashlib.sha256(data).hexdigest(),'entries':listing,
+             'not_used_in_game':True,'art_approved':False}
+          (out/'inventory.json').write_text(json.dumps(manifest,indent=2))
+          print('BREACHWATCH_CC0_ART_RESEARCH_ONLY '+manifest['source_sha256']+' entries='+str(len(listing)))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-cc0-donor-research-${{ github.run_id }}
+          path: ${{ runner.temp }}/breachwatch-cc0-donor/**
+          if-no-files-found: error
+          retention-days: 7
+  approved-art-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/BreachWatch/**
+            /tools/breach-watch/source/**
+          persist-credentials: false
+      - name: Check all four independent CC0 sprites, hashes and unique Unity GUIDs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt')
+          manifest=json.loads((folder/'source-manifest.json').read_text())
+          assert manifest['license']=='CC0 1.0 in archive'
+          assert manifest['archive_sha256']=='f089903c2a515c1737344772c538e2bc2d8a153e219096d9118f74db5bf47d76'
+          assert 'CC0 1.0' in (folder/'LICENSE_CC0_SOURCE.txt').read_text()
+          assert len(manifest['sprites'])==4
+          assert folder.parent.with_suffix('.meta').exists()
+          assert folder.with_suffix('.meta').exists()
+          guids=[]
+          for art in manifest['sprites']:
+              name=art['name']
+              png=folder/(name+'.png')
+              raw=png.read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==art['sha256'],name
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6,name
+              assert struct.unpack('>II',raw[16:24])==tuple(art['size']),name
+              meta=(folder/(name+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta,name
+              guid=[line[6:] for line in meta.splitlines() if line.startswith('guid: ')]
+              assert len(guid)==1 and len(guid[0])==32 and guid[0] not in guids,name
+              guids.extend(guid)
+          resourceFolder=folder/'ResourceIcons'
+          resources=json.loads((resourceFolder/'manifest.json').read_text())
+          assert resources['license']=='CC0 1.0'
+          assert resources['source_sha256']=='20f324feb652b2a5959c634a95c694512d21193d346d2204bddd0e0d350bbe75'
+          assert 'CC0 1.0' in (resourceFolder/'LICENSE_CC0_RESOURCE_SOURCE.txt').read_text()
+          assert (folder/'ResourceIcons.meta').is_file()
+          assert sorted(r['name'] for r in resources['sources'])==['food','stone','wood']
+          for item in resources['sources']:
+              name=item['name']
+              png=resourceFolder/(name+'.png')
+              raw=png.read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==item['sha256'],name
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6,name
+              assert struct.unpack('>II',raw[16:24])==(256,256),name
+              meta=(resourceFolder/(name+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta,name
+              guid=[line[6:] for line in meta.splitlines() if line.startswith('guid: ')]
+              assert guid==[item['guid']] and guid[0] not in guids,name
+              guids.extend(guid)
+          print('BREACHWATCH_CC0_SOURCE_HASH_METADATA_PASS '+str(len(guids))+' ORIGINAL UI SPRITES')
+          PY
+      - name: Verify five distinct new medallions are actual captures from approved concept
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct,pathlib
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference')
+          m=json.loads((folder/'source-manifest.json').read_text())
+          assert m['sha256']=='dff461d5e4c7d3de7ec6ccb641f7e372aee4f324310ca0b25ea630dfcb157437'
+          assert not m['art_approved'] and len(m['sprites'])==5
+          assert sorted(v['name'] for v in m['sprites'])==['castle','helm','provisions','raven','swords']
+          assert (folder.parent/'OwnerReference.meta').exists()
+          seen=set()
+          for art in m['sprites']:
+              name=art['name']
+              p=folder/(name+'.png')
+              raw=p.read_bytes()
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6,name
+              assert struct.unpack('>II',raw[16:24])==(160,160)
+              assert hashlib.sha256(raw).hexdigest()==art['sha256'],name
+              meta=(folder/(name+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
+              assert 'guid: '+art['guid'] in meta and art['guid'] not in seen
+              seen.add(art['guid'])
+          # Each child of the new Canvas is independently rendered; no
+          # screenshot of a fake building, player name or prices is baked into
+          # the reference panel.
+          panel=m['context_frame']
+          assert panel['source_sha256']=='7a0d2377c969d75677e9493a776a9615f984eb72590f6a9d33d18fdca5120d49'
+          assert panel['name']=='carved_context'
+          assert panel['not_native_screenshot'] and panel['dimensions']==[256,398]
+          p=folder/'carved_context.png'
+          raw=p.read_bytes()
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(256,398)
+          assert hashlib.sha256(raw).hexdigest()==panel['sha256']
+          meta=(folder/'carved_context.png.meta').read_text()
+          assert 'guid: '+panel['guid'] in meta
+          assert 'spriteBorder: {x: 39, y: 34, z: 34, w: 57}' in meta
+          print('BREACHWATCH_OWNER_APPROVED_REFERENCE_SPRITES_AND_FRAME_PASS')
+          PY
+      - name: Certify owner's separately extracted golden-lion identity crest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference')
+          p=root/'lion_crest.png'
+          provenance=json.loads((root/'lion_crest-provenance.json').read_text())
+          raw=p.read_bytes()
+          assert provenance['sourceType']=='User-provided original image'
+          assert provenance['usage'].startswith('Only the small independent player crest')
+          assert provenance['currentArtApproval']=='pending native Unity visual evaluation'
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(56,56)
+          assert hashlib.sha256(raw).hexdigest()==provenance['sha256']
+          meta=(root/'lion_crest.png.meta').read_text()
+          assert 'guid: '+provenance['unity_guid'] in meta
+          assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
+          src=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerReference/lion_crest' not in src
+          assert 'VigiliaArt/CleanRoom/profile' in src
+          print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
+          PY
+      - name: Verify authentic owner orange/gold Breach source and absence of generic X glyph
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,struct,base64
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls')
+          proof=json.loads((root/'breach_signal_provenance.json').read_text())
+          source=pathlib.Path('tools/breach-watch/source/owner-rift-separator.webp.b64')
+          assert hashlib.sha256(base64.b64decode(source.read_text().strip(),validate=True)).hexdigest()==proof['source_sha256']
+          assert proof['size']==[198,50] and proof['source_is_not_gameplay']
+          p=root/'breach_signal.png'
+          data=p.read_bytes()
+          assert data[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',data[16:24])==(198,50)
+          assert hashlib.sha256(data).hexdigest()==proof['png_sha256']
+          meta=(root/'breach_signal.png.meta').read_text()
+          assert 'guid: '+proof['guid'] in meta and 'spriteMode: 1' in meta
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerControls/breach_signal' in hud
+          assert 'BreachWatchRiftSeparator' not in hud
+          assert not pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRiftSeparator.cs').exists()
+          print('VIGILIA_SINGLE_AUTHENTIC_OWNER_RIFT_PASS')
+          PY
+      - name: Verify exactly one owner-derived gold X and no extra close decorations
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib,struct
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls')
+          original=pathlib.Path('tools/breach-watch/source/owner-close-button.webp.b64')
+          proof=json.loads((root/'close_medallion_provenance.json').read_text())
+          import base64
+          data=base64.b64decode(original.read_text().strip(),validate=True)
+          assert hashlib.sha256(data).hexdigest()==proof['source_sha256']
+          assert proof['size']==[64,64] and proof['transparent_hit_region_required']
+          dest=root/'close_medallion.png'
+          raw=dest.read_bytes()
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(64,64)
+          assert hashlib.sha256(raw).hexdigest()==proof['png_sha256']
+          meta=(root/'close_medallion.png.meta').read_text()
+          assert 'guid: '+proof['guid'] in meta and 'spriteMode: 1' in meta
+          src=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerControls/close_medallion' in src
+          assert 'BuildButton(panel,"Close selected building"' not in src
+          print('VIGILIA_SINGLE_ORIGINAL_ROUND_CLOSE_PASS')
+          PY
+      - name: Certify three text-free owner-source premium controls and live data ownership
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,struct,pathlib
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls')
+          meta=(folder.parent/'OwnerControls.meta')
+          assert meta.is_file()
+          data=json.loads((folder/'manifest.json').read_text())
+          assert data['art_approved'] is False
+          assert len(data['controls'])==3
+          expected={'profile_bar','resource_capsule','upgrade_button'}
+          assert set(x['name'] for x in data['controls'])==expected
+          for item in data['controls']:
+              p=folder/(item['name']+'.png')
+              raw=p.read_bytes()
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6
+              assert struct.unpack('>II',raw[16:24])==tuple(item['dimensions'])
+              assert hashlib.sha256(raw).hexdigest()==item['png_sha256']
+              im=(folder/(item['name']+'.png.meta')).read_text()
+              assert 'guid: '+item['guid'] in im and 'spriteMode: 1' in im
+              assert 'spriteBorder: {x: '+str(item['border'][0]) in im
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          # Old reference crops remain archived with SHA provenance but
+          # must NEVER be active underneath the 13 new generated UI assets.
+          for name in expected:
+              assert 'VigiliaArt/OwnerControls/'+name not in hud,name
+          # Retain historical source sheets for traceability, not runtime.
+          former=json.loads((folder.parent/'FreshArt/manifest.json').read_text())['files']
+          assert len(former)==13
+          clean=json.loads((folder.parent/'CleanRoom/manifest.json').read_text())
+          artworks={entry['asset'] for entry in clean['assets']}
+          assert clean['output_count']==10
+          for name in ('panel','profile','mission','resource','upgrade'):
+              assert name in artworks and 'VigiliaArt/CleanRoom/'+name in hud,name
+          for name in ('profile_panel','resource_chip','upgrade_button','building_panel','quest_panel'):
+              assert 'VigiliaArt/FreshArt/'+name not in hud,name
+          assert 'BreachWatchCrossedHammers' not in hud
+          assert 'VigiliaArt/PremiumSurfaces/burgundy_action' not in hud
+          assert 'VigiliaArt/PremiumSurfaces/profile_plate' not in hud
+          assert 'VigiliaArt/PremiumSurfaces/slate_resource' not in hud
+          print('VIGILIA_THREE_EXACT_USER_REFERENCE_CONTROLS_VERIFIED')
+          PY
+      - name: Verify genuine approved gold trim source, exact SHA, PNG and true Unity nine-slice
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          source=pathlib.Path('tools/breach-watch/source/owner_gold_reference.webp')
+          assert hashlib.sha256(source.read_bytes()).hexdigest()=='79e2264961b3ea4462f9fc3dc65f513e2f4e76f59f4f6b2e3d27a5d06013a5a1'
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ApprovedContour')
+          manifest=json.loads((folder/'manifest.json').read_text())
+          assert manifest['no_baked_player_data_or_real_gameplay'] is True
+          assert manifest['source_sha256']=='79e2264961b3ea4462f9fc3dc65f513e2f4e76f59f4f6b2e3d27a5d06013a5a1'
+          p=folder/'owner_gold_border.png'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==manifest['png_sha256']
+          raw=p.read_bytes()
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(256,427)
+          assert raw[25]==6  # true RGBA PNG; source builder tested alpha
+          meta=(folder/'owner_gold_border.png.meta').read_text()
+          assert 'guid: '+manifest['guid'] in meta
+          assert 'spriteBorder: {x: 53, y: 61, z: 53, w: 60}' in meta
+          assert 'spritePixelsToUnits: 200' in meta and 'textureType: 8' in meta
+          # One genuine user-approved source image owns both metal contour
+          # and its bottom gem. No obsolete second overlay may survive.
+          assert manifest['new_independent_uGUI_one_piece_border'] is True
+          assert 'bottom_finial_sha256' not in manifest
+          assert not (folder/'owner_bottom_finial.png').exists()
+          assert not (folder/'owner_bottom_finial.png.meta').exists()
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'owner_bottom_finial' not in hud and 'separateOwnerBottomFinial' not in hud
+          print('BREACHWATCH_OWNER_EXACT_APPROVED_ONE_PIECE_GOLD_TRIM_PASS')
+          PY
+      - name: Verify newly authored fully independent nine-slice basalt, brass and burgundy
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt')
+          folder=root/'PremiumSurfaces'
+          assert (root/'PremiumSurfaces.meta').exists()
+          data=json.loads((folder/'manifest.json').read_text())
+          assert data['independent'].startswith('All five nine-slice')
+          assert len(data['sources'])==5
+          assert sorted(x['name'] for x in data['sources'])==[
+              'brass_portrait','burgundy_action','chiseled_quest','profile_plate','slate_resource']
+          guids=set()
+          for entry in data['sources']:
+              p=folder/(entry['name']+'.png')
+              raw=p.read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==entry['sha256'],p
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6,p
+              assert struct.unpack('>II',raw[16:24])==tuple(entry['size']),p
+              meta=(folder/(entry['name']+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
+              assert 'guid: '+entry['guid'] in meta and entry['guid'] not in guids
+              assert 'spriteBorder: {x: '+str(entry['border'][0]) in meta
+              guids.add(entry['guid'])
+          csharp=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          # Provenance of rejected interim art is retained, but no visible
+          # old metal insert is allowed under the new 2K cleanroom cartouche.
+          assert 'VigiliaArt/PremiumSurfaces/brass_portrait' not in csharp
+          assert 'VigiliaArt/CleanRoom/panel' in csharp
+          assert '!portraitFrame.GetComponent<Graphic>()' in csharp
+          assert 'VigiliaArt/PremiumSurfaces/basalt_context' not in csharp
+          assert 'BreachWatchBevelTrim' not in csharp
+          assert not (folder/'basalt_context.png').exists()
+          assert not (folder/'basalt_context.png.meta').exists()
+          print('BREACHWATCH_INDEPENDENT_PREMIUM_3_SLICED_MATERIALS_CERTIFIED',len(guids))
+          PY
+      - name: Verify exactly one source-derived blank mineral body under approved gold ring
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt')
+          p=root/'PremiumSurfaces/panel_fill.png'
+          proof=json.loads((root/'PremiumSurfaces/panel_fill-provenance.json').read_text())
+          source=json.loads((root/'OwnerReference/source-manifest.json').read_text())
+          assert proof['source_sha256']==source['context_frame']['sha256']
+          assert proof['no_baked_player_content'] is True
+          assert proof['size']==[512,736]
+          raw=p.read_bytes()
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(512,736)
+          assert hashlib.sha256(raw).hexdigest()==proof['sha256']
+          meta=(root/'PremiumSurfaces/panel_fill.png.meta').read_text()
+          assert 'guid: '+proof['guid'] in meta and 'textureType: 8' in meta
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/PremiumSurfaces/panel_fill' not in hud
+          assert 'VigiliaArt/CleanRoom/panel' in hud
+          assert 'exactOwnerGoldBorder=null;' in hud
+          assert 'panel.gameObject.AddComponent<BreachWatchPanelInk>()' not in hud
+          print('VIGILIA_CLEANROOM_SINGLE_2K_PANEL_ZERO_OLD_OVERLAY_PASS')
+          PY
+      - name: Verify five separately finished original medallions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt')
+          src=json.loads((root/'OwnerReference/source-manifest.json').read_text())
+          prem=json.loads((root/'PremiumMedallions/manifest.json').read_text())
+          assert len(prem['sprites'])==5
+          assert sorted(x['name'] for x in prem['sprites'])==['castle','helm','provisions','raven','swords']
+          assert (root/'PremiumMedallions.meta').exists()
+          for entry in prem['sprites']:
+              n=entry['name']
+              original=next(x for x in src['sprites'] if x['name']==n)
+              assert entry['original_sha256']==original['sha256']
+              p=root/'PremiumMedallions'/(n+'.png')
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==entry['result_sha256']
+              assert entry['result_sha256']!=entry['original_sha256']
+              meta=(root/'PremiumMedallions'/(n+'.png.meta')).read_text()
+              assert 'guid: '+entry['guid'] in meta
+          print('BREACHWATCH_PREMIUM_OWNER_APPROVED_METAL_ART_PASS')
+          PY
+      - name: Certify three actual owner-approved gold utility medallions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,struct,pathlib
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerUtilities')
+          assert folder.parent.joinpath('OwnerUtilities.meta').exists()
+          manifest=json.loads((folder/'manifest.json').read_text())
+          assert manifest['source_sha256']=='01fcf2fe0aa7526fda850cdb6690807801235536e2151a037380fa7712365bb6'
+          assert manifest['not_native_screenshot'] is True
+          assert manifest['art_approved_in_unity'] is False
+          assert len(manifest['sprites'])==3
+          assert [e['name'] for e in manifest['sprites']]==['bell','settings','breach']
+          for item in manifest['sprites']:
+              file=folder/(item['name']+'.png')
+              raw=file.read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==item['sha256'],file
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+              assert struct.unpack('>II',raw[16:24])==(80,80)
+              meta=(folder/(item['name']+'.png.meta')).read_text()
+              assert 'guid: '+item['guid'] in meta
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
+          src=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerUtilities/' in src
+          print('BREACHWATCH_GENUINE_3_OWNER_GOLD_UTILITY_ICONS_PASS')
+          PY
+      - name: Verify font copyright, original byte identity and independent importer
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts')
+          assert root.parent.joinpath('Fonts.meta').is_file()
+          lic=(root/'OFL.txt').read_text()
+          assert 'SIL Open Font License, Version 1.1' in lic and 'Cormorant Project Authors' in lic
+          expected={
+            'CormorantGaramond-Regular.ttf':'2909868bd6279028d400a7e4dbb874b563667b0e',
+            'CormorantGaramond-SemiBold.ttf':'c30cb04d87c0abdb7bb86db19272d6790ed46758'
+          }
+          for filename,sha in expected.items():
+              raw=(root/filename).read_bytes()
+              actual=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\x00'+raw).hexdigest()
+              assert actual==sha,filename
+              assert raw[:4]==bytes([0,1,0,0]),filename
+              meta=(root/(filename+'.meta')).read_text()
+              assert 'TrueTypeFontImporter:' in meta and 'includeFontData: 1' in meta
+          print('BREACHWATCH_PREMIUM_OFL_FONTS_HASH_AND_IMPORTER_PASS')
+          PY
+      - name: Reject inherited visual presentation or removed Forja assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs
+          test ! -e Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura
+          ! grep -RE 'ForjaOscuraLiveHudSkin|RoyalGoldV2Hud|RoyalGoldV3ContextHud|Unity/Assets/Eldoria/VisualKit' Unity/Assets/Eldoria/BreachWatch/Runtime/*.cs
+          echo "BREACHWATCH_INDEPENDENT_NO_VISUAL_OVERLAY_PASS"
+  source-syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+            /Unity/Assets/Eldoria/BreachWatch/**
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Parse independent first-screen C-sharp sources with actual Roslyn
+        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Independently verify compact UI geometry and physical touch targets
+        run: python3 tools/breach-watch/validate_compact_layout.py
+      - name: Check user-approved Bastion/bridge camera framing and reversibility
+        run: python3 tools/breach-watch/verify_city_framing.py
+      - name: Validate real original premium font outlines versus phone geometry
+        shell: bash
+        run: |
+          python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0 fonttools==4.61.1
+          python3 tools/breach-watch/verify_premium_font_fit.py
+          python3 tools/breach-watch/verify_typography_candidate.py
+      - name: Verify one consistent real-art surface instead of doubled overlay relief
+        run: python3 tools/breach-watch/verify_single_surface_composition.py
+      - name: Verify owner-source mission plate and authored center (no baked game text)
+        shell: bash
+        run: |
+          python3 tools/breach-watch/verify_mission_reference_plate.py
+      - name: Validate eight-view Unity raster A/B utility without Windows
+        run: python3 tools/breach-watch/test_compare_native_art.py
+      - name: Explain proof boundary
+        run: echo 'BREACHWATCH_SOURCE_GEOMETRY_PASS; neither source checks nor Roslyn replace Unity rendering/artistic approval.'
+  owner-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.check.outputs.authorized }}
+      revision: ${{ steps.check.outputs.revision }}
+      owner: ${{ steps.check.outputs.owner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify exact claim without consuming Windows
+        id: check
+        shell: bash
+        run: |
+          node <<'JS'
+          const fs=require('fs');
+          const d=JSON.parse(fs.readFileSync('live-main/pipeline/active-workstreams.json','utf8'));
+          const w=d.active.find(x=>x.id==='eldoria-forja-oscura-visual-proof-20261107');
+          const holders=d.active.filter(x=>x.ownership_state==='claimed'&&(x.resources||[]).includes('windows-runner-heavy'));
+          const ok=!!w&&holders.length===1&&holders[0]===w&&typeof w.owner==='string'&&w.owner.length>0&&w.ownership_revision>=21&&w.ownership_state==='claimed'&&w.branch==='feature/forja-oscura-native-proof-20261107';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\nowner='+(ok?w.owner:'')+'\n');
+          console.log(ok?'BREACHWATCH_EXCLUSIVE_OWNER_PASS':'BREACHWATCH_NO_OWNER_WINDOWS_SKIPPED');
+          JS
+  native:
+    needs: [owner-preflight, source-syntax, approved-art-integrity]
+    if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 120
+    env:
+      VIGILIA_TYPOGRAPHY_AB: '1'
+    steps:
+      - name: Use installed Git without machine mutation
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Installed Git is unavailable'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH";Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - name: Check live claim and exclusive editor access
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+          LEASE_OWNER: ${{ needs.owner-preflight.outputs.owner }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Eldoria-BreachWatch'}
+          $raw=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
+          $encoded=[string]$raw.content
+          if($raw.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($encoded)){
+            if([string]$raw.sha -notmatch '^[a-f0-9]{40}$'){
+              throw 'Large registry identity invalid; refuse native editor'
+            }
+            $blobUrl='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/'+$raw.sha
+            $blob=Invoke-RestMethod -Uri $blobUrl -Headers $headers
+            if($blob.sha -ne $raw.sha -or $blob.encoding -ne 'base64' -or
+               [string]::IsNullOrWhiteSpace([string]$blob.content)){
+              throw 'Large registry immutable blob mismatch'
+            }
+            $encoded=[string]$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or [string]::IsNullOrEmpty($env:LEASE_OWNER) -or
+              $holders[0].owner -ne $env:LEASE_OWNER -or
+             $holders[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
+             [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Native lease moved; fail closed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied; do not interfere'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not found'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity Editor $version"}
+          Write-Host "BREACHWATCH_NATIVE_EDITOR_READY $version"
+      - name: Fetch exact PR source safely with sparse Unity checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'forja-thin-native-source-42408083695'
+          $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+          if(-not(Test-Path (Join-Path $root '.git'))){
+            $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-native-source-"+$env:GITHUB_RUN_ID)
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            & git -C $root init
+            if($LASTEXITCODE){throw 'Git init failed'}
+            & git -C $root remote add origin $url
+          }
+          if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
+          # Preserve existing private Unity inputs before any source switch.
+          # Unknown code/settings are archived and refused; never force checkout.
+          $preserved=Join-Path $env:RUNNER_TEMP ('breachwatch-preserved-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          $helper=Join-Path $env:RUNNER_TEMP ('breachwatch-preserve-helper-'+$env:GITHUB_RUN_ID+'.ps1')
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='vigilia-native-input-preservation'}
+          $pinned="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/tools/breach-watch/Preserve-OwnedNativeInputState.ps1?ref=$env:GITHUB_SHA"
+          $saved=Invoke-RestMethod -Uri $pinned -Headers $headers
+          if($saved.encoding -ne 'base64' -or -not $saved.content){throw 'Pinned input-preservation helper unavailable'}
+          [IO.File]::WriteAllBytes($helper,[Convert]::FromBase64String($saved.content))
+          & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          & git -C $root config core.sparseCheckout true
+          & git -C $root config core.sparseCheckoutCone false
+          $patterns=@('/Unity/**','/tools/breach-watch/**')
+          for($i=1;$i -le 17;$i++){$patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')}
+          foreach($n in @('39131782550','39132144937','39132392803','39132807199','39133202399','39136444844','39137079921','39138143327')){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
+          }
+          [IO.File]::WriteAllLines((Join-Path $root '.git/info/sparse-checkout'),[string[]]$patterns,(New-Object Text.UTF8Encoding($false)))
+          $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git source fetch failed'}
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'Git source checkout failed'}
+          if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){throw 'Source commit mismatch'}
+          foreach($required in @(
+            'Unity/ProjectSettings/ProjectVersion.txt',
+            'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs',
+            'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs',
+            'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity')){
+            if(-not(Test-Path (Join-Path $root $required))){throw "Missing exact proof input: $required"}
+          }
+          Add-Content $env:GITHUB_ENV "BW_SOURCE=$root"
+          Write-Host "BREACHWATCH_EXACT_BRANCH_SOURCE_READY $env:GITHUB_SHA"
+      - name: Run real Unity city and independent UI capture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-native.log'
+          # Previous CI mistakenly accepted an old report when Unity failed
+          # during runtime. Delete ONLY our isolated evidence folder before
+          # capture, and require exact-sha fresh outputs plus a Unity PASS log.
+          $folder=Join-Path $project 'BreachWatchNativeEvidence'
+          if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+          if(Test-Path $log){Remove-Item -LiteralPath $log -Force}
+          $captureStart=[DateTime]::UtcNow
+          $params=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+             '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchNativeEvidence.CaptureBatch',
+             '-logFile',('"'+$log+'"'))
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $params -PassThru
+          $limit=(Get-Date).AddMinutes(66)
+          while(-not $process.HasExited -and (Get-Date) -lt $limit){Start-Sleep 5;$process.Refresh()}
+          if(-not $process.HasExited){Stop-Process -Id $process.Id -Force;throw 'Own Unity process exceeded hard bound'}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 130}
+            throw "Unity native failed: exit=$($process.ExitCode)"
+          }
+          $reportFile=Join-Path $folder 'BreachWatchNativeEvidence.json'
+          if(-not(Test-Path $reportFile)){throw 'Unity native report missing'}
+          $report=Get-Content $reportFile -Raw|ConvertFrom-Json
+          if($report.source -ne $env:GITHUB_SHA){
+            throw "Stale native report expected=$env:GITHUB_SHA actual=$($report.source)"
+          }
+          if((Get-Item $reportFile).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+            throw "Old pre-existing native report was reused"
+          }
+          if(-not(Test-Path $log) -or -not(Select-String -Path $log -Pattern 'BREACH_WATCH_NATIVE_CAPTURE_PASS' -SimpleMatch -Quiet)){
+            throw "Unity did not emit a genuine native capture PASS; stale artifacts or runtime errors cannot count as success"
+          }
+          if(@($report.shots).Count -ne 8 -or $report.screenshotCount -ne 8){throw 'Expected 8 native standalone city/Bastion screenshots'}
+          if($report.status -ne 'UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING' -or $report.artworkApproved){throw 'Evidence falsely claims artistic approval'}
+          foreach($s in $report.shots){
+            $file=Join-Path $folder $s.file
+            if(-not(Test-Path $file)){throw "Missing screenshot $($s.file)"}
+            if((Get-Item $file).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+              throw "Stale output image not from current Unity process: $($s.file)"
+            }
+            if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
+          }
+          Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
+      - name: Capture four real destination screens in disposable Unity progression fixture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $folder=Join-Path $project 'BreachWatchDestinationEvidence'
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-destinations.log'
+          if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+          if(Test-Path $log){Remove-Item -LiteralPath $log -Force}
+          $start=[DateTime]::UtcNow
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchDestinationNativeEvidence.CaptureBatch',
+            '-logFile',('"'+$log+'"'))
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $limit=(Get-Date).AddMinutes(45)
+          while(-not $process.HasExited -and (Get-Date) -lt $limit){Start-Sleep 5;$process.Refresh()}
+          if(-not $process.HasExited){Stop-Process -Id $process.Id -Force;throw 'Own destination Unity process exceeded bound'}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 150}
+            throw "Real destination Unity preview failed: exit=$($process.ExitCode)"
+          }
+          $reportFile=Join-Path $folder 'BreachWatchDestinationEvidence.json'
+          if(-not(Test-Path $reportFile)){throw 'Missing genuine destinations report'}
+          $data=Get-Content $reportFile -Raw | ConvertFrom-Json
+          if($data.source -ne $env:GITHUB_SHA){throw 'Native destination report source SHA mismatch'}
+          if((Get-Item $reportFile).LastWriteTimeUtc -lt $start.AddSeconds(-3)){throw 'Destination evidence is stale'}
+          if($data.status -ne 'VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING' -or
+             $data.artworkApproved -or -not $data.probeOnly -or -not $data.saveUnchanged){throw 'Destination result claims unjustified artistic/gameplay PASS'}
+          if(@($data.screens).Count -ne 16 -or $data.screenshotCount -ne 16){throw 'Expected 4 destinations x 4 screen sizes'}
+          foreach($screen in $data.screens){
+            $file=Join-Path $folder $screen.file
+            if(-not(Test-Path $file)){throw "Missing native destination screenshot $($screen.file)"}
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen -or
+               $screen.interactiveButtons -lt 1){throw "Old UI visible or destination has no live controls: $($screen.file)"}
+            if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){throw "Modified destination screenshot $($screen.file)"}
+          }
+          # Unlike the earlier empty-mail-only snapshots, the canonical
+          # list and report must be demonstrated with an isolated in-memory
+          # event. The report itself must explicitly say ART REVIEW PENDING.
+          $mailFile=Join-Path $folder 'BreachWatchPopulatedMailEvidence.json'
+          if(-not(Test-Path $mailFile)){throw 'Missing actual populated mail UI evidence'}
+          $mailReport=Get-Content $mailFile -Raw | ConvertFrom-Json
+          if($mailReport.source -ne $env:GITHUB_SHA -or
+             $mailReport.status -ne 'VIGILIA_REAL_POPULATED_MAIL_REPORT_ART_REVIEW_PENDING' -or
+             $mailReport.artworkApproved -or -not $mailReport.probeOnly -or
+             -not $mailReport.saveUnchanged -or
+             $mailReport.actualMailboxFirstHitClicks -ne 2 -or
+             @($mailReport.screens).Count -ne 4){
+             throw 'Populated mail report missing or falsely claims real saved message/art approval'
+          }
+          foreach($screen in $mailReport.screens){
+            $image=Join-Path $folder $screen.file
+            if(-not(Test-Path $image)){throw "Missing actual mail list/detail screenshot $($screen.file)"}
+            if(-not $screen.oldCanvasOff -or -not $screen.newCanvasOwnsScreen -or
+               $screen.interactiveButtons -lt 1){throw "Old mail art or no genuine buttons: $($screen.file)"}
+            if((Get-FileHash $image -Algorithm SHA256).Hash.ToLowerInvariant() -ne $screen.sha256){
+               throw "Tampered or stale populated mail art screenshot: $($screen.file)"
+            }
+          }
+          if(-not(Select-String -Path $log -Pattern 'VIGILIA_REAL_DESTINATIONS_NATIVE_CAPTURED_ART_REVIEW_PENDING' -SimpleMatch -Quiet)){
+             throw 'Native Editor did not log actual destination capture PASS'
+          }
+          Write-Host 'VIGILIA_REAL_16_DESTINATIONS_PLUS_4_POPULATED_MAIL_SCREENSHOTS_ART_PENDING'
+      - name: Reject imported-font clipping and verify genuine reversible typography A/B
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:BW_SOURCE 'Unity'
+          $files=@(Get-ChildItem "$root/BreachWatch*Evidence/typography-ab/*.json" -File)
+          if($files.Count -lt 20){throw "Missing native typography A/B cases: $($files.Count)"}
+          $bad=@()
+          foreach($f in $files){
+            $p=Get-Content $f.FullName -Raw|ConvertFrom-Json
+            if($p.source -ne $env:GITHUB_SHA -or -not $p.isolatedInkMaskCalibrated -or -not $p.restored -or $p.artApproved -or @($p.before).Count -ne @($p.after).Count){throw "Stale or non-comparable typography A/B $($f.Name)"}
+            $candidate=Join-Path $f.DirectoryName $p.candidateFile
+            $baseline=Join-Path (Split-Path $f.DirectoryName -Parent) $p.baselineFile
+            if((Get-FileHash $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.candidateSha256 -or
+               (Get-FileHash $baseline -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.baselineSha256){throw 'A/B PNG byte identity mismatch'}
+            if(@($p.violations).Count){$bad+=@($p.violations|ForEach-Object {"$($f.Name): $_"})}
+          }
+          if($bad.Count){throw ("Candidate font/layout rejected; genuine PNGs retained: "+($bad -join '; '))}
+          Write-Host "GENUINE_TYPOGRAPHY_AB_IMPORTED_FONTS_RESTORED $($files.Count); ART_APPROVAL_PENDING"
+      - name: Preserve real Unity screenshots and editor error logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-first-native-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            ${{ env.BW_SOURCE }}/Unity/BreachWatchNativeEvidence/**
+            ${{ env.BW_SOURCE }}/Unity/BreachWatchDestinationEvidence/**
+            ${{ runner.temp }}/breachwatch-native.log
+            ${{ runner.temp }}/breachwatch-destinations.log
+            ${{ runner.temp }}/breachwatch-preserved-*/**
+          if-no-files-found: warn
+          retention-days: 21
+
+  genuine-visual-ab:
+    needs: [native]
+    if: needs.native.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch current exact-head Unity evidence, not old screenshots
+        uses: actions/download-artifact@v4
+        with:
+          name: breachwatch-first-native-${{ github.sha }}-${{ github.run_id }}
+          path: current-native
+      - name: Fetch last actual Unity reference candidate by pinned run and name
+        uses: actions/download-artifact@v4
+        with:
+          name: breachwatch-first-native-36f05a596e243c0eb52b20907187a925a9dab87d-42630398578
+          run-id: 42630398578
+          github-token: ${{ github.token }}
+          path: baseline-native
+      - name: Verify all 16 native PNG digests and create phone-readable JPG review
+        shell: bash
+        run: |
+          python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+          python3 tools/breach-watch/prepare_native_art_review.py \
+            baseline-native current-native review-output \
+            --baseline-sha 36f05a596e243c0eb52b20907187a925a9dab87d \
+            --candidate-sha "${GITHUB_SHA}"
+      - name: Reject washed-out ink in actual 390x844 Unity mailbox report
+        shell: bash
+        run: python3 tools/breach-watch/verify_mail_report_contrast.py current-native
+      - name: Upload real Unity A/B images and diagnostics (not artistic approval)
+        uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-real-unity-ab-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            review-output/vigilia_native_art_ab.jpg
+            review-output/vigilia_native_art_diff.json
+            review-output/vigilia_review_manifest.json
+          retention-days: 21
+

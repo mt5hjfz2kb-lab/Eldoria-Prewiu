@@ -1,0 +1,81 @@
+name: Issue186 exact pending overlay source recovery (no Unity)
+on:
+  push:
+    branches: [feature/issue186-reward-attention-guidance-20261111]
+    paths: [tools/reward-experience/native-recovery-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: issue186-native-art
+  cancel-in-progress: false
+jobs:
+  exact-source-recovery:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OUT: ${{ github.workspace }}\issue186-source-recovery-${{ github.run_id }}
+    steps:
+      - name: Verify exact central lease and restore only two preserved overlay layers
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native computer busy'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-exact-source-recovery'}
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY"
+          function ReadPinned([string]$path){
+            $r=Invoke-RestMethod -Headers $headers -Uri ($api+'/contents/'+$path+'?ref='+$env:GITHUB_SHA)
+            if($r.encoding -ne 'base64' -or -not $r.content){throw 'Exact recovery source missing'}
+            [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($r.content))
+          }
+          $ref=Invoke-RestMethod -Headers $headers -Uri ($api+'/git/ref/heads/feature/issue186-reward-attention-guidance-20261111')
+          if($ref.object.sha -ne $env:GITHUB_SHA){throw 'Recovery branch moved after dispatch'}
+          $request=ReadPinned 'tools/reward-experience/native-recovery-request.json'|ConvertFrom-Json
+          if($request.state -notin @('RECOVER_EXACT_PENDING_OVERLAYS','INSPECT_EXACT_OVERLAY','RECOVER_REVIEWED_OVERLAY')){throw 'Recovery not requested'}
+          $p=Invoke-RestMethod -Headers $headers -Uri ($api+'/contents/pipeline/active-workstreams.json?ref=main')
+          if($p.encoding -ne 'base64' -or -not $p.content){$p=Invoke-RestMethod -Headers $headers -Uri ($api+'/git/blobs/'+$p.sha)}
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($p.content))|ConvertFrom-Json
+          $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if([string]::IsNullOrWhiteSpace($request.owner) -or $holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or $holders[0].owner -ne $request.owner -or $holders[0].ownership_revision -ne $request.ownership_revision -or $holders[0].ownership_state -ne 'claimed'){throw 'Exact central recovery lease absent'}
+          [IO.Directory]::CreateDirectory($env:OUT)|Out-Null
+          $scripts=Join-Path $env:OUT 'pinned-tools'
+          [IO.Directory]::CreateDirectory($scripts)|Out-Null
+          if($request.state -eq 'INSPECT_EXACT_OVERLAY'){
+            if([string]$request.run -notmatch '^[0-9]+$'){throw 'Invalid recorded overlay run'}
+            $script=Join-Path $scripts 'Get-VigiliaProofOverlayDrift.ps1'
+            [IO.File]::WriteAllText($script,(ReadPinned 'tools/reward-experience/native/Get-VigiliaProofOverlayDrift.ps1'),(New-Object Text.UTF8Encoding($false)))
+            $manifest=Join-Path $env:GITHUB_WORKSPACE ('issue186-native-'+$request.run+'/vigilia-overlay.json')
+            & $script -Project (Join-Path $env:GITHUB_WORKSPACE 'issue186-source/Unity') -Manifest $manifest -Output (Join-Path $env:OUT 'drift')
+            Copy-Item -LiteralPath $manifest -Destination (Join-Path $env:OUT 'original-overlay.json')
+            exit 0
+          }
+          if($request.state -eq 'RECOVER_REVIEWED_OVERLAY'){
+            if([string]$request.run -notmatch '^[0-9]+$' -or $request.manifest_sha256 -notmatch '^[a-f0-9]{64}$'){throw 'Exact reviewed manifest identity required'}
+            $manifest=Join-Path $env:GITHUB_WORKSPACE ('issue186-native-'+$request.run+'/vigilia-overlay.json')
+            if((Get-FileHash -LiteralPath $manifest -Algorithm SHA256).Hash.ToLowerInvariant() -ne $request.manifest_sha256){throw 'Recorded overlay manifest changed'}
+            foreach($file in @('Set-VigiliaProofOverlay.ps1','reviewed-vigilia-imported-metadata-current.json')){
+              [IO.File]::WriteAllText((Join-Path $scripts $file),(ReadPinned ('tools/reward-experience/native/'+$file)),(New-Object Text.UTF8Encoding($false)))
+            }
+            & (Join-Path $scripts 'Set-VigiliaProofOverlay.ps1') -Operation Restore -Project (Join-Path $env:GITHUB_WORKSPACE 'issue186-source/Unity') -Manifest $manifest -ReviewedMetadata (Join-Path $scripts 'reviewed-vigilia-imported-metadata-current.json')
+            Copy-Item -LiteralPath ($manifest+'.restored.json') -Destination $env:OUT
+            Copy-Item -LiteralPath ($manifest+'.reviewed-importer-files') -Destination $env:OUT -Recurse
+            exit 0
+          }
+          foreach($file in @('Restore-ExactPendingOverlays.ps1','Set-VigiliaProofOverlay.ps1','reviewed-vigilia-imported-metadata-nested-925.json','reviewed-vigilia-imported-metadata.json')){
+            [IO.File]::WriteAllText((Join-Path $scripts $file),(ReadPinned ('tools/reward-experience/native/'+$file)),(New-Object Text.UTF8Encoding($false)))
+          }
+          $requestPath=Join-Path $env:OUT 'request.json'
+          [IO.File]::WriteAllText($requestPath,($request|ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false)))
+          & (Join-Path $scripts 'Restore-ExactPendingOverlays.ps1') -Workspace $env:GITHUB_WORKSPACE -Request $requestPath -Output $env:OUT
+      - name: Preserve exact recovery receipts and reviewed metadata archives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-exact-source-recovery-${{ github.sha }}
+          path: |
+            ${{ env.OUT }}
+            ${{ github.workspace }}/issue186-native-43178513272/vigilia-overlay.json.restored.json
+            ${{ github.workspace }}/issue186-native-43178513272/vigilia-overlay.json.reviewed-importer-files
+            ${{ github.workspace }}/issue186-native-43175152232/vigilia-overlay.json.restored.json
+            ${{ github.workspace }}/issue186-native-43175152232/vigilia-overlay.json.reviewed-importer-files
+          if-no-files-found: warn

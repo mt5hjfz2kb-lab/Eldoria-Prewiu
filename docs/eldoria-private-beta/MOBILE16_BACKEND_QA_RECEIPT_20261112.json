@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "role": "SYNTHETIC_TRANSPORT_NOT_UNITY",
+  "checked_at": "2026-11-12T07:43:57.341Z",
+  "project": "eavaxwpxxcrwibooiimb",
+  "function": "eldoria-mobile16-events-qa",
+  "version": 1,
+  "status": "ACTIVE",
+  "deployed_source_exact": true,
+  "deployment_bundle_sha256": "c54b6741fba93148ed464d30e51616e931b3ea65fa4669969a3f8b563453950e",
+  "engine_source": "4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71",
+  "engine_build": "native325-mobile16-full-lazy-profile-owner-qa",
+  "accepted_event_uuid": "e196c3df-6bfb-4eac-887e-c1c4b7101762",
+  "http": {
+    "no_consent": 422,
+    "spoofed_source": 422,
+    "wrong_origin": 403,
+    "accepted": 202,
+    "same_uuid_retry": 202
+  },
+  "database_receipt_verified": true,
+  "matching_rows_after_retry": 1,
+  "is_qa": true,
+  "legacy_edge_version_unchanged": 1,
+  "legacy_edge_bundle_unchanged": true,
+  "unity_event_chain_verified": false,
+  "physical_iphone_verified": false,
+  "external_testers_enabled": false
+}

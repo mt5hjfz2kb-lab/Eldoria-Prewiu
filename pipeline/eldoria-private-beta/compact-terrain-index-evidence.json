@@ -1,0 +1,61 @@
+{
+  "scope": "Exact C# compact index versus original algorithm, real exported terrain; NOT Unity runtime or iPhone",
+  "results": [
+    {
+      "label": "exact authored terrain",
+      "vertices": 369163,
+      "queries": 369163,
+      "covered": 369163,
+      "missing": 0,
+      "buckets": 331431,
+      "oldAllocation": 76354672,
+      "newAllocation": 10101032,
+      "bufferBytes": 10100912,
+      "oldMs": 193.1275,
+      "newMs": 151.922,
+      "passed": true
+    },
+    {
+      "label": "real terrain near tolerance and rejected offsets",
+      "vertices": 369163,
+      "queries": 24000,
+      "covered": 6789,
+      "missing": 17184,
+      "buckets": 331431,
+      "oldAllocation": 76354536,
+      "newAllocation": 10101032,
+      "bufferBytes": 10100912,
+      "oldMs": 15.4755,
+      "newMs": 10.0921,
+      "passed": true
+    },
+    {
+      "label": "cell boundaries duplicates strict tolerance",
+      "vertices": 54,
+      "queries": 162,
+      "covered": 54,
+      "missing": 72,
+      "buckets": 12,
+      "oldAllocation": 3368,
+      "newAllocation": 1488,
+      "bufferBytes": 1376,
+      "oldMs": 0.1941,
+      "newMs": 0.1125,
+      "passed": true
+    },
+    {
+      "label": "missing source coverage must remain missing",
+      "vertices": 369163,
+      "queries": 369162,
+      "covered": 369162,
+      "missing": 0,
+      "buckets": 331431,
+      "oldAllocation": 76354536,
+      "newAllocation": 10102848,
+      "bufferBytes": 10100912,
+      "oldMs": 161.1024,
+      "newMs": 93.7472,
+      "passed": true
+    }
+  ]
+}

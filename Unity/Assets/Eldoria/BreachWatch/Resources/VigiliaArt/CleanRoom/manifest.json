@@ -1,0 +1,112 @@
+{
+  "pipeline": "cleanroom-new-asset-generation-v1",
+  "created_utc": "2026-11-10T11:49:56.537407+00:00",
+  "reference_pixels_reused": false,
+  "legacy_hud_asset_reused": false,
+  "output_count": 10,
+  "source_count": 6,
+  "assets": [
+    {
+      "asset": "panel",
+      "width": 965,
+      "height": 1630,
+      "sha256": "d7556228f58cc7ae4930a684f2b108246fe9c9c4178096cade9fe8c267c8627b",
+      "source_sha256": "d7556228f58cc7ae4930a684f2b108246fe9c9c4178096cade9fe8c267c8627b",
+      "source_task": "exec-3536b403-4d3f-4906-b6ce-9df2e0169301",
+      "origin": "builtin-imagegen-reference-guided-20261110",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "mission",
+      "width": 2172,
+      "height": 724,
+      "sha256": "bd5e03343cfe6460e553293e80c8b1b0ec491eef463982f114f65ce93e439380",
+      "source_sha256": "bd5e03343cfe6460e553293e80c8b1b0ec491eef463982f114f65ce93e439380",
+      "source_task": "exec-edf93a35-57e7-4545-98a8-bcd5e6a22865",
+      "origin": "builtin-imagegen-reference-guided-20261110",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_castle",
+      "width": 674,
+      "height": 667,
+      "sha256": "95c15f566e7de854314dc9d481d95bab7b5008668b2bb1a61b90d16819773456",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_provisions",
+      "width": 679,
+      "height": 667,
+      "sha256": "a1594264a1249048bed8eccc0cfabce387485eac9b610898c62842fa528b8847",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_swords",
+      "width": 674,
+      "height": 667,
+      "sha256": "d9453b08aea5241e76df928fdcef0e3edf5bca66d3d0c48979d1f300c669162a",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_raven",
+      "width": 667,
+      "height": 674,
+      "sha256": "63c24a67ce0ea75058e9759efe18cfa77cb0b148e773a9651ae2ba1baa35e6d0",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "nav_helm",
+      "width": 674,
+      "height": 674,
+      "sha256": "3ad897c0df8bb0025365a080ade7c26e71b5c438e7922ec819fadca7d8eda2c7",
+      "source_sha256": "db8cd231875f63c5b64d66cd88a7b9e729a3f78cf8b136009cdae32a92162b5f",
+      "source_task": "c1eb2893-47e3-4b82-9810-33b0745f2bb7",
+      "origin": "medals",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "profile",
+      "width": 2496,
+      "height": 832,
+      "sha256": "54e388f42721a832967addbda3e79b5665adea962e3b47106b1f0e5ee6451484",
+      "source_sha256": "eeebb80d53d5a1381e84435edd8e4a1913c443a87b4330835780648c40f88b6f",
+      "source_task": "c3f74e0d-6385-4ca4-a3dc-5c0fbdfd5479",
+      "origin": "profile",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "resource",
+      "width": 2593,
+      "height": 651,
+      "sha256": "f16faacbba20137b9a96b02dd2a613d323a1e14c339d6df9c5ac6e240e0fb60b",
+      "source_sha256": "805835ea73ce1b24162626302fc17164e3bdca7608924b46a791355def2fa8db",
+      "source_task": "c3e689a2-1065-4f27-9415-fa9fc4996f87",
+      "origin": "resource",
+      "derived_from": "new_generation_only"
+    },
+    {
+      "asset": "upgrade",
+      "width": 2322,
+      "height": 494,
+      "sha256": "0b52838109a550b7074fdea148b6d58941653a7a6c2fefbfae866d33fb236706",
+      "source_sha256": "6d95f83a9d4ffd83a41d9dd8c80ffcfa9297335ef500288f38503239fbf19ab9",
+      "source_task": "ba5008e3-0109-4de2-a1b5-a796983c867b",
+      "origin": "upgrade",
+      "derived_from": "new_generation_only"
+    }
+  ],
+  "art_approved": false,
+  "unity_native_qa": "pending"
+}

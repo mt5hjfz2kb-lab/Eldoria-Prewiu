@@ -1,0 +1,198 @@
+name: Eldoria full lazy world — reuse proven mobile profile and actual Apple GPU A/B
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-mobile-candidate.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-beta-mobile-candidate
+  cancel-in-progress: false
+env:
+  NATIVE_RUN: '43135567923'
+  NATIVE_SOURCE: 4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71
+  CANDIDATE_REVISION: native325-mobile16-full-lazy-profile-owner-qa
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+          persist-credentials: false
+      - name: Require actual completed native job; failed Mac arm is not a failed native build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def get(path):
+              req=urllib.request.Request(root+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
+          run=get('actions/runs/'+os.environ['NATIVE_RUN'])
+          assert run['head_sha']==os.environ['NATIVE_SOURCE']
+          jobs=get('actions/runs/'+os.environ['NATIVE_RUN']+'/jobs')['jobs']
+          for name in ('preflight','native','package-owner'):
+              found=[j for j in jobs if j['name']==name]
+              assert len(found)==1 and found[0]['status']=='completed' and found[0]['conclusion']=='success', name
+          print('EXACT_ACTUAL_NATIVE_AND_PACKAGING_PASS; ORIGINAL_MAC_FAILURE_RETAINED')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42481331350
+          name: deduplicated-bundle-unverified
+          github-token: ${{ github.token }}
+          path: reference-parent
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42493894120
+          name: mobile6-candidate-site
+          github-token: ${{ github.token }}
+          path: reference-profile
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42999782863
+          name: beta14-city-only-candidate-site
+          github-token: ${{ github.token }}
+          path: beta14-shell
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: pr179-full-lazy-world-i-v-native-evidence
+          github-token: ${{ github.token }}
+          path: native-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: pr179-lazy-world-unity-playmode-owner-evidence
+          github-token: ${{ github.token }}
+          path: playmode-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: pr179-full-lazy-world-webgl-owner-only-not-iphone-certified
+          github-token: ${{ github.token }}
+          path: compiled-webgl
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile source and prepare bounded off-PC texture verification
+        run: |
+          python3 -m py_compile tools/eldoria-private-beta/prepare_lazy_profile_owner_site.py
+          python3 -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+          sudo fallocate -l 8G /tmp/eldoria-profile.swap
+          sudo chmod 600 /tmp/eldoria-profile.swap
+          sudo mkswap /tmp/eldoria-profile.swap
+          sudo swapon /tmp/eldoria-profile.swap
+      - name: Reuse only exact existing profile transformations and verify every serialized object
+        run: |
+          python3 tools/eldoria-private-beta/prepare_lazy_profile_owner_site.py \
+            --native-artifact native-evidence --playmode-artifact playmode-evidence \
+            --webgl-artifact compiled-webgl --beta14-shell-artifact beta14-shell \
+            --reference-parent reference-parent --reference-site reference-profile \
+            --work profile-work --output owner-only-site \
+            --source-head "$NATIVE_SOURCE" --native-run "$NATIVE_RUN" \
+            --revision "$CANDIDATE_REVISION"
+          node tools/delivery/test-exact-decoded-transport.mjs owner-only-site
+      - name: Retain exact source, serialized verification chain and candidate identity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-full-lazy-existing-profile-proof-not-runtime
+          path: |
+            profile-work/original/extraction.json
+            profile-work/deduplicated/integrity.json
+            profile-work/profile/*.json
+            owner-only-site/release-identity.json
+            owner-only-site/owner-only-profile-proof.json
+          retention-days: 14
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: mobile16-full-lazy-owner-only-site-not-iphone-pass
+          path: owner-only-site/
+          compression-level: 0
+          retention-days: 7
+  apple-gpu:
+    needs: package
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile16-full-lazy-owner-only-site-not-iphone-pass
+          path: qa-site/same-bundle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run same profiled binary in eager and lazy city modes on real desktop Apple GPU
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_REVISION: ${{ env.CANDIDATE_REVISION }}
+          QA_EXPECT_ORIGIN: http://127.0.0.1:18765
+        run: |
+          set -uo pipefail
+          mkdir -p evidence
+          npm install --prefix "$RUNNER_TEMP/eldoria-profile-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-profile-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-profile-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >evidence/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in {1..40}; do
+            if curl -fsS -o /dev/null http://127.0.0.1:18765/same-bundle/release-identity.json; then ready=1;break;fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then echo 'Local owner-only server did not start';exit 1;fi
+          failed=0
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1' \
+            QA_OUT=evidence/eager node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/same-bundle/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1' \
+            QA_LAZY_WORLD=1 QA_OUT=evidence/deferred node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          python3 - <<'PY'
+          import json,pathlib
+          for mode in ('eager','deferred'):
+              p=pathlib.Path('evidence')/mode/'report.json'
+              if p.exists():
+                  r=json.loads(p.read_text());samples=r.get('samples',[])+r.get('entrySamples',[])
+                  rss=[x['rssKiB'] for s in samples for x in s.get('processes',[]) if 'WebContent' in x.get('name','')]
+                  print('ACTUAL_MAC_PROFILE_ARM',mode,json.dumps({'passed':r.get('passed'),'failure':r.get('failure'),'errors':r.get('errors'),'sample_count':len(samples),'peak_webcontent_rss_kib':max(rss) if rss else None,'lazy_deferred':r.get('lazyWorldDeferredToFirstEntryVerified'),'eager_installed':r.get('eagerWorldInstalledVerified'),'entry':r.get('entry'),'physical_iphone_verified':False}))
+          PY
+          if [ "$failed" != 0 ]; then exit 1;fi
+          python3 - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path('evidence')
+          a=json.loads((root/'eager/report.json').read_text());b=json.loads((root/'deferred/report.json').read_text())
+          assert a['passed'] and b['passed'] and a['entry']['reloaded'] and b['entry']['reloaded']
+          assert a['eagerWorldInstalledVerified'] and b['lazyWorldDeferredToFirstEntryVerified']
+          assert a['identity']['source_sha']==b['identity']['source_sha']==os.environ['NATIVE_SOURCE']
+          assert a['identity']['candidate_bundle_sha256']==b['identity']['candidate_bundle_sha256']
+          result={'status':'DESKTOP_MAC_PROFILE_AND_LAZY_CITY_PASS_NOT_PHYSICAL_PHONE','source_sha':os.environ['NATIVE_SOURCE'],'revision':os.environ['CANDIDATE_REVISION'],'world_entry_verified':False,'physical_iphone_verified':False,'art_approved':False,'testers_authorized':False}
+          (root/'mac-profile-ab.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result))
+          PY
+      - name: Retain real desktop WebKit screenshots, process samples and failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-full-lazy-desktop-apple-gpu-not-iphone-certificate
+          path: evidence/
+          retention-days: 14

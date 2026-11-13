@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED_TEXTURE_TRANSFORMS_ROUNDTRIP_PASS",
+  "tool_commit": "2f3734a90560590f05ea373d68ee1184a526e61e",
+  "input_sha256": "6efe4b1f1eeedd33727ec8f24d4d25075b516478d3bb80ea61a6bdbb12528ca0",
+  "expected_sha256": "60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315",
+  "actual_sha256": "60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315",
+  "all_objects_verified": 54338,
+  "changed_texture_objects": 106,
+  "unique_byte_identical_transforms": 102,
+  "unmatched_transforms": 0,
+  "scope": "Reproduces previous candidate3 bundle byte-for-byte from frozen original; fresh structural build application not yet tested. Candidate3 itself failed on physical iPhone.",
+  "runtime_fix_certified": false
+}

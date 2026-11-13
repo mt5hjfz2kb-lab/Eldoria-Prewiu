@@ -1,0 +1,134 @@
+name: Vigilia reusable destination source guard
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths:
+      - '.github/workflows/vigilia-shared-destination-source.yml'
+      - 'tools/breach-watch/*OwnedNativeInput*.ps1'
+      - '.github/workflows/breach-watch-native.yml'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchResourceBagBridge.cs'
+      - 'tools/breach-watch/validate_shared_destination_theme.py'
+      - 'tools/breach-watch/validate_mailbox_theme.py'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png.meta'
+      - 'tools/breach-watch/validate_modal_bridge.py'
+      - 'tools/breach-watch/validate_vigilia_web_optin.py'
+      - 'tools/breach-watch/validate_heroes_theme.py'
+      - 'tools/breach-watch/validate_retention_theme.py'
+      - 'tools/breach-watch/validate_march_composition.py'
+      - 'tools/breach-watch/native_visual_ab_review.py'
+      - 'pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMarchComposition.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchSharedTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchDestinationBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxEmptyArtwork.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchMailboxBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchModalBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHeroesBridge.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs'
+      - 'Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionTheme.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRetentionBridge.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchBetaBootstrap.cs'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader.meta'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  style-source-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/validate_shared_destination_theme.py
+            /tools/breach-watch/validate_mailbox_theme.py
+            /tools/breach-watch/validate_modal_bridge.py
+            /tools/breach-watch/validate_vigilia_web_optin.py
+            /tools/breach-watch/validate_heroes_theme.py
+            /tools/breach-watch/validate_retention_theme.py
+            /tools/breach-watch/validate_march_composition.py
+            /tools/breach-watch/native_visual_ab_review.py
+            /pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json
+            /Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchDestinationNativeEvidence.cs
+            /tools/breach-watch/*OwnedNativeInput*.ps1
+            /tools/breach-watch/SyntaxAudit.csproj
+            /tools/breach-watch/Program.cs
+            /Unity/Assets/Eldoria/BreachWatch/Runtime/**
+            /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs
+            /Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/panel_fill.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/burgundy_action.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls/close_medallion.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/MailboxArtwork/sealed_letter.png.meta
+          persist-credentials: false
+      - name: Parse real C-sharp syntax without occupying Windows Unity runner
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Roslyn compile-tree parse of new C-sharp runtime components
+        shell: bash
+        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Check staged theme and gameplay boundaries (NOT visual approval)
+        shell: bash
+        run: |
+          python3 tools/breach-watch/validate_shared_destination_theme.py
+          python3 tools/breach-watch/validate_mailbox_theme.py
+          python3 tools/breach-watch/validate_modal_bridge.py
+          python3 tools/breach-watch/validate_vigilia_web_optin.py
+          python3 tools/breach-watch/validate_heroes_theme.py
+          python3 tools/breach-watch/validate_retention_theme.py
+          python3 tools/breach-watch/validate_march_composition.py
+          python3 -m py_compile tools/breach-watch/native_visual_ab_review.py
+          python3 -m json.tool pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json >/dev/null
+
+      - name: Verify real Git preservation, exact settings pins and unknown-edit refusal
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          foreach($script in @('tools/breach-watch/Preserve-OwnedNativeInputState.ps1','tools/breach-watch/Test-OwnedNativeInputPreservation.ps1')){
+            $tokens=$null;$errors=$null
+            [Management.Automation.Language.Parser]::ParseFile((Resolve-Path $script),[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count){throw ($errors|Out-String)}
+          }
+          & ./tools/breach-watch/Test-OwnedNativeInputPreservation.ps1
+
+  review-actual-failed-hall:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/breach-watch
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43161203990
+          artifact-ids: 13917529325
+          github-token: ${{ github.token }}
+          path: actual-failed-ui
+          merge-multiple: true
+      - name: Preserve exact actual failed Hall image and original source panels without retouching
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/breach-watch/copy_actual_failed_hall_review.py

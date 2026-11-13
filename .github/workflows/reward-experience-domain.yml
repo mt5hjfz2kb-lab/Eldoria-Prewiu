@@ -1,0 +1,102 @@
+name: Issue 186 reward, attention and guidance (source and gateway)
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs'
+      - 'tools/reward-experience/**'
+      - 'Unity/Assets/Eldoria/Issue186Art/**'
+      - '.github/workflows/reward-experience-domain.yml'
+      - 'pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json'
+  workflow_dispatch:
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            Unity/Assets/Eldoria/Issue186Art
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs
+            tools/reward-experience
+            pipeline/art-production-requests
+            .github/workflows
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Enforce traceable original art routing and native-only approval
+        run: python3 tools/reward-experience/check_art_governance.py
+      - name: Verify actual 16 imported PNG hashes, sizes and Unity GUIDs without Windows
+        run: python3 tools/reward-experience/check_art_import.py
+      - name: Check twelve painted resource identities at genuine 48-pixel display size
+        run: python3 tools/reward-experience/check_art_readability.py
+      - name: Preserve read-only 48-pixel differentiation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-art-48px-audit
+          path: issue186_48px_readability.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve deterministic source-art audit even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue186-source-art-audit
+          path: issue186_art_import_preflight.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Source-only geometry regression for 4 real viewport specifications
+        run: python3 tools/reward-experience/test_native_layout.py
+      - name: Execute actual reward domain rules with source-linked smoke
+        run: dotnet run -c Release --project tools/reward-experience/RewardExperience.Smoke.csproj
+      - name: Exercise real saved gateway commands and JSON reload with reward feature enabled
+        run: dotnet run -c Release --project tools/reward-experience/Gateway.Smoke.csproj
+      - name: Verify real filesystem overlay rollback and unknown-edit rejection without Windows
+        shell: pwsh
+        run: |
+          Get-ChildItem tools/reward-experience/native -Filter '*.ps1' -File | ForEach-Object {
+            $parseProblems=$null;$parseTokens=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$parseTokens,[ref]$parseProblems)|Out-Null
+            if(@($parseProblems).Count){throw ($_.FullName+': '+(($parseProblems|ForEach-Object {$_.Message+' at '+$_.Extent.StartLineNumber}) -join '; '))}
+          }
+          & tools/reward-experience/native/Test-VigiliaProofOverlay.ps1
+          & tools/reward-experience/native/Test-ExactReviewedTrackedRestore.ps1
+          $p=Get-Content 'issue186-overlay-source-guards.json' -Raw|ConvertFrom-Json
+          if($p.status -ne 'PASS' -or $p.checks -lt 21 -or -not $p.actual_filesystem){throw 'Overlay rollback checks did not execute'}
+      - name: Roslyn syntax check of real Unity runtime and editor art scripts
+        run: dotnet run -c Release --project tools/reward-experience/ArtSyntaxAudit.csproj
+
+  review-partial-real-bag:
+    if: github.event_name == 'pull_request' && github.event.pull_request.number == 187 && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/reward-experience
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43155182543
+          artifact-ids: 13915329220
+          github-token: ${{ github.token }}
+          path: partial-native
+          merge-multiple: true
+      - name: Preserve the exact partial bag image with failed mailbox verdict intact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/reward-experience/native/copy_partial_bag_review.py

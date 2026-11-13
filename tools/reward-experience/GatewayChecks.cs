@@ -1,0 +1,425 @@
+using System.Text.Json;
+using Eldoria.Domain;
+using Eldoria.Application;
+int checks=0;
+void Need(bool ok,string message){checks++;if(!ok)throw new Exception(message);}
+var clock=new FixedClock{UtcTicks=new DateTime(2026,11,11,12,0,0,DateTimeKind.Utc).Ticks};
+CommandResult Send(LocalGateway g,string id,string kind,string target){var s=g.Snapshot();return g.Execute(new GameCommand(id,s.PlayerId,kind,target,s.Revision));}
+ResourceRewardInventory Packets(string mail="letter"){
+ var r=new ResourceRewardInventory();Need(ResourceRewardRules.TryIssueBundle(r,"mission:chapter1","mission",75,50,0,mail),"seed exact compound reward");return r;
+}
+var initial=new PlayerState{ResourceRewards=Packets(),ResourceRewardsVersion=1};
+initial.Mailbox.Receive(new EldoriaV41Message{EventId="letter",Category="recompensas",Type="mission",Title="Premio de misión"});
+AttentionCueRules.Signal(initial.RewardAttention,"mail-reward:letter","mail",AttentionLevel.ActionReady);
+var store=new JsonStore(initial);var gateway=new LocalGateway(clock,store);gateway.Advance();
+var wallet=gateway.Snapshot().Resources;int wood=wallet.Wood,stone=wallet.Stone,food=wallet.Food;
+Need(Send(gateway,"read","MailRead","letter").Ok,"real mail read command");
+var read=gateway.Snapshot();Need(read.Mailbox.Messages.Single().Read,"read flag persisted through gateway");
+Need(read.ResourceRewards.Packets.All(p=>!p.Collected),"reading cannot collect packets");
+Need(read.Resources.Wood==wood&&read.Resources.Stone==stone,"reading cannot credit wallet");
+Need(AttentionCueRules.At(read.RewardAttention,"mail")==AttentionLevel.ActionReady,"reading cannot remove pending claim attention");
+int writes=store.Writes;
+Need(!Send(gateway,"delete-locked","MailDelete","letter").Ok,"cannot delete pending-reward mail and strand its packages");
+Need(store.Writes==writes&&gateway.Snapshot().Mailbox.Messages.Count==1,"rejected deletion neither saves nor removes letter");
+Need(!Send(gateway,"use-locked",ResourceRewardCommands.UsePacket,"mission:chapter1:wood").Ok,"locked packet cannot be spent");
+Need(!gateway.Snapshot().ResourceGuidance.Completed.Contains(ResourceRewardCommands.FirstUseStep),"failed use cannot complete tutorial");
+writes=store.Writes;
+Need(Send(gateway,"claim",ResourceRewardCommands.ClaimMail,"letter").Ok,"real claim command accepted");
+var claimed=gateway.Snapshot();Need(store.Writes==writes+1,"claim is one authoritative saved transaction");
+Need(claimed.ResourceRewards.Packets.All(p=>p.Collected&&!p.Used),"claim transfers all components to bag");
+Need(claimed.Resources.Wood==wood&&claimed.Resources.Stone==stone&&claimed.Resources.Food==food,"claim does not credit wallet");
+Need(AttentionCueRules.At(claimed.RewardAttention,"mail")==AttentionLevel.None,"successful claim resolves pending letter attention");
+Need(AttentionCueRules.At(claimed.RewardAttention,"bag")==AttentionLevel.New,"new bag items are informational");
+Need(claimed.ResourceGuidance.Completed.Contains(ResourceRewardCommands.FirstMailClaimStep),"only real successful claim completes claim tutorial");
+writes=store.Writes;Need(Send(gateway,"claim",ResourceRewardCommands.ClaimMail,"letter").Ok,"same command ID remains idempotent");Need(store.Writes==writes,"same claim ID cannot save/grant again");
+Need(!Send(gateway,"claim-again",ResourceRewardCommands.ClaimMail,"letter").Ok,"different command ID cannot claim spent mail twice");
+Need(store.Writes==writes,"replayed logical claim cannot save again");
+gateway=new LocalGateway(clock,store);Need(gateway.Snapshot().ResourceRewards.Packets.All(p=>p.Collected),"JSON reload retains collected packages");
+writes=store.Writes;Need(Send(gateway,"use",ResourceRewardCommands.UsePacket,"mission:chapter1:wood").Ok,"real use command accepted");
+var used=gateway.Snapshot();Need(store.Writes==writes+1,"wallet and used receipt save together");
+Need(used.Resources.Wood==wood+75&&used.Resources.Stone==stone&&used.Resources.Food==food,"only actual packet amount/resource credits");
+Need(used.ResourceRewards.Packets.Single(p=>p.Kind=="wood").Used,"used tombstone retained");
+Need(used.ResourceGuidance.Completed.Contains(ResourceRewardCommands.FirstUseStep),"real successful use completes first-use tutorial");
+writes=store.Writes;Need(Send(gateway,"use",ResourceRewardCommands.UsePacket,"mission:chapter1:wood").Ok,"same use command idempotent");
+Need(!Send(gateway,"use-again",ResourceRewardCommands.UsePacket,"mission:chapter1:wood").Ok,"new command cannot reuse same item");Need(store.Writes==writes,"reuse cannot create saved duplicate credit");
+gateway=new LocalGateway(clock,store);Need(!Send(gateway,"after-reload",ResourceRewardCommands.UsePacket,"mission:chapter1:wood").Ok,"used tombstone survives real JSON reload");Need(gateway.Snapshot().Resources.Wood==wood+75,"reload cannot recredit wallet");
+var external=gateway.Snapshot();external.ResourceRewards.Packets.Single(p=>p.Kind=="stone").Amount=int.MaxValue;external.ResourceGuidance.Completed.Clear();external.RewardAttention.Records.Clear();external.Resources.Wood=0;
+var isolated=gateway.Snapshot();Need(isolated.ResourceRewards.Packets.Single(p=>p.Kind=="stone").Amount==50,"snapshot cannot mutate packet authority");Need(isolated.ResourceGuidance.Completed.Count>0,"snapshot guidance is deep copied");Need(isolated.RewardAttention.Records.Count>0,"snapshot attention is deep copied");Need(isolated.Resources.Wood==wood+75,"snapshot wallet is isolated");
+Need(Send(gateway,"delete-claimed","MailDelete","letter").Ok,"claimed informational letter can be deleted");Need(Send(gateway,"use-stone",ResourceRewardCommands.UsePacket,"mission:chapter1:stone").Ok,"deleting claimed letter cannot remove collected item");Need(gateway.Snapshot().Resources.Stone==stone+50,"stone credits exactly once");
+foreach(string kind in new[]{"wood","stone","food"}){
+ var s=new PlayerState();s.Resources.Wood=s.Resources.Stone=s.Resources.Food=int.MaxValue-5;Need(ResourceRewardRules.TryIssue(s.ResourceRewards,"overflow:"+kind,"mission",kind,10),"seed overflow packet");var st=new JsonStore(s);var g=new LocalGateway(clock,st);g.Advance();int before=st.Writes;
+ Need(!Send(g,"overflow",ResourceRewardCommands.UsePacket,"overflow:"+kind).Ok,"overflow rejects "+kind);var actual=g.Snapshot();Need(actual.ResourceRewards.Packets.Single().Used==false,"overflow keeps packet "+kind);Need(!actual.ResourceGuidance.Completed.Contains(ResourceRewardCommands.FirstUseStep),"overflow does not fake tutorial "+kind);Need(st.Writes==before,"overflow has no saved partial mutation "+kind);
+}
+var seenState=new PlayerState{ResourceRewards=Packets("")};var seenStore=new JsonStore(seenState);var seenGateway=new LocalGateway(clock,seenStore);seenGateway.Advance();
+Need(Send(seenGateway,"seen",ResourceRewardCommands.MarkBagSeen,"mission:chapter1:wood").Ok,"seeing packet uses real command");Need(!seenGateway.Snapshot().ResourceRewards.Packets.Single(p=>p.Kind=="wood").Used,"seeing is not forced consumption");
+Need(Send(seenGateway,"skip",ResourceRewardCommands.DismissGuidance,ResourceRewardCommands.FirstUseStep).Ok,"explicit tutorial skip accepted");seenGateway=new LocalGateway(clock,seenStore);var progress=seenGateway.Snapshot().ResourceGuidance;Need(progress.Dismissed.Contains(ResourceRewardCommands.FirstUseStep)&&!progress.Completed.Contains(ResourceRewardCommands.FirstUseStep),"skip persists without fake completion");Need(!GuidedTutorialRules.ShouldPoint(progress,ResourceRewardCommands.FirstUseStep,"actual-use-button",true,true),"dismissed pointer does not return after reload");Need(!Send(seenGateway,"unknown-skip",ResourceRewardCommands.DismissGuidance,"unrelated-feature").Ok,"resource module cannot dismiss unrelated steps");
+var legacy=new PlayerState{ResourceRewardsVersion=0,ResourceRewards=null,ResourceGuidance=null,RewardAttention=null};int oldWood=legacy.Resources.Wood;var oldStore=new JsonStore(legacy);var migrated=new LocalGateway(clock,oldStore).Snapshot();Need(migrated.ResourceRewardsVersion==1&&migrated.ResourceRewards.Packets.Count==0,"legacy null ledger migrates additively");Need(migrated.ResourceGuidance.Completed.Count==0&&migrated.RewardAttention.Records.Count==0,"legacy missing guidance initializes safely");Need(migrated.Resources.Wood==oldWood,"migration does not retroactively reissue/credit rewards");
+try{new LocalGateway(clock,new JsonStore(new PlayerState{ResourceRewardsVersion=2}));Need(false,"future module save must not be overwritten");}catch(InvalidOperationException){checks++;}
+
+// Daily resources arrive as unopened MAIL packets, never as wallet
+// deposits. Check the actual gateway, JSON storage and replay boundaries.
+long utcDay=DailyTreasureRules.UtcDay(clock.UtcTicks);
+string dailyLetter="daily-treasure:"+utcDay;
+var dailyStore=new JsonStore(new PlayerState());
+var daily=new LocalGateway(clock,dailyStore);daily.Advance();
+int initialDailyWood=daily.Snapshot().Resources.Wood;
+int dailyWrites=dailyStore.Writes;
+Need(Send(daily,"day1-real-gateway","ClaimDailyTreasure","").Ok,"day one real daily claim");
+var day1=daily.Snapshot();
+Need(dailyStore.Writes==dailyWrites+1,"daily claim, mail, packets saved once");
+Need(day1.Resources.Wood==initialDailyWood,"daily claim did not bypass the bag");
+var day1Pack=day1.ResourceRewards.Packets.Single(p=>p.MailEventId==dailyLetter);
+Need(day1Pack.Kind=="wood"&&day1Pack.Amount==60&&!day1Pack.Collected&&!day1Pack.Used,"day one exact locked 60 wood");
+Need(day1.Mailbox.Messages.Any(m=>m.EventId==dailyLetter&&m.Subtitle.Contains("paquetes esperan")),"daily mail explains pending packets");
+Need(AttentionCueRules.At(day1.RewardAttention,"mail")==AttentionLevel.ActionReady,"daily claim creates actionable mail cue");
+dailyWrites=dailyStore.Writes;
+Need(!Send(daily,"day1-second-id","ClaimDailyTreasure","").Ok,"day one replay cannot credit new packets");
+Need(dailyStore.Writes==dailyWrites,"replayed daily claim does not save");
+Need(Send(daily,"day1-mail-read","MailRead",dailyLetter).Ok,"daily mail read");
+Need(!daily.Snapshot().ResourceRewards.Packets.Single().Collected,"read is not claim");
+Need(!Send(daily,"day1-mail-delete","MailDelete",dailyLetter).Ok,"pending letter cannot be deleted");
+Need(Send(daily,"day1-mail-claim",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"mail claim transfers daily packet to bag");
+Need(daily.Snapshot().Resources.Wood==initialDailyWood,"mail claim does not credit wallet");
+daily=new LocalGateway(clock,dailyStore);
+Need(Send(daily,"day1-bag-use",ResourceRewardCommands.UsePacket,day1Pack.ReceiptId).Ok,"daily bag use after reload");
+Need(daily.Snapshot().Resources.Wood==initialDailyWood+60,"daily credit only upon use");
+Need(!Send(daily,"day1-use-again",ResourceRewardCommands.UsePacket,day1Pack.ReceiptId).Ok,"daily packet cannot be reused");
+// Multi-resource rewards retain both components, zero partial replays.
+var fourth=new PlayerState{DailyTreasures=new DailyTreasureState{
+    LastClaimUtcDay=utcDay-1,CycleDay=3,ConsecutiveDays=3,TotalClaims=3}};
+var fourStore=new JsonStore(fourth);
+var four=new LocalGateway(clock,fourStore);four.Advance();
+Need(Send(four,"day4-real-gateway","ClaimDailyTreasure","").Ok,"day four accepts two resource components");
+var day4=four.Snapshot();
+Need(day4.ResourceRewards.Packets.Count(p=>p.MailEventId==dailyLetter)==2,"day four awards two locked packets");
+Need(day4.ResourceRewards.Packets.Any(p=>p.Kind=="wood"&&p.Amount==90&&!p.Collected)&&
+     day4.ResourceRewards.Packets.Any(p=>p.Kind=="stone"&&p.Amount==60&&!p.Collected),"day four actual amounts 90 and 60");
+Need(!Send(four,"day4-second-id","ClaimDailyTreasure","").Ok,"day four replay cannot grant more resources");
+Need(Send(four,"day4-mail-claim",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"multi-resource mail claim works");
+Need(four.Snapshot().ResourceRewards.Packets.All(p=>p.Collected),"one claim collects entire two-part bundle");
+// A day containing only acceleration generates no fake resource packet.
+var fifth=new PlayerState{DailyTreasures=new DailyTreasureState{
+    LastClaimUtcDay=utcDay-1,CycleDay=4,ConsecutiveDays=4,TotalClaims=4}};
+var fiveStore=new JsonStore(fifth);
+var five=new LocalGateway(clock,fiveStore);five.Advance();
+int oldSpeedups=five.Snapshot().SpeedupOneMinute;
+Need(Send(five,"day5-speedups","ClaimDailyTreasure","").Ok,"speedup-only day claims successfully");
+var day5=five.Snapshot();
+Need(day5.SpeedupOneMinute==oldSpeedups+2&&day5.ResourceRewards.Packets.Count==0,"day five retains direct speedups, zero fake packets");
+Need(day5.Mailbox.Messages.Any(m=>m.EventId==dailyLetter),"informational day five mail exists");
+Need(!Send(five,"day5-nothing",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"day five cannot fake packet claim");
+Need(Send(five,"day5-mail-delete","MailDelete",dailyLetter).Ok,"no locked resource means mail may be deleted");
+// A full wallet never forfeits an earned packet. Only USE is blocked.
+var full=new PlayerState();full.Resources.Wood=int.MaxValue;
+var fullStore=new JsonStore(full);
+var fullGateway=new LocalGateway(clock,fullStore);fullGateway.Advance();
+Need(Send(fullGateway,"day1-full-wallet","ClaimDailyTreasure","").Ok,"full wallet still receives packet");
+var fullPack=fullGateway.Snapshot().ResourceRewards.Packets.Single();
+Need(Send(fullGateway,"day1-full-mail",ResourceRewardCommands.ClaimMail,dailyLetter).Ok,"full wallet still allows collecting packet");
+Need(!Send(fullGateway,"day1-use-overflow",ResourceRewardCommands.UsePacket,fullPack.ReceiptId).Ok,"overflow rejects use only");
+Need(!fullGateway.Snapshot().ResourceRewards.Packets.Single().Used,"overflow keeps packet unspent");
+
+
+// Historical mail tombstones survive deletion. In a mismatched/imported
+// daily-cycle save, never issue packets with no visible letter to claim.
+var tombState=new PlayerState();
+tombState.Mailbox.ReceivedEventIds.Add(dailyLetter);
+var tombStore=new JsonStore(tombState);
+var tombGateway=new LocalGateway(clock,tombStore);tombGateway.Advance();
+int tombWrites=tombStore.Writes;
+Need(!Send(tombGateway,"daily-deleted-mail-tombstone","ClaimDailyTreasure","").Ok,
+    "deleted mail event tombstone blocks orphan daily packets");
+var tombResult=tombGateway.Snapshot();
+Need(tombStore.Writes==tombWrites&&tombResult.DailyTreasures.TotalClaims==0,
+    "rejected tombstone daily claim does not advance or save");
+Need(tombResult.ResourceRewards.Packets.Count==0,
+    "deleted mail tombstone cannot strand new unclaimable reward");
+
+// Real chapter producers, not manually seeded packets. Owner-runtime mission
+// milestones grant to the saved BAG only, including legacy non-tier amounts.
+// The existing authoritative node/hunt/building paths remain direct wallets.
+SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+try
+{
+ var missionSeed=new PlayerState{BastionLevel=1,SawmillLevel=1};
+ int missionWood=missionSeed.Resources.Wood,missionStone=missionSeed.Resources.Stone;
+ var missionStore=new JsonStore(missionSeed);
+ var missionGateway=new LocalGateway(clock,missionStore);
+ var earned=missionGateway.Snapshot();
+ Need(earned.ChapterProgress.GrantedRewards.Contains("c1-sawmill"),
+     "real chapter milestone is durably recorded");
+ var woodPrize=earned.ResourceRewards.Packets.Single(x=>x.ReceiptId=="mission:c1-sawmill:wood");
+ Need(woodPrize.Origin=="mission"&&woodPrize.Kind=="wood"&&woodPrize.Amount==120&&woodPrize.Collected&&!woodPrize.Used,
+     "real owner chapter source emits exact saved 120-wood packet");
+ Need(earned.Resources.Wood==missionWood&&earned.Resources.Stone==missionStone,
+     "receiving real mission prize never deposits directly into wallet");
+ Need(AttentionCueRules.At(earned.RewardAttention,"bag")==AttentionLevel.New,
+     "real mission producer raises bag novelty, not forced consumption");
+ int missionWrites=missionStore.Writes;
+ missionGateway.Advance();
+ Need(missionStore.Writes==missionWrites&&missionGateway.Snapshot().ResourceRewards.Packets.Count==1,
+     "repeated mission advancement cannot duplicate packet or commit");
+ missionGateway=new LocalGateway(clock,missionStore);
+ Need(Send(missionGateway,"real-mission-use",ResourceRewardCommands.UsePacket,woodPrize.ReceiptId).Ok,
+     "real earned mission packet can be spent through the saved gateway");
+ Need(missionGateway.Snapshot().Resources.Wood==missionWood+120,
+     "mission wallet receives exactly 120 only after real Use");
+ Need(!Send(missionGateway,"real-mission-replay",ResourceRewardCommands.UsePacket,woodPrize.ReceiptId).Ok,
+     "earned mission packet cannot be re-used under another command ID");
+ missionGateway=new LocalGateway(clock,missionStore);
+ Need(missionGateway.Snapshot().Resources.Wood==missionWood+120 &&
+      missionGateway.Snapshot().ResourceRewards.Packets.Single().Used,
+     "mission reward and spent receipt survive authoritative JSON reload");
+ var routeSeed=new PlayerState();
+ routeSeed.ChapterProgress.RouteCleared=true;
+ int routeWood=routeSeed.Resources.Wood,routeStone=routeSeed.Resources.Stone;
+ var routeStore=new JsonStore(routeSeed);
+ var routeGateway=new LocalGateway(clock,routeStore);
+ var route=routeGateway.Snapshot();
+ Need(route.ChapterProgress.GrantedRewards.Contains("c1-route"),
+     "real two-resource route milestone paid once");
+ Need(route.ResourceRewards.Packets.Count(p=>p.Origin=="mission")==2 &&
+      route.ResourceRewards.Packets.Any(p=>p.ReceiptId=="mission:c1-route:wood"&&p.Amount==90) &&
+      route.ResourceRewards.Packets.Any(p=>p.ReceiptId=="mission:c1-route:stone"&&p.Amount==55),
+     "route milestone pays indivisible exact 90-wood and 55-stone bundle");
+ Need(route.Resources.Wood==routeWood&&route.Resources.Stone==routeStone,
+     "two-resource mission remains outside wallet until player uses each packet");
+ routeGateway=new LocalGateway(clock,routeStore);
+ Need(Send(routeGateway,"real-route-stone",ResourceRewardCommands.UsePacket,"mission:c1-route:stone").Ok,
+     "one mission bundle resource may be used independently");
+ Need(routeGateway.Snapshot().Resources.Stone==routeStone+55 &&
+      routeGateway.Snapshot().Resources.Wood==routeWood,
+     "using stone does not secretly consume wood");
+ Need(routeGateway.Snapshot().ResourceRewards.Packets.Count==2 &&
+      !routeGateway.Snapshot().ResourceRewards.Packets.Single(p=>p.Kind=="wood").Used,
+     "other mission packet remains available after partial player consumption");
+}
+finally { SliceContentProfiles.SetRuntimeProfileOverride(null); }
+
+// The player's irreversible Bastion IV priority also produces a durable
+// bag bonus. These three alternatives are not normal building production.
+foreach(var choice in new[]{"production","defense","civil"})
+{
+ var choiceSeed=new PlayerState{BastionLevel=4};
+ var choiceStore=new JsonStore(choiceSeed);
+ var choiceGateway=new LocalGateway(clock,choiceStore);
+ var before=choiceGateway.Snapshot();
+ int baseWood=before.Resources.Wood,baseStone=before.Resources.Stone,baseFood=before.Resources.Food;
+ int basePower=before.MissionPower;
+ Need(Send(choiceGateway,"choice-"+choice,"ChooseDevelopment",choice).Ok,
+     "Bastion IV real development choice accepted: "+choice);
+ var awarded=choiceGateway.Snapshot();
+ var bundles=awarded.ResourceRewards.Packets.Where(p=>p.Origin=="development").ToList();
+ Need(awarded.ChapterThree.DevelopmentPriority==choice&&bundles.Count==(choice=="defense"?1:2),
+     "development choice persisted with the actual nonzero resource components");
+ int expectWood=choice=="production"?260:choice=="civil"?180:0;
+ int expectStone=choice=="production"?180:choice=="defense"?220:0;
+ int expectFood=choice=="civil"?280:0;
+ Need(bundles.All(p=>p.Collected&&!p.Used&&p.MailEventId=="") &&
+      bundles.Where(p=>p.Kind=="wood").Sum(p=>p.Amount)==expectWood &&
+      bundles.Where(p=>p.Kind=="stone").Sum(p=>p.Amount)==expectStone &&
+      bundles.Where(p=>p.Kind=="food").Sum(p=>p.Amount)==expectFood,
+     "development choice produces exact durable bonus components");
+ Need(awarded.Resources.Wood==baseWood&&awarded.Resources.Stone==baseStone&&
+      awarded.Resources.Food==baseFood,
+     "choosing development never invisibly credits wallet");
+ Need(awarded.MissionPower==basePower+(choice=="defense"?100:0),
+     "defense choice still grants immediate non-resource mission power");
+ choiceGateway=new LocalGateway(clock,choiceStore);
+ Need(!Send(choiceGateway,"choice-repeat-"+choice,"ChooseDevelopment",choice).Ok,
+     "priority cannot pay again after JSON reload");
+ Need(choiceGateway.Snapshot().ResourceRewards.Packets.Count(p=>p.Origin=="development")== (choice=="defense"?1:2),
+     "reload and replay cannot duplicate development bonus");
+}
+
+// A source-only UI bridge reads REAL persistent mail and inventory, and
+// dispatches the actual gateway commands. It is not yet a Unity Canvas.
+var uiSeed=new PlayerState{ResourceRewards=Packets("ui-letter")};
+uiSeed.Mailbox.Receive(new EldoriaV41Message{
+ EventId="ui-letter",Category="recompensas",Type="mission",Title="Premio de ruta",
+ Subtitle="Dos paquetes por reclamar"});
+var uiStore=new JsonStore(uiSeed);
+var uiGateway=new LocalGateway(clock,uiStore);
+var uiBridge=new Eldoria.Issue186Art.ResourceExperienceUiBridge(uiGateway);
+var view=uiBridge.Refresh();
+Need(view.Mail.Count==1&&view.Mail[0].CanClaim&&view.Mail[0].LockedPackets==2 &&
+     view.MailAttention==AttentionLevel.ActionReady &&
+     view.ClaimTutorialPending && view.Bag.Count==0,
+     "actual mailbox projection distinguishes actionable claim, not consumed bag");
+Need(uiBridge.ReadMail("ui-letter").Ok,"real UI bridge dispatches read independently");
+view=uiBridge.Refresh();
+Need(!view.Mail[0].Unread&&view.Mail[0].CanClaim &&
+     view.MailAttention==AttentionLevel.ActionReady,
+     "reading through UI bridge cannot clear actionable reward");
+int uiBaseWood=uiGateway.Snapshot().Resources.Wood;
+Need(uiBridge.ClaimMail("ui-letter").Ok,"real UI bridge dispatches claim");
+view=uiBridge.Refresh();
+Need(view.Mail.Count==1&&!view.Mail[0].CanClaim&&view.Bag.Count==2 &&
+     view.MailAttention==AttentionLevel.None &&
+     view.BagAttention==AttentionLevel.New &&
+     view.Bag.All(p=>p.CanUse&&p.New) &&
+     view.Bag.All(p=>!string.IsNullOrEmpty(p.SpriteKey)&&!string.IsNullOrEmpty(p.AmountText)),
+     "real claimed reward projects exact actionable bag icon, amount and novelty");
+Need(!view.ClaimTutorialPending&&view.UseTutorialPending,
+     "tutorial progression reflects successful gateway claim, not mere UI click");
+Need(uiGateway.Snapshot().Resources.Wood==uiBaseWood,
+     "UI bridge cannot credit wallet on mail claim");
+Need(uiBridge.MarkBagSeen("mission:chapter1:wood").Ok,
+     "UI bridge can clear bag novelty without spending");
+view=uiBridge.Refresh();
+Need(view.Bag.Count(p=>p.New)==1&&view.Bag.Count==2,
+     "one bag seen event does not consume either item");
+Need(uiBridge.UsePacket("mission:chapter1:wood").Ok,
+     "actual use button dispatches authoritative saved command");
+view=uiBridge.Refresh();
+Need(uiGateway.Snapshot().Resources.Wood==uiBaseWood+75&&view.Bag.Count==1 &&
+     !view.UseTutorialPending,
+     "UI bridge uses one exact packet and tutorial completes on real success");
+Need(!uiBridge.UsePacket("mission:chapter1:wood").Ok,
+     "UI bridge cannot resurrect spent packet");
+uiGateway=new LocalGateway(clock,uiStore);
+view=new Eldoria.Issue186Art.ResourceExperienceUiBridge(uiGateway).Refresh();
+Need(view.Bag.Count==1&&uiGateway.Snapshot().Resources.Wood==uiBaseWood+75,
+     "real UI bridge projection survives JSON save/reload and tombstone");
+
+// Sweep UTC rollover across every clock read of one real command.
+for(int threshold=1;threshold<=80;threshold++){
+ var midnight=(utcDay+1)*TimeSpan.TicksPerDay;
+ var rollover=new RolloverClock(midnight-1,midnight,threshold);
+ var rolloverState=new PlayerState{DailyTreasures=new DailyTreasureState{
+  LastClaimUtcDay=utcDay-1,CycleDay=6,ConsecutiveDays=6,TotalClaims=6}};
+ var rolloverStore=new JsonStore(rolloverState);
+ var rolloverGateway=new LocalGateway(rollover,rolloverStore);
+ var beforeRollover=rolloverGateway.Snapshot();
+ var accepted=rolloverGateway.Execute(new GameCommand("rollover",beforeRollover.PlayerId,
+  "ClaimDailyTreasure","",beforeRollover.Revision));
+ Need(accepted.Ok,"UTC-boundary daily claim accepts at threshold "+threshold);
+ var settled=rolloverGateway.Snapshot();var ledger=settled.DailyTreasures;
+ var expected=DailyTreasureRules.ForDay(ledger.CycleDay,ledger.ConsecutiveDays);
+ string eventId="daily-treasure:"+ledger.LastClaimUtcDay;
+ Need(settled.Mailbox.Messages.Any(m=>m.EventId==eventId &&
+  DailyTreasureRules.UtcDay(m.OccurredAtUtcTicks)==ledger.LastClaimUtcDay),
+  "UTC receipt, event ID and claimed day agree at threshold "+threshold);
+ Need(settled.ResourceRewards.Packets.Where(p=>p.Kind=="wood").Sum(p=>p.Amount)==expected.Wood &&
+      settled.ResourceRewards.Packets.Where(p=>p.Kind=="stone").Sum(p=>p.Amount)==expected.Stone &&
+      settled.ResourceRewards.Packets.Where(p=>p.Kind=="food").Sum(p=>p.Amount)==expected.Food,
+  "UTC packet amounts match actually claimed streak at threshold "+threshold);
+}
+// Real offline march-return saves: only nodes and actual animal hunts
+// credit directly. Combat packages require explicit claim, then use.
+foreach(var target in new[]{"forest-valoria","quarry-valoria","meat-valoria","hunt-boar","hunt-wolf","region1:boar:1","engendro-valoria","corrupt-scout","ash-stalker-valoria","region1:spawnling:1"})
+{
+ bool direct=target=="forest-valoria"||target=="quarry-valoria"||target=="meat-valoria"||target.StartsWith("hunt-")||target=="region1:boar:1";
+ long due=clock.UtcTicks-TimeSpan.FromMinutes(5).Ticks;
+ string receipt="return:march-main:"+due;
+ var seed=new PlayerState();
+ seed.March=new MarchState{TargetId=target,Phase="returning",PhaseEndsUtcTicks=due,PendingWood=17,PendingStone=13,PendingFood=11};
+ if(target.StartsWith("region1:"))seed.WorldCreatureLocations.Add(new WorldCreatureLocation{TargetId=target,CreatureKind=target.Contains("boar")?"boar":"spawnling",Generation=1,Level=1,DefeatedUtcTicks=due-TimeSpan.FromSeconds(10).Ticks,RespawnUtcTicks=clock.UtcTicks+TimeSpan.FromHours(1).Ticks});
+ int w=seed.Resources.Wood,st=seed.Resources.Stone,f=seed.Resources.Food;
+ var saved=new JsonStore(seed);var g=new LocalGateway(clock,saved);g.Advance();var returned=g.Snapshot();
+ Need(returned.March.Phase=="idle"&&returned.CompletedTaskIds.Contains(receipt),target+" actual offline return completed");
+ Need(returned.Resources.Wood==w+(direct?17:0)&&returned.Resources.Stone==st+(direct?13:0)&&returned.Resources.Food==f+(direct?11:0),target+" exact approved direct-versus-packet routing");
+ var packets=returned.ResourceRewards.Packets.Where(x=>x.MailEventId==receipt).ToList();
+ Need(packets.Count==(direct?0:3),target+" exact return reward components");
+ Need(returned.Mailbox.Messages.Count(x=>x.EventId==receipt)==1,target+" one real return letter");
+ g=new LocalGateway(clock,saved);g.Advance();
+ Need(g.Snapshot().ResourceRewards.Packets.Count(x=>x.MailEventId==receipt)==packets.Count,target+" JSON reload no duplicate receipt");
+ if(!direct)
+ {
+  Need(packets.All(x=>!x.Collected&&!x.Used&&x.Origin=="combat"),target+" combat packets locked, no premature collection");
+  Need(AttentionCueRules.At(returned.RewardAttention,"mail")==AttentionLevel.ActionReady,target+" actual pending claim attention");
+  Need(Send(g,"read-"+target,"MailRead",receipt).Ok,target+" real mail read accepted");
+  Need(g.Snapshot().Resources.Wood==w&&!g.Snapshot().ResourceRewards.Packets.First(x=>x.MailEventId==receipt).Collected,target+" reading is not reward collection");
+  Need(Send(g,"claim-"+target,ResourceRewardCommands.ClaimMail,receipt).Ok,target+" actual combat reward claim");
+  Need(g.Snapshot().Resources.Wood==w&&g.Snapshot().ResourceRewards.Packets.Where(x=>x.MailEventId==receipt).All(x=>x.Collected&&!x.Used),target+" claim moves to bag without spending");
+  g=new LocalGateway(clock,saved);
+  Need(Send(g,"use-"+target,ResourceRewardCommands.UsePacket,receipt+":wood").Ok,target+" actual one packet use after reload");
+  Need(g.Snapshot().Resources.Wood==w+17&&g.Snapshot().Resources.Stone==st&&g.Snapshot().Resources.Food==f,target+" use credits only exact wood amount");
+  Need(!Send(g,"reuse-"+target,ResourceRewardCommands.UsePacket,receipt+":wood").Ok,target+" no reused combat packet");
+ }
+}
+// Actual saved exploration claims use all four established reward tables.
+for(int family=0;family<4;family++)
+{
+ string orderId=(EarlyRetentionRules.Period(clock.UtcTicks)-1)+":"+family;
+ var seed=new PlayerState{BastionLevel=3,BarracksLevel=1};
+ seed.ChapterProgress.MarchConfirmed=true;
+ seed.ChapterProgress.SeenNarrative.Add("scouts-introduction");
+ seed.Retention.Orders.Add(new ScoutOrder{Id=orderId,Kind=family,Period=(int)EarlyRetentionRules.Period(clock.UtcTicks)-1,StartedUtcTicks=clock.UtcTicks-TimeSpan.FromMinutes(10).Ticks,EndsUtcTicks=clock.UtcTicks-TimeSpan.FromMinutes(1).Ticks,TroopsReturned=true});
+ int w=seed.Resources.Wood,st=seed.Resources.Stone,f=seed.Resources.Food;
+ var save=new JsonStore(seed);var g=new LocalGateway(clock,save);g.Advance();
+ int beforeXp=g.Snapshot().Retention.AldricExperience;
+ Need(Send(g,"scout-packet-"+family,"ScoutClaim",orderId).Ok,"actual exploration claim family "+family);
+ var claimedScout=g.Snapshot();var packets=claimedScout.ResourceRewards.Packets.Where(x=>x.Origin=="exploration").ToList();
+ int ew=family==0?45:family==1?35:family==2?60:0;
+ int es=family==0?20:family==2||family==3?25:0;
+ int ef=family==1?30:family==3?45:0;
+ Need(packets.Count==2&&packets.All(x=>x.Collected&&!x.Used&&x.MailEventId==""),"scout claim produces two actual bag components, not another claim gate");
+ Need(packets.Where(x=>x.Kind=="wood").Sum(x=>x.Amount)==ew&&packets.Where(x=>x.Kind=="stone").Sum(x=>x.Amount)==es&&packets.Where(x=>x.Kind=="food").Sum(x=>x.Amount)==ef,"scout exact family reward table preserved");
+ Need(claimedScout.Resources.Wood==w&&claimedScout.Resources.Stone==st&&claimedScout.Resources.Food==f,"scout explicit claim never spends its new bag contents");
+ Need(claimedScout.Retention.AldricExperience==beforeXp+20&&claimedScout.Retention.Orders.Single(x=>x.Id==orderId).Claimed,"scout actual discovery and non-resource XP remain immediate");
+ Need(claimedScout.Mailbox.Messages.Single(x=>x.DiscoveryOrderId==orderId).DiscoveryKind==family,"existing actual discovery report preserves family");
+ Need(AttentionCueRules.At(claimedScout.RewardAttention,"bag")==AttentionLevel.New,"scout bag informational novelty");
+ g=new LocalGateway(clock,save);
+ Need(!Send(g,"scout-again-"+family,"ScoutClaim",orderId).Ok,"scout cannot reissue after reload with a new command ID");
+ Need(g.Snapshot().ResourceRewards.Packets.Count(x=>x.Origin=="exploration")==2,"scout durable exactly-once two-component bundle");
+ foreach(var packet in packets)Need(Send(g,"scout-use-"+packet.Kind,ResourceRewardCommands.UsePacket,packet.ReceiptId).Ok,"actual voluntary use of scout "+packet.Kind);
+ Need(g.Snapshot().Resources.Wood==w+ew&&g.Snapshot().Resources.Stone==st+es&&g.Snapshot().Resources.Food==f+ef,"scout exact quantities credited only through actual uses");
+}
+var vigilantSeed=new PlayerState{BastionLevel=3};
+vigilantSeed.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+vigilantSeed.Available=new ArmyRoster();vigilantSeed.Available.Set(0,5,100);
+int vigilantWood=vigilantSeed.Resources.Wood,vigilantStone=vigilantSeed.Resources.Stone;
+var vigilantStore=new JsonStore(vigilantSeed);var vigilantGateway=new LocalGateway(clock,vigilantStore);vigilantGateway.Advance();
+Need(Send(vigilantGateway,"real-vigilant-packets","VigilantBattle","1").Ok,"actual resolved stage-one battle command");
+var wonStage=vigilantGateway.Snapshot();
+Need(wonStage.Retention.LastClearedStage==1&&wonStage.LastBattleReport.Won,"actual strong T5 army wins stage one");
+var stagePackets=wonStage.ResourceRewards.Packets.Where(x=>x.Origin=="vigilants").ToList();
+Need(stagePackets.Count==2&&stagePackets.All(x=>x.Collected&&!x.Used&&x.MailEventId==""),"won Vigilant stage issues real collected bag packets");
+Need(stagePackets.Single(x=>x.Kind=="wood").Amount==32&&stagePackets.Single(x=>x.Kind=="stone").Amount==11,"stage-one reward balance preserved");
+Need(wonStage.Resources.Wood==vigilantWood&&wonStage.Resources.Stone==vigilantStone,"Vigilant victory does not spend packet rewards");
+Need(wonStage.Retention.AldricExperience==20,"Vigilant non-resource mastery XP remains immediate");
+Need(wonStage.Mailbox.Messages.Any(x=>x.Type=="battle"),"actual Vigilant battle report still generated");
+vigilantGateway=new LocalGateway(clock,vigilantStore);
+Need(!Send(vigilantGateway,"vigilant-stage-replay","VigilantBattle","1").Ok,"same won stage cannot mint more after reload");
+Need(vigilantGateway.Snapshot().ResourceRewards.Packets.Count(x=>x.Origin=="vigilants")==2,"Vigilant stage stable two-component receipt");
+Need(Send(vigilantGateway,"vigilant-use",ResourceRewardCommands.UsePacket,"vigilant:stage:1:wood").Ok,"Vigilant actual packet USE accepted");
+Need(vigilantGateway.Snapshot().Resources.Wood==vigilantWood+32&&vigilantGateway.Snapshot().Resources.Stone==vigilantStone,"Vigilant packet credits its exact amount independently");
+// A loss must not accidentally commit the prevalidated potential prize.
+var losingSeed=new PlayerState{BastionLevel=3};losingSeed.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+losingSeed.Available=new ArmyRoster();losingSeed.Available.Set(0,1,1);losingSeed.Retention.LastClearedStage=24;
+var losingStore=new JsonStore(losingSeed);var losing=new LocalGateway(clock,losingStore);losing.Advance();
+Need(Send(losing,"actual-vigilant-defeat","VigilantBattle","25").Ok,"real failed battle is still a recorded accepted encounter");
+Need(!losing.Snapshot().LastBattleReport.Won&&losing.Snapshot().Retention.LastClearedStage==24,"weak actual army does not clear the stage");
+Need(losing.Snapshot().ResourceRewards.Packets.Count==0&&losing.Snapshot().Retention.AldricExperience==0,"defeat grants neither packets nor victory XP");
+Need(losing.Snapshot().Resources.Wood==losingSeed.Resources.Wood,"defeat cannot credit wallet");
+// Loading already-awarded historical discoveries/stages cannot mint packages.
+var historical=new PlayerState{BastionLevel=3,BarracksLevel=1};historical.ChapterProgress.MarchConfirmed=true;
+historical.ChapterProgress.SeenNarrative.Add("vigilants-introduction");historical.ChapterProgress.SeenNarrative.Add("scouts-introduction");
+historical.Retention.LastClearedStage=1;historical.Retention.Orders.Add(new ScoutOrder{Id="legacy-paid",Kind=2,Claimed=true});
+var historicalStore=new JsonStore(historical);var historicalGateway=new LocalGateway(clock,historicalStore);historicalGateway.Advance();
+Need(historicalGateway.Snapshot().ResourceRewards.Packets.Count==0,"legacy already-paid history creates no retrospective bag award");
+Need(!Send(historicalGateway,"legacy-stage","VigilantBattle","1").Ok,"legacy cleared stage cannot pay again");
+Need(!Send(historicalGateway,"legacy-order","ScoutClaim","legacy-paid").Ok,"legacy claimed exploration cannot pay again");
+// Counter capacity refusal precedes new progress, report and inventory mutation.
+var xpFull=new PlayerState{BastionLevel=3};xpFull.ChapterProgress.SeenNarrative.Add("vigilants-introduction");xpFull.Retention.AldricExperience=int.MaxValue;
+xpFull.Available=new ArmyRoster();xpFull.Available.Set(0,5,100);
+var xpStore=new JsonStore(xpFull);var xpGateway=new LocalGateway(clock,xpStore);xpGateway.Advance();int xpWrites=xpStore.Writes;var xpBefore=xpGateway.Snapshot();
+Need(!Send(xpGateway,"vigilant-xp-capacity","VigilantBattle","1").Ok,"Vigilant XP overflow refuses without throwing or awarding");
+Need(xpGateway.Snapshot().Retention.LastClearedStage==0&&xpGateway.Snapshot().ResourceRewards.Packets.Count==0&&xpGateway.Snapshot().LastBattleReport?.TargetId==xpBefore.LastBattleReport?.TargetId,"XP refusal leaves victory and inventory untouched");
+Need(xpStore.Writes==xpWrites,"XP capacity refusal has no saved partial transaction");
+Console.WriteLine("RESOURCE_REAL_GATEWAY_PASS checks="+checks+"; actual JSON save/reload; NOT Unity/UI/mobile proof");
+sealed class FixedClock:IClock{public long UtcTicks{get;set;}}
+sealed class JsonStore:IStateStore{
+ static readonly JsonSerializerOptions options=new JsonSerializerOptions{IncludeFields=true};string json;public int Writes;
+ public JsonStore(PlayerState state){json=JsonSerializer.Serialize(state,options);}public PlayerState Load()=>JsonSerializer.Deserialize<PlayerState>(json,options);
+ public void Save(PlayerState state){json=JsonSerializer.Serialize(state,options);Writes++;}
+}
+
+
+sealed class RolloverClock:IClock{
+ readonly long before,after;readonly int threshold;int reads;
+ public RolloverClock(long before,long after,int threshold){this.before=before;this.after=after;this.threshold=threshold;}
+ public long UtcTicks=>++reads<=threshold?before:after;
+}
+

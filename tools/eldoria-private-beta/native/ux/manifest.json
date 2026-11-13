@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "base_runtime": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+  "review_base": "ea7f3c6971d48db323f8e6455984e703cf444ff5",
+  "scope": "Isolated frozen beta only; does not modify PR173 or PR181 canonical source",
+  "files": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+      "overlay": "ValoriaIntegrationBuild.cs.txt",
+      "baseline_sha256": "51b70f48acb1c9d82f9c8f8ea4c051b052863145ba2005c9c385a1e5f35ab59f",
+      "candidate_sha256": "572d1ce0a63a2775fe76980ce2a4da177c22cee87670022b2f8d02fd18a31ff8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+      "overlay": "ValoriaIntegratedWorld.cs.txt",
+      "baseline_sha256": "19e289ff881b483748ea627c0b570768498b798cb0cf684e8c2a45eccd11cb88",
+      "candidate_sha256": "1bc7a25bd08f39d6a39152efdb8fdfb73103faca661e9818196229846d5c09a7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
+      "overlay": "ValoriaJourneyGuidance.cs.txt",
+      "baseline_sha256": "882b6170c3bdda74f4bfd9c47632f7d9c61914f2f0f5c5b4cb577610000a183e",
+      "candidate_sha256": "8ef6aadd66462c193614ae4fe5f3cff7a7c11b59fd542d8bf1292b8cde301e83"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
+      "overlay": "PlayerClarityRuntime.cs.txt",
+      "baseline_sha256": "91ee10fbe9b9eff6573ec43c89c9878ea105dfc9300ef53d41ea96611fdc5a27",
+      "candidate_sha256": "e0f877393a2f7ed0fe0ab473045a07f53d1f3a9186782b16f3c7c64e485d9b06"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+      "overlay": "LocalGateway.cs.txt",
+      "baseline_sha256": "3f405f25d87caf770fc39ca566eb5abcd13f5e5496974fa2aef6dfebda7800f0",
+      "candidate_sha256": "3ba8ba7dbd579cf6130e82881988e148b5dca7e889c9bdbaf063e56421f55492"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+      "overlay": "EarlyRetentionRules.cs.txt",
+      "baseline_sha256": "9116890825f42de5765d3648cb03f203eb5803521021faae976a019f815159a7",
+      "candidate_sha256": "adc134b3478bb885ad5a33c0f384d96588f0b76fdf012124e3d1456a21338784"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs",
+      "overlay": "NarrativeCoherenceRules.cs.txt",
+      "baseline_sha256": "bd68eb8bce581709098685abaa704c587a166069a7f5d6274d2a849ad86c011f",
+      "candidate_sha256": "607d6c1f1a4fe7abab64e4e440b2721153cb7ee13efcd60297349ea6b234c740"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs",
+      "overlay": "ExistingSliceBinding.cs.txt",
+      "baseline_sha256": "619de9dc1564a9bd842a3aa6b426eb23caa41017fa2210cfffef3a2b465ab7a2",
+      "candidate_sha256": "69ee05315eecd5530a5e9d05c18b012220d4701d330dc8fb2e9381528b7b45a0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs",
+      "overlay": "BottomNavigation.cs.txt",
+      "baseline_sha256": "e4ad0cfd4ce379abb10c1a27f7dd71a51ca350b9f455699bdcac37c003eb071a",
+      "candidate_sha256": "13764100f411653f96fb376337a9685ca7dbb6bd524223438385ddeaa50e9eac"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BuildingLabel.cs",
+      "overlay": "BuildingLabel.cs.txt",
+      "baseline_sha256": "f03046a7c96649b318f091775d3fd3553ceb8479f2e17dd056ee9c899550b348",
+      "candidate_sha256": "f4ffc6c67a7ebd8ed08166c5ec761688c0e2a6ab4a699d7f643b2d7e84009c53"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+      "overlay": "RoyalHUD.cs.txt",
+      "baseline_sha256": "b64de72d44b7c242160b180881bf4d096a655d603edea304e517d920d64f2ba1",
+      "candidate_sha256": "99eb36d3d8bd158867cf2aaa66f9d6daafa3209ab28bfb523b6b785c0e89f300"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalIconGraphic.cs",
+      "overlay": "RoyalIconGraphic.cs.txt",
+      "baseline_sha256": "86f3ec4dee5ce49fc83e021affd6d3236c8bf546921b1253b20e0014a03a86ec",
+      "candidate_sha256": "e8e59461ca864fa261a74b349bdf9bf80f94816a4c3fe8f54424bd56d934cf6f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core/RoyalContracts.cs",
+      "overlay": "RoyalContracts.cs.txt",
+      "baseline_sha256": "8d612fbed0e67ddafae7f3f847b3b644aeccf4b5a09e3d52d7af766a82955b17",
+      "candidate_sha256": "a688c12dc97edd69cf6f8c811f17ad3e9d1a86baba5164101d0b0de68423f8ad"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+      "overlay": "RoyalGoldV2Hud.cs.txt",
+      "baseline_sha256": "a8b0403add245996e85eae912de87fdd90dccd94fa21a420f11a41d4765dc60e",
+      "candidate_sha256": "2368b57307d4d486f16a21ba7ac19a848a8a01993652c1352f37177a34d3f001"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
+      "overlay": "RoyalGoldV3ContextHud.cs.txt",
+      "baseline_sha256": "e534dba6fe50fec7f15fc5b82e8ca01e5578c6174fc0fdecdcd116d0b20b0c43",
+      "candidate_sha256": "bc0597c25f10f8e7118161b2ed29659febb71f944f0cf794555f879d915683c9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs",
+      "overlay": "RoyalGoldV3LayeredFinish.cs.txt",
+      "baseline_sha256": "39553ed8fb30576aa0a629dbafb5983ae15707075d77c60b88612e1524b7a724",
+      "candidate_sha256": "8725da918a3dd1da1b1539f3e1db7ed84b9dffee3178a5e56b381a6b7e97d7a8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+      "overlay": "RoyalGoldV3ManagementScreens.cs.txt",
+      "baseline_sha256": "a8f6e80a94aa4a2609ba02fa58f222202a80dbc9d873b18ab2fc535c73636bec",
+      "candidate_sha256": "63778c8a67730d9ce6e69ae9e8c09e7059aa9546d29a9d803998192b2d1b9a69"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsParallax.cs",
+      "overlay": "RoyalGoldV3VigilantsParallax.cs.txt",
+      "baseline_sha256": "08009821aeeae97332bfafbcb705eb63478167a6ccd1ad7b50f628fab66d7eb9",
+      "candidate_sha256": "953797705999e2aa8b517f11fdd80bc42c2c48d4642402c9f327436b4e3d8072"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs",
+      "overlay": "RoyalGoldV41MailboxScreen.cs.txt",
+      "baseline_sha256": "414202d76db0fd72ce84433bb39060c629be0118543b9001f91160698573accf",
+      "candidate_sha256": "d466e151405f229bc66c3bd5e7bcfc2e348867c337083e41c18bb2d3b31a6ced"
+    }
+  ]
+}

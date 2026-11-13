@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable><ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/GameState.cs" Link="GameState.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs" Link="EldoriaV41Contracts.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs" Link="EarlyRetentionRules.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs" Link="NarrativeCoherenceRules.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs" Link="SliceContentProfiles.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs" Link="EconomyProductionV2.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs" Link="RewardExperienceRules.cs"/>
+    <Compile Include="Program.cs"/>
+  </ItemGroup>
+</Project>

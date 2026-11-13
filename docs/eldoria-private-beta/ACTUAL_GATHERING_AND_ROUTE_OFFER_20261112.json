@@ -1,0 +1,20 @@
+{
+  "source": "53d62d2d3938ad71ccc273ec020ffe04853b23f5",
+  "run": 43196662146,
+  "artifact": 13934435838,
+  "artifact_sha256": "ea9e0456259406fcdecca337a29ca13208f683b0d028c72956bca17aa3083db4",
+  "browser_passed": true,
+  "browser_errors": 0,
+  "actual_gather_actions": [
+    "Recoger madera",
+    "Recoger madera",
+    "Recoger piedra"
+  ],
+  "actual_next_mission": "Despeja la ruta corrupta",
+  "actual_next_primary_offer": "Atacar explorador",
+  "no_gameplay_save_or_clock_injection": true,
+  "full_hosted_i_v_certified": false,
+  "physical_iphone_certified": false,
+  "http202": 64,
+  "unique_uuids": 63
+}

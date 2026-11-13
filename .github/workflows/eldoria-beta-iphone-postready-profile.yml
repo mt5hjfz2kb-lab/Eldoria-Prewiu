@@ -1,0 +1,109 @@
+name: Eldoria beta13 P0 isolated post-ready phase diagnostic
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - '.github/workflows/eldoria-beta-iphone-postready-profile.yml'
+      - 'tools/eldoria-private-beta/iphone_ab/postready_profile.js'
+      - 'tools/eldoria-private-beta/iphone_ab/postready_profile.test.cjs'
+      - 'tools/eldoria-private-beta/iphone_ab/stage_postready_profile.py'
+      - 'tools/eldoria-private-beta/iphone_ab/test_postready_profile_stage.py'
+      - 'tools/eldoria-private-beta/qa_webkit_residency.cjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-beta13-p0-postready-profile
+  cancel-in-progress: false
+jobs:
+  stage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Opt-in/privacy, lifecycle and fail-closed stage tests
+        run: |
+          node --check tools/eldoria-private-beta/iphone_ab/postready_profile.js
+          node --test tools/eldoria-private-beta/iphone_ab/postready_profile.test.cjs
+          python -m unittest discover -s tools/eldoria-private-beta/iphone_ab -p 'test_postready_profile_stage.py' -v
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42916816001
+          name: beta13-prebaked-collision-candidate-site
+          github-token: ${{ github.token }}
+          path: site
+      - name: Check exact beta13 build, add owner-only phase recorder, preserve compiled data
+        run: |
+          python tools/eldoria-private-beta/iphone_ab/stage_postready_profile.py site tools/eldoria-private-beta/iphone_ab/postready_profile.js >stage-evidence.json
+          node --check site/play.js
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('site');x=json.loads((p/'release-identity.json').read_text())
+          assert x['source_sha']=='7ae5416613480ba526a839b429459d53629041e5'
+          assert x['p0_local_profile']['preserves_engine_and_game_assets'] is True
+          assert x['p0_local_profile']['external_testers_enabled'] is False
+          assert x['p0_local_profile']['physical_iphone_verified'] is False
+          print('BETA13_POSTREADY_PHASE_PROFILE_STAGED_NOT_PUBLISHED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta13-postready-phase-evidence
+          path: |
+            stage-evidence.json
+            site/release-identity.json
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: beta13-postready-iphone-unverified-site
+          path: site/
+          compression-level: 0
+          retention-days: 14
+  apple-gpu:
+    needs: stage
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: beta13-postready-iphone-unverified-site
+          path: qa-sites/candidate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check Apple WebKit entry, player name and reload with profiler opt-in
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_EARLY_NO_SCREENSHOT: '1'
+        run: |
+          npm install --prefix "$RUNNER_TEMP/compact-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/compact-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/compact-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-sites 18765 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1&eldoria_p0=1' QA_REVISION=native325-mobile13-prebaked-collision-qa QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta13-postready-apple-webkit-not-iphone-certification
+          path: |
+            evidence/
+            server.log
+          retention-days: 14

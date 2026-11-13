@@ -1,0 +1,139 @@
+name: Eldoria baked original terrain queries native parity and WebGL
+# Owner confirmed Windows handoff on 2026-11-09: validate frozen pretester UX.
+# Bake original collider responses, replay with exact parity, then build without runtime cooking.
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-native-memory.yml', 'tools/eldoria-private-beta/native/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  statuses: write
+concurrency:
+  group: eldoria-beta-native-warm-preserved
+  cancel-in-progress: false
+env:
+  EXPECTED_LEASE_REVISION: '22'
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      native_available: ${{ steps.lease.outputs.available }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: beta-tools
+          sparse-checkout: |
+            tools/eldoria-private-beta/native
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
+          persist-credentials: false
+      - name: Parse PowerShell without starting Unity
+        shell: pwsh
+        run: |
+          $tokens=$null;$errors=$null
+          Get-ChildItem "$pwd/beta-tools/tools/eldoria-private-beta/native" -Filter *.ps1 -Recurse|ForEach-Object {
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
+          }
+      - name: Test isolated and reviewed input validation
+        shell: pwsh
+        run: ./beta-tools/tools/eldoria-private-beta/native/test_input_audit.ps1
+      - name: Verify frozen UX source transaction and domain behaviour
+        shell: bash
+        run: |
+          python beta-tools/tools/eldoria-private-beta/native/ux/test_overlay.py
+          python beta-tools/tools/eldoria-private-beta/native/ux/apply_overlay.py --source beta-tools --existing-only
+          pwsh -NoProfile -File beta-tools/tools/eldoria-private-beta/native/ux/test_domain.ps1 -Source beta-tools
+      - name: Check current ownership without occupying Windows
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq .content | base64 -d > registry.json
+          gh api "repos/$GITHUB_REPOSITORY/pulls?state=open&per_page=100" > pulls.json
+          python - <<'PY'
+          import json,os
+          active=json.load(open('registry.json'))['active']
+          holders=[x for x in active if 'windows-runner-heavy' in x.get('resources',[])]
+          own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
+          prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
+          if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
+          valid=own['owner']=='chatgpt-eldoria-pilot-telemetry-20261109' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('available='+str(valid).lower()+'\n')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write('PowerShell syntax checked. Native Unity '+('authorized for this exact lease.' if valid else 'NOT RUN: resource lease is not available to this revision. No gameplay/build certification.')+'\n')
+          print({'native_available':valid,'holders':[x['id'] for x in holders]})
+          PY
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.native_available == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 170
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: beta-structural-tools
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: beta-structural-live
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Recheck fresh lease and protect every existing project
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=Get-Content beta-structural-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-eldoria-pilot-telemetry-20261109' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
+      - name: Recover imported isolated project and verify existing production artwork
+        shell: powershell
+        run: |
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_isolated.ps1 -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - name: Original versus staged native startup, canonical journey, then WebGL
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta-structural-native-evidence
+          path: beta-structural-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: beta-structural-webgl-unverified
+          path: beta-structural-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
+          compression-level: 0
+          retention-days: 14
+

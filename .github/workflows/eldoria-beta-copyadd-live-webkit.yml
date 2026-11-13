@@ -1,0 +1,91 @@
+name: Eldoria actual public owner journey and opt-in telemetry — desktop WebKit, no deployment
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-copyadd-live-webkit.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-staged-mobile16-actual-mac
+  cancel-in-progress: false
+jobs:
+  staged-desktop-webkit:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43150432049
+          name: mobile16-unpublished-preserved-owner-site
+          github-token: ${{ github.token }}
+          path: site
+      - name: Download byte-identical genuinely earned Bastion II barracks campaign
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43203180584
+          name: mobile16-actual-public-owner-telemetry-journey-not-physical-iphone
+          github-token: ${{ github.token }}
+          path: earned
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify exact native identity and preserved owner publication guard
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          r=pathlib.Path('site')
+          p=json.loads((r/'beta-lazy-world-owner-proof.json').read_text())
+          assert p['combined_bytes']==972044910 and p['original_files_preserved']==144
+          assert p['source_sha']=='4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71' and p['shared_exact_streaming_assets']
+          assert p['native_bundle_sha256']=='49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a'
+          assert not p['published'] and not p['physical_iphone_verified'] and not p['external_testers_enabled']
+          print('EXACT_UNPUBLISHED_144_ORIGINAL_FILES_NATIVE_STREAM_VERIFIED')
+          PY
+      - name: Follow actual barracks training control and verify twenty normal timed recruits
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '0'
+          QA_EARLY_NO_SCREENSHOT: '1'
+          QA_RESIZE_STRESS: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_LAZY_WORLD: '1'
+          QA_ADVANCE_STORY: '1'
+          QA_ACTUAL_WORLD_UI: '1'
+          QA_NEXT_OBJECTIVE: '1'
+          QA_COMPLETE_CHAPTER_ONE: '1'
+          QA_BUILD_BARRACKS: '1'
+          QA_EXPORT_ORDINARY_STATE: '1'
+          QA_GLOBAL_DEADLINE_MS: '1200000'
+          QA_OCR_EXECUTABLE: /tmp/eldoria-actual-ui-ocr
+          QA_EARNED_STATE: earned/deferred/ordinary-qa-storage-state.json
+          QA_OUT: evidence/deferred
+          QA_REVISION: native325-mobile16-full-lazy-profile-owner-qa
+          QA_TELEMETRY_BUNDLE: evidence/current-mobile16-pilot-qa.js
+          QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
+          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-p0-lazy-world/?eldoria_diag=1&eldoria_profile=1&eldoria_p0_lazy_world=1&eldoriaBetaTelemetry=1
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          npm install --prefix "$RUNNER_TEMP/eldoria-stage-qa" --no-save playwright@1.55.0 esbuild@0.25.12
+          "$RUNNER_TEMP/eldoria-stage-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/eldoria-stage-qa/node_modules"
+          # Verify bounded keepalive transport across the actual reload, without filtering browser errors.
+          node tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-iphone-p0-lazy-world tools/eldoria-private-beta/pages
+          "$RUNNER_TEMP/eldoria-stage-qa/node_modules/.bin/esbuild" site/beta-iphone-p0-lazy-world/pilot-bootstrap.mjs --bundle --format=iife --platform=browser --outfile=evidence/current-mobile16-pilot-qa.js
+          node --check evidence/current-mobile16-pilot-qa.js
+          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -framework Vision -framework ImageIO -o /tmp/eldoria-actual-ui-ocr
+          node tools/eldoria-private-beta/qa_webkit_resume_earned.cjs
+      - name: Preserve actual browser evidence even if the new delivery fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-actual-public-owner-telemetry-journey-not-physical-iphone
+          path: evidence/
+          retention-days: 14

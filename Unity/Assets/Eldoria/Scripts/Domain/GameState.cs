@@ -228,9 +228,24 @@ namespace Eldoria.Domain
             Stone = SliceContentProfiles.Active.InitialStone,
             Food = SliceContentProfiles.Active.InitialFood
         };
+#if UNITY_6000_0_OR_NEWER || REWARD_EXPERIENCE_FEATURE
+        // Additive schema-one fields. No retroactive reissue of old rewards.
+        public int ResourceRewardsVersion = 1;
+        public ResourceRewardInventory ResourceRewards = new ResourceRewardInventory();
+        public GuidedTutorialProgress ResourceGuidance = new GuidedTutorialProgress();
+        public AttentionCueLedger RewardAttention = new AttentionCueLedger();
+#endif
         public BastionThreeState ChapterThree = new BastionThreeState();
         // Additive optional progress: old schema-one saves initialize on load.
         public EarlyRetentionState Retention = new EarlyRetentionState();
+        // Opt-in daily rewards live in Unity's ONE authoritative save.
+        // External standalone C# smoke suites intentionally compile only
+        // their historical core contracts. Do not force their foreign-owned
+        // project files to add a new source file merely for GameState.
+        // The daily gateway's OWN smoke explicitly opts into this feature.
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
+        public DailyTreasureState DailyTreasures = new DailyTreasureState();
+#endif
         public int BastionLevel = 1;
         public int MissionPower;
         public int SawmillLevel;

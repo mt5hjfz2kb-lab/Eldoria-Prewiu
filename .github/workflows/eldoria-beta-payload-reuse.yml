@@ -1,0 +1,111 @@
+name: Eldoria owner staging evidence review — no build or deployment
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-payload-reuse.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-beta-owner-lazy-stage
+  cancel-in-progress: false
+jobs:
+  stage-unpublished-owner-route:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - name: Compile delivery preparation and verify bounded forward reconstruction
+        run: |
+          python3 -m py_compile tools/eldoria-private-beta/stage_lazy_profile_owner_site.py
+          python3 tools/eldoria-private-beta/test_lazy_profile_reconstruction.py
+      - name: Download existing complete owner Pages without changing it
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43006294342
+          name: github-pages
+          github-token: ${{ github.token }}
+          path: existing-pages
+      - name: Download exact fresh native profiled candidate
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43140354002
+          name: mobile16-full-lazy-owner-only-site-not-iphone-pass
+          github-token: ${{ github.token }}
+          path: candidate
+      - name: Download actual two-arm Apple GPU QA
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43140354002
+          name: mobile16-full-lazy-desktop-apple-gpu-not-iphone-certificate
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Preserve every live byte and stage exact small-frame owner route
+        run: |
+          python3 tools/eldoria-private-beta/stage_lazy_profile_owner_site.py --pages existing-pages/artifact.tar --candidate candidate --mac actual-mac --output site --transport tools/eldoria-private-beta/iphone_ab/copyadd_transport.js
+      - name: Verify all native data parts through small-frame browser transport through real browser HTTP streaming
+        run: node --max-old-space-size=3072 tools/eldoria-private-beta/verify_lazy_profile_http.mjs site
+      - name: Retain unpublished complete owner site
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-unpublished-preserved-owner-site
+          path: site/
+          compression-level: 0
+          retention-days: 14
+      - name: Retain staging and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile16-owner-staging-proof-no-publication
+          path: |
+            site/beta-lazy-world-owner-proof.json
+            actual-mac/**/report.json
+          retention-days: 14
+
+  export-actual-original-mac:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43140354002
+          name: mobile16-full-lazy-desktop-apple-gpu-not-iphone-certificate
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Preserve actual four photographs for direct visual inspection
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/eldoria-private-beta/copy_actual_mac_profile_review.py
+  export-staged-owner-mac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 43171823166
+          name: mobile16-actual-player-world-journey-not-physical-iphone
+          github-token: ${{ github.token }}
+          path: actual-mac
+      - name: Preserve actual staged-route screenshots and bounded read segments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/eldoria-private-beta/copy_actual_world_ui_review.py

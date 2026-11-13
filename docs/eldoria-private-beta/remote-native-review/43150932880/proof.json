@@ -1,0 +1,339 @@
+{
+  "source_sha": "4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71",
+  "native_mac_run": 43150932880,
+  "physical_iphone_verified": false,
+  "world_entry_verified": false,
+  "visual_name_verification": "pending image inspection",
+  "art_approved": false,
+  "images": [
+    {
+      "file": "deferred-after-name.png",
+      "bytes": 2438770,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "050781eb3d461f63ff45e43b666ee8d38905371f29703659bd30234028d50e7e"
+    },
+    {
+      "file": "deferred-reloaded.png",
+      "bytes": 2438404,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "2cfed81e31a0b3b1292dece19a04649be0f94b19a82f3bab70da6356f340e1fa"
+    },
+    {
+      "file": "deferred-story-step-0.png",
+      "bytes": 2340645,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "7893ac3f1125e691cfdbddf2520dc87702d2b8f8ed160c4fddcbf146bb3b685f"
+    },
+    {
+      "file": "deferred-story-step-1.png",
+      "bytes": 2401693,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "032cc80cc2e65f3a04e0d886b4a08484559b9e15d7aea7c16140ac8894b28768"
+    },
+    {
+      "file": "deferred-story-step-2.png",
+      "bytes": 2394359,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "c7aecbee8043b62e31f6e3e33a73f518ed05eb08b952e997944bc4b7f639a1cb"
+    },
+    {
+      "file": "deferred-story-step-3.png",
+      "bytes": 2453161,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "502d5fedd4e4a3ff61f81b15b984e3f6b1d646524db0f5ff6a95f3022e00d0b0"
+    }
+  ],
+  "arms": {
+    "deferred": {
+      "passed": true,
+      "entry": {
+        "nickname": "Beta QA",
+        "typed": true,
+        "reloaded": true,
+        "observationSeconds": 45,
+        "visualNameVerification": "pending image inspection"
+      },
+      "identity": {
+        "revision": "native325-mobile16-full-lazy-profile-owner-qa",
+        "source_sha": "4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71",
+        "frozen_base_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
+        "source_composition": "Actual native lazy Region1 plus frozen UX19; exact imported-texture deduplication and byte-identical pre-existing mobile6 profile transforms only; fresh WASM/framework unchanged",
+        "existing_input_audit_sha256": "DB0DC33D00DFA620AF5EA2F8B26557C999731F871F85A67A5985E4ECCE866AF0",
+        "game_bytes_unchanged": false,
+        "gameplay_code_unchanged": false,
+        "tutorial_unchanged": true,
+        "clock_unchanged": true,
+        "native_parity_verified": true,
+        "native_journey_verified": true,
+        "native_run": "43135567923",
+        "texture_payload_modified": true,
+        "candidate_bundle_sha256": "49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a",
+        "decoded_files": [
+          {
+            "path": "Build/ValoriaWebPlaytest.loader.js",
+            "sha256": "1ccd1e7918051127c2afe383df585065a6302e16b5eb6ce22121e91640404b02",
+            "bytes": 47867
+          },
+          {
+            "url": "Build/ValoriaWebPlaytest.framework.js.unityweb",
+            "encoding": "gzip",
+            "decoded_bytes": 442305,
+            "decoded_sha256": "dbe9a45c38551a15a2cd45ef062e45d8fbd6baf14b4e32bdae0f4b6f9cce3a9c"
+          },
+          {
+            "url": "Build/ValoriaWebPlaytest.wasm.unityweb",
+            "encoding": "gzip",
+            "decoded_bytes": 44221694,
+            "decoded_sha256": "3611f56d24764cecc008f5a90332cde088e88ee517e32fa03ca5842914ac132d"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-0.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "a2298b84eae14aca694d81f969341596e32148d1d56d8e2cf4cda16fd2135d17"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-1.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "ee0a1edc5b9eb00d253a2a5185157cde77aa78b26f70dbace5c17ba37531d701"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-2.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "08d50c2362a44324f34c77e9982a3500e5cb317c0aa25afc538eb5f46d638761"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-3.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "cb084076eb310b37dea5f412ca8cfdd2ac88095f965a45d8d09a669a550ec85a"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-4.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "21eecffa8d8b4eec171df6a4026da8ede831dcff4c208beb78d6cd1c54d0bf58"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-5.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "4bff49ca47b0b6bb5be6729596be56d4999b5b718476bd1edd56229bc7049c82"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-6.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "e28100da20b64f5a5e1b671860e2d60cb5601a8bcc124e98d059dcc0ef75c997"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-7.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "2447707d39c46840e29d92be14e744fd678faa9f3e0842d5ff27ba785b97c84e"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-8.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "aacc66747550a35132c3380475c12030b508547704231fb73f232c1f55877da5"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-9.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "be822b84f7b327e023928a6dda3ba574509f0737f8af40abd2963114e3453044"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-10.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "de66a6a5ab38b053fb7651d93ef68c2137ef110a374a38786336543a7e391565"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-11.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "717fb329fd581f5b555fb1590542f3b2085ea9c22eaf77b819e0142f8407f117"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-12.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "e44822b83abf4b9042d38bac35e2182ae5cc21e4b3d5c44dc23cfff79d9be066"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-13.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "dd8668bbe869085f97b4616de3e7332306f360bc3e6261eab7dae41f6ad5de22"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-14.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "6b241e434d68c0dfe998c398b59d82014a17c1a222f7f4df8cdc220eb574c836"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-15.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "361a95deaa0bc66dd241502f6e0d0dde800cf99323249df3465b01e0d59eff63"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-16.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "d08a1a0c45402e4dea3067a4f08c2db44d14341d4d5a1d1020200c962dbbe398"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-17.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "4c92f860e254b791e0854a4c769960aa5f3436150450126dfc957e5e25f43de1"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-18.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "e55fbd387bf57196188c6bff5b19f6a407185d265a422fe87bb00d9ed6667646"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-19.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "b73fefe48ace47c2764067763aec54501b5e22b5499621721d5ecdf9bb1940ab"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-20.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "e057f44555b5593bfccd509523cfea33290ec0927952492d77299f532b448553"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-21.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "991825dcd1ff29a663c114ff641dcf1a2cf612e28e3e1eb503bc7fffd2596a06"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-22.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "659b85e9790c4a549fb5e00368fd15425309a55095f8a7bacc507f6ffa586b81"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-23.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "513b2d7c1becb302d9edd393222e7e8d72321ec84403ea215c21a9bd2be2d732"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-24.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "568a7fefe83d432597d8b43d3d04f5c5506759d3dec77510f45ac2d92fffe556"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-25.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "3bc51d9e08da11c6baa47580c725aad8004d0f8473f0fa755f3096135677db04"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-26.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "57c7c82355ca3dfbd5a21297578cb3dc36a58f1a74d4b4c08cd11015dd434858"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-27.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "ddf04135f34923253c6cb734bd1fca24e4e8f5af1691847a75c61ecc69044336"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-28.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "b4c6efbb7d568afce80b98be25b8e392a06412cd074f28d9f6f859bd59c570a5"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-29.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 16777216,
+            "decoded_sha256": "a9ac6ba5a7f272fb022388da9d7f105322edf5ed35dbccb5d70681789d1e6eb5"
+          },
+          {
+            "url": "payload-decoded/native325-mobile16-full-lazy-profile-owner-qa-30.gz",
+            "encoding": "gzip",
+            "decoded_bytes": 10341133,
+            "decoded_sha256": "817e08663990cf039b78fb38f55f4e83f68f2420acb7e13c3384a6cba80174b0"
+          }
+        ],
+        "physical_mobile_tested": false,
+        "runtime_verified": false,
+        "release_for_external_testers": false,
+        "telemetry_gameplay_connected": false,
+        "candidate": true,
+        "original_full_world_bundle_sha256": "de991b1a02b2f8ca9b3c09344805012f72dd5201d131f62c2327598961509a79",
+        "full_region1_compiled": true,
+        "real_lazy_unity_playmode_passed": true,
+        "real_native_i_v_journey_passed": true,
+        "preexisting_mobile6_profile_reused": true,
+        "no_new_texture_compression_decisions": true,
+        "mac_same_binary_ab_verified": false,
+        "physical_iphone_30min_verified": false,
+        "physical_android_30min_verified": false,
+        "world_entry_physical_verified": false,
+        "owner_only": true,
+        "published": false,
+        "recommended_owner_opt_in": "eldoria_p0_lazy_world=1",
+        "owner_delivery": {
+          "format": "ELDORIA_COPY_ADD_V1",
+          "native_input_provenance_retained": true,
+          "all_native_data_bytes_verified": true,
+          "published": false,
+          "physical_iphone_verified": false
+        }
+      },
+      "storyAttempt": {
+        "actualCanvasClicks": [
+          {
+            "step": 0,
+            "x": 300,
+            "y": 735,
+            "file": "story-step-0.png"
+          },
+          {
+            "step": 1,
+            "x": 300,
+            "y": 735,
+            "file": "story-step-1.png"
+          },
+          {
+            "step": 2,
+            "x": 300,
+            "y": 735,
+            "file": "story-step-2.png"
+          },
+          {
+            "step": 3,
+            "x": 300,
+            "y": 735,
+            "file": "story-step-3.png"
+          }
+        ],
+        "realWorldEntryVerified": false
+      }
+    }
+  }
+}

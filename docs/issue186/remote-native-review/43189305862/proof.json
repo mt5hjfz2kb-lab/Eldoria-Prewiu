@@ -1,0 +1,255 @@
+{
+  "source": "9bf06a1438014dbc973753636b4ac71ca92ea96f",
+  "native_run": 43189305862,
+  "artifact_id": 13930465228,
+  "artifact_digest": "sha256:d26af2db74439c0d51308194c1ffa73b17ea289df9f5d4e33bae1df6737b6814",
+  "method": "BYTE_IDENTICAL_NATIVE_PNG_NO_RETOUCH",
+  "artApproved": false,
+  "fullSceneVerified": false,
+  "actualIntegratedCityFrames": 4,
+  "realFirstHitClicks": 52,
+  "sourceOverlayRestored": true,
+  "physicalMobileVerified": false,
+  "files": [
+    {
+      "file": "real-vigilia-bag-actual-integrated-city-390x844.png",
+      "git_blob": "2bf95d8cf8ac5f56df26856e9d4099eb8a49fa7e",
+      "native": {
+        "file": "real-vigilia-bag-actual-integrated-city-390x844.png",
+        "sha256": "b2e4f0e46556001f7749dabc79de987d75e5e9becf24ec05ffc76e6e1ebbeef3",
+        "phase": "actual-integrated-city",
+        "width": 390,
+        "height": 844,
+        "bytes": 553011
+      }
+    },
+    {
+      "file": "real-vigilia-bag-new-390x844.png",
+      "git_blob": "17b97c1fcaa88a56040f319d02f9fc3b3e3b744d",
+      "native": {
+        "file": "real-vigilia-bag-new-390x844.png",
+        "sha256": "ee20e1d37a9ed66e0a08d775168e6c653afddbb3df298ffc69f3659474925f81",
+        "phase": "new",
+        "width": 390,
+        "height": 844,
+        "bytes": 163285
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-read-unclaimed-390x844.png",
+      "git_blob": "e94e875836c0582fda31e34ecf2620eb7c497f44",
+      "native": {
+        "file": "real-vigilia-bag-mail-read-unclaimed-390x844.png",
+        "sha256": "ffabfa9cfe20198dd3bbf9955755da5e584522fae1e260e855664bd2e8ff1da0",
+        "phase": "mail-read-unclaimed",
+        "width": 390,
+        "height": 844,
+        "bytes": 127846
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-claimed-no-credit-390x844.png",
+      "git_blob": "dd1d783109810bbe714bd9271a3c1c22f4e5f016",
+      "native": {
+        "file": "real-vigilia-bag-mail-claimed-no-credit-390x844.png",
+        "sha256": "4eb5d1968d043f48488c5bf75390647ada9366ac095e8b0ee8dafcd58d4c2682",
+        "phase": "mail-claimed-no-credit",
+        "width": 390,
+        "height": 844,
+        "bytes": 128739
+      }
+    },
+    {
+      "file": "real-vigilia-bag-used-reloaded-390x844.png",
+      "git_blob": "fc19d3250615b167cc52275b289d14caa7a804d5",
+      "native": {
+        "file": "real-vigilia-bag-used-reloaded-390x844.png",
+        "sha256": "110a37c32a0b66d61fc80995a0b87948d56958d3f67b5fdd303413e5047bb778",
+        "phase": "used-reloaded",
+        "width": 390,
+        "height": 844,
+        "bytes": 159496
+      }
+    },
+    {
+      "file": "real-vigilia-bag-actual-integrated-city-844x390.png",
+      "git_blob": "07e493c9a05ca0a0e05365a67bc2e58421695d33",
+      "native": {
+        "file": "real-vigilia-bag-actual-integrated-city-844x390.png",
+        "sha256": "93df84bcf001bb692eee62355d09473491de0bf8cca346fa322de3457d664b2e",
+        "phase": "actual-integrated-city",
+        "width": 844,
+        "height": 390,
+        "bytes": 572001
+      }
+    },
+    {
+      "file": "real-vigilia-bag-new-844x390.png",
+      "git_blob": "e3743edbd18cc4687bc427864270903f58508fef",
+      "native": {
+        "file": "real-vigilia-bag-new-844x390.png",
+        "sha256": "567a32ab596b760ea343bc9d8f4448f4041400c66e8108b627f1383f59a04c99",
+        "phase": "new",
+        "width": 844,
+        "height": 390,
+        "bytes": 108231
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-read-unclaimed-844x390.png",
+      "git_blob": "066e0c35cd8b8d15f57d2f055f30f5b8e8b06627",
+      "native": {
+        "file": "real-vigilia-bag-mail-read-unclaimed-844x390.png",
+        "sha256": "ec5147e4d863a9d9fe3639cb3f441c2d5deabd1a9148479ffbbe4200779d4869",
+        "phase": "mail-read-unclaimed",
+        "width": 844,
+        "height": 390,
+        "bytes": 122328
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-claimed-no-credit-844x390.png",
+      "git_blob": "18c79ef3eb2e0acf46687f33d8856e4c190e71d4",
+      "native": {
+        "file": "real-vigilia-bag-mail-claimed-no-credit-844x390.png",
+        "sha256": "cc7d041fd4cbaa4daacbc4325ece11add36a587985c0ba6eccdb34f01d0c8ba6",
+        "phase": "mail-claimed-no-credit",
+        "width": 844,
+        "height": 390,
+        "bytes": 123210
+      }
+    },
+    {
+      "file": "real-vigilia-bag-used-reloaded-844x390.png",
+      "git_blob": "2b1989318c79aed0fa5e7066a85e197be7818a85",
+      "native": {
+        "file": "real-vigilia-bag-used-reloaded-844x390.png",
+        "sha256": "e42692797ac2ec2b167fe4c05a982e08e19c4c368ec594a820161c120e6aef6d",
+        "phase": "used-reloaded",
+        "width": 844,
+        "height": 390,
+        "bytes": 103593
+      }
+    },
+    {
+      "file": "real-vigilia-bag-actual-integrated-city-900x1600.png",
+      "git_blob": "a3f8879228055342bdebc9d16ace7661db3c5e0c",
+      "native": {
+        "file": "real-vigilia-bag-actual-integrated-city-900x1600.png",
+        "sha256": "9b0241e88e90de3ef6055236a46224f09cc74291cece1de7fc66f3fe78b6e101",
+        "phase": "actual-integrated-city",
+        "width": 900,
+        "height": 1600,
+        "bytes": 2319480
+      }
+    },
+    {
+      "file": "real-vigilia-bag-new-900x1600.png",
+      "git_blob": "6b4c87d30e14022dbce3fcb696e21386a6d28b0c",
+      "native": {
+        "file": "real-vigilia-bag-new-900x1600.png",
+        "sha256": "f1d178e4255dbe7372b85660812ba91059be43bdbc2b1d4164b9f3d1d31dc883",
+        "phase": "new",
+        "width": 900,
+        "height": 1600,
+        "bytes": 265327
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-read-unclaimed-900x1600.png",
+      "git_blob": "266d73878af7b0affce96005eb756c849296e2ad",
+      "native": {
+        "file": "real-vigilia-bag-mail-read-unclaimed-900x1600.png",
+        "sha256": "56bd352aad5de0bfd34890b007edbe17c5a678300ba56d9db4d175d21f0489f8",
+        "phase": "mail-read-unclaimed",
+        "width": 900,
+        "height": 1600,
+        "bytes": 299950
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-claimed-no-credit-900x1600.png",
+      "git_blob": "1a18f96166db90f5719e08cd5a572a0775911832",
+      "native": {
+        "file": "real-vigilia-bag-mail-claimed-no-credit-900x1600.png",
+        "sha256": "2730d3f9a1f894d02e378ab6acc561086c8bf4a774a0d1ed58b5665637325dd2",
+        "phase": "mail-claimed-no-credit",
+        "width": 900,
+        "height": 1600,
+        "bytes": 301498
+      }
+    },
+    {
+      "file": "real-vigilia-bag-used-reloaded-900x1600.png",
+      "git_blob": "d2a02335470a3159adf1aa730b73b13c82d27f40",
+      "native": {
+        "file": "real-vigilia-bag-used-reloaded-900x1600.png",
+        "sha256": "6e91fbbd19d9d623c320d435a99bdf1a3f5b4afc4dd88fa88a493a9183d60c31",
+        "phase": "used-reloaded",
+        "width": 900,
+        "height": 1600,
+        "bytes": 508595
+      }
+    },
+    {
+      "file": "real-vigilia-bag-actual-integrated-city-1600x900.png",
+      "git_blob": "bed5844f1c5f348ad755f6ab9d440d937d5b9cbb",
+      "native": {
+        "file": "real-vigilia-bag-actual-integrated-city-1600x900.png",
+        "sha256": "5a0c7adbac50dc32a3386b7f69d4e7d7da8909909f7c69ddd52f831a4d0f02ba",
+        "phase": "actual-integrated-city",
+        "width": 1600,
+        "height": 900,
+        "bytes": 2420269
+      }
+    },
+    {
+      "file": "real-vigilia-bag-new-1600x900.png",
+      "git_blob": "cbf2bcce71d85e77495a886d0f045d0411f29533",
+      "native": {
+        "file": "real-vigilia-bag-new-1600x900.png",
+        "sha256": "76eddeb70276bbfe2a6854a59fb1f764834ec77f16486e8542c99dc5c094fb0f",
+        "phase": "new",
+        "width": 1600,
+        "height": 900,
+        "bytes": 254360
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-read-unclaimed-1600x900.png",
+      "git_blob": "d120e992739905ede6e893e3f1e095381a875fec",
+      "native": {
+        "file": "real-vigilia-bag-mail-read-unclaimed-1600x900.png",
+        "sha256": "b21ff2dee867e88f8bacb35a8ff7f2088f4e0dcb08b123dcea3e9083e4187030",
+        "phase": "mail-read-unclaimed",
+        "width": 1600,
+        "height": 900,
+        "bytes": 289631
+      }
+    },
+    {
+      "file": "real-vigilia-bag-mail-claimed-no-credit-1600x900.png",
+      "git_blob": "291a78ff8d6269374e8a5437cf4ae2eb697280dd",
+      "native": {
+        "file": "real-vigilia-bag-mail-claimed-no-credit-1600x900.png",
+        "sha256": "6b67f8cc46764e4dfeb1ee23f6657f3e50a1e97ab72418f79219119519b40c70",
+        "phase": "mail-claimed-no-credit",
+        "width": 1600,
+        "height": 900,
+        "bytes": 291225
+      }
+    },
+    {
+      "file": "real-vigilia-bag-used-reloaded-1600x900.png",
+      "git_blob": "cb9fc109c80871269eafeb578d696d433d127c16",
+      "native": {
+        "file": "real-vigilia-bag-used-reloaded-1600x900.png",
+        "sha256": "33cf1af44bb89eb35f2365b6850d7f5c789c5181958c12447bc530878841d4b6",
+        "phase": "used-reloaded",
+        "width": 1600,
+        "height": 900,
+        "bytes": 357110
+      }
+    }
+  ]
+}

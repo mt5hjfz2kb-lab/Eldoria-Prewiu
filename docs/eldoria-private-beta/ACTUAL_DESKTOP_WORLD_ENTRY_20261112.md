@@ -1,0 +1,7 @@
+# Actual desktop WebKit world entry
+
+Actual normal-player journey43161378432 on source8af717cdeb1f47ab77081f1b6a3330ec29495d0d succeeded. It used the unchanged staged native bundle49a2d76277a02c7dad31cc1fd46c641d4f15144c2c02e2c6dba1b01ec8c9d66a, actual game source4fd1cacc9c206cfc20e78b20738e4b5bc48e0e71. The browser entered and saved Beta QA, resized, reloaded, advanced the5real prologue pages, used the real objective arrow and real Construir control, waited for actual Aserradero level1, and clicked the unlocked World compass. REGION1_CANON_WORLD_INSTALLED appeared only after that actual world action. WebKit remained alive60seconds after entry with zero recorded browser/runtime errors.
+
+The untouched world screenshot f65100c6aa1337d89de7689d433b7bcbee82e6ad9c9b7c29a828305a720bc69d was directly inspected: real Region1, real Bastion and bridge, CITY navigation and Sir Aldric's first world introduction. This verifies desktop world mode and construction through actual UI; it does not prove the introduction completed, gathering/combat, an I-V hosted journey or a physical phone. Original raw proof flags remain unedited. Next QA completes visible world Continue pages, observes90seconds and attempts real city return, preserving exact images for review.
+
+Owner-only beta16 already published by43152671564 with all144original live files unchanged. No republish, art merge or external invitations. Physical iPhone/Android30minutes and final tester acceptance remain pending; release-request stays disabled.

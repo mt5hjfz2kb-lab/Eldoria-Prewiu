@@ -1,0 +1,9 @@
+MARCH CANONICAL LAYOUT RESTORATION REGRESSION
+workstream=eldoria-forja-oscura-visual-proof-20261107
+owner=chatgpt-work-recovery-8b37e8b1eab0-20261112
+ownership_revision=123
+required=two_real_controller_refresh_restore_cycles_all_RectTransform_anchors_pivot_position_size;existing_38_typography_AB_pairs_and_real_first_hits
+viewports=390x844,900x1600,844x390,1600x900
+art_approved=false
+physical_mobile_verified=false
+merge_or_publish=false

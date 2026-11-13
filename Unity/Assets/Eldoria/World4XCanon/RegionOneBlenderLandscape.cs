@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -8,27 +9,73 @@ using UnityEngine;
 
 namespace Eldoria.World4XCanon
 {
+ // One bounded amount of work between frames, not one mandatory frame per
+ // tiny batch. Resume AFTER the yield so idle browser time is never charged.
+ internal sealed class RegionOneFrameSlice
+ {
+  readonly Func<long> clock; readonly long limit; readonly int maximumUnits;
+  long started; int completed;
+  internal RegionOneFrameSlice(int maximumUnits):this(
+   System.Diagnostics.Stopwatch.GetTimestamp,
+   System.Diagnostics.Stopwatch.Frequency,4,maximumUnits) {}
+  internal RegionOneFrameSlice(Func<long> clock,long frequency,
+   int milliseconds,int maximumUnits)
+  {
+   if(clock==null)throw new ArgumentNullException(nameof(clock));
+   if(frequency<=0||milliseconds<=0||milliseconds>1000||maximumUnits<=0)
+    throw new ArgumentOutOfRangeException();
+   this.clock=clock;this.maximumUnits=maximumUnits;
+   limit=Math.Max(1,(long)(frequency*(milliseconds/1000.0)));
+   Resume();
+  }
+  internal bool ShouldYield(int units=1)
+  {
+   if(units<=0)throw new ArgumentOutOfRangeException(nameof(units));
+   completed=units>=maximumUnits-completed?maximumUnits:completed+units;
+   return completed>=maximumUnits||clock()-started>=limit;
+  }
+  internal void Resume(){started=clock();completed=0;}
+ }
+
  // The exported Blender asset is the only landscape. This component never generates terrain.
  public sealed class RegionOneBlenderLandscape : MonoBehaviour
  {
   const string AssetRoot="World4X/Blender/";
-  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static Dictionary<Vector2Int,System.Collections.Generic.List<VerificationVertex>> sourceVertices; static int sourceVertexCount;
-  struct VerificationVertex { public Vector3 position; public int index; }
+  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static CompactTerrainVerification sourceVertices; static int sourceVertexCount;
   GameObject artwork; MeshFilter terrain; readonly List<Mesh> fittedPigments=new List<Mesh>();
   static RegionOneBlenderLandscape activeSurface;
   Vector3[] contactVertices,contactNormals;int[] contactTriangles;
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
+  // Eager editor verification and deferred WebGL assembly consume the SAME triangle/cell algorithm.
+  // Draining synchronously preserves old entry points without maintaining a second contact index.
   void BuildContactSurface(Vector3 origin)
   {
-   contactVertices=WorldVertices.Select(p=>p-origin).ToArray();contactTriangles=terrain.sharedMesh.triangles;
-   contactNormals=terrain.sharedMesh.normals.Select(n=>terrain.transform.TransformDirection(n).normalized).ToArray();
+   var stages=BuildContactSurfaceStaged(origin);
+   try {while(stages.MoveNext()) {}}
+   finally {(stages as IDisposable)?.Dispose();}
+  }
+  IEnumerator BuildContactSurfaceStaged(Vector3 origin)
+  {
+   // Mesh accessors return owned copies. Transform those copies in place;
+   // never allocate the former local -> world -> relative intermediate arrays.
+   contactVertices=terrain.sharedMesh.vertices;contactTriangles=terrain.sharedMesh.triangles;
+   for(int i=0;i<contactVertices.Length;i++)contactVertices[i]=terrain.transform.TransformPoint(contactVertices[i])-origin;
+   contactNormals=terrain.sharedMesh.normals;
+   for(int i=0;i<contactNormals.Length;i++)contactNormals[i]=terrain.transform.TransformDirection(contactNormals[i]).normalized;
+   var slice=new RegionOneFrameSlice(16384);
    for(int i=0;i<contactTriangles.Length;i+=3){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
     int x0=Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))/16);
     int z0=Mathf.FloorToInt(Mathf.Min(a.z,Mathf.Min(b.z,c.z))/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,Mathf.Max(b.z,c.z))/16);
     for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){var k=new Vector2Int(x,z);if(!contactCells.TryGetValue(k,out var list)){list=new List<int>();contactCells[k]=list;}list.Add(i);}
+    // Check time every 256 COMPLETE triangles. Force a boundary by 16384
+    // triangles even on a coarse clock, retaining GC opportunities in WebGL.
+    if(((i/3)+1)%256==0&&slice.ShouldYield(256)){
+     yield return null; slice.Resume();
+    }
    }
    activeSurface=this;
   }
+  public delegate bool SurfaceRaycast(Ray ray,out RaycastHit hit,float distance);
   bool ContactHeight(float x,float z,out float height)
   {
    height=float.NegativeInfinity;if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x/16),Mathf.FloorToInt(z/16)),out var list))return false;
@@ -79,19 +126,52 @@ namespace Eldoria.World4XCanon
   void OnDestroy(){if(activeSurface==this)activeSurface=null;foreach(var mesh in fittedPigments)if(mesh)Destroy(mesh);}
 
   public Mesh DirectedTerrain=>terrain.sharedMesh;
-  public Vector3[] WorldVertices=>terrain.sharedMesh.vertices.Select(terrain.transform.TransformPoint).ToArray();
+  public Vector3[] WorldVertices
+  {
+   get {
+    // Mesh.vertices already returns an owned copy. Transform it in place
+    // instead of retaining that copy while LINQ allocates a second array.
+    var positions=terrain.sharedMesh.vertices;
+    for(int i=0;i<positions.Length;i++)positions[i]=terrain.transform.TransformPoint(positions[i]);
+    return positions;
+   }
+  }
   public Texture2D GeographicMask
   {
    get {EnsureData();var texture=new Texture2D(nx,nz,TextureFormat.RGBA32,false,true);texture.LoadRawTextureData(masks);texture.Apply();return texture;}
   }
   public static RegionOneBlenderLandscape Install(Transform parent,ValoriaIntegratedWorld host)
   {
+   RegionOneBlenderLandscape result=null;
+   var stages=InstallStaged(parent,host,value=>result=value);
+   try {while(stages.MoveNext()) {}} finally {(stages as IDisposable)?.Dispose();}
+   return result;
+  }
+  // Runtime yields frame boundaries so Web GC can reclaim each completed phase.
+  // Synchronous editor callers retain the exact same validated installation path.
+  internal static void TraceStartupMemory(string phase)
+  {
+   bool enabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer
+    ?UnityEngine.Application.absoluteURL.Contains("eldoria_profile=1")
+    :Environment.GetEnvironmentVariable("ELDORIA_MEMORY_PHASES")=="1";
+   if(!enabled)return;
+   Debug.Log("ELDORIA_MEMORY_PHASE phase="+phase+
+    " allocated="+UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong()+
+    " reserved="+UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong()+
+    " managed="+GC.GetTotalMemory(false));
+  }
+  public static IEnumerator InstallStaged(Transform parent,ValoriaIntegratedWorld host,Action<RegionOneBlenderLandscape> completed)
+  {
+   if(completed==null)throw new ArgumentNullException(nameof(completed));
    var instance=parent.gameObject.AddComponent<RegionOneBlenderLandscape>();
+   TraceStartupMemory("prefab-before");
    var prefab=Resources.Load<GameObject>(AssetRoot+"RegionOneBlenderWorld");
+   TraceStartupMemory("prefab-loaded");
    if(!prefab)throw new InvalidOperationException("Blender GLB must be imported as a prefab by the installed glTFast importer.");
-   EnsureData();
+   // Load query/verification data in the next phase, not alongside prefab import.
    instance.artwork=Instantiate(prefab,parent);instance.artwork.name="Blender authored geography";
    instance.artwork.transform.position=host.WorldHome;
+   TraceStartupMemory("prefab-instantiated");
    // glTF is right handed. Resolve the importer conversion using an authored asymmetrical anchor,
    // never by changing vertices or reconstructing any geographic feature.
    var floor=instance.artwork.GetComponentsInChildren<MeshRenderer>(true).Single(x=>x.name=="BLD_BreachFloor");
@@ -111,39 +191,53 @@ namespace Eldoria.World4XCanon
    }
    if(instance.artwork.GetComponentsInChildren<Collider>(true).Length!=0)
     throw new InvalidOperationException("Art export must not add gameplay colliders.");
-   instance.ValidateImportedSurface(host.WorldHome);
-   instance.BuildContactSurface(host.WorldHome);
+   yield return null;
+   // Verification stays mandatory, but its hundreds of thousands of buckets
+   // must not coexist with contact/routing construction or remain resident.
+   TraceStartupMemory("verify-before");
+   try {EnsureData(true);TraceStartupMemory("verify-index");instance.ValidateImportedSurface(host.WorldHome);}
+   finally {sourceVertices=null;sourceVertexCount=0;}
+   TraceStartupMemory("verify-released");
+   yield return null;
+   // Lazy iPhone world builds subdivide contact bucketing; editor/eager keeps exact tape.
+   if(ValoriaIntegratedWorld.P0LazyWorldProbe)
+    yield return instance.BuildContactSurfaceStaged(host.WorldHome);
+   else instance.BuildContactSurface(host.WorldHome);
+   TraceStartupMemory("contact-ready");
+   yield return null;
    instance.FitImportedPigment(host.WorldHome);
+   // Only CoincidentGroundNormal reads these copied normals, exclusively during
+   // FitImportedPigment above. Keep contact vertices/triangles/cells for gameplay.
+   // Do not discard shared Mesh CPU data: a later scene load still reads it.
+   instance.contactNormals=null;
+   TraceStartupMemory("pigment-ready");
+   yield return null;
    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
    Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");
-   return instance;
+   completed(instance);
   }
   void ValidateImportedSurface(Vector3 origin)
   {
    var positions=WorldVertices;
    if(positions.Length<10000)throw new InvalidOperationException("Incomplete Blender terrain import.");
    if(sourceVertices==null)throw new InvalidOperationException("Exact Blender vertex verification data missing.");
-   var matched=new HashSet<int>();
+   var matched=new bool[sourceVertexCount];int matchedCount=0;
    foreach(var p in positions)
    {
-    var local=p-origin;var key=new Vector2Int(Mathf.FloorToInt(local.x*4),Mathf.FloorToInt(local.z*4));
-    bool found=false;const float toleranceSquared=.002f*.002f;
-    for(int dz=-1;dz<=1;dz++)for(int dx=-1;dx<=1;dx++)
-     if(sourceVertices.TryGetValue(key+new Vector2Int(dx,dz),out var bucket))
-      foreach(var vertex in bucket)
-      {float distance=(vertex.position-local).sqrMagnitude;if(distance<toleranceSquared){found=true;matched.Add(vertex.index);}}
-    if(!found)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
+    var local=p-origin;int added=sourceVertices.MarkMatches(local.x,local.y,local.z,matched);
+    if(added<0)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
+    matchedCount+=added;
     // Import/world transforms may collapse sub-millimetre separations; cover every source position within the unchanged tolerance.
    }
-   if(matched.Count!=sourceVertexCount)throw new InvalidOperationException("Incomplete imported Blender surface.");
+   if(matchedCount!=sourceVertexCount)throw new InvalidOperationException("Incomplete imported Blender surface.");
   }
 
   public void Refresh() {} // Phase A uses the same meshes at every zoom.
   public void SetBlockout(bool value) {} // This entire candidate IS the composition blockout.
-  static void EnsureData()
+  static void EnsureData(bool includeVerification=false)
   {
-   if(heights!=null)return;
+   if(heights!=null&&(!includeVerification||sourceVertices!=null))return;
    var asset=Resources.Load<TextAsset>(AssetRoot+"RegionOneBlenderQueries");
    if(!asset)throw new InvalidOperationException("Missing Blender terrain query export; no mathematical fallback.");
    using(var input=new MemoryStream(asset.bytes))using(var gzip=new GZipStream(input,CompressionMode.Decompress))using(var reader=new BinaryReader(gzip))
@@ -151,17 +245,16 @@ namespace Eldoria.World4XCanon
     if(reader.ReadInt32()!=0x31424c45)throw new InvalidDataException("Unknown Blender query format");
     nx=reader.ReadInt32();nz=reader.ReadInt32();width=reader.ReadSingle();depth=reader.ReadSingle();
     if(nx<2||nz<2||nx*nz>2000000||width!=1820||depth!=3600)throw new InvalidDataException("Unexpected Blender terrain dimensions");
-    var data=new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
+    var data=heights??new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
     masks=reader.ReadBytes(data.Length*4);if(masks.Length!=data.Length*4)throw new InvalidDataException("Truncated Blender masks");
+    if(!includeVerification){heights=data;return;}
     if(reader.ReadInt32()!=0x32564c45)throw new InvalidDataException("Exact Blender source vertices missing");
     int vertexCount=reader.ReadInt32();if(vertexCount<10000||vertexCount>1000000)throw new InvalidDataException("Unexpected source vertex count");
-    sourceVertices=new Dictionary<Vector2Int,List<VerificationVertex>>();sourceVertexCount=vertexCount;
+    sourceVertices=new CompactTerrainVerification(vertexCount);sourceVertexCount=vertexCount;
     for(int i=0;i<vertexCount;i++)
     {
      float x=reader.ReadSingle(),y=reader.ReadSingle(),z=reader.ReadSingle();
-     var key=new Vector2Int(Mathf.FloorToInt(x*4),Mathf.FloorToInt(z*4));
-     if(!sourceVertices.TryGetValue(key,out var bucket)){bucket=new List<VerificationVertex>();sourceVertices[key]=bucket;}
-     bucket.Add(new VerificationVertex{position=new Vector3(x,y,z),index=i});
+     sourceVertices.Add(i,x,y,z);
     }
     heights=data;
    }
@@ -181,4 +274,57 @@ namespace Eldoria.World4XCanon
   public static float Forest(float x,float z)=>Sample(x,z,3);
   public static float RoadDistance(float x,float z)=>(1-Road(x,z))*3;
  }
+// COMPACT_TERRAIN_VERIFICATION_BEGIN
+// Fixed arrays replace one Dictionary entry and List allocation per occupied cell.
+// Original vertex indices, floor(x*4) cells and strict 2 mm predicate are preserved.
+internal sealed class CompactTerrainVerification
+{
+    struct Vertex { public float x, y, z; }
+    readonly Vertex[] vertices;
+    readonly int[] next, heads;
+    public int Count => vertices.Length;
+    public long BufferBytes => (long)vertices.Length * 16 + (long)heads.Length * 4;
+    public CompactTerrainVerification(int count)
+    {
+        if (count < 1 || count > 1000000) throw new System.ArgumentOutOfRangeException(nameof(count));
+        vertices = new Vertex[count]; next = new int[count];
+        int size = 1; while (size < count * 2) size <<= 1;
+        heads = new int[size]; for (int i = 0; i < size; i++) heads[i] = -1;
+    }
+    static int Cell(float value) => (int)System.Math.Floor(value * 4f);
+    int Bucket(int x, int z)
+    {
+        unchecked { return (int)(((uint)x * 73856093u ^ (uint)z * 19349663u) & (uint)(heads.Length - 1)); }
+    }
+    public void Add(int index, float x, float y, float z)
+    {
+        vertices[index] = new Vertex { x = x, y = y, z = z };
+        int bucket = Bucket(Cell(x), Cell(z)); next[index] = heads[bucket]; heads[bucket] = index;
+    }
+    // -1 means no geometric match; zero means matching vertices were already covered.
+    public int MarkMatches(float x, float y, float z, bool[] covered)
+    {
+        int cx = Cell(x), cz = Cell(z), added = 0; bool found = false;
+        const float toleranceSquared = .002f * .002f;
+        for (int dz = -1; dz <= 1; dz++) for (int dx = -1; dx <= 1; dx++)
+        {
+            int bx = cx + dx, bz = cz + dz;
+            for (int index = heads[Bucket(bx, bz)]; index >= 0; index = next[index])
+            {
+                var v = vertices[index];
+                // Hash collisions must not merge distinct spatial cells.
+                if (Cell(v.x) != bx || Cell(v.z) != bz) continue;
+                float vx = v.x - x, vy = v.y - y, vz = v.z - z;
+                if (vx * vx + vy * vy + vz * vz < toleranceSquared)
+                {
+                    found = true;
+                    if (!covered[index]) { covered[index] = true; added++; }
+                }
+            }
+        }
+        return found ? added : -1;
+    }
+}
+// COMPACT_TERRAIN_VERIFICATION_END
+
 }

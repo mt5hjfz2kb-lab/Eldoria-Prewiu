@@ -1,0 +1,4 @@
+# Actual enlarged quantity glyphs must render
+Native43196427281 proves responsive2x2 layout and truthful rewardmail,20PNG/52clicks plus245source restore. Original1600x900 grid visually exposed that the enlarged saved quantity label has no visible glyphs: font29 was placed in35-unit height with truncating vertical overflow. Small baked packet-plaque digits remained, masking the failure in geometry/payment-only gates.
+Give ONLY the enlarged29px amount a46-unit line box; original phone typography and gateway remain unchanged. Native checks the real Unity TextGenerator after actual canvas draw for every visible saved amount: visible character count must include the entire actual formatted quantity. This detects valid text/rects producing blank rendered labels. Existing20/52/mail/archive/exactonce/source rollback gates remain.
+Pending sourceCI and actual native comparison. No artapproval or mainmerge.

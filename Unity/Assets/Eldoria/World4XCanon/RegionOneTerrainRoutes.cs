@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Application;
@@ -17,12 +18,32 @@ namespace Eldoria.World4XCanon
         HashSet<Vector2Int> cachedOccupied;
         Vector2Int cachedStart;
         Dictionary<Vector2Int,Vector2Int> reachable;
+        readonly Queue<Vector2Int> searchQueue=new Queue<Vector2Int>();
         readonly RegionOneResourcePlacement.FaultSegment[] faults;
         static readonly Vector2Int[] directions={Vector2Int.left,Vector2Int.right,Vector2Int.up,Vector2Int.down};
         public int WalkableCells=>cells.Count;
-        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain,RegionOneResourcePlacement.FaultSegment[] faults)
+        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain,RegionOneResourcePlacement.FaultSegment[] faults) : this(host,terrain.Raycast,faults) {}
+        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,RegionOneBlenderLandscape.SurfaceRaycast terrain,RegionOneResourcePlacement.FaultSegment[] faults) : this(host,faults)
+        {
+            // Production/eager still consumes the IDENTICAL iterator synchronously.
+            var stages=BuildGrid(terrain);
+            try {while(stages.MoveNext()) {}}
+            finally {(stages as IDisposable)?.Dispose();}
+        }
+        RegionOneTerrainRoutes(ValoriaIntegratedWorld host,RegionOneResourcePlacement.FaultSegment[] faults)
         {
             this.host=host;this.faults=faults;
+        }
+        // Opt-in WebGL only: the 100k-cell route lattice used to execute in one frame
+        // even after the site scan was staged. Preserve order, query tape and cells.
+        public static IEnumerator CreateStaged(ValoriaIntegratedWorld host,RegionOneBlenderLandscape.SurfaceRaycast terrain,RegionOneResourcePlacement.FaultSegment[] faults,Action<RegionOneTerrainRoutes> onReady)
+        {
+            var result=new RegionOneTerrainRoutes(host,faults);
+            yield return result.BuildGrid(terrain);
+            onReady?.Invoke(result);
+        }
+        IEnumerator BuildGrid(RegionOneBlenderLandscape.SurfaceRaycast terrain)
+        {
             var obstacles=host.WorldRoot.GetComponentsInChildren<Renderer>(true)
                 .Where(x=>x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)||x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).Select(x=>x.bounds).ToArray();
             // Index the SAME expanded bounds by exact grid coordinate. This avoids
@@ -35,16 +56,21 @@ namespace Eldoria.World4XCanon
                     var key=new Vector2Int(x,z);if(!obstacleCells.TryGetValue(key,out var bucket)){bucket=new List<Bounds>();obstacleCells[key]=bucket;}bucket.Add(bounds);
                 }
             }
-            for(int z=-224;z<=224;z++)for(int x=-112;x<=112;x++)
+            var slice=new RegionOneFrameSlice(8);
+            for(int z=-224;z<=224;z++)
             {
+             for(int x=-112;x<=112;x++)
+             {
                 float xx=x*8,zz=z*8;
                 if(RegionOneResourcePlacement.FaultExcluded(faults,xx,zz,2)||RegionOneBlenderLandscape.Shore(xx,zz)<4||RegionOneBlenderLandscape.Water(xx,zz)>.08f)continue;
                 var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
-                if(!terrain.Raycast(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.9f)continue;
+                if(!terrain(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.9f)continue;
                 bool blocked=false;
                 if(obstacleCells.TryGetValue(new Vector2Int(x,z),out var nearby))foreach(var bounds in nearby)
                     if(hit.point.x>bounds.min.x-1&&hit.point.x<bounds.max.x+1&&hit.point.z>bounds.min.z-1&&hit.point.z<bounds.max.z+1){blocked=true;break;}
                 if(!blocked)cells[new Vector2Int(x,z)]=hit.point;
+            }
+             if(slice.ShouldYield()){yield return null;slice.Resume();}
             }
         }
         public bool FootprintClear(Vector3 point,float clearance)
@@ -93,7 +119,12 @@ namespace Eldoria.World4XCanon
             // 24 m approach limit are exactly the same as before; no diagonal shortcuts.
             if(reachable==null||cachedStart!=start||!cachedOccupied.SetEquals(occupied))
             {
-                var queue=new Queue<Vector2Int>();reachable=new Dictionary<Vector2Int,Vector2Int>();queue.Enqueue(start);reachable[start]=start;
+                // Each newly populated resource changes occupancy. Rebuild the exact
+                // search, but retain its large storage instead of abandoning a
+                // dictionary for every resource in the same WebGL frame.
+                if(reachable==null)reachable=new Dictionary<Vector2Int,Vector2Int>();
+                else reachable.Clear();
+                var queue=searchQueue;queue.Clear();queue.Enqueue(start);reachable[start]=start;
                 while(queue.Count>0)
                 {
                     var a=queue.Dequeue();

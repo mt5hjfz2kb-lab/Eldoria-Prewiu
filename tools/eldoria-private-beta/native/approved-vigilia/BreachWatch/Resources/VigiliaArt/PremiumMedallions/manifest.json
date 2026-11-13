@@ -1,0 +1,59 @@
+{
+  "source": "OwnerReference/source-manifest.json",
+  "scope": "new independent Vigilia uGUI only",
+  "authoring": "One original sculpted icon per control; its existing metal rim is gently color-graded to copper within the same sprite, no second circle/glow/studs/vector symbol.",
+  "not_native_capture": true,
+  "not_owner_art_approval": true,
+  "sprites": [
+    {
+      "name": "helm",
+      "original_sha256": "e8928a77d884f6e5f2afa871ead05645055eb0871213f0e04878950dea594556",
+      "result_sha256": "1ce92d302381e99269e6dcefdd721f5b7b79d8d7d2f2899da1053779731e4116",
+      "guid": "090de8111d645699b6c7d11899f9d94e",
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "name": "swords",
+      "original_sha256": "46d25b007f6847855e6bac2ee08e77d90def68481f74a1031bbd1cc0253341db",
+      "result_sha256": "977ab1ca527da614ea4318f4dcfbdda8dfab9b784a3aba328b61bfa357b2374d",
+      "guid": "012badb8a03d5462922e57fae25dd743",
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "name": "castle",
+      "original_sha256": "ecf4d8b8380f5488cced3658d12e44534650d0c5c38a9b841cdd3c5a8b4a1880",
+      "result_sha256": "9fa4f5fe46dec1e89bee08414642e0afb13f0c98d00909cc28394d31d612eb57",
+      "guid": "a661a1c88eff5f11bfeaa10a00176d71",
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "name": "provisions",
+      "original_sha256": "ab90a13b5378cfa214bf7e907df5dad43a6ca737f8ddff3fbad1143f2155e23e",
+      "result_sha256": "73b01765d9920bb1de80a7330fced0a6a7f429eff65196a4e3fd51b9c611875a",
+      "guid": "c58c8ca275b057a1977d9b7f901d50c3",
+      "size": [
+        192,
+        192
+      ]
+    },
+    {
+      "name": "raven",
+      "original_sha256": "88b8122347cc98cb98522466be287c9b881ff03c763a4a0628928ea53c99ef64",
+      "result_sha256": "4f01f1a3b42fa012a35396d3670f7e31eecd1bda1770f24baea59f93a2d51d47",
+      "guid": "41f22ed9669250b8a22ef2012025addf",
+      "size": [
+        192,
+        192
+      ]
+    }
+  ]
+}

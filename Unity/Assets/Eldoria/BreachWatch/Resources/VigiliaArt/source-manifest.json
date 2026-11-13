@@ -1,0 +1,50 @@
+{
+  "origin": "https://annomotion.studio/public/packs/dark-fantasy-ui-hud-kit/download",
+  "publisher": "AnnoMotion / ArcadeOn Studios",
+  "archive_sha256": "f089903c2a515c1737344772c538e2bc2d8a153e219096d9118f74db5bf47d76",
+  "license": "CC0 1.0 in archive",
+  "format": "PSD layered source; extracted transparent sprite crops",
+  "purpose": "independent Vigilia candidate; not final art approval",
+  "sprites": [
+    {
+      "name": "nav_sculpted_medallion",
+      "size": [
+        454,
+        454
+      ],
+      "sha256": "0a80fb6b735b160c8afadc4df56aea0ff4d68c17286663bc0fd07bec0da43832",
+      "license": "CC0 1.0",
+      "source": "am_free_dark_fantasy.psd"
+    },
+    {
+      "name": "portrait_forged_iron",
+      "size": [
+        430,
+        430
+      ],
+      "sha256": "fdfca7c665a3e302ab41b02b9afc2e0d3fa029049ebcb2a763292dcd8b93d7c5",
+      "license": "CC0 1.0",
+      "source": "am_free_dark_fantasy.psd"
+    },
+    {
+      "name": "valoria_burgundy_banner",
+      "size": [
+        433,
+        327
+      ],
+      "sha256": "eee7ecd882bcac63589416acf4c7df8b30ed3a4806cba1341b2472fdb4607b99",
+      "license": "CC0 1.0",
+      "source": "am_free_dark_fantasy.psd"
+    },
+    {
+      "name": "action_antique_bronze",
+      "size": [
+        386,
+        250
+      ],
+      "sha256": "37a2f4a2c3aee18c7284f269e0b7ba5b50172107a9d35de506851753ebf77382",
+      "license": "CC0 1.0",
+      "source": "am_free_dark_fantasy.psd"
+    }
+  ]
+}

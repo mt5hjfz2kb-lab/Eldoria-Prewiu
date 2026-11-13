@@ -37,7 +37,22 @@ namespace Eldoria.UI.RoyalGold
             var canvas = Layer.GetComponentInParent<Canvas>();
             var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(Layer, screenPoint, uiCamera, out var local))
+            {
+                // A visible target near the viewport edge must not lose half
+                // its clickable caption. Fit the caption, retaining the real
+                // target and hiding it normally when that target is offscreen.
+                var rect = (RectTransform)transform;
+                var bounds = Layer.rect;
+                float halfWidth = rect.rect.width * Mathf.Abs(rect.localScale.x) * .5f;
+                float halfHeight = rect.rect.height * Mathf.Abs(rect.localScale.y) * .5f;
+                local.x = bounds.width >= halfWidth * 2f + 16f
+                    ? Mathf.Clamp(local.x, bounds.xMin + halfWidth + 8f, bounds.xMax - halfWidth - 8f)
+                    : bounds.center.x;
+                local.y = bounds.height >= halfHeight * 2f + 16f
+                    ? Mathf.Clamp(local.y, bounds.yMin + halfHeight + 8f, bounds.yMax - halfHeight - 8f)
+                    : bounds.center.y;
                 transform.localPosition = new Vector3(local.x,local.y,0f);
+            }
         }
         private void Compact()
         {

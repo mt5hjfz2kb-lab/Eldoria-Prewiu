@@ -1,0 +1,126 @@
+name: Eldoria P0 recover one preserved Unity source after native 42985136961
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+concurrency:
+  group: eldoria-iphone-preserved-source-recovery
+  cancel-in-progress: false
+jobs:
+  lease-preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.lease.outputs.allowed }}
+    steps:
+      - name: Confirm exact canonical lease and PR head
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq .content | base64 -d > registry.json
+          gh api "repos/$GITHUB_REPOSITORY/pulls/179" > pr.json
+          python3 - <<'PY'
+          import json,os
+          a=json.load(open('registry.json'))['active']
+          owners=[x for x in a if 'windows-runner-heavy' in x.get('resources',[])]
+          p=json.load(open('pr.json'))
+          ok=(len(owners)==1 and owners[0]['id']=='eldoria-private-beta-i-v-20261107'
+              and owners[0].get('owner')=='chatgpt-iphone-p0-physical-followup-20261111'
+              and owners[0].get('ownership_state')=='claimed'
+              and owners[0].get('ownership_revision')==28
+              and p['number']==179 and p['state']=='open' and p['draft']
+              and p['head']['sha']==os.environ['GITHUB_SHA'])
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('allowed='+str(ok).lower()+'\n')
+          print('EXCLUSIVE_P0_LEASE_CHECK:', 'PASS' if ok else 'NO_RECOVERY')
+          PY
+  recover:
+    needs: lease-preflight
+    if: needs.lease-preflight.outputs.allowed == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    steps:
+      - name: Locate installed Git without editing a working tree
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: beta-p0-recovery-tools
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+          persist-credentials: false
+      - name: Restore only exact SHA-validated ValoriaIntegratedWorld
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $repo=$env:GITHUB_REPOSITORY
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept="application/vnd.github+json";'X-GitHub-Api-Version'='2022-11-28'}
+          $response=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/contents/pipeline/active-workstreams.json?ref=main" -Headers $h
+          $bytes=[Convert]::FromBase64String(($response.content -replace '\s',''))
+          $registry=[Text.Encoding]::UTF8.GetString($bytes)|ConvertFrom-Json
+          $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-iphone-p0-physical-followup-20261111' -or $holders[0].ownership_state -ne 'claimed' -or [int]$holders[0].ownership_revision -ne 28){throw 'Live CAS resource owner changed; no recovery'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender process active; no recovery'}
+          $root=$env:GITHUB_WORKSPACE
+          $source=Join-Path $root 'beta-structural-source-42505611257-1'
+          $evidence=Join-Path $root 'beta10-minimal-evidence-42985136961-1'
+          $rel='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+          $target=Join-Path $source $rel
+          $beforePath=Join-Path $evidence 'warm-cache-before.json'
+          $auditPath=Join-Path $evidence 'existing-input-audit.json'
+          if(-not(Test-Path $target -PathType Leaf) -or -not(Test-Path $beforePath -PathType Leaf) -or -not(Test-Path $auditPath -PathType Leaf)){throw 'Recorded source and original evidence missing'}
+          if((git -C $source rev-parse HEAD).Trim() -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw 'Frozen source head changed'}
+          $before=Get-Content $beforePath -Raw|ConvertFrom-Json
+          $audit=Get-Content $auditPath -Raw|ConvertFrom-Json
+          if($audit.base -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw 'Original input audit differs'}
+          $matching=@($before.files|Where-Object {$_.path -eq $rel})
+          if($matching.Count -ne 1){throw 'Expected exactly one before-image record'}
+          $record=$matching[0]
+          $expected='85533B5441B2F63D6E89A41C0561DC3689793A76A1D71375970241E4361E444C'
+          if($record.sha256 -ne $expected -or -not(Test-Path $record.backup -PathType Leaf)){throw 'Original backup identity missing'}
+          if((Get-FileHash $record.backup -Algorithm SHA256).Hash -ne $expected){throw 'Original preserved bytes changed'}
+          foreach($item in $audit.files){
+            $f=Join-Path $source $item.path
+            if(-not(Test-Path $f -PathType Leaf) -or (Get-FileHash $f -Algorithm SHA256).Hash -ne $item.sha256){throw "Non-target audited input changed: $($item.path)"}
+          }
+          $current=@(git -C $source status --porcelain -- Unity)
+          if($LASTEXITCODE -ne 0){throw 'Cannot read original Unity status'}
+          $extra=' M '+$rel
+          $unrelated=@($current|Where-Object {$_ -ne $extra}|Sort-Object)
+          $baseline=@($audit.status|Sort-Object)
+          if(@(Compare-Object $baseline $unrelated).Count -gt 0){throw 'Unexpected Unity status changes outside single target'}
+          $currentSha=(Get-FileHash $target -Algorithm SHA256).Hash
+          $ux=(Join-Path $root 'beta-p0-recovery-tools/tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt')
+          $engine=(Join-Path $root 'beta-p0-recovery-tools/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs')
+          $allowed=@($expected,(Get-FileHash $ux -Algorithm SHA256).Hash,(Get-FileHash $engine -Algorithm SHA256).Hash)
+          if($allowed -notcontains $currentSha){throw "Unrecognized changed source SHA256 $currentSha; refuse overwrite"}
+          $restoredNow=$false
+          if($currentSha -ne $expected){Copy-Item $record.backup $target -Force -ErrorAction Stop;$restoredNow=$true}
+          if((Get-FileHash $target -Algorithm SHA256).Hash -ne $expected){throw 'Single-source restoration hash verification failed'}
+          $after=@(git -C $source status --porcelain -- Unity|Sort-Object)
+          if(@(Compare-Object $baseline $after).Count -gt 0){throw 'Unity status differs after recovery'}
+          foreach($item in $audit.files){
+            $f=Join-Path $source $item.path
+            if(-not(Test-Path $f -PathType Leaf) -or (Get-FileHash $f -Algorithm SHA256).Hash -ne $item.sha256){throw "Original generated artwork altered: $($item.path)"}
+          }
+          $report=@{prior_run=42985136961;restored=$true;single_source=$rel;before_sha256=$currentSha;after_sha256=$expected;copied=$restoredNow;audited_input_count=@($audit.files).Count;other_files_changed=$false;unity_status_exactly_restored=$true;Unity_started=$false}
+          $report|ConvertTo-Json -Depth 4|Set-Content -Path (Join-Path $root 'beta-p0-single-file-recovery.json') -Encoding utf8
+          Write-Host "P0_PRESERVED_SOURCE_RECOVERY_PASS: copied=$restoredNow inputs=$(@($audit.files).Count)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta13-p0-source-recovery-429851
+          path: beta-p0-single-file-recovery.json
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,0 +1,218 @@
+name: Eldoria private beta verified WebGL packaging (Ubuntu only)
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - 'tools/eldoria-private-beta/**'
+      - 'pipeline/eldoria-private-beta/**'
+      - '.github/workflows/eldoria-private-beta-qa.yml'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/eldoria-private-beta/**'
+      - 'pipeline/eldoria-private-beta/**'
+      - '.github/workflows/eldoria-private-beta-qa.yml'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-private-beta-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            pipeline/eldoria-private-beta
+            .github/workflows/eldoria-beta-lazy-world-native.yml
+            Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode
+      - name: Node contract tests
+        run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Reject malformed C-sharp in all six engine files, real PlayMode fixture and frozen UX19
+        shell: bash
+        run: |
+          dotnet run --project tools/eldoria-private-beta/csharp-syntax/SyntaxAudit.csproj --configuration Release -- --self-test
+          dotnet run --project tools/eldoria-private-beta/csharp-syntax/SyntaxAudit.csproj --configuration Release -- .
+          echo PR179_CSHARP_SYNTAX_ONLY_NO_UNITY_COMPILE_OR_IPHONE_CERTIFICATION
+      - name: Validate owner-only genuine lazy-world WebGL package preflight (no build)
+        shell: bash
+        run: |
+          python3 -m py_compile tools/eldoria-private-beta/prepare_lazy_owner_site.py
+          python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_lazy_owner_site.py'
+          python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_integrated_owner_site.py'
+          python3 -m unittest discover -v -s tools/eldoria-private-beta -p 'test_exact_build_selection.py'
+          node --check tools/eldoria-private-beta/qa_webkit_residency.cjs
+      - name: Validate first-party lazy-region PlayMode registration (source only)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,re
+          root=pathlib.Path('Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode')
+          assembly=json.loads((root/'Eldoria.BetaMemory.Tests.PlayMode.asmdef').read_text())
+          assert assembly['name']=='Eldoria.BetaMemory.Tests.PlayMode'
+          assert 'UNITY_INCLUDE_TESTS' in assembly['defineConstraints']
+          assert assembly['includePlatforms']==[], 'A PlayMode-only fixture cannot target Editor-only EditMode assembly'
+          assert {'Eldoria.Domain','Eldoria.Application','Eldoria.Infrastructure','Eldoria.Presentation'}.issubset(assembly['references'])
+          assert assembly['precompiledReferences']==['nunit.framework.dll']
+          sources=[root/'LazyRegionStartupTests.cs']
+          guids=[]
+          for asset in [root/'Eldoria.BetaMemory.Tests.PlayMode.asmdef',*sources]:
+            meta=pathlib.Path(str(asset)+'.meta').read_text()
+            match=re.search(r'(?m)^guid:\s*([0-9a-f]{32})$',meta)
+            assert match,asset
+            guids.append(match.group(1))
+          assert len(set(guids))==len(guids),'Unity asset GUID collision'
+          fixture=sources[0].read_text()
+          assert '[UnityTest]' in fixture and 'SceneManager.LoadScene("Valoria_City_World_UI")' in fixture
+          for required in ['P0LazyWorldEditorTestOverride','VALORIA_GAMEPLAY_PROBE',
+                           'IsLoading','IsReady','TrySetWorld','WorldResourceLocations',
+                           'WorldCreatureLocations','BastionLevel','PlayerName']:
+            assert required in fixture,required
+          assert 'if(!(before.SawmillLevel>0' in fixture,'Unlock cannot be faked'
+          assert 'Is.SameAs(gateway)' in fixture and 'Is.SameAs(hud)' in fixture
+          assert 'finally' in fixture and 'optIn.SetValue(null,previousFlag)' in fixture
+          for required in ['ReloadForProbe','WorldResourceLocations.Count','WorldCreatureLocations.Count','Is.Not.SameAs(gateway)','WaitForSecondsRealtime',
+                           'cityStartupStarted<45f','worldLoadStarted<120f',
+                           'cycle<12','ELDORIA_LAZY_REAL_WORLD_NATIVE_LOAD_ELAPSED_SECONDS']:
+            assert required in fixture,'Missing real persistence regression: '+required
+          print('P0_LAZY_WORLD_PLAYMODE_SOURCE_REGISTERED; UNITY_NOT_EXECUTED')
+          PY
+      - name: Parse reversible lazy-world native PlayMode runner without launching Unity
+        shell: pwsh
+        run: |
+          $tokens=$null;$errors=$null
+          $path='tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1'
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path),[ref]$tokens,[ref]$errors)|Out-Null
+          if($errors.Count){$errors|Format-List;throw 'PowerShell syntax errors in reversible native probe'}
+          $code=Get-Content $path -Raw
+          foreach($marker in @('runTests','LazyRegionStartupTests','lazy-world-native-result.json',
+              'testers_authorized','if($issues.Count)','Get-Process Unity,blender','status --porcelain -- Unity',
+              'PR179_HOT_UNITY_EXACT_FROZEN_BASE_AND_ALL_DIRTY_ASSETS_VERIFIED','InputAuditPath','PR179_AUDITED_ART_BYTES_UNCHANGED_AFTER_PLAYMODE','audited_input_byte_changes')){
+            if(-not $code.Contains($marker)){throw "Native QA missing gate: $marker"}
+          }
+          $others=@('tools/eldoria-private-beta/native/run_structural.ps1',
+                     'tools/eldoria-private-beta/native/run_warm_structural.ps1')
+          foreach($other in $others){
+            $tok=$null;$err=$null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $other),[ref]$tok,[ref]$err)|Out-Null
+            if($err.Count){$err|Format-List;throw "Full world PowerShell invalid: $other"}
+          }
+          $core=Get-Content $others[0] -Raw
+          $warm=Get-Content $others[1] -Raw
+          foreach($marker in @('FULL_REGION1_LAZY_OPTIN_OVER_EXACT_FROZEN_BETA10_UX19','Install-UxOverlay',
+             'EldoriaBetaCollisionBake.Enable','ValoriaIntegrationBuild.ValidateCurrent','ValoriaIntegratedWebBuild.Build')){
+            if(-not $core.Contains($marker)){throw "Full native I-V+WebGL missing: $marker"}
+          }
+          if(-not $warm.Contains('ELDORIA_P0_LAZY_WORLD_BUILD')){throw 'Pinned lazy host not admitted for exact restoration'}
+          Write-Host 'LAZY_REGION_AND_FULL_WORLD_WEBGL_SOURCE_PARSER_PASS; UNITY_NOT_RUN'
+      - name: Verify complete frozen 19-file UX and mailbox dependencies before native test
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          ux=pathlib.Path('tools/eldoria-private-beta/native/ux')
+          manifest=json.loads((ux/'manifest.json').read_text())
+          assert len(manifest['files'])==19
+          paths=[entry['path'] for entry in manifest['files']]
+          assert len(set(paths))==19
+          for entry in manifest['files']:
+            raw=(ux/entry['overlay']).read_bytes()
+            assert hashlib.sha256(raw).hexdigest()==entry['candidate_sha256'],entry['path']
+          contracts=(ux/'RoyalContracts.cs.txt').read_text()
+          assert 'Settings, Mailbox' in contracts,'The frozen HUD host requires the Mailbox enum'
+          host=pathlib.Path('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs').read_text()
+          assert 'RoyalSection.Mailbox' in host and 'P0LazyWorldProbe' in host
+          runner=(pathlib.Path('tools/eldoria-private-beta/native/run_lazy_world_playmode.ps1')).read_text()
+          assert '$preserve=@(Get-PR179NativeMaterialPaths)+@($overlays)+@($uxPaths)+@(' in runner
+          assert 'preserve_native_materials.ps1' in runner, 'Native material preservation helper must remain active'
+          # Two inputs are normalized to intermediate engine baselines by the
+          # OLD native pipeline. The recovered warm project has their audited
+          # originals; otherwise a correct PlayMode test would be blocked.
+          recover=(ux/'recover_first_attempt.ps1').read_text()
+          for original in ('85533B5441B2F63D6E89A41C0561DC3689793A76A1D71375970241E4361E444C','4D84DC082FA107BCBD9B0DE03E1AD24D6CF0154F01A73150B9B9815846693478'):
+            assert original in recover and original in runner,'Recovery and native QA disagree about the frozen engine original'
+
+          assert 'PR179_FROZEN_PRETESTER_UX19_STAGED_BEFORE_LAZY_ENGINE' in runner
+          print('LAZY_WORLD_19_UX_SOURCE_DEPENDENCY_AND_TRANSACTION_PASS; UNITY_NOT_RUN')
+          PY
+      # Source-only iPhone regression experiment. Never runs Unity or deploys
+      # Pages: compare immutable beta10 with an anchored clock-only variant.
+      - name: Pin and verify previous playable beta10 versus isolated timer candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --filter=blob:none --depth=1 origin \
+            be49d62e3daf490f41dba0bf8123a8e2eee64480 \
+            8dc875430241a49b4d417782dfeab2d4c7a4f315 \
+            485d7b1c7980b73fa6abac9dfad4a99ccc382ab8 \
+            e445a712b16f0bfc8196bdcb734492e780ef082c
+          python -m unittest discover -v -s tools/eldoria-private-beta/iphone_ab -p 'test_minimal_geometry.py'
+          python tools/eldoria-private-beta/iphone_ab/prepare.py --check
+          python tools/eldoria-private-beta/iphone_ab/prepare.py \
+            --out "$RUNNER_TEMP/eldoria-iphone-timer-ab"
+          python - <<'PY'
+          import json,os,pathlib
+          doc=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab/ab-evidence.json').read_text())
+          assert doc['only_changed_overlay']=='RoyalGoldV3ContextHud.cs.txt'
+          assert doc['overlays_verified_identical_other_than_timer']==18
+          assert doc['variants']==['beta10-control','anchored-gc0','beta10-minimal-anchor']
+          assert doc['one_file_differential_each'] is True
+          for variant in doc['variants']:
+            directory=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab'/variant
+            manifest=json.loads((directory/'manifest.json').read_text())
+            assert len(manifest['files'])==19, variant
+            assert all((directory/x['overlay']).exists() for x in manifest['files']), variant
+          assert doc['native_compiled'] is False
+          assert doc['external_distribution_approved'] is False
+          print('SOURCE_ONLY_ONE_FILE_IPHONE_AB_CHECK_PASS')
+          PY
+      - name: Preserve exact one-file A/B source pair for later Windows native QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta10-iphone-timer-ab-source-only
+          path: ${{ runner.temp }}/eldoria-iphone-timer-ab/
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14
+      - name: Fetch exact published-source archive
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42397405907
+          name: eldoria-pr163-web-preview-42397405907
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-native325
+      - name: Byte-level audit of native325 source ZIP and all 19 WebGL assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-private-beta/verify-freeze.mjs \
+            pipeline/eldoria-private-beta/native325-freeze.json \
+            "${{ runner.temp }}/eldoria-native325" > /tmp/freeze-verified.log
+          cat /tmp/freeze-verified.log
+          zip="$(find "${{ runner.temp }}/eldoria-native325" -type f -name '*.zip' | head -1)"
+          test -n "$zip"
+          mkdir -p "${{ runner.temp }}/eldoria-game"
+          unzip -q "$zip" -d "${{ runner.temp }}/eldoria-game"
+          node tools/eldoria-private-beta/verify-r2-files.mjs \
+            "${{ runner.temp }}/eldoria-game" \
+            pipeline/eldoria-private-beta/r2-upload-manifest.json
+          echo BETA_ORIGINAL_19_WEBGL_ASSETS_EXACT_SHA256_PASS

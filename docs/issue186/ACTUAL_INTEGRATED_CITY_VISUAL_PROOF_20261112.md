@@ -1,0 +1,7 @@
+# Verify the actual integrated city as well as the bag
+
+UI92596b1550fcb2722fb582639bc05c24a7c6a7a8 now has genuine native43172857546success:48images,7658visible Hall intro pixels with0in the14pixel tab gutter,2actual first-hit mailbox controls, immutable save and successful native visualA/B. Artifact13922469493 SHA5059cc9bcf551a58938cc65144b241f1017bf92098077bcf4b694fe16298b301 was downloaded, independently hash-checked and its actual Hall/phoneHUD inspected.
+
+The standalone UI branch is a different project base from the resource branch and stable beta. Its390pixel city capture shows a notably brighter blue roof than the verified beta city. Do not edit shared game materials or claim final visual coherence from that proxy. The next already-planned combined bag/mail native lot additionally photographs the actual integrated city on the resource branch at each of the four same viewports, before opening the bag, with the canonical old HUD canvas disabled and the actual independent canvas active.
+
+The strengthened contract is4integratedcityPNG+16existingbag/mailPNG=20total, still52real first-hit controls, actual first-use hand, full read/claim/credit separation and JSON reload. No repeated component capture, source-art edits, new illustration or added gameplay action. These additional authentic frames permit direct assessment of the resulting presentation before main/owner review. No art or phone approval.

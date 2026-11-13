@@ -1,0 +1,130 @@
+name: Eldoria private beta native325 immutable draft archive
+on:
+  push:
+    branches:
+      - feature/eldoria-private-beta-i-v-20261107
+    paths:
+      - .github/workflows/eldoria-private-beta-freeze.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-private-beta-freeze.yml'
+      - 'tools/eldoria-private-beta/**'
+      - 'pipeline/eldoria-private-beta/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-beta-freeze-native325
+  cancel-in-progress: false
+jobs:
+  validate:
+    name: Beta source/security tests (no Unity or 490MB download)
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            pipeline/eldoria-private-beta
+          persist-credentials: false
+      - name: Verify pinned artifact and R2 metadata contracts
+        run: |
+          node --test tools/eldoria-private-beta/verify-freeze.test.mjs
+          node --test tools/eldoria-private-beta/verify-r2-files.test.mjs
+          node --test tools/eldoria-private-beta/verify-readiness.test.mjs
+      - name: Verify signed-link and 67-event client contracts (no network)
+        run: node --test tools/eldoria-private-beta/cloudflare/*.test.mjs
+  freeze:
+    needs: validate
+    if: ${{ github.repository == 'mt5hjfz2kb-lab/Eldoria-Prewiu' && github.event_name != 'pull_request' }}
+    permissions:
+      contents: write
+      actions: read
+    name: Verify exact web bytes and store only as draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            pipeline/eldoria-private-beta
+          persist-credentials: false
+      - name: Unit tests of strict freeze manifest
+        run: node --test tools/eldoria-private-beta/verify-freeze.test.mjs
+      - name: Prove upstream GitHub artifact before downloading
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/13583674142 > /tmp/beta-artifact.json
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const a=JSON.parse(fs.readFileSync("/tmp/beta-artifact.json","utf8"));
+            const m=JSON.parse(fs.readFileSync("pipeline/eldoria-private-beta/native325-freeze.json","utf8"));
+            if(a.id!==m.artifact_id || a.workflow_run?.id!==m.artifact_run_id ||
+              a.workflow_run?.head_sha!==m.artifact_workflow_head_sha ||
+              a.name!==m.artifact_name || a.digest!==m.artifact_zip_digest ||
+              a.expired!==false)throw Error("Upstream Actions package identity invalid or expired");
+            console.log("BETA_UPSTREAM_ARTIFACT_EXACT_MATCH",a.id,a.digest);
+          '
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42397405907
+          name: eldoria-pr163-web-preview-42397405907
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-native325-artifact
+      - name: Verify byte-identical native325 ZIP
+        id: package
+        env:
+          BETA_FREEZE_RECEIPT: ${{ runner.temp }}/beta-native325-verify.json
+        run: |
+          node tools/eldoria-private-beta/verify-freeze.mjs \
+            pipeline/eldoria-private-beta/native325-freeze.json \
+            "${{ runner.temp }}/eldoria-native325-artifact"
+      - name: Freeze in private DRAFT release, never publish publicly
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=eldoria-beta-native325-frozen-20261107
+          ASSET="${{ runner.temp }}/Eldoria-Beta-1-native325-exact.zip"
+          cp "$ZIP_PATH" "$ASSET"
+          echo "Validating copy after transferring:"
+          echo "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771  $ASSET" | sha256sum -c -
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh api "repos/$GITHUB_REPOSITORY/releases" > "$RUNNER_TEMP/existing-beta-releases.json"
+            node --input-type=module -e '
+              import fs from "node:fs";
+              const list=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/existing-beta-releases.json","utf8"));
+              const r=list.find(x=>x.tag_name==="eldoria-beta-native325-frozen-20261107");
+              if(!r||r.draft!==true||r.published_at!==null||
+                 r.assets?.length!==1||
+                 r.assets[0].name!=="Eldoria-Beta-1-native325-exact.zip"||
+                 r.assets[0].size!==490319610||
+                 r.assets[0].digest!=="sha256:fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771")
+                 throw Error("Frozen beta draft is missing, published or byte-changed");
+              console.log("BETA_EXISTING_PRIVATE_DRAFT_HASH_PASS",r.id);
+            '
+            exit 0
+          fi
+          {
+            echo '## ELDORIA BETA 1 — ARCHIVO CONGELADO / SIN PUBLICACIÓN'
+            echo 'NO PUBLICAR, NO ENVIAR A TESTERS. Almacenamiento privado como draft de GitHub Release.'
+            echo 'Version WebGL native325-fb1292b3d9ce, artifact 13583674142, SHA256 interior fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771.'
+            echo 'QA alojada, pruebas móviles, telemetría Unity y hosting privado permanecen PENDIENTES.'
+          } > "${{ runner.temp }}/draft-notes.md"
+          gh release create "$TAG" "$ASSET" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --draft \
+            --title "Eldoria Beta 1 native325 · copia congelada · NO PUBLICAR" \
+            --notes-file "${{ runner.temp }}/draft-notes.md"
+          test "$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)" = "true"
+          echo 'BETA_ARCHIVED_AS_DRAFT_ONLY_PASS'

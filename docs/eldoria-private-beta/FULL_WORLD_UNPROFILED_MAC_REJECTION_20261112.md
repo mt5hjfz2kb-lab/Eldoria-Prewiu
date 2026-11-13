@@ -1,0 +1,9 @@
+# Actual full-world original-payload Mac failure and next method
+
+Native43135567923 at source4fd1cacc completed real PlayMode, route/terrain parity, Bastion I-V, WebGL compilation, and exact warm source restoration. The owner-only package also passed identity and exact decoded transport. These are technical/native results, not browser or iPhone stability.
+
+The following actual Mac WebKit A/B failed in BOTH eager and deferred modes before game readiness. Artifact13908019037 (ZIP SHA256 2a72290bb4237ac7d631bf648db13880a08a6a6389e0669fd4d26491e23815d3) was inspected through read-only Ubuntu run43139801302. Both report Browser failure with context loss, then out-of-range UnityPerDraw binding and a null GL shader error. The deferred arm's last two recorded WebContent RSS values were2019408 and1885104KiB. Decoded engine plus data totals1766455046bytes. These facts do not prove a physical iPhone jetsam or identify the underlying GPU-loss cause.
+
+Changing only when gameplay constructs Region1 cannot fix a failure already reached before readiness in both modes. The next bounded candidate reuses the EXISTING mobile6 texture/cubemap profile and exact imported-texture deduplication, which the project already used for prior mobile candidates. It makes no new compression or art decisions. Every eligible source must match exact serialized bytes; all other objects, types, membership and references are verified after saving/reopening. Fresh native WASM/framework, frozen beta14 shell and UX19 remain provenance-pinned. Original failing source and artifacts remain retained.
+
+This is an off-PC candidate packaging/desktop Apple GPU test. Passing serialized integrity does not certify runtime, texture appearance, full world entry or a physical iPhone. Need actual screenshots, genuine eager/deferred readiness/reload/resize measurements and subsequent device evidence. No Pages deployment, main art merge, tester invitation or art approval.
