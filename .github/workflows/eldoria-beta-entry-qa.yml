@@ -10,9 +10,45 @@ permissions:
   contents: read
   actions: write
 concurrency:
-  group: eldoria-postnickname-public-diagnostic
+  group: eldoria-postnickname-repair-construction
   cancel-in-progress: false
 jobs:
+  certificate-ready:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            // Supersede only hosted diagnostic waits, never the native build or certificate.
+            for(const id of [43383505422,43383706599]){
+              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:id})).data;
+              if(r.path!=='.github/workflows/eldoria-beta-entry-qa.yml'||r.head_branch!=='main')throw Error('Unexpected old diagnostic');
+              if(r.status==='completed')continue;
+              const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:id,per_page:100})).data.jobs;
+              if(jobs.some(j=>!['candidate-ready','public-interaction'].includes(j.name)))throw Error('Unknown diagnostic job');
+              await github.rest.actions.cancelWorkflowRun({...context.repo,run_id:id});
+            }
+            const expected='1a73e962d9fdc2a6c3177195f845860474cde95c';
+            const deadline=Date.now()+90*60*1000;
+            while(Date.now()<deadline){
+              const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:43382792518})).data;
+              if(run.head_sha!==expected)throw Error('Unexpected candidate');
+              const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
+              const native=jobs.find(j=>j.name==='native');
+              if(native?.status==='completed'){
+                if(native.conclusion!=='success')throw Error('Native candidate failed');
+                const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
+                if(branch.commit.sha!==expected)throw Error('Candidate moved');
+                const certificates=(await github.rest.actions.listWorkflowRuns({...context.repo,workflow_id:'ui-progression-cert.yml',head_sha:expected,per_page:100})).data.workflow_runs;
+                if(!certificates.some(r=>r.head_sha===expected&&(r.status!=='completed'||r.conclusion==='success')))
+                  await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
+                return;
+              }
+              if(run.status==='completed')throw Error('No successful native job');
+              await new Promise(resolve=>setTimeout(resolve,30000));
+            }
+            throw Error('Native candidate incomplete');
   candidate-ready:
     runs-on: ubuntu-latest
     timeout-minutes: 100
@@ -29,10 +65,7 @@ jobs:
                 if(run.conclusion!=='success')throw Error('Integrated native/package/browser failed; do not certify a different source');
                 const branch=(await github.rest.repos.getBranch({...context.repo,branch:'feature/eldoria-private-beta-i-v-20261107'})).data;
                 if(branch.commit.sha!==expected)throw Error('Candidate branch moved');
-                const certificates=(await github.rest.actions.listWorkflowRuns({...context.repo,workflow_id:'ui-progression-cert.yml',head_sha:expected,per_page:100})).data.workflow_runs;
-                if(!certificates.some(r=>r.head_sha===expected && (r.status!=='completed'||r.conclusion==='success')))
-                  await github.rest.actions.createWorkflowDispatch({...context.repo,workflow_id:'ui-progression-cert.yml',ref:'feature/eldoria-private-beta-i-v-20261107'});
-                core.info('Exact candidate complete; full regression dispatched without changing runtime or publication');return;
+                core.info('Exact integrated candidate complete');return;
               }
               await new Promise(resolve=>setTimeout(resolve,30000));
             }
