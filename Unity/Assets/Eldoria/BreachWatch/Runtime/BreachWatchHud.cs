@@ -79,7 +79,7 @@ namespace Eldoria.BreachWatch
         float feedbackUntil;
         bool created;
         RoyalSnapshot snapshot;
-        readonly string[] navLabels = {"REINO", "RECURSOS", "EJÉRCITO", "EXPLORAR", "HÉROES"};
+        readonly string[] navLabels = {"CIUDAD", "BOLSA", "EJÉRCITO", "MUNDO", "HÉROES"};
         // One canonical navigation artwork mapping. The medallion sprites
         // are complete original illustrations; NEVER create vector placeholder
         // icon components behind or on top of these five surfaces.
@@ -133,13 +133,13 @@ namespace Eldoria.BreachWatch
         {
             get
             {
-                string[] names={"bell","settings","breach"};
+                string[] names={"MailboxArtwork/sealed_letter","OwnerUtilities/settings","OwnerUtilities/breach"};
                 for(int i=0;i<names.Length;i++)
                 {
                     var image=approvedUtilitySeals[i];
                     if(!image || !image.sprite ||
                        image.sprite!=Resources.Load<Sprite>(
-                           "VigiliaArt/OwnerUtilities/"+names[i]))return false;
+                           "VigiliaArt/"+names[i]))return false;
                 }
                 return true;
             }
@@ -202,7 +202,8 @@ namespace Eldoria.BreachWatch
             {
                 for(int i=0;i<navPlates.Length;i++)
                 {
-                    var requested=Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_"+ReferenceNavArt[i]);
+                    var requested=Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_"+
+                        (i==3 && host && host.InWorld?"castle":ReferenceNavArt[i]));
                     if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
                         return false;
                 }
@@ -220,7 +221,8 @@ namespace Eldoria.BreachWatch
                 for(int i=0;i<navPlates.Length;i++)
                     if(!navPlates[i] || !navPlates[i].UsesOwnerReference ||
                        !navPlates[i].sprite ||
-                       navPlates[i].sprite.name!="nav_"+ReferenceNavArt[i])
+                       navPlates[i].sprite.name!="nav_"+
+                           (i==3 && host && host.InWorld?"castle":ReferenceNavArt[i]))
                         return false;
                 return true;
             }
@@ -630,8 +632,9 @@ namespace Eldoria.BreachWatch
                     seal.name="CORREO / real introduced mailbox";
                 }
                 var utilityPlate=seal.GetComponent<BreachWatchPlate>();
-                var genuineArt=Resources.Load<Sprite>(
-                    "VigiliaArt/OwnerUtilities/"+design.art);
+                var genuineArt=Resources.Load<Sprite>(design.art=="bell"
+                    ?"VigiliaArt/MailboxArtwork/sealed_letter"
+                    :"VigiliaArt/OwnerUtilities/"+design.art);
                 if(utilityPlate)
                 {
                     utilityPlate.Type=BreachWatchPlate.PlateType.Navigation;
@@ -954,18 +957,19 @@ namespace Eldoria.BreachWatch
             {
                 case 0:
                     // City/Realm is a destination, not a tab label on the world.
-                    // Return the canonical city camera before selecting Bastion.
+                    // Return the canonical city camera without selecting a building.
                     if(host.InWorld && !host.TrySetWorld(false))return;
                     selectedTab=0;
-                    SelectBuilding("bastion");
+                    SelectBuilding("");
                     SyncLiveCamera();
                     break;
                 case 1:
-                    // Provisions belongs to the REAL city's resource building.
-                    // Never show an inaccessible city card above the world.
+                    // A bag icon opens the actual saved inventory, never a
+                    // resource building or the current construction objective.
                     if(host.InWorld && !host.TrySetWorld(false))return;
-                    selectedTab=1;
-                    SelectBuilding("sawmill");
+                    SelectBuilding("");
+                    if(resourceBagBridge && resourceBagBridge.TryOpenDestination())selectedTab=1;
+                    else SetFeedback("La bolsa todavía no está disponible.");
                     SyncLiveCamera();
                     break;
                 case 2:
@@ -1009,11 +1013,11 @@ namespace Eldoria.BreachWatch
                     }
                     break;
                 case 3:
-                    // Explore is idempotent. A second tap cannot accidentally
-                    // return the player to the city; Reino handles that.
-                    if(host.CanOpen(RoyalSection.World) && host.TrySetWorld(true))
+                    // The relief changes to the actual next destination; no text labels.
+                    bool openWorld=!host.InWorld;
+                    if((!openWorld || host.CanOpen(RoyalSection.World)) && host.TrySetWorld(openWorld))
                     {
-                        selectedTab=3;
+                        selectedTab=openWorld?3:0;
                         SelectBuilding("");
                         SyncLiveCamera();
                     }
@@ -1779,6 +1783,10 @@ namespace Eldoria.BreachWatch
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
                 // army/swords, world/raven and heroes/helm. Only the genuine
                 // first-screen routes are enabled; we never dispatch old panels.
+                var travelArt=Resources.Load<Sprite>("VigiliaArt/CleanRoom/nav_"+
+                    (host.InWorld?"castle":"raven"));
+                if(navPlates[3] && travelArt && navPlates[3].sprite!=travelArt)
+                    navPlates[3].ApplyIndependentArt(travelArt);
                 int activeTab=Mathf.Clamp(host.InWorld?3:selectedTab,0,navButtons.Length-1);
                 for(int i=0;i<5;i++)
                 {

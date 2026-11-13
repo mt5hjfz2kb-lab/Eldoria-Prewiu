@@ -90,17 +90,18 @@ namespace Eldoria.BreachWatch
                 !(ui.RealRetention&&ui.RealRetention.IsShowing)&&
                 !(ui.RealMailbox&&ui.RealMailbox.IsShowing);
         }
-        void TryOpen()
+        void TryOpen(){TryOpenDestination();}
+        public bool TryOpenDestination()
         {
-            if(!CanOpen())return;
+            if(!CanOpen())return false;
             try
             {
                 // Use the normal selection route to close building context.
                 // Never change the save, unlock state or selected resource.
                 host.Hud.SelectBuilding("");
-                open.Invoke(bag,new object[]{canvas});
+                return (bool)open.Invoke(bag,new object[]{canvas});
             }
-            catch(Exception e){Fail(e);}
+            catch(Exception e){Fail(e);return false;}
         }
         public void Synchronize()
         {
