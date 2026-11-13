@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T16:39:29.463Z",
+  "updated_at": "2026-11-13T17:03:04.762Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7379,9 +7379,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-eldoria-beta-navigation-20261113",
+      "owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 74,
+      "ownership_revision": 75,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7436,9 +7436,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PHYSICAL_IPHONE_WORLD_RESTART_AND_NAVIGATION_SEMANTICS_REPAIR",
+      "phase": "EXACT_NATIVE_NAVIGATION_FIXTURE_GATE_REPAIR",
       "note": "Owner reports existing save loads, world entry restarts iPhone, provisions-looking bag selects sawmill, city-looking control selects barracks, bell opens mail. Previous desktop WebKit success is not physical acceptance; pilot blocked.",
-      "next": "Repair semantic navigation and reproduce world entry from existing save with full entry/reentry memory proof; preserve all saves.",
+      "next": "Repair native destination capture count 16 to 20 for added actual barracks-access captures, align CI, then rerun exact isolated Unity and WebKit. Analyze mobile memory against previous baseline without misleading physical iPhone claims.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7708,10 +7708,10 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-eldoria-beta-navigation-20261113",
-        "ownership_revision": 74,
-        "updated_at": "2026-11-13T16:39:29.463Z",
-        "reason": "Owner-directed transfer: resume exact beta icon/navigation candidate; keep prior native folder and its unreviewed non-importer material edits untouched; verify in isolated checkout."
+        "owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
+        "ownership_revision": 75,
+        "updated_at": "2026-11-13T17:03:04.762Z",
+        "reason": "Exact native city/bag/mail/barracks and world regression from isolated Unity source; previous run failed on stale destination capture count, not on player action."
       },
       "ownership_history": [
         {
@@ -7940,6 +7940,14 @@
           "revision": 74,
           "transferred_at": "2026-11-13T16:39:29.463Z",
           "reason": "Owner explicitly requests another chat to continue beta navigation and button corrections. Last native run 43455510898 was safely blocked by existing modified material sources in reused Unity checkout. No running beta workflows observed; retain existing evidence and same canonical branch, preserve old files, run only in a separate checkout. No publish, no save reset."
+        },
+        {
+          "previous_owner": "chatgpt-eldoria-beta-navigation-20261113",
+          "from_revision": 74,
+          "to_revision": 75,
+          "to_owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
+          "transferred_at": "2026-11-13T17:03:04.762Z",
+          "reason": "Owner explicitly asks this chat to continue corrections without report pauses. Exact native 43465479546 finished failure after successfully capturing new barracks-entry shots; QA fixture expected stale 16 captures after addition. Handoff same PR179 without cancelling jobs, preserving all runner source/art/save. Repair test expectations and run exact grouped certification."
         }
       ],
       "frozen_beta_ux_scope": {
