@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T19:00:00+01:00",
+  "updated_at": "2026-11-13T18:18:31.751Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7379,9 +7379,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
+      "owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 75,
+      "ownership_revision": 76,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7436,9 +7436,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "EXACT_NATIVE_NAVIGATION_FIXTURE_GATE_REPAIR",
-      "note": "Owner reports existing save loads, world entry restarts iPhone, provisions-looking bag selects sawmill, city-looking control selects barracks, bell opens mail. Previous desktop WebKit success is not physical acceptance; pilot blocked.",
-      "next": "Repair native destination capture count 16 to 20 for added actual barracks-access captures, align CI, then rerun exact isolated Unity and WebKit. Analyze mobile memory against previous baseline without misleading physical iPhone claims.",
+      "phase": "OWNER_NAVIGATION_LAST_FIX_AND_NEW_WEBGL_PREVIEW",
+      "note": "Owner explicitly requests a new testable build with icon/access corrections and physical Safari world-entry regression addressed. Unity exact ec4d664 passed; package candidate passed. Desktop WebKit 43469529824 still executing; preserve exact SHA and assets, do not restart or cancel. Pending two icon visual defects and owner-only Pages staging, no tester release.",
+      "next": "Finish current WebKit run, fix double castle during deferred loading and bag highlight on selecting buildings with real-input native regression; package and publish an identifiable owner preview, verify origin and preserve saves/routes.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7708,10 +7708,10 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "claimed",
-        "owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
-        "ownership_revision": 75,
-        "updated_at": "2026-11-13T17:03:04.762Z",
-        "reason": "Exact native city/bag/mail/barracks and world regression from isolated Unity source; previous run failed on stale destination capture count, not on player action."
+        "owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
+        "ownership_revision": 76,
+        "updated_at": "2026-11-13T18:18:31.751Z",
+        "reason": "Prepare exact corrected visual-navigation candidate and release proof after existing WebKit completes; no concurrent Windows run."
       },
       "ownership_history": [
         {
@@ -7948,6 +7948,14 @@
           "to_owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
           "transferred_at": "2026-11-13T17:03:04.762Z",
           "reason": "Owner explicitly asks this chat to continue corrections without report pauses. Exact native 43465479546 finished failure after successfully capturing new barracks-entry shots; QA fixture expected stale 16 captures after addition. Handoff same PR179 without cancelling jobs, preserving all runner source/art/save. Repair test expectations and run exact grouped certification."
+        },
+        {
+          "previous_owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
+          "from_revision": 75,
+          "to_revision": 76,
+          "to_owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
+          "transferred_at": "2026-11-13T18:18:31.751Z",
+          "reason": "User requests this chat to continue through a new playable corrected beta link. Preserve ongoing exact WebKit 43469529824 and finished Unity/packaging; same branch and owner-authorized scope, no duplicate PR, no process termination."
         }
       ],
       "frozen_beta_ux_scope": {
