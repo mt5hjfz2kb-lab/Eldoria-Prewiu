@@ -700,6 +700,15 @@ jobs:
           $ErrorActionPreference='Stop'
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
           New-Item -ItemType Directory -Force $env:ELDORIA_V41_EVIDENCE|Out-Null
+          # Production main owns Vigilia; the old fixture asserts retired
+          # Inventory shortcuts and Royal parchment painters. Verify the real
+          # replacement instead, retaining all earlier domain/EditMode/PlayMode
+          # and I-V campaign checks in this certificate.
+          if($env:GITHUB_REF_NAME -eq 'main'){
+            & ./tools/breach-watch/verify_production_native.ps1 -Evidence $env:ELDORIA_V41_EVIDENCE
+            if($LASTEXITCODE -and $LASTEXITCODE -ne 0){throw 'Vigilia native acceptance failed'}
+            exit 0
+          }
           $log=Join-Path $env:ELDORIA_V41_EVIDENCE 'native.log'
           $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod','Eldoria.Editor.EldoriaV41NativeCapture.Capture','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
