@@ -27,6 +27,10 @@ namespace Eldoria.BreachWatch
         readonly List<RoyalGoldV3ScoutContractGraphic> contractSources=new List<RoyalGoldV3ScoutContractGraphic>();
         readonly List<RawImage> medallions=new List<RawImage>();
         RawImage source,backdrop;
+        RoyalGoldV3ScoutDiscoverySeals discoverySource;
+        readonly List<RawImage> discoveryMedallions=new List<RawImage>();
+        static readonly Vector2[] DiscoveryPoints={new Vector2(.30f,.39f),new Vector2(.47f,.64f),new Vector2(.68f,.47f),new Vector2(.78f,.70f)};
+        public int VisibleDiscoveryMask { get { int mask=0;for(int i=0;i<discoveryMedallions.Count;i++)if(discoveryMedallions[i].isActiveAndEnabled)mask|=1<<i;return mask; } }
         bool scouts,installed;
         public bool Installed=>installed && backdrop && backdrop.enabled;
         public int RestoredPlaneCount=>Installed?1+pieces.Count:0;
@@ -106,6 +110,16 @@ namespace Eldoria.BreachWatch
                 var paper=Resources.Load<Texture2D>("EldoriaRetention/scout-parchment-v3");
                 var badge=Resources.Load<Texture2D>("EldoriaRetention/scout-medallions-v5");
                 if(!paper || !badge){Restore();return false;}
+                discoverySource=screen.GetComponentInChildren<RoyalGoldV3ScoutDiscoverySeals>(true);
+                if(!discoverySource){Restore();return false;}
+                for(int family=0;family<4;family++)
+                {
+                    var seal=Painting(discoverySource.transform,"Vigilia / earned map family / "+family,badge);
+                    seal.rectTransform.anchorMin=seal.rectTransform.anchorMax=DiscoveryPoints[family];
+                    seal.rectTransform.anchoredPosition=Vector2.zero;
+                    seal.uvRect=new Rect((family%2)*.5f,family<2?.5f:0f,.5f,.5f);
+                    discoveryMedallions.Add(seal);
+                }
                 var sprite=Sprite.Create(paper,new Rect(0,0,paper.width,paper.height),new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect,new Vector4(70,90,70,90));
                 runtimeSprites.Add(sprite);
                 foreach(var child in screen.GetComponentsInChildren<RectTransform>(true))
@@ -152,6 +166,13 @@ namespace Eldoria.BreachWatch
             }
             if(scouts)
             {
+                for(int i=0;i<discoveryMedallions.Count;i++)
+                {
+                    var seal=discoveryMedallions[i];
+                    seal.gameObject.SetActive((discoverySource.DiscoveredMask&(1<<i))!=0);
+                    float radius=Mathf.Clamp(Mathf.Min(discoverySource.rectTransform.rect.width,discoverySource.rectTransform.rect.height)*.033f,6.5f,15f);
+                    seal.rectTransform.sizeDelta=Vector2.one*radius*3.3f;
+                }
                 for(int i=0;i<medallions.Count;i++)
                 {
                     var donor=contractSources[i];var seal=medallions[i];
@@ -174,7 +195,7 @@ namespace Eldoria.BreachWatch
             hidden.Clear();owned.Clear();pieces.Clear();contractSources.Clear();medallions.Clear();
             foreach(var go in created)if(go){go.SetActive(false);Destroy(go);}created.Clear();
             foreach(var sprite in runtimeSprites)if(sprite)Destroy(sprite);runtimeSprites.Clear();
-            source=backdrop=null;
+            discoveryMedallions.Clear();discoverySource=null;source=backdrop=null;
         }
         void OnDestroy()=>Restore();
     }

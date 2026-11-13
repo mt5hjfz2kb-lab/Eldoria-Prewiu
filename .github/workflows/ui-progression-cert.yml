@@ -733,6 +733,19 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor busy'}
           $e=$env:ALDRIC_NATIVE_OUTPUT
           New-Item -ItemType Directory -Force $e|Out-Null
+          if($env:GITHUB_REF_NAME -eq 'main'){
+            # Main no longer renders Royal dialogue. Verify the current-run
+            # real canonical nickname/story touch evidence from the production probe.
+            $source=Join-Path $env:GITHUB_WORKSPACE ('v41-native-'+$env:GITHUB_RUN_ID+'/BreachWatchNativeEvidence/FirstEntry')
+            if(-not(Test-Path $source)){throw 'Fresh production dialogue proof missing'}
+            if((Get-Content (Join-Path $source 'source.txt') -Raw) -ne $env:GITHUB_SHA){throw 'Wrong dialogue source'}
+            if((Get-Content (Join-Path $source 'complete.txt') -Raw) -ne 'PRODUCTION_FIRST_ENTRY_TWO_REAL_TOUCHES_PASS'){throw 'Actual entry did not complete'}
+            $touches=@(Get-Content (Join-Path $source 'visible-narrative-touches.txt'))
+            if($touches.Count -lt 1 -or @($touches|Where-Object {$_ -notmatch '^PRODUCTION_VISIBLE_NARRATIVE_TOUCH '}).Count){throw 'Actual narrative touch proof missing'}
+            Copy-Item -Path (Join-Path $source '*') -Destination $e -Recurse -Force
+            Write-Host 'VIGILIA_REAL_FIRST_ENTRY_AND_VISIBLE_DIALOGUE_PASS'
+            exit 0
+          }
           $log=Join-Path $e 'native.log'
           $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
             '-executeMethod','Eldoria.UI.RoyalGold.V2.Editor.AldricDialogueNativeCapture.Capture',
@@ -808,6 +821,11 @@ jobs:
           $cases=@(
             @('Eldoria.ReferenceClean.Editor.EarlyRetentionNativeCapture.Capture',$env:EARLY_RETENTION_EVIDENCE,'EARLY_RETENTION_NATIVE_PASS'),
             @('Eldoria.ReferenceClean.Editor.EarlyRetentionEngagementNativeCapture.Capture',$env:ENGAGEMENT_EVIDENCE,'RETENTION_ENGAGEMENT_NATIVE_PASS'))
+          if($env:GITHUB_REF_NAME -eq 'main'){
+            # Preserve real battle/loss, strategy, orders, discoveries, claims
+            # and reload coverage using current production controls and art.
+            $cases=@(,@('Eldoria.BreachWatch.Editor.BreachWatchRetentionInteractionEvidence.Capture',$env:EARLY_RETENTION_EVIDENCE,'VIGILIA_RETENTION_INTERACTION_PASS'))
+          }
           foreach($case in $cases){
             $folder=$case[1]
             if(Test-Path $folder){throw 'Refuse stale retention evidence'}
