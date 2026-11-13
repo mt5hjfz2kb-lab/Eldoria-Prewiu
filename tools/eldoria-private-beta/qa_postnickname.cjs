@@ -34,6 +34,11 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  const returning=await screen('returning-nickname');
  report.nicknameReloadVerified=returning.some(r=>norm(r.text)==='ENTRADA QA');
  if(!report.nicknameReloadVerified)throw Error('Saved nickname did not survive real reload');
+ const storyLine=returning.find(r=>r.confidence>.4&&norm(r.text).includes('BRECHA SE ABRIO'));
+ if(!storyLine)throw Error('Actual returning-player story line was not found for pixel readability proof');
+ const {measureStoryInk}=await import('./story_pixel_readability.mjs');
+ report.storyInk=measureStoryInk(out+'/returning-nickname.png',storyLine);save();
+ if(!report.storyInk.passed)throw Error('Rendered story ink remains dark on Vigilia stone');
  let provisionsClicked=false;
  for(let step=0;step<35;step++){
   const rows=await screen('after-name-'+step);
