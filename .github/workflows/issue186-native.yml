@@ -325,7 +325,7 @@ jobs:
              -not $r.temporaryProbeOnly -or -not $r.actualBagOnVigilia -or -not $r.seenDoesNotUse -or
              -not $r.skipDoesNotComplete -or -not $r.useCreditsOnce -or -not $r.jsonReloadVerified -or
              -not $r.mailReadDoesNotClaim -or -not $r.mailClaimDoesNotCredit -or
-             -not $r.firstUseCoachPresent -or -not $r.firstSawmillHandOnRealHit -or
+             -not $r.productionVigiliaInstalled -or -not $r.firstUseCoachPresent -or -not $r.firstSawmillHandOnRealHit -or
              $r.artApproved -or $r.physicalIphoneVerified -or -not $r.fullMailboxUiFlowVerified -or
              @($r.images).Count -ne 21 -or $r.actualIntegratedCityFrames -ne 4 -or $r.realFirstHitClicks -ne 52){throw 'Actual combined bag proof contract missing'}
           foreach($shot in @($r.images)){
