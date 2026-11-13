@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.ReferenceClean;
+using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -42,6 +43,7 @@ namespace Eldoria.Issue186Art.Editor
         {
             public string status,resourceSource,uiSource,error,limitation,nativeRun,nativeAttempt;
             public bool productionVigiliaInstalled, firstUseCoachPresent, firstSawmillHandOnRealHit;
+            public bool firstSawmillLabelSelected, firstBuildingActionHandOnRealHit;
             public bool firstNicknameInputOnRealHit, firstNicknameConfirmOnRealHit,
                 firstStoryContinueOnRealHit;
             public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
@@ -184,6 +186,42 @@ namespace Eldoria.Issue186Art.Editor
                 handler,data,ExecuteEvents.pointerClickHandler),"First hit has no click handler");clicks++;
             Debug.Log("ISSUE186_ACTUAL_FIRST_HIT_CLICK target="+button.name+
                 "; hit="+hits[0].gameObject.name+"; handler="+handler.name);
+        }
+        static void TouchRealWorldGuidance(RoyalButton actual,
+            Camera camera,RenderTexture target)
+        {
+            Need(actual&&actual.isActiveAndEnabled&&actual.IsInteractable() &&
+                actual.gameObject.activeInHierarchy,
+                "The real city guidance RoyalButton is not available");
+            Draw(camera,target);
+            var system=EventSystem.current;
+            Need(system&&system.isActiveAndEnabled,"Actual guidance EventSystem unavailable");
+            var rect=(RectTransform)actual.transform;
+            var pos=RectTransformUtility.WorldToScreenPoint(camera,
+                rect.TransformPoint(rect.rect.center));
+            var data=new PointerEventData(system){
+                position=pos,pressPosition=pos,
+                button=PointerEventData.InputButton.Left,
+                pointerId=-1,clickCount=1,eligibleForClick=true};
+            var hits=new List<RaycastResult>();
+            system.RaycastAll(data,hits);
+            var handler=hits.Count>0?
+                ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject):null;
+            Need(handler==actual.gameObject,
+                "The visible city label is not the first real touch handler: "+
+                (hits.Count>0?hits[0].gameObject.name:"none"));
+            // RoyalButton deliberately rejects a click without pointer down
+            // and up. The real mobile click sequence must be delivered.
+            Need(ExecuteEvents.Execute<IPointerDownHandler>(handler,data,
+                    ExecuteEvents.pointerDownHandler),
+                "Guidance did not accept real pointer down");
+            Need(ExecuteEvents.Execute<IPointerUpHandler>(handler,data,
+                    ExecuteEvents.pointerUpHandler),
+                "Guidance did not accept real pointer up");
+            Need(ExecuteEvents.Execute<IPointerClickHandler>(handler,data,
+                    ExecuteEvents.pointerClickHandler),
+                "Guidance did not receive real pointer click");
+            clicks++;
         }
         static bool SessionRebound(ValoriaIntegratedWorld host)
         {
@@ -363,6 +401,28 @@ namespace Eldoria.Issue186Art.Editor
                     firstCoach.Rejection+"; target="+firstCoach.TargetId);
                 Photograph(camera,rt,"first-sawmill-guide",390,844);
                 report.firstSawmillHandOnRealHit=true;
+                var realLabel=canvas.GetComponentsInChildren<BuildingLabel>(true)
+                    .SingleOrDefault(v=>v&&v.name=="Guidance sawmill"&&
+                        v.gameObject.activeInHierarchy);
+                Need(realLabel&&realLabel.Select,
+                    "No real, visible and selectable Aserradero guidance label");
+                TouchRealWorldGuidance(realLabel.Select,camera,rt);
+                Need(host.Selected=="sawmill"&&
+                     host.Hud.SelectedBuildingId=="sawmill",
+                    "The first label touch did not actually select the sawmill");
+                report.firstSawmillLabelSelected=true;
+                double actionDeadline=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<actionDeadline &&
+                      !(firstCoach.Visible&&firstCoach.TargetId=="building-action"))
+                    {RenderUi(ui,390,844);yield return null;}
+                Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
+                    "The hand did not move to the real CONSTRUIR action: "+
+                    firstCoach.Rejection);
+                Photograph(camera,rt,"first-sawmill-build-guide",390,844);
+                report.firstBuildingActionHandOnRealHit=true;
+                // Reset only the disposable view selection, not a save or
+                // building action, before the existing bag/mail fixture.
+                host.Hud.SelectBuilding("");
                 camera.targetTexture=oldTarget;rt.Release();Object.DestroyImmediate(rt);rt=null;
                 foreach(var size in new[]{(390,844),(900,1600),(844,390),(1600,900)})
                 {
