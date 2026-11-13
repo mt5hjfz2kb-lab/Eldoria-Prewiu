@@ -1,14 +1,14 @@
 {
-  "owner": "chatgpt-eldoria-beta-navigation-20261113",
-  "ownership_revision": 74,
+  "owner": "chatgpt-eldoria-beta-nav-fixture-repair-20261113",
+  "ownership_revision": 75,
   "integration_pr": 179,
   "baseline": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
   "ui": "d868f9860f3607dbacc406a290f8e8bb623dea74",
   "treasures": "e6e0fe682d53f34a4d217c3d06f652aeab16213f",
   "rewards": "373be6875b8131ebf47c60a1b7d316e57f1ccc4b",
   "contract": "Mandatory Vigilia on real session; no retired decorative paintings or fallback. No public beta overwrite before native and gameplay verification.",
-  "attempt": 44,
-  "previous_run": 43465080524,
-  "correction": "Icon-only semantic audit: cancel queued world transitions on city/bag/other screens; one world return castle; clear compact engraved mail control. Native interaction assertions plus full deferred-world saved-game PlayMode and actual WebKit world reentry. Before first world assembly release unused assets, with opt-in measured before/after texture/mesh inventories. Not a physical iPhone fix claim. No save reset. Complete audit follow-up: generic envelope icon17 no longer becomes raven; built-barracks swords opens canonical Training through actual pointer-tested control; bag highlight follows actual open state. Retain exact world-memory candidate for comparison. Follow-up after run43455510898: safe checkout refused to change reused Holotna/MegaFantasy material sources. Isolate new SHA-specific native project in a never-reused path, retain all old files and preservation artifacts, rerun full real controls/memory/world/reload before any promotion. No publication, no save reset, no physical-iPhone PASS claim. Run43465080524 confirmed truly isolated git init, but old preservation helper (which requires HEAD) threw before fetch because a fresh repository has no HEAD. Guard empty isolated root explicitly and do not run existing-checkout preservation on a never-used directory. Previous source remains untouched; require exact native QA and WebKit reentry.",
+  "attempt": 45,
+  "previous_run": 43465479546,
+  "correction": "Icon-only semantic audit: cancel queued world transitions on city/bag/other screens; one world return castle; clear compact engraved mail control. Native interaction assertions plus full deferred-world saved-game PlayMode and actual WebKit world reentry. Before first world assembly release unused assets, with opt-in measured before/after texture/mesh inventories. Not a physical iPhone fix claim. No save reset. Complete audit follow-up: generic envelope icon17 no longer becomes raven; built-barracks swords opens canonical Training through actual pointer-tested control; bag highlight follows actual open state. Retain exact world-memory candidate for comparison. Follow-up after run43455510898: safe checkout refused to change reused Holotna/MegaFantasy material sources. Isolate new SHA-specific native project in a never-reused path, retain all old files and preservation artifacts, rerun full real controls/memory/world/reload before any promotion. No publication, no save reset, no physical-iPhone PASS claim. Run43465080524 confirmed truly isolated git init, but old preservation helper (which requires HEAD) threw before fetch because a fresh repository has no HEAD. Guard empty isolated root explicitly and do not run existing-checkout preservation on a never-used directory. Previous source remains untouched; require exact native QA and WebKit reentry. Exact native on isolated SHA bf2cc865 completed actual built Cuartel Training button and captured four more 390x844/900x1600/1600x900/844x390 images, but legacy QA and workflow still required 16 rather than 20 shots. Update both to certify five destination surfaces, preserving gameplay, saves and art. Native group must rerun at this exact SHA. Memory investigation remains independently unresolved on physical iPhone.",
   "build_candidate": true
 }
