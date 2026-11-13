@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, fix/player-feedback-context-ui-20261030, fix/player-experience-audit-20261106]
     paths:
-      - '.github/workflows/ui-progression-cert.yml'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs'
       - 'Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs'
       # Certify exact V4 art code with a branch push even when the DRAFT PR
