@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T12:52:44.236Z",
+  "updated_at": "2026-11-14T13:05:00.000Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -51,13 +51,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 61,
+      "ownership_revision": 62,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
       "phase": "FIRST_USE_REAL_FIRST_HIT_REPAIR_AND_NATIVE_GATE",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -230,16 +232,16 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "temporary_release_to_vigilia_phase1",
+        "status": "claimed_for_issue186_exact_native_with_strict_disk_gate",
         "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
-        "ownership_revision": 61,
-        "updated_at": "2026-11-14T11:30:22.497Z",
-        "reason": "Propietario confirmó PC Unity propio 2026-11-14 y ordenó continuar Vigilia; Issue186 native 43583823285 completed SUCCESS, no live or recent queued Windows runs. No loss of Issue186 source/edit ownership. Borrow only for one exact Vigilia native run, existing guards fail closed if PC becomes busy."
+        "ownership_revision": 62,
+        "updated_at": "2026-11-14T13:05:00.000Z",
+        "reason": "Previously reserved by Vigilia until rev131 release after native disk failure. No Windows access unless exclusive CAS and >=16 GiB safe. Capture existing screenshots and native logs; no merge or publish."
       },
-      "runner_claimed_at": "2026-11-14T09:50:44.400Z",
+      "runner_claimed_at": "2026-11-14T13:05:00.000Z",
       "runner_released_at": "2026-11-13T23:54:59.802Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
-      "runner_claim_basis": "Owner-directed CAS reclaim after Vigilia recorded disk-blocked release at revision129; one exact PR190 native preflight only; fail closed below 16 GiB without touching existing Unity worktrees, no publication.",
+      "runner_claim_basis": "Owner-directed CAS reclaim after Vigilia legitimately released Windows at rev131 (2026-11-14T12:52Z); no current exclusive holder and no active Windows native Actions. Reclaim for ONE Issue186 exact-head native preflight only. Vigilia failed Unity with C: disk exhaustion, so Issue186 16 GiB free-space safety gate MUST refuse Editor before any new worktree; reclaim ONLY independently verified archived own Unity/Library cache, never foreign sources, beta or art.",
       "runner_release_basis": "Temporary Windows loan for owner-requested Vigilia phase1. Latest native Issue186 43583823285 SUCCESS, no active/waiting runs at CAS preflight. Issue186 remains source owner and can reclaim via subsequent safe CAS after Vigilia releases.",
       "last_native": {
         "run": 43226508340,
