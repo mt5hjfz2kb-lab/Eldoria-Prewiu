@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T13:05:00.000Z",
+  "updated_at": "2026-11-14T13:07:00.000Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -51,15 +51,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 62,
+      "ownership_revision": 63,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
       "phase": "FIRST_USE_REAL_FIRST_HIT_REPAIR_AND_NATIVE_GATE",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -91,7 +89,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Reproduce actual first nickname input raycast failure in run43503266427; ensure a truly rendered GPU frame before asserting first EventSystem hit (no disabled checks), rerun exact PR190 native on the existing Windows lease; inspect all 24 real images and real touch sequence before any merge or external release.",
+      "next": "Exact first-use branch 6325662868d02900fb2dc3e11b25412f71f7516d source CI; Unity 4-size 28-PNG/54-hit test could not start because C: remains 5.84GiB (<16GiB) after safe Issue186-only cache recovery in native run43598020843. Obtain authorized safe disk recovery without deleting foreign/dirty Unity evidence. Recheck live Windows ownership and CI; CAS claim and update native-request exact revision, then rerun strict Unity and inspect four viewport captures. Keep draft, no merge/beta/testers.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_history": [
@@ -232,17 +230,17 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed_for_issue186_exact_native_with_strict_disk_gate",
+        "status": "released_after_native_disk_preflight_5_84GiB",
         "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
-        "ownership_revision": 62,
-        "updated_at": "2026-11-14T13:05:00.000Z",
-        "reason": "Previously reserved by Vigilia until rev131 release after native disk failure. No Windows access unless exclusive CAS and >=16 GiB safe. Capture existing screenshots and native logs; no merge or publish."
+        "ownership_revision": 63,
+        "updated_at": "2026-11-14T13:07:00.000Z",
+        "reason": "Issue186 exact-native #43598020843 finished FAILURE safely at storage preflight: verified and removed ONLY archived generated Unity/Library for run43583823285; C free rose to 5.84 GiB, below hard 16 GiB. No Unity checkout, no GPU run, no source/art/save deletion. Exclusive Windows resource released after completed job; do not retry until independently proven free C >=16 GiB."
       },
       "runner_claimed_at": "2026-11-14T13:05:00.000Z",
-      "runner_released_at": "2026-11-13T23:54:59.802Z",
+      "runner_released_at": "2026-11-14T13:07:00.000Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
       "runner_claim_basis": "Owner-directed CAS reclaim after Vigilia legitimately released Windows at rev131 (2026-11-14T12:52Z); no current exclusive holder and no active Windows native Actions. Reclaim for ONE Issue186 exact-head native preflight only. Vigilia failed Unity with C: disk exhaustion, so Issue186 16 GiB free-space safety gate MUST refuse Editor before any new worktree; reclaim ONLY independently verified archived own Unity/Library cache, never foreign sources, beta or art.",
-      "runner_release_basis": "Temporary Windows loan for owner-requested Vigilia phase1. Latest native Issue186 43583823285 SUCCESS, no active/waiting runs at CAS preflight. Issue186 remains source owner and can reclaim via subsequent safe CAS after Vigilia releases.",
+      "runner_release_basis": "Issue186 exact-native #43598020843 finished FAILURE safely at storage preflight: verified and removed ONLY archived generated Unity/Library for run43583823285; C free rose to 5.84 GiB, below hard 16 GiB. No Unity checkout, no GPU run, no source/art/save deletion. Exclusive Windows resource released after completed job; do not retry until independently proven free C >=16 GiB.",
       "last_native": {
         "run": 43226508340,
         "head": "7a9cda13ca7edf5790b884ae49051d7a7e3492ee",
