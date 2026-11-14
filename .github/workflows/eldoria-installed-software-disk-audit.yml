@@ -1,0 +1,56 @@
+name: Eldoria read-only installed software storage classification
+on:
+  push:
+    branches: [maintenance/eldoria-runner-disk-audit-20261114]
+    paths: [.github/workflows/eldoria-installed-software-disk-audit.yml]
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-breachwatch-native-first-screen
+  cancel-in-progress: false
+jobs:
+  classify:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    steps:
+      - name: Measure Program Files x86 subdirectories and classify without exposing installed app names
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            Write-Host 'PROGRAMS_AUDIT_EDITOR_BUSY';exit 0
+          }
+          $base='C:\Program Files (x86)'
+          $gib=[double](1024*1024*1024)
+          $deadline=[datetime]::UtcNow.AddMinutes(6)
+          [int]$index=0
+          $totals=@{}
+          foreach($dir in @(Get-ChildItem -LiteralPath $base -Directory -Force -ErrorAction Stop | Sort-Object Name)){
+            if($dir.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+            $index++
+            $label='other-installed-software-'+$index
+            if($dir.Name -match '(?i)unity|unreal|godot'){ $label='game-engine-'+$index }
+            elseif($dir.Name -match '(?i)visual studio|windows kits|microsoft sdk|dotnet|msbuild'){ $label='developer-tool-'+$index }
+            elseif($dir.Name -match '(?i)steam|epic games|gog|ubisoft|electronic arts'){ $label='game-library-or-store-'+$index }
+            elseif($dir.Name -match '(?i)github|git|nodejs|python'){ $label='development-utility-'+$index }
+            [long]$bytes=0;[long]$files=0
+            $stack=New-Object 'System.Collections.Generic.Stack[string]'
+            $stack.Push($dir.FullName)
+            while($stack.Count -gt 0){
+              if([datetime]::UtcNow -ge $deadline){Write-Host 'PROGRAMS_AUDIT_PARTIAL';break}
+              $next=$stack.Pop()
+              try{
+                foreach($item in ([IO.DirectoryInfo]::new($next)).EnumerateFileSystemInfos()){
+                  try{
+                    if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+                    if($item -is [IO.DirectoryInfo]){$stack.Push($item.FullName)}
+                    else{$bytes+=[long]$item.Length;$files++}
+                  }catch{}
+                }
+              }catch{}
+            }
+            $totals[$label]=$bytes
+            Write-Host ("PROGRAMS_AUDIT_DIRECTORY category={0} GiB={1:N3} files={2}" -f $label,($bytes/$gib),$files)
+          }
+          $sum=($totals.Values | Measure-Object -Sum).Sum
+          Write-Host ("PROGRAMS_AUDIT_END subfolders={0} observedGiB={1:N3} deleted=false" -f $totals.Count,([double]$sum/$gib))
