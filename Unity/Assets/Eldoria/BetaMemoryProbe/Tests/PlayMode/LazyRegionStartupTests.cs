@@ -164,6 +164,28 @@ namespace Eldoria.BetaMemory.Tests
                     Is.EqualTo(48),"Canonical resources must be present, not an empty diagnostic map");
                 Assert.That(after.WorldCreatureLocations.Count,Is.EqualTo(36),
                     "Actual combat population must survive deferred installation");
+                // Renderer allocation is a separate mobile-first safety invariant:
+                // the canonical 48 resources and 36 enemies exist logically,
+                // but off-screen 3D GLB copies must never all occupy memory.
+                yield return new WaitForSecondsRealtime(2f);
+                var visualTransforms=world.GetComponentsInChildren<Transform>(true);
+                int resourceNear=visualTransforms.Count(x=>x.name.StartsWith(
+                    "Production resource visual region1:",StringComparison.Ordinal));
+                int resourceBillboards=visualTransforms.Count(x=>x.name.StartsWith(
+                    "Production resource impostor region1:",StringComparison.Ordinal));
+                int creatureModels=visualTransforms.Count(x=>x.name.StartsWith(
+                    "Original Tripo ",StringComparison.Ordinal));
+                Assert.That(resourceNear,Is.LessThanOrEqualTo(10),
+                    "Resource GLB residency must follow the on-screen, bounded budget");
+                Assert.That(creatureModels,Is.LessThanOrEqualTo(12),
+                    "Creature GLB residency must follow the on-screen, bounded budget");
+                Assert.That(resourceBillboards,Is.GreaterThanOrEqualTo(48),
+                    "All canonical resource nodes keep their lightweight regional artwork");
+                Debug.Log("ELDORIA_WORLD_STREAMING_VISUALS resource_near="+resourceNear+
+                    " resource_billboards="+resourceBillboards+
+                    " creature_models="+creatureModels+
+                    " allocated="+UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong()+
+                    " managed="+GC.GetTotalMemory(false));
                 // Exercise the same camera/root repeatedly. This must not allocate
                 // a second Region 1, lose HUD/gateway or re-enter construction.
                 for(int cycle=0;cycle<12;cycle++)
