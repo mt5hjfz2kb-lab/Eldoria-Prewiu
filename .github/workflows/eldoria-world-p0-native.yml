@@ -128,6 +128,48 @@ jobs:
           New-Item -ItemType Directory -Force -Path 'world-p0-results'|Out-Null
           Set-Content -LiteralPath 'world-p0-results/source.txt' -Value $env:GITHUB_SHA
           Write-Host ('WORLD_P0_OWNED_PROJECT_SOURCE_READY='+$env:GITHUB_SHA+' FREE_GIB='+[Math]::Round($disk,2))
+      - name: Retrieve prior validated source-identical terrain query tape for exact Region 1
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43489752868
+          name: integrated-build-proof-90465a9a910b89a8a8b74e4b33a9bbc88578e00e
+          github-token: ${{ github.token }}
+          path: world-p0-verified-prior-proof
+      - name: Verify and import original audited terrain queries into isolated P0 source
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $prefix=Join-Path $env:GITHUB_WORKSPACE 'world-p0-verified-prior-proof/integrated-terrain-43489752868'
+          $source=Join-Path $prefix 'RuntimeTerrainQueries.bytes'
+          $sourceMeta=Join-Path $prefix 'RuntimeTerrainQueries.bytes.meta'
+          $expected='013EBF8194BE6974DBCADF27E3CF2AE43DB7C7638E0E6CB22CFE838E037ED986'
+          $metaSha='C05C2D9E21F36BA5FBCBBBD4D97CC377A1CB04F72FBDA47BC630B1D9F4A324BD'
+          if(-not(Test-Path -LiteralPath $source) -or
+             (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash -ne $expected){
+            throw 'Previously baked terrain queries missing or not byte identical'
+          }
+          if(-not(Test-Path -LiteralPath $sourceMeta) -or
+             (Get-FileHash -LiteralPath $sourceMeta -Algorithm SHA256).Hash -ne $metaSha){
+            throw 'Baked terrain Unity GUID identity not preserved'
+          }
+          $proof=Get-Content -LiteralPath (Join-Path $prefix 'validate/startup-0.json') -Raw|ConvertFrom-Json
+          if($proof.source -ne '90465a9a910b89a8a8b74e4b33a9bbc88578e00e' -or
+             -not $proof.canonicalSavesUnchanged -or $proof.terrainParityCheckedQueries -le 10000){
+            throw 'Previous exact terrain geometry/query/save certificate is invalid'
+          }
+          $asset=Join-Path $env:ELDORIA_P0_PROJECT 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes'
+          New-Item -ItemType Directory -Force (Split-Path $asset)|Out-Null
+          if(Test-Path -LiteralPath $asset){
+            if((Get-FileHash -LiteralPath $asset -Algorithm SHA256).Hash -ne $expected){
+              throw 'Protected generated terrain asset differs; refuse overwrite'
+            }
+          }else{Copy-Item -LiteralPath $source -Destination $asset}
+          if(Test-Path -LiteralPath ($asset+'.meta')){
+            if((Get-FileHash -LiteralPath ($asset+'.meta') -Algorithm SHA256).Hash -ne $metaSha){
+              throw 'Protected generated Unity meta differs; refuse overwrite'
+            }
+          }else{Copy-Item -LiteralPath $sourceMeta -Destination ($asset+'.meta')}
+          Write-Host 'P0_REGIONAL_TERRAIN_TAPE_EXACT_SOURCE_IMPORTED; PLAYMODE_MUST_CONFIRM_QUERY_ORDER'
       - name: Restore only exact SHA-audited Bastion III art or explicitly run logical-only diagnostics
         shell: powershell
         timeout-minutes: 12
