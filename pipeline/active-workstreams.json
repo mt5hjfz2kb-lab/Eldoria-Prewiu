@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T11:45:09.033Z",
+  "updated_at": "2026-11-14T12:52:44.236Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6992,14 +6992,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 130,
+      "ownership_revision": 131,
       "write_scope_released": false,
-      "phase": "PHASE1_NATIVE_EXCLUSIVE_TEMPORARY_WINDOWS_LOAN_AFTER_23_26_GIB_RECOVERY",
-      "next": "Wait only for currently executing native 43590398106 (SHA 182676e6, ownership rev130); no further Unity launch. Current hardware artifact 14112067518 measured C: 11.27 GiB, below owner required 16 GiB (earlier 23.26 was not durable). After run completes, inspect actual artifacts/all 15 native 3x PNGs and 300% buttons; ART APPROVAL only if actual quality passes. Correct future disk gate to >=16 GiB; release Windows via safe CAS after native completes, preserve old dirty checkout and all other branches/main gameplay/saves.",
+      "phase": "PHASE1_BLOCKED_NATIVE_DISK_EXHAUSTION_WINDOWS_RELEASED_NO_ART_APPROVAL",
+      "next": "Do not claim Windows or start heavy CI. Confirm physically >=16 GiB available on C or verified alternative and no active/reserved Unity/other owner; source workflow now fail-closed below 16 GiB in 998f73a. On proof, CAS claim for ONE new exact-SHA native Unity checkout (previous 43590398106 FAILED; no screenshot A/B) and verify all 15 Retina 3x real images for city/Bastion/mail/bag plus button 300%, safe save/integrity. Do not clean historical worktree or any other producer data, no phase2, no game/beta/main gameplay edits.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-14T11:30:22.497Z",
@@ -7321,7 +7319,7 @@
         "mail_empty_changed_pixels_390x844": 16513,
         "gpu_caption_outside_pixels": 0
       },
-      "runner_release_basis": "Verified native Unity hardware cannot safely run: C: 5.94 GiB free (minimum 8 GiB, recommended >=16 GiB) on only local disk. Previous unique isolated worktree has 26 non-meta tracked edits incl Unity/ProjectSettings and packages-lock, 17 untracked incl Unity data and 3 evidence files. Cannot force checkout, clean or delete without losing noncanonical data. Last read-only audit 43576008078, no real 3x captures. Release Windows to other workstreams; retain source workstream owner but no runner claim.",
+      "runner_release_basis": "43590398106 completed FAILURE; job 132433842518 ended, upload artifact 14113007702 contains editor log only, genuine-visual-ab skipped. GitHub runner cleanup logged; no physical post-run free-space measurement, do not assume machine ready. Preserve older and current isolated checkouts.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7348,7 +7346,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-14T08:31:34.273Z",
+      "runner_released_at": "2026-11-14T12:52:44.236Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7362,11 +7360,11 @@
       "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_after_native_failure_disk_exhaustion",
         "owner": "chatgpt-vigilia-visual-kit-20261113",
-        "ownership_revision": 130,
-        "updated_at": "2026-11-14T11:30:22.497Z",
-        "reason": "User 'Unity se ejecuta en mi, continúa con el trabajo'; earlier conditional loan 'Si no hay trabajo en el PC usa el recurso'. C: measured 23.26 GiB at 2026-11-14T10:08:26Z in run43583823285. Issue186 native completed, no active/queued recent Unity. One true Unity capture and quality review only; prior dirty worktree untouched; 0€."
+        "ownership_revision": 131,
+        "updated_at": "2026-11-14T12:52:44.236Z",
+        "reason": "Exact native 43590398106 completed failure at 2026-11-14T12:09:10Z: preflight C 11.27 GiB; Unity consumed free C below 54 MB and PrefabImporter failed writing imports. No live Unity proof, no approved art. Logical lease released without touching old dirty worktrees, no new Unity dispatch."
       },
       "last_native": {
         "run": 43195548484,
@@ -7477,7 +7475,7 @@
         "previous_checkout_nonmeta_modified": 26,
         "previous_checkout_untracked": 17,
         "source_run_diagnostic": 43576008078,
-        "native_run_blocked": "disk_insufficient_pre_editor",
+        "native_run_blocked": "unity_import_exhausted_disk_before_real_capture",
         "runner_released_at": "2026-11-14T08:31:34.273Z"
       },
       "source_guard_extension": {
@@ -7497,7 +7495,30 @@
         "blender_processes": 0,
         "old_git_object_cache_preserved": true,
         "measured_at": "2026-11-14T11:31:48Z",
-        "note": "Fresh current Windows C: measured 11.27 GiB (below owner safe goal >=16GiB; above old minimum 8 GiB). One native Unity job already in progress from exact-head previous CAS, do not dispatch another or claim art success. Preserve historic dirty checkout. Tighten future native preflight to >=16 before new attempt."
+        "note": "11.27 GiB below required safe 16 GiB; actual Unity import exhausted disk, no screenshots. No new Windows run authorized.",
+        "run_completed": true,
+        "run_conclusion": "failure"
+      },
+      "phase1_native_failure_20261114": {
+        "run_id": 43590398106,
+        "job_id": 132433842518,
+        "source_sha": "182676e6ce01e910677d1b95f9df3a9e3b57479b",
+        "completed_at": "2026-11-14T12:09:10Z",
+        "conclusion": "failure",
+        "preflight_c_free_gib": 11.27,
+        "warning_free_mb": 54,
+        "warning_at": "2026-11-14T11:57:23Z",
+        "error_at": "2026-11-14T12:08:57Z",
+        "failure": "disk_exhausted_unity_prefab_import_write_fail_and_editor_crash",
+        "unity_exit_code": 1073741845,
+        "real_3x_captures": 0,
+        "artifact_id": 14113007702,
+        "artifact_only_editor_log": true,
+        "postrun_free_space_unknown": true,
+        "no_art_approval": true,
+        "exclusive_lease_released": true,
+        "source_guard_fix_commit": "998f73a25114d779c4ac5fff5f768998d84724a1",
+        "old_dirty_checkout_preserved_by_this_run": true
       }
     },
     {
