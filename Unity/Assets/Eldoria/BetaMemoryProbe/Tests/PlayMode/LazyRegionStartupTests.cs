@@ -200,8 +200,8 @@ namespace Eldoria.BetaMemory.Tests
                     "Original Tripo ",StringComparison.Ordinal));
                 Assert.That(resourceNear,Is.LessThanOrEqualTo(10),
                     "Resource GLB residency must follow the on-screen, bounded budget");
-                Assert.That(creatureModels,Is.LessThanOrEqualTo(12),
-                    "Creature GLB residency must follow the on-screen, bounded budget");
+                Assert.That(creatureModels,Is.LessThanOrEqualTo(after.WorldCreatureLocations.Count),
+                    "Each saved creature can retain at most one visible LOD, never a near/far pair");
                 Assert.That(resourceBillboards,Is.GreaterThanOrEqualTo(48),
                     "All canonical resource nodes keep their lightweight regional artwork");
                 Debug.Log("ELDORIA_WORLD_STREAMING_VISUALS resource_near="+resourceNear+
@@ -220,10 +220,50 @@ namespace Eldoria.BetaMemory.Tests
                         "Capture must use a new empty output, never overwrite prior evidence");
                     var capture=FindType("Eldoria.World4XCanon.Editor.RegionOneCanonicalCapture");
                     Assert.That(capture,Is.Not.Null,"Real integrated Unity world capture unavailable");
-                    var method=capture.GetMethod("Capture",BindingFlags.Static|BindingFlags.Public);
+                    var method=capture.GetMethod("CaptureCamera",BindingFlags.Static|BindingFlags.NonPublic);
                     Assert.That(method,Is.Not.Null);
-                    Environment.SetEnvironmentVariable("ELDORIA_REGION1_CAPTURE_OUT",output);
-                    method.Invoke(null,null);
+                    Directory.CreateDirectory(output);
+                    var navigation=Member(host,"WorldNavigation");
+                    var previousTarget=(Vector3)Member(navigation,"target");
+                    var previousZoom=camera.orthographicSize;
+                    var previousAspect=camera.aspect;
+                    try {
+                        foreach(var size in new[]{(1280,720,"landscape"),(390,844,"portrait")}){
+                            camera.aspect=size.Item1/(float)size.Item2;
+                            foreach(var stage in new[]{(2,"cercana"),(1,"regional"),(0,"panoramica")}){
+                                Call(navigation,"SetZoomLevel",stage.Item1,true);
+                                Call(navigation,"PanTo",Member(host,"WorldHome"));
+                                Call(navigation,"FitToAuthoredBounds");
+                                Call(adapter,"RefreshForCapture");
+                                // The old synchronous six-view loop never let LateUpdate
+                                // stream models or finish deferred Destroy between cameras.
+                                // Allow the full 36-target budget (2 per .25s) to settle.
+                                yield return new WaitForSecondsRealtime(6f);
+                                Call(adapter,"RefreshForCapture");
+                                yield return null;
+                                var populationType=FindType("Eldoria.World4XCanon.RegionOneCreaturePopulation");
+                                var population=world.GetComponentInChildren(populationType,true);
+                                Assert.That(population,Is.Not.Null);
+                                var visible=populationType.GetMethod("OnScreen",BindingFlags.Instance|BindingFlags.NonPublic);
+                                var landscapeType=FindType("Eldoria.World4XCanon.RegionOneResourcePlacement");
+                                var panoramic=(bool)landscapeType.GetMethod("IsPanoramic",BindingFlags.Static|BindingFlags.Public)
+                                    .Invoke(null,new object[]{camera.orthographicSize,(float)Member(navigation,"globalZoom")});
+                                int expected=after.WorldCreatureLocations.Count(c=>c.Generation>=1&&c.Alive&&!panoramic&&
+                                    (bool)visible.Invoke(population,new object[]{new Vector3(c.X,c.Y,c.Z)}));
+                                int actual=world.GetComponentsInChildren<Transform>(true).Count(x=>
+                                    x.name.StartsWith("Original Tripo ",StringComparison.Ordinal));
+                                Assert.That(actual,Is.EqualTo(expected),
+                                    "Every on-screen saved enemy needs one original model after streaming: "+stage.Item2+" "+size.Item3);
+                                Debug.Log("ELDORIA_WORLD_SETTLED_VISIBLE_ENEMIES view="+stage.Item2+" orientation="+size.Item3+
+                                    " expected="+expected+" actual="+actual);
+                                Canvas.ForceUpdateCanvases();
+                                method.Invoke(null,new object[]{output,camera,navigation,stage.Item2,size.Item3,size.Item1,size.Item2});
+                            }
+                        }
+                    } finally {
+                        camera.aspect=previousAspect;
+                        Call(navigation,"RestoreView",previousTarget,previousZoom);
+                    }
                     Assert.That(Directory.GetFiles(output,"*-unity.png").Length,Is.EqualTo(6),
                         "All three real world zoom levels in two orientations are required");
                     Assert.That(Directory.GetFiles(output,"*-source.json").Length,Is.EqualTo(6),

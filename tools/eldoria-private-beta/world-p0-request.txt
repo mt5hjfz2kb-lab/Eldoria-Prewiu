@@ -2,4 +2,4 @@ state=FIRST_WORLD_ENTRY_NATIVE_ONLY
 owner=chatgpt-world-p0-continuation-9df36d17
 revision=80
 testers_allowed=false
-attempt=7
+attempt=8

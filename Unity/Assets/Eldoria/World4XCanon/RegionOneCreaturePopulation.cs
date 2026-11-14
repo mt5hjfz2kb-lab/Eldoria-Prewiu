@@ -22,7 +22,9 @@ namespace Eldoria.World4XCanon
         readonly Dictionary<string,GameObject> prefabs=new Dictionary<string,GameObject>();
         // Keep every saved logical target, but never instantiate 36 near/far
         // Tripo pairs at once when a player first taps Mundo on iPhone.
-        const int MaximumVisibleModels=12;
+        // Bound creation work, not the visible population. A hard resident cap
+        // left later visible enemies invisible while their colliders remained active.
+        // Each visible target retains only its current LOD, never a near/far pair.
         const int NewModelsPerRefresh=2;
         ValoriaIntegratedWorld host;
         ICommandGateway gateway;
@@ -68,7 +70,6 @@ namespace Eldoria.World4XCanon
             float zoom=host.WorldCamera.orthographicSize;
             bool panorama=RegionOneResourcePlacement.IsPanoramic(zoom,host.WorldNavigation.globalZoom);
             bool near=zoom<110;
-            int resident=instances.Values.Count(x=>x.Near||x.Far);
             int created=0;
             foreach(var creature in state.WorldCreatureLocations)
             {
@@ -95,12 +96,11 @@ namespace Eldoria.World4XCanon
                 // the saved target and its collider are NEVER removed.
                 if(!visible||(near&&entity.Far)||(!near&&entity.Near))
                 {
-                    if(entity.Near||entity.Far)resident--;
                     if(entity.Near)Destroy(entity.Near);
                     if(entity.Far)Destroy(entity.Far);
                     entity.Near=null;entity.Far=null;
                 }
-                if(visible&&resident<MaximumVisibleModels&&created<NewModelsPerRefresh&&
+                if(visible&&created<NewModelsPerRefresh&&
                    !(near?entity.Near:entity.Far))
                 {
                     var model=MakeModel(creature.CreatureKind,near?"near":"far",
@@ -115,7 +115,7 @@ namespace Eldoria.World4XCanon
                             entity.Near=model;
                         }
                         else entity.Far=model;
-                        resident++;created++;
+                        created++;
                     }
                 }
                 // Preserve existing scaling and physical ground alignment for
