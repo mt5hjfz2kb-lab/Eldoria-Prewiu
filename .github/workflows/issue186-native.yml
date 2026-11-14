@@ -199,14 +199,41 @@ jobs:
           }
           # All eligible paths are known and verified before the FIRST write.
           # We reclaim only regenerated import caches, never native captures.
+          # Windows PowerShell 5's Remove-Item -Recurse cannot traverse a
+          # Unity PackageCache path beyond MAX_PATH; the first safe removal
+          # failed 43583503481 on Unity.Collections.LowLevel.ILSupport.asmdef.
+          # Windows Robocopy supports long paths by default (never /256).
+          # Mirror a strictly empty, new run-scoped folder into each ALREADY
+          # verified OWNED Library directory; /XJ excludes junctions. Abort
+          # on robocopy >=8; never mirror any other workstream.
+          $empty=Join-Path $env:RUNNER_TEMP "issue186-empty-mirror-$env:GITHUB_RUN_ID"
+          if(Test-Path -LiteralPath $empty){
+            throw 'ISSUE186_CACHE_RECLAIM_REFUSED: empty source already exists'
+          }
+          New-Item -ItemType Directory -Path $empty -ErrorAction Stop|Out-Null
+          if(@(Get-ChildItem -LiteralPath $empty -Force).Count -ne 0){
+            throw 'ISSUE186_CACHE_RECLAIM_REFUSED: mirror origin is not empty'
+          }
           foreach($item in $eligible){
             if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
               throw 'ISSUE186_CACHE_RECLAIM_INTERRUPTED: native tool became active'
             }
-            Remove-Item -LiteralPath $item.path -Recurse -Force -ErrorAction Stop
-            if(Test-Path -LiteralPath $item.path){throw 'ISSUE186_CACHE_RECLAIM_INCOMPLETE'}
+            & robocopy.exe $empty $item.path /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP
+            $code=$LASTEXITCODE
+            Write-Host "ISSUE186_OWN_CACHE_MIRROR run=$($item.run); exit=$code"
+            if($code -ge 8){
+              throw "ISSUE186_CACHE_RECLAIM_FAILED: robocopy exit $code"
+            }
+            if(@(Get-ChildItem -LiteralPath $item.path -Force -ErrorAction Stop).Count -ne 0){
+              throw 'ISSUE186_CACHE_RECLAIM_INCOMPLETE: Library not empty'
+            }
+            Remove-Item -LiteralPath $item.path -Force -ErrorAction Stop
+            if(Test-Path -LiteralPath $item.path){
+              throw 'ISSUE186_CACHE_RECLAIM_INCOMPLETE: Library directory remains'
+            }
             Write-Host "ISSUE186_OWN_LIBRARY_CACHE_REMOVED run=$($item.run); no source/art/save deletion"
           }
+          Remove-Item -LiteralPath $empty -Force -ErrorAction Stop
           Write-Host ("ISSUE186_CACHE_RECLAIM_DONE freeGiB={0:N2}" -f ($drive.AvailableFreeSpace/1GB))
           if($drive.AvailableFreeSpace -lt 16*1GB){
             throw 'ISSUE186_CACHE_RECLAIM_INSUFFICIENT: 16 GiB native minimum not met'
