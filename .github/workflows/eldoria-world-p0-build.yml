@@ -1,0 +1,198 @@
+name: Eldoria P0 frozen WebGL build and unpublished owner package
+'on':
+  push:
+    branches:
+    - fix/eldoria-world-first-entry-p0-20261114
+    paths:
+    - tools/eldoria-private-beta/world-p0-build-request.txt
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-world-p0-exclusive-unity
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta
+    - name: Parse native build script before acquiring Windows
+      shell: pwsh
+      run: |
+        $tokens=$null;$errors=$null
+        $null=[System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'tools/eldoria-private-beta/run_world_p0_build.ps1'),[ref]$tokens,[ref]$errors)
+        if($errors.Count){$errors|Format-List;throw 'Native build script does not parse'}
+    - name: Verify exclusive live CAS before touching Windows
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        python3 - <<'PY'
+        import base64,json,os,urllib.request
+        repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA']
+        h={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+        def get(path):
+            req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=h)
+            return json.load(urllib.request.urlopen(req,timeout=30))
+        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip()=='build_source=5881df4e76da72c2897633c619449c60694b3552'
+        run=get('actions/runs/43641168362')
+        assert run['head_sha']=='5881df4e76da72c2897633c619449c60694b3552'
+        assert run['conclusion']=='success','Exact native coverage proof has not passed'
+        assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
+        item=get('contents/pipeline/active-workstreams.json?ref=main')
+        b=item.get('content')
+        if item.get('encoding')!='base64' or not b:
+            blob=get('git/blobs/'+item['sha'])
+            assert blob.get('sha')==item['sha'] and blob.get('encoding')=='base64'
+            b=blob['content']
+        j=json.loads(base64.b64decode(b))
+        w=next(x for x in j['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
+        holders=[x for x in j['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+        assert len(holders)==1 and holders[0]['id']==w['id']
+        assert w['owner']=='chatgpt-world-p0-continuation-9df36d17'
+        assert w['branch']=='fix/eldoria-world-first-entry-p0-20261114'
+        assert w['ownership_revision']==80 and w['ownership_state']=='claimed'
+        print('P0_EXACT_CURRENT_SOURCE_LIVE_LEASE_VERIFIED',sha)
+        PY
+  build:
+    needs: preflight
+    runs-on:
+    - self-hosted
+    - windows
+    - unity-6000-3-23f1
+    timeout-minutes: 180
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta/run_world_p0_build.ps1
+        sparse-checkout-cone-mode: false
+        persist-credentials: false
+        path: world-p0-build-control-${{ github.run_id }}
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43641168362
+        name: world-p0-native-proof
+        github-token: ${{ github.token }}
+        path: world-p0-exact-native-${{ github.run_id }}
+    - name: Reject logical-only or stale native evidence
+      shell: powershell
+      run: |-
+        $ErrorActionPreference='Stop'
+        if((Get-Content world-p0-exact-native-${{ github.run_id }}/source.txt -Raw).Trim() -ne '5881df4e76da72c2897633c619449c60694b3552'){throw 'Wrong source proof'}
+        if(Test-Path world-p0-exact-native-${{ github.run_id }}/missing-native-art.txt){throw 'No production build from logical-only proof'}
+        [xml]$xml=Get-Content world-p0-exact-native-${{ github.run_id }}/test-results.xml -Raw
+        if($xml.'test-run'.result -ne 'Passed' -or $xml.'test-run'.passed -ne '1'){throw 'Native test did not pass'}
+        $lines=@(Get-ChildItem world-p0-exact-native-${{ github.run_id }}/editor-attempt-*.log|Select-String 'ELDORIA_WORLD_SETTLED_VISIBLE_ENEMIES' -SimpleMatch)
+        if($lines.Count -ne 6){throw 'Six settled camera coverage checks absent'}
+    - name: Compile frozen world source after genuine UI and campaign checks
+      shell: powershell
+      run: '& ./world-p0-build-control-${{ github.run_id }}/tools/eldoria-private-beta/run_world_p0_build.ps1 -SourceSha
+        ''5881df4e76da72c2897633c619449c60694b3552'''
+    - name: Retain exact WebGL and all native evidence
+      if: always() && env.WORLD_P0_BUILD_OUT != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: world-p0-build-and-proof
+        path: ${{ env.WORLD_P0_BUILD_OUT }}/
+        if-no-files-found: warn
+        compression-level: 0
+        retention-days: 21
+    - name: Reclaim only generated cache after retaining evidence
+      if: always() && env.WORLD_P0_BUILD_PROJECT != ''
+      shell: powershell
+      run: |-
+        $ErrorActionPreference='Stop'
+        if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'EDITOR_BUSY_PRESERVE';exit 0}
+        $project=$env:WORLD_P0_BUILD_PROJECT
+        $allowed=@((Join-Path $env:RUNNER_TEMP 'eldoria-world-p0-43641168362/Unity'),(Join-Path $env:RUNNER_TEMP 'eldoria-world-p0-43638950225/Unity'))
+        if($allowed -notcontains $project){throw 'Unexpected cache owner'}
+        $cache=Join-Path $project 'Library'
+        if(-not(Test-Path $cache)){exit 0}
+        if((Get-Item $cache).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse reparse cache'}
+        $empty=Join-Path $env:WORLD_P0_BUILD_OUT 'empty-cache-cleanup'
+        if(Test-Path $empty){throw 'Preserve existing cleanup marker'}
+        New-Item -ItemType Directory -Path $empty|Out-Null
+        & robocopy.exe $empty $cache /MIR /XJ /R:1 /W:1|Out-Null
+        if($LASTEXITCODE -ge 8){throw 'Cache reclaim failed'}
+        Remove-Item $cache -Recurse -Force
+        Remove-Item $empty -Force
+        Write-Host ('WORLD_P0_BUILD_CACHE_RECLAIMED_FREE_GIB='+[Math]::Round((Get-PSDrive C).Free/1GB,2))
+        exit 0
+  package-owner:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        name: world-p0-build-and-proof
+        path: build-output
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43257126363
+        name: mobile18-full-lazy-owner-only-site-not-iphone-pass
+        github-token: ${{ github.token }}
+        path: stable-shell
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 42481331350
+        name: deduplicated-bundle-unverified
+        github-token: ${{ github.token }}
+        path: reference-parent
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 42493894120
+        name: mobile6-candidate-site
+        github-token: ${{ github.token }}
+        path: reference-profile
+    - name: Reuse the exact stable texture profile with the new native engine
+      shell: bash
+      run: |
+        python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+        python - <<'PY'
+        import json,os,pathlib,sys
+        from types import SimpleNamespace
+        sys.path.insert(0,'tools/eldoria-private-beta')
+        from prepare_integrated_owner_site import package
+        from prepare_lazy_owner_site import sole_dir
+        sha='5881df4e76da72c2897633c619449c60694b3552'
+        ui=[p.parent for p in pathlib.Path('build-output/native-ui').rglob('BreachWatchDestinationEvidence.json')
+            if json.loads(p.read_text(encoding='utf-8-sig')).get('source')==sha]
+        assert len(ui)==1,'Ambiguous current native destination proof'
+        proof=pathlib.Path('build-output/integrated-build-proof')
+        assert (proof/'integration-result.json').is_file(),'Exact unpublished build proof absent'
+        parent=sole_dir('reference-parent','data.unity3d')/'data.unity3d'
+        package(SimpleNamespace(source_head=sha,revision='integrated-mobile20-owner-qa',
+            build_proof=proof,ui_proof=ui[0],stable_shell='stable-shell',
+            stable_identity_sha256='c87066f246d7c7e53352ed6af2d7f2ffd7774b35328e9f17e7ad5183a8227904',
+            webgl_artifact='build-output/compiled-webgl',native_run=os.environ['GITHUB_RUN_ID'],
+            output='candidate-site',work='candidate-work',reference_parent=parent,
+            reference_site='reference-profile'))
+        PY
+    - name: Retain unpublished integrated owner candidate
+      uses: actions/upload-artifact@v4
+      with:
+        name: world-p0-mobile20-owner-site
+        path: candidate-site
+        compression-level: 0
+        if-no-files-found: error
+        retention-days: 21
+    - name: Preserve exact packaging and serialized-object integrity evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: world-p0-mobile20-package-proof
+        path: |
+          candidate-work/exact-build-selection.json
+          candidate-work/original/extraction.json
+          candidate-work/deduplicated/integrity.json
+          candidate-work/profile/integrity.json
+          candidate-site/release-identity.json
+        retention-days: 21
