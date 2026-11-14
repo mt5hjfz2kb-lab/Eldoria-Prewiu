@@ -797,48 +797,9 @@ jobs:
             Write-Host ("VIGILIA_OWN_FAILED_CHECKOUT_RECLAIMED "+$name)
           }
           $free=(Get-PSDrive C).Free
-          $old=Join-Path $workspace 'breachwatch-isolated-43532823031-1'
-          $cache=Join-Path $old 'Unity/Library'
-          # Unity/Library is generated Editor cache, not tracked game art,
-          # saves, source, evidence, or Git objects. Only clear if needed.
-          if($free -lt 12GB -and (Test-Path -LiteralPath $cache)){
-            # This is a separate PowerShell job. Its PATH has not inherited
-            # the native job's GitHubDesktop Git detection.
-            $gitExe=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
-            if(-not $gitExe){
-              $gitExe=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
-                Sort-Object Name -Descending |
-                ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
-                Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-            }
-            if(-not $gitExe){throw 'Unable to verify old isolated source SHA: installed Git not found'}
-            $oldSha=(& $gitExe -C $old rev-parse HEAD).Trim()
-            if($LASTEXITCODE -ne 0 -or $oldSha -ne '543c0a713d0cb3e95fb370923d91e796cf5a5c38'){
-              throw 'Prior successful isolated source identity mismatch'
-            }
-            $item=Get-Item -LiteralPath $cache
-            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint -or
-               -not $item.FullName.StartsWith($workspace+'\breachwatch-isolated-43532823031-1\Unity\Library',[StringComparison]::OrdinalIgnoreCase)){
-              throw 'Refuse cache deletion outside own Unity Library'
-            }
-            if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
-              throw 'Process started before cache cleanup'
-            }
-            # Windows PowerShell 5.1 Remove-Item can fail at long package
-            # file names (>MAX_PATH). Robocopy handles long paths and, with
-            # /XJ, will NOT follow directory junctions into other workspaces.
-            $empty=Join-Path $env:RUNNER_TEMP ('vigilia-empty-library-'+$env:GITHUB_RUN_ID)
-            if(Test-Path -LiteralPath $empty){throw 'Refuse existing cleanup source directory'}
-            New-Item -ItemType Directory -Path $empty -ErrorAction Stop | Out-Null
-            & robocopy.exe $empty $cache /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP
-            $copyExit=$LASTEXITCODE
-            if($copyExit -gt 7){throw "Robocopy refused long-path Library cleanup: $copyExit"}
-            $remaining=@(Get-ChildItem -LiteralPath $cache -Force -ErrorAction Stop | Select-Object -First 1)
-            if($remaining.Count){throw 'Unexpected Library file/junction remains; do not traverse it'}
-            Remove-Item -LiteralPath $cache -Force -ErrorAction Stop
-            Remove-Item -LiteralPath $empty -Force -ErrorAction Stop
-            Write-Host 'VIGILIA_OWN_UNITY_GENERATED_LIBRARY_RECLAIMED'
-          }
+          # User-owned historical checkout is immutable, including Library:
+          # never clean, mirror, overwrite or delete any part of 43532823031-1.
+          # The Windows disk must be provisioned without sacrificing prior evidence.
           $after=(Get-PSDrive C).Free
           Write-Host ('VIGILIA_DISK_FREE_GIB_AFTER '+[math]::Round($after/1GB,2))
           # Read-only inventory, never traverse or delete another job's files.
@@ -862,7 +823,7 @@ jobs:
             Write-Host ('VIGILIA_SAFE_VOLUME '+$volume.Root+
               ' freeGiB='+[math]::Round($volume.Free/1GB,2))
           }
-          if($after -lt 8GB){
+          if($after -lt 16GB){
             $alternate=@($volumes | Where-Object {
               $_.Name -ne 'C' -and $_.Free -ge 16GB
             } | Select-Object -First 1)
@@ -1001,6 +962,16 @@ jobs:
           path: ${{ runner.temp }}/vigilia-diagnostic-*.txt
           retention-days: 3
           if-no-files-found: error
+      - name: Stop before checkout if selected volume has less than 16 GiB
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $parent='${{ needs.recover-owned-disk.outputs.source_parent }}'
+          if(-not $parent){throw 'No audited source parent'}
+          $driveLetter=[IO.Path]::GetPathRoot([IO.Path]::GetFullPath($parent)).Substring(0,1)
+          $free=(Get-PSDrive -Name $driveLetter -ErrorAction Stop).Free
+          Write-Host ('VIGILIA_SAFE_BEFORE_CHECKOUT_GIB '+[math]::Round($free/1GB,2))
+          if($free -lt 16GB){throw 'VIGILIA_NO_UNITY: selected volume below 16 GiB safe reserve'}
       - name: Fetch exact PR source safely with sparse Unity checkout
         shell: powershell
         env:
@@ -1078,6 +1049,15 @@ jobs:
           }
           Add-Content $env:GITHUB_ENV "BW_SOURCE=$root"
           Write-Host "BREACHWATCH_EXACT_BRANCH_SOURCE_READY $env:GITHUB_SHA"
+      - name: Stop before Unity if checkout consumed 16 GiB reserve
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:BW_SOURCE){throw 'No exact isolated source path'}
+          $driveLetter=[IO.Path]::GetPathRoot([IO.Path]::GetFullPath($env:BW_SOURCE)).Substring(0,1)
+          $free=(Get-PSDrive -Name $driveLetter -ErrorAction Stop).Free
+          Write-Host ('VIGILIA_SAFE_BEFORE_UNITY_GIB '+[math]::Round($free/1GB,2))
+          if($free -lt 16GB){throw 'VIGILIA_NO_UNITY: checkout left less than 16 GiB safe reserve'}
       - name: Run real Unity city and independent UI capture
         shell: powershell
         run: |
