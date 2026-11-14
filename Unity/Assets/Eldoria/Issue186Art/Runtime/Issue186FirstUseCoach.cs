@@ -239,6 +239,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 (target=="barracks"&&selected=="upgrade-barracks");
             if(selectedTarget)
             {
+                // The genuine world-anchored RoyalButton selects the canonical
+                // RoyalHUD, but does not go through the separate Vigilia HUD
+                // SelectBuilding method. Its private display selection can
+                // therefore remain empty, hiding the real CONSTRUIR panel.
+                // Bridge the already-authorized UI selection using Vigilia's
+                // public presentation API; never create gameplay commands.
+                if(!EnsureVigiliaBuildingSelection(selected))return;
                 if(key=="b2.train-archers")
                     ShowButton(Property(vigilia,"ActualBarracksTrainingEntry") as Button,
                         key,"Abre el entrenamiento del Cuartel.","barracks-training");
@@ -263,6 +270,32 @@ namespace Eldoria.UI.RoyalGold.V2
                 worldTarget?"Toca el objetivo señalado en el mundo.":
                 "Toca el edificio señalado para abrir sus acciones.");
         }
+        bool EnsureVigiliaBuildingSelection(string canonical)
+        {
+            if(!vigilia || string.IsNullOrEmpty(canonical))
+                {Hide("selected-building-ui-not-ready");return false;}
+            var type=vigilia.GetType();
+            var field=type.GetField("selected",
+                BindingFlags.NonPublic|BindingFlags.Instance);
+            var select=type.GetMethod("SelectBuilding",new[]{typeof(string)});
+            // Fail closed if the independent HUD's presentation contract
+            // changes. Do not write its private field or point at a blank CTA.
+            if(field==null || field.FieldType!=typeof(string) || select==null)
+                {Hide("vigilia-selection-contract-missing");return false;}
+            if((string)field.GetValue(vigilia)!=canonical)
+            {
+                try {select.Invoke(vigilia,new object[]{canonical});}
+                catch(TargetInvocationException)
+                    {Hide("vigilia-selection-bridge-rejected");return false;}
+                Debug.Log("ISSUE186_CANONICAL_BUILDING_SELECTION_BRIDGED "+canonical);
+            }
+            var actualPanel=Property(vigilia,"BuildingPanel") as RectTransform;
+            if((string)field.GetValue(vigilia)!=canonical ||
+                !actualPanel || !actualPanel.gameObject.activeInHierarchy)
+                {Hide("selected-building-panel-not-rendered");return false;}
+            return true;
+        }
+
         bool TryGuideGenuineCityLabel(string target,string key)
         {
             if(!canvas || !canvas.isActiveAndEnabled)return false;
