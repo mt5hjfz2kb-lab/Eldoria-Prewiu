@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T17:48:07.713Z",
+  "updated_at": "2026-11-14T17:56:26.200Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7019,12 +7019,14 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 139,
+      "ownership_revision": 140,
       "write_scope_released": false,
-      "phase": "PHASE1_NAV_CAPTION_REPAIR_SOURCE_GUARD_PASS_WINDOWS_OTHER_OWNER_NO_ART_APPROVAL",
-      "next": "Real Unity 43615782618 on SHA 9e23849 failed genuine navigation RECURSOS caption 29.7u preferred vs 16u allocated, after 103.5 GiB free post-checkout. Source-only fix on same canonical branch commits 06b8f938+cfbcd7b: increase real nav Text rect to 36u with pitch-safe width, adjust footer geometry, preserve existing sprites/touch actions and exact native guard; independent Ubuntu Roslyn+geometry/typography source guard PASS 43618566191 (not Unity or artistic PASS). Inspect same native screenshot in artifact 14122048008: 52,913 pure magenta pixels (3.6745%), centered largely on Bastion roof and several shore patches; Unity editor log warns missing/unsupported URP shader dependencies, causal relation NOT yet verified. Other Windows holder is Issue186 and native run 43617649660 was still active at check 16:59Z. Do not start native now. After true release, new >=16 GiB physical disk evidence and exclusive CAS, run exactly ONE new pinned-SHA native capture; verify 390x844/844x390/900x1600 physical 3x, city/Bastion/mail/bag, 300% buttons, art A/B and saved-game invariants. Remain phase1, no main/beta/gameplay changes or art approval.",
+      "phase": "PHASE1_EXCLUSIVE_WINDOWS_CLAIM_NEW_NATIVE_PENDING",
+      "next": "Physical read-only Windows rerun 43603053226 attempt 2 confirmed C: 90.62GiB free at 17:54:37Z (first scan succeeded; later legacy missing-worktree git check failed harmlessly). No Unity/Blender processes at scan entry; no live Actions job and zero main Windows holders before CAS. Source fdbaf45e passed hosted guard 43623583217 (still no Unity validation). ONE source-pinned native proof must be dispatched now, with fail-closed rechecks, 3x screenshots + A/B and no save changes. Preserve all dirty historical copies and release Windows after run; art_approved remains false.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
@@ -7617,6 +7619,23 @@
         "next_native_required": true,
         "phase2_allowed": false,
         "gameplay_main_beta_modified": false
+      },
+      "phase1_runner_claim_20261114_1754utc": {
+        "physical_run": 43603053226,
+        "run_attempt": 2,
+        "measurement_timestamp": "2026-11-14T17:54:37Z",
+        "free_gib": 90.62,
+        "minimum_gib": 16,
+        "disk_measurement": "PASS",
+        "audit_overall_conclusion": "failure after successful disk measurement because old unrelated retired checkout absent",
+        "unity_blender_running_at_audit_start": false,
+        "active_native_runs_at_claim": 0,
+        "other_windows_holders_at_claim": 0,
+        "source_head": "fdbaf45e5acb9892c7b89b212d0400dc5a09b55c",
+        "source_guard_run": 43623583217,
+        "source_guard_conclusion": "success",
+        "exclusive_claim_revision": 140,
+        "art_approved": false
       }
     },
     {
