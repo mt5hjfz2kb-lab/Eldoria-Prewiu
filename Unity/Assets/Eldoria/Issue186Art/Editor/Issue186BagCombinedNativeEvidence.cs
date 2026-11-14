@@ -50,7 +50,7 @@ namespace Eldoria.Issue186Art.Editor
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
                 physicalIphoneVerified,fullMailboxUiFlowVerified;
-            public int realFirstHitClicks,actualIntegratedCityFrames;
+            public int realFirstHitClicks,actualIntegratedCityFrames,firstBuildingActionViewportFrames;
             public Shot[] images;
         }
         static Report report;
@@ -297,6 +297,34 @@ namespace Eldoria.Issue186Art.Editor
             }
             return "["+min.x.ToString("F1")+","+min.y.ToString("F1")+
                    ".."+max.x.ToString("F1")+","+max.y.ToString("F1")+"]";
+        }
+        // Read the actual uGUI frontmost hit after a viewport reflow; unlike
+        // the coach's cached Visible flag this cannot pass on stale geometry.
+        // This probe does not click, change the saved state or increment the
+        // 54 real gameplay/UI interactions.
+        static void RequireActualFirstHitOnButton(Button action,Camera camera,
+            RenderTexture target,string viewport)
+        {
+            Need(action && action.isActiveAndEnabled && action.IsInteractable(),
+                "Rotated building CTA not interactable at "+viewport);
+            Draw(camera,target);
+            var system=EventSystem.current;
+            Need(system && system.isActiveAndEnabled,
+                "Real EventSystem absent at "+viewport);
+            var rect=(RectTransform)action.transform;
+            var point=RectTransformUtility.WorldToScreenPoint(camera,
+                rect.TransformPoint(rect.rect.center));
+            var data=new PointerEventData(system){position=point};
+            var hits=new List<RaycastResult>();
+            system.RaycastAll(data,hits);
+            var handler=hits.Count>0
+                ?ExecuteEvents.GetEventHandler<IPointerClickHandler>(
+                    hits[0].gameObject):null;
+            Need(handler==action.gameObject,
+                "Real CONSTRUIR first-hit occluded at "+viewport+
+                "; first="+(hits.Count>0?hits[0].gameObject.name:"none")+
+                "; position="+point+
+                "; CTA="+ActualScreenRect(camera,rect));
         }
         static void RequirePaintedInRealFrame(Camera camera,RenderTexture target,
             RectTransform control,GameObject painted,string name)
@@ -576,6 +604,7 @@ namespace Eldoria.Issue186Art.Editor
                     RequirePaintedInRealFrame(camera,rt,
                         realHand.rectTransform,realHand.gameObject,
                         "Aserradero action hand: "+diagnostic);
+                    RequireActualFirstHitOnButton(actualAction,camera,rt,"390x844");
                 }
                 catch(Exception)
                 {
@@ -589,7 +618,79 @@ namespace Eldoria.Issue186Art.Editor
                     throw;
                 }
                 Photograph(camera,rt,"first-sawmill-build-guide",390,844);
+                report.firstBuildingActionViewportFrames++;
                 report.firstBuildingActionHandOnRealHit=true;
+                // The previous native PASS checked other orientations only
+                // for city/bag/mail, not the first building CTA or its hand.
+                // Keep the SAME real selected sawmill and run independent GPU
+                // paint + live first-hit checks after each device-size reflow.
+                // Do not dispatch a construction command or alter a save.
+                foreach(var size in new[]{(900,1600),(844,390),(1600,900)})
+                {
+                    int width=size.Item1,height=size.Item2;
+                    string viewport=width+"x"+height;
+                    var rotated=new RenderTexture(width,height,24,
+                        RenderTextureFormat.ARGB32);
+                    rotated.Create();
+                    Need(rotated.IsCreated(),"No physical GPU target for "+viewport);
+                    camera.targetTexture=rotated;
+                    if(rt){rt.Release();Object.DestroyImmediate(rt);}
+                    rt=rotated;
+                    camera.aspect=(float)width/height;
+                    RenderUi(ui,width,height);
+                    // The coach deliberately throttles pointer rechecks to
+                    // 350 ms on iPhone. Exercise a genuine update after
+                    // orientation change, not a stale 390x844 Visible flag.
+                    double refreshUntil=EditorApplication.timeSinceStartup+.6;
+                    do {Draw(camera,rt);yield return null;RenderUi(ui,width,height);}
+                    while(EditorApplication.timeSinceStartup<refreshUntil);
+                    try
+                    {
+                        var panel=(RectTransform)type.GetProperty("BuildingPanel")
+                            .GetValue(ui);
+                        var action=(Button)type.GetProperty("BuildingAction")
+                            .GetValue(ui);
+                        var hand=canvas.GetComponentsInChildren<Image>(true)
+                            .SingleOrDefault(v=>v&&v.name=="Nonblocking actual hand");
+                        string geometry="viewport="+viewport+
+                            "; coach="+firstCoach.TargetId+
+                            "; rejection="+firstCoach.Rejection+
+                            "; panel="+ActualScreenRect(camera,panel)+
+                            "; CTA="+ActualScreenRect(camera,
+                                action?(RectTransform)action.transform:null)+
+                            "; hand="+ActualScreenRect(camera,
+                                hand?hand.rectTransform:null)+
+                            "; editorScreen="+Screen.width+"x"+Screen.height;
+                        Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
+                            "Rotated first-use pointer missing: "+geometry);
+                        Need(panel&&panel.gameObject.activeInHierarchy&&
+                             action&&action.gameObject.activeInHierarchy&&
+                             action.IsInteractable()&&hand&&hand.sprite&&
+                             hand.gameObject.activeInHierarchy,
+                            "Rotated building panel/CTA/hand absent: "+geometry);
+                        RequireActualFirstHitOnButton(action,camera,rt,viewport);
+                        RequirePaintedInRealFrame(camera,rt,
+                            (RectTransform)action.transform,panel.gameObject,
+                            "Aserradero action sheet: "+geometry);
+                        RequirePaintedInRealFrame(camera,rt,
+                            hand.rectTransform,hand.gameObject,
+                            "Aserradero action hand: "+geometry);
+                        Photograph(camera,rt,"first-sawmill-build-guide",width,height);
+                        report.firstBuildingActionViewportFrames++;
+                    }
+                    catch(Exception)
+                    {
+                        // Preserve the rotated GPU evidence on a red test:
+                        // never report success from only live hierarchy state.
+                        try {Photograph(camera,rt,"FAILED-first-sawmill-build-guide",
+                            width,height);}
+                        catch(Exception capture){Debug.LogWarning(
+                            "ISSUE186_ROTATED_BUILD_FRAME_CAPTURE: "+capture);}
+                        throw;
+                    }
+                }
+                Need(report.firstBuildingActionViewportFrames==4,
+                    "First building CTA/hand did not pass all four real viewport captures");
                 // Reset only the disposable view selection, not a save or
                 // building action, before the existing bag/mail fixture.
                 host.Hud.SelectBuilding("");

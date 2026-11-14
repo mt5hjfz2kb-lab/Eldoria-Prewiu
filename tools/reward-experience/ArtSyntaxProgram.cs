@@ -91,7 +91,11 @@ if(!File.Exists(coachFile+".meta") ||
    !firstEntryFixture.Contains("realHand.rectTransform,realHand.gameObject") ||
    !firstEntryFixture.Contains("Photograph(camera,rt,\"FAILED-first-sawmill-build-guide\",390,844)") ||
    !firstEntryFixture.Contains("ActualScreenRect(camera,actualPanel)") ||
-   !firstEntryGate.Contains("@($r.images).Count -ne 25") ||
+   !firstEntryGate.Contains("@($r.images).Count -ne 28") ||
+   !firstEntryGate.Contains("$r.firstBuildingActionViewportFrames -ne 4") ||
+   !firstEntryFixture.Contains("RequireActualFirstHitOnButton(action,camera,rt,viewport)") ||
+   !firstEntryFixture.Contains("new[]{(900,1600),(844,390),(1600,900)}") ||
+   !firstEntryFixture.Contains("report.firstBuildingActionViewportFrames==4") ||
    !firstEntryGate.Contains("$r.realFirstHitClicks -ne 54") ||
    !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
        .Contains("firstSawmillHandOnRealHit") ||
