@@ -109,7 +109,17 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    await page.waitForTimeout(1000);
   }
   if(!entry.entered)throw Error('World entry never reached canonical entered marker');
-  await page.waitForTimeout(12000);await screen('world-visit-'+visit);
+  // Visible models stream AFTER the entered marker. Sampling only up to
+  // that marker misses the very allocation peak this P0 candidate changes.
+  const settleDeadline=Date.now()+12000;
+  while(Date.now()<settleDeadline){
+   if(report.errors.length)throw Error('World browser failure during streamed model settling');
+   const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
+    metrics:window.valoriaGame?.GetMetricsInfo?.(),phase:'world-stream-settling'}));
+   sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|playwright|MiniBrowser/.test(x));
+   entry.samples.push(sample);save();await page.waitForTimeout(500);
+  }
+  await screen('world-visit-'+visit);
   await page.mouse.click(128,776,{delay:180});await page.waitForTimeout(4000);
   const city=await screen('city-return-'+visit);
   entry.returned=city.some(r=>norm(r.text)==='ENTRADA QA');
