@@ -172,3 +172,65 @@ jobs:
           Write-Host ("POSTRUN_CACHE_RECLAIMED run={0} GiB={1:N3} assetsDeleted=false" -f
             $runId,(($volume.AvailableFreeSpace-$before)/$gib))
           exit 0
+
+
+  review-two-more-failed-snapshots:
+    if: github.event_name == 'push'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 7
+    steps:
+      - name: Inspect recoverable unique source bytes in two archived failed runs
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            Write-Host 'NEXT_SOURCE_SCAN_EDITOR_BUSY';exit 0
+          }
+          $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+          if(-not $git){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+          }
+          [double]$gib=1024*1024*1024
+          $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
+          foreach($name in @('breachwatch-native-source-43481923633-1','breachwatch-native-source-43483165131-1')){
+            $source=Join-Path $root $name
+            function GitPaths([string]$arg){
+              $p=New-Object Diagnostics.ProcessStartInfo
+              $p.FileName=$git
+              $p.Arguments='-C "'+$source+'" '+$arg
+              $p.UseShellExecute=$false
+              $p.CreateNoWindow=$true
+              $p.RedirectStandardOutput=$true
+              $p.RedirectStandardError=$true
+              $p.StandardOutputEncoding=[Text.Encoding]::UTF8
+              $proc=[Diagnostics.Process]::Start($p)
+              $v=$proc.StandardOutput.ReadToEnd()
+              $err=$proc.StandardError.ReadToEnd()
+              $proc.WaitForExit()
+              if($proc.ExitCode){throw 'Git file listing failed'}
+              return @($v.Split([char]0) | Where-Object {$_.Length})
+            }
+            $summary=@{}
+            foreach($k in @('modified','untracked','ignored','deleted')){
+              $cmd=if($k -eq 'modified'){'ls-files -m -z'}
+                elseif($k -eq 'untracked'){'ls-files -o --exclude-standard -z'}
+                elseif($k -eq 'ignored'){'ls-files -o -i --exclude-standard -z'}
+                else{'ls-files -d -z'}
+              $paths=@(GitPaths $cmd)
+              [long]$size=0
+              foreach($relative in $paths){
+                $p=Join-Path $source $relative.Replace('/','\')
+                if(Test-Path -LiteralPath $p -PathType Leaf){$size+=(Get-Item -LiteralPath $p).Length}
+              }
+              $summary[$k]=@{count=$paths.Count;GiB=[math]::Round(($size/$gib),4)}
+            }
+            $head=(& $git -C $source rev-parse HEAD).Trim()
+            Write-Host ("NEXT_SOURCE_DELTA label={0} sha={1} modified={2} untracked={3} ignored={4} deleted={5} overlayGiB={6:N4}" -f
+              $name,$head,$summary.modified.count,$summary.untracked.count,
+              $summary.ignored.count,$summary.deleted.count,
+              ($summary.modified.GiB+$summary.untracked.GiB+$summary.ignored.GiB))
+          }
+          Write-Host 'NEXT_SOURCE_SCAN_DONE noChangesMade=true'
