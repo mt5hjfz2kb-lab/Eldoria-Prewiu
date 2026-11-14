@@ -42,8 +42,8 @@ jobs:
             'REFUSE:','Get-ChildItem -LiteralPath $lib -Recurse']
           for term in required:
             assert term in t, 'Missing safety gate: '+term
-          assert t.count('Remove-Item -LiteralPath $lib')==1
-          assert t.count('Remove-Item -LiteralPath $empty')==1
+          assert t.count('\n          Remove-Item -LiteralPath $lib -Force')==1
+          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
           print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
           PY
   reclaim:
