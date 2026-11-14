@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T11:30:22.497Z",
+  "updated_at": "2026-11-14T11:45:09.033Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6999,7 +6999,7 @@
       "ownership_revision": 130,
       "write_scope_released": false,
       "phase": "PHASE1_NATIVE_EXCLUSIVE_TEMPORARY_WINDOWS_LOAN_AFTER_23_26_GIB_RECOVERY",
-      "next": "Run exact-head native GPU A/B now with 23.26 GiB last measured. Preflight rechecks live lease and Unity/Blender process and >=8GB, fail closed on less. New unique isolated checkout; do not modify dirty old own source or Issue186. Verify 15 true Retina 3x and usual 1x across city/Bastion/mail/report/bag before ART approval. After run release Windows promptly regardless of PASS/FAIL.",
+      "next": "Wait only for currently executing native 43590398106 (SHA 182676e6, ownership rev130); no further Unity launch. Current hardware artifact 14112067518 measured C: 11.27 GiB, below owner required 16 GiB (earlier 23.26 was not durable). After run completes, inspect actual artifacts/all 15 native 3x PNGs and 300% buttons; ART APPROVAL only if actual quality passes. Correct future disk gate to >=16 GiB; release Windows via safe CAS after native completes, preserve old dirty checkout and all other branches/main gameplay/saves.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-14T11:30:22.497Z",
@@ -7485,6 +7485,19 @@
         "file": ".github/workflows/vigilia-shared-destination-source.yml",
         "runner_reserved": false,
         "owner_authorization": "Sigue; continue existing Vigilia phase1 workstream"
+      },
+      "last_native_preflight": {
+        "run": 43590398106,
+        "attempt": 1,
+        "head": "182676e6ce01e910677d1b95f9df3a9e3b57479b",
+        "artifact": 14112067518,
+        "measured_c_free_gib": 11.27,
+        "prior_isolated_count": 1,
+        "unity_processes": 0,
+        "blender_processes": 0,
+        "old_git_object_cache_preserved": true,
+        "measured_at": "2026-11-14T11:31:48Z",
+        "note": "Fresh current Windows C: measured 11.27 GiB (below owner safe goal >=16GiB; above old minimum 8 GiB). One native Unity job already in progress from exact-head previous CAS, do not dispatch another or claim art success. Preserve historic dirty checkout. Tighten future native preflight to >=16 before new attempt."
       }
     },
     {
