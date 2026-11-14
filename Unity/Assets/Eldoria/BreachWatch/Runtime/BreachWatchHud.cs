@@ -1514,7 +1514,7 @@ namespace Eldoria.BreachWatch
                             navSize-(compactLandscape?8f:12f));
                         At(navCaptions[i].rectTransform,0f,navSize-1f,
                             navSize,16f);
-                        navCaptions[i].fontSize=compactLandscape?13:12;
+                        navCaptions[i].fontSize=compactLandscape?14:12;
                         navPlates[i].VisualScale=compactLandscape?.92f:.86f;
                     }
                 }
@@ -1526,7 +1526,7 @@ namespace Eldoria.BreachWatch
                 // narrative, full authentic action and resources room.
                 float pw=h<530f?234f:220f;
                 float ph=Mathf.Min(330,h-174f);
-                float top=h<530f?75f:118f;
+                float top=h<530f?68f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
                 At(buildingName.rectTransform,60,h<530f?12f:22f,pw-121,h<530f?27f:22f);
                 At(buildingLevel.rectTransform,60,h<530f?40f:45f,pw-121,21);

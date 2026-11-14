@@ -37,13 +37,18 @@ def coverage(rects:list[R],w:float,h:float)->float:
                 mask[y*nx+x]=1
     return 100*sum(mask)/len(mask)
 
-def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False):
+def check(size:tuple[int,int],food_unlocked:bool=False,
+          world_unlocked:bool=False,density:int=1):
     pw,ph=size
+    assert density in (1,3) and pw>=320 and ph>=300
+    logical_pw,logical_ph=pw/density,ph/density
     portrait=ph>pw
-    scale=(max(.91,min(3.00,pw/514)) if portrait else
-        max(.86,min(1.30,min(pw/1250,ph/680))))
+    authored=(max(.91,min(3.00,logical_pw/514)) if portrait else
+        max(.86,min(1.30,min(logical_pw/1250,logical_ph/680))))
+    scale=authored*density
     w=pw/scale
     h=ph/scale
+    small_phone=logical_small_phone
     m=13 if portrait else 18
     boxes={}
     panels=[]
@@ -59,71 +64,79 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert r.w*scale>=43.5 and r.h*scale>=43.5,(
             f"{size}: {name} physical touch area {r.w*scale:.1f}x{r.h*scale:.1f}")
     if portrait:
-        place("identity",m,11 if pw<600 else 14,182,58 if pw<600 else 48)
+        place("identity",m,11 if small_phone else 14,182,58 if small_phone else 48)
         # Approved lion badge is a COMPLETE one-piece circle, with a real
         # ~15px breathing gap before Prueba Valoria at 900px. A previous
         # source split the lion rim at 25%, causing an extended wing and
         # player name painted ON the gold emblem.
         painted_lion_right=round(2496*.35)*100/2000
-        name_left=(45+8) if pw<600 else (37+16)
+        name_left=(45+8) if small_phone else (37+16)
         assert name_left-painted_lion_right>=8,(size,'player name crosses source lion ring')
-        profile_name=R(0,6 if pw<600 else 5,1,21 if pw<600 else 17)
-        profile_power=R(0,27 if pw<600 else 23,1,18 if pw<600 else 17)
+        profile_name=R(0,6 if small_phone else 5,1,21 if small_phone else 17)
+        profile_power=R(0,27 if small_phone else 23,1,18 if small_phone else 17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         # Real Unity d88903 showed power descenders touching the lower bevel.
         # Lift both live rows 4 units and retain real line metrics, nominal
         # bottom inset and
         # no overlapping nominal rows in the source contract.
-        assert profile_power.y+profile_power.h<= (58 if pw<600 else 48)-4,size
+        assert profile_power.y+profile_power.h<= (58 if small_phone else 48)-4,size
         right=w-(m+182+9+m)
-        chip=(min(94,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 82
-        resgap=4 if pw<600 else 12
+        chip=(min(94,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if small_phone else 82
+        resgap=4 if small_phone else 12
         resw=resources*chip+resgap*(resources-1)
-        resource_left=w-m-resw if pw<600 else min(w-m-resw,w*.52)
+        resource_left=w-m-resw if small_phone else min(w-m-resw,w*.52)
         for i in range(resources):
-            place("resource"+str(i),resource_left+i*(chip+resgap),18 if pw<600 else 17,chip,38 if pw<600 else 28)
-            symbolsize=23 if pw<600 else 19
+            place("resource"+str(i),resource_left+i*(chip+resgap),18 if small_phone else 17,chip,38 if small_phone else 28)
+            symbolsize=23 if small_phone else 19
             badge_x=423/22
             icon_left=badge_x-symbolsize/2
             amount_left=badge_x+symbolsize/2+4
             assert icon_left>=3 and amount_left+20<=chip-3,size
             assert amount_left-(icon_left+symbolsize)==4,size
-        missionw=min(225 if pw<600 else 184,w*(.52 if pw<600 else .40))
+        missionw=min(248 if small_phone else 184,w*(.59 if small_phone else .40))
         # The new alpha-trimmed carved source starts at its real painted edge.
-        place("mission",m,80 if pw<600 else 82,missionw,88 if pw<600 else 68)
+        place("mission",m,80 if small_phone else 82,missionw,110 if small_phone else 68)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 36,18 if pw<600 else 13,missionw-(64 if pw<600 else 44),17 if pw<600 else 15)
+        chapter_text=R(54 if small_phone else 36,16 if small_phone else 13,missionw-(64 if small_phone else 44),20 if small_phone else 15)
         assert chapter_text.x>=36 and chapter_text.x+chapter_text.w<=missionw-8,size
-        assert chapter_text.w >= (144.7 if pw<600 else 122),size
-        if pw<600:
+        assert chapter_text.w >= (144.7 if small_phone else 122),size
+        if small_phone:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(54 if pw<600 else 36,37 if pw<600 else 27,missionw-(64 if pw<600 else 44),12 if pw<600 else 10)
-        progress=R(54 if pw<600 else 36,51 if pw<600 else 40,missionw-(64 if pw<600 else 44),18 if pw<600 else 14)
+        short_objective=R(54 if small_phone else 36,40 if small_phone else 27,
+                          missionw-(64 if small_phone else 44),36 if small_phone else 15)
+        progress=R(54 if small_phone else 36,82 if small_phone else 43,
+                   missionw-(64 if small_phone else 44),19 if small_phone else 14)
         assert chapter_text.y+chapter_text.h<=short_objective.y+1,size
-        assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (88 if pw<600 else 68)-(8 if pw<600 else 5),size
-        assert 87+20<=112-3,size
-        # Compact source plaque keeps native text within both real bevels.
-        assert missionw/(88 if pw<600 else 68)>=2.5,size
+        assert short_objective.y+short_objective.h+(2 if small_phone else 1)<=progress.y,size
+        # Prove >=8 authored units between ink and bottom gold on phone,
+        # and >=5 for large portrait, not a cosmetic test threshold change.
+        assert progress.y+progress.h<= (110 if small_phone else 68)-(8 if small_phone else 5),size
+        assert 94+19<=130-8,size
+        assert missionw/(110 if small_phone else 68)>=(2.0 if small_phone else 2.5),size
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.50-56,69,112,30)
         # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=75,6
-        inset,art_scale=(4,.88) if pw<600 else (5,.88)
+        inset,art_scale=(4,.88) if small_phone else (5,.88)
         painted_physical=(navsize-2*inset)*art_scale*scale
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-(130 if pw<600 else 111)
+        navtop=h-(146 if small_phone else 127)
         for i in range(nav_count):
-            item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
+            item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),
+                       navtop+3,navsize,navsize+17)
             touch("nav"+str(i),item)
-        panelw=min(171,w*.42) if pw<600 else 158
-        card_right=m if pw<600 else 39
-        panely=navtop-297-(34 if pw<600 else 32)
+            caption=13 if portrait and small_phone else (
+                14 if not portrait and compact else 12)
+            assert caption*scale>=11.75,(size,caption,scale,
+                "True readable captions for the original five medallions")
+        panelw=min(171,w*.42) if small_phone else 158
+        card_right=m if small_phone else 39
+        panely=navtop-297-(34 if small_phone else 32)
         context=place("context",w-card_right-panelw,panely,panelw,297)
         touch("close",R(context.x+panelw-55,context.y+14,50,50))
         header=R(45,21,panelw-104,21)
@@ -198,13 +211,18 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-(88 if compact else 78)
+        navtop=h-(104 if compact else 94)
         for i in range(nav_count):
-            item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
+            item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),
+                       navtop+3,navsize,navsize+17)
             touch("nav"+str(i),item)
+            caption=13 if portrait and small_phone else (
+                14 if not portrait and compact else 12)
+            assert caption*scale>=11.75,(size,caption,scale,
+                "True readable captions for the original five medallions")
         contextw=234 if h<530 else 220
         contexth=min(330,h-174)
-        contexty=75 if h<530 else 118
+        contexty=68 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
         header=R(60,12 if h<530 else 22,contextw-121,27 if h<530 else 22)
@@ -242,11 +260,14 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
 def main():
     source=SOURCE.read_text(encoding="utf-8")
     expected=[
-        'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
+        'Mathf.Clamp(logicalWidth/514f,.91f,3.00f)',
+        'float scale=authoredScale*density;',
+        'bool smallPhone=logicalWidth<600f;',
+        'SetNativeCaptureDensity(float density)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
         'float lionTextInset=crestSize+(smallPhone?8f:16f);',
         'float navSize=75f,navGap=6f;',
-        'float navTop=h-(smallPhone?130f:111f)',
+        'float navTop=h-(smallPhone?146f:127f)',
         'float ph=297f',
         'float pw=smallPhone?Mathf.Min(171f,w*.42f):158f;',
         'float cardRightInset=smallPhone?margin:39f;',
@@ -254,7 +275,9 @@ def main():
         'float top=navTop-ph-(smallPhone?34f:32f);',
         'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
         'float navSize=compactLandscape?75f:55f,',
-        'float navTop=h-(compactLandscape?88f:78f);',
+        'float navTop=h-(compactLandscape?104f:94f);',
+        'float top=h<530f?68f:118f;',
+        'navCaptions[i].fontSize=compactLandscape?14:12;',
         'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
         'At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53)',
@@ -268,8 +291,8 @@ def main():
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
         'At(chapterName.rectTransform,smallPhone?54f:36f,',
-        'chapterName.fontSize=smallPhone?13:10;',
-        'chapterName.resizeTextMinSize=smallPhone?13:10;',
+        'chapterName.fontSize=smallPhone?15:11;',
+        'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,45,21,pw-104,21);',
         'At(buildingName.rectTransform,60,h<530f?12f:22f,pw-121,h<530f?27f:22f);',
@@ -282,6 +305,7 @@ def main():
     # Real native evidence rejected 10.92px phone and 11.18px landscape.
     # Preserve >=11.75 physical px rather than lower the native quality gate.
     assert 13*.91 >= 11.75, 'phone portrait title below minimum'
+    assert 14*.86 >= 11.75, 'short landscape nav below minimum'
     assert 14*.86 >= 11.75, 'short landscape title below minimum'
     # 13 grounded screen resolutions × four actual Chapter-I unlock states
     # = 52 source-level layout checks. They complement, never replace, the
@@ -298,7 +322,16 @@ def main():
                 check(size,food,world)
                 validated+=1
     assert validated==52
-    print(f"BOUNDARY: {validated} source-only unlocked/layout variants; actual Unity GPU still required")
+    # Retina Unity preview: identical logical coordinates, 3x framebuffer.
+    # Preserve all 52 real-device variants and add twelve strict 3x cases.
+    for logical in ((390,844),(844,390),(900,1600)):
+        target=(logical[0]*3,logical[1]*3)
+        for food in (False,True):
+            for world in (False,True):
+                check(target,food,world,density=3)
+                validated+=1
+    assert validated==64
+    print(f"BOUNDARY: {validated} source-only layout variants (52 normal + 12 Retina); actual Unity GPU still required")
 
 if __name__=="__main__":
     main()

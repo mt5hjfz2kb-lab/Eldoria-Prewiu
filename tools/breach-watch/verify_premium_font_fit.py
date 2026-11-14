@@ -59,9 +59,16 @@ def verify():
     # This exact accepted Chapter I inscription is measured to fit at 13/14,
     # so it must NOT be silently shrunk by Unity legacy BestFit on small RT.
     assert "chapterName.resizeTextForBestFit=!chapterOne;" in hud
-    assert "chapterName.resizeTextMinSize=smallPhone?13:10;" in hud
-    assert "chapterName.resizeTextMaxSize=smallPhone?13:10;" in hud
+    assert "chapterName.resizeTextMinSize=smallPhone?13:11;" in hud
+    assert "chapterName.resizeTextMaxSize=smallPhone?15:11;" in hud
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
+    assert "navCaptions[i].fontSize=smallPhone?13:12;" in hud
+    assert "navCaptions[i].fontSize=compactLandscape?14:12;" in hud
+    assert 14*.86>=11.75, "844px navigation labels must be readable"
+    # The genuine 3x Editor captures must not silently render text 1x,
+    # while runtime WebGL density remains unchanged to protect phone memory.
+    assert "float scale=authoredScale*density;" in hud
+    assert "SetNativeCaptureDensity(float density)" in hud
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
     # Genuine Unity 900x1600 prior failure: 49u Baskerville NIVEL I
     # wrapped into two lines. The real approval reference uses a slim copper
@@ -84,7 +91,7 @@ def verify():
          "real status/timer")
     fits("0 / 1",BODY,14,147,"phone mission progress with bottom clearance")
     fits("Operativo · 2:00",REGULAR,12,126,"large portrait timer inside padded well")
-    assert "chapterProgress.fontSize=smallPhone?14:11;" in hud
+    assert "chapterProgress.fontSize=smallPhone?15:12;" in hud
     assert "buildingState.fontSize=smallPhone?14:12;" in hud
     assert 14*.91>=12.5,"Phone secondary text must be readable at native scale"
     # Physically readable small-phone context despite the tighter panel.

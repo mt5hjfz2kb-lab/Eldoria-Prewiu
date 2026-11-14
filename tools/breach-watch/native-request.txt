@@ -1,14 +1,14 @@
-VIGILIA PHASE1 EXACT-NATIVE 3X SCREENSHOT CERTIFICATION
+VIGILIA PHASE1 RETRY OF SOURCE-STAGED SCREENSHOT CAMPAIGN
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
 ownership_revision=128
-source_parent_sha=7c65a557d33ef03dd71f2a6823b6c88ca0fb60c1
-owner_authorization=2026-11-14: Si no hay trabajo en el PC usa el recurso
-native_test=Genuine Unity disposable city/Bastion/mail/report/bag 1x plus 15 real Retina 3x PNG
-viewports=390x844,844x390,900x1600
-source_qa=43526553331 PASS; source docs 7c65a557
-run_once=fail closed if remote Windows process or CAS owner changed
-no_main_merge=true
-no_beta_publish=true
-no_credits_eur=0
+parent_sha=dfd4a93486672183793aa8d86a3d42fb700777f3
+previous_run=43530638944 SOURCE_SYNTAX_FAILED_BEFORE_UNITY
+root_cause=validator expected obsolete pixelWidth layout while HUD uses logicalWidth/density + labelled nav
+corrective_source=update real compact landscape panel clearance 7u, labelled medallion minimum 14pt, 64 source geometry cases including Retina
+qa=real Unity 1x+15 real 3x screenshots city/Bastion/mail/report/bag
+guard=CAS owner + Windows native Get-Process gate
+no_merge=true
+no_publish=true
+eur_budget=0
 art_approved=false
