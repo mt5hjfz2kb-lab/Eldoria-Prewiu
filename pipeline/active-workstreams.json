@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T13:20:43.192Z",
+  "updated_at": "2026-11-14T13:35:55Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6992,18 +6992,14 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 132,
+      "ownership_revision": 133,
       "write_scope_released": false,
-      "phase": "PHASE1_ISOLATED_NATIVE_SOURCE_SPARSITY_AND_DISK_RECLAIM_PENDING_SINGLE_RUN",
-      "next": "One exact-SHA Unity native 1x+3x run after verifying C free>=16GiB post isolated git checkout; if no disk, release runner with concrete evidence, do not delete unowned assets. After native run verify 15 actual Retina 3x and city/Bastion/mail/report/bag, compare against approved photo A/B and close/repair once. No merge/main/beta/phase2.",
+      "phase": "PHASE1_NATIVE_BLOCKED_DISK_10_10_GIB_NO_ALTERNATIVE_AFTER_OWN_CACHE_RECLAIM",
+      "next": "Do not claim Windows or start native/CI heavy without a NEW measured >=16GiB post-checkout or owned proven alternative volume; latest physical Windows C: 10.10GiB after safe old failed Unity/Library reclaim in 43599345032 (2026-11-14 13:22Z); no other volume. Preserve 43532823031-1 (dirty/untracked). Latest source guard 43600493315 PASS at cac317f6, but no Unity captures. Preserve exact uncommitted and untracked scratch bytes with verified artifact before any own-old-source deletion. Verify all live jobs/reservations and CAS-claim before ONE isolated exact-SHA native 390x844/844x390/900x1600 3x + 300% buttons/camera A/B; ART_APPROVED false, no main/beta/gameplay, €0.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-14T13:20:43.192Z",
-      "runner_claim_basis": "User explicitly requests uninterrupted completion of Vigilia phase1 on personal Unity PC. Issue186 released Windows, no running Windows jobs. New candidate source 3f181b5 has Roslyn/PowerShell/source CI PASS 43599140877, fixes Git alternate invalid newline, excludes 1.66GB archived variants and safely reclaims only own failed 43590398106 Unity/Library (source and captures untouched). Exactly one real Unity A/B batch; fail closed on low disk or busy processes. No changes to beta or Issue186; €0.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -7203,6 +7199,13 @@
           "to_owner": "chatgpt-vigilia-visual-kit-20261113",
           "transferred_at": "2026-11-13T21:46:10.789Z",
           "reason": "Orden expresa del propietario 2026-11-13: relevo del workstream canónico de Vigilia para FASE 1 (kit uniforme ciudad/Bastión/Buzón/Bolsa, nitidez y capturas Unity A/B); conservar #173 fusionada y rama histórica, no abrir PR duplicada, no tocar beta ni Windows/Issue186, 0 €. Rama fuente a reconciliar con main sin reactivar UI antigua."
+        },
+        {
+          "owner": "chatgpt-vigilia-visual-kit-20261113",
+          "from_revision": 132,
+          "to_revision": 133,
+          "transferred_at": "2026-11-14T13:35:55Z",
+          "reason": "Release ONLY Windows after own 43599345032 failed pre-native: measured 5.85 to 10.10 GiB by reclaiming only own failed Unity Library; no second disk; <16 GiB. Source guard 43600493315 success but no 3x art. Preserve all dirty scratch and source ownership; no native/CI heavy until new >=16GiB physical evidence and CAS."
         }
       ],
       "runner_priority_handoff": {
@@ -7521,6 +7524,19 @@
         "exclusive_lease_released": true,
         "source_guard_fix_commit": "998f73a25114d779c4ac5fff5f768998d84724a1",
         "old_dirty_checkout_preserved_by_this_run": true
+      },
+      "disk_gate_evidence": {
+        "observed_at": "2026-11-14T13:22:14Z",
+        "workflow_run_id": 43599345032,
+        "free_gib": 10.1,
+        "minimum_safe_gib": 16,
+        "volume": "C:",
+        "alternative_volume_verified": false,
+        "cleanup": "only owned failed 43590398106 Unity/Library; historical 43532823031-1 read-only",
+        "native_run": "skipped",
+        "latest_source_guard_run_id": 43600493315,
+        "source_guard": "success",
+        "source_sha": "cac317f6a12adb14f72aa7a74bdb0c35d2a9466e"
       }
     },
     {
