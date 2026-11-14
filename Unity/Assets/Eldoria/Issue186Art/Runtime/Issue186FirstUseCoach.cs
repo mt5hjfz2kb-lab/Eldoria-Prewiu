@@ -28,6 +28,13 @@ namespace Eldoria.UI.RoyalGold.V2
         Text note;
         float nextRefresh;
         readonly List<RaycastResult> hits = new List<RaycastResult>(16);
+        // An instructional label is needed for the first click, but is
+        // redundant once the actual action panel is open. Landscape reflow
+        // can leave it partially obscured behind the CONSTRUIR sheet.
+        CanvasGroup mutedSelectedLabel;
+        bool addedSelectedLabelGroup;
+        float previousSelectedLabelAlpha;
+        bool previousSelectedLabelRaycasts;
 
         public bool Visible => hand && hand.gameObject.activeInHierarchy;
         public string TargetId {get;private set;} = "";
@@ -113,14 +120,63 @@ namespace Eldoria.UI.RoyalGold.V2
             var image=obj.GetComponent<Image>();
             image.color=tint;image.raycastTarget=false;return image;
         }
+        void RestoreSelectedCityLabel()
+        {
+            var group=mutedSelectedLabel;
+            if(group)
+            {
+                group.alpha=previousSelectedLabelAlpha;
+                group.blocksRaycasts=previousSelectedLabelRaycasts;
+                if(addedSelectedLabelGroup)Destroy(group);
+            }
+            mutedSelectedLabel=null;
+            addedSelectedLabelGroup=false;
+        }
+        void ConcealSelectedCityLabel(string target)
+        {
+            if(!canvas || string.IsNullOrEmpty(target))
+                {RestoreSelectedCityLabel();return;}
+            BuildingLabel match=null;
+            foreach(var label in canvas.GetComponentsInChildren<BuildingLabel>(true))
+                if(label && label.name=="Guidance "+target &&
+                    label.gameObject.activeInHierarchy)
+                    {match=label;break;}
+            if(!match){RestoreSelectedCityLabel();return;}
+            var group=match.GetComponent<CanvasGroup>();
+            if(mutedSelectedLabel && mutedSelectedLabel!=group)
+                RestoreSelectedCityLabel();
+            if(!group)
+            {
+                group=match.gameObject.AddComponent<CanvasGroup>();
+                addedSelectedLabelGroup=true;
+                previousSelectedLabelAlpha=1f;
+                previousSelectedLabelRaycasts=true;
+                mutedSelectedLabel=group;
+            }
+            else if(mutedSelectedLabel!=group)
+            {
+                mutedSelectedLabel=group;
+                addedSelectedLabelGroup=false;
+                previousSelectedLabelAlpha=group.alpha;
+                previousSelectedLabelRaycasts=group.blocksRaycasts;
+            }
+            group.alpha=0f;
+            group.blocksRaycasts=false;
+        }
         void Hide(string reason)
         {
+            RestoreSelectedCityLabel();
             Rejection=reason;TargetId="";
             if(hand)hand.gameObject.SetActive(false);
             if(halo)halo.gameObject.SetActive(false);
             if(noteBack)noteBack.gameObject.SetActive(false);
         }
-        void OnDestroy(){if(surface)Destroy(surface.gameObject);}
+        void OnDisable(){RestoreSelectedCityLabel();}
+        void OnDestroy()
+        {
+            RestoreSelectedCityLabel();
+            if(surface)Destroy(surface.gameObject);
+        }
 
         void Update()
         {
@@ -237,6 +293,7 @@ namespace Eldoria.UI.RoyalGold.V2
             string selected=hud.SelectedBuildingId??"";
             bool selectedTarget=selected==target ||
                 (target=="barracks"&&selected=="upgrade-barracks");
+            if(!selectedTarget)RestoreSelectedCityLabel();
             if(selectedTarget)
             {
                 // The genuine world-anchored RoyalButton selects the canonical
@@ -246,6 +303,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Bridge the already-authorized UI selection using Vigilia's
                 // public presentation API; never create gameplay commands.
                 if(!EnsureVigiliaBuildingSelection(selected))return;
+                ConcealSelectedCityLabel(target);
                 if(key=="b2.train-archers")
                     ShowButton(Property(vigilia,"ActualBarracksTrainingEntry") as Button,
                         key,"Abre el entrenamiento del Cuartel.","barracks-training");

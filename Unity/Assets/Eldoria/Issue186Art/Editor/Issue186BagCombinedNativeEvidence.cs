@@ -194,6 +194,20 @@ namespace Eldoria.Issue186Art.Editor
             Need(plate&&!plate.gameObject.activeInHierarchy,
                 "The redundant coach caption covers the real "+state+" text");
         }
+        static void RequireSelectedCityLabelUnpainted(Canvas canvas,
+            string building,string viewport)
+        {
+            // After the real first click the label must neither paint over
+            // the construction panel nor catch an invisible first touch.
+            var label=canvas.GetComponentsInChildren<BuildingLabel>(true)
+                .FirstOrDefault(v=>v && v.name=="Guidance "+building &&
+                    v.gameObject.activeInHierarchy);
+            if(!label)return; // The production UI may remove its selected label.
+            var group=label.GetComponent<CanvasGroup>();
+            Need(group && group.alpha<.001f && !group.blocksRaycasts,
+                "Selected "+building+" label still paints/blocks the "+
+                viewport+" actual construction panel");
+        }
         static void TouchRealWorldGuidance(RoyalButton actual,
             Camera camera,RenderTexture target)
         {
@@ -637,6 +651,7 @@ namespace Eldoria.Issue186Art.Editor
                          actualAction.IsInteractable(),
                         "Selected Aserradero does not show a real construction sheet and CTA: "+
                         diagnostic);
+                    RequireSelectedCityLabelUnpainted(canvas,"sawmill","390x844");
                     var realHand=canvas.GetComponentsInChildren<Image>(true)
                         .SingleOrDefault(image=>image && image.name=="Nonblocking actual hand");
                     var handDiagnostic=diagnostic+
@@ -718,6 +733,7 @@ namespace Eldoria.Issue186Art.Editor
                              action.IsInteractable()&&hand&&hand.sprite&&
                              hand.gameObject.activeInHierarchy,
                             "Rotated building panel/CTA/hand absent: "+geometry);
+                        RequireSelectedCityLabelUnpainted(canvas,"sawmill",viewport);
                         RequireActualFirstHitOnButton(action,camera,rt,viewport);
                         RequirePaintedFingertipHit(action,hand,camera,viewport);
                         RequirePaintedInRealFrame(camera,rt,
