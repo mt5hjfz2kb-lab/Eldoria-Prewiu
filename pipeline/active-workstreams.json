@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T18:19:34.733Z",
+  "updated_at": "2026-11-14T19:26:20.174Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7692,7 +7692,9 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
-        ".github/workflows/eldoria-world-p0-native.yml"
+        ".github/workflows/eldoria-world-p0-native.yml",
+        ".github/workflows/eldoria-world-p0-origin-search.yml",
+        "tools/eldoria-private-beta/world-p0-origin-search-request.txt"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -7701,9 +7703,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_PRIORITY_P0_WORLD_NATIVE_CLAIMED",
+      "phase": "RECOVER_EXACT_BASTIONIII_NATIVE_ASSETS_FOR_WORLD_P0_PROOF",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Run isolated Unity PlayMode and optional WebGL real-world entry on branch fix/eldoria-world-first-entry-p0-20261114; ensure current free disk and idle editor, compare original result, iPhone still needed.",
+      "next": "Genuine Unity failed because original art absent in throwaway project. Audited 51 asset names/hashes; query only runner-owned historical worktree paths read-only and attempt asset restoration from original artifact with identical SHA, no substitutes.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
