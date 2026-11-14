@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T13:07:00.000Z",
+  "updated_at": "2026-11-14T13:20:43.192Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6992,16 +6992,18 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 131,
+      "ownership_revision": 132,
       "write_scope_released": false,
-      "phase": "PHASE1_BLOCKED_NATIVE_DISK_EXHAUSTION_WINDOWS_RELEASED_NO_ART_APPROVAL",
-      "next": "Do not claim Windows or start heavy CI. Confirm physically >=16 GiB available on C or verified alternative and no active/reserved Unity/other owner; source workflow now fail-closed below 16 GiB in 998f73a. On proof, CAS claim for ONE new exact-SHA native Unity checkout (previous 43590398106 FAILED; no screenshot A/B) and verify all 15 Retina 3x real images for city/Bastion/mail/bag plus button 300%, safe save/integrity. Do not clean historical worktree or any other producer data, no phase2, no game/beta/main gameplay edits.",
+      "phase": "PHASE1_ISOLATED_NATIVE_SOURCE_SPARSITY_AND_DISK_RECLAIM_PENDING_SINGLE_RUN",
+      "next": "One exact-SHA Unity native 1x+3x run after verifying C free>=16GiB post isolated git checkout; if no disk, release runner with concrete evidence, do not delete unowned assets. After native run verify 15 actual Retina 3x and city/Bastion/mail/report/bag, compare against approved photo A/B and close/repair once. No merge/main/beta/phase2.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-14T11:30:22.497Z",
-      "runner_claim_basis": "User 'Unity se ejecuta en mi, continúa con el trabajo'; earlier conditional loan 'Si no hay trabajo en el PC usa el recurso'. C: measured 23.26 GiB at 2026-11-14T10:08:26Z in run43583823285. Issue186 native completed, no active/queued recent Unity. One true Unity capture and quality review only; prior dirty worktree untouched; 0€.",
+      "runner_claimed_at": "2026-11-14T13:20:43.192Z",
+      "runner_claim_basis": "User explicitly requests uninterrupted completion of Vigilia phase1 on personal Unity PC. Issue186 released Windows, no running Windows jobs. New candidate source 3f181b5 has Roslyn/PowerShell/source CI PASS 43599140877, fixes Git alternate invalid newline, excludes 1.66GB archived variants and safely reclaims only own failed 43590398106 Unity/Library (source and captures untouched). Exactly one real Unity A/B batch; fail closed on low disk or busy processes. No changes to beta or Issue186; €0.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -7360,11 +7362,11 @@
       "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_native_failure_disk_exhaustion",
+        "status": "claimed",
         "owner": "chatgpt-vigilia-visual-kit-20261113",
-        "ownership_revision": 131,
-        "updated_at": "2026-11-14T12:52:44.236Z",
-        "reason": "Exact native 43590398106 completed failure at 2026-11-14T12:09:10Z: preflight C 11.27 GiB; Unity consumed free C below 54 MB and PrefabImporter failed writing imports. No live Unity proof, no approved art. Logical lease released without touching old dirty worktrees, no new Unity dispatch."
+        "ownership_revision": 132,
+        "updated_at": "2026-11-14T13:20:43.192Z",
+        "reason": "User explicitly requests uninterrupted completion of Vigilia phase1 on personal Unity PC. Issue186 released Windows, no running Windows jobs. New candidate source 3f181b5 has Roslyn/PowerShell/source CI PASS 43599140877, fixes Git alternate invalid newline, excludes 1.66GB archived variants and safely reclaims only own failed 43590398106 Unity/Library (source and captures untouched). Exactly one real Unity A/B batch; fail closed on low disk or busy processes. No changes to beta or Issue186; €0."
       },
       "last_native": {
         "run": 43195548484,
