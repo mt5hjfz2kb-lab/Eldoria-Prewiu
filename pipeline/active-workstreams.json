@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T14:10:33.490Z",
+  "updated_at": "2026-11-14T14:44:11.245Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,6 +19,26 @@
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
   "active": [
+    {
+      "id": "eldoria-runner-storage-recovery-20261114",
+      "title": "Eldoria runner storage lifecycle — reproducible disk recovery and future cache hygiene",
+      "owner": "chatgpt-eldoria-runner-storage-20261114",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "maintenance/eldoria-runner-disk-audit-20261114",
+      "status": "active",
+      "phase": "DISK_RECLAIM_47_013_GIB_VERIFIED_POSTRUN_PR192_DRAFT_FIRST_LIVE_PENDING",
+      "claimed_at": "2026-11-14T14:42:25Z",
+      "resources": [],
+      "scope": [
+        ".github/workflows/eldoria-postrun-unity-cache.yml",
+        "docs/runner-storage/ELDORIA_DISK_FORENSICS_20261114.md"
+      ],
+      "base_main_sha": "a4b3ee8c2b2a17d6450697c46cd0ffcb9cb9e5b7",
+      "reason": "Owner authorizes recover personal Windows disk capacity without loss of Eldoria assets, source or saved work; standalone maintenance never claims Unity runner or foreign game/UI sources.",
+      "run_evidence": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43602596197",
+      "work_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/192"
+    },
     {
       "id": "eldoria-relicario-premium-master-v2-20261113",
       "title": "Relicario — plantilla visual V2 premium modular 5:8, lista para integración futura",
