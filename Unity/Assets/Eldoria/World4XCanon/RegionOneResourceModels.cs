@@ -351,9 +351,16 @@ namespace Eldoria.World4XCanon
                     // shares that SAME anchor at every zoom and camera aspect.
                     // No per-frame bounds calculation or logical site relocation.
                     node.Impostor.transform.position=p;
-                    node.Impostor.enabled=alive&&regional;
+                    // Until the real close-range source mesh arrives, retain
+                    // the existing canonical regional silhouette as a brief
+                    // near-view fallback. Never leave an earned node invisible
+                    // because the bounded importer is still streaming.
+                    bool temporaryNearFallback=near&&!node.Visual;
+                    bool showImpostor=alive&&(regional||temporaryNearFallback);
+                    node.Impostor.enabled=showImpostor;
                     node.Impostor.localBounds=new Bounds(Vector3.up*12f*screenScale,Vector3.one*40f*screenScale);
-                    if(regional||node.Visual)FitRegionalPicking(node,p,screenScale,regional);
+                    if(showImpostor||node.Visual)
+                        FitRegionalPicking(node,p,screenScale,regional||temporaryNearFallback);
                 }
             }
             // The reference decorations are always hidden by the production
