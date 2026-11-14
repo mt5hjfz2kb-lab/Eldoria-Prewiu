@@ -18,37 +18,33 @@ jobs:
         persist-credentials: false
     - uses: actions/download-artifact@v4
       with:
-        run-id: 43644208819
-        name: world-p0-mobile20-owner-site
+        run-id: 43653390105
+        name: world-p0-mobile21-owner-site
         github-token: ${{ github.token }}
         path: qa-site/candidate
     - uses: actions/download-artifact@v4
       with:
-        run-id: 43649546135
-        name: world-p0-browser-comparison
+        run-id: 43653390105
+        name: world-p0-reconciled-native-proof
         github-token: ${{ github.token }}
-        path: prior-browser-proof
-    - name: Reuse unchanged successful startup and exact native evidence
+        path: exact-native-proof
+    - name: Retain exact reconciled native proof and published-UI provenance
       run: |
         python3 - <<'END'
         import pathlib,shutil,json
-        source=pathlib.Path('prior-browser-proof');out=pathlib.Path('world-evidence');out.mkdir(parents=True)
+        source=pathlib.Path('exact-native-proof');out=pathlib.Path('world-evidence/native-build')
         identity=json.loads(pathlib.Path('qa-site/candidate/release-identity.json').read_text())
-        report=json.loads((source/'candidate/report.json').read_text())
-        assert report['passed'] and not report['errors'] and report['entry']['reloaded']
-        for key in ['source_sha','candidate_bundle_sha256','delivered_data_sha256']:
-         assert report['identity'][key]==identity[key],key
-        provenance=json.loads((source/'native-build/provenance.json').read_text(encoding='utf-8-sig'))
-        assert provenance['source']==identity['source_sha']=='5881df4e76da72c2897633c619449c60694b3552'
-        for folder in ['candidate','native-build']:shutil.copytree(source/folder,out/folder)
-        (out/'reused-evidence.json').write_text(json.dumps({'run':43649546135,'artifact':14136280792,'zip_sha256':'3626e48cb335cd7fb73f0e24c713e64ff09f974e7ae7889c2db662bc4f84c48f','reused':['unchanged residency scenario on identical package','original exact native certificates and PNGs'],'not_reused':['world return and zoom scenario corrected after image review']},indent=2))
+        provenance=json.loads((source/'provenance.json').read_text(encoding='utf-8-sig'))
+        assert provenance['source']==identity['source_sha']=='d0b21fd5708c5070d1bd62dc6c6a98399c549051'
+        assert provenance['workflow']=='cf105a3e407b24c8ffd7cf3a2e7fb3fd1ae834b9'
+        shutil.copytree(source,out)
         END
     - uses: actions/setup-node@v4
       with:
         node-version: '22'
     - name: Compare real earned saved-game world entries in desktop WebKit
       env:
-        QA_EXPECT_SOURCE: 5881df4e76da72c2897633c619449c60694b3552
+        QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
         QA_URL: http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1
         QA_REQUIRE_CONSTRUCTION: '1'
         QA_OUT: world-evidence/world-entry
@@ -68,6 +64,10 @@ jobs:
           sleep 1
         done
         failed=0
+        QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=world-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
         QA_EXPECT_SOURCE=90465a9a910b89a8a8b74e4b33a9bbc88578e00e \
           QA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1' \
           QA_OUT=world-evidence/control19 node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
@@ -97,8 +97,66 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: world-p0-browser-comparison
-        path: world-evidence
+        name: world-p0-reconciled-native-proof
+        path: exact-native-proof
+        retention-days: 30
+        run-id: 43653390105
+    needs: route
+    if: needs.route.outputs.mode == 'comparison'
+  route:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta/world-p0-browser-request.txt
+        sparse-checkout-cone-mode: false
+    - id: mode
+      name: Read explicit QA mode
+      run: |
+        python3 - <<'END'
+        import os,pathlib
+        lines=pathlib.Path('tools/eldoria-private-beta/world-p0-browser-request.txt').read_text().splitlines()
+        modes=[x.split('=',1)[1] for x in lines if x.startswith('mode=')]
+        assert len(modes)==1 and modes[0] in ['control','comparison']
+        with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('mode='+modes[0]+'\n')
+        END
+  published-control:
+    needs: route
+    if: needs.route.outputs.mode == 'control'
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      QA_EXPECT_SOURCE: 90465a9a910b89a8a8b74e4b33a9bbc88578e00e
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_OUT: control-evidence/control19
+      QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Verify actual unobstructed wheel and saved city return on published control
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        node tools/eldoria-private-beta/qa_world_entry_public.cjs
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-published-control-proof
+        path: control-evidence
         retention-days: 30
 'on':
   push:
