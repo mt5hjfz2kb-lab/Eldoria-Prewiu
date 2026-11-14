@@ -1,7 +1,7 @@
 name: Eldoria private beta verified WebGL packaging (Ubuntu only)
 on:
   push:
-    branches: [feature/eldoria-private-beta-i-v-20261107]
+    branches: [feature/eldoria-private-beta-i-v-20261107, fix/eldoria-world-first-entry-p0-20261114]
     paths:
       - 'tools/eldoria-private-beta/**'
       - 'pipeline/eldoria-private-beta/**'
@@ -13,7 +13,7 @@ on:
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
   pull_request:
-    branches: [main]
+    branches: [main, feature/eldoria-private-beta-i-v-20261107]
     paths:
       - 'tools/eldoria-private-beta/**'
       - 'pipeline/eldoria-private-beta/**'

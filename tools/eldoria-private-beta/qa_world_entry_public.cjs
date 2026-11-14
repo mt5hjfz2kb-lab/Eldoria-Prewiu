@@ -146,9 +146,10 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    const {decodeUnityPng}=await import('../art-direction/ai-authoring/unity_pixel_diff.mjs');
    let previousView=out+'/world-visit-'+visit+'.png';
    report.zoomPixelChanges=[];
-   for(const [ticks,delta,view] of [[12,240,'out'],[32,240,'overview'],[70,-240,'in']]){
+   for(const [ticks,delta,view] of [[6,240,'out'],[32,240,'overview'],[70,-240,'in']]){
     await page.evaluate(view=>window.__eldoriaWorldQaFrames.phase='zoom-'+view,view);
-    await page.mouse.move(195,420);
+    // Keep the pointer off the central Entrar en Valoria button as it moves during zoom.
+    await page.mouse.move(350,200);
     for(let tick=0;tick<ticks;tick++){
      await page.mouse.wheel(0,delta);await page.waitForTimeout(250);
      const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
@@ -195,10 +196,10 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    }
    return {visibility:document.visibilityState,phases};
   });save();
-  // Coordinates come from this run's reviewed genuine images. Beta19 has
-  // two world footer controls, while the candidate has three; the nickname
-  // is present in BOTH scenes and cannot certify a return to the city.
-  const returnX=identity.source_sha==='90465a9a910b89a8a8b74e4b33a9bbc88578e00e'?225:128;
+  // Both approved comparison sources now retain the published beta19 UI:
+  // two world footer controls, with the actual city button at225,776.
+  // The rejected588 candidate used an obsolete three-button layout.
+  const returnX=225;
   await page.mouse.click(returnX,776,{delay:180});await page.waitForTimeout(4000);
   await screen('city-return-'+visit);
   await page.mouse.click(26,282,{delay:150});await page.waitForTimeout(1500);

@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$SourceSha)
 $ErrorActionPreference='Stop'
 trap { Write-Host $_.ScriptStackTrace; throw }
-if($SourceSha -ne '5881df4e76da72c2897633c619449c60694b3552'){throw 'Unexpected frozen source'}
+if($SourceSha -ne 'd0b21fd5708c5070d1bd62dc6c6a98399c549051'){throw 'Unexpected frozen source'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
 if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
   $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
@@ -10,54 +10,26 @@ if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
   if(-not $git){throw 'Installed Git unavailable'}
   $env:PATH=(Split-Path $git)+';'+$env:PATH
 }
-$ownedSources=@()
-foreach($name in @('eldoria-world-p0-43641168362','eldoria-world-p0-43638950225')){
-  $candidate=Join-Path $env:RUNNER_TEMP $name
-  if((Test-Path $candidate) -and -not((Get-Item $candidate).Attributes -band [IO.FileAttributes]::ReparsePoint)){
-    if((& git -C $candidate rev-parse HEAD).Trim() -eq $SourceSha){$ownedSources+=,$candidate}
-  }
-}
-$persistent=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-source-5881df4e76da'
-if($ownedSources.Count -eq 0 -and (Test-Path $persistent)){
-  if((Get-Item $persistent).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Persistent source is a reparse point'}
-  $headLines=@(& git -C $persistent rev-parse --verify HEAD)
-  $headExit=$LASTEXITCODE
-  $head=($headLines -join '').Trim()
-  if($headExit){
-    # The superseded preparation was interrupted while downloading the sparse
-    # checkout. Preserve that directory; reuse only its verified Git object store.
-    & git -C $persistent cat-file -e ($SourceSha+'^{commit}')
-    if($LASTEXITCODE){throw 'Exact frozen source commit missing from interrupted object store'}
-    if((& git -C $persistent remote get-url origin).Trim() -ne ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')){throw 'Interrupted source origin differs'}
-    $ready=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-ready-5881df4e76da'
-    if(Test-Path $ready){throw 'Preserve existing recovery worktree'}
-    & git -C $persistent worktree add --no-checkout --detach $ready $SourceSha
-    if($LASTEXITCODE){throw 'Could not recover owned object store into a separate worktree'}
-    & git -C $ready sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
-    if($LASTEXITCODE){throw 'Recovery sparse configuration failed'}
-    & git -C $ready checkout --detach $SourceSha
-    if($LASTEXITCODE){throw 'Recovery checkout failed; preserve both sources'}
-    $persistent=$ready
-  }elseif($head -ne $SourceSha){throw 'Persistent source identity changed'}
-  $ownedSources+=,$persistent
-}
-if($ownedSources.Count -gt 1){throw 'Ambiguous owned source checkout'}
-if($ownedSources.Count -eq 1){$root=$ownedSources[0]}else{
-  # RUNNER_TEMP is emptied between jobs. Persist this owned source under the
-  # workspace, never depend on the preceding job's temporary checkout surviving.
-  if((Get-PSDrive C).Free/1GB -lt 36){throw 'Insufficient free disk for exact source import'}
-  $root=$persistent
-  if(Test-Path $root){throw 'Run-owned source already exists; preserve it'}
-  & git init -q $root
-  if($LASTEXITCODE){throw 'Owned source init failed'}
-  & git -C $root config core.longpaths true
-  & git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
-  & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $SourceSha
+# Reuse immutable objects owned by this workstream, never another artist's checkout.
+$seed=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-source-5881df4e76da'
+$root=Join-Path $env:GITHUB_WORKSPACE ('world-p0-build-source-'+$SourceSha.Substring(0,12))
+if(Test-Path $root){
+  if((Get-Item $root).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Source reparse point'}
+  if((& git -C $root rev-parse --verify HEAD).Trim() -ne $SourceSha){throw 'Preserve different existing source'}
+}else{
+  if((Get-PSDrive C).Free/1GB -lt 36){throw 'Insufficient disk; preserve sources'}
+  if(-not(Test-Path $seed) -or ((Get-Item $seed).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Owned immutable seed missing'}
+  if((& git -C $seed remote get-url origin).Trim() -ne ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')){throw 'Owned seed origin mismatch'}
+  & git -C $seed cat-file -e '5881df4e76da72c2897633c619449c60694b3552^{commit}'
+  if($LASTEXITCODE){throw 'Owned seed provenance missing'}
+  & git -C $seed fetch --no-tags --depth=1 --filter=blob:none origin $SourceSha
   if($LASTEXITCODE){throw 'Exact source fetch failed'}
+  & git -C $seed worktree add --no-checkout --detach $root $SourceSha
+  if($LASTEXITCODE){throw 'New owned worktree failed; preserve prior sources'}
   & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
-  if($LASTEXITCODE){throw 'Exact source sparse configuration failed'}
+  if($LASTEXITCODE){throw 'Sparse configuration failed'}
   & git -C $root checkout --detach $SourceSha
-  if($LASTEXITCODE){throw 'Exact source checkout failed'}
+  if($LASTEXITCODE){throw 'Exact source checkout failed; preserve all worktrees'}
 }
 if((& git -C $root rev-parse HEAD).Trim() -ne $SourceSha){throw 'Frozen source mismatch'}
 $project=Join-Path $root 'Unity' 
@@ -136,7 +108,7 @@ Add-Content $env:GITHUB_ENV ('WORLD_P0_BUILD_PROJECT='+$project)
 $workflowSha=$env:GITHUB_SHA
 # The workflow and compiled source have separate identities. Never relabel old code.
 $env:GITHUB_SHA=$SourceSha
-@{source=$SourceSha;workflow=$workflowSha;nativeRun=43641168362;physicalIphoneTested=$false}|ConvertTo-Json|Set-Content (Join-Path $out 'provenance.json')
+@{source=$SourceSha;workflow=$workflowSha;nativeRun=$env:GITHUB_RUN_ID;physicalIphoneTested=$false}|ConvertTo-Json|Set-Content (Join-Path $out 'provenance.json')
 $backup=Join-Path $out 'original-inputs';New-Item -ItemType Directory -Path $backup|Out-Null
 Copy-Item (Join-Path $project 'ProjectSettings') (Join-Path $backup 'ProjectSettings') -Recurse
 $render=@('Assets/UniversalRenderPipelineGlobalSettings.asset','Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset')
@@ -162,6 +134,32 @@ function Invoke-Phase([string]$method,[string]$target,[string]$label,[string]$re
   }
   throw ('No genuine result after warm retry: '+$label)
 }
+function Invoke-WorldProof {
+  $xml=Join-Path $out 'test-results.xml'
+  $env:ELDORIA_WORLD_P0_CAPTURE_REAL_ART='1'
+  $env:ELDORIA_WORLD_P0_CAPTURE_DIR=Join-Path $out 'world-unity-views'
+  for($attempt=1;$attempt -le 2;$attempt++){
+    if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor occupied before real World test'}
+    $log=Join-Path $out ('world-playmode-'+$attempt+'.log')
+    $args=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',('"'+$project+'"'),
+      '-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests',
+      '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+    $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+    if(-not $proc.WaitForExit(3600000)){& taskkill.exe /PID $proc.Id /T /F|Out-Null;throw 'Owned world test timed out'}
+    if($proc.ExitCode -ne 0){Get-Content $log -Tail 100;throw 'World PlayMode failed'}
+    if(Test-Path $xml){break}
+  }
+  if(-not(Test-Path $xml)){throw 'No genuine NUnit result'}
+  [xml]$r=Get-Content $xml -Raw
+  $cases=@($r.SelectNodes('//test-case')|Where-Object {$_.GetAttribute('fullname').EndsWith('.RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD')})
+  if($r.'test-run'.result -ne 'Passed' -or [int]$r.'test-run'.total -ne 1 -or [int]$r.'test-run'.passed -ne 1 -or [int]$r.'test-run'.failed -ne 0 -or [int]$r.'test-run'.skipped -ne 0 -or $cases.Count -ne 1 -or $cases[0].GetAttribute('result') -ne 'Passed'){throw 'Exact world fixture did not pass'}
+  foreach($marker in @('ELDORIA_WORLD_STREAMING_VISUALS','ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE')){
+    if(-not(Select-String $log -Pattern $marker -SimpleMatch -Quiet)){throw ('Missing native marker '+$marker)}
+  }
+  if(@(Select-String $log -Pattern 'ELDORIA_WORLD_SETTLED_VISIBLE_ENEMIES' -SimpleMatch).Count -ne 6){throw 'Missing settled viewport coverage'}
+  if(@(Get-ChildItem $env:ELDORIA_WORLD_P0_CAPTURE_DIR -Filter '*-unity.png' -File).Count -ne 6){throw 'Missing genuine world views'}
+  Write-Host ('WORLD_P0_RECONCILED_NATIVE_PASS '+$SourceSha)
+}
 $probe=Join-Path $project 'Assets/EldoriaWorldP0BuildProbe'
 if((Test-Path $probe) -or (Test-Path ($probe+'.meta'))){throw 'Preserve existing build probe'}
 try{
@@ -173,6 +171,7 @@ try{
   Invoke-Phase 'EldoriaBetaCollisionBake.Enable' 'Win64' 'collision-prebake' (Join-Path $out 'collision-bake-setting.json')
   $collision=Get-Content (Join-Path $out 'collision-bake-setting.json') -Raw|ConvertFrom-Json
   if($collision.source -ne $SourceSha -or -not $collision.after){throw 'Established collision prebake recipe not active'}
+  Invoke-WorldProof
   Invoke-Phase 'Eldoria.BreachWatch.Editor.BreachWatchDestinationNativeEvidence.CaptureBatch' 'Win64' 'destinations' (Join-Path $ui 'BreachWatchDestinationEvidence.json')
   foreach($name in @('BreachWatchDestinationEvidence.json','BreachWatchIntegratedTreasureEvidence.json')){
     $j=Get-Content (Join-Path $ui $name) -Raw|ConvertFrom-Json
