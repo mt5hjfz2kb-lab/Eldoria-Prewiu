@@ -764,6 +764,33 @@ jobs:
           $version=& $env:UNITY_EDITOR_PATH -version
           if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity Editor $version"}
           Write-Host "BREACHWATCH_NATIVE_EDITOR_READY $version"
+      - name: Read-only PC capacity and previously isolated Vigilia source
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $file=Join-Path $env:RUNNER_TEMP ("vigilia-diagnostic-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT+".txt")
+          $drive=Get-PSDrive -Name C
+          $candidates=@(Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Directory -Filter 'breachwatch-isolated-*' -ErrorAction SilentlyContinue)
+          $oldCache=Join-Path $env:GITHUB_WORKSPACE 'breachwatch-isolated-43532823031-1/.git/objects'
+          $metrics=@(
+            ("sha="+$env:GITHUB_SHA),
+            ("attempt="+$env:GITHUB_RUN_ATTEMPT),
+            ("drive_free_gib="+[math]::Round($drive.Free/1GB,2)),
+            ("drive_used_gib="+[math]::Round($drive.Used/1GB,2)),
+            ("prior_isolated_count="+$candidates.Count),
+            ("old_successful_git_object_cache_exists="+(Test-Path -LiteralPath $oldCache)),
+            ("unity_processes="+@(Get-Process Unity -ErrorAction SilentlyContinue).Count),
+            ("blender_processes="+@(Get-Process blender -ErrorAction SilentlyContinue).Count),
+            "note=no old working directory changed or deleted"
+          )
+          [IO.File]::WriteAllLines($file,[string[]]$metrics,(New-Object Text.UTF8Encoding($false)))
+          Get-Content $file
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-native-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/vigilia-diagnostic-*.txt
+          retention-days: 3
+          if-no-files-found: error
       - name: Fetch exact PR source safely with sparse Unity checkout
         shell: powershell
         env:
@@ -784,6 +811,18 @@ jobs:
           if($LASTEXITCODE){throw 'Fresh isolated Git init failed'}
           & git -C $root remote add origin $url
           if($LASTEXITCODE){throw 'Fresh isolated Git remote add failed'}
+          # Git objects from our OWN earlier successful isolated checkout
+          # are immutable and may be referenced read-only. Never alter that
+          # prior checkout or reuse its working tree, files or index.
+          $cache=Join-Path $env:GITHUB_WORKSPACE 'breachwatch-isolated-43532823031-1/.git/objects'
+          if(Test-Path -LiteralPath $cache){
+            $objects=(Resolve-Path -LiteralPath $cache).Path.Replace('\','/')
+            $alternates=Join-Path $root '.git/objects/info/alternates'
+            [IO.File]::WriteAllText($alternates,($objects+"\n"),(New-Object Text.UTF8Encoding($false)))
+            Write-Host 'BREACHWATCH_READ_ONLY_GIT_OBJECT_REUSE_ENABLED'
+          }else{
+            Write-Host 'BREACHWATCH_READ_ONLY_GIT_OBJECT_REUSE_NOT_PRESENT; fetching exact SHA remotely'
+          }
           if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
           # Preserve existing private Unity inputs before any source switch.
           # Unknown code/settings are archived and refused; never force checkout.

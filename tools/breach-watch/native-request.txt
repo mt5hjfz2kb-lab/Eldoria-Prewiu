@@ -1,11 +1,10 @@
-VIGILIA PHASE1 NATIVE REAL UNITY 3X PROBE: FIX REAL NAV CAPTIONS AND SPRITE CONTRACT
+VIGILIA PHASE1 REPRODUCIBLE REAL UNITY 3X
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-revision=128
-last_run=43532823031
-last_failure=Unity native runtime guard false-negative: expects only 1 painted medallion when new approved kit includes 1 icon + 1 label. Actual caption Text was uninitialized.
-source_fix=caption.text now assigned actual 5 canonical nav destinations; native guard strictly requires 1 medallion + 1 legible matching label, rejects duplicates; sharp sprite rule matches audited 1024, bilinear, zero mipmaps.
-required=actual Unity proof 390x844 844x390 900x1600 at 3x + 1x; no fake art approval; preserve player save.
-resource_claim=windows-runner-heavy only leased to Vigilia rev128; stop if Unity or Blender busy
-do_not_modify=main, beta, Issue186, player data, economy, phase2
-budget_eur=0
+owner_revision=128
+previous_native_attempt=43572548608 attempts 1 and 2: remote Git sparse checkout lost runner before Unity and did not preserve logs, no screenshots certified
+checkout_correction=read-only 3 day preflight diagnostics for disk, previously isolated cache availability, live Unity/Blender counts; reuse own previous successful isolated Git objects read-only if available, final commit exact SHA and no edits to previous candidates
+intent=capture real Unity 1x and actual physical 3x RenderTexture phone output; no art autoapproval
+deliverables=city,bastion,mail,mail-report-document,bag
+formats=390x844,844x390,900x1600
+restrictions=no main,beta,issue186 mutation; no Unity/Blender already active; zero euros; no file deletion outside fresh current owned directory
