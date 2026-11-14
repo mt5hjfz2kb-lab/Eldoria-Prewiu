@@ -48,7 +48,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
     scale=authored*density
     w=pw/scale
     h=ph/scale
-    small_phone=logical_small_phone
+    small_phone=logical_pw<600
     m=13 if portrait else 18
     boxes={}
     panels=[]
@@ -128,8 +128,16 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
         navtop=h-(146 if small_phone else 127)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),
-                       navtop+3,navsize,navsize+17)
+                       navtop+3,navsize,navsize+17,solid=False)
             touch("nav"+str(i),item)
+            # A native navigation Button has an invisible full-area hit
+            # surface. Count its actual painted medallion at worst .92
+            # visible scale plus LIVE label separately; counting the
+            # transparent hit area as an opaque slab fabricated clutter.
+            painted=(navsize-2*inset)*.92
+            panels.append(R(item.x+(navsize-painted)/2,
+                            item.y+(navsize-painted)/2,painted,painted))
+            panels.append(R(item.x,item.y+navsize-1,navsize,16))
             caption=13 if portrait and small_phone else (
                 14 if not portrait and compact else 12)
             assert caption*scale>=11.75,(size,caption,scale,
@@ -214,8 +222,16 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
         navtop=h-(104 if compact else 94)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),
-                       navtop+3,navsize,navsize+17)
+                       navtop+3,navsize,navsize+17,solid=False)
             touch("nav"+str(i),item)
+            # A native navigation Button has an invisible full-area hit
+            # surface. Count its actual painted medallion at worst .92
+            # visible scale plus LIVE label separately; counting the
+            # transparent hit area as an opaque slab fabricated clutter.
+            painted=(navsize-2*inset)*.92
+            panels.append(R(item.x+(navsize-painted)/2,
+                            item.y+(navsize-painted)/2,painted,painted))
+            panels.append(R(item.x,item.y+navsize-1,navsize,16))
             caption=13 if portrait and small_phone else (
                 14 if not portrait and compact else 12)
             assert caption*scale>=11.75,(size,caption,scale,

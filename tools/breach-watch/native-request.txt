@@ -1,14 +1,13 @@
-VIGILIA PHASE1 RETRY OF SOURCE-STAGED SCREENSHOT CAMPAIGN
+VIGILIA SCREEN QA RETRY: PRECISE SOURCE-ONLY MASK FIX
 workstream=eldoria-forja-oscura-visual-proof-20261107
-owner=chatgpt-vigilia-visual-kit-20261113
-ownership_revision=128
-parent_sha=dfd4a93486672183793aa8d86a3d42fb700777f3
-previous_run=43530638944 SOURCE_SYNTAX_FAILED_BEFORE_UNITY
-root_cause=validator expected obsolete pixelWidth layout while HUD uses logicalWidth/density + labelled nav
-corrective_source=update real compact landscape panel clearance 7u, labelled medallion minimum 14pt, 64 source geometry cases including Retina
-qa=real Unity 1x+15 real 3x screenshots city/Bastion/mail/report/bag
-guard=CAS owner + Windows native Get-Process gate
-no_merge=true
-no_publish=true
-eur_budget=0
-art_approved=false
+lease_owner=chatgpt-vigilia-visual-kit-20261113
+lease_revision=128
+previous_run=43531323696
+prior_error=validate_compact_layout.py logical_small_phone NameError
+corrected=logical_pw<600 and explicitly count painted medallion+live caption rather than invisible raycast box; physical 44px hit preserved
+density=normal 52 cases plus original-pixel 3x 12 cases
+source_parent=eecf8513409468ac59ae53793a055407780266dd
+native=real Unity 390x844,844x390,900x1600 A/B at 3x
+budget=0
+no_owner_visual_approval=true
+no_merge_or_release=true
