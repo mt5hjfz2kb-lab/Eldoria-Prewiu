@@ -1,7 +1,6 @@
-VIGILIA PHASE1 RECOVER RUNNER DISK - READ ONLY INVENTORY OF OUR OWN ISOLATED CHECKOUTS
-workstream=eldoria-forja-oscura-visual-proof-20261107
-owner=chatgpt-vigilia-visual-kit-20261113
-owner_revision=128
-previous_run=43574403114 safe long-path cleanup reclaimed 5.92 GiB from own generated Unity Library only, below guarded 8 GiB minimum; no native evidence.
-action=read-only list of own breachwatch-isolated-* checkout roots and flags generated Library/city evidence/destination evidence/Git object storage; select a safe low-risk strategy to reach 8 GiB before Unity.
-no Other owner files, no beta/source deletion, no money, no art autoapproval.
+VIGILIA PHASE1 USE ALTERNATIVE LOCAL VOLUME WITHOUT TOUCHING PREVIOUS EVIDENCE
+workstream=eldoria-forja-oscura-visual-proof-20261107 owner=chatgpt-vigilia-visual-kit-20261113 revision=128
+C_drive_after_own_cleanup=5.94_GiB; only old source exists and includes City Unity evidence.
+measure_other_local_drives=true; require alternate fixed local drive at least 16 GiB; create unique isolated owner workspace only; otherwise block with evidence.
+no_delete_reference_or_beta_or_other_work=true
+gpu_proof=15 actual 3x Unity captures, same camera, zero euros, no false art approval

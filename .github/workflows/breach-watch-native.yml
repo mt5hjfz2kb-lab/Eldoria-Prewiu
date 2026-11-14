@@ -713,11 +713,14 @@ jobs:
     if: needs.owner-preflight.outputs.authorized == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 15
+    outputs:
+      source_parent: ${{ steps.recovery.outputs.source_parent }}
     permissions:
       contents: read
       actions: read
     steps:
       - name: Reclaim only old failed Vigilia-specific temporary sources
+        id: recovery
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
@@ -849,7 +852,35 @@ jobs:
               " generatedLibrary="+$hasLib+" cityEvidence="+$hasCity+
               " destinationEvidence="+$hasDestination+" gitObjects="+$hasGit)
           }
-          if($after -lt 8GB){throw 'Not enough safe disk space to run new isolated Unity capture'}
+          # Use an alternative local disk only if safely verified and
+          # sufficiently capacious; never touch other owners' data.
+          $parent=$env:GITHUB_WORKSPACE
+          $volumes=@(Get-PSDrive -PSProvider FileSystem |
+            Where-Object { $_.Root -match '^[A-Za-z]:\\$' } |
+            Sort-Object Free -Descending)
+          foreach($volume in $volumes){
+            Write-Host ('VIGILIA_SAFE_VOLUME '+$volume.Root+
+              ' freeGiB='+[math]::Round($volume.Free/1GB,2))
+          }
+          if($after -lt 8GB){
+            $alternate=@($volumes | Where-Object {
+              $_.Name -ne 'C' -and $_.Free -ge 16GB
+            } | Select-Object -First 1)
+            if($alternate.Count -ne 1){
+              throw 'No safe second volume >=16 GiB; preserve native evidence and other work'
+            }
+            $parent=Join-Path $alternate[0].Root 'Eldoria-Vigilia-owned-native'
+            if(-not(Test-Path -LiteralPath $parent)){
+              New-Item -ItemType Directory -Path $parent -ErrorAction Stop | Out-Null
+            }
+            $actual=[IO.Path]::GetFullPath($parent)
+            if(-not $actual.StartsWith($alternate[0].Root,[StringComparison]::OrdinalIgnoreCase) -or
+               ((Get-Item -LiteralPath $parent).Attributes -band [IO.FileAttributes]::ReparsePoint)){
+              throw 'Non-owned or linked alternative workspace'
+            }
+            Write-Host ('VIGILIA_SAFE_ALTERNATIVE_ROOT '+$actual)
+          }
+          Add-Content $env:GITHUB_OUTPUT ('source_parent='+$parent)
           Write-Host 'VIGILIA_DISK_RECOVERY_EXCLUSIVE_SAFE_PASS'
   native:
     needs: [owner-preflight, source-syntax, approved-art-integrity, recover-owned-disk]
@@ -944,7 +975,11 @@ jobs:
           # owned by other producers. Never clean, reset, checkout or reuse
           # that directory. Start a fresh per-attempt Unity source tree.
           # Retain the exact SHA and the preservation guard in the new tree.
-          $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-isolated-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
+          $parent='${{ needs.recover-owned-disk.outputs.source_parent }}'
+          if(-not $parent -or -not(Test-Path -LiteralPath $parent)){
+            throw 'Safe measured Unity source parent unavailable'
+          }
+          $root=Join-Path $parent ("breachwatch-isolated-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
           $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
           if(Test-Path -LiteralPath $root){
             throw "Refuse existing candidate checkout; preserve potential other-user data: $root"
