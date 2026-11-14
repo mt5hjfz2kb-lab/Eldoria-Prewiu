@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T16:27:25.231Z",
+  "updated_at": "2026-11-14T16:44:27.194Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7012,14 +7012,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 137,
+      "ownership_revision": 138,
       "write_scope_released": false,
-      "phase": "PHASE1_SINGLE_REAL_NATIVE_RETEST_CAS_107_GIB_PROVEN",
-      "next": "Last physical Windows runner DESKTOP-R10PE55 disk proof: 107.704 GiB free 2026-11-14T16:17:06Z in run 43614706067; zero other windows-runner-heavy holders and zero GitHub in-progress runs at claim. Exactly ONE workflow native retest on new source SHA descended from 62d9e139 (three resource import .meta fixes). Within workflow enforce live lease, idle Unity/Blender/Git processes and >=16 GiB before/after isolated checkout. Protect original 43532823031-1 and all other owners. Inspect authentic 3x HUD/Bastion/Mail/Bag, same-camera A/B, 300% button crops, save unchanged. Never infer art approved, or publish/change main playable. After run finishes, inspect and CAS release lease.",
+      "phase": "PHASE1_NATIVE_43615782618_TRUE_TEXT_CLIPPING_WINDOWS_RELEASED_NO_ART_APPROVAL",
+      "next": "Real Unity run 43615782618 completed FAILURE at 2026-11-14 16:42Z exact source SHA 9e23849e670870d1350f7af82f82aac371c827fb. PRECHECK PASS 107.7 GiB C:, isolated checkout and Unity precheck PASS 103.5 GiB. Prior resource PNG mipmaps/filtering correction passed to reach next genuine failure: BreachWatchNativeEvidence.cs:1229 'Live text genuinely clips vertically: real-unity-city-1600x900.png/Navigation / RECURSOS wanted=29.7 available=16.0'. Native snapshot, editor log saved in artifact 14122048008; A/B skipped, 3x and destinations not verified. Investigate and repair actual new UI navigation caption layout without weakening native guard, then obtain new real 16GiB+ Windows measurement and CAS native retest only when idle/unreserved. Historical magenta Bastion/terrain remains unapproved pending genuine new artifact visual QA; no changes to real game, beta/main playable, saves, owner protected checkouts. Windows ONLY lease released after completed native job, same source owner retained. Do not approve artwork or phase2.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
@@ -7346,7 +7344,7 @@
         "mail_empty_changed_pixels_390x844": 16513,
         "gpu_caption_outside_pixels": 0
       },
-      "runner_release_basis": "43590398106 completed FAILURE; job 132433842518 ended, upload artifact 14113007702 contains editor log only, genuine-visual-ab skipped. GitHub runner cleanup logged; no physical post-run free-space measurement, do not assume machine ready. Preserve older and current isolated checkouts.",
+      "runner_release_basis": "43615782618 native job 132510588794 completed FAILURE; Unity exited and GitHub runner cleanup logged 2026-11-14T16:42:06Z; artifact 14122048008 retained. Earlier physical freeGiB 107.7, but no postrun measurement; reevaluate before new claim.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7373,7 +7371,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-14T12:52:44.236Z",
+      "runner_released_at": "2026-11-14T16:44:27.194Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7387,11 +7385,11 @@
       "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-vigilia-visual-kit-20261113",
-        "ownership_revision": 137,
-        "updated_at": "2026-11-14T16:27:25.231Z",
-        "reason": "Physical Windows 107.704GiB free as of 2026-11-14T16:17Z in 43614706067; no live actions or other claimed owner. One bounded Vigilia F1 native retest source 62d9e139 icon correction, no beta/main game changes."
+        "ownership_revision": 138,
+        "updated_at": "2026-11-14T16:44:27.194Z",
+        "reason": "CAS release of ONLY Windows lease after completed failed native 43615782618; preserve source owner and all historical copies; no art approval."
       },
       "last_native": {
         "run": 43195548484,
