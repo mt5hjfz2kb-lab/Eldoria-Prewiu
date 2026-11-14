@@ -16,6 +16,7 @@ var paths = new[]
     "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/ResourceExperienceUiBridge.cs",
     "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs",
+    "Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186FirstUseCoach.cs",
     "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs"
 };
 // Unity 6000.3.23f1 REAL attachment failure 43134015062: MonoBehaviours
@@ -39,6 +40,75 @@ foreach (var fixture in new[]
         Console.Error.WriteLine("ISSUE186_UNATTACHABLE_EDITOR_FIXTURE_OR_GUID_MISMATCH " + fixture.Name);
         return 2;
     }
+}
+// Product regression: the introductory coach is installed into the ONE saved
+// RoyalHUD. Source guards do not pretend to certify real Unity pointer hits.
+string coachFile="Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186FirstUseCoach.cs";
+string bagFile="Unity/Assets/Eldoria/Issue186Art/Runtime/Issue186BagOverlay.cs";
+string coachSource=File.ReadAllText(coachFile);
+string bagSource=File.ReadAllText(bagFile);
+string firstEntryFixture=File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs");
+string firstEntryGate=File.ReadAllText(".github/workflows/issue186-native.yml");
+if(!File.Exists(coachFile+".meta") ||
+   !File.ReadAllText(coachFile+".meta").Contains("MonoImporter:") ||
+   !bagSource.Contains("coach.Initialize(owner,authority)") ||
+   !bagSource.Contains("gameObject.AddComponent<Issue186FirstUseCoach>()") ||
+   !coachSource.Contains("NarrativeCoherenceRules.Seen(state,\"start\")") ||
+   !coachSource.Contains("SliceRules.CurrentObjectiveKey(state)") ||
+   !coachSource.Contains("GuidedTutorialRules.ShouldPoint") ||
+   !coachSource.Contains("Issue186ArtKit.BindFirstUsePointer") ||
+   !coachSource.Contains("EventSystem.current") ||
+   !coachSource.Contains("NoUiBlocker") ||
+   !coachSource.Contains("no-real-physical-hit") ||
+   !coachSource.Contains("state.PlayerName") ||
+   !coachSource.Contains("ShowFirstNamePrompt()") ||
+   !coachSource.Contains("nickname-input") ||
+   !coachSource.Contains("nickname-confirm") ||
+   !coachSource.Contains("TryGuideGenuineCityLabel(target,key)") ||
+   !coachSource.Contains("ConcealSelectedCityLabel(target)") ||
+   !coachSource.Contains("RestoreSelectedCityLabel()") ||
+   !firstEntryFixture.Contains("RequireSelectedCityLabelUnpainted(canvas,\"sawmill\",viewport)") ||
+   !coachSource.Contains("bool hasActualCaption=") ||
+   !firstEntryFixture.Contains("RequireCleanSelfExplainingGuide(canvas,\"nickname input\")") ||
+   !firstEntryFixture.Contains("RequireCleanSelfExplainingGuide(canvas,\"first narrative\")") ||
+   !coachSource.Contains("EnsureVigiliaBuildingSelection(selected)") ||
+   !coachSource.Contains("select.Invoke(vigilia,new object[]{canonical})") ||
+   !coachSource.Contains("selected-building-panel-not-rendered") ||
+   !coachSource.Contains("ISSUE186_CANONICAL_BUILDING_SELECTION_BRIDGED") ||
+   !coachSource.Contains("label.Select,key") ||
+   !coachSource.Contains("narrative-continue") ||
+   !firstEntryFixture.Contains("firstNicknameInputOnRealHit=true") ||
+   !firstEntryFixture.Contains("firstNicknameConfirmOnRealHit=true") ||
+   !firstEntryFixture.Contains("firstStoryContinueOnRealHit=true") ||
+   !firstEntryFixture.Contains("Click(confirm,camera,target)") ||
+   !firstEntryFixture.Contains("TouchRealWorldGuidance(realLabel.Select,camera,rt)") ||
+   !firstEntryFixture.Contains("firstBuildingActionHandOnRealHit=true") ||
+   !firstEntryFixture.Contains("firstSawmillLabelSelected=true") ||
+   // A native SUCCESS was visually false-green: a live Unity panel and hand
+   // were reported present but were absent from the 390x844 GPU screenshot.
+   // Protect the actual rendered-pixel acceptance gate against accidental
+   // removal while other workstreams hold the exclusive Windows runner.
+   !firstEntryFixture.Contains("Need(changed>35") ||
+   !firstEntryFixture.Contains("if(contrast>48)changed++") ||
+   !firstEntryFixture.Contains("(RectTransform)actualAction.transform,actualPanel.gameObject") ||
+   !firstEntryFixture.Contains("realHand.rectTransform,realHand.gameObject") ||
+   !firstEntryFixture.Contains("Photograph(camera,rt,\"FAILED-first-sawmill-build-guide\",390,844)") ||
+   !firstEntryFixture.Contains("ActualScreenRect(camera,actualPanel)") ||
+   !firstEntryGate.Contains("@($r.images).Count -ne 28") ||
+   !firstEntryGate.Contains("$r.firstBuildingActionViewportFrames -ne 4") ||
+   !firstEntryFixture.Contains("RequireActualFirstHitOnButton(action,camera,rt,viewport)") ||
+   !firstEntryFixture.Contains("new[]{(900,1600),(844,390),(1600,900)}") ||
+   !firstEntryFixture.Contains("report.firstBuildingActionViewportFrames==4") ||
+   !firstEntryGate.Contains("$r.realFirstHitClicks -ne 54") ||
+   !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
+       .Contains("firstSawmillHandOnRealHit") ||
+   !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
+       .Contains("Actual Aserradero tutorial hand did not find a frontmost hit") ||
+   coachSource.Contains("new GameObject(\"Canvas\"") ||
+   coachSource.Contains("gateway.Execute("))
+{
+    Console.Error.WriteLine("ISSUE186_FIRST_USE_REAL_UI_SOURCE_CONTRACT_FAILED");
+    return 1;
 }
 var opts = CSharpParseOptions.Default.WithPreprocessorSymbols("UNITY_EDITOR","UNITY_6000_0_OR_NEWER","UNITY_6000_3_OR_NEWER");
 foreach (var file in paths)

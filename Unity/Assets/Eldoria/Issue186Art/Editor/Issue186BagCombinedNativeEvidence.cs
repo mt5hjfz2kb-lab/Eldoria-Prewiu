@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.ReferenceClean;
+using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -41,11 +42,15 @@ namespace Eldoria.Issue186Art.Editor
         [Serializable] sealed class Report
         {
             public string status,resourceSource,uiSource,error,limitation,nativeRun,nativeAttempt;
+            public bool productionVigiliaInstalled, firstUseCoachPresent, firstSawmillHandOnRealHit;
+            public bool firstSawmillLabelSelected, firstBuildingActionHandOnRealHit;
+            public bool firstNicknameInputOnRealHit, firstNicknameConfirmOnRealHit,
+                firstStoryContinueOnRealHit;
             public bool temporaryProbeOnly,actualBagOnVigilia,seenDoesNotUse,
                 skipDoesNotComplete,useCreditsOnce,jsonReloadVerified,
                 mailReadDoesNotClaim,mailClaimDoesNotCredit,artApproved,
                 physicalIphoneVerified,fullMailboxUiFlowVerified;
-            public int realFirstHitClicks,actualIntegratedCityFrames;
+            public int realFirstHitClicks,actualIntegratedCityFrames,firstBuildingActionViewportFrames;
             public Shot[] images;
         }
         static Report report;
@@ -82,6 +87,7 @@ namespace Eldoria.Issue186Art.Editor
         {
             Need(!EditorApplication.isPlaying,"Start from a fresh isolated Editor");
             Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+            Environment.SetEnvironmentVariable("ELDORIA_NEW_UI_ONLY","1");
             EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
             SessionState.SetBool(Flag,true);routine=null;deadline=0;
             EditorApplication.EnterPlaymode();
@@ -181,6 +187,63 @@ namespace Eldoria.Issue186Art.Editor
             Debug.Log("ISSUE186_ACTUAL_FIRST_HIT_CLICK target="+button.name+
                 "; hit="+hits[0].gameObject.name+"; handler="+handler.name);
         }
+        static void RequireCleanSelfExplainingGuide(Canvas canvas,string state)
+        {
+            var plate=canvas.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(r=>r&&r.name=="First-use caption plate");
+            Need(plate&&!plate.gameObject.activeInHierarchy,
+                "The redundant coach caption covers the real "+state+" text");
+        }
+        static void RequireSelectedCityLabelUnpainted(Canvas canvas,
+            string building,string viewport)
+        {
+            // After the real first click the label must neither paint over
+            // the construction panel nor catch an invisible first touch.
+            var label=canvas.GetComponentsInChildren<BuildingLabel>(true)
+                .FirstOrDefault(v=>v && v.name=="Guidance "+building &&
+                    v.gameObject.activeInHierarchy);
+            if(!label)return; // The production UI may remove its selected label.
+            var group=label.GetComponent<CanvasGroup>();
+            Need(group && group.alpha<.001f && !group.blocksRaycasts,
+                "Selected "+building+" label still paints/blocks the "+
+                viewport+" actual construction panel");
+        }
+        static void TouchRealWorldGuidance(RoyalButton actual,
+            Camera camera,RenderTexture target)
+        {
+            Need(actual&&actual.isActiveAndEnabled&&actual.IsInteractable() &&
+                actual.gameObject.activeInHierarchy,
+                "The real city guidance RoyalButton is not available");
+            Draw(camera,target);
+            var system=EventSystem.current;
+            Need(system&&system.isActiveAndEnabled,"Actual guidance EventSystem unavailable");
+            var rect=(RectTransform)actual.transform;
+            var pos=RectTransformUtility.WorldToScreenPoint(camera,
+                rect.TransformPoint(rect.rect.center));
+            var data=new PointerEventData(system){
+                position=pos,pressPosition=pos,
+                button=PointerEventData.InputButton.Left,
+                pointerId=-1,clickCount=1,eligibleForClick=true};
+            var hits=new List<RaycastResult>();
+            system.RaycastAll(data,hits);
+            var handler=hits.Count>0?
+                ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject):null;
+            Need(handler==actual.gameObject,
+                "The visible city label is not the first real touch handler: "+
+                (hits.Count>0?hits[0].gameObject.name:"none"));
+            // RoyalButton deliberately rejects a click without pointer down
+            // and up. The real mobile click sequence must be delivered.
+            Need(ExecuteEvents.Execute<IPointerDownHandler>(handler,data,
+                    ExecuteEvents.pointerDownHandler),
+                "Guidance did not accept real pointer down");
+            Need(ExecuteEvents.Execute<IPointerUpHandler>(handler,data,
+                    ExecuteEvents.pointerUpHandler),
+                "Guidance did not accept real pointer up");
+            Need(ExecuteEvents.Execute<IPointerClickHandler>(handler,data,
+                    ExecuteEvents.pointerClickHandler),
+                "Guidance did not receive real pointer click");
+            clicks++;
+        }
         static bool SessionRebound(ValoriaIntegratedWorld host)
         {
             var field=typeof(ValoriaIntegratedWorld).GetField("boundGateway",
@@ -198,6 +261,161 @@ namespace Eldoria.Issue186Art.Editor
             var s=gateway.Snapshot();
             return gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
                 s.PlayerId,kind,target,s.Revision));
+        }
+        // GPU acceptance, not just active GameObjects / raycast handlers.
+        // Real native review caught a false green: the guide action was
+        // "clickable" in the component tree while its 390x844 screenshot
+        // showed only the city, no visible building sheet or hand.
+        static Color32[] RenderedPatch(Camera camera,RenderTexture target,
+            RectTransform control)
+        {
+            Need(camera && target && control,"Native visible-control probe missing input");
+            var center=RectTransformUtility.WorldToScreenPoint(camera,
+                control.TransformPoint(control.rect.center));
+            const int pw=40,ph=30;
+            int x=Mathf.FloorToInt(center.x-pw*.5f);
+            int y=Mathf.FloorToInt(center.y-ph*.5f);
+            Need(x>=0 && y>=0 && x+pw<=target.width && y+ph<=target.height,
+                "Actual guide target is outside the physical phone render: "+
+                control.name+" center="+center+" output="+target.width+"x"+target.height);
+            Draw(camera,target);
+            var prior=RenderTexture.active;
+            var tex=new Texture2D(pw,ph,TextureFormat.RGB24,false);
+            try
+            {
+                RenderTexture.active=target;
+                tex.ReadPixels(new Rect(x,y,pw,ph),0,0);
+                tex.Apply(false,false);
+                return tex.GetPixels32();
+            }
+            finally
+            {
+                RenderTexture.active=prior;
+                Object.DestroyImmediate(tex);
+            }
+        }
+        // Native debug geometry for the *painted* 390x844 output, not the
+        // Editor host window. A RectTransform can be active and raycastable
+        // while every visible pixel is outside the actual render target.
+        static string ActualScreenRect(Camera camera,RectTransform control)
+        {
+            if(!camera || !control)return "<missing>";
+            var corners=new Vector3[4];
+            control.GetWorldCorners(corners);
+            var min=new Vector2(float.PositiveInfinity,float.PositiveInfinity);
+            var max=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
+            foreach(var corner in corners)
+            {
+                var point=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                min=Vector2.Min(min,point);max=Vector2.Max(max,point);
+            }
+            return "["+min.x.ToString("F1")+","+min.y.ToString("F1")+
+                   ".."+max.x.ToString("F1")+","+max.y.ToString("F1")+"]";
+        }
+        // Read the actual uGUI frontmost hit after a viewport reflow; unlike
+        // the coach's cached Visible flag this cannot pass on stale geometry.
+        // This probe does not click, change the saved state or increment the
+        // 54 real gameplay/UI interactions.
+        static void RequireActualFirstHitOnButton(Button action,Camera camera,
+            RenderTexture target,string viewport)
+        {
+            Need(action && action.isActiveAndEnabled && action.IsInteractable(),
+                "Rotated building CTA not interactable at "+viewport);
+            Draw(camera,target);
+            var system=EventSystem.current;
+            Need(system && system.isActiveAndEnabled,
+                "Real EventSystem absent at "+viewport);
+            var rect=(RectTransform)action.transform;
+            var point=RectTransformUtility.WorldToScreenPoint(camera,
+                rect.TransformPoint(rect.rect.center));
+            var data=new PointerEventData(system){position=point};
+            var hits=new List<RaycastResult>();
+            system.RaycastAll(data,hits);
+            var handler=hits.Count>0
+                ?ExecuteEvents.GetEventHandler<IPointerClickHandler>(
+                    hits[0].gameObject):null;
+            Need(handler==action.gameObject,
+                "Real CONSTRUIR first-hit occluded at "+viewport+
+                "; first="+(hits.Count>0?hits[0].gameObject.name:"none")+
+                "; position="+point+
+                "; CTA="+ActualScreenRect(camera,rect));
+        }
+        // Art QA: a hand painted near CONSTRUIR is not enough. Its actual
+        // authored fingertip sits at the RectTransform pivot (.16,.696).
+        // On every viewport, this pixel must lie inside the real button and
+        // resolve to the SAME foremost click handler, without tapping it.
+        static void RequirePaintedFingertipHit(Button action,Image hand,
+            Camera camera,string viewport)
+        {
+            Need(action && hand && hand.sprite && hand.gameObject.activeInHierarchy,
+                "Missing painted fingertip/button at "+viewport);
+            var control=(RectTransform)action.transform;
+            var corners=new Vector3[4];control.GetWorldCorners(corners);
+            var lo=new Vector2(float.PositiveInfinity,float.PositiveInfinity);
+            var hi=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
+            foreach(var corner in corners)
+            {
+                var p=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                lo=Vector2.Min(lo,p);hi=Vector2.Max(hi,p);
+            }
+            var tip=RectTransformUtility.WorldToScreenPoint(
+                camera,hand.rectTransform.position);
+            Need(tip.x>=lo.x+2f && tip.x<=hi.x-2f &&
+                 tip.y>=lo.y+2f && tip.y<=hi.y-2f,
+                "Painted fingertip outside actual CONSTRUIR at "+viewport+
+                "; tip="+tip+"; CTA="+ActualScreenRect(camera,control));
+            var events=EventSystem.current;
+            Need(events && events.isActiveAndEnabled,
+                "Missing real EventSystem for fingertip at "+viewport);
+            var hits=new List<RaycastResult>();
+            events.RaycastAll(new PointerEventData(events){position=tip},hits);
+            var handler=hits.Count>0
+                ?ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)
+                :null;
+            Need(handler==action.gameObject,
+                "Painted fingertip does not hit CONSTRUIR at "+viewport+
+                "; first="+(hits.Count>0?hits[0].gameObject.name:"none")+
+                "; tip="+tip);
+        }
+        static void RequirePaintedInRealFrame(Camera camera,RenderTexture target,
+            RectTransform control,GameObject painted,string name)
+        {
+            Need(painted && painted.activeInHierarchy,
+                name+" is not visibly active in its real Canvas");
+            // Compare the SAME layout with only the candidate's pixels
+            // removed. Deactivating the GameObject can rebuild layout/reflow
+            // neighbouring UI, yielding a false GPU difference even when the
+            // construction panel/hand itself was never painted.
+            var actual=RenderedPatch(camera,target,control);
+            var opacity=painted.GetComponent<CanvasGroup>();
+            bool addedOpacity=!opacity;
+            if(addedOpacity)opacity=painted.AddComponent<CanvasGroup>();
+            float priorAlpha=opacity.alpha;
+            try
+            {
+                opacity.alpha=0f;
+                var absent=RenderedPatch(camera,target,control);
+                int changed=0;
+                for(int i=0;i<actual.Length;i++)
+                {
+                    int contrast=Mathf.Abs(actual[i].r-absent[i].r)+
+                        Mathf.Abs(actual[i].g-absent[i].g)+
+                        Mathf.Abs(actual[i].b-absent[i].b);
+                    if(contrast>48)changed++;
+                }
+                Need(changed>35,
+                    name+" contributes no visible pixels at its real touch target ("+
+                    changed+"/"+actual.Length+"); unchanged-layout GPU alpha probe failed");
+            }
+            finally
+            {
+                if(opacity)
+                {
+                    opacity.alpha=priorAlpha;
+                    if(addedOpacity)Object.DestroyImmediate(opacity);
+                }
+                Draw(camera,target);
+            }
         }
         static void Photograph(Camera camera,RenderTexture target,string phase,int width,int height)
         {
@@ -218,13 +436,100 @@ namespace Eldoria.Issue186Art.Editor
             }
             finally{RenderTexture.active=prior;Object.DestroyImmediate(texture);}
         }
+        // First entry is tested BEFORE fixture helpers auto-complete it.
+        // Three production pointer hits are verified against the first real
+        // EventSystem target; the nickname is committed by the genuine Button.
+        static IEnumerator VerifyInitialEntryHand(ValoriaIntegratedWorld host)
+        {
+            var type=VigiliaType();Need(type!=null,"Vigilia type missing at first entry");
+            var ui=(Component)type.GetMethod("Install",BindingFlags.Public|BindingFlags.Static)
+                .Invoke(null,new object[]{host});
+            Need(type.GetProperty("ProductionPresentation")?.GetValue(ui) is bool prod && prod,
+                "First entry is not the real production-only Vigilia UI");
+            var canvas=(Canvas)type.GetProperty("NativeCanvas").GetValue(ui);
+            var coach=host.Hud.GetComponent<Issue186FirstUseCoach>();
+            Need(canvas&&coach,"First entry has no live tutorial coach/canvas");
+            var camera=host.PlayerCamera;Need(camera,"First entry has no player camera");
+            var oldTarget=camera.targetTexture;
+            float oldAspect=camera.aspect;int oldMask=camera.cullingMask;
+            var oldCanvasCamera=canvas.worldCamera;
+            var target=new RenderTexture(390,844,24,RenderTextureFormat.ARGB32);
+            target.Create();
+            try
+            {
+                camera.targetTexture=target;camera.aspect=390f/844f;
+                camera.cullingMask|=1<<5;canvas.worldCamera=camera;
+                var coordinator=host.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+                Need(coordinator,"Canonical first-entry coordinator missing");
+                coordinator.Refresh();
+                var field=coordinator.GetType().GetField("prompt",
+                    BindingFlags.Instance|BindingFlags.NonPublic);
+                var prompt=field?.GetValue(coordinator) as Eldoria.PlayerClarity.RoyalPlayerNamePrompt;
+                Need(prompt&&prompt.IsOpen,"Real first name prompt absent before tutorial");
+                var input=prompt.GetComponentInChildren<InputField>(true);
+                var confirm=prompt.GetComponentsInChildren<Button>(true)
+                    .SingleOrDefault(b=>b.name=="Confirm your name");
+                Need(input&&confirm,"Actual first-entry input/confirmation button missing");
+                Need(string.IsNullOrWhiteSpace(host.City.Gateway.Snapshot().PlayerName),
+                    "First-entry fixture unexpectedly already named");
+                // Headless native evidence has no automatic GameView render.
+                // A Graphic's depth and GraphicRaycaster registry become live
+                // only after the real independent Camera/Canvas has drawn.
+                // Do not bypass EventSystem or grant a fake tutorial hit:
+                // use the same GPU Draw that every subsequent real click uses.
+                RenderUi(ui,390,844);
+                Draw(camera,target);
+                double limit=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<limit &&
+                      !(coach.Visible&&coach.TargetId=="nickname-input"))
+                    {RenderUi(ui,390,844);Draw(camera,target);yield return null;}
+                Need(coach.Visible&&coach.TargetId=="nickname-input",
+                    "First name input hand misses actual UI hit: "+coach.Rejection);
+                RequireCleanSelfExplainingGuide(canvas,"nickname input");
+                Photograph(camera,target,"first-nickname-input-guide",390,844);
+                report.firstNicknameInputOnRealHit=true;
+                input.text="Prueba Valoria";
+                limit=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<limit &&
+                      !(coach.Visible&&coach.TargetId=="nickname-confirm"))
+                    {RenderUi(ui,390,844);Draw(camera,target);yield return null;}
+                Need(coach.Visible&&coach.TargetId=="nickname-confirm",
+                    "Name confirmation hand misses actual UI hit: "+coach.Rejection);
+                RequireCleanSelfExplainingGuide(canvas,"nickname confirmation");
+                Photograph(camera,target,"first-nickname-confirm-guide",390,844);
+                report.firstNicknameConfirmOnRealHit=true;
+                // Physical hit testing and real Button handler, not Invoke().
+                Click(confirm,camera,target);
+                Need(host.City.Gateway.Snapshot().PlayerName=="Prueba Valoria",
+                    "Real name confirmation did not persist canonical player name");
+                limit=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<limit &&
+                      !(host.Hud.NarrativeOpen&&coach.Visible&&
+                        coach.TargetId=="narrative-continue"))
+                    {RenderUi(ui,390,844);Draw(camera,target);yield return null;}
+                Need(host.Hud.NarrativeOpen&&coach.Visible&&
+                     coach.TargetId=="narrative-continue",
+                    "Opening narrative hand misses actual continue hit: "+coach.Rejection);
+                RequireCleanSelfExplainingGuide(canvas,"first narrative");
+                Photograph(camera,target,"first-story-continue-guide",390,844);
+                report.firstStoryContinueOnRealHit=true;
+            }
+            finally
+            {
+                camera.targetTexture=oldTarget;camera.aspect=oldAspect;
+                camera.cullingMask=oldMask;canvas.worldCamera=oldCanvasCamera;
+                target.Release();Object.DestroyImmediate(target);
+            }
+        }
         static IEnumerator Run()
         {
             ValoriaIntegratedWorld host=null;
             while(!host||!host.Ready||!host.City||!host.Hud)
             {host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();yield return null;}
             Need(host.City.Probe,"Refuse actual player campaign");
-            Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
+            // Actual input, confirmation and story targets are checked first.
+            var firstEntry=VerifyInitialEntryHand(host);
+            while(firstEntry.MoveNext())yield return firstEntry.Current;
             int pages=0;
             while(host.Hud.NarrativeOpen)
             {
@@ -245,12 +550,218 @@ namespace Eldoria.Issue186Art.Editor
             var ui=(Component)type.GetMethod("Install",BindingFlags.Public|BindingFlags.Static)
                 .Invoke(null,new object[]{host});
             var canvas=(Canvas)type.GetProperty("NativeCanvas").GetValue(ui);
+            Need(type.GetProperty("ProductionPresentation")?.GetValue(ui) is bool exclusive && exclusive,
+                "The first-use test must run the real replacement presentation, never Editor legacy paint");
+            report.productionVigiliaInstalled=true;
             Need(canvas&&canvas!=host.Hud.GetComponent<Canvas>(),"Bag requires the actual independent canvas");
             var camera=host.PlayerCamera;Need(camera,"Canonical camera absent");
             var oldTarget=camera.targetTexture;float oldAspect=camera.aspect;int oldMask=camera.cullingMask;
             RenderTexture rt=null;
             try
             {
+                // Real FIRST journey in the same disposable, named and
+                // narratively acknowledged player, BEFORE advanced bag seeds.
+                // This rejects the original defect where the approved hand
+                // existed only for first packet USE and never appeared beside
+                // the opening Aserradero interaction.
+                var firstStep=SliceRules.CurrentObjectiveKey(host.City.Gateway.Snapshot());
+                Need(firstStep=="b1.build-sawmill",
+                    "Starting onboarding objective changed: "+firstStep);
+                var firstCoach=host.Hud.GetComponent<Issue186FirstUseCoach>();
+                Need(firstCoach!=null,"No actual first-journey hand installed on canonical HUD");
+                report.firstUseCoachPresent=true;
+                rt=new RenderTexture(390,844,24,RenderTextureFormat.ARGB32);rt.Create();
+                camera.targetTexture=rt;camera.aspect=390f/844f;
+                camera.cullingMask|=1<<5;canvas.worldCamera=camera;
+                RenderUi(ui,390,844);
+                // The original native probe failed before the first actual
+                // camera draw but its failure Photograph showed the live,
+                // player-visible "Construir aqui: Aserradero" label. Match
+                // real player timing: render the production Canvas before
+                // querying its first EventSystem hit, never fake the hit.
+                Draw(camera,rt);
+                double pointerDeadline=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<pointerDeadline &&
+                      !(firstCoach.Visible&&firstCoach.TargetId=="sawmill"))
+                    {RenderUi(ui,390,844);Draw(camera,rt);yield return null;}
+                RenderUi(ui,390,844);
+                Draw(camera,rt);
+                if(!firstCoach.Visible)
+                    Photograph(camera,rt,"FAILED-first-sawmill-guide",390,844);
+                Need(firstCoach.Visible && firstCoach.TargetId=="sawmill",
+                    "Actual Aserradero tutorial hand did not find a frontmost hit: "+
+                    firstCoach.Rejection+"; target="+firstCoach.TargetId);
+                RequireCleanSelfExplainingGuide(canvas,"Aserradero label");
+                Photograph(camera,rt,"first-sawmill-guide",390,844);
+                report.firstSawmillHandOnRealHit=true;
+                var realLabel=canvas.GetComponentsInChildren<BuildingLabel>(true)
+                    .SingleOrDefault(v=>v&&v.name=="Guidance sawmill"&&
+                        v.gameObject.activeInHierarchy);
+                Need(realLabel&&realLabel.Select,
+                    "No real, visible and selectable Aserradero guidance label");
+                TouchRealWorldGuidance(realLabel.Select,camera,rt);
+                Need(host.Selected=="sawmill"&&
+                     host.Hud.SelectedBuildingId=="sawmill",
+                    "The first label touch did not actually select the sawmill");
+                report.firstSawmillLabelSelected=true;
+                double actionDeadline=EditorApplication.timeSinceStartup+3.0;
+                while(EditorApplication.timeSinceStartup<actionDeadline &&
+                      !(firstCoach.Visible&&firstCoach.TargetId=="building-action"))
+                    {RenderUi(ui,390,844);Draw(camera,rt);yield return null;}
+                // Do not accept a guide that exists in the hierarchy but is
+                // missing from the picture actually shown to the player.
+                // Preserve the GPU frame even when the hand never reaches
+                // CONSTRUIR (previously this assertion escaped the screenshot
+                // catch), not only when the later pixel contrast check fails.
+                // Captures are evidence; first-hit/pixel gates remain strict.
+                try
+                {
+                    // Always capture the actual layout before rejecting a
+                    // missing hand: otherwise the error lost all evidence of
+                    // whether the sheet was offscreen, disabled or occluded.
+                    RenderUi(ui,390,844);
+                    var actualPanel=(RectTransform)type.GetProperty("BuildingPanel")
+                        .GetValue(ui);
+                    var actualAction=(Button)type.GetProperty("BuildingAction").GetValue(ui);
+                    var selectedField=type.GetField("selected",
+                        BindingFlags.NonPublic|BindingFlags.Instance);
+                    var widthField=type.GetField("lastWidth",
+                        BindingFlags.NonPublic|BindingFlags.Instance);
+                    var heightField=type.GetField("lastHeight",
+                        BindingFlags.NonPublic|BindingFlags.Instance);
+                    var diagnostic="canonical="+host.Selected+
+                        "; hud="+host.Hud.SelectedBuildingId+
+                        "; vigilia="+(selectedField?.GetValue(ui)??"<missing>")+
+                        "; vigiliaReflow="+(widthField?.GetValue(ui)??"<missing>")+
+                        "x"+(heightField?.GetValue(ui)??"<missing>")+
+                        "; editorScreen="+Screen.width+"x"+Screen.height+
+                        "; renderTarget="+rt.width+"x"+rt.height+
+                        "; panelActive="+(actualPanel&&actualPanel.gameObject.activeInHierarchy)+
+                        "; ctaActive="+(actualAction&&actualAction.gameObject.activeInHierarchy)+
+                        "; canvasPixelRect="+canvas.pixelRect+
+                        "; cameraPixelRect="+camera.pixelRect+
+                        "; panelPhysicalRect="+ActualScreenRect(camera,actualPanel)+
+                        "; ctaPhysicalRect="+ActualScreenRect(camera,
+                            actualAction?(RectTransform)actualAction.transform:null);
+                    Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
+                        "The hand did not move to the real CONSTRUIR action: "+
+                        firstCoach.Rejection+"; "+diagnostic);
+                    Need(actualPanel && actualPanel.gameObject.activeInHierarchy &&
+                         actualAction && actualAction.gameObject.activeInHierarchy &&
+                         actualAction.IsInteractable(),
+                        "Selected Aserradero does not show a real construction sheet and CTA: "+
+                        diagnostic);
+                    RequireSelectedCityLabelUnpainted(canvas,"sawmill","390x844");
+                    var realHand=canvas.GetComponentsInChildren<Image>(true)
+                        .SingleOrDefault(image=>image && image.name=="Nonblocking actual hand");
+                    var handDiagnostic=diagnostic+
+                        "; handPhysicalRect="+ActualScreenRect(camera,
+                            realHand?realHand.rectTransform:null)+
+                        "; handDepth="+(realHand?realHand.depth:-999);
+                    Debug.Log("ISSUE186_VISIBLE_BUILD_GEOMETRY "+handDiagnostic);
+                    Need(realHand&&realHand.gameObject.activeInHierarchy &&
+                         realHand.sprite!=null,
+                        "First Aserradero build hand is not visually active: "+handDiagnostic);
+                    RequirePaintedInRealFrame(camera,rt,
+                        (RectTransform)actualAction.transform,actualPanel.gameObject,
+                        "Aserradero action sheet: "+diagnostic);
+                    RequirePaintedInRealFrame(camera,rt,
+                        realHand.rectTransform,realHand.gameObject,
+                        "Aserradero action hand: "+diagnostic);
+                    RequireActualFirstHitOnButton(actualAction,camera,rt,"390x844");
+                    RequirePaintedFingertipHit(actualAction,realHand,camera,"390x844");
+                }
+                catch(Exception)
+                {
+                    // Preserve the unmodified real GPU result before exit(1)
+                    // so a red native run remains diagnosable without another
+                    // costly 20-minute Editor cycle. Never mask the original
+                    // failure if screenshot encoding independently fails.
+                    try { Photograph(camera,rt,"FAILED-first-sawmill-build-guide",390,844); }
+                    catch(Exception capture) { Debug.LogWarning(
+                        "ISSUE186_FAILED_BUILD_FRAME_CAPTURE: "+capture); }
+                    throw;
+                }
+                Photograph(camera,rt,"first-sawmill-build-guide",390,844);
+                report.firstBuildingActionViewportFrames++;
+                report.firstBuildingActionHandOnRealHit=true;
+                // The previous native PASS checked other orientations only
+                // for city/bag/mail, not the first building CTA or its hand.
+                // Keep the SAME real selected sawmill and run independent GPU
+                // paint + live first-hit checks after each device-size reflow.
+                // Do not dispatch a construction command or alter a save.
+                foreach(var size in new[]{(900,1600),(844,390),(1600,900)})
+                {
+                    int width=size.Item1,height=size.Item2;
+                    string viewport=width+"x"+height;
+                    var rotated=new RenderTexture(width,height,24,
+                        RenderTextureFormat.ARGB32);
+                    rotated.Create();
+                    Need(rotated.IsCreated(),"No physical GPU target for "+viewport);
+                    camera.targetTexture=rotated;
+                    if(rt){rt.Release();Object.DestroyImmediate(rt);}
+                    rt=rotated;
+                    camera.aspect=(float)width/height;
+                    RenderUi(ui,width,height);
+                    // The coach deliberately throttles pointer rechecks to
+                    // 350 ms on iPhone. Exercise a genuine update after
+                    // orientation change, not a stale 390x844 Visible flag.
+                    double refreshUntil=EditorApplication.timeSinceStartup+.6;
+                    do {Draw(camera,rt);yield return null;RenderUi(ui,width,height);}
+                    while(EditorApplication.timeSinceStartup<refreshUntil);
+                    try
+                    {
+                        var panel=(RectTransform)type.GetProperty("BuildingPanel")
+                            .GetValue(ui);
+                        var action=(Button)type.GetProperty("BuildingAction")
+                            .GetValue(ui);
+                        var hand=canvas.GetComponentsInChildren<Image>(true)
+                            .SingleOrDefault(v=>v&&v.name=="Nonblocking actual hand");
+                        string geometry="viewport="+viewport+
+                            "; coach="+firstCoach.TargetId+
+                            "; rejection="+firstCoach.Rejection+
+                            "; panel="+ActualScreenRect(camera,panel)+
+                            "; CTA="+ActualScreenRect(camera,
+                                action?(RectTransform)action.transform:null)+
+                            "; hand="+ActualScreenRect(camera,
+                                hand?hand.rectTransform:null)+
+                            "; editorScreen="+Screen.width+"x"+Screen.height;
+                        Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
+                            "Rotated first-use pointer missing: "+geometry);
+                        Need(panel&&panel.gameObject.activeInHierarchy&&
+                             action&&action.gameObject.activeInHierarchy&&
+                             action.IsInteractable()&&hand&&hand.sprite&&
+                             hand.gameObject.activeInHierarchy,
+                            "Rotated building panel/CTA/hand absent: "+geometry);
+                        RequireSelectedCityLabelUnpainted(canvas,"sawmill",viewport);
+                        RequireActualFirstHitOnButton(action,camera,rt,viewport);
+                        RequirePaintedFingertipHit(action,hand,camera,viewport);
+                        RequirePaintedInRealFrame(camera,rt,
+                            (RectTransform)action.transform,panel.gameObject,
+                            "Aserradero action sheet: "+geometry);
+                        RequirePaintedInRealFrame(camera,rt,
+                            hand.rectTransform,hand.gameObject,
+                            "Aserradero action hand: "+geometry);
+                        Photograph(camera,rt,"first-sawmill-build-guide",width,height);
+                        report.firstBuildingActionViewportFrames++;
+                    }
+                    catch(Exception)
+                    {
+                        // Preserve the rotated GPU evidence on a red test:
+                        // never report success from only live hierarchy state.
+                        try {Photograph(camera,rt,"FAILED-first-sawmill-build-guide",
+                            width,height);}
+                        catch(Exception capture){Debug.LogWarning(
+                            "ISSUE186_ROTATED_BUILD_FRAME_CAPTURE: "+capture);}
+                        throw;
+                    }
+                }
+                Need(report.firstBuildingActionViewportFrames==4,
+                    "First building CTA/hand did not pass all four real viewport captures");
+                // Reset only the disposable view selection, not a save or
+                // building action, before the existing bag/mail fixture.
+                host.Hud.SelectBuilding("");
+                camera.targetTexture=oldTarget;rt.Release();Object.DestroyImmediate(rt);rt=null;
                 foreach(var size in new[]{(390,844),(900,1600),(844,390),(1600,900)})
                 {
                     int width=size.Item1,height=size.Item2;

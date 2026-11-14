@@ -206,9 +206,14 @@ namespace Eldoria.Issue186Art
                     contactY = actualControl.rect.yMin + insetY;
                 else if (contact == 2)
                     contactY = actualControl.rect.yMax - insetY;
+                // The painted fingertip must touch the clickable interior,
+                // not hover 3 px outside its ornate edge on mobile/landscape.
+                // An inner 4..14 UI-unit contact leaves the CTA text legible.
+                float contactInsetX = Mathf.Clamp(
+                    actualControl.rect.width * .09f, 4f, 14f);
                 var tip = actualControl.TransformPoint(new Vector3(
-                    mirror ? actualControl.rect.xMin - 3f :
-                             actualControl.rect.xMax + 3f,
+                    mirror ? actualControl.rect.xMin + contactInsetX :
+                             actualControl.rect.xMax - contactInsetX,
                     contactY, 0f));
                 var target = RectTransformUtility.WorldToScreenPoint(camera,tip);
                 if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
