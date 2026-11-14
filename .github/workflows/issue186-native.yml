@@ -123,33 +123,34 @@ jobs:
           if($freeBytes -lt $requiredBytes){
             throw 'ISSUE186_NATIVE_DISK_BLOCKED: need >=16 GiB free on the native workspace drive before creating a new exact-head Unity worktree; do not delete unreviewed evidence'
           }
-      - name: Inventory preserved native disk without deleting unknown work
+      - name: Inventory only Issue186-owned recoverable Unity caches after disk gate
         if: failure()
         shell: powershell
         run: |
-          $ErrorActionPreference='Continue'
-          # A red disk gate must tell the next safe operation, not invite
-          # blind removal of another workstream's Unity sources or captures.
-          # This is READ ONLY. Do not use Remove-Item/clean/prune here.
-          Write-Host 'ISSUE186_DISK_INVENTORY_READ_ONLY_BEGIN'
-          Write-Host "workspace=$env:GITHUB_WORKSPACE"
-          Write-Host "runnerTemp=$env:RUNNER_TEMP"
-          $roots=@($env:GITHUB_WORKSPACE,$env:RUNNER_TEMP) |
-            Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Container) } |
-            Select-Object -Unique
-          $deadline=(Get-Date).AddSeconds(110)
-          foreach($root in $roots){
-            if((Get-Date) -ge $deadline){Write-Host 'ISSUE186_INVENTORY_TIME_BUDGET_EXPIRED';break}
-            $entries=@(Get-ChildItem -LiteralPath $root -Force -Directory -ErrorAction SilentlyContinue |
-              Where-Object { -not ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) })
-            Write-Host ("ISSUE186_INVENTORY_ROOT {0} entries={1}" -f $root,$entries.Count)
-            $sizes=@()
-            foreach($entry in $entries){
-              if((Get-Date) -ge $deadline){Write-Host 'ISSUE186_INVENTORY_PARTIAL';break}
+          $ErrorActionPreference='Stop'
+          # Evidence 14075333657 / 14080850495 / 14083542406 already
+          # exists on GitHub. Read-only analysis of OWNED caches, not unknown
+          # checkout/source, another PR or unrelated screen/art artifacts.
+          Write-Host 'ISSUE186_CACHE_PROVENANCE_READ_ONLY_BEGIN'
+          $ids=@('43503266427','43511148168','43520031645')
+          $deadline=(Get-Date).AddSeconds(95)
+          foreach($id in $ids){
+            $root=Join-Path $env:GITHUB_WORKSPACE "issue186-fresh-source-$id"
+            $cache=Join-Path $root 'Unity/Library'
+            if(-not(Test-Path -LiteralPath $cache -PathType Container)){
+              Write-Host "ISSUE186_CACHE_MISSING run=$id";continue
+            }
+            $item=Get-Item -LiteralPath $cache -Force
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){
+              Write-Host "ISSUE186_CACHE_REDIRECT_REFUSED run=$id";continue
+            }
+            Write-Host "ISSUE186_CACHE_ROOT run=$id path=$cache"
+            [long]$total=0
+            foreach($part in (Get-ChildItem -LiteralPath $cache -Force -Directory |
+              Where-Object {-not($_.Attributes -band [IO.FileAttributes]::ReparsePoint)})){
               $queue=New-Object 'System.Collections.Generic.Queue[string]'
-              $queue.Enqueue($entry.FullName)
+              $queue.Enqueue($part.FullName)
               [long]$bytes=0
-              [long]$files=0
               $complete=$true
               while($queue.Count -gt 0){
                 if((Get-Date) -ge $deadline){$complete=$false;break}
@@ -157,25 +158,18 @@ jobs:
                 foreach($child in (Get-ChildItem -LiteralPath $next -Force -ErrorAction SilentlyContinue)){
                   if($child.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
                   if($child.PSIsContainer){$queue.Enqueue($child.FullName)}
-                  else{$bytes+=[long]$child.Length;$files++}
+                  else{$bytes+=[long]$child.Length}
                 }
               }
-              $sizes+= [pscustomobject]@{Name=$entry.Name;GiB=[math]::Round($bytes/1GB,3);Files=$files;Complete=$complete;LastWrite=$entry.LastWriteTime.ToString('s')}
+              $total+=$bytes
+              Write-Host ("ISSUE186_CACHE_PART run={0} name={1} GiB={2:N3} complete={3}" -f
+                $id,$part.Name,($bytes/1GB),$complete)
+              if(-not $complete){break}
             }
-            $sizes|Sort-Object GiB -Descending|Select-Object -First 25|Format-Table -AutoSize|Out-String|Write-Host
-            foreach($entry in ($entries|Where-Object {$_.Name -like 'issue186-*'})){
-              $gitdir=Join-Path $entry.FullName '.git'
-              $lib=Join-Path $entry.FullName 'Unity/Library'
-              $output=Join-Path $entry.FullName 'Unity/Issue186NativeEvidence'
-              Write-Host ("ISSUE186_OWN_WORKTREE_PROVENANCE path={0}; git={1}; library={2}; output={3}; touched={4}" -f
-                $entry.Name,(Test-Path -LiteralPath $gitdir),
-                (Test-Path -LiteralPath $lib),(Test-Path -LiteralPath $output),
-                $entry.LastWriteTime.ToString('s'))
-              # Presence is not deletion authority: dirty/meta changes, artifacts,
-              # workstream ownership and completed upload must be checked first.
-            }
+            Write-Host ("ISSUE186_CACHE_TOTAL run={0} observedGiB={1:N3}" -f $id,($total/1GB))
+            if((Get-Date) -ge $deadline){Write-Host 'ISSUE186_CACHE_INVENTORY_PARTIAL';break}
           }
-          Write-Host 'ISSUE186_DISK_INVENTORY_READ_ONLY_END'
+          Write-Host 'ISSUE186_CACHE_PROVENANCE_READ_ONLY_END'
       - name: Resolve already installed Git before checkout; forbid archive fallback
         shell: powershell
         run: |
