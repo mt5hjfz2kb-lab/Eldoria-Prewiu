@@ -22,6 +22,29 @@ jobs:
         name: world-p0-mobile20-owner-site
         github-token: ${{ github.token }}
         path: qa-site/candidate
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43644208819
+        name: world-p0-build-and-proof
+        github-token: ${{ github.token }}
+        path: exact-build-evidence
+    - name: Retain small original native certificates and genuine images for review
+      run: |
+        python3 - <<'END'
+        import pathlib,shutil,json
+        source=pathlib.Path('exact-build-evidence');out=pathlib.Path('world-evidence/native-build');out.mkdir(parents=True)
+        provenance=json.loads((source/'provenance.json').read_text(encoding='utf-8-sig'))
+        assert provenance['source']=='5881df4e76da72c2897633c619449c60694b3552'
+        assert provenance['workflow']=='7ec789ab4a13cf4bf1267fa0cc5b8dc039579e61'
+        for folder in ['native-ui','integrated-build-proof']:
+         for p in (source/folder).rglob('*'):
+          if p.is_file() and p.suffix.lower() in ['.json','.png']:
+           target=out/p.relative_to(source);target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,target)
+        for p in source.glob('*.json'):shutil.copyfile(p,out/p.name)
+        for p in source.glob('*.log'):
+         (out/(p.stem+'-tail.txt')).write_text('\n'.join(p.read_text(errors='replace').splitlines()[-1000:]))
+        print('Original certificates/images copied; full unchanged logs remain in native artifact14134931795')
+        END
     - uses: actions/setup-node@v4
       with:
         node-version: '22'
