@@ -2,4 +2,4 @@ state=FIRST_WORLD_ENTRY_NATIVE_ONLY
 owner=chatgpt-eldoria-world-entry-p0-20261114
 revision=79
 testers_allowed=false
-attempt=5
+attempt=6
