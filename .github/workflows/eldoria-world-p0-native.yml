@@ -72,31 +72,62 @@ jobs:
           $free=(Get-PSDrive C).Free/1GB
           Write-Host ('P0_FREE_BEFORE_GIB='+[Math]::Round($free,2))
           if($free -lt 36){throw 'Too little free disk for isolated Unity; preserve all sources'}
-      - name: Sparse partial clone exact current project to owned disposable path
+      - name: Reuse only owned verified P0 Git checkout, or fetch current source safely
         shell: powershell
         timeout-minutes: 30
         run: |
           $ErrorActionPreference='Stop'
-          $root=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
-          if(Test-Path $root){throw 'Run-owned project already exists; refuse overwrite'}
-          & git init -q $root
-          if($LASTEXITCODE){throw 'git init failed'}
-          & git -C $root config core.longpaths true
-          & git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
-          & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
-          if($LASTEXITCODE){throw 'sparse init failed'}
-          & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
-          if($LASTEXITCODE){throw 'exact partial fetch failed'}
-          & git -C $root checkout --detach FETCH_HEAD
-          if($LASTEXITCODE){throw 'exact source checkout failed'}
-          if((& git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'source mismatch'}
+          # The previous P0 run already fetched 16GB of Git assets. Reusing
+          # ONLY that isolated P0 checkout avoids another entire source
+          # download, reducing the runner disk-growth problem. Never borrow
+          # another owner's checkout and never force-clean untracked files.
+          $prior=Join-Path $env:RUNNER_TEMP 'eldoria-world-p0-43633477587'
+          $priorSha='c17d0db39c80a1f8f49174d23411ef19b9e35f46'
+          $root=$null
+          if(Test-Path -LiteralPath $prior -PathType Container){
+            $item=Get-Item -LiteralPath $prior -Force
+            if(-not($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -and
+               (Test-Path -LiteralPath (Join-Path $prior '.git'))){
+              $head=(& git -C $prior rev-parse HEAD).Trim()
+              if($head -eq $priorSha){
+                $dirty=@(& git -C $prior status --porcelain --untracked-files=no)
+                if($LASTEXITCODE){throw 'Failed to inspect prior P0 checkout; preserve it'}
+                if($dirty.Count -eq 0){$root=$prior}
+              }
+            }
+          }
+          if($root){
+            Write-Host 'REUSING_PRIOR_P0_CHECKOUT_WITH_EXACT_SOURCE_AND_CLEAN_TRACKED_FILES'
+            & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+            if($LASTEXITCODE){throw 'Cannot fetch new exact commit into prior P0 source'}
+            & git -C $root checkout --detach FETCH_HEAD
+            if($LASTEXITCODE){throw 'Prior source checkout rejected edits; preserve all files'}
+          }else{
+            $root=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
+            if(Test-Path -LiteralPath $root){throw 'Run-owned directory already exists; refuse overwrite'}
+            & git init -q $root
+            if($LASTEXITCODE){throw 'Git init failed'}
+            & git -C $root config core.longpaths true
+            & git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+            & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
+            if($LASTEXITCODE){throw 'Sparse configuration failed'}
+            & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+            if($LASTEXITCODE){throw 'Exact Git source fetch failed'}
+            & git -C $root checkout --detach FETCH_HEAD
+            if($LASTEXITCODE){throw 'Exact fresh Git checkout failed'}
+          }
+          if((& git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source mismatch'}
           $project=Join-Path $root 'Unity'
-          if(-not(Test-Path (Join-Path $project 'Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs'))){throw 'real gameplay test missing'}
-          if((Get-PSDrive C).Free/1GB -lt 24){throw 'Unity Library space gate failed; no cleanup of other projects'}
+          if(-not(Test-Path (Join-Path $project 'Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs'))){
+            throw 'Actual Unity regression fixture missing'
+          }
+          $disk=(Get-PSDrive C).Free/1GB
+          if($disk -lt 24){throw 'Too little free disk to import Unity without touching other work'}
           Add-Content $env:GITHUB_ENV ('ELDORIA_P0_SRC='+$root)
           Add-Content $env:GITHUB_ENV ('ELDORIA_P0_PROJECT='+$project)
           New-Item -ItemType Directory -Force -Path 'world-p0-results'|Out-Null
-          Set-Content -Path 'world-p0-results/source.txt' -Value $env:GITHUB_SHA
+          Set-Content -LiteralPath 'world-p0-results/source.txt' -Value $env:GITHUB_SHA
+          Write-Host ('WORLD_P0_OWNED_PROJECT_SOURCE_READY='+$env:GITHUB_SHA+' FREE_GIB='+[Math]::Round($disk,2))
       - name: Restore only exact SHA-audited Bastion III art or explicitly run logical-only diagnostics
         shell: powershell
         timeout-minutes: 12
@@ -251,7 +282,10 @@ jobs:
           if(-not $env:ELDORIA_P0_SRC){Write-Host 'NO_OWNED_PROJECT_SKIP';exit 0}
           $src=$env:ELDORIA_P0_SRC
           $expected=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
-          if($src -ne $expected){throw 'Source outside owned workspace'}
+          $reused=Join-Path $env:RUNNER_TEMP 'eldoria-world-p0-43633477587'
+          if($src -ne $expected -and $src -ne $reused){
+            throw 'Cache cleanup path is outside exact permitted owned P0 checkouts'
+          }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'EDITOR_BUSY_SKIP_LIBRARY';exit 0}
           if((& git -C $src rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Unrecognized source; preserve'}
           $library=Join-Path $src 'Unity/Library'
