@@ -1,13 +1,14 @@
-VIGILIA SCREEN QA RETRY: PRECISE SOURCE-ONLY MASK FIX
+VIGILIA FASE1 EXACT NATIVE UNITY 3X AFTER COMPLETE SOURCE QA PASS
 workstream=eldoria-forja-oscura-visual-proof-20261107
-lease_owner=chatgpt-vigilia-visual-kit-20261113
-lease_revision=128
-previous_run=43531323696
-prior_error=validate_compact_layout.py logical_small_phone NameError
-corrected=logical_pw<600 and explicitly count painted medallion+live caption rather than invisible raycast box; physical 44px hit preserved
-density=normal 52 cases plus original-pixel 3x 12 cases
-source_parent=eecf8513409468ac59ae53793a055407780266dd
-native=real Unity 390x844,844x390,900x1600 A/B at 3x
-budget=0
-no_owner_visual_approval=true
-no_merge_or_release=true
+owner=chatgpt-vigilia-visual-kit-20261113
+ownership_revision=128
+head_before=2d88c55dbad3bd2048afddba39922517efaaa826
+ubuntu_source_guard=43531996241 SUCCESS; 64 physical/retina geometry and OFL glyph fit
+other_actions=43531459165 ubuntu-latest tester-qa only; no heavy Windows competition
+previous_native=43530638944,43531323696,43531642317 pre-Unity source guards rejected stale fixture
+native_required=real Unity 1x + 15 actual 3x PNG; same camera before/after; inspect visual quality not just technical success
+process_gate=Get-Process Unity,blender refuses occupied PC
+save_economy_progress=untouched
+budget_eur=0
+no_beta_publish_or_merge=true
+art_approved=false
