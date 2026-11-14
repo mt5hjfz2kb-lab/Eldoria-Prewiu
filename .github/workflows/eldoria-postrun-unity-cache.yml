@@ -246,6 +246,9 @@ jobs:
             return @{size=$bytes;files=$files;links=$links;scanErrors=$scanErrors;complete=($scanErrors -eq 0)}
           }
           foreach($name in $names){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+              Write-Host 'STORAGE_PROBE_STOP_EDITOR_STARTED';break
+            }
             if([datetime]::UtcNow -ge $deadline){Write-Host 'STORAGE_PROBE_PARTIAL_TIMEOUT';break}
             $path=Join-Path $root $name
             if(-not(Test-Path -LiteralPath $path -PathType Container)){
@@ -275,10 +278,13 @@ jobs:
               $alt=Join-Path $neighbor.FullName '.git\objects\info\alternates'
               if(Test-Path -LiteralPath $alt -PathType Leaf){
                 if(([IO.File]::ReadAllText($alt)).IndexOf($name,[StringComparison]::OrdinalIgnoreCase) -ge 0){
-                  $dependent+=1
+                  $dependent+=$neighbor.Name
                 }
               }
             }
+            if($dependent.Count){Write-Host ("STORAGE_PROBE_ALTERNATES_IN name={0} dependents={1}" -f $name,($dependent -join ','))}
+            $selfAlt=Join-Path $path '.git\objects\info\alternates'
+            if(Test-Path -LiteralPath $selfAlt -PathType Leaf){Write-Host ("STORAGE_PROBE_ALTERNATES_OUT name={0} content={1}" -f $name,([IO.File]::ReadAllText($selfAlt).Trim()))}
             Write-Host ("STORAGE_PROBE_SOURCE name={0} GiB={1:N3} files={2} complete={3} links={4} scanErrors={11} libraryPresent={5} gitPresent={6} dirtyTracked={7} untracked={8} dependentCount={9} head={10}" -f
               $name,($siz.size/$gib),$siz.files,$siz.complete,$siz.links,$libPresent,$gitPresent,$dirty,$untracked,$dependent.Count,$head,$siz.scanErrors)
           }
