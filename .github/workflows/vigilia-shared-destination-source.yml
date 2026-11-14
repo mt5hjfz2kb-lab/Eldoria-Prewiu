@@ -39,6 +39,8 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/*.png.meta'
       - 'tools/breach-watch/import_cleanroom_art.py'
+      - 'tools/breach-watch/validate_compact_layout.py'
+      - 'tools/breach-watch/verify_premium_font_fit.py'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchBetaBootstrap.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/**'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/BreachWatchHallWarmStone.shader'
@@ -57,6 +59,8 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/breach-watch/import_cleanroom_art.py
+            /tools/breach-watch/validate_compact_layout.py
+            /tools/breach-watch/verify_premium_font_fit.py
             /tools/breach-watch/validate_shared_destination_theme.py
             /tools/breach-watch/validate_mailbox_theme.py
             /tools/breach-watch/validate_modal_bridge.py
@@ -77,6 +81,8 @@ jobs:
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_raven.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_helm.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts/**
             /tools/breach-watch/*OwnedNativeInput*.ps1
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
@@ -101,6 +107,12 @@ jobs:
       - name: Roslyn compile-tree parse of new C-sharp runtime components
         shell: bash
         run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Check real 64-case screen geometry and packaged font fit (NOT Unity)
+        shell: bash
+        run: |
+          python3 tools/breach-watch/validate_compact_layout.py
+          python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+          python3 tools/breach-watch/verify_premium_font_fit.py
       - name: Verify Retina editor coverage and lossless nav sprite import (NOT Unity)
         shell: bash
         run: |

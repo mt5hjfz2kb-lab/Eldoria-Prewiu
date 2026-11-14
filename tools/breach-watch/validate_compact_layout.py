@@ -264,7 +264,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
         assert not costs.intersects(state),size
         assert not state.intersects(action),size
         assert context.y+context.h<=navtop-2,size
-        limit=32 if ph<500 else 22
+        limit=32 if h<530 else 22
     assert not boxes["identity"].intersects(boxes["resource0"]),size
     compact=coverage(panels,w,h)
     assert compact<=limit,(size,compact,limit)
