@@ -268,6 +268,11 @@ namespace Eldoria.BetaMemory.Tests
                     "Saved Region 1 must remain immediately accessible after reload");
                 Assert.That(Member(city,"Gateway"),Is.SameAs(reloaded));
                 Assert.That(camera.enabled,Is.True);
+                if(logicOnly){
+                    Assert.That(unexpectedErrors,Is.Empty,
+                        "Unity runtime logged an unrelated error during the entire real world journey");
+                    Debug.Log("ELDORIA_WORLD_P0_LOGICAL_ONLY_FULL_REENTRY_COMPLETED visual_art_certified=false");
+                }
             }
             finally
             {
