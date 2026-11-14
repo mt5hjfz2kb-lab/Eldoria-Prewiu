@@ -1,14 +1,14 @@
-VIGILIA FASE1 EXACT NATIVE UNITY 3X AFTER COMPLETE SOURCE QA PASS
+VIGILIA FASE1 EXACT NATIVE ISOLATED UNITY SOURCE
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
 ownership_revision=128
-head_before=2d88c55dbad3bd2048afddba39922517efaaa826
-ubuntu_source_guard=43531996241 SUCCESS; 64 physical/retina geometry and OFL glyph fit
-other_actions=43531459165 ubuntu-latest tester-qa only; no heavy Windows competition
-previous_native=43530638944,43531323696,43531642317 pre-Unity source guards rejected stale fixture
-native_required=real Unity 1x + 15 actual 3x PNG; same camera before/after; inspect visual quality not just technical success
-process_gate=Get-Process Unity,blender refuses occupied PC
-save_economy_progress=untouched
-budget_eur=0
-no_beta_publish_or_merge=true
+previous_head=59f1dd2b2df851f7c7a0732189ae823a1baab677
+previous_run=43532249892 PC_READY but dirty historical checkout refused
+fixed=always create unique per-attempt git checkout, preserve every existing .mat file and old source tree
+source_verified=43531996241 PASS 64 geometry/real fonts, 43532249892 source syntax PASS
+other_active=43532317374 ubuntu-only tester validation, not Windows
+process_gate=do not interrupt Unity/Blender, fail if process exists
+native=real Unity 1x and 15 genuine Retina 3x city/Bastion/mail/report/bag
+budget=0
+no_main_beta_or_merge=true
 art_approved=false

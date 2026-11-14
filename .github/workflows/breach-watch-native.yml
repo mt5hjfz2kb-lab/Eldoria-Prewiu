@@ -770,15 +770,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          $root=Join-Path $env:GITHUB_WORKSPACE 'forja-thin-native-source-42408083695'
+          # Historical shared checkout may contain modified .mat source
+          # owned by other producers. Never clean, reset, checkout or reuse
+          # that directory. Start a fresh per-attempt Unity source tree.
+          # Retain the exact SHA and the preservation guard in the new tree.
+          $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-isolated-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
           $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
-          if(-not(Test-Path (Join-Path $root '.git'))){
-            $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-native-source-"+$env:GITHUB_RUN_ID)
-            New-Item -ItemType Directory -Path $root -Force | Out-Null
-            & git -C $root init
-            if($LASTEXITCODE){throw 'Git init failed'}
-            & git -C $root remote add origin $url
+          if(Test-Path -LiteralPath $root){
+            throw "Refuse existing candidate checkout; preserve potential other-user data: $root"
           }
+          New-Item -ItemType Directory -Path $root -ErrorAction Stop | Out-Null
+          & git -C $root init
+          if($LASTEXITCODE){throw 'Fresh isolated Git init failed'}
+          & git -C $root remote add origin $url
+          if($LASTEXITCODE){throw 'Fresh isolated Git remote add failed'}
           if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
           # Preserve existing private Unity inputs before any source switch.
           # Unknown code/settings are archived and refused; never force checkout.
