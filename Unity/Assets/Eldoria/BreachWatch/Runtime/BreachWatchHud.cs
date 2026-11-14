@@ -1312,13 +1312,17 @@ namespace Eldoria.BreachWatch
                 // at 844x390 despite 52 source geometry checks passing.
                 // Preserve owner-approved artwork, increase its real mesh
                 // footprint and keep the complete row within the safe area.
+                // Native 43615782618 found a genuine clipped RECURSOS caption:
+                // bold Baskerville required 29.7u but its old box was only 16u.
+                // Reserve ink height AND pitch-wide caption width without touching
+                // original medallion sprites, tap handlers, gameplay or the QA gate.
                 // Owner review: footer must remain visibly present in a full-screen mobile capture.
                 // Larger original medallions, safe-area clearance and all five slots still fit.
                 float navSize=75f,navGap=6f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
                 float navTop=h-(smallPhone?146f:127f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    100f);
+                    112f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1328,11 +1332,16 @@ namespace Eldoria.BreachWatch
                     if(visible)
                     {
                         At((RectTransform)navButtons[i].transform,
-                            navColumn++*(navSize+navGap),3,navSize,navSize+17f);
+                            navColumn++*(navSize+navGap),3,navSize,navSize+34f);
                         At(navPlates[i].rectTransform,smallPhone?4f:5f,0f,
                             navSize-(smallPhone?8f:10f),navSize-(smallPhone?8f:10f));
-                        At(navCaptions[i].rectTransform,0f,navSize-1f,
-                            navSize,16f);
+                        // Let long authentic labels wrap into a fully visible two-line
+                        // well rather than clip to a nominal 16u inscription.
+                        // Maximum caption width stops 2u short of next cell.
+                        float captionWidth=navSize+navGap-2f;
+                        At(navCaptions[i].rectTransform,
+                            -(captionWidth-navSize)*.5f,navSize-5f,
+                            captionWidth,36f);
                         navCaptions[i].fontSize=smallPhone?13:12;
                         navPlates[i].VisualScale=smallPhone?.92f:.90f;
                     }
@@ -1499,9 +1508,9 @@ namespace Eldoria.BreachWatch
                 float navSize=compactLandscape?75f:55f,
                     navGap=compactLandscape?10f:15f;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-(compactLandscape?104f:94f);
+                float navTop=h-(compactLandscape?120f:101f);
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,
-                    compactLandscape?101f:85f);
+                    compactLandscape?116f:96f);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
@@ -1511,12 +1520,17 @@ namespace Eldoria.BreachWatch
                     if(visible)
                     {
                         At((RectTransform)navButtons[i].transform,
-                            navColumn++*(navSize+navGap),3,navSize,navSize+17f);
+                            navColumn++*(navSize+navGap),3,navSize,navSize+34f);
                         At(navPlates[i].rectTransform,compactLandscape?4f:6f,0f,
                             navSize-(compactLandscape?8f:12f),
                             navSize-(compactLandscape?8f:12f));
-                        At(navCaptions[i].rectTransform,0f,navSize-1f,
-                            navSize,16f);
+                        // Let long authentic labels wrap into a fully visible two-line
+                        // well rather than clip to a nominal 16u inscription.
+                        // Maximum caption width stops 2u short of next cell.
+                        float captionWidth=navSize+navGap-2f;
+                        At(navCaptions[i].rectTransform,
+                            -(captionWidth-navSize)*.5f,navSize-5f,
+                            captionWidth,36f);
                         navCaptions[i].fontSize=compactLandscape?14:12;
                         navPlates[i].VisualScale=compactLandscape?.92f:.86f;
                     }

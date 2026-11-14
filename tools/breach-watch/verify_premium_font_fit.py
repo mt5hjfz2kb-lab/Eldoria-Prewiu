@@ -64,6 +64,15 @@ def verify():
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
     assert "navCaptions[i].fontSize=smallPhone?13:12;" in hud
     assert "navCaptions[i].fontSize=compactLandscape?14:12;" in hud
+    # This source-based preview checks the actual shipped OFL bold body font.
+    # A wrapped word is allowed only if it fits within the new real 36u well;
+    # Unity's rendered TextGenerator is the final authority, not this model.
+    for label in ("REINO","RECURSOS","EJÉRCITO","EXPLORAR","HÉROES"):
+        for target,pt,pitch in (("900x1600",12,81),("390x844",13,81),
+                                ("844x390",14,85),("1600x900",12,70)):
+            measured=width(BODY_BOLD,pt,label)
+            assert measured<=2*(pitch-2)-4,(target,label,measured,"would need 3 lines")
+    assert hud.count("captionWidth,36f);")==2
     assert 14*.86>=11.75, "844px navigation labels must be readable"
     # The genuine 3x Editor captures must not silently render text 1x,
     # while runtime WebGL density remains unchanged to protect phone memory.

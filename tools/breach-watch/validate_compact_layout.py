@@ -128,7 +128,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
         navtop=h-(146 if small_phone else 127)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),
-                       navtop+3,navsize,navsize+17,solid=False)
+                       navtop+3,navsize,navsize+34,solid=False)
             touch("nav"+str(i),item)
             # A native navigation Button has an invisible full-area hit
             # surface. Count its actual painted medallion at worst .92
@@ -137,7 +137,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
             painted=(navsize-2*inset)*.92
             panels.append(R(item.x+(navsize-painted)/2,
                             item.y+(navsize-painted)/2,painted,painted))
-            panels.append(R(item.x,item.y+navsize-1,navsize,16))
+            caption_box=R(item.x-(gap-2)/2,item.y+navsize-5,
+                          navsize+gap-2,36)
+            assert caption_box.visible(w,h,1.01),(size,'clipped live navigation text',caption_box)
+            panels.append(caption_box)
             caption=13 if portrait and small_phone else (
                 14 if not portrait and compact else 12)
             assert caption*scale>=11.75,(size,caption,scale,
@@ -219,10 +222,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
         assert painted_physical>=38,(size,"medallion painted region below 38px",painted_physical)
         assert 5*navsize+4*gap<=w-2*m,(size,"all five unlocked medals would overflow")
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-(104 if compact else 94)
+        navtop=h-(120 if compact else 101)
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),
-                       navtop+3,navsize,navsize+17,solid=False)
+                       navtop+3,navsize,navsize+34,solid=False)
             touch("nav"+str(i),item)
             # A native navigation Button has an invisible full-area hit
             # surface. Count its actual painted medallion at worst .92
@@ -231,7 +234,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
             painted=(navsize-2*inset)*.92
             panels.append(R(item.x+(navsize-painted)/2,
                             item.y+(navsize-painted)/2,painted,painted))
-            panels.append(R(item.x,item.y+navsize-1,navsize,16))
+            caption_box=R(item.x-(gap-2)/2,item.y+navsize-5,
+                          navsize+gap-2,36)
+            assert caption_box.visible(w,h,1.01),(size,'clipped live navigation text',caption_box)
+            panels.append(caption_box)
             caption=13 if portrait and small_phone else (
                 14 if not portrait and compact else 12)
             assert caption*scale>=11.75,(size,caption,scale,
@@ -263,7 +269,11 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
         assert not heading.intersects(costs),size
         assert not costs.intersects(state),size
         assert not state.intersects(action),size
-        assert context.y+context.h<=navtop-2,size
+        # The raised safe footer can share y with the far-right building
+        # card, but must never intersect it in BOTH axes.
+        footer=R((w-navw)*.5-(gap-2)/2,navtop,
+                 navw+gap-2,116 if compact else 96)
+        assert not context.intersects(footer),size
         limit=32 if h<530 else 22
     assert not boxes["identity"].intersects(boxes["resource0"]),size
     compact=coverage(panels,w,h)
@@ -291,9 +301,12 @@ def main():
         'float top=navTop-ph-(smallPhone?34f:32f);',
         'At(((RectTransform)actionButton.transform),6,ph-53,pw-12,50)',
         'float navSize=compactLandscape?75f:55f,',
-        'float navTop=h-(compactLandscape?104f:94f);',
+        'float navTop=h-(compactLandscape?120f:101f);',
         'float top=h<530f?68f:118f;',
         'navCaptions[i].fontSize=compactLandscape?14:12;',
+        'float captionWidth=navSize+navGap-2f;',
+        'navSize,navSize+34f);',
+        'captionWidth,36f);',
         'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
         'At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53)',
@@ -318,6 +331,9 @@ def main():
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
+    assert source.count('float captionWidth=navSize+navGap-2f;')==2
+    assert source.count('captionWidth,36f);')==2
+    assert source.count('navSize,navSize+34f);')==2
     # Real native evidence rejected 10.92px phone and 11.18px landscape.
     # Preserve >=11.75 physical px rather than lower the native quality gate.
     assert 13*.91 >= 11.75, 'phone portrait title below minimum'
