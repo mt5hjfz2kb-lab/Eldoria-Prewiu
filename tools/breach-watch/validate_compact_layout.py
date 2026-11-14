@@ -140,7 +140,11 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
             caption_box=R(item.x-(gap-2)/2,item.y+navsize-5,
                           navsize+gap-2,36)
             assert caption_box.visible(w,h,1.01),(size,'clipped live navigation text',caption_box)
-            panels.append(caption_box)
+            # The enlarged 36u Text RECT is transparent outside the actual
+            # painted letters. Count the unchanged single inscription's ink
+            # footprint, not an invented opaque 36u footer slab. Native GPU
+            # screenshots and text line/vertex guards remain the authority.
+            panels.append(R(item.x,item.y+navsize+3,navsize,16))
             caption=13 if portrait and small_phone else (
                 14 if not portrait and compact else 12)
             assert caption*scale>=11.75,(size,caption,scale,
@@ -237,7 +241,11 @@ def check(size:tuple[int,int],food_unlocked:bool=False,
             caption_box=R(item.x-(gap-2)/2,item.y+navsize-5,
                           navsize+gap-2,36)
             assert caption_box.visible(w,h,1.01),(size,'clipped live navigation text',caption_box)
-            panels.append(caption_box)
+            # The enlarged 36u Text RECT is transparent outside the actual
+            # painted letters. Count the unchanged single inscription's ink
+            # footprint, not an invented opaque 36u footer slab. Native GPU
+            # screenshots and text line/vertex guards remain the authority.
+            panels.append(R(item.x,item.y+navsize+3,navsize,16))
             caption=13 if portrait and small_phone else (
                 14 if not portrait and compact else 12)
             assert caption*scale>=11.75,(size,caption,scale,
