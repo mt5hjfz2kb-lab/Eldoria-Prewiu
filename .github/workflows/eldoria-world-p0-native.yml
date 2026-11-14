@@ -33,7 +33,7 @@ jobs:
           lines=open('tools/eldoria-private-beta/world-p0-request.txt').read().strip().splitlines()
           assert lines==['state=FIRST_WORLD_ENTRY_NATIVE_ONLY',
                          'owner=chatgpt-eldoria-world-entry-p0-20261114',
-                         'revision=79','testers_allowed=false','attempt=4']
+                         'revision=79','testers_allowed=false','attempt=5']
           assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
           item=get('contents/pipeline/active-workstreams.json?ref=main')
           b=item.get('content')
@@ -115,7 +115,21 @@ jobs:
           if($art.Count -ne 51 -or ($art|Measure-Object bytes -Sum).Sum -ne 108788643){
             throw 'Incomplete original Bastion III art inventory'
           }
-          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source')
+          # First look for the two historical certified roots. The most recent
+          # integrated native build also hydrated all 51 inputs in its own
+          # isolated source tree; recovery must use its exact SHA, not a lookalike.
+          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source',
+            'breachwatch-native-source-43489752868-1','forja-thin-native-source-42408083695')
+          # Retain a bounded index of known run-owned native source directories.
+          # No recursive traversal, no deletion, and verify every copied byte.
+          $more=@(Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Directory -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -like 'breachwatch-native-source-*' -or
+                           $_.Name -like 'beta-structural-source-*' } |
+            Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 20)
+          foreach($dir in $more){
+            if($origins -notcontains $dir.Name){$origins+= $dir.Name}
+          }
+          Write-Host ('WORLD_P0_SOURCE_CANDIDATES '+($origins -join ','))
           $copies=0
           foreach($item in $art){
             $rel=[string]$item.path
