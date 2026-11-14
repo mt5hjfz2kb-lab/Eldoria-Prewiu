@@ -504,25 +504,59 @@ namespace Eldoria.Issue186Art.Editor
                     firstCoach.Rejection);
                 // Do not accept a guide that exists in the hierarchy but is
                 // missing from the picture actually shown to the player.
-                RenderUi(ui,390,844);
-                var actualPanel=(RectTransform)type.GetProperty("BuildingPanel")
-                    .GetValue(ui);
-                var actualAction=(Button)type.GetProperty("BuildingAction").GetValue(ui);
-                Need(actualPanel && actualPanel.gameObject.activeInHierarchy &&
-                     actualAction && actualAction.gameObject.activeInHierarchy &&
-                     actualAction.IsInteractable(),
-                    "Selected Aserradero does not show a real construction sheet and CTA");
-                var realHand=canvas.GetComponentsInChildren<Image>(true)
-                    .SingleOrDefault(image=>image && image.name=="Nonblocking actual hand");
-                Need(realHand&&realHand.gameObject.activeInHierarchy &&
-                     realHand.sprite!=null,
-                    "First Aserradero build hand is not visually active");
-                RequirePaintedInRealFrame(camera,rt,
-                    (RectTransform)actualAction.transform,actualPanel.gameObject,
-                    "Aserradero action sheet");
-                RequirePaintedInRealFrame(camera,rt,
-                    realHand.rectTransform,realHand.gameObject,
-                    "Aserradero action hand");
+                // A failed native test MUST retain the actual failing frame:
+                // the last Unity PASS had no panel in its final PNG even while
+                // object/raycast assertions were true. Captures here are
+                // evidence only; they do not lower any pixel or pointer gate.
+                try
+                {
+                    RenderUi(ui,390,844);
+                    var actualPanel=(RectTransform)type.GetProperty("BuildingPanel")
+                        .GetValue(ui);
+                    var actualAction=(Button)type.GetProperty("BuildingAction").GetValue(ui);
+                    var selectedField=type.GetField("selected",
+                        BindingFlags.NonPublic|BindingFlags.Instance);
+                    var widthField=type.GetField("lastWidth",
+                        BindingFlags.NonPublic|BindingFlags.Instance);
+                    var heightField=type.GetField("lastHeight",
+                        BindingFlags.NonPublic|BindingFlags.Instance);
+                    var diagnostic="canonical="+host.Selected+
+                        "; hud="+host.Hud.SelectedBuildingId+
+                        "; vigilia="+(selectedField?.GetValue(ui)??"<missing>")+
+                        "; vigiliaReflow="+(widthField?.GetValue(ui)??"<missing>")+
+                        "x"+(heightField?.GetValue(ui)??"<missing>")+
+                        "; editorScreen="+Screen.width+"x"+Screen.height+
+                        "; renderTarget="+rt.width+"x"+rt.height+
+                        "; panelActive="+(actualPanel&&actualPanel.gameObject.activeInHierarchy)+
+                        "; ctaActive="+(actualAction&&actualAction.gameObject.activeInHierarchy);
+                    Need(actualPanel && actualPanel.gameObject.activeInHierarchy &&
+                         actualAction && actualAction.gameObject.activeInHierarchy &&
+                         actualAction.IsInteractable(),
+                        "Selected Aserradero does not show a real construction sheet and CTA: "+
+                        diagnostic);
+                    var realHand=canvas.GetComponentsInChildren<Image>(true)
+                        .SingleOrDefault(image=>image && image.name=="Nonblocking actual hand");
+                    Need(realHand&&realHand.gameObject.activeInHierarchy &&
+                         realHand.sprite!=null,
+                        "First Aserradero build hand is not visually active: "+diagnostic);
+                    RequirePaintedInRealFrame(camera,rt,
+                        (RectTransform)actualAction.transform,actualPanel.gameObject,
+                        "Aserradero action sheet: "+diagnostic);
+                    RequirePaintedInRealFrame(camera,rt,
+                        realHand.rectTransform,realHand.gameObject,
+                        "Aserradero action hand: "+diagnostic);
+                }
+                catch(Exception)
+                {
+                    // Preserve the unmodified real GPU result before exit(1)
+                    // so a red native run remains diagnosable without another
+                    // costly 20-minute Editor cycle. Never mask the original
+                    // failure if screenshot encoding independently fails.
+                    try { Photograph(camera,rt,"FAILED-first-sawmill-build-guide",390,844); }
+                    catch(Exception capture) { Debug.LogWarning(
+                        "ISSUE186_FAILED_BUILD_FRAME_CAPTURE: "+capture); }
+                    throw;
+                }
                 Photograph(camera,rt,"first-sawmill-build-guide",390,844);
                 report.firstBuildingActionHandOnRealHit=true;
                 // Reset only the disposable view selection, not a save or
