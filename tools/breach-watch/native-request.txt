@@ -1,10 +1,11 @@
-VIGILIA PHASE1 REPRODUCIBLE REAL UNITY 3X
+VIGILIA PHASE1 DISK RECOVERY: FAIL CLOSED + NATIVE GPU EVIDENCE
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-owner_revision=128
-previous_native_attempt=43572548608 attempts 1 and 2: remote Git sparse checkout lost runner before Unity and did not preserve logs, no screenshots certified
-checkout_correction=read-only 3 day preflight diagnostics for disk, previously isolated cache availability, live Unity/Blender counts; reuse own previous successful isolated Git objects read-only if available, final commit exact SHA and no edits to previous candidates
-intent=capture real Unity 1x and actual physical 3x RenderTexture phone output; no art autoapproval
-deliverables=city,bastion,mail,mail-report-document,bag
-formats=390x844,844x390,900x1600
-restrictions=no main,beta,issue186 mutation; no Unity/Blender already active; zero euros; no file deletion outside fresh current owned directory
+ownership_revision=128
+run=43573475352 native Set up job failed BEFORE steps, confirmed GitHub log: "Espacio en disco insuficiente" while downloading actions/upload-artifact; no native PNG
+recovery=separate no-third-party-action self-hosted job immediately before normal native; verify lease/CAS, no live Unity/Blender/Git; delete only per-attempt isolated candidate folders from completed failed Git clone runs 43572548608-1/-2,43532593397-1,43532249892-1, and only if necessary generated Unity/Library cache under our old successful run 43532823031-1 verified exact SHA
+no_shared_checkout_clean_or_reset=true
+no_existing_art_evidence_deleted=true
+no_other_owner_touch=true
+native_output=15 true 3x Unity render images + 1x at user sizes, no false acceptance
+cost_eur=0

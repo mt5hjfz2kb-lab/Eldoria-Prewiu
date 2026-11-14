@@ -708,9 +708,119 @@ jobs:
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\nowner='+(ok?w.owner:'')+'\n');
           console.log(ok?'BREACHWATCH_EXCLUSIVE_OWNER_PASS':'BREACHWATCH_NO_OWNER_WINDOWS_SKIPPED');
           JS
-  native:
+  recover-owned-disk:
     needs: [owner-preflight, source-syntax, approved-art-integrity]
-    if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
+    if: needs.owner-preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Reclaim only old failed Vigilia-specific temporary sources
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEASE_OWNER: ${{ needs.owner-preflight.outputs.owner }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Eldoria-Vigilia-bounded-disk-recovery'}
+          $api='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu'
+          $raw=Invoke-RestMethod -Uri ($api+'/contents/pipeline/active-workstreams.json?ref=main') -Headers $headers
+          $encoded=[string]$raw.content
+          if($raw.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($encoded)){
+            $blob=Invoke-RestMethod -Uri ($api+'/git/blobs/'+$raw.sha) -Headers $headers
+            if($blob.sha -ne $raw.sha -or $blob.encoding -ne 'base64'){
+              throw 'Live lease blob identity cannot be verified'
+            }
+            $encoded=[string]$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
+             $holders[0].owner -ne $env:LEASE_OWNER -or
+             [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION){
+            throw 'Not exclusive current Vigilia owner: no cleanup is allowed'
+          }
+          if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
+            throw 'Active Unity/Blender/Git detected: no cleanup is allowed'
+          }
+          $workspace=[IO.Path]::GetFullPath($env:GITHUB_WORKSPACE).TrimEnd([char]'\')
+          $before=(Get-PSDrive C).Free
+          Write-Host ('VIGILIA_DISK_FREE_GIB_BEFORE '+[math]::Round($before/1GB,2))
+          # These run IDs are explicitly verified GitHub failures BEFORE
+          # executing Unity. They are OUR one-off isolated sparse checkouts,
+          # never the shared checkout, owner files, or the beta installation.
+          $runs=@('43572548608','43532593397','43532249892')
+          foreach($runId in $runs){
+            $run=Invoke-RestMethod -Uri ($api+'/actions/runs/'+$runId) -Headers $headers
+            if($run.status -ne 'completed' -or $run.conclusion -ne 'failure'){
+              throw "Run not established as failed/finished: $runId"
+            }
+          }
+          $names=@(
+            'breachwatch-isolated-43572548608-1',
+            'breachwatch-isolated-43572548608-2',
+            'breachwatch-isolated-43532593397-1',
+            'breachwatch-isolated-43532249892-1'
+          )
+          foreach($name in $names){
+            $candidate=Join-Path $workspace $name
+            if(-not(Test-Path -LiteralPath $candidate)){continue}
+            $item=Get-Item -LiteralPath $candidate
+            $resolved=[IO.Path]::GetFullPath($item.FullName)
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint -or
+              -not $resolved.StartsWith($workspace+'\breachwatch-isolated-',[StringComparison]::OrdinalIgnoreCase) -or
+               (Split-Path -Leaf $resolved) -ne $name){
+              throw "Refuse symlink, traversal or unrelated path: $name"
+            }
+            $gitConfig=Join-Path $resolved '.git/config'
+            if(-not(Test-Path -LiteralPath $gitConfig) -or
+               -not((Get-Content $gitConfig -Raw) -match 'https://github\.com/mt5hjfz2kb-lab/Eldoria-Prewiu\.git')){
+              throw "Refuse unknown or non-owned checkout: $name"
+            }
+            foreach($evidence in @('Unity/BreachWatchNativeEvidence','Unity/BreachWatchDestinationEvidence','Unity/PlaybackEvidence')){
+              if(Test-Path -LiteralPath (Join-Path $resolved $evidence)){
+                throw "Refuse candidate containing native evidence: $name/$evidence"
+              }
+            }
+            if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
+              throw 'Process started during verification: abort without deleting'
+            }
+            # All four paths are non-shared, disposable source checkouts
+            # created by our exact failed workflows before the Unity step.
+            Remove-Item -LiteralPath $resolved -Recurse -Force -ErrorAction Stop
+            Write-Host ("VIGILIA_OWN_FAILED_CHECKOUT_RECLAIMED "+$name)
+          }
+          $free=(Get-PSDrive C).Free
+          $old=Join-Path $workspace 'breachwatch-isolated-43532823031-1'
+          $cache=Join-Path $old 'Unity/Library'
+          # Unity/Library is generated Editor cache, not tracked game art,
+          # saves, source, evidence, or Git objects. Only clear if needed.
+          if($free -lt 12GB -and (Test-Path -LiteralPath $cache)){
+            $oldSha=(& git -C $old rev-parse HEAD).Trim()
+            if($LASTEXITCODE -ne 0 -or $oldSha -ne '543c0a713d0cb3e95fb370923d91e796cf5a5c38'){
+              throw 'Prior successful isolated source identity mismatch'
+            }
+            $item=Get-Item -LiteralPath $cache
+            if($item.Attributes -band [IO.FileAttributes]::ReparsePoint -or
+               -not $item.FullName.StartsWith($workspace+'\breachwatch-isolated-43532823031-1\Unity\Library',[StringComparison]::OrdinalIgnoreCase)){
+              throw 'Refuse cache deletion outside own Unity Library'
+            }
+            if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
+              throw 'Process started before cache cleanup'
+            }
+            Remove-Item -LiteralPath $cache -Recurse -Force -ErrorAction Stop
+            Write-Host 'VIGILIA_OWN_UNITY_GENERATED_LIBRARY_RECLAIMED'
+          }
+          $after=(Get-PSDrive C).Free
+          Write-Host ('VIGILIA_DISK_FREE_GIB_AFTER '+[math]::Round($after/1GB,2))
+          if($after -lt 8GB){throw 'Not enough safe disk space to run new isolated Unity capture'}
+          Write-Host 'VIGILIA_DISK_RECOVERY_EXCLUSIVE_SAFE_PASS'
+  native:
+    needs: [owner-preflight, source-syntax, approved-art-integrity, recover-owned-disk]
+    if: needs.owner-preflight.outputs.authorized == 'true' && needs.recover-owned-disk.result == 'success' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 120
     env:
