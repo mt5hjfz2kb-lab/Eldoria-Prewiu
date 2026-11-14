@@ -33,7 +33,7 @@ jobs:
           lines=open('tools/eldoria-private-beta/world-p0-request.txt').read().strip().splitlines()
           assert lines==['state=FIRST_WORLD_ENTRY_NATIVE_ONLY',
                          'owner=chatgpt-eldoria-world-entry-p0-20261114',
-                         'revision=79','testers_allowed=false','attempt=5']
+                         'revision=79','testers_allowed=false','attempt=6']
           assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
           item=get('contents/pipeline/active-workstreams.json?ref=main')
           b=item.get('content')
