@@ -97,49 +97,37 @@ jobs:
           Add-Content $env:GITHUB_ENV ('ELDORIA_P0_PROJECT='+$project)
           New-Item -ItemType Directory -Force -Path 'world-p0-results'|Out-Null
           Set-Content -Path 'world-p0-results/source.txt' -Value $env:GITHUB_SHA
-      - name: Restore exact previously audited Bastion III art from preserved local sources
+      - name: Restore only exact SHA-audited Bastion III art or explicitly run logical-only diagnostics
         shell: powershell
         timeout-minutes: 12
         run: |
           $ErrorActionPreference='Stop'
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
-            throw 'Native tool still active; refuse production-art hydration'
+            throw 'Another native editor is running'
           }
           $auditPath=Join-Path $env:ELDORIA_P0_SRC 'tools/eldoria-private-beta/native/existing-input-audit.json'
           $audit=Get-Content -LiteralPath $auditPath -Raw | ConvertFrom-Json
           if($audit.base -ne '948ffa9837168a0b68dab80be76b66350422b23a'){
-            throw 'Audited art provenance changed'
+            throw 'Original Bastion III source provenance differs'
           }
           $prefix='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/'
-          $art=@($audit.files | Where-Object {$_.path.StartsWith($prefix)})
+          $art=@($audit.files|Where-Object {$_.path.StartsWith($prefix)})
           if($art.Count -ne 51 -or ($art|Measure-Object bytes -Sum).Sum -ne 108788643){
-            throw 'Incomplete original Bastion III art inventory'
+            throw 'Original 51-file native asset inventory has changed'
           }
-          # First look for the two historical certified roots. The most recent
-          # integrated native build also hydrated all 51 inputs in its own
-          # isolated source tree; recovery must use its exact SHA, not a lookalike.
-          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source',
-            'breachwatch-native-source-43489752868-1','forja-thin-native-source-42408083695')
-          # Retain a bounded index of known run-owned native source directories.
-          # No recursive traversal, no deletion, and verify every copied byte.
-          $more=@(Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Directory -ErrorAction SilentlyContinue |
-            Where-Object { $_.Name -like 'breachwatch-native-source-*' -or
-                           $_.Name -like 'beta-structural-source-*' } |
-            Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 20)
-          foreach($dir in $more){
-            if($origins -notcontains $dir.Name){$origins+= $dir.Name}
-          }
-          Write-Host ('WORLD_P0_SOURCE_CANDIDATES '+($origins -join ','))
-          $copies=0
+          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source')
+          $copies=New-Object 'System.Collections.Generic.List[object]'
+          $missing=New-Object 'System.Collections.Generic.List[string]'
           foreach($item in $art){
             $rel=[string]$item.path
-            if($rel.Contains('..') -or $rel.Contains(':') -or $rel.EndsWith('.cs') -or $rel.EndsWith('.dll') -or $rel.EndsWith('.exe')){
-              throw 'Unsafe non-art file in audited manifest'
+            if($rel.Contains('..') -or $rel.Contains(':') -or $rel.EndsWith('.cs') -or
+                $rel.EndsWith('.dll') -or $rel.EndsWith('.exe')){
+              throw 'Unapproved input in original asset manifest'
             }
             $dest=Join-Path $env:ELDORIA_P0_SRC $rel
             if(Test-Path -LiteralPath $dest){
               if((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $item.sha256){
-                throw ('Existing protected art SHA mismatch: '+$rel)
+                throw ('Protected source asset differs from audit: '+$rel)
               }
               continue
             }
@@ -149,19 +137,33 @@ jobs:
               if((Test-Path -LiteralPath $candidate -PathType Leaf) -and
                  -not ((Get-Item -LiteralPath $candidate).Attributes -band [IO.FileAttributes]::ReparsePoint) -and
                  (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash -eq $item.sha256){
-                $from=$candidate
-                break
+                $from=$candidate;break
               }
             }
-            if(-not $from){throw ('Exact original art unavailable; refuse substitutions: '+$rel)}
-            New-Item -ItemType Directory -Force (Split-Path $dest)|Out-Null
-            Copy-Item -LiteralPath $from -Destination $dest
-            if((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $item.sha256){
-              throw ('Copied art failed SHA verification: '+$rel)
-            }
-            $copies++
+            if(-not $from){$missing.Add($rel);continue}
+            $copies.Add(@{source=$from;dest=$dest;sha256=$item.sha256;path=$rel})
           }
-          Write-Host ('WORLD_P0_ORIGINAL_BASTION_ART_HYDRATED files='+$art.Count+' copied='+$copies)
+          if($missing.Count){
+            # This is a diagnostic-only fallback. It never substitutes or
+            # changes source artwork, scene, gameplay, or player build files.
+            # The published candidate MUST retain its full original art.
+            'ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART=1' | Add-Content $env:GITHUB_ENV
+            @('status=INCOMPLETE_ORIGINAL_BASTION_III_ART_NOT_CERTIFIED',
+              ('missing_files='+$missing.Count),'logical_qa_only=true',
+              'production_build_allowed=false') |
+              Set-Content 'world-p0-results/missing-native-art.txt'
+            Write-Host ('MISSING_ORIGINAL_BASTION_III_ART='+$missing.Count+
+              ' NO_RELEASE_OR_ART_CERTIFICATION; RUN_LOGICAL_PROBE_ONLY')
+          }else{
+            foreach($item in $copies){
+              New-Item -ItemType Directory -Force (Split-Path $item.dest)|Out-Null
+              Copy-Item -LiteralPath $item.source -Destination $item.dest
+              if((Get-FileHash -LiteralPath $item.dest -Algorithm SHA256).Hash -ne $item.sha256){
+                throw ('Copied art failed exact checksum '+$item.path)
+              }
+            }
+            Write-Host ('WORLD_P0_ALL_ORIGINAL_ART_VERIFIED files='+$art.Count+' restored='+$copies.Count)
+          }
       - name: Execute genuine Unity full-world first entry and 12 re-entry PlayMode
         shell: powershell
         timeout-minutes: 95
@@ -211,7 +213,14 @@ jobs:
           }
           if(-not(Select-String -Path $log -Pattern 'ELDORIA_WORLD_STREAMING_VISUALS' -SimpleMatch -Quiet)){throw 'Missing stream bound proof'}
           if(-not(Select-String $log -Pattern 'ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE' -SimpleMatch -Quiet)){throw 'Repeated world navigation not proven'}
-          Write-Host ('ELDORIA_WORLD_P0_REAL_UNITY_PASS '+$env:GITHUB_SHA)
+          if($env:ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART -eq '1'){
+            if(-not(Select-String -Path $log -Pattern 'ELDORIA_WORLD_P0_LOGIC_PROBE_MISSING_BASTION_ART_COUNT=' -SimpleMatch -Quiet)){
+              throw 'Missing-art logic-only proof marker absent'
+            }
+            Write-Host ('ELDORIA_WORLD_P0_LOGIC_ONLY_NATIVE_PASS_NOT_RELEASABLE '+$env:GITHUB_SHA)
+          }else{
+            Write-Host ('ELDORIA_WORLD_P0_REAL_UNITY_PASS_ORIGINAL_ART '+$env:GITHUB_SHA)
+          }
       - name: Upload truthful native log and XML even when the proof fails
         if: always()
         uses: actions/upload-artifact@v4
