@@ -56,7 +56,7 @@ namespace Eldoria.BetaMemory.Tests
             var previousLogAssertionMode=LogAssert.ignoreFailingMessages;
             var unexpectedErrors=new System.Collections.Generic.List<string>();
             int missingBastionArt=0;
-            Application.LogCallback callback=(message,stack,type)=>{
+            UnityEngine.Application.LogCallback callback=(message,stack,type)=>{
                 if(type!=LogType.Error&&type!=LogType.Exception&&type!=LogType.Assert)return;
                 if(type==LogType.Error&&message.StartsWith(
                     "BASTION_III_MISSING_ART BastionIII/",StringComparison.Ordinal)){
@@ -66,7 +66,7 @@ namespace Eldoria.BetaMemory.Tests
             };
             if(logicOnly){
                 LogAssert.ignoreFailingMessages=true;
-                Application.logMessageReceived+=callback;
+                UnityEngine.Application.logMessageReceived+=callback;
                 Debug.Log("ELDORIA_WORLD_P0_LOGIC_ONLY_PROBE_NOT_A_RELEASE_CERTIFICATE");
             }
             var previousProbe=Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE");
@@ -299,7 +299,7 @@ namespace Eldoria.BetaMemory.Tests
             finally
             {
                 if(logicOnly){
-                    Application.logMessageReceived-=callback;
+                    UnityEngine.Application.logMessageReceived-=callback;
                     LogAssert.ignoreFailingMessages=previousLogAssertionMode;
                 }
                 optIn.SetValue(null,previousFlag);

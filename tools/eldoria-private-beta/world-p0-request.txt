@@ -1,5 +1,5 @@
 state=FIRST_WORLD_ENTRY_NATIVE_ONLY
-owner=chatgpt-eldoria-world-entry-p0-20261114
-revision=79
+owner=chatgpt-world-p0-continuation-9df36d17
+revision=80
 testers_allowed=false
-attempt=6
+attempt=7
