@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/vigilia-shared-destination-source.yml'
       - 'tools/breach-watch/*OwnedNativeInput*.ps1'
+      - 'tools/breach-watch/RecoverOwnFailedNativeScratch.ps1'
       - '.github/workflows/breach-watch-native.yml'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchResourceBagBridge.cs'
@@ -89,6 +90,7 @@ jobs:
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts/**
             /tools/breach-watch/*OwnedNativeInput*.ps1
+            /tools/breach-watch/RecoverOwnFailedNativeScratch.ps1
             /tools/breach-watch/SyntaxAudit.csproj
             /tools/breach-watch/Program.cs
             /Unity/Assets/Eldoria/BreachWatch/Runtime/**
@@ -223,6 +225,20 @@ jobs:
               )
               assert set(result.stdout.splitlines())==set(required),(result.stdout,result.stderr)
           print('VIGILIA_NATIVE_SCENE_RETAINED_ARCHIVES_EXCLUDED_SPARSE_GUARD_PASS')
+          archive=Path('tools/breach-watch/RecoverOwnFailedNativeScratch.ps1').read_text()
+          wf=Path('.github/workflows/breach-watch-native.yml').read_text()
+          pos=[wf.index(t) for t in (
+            '      - name: Preserve exact modified and untracked scratch bytes',
+            '      - uses: actions/upload-artifact@v4\n        id: uploaded-snapshot',
+            '      - name: Reclaim only backed-up failed scratch after uploaded artifact ID',
+            '  native:\n',
+          )]
+          assert pos==sorted(pos),pos
+          assert "original[0].id" in archive and "allChangesStoredExactly" in archive
+          assert "Source-difference snapshot hash changed" in archive or "Source-difference snapshot" in archive or "snapshot hash changed" in archive.lower()
+          assert "Get-Process Unity,blender,git" in archive
+          assert "VIGILIA_EXACT_FAILED_SCRATCH_REQUIRES_BACKUP_BEFORE_RECLAIM" in wf
+          print('VIGILIA_NATIVE_DISK_CLEANUP_PRESERVES_EVERY_DIRTY_FILE_BEFORE_DELETE')
           PY
       - name: Parse exact PowerShell native recovery and checkout before using Windows
         shell: pwsh
@@ -231,6 +247,9 @@ jobs:
           $lines=Get-Content '.github/workflows/breach-watch-native.yml'
           foreach($name in @(
              'Reclaim only old failed Vigilia-specific temporary sources',
+             'Fetch exact own-scratch preservation helper',
+             'Preserve exact modified and untracked scratch bytes',
+             'Reclaim only backed-up failed scratch after uploaded artifact ID',
              'Fetch exact PR source safely with sparse Unity checkout',
              'Stop before Unity if checkout consumed 16 GiB reserve'
           )){
@@ -258,6 +277,11 @@ jobs:
             if($errors.Count){throw ("Bad native source PowerShell for $name : "+($errors|Out-String))}
             Write-Host ("VIGILIA_NATIVE_POWERSHELL_SOURCE_PARSE_PASS "+$name)
           }
+          $file='tools/breach-watch/RecoverOwnFailedNativeScratch.ps1'
+          $tokens=$null;$errors=$null
+          [Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file),[ref]$tokens,[ref]$errors)|Out-Null
+          if($errors.Count){throw ($errors|Out-String)}
+          Write-Host 'VIGILIA_EXACT_SOURCE_DIFF_BACKUP_POWERSHELL_PARSE_PASS'
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash
         run: |

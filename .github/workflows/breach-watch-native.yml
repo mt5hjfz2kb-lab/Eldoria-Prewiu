@@ -929,7 +929,17 @@ jobs:
                   }
                 }
               }
-              throw 'No safe second volume; previous unique Vigilia checkout audited read-only for in-place source reuse'
+              # Only a dedicated scratch folder of our own failed Unity
+              # run is eligible for separate byte-for-byte snapshot/cleanup.
+              # Never modify historical 43532823031-1 or any other owner.
+              $ownCrash=Join-Path $workspace 'breachwatch-isolated-43590398106-1'
+              if(-not(Test-Path -LiteralPath $ownCrash)){
+                throw 'No safe second volume or own failed disposable checkout'
+              }
+              Add-Content $env:GITHUB_OUTPUT 'need_snapshot=yes'
+              Add-Content $env:GITHUB_OUTPUT ('source_parent='+$env:GITHUB_WORKSPACE)
+              Write-Host 'VIGILIA_EXACT_FAILED_SCRATCH_REQUIRES_BACKUP_BEFORE_RECLAIM'
+              return
             }
             $parent=Join-Path $alternate[0].Root 'Eldoria-Vigilia-owned-native'
             if(-not(Test-Path -LiteralPath $parent)){
@@ -944,6 +954,61 @@ jobs:
           }
           Add-Content $env:GITHUB_OUTPUT ('source_parent='+$parent)
           Write-Host 'VIGILIA_DISK_RECOVERY_EXCLUSIVE_SAFE_PASS'
+      - name: Fetch exact own-scratch preservation helper
+        if: steps.recovery.outputs.need_snapshot == 'yes'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Vigilia-Own-Crash-Restore'}
+          $url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/tools/breach-watch/RecoverOwnFailedNativeScratch.ps1?ref='+$env:GITHUB_SHA
+          $file=Invoke-RestMethod -Uri $url -Headers $headers
+          if($file.sha -ne '99228c05475d17c2f212cbc3096e16772c7fe4cb' -or
+             $file.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace([string]$file.content)){
+             throw 'Cannot verify exact byte-archive helper from triggered source'
+          }
+          $dst=Join-Path $env:RUNNER_TEMP ('vigilia-recover-'+$env:GITHUB_RUN_ID+'.ps1')
+          if(Test-Path -LiteralPath $dst){throw 'Unexpected stale helper path'}
+          [IO.File]::WriteAllBytes($dst,[Convert]::FromBase64String(($file.content -replace '\s','')))
+          $tokens=$null;$errors=$null
+          [Management.Automation.Language.Parser]::ParseFile($dst,[ref]$tokens,[ref]$errors)|Out-Null
+          if($errors.Count){throw ($errors|Out-String)}
+          Write-Host 'VIGILIA_OWN_DIFFERENCE_ARCHIVER_PINNED_AND_PARSED'
+      - name: Preserve exact modified and untracked scratch bytes
+        if: steps.recovery.outputs.need_snapshot == 'yes'
+        id: snapshot
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEASE_OWNER: ${{ needs.owner-preflight.outputs.owner }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+        run: |
+          $script=Join-Path $env:RUNNER_TEMP ('vigilia-recover-'+$env:GITHUB_RUN_ID+'.ps1')
+          & $script -Phase Snapshot
+          if($LASTEXITCODE -and $LASTEXITCODE -ne 0){throw 'Native source byte snapshot failed'}
+      - uses: actions/upload-artifact@v4
+        id: uploaded-snapshot
+        if: steps.recovery.outputs.need_snapshot == 'yes'
+        with:
+          name: vigilia-own-failed-source-${{ github.run_id }}
+          path: ${{ runner.temp }}/vigilia-failed-diff-${{ github.run_id }}.zip
+          if-no-files-found: error
+          retention-days: 21
+      - name: Reclaim only backed-up failed scratch after uploaded artifact ID
+        if: steps.recovery.outputs.need_snapshot == 'yes'
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEASE_OWNER: ${{ needs.owner-preflight.outputs.owner }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+          PRESERVED_SNAPSHOT_SHA: ${{ steps.snapshot.outputs.snapshot_sha }}
+          PRESERVED_ARTIFACT_ID: ${{ steps.uploaded-snapshot.outputs.artifact-id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $script=Join-Path $env:RUNNER_TEMP ('vigilia-recover-'+$env:GITHUB_RUN_ID+'.ps1')
+          & $script -Phase Cleanup -ArtifactId $env:PRESERVED_ARTIFACT_ID -ExpectedSnapshotSha256 $env:PRESERVED_SNAPSHOT_SHA
+          if($LASTEXITCODE -and $LASTEXITCODE -ne 0){throw 'Own failed checkout cleanup failed closed'}
   native:
     needs: [owner-preflight, source-syntax, approved-art-integrity, recover-owned-disk]
     if: needs.owner-preflight.outputs.authorized == 'true' && needs.recover-owned-disk.result == 'success' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
