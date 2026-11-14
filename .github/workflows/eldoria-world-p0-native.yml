@@ -115,7 +115,10 @@ jobs:
           if($art.Count -ne 51 -or ($art|Measure-Object bytes -Sum).Sum -ne 108788643){
             throw 'Original 51-file native asset inventory has changed'
           }
-          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source')
+          $origins=@('breachwatch-native-source-43489752868-1',
+            'beta-structural-preserved-inputs-42985136961-1',
+            'beta-structural-preserved-inputs-42595057735-1',
+            'beta-structural-source-42505611257-1','valoria-layered-source')
           $copies=New-Object 'System.Collections.Generic.List[object]'
           $missing=New-Object 'System.Collections.Generic.List[string]'
           foreach($item in $art){
