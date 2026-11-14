@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Eldoria.Application;
@@ -208,6 +209,27 @@ namespace Eldoria.BetaMemory.Tests
                     " creature_models="+creatureModels+
                     " allocated="+UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong()+
                     " managed="+GC.GetTotalMemory(false));
+
+                // Actual Unity camera evidence is mandatory when the original
+                // 51 Bastion III source assets are present. Never capture the
+                // logic-only missing-art sandbox as artistic proof.
+                if(!logicOnly&&Environment.GetEnvironmentVariable("ELDORIA_WORLD_P0_CAPTURE_REAL_ART")=="1"){
+                    string output=Environment.GetEnvironmentVariable("ELDORIA_WORLD_P0_CAPTURE_DIR");
+                    Assert.That(output,Is.Not.Null.And.Not.Empty,"Owned output directory required");
+                    Assert.That(Directory.Exists(output),Is.False,
+                        "Capture must use a new empty output, never overwrite prior evidence");
+                    var capture=FindType("Eldoria.World4XCanon.Editor.RegionOneCanonicalCapture");
+                    Assert.That(capture,Is.Not.Null,"Real integrated Unity world capture unavailable");
+                    var method=capture.GetMethod("Capture",BindingFlags.Static|BindingFlags.Public);
+                    Assert.That(method,Is.Not.Null);
+                    Environment.SetEnvironmentVariable("ELDORIA_REGION1_CAPTURE_OUT",output);
+                    method.Invoke(null,null);
+                    Assert.That(Directory.GetFiles(output,"*-unity.png").Length,Is.EqualTo(6),
+                        "All three real world zoom levels in two orientations are required");
+                    Assert.That(Directory.GetFiles(output,"*-source.json").Length,Is.EqualTo(6),
+                        "Original Unity camera provenance must accompany every screenshot");
+                    Debug.Log("ELDORIA_WORLD_P0_SIX_REAL_UNITY_VIEWS_VERIFIED");
+                }
                 // Exercise the same camera/root repeatedly. This must not allocate
                 // a second Region 1, lose HUD/gateway or re-enter construction.
                 for(int cycle=0;cycle<12;cycle++)
