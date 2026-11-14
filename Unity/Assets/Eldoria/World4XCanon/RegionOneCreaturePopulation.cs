@@ -20,28 +20,22 @@ namespace Eldoria.World4XCanon
         }
         readonly Dictionary<string,Encounter> instances=new Dictionary<string,Encounter>();
         readonly Dictionary<string,GameObject> prefabs=new Dictionary<string,GameObject>();
+        // Keep every saved logical target, but never instantiate 36 near/far
+        // Tripo pairs at once when a player first taps Mundo on iPhone.
+        const int MaximumVisibleModels=12;
+        const int NewModelsPerRefresh=2;
         ValoriaIntegratedWorld host;
         ICommandGateway gateway;
         RegionOneResourcePlacement placement;
         float nextSnapshot;
         public static void Install(Transform parent,ValoriaIntegratedWorld host,RegionOneResourcePlacement placement)
         {
-            var boarNear=Resources.Load<GameObject>("World4X/Creatures/RockBoarNear");
-            var boarFar=Resources.Load<GameObject>("World4X/Creatures/RockBoarFar");
-            var spawnNear=Resources.Load<GameObject>("World4X/Creatures/SpawnlingNear");
-            var spawnFar=Resources.Load<GameObject>("World4X/Creatures/SpawnlingFar");
-            if(!boarNear||!boarFar||!spawnNear||!spawnFar)
-            {
-                Debug.LogWarning("REGION1_TRIPO_CREATURE_SOURCES_UNAVAILABLE: no fake encounters instantiated");
-                return;
-            }
+            // Loading four source prefabs before the first world frame retains
+            // all four GLB hierarchies even when no creature is on screen.
+            // Resolve each source on the first actual visible use instead.
             var service=parent.gameObject.AddComponent<RegionOneCreaturePopulation>();
             service.host=host;
             service.placement=placement;
-            service.prefabs["boar:near"]=boarNear;
-            service.prefabs["boar:far"]=boarFar;
-            service.prefabs["spawnling:near"]=spawnNear;
-            service.prefabs["spawnling:far"]=spawnFar;
             if(host.City.Gateway is LocalGateway local&&local.Snapshot().WorldId=="world-local")
             {
                 local.ConfigureLocalCreatureRespawn(placement,RenewablePopulationPolicy.Delay);
@@ -74,6 +68,8 @@ namespace Eldoria.World4XCanon
             float zoom=host.WorldCamera.orthographicSize;
             bool panorama=RegionOneResourcePlacement.IsPanoramic(zoom,host.WorldNavigation.globalZoom);
             bool near=zoom<110;
+            int resident=instances.Values.Count(x=>x.Near||x.Far);
+            int created=0;
             foreach(var creature in state.WorldCreatureLocations)
             {
                 if(creature.Generation<1)continue;
@@ -87,45 +83,96 @@ namespace Eldoria.World4XCanon
                     var collider=go.AddComponent<BoxCollider>();
                     collider.isTrigger=true;collider.center=new Vector3(0,5,0);
                     collider.size=new Vector3(12,10,12);
-                    var close=MakeModel(creature.CreatureKind,"near",go.transform,creature.TargetId);
-                    var far=MakeModel(creature.CreatureKind,"far",go.transform,creature.TargetId);
-                    float nearScale=RegionOneResourceModels.FitNearWidth(close,
-                        RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f));
-                    entity=new Encounter{Hotspot=hot,Near=close,Far=far,NearScale=nearScale};
+                    // The hotspot/collider must be ready for real gameplay even
+                    // while its expensive 3D representation is not in view.
+                    entity=new Encounter{Hotspot=hot,NearScale=0};
                     instances.Add(creature.TargetId,entity);
                 }
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
-                // Both source LODs use the same continuous scale at their switching distance.
+                bool visible=creature.Alive&&!panorama&&OnScreen(entity.Hotspot.transform.position);
+                // A maximum of one mesh representation is retained per
+                // visible creature. All off-screen/panoramic meshes are freed;
+                // the saved target and its collider are NEVER removed.
+                if(!visible||(near&&entity.Far)||(!near&&entity.Near))
+                {
+                    if(entity.Near||entity.Far)resident--;
+                    if(entity.Near)Destroy(entity.Near);
+                    if(entity.Far)Destroy(entity.Far);
+                    entity.Near=null;entity.Far=null;
+                }
+                if(visible&&resident<MaximumVisibleModels&&created<NewModelsPerRefresh&&
+                   !(near?entity.Near:entity.Far))
+                {
+                    var model=MakeModel(creature.CreatureKind,near?"near":"far",
+                        entity.Hotspot.transform,creature.TargetId);
+                    if(model)
+                    {
+                        if(near)
+                        {
+                            entity.NearScale=RegionOneResourceModels.FitNearWidth(model,
+                                RegionOneReferenceNodes.BastionOneVisualWidth*
+                                (creature.CreatureKind=="boar"?.45f:.55f));
+                            entity.Near=model;
+                        }
+                        else entity.Far=model;
+                        resident++;created++;
+                    }
+                }
+                // Preserve existing scaling and physical ground alignment for
+                // whichever original Tripo model is actually in the viewport.
                 float presence=Mathf.Lerp(2f,3.4f,Mathf.InverseLerp(36f,280f,zoom));
-                // Portrait's regional camera frames the same world with a larger
-                // orthographic size. Preserve a target's share of viewport height
-                // beyond the landscape reference, independently of device pixels.
                 if(!near)presence*=Mathf.Max(1f,zoom/280f);
                 float baseScale=creature.CreatureKind=="boar"?7.5f:7.2f;
                 float closePresence=Mathf.Lerp(entity.NearScale/baseScale,presence,
                     Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(64f,110f,zoom)));
-                FitModel(entity.Near,creature.CreatureKind,closePresence,entity.Hotspot.transform);
-                FitModel(entity.Far,creature.CreatureKind,presence,entity.Hotspot.transform);
+                if(entity.Near)FitModel(entity.Near,creature.CreatureKind,closePresence,entity.Hotspot.transform);
+                if(entity.Far)FitModel(entity.Far,creature.CreatureKind,presence,entity.Hotspot.transform);
                 var shown=near?entity.Near:entity.Far;
-                var visibleBounds=shown.GetComponentsInChildren<Renderer>(true);
-                if(visibleBounds.Length>0)
+                if(shown)
                 {
-                    var bounds=visibleBounds[0].bounds;
-                    foreach(var renderer in visibleBounds)bounds.Encapsulate(renderer.bounds);
-                    var pick=(BoxCollider)entity.Hotspot.GetComponent<Collider>();
-                    pick.center=bounds.center-entity.Hotspot.transform.position;
-                    pick.size=Vector3.Max(bounds.size,new Vector3(12,10,12));
+                    var visibleBounds=shown.GetComponentsInChildren<Renderer>(true);
+                    if(visibleBounds.Length>0)
+                    {
+                        var bounds=visibleBounds[0].bounds;
+                        foreach(var renderer in visibleBounds)bounds.Encapsulate(renderer.bounds);
+                        var pick=(BoxCollider)entity.Hotspot.GetComponent<Collider>();
+                        pick.center=bounds.center-entity.Hotspot.transform.position;
+                        pick.size=Vector3.Max(bounds.size,new Vector3(12,10,12));
+                    }
                 }
-                var alive=creature.Alive;
-                entity.Hotspot.GetComponent<Collider>().enabled=alive&&!panorama;
-                // Hide visual, impostor and shadows in panorama without removing state.
-                SetVisible(entity.Near,alive&&!panorama&&near);
-                SetVisible(entity.Far,alive&&!panorama&&!near);
+                entity.Hotspot.GetComponent<Collider>().enabled=creature.Alive&&!panorama;
+                SetVisible(entity.Near,creature.Alive&&!panorama&&near);
+                SetVisible(entity.Far,creature.Alive&&!panorama&&!near);
             }
+        }
+        bool OnScreen(Vector3 point)
+        {
+            if(!host||!host.InWorld||!host.WorldCamera)return false;
+            var screen=host.WorldCamera.WorldToViewportPoint(point);
+            return screen.z>0&&screen.x>=-.15f&&screen.x<=1.15f&&
+                screen.y>=-.15f&&screen.y<=1.15f;
+        }
+        GameObject SourceFor(string kind,string lod)
+        {
+            string key=kind+":"+lod;
+            if(prefabs.TryGetValue(key,out var source))return source;
+            string resource=kind=="boar"?"RockBoar":kind=="spawnling"?"Spawnling":null;
+            if(resource==null)throw new InvalidOperationException("Unknown canonical creature "+kind);
+            source=Resources.Load<GameObject>("World4X/Creatures/"+resource+(lod=="near"?"Near":"Far"));
+            if(!source)
+            {
+                Debug.LogWarning("REGION1_TRIPO_CREATURE_SOURCES_UNAVAILABLE: "+key+
+                    "; no substitute encounter is created");
+                return null;
+            }
+            prefabs.Add(key,source);
+            return source;
         }
         GameObject MakeModel(string kind,string lod,Transform parent,string id)
         {
-            var go=Instantiate(prefabs[kind+":"+lod],parent);
+            var source=SourceFor(kind,lod);
+            if(!source)return null;
+            var go=Instantiate(source,parent);
             go.name="Original Tripo "+kind+" "+lod+" "+id;
             go.transform.localPosition=Vector3.zero;
             float heading=0;foreach(char c in id)heading=(heading*31+c)%360;
