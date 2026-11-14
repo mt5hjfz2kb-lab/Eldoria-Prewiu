@@ -68,6 +68,10 @@ if(!File.Exists(coachFile+".meta") ||
    !coachSource.Contains("bool hasActualCaption=") ||
    !firstEntryFixture.Contains("RequireCleanSelfExplainingGuide(canvas,\"nickname input\")") ||
    !firstEntryFixture.Contains("RequireCleanSelfExplainingGuide(canvas,\"first narrative\")") ||
+   !coachSource.Contains("EnsureVigiliaBuildingSelection(selected)") ||
+   !coachSource.Contains("select.Invoke(vigilia,new object[]{canonical})") ||
+   !coachSource.Contains("selected-building-panel-not-rendered") ||
+   !coachSource.Contains("ISSUE186_CANONICAL_BUILDING_SELECTION_BRIDGED") ||
    !coachSource.Contains("label.Select,key") ||
    !coachSource.Contains("narrative-continue") ||
    !firstEntryFixture.Contains("firstNicknameInputOnRealHit=true") ||
