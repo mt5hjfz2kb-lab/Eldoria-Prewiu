@@ -1,11 +1,11 @@
-VIGILIA PHASE1 EXACT NATIVE UNITY CHECKOUT ORDER REPAIR
+VIGILIA PHASE1 NATIVE REAL UNITY 3X PROBE: FIX REAL NAV CAPTIONS AND SPRITE CONTRACT
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
 revision=128
-parent_sha=db1e5f1e9954dc466b847b32291f53aae97489a3
-previous_run=43532593397 native FAIL before Editor; fresh git repo has unborn HEAD so preservation checker errored
-correction=check previously absent candidate directory, initialize/fetch/checkout exact SHA then run preservation checker with real HEAD
-reference_quality=must render real 1x and 15 actual 3x captures, no fake visual approval
-no_touch_old_checkouts=true
-native_interference_guard=Get-Process Unity,Blender + exact main lease
+last_run=43532823031
+last_failure=Unity native runtime guard false-negative: expects only 1 painted medallion when new approved kit includes 1 icon + 1 label. Actual caption Text was uninitialized.
+source_fix=caption.text now assigned actual 5 canonical nav destinations; native guard strictly requires 1 medallion + 1 legible matching label, rejects duplicates; sharp sprite rule matches audited 1024, bilinear, zero mipmaps.
+required=actual Unity proof 390x844 844x390 900x1600 at 3x + 1x; no fake art approval; preserve player save.
+resource_claim=windows-runner-heavy only leased to Vigilia rev128; stop if Unity or Blender busy
+do_not_modify=main, beta, Issue186, player data, economy, phase2
 budget_eur=0

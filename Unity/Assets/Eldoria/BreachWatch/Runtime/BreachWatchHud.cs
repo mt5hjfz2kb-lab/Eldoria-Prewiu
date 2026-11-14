@@ -823,6 +823,9 @@ namespace Eldoria.BreachWatch
                 navActiveOutlines[i]=glow;
                 var caption=Label(root,"Navigation / "+navLabels[i],13,
                     TextAnchor.MiddleCenter,TextIvory,true);
+                // Label initializes a Text component but does not set
+                // its content: the five real navigation labels must do so.
+                caption.text=navLabels[i];
                 caption.resizeTextForBestFit=false;
                 navCaptions[i]=caption;
                 navButtons[i]=button;

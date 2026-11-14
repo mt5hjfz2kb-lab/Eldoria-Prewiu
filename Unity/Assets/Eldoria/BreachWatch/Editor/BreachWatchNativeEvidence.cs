@@ -1009,11 +1009,20 @@ namespace Eldoria.BreachWatch.Editor
                     Need(button.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
                          "Old vector icons still layered under a final medallion in "+
                          name+"/"+button.name);
+                    // The current approved kit deliberately shows exactly one
+                    // source medallion and one real destination name.
+                    var captions=button.GetComponentsInChildren<Text>(true);
+                    Need(captions.Length==1 && captions[0] &&
+                         captions[0].text==button.name &&
+                         !captions[0].raycastTarget,
+                         "Real navigation caption missing or duplicated: "+
+                         name+"/"+button.name);
                     var visiblePaint=button.GetComponentsInChildren<Graphic>(true)
                         .Count(g=>g && g.enabled &&
-                            g.gameObject.activeInHierarchy && g.color.a>.01f);
-                    Need(visiblePaint==(button.gameObject.activeInHierarchy?1:0),
-                         "Unimplemented or duplicated painted navigation appears in "+
+                            g.gameObject.activeInHierarchy && g.color.a>.01f &&
+                            (!(g is Text) || !string.IsNullOrWhiteSpace(((Text)g).text)));
+                    Need(visiblePaint==(button.gameObject.activeInHierarchy?2:0),
+                         "Expected one approved medallion and one readable caption: "+
                          name+"/"+button.name);
                 }
                 float previousRight = -1;
@@ -1039,10 +1048,14 @@ namespace Eldoria.BreachWatch.Editor
                     medal.rectTransform.GetWorldCorners(paintedCorners);
                     var pa=RectTransformUtility.WorldToScreenPoint(camera,paintedCorners[0]);
                     var pb=RectTransformUtility.WorldToScreenPoint(camera,paintedCorners[2]);
-                    Need(medal.sprite.texture.mipmapCount>1 &&
-                         medal.sprite.texture.filterMode==FilterMode.Trilinear &&
-                         medal.sprite.texture.width<=512,
-                         "Medallion must use bounded, filtered minification: "+name);
+                    // Phase-1 UI is sharper with original source at most
+                    // 1024px, bilinear texture sampling and no sprite mipmaps.
+                    // Preserve exact native import checks rather than
+                    // ignoring the changed texture contract.
+                    Need(medal.sprite.texture.mipmapCount==1 &&
+                         medal.sprite.texture.filterMode==FilterMode.Bilinear &&
+                         medal.sprite.texture.width<=1024,
+                         "Medallion not using phase-1 no-mipmap 1024px UI source: "+name);
                     float visibleInkWidth=(pb.x-pa.x)*medal.VisualScale;
                     float visibleInkHeight=(pb.y-pa.y)*medal.VisualScale;
                     Need(visibleInkWidth>=38f && visibleInkHeight>=38f,
