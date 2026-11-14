@@ -821,7 +821,19 @@ jobs:
             if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
               throw 'Process started before cache cleanup'
             }
-            Remove-Item -LiteralPath $cache -Recurse -Force -ErrorAction Stop
+            # Windows PowerShell 5.1 Remove-Item can fail at long package
+            # file names (>MAX_PATH). Robocopy handles long paths and, with
+            # /XJ, will NOT follow directory junctions into other workspaces.
+            $empty=Join-Path $env:RUNNER_TEMP ('vigilia-empty-library-'+$env:GITHUB_RUN_ID)
+            if(Test-Path -LiteralPath $empty){throw 'Refuse existing cleanup source directory'}
+            New-Item -ItemType Directory -Path $empty -ErrorAction Stop | Out-Null
+            & robocopy.exe $empty $cache /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP
+            $copyExit=$LASTEXITCODE
+            if($copyExit -gt 7){throw "Robocopy refused long-path Library cleanup: $copyExit"}
+            $remaining=@(Get-ChildItem -LiteralPath $cache -Force -ErrorAction Stop | Select-Object -First 1)
+            if($remaining.Count){throw 'Unexpected Library file/junction remains; do not traverse it'}
+            Remove-Item -LiteralPath $cache -Force -ErrorAction Stop
+            Remove-Item -LiteralPath $empty -Force -ErrorAction Stop
             Write-Host 'VIGILIA_OWN_UNITY_GENERATED_LIBRARY_RECLAIMED'
           }
           $after=(Get-PSDrive C).Free

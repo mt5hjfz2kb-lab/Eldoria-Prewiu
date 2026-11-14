@@ -1,10 +1,11 @@
-VIGILIA PHASE1 RECOVER WINDOWS DISK WITH INSTALLED GIT BEFORE UNITY
-workstream=eldoria-forja-oscura-visual-proof-20261107
+VIGILIA PHASE1 NATIVE 3X AFTER GENUINE WINDOWS LIBRARY MAXPATH FIX
 owner=chatgpt-vigilia-visual-kit-20261113
-revision=128
-previous_run=43573999387 disk recovery preflight 0 GiB C; strictly verified and reclaimed 3 failed isolated candidate directories; next gate old OWN 43532823031-1 Unity/Library cache verification aborted because cleanup job PATH omitted GitHubDesktop Git.
-correction=isolate installed git.exe in recovery job and verify previous exact SHA before touching ONLY own generated Unity/Library cache when C remains under 12GiB.
-keep_old_source_git_objects=true
-do_not_clean_shared_checkout_or_other_owner=true
-after_safe_disk_recovery=one real Unity 3x capture and actual A/B quality judgement
-zero_euro=true
+rev=128
+last_run=43574160539 failed during safe cache cleaning at own old generated Unity/Library/PackageCache due Windows PowerShell Remove-Item MAX_PATH (not game failure).
+fix=Robocopy /MIR /XJ from freshly verified empty temporary directory to own generated Library, no junction traversals, fail if anything remains. Prior HEAD verified exactly.
+source_sha_pinned_by_git_workflow=true
+no_alteration_other_owners=true
+no_gameplay_save_change=true
+no_beta_publishing=true
+zero_euros=true
+capture=15 actual Retina Unity 3x images and native 1x (390x844/844x390/900x1600), then independent art review.
