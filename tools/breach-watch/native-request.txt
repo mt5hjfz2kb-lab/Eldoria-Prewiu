@@ -1,14 +1,11 @@
-VIGILIA FASE1 EXACT NATIVE ISOLATED UNITY SOURCE
+VIGILIA PHASE1 EXACT NATIVE UNITY CHECKOUT ORDER REPAIR
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-ownership_revision=128
-previous_head=59f1dd2b2df851f7c7a0732189ae823a1baab677
-previous_run=43532249892 PC_READY but dirty historical checkout refused
-fixed=always create unique per-attempt git checkout, preserve every existing .mat file and old source tree
-source_verified=43531996241 PASS 64 geometry/real fonts, 43532249892 source syntax PASS
-other_active=43532317374 ubuntu-only tester validation, not Windows
-process_gate=do not interrupt Unity/Blender, fail if process exists
-native=real Unity 1x and 15 genuine Retina 3x city/Bastion/mail/report/bag
-budget=0
-no_main_beta_or_merge=true
-art_approved=false
+revision=128
+parent_sha=db1e5f1e9954dc466b847b32291f53aae97489a3
+previous_run=43532593397 native FAIL before Editor; fresh git repo has unborn HEAD so preservation checker errored
+correction=check previously absent candidate directory, initialize/fetch/checkout exact SHA then run preservation checker with real HEAD
+reference_quality=must render real 1x and 15 actual 3x captures, no fake visual approval
+no_touch_old_checkouts=true
+native_interference_guard=Get-Process Unity,Blender + exact main lease
+budget_eur=0

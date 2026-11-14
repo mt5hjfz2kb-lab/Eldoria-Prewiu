@@ -794,7 +794,9 @@ jobs:
           $saved=Invoke-RestMethod -Uri $pinned -Headers $headers
           if($saved.encoding -ne 'base64' -or -not $saved.content){throw 'Pinned input-preservation helper unavailable'}
           [IO.File]::WriteAllBytes($helper,[Convert]::FromBase64String($saved.content))
-          & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          # Empty newly initialized repository has no HEAD; the preservation
+          # helper necessarily refuses it. Run it AFTER the first verified
+          # checkout. The old dirty shared tree is never opened or mutated.
           & git -C $root config core.sparseCheckout true
           & git -C $root config core.sparseCheckoutCone false
           $patterns=@('/Unity/**','/tools/breach-watch/**')
@@ -809,6 +811,10 @@ jobs:
           & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
           if($LASTEXITCODE){throw 'Git source checkout failed'}
           if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){throw 'Source commit mismatch'}
+          # The initial source directory was proven absent before git init;
+          # now HEAD exists and the usual strict Git preservation check can
+          # verify the fresh worktree without dereferencing an unborn branch.
+          & $helper -Source $root -Output $preserved -SnapshotId ($env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
           foreach($required in @(
             'Unity/ProjectSettings/ProjectVersion.txt',
             'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs',
