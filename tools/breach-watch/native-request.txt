@@ -1,11 +1,7 @@
-VIGILIA PHASE1 NATIVE 3X AFTER GENUINE WINDOWS LIBRARY MAXPATH FIX
+VIGILIA PHASE1 RECOVER RUNNER DISK - READ ONLY INVENTORY OF OUR OWN ISOLATED CHECKOUTS
+workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-rev=128
-last_run=43574160539 failed during safe cache cleaning at own old generated Unity/Library/PackageCache due Windows PowerShell Remove-Item MAX_PATH (not game failure).
-fix=Robocopy /MIR /XJ from freshly verified empty temporary directory to own generated Library, no junction traversals, fail if anything remains. Prior HEAD verified exactly.
-source_sha_pinned_by_git_workflow=true
-no_alteration_other_owners=true
-no_gameplay_save_change=true
-no_beta_publishing=true
-zero_euros=true
-capture=15 actual Retina Unity 3x images and native 1x (390x844/844x390/900x1600), then independent art review.
+owner_revision=128
+previous_run=43574403114 safe long-path cleanup reclaimed 5.92 GiB from own generated Unity Library only, below guarded 8 GiB minimum; no native evidence.
+action=read-only list of own breachwatch-isolated-* checkout roots and flags generated Library/city evidence/destination evidence/Git object storage; select a safe low-risk strategy to reach 8 GiB before Unity.
+no Other owner files, no beta/source deletion, no money, no art autoapproval.

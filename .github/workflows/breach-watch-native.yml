@@ -838,6 +838,17 @@ jobs:
           }
           $after=(Get-PSDrive C).Free
           Write-Host ('VIGILIA_DISK_FREE_GIB_AFTER '+[math]::Round($after/1GB,2))
+          # Read-only inventory, never traverse or delete another job's files.
+          $ownDirs=@(Get-ChildItem -LiteralPath $workspace -Directory -Filter 'breachwatch-isolated-*' -ErrorAction SilentlyContinue)
+          foreach($dir in $ownDirs){
+            $hasLib=Test-Path -LiteralPath (Join-Path $dir.FullName 'Unity/Library')
+            $hasCity=Test-Path -LiteralPath (Join-Path $dir.FullName 'Unity/BreachWatchNativeEvidence')
+            $hasDestination=Test-Path -LiteralPath (Join-Path $dir.FullName 'Unity/BreachWatchDestinationEvidence')
+            $hasGit=Test-Path -LiteralPath (Join-Path $dir.FullName '.git/objects')
+            Write-Host ("VIGILIA_OWN_ISOLATED_INVENTORY name="+$dir.Name+
+              " generatedLibrary="+$hasLib+" cityEvidence="+$hasCity+
+              " destinationEvidence="+$hasDestination+" gitObjects="+$hasGit)
+          }
           if($after -lt 8GB){throw 'Not enough safe disk space to run new isolated Unity capture'}
           Write-Host 'VIGILIA_DISK_RECOVERY_EXCLUSIVE_SAFE_PASS'
   native:
