@@ -492,7 +492,10 @@ namespace Eldoria.BreachWatch.Editor
                  "Unintroduced food capsule is visible or unlocked food is missing");
             Need(ui.HasNativePremiumTypography,
                 "Vigilia must use its own legally bundled Garamond text on all devices");
-            var expectedDestinations=new []{"REINO","RECURSOS","EJÉRCITO","EXPLORAR","HÉROES"};
+            var expectedDestinations=new []{"CIUDAD","BOLSA","EJÉRCITO","MUNDO","HÉROES"};
+            Need(!ui.NavButtons.Any(b=>b.GetComponentsInChildren<Text>(true).Any(t=>
+                     t && !string.IsNullOrWhiteSpace(t.text))),
+                 "Navigation must remain icon-only, without visible names");
             Need(ui.NavButtons.Count==5 &&
                  ui.NavButtons.Select(x=>x.name).SequenceEqual(expectedDestinations),
                  "The five sculpted medallions have misleading destination labels");
@@ -530,12 +533,26 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.SelectedBuildingId=="sawmill" &&
                  ui.CurrentSnapshot?.Building?.Id=="sawmill",
                  "Real city selection did not reach the independent Vigilia panel");
-            // Second real destination uses the provisions medallion. It must
-            // select a resource building, not the barracks or an old HUD panel.
+            var bagPlate=ui.NavButtons[1].GetComponentInChildren<BreachWatchPlate>(true);
+            Need(bagPlate && bagPlate.Type!=BreachWatchPlate.PlateType.Selected,
+                 "Selecting the real Sawmill incorrectly highlights BOLSA");
+            // Navigation semantics: city must clear building context without
+            // dispatching construction or selecting a tutorial objective.
+            ui.NavButtons[0].onClick.Invoke();
+            Need(ui.SelectedBuildingId=="" && !host.InWorld,
+                 "CIUDAD opened a building instead of returning to the city");
+            var savedBag=host.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.Issue186BagOverlay>();
+            Need(savedBag,"Production saved bag is absent");
             ui.NavButtons[1].onClick.Invoke();
-            Need(ui.SelectedBuildingId=="sawmill" &&
-                 ui.CurrentSnapshot?.Building?.Id=="sawmill",
-                 "Provisions/RECURSOS did not select the live sawmill");
+            Need(savedBag.IsOpen && ui.SelectedBuildingId=="",
+                 "BOLSA failed to open saved inventory or selected a building");
+            ui.RenderNow();
+            Need(bagPlate.Type==BreachWatchPlate.PlateType.Selected,
+                 "BOLSA should highlight only while the saved inventory is actually open");
+            savedBag.RestorePresentation();
+            ui.RenderNow();
+            Need(bagPlate.Type!=BreachWatchPlate.PlateType.Selected,
+                 "BOLSA remained selected after closing the actual inventory");
             // Inspect both real destinations through repeated orientations.
             // The Bastion-only screenshots cannot detect a clipped Aserradero
             // title or BestFit bounds inherited from the preceding layout.
@@ -618,9 +635,27 @@ namespace Eldoria.BreachWatch.Editor
                     pointerClicks++;
                 }
 
-                ClickAsPlayer(target,"REINO");
-                Need(ui.SelectedBuildingId=="bastion",
-                    "REAL pointer to Reino could not open Bastion");
+                // Reproduce an in-flight entry without creating another world:
+                // a city or bag selection must invalidate the queued request.
+                var pendingField=typeof(ValoriaIntegratedWorld).GetField("deferredWorldEntryQueued",
+                    System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+                Need(pendingField!=null,"Deferred world-entry contract missing");
+                pendingField.SetValue(host,true);
+                ui.RenderNow();
+                Need(!ui.NavButtons[0].gameObject.activeInHierarchy,
+                    "Pending world entry duplicates the return castle icon");
+                // Synthetic pending state before Chapter I world unlock:
+                // the actual deferred return icon is gated until the story
+                // unlock. Test cancel here via the canonical host, and the
+                // visible travel medallion in advanced unlocked QA below.
+                Need(host.TrySetWorld(false),
+                    "Canonical city return failed to cancel synthetic deferred entry");
+                ui.RenderNow();
+                ClickAsPlayer(target,"CIUDAD");
+                Need(!host.WorldEntryPending,"City return left queued world entry");
+                Need(ui.SelectedBuildingId=="" && !ui.BuildingPanel.gameObject.activeInHierarchy,
+                    "REAL city pointer selected a construction target");
+                Need(host.Select("bastion"),"Actual city Bastion selection failed");
                 // A visually disabled B1 upgrade still explains the real
                 // canonical reason on touch; it must NEVER consume resources.
                 if(!ui.BuildingAction.interactable)
@@ -641,10 +676,12 @@ namespace Eldoria.BreachWatch.Editor
                 Need(ui.SelectedBuildingId=="" &&
                      !ui.BuildingPanel.gameObject.activeInHierarchy,
                      "Real native close touch did not dismiss the live Bastion card");
-                ClickAsPlayer(ui.NavButtons[1],"RECURSOS");
-                Need(ui.SelectedBuildingId=="sawmill" &&
-                     ui.CurrentSnapshot?.Building?.Id=="sawmill",
-                     "RECURSOS medallion failed to select the live sawmill");
+                pendingField.SetValue(host,true);
+                ClickAsPlayer(ui.NavButtons[1],"BOLSA");
+                Need(!host.WorldEntryPending,"Bag icon did not cancel queued world entry");
+                Need(savedBag.IsOpen && ui.SelectedBuildingId=="",
+                     "BOLSA medallion failed to open real saved inventory");
+                savedBag.RestorePresentation();
                 ui.SelectBuilding("");
                 var objectiveButton=ui.GetComponentsInChildren<Button>(true)
                     .FirstOrDefault(q=>q && q.name=="Chapter side tablet");

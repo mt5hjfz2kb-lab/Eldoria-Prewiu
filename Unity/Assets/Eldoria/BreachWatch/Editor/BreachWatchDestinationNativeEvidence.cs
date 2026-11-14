@@ -300,6 +300,27 @@ namespace Eldoria.BreachWatch.Editor
                 Need(nav!=null && nav.Length==5 && nav[2] &&
                      nav[4] && nav[2].interactable && nav[4].interactable,
                      "Real army and heroine medallions missing after Chapter III unlock");
+                Need(host.CanOpen(RoyalSection.World),
+                     "Saved Sawmill must unlock real world in advanced fixture");
+                // The deferred transition is driven by a real coroutine in
+                // production; inject its pending flag only to test the exact
+                // one-castle visibility and pointer routing without allocating
+                // Region 1 in a UI-only capture.
+                var pending=typeof(ValoriaIntegratedWorld).GetField(
+                    "deferredWorldEntryQueued",BindingFlags.Instance|BindingFlags.NonPublic);
+                Need(pending!=null,"Deferred world state unavailable for nav proof");
+                pending.SetValue(host,true);
+                ui.RenderNow();
+                var travelPlate=nav[3].GetComponentInChildren<BreachWatchPlate>(true);
+                Need(!nav[0].gameObject.activeInHierarchy &&
+                     nav[3].gameObject.activeInHierarchy && travelPlate &&
+                     travelPlate.sprite && travelPlate.sprite.name=="nav_castle",
+                     "A deferred world entry displays two castles or hides its cancel route");
+                ClickActualMailControl(ui,nav[3],false);
+                Need(!host.WorldEntryPending && !host.InWorld &&
+                     nav[0].gameObject.activeInHierarchy &&
+                     travelPlate.sprite && travelPlate.sprite.name=="nav_raven",
+                     "Real return medallion did not cancel deferred entry and restore city");
                 foreach(var size in new[]{(900,1600),(390,844)})
                     unlockedNavShots.Add(Capture(ui,folder,"nav-advanced",
                         size.Item1,size.Item2,
@@ -323,8 +344,19 @@ namespace Eldoria.BreachWatch.Editor
                     " narrative="+host.Hud.NarrativeOpen+
                     " b="+gateway.Snapshot().BastionLevel+
                     " barracks="+gateway.Snapshot().BarracksLevel);
-                bool opened=military.TryOpen(
-                    RoyalGoldV3ManagementScreens.Destination.Training);
+                Need(host.Select("barracks"),"Built barracks cannot be selected in city");
+                ui.RenderNow();
+                var bagPlate=nav[1].GetComponentInChildren<BreachWatchPlate>(true);
+                Need(bagPlate && bagPlate.Type!=BreachWatchPlate.PlateType.Selected,
+                     "Selecting real Cuartel highlights BOLSA rather than CIUDAD");
+                var trainingEntry=ui.ActualBarracksTrainingEntry;
+                Need(trainingEntry && trainingEntry.gameObject.activeInHierarchy &&
+                     trainingEntry.interactable,"Built barracks has no actual Training access");
+                CaptureMany(ui,folder,"barracks-entry",shots,()=>
+                    trainingEntry.gameObject.activeInHierarchy && !military.IsShowing);
+                ClickActualMailControl(ui,trainingEntry,false);
+                bool opened=military.IsShowing && manager.CurrentDestination==
+                    RoyalGoldV3ManagementScreens.Destination.Training;
                 Debug.Log("VIGILIA_TRAINING_PREVIEW_STATE opened="+opened+
                     " canonical="+(manager!=null&&manager.IsOpen)+
                     " showing="+military.IsShowing+
@@ -586,7 +618,7 @@ namespace Eldoria.BreachWatch.Editor
             }
             var after=JsonUtility.ToJson(gateway.Snapshot());
             Need(before==after,"Migration fixture changed original player state");
-            Need(shots.Count==16,"Expected sixteen real native destination captures");
+            Need(shots.Count==20,"Expected twenty real native destination captures (five surfaces x four sizes)");
             Need(profileShots.Count==10,
                 "Expected ten additional real Unity hero profile/page captures");
             Need(unlockedNavShots.Count==2,
@@ -598,7 +630,7 @@ namespace Eldoria.BreachWatch.Editor
             var report=new Report{
                 status="VIGILIA_DESTINATIONS_CAPTURED_ART_REVIEW_PENDING",
                 source=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local",
-                notes="Four real authoritative destinations in test-only injected advanced state. Native phone/desktop images; no player save mutation, no real purchase and NO visual approval.",
+                notes="Five real destination surfaces including built barracks Training entry in test-only injected advanced state. Native phone/desktop images; no player save mutation, no real purchase and NO visual approval.",
                 probeOnly=true,saveUnchanged=true,artworkApproved=false,
                 screenshotCount=shots.Count,screens=shots.ToArray()
             };
@@ -625,7 +657,7 @@ namespace Eldoria.BreachWatch.Editor
                 "BreachWatchPopulatedMailEvidence.json"),
                 JsonUtility.ToJson(mailReport,true));
             // Separate, SHA256-labelled supplemental art audit. The canonical
-            // 16-image destination manifest stays unchanged for existing CI.
+            // Five destination surfaces include the actual contextual barracks Training entry (20 images).
             var heroReport=new Report {
                 status="VIGILIA_REAL_HERO_PROFILES_CAPTURED_ART_REVIEW_PENDING",
                 source=report.source,
@@ -694,8 +726,15 @@ namespace Eldoria.BreachWatch.Editor
         {
             Need(button && button.isActiveAndEnabled && button.IsInteractable(),
                 "Actual canonical mail control is unavailable");
-            Need(button.targetGraphic && button.targetGraphic.raycastTarget,
-                "Actual mail control lost its configured pointer input after activation: "+button.name);
+            // targetGraphic is the painted plate used for tint/press feedback,
+            // NOT necessarily the GraphicRaycaster hit area. Sculpted nav
+            // buttons intentionally have a non-raycast art child and a real
+            // transparent 44px+ Image on the Button root. Require that input
+            // surface and then verify the actual first EventSystem hit below.
+            Need(button.targetGraphic &&
+                 button.GetComponentsInChildren<Graphic>(true).Any(g=>
+                    g && g.gameObject.activeInHierarchy && g.raycastTarget),
+                "Actual control has no raycastable pointer surface: "+button.name);
             var camera=host.PlayerCamera;Need(camera,"Canonical input camera missing");
             var priorTarget=camera.targetTexture;var priorAspect=camera.aspect;
             int priorMask=camera.cullingMask;

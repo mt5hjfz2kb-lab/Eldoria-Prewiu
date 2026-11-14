@@ -67,6 +67,7 @@ namespace Eldoria.BreachWatch
 
             // Canonical guards (chapters, modal, training availability)
             // remain owned by the existing destination controller.
+            if(host && host.WorldEntryPending && !host.TrySetWorld(false))return false;
             management.Open(destination);
             if(!management.IsOpen) return false;
             return TryAdoptAlreadyOpen();
