@@ -1,10 +1,13 @@
-VIGILIA REAL UNITY PHASE1 3X — OWNER CONFIRMED LOCAL PC
+VIGILIA FASE 1 — ÚNICA PRUEBA UNITY NATIVA REAL 3× CON RECLAMACIÓN VIVA
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-registry_revision=130
-main_windows_loan_commit=ff65534acc29fea2fc011da6698dc7bc9a0dfed7
-prior_fails=43576008078 old own checkout dirty; DO NOT REUSE OR CLEAN, 26 non-meta tracked modifications and 17 untracked.
-capacity_source=Issue186 native run 43583823285 actual C: 23.26 GiB free at 2026-11-14T10:08Z; recheck live runner and exclusive reservation before Unity. If current disk <8 GiB fail closed.
-target=actual 1x city/Bastion/mail/report/bag and 15 genuine 3x Unity Editor RenderTexture captures at 390x844,844x390,900x1600.
-art_review=compare against owner approved reference 864x1536, historical native 1x and 300% actual button crops; no fake ART_APPROVED.
-restrictions=0 EUR, preserve Issue186/beta/main/gameplay/save/economy; phase2 NOT authorized. Release Windows after test.
+claim_revision=132
+base_source=3f181b569e50aa118e399d00b8bac32f3935ee2c
+source_ci_pass=43599140877
+prior_failure=43590398106; Unity import depleted local disk 0 MB, exited on prefab write failures before native screenshot.
+recovery=only throwaway own run43590398106-1 Unity/Library after exact SHA + Git no tracked Library + completed failed run; preserve all source and historical evidence, no old 435328 worktree changes.
+source_optimization=exclude additional 1.66 GB historical art from sparse checkout, retain genuine Valoria_City_World_UI.unity, all original C# and world resources.
+git_fix=real newline in read-only alternates, not literal backslash-n.
+test=real Unity import + 1x and genuine 3x capture of HUD city/Bastion/Buzón/mail report/Bolsa, 390x844,844x390,900x1600.
+guard=disallow running if volume free <16 GiB after checkout or runner lease CAS fails, no actual player progress modifications.
+scope=NO main or beta publication, no phase2, zero budget. ART_APPROVED remains false until matching real GPU A/B assessed.
