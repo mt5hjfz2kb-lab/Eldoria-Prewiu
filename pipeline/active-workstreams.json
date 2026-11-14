@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T19:26:20.174Z",
+  "updated_at": "2026-11-14T19:35:28.835Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -37,7 +37,8 @@
       "base_main_sha": "a4b3ee8c2b2a17d6450697c46cd0ffcb9cb9e5b7",
       "reason": "Owner authorizes recover personal Windows disk capacity without loss of Eldoria assets, source or saved work; standalone maintenance never claims Unity runner or foreign game/UI sources.",
       "run_evidence": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43602596197",
-      "work_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/192"
+      "work_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/192",
+      "art_production_routing": "not_applicable"
     },
     {
       "id": "eldoria-relicario-premium-master-v2-20261113",
