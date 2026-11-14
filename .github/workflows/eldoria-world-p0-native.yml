@@ -33,7 +33,7 @@ jobs:
           lines=open('tools/eldoria-private-beta/world-p0-request.txt').read().strip().splitlines()
           assert lines==['state=FIRST_WORLD_ENTRY_NATIVE_ONLY',
                          'owner=chatgpt-eldoria-world-entry-p0-20261114',
-                         'revision=79','testers_allowed=false']
+                         'revision=79','testers_allowed=false','attempt=2']
           assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
           item=get('contents/pipeline/active-workstreams.json?ref=main')
           b=item.get('content')
@@ -103,18 +103,48 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unexpected Editor process; cannot overlap'}
-          $log=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results/editor.log'
           $xml=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results/test-results.xml'
-          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$env:ELDORIA_P0_PROJECT+'"'),
-            '-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests',
-            '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'),'-quit')
-          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $proc.WaitForExit(5400000)){throw 'Own Unity timed out; keep logs for diagnosis'}
-          if($proc.ExitCode -ne 0){Get-Content $log -Tail 80;throw ('Native Unity failed with exit '+$proc.ExitCode)}
-          if(-not(Test-Path $xml)){throw 'Missing true Unity test result'}
-          [xml]$result=Get-Content $xml -Raw
-          if($result.'test-run'.result -ne 'Passed' -or [int]$result.'test-run'.passed -lt 1 -or [int]$result.'test-run'.failed -ne 0){throw 'Unity player PlayMode assertions failed'}
-          if(-not(Select-String $log -Pattern 'ELDORIA_WORLD_STREAMING_VISUALS' -SimpleMatch -Quiet)){throw 'Missing stream bound proof'}
+          # On a brand-new 16 GB checkout Unity first imports the project and
+          # may exit normally without entering NUnit. The previous run
+          # 43626491653 exited 0 after importing but emitted NO test XML.
+          # A cold-import success cannot be reported as gameplay success.
+          # Never pass -quit to the Test Runner (the existing canonical
+          # run_lazy_world_playmode.ps1 intentionally omits it).
+          $log=$null
+          for($attempt=1;$attempt -le 2;$attempt++){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+              throw 'Unexpected Editor process on rerun; preserve logs'
+            }
+            $log=Join-Path $env:GITHUB_WORKSPACE ('world-p0-results/editor-attempt-'+$attempt+'.log')
+            $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$env:ELDORIA_P0_PROJECT+'"'),
+              '-runTests','-testPlatform','PlayMode',
+              '-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests',
+              '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+            $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $proc.WaitForExit(5400000)){throw 'Own Unity test timed out; preserve logs'}
+            if($proc.ExitCode -ne 0){
+              Get-Content -LiteralPath $log -Tail 80
+              throw ('Unity Editor failed with exit '+$proc.ExitCode)
+            }
+            if(Test-Path -LiteralPath $xml){break}
+            if($attempt -eq 1){
+              Write-Host 'COLD_IMPORT_FINISHED_WITHOUT_NUNIT_XML_RETRY_SAME_EXACT_PROJECT'
+              continue
+            }
+            throw 'Unity did not execute the real PlayMode test after warm retry'
+          }
+          [xml]$result=Get-Content -LiteralPath $xml -Raw
+          $node=$result.'test-run'
+          $cases=@($result.SelectNodes('//test-case')|Where-Object {
+            $_.GetAttribute('fullname').EndsWith('.RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD')
+          })
+          if($node.result -ne 'Passed' -or [int]$node.total -ne 1 -or
+             [int]$node.passed -ne 1 -or [int]$node.failed -ne 0 -or
+             [int]$node.skipped -ne 0 -or $cases.Count -ne 1 -or
+             $cases[0].GetAttribute('result') -ne 'Passed'){
+            throw 'Exact Unity full-region playable fixture did not pass'
+          }
+          if(-not(Select-String -Path $log -Pattern 'ELDORIA_WORLD_STREAMING_VISUALS' -SimpleMatch -Quiet)){throw 'Missing stream bound proof'}
           if(-not(Select-String $log -Pattern 'ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE' -SimpleMatch -Quiet)){throw 'Repeated world navigation not proven'}
           Write-Host ('ELDORIA_WORLD_P0_REAL_UNITY_PASS '+$env:GITHUB_SHA)
       - name: Upload truthful native log and XML even when the proof fails
