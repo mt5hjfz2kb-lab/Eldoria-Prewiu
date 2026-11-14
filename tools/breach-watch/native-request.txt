@@ -1,6 +1,5 @@
-VIGILIA PHASE1 USE ALTERNATIVE LOCAL VOLUME WITHOUT TOUCHING PREVIOUS EVIDENCE
-workstream=eldoria-forja-oscura-visual-proof-20261107 owner=chatgpt-vigilia-visual-kit-20261113 revision=128
-C_drive_after_own_cleanup=5.94_GiB; only old source exists and includes City Unity evidence.
-measure_other_local_drives=true; require alternate fixed local drive at least 16 GiB; create unique isolated owner workspace only; otherwise block with evidence.
-no_delete_reference_or_beta_or_other_work=true
-gpu_proof=15 actual 3x Unity captures, same camera, zero euros, no false art approval
+VIGILIA PHASE1 READ ONLY OWN ISOLATED UNITY WORKTREE AUDIT
+owner=chatgpt-vigilia-visual-kit-20261113 revision=128
+C_drive_5.94_GiB, no alternative local drive. Existing old distinct successful isolated source breachwatch-isolated-43532823031-1 contains native city evidence.
+verify_without_mutating=old HEAD 543c0a713d0cb3e95fb370923d91e796cf5a5c38 and porcelain Git status/untracked/evidence names; only then consider safely reusing this owned unique source to avoid duplicated checkout.
+no old source checkout modification in this run, no deletions or beta/issue186 interference, 0 EUR.

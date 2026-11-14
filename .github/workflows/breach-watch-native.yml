@@ -867,7 +867,35 @@ jobs:
               $_.Name -ne 'C' -and $_.Free -ge 16GB
             } | Select-Object -First 1)
             if($alternate.Count -ne 1){
-              throw 'No safe second volume >=16 GiB; preserve native evidence and other work'
+              # Audit our OWN historical successful isolated source without
+              # checking it out, modifying its index, deleting or moving files.
+              $old=Join-Path $workspace 'breachwatch-isolated-43532823031-1'
+              if(Test-Path -LiteralPath (Join-Path $old '.git/config')){
+                $gitExe=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+                if(-not $gitExe){
+                  $gitExe=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+                    Sort-Object Name -Descending |
+                    ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+                    Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+                }
+                if(-not $gitExe){throw 'Git unavailable for safe historical source audit'}
+                $exactSha=(& $gitExe -C $old rev-parse HEAD).Trim()
+                if($LASTEXITCODE -ne 0){throw 'Old isolated worktree has no verified HEAD'}
+                Write-Host ("VIGILIA_OLD_OWN_ISOLATED_SOURCE_SHA "+$exactSha)
+                $changes=@(& $gitExe -C $old status --porcelain=v1 --untracked-files=all)
+                if($LASTEXITCODE -ne 0){throw 'Old isolated status could not be read'}
+                Write-Host ("VIGILIA_OLD_OWN_ISOLATED_STATUS_COUNT "+$changes.Count)
+                $changes | Select-Object -First 50 | ForEach-Object {Write-Host ("VIGILIA_OLD_OWN_STATUS_ENTRY "+$_)}
+                $evidence=Join-Path $old 'Unity/BreachWatchNativeEvidence'
+                if(Test-Path -LiteralPath $evidence){
+                  $images=@(Get-ChildItem -LiteralPath $evidence -File -Recurse -ErrorAction Stop)
+                  Write-Host ("VIGILIA_OLD_OWN_EVIDENCE_FILES "+$images.Count)
+                  foreach($img in $images | Select-Object -First 16){
+                    Write-Host ("VIGILIA_OLD_OWN_EVIDENCE_NAME "+$img.Name)
+                  }
+                }
+              }
+              throw 'No safe second volume; previous unique Vigilia checkout audited read-only for in-place source reuse'
             }
             $parent=Join-Path $alternate[0].Root 'Eldoria-Vigilia-owned-native'
             if(-not(Test-Path -LiteralPath $parent)){
