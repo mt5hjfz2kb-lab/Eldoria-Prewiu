@@ -46,6 +46,31 @@ jobs:
           assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
           print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
           PY
+      - name: Parse actual cleanup PowerShell without executing it
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rows=Path('.github/workflows/eldoria-postrun-unity-cache.yml').read_text().splitlines()
+          pos=next(i for i,r in enumerate(rows) if r.strip()=='- name: Reclaim exact completed run generated Library only')
+          start=next(i for i in range(pos,len(rows)) if rows[i].strip()=='run: |')+1
+          script=[]
+          for line in rows[start:]:
+            if line and not line.startswith('          '):break
+            script.append(line[10:] if line.startswith('          ') else '')
+          Path('eldoria-postrun-body.ps1').write_text('\n'.join(script)+'\n')
+          assert len(script)>80
+          PY
+          if ! command -v pwsh >/dev/null; then
+            echo 'PowerShell parser unavailable; cannot certify script' >&2
+            exit 1
+          fi
+          pwsh -NoProfile -NonInteractive -Command '
+            $tok=$null; $errors=$null
+            $null=[System.Management.Automation.Language.Parser]::ParseFile("eldoria-postrun-body.ps1",[ref]$tok,[ref]$errors)
+            if($errors -and $errors.Count){$errors | Out-String | Write-Error; exit 1}
+            Write-Host "ELDORIA_POSTRUN_POWERSHELL_PARSE_PASS"
+          '
   reclaim:
     if: github.event_name == 'workflow_run' && github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
