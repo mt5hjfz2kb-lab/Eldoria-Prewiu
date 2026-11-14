@@ -43,7 +43,7 @@ jobs:
           for term in required:
             assert term in t, 'Missing safety gate: '+term
           assert t.count('\n          Remove-Item -LiteralPath $lib -Force')==1
-          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
+          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==2
           print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
           PY
       - name: Parse actual cleanup PowerShell without executing it
@@ -199,8 +199,8 @@ jobs:
             body.append(line[10:] if line.startswith('          ') else '')
           code='\n'.join(body)+'\n'
           Path('eldoria-two-cache-reclaim.ps1').write_text(code)
-          assert code.count("Remove-Item -LiteralPath $lib -Force") == 1
-          assert code.count("robocopy.exe $empty $lib /MIR /XJ") == 1
+          assert code.count("Remove-Item -LiteralPath $item.path -Force") == 1
+          assert code.count("robocopy.exe $empty $item.path /MIR /XJ") == 1
           assert "Unity\\Library" in code
           assert "Assets" in code and "ProjectSettings" in code and ".git" in code
           assert code.count("beta-structural-source-42505611257-1")==1
