@@ -43,7 +43,7 @@ jobs:
             if($table.ContainsKey($key)){$table[$key]=[long]$table[$key]+$bytes}
             else{$table[$key]=[long]$bytes}
           }
-          function measure([string]$base,[string]$mode) {
+          function Measure-EldoriaTree([string]$base,[string]$mode) {
             if(-not (Test-Path -LiteralPath $base -PathType Container)){return}
             $stack=New-Object 'System.Collections.Generic.Stack[string]'
             $stack.Push($base)
@@ -56,7 +56,7 @@ jobs:
               }
               $next=$stack.Pop()
               try {
-                $entries=(New-Object IO.DirectoryInfo($next)).EnumerateFileSystemInfos()
+                $entries=([IO.DirectoryInfo]::new($next)).EnumerateFileSystemInfos()
                 foreach($entry in $entries) {
                   try {
                     if(($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
@@ -101,7 +101,7 @@ jobs:
             Write-Host ("STORAGE_ROOT group={0} observedGiB={1:N2} files={2} complete={3}" -f $mode,($total/$gib),$count,(-not $script:partial))
           }
           $runnerBase='C:\actions-runner-eldoria\_work'
-          measure $runnerBase 'runner'
+          Measure-EldoriaTree $runnerBase 'runner'
           Write-Host 'STORAGE_LARGEST_RUNNER_WORKTREES_BEGIN'
           $script:groups.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 40 | ForEach-Object {
             Write-Host ("STORAGE_WORKTREE group={0} GiB={1:N3}" -f $_.Key,($_.Value/$gib))
@@ -121,7 +121,7 @@ jobs:
             )
             foreach($root in $roots) {
               if($script:partial){break}
-              measure $root.path $root.name
+              Measure-EldoriaTree $root.path $root.name
             }
           }
           Write-Host ("STORAGE_SCAN_END files={0} errors={1} linksSkipped={2} partial={3} utc={4}" -f $script:scanned,$script:errors,$script:links,$script:partial,[datetime]::UtcNow.ToString('o'))
