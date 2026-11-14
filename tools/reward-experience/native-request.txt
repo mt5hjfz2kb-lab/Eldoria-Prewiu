@@ -1,10 +1,10 @@
-# Exact-head Issue186 four-viewport native GPU gate after rev62 CAS; never weaken 28 PNG, 54 first hits or save/reload.
+# Exact-head Issue186 four-viewport native GPU gate after verified rev64 CAS; never weaken 28 PNG, 54 first hits or save/reload.
 state=REQUEST_FIRST_GUIDED_HAND_NATIVE
 workstream=eldoria-issue186-reward-attention-guidance-20261111
 owner=chatgpt-eldoria-player-ux-recovery-20261113
-ownership_revision=62
+ownership_revision=64
 required=production_only_real_vigilia;actual_nickname_input_first_hit;actual_name_confirmation_pointer_click_and_save;actual_first_story_continue_first_hit;actual_sawmill_UI_label_pointer_first_hit;real_sawmill_label_pointer_down_up_click;hand_moves_to_building_action;390x844_900x1600_844x390_1600x900_real_GPU_panel_CTA_hand_and_real_first_hit;28PNG54realclicks;real_saved_bag_mail_reload;clean_Unity_exit
-attempt=12
+attempt=13
 previous_successful_native_run=43583823285
 previous_successful_head=1180e77f0c6abe74fcd6a5a62a108c98445d1645
 previous_success_scope=25_png_54_hits_only_390x844_first_building_viewport
