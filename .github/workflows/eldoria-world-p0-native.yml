@@ -189,9 +189,41 @@ jobs:
             throw 'Original 51-file native asset inventory has changed'
           }
           $origins=@('breachwatch-native-source-43489752868-1',
+            'beta-structural-preserved-inputs-43246088947-1',
+            'beta-structural-preserved-inputs-43211338159-1',
+            'beta-structural-preserved-inputs-43135567923-1',
+            'beta-structural-preserved-inputs-43127449523-1',
+            'beta-structural-preserved-inputs-42998206844-1',
+            'beta-structural-preserved-inputs-42993101501-1',
+            'beta-structural-preserved-inputs-42992127220-1',
             'beta-structural-preserved-inputs-42985136961-1',
+            'beta-structural-preserved-inputs-42909656581-1',
+            'beta-structural-preserved-inputs-42714385780-1',
+            'beta-structural-preserved-inputs-42682071151-1',
+            'beta-structural-preserved-inputs-42645633286-1',
             'beta-structural-preserved-inputs-42595057735-1',
-            'beta-structural-source-42505611257-1','valoria-layered-source')
+            'beta-structural-preserved-inputs-42593886558-1',
+            'beta-structural-preserved-inputs-42592919747-1',
+            'beta-structural-preserved-inputs-42590953962-1',
+            'beta-structural-preserved-inputs-42589025185-1',
+            'beta-structural-preserved-inputs-42588844458-1',
+            'beta-structural-preserved-inputs-42588287142-1',
+            'beta-structural-preserved-inputs-42587774697-1',
+            'beta-structural-preserved-inputs-42586848479-1',
+            'beta-structural-preserved-inputs-42586512619-1',
+            'beta-structural-preserved-inputs-42585946027-1',
+            'beta-structural-preserved-inputs-42518950317-1',
+            'beta-structural-preserved-inputs-42514790566-1',
+            'beta-structural-preserved-inputs-42514002669-1',
+            'beta-structural-preserved-inputs-42513182378-1',
+            'beta-structural-preserved-inputs-42508059413-1',
+            'beta-structural-preserved-inputs-42507779126-1',
+            'beta-structural-preserved-inputs-42435095850-1',
+            'beta-structural-preserved-inputs-42431634641-1',
+            'beta-structural-preserved-inputs-42431391139-1',
+            'forja-thin-native-source-42408083695',
+            'beta-structural-source-42505611257-1',
+            'valoria-layered-source')
           $copies=New-Object 'System.Collections.Generic.List[object]'
           $missing=New-Object 'System.Collections.Generic.List[string]'
           foreach($item in $art){
@@ -225,7 +257,8 @@ jobs:
             # The published candidate MUST retain its full original art.
             'ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART=1' | Add-Content $env:GITHUB_ENV
             @('status=INCOMPLETE_ORIGINAL_BASTION_III_ART_NOT_CERTIFIED',
-              ('missing_files='+$missing.Count),'logical_qa_only=true',
+              ('missing_files='+$missing.Count),('missing_paths='+($missing -join '|')),
+              'logical_qa_only=true',
               'production_build_allowed=false') |
               Set-Content 'world-p0-results/missing-native-art.txt'
             Write-Host ('MISSING_ORIGINAL_BASTION_III_ART='+$missing.Count+
