@@ -108,6 +108,21 @@ jobs:
           $ErrorActionPreference='Stop'
           if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender process already running. Refuse overlap.'}
+          # A previous Vigilia audit measured only 5.94 GiB free on the
+          # shared Windows workspace drive. This workflow creates a unique
+          # preserved Unity checkout and must never start one when there is
+          # insufficient space for source, import cache and GPU evidence.
+          # Fail before touching the existing evidence-bearing worktrees.
+          $driveRoot=[IO.Path]::GetPathRoot([IO.Path]::GetFullPath($env:GITHUB_WORKSPACE))
+          $workspaceDrive=[IO.DriveInfo]::new($driveRoot)
+          if(-not $workspaceDrive.IsReady){throw 'ISSUE186_NATIVE_DISK_NOT_READY'}
+          $freeBytes=$workspaceDrive.AvailableFreeSpace
+          $requiredBytes=16 * 1GB
+          Write-Host ("ISSUE186_NATIVE_DISK_PREFLIGHT drive={0} freeGiB={1:N2} requiredGiB=16" -f
+            $driveRoot,($freeBytes/1GB))
+          if($freeBytes -lt $requiredBytes){
+            throw 'ISSUE186_NATIVE_DISK_BLOCKED: need >=16 GiB free on the native workspace drive before creating a new exact-head Unity worktree; do not delete unreviewed evidence'
+          }
       - name: Resolve already installed Git before checkout; forbid archive fallback
         shell: powershell
         run: |
