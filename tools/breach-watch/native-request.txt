@@ -1,14 +1,15 @@
-VIGILIA FASE 1 — SEGUNDA PRUEBA NATIVA, UN SOLO BATCH AISLADO, REVISION CANONICA 137
+VIGILIA FASE 1 — TERCERA PRUEBA NATIVA; SOLO UN BATCH PINNED UNITY; REVISION CANONICA 140
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-claim_revision=137
-base_source=62d9e139ffc8805e9d62fc3ee8bf667bdcdbc08c
-source_fix=three authentic resource-icon importer meta filterMode=Bilinear enableMipMap=0, GUID and PNG unchanged
-previous_native=43603542306; failed import filtering while rendering first actual 1600x900 city; one partial screenshot 14118261043 magenta visible, art NOT approved
-physical_storage=43614706067 at 2026-11-14T16:17:06Z; DESKTOP-R10PE55 C: 107.704 GiB free after safely archived other worktrees by separate maintenance
-lease=main CAS commit dcd2477b838edbeb0ac98d1de475376508c6e709; no second holder at claim
-native=exact checkout SHA produced by THIS push only; fail closed unless live lease matches, no competing Unity/Blender/Git process, >=16 GiB C: before and after source checkout
-render=city Bastion Buzon Bolsa 390x844 844x390 900x1600; physical 3x native screenshots, matched camera A/B, 300 percent button artwork
-integrity=do not modify original dirty breachwatch-isolated-43532823031-1 or worktrees belonging to other owners; no gameplay/save/progress changes
-budget=0 EUR; no phase2; no merging to main/beta; no ART_APPROVED until genuine screenshots reviewed
-after=inspect real native and metadata, record failures rather than assume PASS, CAS release Windows only after batch finished
+claim_revision=140
+source_before_this_request=fdbaf45e5acb9892c7b89b212d0400dc5a09b55c
+source_proof=geometry correction for Navigation / RECURSOS real 29.7 wanted vs 16.0 allocated; added readonly shader.isSupported instrumentation to real terrain and large renderer slots, no material/scene edits
+hosted_source_guard=43623583217 PASS on fdbaf45e5acb9892c7b89b212d0400dc5a09b55c; NOT art approval
+physical_storage=43603053226 attempt 2 at 2026-11-14T17:54:37Z on DESKTOP-R10PE55 C: 90.62 GiB free; read-only disk result PASS, old unrelated deleted cache fingerprint later fails as expected
+lease=main CAS commit 06cc84203aaecba845f2a2ce183be49f6ed7432c revision 140; one owner and zero active native jobs at claim
+previous_native=43615782618 failed real RECURSOS label clip; partial 1600x900 artifact 14122048008; previous measured magenta 52,913 pixels 3.6745%, shader linkage unresolved
+native=EXACT SHA of this request commit ONLY; isolated checkout and editor, current owner/ref+>=16GiB disk rechecked, refuse if runner/editor busy
+render=HUD ciudad/Bastion/Buzon/Bolsa 390x844,844x390,900x1600 and retina physical 3x, matched A/B, 300% button art
+integrity=preserve old dirty breachwatch-isolated-43532823031-1 and all other owner worktrees; no game saves/progress/gameplay changes
+budget=0 EUR; no phase2, no merging main/beta; no art_approved until real 3x and 300% image review
+after=preserve authentic native artifacts even on failure, inspect actual screenshots and shader-support inventory, release ONLY Windows via main CAS after Editor and run complete
