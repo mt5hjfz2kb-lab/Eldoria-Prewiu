@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T16:48:32.300Z",
+  "updated_at": "2026-11-14T16:59:32.000Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7016,10 +7016,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 138,
+      "ownership_revision": 139,
       "write_scope_released": false,
-      "phase": "PHASE1_NATIVE_43615782618_TRUE_TEXT_CLIPPING_WINDOWS_RELEASED_NO_ART_APPROVAL",
-      "next": "Real Unity run 43615782618 completed FAILURE at 2026-11-14 16:42Z exact source SHA 9e23849e670870d1350f7af82f82aac371c827fb. PRECHECK PASS 107.7 GiB C:, isolated checkout and Unity precheck PASS 103.5 GiB. Prior resource PNG mipmaps/filtering correction passed to reach next genuine failure: BreachWatchNativeEvidence.cs:1229 'Live text genuinely clips vertically: real-unity-city-1600x900.png/Navigation / RECURSOS wanted=29.7 available=16.0'. Native snapshot, editor log saved in artifact 14122048008; A/B skipped, 3x and destinations not verified. Investigate and repair actual new UI navigation caption layout without weakening native guard, then obtain new real 16GiB+ Windows measurement and CAS native retest only when idle/unreserved. Historical magenta Bastion/terrain remains unapproved pending genuine new artifact visual QA; no changes to real game, beta/main playable, saves, owner protected checkouts. Windows ONLY lease released after completed native job, same source owner retained. Do not approve artwork or phase2.",
+      "phase": "PHASE1_NAV_CAPTION_REPAIR_SOURCE_GUARD_PASS_WINDOWS_OTHER_OWNER_NO_ART_APPROVAL",
+      "next": "Real Unity 43615782618 on SHA 9e23849 failed genuine navigation RECURSOS caption 29.7u preferred vs 16u allocated, after 103.5 GiB free post-checkout. Source-only fix on same canonical branch commits 06b8f938+cfbcd7b: increase real nav Text rect to 36u with pitch-safe width, adjust footer geometry, preserve existing sprites/touch actions and exact native guard; independent Ubuntu Roslyn+geometry/typography source guard PASS 43618566191 (not Unity or artistic PASS). Inspect same native screenshot in artifact 14122048008: 52,913 pure magenta pixels (3.6745%), centered largely on Bastion roof and several shore patches; Unity editor log warns missing/unsupported URP shader dependencies, causal relation NOT yet verified. Other Windows holder is Issue186 and native run 43617649660 was still active at check 16:59Z. Do not start native now. After true release, new >=16 GiB physical disk evidence and exclusive CAS, run exactly ONE new pinned-SHA native capture; verify 390x844/844x390/900x1600 physical 3x, city/Bastion/mail/bag, 300% buttons, art A/B and saved-game invariants. Remain phase1, no main/beta/gameplay changes or art approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
@@ -7570,6 +7570,48 @@
         "no_other_active_runs_at_claim": true,
         "protected_old_copy": "breachwatch-isolated-43532823031-1",
         "art_approved": false
+      },
+      "phase1_nav_caption_source_fix_20261114": {
+        "previous_native": {
+          "run": 43615782618,
+          "source": "9e23849e670870d1350f7af82f82aac371c827fb",
+          "artifact": 14122048008,
+          "result": "failure",
+          "cause": "Actual real Text caption Navigation / RECURSOS preferredHeight=29.7, allocated rect.height=16.0; 1600x900 GPU city capture present",
+          "disk_post_checkout_gib": 103.5
+        },
+        "branch_head": "cfbcd7b419c8f8954ca93e1016b55fa35028cc4f",
+        "source_commits": [
+          "06b8f938f4130ab76297ac64f05de474d6634da8",
+          "cfbcd7b419c8f8954ca93e1016b55fa35028cc4f"
+        ],
+        "changed_files": [
+          "Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs",
+          "tools/breach-watch/validate_compact_layout.py",
+          "tools/breach-watch/verify_premium_font_fit.py"
+        ],
+        "source_guard": {
+          "run": 43618566191,
+          "conclusion": "success",
+          "is_native_unity": false,
+          "is_art_approval": false
+        },
+        "visual_observation": {
+          "artifact": 14122048008,
+          "shot": "real-unity-city-1600x900.png",
+          "pure_magenta_pixels": 52913,
+          "magenta_fraction": 0.036745,
+          "material_shader_logs": "Unity warnings for Universal Render Pipeline/Terrain/Lit and missing fallback dependencies; possible rendering issue, no proven causality",
+          "art_approved": false
+        },
+        "runner": {
+          "held_by": "eldoria-issue186-reward-attention-guidance-20261111",
+          "last_active_run": 43617649660,
+          "lease_claimed_by_vigilia": false
+        },
+        "next_native_required": true,
+        "phase2_allowed": false,
+        "gameplay_main_beta_modified": false
       }
     },
     {
