@@ -9,24 +9,106 @@ if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
   if(-not $git){throw 'Installed Git unavailable'}
   $env:PATH=(Split-Path $git)+';'+$env:PATH
 }
-$matches=@()
+$ownedSources=@()
 foreach($name in @('eldoria-world-p0-43641168362','eldoria-world-p0-43638950225')){
   $candidate=Join-Path $env:RUNNER_TEMP $name
   if((Test-Path $candidate) -and -not((Get-Item $candidate).Attributes -band [IO.FileAttributes]::ReparsePoint)){
-    if((& git -C $candidate rev-parse HEAD).Trim() -eq $SourceSha){$matches+=,$candidate}
+    if((& git -C $candidate rev-parse HEAD).Trim() -eq $SourceSha){$ownedSources+=,$candidate}
   }
 }
-if($matches.Count -ne 1){throw 'Expected exactly one owned native-tested checkout'}
-$root=$matches[0];$project=Join-Path $root 'Unity'
+$persistent=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-source-5881df4e76da'
+if($ownedSources.Count -eq 0 -and (Test-Path $persistent)){
+  if((Get-Item $persistent).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Persistent source is a reparse point'}
+  if((& git -C $persistent rev-parse HEAD).Trim() -ne $SourceSha){throw 'Persistent source identity changed'}
+  $ownedSources+=,$persistent
+}
+if($ownedSources.Count -gt 1){throw 'Ambiguous owned source checkout'}
+if($ownedSources.Count -eq 1){$root=$ownedSources[0]}else{
+  # RUNNER_TEMP is emptied between jobs. Persist this owned source under the
+  # workspace, never depend on the preceding job's temporary checkout surviving.
+  if((Get-PSDrive C).Free/1GB -lt 36){throw 'Insufficient free disk for exact source import'}
+  $root=$persistent
+  if(Test-Path $root){throw 'Run-owned source already exists; preserve it'}
+  & git init -q $root
+  if($LASTEXITCODE){throw 'Owned source init failed'}
+  & git -C $root config core.longpaths true
+  & git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+  & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $SourceSha
+  if($LASTEXITCODE){throw 'Exact source fetch failed'}
+  & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
+  if($LASTEXITCODE){throw 'Exact source sparse configuration failed'}
+  & git -C $root checkout --detach $SourceSha
+  if($LASTEXITCODE){throw 'Exact source checkout failed'}
+}
+if((& git -C $root rev-parse HEAD).Trim() -ne $SourceSha){throw 'Frozen source mismatch'}
+$project=Join-Path $root 'Unity' 
 if((Get-PSDrive C).Free/1GB -lt 32){throw 'Insufficient space for WebGL; preserve existing work'}
 $changed=@(& git -C $root diff --name-only HEAD -- '*.cs' '*.asmdef' '*.unity')
 if($LASTEXITCODE -or $changed.Count){throw ('Frozen gameplay source drift: '+($changed -join ','))}
 $audit=Get-Content (Join-Path $root 'tools/eldoria-private-beta/native/existing-input-audit.json') -Raw|ConvertFrom-Json
 $art=@($audit.files|Where-Object {$_.path.StartsWith('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/')})
 if($art.Count -ne 51){throw 'Original art inventory changed'}
-foreach($item in $art){if((Get-FileHash (Join-Path $root $item.path) -Algorithm SHA256).Hash -ne $item.sha256){throw ('Original art changed '+$item.path)}}
+$origins=@('breachwatch-native-source-43489752868-1',
+            'beta-structural-preserved-inputs-43246088947-1',
+            'beta-structural-preserved-inputs-43211338159-1',
+            'beta-structural-preserved-inputs-43135567923-1',
+            'beta-structural-preserved-inputs-43127449523-1',
+            'beta-structural-preserved-inputs-42998206844-1',
+            'beta-structural-preserved-inputs-42993101501-1',
+            'beta-structural-preserved-inputs-42992127220-1',
+            'beta-structural-preserved-inputs-42985136961-1',
+            'beta-structural-preserved-inputs-42909656581-1',
+            'beta-structural-preserved-inputs-42714385780-1',
+            'beta-structural-preserved-inputs-42682071151-1',
+            'beta-structural-preserved-inputs-42645633286-1',
+            'beta-structural-preserved-inputs-42595057735-1',
+            'beta-structural-preserved-inputs-42593886558-1',
+            'beta-structural-preserved-inputs-42592919747-1',
+            'beta-structural-preserved-inputs-42590953962-1',
+            'beta-structural-preserved-inputs-42589025185-1',
+            'beta-structural-preserved-inputs-42588844458-1',
+            'beta-structural-preserved-inputs-42588287142-1',
+            'beta-structural-preserved-inputs-42587774697-1',
+            'beta-structural-preserved-inputs-42586848479-1',
+            'beta-structural-preserved-inputs-42586512619-1',
+            'beta-structural-preserved-inputs-42585946027-1',
+            'beta-structural-preserved-inputs-42518950317-1',
+            'beta-structural-preserved-inputs-42514790566-1',
+            'beta-structural-preserved-inputs-42514002669-1',
+            'beta-structural-preserved-inputs-42513182378-1',
+            'beta-structural-preserved-inputs-42508059413-1',
+            'beta-structural-preserved-inputs-42507779126-1',
+            'beta-structural-preserved-inputs-42435095850-1',
+            'beta-structural-preserved-inputs-42431634641-1',
+            'beta-structural-preserved-inputs-42431391139-1',
+            'forja-thin-native-source-42408083695',
+            'beta-structural-source-42505611257-1',
+            'valoria-layered-source')
+foreach($item in $art){
+  $dest=Join-Path $root $item.path
+  if(-not(Test-Path $dest)){
+    $from=$null
+    foreach($name in $origins){
+      $candidate=Join-Path (Join-Path $env:GITHUB_WORKSPACE $name) $item.path
+      if((Test-Path $candidate) -and (Get-FileHash $candidate -Algorithm SHA256).Hash -eq $item.sha256){$from=$candidate;break}
+    }
+    if(-not $from){throw ('Audited original art unavailable '+$item.path)}
+    New-Item -ItemType Directory -Force (Split-Path $dest)|Out-Null
+    Copy-Item $from $dest
+  }
+  if((Get-FileHash $dest -Algorithm SHA256).Hash -ne $item.sha256){throw ('Original art changed '+$item.path)}
+}
 $query=Join-Path $project 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes'
-if((Get-FileHash $query -Algorithm SHA256).Hash -ne '013EBF8194BE6974DBCADF27E3CF2AE43DB7C7638E0E6CB22CFE838E037ED986'){throw 'Terrain tape differs'}
+$priorTerrain=Join-Path $env:GITHUB_WORKSPACE 'world-p0-verified-prior-proof/integrated-terrain-43489752868'
+foreach($part in @(@{path=$query;name='RuntimeTerrainQueries.bytes';hash='013EBF8194BE6974DBCADF27E3CF2AE43DB7C7638E0E6CB22CFE838E037ED986'},@{path=($query+'.meta');name='RuntimeTerrainQueries.bytes.meta';hash='C05C2D9E21F36BA5FBCBBBD4D97CC377A1CB04F72FBDA47BC630B1D9F4A324BD'})){
+  if(-not(Test-Path $part.path)){
+    $from=Join-Path $priorTerrain $part.name
+    if((Get-FileHash $from -Algorithm SHA256).Hash -ne $part.hash){throw 'Original terrain bytes differ'}
+    New-Item -ItemType Directory -Force (Split-Path $part.path)|Out-Null
+    Copy-Item $from $part.path
+  }
+  if((Get-FileHash $part.path -Algorithm SHA256).Hash -ne $part.hash){throw 'Terrain tape or GUID differs'}
+}
 $out=Join-Path $env:RUNNER_TEMP ('world-p0-build-'+$env:GITHUB_RUN_ID)
 if(Test-Path $out){throw 'Preserve existing build evidence'}
 New-Item -ItemType Directory -Path $out|Out-Null
