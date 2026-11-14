@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T23:27:00.976Z",
+  "updated_at": "2026-11-14T23:32:13.460Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7707,9 +7707,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PUBLISHED_BASELINE_RECONCILED_NATIVE_CERTIFICATION_PREPARING",
+      "phase": "RECONCILED_PUBLISHED_BASELINE_NATIVE_AND_WEBGL_RUNNING",
       "note": "Reject5881df delivery: its main baseline would roll back delivered90465 navigation fixes. Reconciled source d0b21fd preserves all BreachWatch bytes and published WorldEntryPending while applying only world P0 changes. No main UI edits or other-workstream takeover. PR194 now targets existing frozen published beta branch.",
-      "next": "Run combined exact d0b21fd native world12reentries/sixsettledviews + actual delivered UI + campaign I-V + WebGL in one owned cache.15 focused source tests pass. Earlierbrowser436495/436515 errors were harness issues (wrong return position, disabled keyboard shortcuts, then wheel pointer landed over world-entry button); keep artifacts. Use pointer350,200 away from central action and confirm actual zoom; new candidate retains two-control world footer like beta19. Do not publish588 or claim iPhone solved.",
+      "next": "Finish combined native/build43653390105 job132626591070, workflowcf105a3e, runtime d0b21fd. Preflight source/UI parity,15 Node tests,architecture/workflow guards passed; source audit43653390133 passed. Release Windows after cleanup. Then commit prepared browser trigger for mobile21 package with real wheel at350,200 and city225,776. Do not publish old588/mobile20. Preserve baseline90465/BreachWatch bytes and stable18.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9041,6 +9041,19 @@
         "source": "90465a9a910b89a8a8b74e4b33a9bbc88578e00e",
         "reason": "This already-published branch contains completed navigation/mail/bag fixes absent from main. PR194 retargeted to existing frozen beta base; consumes committed outputs per protocol without authoring or taking over BreachWatch. All BreachWatch bytes remain identical to published90465.",
         "new_source": "d0b21fd5708c5070d1bd62dc6c6a98399c549051"
+      },
+      "reconciled_world_candidate": {
+        "source": "d0b21fd5708c5070d1bd62dc6c6a98399c549051",
+        "baseline": "90465a9a910b89a8a8b74e4b33a9bbc88578e00e",
+        "pr": 194,
+        "pr_base": "feature/eldoria-private-beta-i-v-20261107",
+        "workflow": "cf105a3e407b24c8ffd7cf3a2e7fb3fd1ae834b9",
+        "run": 43653390105,
+        "job": 132626591070,
+        "source_audit_run": 43653390133,
+        "preflight": "success",
+        "published_ui_tree_unchanged": true,
+        "physical_iphone_verified": false
       }
     },
     {
