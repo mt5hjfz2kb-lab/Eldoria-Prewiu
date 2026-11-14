@@ -1,11 +1,10 @@
-VIGILIA PHASE1 DISK RECOVERY: FAIL CLOSED + NATIVE GPU EVIDENCE
+VIGILIA PHASE1 RECOVER WINDOWS DISK WITH INSTALLED GIT BEFORE UNITY
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-ownership_revision=128
-run=43573475352 native Set up job failed BEFORE steps, confirmed GitHub log: "Espacio en disco insuficiente" while downloading actions/upload-artifact; no native PNG
-recovery=separate no-third-party-action self-hosted job immediately before normal native; verify lease/CAS, no live Unity/Blender/Git; delete only per-attempt isolated candidate folders from completed failed Git clone runs 43572548608-1/-2,43532593397-1,43532249892-1, and only if necessary generated Unity/Library cache under our old successful run 43532823031-1 verified exact SHA
-no_shared_checkout_clean_or_reset=true
-no_existing_art_evidence_deleted=true
-no_other_owner_touch=true
-native_output=15 true 3x Unity render images + 1x at user sizes, no false acceptance
-cost_eur=0
+revision=128
+previous_run=43573999387 disk recovery preflight 0 GiB C; strictly verified and reclaimed 3 failed isolated candidate directories; next gate old OWN 43532823031-1 Unity/Library cache verification aborted because cleanup job PATH omitted GitHubDesktop Git.
+correction=isolate installed git.exe in recovery job and verify previous exact SHA before touching ONLY own generated Unity/Library cache when C remains under 12GiB.
+keep_old_source_git_objects=true
+do_not_clean_shared_checkout_or_other_owner=true
+after_safe_disk_recovery=one real Unity 3x capture and actual A/B quality judgement
+zero_euro=true

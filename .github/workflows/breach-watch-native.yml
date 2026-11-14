@@ -799,7 +799,17 @@ jobs:
           # Unity/Library is generated Editor cache, not tracked game art,
           # saves, source, evidence, or Git objects. Only clear if needed.
           if($free -lt 12GB -and (Test-Path -LiteralPath $cache)){
-            $oldSha=(& git -C $old rev-parse HEAD).Trim()
+            # This is a separate PowerShell job. Its PATH has not inherited
+            # the native job's GitHubDesktop Git detection.
+            $gitExe=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+            if(-not $gitExe){
+              $gitExe=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending |
+                ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+                Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+            }
+            if(-not $gitExe){throw 'Unable to verify old isolated source SHA: installed Git not found'}
+            $oldSha=(& $gitExe -C $old rev-parse HEAD).Trim()
             if($LASTEXITCODE -ne 0 -or $oldSha -ne '543c0a713d0cb3e95fb370923d91e796cf5a5c38'){
               throw 'Prior successful isolated source identity mismatch'
             }
