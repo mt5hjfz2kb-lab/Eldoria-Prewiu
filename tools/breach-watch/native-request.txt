@@ -1,13 +1,14 @@
-VIGILIA FASE 1 — ÚNICA PRUEBA UNITY NATIVA REAL 3× CON RECLAMACIÓN VIVA
+VIGILIA FASE 1 — UNA SOLA PRUEBA NATIVA UNITY REAL, REVISION CANONICA 134
 workstream=eldoria-forja-oscura-visual-proof-20261107
 owner=chatgpt-vigilia-visual-kit-20261113
-claim_revision=132
-base_source=3f181b569e50aa118e399d00b8bac32f3935ee2c
-source_ci_pass=43599140877
-prior_failure=43590398106; Unity import depleted local disk 0 MB, exited on prefab write failures before native screenshot.
-recovery=only throwaway own run43590398106-1 Unity/Library after exact SHA + Git no tracked Library + completed failed run; preserve all source and historical evidence, no old 435328 worktree changes.
-source_optimization=exclude additional 1.66 GB historical art from sparse checkout, retain genuine Valoria_City_World_UI.unity, all original C# and world resources.
-git_fix=real newline in read-only alternates, not literal backslash-n.
-test=real Unity import + 1x and genuine 3x capture of HUD city/Bastion/Buzón/mail report/Bolsa, 390x844,844x390,900x1600.
-guard=disallow running if volume free <16 GiB after checkout or runner lease CAS fails, no actual player progress modifications.
-scope=NO main or beta publication, no phase2, zero budget. ART_APPROVED remains false until matching real GPU A/B assessed.
+claim_revision=134
+base_source=cac317f6a12adb14f72aa7a74bdb0c35d2a9466e
+source_ci_pass=43600493315
+verified_cleanup=43602596197; cache-only, sourceUnchanged=true, free 9.673 GiB to 56.686 GiB
+physical_disk_inventory=43603053226; 14:08:55Z C: 56.25 GiB free after independent read-only audit
+windows_lease=main commit a4b3ee8c2b2a17d6450697c46cd0ffcb9cb9e5b7, exclusive CAS, no other holder or active run at claim
+native=one exact triggered SHA checkout, check >=16 GiB free again after checkout before Unity
+render=HUD city/Bastion/Buzon/Bolsa 390x844,844x390,900x1600 3x, same real camera A/B, 300 percent button crops
+integrity=old original 43532823031-1 protected; no gameplay, save, progression changes or actual player data
+budget=0 EUR; no phase 2; no main/beta changes; no art approval without real independent visual PASS
+next=after native succeeds/fails inspect real artifacts then release Windows safely by CAS
