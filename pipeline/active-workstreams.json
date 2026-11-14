@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-13T23:54:59.802Z",
+  "updated_at": "2026-11-14T08:31:34.273Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6992,14 +6992,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 128,
+      "ownership_revision": 129,
       "write_scope_released": false,
-      "phase": "PHASE1_NATIVE_EXCLUSIVE_WINDOWS_LOAN_AUTHORIZED_CAPTURE_NEXT",
-      "next": "Launch single exact-head Vigilia Unity 3x capture on current branch; fail closed on PC process and source state, inspect 1x+3x images; release Windows on clean exit; no merge/publication/art approval.",
+      "phase": "PHASE1_BLOCKED_PC_DISK_5_94_GIB_RELEASED_WINDOWS_NOT_ART_ACCEPTED",
+      "next": "Hardware dependency: provide at least 16 GiB free on C: (5.94 GiB at last measured), or a second local volume with >=16 GiB before reacquiring Windows via live registry CAS. Never clean/reuse dirty checkout 43532823031-1 without exact preservation and provenance. Then run one isolated exact-head Unity 3x A/B for city/Bastion/mail/report/bag, inspect and correct based on visual result. No main merge, no beta, no gameplay/saves/economy/phase2.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-13T23:54:59.802Z",
@@ -7321,7 +7319,7 @@
         "mail_empty_changed_pixels_390x844": 16513,
         "gpu_caption_outside_pixels": 0
       },
-      "runner_release_basis": "Full native job131382758528 and complete run43275431455 SUCCESS, both Unity processes exited clean; genuine-visual-ab completed. Independently verified archive and all38 image pairs before resource-only release. Source ownership remains central.",
+      "runner_release_basis": "Verified native Unity hardware cannot safely run: C: 5.94 GiB free (minimum 8 GiB, recommended >=16 GiB) on only local disk. Previous unique isolated worktree has 26 non-meta tracked edits incl Unity/ProjectSettings and packages-lock, 17 untracked incl Unity data and 3 evidence files. Cannot force checkout, clean or delete without losing noncanonical data. Last read-only audit 43576008078, no real 3x captures. Release Windows to other workstreams; retain source workstream owner but no runner claim.",
       "owner_visual_feedback": "2026-11-10: User explicitly likes restored current base; requests complete screenshot, framing adjustments and a little more richness in lower buttons. Prior agent5.5 is subjective, not an owner rejection.",
       "visual_learning": "High-resolution source sprites still alias when strongly minified without mipmaps; do not blame screenshot alone. Compare actual native renders at matching sizes. Frame-centred icon placement must follow artwork badge coordinate and spritePPU/Canvas.referencePPU, not arbitrary per-orientation offsets. Owner accepted sharper icons but rejected cramped frame capacity. Correct icon centring is independent of capsule width: preserve artwork badge coordinates and enlarge the amount well. Evaluate actual painted gold rim clearance, not only Text Rect containment; source geometry/font checks are not native visual proof. Dynamic labels must be checked on actual alternate destinations; cost fontSize is not actual sizing while constructor BestFit bounds remain enabled. Reset every orientation and restore each selected title from its layout maximum. Native synchronous pointer probes must render re-enabled camera-space graphics before raycasting; final6clicks pass without relaxing assertions. A source-painted separator must not coexist with procedural divider. Desktop level needs full21u line; title must clear both top rim and painted tower. Verify actual level GPU contribution rather than nominal font/rect alone.",
       "pending_frame_spacing": {
@@ -7348,7 +7346,7 @@
         "native_artifact": 13836976829,
         "visual_ab_artifact": 13837400815
       },
-      "runner_released_at": "2026-11-12T19:54:12.808Z",
+      "runner_released_at": "2026-11-14T08:31:34.273Z",
       "delivery_definition": {
         "deliverable": "Extend the accepted Vigilia design to real UI destinations while preserving commands, tutorial unlocks, saves and approved reward artwork.",
         "evidence": "Current-head Unity captures per destination at phone/desktop sizes; real navigation and command regression; visual review separate from technical PASS.",
@@ -7362,11 +7360,11 @@
       "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released_due_to_verified_PC_disk_blocker",
         "owner": "chatgpt-vigilia-visual-kit-20261113",
-        "ownership_revision": 128,
-        "updated_at": "2026-11-13T23:54:59.802Z",
-        "reason": "Explicit owner conditional authorization 2026-11-14 ('Si no hay trabajo en el PC usa el recurso'); last Issue186 native 43520031645 SUCCESS, process clean exit, Actions currently in_progress=0 and waiting=0; temporary single native capture only, 0 EUR; fail if local Unity/Blender process busy; preserve beta and release resource on exit."
+        "ownership_revision": 129,
+        "updated_at": "2026-11-14T08:31:34.273Z",
+        "reason": "User-authorized temporary Windows loan ended after safe cleanup. Insufficient disk and dirty old evidence-bearing worktree; no more safe native work possible now. Not a Unity or artistic PASS."
       },
       "last_native": {
         "run": 43195548484,
@@ -7432,9 +7430,9 @@
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       },
       "phase1_qa_20261113": {
-        "sha": "1332a95f1a3ad36a6c0b425fef84014269edc685",
+        "sha": "f84a7579e016475b829b7071fc167b1d585f81a3",
         "branch": "feature/forja-oscura-native-proof-20261107",
-        "source_ci_run": 43526553331,
+        "source_ci_run": 43576008075,
         "source_ci_result": "success",
         "unity_executed_on_sha": false,
         "visual_approval": false,
@@ -7467,7 +7465,18 @@
         ],
         "before_manifest_zip_sha256": "87d422a47c800e693139cea4d9f614dbfe7d93caa518bbdb3a9b231d498a1b2b",
         "source_doc": "docs/ui-v3/BREACH_WATCH_PHASE1_UNIFIED_KIT_20261114.md",
-        "brief": "13 files original kit + Retina capture, 4 high-quality compressed UI surfaces and mailbox resolution cap 1024, source generator updated; 0€"
+        "brief": "13 files original kit + Retina capture, 4 high-quality compressed UI surfaces and mailbox resolution cap 1024, source generator updated; 0€",
+        "windows_free_gib_20261114": 5.94,
+        "minimum_native_headroom_gib": 8,
+        "recommended_headroom_gib": 16,
+        "only_drive": "C:",
+        "alternative_drive_available": false,
+        "previous_own_checkout_dirty": 166,
+        "previous_checkout_nonmeta_modified": 26,
+        "previous_checkout_untracked": 17,
+        "source_run_diagnostic": 43576008078,
+        "native_run_blocked": "disk_insufficient_pre_editor",
+        "runner_released_at": "2026-11-14T08:31:34.273Z"
       },
       "source_guard_extension": {
         "purpose": "Roslyn parse ALL true 3x Editor source, verify exact UI import settings without licensed Windows runtime",
