@@ -143,7 +143,17 @@ function Invoke-Phase([string]$method,[string]$target,[string]$label,[string]$re
   }
   throw ('No genuine result after warm retry: '+$label)
 }
+$probe=Join-Path $project 'Assets/EldoriaWorldP0BuildProbe'
+if((Test-Path $probe) -or (Test-Path ($probe+'.meta'))){throw 'Preserve existing build probe'}
 try{
+  # Preserve the established mobile build recipe: collision data is baked
+  # offline rather than introduced as a second variable in the memory trial.
+  New-Item -ItemType Directory -Path (Join-Path $probe 'Editor')|Out-Null
+  Copy-Item (Join-Path $root 'tools/eldoria-private-beta/native/CollisionBake.cs') (Join-Path $probe 'Editor/CollisionBake.cs')
+  $env:ELDORIA_COLLISION_BAKE_OUT=$out
+  Invoke-Phase 'EldoriaBetaCollisionBake.Enable' 'Win64' 'collision-prebake' (Join-Path $out 'collision-bake-setting.json')
+  $collision=Get-Content (Join-Path $out 'collision-bake-setting.json') -Raw|ConvertFrom-Json
+  if($collision.source -ne $SourceSha -or -not $collision.after){throw 'Established collision prebake recipe not active'}
   Invoke-Phase 'Eldoria.BreachWatch.Editor.BreachWatchDestinationNativeEvidence.CaptureBatch' 'Win64' 'destinations' (Join-Path $ui 'BreachWatchDestinationEvidence.json')
   foreach($name in @('BreachWatchDestinationEvidence.json','BreachWatchIntegratedTreasureEvidence.json')){
     $j=Get-Content (Join-Path $ui $name) -Raw|ConvertFrom-Json
@@ -159,6 +169,8 @@ try{
   Write-Host ('WORLD_P0_EXACT_WEBGL_COMPILED_NOT_IPHONE_PASS '+$SourceSha)
 }finally{
   if(@(Get-Process Unity -ErrorAction SilentlyContinue).Count){throw 'Editor still live; retain backups'}
+  if(Test-Path $probe){Move-Item $probe (Join-Path $out 'build-editor-probe')}
+  if(Test-Path ($probe+'.meta')){Move-Item ($probe+'.meta') (Join-Path $out 'build-editor-probe.meta')}
   foreach($entry in @(@{path=$proof;name='prior-proof';output='integrated-build-proof'},@{path=$web;name='prior-web';output='compiled-webgl'},@{path=$ui;name='prior-ui';output='native-ui'})){
     if(Test-Path $entry.path){Move-Item $entry.path (Join-Path $out $entry.output)}
     if($prior[$entry.name]){Move-Item (Join-Path $backup $entry.name) $entry.path}

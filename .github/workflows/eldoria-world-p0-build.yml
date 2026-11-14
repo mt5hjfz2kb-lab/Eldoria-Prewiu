@@ -37,7 +37,7 @@ jobs:
         def get(path):
             req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=h)
             return json.load(urllib.request.urlopen(req,timeout=30))
-        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip().splitlines()==['build_source=5881df4e76da72c2897633c619449c60694b3552','attempt=2']
+        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip().splitlines()==['build_source=5881df4e76da72c2897633c619449c60694b3552','attempt=3']
         run=get('actions/runs/43641168362')
         assert run['head_sha']=='5881df4e76da72c2897633c619449c60694b3552'
         assert run['conclusion']=='success','Exact native coverage proof has not passed'
