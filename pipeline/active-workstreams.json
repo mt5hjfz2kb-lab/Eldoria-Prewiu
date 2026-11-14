@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T22:51:56.901Z",
+  "updated_at": "2026-11-14T23:27:00.976Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7700,14 +7700,16 @@
         ".github/workflows/tester-qa.yml",
         ".github/workflows/eldoria-world-p0-build.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "EXACT_WEBGL_PACKAGE_PASS_BROWSER_COMPARISON_RUNNING",
-      "note": "Frozen gameplay5881df4e76da72c2897633c619449c60694b3552 passed six settled native views and12reentries (43641168362), then real UI/campaign I-V/WebGL build job132598309828 in run43644208819. Owner beta remains90465 until actual browser comparison and image review. Physical iPhone cause/acceptance unconfirmed.",
-      "next": "Inspect running actual WebKit43649546135 (workflow96dfb9e, gameplay5881df), downloadworld-p0-browser-comparison and review original native UI/images plus control19/candidate world zooms, frame gaps and memory. Build/package43644208819 passed; do not rebuild or reserve Windows. Published90465 unchanged. Physical iPhone unverified.",
+      "phase": "PUBLISHED_BASELINE_RECONCILED_NATIVE_CERTIFICATION_PREPARING",
+      "note": "Reject5881df delivery: its main baseline would roll back delivered90465 navigation fixes. Reconciled source d0b21fd preserves all BreachWatch bytes and published WorldEntryPending while applying only world P0 changes. No main UI edits or other-workstream takeover. PR194 now targets existing frozen published beta branch.",
+      "next": "Run combined exact d0b21fd native world12reentries/sixsettledviews + actual delivered UI + campaign I-V + WebGL in one owned cache.15 focused source tests pass. Earlierbrowser436495/436515 errors were harness issues (wrong return position, disabled keyboard shortcuts, then wheel pointer landed over world-entry button); keep artifacts. Use pointer350,200 away from central action and confirm actual zoom; new candidate retains two-control world footer like beta19. Do not publish588 or claim iPhone solved.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7976,11 +7978,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
+        "status": "claimed",
         "owner": "chatgpt-world-p0-continuation-9df36d17",
         "ownership_revision": 80,
-        "updated_at": "2026-11-14T22:39:06.332Z",
-        "reason": "Exact native build job132598309828 succeeded on frozen gameplay5881df; full WebGL and evidence artifact14134931795 retained; source/settings restored; generated Library cache reclaimed;70.1GiB free. Packaging and browser use hosted runners; retain source ownership only."
+        "updated_at": "2026-11-14T23:27:00.976Z",
+        "reason": "One combined native PlayMode/UI/I-V/WebGL certification of reconciled published-baseline source d0b21fd. Reuse only owned Git objects; do not touch artist worktrees."
       },
       "ownership_history": [
         {
@@ -9033,6 +9035,12 @@
         "physical_iphone_verified": false,
         "browser_run": 43649546135,
         "browser_workflow_sha": "96dfb9e7866737889219ea766972afb4f023a7b4"
+      },
+      "integration_base": {
+        "branch": "feature/eldoria-private-beta-i-v-20261107",
+        "source": "90465a9a910b89a8a8b74e4b33a9bbc88578e00e",
+        "reason": "This already-published branch contains completed navigation/mail/bag fixes absent from main. PR194 retargeted to existing frozen beta base; consumes committed outputs per protocol without authoring or taking over BreachWatch. All BreachWatch bytes remain identical to published90465.",
+        "new_source": "d0b21fd5708c5070d1bd62dc6c6a98399c549051"
       }
     },
     {
