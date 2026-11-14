@@ -46,6 +46,28 @@ namespace Eldoria.BetaMemory.Tests
         [UnityTest]
         public IEnumerator RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD()
         {
+            // Optional logic-only smoke mode for isolated CI when 51 unversioned,
+            // previously audited Bastion III art files are unavailable on the
+            // Windows runner. This is NEVER a release/candidate or visual gate.
+            // The production test remains strict by default.
+            bool logicOnly=Environment.GetEnvironmentVariable(
+                "ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART")=="1";
+            var previousLogAssertionMode=LogAssert.ignoreFailingMessages;
+            var unexpectedErrors=new System.Collections.Generic.List<string>();
+            int missingBastionArt=0;
+            Application.LogCallback callback=(message,stack,type)=>{
+                if(type!=LogType.Error&&type!=LogType.Exception&&type!=LogType.Assert)return;
+                if(type==LogType.Error&&message.StartsWith(
+                    "BASTION_III_MISSING_ART BastionIII/",StringComparison.Ordinal)){
+                    missingBastionArt++;return;
+                }
+                unexpectedErrors.Add(message);
+            };
+            if(logicOnly){
+                LogAssert.ignoreFailingMessages=true;
+                Application.logMessageReceived+=callback;
+                Debug.Log("ELDORIA_WORLD_P0_LOGIC_ONLY_PROBE_NOT_A_RELEASE_CERTIFICATE");
+            }
             var previousProbe=Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE");
             var hostType=FindType("Eldoria.ReferenceClean.ValoriaIntegratedWorld");
             Assert.That(hostType,Is.Not.Null,"Integrated host must exist in the real player assembly");
@@ -205,6 +227,14 @@ namespace Eldoria.BetaMemory.Tests
                     Assert.That(Member(Member(host,"City"),"Gateway"),Is.SameAs(gateway));
                     yield return null;
                 }
+                if(logicOnly){
+                    Assert.That(missingBastionArt,Is.GreaterThan(0),
+                        "The explicit missing-art probe must not accidentally run against full production art");
+                    Assert.That(unexpectedErrors,Is.Empty,
+                        "Unrelated Unity errors cannot be dismissed by logic-only native tests");
+                    Debug.Log("ELDORIA_WORLD_P0_LOGIC_PROBE_MISSING_BASTION_ART_COUNT="+missingBastionArt+
+                              " production_visual_assets_validated=false");
+                }
                 Debug.Log("ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE");
 
                 // A full Region 1 is not usable by testers if its real saved
@@ -241,6 +271,10 @@ namespace Eldoria.BetaMemory.Tests
             }
             finally
             {
+                if(logicOnly){
+                    Application.logMessageReceived-=callback;
+                    LogAssert.ignoreFailingMessages=previousLogAssertionMode;
+                }
                 optIn.SetValue(null,previousFlag);
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE",previousProbe);
             }
