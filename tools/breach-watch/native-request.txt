@@ -1,5 +1,10 @@
-VIGILIA PHASE1 PATCH NATIVE READONLY STATUS AUDIT YAML FIX
-workstream=eldoria-forja-oscura-visual-proof-20261107 revision=128
-prior run 43575520713: own old isolated Unity source has 166 dirty files, must classify before considering in-place reuse.
-Fixed workflow YAML indentation/dedup; no native work if C disk under 8 GiB; read only modified vs untracked, preserve three historical Unity evidence files.
-No beta or other owner source altered, no spend.
+VIGILIA REAL UNITY PHASE1 3X — OWNER CONFIRMED LOCAL PC
+workstream=eldoria-forja-oscura-visual-proof-20261107
+owner=chatgpt-vigilia-visual-kit-20261113
+registry_revision=130
+main_windows_loan_commit=ff65534acc29fea2fc011da6698dc7bc9a0dfed7
+prior_fails=43576008078 old own checkout dirty; DO NOT REUSE OR CLEAN, 26 non-meta tracked modifications and 17 untracked.
+capacity_source=Issue186 native run 43583823285 actual C: 23.26 GiB free at 2026-11-14T10:08Z; recheck live runner and exclusive reservation before Unity. If current disk <8 GiB fail closed.
+target=actual 1x city/Bastion/mail/report/bag and 15 genuine 3x Unity Editor RenderTexture captures at 390x844,844x390,900x1600.
+art_review=compare against owner approved reference 864x1536, historical native 1x and 300% actual button crops; no fake ART_APPROVED.
+restrictions=0 EUR, preserve Issue186/beta/main/gameplay/save/economy; phase2 NOT authorized. Release Windows after test.
