@@ -7,6 +7,9 @@ on:
       - 'pipeline/eldoria-private-beta/**'
       - '.github/workflows/eldoria-private-beta-qa.yml'
       - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
   pull_request:
@@ -16,6 +19,9 @@ on:
       - 'pipeline/eldoria-private-beta/**'
       - '.github/workflows/eldoria-private-beta-qa.yml'
       - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs'
+      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/**'
 permissions:
@@ -39,6 +45,9 @@ jobs:
             Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
             Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
             Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs
+            Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
             Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode
