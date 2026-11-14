@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: issue186-native-art
   cancel-in-progress: false
@@ -102,6 +103,114 @@ jobs:
       LEASE_OWNER: ${{ needs.exclusive-preflight.outputs.owner }}
       LEASE_REVISION: ${{ needs.exclusive-preflight.outputs.revision }}
     steps:
+      - name: Reclaim ONLY verified historical Issue186 Unity import caches
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          # This is NOT general runner cleanup. All three exact Issue186 runs
+          # were checked read-only: each owns ~5.67 GiB of regenerated Unity/
+          # Library data; GitHub archives retain their exact native evidence.
+          # Preserve every Assets/.meta, source .git, ProjectSettings, save,
+          # screenshot, other branch and foreign workstream without exception.
+          $drive=[IO.DriveInfo]::new([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE))
+          if($drive.AvailableFreeSpace -ge 16*1GB){
+            Write-Host 'ISSUE186_CACHE_RECLAIM_NOT_NEEDED; free >=16 GiB'
+            exit 0
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'ISSUE186_CACHE_RECLAIM_REFUSED: Unity/Blender still running'
+          }
+          $repo='mt5hjfz2kb-lab/Eldoria-Prewiu'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='issue186-owned-cache-reclaim'}
+          $registry=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/contents/pipeline/active-workstreams.json?ref=main" -Headers $headers
+          $b64=[string]$registry.content
+          if($registry.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($b64)){
+            $blob=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/blobs/$($registry.sha)" -Headers $headers
+            if($blob.sha -ne $registry.sha -or $blob.encoding -ne 'base64'){throw 'Issue186 registry CAS blob unreadable'}
+            $b64=[string]$blob.content
+          }
+          $claims=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64))|ConvertFrom-Json).active |
+            Where-Object {$_.resources -contains 'windows-runner-heavy'}
+          $claims=@($claims)
+          if($claims.Count -ne 1 -or
+             $claims[0].id -ne 'eldoria-issue186-reward-attention-guidance-20261111' -or
+             $claims[0].owner -ne $env:LEASE_OWNER -or
+             [string]$claims[0].ownership_revision -ne $env:LEASE_REVISION -or
+             $claims[0].ownership_state -ne 'claimed'){
+            throw 'ISSUE186_CACHE_RECLAIM_REFUSED: lease changed'
+          }
+          $branchHead=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/issue186-first-guided-hand-20261113" -Headers $headers
+          if($branchHead.object.sha -ne $env:GITHUB_SHA){throw 'ISSUE186_CACHE_RECLAIM_REFUSED: branch moved'}
+          $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+          if(-not $git){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+          }
+          if(-not $git){throw 'ISSUE186_CACHE_RECLAIM_REFUSED: Git provenance unavailable'}
+          $records=@(
+            @{run=43503266427;sha='b63b94743efc84ec156d9ae5239143c6048fe069';artifact=14075333657},
+            @{run=43511148168;sha='eb2fbffffc957d8b1e41334b0cd3b8b4e68983e6';artifact=14080850495},
+            @{run=43520031645;sha='2757823c5adca75c4fa8e0eb00356ebe7ec4dc03';artifact=14083542406}
+          )
+          $eligible=@()
+          foreach($r in $records){
+            $source=Join-Path $env:GITHUB_WORKSPACE "issue186-fresh-source-$($r.run)"
+            $unity=Join-Path $source 'Unity'
+            $cache=Join-Path $unity 'Library'
+            if(-not(Test-Path -LiteralPath $cache -PathType Container)){
+              Write-Host "ISSUE186_CACHE_ALREADY_ABSENT run=$($r.run)"
+              continue
+            }
+            foreach($p in @($source,(Join-Path $source '.git'),$unity,$cache)){
+              if(-not(Test-Path -LiteralPath $p -PathType Container) -or
+                ((Get-Item -LiteralPath $p -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){
+                throw "ISSUE186_CACHE_RECLAIM_REFUSED unexpected folder or redirect: $p"
+              }
+            }
+            $recordedRun=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/actions/runs/$($r.run)" -Headers $headers
+            $archived=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/actions/artifacts/$($r.artifact)" -Headers $headers
+            if($recordedRun.status -ne 'completed' -or
+              $recordedRun.head_sha -ne $r.sha -or
+              $recordedRun.head_branch -ne 'feature/issue186-first-guided-hand-20261113' -or
+              $archived.expired -or $archived.workflow_run.id -ne $r.run -or
+              $archived.size_in_bytes -lt 100000){
+              throw "ISSUE186_CACHE_RECLAIM_REFUSED: historical run/artifact unverified $($r.run)"
+            }
+            $actualHead=(& $git -C $source rev-parse HEAD).Trim()
+            if($LASTEXITCODE -ne 0 -or $actualHead -ne $r.sha){
+              throw "ISSUE186_CACHE_RECLAIM_REFUSED: worktree HEAD differs for $($r.run)"
+            }
+            $tracked=@(& $git -C $source ls-files -- Unity/Library)
+            if($LASTEXITCODE -ne 0 -or $tracked.Count -gt 0){
+              throw "ISSUE186_CACHE_RECLAIM_REFUSED: tracked Library file for $($r.run)"
+            }
+            # Reject symlinks/junctions anywhere in this derived cache. A
+            # recursive deletion may never traverse an alien destination.
+            $redirect=Get-ChildItem -LiteralPath $cache -Recurse -Force -ErrorAction Stop |
+              Where-Object {$_.Attributes -band [IO.FileAttributes]::ReparsePoint} |
+              Select-Object -First 1
+            if($redirect){throw "ISSUE186_CACHE_RECLAIM_REFUSED: nested redirect $($redirect.FullName)"}
+            $eligible+=@{run=$r.run;path=$cache}
+            Write-Host "ISSUE186_OWN_CACHE_VERIFIED run=$($r.run); artifact=$($r.artifact); untouched=Unity/Assets,ProjectSettings,.git"
+          }
+          # All eligible paths are known and verified before the FIRST write.
+          # We reclaim only regenerated import caches, never native captures.
+          foreach($item in $eligible){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+              throw 'ISSUE186_CACHE_RECLAIM_INTERRUPTED: native tool became active'
+            }
+            Remove-Item -LiteralPath $item.path -Recurse -Force -ErrorAction Stop
+            if(Test-Path -LiteralPath $item.path){throw 'ISSUE186_CACHE_RECLAIM_INCOMPLETE'}
+            Write-Host "ISSUE186_OWN_LIBRARY_CACHE_REMOVED run=$($item.run); no source/art/save deletion"
+          }
+          Write-Host ("ISSUE186_CACHE_RECLAIM_DONE freeGiB={0:N2}" -f ($drive.AvailableFreeSpace/1GB))
+          if($drive.AvailableFreeSpace -lt 16*1GB){
+            throw 'ISSUE186_CACHE_RECLAIM_INSUFFICIENT: 16 GiB native minimum not met'
+          }
       - name: Verify installed Unity and idle computer
         shell: powershell
         run: |
