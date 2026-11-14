@@ -77,6 +77,16 @@ if(!File.Exists(coachFile+".meta") ||
    !firstEntryFixture.Contains("TouchRealWorldGuidance(realLabel.Select,camera,rt)") ||
    !firstEntryFixture.Contains("firstBuildingActionHandOnRealHit=true") ||
    !firstEntryFixture.Contains("firstSawmillLabelSelected=true") ||
+   // A native SUCCESS was visually false-green: a live Unity panel and hand
+   // were reported present but were absent from the 390x844 GPU screenshot.
+   // Protect the actual rendered-pixel acceptance gate against accidental
+   // removal while other workstreams hold the exclusive Windows runner.
+   !firstEntryFixture.Contains("Need(changed>35") ||
+   !firstEntryFixture.Contains("if(contrast>48)changed++") ||
+   !firstEntryFixture.Contains("(RectTransform)actualAction.transform,actualPanel.gameObject") ||
+   !firstEntryFixture.Contains("realHand.rectTransform,realHand.gameObject") ||
+   !firstEntryFixture.Contains("Photograph(camera,rt,\"FAILED-first-sawmill-build-guide\",390,844)") ||
+   !firstEntryFixture.Contains("ActualScreenRect(camera,actualPanel)") ||
    !firstEntryGate.Contains("@($r.images).Count -ne 25") ||
    !firstEntryGate.Contains("$r.realFirstHitClicks -ne 54") ||
    !File.ReadAllText("Unity/Assets/Eldoria/Issue186Art/Editor/Issue186BagCombinedNativeEvidence.cs")
