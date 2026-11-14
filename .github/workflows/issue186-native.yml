@@ -218,7 +218,7 @@ jobs:
             if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
               throw 'ISSUE186_CACHE_RECLAIM_INTERRUPTED: native tool became active'
             }
-            & robocopy.exe $empty $item.path /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP
+            & robocopy.exe $empty $item.path /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP | Out-Null
             $code=$LASTEXITCODE
             Write-Host "ISSUE186_OWN_CACHE_MIRROR run=$($item.run); exit=$code"
             if($code -ge 8){
@@ -238,6 +238,9 @@ jobs:
           if($drive.AvailableFreeSpace -lt 16*1GB){
             throw 'ISSUE186_CACHE_RECLAIM_INSUFFICIENT: 16 GiB native minimum not met'
           }
+          # Robocopy exit 2 means extra files were deleted successfully; the
+          # runner's PowerShell wrapper otherwise exits with stale exit code 2.
+          $global:LASTEXITCODE=0
       - name: Verify installed Unity and idle computer
         shell: powershell
         run: |
