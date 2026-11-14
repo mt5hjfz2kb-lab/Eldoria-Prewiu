@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T20:53:14.007Z",
+  "updated_at": "2026-11-14T21:18:52.134Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7697,7 +7697,8 @@
         ".github/workflows/eldoria-world-p0-native.yml",
         ".github/workflows/eldoria-world-p0-origin-search.yml",
         "tools/eldoria-private-beta/world-p0-origin-search-request.txt",
-        ".github/workflows/tester-qa.yml"
+        ".github/workflows/tester-qa.yml",
+        ".github/workflows/eldoria-world-p0-build.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -7706,9 +7707,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "FIX_PROVEN_NATIVE_TEST_COMPILATION_THEN_VALIDATE_WORLD_ENTRY",
+      "phase": "VERIFY_SETTLED_WORLD_THEN_BUILD_EXACT_WEBGL",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Qualify UnityEngine.Application in test fixture; run exact original-art native proof, retaining physical iPhone cause as unconfirmed.",
+      "next": "Finish run43641168362; require all six settled enemy coverage checks, then compile same frozen source and retain exact native UI/campaign/build provenance. Physical iPhone crash cause remains unconfirmed.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8990,6 +8991,17 @@
         "root_cause_confirmed": false,
         "peak_sampled_webcontent_rss_mib": 2050,
         "peak_sampled_gpu_rss_mib": 548
+      },
+      "last_world_p0_native": {
+        "source": "8e2eac0ac4831059fabd9bb4639bb2667e3dac19",
+        "run": 43638950225,
+        "passed": true,
+        "first_entry_seconds": 12.028,
+        "reentries": 12,
+        "physical_iphone_verified": false,
+        "latest_source": "5881df4e76da72c2897633c619449c60694b3552",
+        "latest_run": 43641168362,
+        "latest_status": "running"
       }
     },
     {
