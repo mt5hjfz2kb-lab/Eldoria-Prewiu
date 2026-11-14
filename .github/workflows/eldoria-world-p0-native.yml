@@ -243,3 +243,7 @@ jobs:
           Remove-Item $library -Recurse -Force
           Remove-Item $empty -Force
           Write-Host ('P0_GENERATED_CACHE_RECLAIMED_FREE_GIB='+[Math]::Round((Get-PSDrive C).Free/1GB,2))
+          # Robocopy 1..7 means a successful copy/deletion but sets LASTEXITCODE
+          # nonzero. The explicit success return prevents false CI failure
+          # after all guarded cleanup operations have completed.
+          exit 0
