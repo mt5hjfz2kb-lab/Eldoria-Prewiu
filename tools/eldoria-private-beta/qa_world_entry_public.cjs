@@ -8,8 +8,24 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  browser=await webkit.launch({headless:true});
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
  const page=await context.newPage();
+ // Read-only frame pacing observer: identical for control and candidate. It
+ // never calls Unity methods or changes saved state, camera or game time.
+ await page.addInitScript(()=>{
+  window.__eldoriaWorldQaFrames={active:false,last:0,phase:'idle',gaps:{}};
+  const observe=now=>{
+   const s=window.__eldoriaWorldQaFrames;
+   if(s.active&&s.last){const a=s.gaps[s.phase]||(s.gaps[s.phase]=[]);if(a.length<36000)a.push(now-s.last);}
+   s.last=now;requestAnimationFrame(observe);
+  };
+  requestAnimationFrame(observe);
+ });
  let consoleText='';
- page.on('console',m=>{consoleText+=m.text()+'\n';});
+ page.on('console',m=>{
+  const text=m.text();consoleText+=text+'\n';
+  if(/Could not allocate|out of memory|RuntimeError:|NullReferenceException|ELDORIA_CONTEXT_LOST|CONTEXT_LOST_WEBGL/i.test(text)){
+   report.errors.push('UNITY_RUNTIME: '+text);save();
+  }
+ });
  page.on('crash',()=>{report.errors.push('PAGE_CRASH');save();});
  page.on('console',m=>fs.appendFileSync(out+'/console.log',m.text()+'\n'));
  page.on('pageerror',e=>{report.errors.push(String(e));save();});
@@ -95,9 +111,11 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  report.worldEntries=[];
  for(let visit=0;visit<2;visit++){
   const logStart=consoleText.length;
+  await page.evaluate(()=>Object.assign(window.__eldoriaWorldQaFrames,
+   {active:true,last:performance.now(),phase:'world-entry',gaps:{}}));
   // Actual published a2 screenshot: three footer controls at x128/195/263.
   await page.mouse.click(263,776,{delay:180});
-  const entry={visit,samples:[],entered:false};report.worldEntries.push(entry);save();
+  const entry={visit,samples:[],entered:false,requestedAt:Date.now()};report.worldEntries.push(entry);save();
   const deadline=Date.now()+150000;
   while(Date.now()<deadline){
    if(report.errors.length)throw Error('World browser failure');
@@ -105,12 +123,13 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
     metrics:window.valoriaGame?.GetMetricsInfo?.(),canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height}}));
    sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
    entry.samples.push(sample);save();
-   if(consoleText.slice(logStart).includes('ELDORIA_P0_LAZY_WORLD_ENTERED')){entry.entered=true;break;}
+   if(consoleText.slice(logStart).includes('ELDORIA_P0_LAZY_WORLD_ENTERED')){entry.entered=true;entry.observedEntryWaitMs=Date.now()-entry.requestedAt;break;}
    await page.waitForTimeout(1000);
   }
   if(!entry.entered)throw Error('World entry never reached canonical entered marker');
   // Visible models stream AFTER the entered marker. Sampling only up to
   // that marker misses the very allocation peak this P0 candidate changes.
+  await page.evaluate(()=>window.__eldoriaWorldQaFrames.phase='world-stream-settling');
   const settleDeadline=Date.now()+12000;
   while(Date.now()<settleDeadline){
    if(report.errors.length)throw Error('World browser failure during streamed model settling');
@@ -120,6 +139,36 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    entry.samples.push(sample);save();await page.waitForTimeout(500);
   }
   await screen('world-visit-'+visit);
+  if(visit===0){
+   // These are the camera's actual production keyboard shortcuts, handled by
+   // ZoneOneStrategicCamera.LateUpdate; no game state or camera fields injected.
+   for(const [key,view] of [['2','regional'],['3','near'],['1','panoramic']]){
+    await page.evaluate(view=>window.__eldoriaWorldQaFrames.phase='zoom-'+view,view);
+    await page.keyboard.press(key,{delay:100});
+    report.actions.push({kind:'actual-camera-shortcut',key,view});
+    const viewDeadline=Date.now()+6500;
+    while(Date.now()<viewDeadline){
+     if(report.errors.length)throw Error('Runtime error while streaming zoom '+view);
+     const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
+      metrics:window.valoriaGame?.GetMetricsInfo?.()}));
+     sample.phase='zoom-'+view;
+     sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
+     entry.samples.push(sample);save();await page.waitForTimeout(500);
+    }
+    await screen('world-zoom-'+view);
+   }
+   report.zoomInputsSent=true;report.zoomViewsRequireImageReview=true;save();
+  }
+  entry.framePacing=await page.evaluate(()=>{
+   const s=window.__eldoriaWorldQaFrames;s.active=false;
+   const phases={};for(const [phase,raw] of Object.entries(s.gaps)){
+    const values=raw.filter(x=>x>=0).sort((a,b)=>a-b);
+    phases[phase]={frames:values.length,maxGapMs:values.at(-1)||0,
+     p95GapMs:values[Math.floor((values.length-1)*.95)]||0,
+     over100ms:values.filter(x=>x>100).length,over250ms:values.filter(x=>x>250).length};
+   }
+   return {visibility:document.visibilityState,phases};
+  });save();
   await page.mouse.click(128,776,{delay:180});await page.waitForTimeout(4000);
   const city=await screen('city-return-'+visit);
   entry.returned=city.some(r=>norm(r.text)==='ENTRADA QA');
