@@ -60,6 +60,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/breach-watch/import_cleanroom_art.py
+            /.github/workflows/breach-watch-native.yml
             /tools/breach-watch/validate_compact_layout.py
             /tools/breach-watch/verify_premium_font_fit.py
             /tools/breach-watch/validate_shared_destination_theme.py
@@ -178,6 +179,50 @@ jobs:
           assert 'compression=0 if navigation or name=="upgrade" else 1' in generator
           print('VIGILIA_READONLY_RETINA_EDITOR_AND_SPRITE_SOURCE_CHECK_PASS')
           print('NOT A UNITY COMPILE, A 3X GPU SCREENSHOT, WEBGL DPR OR ART APPROVAL')
+          PY
+      - name: Verify native Git alternate line ending and evidence-only sparse inclusion
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess,tempfile
+          wf=Path('.github/workflows/breach-watch-native.yml').read_text()
+          # PowerShell literal backslash-n was interpreted by Git as an
+          # extra /n directory, invalidating read-only object reuse.
+          assert '($objects+[Environment]::NewLine)' in wf
+          assert 'BREACHWATCH_READ_ONLY_GIT_OBJECT_REUSE_VERIFIED' in wf
+          assert '($objects+"\\n")' not in wf
+          archive_excludes=(
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated*/**',
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-*/**',
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/**',
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/**',
+          )
+          for p in archive_excludes:
+              assert "'"+p+"'" in wf,p
+          assert "VIGILIA_REAL_SCENE_ONLY_ARCHIVED_VARIANTS_EXCLUDED" in wf
+          required=(
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity',
+            'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs',
+            'Unity/Packages/manifest.json',
+          )
+          excluded=(
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18/Entry_00012.asset',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/Entry_00012.asset',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion66/Bastion_Ensemble_Candidate_GI.asset',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Lightmap-0_comp_light.exr',
+          )
+          with tempfile.TemporaryDirectory() as folder:
+              subprocess.run(['git','init','-q',folder],check=True)
+              rules=Path(folder)/'rules'
+              rules.write_text('/Unity/**\n/tools/breach-watch/**\n'+'\n'.join(archive_excludes)+'\n')
+              result=subprocess.run(
+                  ['git','-C',folder,'sparse-checkout','check-rules','--no-cone','--rules-file',str(rules)],
+                  input='\n'.join(required+excluded)+'\n',text=True,
+                  capture_output=True,check=True
+              )
+              assert set(result.stdout.splitlines())==set(required),(result.stdout,result.stderr)
+          print('VIGILIA_NATIVE_SCENE_RETAINED_ARCHIVES_EXCLUDED_SPARSE_GUARD_PASS')
           PY
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash

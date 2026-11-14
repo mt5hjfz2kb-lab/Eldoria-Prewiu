@@ -1003,8 +1003,20 @@ jobs:
           if(Test-Path -LiteralPath $cache){
             $objects=(Resolve-Path -LiteralPath $cache).Path.Replace('\','/')
             $alternates=Join-Path $root '.git/objects/info/alternates'
-            [IO.File]::WriteAllText($alternates,($objects+"\n"),(New-Object Text.UTF8Encoding($false)))
-            Write-Host 'BREACHWATCH_READ_ONLY_GIT_OBJECT_REUSE_ENABLED'
+            # PowerShell does not use \n to mean newline. The previous
+            # literal suffix created .../objects/n and forced Git to re-fetch
+            # large object packs. Write one genuine platform newline and
+            # verify Git will read the exact existing objects directory.
+            [IO.File]::WriteAllText($alternates,
+              ($objects+[Environment]::NewLine),
+              (New-Object Text.UTF8Encoding($false)))
+            $alternatesRead=@([IO.File]::ReadAllLines($alternates))
+            if($alternatesRead.Count -ne 1 -or
+               $alternatesRead[0] -ne $objects -or
+               -not(Test-Path -LiteralPath $objects)){
+              throw 'Unverified or malformed read-only Git alternate; abort before checkout'
+            }
+            Write-Host 'BREACHWATCH_READ_ONLY_GIT_OBJECT_REUSE_VERIFIED'
           }else{
             Write-Host 'BREACHWATCH_READ_ONLY_GIT_OBJECT_REUSE_NOT_PRESENT; fetching exact SHA remotely'
           }
@@ -1028,6 +1040,17 @@ jobs:
           foreach($n in @('39131782550','39132144937','39132392803','39132807199','39133202399','39136444844','39137079921','39138143327')){
             $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
           }
+          # The exact live scene, source scripts, prefabs and primary
+          # environment are included above. These four paths are historical
+          # generated *variants*, not active scene resources. Immutable Git
+          # tree inspection found ZERO .cs/.asmdef and 1.66GB additional
+          # history excluded, while the active scene and every script remain.
+          $patterns+=@(
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated*/**',
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-*/**',
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/**',
+            '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/**'
+          )
           [IO.File]::WriteAllLines((Join-Path $root '.git/info/sparse-checkout'),[string[]]$patterns,(New-Object Text.UTF8Encoding($false)))
           $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
           & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
@@ -1035,6 +1058,19 @@ jobs:
           & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --detach FETCH_HEAD
           if($LASTEXITCODE){throw 'Git source checkout failed'}
           if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){throw 'Source commit mismatch'}
+          # Explicitly prove historical variant assets stayed out and the
+          # genuine registered playable scene did not. Never mutate source.
+          foreach($archive in @(
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion66',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting'
+          )){
+            if(Test-Path -LiteralPath (Join-Path $root $archive)){
+              throw "Unexpected historical archive imported into native proof: $archive"
+            }
+          }
+          Write-Host 'VIGILIA_REAL_SCENE_ONLY_ARCHIVED_VARIANTS_EXCLUDED'
           # The initial source directory was proven absent before git init;
           # now HEAD exists and the usual strict Git preservation check can
           # verify the fresh worktree without dereferencing an unborn branch.
