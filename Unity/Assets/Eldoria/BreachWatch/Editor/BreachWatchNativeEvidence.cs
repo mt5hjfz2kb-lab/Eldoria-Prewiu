@@ -231,7 +231,9 @@ namespace Eldoria.BreachWatch.Editor
                     " size="+(data?data.size.ToString("F2"):"missing")+
                     " material="+(terrain.materialTemplate?terrain.materialTemplate.name:"default")+
                     " shader="+(terrain.materialTemplate && terrain.materialTemplate.shader
-                        ?terrain.materialTemplate.shader.name:"default"));
+                        ?terrain.materialTemplate.shader.name:"default")+
+                    " shaderSupported="+(terrain.materialTemplate && terrain.materialTemplate.shader
+                        ?terrain.materialTemplate.shader.isSupported.ToString():"unknown"));
                 if(data)
                 {
                     var layers=data.terrainLayers;
@@ -280,6 +282,7 @@ namespace Eldoria.BreachWatch.Editor
                     r.bounds.size.x>=10f && r.bounds.size.z>=10f)
                 .OrderByDescending(r=>r.bounds.size.x*r.bounds.size.z)
                 .Take(48).ToArray();
+            int unsupportedAssignedSlots=0;
             foreach(var renderer in large)
             {
                 var area=renderer.bounds.size.x*renderer.bounds.size.z;
@@ -289,13 +292,15 @@ namespace Eldoria.BreachWatch.Editor
                 {
                     var material=materials[i];
                     if(!material)continue;
+                    if(material.shader && !material.shader.isSupported)unsupportedAssignedSlots++;
                     var color=material.HasProperty("_BaseColor")
                         ?material.GetColor("_BaseColor").ToString("F3")
                         :material.HasProperty("_Color")
                             ?material.GetColor("_Color").ToString("F3"):"none";
                     descriptions.Add(i+":"+material.name+
                         " color="+color+
-                        " shader="+(material.shader?material.shader.name:"none"));
+                        " shader="+(material.shader?material.shader.name:"none")+
+                        " shaderSupported="+(material.shader?material.shader.isSupported.ToString():"unknown"));
                 }
                 entries.Add("RENDERER areaXZ="+area.ToString("F2")+
                     " bounds="+renderer.bounds.size.ToString("F2")+
@@ -305,7 +310,8 @@ namespace Eldoria.BreachWatch.Editor
             File.WriteAllLines(Path.Combine(directory,"VigiliaGroundMaterialInventory.txt"),entries);
             Debug.Log("VIGILIA_GROUND_INVENTORY_READ_ONLY "+
                 "terrain="+Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Length+
-                " largeRenderers="+large.Length);
+                " largeRenderers="+large.Length+
+                " unsupportedAssignedSlots="+unsupportedAssignedSlots);
         }
 
         static void VerifyProductionFirstEntry()
