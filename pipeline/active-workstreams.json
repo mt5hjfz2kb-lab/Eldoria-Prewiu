@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T17:56:26.200Z",
+  "updated_at": "2026-11-14T18:04:06.807Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7641,9 +7641,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
+      "owner": "chatgpt-eldoria-world-entry-p0-20261114",
       "ownership_state": "claimed",
-      "ownership_revision": 77,
+      "ownership_revision": 78,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -7697,7 +7697,7 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "NATIVE_AND_WEBGL_PASS_OWNER_PACKAGING_BROWSER_PAGES_PENDING",
+      "phase": "WORLD_ENTRY_PHYSICAL_IPHONE_P0_REPRO_REPAIR",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
       "next": "Preserve package-owner/browser-owner jobs of run43489752868 and source-pinned owner Pages workflow; verify actual published identity before reporting an owner-playable link. Do not cancel/change the active workflow or overwrite stable beta18. Physical iPhone and external testers remain unverified.",
       "last_verified": {
@@ -8217,6 +8217,13 @@
           "to_owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
           "transferred_at": "2026-11-13T18:18:31.751Z",
           "reason": "User requests this chat to continue through a new playable corrected beta link. Preserve ongoing exact WebKit 43469529824 and finished Unity/packaging; same branch and owner-authorized scope, no duplicate PR, no process termination."
+        },
+        {
+          "from": "chatgpt-eldoria-owner-nav-delivery-20261113",
+          "to": "chatgpt-eldoria-world-entry-p0-20261114",
+          "revision": 78,
+          "transferred_at": "2026-11-14T18:04:06.805Z",
+          "reason": "Owner directs current chat to stop all supervisory scheduled tasks and autonomously execute real P0 fix: tapping Mundo exits Eldoria beta on iPhone. Same canonical workstream, no force/cancel, no Windows claim. Must preserve beta18, game state, terrain and QA gates."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -8570,7 +8577,7 @@
         "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1",
         "external_testers_enabled": false
       },
-      "previous_owner": "chatgpt-work-recovery-4b742ab71c8e-20261112",
+      "previous_owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
       "released_at": "2026-11-10T23:04:36.314Z",
       "owner_only_lazy16": {
         "published": true,
