@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T18:18:09.360Z",
+  "updated_at": "2026-11-14T18:19:34.733Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7691,7 +7691,8 @@
         ".github/workflows/eldoria-beta-owner-nav-pages.yml",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs"
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
+        ".github/workflows/eldoria-world-p0-native.yml"
       ],
       "resources": [
         "windows-runner-heavy"
