@@ -204,7 +204,7 @@ jobs:
             -not ($_.Attributes -band [IO.FileAttributes]::ReparsePoint)
           } | Sort-Object Name)
           Write-Host ("WORKTREES_AUDIT_CANDIDATES count={0}" -f $candidates.Count)
-          $allAlternates=@(Get-ChildItem -LiteralPath $root -Recurse -Filter alternates -File -ErrorAction SilentlyContinue | Where-Object {
+          $allAlternates=@(Get-ChildItem -LiteralPath $root -Recurse -Force -Filter alternates -File -ErrorAction SilentlyContinue | Where-Object {
             $_.FullName -match '[\\/]objects[\\/]info[\\/]alternates$'
           })
           Write-Host ("WORKTREES_AUDIT_GIT_ALTERNATES observedFiles={0}" -f $allAlternates.Count)
@@ -216,10 +216,44 @@ jobs:
             if(-not(Test-Path -LiteralPath $gitDir)){
               Write-Host ("WORKTREE category={0} gitMissing=true" -f $d.Name);continue
             }
-            $head=(& $git -C $d.FullName rev-parse HEAD 2>$null)
-            $remote=(& $git -C $d.FullName remote get-url origin 2>$null)
-            $status=@(& $git -C $d.FullName status --porcelain=v1 --untracked-files=all 2>$null)
-            $statusCode=$LASTEXITCODE
+            if(-not (Test-Path -LiteralPath (Join-Path $gitDir 'HEAD'))){
+              Write-Host ("WORKTREE category={0} noHead=true" -f $d.Name);continue
+            }
+            # Older checkouts may be half-written. Git stderr must not kill a
+            # read-only forensic pass on a single incomplete historical copy.
+            $oldPreference=$ErrorActionPreference
+            $ErrorActionPreference='Continue'
+            try {
+              $head=(& $git -C $d.FullName rev-parse HEAD 2>$null)
+              $headCode=$LASTEXITCODE
+              if($headCode -ne 0 -or [string]$head -notmatch '^[a-f0-9]{40}
+            $changed=@($status | Where-Object {$_ -notmatch '^\?\?'}).Count
+            $untracked=@($status | Where-Object {$_ -match '^\?\?'}).Count
+            $ownAlt=Join-Path $gitDir 'objects/info/alternates'
+            $usesAlt=Test-Path -LiteralPath $ownAlt
+            [int]$inbound=0
+            foreach($al in $allAlternates){
+              if($al.FullName.StartsWith($d.FullName+'\',[StringComparison]::OrdinalIgnoreCase)){continue}
+              try{
+                $line=[IO.File]::ReadAllText($al.FullName)
+                if($line.IndexOf($d.Name,[StringComparison]::OrdinalIgnoreCase) -ge 0){$inbound++}
+              }catch{}
+            }
+            Write-Host ("WORKTREE name={0} HEAD={1} remoteOk={2} gitStatusCode={3} trackedDirty={4} untracked={5} hasAlternate={6} incomingAlternates={7}" -f
+              $d.Name,[string]$head,([string]$remote -match '^https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu(\.git)?$'),
+              $statusCode,$changed,$untracked,$usesAlt,$inbound)
+            if($visited -ge 50){Write-Host 'WORKTREES_AUDIT_MAX_50';break}
+          }
+          Write-Host ("WORKTREES_AUDIT_FINISHED reviewed={0} freeGiB={1:N3} deleted=false" -f $visited,($drive.AvailableFreeSpace/$gib))
+){
+                Write-Host ("WORKTREE category={0} invalidGitHead=true" -f $d.Name);continue
+              }
+              $remote=(& $git -C $d.FullName remote get-url origin 2>$null)
+              $status=@(& $git -C $d.FullName status --porcelain=v1 --untracked-files=all 2>$null)
+              $statusCode=$LASTEXITCODE
+            } finally {
+              $ErrorActionPreference=$oldPreference
+            }
             $changed=@($status | Where-Object {$_ -notmatch '^\?\?'}).Count
             $untracked=@($status | Where-Object {$_ -match '^\?\?'}).Count
             $ownAlt=Join-Path $gitDir 'objects/info/alternates'
