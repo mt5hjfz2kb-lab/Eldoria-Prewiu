@@ -326,6 +326,43 @@ namespace Eldoria.Issue186Art.Editor
                 "; position="+point+
                 "; CTA="+ActualScreenRect(camera,rect));
         }
+        // Art QA: a hand painted near CONSTRUIR is not enough. Its actual
+        // authored fingertip sits at the RectTransform pivot (.16,.696).
+        // On every viewport, this pixel must lie inside the real button and
+        // resolve to the SAME foremost click handler, without tapping it.
+        static void RequirePaintedFingertipHit(Button action,Image hand,
+            Camera camera,string viewport)
+        {
+            Need(action && hand && hand.sprite && hand.gameObject.activeInHierarchy,
+                "Missing painted fingertip/button at "+viewport);
+            var control=(RectTransform)action.transform;
+            var corners=new Vector3[4];control.GetWorldCorners(corners);
+            var lo=new Vector2(float.PositiveInfinity,float.PositiveInfinity);
+            var hi=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
+            foreach(var corner in corners)
+            {
+                var p=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                lo=Vector2.Min(lo,p);hi=Vector2.Max(hi,p);
+            }
+            var tip=RectTransformUtility.WorldToScreenPoint(
+                camera,hand.rectTransform.position);
+            Need(tip.x>=lo.x+2f && tip.x<=hi.x-2f &&
+                 tip.y>=lo.y+2f && tip.y<=hi.y-2f,
+                "Painted fingertip outside actual CONSTRUIR at "+viewport+
+                "; tip="+tip+"; CTA="+ActualScreenRect(camera,control));
+            var events=EventSystem.current;
+            Need(events && events.isActiveAndEnabled,
+                "Missing real EventSystem for fingertip at "+viewport);
+            var hits=new List<RaycastResult>();
+            events.RaycastAll(new PointerEventData(events){position=tip},hits);
+            var handler=hits.Count>0
+                ?ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)
+                :null;
+            Need(handler==action.gameObject,
+                "Painted fingertip does not hit CONSTRUIR at "+viewport+
+                "; first="+(hits.Count>0?hits[0].gameObject.name:"none")+
+                "; tip="+tip);
+        }
         static void RequirePaintedInRealFrame(Camera camera,RenderTexture target,
             RectTransform control,GameObject painted,string name)
         {
@@ -617,6 +654,7 @@ namespace Eldoria.Issue186Art.Editor
                         realHand.rectTransform,realHand.gameObject,
                         "Aserradero action hand: "+diagnostic);
                     RequireActualFirstHitOnButton(actualAction,camera,rt,"390x844");
+                    RequirePaintedFingertipHit(actualAction,realHand,camera,"390x844");
                 }
                 catch(Exception)
                 {
@@ -681,6 +719,7 @@ namespace Eldoria.Issue186Art.Editor
                              hand.gameObject.activeInHierarchy,
                             "Rotated building panel/CTA/hand absent: "+geometry);
                         RequireActualFirstHitOnButton(action,camera,rt,viewport);
+                        RequirePaintedFingertipHit(action,hand,camera,viewport);
                         RequirePaintedInRealFrame(camera,rt,
                             (RectTransform)action.transform,panel.gameObject,
                             "Aserradero action sheet: "+geometry);
