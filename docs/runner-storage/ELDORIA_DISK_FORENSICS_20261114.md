@@ -51,6 +51,17 @@ Los respaldos externos más recientes por los que se puede verificar la restaura
 - `b425`: fuente `14121008070` (119), Git `14121461912` (32), fuente `948ffa9837168a0b68dab80be76b66350422b23a`.
 - `i032`: fuente `14120719795` (182), Git `14121920431` (40), fuente `b63b94743efc84ec156d9ae5239143c6048fe069`.
 
+## Preservación preventiva verificada de otro checkout del tutorial (14/11/2026)
+
+**SOURCE_ARCHIVE_I111: original aún intacto; NO se ha retirado.** Se identificó `issue186-fresh-source-43511148168` (~5,475 GiB en el inventario del 14/11). Corresponde a [la ejecución histórica 43511148168](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43511148168), terminada `failure`, SHA remoto `eb2fbffffc957d8b1e41334b0cd3b8b4e68983e6`; el fallo antiguo no autoriza su eliminación por sí solo.
+
+- Copia diferencial de **186 archivos de trabajo locales**, incluida selección de modificados tracked (índice y árbol), untracked e ignored: [Actions 43617490592](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43617490592), `SOURCE_DELTA_ARCHIVE_VERIFIED`, ZIP `4,63 MiB`, SHA256 `7ddf014978e533fd42f0aadead6afc0efba884b807fdc6f34c9e82663d4424d8`, artefacto externo **14122299376** (`eldoria-unique-i111-43617490592`, retención 90 días). Original sin eliminar.
+- Copia exacta de **40 archivos Git originales**, **1,560 GiB** preservados separadamente en el runner con verificación SHA256 archivo por archivo: [Actions 43617632234](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43617632234). SHA256 del manifiesto `05057631a0cd17f6f2da996184538a2a294be55556fa10ea9bcc3aed3f267366`, artefacto externo del manifiesto **14122842061** (`eldoria-git-manifest-i111-43617632234`, 90 días). **Los objetos Git completos aún están locales, no consta copia externa de esos 1,560 GiB.**
+- Última lectura física de la operación de respaldo: `C:` **101,916 GiB libres**, 14/11/2026 a las **16:49:22 UTC**, anterior a un nuevo trabajo Unity. No atribuir a este archivo ninguna liberación de espacio: archivó, no eliminó; el espacio disminuyó por la duplicación protegida.
+- Antes de retirar esta fuente debe verificarse que el nuevo trabajo Unity ha concluido y que `windows-runner-heavy` ha sido liberado en el registro vivo; respaldar externamente los objetos Git si su singularidad lo requiere; comprobar los alternates entrantes y salientes; verificar el ZIP, SHA, manifiestos y todas las fuentes únicas inmediatamente antes de retirar la copia. Durante esta comprobación [Issue186 43617649660](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43617649660) había reclamado el recurso Windows; no se encoló ninguna retirada.
+
+Las siete retiradas históricas anteriores mantienen los ZIP de deltas y manifiestos externos con retención de **90 días**, y los objetos Git originales preservados localmente bajo `C:\actions-runner-eldoria\_preserved_snapshots`. Que un archivo manifiesto esté fuera del ordenador no prueba que todo su objeto Git también lo esté.
+
 ## Alcance pendiente y restricciones comprobadas
 
 La medición anterior de todo el entorno Eldoria fue 385,991 GiB cuando quedaban 46,62 GiB libres; **el tamaño actual del entorno no se ha vuelto a medir de forma completa** después de estas retiradas. No estimarlo como si fuese una nueva medición.
