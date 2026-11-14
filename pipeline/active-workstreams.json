@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T18:09:32.396Z",
+  "updated_at": "2026-11-14T18:18:09.360Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7019,14 +7019,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 140,
+      "ownership_revision": 141,
       "write_scope_released": false,
-      "phase": "PHASE1_EXCLUSIVE_WINDOWS_CLAIM_NEW_NATIVE_PENDING",
-      "next": "Physical read-only Windows rerun 43603053226 attempt 2 confirmed C: 90.62GiB free at 17:54:37Z (first scan succeeded; later legacy missing-worktree git check failed harmlessly). No Unity/Blender processes at scan entry; no live Actions job and zero main Windows holders before CAS. Source fdbaf45e passed hosted guard 43623583217 (still no Unity validation). ONE source-pinned native proof must be dispatched now, with fail-closed rechecks, 3x screenshots + A/B and no save changes. Preserve all dirty historical copies and release Windows after run; art_approved remains false.",
+      "phase": "OWNER_PAUSED_NON_P0_SUPERVISION_WORLD_CRASH_FIRST_UNITY_RELEASED",
+      "next": "Resume UI art only after P0 first-world-entry crash fixed; exact last native 43623869301 SUCCESS, preserve full workstream/branch/commits; do not claim Windows during world P0. Explicit user requested cancel all other supervision.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
@@ -7643,7 +7641,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-eldoria-world-entry-p0-20261114",
       "ownership_state": "claimed",
-      "ownership_revision": 78,
+      "ownership_revision": 79,
       "write_scope_released": false,
       "status": "active",
       "branch": "fix/eldoria-world-first-entry-p0-20261114",
@@ -7695,14 +7693,16 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "P0_WORLD_ENTRY_CLOSED_SET_VISIBLE_SCENE_STREAMING_REVIEW",
+      "phase": "OWNER_PRIORITY_P0_WORLD_NATIVE_CLAIMED",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Implement bounded resource/creature models and skip invisible LOD, preserving logical hotspots, terrain, quality of visible models. Review native/hosted memory and iPhone evidence before merge.",
+      "next": "Run isolated Unity PlayMode and optional WebGL real-world entry on branch fix/eldoria-world-first-entry-p0-20261114; ensure current free disk and idle editor, compare original result, iPhone still needed.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
