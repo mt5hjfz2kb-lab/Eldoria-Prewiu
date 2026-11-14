@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T16:59:32.000Z",
+  "updated_at": "2026-11-14T17:06:13.836Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -71,15 +71,13 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 64,
+      "ownership_revision": 65,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "FIRST_USE_EXACT_NATIVE_4_VIEWPORT_CAS_CLAIM",
+      "phase": "FOUR_VIEWPORT_NATIVE_PASS_INDEPENDENT_ART_REVIEW_PENDING",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -111,7 +109,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "CAS rev64 Issue186 exclusively claimed Windows for one source-pinned a9dc7c9 4-viewport Unity native proof. Next: bump native-request to rev64 and push, inspect 28 GPU images, 54 first-hit interactions and saved mail/bag/reload, release with CAS. No merge/beta/testers.",
+      "next": "Source 5f1062a682fdc05d3901d3d3c9ce18d3be20a8ce exact native run43617649660 SUCCESS: 28 authentic GPU PNG with SHA and 4 size selected-building pixel/first-hit, 54 real clicks, actual nickname/story/bag/mail/reload and clean exit; artifact 14123876057. Independent artistic review of 28 PNG plus browser/iPhone physical stability remain gates. Exclusive Windows released CAS rev65 after completed jobs. No merge/beta/testers.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_history": [
