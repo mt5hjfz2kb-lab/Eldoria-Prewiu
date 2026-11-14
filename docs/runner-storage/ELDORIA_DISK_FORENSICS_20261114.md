@@ -1,6 +1,6 @@
 # Eldoria — recuperación y prevención del llenado de C: (14/11/2026)
 
-Estado: **recuperación real en ejecución y verificada por logs; PR #192 fusionada en `main`; primera activación automática por `workflow_run` pendiente de verificación; varios archivos históricos conservados y retiradas protegidas.**
+Estado: **recuperación real verificada, PR #192 fusionada en `main` y primera activación automática `workflow_run` probada físicamente el 14/11/2026; aún quedan fuentes históricas sin clasificar o preservar.**
 
 ## Causa y evidencia
 El equipo Windows autoalojado `DESKTOP-R10PE55` mantuvo copias de trabajo y cachés de Unity de sucesivas pruebas. No era la cuota de GitHub: se trataba de `C:\` del ordenador.
@@ -22,7 +22,7 @@ El equipo Windows autoalojado `DESKTOP-R10PE55` mantuvo copias de trabajo y cach
 - Elimina **únicamente** `Unity/Library` de una copia aislada de ejecución específica con el mismo mecanismo `robocopy /MIR /XJ` que funcionó en [43602596197](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43602596197). Nunca borra fuentes, modelos, archivos originales, `.meta`, `.git` ni evidencia. En cualquier discrepancia se detiene o omite esa copia.
 - Aun integrada, reduce la acumulación **de cachés**; las copias de `Unity/Assets` y Git exigen una política posterior de archivo y deduplicación antes de poder eliminarse. No afirmar que se ha resuelto la ocupación de la máquina para siempre.
 
-PR [#192](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/192) fusionada el 14/11/2026. Comprobación estática y parseo PowerShell en [43606178339](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43606178339) SUCCESS. **No equivale a prueba de una limpieza automática disparada por `workflow_run` sobre el PC**; esa primera activación real requiere evidencia separada.
+PR [#192](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/192) fusionada el 14/11/2026. Comprobación estática y parseo PowerShell en [43606178339](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43606178339) SUCCESS. **Primera limpieza automática física comprobada:** al finalizar la prueba Unity de Vigilia [43615782618](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43615782618) el 14/11/2026, el `workflow_run` [43617042919](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43617042919) ejecutó `reclaim` con `success` en `DESKTOP-R10PE55`. El log registra `POSTRUN_CACHE_RECLAIMED run=43615782618 GiB=5,621 assetsDeleted=false` a las **16:42:46 UTC**. Esto prueba la eliminación acotada de esa `Unity/Library`, pero NO prueba por sí solo la retención permanente ni una nueva medición de `C:` total. La ejecución Unity previa terminó con un error visual de recorte real del texto `RECURSOS` (29,7 px solicitados, 16,0 disponibles), no con error de almacenamiento. El checkout emitió avisos sobre una ruta Git `alternates` ausente hacia `breachwatch-isolated-43532823031-1`: antes de retirar esta fuente o sus dependientes hay que verificar toda la cadena de alternates.
 
 Documentación de terceros:
 - Unity, caché `Library`: https://docs.unity3d.com/Manual/AssetWorkflow.html — Unity puede regenerarla con el proyecto cerrado.
@@ -43,7 +43,7 @@ Las copias listadas abajo se retiraron **solo después** de generar un ZIP de ar
 | `beta-structural-source-42505611257-1` | [43613930941](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43613930941) | 12,442 | 103,783 |
 | `issue186-fresh-source-43503266427` | [43614706067](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43614706067) | 5,484 | **107,704** |
 
-Última medida física verificada el 14/11/2026: **107,704 GiB libres** en `C:\`. Es una instantánea, no garantía de espacio actual constante. De los directorios anteriores, los 4 últimos se retiraron en el trabajo de este turno. Hay archivos ZIP de deltas únicos y manifiestos externos asociados con retención limitada a **90 días**; los objetos Git locales se conservan en `C:\actions-runner-eldoria\_preserved_snapshots`.
+Última medida física absoluta verificada el 14/11/2026 antes de la nueva prueba nativa: **107,704 GiB libres** en `C:\`. Después hubo una prueba Unity con consumo temporal y recuperación post-run de 5,621 GiB, pero NO existe una nueva medición total de espacio libre. No sumar estas variaciones para inventar un valor absoluto.
 
 Los respaldos externos más recientes por los que se puede verificar la restauración son:
 - `b695`: fuente exclusiva artefacto GitHub `14120946457` (661 ficheros), manifiesto Git `14121260373` (39 entradas), fuente `ec4d664e8765a4ee3d97f71f075820b10f04f449`.
