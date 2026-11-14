@@ -522,3 +522,144 @@ jobs:
           path: C:/actions-runner-eldoria/_preserved_snapshots/beta-structural-source-42505611257-1-unique-20261114.zip
           retention-days: 90
           if-no-files-found: error
+
+  verify-git-metadata-archiver-b425:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[git-b425]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: .github/workflows/eldoria-postrun-unity-cache.yml
+          sparse-checkout-cone-mode: false
+      - name: Ensure Git object backup source code is non-destructive and parses
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rows=Path('.github/workflows/eldoria-postrun-unity-cache.yml').read_text().splitlines()
+          i=next(i for i,r in enumerate(rows) if r.strip()=='- name: Copy Git object store exactly and compare every hash')
+          j=next(i for i in range(i,len(rows)) if rows[i].strip()=='run: |')+1
+          t=[]
+          for line in rows[j:]:
+            if line and not line.startswith('          '):break
+            t.append(line[10:] if line.startswith('          ') else '')
+          code='\n'.join(t)+'\n'
+          assert 'Remove-Item' not in code
+          assert 'gitBackup' in code and 'Get-FileHash' in code
+          assert 'Copy-Item -LiteralPath $gitSource' in code
+          assert 'SHA256' in code
+          Path('verify-git-preservation.ps1').write_text(code)
+          PY
+          pwsh -NoProfile -NonInteractive -Command '
+            $tokens=$null; $errors=$null
+            $null=[Management.Automation.Language.Parser]::ParseFile("verify-git-preservation.ps1",[ref]$tokens,[ref]$errors)
+            if($errors.Count){$errors | Out-String | Write-Error; exit 1}
+            Write-Host "GIT_METADATA_ARCHIVE_SCRIPT_PARSE_PASS"
+          '
+  archive-original-git-metadata-b425:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[git-b425]')
+    needs: verify-git-metadata-archiver-b425
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Copy Git object store exactly and compare every hash
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $ProgressPreference='SilentlyContinue'
+          if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
+            Write-Host 'GIT_METADATA_ARCHIVE_SKIP_TOOL_BUSY';exit 0
+          }
+          $label='beta-structural-source-42505611257-1'
+          $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
+          $source=Join-Path $root $label
+          $gitSource=Join-Path $source '.git'
+          $archiveRoot='C:\actions-runner-eldoria\_preserved_snapshots'
+          $overlayZip=Join-Path $archiveRoot ($label+'-unique-20261114.zip')
+          $gitBackup=Join-Path $archiveRoot ($label+'-git-objects')
+          $manifestPath=Join-Path $archiveRoot ($label+'-git-manifest.json')
+          if(-not(Test-Path -LiteralPath $overlayZip -PathType Leaf) -or
+             -not(Test-Path -LiteralPath (Join-Path $gitSource 'HEAD') -PathType Leaf)){
+            throw 'REFUSE: reversible overlay or original Git missing'
+          }
+          if((Get-FileHash -LiteralPath $overlayZip -Algorithm SHA256).Hash.ToLowerInvariant() -ne
+             '2df938c208227f5808f31499268e04cb9b6532a7f1634aec1c5c20ecdc54324e'){
+            throw 'REFUSE: verified overlay checksum has changed'
+          }
+          $remoteProof=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/14121008070' -Headers @{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json';'User-Agent'='eldoria-storage-archive'} -ErrorAction Stop
+          if($remoteProof.expired -or
+             $remoteProof.name -ne 'eldoria-unique-b425-43613603217' -or
+             $remoteProof.workflow_run.id -ne 43613603217 -or
+             $remoteProof.size_in_bytes -lt 1000000){
+            throw 'REFUSE: off-machine unique source artifact is not verifiable'
+          }
+          if(Test-Path -LiteralPath $gitBackup){throw 'REFUSE: Git backup destination already exists'}
+          if(Test-Path -LiteralPath $manifestPath){throw 'REFUSE: Git backup manifest already exists'}
+          $attrs=(Get-Item -LiteralPath $gitSource -Force).Attributes
+          if($attrs -band [IO.FileAttributes]::ReparsePoint){throw 'REFUSE: original Git is a junction'}
+          $srcFiles=@(Get-ChildItem -LiteralPath $gitSource -Recurse -File -Force -ErrorAction Stop)
+          $linked=Get-ChildItem -LiteralPath $gitSource -Recurse -Force -ErrorAction Stop |
+            Where-Object {$_.Attributes -band [IO.FileAttributes]::ReparsePoint} | Select-Object -First 1
+          if($linked){throw 'REFUSE: original Git references a linked file'}
+          if($srcFiles.Count -lt 20 -or $srcFiles.Count -gt 500){
+            throw 'REFUSE: unexpected Git source inventory count'
+          }
+          [double]$gib=1024*1024*1024
+          $drive=[IO.DriveInfo]::new('C')
+          [long]$start=$drive.AvailableFreeSpace
+          if($start -lt 15*$gib){throw 'REFUSE: not enough disk space to retain Git backup'}
+          Copy-Item -LiteralPath $gitSource -Destination $gitBackup -Recurse -Force -ErrorAction Stop
+          if(-not(Test-Path -LiteralPath (Join-Path $gitBackup 'HEAD'))){
+            throw 'REFUSE: exact backup did not contain HEAD'
+          }
+          $backFiles=@(Get-ChildItem -LiteralPath $gitBackup -Recurse -File -Force -ErrorAction Stop)
+          if($backFiles.Count -ne $srcFiles.Count){
+            throw 'REFUSE: backup file count differs'
+          }
+          $manifest=New-Object System.Collections.ArrayList
+          [long]$bytes=0
+          foreach($original in $srcFiles){
+            $relative=$original.FullName.Substring($gitSource.Length).TrimStart('\')
+            $copy=Join-Path $gitBackup $relative
+            if(-not(Test-Path -LiteralPath $copy -PathType Leaf)){
+              throw 'REFUSE: Git backup missing source entry'
+            }
+            $originalHash=(Get-FileHash -LiteralPath $original.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            $copyHash=(Get-FileHash -LiteralPath $copy -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($originalHash -ne $copyHash -or $original.Length -ne (Get-Item -LiteralPath $copy).Length){
+              throw 'REFUSE: Git backup content differs from original'
+            }
+            $bytes += [long]$original.Length
+            $null=$manifest.Add([pscustomobject]@{
+              path=$relative;bytes=[long]$original.Length;sha256=$originalHash
+            })
+          }
+          [pscustomobject]@{
+            schema='eldoria-original-local-git-preservation-1'
+            source=$label
+            sourceSha='948ffa9837168a0b68dab80be76b66350422b23a'
+            createdUtc=[datetime]::UtcNow.ToString('o')
+            originalWorktreeStillPresent=$true
+            count=$srcFiles.Count
+            totalBytes=$bytes
+            files=@($manifest)
+          } | ConvertTo-Json -Depth 8 |
+            Set-Content -LiteralPath $manifestPath -Encoding UTF8 -ErrorAction Stop
+          $manifestHash=(Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash.ToLowerInvariant()
+          Write-Host ("GIT_METADATA_ARCHIVE_VERIFIED label={0} files={1} backedGiB={2:N3} manifestSha256={3}" -f
+            $label,$srcFiles.Count,($bytes/$gib),$manifestHash)
+          Write-Host ("GIT_METADATA_ORIGINAL_PRESERVED freeGiB={0:N3} originalDeleted=false" -f ($drive.AvailableFreeSpace/$gib))
+          exit 0
+
+      - name: Upload verified Git source preservation manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-git-manifest-b425-${{ github.run_id }}
+          path: C:/actions-runner-eldoria/_preserved_snapshots/beta-structural-source-42505611257-1-git-manifest.json
+          retention-days: 90
+          if-no-files-found: error
