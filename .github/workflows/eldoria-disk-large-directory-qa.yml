@@ -1,0 +1,98 @@
+name: Eldoria classify large Windows directories without reading user content
+on:
+  push:
+    branches: [maintenance/eldoria-runner-disk-audit-20261114]
+    paths: [.github/workflows/eldoria-disk-large-directory-qa.yml]
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-breachwatch-native-first-screen
+  cancel-in-progress: false
+jobs:
+  classify:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 9
+    steps:
+      - name: Classify large installed-software directories by extension and broad category
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ProgressPreference='SilentlyContinue'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'DISK_QA_EDITOR_BUSY';exit 0}
+          $base='C:\Program Files (x86)'
+          $gib=[double](1024*1024*1024)
+          $roots=@(Get-ChildItem -LiteralPath $base -Directory -Force -ErrorAction Stop | Sort-Object Name)
+          if($roots.Count -ne 30){throw "DISK_QA_FOLDER_COUNT_CHANGED; refuse stale directory mapping"}
+          $deadline=[datetime]::UtcNow.AddMinutes(6)
+          $extToType=@{
+            '.pak'='game-content';'.vpk'='game-content';'.ucas'='game-content';
+            '.utoc'='game-content';'.mpq'='game-content';'.cas'='game-content';
+            '.wad'='game-content';'.unity3d'='game-content';'.assetbundle'='game-content';
+            '.bundle'='game-content';'.upk'='game-content';'.bnk'='game-content';
+            '.fsb'='game-content';'.pck'='game-content';'.iwd'='game-content';
+            '.vfs'='game-content';'.data'='generic-data';'.bin'='generic-data';
+            '.dat'='generic-data';'.blob'='generic-data';'.cache'='generic-data';
+            '.dll'='binaries';'.exe'='binaries';'.pdb'='binaries';'.lib'='binaries';
+            '.so'='binaries';'.msi'='installers';'.zip'='archive';
+            '.7z'='archive';'.rar'='archive';'.tar'='archive';
+            '.png'='images';'.jpg'='images';'.jpeg'='images';'.tga'='images';
+            '.dds'='images';'.psd'='images';'.webp'='images';
+            '.ogg'='audio';'.wav'='audio';'.mp3'='audio';'.mp4'='video';
+            '.avi'='video';'.mkv'='video';'.wmv'='video'
+          }
+          foreach($index in @(18,30)){
+            $root=$roots[$index-1]
+            $category='other-software'
+            if($root.Name -match '(?i)steam|epic games|gog|ubisoft|electronic arts|battle.net'){$category='games-platform'}
+            elseif($root.Name -match '(?i)warcraft|war thunder|world of|wuthering|valorant|league of|riot|minecraft|roblox|game|gaming|battlefield|diablo|starcraft'){$category='installed-game'}
+            elseif($root.Name -match '(?i)unity|unreal|godot|visual studio|blender|autodesk|adobe'){$category='developer-or-content-tool'}
+            $types=@{};$sizeByLevel=@{};$extensions=@{};[long]$files=0
+            $queue=New-Object 'System.Collections.Generic.Stack[string]'
+            $queue.Push($root.FullName)
+            [bool]$partial=$false
+            while($queue.Count -gt 0){
+              if([datetime]::UtcNow -ge $deadline){$partial=$true;break}
+              $p=$queue.Pop()
+              try {
+                foreach($f in ([IO.DirectoryInfo]::new($p)).EnumerateFileSystemInfos()){
+                  try{
+                    if($f.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+                    if($f -is [IO.DirectoryInfo]){$queue.Push($f.FullName);continue}
+                    $files++
+                    [long]$b=$f.Length
+                    $extension=$f.Extension.ToLowerInvariant()
+                    $type=if($extToType.ContainsKey($extension)){$extToType[$extension]}else{'other'}
+                    if($types.ContainsKey($type)){$types[$type]+=$b}else{$types[$type]=$b}
+                    $relative=$f.FullName.Substring($root.FullName.Length).TrimStart('\')
+                    $first=$relative.Split('\')[0]
+                    $label=if($first -eq $f.Name){'root-files'}else{'child-dir'}
+                    if($sizeByLevel.ContainsKey($label)){$sizeByLevel[$label]+=$b}else{$sizeByLevel[$label]=$b}
+                    # No names of personal or installed files in the public log.
+                  }catch{}
+                }
+              }catch{}
+            }
+            Write-Host ("LARGE_DIR_QA index={0} class={1} files={2} partial={3}" -f $index,$category,$files,$partial)
+            foreach($type in @($types.Keys | Sort-Object)){
+              Write-Host ("LARGE_DIR_TYPE index={0} type={1} GiB={2:N3}" -f $index,$type,($types[$type]/$gib))
+            }
+          }
+      - name: Measure Windows root system file categories only
+        shell: powershell
+        run: |
+          $gib=[double](1024*1024*1024)
+          $groups=@{}
+          foreach($p in @(Get-ChildItem -LiteralPath 'C:\' -File -Force -ErrorAction SilentlyContinue)){
+            $name=$p.Name.ToLowerInvariant()
+            $type=if($name -eq 'pagefile.sys'){'windows-pagefile'}
+              elseif($name -eq 'hiberfil.sys'){'windows-hibernation'}
+              elseif($name -eq 'swapfile.sys'){'windows-swap'}
+              elseif($name -eq 'memory.dmp'){'windows-crash-dump'}
+              else{'unknown-root-file'}
+            if($groups.ContainsKey($type)){$groups[$type]+=[long]$p.Length}
+            else{$groups[$type]=[long]$p.Length}
+          }
+          foreach($k in @($groups.Keys | Sort-Object)){
+            Write-Host ("ROOT_FILE_QA category={0} GiB={1:N3}" -f $k,($groups[$k]/$gib))
+          }
+          Write-Host 'LARGE_DIR_QA_DONE readOnly=true deleted=false'
