@@ -1,0 +1,174 @@
+name: Eldoria post-run bounded Unity Library cleanup
+on:
+  push:
+    branches: [maintenance/eldoria-runner-disk-audit-20261114]
+    paths: [.github/workflows/eldoria-postrun-unity-cache.yml]
+  workflow_run:
+    workflows:
+      - Vigilia de la Brecha genuine Unity first screen
+      - Integrated beta — exclusive Vigilia, treasures and saved rewards
+      - Issue 186 Unity native art evidence (exclusive Windows)
+      - Eldoria compact terrain native parity and WebGL
+      - Forja Oscura Unity native A-B evidence
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-breachwatch-native-first-screen
+  cancel-in-progress: false
+jobs:
+  test-guards:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: .github/workflows/eldoria-postrun-unity-cache.yml
+          sparse-checkout-cone-mode: false
+      - name: Reject unsafe cleanup policy
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          t=Path('.github/workflows/eldoria-postrun-unity-cache.yml').read_text()
+          required=['workflow_run:','types: [completed]','SOURCE_RUN_ID','SOURCE_RUN_SHA',
+            'Get-Process Unity,blender','Unity\\Library','sourceSha','head_sha',
+            'actions/runs/','/artifacts?per_page=100','robocopy.exe $empty $lib /MIR /XJ',
+            'Remove-Item -LiteralPath $lib','Remove-Item -LiteralPath $empty',
+            'REFUSE:','Get-ChildItem -LiteralPath $lib -Recurse']
+          for term in required:
+            assert term in t, 'Missing safety gate: '+term
+          assert t.count('\n          Remove-Item -LiteralPath $lib -Force')==1
+          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
+          print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
+          PY
+      - name: Parse actual cleanup PowerShell without executing it
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          rows=Path('.github/workflows/eldoria-postrun-unity-cache.yml').read_text().splitlines()
+          pos=next(i for i,r in enumerate(rows) if r.strip()=='- name: Reclaim exact completed run generated Library only')
+          start=next(i for i in range(pos,len(rows)) if rows[i].strip()=='run: |')+1
+          script=[]
+          for line in rows[start:]:
+            if line and not line.startswith('          '):break
+            script.append(line[10:] if line.startswith('          ') else '')
+          Path('eldoria-postrun-body.ps1').write_text('\n'.join(script)+'\n')
+          assert len(script)>80
+          PY
+          if ! command -v pwsh >/dev/null; then
+            echo 'PowerShell parser unavailable; cannot certify script' >&2
+            exit 1
+          fi
+          pwsh -NoProfile -NonInteractive -Command '
+            $tok=$null; $errors=$null
+            $null=[System.Management.Automation.Language.Parser]::ParseFile("eldoria-postrun-body.ps1",[ref]$tok,[ref]$errors)
+            if($errors -and $errors.Count){$errors | Out-String | Write-Error; exit 1}
+            Write-Host "ELDORIA_POSTRUN_POWERSHELL_PARSE_PASS"
+          '
+  reclaim:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+      SOURCE_RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+      SOURCE_RUN_NAME: ${{ github.event.workflow_run.name }}
+    steps:
+      - name: Reclaim exact completed run generated Library only
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ProgressPreference='SilentlyContinue'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            Write-Host 'POSTRUN_SKIP_EDITOR_BUSY';exit 0
+          }
+          $runId=[string]$env:SOURCE_RUN_ID
+          $sourceSha=[string]$env:SOURCE_RUN_SHA
+          if($runId -notmatch '^[0-9]{9,15}$' -or $sourceSha -notmatch '^[a-f0-9]{40}$'){
+            throw 'REFUSE: malformed exact source'
+          }
+          $map=@{
+            'Vigilia de la Brecha genuine Unity first screen'='breachwatch-isolated-'
+            'Integrated beta — exclusive Vigilia, treasures and saved rewards'='breachwatch-native-source-'
+            'Issue 186 Unity native art evidence (exclusive Windows)'='issue186-fresh-source-'
+            'Eldoria compact terrain native parity and WebGL'='beta-structural-source-'
+            'Forja Oscura Unity native A-B evidence'='forja-thin-native-source-'
+          }
+          if(-not $map.ContainsKey($env:SOURCE_RUN_NAME)){exit 0}
+          $suffix=if($env:SOURCE_RUN_NAME -match '^(Issue 186|Forja Oscura)'){''}else{'-1'}
+          $name=$map[$env:SOURCE_RUN_NAME]+$runId+$suffix
+          $parent='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
+          $source=Join-Path $parent $name
+          $lib=Join-Path $source 'Unity\Library'
+          if(-not(Test-Path -LiteralPath $lib -PathType Container)){
+            Write-Host "POSTRUN_SKIP_MISSING_CACHE $runId";exit 0
+          }
+          foreach($path in @($parent,$source,(Join-Path $source 'Unity'),$lib)){
+            $d=Get-Item -LiteralPath $path -Force -ErrorAction Stop
+            if(-not $d.PSIsContainer -or ($d.Attributes -band [IO.FileAttributes]::ReparsePoint)){
+              throw 'REFUSE: linked source ancestry'
+            }
+          }
+          if(-not(Test-Path -LiteralPath (Join-Path $source '.git')) -or
+             -not(Test-Path -LiteralPath (Join-Path $source 'Unity\Assets')) -or
+             -not(Test-Path -LiteralPath (Join-Path $source 'Unity\ProjectSettings'))){
+            throw 'REFUSE: original source not verifiable'
+          }
+          $headers=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json';'User-Agent'='eldoria-safe-postrun'}
+          $run=Invoke-RestMethod -Uri ("https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/"+$runId) -Headers $headers -ErrorAction Stop
+          if($run.status -ne 'completed' -or $run.head_sha -ne $sourceSha -or
+             $run.name -ne $env:SOURCE_RUN_NAME -or
+             $run.head_repository.full_name -ne 'mt5hjfz2kb-lab/Eldoria-Prewiu'){
+            throw 'REFUSE: GitHub completed run identity mismatch'
+          }
+          $evidence=Invoke-RestMethod -Uri ("https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/$runId/artifacts?per_page=100") -Headers $headers -ErrorAction Stop
+          if(@($evidence.artifacts | Where-Object {-not $_.expired -and $_.size_in_bytes -gt 10000}).Count -eq 0){
+            Write-Host "POSTRUN_SKIP_UNARCHIVED $runId";exit 0
+          }
+          $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+          if(-not $git){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+          }
+          if(-not $git){throw 'REFUSE: installed Git unavailable'}
+          $head=(& $git -C $source rev-parse HEAD).Trim()
+          $remote=(& $git -C $source remote get-url origin).Trim()
+          if($LASTEXITCODE -ne 0 -or $head -ne $sourceSha -or
+             $remote -notin @('https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu',
+               'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git')){
+            Write-Host "POSTRUN_SKIP_DIFFERENT_WORKTREE $runId";exit 0
+          }
+          $tracked=@(& $git -C $source ls-files -- Unity/Library)
+          if($LASTEXITCODE -ne 0 -or $tracked.Count -ne 0){
+            throw 'REFUSE: Library contains tracked sources'
+          }
+          $links=Get-ChildItem -LiteralPath $lib -Recurse -Force -ErrorAction Stop |
+            Where-Object {$_.Attributes -band [IO.FileAttributes]::ReparsePoint} |
+            Select-Object -First 1
+          if($links){throw 'REFUSE: cache contains linked path'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){exit 0}
+          $empty=Join-Path $env:RUNNER_TEMP ('eldoria-postrun-empty-'+$runId)
+          if(Test-Path -LiteralPath $empty){throw 'REFUSE: unexpected mirror path'}
+          New-Item -Path $empty -ItemType Directory -ErrorAction Stop | Out-Null
+          $volume=[IO.DriveInfo]::new('C')
+          [long]$before=$volume.AvailableFreeSpace
+          & robocopy.exe $empty $lib /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP | Out-Null
+          if($LASTEXITCODE -gt 7){throw 'REFUSE: robocopy returned failure'}
+          if(@(Get-ChildItem -LiteralPath $lib -Force -ErrorAction Stop | Select-Object -First 1).Count){
+            throw 'REFUSE: mirrored cache still nonempty'
+          }
+          Remove-Item -LiteralPath $lib -Force -ErrorAction Stop
+          Remove-Item -LiteralPath $empty -Force -ErrorAction Stop
+          [double]$gib=1024*1024*1024
+          Write-Host ("POSTRUN_CACHE_RECLAIMED run={0} GiB={1:N3} assetsDeleted=false" -f
+            $runId,(($volume.AvailableFreeSpace-$before)/$gib))
+          exit 0
