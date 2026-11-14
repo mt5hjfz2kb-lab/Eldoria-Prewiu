@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T18:05:31.995Z",
+  "updated_at": "2026-11-14T18:09:32.396Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7690,16 +7690,19 @@
         ".github/workflows/eldoria-beta-recover-429851.yml",
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/eldoria-beta-postmerge-queue.yml",
-        ".github/workflows/eldoria-beta-owner-nav-pages.yml"
+        ".github/workflows/eldoria-beta-owner-nav-pages.yml",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs"
       ],
       "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "WORLD_ENTRY_P0_STRUCTURAL_MEMORY_HOTFIX_ISOLATED_BRANCH",
+      "phase": "P0_WORLD_ENTRY_CLOSED_SET_VISIBLE_SCENE_STREAMING_REVIEW",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Diagnose world entrance memory and crash; implement a reversible Mac WebKit/iPhone-safe source optimization preserving canonical map, compare actual Unity/hosted before considering merge; no testers.",
+      "next": "Implement bounded resource/creature models and skip invisible LOD, preserving logical hotspots, terrain, quality of visible models. Review native/hosted memory and iPhone evidence before merge.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
