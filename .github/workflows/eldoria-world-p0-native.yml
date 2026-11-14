@@ -97,6 +97,138 @@ jobs:
           Add-Content $env:GITHUB_ENV ('ELDORIA_P0_PROJECT='+$project)
           New-Item -ItemType Directory -Force -Path 'world-p0-results'|Out-Null
           Set-Content -Path 'world-p0-results/source.txt' -Value $env:GITHUB_SHA
+      - name: Restore exact previously audited Bastion III art from preserved local sources
+        shell: powershell
+        timeout-minutes: 12
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Native tool still active; refuse production-art hydration'
+          }
+          $auditPath=Join-Path $env:ELDORIA_P0_SRC 'tools/eldoria-private-beta/native/existing-input-audit.json'
+          $audit=Get-Content -LiteralPath $auditPath -Raw | ConvertFrom-Json
+          if($audit.base -ne '948ffa9837168a0b68dab80be76b66350422b23a'){
+            throw 'Audited art provenance changed'
+          }
+          $prefix='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/'
+          $art=@($audit.files | Where-Object {$_.path.StartsWith($prefix)})
+          if($art.Count -ne 51 -or ($art|Measure-Object bytes -Sum).Sum -ne 108788643){
+            throw 'Incomplete original Bastion III art inventory'
+          }
+          $origins=@('beta-structural-source-42505611257-1','valoria-layered-source')
+          $copies=0
+          foreach($item in $art){
+            $rel=[string]$item.path
+            if($rel.Contains('..') -or $rel.Contains(':') -or $rel -match '\.(cs|dll|asmdef|exe)
+        shell: powershell
+        timeout-minutes: 95
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unexpected Editor process; cannot overlap'}
+          $xml=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results/test-results.xml'
+          # On a brand-new 16 GB checkout Unity first imports the project and
+          # may exit normally without entering NUnit. The previous run
+          # 43626491653 exited 0 after importing but emitted NO test XML.
+          # A cold-import success cannot be reported as gameplay success.
+          # Never pass -quit to the Test Runner (the existing canonical
+          # run_lazy_world_playmode.ps1 intentionally omits it).
+          $log=$null
+          for($attempt=1;$attempt -le 2;$attempt++){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+              throw 'Unexpected Editor process on rerun; preserve logs'
+            }
+            $log=Join-Path $env:GITHUB_WORKSPACE ('world-p0-results/editor-attempt-'+$attempt+'.log')
+            $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$env:ELDORIA_P0_PROJECT+'"'),
+              '-runTests','-testPlatform','PlayMode',
+              '-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests',
+              '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+            $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $proc.WaitForExit(5400000)){throw 'Own Unity test timed out; preserve logs'}
+            if($proc.ExitCode -ne 0){
+              Get-Content -LiteralPath $log -Tail 80
+              throw ('Unity Editor failed with exit '+$proc.ExitCode)
+            }
+            if(Test-Path -LiteralPath $xml){break}
+            if($attempt -eq 1){
+              Write-Host 'COLD_IMPORT_FINISHED_WITHOUT_NUNIT_XML_RETRY_SAME_EXACT_PROJECT'
+              continue
+            }
+            throw 'Unity did not execute the real PlayMode test after warm retry'
+          }
+          [xml]$result=Get-Content -LiteralPath $xml -Raw
+          $node=$result.'test-run'
+          $cases=@($result.SelectNodes('//test-case')|Where-Object {
+            $_.GetAttribute('fullname').EndsWith('.RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD')
+          })
+          if($node.result -ne 'Passed' -or [int]$node.total -ne 1 -or
+             [int]$node.passed -ne 1 -or [int]$node.failed -ne 0 -or
+             [int]$node.skipped -ne 0 -or $cases.Count -ne 1 -or
+             $cases[0].GetAttribute('result') -ne 'Passed'){
+            throw 'Exact Unity full-region playable fixture did not pass'
+          }
+          if(-not(Select-String -Path $log -Pattern 'ELDORIA_WORLD_STREAMING_VISUALS' -SimpleMatch -Quiet)){throw 'Missing stream bound proof'}
+          if(-not(Select-String $log -Pattern 'ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE' -SimpleMatch -Quiet)){throw 'Repeated world navigation not proven'}
+          Write-Host ('ELDORIA_WORLD_P0_REAL_UNITY_PASS '+$env:GITHUB_SHA)
+      - name: Upload truthful native log and XML even when the proof fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-p0-native-proof
+          path: world-p0-results/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Safely reclaim ONLY this owned run's regenerable Library after upload
+        if: always()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:ELDORIA_P0_SRC){Write-Host 'NO_OWNED_PROJECT_SKIP';exit 0}
+          $src=$env:ELDORIA_P0_SRC
+          $expected=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
+          if($src -ne $expected){throw 'Source outside owned workspace'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'EDITOR_BUSY_SKIP_LIBRARY';exit 0}
+          if((& git -C $src rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Unrecognized source; preserve'}
+          $library=Join-Path $src 'Unity/Library'
+          if(-not(Test-Path $library)){exit 0}
+          $item=Get-Item $library -Force
+          if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Reparse point in Library; preserve'}
+          $empty=Join-Path $src 'world-p0-empty-owned'
+          if(Test-Path $empty){throw 'Cleanup marker exists; preserve'}
+          New-Item -ItemType Directory -Path $empty|Out-Null
+          & robocopy.exe $empty $library /MIR /XJ /R:1 /W:1 | Out-Null
+          if($LASTEXITCODE -ge 8){throw 'Safe Library reclaim failed'}
+          Remove-Item $library -Recurse -Force
+          Remove-Item $empty -Force
+          Write-Host ('P0_GENERATED_CACHE_RECLAIMED_FREE_GIB='+[Math]::Round((Get-PSDrive C).Free/1GB,2))
+){
+              throw 'Unsafe non-art file in audited manifest'
+            }
+            $dest=Join-Path $env:ELDORIA_P0_SRC $rel
+            if(Test-Path -LiteralPath $dest){
+              if((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $item.sha256){
+                throw ('Existing protected art SHA mismatch: '+$rel)
+              }
+              continue
+            }
+            $from=$null
+            foreach($name in $origins){
+              $candidate=Join-Path (Join-Path $env:GITHUB_WORKSPACE $name) $rel
+              if((Test-Path -LiteralPath $candidate -PathType Leaf) -and
+                 -not ((Get-Item -LiteralPath $candidate).Attributes -band [IO.FileAttributes]::ReparsePoint) -and
+                 (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash -eq $item.sha256){
+                $from=$candidate
+                break
+              }
+            }
+            if(-not $from){throw ('Exact original art unavailable; refuse substitutions: '+$rel)}
+            New-Item -ItemType Directory -Force (Split-Path $dest)|Out-Null
+            Copy-Item -LiteralPath $from -Destination $dest
+            if((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $item.sha256){
+              throw ('Copied art failed SHA verification: '+$rel)
+            }
+            $copies++
+          }
+          Write-Host ('WORLD_P0_ORIGINAL_BASTION_ART_HYDRATED files='+$art.Count+' copied='+$copies)
       - name: Execute genuine Unity full-world first entry and 12 re-entry PlayMode
         shell: powershell
         timeout-minutes: 95
