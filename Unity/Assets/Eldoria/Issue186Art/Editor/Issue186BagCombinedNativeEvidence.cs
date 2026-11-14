@@ -248,6 +248,66 @@ namespace Eldoria.Issue186Art.Editor
             return gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
                 s.PlayerId,kind,target,s.Revision));
         }
+        // GPU acceptance, not just active GameObjects / raycast handlers.
+        // Real native review caught a false green: the guide action was
+        // "clickable" in the component tree while its 390x844 screenshot
+        // showed only the city, no visible building sheet or hand.
+        static Color32[] RenderedPatch(Camera camera,RenderTexture target,
+            RectTransform control)
+        {
+            Need(camera && target && control,"Native visible-control probe missing input");
+            var center=RectTransformUtility.WorldToScreenPoint(camera,
+                control.TransformPoint(control.rect.center));
+            const int pw=40,ph=30;
+            int x=Mathf.FloorToInt(center.x-pw*.5f);
+            int y=Mathf.FloorToInt(center.y-ph*.5f);
+            Need(x>=0 && y>=0 && x+pw<=target.width && y+ph<=target.height,
+                "Actual guide target is outside the physical phone render: "+
+                control.name+" center="+center+" output="+target.width+"x"+target.height);
+            Draw(camera,target);
+            var prior=RenderTexture.active;
+            var tex=new Texture2D(pw,ph,TextureFormat.RGB24,false);
+            try
+            {
+                RenderTexture.active=target;
+                tex.ReadPixels(new Rect(x,y,pw,ph),0,0);
+                tex.Apply(false,false);
+                return tex.GetPixels32();
+            }
+            finally
+            {
+                RenderTexture.active=prior;
+                Object.DestroyImmediate(tex);
+            }
+        }
+        static void RequirePaintedInRealFrame(Camera camera,RenderTexture target,
+            RectTransform control,GameObject painted,string name)
+        {
+            Need(painted && painted.activeInHierarchy,
+                name+" is not visibly active in its real Canvas");
+            var actual=RenderedPatch(camera,target,control);
+            painted.SetActive(false);
+            try
+            {
+                var absent=RenderedPatch(camera,target,control);
+                int changed=0;
+                for(int i=0;i<actual.Length;i++)
+                {
+                    int contrast=Mathf.Abs(actual[i].r-absent[i].r)+
+                        Mathf.Abs(actual[i].g-absent[i].g)+
+                        Mathf.Abs(actual[i].b-absent[i].b);
+                    if(contrast>48)changed++;
+                }
+                Need(changed>35,
+                    name+" contributes no visible pixels at its real touch target ("+
+                    changed+"/"+actual.Length+"); active/raycast PASS is not visual PASS");
+            }
+            finally
+            {
+                painted.SetActive(true);
+                Draw(camera,target);
+            }
+        }
         static void Photograph(Camera camera,RenderTexture target,string phase,int width,int height)
         {
             Draw(camera,target);
@@ -442,6 +502,27 @@ namespace Eldoria.Issue186Art.Editor
                 Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
                     "The hand did not move to the real CONSTRUIR action: "+
                     firstCoach.Rejection);
+                // Do not accept a guide that exists in the hierarchy but is
+                // missing from the picture actually shown to the player.
+                RenderUi(ui,390,844);
+                var actualPanel=(RectTransform)type.GetProperty("BuildingPanel")
+                    .GetValue(ui);
+                var actualAction=(Button)type.GetProperty("BuildingAction").GetValue(ui);
+                Need(actualPanel && actualPanel.gameObject.activeInHierarchy &&
+                     actualAction && actualAction.gameObject.activeInHierarchy &&
+                     actualAction.IsInteractable(),
+                    "Selected Aserradero does not show a real construction sheet and CTA");
+                var realHand=canvas.GetComponentsInChildren<Image>(true)
+                    .SingleOrDefault(image=>image && image.name=="Nonblocking actual hand");
+                Need(realHand&&realHand.gameObject.activeInHierarchy &&
+                     realHand.sprite!=null,
+                    "First Aserradero build hand is not visually active");
+                RequirePaintedInRealFrame(camera,rt,
+                    (RectTransform)actualAction.transform,actualPanel.gameObject,
+                    "Aserradero action sheet");
+                RequirePaintedInRealFrame(camera,rt,
+                    realHand.rectTransform,realHand.gameObject,
+                    "Aserradero action hand");
                 Photograph(camera,rt,"first-sawmill-build-guide",390,844);
                 report.firstBuildingActionHandOnRealHit=true;
                 // Reset only the disposable view selection, not a save or
