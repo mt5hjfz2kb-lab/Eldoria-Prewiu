@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T16:44:27.194Z",
+  "updated_at": "2026-11-14T16:48:32.300Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -71,13 +71,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 63,
+      "ownership_revision": 64,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "FIRST_USE_REAL_FIRST_HIT_REPAIR_AND_NATIVE_GATE",
+      "phase": "FIRST_USE_EXACT_NATIVE_4_VIEWPORT_CAS_CLAIM",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -109,7 +111,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Exact first-use branch 6325662868d02900fb2dc3e11b25412f71f7516d source CI; Unity 4-size 28-PNG/54-hit test could not start because C: remains 5.84GiB (<16GiB) after safe Issue186-only cache recovery in native run43598020843. Obtain authorized safe disk recovery without deleting foreign/dirty Unity evidence. Recheck live Windows ownership and CI; CAS claim and update native-request exact revision, then rerun strict Unity and inspect four viewport captures. Keep draft, no merge/beta/testers.",
+      "next": "CAS rev64 Issue186 exclusively claimed Windows for one source-pinned a9dc7c9 4-viewport Unity native proof. Next: bump native-request to rev64 and push, inspect 28 GPU images, 54 first-hit interactions and saved mail/bag/reload, release with CAS. No merge/beta/testers.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_history": [
