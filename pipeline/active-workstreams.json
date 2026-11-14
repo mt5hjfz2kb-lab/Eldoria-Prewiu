@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T14:44:11.245Z",
+  "updated_at": "2026-11-14T15:44:58.028Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7012,14 +7012,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/VigiliaProductionPresentation.cs.meta",
         ".github/workflows/vigilia-shared-destination-source.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 134,
+      "ownership_revision": 135,
       "write_scope_released": false,
-      "phase": "PHASE1_WINDOWS_EXCLUSIVE_CAS_AFTER_PHYSICAL_FREE_56_25_GIB_43603053226",
-      "next": "Physical Windows 56.25 GiB free after verified cache-only recovery 43602596197; independent inventory 43603053226 completed success 14:08:59Z. Claim exactly one native Unity on current branch after rechecking lease and space post checkout; no other workstreams/old modified checkouts; 390x844/844x390/900x1600 3x HUD/Bastion/mail/bag with A/B camera, 300%-button and save integrity, art remains pending until real proof. Release runner when native completes even on failure.",
+      "phase": "PHASE1_REAL_NATIVE_43603542306_FAILED_RESOURCE_SPRITE_IMPORT_SETTINGS_WINDOWS_RELEASED",
+      "next": "Native 43603542306 on exact bfe9c3b reached first genuine 1600x900 city capture and Unity failed assertion in BreachWatchNativeEvidence.cs:1180: FreshArt wood/stone/food import .meta enableMipMap=1 filterMode=2 contradict authored UI requirement mipmapCount=1, Bilinear. Fix only three Vigilia FreshArt resource-icon .meta (disable mipmaps, bilinear), source-guard PASS, preserve snapshots; no art approval or heavy Unity until runner disk >=16GiB and new exclusive CAS claim. Screenshots at 390x844,844x390,900x1600 3x, A/B, buttons 300% and save integrity still require native verification.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification. | 2026-11-13 Fase1: fuente aislada en rama canónica; 13 archivos; zero budget; Windows no reclamado; nueva prueba Unity pendiente; usuario acepta solo con A/B 3x.",
