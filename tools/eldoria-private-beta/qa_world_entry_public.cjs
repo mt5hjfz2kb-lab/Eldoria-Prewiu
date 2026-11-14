@@ -103,7 +103,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    if(report.errors.length)throw Error('World browser failure');
    const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
     metrics:window.valoriaGame?.GetMetricsInfo?.(),canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height}}));
-   sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|playwright|MiniBrowser/.test(x));
+   sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
    entry.samples.push(sample);save();
    if(consoleText.slice(logStart).includes('ELDORIA_P0_LAZY_WORLD_ENTERED')){entry.entered=true;break;}
    await page.waitForTimeout(1000);
@@ -116,7 +116,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    if(report.errors.length)throw Error('World browser failure during streamed model settling');
    const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
     metrics:window.valoriaGame?.GetMetricsInfo?.(),phase:'world-stream-settling'}));
-   sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|playwright|MiniBrowser/.test(x));
+   sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
    entry.samples.push(sample);save();await page.waitForTimeout(500);
   }
   await screen('world-visit-'+visit);

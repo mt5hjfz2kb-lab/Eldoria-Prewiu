@@ -201,4 +201,3 @@ if __name__ == '__main__':
     parser.add_argument('--require-world-entry', action='store_true',
                         help='Require real browser saved-game world entry and return twice')
     stage(parser.parse_args())
-

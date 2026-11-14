@@ -61,13 +61,18 @@ jobs:
         for name in ('control19','world-entry'):
          p=root/name/'report.json'
          if not p.exists():continue
-         d=json.loads(p.read_text());rss=[]
+         d=json.loads(p.read_text());rss=[];gpu=[]
          for entry in d.get('worldEntries',[]):
           for sample in entry.get('samples',[]):
+           web_total=gpu_total=0
            for line in sample.get('processes',[]):
-            m=re.match(r'\s*\d+\s+\d+\s+(\d+)\s+.*WebContent',line)
-            if m:rss.append(int(m.group(1)))
-         rows.append(dict(name=name,source=d.get('source'),passed=d.get('passed'),worldEntryAndReentryVerified=d.get('worldEntryAndReentryVerified'),peakSampledWebContentKiB=max(rss) if rss else None,failure=d.get('failure')))
+            m=re.match(r'\s*\d+\s+\d+\s+(\d+)\s+(.*)',line)
+            if not m:continue
+            if 'WebContent' in m.group(2):web_total+=int(m.group(1))
+            elif 'GPU' in m.group(2):gpu_total+=int(m.group(1))
+           if web_total:rss.append(web_total)
+           if gpu_total:gpu.append(gpu_total)
+         rows.append(dict(name=name,source=d.get('source'),passed=d.get('passed'),worldEntryAndReentryVerified=d.get('worldEntryAndReentryVerified'),peakSampledWebContentTotalKiB=max(rss) if rss else None,peakSampledGpuTotalKiB=max(gpu) if gpu else None,failure=d.get('failure')))
         (root/'comparison.json').write_text(json.dumps(dict(scope='DESKTOP_WEBKIT_NOT_PHYSICAL_IPHONE',rows=rows),indent=2))
         print(json.dumps(rows))
         END
