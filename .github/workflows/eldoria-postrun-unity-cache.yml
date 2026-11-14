@@ -174,19 +174,18 @@ jobs:
           exit 0
 
 
-  inventory-archivable-old-sources:
+  measure-single-delta-archive:
     if: github.event_name == 'push'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 9
+    timeout-minutes: 7
     steps:
-      - name: Classify tracked and untracked changes in three finished historical worktrees
+      - name: Read-only sizing of dirty, untracked and ignored source deltas
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
-            Write-Host 'ARCHIVE_AUDIT_EDITOR_BUSY';exit 0
+            Write-Host 'DELTA_SIZING_SKIPPED_EDITOR_BUSY';exit 0
           }
-          $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
           $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
           if(-not $git){
             $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
@@ -194,51 +193,52 @@ jobs:
               ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
               Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
           }
-          if(-not $git){throw 'Cannot classify source without Git'}
-          [double]$gib=1024*1024*1024
-          $drive=[IO.DriveInfo]::new('C')
-          Write-Host ("ARCHIVE_AUDIT_DISK freeGiB={0:N3}" -f ($drive.AvailableFreeSpace/$gib))
-          foreach($name in @(
-            'breachwatch-native-source-43465479546-1',
-            'breachwatch-native-source-43481923633-1',
-            'breachwatch-native-source-43483165131-1'
-          )){
-            $source=Join-Path $root $name
-            if(-not(Test-Path -LiteralPath (Join-Path $source '.git'))){continue}
-            $sha=(& $git -C $source rev-parse HEAD).Trim()
-            $modified=@(& $git -C $source ls-files -m)
-            $untracked=@(& $git -C $source ls-files --others --exclude-standard)
-            $ignored=@(& $git -C $source ls-files --others --ignored --exclude-standard --directory)
-            $deleted=@(& $git -C $source ls-files -d)
-            Write-Host ("ARCHIVE_SOURCE label={0} SHA={1} modified={2} untracked={3} ignoredTop={4} deleted={5}" -f
-              $name,$sha,$modified.Count,$untracked.Count,$ignored.Count,$deleted.Count)
-            foreach($group in @('Assets','NativeEvidence','Other')){
-              $sample=if($group -eq 'Assets'){@($untracked | Where-Object {$_ -match '^Unity/Assets/'})}
-                elseif($group -eq 'NativeEvidence'){@($untracked | Where-Object {$_ -match '^Unity/.*Evidence/'})}
-                else {@($untracked | Where-Object {$_ -notmatch '^Unity/(Assets|.*Evidence)/'})}
-              Write-Host ("ARCHIVE_UNTRACKED_GROUP label={0} class={1} count={2}" -f $name,$group,$sample.Count)
-            }
-            foreach($pattern in @(
-              @{name='git';path='.git'},
-              @{name='assets';path='Unity\Assets'},
-              @{name='evidence';path='Unity\BreachWatchNativeEvidence'},
-              @{name='native-destination';path='Unity\BreachWatchDestinationEvidence'}
-            )){
-              $p=Join-Path $source $pattern.path
-              if(-not(Test-Path -LiteralPath $p -PathType Container)){continue}
-              [long]$bytes=0;[long]$files=0
-              $stack=New-Object 'System.Collections.Generic.Stack[string]'
-              $stack.Push($p)
-              while($stack.Count){
-                foreach($x in ([IO.DirectoryInfo]::new($stack.Pop())).EnumerateFileSystemInfos()){
-                  if($x.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
-                  if($x -is [IO.DirectoryInfo]){$stack.Push($x.FullName)}
-                  else{$bytes += [long]$x.Length;$files++}
-                }
-              }
-              Write-Host ("ARCHIVE_CATEGORY label={0} class={1} GiB={2:N3} files={3}" -f
-                $name,$pattern.name,($bytes/$gib),$files)
-            }
-            Write-Host ("ARCHIVE_IGNORED_GROUP label={0} found={1}" -f $name,$ignored.Count)
+          if(-not $git){throw 'No Git for source preservation plan'}
+          $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
+          $source=Join-Path $root 'breachwatch-native-source-43465479546-1'
+          function Query-GitNull([string]$argumentText) {
+            $info=New-Object System.Diagnostics.ProcessStartInfo
+            $info.FileName=$git
+            $info.Arguments='-C "'+$source+'" '+$argumentText
+            $info.UseShellExecute=$false
+            $info.CreateNoWindow=$true
+            $info.RedirectStandardOutput=$true
+            $info.RedirectStandardError=$true
+            $info.StandardOutputEncoding=[Text.Encoding]::UTF8
+            $process=[Diagnostics.Process]::Start($info)
+            $output=$process.StandardOutput.ReadToEnd()
+            $stderr=$process.StandardError.ReadToEnd()
+            $process.WaitForExit()
+            if($process.ExitCode -ne 0){throw 'Source files cannot be listed reliably'}
+            return @($output.Split([char]0) | Where-Object {$_.Length -gt 0})
           }
-          Write-Host ("ARCHIVE_AUDIT_END freeGiB={0:N3} deleted=false" -f ($drive.AvailableFreeSpace/$gib))
+          $changed=@(Query-GitNull 'ls-files -m -z')
+          $untracked=@(Query-GitNull 'ls-files -o --exclude-standard -z')
+          $ignored=@(Query-GitNull 'ls-files -o -i --exclude-standard -z')
+          $deleted=@(Query-GitNull 'ls-files -d -z')
+          [double]$gib=1024*1024*1024
+          $sets=@{}
+          $sets['modified']=$changed
+          $sets['untracked']=$untracked
+          $sets['ignored']=$ignored
+          foreach($key in @('modified','untracked','ignored')){
+            [long]$size=0
+            [int]$found=0
+            [int]$missing=0
+            [int]$links=0
+            [long]$big=0
+            $paths=@($sets[$key])
+            foreach($relative in $paths){
+              $full=Join-Path $source ($relative.Replace('/','\'))
+              if(-not(Test-Path -LiteralPath $full -PathType Leaf)){$missing++;continue}
+              $item=Get-Item -LiteralPath $full -Force
+              if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){$links++;continue}
+              $size+=[long]$item.Length
+              $found++
+              if($item.Length -gt $big){$big=$item.Length}
+            }
+            Write-Host ("DELTA_SIZING category={0} paths={1} existing={2} missing={3} links={4} GiB={5:N4} largestMiB={6:N2}" -f
+              $key,$paths.Count,$found,$missing,$links,($size/$gib),($big/1MB))
+          }
+          Write-Host ("DELTA_SIZING_DELETED count={0}" -f $deleted.Count)
+          Write-Host 'DELTA_SIZING_DONE noFilesChanged=true'
