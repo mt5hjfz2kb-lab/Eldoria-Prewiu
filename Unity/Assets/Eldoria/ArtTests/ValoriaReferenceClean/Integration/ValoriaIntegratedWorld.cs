@@ -451,6 +451,15 @@ namespace Eldoria.ReferenceClean {
    if(InWorld==open)return true;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    unappliedDragPixels=Vector2.zero;
+   // Experimental opt-in for mobile GPU allocation diagnosis. The City
+   // retains its approved antialiasing. An explicit browser URL flag can
+   // compare this SAME source/terrain with and without the World camera's
+   // MSAA render target; it is not a blanket quality reduction.
+   if(open&&UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer&&
+      UnityEngine.Application.absoluteURL.Contains("eldoria_p0_world_msaa_off=1")){
+    WorldCamera.allowMSAA=false;
+    Debug.Log("ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1");
+   }
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    if(open&&P0LazyWorldProbe)Debug.Log("ELDORIA_P0_LAZY_WORLD_ENTERED");
    if(!open)city.Controls.ResetView();
