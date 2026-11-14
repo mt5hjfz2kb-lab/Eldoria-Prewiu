@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T22:39:06.332Z",
+  "updated_at": "2026-11-14T22:51:56.901Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "EXACT_WEBGL_PASS_PACKAGING_AND_BROWSER_PENDING",
+      "phase": "EXACT_WEBGL_PACKAGE_PASS_BROWSER_COMPARISON_RUNNING",
       "note": "Frozen gameplay5881df4e76da72c2897633c619449c60694b3552 passed six settled native views and12reentries (43641168362), then real UI/campaign I-V/WebGL build job132598309828 in run43644208819. Owner beta remains90465 until actual browser comparison and image review. Physical iPhone cause/acceptance unconfirmed.",
-      "next": "Finish package-owner43644208819, inspect package proof, then commit prepared world-p0-browser-request.txt to PR194 head052fc10b. Browser QA records actual saved construction, reload, world2entries, zooms, WebContent/GPU samples and RAF gaps. Windows released; no duplicate native rebuild.",
+      "next": "Inspect running actual WebKit43649546135 (workflow96dfb9e, gameplay5881df), downloadworld-p0-browser-comparison and review original native UI/images plus control19/candidate world zooms, frame gaps and memory. Build/package43644208819 passed; do not rebuild or reserve Windows. Published90465 unchanged. Physical iPhone unverified.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9018,27 +9018,21 @@
       },
       "world_p0_build": {
         "run": 43644208819,
-        "job": 132598309828,
         "workflow_sha": "7ec789ab4a13cf4bf1267fa0cc5b8dc039579e61",
         "source_sha": "5881df4e76da72c2897633c619449c60694b3552",
-        "status": "in_progress",
-        "published": false,
-        "source_branch": "fix/eldoria-world-first-entry-p0-20261114",
-        "lessons": [
-          "RUNNER_TEMP is cleared between jobs; owned persistent worktree required",
-          "Windows Git is installed inside GitHub Desktop; avoid checkout action archive fallback",
-          "Preserve established collision prebake before WebGL",
-          "Cancelled sparse fetch can leave unborn HEAD; verify exact commit and resume separate owned worktree"
-        ],
-        "prepared_browser_workflow": ".github/workflows/eldoria-beta-entry-qa.yml",
-        "browser_trigger": "tools/eldoria-private-beta/world-p0-browser-request.txt (prepared locally; not yet committed)",
-        "last_prepared_tools_sha": "be8b06756caab2a7704ab3dc405382398341af5b",
-        "live_control_source": "90465a9a910b89a8a8b74e4b33a9bbc88578e00e",
-        "live_publication_run": 43503650892,
-        "live_inventory_artifact": 14076020743,
-        "live_inventory_sha256": "f220237c5f3a7b113b4317fed56f5de6d753d31e6d7b190411fc9e63996c113b",
-        "live_files": 145,
-        "live_bytes": 961110684
+        "conclusion": "success",
+        "native_job": 132598309828,
+        "artifact": 14134931795,
+        "artifact_sha256": "e9391cf620a0b62860edd45323dbd945d040ab7a7b8732a6d3e5bf6e54d5c5d4",
+        "package_artifact": 14135597114,
+        "package_bundle_sha256": "15483a1f63f250f2e80ec57bfc45b6f8b608ea26c363545376bc8c707ef76a90",
+        "package_data_sha256": "bcce3c1def1cb85eb03648aecbd4ea31d931e99b126719965987d3214c188cc9",
+        "package_proof_zip_sha256": "d0b0b611fcef1c0ec75b5986a2eb43031f0beabb10efecb9bf4dc2102f3f8db9",
+        "windows_released": true,
+        "free_gib_after_generated_cache_cleanup": 70.1,
+        "physical_iphone_verified": false,
+        "browser_run": 43649546135,
+        "browser_workflow_sha": "96dfb9e7866737889219ea766972afb4f023a7b4"
       }
     },
     {
