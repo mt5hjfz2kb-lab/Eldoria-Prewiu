@@ -280,6 +280,24 @@ namespace Eldoria.Issue186Art.Editor
                 Object.DestroyImmediate(tex);
             }
         }
+        // Native debug geometry for the *painted* 390x844 output, not the
+        // Editor host window. A RectTransform can be active and raycastable
+        // while every visible pixel is outside the actual render target.
+        static string ActualScreenRect(Camera camera,RectTransform control)
+        {
+            if(!camera || !control)return "<missing>";
+            var corners=new Vector3[4];
+            control.GetWorldCorners(corners);
+            var min=new Vector2(float.PositiveInfinity,float.PositiveInfinity);
+            var max=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
+            foreach(var corner in corners)
+            {
+                var point=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                min=Vector2.Min(min,point);max=Vector2.Max(max,point);
+            }
+            return "["+min.x.ToString("F1")+","+min.y.ToString("F1")+
+                   ".."+max.x.ToString("F1")+","+max.y.ToString("F1")+"]";
+        }
         static void RequirePaintedInRealFrame(Camera camera,RenderTexture target,
             RectTransform control,GameObject painted,string name)
         {
@@ -507,9 +525,9 @@ namespace Eldoria.Issue186Art.Editor
                 // Captures are evidence; first-hit/pixel gates remain strict.
                 try
                 {
-                    Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
-                        "The hand did not move to the real CONSTRUIR action: "+
-                        firstCoach.Rejection);
+                    // Always capture the actual layout before rejecting a
+                    // missing hand: otherwise the error lost all evidence of
+                    // whether the sheet was offscreen, disabled or occluded.
                     RenderUi(ui,390,844);
                     var actualPanel=(RectTransform)type.GetProperty("BuildingPanel")
                         .GetValue(ui);
@@ -528,7 +546,15 @@ namespace Eldoria.Issue186Art.Editor
                         "; editorScreen="+Screen.width+"x"+Screen.height+
                         "; renderTarget="+rt.width+"x"+rt.height+
                         "; panelActive="+(actualPanel&&actualPanel.gameObject.activeInHierarchy)+
-                        "; ctaActive="+(actualAction&&actualAction.gameObject.activeInHierarchy);
+                        "; ctaActive="+(actualAction&&actualAction.gameObject.activeInHierarchy)+
+                        "; canvasPixelRect="+canvas.pixelRect+
+                        "; cameraPixelRect="+camera.pixelRect+
+                        "; panelPhysicalRect="+ActualScreenRect(camera,actualPanel)+
+                        "; ctaPhysicalRect="+ActualScreenRect(camera,
+                            actualAction?(RectTransform)actualAction.transform:null);
+                    Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
+                        "The hand did not move to the real CONSTRUIR action: "+
+                        firstCoach.Rejection+"; "+diagnostic);
                     Need(actualPanel && actualPanel.gameObject.activeInHierarchy &&
                          actualAction && actualAction.gameObject.activeInHierarchy &&
                          actualAction.IsInteractable(),
@@ -536,9 +562,14 @@ namespace Eldoria.Issue186Art.Editor
                         diagnostic);
                     var realHand=canvas.GetComponentsInChildren<Image>(true)
                         .SingleOrDefault(image=>image && image.name=="Nonblocking actual hand");
+                    var handDiagnostic=diagnostic+
+                        "; handPhysicalRect="+ActualScreenRect(camera,
+                            realHand?realHand.rectTransform:null)+
+                        "; handDepth="+(realHand?realHand.depth:-999);
+                    Debug.Log("ISSUE186_VISIBLE_BUILD_GEOMETRY "+handDiagnostic);
                     Need(realHand&&realHand.gameObject.activeInHierarchy &&
                          realHand.sprite!=null,
-                        "First Aserradero build hand is not visually active: "+diagnostic);
+                        "First Aserradero build hand is not visually active: "+handDiagnostic);
                     RequirePaintedInRealFrame(camera,rt,
                         (RectTransform)actualAction.transform,actualPanel.gameObject,
                         "Aserradero action sheet: "+diagnostic);
