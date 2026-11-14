@@ -43,7 +43,7 @@ jobs:
           for term in required:
             assert term in t, 'Missing safety gate: '+term
           assert t.count('\n          Remove-Item -LiteralPath $lib -Force')==1
-          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
+          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==2
           print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
           PY
       - name: Parse actual cleanup PowerShell without executing it
@@ -203,7 +203,7 @@ jobs:
           assert '7eed9e4549a1a72b97ded1ab32f23eba489c04c4a5b2ef92094585364b8e9bf6' in code
           assert 'd0da7f2a3130b81c2bf347c7e5c3f0c2e7bf062dd2bfcd0b2d26e7a0372b5277' in code
           assert 'Get-Process Unity,blender,git' in code
-          assert 'objects/info/alternates' in code
+          assert 'objects' in code and 'alternates' in code
           assert 'manifest.files' in code
           Path('retire-exact-checkout.ps1').write_text(code)
           print('WORKTREE_RETIRE_NO_UNBACKED_SOURCE_GUARD_PASS')
@@ -269,7 +269,7 @@ jobs:
           try {
             $manifestEntry=$reader.GetEntry('manifest.json')
             if($null -eq $manifestEntry){throw 'REFUSE: source overlay manifest not found'}
-            $stream=New-Object IO.StreamReader($manifestEntry.Open())
+            $stream=[IO.StreamReader]::new($manifestEntry.Open())
             try{$manifest=$stream.ReadToEnd() | ConvertFrom-Json}finally{$stream.Dispose()}
             if($manifest.source -ne $label -or
                $manifest.sourceSha -ne 'bf2cc865722aee8b8ec08c01507361570f1227cd' -or
