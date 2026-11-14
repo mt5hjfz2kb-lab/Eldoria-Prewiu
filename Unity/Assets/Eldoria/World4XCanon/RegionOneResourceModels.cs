@@ -10,8 +10,13 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
+        sealed class Node { public string Id; public string Family; public int Variant; public bool Pinned; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
         readonly List<Node> nodes=new List<Node>();
+        // Only nodes near the actual player camera require full Blender meshes.
+        // Logical hotspots and cheap regional billboards remain available everywhere.
+        const int MaximumDynamicNearMeshes=10;
+        const int NewNearMeshesPerFrame=1;
+        Renderer[] retiredReferenceDecorations;
         float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
         GameObject library;RegionOneLookDevelopment look;
@@ -187,6 +192,53 @@ namespace Eldoria.World4XCanon
             }
             var go=new GameObject("Production resource impostor "+id);go.transform.SetParent(parent,false);go.layer=29;go.AddComponent<MeshFilter>().sharedMesh=impostorMeshes[tile];var renderer=go.AddComponent<MeshRenderer>();renderer.sharedMaterial=impostorMaterial;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;renderer.enabled=false;return renderer;
         }
+        bool NearCamera(Vector3 point)
+        {
+            if(!host||!host.InWorld||!host.WorldCamera||host.WorldCamera.orthographicSize>=110f)
+                return false;
+            var screen=host.WorldCamera.WorldToViewportPoint(point);
+            // Slight margin permits prewarming models just beyond the view edges.
+            return screen.z>0f&&screen.x>=-.15f&&screen.x<=1.15f&&
+                   screen.y>=-.15f&&screen.y<=1.15f;
+        }
+        void CreateNearMesh(Node node)
+        {
+            if(node.Pinned||node.Visual||!library)return;
+            var source=library.GetComponentsInChildren<Transform>(true)
+                .Single(x=>x.name=="Resource_"+node.Family+"_"+node.Variant);
+            var visual=Instantiate(source.gameObject,transform);
+            visual.name="Production resource visual "+node.Id;
+            visual.transform.localScale=Vector3.one*(node.Family=="Wood"?1.55f:1.35f);
+            visual.transform.rotation=Quaternion.Euler(0,180,0);
+            FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
+            if(look)look.ApplyMaterials(visual);
+            var renderers=visual.GetComponentsInChildren<Renderer>(true);
+            foreach(var renderer in renderers)renderer.gameObject.layer=29;
+            node.Visual=visual;
+            node.Renderers=renderers;
+            node.Grounded=false;
+            node.AnchorCached=false;
+        }
+        void ReleaseNearMesh(Node node)
+        {
+            if(node.Pinned||!node.Visual)return;
+            // A relocated resource can own fitted, per-node mesh copies. Destroy
+            // only these copies; source library meshes remain untouched.
+            if(node.Parts!=null&&node.SourceMeshes!=null)
+                for(int i=0;i<node.Parts.Length;i++)
+                {
+                    var part=node.Parts[i];
+                    if(!part)continue;
+                    var copy=part.sharedMesh;
+                    if(copy&&copy!=node.SourceMeshes[i]&&authoredContactCopies.Remove(copy))
+                        Destroy(copy);
+                }
+            Destroy(node.Visual);
+            node.Visual=null;node.Renderers=null;node.Parts=null;
+            node.BasePositions=null;node.SourceMeshes=null;
+            node.Grounded=false;node.AnchorCached=false;node.VisualAnchorOffset=Vector3.zero;
+            node.LastPickScale=-1f;
+        }
         void OnDestroy()
         {
             if(impostorMaterial)Destroy(impostorMaterial);
@@ -211,7 +263,7 @@ namespace Eldoria.World4XCanon
                 visual.transform.localScale=Vector3.one*(pair.Item1=="forest-valoria"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
                 FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
-                service.nodes.Add(new Node{Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
+                service.nodes.Add(new Node{Id=pair.Item1,Family=pair.Item1=="forest-valoria"?"Wood":"Stone",Variant=0,Pinned=true,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
             }
         }
         void LateUpdate()
@@ -219,18 +271,40 @@ namespace Eldoria.World4XCanon
             if(!host||!host.Ready)return;
             if(cachedState==null||!ReferenceEquals(cachedGateway,host.City.Gateway)||Time.unscaledTime>=nextState){cachedGateway=host.City.Gateway;cachedState=cachedGateway.Snapshot();nextState=Time.unscaledTime+.25f;}
             var state=cachedState;float zoom=host.WorldCamera.orthographicSize;bool near=zoom<110;bool regional=zoom>=110&&!RegionOneResourcePlacement.IsPanoramic(zoom,host.WorldNavigation.globalZoom);
+            // Register every canonical resource target immediately, but create
+            // ONLY its inexpensive shared billboard. Its logical WorldHotspot
+            // and gameplay selection already belong to RegionOneResourcePlacement.
+            // A full 3D source is instantiated only when the player approaches.
             foreach(var item in state.WorldResourceLocations)
             {
-                if(!item.TargetId.StartsWith("region1:",StringComparison.Ordinal)||item.Generation<=0||nodes.Any(x=>x.Id==item.TargetId))continue;
-                var logical=host.FindTarget(item.TargetId);if(!logical)continue;
+                if(!item.TargetId.StartsWith("region1:",StringComparison.Ordinal)||item.Generation<=0||
+                   nodes.Any(x=>x.Id==item.TargetId))continue;
+                var logical=host.FindTarget(item.TargetId);
+                if(!logical)continue;
                 string family=item.ResourceKind=="wood"?"Wood":"Stone";
-                var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="Resource_"+family+"_"+(nodes.Count%3));
-                var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;
-                visual.transform.localScale=Vector3.one*(family=="Wood"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
-                FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
-                if(look)look.ApplyMaterials(visual);
-                foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
-                nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
+                int variant=nodes.Count%3; // Same stable roster-order variant as before.
+                nodes.Add(new Node{Id=item.TargetId,Family=family,Variant=variant,
+                    Logical=logical.transform,Impostor=MakeImpostor(item.TargetId,transform)});
+            }
+            // Destroy out-of-frame dynamic meshes before allocating new ones.
+            // Never unload canonical forest/quarry meshes or logical hotspots.
+            int loaded=0;
+            foreach(var node in nodes)
+            {
+                if(node.Pinned)continue;
+                bool present=LocalGateway.ResourceRemaining(state,node.Id)>0;
+                if(node.Visual&&(!present||!near||!NearCamera(node.Logical.position)))
+                    ReleaseNearMesh(node);
+                if(node.Visual)loaded++;
+            }
+            int created=0;
+            foreach(var node in nodes)
+            {
+                if(loaded>=MaximumDynamicNearMeshes||created>=NewNearMeshesPerFrame)break;
+                if(node.Pinned||node.Visual||!NearCamera(node.Logical.position)||
+                   LocalGateway.ResourceRemaining(state,node.Id)<=0)continue;
+                CreateNearMesh(node);
+                loaded++;created++;
             }
             // LOD silhouette continuity: the close mesh is 20.4m wide,
             // while this regional billboard's UV2 spans 32m. At the exact
@@ -251,7 +325,7 @@ namespace Eldoria.World4XCanon
                 // resource's modelling pivot. Align their visible footprint
                 // once with the saved hotspot; the mid/far billboard already
                 // uses that same hotspot as its anchor.
-                if(!node.AnchorCached)
+                if(node.Visual&&!node.AnchorCached)
                 {
                     var bounds=node.Renderers[0].bounds;
                     for(int i=1;i<node.Renderers.Length;i++)bounds.Encapsulate(node.Renderers[i].bounds);
@@ -261,10 +335,15 @@ namespace Eldoria.World4XCanon
                         node.Visual.transform.position.z-bounds.center.z);
                     node.AnchorCached=true;
                 }
-                node.Visual.transform.position=p+node.VisualAnchorOffset;
-                GroundParts(node,p);
+                if(node.Visual)
+                {
+                    node.Visual.transform.position=p+node.VisualAnchorOffset;
+                    GroundParts(node,p);
+                }
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
-                foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
+                if(node.Renderers!=null)
+                    foreach(var renderer in node.Renderers)
+                        if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
                 if(node.Impostor){
                     // The near mesh's imported pivot is recentered once above
                     // using VisualAnchorOffset. Its rendered footprint now
@@ -274,11 +353,17 @@ namespace Eldoria.World4XCanon
                     node.Impostor.transform.position=p;
                     node.Impostor.enabled=alive&&regional;
                     node.Impostor.localBounds=new Bounds(Vector3.up*12f*screenScale,Vector3.one*40f*screenScale);
-                    FitRegionalPicking(node,p,screenScale,regional);
+                    if(regional||node.Visual)FitRegionalPicking(node,p,screenScale,regional);
                 }
             }
-            foreach(var renderer in GetComponentsInChildren<Renderer>(true))
-                if(renderer.name=="Reference existing quarry"||renderer.name=="Reference existing wood grove")renderer.enabled=false;
+            // The reference decorations are always hidden by the production
+            // resource treatment. Avoid allocating a full scene Renderer[] EACH frame.
+            if(retiredReferenceDecorations==null)
+                retiredReferenceDecorations=GetComponentsInChildren<Renderer>(true)
+                    .Where(renderer=>renderer.name=="Reference existing quarry"||
+                                     renderer.name=="Reference existing wood grove").ToArray();
+            foreach(var renderer in retiredReferenceDecorations)
+                if(renderer)renderer.enabled=false;
         }
     }
 }
