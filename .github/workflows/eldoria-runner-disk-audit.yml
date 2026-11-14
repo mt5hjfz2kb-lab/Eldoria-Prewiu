@@ -1,0 +1,128 @@
+name: Eldoria Windows storage forensic inventory (read-only)
+on:
+  push:
+    branches:
+      - maintenance/eldoria-runner-disk-audit-20261114
+    paths:
+      - .github/workflows/eldoria-runner-disk-audit.yml
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-breachwatch-native-first-screen
+  cancel-in-progress: false
+jobs:
+  measure:
+    name: Safe read-only disk inventory on Eldoria Unity computer
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Inspect C volume and runner data without deleting or modifying any existing file
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $ProgressPreference='SilentlyContinue'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count) {
+            Write-Host 'AUDIT_REFUSED_EDITOR_BUSY: read-only scan postponed to avoid competing with Unity.'
+            exit 0
+          }
+          # GitHub logs are publicly readable: never print user profile names,
+          # individual file paths, filenames outside the runner, or file contents.
+          # Absolutely NO Remove-Item, Move-Item, robocopy /MIR, checkout or restart.
+          $drive=New-Object IO.DriveInfo('C')
+          $gib=[double](1024*1024*1024)
+          Write-Host ("STORAGE_VOLUME totalGiB={0:N2} usedGiB={1:N2} freeGiB={2:N2}" -f ($drive.TotalSize/$gib),(($drive.TotalSize-$drive.AvailableFreeSpace)/$gib),($drive.AvailableFreeSpace/$gib))
+          Write-Host 'STORAGE_MACHINE role=self-hosted-windows-unity; diagnosis=read-only; personal-paths=redacted'
+          $script:deadline=[datetime]::UtcNow.AddMinutes(9)
+          $script:groups=@{}
+          $script:parts=@{}
+          $script:scanned=0L
+          $script:errors=0L
+          $script:links=0L
+          $script:partial=$false
+          function add([hashtable]$table,[string]$key,[long]$bytes) {
+            if($table.ContainsKey($key)){$table[$key]=[long]$table[$key]+$bytes}
+            else{$table[$key]=[long]$bytes}
+          }
+          function measure([string]$base,[string]$mode) {
+            if(-not (Test-Path -LiteralPath $base -PathType Container)){return}
+            $stack=New-Object 'System.Collections.Generic.Stack[string]'
+            $stack.Push($base)
+            [long]$total=0
+            [long]$count=0
+            while($stack.Count -gt 0) {
+              if(([datetime]::UtcNow -ge $script:deadline) -or $script:scanned -ge 1500000) {
+                $script:partial=$true
+                break
+              }
+              $next=$stack.Pop()
+              try {
+                $entries=(New-Object IO.DirectoryInfo($next)).EnumerateFileSystemInfos()
+                foreach($entry in $entries) {
+                  try {
+                    if(($entry.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+                      $script:links++
+                      continue
+                    }
+                    if($entry -is [IO.DirectoryInfo]) {
+                      $stack.Push($entry.FullName)
+                      continue
+                    }
+                    [long]$bytes=$entry.Length
+                    $total+=$bytes
+                    $count++
+                    $script:scanned++
+                    if($mode -eq 'runner'){
+                      $relative=$entry.FullName.Substring($base.Length).TrimStart('\')
+                      $segments=$relative.Split('\')
+                      $name='runner-internal'
+                      if($segments.Length -gt 0) {
+                        if($segments[0] -eq 'Eldoria-Prewiu' -and $segments.Length -ge 3 -and $segments[1] -eq 'Eldoria-Prewiu'){
+                          $name='worktree/'+$segments[2]
+                        } else {
+                          $name='runner-root/'+$segments[0]
+                        }
+                      }
+                      add $script:groups $name $bytes
+                      if($segments -contains 'Library' -and $segments -contains 'Unity') {add $script:parts 'unity-library' $bytes}
+                      elseif($segments -contains '.git') {add $script:parts 'git-objects-and-repo' $bytes}
+                      elseif($segments -contains 'Assets' -and $segments -contains 'Unity') {add $script:parts 'unity-assets' $bytes}
+                      elseif($segments -contains 'Build' -or $segments -contains 'Builds') {add $script:parts 'build-output' $bytes}
+                      else {add $script:parts 'other-runner-data' $bytes}
+                    }
+                  } catch {
+                    $script:errors++
+                  }
+                }
+              } catch {$script:errors++}
+              if($script:scanned -gt 0 -and $script:scanned % 200000 -eq 0) {
+                Write-Host ("STORAGE_PROGRESS files={0} elapsedEstimate=bounded" -f $script:scanned)
+              }
+            }
+            Write-Host ("STORAGE_ROOT group={0} observedGiB={1:N2} files={2} complete={3}" -f $mode,($total/$gib),$count,(-not $script:partial))
+          }
+          $runnerBase='C:\actions-runner-eldoria\_work'
+          measure $runnerBase 'runner'
+          Write-Host 'STORAGE_LARGEST_RUNNER_WORKTREES_BEGIN'
+          $script:groups.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 40 | ForEach-Object {
+            Write-Host ("STORAGE_WORKTREE group={0} GiB={1:N3}" -f $_.Key,($_.Value/$gib))
+          }
+          Write-Host 'STORAGE_LARGEST_RUNNER_WORKTREES_END'
+          foreach($name in @('unity-library','unity-assets','git-objects-and-repo','build-output','other-runner-data')) {
+            Write-Host ("STORAGE_COMPONENT group={0} GiB={1:N2}" -f $name,([double]$script:parts[$name]/$gib))
+          }
+          # Non-runner roots: only category totals, never user folders or files.
+          if(-not $script:partial) {
+            $roots=@(
+              @{name='user-profiles';path='C:\Users'},
+              @{name='windows-system';path='C:\Windows'},
+              @{name='programdata';path='C:\ProgramData'},
+              @{name='program-files';path='C:\Program Files'},
+              @{name='program-files-x86';path='C:\Program Files (x86)'}
+            )
+            foreach($root in $roots) {
+              if($script:partial){break}
+              measure $root.path $root.name
+            }
+          }
+          Write-Host ("STORAGE_SCAN_END files={0} errors={1} linksSkipped={2} partial={3} utc={4}" -f $script:scanned,$script:errors,$script:links,$script:partial,[datetime]::UtcNow.ToString('o'))
+          Write-Host ("STORAGE_VOLUME_END freeGiB={0:N2}" -f ($drive.AvailableFreeSpace/$gib))
