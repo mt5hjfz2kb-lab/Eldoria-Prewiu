@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T22:13:24.616Z",
+  "updated_at": "2026-11-14T22:39:06.332Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7700,16 +7700,14 @@
         ".github/workflows/tester-qa.yml",
         ".github/workflows/eldoria-world-p0-build.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "NATIVE_WORLD_PASS_EXACT_WEBGL_BUILD_RUNNING",
-      "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Finish frozen-source build43644208819 (workflow7ec789, gameplay5881df). Then trigger prepared actual WebKit comparison from PR194; all six native settled views and12reentries already passed. Do not restart native proof or claim iPhone cause solved.",
+      "phase": "EXACT_WEBGL_PASS_PACKAGING_AND_BROWSER_PENDING",
+      "note": "Frozen gameplay5881df4e76da72c2897633c619449c60694b3552 passed six settled native views and12reentries (43641168362), then real UI/campaign I-V/WebGL build job132598309828 in run43644208819. Owner beta remains90465 until actual browser comparison and image review. Physical iPhone cause/acceptance unconfirmed.",
+      "next": "Finish package-owner43644208819, inspect package proof, then commit prepared world-p0-browser-request.txt to PR194 head052fc10b. Browser QA records actual saved construction, reload, world2entries, zooms, WebContent/GPU samples and RAF gaps. Windows released; no duplicate native rebuild.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7979,10 +7977,10 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "released",
-        "owner": "chatgpt-eldoria-owner-nav-delivery-20261113",
-        "ownership_revision": 77,
-        "updated_at": "2026-11-13T20:21:59.884Z",
-        "reason": "Successful native job 132108138117 completed on SHA 90465a9a after real Unity captures, saved gameplay, fresh WebGL and clean Editor/input restoration; package/browser/Pages remain independent hosted steps; release only the Windows resource, retain beta source author."
+        "owner": "chatgpt-world-p0-continuation-9df36d17",
+        "ownership_revision": 80,
+        "updated_at": "2026-11-14T22:39:06.332Z",
+        "reason": "Exact native build job132598309828 succeeded on frozen gameplay5881df; full WebGL and evidence artifact14134931795 retained; source/settings restored; generated Library cache reclaimed;70.1GiB free. Packaging and browser use hosted runners; retain source ownership only."
       },
       "ownership_history": [
         {
