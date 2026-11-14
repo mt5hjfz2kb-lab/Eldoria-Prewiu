@@ -174,80 +174,57 @@ jobs:
           exit 0
 
 
-  inspect-old-worktrees:
+  measure-two-legacy-caches:
     if: github.event_name == 'push'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 12
+    timeout-minutes: 6
     steps:
-      - name: Read-only inventory of uniquely modified and dependent old Eldoria copies
+      - name: Confirm two historical generated caches are idle and have no source links
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $ProgressPreference='SilentlyContinue'
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
-            Write-Host 'WORKTREES_AUDIT_SKIPPED_EDITOR_BUSY';exit 0
-          }
           $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
-          $drive=[IO.DriveInfo]::new('C')
           [double]$gib=1024*1024*1024
-          Write-Host ("WORKTREES_AUDIT_C freeGiB={0:N3}" -f ($drive.AvailableFreeSpace/$gib))
-          $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
-          if(-not $git){
-            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
-              Sort-Object Name -Descending |
-              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
-              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+          $volume=[IO.DriveInfo]::new('C')
+          Write-Host ("LEGACY_CACHE_START freeGiB={0:N3}" -f ($volume.AvailableFreeSpace/$gib))
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            Write-Host 'LEGACY_CACHE_SKIP_BUSY';exit 0
           }
-          if(-not $git){throw 'No installed Git for read-only provenance audit'}
-          $directories=@(Get-ChildItem -LiteralPath $root -Directory -Force -ErrorAction Stop |
-            Where-Object {-not ($_.Attributes -band [IO.FileAttributes]::ReparsePoint)})
-          $candidates=@($directories | Where-Object {
-            $_.Name -match '^(breachwatch-native-source|beta-structural-source|forja-thin-native-source|issue186-fresh-source|breachwatch-isolated|pr179-lazy-full-webgl|beta10-minimal-webgl)-'
-          } | Sort-Object Name)
-          $alternates=@()
-          foreach($entry in $directories){
-            $al=Join-Path $entry.FullName '.git/objects/info/alternates'
-            if(Test-Path -LiteralPath $al -PathType Leaf){$alternates+=Get-Item -LiteralPath $al}
-          }
-          Write-Host ("WORKTREES_AUDIT_SCOPE candidates={0} inboundSourceAlternates={1}" -f $candidates.Count,$alternates.Count)
-          $deadline=[datetime]::UtcNow.AddMinutes(9)
-          [int]$checked=0
-          foreach($d in $candidates){
-            if([datetime]::UtcNow -ge $deadline){Write-Host 'WORKTREES_AUDIT_TIME_LIMIT_REACHED';break}
-            $checked++
-            $gitdir=Join-Path $d.FullName '.git'
-            if(-not(Test-Path -LiteralPath (Join-Path $gitdir 'HEAD'))){
-              Write-Host ("WORKTREE label={0} hasGitHead=false" -f $d.Name);continue
+          foreach($name in @('beta-structural-source-42505611257-1','forja-thin-native-source-42408083695')){
+            $source=Join-Path $root $name
+            $lib=Join-Path $source 'Unity\Library'
+            if(-not(Test-Path -LiteralPath $lib -PathType Container)){
+              Write-Host ("LEGACY_CACHE_MISSING label={0}" -f $name);continue
             }
-            $previousPreference=$ErrorActionPreference
-            $ErrorActionPreference='Continue'
-            try {
-              $head=(& $git -C $d.FullName rev-parse HEAD 2>$null)
-              $validHead=$LASTEXITCODE -eq 0 -and [string]$head -match '^[a-f0-9]{40}$'
-              if(-not $validHead){
-                Write-Host ("WORKTREE label={0} completeGitCommit=false" -f $d.Name)
-                continue
+            [long]$bytes=0
+            [long]$files=0
+            [long]$links=0
+            [datetime]$last=[datetime]::MinValue
+            $queue=New-Object 'System.Collections.Generic.Stack[string]'
+            $queue.Push($lib)
+            while($queue.Count -gt 0){
+              $next=$queue.Pop()
+              foreach($f in ([IO.DirectoryInfo]::new($next)).EnumerateFileSystemInfos()){
+                if($f.Attributes -band [IO.FileAttributes]::ReparsePoint){$links++;continue}
+                if($f -is [IO.DirectoryInfo]){$queue.Push($f.FullName)}
+                else{
+                  $bytes+=[long]$f.Length
+                  $files++
+                  if($f.LastWriteTimeUtc -gt $last){$last=$f.LastWriteTimeUtc}
+                }
               }
-              $remote=(& $git -C $d.FullName remote get-url origin 2>$null)
-              $status=@(& $git -C $d.FullName status --porcelain=v1 --untracked-files=all 2>$null)
-              $statusCode=$LASTEXITCODE
-            } finally {
-              $ErrorActionPreference=$previousPreference
             }
-            $dirty=@($status | Where-Object {$_ -notmatch '^\?\?'}).Count
-            $untracked=@($status | Where-Object {$_ -match '^\?\?'}).Count
-            $usesAlt=Test-Path -LiteralPath (Join-Path $gitdir 'objects/info/alternates')
-            [int]$inbound=0
-            foreach($al in $alternates){
-              if($al.FullName.StartsWith($d.FullName+'\',[StringComparison]::OrdinalIgnoreCase)){continue}
-              try{
-                $ref=[IO.File]::ReadAllText($al.FullName)
-                if($ref.IndexOf($d.Name,[StringComparison]::OrdinalIgnoreCase) -ge 0){$inbound++}
-              }catch{}
+            $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+            if(-not $git){
+              $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending |
+                ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+                Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
             }
-            Write-Host ("WORKTREE label={0} sha={1} githubRemote={2} statusCode={3} changed={4} untracked={5} outboundAlternate={6} inboundAlternates={7}" -f
-              $d.Name,[string]$head,([string]$remote -match '^https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu(\.git)?$'),
-              $statusCode,$dirty,$untracked,$usesAlt,$inbound)
-            if($checked -ge 35){Write-Host 'WORKTREES_AUDIT_MAX_COUNT';break}
+            $tracked=@(& $git -C $source ls-files -- 'Unity/Library')
+            $trackedCount=$tracked.Count
+            $head=(& $git -C $source rev-parse HEAD).Trim()
+            Write-Host ("LEGACY_CACHE_INVENTORY label={0} GiB={1:N3} files={2} links={3} tracked={4} head={5} lastWrittenUtc={6}" -f
+              $name,($bytes/$gib),$files,$links,$trackedCount,$head,$last.ToString('o'))
           }
-          Write-Host ("WORKTREES_AUDIT_END analyzed={0} freeGiB={1:N3} deleted=false" -f $checked,($drive.AvailableFreeSpace/$gib))
+          Write-Host ("LEGACY_CACHE_END freeGiB={0:N3} deletion=none" -f ($volume.AvailableFreeSpace/$gib))
