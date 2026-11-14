@@ -1099,8 +1099,8 @@ namespace Eldoria.BreachWatch.Editor
                         "Authored empty mail illustration is missing or intercepts input");
                     var expected=Resources.Load<Sprite>("VigiliaArt/MailboxArtwork/sealed_letter");
                     Need(expected && art.mainTexture==expected.texture &&
-                         expected.texture.width<=512 && expected.texture.height<=512,
-                        "Empty mail did not bind its actual bounded authored texture");
+                         expected.texture.width<=1024 && expected.texture.height<=1024,
+                        "Empty mail did not bind its authored 1024px-cap source");
                     var originalPixels=texture.GetPixels32();
                     var withoutArt=new Texture2D(width,height,TextureFormat.RGB24,false);
                     try

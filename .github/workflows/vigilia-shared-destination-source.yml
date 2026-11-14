@@ -38,6 +38,7 @@ on:
       - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchRetinaEvidence.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs'
       - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/*.png.meta'
+      - 'Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/*.png.meta'
       - 'tools/breach-watch/import_cleanroom_art.py'
       - 'tools/breach-watch/validate_compact_layout.py'
       - 'tools/breach-watch/verify_premium_font_fit.py'
@@ -81,6 +82,9 @@ jobs:
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_raven.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/nav_helm.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/wood.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/stone.png.meta
+            /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ResourceIcons/food.png.meta
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/CleanRoom/upgrade.png
             /Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts/**
             /tools/breach-watch/*OwnedNativeInput*.ps1
@@ -155,6 +159,19 @@ jobs:
           assert mail.count('maxTextureSize: 1024')==6
           assert 'enableMipMap: 0' in mail
           assert 'textureCompression: 0' in mail
+          # Catch source-vs-native-test contradictions BEFORE expensive Unity.
+          # Original licensed resource UI icons have no mipmaps, bilinear
+          # and 512px maximum. They are not minified 3D textures.
+          icons=root/'Resources/VigiliaArt/ResourceIcons'
+          for name in ('wood','stone','food'):
+              meta=(icons/(name+'.png.meta')).read_text()
+              assert 'enableMipMap: 0' in meta,name
+              assert 'filterMode: 1' in meta,name
+              assert 'maxTextureSize: 512' in meta,name
+          assert 'icon.sprite.texture.mipmapCount==1' in native
+          assert 'icon.sprite.texture.filterMode==FilterMode.Bilinear' in native
+          assert 'icon.sprite.texture.width<=512' in native
+          assert 'expected.texture.width<=1024 && expected.texture.height<=1024' in dest
           generator=Path('tools/breach-watch/import_cleanroom_art.py').read_text()
           assert '"mission":1400,"resource":2200' in generator
           assert 'max_size=1024 if navigation else 4096' in generator

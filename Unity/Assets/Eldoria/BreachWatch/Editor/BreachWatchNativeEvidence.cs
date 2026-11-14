@@ -1173,9 +1173,15 @@ namespace Eldoria.BreachWatch.Editor
                     Need(Mathf.Abs(iconCentre-423f/22f)<.25f &&
                          Mathf.Abs(iconY-stone.rect.height*.49f)<.25f,
                          "Resource artwork is not centred on its actual capsule badge: "+name);
-                    Need(icon.sprite.texture.mipmapCount>1 &&
-                         icon.sprite.texture.filterMode==FilterMode.Trilinear,
-                         "Resource icon missing small-size filtering: "+name);
+                    // The real CC0 source sprite import is intentionally
+                    // mipmap-free, bilinear and bounded to 512 UI pixels.
+                    // The legacy 3D trilinear assumption contradicted the
+                    // current resource icon .meta (enableMipMap: 0).
+                    Need(icon.sprite && icon.sprite.texture &&
+                         icon.sprite.texture.mipmapCount==1 &&
+                         icon.sprite.texture.filterMode==FilterMode.Bilinear &&
+                         icon.sprite.texture.width<=512,
+                         "Resource icon not using authored UI sprite filtering: "+name);
 
                 }
                 foreach(var label in ui.GetComponentsInChildren<Text>(true))
