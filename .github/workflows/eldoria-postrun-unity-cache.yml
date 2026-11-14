@@ -43,7 +43,7 @@ jobs:
           for term in required:
             assert term in t, 'Missing safety gate: '+term
           assert t.count('\n          Remove-Item -LiteralPath $lib -Force')==1
-          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==3
+          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
           print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
           PY
       - name: Parse actual cleanup PowerShell without executing it
