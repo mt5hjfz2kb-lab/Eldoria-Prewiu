@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T17:06:13.836Z",
+  "updated_at": "2026-11-14T17:20:16.716Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -71,13 +71,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 65,
+      "ownership_revision": 66,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
-      "phase": "FOUR_VIEWPORT_NATIVE_PASS_INDEPENDENT_ART_REVIEW_PENDING",
+      "phase": "FOUR_VIEWPORT_REAL_FINGERTIP_NATIVE_REPROBE_PENDING",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -109,7 +111,7 @@
         "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3ManagementRulesTests.cs",
         ".github/workflows/issue186-exact-source-recovery.yml"
       ],
-      "next": "Source 5f1062a682fdc05d3901d3d3c9ce18d3be20a8ce exact native run43617649660 SUCCESS: 28 authentic GPU PNG with SHA and 4 size selected-building pixel/first-hit, 54 real clicks, actual nickname/story/bag/mail/reload and clean exit; artifact 14123876057. Independent artistic review of 28 PNG plus browser/iPhone physical stability remain gates. Exclusive Windows released CAS rev65 after completed jobs. No merge/beta/testers.",
+      "next": "Exact source 1cffbb3c1bfa10537e0e675eb6ddada3f7a82691 includes painted-hand fingertip contact and 4-viewport real hit gate. Native after source CI43620410307 SUCCESS, Unity metadata43620410263 SUCCESS. Trigger exact rev66 native-request and inspect authentic 28 images, 54 taps and saved bag/mail; no art approval, iPhone/web acceptance, merge or publication.",
       "art_production_request": "pipeline/art-production-requests/eldoria-issue186-reward-attention-guidance-20261111.json",
       "previous_owner": "chatgpt-eldoria-first-use-qa-recovery-20261113",
       "ownership_history": [
@@ -250,13 +252,13 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_native_disk_preflight_5_84GiB",
+        "status": "claimed_for_exact_touch_geometry_native_reprobe",
         "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
-        "ownership_revision": 63,
-        "updated_at": "2026-11-14T13:07:00.000Z",
-        "reason": "Issue186 exact-native #43598020843 finished FAILURE safely at storage preflight: verified and removed ONLY archived generated Unity/Library for run43583823285; C free rose to 5.84 GiB, below hard 16 GiB. No Unity checkout, no GPU run, no source/art/save deletion. Exclusive Windows resource released after completed job; do not retry until independently proven free C >=16 GiB."
+        "ownership_revision": 66,
+        "updated_at": "2026-11-14T17:20:16.716Z",
+        "reason": "Only after 43617649660 completed Unity/28-PNG/54 clicks with clean exit and rev65 CAS released Windows; live main registry had zero holders, no competing active native jobs; source 1cffbb3c art correction requires new full GPU validation; minimum 16GiB disk gate unchanged."
       },
-      "runner_claimed_at": "2026-11-14T13:05:00.000Z",
+      "runner_claimed_at": "2026-11-14T17:20:16.716Z",
       "runner_released_at": "2026-11-14T13:07:00.000Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
       "runner_claim_basis": "Owner-directed CAS reclaim after Vigilia legitimately released Windows at rev131 (2026-11-14T12:52Z); no current exclusive holder and no active Windows native Actions. Reclaim for ONE Issue186 exact-head native preflight only. Vigilia failed Unity with C: disk exhaustion, so Issue186 16 GiB free-space safety gate MUST refuse Editor before any new worktree; reclaim ONLY independently verified archived own Unity/Library cache, never foreign sources, beta or art.",
