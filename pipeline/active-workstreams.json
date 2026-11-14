@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T08:31:34.273Z",
+  "updated_at": "2026-11-14T09:50:44.400Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -51,13 +51,15 @@
       "title": "Eldoria #186 — paquetes de recursos, señales y tutorial guiado",
       "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
       "ownership_state": "claimed",
-      "ownership_revision": 59,
+      "ownership_revision": 60,
       "branch": "feature/issue186-first-guided-hand-20261113",
       "status": "active",
       "phase": "FIRST_USE_REAL_FIRST_HIT_REPAIR_AND_NATIVE_GATE",
       "claimed_at": "2026-11-13T19:43:59.968Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RewardExperienceRules.cs.meta",
@@ -230,16 +232,16 @@
       ],
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
+        "status": "claimed",
         "owner": "chatgpt-eldoria-player-ux-recovery-20261113",
-        "ownership_revision": 59,
-        "updated_at": "2026-11-13T23:54:59.802Z",
-        "reason": "Temporary safe owner-directed lending to Vigilia after native 43520031645 clean exit; native scope/writer remains Issue186. Future Issue186 native runs must reacquire Windows lease; do not overtake Vigilia."
+        "ownership_revision": 60,
+        "updated_at": "2026-11-14T09:50:44.400Z",
+        "reason": "Exclusive Windows lease reacquired for PR190 exact-head real-pixel Unity test, conditional on 16 GiB disk gate and clean runner."
       },
-      "runner_claimed_at": "2026-11-13T20:21:59.884Z",
+      "runner_claimed_at": "2026-11-14T09:50:44.400Z",
       "runner_released_at": "2026-11-13T23:54:59.802Z",
       "scope_extension_reason": "Continue exact native certification: repair four stale direct-wallet reward assertions in two otherwise unclaimed test files; assert claim/use and idempotency without changing production rewards.",
-      "runner_claim_basis": "Exact March native/A-B completed, original artifact independently hash verified; next bounded native bag binding rotation regression. Same owner and source, no cancellation.",
+      "runner_claim_basis": "Owner-directed CAS reclaim after Vigilia recorded disk-blocked release at revision129; one exact PR190 native preflight only; fail closed below 16 GiB without touching existing Unity worktrees, no publication.",
       "runner_release_basis": "Exact audited overlay restored successfully in run43296125081; 64 metadata hash triples identical to prior review, all257 original paths checked by restoration. No Unity rerun or unknown overwrite.",
       "last_native": {
         "run": 43226508340,
@@ -315,7 +317,7 @@
         "preserve_baseline": "published engine18 de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "artistic_contract": "New Vigilia visual surfaces only; old gameplay services may remain as non-presenting logic; no old interface graphics allowed in active player UI."
       },
-      "note": "Owner reports no pointer when entering published Vigilia. Main binds hand only on Issue186BagOverlay first resource packet use, not first city/world/construction interaction; actual post-name guidance absent. Transfer owner-directed to this chat; preserve PR179 runner and source. | 2026-11-13T23:54:59.802Z Windows only lent to Vigilia per conditional user authorization; Issue186 PR190 remains claimed and source unchanged.",
+      "note": "Owner reports no pointer when entering published Vigilia. Main binds hand only on Issue186BagOverlay first resource packet use, not first city/world/construction interaction; actual post-name guidance absent. Transfer owner-directed to this chat; preserve PR179 runner and source. | 2026-11-13T23:54:59.802Z Windows only lent to Vigilia per conditional user authorization; Issue186 PR190 remains claimed and source unchanged. | 2026-11-14T09:50:44.400Z CAS Windows reclaim only after Vigilia released rev129 and Actions in_progress=0; disk preflight hard-gated; no artifact cleanup.",
       "delivery_definition": {
         "deliverable": "Visible, actionable first-use hand in real Vigilia onboarding after nickname (sawmill selection then construction and unlocked steps) without blocking interaction or repeating after completion",
         "evidence": "Source tests followed by exact Unity real raycasts at phone and desktop sizes, browser saved-flow; first tap and save preserved",
