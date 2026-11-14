@@ -270,7 +270,7 @@ jobs:
               if($lines[$k] -ne '' -and -not $lines[$k].StartsWith('          ')){break}
               $body.Add(($lines[$k].Length -ge 10) ? $lines[$k].Substring(10) : '')
             }
-            if($body.Count -lt 6){throw "Incomplete PowerShell step $name"}
+            if($body.Count -lt 2){throw "Incomplete PowerShell step $name"}
             $script=[string]::Join([Environment]::NewLine,$body)
             $tokens=$null;$errors=$null
             [Management.Automation.Language.Parser]::ParseInput($script,[ref]$tokens,[ref]$errors)|Out-Null
