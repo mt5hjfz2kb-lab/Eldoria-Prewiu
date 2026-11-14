@@ -1,0 +1,140 @@
+name: EONSCAR native logo and UI import (exclusive lease only)
+on:
+  push:
+    branches: [feature/eonscar-branding-trial-20261109]
+    paths: ['tools/eonscar-branding-trial/native-request.txt']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eonscar-branding-exclusive-native
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Fail closed if Windows owner or branch HEAD differs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                   'Accept':'application/vnd.github+json','User-Agent':'eldoria-eonscar-native-preflight'}
+          def get(url):
+              with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=30) as r:
+                  return json.load(r)
+          cfg=get(f'https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main')
+          reg=json.loads(base64.b64decode(cfg['content']))
+          holders=[x for x in reg['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          if len(holders)!=1 or holders[0].get('id')!='eldoria-eonscar-branding-trial-20261109':
+              raise SystemExit('Windows is held by another workstream; native test not allowed')
+          if holders[0].get('owner')!='chatgpt-eonscar-branding-trial-20261109' or holders[0].get('ownership_state')!='claimed':
+              raise SystemExit('No authorized EONSCAR Windows claim')
+          head=get(f'https://api.github.com/repos/{repo}/git/ref/heads/feature/eonscar-branding-trial-20261109')
+          if head['object']['sha']!=os.environ['GITHUB_SHA']:
+              raise SystemExit('Branch advanced; refuse stale proof')
+          print('EONSCAR_NATIVE_LEASE_PASS',os.environ['GITHUB_SHA'])
+          PY
+  native:
+    needs: preflight
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    steps:
+      - name: Recover installed Git if the Windows runner does not expose it
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No installed git: refuse large archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV1/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV2/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV3/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV4/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV6/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV16/**
+            !/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/**
+      - name: Recheck lease, live processes, exact source PNG and available Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'Unity 6000.3.23f1 unavailable'
+          }
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $blob=Invoke-RestMethod -Uri $url -Headers $headers
+          $reg=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($blob.content)))|ConvertFrom-Json
+          $holders=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-eonscar-branding-trial-20261109' -or $holders[0].owner -ne 'chatgpt-eonscar-branding-trial-20261109'){
+            throw 'Native lease changed since Ubuntu preflight'
+          }
+          $remote=Invoke-RestMethod -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/git/ref/heads/feature/eonscar-branding-trial-20261109" -Headers $headers
+          if($remote.object.sha -ne $env:GITHUB_SHA){throw 'Stale exact PR HEAD'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another native process is running'}
+          $source='Unity/Assets/Eldoria/Branding/EonscarTrial/Resources/EonscarTrial/eonscar-logo.png'
+          if(-not(Test-Path $source)){throw 'Approved QA logo missing in checkout'}
+          if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72'){
+            throw 'Logo bytes mismatch: do not test unidentified art'
+          }
+      - name: Run Unity Editor real compilation and opt-in hierarchy/import probe
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP "eonscar-native-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Path $out -Force|Out-Null
+          $env:EONSCAR_QA_OUTPUT=$out
+          $log=Join-Path $out 'unity-editor.log'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+                  '-executeMethod','Eldoria.Branding.Editor.EonscarBrandingNativeProbe.Run',
+                  '-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($proc.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity exit code $($proc.ExitCode)"}
+          $report=Join-Path $out 'eonscar-native-probe.json'
+          if(-not(Test-Path $report)){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Native report absent'}
+          if(-not(Select-String -Path $log -Pattern 'EONSCAR_NATIVE_IMPORT_AND_UI_HIERARCHY_PASS' -Quiet)){
+            Get-Content $log -Tail 100;throw 'Native PASS marker absent'
+          }
+          $data=Get-Content $report -Raw|ConvertFrom-Json
+          if($data.result -ne 'PASS_EDITOR_IMPORT_AND_UI_HIERARCHY_ONLY' -or $data.gamePlayed -or $data.deviceTested){
+            throw 'Incorrect native proof scope or incorrect test result'
+          }
+          Write-Host 'EONSCAR_NATIVE_IMPORT_ONLY_PASS; PLAYMODE_AND_ART_QA_STILL_PENDING'
+      - name: Preserve output on success or failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eonscar-native-${{ github.run_id }}
+          path: ${{ runner.temp }}/eonscar-native-${{ github.run_id }}/**
+          if-no-files-found: warn
+          retention-days: 14
