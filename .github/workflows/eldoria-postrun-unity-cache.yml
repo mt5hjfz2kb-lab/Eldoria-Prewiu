@@ -43,7 +43,7 @@ jobs:
           for term in required:
             assert term in t, 'Missing safety gate: '+term
           assert t.count('\n          Remove-Item -LiteralPath $lib -Force')==1
-          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==2
+          assert t.count('\n          Remove-Item -LiteralPath $empty -Force')==1
           print('ELDORIA_POSTRUN_STATIC_SOURCE_POLICY_PASS')
           PY
       - name: Parse actual cleanup PowerShell without executing it
@@ -284,8 +284,8 @@ jobs:
           }
           Write-Host ("STORAGE_PROBE_END freeGiB={0:N3} changedFiles=false deleted=false" -f ($drive.AvailableFreeSpace/$gib))
 
-  validate-source-delta-archiver-b425:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[archive-b425]')
+  validate-source-delta-archiver-i032:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[archive-i032]')
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
@@ -312,7 +312,7 @@ jobs:
           assert 'Move-Item -LiteralPath $temporaryZip' in t
           assert 'ZipArchive' in t
           assert 'Get-FileHash' in t
-          assert '948ffa9837168a0b68dab80be76b66350422b23a' in t
+          assert 'b63b94743efc84ec156d9ae5239143c6048fe069' in t
           Path('archive-one-source.ps1').write_text(t)
           print('ELDORIA_SOURCE_DELTA_ARCHIVE_NO_DELETE_STATIC_PASS')
           PY
@@ -322,9 +322,9 @@ jobs:
             if($errs.Count){$errs | Out-String | Write-Error;exit 1}
             Write-Host "ELDORIA_SOURCE_DELTA_ARCHIVE_POWERSHELL_PARSE_PASS"
           '
-  create-reversible-delta-archive-b425:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[archive-b425]')
-    needs: validate-source-delta-archiver-b425
+  create-reversible-delta-archive-i032:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[archive-i032]')
+    needs: validate-source-delta-archiver-i032
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 12
     steps:
@@ -345,12 +345,12 @@ jobs:
           }
           if(-not $git){throw 'No Git for recovery provenance'}
           $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
-          $label='beta-structural-source-42505611257-1'
+          $label='issue186-fresh-source-43503266427'
           $source=Join-Path $root $label
           $head=(& $git -C $source rev-parse HEAD).Trim()
           $remote=(& $git -C $source remote get-url origin).Trim()
           if($LASTEXITCODE -ne 0 -or
-             $head -ne '948ffa9837168a0b68dab80be76b66350422b23a' -or
+             $head -ne 'b63b94743efc84ec156d9ae5239143c6048fe069' -or
              $remote -notin @('https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu',
                'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git')){
             throw 'REFUSE: original branch source changed'
@@ -380,7 +380,7 @@ jobs:
           $deleted=@(Get-GitNul 'ls-files -d -z')
           if($changed.Count -gt 5000 -or $untracked.Count -gt 10000 -or
              $ignored.Count -gt 1500 -or $deleted.Count -ne 0){
-            throw 'REFUSE: unexpected local delta scale or deleted tracked files'
+            throw 'REFUSE: unexpected local delta scale or tracked deletions'
           }
           $files=[Collections.Generic.Dictionary[string,string]]::new([StringComparer]::OrdinalIgnoreCase)
           foreach($group in @(
@@ -405,11 +405,11 @@ jobs:
             $candidate=Join-Path $source ($relative.Replace('/','\'))
             $item=Get-Item -LiteralPath $candidate -Force -ErrorAction Stop
             if($item.PSIsContainer -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)){
-              throw 'REFUSE: unsafe source path for backup'
+              throw 'REFUSE: source entry cannot be archived safely'
             }
             $rawBytes += [long]$item.Length
           }
-          if($rawBytes -gt 1600MB){throw 'REFUSE: unique source exceeds external backup capacity'}
+          if($rawBytes -gt 1600MB){throw 'REFUSE: unique source exceeds external artifact limit'}
           Write-Host ("SOURCE_DELTA_PREFLIGHT uniqueFiles={0} uncompressedMiB={1:N2}" -f $files.Count,($rawBytes/1MB))
           $archiveRoot='C:\actions-runner-eldoria\_preserved_snapshots'
           if(-not(Test-Path -LiteralPath $archiveRoot)){
@@ -515,367 +515,10 @@ jobs:
           Write-Host ("SOURCE_DELTA_ORIGINAL_PRESERVED sha={0} retainedOnSamePC=true removed=false" -f $head)
           exit 0
 
-      - name: Archive unique beta structural source outside the computer
+      - name: Upload immutable tutorial source overlay for independent restoration
         uses: actions/upload-artifact@v4
         with:
-          name: eldoria-unique-b425-${{ github.run_id }}
-          path: C:/actions-runner-eldoria/_preserved_snapshots/beta-structural-source-42505611257-1-unique-20261114.zip
+          name: eldoria-unique-i032-${{ github.run_id }}
+          path: C:/actions-runner-eldoria/_preserved_snapshots/issue186-fresh-source-43503266427-unique-20261114.zip
           retention-days: 90
           if-no-files-found: error
-
-  verify-git-metadata-archiver-b425:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[git-b425]')
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-          sparse-checkout: .github/workflows/eldoria-postrun-unity-cache.yml
-          sparse-checkout-cone-mode: false
-      - name: Ensure Git object backup source code is non-destructive and parses
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          rows=Path('.github/workflows/eldoria-postrun-unity-cache.yml').read_text().splitlines()
-          i=next(i for i,r in enumerate(rows) if r.strip()=='- name: Copy Git object store exactly and compare every hash')
-          j=next(i for i in range(i,len(rows)) if rows[i].strip()=='run: |')+1
-          t=[]
-          for line in rows[j:]:
-            if line and not line.startswith('          '):break
-            t.append(line[10:] if line.startswith('          ') else '')
-          code='\n'.join(t)+'\n'
-          assert 'Remove-Item' not in code
-          assert 'gitBackup' in code and 'Get-FileHash' in code
-          assert 'Copy-Item -LiteralPath $gitSource' in code
-          assert 'SHA256' in code
-          Path('verify-git-preservation.ps1').write_text(code)
-          PY
-          pwsh -NoProfile -NonInteractive -Command '
-            $tokens=$null; $errors=$null
-            $null=[Management.Automation.Language.Parser]::ParseFile("verify-git-preservation.ps1",[ref]$tokens,[ref]$errors)
-            if($errors.Count){$errors | Out-String | Write-Error; exit 1}
-            Write-Host "GIT_METADATA_ARCHIVE_SCRIPT_PARSE_PASS"
-          '
-  archive-original-git-metadata-b425:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[git-b425]')
-    needs: verify-git-metadata-archiver-b425
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 12
-    steps:
-      - name: Copy Git object store exactly and compare every hash
-        shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $ErrorActionPreference='Stop'
-          $ProgressPreference='SilentlyContinue'
-          if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
-            Write-Host 'GIT_METADATA_ARCHIVE_SKIP_TOOL_BUSY';exit 0
-          }
-          $label='beta-structural-source-42505611257-1'
-          $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
-          $source=Join-Path $root $label
-          $gitSource=Join-Path $source '.git'
-          $archiveRoot='C:\actions-runner-eldoria\_preserved_snapshots'
-          $overlayZip=Join-Path $archiveRoot ($label+'-unique-20261114.zip')
-          $gitBackup=Join-Path $archiveRoot ($label+'-git-objects')
-          $manifestPath=Join-Path $archiveRoot ($label+'-git-manifest.json')
-          if(-not(Test-Path -LiteralPath $overlayZip -PathType Leaf) -or
-             -not(Test-Path -LiteralPath (Join-Path $gitSource 'HEAD') -PathType Leaf)){
-            throw 'REFUSE: reversible overlay or original Git missing'
-          }
-          if((Get-FileHash -LiteralPath $overlayZip -Algorithm SHA256).Hash.ToLowerInvariant() -ne
-             '2df938c208227f5808f31499268e04cb9b6532a7f1634aec1c5c20ecdc54324e'){
-            throw 'REFUSE: verified overlay checksum has changed'
-          }
-          $remoteProof=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/14121008070' -Headers @{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json';'User-Agent'='eldoria-storage-archive'} -ErrorAction Stop
-          if($remoteProof.expired -or
-             $remoteProof.name -ne 'eldoria-unique-b425-43613603217' -or
-             $remoteProof.workflow_run.id -ne 43613603217 -or
-             $remoteProof.size_in_bytes -lt 1000000){
-            throw 'REFUSE: off-machine unique source artifact is not verifiable'
-          }
-          if(Test-Path -LiteralPath $gitBackup){throw 'REFUSE: Git backup destination already exists'}
-          if(Test-Path -LiteralPath $manifestPath){throw 'REFUSE: Git backup manifest already exists'}
-          $attrs=(Get-Item -LiteralPath $gitSource -Force).Attributes
-          if($attrs -band [IO.FileAttributes]::ReparsePoint){throw 'REFUSE: original Git is a junction'}
-          $srcFiles=@(Get-ChildItem -LiteralPath $gitSource -Recurse -File -Force -ErrorAction Stop)
-          $linked=Get-ChildItem -LiteralPath $gitSource -Recurse -Force -ErrorAction Stop |
-            Where-Object {$_.Attributes -band [IO.FileAttributes]::ReparsePoint} | Select-Object -First 1
-          if($linked){throw 'REFUSE: original Git references a linked file'}
-          if($srcFiles.Count -lt 20 -or $srcFiles.Count -gt 500){
-            throw 'REFUSE: unexpected Git source inventory count'
-          }
-          [double]$gib=1024*1024*1024
-          $drive=[IO.DriveInfo]::new('C')
-          [long]$start=$drive.AvailableFreeSpace
-          if($start -lt 15*$gib){throw 'REFUSE: not enough disk space to retain Git backup'}
-          Copy-Item -LiteralPath $gitSource -Destination $gitBackup -Recurse -Force -ErrorAction Stop
-          if(-not(Test-Path -LiteralPath (Join-Path $gitBackup 'HEAD'))){
-            throw 'REFUSE: exact backup did not contain HEAD'
-          }
-          $backFiles=@(Get-ChildItem -LiteralPath $gitBackup -Recurse -File -Force -ErrorAction Stop)
-          if($backFiles.Count -ne $srcFiles.Count){
-            throw 'REFUSE: backup file count differs'
-          }
-          $manifest=New-Object System.Collections.ArrayList
-          [long]$bytes=0
-          foreach($original in $srcFiles){
-            $relative=$original.FullName.Substring($gitSource.Length).TrimStart('\')
-            $copy=Join-Path $gitBackup $relative
-            if(-not(Test-Path -LiteralPath $copy -PathType Leaf)){
-              throw 'REFUSE: Git backup missing source entry'
-            }
-            $originalHash=(Get-FileHash -LiteralPath $original.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-            $copyHash=(Get-FileHash -LiteralPath $copy -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($originalHash -ne $copyHash -or $original.Length -ne (Get-Item -LiteralPath $copy).Length){
-              throw 'REFUSE: Git backup content differs from original'
-            }
-            $bytes += [long]$original.Length
-            $null=$manifest.Add([pscustomobject]@{
-              path=$relative;bytes=[long]$original.Length;sha256=$originalHash
-            })
-          }
-          [pscustomobject]@{
-            schema='eldoria-original-local-git-preservation-1'
-            source=$label
-            sourceSha='948ffa9837168a0b68dab80be76b66350422b23a'
-            createdUtc=[datetime]::UtcNow.ToString('o')
-            originalWorktreeStillPresent=$true
-            count=$srcFiles.Count
-            totalBytes=$bytes
-            files=@($manifest)
-          } | ConvertTo-Json -Depth 8 |
-            Set-Content -LiteralPath $manifestPath -Encoding UTF8 -ErrorAction Stop
-          $manifestHash=(Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash.ToLowerInvariant()
-          Write-Host ("GIT_METADATA_ARCHIVE_VERIFIED label={0} files={1} backedGiB={2:N3} manifestSha256={3}" -f
-            $label,$srcFiles.Count,($bytes/$gib),$manifestHash)
-          Write-Host ("GIT_METADATA_ORIGINAL_PRESERVED freeGiB={0:N3} originalDeleted=false" -f ($drive.AvailableFreeSpace/$gib))
-          exit 0
-
-      - name: Upload verified Git source preservation manifest
-        uses: actions/upload-artifact@v4
-        with:
-          name: eldoria-git-manifest-b425-${{ github.run_id }}
-          path: C:/actions-runner-eldoria/_preserved_snapshots/beta-structural-source-42505611257-1-git-manifest.json
-          retention-days: 90
-          if-no-files-found: error
-
-  guard-retire-one-historical-worktree-b425:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[retire-b425]')
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          filter: blob:none
-          sparse-checkout: .github/workflows/eldoria-postrun-unity-cache.yml
-          sparse-checkout-cone-mode: false
-      - name: Verify exact run checkout retirement script syntax and backup prerequisite
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          r=Path('.github/workflows/eldoria-postrun-unity-cache.yml').read_text().splitlines()
-          i=next(i for i,s in enumerate(r) if s.strip()=='- name: Retire original redundant failed worktree only after complete backup verification')
-          j=next(i for i in range(i,len(r)) if r[i].strip()=='run: |')+1
-          body=[]
-          for line in r[j:]:
-            if line and not line.startswith('          '):break
-            body.append(line[10:] if line.startswith('          ') else '')
-          code='\n'.join(body)+'\n'
-          assert code.count('robocopy.exe $empty $source /MIR /XJ')==1
-          assert code.count('Remove-Item -LiteralPath $source -Force')==1
-          assert '2df938c208227f5808f31499268e04cb9b6532a7f1634aec1c5c20ecdc54324e' in code
-          assert '3a72a709b0b97bd4aea12525b681eb58bfaef2bab78e342a46bd300b961eaa56' in code
-          assert 'Get-Process Unity,blender,git' in code
-          assert 'objects' in code and 'alternates' in code
-          assert 'manifest.files' in code
-          Path('retire-exact-checkout.ps1').write_text(code)
-          print('WORKTREE_RETIRE_NO_UNBACKED_SOURCE_GUARD_PASS')
-          PY
-          pwsh -NoProfile -NonInteractive -Command '
-            $tokens=$null; $errors=$null
-            $null=[Management.Automation.Language.Parser]::ParseFile("retire-exact-checkout.ps1",[ref]$tokens,[ref]$errors)
-            if($errors.Count){$errors | Out-String | Write-Error;exit 1}
-            Write-Host "WORKTREE_RETIRE_POWERSHELL_PARSE_PASS"
-          '
-  retire-archived-worktree-b425:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[retire-b425]')
-    needs: guard-retire-one-historical-worktree-b425
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 12
-    steps:
-      - name: Retire original redundant failed worktree only after complete backup verification
-        shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $ErrorActionPreference='Stop'
-          $ProgressPreference='SilentlyContinue'
-          [double]$gib=1024*1024*1024
-          $drive=[IO.DriveInfo]::new('C')
-          [double]$before=$drive.AvailableFreeSpace
-          Write-Host ("HISTORICAL_RETIRE_BEGIN freeGiB={0:N3}" -f ($before/$gib))
-          if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
-            Write-Host 'HISTORICAL_RETIRE_SKIP_TOOLS_ACTIVE';exit 0
-          }
-          $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
-          $label='beta-structural-source-42505611257-1'
-          $source=Join-Path $root $label
-          $gitOriginal=Join-Path $source '.git'
-          $backups='C:\actions-runner-eldoria\_preserved_snapshots'
-          $overlay=Join-Path $backups ($label+'-unique-20261114.zip')
-          $gitBackup=Join-Path $backups ($label+'-git-objects')
-          $gitManifest=Join-Path $backups ($label+'-git-manifest.json')
-          if(-not(Test-Path -LiteralPath $source -PathType Container)){
-            Write-Host 'HISTORICAL_RETIRE_ALREADY_ABSENT';exit 0
-          }
-          foreach($required in @($root,$source,$gitOriginal,$backups,$gitBackup)){
-            $info=Get-Item -LiteralPath $required -Force -ErrorAction Stop
-            if(-not $info.PSIsContainer -or ($info.Attributes -band [IO.FileAttributes]::ReparsePoint)){
-              throw 'REFUSE: reparse point or invalid original/backup parent'
-            }
-          }
-          foreach($required in @($overlay,$gitManifest,(Join-Path $source 'Unity\Assets'),
-            (Join-Path $source 'Unity\ProjectSettings'),(Join-Path $gitBackup 'HEAD'))){
-            if(-not(Test-Path -LiteralPath $required)){
-              throw 'REFUSE: restore prerequisites missing'
-            }
-          }
-          $headers=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json';'User-Agent'='eldoria-worktree-snapshot'}
-          foreach($proof in @(
-            @{id=14121008070;name='eldoria-unique-b425-43613603217';run=43613603217;min=1000000},
-            @{id=14121461912;name='eldoria-git-manifest-b425-43613757520';run=43613757520;min=1000}
-          )){
-            $external=Invoke-RestMethod -Uri ("https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/"+$proof.id) -Headers $headers -ErrorAction Stop
-            if($external.expired -or $external.name -ne $proof.name -or
-               $external.workflow_run.id -ne $proof.run -or
-               $external.size_in_bytes -lt $proof.min){
-              throw 'REFUSE: external source backup cannot be independently verified'
-            }
-          }
-          $remoteCommit=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/commits/948ffa9837168a0b68dab80be76b66350422b23a' -Headers $headers -ErrorAction Stop
-          if($remoteCommit.sha -ne '948ffa9837168a0b68dab80be76b66350422b23a'){
-            throw 'REFUSE: original commit cannot be rebuilt from remote'
-          }
-          if((Get-FileHash -LiteralPath $overlay -Algorithm SHA256).Hash.ToLowerInvariant() -ne
-             '2df938c208227f5808f31499268e04cb9b6532a7f1634aec1c5c20ecdc54324e'){
-            throw 'REFUSE: local unique overlay checksum mismatched'
-          }
-          if((Get-FileHash -LiteralPath $gitManifest -Algorithm SHA256).Hash.ToLowerInvariant() -ne
-             '3a72a709b0b97bd4aea12525b681eb58bfaef2bab78e342a46bd300b961eaa56'){
-            throw 'REFUSE: local original Git backup manifest checksum mismatched'
-          }
-          Add-Type -AssemblyName System.IO.Compression
-          Add-Type -AssemblyName System.IO.Compression.FileSystem
-          $reader=[IO.Compression.ZipFile]::OpenRead($overlay)
-          try {
-            $manifestEntry=$reader.GetEntry('manifest.json')
-            if($null -eq $manifestEntry){throw 'REFUSE: source overlay manifest not found'}
-            $stream=[IO.StreamReader]::new($manifestEntry.Open())
-            try{$manifest=$stream.ReadToEnd() | ConvertFrom-Json}finally{$stream.Dispose()}
-            if($manifest.source -ne $label -or
-               $manifest.sourceSha -ne '948ffa9837168a0b68dab80be76b66350422b23a' -or
-               @($manifest.files).Count -ne 119 -or
-               $manifest.modifiedCount -ne 50 -or
-               $manifest.untrackedCount -ne 65 -or
-               $manifest.ignoredCount -ne 4 -or
-               @($manifest.deletedTrackedPaths).Count -ne 0){
-              throw 'REFUSE: source overlay manifest identity changed'
-            }
-            foreach($file in @($manifest.files)){
-              $path=[string]$file.path
-              if($path.Contains(':') -or $path.StartsWith('/') -or $path.Split('/') -contains '..'){
-                throw 'REFUSE: unsafe relative overlay entry'
-              }
-              $original=Join-Path $source ($path.Replace('/','\'))
-              $entry=$reader.GetEntry([string]$file.archivePath)
-              if($null -eq $entry -or $entry.Length -ne $file.bytes -or
-                 -not(Test-Path -LiteralPath $original -PathType Leaf)){
-                throw 'REFUSE: overlay entry or live source missing'
-              }
-              $liveHash=(Get-FileHash -LiteralPath $original -Algorithm SHA256).Hash.ToLowerInvariant()
-              if($liveHash -ne [string]$file.sha256){
-                throw 'REFUSE: original source changed after archive verification'
-              }
-            }
-          } finally {$reader.Dispose()}
-          $gitFiles=@(Get-ChildItem -LiteralPath $gitOriginal -Recurse -File -Force -ErrorAction Stop)
-          $gitRecord=(Get-Content -LiteralPath $gitManifest -Raw -ErrorAction Stop | ConvertFrom-Json)
-          if($gitRecord.source -ne $label -or $gitRecord.count -ne 32 -or
-             $gitFiles.Count -ne @($gitRecord.files).Count){
-            throw 'REFUSE: original Git inventory differs from archived source'
-          }
-          foreach($item in @($gitRecord.files)){
-            $src=Join-Path $gitOriginal ([string]$item.path)
-            $backup=Join-Path $gitBackup ([string]$item.path)
-            if(-not(Test-Path -LiteralPath $src -PathType Leaf) -or
-               -not(Test-Path -LiteralPath $backup -PathType Leaf)){
-              throw 'REFUSE: original or archived Git object missing'
-            }
-            $srcHash=(Get-FileHash -LiteralPath $src -Algorithm SHA256).Hash.ToLowerInvariant()
-            $bakHash=(Get-FileHash -LiteralPath $backup -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($srcHash -ne $item.sha256 -or $bakHash -ne $item.sha256){
-              throw 'REFUSE: Git metadata backup no longer equals original'
-            }
-          }
-          $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
-          if(-not $git){
-            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
-              Sort-Object Name -Descending |
-              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
-              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
-          }
-          if(-not $git){throw 'REFUSE: installed Git unavailable'}
-          $sha=(& $git -C $source rev-parse HEAD).Trim()
-          if($LASTEXITCODE -ne 0 -or $sha -ne '948ffa9837168a0b68dab80be76b66350422b23a'){
-            throw 'REFUSE: original Git HEAD moved after archive'
-          }
-          $status=@(& $git -C $source status --porcelain=v1 --untracked-files=all)
-          if($LASTEXITCODE -ne 0 -or
-             @($status | Where-Object {$_ -notmatch '^\?\?'}).Count -ne 50 -or
-             @($status | Where-Object {$_ -match '^\?\?'}).Count -ne 65){
-            throw 'REFUSE: local modified/untracked source count moved'
-          }
-          foreach($neighbor in @(Get-ChildItem -LiteralPath $root -Directory -Force -ErrorAction Stop)){
-            if($neighbor.Name -eq $label){continue}
-            $alternate=Join-Path $neighbor.FullName '.git\objects\info\alternates'
-            if(Test-Path -LiteralPath $alternate -PathType Leaf){
-              $contents=[IO.File]::ReadAllText($alternate)
-              if($contents.IndexOf($label,[StringComparison]::OrdinalIgnoreCase) -ge 0){
-                throw 'REFUSE: another repository depends on these Git objects'
-              }
-            }
-          }
-          $links=Get-ChildItem -LiteralPath $source -Recurse -Force -ErrorAction Stop |
-            Where-Object {$_.Attributes -band [IO.FileAttributes]::ReparsePoint} |
-            Select-Object -First 1
-          if($links){throw 'REFUSE: source worktree has linked data'}
-          if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
-            throw 'REFUSE: tools started while checking backup'
-          }
-          $empty=Join-Path $env:RUNNER_TEMP ('eldoria-archive-retirement-empty-'+$env:GITHUB_RUN_ID)
-          if(Test-Path -LiteralPath $empty){throw 'REFUSE: unexpected mirror directory exists'}
-          New-Item -ItemType Directory -Path $empty -ErrorAction Stop | Out-Null
-          Write-Host ("HISTORICAL_RETIRE_VERIFIED label={0} archiveFiles=119 gitBackupFiles=32 originalSha={1}" -f
-            $label,$sha)
-          & robocopy.exe $empty $source /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP | Out-Null
-          $exitCode=$LASTEXITCODE
-          if($exitCode -gt 7){throw ("REFUSE: whole-worktree mirror failed code "+$exitCode)}
-          if(@(Get-ChildItem -LiteralPath $source -Force -ErrorAction Stop | Select-Object -First 1).Count){
-            throw 'REFUSE: original folder not empty after verified retirement'
-          }
-          Remove-Item -LiteralPath $source -Force -ErrorAction Stop
-          Remove-Item -LiteralPath $empty -Force -ErrorAction Stop
-          if(-not(Test-Path -LiteralPath $overlay -PathType Leaf) -or
-             -not(Test-Path -LiteralPath (Join-Path $gitBackup 'HEAD') -PathType Leaf)){
-            throw 'REFUSE: original verified backups disappeared'
-          }
-          Write-Host ("HISTORICAL_RETIRE_COMPLETE label={0} freedGiB={1:N3} freeGiB={2:N3} backupRetained=true remoteCommitAvailable=true" -f
-            $label,(($drive.AvailableFreeSpace-$before)/$gib),($drive.AvailableFreeSpace/$gib))
-          exit 0
