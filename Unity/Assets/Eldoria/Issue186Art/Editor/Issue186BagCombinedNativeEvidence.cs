@@ -499,17 +499,17 @@ namespace Eldoria.Issue186Art.Editor
                 while(EditorApplication.timeSinceStartup<actionDeadline &&
                       !(firstCoach.Visible&&firstCoach.TargetId=="building-action"))
                     {RenderUi(ui,390,844);Draw(camera,rt);yield return null;}
-                Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
-                    "The hand did not move to the real CONSTRUIR action: "+
-                    firstCoach.Rejection);
                 // Do not accept a guide that exists in the hierarchy but is
                 // missing from the picture actually shown to the player.
-                // A failed native test MUST retain the actual failing frame:
-                // the last Unity PASS had no panel in its final PNG even while
-                // object/raycast assertions were true. Captures here are
-                // evidence only; they do not lower any pixel or pointer gate.
+                // Preserve the GPU frame even when the hand never reaches
+                // CONSTRUIR (previously this assertion escaped the screenshot
+                // catch), not only when the later pixel contrast check fails.
+                // Captures are evidence; first-hit/pixel gates remain strict.
                 try
                 {
+                    Need(firstCoach.Visible&&firstCoach.TargetId=="building-action",
+                        "The hand did not move to the real CONSTRUIR action: "+
+                        firstCoach.Rejection);
                     RenderUi(ui,390,844);
                     var actualPanel=(RectTransform)type.GetProperty("BuildingPanel")
                         .GetValue(ui);
