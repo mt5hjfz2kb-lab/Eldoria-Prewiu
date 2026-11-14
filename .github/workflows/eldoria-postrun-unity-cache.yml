@@ -624,20 +624,23 @@ jobs:
             [long]$bytes=0
             [long]$files=0
             [int]$links=0
+            [int]$scanErrors=0
             $stack=New-Object 'System.Collections.Generic.Stack[string]'
             $stack.Push($p)
             while($stack.Count -gt 0){
               if([datetime]::UtcNow -ge $deadline){return @{size=$bytes;files=$files;links=$links;complete=$false}}
               $next=$stack.Pop()
-              foreach($f in ([IO.DirectoryInfo]::new($next)).EnumerateFileSystemInfos()){
-                try{
-                  if($f.Attributes -band [IO.FileAttributes]::ReparsePoint){$links++;continue}
-                  if($f -is [IO.DirectoryInfo]){$stack.Push($f.FullName)}
-                  else{$bytes+=[long]$f.Length;$files++}
-                }catch{}
-              }
+              try{
+                foreach($f in ([IO.DirectoryInfo]::new($next)).EnumerateFileSystemInfos()){
+                  try{
+                    if($f.Attributes -band [IO.FileAttributes]::ReparsePoint){$links++;continue}
+                    if($f -is [IO.DirectoryInfo]){$stack.Push($f.FullName)}
+                    else{$bytes+=[long]$f.Length;$files++}
+                  }catch{$scanErrors++}
+                }
+              }catch{$scanErrors++}
             }
-            return @{size=$bytes;files=$files;links=$links;complete=$true}
+            return @{size=$bytes;files=$files;links=$links;scanErrors=$scanErrors;complete=($scanErrors -eq 0)}
           }
           foreach($name in $names){
             if([datetime]::UtcNow -ge $deadline){Write-Host 'STORAGE_PROBE_PARTIAL_TIMEOUT';break}
@@ -668,7 +671,7 @@ jobs:
                 }
               }
             }
-            Write-Host ("STORAGE_PROBE_SOURCE name={0} GiB={1:N3} files={2} complete={3} links={4} libraryPresent={5} gitPresent={6} dirtyTracked={7} untracked={8} dependentCount={9} head={10}" -f
-              $name,($siz.size/$gib),$siz.files,$siz.complete,$siz.links,$libPresent,$gitPresent,$dirty,$untracked,$dependent.Count,$head)
+            Write-Host ("STORAGE_PROBE_SOURCE name={0} GiB={1:N3} files={2} complete={3} links={4} scanErrors={11} libraryPresent={5} gitPresent={6} dirtyTracked={7} untracked={8} dependentCount={9} head={10}" -f
+              $name,($siz.size/$gib),$siz.files,$siz.complete,$siz.links,$libPresent,$gitPresent,$dirty,$untracked,$dependent.Count,$head,$siz.scanErrors)
           }
           Write-Host ("STORAGE_PROBE_END freeGiB={0:N3} changedFiles=false deleted=false" -f ($drive.AvailableFreeSpace/$gib))
