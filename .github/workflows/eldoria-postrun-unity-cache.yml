@@ -174,19 +174,18 @@ jobs:
           exit 0
 
 
-  verify-two-recovered-caches:
+  inventory-archivable-old-sources:
     if: github.event_name == 'push'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 6
+    timeout-minutes: 9
     steps:
-      - name: Independently check disk, absent caches and preserved source state
+      - name: Classify tracked and untracked changes in three finished historical worktrees
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          [double]$gib=1024*1024*1024
-          $drive=[IO.DriveInfo]::new('C')
-          Write-Host ("RECOVERY_INDEPENDENT_DISK freeGiB={0:N3} usedGiB={1:N3}" -f
-            ($drive.AvailableFreeSpace/$gib),(($drive.TotalSize-$drive.AvailableFreeSpace)/$gib))
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            Write-Host 'ARCHIVE_AUDIT_EDITOR_BUSY';exit 0
+          }
           $root='C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu'
           $git=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
           if(-not $git){
@@ -195,32 +194,51 @@ jobs:
               ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
               Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
           }
-          if(-not $git){throw 'Git unavailable for postrecovery source verification'}
-          foreach($target in @(
-            @{name='beta-structural-source-42505611257-1';sha='948ffa9837168a0b68dab80be76b66350422b23a';dirty=50;untracked=65}
-            @{name='forja-thin-native-source-42408083695';sha='0577b6ff0495cf1cee4f422a993ef4f15e7716e2';dirty=135;untracked=787}
+          if(-not $git){throw 'Cannot classify source without Git'}
+          [double]$gib=1024*1024*1024
+          $drive=[IO.DriveInfo]::new('C')
+          Write-Host ("ARCHIVE_AUDIT_DISK freeGiB={0:N3}" -f ($drive.AvailableFreeSpace/$gib))
+          foreach($name in @(
+            'breachwatch-native-source-43465479546-1',
+            'breachwatch-native-source-43481923633-1',
+            'breachwatch-native-source-43483165131-1'
           )){
-            $dir=Join-Path $root $target.name
-            if(Test-Path -LiteralPath (Join-Path $dir 'Unity\Library')){
-              throw ("RECOVERY_VERIFY_FAILED_LIBRARY_PRESENT "+$target.name)
+            $source=Join-Path $root $name
+            if(-not(Test-Path -LiteralPath (Join-Path $source '.git'))){continue}
+            $sha=(& $git -C $source rev-parse HEAD).Trim()
+            $modified=@(& $git -C $source ls-files -m)
+            $untracked=@(& $git -C $source ls-files --others --exclude-standard)
+            $ignored=@(& $git -C $source ls-files --others --ignored --exclude-standard --directory)
+            $deleted=@(& $git -C $source ls-files -d)
+            Write-Host ("ARCHIVE_SOURCE label={0} SHA={1} modified={2} untracked={3} ignoredTop={4} deleted={5}" -f
+              $name,$sha,$modified.Count,$untracked.Count,$ignored.Count,$deleted.Count)
+            foreach($group in @('Assets','NativeEvidence','Other')){
+              $sample=if($group -eq 'Assets'){@($untracked | Where-Object {$_ -match '^Unity/Assets/'})}
+                elseif($group -eq 'NativeEvidence'){@($untracked | Where-Object {$_ -match '^Unity/.*Evidence/'})}
+                else {@($untracked | Where-Object {$_ -notmatch '^Unity/(Assets|.*Evidence)/'})}
+              Write-Host ("ARCHIVE_UNTRACKED_GROUP label={0} class={1} count={2}" -f $name,$group,$sample.Count)
             }
-            foreach($required in @('.git','Unity\Assets','Unity\ProjectSettings')){
-              if(-not(Test-Path -LiteralPath (Join-Path $dir $required))){
-                throw ("RECOVERY_VERIFY_FAILED_ORIGINAL_MISSING "+$target.name)
+            foreach($pattern in @(
+              @{name='git';path='.git'},
+              @{name='assets';path='Unity\Assets'},
+              @{name='evidence';path='Unity\BreachWatchNativeEvidence'},
+              @{name='native-destination';path='Unity\BreachWatchDestinationEvidence'}
+            )){
+              $p=Join-Path $source $pattern.path
+              if(-not(Test-Path -LiteralPath $p -PathType Container)){continue}
+              [long]$bytes=0;[long]$files=0
+              $stack=New-Object 'System.Collections.Generic.Stack[string]'
+              $stack.Push($p)
+              while($stack.Count){
+                foreach($x in ([IO.DirectoryInfo]::new($stack.Pop())).EnumerateFileSystemInfos()){
+                  if($x.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+                  if($x -is [IO.DirectoryInfo]){$stack.Push($x.FullName)}
+                  else{$bytes += [long]$x.Length;$files++}
+                }
               }
+              Write-Host ("ARCHIVE_CATEGORY label={0} class={1} GiB={2:N3} files={3}" -f
+                $name,$pattern.name,($bytes/$gib),$files)
             }
-            $sha=(& $git -C $dir rev-parse HEAD).Trim()
-            if($LASTEXITCODE -ne 0 -or $sha -ne $target.sha){
-              throw ("RECOVERY_VERIFY_FAILED_SOURCE_HEAD_CHANGED "+$target.name)
-            }
-            $s=@(& $git -C $dir status --porcelain=v1 --untracked-files=all)
-            if($LASTEXITCODE -ne 0){throw 'Git status failed after cache removal'}
-            $dirty=@($s | Where-Object {$_ -notmatch '^\?\?'}).Count
-            $untracked=@($s | Where-Object {$_ -match '^\?\?'}).Count
-            if($dirty -ne $target.dirty -or $untracked -ne $target.untracked){
-              throw ("RECOVERY_VERIFY_FAILED_SOURCE_DELTA_CHANGED "+$target.name)
-            }
-            Write-Host ("RECOVERY_INDEPENDENT_SOURCE_PASS label={0} SHA={1} changed={2} untracked={3} libraryAbsent=true" -f
-              $target.name,$sha,$dirty,$untracked)
+            Write-Host ("ARCHIVE_IGNORED_GROUP label={0} found={1}" -f $name,$ignored.Count)
           }
-          Write-Host 'RECOVERY_INDEPENDENT_FINISH originalsPreserved=true deleted=false'
+          Write-Host ("ARCHIVE_AUDIT_END freeGiB={0:N3} deleted=false" -f ($drive.AvailableFreeSpace/$gib))
