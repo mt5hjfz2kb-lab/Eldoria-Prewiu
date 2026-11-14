@@ -1,8 +1,5 @@
-VIGILIA PHASE1 AUDIT OWN HISTORICAL UNITY WORKTREE BEFORE IN-PLACE REUSE
-owner=chatgpt-vigilia-visual-kit-20261113
-workstream=eldoria-forja-oscura-visual-proof-20261107
-revision=128
-last_native_run=43575520713
-verified_C_available_GiB=5.94, no alternate drive, own failed checkout cache cleaned; existing own successful Unity source SHA543c0a713d0cb3e95fb370923d91e796cf5a5c38 has 166 dirty Git paths + prior native PNG.
-audit_only=git status classify every tracked non-meta change and all untracked files; show path/count. This run MUST fail closed without changing source or deleting evidence.
-budget_EUR=0
+VIGILIA PHASE1 PATCH NATIVE READONLY STATUS AUDIT YAML FIX
+workstream=eldoria-forja-oscura-visual-proof-20261107 revision=128
+prior run 43575520713: own old isolated Unity source has 166 dirty files, must classify before considering in-place reuse.
+Fixed workflow YAML indentation/dedup; no native work if C disk under 8 GiB; read only modified vs untracked, preserve three historical Unity evidence files.
+No beta or other owner source altered, no spend.
