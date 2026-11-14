@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T20:41:51.971Z",
+  "updated_at": "2026-11-14T20:53:14.007Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7696,7 +7696,8 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
         ".github/workflows/eldoria-world-p0-native.yml",
         ".github/workflows/eldoria-world-p0-origin-search.yml",
-        "tools/eldoria-private-beta/world-p0-origin-search-request.txt"
+        "tools/eldoria-private-beta/world-p0-origin-search-request.txt",
+        ".github/workflows/tester-qa.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -8698,7 +8699,7 @@
           "alternative": "Linux immutable input/site verified; browser launch denied by OS socket policy. Prepare isolated Windows Edge reopen on now-free PC; no owner save or source modified."
         }
       },
-      "scope_extension_reason": "Integrated CI correction: remove historical self-triggering recovery workflow; admit current exact PR179 reservation in existing full gameplay native gate, preserving all tests and exclusive process checks.",
+      "scope_extension_reason": "Fix observed required PR194 frozen-web CI infrastructure failure: pinned Playwright 1.55 cannot install chromium on ubuntu-latest 26.04. Pin only that test job to supported ubuntu-24.04, preserve every test and production input. No foreign claimed owner holds file.",
       "native_navigation_correction": {
         "source": "de63660d25bee9a32d7b804d6245744ed1f0dbca",
         "run": 43246088947,
