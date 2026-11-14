@@ -23,6 +23,23 @@ namespace Eldoria.World4XCanon
                     near.transform.localScale*=closeLimit/closeFootprint;
                     near.transform.position+=Vector3.up*(root-near.bounds.min.y);
                 }
+                // These authored cohorts are invisible in every approved camera.
+                // Preserve their source renderer/bounds for route and terrain logic,
+                // but never allocate a GameObject, LODGroup or far-tree transform for
+                // something whose near/far renderers are both permanently hidden.
+                bool mass=near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal);
+                bool rejectedRounded=mass&&near.sharedMaterials.Any(material=>material&&
+                    material.name.StartsWith("Player broadleaf crown shade ",StringComparison.Ordinal));
+                bool infill=mass&&(near.name.StartsWith("BLD_ForestMass_Context_",StringComparison.Ordinal)||
+                    near.name.StartsWith("BLD_ForestMass_Belt_",StringComparison.Ordinal)||
+                    near.name.StartsWith("BLD_ForestMass_Regional_",StringComparison.Ordinal)||
+                    near.name.StartsWith("BLD_ForestMass_Castle_",StringComparison.Ordinal));
+                if(rejectedRounded||infill)
+                {
+                    near.forceRenderingOff=true;
+                    far.forceRenderingOff=true;
+                    continue;
+                }
                 var group=new GameObject("LOD "+near.name);group.transform.SetParent(artwork.transform,false);
                 // Reparent with world transforms preserved, including glTF handedness.
                 near.transform.SetParent(group.transform,true);far.transform.SetParent(group.transform,true);
@@ -93,26 +110,6 @@ namespace Eldoria.World4XCanon
                     lod.SetLODs(new[]{close});
                     far.enabled=false;
                     if(retained)far.gameObject.SetActive(false);
-                }
-                // Reject the recent rounded crown model and remove complete
-                // infill cohorts instead of scattering hash-selected holes.
-                // Context/Belt/Regional/Castle were authored to fill blank ground.
-                // The original numbered groves, riparian firs, fir ecotones and
-                // every protected Pilot pine retain their existing anchors.
-                // Sources, colliders/navigation bounds, resources and saves stay
-                // intact; both representations use the same visibility decision.
-                bool mass=near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal);
-                bool rejectedRounded=mass&&near.sharedMaterials.Any(material=>material&&
-                    material.name.StartsWith("Player broadleaf crown shade ",StringComparison.Ordinal));
-                bool infill=mass&&(near.name.StartsWith("BLD_ForestMass_Context_",StringComparison.Ordinal)||
-                    near.name.StartsWith("BLD_ForestMass_Belt_",StringComparison.Ordinal)||
-                    near.name.StartsWith("BLD_ForestMass_Regional_",StringComparison.Ordinal)||
-                    near.name.StartsWith("BLD_ForestMass_Castle_",StringComparison.Ordinal));
-                if(rejectedRounded||infill)
-                {
-                    lod.enabled=false;
-                    near.forceRenderingOff=true;
-                    far.forceRenderingOff=true;
                 }
             }
         }
