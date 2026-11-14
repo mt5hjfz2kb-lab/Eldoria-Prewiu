@@ -224,6 +224,40 @@ jobs:
               assert set(result.stdout.splitlines())==set(required),(result.stdout,result.stderr)
           print('VIGILIA_NATIVE_SCENE_RETAINED_ARCHIVES_EXCLUDED_SPARSE_GUARD_PASS')
           PY
+      - name: Parse exact PowerShell native recovery and checkout before using Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $lines=Get-Content '.github/workflows/breach-watch-native.yml'
+          foreach($name in @(
+             'Reclaim only old failed Vigilia-specific temporary sources',
+             'Fetch exact PR source safely with sparse Unity checkout',
+             'Stop before Unity if checkout consumed 16 GiB reserve'
+          )){
+            $label='      - name: '+$name
+            $line=@(0..($lines.Count-1) | Where-Object { $lines[$_] -eq $label })
+            if($line.Count -ne 1){throw "No unique native PowerShell step $name"}
+            $start=$line[0]
+            $scriptLine=$null
+            for($k=$start+1;$k -lt $lines.Count;$k++){
+              if($lines[$k] -eq '        run: |'){$scriptLine=$k;break}
+              if($lines[$k] -match '^      - name:' -or $lines[$k] -match '^  [a-z][a-z-]+:'){
+                break
+              }
+            }
+            if($null -eq $scriptLine){throw "No inline PowerShell body $name"}
+            $body=New-Object System.Collections.Generic.List[string]
+            for($k=$scriptLine+1;$k -lt $lines.Count;$k++){
+              if($lines[$k] -ne '' -and -not $lines[$k].StartsWith('          ')){break}
+              $body.Add(($lines[$k].Length -ge 10) ? $lines[$k].Substring(10) : '')
+            }
+            if($body.Count -lt 6){throw "Incomplete PowerShell step $name"}
+            $script=[string]::Join([Environment]::NewLine,$body)
+            $tokens=$null;$errors=$null
+            [Management.Automation.Language.Parser]::ParseInput($script,[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count){throw ("Bad native source PowerShell for $name : "+($errors|Out-String))}
+            Write-Host ("VIGILIA_NATIVE_POWERSHELL_SOURCE_PARSE_PASS "+$name)
+          }
       - name: Check staged theme and gameplay boundaries (NOT visual approval)
         shell: bash
         run: |

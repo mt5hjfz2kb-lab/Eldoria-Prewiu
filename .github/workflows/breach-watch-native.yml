@@ -797,9 +797,74 @@ jobs:
             Write-Host ("VIGILIA_OWN_FAILED_CHECKOUT_RECLAIMED "+$name)
           }
           $free=(Get-PSDrive C).Free
-          # User-owned historical checkout is immutable, including Library:
-          # never clean, mirror, overwrite or delete any part of 43532823031-1.
-          # The Windows disk must be provisioned without sacrificing prior evidence.
+          # A previous isolated Vigilia GPU run exhausted C: while Unity
+          # generated its throwaway Library cache. The run's native logs and
+          # available evidence were already uploaded to Actions. Reclaim
+          # ONLY Unity/Library in that exact, owned, failed SHA checkout.
+          # Preserve its source, metadata, modified assets and all evidence.
+          $failedRunId='43590398106'
+          $failedSha='182676e6ce01e910677d1b95f9df3a9e3b57479b'
+          $failedRun=Invoke-RestMethod -Uri ($api+'/actions/runs/'+$failedRunId) -Headers $headers
+          if($failedRun.status -ne 'completed' -or
+             $failedRun.conclusion -ne 'failure' -or
+             $failedRun.head_sha -ne $failedSha){
+            throw 'Unexpected prior GPU run; refusing all failed-run cache cleanup'
+          }
+          $failedName='breachwatch-isolated-'+$failedRunId+'-1'
+          $failedSource=Join-Path $workspace $failedName
+          if(Test-Path -LiteralPath $failedSource){
+            $parent=(Get-Item -LiteralPath $failedSource)
+            if($parent.Attributes -band [IO.FileAttributes]::ReparsePoint -or
+               $parent.Name -ne $failedName -or
+               -not [IO.Path]::GetFullPath($parent.FullName).StartsWith(
+                 $workspace+'\breachwatch-isolated-',
+                 [StringComparison]::OrdinalIgnoreCase)){
+              throw 'Refuse symlink, non-owned or moved prior GPU checkout'
+            }
+            $gitExe=(Get-Command git.exe -ErrorAction SilentlyContinue).Source
+            if(-not $gitExe){
+              $gitExe=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending |
+                ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+                Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+            }
+            if(-not $gitExe){throw 'Cannot verify exact prior GPU checkout without Git'}
+            $previous=(& $gitExe -C $failedSource rev-parse HEAD).Trim()
+            if($LASTEXITCODE -ne 0 -or $previous -ne $failedSha){
+              throw 'Prior GPU worktree SHA changed; no cleanup'
+            }
+            $tracked=@(& $gitExe -C $failedSource ls-files -- 'Unity/Library/**')
+            if($LASTEXITCODE -ne 0 -or $tracked.Count){
+              throw 'Unity/Library may have tracked files; no cleanup'
+            }
+            $failedLibrary=Join-Path $failedSource 'Unity/Library'
+            if(Test-Path -LiteralPath $failedLibrary){
+              $cacheItem=Get-Item -LiteralPath $failedLibrary
+              if($cacheItem.Attributes -band [IO.FileAttributes]::ReparsePoint){
+                throw 'Refuse symlinked Unity Library'
+              }
+              if(@(Get-Process Unity,blender,git -ErrorAction SilentlyContinue).Count){
+                throw 'Native process started; no cache cleanup'
+              }
+              $empty=Join-Path $env:RUNNER_TEMP ('vigilia-empty-failed-'+$env:GITHUB_RUN_ID)
+              if(Test-Path -LiteralPath $empty){throw 'Refuse existing cleanup mirror directory'}
+              New-Item -ItemType Directory -Path $empty -ErrorAction Stop | Out-Null
+              & robocopy.exe $empty $failedLibrary /MIR /XJ /R:0 /W:0 /NFL /NDL /NJH /NJS /NP | Out-Null
+              $result=$LASTEXITCODE
+              if($result -gt 7){throw "Safe long-path cache cleanup failed exit=$result"}
+              if(@(Get-ChildItem -LiteralPath $failedLibrary -Force -ErrorAction Stop | Select-Object -First 1).Count){
+                throw 'Nonempty cache or redirect remains; no further changes'
+              }
+              Remove-Item -LiteralPath $failedLibrary -Force -ErrorAction Stop
+              Remove-Item -LiteralPath $empty -Force -ErrorAction Stop
+              Write-Host 'VIGILIA_FAILED_43590398106_LIBRARY_ONLY_RECLAIMED'
+            }
+          }
+          # User-owned historical checkout 43532823031-1 is immutable,
+          # including its original captured PNG. Never reset or clean it.
+          $free=(Get-PSDrive C).Free
+          # The Windows disk is provisioned only from verified regenerated
+          # caches of our failed runs, not other owners' data.
           $after=(Get-PSDrive C).Free
           Write-Host ('VIGILIA_DISK_FREE_GIB_AFTER '+[math]::Round($after/1GB,2))
           # Read-only inventory, never traverse or delete another job's files.
