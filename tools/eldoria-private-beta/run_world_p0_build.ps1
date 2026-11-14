@@ -19,7 +19,22 @@ foreach($name in @('eldoria-world-p0-43641168362','eldoria-world-p0-43638950225'
 $persistent=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-source-5881df4e76da'
 if($ownedSources.Count -eq 0 -and (Test-Path $persistent)){
   if((Get-Item $persistent).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Persistent source is a reparse point'}
-  if((& git -C $persistent rev-parse HEAD).Trim() -ne $SourceSha){throw 'Persistent source identity changed'}
+  $head=([string](& git -C $persistent rev-parse --verify HEAD)).Trim()
+  if($LASTEXITCODE){
+    # The superseded preparation was interrupted while downloading the sparse
+    # checkout. Preserve that directory; reuse only its verified Git object store.
+    if((& git -C $persistent rev-parse FETCH_HEAD).Trim() -ne $SourceSha){throw 'Interrupted source fetch identity differs'}
+    if((& git -C $persistent remote get-url origin).Trim() -ne ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')){throw 'Interrupted source origin differs'}
+    $ready=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-ready-5881df4e76da'
+    if(Test-Path $ready){throw 'Preserve existing recovery worktree'}
+    & git -C $persistent worktree add --no-checkout --detach $ready $SourceSha
+    if($LASTEXITCODE){throw 'Could not recover owned object store into a separate worktree'}
+    & git -C $ready sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
+    if($LASTEXITCODE){throw 'Recovery sparse configuration failed'}
+    & git -C $ready checkout --detach $SourceSha
+    if($LASTEXITCODE){throw 'Recovery checkout failed; preserve both sources'}
+    $persistent=$ready
+  }elseif($head -ne $SourceSha){throw 'Persistent source identity changed'}
   $ownedSources+=,$persistent
 }
 if($ownedSources.Count -gt 1){throw 'Ambiguous owned source checkout'}
