@@ -1,0 +1,150 @@
+name: Eldoria P0 real Unity world-entry and streaming proof
+on:
+  push:
+    branches: [fix/eldoria-world-first-entry-p0-20261114]
+    paths: [tools/eldoria-private-beta/world-p0-request.txt]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-world-p0-exclusive-unity
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta/world-p0-request.txt
+          sparse-checkout-cone-mode: false
+      - name: Verify exclusive live CAS before touching Windows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA']
+          h={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          def get(path):
+              req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=h)
+              return json.load(urllib.request.urlopen(req,timeout=30))
+          lines=open('tools/eldoria-private-beta/world-p0-request.txt').read().strip().splitlines()
+          assert lines==['state=FIRST_WORLD_ENTRY_NATIVE_ONLY',
+                         'owner=chatgpt-eldoria-world-entry-p0-20261114',
+                         'revision=79','testers_allowed=false']
+          assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
+          item=get('contents/pipeline/active-workstreams.json?ref=main')
+          b=item.get('content')
+          if item.get('encoding')!='base64' or not b:
+              blob=get('git/blobs/'+item['sha'])
+              assert blob.get('sha')==item['sha'] and blob.get('encoding')=='base64'
+              b=blob['content']
+          j=json.loads(base64.b64decode(b))
+          w=next(x for x in j['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
+          holders=[x for x in j['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          assert len(holders)==1 and holders[0]['id']==w['id']
+          assert w['owner']=='chatgpt-eldoria-world-entry-p0-20261114'
+          assert w['branch']=='fix/eldoria-world-first-entry-p0-20261114'
+          assert w['ownership_revision']==79 and w['ownership_state']=='claimed'
+          print('P0_EXACT_CURRENT_SOURCE_LIVE_LEASE_VERIFIED',sha)
+          PY
+  native:
+    needs: preflight
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 150
+    steps:
+      - name: Verify installed Git, disk safety and no existing Unity or Blender
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another owner runs Unity or Blender'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No installed Git; archive fallback forbidden'}
+            $dir=Split-Path $git;$env:PATH="$dir;$env:PATH";Add-Content $env:GITHUB_PATH $dir
+          }
+          $free=(Get-PSDrive C).Free/1GB
+          Write-Host ('P0_FREE_BEFORE_GIB='+[Math]::Round($free,2))
+          if($free -lt 36){throw 'Too little free disk for isolated Unity; preserve all sources'}
+      - name: Sparse partial clone exact current project to owned disposable path
+        shell: powershell
+        timeout-minutes: 30
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $root){throw 'Run-owned project already exists; refuse overwrite'}
+          & git init -q $root
+          if($LASTEXITCODE){throw 'git init failed'}
+          & git -C $root config core.longpaths true
+          & git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
+          if($LASTEXITCODE){throw 'sparse init failed'}
+          & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'exact partial fetch failed'}
+          & git -C $root checkout --detach FETCH_HEAD
+          if($LASTEXITCODE){throw 'exact source checkout failed'}
+          if((& git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'source mismatch'}
+          $project=Join-Path $root 'Unity'
+          if(-not(Test-Path (Join-Path $project 'Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs'))){throw 'real gameplay test missing'}
+          if((Get-PSDrive C).Free/1GB -lt 24){throw 'Unity Library space gate failed; no cleanup of other projects'}
+          Add-Content $env:GITHUB_ENV ('ELDORIA_P0_SRC='+$root)
+          Add-Content $env:GITHUB_ENV ('ELDORIA_P0_PROJECT='+$project)
+          New-Item -ItemType Directory -Force -Path 'world-p0-results'|Out-Null
+          Set-Content -Path 'world-p0-results/source.txt' -Value $env:GITHUB_SHA
+      - name: Execute genuine Unity full-world first entry and 12 re-entry PlayMode
+        shell: powershell
+        timeout-minutes: 95
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unexpected Editor process; cannot overlap'}
+          $log=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results/editor.log'
+          $xml=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results/test-results.xml'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$env:ELDORIA_P0_PROJECT+'"'),
+            '-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests',
+            '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'),'-quit')
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(5400000)){throw 'Own Unity timed out; keep logs for diagnosis'}
+          if($proc.ExitCode -ne 0){Get-Content $log -Tail 80;throw ('Native Unity failed with exit '+$proc.ExitCode)}
+          if(-not(Test-Path $xml)){throw 'Missing true Unity test result'}
+          [xml]$result=Get-Content $xml -Raw
+          if($result.'test-run'.result -ne 'Passed' -or [int]$result.'test-run'.passed -lt 1 -or [int]$result.'test-run'.failed -ne 0){throw 'Unity player PlayMode assertions failed'}
+          if(-not(Select-String $log -Pattern 'ELDORIA_WORLD_STREAMING_VISUALS' -SimpleMatch -Quiet)){throw 'Missing stream bound proof'}
+          if(-not(Select-String $log -Pattern 'ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE' -SimpleMatch -Quiet)){throw 'Repeated world navigation not proven'}
+          Write-Host ('ELDORIA_WORLD_P0_REAL_UNITY_PASS '+$env:GITHUB_SHA)
+      - name: Upload truthful native log and XML even when the proof fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-p0-native-proof
+          path: world-p0-results/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Safely reclaim ONLY this owned run's regenerable Library after upload
+        if: always()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:ELDORIA_P0_SRC){Write-Host 'NO_OWNED_PROJECT_SKIP';exit 0}
+          $src=$env:ELDORIA_P0_SRC
+          $expected=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
+          if($src -ne $expected){throw 'Source outside owned workspace'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'EDITOR_BUSY_SKIP_LIBRARY';exit 0}
+          if((& git -C $src rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Unrecognized source; preserve'}
+          $library=Join-Path $src 'Unity/Library'
+          if(-not(Test-Path $library)){exit 0}
+          $item=Get-Item $library -Force
+          if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Reparse point in Library; preserve'}
+          $empty=Join-Path $src 'world-p0-empty-owned'
+          if(Test-Path $empty){throw 'Cleanup marker exists; preserve'}
+          New-Item -ItemType Directory -Path $empty|Out-Null
+          & robocopy.exe $empty $library /MIR /XJ /R:1 /W:1 | Out-Null
+          if($LASTEXITCODE -ge 8){throw 'Safe Library reclaim failed'}
+          Remove-Item $library -Recurse -Force
+          Remove-Item $empty -Force
+          Write-Host ('P0_GENERATED_CACHE_RECLAIMED_FREE_GIB='+[Math]::Round((Get-PSDrive C).Free/1GB,2))
