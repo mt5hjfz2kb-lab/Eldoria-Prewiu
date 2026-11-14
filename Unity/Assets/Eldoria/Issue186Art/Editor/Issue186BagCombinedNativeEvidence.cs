@@ -331,10 +331,18 @@ namespace Eldoria.Issue186Art.Editor
         {
             Need(painted && painted.activeInHierarchy,
                 name+" is not visibly active in its real Canvas");
+            // Compare the SAME layout with only the candidate's pixels
+            // removed. Deactivating the GameObject can rebuild layout/reflow
+            // neighbouring UI, yielding a false GPU difference even when the
+            // construction panel/hand itself was never painted.
             var actual=RenderedPatch(camera,target,control);
-            painted.SetActive(false);
+            var opacity=painted.GetComponent<CanvasGroup>();
+            bool addedOpacity=!opacity;
+            if(addedOpacity)opacity=painted.AddComponent<CanvasGroup>();
+            float priorAlpha=opacity.alpha;
             try
             {
+                opacity.alpha=0f;
                 var absent=RenderedPatch(camera,target,control);
                 int changed=0;
                 for(int i=0;i<actual.Length;i++)
@@ -346,11 +354,15 @@ namespace Eldoria.Issue186Art.Editor
                 }
                 Need(changed>35,
                     name+" contributes no visible pixels at its real touch target ("+
-                    changed+"/"+actual.Length+"); active/raycast PASS is not visual PASS");
+                    changed+"/"+actual.Length+"); unchanged-layout GPU alpha probe failed");
             }
             finally
             {
-                painted.SetActive(true);
+                if(opacity)
+                {
+                    opacity.alpha=priorAlpha;
+                    if(addedOpacity)Object.DestroyImmediate(opacity);
+                }
                 Draw(camera,target);
             }
         }
