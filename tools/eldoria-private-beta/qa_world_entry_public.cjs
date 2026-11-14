@@ -140,12 +140,24 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   }
   await screen('world-visit-'+visit);
   if(visit===0){
-   // These are the camera's actual production keyboard shortcuts, handled by
-   // ZoneOneStrategicCamera.LateUpdate; no game state or camera fields injected.
-   for(const [key,view] of [['2','regional'],['3','near'],['1','panoramic']]){
+   // Integrated Valoria disables ZoneOneStrategicCamera.LateUpdate and owns
+   // real input in SlicePresenter. Keyboard 1/2/3 therefore cannot test zoom.
+   // Use actual wheel events through that production input path instead.
+   const {decodeUnityPng}=await import('../art-direction/ai-authoring/unity_pixel_diff.mjs');
+   let previousView=out+'/world-visit-'+visit+'.png';
+   report.zoomPixelChanges=[];
+   for(const [ticks,delta,view] of [[12,240,'out'],[32,240,'overview'],[70,-240,'in']]){
     await page.evaluate(view=>window.__eldoriaWorldQaFrames.phase='zoom-'+view,view);
-    await page.keyboard.press(key,{delay:100});
-    report.actions.push({kind:'actual-camera-shortcut',key,view});
+    await page.mouse.move(195,420);
+    for(let tick=0;tick<ticks;tick++){
+     await page.mouse.wheel(0,delta);await page.waitForTimeout(250);
+     const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
+      metrics:window.valoriaGame?.GetMetricsInfo?.()}));
+     sample.phase='zoom-'+view+'-gesture';
+     sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
+     entry.samples.push(sample);
+    }
+    report.actions.push({kind:'actual-mouse-wheel',ticks,delta,view});
     const viewDeadline=Date.now()+6500;
     while(Date.now()<viewDeadline){
      if(report.errors.length)throw Error('Runtime error while streaming zoom '+view);
@@ -156,8 +168,22 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
      entry.samples.push(sample);save();await page.waitForTimeout(500);
     }
     await screen('world-zoom-'+view);
+    const currentView=out+'/world-zoom-'+view+'.png';
+    const before=decodeUnityPng(fs.readFileSync(previousView)),after=decodeUnityPng(fs.readFileSync(currentView));
+    if(before.width!==after.width||before.height!==after.height)throw Error('Zoom screenshot dimensions changed');
+    let changed=0,total=0;
+    for(let y=Math.floor(after.height*.2);y<after.height*.8;y+=4){
+     for(let x=Math.floor(after.width*.1);x<after.width*.9;x+=4){
+      const i=(y*after.width+x)*3;total++;
+      if(Math.max(...[0,1,2].map(c=>Math.abs(before.rgb[i+c]-after.rgb[i+c])))>24)changed++;
+     }
+    }
+    const change={view,changedFraction:changed/total,sampledPixels:total};
+    report.zoomPixelChanges.push(change);save();
+    if(change.changedFraction<.1)throw Error('Wheel did not visibly change the actual world view: '+view);
+    previousView=currentView;
    }
-   report.zoomInputsSent=true;report.zoomViewsRequireImageReview=true;save();
+   report.zoomInputsSent=true;report.zoomViewsChanged=true;report.zoomViewsRequireImageReview=true;save();
   }
   entry.framePacing=await page.evaluate(()=>{
    const s=window.__eldoriaWorldQaFrames;s.active=false;
@@ -169,10 +195,18 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    }
    return {visibility:document.visibilityState,phases};
   });save();
-  await page.mouse.click(128,776,{delay:180});await page.waitForTimeout(4000);
-  const city=await screen('city-return-'+visit);
-  entry.returned=city.some(r=>norm(r.text)==='ENTRADA QA');
-  if(!entry.returned)throw Error('City return lost visible saved nickname');
+  // Coordinates come from this run's reviewed genuine images. Beta19 has
+  // two world footer controls, while the candidate has three; the nickname
+  // is present in BOTH scenes and cannot certify a return to the city.
+  const returnX=identity.source_sha==='90465a9a910b89a8a8b74e4b33a9bbc88578e00e'?225:128;
+  await page.mouse.click(returnX,776,{delay:180});await page.waitForTimeout(4000);
+  await screen('city-return-'+visit);
+  await page.mouse.click(26,282,{delay:150});await page.waitForTimeout(1500);
+  const city=await screen('city-return-sawmill-'+visit);
+  entry.returned=city.some(r=>norm(r.text)==='ENTRADA QA')&&
+   city.some(r=>/^(ASERRADERO|SAWMILL)$/.test(norm(r.text)))&&
+   city.some(r=>/^(NIVEL|LEVEL)\s*1$/.test(norm(r.text)));
+  if(!entry.returned)throw Error('City return did not expose the genuinely saved sawmill');
   save();
  }
  report.worldEntryAndReentryVerified=true;

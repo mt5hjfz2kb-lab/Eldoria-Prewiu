@@ -24,26 +24,24 @@ jobs:
         path: qa-site/candidate
     - uses: actions/download-artifact@v4
       with:
-        run-id: 43644208819
-        name: world-p0-build-and-proof
+        run-id: 43649546135
+        name: world-p0-browser-comparison
         github-token: ${{ github.token }}
-        path: exact-build-evidence
-    - name: Retain small original native certificates and genuine images for review
+        path: prior-browser-proof
+    - name: Reuse unchanged successful startup and exact native evidence
       run: |
         python3 - <<'END'
         import pathlib,shutil,json
-        source=pathlib.Path('exact-build-evidence');out=pathlib.Path('world-evidence/native-build');out.mkdir(parents=True)
-        provenance=json.loads((source/'provenance.json').read_text(encoding='utf-8-sig'))
-        assert provenance['source']=='5881df4e76da72c2897633c619449c60694b3552'
-        assert provenance['workflow']=='7ec789ab4a13cf4bf1267fa0cc5b8dc039579e61'
-        for folder in ['native-ui','integrated-build-proof']:
-         for p in (source/folder).rglob('*'):
-          if p.is_file() and p.suffix.lower() in ['.json','.png']:
-           target=out/p.relative_to(source);target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,target)
-        for p in source.glob('*.json'):shutil.copyfile(p,out/p.name)
-        for p in source.glob('*.log'):
-         (out/(p.stem+'-tail.txt')).write_text('\n'.join(p.read_text(errors='replace').splitlines()[-1000:]))
-        print('Original certificates/images copied; full unchanged logs remain in native artifact14134931795')
+        source=pathlib.Path('prior-browser-proof');out=pathlib.Path('world-evidence');out.mkdir(parents=True)
+        identity=json.loads(pathlib.Path('qa-site/candidate/release-identity.json').read_text())
+        report=json.loads((source/'candidate/report.json').read_text())
+        assert report['passed'] and not report['errors'] and report['entry']['reloaded']
+        for key in ['source_sha','candidate_bundle_sha256','delivered_data_sha256']:
+         assert report['identity'][key]==identity[key],key
+        provenance=json.loads((source/'native-build/provenance.json').read_text(encoding='utf-8-sig'))
+        assert provenance['source']==identity['source_sha']=='5881df4e76da72c2897633c619449c60694b3552'
+        for folder in ['candidate','native-build']:shutil.copytree(source/folder,out/folder)
+        (out/'reused-evidence.json').write_text(json.dumps({'run':43649546135,'artifact':14136280792,'zip_sha256':'3626e48cb335cd7fb73f0e24c713e64ff09f974e7ae7889c2db662bc4f84c48f','reused':['unchanged residency scenario on identical package','original exact native certificates and PNGs'],'not_reused':['world return and zoom scenario corrected after image review']},indent=2))
         END
     - uses: actions/setup-node@v4
       with:
@@ -70,10 +68,6 @@ jobs:
           sleep 1
         done
         failed=0
-        QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
-          QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
-          QA_REVISION=integrated-mobile20-owner-qa QA_OUT=world-evidence/candidate \
-          node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
         QA_EXPECT_SOURCE=90465a9a910b89a8a8b74e4b33a9bbc88578e00e \
           QA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1' \
           QA_OUT=world-evidence/control19 node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
