@@ -1,0 +1,20 @@
+{
+  "version": "2.4.0",
+  "status": "implemented_in_draft_PR",
+  "verifiedLocal": [
+    "48 stat-placement cases in Chromium (4 rarities, values 1/6/10)",
+    "10 effect widths from 150 to 320px without clipping",
+    "320x512 SVG alpha: no continuous green perimeter or stat/effect intersection"
+  ],
+  "unchanged": [
+    "5:8 aspect",
+    "card data, rarity, effects",
+    "original 4 rarity image frames",
+    "V2.2 numeric positions"
+  ],
+  "pending": [
+    "Unity integration",
+    "physical iPhone/WebGL",
+    "owner visual approval"
+  ]
+}
