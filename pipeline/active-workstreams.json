@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T21:18:52.134Z",
+  "updated_at": "2026-11-14T22:13:24.616Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7707,9 +7707,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "VERIFY_SETTLED_WORLD_THEN_BUILD_EXACT_WEBGL",
+      "phase": "NATIVE_WORLD_PASS_EXACT_WEBGL_BUILD_RUNNING",
       "note": "Run43483165131 passed retention and real city controls but failed in native destinations due to QA-only false assertion: MUNDO's painted medallion is intentionally non-raycast, the actual pointer Image on the button root is raycastable. Actual Unity log/error.txt recovered; no evidence of navigation action failure. Editor test helper corrected in 57c7586 to assert a genuine active raycastable surface and first EventSystem click-handler hit. New exact build source90465a9a910b89a8a8b74e4b33a9bbc88578e00e run43489752868 launched; previous full source ec4d664 Unity+packaging+desktop world entry passed. No physical iPhone result or tester release.",
-      "next": "Finish run43641168362; require all six settled enemy coverage checks, then compile same frozen source and retain exact native UI/campaign/build provenance. Physical iPhone crash cause remains unconfirmed.",
+      "next": "Finish frozen-source build43644208819 (workflow7ec789, gameplay5881df). Then trigger prepared actual WebKit comparison from PR194; all six native settled views and12reentries already passed. Do not restart native proof or claim iPhone cause solved.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8993,15 +8993,54 @@
         "peak_sampled_gpu_rss_mib": 548
       },
       "last_world_p0_native": {
-        "source": "8e2eac0ac4831059fabd9bb4639bb2667e3dac19",
-        "run": 43638950225,
+        "source": "5881df4e76da72c2897633c619449c60694b3552",
+        "run": 43641168362,
         "passed": true,
-        "first_entry_seconds": 12.028,
+        "first_entry_seconds": 11.89,
         "reentries": 12,
+        "saved_resources": 48,
+        "saved_creatures": 36,
+        "settled_visible_counts": {
+          "landscape": [
+            1,
+            22,
+            0
+          ],
+          "portrait": [
+            0,
+            28,
+            0
+          ]
+        },
+        "six_images_reviewed": true,
+        "artifact": 14132713638,
+        "artifact_sha256": "65e5155cec36292035240229509bf5270197e36fd17a0a10abb84c66f1aa1771",
         "physical_iphone_verified": false,
-        "latest_source": "5881df4e76da72c2897633c619449c60694b3552",
-        "latest_run": 43641168362,
-        "latest_status": "running"
+        "root_cause_confirmed": false
+      },
+      "world_p0_build": {
+        "run": 43644208819,
+        "job": 132598309828,
+        "workflow_sha": "7ec789ab4a13cf4bf1267fa0cc5b8dc039579e61",
+        "source_sha": "5881df4e76da72c2897633c619449c60694b3552",
+        "status": "in_progress",
+        "published": false,
+        "source_branch": "fix/eldoria-world-first-entry-p0-20261114",
+        "lessons": [
+          "RUNNER_TEMP is cleared between jobs; owned persistent worktree required",
+          "Windows Git is installed inside GitHub Desktop; avoid checkout action archive fallback",
+          "Preserve established collision prebake before WebGL",
+          "Cancelled sparse fetch can leave unborn HEAD; verify exact commit and resume separate owned worktree"
+        ],
+        "prepared_browser_workflow": ".github/workflows/eldoria-beta-entry-qa.yml",
+        "browser_trigger": "tools/eldoria-private-beta/world-p0-browser-request.txt (prepared locally; not yet committed)",
+        "last_prepared_tools_sha": "be8b06756caab2a7704ab3dc405382398341af5b",
+        "live_control_source": "90465a9a910b89a8a8b74e4b33a9bbc88578e00e",
+        "live_publication_run": 43503650892,
+        "live_inventory_artifact": 14076020743,
+        "live_inventory_sha256": "f220237c5f3a7b113b4317fed56f5de6d753d31e6d7b190411fc9e63996c113b",
+        "live_files": 145,
+        "live_bytes": 961110684
       }
     },
     {
