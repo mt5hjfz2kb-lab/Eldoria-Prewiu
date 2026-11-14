@@ -109,9 +109,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          # This is NOT general runner cleanup. All three exact Issue186 runs
+          # This is NOT general runner cleanup. Three older exact Issue186 runs
           # were checked read-only: each owns ~5.67 GiB of regenerated Unity/
-          # Library data; GitHub archives retain their exact native evidence.
+          # Library data. The fourth, exact successful 43583823285, has its
+          # own real captured 25-PNG/54-hit evidence archived on GitHub.
+          # Only an intact HEAD, completed run and unexpired matching artifact
+          # permit deleting that run's GENERATED Unity/Library, never Assets,
+          # ProjectSettings, .git, its native pictures or another owner cache.
           # Preserve every Assets/.meta, source .git, ProjectSettings, save,
           # screenshot, other branch and foreign workstream without exception.
           $drive=[IO.DriveInfo]::new([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE))
@@ -154,7 +158,8 @@ jobs:
           $records=@(
             @{run=43503266427;sha='b63b94743efc84ec156d9ae5239143c6048fe069';artifact=14075333657},
             @{run=43511148168;sha='eb2fbffffc957d8b1e41334b0cd3b8b4e68983e6';artifact=14080850495},
-            @{run=43520031645;sha='2757823c5adca75c4fa8e0eb00356ebe7ec4dc03';artifact=14083542406}
+            @{run=43520031645;sha='2757823c5adca75c4fa8e0eb00356ebe7ec4dc03';artifact=14083542406},
+            @{run=43583823285;sha='1180e77f0c6abe74fcd6a5a62a108c98445d1645';artifact=14109717083}
           )
           $eligible=@()
           foreach($r in $records){
@@ -267,11 +272,11 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          # Evidence 14075333657 / 14080850495 / 14083542406 already
+          # Evidence 14075333657 / 14080850495 / 14083542406 / 14109717083 already
           # exists on GitHub. Read-only analysis of OWNED caches, not unknown
           # checkout/source, another PR or unrelated screen/art artifacts.
           Write-Host 'ISSUE186_CACHE_PROVENANCE_READ_ONLY_BEGIN'
-          $ids=@('43503266427','43511148168','43520031645')
+          $ids=@('43503266427','43511148168','43520031645','43583823285')
           $deadline=(Get-Date).AddSeconds(95)
           foreach($id in $ids){
             $root=Join-Path $env:GITHUB_WORKSPACE "issue186-fresh-source-$id"
