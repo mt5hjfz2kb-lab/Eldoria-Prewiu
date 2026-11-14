@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$SourceSha)
 $ErrorActionPreference='Stop'
+trap { Write-Host $_.ScriptStackTrace; throw }
 if($SourceSha -ne '5881df4e76da72c2897633c619449c60694b3552'){throw 'Unexpected frozen source'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
 if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
@@ -19,11 +20,14 @@ foreach($name in @('eldoria-world-p0-43641168362','eldoria-world-p0-43638950225'
 $persistent=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-source-5881df4e76da'
 if($ownedSources.Count -eq 0 -and (Test-Path $persistent)){
   if((Get-Item $persistent).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Persistent source is a reparse point'}
-  $head=([string](& git -C $persistent rev-parse --verify HEAD)).Trim()
-  if($LASTEXITCODE){
+  $headLines=@(& git -C $persistent rev-parse --verify HEAD)
+  $headExit=$LASTEXITCODE
+  $head=($headLines -join '').Trim()
+  if($headExit){
     # The superseded preparation was interrupted while downloading the sparse
     # checkout. Preserve that directory; reuse only its verified Git object store.
-    if((& git -C $persistent rev-parse FETCH_HEAD).Trim() -ne $SourceSha){throw 'Interrupted source fetch identity differs'}
+    & git -C $persistent cat-file -e ($SourceSha+'^{commit}')
+    if($LASTEXITCODE){throw 'Exact frozen source commit missing from interrupted object store'}
     if((& git -C $persistent remote get-url origin).Trim() -ne ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')){throw 'Interrupted source origin differs'}
     $ready=Join-Path $env:GITHUB_WORKSPACE 'world-p0-build-ready-5881df4e76da'
     if(Test-Path $ready){throw 'Preserve existing recovery worktree'}
