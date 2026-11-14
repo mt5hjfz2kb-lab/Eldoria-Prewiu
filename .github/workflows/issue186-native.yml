@@ -123,6 +123,59 @@ jobs:
           if($freeBytes -lt $requiredBytes){
             throw 'ISSUE186_NATIVE_DISK_BLOCKED: need >=16 GiB free on the native workspace drive before creating a new exact-head Unity worktree; do not delete unreviewed evidence'
           }
+      - name: Inventory preserved native disk without deleting unknown work
+        if: failure()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Continue'
+          # A red disk gate must tell the next safe operation, not invite
+          # blind removal of another workstream's Unity sources or captures.
+          # This is READ ONLY. Do not use Remove-Item/clean/prune here.
+          Write-Host 'ISSUE186_DISK_INVENTORY_READ_ONLY_BEGIN'
+          Write-Host "workspace=$env:GITHUB_WORKSPACE"
+          Write-Host "runnerTemp=$env:RUNNER_TEMP"
+          $roots=@($env:GITHUB_WORKSPACE,$env:RUNNER_TEMP) |
+            Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Container) } |
+            Select-Object -Unique
+          $deadline=(Get-Date).AddSeconds(110)
+          foreach($root in $roots){
+            if((Get-Date) -ge $deadline){Write-Host 'ISSUE186_INVENTORY_TIME_BUDGET_EXPIRED';break}
+            $entries=@(Get-ChildItem -LiteralPath $root -Force -Directory -ErrorAction SilentlyContinue |
+              Where-Object { -not ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) })
+            Write-Host ("ISSUE186_INVENTORY_ROOT {0} entries={1}" -f $root,$entries.Count)
+            $sizes=@()
+            foreach($entry in $entries){
+              if((Get-Date) -ge $deadline){Write-Host 'ISSUE186_INVENTORY_PARTIAL';break}
+              $queue=New-Object 'System.Collections.Generic.Queue[string]'
+              $queue.Enqueue($entry.FullName)
+              [long]$bytes=0
+              [long]$files=0
+              $complete=$true
+              while($queue.Count -gt 0){
+                if((Get-Date) -ge $deadline){$complete=$false;break}
+                $next=$queue.Dequeue()
+                foreach($child in (Get-ChildItem -LiteralPath $next -Force -ErrorAction SilentlyContinue)){
+                  if($child.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+                  if($child.PSIsContainer){$queue.Enqueue($child.FullName)}
+                  else{$bytes+=[long]$child.Length;$files++}
+                }
+              }
+              $sizes+= [pscustomobject]@{Name=$entry.Name;GiB=[math]::Round($bytes/1GB,3);Files=$files;Complete=$complete;LastWrite=$entry.LastWriteTime.ToString('s')}
+            }
+            $sizes|Sort-Object GiB -Descending|Select-Object -First 25|Format-Table -AutoSize|Out-String|Write-Host
+            foreach($entry in ($entries|Where-Object {$_.Name -like 'issue186-*'})){
+              $gitdir=Join-Path $entry.FullName '.git'
+              $lib=Join-Path $entry.FullName 'Unity/Library'
+              $output=Join-Path $entry.FullName 'Unity/Issue186NativeEvidence'
+              Write-Host ("ISSUE186_OWN_WORKTREE_PROVENANCE path={0}; git={1}; library={2}; output={3}; touched={4}" -f
+                $entry.Name,(Test-Path -LiteralPath $gitdir),
+                (Test-Path -LiteralPath $lib),(Test-Path -LiteralPath $output),
+                $entry.LastWriteTime.ToString('s'))
+              # Presence is not deletion authority: dirty/meta changes, artifacts,
+              # workstream ownership and completed upload must be checked first.
+            }
+          }
+          Write-Host 'ISSUE186_DISK_INVENTORY_READ_ONLY_END'
       - name: Resolve already installed Git before checkout; forbid archive fallback
         shell: powershell
         run: |
