@@ -55,7 +55,73 @@ namespace Eldoria.ReferenceClean {
   }
 #if UNITY_EDITOR
   public static bool P0LazyWorldEditorTestOverride {get;set;}
+  public static bool P0EntryRenderBudgetEditorTestOverride {get;set;}
 #endif
+  // Separate opt-in from the published world-only MSAA trial: its change
+  // happened after construction and could not reduce the first-entry peak.
+  static bool P0EntryRenderBudget {
+   get {
+#if UNITY_EDITOR
+    return P0EntryRenderBudgetEditorTestOverride;
+#elif UNITY_WEBGL
+    return UnityEngine.Application.absoluteURL.Contains("eldoria_p0_entry_msaa_off=1");
+#else
+    return false;
+#endif
+   }
+  }
+  Camera entryCityCamera;
+  bool entryRenderBudgetHeld,entryCityMsaa,entryWorldMsaa;
+  internal IEnumerator PrepareDeferredWorldRenderBudget(){
+   if(!P0EntryRenderBudget||!city||!city.PlayerCamera||!WorldCamera)yield break;
+   var previousTargets=Resources.FindObjectsOfTypeAll<RenderTexture>()
+    .Where(t=>t&&t.IsCreated()&&t.antiAliasing>1&&
+     (t.name.StartsWith("_CameraDepthAttachment",StringComparison.Ordinal)||
+      t.name.StartsWith("_CameraTargetAttachment",StringComparison.Ordinal))).ToArray();
+   if(!entryRenderBudgetHeld){
+    entryCityCamera=city.PlayerCamera;
+    entryCityMsaa=entryCityCamera.allowMSAA;entryWorldMsaa=WorldCamera.allowMSAA;
+    entryRenderBudgetHeld=true;
+    TraceEntryRenderTargets("before");
+    entryCityCamera.allowMSAA=false;WorldCamera.allowMSAA=false;
+    Debug.Log("ELDORIA_P0_ENTRY_RENDER_BUDGET_REQUESTED");
+   }
+   // Return to the player loop before any terrain allocation. Camera flags
+   // alone do not prove that URP has retired its old render targets.
+   yield return null;
+   yield return null;
+   float deadline=Time.realtimeSinceStartup+15f;
+   int waited=2;
+   while(previousTargets.Any(t=>t&&t.IsCreated()&&t.antiAliasing>1)&&
+         waited<90&&Time.realtimeSinceStartup<deadline){
+    waited++;yield return null;
+   }
+   TraceEntryRenderTargets("before-terrain");
+   if(previousTargets.Any(t=>t&&t.IsCreated()&&t.antiAliasing>1))
+    throw new InvalidOperationException("City MSAA render targets remained allocated before terrain");
+   Debug.Log("ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED retired="+previousTargets.Length+" frames="+waited);
+  }
+  internal void DeferredWorldBuildFinished(){
+   if(!deferredWorldEntryQueued&&!InWorld)RestoreEntryRenderBudget();
+  }
+  void RestoreEntryRenderBudget(){
+   if(!entryRenderBudgetHeld)return;
+   if(entryCityCamera)entryCityCamera.allowMSAA=entryCityMsaa;
+   if(WorldCamera)WorldCamera.allowMSAA=entryWorldMsaa;
+   entryRenderBudgetHeld=false;entryCityCamera=null;
+   Debug.Log("ELDORIA_P0_ENTRY_RENDER_BUDGET_RESTORED");
+  }
+  void OnDisable(){RestoreEntryRenderBudget();}
+  static void TraceEntryRenderTargets(string phase){
+   long bytes=0;int created=0,multisampled=0;
+   foreach(var target in Resources.FindObjectsOfTypeAll<RenderTexture>()){
+    if(!target||!target.IsCreated())continue;
+    created++;if(target.antiAliasing>1)multisampled++;
+    bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(target);
+   }
+   Debug.Log("ELDORIA_P0_ENTRY_RENDER_TARGETS phase="+phase+
+    " created="+created+" multisampled="+multisampled+" unity_bytes="+bytes);
+  }
   public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe||P0LazyWorldProbe);
   bool deferredWorldEntryQueued;
   public bool WorldEntryPending=>deferredWorldEntryQueued;
@@ -73,8 +139,13 @@ namespace Eldoria.ReferenceClean {
    var objective=deferredWorldObjective;deferredWorldObjective=null;
    if(worldPresentation&&worldPresentation.IsReady){
     Debug.Log("ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY");
-    if(TrySetWorld(true)&&!string.IsNullOrEmpty(objective))Select(objective);
-   }else if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+    if(TrySetWorld(true)){
+     if(!string.IsNullOrEmpty(objective))Select(objective);
+    }else RestoreEntryRenderBudget();
+   }else {
+    if(!worldPresentation||!worldPresentation.IsLoading)RestoreEntryRenderBudget();
+    if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+   }
   }
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
@@ -432,6 +503,9 @@ namespace Eldoria.ReferenceClean {
    if(!open){
     deferredWorldObjective=null;
     if(deferredWorldEntryQueued){deferredWorldEntryQueued=false;deferredWorldEpoch++;}
+    // Cancelling entry does not cancel the single background terrain build.
+    // Retain its budget until that build finishes, then restore the city.
+    if(!worldPresentation||!worldPresentation.IsLoading)RestoreEntryRenderBudget();
    }
    if(open&&P0LazyWorldProbe){
     // Never expose camera or enemy targets before complete canonical installation.

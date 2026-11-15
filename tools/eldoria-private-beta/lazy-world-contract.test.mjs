@@ -34,7 +34,7 @@ test('the real staged map installs once and gates camera exposure',()=>{
   assert.match(host,/!worldPresentation\.IsReady/);
   assert.match(host,/if\(!open\)\{\s+deferredWorldObjective=null;\s+if\(deferredWorldEntryQueued\)\{deferredWorldEntryQueued=false;deferredWorldEpoch\+\+;/);
   assert.match(host,/if\(deferredWorldEntryQueued\)deferredWorldObjective=id;/);
-  assert.match(host,/if\(TrySetWorld\(true\)&&!string\.IsNullOrEmpty\(objective\)\)Select\(objective\);/);
+  assert.match(host,/if\(TrySetWorld\(true\)\)\{\s+if\(!string\.IsNullOrEmpty\(objective\)\)Select\(objective\);\s+\}else RestoreEntryRenderBudget\(\);/);
 });
 
 test('the launch path preserves gameplay authority, HUD and save schemas',()=>{

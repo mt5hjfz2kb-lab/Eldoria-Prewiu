@@ -76,8 +76,13 @@ namespace Eldoria.BetaMemory.Tests
                 BindingFlags.Static|BindingFlags.Public);
             Assert.That(optIn,Is.Not.Null,"Editor-only lazy flag must remain testable");
             bool previousFlag=(bool)optIn.GetValue(null);
+            var renderOptIn=hostType.GetProperty("P0EntryRenderBudgetEditorTestOverride",
+                BindingFlags.Static|BindingFlags.Public);
+            Assert.That(renderOptIn,Is.Not.Null);
+            bool previousRenderFlag=(bool)renderOptIn.GetValue(null);
             Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
             optIn.SetValue(null,true);
+            renderOptIn.SetValue(null,true);
             try
             {
                 SceneManager.LoadScene("Valoria_City_World_UI");
@@ -104,6 +109,9 @@ namespace Eldoria.BetaMemory.Tests
                 var camera=(Camera)Member(host,"WorldCamera");
                 var hud=Member(host,"Hud") as Component;
                 var city=Member(host,"City");
+                var cityCamera=(Camera)Member(city,"PlayerCamera");
+                bool originalCityMsaa=cityCamera.allowMSAA;
+                bool originalWorldMsaa=camera.allowMSAA;
                 Assert.That(world,Is.Not.Null);
                 Assert.That(hud,Is.Not.Null);
                 Assert.That(world.transform.Find("Region 1 canonical continuous geography"),Is.Null,
@@ -142,6 +150,11 @@ namespace Eldoria.BetaMemory.Tests
                 Assert.That((bool)Call(host,"NavigateToObjective","forest-valoria"),Is.False,
                     "The actual quest navigation cannot expose an incomplete world");
                 Assert.That((bool)Member(adapter,"IsLoading"),Is.True);
+                Assert.That(cityCamera.allowMSAA,Is.False,
+                    "City MSAA must be disabled before the deferred terrain build starts");
+                Assert.That(camera.allowMSAA,Is.False);
+                Assert.That(world.transform.Find("Region 1 canonical continuous geography"),Is.Null,
+                    "Camera preparation must yield before allocating the canonical terrain");
                 Assert.That((bool)Call(host,"NavigateToObjective","quarry-valoria"),Is.False,
                     "A second objective must replace the target in the same in-flight load");
                 Assert.That((bool)Call(host,"TrySetWorld",false),Is.True,
@@ -149,6 +162,8 @@ namespace Eldoria.BetaMemory.Tests
                 yield return null;
                 Assert.That((bool)Member(host,"InWorld"),Is.False,
                     "A cancelled coroutine must never force the world open");
+                Assert.That(cityCamera.allowMSAA,Is.False,
+                    "Cancelling navigation must not restore costly buffers during the in-flight build");
                 Assert.That((bool)Call(host,"NavigateToObjective","forest-valoria"),Is.False);
                 Assert.That((bool)Call(host,"NavigateToObjective","quarry-valoria"),Is.False,
                     "A new request can rejoin the same background load after cancellation");
@@ -170,6 +185,8 @@ namespace Eldoria.BetaMemory.Tests
                     "Eligible first request must enter full world automatically");
                 Assert.That(world.activeInHierarchy,Is.True);
                 Assert.That(camera.enabled,Is.True);
+                Assert.That(cityCamera.allowMSAA,Is.False);
+                Assert.That(camera.allowMSAA,Is.False);
                 Assert.That((string)Member(host,"Selected"),Is.EqualTo("quarry-valoria"),
                     "First deferred quest entry must select its latest target without another tap");
                 Assert.That(world.transform.Find("Region 1 canonical continuous geography"),Is.Not.Null);
@@ -275,6 +292,9 @@ namespace Eldoria.BetaMemory.Tests
                 for(int cycle=0;cycle<12;cycle++)
                 {
                     Assert.That((bool)Call(host,"TrySetWorld",false),Is.True);
+                    Assert.That(cityCamera.allowMSAA,Is.EqualTo(originalCityMsaa),
+                        "Returning must restore the exact original city antialiasing setting");
+                    Assert.That(camera.allowMSAA,Is.EqualTo(originalWorldMsaa));
                     Assert.That((bool)Member(host,"InWorld"),Is.False);
                     Assert.That(world.activeInHierarchy,Is.False);
                     Assert.That(camera.enabled,Is.False);
@@ -343,6 +363,7 @@ namespace Eldoria.BetaMemory.Tests
                     LogAssert.ignoreFailingMessages=previousLogAssertionMode;
                 }
                 optIn.SetValue(null,previousFlag);
+                renderOptIn.SetValue(null,previousRenderFlag);
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE",previousProbe);
             }
         }

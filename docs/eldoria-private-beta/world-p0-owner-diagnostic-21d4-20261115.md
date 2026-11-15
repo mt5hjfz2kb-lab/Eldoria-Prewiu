@@ -82,14 +82,34 @@ certificate: that would correctly fail the stale-publication guard.
 Owner URL:
 https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&build=world21d4
 
-## Next action
+## Physical results and next candidate
 
-Physical-device evidence is now the missing input: owner opens the URL in Safari,
-checks 21d4, enters the world once, and after the interruption reopens the same page,
-opens Diagnóstico, copies the record and pastes it into this chat.
-No cache/save deletion; no extra system-log search. Identify the last observed native
-phase before choosing a targeted runtime intervention. Absence of pagehide remains
-non-causal. Preserve original owner failure and do not announce the crash fixed.
-No Windows lease or editor process held by this diagnostic work.
+Owner supplied two full v4 journals after publication; the iPhone still fails.
+The delayed-entry control has startup-ready at1794740195837, world-requested at1794740278799,
+terrain-query at1794740289823, and a new back_forward boot at1794740291008.
+City survives82.962s before the request; the restart follows the request by12.209s,
+startup-ready by95.171s, and the last terrain-query marker by1.185s.
+This rejects the earlier approximately10-second fixed-startup-timer hypothesis.
+No further repetition of that control or search for the same absent device logs is needed.
+Root cause remains UNKNOWN; missing pagehide does not prove memory termination.
 
-Public-origin follow-up job 132763285353 SUCCEEDED. Both startup/residency and earned-construction/world/reload reports passed with zero errors. The actual public journal retained requested, built, ready, entered and two-callback events after a genuine reload. Artifact 14155622776, ZIP SHA256 5e5296c94e030d7f24c38f7cc07f6ad6173cbdc60f926e758b6c4d8dd33414f1. Whole run 43697289069 succeeded. Physical iPhone crash resolution remains unverified and the last owner result remains FAIL.
+Desktop public evidence in43697289069 shows4xMSAA city depth/color targets still resident
+through creatures-after, about50.36MB combined, before the world camera-only toggle.
+These are Unity runtime sizes, not total device process/GPU residency. The old toggle
+cannot reduce the preactivation peak seen in the latest owner failures.
+
+The new source candidate adds a separate eldoria_p0_entry_msaa_off=1 opt-in.
+Before terrain loading it snapshots city/world camera MSAA settings, disables them,
+and yields while the previous camera MSAA targets remain created (bounded90frames/15s).
+It refuses terrain allocation if those old targets cannot retire. It logs measured target
+counts/bytes before and after; no assumed memory reduction or fixed iPhone RAM limit.
+Cancellation keeps the reduction while the shared background build runs, then restores
+settings; return/failure/host disable restores the original camera values.
+The default and previous world-only flag paths, terrain, resources, saves and approved UI remain intact.
+
+Validation so far:15 existing source/UX parity checks pass. The actual Unity scene test
+now verifies prebuild camera settings, no early terrain allocation, cancellation/rejoin,
+world completion, restoration on return and the existing12reentries/persistent save.
+Native execution, exact WebGL build, actual browser target reduction and physical iPhone
+acceptance are PENDING. Do not publish this as a proven fix or ask the owner to test
+unchanged21d4 again. Public runtime is still d0b21fd; no new native build is delivered.
