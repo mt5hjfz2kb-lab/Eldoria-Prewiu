@@ -1,2 +1,2 @@
-build_source=ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
-attempt=7-prebuild-render-targets
+build_source=05e1846f0213c6320850505bc054110c53934f55
+attempt=8-static-mesh-cpu-retirement
