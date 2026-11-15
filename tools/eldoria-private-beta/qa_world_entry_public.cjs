@@ -210,6 +210,18 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   if(!entry.returned)throw Error('City return did not expose the genuinely saved sawmill');
   save();
  }
+ if(process.env.QA_REQUIRE_WORLD_JOURNAL==='1'){
+  const journal=await page.evaluate(()=>window.EldoriaLocalDiagnostic?.readWorldReport?.());
+  if(!journal?.persistent)throw Error('World journal not persisted');
+  for(const phase of ['world-requested','world-built','world-ready','world-entered','world-frame-2'])
+   if(!journal.current.some(e=>e.phase===phase))throw Error('Missing actual Unity journal phase: '+phase);
+  fs.writeFileSync(out+'/world-journal.json',JSON.stringify(journal,null,2));
+  await page.reload({waitUntil:'domcontentloaded'});
+  const recovered=await page.evaluate(()=>window.EldoriaLocalDiagnostic?.readWorldReport?.());
+  if(!recovered?.previous.some(e=>e.phase==='world-entered'))throw Error('World journal lost after real reload');
+  fs.writeFileSync(out+'/world-journal-recovered.json',JSON.stringify(recovered,null,2));
+  report.worldJournalVerified=true;
+ }
  report.worldEntryAndReentryVerified=true;
  report.metrics=await page.evaluate(()=>window.valoriaGame?.GetMetricsInfo?.());
  report.completed=true;report.scope='Actual browser controls; screenshot review required, NOT physical iPhone';
