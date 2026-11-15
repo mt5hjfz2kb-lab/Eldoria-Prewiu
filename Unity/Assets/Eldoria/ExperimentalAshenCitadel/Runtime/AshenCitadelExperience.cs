@@ -65,7 +65,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             try
             {
                 // Own persistent save key. Production's filename and WebGL key are untouched.
-                var save = Path.Combine(Application.persistentDataPath, "eldoria-ashen-experiment-v1.json");
+                var save = Path.Combine(UnityEngine.Application.persistentDataPath, "eldoria-ashen-experiment-v1.json");
                 gateway = new LocalGateway(new SystemClock(), new FileStateStore(save));
             }
             catch(Exception exception)
