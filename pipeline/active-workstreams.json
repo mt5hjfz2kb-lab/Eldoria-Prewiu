@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:53:58.650Z",
+  "updated_at": "2026-11-15T23:54:41.318Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 10,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "LIGHTING_VERIFIED_FINAL_PORTRAIT_CLEARANCE_WAITING_NEXT_TURN",
+      "phase": "FINAL_VALLEY_PORTRAIT_NATIVE_RUNNING",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9783,8 +9783,8 @@
       "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_for_visual_reboot_then_final_portrait_check",
-        "source_sha": "ce3422bbba07d6e0579419c85ac69a4b44e5c5df",
+        "status": "running_current_visual_verification",
+        "source_sha": "486282eca21e097ffd83c74ca3bbe25600017eb4",
         "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "reason": "43775821050 compile failure corrected at 8034917; retry 43776052927 blocked by resource reassignment during checkout (Unity not executed). Please return Windows after current Reboot run; Ashen will retry this exact fixed HEAD and release after terminal native evidence.",
         "run_id": 43776052927,
@@ -9801,9 +9801,9 @@
         "shadow_affected_pixels": 271354,
         "visual_review": "Directional shadows and ground colour improved. Final portrait near-ray clearance fix to 6m prepared at current HEAD; pending next native capture."
       },
-      "final_source_sha": "ce3422bbba07d6e0579419c85ac69a4b44e5c5df",
+      "final_source_sha": "486282eca21e097ffd83c74ca3bbe25600017eb4",
       "art_approved": false,
-      "next": "Windows released after successful lighting turn; Visual Reboot may take its next bounded run. After return, trigger exact current HEAD for final portrait clearance verification (near rays6m > new terrain max3m)."
+      "next": "Final portrait clearance native run starting at exact HEAD 486282eca21e097ffd83c74ca3bbe25600017eb4. Preserve this returned turn until run terminates, then release Windows."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
