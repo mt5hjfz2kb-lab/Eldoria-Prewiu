@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-ashen-citadel-original-i-v-20261115",
+  "workstream_id": "eldoria-ashen-citadel-original-i-v-20261115",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Ashen Citadel — original artistic rebuild Bastion I–V; isolated Unity 6 experiment",
+  "profile": "environment_composition",
+  "visual_gate_state": "BLENDER_FIVE_STAGES_RENDERED_NATIVE_UNITY_AND_MOBILE_PENDING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Original 3D geometry and authentic Blender compositions exist. The primary gap is UNITY real scene fidelity, interaction UX and iPhone/WebGL performance, not source file existence. No accepted production visual treatment yet.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_3d_assets_modified": false,
+    "original_3d_assets_created": true,
+    "blender_sources_verified": true,
+    "unity_camera_ab": false
+  },
+  "validation": {
+    "source_gate": "11 real OBJ meshes, 18 authored palette materials, six small UV0 textures, Blender Cycles exact 5 renders with .blend GLB, 4 UI sprites. Independent Roslyn syntax + authoritative command source gate PASS.",
+    "final_gate": "Unity 6000.3.23f1: real scene 10 PNG/2 viewports, no pink/blank and real pointer navigation; PlayMode gateway I–V and saved persistence; separate WebGL iPhone stability; visual approval only on genuinely viewed Unity screenshots."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "isolation": "No production HUD, save key, scene or beta replaced; no automatic merge or release.",
+  "forbidden_art": [
+    "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb"
+  ]
+}
