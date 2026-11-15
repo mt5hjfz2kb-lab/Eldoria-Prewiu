@@ -53,19 +53,20 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 {
                     painted=ground.Painted;layers=ground.Layers;
                     audit.AddRange(ground.Audit);
-                    using(var decorations=StylizedCompositionStudy.Build(city,camera))
+                    // Evidence from run 43726354590: 105 staged prefabs
+                    // introduced visibly detached gray rubble piles.
+                    // Explicitly reject that path. Preserve ONLY original
+                    // real scene meshes with the temporary painted terrain.
+                    placed=0;
+                    audit.Add("DECISION: Reject added prefab dressing (unconvincing rubble). Original city geometry retained.");
+                    using(var lighting=new LightPass(camera))
                     {
-                        placed=decorations.Count;
-                        audit.AddRange(decorations.Sources);
-                        using(var lighting=new LightPass(camera))
-                        {
-                            Screenshot(camera,wideF,1600,900);
-                            Screenshot(camera,phoneF,390,844);
-                        }
+                        Screenshot(camera,wideF,1600,900);
+                        Screenshot(camera,phoneF,390,844);
                     }
                 }
                 float d1=Diff(wideA,wideF),d2=Diff(phoneA,phoneF);
-                if(d1<6||d2<6||painted==0||placed<45)
+                if(d1<6||d2<6||painted==0)
                     throw new InvalidOperationException("Real-world visual effect too small: pixels "+
                         d1.ToString("F2")+"/"+d2.ToString("F2")+" placed="+placed);
                 File.WriteAllLines(Path.Combine(output,"landscape-pilot-audit.txt"),audit);
