@@ -34,15 +34,35 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             EditorApplication.playModeStateChanged += OnPlayMode;
         }
 
+        static void Mark(string stage)
+        {
+            var dir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../StylizedDirectionPilotCaptures"));
+            Directory.CreateDirectory(dir);
+            File.AppendAllText(Path.Combine(dir,"stages.txt"),DateTime.UtcNow.ToString("o")+" "+stage+"\n");
+            Debug.Log("ELDORIA_STYLIZED_PROBE_STAGE "+stage);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void SkipUnrelatedWorldForEditorCityEvidence()
+        {
+            if(!SessionState.GetBool(Flag,false))return;
+            ValoriaIntegratedWorld.P0LazyWorldEditorTestOverride=true;
+            Mark("ISOLATED_LAZY_WORLD_SET_BEFORE_SCENE");
+        }
+
         public static void Capture()
         {
             try
             {
                 // Use precisely the existing native proof save sandbox.
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+                Mark("NATIVE_METHOD_ENTERED");
+                ValoriaIntegratedWorld.P0LazyWorldEditorTestOverride=true;
                 if (!AssetDatabase.LoadAssetAtPath<SceneAsset>(Scene)) throw new FileNotFoundException("Canonical integrated playable city scene",Scene);
                 EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
+                Mark("REAL_CITY_SCENE_OPENED");
                 SessionState.SetBool(Flag,true);
+                Mark("ENTER_PLAYMODE_REQUESTED");
                 EditorApplication.EnterPlaymode();
             }
             catch(Exception ex) { Fail(ex); }
@@ -51,9 +71,12 @@ namespace Eldoria.StylizedDirectionPilot.Editor
         static void OnPlayMode(PlayModeStateChange change)
         {
             if(change != PlayModeStateChange.EnteredPlayMode || !SessionState.GetBool(Flag,false)) return;
+            Mark("PLAYMODE_CALLBACK_RECEIVED");
             SessionState.SetBool(Flag,false);
+            ValoriaIntegratedWorld.P0LazyWorldEditorTestOverride=true;
             EditorApplication.delayCall += () =>
             {
+                Mark("PLAYMODE_DELAYCALL_ENTERED");
                 var host = Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
                 if(!host) { Fail(new Exception("Integrated Valoria runtime host is absent")); return; }
                 host.StartCoroutine(Guard(host));
@@ -78,8 +101,10 @@ namespace Eldoria.StylizedDirectionPilot.Editor
         {
             var output = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../StylizedDirectionPilotCaptures"));
             Directory.CreateDirectory(output);
+            Mark("COROUTINE_RUNNING");
             float deadline=Time.realtimeSinceStartup+120f;
             while(!host.Ready && Time.realtimeSinceStartup<deadline) yield return null;
+            Mark("READY_CHECK_COMPLETE="+host.Ready);
             if(!host.Ready || !host.City || !host.City.Probe)
                 throw new InvalidOperationException("Canonical city did not enter the disposable native probe save");
             if(host.City.Gateway.Snapshot().PlayerName == "")
@@ -90,8 +115,11 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             var beforeState = JsonUtility.ToJson(host.City.Gateway.Snapshot());
             var baselineWide=Path.Combine(output,"A-genuine-city-1600x900.png");
             var baselinePhone=Path.Combine(output,"A-genuine-city-390x844.png");
+            Mark("CAPTURE_BASELINE_WIDE_START");
             ValoriaIntegrationBuild.Capture(host,baselineWide,1600,900);
+            Mark("CAPTURE_BASELINE_PHONE_START");
             ValoriaIntegrationBuild.Capture(host,baselinePhone,390,844);
+            Mark("CAPTURE_BASELINE_COMPLETE");
 
             string afterState;
             int changedRenderers,changedMaterials;
@@ -103,8 +131,11 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     throw new InvalidOperationException("Candidate cannot be judged: insufficient real materials");
                 var candidateWide=Path.Combine(output,"B-stylized-city-1600x900.png");
                 var candidatePhone=Path.Combine(output,"B-stylized-city-390x844.png");
+                Mark("CAPTURE_STYLIZED_WIDE_START");
                 ValoriaIntegrationBuild.Capture(host,candidateWide,1600,900);
+                Mark("CAPTURE_STYLIZED_PHONE_START");
                 ValoriaIntegrationBuild.Capture(host,candidatePhone,390,844);
+                Mark("CAPTURE_STYLIZED_COMPLETE");
             }
             afterState=JsonUtility.ToJson(host.City.Gateway.Snapshot());
             if(beforeState!=afterState)
@@ -122,6 +153,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 kind="REAL_UNITY_EDITOR_CAMERA_AB_UNAPPROVED_VISUAL_PILOT"
             };
             File.WriteAllText(Path.Combine(output,"evidence.json"),JsonUtility.ToJson(evidence,true));
+            Mark("REAL_UNITY_AB_FILES_WRITTEN");
             Notes.Add("STYLIZED_DIRECTION_PILOT_COMPLETE baseline+candidates=4 png; gameplay state unchanged");
             foreach(var note in Notes) Debug.Log(note);
             EditorApplication.Exit(0);

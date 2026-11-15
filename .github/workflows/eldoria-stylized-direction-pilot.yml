@@ -8,7 +8,7 @@ permissions:
   contents: read
 concurrency:
   group: eldoria-stylized-direction-native
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   lease:
     runs-on: ubuntu-latest

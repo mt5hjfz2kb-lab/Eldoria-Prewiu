@@ -1,8 +1,8 @@
-# Attempt 3: keep Unity in batchmode until delayed PlayMode captures finish.
+# Attempt 4 replaces this workstream's own stuck attempt 3; does not cancel P0.
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=2
-attempt=3
-cause=Attempt 2 compiled but batchmode -quit closed before EnterPlaymode coroutine.
+attempt=4
+cause=Attempt 3 did not complete asynchronous capture in expected time; isolate city with P0LazyWorldEditorTestOverride and emit stage evidence.
 state=REQUEST_ONE_REAL_UNITY_CAMERA_AB
 art_approved=false
