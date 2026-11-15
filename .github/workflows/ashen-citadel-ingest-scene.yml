@@ -1,0 +1,135 @@
+name: "EXPERIMENT Ashen Citadel · retain authentic Unity scene assets"
+on:
+  push:
+    branches: [experiment/ashen-citadel-i-v-20261115]
+    paths:
+      - 'tools/ashen-citadel/ingest-request.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: ashen-experimental-scene-ingest
+  cancel-in-progress: false
+
+jobs:
+  retain:
+    name: "Verify exact native SHA, preserve imported GUIDs and commit only experimental scene"
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel/**
+            tools/ashen-citadel/ingest-request.txt
+            .github/workflows/ashen-citadel-ingest-scene.yml
+            docs/ashen-citadel/**
+      - name: Check source artifact provenance and current isolated workstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14180407102" > /tmp/ashen-artifact.json
+          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq '.content' | base64 -d > /tmp/ashen-registry.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/ashen-artifact.json'))
+          r=json.load(open('/tmp/ashen-registry.json'))['active']
+          source='c7fd3b250cb0cc6160a583c1f02f8313d80cdfde'
+          assert a['id']==14180407102 and a['expired'] is False
+          assert a['workflow_run']['head_sha']==source
+          assert a['digest']=='sha256:d27683348e010fa506d2420adef132c8e48ad080a10528b1d15733ef418db76e'
+          own=[x for x in r if x['id']=='eldoria-ashen-citadel-original-i-v-20261115']
+          assert len(own)==1 and own[0]['branch']=='experiment/ashen-citadel-i-v-20261115'
+          assert own[0]['ownership_state']=='claimed'
+          assert own[0]['owner']=='chatgpt-ashen-citadel-art-production-20261115'
+          print('ASHEN_EXACT_NATIVE_ARTIFACT_PROVENANCE_PASS',source)
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 43761891018
+          name: ashen-native-unity-i-v-43761891018
+          path: ${{ runner.temp }}/ashen-native-review
+      - name: Preserve only original imported Unity source, GUIDs, authored materials and scene
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,pathlib,shutil,os
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'ashen-native-review'
+          report=json.loads((root/'native-proof.json').read_text(encoding='utf-8-sig'))
+          assert report['scene_saved'] is True
+          assert report['source_sha']=='c7fd3b250cb0cc6160a583c1f02f8313d80cdfde'
+          assert report['certification']=='editor-camera-only'
+          shots=report['screenshots']
+          assert len(shots)==10
+          assert len({s['sha256'] for s in shots})==10
+          for item in shots:
+              name=item['file']
+              assert name.startswith('Ashen_Bastion_') and name.endswith('.png')
+              file=root/'UnityScreenshots'/name
+              assert file.is_file() and file.stat().st_size==item['size_bytes']
+              assert hashlib.sha256(file.read_bytes()).hexdigest().upper()==item['sha256']
+          from_root=root/'UnityExperimentSource'
+          destination=pathlib.Path('Unity/Assets/Eldoria/ExperimentalAshenCitadel')
+          allowed={'.meta','.mat','.unity','.asset'}
+          count=0
+          for source in from_root.rglob('*'):
+              if not source.is_file() or source.suffix not in allowed:continue
+              rel=source.relative_to(from_root)
+              if '..' in rel.parts or not rel.parts:raise RuntimeError('Unsafe artifact relative path')
+              dest=destination/rel
+              dest.parent.mkdir(parents=True,exist_ok=True)
+              # All original OBJ/PNG/C# content remains owned by the existing
+              # experiment branch. Never overwrite it from an Actions artifact.
+              shutil.copyfile(source,dest)
+              count+=1
+          assert count>=70,('Unexpected Unity import metadata count',count)
+          scene=destination/'Scenes/AshenCitadel.unity'
+          assert scene.is_file() and scene.stat().st_size>10000
+          text=scene.read_text(encoding='utf-8-sig')
+          assert 'm_Name: Stage_1' in text and 'm_Name: Stage_5' in text
+          assert 'Valoria_HeroBastion_v1' not in text
+          reportpath=pathlib.Path('docs/ashen-citadel/UNITY_NATIVE_PROOF_20261115.md')
+          reportpath.parent.mkdir(parents=True,exist_ok=True)
+          reportpath.write_text(
+            '# Ashen Citadel · first real Unity scene source\n\n'
+            'Original experimental scene, not main or beta; Unity 6000.3.23f1 URP.\n'
+            'Source: c7fd3b250cb0cc6160a583c1f02f8313d80cdfde\n'
+            'Run: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43761891018\n'
+            'Artifact: 14180407102, checked digest/ZIP/10 screenshot hashes.\n'
+            'Five levels and generated materials/GUIDs captured; no pink shader.\n'
+            '**EDITOR CAMERA CERTIFICATE ONLY.** Not PlayMode/graphics approved.\n'
+            'Known art defects: rectangular ground, repeated thin trees, low environmental richness.\n'
+            'Pending: real gameplay, HUD/mobile and WebGL memory verification; further art work.\n',
+            encoding='utf-8'
+          )
+          print('ASHEN_UNITY_IMPORT_IDENTITY_PRESERVED',count,'files')
+          PY
+      - name: Commit ONLY experimental generated asset definitions without touching main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = 'experiment/ashen-citadel-i-v-20261115'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- Unity/Assets/Eldoria/ExperimentalAshenCitadel docs/ashen-citadel/UNITY_NATIVE_PROOF_20261115.md
+          git diff --cached --name-only > /tmp/ashen-changed.txt
+          if grep -Ev '^Unity/Assets/Eldoria/ExperimentalAshenCitadel/.*\.(meta|mat|unity|asset)$|^docs/ashen-citadel/UNITY_NATIVE_PROOF_20261115\.md$' /tmp/ashen-changed.txt;then
+            echo 'Incorrect file scope, no branch push'; exit 1
+          fi
+          test -s /tmp/ashen-changed.txt
+          git commit -m 'art(ashen): retain genuine Unity-built scene, material sources and GUIDs (no beta changes)'
+          # Standard fast-forward only; a concurrent writer causes rejection,
+          # never a force/overwrite or a merge into production main.
+          git push origin HEAD:refs/heads/experiment/ashen-citadel-i-v-20261115
