@@ -98,23 +98,18 @@ def camera_and_lights():
 
 def configure_render():
     sc=bpy.context.scene
-    sc.render.resolution_x=1100;sc.render.resolution_y=760;sc.render.resolution_percentage=100
+    sc.render.resolution_x=1000;sc.render.resolution_y=700;sc.render.resolution_percentage=100
     sc.render.image_settings.file_format="PNG"
     sc.render.film_transparent=False
     try: sc.view_settings.view_transform = "AgX"
     except Exception: pass
-    try:sc.render.engine="BLENDER_EEVEE_NEXT"
-    except (ValueError,TypeError):
-        try:sc.render.engine="BLENDER_EEVEE"
-        except (ValueError,TypeError):sc.render.engine="BLENDER_WORKBENCH"
-    try:sc.render.image_settings.color_mode="RGBA"
-    except:pass
-    try:sc.render.engine="BLENDER_EEVEE_NEXT"
-    except:pass
-    if sc.render.engine=="BLENDER_WORKBENCH":
-        sc.display.shading.color_type="MATERIAL"
-        sc.display.shading.show_shadows=True
-        sc.display.shading.show_cavity=True
+    # Cycles is CPU-capable on GitHub's Linux runner without a GPU/display.
+    sc.render.engine="CYCLES"
+    sc.cycles.device="CPU"
+    sc.cycles.samples=20
+    try: sc.cycles.use_denoising=True
+    except Exception: pass
+    sc.render.image_settings.color_mode="RGBA"
     return sc.render.engine
 
 def main():
