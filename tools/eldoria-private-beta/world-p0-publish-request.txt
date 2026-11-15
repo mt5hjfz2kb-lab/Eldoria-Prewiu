@@ -1,1 +1,4 @@
-Owner-only diagnostic 21d4 attempt3, same stage14c64284. Attempt2 stopped before game test due public CDN503. Reuse durable beta21 archive SHA7d053452b9739828310936e1b5e2ce759029fa8f458b24dfeada82d86673208e with full 145-file fingerprint verification and unchanged live certificate. All actual game, journal, governance and publication gates retained. Physical iPhone not fixed.
+Publish owner-only world21e1: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+Native 43707493997 PASS; desktop WebKit comparison 43712314700 PASS.
+Retire old city MSAA targets before terrain: 72402259 -> 27965659 target bytes; not total process memory proof.
+Physical iPhone verification pending. Preserve all protected routes and saved games.

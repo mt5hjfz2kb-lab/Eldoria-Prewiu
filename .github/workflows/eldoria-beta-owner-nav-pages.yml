@@ -9,22 +9,20 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish-owner-preview:
-    runs-on: macos-15
+    runs-on: ubuntu-24.04
     timeout-minutes: 70
     environment:
       name: github-pages
-      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1
+      url: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1&build=world21e1
     env:
-      EXPECTED_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
-      BUILD_RUN: '43653390105'
-      BUILD_WORKFLOW_SHA: cf105a3e407b24c8ffd7cf3a2e7fb3fd1ae834b9
-      BROWSER_RUN: 43659627661
-      BROWSER_SHA: f03ac3c3083ab3e24d46b19ba58cb26c48a9c155
+      EXPECTED_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      BUILD_RUN: '43707493997'
+      BUILD_WORKFLOW_SHA: 5c8cbebb3dd56b7e3816b69dd883815afc747b24
+      BROWSER_RUN: '43712314700'
+      BROWSER_SHA: 25bd1cd9678f0bd3615d55a0ff2ab720953b6924
       PREVIOUS_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
-      STAGE_SHA: 14c64284f2aef341c1787a1d815e54b369e15efc
+      STAGE_SHA: 25bd1cd9678f0bd3615d55a0ff2ab720953b6924
       GH_TOKEN: ${{ github.token }}
-      MSAA_RUN: '43661585648'
-      MSAA_SHA: 557fc6b2c50e34b4570855868f6e1ea61b5e81c1
     steps:
     - uses: actions/checkout@v4
       with:
@@ -49,9 +47,6 @@ jobs:
         node tools/check-repository-architecture.mjs --tracked-tree
         node tools/check-workflow-governance.mjs
         node tools/check-workflow-quarantine.mjs
-
-        node tools/eldoria-private-beta/test-world-phase-diagnostic.cjs
-        python3 -m unittest discover -s tools/eldoria-private-beta -p test_patch_world_diagnostic.py
     - name: Require exact native, compiled package and browser success
       run: |
         python3 - <<'END'
@@ -61,96 +56,89 @@ jobs:
          req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
          return json.load(urllib.request.urlopen(req,timeout=30))
         for run,sha,names in [(os.environ['BUILD_RUN'],os.environ['BUILD_WORKFLOW_SHA'],['preflight','build','package-owner']),
-         (os.environ['BROWSER_RUN'],os.environ['BROWSER_SHA'],['public-world-entry']),
-         (os.environ['MSAA_RUN'],os.environ['MSAA_SHA'],['same-build-msaa'])]:
+         (os.environ['BROWSER_RUN'],os.environ['BROWSER_SHA'],['entry-render-budget'])]:
          data=get('actions/runs/'+run)
          assert data['conclusion']=='success' and data['head_sha']==sha,(run,'exact source/result')
          jobs=get('actions/runs/'+run+'/jobs?per_page=100')['jobs']
          assert all(any(j['name']==name and j['conclusion']=='success' for j in jobs) for name in names)
         print('EXACT_NATIVE_BUILD_AND_REAL_BROWSER_GATES_PASS_NOT_PHYSICAL_IPHONE')
         END
-    - name: Restore already verified durable beta21 snapshot and reject a changed public certificate
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: ${{ env.BUILD_RUN }}
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: candidate
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: ${{ env.BROWSER_RUN }}
+        name: world-p0-entry-render-budget-comparison
+        github-token: ${{ github.token }}
+        path: browser
+    - name: Require measured preterrain target reduction and both real saved-game variants
       run: |
         set -euo pipefail
-        curl --retry 4 --retry-delay 3 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o current-proof.json
-        mkdir -p verified-archive previous-pages
-        gh release download archive-pages-before-world-diagnostic-21d4 --pattern artifact.tar --dir verified-archive
-        cp verified-archive/artifact.tar previous-pages/artifact.tar
+        python3 tools/eldoria-private-beta/verify_entry_render_budget.py browser
+        python3 tools/eldoria-private-beta/install_entry_budget_journal.py candidate
+    - name: Recover every current public byte from certified publication inventory
+      run: |
+        set -euo pipefail
+        curl --retry 4 --retry-delay 3 --retry-all-errors -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o current-proof.json
         python3 - <<'END'
-        import hashlib,json,pathlib,tarfile
-        root=pathlib.Path('site');root.mkdir()
-        proof=pathlib.Path('current-proof.json')
-        def digest(p):
-         with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
-        proofhash='f4bc2c0ca3768f62992a66a7ef3fbe299ee2b561354c1b899847432fa62895fa'
-        archivehash='7d053452b9739828310936e1b5e2ce759029fa8f458b24dfeada82d86673208e'
-        assert digest(proof)==proofhash,'Concurrent public replacement: refuse'
-        a=pathlib.Path('previous-pages/artifact.tar');assert digest(a)==archivehash
-        p=json.loads(proof.read_text());assert p['source_sha']=='d0b21fd5708c5070d1bd62dc6c6a98399c549051'
-        rows=dict(p['preserved_fingerprints']);rows.update({'beta-integrated-vigilia/'+k:v for k,v in p['candidate_fingerprints'].items()})
-        rows['integrated-owner-stage-proof.json']={'sha256':proofhash,'bytes':proof.stat().st_size}
-        assert sum(x['bytes'] for x in rows.values())==p['combined_bytes']
-        with tarfile.open(a) as t:
-         members=t.getmembers();assert len(members)==len(rows) and {m.name for m in members}==set(rows)
-         for m in members:
-          assert m.isfile() and '..' not in pathlib.PurePosixPath(m.name).parts and not m.name.startswith('/')
-          assert m.size==rows[m.name]['bytes']
-          dest=root/m.name;dest.parent.mkdir(parents=True,exist_ok=True)
-          with t.extractfile(m) as src,dest.open('xb') as out:
-           while chunk:=src.read(1024*1024):out.write(chunk)
-          assert digest(dest)==rows[m.name]['sha256'],m.name
-        pathlib.Path('previous-pages/artifact.tar.recovery.json').write_text(json.dumps({'status':'FULL_ARCHIVE_RECOVERED_BYTE_IDENTICAL','archive_sha256':archivehash,'publication_inventory_sha256':proofhash,'files':len(rows),'bytes':p['combined_bytes'],'public_certificate_still_exact':True},indent=2))
-        print('DURABLE_ARCHIVE_ALL_FILES_VERIFIED',len(rows))
+        import os,sys,subprocess
+        from types import SimpleNamespace
+        sys.path.insert(0,'tools/eldoria-private-beta')
+        from restore_published_owner_snapshot import restore
+        def fetch(url,dest):
+         assert not dest.exists(),'Refuse overwriting existing recovery input'
+         subprocess.run(['curl','--retry','4','--retry-delay','2','--retry-all-errors','-fsSL','--max-time','180','-o',str(dest),url],check=True)
+        restore(SimpleNamespace(proof='current-proof.json',proof_sha256='1e86acc219a7a05b94bcfcc7c7f901604c70ac4a08412f500a48882fd4c923ba',source=os.environ['PREVIOUS_SOURCE'],origin='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu',output='previous-live',archive='previous-pages/artifact.tar'),downloader=fetch)
         END
+    - name: Stage exact candidate while preserving all other routes and saves
+      run: |
+        set -euo pipefail
+        python3 - <<'END'
+        import json,os,pathlib
+        p=pathlib.Path('candidate/release-identity.json');j=json.loads(p.read_text())
+        assert j['source_sha']==os.environ['EXPECTED_SOURCE'] and str(j['native_run'])==os.environ['BUILD_RUN']
+        assert j['native_journey_verified'] and j['native_destination_captures_verified']
+        assert not j['physical_mobile_tested'] and not j['release_for_external_testers']
+        pathlib.Path('pinned-candidate.json').write_bytes(p.read_bytes())
+        END
+        BUNDLE=$(python3 -c 'import json;print(json.load(open("pinned-candidate.json"))["candidate_bundle_sha256"])')
+        DATA=$(python3 -c 'import json;print(json.load(open("pinned-candidate.json"))["delivered_data_sha256"])')
+        python3 tools/eldoria-private-beta/stage_integrated_owner_site.py \
+         --pages previous-pages/artifact.tar --candidate candidate --browser browser \
+         --output site --work stage-work --replace-source "$PREVIOUS_SOURCE" \
+         --expected-source-sha "$EXPECTED_SOURCE" --expected-bundle-sha256 "$BUNDLE" \
+         --expected-data-sha256 "$DATA" --native-run "$BUILD_RUN" --full-certificate-run "$BUILD_RUN" \
+         --require-world-entry
     - name: Durably archive recovered current site before replacement
       run: |
         set -euo pipefail
-        TAG=archive-pages-before-world-diagnostic-21d4
-        shasum -a 256 previous-pages/artifact.tar > previous-pages-sha256.txt
+        TAG=archive-pages-before-world-entry-21e1
+        sha256sum previous-pages/artifact.tar > previous-pages-sha256.txt
         cat > previous-pages-note.md <<'END'
-        Complete owner beta21 Pages snapshot, exact publication certificate f4bc2c0ca3768f62992a66a7ef3fbe299ee2b561354c1b899847432fa62895fa. Rollback before local diagnostic 21d4. Physical iPhone world entry remains failed; not a tester release.
+        Complete owner 21d4 Pages snapshot recovered from publication43697289069. All146public files were SHA256-verified against certificate1e86acc219a7a05b94bcfcc7c7f901604c70ac4a08412f500a48882fd4c923ba. This archive is the rollback for the world-entry P0 owner candidate, not a tester release.
         END
         if ! gh release view "$TAG" --json tagName >/dev/null 2>&1; then
-         gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Verified beta21 Pages before diagnostic 21d4' --notes-file previous-pages-note.md
+         gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Verified complete Pages snapshot before world P0' --notes-file previous-pages-note.md
         fi
         if ! gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq artifact.tar; then
          gh release upload "$TAG" previous-pages/artifact.tar
         fi
         mkdir -p verified-archive
-        if [ ! -f verified-archive/artifact.tar ]; then gh release download "$TAG" --pattern artifact.tar --dir verified-archive; fi
+        gh release download "$TAG" --pattern artifact.tar --dir verified-archive
         cmp previous-pages/artifact.tar verified-archive/artifact.tar
-    - name: Patch only local world diagnostic and certify unchanged native bytes
-      run: python3 tools/eldoria-private-beta/patch_world_diagnostic.py site
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-    - name: Prove actual Unity world phases and recovery before deployment
-      env:
-        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
-        QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
-        QA_REQUIRE_CONSTRUCTION: '1'
-        QA_REQUIRE_WORLD_JOURNAL: '1'
-      run: |
-        set -euo pipefail
-        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
-        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
-        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
-        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
-        node tools/eldoria-private-beta/qa_static_server.cjs site 18765 > local-server.log 2>&1 &
-        SERVER_PID=$!
-        trap 'kill "$SERVER_PID"' EXIT
-        QA_URL='http://127.0.0.1:18765/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1' \
-         QA_OUT=diagnostic-browser node tools/eldoria-private-beta/qa_world_entry_public.cjs
     - uses: actions/upload-artifact@v4
-      if: always()
       with:
-        name: world-diagnostic-21d4-proof
+        name: world-p0-owner-publication-proof
         path: |-
           site/integrated-owner-stage-proof.json
+          pinned-candidate.json
           previous-pages-sha256.txt
           previous-pages/artifact.tar.recovery.json
-          diagnostic-browser
-          local-server.log
+          browser/comparison.json
         retention-days: 60
     - uses: actions/configure-pages@v5
     - uses: actions/upload-pages-artifact@v3
@@ -171,7 +159,7 @@ jobs:
         registry=json.loads(base64.b64decode(item['content']))
         stream=next(x for x in registry['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
         assert stream['owner']=='chatgpt-world-p0-continuation-9df36d17'
-        assert stream['ownership_revision']==80 and stream['ownership_state']=='claimed'
+        assert stream['ownership_revision']==82 and stream['ownership_state']=='claimed'
         assert stream['branch']=='fix/eldoria-world-first-entry-p0-20261114'
         checks=get('commits/'+os.environ['STAGE_SHA']+'/check-runs?per_page=100')['check_runs']
         for name in ['metadata','ownership','rights','audit']:
@@ -181,6 +169,9 @@ jobs:
         for name in ['architecture','quarantine','governance']:
          selected=[x for x in publication_checks if x['name']==name]
          assert selected and all(x['status']=='completed' and x['conclusion']=='success' for x in selected),(name,'publication commit not certified')
+        import hashlib
+        with urllib.request.urlopen('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json?before_21e1',timeout=60) as r: live=r.read()
+        assert hashlib.sha256(live).hexdigest()=='1e86acc219a7a05b94bcfcc7c7f901604c70ac4a08412f500a48882fd4c923ba','Concurrent public replacement: refuse'
         print('LIVE_SOURCE_OWNERSHIP_AND_EXACT_GOVERNANCE_PASS')
         END
     - name: Deploy only the verified owner candidate
@@ -219,9 +210,9 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 35
     env:
-      STAGE_SHA: 14c64284f2aef341c1787a1d815e54b369e15efc
-      QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
-      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1
+      STAGE_SHA: 25bd1cd9678f0bd3615d55a0ff2ab720953b6924
+      QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1
       QA_REQUIRE_CONSTRUCTION: '1'
       QA_REQUIRE_WORLD_JOURNAL: '1'
     steps:
@@ -251,6 +242,8 @@ jobs:
         if [ "$failed" != 0 ]; then exit 1;fi
 
         grep -F 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' public-world-evidence/world-entry/console.log
+
+        grep -F 'ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED retired=' public-world-evidence/world-entry/console.log
       env:
         QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
     - uses: actions/upload-artifact@v4
