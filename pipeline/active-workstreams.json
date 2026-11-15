@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T15:04:53.290Z",
+  "updated_at": "2026-11-15T15:30:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9626,14 +9626,12 @@
       "title": "Prueba estilizada coherente 2.5D sobre capturas nativas de la ciudad de Valoria",
       "owner": "chatgpt-eldoria-stylized-art-proof-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "branch": "feature/eldoria-stylized-direction-proof-20261115",
       "status": "active",
-      "phase": "TRUE_UNITY_ART_DIRECTED_SOIL_COHERENCE_PROOF",
+      "phase": "STYLIZED_EDITABLE_BLENDER_SOURCE_RENDER_HOSTED_NO_WINDOWS",
       "claimed_at": "2026-11-15T13:39:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/StylizedDirectionPilot/**",
         "Unity/Assets/Eldoria/StylizedDirectionPilot.meta",
@@ -9648,11 +9646,11 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-stylized-direction-proof-20261115.json",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "write_scope_released": true,
+      "write_scope_released": false,
       "last_handoff_at": "2026-11-15T14:55:00Z",
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/196",
       "final_evidence": "Runs 43723401749, 43723908844, 43725656960, 43725782481 native Editor; 43726354590 Editor writes actual terrain PNG but workflow FAIL due stale filename gate. No visually approved candidate. See docs/stylized-direction-pilot/RESULTADOS_2026-11-15.md in draft PR196.",
-      "next": "One genuinely authored 3D/2.5D terrain-and-architecture modular kit in Blender, A/B on identical genuine Unity camera; do not repeat palette or random-prop tests, do not alter beta/P0 until art and iPhone measured."
+      "next": "Assess native Blender source / authored 3D GLB and true render, then if quality merits it request bounded Unity camera import A/B with new explicit Windows CAS; P0 beta remains unaffected."
     }
   ],
   "history": [
