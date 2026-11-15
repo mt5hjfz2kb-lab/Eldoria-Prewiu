@@ -93,7 +93,7 @@ jobs:
           $holders=@($registry.active | Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-bastion-card-fidelity-proof-20261115' -or $holders[0].owner -ne 'chatgpt-eldoria-bastion-card-fidelity-20261115'){throw 'CAS lease changed while queued'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Other Unity instance became active'}
-      - name: Render authentic same-camera A and B without touching beta
+      - name: Render genuine three-way A / B / C on same actual Bastion camera without touching beta
         shell: powershell
         timeout-minutes: 29
         run: |
@@ -109,14 +109,14 @@ jobs:
           if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Native pilot timed out'}
           $p.Refresh()
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 140};throw "Unity failed: $($p.ExitCode)"}
-          foreach($variant in @('A-current','B-owner-original')){
+          foreach($variant in @('A-current','B-earlier-context','C-exact-approved-contour')){
             foreach($size in @('900x1600','390x844','1600x900','844x390')){
               $image=Join-Path $out "$variant-real-unity-bastion-$size.png"
               if(-not(Test-Path $image) -or (Get-Item $image).Length -lt 16000){throw "Native PNG missing: $image"}
             }
           }
           $report=Get-Content (Join-Path $out 'evidence.json') -Raw | ConvertFrom-Json
-          if($report.status -ne 'UNITY_CAPTURED_REVIEW_REQUIRED' -or $report.artApproved -or -not $report.saveUnchanged -or $report.shots.Count -ne 8){throw 'Art gate not verified or game state changed'}
+          if($report.status -ne 'UNITY_CAPTURED_REVIEW_REQUIRED' -or $report.artApproved -or -not $report.saveUnchanged -or $report.shots.Count -ne 12){throw 'Art gate not verified or game state changed'}
           Write-Output "BASTION_CARD_NATIVE_SOURCE_GATE_PASS_REVIEW_REQUIRED"
       - uses: actions/upload-artifact@v4
         if: always()
