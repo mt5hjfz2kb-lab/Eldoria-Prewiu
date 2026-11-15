@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T14:46:10.314Z",
+  "updated_at": "2026-11-15T14:55:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9621,16 +9621,14 @@
     {
       "id": "eldoria-stylized-direction-proof-20261115",
       "title": "Prueba estilizada coherente 2.5D sobre capturas nativas de la ciudad de Valoria",
-      "owner": "chatgpt-eldoria-stylized-art-proof-20261115",
-      "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 5,
       "branch": "feature/eldoria-stylized-direction-proof-20261115",
       "status": "active",
-      "phase": "STYLIZED_EDITOR_MACRO_COMPOSITION_NATIVE_RETEST",
+      "phase": "UNITY_REAL_AB_TESTED_ALL_VISUAL_VARIANTS_REJECTED_STYLIZED_ASSET_AUTHORING_NEEDED",
       "claimed_at": "2026-11-15T13:39:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/StylizedDirectionPilot/**",
         "Unity/Assets/Eldoria/StylizedDirectionPilot.meta",
@@ -9644,7 +9642,12 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-stylized-direction-proof-20261115.json",
       "art_approved": false,
-      "physical_mobile_tested": false
+      "physical_mobile_tested": false,
+      "write_scope_released": true,
+      "last_handoff_at": "2026-11-15T14:55:00Z",
+      "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/196",
+      "final_evidence": "Runs 43723401749, 43723908844, 43725656960, 43725782481 native Editor; 43726354590 Editor writes actual terrain PNG but workflow FAIL due stale filename gate. No visually approved candidate. See docs/stylized-direction-pilot/RESULTADOS_2026-11-15.md in draft PR196.",
+      "next": "One genuinely authored 3D/2.5D terrain-and-architecture modular kit in Blender, A/B on identical genuine Unity camera; do not repeat palette or random-prop tests, do not alter beta/P0 until art and iPhone measured."
     }
   ],
   "history": [
