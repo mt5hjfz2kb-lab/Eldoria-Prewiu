@@ -23,7 +23,7 @@ jobs:
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionII.glb
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/SawmillRefined104.glb
             /Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb
-            /Unity/Assets/Eldoria/Resources/WorldInventory/MegaGate.fbx
+            /Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb
       - name: Install zero-credit Blender CPU
         run: |
           sudo apt-get update -qq

@@ -193,28 +193,9 @@ reused_glb(os.path.join(source_dir,'SawmillRefined104.glb'),(-24,4),9.5,z(-24,4)
 # gothic stone gate source rather than featureless extruded wedges.
 barracks=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','Valoria_Cuartel_AP2_v1.glb')
 reused_glb(barracks,(13,-1),9.1,z(13,-1)+.20,'Cuartel original')
-def imported_gate_fbx(asset):
- if not os.path.isfile(asset):raise RuntimeError('Stone landmark FBX missing')
- before=set(bpy.data.objects)
- bpy.ops.import_scene.fbx(filepath=asset)
- created=[o for o in bpy.data.objects if o not in before]
- meshes=[o for o in created if o.type=='MESH']
- if not meshes:raise RuntimeError('Imported source gate contains no geometry')
- bpy.context.view_layer.update()
- bb=[o.matrix_world@Vector(v) for o in meshes for v in o.bound_box]
- lo=Vector((min(v.x for v in bb),min(v.y for v in bb),min(v.z for v in bb)))
- hi=Vector((max(v.x for v in bb),max(v.y for v in bb),max(v.z for v in bb)))
- center=(lo+hi)*.5
- ratio=12/max(.01,hi.x-lo.x,hi.y-lo.y)
- root=bpy.data.objects.new('ancient empire gateway / reused mesh',None)
- bpy.context.collection.objects.link(root)
- for o in created:
-  if o.parent in created:continue
-  matrix=o.matrix_world.copy();o.parent=root;o.matrix_world=matrix
- root.scale=(ratio,)*3
- root.location=(19-center.x*ratio,18-center.y*ratio,z(19,18)+.2-lo.z*ratio)
- print('ELDORIA_EXISTING_GOTHIC_GATE_REUSED',len(meshes))
-imported_gate_fbx(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','WorldInventory','MegaGate.fbx'))
+# Genuine 3D art from the existing heritage-landmark library; avoids the
+# broken FBX importer distributed with the Ubuntu Blender package.
+reused_glb(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','HistoricalLandmarks','GateStreetRiseRock_MV1.glb'),(19,18),12.0,z(19,18)+.20,'ancient rocky gateway')
 # Massive broken geological foundations rather than a square platform.
 for k in range(26):
  a=k*2*pi/26
