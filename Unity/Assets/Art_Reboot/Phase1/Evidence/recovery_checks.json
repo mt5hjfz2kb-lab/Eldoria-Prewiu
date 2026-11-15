@@ -9,5 +9,12 @@
   "unity_rendered": false,
   "physical_mobile_tested": false,
   "art_approved": false,
-  "csharp_syntax": "PASS_TREE_SITTER_NOT_UNITY_COMPILATION"
+  "csharp_syntax": "PASS_TREE_SITTER_NOT_UNITY_COMPILATION",
+  "lease_regression_tests": {
+    "total": 8,
+    "passed": 8
+  },
+  "canonical_art_planner": "PASS",
+  "workflow_yaml": "PARSE_PASS",
+  "powershell_parse_executed": false
 }

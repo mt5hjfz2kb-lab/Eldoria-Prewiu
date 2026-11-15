@@ -26,12 +26,17 @@ namespace Eldoria.ArtReboot.Editor
                 if (SceneManager.GetSceneAt(i).isDirty)
                     throw new InvalidOperationException("Save your open scenes before the isolated capture.");
             var setup = EditorSceneManager.GetSceneManagerSetup();
+            var previousPipeline = QualitySettings.renderPipeline;
             string original = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
             byte[] originalBytes = File.ReadAllBytes(original);
-            var output = Path.GetFullPath(Path.Combine("..", "artifacts", "visual-reboot", DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff")));
+            var requestedOutput = Environment.GetEnvironmentVariable("REBOOT_CAPTURE_OUTPUT");
+            var output = Path.GetFullPath(string.IsNullOrEmpty(requestedOutput)
+                ? Path.Combine("..", "artifacts", "visual-reboot", DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff"))
+                : requestedOutput);
             Directory.CreateDirectory(output);
             try
             {
+                QualitySettings.renderPipeline = PreparePilotPipeline();
                 var scene = EditorSceneManager.OpenScene(RebootSandboxGuard.ScenePath, OpenSceneMode.Single);
                 // The copied hierarchy stays archived, inactive and unmodified.
                 foreach (var item in scene.GetRootGameObjects())
@@ -138,10 +143,43 @@ namespace Eldoria.ArtReboot.Editor
             }
             finally
             {
+                QualitySettings.renderPipeline = previousPipeline;
                 EditorSceneManager.RestoreSceneManagerSetup(setup);
                 if (!File.ReadAllBytes(original).SequenceEqual(originalBytes))
                     throw new InvalidOperationException("Original scene bytes changed during capture.");
             }
+        }
+
+        static UniversalRenderPipelineAsset PreparePilotPipeline()
+        {
+            // The production renderer has no postProcessData. Clone it; never mutate it.
+            const string pipelineSource = "Assets/Eldoria/Content/EldoriaMobileURP.asset";
+            const string rendererSource = "Assets/Eldoria/Content/EldoriaForwardRenderer.asset";
+            const string pipelinePath = Root + "/Materials/Reboot_URP.asset";
+            const string rendererPath = Root + "/Materials/Reboot_Renderer.asset";
+            if (!AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath)
+                && !AssetDatabase.CopyAsset(pipelineSource, pipelinePath))
+                throw new InvalidOperationException("Cannot clone original mobile URP asset.");
+            if (!AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererPath)
+                && !AssetDatabase.CopyAsset(rendererSource, rendererPath))
+                throw new InvalidOperationException("Cannot clone original renderer.");
+            var renderer = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererPath);
+            var post = AssetDatabase.LoadAssetAtPath<PostProcessData>(
+                "Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset");
+            if (post == null) throw new InvalidOperationException("Installed URP postprocess resources unavailable.");
+            var rendererData = new SerializedObject(renderer);
+            var postProperty = rendererData.FindProperty("postProcessData");
+            if (postProperty == null) throw new InvalidOperationException("URP renderer schema differs; do not guess.");
+            postProperty.objectReferenceValue = post;
+            rendererData.ApplyModifiedPropertiesWithoutUndo();
+            var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath);
+            var settings = new SerializedObject(pipeline);
+            var renderers = settings.FindProperty("m_RendererDataList");
+            if (renderers == null || renderers.arraySize != 1)
+                throw new InvalidOperationException("Unexpected mobile renderer topology.");
+            renderers.GetArrayElementAtIndex(0).objectReferenceValue = renderer;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+            return pipeline;
         }
 
         static Material MaterialAsset(string name, Shader shader, Texture atlas, float emission)
@@ -158,6 +196,7 @@ namespace Eldoria.ArtReboot.Editor
         static void Capture(Camera camera, int width, int height, string path)
         {
             var previous = RenderTexture.active;
+            var previousTarget = camera.targetTexture;
             float previousAspect = camera.aspect;
             var target = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
             Texture2D pixels = null;
@@ -166,6 +205,14 @@ namespace Eldoria.ArtReboot.Editor
                 if (!target.Create()) throw new InvalidOperationException("GPU allocation failed.");
                 camera.aspect = (float)width / height;
                 var request = new RenderPipeline.StandardRequest { destination = target };
+                // Batch Edit Mode can reach this method before the newly selected SRP
+                // has rendered its first frame. Bootstrap one genuine camera render.
+                if (!RenderPipeline.SupportsRenderRequest(camera, request))
+                {
+                    camera.targetTexture = target;
+                    camera.Render();
+                    camera.targetTexture = previousTarget;
+                }
                 if (!RenderPipeline.SupportsRenderRequest(camera, request))
                     throw new InvalidOperationException("URP render request unavailable.");
                 RenderPipeline.SubmitRenderRequest(camera, request);
@@ -185,7 +232,8 @@ namespace Eldoria.ArtReboot.Editor
             }
             finally
             {
-                camera.aspect = previousAspect; RenderTexture.active = previous;
+                camera.aspect = previousAspect; camera.targetTexture = previousTarget;
+                RenderTexture.active = previous;
                 if (pixels != null) Object.DestroyImmediate(pixels);
                 target.Release(); Object.DestroyImmediate(target);
             }

@@ -1,5 +1,5 @@
 {
-  "proposal_only": true,
+  "proposal_only": false,
   "target": "main:pipeline/active-workstreams.json",
   "mutation": "Append only this isolated workstream after owner permits coordination exception; preserve every existing entry. No Windows reservation until current owner releases it.",
   "entry": {
@@ -7,7 +7,7 @@
     "title": "Visual reboot \u2014 three-state Bastion visual pilot",
     "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
     "ownership_state": "claimed",
-    "ownership_revision": 1,
+    "ownership_revision": 2,
     "branch": "art/visual-reboot",
     "status": "active",
     "phase": "EDITOR_CAPTURE_IMPLEMENTED_NATIVE_PENDING",
@@ -23,5 +23,7 @@
       "evidence": "Source FBX/GLB/Blend, real Unity renders and independent visual review; mobile separate",
       "handoff": "Same branch, exact SHA, actual tests and open gates"
     }
-  }
+  },
+  "registered_in_main": true,
+  "coordination_commit": "0b4bc4161687977bab1ff4d63e2fd773bd6fc9e5"
 }

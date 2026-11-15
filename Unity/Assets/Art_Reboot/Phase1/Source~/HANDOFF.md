@@ -44,10 +44,10 @@ comprobar cuánto de esa lectura se mantiene en el motor real.
    `eldoria-ashen-citadel-original-i-v-20261115` reserva Windows. Su run
    43766002991 figura success, pero eso NO libera su titularidad de escritura
    ni su reserva. No cancelar ni apropiarse de ella.
-2. `art/visual-reboot` aún no tiene entrada en el registro de main. El requisito
-   de registrarlo entra en conflicto con la prohibición específica de tocar main.
-   No escribir allí ni abrir otra PR/workstream para sortear el conflicto.
-   Se requiere resolver la excepción de coordinación antes de usar el runner.
+2. El propietario autorizó la coordinación. Entrada canónica registrada en main,
+   mismo ID `eldoria-art-visual-reboot-phase1-20261115`, revisión 2; descriptor
+   de producción artística registrado como metadatos de coordinación, sin arte
+   ni código del juego en main. Scope de workflow nativo aislado incluido.
 3. Con reserva legítima y checkout completo, abrir Unity 6000.3.23f1/URP17.3,
    compilar y ejecutar `Art Reboot/Build and capture phase 1` o el método
    `Eldoria.ArtReboot.Editor.RebootPilotCapture.BuildAndCapture` en Edit Mode,
@@ -69,3 +69,40 @@ No merge, publicación, gasto, ni cambios sobre el otro experimento.
 API de captura consultada: Unity 6 `RenderPipeline.StandardRequest` y
 `RenderPipeline.SubmitRenderRequest`:
 https://docs.unity.com/en-us/engine/6000.0/manual/cameras/urp/multiple/user-render-requests
+
+## Continuación autónoma — preparación nativa completa
+
+- Workflow `.github/workflows/art-visual-reboot-native.yml`: preparado; Sin solicitud de ejecución nativa. Los pushes ordinarios sólo ejecutan
+  preflight Ubuntu, que analiza PowerShell
+  y verifica propietario, rama y SHA exacto antes de siquiera encolar Windows.
+  El job Windows repite la comprobación viva inmediatamente antes de Unity.
+- `Source~/native_capture.ps1`: copia sólo Art_Reboot, escena original intacta
+  para comparación, configuración URP y ProjectSettings a RUNNER_TEMP propio.
+  No copia Domain/Application/Infrastructure/UI ni ejecuta V4.1. Es un laboratorio
+  de importación visual, NO certificación de integración en el juego completo.
+  Los objetos históricos desactivados pueden tener referencias no disponibles
+  en este laboratorio; no afirmar lo contrario ni usarlo como build jugable.
+- El renderer existente carece de postProcessData. PreparePilotPipeline ahora
+  copia renderer/URP dentro de Art_Reboot, enlaza el PostProcessData del paquete,
+  asigna temporalmente la copia y restaura la selección de pipeline al terminar.
+  No se modifica el recurso original. La mejora visual aún NO se ha observado.
+- Se conservan logs del run, cuatro PNG, hashes, escena y assets importados.
+  El script se niega a tocar un proyecto previo o procesos ajenos; sólo detiene
+  por tiempo excedido su propio proceso y conserva diagnóstico si falla.
+- Verificados: 8/8 tests de rechazo de reservas indebidas/candidatos obsoletos,
+  parser C# sin errores, YAML válido, plan artístico canónico PASS,
+  verify_source PASS. PowerShell sólo tiene preflight preparado: no afirmar
+  análisis PowerShell ejecutado ni compilación C#/Unity por estos controles.
+- Última lectura: Ashen Citadel todavía mantiene Windows y su run nativo
+  43767889061 estaba in_progress. No se solicitó cancelación ni se usurpó reserva.
+- Alternativas comprobadas: este Linux tiene Blender 4.3.2, pero no Unity ni
+  dotnet/pwsh; el conector disponible no proporciona una segunda máquina Unity.
+  Blender sirve para fuente/UV, no para sustituir las imágenes URP solicitadas.
+
+Siguiente acción cuando la reserva quede libre: reclamar sólo Windows mediante
+CAS del registro, crear el commit con marcador explícito [visual-reboot-native] en el mensaje, fijar native_source_sha
+al SHA real de ese candidato ANTES de actualizar su ref, y dejar que el workflow
+verifique esa coincidencia dos veces. No cambia la autorización ya concedida.
+
+Los pushes sin el marcador explícito sólo ejecutan análisis PowerShell y tests
+de reserva en Ubuntu; el job Windows se omite, aunque exista una reserva.

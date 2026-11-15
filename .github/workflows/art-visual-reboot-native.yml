@@ -1,0 +1,87 @@
+name: "Visual reboot · isolated URP import and camera evidence"
+on:
+  push:
+    branches: [art/visual-reboot]
+    paths: [Unity/Assets/Art_Reboot/**, .github/workflows/art-visual-reboot-native.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: visual-reboot-native
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: Unity/Assets/Art_Reboot/Phase1/Source~
+      - name: Validate Windows script before queueing native work
+        shell: pwsh
+        run: |
+          $tokens=$null; $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$pwd/Unity/Assets/Art_Reboot/Phase1/Source~/native_capture.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if($errors.Count){$errors | Format-List;throw 'PowerShell parse failed'}
+      - name: Reject foreign and stale lease fixtures
+        run: python3 Unity/Assets/Art_Reboot/Phase1/Source~/test_lease.py
+  lease:
+    needs: preflight
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[visual-reboot-native]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: Unity/Assets/Art_Reboot/Phase1/Source~
+      - name: Require sole live Windows reservation and exact source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.py
+  native:
+    needs: lease
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Refuse busy PC or insufficient disk before checkout
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC busy'}
+          if((Get-PSDrive C).Free -lt 20GB){throw 'Insufficient scratch space'}
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $git)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: visual-reboot-source
+          clean: false
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Unity/Assets/Art_Reboot/**
+            Unity/Assets/Art_Reboot.meta
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity*
+            Unity/Assets/Eldoria/Content/EldoriaMobileURP.asset*
+            Unity/Assets/Eldoria/Content/EldoriaForwardRenderer.asset*
+            Unity/Assets/UniversalRenderPipelineGlobalSettings.asset*
+            Unity/ProjectSettings/**
+            Unity/Packages/manifest.json
+      - name: Recheck live ownership immediately before launching Unity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: python visual-reboot-source/Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.py
+      - name: Import and render in an isolated temporary project
+        shell: powershell
+        run: |
+          & "$pwd/visual-reboot-source/Unity/Assets/Art_Reboot/Phase1/Source~/native_capture.ps1" -SourceRoot "$pwd/visual-reboot-source" -OutputRoot "$pwd/visual-reboot-evidence-$env:GITHUB_RUN_ID"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-reboot-native-${{ github.run_id }}
+          path: visual-reboot-evidence-${{ github.run_id }}/**
+          if-no-files-found: warn
+          retention-days: 14

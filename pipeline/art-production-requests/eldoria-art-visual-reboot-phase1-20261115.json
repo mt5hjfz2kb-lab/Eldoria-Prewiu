@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-art-visual-reboot-phase1-20261115",
+  "workstream_id": "eldoria-art-visual-reboot-phase1-20261115",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Art_Reboot/Phase1 three-state Bastion pilot",
+  "profile": "environment_composition",
+  "visual_gate_state": "SOURCE_VERIFIED_NATIVE_PENDING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Assemble already authored and reimport-verified Blender assets in isolated URP scene. Native material/light/readability is unverified. No old Bastion asset, no gameplay changes.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "unity_camera_ab": true,
+    "blender_material_consolidation": true
+  },
+  "validation": {
+    "source_gate": "Four mesh families, 21308 triangles, one 256 atlas; per-face UV tile check and vertex colors on actual FBX reimport",
+    "final_gate": "Real Unity URP screenshots and independent visual review; no claim of full game integration or mobile performance"
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0
+}
