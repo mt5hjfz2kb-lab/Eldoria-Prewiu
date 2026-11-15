@@ -1,0 +1,95 @@
+{
+  "name": "Ashen Citadel",
+  "state": "FIRST_AUTHORING_PASS_UNITY_UNTESTED",
+  "authorship": "Original 3D polygon meshes and 18-color material palette; no previous Bastion reused",
+  "levels": [
+    "Timber redoubt",
+    "Stone watch",
+    "Fortified ward",
+    "Royal stronghold",
+    "Ash crown"
+  ],
+  "coordinateSystem": "X/Y(up)/Z; front is -Z; unit metres",
+  "stats": {
+    "bastion1": {
+      "vertices": 3570,
+      "polygons": 928,
+      "trianglesUpperBound": 3712
+    },
+    "bastion2": {
+      "vertices": 3448,
+      "polygons": 852,
+      "trianglesUpperBound": 3408
+    },
+    "bastion3": {
+      "vertices": 4768,
+      "polygons": 1170,
+      "trianglesUpperBound": 4680
+    },
+    "bastion4": {
+      "vertices": 5358,
+      "polygons": 1318,
+      "trianglesUpperBound": 5272
+    },
+    "bastion5": {
+      "vertices": 6664,
+      "polygons": 1640,
+      "trianglesUpperBound": 6560
+    },
+    "Sawmill": {
+      "vertices": 686,
+      "polygons": 166,
+      "trianglesUpperBound": 664
+    },
+    "Barracks": {
+      "vertices": 619,
+      "polygons": 155,
+      "trianglesUpperBound": 620
+    },
+    "Granary": {
+      "vertices": 422,
+      "polygons": 102,
+      "trianglesUpperBound": 408
+    },
+    "Stoneworks": {
+      "vertices": 596,
+      "polygons": 148,
+      "trianglesUpperBound": 592
+    },
+    "Pine": {
+      "vertices": 156,
+      "polygons": 46,
+      "trianglesUpperBound": 184
+    },
+    "Rock": {
+      "vertices": 123,
+      "polygons": 30,
+      "trianglesUpperBound": 120
+    }
+  },
+  "palette": {
+    "basalt": "#33383A",
+    "stone": "#666961",
+    "stoneLight": "#AAA38F",
+    "cut": "#86877E",
+    "iron": "#252A31",
+    "wood": "#715241",
+    "oak": "#987253",
+    "roof": "#3F4550",
+    "slate": "#5E6570",
+    "brass": "#C7A173",
+    "warm": "#E3B46A",
+    "banner": "#783F49",
+    "plaster": "#B1A48F",
+    "soil": "#5A5C4F",
+    "moss": "#556951",
+    "leaf": "#3C5345",
+    "leafLight": "#69785F",
+    "violet": "#7C6196"
+  },
+  "reuse": "Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",
+  "limits": [
+    "Unity import/render not yet certified",
+    "Gameplay and mobile performance not yet tested"
+  ]
+}

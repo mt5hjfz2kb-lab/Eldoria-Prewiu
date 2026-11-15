@@ -1,0 +1,126 @@
+# ASHEN CITADEL ART PALETTE | proprietary original mesh artwork.
+newmtl basalt
+Ka .08 .08 .08
+Kd 0.2000 0.2196 0.2275
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl stone
+Ka .08 .08 .08
+Kd 0.4000 0.4118 0.3804
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl stoneLight
+Ka .08 .08 .08
+Kd 0.6667 0.6392 0.5608
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl cut
+Ka .08 .08 .08
+Kd 0.5255 0.5294 0.4941
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl iron
+Ka .08 .08 .08
+Kd 0.1451 0.1647 0.1922
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl wood
+Ka .08 .08 .08
+Kd 0.4431 0.3216 0.2549
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl oak
+Ka .08 .08 .08
+Kd 0.5961 0.4471 0.3255
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl roof
+Ka .08 .08 .08
+Kd 0.2471 0.2706 0.3137
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl slate
+Ka .08 .08 .08
+Kd 0.3686 0.3961 0.4392
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl brass
+Ka .08 .08 .08
+Kd 0.7804 0.6314 0.4510
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl warm
+Ka .08 .08 .08
+Kd 0.8902 0.7059 0.4157
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl banner
+Ka .08 .08 .08
+Kd 0.4706 0.2471 0.2863
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl plaster
+Ka .08 .08 .08
+Kd 0.6941 0.6431 0.5608
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl soil
+Ka .08 .08 .08
+Kd 0.3529 0.3608 0.3098
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl moss
+Ka .08 .08 .08
+Kd 0.3333 0.4118 0.3176
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl leaf
+Ka .08 .08 .08
+Kd 0.2353 0.3255 0.2706
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl leafLight
+Ka .08 .08 .08
+Kd 0.4118 0.4706 0.3725
+Ks .06 .06 .06
+Ns 10
+illum 2
+
+newmtl violet
+Ka .08 .08 .08
+Kd 0.4863 0.3804 0.5882
+Ks .06 .06 .06
+Ns 10
+illum 2
