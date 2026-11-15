@@ -103,11 +103,24 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
             canvas.planeDistance=2;
             Canvas.ForceUpdateCanvases();
 
+            // Real layout dimensions, not screenshot-only pixel heuristics.
+            var safe=Find("Device safe area").GetComponent<RectTransform>();
+            var sheet=Find("Action sheet").GetComponent<RectTransform>();
+            var nickname=Find("Player name field").GetComponent<RectTransform>();
+            Assert.That(sheet.rect.height,Is.LessThan(safe.rect.height*.67f),
+                "Welcome must not hide the entire city");
+            Assert.That(nickname.rect.height,Is.GreaterThanOrEqualTo(40f),
+                "Nickname must be a real visible input field, never a thin line");
+            Assert.That(Find("Daily treasury").gameObject.activeInHierarchy,Is.False,
+                "Daily action must not overlap an open modal");
+
             var frames=new[]{new Vector2Int(390,844),new Vector2Int(1600,900)};
             foreach(var frame in frames)
                 SaveActualUi(camera,canvas,"Welcome",frame.x,frame.y);
             RequireButton("Close").onClick.Invoke();
             yield return null;
+            Assert.That(Find("Daily treasury").gameObject.activeInHierarchy,Is.True,
+                "Daily access must return when a panel closes");
 
             foreach(var v in new[]{
                 ("City","Nav · BASTIÓN"),
@@ -117,6 +130,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
             {
                 RequireButton(v.Item2).onClick.Invoke();
                 yield return null;
+                Canvas.ForceUpdateCanvases();
+                Assert.That(sheet.rect.height,Is.LessThanOrEqualTo(safe.rect.height*.68f),
+                    "Action panel overflows mobile-safe game view: "+v.Item1);
                 foreach(var frame in frames)
                     SaveActualUi(camera,canvas,v.Item1,frame.x,frame.y);
             }
