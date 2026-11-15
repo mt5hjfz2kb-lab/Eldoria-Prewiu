@@ -11,7 +11,7 @@ Conservar la mecánica que el propietario aprobó al ver el vídeo del prototipo
 
 - Juego exclusivamente virtual de seis oleadas y tres carriles; entrada, pausa, reintento, victoria y derrota.
 - Cámara Unity **perspectiva** y geometría 3D: calzada de pizarra, márgenes de roca, bosque, ruinas/columnas, soldados con casco, escudo y lanza, enemigos y puertas físicas con cifras flotantes.
-- Formaciones visuales de hasta **14** soldados de un ejército virtual de hasta **100**; evitan instanciar un GameObject por cada soldado lógico. Cámara, materiales y geometría pertenecen a un único root aislado, sin usar assets prohibidos.
+- Formaciones visuales variables de **8 al iniciar** hasta un máximo de **14** soldados de un ejército virtual de hasta **100**. El número de actores visibles crece al reclutar y disminuye tras pérdidas. Se corrigió el defecto de la versión inicial, que mostraba siempre 14 soldados aunque se reclutasen más. No se instancia un GameObject por cada unidad lógica. Cámara, materiales y geometría pertenecen a un único root aislado, sin usar assets prohibidos.
 - Arquería simulada con un conjunto fijo de doce proyectiles visibles; gestos táctiles laterales, flechas del teclado, botón de pausa y HUD temporal nativo.
 - Resolución automática basada en las reglas candidatas del piloto, **sin** aplicar cambios al motor T1–T5, a economía, misiones, correo, recursos o guardados.
 - Fixture nativo de Editor capaz de generar capturas GPU reales a `390×844` y `844×390`; no se confunden con imágenes conceptuales. El runner requiere GPU real y permiso exclusivo sobre `windows-runner-heavy`.
@@ -22,7 +22,7 @@ La demo web inicial resultó aceptable como referencia de mecánica en vídeo, p
 
 ## Prueba repetible sin tocar main
 
-En el editor Unity 6000.3.23f1, ejecutar el menú `Eldoria → Prototipos → Senda de la Brecha (crear escena temporal)`. El menú abre una **escena nueva sin guardar**; no modificar la escena de producción. Entrar en Play, pulsar `COMENZAR EXPEDICIÓN`, mover con las flechas laterales, observar los seis tramos y confirmar reinicio. La cámara y todo el contenido se crean únicamente dentro de la escena temporal. En ejecución CI desechable, usar `-executeMethod Eldoria.SendaBrecha.Editor.SendaBrechaNativeProof.Run` sin `-nographics`, con `SENDA_BRECHA_CAPTURE_DIR` para redirigir resultados. Ese fixture genera siete PNG y un `proof.json` con estado y no avala por sí solo nivel artístico.
+En el editor Unity 6000.3.23f1, ejecutar el menú `Eldoria → Prototipos → Senda de la Brecha (escena aislada)`. El menú abre una **escena nueva sin guardar**; no modificar la escena de producción. También se ofrece `... (guardar escena aislada)`, que guarda únicamente una nueva escena `Assets/Eldoria/SendaBrecha/Scenes/SendaBrecha_Experimental.unity` fuera de las escenas publicadas. Entrar en Play, pulsar `COMENZAR EXPEDICIÓN`, mover con las flechas laterales, observar los seis tramos y confirmar reinicio. La cámara y todo el contenido se crean únicamente dentro de la escena temporal. En ejecución CI desechable, usar `-executeMethod Eldoria.SendaBrecha.Editor.SendaBrechaNativeProof.Run` sin `-nographics`, con `SENDA_BRECHA_CAPTURE_DIR` para redirigir resultados. Ese fixture, una vez ejecutado realmente, debe generar nueve PNG e incluir pruebas de refuerzos visibles, victoria y derrota y un `proof.json` con estado y no avala por sí solo nivel artístico.
 
 ## Gates de calidad
 
@@ -37,5 +37,12 @@ En el editor Unity 6000.3.23f1, ejecutar el menú `Eldoria → Prototipos → Se
 
 - La versión **web 2.5D**, no Unity, ya se ejecutó en navegador remoto mediante raw.githack: confirmación de seguridad, `JUGAR AHORA` y botones de carril funcionaron. No se ha probado en Safari iPhone físico.
 - La lógica port C# tiene test **estático** reproducible `python tools/senda-brecha/tests/unity_3d_contract.py` para 729 recorridos; ese script no compila C# ni renderiza Unity.
-- En el momento de redactar el archivo, el runner Windows está reservado por `eldoria-stylized-direction-proof-20261115`; **no se inicia Unity ni se cancela su trabajo**.
+- La fuente puede revisarse sin Windows y no está integrada en la beta. Para ejecutar Unity se requiere reclamar el recurso exclusivo vigente y un workflow con preflight CAS; nunca suponer que ha sido certificado por existir el código. Si el runner está ocupado por otro trabajo, no interferir.
 - El prototipo Unity se guarda en PR #195 como borrador; no se fusiona ni publica y no sustituye el videojuego actual.
+
+## Corrección estructural antes de Unity
+
+- Corregida la resolución de `UnityEngine.Application` para evitar colisión con el namespace `Eldoria.Application` existente en el juego.
+- Selección de shader por el render pipeline activo: URP en Eldoria; `Standard` únicamente para un proyecto Unity de prueba aislado sin URP. No declarar que una prueba de Built-in certifica arte URP.
+- HUD en orientación horizontal reorganizado con la misma lógica de interacción y sin reducir toda la interfaz de móvil vertical a una tira de 180 píxeles. Este layout se debe comprobar con captura nativa de juego, no únicamente `Camera.Render`.
+- El fixture de Play/Editor es responsable de 9 PNG GPU de cámara y de comprobar positiva/negativa y reinicio; `OnGUI` queda fuera de `Camera.Render`, por tanto se requiere inspección separada del HUD real en Game View.
