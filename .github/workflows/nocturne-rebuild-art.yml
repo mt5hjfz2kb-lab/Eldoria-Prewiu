@@ -31,11 +31,12 @@ jobs:
       - name: Install Blender (Ubuntu packages, no paid services)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq blender
+          sudo apt-get install -y -qq blender python3-numpy
           blender --version | head -2
       - name: Generate physically imported GLB models and editable BLEND source
         run: |
           blender --background --factory-startup --python tools/nocturne-rebuild/author_art.py > /tmp/nocturne-blender.log 2>&1 || { tail -150 /tmp/nocturne-blender.log; exit 1; }
+          grep -q "NOCTURNE_ART_EXPORT_PASS" /tmp/nocturne-blender.log || { tail -150 /tmp/nocturne-blender.log; exit 1; }
           tail -35 /tmp/nocturne-blender.log
       - name: Validate generated assets and hard scope
         run: |
