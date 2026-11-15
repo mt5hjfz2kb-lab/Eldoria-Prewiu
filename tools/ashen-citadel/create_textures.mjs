@@ -30,9 +30,12 @@ const makeTextures=function makeTextures(){
      if(stripe===10||stripe===22)v-=.06;
      if((y%48===6||y%48===7)&&(stripe===6||stripe===25))v=.43;
    } else if(kind==="Moss"){
-     v=.78+hash(Math.floor(x/7),Math.floor(y/7),16)*.14+
-       hash(Math.floor(x/21),Math.floor(y/21),47)*.08;
-     if(hash(x,y,63)>.986)v=.51;
+     // Soft periodic painted meadow. A discrete hashed quilt produces
+     // visible checkerboard patches when a large terrain cube is viewed at
+     // 2.5D mobile scale; use continuous low-contrast variation instead.
+     v=.85+.023*Math.sin(x*Math.PI/32)*Math.cos(y*Math.PI/32)+
+       .018*Math.cos(x*Math.PI/64)*Math.cos(y*Math.PI/64)+
+       (hash(x,y,63)-.5)*.020;
    } else if(kind==="Metal"){
      v=.84+.06*hash(1,y,88)+.035*Math.sin(x*.39);
      if(x%32<2)v=.72;

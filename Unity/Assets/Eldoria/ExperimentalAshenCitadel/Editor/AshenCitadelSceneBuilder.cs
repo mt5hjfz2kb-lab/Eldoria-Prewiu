@@ -215,6 +215,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
                 if(texture==null)throw new FileNotFoundException("Required authored texture not imported: "+texturePath);
                 mat.SetTexture("_BaseMap",texture);
+                // Terrain UV0 comes from a single large floor primitive.
+                // Repeat the lightweight moss/soil atlas instead of stretching
+                // one 128px tile over the entire 146m² world.
+                if(current=="moss" || current=="soil")
+                    mat.SetTextureScale("_BaseMap",new Vector2(18,18));
                 mat.SetFloat("_Smoothness",current=="brass"?.35f:.09f);
                 mat.SetFloat("_Metallic",current=="brass"?.42f:.01f);
                 EditorUtility.SetDirty(mat);Colors[current]=mat;
