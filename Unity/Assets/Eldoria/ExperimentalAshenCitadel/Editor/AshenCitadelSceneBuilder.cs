@@ -10,6 +10,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace Eldoria.ExperimentalAshenCitadel.Editor
@@ -30,10 +31,21 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             Directory.CreateDirectory(MaterialPath);
             AssetDatabase.Refresh();
             CreateMaterials();
+            // Private look-development pipeline; never mutate the production asset.
+            var sourcePipeline=GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;
+            if(sourcePipeline!=null){
+                var pipeline=UnityEngine.Object.Instantiate(sourcePipeline);
+                pipeline.name="Ashen private lookdev";pipeline.shadowDistance=85f;pipeline.msaaSampleCount=4;
+                var pipelinePath=Root+"/Materials/AshenLookdevPipeline.asset";
+                var savedPipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath);
+                if(savedPipeline==null){AssetDatabase.CreateAsset(pipeline,pipelinePath);savedPipeline=pipeline;}
+                else{EditorUtility.CopySerialized(pipeline,savedPipeline);UnityEngine.Object.DestroyImmediate(pipeline);}
+                GraphicsSettings.defaultRenderPipeline=savedPipeline;QualitySettings.renderPipeline=savedPipeline;
+            }
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.32f,.34f,.34f);
-            RenderSettings.ambientEquatorColor=new Color(.22f,.25f,.24f);
+            RenderSettings.ambientSkyColor=new Color(.28f,.34f,.41f);
+            RenderSettings.ambientEquatorColor=new Color(.18f,.22f,.25f);
             RenderSettings.ambientGroundColor=new Color(.095f,.10f,.09f);
             RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.29f);
             RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=48;RenderSettings.fogEndDistance=135;
@@ -42,7 +54,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var sun=key.AddComponent<Light>();
             sun.type=LightType.Directional;sun.intensity=1.35f;
             sun.color=new Color(1f,.84f,.69f);
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.55f;
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=.8f;
             sun.transform.rotation=Quaternion.Euler(48,-35,0);
             var fill=new GameObject("Sky · cold fill").AddComponent<Light>();
             fill.type=LightType.Directional;fill.intensity=.23f;fill.color=new Color(.54f,.67f,.77f);
@@ -52,7 +64,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var cameraGO=new GameObject("Ashen · Player camera");
             cameraGO.tag="MainCamera";
             var camera=cameraGO.AddComponent<Camera>();
-            camera.orthographic=true;camera.orthographicSize=20.6f;
+            camera.orthographic=true;camera.orthographicSize=30f;
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.25f,.28f,.28f);
             camera.allowHDR=false;camera.allowMSAA=true;camera.depth=0;
@@ -227,12 +239,13 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var texturePath=Root+"/Textures/Ashen"+textureFamily+".png";
                 var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
                 if(texture==null)throw new FileNotFoundException("Required authored texture not imported: "+texturePath);
-                mat.SetTexture("_BaseMap",texture);
+                mat.SetTexture("_BaseMap",current=="basalt"?null:texture);
                 // Terrain UV0 comes from a single large floor primitive.
                 // Repeat the lightweight moss/soil atlas instead of stretching
                 // one 128px tile over the entire 146m² world.
                 if(current=="moss" || current=="soil")
-                    mat.SetTextureScale("_BaseMap",new Vector2(18,18));
+                    mat.SetTextureScale("_BaseMap",Vector2.one);
+                if(current=="warm"){mat.EnableKeyword("_EMISSION");mat.SetColor("_EmissionColor",new Color(.65f,.32f,.08f));}
                 mat.SetFloat("_Smoothness",current=="brass"?.35f:.09f);
                 mat.SetFloat("_Metallic",current=="brass"?.42f:.01f);
                 EditorUtility.SetDirty(mat);Colors[current]=mat;
@@ -388,7 +401,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                         if(t==null)throw new InvalidOperationException("Missing authored stage "+j);
                         t.gameObject.SetActive(j==l);
                     }
-                    camera.orthographicSize=viewport.y>viewport.x?20.6f:14f;
+                    camera.orthographicSize=viewport.y>viewport.x?30f:14f;
                     var rt=new RenderTexture(viewport.x,viewport.y,24,RenderTextureFormat.ARGB32);
                     camera.targetTexture=rt;camera.aspect=(float)viewport.x/viewport.y;
                     RenderTexture.active=rt;camera.Render();

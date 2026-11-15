@@ -45,8 +45,7 @@ const makeLandscape=function makeLandscape(){
     const xc=x+cell/2,zc=z+cell/2;
     const pathCenter=Math.sin(zc*.12)*.70;
     const route=(zc<-6 && zc>-36 && Math.abs(xc-pathCenter)<3.1);
-    const material=route?"soil":((noise(xc*.65,zc*.4)> .60 && Math.hypot(xc,zc)>15)?"leafLight":
-      (Math.abs(noise(xc*.11,zc*.12))>.50 && Math.hypot(xc,zc)>13)?"soil":"moss");
+    const material="moss";
     tri(a,c,b,material);tri(a,d,c,material);
   }
   // Footpath is a continuous hand-curved 3d ribbon with broken edges, no rectangular tiles.
@@ -59,7 +58,7 @@ const makeLandscape=function makeLandscape(){
       return [xx,yy,z];
     };
     const a=path(p,-1),b=path(p,1),c=path(q,1),d=path(q,-1);
-    tri(a,b,c,"stoneLight");tri(a,c,d,"stoneLight");
+    tri(a,b,c,"soil");tri(a,c,d,"soil");
   }
   // Sculpted grassy hummocks and beds of undergrowth, strongly less repetitive
   // than the tree-ring algorithm; all triangles are actual 3D geometry.
@@ -95,9 +94,9 @@ const makeLandscape=function makeLandscape(){
     const mat=i%3===0?"stone":i%3===1?"cut":"basalt";
     for(let k=0;k<nside;k++){
       const j=(k+1)%nside;
-      tri(base[k],base[j],top[j],mat);
-      tri(base[k],top[j],top[k],mat);
-      tri(top[k],top[j],[x,y+ry*1.40,z],i%2?"stoneLight":mat);
+      tri(top[j],base[j],base[k],mat);
+      tri(top[k],top[j],base[k],mat);
+      tri([x,y+ry*1.40,z],top[j],top[k],i%2?"stone":mat);
     }
     stones++;
   }

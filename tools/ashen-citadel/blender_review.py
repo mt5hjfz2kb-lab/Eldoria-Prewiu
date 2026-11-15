@@ -55,7 +55,9 @@ def pbr(material, rgb, material_key=None):
         if rough:rough.default_value=.66
         metal=bsdf.inputs.get("Metallic")
         if metal:metal.default_value=.34 if "brass" in material.name.lower() else 0
-        if material_key:
+        if material_key=="basalt":
+            for link in list(color.links):material.node_tree.links.remove(link)
+        if material_key and material_key!="basalt":
             groups={
                 "Stone":["basalt","stone","stoneLight","cut","plaster"],
                 "Roof":["roof","slate"],"Wood":["wood","oak"],
@@ -105,8 +107,8 @@ def camera_and_lights():
     cam.data.type="ORTHO";cam.data.ortho_scale=45
     sc.camera=cam
     bpy.ops.object.light_add(type="AREA", location=(-8,-13,25))
-    light=bpy.context.object;light.name="Warm dusk · 3700K";light.data.energy=1900
-    light.data.shape="DISK";light.data.size=18
+    light=bpy.context.object;light.name="Warm dusk · 3700K";light.data.energy=4200
+    light.data.shape="DISK";light.data.size=10
     light.data.color=(1,.78,.55)
     bpy.ops.object.light_add(type="AREA", location=(11,10,18))
     fill=bpy.context.object;fill.name="Cold sky fill";fill.data.energy=1200
@@ -131,7 +133,7 @@ def configure_render():
     sc.render.engine="CYCLES"
     sc.cycles.device="CPU"
     sc.cycles.samples=20
-    try: sc.cycles.use_denoising=True
+    try: sc.cycles.use_denoising=False
     except Exception: pass
     sc.render.image_settings.color_mode="RGBA"
     return sc.render.engine

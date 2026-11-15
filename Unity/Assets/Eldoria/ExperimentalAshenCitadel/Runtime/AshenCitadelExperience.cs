@@ -351,7 +351,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 var p=show?new Vector3(18,19,33):new Vector3(18,19,-22);
                 playerCamera.transform.position=p;
                 playerCamera.transform.LookAt(show?new Vector3(0,0,55):new Vector3(0,1.8f,0));
-                playerCamera.orthographicSize=Screen.width<Screen.height?20.6f:14f;
+                playerCamera.orthographicSize=Screen.width<Screen.height?30f:17f;
             }
             Refresh();
         }
@@ -402,8 +402,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             if(section==0)
             {
                 ShowWorld(false);
-                var description="Progreso real del reino, sin saltos de nivel. Objetivo: "+SliceRules.CurrentObjectiveKey(s)+
-                    "\nLas mejoras conservan sus requisitos, costes y temporizadores originales.";
+                var description="El corazón de Valoria. Refuerza sus murallas para ampliar tu reino.";
                 if(s.BastionLevel<5)
                 {
                     var next=BastionProgressionCatalog.ForLevel(s.BastionLevel+1);
@@ -428,7 +427,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 AddBuilding(actions,"GRANERO",c?.GranaryLevel??0,"granary",s.BastionLevel>=3);
                 AddBuilding(actions,"TALLER DE PIEDRA",c?.StoneworksLevel??0,"stoneworks",s.BastionLevel>=5);
                 Open("EDIFICIOS DEL REINO",
-                    "Las construcciones aparecen en el mundo únicamente cuando la autoridad confirma su nivel. " +
+                    "Desarrolla tus edificios para sostener el crecimiento de Valoria. " +
                     "Una obra en curso bloquea las nuevas hasta completarse.",actions);
             }
             else if(section==2)
@@ -439,7 +438,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 Add(actions,"CONFIRMAR MARCHA AUTOMÁTICA",()=>Send("ConfigureMarch","march-main"),s.BastionLevel>=2&&s.BarracksLevel>=1);
                 Open("EJÉRCITO Y MARCHAS",
                     "Tropas disponibles: "+s.Available.Total+" · reclutamiento "+(s.RecruitmentCompletesUtcTicks>0?"activo":"libre")+
-                    "\nEl motor conserva sus reglas T1–T5, reserva de tropas, capacidad y héroes.",
+                    "\nPrepara tus tropas y elige la formación antes de partir.",
                     actions);
             }
             else

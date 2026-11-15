@@ -12,29 +12,29 @@
   "coordinateSystem": "X/Y(up)/Z; front is -Z; unit metres",
   "stats": {
     "bastion1": {
-      "vertices": 3634,
-      "polygons": 948,
-      "trianglesUpperBound": 3792
+      "vertices": 6678,
+      "polygons": 1794,
+      "trianglesUpperBound": 7176
     },
     "bastion2": {
-      "vertices": 3512,
-      "polygons": 872,
-      "trianglesUpperBound": 3488
+      "vertices": 3568,
+      "polygons": 888,
+      "trianglesUpperBound": 3552
     },
     "bastion3": {
-      "vertices": 4832,
-      "polygons": 1190,
-      "trianglesUpperBound": 4760
+      "vertices": 4888,
+      "polygons": 1206,
+      "trianglesUpperBound": 4824
     },
     "bastion4": {
-      "vertices": 5422,
-      "polygons": 1338,
-      "trianglesUpperBound": 5352
+      "vertices": 5478,
+      "polygons": 1354,
+      "trianglesUpperBound": 5416
     },
     "bastion5": {
-      "vertices": 6728,
-      "polygons": 1660,
-      "trianglesUpperBound": 6640
+      "vertices": 6784,
+      "polygons": 1676,
+      "trianglesUpperBound": 6704
     },
     "Sawmill": {
       "vertices": 746,
@@ -57,18 +57,18 @@
       "trianglesUpperBound": 664
     },
     "Pine": {
-      "vertices": 285,
-      "polygons": 61,
-      "trianglesUpperBound": 244
+      "vertices": 588,
+      "polygons": 191,
+      "trianglesUpperBound": 764
     },
     "Rock": {
       "vertices": 99,
-      "polygons": 24,
-      "trianglesUpperBound": 96
+      "polygons": 27,
+      "trianglesUpperBound": 108
     }
   },
   "palette": {
-    "basalt": "#33383A",
+    "basalt": "#4D5557",
     "stone": "#666961",
     "stoneLight": "#AAA38F",
     "cut": "#86877E",
@@ -82,9 +82,9 @@
     "banner": "#783F49",
     "plaster": "#B1A48F",
     "soil": "#5A5C4F",
-    "moss": "#556951",
-    "leaf": "#3C5345",
-    "leafLight": "#69785F",
+    "moss": "#4B604C",
+    "leaf": "#294D48",
+    "leafLight": "#3D6054",
     "violet": "#7C6196"
   },
   "reuse": "Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",

@@ -64,13 +64,6 @@ def build_environment(level,palette,meshes_dir,import_obj,remap,pbr):
     ramp.color_ramp.elements[1].color=(.56,.48,.36,1)
     earth.node_tree.links.new(noise.outputs["Fac"],ramp.inputs["Fac"])
     earth.node_tree.links.new(ramp.outputs["Color"],bsdf.inputs["Base Color"])
-    for i in range(10):
-        bpy.ops.mesh.primitive_cube_add(size=1,location=(math.sin(i*.31)*.67,-7-i*2.5,.076))
-        road=bpy.context.object
-        road.name=f"Approach path segment {i}"
-        road.scale=(2.15+.23*(i%2),2.73,.032)
-        road.rotation_euler[2]=math.sin(i*.36)*.08
-        road.data.materials.append(earth)
 
     wood=bpy.data.materials.new("Cut cedar logs")
     pbr(wood,(.41,.275,.19))

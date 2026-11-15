@@ -2,7 +2,7 @@
 import fs from "node:fs"; import path from "node:path";
 const author=function author(){
  const dir="Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes/";
- const palette={basalt:"#33383A",stone:"#666961",stoneLight:"#AAA38F",cut:"#86877E",iron:"#252A31",wood:"#715241",oak:"#987253",roof:"#3F4550",slate:"#5E6570",brass:"#C7A173",warm:"#E3B46A",banner:"#783F49",plaster:"#B1A48F",soil:"#5A5C4F",moss:"#556951",leaf:"#3C5345",leafLight:"#69785F",violet:"#7C6196"};
+ const palette={basalt:"#4D5557",stone:"#666961",stoneLight:"#AAA38F",cut:"#86877E",iron:"#252A31",wood:"#715241",oak:"#987253",roof:"#3F4550",slate:"#5E6570",brass:"#C7A173",warm:"#E3B46A",banner:"#783F49",plaster:"#B1A48F",soil:"#5A5C4F",moss:"#4B604C",leaf:"#294D48",leafLight:"#3D6054",violet:"#7C6196"};
  let mat=["# ASHEN CITADEL ART PALETTE | proprietary original mesh artwork."];
  for(const [id,hex] of Object.entries(palette)){const rgb=[1,3,5].map(n=>(parseInt(hex.slice(n,n+2),16)/255).toFixed(4));mat.push("newmtl "+id,"Ka .08 .08 .08","Kd "+rgb.join(" "),"Ks .06 .06 .06","Ns 10","illum 2","");}
  const outputs={[dir+"AshenPalette.mtl"]:mat.join("\n")};
@@ -13,14 +13,14 @@ const author=function author(){
    if(w<=0||h<=0||d<=0)throw Error("Invalid box");
    const x0=x-w/2,x1=x+w/2,z0=z-d/2,z1=z+d/2,y0=y,y1=y+h;
    const v=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];
-   for(const ii of [[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7],[3,2,1,0]])poly(ii.map(i=>v[i]),m);
+   for(const ii of [[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7],[3,2,1,0]])poly(ii.map(i=>v[i]).reverse(),m);
   }
   function prism(x,y,z,r,h,n=8,m="stone"){
    const B=[],T=[];for(let i=0;i<n;i++){let a=2*Math.PI*i/n;B.push([x+Math.cos(a)*r,y,z+Math.sin(a)*r]);T.push([x+Math.cos(a)*r,y+h,z+Math.sin(a)*r]);}
-   poly([...B].reverse(),m);poly(T,m);
-   for(let i=0;i<n;i++)poly([B[i],B[(i+1)%n],T[(i+1)%n],T[i]],m);
+   poly(B,m);poly([...T].reverse(),m);
+   for(let i=0;i<n;i++)poly([T[i],T[(i+1)%n],B[(i+1)%n],B[i]],m);
   }
-  function cone(x,y,z,r,h,n=8,m="roof"){const top=[x,y+h,z];for(let i=0;i<n;i++){let a=i*2*Math.PI/n,b=(i+1)*2*Math.PI/n;poly([[x+Math.cos(a)*r,y,z+Math.sin(a)*r],[x+Math.cos(b)*r,y,z+Math.sin(b)*r],top],m);}}
+  function cone(x,y,z,r,h,n=8,m="roof"){const top=[x,y+h,z];for(let i=0;i<n;i++){let a=i*2*Math.PI/n,b=(i+1)*2*Math.PI/n;poly([[x+Math.cos(a)*r,y,z+Math.sin(a)*r],[x+Math.cos(b)*r,y,z+Math.sin(b)*r],top].reverse(),m);}}
   function frustum(x,y,z,bottom,top,height,n=9,m="leaf"){
     const low=[],high=[];
     for(let i=0;i<n;i++){
@@ -29,12 +29,12 @@ const author=function author(){
       low.push([x+Math.cos(theta)*bottom*jag,y+.08*Math.sin(i*2.1),z+Math.sin(theta)*bottom*jag]);
       high.push([x+Math.cos(theta)*top,y+height,z+Math.sin(theta)*top]);
     }
-    poly([...low].reverse(),m);poly(high,m);
-    for(let i=0;i<n;i++)poly([low[i],low[(i+1)%n],high[(i+1)%n],high[i]],m);
+    poly(low,m);poly([...high].reverse(),m);
+    for(let i=0;i<n;i++)poly([high[i],high[(i+1)%n],low[(i+1)%n],low[i]],m);
   }
   function roof(x,y,z,w,d,raise=1.5){
    const A=[x-w/2,y,z-d/2],B=[x+w/2,y,z-d/2],C=[x+w/2,y,z+d/2],D=[x-w/2,y,z+d/2],E=[x,y+raise,z-d/2],F=[x,y+raise,z+d/2];
-   poly([A,E,F,D],"roof");poly([B,C,F,E],"roof");poly([A,B,E],"slate");poly([C,D,F],"slate");
+   poly([D,F,E,A],"roof");poly([E,F,C,B],"roof");poly([E,B,A],"slate");poly([F,D,C],"slate");
    box(x,y+raise,z,.14,.12,d+.2,"brass");
    for(let u=1;u<4;u++){const xx=w*u/8,yy=y+raise*(1-u/4);
      box(x-xx,yy,z,.10,.065,d+.13,"slate");box(x+xx,yy,z,.10,.065,d+.13,"slate");}
@@ -100,15 +100,15 @@ const author=function author(){
     for(let i=0;i<n;i++)poly([high[i],high[(i+1)%n],low[(i+1)%n],low[i]],"basalt");
     for(let i=0;i<n;i++)poly([[0,top,0],high[(i+1)%n],high[i]],"moss");
   }
-  function base(){contourPlate(10.3,9.1,-.24,.12,16,1.2);
+  function base(){contourPlate(10.3,9.1,-.24,.045,24,1.2);
    box(0,.07,-8.0,3.4,.10,5.7,"cut");for(let i=0;i<5;i++)box(0,.10+i*.11,-11+i*.41,3.8-i*.3,.19,.50,"stoneLight");
   }
   function castle(level){
    base();
    if(level===1){
      hall(0,1.4,5.3,5.8,3.7,1);door(0,.32,-1.51,1.5,2.45);
-     for(let x of [-6.2,6.2])for(let z=-5.9;z<=5.9;z+=1.35){box(x,.13,z,.35,2.15,.35,"wood");cone(x,2.28,z,.30,.48,4,"oak");}
-     for(let z of [-5.9,5.9])for(let x=-5.8;x<=5.8;x+=1.3){if(z===-5.9&&Math.abs(x)<2)continue;box(x,.13,z,.34,2.15,.35,"wood");cone(x,2.28,z,.29,.48,4,"oak");}
+     for(let x of [-6.2,6.2])for(let z=-5.9;z<=5.9;z+=.38){box(x,.13,z,.35,2.15,.35,"wood");cone(x,2.28,z,.30,.48,4,"oak");}
+     for(let z of [-5.9,5.9])for(let x=-5.8;x<=5.8;x+=.38){if(z===-5.9&&Math.abs(x)<2)continue;box(x,.13,z,.34,2.15,.35,"wood");cone(x,2.28,z,.29,.48,4,"oak");}
      door(0,.18,-6.0,2.20,2.25);
      for(let x of [-4.1,4.1]){box(x,.16,0,2.4,1.8,2.7,"wood");roof(x,1.96,0,2.8,3.13,1.1);torch(x,1.7,-2);}
    }else{
@@ -168,16 +168,37 @@ const author=function author(){
      for(let i=0;i<10;i++)box((i%4)*1.06-1.6,.16,-1.9-Math.floor(i/4)*.66,.82,.4,.54,i%2?"stoneLight":"stone");
      prism(-1.7,.2,1.3,.65,.78,8,"stoneLight");torch(-1.6,1.9,-1.45);
    }else if(kind==="Pine"){
-     // Filled botanical mass: four intersecting tapered whorls, no floating
-     // paper-cone umbrellas or exposed billboard-like branch polygons.
-     prism(0,0,0,.25,4.52,9,"wood");
-     frustum(0,.70,0,1.74,.74,1.56,11,"leaf");
-     frustum(0,1.70,0,1.51,.53,1.60,11,"leafLight");
-     frustum(0,2.72,0,1.17,.25,1.47,11,"leaf");
-     cone(0,3.68,0,.71,1.19,11,"leafLight");
+     prism(0,0,0,.17,5.2,7,"wood");
+     // Asymmetric overlapping boughs: irregular silhouette, no stacked lampshades.
+     for(let tier=0;tier<7;tier++){
+       const y=.8+tier*.59,r=1.65-tier*.18;
+       const pts=[];const n=13;
+       for(let k=0;k<n;k++){
+         const a=k*2*Math.PI/n+tier*.71,rr=r*(.78+.22*Math.sin(k*7.1+tier*3.7)**2);
+         pts.push([Math.cos(a)*rr+.11*Math.sin(tier*2),y+.20*Math.sin(k*3.9+tier),Math.sin(a)*rr]);
+       }
+       const tip=[.12*Math.sin(tier),y+1.5,.10*Math.cos(tier*1.3)];
+       for(let k=0;k<n;k++){
+         poly([pts[(k+1)%n],pts[k],tip],k%5===0?"leafLight":"leaf");
+         poly([[0,y+.2,0],pts[k],pts[(k+1)%n]],"leaf");
+       }
+     }
    }else if(kind==="Rock"){
-     prism(0,0,0,1.75,1.25,7,"basalt");cone(0,1.22,0,1.60,.80,7,"stone");
-     prism(1.3,0,.5,.72,.75,6,"cut");
+     // Hand-shaped faceted fieldstone; no masonry texture on natural geology.
+     const low=[],mid=[],high=[];const n=9;
+     for(let i=0;i<n;i++){
+       const a=i*2*Math.PI/n,r=1.25+.24*Math.sin(i*3.2)+.14*Math.cos(i*2.3);
+       low.push([Math.cos(a)*r,-.14,Math.sin(a)*r*.74]);
+       mid.push([Math.cos(a)*r*1.03,.48+.17*Math.sin(i*2.1),Math.sin(a)*r*.8]);
+       high.push([Math.cos(a)*r*.61-.18,.95+.15*Math.cos(i*1.7),Math.sin(a)*r*.51]);
+     }
+     for(let i=0;i<n;i++){
+       const j=(i+1)%n;
+       poly([mid[i],mid[j],low[j],low[i]],"basalt");
+       poly([high[i],high[j],mid[j],mid[i]],"basalt");
+       poly([[-.18,1.09,0],high[j],high[i]],"basalt");
+     }
+
    }
   }
   function finish(){

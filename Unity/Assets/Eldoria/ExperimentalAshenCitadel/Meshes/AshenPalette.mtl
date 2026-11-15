@@ -1,7 +1,7 @@
 # ASHEN CITADEL ART PALETTE | proprietary original mesh artwork.
 newmtl basalt
 Ka .08 .08 .08
-Kd 0.2000 0.2196 0.2275
+Kd 0.3020 0.3333 0.3412
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -113,7 +113,7 @@ map_Kd ../Textures/AshenMoss.png
 
 newmtl moss
 Ka .08 .08 .08
-Kd 0.3333 0.4118 0.3176
+Kd 0.2941 0.3765 0.2980
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -121,7 +121,7 @@ map_Kd ../Textures/AshenMoss.png
 
 newmtl leaf
 Ka .08 .08 .08
-Kd 0.2353 0.3255 0.2706
+Kd 0.1608 0.3020 0.2824
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -129,7 +129,7 @@ map_Kd ../Textures/AshenMoss.png
 
 newmtl leafLight
 Ka .08 .08 .08
-Kd 0.4118 0.4706 0.3725
+Kd 0.2392 0.3765 0.3294
 Ks .06 .06 .06
 Ns 10
 illum 2
