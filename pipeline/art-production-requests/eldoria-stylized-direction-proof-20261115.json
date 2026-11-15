@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-stylized-direction-proof-20261115",
+  "workstream_id": "eldoria-stylized-direction-proof-20261115",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Piloto estilizado sobre escena real Unity de Valoria, sin alterar beta",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_AB_CANDIDATE_UNAPPROVED",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Probar sobre la cámara Unity real un tratamiento pictórico coherente de piedra, madera, tejados y suelo, antes de rehacer geometría; no confundir arte conceptual con resultado del motor.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {"approved": false, "authorized_credit_cost": 0},
+  "capabilities": {"existing_3d_assets_modified": false, "temporary_editor_only_shader": true, "unity_camera_ab": true},
+  "validation": {
+    "source_gate": "Solo rutas aisladas; no alterar escena, materiales originales, PR194, ni beta iPhone.",
+    "final_gate": "Cuatro capturas nativas con mismos puntos de vista, diferencias visuales reales, revisión humana de calidad separada de compilación. Pendiente iPhone/WebGL."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0
+}
