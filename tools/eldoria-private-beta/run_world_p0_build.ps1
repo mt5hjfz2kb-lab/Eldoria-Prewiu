@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$SourceSha)
 $ErrorActionPreference='Stop'
 trap { Write-Host $_.ScriptStackTrace; throw }
-if($SourceSha -ne 'd0b21fd5708c5070d1bd62dc6c6a98399c549051'){throw 'Unexpected frozen source'}
+if($SourceSha -ne 'ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029'){throw 'Unexpected frozen source'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
 if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
   $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
@@ -153,7 +153,7 @@ function Invoke-WorldProof {
   [xml]$r=Get-Content $xml -Raw
   $cases=@($r.SelectNodes('//test-case')|Where-Object {$_.GetAttribute('fullname').EndsWith('.RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD')})
   if($r.'test-run'.result -ne 'Passed' -or [int]$r.'test-run'.total -ne 1 -or [int]$r.'test-run'.passed -ne 1 -or [int]$r.'test-run'.failed -ne 0 -or [int]$r.'test-run'.skipped -ne 0 -or $cases.Count -ne 1 -or $cases[0].GetAttribute('result') -ne 'Passed'){throw 'Exact world fixture did not pass'}
-  foreach($marker in @('ELDORIA_WORLD_STREAMING_VISUALS','ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE')){
+  foreach($marker in @('ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED','ELDORIA_P0_ENTRY_RENDER_BUDGET_RESTORED','ELDORIA_WORLD_STREAMING_VISUALS','ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE')){
     if(-not(Select-String $log -Pattern $marker -SimpleMatch -Quiet)){throw ('Missing native marker '+$marker)}
   }
   if(@(Select-String $log -Pattern 'ELDORIA_WORLD_SETTLED_VISIBLE_ENEMIES' -SimpleMatch).Count -ne 6){throw 'Missing settled viewport coverage'}
