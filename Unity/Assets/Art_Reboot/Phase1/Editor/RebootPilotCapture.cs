@@ -44,7 +44,7 @@ namespace Eldoria.ArtReboot.Editor
                     if (item.name == Generated) Object.DestroyImmediate(item);
                     else if (item.activeSelf) throw new InvalidOperationException("Unexpected active original root: " + item.name);
                 }
-                AssetDatabase.ImportAsset(Root + "/Models/Reboot_Pilot.fbx", ImportAssetOptions.ForceSynchronousImport);
+                PrepareModel(output);
                 AssetDatabase.ImportAsset(Root + "/Materials/Reboot_Atlas.shadergraph", ImportAssetOptions.ForceSynchronousImport);
                 var shader = AssetDatabase.LoadAssetAtPath<Shader>(Root + "/Materials/Reboot_Atlas.shadergraph");
                 Debug.Log("REBOOT_SHADER_IMPORT " + (shader == null ? "null" : shader.name));
@@ -72,6 +72,12 @@ namespace Eldoria.ArtReboot.Editor
                     renderer.shadowCastingMode = ShadowCastingMode.On;
                     renderer.receiveShadows = true;
                 }
+                var terrainBounds = renderers.Single(r => r.name == "Terrain").bounds;
+                Debug.Log("REBOOT_WORLD_BOUNDS " + terrainBounds);
+                File.WriteAllText(Path.Combine(output, "model-world-bounds.txt"),
+                    string.Join("\n", renderers.Select(r => r.name + " " + r.bounds + " scale=" + r.transform.lossyScale)));
+                if (Mathf.Abs(terrainBounds.size.x - 48) > .1f || Mathf.Abs(terrainBounds.size.z - 48) > .1f)
+                    throw new InvalidOperationException("Imported world metres differ from Blender's 48m terrain: " + terrainBounds);
                 if (triangles != 21308) throw new InvalidOperationException("FBX topology differs from authored source: " + triangles);
                 RenderSettings.ambientMode = AmbientMode.Trilight;
                 RenderSettings.ambientSkyColor = new Color(.24f, .31f, .44f);
@@ -159,6 +165,26 @@ namespace Eldoria.ArtReboot.Editor
                 if (!File.ReadAllBytes(original).SequenceEqual(originalBytes))
                     throw new InvalidOperationException("Original scene bytes changed during capture.");
             }
+        }
+
+        static void PrepareModel(string output)
+        {
+            const string path = Root + "/Models/Reboot_Pilot.fbx";
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(path) as ModelImporter;
+            if (importer == null) throw new InvalidOperationException("FBX ModelImporter unavailable.");
+            File.WriteAllText(Path.Combine(output, "model-import-before.json"), EditorJsonUtility.ToJson(importer, true));
+            Debug.Log($"REBOOT_MODEL_BEFORE global={importer.globalScale} file={importer.fileScale} useFileScale={importer.useFileScale} useFileUnits={importer.useFileUnits}");
+            importer.globalScale = 1;
+            importer.useFileScale = true;
+            importer.useFileUnits = true;
+            importer.bakeAxisConversion = true;
+            importer.importAnimation = false;
+            importer.meshCompression = ModelImporterMeshCompression.Off;
+            importer.importNormals = ModelImporterNormals.Import;
+            importer.SaveAndReimport();
+            File.WriteAllText(Path.Combine(output, "model-import-after.json"), EditorJsonUtility.ToJson(importer, true));
+            Debug.Log($"REBOOT_MODEL_AFTER global={importer.globalScale} file={importer.fileScale} useFileScale={importer.useFileScale} useFileUnits={importer.useFileUnits}");
         }
 
         static Texture2D PrepareAtlas(string output)
@@ -273,9 +299,10 @@ namespace Eldoria.ArtReboot.Editor
                     int luma = (c.r + c.g + c.b) / 3; min = Math.Min(min,luma); max = Math.Max(max,luma);
                     if (c.r > 220 && c.b > 220 && c.g < 40) magenta++;
                 }
-                if (max - min < 20 || magenta > colors.Length / 1000)
-                    throw new InvalidOperationException("Blank/flat render or shader-error pixels; no PASS.");
                 File.WriteAllBytes(path,pixels.EncodeToPNG());
+                File.WriteAllText(path + ".metrics.txt", $"lumaMin={min} lumaMax={max} magenta={magenta} pixels={colors.Length}");
+                if (max - min < 20 || magenta > colors.Length / 1000)
+                    throw new InvalidOperationException($"Rejected render {width}x{height}: luma {min}..{max}, magenta {magenta}; diagnostic PNG retained, not approved.");
             }
             finally
             {
