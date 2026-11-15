@@ -20,7 +20,10 @@ for c in list(bpy.data.collections):
     if c.name!="Collection" and c.users==0: bpy.data.collections.remove(c)
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=18
+scene.cycles.samples=8
+scene.cycles.device='CPU'
+scene.cycles.use_denoising=False
+for render_view_layer in scene.view_layers: render_view_layer.cycles.use_denoising=False
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
 scene.render.film_transparent=False
@@ -28,6 +31,8 @@ scene.view_settings.view_transform='Standard'
 scene.view_settings.look='Medium High Contrast'
 scene.render.resolution_x=1080
 scene.render.resolution_y=720
+scene.render.threads_mode='FIXED'
+scene.render.threads=4
 scene.camera=None
 scene.world.color=(.09,.11,.14)
 COL=None
