@@ -346,15 +346,57 @@ def rock():
         cone("Faceted rock",(x,y,z),.68*s,.34*s,.76*s,M["stone_dark" if s<.9 else "stone"],7)
     return COL
 def export(c,name):
+    """Consolidate physical authored meshes by material for low mobile draw calls.
+
+    The unmodified original objects stay editable in Nocturne_Master.blend;
+    only temporary evaluated copies are joined for GLB transport.
+    """
+    export_col=collection("_TemporaryExport_"+name)
+    original=list(c.objects)
+    duplicates={}
+    for o in original:
+        if o.type!='MESH':continue
+        cp=o.copy()
+        cp.data=o.data.copy()
+        cp.name="Mobile / "+o.name
+        export_col.objects.link(cp)
+        cp.matrix_world=o.matrix_world.copy()
+        bpy.ops.object.select_all(action='DESELECT')
+        cp.select_set(True)
+        bpy.context.view_layer.objects.active=cp
+        # Bake 1-segment authored bevel into the shipped mesh, keeping the
+        # editable bevel on the original file, for reliable GLB normals.
+        for mod in list(cp.modifiers):
+            try: bpy.ops.object.modifier_apply(modifier=mod.name)
+            except Exception as e:
+                raise RuntimeError("modifier export failure "+name+"/"+o.name+"/"+mod.name+": "+str(e))
+        mats=list(cp.data.materials)
+        key=mats[0].name if mats else "_untextured"
+        duplicates.setdefault(key,[]).append(cp)
+    final=[]
+    for material_name,objects in duplicates.items():
+        bpy.ops.object.select_all(action='DESELECT')
+        for ob in objects:ob.select_set(True)
+        bpy.context.view_layer.objects.active=objects[0]
+        if len(objects)>1:
+            bpy.ops.object.join()
+        combined=bpy.context.view_layer.objects.active
+        combined.name=name+" / merged "+material_name
+        final.append(combined)
     bpy.ops.object.select_all(action='DESELECT')
-    for o in c.all_objects:
-        if o.type=='MESH': o.hide_set(False);o.select_set(True)
-    if not any(o.select_get() for o in c.all_objects): raise RuntimeError("no selected models "+name)
+    for ob in final:ob.select_set(True)
+    if not final: raise RuntimeError("no selected 3D geometry "+name)
+    bpy.context.view_layer.objects.active=final[0]
     path=MODELS/(name+".glb")
     bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,
         export_apply=True,export_yup=True,export_texcoords=True,export_normals=True)
     if path.stat().st_size<1000: raise RuntimeError("GLB too small "+str(path))
-    print("EXPORTED",name,path.stat().st_size)
+    bpy.ops.object.select_all(action='DESELECT')
+    for ob in final:
+        bpy.data.objects.remove(ob,do_unlink=True)
+    bpy.data.collections.remove(export_col,do_unlink=True)
+    print("EXPORTED",name,path.stat().st_size,"draw_surface_groups",len(final),
+          "editable_sources",len(original))
 def instance_collection(c,name,at,rot=0,scale=1.0):
     # Mesh copies stay in the preview context. Source collection remains invisible
     # in rendering so it cannot overlap the bastion at the world origin.
