@@ -9,7 +9,7 @@ os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=30
-scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=.80
+scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=1.12
 scene.render.image_settings.file_format='PNG';scene.render.resolution_percentage=100
 scene.world.color=(.26,.29,.33)
 def mat(name,color,glow=0):
@@ -27,7 +27,7 @@ wood=mat('timber',(.31,.22,.17));repair=mat('raw timber',(.45,.33,.23))
 slate=mat('dark slate',(.19,.24,.31));river=mat('cold teal water',(.10,.28,.32))
 pine=[mat('evergreen deep',(.10,.24,.20)),mat('evergreen sage',(.15,.33,.27)),mat('evergreen olive',(.25,.35,.26))]
 bronze=mat('ancient bronze',(.57,.43,.20));banner=mat('indigo imperial cloth',(.09,.15,.26))
-amber=mat('settlement fire',(.99,.48,.16),4);breach=mat('breach glow',(.38,.07,.56),2.1)
+amber=mat('settlement fire',(.99,.48,.16),1.9);breach=mat('breach glow',(.30,.05,.44),.9)
 dark=mat('hollow gate',(.07,.09,.10));soil=mat('dry earth',(.44,.37,.26))
 def box(name,loc,dims,m):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc)
@@ -52,13 +52,13 @@ def z(x,y):
  return n+1.0*exp(-((x+5)**2/400+(y-5)**2/330))-1.20*exp(-((y+17+1.5*sin(x*.12))**2)/22)
 # Single continuous authored topography, no prefab rectangular island.
 vs=[];fs=[];mi=[]
-for j in range(73):
- for i in range(101):
-  x=-46+i*.92;y=-33+j*.90;vs.append((x,y,z(x,y)))
-for j in range(72):
- for i in range(100):
-  a=j*101+i;fs.extend([(a,a+1,a+102),(a,a+102,a+101)])
-  x=-46+i*.92;y=-33+j*.90;n=noise.noise(Vector((x*.09+7,y*.09+3,2)))
+for j in range(119):
+ for i in range(145):
+  x=-72+i*1.0;y=-54+j*.95;vs.append((x,y,z(x,y)))
+for j in range(118):
+ for i in range(144):
+  a=j*145+i;fs.extend([(a,a+1,a+146),(a,a+146,a+145)])
+  x=-72+i*1.0;y=-54+j*.95;n=noise.noise(Vector((x*.09+7,y*.09+3,2)))
   t=0 if n<-.20 else (2 if n>.36 else 1);mi.extend([t,t])
 terrain=ownmesh('unified continuous painterly soil',vs,fs,grass,mi)
 # Original smooth hand-painted sage material: no hard checkerboard terrain patches.
@@ -77,6 +77,17 @@ for i in range(151):
  for side in [-1,1]:rvs.append((x,y+side*2.75,-.71))
  if i<150:rfs.append((2*i,2*i+1,2*i+3,2*i+2))
 ownmesh('original single river ribbon',rvs,rfs,[river])
+
+# Subtle ripple bands follow the same actual river centerline, not detached lakes.
+foam=mat('quiet turquoise bank froth',(.29,.47,.45))
+for side in (-1,1):
+ wavev=[];wavef=[]
+ for k in range(125):
+  x=-47+k*94/124
+  y=-17-1.5*sin(x*.12)+side*(2.55+.09*sin(x*.37))
+  wavev.extend([(x,y,-.67),(x,y+side*.18,-.67)])
+  if k<124:wavef.append((k*2,k*2+1,k*2+3,k*2+2))
+ ownmesh('shoreline subtle ripples',wavev,wavef,[foam])
 # Castle remains compact but visibly monumental.
 bz=z(-5,5)
 box('aged fortress foundation',(-5,5,bz+1.45),(20,15,3.0),stone[2])
@@ -107,9 +118,12 @@ for row in range(32):
  for lane in range(5):
   xx=x+(lane-2)*.76
   box('cut road stones',(xx,y,z(xx,y)+.08),(.67,.40,.13),stone[0 if (row+lane)%3 else 2])
-box('bridge deck',(-5,-17,.0),(7.0,13,.95),stone[0])
+box('bridge deck',(-5,-17,.0),(7.0,13,.95),stone[2])
+for row in range(12):
+ for lane in range(4):
+  box('bridge cobbled roadway',(-7.25+lane*1.48,-23+row*1.05,.515), (1.38,.97,.08),stone[0 if (row+lane)%4 else 1])
 for x in [-8.2,-1.8]:
- box('bridge parapet',(x,-17,.76),(.56,12.8,1.35),stone[1])
+ box('bridge parapet',(x,-17,.76),(.56,12.8,1.35),stone[0])
  for y in [-22.6,-11.4]:
   box('torch pier',(x,y,1.4),(.84,.84,2.1),stone[1])
   rock('golden torch',(x,y,2.6),(.40,.40,.57),amber)
@@ -132,13 +146,13 @@ def tree(x,y,h,i):
  box('old conifer trunk',(x,y,zz+h*.35),(.3,.3,h*.70),wood)
  for lev in range(3):
   cone('stylized forest tree crown',(x,y,zz+h*(.34+lev*.25)),h*(.26-.044*lev),h*.46,pine[(i+lev)%3])
-for i in range(150):
+for i in range(250):
  x=R.uniform(-44,44);y=R.uniform(-31,33)
  if not (abs(x)>28 or y>21 or (x<-18 and y>10) or (x>25 and y>7)):continue
  if abs(y+17+1.5*sin(x*.12))<5:continue
  tree(x,y,R.uniform(4,8),i)
 # Rock outcrops and edge decoration are from one modular family.
-for i in range(120):
+for i in range(95):
  x=R.uniform(-45,45);y=R.uniform(-31,32)
  if abs(x+5)<10 and -24<y<13:continue
  scale=R.uniform(.4,1.25)
@@ -195,7 +209,32 @@ barracks=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valori
 reused_glb(barracks,(13,-1),9.1,z(13,-1)+.20,'Cuartel original')
 # Genuine 3D art from the existing heritage-landmark library; avoids the
 # broken FBX importer distributed with the Ubuntu Blender package.
-reused_glb(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','HistoricalLandmarks','GateStreetRiseRock_MV1.glb'),(19,18),12.0,z(19,18)+.20,'ancient rocky gateway')
+gate=reused_glb(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','HistoricalLandmarks','GateStreetRiseRock_MV1.glb'),(22,21),7.8,z(22,21)+.25,'ancient rocky gateway')
+# Darken the overexposed white imported heritage stone, not the source asset.
+for obj in gate.children_recursive:
+ if obj.type!='MESH':continue
+ for i,original in enumerate(obj.data.materials):
+  if not original:continue
+  m=original.copy()
+  if m.use_nodes:
+   nodes=m.node_tree.nodes;links=m.node_tree.links
+   bs=nodes.get('Principled BSDF')
+   if bs:
+    surface=bs.inputs.get('Base Color')
+    if surface and surface.is_linked:
+     old_link=surface.links[0]
+     mix=nodes.new('ShaderNodeMixRGB');mix.blend_type='MULTIPLY'
+     mix.inputs[0].default_value=.84
+     mix.inputs[2].default_value=(.44,.43,.40,1)
+     upstream=old_link.from_socket
+     links.remove(old_link)
+     links.new(upstream,mix.inputs[1]);links.new(mix.outputs[0],surface)
+    elif surface:surface.default_value=(.44,.45,.41,1)
+  obj.data.materials[i]=m
+# Reuse the project's modular heritage language as background, not new buildings.
+pieces=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','MidTierArchitectureKit_v1')
+reused_glb(os.path.join(pieces,'Piece02.glb'),(-32,12),4.4,z(-32,12)+.18,'ruined west imperial workshop')
+reused_glb(os.path.join(pieces,'Piece03.glb'),(30,3),4.2,z(30,3)+.18,'ruined east imperial outpost')
 # Massive broken geological foundations rather than a square platform.
 for k in range(26):
  a=k*2*pi/26
@@ -217,15 +256,15 @@ def light(name,loc,power,size,color):
 light('warm sun',(-25,-32,48),6200,40,(1,.84,.67))
 light('cold sky',(22,3,55),4500,60,(.66,.76,1))
 data=bpy.data.cameras.new('isometric game camera');cam=bpy.data.objects.new('isometric game camera',data)
-bpy.context.collection.objects.link(cam);cam.location=(54,-64,58)
+bpy.context.collection.objects.link(cam);cam.location=(52,-64,54)
 cam.rotation_euler=(Vector((-5,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()
-data.type='ORTHO';data.ortho_scale=67;scene.camera=cam
+data.type='ORTHO';data.ortho_scale=62;scene.camera=cam
 scene.render.resolution_x=1400;scene.render.resolution_y=850
 scene.render.filepath=os.path.join(out,'real-blender-stylized-world-landscape.png')
 bpy.ops.render.render(write_still=True)
 cam.location=(49,-58,61)
 cam.rotation_euler=(Vector((-5,-4,1))-cam.location).to_track_quat('-Z','Y').to_euler()
-cam.data.ortho_scale=54
+cam.data.ortho_scale=50
 scene.render.resolution_x=760;scene.render.resolution_y=1240
 scene.cycles.samples=15
 scene.render.filepath=os.path.join(out,'real-blender-stylized-world-portrait.png')
