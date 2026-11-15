@@ -127,7 +127,7 @@ const author=function author(){
    }
   }
   function aux(kind){
-   box(0,-.10,0,4.8,.28,4.8,"basalt");
+   if(kind!=="Pine"&&kind!=="Rock")box(0,-.10,0,4.8,.28,4.8,"basalt");
    if(kind==="Sawmill"){
      box(0,.2,0,3.7,2.3,3.1,"wood");roof(0,2.52,0,4.2,3.6,1.55);
      for(let i=0;i<6;i++)box(-1.8+i*.7,.16,-2.15,.53,.30,1.6,i%2?"oak":"wood");

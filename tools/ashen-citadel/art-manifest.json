@@ -57,14 +57,14 @@
       "trianglesUpperBound": 592
     },
     "Pine": {
-      "vertices": 156,
-      "polygons": 46,
-      "trianglesUpperBound": 184
+      "vertices": 132,
+      "polygons": 40,
+      "trianglesUpperBound": 160
     },
     "Rock": {
-      "vertices": 123,
-      "polygons": 30,
-      "trianglesUpperBound": 120
+      "vertices": 99,
+      "polygons": 24,
+      "trianglesUpperBound": 96
     }
   },
   "palette": {
