@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:40:33.460Z",
+  "updated_at": "2026-11-15T23:41:22.381Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 7,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "VALLEY_LIGHTING_CANDIDATE_READY_WAITING_SHARED_TURN",
+      "phase": "URP_COMPILE_FIXED_NATIVE_RETRY_WAITING_NEXT_TURN",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [],
@@ -9782,9 +9782,9 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "waiting_for_visual_reboot_release",
-        "source_sha": "dd63fd76d2b6dff76372cf85617595183e074b92",
+        "source_sha": "8034917ca7efdc20215e56067136c2be4791501c",
         "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "reason": "New owner continuation: continuous ground colour, raised forest rim and lateral lighting candidate; request next bounded native capture after Visual Reboot releases current turn."
+        "reason": "43775821050 compile failure corrected at 8034917; retry 43776052927 blocked by resource reassignment during checkout (Unity not executed). Please return Windows after current Reboot run; Ashen will retry this exact fixed HEAD and release after terminal native evidence."
       },
       "last_native": {
         "run": 43773241535,
@@ -9795,9 +9795,9 @@
         "playmode_passed": 4,
         "visual_review": "First reviewable architecture/environment sample: opaque roofs, coherent five-stage forms, repaired vegetation and complete portrait ground. Not global ART_APPROVED: flat lighting, repeated terrain, unfinished UI and physical iPhone checks remain."
       },
-      "final_source_sha": "dd63fd76d2b6dff76372cf85617595183e074b92",
+      "final_source_sha": "8034917ca7efdc20215e56067136c2be4791501c",
       "art_approved": false,
-      "next": "Windows released for Visual Reboot next turn. Continue lighting/contact richness and UI after reviewing real Unity sample; no merge to production. Review and reproduction notes docs/ashen-citadel/ART_CONTINUATION_REVIEW.md."
+      "next": "Rerun failed native job of 43776052927 at 8034917 after next turn. Keep own phase RUNNING with run ID while importing; no artistic claim before real image."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
