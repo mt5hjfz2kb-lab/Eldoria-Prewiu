@@ -39,7 +39,7 @@ jobs:
           w=holders[0]
           if (w.get("id")!="eldoria-stylized-direction-proof-20261115" or
               w.get("owner")!="chatgpt-eldoria-stylized-art-proof-20261115" or
-              w.get("ownership_state")!="claimed" or w.get("ownership_revision")!=2):
+              w.get("ownership_state")!="claimed" or w.get("ownership_revision")!=4):
               raise SystemExit("Native lease does not match exact pilot revision")
           print("ELDORIA_STYLE_EXCLUSIVE_PRECHECK_PASS")
           PY
@@ -94,7 +94,7 @@ jobs:
           }
           $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)) | ConvertFrom-Json
           $holder=@($registry.active | Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holder.Count -ne 1 -or $holder[0].id -ne 'eldoria-stylized-direction-proof-20261115' -or $holder[0].owner -ne 'chatgpt-eldoria-stylized-art-proof-20261115' -or $holder[0].ownership_revision -ne 2){throw 'Exact Windows lease revoked or superseded'}
+          if($holder.Count -ne 1 -or $holder[0].id -ne 'eldoria-stylized-direction-proof-20261115' -or $holder[0].owner -ne 'chatgpt-eldoria-stylized-art-proof-20261115' -or $holder[0].ownership_revision -ne 4){throw 'Exact Windows lease revoked or superseded'}
       - name: Real Unity 1600x900 and 390x844 camera A/B
         shell: powershell
         timeout-minutes: 29
