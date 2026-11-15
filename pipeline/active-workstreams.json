@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T13:07:55.336Z",
+  "updated_at": "2026-11-15T13:12:03.270Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7641,10 +7641,10 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 83,
-      "write_scope_released": true,
+      "owner": "chatgpt-world-p0-continuation-9df36d17",
+      "ownership_state": "claimed",
+      "ownership_revision": 84,
+      "write_scope_released": false,
       "status": "active",
       "branch": "fix/eldoria-world-first-entry-p0-20261114",
       "scope": [
@@ -7701,13 +7701,13 @@
         ".github/workflows/eldoria-world-p0-build.yml"
       ],
       "resources": [],
-      "claimed_at": "2026-11-09T22:42:54.852Z",
+      "claimed_at": "2026-11-15T13:12:03.270Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER21E1_CANDIDATE_DELIVERED_VERIFIED_DEVICE_CAUSE_UNCONFIRMED",
+      "phase": "PHYSICAL21E1_FAIL_POST_ENTRY_INVESTIGATION",
       "note": "Delivered and independently verified21e1 runtimeca5 on existing owner route. Native, target retirement, public saved world journey and corrected residency gates passed. This completes candidate delivery, NOT physical iPhone crash resolution or tester release. Resources and writing claim released; no background monitoring.",
-      "next": "Use new21e1 URL with eldoria_p0_entry_msaa_off=1 for owner world->city check. If exit recurs, reclaim this canonical ID/PR194 and continue from saved journal and exactca5 publication; root cause unknown. Do not repeat rejected post-startup timer/delayed control or claim total RSS savings. No native rebuild for shell-only changes.",
+      "next": "Investigate actual post-activation render/resource footprint and compare a macroscopic residency/render-cost alternative; preserve approved UI, geography, nodes, saves. Do not repeat MSAA-only microcorrection or claim missing pagehide proves OOM.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8248,6 +8248,14 @@
           "revision": 83,
           "transferred_at": "2026-11-15T13:01:40.059Z",
           "reason": "Verified owner21e1 candidate delivered; all executable gates complete, resources and writing scope released. Physical failure is not declared resolved; exact evidence retained for any continuation."
+        },
+        {
+          "from": null,
+          "to": "chatgpt-world-p0-continuation-9df36d17",
+          "previous_revision": 83,
+          "revision": 84,
+          "transferred_at": "2026-11-15T13:12:03.270Z",
+          "reason": "Owner supplies concrete21e1 physical failure after world visible. Reopen same canonical PR194 and preserve all earlier evidence."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -9156,7 +9164,7 @@
         "native_test": "1 passed, cancellation/rejoin,12 reentries, actual saved reload",
         "native_msaa_targets_retired": 0,
         "browser_target_retirement": "PASS: 2 old city targets retired after 11 frames before terrain; 72402259 -> 27965659 Unity target bytes. Total RSS reduction NOT established.",
-        "physical_iphone": "NOT_TESTED_ON_21E1; prior21d4 device failure remains confirmed; cause UNKNOWN",
+        "physical_iphone": "FAIL owner observed world then involuntary restart, 2026-11-15",
         "public_runtime": "ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029",
         "browser_run": 43712314700,
         "browser_artifact": 14161930181,
@@ -9177,7 +9185,19 @@
         "public_residency_zip_sha256": "f0ce17869f129d53fddd8f61df20021a10c4d508fba8e94f46becf34df90dbfa",
         "evidence_commit": "6d3cda40b92fe9ba4c2adaf4a8d6f43908aea956",
         "desktop_delivery_complete": true,
-        "physical_crash_resolved": false
+        "physical_crash_resolved": false,
+        "physical_owner_result": {
+          "render_budget_requested": 1794748212792,
+          "render_budget_ready": 1794748213862,
+          "world_entered": 1794748220528,
+          "world_frame_2": 1794748220681,
+          "new_boot": 1794748225194,
+          "entry_to_boot_ms": 4666,
+          "budget_wait_ms": 1070,
+          "world_requested_to_entry_ms": 7738,
+          "root_cause": "UNCONFIRMED",
+          "note": "Render budget marker confirms active mitigation; insufficient for physical acceptance. No fixed startup timer: request41.709s afterstartup-ready."
+        }
       }
     },
     {
