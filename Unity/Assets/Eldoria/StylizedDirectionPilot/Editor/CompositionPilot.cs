@@ -86,7 +86,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             var volume=go.AddComponent<Volume>();
             volume.isGlobal=true;
             volume.priority=2000;
-            volume.profile=profile;
+            volume.sharedProfile=profile;
             var tone=profile.Add<Tonemapping>(true);
             tone.mode.Override(TonemappingMode.ACES);
             var grade=profile.Add<ColorAdjustments>(true);
