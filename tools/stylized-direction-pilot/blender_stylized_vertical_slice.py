@@ -210,8 +210,33 @@ remove={'aged fortress foundation','barracks','barracks slate roof','barracks do
 'warm fire torches','indigo royal banners','working sawmill','sawmill roof','logs'}
 for ob in list(bpy.data.objects):
  if ob.name.split('.')[0] in remove:bpy.data.objects.remove(ob,do_unlink=True)
-reused_glb(os.path.join(source_dir,'BastionII.glb'),(-5,6),16.2,z(-5,5)+.28,'Bastion II')
-reused_glb(os.path.join(source_dir,'SawmillRefined104.glb'),(-24,4),9.5,z(-24,4)+.6,'Sawmill real')
+bastion=reused_glb(os.path.join(source_dir,'BastionII.glb'),(-5,6),16.2,z(-5,5)+.28,'Bastion II')
+sawmill=reused_glb(os.path.join(source_dir,'SawmillRefined104.glb'),(-24,4),9.5,z(-24,4)+.6,'Sawmill real')
+# Reversible Blender-only desaturation of the existing blue slate materials.
+# Keep all original texel structure; never rewrite canonical model assets.
+def sober_slates(root):
+ tinted=0
+ for ob in root.children_recursive:
+  if ob.type!='MESH':continue
+  for idx,material in enumerate(ob.data.materials):
+   if not material or not material.use_nodes or 'Blue slate' not in material.name:continue
+   m=material.copy()
+   nodes=m.node_tree.nodes;links=m.node_tree.links
+   bs=nodes.get('Principled BSDF')
+   if not bs:continue
+   sock=bs.inputs.get('Base Color')
+   if not sock:continue
+   tone=nodes.new('ShaderNodeHueSaturation')
+   tone.inputs['Saturation'].default_value=.49
+   tone.inputs['Value'].default_value=.86
+   if sock.is_linked:
+    current=sock.links[0];upstream=current.from_socket
+    links.remove(current);links.new(upstream,tone.inputs['Color'])
+   else:tone.inputs['Color'].default_value=sock.default_value
+   links.new(tone.outputs['Color'],sock)
+   ob.data.materials[idx]=m;tinted+=1
+ return tinted
+print('SLATE_MATERIALS_SOBERED',sober_slates(bastion)+sober_slates(sawmill))
 
 # Reuse the actual production barracks, not a cuboid placeholder, and a real
 # gothic stone gate source rather than featureless extruded wedges.
@@ -267,47 +292,49 @@ for ob in list(bpy.data.objects):
 
 # Genuine preexisting PineCanopy77 production GLB, instantiated with shared mesh
 # data: only the instance transforms differ. Do not generate a new tree model.
+# PineCanopy77 is an existing whole forest c. 94x105m, NOT a lone pine.
+# v5 mistakenly normalized 77 trees to a 5.2m cloud of black specks.
+# Place only four full-scale reusable patches along forest-zone edges.
 pine_source=os.path.join(source_dir,'PineCanopy77.glb')
-pine_master=reused_glb(pine_source,(-31,26),5.2,z(-31,26)+.1,'authored PineCanopy77')
-pine_group=[pine_master]+list(pine_master.children_recursive)
-if len(pine_group)<2:raise RuntimeError('Pine77 tree model contains no authored geometry')
-def pine_instance(x,y,scale,azimuth):
+master_xy=(-43,37)
+forest_master=reused_glb(
+ pine_source,master_xy,50.0,z(*master_xy)+.02,'canonical 77-tree forest grove')
+forest_group=[forest_master]+list(forest_master.children_recursive)
+if len(forest_group)<2:raise RuntimeError('Canonical forest contains no mesh')
+def forest_patch(x,y,scale,azimuth):
  p={}
- for old in pine_group:
+ for old in forest_group:
   n=old.copy()
   if old.data:n.data=old.data
   bpy.context.collection.objects.link(n)
   p[old]=n
- for old in pine_group:
-  if old is pine_master:continue
+ for old in forest_group:
+  if old is forest_master:continue
   n=p[old]
   if old.parent in p:n.parent=p[old.parent]
   n.matrix_parent_inverse=old.matrix_parent_inverse.copy()
   n.matrix_basis=old.matrix_basis.copy()
- root=p[pine_master]
- root.location=(x,y,z(x,y)+.07)
- root.scale=tuple(v*scale for v in pine_master.scale)
+ root=p[forest_master]
+ delta=forest_master.location-Vector((master_xy[0],master_xy[1],z(*master_xy)+.02))
+ root.location=Vector((x,y,z(x,y)+.02))+delta*scale
+ root.scale=tuple(v*scale for v in forest_master.scale)
  root.rotation_euler.z=azimuth
- root.name='Grove authored PineCanopy77 / shared art'
+ root.name='Forest patch / reusable PineCanopy77 original'
  return root
-
-groves=[(-32,25,17),(33,29,21),(-43,0,13),(33,-10,10),
-        (-22,37,13),(10,40,13),(38,7,12)]
-planted=0
-for cx,cy,count in groves:
- for j in range(count):
-  x=cx+R.gauss(0,5);y=cy+R.gauss(0,5)
-  if x<-45 or x>45 or y<-32 or y>44:continue
-  if (x+5)**2/14**2+(y-6)**2/11**2<1:continue
-  if (x+24)**2/10**2+(y-4)**2/9**2<1:continue
-  if (x-13)**2/9**2+(y+1)**2/7**2<1:continue
-  if abs(y-river_y(x))<4.3:continue
-  pine_instance(x,y,R.uniform(.73,1.33),R.uniform(-3.14,3.14))
-  planted+=1
-print('AUTHORED_PINE77_INSTANCES',planted,'SOURCE_SUBOBJECTS',len(pine_group))
+for x,y,s,rot in [(44,38,.88,-.30),(-46,-24,.79,.18),(44,-23,.79,-.18)]:
+ forest_patch(x,y,s,rot)
+print('AUTHORED_PINE77_PATCHES',4,'SOURCE_SUBOBJECTS',len(forest_group))
 
 # Ground-clamped authored meadow variation / paths rather than uniform smooth green.
-dry=mat('sienna trampled earth',(.39,.315,.24))
+dry=mat('sienna trampled earth',(.30,.34,.27))
+earthnodes=dry.node_tree.nodes
+nt=earthnodes.new('ShaderNodeTexNoise');nt.inputs['Scale'].default_value=13
+nt.inputs['Detail'].default_value=4.0
+er=earthnodes.new('ShaderNodeValToRGB')
+er.color_ramp.elements[0].position=.25;er.color_ramp.elements[0].color=(.23,.29,.23,1)
+er.color_ramp.elements[1].position=.79;er.color_ramp.elements[1].color=(.38,.37,.29,1)
+dry.node_tree.links.new(nt.outputs['Fac'],er.inputs['Fac'])
+dry.node_tree.links.new(er.outputs['Color'],earthnodes.get('Principled BSDF').inputs['Base Color'])
 moss=mat('lowland moss',(.23,.34,.27))
 sand=mat('bank worn gravel',(.39,.41,.34))
 flora=mat('dark sage flowering groundcover',(.17,.32,.23))
@@ -318,18 +345,18 @@ def soilribbon(name,waypoints,width,material):
   prev=waypoints[max(0,i-1)];nxt=waypoints[min(len(waypoints)-1,i+1)]
   dx=nxt[0]-prev[0];dy=nxt[1]-prev[1]
   l=max(.001,math.hypot(dx,dy));tx=-dy/l;ty=dx/l
-  w=width*(.91+.09*sin(i*1.93))
+  w=width*(.87+.11*sin(i*1.93)+.04*sin(i*3.67))
   for s in (-1,1):
    xx=x+s*tx*w/2;yy=y+s*ty*w/2
    vs.append((xx,yy,z(xx,yy)+.085))
   if i:faces.append((2*(i-1),2*i,2*i+1,2*(i-1)+1))
  return ownmesh(name,vs,faces,[material])
 soilribbon('worn settlement avenue under cobbles',
- [(-5+sin(i*.24)*.55,-12.8+i*.47) for i in range(34)],6.2,dry)
+ [(-5+sin(i*.24)*.55,-12.8+i*.47) for i in range(34)],4.8,dry)
 soilribbon('organic edge of western sawmill path',
- [(-8,2),(-12,1),(-17,2),(-21,3),(-24,5)],2.8,dry)
+ [(-8,2),(-12,1),(-17,2),(-21,3),(-24,5)],1.8,dry)
 soilribbon('organic path to eastern barracks',
- [(-2,-2),(2,-3),(7,-4),(11,-3)],2.9,dry)
+ [(-2,-2),(2,-3),(7,-4),(11,-3)],2.0,dry)
 
 # Lithological bank stones follow the actual meander and adjacent grass is planted
 # according to the same waterline, with sparse clumps and coherent scale.
@@ -350,7 +377,7 @@ for i in range(140):
       (.78*r,.68*r,.26*r),R.choice((moss,flora,russet)))
 # Thousands of tiny grass planes are 1 authored MESH, not thousands of new draw calls.
 bladeV=[];bladeF=[];bladeMI=[]
-for i in range(1300):
+for i in range(700):
  x=R.uniform(-43,43);y=R.uniform(-28,38)
  if abs(y-river_y(x))<2.8:continue
  if (x+5)**2/13**2+(y-5)**2/10**2<1 and R.random()<.50:continue
