@@ -1,10 +1,2 @@
-source=d0b21fd5708c5070d1bd62dc6c6a98399c549051
-build_run=43653390105
-browser_run=43659627661
-msaa_ab_run=43661585648
-owner_only=true
-physical_iphone_verified=false
-crash_resolution_proven=false
-attempt=2-yaml-trigger-string-key
-
-retry=3-archive-tag-at-authorized-main-publication-commit
+Owner-only diagnostic 21d4. Native source d0b21fd unchanged; iPhone world entry remains failed. Preserve exact current site and archive before shell replacement. Require actual world marker journal and reload recovery in WebKit before deployment.
+Stage: baa343292f21378499b9af7f4fd8b67f7fefbe83

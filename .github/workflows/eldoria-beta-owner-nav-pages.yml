@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish-owner-preview:
-    runs-on: ubuntu-24.04
+    runs-on: macos-15
     timeout-minutes: 70
     environment:
       name: github-pages
@@ -20,8 +20,8 @@ jobs:
       BUILD_WORKFLOW_SHA: cf105a3e407b24c8ffd7cf3a2e7fb3fd1ae834b9
       BROWSER_RUN: 43659627661
       BROWSER_SHA: f03ac3c3083ab3e24d46b19ba58cb26c48a9c155
-      PREVIOUS_SOURCE: 90465a9a910b89a8a8b74e4b33a9bbc88578e00e
-      STAGE_SHA: f03ac3c3083ab3e24d46b19ba58cb26c48a9c155
+      PREVIOUS_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
+      STAGE_SHA: baa343292f21378499b9af7f4fd8b67f7fefbe83
       GH_TOKEN: ${{ github.token }}
       MSAA_RUN: '43661585648'
       MSAA_SHA: 557fc6b2c50e34b4570855868f6e1ea61b5e81c1
@@ -49,6 +49,9 @@ jobs:
         node tools/check-repository-architecture.mjs --tracked-tree
         node tools/check-workflow-governance.mjs
         node tools/check-workflow-quarantine.mjs
+
+        node tools/eldoria-private-beta/test-world-phase-diagnostic.cjs
+        python3 -m unittest discover -s tools/eldoria-private-beta -p test_patch_world_diagnostic.py
     - name: Require exact native, compiled package and browser success
       run: |
         python3 - <<'END'
@@ -66,79 +69,25 @@ jobs:
          assert all(any(j['name']==name and j['conclusion']=='success' for j in jobs) for name in names)
         print('EXACT_NATIVE_BUILD_AND_REAL_BROWSER_GATES_PASS_NOT_PHYSICAL_IPHONE')
         END
-    - uses: actions/download-artifact@v4
-      with:
-        run-id: ${{ env.BUILD_RUN }}
-        name: world-p0-mobile21-owner-site
-        github-token: ${{ github.token }}
-        path: candidate
-    - uses: actions/download-artifact@v4
-      with:
-        run-id: ${{ env.BROWSER_RUN }}
-        name: world-p0-browser-comparison
-        github-token: ${{ github.token }}
-        path: browser
-    - uses: actions/download-artifact@v4
-      with:
-        run-id: 43503650892
-        name: eldoria-owner-navigation-pages-proof
-        github-token: ${{ github.token }}
-        path: previous-proof
-    - uses: actions/download-artifact@v4
-      with:
-        run-id: ${{ env.MSAA_RUN }}
-        name: world-p0-identical-build-msaa-comparison
-        github-token: ${{ github.token }}
-        path: msaa-browser
-    - name: Require both same-binary variants and real world-camera marker
-      run: |
-        python3 - <<'END'
-        import json,os,pathlib
-        for variant in ['default','no-world-msaa']:
-         root=pathlib.Path('msaa-browser')/variant
-         d=json.loads((root/'report.json').read_text())
-         assert d['source']==os.environ['EXPECTED_SOURCE'] and d['passed'] and not d['errors']
-         assert d['worldEntryAndReentryVerified'] and d['constructionReloadVerified']
-         assert len(d['worldEntries'])==2 and all(e['entered'] and e['returned'] for e in d['worldEntries'])
-        assert 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' in pathlib.Path('msaa-browser/no-world-msaa/console.log').read_text()
-        pathlib.Path('owner-diagnostic-selection.json').write_text(json.dumps({'source':os.environ['EXPECTED_SOURCE'],'selected_url_flag':'eldoria_p0_world_msaa_off=1','same_binary_run':os.environ['MSAA_RUN'],'scope':'Owner-only physical-device investigation; desktop gameplay passed; frame gaps improved in one comparison; resident-memory reduction and iPhone crash resolution NOT proven','physical_iphone_verified':False,'external_testers_enabled':False},indent=2))
-        END
-    - name: Recover every current public byte from certified publication inventory
-      run: |
-        python3 tools/eldoria-private-beta/restore_published_owner_snapshot.py \
-         --proof previous-proof/site/integrated-owner-stage-proof.json \
-         --proof-sha256 f220237c5f3a7b113b4317fed56f5de6d753d31e6d7b190411fc9e63996c113b \
-         --source "$PREVIOUS_SOURCE" --origin https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu \
-         --output previous-live --archive previous-pages/artifact.tar
-    - name: Stage exact candidate while preserving all other routes and saves
+    - name: Recover current beta21 from its exact public certificate
       run: |
         set -euo pipefail
-        python3 - <<'END'
-        import json,os,pathlib
-        p=pathlib.Path('candidate/release-identity.json');j=json.loads(p.read_text())
-        assert j['source_sha']==os.environ['EXPECTED_SOURCE'] and str(j['native_run'])==os.environ['BUILD_RUN']
-        assert j['native_journey_verified'] and j['native_destination_captures_verified']
-        assert not j['physical_mobile_tested'] and not j['release_for_external_testers']
-        pathlib.Path('pinned-candidate.json').write_bytes(p.read_bytes())
-        END
-        BUNDLE=$(python3 -c 'import json;print(json.load(open("pinned-candidate.json"))["candidate_bundle_sha256"])')
-        DATA=$(python3 -c 'import json;print(json.load(open("pinned-candidate.json"))["delivered_data_sha256"])')
-        python3 tools/eldoria-private-beta/stage_integrated_owner_site.py \
-         --pages previous-pages/artifact.tar --candidate candidate --browser browser \
-         --output site --work stage-work --replace-source "$PREVIOUS_SOURCE" \
-         --expected-source-sha "$EXPECTED_SOURCE" --expected-bundle-sha256 "$BUNDLE" \
-         --expected-data-sha256 "$DATA" --native-run "$BUILD_RUN" --full-certificate-run "$BUILD_RUN" \
-         --require-world-entry
+        curl -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o current-proof.json
+        python3 tools/eldoria-private-beta/restore_published_owner_snapshot.py \
+         --proof current-proof.json \
+         --proof-sha256 f4bc2c0ca3768f62992a66a7ef3fbe299ee2b561354c1b899847432fa62895fa \
+         --source "$EXPECTED_SOURCE" --origin https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu \
+         --output site --archive previous-pages/artifact.tar
     - name: Durably archive recovered current site before replacement
       run: |
         set -euo pipefail
-        TAG=archive-pages-before-world-p0-d0b21fd
-        sha256sum previous-pages/artifact.tar > previous-pages-sha256.txt
+        TAG=archive-pages-before-world-diagnostic-21d4
+        shasum -a 256 previous-pages/artifact.tar > previous-pages-sha256.txt
         cat > previous-pages-note.md <<'END'
-        Complete owner beta19 Pages snapshot recovered from the successful 43503650892 publication inventory. All 145 public files were SHA256-verified against that certificate. This archive is the rollback for the world-entry P0 owner candidate, not a tester release.
+        Complete owner beta21 Pages snapshot, exact publication certificate f4bc2c0ca3768f62992a66a7ef3fbe299ee2b561354c1b899847432fa62895fa. Rollback before local diagnostic 21d4. Physical iPhone world entry remains failed; not a tester release.
         END
         if ! gh release view "$TAG" --json tagName >/dev/null 2>&1; then
-         gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Verified complete Pages snapshot before world P0' --notes-file previous-pages-note.md
+         gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Verified beta21 Pages before diagnostic 21d4' --notes-file previous-pages-note.md
         fi
         if ! gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq artifact.tar; then
          gh release upload "$TAG" previous-pages/artifact.tar
@@ -146,15 +95,38 @@ jobs:
         mkdir -p verified-archive
         gh release download "$TAG" --pattern artifact.tar --dir verified-archive
         cmp previous-pages/artifact.tar verified-archive/artifact.tar
-    - uses: actions/upload-artifact@v4
+    - name: Patch only local world diagnostic and certify unchanged native bytes
+      run: python3 tools/eldoria-private-beta/patch_world_diagnostic.py site
+    - uses: actions/setup-node@v4
       with:
-        name: world-p0-owner-publication-proof
+        node-version: '22'
+    - name: Prove actual Unity world phases and recovery before deployment
+      env:
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+        QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
+        QA_REQUIRE_CONSTRUCTION: '1'
+        QA_REQUIRE_WORLD_JOURNAL: '1'
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        node tools/eldoria-private-beta/qa_static_server.cjs site 18765 > local-server.log 2>&1 &
+        SERVER_PID=$!
+        trap 'kill "$SERVER_PID"' EXIT
+        QA_URL='http://127.0.0.1:18765/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1' \
+         QA_OUT=diagnostic-browser node tools/eldoria-private-beta/qa_world_entry_public.cjs
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-diagnostic-21d4-proof
         path: |-
           site/integrated-owner-stage-proof.json
-          pinned-candidate.json
           previous-pages-sha256.txt
           previous-pages/artifact.tar.recovery.json
-          owner-diagnostic-selection.json
+          diagnostic-browser
+          local-server.log
         retention-days: 60
     - uses: actions/configure-pages@v5
     - uses: actions/upload-pages-artifact@v3
@@ -223,10 +195,11 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 35
     env:
-      STAGE_SHA: f03ac3c3083ab3e24d46b19ba58cb26c48a9c155
+      STAGE_SHA: baa343292f21378499b9af7f4fd8b67f7fefbe83
       QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
       QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1
       QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
     steps:
     - uses: actions/checkout@v4
       with:
