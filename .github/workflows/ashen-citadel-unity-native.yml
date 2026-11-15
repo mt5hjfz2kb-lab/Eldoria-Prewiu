@@ -1,0 +1,158 @@
+name: "EXPERIMENT Ashen Citadel · real Unity 6 URP native proof"
+on:
+  push:
+    branches:
+      - experiment/ashen-citadel-i-v-20261115
+    paths:
+      - tools/ashen-citadel/native-request.txt
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: ashen-citadel-unity-native-single
+  cancel-in-progress: false
+
+jobs:
+  lease:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate exact independent branch and sole Windows lease before queuing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,base64,json,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+                   "Accept":"application/vnd.github+json","User-Agent":"ashen-citadel-native-qa"}
+          def get(url):
+              req=urllib.request.Request("https://api.github.com/repos/"+repo+"/"+url,headers=headers)
+              with urllib.request.urlopen(req, timeout=20) as res:return json.load(res)
+          head=get("git/ref/heads/experiment/ashen-citadel-i-v-20261115")
+          if head["object"]["sha"]!=os.environ["GITHUB_SHA"]:
+              raise SystemExit("Stale source SHA; do not run Unity")
+          r=get("contents/pipeline/active-workstreams.json?ref=main")
+          if r.get("encoding")=="base64":content=r["content"]
+          else:
+              obj=get("git/blobs/"+r["sha"])
+              if obj.get("sha")!=r["sha"] or obj.get("encoding")!="base64":
+                  raise SystemExit("Registry digest not validated")
+              content=obj["content"]
+          data=json.loads(base64.b64decode(content))
+          holders=[x for x in data["active"] if "windows-runner-heavy" in (x.get("resources") or [])]
+          if len(holders)!=1:raise SystemExit("Windows has no unique claim; do not schedule Unity")
+          w=holders[0]
+          if(w.get("id")!="eldoria-ashen-citadel-original-i-v-20261115" or
+             w.get("branch")!="experiment/ashen-citadel-i-v-20261115" or
+             w.get("owner")!="chatgpt-ashen-citadel-art-production-20261115" or
+             w.get("ownership_state")!="claimed" or w.get("status")!="active"):
+              raise SystemExit("Windows belongs to a different task")
+          print("ASHEN_WINDOWS_LEASE_CAS_PASS",w["id"],w.get("ownership_revision"))
+          PY
+
+  native:
+    needs: lease
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Native Windows resource and disk guard BEFORE checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -gt 0){
+            throw 'Windows already occupied; do not disturb another process'
+          }
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'Exact Unity editor is not accessible'
+          }
+          $free=[math]::Round((Get-PSDrive C).Free/1GB,2)
+          if($free -lt 20){throw "Insufficient scratch space: $free GiB (<20)"}
+          Write-Output "ASHEN_NATIVE_WINDOWS_FREE_GIB $free"
+      - name: Resolve previously installed Git without downloading tools
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing from configured runner'}
+            Add-Content $env:GITHUB_PATH (Split-Path $git)
+          }
+      - name: Checkout limited independent art plus real gateway/domain
+        uses: actions/checkout@v4
+        with:
+          path: ashen-src
+          clean: false
+          fetch-depth: 1
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/ashen-citadel-unity-native.yml
+            tools/ashen-citadel/native-qa.ps1
+            tools/ashen-citadel/native-request.txt
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel/**
+            Unity/Assets/Eldoria/Scripts/Domain/**
+            Unity/Assets/Eldoria/Scripts/Application/**
+            Unity/Assets/Eldoria/Scripts/Infrastructure/**
+            Unity/Assets/Eldoria/Content/EldoriaMobileURP.asset
+            Unity/Assets/Eldoria/Content/EldoriaMobileURP.asset.meta
+            Unity/Assets/Eldoria/Content/EldoriaForwardRenderer.asset
+            Unity/Assets/Eldoria/Content/EldoriaForwardRenderer.asset.meta
+            Unity/Assets/UniversalRenderPipelineGlobalSettings.asset
+            Unity/Assets/UniversalRenderPipelineGlobalSettings.asset.meta
+            Unity/ProjectSettings/**
+            Unity/Packages/manifest.json
+      - name: Revalidate registry ownership after checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $uri="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $registryBlob=Invoke-RestMethod -Uri $uri -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+          if($registryBlob.encoding -eq 'base64'){$b64=$registryBlob.content}
+          else{
+            $blob=Invoke-RestMethod -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/git/blobs/$($registryBlob.sha)" -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+            if($blob.sha -ne $registryBlob.sha -or $blob.encoding -ne 'base64'){throw 'Main registry SHA mismatch'}
+            $b64=$blob.content
+          }
+          $data=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64))|ConvertFrom-Json
+          $holders=@($data.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-ashen-citadel-original-i-v-20261115' -or
+            $holders[0].owner -ne 'chatgpt-ashen-citadel-art-production-20261115'){
+            throw 'Native resource has been reassigned; fail closed'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -gt 0){throw 'Unity became busy after checkout'}
+      - name: Run real isolated Unity Editor and capture five stage meshes on two viewport sizes
+        shell: powershell
+        timeout-minutes: 42
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'ashen-evidence'
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          $source=Join-Path $env:GITHUB_WORKSPACE 'ashen-src'
+          & "$source/tools/ashen-citadel/native-qa.ps1" -SourceRoot $source -OutputRoot $out -NativeLog (Join-Path $out 'unity-editor.log')
+      - name: Keep genuine Unity captures, created scene, importer metadata and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ashen-native-unity-i-v-${{ github.run_id }}
+          path: |
+            ashen-evidence/**
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Remove ONLY this run's scratch import/caches
+        if: always()
+        shell: powershell
+        run: |
+          $path=Join-Path $env:RUNNER_TEMP ("ashen-citadel-"+$env:GITHUB_RUN_ID)
+          if((Test-Path $path) -and $path.StartsWith($env:RUNNER_TEMP) -and
+             ((Split-Path $path -Leaf) -eq ("ashen-citadel-"+$env:GITHUB_RUN_ID))){
+            Remove-Item -LiteralPath $path -Recurse -Force -ErrorAction Continue
+            Write-Output 'ASHEN_OWN_SCRATCH_CLEANUP_DONE'
+          }
