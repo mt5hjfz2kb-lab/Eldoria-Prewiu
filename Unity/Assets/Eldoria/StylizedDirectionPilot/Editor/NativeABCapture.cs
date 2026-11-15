@@ -138,6 +138,21 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     }
                 }
                 Mark("EDITOR_SAFE_MATERIAL_PALETTE_FILES_WRITTEN");
+                // D: macro composition test using imported kit prefabs. This is
+                // a disposable ART DIRECTION study, not a release scene or POI.
+                var dressedWide=Path.Combine(outDir,"D-modular-diorama-1600x900.png");
+                var dressedPhone=Path.Combine(outDir,"D-modular-diorama-390x844.png");
+                using(var dressed=StylizedCompositionStudy.Build(city,camera))
+                {
+                    SaveEditorCamera(camera,dressedWide,1600,900);
+                    SaveEditorCamera(camera,dressedPhone,390,844);
+                    File.WriteAllLines(Path.Combine(outDir,"diorama-reuse-audit.csv"),dressed.Sources);
+                    Mark("EDITOR_MODULAR_DIORAMA_PROPS="+dressed.Count);
+                }
+                var dressedDelta=Difference(wideA,dressedWide);
+                if(dressedDelta.changedFraction<.08f)
+                    throw new InvalidOperationException("Modular diorama too subtle vs actual city baseline");
+
                 var safeWide=Difference(wideA,wideC);
                 var safePhone=Difference(phoneA,phoneC);
                 if(safeWide.meanPixelDelta<1 || safePhone.meanPixelDelta<1)

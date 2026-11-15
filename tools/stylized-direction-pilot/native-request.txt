@@ -1,7 +1,8 @@
-attempt=7
+# Attempt 8: macro pivot from color filters to physically staged modular 3D
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=2
-state=REAL_EDITOR_CITY_COMPOSITION_ABC_DE
-reason=After real 43723908844 same-shader B/C stayed too close to baseline; art direction pivot tests monumental ruins, grouped trees, terrain framing and URP tonal grading in temporary scene. Capture 10 real Unity PNGs and isolate all effects.
+attempt=8
+reason=Native runs 43723401749 and 43723908844 pass technically, but pure shader/palette changes do not improve composition; test disposable original-prefab forest/stone/ruins in Unity Editor camera without changing beta.
+state=REQUEST_EDITOR_NATIVE_MODULAR_COMPOSITION
 art_approved=false
