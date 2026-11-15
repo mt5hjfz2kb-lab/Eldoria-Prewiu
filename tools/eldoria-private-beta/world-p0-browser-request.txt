@@ -1,2 +1,3 @@
-mode=static-mesh-trial
-reason=Owner21e1 physical post-entry failure; exact four static mesh Read/Write bytes, isolated same-engine comparison; no publication and no Windows claim.
+mode=native-static-mesh
+native_run=43739391559
+attempt=1-exact-native-retirement
