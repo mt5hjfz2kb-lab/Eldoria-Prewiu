@@ -55,3 +55,27 @@ DELIVERY REJECTION AND BASE RECONCILIATION (15 November Europe/Madrid): comparin
 Second browser43651540315 artifact14137005353 ZIP a74efee964b7c6cd51e9855ab0afbe207f0604384557da4c2d19ef042506e847: actual wheel changed the first image, then stopped changing both versions. Reviewed first image shows central Entrar en Valoria moved under pointer195,420, so production UI correctly consumed further wheel gestures. Move real pointer to350,200 away from that central button; keep the substantial pixel-change assertion. Do not claim a game zoom failure or weaken the gate. Both approved sources retain the two-control world footer at225,776. Old588 remains rejected regardless of browser outcome.
 
 Initial close-view process samples were mixed: WebContent peak decreased but GPU peak rose; simultaneous WebContent+GPU sampled maxima were3031536KiB(control) versus3167904KiB(rejected candidate) on first visit. These are desktop observations, not a memory-reduction certificate or physical-iPhone diagnosis.
+
+## 2026-11-15 — reconciled native and real-browser proof; memory gate remains open
+
+- Frozen runtime: `d0b21fd5708c5070d1bd62dc6c6a98399c549051`, published baseline `90465a9a910b89a8a8b74e4b33a9bbc88578e00e`; BreachWatch source preserved byte-for-byte.
+- Combined build run `43653390105` passed native world PlayMode (12 reentries, actual saved-state reload, six settled world views), native UI, authored I–V checks, WebGL build and packaging. Windows cleanup completed and its claim was released. Cleanup log observed 59.28 GiB free; this is a historical measurement, not a current free-space guarantee.
+- Original native artifact `14138742713`, ZIP SHA256 `fafba2ffe49a601194b67de56ed8531bf9b455cf14c4a786881db80b3de776d5`: XML 1 passed / 0 failed / 0 skipped; 54 world/UI screenshot hashes independently verified. Six world views and six phone destination captures reviewed. This is preservation/functional evidence, not new artistic approval or physical iPhone testing.
+- Package proof `14139205643`, ZIP SHA256 `2ce39ec2d5d31ea1d3b6472ad6792673ace072a944e9f34affd9ec446aa7efc0`; bundle `6e33438d57aa5265e823d7730640432e0aa22421d71c7a62eb70fbf00bd74413`, delivered data `37b8b8b94d8566da52e695630c592be1e11019c9f394bb0e58d12f5dd49e2b79`.
+- Corrected visible-control harness passed on published control in run `43656016744`. Job-level `runner.temp` expression prevented the preceding workflow from starting; move it to step environment. Preserve failed workflow `43655589496` as infrastructure failure, not game failure. Correct artifact upload must retain `world-evidence`, not re-upload native proof alone.
+- Actual desktop WebKit comparison `43659627661`, workflow SHA `f03ac3c3083ab3e24d46b19ba58cb26c48a9c155`, passed both published control and new candidate: earned sawmill, nickname and construction reload, three real wheel zooms, two world entries and two verified city returns. Artifact `14140730101`, ZIP SHA256 `6dd689234e9019fa15a0bce177f0b3d9af6191d7b8cdc3c01d5534e3324c3dbb`.
+
+| Observed desktop WebKit metric | Published 90465 | Candidate d0b |
+|---|---:|---:|
+| First entry observed wait (ms) | 12,085 | 12,845 |
+| First entry maximum RAF gap (ms) | 2,687 | 2,561 |
+| Peak sampled WebContent RSS (KiB) | 2,122,720 | 2,228,624 |
+| Peak sampled GPU RSS (KiB), separate peak | 1,289,024 | 1,362,640 |
+| Maximum simultaneous sampled WebContent + GPU RSS (KiB) | 2,534,336 | 2,908,560 |
+| Last sampled used WASM after second entry (bytes) | 572,585,504 | 559,410,000 |
+
+These are one desktop comparison, not a controlled physical-iPhone memory benchmark. Do not sum independent peaks or claim total memory savings from the small WASM improvement. Candidate default has **not** demonstrated the intended resident-memory improvement and must not be presented as a solved iPhone crash.
+
+Follow-up: run `43661585648`, source `557fc6b2c50e34b4570855868f6e1ea61b5e81c1`, compares the identical mobile21 binary with default rendering versus the pre-existing opt-in `eldoria_p0_world_msaa_off=1`. No Unity rebuild, art replacement, source UI change or Windows claim. Require the actual opt-in Unity marker, full gameplay success, memory/RAF comparison and screenshot review before deciding whether that variant merits owner publication. Unity documents Camera.allowMSAA as controlling the camera MSAA target and URP performance guidance identifies MSAA attachment bandwidth as a measurable cost: https://docs.unity.com/en-us/engine/6000.3/script-reference/unityengine/camera/allowmsaa and https://docs.unity.com/en-us/engine/6000.0/manual/render-pipelines/universal-render-pipeline/introduction/configure-for-better-performance . This supports testing the hypothesis, not declaring the iPhone cause.
+
+Rollback preparation independently recovered all 145 currently public files, 961,110,684 bytes, against publication proof SHA256 `f220237c5f3a7b113b4317fed56f5de6d753d31e6d7b190411fc9e63996c113b`; deterministic tar SHA256 `a30724a10bb3aa04d1142a11d0f65dd1ae2c001828eebc574b7c453fd745d14c`. Publication remains untriggered. The current site still serves 90465. Physical-iPhone confirmation, proven root cause and tester release remain pending.
