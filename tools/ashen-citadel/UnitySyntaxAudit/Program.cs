@@ -17,6 +17,14 @@ if(sources.Count<4)throw new Exception("Experimental Unity code incomplete");
 var opts=CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest)
     .WithPreprocessorSymbols("UNITY_EDITOR","UNITY_6000_0_OR_NEWER","UNITY_6000_3_OR_NEWER");
 int errors=0;
+// Prevent ambiguous namespace resolution; genuine Unity showed CS0234 twice
+// while the syntax-only parser still returned success.
+foreach(var path in sources)
+{
+    var text = File.ReadAllText(path);
+    if(Regex.IsMatch(text, @"(?<!UnityEngine\\.)\\bApplication\\.(dataPath|persistentDataPath)"))
+        throw new Exception("ASHEN_UNQUALIFIED_UNITY_APPLICATION: " + path);
+}
 foreach(var path in sources)
 {
     var tree=CSharpSyntaxTree.ParseText(File.ReadAllText(path),opts,path:path);

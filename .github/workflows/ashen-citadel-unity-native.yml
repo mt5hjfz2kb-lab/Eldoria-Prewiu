@@ -148,7 +148,7 @@ jobs:
         timeout-minutes: 42
         run: |
           $ErrorActionPreference='Stop'
-          $out=Join-Path $env:GITHUB_WORKSPACE 'ashen-evidence'
+          $out=Join-Path $env:GITHUB_WORKSPACE ("ashen-evidence-"+$env:GITHUB_RUN_ID)
           New-Item -ItemType Directory -Force -Path $out | Out-Null
           $source=Join-Path $env:GITHUB_WORKSPACE 'ashen-src'
           & "$source/tools/ashen-citadel/native-qa.ps1" -SourceRoot $source -OutputRoot $out -NativeLog (Join-Path $out 'unity-editor.log')
@@ -158,7 +158,7 @@ jobs:
         with:
           name: ashen-native-unity-i-v-${{ github.run_id }}
           path: |
-            ashen-evidence/**
+            ashen-evidence-${{ github.run_id }}/**
           if-no-files-found: warn
           retention-days: 14
       - name: Remove ONLY this run's scratch import/caches
