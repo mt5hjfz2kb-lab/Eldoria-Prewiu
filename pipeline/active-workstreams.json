@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T13:01:40.059Z",
+  "updated_at": "2026-11-15T13:07:55.336Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9534,6 +9534,29 @@
         "unrelated_early_retention_domain_failure": "CS0103 NarrativeCoherenceRules"
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
+    },
+    {
+      "id": "eldoria-senda-brecha-lane-event-20261115",
+      "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
+      "owner": "chatgpt-senda-brecha-event-20261115",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "feature/senda-brecha-lane-event-20261115",
+      "status": "active",
+      "phase": "ISOLATED_PROTOTYPE_DEVELOPMENT",
+      "claimed_at": "2026-11-15T13:07:55.336Z",
+      "resources": [],
+      "scope": [
+        "tools/senda-brecha/**",
+        "docs/events/senda-brecha/**",
+        "Unity/Assets/Eldoria/SendaBrecha/**"
+      ],
+      "base_main_sha": "b3b94857f89bdbe7905af013ec910d4e3658fecc",
+      "reason": "Owner explicitly requests preparing standalone lane-battle event from supplied gameplay video; isolate prototype, do not integrate into current iPhone beta or change gameplay economy/saves.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only isolated deterministic gameplay prototype with procedural placeholder visuals; no production 2D/3D art, model or paid assets. Future art integration will require its own art-production routing.",
+      "art_approved": false,
+      "physical_iphone_verified": false
     }
   ],
   "history": [
