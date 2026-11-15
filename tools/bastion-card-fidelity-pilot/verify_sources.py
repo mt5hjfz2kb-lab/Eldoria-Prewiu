@@ -113,6 +113,7 @@ def main():
         "initialSnapshot ==","ui.HasLiveBuildingPortrait",
         "ui.LegacyPresentationHidden","AssetDatabase.GetAssetPath",
         "Object.DestroyImmediate(ownerGoldObject)",
+        "shaderErrorMagentaFraction", "magentaFraction < .006f",
     ):
         assert invariant in code, f"Source-only pilot missing required invariant: {invariant}"
     preview=create_preview(images,borders)
