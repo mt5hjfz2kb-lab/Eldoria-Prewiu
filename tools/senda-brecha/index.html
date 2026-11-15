@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10131b">
+  <title>La Senda de la Brecha · Prototipo independiente de Eldoria</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app" aria-label="Prototipo jugable del evento La Senda de la Brecha">
+  <header class="topline">
+    <div class="crest" aria-hidden="true">V</div>
+    <div class="heading"><p class="eyebrow">EVENTO · PROTOTIPO</p><h1>La Senda de la Brecha</h1></div>
+    <span class="chapter" id="chapter">I / III</span>
+  </header>
+  <section class="stats" aria-label="Estado de la expedición">
+    <div><span class="stat-label">TROPAS</span><strong id="soldiers">22</strong></div>
+    <div><span class="stat-label">ATAQUE</span><strong id="attack">39</strong></div>
+    <div><span class="stat-label">CAÍDAS</span><strong id="fallen">0</strong></div>
+    <div class="stat-time"><span class="stat-label">TIEMPO</span><strong id="elapsed">00:00</strong></div>
+  </section>
+  <section class="arena-shell" id="arena-shell" aria-label="Camino de batalla">
+    <canvas id="arena" aria-label="Representación del camino, el escuadrón, las puertas y los enemigos"></canvas>
+    <div class="zone" id="zone"><span>TRAMO 1</span> <strong>El bosque silencioso</strong></div>
+    <div class="enemy-hud hidden" id="enemy-hud" aria-live="off">
+      <span id="enemy-label">Acechadores</span><div class="enemy-track"><i id="enemy-fill"></i></div>
+    </div>
+    <div class="choice-hud" id="choice-hud">
+      <div class="choice-timer"><span>ELIGE TU RUTA</span><strong id="gate-time">6</strong></div>
+      <div class="gate-cards">
+        <button class="gate-card selected" id="gate-left" type="button" aria-label="Elegir puerta izquierda"><span class="gate-symbol" id="left-icon">⚔</span><span class="gate-name" id="left-title">Guardia de Valoria</span><strong id="left-detail">+12 INFANTERÍA</strong></button>
+        <button class="gate-card" id="gate-right" type="button" aria-label="Elegir puerta derecha"><span class="gate-symbol" id="right-icon">➶</span><span class="gate-name" id="right-title">Arqueros errantes</span><strong id="right-detail">+9 ARQUEROS</strong></button>
+      </div>
+    </div>
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+  </section>
+  <div class="bottom">
+    <div class="phase-caption"><span class="phase-dot"></span><span id="phase-info">Selecciona una puerta antes de llegar a ella.</span></div>
+    <div class="lane-controls">
+      <button id="left" class="lane-btn" type="button"><span class="direction">←</span> IZQUIERDA</button>
+      <span class="lane-hint">DESLIZA<br>O TOCA</span>
+      <button id="right" class="lane-btn" type="button">DERECHA <span class="direction">→</span></button>
+    </div>
+    <p class="disclaimer">Demostración aislada · No modifica partidas ni concede premios reales</p>
+  </div>
+  <div class="overlay" id="intro" role="dialog" aria-modal="true" aria-labelledby="intro-heading">
+    <div class="modal">
+      <div class="modal-rune" aria-hidden="true">✧</div>
+      <p class="eyebrow">VALORIA · MISIÓN ESPECIAL</p>
+      <h2 id="intro-heading">La Senda<br>de la Brecha</h2>
+      <p>Conduce a tu destacamento por un bosque corrompido. Elige entre dos rutas, incorpora refuerzos y vence al guardián.</p>
+      <div class="howto"><div><strong>01</strong><span>Desliza a izquierda o derecha para elegir una puerta.</span></div><div><strong>02</strong><span>Las tropas combaten automáticamente.</span></div><div><strong>03</strong><span>Supera tres tramos sin perder todo el escuadrón.</span></div></div>
+      <button id="start" class="primary" type="button">INICIAR EXPEDICIÓN <span aria-hidden="true">›</span></button>
+      <small>Prueba independiente, no incluida en la beta de Eldoria.</small>
+    </div>
+  </div>
+  <div class="overlay hidden" id="result" role="dialog" aria-modal="true" aria-labelledby="result-heading">
+    <div class="modal result-modal"><div class="modal-rune" aria-hidden="true" id="result-rune">✦</div>
+      <p class="eyebrow" id="result-kicker">EXPEDICIÓN COMPLETADA</p><h2 id="result-heading">Victoria</h2>
+      <p id="result-description">El camino vuelve a estar a salvo.</p>
+      <div class="result-stats"><div><span>SUPERVIVIENTES</span><strong id="result-survivors">0</strong></div><div><span>TIEMPO</span><strong id="result-time">00:00</strong></div><div><span>TRAMOS</span><strong id="result-stages">3/3</strong></div></div>
+      <div class="reward" id="reward"><span class="reward-icon">✧</span><div><strong>45 fragmentos + 1 sello</strong><small>Premio simulado; no abonado al juego</small></div></div>
+      <button id="again" class="primary" type="button">VOLVER A INTENTARLO <span aria-hidden="true">↻</span></button>
+    </div>
+  </div>
+</main>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
