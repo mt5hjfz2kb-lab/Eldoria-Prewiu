@@ -104,7 +104,7 @@ jobs:
           $out=Join-Path $project 'StylizedDirectionPilotCaptures'
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-stylized-ab.log'
           if(Test-Path $out){Remove-Item $out -Recurse -Force}
-          $args='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.StylizedDirectionPilot.Editor.GraphicFinishNativeCapture.Capture -logFile "'+$log+'"'
+          $args='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.StylizedDirectionPilot.Editor.TerrainCompositionAB.Capture -logFile "'+$log+'"'
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $until=(Get-Date).AddMinutes(25)
           while(-not $p.HasExited -and (Get-Date) -lt $until){Start-Sleep -Seconds 3;$p.Refresh()}
@@ -116,8 +116,8 @@ jobs:
             $file=Join-Path $out $name
             if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 30000){throw "Real Unity A/B missing/blank: $name"}
           }
-          if(-not(Test-Path (Join-Path $out 'graphic-finish-evidence.json'))){throw 'No source-pinned evidence'}
-          Get-Content (Join-Path $out 'graphic-finish-evidence.json')
+          if(-not(Test-Path (Join-Path $out 'landscape-pilot-evidence.json'))){throw 'No source-pinned evidence'}
+          Get-Content (Join-Path $out 'landscape-pilot-evidence.json')
       - uses: actions/upload-artifact@v4
         if: always()
         with:

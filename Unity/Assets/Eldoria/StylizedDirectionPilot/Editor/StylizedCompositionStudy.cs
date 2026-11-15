@@ -46,13 +46,15 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             return f-Mathf.Floor(f);
         }
 
-        static Vector3 Ground(Camera camera,float nx,float ny)
+        static Vector3 Ground(Camera camera,Terrain terrain,float nx,float ny)
         {
             var ray=camera.ViewportPointToRay(new Vector3(nx,ny,0f));
-            var plane=new Plane(Vector3.up,Vector3.zero);
+            var plane=new Plane(Vector3.up,terrain.transform.position);
             if(!plane.Raycast(ray,out float distance))
                 throw new InvalidOperationException("Isometric player camera cannot project onto real ground");
-            return ray.GetPoint(distance);
+            var p=ray.GetPoint(distance);
+            p.y=terrain.SampleHeight(p)+terrain.transform.position.y;
+            return p;
         }
 
         static Bounds BoundsOf(GameObject go)
@@ -64,7 +66,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             return b;
         }
 
-        bool Place(Camera cam,string path,float nx,float ny,float height,float yaw,int index,string role)
+        bool Place(Camera cam,Terrain terrain,string path,float nx,float ny,float height,float yaw,int index,string role)
         {
             var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if(!prefab)return false;
@@ -77,9 +79,10 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             float nativeHeight=Mathf.Max(.01f,b.size.y);
             float scale=Mathf.Clamp(height/nativeHeight,.3f,2.5f);
             go.transform.localScale*=scale;
-            go.transform.position=Ground(cam,nx,ny);
+            Vector3 ground=Ground(cam,terrain,nx,ny);
+            go.transform.position=ground;
             b=BoundsOf(go);
-            go.transform.position+=Vector3.up*(.05f-b.min.y);
+            go.transform.position+=Vector3.up*(ground.y+.035f-b.min.y);
             // This is a composition preview only; no new selectable nodes.
             foreach(var collider in go.GetComponentsInChildren<Collider>(true))collider.enabled=false;
             foreach(var mb in go.GetComponentsInChildren<MonoBehaviour>(true))mb.enabled=false;
@@ -90,7 +93,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             return true;
         }
 
-        void Forest(Camera cam,float cx,float cy,float dx,float dy,int n,int seed)
+        void Forest(Camera cam,Terrain terrain,float cx,float cy,float dx,float dy,int n,int seed)
         {
             for(int i=0;i<n;i++)
             {
@@ -101,10 +104,10 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 if(x<.01f||x>.99f||y<.05f||y>.98f)continue;
                 string source=Base+Trees[(i+seed)%Trees.Length];
                 float height=2.6f+Rand(i,seed+22)*2.0f;
-                Place(cam,source,x,y,height,Rand(i,seed+80)*360,i,"forest");
+                Place(cam,terrain,source,x,y,height,Rand(i,seed+80)*360,i,"forest");
             }
         }
-        void Rocks(Camera cam,float cx,float cy,float rx,float ry,int n,int seed)
+        void Rocks(Camera cam,Terrain terrain,float cx,float cy,float rx,float ry,int n,int seed)
         {
             for(int i=0;i<n;i++)
             {
@@ -113,7 +116,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 float x=cx+Mathf.Cos(theta)*rx*rr;
                 float y=cy+Mathf.Sin(theta)*ry*rr;
                 if(x<.01f||x>.99f||y<.03f||y>.97f)continue;
-                Place(cam,Base+Stones[(i+seed)%Stones.Length],x,y,
+                Place(cam,terrain,Base+Stones[(i+seed)%Stones.Length],x,y,
                     .55f+Rand(i,seed+14)*1.25f,Rand(i,seed+53)*360,i,"geology");
             }
         }
@@ -122,26 +125,28 @@ namespace Eldoria.StylizedDirectionPilot.Editor
         {
             if(!city||!camera)throw new ArgumentNullException("City and camera required");
             var study=new StylizedCompositionStudy();
+            var terrain=Object.FindFirstObjectByType<Terrain>(FindObjectsInactive.Include);
+            if(!terrain)throw new InvalidOperationException("Terrain grounding unavailable");
             try
             {
                 // Substantial, deliberate silhouette clusters, not evenly spaced props.
                 // Free corridor and Bastion middle preserve interaction clarity.
-                study.Forest(camera,.10f,.86f,.12f,.11f,12,11);
-                study.Forest(camera,.29f,.91f,.10f,.075f,11,19);
-                study.Forest(camera,.81f,.88f,.15f,.09f,17,31);
-                study.Forest(camera,.92f,.63f,.08f,.14f,10,47);
-                study.Forest(camera,.13f,.44f,.09f,.12f,8,67);
-                study.Forest(camera,.87f,.14f,.11f,.09f,12,83);
-                study.Rocks(camera,.69f,.74f,.11f,.075f,15,21);
-                study.Rocks(camera,.90f,.43f,.07f,.10f,10,34);
-                study.Rocks(camera,.10f,.35f,.07f,.08f,8,44);
+                study.Forest(camera,terrain,.10f,.86f,.12f,.11f,12,11);
+                study.Forest(camera,terrain,.29f,.91f,.10f,.075f,11,19);
+                study.Forest(camera,terrain,.81f,.88f,.15f,.09f,17,31);
+                study.Forest(camera,terrain,.92f,.63f,.08f,.14f,10,47);
+                study.Forest(camera,terrain,.13f,.44f,.09f,.12f,8,67);
+                study.Forest(camera,terrain,.87f,.14f,.11f,.09f,12,83);
+                study.Rocks(camera,terrain,.69f,.74f,.11f,.075f,15,21);
+                study.Rocks(camera,terrain,.90f,.43f,.07f,.10f,10,34);
+                study.Rocks(camera,terrain,.10f,.35f,.07f,.08f,8,44);
 
                 // Ancient wall fragments can frame the lost empire but must not
                 // become new production buildings or touch existing districts.
                 var ruin="Assets/Eldoria/Resources/Valoria/Stone_Wall.prefab";
-                study.Place(camera,ruin,.74f,.84f,4.5f,19,1,"ancient-ruin");
-                study.Place(camera,ruin,.84f,.80f,3.7f,72,2,"ancient-ruin");
-                study.Place(camera,ruin,.20f,.80f,2.6f,145,3,"ancient-ruin");
+                study.Place(camera,terrain,ruin,.74f,.84f,4.5f,19,1,"ancient-ruin");
+                study.Place(camera,terrain,ruin,.84f,.80f,3.7f,72,2,"ancient-ruin");
+                study.Place(camera,terrain,ruin,.20f,.80f,2.6f,145,3,"ancient-ruin");
 
                 if(study.Count<45)
                     throw new InvalidOperationException("Too few authentic reusable kit props for scene proof: "+study.Count);
