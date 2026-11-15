@@ -1,7 +1,7 @@
-attempt=12
+attempt=13
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=4
-state=UNITY_REAL_TERRAIN_ONLY_ART_DIRECTION
-reason=Real Unity run 43726354590 proved terrain palette/texture changed strongly, but 105 artificial source-rock clones visually failed. Remove all new decorative geometry, keep real original meshes and terrain layer recoloring+local soil, require same-camera A/F wide/mobile.
+state=REAL_UNITY_TERRAIN_H_ATMOSPHERE_A_B_C
+reason=Genuine native capture 43726672716 succeeded on two resolutions and restored city. The isolated F terrain is visibly more coherent but too bland. Compare a second bold macro approach H with cold ambient, warm sun, higher contrast, restrained vignette using same scene/camera. No new assets, no gameplay or beta modifications.
 art_approved=false

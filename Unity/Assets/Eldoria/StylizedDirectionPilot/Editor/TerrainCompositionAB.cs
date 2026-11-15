@@ -45,6 +45,8 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 string phoneA=Path.Combine(output,"A-original-city-390x844.png");
                 string wideF=Path.Combine(output,"F-painted-landscape-1600x900.png");
                 string phoneF=Path.Combine(output,"F-painted-landscape-390x844.png");
+                string wideH=Path.Combine(output,"H-atmospheric-diorama-1600x900.png");
+                string phoneH=Path.Combine(output,"H-atmospheric-diorama-390x844.png");
                 Screenshot(camera,wideA,1600,900);
                 Screenshot(camera,phoneA,390,844);
                 int painted=0,layers=0,placed=0;
@@ -64,11 +66,22 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                         Screenshot(camera,wideF,1600,900);
                         Screenshot(camera,phoneF,390,844);
                     }
+                    // Distinct art direction (cold atmosphere / warm recovered realm).
+                    // Same real scene, same camera and painterly terrain; the
+                    // comparison judges light and visual hierarchy only.
+                    using(var atmosphere=new LightPass(camera,true))
+                    {
+                        Screenshot(camera,wideH,1600,900);
+                        Screenshot(camera,phoneH,390,844);
+                    }
                 }
                 float d1=Diff(wideA,wideF),d2=Diff(phoneA,phoneF);
+                float h1=Diff(wideA,wideH),h2=Diff(phoneA,phoneH);
                 if(d1<6||d2<6||painted==0)
                     throw new InvalidOperationException("Real-world visual effect too small: pixels "+
                         d1.ToString("F2")+"/"+d2.ToString("F2")+" placed="+placed);
+                audit.Add("H-atmospheric-diorama / A-wide-delta="+h1.ToString("F2")+
+                    " A-phone-delta="+h2.ToString("F2"));
                 File.WriteAllLines(Path.Combine(output,"landscape-pilot-audit.txt"),audit);
                 var e=new Evidence{
                     kind="TRUE_UNITY_EDITOR_CAMERA_REAL_TERRAIN_LAYER_A_B_NOT_GAMEPLAY",
@@ -136,7 +149,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             readonly List<Color> oldColors=new List<Color>();
             readonly List<float> oldStrengths=new List<float>();
             readonly Color ambient;readonly AmbientMode mode;
-            public LightPass(Camera cam)
+            public LightPass(Camera cam,bool cinematic=false)
             {
                 camera=cam;previousHDR=cam.allowHDR;
                 additional=cam.GetUniversalAdditionalCameraData();
@@ -144,12 +157,13 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 cam.allowHDR=true;additional.renderPostProcessing=true;
                 ambient=RenderSettings.ambientLight;mode=RenderSettings.ambientMode;
                 RenderSettings.ambientMode=AmbientMode.Flat;
-                RenderSettings.ambientLight=new Color(.62f,.66f,.65f);
+                RenderSettings.ambientLight=cinematic ? new Color(.53f,.59f,.64f) : new Color(.62f,.66f,.65f);
                 foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
                 {
                     if(l.type!=LightType.Directional||!l.gameObject.activeInHierarchy)continue;
                     suns.Add(l);oldColors.Add(l.color);oldStrengths.Add(l.intensity);
-                    l.color=new Color(1f,.92f,.83f);l.intensity*=.91f;
+                    l.color=cinematic ? new Color(1f,.80f,.63f) : new Color(1f,.92f,.83f);
+                    l.intensity*=cinematic ? 1.04f : .91f;
                 }
                 root=new GameObject("Art direction only / tonal post");
                 root.hideFlags=HideFlags.DontSaveInBuild|HideFlags.DontSaveInEditor;
@@ -158,8 +172,19 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 volume.sharedProfile=profile;
                 var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.ACES);
                 var grade=profile.Add<ColorAdjustments>(true);
-                grade.postExposure.Override(-.05f);grade.contrast.Override(10f);
-                grade.saturation.Override(-15f);grade.colorFilter.Override(new Color(.96f,.99f,1f));
+                grade.postExposure.Override(cinematic ? -.09f : -.05f);
+                grade.contrast.Override(cinematic ? 22f : 10f);
+                grade.saturation.Override(cinematic ? -19f : -15f);
+                grade.colorFilter.Override(cinematic ? new Color(.94f,.97f,1f) : new Color(.96f,.99f,1f));
+                if(cinematic)
+                {
+                    var vignette=profile.Add<Vignette>(true);
+                    vignette.intensity.Override(.19f);
+                    vignette.smoothness.Override(.38f);
+                    var bloom=profile.Add<Bloom>(true);
+                    bloom.intensity.Override(.09f);
+                    bloom.threshold.Override(1.25f);
+                }
             }
             public void Dispose()
             {
