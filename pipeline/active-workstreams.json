@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:44:29.363Z",
+  "updated_at": "2026-11-15T23:45:21.641Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9811,7 +9811,7 @@
       "ownership_revision": 12,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "ATLAS_FIXED_FBX_TRIANGULATION_DIAGNOSIS",
+      "phase": "TRIANGULATED_FBX_READY_WAITING_ASHEN_RELEASE",
       "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
@@ -9828,7 +9828,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "One bounded capture recovery verification, then release Windows for Ashen Citadel and inspect actual evidence.",
+      "next": "FBX re-exported as triangles; Blender reimport verifies four meshes, 21308 triangles, per-face UV and vertex colors. Next native only after Ashen attempt2 completes and explicitly releases Windows; do not race its queued retry.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9838,11 +9838,11 @@
         "lease_tests": "8/8 PASS",
         "windows_executed": false
       },
-      "final_source_sha": "fa9f8eae7be6e4dd7a78a45be76f53f9b4d862e5",
+      "final_source_sha": "fb48310ebbd0e83bd9b7301c43a1d1b4d48c1465",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_one_execution",
-        "after_run_id": 43773241535,
+        "status": "waiting_for_ashen_completed_turn",
+        "after_run_id": 43776052927,
         "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
         "requested_at": "2026-11-15T22:44:00.333Z"
       },
