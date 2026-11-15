@@ -52,3 +52,10 @@ retry=11
 cause=PlayMode UnityTest cases were discovered during EditMode run and tried to load a scene outside PlayMode
 fix=PlayMode asmdef cross-platform plus explicit class testFilter for each actual test runner
 expected=7 EditMode and 3 PlayMode separate XML files, 10 Unity screenshots, no P0/beta impact
+
+retry=12
+intent=Genuine Unity 6 URP scene after artist-authored continuous landscape replaces flat floor
+landscape=AshenLandscape.obj 7509 authored triangles, actual Blender lookdev QA run 43767337098 PASS
+ui=Headless ScreenSpaceCamera compositing into real RenderTexture; five playable UI states, not iPhone
+gates=7 EditMode progression+scene, >=4 PlayMode real scene navigation plus UI screenshots and zero-shader-magenta
+safety=isolated experiment/ashen-citadel-i-v-20261115 only; never modify main or beta
