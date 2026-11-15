@@ -1,5 +1,16 @@
 # Visual reboot — Fase 1, relevo 15 noviembre 2026
 
+## Estado actual — 16 noviembre 2026 (Europe/Madrid)
+
+- Alternancia real verificada: Ashen → Visual Reboot → Ashen; fuente y escenas siguen separadas.
+- Run 43775314861, fuente 430fb4a19f5a2798bd61213495147de397e1e40a: compila el código Editor e importa Shader Graph; falla antes de renderizar porque el atlas no satisface el contrato 256×256 al cargarlo. La restauración de escena vacía ya no oculta la excepción.
+- Artefacto 14186590250, ZIP SHA256 f100b544ede21848506d4d5ecf33de7e7837e10bb2267b75723a839584a503dc, descargado y comprobado. Contiene log y excepción, cero PNG Unity.
+- Fuente PNG verificada localmente: 256×256 RGBA, no es un puntero LFS. El .meta recuperado sólo tenía GUID; aún no conocemos los valores efectivos del importador en Windows.
+- Corrección candidata 447aa5d948f938d6cc49883f3fc10c6ef1a32074: prepara explícitamente Texture2D, tamaño256, sRGB, sin compresión/mipmaps, guarda diagnósticos de importación antes/después y exige tamaño real. No cambia la imagen ni su GUID. Sintaxis C# y16 pruebas de reserva PASS; prueba Unity pendiente.
+- Windows devuelto a Ashen para run43775821050; NO interrumpir. Reclamar sólo después del relevo vivo y cola libre.
+- No UNITY_RENDERED ni ART_APPROVED ni MOBILE_TESTED. Las secciones siguientes son historial y sus estados antiguos no prevalecen sobre este resumen.
+
+
 ## Identidad y límites
 
 Continuar únicamente `art/visual-reboot`, fuente recuperada `855af6dd4ea7c37318796847a71778377fd513d8`.
