@@ -61,7 +61,7 @@ def remap(objects,pal):
         for slot in obj.material_slots:
             orig=slot.material
             if orig is None:continue
-            name=re.sub(r"\\.\\d{3}$", "", orig.name.lower())
+            name=re.sub(r"\.\d{3}$", "", orig.name.lower())
             found=next((k for k in pal if k.lower()==name or name.endswith(":"+k.lower()) or name.startswith(k.lower()+" ")),None)
             if found:
                 pbr(orig,pal[found]);count+=1
