@@ -30,3 +30,13 @@ El contorno C es **una** textura transparente, sin texto fijo y sin fondo/placa 
 Revisar las 12 capturas verdaderas frente a la imagen de 864×1536: marco/material y proporción; integración del 3D; renglones reales no truncados; botón y martillos sin choque; interacción, estado bloqueado, clic, safe area y armonía con el HUD. Si C o B empeoran A, rechazar sin añadir filtros. Solo tras mejora artística evidente validar WebGL y iPhone físico. Ningún test técnico emite ART_APPROVED.
 
 **Estado:** A/B/C fuente preparada, pruebas Unity/WebGL/iPhone y decisión estética pendientes, sin merge ni publicación.
+
+## Diagnóstico nuevo: 14/11/2026, captura genuina de Unity archivada
+
+Recuperada y revisada la evidencia del **run 43623869301**, source `ae05d1c6b5e7deb949b98c3f3100fa85ced3ba81`, incluyendo cuatro capturas de Bastión y `breachwatch-native.log`. El Bastión aparece magenta tanto en ciudad como en su retrato 3D; el porcentaje de píxeles casi-magenta medido sobre todo el framebuffer fue **5,82 %** (390×844), **5,01 %** (900×1600), **4,25 %** (1600×900) y **3,79 %** (844×390). Son mediciones de ese candidato archivado, NO de una beta física actual.
+
+El inventario del mismo run declara `Universal Render Pipeline/Lit shaderSupported=True` para las ranuras 8/9/10 del Bastión, mientras los logs contienen advertencias de subshaders no disponibles para otros shaders. Por tanto **no está verificada la causa exacta** de los polígonos magenta; tampoco sabemos si persisten en el último artefacto distribuido. Una propiedad Shader.isSupported=true **no basta** para dar por válido el render: comprobar los píxeles reales es indispensable.
+
+El capturador de la PR197 rechaza el A/B/C completo cuando una captura real contiene **0,6 % o más** de píxeles con R/B altos y G bajo, preservando el PNG fallido y el error. Este umbral es una prueba diagnóstica específica de **Valoria/Bastión sin ambientación violeta**, no una regla universal para escenas de Brecha. No introducir un material de sustitución ni ocultar el fallo dentro del piloto: corresponde diagnosticar el pipeline/material del Bastión en su trabajo autorizado sin invadir PR194/P0.
+
+La comparación de fuentes en Ubuntu **sí ha pasado** y ha producido la hoja de materiales A/B/C. Su revisión visual indica que el conjunto A conserva una estructura pictórica más próxima al objetivo que B o C por separado. La hipótesis del simple intercambio de sprites **no está aprobada**, aunque la decisión definitiva exige capturas nativas sin magenta y con textos/3D verdaderos.
