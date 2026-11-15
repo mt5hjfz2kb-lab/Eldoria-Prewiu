@@ -45,8 +45,9 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version | head -n 2
+          blender -b -t 2 --python-expr "import numpy; print('ASHEN_NUMPY_IMPORT_PASS',numpy.__version__)"
       - name: Real Blender 3D import, material, camera & five renders
         shell: bash
         run: |
