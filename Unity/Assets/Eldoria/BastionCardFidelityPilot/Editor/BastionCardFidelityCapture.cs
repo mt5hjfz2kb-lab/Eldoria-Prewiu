@@ -29,9 +29,9 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
 
         [Serializable] public sealed class Shot
         {
-            public string variant, file, sha256, buildingName, actionCaption, surface, action;
+            public string variant, file, sha256, buildingName, actionCaption, surface, action, border;
             public int width, height;
-            public bool realPortrait, liveState, productionVigilia, oldCanvasHidden;
+            public bool realPortrait, liveState, productionVigilia, oldCanvasHidden, exactApprovedBorder;
         }
         [Serializable] public sealed class Evidence
         {
@@ -146,6 +146,18 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                     "One owner-approved real hammered burgundy image");
             Need(surface && surface.sprite && action && action.sprite,
                 "The genuine Bastion card surface or action is missing");
+            var originalBorder = Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border");
+            var borderImage = ui.BuildingPanel.GetComponentsInChildren<Image>(true)
+                .FirstOrDefault(i => i && i.name == "Pilot / single genuine owner gold contour");
+            if (variant.StartsWith("C-"))
+                Need(originalBorder && borderImage && borderImage.sprite == originalBorder &&
+                    borderImage.type == Image.Type.Sliced && !borderImage.raycastTarget &&
+                    ui.BuildingPanel.GetComponentsInChildren<Image>(true)
+                      .Count(i => i && i.name == "Pilot / single genuine owner gold contour") == 1,
+                    "Exact owner border is missing, duplicated or cannot stretch properly");
+            else
+                Need(borderImage == null,
+                    "The baseline must not contain the experiment's gold border");
             var tex = new RenderTexture(w, h, 24, RenderTextureFormat.ARGB32);
             var pixels = new Texture2D(w, h, TextureFormat.RGB24, false);
             string filename = variant + "-real-unity-bastion-" + w + "x" + h + ".png";
@@ -191,6 +203,8 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                     actionCaption = caption.text,
                     surface = AssetDatabase.GetAssetPath(surface.sprite),
                     action = AssetDatabase.GetAssetPath(action.sprite),
+                    border = borderImage ? AssetDatabase.GetAssetPath(borderImage.sprite) : "",
+                    exactApprovedBorder = borderImage && borderImage.sprite == originalBorder,
                     realPortrait = ui.HasLiveBuildingPortrait,
                     liveState = ui.HasRealSession,
                     productionVigilia = ui.ProductionPresentation,
@@ -230,12 +244,19 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
             var originalAction = realAction.sprite;
             var ownerCard = Resources.Load<Sprite>("VigiliaArt/OwnerReference/carved_context");
             var ownerAction = Resources.Load<Sprite>("VigiliaArt/OwnerControls/upgrade_button");
-            Need(ownerCard && ownerAction, "The original user-approved components are absent");
+            var ownerFill = Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
+            var ownerBorder = Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border");
+            Need(ownerCard && ownerAction && ownerFill && ownerBorder,
+                 "The preserved owner-reference artwork for the three variants is absent");
             Need(ownerCard.border.x > 0 && ownerCard.border.y > 0 &&
                  ownerCard.border.z > 0 && ownerCard.border.w > 0,
                  "Owner card needs real original 9-slice import borders");
             var sizes = new [] { (900, 1600), (390, 844), (1600, 900), (844, 390) };
+            Need(ownerBorder.border.x > 0 && ownerBorder.border.y > 0 &&
+                 ownerBorder.border.z > 0 && ownerBorder.border.w > 0,
+                 "The exact owner gold border is missing its four-sided 9-slice");
             var shots = new System.Collections.Generic.List<Shot>();
+            GameObject ownerGoldObject = null;
             try
             {
                 foreach (var v in sizes)
@@ -252,12 +273,38 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                 realAction.preserveAspect = true;
                 realAction.raycastTarget = false;
                 foreach (var v in sizes)
-                    shots.Add(Capture(ui, "B-owner-original", directory, v.Item1, v.Item2));
+                    shots.Add(Capture(ui, "B-earlier-context", directory, v.Item1, v.Item2));
+
+                // Third approach: the exact visual-language contour cropped
+                // from the approved 864x1536 reference, over its own blank
+                // stone fill. One frame, no second background frame and no
+                // screenshot/static gameplay data.
+                realPanel.sprite = ownerFill;
+                realPanel.type = Image.Type.Simple;
+                realPanel.preserveAspect = false;
+                ownerGoldObject = new GameObject("Pilot / single genuine owner gold contour",
+                    typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                ownerGoldObject.layer = ui.BuildingPanel.gameObject.layer;
+                var borderRect = ownerGoldObject.GetComponent<RectTransform>();
+                borderRect.SetParent(ui.BuildingPanel, false);
+                borderRect.anchorMin = Vector2.zero;
+                borderRect.anchorMax = Vector2.one;
+                borderRect.offsetMin = borderRect.offsetMax = Vector2.zero;
+                borderRect.SetAsLastSibling();
+                var border = ownerGoldObject.GetComponent<Image>();
+                border.sprite = ownerBorder;
+                border.type = Image.Type.Sliced;
+                border.fillCenter = true; // the source interior itself is transparent
+                border.color = Color.white;
+                border.raycastTarget = false;
+                foreach (var v in sizes)
+                    shots.Add(Capture(ui, "C-exact-approved-contour", directory, v.Item1, v.Item2));
             }
             finally
             {
                 // Leave the disposable Play session exactly as it was before
                 // this isolated visual test. Nothing is written to production.
+                if (ownerGoldObject) Object.DestroyImmediate(ownerGoldObject);
                 realPanel.sprite = originalPanel;
                 realPanel.type = originalType;
                 realAction.ApplyIndependentArt(originalAction);
@@ -272,10 +319,13 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                 scene = Scene,
                 baseline = AssetDatabase.GetAssetPath(originalPanel) + " / " +
                            AssetDatabase.GetAssetPath(originalAction),
-                candidate = AssetDatabase.GetAssetPath(ownerCard) + " / " +
+                candidate = "B: " + AssetDatabase.GetAssetPath(ownerCard) + " / " +
+                            AssetDatabase.GetAssetPath(ownerAction) +
+                            "; C: " + AssetDatabase.GetAssetPath(ownerFill) + " + " +
+                            AssetDatabase.GetAssetPath(ownerBorder) + " / " +
                             AssetDatabase.GetAssetPath(ownerAction),
                 modelSource = "Live game Bastion RenderTexture, not a pasted reference photograph",
-                warning = "Pixel differences and a green build are not art approval. " +
+                warning = "B context comes from a DIFFERENT earlier art source; C border is from approved 864x1536 reference. Pixel differences and a green build are not art approval. " +
                           "Compare complete genuine A/B, then validate physical iPhone separately.",
                 artApproved = false,
                 realUnityRender = true,
@@ -285,7 +335,7 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
             };
             File.WriteAllText(Path.Combine(directory, "evidence.json"),
                 JsonUtility.ToJson(report, true));
-            Need(shots.Count == 8, "Exactly eight real A/B captures required");
+            Need(shots.Count == 12, "Exactly twelve real three-way captures required");
         }
     }
 }
