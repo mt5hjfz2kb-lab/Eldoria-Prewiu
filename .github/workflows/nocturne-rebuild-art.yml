@@ -63,6 +63,8 @@ jobs:
           assert (source/'Nocturne_Master.blend').stat().st_size>5000
           print('ART_SOURCE_ASSETS_VALIDATED',len(models))
           PY
+      - name: Check actual geometry and mobile draw batches
+        run: python3 tools/nocturne-rebuild/verify_models.py
       - name: Upload inspectible proof even if commit is blocked
         uses: actions/upload-artifact@v4
         with:
