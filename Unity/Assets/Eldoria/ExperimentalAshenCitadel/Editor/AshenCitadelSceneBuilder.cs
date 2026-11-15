@@ -61,7 +61,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             cameraGO.transform.LookAt(new Vector3(0,2.5f,0));
 
             var sceneRoot=new GameObject("Ashen City · authored hierarchy");
-            AddGround(sceneRoot.transform,0,0,146,142);
+            // Independent physically authored 3D mesh: sculpted terrain, stone
+            // causeway, wild meadow and rocky edge. Blender/Unity share its UVs.
+            var cityTerrain=Import("AshenLandscape",sceneRoot.transform);
+            cityTerrain.name="Ashen valley · true 3D landscape";
+            DisableDecorativeColliders(cityTerrain);
             var stagesRoot=new GameObject("Bastion stage variants");stagesRoot.transform.SetParent(sceneRoot.transform,false);
             var stages=new GameObject[5];
             for(int n=1;n<=5;n++)
@@ -113,7 +117,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 rock.transform.rotation=Quaternion.Euler(0,(i*83f)%360f,0);
             }
             var world=new GameObject("Ashen Frontier · authored experiment");
-            AddGround(world.transform,0,55,146,148);
+            var frontierTerrain=Import("AshenLandscape",world.transform);
+            frontierTerrain.name="Ashen frontier · true 3D landscape";
+            frontierTerrain.transform.position=new Vector3(0,0,55);
+            DisableDecorativeColliders(frontierTerrain);
             // Three readable regions with authored meshes; not imported legacy landmarks.
             for(int i=0;i<30;i++)
             {
@@ -141,6 +148,12 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             AssetDatabase.SaveAssets();AssetDatabase.Refresh();
             Debug.Log("ASHEN_ART_SCENE_BUILT path="+ScenePath+" stages=5 auxiliary=4 world=yes");
         }
+        private static void DisableDecorativeColliders(GameObject item)
+        {
+            foreach(var c in item.GetComponentsInChildren<Collider>(true))
+                UnityEngine.Object.DestroyImmediate(c);
+        }
+
         // Coarse author-time proxies, no cooked mesh colliders in the mobile runtime.
         private static void BindClick(GameObject target,string title,string id,string kind,
             Vector3 localCenter,Vector3 localSize)
