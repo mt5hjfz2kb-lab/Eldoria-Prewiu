@@ -100,6 +100,42 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     SaveEditorCamera(camera,wideC,1600,900);
                     SaveEditorCamera(camera,phoneC,390,844);
                     File.WriteAllLines(Path.Combine(outDir,"safe-original-shaders-material-audit.txt"),style.Audit);
+
+                    // Keep D on the exact original camera; E evaluates a
+                    // closer city-management framing separately.
+                    using(var composition=new CompositionPilot(camera))
+                    {
+                        string dWide=Path.Combine(outDir,"D-diorama-same-camera-1600x900.png");
+                        string dPhone=Path.Combine(outDir,"D-diorama-same-camera-390x844.png");
+                        string eWide=Path.Combine(outDir,"E-diorama-focused-1600x900.png");
+                        string ePhone=Path.Combine(outDir,"E-diorama-focused-390x844.png");
+                        SaveEditorCamera(camera,dWide,1600,900);
+                        SaveEditorCamera(camera,dPhone,390,844);
+                        composition.FrameCity(.88f,.38f);
+                        SaveEditorCamera(camera,eWide,1600,900);
+                        // Phone already fills its viewport; do not crop the city.
+                        composition.FrameCity(.96f,.22f);
+                        SaveEditorCamera(camera,ePhone,390,844);
+                        File.WriteAllLines(Path.Combine(outDir,"composition-scope-audit.txt"),composition.Receipts);
+                        var staged=Difference(wideA,dWide);
+                        var stagedPhone=Difference(phoneA,dPhone);
+                        if(composition.StagedObjects<10 || staged.meanPixelDelta<2.0 ||
+                           stagedPhone.meanPixelDelta<2.0)
+                            throw new InvalidOperationException(
+                                "Diorama proof unchanged/empty; staged="+composition.StagedObjects+
+                                " wideDelta="+staged.meanPixelDelta+" phoneDelta="+stagedPhone.meanPixelDelta);
+                        var record=new CompositionEvidence
+                        {
+                            kind="GENUINE_UNITY_EDITOR_STAGED_SCENE_UNAPPROVED",
+                            sameCameraD=true,focusedCameraE=true,
+                            stagedVisualObjects=composition.StagedObjects,
+                            wide=staged,phone=stagedPhone,
+                            originalModelsPreserved=true,
+                            artApproved=false,mobileTested=false
+                        };
+                        File.WriteAllText(Path.Combine(outDir,"composition-evidence.json"),
+                            JsonUtility.ToJson(record,true));
+                    }
                 }
                 Mark("EDITOR_SAFE_MATERIAL_PALETTE_FILES_WRITTEN");
                 var safeWide=Difference(wideA,wideC);
@@ -287,6 +323,16 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             public double meanPixelDelta;
             public float changedFraction;
         }
+        [Serializable]
+        sealed class CompositionEvidence
+        {
+            public string kind;
+            public bool sameCameraD,focusedCameraE,originalModelsPreserved;
+            public int stagedVisualObjects;
+            public DifferenceMetric wide,phone;
+            public bool artApproved,mobileTested;
+        }
+
         [Serializable]
         sealed class Evidence
         {
