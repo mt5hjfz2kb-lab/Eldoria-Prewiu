@@ -326,23 +326,31 @@ jobs:
       QA_REQUIRE_CONSTRUCTION: '1'
       QA_REQUIRE_WORLD_JOURNAL: '1'
       QA_OUT: gpu-ledger-evidence
-      QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
     steps:
     - uses: actions/checkout@v4
       with:
-        sparse-checkout: 'tools/eldoria-private-beta
-  
-          tools/art-direction/ai-authoring'
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
         persist-credentials: false
     - uses: actions/setup-node@v4
       with:
         node-version: '22'
     - name: Measure actual WebGL buffer allocations through saved world journey on unchanged21e1
-      run: "set -euo pipefail\nverify_public() {\n  curl --retry 3 --max-time 60 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json\
-        \ -o public-proof.json\n  echo '93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5  public-proof.json' | shasum -a 256 -c -\n}\nverify_public\n\
-        npm install --prefix \"$RUNNER_TEMP/world-qa-node\" --no-save playwright@1.55.0\n\"$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright\" install\
-        \ webkit\nexport NODE_PATH=\"$RUNNER_TEMP/world-qa-node/node_modules\"\nswiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o \"$QA_OCR_EXECUTABLE\"\
-        \nnode tools/eldoria-private-beta/qa_world_entry_public.cjs\nverify_public\n"
+      run: |
+        set -euo pipefail
+        verify_public() {
+          curl --retry 3 --max-time 60 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o public-proof.json
+          echo '93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5  public-proof.json' | shasum -a 256 -c -
+        }
+        verify_public
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        export QA_OCR_EXECUTABLE="$RUNNER_TEMP/eldoria-world-ocr"
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        node tools/eldoria-private-beta/qa_world_entry_public.cjs
+        verify_public
     - uses: actions/upload-artifact@v4
       if: always()
       with:

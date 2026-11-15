@@ -1,2 +1,2 @@
 mode=gpu-ledger
-21e1 physical failure after visible world; measure WebGL API buffer allocations without changing native bytes, public site or save semantics. Observer timing is not a performance certificate.
+21e1 physical post-entry failure. Correct runner.temp expression scope in hosted observer job; no game or public byte changes.
