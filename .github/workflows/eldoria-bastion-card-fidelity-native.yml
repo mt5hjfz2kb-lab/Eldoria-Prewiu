@@ -54,6 +54,10 @@ jobs:
           $ErrorActionPreference='Stop'
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Windows busy: refuse overlapping Unity/Blender'}
           if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor unavailable'}
+          $drive=Get-PSDrive -Name C -ErrorAction Stop
+          $freeGiB=[math]::Round(($drive.Free / 1GB),2)
+          if($freeGiB -lt 16){throw "BASTION_CARD_NO_DISK_SPACE: $freeGiB GiB free, require >=16 GiB before checkout/Unity"}
+          Write-Output "BASTION_CARD_DISK_PREFLIGHT_PASS $freeGiB GiB"
       - name: Find existing git executable without downloading project ZIP
         shell: powershell
         run: |
