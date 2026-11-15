@@ -86,3 +86,5 @@ fix=Editor-only reflection finds the actual running adapter by component type an
 preflight=Roslyn source QA run 43770657168 PASS; exact native C# assembly verification required.
 visual=verify genuine 390x844 and 1600x900 user interface is not clipped nor giant; preserve 7 EditMode, 4 PlayMode, both 3D and HUD screenshots.
 safety=experiment branch, sole CAS Windows lease, never touch main or public beta.
+
+Art continuation 237e5d69e3a9: 2a7e9556b6ac2d16ff3785efe192bb60662fe917 corrects inside-out boxes/prisms/roofs, replaces pine boughs and fieldstone, removes terrain quilt, frames full fortress in portrait, private shadow/MSAA pipeline. Local 12-OBJ integrity PASS; five genuine Blender stage previews produced. Windows explicitly returned by Visual Reboot after terminal run43771635637; revision4. Capture exact new HEAD; no publication.
