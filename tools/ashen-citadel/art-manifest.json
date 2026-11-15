@@ -57,9 +57,9 @@
       "trianglesUpperBound": 592
     },
     "Pine": {
-      "vertices": 132,
-      "polygons": 40,
-      "trianglesUpperBound": 160
+      "vertices": 285,
+      "polygons": 61,
+      "trianglesUpperBound": 244
     },
     "Rock": {
       "vertices": 99,
@@ -91,5 +91,6 @@
   "limits": [
     "Unity import/render not yet certified",
     "Gameplay and mobile performance not yet tested"
-  ]
+  ],
+  "artisticReview": "Pine crown refactored after native photo revealed flat paper umbrella silhouette; Unity evidence pending on new mesh."
 }
