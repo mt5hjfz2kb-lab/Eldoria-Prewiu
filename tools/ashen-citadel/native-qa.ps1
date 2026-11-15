@@ -107,13 +107,44 @@ if(-not $process.HasExited){
     & taskkill.exe /PID $process.Id /T /F | Out-Null
     throw 'ASHEN_EDITOR_TIMEOUT: native render did not finish before hard gate'
 }
+$process.WaitForExit()
 $process.Refresh()
+# Some Windows PowerShell 5.1 runs show a null ExitCode even when Unity logs
+# an authentic exit 0. Fail closed unless this run contains a real saved scene,
+# all 10 captures, and the two exact Unity completion markers.
+$nativeExit=$process.ExitCode
+if($null -eq $nativeExit){
+    $successLog=(Test-Path $NativeLog)
+    if($successLog){
+        $successLog=(Select-String -LiteralPath $NativeLog -Pattern 'Application will terminate with return code 0' -Quiet) -and
+                    (Select-String -LiteralPath $NativeLog -Pattern 'ASHEN_CAPTURE_COMPLETE 10 Unity-camera PNG' -Quiet)
+    }
+    $sceneProof=Join-Path $project 'Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity'
+    $imagesProof=Join-Path $project 'ArtEvidence'
+    $allImages=Test-Path $imagesProof
+    if($allImages){
+        foreach($size in @('390x844','1600x900')){
+            foreach($level in 1..5){
+                $candidate=Join-Path $imagesProof ("Ashen_Bastion_"+$level+"_"+$size+".png")
+                if(-not (Test-Path $candidate) -or (Get-Item $candidate).Length -lt 10000){$allImages=$false}
+            }
+        }
+    }
+    if($successLog -and (Test-Path $sceneProof) -and $allImages){
+        $nativeExit=0
+        Write-Output 'ASHEN_EXIT_RECONCILED_SAME_RUN_UNITY_ZERO_LOG_AND_10_REAL_PNG'
+    }else{
+        $nativeExit=-997
+        Write-Output 'ASHEN_EXIT_UNKNOWN_NO_ARTIFACT_PROOF_FAIL_CLOSED'
+    }
+}
+Write-Output "ASHEN_EDITOR_EXIT_VERIFIED $nativeExit"
 if(-not(Test-Path $NativeLog)){
     # Never copy the user's previous Unity Editor.log. On this Windows PC the
     # unrelated historical file exceeded 4 GiB; it is NOT experiment evidence.
     Write-Output 'ASHEN_NATIVE_LOG_NOT_WRITTEN; previous Editor.log intentionally ignored'
 }
-if($process.ExitCode -ne 0){
+if($nativeExit -ne 0){
     foreach($log in @($NativeLog,$stdout,$stderr)){
         if(Test-Path $log){
             Write-Output ('ASHEN_DIAGNOSTIC_LOG '+([IO.Path]::GetFileName($log)))
@@ -121,11 +152,11 @@ if($process.ExitCode -ne 0){
         }
     }
     @{source_sha=$env:GITHUB_SHA;status='UNITY_PROCESS_FAILED';
-      exit_code=$process.ExitCode; editor_version='Unity6000.3.23f1';
+      exit_code=$nativeExit; editor_version='Unity6000.3.23f1';
       evidence='Only this run scratch & captured process diagnostics';
       scene_saved=$false}|ConvertTo-Json -Depth 6 |
       Set-Content -Path (Join-Path $OutputRoot 'native-failed.json') -Encoding UTF8
-    throw "ASHEN_EDITOR_FAILED: native Unity returned $($process.ExitCode)"
+    throw "ASHEN_EDITOR_FAILED: native Unity returned $nativeExit"
 }
 $scene=Join-Path $project 'Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity'
 if(-not(Test-Path $scene) -or (Get-Item $scene).Length -lt 10000){

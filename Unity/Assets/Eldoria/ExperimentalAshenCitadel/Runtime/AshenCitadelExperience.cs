@@ -66,13 +66,13 @@ namespace Eldoria.ExperimentalAshenCitadel
             {
                 // Own persistent save key. Production's filename and WebGL key are untouched.
                 var save = Path.Combine(UnityEngine.Application.persistentDataPath, "eldoria-ashen-experiment-v1.json");
-                gateway = new LocalGateway(new SystemClock(), new FileStateStore(save));
+                gateway = new LocalGateway(new SystemClock(), new FileStateStore(save), EldoriaV41GatewayResolver.Campaign());
             }
             catch(Exception exception)
             {
                 Debug.LogError("ASHEN: isolated save unreadable, not overwriting it: " + exception);
                 lastMessage = "Guardado experimental ilegible; sesión temporal.";
-                gateway = new LocalGateway(new SystemClock(), new SessionStore());
+                gateway = new LocalGateway(new SystemClock(), new SessionStore(), EldoriaV41GatewayResolver.Campaign());
             }
             if(gateway.Snapshot().WorldId == "world-local")
                 gateway.ConfigureLocalMarchRoutes(new AshenCitadelRoutes());
