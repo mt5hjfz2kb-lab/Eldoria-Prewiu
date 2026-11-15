@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "IPHONE_WORLD_FAILURE_VARIABLE_PHASE_STARTUP_TIMING_CONTROL_REQUIRED",
+      "phase": "IPHONE_DELAY_CONTROL_FAIL_WORLD_ENTRY_PREACTIVATION_PEAK_INVESTIGATION",
       "note": "New owner JSON stops at landscape-imported (before terrain-query/built/entered), unlike earlier screenshot which reached entered/two callbacks. Therefore post-activation creature/resource streaming cannot explain every observed interruption. New document boots10044ms after startup-ready; first earlier screenshot also showed about10s. No automatic10s navigation found in delivered page/Unity loader; Editor-only StructuralStartupProbe cannot execute in WebGL. Timing is a hypothesis, not proof of a timer or memory kill. Next test delays world entry30s without changing browser or build.",
-      "next": "Owner-provided v4 report received and analyzed: do not request it again. Controlled physical test on same21d4 URL and same browser: enter city, wait30s without Mundo; if it survives, enter world, then copy journal after failure. Distinguish readiness-relative restart from world-entry-relative failure before another code change. No save reset, no new build, no Windows claim.",
+      "next": "Owner delayed-entry control completed: city survives 82.962s before request; boot follows request by12.209s, last terrain-query by1.185s. Fixed10s-startup hypothesis rejected. Prepare opt-in prebuild camera render-target budget, measure actual MSAA target allocation before region import; preserve full terrain, gameplay and saves. Native/WebGL and physical iPhone validation required; do not request unchanged diagnostic again.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9137,6 +9137,22 @@
           "phase_not_consistent_between_attempts": true,
           "root_cause": "UNKNOWN",
           "resize_events_not_canvas_allocation_proof": true
+        },
+        "delayed_entry_control": {
+          "diagnostic": "beta21-world-v4",
+          "startup_ready_at": 1794740195837,
+          "world_requested_at": 1794740278799,
+          "last_phase": "terrain-query",
+          "last_phase_at": 1794740289823,
+          "boot_at": 1794740291008,
+          "ready_to_request_ms": 82962,
+          "request_to_boot_ms": 12209,
+          "ready_to_boot_ms": 95171,
+          "last_phase_to_boot_ms": 1185,
+          "navigation": "back_forward",
+          "fixed_startup_timer_hypothesis": "REJECTED_BY_OWNER_CONTROL",
+          "root_cause": "UNKNOWN",
+          "physical_result": "FAIL"
         }
       }
     },
