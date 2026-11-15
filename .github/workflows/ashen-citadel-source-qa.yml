@@ -1,0 +1,43 @@
+name: "EXPERIMENT Ashen Citadel · C# syntax and gameplay source contract"
+on:
+  push:
+    branches: [experiment/ashen-citadel-i-v-20261115]
+    paths:
+      - 'Unity/Assets/Eldoria/ExperimentalAshenCitadel/**/*.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs'
+      - 'tools/ashen-citadel/UnitySyntaxAudit/**'
+      - '.github/workflows/ashen-citadel-source-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ashen-source-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source:
+    name: "Roslyn parse + authoritative command/static artifact bridge"
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/ashen-citadel/UnitySyntaxAudit
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel/Runtime
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel/Editor
+            Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs
+            Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
+            Unity/Assets/Eldoria/Scripts/Domain/GameState.cs
+            Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs
+          sparse-checkout-cone-mode: false
+      - name: .NET 10 Roslyn available (SDK installed by runner)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Parse C# and verify game calls only, not claim Unity compilation
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet run --project tools/ashen-citadel/UnitySyntaxAudit/UnitySyntaxAudit.csproj --configuration Release -- "$PWD"
