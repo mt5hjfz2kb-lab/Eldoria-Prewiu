@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "request_id": "eldoria-senda-brecha-lane-event-20261115",
+  "workstream_id": "eldoria-senda-brecha-lane-event-20261115",
+  "asset_or_sector": "La Senda de la Brecha — independent mobile lane-battle 3D scene and original Valoria visual language",
+  "profile": "environment_composition",
+  "visual_gate_state": "OWNER_APPROVED_2D_MECHANIC_VIDEO_NATIVE_UNITY_3D_NOT_YET_TESTED",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Owner confirmed 2.5D video displays the intended continuous lane mechanics, but original web demo is procedurally drawn and not native Unity. Create a separate procedural 3D Unity prototype; evaluate real native mobile-aspect captures against video for player legibility and compositional quality. The existing Valoria beta cannot be modified while world iPhone restart P0 remains open.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_urp": true,
+    "procedural_3d_geometry_provisional": true,
+    "original_2d_graphic_design": false,
+    "existing_3d_assets_modified": false,
+    "zero_paid_assets": true
+  },
+  "artist": {
+    "design": "Adult dark medieval atmosphere with Valoria's steel blue, aged gold, weathered slate and restrained violet fissure. A visible running army in physical 3D perspective, touch lateral movement, portals integrated in roadway, foes, projectiles, actual visual growth and losses. Avoid copied characters, UI, Snow terrain and commercial game's asset language.",
+    "source": "Unity/Assets/Eldoria/SendaBrecha/ (isolated procedural prototype only)",
+    "reference": "Owner-supplied ~19.5-second lane-battle video and approved Nov 15 continuous-action web prototype; approval limited to mechanics. Visual source snapshots not copied."
+  },
+  "validation": {
+    "source_gate": "Same canonical PR #195, source-only isolation (no edits to existing beta, HUD, world, T1–T5, saves), verify C# syntax and 729-route deterministic simulation; do not claim Unity build from static checks.",
+    "final_gate": "When exclusive Windows Unity runner lease is legitimately released, execute native Unity 6000.3.23f1 exact HEAD proof with 390×844 and 844×390 camera.Render GPU screenshots, inspect soldier/portal readability, auto combat and end state; then player-controlled WebGL hosted away from current beta, physical iPhone Safari acceptance, memory/framerate, actual artistic approval before promoting."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "Route only; no art has been approved. Existing link is external read-only HTML prototype, tested by remote desktop browser but not iPhone. New Unity primitive models are test proxies, not approved new character meshes."
+}
