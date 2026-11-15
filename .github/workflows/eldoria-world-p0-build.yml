@@ -56,7 +56,7 @@ jobs:
         def get(path):
             req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=h)
             return json.load(urllib.request.urlopen(req,timeout=30))
-        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip().splitlines()==['build_source=05e1846f0213c6320850505bc054110c53934f55','attempt=10-restore-exact-archived-originals']
+        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip().splitlines()==['build_source=05e1846f0213c6320850505bc054110c53934f55','attempt=11-explicit-recovery-artifact-run']
         assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
         item=get('contents/pipeline/active-workstreams.json?ref=main')
         b=item.get('content')
@@ -99,6 +99,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         artifact-ids: '14121008070'
+        run-id: 43613603217
         github-token: ${{ github.token }}
         repository: ${{ github.repository }}
         merge-multiple: true
