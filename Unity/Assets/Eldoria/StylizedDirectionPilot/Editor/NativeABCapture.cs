@@ -76,7 +76,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
 
         static IEnumerator Perform(ValoriaIntegratedWorld host)
         {
-            var output = Path.GetFullPath(Path.Combine(Application.dataPath,"../StylizedDirectionPilotCaptures"));
+            var output = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../StylizedDirectionPilotCaptures"));
             Directory.CreateDirectory(output);
             float deadline=Time.realtimeSinceStartup+120f;
             while(!host.Ready && Time.realtimeSinceStartup<deadline) yield return null;
