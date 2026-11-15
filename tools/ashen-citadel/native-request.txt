@@ -17,3 +17,9 @@ retry=5
 cause=Unity native CS0234 Application.persistentDataPath resolved to Eldoria.Application namespace
 fixed=UnityEngine.Application.persistentDataPath fully qualified in isolated UI
 candidate_source_sha=09c6a05c6d49933f35367c641fb681f6a08e5273
+
+retry=6
+cause=Unity 6 Editor C# CS0234 in SceneBuilder Application.dataPath
+fix=Fully-qualified UnityEngine.Application.dataPath and new static namespace collision gate
+artifact_scope=per-run folder to avoid re-uploading stale 4.5GB fallback log
+source_sha=1dfc742cc1965d0e8899283862385cf7d1356122
