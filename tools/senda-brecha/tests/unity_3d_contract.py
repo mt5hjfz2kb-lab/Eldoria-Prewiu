@@ -11,6 +11,9 @@ text = SOURCE.read_text(encoding='utf-8')
 assert 'UnityEngine' in text and 'Camera' in text and 'PrimitiveType' in text
 assert 'LocalGateway' not in text and 'PlayerPrefs' not in text and 'GameState' not in text
 assert 'IsolatedFromMainGame => true' in text
+assert 'Mathf.CeilToInt(Soldiers / 4f)' in text, 'Reinforcements must visibly grow the formation'
+assert 'if (Application.isPlaying)' not in text, 'Namespace collision: qualify UnityEngine.Application'
+assert 'GraphicsSettings.currentRenderPipeline' in text, 'Select shader by actual active render pipeline'
 assert text.count('new Wave(') == 6
 regex = re.compile(r'new Wave\("([^"]+)",(\d+),new Gate\(GateType\.(\w+),(\d+)\),new Gate\(GateType\.(\w+),(\d+)\),new Gate\(GateType\.(\w+),(\d+)\)\)')
 waves = []
