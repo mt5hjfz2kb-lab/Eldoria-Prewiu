@@ -119,6 +119,7 @@ namespace Eldoria.Experiments.Nocturne.Editor
             BuildSelectionPanel(runtime,canvas);
             BuildBuildingTabs(runtime,canvas);
             BuildWorldChoices(runtime,canvas);
+            BuildCouncilOverlay(runtime,canvas);
             BuildEventSystem();
             var responsive=canvas.gameObject.AddComponent<NocturneResponsiveLayout>();
             responsive.PlayCamera=cam;
@@ -395,6 +396,31 @@ namespace Eldoria.Experiments.Nocturne.Editor
                     new Vector2(0,-top),new Vector2(150,36),out Text _,12);
             }
         }
+        private static void BuildCouncilOverlay(NocturneRuntime r,Canvas canvas)
+        {
+            RectTransform holder=Rect(canvas.gameObject,
+                "COUNCIL / irreversible development decision",
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                Vector2.zero,new Vector2(348,316));
+            Artwork(holder,panel,Color.white);
+            r.DevelopmentPanel=holder.gameObject;
+            Label(holder,"Council heading","EL CONSEJO DE VALORIA",19,TextAnchor.MiddleCenter,
+                Gold,new Vector2(0,1),new Vector2(1,1),new Vector2(0,-31),
+                new Vector2(-32,44));
+            Label(holder,"Choice consequences","Elige una prioridad permanente para Bastión IV.",
+                12,TextAnchor.MiddleCenter,Ivory,
+                new Vector2(0,1),new Vector2(1,1),new Vector2(0,-73),new Vector2(-32,45));
+            string[] choices={"PRODUCCIÓN · Madera y piedra","DEFENSA · Poder militar","CIVIL · Abastecimiento"};
+            for(int i=0;i<3;i++)
+                r.DevelopmentButtons[i]=Button(holder,"Council / "+choices[i],choices[i],
+                    i==0?goldButton:softButton,new Vector2(.5f,1),new Vector2(.5f,1),
+                    new Vector2(0,-123-i*48),new Vector2(287,41),out Text _,13);
+            r.DevelopmentClose=Button(holder,"Close council decision",
+                "VOLVER · SIN DECIDIR",softButton,
+                new Vector2(.5f,0),new Vector2(.5f,0),new Vector2(0,25),
+                new Vector2(245,35),out Text _,11);
+        }
+
         private static void BuildEventSystem()
         {
             var ev=new GameObject("EventSystem • new Input System");
