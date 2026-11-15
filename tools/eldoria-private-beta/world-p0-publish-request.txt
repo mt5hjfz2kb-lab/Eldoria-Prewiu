@@ -2,4 +2,5 @@ source=05e1846f0213c6320850505bc054110c53934f55
 native_run=43739391559
 browser_run=43744175007
 revision=world21e2-static-mesh-owner-only
+attempt=2-wait-exact-publication-checks
 physical_iphone_verified=false

@@ -169,10 +169,27 @@ jobs:
         for name in ['metadata','ownership','rights','audit']:
          selected=[x for x in checks if x['name']==name]
          assert selected and any(x['status']=='completed' and x['conclusion']=='success' for x in selected),(name,'not certified')
-        publication_checks=get('commits/'+os.environ['GITHUB_SHA']+'/check-runs?per_page=100')['check_runs']
-        for name in ['architecture','quarantine','governance']:
-         selected=[x for x in publication_checks if x['name']==name]
-         assert selected and all(x['status']=='completed' and x['conclusion']=='success' for x in selected),(name,'publication commit not certified')
+        import time
+        deadline=time.monotonic()+2700
+        while True:
+         publication_checks=get('commits/'+os.environ['GITHUB_SHA']+'/check-runs?per_page=100')['check_runs']
+         ready=True
+         for name in ['architecture','quarantine','governance']:
+          selected=[x for x in publication_checks if x['name']==name]
+          failed=[x for x in selected if x['status']=='completed' and x['conclusion']!='success']
+          assert not failed,(name,'publication validation failed',[(x['id'],x['conclusion']) for x in failed])
+          if not selected or any(x['status']!='completed' for x in selected):ready=False
+         if ready:break
+         assert time.monotonic()<deadline,'Publication validation deadline exceeded; preserve current live site'
+         print('Waiting for exact publication checks to complete',flush=True)
+         time.sleep(10)
+        # A wait may span an ownership update: re-read immediately before deployment.
+        item=get('contents/pipeline/active-workstreams.json?ref=main')
+        if item.get('encoding')!='base64' or not item.get('content'):item=get('git/blobs/'+item['sha'])
+        current=json.loads(base64.b64decode(item['content']))
+        current_stream=next(x for x in current['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
+        assert current_stream['owner']==stream['owner'] and current_stream['ownership_revision']==85
+        assert current_stream['ownership_state']=='claimed' and current_stream['branch']==stream['branch']
         import hashlib
         with urllib.request.urlopen('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json?before_21e2',timeout=60) as r: live=r.read()
         assert hashlib.sha256(live).hexdigest()=='93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5','Concurrent public replacement: refuse'
