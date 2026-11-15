@@ -1,8 +1,1 @@
-# Attempt 6: different art technology (offline CPU painterly texture bakes, original URP shaders).
-workstream_id=eldoria-stylized-direction-proof-20261115
-owner=chatgpt-eldoria-stylized-art-proof-20261115
-ownership_revision=2
-attempt=6
-reason=Native attempt5 captured 107 renderers/118 materials but replacing URP forward shader made all buildings disappear. Quality rejected. Preserve real original shaders and paint their base textures only, add visual detail retention gate.
-state=REQUEST_EDITOR_NATIVE_PALETTE_ON_REAL_GEOMETRY
-art_approved=false
+attempt=6\nworkstream_id=eldoria-stylized-direction-proof-20261115\nowner=chatgpt-eldoria-stylized-art-proof-20261115\nownership_revision=2\nreason=Actual SHA 818cad5 shows almost all renderers invisible after custom shader. Remove alpha clip and compare against a safe candidate that retains every original material shader.\nart_approved=false\n

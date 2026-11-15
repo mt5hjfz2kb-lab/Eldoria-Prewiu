@@ -63,7 +63,7 @@ Shader "Eldoria/StylizedDirectionPilot/Surface"
             half4 Frag(Varyings input) : SV_Target
             {
                 float4 sampleColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
-                clip(sampleColor.a * _BaseColor.a - _Cutoff);
+                // Deliberately disable alpha discard for OPAQUE pilot renderers.\n                // A/B on the previous SHA proved that all meshes vanished in color pass.\n                // Cutout handling must use material classification in a future real implementation.
                 float3 source = saturate(sampleColor.rgb * _BaseColor.rgb);
                 float luminance = dot(source, float3(.2126,.7152,.0722));
                 float maxRG = max(source.r, source.g);

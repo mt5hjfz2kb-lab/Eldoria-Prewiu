@@ -86,6 +86,26 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     SaveEditorCamera(camera,phoneB,390,844);
                 }
                 Mark("EDITOR_STYLIZED_FILES_WRITTEN");
+                // A second candidate must remain visible: clone each original shader,
+                // retaining GLTF/PBR variants, alpha clip, textures and lightmaps.
+                string wideC=Path.Combine(outDir,"C-cohesive-original-shaders-1600x900.png");
+                string phoneC=Path.Combine(outDir,"C-cohesive-original-shaders-390x844.png");
+                int safeRenderers=0,safeMaterials=0;
+                using(var style=new OriginalShaderPaletteScope(city.gameObject.scene))
+                {
+                    safeRenderers=style.RendererCount;
+                    safeMaterials=style.MaterialCount;
+                    if(safeRenderers<10||safeMaterials<5)
+                        throw new InvalidOperationException("Safe palette touched too few genuine materials");
+                    SaveEditorCamera(camera,wideC,1600,900);
+                    SaveEditorCamera(camera,phoneC,390,844);
+                    File.WriteAllLines(Path.Combine(outDir,"safe-original-shaders-material-audit.txt"),style.Audit);
+                }
+                Mark("EDITOR_SAFE_MATERIAL_PALETTE_FILES_WRITTEN");
+                var safeWide=Difference(wideA,wideC);
+                var safePhone=Difference(phoneA,phoneC);
+                if(safeWide.meanPixelDelta<1 || safePhone.meanPixelDelta<1)
+                    throw new InvalidOperationException("Safe palette is not visually distinct");
                 var wide=Difference(wideA,wideB);
                 var phone=Difference(phoneA,phoneB);
                 float retained=CentralBuildingEdgeRatio(wideA,wideB);
@@ -102,6 +122,11 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     wide=wide,phone=phone,artApproved=false,mobileTested=false,
                     kind="ACTUAL_UNITY_EDITOR_SCENE_ART_AB_NOT_PLAYMODE_OR_DEVICE"
                 };
+                File.WriteAllText(Path.Combine(outDir,"safe-original-shaders-evidence.json"),
+                    "{\\\"candidate\\\":\\\"C_original_shader_palette\\\",\\\"real_unity_editor\\\":true,\\\"not_playmode\\\":true,\\\"artApproved\\\":false,\\\"renderers\\\":"+
+                    safeRenderers+",\\\"materials\\\":"+safeMaterials+
+                    ",\\\"wideMeanDelta\\\":"+safeWide.meanPixelDelta.ToString(System.Globalization.CultureInfo.InvariantCulture)+
+                    ",\\\"phoneMeanDelta\\\":"+safePhone.meanPixelDelta.ToString(System.Globalization.CultureInfo.InvariantCulture)+"}");
                 File.WriteAllText(Path.Combine(outDir,"evidence.json"),JsonUtility.ToJson(evidence,true));
                 Mark("EDITOR_ART_AB_PASS_PENDING_HUMAN_QUALITY");
                 EditorApplication.Exit(0);
@@ -339,6 +364,105 @@ namespace Eldoria.StylizedDirectionPilot.Editor
         // Art-process change: reuse original URP shaders and real texture maps
         // rather than replacing mesh materials with an unvalidated forward pass.
         // CPU palette textures are editor-only scratch, never imported/persisted.
+
+        // Artwork-preserving alternative: no shader replacement, no cutout or
+        // roof/stone geometry loss; safe enough to evaluate a production palette.
+        sealed class OriginalShaderPaletteScope : IDisposable
+        {
+            readonly Dictionary<Renderer,Material[]> old=new Dictionary<Renderer,Material[]>();
+            readonly List<Material> copies=new List<Material>();
+            readonly Dictionary<Material,Material> palette=new Dictionary<Material,Material>();
+            readonly List<string> audit=new List<string>();
+            readonly AmbientMode oldAmbient=RenderSettings.ambientMode;
+            readonly Color oldFill=RenderSettings.ambientLight;
+            readonly List<Sun> suns=new List<Sun>();
+            struct Sun { public Light light; public Color color; public float intensity; public float shadow; }
+            public int RendererCount=>old.Count;
+            public int MaterialCount=>palette.Count;
+            public IEnumerable<string> Audit=>audit;
+            public OriginalShaderPaletteScope(UnityEngine.SceneManagement.Scene scene)
+            {
+                RenderSettings.ambientMode=AmbientMode.Flat;
+                RenderSettings.ambientLight=new Color(.64f,.69f,.70f);
+                foreach(var l in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
+                {
+                    if(!l||l.gameObject.scene!=scene||l.type!=LightType.Directional)continue;
+                    suns.Add(new Sun{light=l,color=l.color,intensity=l.intensity,shadow=l.shadowStrength});
+                    l.color=new Color(1f,.90f,.78f);
+                    l.intensity*=.91f;
+                    l.shadowStrength=Mathf.Max(l.shadowStrength,.62f);
+                }
+                foreach(var renderer in Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
+                {
+                    if(!renderer||renderer.gameObject.scene!=scene||
+                       !renderer.gameObject.activeInHierarchy||!renderer.enabled)continue;
+                    var src=renderer.sharedMaterials;
+                    var dst=(Material[])src.Clone();
+                    bool changed=false;
+                    for(int i=0;i<src.Length;i++)
+                    {
+                        Material source=src[i];
+                        if(!source||source.renderQueue>=3000)continue;
+                        if(!palette.TryGetValue(source,out var copy))
+                        {
+                            copy=new Material(source){name="SAFE_PALETTE_PROOF / "+source.name};
+                            var key=(renderer.name+" "+source.name).ToLowerInvariant();
+                            var factor=TintFactor(key);
+                            string prop=copy.HasProperty("_BaseColor")?"_BaseColor":
+                                copy.HasProperty("baseColorFactor")?"baseColorFactor":
+                                copy.HasProperty("_Color")?"_Color":null;
+                            if(prop!=null)
+                            {
+                                var c=copy.GetColor(prop);
+                                c=new Color(c.r*factor.r,c.g*factor.g,c.b*factor.b,c.a);
+                                copy.SetColor(prop,c);
+                            }
+                            if(copy.HasProperty("_Smoothness"))
+                                copy.SetFloat("_Smoothness",Mathf.Min(.22f,copy.GetFloat("_Smoothness")));
+                            if(copy.HasProperty("_Metallic"))
+                                copy.SetFloat("_Metallic",Mathf.Min(.14f,copy.GetFloat("_Metallic")));
+                            copies.Add(copy);
+                            palette.Add(source,copy);
+                            audit.Add(source.name+" | "+source.shader.name+" | "+renderer.name+" | "+
+                                factor.ToString("F3")+" | "+(prop??"NO_COLOR_PROPERTY"));
+                        }
+                        dst[i]=copy;changed=true;
+                    }
+                    if(changed){old.Add(renderer,src);renderer.sharedMaterials=dst;}
+                }
+            }
+            static Color TintFactor(string key)
+            {
+                if(key.Contains("roof")||key.Contains("shingle")||key.Contains("slate")||
+                   key.Contains("tejado")||key.Contains("techo"))
+                    return new Color(.77f,.79f,.71f,1);
+                if(key.Contains("stone")||key.Contains("stonework")||key.Contains("masonry")||
+                   key.Contains("brick")||key.Contains("wall")||key.Contains("castle"))
+                    return new Color(.89f,.92f,.95f,1);
+                if(key.Contains("tree")||key.Contains("forest")||key.Contains("pine")||
+                   key.Contains("leaf")||key.Contains("foliage"))
+                    return new Color(.88f,.92f,.78f,1);
+                if(key.Contains("wood")||key.Contains("timber")||key.Contains("sawmill"))
+                    return new Color(.92f,.85f,.78f,1);
+                if(key.Contains("road")||key.Contains("path")||key.Contains("paving"))
+                    return new Color(.92f,.90f,.86f,1);
+                return new Color(.93f,.93f,.90f,1);
+            }
+            public void Dispose()
+            {
+                foreach(var pair in old)if(pair.Key)pair.Key.sharedMaterials=pair.Value;
+                foreach(var l in suns)if(l.light)
+                {
+                    l.light.color=l.color;
+                    l.light.intensity=l.intensity;
+                    l.light.shadowStrength=l.shadow;
+                }
+                RenderSettings.ambientMode=oldAmbient;
+                RenderSettings.ambientLight=oldFill;
+                foreach(var c in copies)if(c)Object.DestroyImmediate(c);
+            }
+        }
+
         sealed class MaterialStyleScope : IDisposable
         {
             readonly Dictionary<Renderer,Material[]> originals=new Dictionary<Renderer,Material[]>();
