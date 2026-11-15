@@ -1,8 +1,8 @@
-# Attempt 5 deliberately switches to synchronous Editor camera, no runtime or world import.
+# Attempt 6: different art technology (offline CPU painterly texture bakes, original URP shaders).
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=2
-attempt=5
-reason=Runtime startup is outside artistic-test scope and P0 has an active world-loading failure; use actual integrated Unity serialized city and direct Editor camera A/B.
-state=REQUEST_ONE_REAL_UNITY_EDITOR_SCENE_AB
+attempt=6
+reason=Native attempt5 captured 107 renderers/118 materials but replacing URP forward shader made all buildings disappear. Quality rejected. Preserve real original shaders and paint their base textures only, add visual detail retention gate.
+state=REQUEST_EDITOR_NATIVE_PALETTE_ON_REAL_GEOMETRY
 art_approved=false

@@ -25,7 +25,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
     {
         const string Flag = "Eldoria.StylizedDirectionPilot.Capture";
         const string Scene = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
-        const string ShaderName = "Eldoria/StylizedDirectionPilot/Surface";
+        const string ShaderName = "Existing URP materials + editor-baked painterly texture palette";
         static readonly List<string> Notes = new List<string>();
 
         static NativeABCapture()
@@ -88,6 +88,10 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 Mark("EDITOR_STYLIZED_FILES_WRITTEN");
                 var wide=Difference(wideA,wideB);
                 var phone=Difference(phoneA,phoneB);
+                float retained=CentralBuildingEdgeRatio(wideA,wideB);
+                if(retained<.55f)
+                    throw new InvalidOperationException("Rejected: candidate hides actual buildings; retained edge ratio="+retained.ToString("F3"));
+                Mark("EDITOR_BUILDING_DETAIL_RETENTION="+retained.ToString("F3"));
                 if(wide.meanPixelDelta<1.0||phone.meanPixelDelta<1.0)
                     throw new InvalidOperationException("Style treatment invisible on actual Unity camera");
                 var evidence=new Evidence
@@ -307,71 +311,182 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             EditorApplication.Exit(1);
         }
 
+        static float CentralBuildingEdgeRatio(string original,string candidate)
+        {
+            var a=new Texture2D(2,2,TextureFormat.RGB24,false);
+            var b=new Texture2D(2,2,TextureFormat.RGB24,false);
+            try
+            {
+                if(!a.LoadImage(File.ReadAllBytes(original)) || !b.LoadImage(File.ReadAllBytes(candidate)) ||
+                   a.width!=b.width || a.height!=b.height)throw new InvalidOperationException("Geometry gate images invalid");
+                var p=a.GetPixels32();var q=b.GetPixels32();int w=a.width,h=a.height;
+                int originalEdges=0,styledEdges=0;
+                for(int y=(int)(h*.10f);y<(int)(h*.43f);y+=2)
+                for(int x=(int)(w*.40f);x<(int)(w*.68f)-3;x+=2)
+                {
+                    int i=y*w+x,j=i+3;
+                    float e=Mathf.Abs(.21f*(p[i].r-p[j].r)+.72f*(p[i].g-p[j].g)+.07f*(p[i].b-p[j].b));
+                    float f=Mathf.Abs(.21f*(q[i].r-q[j].r)+.72f*(q[i].g-q[j].g)+.07f*(q[i].b-q[j].b));
+                    if(e>19f)originalEdges++;
+                    if(f>19f)styledEdges++;
+                }
+                if(originalEdges<250)throw new InvalidOperationException("Real Bastion ROI has no edge evidence");
+                return styledEdges/(float)originalEdges;
+            }
+            finally {Object.DestroyImmediate(a);Object.DestroyImmediate(b);}
+        }
+
+        // Art-process change: reuse original URP shaders and real texture maps
+        // rather than replacing mesh materials with an unvalidated forward pass.
+        // CPU palette textures are editor-only scratch, never imported/persisted.
         sealed class MaterialStyleScope : IDisposable
         {
             readonly Dictionary<Renderer,Material[]> originals=new Dictionary<Renderer,Material[]>();
             readonly Dictionary<Material,Material> clones=new Dictionary<Material,Material>();
+            readonly Dictionary<Texture,Texture2D> paintedTextures=new Dictionary<Texture,Texture2D>();
             readonly Color savedAmbient=RenderSettings.ambientLight;
             readonly AmbientMode savedAmbientMode=RenderSettings.ambientMode;
             readonly Color savedFog=RenderSettings.fogColor;
             readonly bool savedFogEnabled=RenderSettings.fog;
             readonly List<LightState> lights=new List<LightState>();
+            static readonly string[] BaseTextureKeys={"_BaseMap","_MainTex","baseColorTexture","_BaseColorTexture"};
             public int RendererCount=>originals.Count;
             public int MaterialCount=>clones.Count;
             struct LightState {public Light light;public Color color;public float intensity;public float shadow;}
+
             public MaterialStyleScope(UnityEngine.SceneManagement.Scene scene)
             {
-                var shader=Shader.Find(ShaderName);
-                if(!shader||!shader.isSupported)
-                    throw new InvalidOperationException("Stylized URP shader unavailable");
                 RenderSettings.ambientMode=AmbientMode.Flat;
-                RenderSettings.ambientLight=new Color(.65f,.72f,.72f,1);
-                RenderSettings.fogColor=new Color(.44f,.49f,.50f,1);
-                // Do not enable/change fog globally: one scene may not use it.
+                RenderSettings.ambientLight=new Color(.68f,.72f,.70f,1);
+                // No fog or post-process replacement: preserve actual scene.
                 foreach(var sun in Object.FindObjectsByType<Light>(FindObjectsSortMode.None))
                 {
-                    if(sun.gameObject.scene!=scene||sun.type!=LightType.Directional)continue;
-                    lights.Add(new LightState {light=sun,color=sun.color,intensity=sun.intensity,shadow=sun.shadowStrength});
-                    sun.color=new Color(.97f,.89f,.77f);
-                    sun.intensity*=.87f;
-                    sun.shadowStrength=Mathf.Max(sun.shadowStrength,.64f);
+                    if(sun.gameObject.scene!=scene || sun.type!=LightType.Directional)continue;
+                    lights.Add(new LightState{light=sun,color=sun.color,intensity=sun.intensity,shadow=sun.shadowStrength});
+                    sun.color=new Color(1f,.94f,.84f);
+                    sun.intensity*=.88f;
+                    sun.shadowStrength=Mathf.Max(sun.shadowStrength,.65f);
                 }
                 foreach(var r in Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
                 {
-                    if(!r || r.gameObject.scene!=scene || !r.gameObject.activeInHierarchy || !r.enabled)continue;
-                    var original=r.sharedMaterials;
-                    var next=(Material[])original.Clone();
+                    if(!r || r.gameObject.scene!=scene || !r.enabled || !r.gameObject.activeInHierarchy)continue;
+                    var old=r.sharedMaterials;
+                    var next=(Material[])old.Clone();
                     bool changed=false;
-                    for(int i=0;i<next.Length;i++)
+                    for(int i=0;i<old.Length;i++)
                     {
-                        var m=original[i];
-                        if(!m || m.renderQueue>=3000 || (m.shader&&
-                            (m.shader.name.Contains("Sprites/")||m.shader.name.Contains("Particle"))))continue;
+                        var m=old[i];
+                        if(!m || m.renderQueue>=3000 || !m.shader ||
+                           m.shader.name.Contains("Sprites/") || m.shader.name.Contains("Particle"))continue;
                         if(!clones.TryGetValue(m,out var replacement))
                         {
-                            replacement=new Material(shader) {name="PILOT ONLY / "+m.name};
-                            var tex = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") :
-                                      m.HasProperty("baseColorTexture")?m.GetTexture("baseColorTexture") :
-                                      m.HasProperty("_MainTex")?m.GetTexture("_MainTex"):null;
-                            if(tex)replacement.SetTexture("_BaseMap",tex);
-                            if(m.HasProperty("_BaseMap"))replacement.SetTextureScale("_BaseMap",m.GetTextureScale("_BaseMap"));
-                            Color c=m.HasProperty("_BaseColor")?m.GetColor("_BaseColor") :
-                              m.HasProperty("baseColorFactor")?m.GetColor("baseColorFactor") :
-                              m.HasProperty("_Color")?m.GetColor("_Color"):Color.white;
-                            replacement.SetColor("_BaseColor",c);
-                            replacement.SetFloat("_StyleStrength",.85f);
-                            replacement.SetFloat("_Cutoff",.25f);
+                            replacement=new Material(m){name="PILOT BAKED PALETTE / "+m.name};
+                            bool vfx=m.name.IndexOf("flame",StringComparison.OrdinalIgnoreCase)>=0||
+                                     m.name.IndexOf("emission",StringComparison.OrdinalIgnoreCase)>=0||
+                                     m.name.IndexOf("fire",StringComparison.OrdinalIgnoreCase)>=0||
+                                     m.name.IndexOf("glow",StringComparison.OrdinalIgnoreCase)>=0||
+                                     m.name.IndexOf("breach",StringComparison.OrdinalIgnoreCase)>=0;
+                            if(!vfx)
+                            {
+                                foreach(var property in BaseTextureKeys)
+                                {
+                                    if(!m.HasProperty(property))continue;
+                                    var source=m.GetTexture(property);
+                                    if(source==null)continue;
+                                    if(!paintedTextures.TryGetValue(source,out var baked))
+                                    {
+                                        baked=PaintOnce(source);
+                                        paintedTextures.Add(source,baked);
+                                    }
+                                    if(baked)replacement.SetTexture(property,baked);
+                                }
+                                if(replacement.HasProperty("_BaseColor"))
+                                {
+                                    var c=replacement.GetColor("_BaseColor");
+                                    replacement.SetColor("_BaseColor",Palette(c));
+                                }
+                                else if(replacement.HasProperty("baseColorFactor"))
+                                {
+                                    var c=replacement.GetColor("baseColorFactor");
+                                    replacement.SetColor("baseColorFactor",Palette(c));
+                                }
+                                else if(replacement.HasProperty("_Color"))
+                                {
+                                    var c=replacement.GetColor("_Color");
+                                    replacement.SetColor("_Color",Palette(c));
+                                }
+                                if(replacement.HasProperty("_Smoothness"))
+                                    replacement.SetFloat("_Smoothness",replacement.GetFloat("_Smoothness")*.72f);
+                            }
                             clones.Add(m,replacement);
                         }
                         next[i]=replacement;changed=true;
                     }
-                    if(changed){originals.Add(r,original);r.sharedMaterials=next;}
+                    if(changed){originals.Add(r,old);r.sharedMaterials=next;}
+                }
+                Mark("EDITOR_ORIGINAL_SHADERS_RETAINED_AND_TEXTURES_BAKED="+paintedTextures.Count);
+            }
+
+            static Color Palette(Color c)
+            {
+                float r=c.r,g=c.g,b=c.b;
+                float lum=.2126f*r+.7152f*g+.0722f*b;
+                float blue=Mathf.Clamp01((b-Mathf.Max(r,g)-.035f)*3.2f);
+                float ochre=Mathf.Clamp01((r-b-.11f)*3f)*Mathf.Clamp01((g-b-.10f)*3f);
+                bool warmFire=r>g*1.35f && g>b*1.3f;
+                if(warmFire)return c;
+                var col=new Color(r,g,b,c.a);
+                col=Color.Lerp(col,new Color(lum*.77f,lum*.91f,lum*1.02f,c.a),blue*.84f);
+                col=Color.Lerp(col,new Color(lum*.92f,lum*.99f,lum*.84f,c.a),ochre*.55f);
+                col=Color.Lerp(col,new Color(lum,lum,lum,c.a),.12f);
+                col.a=c.a;
+                return col;
+            }
+
+            static Texture2D PaintOnce(Texture source)
+            {
+                int w=Mathf.Clamp(source.width,4,1024),h=Mathf.Clamp(source.height,4,1024);
+                var rt=RenderTexture.GetTemporary(w,h,0,RenderTextureFormat.ARGB32);
+                var previouslyActive=RenderTexture.active;
+                Texture2D tex=null;
+                try
+                {
+                    Graphics.Blit(source,rt);
+                    RenderTexture.active=rt;
+                    tex=new Texture2D(w,h,TextureFormat.RGBA32,true,false);
+                    tex.ReadPixels(new Rect(0,0,w,h),0,0);
+                    tex.Apply(false,false);
+                    var pixels=tex.GetPixels32();
+                    for(int k=0;k<pixels.Length;k++)
+                    {
+                        Color c=pixels[k];
+                        // Preserve alpha and silhouette exactly; only recolor paint.
+                        var p=Palette(c);
+                        pixels[k]=new Color(p.r,p.g,p.b,c.a);
+                    }
+                    tex.SetPixels32(pixels);
+                    tex.Apply(true,true); // read-only on GPU; avoid persistent readable CPU copy
+                    tex.name="ART-PILOT-ONLY / "+source.name;
+                    tex.filterMode=source.filterMode;
+                    tex.wrapMode=source.wrapMode;
+                    return tex;
+                }
+                catch
+                {
+                    if(tex)Object.DestroyImmediate(tex);
+                    throw;
+                }
+                finally
+                {
+                    RenderTexture.active=previouslyActive;
+                    RenderTexture.ReleaseTemporary(rt);
                 }
             }
             public void Dispose()
             {
                 foreach(var pair in originals)if(pair.Key)pair.Key.sharedMaterials=pair.Value;
-                foreach(var mat in clones.Values)if(mat){if(UnityEngine.Application.isPlaying)Object.Destroy(mat);else Object.DestroyImmediate(mat);}
+                foreach(var mat in clones.Values)if(mat)Object.DestroyImmediate(mat);
+                foreach(var tex in paintedTextures.Values)if(tex)Object.DestroyImmediate(tex);
                 foreach(var light in lights)if(light.light)
                 {
                     light.light.color=light.color;
