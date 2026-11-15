@@ -310,7 +310,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var stages=GameObject.Find("Bastion stage variants");
             var camera=GameObject.Find("Ashen · Player camera")?.GetComponent<Camera>();
             if(stages==null||camera==null)throw new InvalidOperationException("Experimental scene incomplete");
-            var outDir=Path.GetFullPath("artifacts/ashen-citadel");
+            var outDir=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ArtEvidence"));
             Directory.CreateDirectory(outDir);
             foreach(var viewport in new[]{new Vector2Int(390,844),new Vector2Int(1600,900)})
             {
@@ -329,9 +329,21 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     var image=new Texture2D(viewport.x,viewport.y,TextureFormat.RGB24,false);
                     image.ReadPixels(new Rect(0,0,viewport.x,viewport.y),0,0);image.Apply(false);
                     var pixels=image.GetPixels32();
-                    int pink=0;foreach(var c in pixels)if(c.r>205 && c.b>180 && c.g<80)pink++;
+                    int pink=0;
+                    double brightness=0,brightnessSquare=0;
+                    foreach(var c in pixels)
+                    {
+                        if(c.r>205 && c.b>180 && c.g<80)pink++;
+                        double v=(.2126*c.r+.7152*c.g+.0722*c.b);
+                        brightness+=v;brightnessSquare+=v*v;
+                    }
                     float pct=100f*pink/pixels.Length;
+                    double mean=brightness/pixels.Length;
+                    double variance=brightnessSquare/pixels.Length-mean*mean;
                     if(pct>.5f)throw new InvalidOperationException("PINK SHADER "+pct.ToString("F2",Invariant)+"% on Bastion "+l);
+                    if(mean<14||variance<60)
+                        throw new InvalidOperationException("Blank/flat camera render. Mean="+mean.ToString("F2",Invariant)+
+                            " variance="+variance.ToString("F2",Invariant)+". No art certification.");
                     var name="Ashen_Bastion_"+l+"_"+viewport.x+"x"+viewport.y+".png";
                     File.WriteAllBytes(Path.Combine(outDir,name),image.EncodeToPNG());
                     Debug.Log("ASHEN_CAPTURE "+name+" suspect_magenta="+pct.ToString("F3",Invariant)+"%");
