@@ -205,7 +205,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     audit.Add("terrain-source="+src.name+
                         " / diff="+(src.diffuseTexture?src.diffuseTexture.name:"null"));
                 }
-                if(layers.Count<=6)
+                if(layers.Count<=7)
                 {
                     var earth=new TerrainLayer {name="Painted worn earth / source-road blending"};
                     earth.hideFlags=HideFlags.DontSaveInEditor|HideFlags.DontSaveInBuild;
