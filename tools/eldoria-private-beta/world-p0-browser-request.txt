@@ -1,5 +1,4 @@
-mode=msaa
-source=d0b21fd5708c5070d1bd62dc6c6a98399c549051
-build_run=43653390105
-physical_iphone_verified=false
-attempt=7-identical-build-world-msaa-isolation
+mode=entry-budget
+source=ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+build_run=43707493997
+attempt=1-native-pass-measure-preterrain-targets

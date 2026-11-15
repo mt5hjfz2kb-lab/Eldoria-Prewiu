@@ -113,3 +113,22 @@ world completion, restoration on return and the existing12reentries/persistent s
 Native execution, exact WebGL build, actual browser target reduction and physical iPhone
 acceptance are PENDING. Do not publish this as a proven fix or ask the owner to test
 unchanged21d4 again. Public runtime is still d0b21fd; no new native build is delivered.
+
+## Exact native candidate evidence
+
+Native source ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029, workflow5c8cbebb3dd56b7e3816b69dd883815afc747b24,
+run43707493997 build job132791702898 SUCCESS. ZIP14160399465 independently verified SHA256
+22a534af1634c67e69291fb81b268b8b9d895a230701a9db0d115de1784e637b.
+Real scene NUnit test1/1 passed in66.05s; first world load12.143s; cancellation/rejoin,
+12reentries,48resources,36creatures and actual on-disk nickname/population reload retained.
+Native I-V campaign and exact WebGL compile passed. Six near/regional/panoramic portrait/
+landscape Unity images inspected: actual geography/population visible; not an art approval.
+
+The native batch scene had2created render targets,0multisampled,1422321Unity bytes before
+and after preparation. Prepared retired=0 frames=2. This is NOT proof of GPU memory savings.
+The browser comparison must see actual pre-existing MSAA targets retire before the first
+terrain stage and measure fewer target bytes, plus real saved-game journeys in both variants.
+
+Windows job cleanly finished; generated owned Library cache reclaimed,48.64GiB free.
+Lease released at revision82; packaging and subsequent browser QA use hosted runners only.
+No new owner runtime published. Physical iPhone outcome is still the earlier FAIL.
