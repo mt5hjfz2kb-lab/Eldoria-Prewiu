@@ -1,0 +1,50 @@
+name: Eldoria stylized modular source - original Blender CPU proof
+on:
+  push:
+    branches: [feature/eldoria-stylized-direction-proof-20261115]
+    paths: ['tools/stylized-direction-pilot/blender_stylized_vertical_slice.py','.github/workflows/eldoria-stylized-blender-vertical-slice.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-stylized-original-blender-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-3d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/stylized-direction-pilot/blender_stylized_vertical_slice.py
+      - name: Install zero-credit Blender CPU
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          blender --version | head -2
+      - name: Produce original geometry and genuine Blender renders
+        run: |
+          mkdir -p output-stylized-source
+          blender -b -t 4 --python-exit-code 1 --python tools/stylized-direction-pilot/blender_stylized_vertical_slice.py -- --out "$PWD/output-stylized-source"
+      - name: Verify original renders/source without claiming Unity integration
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('output-stylized-source')
+          for f in ('real-blender-stylized-world-landscape.png','real-blender-stylized-world-portrait.png','editablesource-valoria-stylized.blend'):
+              q=p/f
+              assert q.is_file() and q.stat().st_size>75000, f
+          meta=json.loads((p/'visual-proof.json').read_text())
+          assert meta['blender_render'] and not meta['unity_render'] and not meta['art_approved']
+          print('ELDORIA_STYLIZED_SOURCE_RENDER_PASS',meta)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-stylized-original-blender-${{ github.sha }}
+          path: output-stylized-source/
+          if-no-files-found: warn
+          retention-days: 30
