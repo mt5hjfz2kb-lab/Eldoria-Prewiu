@@ -9,3 +9,7 @@ public_release=false
 external_testers=false
 physical_iphone_verified=false
 art_approved=false
+
+retry=2
+failure_repaired=PowerShell_UTF8_BOM_in_temporary_manifest
+previous_run=43728957922
