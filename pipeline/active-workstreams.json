@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T13:12:03.270Z",
+  "updated_at": "2026-11-15T13:28:30.903Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9558,12 +9558,12 @@
     {
       "id": "eldoria-senda-brecha-lane-event-20261115",
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
-      "owner": "chatgpt-senda-brecha-event-20261115",
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 2,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "ISOLATED_PROTOTYPE_DEVELOPMENT",
+      "phase": "STANDALONE_PLAYABLE_V1_QA_PASS_PR195_DRAFT_UNITY_FUTURE",
       "claimed_at": "2026-11-15T13:07:55.336Z",
       "resources": [],
       "scope": [
@@ -9576,7 +9576,14 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Only isolated deterministic gameplay prototype with procedural placeholder visuals; no production 2D/3D art, model or paid assets. Future art integration will require its own art-production routing.",
       "art_approved": false,
-      "physical_iphone_verified": false
+      "physical_iphone_verified": false,
+      "previous_owner": "chatgpt-senda-brecha-event-20261115",
+      "write_scope_released": true,
+      "last_handoff_at": "2026-11-15T13:28:30.903Z",
+      "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
+      "final_source_sha": "3e2a83dbc95f540e7833d02cc5e1023153712ba9",
+      "final_evidence": "HTML5 offline 3-stage gameplay; eight deterministic routes (5 wins, 3 losses), Chromium portrait/landscape touch/buttons/replay/victory/defeat PASS, screenshots reviewed; 0 JavaScript errors. Exact 11-file source committed and 4 blobs compared by Git SHA to local. Not native Unity, real iPhone, visual approval or beta publication.",
+      "next": "Reuse PR #195 and same ID when owner requests Unity adaptation; first real fun test, then art routing, isolated Unity scene and native/mobile performance gates; no main beta/locale/economy changes."
     }
   ],
   "history": [
