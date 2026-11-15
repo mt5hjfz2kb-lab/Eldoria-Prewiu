@@ -24,6 +24,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             var toolbar=Node(safe,"Account navigation",
                 new Vector2(0,1),new Vector2(1,1),
                 new Vector2(8,-169),new Vector2(-8,-122));
+            accountHud=toolbar;
             var background=Plate(toolbar,frame,Color.white);
             background.raycastTarget=false;
             var commands=new (string name,Action activate)[]{
