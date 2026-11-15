@@ -7643,7 +7643,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-world-p0-continuation-9df36d17",
       "ownership_state": "claimed",
-      "ownership_revision": 81,
+      "ownership_revision": 82,
       "write_scope_released": false,
       "status": "active",
       "branch": "fix/eldoria-world-first-entry-p0-20261114",
@@ -7700,16 +7700,14 @@
         ".github/workflows/tester-qa.yml",
         ".github/workflows/eldoria-world-p0-build.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PREBUILD_RENDER_TARGET_CANDIDATE_NATIVE_CERTIFICATION",
+      "phase": "PREBUILD_RENDER_BUDGET_NATIVE_PASS_BROWSER_MEASUREMENT_PENDING",
       "note": "New owner JSON stops at landscape-imported (before terrain-query/built/entered), unlike earlier screenshot which reached entered/two callbacks. Therefore post-activation creature/resource streaming cannot explain every observed interruption. New document boots10044ms after startup-ready; first earlier screenshot also showed about10s. No automatic10s navigation found in delivered page/Unity loader; Editor-only StructuralStartupProbe cannot execute in WebGL. Timing is a hypothesis, not proof of a timer or memory kill. Next test delays world entry30s without changing browser or build.",
-      "next": "Run exact ca5e1c3d native cancellation/rejoin, target restoration,12reentries and saves; compile exact WebGL and measure preterrain target retirement before any owner publication. Previous iPhone result FAIL; no physical fix claimed.",
+      "next": "Finish package-owner, then execute prepared entry-budget Mac WebKit same-build comparison from PR194; require actual old MSAA targets retired before terrain, measured target bytes decrease, startup/reload and genuine earned world entries. Review native/browser captures. Do not repeat Unity for shell-only changes; no new physical claim before owner acceptance.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8401,7 +8399,7 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-13T20:21:59.884Z",
+      "runner_released_at": "2026-11-15T12:03:47.255Z",
       "iphone_timer_ab_source_only": {
         "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
         "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -8629,7 +8627,7 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "43653390105 build job132626591070 success including cleanup; package-owner132639790902 success.",
+      "runner_release_basis": "Exact native43707493997 build job132791702898 completed SUCCESS; native ZIP14160399465 SHA256 verified locally; owned cache cleanup successful, free48.64GiB. Packaging is Ubuntu-only. Native scene test passed but had0MSAA targets at entry, so actual buffer retirement remains a browser measurement, NOT an inferred pass.",
       "last_completed_earned_campaign": {
         "run": 43231463013,
         "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
@@ -9140,6 +9138,18 @@
           "root_cause": "UNKNOWN",
           "resize_events_not_canvas_allocation_proof": true
         }
+      },
+      "entry_render_budget_candidate": {
+        "source": "ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029",
+        "build_run": 43707493997,
+        "workflow": "5c8cbebb3dd56b7e3816b69dd883815afc747b24",
+        "native_artifact": 14160399465,
+        "native_zip_sha256": "22a534af1634c67e69291fb81b268b8b9d895a230701a9db0d115de1784e637b",
+        "native_test": "1 passed, cancellation/rejoin,12 reentries, actual saved reload",
+        "native_msaa_targets_retired": 0,
+        "browser_target_retirement": "PENDING",
+        "physical_iphone": "NOT_TESTED",
+        "public_runtime": "d0b21fd5708c5070d1bd62dc6c6a98399c549051"
       }
     },
     {
