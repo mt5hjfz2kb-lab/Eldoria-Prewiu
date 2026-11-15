@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:44:03.613Z",
+  "updated_at": "2026-11-15T23:44:29.363Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 8,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "URP_COMPILE_FIXED_NATIVE_RETRY_WAITING_NEXT_TURN",
+      "phase": "NATIVE_RUNNING_43776052927_ATTEMPT2",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9783,10 +9783,12 @@
       "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "waiting_for_visual_reboot_release",
+        "status": "running_current_visual_verification",
         "source_sha": "8034917ca7efdc20215e56067136c2be4791501c",
         "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "reason": "43775821050 compile failure corrected at 8034917; retry 43776052927 blocked by resource reassignment during checkout (Unity not executed). Please return Windows after current Reboot run; Ashen will retry this exact fixed HEAD and release after terminal native evidence."
+        "reason": "43775821050 compile failure corrected at 8034917; retry 43776052927 blocked by resource reassignment during checkout (Unity not executed). Please return Windows after current Reboot run; Ashen will retry this exact fixed HEAD and release after terminal native evidence.",
+        "run_id": 43776052927,
+        "attempt": 2
       },
       "last_native": {
         "run": 43773241535,
@@ -9799,7 +9801,7 @@
       },
       "final_source_sha": "8034917ca7efdc20215e56067136c2be4791501c",
       "art_approved": false,
-      "next": "Rerun failed native job of 43776052927 at 8034917 after next turn. Keep own phase RUNNING with run ID while importing; no artistic claim before real image."
+      "next": "Native retry of exact 8034917 is now running. Preserve lease until this attempt terminates, retain evidence, then release Windows; source ownership remains unchanged."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
