@@ -1,1 +1,1 @@
-Valley lighting and continuous ground; real shadow on/off diagnostic; 2026-11-16 continuation
+Correct URP17.3 read-only shadow flags via serialized private pipeline, qualify ShadowQuality; continue same lighting candidate

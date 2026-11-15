@@ -36,7 +36,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             if(sourcePipeline!=null){
                 var pipeline=UnityEngine.Object.Instantiate(sourcePipeline);
                 pipeline.name="Ashen private lookdev";pipeline.shadowDistance=140f;pipeline.msaaSampleCount=4;
-                pipeline.supportsMainLightShadows=true;pipeline.supportsSoftShadows=true;
+                // URP 17.3 exposes these two flags as read-only public properties.
+                var settings=new SerializedObject(pipeline);
+                settings.FindProperty("m_MainLightShadowsSupported").boolValue=true;
+                settings.FindProperty("m_SoftShadowsSupported").boolValue=true;
+                settings.ApplyModifiedPropertiesWithoutUndo();
                 pipeline.mainLightShadowmapResolution=2048;pipeline.shadowCascadeCount=2;
                 pipeline.shadowDepthBias=.2f;pipeline.shadowNormalBias=.25f;
                 var pipelinePath=Root+"/Materials/AshenLookdevPipeline.asset";
@@ -52,7 +56,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             RenderSettings.ambientGroundColor=new Color(.095f,.10f,.09f);
             RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.29f);
             RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=85;RenderSettings.fogEndDistance=190;
-            QualitySettings.shadows=ShadowQuality.All;
+            QualitySettings.shadows=UnityEngine.ShadowQuality.All;
 
             var key=new GameObject("Sun · amber key");
             var sun=key.AddComponent<Light>();
