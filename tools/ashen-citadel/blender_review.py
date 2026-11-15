@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from mathutils import Vector
 
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from blender_environment import build_environment, meadow_material
 ROOT = Path(__file__).resolve().parents[2]
 MESHES = ROOT/"Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes"
 
@@ -76,11 +78,11 @@ def camera_and_lights():
     sc.world=world;world.use_nodes=True
     world.node_tree.nodes["Background"].inputs["Color"].default_value=(.23,.29,.29,1)
     world.node_tree.nodes["Background"].inputs["Strength"].default_value=.70
-    bpy.ops.object.camera_add(location=(20,-24,24))
+    bpy.ops.object.camera_add(location=(23,29,27))
     cam=bpy.context.object;cam.name="Ashen City · Isometric 2.5D"
     direction=Vector((0,0,3))-cam.location
     cam.rotation_euler=direction.to_track_quat("-Z","Y").to_euler()
-    cam.data.type="ORTHO";cam.data.ortho_scale=31
+    cam.data.type="ORTHO";cam.data.ortho_scale=45
     sc.camera=cam
     bpy.ops.object.light_add(type="AREA", location=(-8,-13,25))
     light=bpy.context.object;light.name="Warm dusk · 3700K";light.data.energy=1900
@@ -89,12 +91,13 @@ def camera_and_lights():
     bpy.ops.object.light_add(type="AREA", location=(11,10,18))
     fill=bpy.context.object;fill.name="Cold sky fill";fill.data.energy=1200
     fill.data.shape="DISK";fill.data.size=25;fill.data.color=(.57,.73,.88)
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(0,0,-.69))
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0,0,-.19))
     plane=bpy.context.object;plane.name="Dark meadow · QA plinth"
-    plane.scale=(30,30,.22)
+    plane.scale=(130,130,.50)
     mat=bpy.data.materials.new("Dusk dry moss")
     pbr(mat,(.32,.37,.31))
     plane.data.materials.append(mat)
+    meadow_material(mat)
     return cam
 
 def configure_render():
@@ -130,6 +133,7 @@ def main():
                 obj.name="Bastion %d · authored mesh" % level
                 if hasattr(obj.data, "use_auto_smooth"): obj.data.use_auto_smooth = False
         cam=camera_and_lights()
+        build_environment(level,colors,MESHES,import_obj,remap,pbr)
         engine=configure_render()
         outpath=out/f"Bastion_{level}_blender.png"
         bpy.context.scene.render.filepath=str(outpath)
