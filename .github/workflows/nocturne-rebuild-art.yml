@@ -1,0 +1,79 @@
+name: NOCTURNE independent Blender art — Bastion I-V
+on:
+  push:
+    branches:
+      - experiment/nocturne-rebuild-bastion-i-v-20261115
+    paths:
+      - tools/nocturne-rebuild/author_art.py
+      - .github/workflows/nocturne-rebuild-art.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nocturne-art-only
+  cancel-in-progress: false
+jobs:
+  author-art:
+    name: Author original 3D and inspectible native previews, no Windows/Unity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Sparse source checkout; never use production Windows runner
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            tools/nocturne-rebuild
+            ArtSource/NocturneRebuild
+            Unity/Assets/Eldoria/Experiments/NocturneRebuild
+          persist-credentials: true
+      - name: Install Blender (Ubuntu packages, no paid services)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender
+          blender --version | head -2
+      - name: Generate physically imported GLB models and editable BLEND source
+        run: |
+          blender --background --factory-startup --python tools/nocturne-rebuild/author_art.py > /tmp/nocturne-blender.log 2>&1 || { tail -150 /tmp/nocturne-blender.log; exit 1; }
+          tail -35 /tmp/nocturne-blender.log
+      - name: Validate generated assets and hard scope
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          base=Path('Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models')
+          source=Path('ArtSource/NocturneRebuild')
+          models=[base/f'Bastion_{i:02d}.glb' for i in range(1,6)]
+          models += [base/f'{n}.glb' for n in ['Sawmill','Barracks','Granary','Stoneworks','Pine','Rock']]
+          for p in models:
+              data=p.read_bytes()
+              assert len(data)>2000 and data[:4]==b'glTF', (p,len(data))
+              assert int.from_bytes(data[8:12],'little')==len(data),(p,'GLB size mismatch')
+              print('3D OK',p,len(data))
+          for i in range(1,6):
+              p=source/'Previews'/f'Bastion_{i:02d}.png'
+              d=p.read_bytes()
+              assert d[:8]==b'\x89PNG\r\n\x1a\n' and len(d)>10000,(p,len(d))
+          assert (source/'Nocturne_Master.blend').stat().st_size>5000
+          print('ART_SOURCE_ASSETS_VALIDATED',len(models))
+          PY
+      - name: Upload inspectible proof even if commit is blocked
+        uses: actions/upload-artifact@v4
+        with:
+          name: nocturne-source-bastion-i-v
+          path: |
+            ArtSource/NocturneRebuild/Previews
+            ArtSource/NocturneRebuild/Nocturne_Master.blend
+            Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models
+          retention-days: 14
+      - name: Commit physical art exclusively to experiment branch
+        run: |
+          git config user.name "eldoria-nocturne-art-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ArtSource/NocturneRebuild Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models
+          if git diff --staged --quiet; then
+            echo "Assets already identical"
+          else
+            git commit -m "experiment(nocturne): version original Blender 3D assets and five renders"
+            git push origin HEAD:refs/heads/experiment/nocturne-rebuild-bastion-i-v-20261115
+          fi
