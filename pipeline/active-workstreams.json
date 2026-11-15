@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T15:13:31.181Z",
+  "updated_at": "2026-11-15T15:14:04.091Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9593,12 +9593,14 @@
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
       "owner": "chatgpt-senda-brecha-ios-unity-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "3D_SOURCE_COMMITTED_NATIVE_WORKFLOW_STAGED_AWAIT_EXCLUSIVE_WINDOWS",
+      "phase": "EXCLUSIVE_WINDOWS_LEASE_NATIVE_QA_NEXT",
       "claimed_at": "2026-11-15T14:52:00+01:00",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
@@ -9619,7 +9621,7 @@
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "f17c6056ad1fb85490f15d0a14477cd49ac39f88",
       "final_evidence": "Canonical six-stage, three-lane standalone browser pilot under tools/senda-brecha/dist/senda-brecha.html. Node 5/5 tests and exhaustive 729 combinations (168 wins/561 losses), Chromium QA 390x844, 320x700, 844x390, 1280x800 all PASS for win/defeat, canvas pointer lane, pause/restart, 0 JS pageerrors. Older 3-stage/two-choice pilot 3e2a83d retained in Git history only, not a second active implementation. NOT Unity, real iPhone, art approved or beta publication.",
-      "next": "Native GPU evidence requires exclusive Windows lease; current holder must complete and release. Then commit gated native request, inspect screenshots, fix issues; browser owner playable URL already verified.",
+      "next": "Execute exact native Unity 6000.3.23f1 isolated graphics QA after successful workflow preflight; no cancellation of other runs or production source changes.",
       "art_production_request": "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json"
     },
     {
