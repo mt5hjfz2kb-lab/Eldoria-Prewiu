@@ -7643,7 +7643,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-world-p0-continuation-9df36d17",
       "ownership_state": "claimed",
-      "ownership_revision": 80,
+      "ownership_revision": 81,
       "write_scope_released": false,
       "status": "active",
       "branch": "fix/eldoria-world-first-entry-p0-20261114",
@@ -7700,14 +7700,16 @@
         ".github/workflows/tester-qa.yml",
         ".github/workflows/eldoria-world-p0-build.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "IPHONE_DELAY_CONTROL_FAIL_WORLD_ENTRY_PREACTIVATION_PEAK_INVESTIGATION",
+      "phase": "PREBUILD_RENDER_TARGET_CANDIDATE_NATIVE_CERTIFICATION",
       "note": "New owner JSON stops at landscape-imported (before terrain-query/built/entered), unlike earlier screenshot which reached entered/two callbacks. Therefore post-activation creature/resource streaming cannot explain every observed interruption. New document boots10044ms after startup-ready; first earlier screenshot also showed about10s. No automatic10s navigation found in delivered page/Unity loader; Editor-only StructuralStartupProbe cannot execute in WebGL. Timing is a hypothesis, not proof of a timer or memory kill. Next test delays world entry30s without changing browser or build.",
-      "next": "Owner delayed-entry control completed: city survives 82.962s before request; boot follows request by12.209s, last terrain-query by1.185s. Fixed10s-startup hypothesis rejected. Prepare opt-in prebuild camera render-target budget, measure actual MSAA target allocation before region import; preserve full terrain, gameplay and saves. Native/WebGL and physical iPhone validation required; do not request unchanged diagnostic again.",
+      "next": "Run exact ca5e1c3d native cancellation/rejoin, target restoration,12reentries and saves; compile exact WebGL and measure preterrain target retirement before any owner publication. Previous iPhone result FAIL; no physical fix claimed.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8263,7 +8265,7 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-12T20:42:04.091Z",
+      "runner_claimed_at": "2026-11-15T11:08:35.822Z",
       "canonical_integration_request": {
         "requested_at": "2026-11-09T10:49:44.401Z",
         "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
@@ -8349,7 +8351,7 @@
         "issue": 96,
         "release_allowed": false
       },
-      "runner_claim_basis": "Single exact combined PR179 native validation after zero live jobs; preserves published mobile18. UI173, rewards187 and treasures181 same authorized owner. No overlays or publication.",
+      "runner_claim_basis": "Same owner/source scope; no current resource holders and no in-progress Actions in fresh read. One exact native/full WebGL candidate ca5e1c3d. Script must still refuse occupied Unity/Blender or insufficient disk without touching foreign work.",
       "native_candidate": {
         "run_id": 42682071151,
         "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
@@ -9137,22 +9139,6 @@
           "phase_not_consistent_between_attempts": true,
           "root_cause": "UNKNOWN",
           "resize_events_not_canvas_allocation_proof": true
-        },
-        "delayed_entry_control": {
-          "diagnostic": "beta21-world-v4",
-          "startup_ready_at": 1794740195837,
-          "world_requested_at": 1794740278799,
-          "last_phase": "terrain-query",
-          "last_phase_at": 1794740289823,
-          "boot_at": 1794740291008,
-          "ready_to_request_ms": 82962,
-          "request_to_boot_ms": 12209,
-          "ready_to_boot_ms": 95171,
-          "last_phase_to_boot_ms": 1185,
-          "navigation": "back_forward",
-          "fixed_startup_timer_hypothesis": "REJECTED_BY_OWNER_CONTROL",
-          "root_cause": "UNKNOWN",
-          "physical_result": "FAIL"
         }
       }
     },
