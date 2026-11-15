@@ -96,7 +96,7 @@ jobs:
           scene=destination/'Scenes/AshenCitadel.unity'
           assert scene.is_file() and scene.stat().st_size>10000
           text=scene.read_text(encoding='utf-8-sig')
-          assert 'm_Name: Stage_1' in text and 'm_Name: Stage_5' in text
+          assert 'value: Stage_1' in text and 'value: Stage_5' in text
           assert 'Valoria_HeroBastion_v1' not in text
           reportpath=pathlib.Path('docs/ashen-citadel/UNITY_NATIVE_PROOF_20261115.md')
           reportpath.parent.mkdir(parents=True,exist_ok=True)
