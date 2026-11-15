@@ -92,4 +92,4 @@ phase before choosing a targeted runtime intervention. Absence of pagehide remai
 non-causal. Preserve original owner failure and do not announce the crash fixed.
 No Windows lease or editor process held by this diagnostic work.
 
-Public-origin follow-up job132763285353 is still running at this checkpoint; do not claim it passed yet.
+Public-origin follow-up job 132763285353 SUCCEEDED. Both startup/residency and earned-construction/world/reload reports passed with zero errors. The actual public journal retained requested, built, ready, entered and two-callback events after a genuine reload. Artifact 14155622776, ZIP SHA256 5e5296c94e030d7f24c38f7cc07f6ad6173cbdc60f926e758b6c4d8dd33414f1. Whole run 43697289069 succeeded. Physical iPhone crash resolution remains unverified and the last owner result remains FAIL.
