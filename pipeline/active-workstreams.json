@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T22:48:16.310Z",
+  "updated_at": "2026-11-15T22:49:22.356Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9781,11 +9781,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "WINDOWS_PREFLIGHT_REPAIR_OFF_PC",
-      "resources": [],
+      "phase": "ALTERNATING_TURN_FIRST_UNITY_ATTEMPT_AFTER_PRELAUNCH_REPAIR",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9819,7 +9821,7 @@
         "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
         "requested_at": "2026-11-15T22:44:00.333Z"
       },
-      "native_source_sha": "51184590b20e5a715a7f558e9efa501db982fe4c",
+      "native_source_sha": "5db684b21ac5cee0108a75b81524c19f5c4dbab6",
       "last_native_attempt": {
         "run": 43771163914,
         "result": "failure_before_unity",
@@ -20257,10 +20259,10 @@
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
     "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-    "current_run_id": 43771163914,
+    "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "visual_reboot_prelaunch_repair_no_resource_held",
+    "status": "visual_reboot_turn",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
@@ -20269,6 +20271,6 @@
       "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
     ],
     "previous_completed_run": 43770724604,
-    "note": "No Unity execution occurred. PC released during PowerShell-only startup repair. Existing owners may request a turn; recheck fresh registry before retry."
+    "note": "First attempt stopped before Unity because Windows has no Python. PowerShell repair prepared while resource released. No competing claim or native job at renewed CAS; still the single authorized Unity execution."
   }
 }
