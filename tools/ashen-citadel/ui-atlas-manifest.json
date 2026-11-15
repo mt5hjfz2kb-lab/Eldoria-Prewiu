@@ -1,0 +1,24 @@
+{
+  "name": "Ashen Citadel UI atlas",
+  "files": [
+    {
+      "name": "AshenPanel.png",
+      "bytes": 262488
+    },
+    {
+      "name": "AshenButtonPrimary.png",
+      "bytes": 73873
+    },
+    {
+      "name": "AshenButtonSecondary.png",
+      "bytes": 73873
+    },
+    {
+      "name": "AshenCrest.png",
+      "bytes": 65737
+    }
+  ],
+  "origin": "Original handcrafted pixel/gradient textures; used as 9-sliced frame and button plates",
+  "approved": false,
+  "unityVerified": false
+}
