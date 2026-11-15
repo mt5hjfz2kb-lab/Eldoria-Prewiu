@@ -138,7 +138,7 @@ jobs:
         Complete owner beta19 Pages snapshot recovered from the successful 43503650892 publication inventory. All 145 public files were SHA256-verified against that certificate. This archive is the rollback for the world-entry P0 owner candidate, not a tester release.
         END
         if ! gh release view "$TAG" --json tagName >/dev/null 2>&1; then
-         gh release create "$TAG" --draft --target "$STAGE_SHA" --title 'Verified complete Pages snapshot before world P0' --notes-file previous-pages-note.md
+         gh release create "$TAG" --draft --target "$GITHUB_SHA" --title 'Verified complete Pages snapshot before world P0' --notes-file previous-pages-note.md
         fi
         if ! gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq artifact.tar; then
          gh release upload "$TAG" previous-pages/artifact.tar

@@ -6,3 +6,5 @@ owner_only=true
 physical_iphone_verified=false
 crash_resolution_proven=false
 attempt=2-yaml-trigger-string-key
+
+retry=3-archive-tag-at-authorized-main-publication-commit
