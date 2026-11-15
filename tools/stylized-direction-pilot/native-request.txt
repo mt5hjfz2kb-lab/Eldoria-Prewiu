@@ -1,7 +1,7 @@
-attempt=13
+attempt=14
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
-ownership_revision=4
+ownership_revision=6
 state=REAL_UNITY_TERRAIN_H_ATMOSPHERE_A_B_C
-reason=Genuine native capture 43726672716 succeeded on two resolutions and restored city. The isolated F terrain is visibly more coherent but too bland. Compare a second bold macro approach H with cold ambient, warm sun, higher contrast, restrained vignette using same scene/camera. No new assets, no gameplay or beta modifications.
+reason=Previous 43727084829 failed before Unity because workflow hard-coded revision4 after owner CAS already advanced to6. Reconcile the exact lease and re-run existing artistic source unchanged.
 art_approved=false
