@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:36:17.913Z",
+  "updated_at": "2026-11-15T23:40:33.460Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-citadel-art-production-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
       "phase": "VALLEY_LIGHTING_CANDIDATE_READY_WAITING_SHARED_TURN",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9769,12 +9767,12 @@
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
-        "status": "returned_after_visual_reboot_turn",
+        "status": "completed_and_released_for_next_turn",
         "run_id": 43770724604,
         "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "requested_at": "2026-11-15T22:44:00.333Z",
         "instruction": "Finish this exact native run without interruption, retain all evidence, then yield Windows for one Visual Reboot capture. No source ownership transfer. Owner explicitly authorized alternating turns.",
-        "completed_run": 43773241535,
+        "completed_run": 43775821050,
         "return_after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "visual_reboot_run": 43775314861,
         "released_at": "2026-11-15T23:16:20.904Z"
@@ -9806,11 +9804,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "ATLAS_IMPORT_FAILURE_DIAGNOSIS_OFF_PC",
-      "resources": [],
+      "phase": "EXPLICIT_ATLAS_NATIVE_VALIDATION",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9839,12 +9839,12 @@
       "final_source_sha": "fa9f8eae7be6e4dd7a78a45be76f53f9b4d862e5",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_one_execution",
+        "status": "granted_one_execution",
         "after_run_id": 43773241535,
         "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
         "requested_at": "2026-11-15T22:44:00.333Z"
       },
-      "native_source_sha": "430fb4a19f5a2798bd61213495147de397e1e40a",
+      "native_source_sha": "9e7bf8564eac35d26a36090f73136bbc6a261f5e",
       "last_native_attempt": {
         "run": 43775314861,
         "source": "430fb4a19f5a2798bd61213495147de397e1e40a",
@@ -20283,11 +20283,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "current_run_id": null,
-    "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+    "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_turn_returned",
+    "status": "visual_reboot_turn_claimed",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
@@ -20295,7 +20295,7 @@
       "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
       "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
     ],
-    "previous_completed_run": 43773241535,
+    "previous_completed_run": 43775821050,
     "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
     "completed_visual_reboot_run": 43775314861
   }
