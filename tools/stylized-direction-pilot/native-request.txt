@@ -1,7 +1,7 @@
-attempt=11
+attempt=12
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=4
-state=REAL_UNITY_TERRAIN_ART_SOURCE_COMPILATION_FIX
-reason=Native run 43726206846 found two exact CS errors: TerrainLayer must be new, and var declarations split; compile then execute native terrain style AB.
+state=UNITY_REAL_TERRAIN_ONLY_ART_DIRECTION
+reason=Real Unity run 43726354590 proved terrain palette/texture changed strongly, but 105 artificial source-rock clones visually failed. Remove all new decorative geometry, keep real original meshes and terrain layer recoloring+local soil, require same-camera A/F wide/mobile.
 art_approved=false
