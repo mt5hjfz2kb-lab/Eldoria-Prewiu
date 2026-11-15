@@ -1,0 +1,63 @@
+{
+  "authorship": "Original deterministic hand-designed grayscale material patterns",
+  "textureSize": "128×128 RGBA",
+  "materialGroups": {
+    "Stone": [
+      "basalt",
+      "stone",
+      "stoneLight",
+      "cut",
+      "plaster"
+    ],
+    "Roof": [
+      "roof",
+      "slate"
+    ],
+    "Wood": [
+      "wood",
+      "oak"
+    ],
+    "Moss": [
+      "soil",
+      "moss",
+      "leaf",
+      "leafLight"
+    ],
+    "Metal": [
+      "iron",
+      "brass",
+      "warm"
+    ],
+    "Cloth": [
+      "banner",
+      "violet"
+    ]
+  },
+  "files": [
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenStone.png",
+      "bytes": 65737
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenRoof.png",
+      "bytes": 65737
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenWood.png",
+      "bytes": 65737
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenMoss.png",
+      "bytes": 65737
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenMetal.png",
+      "bytes": 65737
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenCloth.png",
+      "bytes": 65737
+    }
+  ],
+  "note": "World/Unity artist must assign texture + original RGB palette. Grayscale shader multiplication keeps material family colors."
+}
