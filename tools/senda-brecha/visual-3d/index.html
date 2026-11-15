@@ -35,7 +35,7 @@ const ball=(parent,x,y,z,r,color,metal=0)=>mesh(new THREE.IcosahedronGeometry(r,
 const cylinder=(parent,x,y,z,r,depth,color,metal=0)=>mesh(new THREE.CylinderGeometry(r,r,depth,8),mat(color,metal),parent,x,y,z);
 const cone=(parent,x,y,z,r,h,color)=>mesh(new THREE.ConeGeometry(r,h,7),mat(color),parent,x,y,z);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup;
+let squad=[],foes=[],gates=[],projectiles=[],trees=[],runes=[],foeGroup,laneMarker;
 function soldier(enemy=false,leader=false){const unit=new THREE.Group(), blue=enemy?palette.blood:(leader?0x484b71:palette.blue), steel=enemy?0x777078:palette.iron, trim=enemy?0xb86577:palette.gold;
  let shadow=mesh(new THREE.CircleGeometry(.43,12),new THREE.MeshBasicMaterial({color:0x111721,transparent:true,opacity:.28,depthWrite:false}),unit,0,.012,0);shadow.rotation.x=-Math.PI/2;
  box(unit,0,.57,-.14,.62,.70,.18,blue);cylinder(unit,0,.87,0,.31,.77,steel,.5);box(unit,0,.63,.34,.60,.14,.11,trim,.5);
@@ -78,6 +78,7 @@ function makeScene(){scene=new THREE.Scene();scene.background=new THREE.Color(0x
  else forest(x,z,i)}
  for(let i=0;i<13;i++){let z=3+i*10.6;for(let side of [-1,1]){box(scene,side*4.4,.61,z,.48,1.22,.53,0x474b54);box(scene,side*4.4,1.24,z,.7,.17,.66,0x73717b)}}
  for(let i=0;i<14;i++){let o=soldier(false,i===0);scene.add(o);squad.push(o)}
+ laneMarker=mesh(new THREE.RingGeometry(.83,1.06,30),new THREE.MeshBasicMaterial({color:0xc2a372,transparent:true,opacity:.28,side:THREE.DoubleSide,depthWrite:false}),scene,0,.11,3.1);laneMarker.rotation.x=-Math.PI/2;
  for(let i=0;i<10;i++){let o=soldier(true,i===0);scene.add(o);foes.push(o)}
  for(let i=0;i<3;i++)buildGate(i);
  for(let i=0;i<18;i++){let shaft=cylinder(scene,0,-10,0,.04,.54,0xf0bd7d);shaft.rotation.x=Math.PI/2;shaft.material=mat(0xf0ca80,.5,true);projectiles.push(shaft)}
@@ -114,8 +115,10 @@ function update(dt){elapsed+=dt;stepTime+=dt;sideX=THREE.MathUtils.damp(sideX,(l
  stage++;stepTime-=11;gateUsed=false;battleDone=false;for(let i=0;i<gates.length;i++){let [type,value]=waves[stage].gates[i];setGate(gates[i],type,value)}hud()}
 }
 function present(t){let cameraBob=.018*Math.sin(t*4);camera.position.y+=(Math.sin(t*2)*.0002);
+ const visibleCount=Math.min(squad.length,Math.max(0,2+Math.ceil(soldiers/4)));
+ if(laneMarker){laneMarker.position.x=sideX;laneMarker.material.opacity=.28+.10*Math.sin(t*5)}
  for(let i=0;i<squad.length;i++){
- let u=squad[i],active=i<Math.min(soldiers,squad.length);u.visible=active;if(!active)continue;
+ let u=squad[i],active=i<visibleCount;u.visible=active;if(!active)continue;
  let col=i%4,row=Math.floor(i/4);u.position.set(sideX+(i===0?0:(col-1.5)*.56),.038*Math.sin(t*10+i*1.7),2.7-row*.62+(i===0?.75:0));u.rotation.z=.012*Math.sin(t*7+i)}
  let gatez=30-Math.min(1,stepTime/4.15)*26.6;
  for(let i=0;i<gates.length;i++){let g=gates[i];g.group.visible=!gateUsed;g.group.position.set((i-1)*2.12,0,gatez)}
@@ -139,7 +142,7 @@ function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport'),alpha
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>touchX=e.clientX);$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- window.__senda3d={start,steer,setSpeed:v=>{speed=v},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;hud()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer})};
+ window.__senda3d={start,steer,setSpeed:v=>{speed=v},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;hud()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:Math.min(squad.length,Math.max(0,2+Math.ceil(soldiers/4)))})};
  hud();requestAnimationFrame(loop);
  }catch(e){console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;
