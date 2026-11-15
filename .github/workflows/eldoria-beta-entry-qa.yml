@@ -119,7 +119,7 @@ jobs:
         import os,pathlib
         lines=pathlib.Path('tools/eldoria-private-beta/world-p0-browser-request.txt').read_text().splitlines()
         modes=[x.split('=',1)[1] for x in lines if x.startswith('mode=')]
-        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency']
+        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency','gpu-ledger']
         with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('mode='+modes[0]+'\n')
         END
   published-control:
@@ -313,6 +313,41 @@ jobs:
       with:
         name: world-p0-public-residency-proof
         path: public-residency-evidence
+        retention-days: 30
+  gpu-ledger:
+    needs: route
+    if: needs.route.outputs.mode == 'gpu-ledger'
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1
+      QA_GPU_LEDGER: '1'
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+      QA_OUT: gpu-ledger-evidence
+      QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: 'tools/eldoria-private-beta
+  
+          tools/art-direction/ai-authoring'
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Measure actual WebGL buffer allocations through saved world journey on unchanged21e1
+      run: "set -euo pipefail\nverify_public() {\n  curl --retry 3 --max-time 60 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json\
+        \ -o public-proof.json\n  echo '93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5  public-proof.json' | shasum -a 256 -c -\n}\nverify_public\n\
+        npm install --prefix \"$RUNNER_TEMP/world-qa-node\" --no-save playwright@1.55.0\n\"$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright\" install\
+        \ webkit\nexport NODE_PATH=\"$RUNNER_TEMP/world-qa-node/node_modules\"\nswiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o \"$QA_OCR_EXECUTABLE\"\
+        \nnode tools/eldoria-private-beta/qa_world_entry_public.cjs\nverify_public\n"
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-webgl-buffer-ledger
+        path: gpu-ledger-evidence
         retention-days: 30
 'on':
   push:

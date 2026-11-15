@@ -8,6 +8,8 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
  browser=await webkit.launch({headless:true});
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
  const page=await context.newPage();
+ if(process.env.QA_GPU_LEDGER==='1')
+  await page.addInitScript(require('./webgl_buffer_ledger.cjs').installWebGLBufferLedger);
  // Read-only frame pacing observer: identical for control and candidate. It
  // never calls Unity methods or changes saved state, camera or game time.
  await page.addInitScript(()=>{
@@ -108,6 +110,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   if(!report.constructionReloadVerified)throw Error('Built sawmill did not survive real reload');
  }
  if(!report.constructionReloadVerified)throw Error('World regression requires genuinely earned and reloaded sawmill');
+ report.gpuBeforeWorld=await page.evaluate(()=>window.__eldoriaGpuLedger?.snapshot?.());
  report.worldEntries=[];
  for(let visit=0;visit<2;visit++){
   const logStart=consoleText.length;
@@ -120,7 +123,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   while(Date.now()<deadline){
    if(report.errors.length)throw Error('World browser failure');
    const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
-    metrics:window.valoriaGame?.GetMetricsInfo?.(),canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height}}));
+    gpuLedger:window.__eldoriaGpuLedger?.snapshot?.(),metrics:window.valoriaGame?.GetMetricsInfo?.(),canvas:{width:document.getElementById('unity-canvas').width,height:document.getElementById('unity-canvas').height}}));
    sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
    entry.samples.push(sample);save();
    if(consoleText.slice(logStart).includes('ELDORIA_P0_LAZY_WORLD_ENTERED')){entry.entered=true;entry.observedEntryWaitMs=Date.now()-entry.requestedAt;break;}
@@ -134,7 +137,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
   while(Date.now()<settleDeadline){
    if(report.errors.length)throw Error('World browser failure during streamed model settling');
    const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
-    metrics:window.valoriaGame?.GetMetricsInfo?.(),phase:'world-stream-settling'}));
+    gpuLedger:window.__eldoriaGpuLedger?.snapshot?.(),metrics:window.valoriaGame?.GetMetricsInfo?.(),phase:'world-stream-settling'}));
    sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
    entry.samples.push(sample);save();await page.waitForTimeout(500);
   }
@@ -153,7 +156,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
     for(let tick=0;tick<ticks;tick++){
      await page.mouse.wheel(0,delta);await page.waitForTimeout(250);
      const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
-      metrics:window.valoriaGame?.GetMetricsInfo?.()}));
+      gpuLedger:window.__eldoriaGpuLedger?.snapshot?.(),metrics:window.valoriaGame?.GetMetricsInfo?.()}));
      sample.phase='zoom-'+view+'-gesture';
      sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
      entry.samples.push(sample);
@@ -163,7 +166,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
     while(Date.now()<viewDeadline){
      if(report.errors.length)throw Error('Runtime error while streaming zoom '+view);
      const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
-      metrics:window.valoriaGame?.GetMetricsInfo?.()}));
+      gpuLedger:window.__eldoriaGpuLedger?.snapshot?.(),metrics:window.valoriaGame?.GetMetricsInfo?.()}));
      sample.phase='zoom-'+view;
      sample.processes=execFileSync('ps',['-axo','pid=,ppid=,rss=,comm='],{encoding:'utf8',timeout:5000}).split('\n').filter(x=>/WebContent|WebKit.GPU|GPUProcess|playwright|MiniBrowser/.test(x));
      entry.samples.push(sample);save();await page.waitForTimeout(500);
@@ -208,6 +211,7 @@ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().tr
    city.some(r=>/^(ASERRADERO|SAWMILL)$/.test(norm(r.text)))&&
    city.some(r=>/^(NIVEL|LEVEL)\s*1$/.test(norm(r.text)));
   if(!entry.returned)throw Error('City return did not expose the genuinely saved sawmill');
+  entry.gpuAfterReturn=await page.evaluate(()=>window.__eldoriaGpuLedger?.snapshot?.());
   save();
  }
  if(process.env.QA_REQUIRE_WORLD_JOURNAL==='1'){

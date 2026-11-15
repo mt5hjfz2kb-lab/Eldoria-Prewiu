@@ -1,2 +1,2 @@
-mode=public-residency
-Repeat incomplete public residency observation after measured outer watchdog budget correction. Native and public bytes unchanged; prior public world journey passed in 43714355086.
+mode=gpu-ledger
+21e1 physical failure after visible world; measure WebGL API buffer allocations without changing native bytes, public site or save semantics. Observer timing is not a performance certificate.
