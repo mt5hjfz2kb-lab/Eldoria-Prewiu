@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T22:12:14.398Z",
+  "updated_at": "2026-11-15T22:15:59.334Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9794,8 +9794,17 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation.",
-      "next": "Source integrity, FBX reimport and 8 lease tests pass; actual Unity still pending. Native workflow prepared under art/visual-reboot, no request marker dispatched. Ashen Citadel retains Windows; never cancel or take over. URP clone adds missing postprocess resources only in isolated Art_Reboot.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json"
+      "next": "Native import/capture ready; wait for explicit release of Windows by Ashen Citadel. No Unity installed in local Linux and no second configured Unity executor exposed. Do not convert Blender or preflight evidence into Unity approval. Claim Windows only after fresh registry/queue checks; pin real native candidate SHA before dispatch.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
+      "last_preflight": {
+        "run": 43768175996,
+        "source": "acafc10c6b4d699c31a8d36201fe89dbb3901da3",
+        "conclusion": "success",
+        "powershell_syntax": "PASS",
+        "lease_tests": "8/8 PASS",
+        "windows_executed": false
+      },
+      "final_source_sha": "fa9f8eae7be6e4dd7a78a45be76f53f9b4d862e5"
     }
   ],
   "history": [
