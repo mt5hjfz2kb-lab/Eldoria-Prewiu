@@ -11,9 +11,10 @@ random.seed(16112026)
 ROOT=Path(__file__).resolve().parents[2]
 ASSETS=ROOT/"Unity/Assets/Eldoria/Experiments/NocturneRebuild"
 MODELS=ASSETS/"Models"
+UI=ASSETS/"UI"
 ART=ROOT/"ArtSource/NocturneRebuild"
 PREV=ART/"Previews"
-for p in [MODELS,ART,PREV]: p.mkdir(parents=True,exist_ok=True)
+for p in [MODELS,UI,ART,PREV]: p.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 for c in list(bpy.data.collections):
@@ -79,6 +80,57 @@ def tex_image(name,base,kind):
     image.file_format='PNG'
     image.save()
     return image
+def ui_sprite(name,kind):
+    """Author RGBA nine-slice sprites as physical game assets, not runtime rectangles."""
+    n=256
+    im=bpy.data.images.new(name,width=n,height=n,alpha=True)
+    px=[0.0]*(n*n*4)
+    for y in range(n):
+        for x in range(n):
+            d=min(x,y,n-1-x,n-1-y)
+            chamfer=(x+y<23 or x+(n-1-y)<23 or (n-1-x)+y<23 or
+                     (n-1-x)+(n-1-y)<23)
+            if chamfer:rgba=(0,0,0,0)
+            else:
+                noise=.011*math.sin((x*13+y*17)*.052)+.009*math.cos((x*7-y*11)*.101)
+                if kind=="panel":
+                    base=(.078,.093,.111)
+                    if d<=2:base=(.13,.13,.13)
+                    elif d<=7:base=(.43,.33,.22)
+                    elif d<=10:base=(.72,.54,.33)
+                    elif d<=15:base=(.16,.18,.19)
+                    elif d<=19:base=(.31,.27,.22)
+                    else:
+                        grad=(1-y/n)*.022
+                        base=(.075+grad,.088+grad,.104+grad)
+                elif kind=="primary":
+                    grad=.045*(1-y/n)
+                    base=(.47+grad,.295+grad,.13+grad)
+                    if d<=3:base=(.10,.105,.11)
+                    elif d<=8:base=(.74,.57,.32)
+                    elif d<=12:base=(.26,.20,.13)
+                    elif d<=15:base=(.69,.45,.22)
+                else:
+                    grad=.018*(1-y/n)
+                    base=(.105+grad,.122+grad,.135+grad)
+                    if d<=3:base=(.08,.09,.10)
+                    elif d<=8:base=(.55,.43,.29)
+                    elif d<=11:base=(.21,.24,.26)
+                    elif d<=14:base=(.37,.30,.21)
+                rgba=(max(0,min(1,base[0]+noise)),max(0,min(1,base[1]+noise)),
+                      max(0,min(1,base[2]+noise)),1)
+            o=(y*n+x)*4
+            px[o:o+4]=rgba
+    im.pixels[:]=px
+    im.filepath_raw=str(UI/(name+".png"))
+    im.file_format="PNG"
+    im.save()
+    print("UI_SPRITE",name,Path(im.filepath_raw).stat().st_size)
+for sprite_name,sprite_kind in (
+    ("NocturnePanel","panel"),("NocturnePrimary","primary"),
+    ("NocturneSecondary","secondary"),("NocturneDock","panel")):
+    ui_sprite(sprite_name,sprite_kind)
+
 def material(name,hexcode,kind=None,metallic=0,rough=.88):
     m=bpy.data.materials.new(name)
     m.diffuse_color=(*rgb(hexcode),1)
@@ -321,6 +373,22 @@ def instance_collection(c,name,at,rot=0,scale=1.0):
         ob.scale=(ob.scale.x*scale,ob.scale.y*scale,ob.scale.z*scale)
     return None
 
+# Plot foundation is a real mesh asset (timber stakes and folded plans), not
+# a disappearing game target or a placeholder PNG on top of the scene.
+COL=collection("Construction_plot_source")
+cube("Staked plot plinth",(0,0,.08),(4.1,3.12,.16),M["soil"],.02)
+for sx in (-1,1):
+    for sy in (-1,1):
+        x=sx*1.75;y=sy*1.24
+        cube("Oak survey stake",(x,y,.62),(.13,.13,1.2),M["wood_dark"],.025)
+        cone("Stake tip",(x,y,1.28),.12,0,.26,M["bronze"],7)
+for sx in [-1,1]:
+    cube("Folded plan board",(sx*.48,-.1,.33),(.86,1.17,.09),M["wood"],.023,
+         rot=(0,0,sx*.11))
+cube("Plan parchment",(0,-.13,.385),(1.65,1.02,.027),M["stone_light"],.015)
+export(COL,"ConstructionPlot")
+COL.hide_render=True
+
 # First produce every distinct independent physical asset; no barred legacy assets.
 base=[]
 for family in ["Sawmill","Barracks","Granary","Stoneworks"]:
@@ -340,6 +408,7 @@ for k in range(10):
     for x in [-.93,.03,.99]:
         if (k+int(x*10))%4!=0:
             cube("Individual road slab",(x,y,.12),(.8,.73,.075),M["stone_light"],.02)
+export(COL,"CityGround")
 for fam,c,pos in [
     ("Sawmill",base[0][1],(-8.5,-3.5,0)),
     ("Barracks",base[1][1],(8.5,-3.5,0)),
@@ -350,6 +419,36 @@ for x,y,s in [(-12,2,1),(-11,8,.9),(12,2,.95),(12,8,1),(-4,9,.9),(5,10,.95),(-12
     instance_collection(p,"Pine scenic", (x,y,0),scale=s)
 for x,y,s in [(-10,-8,1.2),(10,-9,.9),(3,9,1),(-7,8,.7)]:
     instance_collection(r,"Rock scenic",(x,y,0),scale=s)
+# Ground for the frontier uses a distinct original sculpted ground-and-rift
+# geometry source. Terrain and the Breach will not rely on shader magic.
+COL=collection("Frontier_ground_source")
+cube("Frontier forest floor",(0,0,-.43),(38,33,.75),M["earth"],.17)
+for i in range(15):
+    x=-12.8+i*1.65
+    y=-6.6+1.6*math.sin(i*.39)
+    cube("Frontier winding stone route",(x,y,.028),(1.39,1.11,.09),
+         M["soil"],.08,rot=(0,0,.16*math.cos(i*.39)))
+# Breach strata: a geological crack rim and 3 recessed glowing seams;
+# each is an actual mesh. Corruption remains a local visual landmark.
+for sign in (-1,1):
+    verts=[]
+    for i in range(9):
+        t=i/8
+        yy=-3.2+t*8.8
+        jitter=.30*math.sin(i*1.81)
+        xx=6.7+sign*(.65+.25*math.sin(t*math.pi))+jitter
+        verts.extend(((xx,yy,.00),(xx+sign*.62,yy,.38)))
+    faces=[]
+    for i in range(8):
+        a=i*2;faces.append((a,a+1,a+3,a+2))
+    custom("Breach geological broken lip",verts,faces,M["stone_dark"])
+for i in range(3):
+    yy=-2.5+i*2.8
+    cube("Breached inner violet seam",(6.65,yy,-.04),(.45,2.65,.06),M["violet"],.07,
+         rot=(0,0,.12*math.sin(i*2.14)))
+export(COL,"WorldGround")
+COL.hide_render=True
+COL=scene.collection.children.get("Preview_environment")
 # Three real lights; diffuse materials remain readable at low exposure.
 world=bpy.data.worlds.new("Smoky twilight")
 scene.world=world
