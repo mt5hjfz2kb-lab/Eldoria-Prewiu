@@ -29,6 +29,21 @@ const assert=require('node:assert/strict');
   checks.push({name,width,height,canvas:true,started:start.started,stage:state.stage,lane:state.lane,statsVisible:!!(await page.locator('#stats').isVisible())});
   await page.close();
  }
+ // Record genuine WebGL frames, not AI artwork or offline mockup.
+ const sequence=path.join(directory,'frames');fs.mkdirSync(sequence,{recursive:true});
+ const videoPage=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,hasTouch:true});
+ videoPage.on('pageerror',e=>errors.push('clip:'+e.message));
+ await videoPage.goto('http://127.0.0.1:8769/tools/senda-brecha/visual-3d/index.html',{waitUntil:'domcontentloaded',timeout:90000});
+ await videoPage.waitForFunction(()=>window.__senda3d&&window.__senda3d.state().hasWebGL,{timeout:90000});
+ await videoPage.getByRole('button',{name:'COMENZAR EXPEDICIÓN'}).click();
+ await videoPage.evaluate(()=>window.__senda3d.setSpeed(4));
+ for(let frame=0;frame<80;frame++){
+  if(frame===8) await videoPage.locator('#left').click();
+  if(frame===28) await videoPage.locator('#right').click();
+  await videoPage.waitForTimeout(50);
+  await videoPage.screenshot({path:path.join(sequence,String(frame).padStart(3,'0')+'.png')});
+ }
+ await videoPage.close();
  await browser.close();
  const result={renderer:'THREE/WebGL',source:'isolated prototype',notUnity:true,notIphonePhysical:true,checks,errors};
  fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify(result,null,2));
