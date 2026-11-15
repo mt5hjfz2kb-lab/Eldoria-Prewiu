@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T14:55:00Z",
+  "updated_at": "2026-11-15T14:53:59.155Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9596,13 +9596,14 @@
       "ownership_revision": 3,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "OWNER_APPROVED_VISUAL_MECHANIC_IOS_PLAYABLE_URL_VERIFIED_UNITY_SCENE_PENDING",
+      "phase": "ISOLATED_UNITY_3D_PROTOTYPE_SOURCE_AND_NATIVE_QA_FIXTURE_IN_PREPARATION",
       "claimed_at": "2026-11-15T14:52:00+01:00",
       "resources": [],
       "scope": [
         "tools/senda-brecha/**",
         "docs/events/senda-brecha/**",
-        "Unity/Assets/Eldoria/SendaBrecha/**"
+        "Unity/Assets/Eldoria/SendaBrecha/**",
+        "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json"
       ],
       "base_main_sha": "b3b94857f89bdbe7905af013ec910d4e3658fecc",
       "reason": "Owner explicitly requests preparing standalone lane-battle event from supplied gameplay video; isolate prototype, do not integrate into current iPhone beta or change gameplay economy/saves.",
@@ -9616,7 +9617,8 @@
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "f17c6056ad1fb85490f15d0a14477cd49ac39f88",
       "final_evidence": "Canonical six-stage, three-lane standalone browser pilot under tools/senda-brecha/dist/senda-brecha.html. Node 5/5 tests and exhaustive 729 combinations (168 wins/561 losses), Chromium QA 390x844, 320x700, 844x390, 1280x800 all PASS for win/defeat, canvas pointer lane, pause/restart, 0 JS pageerrors. Older 3-stage/two-choice pilot 3e2a83d retained in Git history only, not a second active implementation. NOT Unity, real iPhone, art approved or beta publication.",
-      "next": "Create isolated native Unity scene using only procedural temporary meshes; browser playable link externally tested, full Unity/iPhone art still pending. No shared Windows until owner releases resource."
+      "next": "Create isolated native Unity scene using only procedural temporary meshes; browser playable link externally tested, full Unity/iPhone art still pending. No shared Windows until owner releases resource.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json"
     },
     {
       "id": "eldoria-stylized-direction-proof-20261115",
