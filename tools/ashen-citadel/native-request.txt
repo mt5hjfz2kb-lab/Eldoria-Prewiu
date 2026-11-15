@@ -79,3 +79,10 @@ cause=CanvasScaler 390x844 matchWidthOrHeight=.35 scales by width in landscape; 
 fix=height-driven CanvasScaler (match=1.0), centered max-width UI furniture, width-capped bottom sheet, single runtime ReflowForViewport rule used for real orientation changes and headless evidence.
 acceptance=7 EditMode + 4 PlayMode; compact and unclipped horizontal/portrait UI and non-collapsed nickname; ten 3D and ten composited uGUI PNG; genuine A/B visual inspection before approval.
 isolation=experiment branch only; protected exclusive Windows lease; no main, beta or iPhone-public release.
+
+retry=16
+cause=Unity C# CS0246 in PlayMode capture test. Tests have separate asmdef while runtime adapter is compiled in Assembly-CSharp; direct GetComponent<AshenCitadelExperience>() reference is illegal even when fully qualified.
+fix=Editor-only reflection finds the actual running adapter by component type and invokes its public ReflowForViewport(int,int) method, no direct asmdef reference.
+preflight=Roslyn source QA run 43770657168 PASS; exact native C# assembly verification required.
+visual=verify genuine 390x844 and 1600x900 user interface is not clipped nor giant; preserve 7 EditMode, 4 PlayMode, both 3D and HUD screenshots.
+safety=experiment branch, sole CAS Windows lease, never touch main or public beta.
