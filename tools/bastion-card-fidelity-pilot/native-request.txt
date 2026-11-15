@@ -1,2 +1,5 @@
-NOT_AUTHORIZED_WINDOWS_LEASE
-Run only after main/active-workstreams contains the unique CAS lease for this pilot and PR194 releases Windows.
+ONE_SHOT_OWNER_REQUEST_REAL_BASTION_CARD_SCREENSHOTS
+Workstream-ID: eldoria-bastion-card-fidelity-proof-20261115
+Authority: user asks to see genuine Unity screenshot, only after Windows CAS was released by P0
+Expected 12 frames: three current/existing/owner-contour variants x four resolutions
+Do not publish or merge. Refuse if disk <16 GiB or any Windows process is active.
