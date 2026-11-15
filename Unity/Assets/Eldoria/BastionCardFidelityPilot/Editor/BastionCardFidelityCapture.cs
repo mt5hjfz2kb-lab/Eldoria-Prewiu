@@ -32,6 +32,7 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
             public string variant, file, sha256, buildingName, actionCaption, surface, action, border;
             public int width, height;
             public bool realPortrait, liveState, productionVigilia, oldCanvasHidden, exactApprovedBorder;
+            public float shaderErrorMagentaFraction;
         }
         [Serializable] public sealed class Evidence
         {
@@ -176,8 +177,24 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                 RenderTexture.active = tex;
                 pixels.ReadPixels(new Rect(0, 0, w, h), 0, 0);
                 pixels.Apply(false);
+                // A green Editor or PlayMode test is NOT an art pass if
+                // the real model is rendered with Unity's magenta error shader.
+                // Compare actual framebuffer pixels (not Shader.isSupported):
+                // archived genuine native 43623869301 had 3.79%-5.82% magenta
+                // even though material shaderSupported=true appeared in inventory.
+                var actualPixels = pixels.GetPixels32();
+                int errorMagentaPixels = 0;
+                foreach (var pixel in actualPixels)
+                    if(pixel.r >= 230 && pixel.b >= 230 && pixel.g <= 50)
+                        errorMagentaPixels++;
+                float magentaFraction = errorMagentaPixels/(float)actualPixels.Length;
                 string path = Path.Combine(directory, filename);
                 File.WriteAllBytes(path, pixels.EncodeToPNG());
+                Need(magentaFraction < .006f,
+                    "Genuine Unity scene contains " +
+                    (magentaFraction*100f).ToString("F2") +
+                    "% suspected error-shader magenta; UI quality comparison INVALID: " +
+                    filename);
                 var labels = ui.GetComponentsInChildren<Text>(true);
                 var heading = labels.First(t => t && t.name == "Real building name");
                 var caption = labels.First(t => t && t.name == "Real action title");
@@ -205,6 +222,7 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                     action = AssetDatabase.GetAssetPath(action.sprite),
                     border = borderImage ? AssetDatabase.GetAssetPath(borderImage.sprite) : "",
                     exactApprovedBorder = borderImage && borderImage.sprite == originalBorder,
+                    shaderErrorMagentaFraction = magentaFraction,
                     realPortrait = ui.HasLiveBuildingPortrait,
                     liveState = ui.HasRealSession,
                     productionVigilia = ui.ProductionPresentation,
