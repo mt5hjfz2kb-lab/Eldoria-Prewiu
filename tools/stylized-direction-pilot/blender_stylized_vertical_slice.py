@@ -8,7 +8,7 @@ out=args[args.index('--out')+1] if '--out' in args else '/tmp/eldoria-art'
 os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
-scene.render.engine='CYCLES';scene.cycles.samples=24
+scene.render.engine='CYCLES';scene.cycles.samples=30
 scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=.80
 scene.render.image_settings.file_format='PNG';scene.render.resolution_percentage=100
 scene.world.color=(.26,.29,.33)
@@ -27,7 +27,7 @@ wood=mat('timber',(.31,.22,.17));repair=mat('raw timber',(.45,.33,.23))
 slate=mat('dark slate',(.19,.24,.31));river=mat('cold teal water',(.10,.28,.32))
 pine=[mat('evergreen deep',(.10,.24,.20)),mat('evergreen sage',(.15,.33,.27)),mat('evergreen olive',(.25,.35,.26))]
 bronze=mat('ancient bronze',(.57,.43,.20));banner=mat('indigo imperial cloth',(.09,.15,.26))
-amber=mat('settlement fire',(.99,.48,.16),4);breach=mat('breach glow',(.52,.08,.77),6)
+amber=mat('settlement fire',(.99,.48,.16),4);breach=mat('breach glow',(.38,.07,.56),2.1)
 dark=mat('hollow gate',(.07,.09,.10));soil=mat('dry earth',(.44,.37,.26))
 def box(name,loc,dims,m):
  bpy.ops.mesh.primitive_cube_add(size=1,location=loc)
@@ -179,13 +179,54 @@ def reused_glb(asset,target,width,base,label):
  bpy.context.view_layer.update()
  print('CANONICAL_SOURCE_REUSED',label,'meshes',len(models),'scale',factor)
 source_dir=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','ArtTests','ValoriaReferenceClean','Sources')
-remove={'upper ward and bastion','slate roof main mass','four weighty defensive towers',
+remove={'aged fortress foundation','barracks','barracks slate roof','barracks doorway',
+'old empire arch pier','cyclopean broken arch stone voussoir',
+'upper ward and bastion','slate roof main mass','four weighty defensive towers',
 'stone tower crowns','crenellations','central gate surround','heavy gateway',
 'warm fire torches','indigo royal banners','working sawmill','sawmill roof','logs'}
 for ob in list(bpy.data.objects):
  if ob.name.split('.')[0] in remove:bpy.data.objects.remove(ob,do_unlink=True)
-reused_glb(os.path.join(source_dir,'BastionII.glb'),(-5,6),16.2,z(-5,5)+3.0,'Bastion II')
+reused_glb(os.path.join(source_dir,'BastionII.glb'),(-5,6),16.2,z(-5,5)+.28,'Bastion II')
 reused_glb(os.path.join(source_dir,'SawmillRefined104.glb'),(-24,4),9.5,z(-24,4)+.6,'Sawmill real')
+
+# Reuse the actual production barracks, not a cuboid placeholder, and a real
+# gothic stone gate source rather than featureless extruded wedges.
+barracks=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','Valoria_Cuartel_AP2_v1.glb')
+reused_glb(barracks,(13,-1),9.1,z(13,-1)+.20,'Cuartel original')
+def imported_gate_fbx(asset):
+ if not os.path.isfile(asset):raise RuntimeError('Stone landmark FBX missing')
+ before=set(bpy.data.objects)
+ bpy.ops.import_scene.fbx(filepath=asset)
+ created=[o for o in bpy.data.objects if o not in before]
+ meshes=[o for o in created if o.type=='MESH']
+ if not meshes:raise RuntimeError('Imported source gate contains no geometry')
+ bpy.context.view_layer.update()
+ bb=[o.matrix_world@Vector(v) for o in meshes for v in o.bound_box]
+ lo=Vector((min(v.x for v in bb),min(v.y for v in bb),min(v.z for v in bb)))
+ hi=Vector((max(v.x for v in bb),max(v.y for v in bb),max(v.z for v in bb)))
+ center=(lo+hi)*.5
+ ratio=12/max(.01,hi.x-lo.x,hi.y-lo.y)
+ root=bpy.data.objects.new('ancient empire gateway / reused mesh',None)
+ bpy.context.collection.objects.link(root)
+ for o in created:
+  if o.parent in created:continue
+  matrix=o.matrix_world.copy();o.parent=root;o.matrix_world=matrix
+ root.scale=(ratio,)*3
+ root.location=(19-center.x*ratio,18-center.y*ratio,z(19,18)+.2-lo.z*ratio)
+ print('ELDORIA_EXISTING_GOTHIC_GATE_REUSED',len(meshes))
+imported_gate_fbx(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','WorldInventory','MegaGate.fbx'))
+# Massive broken geological foundations rather than a square platform.
+for k in range(26):
+ a=k*2*pi/26
+ x=-5+9.3*cos(a);y=6+7.6*sin(a)
+ r=.66+(k%6)*.15
+ rock('ancient castle rock foundation',(x,y,z(x,y)+.12),(.95*r,.65*r,.45*r),stone[2 if k%4 else 0])
+for k in range(20):
+ a=k*2*pi/20
+ x=27+4*cos(a);y=17+7*sin(a)
+ rock('Brecha dark fractured geological rock',(x,y,z(x,y)+.16),
+      (.60+(k%3)*.25,.48,.55),stone[2])
+
 
 # cinematic, readable orthographic camera with true 3D mesh parallax
 def light(name,loc,power,size,color):
@@ -195,15 +236,15 @@ def light(name,loc,power,size,color):
 light('warm sun',(-25,-32,48),6200,40,(1,.84,.67))
 light('cold sky',(22,3,55),4500,60,(.66,.76,1))
 data=bpy.data.cameras.new('isometric game camera');cam=bpy.data.objects.new('isometric game camera',data)
-bpy.context.collection.objects.link(cam);cam.location=(61,-69,59)
-cam.rotation_euler=(Vector((-2,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()
-data.type='ORTHO';data.ortho_scale=77;scene.camera=cam
+bpy.context.collection.objects.link(cam);cam.location=(54,-64,58)
+cam.rotation_euler=(Vector((-5,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()
+data.type='ORTHO';data.ortho_scale=67;scene.camera=cam
 scene.render.resolution_x=1400;scene.render.resolution_y=850
 scene.render.filepath=os.path.join(out,'real-blender-stylized-world-landscape.png')
 bpy.ops.render.render(write_still=True)
 cam.location=(49,-58,61)
 cam.rotation_euler=(Vector((-5,-4,1))-cam.location).to_track_quat('-Z','Y').to_euler()
-cam.data.ortho_scale=57
+cam.data.ortho_scale=54
 scene.render.resolution_x=760;scene.render.resolution_y=1240
 scene.cycles.samples=15
 scene.render.filepath=os.path.join(out,'real-blender-stylized-world-portrait.png')
