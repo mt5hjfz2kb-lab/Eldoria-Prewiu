@@ -1,0 +1,9 @@
+ASHEN_EXACT_NATIVE_SOURCE_INGEST
+source_sha=c7fd3b250cb0cc6160a583c1f02f8313d80cdfde
+native_run_id=43761891018
+artifact_id=14180407102
+artifact_digest=sha256:d27683348e010fa506d2420adef132c8e48ad080a10528b1d15733ef418db76e
+scope=Unity/Assets/Eldoria/ExperimentalAshenCitadel/**/*.{meta,mat,unity,asset}
+goal=commit genuine generated Unity scene and GUIDs only into independent experiment
+no_publication=true
+no_main_changes=true
