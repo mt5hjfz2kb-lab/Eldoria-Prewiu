@@ -1,0 +1,11 @@
+state=RUN_ISOLATED_UNITY_3D
+workstream_id=eldoria-senda-brecha-lane-event-20261115
+owner=chatgpt-senda-brecha-ios-unity-20261115
+lease_revision=5
+validation=source-only-procedural-3d-plus-gpu-screen-9-png-win-and-defeat
+scope=disposable-unity-project-only
+main_beta_modified=false
+public_release=false
+external_testers=false
+physical_iphone_verified=false
+art_approved=false
