@@ -12,3 +12,8 @@ fixed=Unity.exe path quoting, no embedded spaces in -projectPath/-logFile
 
 retry=4
 fixed=Unity 6000 manifest UTF8-no-BOM and strict own-log capture only
+
+retry=5
+cause=Unity native CS0234 Application.persistentDataPath resolved to Eldoria.Application namespace
+fixed=UnityEngine.Application.persistentDataPath fully qualified in isolated UI
+candidate_source_sha=09c6a05c6d49933f35367c641fb681f6a08e5273
