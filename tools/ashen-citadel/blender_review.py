@@ -101,7 +101,8 @@ def configure_render():
     sc.render.resolution_x=1100;sc.render.resolution_y=760;sc.render.resolution_percentage=100
     sc.render.image_settings.file_format="PNG"
     sc.render.film_transparent=False
-    sc.view_settings.view_transform="AgX" if "AgX" in [v.identifier for v in sc.bl_rna.properties["view_settings"].fixed_type.properties["view_transform"].enum_items] else "Standard" if False else sc.view_settings.view_transform
+    try: sc.view_settings.view_transform = "AgX"
+    except Exception: pass
     try:sc.render.engine="BLENDER_EEVEE_NEXT"
     except (ValueError,TypeError):
         try:sc.render.engine="BLENDER_EEVEE"
@@ -131,7 +132,7 @@ def main():
         for obj in objs:
             if obj.type=="MESH":
                 obj.name="Bastion %d · authored mesh" % level
-                obj.data.use_auto_smooth = False if hasattr(obj.data,"use_auto_smooth") else False
+                if hasattr(obj.data, "use_auto_smooth"): obj.data.use_auto_smooth = False
         cam=camera_and_lights()
         engine=configure_render()
         outpath=out/f"Bastion_{level}_blender.png"
