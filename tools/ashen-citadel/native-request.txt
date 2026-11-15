@@ -3,3 +3,6 @@ source_preflight_sha=8dde87115d5d172a2c9c001287e3ccc1b30bfb11
 required_editor=Unity 6000.3.23f1
 workstream=eldoria-ashen-citadel-original-i-v-20261115
 intent=real Unity 3D scene, five Bastion cameras and authentic importer metadata
+
+retry=2
+diagnostic=record Unity.exe stdout stderr fallback editor log and exact CLI
