@@ -187,6 +187,54 @@ $portraitHashes=@($hashes | Where-Object {$_['file'] -like '*390x844.png'} |
 if($portraitHashes.Count -ne 5){
     throw "ASHEN_STAGE_VARIANTS_NOT_DISTINCT: expected 5, found $($portraitHashes.Count)"
 }
+# EditMode's Unity Test Framework runs against the exact same imported
+# isolated scene, with real LocalGateway progression and persistence.
+# A successful .obj import/Editor camera photo alone never proves gameplay.
+$testLog=Join-Path $OutputRoot 'unity-nunit.log'
+$testResults=Join-Path $OutputRoot 'Ashen-EditMode-Results.xml'
+$testArgs='-batchmode -force-d3d11 -projectPath '+$quotedProject+
+    ' -runTests -testPlatform editmode -testResults "'+$testResults+
+    '" -logFile "'+$testLog+'"'
+Write-Output ('ASHEN_NUNIT_UNITY_BEGIN '+$testArgs)
+$testStd=Join-Path $OutputRoot 'nunit-stdout.txt'
+$testErr=Join-Path $OutputRoot 'nunit-stderr.txt'
+$testProcess=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $testArgs -PassThru `
+    -RedirectStandardOutput $testStd -RedirectStandardError $testErr
+$testDeadline=(Get-Date).AddMinutes(19)
+while(-not $testProcess.HasExited -and (Get-Date) -lt $testDeadline){
+    Start-Sleep -Seconds 4
+    $testProcess.Refresh()
+}
+if(-not $testProcess.HasExited){
+    & taskkill.exe /PID $testProcess.Id /T /F | Out-Null
+    throw 'ASHEN_NUNIT_TIMEOUT: actual Unity EditMode suite failed to complete'
+}
+$testProcess.WaitForExit()
+$testProcess.Refresh()
+if(-not(Test-Path $testResults)){
+    if(Test-Path $testLog){Get-Content $testLog -Tail 110}
+    throw 'ASHEN_NUNIT_RESULTS_MISSING: no real Unity test XML'
+}
+[xml]$xml=Get-Content -LiteralPath $testResults -Raw
+$rootNode=$xml.DocumentElement
+if($null -eq $rootNode -or $rootNode.Name -ne 'test-run'){
+    throw 'ASHEN_NUNIT_INVALID_RESULTS: XML has no test-run root'
+}
+$completed=[int]$rootNode.GetAttribute('total')
+$passed=[int]$rootNode.GetAttribute('passed')
+$failed=[int]$rootNode.GetAttribute('failed')
+$skipped=[int]$rootNode.GetAttribute('skipped')
+if($null -ne $testProcess.ExitCode -and $testProcess.ExitCode -ne 0){
+    throw "ASHEN_NUNIT_EDITOR_ERROR: Unity returned $($testProcess.ExitCode)"
+}
+if($completed -lt 7 -or $failed -ne 0 -or $skipped -ne 0 -or
+   $passed -ne $completed -or $rootNode.GetAttribute('result') -ne 'Passed'){
+    Write-Output "ASHEN_NUNIT_GATE_FAIL total=$completed passed=$passed failed=$failed skipped=$skipped"
+    if(Test-Path $testLog){Get-Content $testLog -Tail 110}
+    throw 'ASHEN_NUNIT_GAMEPLAY_REGRESSION_OR_MISSING_TESTS'
+}
+Write-Output "ASHEN_NUNIT_REAL_PASS total=$completed passed=$passed failed=$failed skipped=$skipped"
+
 $art=Join-Path $project 'Assets/Eldoria/ExperimentalAshenCitadel'
 Copy-Item -LiteralPath $scene -Destination (Join-Path $OutputRoot 'AshenCitadel.unity') -Force
 Copy-Item -LiteralPath $photos -Destination (Join-Path $OutputRoot 'UnityScreenshots') -Recurse -Force
@@ -194,7 +242,7 @@ Copy-Item -LiteralPath $photos -Destination (Join-Path $OutputRoot 'UnityScreens
 # generated scene can later be promoted in the same experiment without GUID loss.
 Copy-Item -LiteralPath $art -Destination (Join-Path $OutputRoot 'UnityExperimentSource') -Recurse -Force
 @{source_sha=$env:GITHUB_SHA;scene_saved=$true;screenshots=$hashes;
-    project='Isolated URP Unity experiment';certification='editor-camera-only';
+    project='Isolated URP Unity experiment';certification='editor-camera-plus-real-unity-editmode';
     webgl_playmode=$false;physical_iphone=$false}|
     ConvertTo-Json -Depth 8 | Set-Content -Path (Join-Path $OutputRoot 'native-proof.json') -Encoding UTF8
-Write-Output "ASHEN_REAL_UNITY_SOURCE_PASS: 5 stages, 10 verified screenshots; no gameplay PlayMode claim."
+Write-Output "ASHEN_REAL_UNITY_SOURCE_PASS: 5 stages, 10 verified screenshots plus real EditMode tests; PlayMode/iPhone still pending."

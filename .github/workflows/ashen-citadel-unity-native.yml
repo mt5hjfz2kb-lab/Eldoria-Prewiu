@@ -147,7 +147,7 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -gt 0){throw 'Unity became busy after checkout'}
       - name: Run real isolated Unity Editor and capture five stage meshes on two viewport sizes
         shell: powershell
-        timeout-minutes: 42
+        timeout-minutes: 47
         run: |
           $ErrorActionPreference='Stop'
           $out=Join-Path $env:GITHUB_WORKSPACE ("ashen-evidence-"+$env:GITHUB_RUN_ID)
