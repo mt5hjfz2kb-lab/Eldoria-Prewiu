@@ -487,6 +487,22 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     var name="Ashen_Bastion_"+l+"_"+viewport.x+"x"+viewport.y+".png";
                     File.WriteAllBytes(Path.Combine(outDir,name),image.EncodeToPNG());
                     Debug.Log("ASHEN_CAPTURE "+name+" suspect_magenta="+pct.ToString("F3",Invariant)+"%");
+                    if(l==5 && viewport.x>viewport.y){
+                        var light=RenderSettings.sun;var mode=light.shadows;
+                        light.shadows=LightShadows.None;
+                        RenderPipeline.SubmitRenderRequest(camera,request);
+                        RenderTexture.active=rt;
+                        image.ReadPixels(new Rect(0,0,viewport.x,viewport.y),0,0);image.Apply(false);
+                        var noShadow=image.GetPixels32();int affected=0;double difference=0;
+                        for(int k=0;k<pixels.Length;k++){
+                            float delta=Mathf.Abs(noShadow[k].r-pixels[k].r)+Mathf.Abs(noShadow[k].g-pixels[k].g)+Mathf.Abs(noShadow[k].b-pixels[k].b);
+                            if(delta>12f)affected++;difference+=delta/3f;
+                        }
+                        File.WriteAllBytes(Path.Combine(outDir,"Diagnostic_Bastion_V_shadows_off.png"),image.EncodeToPNG());
+                        light.shadows=mode;
+                        Debug.Log("ASHEN_SHADOW_AB affected_pixels="+affected+" mean_channel_delta="+(difference/pixels.Length).ToString("F4",Invariant)+
+                            " pipeline="+QualitySettings.renderPipeline.name+" quality="+QualitySettings.GetQualityLevel());
+                    }
                     camera.targetTexture=null;RenderTexture.active=null;
                     UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(image);
                 }
