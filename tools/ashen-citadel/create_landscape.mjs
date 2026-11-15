@@ -11,7 +11,7 @@ const makeLandscape=function makeLandscape(){
   function noise(x,z){return Math.sin(x*.41+Math.cos(z*.18))*Math.cos(z*.47)*.5 + Math.sin(x*.11+z*.24)*.38 + Math.sin(x*.82-z*.60)*.12;}
   function height(x,z){
     let rad=Math.hypot(x*.85,z),s=Math.max(0,Math.min(1,(rad-18)/29));
-    let lev=(noise(x,z)*.19+Math.sin(x*.12-z*.14)*.13)*s + Math.pow(s,1.7)*.22;
+    let lev=(noise(x,z)*.55+Math.sin(x*.12-z*.14)*.35)*s + s*s*2.2;
     return -.060+lev;
   }
   function emit(p,mat,uv){

@@ -35,7 +35,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var sourcePipeline=GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;
             if(sourcePipeline!=null){
                 var pipeline=UnityEngine.Object.Instantiate(sourcePipeline);
-                pipeline.name="Ashen private lookdev";pipeline.shadowDistance=85f;pipeline.msaaSampleCount=4;
+                pipeline.name="Ashen private lookdev";pipeline.shadowDistance=140f;pipeline.msaaSampleCount=4;
+                pipeline.supportsMainLightShadows=true;pipeline.supportsSoftShadows=true;
+                pipeline.mainLightShadowmapResolution=2048;pipeline.shadowCascadeCount=2;
+                pipeline.shadowDepthBias=.2f;pipeline.shadowNormalBias=.25f;
                 var pipelinePath=Root+"/Materials/AshenLookdevPipeline.asset";
                 var savedPipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath);
                 if(savedPipeline==null){AssetDatabase.CreateAsset(pipeline,pipelinePath);savedPipeline=pipeline;}
@@ -44,21 +47,23 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             }
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.28f,.34f,.41f);
-            RenderSettings.ambientEquatorColor=new Color(.18f,.22f,.25f);
+            RenderSettings.ambientSkyColor=new Color(.20f,.27f,.36f);
+            RenderSettings.ambientEquatorColor=new Color(.12f,.16f,.20f);
             RenderSettings.ambientGroundColor=new Color(.095f,.10f,.09f);
             RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.29f);
-            RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=48;RenderSettings.fogEndDistance=135;
+            RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=85;RenderSettings.fogEndDistance=190;
+            QualitySettings.shadows=ShadowQuality.All;
 
             var key=new GameObject("Sun · amber key");
             var sun=key.AddComponent<Light>();
-            sun.type=LightType.Directional;sun.intensity=1.35f;
+            sun.type=LightType.Directional;sun.intensity=1.65f;
             sun.color=new Color(1f,.84f,.69f);
             RenderSettings.sun=sun;
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.8f;
-            sun.transform.rotation=Quaternion.Euler(48,-35,0);
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=.88f;sun.shadowBias=.2f;sun.shadowNormalBias=.25f;
+            sun.GetUniversalAdditionalLightData().usePipelineSettings=false;
+            sun.transform.rotation=Quaternion.Euler(35,-52,0);
             var fill=new GameObject("Sky · cold fill").AddComponent<Light>();
-            fill.type=LightType.Directional;fill.intensity=.23f;fill.color=new Color(.54f,.67f,.77f);
+            fill.type=LightType.Directional;fill.intensity=.12f;fill.color=new Color(.54f,.67f,.77f);
             fill.transform.rotation=Quaternion.Euler(56,145,0);
             fill.shadows=LightShadows.None;
 
@@ -68,6 +73,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             camera.orthographic=true;camera.orthographicSize=35f;
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.25f,.28f,.28f);
+            camera.nearClipPlane=.3f;camera.farClipPlane=180f;
             camera.allowHDR=false;camera.allowMSAA=true;camera.depth=0;
             cameraGO.AddComponent<AudioListener>();
             cameraGO.AddComponent<UniversalAdditionalCameraData>().renderShadows=true;
@@ -116,6 +122,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var pos=new Vector3(Mathf.Cos(angle)*radius,0,Mathf.Sin(angle)*radius*.80f);
                 if(Mathf.Abs(pos.x)<5f && pos.z<0)continue;
                 var tree=ImportPrefab(treePrefab,sceneRoot.transform,"Pine · "+i);
+                pos.y=ValleyHeight(pos.x,pos.z);
                 tree.transform.position=pos;
                 tree.transform.localScale=new Vector3(.77f+.55f*(float)random.NextDouble(),
                     .72f+.72f*(float)random.NextDouble(),.77f+.55f*(float)random.NextDouble());
@@ -127,6 +134,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float radius=19f+20f*(float)random.NextDouble();
                 var rock=ImportPrefab(rockPrefab,sceneRoot.transform,"Natural fieldstone · "+i);
                 rock.transform.position=new Vector3(Mathf.Cos(angle)*radius,-.04f,Mathf.Sin(angle)*radius*.87f);
+                var rp=rock.transform.position;rp.y=ValleyHeight(rp.x,rp.z)-.04f;rock.transform.position=rp;
                 rock.transform.localScale=Vector3.one*Mathf.Lerp(.36f,1.00f,(float)random.NextDouble());
                 rock.transform.rotation=Quaternion.Euler(0,(i*83f)%360f,0);
             }
@@ -247,6 +255,12 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 // one 128px tile over the entire 146m² world.
                 if(current=="moss" || current=="soil")
                     mat.SetTextureScale("_BaseMap",Vector2.one);
+                if(current=="moss"){
+                    mat.SetColor("_BaseColor",Color.white);
+                    mat.SetTexture("_BaseMap",CreateValleyGroundTexture());
+                    mat.SetTextureScale("_BaseMap",Vector2.one/36f);
+                    mat.SetTextureOffset("_BaseMap",new Vector2(.5f,.5f));
+                }
                 if(current=="warm"){mat.EnableKeyword("_EMISSION");mat.SetColor("_EmissionColor",new Color(.65f,.32f,.08f));}
                 mat.SetFloat("_Smoothness",current=="brass"?.35f:.09f);
                 mat.SetFloat("_Metallic",current=="brass"?.42f:.01f);
@@ -255,6 +269,44 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);
             AssetDatabase.SaveAssets();
         }
+        // Keep the central building plots planar; raise the wooded rim, not the foundations.
+        private static float ValleyHeight(float x,float z)
+        {
+            float rad=Mathf.Sqrt(x*x*.85f*.85f+z*z);
+            float t=Mathf.Clamp01((rad-18f)/29f);
+            float noise=Mathf.Sin(x*.41f+Mathf.Cos(z*.18f))*Mathf.Cos(z*.47f)*.5f+
+                Mathf.Sin(x*.11f+z*.24f)*.38f+Mathf.Sin(x*.82f-z*.60f)*.12f;
+            return -.06f+(noise*.55f+Mathf.Sin(x*.12f-z*.14f)*.35f)*t+
+                t*t*2.2f;
+        }
+        private static Texture2D CreateValleyGroundTexture()
+        {
+            const int size=512;
+            var tex=new Texture2D(size,size,TextureFormat.RGBA32,true){name="Ashen valley hand-layered ground",
+                wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Trilinear,anisoLevel=4};
+            var pixels=new Color[size*size];
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++){
+                float wx=(x/(float)(size-1)-.5f)*180f,wz=(y/(float)(size-1)-.5f)*180f;
+                float broad=Mathf.PerlinNoise(wx*.045f+29f,wz*.045f+51f);
+                float detail=Mathf.PerlinNoise(wx*.39f+17f,wz*.39f+11f);
+                var col=Color.Lerp(new Color(.18f,.235f,.18f),new Color(.32f,.36f,.24f),broad);
+                col*=.90f+detail*.20f;
+                float routeX=Mathf.Sin((wz+8f)*.15f)*.66f+Mathf.Sin((wz+8f)*.52f)*.17f;
+                float route=Mathf.Clamp01(1f-(Mathf.Abs(wx-routeX)-1.3f)/2.1f)*
+                    Mathf.Clamp01((-wz-6f)/3f)*Mathf.Clamp01((wz+44f)/4f);
+                col=Color.Lerp(col,new Color(.35f,.31f,.225f)*( .9f+detail*.18f),route*.85f);
+                float edge=Mathf.Max(Mathf.Abs(wx)/10f,Mathf.Abs(wz)/9f);
+                float apron=(1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(1f,1.25f,edge)))*Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.88f,1f,edge));
+                col=Color.Lerp(col,new Color(.245f,.25f,.205f),apron*.60f);
+                pixels[y*size+x]=col;
+            }
+            tex.SetPixels(pixels);tex.Apply(true,false);
+            var path=Root+"/Textures/AshenValleyGround.asset";
+            var saved=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if(saved==null){AssetDatabase.CreateAsset(tex,path);return tex;}
+            EditorUtility.CopySerialized(tex,saved);UnityEngine.Object.DestroyImmediate(tex);return saved;
+        }
+
         // Contiguous terrain extends beyond every portrait and landscape camera
         // instead of exposing the rectangular edge of a tabletop city.
         private static void AddGround(Transform root,float x,float z,float w,float d)
