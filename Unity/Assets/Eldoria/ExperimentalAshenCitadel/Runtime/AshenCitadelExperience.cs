@@ -29,6 +29,11 @@ namespace Eldoria.ExperimentalAshenCitadel
         private RectTransform popup;
         private Text levelText, resourceText, feedbackText, popupTitle, popupDescription;
         private Transform popupActionArea;
+        private RectTransform sheetActionsViewport;
+        private ScrollRect sheetScroll;
+        private Button sheetClose;
+        private string sheetDescription="";
+        private int sheetRows;
         private bool worldMode;
         private float nextRefresh;
         private int lastWidth, lastHeight;
@@ -142,59 +147,104 @@ namespace Eldoria.ExperimentalAshenCitadel
         }
         private void BuildInterface()
         {
-            var go=new GameObject("Ashen · Royal Interface",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
-            var canvas=go.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=90;
-            var scaler=go.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution=new Vector2(390,844);scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            var root=new GameObject("Ashen · Royal Interface",typeof(RectTransform),typeof(Canvas),
+                typeof(CanvasScaler),typeof(GraphicRaycaster));
+            var canvas=root.GetComponent<Canvas>();
+            canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=90;
+            var scaler=root.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution=new Vector2(390,844);
+            scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight=.35f;
-            safe=Node(go.transform,"Device safe area",Vector2.zero,Vector2.one,Vector2.zero,Vector2.zero);
-            var top=Node(safe,"Header",new Vector2(0,1),Vector2.one,new Vector2(4,-117),new Vector2(-4,-3));
-            Plate(top,frame,Color.white);
-            var cr=Node(top,"Crest",new Vector2(0,0),new Vector2(0,1),new Vector2(9,12),new Vector2(92,-11));
-            Plate(cr,crest,Color.white);
-            levelText=Label(top,"Realm",21,TextAnchor.MiddleLeft,Ivory,new Vector2(0,0.52f),Vector2.one,
-                new Vector2(94,0),new Vector2(-12,-5));
-            resourceText=Label(top,"Resources",15,TextAnchor.MiddleLeft,Muted,new Vector2(0,0),new Vector2(1,.53f),
-                new Vector2(94,1),new Vector2(-12,-2));
-            var bottom=Node(safe,"Bottom navigation",Vector2.zero,new Vector2(1,0),new Vector2(4,4),new Vector2(-4,118));
+            safe=Node(root.transform,"Device safe area",Vector2.zero,Vector2.one,Vector2.zero,Vector2.zero);
+
+            // The background environment remains visible between the compact
+            // header, 46 px account ribbon and the shallow 74 px footer.
+            var header=Node(safe,"Header",new Vector2(0,1),Vector2.one,
+                new Vector2(4,-103),new Vector2(-4,-3));
+            Plate(header,frame,Color.white);
+            var emblem=Node(header,"Crest",new Vector2(0,0),new Vector2(0,1),
+                new Vector2(10,17),new Vector2(78,-16));
+            Plate(emblem,crest,Color.white);
+            levelText=Label(header,"Realm",18,TextAnchor.MiddleLeft,Ivory,
+                new Vector2(0,.49f),Vector2.one,new Vector2(86,0),new Vector2(-10,-4));
+            resourceText=Label(header,"Resources",13,TextAnchor.MiddleLeft,Muted,
+                new Vector2(0,0),new Vector2(1,.50f),new Vector2(86,2),new Vector2(-8,0));
+
+            var bottom=Node(safe,"Bottom navigation",Vector2.zero,new Vector2(1,0),
+                new Vector2(4,4),new Vector2(-4,78));
             Plate(bottom,frame,Color.white);
-            string[] captions={"BASTIÓN","EDIFICIOS","EJÉRCITO","MUNDO"};
-            for(int i=0;i<captions.Length;i++)
+            string[] nav={"BASTIÓN","EDIFICIOS","EJÉRCITO","MUNDO"};
+            for(int i=0;i<nav.Length;i++)
             {
-                int n=i;float x0=i/4f,x1=(i+1)/4f;
-                Button(bottom,"Nav · "+captions[i],captions[i],secondary,new Vector2(x0,.13f),
-                    new Vector2(x1,.95f),new Vector2(5,0),new Vector2(-5,0),
-                    ()=>OpenSection(n),13);
+                int n=i;
+                float x0=i/4f,x1=(i+1)/4f;
+                Button(bottom,"Nav · "+nav[i],nav[i],secondary,new Vector2(x0,.12f),
+                    new Vector2(x1,.90f),new Vector2(4,0),new Vector2(-4,0),
+                    ()=>OpenSection(n),12);
             }
             feedbackText=Label(safe,"Message",13,TextAnchor.MiddleCenter,Ivory,
-                new Vector2(0,0),new Vector2(1,0),new Vector2(12,124),new Vector2(-12,158));
-            popup=Node(safe,"Action sheet",new Vector2(.045f,.20f),new Vector2(.955f,.78f),
+                new Vector2(0,0),new Vector2(1,0),new Vector2(12,82),new Vector2(-12,112));
+
+            // Content-driven sheet attached above navigation, not an oversized
+            // modal that hides 60% of the kingdom regardless of content.
+            popup=Node(safe,"Action sheet",new Vector2(.035f,0),new Vector2(.965f,0),
                 Vector2.zero,Vector2.zero);
+            popup.pivot=new Vector2(.5f,0);
+            popup.anchoredPosition=new Vector2(0,114);
+            popup.sizeDelta=new Vector2(0,260);
             Plate(popup,frame,Color.white);
-            popupTitle=Label(popup,"Sheet title",20,TextAnchor.MiddleCenter,Ivory,
-                new Vector2(0,1),Vector2.one,new Vector2(42,-67),new Vector2(-42,-12));
+            popupTitle=Label(popup,"Sheet title",18,TextAnchor.MiddleLeft,Ivory,
+                new Vector2(0,1),Vector2.one,new Vector2(20,-57),new Vector2(-57,-9));
             popupDescription=Label(popup,"Description",13,TextAnchor.UpperLeft,Muted,
-                new Vector2(0,1),Vector2.one,new Vector2(22,-140),new Vector2(-22,-72));
-            var close=Button(popup,"Close","×",secondary,new Vector2(1,1),Vector2.one,
-                new Vector2(-48,-58),new Vector2(-13,-18),()=>popup.gameObject.SetActive(false),22);
-            var scroll=Node(popup,"Actions scroll",new Vector2(0,0),new Vector2(1,1),
-                new Vector2(22,18),new Vector2(-22,-151));
-            var viewport=Node(scroll,"Viewport",Vector2.zero,Vector2.one,Vector2.zero,Vector2.zero);
-            viewport.gameObject.AddComponent<RectMask2D>();
-            var content=Node(viewport,"Content",new Vector2(0,1),Vector2.one,
-                new Vector2(0,-20),Vector2.zero);
+                new Vector2(0,1),Vector2.one,new Vector2(20,-120),new Vector2(-20,-61));
+            sheetClose=Button(popup,"Close","×",secondary,new Vector2(1,1),Vector2.one,
+                new Vector2(-52,-53),new Vector2(-13,-13),CloseSheet,21);
+
+            var scroll=Node(popup,"Actions scroll",Vector2.zero,Vector2.one,
+                new Vector2(20,15),new Vector2(-20,-132));
+            sheetActionsViewport=Node(scroll,"Viewport",Vector2.zero,Vector2.one,
+                Vector2.zero,Vector2.zero);
+            sheetActionsViewport.gameObject.AddComponent<RectMask2D>();
+            var content=Node(sheetActionsViewport,"Content",new Vector2(0,1),Vector2.one,
+                Vector2.zero,Vector2.zero);
+            content.pivot=new Vector2(.5f,1);
+            content.sizeDelta=Vector2.zero;
             popupActionArea=content;
-            var layout=content.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.spacing=7;layout.childControlWidth=true;layout.childControlHeight=false;
-            layout.childForceExpandWidth=true;layout.childForceExpandHeight=false;
-            var fitter=content.gameObject.AddComponent<ContentSizeFitter>();
-            fitter.verticalFit=ContentSizeFitter.FitMode.PreferredSize;
-            var scrollRect=scroll.gameObject.AddComponent<ScrollRect>();
-            scrollRect.horizontal=false;scrollRect.vertical=true;scrollRect.viewport=viewport;
-            scrollRect.content=content;scrollRect.scrollSensitivity=22;
+            sheetScroll=scroll.gameObject.AddComponent<ScrollRect>();
+            sheetScroll.horizontal=false;sheetScroll.vertical=true;
+            sheetScroll.viewport=sheetActionsViewport;
+            sheetScroll.content=content;
+            sheetScroll.scrollSensitivity=22;
             popup.gameObject.SetActive(false);
             ApplySafeArea();
         }
+        private void CloseSheet()
+        {
+            popup.gameObject.SetActive(false);
+            if(dailyButton!=null)dailyButton.gameObject.SetActive(true);
+            if(timeText!=null)timeText.gameObject.SetActive(true);
+        }
+        private void SizeSheet(int rows)
+        {
+            sheetRows=rows;
+            int hardBreaks=sheetDescription.Split('\n').Length;
+            float lineEstimate=Mathf.Ceil(sheetDescription.Length/44f)+Mathf.Max(0,hardBreaks-1);
+            float descriptionHeight=Mathf.Clamp(37f+lineEstimate*14f,66f,135f);
+            popupDescription.rectTransform.offsetMin=new Vector2(20,-(61+descriptionHeight));
+            popupDescription.rectTransform.offsetMax=new Vector2(-20,-61);
+            var scrollRect=sheetScroll.GetComponent<RectTransform>();
+            scrollRect.offsetMax=new Vector2(-20,-(71+descriptionHeight));
+            const float rowStep=54f;
+            float contentHeight=Mathf.Max(1f,rows*rowStep);
+            ((RectTransform)popupActionArea).sizeDelta=new Vector2(0,contentHeight);
+            float preferredHeight=85f+descriptionHeight+Mathf.Min(rows,5)*rowStep+20f;
+            float safeHeight=safe.rect.height>200?safe.rect.height:844f;
+            float maxHeight=Mathf.Max(230f,Mathf.Min(490f,safeHeight*.65f));
+            popup.sizeDelta=new Vector2(0,Mathf.Clamp(preferredHeight,192f,maxHeight));
+            if(sheetScroll!=null)sheetScroll.verticalNormalizedPosition=1f;
+        }
+
         private void ApplySafeArea()
         {
             if(safe==null || Screen.width<=0 || Screen.height<=0)return;
@@ -225,9 +275,9 @@ namespace Eldoria.ExperimentalAshenCitadel
             if(barracks!=null)barracks.SetActive(!worldMode && s.BarracksLevel>0);
             if(granary!=null)granary.SetActive(!worldMode && s.ChapterThree!=null && s.ChapterThree.GranaryLevel>0);
             if(stoneworks!=null)stoneworks.SetActive(!worldMode && s.ChapterThree!=null && s.ChapterThree.StoneworksLevel>0);
-            levelText.text="LA CIUDADELA DE CENIZA  ·  I–V\nBASTIÓN "+Roman(visibleStage);
-            resourceText.text="MADERA "+s.Resources.Wood+"    PIEDRA "+s.Resources.Stone+
-                "\nCOMIDA "+s.Resources.Food+"    TROPAS "+s.Available.Total;
+            levelText.text="CIUDADELA DE CENIZA\nBASTIÓN "+Roman(visibleStage);
+            resourceText.text="MADERA "+s.Resources.Wood+" · PIEDRA "+s.Resources.Stone+
+                "\nCOMIDA "+s.Resources.Food+" · TROPAS "+s.Available.Total;
             feedbackText.text=lastMessage;
         }
         private static string Roman(int level)=>new[]{"I","II","III","IV","V"}[Mathf.Clamp(level-1,0,4)];
@@ -261,18 +311,27 @@ namespace Eldoria.ExperimentalAshenCitadel
         private void Open(string title,string description,List<(string,Action,bool)> actions)
         {
             popup.gameObject.SetActive(true);
-            popupTitle.text=title;popupDescription.text=description;
+            popupTitle.text=title;
+            sheetDescription=description??"";
+            popupDescription.text=sheetDescription;
+            actions=actions??new List<(string,Action,bool)>();
             for(int i=popupActionArea.childCount-1;i>=0;i--)
                 Destroy(popupActionArea.GetChild(i).gameObject);
-            foreach(var spec in actions)
+            SizeSheet(actions.Count);
+            const int rowHeight=47,rowPitch=54;
+            for(int i=0;i<actions.Count;i++)
             {
-                var item=Button(popupActionArea,spec.Item1,spec.Item1,spec.Item3?primary:secondary,
-                    new Vector2(0,0),new Vector2(1,0),Vector2.zero,new Vector2(0,47),spec.Item2,14);
-                var element=item.GetComponent<LayoutElement>();
-                if(element==null)element=item.gameObject.AddComponent<LayoutElement>();
-                element.preferredHeight=47;
+                var spec=actions[i];
+                float top=-i*rowPitch,bottom=top-rowHeight;
+                var item=Button(popupActionArea,spec.Item1,spec.Item1,
+                    spec.Item3?primary:secondary,
+                    new Vector2(0,1),new Vector2(1,1),
+                    new Vector2(0,bottom),new Vector2(0,top),spec.Item2,13);
                 item.interactable=spec.Item3;
             }
+            if(dailyButton!=null)dailyButton.gameObject.SetActive(false);
+            if(timeText!=null)timeText.gameObject.SetActive(false);
+            Canvas.ForceUpdateCanvases();
         }
         private static void Add(List<(string,Action,bool)> a,string label,Action action,bool enabled=true)
             =>a.Add((label,action,enabled));
