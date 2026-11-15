@@ -1,7 +1,7 @@
-attempt=9
+attempt=10
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=4
-state=REAL_UNITY_EDITOR_MODULAR_AFTER_DONOR_FIX
-reason=Real Unity run 43724866674 failed to locate tree/rock donors because city-only Editor scene keeps world donors under inactive WorldRoot. Select inactive source meshes explicitly and instantiate into independent temporary active scene root; no runtime/main edits.
+state=REAL_UNITY_EDITOR_SCENE_DONOR_REUSE_AB
+reason=Reject imported EmaceArt rocks and black vegetation (actual 43725103057 output); test only original 3D authorship of city/world prefabs including inactive source donors, preserving material coherence. No player saves, beta or main scene changes.
 art_approved=false
