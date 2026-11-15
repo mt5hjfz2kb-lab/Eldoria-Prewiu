@@ -23,3 +23,10 @@ cause=Unity 6 Editor C# CS0234 in SceneBuilder Application.dataPath
 fix=Fully-qualified UnityEngine.Application.dataPath and new static namespace collision gate
 artifact_scope=per-run folder to avoid re-uploading stale 4.5GB fallback log
 source_sha=1dfc742cc1965d0e8899283862385cf7d1356122
+
+retry=7
+observed=Unity created scene and 10 real camera PNGs with zero magenta, engine exit log code 0
+cause=Windows PowerShell process.ExitCode null; false negative verification, artifact copy skipped
+fix=WaitForExit and exact same-run log+scene+ten-PNG fail-closed reconciliation
+mechanics=EldoriaV41GatewayResolver.Campaign selected in experimental gateway
+source_sha=bf89db18403400191a57b8911d431801205a9e6e
