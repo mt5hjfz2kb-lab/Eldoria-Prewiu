@@ -76,7 +76,7 @@ $manifestJson=@{dependencies=$dependencies}|ConvertTo-Json -Depth 15
 # Windows PowerShell 5.1 Set-Content -Encoding UTF8 emits U+FEFF BOM.
 # Unity 6000 package manager rejects that BOM as invalid JSON at character 0.
 [IO.File]::WriteAllText($manifestPath,$manifestJson,
-    (New-Object System.Text.UTF8Encoding($false)))
+    ([System.Text.UTF8Encoding]::new($false)))
 $bytes=[IO.File]::ReadAllBytes($manifestPath)
 if($bytes[0] -ne 123){throw 'Unity manifest must begin with ASCII { (UTF-8 no BOM)'}
 Write-Output ('ASHEN_SPARSE_UNITY_PACKAGES '+($dependencies.Keys -join ', '))
