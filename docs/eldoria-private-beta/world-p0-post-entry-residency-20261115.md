@@ -186,3 +186,12 @@ A redundant queued publication43747483098 correctly refused replacing the now-ne
 public certificate; it did not overwrite21e2. Read-only public verification has
 bounded retries for propagation but still requires every exact byte hash plus
 the complete public saved-game browser journey. Physical iPhone remains pending.
+
+
+## Final independent public certification — 2026-11-15
+
+Read-only run43747730982 completed SUCCESS. Artifact14175671344 independently downloaded and SHA256 verified: 064d889e0038b417e80c04f99d97dc67c1bb83ebb0f52ea3fdab1e72cc14e3aa.
+All146 public files matched exactly (98 protected,47 candidate and certificate). Certificate remained62e296b8ae5b1f0c63596f10f3f27e936ed676bc6e5bae2567fd618d39433e4a before and after testing.
+Actual public WebKit journey passed nickname persistence, sawmill construction and reload, two world entries and city returns, zoom changes and journal export, with zero recorded errors. CPU retirement marker confirmed active. Early residency/reload report independently passed. Reviewed public world-entry, overview, close zoom and city-return screenshots; no geometry disappearance observed. This is technical verification, not artistic approval or physical iPhone acceptance.
+Previous21e1 rollback archive SHA256: 5346c9e62b4b56b3688ee31994eb937fde2bb3581f2eda44bf2e213efbc32a30.
+All local/native/browser work for this candidate is complete. Physical iPhone restart cause remains unconfirmed and21e2 physical outcome is pending. No external tester release.
