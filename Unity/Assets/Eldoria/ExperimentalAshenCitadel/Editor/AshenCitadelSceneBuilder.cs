@@ -57,11 +57,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             camera.backgroundColor=new Color(.25f,.28f,.28f);
             camera.allowHDR=false;camera.allowMSAA=true;camera.depth=0;
             cameraGO.AddComponent<AudioListener>();
-            cameraGO.transform.position=new Vector3(18,19,-22);
-            cameraGO.transform.LookAt(new Vector3(0,1.8f,0));
+            cameraGO.transform.position=new Vector3(20,24,-28);
+            cameraGO.transform.LookAt(new Vector3(0,2.5f,0));
 
             var sceneRoot=new GameObject("Ashen City · authored hierarchy");
-            AddGround(sceneRoot.transform,0,0,68,54);
+            AddGround(sceneRoot.transform,0,0,146,142);
             var stagesRoot=new GameObject("Bastion stage variants");stagesRoot.transform.SetParent(sceneRoot.transform,false);
             var stages=new GameObject[5];
             for(int n=1;n<=5;n++)
@@ -89,26 +89,31 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var rockPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Rock.obj");
             if(!treePrefab||!rockPrefab)throw new InvalidOperationException("Missing authored flora assets");
             var random=new System.Random(1795);
-            for(int i=0;i<38;i++)
+            // An organic silhouette instead of a circular row of identical trees.
+            // Conifers form small pockets along the ravine, never on the main road.
+            for(int i=0;i<86;i++)
             {
-                float angle=(float)(random.NextDouble()*Math.PI*2);
-                float radius=22f+(float)random.NextDouble()*8f;
-                var pos=new Vector3(Mathf.Cos(angle)*radius,0,Mathf.Sin(angle)*radius*.74f);
+                float angle=i*2.39996323f+Mathf.Sin(i*1.13f)*.20f;
+                float radius=17.5f+Mathf.Sqrt((i+.5f)/86f)*24f;
+                var pos=new Vector3(Mathf.Cos(angle)*radius,0,Mathf.Sin(angle)*radius*.80f);
+                if(Mathf.Abs(pos.x)<5f && pos.z<0)continue;
                 var tree=ImportPrefab(treePrefab,sceneRoot.transform,"Pine · "+i);
-                tree.transform.position=pos;tree.transform.localScale=Vector3.one*Mathf.Lerp(.7f,1.3f,(float)random.NextDouble());
-                tree.transform.rotation=Quaternion.Euler(0,i*47f,0);
+                tree.transform.position=pos;
+                tree.transform.localScale=new Vector3(.77f+.55f*(float)random.NextDouble(),
+                    .72f+.72f*(float)random.NextDouble(),.77f+.55f*(float)random.NextDouble());
+                tree.transform.rotation=Quaternion.Euler(0,(i*47f)%360f,0);
             }
-            for(int i=0;i<19;i++)
+            for(int i=0;i<27;i++)
             {
-                float angle=(float)(random.NextDouble()*Math.PI*2);
-                float radius=17f+(float)random.NextDouble()*12f;
-                var rock=ImportPrefab(rockPrefab,sceneRoot.transform,"Ground boulder · "+i);
-                rock.transform.position=new Vector3(Mathf.Cos(angle)*radius,-.04f,Mathf.Sin(angle)*radius*.8f);
-                rock.transform.localScale=Vector3.one*Mathf.Lerp(.42f,1.5f,(float)random.NextDouble());
-                rock.transform.rotation=Quaternion.Euler(0,i*83f,0);
+                float angle=i*2.349963f;
+                float radius=19f+20f*(float)random.NextDouble();
+                var rock=ImportPrefab(rockPrefab,sceneRoot.transform,"Natural fieldstone · "+i);
+                rock.transform.position=new Vector3(Mathf.Cos(angle)*radius,-.04f,Mathf.Sin(angle)*radius*.87f);
+                rock.transform.localScale=Vector3.one*Mathf.Lerp(.36f,1.00f,(float)random.NextDouble());
+                rock.transform.rotation=Quaternion.Euler(0,(i*83f)%360f,0);
             }
             var world=new GameObject("Ashen Frontier · authored experiment");
-            AddGround(world.transform,0,55,74,66);
+            AddGround(world.transform,0,55,146,148);
             // Three readable regions with authored meshes; not imported legacy landmarks.
             for(int i=0;i<30;i++)
             {
@@ -217,22 +222,65 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);
             AssetDatabase.SaveAssets();
         }
+        // Contiguous terrain extends beyond every portrait and landscape camera
+        // instead of exposing the rectangular edge of a tabletop city.
         private static void AddGround(Transform root,float x,float z,float w,float d)
         {
-            var baseMesh=GameObject.CreatePrimitive(PrimitiveType.Cube);
-            baseMesh.name="Basalt substrate";baseMesh.transform.SetParent(root,false);
-            baseMesh.transform.position=new Vector3(x,-.62f,z);baseMesh.transform.localScale=new Vector3(w,1.16f,d);
-            baseMesh.GetComponent<Renderer>().sharedMaterial=Colors["basalt"];
             var floor=GameObject.CreatePrimitive(PrimitiveType.Cube);
-            floor.name="Moss and dark loam";floor.transform.SetParent(root,false);
-            floor.transform.position=new Vector3(x,-.035f,z);floor.transform.localScale=new Vector3(w-.5f,.09f,d-.5f);
+            floor.name="Deep valley · continuous terrain";
+            floor.transform.SetParent(root,false);
+            floor.transform.position=new Vector3(x,-.36f,z);
+            floor.transform.localScale=new Vector3(w,.60f,d);
             floor.GetComponent<Renderer>().sharedMaterial=Colors["moss"];
-            var path=GameObject.CreatePrimitive(PrimitiveType.Cube);
-            path.name="Broken stone causeway";path.transform.SetParent(root,false);
-            path.transform.position=new Vector3(x,.028f,z-d*.22f);
-            path.transform.localScale=new Vector3(3.8f,.045f,d*.53f);
-            path.GetComponent<Renderer>().sharedMaterial=Colors["cut"];
-            foreach(var obj in new[]{baseMesh,floor,path})UnityEngine.Object.DestroyImmediate(obj.GetComponent<Collider>());
+            UnityEngine.Object.DestroyImmediate(floor.GetComponent<Collider>());
+
+            // An authored winding causeway, not a single long rectangular strip.
+            // These vertices are saved in the experimental Unity scene/mesh asset.
+            var vertices=new List<Vector3>();
+            var triangles=new List<int>();
+            for(int i=0;i<=22;i++)
+            {
+                float t=i/22f;
+                float at=z-34f+37f*t;
+                float drift=Mathf.Sin(t*4.20f)*.57f+Mathf.Sin(t*10.7f)*.12f;
+                float width=2.30f+.32f*Mathf.Sin(t*6.31f);
+                vertices.Add(new Vector3(x+drift-width,.035f,at));
+                vertices.Add(new Vector3(x+drift+width,.035f,at));
+                if(i==0)continue;
+                int previous=(i-1)*2,current=i*2;
+                triangles.Add(previous);triangles.Add(current);triangles.Add(current+1);
+                triangles.Add(previous);triangles.Add(current+1);triangles.Add(previous+1);
+            }
+            var roadMesh=new Mesh{name="Ashen · soft-curved worn approach"};
+            roadMesh.SetVertices(vertices);roadMesh.SetTriangles(triangles,0);
+            roadMesh.RecalculateNormals();roadMesh.RecalculateBounds();
+            var path=Root+"/Meshes/AshenRoadMesh.asset";
+            var existing=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if(existing==null){AssetDatabase.CreateAsset(roadMesh,path);existing=roadMesh;}
+            else{EditorUtility.CopySerialized(roadMesh,existing);UnityEngine.Object.DestroyImmediate(roadMesh);}
+            var road=new GameObject("Stone-dust road · terrain embedded");
+            road.transform.SetParent(root,false);
+            road.AddComponent<MeshFilter>().sharedMesh=existing;
+            road.AddComponent<MeshRenderer>().sharedMaterial=Colors["soil"];
+
+            // Small irregular stone islands give scale without outlining a square.
+            var rng=new System.Random(3719+(int)z);
+            for(int i=0;i<24;i++)
+            {
+                float progress=(float)rng.NextDouble();
+                float zz=z-29f+29f*progress;
+                float xx=x+Mathf.Sin(progress*4.20f)*.57f+
+                    (rng.Next(2)==0?-1f:1f)*Mathf.Lerp(1.9f,4.25f,(float)rng.NextDouble());
+                var pebble=GameObject.CreatePrimitive(PrimitiveType.Cube);
+                pebble.name="Weathered route stone · "+i;
+                pebble.transform.SetParent(root,false);
+                pebble.transform.position=new Vector3(xx,.039f,zz);
+                pebble.transform.rotation=Quaternion.Euler(0,(float)rng.NextDouble()*180f,0);
+                pebble.transform.localScale=new Vector3(.22f+.27f*(float)rng.NextDouble(),
+                    .048f,.37f+.25f*(float)rng.NextDouble());
+                pebble.GetComponent<Renderer>().sharedMaterial=Colors["cut"];
+                UnityEngine.Object.DestroyImmediate(pebble.GetComponent<Collider>());
+            }
         }
         private static void AddRift(Transform parent,Vector3 center)
         {

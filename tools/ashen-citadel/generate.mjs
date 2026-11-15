@@ -21,6 +21,17 @@ const author=function author(){
    for(let i=0;i<n;i++)poly([B[i],B[(i+1)%n],T[(i+1)%n],T[i]],m);
   }
   function cone(x,y,z,r,h,n=8,m="roof"){const top=[x,y+h,z];for(let i=0;i<n;i++){let a=i*2*Math.PI/n,b=(i+1)*2*Math.PI/n;poly([[x+Math.cos(a)*r,y,z+Math.sin(a)*r],[x+Math.cos(b)*r,y,z+Math.sin(b)*r],top],m);}}
+  function frustum(x,y,z,bottom,top,height,n=9,m="leaf"){
+    const low=[],high=[];
+    for(let i=0;i<n;i++){
+      const theta=2*Math.PI*i/n;
+      const jag=1+.035*Math.sin(i*4.7+n);
+      low.push([x+Math.cos(theta)*bottom*jag,y+.08*Math.sin(i*2.1),z+Math.sin(theta)*bottom*jag]);
+      high.push([x+Math.cos(theta)*top,y+height,z+Math.sin(theta)*top]);
+    }
+    poly([...low].reverse(),m);poly(high,m);
+    for(let i=0;i<n;i++)poly([low[i],low[(i+1)%n],high[(i+1)%n],high[i]],m);
+  }
   function roof(x,y,z,w,d,raise=1.5){
    const A=[x-w/2,y,z-d/2],B=[x+w/2,y,z-d/2],C=[x+w/2,y,z+d/2],D=[x-w/2,y,z+d/2],E=[x,y+raise,z-d/2],F=[x,y+raise,z+d/2];
    poly([A,E,F,D],"roof");poly([B,C,F,E],"roof");poly([A,B,E],"slate");poly([C,D,F],"slate");
@@ -145,8 +156,13 @@ const author=function author(){
      for(let i=0;i<10;i++)box((i%4)*1.06-1.6,.16,-1.9-Math.floor(i/4)*.66,.82,.4,.54,i%2?"stoneLight":"stone");
      prism(-1.7,.2,1.3,.65,.78,8,"stoneLight");torch(-1.6,1.9,-1.45);
    }else if(kind==="Pine"){
-     prism(0,0,0,.25,3.7,6,"wood");
-     for(let k=0;k<4;k++)cone(0,1.15+k*.65,0,2.0-k*.40,2.1-k*.25,8,k%2?"leafLight":"leaf");
+     // Filled botanical mass: four intersecting tapered whorls, no floating
+     // paper-cone umbrellas or exposed billboard-like branch polygons.
+     prism(0,0,0,.25,4.52,9,"wood");
+     frustum(0,.70,0,1.74,.74,1.56,11,"leaf");
+     frustum(0,1.70,0,1.51,.53,1.60,11,"leafLight");
+     frustum(0,2.72,0,1.17,.25,1.47,11,"leaf");
+     cone(0,3.68,0,.71,1.19,11,"leafLight");
    }else if(kind==="Rock"){
      prism(0,0,0,1.75,1.25,7,"basalt");cone(0,1.22,0,1.60,.80,7,"stone");
      prism(1.3,0,.5,.72,.75,6,"cut");
