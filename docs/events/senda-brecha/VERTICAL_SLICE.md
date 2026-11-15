@@ -56,3 +56,7 @@ Seis tramos: El Umbral, Bosque Marchito, El Puente Roto, Las Ruinas, Antes de la
 - `node scripts-build.mjs`: genera el archivo único `dist/senda-brecha.html`; no peticiones externas necesarias.
 
 **Limitaciones:** Las pruebas del navegador se realizaron en el contenedor de desarrollo sobre Chromium de escritorio con emulación de tamaño y táctil; no prueban el rendimiento/compatibilidad de Safari real de iPhone. El arte generado es provisional y no aprobado. La escena Unity no ha sido creada. No se han realizado tests con jugadores reales.
+
+## Historial de consolidación
+
+La rama contenía un piloto anterior de **3 tramos y 2 elecciones** en el commit [`3e2a83d`](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/3e2a83dbc95f540e7833d02cc5e1023153712ba9), con su motor, UI y pruebas independientes. Esa variante queda conservada íntegramente en el historial de Git, pero fue **sustituida** para evitar dos entradas jugables diferentes en el mismo evento. La implementación canónica de esta PR es la de **6 tramos, 3 carriles** bajo `tools/senda-brecha/src/` y `dist/senda-brecha.html`. Sus pruebas no se suman ni se confunden con las del piloto anterior.
