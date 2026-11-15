@@ -269,7 +269,7 @@ namespace Eldoria.ExperimentalAshenCitadel
         public void ReflowForViewport(int width,int height)
         {
             if(width<1||height<1||safe==null||responsiveScaler==null)return;
-            if(playerCamera!=null)playerCamera.orthographicSize=width<height?35f:17f;
+            FrameCameraForViewport(playerCamera,width,height);
             responsiveScaler.matchWidthOrHeight=1f;
             float viewportWidth=844f*width/height;
             float usableWidth=Mathf.Max(280f,viewportWidth-8f);
@@ -306,6 +306,20 @@ namespace Eldoria.ExperimentalAshenCitadel
                 AnchorCentered(timeText.rectTransform,
                     new Vector2(.5f,0),new Vector2(175f,34f),new Vector2(x,115f));
             }
+        }
+        // Orthographic portrait rays can begin BELOW the ground even when the
+        // camera centre is above it. Increasing terrain size cannot fix this.
+        // Translate along the view axis (unchanged composition) until the lowest
+        // ray begins above the ground; shared by runtime and genuine captures.
+        public static void FrameCameraForViewport(Camera camera,int width,int height)
+        {
+            if(camera==null||width<1||height<1)return;
+            camera.aspect=width/(float)height;
+            camera.orthographicSize=width<height?35f:17f;
+            float lowest=camera.ViewportPointToRay(new Vector3(.5f,0,0)).origin.y;
+            float upward=-camera.transform.forward.y;
+            if(lowest<2f && upward>.01f)
+                camera.transform.position-=camera.transform.forward*((2f-lowest)/upward);
         }
         private static void AnchorCentered(RectTransform element,Vector2 anchor,
                                            Vector2 size,Vector2 offset)
@@ -352,7 +366,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 var p=show?new Vector3(18,19,33):new Vector3(18,19,-22);
                 playerCamera.transform.position=p;
                 playerCamera.transform.LookAt(show?new Vector3(0,0,55):new Vector3(0,1.8f,0));
-                playerCamera.orthographicSize=Screen.width<Screen.height?35f:17f;
+                FrameCameraForViewport(playerCamera,Screen.width,Screen.height);
             }
             Refresh();
         }

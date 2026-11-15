@@ -403,7 +403,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                         if(t==null)throw new InvalidOperationException("Missing authored stage "+j);
                         t.gameObject.SetActive(j==l);
                     }
-                    camera.orthographicSize=viewport.y>viewport.x?35f:14f;
+                    AshenCitadelExperience.FrameCameraForViewport(camera,viewport.x,viewport.y);
+                    // Preserve the established landscape A/B composition.
+                    if(viewport.x>viewport.y)camera.orthographicSize=14f;
+                    if(camera.ViewportPointToRay(new Vector3(.5f,0,0)).origin.y<1.99f)
+                        throw new InvalidOperationException("Portrait camera ray starts below terrain");
                     var rt=new RenderTexture(viewport.x,viewport.y,24,RenderTextureFormat.ARGB32);
                     camera.targetTexture=rt;camera.aspect=(float)viewport.x/viewport.y;
                     var request=new RenderPipeline.StandardRequest{destination=rt};
