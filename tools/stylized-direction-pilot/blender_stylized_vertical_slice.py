@@ -9,7 +9,7 @@ os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=30
-scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=1.12
+scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=.96
 scene.render.image_settings.file_format='PNG';scene.render.resolution_percentage=100
 scene.world.color=(.26,.29,.33)
 def mat(name,color,glow=0):
@@ -47,9 +47,18 @@ def ownmesh(name,vertices,faces,materials,indices=None):
  if indices:
   for face,i in zip(me.polygons,indices):face.material_index=i
  return o
+def river_y(x):
+ # One watercourse geometry drives bank erosion, surface mesh, shorelines and ecological setbacks.
+ return -17-2.7*sin((x+5)*.092)-1.15*sin((x+5)*.21)
+
 def z(x,y):
  n=noise.noise(Vector((x*.065,y*.065,1)))*.44+noise.noise(Vector((x*.2,y*.2,2)))*.12
- return n+1.0*exp(-((x+5)**2/400+(y-5)**2/330))-1.20*exp(-((y+17+1.5*sin(x*.12))**2)/22)
+ # Continuous, terrain-attached macro terraces and deliberately eroded riverbanks.
+ hills=1.0*exp(-((x+5)**2/400+(y-5)**2/330))
+ riverbed=1.25*exp(-((y-river_y(x))**2)/23)
+ ridge=.68*exp(-((x+34)**2/170+(y-22)**2/300))
+ distant=.62*exp(-((x-36)**2/240+(y-30)**2/360))
+ return n+hills+ridge+distant-riverbed
 # Single continuous authored topography, no prefab rectangular island.
 vs=[];fs=[];mi=[]
 for j in range(119):
@@ -73,7 +82,7 @@ links.new(noiseNode.outputs['Fac'],ramp.inputs['Fac'])
 links.new(ramp.outputs['Color'],grassnodes.get('Principled BSDF').inputs['Base Color'])
 rvs=[];rfs=[]
 for i in range(151):
- x=-47+i*94/150;y=-17-1.5*sin(x*.12)
+ x=-47+i*94/150;y=river_y(x)
  for side in [-1,1]:rvs.append((x,y+side*2.75,-.71))
  if i<150:rfs.append((2*i,2*i+1,2*i+3,2*i+2))
 ownmesh('original single river ribbon',rvs,rfs,[river])
@@ -84,7 +93,7 @@ for side in (-1,1):
  wavev=[];wavef=[]
  for k in range(125):
   x=-47+k*94/124
-  y=-17-1.5*sin(x*.12)+side*(2.55+.09*sin(x*.37))
+  y=river_y(x)+side*(2.48+.12*sin(x*.37))
   wavev.extend([(x,y,-.67),(x,y+side*.18,-.67)])
   if k<124:wavef.append((k*2,k*2+1,k*2+3,k*2+2))
  ownmesh('shoreline subtle ripples',wavev,wavef,[foam])
@@ -149,7 +158,7 @@ def tree(x,y,h,i):
 for i in range(250):
  x=R.uniform(-44,44);y=R.uniform(-31,33)
  if not (abs(x)>28 or y>21 or (x<-18 and y>10) or (x>25 and y>7)):continue
- if abs(y+17+1.5*sin(x*.12))<5:continue
+ if abs(y-river_y(x))<5:continue
  tree(x,y,R.uniform(4,8),i)
 # Rock outcrops and edge decoration are from one modular family.
 for i in range(95):
@@ -210,7 +219,7 @@ barracks=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valori
 reused_glb(barracks,(13,-1),9.1,z(13,-1)+.20,'Cuartel original')
 # Genuine 3D art from the existing heritage-landmark library; avoids the
 # broken FBX importer distributed with the Ubuntu Blender package.
-gate=reused_glb(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','HistoricalLandmarks','GateStreetRiseRock_MV1.glb'),(22,21),7.8,z(22,21)+.25,'ancient rocky gateway')
+gate=reused_glb(os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','HistoricalLandmarks','GateStreetRiseRock_MV1.glb'),(18,16),5.9,z(18,16)+.08,'ancient rocky gateway')
 # Darken the overexposed white imported heritage stone, not the source asset.
 for obj in gate.children_recursive:
  if obj.type!='MESH':continue
@@ -225,12 +234,12 @@ for obj in gate.children_recursive:
     if surface and surface.is_linked:
      old_link=surface.links[0]
      mix=nodes.new('ShaderNodeMixRGB');mix.blend_type='MULTIPLY'
-     mix.inputs[0].default_value=.84
-     mix.inputs[2].default_value=(.44,.43,.40,1)
+     mix.inputs[0].default_value=.93
+     mix.inputs[2].default_value=(.28,.30,.29,1)
      upstream=old_link.from_socket
      links.remove(old_link)
      links.new(upstream,mix.inputs[1]);links.new(mix.outputs[0],surface)
-    elif surface:surface.default_value=(.44,.45,.41,1)
+    elif surface:surface.default_value=(.35,.37,.35,1)
   obj.data.materials[i]=m
 # Reuse the project's modular heritage language as background, not new buildings.
 pieces=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','Resources','Valoria','MidTierArchitectureKit_v1')
@@ -249,13 +258,138 @@ for k in range(20):
       (.60+(k%3)*.25,.48,.55),stone[2])
 
 
+
+# v5 is a *composition pass*, not global filters. Reuse authored project vegetation
+# instead of the repetitive three-cone trees from the abandoned procedural look.
+for ob in list(bpy.data.objects):
+ if ob.name.startswith('old conifer trunk') or ob.name.startswith('stylized forest tree crown'):
+  bpy.data.objects.remove(ob,do_unlink=True)
+
+# Genuine preexisting PineCanopy77 production GLB, instantiated with shared mesh
+# data: only the instance transforms differ. Do not generate a new tree model.
+pine_source=os.path.join(source_dir,'PineCanopy77.glb')
+pine_master=reused_glb(pine_source,(-31,26),5.2,z(-31,26)+.1,'authored PineCanopy77')
+pine_group=[pine_master]+list(pine_master.children_recursive)
+if len(pine_group)<2:raise RuntimeError('Pine77 tree model contains no authored geometry')
+def pine_instance(x,y,scale,azimuth):
+ p={}
+ for old in pine_group:
+  n=old.copy()
+  if old.data:n.data=old.data
+  bpy.context.collection.objects.link(n)
+  p[old]=n
+ for old in pine_group:
+  if old is pine_master:continue
+  n=p[old]
+  if old.parent in p:n.parent=p[old.parent]
+  n.matrix_parent_inverse=old.matrix_parent_inverse.copy()
+  n.matrix_basis=old.matrix_basis.copy()
+ root=p[pine_master]
+ root.location=(x,y,z(x,y)+.07)
+ root.scale=tuple(v*scale for v in pine_master.scale)
+ root.rotation_euler.z=azimuth
+ root.name='Grove authored PineCanopy77 / shared art'
+ return root
+
+groves=[(-32,25,17),(33,29,21),(-43,0,13),(33,-10,10),
+        (-22,37,13),(10,40,13),(38,7,12)]
+planted=0
+for cx,cy,count in groves:
+ for j in range(count):
+  x=cx+R.gauss(0,5);y=cy+R.gauss(0,5)
+  if x<-45 or x>45 or y<-32 or y>44:continue
+  if (x+5)**2/14**2+(y-6)**2/11**2<1:continue
+  if (x+24)**2/10**2+(y-4)**2/9**2<1:continue
+  if (x-13)**2/9**2+(y+1)**2/7**2<1:continue
+  if abs(y-river_y(x))<4.3:continue
+  pine_instance(x,y,R.uniform(.73,1.33),R.uniform(-3.14,3.14))
+  planted+=1
+print('AUTHORED_PINE77_INSTANCES',planted,'SOURCE_SUBOBJECTS',len(pine_group))
+
+# Ground-clamped authored meadow variation / paths rather than uniform smooth green.
+dry=mat('sienna trampled earth',(.39,.315,.24))
+moss=mat('lowland moss',(.23,.34,.27))
+sand=mat('bank worn gravel',(.39,.41,.34))
+flora=mat('dark sage flowering groundcover',(.17,.32,.23))
+russet=mat('soft autumn undergrowth',(.41,.34,.21))
+def soilribbon(name,waypoints,width,material):
+ vs=[];faces=[]
+ for i,(x,y) in enumerate(waypoints):
+  prev=waypoints[max(0,i-1)];nxt=waypoints[min(len(waypoints)-1,i+1)]
+  dx=nxt[0]-prev[0];dy=nxt[1]-prev[1]
+  l=max(.001,math.hypot(dx,dy));tx=-dy/l;ty=dx/l
+  w=width*(.91+.09*sin(i*1.93))
+  for s in (-1,1):
+   xx=x+s*tx*w/2;yy=y+s*ty*w/2
+   vs.append((xx,yy,z(xx,yy)+.085))
+  if i:faces.append((2*(i-1),2*i,2*i+1,2*(i-1)+1))
+ return ownmesh(name,vs,faces,[material])
+soilribbon('worn settlement avenue under cobbles',
+ [(-5+sin(i*.24)*.55,-12.8+i*.47) for i in range(34)],6.2,dry)
+soilribbon('organic edge of western sawmill path',
+ [(-8,2),(-12,1),(-17,2),(-21,3),(-24,5)],2.8,dry)
+soilribbon('organic path to eastern barracks',
+ [(-2,-2),(2,-3),(7,-4),(11,-3)],2.9,dry)
+
+# Lithological bank stones follow the actual meander and adjacent grass is planted
+# according to the same waterline, with sparse clumps and coherent scale.
+for i in range(86):
+ x=R.uniform(-46,47);side=R.choice((-1,1))
+ y=river_y(x)+side*R.uniform(2.8,5.6)
+ if (x+5)**2/10**2+(y+17)**2/11**2<1:continue
+ s=R.uniform(.20,.76)
+ rock('river bank sediment / weathered local stone',
+      (x,y,z(x,y)+.15),(.89*s,.56*s,.31*s),stone[R.choice((0,2))])
+for i in range(140):
+ x=R.uniform(-45,46);side=R.choice((-1,1))
+ y=river_y(x)+side*R.uniform(4.2,9.4)
+ if (x+5)**2/12**2+(y-6)**2/9**2<1:continue
+ if R.random()<.5:continue
+ r=R.uniform(.32,.76)
+ rock('regional scrub / silt bed',(x,y,z(x,y)+r*.18),
+      (.78*r,.68*r,.26*r),R.choice((moss,flora,russet)))
+# Thousands of tiny grass planes are 1 authored MESH, not thousands of new draw calls.
+bladeV=[];bladeF=[];bladeMI=[]
+for i in range(1300):
+ x=R.uniform(-43,43);y=R.uniform(-28,38)
+ if abs(y-river_y(x))<2.8:continue
+ if (x+5)**2/13**2+(y-5)**2/10**2<1 and R.random()<.50:continue
+ h=R.uniform(.17,.49);r=R.uniform(.11,.33)
+ a=R.uniform(0,2*pi);dx=r*cos(a);dy=r*sin(a)
+ z0=z(x,y)+.10
+ ix=len(bladeV)
+ bladeV.extend(((x-dx,y-dy,z0),(x+dx,y+dy,z0),
+                (x+.17*dx,y-.16*dy,z0+h)))
+ bladeF.append((ix,ix+1,ix+2));bladeMI.append(i%3)
+ownmesh('authored clustered groundcover / 1 batched mesh',
+        bladeV,bladeF,[moss,flora,russet],bladeMI)
+
+# Mobile-friendly stone bridge: irregular wear patterns share the local stone family.
+# The bridge and road are recognisable; no disconnected fantasy arch geometry overlays.
+for i in range(24):
+ x=R.uniform(-8.0,-2.0);y=R.uniform(-22.0,-12.0)
+ if abs(x+5)<1.4 and R.random()>.3:continue
+ b=R.uniform(.07,.21)
+ rock('bridge masonry age and lichen',(x,y,.61),
+      (b*2,b*2,b*.18),R.choice((moss,soil,stone[2])))
+# Amber is localized to gates/inhabited buildings; ambient light stays cool.
+def pointlight(name,xyz,power,colour,radius):
+ d=bpy.data.lights.new(name,'POINT');d.energy=power;d.color=colour
+ d.shadow_soft_size=radius;o=bpy.data.objects.new(name,d)
+ bpy.context.collection.objects.link(o);o.location=xyz
+for name,xyz in [
+ ('bastion torch left',(-10,1,z(-10,1)+4)),
+ ('bastion torch right',(1,1,z(1,1)+4)),
+ ('sawmill lantern',(-22,1,z(-22,1)+3))]:
+ pointlight(name,xyz,160,(1,.54,.23),3.0)
+
 # cinematic, readable orthographic camera with true 3D mesh parallax
 def light(name,loc,power,size,color):
  data=bpy.data.lights.new(name,'AREA');data.energy=power;data.size=size;data.color=color
  ob=bpy.data.objects.new(name,data);bpy.context.collection.objects.link(ob);ob.location=loc
  ob.rotation_euler=(Vector((-5,1,0))-ob.location).to_track_quat('-Z','Y').to_euler()
-light('warm sun',(-25,-32,48),6200,40,(1,.84,.67))
-light('cold sky',(22,3,55),4500,60,(.66,.76,1))
+light('warm sun',(-25,-32,48),5700,32,(1,.84,.70))
+light('cold sky',(22,3,55),3400,60,(.71,.81,1))
 data=bpy.data.cameras.new('isometric game camera');cam=bpy.data.objects.new('isometric game camera',data)
 bpy.context.collection.objects.link(cam);cam.location=(52,-64,54)
 cam.rotation_euler=(Vector((-5,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()

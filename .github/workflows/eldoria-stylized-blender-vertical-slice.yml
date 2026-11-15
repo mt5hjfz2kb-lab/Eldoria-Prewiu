@@ -22,6 +22,7 @@ jobs:
             /tools/stylized-direction-pilot/blender_stylized_vertical_slice.py
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/BastionII.glb
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/SawmillRefined104.glb
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/PineCanopy77.glb
             /Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb
             /Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb
             /Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb
