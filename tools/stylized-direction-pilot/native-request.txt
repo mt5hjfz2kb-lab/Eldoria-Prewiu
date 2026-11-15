@@ -1,8 +1,8 @@
-# Attempt 4 replaces this workstream's own stuck attempt 3; does not cancel P0.
+# Attempt 5 deliberately switches to synchronous Editor camera, no runtime or world import.
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=2
-attempt=4
-cause=Attempt 3 did not complete asynchronous capture in expected time; isolate city with P0LazyWorldEditorTestOverride and emit stage evidence.
-state=REQUEST_ONE_REAL_UNITY_CAMERA_AB
+attempt=5
+reason=Runtime startup is outside artistic-test scope and P0 has an active world-loading failure; use actual integrated Unity serialized city and direct Editor camera A/B.
+state=REQUEST_ONE_REAL_UNITY_EDITOR_SCENE_AB
 art_approved=false

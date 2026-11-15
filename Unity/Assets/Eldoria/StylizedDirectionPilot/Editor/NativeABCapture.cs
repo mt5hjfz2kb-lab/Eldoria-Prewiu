@@ -50,6 +50,97 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             Mark("ISOLATED_LAZY_WORLD_SET_BEFORE_SCENE");
         }
 
+        // Deterministic EDIT-MODE proof. Unlike the player-runtime path below,
+        // it does not load the canonical World4X or require PlayMode/coroutines.
+        // It evaluates the already-serialized current integrated scene models.
+        public static void CaptureEditorOnly()
+        {
+            try
+            {
+                Mark("EDITOR_ONLY_CAPTURE_START");
+                EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
+                var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>(FindObjectsInactive.Include);
+                if(!city || !city.PlayerCamera)throw new InvalidOperationException("Actual integrated source city camera missing");
+                city.Apply(new Eldoria.Domain.PlayerState
+                {
+                    BastionLevel=2,SawmillLevel=1,BarracksLevel=1,CorruptionDiscovered=true
+                });
+                var camera=city.PlayerCamera;
+                var outDir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../StylizedDirectionPilotCaptures"));
+                Directory.CreateDirectory(outDir);
+                Mark("EDITOR_REAL_SCENE_LOADED");
+                string wideA=Path.Combine(outDir,"A-genuine-city-1600x900.png");
+                string phoneA=Path.Combine(outDir,"A-genuine-city-390x844.png");
+                string wideB=Path.Combine(outDir,"B-stylized-city-1600x900.png");
+                string phoneB=Path.Combine(outDir,"B-stylized-city-390x844.png");
+                SaveEditorCamera(camera,wideA,1600,900);
+                SaveEditorCamera(camera,phoneA,390,844);
+                Mark("EDITOR_BASELINE_FILES_WRITTEN");
+                int meshes,mats;
+                using(var style=new MaterialStyleScope(city.gameObject.scene))
+                {
+                    meshes=style.RendererCount;
+                    mats=style.MaterialCount;
+                    if(meshes<10||mats<5)throw new InvalidOperationException("No substantial source mesh palette applied");
+                    SaveEditorCamera(camera,wideB,1600,900);
+                    SaveEditorCamera(camera,phoneB,390,844);
+                }
+                Mark("EDITOR_STYLIZED_FILES_WRITTEN");
+                var wide=Difference(wideA,wideB);
+                var phone=Difference(phoneA,phoneB);
+                if(wide.meanPixelDelta<1.0||phone.meanPixelDelta<1.0)
+                    throw new InvalidOperationException("Style treatment invisible on actual Unity camera");
+                var evidence=new Evidence
+                {
+                    sourceSha=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local-unpinned",
+                    scene=Scene,shader=ShaderName,saveSandbox="NO_GAME_RUNNING_NO_SAVE",
+                    modifiedRendererCount=meshes,modifiedMaterialCount=mats,
+                    wide=wide,phone=phone,artApproved=false,mobileTested=false,
+                    kind="ACTUAL_UNITY_EDITOR_SCENE_ART_AB_NOT_PLAYMODE_OR_DEVICE"
+                };
+                File.WriteAllText(Path.Combine(outDir,"evidence.json"),JsonUtility.ToJson(evidence,true));
+                Mark("EDITOR_ART_AB_PASS_PENDING_HUMAN_QUALITY");
+                EditorApplication.Exit(0);
+            }
+            catch(Exception ex){Fail(ex);}
+        }
+
+        static void SaveEditorCamera(Camera camera,string path,int width,int height)
+        {
+            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
+            var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
+            var saved=RenderTexture.active;
+            var target=camera.targetTexture;
+            bool enabled=camera.enabled;
+            float aspect=camera.aspect,size=camera.orthographicSize;
+            try
+            {
+                camera.enabled=true;
+                camera.aspect=width/(float)height;
+                // Adjust framing, not source geometry. Compare A/B with identical values.
+                if(height>width)camera.orthographicSize=size*1.18f;
+                camera.targetTexture=rt;
+                camera.Render();
+                RenderTexture.active=rt;
+                tex.ReadPixels(new Rect(0,0,width,height),0,0);
+                tex.Apply(false,false);
+                File.WriteAllBytes(path,tex.EncodeToPNG());
+                if(new FileInfo(path).Length<30000)
+                    throw new InvalidOperationException("Editor render returned blank camera: "+path);
+            }
+            finally
+            {
+                camera.targetTexture=target;
+                camera.aspect=aspect;
+                camera.orthographicSize=size;
+                camera.enabled=enabled;
+                RenderTexture.active=saved;
+                rt.Release();
+                Object.DestroyImmediate(rt);
+                Object.DestroyImmediate(tex);
+            }
+        }
+
         public static void Capture()
         {
             try
@@ -280,7 +371,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             public void Dispose()
             {
                 foreach(var pair in originals)if(pair.Key)pair.Key.sharedMaterials=pair.Value;
-                foreach(var mat in clones.Values)if(mat)Object.Destroy(mat);
+                foreach(var mat in clones.Values)if(mat){if(UnityEngine.Application.isPlaying)Object.Destroy(mat);else Object.DestroyImmediate(mat);}
                 foreach(var light in lights)if(light.light)
                 {
                     light.light.color=light.color;
