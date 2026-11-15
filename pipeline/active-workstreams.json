@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T22:49:22.356Z",
+  "updated_at": "2026-11-15T22:50:02.493Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,10 +9742,10 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-citadel-art-production-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "BLENDER_5_REAL_LEVELS_QA_PASS_UNITY_NATIVE_SCENE_CANDIDATE_IN_PROGRESS",
+      "phase": "ART_REVIEW_WINDING_AND_COMPOSITION_REPAIR",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [],
@@ -9774,7 +9774,9 @@
         "instruction": "Finish this exact native run without interruption, retain all evidence, then yield Windows for one Visual Reboot capture. No source ownership transfer. Owner explicitly authorized alternating turns.",
         "completed_run": 43770724604,
         "return_after_workstream": "eldoria-art-visual-reboot-phase1-20261115"
-      }
+      },
+      "continuation_session": "237e5d69e3a9",
+      "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
