@@ -21,8 +21,13 @@ jobs:
         shell: pwsh
         run: |
           $tokens=$null; $errors=$null
-          [System.Management.Automation.Language.Parser]::ParseFile("$pwd/Unity/Assets/Art_Reboot/Phase1/Source~/native_capture.ps1",[ref]$tokens,[ref]$errors) | Out-Null
-          if($errors.Count){$errors | Format-List;throw 'PowerShell parse failed'}
+          foreach($script in @('native_capture.ps1','check_lease.ps1','test_lease.ps1')){
+            [System.Management.Automation.Language.Parser]::ParseFile("$pwd/Unity/Assets/Art_Reboot/Phase1/Source~/$script",[ref]$tokens,[ref]$errors) | Out-Null
+            if($errors.Count){$errors | Format-List;throw 'PowerShell parse failed'}
+          }
+      - name: Run Windows lease fixtures using actual PowerShell script
+        shell: pwsh
+        run: ./Unity/Assets/Art_Reboot/Phase1/Source~/test_lease.ps1
       - name: Reject foreign and stale lease fixtures
         run: python3 Unity/Assets/Art_Reboot/Phase1/Source~/test_lease.py
   lease:
@@ -73,7 +78,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         shell: powershell
-        run: python visual-reboot-source/Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.py
+        run: '& "$pwd/visual-reboot-source/Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.ps1"'
       - name: Import and render in an isolated temporary project
         shell: powershell
         run: |
