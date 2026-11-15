@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-14T23:32:13.460Z",
+  "updated_at": "2026-11-15T00:43:48.585Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7700,16 +7700,14 @@
         ".github/workflows/tester-qa.yml",
         ".github/workflows/eldoria-world-p0-build.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T22:42:54.852Z",
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "RECONCILED_PUBLISHED_BASELINE_NATIVE_AND_WEBGL_RUNNING",
+      "phase": "RECONCILED_BUILD_PASS_HOSTED_BROWSER_QA",
       "note": "Reject5881df delivery: its main baseline would roll back delivered90465 navigation fixes. Reconciled source d0b21fd preserves all BreachWatch bytes and published WorldEntryPending while applying only world P0 changes. No main UI edits or other-workstream takeover. PR194 now targets existing frozen published beta branch.",
-      "next": "Finish combined native/build43653390105 job132626591070, workflowcf105a3e, runtime d0b21fd. Preflight source/UI parity,15 Node tests,architecture/workflow guards passed; source audit43653390133 passed. Release Windows after cleanup. Then commit prepared browser trigger for mobile21 package with real wheel at350,200 and city225,776. Do not publish old588/mobile20. Preserve baseline90465/BreachWatch bytes and stable18.",
+      "next": "Run real WebKit comparison on mobile21/d0b candidate; inspect native and browser evidence before owner-only publication. Physical iPhone unresolved.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7978,11 +7976,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed",
+        "status": "released",
         "owner": "chatgpt-world-p0-continuation-9df36d17",
         "ownership_revision": 80,
-        "updated_at": "2026-11-14T23:27:00.976Z",
-        "reason": "One combined native PlayMode/UI/I-V/WebGL certification of reconciled published-baseline source d0b21fd. Reuse only owned Git objects; do not touch artist worktrees."
+        "updated_at": "2026-11-15T00:43:48.581Z",
+        "reason": "Run43653390105 build, evidence upload and generated-cache cleanup completed success; remaining browser QA is hosted macOS."
       },
       "ownership_history": [
         {
@@ -8629,7 +8627,7 @@
         "physical_iphone": false,
         "full_hosted_i_v": false
       },
-      "runner_release_basis": "Native run43449861957 completed SUCCESS including cleanup and artifact; no WebGL build requested. Retain source workstream for world restart investigation and unpublished navigation candidate.",
+      "runner_release_basis": "43653390105 build job132626591070 success including cleanup; package-owner132639790902 success.",
       "last_completed_earned_campaign": {
         "run": 43231463013,
         "source": "1091aed9d42a375e9041b2aec7803aacaec12f76",
@@ -9053,7 +9051,14 @@
         "source_audit_run": 43653390133,
         "preflight": "success",
         "published_ui_tree_unchanged": true,
-        "physical_iphone_verified": false
+        "physical_iphone_verified": false,
+        "build": "success",
+        "package": "success",
+        "windows_released": true,
+        "control_browser_run": 43656016744,
+        "control_browser_result": "success",
+        "native_artifact": 14138742713,
+        "package_artifact": 14138159798
       }
     },
     {
