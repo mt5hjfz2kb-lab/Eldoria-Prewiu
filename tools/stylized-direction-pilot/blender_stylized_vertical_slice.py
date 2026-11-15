@@ -192,6 +192,7 @@ def reused_glb(asset,target,width,base,label):
  root.location=(target[0]-center.x*factor,target[1]-center.y*factor,base-lo.z*factor)
  bpy.context.view_layer.update()
  print('CANONICAL_SOURCE_REUSED',label,'meshes',len(models),'scale',factor)
+ return root
 source_dir=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','ArtTests','ValoriaReferenceClean','Sources')
 remove={'aged fortress foundation','barracks','barracks slate roof','barracks doorway',
 'old empire arch pier','cyclopean broken arch stone voussoir',
