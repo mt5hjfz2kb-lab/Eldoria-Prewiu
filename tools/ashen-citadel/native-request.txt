@@ -6,3 +6,6 @@ intent=real Unity 3D scene, five Bastion cameras and authentic importer metadata
 
 retry=2
 diagnostic=record Unity.exe stdout stderr fallback editor log and exact CLI
+
+retry=3
+fixed=Unity.exe path quoting, no embedded spaces in -projectPath/-logFile
