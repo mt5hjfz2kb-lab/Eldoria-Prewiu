@@ -1,0 +1,13 @@
+{
+  "sourceRecovered": "855af6dd4ea7c37318796847a71778377fd513d8",
+  "source_integrity": "PASS",
+  "blender_fbx_reimport": "PASS",
+  "triangles": 21308,
+  "meshes": 4,
+  "uv_per_face_single_tile": true,
+  "unity_compiled": false,
+  "unity_rendered": false,
+  "physical_mobile_tested": false,
+  "art_approved": false,
+  "csharp_syntax": "PASS_TREE_SITTER_NOT_UNITY_COMPILATION"
+}

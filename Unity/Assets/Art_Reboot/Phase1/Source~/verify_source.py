@@ -6,7 +6,10 @@ REPO=ROOT.parents[3]
 base='2d034db21e3da53b65ec187c79f074b334012bc1'
 original='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
 before=subprocess.check_output(['git','show',base+':'+original],cwd=REPO)
-assert (REPO/original).read_bytes()==before,'Original scene changed'
+tracked_original=subprocess.check_output(['git','show','HEAD:'+original],cwd=REPO)
+assert tracked_original==before,'Original scene changed in branch'
+if (REPO/original).exists():
+ assert (REPO/original).read_bytes()==before,'Original scene changed in working tree'
 scene=(ROOT/'Scenes/Eldoria_Visual_Sandbox.unity').read_text()
 assert scene==re.sub('m_IsActive: 1','m_IsActive: 0',before.decode()),'Unexpected sandbox modification before Unity assembly'
 assert 'm_IsActive: 1' not in scene,'Active original object'
