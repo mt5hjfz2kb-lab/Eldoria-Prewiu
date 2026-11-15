@@ -57,8 +57,16 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
         }
         private static void SaveActualUi(Camera cam,Canvas canvas,string page,int width,int height)
         {
-            var adapter=Find("ASHEN · authoritative game adapter").GetComponent<global::Eldoria.ExperimentalAshenCitadel.AshenCitadelExperience>();
-            adapter.ReflowForViewport(width,height);
+            // PlayMode tests live in their own asmdef; runtime MonoBehaviours
+            // compile in Assembly-CSharp. Use Editor-only reflection rather
+            // than an invalid direct compile-time dependency across assemblies.
+            var host=Find("ASHEN · authoritative game adapter");
+            var adapter=host.GetComponents<MonoBehaviour>()
+                .FirstOrDefault(x=>x!=null && x.GetType().Name=="AshenCitadelExperience");
+            Assert.That(adapter,Is.Not.Null,"Runtime art adapter was not instantiated");
+            var reflow=adapter.GetType().GetMethod("ReflowForViewport");
+            Assert.That(reflow,Is.Not.Null,"Runtime viewport rule must be shared with captures");
+            reflow.Invoke(adapter,new object[]{width,height});
             Canvas.ForceUpdateCanvases();
             var without=ActualCameraPixels(cam,canvas,width,height,false);
             var with=ActualCameraPixels(cam,canvas,width,height,true);
