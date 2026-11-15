@@ -132,3 +132,28 @@ terrain stage and measure fewer target bytes, plus real saved-game journeys in b
 Windows job cleanly finished; generated owned Library cache reclaimed,48.64GiB free.
 Lease released at revision82; packaging and subsequent browser QA use hosted runners only.
 No new owner runtime published. Physical iPhone outcome is still the earlier FAIL.
+
+## 21e1 desktop comparison — 2026-11-15
+
+Native runtime ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029, exact browser workflow
+25bd1cd9678f0bd3615d55a0ff2ab720953b6924, run43712314700 / job132806380793 SUCCESS.
+Artifact14161930181 ZIP SHA256177b8493f4af5faf6a78b33c557e52d9d6fe7e22caca8c09837eca201d98bbc1 independently downloaded and verified.
+
+Identical compiled binary, old world-only flag control vs additional entry flag:
+created render targets11 in both; multisampled3 to1; Unity target bytes72402259 to27965659.
+Two old city targets retired after11frames, before terrain allocation: reduction44436600bytes
+(42.38MiB). Original native batch had no multisampled targets and was not savings evidence.
+Real browser startup, saved nickname, construction/reload, two world visits/returns, zoom
+and persistent diagnostic journal passed in both variants with zero runtime errors.
+World/city return screenshots inspected; terrain and saved sawmill visible, not art approval.
+
+Total process residency is NOT proven lower. Peak sampled WebContent KiB:
+control2264896, candidate2415216; GPU1350160 vs1216768 (non-simultaneous maxima).
+Simultaneous WebContent+GPU peak per world visit KiB: first2701104 vs2849440;
+second1669632 vs1442336. Global desktop process samples are not physical iPhone measurements.
+Thus target retirement is measured, but neither total-memory improvement nor OS crash
+root cause is established. Physical iPhone acceptance remains pending.
+
+Publication request e519fb87327f8c8f3c4c0da8759b612be6708eeb / run43714355086
+uses exact native/browser gates, all-file rollback and preservation. Publication outcome
+must be appended before describing the candidate as delivered.
