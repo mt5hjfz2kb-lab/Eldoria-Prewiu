@@ -310,7 +310,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var stages=GameObject.Find("Bastion stage variants");
             var camera=GameObject.Find("Ashen · Player camera")?.GetComponent<Camera>();
             if(stages==null||camera==null)throw new InvalidOperationException("Experimental scene incomplete");
-            var outDir=Path.GetFullPath(Path.Combine(Application.dataPath,"..","ArtEvidence"));
+            var outDir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..","ArtEvidence"));
             Directory.CreateDirectory(outDir);
             foreach(var viewport in new[]{new Vector2Int(390,844),new Vector2Int(1600,900)})
             {
