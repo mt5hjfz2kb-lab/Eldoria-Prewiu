@@ -1,7 +1,7 @@
 attempt=8
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
-ownership_revision=2
-state=REAL_EDITOR_CITY_MODULAR_COMPOSITION
-reason=Macro artwork composition uses existing in-project trees, ruins and rocks in actual Unity city. Independent from rejected micro-palette and gameplay saves; no model purchases or beta changes.
+ownership_revision=4
+state=REAL_UNITY_EDITOR_MACRO_COMPOSITION_10_CAPTURES
+reason=Exclusive Windows lease reclaimed. Render A baseline, B/C material variants, D same-camera staged 3D environment and E close staged camera; reject if source assets missing. Do not publish/merge.
 art_approved=false
