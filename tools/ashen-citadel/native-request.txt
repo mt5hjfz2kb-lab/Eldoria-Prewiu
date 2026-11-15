@@ -35,3 +35,9 @@ retry=8
 unity_result=0; actual Editor created scene and 10 screen captures; postprocess hash gate failed due Select-Object unable to expand Hashtable key
 fix=PowerShell 5.1 explicit Hashtable indexing; separate positive/negative hash smoke on Ubuntu before Windows
 source_sha=c0bf9fd563298a830b21a00db62a4036facac159
+
+retry=9
+intent=Capture revised natural terrain, multiring spruce, winding approach and actual I-V stage materials using Unity 6 URP
+tests=7 real Unity EditMode scene/progression/saved-timers assertions, fail closed on XML
+art_changes=terrain visually extends beyond framing; source UV/textures and meshes saved under experiment only
+restrictions=original main/beta untouched; hold owner Windows lease; no ART_APPROVED before inspecting native screenshots
