@@ -69,15 +69,39 @@ jobs:
          assert all(any(j['name']==name and j['conclusion']=='success' for j in jobs) for name in names)
         print('EXACT_NATIVE_BUILD_AND_REAL_BROWSER_GATES_PASS_NOT_PHYSICAL_IPHONE')
         END
-    - name: Recover current beta21 from its exact public certificate
+    - name: Restore already verified durable beta21 snapshot and reject a changed public certificate
       run: |
         set -euo pipefail
-        curl -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o current-proof.json
-        python3 tools/eldoria-private-beta/restore_published_owner_snapshot.py \
-         --proof current-proof.json \
-         --proof-sha256 f4bc2c0ca3768f62992a66a7ef3fbe299ee2b561354c1b899847432fa62895fa \
-         --source "$EXPECTED_SOURCE" --origin https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu \
-         --output site --archive previous-pages/artifact.tar
+        curl --retry 4 --retry-delay 3 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o current-proof.json
+        mkdir -p verified-archive previous-pages
+        gh release download archive-pages-before-world-diagnostic-21d4 --pattern artifact.tar --dir verified-archive
+        cp verified-archive/artifact.tar previous-pages/artifact.tar
+        python3 - <<'END'
+        import hashlib,json,pathlib,tarfile
+        root=pathlib.Path('site');root.mkdir()
+        proof=pathlib.Path('current-proof.json')
+        def digest(p):
+         with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+        proofhash='f4bc2c0ca3768f62992a66a7ef3fbe299ee2b561354c1b899847432fa62895fa'
+        archivehash='7d053452b9739828310936e1b5e2ce759029fa8f458b24dfeada82d86673208e'
+        assert digest(proof)==proofhash,'Concurrent public replacement: refuse'
+        a=pathlib.Path('previous-pages/artifact.tar');assert digest(a)==archivehash
+        p=json.loads(proof.read_text());assert p['source_sha']=='d0b21fd5708c5070d1bd62dc6c6a98399c549051'
+        rows=dict(p['preserved_fingerprints']);rows.update({'beta-integrated-vigilia/'+k:v for k,v in p['candidate_fingerprints'].items()})
+        rows['integrated-owner-stage-proof.json']={'sha256':proofhash,'bytes':proof.stat().st_size}
+        assert sum(x['bytes'] for x in rows.values())==p['combined_bytes']
+        with tarfile.open(a) as t:
+         members=t.getmembers();assert len(members)==len(rows) and {m.name for m in members}==set(rows)
+         for m in members:
+          assert m.isfile() and '..' not in pathlib.PurePosixPath(m.name).parts and not m.name.startswith('/')
+          assert m.size==rows[m.name]['bytes']
+          dest=root/m.name;dest.parent.mkdir(parents=True,exist_ok=True)
+          with t.extractfile(m) as src,dest.open('xb') as out:
+           while chunk:=src.read(1024*1024):out.write(chunk)
+          assert digest(dest)==rows[m.name]['sha256'],m.name
+        pathlib.Path('previous-pages/artifact.tar.recovery.json').write_text(json.dumps({'status':'FULL_ARCHIVE_RECOVERED_BYTE_IDENTICAL','archive_sha256':archivehash,'publication_inventory_sha256':proofhash,'files':len(rows),'bytes':p['combined_bytes'],'public_certificate_still_exact':True},indent=2))
+        print('DURABLE_ARCHIVE_ALL_FILES_VERIFIED',len(rows))
+        END
     - name: Durably archive recovered current site before replacement
       run: |
         set -euo pipefail
@@ -93,7 +117,7 @@ jobs:
          gh release upload "$TAG" previous-pages/artifact.tar
         fi
         mkdir -p verified-archive
-        gh release download "$TAG" --pattern artifact.tar --dir verified-archive
+        if [ ! -f verified-archive/artifact.tar ]; then gh release download "$TAG" --pattern artifact.tar --dir verified-archive; fi
         cmp previous-pages/artifact.tar verified-archive/artifact.tar
     - name: Patch only local world diagnostic and certify unchanged native bytes
       run: python3 tools/eldoria-private-beta/patch_world_diagnostic.py site
