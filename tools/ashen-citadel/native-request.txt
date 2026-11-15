@@ -59,3 +59,9 @@ landscape=AshenLandscape.obj 7509 authored triangles, actual Blender lookdev QA 
 ui=Headless ScreenSpaceCamera compositing into real RenderTexture; five playable UI states, not iPhone
 gates=7 EditMode progression+scene, >=4 PlayMode real scene navigation plus UI screenshots and zero-shader-magenta
 safety=isolated experiment/ashen-citadel-i-v-20261115 only; never modify main or beta
+
+retry=13
+cause=Unity 6000 PlayMode C# CS0102: duplicate ScenePath in partial AshenCitadelPlayableTests class, not a gameplay bug
+fix=single ScenePath declared in original partial test file; newly added capture test reuses it
+proof=rerun exact head Unity editor + 7 EditMode + 4 PlayMode including genuine camera-space uGUI screenshots
+scope=experiment only; do not touch production Unity scenes or saved data
