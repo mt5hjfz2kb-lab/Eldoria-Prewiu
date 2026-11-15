@@ -100,12 +100,10 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             {
                 var all=Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None);
                 // Choose copies already designed for this project's own world.
-                var tree=all.FirstOrDefault(t=>t&&t.gameObject.activeInHierarchy&&
-                    (t.name.StartsWith("Existing Holotna tree.")||t.name.StartsWith("Forest retained Valoria pine"))&&
-                    t.GetComponentInChildren<MeshRenderer>()!=null);
-                var rock=all.FirstOrDefault(t=>t&&t.gameObject.activeInHierarchy&&
-                    (t.name.StartsWith("Existing Holotna rock.")||t.name.StartsWith("Rock01_LOD0"))&&
-                    t.GetComponentInChildren<MeshRenderer>()!=null);
+                var tree=all.FirstOrDefault(t=>t&&(t.name.StartsWith("Existing Holotna tree.")||t.name.StartsWith("Forest retained Valoria pine"))&&
+                    t.GetComponentInChildren<MeshRenderer>(true)!=null);
+                var rock=all.FirstOrDefault(t=>t&&(t.name.StartsWith("Existing Holotna rock.")||t.name.StartsWith("Rock01_LOD0"))&&
+                    t.GetComponentInChildren<MeshRenderer>(true)!=null);
                 var ruin=all.FirstOrDefault(t=>t&&(t.name=="Arch_Gothic"||t.name.StartsWith("Ruin_-22_46"))&&
                     t.GetComponentInChildren<MeshRenderer>(true)!=null);
                 if(tree==null||rock==null)throw new InvalidOperationException("Retained city vegetation/rock donors missing");
