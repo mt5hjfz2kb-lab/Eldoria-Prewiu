@@ -67,16 +67,23 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             for(int n=1;n<=5;n++)
             {
                 var imported=Import("AshenBastion_"+n,stagesRoot.transform);
-                imported.name="Stage_"+n;imported.SetActive(n==1);stages[n-1]=imported;
+                imported.name="Stage_"+n;
+                BindClick(imported,"Bastión","bastion","building",
+                    new Vector3(0,3.4f,0),new Vector3(18.6f,8f,17.6f));
+                imported.SetActive(n==1);stages[n-1]=imported;
             }
             var sawmill=Import("Ashen_Sawmill",sceneRoot.transform);
             sawmill.transform.position=new Vector3(-13.4f,.08f,-4.5f);
+            BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             var barracks=Import("Ashen_Barracks",sceneRoot.transform);
             barracks.transform.position=new Vector3(13.4f,.08f,-4.5f);
+            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             var granary=Import("Ashen_Granary",sceneRoot.transform);
             granary.transform.position=new Vector3(-13.4f,.08f,4.8f);
+            BindClick(granary,"Granero","granary","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             var stoneworks=Import("Ashen_Stoneworks",sceneRoot.transform);
             stoneworks.transform.position=new Vector3(13.4f,.08f,4.8f);
+            BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             // Distinctive landscape frame, sparse around the playable fortress.
             var treePrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Pine.obj");
             var rockPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Rock.obj");
@@ -129,6 +136,15 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             AssetDatabase.SaveAssets();AssetDatabase.Refresh();
             Debug.Log("ASHEN_ART_SCENE_BUILT path="+ScenePath+" stages=5 auxiliary=4 world=yes");
         }
+        // Coarse author-time proxies, no cooked mesh colliders in the mobile runtime.
+        private static void BindClick(GameObject target,string title,string id,string kind,
+            Vector3 localCenter,Vector3 localSize)
+        {
+            var collider=target.AddComponent<BoxCollider>();
+            collider.center=localCenter;collider.size=localSize;collider.isTrigger=true;
+            target.AddComponent<AshenCitadelPickTarget>().Configure(title,id,kind);
+        }
+
         private static GameObject Import(string name,Transform parent)
         {
             var asset=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+name+".obj");
@@ -274,7 +290,13 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 obj.transform.position=milestones[i];
                 obj.transform.localScale=new Vector3(.84f,.14f,.84f);
                 obj.GetComponent<Renderer>().sharedMaterial=Colors[i==4?"violet":"stoneLight"];
-                UnityEngine.Object.DestroyImmediate(obj.GetComponent<Collider>());
+                var landmark=obj.AddComponent<AshenCitadelPickTarget>();
+                string[] titles={"Bosque","Cantera","Explorador corrupto","Engendro","Brecha"};
+                string[] ids={"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria","fissure-valoria"};
+                string[] kinds={"gather","gather","fight","fight","fissure"};
+                landmark.Configure(titles[i],ids[i],kinds[i]);
+                var collider=obj.GetComponent<Collider>();
+                if(collider!=null)collider.isTrigger=true;
             }
         }
 
