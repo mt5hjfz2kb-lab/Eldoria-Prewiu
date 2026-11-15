@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#080d17">
+  <meta name="description" content="La Senda de la Brecha — prototipo táctil independiente de combate por carriles para Eldoria.">
+  <title>La Senda de la Brecha · Prototipo Eldoria</title>
+  <style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#080d17;color:#f4ead9}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overscroll-behavior:none}button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:3px solid #f3d79e;outline-offset:3px}
+body{display:flex;justify-content:center;align-items:center;background:radial-gradient(ellipse at 50% 10%,#2a2b40,#090b13 75%)}
+.game{width:min(100vw,480px);height:100dvh;max-height:1040px;min-height:470px;overflow:hidden;position:relative;isolation:isolate;box-shadow:0 0 0 1px #a18a6845,0 0 100px #000b;background:#151c28}
+#battlefield{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.vignette{pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,#060b17ee 0%,#0a0d19b3 18%,transparent 43%,transparent 73%,#080d17d9 90%,#080c15fc 100%);z-index:1}
+.hud{position:absolute;top:0;left:0;right:0;z-index:4;padding:max(env(safe-area-inset-top),12px) 16px 0;pointer-events:none}
+.hud button{pointer-events:auto}.hud-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.smallcaps,.eyebrow{font-size:9px;letter-spacing:2.5px;font-weight:800;color:#c8a675;text-shadow:0 2px 4px #000}.sigil{font-size:19px;color:#d9b47a;vertical-align:-2px}.divider-dot{color:#888;padding:0 5px}
+h1,h2{font-family:Georgia,"Times New Roman",serif;text-transform:uppercase;letter-spacing:.6px}h1{font-size:clamp(16px,4.7vw,24px);font-weight:800;margin:0;line-height:1.05;color:#f5ead7;text-shadow:0 2px 7px #000}h1 em{display:block;font-style:normal;color:#d8ad75}
+.icon-button{width:37px;height:37px;background:#1b2433dd;color:#e2cba8;border:1px solid #7b6542;border-radius:9px;font-size:17px;box-shadow:inset 0 1px #ffffff23;flex:none}
+.progress-header{display:flex;justify-content:space-between;margin-top:12px;color:#eadaca;font-weight:800;font-size:9px;letter-spacing:1.1px}.progress-header span:first-child{color:#c1a3d7}
+.progress-track{display:flex;gap:4px;margin-top:7px;height:6px}.progress-track span{flex:1;border:1px solid #60556c;background:#2c2a37;border-radius:3px}.progress-track span.done{background:#b28c52;border-color:#d5b176}.progress-track span.current{background:#9a67b8;border-color:#d6a0eb;box-shadow:0 0 9px #bc69ee90}
+.stats{display:flex;gap:7px;margin-top:11px}.stat{min-width:0;flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 5px;border-radius:7px;background:#111927b0;border:1px solid #5e586277;box-shadow:inset 0 1px #ffffff18}.stat-symbol{font-size:23px;color:#cdb78f}.stat-symbol.troops{color:#f0d5a4}.stat-symbol.attack{color:#eca678}.stat-symbol.shield{color:#c9a4e6}.stat strong{display:block;font-size:17px;line-height:1.05;font-variant-numeric:tabular-nums;color:#fff8e9}.stat small{display:block;font-size:8px;letter-spacing:1px;color:#b6acb1;font-weight:800;margin-top:3px}
+.gate-header{position:absolute;z-index:3;top:24%;left:0;right:0;padding:0 10px;transition:opacity .24s,transform .24s;pointer-events:auto}.gate-header.hidden-stage{opacity:0;transform:translateY(-12px);pointer-events:none}
+.gate-title{display:flex;align-items:center;gap:9px;justify-content:center;font-size:10px;font-weight:800;letter-spacing:2px;color:#ecdcc6;text-shadow:0 2px 5px #000;margin-bottom:11px}.goldline{height:1px;width:26px;background:linear-gradient(90deg,transparent,#9c7d4d)}.goldline:last-child{transform:rotate(180deg)}
+.gates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gate{background:linear-gradient(160deg,#212a34f0,#131827f2);color:#fff;border:1px solid #75686f;border-bottom:3px solid #6c6375;border-radius:9px;min-height:92px;padding:8px 3px 10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;position:relative;box-shadow:0 5px 16px #0009,inset 0 1px #ffffff24;overflow:hidden}.gate::before{content:"";height:2px;position:absolute;top:0;left:10%;right:10%;background:var(--gate-color);box-shadow:0 0 12px var(--gate-color)}.gate.selected{border-color:#e2c38e;box-shadow:0 0 0 2px #d7b47e99,0 0 22px var(--glow),inset 0 1px #ffffff4a;transform:translateY(-3px)}
+.gate .g-symbol{font-size:20px;color:var(--gate-color);line-height:1.2}.gate strong{font-size:18px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}.gate .g-type{font-size:9px;letter-spacing:.3px;font-weight:900}.gate .g-hint{font-size:9px;color:#bfb6b4}.gate[data-type=recruit]{--gate-color:#d6c092;--glow:#d3ae5a33}.gate[data-type=power]{--gate-color:#eb9573;--glow:#d45c5433}.gate[data-type=ward]{--gate-color:#c8a4f3;--glow:#b16ddd33}.gate[data-type=sabotage]{--gate-color:#8dcaba;--glow:#42ccb633}
+.gate-timer{height:4px;margin:11px 9px 0;background:#251e30;border-radius:8px;overflow:hidden}.gate-timer span{display:block;height:100%;width:100%;background:linear-gradient(90deg,#a279b5,#dec29b);transform-origin:left}
+.encounter-info{position:absolute;z-index:2;top:46%;left:50%;transform:translate(-50%,-50%);font-size:10px;letter-spacing:1.2px;font-weight:900;color:#e8b0a0;text-shadow:0 2px 7px #000;background:#140f17a8;border:1px solid #a05f6988;white-space:nowrap;border-radius:20px;padding:5px 13px;transition:opacity .2s}
+.combat-message{position:absolute;top:53%;left:10%;right:10%;z-index:4;text-align:center;pointer-events:none;font-weight:900;letter-spacing:1px;color:#ffe8c5;font-size:15px;text-shadow:0 3px 5px #000,0 0 12px #a37e83;opacity:0;transition:opacity .2s}.combat-message.show{opacity:1}
+.controls{position:absolute;z-index:4;bottom:max(env(safe-area-inset-bottom),10px);left:12px;right:12px;text-align:center}.tip{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#e9cf9d;margin-bottom:9px;text-shadow:0 1px 5px #000}.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.lane{min-height:60px;border:1px solid #726750;border-bottom:3px solid #69503f;border-radius:9px;background:linear-gradient(#202838ed,#101724f0);color:#c2b8ae;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:850;letter-spacing:.8px;box-shadow:inset 0 1px #ffffff20}.lane-arrow{font-size:17px;line-height:1.2;color:#a9a6ad}.lane.selected{border-color:#d8af70;background:linear-gradient(#5f4736,#27212d);color:#ffe8bb;box-shadow:inset 0 1px #ffffd633,0 0 15px #a7834933}.lane.selected .lane-arrow{color:#ffdc93}.lane:disabled{opacity:.5;cursor:default}
+.footer-note{font-size:8px;letter-spacing:1px;color:#948d91;margin-top:9px}
+.modal-wrap{position:absolute;inset:0;z-index:8;background:radial-gradient(ellipse at 50% 43%,#171321d5,#030612f7 76%);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(7px)}.hidden{display:none!important}
+.modal{width:100%;max-width:410px;padding:23px 18px 21px;text-align:center;position:relative;background:linear-gradient(150deg,#2d2830 0%,#191e2b 50%,#141722 100%);border:1px solid #b38b5d;box-shadow:inset 0 0 0 4px #24202b,inset 0 0 0 5px #72563d7c,0 22px 60px #000c;border-radius:7px}.modal::after{content:"";position:absolute;inset:9px;border:1px solid #b7966344;pointer-events:none;border-radius:3px}.crest{width:78px;height:78px;margin:-57px auto 17px;border-radius:50%;border:3px solid #c8a06b;background:radial-gradient(circle,#72466d 0%,#2b2035 54%,#111721 70%);box-shadow:0 0 0 4px #211925,0 0 26px #976ac477, inset 0 0 13px #d5b07f66;display:grid;place-items:center;font-size:43px;color:#dfc391;text-shadow:0 0 20px #daa56f}
+.modal h2{font-size:clamp(28px,7vw,38px);line-height:1.05;color:#f8e9d4;margin:11px 0 14px;text-shadow:0 3px 8px #000}.modal h2 i{font-style:normal;color:#d6a77f}.modal p{font-size:13px;line-height:1.65;color:#dbd0cc;max-width:320px;margin:0 auto 19px}.feature-row{display:flex;justify-content:space-between;gap:7px;font-size:10px;color:#cbbda9;border-top:1px solid #c0a07830;padding:8px 3px}.feature-row span{flex:1;text-align:left}.feature-row span+span{text-align:right}
+.primary{width:100%;margin-top:17px;min-height:56px;border-radius:7px;background:linear-gradient(180deg,#f2d19b,#c39a61 45%,#98673d);border:1px solid #f1dab2;border-bottom:4px solid #5d3a25;color:#281e1c;font-weight:950;letter-spacing:1.2px;box-shadow:inset 0 1px #fff5d2,0 7px 22px #0008;font-size:13px}.primary span{float:right;margin-right:13px;font-size:25px;line-height:14px}.primary:active{transform:translateY(2px)}.modal-foot{font-size:10px;color:#978f91;line-height:1.5;margin-top:12px}.short{padding-top:30px}.short h2{font-size:30px}.text-button{background:transparent;color:#c0ac9e;border:0;margin-top:13px;font-size:12px;text-decoration:underline}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:16px 0}.results>div{border:1px solid #92795673;padding:11px 2px;background:#121b25}.results strong{display:block;color:#e8c08b;font-size:23px;line-height:1.1}.results small{font-size:8px;color:#aeaba7;letter-spacing:.7px}.result-history{text-align:left;max-height:130px;overflow:auto;font-size:10px;color:#d2c3b9}.result-history>div{display:flex;justify-content:space-between;gap:6px;border-bottom:1px solid #74665346;padding:5px 2px}.result-history .lost{color:#dba293}.result-history .win{color:#b3d4c3}
+@media(max-height:700px){.hud{padding-top:8px}.smallcaps{font-size:8px}.hud h1{font-size:18px}.progress-header{margin-top:6px}.stats{margin-top:6px}.stat{padding:3px}.stat strong{font-size:14px}.stat-symbol{font-size:17px}.gate-header{top:25%}.gate{min-height:76px;padding:4px 2px}.gate .g-symbol{font-size:17px}.gate strong{font-size:15px}.gate .g-hint{font-size:8px}.gate-timer{margin-top:5px}.controls{bottom:5px}.tip{margin-bottom:5px;font-size:9px}.lane{min-height:43px}.footer-note{display:none}.modal{padding:15px}.modal h2{font-size:26px}.modal p{font-size:12px}.crest{width:57px;height:57px;margin:-27px auto 5px;font-size:30px}.feature-row{padding:4px}.primary{margin-top:8px;min-height:44px}.modal-foot{margin-top:6px}}
+@media(max-height:490px){.game{min-height:0}.hud h1{font-size:14px}.smallcaps{font-size:7px}.stat small{display:none}.stats{max-width:320px}.stat strong{font-size:12px}.progress-header{display:none}.gate-header{top:29%;max-width:420px;left:50%;right:auto;width:60%;transform:translateX(-50%)}.gate-header.hidden-stage{transform:translate(-50%,-12px)}.gate-title{font-size:8px;margin-bottom:3px}.gate{min-height:54px;gap:0}.gate .g-symbol{display:none}.gate strong{font-size:12px}.gate .g-type{font-size:8px}.gate .g-hint{font-size:7px}.controls{bottom:3px;right:7px;left:auto;width:35%}.lane{min-height:37px;font-size:7px;gap:0}.lane-arrow{font-size:13px}.tip{display:none}.encounter-info{left:22%;top:60%;font-size:8px}.modal{max-width:560px}.modal h2{margin:6px 0;font-size:23px}.modal p{line-height:1.3}.feature-row{display:none}.modal .primary{min-height:36px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+</style>
+</head>
+<body>
+  <main class="game" id="game" aria-label="La Senda de la Brecha, prototipo interactivo">
+    <canvas id="battlefield" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <header class="hud">
+      <div class="hud-top">
+        <div>
+          <div class="smallcaps"><span class="sigil">✧</span> ELDORIA <span class="divider-dot">·</span> EVENTO EXPERIMENTAL</div>
+          <h1>LA SENDA <em>DE LA BRECHA</em></h1>
+        </div>
+        <button type="button" class="icon-button" id="pause" title="Pausar partida" aria-label="Pausar partida">Ⅱ</button>
+      </div>
+      <div class="progress-header">
+        <span id="zoneLabel">EL UMBRAL</span>
+        <span id="roundLabel">TRAMO 1 / 6</span>
+      </div>
+      <div class="progress-track" id="progressTrack" aria-label="Progreso del evento"></div>
+      <div class="stats">
+        <div class="stat"><span class="stat-symbol troops">♟</span><span><strong id="troops">22</strong><small>TROPAS</small></span></div>
+        <div class="stat"><span class="stat-symbol attack">⚔</span><span><strong id="attack">+0%</strong><small>ATAQUE</small></span></div>
+        <div class="stat"><span class="stat-symbol shield">◈</span><span><strong id="shield">0</strong><small>ESCUDOS</small></span></div>
+      </div>
+    </header>
+    <div class="gate-header" id="gateHeader">
+      <div class="gate-title"><span class="goldline"></span><span id="instruction">ELIGE TU PORTAL</span><span class="goldline"></span></div>
+      <div class="gates" id="gates"></div>
+      <div class="gate-timer" id="gateTimer"><span></span></div>
+    </div>
+    <div class="combat-message" id="combatMessage" aria-live="polite"></div>
+    <div class="encounter-info" id="encounterInfo">⚔ <span id="enemyCount">14</span> CORRUPTOS AGUARDAN</div>
+    <footer class="controls">
+      <div class="tip" id="tip">DESLIZA O TOCA UN CARRIL PARA ELEGIR</div>
+      <div class="lanes" id="lanes" role="group" aria-label="Seleccionar carril">
+        <button type="button" class="lane" data-lane="0" aria-label="Carril izquierdo"><span class="lane-arrow">◀</span><span>IZQUIERDA</span></button>
+        <button type="button" class="lane selected" data-lane="1" aria-pressed="true" aria-label="Carril central"><span class="lane-arrow">◆</span><span>CENTRO</span></button>
+        <button type="button" class="lane" data-lane="2" aria-label="Carril derecho"><span class="lane-arrow">▶</span><span>DERECHA</span></button>
+      </div>
+      <div class="footer-note">PROTOTIPO AISLADO · SIN GASTO NI RECOMPENSAS REALES</div>
+    </footer>
+    <div class="modal-wrap" id="startOverlay">
+      <section class="modal" aria-labelledby="startTitle">
+        <div class="crest" aria-hidden="true"><span>✦</span></div>
+        <div class="eyebrow">EVENTO DE PRUEBA · 6 ENCUENTROS</div>
+        <h2 id="startTitle">La Senda<br><i>de la Brecha</i></h2>
+        <p>Guía a una pequeña guardia de Valoria a través del bosque corrompido. Cada portal cambia tus posibilidades de sobrevivir.</p>
+        <div class="feature-row"><span>⚔ Combate automático</span><span>◇ Tres decisiones por tramo</span></div>
+        <div class="feature-row"><span>✧ Un guardián final</span><span>◷ Partidas de ~1 minuto</span></div>
+        <button type="button" id="start" class="primary">INICIAR EXPEDICIÓN <span>›</span></button>
+        <div class="modal-foot">Toca los portales, usa las flechas o desliza para cambiar de carril.</div>
+      </section>
+    </div>
+    <div class="modal-wrap hidden" id="pauseOverlay">
+      <section class="modal short" aria-labelledby="pauseTitle"><div class="eyebrow">PARTIDA PAUSADA</div><h2 id="pauseTitle">El camino espera</h2><p>Tu expedición se ha detenido.</p><button type="button" id="resume" class="primary">CONTINUAR <span>›</span></button><button class="text-button" type="button" id="restartFromPause">REINICIAR</button></section>
+    </div>
+    <div class="modal-wrap hidden" id="endOverlay">
+      <section class="modal" aria-labelledby="endTitle">
+        <div class="crest" id="endCrest" aria-hidden="true"><span>✦</span></div>
+        <div class="eyebrow" id="endLabel">RESULTADO DEL EVENTO</div>
+        <h2 id="endTitle">Victoria</h2>
+        <p id="endBody"></p>
+        <div class="results">
+          <div><strong id="resultStages">6/6</strong><small>TRAMOS</small></div>
+          <div><strong id="resultTroops">0</strong><small>SUPERVIVIENTES</small></div>
+          <div><strong id="resultScore">0</strong><small>PUNTOS</small></div>
+        </div>
+        <div class="result-history" id="resultHistory" aria-label="Historial de encuentros"></div>
+        <button type="button" class="primary" id="retry">VOLVER A INTENTARLO <span>›</span></button>
+        <div class="modal-foot">El evento no modifica tus tropas ni tu partida de Eldoria.</div>
+      </section>
+    </div>
+  </main>
+  <script>
+/* La Senda de la Brecha — standalone deterministic event rules.
+ * Zero effect on Eldoria's canonical combat, currencies, troop roster or saves.
+ * Browser global + CommonJS for repeatable Node tests, no dependencies. */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.SendaRules = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const TYPES = Object.freeze({
+    recruit: 'REFUERZOS',
+    power: 'FURIA',
+    ward: 'PROTECCIÓN',
+    sabotage: 'EMBOSCADA'
+  });
+  const WAVES = Object.freeze([
+    { name: 'EL UMBRAL', enemy: 14, strength: 1.00, boss: false, gates: [
+      {type:'recruit',value:8,title:'+8',hint:'soldados'},
+      {type:'power',value:22,title:'+22 %',hint:'ataque'},
+      {type:'ward',value:6,title:'+6',hint:'escudos'} ] },
+    { name: 'BOSQUE MARCHITO', enemy: 21, strength: 1.14, boss: false, gates: [
+      {type:'sabotage',value:9,title:'−9',hint:'enemigos'},
+      {type:'recruit',value:7,title:'+7',hint:'soldados'},
+      {type:'ward',value:8,title:'+8',hint:'escudos'} ] },
+    { name: 'EL PUENTE ROTO', enemy: 26, strength: 1.22, boss: false, gates: [
+      {type:'power',value:26,title:'+26 %',hint:'ataque'},
+      {type:'recruit',value:8,title:'+8',hint:'soldados'},
+      {type:'ward',value:9,title:'+9',hint:'escudos'} ] },
+    { name: 'LAS RUINAS', enemy: 31, strength: 1.32, boss: false, gates: [
+      {type:'sabotage',value:12,title:'−12',hint:'enemigos'},
+      {type:'ward',value:11,title:'+11',hint:'escudos'},
+      {type:'power',value:30,title:'+30 %',hint:'ataque'} ] },
+    { name: 'ANTES DE LA GRIETA', enemy: 39, strength: 1.45, boss: false, gates: [
+      {type:'recruit',value:12,title:'+12',hint:'soldados'},
+      {type:'ward',value:13,title:'+13',hint:'escudos'},
+      {type:'power',value:34,title:'+34 %',hint:'ataque'} ] },
+    { name: 'GUARDIÁN DE LA BRECHA', enemy: 53, strength: 1.64, boss: true, gates: [
+      {type:'recruit',value:14,title:'+14',hint:'soldados'},
+      {type:'power',value:40,title:'+40 %',hint:'ataque'},
+      {type:'ward',value:17,title:'+17',hint:'escudos'} ] }
+  ]);
+  function initialState() {
+    return {stage:0, units:22, attackBonus:0, shields:0, totalLost:0,
+      totalRecruited:0, score:0, finished:false, victory:false, history:[]};
+  }
+  function checkedState(source) {
+    if (!source || !Number.isInteger(source.stage) || source.stage < 0 || source.stage >= WAVES.length || source.finished) {
+      throw new Error('La partida no admite otro encuentro');
+    }
+    if (!Number.isFinite(source.units) || source.units <= 0 || !Number.isFinite(source.attackBonus) || !Number.isFinite(source.shields)) {
+      throw new Error('Estado de la expedición inválido');
+    }
+  }
+  function playWave(state, lane) {
+    checkedState(state);
+    if (!Number.isInteger(lane) || lane < 0 || lane > 2) throw new RangeError('Carril inválido');
+    const wave = WAVES[state.stage];
+    const gate = wave.gates[lane];
+    const next = {...state, history:state.history.slice()};
+    const priorUnits = next.units;
+    let enemies = wave.enemy;
+    switch (gate.type) {
+      case 'recruit': next.units = Math.min(96, next.units + gate.value); next.totalRecruited += next.units-priorUnits; break;
+      case 'power': next.attackBonus = Math.min(125, next.attackBonus + gate.value); break;
+      case 'ward': next.shields = Math.min(50, next.shields + gate.value); break;
+      case 'sabotage': enemies = Math.max(1, enemies - gate.value); break;
+      default: throw new Error('Puerta desconocida');
+    }
+    const attack = next.units * (1 + next.attackBonus/100);
+    const resistance = enemies * wave.strength;
+    const insufficientForce = attack < resistance * (wave.boss ? 0.42 : 0.31);
+    const baseLoss = Math.max(1, Math.ceil(
+      enemies * wave.strength * (wave.boss ? 0.47 : 0.33) /
+      (1 + attack / 45)
+    ));
+    const penalty = insufficientForce ? Math.ceil((resistance*(wave.boss?0.42:0.31)-attack)/2.4) : 0;
+    const incoming = baseLoss + Math.max(0, penalty);
+    const absorbed = Math.min(incoming, next.shields);
+    next.shields -= absorbed;
+    const lost = Math.min(next.units, incoming - absorbed);
+    next.units -= lost;
+    next.totalLost += lost;
+    const survived = next.units > 0 && !insufficientForce;
+    next.score += survived ? (95 + state.stage*35 + Math.min(30, next.units)) : 15;
+    const report = {stage:state.stage+1, zone:wave.name, lane, gate:gate.type,
+      gateValue:gate.value, enemies, enemyInitial:wave.enemy, enemyStrength:wave.strength,
+      before:priorUnits, after:next.units, lost, absorbed, incoming,
+      attackBonus:next.attackBonus, remainingShields:next.shields, survived, boss:wave.boss};
+    next.history.push(report);
+    next.stage += 1;
+    if (!survived || next.stage === WAVES.length) {
+      next.finished = true;
+      next.victory = survived && next.stage === WAVES.length;
+      if (next.victory) next.score += 380 + next.units*10 + next.shields*3;
+    }
+    return {state:next,report};
+  }
+  function summary(state) {
+    return {victory:state.victory,wavesCleared:state.history.filter(r=>r.survived).length,
+      units:state.units,lost:state.totalLost,recruited:state.totalRecruited,score:state.score,
+      grade:state.victory ? (state.units>=35?'S':state.units>=20?'A':'B') : '—'};
+  }
+  return Object.freeze({TYPES,WAVES,initialState,playWave,summary});
+});
+
+</script>
+  <script>
+/* Interactive visual prototype of La Senda de la Brecha. All art procedural, no remote assets. */
+(function () {
+ 'use strict';
+ const R=window.SendaRules;
+ if(!R) throw Error('Falta el motor de decisiones de La Senda');
+ const $=id=>document.getElementById(id);
+ const canvas=$('battlefield'),ctx=canvas.getContext('2d',{alpha:false});
+ const startOverlay=$('startOverlay'),pauseOverlay=$('pauseOverlay'),endOverlay=$('endOverlay');
+ const laneButtons=[...document.querySelectorAll('.lane')];
+ let run=R.initialState(),selectedLane=1,elapsed=0,stepTime=9.6,viewStage=0;
+ let running=false,paused=false,locked=false,resolved=false,notification='',notificationTimer=0;
+ let animationTime=0,lastFrame=0,canvasSize={w:390,h:844,dpr:1},pointerHeld=false;
+ const ATK_SYMBOL={recruit:'♟',power:'⚔',ward:'◇',sabotage:'✣'};
+ function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+ function rand(i){const n=Math.sin(i*127.1+91.7)*43758.5453;return n-Math.floor(n)}
+ function show(element,visible){element.classList.toggle('hidden',!visible)}
+ function resize(){const r=canvas.getBoundingClientRect();const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);canvasSize={w:r.width,h:r.height,dpr};}
+ function updateStats(){
+   $('troops').textContent=run.units;$('attack').textContent='+'+run.attackBonus+'%';$('shield').textContent=run.shields;
+   $('zoneLabel').textContent=R.WAVES[Math.min(viewStage,5)].name;
+   $('roundLabel').textContent='TRAMO '+Math.min(viewStage+1,6)+' / 6';
+   const bars=[...$('progressTrack').children];bars.forEach((b,i)=>b.className=i<run.stage?'done':i===run.stage?'current':'');
+ }
+ function makeCards(){
+   const wave=R.WAVES[Math.min(run.stage,5)];
+   $('enemyCount').textContent=wave.enemy;
+   $('gates').replaceChildren();
+   wave.gates.forEach((g,i)=>{
+     const b=document.createElement('button');b.type='button';b.className='gate';b.dataset.type=g.type;b.dataset.lane=String(i);
+     b.setAttribute('aria-label',`Carril ${i+1}: ${R.TYPES[g.type]} ${g.title} ${g.hint}`);
+     const symbol=document.createElement('span');symbol.className='g-symbol';symbol.textContent=ATK_SYMBOL[g.type];
+     const strong=document.createElement('strong');strong.textContent=g.title;
+     const label=document.createElement('span');label.className='g-type';label.textContent=R.TYPES[g.type];
+     const hint=document.createElement('span');hint.className='g-hint';hint.textContent=g.hint;
+     b.append(symbol,strong,label,hint);b.addEventListener('click',()=>choose(i));$('gates').append(b);
+   });
+   updateSelection();updateStats();
+ }
+ function updateSelection(){
+   laneButtons.forEach((b,i)=>{b.classList.toggle('selected',i===selectedLane);b.setAttribute('aria-pressed',i===selectedLane?'true':'false');b.disabled=locked||!running||paused});
+   [...$('gates').children].forEach((b,i)=>{b.classList.toggle('selected',i===selectedLane);b.disabled=locked||!running||paused;});
+ }
+ function choose(lane){if(!running||paused||locked||!Number.isInteger(lane)||lane<0||lane>2)return false;
+   selectedLane=lane;updateSelection();announce(`Carril ${lane+1} seleccionado`,0.75);return true;}
+ function announce(text,seconds=2){notification=text;notificationTimer=seconds;$('combatMessage').textContent=text;$('combatMessage').classList.add('show')}
+ function start(){run=R.initialState();selectedLane=1;elapsed=0;viewStage=0;animationTime=0;lastFrame=performance.now();running=true;paused=false;locked=false;resolved=false;notification='';notificationTimer=0;
+   show(startOverlay,false);show(pauseOverlay,false);show(endOverlay,false);$('pause').textContent='Ⅱ';$('pause').setAttribute('aria-label','Pausar partida');$('gateHeader').classList.remove('hidden-stage');$('instruction').textContent='ELIGE TU PORTAL';$('tip').textContent='DESLIZA O TOCA UN CARRIL PARA ELEGIR';
+   makeCards();updateSelection();}
+ function pause(){if(!running||run.finished)return;paused=!paused;show(pauseOverlay,paused);$('pause').textContent=paused?'▶':'Ⅱ';$('pause').setAttribute('aria-label',paused?'Reanudar partida':'Pausar partida');updateSelection()}
+ function finish(){running=false;paused=false;locked=true;updateSelection();
+   const s=R.summary(run);
+   $('endTitle').textContent=s.victory?'¡BRECHA SELLADA!':'EXPEDICIÓN CAÍDA';
+   $('endLabel').textContent=s.victory?'VICTORIA · GRADO '+s.grade:'DERROTA · VUELVE A INTENTARLO';
+   $('endBody').textContent=s.victory?'Tu guardia ha derrotado al Guardián. Los supervivientes regresan a Valoria.':'La corrupción ha detenido a tu guardia. Prueba otra combinación de portales.';
+   $('endCrest').querySelector('span').textContent=s.victory?'✦':'⚔';
+   $('resultStages').textContent=s.wavesCleared+'/6';$('resultTroops').textContent=s.units;$('resultScore').textContent=s.score.toLocaleString('es-ES');
+   $('resultHistory').replaceChildren();run.history.forEach(r=>{
+     const item=document.createElement('div'),l=document.createElement('span'),v=document.createElement('span');
+     l.textContent=r.stage+'. '+r.zone;
+     v.textContent=(r.survived?'SUPERADO':'CAÍDA')+' · −'+r.lost+' tropas';v.className=r.survived?'win':'lost';
+     item.append(l,v);$('resultHistory').append(item);
+   });show(endOverlay,true);
+ }
+ function advance(dt){if(!running||paused)return;
+   dt=clamp(dt,0,0.2);animationTime+=dt;elapsed+=dt;
+   const phase=clamp(elapsed/stepTime,0,1);
+   if(notificationTimer>0){notificationTimer-=dt;if(notificationTimer<=0)$('combatMessage').classList.remove('show')}
+   if(!locked && phase>=0.49){locked=true;$('gateHeader').classList.add('hidden-stage');$('tip').textContent='¡PREPARA EL ENFRENTAMIENTO!';updateSelection();}
+   if(!resolved && phase>=0.76){resolved=true;
+     const previous=run;
+     const output=R.playWave(run,selectedLane);run=output.state;const rep=output.report;
+     const bonus=R.WAVES[previous.stage].gates[selectedLane];
+     announce((rep.survived?'OLEADA SUPERADA · ':'CAÍDA · ')+R.TYPES[bonus.type]+' · −'+rep.lost+' TROPAS',2.4);
+     updateStats();$('encounterInfo').style.opacity='0';
+   }
+   if(phase>=1){
+     if(run.finished){finish();return}
+     elapsed=0;viewStage=run.stage;locked=false;resolved=false;$('gateHeader').classList.remove('hidden-stage');$('tip').textContent='ELIGE TU PRÓXIMO PORTAL';$('encounterInfo').style.opacity='1';
+     $('instruction').textContent=run.stage===5?'EL GUARDIÁN SE ACERCA':'ELIGE TU PORTAL';
+     makeCards();
+   }
+   $('gateTimer').firstElementChild.style.transform='scaleX('+Math.max(0,1-phase/0.49)+')';
+ }
+ function poly(points,fill,stroke,width=1){ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
+ function ellipse(x,y,rx,ry,color){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
+ function line(points,color,width=1){ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke()}
+ function roadHalfWidth(y){const {w,h}=canvasSize;return w*(0.19+0.34*clamp((y-h*0.18)/(h*0.78),0,1));}
+ function laneX(lane,y){return canvasSize.w/2+(lane-1)*roadHalfWidth(y)*0.56}
+ function drawSky(){const {w,h}=canvasSize;
+   let gr=ctx.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#090b18');gr.addColorStop(.34,'#192333');gr.addColorStop(.73,'#25222d');gr.addColorStop(1,'#0b111a');ctx.fillStyle=gr;ctx.fillRect(0,0,w,h);
+   ellipse(w*.56,h*.19,w*.29,h*.08,'#764a7a17');ellipse(w*.56,h*.20,w*.20,h*.05,'#a27eaf0d');
+   for(let i=0;i<22;i++){const x=rand(i+32)*w,y=h*.1+rand(i+211)*h*.45,sz=.5+rand(i+13)*1.6;ellipse(x,y,sz,sz,'#af88d2'+(i%3?'48':'73'))}
+   for(let s=0;s<2;s++){
+    let p=[[0,h*.30+s*h*.12]];for(let j=0;j<=10;j++){let x=j*w/10,y=h*(.23+s*.09)+rand(j+s*47)*h*.085;p.push([x,y])}p.push([w,h*.82],[0,h*.82]);poly(p,s===0?'#171d2a':'#22232b');
+   }
+   for(let i=0;i<7;i++){const x=i*w/6+rand(i*11)*17;const ty=h*(.28+rand(i*23)*.15),size=8+rand(i*9)*25;
+     poly([[x-size*.65,ty+size],[x-size*.52,ty],[x-size*.2,ty],[x-size*.1,ty-size*.7],[x+size*.08,ty-size*.85],[x+size*.1,ty],[x+size*.5,ty],[x+size*.68,ty+size]],'#101621');
+     ctx.fillStyle='#5d49854a';ctx.fillRect(x-size*.06,ty-size*.38,size*.13,size*.22);
+   }
+ }
+ function drawRoad(){const {w,h}=canvasSize,t=animationTime,top=h*.19,bottom=h*1.15;
+   const hTop=roadHalfWidth(top),hBottom=roadHalfWidth(bottom);
+   const roadGrad=ctx.createLinearGradient(0,top,0,bottom);roadGrad.addColorStop(0,'#37313a');roadGrad.addColorStop(.6,'#38343b');roadGrad.addColorStop(1,'#342a32');
+   poly([[w/2-hTop,top],[w/2+hTop,top],[w/2+hBottom,bottom],[w/2-hBottom,bottom]],roadGrad,'#a5845d44',3);
+   // Perspective seam marks, paced as if walking forward
+   for(let i=0;i<31;i++){
+    const z=((i/31 + t*.075)%1);const y=top+(h-top)*z*z;
+    const wAt=roadHalfWidth(y);const x=w/2+(rand(i*7+14)-.5)*wAt*1.8;
+    const r=1+z*7;
+    poly([[x-r,y],[x-r*.6,y-r*.3],[x+r*.8,y-r*.2],[x+r,y+r*.3],[x-r*.5,y+r*.25]],i%2?'#73626a34':'#9a837b25');
+   }
+   for(let j=1;j<3;j++){
+     const xx=(j-1.5)*2;
+     for(let i=0;i<13;i++){
+       const z=((i/13+t*.16)%1);const y=top+(h-top)*z*z;const half=roadHalfWidth(y);const x=w/2+xx*half*.33;
+       if(y>top+12)line([[x,y],[x,y+2+z*11]],'#b69d9b35',.7+z*1.6);
+     }
+   }
+   // Soil, stone, roots and violet fissure on the edges
+   for(const side of [-1,1]){
+     for(let i=0;i<22;i++){
+       const z=((i/22+t*.06)%1),y=top+(h-top)*z;
+       const edge=w/2+side*(roadHalfWidth(y)+4+z*12),rx=2+z*8;
+       poly([[edge-side*rx,y-rx],[edge+side*rx*.8,y-rx*.55],[edge+side*rx*1.4,y+rx],[edge-side*rx*.6,y+rx*.8]],i%3?'#26202e':'#39323b','#72547a40',.7);
+       if(i%4===0){line([[edge,y],[edge+side*(3+z*9),y-(6+z*15)],[edge+side*(6+z*12),y-(9+z*22)]],'#b762d0a3',1+z*2);ellipse(edge,y,1+z*2,1+z*2,'#c177e2')}
+     }
+   }
+   // Ancient ritual fissure at the distant end
+   line([[w*.50,top],[w*.48,top+20],[w*.52,top+37],[w*.49,top+52]],'#b661d6ad',2);
+ }
+ function drawWorldProps(){const {w,h}=canvasSize,t=animationTime;
+   for(let i=0;i<18;i++){
+     const z=((i/18+t*.055)%1),y=h*.23+(h*.71)*z;
+     const side=i%2?-1:1,x=w/2+side*(roadHalfWidth(y)+9+rand(i+33)*38*z);
+     const size=(4+z*18)*(0.72+rand(i+40)*.5);
+     // corrupted standing stone with violet crystal
+     poly([[x-size*.45,y],[x-size*.6,y-size*.48],[x,y-size*1.3],[x+size*.65,y-size*.55],[x+size*.4,y]],'#262634','#535364',.7);
+     poly([[x-size*.2,y-size*.5],[x,y-size*1.2],[x+size*.25,y-size*.5],[x,y-size*.13]],i%3?'#7f6aa18f':'#b35cbaaa');
+     ellipse(x,y-size*.5,size*.5,size*.38,'#a260a01a');
+   }
+ }
+ function drawPortal(x,y,scale,selected,kind){ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+   const c={recruit:'#dfc38e',power:'#e59b7b',ward:'#bc8ee5',sabotage:'#8fd1bc'}[kind]||'#a98ac9';
+   ellipse(0,3,27,10,selected?'#e3b77844':'#8b6bac29');
+   ctx.shadowColor=c;ctx.shadowBlur=selected?22:8;
+   line([[-17,0],[-18,-37],[-11,-56],[0,-63],[11,-56],[18,-37],[17,0]],c,selected?4:2.5);
+   ctx.shadowBlur=0;line([[-9,-4],[-9,-39],[0,-48],[9,-39],[9,-4]],'#b28ec4aa',1.3);
+   ellipse(0,-31,selected?8:5,selected?10:7,selected?'#d9b58a90':'#7b75a955');
+   ctx.restore();}
+ function drawGateProps(phase){if(phase>=.6)return;const w=canvasSize.w,h=canvasSize.h,stage=Math.min(viewStage,5);
+   const y=h*(.39+phase*.42);
+   for(let j=0;j<3;j++)drawPortal(laneX(j,y),y,.58+phase*1.5,j===selectedLane,R.WAVES[stage].gates[j].type);
+ }
+ function drawSoldier(x,y,scale,side,leader=false){ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+   ellipse(1,5,8,3,'#050b13aa');
+   if(side==='enemy'){
+     poly([[-7,2],[-6,-11],[0,-15],[6,-11],[8,3]],'#382532','#a5586d',.8);
+     poly([[-5,-8],[-8,-16],[-2,-19],[0,-15],[6,-19],[10,-13],[4,-8]],'#595061','#7a566e',.8);
+     ellipse(-2,-10,1.6,1,'#f47887');ellipse(3,-10,1.6,1,'#f47887');
+     ellipse(-7,-2,5,7,'#5b424d');ellipse(-7,-2,3,5,'#9b576e');
+     line([[6,-4],[10,-22],[13,-24]],'#e8c6bc',1.7);
+   }else{
+     poly([[-7,3],[-9,-6],[0,-13],[7,-6],[8,4]],leader?'#854852':'#4a5c70','#8d7680',.7);
+     poly([[-4,-8],[-5,-14],[0,-17],[5,-14],[4,-8]],leader?'#d3b073':'#a2a8a8','#d9c6af',.7);
+     ellipse(-6,-2,4,6,leader?'#bc9b73':'#82929c');ellipse(-6,-2,2.4,4,leader?'#d5c293':'#b8c8c7');
+     line([[7,-4],[12,-22],[11,-25]],leader?'#e8cb92':'#b6c4cb',1.7);
+   }ctx.restore()}
+ function drawSquad(phase){const {w,h}=canvasSize;const y=h*(h<490?.68:.724);let lane=selectedLane;
+   const x=laneX(lane,y),t=animationTime;
+   const visible=Math.min(run.units,22);
+   for(let i=visible-1;i>=0;i--){const row=Math.floor(i/5),col=i%5;
+      const sx=x+(col-2)*13+(row%2?5:0);const sy=y+row*13-18+Math.sin(t*9+i*.6)*1.4;
+      drawSoldier(sx,sy,.64+(row*.025),'ally',false)}
+   drawSoldier(x,y-20+Math.sin(t*9)*1.4,1.4,'ally',true);
+   if(phase>=.76&&phase<.94){
+      for(let i=0;i<12;i++){const px=x+(rand(i)*2-1)*40,py=y-65-rand(i+33)*34+(animationTime*80+i*7)%30;ellipse(px,py,2+rand(i+4)*2,2,'#f7b98f90')}
+   }
+ }
+ function drawEnemies(phase){const {w,h}=canvasSize;
+   if(phase<.29 || phase>.98)return;
+   const y=h*(.38+(phase-.29)*.38);const x=laneX(selectedLane,y);
+   const count=Math.min(15,R.WAVES[Math.min(viewStage,5)].enemy),boss=R.WAVES[Math.min(viewStage,5)].boss;
+   for(let i=count-1;i>=0;i--){const row=Math.floor(i/5),col=i%5;
+     drawSoldier(x+(col-2)*14+(row%2?5:0),y+row*12-10,.70,'enemy')}
+   if(boss){ctx.save();ctx.shadowBlur=20;ctx.shadowColor='#ba55e8';drawSoldier(x,y-55,2.7,'enemy');ctx.restore();
+      ellipse(x,y-62,24,29,'#a14cd51b');}
+   if(phase>.70){for(let k=0;k<12;k++){
+      const sy=y+20+rand(k+41)*35,ex=x+((rand(k+8)-.5)*80);
+      line([[ex,sy],[ex+8,sy-17]],k%2?'#eab07d88':'#c66bd388',1.4);
+   }}
+ }
+ function drawAsh(){const {w,h}=canvasSize,t=animationTime;
+   for(let i=0;i<45;i++){
+     const x=((rand(i*31)+t*(i%2?0.004:-0.004))%1+1)%1*w;
+     const y=(((rand(i*43+70)+t*(0.009+rand(i*91)*.010))%1)+1)%1*h;
+     const r=.5+rand(i+78)*2.1;ellipse(x,y,r,r, i%5?'#a38cac30':'#dfc99a45');
+   }
+ }
+ function draw(){const {w,h}=canvasSize;if(!w||!h)return;
+   const phase=elapsed/stepTime;drawSky();drawRoad();drawWorldProps();drawGateProps(phase);drawEnemies(phase);drawSquad(phase);drawAsh();
+   if(phase>.72&&phase<.94){ctx.fillStyle=`rgba(216,116,172,${0.07*Math.sin((phase-.72)/.22*Math.PI)})`;ctx.fillRect(0,0,w,h)}
+ }
+ function frame(now){if(!lastFrame)lastFrame=now;const delta=Math.min(.05,Math.max(0,(now-lastFrame)/1000));lastFrame=now;advance(delta);draw();requestAnimationFrame(frame)}
+ laneButtons.forEach(b=>b.addEventListener('click',()=>choose(Number(b.dataset.lane))));
+ $('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('pause').addEventListener('click',pause);$('resume').addEventListener('click',pause);$('restartFromPause').addEventListener('click',start);
+ window.addEventListener('keydown',e=>{if(!running||paused||locked)return;
+   if(['ArrowLeft','a','A'].includes(e.key)){e.preventDefault();choose(clamp(selectedLane-1,0,2))}
+   else if(['ArrowRight','d','D'].includes(e.key)){e.preventDefault();choose(clamp(selectedLane+1,0,2))}
+   else if(['1','2','3'].includes(e.key)){e.preventDefault();choose(Number(e.key)-1)}
+   else if(e.key===' '){e.preventDefault();pause()}
+ });
+ function laneFromPointer(e){const r=canvas.getBoundingClientRect();const x=e.clientX-r.left;return clamp(Math.floor(x/r.width*3),0,2)}
+ canvas.addEventListener('pointerdown',e=>{pointerHeld=true;try{canvas.setPointerCapture(e.pointerId)}catch{}choose(laneFromPointer(e))});
+ canvas.addEventListener('pointermove',e=>{if(pointerHeld)choose(laneFromPointer(e))});
+ canvas.addEventListener('pointerup',()=>pointerHeld=false);canvas.addEventListener('pointercancel',()=>pointerHeld=false);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden && running && !paused)pause();lastFrame=performance.now()});
+ window.addEventListener('resize',resize);resize();
+ $('progressTrack').replaceChildren(...Array.from({length:6},()=>document.createElement('span')));makeCards();
+ // QA-only synchronously advances the same event state machine; unavailable in normal play.
+ if(new URLSearchParams(location.search).has('qa')||window.__sendaQA)window.__sendaTest={
+   start,choose, state:()=>structuredClone(run), phase:()=>elapsed/stepTime,
+   advanceSeconds:seconds=>{let n=Math.ceil(seconds/.045);for(let i=0;i<n;i++)advance(seconds/n);draw();},
+   forceFinish:()=>{if(run.finished)finish();},
+ };
+ requestAnimationFrame(frame);
+})();
+
+</script>
+</body>
+</html>
