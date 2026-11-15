@@ -1,0 +1,8 @@
+{
+  "meshes": 4,
+  "triangles": 21308,
+  "all_have_uv": true,
+  "all_have_vertex_colors": true,
+  "unit_scales": true,
+  "engine": "Blender FBX reimport, NOT Unity"
+}

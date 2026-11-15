@@ -1,0 +1,20 @@
+{
+  "generator": "Blender 4.3.2",
+  "seed": 151126,
+  "triangles": 21308,
+  "mesh_objects": 4,
+  "materials": 2,
+  "atlas": [
+    256,
+    256
+  ],
+  "units": "metres",
+  "pivot": "world origin, ground plane z=0",
+  "families": [
+    "Terrain",
+    "01_Reclaimed_Hall",
+    "02_Roofless_Ruin",
+    "03_Corrupted_Watchtower"
+  ],
+  "unity_verified": false
+}

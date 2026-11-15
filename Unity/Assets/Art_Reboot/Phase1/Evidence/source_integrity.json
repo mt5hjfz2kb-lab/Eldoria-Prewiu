@@ -1,0 +1,12 @@
+{
+  "status": "SOURCE_INTEGRITY_PASS",
+  "original_scene_sha256": "7c0fa3fb913af7285f9b76509cc5e7cd1adeb8e52738a6abd736385fcd694aea",
+  "original_scene_unchanged": true,
+  "sandbox_original_objects_inactive": true,
+  "gltf_one_atlas": true,
+  "gltf_vertex_colors_present": true,
+  "shadergraph_references_valid": true,
+  "unity_compiled": false,
+  "unity_rendered": false,
+  "mobile_tested": false
+}
