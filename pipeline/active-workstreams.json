@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T13:28:30.903Z",
+  "updated_at": "2026-11-15T13:44:09.196Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9563,7 +9563,7 @@
       "ownership_revision": 2,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "STANDALONE_PLAYABLE_V1_QA_PASS_PR195_DRAFT_UNITY_FUTURE",
+      "phase": "SIX_STAGE_THREE_LANE_OFFLINE_PILOT_QA_PASS_PR195_DRAFT_UNITY_FUTURE",
       "claimed_at": "2026-11-15T13:07:55.336Z",
       "resources": [],
       "scope": [
@@ -9581,9 +9581,9 @@
       "write_scope_released": true,
       "last_handoff_at": "2026-11-15T13:28:30.903Z",
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
-      "final_source_sha": "3e2a83dbc95f540e7833d02cc5e1023153712ba9",
-      "final_evidence": "HTML5 offline 3-stage gameplay; eight deterministic routes (5 wins, 3 losses), Chromium portrait/landscape touch/buttons/replay/victory/defeat PASS, screenshots reviewed; 0 JavaScript errors. Exact 11-file source committed and 4 blobs compared by Git SHA to local. Not native Unity, real iPhone, visual approval or beta publication.",
-      "next": "Reuse PR #195 and same ID when owner requests Unity adaptation; first real fun test, then art routing, isolated Unity scene and native/mobile performance gates; no main beta/locale/economy changes."
+      "final_source_sha": "f17c6056ad1fb85490f15d0a14477cd49ac39f88",
+      "final_evidence": "Canonical six-stage, three-lane standalone browser pilot under tools/senda-brecha/dist/senda-brecha.html. Node 5/5 tests and exhaustive 729 combinations (168 wins/561 losses), Chromium QA 390x844, 320x700, 844x390, 1280x800 all PASS for win/defeat, canvas pointer lane, pause/restart, 0 JS pageerrors. Older 3-stage/two-choice pilot 3e2a83d retained in Git history only, not a second active implementation. NOT Unity, real iPhone, art approved or beta publication.",
+      "next": "Continue SAME canonical PR #195 and workstream ID for owner-authorized Unity adaptation. First playtest for enjoyment, then artistic routing, C# equivalence and isolated Unity scene. Preserve main beta and world iPhone P0; no economic or gameplay integration yet."
     }
   ],
   "history": [
