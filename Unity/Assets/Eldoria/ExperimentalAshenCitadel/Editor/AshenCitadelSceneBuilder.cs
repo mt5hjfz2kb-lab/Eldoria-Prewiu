@@ -180,6 +180,20 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var mat=AssetDatabase.LoadAssetAtPath<Material>(mPath);
                 if(!mat){mat=new Material(shader){name="Ashen "+current};AssetDatabase.CreateAsset(mat,mPath);}
                 mat.shader=shader;mat.SetColor("_BaseColor",col);
+                // Match the actual Blender source: six UV-mapped 128 px reusable
+                // artist-authored textures, multiplied by this palette color.
+                var textureFamily=
+                    new[]{"basalt","stone","stoneLight","cut","plaster"}.Contains(current)?"Stone":
+                    new[]{"roof","slate"}.Contains(current)?"Roof":
+                    new[]{"wood","oak"}.Contains(current)?"Wood":
+                    new[]{"soil","moss","leaf","leafLight"}.Contains(current)?"Moss":
+                    new[]{"iron","brass","warm"}.Contains(current)?"Metal":
+                    new[]{"banner","violet"}.Contains(current)?"Cloth":null;
+                if(textureFamily==null)throw new InvalidDataException("Unknown source palette key: "+current);
+                var texturePath=Root+"/Textures/Ashen"+textureFamily+".png";
+                var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+                if(texture==null)throw new FileNotFoundException("Required authored texture not imported: "+texturePath);
+                mat.SetTexture("_BaseMap",texture);
                 mat.SetFloat("_Smoothness",current=="brass"?.35f:.09f);
                 mat.SetFloat("_Metallic",current=="brass"?.42f:.01f);
                 EditorUtility.SetDirty(mat);Colors[current]=mat;

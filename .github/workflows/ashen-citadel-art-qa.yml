@@ -36,10 +36,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m py_compile tools/ashen-citadel/verify_art.py tools/ashen-citadel/blender_review.py
-          python3 tools/ashen-citadel/verify_art.py
+          python3 -m py_compile tools/ashen-citadel/verify_art.py tools/ashen-citadel/blender_review.py tools/ashen-citadel/blender_environment.py
           node tools/ashen-citadel/generate.mjs
-          git diff --exit-code -- tools/ashen-citadel/art-manifest.json Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes
+          node tools/ashen-citadel/create_textures.mjs
+          node tools/ashen-citadel/unwrap_uv.mjs
+          python3 tools/ashen-citadel/verify_art.py
+          git diff --exit-code -- tools/ashen-citadel/art-manifest.json Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures
       - name: Install actual Blender (headless Ubuntu)
         shell: bash
         run: |

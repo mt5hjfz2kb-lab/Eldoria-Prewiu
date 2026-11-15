@@ -27,6 +27,7 @@ for name in expected:
     assert "mtllib AshenPalette.mtl" in content, path
     assert "Valoria_HeroBastion" not in content, "Prohibited old mesh reference"
     vertices=[]
+    uv_coords=[]
     polygons=0
     active=None
     materials=set()
@@ -36,17 +37,27 @@ for name in expected:
             if len(pts)!=3 or any(not math.isfinite(p) or abs(p)>200 for p in pts):
                 failures.append(f"{name}: invalid coordinate {line}")
             vertices.append(pts)
+        elif line.startswith("vt "):
+            xy=list(map(float,line[3:].split()))
+            if len(xy)!=2 or not all(math.isfinite(x) for x in xy):
+                failures.append(f"{name}: invalid texture coordinate")
+            uv_coords.append(xy)
         elif line.startswith("usemtl "):
             active=line[7:].strip()
             materials.add(active)
         elif line.startswith("f "):
-            inds=[int(t.split("/")[0]) for t in line[2:].split()]
+            tokens=line[2:].split()
+            inds=[int(t.split("/")[0]) for t in tokens]
+            uv_indices=[int(t.split("/")[1]) if "/" in t and t.split("/")[1] else -1 for t in tokens]
+            if any(k<1 or k>len(uv_coords) for k in uv_indices):
+                failures.append(f"{name}: missing/invalid UV0 index")
             if len(inds)<3 or not active or any(k<1 or k>len(vertices) for k in inds):
                 failures.append(f"{name}: invalid face {line}")
             if len(set(inds))!=len(inds):
                 failures.append(f"{name}: duplicate face indices")
             polygons+=1
     if not vertices or not polygons:failures.append(f"{name}: empty mesh")
+    if len(uv_coords)!=len(vertices):failures.append(f"{name}: one UV0 required per authored face vertex")
     if not materials.issubset(palette):failures.append(f"{name}: unmapped source materials {materials-palette}")
     entry=("bastion"+name[-1]) if name.startswith("AshenBastion_") else name.removeprefix("Ashen_")
     expected_stats=manifest["stats"][entry]
@@ -78,5 +89,9 @@ def validate_png(path,dimensions):
 for filename,size in [("AshenPanel.png",(256,256)),("AshenButtonPrimary.png",(256,72)),
                       ("AshenButtonSecondary.png",(256,72)),("AshenCrest.png",(128,128))]:
     validate_png(resources/filename,size)
+for name in ["AshenStone.png","AshenRoof.png","AshenWood.png","AshenMoss.png","AshenMetal.png","AshenCloth.png"]:
+    validate_png(source/"Textures"/name,(128,128))
+mtl=(meshes/"AshenPalette.mtl").read_text()
+if mtl.count("map_Kd ../Textures/Ashen")!=18:failures.append("MTL must bind all 18 authored materials")
 if failures:raise SystemExit("\n".join(failures))
-print("ASHEN_ART_SOURCE_INTEGRITY_PASS: 11 OBJ / 18 materials / 4 sprites")
+print("ASHEN_ART_SOURCE_INTEGRITY_PASS: 11 UV-mapped OBJ / 18 materials / 6 textures / 4 sprites")

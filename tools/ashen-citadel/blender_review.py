@@ -44,7 +44,7 @@ def palette():
     assert len(values)==18, ("Incomplete palette",len(values))
     return values
 
-def pbr(material, rgb):
+def pbr(material, rgb, material_key=None):
     material.diffuse_color=(rgb[0],rgb[1],rgb[2],1)
     material.use_nodes=True
     bsdf=material.node_tree.nodes.get("Principled BSDF")
@@ -55,6 +55,26 @@ def pbr(material, rgb):
         if rough:rough.default_value=.66
         metal=bsdf.inputs.get("Metallic")
         if metal:metal.default_value=.34 if "brass" in material.name.lower() else 0
+        if material_key:
+            groups={
+                "Stone":["basalt","stone","stoneLight","cut","plaster"],
+                "Roof":["roof","slate"],"Wood":["wood","oak"],
+                "Moss":["soil","moss","leaf","leafLight"],
+                "Metal":["iron","brass","warm"],"Cloth":["banner","violet"]
+            }
+            family=next((g for g,keys in groups.items() if material_key in keys),None)
+            if not family:raise RuntimeError("No mobile texture group for "+material_key)
+            path=MESHES.parent/"Textures"/("Ashen"+family+".png")
+            if not path.is_file():raise FileNotFoundError(str(path))
+            image=bpy.data.images.load(str(path),check_existing=True)
+            nodes=material.node_tree.nodes;links=material.node_tree.links
+            texture=nodes.new("ShaderNodeTexImage");texture.image=image
+            multiply=nodes.new("ShaderNodeMixRGB");multiply.blend_type="MULTIPLY"
+            multiply.inputs[0].default_value=1
+            multiply.inputs[1].default_value=(rgb[0],rgb[1],rgb[2],1)
+            for current in list(color.links):links.remove(current)
+            links.new(texture.outputs["Color"],multiply.inputs[2])
+            links.new(multiply.outputs["Color"],color)
     return material
 
 def remap(objects,pal):
@@ -66,7 +86,7 @@ def remap(objects,pal):
             name=re.sub(r"\.\d{3}$", "", orig.name.lower())
             found=next((k for k in pal if k.lower()==name or name.endswith(":"+k.lower()) or name.startswith(k.lower()+" ")),None)
             if found:
-                pbr(orig,pal[found]);count+=1
+                pbr(orig,pal[found],found);count+=1
             else:
                 # Blender OBJ material assignments must be investigated, not silently replaced.
                 raise RuntimeError("Unknown MTL material "+repr(orig.name)+" in "+obj.name)
