@@ -20,6 +20,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          sparse-checkout: |
+            tools/ashen-citadel/native-qa.ps1
+          sparse-checkout-cone-mode: false
+      - name: Parse entire Windows builder PowerShell before reserving native job
+        shell: pwsh
+        run: |
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$pwd/tools/ashen-citadel/native-qa.ps1",[ref]$tokens,[ref]$errors) | Out-Null
+          if($errors.Count -gt 0){$errors|Format-List;throw 'Invalid native builder syntax'}
+          Write-Output 'ASHEN_POWERSHELL_SYNTAX_PASS'
       - name: Validate exact independent branch and sole Windows lease before queuing
         env:
           GH_TOKEN: ${{ github.token }}
