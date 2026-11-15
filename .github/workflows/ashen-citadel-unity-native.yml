@@ -25,6 +25,7 @@ jobs:
           lfs: false
           sparse-checkout: |
             tools/ashen-citadel/native-qa.ps1
+            tools/ashen-citadel/native-hash-smoke.ps1
           sparse-checkout-cone-mode: false
       - name: Parse entire Windows builder PowerShell before reserving native job
         shell: pwsh
@@ -35,6 +36,7 @@ jobs:
             "$pwd/tools/ashen-citadel/native-qa.ps1",[ref]$tokens,[ref]$errors) | Out-Null
           if($errors.Count -gt 0){$errors|Format-List;throw 'Invalid native builder syntax'}
           Write-Output 'ASHEN_POWERSHELL_SYNTAX_PASS'
+          & "$pwd/tools/ashen-citadel/native-hash-smoke.ps1"
       - name: Validate exact independent branch and sole Windows lease before queuing
         env:
           GH_TOKEN: ${{ github.token }}
