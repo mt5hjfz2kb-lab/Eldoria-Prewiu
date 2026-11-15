@@ -70,6 +70,57 @@ namespace Eldoria.ReferenceClean {
 #endif
    }
   }
+#if UNITY_EDITOR
+  public static bool P0StaticMeshCpuEditorTestOverride {get;set;}
+#endif
+  static bool P0StaticMeshCpu {
+   get {
+#if UNITY_EDITOR
+    return P0StaticMeshCpuEditorTestOverride||Environment.GetEnvironmentVariable("ELDORIA_STATIC_MESH_CPU_TRIAL")=="1";
+#elif UNITY_WEBGL
+    return UnityEngine.Application.absoluteURL.Contains("eldoria_p0_static_mesh_cpu=1");
+#else
+    return false;
+#endif
+   }
+  }
+  void RetireStaticBastionCpuCopies(){
+   if(!P0StaticMeshCpu)return;
+   var roots=new[]{city.BastionOne,city.BastionTwo,WorldBastionOne,WorldBastionTwo};
+   if(roots.Any(root=>!root))throw new InvalidOperationException("Static Bastion roots missing");
+   var filters=roots.SelectMany(root=>root.GetComponentsInChildren<MeshFilter>(true)).ToArray();
+   var meshes=filters.Where(filter=>filter.sharedMesh).Select(filter=>filter.sharedMesh).Distinct().ToArray();
+   // Exact measured four-mesh cohort. No terrain, creatures, resource contact
+   // fitting or heroes are eligible; a changed scene must be audited again.
+   if(meshes.Length!=4)throw new InvalidOperationException("Static Bastion mesh cohort changed");
+   if(Resources.FindObjectsOfTypeAll<SkinnedMeshRenderer>().Any(skin=>skin&&meshes.Contains(skin.sharedMesh)))
+    throw new InvalidOperationException("Static mesh unexpectedly used by skinning");
+   foreach(var collider in Resources.FindObjectsOfTypeAll<MeshCollider>()){
+    if(!collider||!meshes.Contains(collider.sharedMesh))continue;
+    if(collider.convex||(int)collider.cookingOptions!=30)
+     throw new InvalidOperationException("Static mesh has non-default collider cooking");
+    var matrix=collider.transform.localToWorldMatrix;
+    Vector3 x=matrix.GetColumn(0),y=matrix.GetColumn(1),z=matrix.GetColumn(2);
+    if(matrix.determinant<=0||Mathf.Abs(Vector3.Dot(x.normalized,y.normalized))>.0001f||
+       Mathf.Abs(Vector3.Dot(x.normalized,z.normalized))>.0001f||
+       Mathf.Abs(Vector3.Dot(y.normalized,z.normalized))>.0001f)
+     throw new InvalidOperationException("Static mesh collider has negative or sheared transform");
+   }
+   long before=meshes.Sum(mesh=>UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh));
+   foreach(var mesh in meshes){
+    var bounds=mesh.bounds;int vertices=mesh.vertexCount,submeshes=mesh.subMeshCount;
+    var indices=Enumerable.Range(0,submeshes).Select(i=>mesh.GetIndexCount(i)).ToArray();
+    // Keep the GPU geometry and existing cooked collider. Only retire the
+    // script-readable CPU copy, which these static models never edit/read.
+    if(mesh.isReadable)mesh.UploadMeshData(true);
+    if(mesh.isReadable||mesh.vertexCount!=vertices||mesh.subMeshCount!=submeshes||mesh.bounds!=bounds||
+       Enumerable.Range(0,submeshes).Any(i=>mesh.GetIndexCount(i)!=indices[i]))
+     throw new InvalidOperationException("Static mesh metadata changed during CPU retirement");
+   }
+   long after=meshes.Sum(mesh=>UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh));
+   Debug.Log("ELDORIA_P0_STATIC_MESH_CPU_RETIRED count="+meshes.Length+" before="+before+" after="+after+
+    " geometry_preserved=1");
+  }
   Camera entryCityCamera;
   bool entryRenderBudgetHeld,entryCityMsaa,entryWorldMsaa;
   internal IEnumerator PrepareDeferredWorldRenderBudget(){
@@ -197,6 +248,7 @@ namespace Eldoria.ReferenceClean {
    city=GetComponent<ValoriaReferenceCleanGameplay>();
    yield return null;
    if(city==null||!city.Ready||HudPrefab==null||WorldRoot==null||WorldCamera==null){Debug.LogError("VALORIA_INTEGRATION_MISSING_BINDING");yield break;}
+   RetireStaticBastionCpuCopies();
    var legacy=GameObject.Find("Eldoria HUD");
    if(!legacy){Debug.LogError("VALORIA_INTEGRATION_MISSING_PRESENTER_HUD");yield break;}
    legacyCanvas=legacy.GetComponent<Canvas>();legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();

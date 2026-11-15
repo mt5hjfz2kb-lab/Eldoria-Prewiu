@@ -49,7 +49,11 @@ test('lazy-world game host restores exactly to unchanged 19-overlay UX baseline'
   assert.match(msaa,/WorldCamera\.allowMSAA=false/);
   assert.doesNotMatch(msaa,/PlayerPrefs|Commit\(|Save\(|new LocalGateway|\.SetActive\(/);
 
-  let back=host.replace(front,oldReady).replace(city,'').replace(defer,'').replace(marker,'')
+  const staticRetirement='   RetireStaticBastionCpuCopies();\n';
+  exactlyOne(host,staticRetirement);
+  assert.match(front,/if\(!P0StaticMeshCpu\)return;/);
+  assert.doesNotMatch(front,/PlayerPrefs|Commit\(|Save\(|new LocalGateway/);
+  let back=host.replace(staticRetirement,'').replace(front,oldReady).replace(city,'').replace(defer,'').replace(marker,'')
     .replace(navigation,'').replace(selectionCancel,'').replace(msaa,'');
   assert.equal(back,frozen,'Unrelated UX, telemetry, progress, mailbox or save behavior changed');
 });

@@ -80,6 +80,10 @@ namespace Eldoria.BetaMemory.Tests
                 BindingFlags.Static|BindingFlags.Public);
             Assert.That(renderOptIn,Is.Not.Null);
             bool previousRenderFlag=(bool)renderOptIn.GetValue(null);
+            var meshOptIn=hostType.GetProperty("P0StaticMeshCpuEditorTestOverride",BindingFlags.Static|BindingFlags.Public);
+            Assert.That(meshOptIn,Is.Not.Null);
+            bool previousMeshFlag=(bool)meshOptIn.GetValue(null);
+            meshOptIn.SetValue(null,true);
             Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
             optIn.SetValue(null,true);
             renderOptIn.SetValue(null,true);
@@ -110,6 +114,27 @@ namespace Eldoria.BetaMemory.Tests
                 var hud=Member(host,"Hud") as Component;
                 var city=Member(host,"City");
                 var cityCamera=(Camera)Member(city,"PlayerCamera");
+
+                var staticRoots=new[]{(GameObject)Member(city,"BastionOne"),(GameObject)Member(city,"BastionTwo"),
+                    (GameObject)Member(host,"WorldBastionOne"),(GameObject)Member(host,"WorldBastionTwo")};
+                var staticMeshes=staticRoots.SelectMany(root=>root.GetComponentsInChildren<MeshFilter>(true))
+                    .Select(filter=>filter.sharedMesh).Where(mesh=>mesh).Distinct().ToArray();
+                Assert.That(staticMeshes.Length,Is.EqualTo(4));
+                Assert.That(staticMeshes.All(mesh=>!mesh.isReadable),Is.True,
+                    "Static CPU copies must be retired before allocating Region 1");
+                foreach(var root in staticRoots)
+                    foreach(var collider in root.GetComponentsInChildren<MeshCollider>(true)){
+                        var bounds=collider.bounds;bool hit=false;
+                        // Use several real roof/courtyard positions: one arbitrary
+                        // central ray could legitimately pass through a courtyard.
+                        for(int x=1;x<5&&!hit;x++)for(int z=1;z<5&&!hit;z++){
+                            var from=new Vector3(Mathf.Lerp(bounds.min.x,bounds.max.x,x/5f),bounds.max.y+5,
+                                Mathf.Lerp(bounds.min.z,bounds.max.z,z/5f));
+                            hit=collider.Raycast(new Ray(from,Vector3.down),out _,bounds.size.y+10);
+                        }
+                        if(collider.enabled&&collider.gameObject.activeInHierarchy)
+                            Assert.That(hit,Is.True,"Static collider must keep real cooked hits after CPU retirement");
+                    }
                 bool originalCityMsaa=cityCamera.allowMSAA;
                 bool originalWorldMsaa=camera.allowMSAA;
                 Assert.That(world,Is.Not.Null);
@@ -364,6 +389,7 @@ namespace Eldoria.BetaMemory.Tests
                 }
                 optIn.SetValue(null,previousFlag);
                 renderOptIn.SetValue(null,previousRenderFlag);
+                meshOptIn.SetValue(null,previousMeshFlag);
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE",previousProbe);
             }
         }

@@ -63,3 +63,14 @@ alone will not be reported as fixing iPhone.
 Local serialized-integrity gate PASS:57656 objects reloaded and checked; exactly
 four bytes changed. Candidate bundle1bdee526eb59ec6592393b2403af78ee2a223fbc889c9d7032608e44d387463b.
 Runtime measurement not yet performed at commit time.
+
+Native implementation prepared behind `eldoria_p0_static_mesh_cpu=1`: retire the
+same four static mesh CPU copies at initialized city startup using UploadMeshData.
+Before any mutation it checks the complete cohort, skinning consumers and collider
+cooking/transform constraints. It preserves bounds, vertex count and submesh index
+counts and logs measured Unity memory before/after. Real PlayMode fixture now checks
+non-readability before Region1 allocation and actual active-collider ray hits,
+then runs existing cancellation/rejoin,12 entries,48 resources36 creatures and save
+reload. Source UX parity gates15/15 pass. **Native compilation/runtime proof pending**;
+this source is not a publication or iPhone fix claim. Same-engine serialized trial
+run43720075089 is still running at this source checkpoint.
