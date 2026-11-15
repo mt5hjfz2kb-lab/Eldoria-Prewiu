@@ -77,12 +77,14 @@ foreach($required in $keep){
 Write-Output ('ASHEN_SPARSE_UNITY_PACKAGES '+($dependencies.Keys -join ', '))
 
 # The source branch builds exactly one scene in an isolated editor project.
-$argsLine=@(
-    '-batchmode','-quit','-force-d3d11',
-    '-projectPath','"'+$project+'"',
-    '-executeMethod','Eldoria.ExperimentalAshenCitadel.Editor.AshenCitadelSceneBuilder.BuildAndCapture',
-    '-logFile','"'+$NativeLog+'"'
-) -join ' '
+# DO NOT build the command with a PowerShell array and embedded +:
+# it previously inserted spaces INSIDE quoted paths, and Unity exited 127.
+$quotedProject='"'+$project+'"'
+$quotedLog='"'+$NativeLog+'"'
+$argsLine='-batchmode -quit -force-d3d11 -projectPath '+$quotedProject+
+    ' -executeMethod Eldoria.ExperimentalAshenCitadel.Editor.AshenCitadelSceneBuilder.BuildAndCapture -logFile '+$quotedLog
+if($argsLine -match '"\s+[A-Za-z]:\\'){throw 'Invalid leading path whitespace in Unity command'}
+if($argsLine -match '[A-Za-z]:[^"]+\s+"'){throw 'Invalid trailing path whitespace in Unity command'}
 Write-Output 'ASHEN_UNITY_REAL_EDITOR_BEGIN'
 Write-Output ('ASHEN_EDITOR_EXE_NAME '+[IO.Path]::GetFileName($env:UNITY_EDITOR_PATH))
 Write-Output ('ASHEN_EDITOR_EXE_SIZE '+(Get-Item $env:UNITY_EDITOR_PATH).Length)
