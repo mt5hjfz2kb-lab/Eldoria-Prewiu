@@ -1,4 +1,5 @@
-Publish owner-only world21e1: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
-Native 43707493997 PASS; desktop WebKit comparison 43712314700 PASS.
-Retire old city MSAA targets before terrain: 72402259 -> 27965659 target bytes; not total process memory proof.
-Physical iPhone verification pending. Preserve all protected routes and saved games.
+source=05e1846f0213c6320850505bc054110c53934f55
+native_run=43739391559
+browser_run=43744175007
+revision=world21e2-static-mesh-owner-only
+physical_iphone_verified=false
