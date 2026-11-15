@@ -57,6 +57,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
         }
         private static void SaveActualUi(Camera cam,Canvas canvas,string page,int width,int height)
         {
+            var adapter=Find("ASHEN · authoritative game adapter").GetComponent<AshenCitadelExperience>();
+            adapter.ReflowForViewport(width,height);
+            Canvas.ForceUpdateCanvases();
             var without=ActualCameraPixels(cam,canvas,width,height,false);
             var with=ActualCameraPixels(cam,canvas,width,height,true);
             Assert.That(with.Length,Is.EqualTo(without.Length));
