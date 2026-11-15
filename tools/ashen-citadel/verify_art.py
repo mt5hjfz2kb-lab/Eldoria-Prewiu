@@ -61,7 +61,7 @@ for name in expected:
     if not materials.issubset(palette):failures.append(f"{name}: unmapped source materials {materials-palette}")
     entry=("bastion"+name[-1]) if name.startswith("AshenBastion_") else name.removeprefix("Ashen_")
     expected_stats=json.loads((root/"tools/ashen-citadel/landscape-manifest.json").read_text()) if name=="AshenLandscape" else manifest["stats"][entry]
-    if len(vertices)!=expected_stats["vertices"] or polygons!=expected_stats["polygons"]:
+    if len(vertices)!=expected_stats["vertices"] or polygons!=expected_stats.get("polygons",expected_stats.get("faces")):
         failures.append(f"{name}: generated topology differs from manifest")
     print(f"OK {name}: {len(vertices)} vertices, {polygons} polygons, {len(materials)} used MTL")
 
