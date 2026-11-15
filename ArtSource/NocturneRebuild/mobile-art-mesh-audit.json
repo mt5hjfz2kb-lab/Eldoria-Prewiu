@@ -1,0 +1,134 @@
+{
+  "status": "STRUCTURE_ONLY_NOT_VISUAL_APPROVAL",
+  "mobile_surface_gate": 24,
+  "levels": [
+    {
+      "name": "Bastion_01",
+      "triangles": 2295,
+      "surface_batches": 12,
+      "materials": 12,
+      "textures": 7,
+      "bytes": 361480,
+      "sha256": "6361843a33041b8c0648c75f9299874394b5c99a262f5e15d16687b2417bf237"
+    },
+    {
+      "name": "Bastion_02",
+      "triangles": 3407,
+      "surface_batches": 12,
+      "materials": 12,
+      "textures": 7,
+      "bytes": 443416,
+      "sha256": "8a0c4ca1325c6fb477317bad5f6a7f02ea2afec7d6db6937cc3d1fe6234c91bb"
+    },
+    {
+      "name": "Bastion_03",
+      "triangles": 4871,
+      "surface_batches": 12,
+      "materials": 12,
+      "textures": 7,
+      "bytes": 551632,
+      "sha256": "2b64557cef216961ba137b4adae45150f2630dcc7607f93879246210630f0682"
+    },
+    {
+      "name": "Bastion_04",
+      "triangles": 6259,
+      "surface_batches": 13,
+      "materials": 13,
+      "textures": 7,
+      "bytes": 653600,
+      "sha256": "a7ee0778c2059602596bb3e29225c1b0b8416a2ec2c96aaa7a6c3ccf0c949388"
+    },
+    {
+      "name": "Bastion_05",
+      "triangles": 7473,
+      "surface_batches": 13,
+      "materials": 13,
+      "textures": 7,
+      "bytes": 742152,
+      "sha256": "50d31b2b62cb2fba159c716accca30b40235d4f12228a2a14d6e7367d5fd03af"
+    }
+  ],
+  "other_assets": [
+    {
+      "name": "Sawmill",
+      "triangles": 1096,
+      "surface_batches": 9,
+      "materials": 9,
+      "textures": 6,
+      "bytes": 238504,
+      "sha256": "0e326057e7f7e5744f580f9e7317533d0dcb4ce597964d8eac325e3b327e9905"
+    },
+    {
+      "name": "Barracks",
+      "triangles": 1143,
+      "surface_batches": 11,
+      "materials": 11,
+      "textures": 6,
+      "bytes": 246024,
+      "sha256": "b385a3ee524628bf2fae704313e38924a451bb90026d385be7f7c1afac1d1206"
+    },
+    {
+      "name": "Granary",
+      "triangles": 1292,
+      "surface_batches": 9,
+      "materials": 9,
+      "textures": 6,
+      "bytes": 250684,
+      "sha256": "90bf5f39e96d322d18e27dd40e1b2cc9b3d8495d3cb9dc02f923e8aacb568429"
+    },
+    {
+      "name": "Stoneworks",
+      "triangles": 1084,
+      "surface_batches": 9,
+      "materials": 9,
+      "textures": 6,
+      "bytes": 238864,
+      "sha256": "afaef4fe431ff1e3793e0760272b9b7253df96f42da91caff3f9efecc6926f06"
+    },
+    {
+      "name": "Pine",
+      "triangles": 70,
+      "surface_batches": 3,
+      "materials": 3,
+      "textures": 1,
+      "bytes": 33204,
+      "sha256": "0d21914db8003fafd61f428ada0b08aa62a7c9d9d2e1bddf72f3d5bf79becf97"
+    },
+    {
+      "name": "Rock",
+      "triangles": 72,
+      "surface_batches": 2,
+      "materials": 2,
+      "textures": 2,
+      "bytes": 56020,
+      "sha256": "a4ace50807d64e3f42743807494e170fb9b97b3c74eb68370659959a84686628"
+    },
+    {
+      "name": "CityGround",
+      "triangles": 1056,
+      "surface_batches": 3,
+      "materials": 3,
+      "textures": 3,
+      "bytes": 158980,
+      "sha256": "f3c5517f640f30d3c818cf138b2bcb42eb38ef1058d4daac00a01ba32e0b894a"
+    },
+    {
+      "name": "WorldGround",
+      "triangles": 868,
+      "surface_batches": 4,
+      "materials": 4,
+      "textures": 3,
+      "bytes": 145292,
+      "sha256": "9189a118721a2f370e3a520db8e15c75b11619304e64d8b2fa7e7b5b97e1db40"
+    },
+    {
+      "name": "ConstructionPlot",
+      "triangles": 400,
+      "surface_batches": 5,
+      "materials": 5,
+      "textures": 4,
+      "bytes": 135808,
+      "sha256": "062a6a1068ed7984f28704aa5ed5332d7ec0e7fe5565c6cfab05c8b06ead514e"
+    }
+  ]
+}
