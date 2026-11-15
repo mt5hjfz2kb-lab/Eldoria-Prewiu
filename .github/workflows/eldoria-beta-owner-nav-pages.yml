@@ -1,10 +1,4 @@
 name: Eldoria P0 verified owner-only Pages delivery
-true:
-  push:
-    branches:
-    - main
-    paths:
-    - tools/eldoria-private-beta/world-p0-publish-request.txt
 permissions:
   contents: write
   actions: read
@@ -37,44 +31,41 @@ jobs:
         ref: ${{ env.STAGE_SHA }}
         fetch-depth: 20
         filter: blob:none
-        sparse-checkout: 'tools
-
+        sparse-checkout: |-
+          tools
           pipeline
-
           .github/workflows
-
-          AGENTS.md'
+          AGENTS.md
         persist-credentials: false
         sparse-checkout-cone-mode: false
     - name: Verify frozen runtime and staging tests
-      run: 'set -euo pipefail
-
+      run: |
+        set -euo pipefail
         test "$(git rev-parse HEAD)" = "$STAGE_SHA"
-
         git cat-file -e "$EXPECTED_SOURCE^{commit}"
-
         git diff --exit-code "$EXPECTED_SOURCE" HEAD -- Unity/
-
         python3 -m unittest discover -s tools/eldoria-private-beta -p test_integrated_owner_stage.py
-
         python3 -m unittest discover -s tools/eldoria-private-beta -p test_restore_published_owner_snapshot.py
-
         node tools/check-repository-architecture.mjs --tracked-tree
-
         node tools/check-workflow-governance.mjs
-
         node tools/check-workflow-quarantine.mjs
-
-        '
     - name: Require exact native, compiled package and browser success
-      run: "python3 - <<'END'\nimport json,os,urllib.request\nbase='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'\n\
-        def get(path):\n req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})\n\
-        \ return json.load(urllib.request.urlopen(req,timeout=30))\nfor run,sha,names in [(os.environ['BUILD_RUN'],os.environ['BUILD_WORKFLOW_SHA'],['preflight','build','package-owner']),\n\
-        \ (os.environ['BROWSER_RUN'],os.environ['BROWSER_SHA'],['public-world-entry']),\n (os.environ['MSAA_RUN'],os.environ['MSAA_SHA'],['same-build-msaa'])]:\n\
-        \ data=get('actions/runs/'+run)\n assert data['conclusion']=='success' and data['head_sha']==sha,(run,'exact source/result')\n\
-        \ jobs=get('actions/runs/'+run+'/jobs?per_page=100')['jobs']\n assert all(any(j['name']==name and j['conclusion']=='success'\
-        \ for j in jobs) for name in names)\nprint('EXACT_NATIVE_BUILD_AND_REAL_BROWSER_GATES_PASS_NOT_PHYSICAL_IPHONE')\n\
-        END\n"
+      run: |
+        python3 - <<'END'
+        import json,os,urllib.request
+        base='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+        def get(path):
+         req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+         return json.load(urllib.request.urlopen(req,timeout=30))
+        for run,sha,names in [(os.environ['BUILD_RUN'],os.environ['BUILD_WORKFLOW_SHA'],['preflight','build','package-owner']),
+         (os.environ['BROWSER_RUN'],os.environ['BROWSER_SHA'],['public-world-entry']),
+         (os.environ['MSAA_RUN'],os.environ['MSAA_SHA'],['same-build-msaa'])]:
+         data=get('actions/runs/'+run)
+         assert data['conclusion']=='success' and data['head_sha']==sha,(run,'exact source/result')
+         jobs=get('actions/runs/'+run+'/jobs?per_page=100')['jobs']
+         assert all(any(j['name']==name and j['conclusion']=='success' for j in jobs) for name in names)
+        print('EXACT_NATIVE_BUILD_AND_REAL_BROWSER_GATES_PASS_NOT_PHYSICAL_IPHONE')
+        END
     - uses: actions/download-artifact@v4
       with:
         run-id: ${{ env.BUILD_RUN }}
@@ -100,51 +91,70 @@ jobs:
         github-token: ${{ github.token }}
         path: msaa-browser
     - name: Require both same-binary variants and real world-camera marker
-      run: "python3 - <<'END'\nimport json,os,pathlib\nfor variant in ['default','no-world-msaa']:\n root=pathlib.Path('msaa-browser')/variant\n\
-        \ d=json.loads((root/'report.json').read_text())\n assert d['source']==os.environ['EXPECTED_SOURCE'] and d['passed']\
-        \ and not d['errors']\n assert d['worldEntryAndReentryVerified'] and d['constructionReloadVerified']\n assert len(d['worldEntries'])==2\
-        \ and all(e['entered'] and e['returned'] for e in d['worldEntries'])\nassert 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED\
-        \ only_world=1' in pathlib.Path('msaa-browser/no-world-msaa/console.log').read_text()\npathlib.Path('owner-diagnostic-selection.json').write_text(json.dumps({'source':os.environ['EXPECTED_SOURCE'],'selected_url_flag':'eldoria_p0_world_msaa_off=1','same_binary_run':os.environ['MSAA_RUN'],'scope':'Owner-only\
-        \ physical-device investigation; desktop gameplay passed; frame gaps improved in one comparison; resident-memory reduction\
-        \ and iPhone crash resolution NOT proven','physical_iphone_verified':False,'external_testers_enabled':False},indent=2))\n\
-        END\n"
+      run: |
+        python3 - <<'END'
+        import json,os,pathlib
+        for variant in ['default','no-world-msaa']:
+         root=pathlib.Path('msaa-browser')/variant
+         d=json.loads((root/'report.json').read_text())
+         assert d['source']==os.environ['EXPECTED_SOURCE'] and d['passed'] and not d['errors']
+         assert d['worldEntryAndReentryVerified'] and d['constructionReloadVerified']
+         assert len(d['worldEntries'])==2 and all(e['entered'] and e['returned'] for e in d['worldEntries'])
+        assert 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' in pathlib.Path('msaa-browser/no-world-msaa/console.log').read_text()
+        pathlib.Path('owner-diagnostic-selection.json').write_text(json.dumps({'source':os.environ['EXPECTED_SOURCE'],'selected_url_flag':'eldoria_p0_world_msaa_off=1','same_binary_run':os.environ['MSAA_RUN'],'scope':'Owner-only physical-device investigation; desktop gameplay passed; frame gaps improved in one comparison; resident-memory reduction and iPhone crash resolution NOT proven','physical_iphone_verified':False,'external_testers_enabled':False},indent=2))
+        END
     - name: Recover every current public byte from certified publication inventory
-      run: "python3 tools/eldoria-private-beta/restore_published_owner_snapshot.py \\\n --proof previous-proof/site/integrated-owner-stage-proof.json\
-        \ \\\n --proof-sha256 f220237c5f3a7b113b4317fed56f5de6d753d31e6d7b190411fc9e63996c113b \\\n --source \"$PREVIOUS_SOURCE\"\
-        \ --origin https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu \\\n --output previous-live --archive previous-pages/artifact.tar\n"
+      run: |
+        python3 tools/eldoria-private-beta/restore_published_owner_snapshot.py \
+         --proof previous-proof/site/integrated-owner-stage-proof.json \
+         --proof-sha256 f220237c5f3a7b113b4317fed56f5de6d753d31e6d7b190411fc9e63996c113b \
+         --source "$PREVIOUS_SOURCE" --origin https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu \
+         --output previous-live --archive previous-pages/artifact.tar
     - name: Stage exact candidate while preserving all other routes and saves
-      run: "set -euo pipefail\npython3 - <<'END'\nimport json,os,pathlib\np=pathlib.Path('candidate/release-identity.json');j=json.loads(p.read_text())\n\
-        assert j['source_sha']==os.environ['EXPECTED_SOURCE'] and str(j['native_run'])==os.environ['BUILD_RUN']\nassert j['native_journey_verified']\
-        \ and j['native_destination_captures_verified']\nassert not j['physical_mobile_tested'] and not j['release_for_external_testers']\n\
-        pathlib.Path('pinned-candidate.json').write_bytes(p.read_bytes())\nEND\nBUNDLE=$(python3 -c 'import json;print(json.load(open(\"\
-        pinned-candidate.json\"))[\"candidate_bundle_sha256\"])')\nDATA=$(python3 -c 'import json;print(json.load(open(\"\
-        pinned-candidate.json\"))[\"delivered_data_sha256\"])')\npython3 tools/eldoria-private-beta/stage_integrated_owner_site.py\
-        \ \\\n --pages previous-pages/artifact.tar --candidate candidate --browser browser \\\n --output site --work stage-work\
-        \ --replace-source \"$PREVIOUS_SOURCE\" \\\n --expected-source-sha \"$EXPECTED_SOURCE\" --expected-bundle-sha256 \"\
-        $BUNDLE\" \\\n --expected-data-sha256 \"$DATA\" --native-run \"$BUILD_RUN\" --full-certificate-run \"$BUILD_RUN\"\
-        \ \\\n --require-world-entry\n"
+      run: |
+        set -euo pipefail
+        python3 - <<'END'
+        import json,os,pathlib
+        p=pathlib.Path('candidate/release-identity.json');j=json.loads(p.read_text())
+        assert j['source_sha']==os.environ['EXPECTED_SOURCE'] and str(j['native_run'])==os.environ['BUILD_RUN']
+        assert j['native_journey_verified'] and j['native_destination_captures_verified']
+        assert not j['physical_mobile_tested'] and not j['release_for_external_testers']
+        pathlib.Path('pinned-candidate.json').write_bytes(p.read_bytes())
+        END
+        BUNDLE=$(python3 -c 'import json;print(json.load(open("pinned-candidate.json"))["candidate_bundle_sha256"])')
+        DATA=$(python3 -c 'import json;print(json.load(open("pinned-candidate.json"))["delivered_data_sha256"])')
+        python3 tools/eldoria-private-beta/stage_integrated_owner_site.py \
+         --pages previous-pages/artifact.tar --candidate candidate --browser browser \
+         --output site --work stage-work --replace-source "$PREVIOUS_SOURCE" \
+         --expected-source-sha "$EXPECTED_SOURCE" --expected-bundle-sha256 "$BUNDLE" \
+         --expected-data-sha256 "$DATA" --native-run "$BUILD_RUN" --full-certificate-run "$BUILD_RUN" \
+         --require-world-entry
     - name: Durably archive recovered current site before replacement
-      run: "set -euo pipefail\nTAG=archive-pages-before-world-p0-d0b21fd\nsha256sum previous-pages/artifact.tar > previous-pages-sha256.txt\n\
-        cat > previous-pages-note.md <<'END'\nComplete owner beta19 Pages snapshot recovered from the successful 43503650892\
-        \ publication inventory. All 145 public files were SHA256-verified against that certificate. This archive is the rollback\
-        \ for the world-entry P0 owner candidate, not a tester release.\nEND\nif ! gh release view \"$TAG\" --json tagName\
-        \ >/dev/null 2>&1; then\n gh release create \"$TAG\" --draft --target \"$STAGE_SHA\" --title 'Verified complete Pages\
-        \ snapshot before world P0' --notes-file previous-pages-note.md\nfi\nif ! gh release view \"$TAG\" --json assets --jq\
-        \ '.assets[].name' | grep -Fxq artifact.tar; then\n gh release upload \"$TAG\" previous-pages/artifact.tar\nfi\nmkdir\
-        \ -p verified-archive\ngh release download \"$TAG\" --pattern artifact.tar --dir verified-archive\ncmp previous-pages/artifact.tar\
-        \ verified-archive/artifact.tar\n"
+      run: |
+        set -euo pipefail
+        TAG=archive-pages-before-world-p0-d0b21fd
+        sha256sum previous-pages/artifact.tar > previous-pages-sha256.txt
+        cat > previous-pages-note.md <<'END'
+        Complete owner beta19 Pages snapshot recovered from the successful 43503650892 publication inventory. All 145 public files were SHA256-verified against that certificate. This archive is the rollback for the world-entry P0 owner candidate, not a tester release.
+        END
+        if ! gh release view "$TAG" --json tagName >/dev/null 2>&1; then
+         gh release create "$TAG" --draft --target "$STAGE_SHA" --title 'Verified complete Pages snapshot before world P0' --notes-file previous-pages-note.md
+        fi
+        if ! gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq artifact.tar; then
+         gh release upload "$TAG" previous-pages/artifact.tar
+        fi
+        mkdir -p verified-archive
+        gh release download "$TAG" --pattern artifact.tar --dir verified-archive
+        cmp previous-pages/artifact.tar verified-archive/artifact.tar
     - uses: actions/upload-artifact@v4
       with:
         name: world-p0-owner-publication-proof
-        path: 'site/integrated-owner-stage-proof.json
-
+        path: |-
+          site/integrated-owner-stage-proof.json
           pinned-candidate.json
-
           previous-pages-sha256.txt
-
           previous-pages/artifact.tar.recovery.json
-
-          owner-diagnostic-selection.json'
+          owner-diagnostic-selection.json
         retention-days: 60
     - uses: actions/configure-pages@v5
     - uses: actions/upload-pages-artifact@v3
@@ -152,32 +162,62 @@ jobs:
         path: site
         retention-days: 7
     - name: Recheck live source ownership and exact staging governance before deployment
-      run: "python3 - <<'END'\nimport base64,json,os,urllib.request\nbase='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'\n\
-        def get(path):\n req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})\n\
-        \ return json.load(urllib.request.urlopen(req,timeout=30))\nitem=get('contents/pipeline/active-workstreams.json?ref=main')\n\
-        if item.get('encoding')!='base64' or not item.get('content'):\n item=get('git/blobs/'+item['sha'])\nregistry=json.loads(base64.b64decode(item['content']))\n\
-        stream=next(x for x in registry['active'] if x['id']=='eldoria-private-beta-i-v-20261107')\nassert stream['owner']=='chatgpt-world-p0-continuation-9df36d17'\n\
-        assert stream['ownership_revision']==80 and stream['ownership_state']=='claimed'\nassert stream['branch']=='fix/eldoria-world-first-entry-p0-20261114'\n\
-        checks=get('commits/'+os.environ['STAGE_SHA']+'/check-runs?per_page=100')['check_runs']\nfor name in ['metadata','ownership','rights','audit']:\n\
-        \ selected=[x for x in checks if x['name']==name]\n assert selected and any(x['status']=='completed' and x['conclusion']=='success'\
-        \ for x in selected),(name,'not certified')\npublication_checks=get('commits/'+os.environ['GITHUB_SHA']+'/check-runs?per_page=100')['check_runs']\n\
-        for name in ['architecture','quarantine','governance']:\n selected=[x for x in publication_checks if x['name']==name]\n\
-        \ assert selected and all(x['status']=='completed' and x['conclusion']=='success' for x in selected),(name,'publication\
-        \ commit not certified')\nprint('LIVE_SOURCE_OWNERSHIP_AND_EXACT_GOVERNANCE_PASS')\nEND\n"
+      run: |
+        python3 - <<'END'
+        import base64,json,os,urllib.request
+        base='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+        def get(path):
+         req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+         return json.load(urllib.request.urlopen(req,timeout=30))
+        item=get('contents/pipeline/active-workstreams.json?ref=main')
+        if item.get('encoding')!='base64' or not item.get('content'):
+         item=get('git/blobs/'+item['sha'])
+        registry=json.loads(base64.b64decode(item['content']))
+        stream=next(x for x in registry['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
+        assert stream['owner']=='chatgpt-world-p0-continuation-9df36d17'
+        assert stream['ownership_revision']==80 and stream['ownership_state']=='claimed'
+        assert stream['branch']=='fix/eldoria-world-first-entry-p0-20261114'
+        checks=get('commits/'+os.environ['STAGE_SHA']+'/check-runs?per_page=100')['check_runs']
+        for name in ['metadata','ownership','rights','audit']:
+         selected=[x for x in checks if x['name']==name]
+         assert selected and any(x['status']=='completed' and x['conclusion']=='success' for x in selected),(name,'not certified')
+        publication_checks=get('commits/'+os.environ['GITHUB_SHA']+'/check-runs?per_page=100')['check_runs']
+        for name in ['architecture','quarantine','governance']:
+         selected=[x for x in publication_checks if x['name']==name]
+         assert selected and all(x['status']=='completed' and x['conclusion']=='success' for x in selected),(name,'publication commit not certified')
+        print('LIVE_SOURCE_OWNERSHIP_AND_EXACT_GOVERNANCE_PASS')
+        END
     - name: Deploy only the verified owner candidate
       uses: actions/deploy-pages@v4
       id: deploy
     - name: Verify actual public candidate and every protected file
-      run: "python3 - <<'END'\nimport json,pathlib,urllib.request,hashlib,concurrent.futures,time,os\nproof=json.loads(pathlib.Path('site/integrated-owner-stage-proof.json').read_text())\n\
-        base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'\nfor attempt in range(20):\n try:\n  with urllib.request.urlopen(base+'beta-integrated-vigilia/release-identity.json?p0_identity='+str(attempt),timeout=30)\
-        \ as r:j=json.load(r)\n  assert j['source_sha']==os.environ['EXPECTED_SOURCE']\n  assert j['owner_only'] and not j['release_for_external_testers']\n\
-        \  break\n except Exception:\n  if attempt==19:raise\n  time.sleep(6)\nrows=dict(proof['preserved_fingerprints'])\n\
-        publication_proof=pathlib.Path('site/integrated-owner-stage-proof.json')\nrows['integrated-owner-stage-proof.json']={'bytes':publication_proof.stat().st_size,'sha256':hashlib.sha256(publication_proof.read_bytes()).hexdigest()}\n\
-        rows.update({'beta-integrated-vigilia/'+k:v for k,v in proof['candidate_fingerprints'].items()})\ndef verify(item):\n\
-        \ name,row=item\n with urllib.request.urlopen(base+name+'?p0_verified='+row['sha256'],timeout=90) as r:\n  h=hashlib.sha256();size=0\n\
-        \  while chunk:=r.read(1024*1024):h.update(chunk);size+=len(chunk)\n assert h.hexdigest()==row['sha256'] and size==row['bytes'],name\n\
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:list(pool.map(verify,rows.items()))\nprint('ALL_PUBLIC_CANDIDATE_AND_PROTECTED_FILES_BYTE_VERIFIED',len(rows))\n\
-        END\n"
+      run: |
+        python3 - <<'END'
+        import json,pathlib,urllib.request,hashlib,concurrent.futures,time,os
+        proof=json.loads(pathlib.Path('site/integrated-owner-stage-proof.json').read_text())
+        base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+        for attempt in range(20):
+         try:
+          with urllib.request.urlopen(base+'beta-integrated-vigilia/release-identity.json?p0_identity='+str(attempt),timeout=30) as r:j=json.load(r)
+          assert j['source_sha']==os.environ['EXPECTED_SOURCE']
+          assert j['owner_only'] and not j['release_for_external_testers']
+          break
+         except Exception:
+          if attempt==19:raise
+          time.sleep(6)
+        rows=dict(proof['preserved_fingerprints'])
+        publication_proof=pathlib.Path('site/integrated-owner-stage-proof.json')
+        rows['integrated-owner-stage-proof.json']={'bytes':publication_proof.stat().st_size,'sha256':hashlib.sha256(publication_proof.read_bytes()).hexdigest()}
+        rows.update({'beta-integrated-vigilia/'+k:v for k,v in proof['candidate_fingerprints'].items()})
+        def verify(item):
+         name,row=item
+         with urllib.request.urlopen(base+name+'?p0_verified='+row['sha256'],timeout=90) as r:
+          h=hashlib.sha256();size=0
+          while chunk:=r.read(1024*1024):h.update(chunk);size+=len(chunk)
+         assert h.hexdigest()==row['sha256'] and size==row['bytes'],name
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:list(pool.map(verify,rows.items()))
+        print('ALL_PUBLIC_CANDIDATE_AND_PROTECTED_FILES_BYTE_VERIFIED',len(rows))
+        END
   verify-public-player:
     needs: publish-owner-preview
     runs-on: macos-15
@@ -191,22 +231,29 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: ${{ env.STAGE_SHA }}
-        sparse-checkout: 'tools/eldoria-private-beta
-
-          tools/art-direction/ai-authoring'
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
         persist-credentials: false
     - uses: actions/setup-node@v4
       with:
         node-version: '22'
     - name: Verify real public reload, saved construction and world zooms
-      run: "set -euo pipefail\nnpm install --prefix \"$RUNNER_TEMP/world-qa-node\" --no-save playwright@1.55.0\n\"$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright\"\
-        \ install webkit\nswiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o \"$QA_OCR_EXECUTABLE\"\nexport NODE_PATH=\"\
-        $RUNNER_TEMP/world-qa-node/node_modules\"\nfailed=0\nQA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1\
-        \ QA_RESIZE_STRESS=1 \\\n QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=https://mt5hjfz2kb-lab.github.io\
-        \ \\\n QA_REVISION=integrated-mobile21-owner-qa QA_OUT=public-world-evidence/candidate \\\n node tools/eldoria-private-beta/qa_webkit_residency.cjs\
-        \ || failed=1\nQA_OUT=public-world-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs\
-        \ || failed=1\nif [ \"$failed\" != 0 ]; then exit 1;fi\n\ngrep -F 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1'\
-        \ public-world-evidence/world-entry/console.log\n"
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        failed=0
+        QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=https://mt5hjfz2kb-lab.github.io \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=public-world-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        QA_OUT=public-world-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        if [ "$failed" != 0 ]; then exit 1;fi
+
+        grep -F 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' public-world-evidence/world-entry/console.log
       env:
         QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
     - uses: actions/upload-artifact@v4
@@ -215,3 +262,9 @@ jobs:
         name: world-p0-public-browser-proof
         path: public-world-evidence
         retention-days: 30
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - tools/eldoria-private-beta/world-p0-publish-request.txt
