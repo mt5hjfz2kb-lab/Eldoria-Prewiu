@@ -30,7 +30,9 @@ namespace Eldoria.Experiments.Nocturne
         public Button[] TargetButtons = new Button[8];
         public Button PrimaryButton, SecondaryButton;
         public Text PrimaryText, SecondaryText;
-        public GameObject ContextPanel, WorldChoicesPanel;
+        public GameObject ContextPanel, WorldChoicesPanel, DevelopmentPanel;
+        public Button[] DevelopmentButtons = new Button[3];
+        public Button DevelopmentClose;
         public Text CityNavText, WorldNavText;
         public Transform ContextPanelTransform;
         public bool NocturneDedicatedSave = true;
@@ -108,6 +110,16 @@ namespace Eldoria.Experiments.Nocturne
                 if (TargetButtons[index] != null)
                     TargetButtons[index].gameObject.GetComponentInChildren<Text>().text = WorldTargetLabels[index];
             }
+            if (DevelopmentPanel) DevelopmentPanel.SetActive(false);
+            for (int i=0;i<DevelopmentButtons.Length;i++)
+            {
+                var index=i;
+                if (DevelopmentButtons[i])
+                    DevelopmentButtons[i].onClick.AddListener(
+                        () => ChooseDevelopment(new[]{"production","defense","civil"}[index]));
+            }
+            if (DevelopmentClose)
+                DevelopmentClose.onClick.AddListener(()=>{DevelopmentPanel.SetActive(false);});
             SetView(false);
             Redraw(true);
         }
@@ -262,6 +274,22 @@ namespace Eldoria.Experiments.Nocturne
             ExecuteCommand("Fight", id);
         }
 
+        public void OpenDevelopmentMenu()
+        {
+            var s=gateway.Snapshot();
+            if (s.BastionLevel < 4 || !string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority))
+            {
+                info="El Consejo solo decide el desarrollo durante el Bastión IV.";
+                Redraw(false);
+                return;
+            }
+            if (DevelopmentPanel) DevelopmentPanel.SetActive(true);
+        }
+        private void ChooseDevelopment(string priority)
+        {
+            ExecuteCommand("ChooseDevelopment",priority);
+            if (DevelopmentPanel) DevelopmentPanel.SetActive(false);
+        }
         public void PrepareMarch() { ExecuteCommand("ConfigureMarch", "march-main"); }
         public void RecruitArchers() { ExecuteCommand("Recruit", "archer:t1"); }
 
@@ -303,8 +331,16 @@ namespace Eldoria.Experiments.Nocturne
                     description = "MEJORA EN CURSO · " + TimeRemaining(state.BastionUpgradeCompletesUtcTicks);
                     primary = "";
                 }
-                secondary = "PREPARAR MARCHA";
-                secondaryAction = PrepareMarch;
+                if (state.BastionLevel >= 4 && string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority))
+                {
+                    secondary = "CONSEJO DE VALORIA";
+                    secondaryAction = OpenDevelopmentMenu;
+                }
+                else
+                {
+                    secondary = "PREPARAR MARCHA";
+                    secondaryAction = PrepareMarch;
+                }
             }
             else
             {
