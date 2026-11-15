@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T01:09:24.181Z",
+  "updated_at": "2026-11-15T01:36:12.390Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BROWSER_GAMEPLAY_PASS_MEMORY_BENEFIT_UNPROVEN_MSAA_AB_RUNNING",
+      "phase": "OWNER_DIAGNOSTIC21_PUBLISHED_PUBLIC_BROWSER_RUNNING",
       "note": "Reject5881df delivery: its main baseline would roll back delivered90465 navigation fixes. Reconciled source d0b21fd preserves all BreachWatch bytes and published WorldEntryPending while applying only world P0 changes. No main UI edits or other-workstream takeover. PR194 now targets existing frozen published beta branch.",
-      "next": "Do not publish default candidate as a proven iPhone fix. Actual gameplay passed, but resident memory higher in sampled comparison. Same-binary world MSAA opt-in comparison43661585648 running on hosted macOS. Inspect benefit and visuals, then exact owner publication/public test if justified. No Windows claim.",
+      "next": "Complete public player job132658576862 in publication43663397708; inspect screenshots and report. Owner-only MSAA-off URL already provided. Physical iPhone crash resolution remains unconfirmed; no memory-saving claim or tester release. Windows is free.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9071,7 +9071,21 @@
         },
         "msaa_ab_run": 43661585648,
         "msaa_ab_source": "557fc6b2c50e34b4570855868f6e1ea61b5e81c1",
-        "public_snapshot_verified_files": 145
+        "public_snapshot_verified_files": 145,
+        "msaa_ab_result": "success; same-binary gameplay passed; frame gaps lower in observed trial, resident-memory savings NOT demonstrated",
+        "msaa_artifact": 14141205035,
+        "msaa_artifact_sha256": "bb56c5fe4b66af0ee5c12ae0312713856ff689d929ee3aff40429dda20098bdc",
+        "publication_run": 43663397708,
+        "publication_main_sha": "99e994cbd92eb912eec5fcf4645547b718875cf9",
+        "public_source_verified": true,
+        "all_public_files_verified": 145,
+        "public_browser_job": 132658576862,
+        "public_browser_result": "in_progress",
+        "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_p0_world_msaa_off=1&eldoria_diag=1&build=world21",
+        "published_as": "OWNER_DIAGNOSTIC_NOT_CONFIRMED_IPHONE_FIX",
+        "rollback_archive_sha256": "a30724a10bb3aa04d1142a11d0f65dd1ae2c001828eebc574b7c453fd745d14c",
+        "publication_proof_artifact": 14141038195,
+        "external_testers_enabled": false
       }
     },
     {
