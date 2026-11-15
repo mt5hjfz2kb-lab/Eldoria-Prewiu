@@ -120,7 +120,7 @@ jobs:
         import os,pathlib
         lines=pathlib.Path('tools/eldoria-private-beta/world-p0-browser-request.txt').read_text().splitlines()
         modes=[x.split('=',1)[1] for x in lines if x.startswith('mode=')]
-        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency','gpu-ledger','static-mesh-trial','native-static-mesh']
+        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency','gpu-ledger','static-mesh-trial','native-static-mesh','public-native']
         native_runs=[x.split('=',1)[1] for x in lines if x.startswith('native_run=')]
         if modes[0]=='native-static-mesh':
           assert len(native_runs)==1 and native_runs[0].isdigit()
@@ -499,6 +499,93 @@ jobs:
         name: world-p0-native-static-mesh-owner-site
         path: qa-site/candidate
         retention-days: 30
+  public-native:
+    needs: route
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      STAGE_SHA: 668b3a33ce3bf7d9965a82c48f7f53c79c107f8b
+      QA_EXPECT_SOURCE: 05e1846f0213c6320850505bc054110c53934f55
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1&eldoria_p0_static_mesh_cpu=1
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ env.STAGE_SHA }}
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43747367995
+        name: world-p0-owner-publication-proof
+        github-token: ${{ github.token }}
+        path: deployed-proof
+    - name: Verify exact deployed bytes with bounded cache-propagation retries
+      run: |
+        python3 - <<'END'
+        import json,pathlib,urllib.request,hashlib,concurrent.futures,time
+        p=pathlib.Path('deployed-proof/site/integrated-owner-stage-proof.json')
+        expected='62e296b8ae5b1f0c63596f10f3f27e936ed676bc6e5bae2567fd618d39433e4a'
+        assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
+        proof=json.loads(p.read_text());assert proof['source_sha']=='05e1846f0213c6320850505bc054110c53934f55'
+        rows=dict(proof['preserved_fingerprints'])
+        rows.update({'beta-integrated-vigilia/'+k:v for k,v in proof['candidate_fingerprints'].items()})
+        rows['integrated-owner-stage-proof.json']={'bytes':p.stat().st_size,'sha256':expected}
+        base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+        def verify(item):
+         name,row=item
+         for attempt in range(10):
+          try:
+           with urllib.request.urlopen(base+name+'?p0_verified='+row['sha256']+'&attempt='+str(attempt),timeout=90) as r:
+            h=hashlib.sha256();size=0
+            while chunk:=r.read(1024*1024):h.update(chunk);size+=len(chunk)
+           assert h.hexdigest()==row['sha256'] and size==row['bytes'],name
+           return name
+          except Exception:
+           if attempt==9:raise
+           time.sleep(3)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:verified=list(pool.map(verify,rows.items()))
+        out=pathlib.Path('public-world-evidence');out.mkdir(exist_ok=True)
+        (out/'public-byte-verification.json').write_text(json.dumps({'source':proof['source_sha'],'certificate_sha256':expected,'verified_file_count':len(verified),'all_files_matched':True,'physical_iphone_verified':False},indent=2))
+        print('ALL_PUBLIC_CANDIDATE_AND_PROTECTED_FILES_BYTE_VERIFIED',len(verified))
+        END
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Verify real public reload, saved construction and world zooms
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        failed=0
+        QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=https://mt5hjfz2kb-lab.github.io \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=public-world-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        QA_OUT=public-world-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        if [ "$failed" != 0 ]; then exit 1;fi
+
+        grep -F 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' public-world-evidence/world-entry/console.log
+
+        grep -F 'ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED retired=' public-world-evidence/world-entry/console.log
+        grep -F 'ELDORIA_P0_STATIC_MESH_CPU_RETIRED count=4' public-world-evidence/world-entry/console.log
+
+        curl -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o public-after.json
+        echo "62e296b8ae5b1f0c63596f10f3f27e936ed676bc6e5bae2567fd618d39433e4a  public-after.json" | shasum -a 256 -c -
+      env:
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-public-browser-proof
+        path: public-world-evidence
+        retention-days: 30
+    if: needs.route.outputs.mode == 'public-native'
 'on':
   push:
     branches:
