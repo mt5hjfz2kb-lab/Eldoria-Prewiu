@@ -22,7 +22,7 @@ int errors=0;
 foreach(var path in sources)
 {
     var text = File.ReadAllText(path);
-    if(Regex.IsMatch(text, @"(?<!UnityEngine\\.)\\bApplication\\.(dataPath|persistentDataPath)"))
+    if(Regex.IsMatch(text, @"(?<!UnityEngine\.)\bApplication\.(dataPath|persistentDataPath)"))
         throw new Exception("ASHEN_UNQUALIFIED_UNITY_APPLICATION: " + path);
 }
 foreach(var path in sources)
