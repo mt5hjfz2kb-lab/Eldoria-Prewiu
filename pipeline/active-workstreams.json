@@ -9745,7 +9745,7 @@
       "ownership_revision": 4,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "ART_REVIEW_WINDING_AND_COMPOSITION_REPAIR",
+      "phase": "NATIVE_ART_SECOND_PASS_URP_FRAMING",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9782,10 +9782,20 @@
       "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "ready_for_next_alternating_turn",
+        "status": "running_current_visual_verification",
         "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "source_sha": "2a7e9556b6ac2d16ff3785efe192bb60662fe917",
-        "reason": "Art winding and composition repair is ready for native proof. Preserve current Reboot ownership; return turn after its existing native work is released."
+        "source_sha": "0bba20dae7bb82b2bb39905ba70f10dc8f88b214",
+        "reason": "Art winding and composition repair is ready for native proof. Preserve current Reboot ownership; return turn after its existing native work is released.",
+        "run_id": 43772683066
+      },
+      "last_native": {
+        "run": 43772073861,
+        "head": "e5d4ea5948a88f1b92ece4465cdab1c79d7392f1",
+        "artifact": 14184646602,
+        "result": "success",
+        "editmode_passed": 7,
+        "playmode_passed": 4,
+        "visual_review": "Improved opaque roofs/trees and full architecture. REWORK: portrait clipping, visible terrain edges, missing shadow read; no artistic approval."
       }
     },
     {
