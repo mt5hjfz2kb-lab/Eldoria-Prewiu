@@ -1,6 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$SourceSha)
 $ErrorActionPreference='Stop'
-trap { Write-Host $_.ScriptStackTrace; throw }
+trap { Write-Host $_.Exception.Message; Write-Host $_.ScriptStackTrace; throw }
 if($SourceSha -ne '05e1846f0213c6320850505bc054110c53934f55'){throw 'Unexpected frozen source'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
 if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
@@ -18,14 +18,22 @@ if(Test-Path $root){
   if((& git -C $root rev-parse --verify HEAD).Trim() -ne $SourceSha){throw 'Preserve different existing source'}
 }else{
   if((Get-PSDrive C).Free/1GB -lt 36){throw 'Insufficient disk; preserve sources'}
-  if(-not(Test-Path $seed) -or ((Get-Item $seed).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Owned immutable seed missing'}
-  if((& git -C $seed remote get-url origin).Trim() -ne ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')){throw 'Owned seed origin mismatch'}
-  & git -C $seed cat-file -e '5881df4e76da72c2897633c619449c60694b3552^{commit}'
-  if($LASTEXITCODE){throw 'Owned seed provenance missing'}
-  & git -C $seed fetch --no-tags --depth=1 --filter=blob:none origin $SourceSha
-  if($LASTEXITCODE){throw 'Exact source fetch failed'}
-  & git -C $seed worktree add --no-checkout --detach $root $SourceSha
-  if($LASTEXITCODE){throw 'New owned worktree failed; preserve prior sources'}
+  if(Test-Path $seed){
+    if((Get-Item $seed).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Owned seed reparse point'}
+    if((& git -C $seed remote get-url origin).Trim() -ne ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')){throw 'Owned seed origin mismatch'}
+    & git -C $seed fetch --no-tags --depth=1 --filter=blob:none origin $SourceSha
+    if($LASTEXITCODE){throw 'Exact source fetch failed'}
+    & git -C $seed worktree add --no-checkout --detach $root $SourceSha
+    if($LASTEXITCODE){throw 'New owned worktree failed; preserve prior sources'}
+  }else{
+    Write-Host 'Owned seed absent; reconstruct exact frozen source in a new isolated checkout'
+    & git init $root
+    if($LASTEXITCODE){throw 'Isolated repository initialization failed'}
+    & git -C $root remote add origin ('https://github.com/'+$env:GITHUB_REPOSITORY+'.git')
+    if($LASTEXITCODE){throw 'Isolated origin initialization failed'}
+    & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $SourceSha
+    if($LASTEXITCODE){throw 'Isolated exact source fetch failed'}
+  }
   & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
   if($LASTEXITCODE){throw 'Sparse configuration failed'}
   & git -C $root checkout --detach $SourceSha
