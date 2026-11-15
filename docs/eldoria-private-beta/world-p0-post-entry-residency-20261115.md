@@ -155,3 +155,34 @@ Windows completed own generated-cache cleanup and reported403.99GiB free, then
 resource was released in main. Browser comparison43744175007 at668b3a33ce3bf7d9965a82c48f7f53c79c107f8b
 is pending.11local publication/restoration unit checks passed. Public21e1 unchanged.
 
+## Compiled same-engine browser comparison passed
+
+Exact-source run43744175007 completed all three journeys: CPU-retirement ON,
+OFF, and original early-entry/resize/reload residency observations.0errors.
+Artifact14174252792 SHA25602bd4f66e01432be831df4c659fb7557a825412ef5f689bb1635813b057aacc8
+was independently downloaded, hashed, verified and visually reviewed.
+Used WASM peaks: ON471787904bytes vs OFF559859592bytes, reduction88071688bytes
+(about84MiB). Capacity did NOT decrease:622592000 vs622526464bytes.
+Peak sampled combined WebContent+GPU RSS was higher in this pair:
+ON2786640KiB vs OFF2687312KiB. Therefore no total-process/iOS-memory reduction
+or physical-crash solution is claimed. First entry16.178s vs15.442s; no speed claim.
+Both actual saved-game world journeys, real zooms, city returns and original
+residency/reload observations passed. Reviewed world/zoom/city pairs and early
+nickname/reload screenshots; geometry preserved, saved name visibly retained.
+The bounded journal exported all five actual numeric memory samples.
+
+## Owner21e2 publication and verification status
+
+Publication43747367995 deployed source05e184 successfully at18:34:29UTC.
+Post-deploy immediate all-file check failed on decoded part15; a subsequent
+independent download matched its exact expected SHA256 and15204292bytes.
+Certificate62e296b8ae5b1f0c63596f10f3f27e936ed676bc6e5bae2567fd618d39433e4a
+was verified against artifact14175225220, ZIP
+365a7e2630523244fc84144ed5ddd8b149ff3f9f4689f627e48480708ba8ff5d.
+Full rollback archive of21e1 is retained in draft release
+archive-pages-before-world-static-mesh-21e2.
+No claim of complete public verification until independent read-only job passes.
+A redundant queued publication43747483098 correctly refused replacing the now-new
+public certificate; it did not overwrite21e2. Read-only public verification has
+bounded retries for propagation but still requires every exact byte hash plus
+the complete public saved-game browser journey. Physical iPhone remains pending.
