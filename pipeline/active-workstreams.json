@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T00:43:48.585Z",
+  "updated_at": "2026-11-15T01:09:24.181Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "RECONCILED_BUILD_PASS_HOSTED_BROWSER_QA",
+      "phase": "BROWSER_GAMEPLAY_PASS_MEMORY_BENEFIT_UNPROVEN_MSAA_AB_RUNNING",
       "note": "Reject5881df delivery: its main baseline would roll back delivered90465 navigation fixes. Reconciled source d0b21fd preserves all BreachWatch bytes and published WorldEntryPending while applying only world P0 changes. No main UI edits or other-workstream takeover. PR194 now targets existing frozen published beta branch.",
-      "next": "Run real WebKit comparison on mobile21/d0b candidate; inspect native and browser evidence before owner-only publication. Physical iPhone unresolved.",
+      "next": "Do not publish default candidate as a proven iPhone fix. Actual gameplay passed, but resident memory higher in sampled comparison. Same-binary world MSAA opt-in comparison43661585648 running on hosted macOS. Inspect benefit and visuals, then exact owner publication/public test if justified. No Windows claim.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9058,7 +9058,20 @@
         "control_browser_run": 43656016744,
         "control_browser_result": "success",
         "native_artifact": 14138742713,
-        "package_artifact": 14138159798
+        "package_artifact": 14138159798,
+        "browser_run": 43659627661,
+        "browser_source": "f03ac3c3083ab3e24d46b19ba58cb26c48a9c155",
+        "browser_result": "success",
+        "browser_artifact": 14140730101,
+        "browser_artifact_sha256": "6dd689234e9019fa15a0bce177f0b3d9af6191d7b8cdc3c01d5534e3324c3dbb",
+        "memory_benefit_proven": false,
+        "first_entry_wait_ms": {
+          "published_control": 12085,
+          "candidate": 12845
+        },
+        "msaa_ab_run": 43661585648,
+        "msaa_ab_source": "557fc6b2c50e34b4570855868f6e1ea61b5e81c1",
+        "public_snapshot_verified_files": 145
       }
     },
     {
