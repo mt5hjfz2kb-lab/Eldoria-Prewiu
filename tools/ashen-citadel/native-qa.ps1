@@ -179,9 +179,13 @@ foreach($size in @('390x844','1600x900')){
         $hashes+=@{file=$filename;sha256=$hash;size_bytes=$bytes.Length}
     }
 }
-if(($hashes|Where-Object {$_.file -like '*390x844.png'} |
-    Select-Object -ExpandProperty sha256 -Unique).Count -ne 5){
-    throw 'ASHEN_STAGE_VARIANTS_NOT_DISTINCT: same renderer output in portrait'
+# PowerShell 5.1 Select-Object -ExpandProperty does NOT expose Hashtable keys.
+# Use explicit key indexing; the previous expression blocked delivery AFTER all
+# ten actual Unity screenshots were created and the Editor exited successfully.
+$portraitHashes=@($hashes | Where-Object {$_['file'] -like '*390x844.png'} |
+    ForEach-Object {$_['sha256']} | Sort-Object -Unique)
+if($portraitHashes.Count -ne 5){
+    throw "ASHEN_STAGE_VARIANTS_NOT_DISTINCT: expected 5, found $($portraitHashes.Count)"
 }
 $art=Join-Path $project 'Assets/Eldoria/ExperimentalAshenCitadel'
 Copy-Item -LiteralPath $scene -Destination (Join-Path $OutputRoot 'AshenCitadel.unity') -Force
