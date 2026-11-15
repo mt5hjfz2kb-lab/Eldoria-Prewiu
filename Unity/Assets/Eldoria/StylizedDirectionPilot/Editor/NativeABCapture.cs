@@ -40,7 +40,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             {
                 // Use precisely the existing native proof save sandbox.
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
-                if (!File.Exists(Scene)) throw new FileNotFoundException("Canonical integrated playable city scene",Scene);
+                if (!AssetDatabase.LoadAssetAtPath<SceneAsset>(Scene)) throw new FileNotFoundException("Canonical integrated playable city scene",Scene);
                 EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
                 SessionState.SetBool(Flag,true);
                 EditorApplication.EnterPlaymode();
