@@ -118,7 +118,7 @@ def cube(name,at,size,mat,bevel=.0,rot=None):
     assign(o,mat)
     if bevel>0:
         mo=o.modifiers.new("Soft hand-cut edges","BEVEL");mo.width=bevel;mo.segments=1
-        mo.affect='EDGES' if hasattr(mo,'affect') else None
+        if hasattr(mo,'affect'): mo.affect='EDGES'
         no=o.modifiers.new("Weighted corner normals","WEIGHTED_NORMAL")
     return o
 def cyl(name,at,r,depth,mat,n=10):
@@ -298,12 +298,24 @@ def export(c,name):
         export_apply=True,export_yup=True,export_texcoords=True,export_normals=True)
     if path.stat().st_size<1000: raise RuntimeError("GLB too small "+str(path))
     print("EXPORTED",name,path.stat().st_size)
-def instance_collection(c,name,at,rot=0):
-    ob=bpy.data.objects.new(name,None)
-    scene.collection.objects.link(ob)
-    ob.instance_type='COLLECTION';ob.instance_collection=c
-    ob.location=at; ob.rotation_euler[2]=rot
-    return ob
+def instance_collection(c,name,at,rot=0,scale=1.0):
+    # Mesh copies stay in the preview context. Source collection remains invisible
+    # in rendering so it cannot overlap the bastion at the world origin.
+    from mathutils import Matrix
+    for o in c.objects:
+        if o.type!='MESH': continue
+        ob=o.copy()
+        ob.data=o.data
+        ob.name=name+"/"+o.name
+        COL.objects.link(ob)
+        v=Vector((o.location.x*scale,o.location.y*scale,o.location.z*scale))
+        a=math.cos(rot)*v.x-math.sin(rot)*v.y
+        b=math.sin(rot)*v.x+math.cos(rot)*v.y
+        ob.location=(at[0]+a,at[1]+b,at[2]+v.z)
+        ob.rotation_euler[2]+=rot
+        ob.scale=(ob.scale.x*scale,ob.scale.y*scale,ob.scale.z*scale)
+    return None
+
 # First produce every distinct independent physical asset; no barred legacy assets.
 base=[]
 for family in ["Sawmill","Barracks","Granary","Stoneworks"]:
@@ -328,12 +340,11 @@ for fam,c,pos in [
     ("Barracks",base[1][1],(8.5,-3.5,0)),
     ("Granary",base[2][1],(-8.8,5.2,0)),
     ("Stoneworks",base[3][1],(8.9,5.7,0))]:
-    inst=instance_collection(c,fam+" preview",pos,rot=.12 if pos[0]>0 else -.14)
-    inst.hide_render=False
+    instance_collection(c,fam+" preview",pos,rot=.12 if pos[0]>0 else -.14)
 for x,y,s in [(-12,2,1),(-11,8,.9),(12,2,.95),(12,8,1),(-4,9,.9),(5,10,.95),(-12,-10,.87),(12,-10,1)]:
-    inst=instance_collection(p,"Pine scenic", (x,y,0));inst.scale=(s,s,s);inst.hide_render=False
+    instance_collection(p,"Pine scenic", (x,y,0),scale=s)
 for x,y,s in [(-10,-8,1.2),(10,-9,.9),(3,9,1),(-7,8,.7)]:
-    inst=instance_collection(r,"Rock scenic",(x,y,0));inst.scale=(s,s,s);inst.hide_render=False
+    instance_collection(r,"Rock scenic",(x,y,0),scale=s)
 # Three real lights; diffuse materials remain readable at low exposure.
 world=bpy.data.worlds.new("Smoky twilight")
 scene.world=world
