@@ -1,4 +1,2 @@
-mode=entry-budget
-source=ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
-build_run=43707493997
-attempt=1-native-pass-measure-preterrain-targets
+mode=public-residency
+Repeat incomplete public residency observation after measured outer watchdog budget correction. Native and public bytes unchanged; prior public world journey passed in 43714355086.

@@ -46,7 +46,9 @@ function processes(){
 }
 (async()=>{
   let browser, page;
-  const watchdog=setTimeout(()=>{report.errors.push('GLOBAL_DEADLINE');write();process.exit(1);},420000);
+  // The 330s initial window, 120s reload limit and 30s/45s observations can exceed 420s.
+  // Keep every per-phase bound; the outer watchdog also covers setup and screenshots.
+  const watchdog=setTimeout(()=>{report.errors.push('GLOBAL_DEADLINE');write();process.exit(1);},750000);
   try {
     if(!['webkit','chromium'].includes(engine))throw Error('Unknown engine');
     browser=await ({webkit,chromium}[engine]).launch({headless:true});

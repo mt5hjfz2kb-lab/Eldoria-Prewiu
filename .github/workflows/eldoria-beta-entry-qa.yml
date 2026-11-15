@@ -119,7 +119,7 @@ jobs:
         import os,pathlib
         lines=pathlib.Path('tools/eldoria-private-beta/world-p0-browser-request.txt').read_text().splitlines()
         modes=[x.split('=',1)[1] for x in lines if x.startswith('mode=')]
-        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget']
+        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency']
         with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('mode='+modes[0]+'\n')
         END
   published-control:
@@ -267,6 +267,52 @@ jobs:
       with:
         name: world-p0-entry-render-budget-comparison
         path: entry-budget-evidence
+        retention-days: 30
+  public-residency:
+    needs: route
+    if: needs.route.outputs.mode == 'public-residency'
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1
+      QA_ENGINE: webkit
+      QA_ENTRY: '1'
+      QA_EARLY_ENTRY: '1'
+      QA_EARLY_NO_SCREENSHOT: '1'
+      QA_RESIZE_STRESS: '1'
+      QA_SKIP_PREFLIGHT: '1'
+      QA_LAZY_WORLD: '1'
+      QA_EXPECT_VIGILIA: '1'
+      QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
+      QA_REVISION: integrated-mobile21-owner-qa
+      QA_OUT: public-residency-evidence
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Verify unchanged public bytes and complete original residency observations
+      run: |
+        set -euo pipefail
+        verify_public() {
+          curl --retry 3 --max-time 60 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o public-proof.json
+          echo '93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5  public-proof.json' | shasum -a 256 -c -
+        }
+        verify_public
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        node tools/eldoria-private-beta/qa_webkit_residency.cjs
+        verify_public
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-public-residency-proof
+        path: public-residency-evidence
         retention-days: 30
 'on':
   push:

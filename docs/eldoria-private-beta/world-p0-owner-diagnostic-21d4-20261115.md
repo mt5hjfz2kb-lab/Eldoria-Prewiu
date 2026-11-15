@@ -157,3 +157,31 @@ root cause is established. Physical iPhone acceptance remains pending.
 Publication request e519fb87327f8c8f3c4c0da8759b612be6708eeb / run43714355086
 uses exact native/browser gates, all-file rollback and preservation. Publication outcome
 must be appended before describing the candidate as delivered.
+
+## Actual owner publication 21e1
+
+Main delivery commit e519fb87327f8c8f3c4c0da8759b612be6708eeb; run43714355086,
+publish job132812543433 SUCCESS. All146 public candidate/protected files SHA256-verified
+after deployment; original route and save storage retained. Runtime ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029.
+Publication artifact14162375199 ZIP SHA2566d45c196e9e4c75ff5b63de75919b3a3506231803b63bfd260ef9626c546d762
+independently downloaded and verified. Public inventory certificate SHA256
+93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5.
+The inventory file retains its predeployment STAGED label; actual publication is established
+by the completed deployment and all-file public hash verification, not that label.
+Prior complete21d4 site archived under draft tag archive-pages-before-world-entry-21e1,
+artifact.tar SHA2562710ce1339a241048322fb3a59dc9fd150ee1072ea7c267f5b211d4020a75d00.
+New hashed shell play-99309be73ac1e4c3.js, visible Diagnóstico · 21e1.
+Owner URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1&build=world21e1
+The old URL does not opt in to preterrain retirement. No cache/save clearing required.
+
+Public follow-up job132813859394: world gameplay PASSED (two entries/returns, actual
+saved construction/nickname reload, journal, no runtime errors); residency harness FAILED
+GLOBAL_DEADLINE at420s. Artifact14162123518 ZIP SHA256
+38804feef0ee04e034fd1bf095569ff083e6b0d34e2d958b8207b73a263c4290 verified.
+First startup179843ms, reload81443ms; last sample ready=true at112572ms after reload.
+The outer420s watchdog expired during the required45s post-reload observation, after
+successful loading. Its bound was shorter than allowed phase totals. This is a harness
+budget defect, not evidence the runtime crashed; slow public startup remains observed.
+Outer watchdog corrected to750s; initial330s and reload120s bounds and full90/30/45s
+survival windows remain unchanged. Repeat only residency on unchanged public certificate;
+retain the successful world journey, do not rebuild or republish native code.
