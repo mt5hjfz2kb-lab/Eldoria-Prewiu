@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T08:30:10.299Z",
+  "updated_at": "2026-11-15T13:01:40.059Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7641,10 +7641,10 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-world-p0-continuation-9df36d17",
-      "ownership_state": "claimed",
-      "ownership_revision": 82,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 83,
+      "write_scope_released": true,
       "status": "active",
       "branch": "fix/eldoria-world-first-entry-p0-20261114",
       "scope": [
@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PREBUILD_RENDER_BUDGET_NATIVE_PASS_BROWSER_MEASUREMENT_PENDING",
-      "note": "New owner JSON stops at landscape-imported (before terrain-query/built/entered), unlike earlier screenshot which reached entered/two callbacks. Therefore post-activation creature/resource streaming cannot explain every observed interruption. New document boots10044ms after startup-ready; first earlier screenshot also showed about10s. No automatic10s navigation found in delivered page/Unity loader; Editor-only StructuralStartupProbe cannot execute in WebGL. Timing is a hypothesis, not proof of a timer or memory kill. Next test delays world entry30s without changing browser or build.",
-      "next": "Finish package-owner, then execute prepared entry-budget Mac WebKit same-build comparison from PR194; require actual old MSAA targets retired before terrain, measured target bytes decrease, startup/reload and genuine earned world entries. Review native/browser captures. Do not repeat Unity for shell-only changes; no new physical claim before owner acceptance.",
+      "phase": "OWNER21E1_CANDIDATE_DELIVERED_VERIFIED_DEVICE_CAUSE_UNCONFIRMED",
+      "note": "Delivered and independently verified21e1 runtimeca5 on existing owner route. Native, target retirement, public saved world journey and corrected residency gates passed. This completes candidate delivery, NOT physical iPhone crash resolution or tester release. Resources and writing claim released; no background monitoring.",
+      "next": "Use new21e1 URL with eldoria_p0_entry_msaa_off=1 for owner world->city check. If exit recurs, reclaim this canonical ID/PR194 and continue from saved journal and exactca5 publication; root cause unknown. Do not repeat rejected post-startup timer/delayed control or claim total RSS savings. No native rebuild for shell-only changes.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -8240,6 +8240,14 @@
           "revision": 80,
           "transferred_at": "2026-11-14T20:41:51.970Z",
           "reason": "Owner explicitly continues filled previous chat. Preserve PR194 and prepared streaming candidate; fix proven Unity test namespace compilation failure before actual world-entry validation."
+        },
+        {
+          "from": "chatgpt-world-p0-continuation-9df36d17",
+          "to": null,
+          "previous_revision": 82,
+          "revision": 83,
+          "transferred_at": "2026-11-15T13:01:40.059Z",
+          "reason": "Verified owner21e1 candidate delivered; all executable gates complete, resources and writing scope released. Physical failure is not declared resolved; exact evidence retained for any continuation."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -8593,8 +8601,8 @@
         "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-iphone-clock-direct/?build=collision-r1&eldoria_diag=1",
         "external_testers_enabled": false
       },
-      "previous_owner": "chatgpt-eldoria-world-entry-p0-20261114",
-      "released_at": "2026-11-10T23:04:36.314Z",
+      "previous_owner": "chatgpt-world-p0-continuation-9df36d17",
+      "released_at": "2026-11-15T13:01:40.059Z",
       "owner_only_lazy16": {
         "published": true,
         "pages_run": 43152671564,
@@ -9147,9 +9155,29 @@
         "native_zip_sha256": "22a534af1634c67e69291fb81b268b8b9d895a230701a9db0d115de1784e637b",
         "native_test": "1 passed, cancellation/rejoin,12 reentries, actual saved reload",
         "native_msaa_targets_retired": 0,
-        "browser_target_retirement": "PENDING",
-        "physical_iphone": "NOT_TESTED",
-        "public_runtime": "d0b21fd5708c5070d1bd62dc6c6a98399c549051"
+        "browser_target_retirement": "PASS: 2 old city targets retired after 11 frames before terrain; 72402259 -> 27965659 Unity target bytes. Total RSS reduction NOT established.",
+        "physical_iphone": "NOT_TESTED_ON_21E1; prior21d4 device failure remains confirmed; cause UNKNOWN",
+        "public_runtime": "ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029",
+        "browser_run": 43712314700,
+        "browser_artifact": 14161930181,
+        "browser_zip_sha256": "177b8493f4af5faf6a78b33c557e52d9d6fe7e22caca8c09837eca201d98bbc1",
+        "publication_run": 43714355086,
+        "publication_job": 132812543433,
+        "public_files_verified": 146,
+        "publication_inventory_sha256": "93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5",
+        "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1&build=world21e1",
+        "public_world_journey": "PASS: 2 entries/returns, zooms, nickname and construction reload, persistent journal, zero runtime errors",
+        "public_world_artifact": 14162123518,
+        "public_world_zip_sha256": "38804feef0ee04e034fd1bf095569ff083e6b0d34e2d958b8207b73a263c4290",
+        "public_residency_initial": "FAIL GLOBAL_DEADLINE: outer420s expired during required post-reload observation after179843ms startup and81443ms reload; runtime ready at final sample.",
+        "public_residency_recheck": 43716300729,
+        "external_testers_enabled": false,
+        "public_residency_result": "PASS: corrected outer watchdog only, full original observations; same public certificate before/after",
+        "public_residency_artifact": 14162373927,
+        "public_residency_zip_sha256": "f0ce17869f129d53fddd8f61df20021a10c4d508fba8e94f46becf34df90dbfa",
+        "evidence_commit": "6d3cda40b92fe9ba4c2adaf4a8d6f43908aea956",
+        "desktop_delivery_complete": true,
+        "physical_crash_resolved": false
       }
     },
     {
