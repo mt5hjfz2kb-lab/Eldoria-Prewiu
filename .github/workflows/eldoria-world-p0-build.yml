@@ -56,7 +56,7 @@ jobs:
         def get(path):
             req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=h)
             return json.load(urllib.request.urlopen(req,timeout=30))
-        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip().splitlines()==['build_source=05e1846f0213c6320850505bc054110c53934f55','attempt=9-reconstruct-missing-owned-seed']
+        assert open('tools/eldoria-private-beta/world-p0-build-request.txt').read().strip().splitlines()==['build_source=05e1846f0213c6320850505bc054110c53934f55','attempt=10-restore-exact-archived-originals']
         assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
         item=get('contents/pipeline/active-workstreams.json?ref=main')
         b=item.get('content')
@@ -96,6 +96,19 @@ jobs:
         $null=[System.Management.Automation.Language.Parser]::ParseFile($script,[ref]$tokens,[ref]$errors)
         if($errors.Count){throw 'Downloaded exact script failed parser'}
         Add-Content $env:GITHUB_ENV ('WORLD_P0_BUILD_SCRIPT='+$script)
+    - uses: actions/download-artifact@v4
+      with:
+        artifact-ids: '14121008070'
+        github-token: ${{ github.token }}
+        repository: ${{ github.repository }}
+        merge-multiple: true
+        path: world-p0-original-art-recovery
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43489752868
+        name: integrated-build-proof-90465a9a910b89a8a8b74e4b33a9bbc88578e00e
+        github-token: ${{ github.token }}
+        path: world-p0-verified-prior-proof
     - name: Certify reconciled world, published UI, campaign and exact WebGL
       shell: powershell
       run: '& $env:WORLD_P0_BUILD_SCRIPT -SourceSha ''05e1846f0213c6320850505bc054110c53934f55'''

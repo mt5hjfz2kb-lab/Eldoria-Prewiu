@@ -1,2 +1,2 @@
 build_source=05e1846f0213c6320850505bc054110c53934f55
-attempt=9-reconstruct-missing-owned-seed
+attempt=10-restore-exact-archived-originals

@@ -83,6 +83,22 @@ $origins=@('breachwatch-native-source-43489752868-1',
             'forja-thin-native-source-42408083695',
             'beta-structural-source-42505611257-1',
             'valoria-layered-source')
+# Restore only the 51 audited files, never apply the whole historical overlay.
+$archive=Join-Path $env:GITHUB_WORKSPACE 'world-p0-original-art-recovery/beta-structural-source-42505611257-1-unique-20261114.zip'
+if((Get-FileHash $archive -Algorithm SHA256).Hash -ne '2df938c208227f5808f31499268e04cb9b6532a7f1634aec1c5c20ecdc54324e'){throw 'Original art archive hash mismatch'}
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$zip=[System.IO.Compression.ZipFile]::OpenRead($archive)
+try{
+  foreach($item in $art){
+    $dest=Join-Path $root $item.path
+    if(Test-Path $dest){continue}
+    $entry=$zip.GetEntry('overlays/'+$item.path)
+    if(-not $entry){throw ('Audited entry absent '+$item.path)}
+    New-Item -ItemType Directory -Force (Split-Path $dest)|Out-Null
+    [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry,$dest,$false)
+    if((Get-FileHash $dest -Algorithm SHA256).Hash -ne $item.sha256){throw ('Recovered original hash differs '+$item.path)}
+  }
+}finally{$zip.Dispose()}
 foreach($item in $art){
   $dest=Join-Path $root $item.path
   if(-not(Test-Path $dest)){
