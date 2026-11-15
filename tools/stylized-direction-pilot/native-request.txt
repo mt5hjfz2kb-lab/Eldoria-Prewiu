@@ -1,1 +1,7 @@
-attempt=6\nworkstream_id=eldoria-stylized-direction-proof-20261115\nowner=chatgpt-eldoria-stylized-art-proof-20261115\nownership_revision=2\nreason=Actual SHA 818cad5 shows almost all renderers invisible after custom shader. Remove alpha clip and compare against a safe candidate that retains every original material shader.\nart_approved=false\n
+attempt=7
+workstream_id=eldoria-stylized-direction-proof-20261115
+owner=chatgpt-eldoria-stylized-art-proof-20261115
+ownership_revision=2
+state=REAL_EDITOR_CITY_COMPOSITION_ABC_DE
+reason=After real 43723908844 same-shader B/C stayed too close to baseline; art direction pivot tests monumental ruins, grouped trees, terrain framing and URP tonal grading in temporary scene. Capture 10 real Unity PNGs and isolate all effects.
+art_approved=false
