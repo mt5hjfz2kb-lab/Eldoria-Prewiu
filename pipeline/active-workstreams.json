@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:16:20.904Z",
+  "updated_at": "2026-11-15T23:31:49.202Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9805,11 +9805,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "NATIVE_RUN_COMPLETED_FAILURE_REVIEW_OFF_PC",
-      "resources": [],
+      "phase": "NATIVE_CAPTURE_RECOVERY_NEXT_TURN",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9825,7 +9827,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Native import/capture ready; wait for explicit release of Windows by Ashen Citadel. No Unity installed in local Linux and no second configured Unity executor exposed. Do not convert Blender or preflight evidence into Unity approval. Claim Windows only after fresh registry/queue checks; pin real native candidate SHA before dispatch.",
+      "next": "One bounded capture recovery verification, then release Windows for Ashen Citadel and inspect actual evidence.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9839,11 +9841,11 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "granted_one_execution",
-        "after_run_id": 43770724604,
+        "after_run_id": 43773241535,
         "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
         "requested_at": "2026-11-15T22:44:00.333Z"
       },
-      "native_source_sha": "57ab4c3cbeb67bdda115e74bda37861125c8131e",
+      "native_source_sha": "430fb4a19f5a2798bd61213495147de397e1e40a",
       "last_native_attempt": {
         "run": 43771635637,
         "source": "57ab4c3cbeb67bdda115e74bda37861125c8131e",
@@ -20281,11 +20283,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "current_run_id": null,
-    "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+    "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_turn_returned",
+    "status": "visual_reboot_turn_claimed",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
@@ -20293,7 +20295,7 @@
       "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
       "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
     ],
-    "previous_completed_run": 43770724604,
+    "previous_completed_run": 43773241535,
     "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
     "completed_visual_reboot_run": 43771635637
   }
