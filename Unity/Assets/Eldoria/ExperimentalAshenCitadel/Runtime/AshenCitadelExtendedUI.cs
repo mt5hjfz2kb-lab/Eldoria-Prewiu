@@ -15,6 +15,7 @@ namespace Eldoria.ExperimentalAshenCitadel
     {
         private InputField playerNickname;
         private Text timeText;
+        private Button dailyButton;
         private string openedArea="";
 
         private void BuildAdditionalAccesses()
@@ -36,12 +37,12 @@ namespace Eldoria.ExperimentalAshenCitadel
                     new Vector2(n/(float)m,.07f),new Vector2((n+1)/(float)m,.94f),
                     new Vector2(3,0),new Vector2(-3,0),commands[n].activate,12);
             }
-            var daily=Button(safe,"Daily treasury","TRIBUTO",primary,
+            dailyButton=Button(safe,"Daily treasury","TRIBUTO",primary,
                 new Vector2(0,.0f),new Vector2(.33f,0),
-                new Vector2(12,168),new Vector2(-4,206),OpenDaily,11);
+                new Vector2(12,115),new Vector2(-4,153),OpenDaily,11);
             timeText=Label(safe,"Timekeeper",12,TextAnchor.MiddleRight,Muted,
                 new Vector2(.4f,0),new Vector2(1,0),
-                new Vector2(0,165),new Vector2(-12,204));
+                new Vector2(0,113),new Vector2(-12,153));
             RefreshClockLabel();
         }
 
@@ -242,8 +243,19 @@ namespace Eldoria.ExperimentalAshenCitadel
                         {popup.gameObject.SetActive(false);playerNickname=null;}
                     },true)
                 });
+            // Reserve a dedicated input row ABOVE the confirm button.
+            // Direct RectTransform positioning avoids the previous squeezed
+            // one-pixel field caused by competing LayoutGroup constraints.
+            var confirm=popupActionArea.Cast<Transform>().FirstOrDefault(x=>x.name=="CONFIRMAR NOMBRE");
+            if(confirm!=null)
+            {
+                var actionRect=(RectTransform)confirm;
+                actionRect.offsetMin+=new Vector2(0,-58);
+                actionRect.offsetMax+=new Vector2(0,-58);
+            }
             var r=Node(popupActionArea,"Player name field",
-                new Vector2(0,0),new Vector2(1,0),Vector2.zero,new Vector2(0,52));
+                new Vector2(0,1),new Vector2(1,1),
+                new Vector2(0,-52),new Vector2(0,0));
             r.SetAsFirstSibling();
             var rowImage=Plate(r,secondary,Color.white);
             var input=r.gameObject.AddComponent<InputField>();
@@ -252,8 +264,13 @@ namespace Eldoria.ExperimentalAshenCitadel
             var value=Label(r,"Value",17,TextAnchor.MiddleLeft,Ivory,
                 Vector2.zero,Vector2.one,new Vector2(18,3),new Vector2(-18,-3));
             input.textComponent=value;
-            var layout=r.gameObject.AddComponent<LayoutElement>();layout.preferredHeight=52;
+            var hint=Label(r,"Placeholder",14,TextAnchor.MiddleLeft,Muted,
+                Vector2.zero,Vector2.one,new Vector2(18,3),new Vector2(-18,-3));
+            hint.text="Escribe tu nombre";
+            input.placeholder=hint;
             playerNickname=input;
+            SizeSheet(2);
+            Canvas.ForceUpdateCanvases();
         }
 
         private void OpenPickedTarget(AshenCitadelPickTarget target)
