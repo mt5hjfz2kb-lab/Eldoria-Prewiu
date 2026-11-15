@@ -45,9 +45,12 @@ const assert=require('node:assert/strict');
  await videoPage.waitForFunction(()=>window.__senda3d&&window.__senda3d.state().hasWebGL,{timeout:90000});
  await videoPage.getByRole('button',{name:'COMENZAR EXPEDICIÓN'}).click();
  await videoPage.evaluate(()=>window.__senda3d.setSpeed(4));
- for(let frame=0;frame<80;frame++){
-  if(frame===8) await videoPage.locator('#left').click();
-  if(frame===28) await videoPage.locator('#right').click();
+ // 80 software-rendered PNGs made the Chromium job exceed its practical GPU budget.
+ // Four real viewports already test intro, gates, combat and added recruits;
+ // the clip needs only a representative dozen frames, not 80 redundant renders.
+ for(let frame=0;frame<12;frame++){
+  if(frame===2) await videoPage.locator('#left').click();
+  if(frame===9) await videoPage.locator('#right').click();
   await videoPage.waitForTimeout(50);
   await videoPage.screenshot({path:path.join(sequence,String(frame).padStart(3,'0')+'.png')});
  }
