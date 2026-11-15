@@ -26,7 +26,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
             public string kind,sourceSha,scene,shader,notes;
             public int wideWidth,wideHeight,phoneWidth,phoneHeight;
             public float painterlyWideDelta,illustratedWideDelta,painterlyPhoneDelta,illustratedPhoneDelta;
-            public bool originalSceneAndMaterialsUntouched,artApproved,mobileTested;
+            public bool originalSceneAndMaterialsUntouched,focusedBastionIsActualMesh,artApproved,mobileTested;
         }
 
         public static void Capture()
@@ -67,6 +67,14 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 material.SetFloat("_Bands",10f);
                 Save(city.PlayerCamera,illustratedWide,1600,900,material);
                 Save(city.PlayerCamera,illustratedPhone,390,844,material);
+                // New art-director framing is explicitly a DIFFERENT camera
+                // candidate, not a false pixel-matched material comparison.
+                SaveFocused(city.PlayerCamera,
+                    Path.Combine(output,"G3-focused-illustrated-1600x900.png"),
+                    1600,900,material,.79f,new Vector2(.52f,.59f));
+                SaveFocused(city.PlayerCamera,
+                    Path.Combine(output,"G3-focused-illustrated-390x844.png"),
+                    390,844,material,.97f,new Vector2(.50f,.62f));
 
                 var report=new Report{
                     kind="TRUE_UNITY_CAMERA_EDITOR_POST_FINISH_STUDY_NOT_PLAYABLE",
@@ -78,7 +86,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                     illustratedWideDelta=Difference(rawWide,illustratedWide),
                     painterlyPhoneDelta=Difference(rawPhone,paintedPhone),
                     illustratedPhoneDelta=Difference(rawPhone,illustratedPhone),
-                    originalSceneAndMaterialsUntouched=true,artApproved=false,mobileTested=false
+                    originalSceneAndMaterialsUntouched=true,focusedBastionIsActualMesh=true,artApproved=false,mobileTested=false
                 };
                 if(report.painterlyWideDelta<2f || report.illustratedWideDelta<2f ||
                    report.painterlyPhoneDelta<2f || report.illustratedPhoneDelta<2f)
@@ -130,6 +138,51 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 rt.Release();Object.DestroyImmediate(rt);
                 if(dest){dest.Release();Object.DestroyImmediate(dest);}
                 Object.DestroyImmediate(texture);
+            }
+        }
+
+        // Reframe around the actual Bastion renderer bounds; never teleport
+        // gameplay objects, modify their colliders, or alter scene assets.
+        static Vector3 BastionAnchor()
+        {
+            foreach(var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None))
+            {
+                if(!t||t.name!="Bastion_I_Grounding")continue;
+                var renderers=t.GetComponentsInChildren<Renderer>(true);
+                if(renderers.Length==0)continue;
+                var bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                return bounds.center;
+            }
+            throw new InvalidOperationException("Cannot validate a focused city view without the actual Bastion mesh");
+        }
+
+        static void SaveFocused(Camera cam,string path,int width,int height,
+            Material finish,float zoom,Vector2 desiredViewport)
+        {
+            var oldPosition=cam.transform.position;
+            var oldRotation=cam.transform.rotation;
+            var oldSize=cam.orthographicSize;
+            var oldAspect=cam.aspect;
+            try
+            {
+                cam.aspect=width/(float)height;
+                // Reproduce the portrait viewport sizing used by Save().
+                float renderSize=oldSize*zoom*(height>width?1.18f:1f);
+                cam.orthographicSize=renderSize;
+                var bastion=BastionAnchor();
+                var projected=cam.WorldToViewportPoint(bastion);
+                var xShift=(projected.x-desiredViewport.x)*2f*renderSize*cam.aspect;
+                var yShift=(projected.y-desiredViewport.y)*2f*renderSize;
+                cam.transform.position+=cam.transform.right*xShift+cam.transform.up*yShift;
+                cam.orthographicSize=oldSize*zoom;
+                Save(cam,path,width,height,finish);
+            }
+            finally
+            {
+                cam.transform.SetPositionAndRotation(oldPosition,oldRotation);
+                cam.orthographicSize=oldSize;
+                cam.aspect=oldAspect;
             }
         }
 
