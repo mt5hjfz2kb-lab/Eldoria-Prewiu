@@ -111,7 +111,7 @@ jobs:
           if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'The pilot Unity process timed out'}
           $p.Refresh()
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Unity pilot error $($p.ExitCode)"}
-          $names=@('A-original-city-1600x900.png','A-original-city-390x844.png','G1-painted-original-1600x900.png','G1-painted-original-390x844.png','G2-illustrated-original-1600x900.png','G2-illustrated-original-390x844.png')
+          $names=@('A-original-city-1600x900.png','A-original-city-390x844.png','G1-painted-original-1600x900.png','G1-painted-original-390x844.png','G2-illustrated-original-1600x900.png','G2-illustrated-original-390x844.png','G3-focused-illustrated-1600x900.png','G3-focused-illustrated-390x844.png')
           foreach($name in $names){
             $file=Join-Path $out $name
             if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 30000){throw "Real Unity A/B missing/blank: $name"}
