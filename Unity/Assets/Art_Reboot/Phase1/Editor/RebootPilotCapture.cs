@@ -50,9 +50,7 @@ namespace Eldoria.ArtReboot.Editor
                 Debug.Log("REBOOT_SHADER_IMPORT " + (shader == null ? "null" : shader.name));
                 if (shader == null || ShaderUtil.ShaderHasError(shader))
                     throw new InvalidOperationException("Pilot Shader Graph failed import/compilation; no fallback shader accepted.");
-                var atlas = AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "/Textures/Reboot_Atlas_256.png");
-                if (atlas == null || atlas.width != 256 || atlas.height != 256)
-                    throw new InvalidOperationException("Expected the authored 256x256 atlas.");
+                var atlas = PrepareAtlas(output);
                 var stone = MaterialAsset("Reboot_Surface", shader, atlas, 0);
                 var glow = MaterialAsset("Reboot_Emission", shader, atlas, 2.4f);
                 var root = new GameObject(Generated);
@@ -161,6 +159,42 @@ namespace Eldoria.ArtReboot.Editor
                 if (!File.ReadAllBytes(original).SequenceEqual(originalBytes))
                     throw new InvalidOperationException("Original scene bytes changed during capture.");
             }
+        }
+
+        static Texture2D PrepareAtlas(string output)
+        {
+            const string path = Root + "/Textures/Reboot_Atlas_256.png";
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null) throw new InvalidOperationException("Atlas TextureImporter unavailable.");
+            importer.GetSourceTextureWidthAndHeight(out int width, out int height);
+            var before = AssetDatabase.LoadMainAssetAtPath(path);
+            File.WriteAllText(Path.Combine(output, "atlas-import-before.json"),
+                EditorJsonUtility.ToJson(importer, true));
+            Debug.Log($"REBOOT_ATLAS_BEFORE source={width}x{height} type={before?.GetType().Name} max={importer.maxTextureSize} shape={importer.textureShape}");
+            if (width != 256 || height != 256)
+                throw new InvalidOperationException($"Authored atlas source differs: {width}x{height}");
+            // The recovered .meta supplied only a GUID. Make the owned atlas's
+            // intended import contract explicit; retain its GUID and PNG bytes.
+            importer.textureType = TextureImporterType.Default;
+            importer.textureShape = TextureImporterShape.Texture2D;
+            importer.maxTextureSize = 256;
+            importer.npotScale = TextureImporterNPOTScale.None;
+            importer.sRGBTexture = true;
+            importer.mipmapEnabled = false;
+            importer.alphaSource = TextureImporterAlphaSource.None;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.ClearPlatformTextureSettings("Standalone");
+            importer.SaveAndReimport();
+            var atlas = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (atlas == null || atlas.width != 256 || atlas.height != 256)
+                throw new InvalidOperationException($"Atlas import contract failed: {(atlas == null ? "null" : atlas.width + "x" + atlas.height)}");
+            Debug.Log($"REBOOT_ATLAS_AFTER {atlas.width}x{atlas.height} {atlas.format}");
+            File.WriteAllText(Path.Combine(output, "atlas-import-after.json"),
+                EditorJsonUtility.ToJson(importer, true));
+            return atlas;
         }
 
         static UniversalRenderPipelineAsset PreparePilotPipeline()
