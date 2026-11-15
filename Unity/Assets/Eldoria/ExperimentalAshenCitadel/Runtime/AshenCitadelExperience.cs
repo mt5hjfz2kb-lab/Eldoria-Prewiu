@@ -26,7 +26,8 @@ namespace Eldoria.ExperimentalAshenCitadel
         private Font typeface;
         private Sprite frame, primary, secondary, crest;
         private RectTransform safe;
-        private RectTransform popup;
+        private RectTransform popup, topHud, bottomHud, accountHud;
+        private CanvasScaler responsiveScaler;
         private Text levelText, resourceText, feedbackText, popupTitle, popupDescription;
         private Transform popupActionArea;
         private RectTransform sheetActionsViewport;
@@ -84,6 +85,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             EnsureInput();
             BuildInterface();
             BuildAdditionalAccesses();
+            ReflowForViewport(Screen.width,Screen.height);
             ShowWorld(false);
             Refresh();
             if(string.IsNullOrWhiteSpace(gateway.Snapshot().PlayerName))ShowNicknamePrompt();
@@ -155,13 +157,17 @@ namespace Eldoria.ExperimentalAshenCitadel
             scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution=new Vector2(390,844);
             scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight=.35f;
+            // Height-based scaling preserves the same readable text/touch height
+            // between a 390x844 iPhone portrait and a 1600x900 desktop landscape.
+            scaler.matchWidthOrHeight=1f;
+            responsiveScaler=scaler;
             safe=Node(root.transform,"Device safe area",Vector2.zero,Vector2.one,Vector2.zero,Vector2.zero);
 
             // The background environment remains visible between the compact
             // header, 46 px account ribbon and the shallow 74 px footer.
             var header=Node(safe,"Header",new Vector2(0,1),Vector2.one,
                 new Vector2(4,-103),new Vector2(-4,-3));
+            topHud=header;
             Plate(header,frame,Color.white);
             var emblem=Node(header,"Crest",new Vector2(0,0),new Vector2(0,1),
                 new Vector2(10,17),new Vector2(78,-16));
@@ -173,6 +179,7 @@ namespace Eldoria.ExperimentalAshenCitadel
 
             var bottom=Node(safe,"Bottom navigation",Vector2.zero,new Vector2(1,0),
                 new Vector2(4,4),new Vector2(-4,78));
+            bottomHud=bottom;
             Plate(bottom,frame,Color.white);
             string[] nav={"BASTIÓN","EDIFICIOS","EJÉRCITO","MUNDO"};
             for(int i=0;i<nav.Length;i++)
@@ -241,7 +248,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             float preferredHeight=85f+descriptionHeight+Mathf.Min(rows,5)*rowStep+20f;
             float safeHeight=safe.rect.height>200?safe.rect.height:844f;
             float maxHeight=Mathf.Max(230f,Mathf.Min(490f,safeHeight*.65f));
-            popup.sizeDelta=new Vector2(0,Mathf.Clamp(preferredHeight,192f,maxHeight));
+            popup.sizeDelta=new Vector2(popup.sizeDelta.x,Mathf.Clamp(preferredHeight,192f,maxHeight));
             if(sheetScroll!=null)sheetScroll.verticalNormalizedPosition=1f;
         }
 
@@ -253,6 +260,59 @@ namespace Eldoria.ExperimentalAshenCitadel
             safe.anchorMax=new Vector2(a.xMax/Screen.width,a.yMax/Screen.height);
             safe.offsetMin=Vector2.zero;safe.offsetMax=Vector2.zero;
             lastWidth=Screen.width;lastHeight=Screen.height;
+            ReflowForViewport(lastWidth,lastHeight);
+        }
+
+        // Runtime orientation changes and camera-space evidence share exactly one
+        // layout rule. Screen height drives the CanvasScaler; logical width depends
+        // only on aspect, not device DPI. No absolute desktop-pixel offsets.
+        public void ReflowForViewport(int width,int height)
+        {
+            if(width<1||height<1||safe==null||responsiveScaler==null)return;
+            responsiveScaler.matchWidthOrHeight=1f;
+            float viewportWidth=844f*width/height;
+            float usableWidth=Mathf.Max(280f,viewportWidth-8f);
+            float furnitureWidth=Mathf.Min(760f,usableWidth);
+            float sheetWidth=Mathf.Min(600f,usableWidth-8f);
+            if(topHud!=null)
+                AnchorCentered(topHud,new Vector2(.5f,1f),new Vector2(furnitureWidth,100f),
+                    new Vector2(0,-3f));
+            if(accountHud!=null)
+                AnchorCentered(accountHud,new Vector2(.5f,1f),new Vector2(furnitureWidth,43f),
+                    new Vector2(0,-109f));
+            if(bottomHud!=null)
+                AnchorCentered(bottomHud,new Vector2(.5f,0f),new Vector2(furnitureWidth,74f),
+                    new Vector2(0,4f));
+            if(feedbackText!=null)
+                AnchorCentered(feedbackText.rectTransform,new Vector2(.5f,0f),
+                    new Vector2(furnitureWidth-16f,28f),new Vector2(0,82f));
+            if(popup!=null)
+            {
+                AnchorCentered(popup,new Vector2(.5f,0f),
+                    new Vector2(sheetWidth,Mathf.Max(195f,popup.sizeDelta.y)),
+                    new Vector2(0,114f));
+                if(popup.gameObject.activeSelf)SizeSheet(sheetRows);
+            }
+            if(dailyButton!=null)
+            {
+                float x=-furnitureWidth/2f+63f;
+                AnchorCentered((RectTransform)dailyButton.transform,
+                    new Vector2(.5f,0),new Vector2(110f,35f),new Vector2(x,115f));
+            }
+            if(timeText!=null)
+            {
+                float x=furnitureWidth/2f-100f;
+                AnchorCentered(timeText.rectTransform,
+                    new Vector2(.5f,0),new Vector2(175f,34f),new Vector2(x,115f));
+            }
+        }
+        private static void AnchorCentered(RectTransform element,Vector2 anchor,
+                                           Vector2 size,Vector2 offset)
+        {
+            element.anchorMin=element.anchorMax=anchor;
+            element.pivot=anchor;
+            element.sizeDelta=size;
+            element.anchoredPosition=offset;
         }
         private void Update()
         {
