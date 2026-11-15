@@ -2,7 +2,7 @@
 import json,pathlib,re,sys
 root=pathlib.Path(sys.argv[1])
 rows=[]
-for name in ('control','candidate'):
+for name in ('control','world-entry'):
     report=json.loads((root/name/'report.json').read_text())
     assert report.get('passed') and report.get('worldEntryAndReentryVerified'),name
     assert report.get('source')=='ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029',name
@@ -10,14 +10,15 @@ for name in ('control','candidate'):
     targets={phase:dict(created=int(count),multisampled=int(msaa),unity_bytes=int(size))
              for phase,count,msaa,size in re.findall(
         r'ELDORIA_P0_ENTRY_RENDER_TARGETS phase=(\S+) created=(\d+) multisampled=(\d+) unity_bytes=(\d+)',log)}
-    if name=='candidate':
+    if name=='world-entry':
         assert set(targets)=={'before','before-terrain'},targets
         before,after=targets['before'],targets['before-terrain']
         assert after['unity_bytes']<before['unity_bytes'],targets
         assert after['multisampled']<before['multisampled'],targets
         prepared=re.search(r'ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED retired=(\d+) frames=(\d+)',log)
         assert prepared and int(prepared[1])>0,'No actual old camera MSAA targets retired'
-        assert log.index(prepared[0])<log.index('ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY')
+        assert log.index(prepared[0])<log.index('ELDORIA_MEMORY_PHASE phase=entry-before-unused-release'),\
+            'Old targets must retire before the first terrain-build stage, not just before entry'
         assert 'ELDORIA_P0_ENTRY_RENDER_BUDGET_RESTORED' in log
     else:
         assert not targets,'Control accidentally enabled candidate'

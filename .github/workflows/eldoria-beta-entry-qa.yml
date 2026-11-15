@@ -227,6 +227,8 @@ jobs:
         name: world-p0-mobile21-owner-site
         github-token: ${{ github.token }}
         path: qa-site/candidate
+    - name: Attach local journal without changing native bytes
+      run: python3 tools/eldoria-private-beta/install_entry_budget_journal.py qa-site/candidate
     - uses: actions/setup-node@v4
       with:
         node-version: '22'
@@ -235,6 +237,7 @@ jobs:
         QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
         QA_REQUIRE_CONSTRUCTION: '1'
         QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+        QA_REQUIRE_WORLD_JOURNAL: '1'
       run: |
         set -euo pipefail
         npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
@@ -250,8 +253,13 @@ jobs:
          sleep 1
         done
         failed=0
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' \
+         QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=entry-budget-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
         QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1' QA_OUT=entry-budget-evidence/control node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
-        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' QA_OUT=entry-budget-evidence/candidate node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' QA_OUT=entry-budget-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
         python3 tools/eldoria-private-beta/verify_entry_render_budget.py entry-budget-evidence
         if [ "$failed" != 0 ];then exit 1;fi
     - uses: actions/upload-artifact@v4
