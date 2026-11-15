@@ -1,0 +1,17 @@
+{
+  "vertices": 22527,
+  "faces": 7509,
+  "triangles": 7509,
+  "undergrowth_blades": 1173,
+  "boulders": 60,
+  "materials": [
+    "basalt",
+    "cut",
+    "leaf",
+    "leafLight",
+    "moss",
+    "soil",
+    "stone",
+    "stoneLight"
+  ]
+}
