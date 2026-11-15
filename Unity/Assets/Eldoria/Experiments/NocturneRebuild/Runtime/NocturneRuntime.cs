@@ -418,4 +418,23 @@ namespace Eldoria.Experiments.Nocturne
     {
         public string BuildingId;
     }
+    public sealed class NocturneResponsiveLayout : MonoBehaviour
+    {
+        public Camera PlayCamera;
+        public CanvasScaler Scaler;
+        public RectTransform ContextPanel, WorldChoices, CityList;
+        private int previousWidth=-1,previousHeight=-1;
+        private void Update()
+        {
+            if(Screen.width==previousWidth && Screen.height==previousHeight)return;
+            previousWidth=Screen.width;previousHeight=Screen.height;
+            bool landscape=Screen.width > Screen.height;
+            if(Scaler)Scaler.matchWidthOrHeight=landscape?1f:0f;
+            if(PlayCamera) PlayCamera.orthographicSize=landscape?14.2f:22.3f;
+            if(ContextPanel) ContextPanel.sizeDelta=new Vector2(landscape?-18:-18,landscape?166:184);
+            if(WorldChoices) WorldChoices.sizeDelta=new Vector2(-18,landscape?217:232);
+            if(CityList)CityList.gameObject.SetActive(true);
+        }
+    }
+
 }
