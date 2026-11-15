@@ -45,7 +45,7 @@ jobs:
           base=Path('Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models')
           source=Path('ArtSource/NocturneRebuild')
           models=[base/f'Bastion_{i:02d}.glb' for i in range(1,6)]
-          models += [base/f'{n}.glb' for n in ['Sawmill','Barracks','Granary','Stoneworks','Pine','Rock']]
+          models += [base/f'{n}.glb' for n in ['Sawmill','Barracks','Granary','Stoneworks','Pine','Rock','CityGround','WorldGround','ConstructionPlot']]
           for p in models:
               data=p.read_bytes()
               assert len(data)>2000 and data[:4]==b'glTF', (p,len(data))
@@ -55,6 +55,11 @@ jobs:
               p=source/'Previews'/f'Bastion_{i:02d}.png'
               d=p.read_bytes()
               assert d[:8]==b'\x89PNG\r\n\x1a\n' and len(d)>10000,(p,len(d))
+          for n in ['NocturnePanel','NocturnePrimary','NocturneSecondary','NocturneDock']:
+              p=base.parent/'UI'/f'{n}.png'
+              d=p.read_bytes()
+              assert d[:8]==b'\x89PNG\r\n\x1a\n' and len(d)>1000,(p,len(d))
+              print('UI SPRITE OK',p,len(d))
           assert (source/'Nocturne_Master.blend').stat().st_size>5000
           print('ART_SOURCE_ASSETS_VALIDATED',len(models))
           PY
@@ -66,12 +71,13 @@ jobs:
             ArtSource/NocturneRebuild/Previews
             ArtSource/NocturneRebuild/Nocturne_Master.blend
             Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models
+            Unity/Assets/Eldoria/Experiments/NocturneRebuild/UI
           retention-days: 14
       - name: Commit physical art exclusively to experiment branch
         run: |
           git config user.name "eldoria-nocturne-art-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ArtSource/NocturneRebuild Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models
+          git add ArtSource/NocturneRebuild Unity/Assets/Eldoria/Experiments/NocturneRebuild/Models Unity/Assets/Eldoria/Experiments/NocturneRebuild/UI
           if git diff --staged --quiet; then
             echo "Assets already identical"
           else
