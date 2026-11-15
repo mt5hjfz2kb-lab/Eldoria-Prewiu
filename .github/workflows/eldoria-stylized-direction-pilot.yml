@@ -104,19 +104,19 @@ jobs:
           $out=Join-Path $project 'StylizedDirectionPilotCaptures'
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-stylized-ab.log'
           if(Test-Path $out){Remove-Item $out -Recurse -Force}
-          $args='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.StylizedDirectionPilot.Editor.ModularCompositionAB.Capture -logFile "'+$log+'"'
+          $args='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.StylizedDirectionPilot.Editor.NativeABCapture.CaptureEditorOnly -logFile "'+$log+'"'
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           $until=(Get-Date).AddMinutes(25)
           while(-not $p.HasExited -and (Get-Date) -lt $until){Start-Sleep -Seconds 3;$p.Refresh()}
           if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'The pilot Unity process timed out'}
           $p.Refresh()
           if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Unity pilot error $($p.ExitCode)"}
-          $names=@('A-composition-baseline-1600x900.png','D-modular-environment-1600x900.png','A-composition-baseline-390x844.png','D-modular-environment-390x844.png')
+          $names=@('A-genuine-city-1600x900.png','D-modular-diorama-1600x900.png','A-genuine-city-390x844.png','D-modular-diorama-390x844.png')
           foreach($name in $names){
             $file=Join-Path $out $name
             if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 30000){throw "Real Unity A/B missing/blank: $name"}
           }
-          if(-not(Test-Path (Join-Path $out 'D-modular-composition-evidence.json'))){throw 'No source-pinned evidence'}
+          if(-not(Test-Path (Join-Path $out 'evidence.json'))){throw 'No source-pinned evidence'}
           Get-Content (Join-Path $out 'D-modular-composition-evidence.json')
       - uses: actions/upload-artifact@v4
         if: always()
