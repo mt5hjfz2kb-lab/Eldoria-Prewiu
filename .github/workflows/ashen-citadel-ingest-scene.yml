@@ -37,11 +37,20 @@ jobs:
         run: |
           set -euo pipefail
           gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/14180407102" > /tmp/ashen-artifact.json
-          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq '.content' | base64 -d > /tmp/ashen-registry.json
+          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" > /tmp/ashen-registry-api.json
           python3 - <<'PY'
-          import json
+          import json,base64,subprocess,os
           a=json.load(open('/tmp/ashen-artifact.json'))
-          r=json.load(open('/tmp/ashen-registry.json'))['active']
+          blob=json.load(open('/tmp/ashen-registry-api.json'))
+          if blob.get('encoding')=='base64' and blob.get('content'):
+              raw=base64.b64decode(blob['content'])
+          else:
+              sha=blob['sha']
+              fetched=json.loads(subprocess.check_output(['gh','api',
+                  'repos/'+os.environ['GITHUB_REPOSITORY']+'/git/blobs/'+sha]))
+              assert fetched['sha']==sha and fetched['encoding']=='base64'
+              raw=base64.b64decode(fetched['content'])
+          r=json.loads(raw)['active']
           source='c7fd3b250cb0cc6160a583c1f02f8313d80cdfde'
           assert a['id']==14180407102 and a['expired'] is False
           assert a['workflow_run']['head_sha']==source
