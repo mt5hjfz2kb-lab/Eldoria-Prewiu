@@ -41,3 +41,9 @@ intent=Capture revised natural terrain, multiring spruce, winding approach and a
 tests=7 real Unity EditMode scene/progression/saved-timers assertions, fail closed on XML
 art_changes=terrain visually extends beyond framing; source UV/textures and meshes saved under experiment only
 restrictions=original main/beta untouched; hold owner Windows lease; no ART_APPROVED before inspecting native screenshots
+
+retry=10
+intent=Test the actual regenerated round-based foundations (no rectangular pads), 5 Bastion stages and 4 buildings
+gameplay_gates=Unity real EditMode 7/7 plus PlayMode 3 live scene/UI callbacks
+capture=10 authentic URP landscape/portrait screenshots; preserve source and XML in exact run artifact
+restrictions=independent experiment only; no main, beta, release, spend or V4.1 experimental combat changes
