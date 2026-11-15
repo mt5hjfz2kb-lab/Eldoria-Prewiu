@@ -81,7 +81,7 @@
   function mount() {
     if (!document.body || panel) return;
     var box=document.createElement('div'), toggle=document.createElement('button'), copy=document.createElement('button');
-    box.style.cssText='position:fixed;left:8px;top:8px;z-index:2147483647;max-width:90vw;color:white;background:#071521;font:12px monospace';
+    box.style.cssText='position:fixed;left:8px;bottom:8px;z-index:2147483647;max-width:90vw;color:white;background:#071521;font:12px monospace';
     toggle.type=copy.type='button'; toggle.textContent='Diagnóstico · 21d4'; copy.textContent='Copiar registro';
     toggle.style.cssText=copy.style.cssText='background:#182b3a;color:white;border:1px solid #ba9a62;padding:7px';
     panel=document.createElement('textarea');panel.readOnly=true;
