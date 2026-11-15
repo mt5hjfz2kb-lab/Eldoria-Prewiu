@@ -111,7 +111,7 @@ def camera_and_lights():
     bpy.ops.object.light_add(type="AREA", location=(11,10,18))
     fill=bpy.context.object;fill.name="Cold sky fill";fill.data.energy=1200
     fill.data.shape="DISK";fill.data.size=25;fill.data.color=(.57,.73,.88)
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(0,0,-.19))
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0,0,-1.42))
     plane=bpy.context.object;plane.name="Dark meadow · QA plinth"
     plane.scale=(130,130,.50)
     mat=bpy.data.materials.new("Dusk dry moss")

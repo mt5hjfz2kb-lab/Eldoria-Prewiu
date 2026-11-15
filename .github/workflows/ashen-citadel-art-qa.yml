@@ -47,8 +47,9 @@ jobs:
           node tools/ashen-citadel/generate.mjs
           node tools/ashen-citadel/create_textures.mjs
           node tools/ashen-citadel/unwrap_uv.mjs
+          node tools/ashen-citadel/create_landscape.mjs
           python3 tools/ashen-citadel/verify_art.py
-          git diff --exit-code -- tools/ashen-citadel/art-manifest.json Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures
+          git diff --exit-code -- tools/ashen-citadel/art-manifest.json tools/ashen-citadel/landscape-manifest.json Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures
       - name: Install actual Blender (headless Ubuntu)
         shell: bash
         run: |

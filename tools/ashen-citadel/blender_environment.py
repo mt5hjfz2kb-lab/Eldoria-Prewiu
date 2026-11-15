@@ -21,6 +21,11 @@ def build_environment(level,palette,meshes_dir,import_obj,remap,pbr):
                 instance.rotation_euler[2]=turn
                 instance.scale=(scale,scale,scale)
                 instance.name=f"Art staged {name} · {i}"
+    # Blender imports the same actual sculpted terrain that Unity will render.
+    terrain=import_obj(meshes_dir/"AshenLandscape.obj")
+    remap(terrain,palette)
+    for mesh_obj in terrain:
+        mesh_obj.name="ASHEN · authored continuous valley + wild verge"
     # Look-dev assumes the building has been completed at that stage.
     # Gameplay visibility and timers remain driven solely by saved PlayerState.
     add_model("Ashen_Sawmill",[(-12.4,-2.5,1.0,.10)])

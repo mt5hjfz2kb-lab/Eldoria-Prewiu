@@ -20,7 +20,7 @@ palette=set(re.findall(r"^newmtl\s+(\S+)\s*$",(meshes/"AshenPalette.mtl").read_t
 assert len(palette)==18, f"Expected 18 source materials, got {len(palette)}"
 failures=[]
 expected=[f"AshenBastion_{i}" for i in range(1,6)]+[
-    "Ashen_Sawmill","Ashen_Barracks","Ashen_Granary","Ashen_Stoneworks","Ashen_Pine","Ashen_Rock"]
+    "Ashen_Sawmill","Ashen_Barracks","Ashen_Granary","Ashen_Stoneworks","Ashen_Pine","Ashen_Rock","AshenLandscape"]
 for name in expected:
     path=meshes/(name+".obj")
     content=path.read_text(encoding="utf-8")
@@ -60,7 +60,7 @@ for name in expected:
     if len(uv_coords)!=len(vertices):failures.append(f"{name}: one UV0 required per authored face vertex")
     if not materials.issubset(palette):failures.append(f"{name}: unmapped source materials {materials-palette}")
     entry=("bastion"+name[-1]) if name.startswith("AshenBastion_") else name.removeprefix("Ashen_")
-    expected_stats=manifest["stats"][entry]
+    expected_stats=json.loads((root/"tools/ashen-citadel/landscape-manifest.json").read_text()) if name=="AshenLandscape" else manifest["stats"][entry]
     if len(vertices)!=expected_stats["vertices"] or polygons!=expected_stats["polygons"]:
         failures.append(f"{name}: generated topology differs from manifest")
     print(f"OK {name}: {len(vertices)} vertices, {polygons} polygons, {len(materials)} used MTL")
@@ -94,4 +94,4 @@ for name in ["AshenStone.png","AshenRoof.png","AshenWood.png","AshenMoss.png","A
 mtl=(meshes/"AshenPalette.mtl").read_text()
 if mtl.count("map_Kd ../Textures/Ashen")!=18:failures.append("MTL must bind all 18 authored materials")
 if failures:raise SystemExit("\n".join(failures))
-print("ASHEN_ART_SOURCE_INTEGRITY_PASS: 11 UV-mapped OBJ / 18 materials / 6 textures / 4 sprites")
+print("ASHEN_ART_SOURCE_INTEGRITY_PASS: 12 UV-mapped OBJ / 18 materials / 6 textures / 4 sprites")
