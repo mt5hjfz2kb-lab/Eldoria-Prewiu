@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T22:55:17.998Z",
+  "updated_at": "2026-11-15T23:16:20.904Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-citadel-art-production-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "NATIVE_ART_SECOND_PASS_URP_FRAMING",
+      "phase": "FIRST_UNITY_ART_SAMPLE_REVIEWED_WINDOWS_RELEASED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9769,34 +9767,38 @@
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
-        "status": "returned_after_visual_reboot_turn",
+        "status": "completed_and_released_for_next_turn",
         "run_id": 43770724604,
         "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "requested_at": "2026-11-15T22:44:00.333Z",
         "instruction": "Finish this exact native run without interruption, retain all evidence, then yield Windows for one Visual Reboot capture. No source ownership transfer. Owner explicitly authorized alternating turns.",
-        "completed_run": 43770724604,
+        "completed_run": 43773241535,
         "return_after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "visual_reboot_run": 43771635637
+        "visual_reboot_run": 43771635637,
+        "released_at": "2026-11-15T23:16:20.904Z"
       },
       "continuation_session": "237e5d69e3a9",
       "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "running_current_visual_verification",
+        "status": "released",
         "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "source_sha": "0bba20dae7bb82b2bb39905ba70f10dc8f88b214",
+        "source_sha": "b0390aa11ad3f9ca4ae596e88ddadc94fb0ea530",
         "reason": "Art winding and composition repair is ready for native proof. Preserve current Reboot ownership; return turn after its existing native work is released.",
-        "run_id": 43772683066
+        "run_id": 43773241535
       },
       "last_native": {
-        "run": 43772073861,
-        "head": "e5d4ea5948a88f1b92ece4465cdab1c79d7392f1",
-        "artifact": 14184646602,
+        "run": 43773241535,
+        "head": "b0390aa11ad3f9ca4ae596e88ddadc94fb0ea530",
+        "artifact": 14185198110,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Improved opaque roofs/trees and full architecture. REWORK: portrait clipping, visible terrain edges, missing shadow read; no artistic approval."
-      }
+        "visual_review": "First reviewable architecture/environment sample: opaque roofs, coherent five-stage forms, repaired vegetation and complete portrait ground. Not global ART_APPROVED: flat lighting, repeated terrain, unfinished UI and physical iPhone checks remain."
+      },
+      "final_source_sha": "027906b775db4b2186f4030b685ab7ef80b5fb46",
+      "art_approved": false,
+      "next": "Windows released for Visual Reboot next turn. Continue lighting/contact richness and UI after reviewing real Unity sample; no merge to production. Review and reproduction notes docs/ashen-citadel/ART_CONTINUATION_REVIEW.md."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
