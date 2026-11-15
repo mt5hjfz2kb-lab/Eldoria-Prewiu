@@ -1,0 +1,163 @@
+// Genuine Unity 6 PlayMode UI look-dev snapshots.
+// The Canvas is temporarily captured in its Camera-space mode so a headless
+// RenderTexture includes real Unity uGUI; gameplay scene keeps Overlay at runtime.
+// NEVER report these captures as physical-iPhone/GameView screenshots.
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
+
+namespace Eldoria.ExperimentalAshenCitadel.Tests
+{
+    [TestFixture]
+    public sealed class AshenCitadelUiCaptureTests
+    {
+        const string ScenePath="Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity";
+        private string save,backedUp;
+        private static string EvidencePath=>Path.GetFullPath(
+            Path.Combine(UnityEngine.Application.dataPath,"..","ArtEvidence"));
+
+        [SetUp]
+        public void PreserveExperimentSave()
+        {
+            save=Path.Combine(UnityEngine.Application.persistentDataPath,
+                "eldoria-ashen-experiment-v1.json");
+            backedUp="";
+            if(File.Exists(save))
+            {
+                backedUp=save+"-capture-backup-"+Guid.NewGuid().ToString("N");
+                File.Move(save,backedUp);
+            }
+        }
+        [TearDown]
+        public void RestoreExperimentSave()
+        {
+            if(!string.IsNullOrEmpty(save)&&File.Exists(save))File.Delete(save);
+            if(!string.IsNullOrEmpty(backedUp)&&File.Exists(backedUp))
+                File.Move(backedUp,save);
+        }
+        private static T Find<T>(string objectName) where T:Component
+        {
+            var component=UnityEngine.Object.FindObjectsByType<T>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None)
+                .FirstOrDefault(x=>x.name==objectName);
+            Assert.That(component,Is.Not.Null,"Expected live component "+objectName);
+            return component;
+        }
+        private static Button Button(string name)=>Find<Button>(name);
+
+        private static Color32[] ActualCameraPixels(Camera camera,Canvas canvas,
+            int width,int height,bool includeUi)
+        {
+            var previous=RenderTexture.active;
+            var original=camera.targetTexture;
+            var wasEnabled=canvas.enabled;
+            var prevAspect=camera.aspect;
+            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
+            var pixels=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            try
+            {
+                rt.Create();
+                Assert.That(rt.IsCreated(),Is.True,"Headless graphics RenderTexture unavailable");
+                canvas.enabled=includeUi;
+                camera.targetTexture=rt;
+                camera.aspect=(float)width/height;
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+                RenderTexture.active=rt;
+                pixels.ReadPixels(new Rect(0,0,width,height),0,0);
+                pixels.Apply(false);
+                return pixels.GetPixels32();
+            }
+            finally
+            {
+                camera.targetTexture=original;
+                camera.aspect=prevAspect;
+                RenderTexture.active=previous;
+                canvas.enabled=wasEnabled;
+                UnityEngine.Object.DestroyImmediate(rt);
+                UnityEngine.Object.DestroyImmediate(pixels);
+            }
+        }
+        private static void SaveActualUi(Camera cam,Canvas canvas,string page,int width,int height)
+        {
+            var without=ActualCameraPixels(cam,canvas,width,height,false);
+            var with=ActualCameraPixels(cam,canvas,width,height,true);
+            Assert.That(with.Length,Is.EqualTo(without.Length));
+            int changed=0,visible=0;
+            for(int i=0;i<with.Length;i++)
+            {
+                var a=with[i];var b=without[i];
+                int difference=Math.Abs(a.r-b.r)+Math.Abs(a.g-b.g)+Math.Abs(a.b-b.b);
+                if(difference>24)changed++;
+                if(a.r+a.g+a.b>50)visible++;
+            }
+            double changedPct=changed/(double)with.Length;
+            Assert.That(changedPct,Is.GreaterThan(.008),
+                "Capture failed to composite real uGUI; never accept a camera-only image: "+page);
+            Assert.That(visible,Is.GreaterThan(with.Length*.35),
+                "Missing scene or blank screenshot: "+page);
+            var outImage=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            try
+            {
+                outImage.SetPixels32(with);
+                outImage.Apply(false);
+                Directory.CreateDirectory(EvidencePath);
+                string dest=Path.Combine(EvidencePath,"Ashen_UI_"+page+"_"+width+"x"+height+".png");
+                File.WriteAllBytes(dest,outImage.EncodeToPNG());
+                Assert.That(new FileInfo(dest).Length,Is.GreaterThan(10000));
+                Debug.Log("ASHEN_REAL_UNITY_UI "+Path.GetFileName(dest)+
+                    " changed_vs_camera_only="+changedPct.ToString("F4",System.Globalization.CultureInfo.InvariantCulture));
+            }
+            finally{UnityEngine.Object.DestroyImmediate(outImage);}
+        }
+
+        [UnityTest]
+        public IEnumerator HeadlessNativeCompositesActualHudAndFourPanelStates()
+        {
+            var scene=EditorSceneManager.LoadSceneInPlayMode(ScenePath,
+                new LoadSceneParameters(LoadSceneMode.Single));
+            Assert.That(scene.IsValid(),Is.True);
+            yield return null;
+            yield return null;
+            var camera=Find<Camera>("Ashen · Player camera");
+            var canvas=Find<Canvas>("Ashen · Royal Interface");
+            Assert.That(canvas.renderMode,Is.EqualTo(RenderMode.ScreenSpaceOverlay),
+                "Actual playable scene must retain its original overlay UI");
+            // In headless tests, Camera.Render does not capture an Overlay
+            // Canvas. Switch only the test instance to Camera mode.
+            canvas.renderMode=RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera=camera;
+            canvas.planeDistance=2;
+            Canvas.ForceUpdateCanvases();
+
+            var frames=new[]{new Vector2Int(390,844),new Vector2Int(1600,900)};
+            foreach(var frame in frames)
+                SaveActualUi(camera,canvas,"Welcome",frame.x,frame.y);
+            Button("Close").onClick.Invoke();
+            yield return null;
+
+            foreach(var v in new[]{
+                ("City","Nav · BASTIÓN"),
+                ("Mailbox","Access · CORREO"),
+                ("Bag","Access · BOLSA"),
+                ("World","Nav · MUNDO")})
+            {
+                Button(v.Item2).onClick.Invoke();
+                yield return null;
+                foreach(var frame in frames)
+                    SaveActualUi(camera,canvas,v.Item1,frame.x,frame.y);
+            }
+            Debug.Log("ASHEN_REAL_UNITY_UI_COMPLETE 10 composited UI PNG, no real-iPhone claim");
+            canvas.renderMode=RenderMode.ScreenSpaceOverlay;
+        }
+    }
+}
+#endif
