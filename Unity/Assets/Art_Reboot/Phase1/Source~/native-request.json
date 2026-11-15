@@ -1,5 +1,7 @@
 {
-  "reason": "Validate empty editor setup recovery and expose primary capture exception",
-  "source": "1a339e59e3a4455659fc2d2f10728ea60d32d60b",
-  "previous_other_run": 43773241535
+  "reason": "Verify FBX physical units and capture real scene after atlas and topology fixes",
+  "source": "0a5836cea35eded51374b508d20a01288ba6aceb",
+  "previous_run": 43776990752,
+  "expected_ground_metres": 48,
+  "keep_rejected_png": true
 }
