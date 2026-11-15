@@ -1,1 +1,1 @@
-Correct URP17.3 read-only shadow flags via serialized private pipeline, qualify ShadowQuality; continue same lighting candidate
+Final valley portrait clearance: all orthographic ray origins above 6m, terrain bound3.04m. Preserve lighting. 2026-11-16.
