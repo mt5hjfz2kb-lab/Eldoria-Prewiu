@@ -72,8 +72,13 @@ foreach($required in $keep){
         throw "Required Unity Package is absent from original manifest: $required"
     }
 }
-@{dependencies=$dependencies} | ConvertTo-Json -Depth 15 |
-    Set-Content -LiteralPath $manifestPath -Encoding UTF8
+$manifestJson=@{dependencies=$dependencies}|ConvertTo-Json -Depth 15
+# Windows PowerShell 5.1 Set-Content -Encoding UTF8 emits U+FEFF BOM.
+# Unity 6000 package manager rejects that BOM as invalid JSON at character 0.
+[IO.File]::WriteAllText($manifestPath,$manifestJson,
+    (New-Object System.Text.UTF8Encoding($false)))
+$bytes=[IO.File]::ReadAllBytes($manifestPath)
+if($bytes[0] -ne 123){throw 'Unity manifest must begin with ASCII { (UTF-8 no BOM)'}
 Write-Output ('ASHEN_SPARSE_UNITY_PACKAGES '+($dependencies.Keys -join ', '))
 
 # The source branch builds exactly one scene in an isolated editor project.
@@ -104,14 +109,12 @@ if(-not $process.HasExited){
 }
 $process.Refresh()
 if(-not(Test-Path $NativeLog)){
-    $fallback=Join-Path $env:LOCALAPPDATA 'Unity/Editor/Editor.log'
-    if(Test-Path $fallback){
-        Copy-Item -LiteralPath $fallback -Destination (Join-Path $OutputRoot 'editor-fallback.log') -Force
-        Write-Output 'ASHEN_NATIVE_LOG_FALLBACK_CAPTURED'
-    }else{Write-Output 'ASHEN_NATIVE_LOG_NOT_WRITTEN'}
+    # Never copy the user's previous Unity Editor.log. On this Windows PC the
+    # unrelated historical file exceeded 4 GiB; it is NOT experiment evidence.
+    Write-Output 'ASHEN_NATIVE_LOG_NOT_WRITTEN; previous Editor.log intentionally ignored'
 }
 if($process.ExitCode -ne 0){
-    foreach($log in @($NativeLog,$stdout,$stderr,(Join-Path $OutputRoot 'editor-fallback.log'))){
+    foreach($log in @($NativeLog,$stdout,$stderr)){
         if(Test-Path $log){
             Write-Output ('ASHEN_DIAGNOSTIC_LOG '+([IO.Path]::GetFileName($log)))
             Get-Content -LiteralPath $log -Tail 85
