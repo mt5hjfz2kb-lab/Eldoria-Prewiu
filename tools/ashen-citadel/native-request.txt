@@ -72,3 +72,10 @@ fixes=5000 upward-facing terrain faces from reviewed Blender mesh; compact adapt
 source_proof=Roslyn 43769477638 PASS; Blender geometry 43769162890 PASS; original native 43768377565 7 EditMode 4 PlayMode but visual REJECTED.
 native_acceptance=10 actual URP Bastion screenshots+10 composited Canvas ScreenspaceCamera captures; real 7/7 EditMode+>=4 PlayMode; reject collapsed nickname and excessive sheet height.
 strict_limit=experiment branch only, unique own Windows lease, no beta or main or production HUD mutation
+
+retry=15
+objective=Native Unity6 URP validation after real 1600x900 screenshots exposed clipped giant interface.
+cause=CanvasScaler 390x844 matchWidthOrHeight=.35 scales by width in landscape; stretched modal and navigation.
+fix=height-driven CanvasScaler (match=1.0), centered max-width UI furniture, width-capped bottom sheet, single runtime ReflowForViewport rule used for real orientation changes and headless evidence.
+acceptance=7 EditMode + 4 PlayMode; compact and unclipped horizontal/portrait UI and non-collapsed nickname; ten 3D and ten composited uGUI PNG; genuine A/B visual inspection before approval.
+isolation=experiment branch only; protected exclusive Windows lease; no main, beta or iPhone-public release.
