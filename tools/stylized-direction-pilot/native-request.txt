@@ -1,0 +1,6 @@
+# Single native A/B experiment; do not publish, merge, or change user save
+workstream_id=eldoria-stylized-direction-proof-20261115
+owner=chatgpt-eldoria-stylized-art-proof-20261115
+ownership_revision=2
+state=REQUEST_ONE_REAL_UNITY_CAMERA_AB
+art_approved=false
