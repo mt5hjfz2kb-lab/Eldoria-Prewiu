@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T22:15:59.334Z",
+  "updated_at": "2026-11-15T22:44:00.333Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9767,7 +9767,14 @@
         "evidence": "Blender .blend/PNG/GLB source, native Unity screenshots and scene asset, controlled level progression/command/Save/Reload tests, mobile/WebGL stability checks.",
         "handoff": "Experiment branch SHA, source and evidence artifacts, precise blocked gates, optional future independent build; no merge or production publication."
       },
-      "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
+      "resource_turn_handoff": {
+        "status": "owner_requested_after_current_run",
+        "run_id": 43770724604,
+        "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+        "requested_at": "2026-11-15T22:44:00.333Z",
+        "instruction": "Finish this exact native run without interruption, retain all evidence, then yield Windows for one Visual Reboot capture. No source ownership transfer. Owner explicitly authorized alternating turns."
+      }
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
@@ -9793,7 +9800,7 @@
         "handoff": "Same branch, exact SHA, actual tests and open gates"
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
-      "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation.",
+      "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
       "next": "Native import/capture ready; wait for explicit release of Windows by Ashen Citadel. No Unity installed in local Linux and no second configured Unity executor exposed. Do not convert Blender or preflight evidence into Unity approval. Claim Windows only after fresh registry/queue checks; pin real native candidate SHA before dispatch.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
@@ -9804,7 +9811,14 @@
         "lease_tests": "8/8 PASS",
         "windows_executed": false
       },
-      "final_source_sha": "fa9f8eae7be6e4dd7a78a45be76f53f9b4d862e5"
+      "final_source_sha": "fa9f8eae7be6e4dd7a78a45be76f53f9b4d862e5",
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "status": "next_turn_after_current_run",
+        "after_run_id": 43770724604,
+        "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
+        "requested_at": "2026-11-15T22:44:00.333Z"
+      }
     }
   ],
   "history": [
@@ -20229,5 +20243,23 @@
     "released_at": "2026-11-06T18:20:56.437Z",
     "release_evidence": "docs/ui-v3/PLAYER_AUDIT_20261106.md",
     "ownership_revision": 153
+  },
+  "resource_rotation": {
+    "resource": "windows-runner-heavy",
+    "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
+    "authorized_at": "2026-11-15T22:44:00.333Z",
+    "mode": "one_bounded_native_execution_per_turn",
+    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_run_id": 43770724604,
+    "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+    "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
+    "status": "finish_current_run_then_handoff",
+    "rules": [
+      "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
+      "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
+      "Retain both source owners/scopes/branches. Transfer ONLY windows-runner-heavy via fresh CAS.",
+      "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
+      "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
+    ]
   }
 }
