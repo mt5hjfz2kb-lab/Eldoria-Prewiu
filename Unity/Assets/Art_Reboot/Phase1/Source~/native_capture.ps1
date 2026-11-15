@@ -49,7 +49,10 @@ if(-not $p.HasExited){
  throw 'Own Unity process timed out; logs retained'
 }
 $p.WaitForExit();$p.Refresh()
-if($null -ne $p.ExitCode -and $p.ExitCode -ne 0){throw "Unity exited $($p.ExitCode)"}
+if($null -ne $p.ExitCode -and $p.ExitCode -ne 0){
+ if(Test-Path $log){Get-Content -LiteralPath $log -Tail 100}
+ throw "Unity exited $($p.ExitCode)"
+}
 if(-not(Test-Path $log)){throw 'No run-specific Unity log'}
 if(-not(Select-String -LiteralPath $log -Pattern 'REBOOT_CAPTURE_OUTPUT' -Quiet)){throw 'Capture completion marker missing'}
 if(-not(Select-String -LiteralPath $log -Pattern 'Application will terminate with return code 0' -Quiet)){throw 'Unity clean exit not proven'}

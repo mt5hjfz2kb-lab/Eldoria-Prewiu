@@ -47,6 +47,7 @@ namespace Eldoria.ArtReboot.Editor
                 AssetDatabase.ImportAsset(Root + "/Models/Reboot_Pilot.fbx", ImportAssetOptions.ForceSynchronousImport);
                 AssetDatabase.ImportAsset(Root + "/Materials/Reboot_Atlas.shadergraph", ImportAssetOptions.ForceSynchronousImport);
                 var shader = AssetDatabase.LoadAssetAtPath<Shader>(Root + "/Materials/Reboot_Atlas.shadergraph");
+                Debug.Log("REBOOT_SHADER_IMPORT " + (shader == null ? "null" : shader.name));
                 if (shader == null || ShaderUtil.ShaderHasError(shader))
                     throw new InvalidOperationException("Pilot Shader Graph failed import/compilation; no fallback shader accepted.");
                 var atlas = AssetDatabase.LoadAssetAtPath<Texture2D>(Root + "/Textures/Reboot_Atlas_256.png");
@@ -141,10 +142,22 @@ namespace Eldoria.ArtReboot.Editor
                 }, true));
                 Debug.Log("REBOOT_CAPTURE_OUTPUT " + output);
             }
+            catch (Exception error)
+            {
+                // Preserve the primary failure even if editor-state cleanup fails too.
+                Debug.LogException(error);
+                File.WriteAllText(Path.Combine(output, "capture-failure.txt"), error.ToString());
+                throw;
+            }
             finally
             {
                 QualitySettings.renderPipeline = previousPipeline;
-                EditorSceneManager.RestoreSceneManagerSetup(setup);
+                // Fresh batchmode projects can start with no loaded/active scene.
+                // Unity rejects restoring that empty SceneSetup array.
+                if (setup.Any(s => s.isLoaded) && setup.Count(s => s.isActive) == 1)
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else
+                    EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 if (!File.ReadAllBytes(original).SequenceEqual(originalBytes))
                     throw new InvalidOperationException("Original scene bytes changed during capture.");
             }

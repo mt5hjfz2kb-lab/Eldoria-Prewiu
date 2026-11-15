@@ -24,5 +24,18 @@
     "powershell_parser": "PASS",
     "lease_tests": "8/8 PASS",
     "windows_job": "skipped"
+  },
+  "native_attempt": {
+    "run": 43771635637,
+    "source": "57ab4c3cbeb67bdda115e74bda37861125c8131e",
+    "artifact": 14184368867,
+    "zip_sha256": "0b6016755581238a2f0c1a08e2a9ab29569c68f89f0b5e062eeb4fecdbb76383",
+    "editor_assembly_compiled": true,
+    "capture_method_executed": true,
+    "exit_code": 1,
+    "screenshots": 0,
+    "masked_primary_exception": true,
+    "empty_scene_restore_fixed_in_source": true,
+    "fix_unity_verified": false
   }
 }

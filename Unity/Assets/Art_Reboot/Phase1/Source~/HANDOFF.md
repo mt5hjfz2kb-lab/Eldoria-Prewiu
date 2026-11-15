@@ -109,3 +109,36 @@ Los pushes sin el marcador explícito sólo ejecutan análisis PowerShell y test
 de reserva en Ubuntu; el job Windows se omite, aunque exista una reserva.
 
 Evidencia remota del código exacto: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43768175996
+
+## Alternancia ejecutada — 15 noviembre 2026
+
+Orden expresa del propietario: alternar Windows por ejecuciones, sin cancelar
+trabajos activos ni transferir fuentes. Registro main `resource_rotation` y
+`resource_turn_handoff` mantienen prioridad siguiente, runs y propietarios.
+
+- Ashen 43770724604 terminó SUCCESS, Editor exit0, 7 EditMode + 4 PlayMode.
+- Visual Reboot recibió el turno. 43771163914 falló ANTES de Unity por alias
+  Python de Windows; se sustituyó la comprobación Windows por PowerShell.
+  43771416271 falló sólo en fixture Ubuntu; corregido alcance de variables
+  de prueba y ejecutados 8/8 casos reales en PowerShell 7.4.6 local y después CI.
+  El PC se liberó durante ambas correcciones, sin proceso Unity lanzado.
+- Primer Unity real de Visual Reboot: 43771635637, fuente
+  57ab4c3cbeb67bdda115e74bda37861125c8131e. Importó assets y compiló el
+  assembly Editor; ejecutó BuildAndCapture, pero terminó exit1 SIN PNG.
+  Artefacto 14184368867 contiene unity-editor.log; ZIP descargado y SHA256
+  contrastado: 0b6016755581238a2f0c1a08e2a9ab29569c68f89f0b5e062eeb4fecdbb76383.
+- Windows devuelto inmediatamente a Ashen; ya ejecuta 43772073861.
+  No se interrumpió ningún job ni se editó código de Ashen.
+
+Diagnóstico real: en proyecto batch recién creado, GetSceneManagerSetup
+puede devolver cero escenas cargadas/activas. El finally llamaba
+RestoreSceneManagerSetup con ese estado inválido y ocultaba la excepción
+primaria. Corregido: restaurar sólo si existe exactamente una escena activa
+y alguna cargada; de lo contrario abrir escena vacía. Además se registra la
+excepción primaria en log y capture-failure.txt, y el script muestra las 100
+últimas líneas del log al fallar. NO afirmar que la excepción primaria está
+resuelta: su identidad quedó ocultada en el run anterior. Siguiente captura
+nativa debe demostrar éxito o revelar ese error, sin alterar gates.
+
+El cambio de restauración pasa parser C#; 8/8 fixtures PowerShell pasan.
+Su ejecución Unity queda pendiente del siguiente turno después de 43772073861.
