@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T15:30:00Z",
+  "updated_at": "2026-11-15T15:13:31.181Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9593,10 +9593,10 @@
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
       "owner": "chatgpt-senda-brecha-ios-unity-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "ISOLATED_UNITY_3D_PROTOTYPE_SOURCE_AND_NATIVE_QA_FIXTURE_IN_PREPARATION",
+      "phase": "3D_SOURCE_COMMITTED_NATIVE_WORKFLOW_STAGED_AWAIT_EXCLUSIVE_WINDOWS",
       "claimed_at": "2026-11-15T14:52:00+01:00",
       "resources": [],
       "scope": [
@@ -9604,7 +9604,8 @@
         "docs/events/senda-brecha/**",
         "Unity/Assets/Eldoria/SendaBrecha/**",
         "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json",
-        ".github/workflows/senda-brecha-web-visual-qa.yml"
+        ".github/workflows/senda-brecha-web-visual-qa.yml",
+        ".github/workflows/senda-brecha-native.yml"
       ],
       "base_main_sha": "b3b94857f89bdbe7905af013ec910d4e3658fecc",
       "reason": "Owner explicitly requests preparing standalone lane-battle event from supplied gameplay video; isolate prototype, do not integrate into current iPhone beta or change gameplay economy/saves.",
@@ -9618,7 +9619,7 @@
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "f17c6056ad1fb85490f15d0a14477cd49ac39f88",
       "final_evidence": "Canonical six-stage, three-lane standalone browser pilot under tools/senda-brecha/dist/senda-brecha.html. Node 5/5 tests and exhaustive 729 combinations (168 wins/561 losses), Chromium QA 390x844, 320x700, 844x390, 1280x800 all PASS for win/defeat, canvas pointer lane, pause/restart, 0 JS pageerrors. Older 3-stage/two-choice pilot 3e2a83d retained in Git history only, not a second active implementation. NOT Unity, real iPhone, art approved or beta publication.",
-      "next": "Independent WebGL 3D Chromium screenshot gate on Ubuntu (not Windows); then native Unity only when Windows runner holder releases resource. Safari physical and visual approval not yet proven.",
+      "next": "Native GPU evidence requires exclusive Windows lease; current holder must complete and release. Then commit gated native request, inspect screenshots, fix issues; browser owner playable URL already verified.",
       "art_production_request": "pipeline/art-production-requests/eldoria-senda-brecha-lane-event-20261115.json"
     },
     {
