@@ -1,8 +1,8 @@
-# One controlled Unity native A/B attempt 2; fix compiler identifier shadowing
+# Attempt 3: keep Unity in batchmode until delayed PlayMode captures finish.
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=2
-attempt=2
-reason=Fix UnityEngine.Application.dataPath instead of Eldoria.Application namespace.
+attempt=3
+cause=Attempt 2 compiled but batchmode -quit closed before EnterPlaymode coroutine.
 state=REQUEST_ONE_REAL_UNITY_CAMERA_AB
 art_approved=false
