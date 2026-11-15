@@ -9779,7 +9779,14 @@
         "visual_reboot_run": 43771635637
       },
       "continuation_session": "237e5d69e3a9",
-      "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn."
+      "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn.",
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "status": "ready_for_next_alternating_turn",
+        "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+        "source_sha": "2a7e9556b6ac2d16ff3785efe192bb60662fe917",
+        "reason": "Art winding and composition repair is ready for native proof. Preserve current Reboot ownership; return turn after its existing native work is released."
+      }
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
