@@ -88,7 +88,19 @@ const author=function author(){
    door(0,.48,-d/2-.37,2.8,2.65);
    box(0,3.26,-d/2-.59,4.7,.48,1.14,"stoneLight");
   }
-  function base(){box(0,-.48,0,21.2,.40,19.1,"basalt");box(0,-.10,0,20.2,.20,18.0,"soil");
+  // Basalt-edged, walkable organic foundation, replacing impossible square pads.
+  function contourPlate(rx,rz,bottom,top,n,seed){
+    const high=[],low=[];
+    for(let i=0;i<n;i++){
+      const a=2*Math.PI*i/n;
+      const jitter=1+.046*Math.sin(i*1.7+seed)+.028*Math.cos(i*2.9+seed*.8);
+      high.push([Math.cos(a)*rx*jitter,top,Math.sin(a)*rz*jitter]);
+      low.push([Math.cos(a)*rx*jitter*1.05,bottom,Math.sin(a)*rz*jitter*1.05]);
+    }
+    for(let i=0;i<n;i++)poly([high[i],high[(i+1)%n],low[(i+1)%n],low[i]],"basalt");
+    for(let i=0;i<n;i++)poly([[0,top,0],high[(i+1)%n],high[i]],"moss");
+  }
+  function base(){contourPlate(10.3,9.1,-.24,.12,16,1.2);
    box(0,.07,-8.0,3.4,.10,5.7,"cut");for(let i=0;i<5;i++)box(0,.10+i*.11,-11+i*.41,3.8-i*.3,.19,.50,"stoneLight");
   }
   function castle(level){
@@ -138,7 +150,7 @@ const author=function author(){
    }
   }
   function aux(kind){
-   if(kind!=="Pine"&&kind!=="Rock")box(0,-.10,0,4.8,.28,4.8,"basalt");
+   if(kind!=="Pine"&&kind!=="Rock")contourPlate(3.15,3.00,-.15,.19,12,.70);
    if(kind==="Sawmill"){
      box(0,.2,0,3.7,2.3,3.1,"wood");roof(0,2.52,0,4.2,3.6,1.55);
      for(let i=0;i<6;i++)box(-1.8+i*.7,.16,-2.15,.53,.30,1.6,i%2?"oak":"wood");

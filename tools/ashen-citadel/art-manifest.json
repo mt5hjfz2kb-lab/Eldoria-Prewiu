@@ -12,49 +12,49 @@
   "coordinateSystem": "X/Y(up)/Z; front is -Z; unit metres",
   "stats": {
     "bastion1": {
-      "vertices": 3570,
-      "polygons": 928,
-      "trianglesUpperBound": 3712
+      "vertices": 3634,
+      "polygons": 948,
+      "trianglesUpperBound": 3792
     },
     "bastion2": {
-      "vertices": 3448,
-      "polygons": 852,
-      "trianglesUpperBound": 3408
+      "vertices": 3512,
+      "polygons": 872,
+      "trianglesUpperBound": 3488
     },
     "bastion3": {
-      "vertices": 4768,
-      "polygons": 1170,
-      "trianglesUpperBound": 4680
+      "vertices": 4832,
+      "polygons": 1190,
+      "trianglesUpperBound": 4760
     },
     "bastion4": {
-      "vertices": 5358,
-      "polygons": 1318,
-      "trianglesUpperBound": 5272
+      "vertices": 5422,
+      "polygons": 1338,
+      "trianglesUpperBound": 5352
     },
     "bastion5": {
-      "vertices": 6664,
-      "polygons": 1640,
-      "trianglesUpperBound": 6560
+      "vertices": 6728,
+      "polygons": 1660,
+      "trianglesUpperBound": 6640
     },
     "Sawmill": {
-      "vertices": 686,
-      "polygons": 166,
-      "trianglesUpperBound": 664
+      "vertices": 746,
+      "polygons": 184,
+      "trianglesUpperBound": 736
     },
     "Barracks": {
-      "vertices": 619,
-      "polygons": 155,
-      "trianglesUpperBound": 620
+      "vertices": 679,
+      "polygons": 173,
+      "trianglesUpperBound": 692
     },
     "Granary": {
-      "vertices": 422,
-      "polygons": 102,
-      "trianglesUpperBound": 408
+      "vertices": 482,
+      "polygons": 120,
+      "trianglesUpperBound": 480
     },
     "Stoneworks": {
-      "vertices": 596,
-      "polygons": 148,
-      "trianglesUpperBound": 592
+      "vertices": 656,
+      "polygons": 166,
+      "trianglesUpperBound": 664
     },
     "Pine": {
       "vertices": 285,
