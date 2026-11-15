@@ -9,7 +9,7 @@ os.makedirs(out,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=24
-scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast'
+scene.view_settings.view_transform='Filmic';scene.view_settings.look='Medium High Contrast';scene.view_settings.exposure=.80
 scene.render.image_settings.file_format='PNG';scene.render.resolution_percentage=100
 scene.world.color=(.26,.29,.33)
 def mat(name,color,glow=0):
@@ -60,7 +60,17 @@ for j in range(72):
   a=j*101+i;fs.extend([(a,a+1,a+102),(a,a+102,a+101)])
   x=-46+i*.92;y=-33+j*.90;n=noise.noise(Vector((x*.09+7,y*.09+3,2)))
   t=0 if n<-.20 else (2 if n>.36 else 1);mi.extend([t,t])
-ownmesh('unified continuous painterly soil',vs,fs,grass,mi)
+terrain=ownmesh('unified continuous painterly soil',vs,fs,grass,mi)
+# Original smooth hand-painted sage material: no hard checkerboard terrain patches.
+for polygon in terrain.data.polygons: polygon.material_index=0
+grassnodes=grass[0].node_tree.nodes
+noiseNode=grassnodes.new('ShaderNodeTexNoise');noiseNode.inputs['Scale'].default_value=9.0
+ramp=grassnodes.new('ShaderNodeValToRGB')
+ramp.color_ramp.elements[0].position=.20;ramp.color_ramp.elements[0].color=(.10,.17,.11,1)
+ramp.color_ramp.elements[1].position=.79;ramp.color_ramp.elements[1].color=(.34,.43,.26,1)
+links=grass[0].node_tree.links
+links.new(noiseNode.outputs['Fac'],ramp.inputs['Fac'])
+links.new(ramp.outputs['Color'],grassnodes.get('Principled BSDF').inputs['Base Color'])
 rvs=[];rfs=[]
 for i in range(151):
  x=-47+i*94/150;y=-17-1.5*sin(x*.12)
@@ -142,13 +152,48 @@ for i in range(len(fracture)-1):
 for i in range(7):
  x=26+R.uniform(-3,3);y=15+R.uniform(-7,7)
  cone('breach crystal',(x,y,z(x,y)+1.0),.4,2.2,breach)
+
+# ACTUAL OWN GAME ASSET REUSE. This substitutes the crude experimental
+# castle/workshop blocks with the current authentic Bastion II and Sawmill.
+# The old expressly forbidden HeroBastion model is never requested.
+def reused_glb(asset,target,width,base,label):
+ if not os.path.isfile(asset):raise RuntimeError('Required source art not in pinned checkout: '+asset)
+ before=set(bpy.data.objects)
+ bpy.ops.import_scene.gltf(filepath=asset)
+ new=[o for o in bpy.data.objects if o not in before]
+ models=[o for o in new if o.type=='MESH']
+ if not models:raise RuntimeError('Canonical GLB empty: '+asset)
+ bpy.context.view_layer.update()
+ bb=[o.matrix_world@Vector(v) for o in models for v in o.bound_box]
+ lo=Vector((min(v.x for v in bb),min(v.y for v in bb),min(v.z for v in bb)))
+ hi=Vector((max(v.x for v in bb),max(v.y for v in bb),max(v.z for v in bb)))
+ center=(lo+hi)*.5;factor=width/max(.01,hi.x-lo.x,hi.y-lo.y)
+ root=bpy.data.objects.new('CANONICAL IMPORT / '+label,None)
+ bpy.context.collection.objects.link(root)
+ for obj in new:
+  if obj.parent in new:continue
+  matrix=obj.matrix_world.copy()
+  obj.parent=root;obj.matrix_world=matrix
+ root.scale=(factor,)*3
+ root.location=(target[0]-center.x*factor,target[1]-center.y*factor,base-lo.z*factor)
+ bpy.context.view_layer.update()
+ print('CANONICAL_SOURCE_REUSED',label,'meshes',len(models),'scale',factor)
+source_dir=os.path.join(os.getcwd(),'Unity','Assets','Eldoria','ArtTests','ValoriaReferenceClean','Sources')
+remove={'upper ward and bastion','slate roof main mass','four weighty defensive towers',
+'stone tower crowns','crenellations','central gate surround','heavy gateway',
+'warm fire torches','indigo royal banners','working sawmill','sawmill roof','logs'}
+for ob in list(bpy.data.objects):
+ if ob.name.split('.')[0] in remove:bpy.data.objects.remove(ob,do_unlink=True)
+reused_glb(os.path.join(source_dir,'BastionII.glb'),(-5,6),16.2,z(-5,5)+3.0,'Bastion II')
+reused_glb(os.path.join(source_dir,'SawmillRefined104.glb'),(-24,4),9.5,z(-24,4)+.6,'Sawmill real')
+
 # cinematic, readable orthographic camera with true 3D mesh parallax
 def light(name,loc,power,size,color):
  data=bpy.data.lights.new(name,'AREA');data.energy=power;data.size=size;data.color=color
  ob=bpy.data.objects.new(name,data);bpy.context.collection.objects.link(ob);ob.location=loc
  ob.rotation_euler=(Vector((-5,1,0))-ob.location).to_track_quat('-Z','Y').to_euler()
-light('warm sun',(-25,-32,48),4200,40,(1,.84,.67))
-light('cold sky',(22,3,55),3200,60,(.66,.76,1))
+light('warm sun',(-25,-32,48),6200,40,(1,.84,.67))
+light('cold sky',(22,3,55),4500,60,(.66,.76,1))
 data=bpy.data.cameras.new('isometric game camera');cam=bpy.data.objects.new('isometric game camera',data)
 bpy.context.collection.objects.link(cam);cam.location=(61,-69,59)
 cam.rotation_euler=(Vector((-2,0,0))-cam.location).to_track_quat('-Z','Y').to_euler()
