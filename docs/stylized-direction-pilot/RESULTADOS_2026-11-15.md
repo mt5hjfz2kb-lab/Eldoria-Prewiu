@@ -1,5 +1,20 @@
 # Eldoria — conclusión del ensayo visual de 15/11/2026
 
+## Ensayo 3D estilizado con fuentes reales — 15/11/2026
+
+**Resultado: render de Blender real y fuente 3D editable reproducibles; calidad de producto todavía NO certificada.** El objetivo de 7,5/10 visual sigue pendiente. La beta y `main` no se alteran.
+
+- [Run 43728354765](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43728354765): primer kit geométrico original completo; demasiado esquemático y oscuro. Rechazado artísticamente, aunque su producción técnica pasó.
+- [Run 43729427408](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43729427408): reutilización real de `BastionII.glb` y `SawmillRefined104.glb`, terreno continuo y luz legible. Mejora macroscópica clara sobre el primer kit.
+- [Run 43730016249](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43730016249): render y archivo fuente de Blender + GLB reales, con Bastión II, Aserradero, Cuartel AP2, paisaje continuo, Brecha y un elemento patrimonial 3D. CI **SUCCESS**; artefacto **14168046558**, ~51 MB. Incluye PNG horizontal y vertical, `.blend` editable y GLB. El material del arco patrimonial sigue demasiado pálido respecto al conjunto; el terreno, río y vegetación necesitan mayor oficio artístico.
+
+**Decisión de dirección:** priorizar estilización adulta y coherencia con fuentes arquitectónicas existentes, no modelos de cajas, fotorealismo o filtros cromáticos. El tercer ensayo es una **prueba de dirección**, no un reemplazo aprobado del juego: escenas separadas, sin HUD/interacción en Unity, sin medición de memoria WebGL o dispositivo físico. La calidad visual real **todavía no justifica fusionarlo a producción**.
+
+**Aprendizaje reutilizable:** preservar el aspecto real de Bastión/Aserradero/Cuartel y concentrar el esfuerzo en un entorno authored 2.5D modular (terrazas, rutas, ribera, arbolado y ruinas) donde el terreno y los edificios compartan escala y material. Evitar nuevas iteraciones de solo color o la producción masiva de props aleatorios. Próxima validación obligatoria: importar el kit aprobado a una escena Unity aislada y probar A/B con cámara y dispositivos exactos. `ART_APPROVED=false`; `MOBILE_TESTED=false`; no publicar ni convertir en beta de testers.
+
+---
+
+
 Estado: **prueba técnica realizada; objetivo artístico NO alcanzado**. PR #196 debe permanecer en borrador, sin merge a main ni a la beta.
 
 ## Evidencia real de Unity
