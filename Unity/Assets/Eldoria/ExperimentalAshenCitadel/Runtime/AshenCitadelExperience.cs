@@ -261,8 +261,9 @@ namespace Eldoria.ExperimentalAshenCitadel
             {
                 var item=Button(popupActionArea,spec.Item1,spec.Item1,spec.Item3?primary:secondary,
                     new Vector2(0,0),new Vector2(1,0),Vector2.zero,new Vector2(0,47),spec.Item2,14);
-                item.GetComponent<LayoutElement>() ?? item.gameObject.AddComponent<LayoutElement>();
-                item.gameObject.GetComponent<LayoutElement>().preferredHeight=47;
+                var element=item.GetComponent<LayoutElement>();
+                if(element==null)element=item.gameObject.AddComponent<LayoutElement>();
+                element.preferredHeight=47;
                 item.interactable=spec.Item3;
             }
         }
