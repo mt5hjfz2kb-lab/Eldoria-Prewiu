@@ -21,6 +21,12 @@ for name in ('candidate','control'):
  assert samples and all(not s.get('gpuLedger') for s in samples),'Use unperturbed rendering in comparison'
  log=(root/name/'console.log').read_text()
  if native:
+  journal=json.loads((root/name/'world-journal.json').read_text())
+  assert journal['diagnostic']=='beta21-world-v5' and journal['nativeSource']==source
+  assert str(journal['nativeRun'])==str(proof['native_run'])
+  for seconds in (1,2,4,8,16):
+   live=[e for e in journal['current'] if e['phase']=='world-live-'+str(seconds)+'s']
+   assert live and all(e.get('usedWASMHeapBytes',0)>0 and e.get('wasmCapacityBytes',0)>=e['usedWASMHeapBytes'] for e in live),'Missing bounded real memory sample'
   marker='ELDORIA_P0_STATIC_MESH_CPU_RETIRED count=4'
   if name=='candidate':
    assert marker in log and log.index(marker)<log.index('ELDORIA_P0_LAZY_WORLD_REQUESTED')
