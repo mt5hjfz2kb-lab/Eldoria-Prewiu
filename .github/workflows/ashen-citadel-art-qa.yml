@@ -1,0 +1,77 @@
+name: "EXPERIMENT Ashen Citadel · genuine Blender art and integrity"
+on:
+  push:
+    branches:
+      - experiment/ashen-citadel-i-v-20261115
+    paths:
+      - 'tools/ashen-citadel/**'
+      - 'Unity/Assets/Eldoria/ExperimentalAshenCitadel/**'
+      - '.github/workflows/ashen-citadel-art-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ashen-art-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-and-blender:
+    name: "Original mesh → validation → Blender Cycles"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout ONLY separate experiment source
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/ashen-citadel-art-qa.yml
+            tools/ashen-citadel
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel
+      - name: Syntax and source geometry integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/ashen-citadel/verify_art.py tools/ashen-citadel/blender_review.py
+          python3 tools/ashen-citadel/verify_art.py
+          node tools/ashen-citadel/generate.mjs
+          git diff --exit-code -- tools/ashen-citadel/art-manifest.json Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes
+      - name: Install actual Blender (headless Ubuntu)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          blender --version | head -n 2
+      - name: Real Blender 3D import, material, camera & five renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python tools/ashen-citadel/blender_review.py -- --out artifacts/ashen-blender 2>&1 | tee artifacts-blender.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('artifacts/ashen-blender')
+          v=json.loads((root/'report.json').read_text())
+          assert len(v['evidence'])==5
+          for item in v['evidence']:
+              assert (root/item['png']).stat().st_size>4000
+              assert (root/item['blend']).stat().st_size>10000
+              assert (root/item['glb']).stat().st_size>4000
+              assert item['triangles']>1000
+          print('ASHEN_BLENDER_OUTPUTS_VERIFIED: 5 PNG + 5 BLEND + 5 GLB')
+          PY
+      - name: Preserve images and editable source for independent visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ashen-blender-art-review-${{ github.run_id }}
+          path: |
+            artifacts/ashen-blender/**
+            artifacts-blender.log
+          retention-days: 14
+          if-no-files-found: warn
