@@ -9,13 +9,15 @@
   "optionalUnityReferences": [
     "TestAssemblies"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": [],
   "autoReferenced": false,
   "defineConstraints": [
     "UNITY_INCLUDE_TESTS"
   ],
-  "overrideReferences": false,
-  "noEngineReferences": false
+  "overrideReferences": true,
+  "noEngineReferences": false,
+  "excludePlatforms": [],
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ]
 }

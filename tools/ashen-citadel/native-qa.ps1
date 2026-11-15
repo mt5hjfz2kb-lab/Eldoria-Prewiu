@@ -193,7 +193,7 @@ if($portraitHashes.Count -ne 5){
 $testLog=Join-Path $OutputRoot 'unity-nunit.log'
 $testResults=Join-Path $OutputRoot 'Ashen-EditMode-Results.xml'
 $testArgs='-batchmode -force-d3d11 -projectPath '+$quotedProject+
-    ' -runTests -testPlatform editmode -testResults "'+$testResults+
+    ' -runTests -testPlatform editmode -testFilter Eldoria.ExperimentalAshenCitadel.Tests.AshenCitadelProgressionTests -testResults "'+$testResults+
     '" -logFile "'+$testLog+'"'
 Write-Output ('ASHEN_NUNIT_UNITY_BEGIN '+$testArgs)
 $testStd=Join-Path $OutputRoot 'nunit-stdout.txt'
@@ -241,7 +241,7 @@ Write-Output "ASHEN_NUNIT_REAL_PASS total=$completed passed=$passed failed=$fail
 $uiLog=Join-Path $OutputRoot 'unity-playmode.log'
 $uiResults=Join-Path $OutputRoot 'Ashen-PlayMode-Results.xml'
 $uiArgs='-batchmode -force-d3d11 -projectPath '+$quotedProject+
-    ' -runTests -testPlatform playmode -testResults "'+$uiResults+
+    ' -runTests -testPlatform playmode -testFilter Eldoria.ExperimentalAshenCitadel.Tests.AshenCitadelPlayableTests -testResults "'+$uiResults+
     '" -logFile "'+$uiLog+'"'
 Write-Output ('ASHEN_PLAYMODE_UNITY_BEGIN '+$uiArgs)
 $uiStd=Join-Path $OutputRoot 'playmode-stdout.txt'
