@@ -128,3 +128,30 @@ no NUnit/native campaign/WebGL success or physical-iPhone stability is claimed.
 The successful same-engine serialized experiment remains distinct from pending
 compiled runtime UploadMeshData verification. No replacement has been published.
 
+## Exact native certification completed
+
+Run43739391559 (workflow79c74ce6bb26c4903f19686b900851a508957bce) completed
+preflight, Windows native certification, WebGL compile and Ubuntu packaging.
+Frozen runtime source05e1846f0213c6320850505bc054110c53934f55.
+Native evidence artifact14173273151 SHA256
+1745e646e5c7478564ce64a8a53c58e2f1ac28039c18683d8db53504c7c5c02d
+was downloaded, independently hashed and inspected. Actual NUnit result1/1passed,
+0failed/0skipped; marker proves12world reentries completed. Four eligible meshes
+retired CPU readability with geometry preserved; real collider checks passed.
+Editor mesh inventory before/after both174154848bytes: NOT a measured browser
+CPU-memory reduction. No physical-iPhone stability claim follows from this.
+
+Reviewed six actual Unity close/regional/panoramic portrait/landscape views plus
+city/barracks,march,heroes,mail captures. No missing static models/roofs observed.
+Native saved I-V campaign completed with exact final save. This is regression
+review, not approval of overall art quality.
+
+Packaged site artifact14173109200 SHA256
+5eae51319416a2df8ed6e8cf519296923fc3a18b6517895399d356effd7dcfb7
+was independently verified. Bundle8fd5fd1c37a0b30b4b23d2a9af3e6a2bd7cf682eef3e53d6732e74b2298e77f2;
+delivered data07aedd85979e3f06ccea19c1fcd6a2bb7c0793ce8e7b6dbdabb54a6f5ef536a3.
+Bounded journal21e2 playSHA99f5fe51df8c611833f340e6a8baca52dc9eb51501eec28582a2242229afc665.
+Windows completed own generated-cache cleanup and reported403.99GiB free, then
+resource was released in main. Browser comparison43744175007 at668b3a33ce3bf7d9965a82c48f7f53c79c107f8b
+is pending.11local publication/restoration unit checks passed. Public21e1 unchanged.
+
