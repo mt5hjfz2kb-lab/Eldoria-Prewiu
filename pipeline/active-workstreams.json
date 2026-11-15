@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T14:53:59.155Z",
+  "updated_at": "2026-11-15T15:21:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9623,14 +9623,16 @@
     {
       "id": "eldoria-stylized-direction-proof-20261115",
       "title": "Prueba estilizada coherente 2.5D sobre capturas nativas de la ciudad de Valoria",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 5,
+      "owner": "chatgpt-eldoria-stylized-art-proof-20261115",
+      "ownership_state": "claimed",
+      "ownership_revision": 6,
       "branch": "feature/eldoria-stylized-direction-proof-20261115",
       "status": "active",
-      "phase": "UNITY_REAL_AB_TESTED_ALL_VISUAL_VARIANTS_REJECTED_STYLIZED_ASSET_AUTHORING_NEEDED",
+      "phase": "TRUE_UNITY_ART_DIRECTED_SOIL_COHERENCE_PROOF",
       "claimed_at": "2026-11-15T13:39:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/StylizedDirectionPilot/**",
         "Unity/Assets/Eldoria/StylizedDirectionPilot.meta",
@@ -9640,7 +9642,7 @@
         ".github/workflows/eldoria-stylized-direction-pilot.yml"
       ],
       "base_main_sha": "26ebae77fd554b91bc4663b10bb1bdfcd2f0920b",
-      "reason": "Owner explicitly authorizes a stylized, easier-to-produce art-direction experiment; add isolated editor-only native capture, compare real camera baseline/candidate without modifying gameplay, player saves, beta or owners of city/world production.",
+      "reason": "Owner explicitly ordered continuing until a substantial visual result; successfully tested F terrain palette preserved, now one bounded soil-wear/camera look-development without altering world P0 or beta.",
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-stylized-direction-proof-20261115.json",
       "art_approved": false,
