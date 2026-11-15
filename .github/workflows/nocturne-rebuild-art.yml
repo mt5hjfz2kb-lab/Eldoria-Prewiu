@@ -84,5 +84,18 @@ jobs:
             echo "Assets already identical"
           else
             git commit -m "experiment(nocturne): version original Blender 3D assets and five renders"
-            git push origin HEAD:refs/heads/experiment/nocturne-rebuild-bastion-i-v-20261115
+            # Never force-push. Ongoing experiment-only code commits may land
+            # while Blender is rendering; replay the new art commit safely.
+            for attempt in 1 2 3; do
+              git fetch --no-tags origin experiment/nocturne-rebuild-bastion-i-v-20261115
+              git rebase FETCH_HEAD || { git rebase --abort; exit 1; }
+              if git push origin HEAD:refs/heads/experiment/nocturne-rebuild-bastion-i-v-20261115; then
+                echo "NOCTURNE_ART_COMMITTED_FAST_FORWARD_SAFE"
+                break
+              fi
+              if [ "$attempt" = 3 ]; then
+                echo "Art validated, but concurrent branch writes prevented publication"
+                exit 1
+              fi
+            done
           fi
