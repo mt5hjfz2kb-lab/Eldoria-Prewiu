@@ -110,7 +110,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
         }
         static float Diff(string left,string right)
         {
-            var a=new Texture2D(2,2),b=new Texture2D(2,2);
+            var a=new Texture2D(2,2); var b=new Texture2D(2,2);
             try {
                 if(!a.LoadImage(File.ReadAllBytes(left))||!b.LoadImage(File.ReadAllBytes(right))||
                    a.width!=b.width||a.height!=b.height)throw new IOException("A/B dimensions mismatch");

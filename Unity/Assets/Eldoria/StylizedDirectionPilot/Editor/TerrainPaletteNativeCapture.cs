@@ -144,7 +144,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 layers=new TerrainLayer[3];
                 for(int i=0;i<layers.Length;i++)
                 {
-                    var l=ScriptableObject.CreateInstance<TerrainLayer>();
+                    var l=new TerrainLayer();
                     l.name="ART PROOF / "+new[]{"sage meadow","forest undergrowth","warm exposed earth"}[i];
                     l.hideFlags=HideFlags.DontSaveInEditor|HideFlags.DontSaveInBuild;
                     l.diffuseTexture=maps[i];
