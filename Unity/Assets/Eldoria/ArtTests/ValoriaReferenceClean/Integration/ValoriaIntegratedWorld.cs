@@ -55,7 +55,124 @@ namespace Eldoria.ReferenceClean {
   }
 #if UNITY_EDITOR
   public static bool P0LazyWorldEditorTestOverride {get;set;}
+  public static bool P0EntryRenderBudgetEditorTestOverride {get;set;}
 #endif
+  // Separate opt-in from the published world-only MSAA trial: its change
+  // happened after construction and could not reduce the first-entry peak.
+  static bool P0EntryRenderBudget {
+   get {
+#if UNITY_EDITOR
+    return P0EntryRenderBudgetEditorTestOverride;
+#elif UNITY_WEBGL
+    return UnityEngine.Application.absoluteURL.Contains("eldoria_p0_entry_msaa_off=1");
+#else
+    return false;
+#endif
+   }
+  }
+#if UNITY_EDITOR
+  public static bool P0StaticMeshCpuEditorTestOverride {get;set;}
+#endif
+  static bool P0StaticMeshCpu {
+   get {
+#if UNITY_EDITOR
+    return P0StaticMeshCpuEditorTestOverride||Environment.GetEnvironmentVariable("ELDORIA_STATIC_MESH_CPU_TRIAL")=="1";
+#elif UNITY_WEBGL
+    return UnityEngine.Application.absoluteURL.Contains("eldoria_p0_static_mesh_cpu=1");
+#else
+    return false;
+#endif
+   }
+  }
+  void RetireStaticBastionCpuCopies(){
+   if(!P0StaticMeshCpu)return;
+   var roots=new[]{city.BastionOne,city.BastionTwo,WorldBastionOne,WorldBastionTwo};
+   if(roots.Any(root=>!root))throw new InvalidOperationException("Static Bastion roots missing");
+   var filters=roots.SelectMany(root=>root.GetComponentsInChildren<MeshFilter>(true)).ToArray();
+   var meshes=filters.Where(filter=>filter.sharedMesh).Select(filter=>filter.sharedMesh).Distinct().ToArray();
+   // Exact measured four-mesh cohort. No terrain, creatures, resource contact
+   // fitting or heroes are eligible; a changed scene must be audited again.
+   if(meshes.Length!=4)throw new InvalidOperationException("Static Bastion mesh cohort changed");
+   if(Resources.FindObjectsOfTypeAll<SkinnedMeshRenderer>().Any(skin=>skin&&meshes.Contains(skin.sharedMesh)))
+    throw new InvalidOperationException("Static mesh unexpectedly used by skinning");
+   foreach(var collider in Resources.FindObjectsOfTypeAll<MeshCollider>()){
+    if(!collider||!meshes.Contains(collider.sharedMesh))continue;
+    if(collider.convex||(int)collider.cookingOptions!=30)
+     throw new InvalidOperationException("Static mesh has non-default collider cooking");
+    var matrix=collider.transform.localToWorldMatrix;
+    Vector3 x=matrix.GetColumn(0),y=matrix.GetColumn(1),z=matrix.GetColumn(2);
+    if(matrix.determinant<=0||Mathf.Abs(Vector3.Dot(x.normalized,y.normalized))>.0001f||
+       Mathf.Abs(Vector3.Dot(x.normalized,z.normalized))>.0001f||
+       Mathf.Abs(Vector3.Dot(y.normalized,z.normalized))>.0001f)
+     throw new InvalidOperationException("Static mesh collider has negative or sheared transform");
+   }
+   long before=meshes.Sum(mesh=>UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh));
+   foreach(var mesh in meshes){
+    var bounds=mesh.bounds;int vertices=mesh.vertexCount,submeshes=mesh.subMeshCount;
+    var indices=Enumerable.Range(0,submeshes).Select(i=>mesh.GetIndexCount(i)).ToArray();
+    // Keep the GPU geometry and existing cooked collider. Only retire the
+    // script-readable CPU copy, which these static models never edit/read.
+    if(mesh.isReadable)mesh.UploadMeshData(true);
+    if(mesh.isReadable||mesh.vertexCount!=vertices||mesh.subMeshCount!=submeshes||mesh.bounds!=bounds||
+       Enumerable.Range(0,submeshes).Any(i=>mesh.GetIndexCount(i)!=indices[i]))
+     throw new InvalidOperationException("Static mesh metadata changed during CPU retirement");
+   }
+   long after=meshes.Sum(mesh=>UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(mesh));
+   Debug.Log("ELDORIA_P0_STATIC_MESH_CPU_RETIRED count="+meshes.Length+" before="+before+" after="+after+
+    " geometry_preserved=1");
+  }
+  Camera entryCityCamera;
+  bool entryRenderBudgetHeld,entryCityMsaa,entryWorldMsaa;
+  internal IEnumerator PrepareDeferredWorldRenderBudget(){
+   if(!P0EntryRenderBudget||!city||!city.PlayerCamera||!WorldCamera)yield break;
+   var previousTargets=Resources.FindObjectsOfTypeAll<RenderTexture>()
+    .Where(t=>t&&t.IsCreated()&&t.antiAliasing>1&&
+     (t.name.StartsWith("_CameraDepthAttachment",StringComparison.Ordinal)||
+      t.name.StartsWith("_CameraTargetAttachment",StringComparison.Ordinal))).ToArray();
+   if(!entryRenderBudgetHeld){
+    entryCityCamera=city.PlayerCamera;
+    entryCityMsaa=entryCityCamera.allowMSAA;entryWorldMsaa=WorldCamera.allowMSAA;
+    entryRenderBudgetHeld=true;
+    TraceEntryRenderTargets("before");
+    entryCityCamera.allowMSAA=false;WorldCamera.allowMSAA=false;
+    Debug.Log("ELDORIA_P0_ENTRY_RENDER_BUDGET_REQUESTED");
+   }
+   // Return to the player loop before any terrain allocation. Camera flags
+   // alone do not prove that URP has retired its old render targets.
+   yield return null;
+   yield return null;
+   float deadline=Time.realtimeSinceStartup+15f;
+   int waited=2;
+   while(previousTargets.Any(t=>t&&t.IsCreated()&&t.antiAliasing>1)&&
+         waited<90&&Time.realtimeSinceStartup<deadline){
+    waited++;yield return null;
+   }
+   TraceEntryRenderTargets("before-terrain");
+   if(previousTargets.Any(t=>t&&t.IsCreated()&&t.antiAliasing>1))
+    throw new InvalidOperationException("City MSAA render targets remained allocated before terrain");
+   Debug.Log("ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED retired="+previousTargets.Length+" frames="+waited);
+  }
+  internal void DeferredWorldBuildFinished(){
+   if(!deferredWorldEntryQueued&&!InWorld)RestoreEntryRenderBudget();
+  }
+  void RestoreEntryRenderBudget(){
+   if(!entryRenderBudgetHeld)return;
+   if(entryCityCamera)entryCityCamera.allowMSAA=entryCityMsaa;
+   if(WorldCamera)WorldCamera.allowMSAA=entryWorldMsaa;
+   entryRenderBudgetHeld=false;entryCityCamera=null;
+   Debug.Log("ELDORIA_P0_ENTRY_RENDER_BUDGET_RESTORED");
+  }
+  void OnDisable(){RestoreEntryRenderBudget();}
+  static void TraceEntryRenderTargets(string phase){
+   long bytes=0;int created=0,multisampled=0;
+   foreach(var target in Resources.FindObjectsOfTypeAll<RenderTexture>()){
+    if(!target||!target.IsCreated())continue;
+    created++;if(target.antiAliasing>1)multisampled++;
+    bytes+=UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(target);
+   }
+   Debug.Log("ELDORIA_P0_ENTRY_RENDER_TARGETS phase="+phase+
+    " created="+created+" multisampled="+multisampled+" unity_bytes="+bytes);
+  }
   public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady||P0CityOnlyProbe||P0LazyWorldProbe);
   bool deferredWorldEntryQueued;
   public bool WorldEntryPending=>deferredWorldEntryQueued;
@@ -73,8 +190,13 @@ namespace Eldoria.ReferenceClean {
    var objective=deferredWorldObjective;deferredWorldObjective=null;
    if(worldPresentation&&worldPresentation.IsReady){
     Debug.Log("ELDORIA_P0_LAZY_WORLD_READY_FOR_ENTRY");
-    if(TrySetWorld(true)&&!string.IsNullOrEmpty(objective))Select(objective);
-   }else if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+    if(TrySetWorld(true)){
+     if(!string.IsNullOrEmpty(objective))Select(objective);
+    }else RestoreEntryRenderBudget();
+   }else {
+    if(!worldPresentation||!worldPresentation.IsLoading)RestoreEntryRenderBudget();
+    if(Hud)Hud.Feedback.Put("No se ha podido preparar el mundo. La ciudad y tu progreso siguen disponibles.");
+   }
   }
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
@@ -126,6 +248,7 @@ namespace Eldoria.ReferenceClean {
    city=GetComponent<ValoriaReferenceCleanGameplay>();
    yield return null;
    if(city==null||!city.Ready||HudPrefab==null||WorldRoot==null||WorldCamera==null){Debug.LogError("VALORIA_INTEGRATION_MISSING_BINDING");yield break;}
+   RetireStaticBastionCpuCopies();
    var legacy=GameObject.Find("Eldoria HUD");
    if(!legacy){Debug.LogError("VALORIA_INTEGRATION_MISSING_PRESENTER_HUD");yield break;}
    legacyCanvas=legacy.GetComponent<Canvas>();legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
@@ -432,6 +555,9 @@ namespace Eldoria.ReferenceClean {
    if(!open){
     deferredWorldObjective=null;
     if(deferredWorldEntryQueued){deferredWorldEntryQueued=false;deferredWorldEpoch++;}
+    // Cancelling entry does not cancel the single background terrain build.
+    // Retain its budget until that build finishes, then restore the city.
+    if(!worldPresentation||!worldPresentation.IsLoading)RestoreEntryRenderBudget();
    }
    if(open&&P0LazyWorldProbe){
     // Never expose camera or enemy targets before complete canonical installation.
@@ -452,6 +578,15 @@ namespace Eldoria.ReferenceClean {
    if(InWorld==open)return true;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    unappliedDragPixels=Vector2.zero;
+   // Experimental opt-in for mobile GPU allocation diagnosis. The City
+   // retains its approved antialiasing. An explicit browser URL flag can
+   // compare this SAME source/terrain with and without the World camera's
+   // MSAA render target; it is not a blanket quality reduction.
+   if(open&&UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer&&
+      UnityEngine.Application.absoluteURL.Contains("eldoria_p0_world_msaa_off=1")){
+    WorldCamera.allowMSAA=false;
+    Debug.Log("ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1");
+   }
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    if(open&&P0LazyWorldProbe)Debug.Log("ELDORIA_P0_LAZY_WORLD_ENTERED");
    if(!open)city.Controls.ResetView();

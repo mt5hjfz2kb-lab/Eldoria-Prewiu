@@ -40,6 +40,9 @@ var sources=new[]
     "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
     "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
+    "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
     "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
     "Unity/Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs"
@@ -80,7 +83,7 @@ foreach(var rel in sources)
     }
     checkedFiles++;
 }
-if(checkedFiles!=26)throw new Exception("Source membership changed: "+checkedFiles);
+if(checkedFiles!=29)throw new Exception("Source membership changed: "+checkedFiles);
 Console.WriteLine("PR179_ROSLYN_SYNTAX_PASS_EDITOR_WEBGL_WINDOWS: "+checkedFiles+
     " source files x 3 preprocessor modes = "+(checkedFiles*3)+" parsed versions.");
 Console.WriteLine("SOURCE-ONLY: no Unity API type-check, PlayMode execution or device PASS");

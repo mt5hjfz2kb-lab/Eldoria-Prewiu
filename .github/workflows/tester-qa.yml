@@ -127,7 +127,9 @@ jobs:
   tester-qa:
     needs: scope
     if: needs.scope.outputs.required == 'true'
-    runs-on: ubuntu-latest
+    # Playwright 1.55 has Chromium builds for 24.04, not ubuntu-latest 26.04.
+    # Keep the frozen browser/test version and every assertion unchanged.
+    runs-on: ubuntu-24.04
     timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4

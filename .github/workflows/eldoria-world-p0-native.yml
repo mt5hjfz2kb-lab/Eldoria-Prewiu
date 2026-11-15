@@ -1,0 +1,397 @@
+name: Eldoria P0 real Unity world-entry and streaming proof
+on:
+  push:
+    branches: [fix/eldoria-world-first-entry-p0-20261114]
+    paths: [tools/eldoria-private-beta/world-p0-request.txt]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-world-p0-exclusive-unity
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta/world-p0-request.txt
+          sparse-checkout-cone-mode: false
+      - name: Verify exclusive live CAS before touching Windows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY'];sha=os.environ['GITHUB_SHA']
+          h={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          def get(path):
+              req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=h)
+              return json.load(urllib.request.urlopen(req,timeout=30))
+          lines=open('tools/eldoria-private-beta/world-p0-request.txt').read().strip().splitlines()
+          assert lines==['state=FIRST_WORLD_ENTRY_NATIVE_ONLY',
+                         'owner=chatgpt-world-p0-continuation-9df36d17',
+                         'revision=80','testers_allowed=false','attempt=8']
+          assert get('git/ref/heads/fix/eldoria-world-first-entry-p0-20261114')['object']['sha']==sha
+          item=get('contents/pipeline/active-workstreams.json?ref=main')
+          b=item.get('content')
+          if item.get('encoding')!='base64' or not b:
+              blob=get('git/blobs/'+item['sha'])
+              assert blob.get('sha')==item['sha'] and blob.get('encoding')=='base64'
+              b=blob['content']
+          j=json.loads(base64.b64decode(b))
+          w=next(x for x in j['active'] if x['id']=='eldoria-private-beta-i-v-20261107')
+          holders=[x for x in j['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          assert len(holders)==1 and holders[0]['id']==w['id']
+          assert w['owner']=='chatgpt-world-p0-continuation-9df36d17'
+          assert w['branch']=='fix/eldoria-world-first-entry-p0-20261114'
+          assert w['ownership_revision']==80 and w['ownership_state']=='claimed'
+          print('P0_EXACT_CURRENT_SOURCE_LIVE_LEASE_VERIFIED',sha)
+          PY
+  native:
+    needs: preflight
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 150
+    steps:
+      - name: Verify installed Git, disk safety and no existing Unity or Blender
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another owner runs Unity or Blender'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'No installed Git; archive fallback forbidden'}
+            $dir=Split-Path $git;$env:PATH="$dir;$env:PATH";Add-Content $env:GITHUB_PATH $dir
+          }
+          $free=(Get-PSDrive C).Free/1GB
+          Write-Host ('P0_FREE_BEFORE_GIB='+[Math]::Round($free,2))
+          if($free -lt 36){throw 'Too little free disk for isolated Unity; preserve all sources'}
+      - name: Reuse only owned verified P0 Git checkout, or fetch current source safely
+        shell: powershell
+        timeout-minutes: 30
+        run: |
+          $ErrorActionPreference='Stop'
+          # The previous P0 run already fetched 16GB of Git assets. Reusing
+          # ONLY that isolated P0 checkout avoids another entire source
+          # download, reducing the runner disk-growth problem. Never borrow
+          # another owner's checkout and never force-clean untracked files.
+          $prior=Join-Path $env:RUNNER_TEMP 'eldoria-world-p0-43638950225'
+          $priorSha='8e2eac0ac4831059fabd9bb4639bb2667e3dac19'
+          $root=$null
+          if(Test-Path -LiteralPath $prior -PathType Container){
+            $item=Get-Item -LiteralPath $prior -Force
+            if(-not($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -and
+               (Test-Path -LiteralPath (Join-Path $prior '.git'))){
+              $head=(& git -C $prior rev-parse HEAD).Trim()
+              if($head -eq $priorSha){
+                $dirty=@(& git -C $prior status --porcelain --untracked-files=no)
+                if($LASTEXITCODE){throw 'Failed to inspect prior P0 checkout; preserve it'}
+                if($dirty.Count -eq 0){$root=$prior}
+              }
+            }
+          }
+          if($root){
+            Write-Host 'REUSING_PRIOR_P0_CHECKOUT_WITH_EXACT_SOURCE_AND_CLEAN_TRACKED_FILES'
+            & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+            if($LASTEXITCODE){throw 'Cannot fetch new exact commit into prior P0 source'}
+            & git -C $root checkout --detach FETCH_HEAD
+            if($LASTEXITCODE){throw 'Prior source checkout rejected edits; preserve all files'}
+          }else{
+            $root=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
+            if(Test-Path -LiteralPath $root){throw 'Run-owned directory already exists; refuse overwrite'}
+            # A dirty owned prior source is preserved. Its immutable Git objects
+            # can seed a NEW worktree without re-downloading the same 16GB.
+            $seed=$false
+            if((Test-Path -LiteralPath (Join-Path $prior '.git')) -and
+               -not((Get-Item -LiteralPath $prior).Attributes -band [IO.FileAttributes]::ReparsePoint)){
+              $seed=((& git -C $prior rev-parse HEAD).Trim() -eq $priorSha)
+            }
+            if($seed){
+              & git -C $prior fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+              if($LASTEXITCODE){throw 'Cannot fetch exact commit into owned Git object store'}
+              & git -C $prior worktree add --no-checkout --detach $root $env:GITHUB_SHA
+              if($LASTEXITCODE){throw 'Cannot create separate owned worktree; preserve prior source'}
+              Write-Host 'P0_PRIOR_DIRTY_SOURCE_PRESERVED_NEW_WORKTREE_REUSES_GIT_OBJECTS'
+            }else{
+              & git init -q $root
+              if($LASTEXITCODE){throw 'Git init failed'}
+              & git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+              & git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+              if($LASTEXITCODE){throw 'Exact Git source fetch failed'}
+            }
+            & git -C $root config core.longpaths true
+            & git -C $root sparse-checkout set --no-cone '/Unity/' '/tools/eldoria-private-beta/'
+            if($LASTEXITCODE){throw 'Sparse configuration failed'}
+            & git -C $root checkout --detach $env:GITHUB_SHA
+            if($LASTEXITCODE){throw 'Exact fresh Git checkout failed'}
+          }
+          if((& git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source mismatch'}
+          $project=Join-Path $root 'Unity'
+          if(-not(Test-Path (Join-Path $project 'Assets/Eldoria/BetaMemoryProbe/Tests/PlayMode/LazyRegionStartupTests.cs'))){
+            throw 'Actual Unity regression fixture missing'
+          }
+          $disk=(Get-PSDrive C).Free/1GB
+          if($disk -lt 24){throw 'Too little free disk to import Unity without touching other work'}
+          Add-Content $env:GITHUB_ENV ('ELDORIA_P0_SRC='+$root)
+          Add-Content $env:GITHUB_ENV ('ELDORIA_P0_PROJECT='+$project)
+          if(Test-Path 'world-p0-results-${{ github.run_id }}'){throw 'Evidence directory already exists; refuse stale result reuse'}
+          New-Item -ItemType Directory -Path 'world-p0-results-${{ github.run_id }}'|Out-Null
+          Set-Content -LiteralPath 'world-p0-results-${{ github.run_id }}/source.txt' -Value $env:GITHUB_SHA
+          Write-Host ('WORLD_P0_OWNED_PROJECT_SOURCE_READY='+$env:GITHUB_SHA+' FREE_GIB='+[Math]::Round($disk,2))
+      - name: Retrieve prior validated source-identical terrain query tape for exact Region 1
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 43489752868
+          name: integrated-build-proof-90465a9a910b89a8a8b74e4b33a9bbc88578e00e
+          github-token: ${{ github.token }}
+          path: world-p0-verified-prior-proof
+      - name: Verify and import original audited terrain queries into isolated P0 source
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $prefix=Join-Path $env:GITHUB_WORKSPACE 'world-p0-verified-prior-proof/integrated-terrain-43489752868'
+          $source=Join-Path $prefix 'RuntimeTerrainQueries.bytes'
+          $sourceMeta=Join-Path $prefix 'RuntimeTerrainQueries.bytes.meta'
+          $expected='013EBF8194BE6974DBCADF27E3CF2AE43DB7C7638E0E6CB22CFE838E037ED986'
+          $metaSha='C05C2D9E21F36BA5FBCBBBD4D97CC377A1CB04F72FBDA47BC630B1D9F4A324BD'
+          if(-not(Test-Path -LiteralPath $source) -or
+             (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash -ne $expected){
+            throw 'Previously baked terrain queries missing or not byte identical'
+          }
+          if(-not(Test-Path -LiteralPath $sourceMeta) -or
+             (Get-FileHash -LiteralPath $sourceMeta -Algorithm SHA256).Hash -ne $metaSha){
+            throw 'Baked terrain Unity GUID identity not preserved'
+          }
+          $proof=Get-Content -LiteralPath (Join-Path $prefix 'validate/startup-0.json') -Raw|ConvertFrom-Json
+          if($proof.source -ne '90465a9a910b89a8a8b74e4b33a9bbc88578e00e' -or
+             -not $proof.canonicalSavesUnchanged -or $proof.terrainParityCheckedQueries -le 10000){
+            throw 'Previous exact terrain geometry/query/save certificate is invalid'
+          }
+          $asset=Join-Path $env:ELDORIA_P0_PROJECT 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes'
+          New-Item -ItemType Directory -Force (Split-Path $asset)|Out-Null
+          if(Test-Path -LiteralPath $asset){
+            if((Get-FileHash -LiteralPath $asset -Algorithm SHA256).Hash -ne $expected){
+              throw 'Protected generated terrain asset differs; refuse overwrite'
+            }
+          }else{Copy-Item -LiteralPath $source -Destination $asset}
+          if(Test-Path -LiteralPath ($asset+'.meta')){
+            if((Get-FileHash -LiteralPath ($asset+'.meta') -Algorithm SHA256).Hash -ne $metaSha){
+              throw 'Protected generated Unity meta differs; refuse overwrite'
+            }
+          }else{Copy-Item -LiteralPath $sourceMeta -Destination ($asset+'.meta')}
+          Write-Host 'P0_REGIONAL_TERRAIN_TAPE_EXACT_SOURCE_IMPORTED; PLAYMODE_MUST_CONFIRM_QUERY_ORDER'
+      - name: Restore only exact SHA-audited Bastion III art or explicitly run logical-only diagnostics
+        shell: powershell
+        timeout-minutes: 12
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Another native editor is running'
+          }
+          $auditPath=Join-Path $env:ELDORIA_P0_SRC 'tools/eldoria-private-beta/native/existing-input-audit.json'
+          $audit=Get-Content -LiteralPath $auditPath -Raw | ConvertFrom-Json
+          if($audit.base -ne '948ffa9837168a0b68dab80be76b66350422b23a'){
+            throw 'Original Bastion III source provenance differs'
+          }
+          $prefix='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/'
+          $art=@($audit.files|Where-Object {$_.path.StartsWith($prefix)})
+          if($art.Count -ne 51 -or ($art|Measure-Object bytes -Sum).Sum -ne 108788643){
+            throw 'Original 51-file native asset inventory has changed'
+          }
+          $origins=@('breachwatch-native-source-43489752868-1',
+            'beta-structural-preserved-inputs-43246088947-1',
+            'beta-structural-preserved-inputs-43211338159-1',
+            'beta-structural-preserved-inputs-43135567923-1',
+            'beta-structural-preserved-inputs-43127449523-1',
+            'beta-structural-preserved-inputs-42998206844-1',
+            'beta-structural-preserved-inputs-42993101501-1',
+            'beta-structural-preserved-inputs-42992127220-1',
+            'beta-structural-preserved-inputs-42985136961-1',
+            'beta-structural-preserved-inputs-42909656581-1',
+            'beta-structural-preserved-inputs-42714385780-1',
+            'beta-structural-preserved-inputs-42682071151-1',
+            'beta-structural-preserved-inputs-42645633286-1',
+            'beta-structural-preserved-inputs-42595057735-1',
+            'beta-structural-preserved-inputs-42593886558-1',
+            'beta-structural-preserved-inputs-42592919747-1',
+            'beta-structural-preserved-inputs-42590953962-1',
+            'beta-structural-preserved-inputs-42589025185-1',
+            'beta-structural-preserved-inputs-42588844458-1',
+            'beta-structural-preserved-inputs-42588287142-1',
+            'beta-structural-preserved-inputs-42587774697-1',
+            'beta-structural-preserved-inputs-42586848479-1',
+            'beta-structural-preserved-inputs-42586512619-1',
+            'beta-structural-preserved-inputs-42585946027-1',
+            'beta-structural-preserved-inputs-42518950317-1',
+            'beta-structural-preserved-inputs-42514790566-1',
+            'beta-structural-preserved-inputs-42514002669-1',
+            'beta-structural-preserved-inputs-42513182378-1',
+            'beta-structural-preserved-inputs-42508059413-1',
+            'beta-structural-preserved-inputs-42507779126-1',
+            'beta-structural-preserved-inputs-42435095850-1',
+            'beta-structural-preserved-inputs-42431634641-1',
+            'beta-structural-preserved-inputs-42431391139-1',
+            'forja-thin-native-source-42408083695',
+            'beta-structural-source-42505611257-1',
+            'valoria-layered-source')
+          $copies=New-Object 'System.Collections.Generic.List[object]'
+          $missing=New-Object 'System.Collections.Generic.List[string]'
+          foreach($item in $art){
+            $rel=[string]$item.path
+            if($rel.Contains('..') -or $rel.Contains(':') -or $rel.EndsWith('.cs') -or
+                $rel.EndsWith('.dll') -or $rel.EndsWith('.exe')){
+              throw 'Unapproved input in original asset manifest'
+            }
+            $dest=Join-Path $env:ELDORIA_P0_SRC $rel
+            if(Test-Path -LiteralPath $dest){
+              if((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $item.sha256){
+                throw ('Protected source asset differs from audit: '+$rel)
+              }
+              continue
+            }
+            $from=$null
+            foreach($name in $origins){
+              $candidate=Join-Path (Join-Path $env:GITHUB_WORKSPACE $name) $rel
+              if((Test-Path -LiteralPath $candidate -PathType Leaf) -and
+                 -not ((Get-Item -LiteralPath $candidate).Attributes -band [IO.FileAttributes]::ReparsePoint) -and
+                 (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash -eq $item.sha256){
+                $from=$candidate;break
+              }
+            }
+            if(-not $from){$missing.Add($rel);continue}
+            $copies.Add(@{source=$from;dest=$dest;sha256=$item.sha256;path=$rel})
+          }
+          if($missing.Count){
+            # This is a diagnostic-only fallback. It never substitutes or
+            # changes source artwork, scene, gameplay, or player build files.
+            # The published candidate MUST retain its full original art.
+            'ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART=1' | Add-Content $env:GITHUB_ENV
+            @('status=INCOMPLETE_ORIGINAL_BASTION_III_ART_NOT_CERTIFIED',
+              ('missing_files='+$missing.Count),('missing_paths='+($missing -join '|')),
+              'logical_qa_only=true',
+              'production_build_allowed=false') |
+              Set-Content 'world-p0-results-${{ github.run_id }}/missing-native-art.txt'
+            Write-Host ('MISSING_ORIGINAL_BASTION_III_ART='+$missing.Count+
+              ' NO_RELEASE_OR_ART_CERTIFICATION; RUN_LOGICAL_PROBE_ONLY')
+          }else{
+            foreach($item in $copies){
+              New-Item -ItemType Directory -Force (Split-Path $item.dest)|Out-Null
+              Copy-Item -LiteralPath $item.source -Destination $item.dest
+              if((Get-FileHash -LiteralPath $item.dest -Algorithm SHA256).Hash -ne $item.sha256){
+                throw ('Copied art failed exact checksum '+$item.path)
+              }
+            }
+            Write-Host ('WORLD_P0_ALL_ORIGINAL_ART_VERIFIED files='+$art.Count+' restored='+$copies.Count)
+          }
+      - name: Execute genuine Unity full-world first entry and 12 re-entry PlayMode
+        shell: powershell
+        timeout-minutes: 95
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unexpected Editor process; cannot overlap'}
+          $xml=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results-${{ github.run_id }}/test-results.xml'
+          if($env:ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART -ne '1'){
+            $env:ELDORIA_WORLD_P0_CAPTURE_REAL_ART='1'
+            $env:ELDORIA_WORLD_P0_CAPTURE_DIR=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results-${{ github.run_id }}/world-unity-views'
+          }
+          # On a brand-new 16 GB checkout Unity first imports the project and
+          # may exit normally without entering NUnit. The previous run
+          # 43626491653 exited 0 after importing but emitted NO test XML.
+          # A cold-import success cannot be reported as gameplay success.
+          # Never pass -quit to the Test Runner (the existing canonical
+          # run_lazy_world_playmode.ps1 intentionally omits it).
+          $log=$null
+          for($attempt=1;$attempt -le 2;$attempt++){
+            if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+              throw 'Unexpected Editor process on rerun; preserve logs'
+            }
+            $log=Join-Path $env:GITHUB_WORKSPACE ('world-p0-results-${{ github.run_id }}/editor-attempt-'+$attempt+'.log')
+            $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$env:ELDORIA_P0_PROJECT+'"'),
+              '-runTests','-testPlatform','PlayMode',
+              '-testFilter','Eldoria.BetaMemory.Tests.LazyRegionStartupTests',
+              '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+            $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $proc.WaitForExit(5400000)){throw 'Own Unity test timed out; preserve logs'}
+            if($proc.ExitCode -ne 0){
+              Get-Content -LiteralPath $log -Tail 80
+              throw ('Unity Editor failed with exit '+$proc.ExitCode)
+            }
+            if(Test-Path -LiteralPath $xml){break}
+            if($attempt -eq 1){
+              Write-Host 'COLD_IMPORT_FINISHED_WITHOUT_NUNIT_XML_RETRY_SAME_EXACT_PROJECT'
+              continue
+            }
+            throw 'Unity did not execute the real PlayMode test after warm retry'
+          }
+          [xml]$result=Get-Content -LiteralPath $xml -Raw
+          $node=$result.'test-run'
+          $cases=@($result.SelectNodes('//test-case')|Where-Object {
+            $_.GetAttribute('fullname').EndsWith('.RealWorldStartsOnFirstEligibleEntryWithoutSecondGatewayOrNewHUD')
+          })
+          if($node.result -ne 'Passed' -or [int]$node.total -ne 1 -or
+             [int]$node.passed -ne 1 -or [int]$node.failed -ne 0 -or
+             [int]$node.skipped -ne 0 -or $cases.Count -ne 1 -or
+             $cases[0].GetAttribute('result') -ne 'Passed'){
+            throw 'Exact Unity full-region playable fixture did not pass'
+          }
+          if(-not(Select-String -Path $log -Pattern 'ELDORIA_WORLD_STREAMING_VISUALS' -SimpleMatch -Quiet)){throw 'Missing stream bound proof'}
+          if(-not(Select-String $log -Pattern 'ELDORIA_LAZY_REAL_WORLD_NATIVE_12_REENTRY_CYCLES_COMPLETE' -SimpleMatch -Quiet)){throw 'Repeated world navigation not proven'}
+          if($env:ELDORIA_WORLD_P0_LOGIC_ONLY_MISSING_ART -eq '1'){
+            if(-not(Select-String -Path $log -Pattern 'ELDORIA_WORLD_P0_LOGIC_PROBE_MISSING_BASTION_ART_COUNT=' -SimpleMatch -Quiet)){
+              throw 'Missing-art logic-only proof marker absent'
+            }
+            Write-Host ('ELDORIA_WORLD_P0_LOGIC_ONLY_NATIVE_PASS_NOT_RELEASABLE '+$env:GITHUB_SHA)
+          }else{
+            $views=Join-Path $env:GITHUB_WORKSPACE 'world-p0-results-${{ github.run_id }}/world-unity-views'
+            if(-not(Test-Path $views)){
+              throw 'No real World 4X camera images despite full art gate'
+            }
+            if(@(Get-ChildItem -LiteralPath $views -Filter '*-unity.png' -File).Count -ne 6){
+              throw 'Not all 6 actual Unity world views were captured'
+            }
+            Write-Host ('ELDORIA_WORLD_P0_REAL_UNITY_WITH_ART_AND_SIX_VIEWS_PASS '+$env:GITHUB_SHA)
+          }
+      - name: Upload truthful native log and XML even when the proof fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-p0-native-proof
+          path: world-p0-results-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Safely reclaim ONLY this owned run's regenerable Library after upload
+        if: always()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:ELDORIA_P0_SRC){Write-Host 'NO_OWNED_PROJECT_SKIP';exit 0}
+          $src=$env:ELDORIA_P0_SRC
+          $expected=Join-Path $env:RUNNER_TEMP ('eldoria-world-p0-'+$env:GITHUB_RUN_ID)
+          $reused=Join-Path $env:RUNNER_TEMP 'eldoria-world-p0-43638950225'
+          if($src -ne $expected -and $src -ne $reused){
+            throw 'Cache cleanup path is outside exact permitted owned P0 checkouts'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'EDITOR_BUSY_SKIP_LIBRARY';exit 0}
+          if((& git -C $src rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Unrecognized source; preserve'}
+          $library=Join-Path $src 'Unity/Library'
+          if(-not(Test-Path $library)){exit 0}
+          $item=Get-Item $library -Force
+          if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Reparse point in Library; preserve'}
+          $empty=Join-Path $src 'world-p0-empty-owned'
+          if(Test-Path $empty){throw 'Cleanup marker exists; preserve'}
+          New-Item -ItemType Directory -Path $empty|Out-Null
+          & robocopy.exe $empty $library /MIR /XJ /R:1 /W:1 | Out-Null
+          if($LASTEXITCODE -ge 8){throw 'Safe Library reclaim failed'}
+          Remove-Item $library -Recurse -Force
+          Remove-Item $empty -Force
+          Write-Host ('P0_GENERATED_CACHE_RECLAIMED_FREE_GIB='+[Math]::Round((Get-PSDrive C).Free/1GB,2))
+          # Robocopy 1..7 means a successful copy/deletion but sets LASTEXITCODE
+          # nonzero. The explicit success return prevents false CI failure
+          # after all guarded cleanup operations have completed.
+          exit 0

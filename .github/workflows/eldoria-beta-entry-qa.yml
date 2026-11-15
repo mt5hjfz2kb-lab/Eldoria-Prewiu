@@ -1,47 +1,594 @@
-name: Eldoria public saved-game world-entry regression
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'tools/eldoria-private-beta/qa_world_entry_public.cjs'
-      - '.github/workflows/eldoria-beta-entry-qa.yml'
-  workflow_dispatch:
+name: Eldoria P0 actual browser world-entry comparison
 permissions:
   contents: read
+  actions: read
 concurrency:
-  group: eldoria-public-world-entry-regression
+  group: eldoria-world-p0-browser
   cancel-in-progress: false
 jobs:
   public-world-entry:
     runs-on: macos-15
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            tools/eldoria-private-beta
-            tools/art-direction/ai-authoring
-          persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Exercise actual public saved-game world entry and return
-        env:
-          QA_EXPECT_SOURCE: a2e956e11bc837a081c3eab1eb05c8ff094f4e05
-          QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1
-          QA_REQUIRE_CONSTRUCTION: '1'
-          QA_OUT: public-world-evidence
-          QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
-        run: |
-          set -euo pipefail
-          npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
-          swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
-          export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
-          node tools/eldoria-private-beta/qa_world_entry_public.cjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: public-world-entry-evidence
-          path: public-world-evidence
-          retention-days: 30
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43653390105
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/candidate
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43653390105
+        name: world-p0-reconciled-native-proof
+        github-token: ${{ github.token }}
+        path: exact-native-proof
+    - name: Retain exact reconciled native proof and published-UI provenance
+      run: |
+        python3 - <<'END'
+        import pathlib,shutil,json
+        source=pathlib.Path('exact-native-proof');out=pathlib.Path('world-evidence/native-build')
+        identity=json.loads(pathlib.Path('qa-site/candidate/release-identity.json').read_text())
+        provenance=json.loads((source/'provenance.json').read_text(encoding='utf-8-sig'))
+        assert provenance['source']==identity['source_sha']=='d0b21fd5708c5070d1bd62dc6c6a98399c549051'
+        assert provenance['workflow']=='cf105a3e407b24c8ffd7cf3a2e7fb3fd1ae834b9'
+        shutil.copytree(source,out)
+        END
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Compare real earned saved-game world entries in desktop WebKit
+      env:
+        QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
+        QA_URL: http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1
+        QA_REQUIRE_CONSTRUCTION: '1'
+        QA_OUT: world-evidence/world-entry
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        mkdir -p world-evidence
+        node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >world-evidence/server.log 2>&1 &
+        server_pid=$!
+        trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+        for i in {1..40}; do
+          if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi
+          sleep 1
+        done
+        failed=0
+        QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=world-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        QA_EXPECT_SOURCE=90465a9a910b89a8a8b74e4b33a9bbc88578e00e \
+          QA_URL='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1' \
+          QA_OUT=world-evidence/control19 node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        python3 - <<'END'
+        import json,pathlib,re
+        root=pathlib.Path('world-evidence');rows=[]
+        for name in ('control19','world-entry'):
+         p=root/name/'report.json'
+         if not p.exists():continue
+         d=json.loads(p.read_text());rss=[];gpu=[]
+         for entry in d.get('worldEntries',[]):
+          for sample in entry.get('samples',[]):
+           web_total=gpu_total=0
+           for line in sample.get('processes',[]):
+            m=re.match(r'\s*\d+\s+\d+\s+(\d+)\s+(.*)',line)
+            if not m:continue
+            if 'WebContent' in m.group(2):web_total+=int(m.group(1))
+            elif 'GPU' in m.group(2):gpu_total+=int(m.group(1))
+           if web_total:rss.append(web_total)
+           if gpu_total:gpu.append(gpu_total)
+         rows.append(dict(name=name,source=d.get('source'),passed=d.get('passed'),worldEntryAndReentryVerified=d.get('worldEntryAndReentryVerified'),peakSampledWebContentTotalKiB=max(rss) if rss else None,peakSampledGpuTotalKiB=max(gpu) if gpu else None,failure=d.get('failure')))
+        (root/'comparison.json').write_text(json.dumps(dict(scope='DESKTOP_WEBKIT_NOT_PHYSICAL_IPHONE',rows=rows),indent=2))
+        print(json.dumps(rows))
+        END
+        if [ "$failed" != 0 ]; then exit 1;fi
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-browser-comparison
+        path: world-evidence
+        retention-days: 30
+    needs: route
+    if: needs.route.outputs.mode == 'comparison'
+  route:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+      native_run: ${{ steps.mode.outputs.native_run }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta/world-p0-browser-request.txt
+        sparse-checkout-cone-mode: false
+    - id: mode
+      name: Read explicit QA mode
+      run: |
+        python3 - <<'END'
+        import os,pathlib
+        lines=pathlib.Path('tools/eldoria-private-beta/world-p0-browser-request.txt').read_text().splitlines()
+        modes=[x.split('=',1)[1] for x in lines if x.startswith('mode=')]
+        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency','gpu-ledger','static-mesh-trial','native-static-mesh','public-native']
+        native_runs=[x.split('=',1)[1] for x in lines if x.startswith('native_run=')]
+        if modes[0]=='native-static-mesh':
+          assert len(native_runs)==1 and native_runs[0].isdigit()
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('native_run='+native_runs[0]+'\n')
+        with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('mode='+modes[0]+'\n')
+        END
+  published-control:
+    needs: route
+    if: needs.route.outputs.mode == 'control'
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      QA_EXPECT_SOURCE: 90465a9a910b89a8a8b74e4b33a9bbc88578e00e
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_OUT: control-evidence/control19
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Verify actual unobstructed wheel and saved city return on published control
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        node tools/eldoria-private-beta/qa_world_entry_public.cjs
+      env:
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-published-control-proof
+        path: control-evidence
+        retention-days: 30
+  same-build-msaa:
+    needs: route
+    if: needs.route.outputs.mode == 'msaa'
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43653390105
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/candidate
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Compare identical compiled world with and without world-camera MSAA
+      env:
+        QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
+        QA_REQUIRE_CONSTRUCTION: '1'
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        mkdir -p msaa-evidence
+        node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >msaa-evidence/server.log 2>&1 &
+        server_pid=$!
+        trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+        for i in {1..40}; do
+         if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi
+         sleep 1
+        done
+        failed=0
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1' QA_OUT=msaa-evidence/default node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1' QA_OUT=msaa-evidence/no-world-msaa node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        grep -F 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' msaa-evidence/no-world-msaa/console.log
+        if [ "$failed" != 0 ];then exit 1;fi
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-identical-build-msaa-comparison
+        path: msaa-evidence
+        retention-days: 30
+  entry-render-budget:
+    needs: route
+    if: needs.route.outputs.mode == 'entry-budget'
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43707493997
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/candidate
+    - name: Attach local journal without changing native bytes
+      run: python3 tools/eldoria-private-beta/install_entry_budget_journal.py qa-site/candidate
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Measure actual preterrain target retirement and saved gameplay on identical compiled source
+      env:
+        QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+        QA_REQUIRE_CONSTRUCTION: '1'
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+        QA_REQUIRE_WORLD_JOURNAL: '1'
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        mkdir -p entry-budget-evidence
+        node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >entry-budget-evidence/server.log 2>&1 &
+        server_pid=$!
+        trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+        for i in {1..40}; do
+         if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi
+         sleep 1
+        done
+        failed=0
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' \
+         QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=entry-budget-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1' QA_OUT=entry-budget-evidence/control node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' QA_OUT=entry-budget-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        python3 tools/eldoria-private-beta/verify_entry_render_budget.py entry-budget-evidence
+        if [ "$failed" != 0 ];then exit 1;fi
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-entry-render-budget-comparison
+        path: entry-budget-evidence
+        retention-days: 30
+  public-residency:
+    needs: route
+    if: needs.route.outputs.mode == 'public-residency'
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1
+      QA_ENGINE: webkit
+      QA_ENTRY: '1'
+      QA_EARLY_ENTRY: '1'
+      QA_EARLY_NO_SCREENSHOT: '1'
+      QA_RESIZE_STRESS: '1'
+      QA_SKIP_PREFLIGHT: '1'
+      QA_LAZY_WORLD: '1'
+      QA_EXPECT_VIGILIA: '1'
+      QA_EXPECT_ORIGIN: https://mt5hjfz2kb-lab.github.io
+      QA_REVISION: integrated-mobile21-owner-qa
+      QA_OUT: public-residency-evidence
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: tools/eldoria-private-beta
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Verify unchanged public bytes and complete original residency observations
+      run: |
+        set -euo pipefail
+        verify_public() {
+          curl --retry 3 --max-time 60 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o public-proof.json
+          echo '93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5  public-proof.json' | shasum -a 256 -c -
+        }
+        verify_public
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        node tools/eldoria-private-beta/qa_webkit_residency.cjs
+        verify_public
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-public-residency-proof
+        path: public-residency-evidence
+        retention-days: 30
+  gpu-ledger:
+    needs: route
+    if: needs.route.outputs.mode == 'gpu-ledger'
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1
+      QA_GPU_LEDGER: '1'
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+      QA_OUT: gpu-ledger-evidence
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Measure actual WebGL buffer allocations through saved world journey on unchanged21e1
+      run: |
+        set -euo pipefail
+        verify_public() {
+          curl --retry 3 --max-time 60 -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o public-proof.json
+          echo '93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5  public-proof.json' | shasum -a 256 -c -
+        }
+        verify_public
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        export QA_OCR_EXECUTABLE="$RUNNER_TEMP/eldoria-world-ocr"
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        node tools/eldoria-private-beta/qa_world_entry_public.cjs
+        verify_public
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-webgl-buffer-ledger
+        path: gpu-ledger-evidence
+        retention-days: 30
+  static-mesh-trial:
+    needs: route
+    if: needs.route.outputs.mode == 'static-mesh-trial'
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      QA_EXPECT_SOURCE: ca5e1c3d52a58d8c6d9c9a9114d2d35445a18029
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43707493997
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/control
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Create isolated four-byte readability candidate and verify every object
+      run: |
+        set -euo pipefail
+        python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+        python tools/eldoria-private-beta/prepare_static_mesh_residency_trial.py qa-site/control mesh-trial
+        mv mesh-trial/site qa-site/candidate
+        python tools/eldoria-private-beta/install_entry_budget_journal.py qa-site/control
+        python tools/eldoria-private-beta/install_entry_budget_journal.py qa-site/candidate
+        mkdir -p mesh-evidence
+        cp mesh-trial/integrity.json mesh-evidence/integrity.json
+        rm mesh-trial/source.data mesh-trial/data.unity3d
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Compare actual saved journey without intrusive GL allocation observer
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        export QA_OCR_EXECUTABLE="$RUNNER_TEMP/eldoria-world-ocr"
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >mesh-evidence/server.log 2>&1 &
+        server_pid=$!
+        trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+        for i in {1..40}; do
+          if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi
+          sleep 1
+        done
+        failed=0
+        for variant in candidate control; do
+          QA_URL="http://127.0.0.1:18765/$variant/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1" QA_OUT="mesh-evidence/$variant" node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        done
+        if [ "$failed" != 0 ];then exit 1;fi
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-static-mesh-residency-trial
+        path: mesh-evidence
+        retention-days: 30
+  native-static-mesh:
+    needs: route
+    if: needs.route.outputs.mode == 'native-static-mesh'
+    runs-on: macos-15
+    timeout-minutes: 55
+    env:
+      QA_EXPECT_SOURCE: 05e1846f0213c6320850505bc054110c53934f55
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: ${{ needs.route.outputs.native_run }}
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/candidate
+    - name: Attach bounded journal to exact certified native artifact
+      env:
+        NATIVE_RUN: ${{ needs.route.outputs.native_run }}
+      run: |
+        set -euo pipefail
+        python3 tools/eldoria-private-beta/install_static_mesh_journal.py qa-site/candidate "$NATIVE_RUN"
+        mkdir -p mesh-evidence
+        cp qa-site/candidate/release-identity.json mesh-evidence/native-build-identity.json
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Compare actual saved journey without intrusive GL allocation observer
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        export QA_OCR_EXECUTABLE="$RUNNER_TEMP/eldoria-world-ocr"
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >mesh-evidence/server.log 2>&1 &
+        server_pid=$!
+        trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+        for i in {1..40}; do
+          if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi
+          sleep 1
+        done
+        failed=0
+        for variant in candidate control; do
+          cpu=0; if [ "$variant" = candidate ];then cpu=1;fi
+          QA_URL="http://127.0.0.1:18765/candidate/?eldoria_p0_static_mesh_cpu=$cpu&eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1" QA_OUT="mesh-evidence/$variant" node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        done
+        python3 tools/eldoria-private-beta/verify_static_mesh_residency_trial.py mesh-evidence --native || failed=1
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_static_mesh_cpu=1&eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' \
+         QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=mesh-evidence/early-residency \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        if [ "$failed" != 0 ];then exit 1;fi
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-native-static-mesh-comparison
+        path: mesh-evidence
+        retention-days: 30
+    - uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: world-p0-native-static-mesh-owner-site
+        path: qa-site/candidate
+        retention-days: 30
+  public-native:
+    needs: route
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      STAGE_SHA: 668b3a33ce3bf7d9965a82c48f7f53c79c107f8b
+      QA_EXPECT_SOURCE: 05e1846f0213c6320850505bc054110c53934f55
+      QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1&eldoria_p0_static_mesh_cpu=1
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ env.STAGE_SHA }}
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43747367995
+        name: world-p0-owner-publication-proof
+        github-token: ${{ github.token }}
+        path: deployed-proof
+    - name: Verify exact deployed bytes with bounded cache-propagation retries
+      run: |
+        python3 - <<'END'
+        import json,pathlib,urllib.request,hashlib,concurrent.futures,time
+        p=pathlib.Path('deployed-proof/site/integrated-owner-stage-proof.json')
+        expected='62e296b8ae5b1f0c63596f10f3f27e936ed676bc6e5bae2567fd618d39433e4a'
+        assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
+        proof=json.loads(p.read_text());assert proof['source_sha']=='05e1846f0213c6320850505bc054110c53934f55'
+        rows=dict(proof['preserved_fingerprints'])
+        rows.update({'beta-integrated-vigilia/'+k:v for k,v in proof['candidate_fingerprints'].items()})
+        rows['integrated-owner-stage-proof.json']={'bytes':p.stat().st_size,'sha256':expected}
+        base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
+        def verify(item):
+         name,row=item
+         for attempt in range(10):
+          try:
+           with urllib.request.urlopen(base+name+'?p0_verified='+row['sha256']+'&attempt='+str(attempt),timeout=90) as r:
+            h=hashlib.sha256();size=0
+            while chunk:=r.read(1024*1024):h.update(chunk);size+=len(chunk)
+           assert h.hexdigest()==row['sha256'] and size==row['bytes'],name
+           return name
+          except Exception:
+           if attempt==9:raise
+           time.sleep(3)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:verified=list(pool.map(verify,rows.items()))
+        out=pathlib.Path('public-world-evidence');out.mkdir(exist_ok=True)
+        (out/'public-byte-verification.json').write_text(json.dumps({'source':proof['source_sha'],'certificate_sha256':expected,'verified_file_count':len(verified),'all_files_matched':True,'physical_iphone_verified':False},indent=2))
+        print('ALL_PUBLIC_CANDIDATE_AND_PROTECTED_FILES_BYTE_VERIFIED',len(verified))
+        END
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Verify real public reload, saved construction and world zooms
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        failed=0
+        QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=https://mt5hjfz2kb-lab.github.io \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=public-world-evidence/candidate \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        QA_OUT=public-world-evidence/world-entry node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        if [ "$failed" != 0 ]; then exit 1;fi
+
+        grep -F 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' public-world-evidence/world-entry/console.log
+
+        grep -F 'ELDORIA_P0_ENTRY_RENDER_BUDGET_PREPARED retired=' public-world-evidence/world-entry/console.log
+        grep -F 'ELDORIA_P0_STATIC_MESH_CPU_RETIRED count=4' public-world-evidence/world-entry/console.log
+
+        curl -fsSL https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/integrated-owner-stage-proof.json -o public-after.json
+        echo "62e296b8ae5b1f0c63596f10f3f27e936ed676bc6e5bae2567fd618d39433e4a  public-after.json" | shasum -a 256 -c -
+      env:
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-public-browser-proof
+        path: public-world-evidence
+        retention-days: 30
+    if: needs.route.outputs.mode == 'public-native'
+'on':
+  push:
+    branches:
+    - fix/eldoria-world-first-entry-p0-20261114
+    paths:
+    - tools/eldoria-private-beta/world-p0-browser-request.txt

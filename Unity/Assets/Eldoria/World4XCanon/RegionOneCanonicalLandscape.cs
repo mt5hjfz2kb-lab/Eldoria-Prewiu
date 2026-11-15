@@ -44,6 +44,9 @@ namespace Eldoria.World4XCanon
   {
    var stack=new Stack<IEnumerator>();
    stack.Push(BuildAndInstall());
+   // LIFO: retire city MSAA targets before the first terrain allocation.
+   // Existing default and published world-only diagnostic paths are unchanged.
+   stack.Push(host.PrepareDeferredWorldRenderBudget());
    Exception failure=null;
    float deadline=Time.realtimeSinceStartup+120f;
    try
@@ -98,6 +101,7 @@ namespace Eldoria.World4XCanon
     creaturePopulation=null;lookDevelopment=null;
    }
    else partialWorldRoot=null;
+   if(host)host.DeferredWorldBuildFinished();
   }
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;

@@ -39,8 +39,22 @@ test('lazy-world game host restores exactly to unchanged 19-overlay UX baseline'
   exactlyOne(host,selectionCancel);
   const marker='   if(open&&P0LazyWorldProbe)Debug.Log("ELDORIA_P0_LAZY_WORLD_ENTERED");\n';
   exactlyOne(host,marker);
-  let back=host.replace(front,oldReady).replace(city,'').replace(defer,'').replace(marker,'')
-    .replace(navigation,'').replace(selectionCancel,'');
+  // The optional mobile World-only antialiasing experiment is isolated.
+  // Its exact source is stripped for UX parity, never silently ignored.
+  // This protects the 19 frozen overlays and all gameplay/save methods.
+  const msaa=between(host,
+    '   // Experimental opt-in for mobile GPU allocation diagnosis.',
+    '   InWorld=open;');
+  assert.match(msaa,/eldoria_p0_world_msaa_off=1/);
+  assert.match(msaa,/WorldCamera\.allowMSAA=false/);
+  assert.doesNotMatch(msaa,/PlayerPrefs|Commit\(|Save\(|new LocalGateway|\.SetActive\(/);
+
+  const staticRetirement='   RetireStaticBastionCpuCopies();\n';
+  exactlyOne(host,staticRetirement);
+  assert.match(front,/if\(!P0StaticMeshCpu\)return;/);
+  assert.doesNotMatch(front,/PlayerPrefs|Commit\(|Save\(|new LocalGateway/);
+  let back=host.replace(staticRetirement,'').replace(front,oldReady).replace(city,'').replace(defer,'').replace(marker,'')
+    .replace(navigation,'').replace(selectionCancel,'').replace(msaa,'');
   assert.equal(back,frozen,'Unrelated UX, telemetry, progress, mailbox or save behavior changed');
 });
 

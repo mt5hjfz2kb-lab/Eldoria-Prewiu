@@ -1,0 +1,3 @@
+mode=public-native
+publication_run=43747367995
+attempt=1-complete-deployed-native-certification

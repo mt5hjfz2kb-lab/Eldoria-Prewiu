@@ -1,0 +1,68 @@
+name: Eldoria P0 locate exact archived BastionIII source assets
+on:
+  push:
+    branches: [fix/eldoria-world-first-entry-p0-20261114]
+    paths: [tools/eldoria-private-beta/world-p0-origin-search-request.txt]
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-world-p0-origin-read-only
+  cancel-in-progress: false
+jobs:
+  locate:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Search only runner worktrees for exact original asset without modifying anything
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $needle='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-1.asset'
+          $expected='5CD7813BCFBB79455D2661CF4E955AAD03A47C44CD6574BEE9EB89C19B997E52'
+          $root=Split-Path $env:RUNNER_TEMP -Parent
+          if(-not(Test-Path -LiteralPath $root -PathType Container)){throw 'Runner work root missing'}
+          $seen=New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+          $frontier=New-Object 'System.Collections.Generic.List[string]'
+          $frontier.Add($root)
+          $matches=New-Object 'System.Collections.Generic.List[string]'
+          for($depth=0;$depth -le 4;$depth++){
+            $next=New-Object 'System.Collections.Generic.List[string]'
+            foreach($folder in $frontier){
+              if(-not $seen.Add($folder)){continue}
+              $test=Join-Path $folder $needle
+              if(Test-Path -LiteralPath $test -PathType Leaf){
+                $item=Get-Item -LiteralPath $test -Force
+                if(-not($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -and
+                   (Get-FileHash -LiteralPath $test -Algorithm SHA256).Hash -eq $expected){
+                  $relative=$folder.Substring($root.Length).TrimStart('\')
+                  $matches.Add($relative)
+                }
+              }
+              if($depth -eq 4){continue}
+              foreach($child in @(Get-ChildItem -LiteralPath $folder -Directory -ErrorAction SilentlyContinue)){
+                if($child.Name -in @('Unity','Library','Assets','Packages','ProjectSettings','node_modules','.git','.cache','Cache')){continue}
+                if($child.Attributes -band [IO.FileAttributes]::ReparsePoint){continue}
+                if($next.Count -ge 1500){throw 'Bounded worktree search exceeded 1500 candidates'}
+                $next.Add($child.FullName)
+              }
+            }
+            $frontier=$next
+          }
+          $result=[ordered]@{
+            diagnostic='READ_ONLY_ART_ORIGIN_SCAN'
+            expected_sha256=$expected
+            scanned_roots=$seen.Count
+            found=$matches.Count -gt 0
+            runner_relative_origins=@($matches)
+            no_source_mutation=$true
+          }
+          New-Item -ItemType Directory -Force 'p0-origin-results'|Out-Null
+          $result|ConvertTo-Json -Depth 5|Set-Content 'p0-origin-results/report.json' -Encoding UTF8
+          Write-Host ('WORLD_P0_ORIGIN_FOUND='+$matches.Count+' RUNNER_ROOT_CANDIDATES='+$seen.Count)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: world-p0-original-art-locator
+          path: p0-origin-results/report.json
+          if-no-files-found: warn
+          retention-days: 14
