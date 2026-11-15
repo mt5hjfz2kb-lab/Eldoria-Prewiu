@@ -47,7 +47,7 @@ const makeLandscape=function makeLandscape(){
     const route=(zc<-6 && zc>-36 && Math.abs(xc-pathCenter)<3.1);
     const material=route?"soil":((noise(xc*.65,zc*.4)> .60 && Math.hypot(xc,zc)>15)?"leafLight":
       (Math.abs(noise(xc*.11,zc*.12))>.50 && Math.hypot(xc,zc)>13)?"soil":"moss");
-    tri(a,b,c,material);tri(a,c,d,material);
+    tri(a,c,b,material);tri(a,d,c,material);
   }
   // Footpath is a continuous hand-curved 3d ribbon with broken edges, no rectangular tiles.
   for(let k=0;k<32;k++){

@@ -55,6 +55,10 @@ for name in expected:
                 failures.append(f"{name}: invalid face {line}")
             if len(set(inds))!=len(inds):
                 failures.append(f"{name}: duplicate face indices")
+            if name=="AshenLandscape" and polygons<5000 and len(inds)==3:
+                a,b,c=[vertices[k-1] for k in inds]
+                up=(b[2]-a[2])*(c[0]-a[0])-(b[0]-a[0])*(c[2]-a[2])
+                if up<=0:failures.append(f"Landscape grass face points DOWN at {polygons}")
             polygons+=1
     if not vertices or not polygons:failures.append(f"{name}: empty mesh")
     if len(uv_coords)!=len(vertices):failures.append(f"{name}: one UV0 required per authored face vertex")
