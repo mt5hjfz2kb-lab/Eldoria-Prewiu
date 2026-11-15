@@ -318,8 +318,8 @@ namespace Eldoria.ExperimentalAshenCitadel
             camera.orthographicSize=width<height?35f:17f;
             float lowest=camera.ViewportPointToRay(new Vector3(.5f,0,0)).origin.y;
             float upward=-camera.transform.forward.y;
-            if(lowest<2f && upward>.01f)
-                camera.transform.position-=camera.transform.forward*((2f-lowest)/upward);
+            if(lowest<6f && upward>.01f)
+                camera.transform.position-=camera.transform.forward*((6f-lowest)/upward);
         }
         private static void AnchorCentered(RectTransform element,Vector2 anchor,
                                            Vector2 size,Vector2 offset)
