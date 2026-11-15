@@ -107,3 +107,24 @@ flag; it requires its own measured build comparison. Source05e184 remains pendin
 native compilation and verification. Current Windows holder is the separate
 stylized-direction workstream; its run43721967300 is not preempted. P0 resource
 request recorded in main, own resources remain empty.
+
+## Recovered original build inputs — 2026-11-15
+
+Native run43734224654 reconstructed exact source05e184 but stopped before Unity:
+the original untracked BastionIII inputs were absent from all prior checkout paths.
+This is a build-input recovery failure, not a new game-runtime finding.
+
+Recovered original archive artifact14121008070 from run43613603217. Inner ZIP
+SHA2562df938c208227f5808f31499268e04cb9b6532a7f1634aec1c5c20ecdc54324e.
+All51 eligible files independently matched existing-input-audit.json byte hashes.
+Only these exact51 entries are restored, never the remaining historical overlay.
+Terrain source recovered from artifact14074420151, run43489752868; outer ZIP
+SHA2560454b10c9b88113f65fac719a8a74e54ad1f6079ca2ff2d370be1a1abe488176.
+The existing terrain byte and GUID hashes remain mandatory in the native script.
+
+Run43739391559 passed hosted preflight and both exact artifact downloads, then
+entered native certification on Windows. At this checkpoint it is still running;
+no NUnit/native campaign/WebGL success or physical-iPhone stability is claimed.
+The successful same-engine serialized experiment remains distinct from pending
+compiled runtime UploadMeshData verification. No replacement has been published.
+
