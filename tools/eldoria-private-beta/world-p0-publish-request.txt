@@ -1,2 +1,1 @@
-Owner-only diagnostic 21d4. Native source d0b21fd unchanged; iPhone world entry remains failed. Preserve exact current site and archive before shell replacement. Require actual world marker journal and reload recovery in WebKit before deployment.
-Stage: baa343292f21378499b9af7f4fd8b67f7fefbe83
+Owner-only diagnostic 21d4 attempt2. Stage 14c64284f2aef341c1787a1d815e54b369e15efc. Previous prepublication QA 43696633066 correctly rejected overlay hiding actual nickname. Move diagnostic to prior bottom-left placement. Preserve real nickname/construction/reentry/journal gates; no runtime or save changes. Physical iPhone unresolved.

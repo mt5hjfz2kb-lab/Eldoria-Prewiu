@@ -21,7 +21,7 @@ jobs:
       BROWSER_RUN: 43659627661
       BROWSER_SHA: f03ac3c3083ab3e24d46b19ba58cb26c48a9c155
       PREVIOUS_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
-      STAGE_SHA: baa343292f21378499b9af7f4fd8b67f7fefbe83
+      STAGE_SHA: 14c64284f2aef341c1787a1d815e54b369e15efc
       GH_TOKEN: ${{ github.token }}
       MSAA_RUN: '43661585648'
       MSAA_SHA: 557fc6b2c50e34b4570855868f6e1ea61b5e81c1
@@ -195,7 +195,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 35
     env:
-      STAGE_SHA: baa343292f21378499b9af7f4fd8b67f7fefbe83
+      STAGE_SHA: 14c64284f2aef341c1787a1d815e54b369e15efc
       QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
       QA_URL: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1
       QA_REQUIRE_CONSTRUCTION: '1'
