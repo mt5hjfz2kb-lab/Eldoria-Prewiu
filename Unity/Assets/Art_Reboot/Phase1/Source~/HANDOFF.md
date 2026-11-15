@@ -91,8 +91,9 @@ https://docs.unity.com/en-us/engine/6000.0/manual/cameras/urp/multiple/user-rend
   por tiempo excedido su propio proceso y conserva diagnóstico si falla.
 - Verificados: 8/8 tests de rechazo de reservas indebidas/candidatos obsoletos,
   parser C# sin errores, YAML válido, plan artístico canónico PASS,
-  verify_source PASS. PowerShell sólo tiene preflight preparado: no afirmar
-  análisis PowerShell ejecutado ni compilación C#/Unity por estos controles.
+  verify_source PASS. PowerShell analizado realmente en Ubuntu/GitHub Actions run 43768175996
+  sobre acafc10c6b4d699c31a8d36201fe89dbb3901da3: PASS. Sus 8 tests
+  también pasan allí; jobs lease/native omitidos. No es compilación C#/Unity.
 - Última lectura: Ashen Citadel todavía mantiene Windows y su run nativo
   43767889061 estaba in_progress. No se solicitó cancelación ni se usurpó reserva.
 - Alternativas comprobadas: este Linux tiene Blender 4.3.2, pero no Unity ni
@@ -106,3 +107,5 @@ verifique esa coincidencia dos veces. No cambia la autorización ya concedida.
 
 Los pushes sin el marcador explícito sólo ejecutan análisis PowerShell y tests
 de reserva en Ubuntu; el job Windows se omite, aunque exista una reserva.
+
+Evidencia remota del código exacto: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43768175996

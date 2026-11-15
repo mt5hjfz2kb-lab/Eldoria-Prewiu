@@ -16,5 +16,13 @@
   },
   "canonical_art_planner": "PASS",
   "workflow_yaml": "PARSE_PASS",
-  "powershell_parse_executed": false
+  "powershell_parse_executed": true,
+  "remote_preflight": {
+    "run": 43768175996,
+    "source": "acafc10c6b4d699c31a8d36201fe89dbb3901da3",
+    "result": "success",
+    "powershell_parser": "PASS",
+    "lease_tests": "8/8 PASS",
+    "windows_job": "skipped"
+  }
 }
