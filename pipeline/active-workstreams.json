@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T14:25:00Z",
+  "updated_at": "2026-11-15T14:33:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9623,12 +9623,14 @@
       "title": "Prueba estilizada coherente 2.5D sobre capturas nativas de la ciudad de Valoria",
       "owner": "chatgpt-eldoria-stylized-art-proof-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "branch": "feature/eldoria-stylized-direction-proof-20261115",
       "status": "active",
-      "phase": "NATIVE_EDITOR_AB_COMPLETE_ART_REJECTED_REQUIRE_MODULAR_SCENE_COMPOSITION",
+      "phase": "STYLIZED_EDITOR_MACRO_COMPOSITION_NATIVE_RETEST",
       "claimed_at": "2026-11-15T13:39:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/StylizedDirectionPilot/**",
         "Unity/Assets/Eldoria/StylizedDirectionPilot.meta",
