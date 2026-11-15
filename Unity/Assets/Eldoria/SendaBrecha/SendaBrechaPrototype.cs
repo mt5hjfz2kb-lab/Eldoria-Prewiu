@@ -55,8 +55,11 @@ namespace Eldoria.SendaBrecha
         public string LastEvent { get; private set; } = "";
 
         public Camera SceneCamera { get; private set; }
-        public int VisibleSoldiers => Mathf.Min(14, Mathf.Max(0, Soldiers));
+        // Low virtual troop counts must visibly change the actual actor formation.
+        // The virtual army never spawns one GameObject per soldier on iPhone.
+        public int VisibleSoldiers => Soldiers <= 0 ? 0 : Mathf.Clamp(2 + Mathf.CeilToInt(Soldiers / 4f), 1, 14);
         public bool ShowOverlay = true;
+        public bool HasLoadedScene => initialized && SceneCamera != null && world != null;
 
         private Transform world;
         private GameObject[] soldierActors;
@@ -81,8 +84,11 @@ namespace Eldoria.SendaBrecha
         {
             int key = Color32Key(c) ^ (glow ? 0x4000000 : 0);
             if (materials.TryGetValue(key, out var existing)) return existing;
-            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
-            if (!shader) shader = Shader.Find("Standard");
+            // Use the actual active pipeline. A standalone minimal Unity validation project
+            // may use Built-in even though Eldoria proper uses URP 17.3.
+            bool urp = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null;
+            Shader shader = Shader.Find(urp ? "Universal Render Pipeline/Lit" : "Standard");
+            if (!shader) shader = Shader.Find(urp ? "Standard" : "Universal Render Pipeline/Lit");
             if (!shader) shader = Shader.Find("Unlit/Color");
             var material = new Material(shader) { name = "SendaBrecha provisional " + key };
             if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", c);
@@ -109,7 +115,7 @@ namespace Eldoria.SendaBrecha
             var renderer = g.GetComponent<MeshRenderer>();
             renderer.sharedMaterial = Mat(color, metal, .3f, glow);
             var collider = g.GetComponent<Collider>();
-            if (collider) { if (Application.isPlaying) Destroy(collider); else DestroyImmediate(collider); }
+            if (collider) { if (UnityEngine.Application.isPlaying) Destroy(collider); else DestroyImmediate(collider); }
             return g;
         }
         private static Transform Empty(string name, Transform parent, Vector3 pos)
@@ -449,36 +455,65 @@ namespace Eldoria.SendaBrecha
         private void OnGUI()
         {
             if (!ShowOverlay || !initialized) return;
-            var saved=GUI.matrix;
-            float sx=Screen.width/390f,sy=Screen.height/844f;
-            float scale=Mathf.Min(sx,sy);if(scale<=0)scale=1;
-            float dx=(Screen.width-390*scale)*.5f;
-            float dy=(Screen.height-844*scale)*.5f;
-            GUI.matrix=Matrix4x4.TRS(new Vector3(dx,dy,0),Quaternion.identity,Vector3.one*scale);
-            Color original=GUI.color;
-            GUI.color=new Color(.075f,.095f,.14f,.88f);
-            GUI.Box(new Rect(8,10,374,116),GUIContent.none);
-            GUI.color=Color.white;
-            GUI.Label(new Rect(18,16,340,22),"ELDORIA  ·  SENDA DE LA BRECHA",LabelStyle(16,new Color(.95f,.83f,.64f)));
-            GUI.Label(new Rect(18,42,340,22),"TRAMO "+(Stage+1)+"/6  ·  "+Waves[Stage].Name.ToUpperInvariant(),LabelStyle(13,Color.white));
-            GUI.Label(new Rect(18,74,340,36),"GUARDIA "+Soldiers+"     ATAQUE "+(100+Power)+"%     ESCUDOS "+Wards,LabelStyle(14,Color.white));
-            if(State==Phase.Intro || State==Phase.Victory || State==Phase.Defeat)
+            var saved = GUI.matrix;
+            var original = GUI.color;
+            bool landscape = Screen.width > Screen.height;
+            float referenceW = landscape ? 844f : 390f;
+            float referenceH = landscape ? 390f : 844f;
+            float scale = Mathf.Min(Screen.width / referenceW, Screen.height / referenceH);
+            if (scale <= 0f) scale = 1f;
+            float dx = (Screen.width-referenceW*scale)*.5f;
+            float dy = (Screen.height-referenceH*scale)*.5f;
+            GUI.matrix = Matrix4x4.TRS(new Vector3(dx,dy,0),Quaternion.identity,Vector3.one*scale);
+            Color accent = new Color(.95f,.83f,.64f);
+            GUI.color = new Color(.075f,.095f,.14f,.88f);
+            GUI.Box(landscape ? new Rect(10,7,475,57) : new Rect(8,10,374,116), GUIContent.none);
+            GUI.color = Color.white;
+            if(landscape)
             {
-                GUI.color=new Color(.09f,.11f,.18f,.96f);
-                GUI.Box(new Rect(31,544,328,174),GUIContent.none);
-                GUI.color=Color.white;
-                string status=State==Phase.Intro?"CRUZA LA BRECHA":State==Phase.Victory?"¡BRECHA SELLADA!":"EXPEDICIÓN DERROTADA";
-                GUI.Label(new Rect(44,561,300,49),status,LabelStyle(22,new Color(.95f,.81f,.56f),TextAnchor.MiddleCenter));
-                if (GUI.Button(new Rect(63,641,264,56),State==Phase.Intro?"COMENZAR EXPEDICIÓN":"VOLVER A INTENTARLO")) Begin();
+                GUI.Label(new Rect(19,10,465,24),"ELDORIA  ·  SENDA DE LA BRECHA",LabelStyle(16,accent));
+                GUI.Label(new Rect(19,34,465,24),"TRAMO "+(Stage+1)+"/6 · "+Waves[Stage].Name+"     GUARDIA "+Soldiers+" · ATQ "+(100+Power)+"% · ESCUDOS "+Wards,LabelStyle(13,Color.white));
+                if(State==Phase.Intro || State==Phase.Victory || State==Phase.Defeat)
+                {
+                    GUI.color = new Color(.09f,.11f,.18f,.96f);
+                    GUI.Box(new Rect(234,130,376,158),GUIContent.none);
+                    GUI.color = Color.white;
+                    string status = State==Phase.Intro ? "CRUZA LA BRECHA" : State==Phase.Victory ? "¡BRECHA SELLADA!" : "EXPEDICIÓN DERROTADA";
+                    GUI.Label(new Rect(253,145,340,50),status,LabelStyle(21,accent,TextAnchor.MiddleCenter));
+                    if (GUI.Button(new Rect(300,208,244,57),State==Phase.Intro?"COMENZAR EXPEDICIÓN":"VOLVER A INTENTARLO")) Begin();
+                }
+                else
+                {
+                    GUI.Label(new Rect(240,331,370,31),LastEvent,LabelStyle(15,Color.white,TextAnchor.MiddleCenter));
+                    if(GUI.Button(new Rect(20,311,88,60),"◀"))Steer(-1);
+                    if(GUI.Button(new Rect(736,311,88,60),"▶"))Steer(1);
+                    if(GUI.Button(new Rect(785,15,40,40),State==Phase.Paused?"▶":"Ⅱ")) TogglePause();
+                }
             }
             else
             {
-                GUI.Label(new Rect(25,710,340,35),LastEvent,LabelStyle(15,Color.white,TextAnchor.MiddleCenter));
-                if(GUI.Button(new Rect(23,762,93,62),"◀"))Steer(-1);
-                if(GUI.Button(new Rect(274,762,93,62),"▶"))Steer(1);
-                if(GUI.Button(new Rect(342,25,30,30),State==Phase.Paused?"▶":"Ⅱ")) TogglePause();
+                GUI.Label(new Rect(18,16,340,22),"ELDORIA  ·  SENDA DE LA BRECHA",LabelStyle(16,accent));
+                GUI.Label(new Rect(18,42,340,22),"TRAMO "+(Stage+1)+"/6  ·  "+Waves[Stage].Name.ToUpperInvariant(),LabelStyle(13,Color.white));
+                GUI.Label(new Rect(18,74,340,36),"GUARDIA "+Soldiers+"     ATAQUE "+(100+Power)+"%     ESCUDOS "+Wards,LabelStyle(14,Color.white));
+                if(State==Phase.Intro || State==Phase.Victory || State==Phase.Defeat)
+                {
+                    GUI.color = new Color(.09f,.11f,.18f,.96f);
+                    GUI.Box(new Rect(31,544,328,174),GUIContent.none);
+                    GUI.color = Color.white;
+                    string status = State==Phase.Intro ? "CRUZA LA BRECHA" : State==Phase.Victory ? "¡BRECHA SELLADA!" : "EXPEDICIÓN DERROTADA";
+                    GUI.Label(new Rect(44,561,300,49),status,LabelStyle(22,accent,TextAnchor.MiddleCenter));
+                    if (GUI.Button(new Rect(63,641,264,56),State==Phase.Intro?"COMENZAR EXPEDICIÓN":"VOLVER A INTENTARLO")) Begin();
+                }
+                else
+                {
+                    GUI.Label(new Rect(25,710,340,35),LastEvent,LabelStyle(15,Color.white,TextAnchor.MiddleCenter));
+                    if(GUI.Button(new Rect(23,762,93,62),"◀"))Steer(-1);
+                    if(GUI.Button(new Rect(274,762,93,62),"▶"))Steer(1);
+                    if(GUI.Button(new Rect(342,25,30,30),State==Phase.Paused?"▶":"Ⅱ")) TogglePause();
+                }
             }
-            GUI.color=original;GUI.matrix=saved;
+            GUI.color = original;
+            GUI.matrix = saved;
         }
         private void OnDestroy()
         {
