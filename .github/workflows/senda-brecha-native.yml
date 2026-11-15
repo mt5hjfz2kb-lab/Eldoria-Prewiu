@@ -127,7 +127,9 @@ jobs:
           # Windows PowerShell 5.1 Set-Content -Encoding UTF8 inserts a BOM (U+FEFF).
           # Unity PackageManager rejects the BOM before the JSON opening brace.
           $utf8=New-Object System.Text.UTF8Encoding($false)
-          [System.IO.File]::WriteAllText((Join-Path $mini 'Packages/manifest.json'),'{"dependencies":{}}',$utf8)
+          # IMGUI is a built-in module in Unity 6000.3; the disposable project must explicitly enable it
+          # because SendaBrechaPrototype uses GUIStyle for its standalone playable controls.
+          [System.IO.File]::WriteAllText((Join-Path $mini 'Packages/manifest.json'),'{"dependencies":{"com.unity.modules.imgui":"1.0.0"}}',$utf8)
           [System.IO.File]::WriteAllText((Join-Path $mini 'ProjectSettings/ProjectVersion.txt'),"m_EditorVersion: 6000.3.23f1`nm_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)`n",$utf8)
           "mini=$mini" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           Write-Host 'MINI_PROJECT_CREATED: Only SendaBrecha source and builtin Unity; no current beta/source assets.'
