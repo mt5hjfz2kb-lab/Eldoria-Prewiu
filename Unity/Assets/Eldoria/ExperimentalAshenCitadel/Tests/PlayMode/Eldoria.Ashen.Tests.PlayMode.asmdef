@@ -1,0 +1,21 @@
+{
+  "name": "Eldoria.AshenCitadel.Tests.PlayMode",
+  "rootNamespace": "Eldoria.ExperimentalAshenCitadel.Tests",
+  "references": [
+    "Eldoria.Domain",
+    "Eldoria.Application",
+    "Eldoria.Infrastructure"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "overrideReferences": false,
+  "noEngineReferences": false
+}
