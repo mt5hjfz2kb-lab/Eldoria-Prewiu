@@ -84,7 +84,13 @@ $argsLine=@(
     '-logFile','"'+$NativeLog+'"'
 ) -join ' '
 Write-Output 'ASHEN_UNITY_REAL_EDITOR_BEGIN'
-$process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $argsLine -PassThru
+Write-Output ('ASHEN_EDITOR_EXE_NAME '+[IO.Path]::GetFileName($env:UNITY_EDITOR_PATH))
+Write-Output ('ASHEN_EDITOR_EXE_SIZE '+(Get-Item $env:UNITY_EDITOR_PATH).Length)
+Write-Output ('ASHEN_EDITOR_CMD '+$argsLine)
+$stdout=Join-Path $OutputRoot 'unity-stdout.txt'
+$stderr=Join-Path $OutputRoot 'unity-stderr.txt'
+$process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $argsLine -PassThru `
+    -RedirectStandardOutput $stdout -RedirectStandardError $stderr
 $deadline=(Get-Date).AddMinutes(34)
 while(-not $process.HasExited -and (Get-Date) -lt $deadline){
     Start-Sleep -Seconds 4
@@ -95,9 +101,25 @@ if(-not $process.HasExited){
     throw 'ASHEN_EDITOR_TIMEOUT: native render did not finish before hard gate'
 }
 $process.Refresh()
-Copy-Item -LiteralPath $NativeLog -Destination (Join-Path $OutputRoot 'unity-editor.log') -ErrorAction SilentlyContinue
+if(-not(Test-Path $NativeLog)){
+    $fallback=Join-Path $env:LOCALAPPDATA 'Unity/Editor/Editor.log'
+    if(Test-Path $fallback){
+        Copy-Item -LiteralPath $fallback -Destination (Join-Path $OutputRoot 'editor-fallback.log') -Force
+        Write-Output 'ASHEN_NATIVE_LOG_FALLBACK_CAPTURED'
+    }else{Write-Output 'ASHEN_NATIVE_LOG_NOT_WRITTEN'}
+}
 if($process.ExitCode -ne 0){
-    if(Test-Path $NativeLog){Get-Content -Path $NativeLog -Tail 120}
+    foreach($log in @($NativeLog,$stdout,$stderr,(Join-Path $OutputRoot 'editor-fallback.log'))){
+        if(Test-Path $log){
+            Write-Output ('ASHEN_DIAGNOSTIC_LOG '+([IO.Path]::GetFileName($log)))
+            Get-Content -LiteralPath $log -Tail 85
+        }
+    }
+    @{source_sha=$env:GITHUB_SHA;status='UNITY_PROCESS_FAILED';
+      exit_code=$process.ExitCode; editor_version='Unity6000.3.23f1';
+      evidence='Only this run scratch & captured process diagnostics';
+      scene_saved=$false}|ConvertTo-Json -Depth 6 |
+      Set-Content -Path (Join-Path $OutputRoot 'native-failed.json') -Encoding UTF8
     throw "ASHEN_EDITOR_FAILED: native Unity returned $($process.ExitCode)"
 }
 $scene=Join-Path $project 'Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity'
