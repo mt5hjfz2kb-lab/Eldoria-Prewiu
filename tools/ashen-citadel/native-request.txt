@@ -88,3 +88,5 @@ visual=verify genuine 390x844 and 1600x900 user interface is not clipped nor gia
 safety=experiment branch, sole CAS Windows lease, never touch main or public beta.
 
 Art continuation 237e5d69e3a9: 2a7e9556b6ac2d16ff3785efe192bb60662fe917 corrects inside-out boxes/prisms/roofs, replaces pine boughs and fieldstone, removes terrain quilt, frames full fortress in portrait, private shadow/MSAA pipeline. Local 12-OBJ integrity PASS; five genuine Blender stage previews produced. Windows explicitly returned by Visual Reboot after terminal run43771635637; revision4. Capture exact new HEAD; no publication.
+
+Second visual pass after successful run43772073861: use documented URP StandardRequest instead of Camera.Render; explicit sun/shadow camera, 35 portrait framing shared with UI evidence; extend terrain from54m to90m to eliminate frame edges. Geometry winding regression retained. No gameplay changes.

@@ -10,6 +10,7 @@ using System.Linq;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -39,7 +40,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
                 camera.targetTexture=rt;
                 camera.aspect=(float)width/height;
                 Canvas.ForceUpdateCanvases();
-                camera.Render();
+                var request=new RenderPipeline.StandardRequest{destination=rt};
+                Assert.That(RenderPipeline.SupportsRenderRequest(camera,request),Is.True,"URP request required");
+                RenderPipeline.SubmitRenderRequest(camera,request);
                 RenderTexture.active=rt;
                 pixels.ReadPixels(new Rect(0,0,width,height),0,0);
                 pixels.Apply(false);

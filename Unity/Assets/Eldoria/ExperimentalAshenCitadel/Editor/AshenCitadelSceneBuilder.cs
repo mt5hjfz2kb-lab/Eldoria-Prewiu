@@ -54,6 +54,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var sun=key.AddComponent<Light>();
             sun.type=LightType.Directional;sun.intensity=1.35f;
             sun.color=new Color(1f,.84f,.69f);
+            RenderSettings.sun=sun;
             sun.shadows=LightShadows.Soft;sun.shadowStrength=.8f;
             sun.transform.rotation=Quaternion.Euler(48,-35,0);
             var fill=new GameObject("Sky · cold fill").AddComponent<Light>();
@@ -64,11 +65,12 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var cameraGO=new GameObject("Ashen · Player camera");
             cameraGO.tag="MainCamera";
             var camera=cameraGO.AddComponent<Camera>();
-            camera.orthographic=true;camera.orthographicSize=30f;
+            camera.orthographic=true;camera.orthographicSize=35f;
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.25f,.28f,.28f);
             camera.allowHDR=false;camera.allowMSAA=true;camera.depth=0;
             cameraGO.AddComponent<AudioListener>();
+            cameraGO.AddComponent<UniversalAdditionalCameraData>().renderShadows=true;
             cameraGO.transform.position=new Vector3(20,24,-28);
             cameraGO.transform.LookAt(new Vector3(0,2.5f,0));
 
@@ -274,7 +276,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float t=i/22f;
                 float at=z-34f+37f*t;
                 float drift=Mathf.Sin(t*4.20f)*.57f+Mathf.Sin(t*10.7f)*.12f;
-                float width=2.30f+.32f*Mathf.Sin(t*6.31f);
+                float width=2.35f+.32f*Mathf.Sin(t*6.31f);
                 vertices.Add(new Vector3(x+drift-width,.035f,at));
                 vertices.Add(new Vector3(x+drift+width,.035f,at));
                 if(i==0)continue;
@@ -401,10 +403,13 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                         if(t==null)throw new InvalidOperationException("Missing authored stage "+j);
                         t.gameObject.SetActive(j==l);
                     }
-                    camera.orthographicSize=viewport.y>viewport.x?30f:14f;
+                    camera.orthographicSize=viewport.y>viewport.x?35f:14f;
                     var rt=new RenderTexture(viewport.x,viewport.y,24,RenderTextureFormat.ARGB32);
                     camera.targetTexture=rt;camera.aspect=(float)viewport.x/viewport.y;
-                    RenderTexture.active=rt;camera.Render();
+                    var request=new RenderPipeline.StandardRequest{destination=rt};
+                    if(!RenderPipeline.SupportsRenderRequest(camera,request))throw new InvalidOperationException("URP render request unsupported");
+                    RenderPipeline.SubmitRenderRequest(camera,request);
+                    RenderTexture.active=rt;
                     var image=new Texture2D(viewport.x,viewport.y,TextureFormat.RGB24,false);
                     image.ReadPixels(new Rect(0,0,viewport.x,viewport.y),0,0);image.Apply(false);
                     var pixels=image.GetPixels32();

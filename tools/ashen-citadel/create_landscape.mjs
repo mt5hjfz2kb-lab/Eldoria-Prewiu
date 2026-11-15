@@ -37,7 +37,7 @@ const makeLandscape=function makeLandscape(){
     }
     faces.push([mat,idx]);fs++;
   }
-  const extent=54,cell=2.16,n=50;
+  const extent=90,cell=3.6,n=50;
   for(let i=0;i<n;i++)for(let j=0;j<n;j++){
     const x=-extent+i*cell,z=-extent+j*cell;
     const p=(dx,dz)=>[x+dx,height(x+dx,z+dz),z+dz];

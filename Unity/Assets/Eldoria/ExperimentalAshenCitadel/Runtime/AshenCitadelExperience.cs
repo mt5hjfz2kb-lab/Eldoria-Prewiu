@@ -269,6 +269,7 @@ namespace Eldoria.ExperimentalAshenCitadel
         public void ReflowForViewport(int width,int height)
         {
             if(width<1||height<1||safe==null||responsiveScaler==null)return;
+            if(playerCamera!=null)playerCamera.orthographicSize=width<height?35f:17f;
             responsiveScaler.matchWidthOrHeight=1f;
             float viewportWidth=844f*width/height;
             float usableWidth=Mathf.Max(280f,viewportWidth-8f);
@@ -351,7 +352,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 var p=show?new Vector3(18,19,33):new Vector3(18,19,-22);
                 playerCamera.transform.position=p;
                 playerCamera.transform.LookAt(show?new Vector3(0,0,55):new Vector3(0,1.8f,0));
-                playerCamera.orthographicSize=Screen.width<Screen.height?30f:17f;
+                playerCamera.orthographicSize=Screen.width<Screen.height?35f:17f;
             }
             Refresh();
         }
