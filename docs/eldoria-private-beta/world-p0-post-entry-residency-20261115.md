@@ -74,3 +74,36 @@ then runs existing cancellation/rejoin,12 entries,48 resources36 creatures and s
 reload. Source UX parity gates15/15 pass. **Native compilation/runtime proof pending**;
 this source is not a publication or iPhone fix claim. Same-engine serialized trial
 run43720075089 is still running at this source checkpoint.
+
+## Same-engine experiment result (independently downloaded and verified)
+
+Run43720075089 completed SUCCESS. Artifact14164493498, ZIP
+50435e11e1f45e7a4707f62b374c133cb714a540faf3ebab0dfe43b7ea571f51.
+Both real browser journeys passed construction, nickname/reload, two world entries,
+zooms, city return and persistent journal, zero runtime errors. No GL observer used.
+
+| Metric | Control21e1 | Four-byte candidate |
+|---|---:|---:|
+| Peak sampled used WASM bytes |559923120|471715584|
+| Maximum WASM capacity bytes |622592000|622592000|
+| Mesh inventory bytes reported by Unity |222738034|222738034|
+| Peak sampled combined WebContent+GPU KiB |2911520|2589952|
+| Observed first entry wait ms |11817|17002|
+
+Used-WASM reduction88207536 bytes =84.12MiB. The capacity did NOT shrink and the
+Unity mesh-inventory number did NOT change; neither is substituted for the actual
+used-heap observation. Combined process RSS is lower in this paired run, not a
+physical-iOS measurement or a general peak bound. The slower first entry is retained
+as an observed tradeoff/uncertainty; no startup-speed improvement is claimed.
+
+Inspected control/candidate actual world entry, overview, close zoom and city-return
+screens: no missing Bastion geometry/roof, terrain, resources or UI observed. The
+camera trajectories are input-driven, not a pixel-identical offline render; no
+artistic score or physical stability verdict inferred.
+
+The predefined40MiB used-WASM threshold for a native validation cycle is met. Native
+runtime UploadMeshData implementation is NOT presumed equivalent to an import-time
+flag; it requires its own measured build comparison. Source05e184 remains pending
+native compilation and verification. Current Windows holder is the separate
+stylized-direction workstream; its run43721967300 is not preempted. P0 resource
+request recorded in main, own resources remain empty.

@@ -107,6 +107,7 @@ jobs:
     timeout-minutes: 3
     outputs:
       mode: ${{ steps.mode.outputs.mode }}
+      native_run: ${{ steps.mode.outputs.native_run }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -119,7 +120,11 @@ jobs:
         import os,pathlib
         lines=pathlib.Path('tools/eldoria-private-beta/world-p0-browser-request.txt').read_text().splitlines()
         modes=[x.split('=',1)[1] for x in lines if x.startswith('mode=')]
-        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency','gpu-ledger','static-mesh-trial']
+        assert len(modes)==1 and modes[0] in ['control','comparison','msaa','entry-budget','public-residency','gpu-ledger','static-mesh-trial','native-static-mesh']
+        native_runs=[x.split('=',1)[1] for x in lines if x.startswith('native_run=')]
+        if modes[0]=='native-static-mesh':
+          assert len(native_runs)==1 and native_runs[0].isdigit()
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('native_run='+native_runs[0]+'\n')
         with open(os.environ['GITHUB_OUTPUT'],'a') as out:out.write('mode='+modes[0]+'\n')
         END
   published-control:
@@ -421,6 +426,78 @@ jobs:
       with:
         name: world-p0-static-mesh-residency-trial
         path: mesh-evidence
+        retention-days: 30
+  native-static-mesh:
+    needs: route
+    if: needs.route.outputs.mode == 'native-static-mesh'
+    runs-on: macos-15
+    timeout-minutes: 55
+    env:
+      QA_EXPECT_SOURCE: 05e1846f0213c6320850505bc054110c53934f55
+      QA_REQUIRE_CONSTRUCTION: '1'
+      QA_REQUIRE_WORLD_JOURNAL: '1'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: |-
+          tools/eldoria-private-beta
+          tools/art-direction/ai-authoring
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: ${{ needs.route.outputs.native_run }}
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/candidate
+    - name: Attach bounded journal to exact certified native artifact
+      env:
+        NATIVE_RUN: ${{ needs.route.outputs.native_run }}
+      run: |
+        set -euo pipefail
+        python3 tools/eldoria-private-beta/install_static_mesh_journal.py qa-site/candidate "$NATIVE_RUN"
+        mkdir -p mesh-evidence
+        cp qa-site/candidate/release-identity.json mesh-evidence/native-build-identity.json
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Compare actual saved journey without intrusive GL allocation observer
+      run: |
+        set -euo pipefail
+        npm install --prefix "$RUNNER_TEMP/world-qa-node" --no-save playwright@1.55.0
+        "$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright" install webkit
+        export NODE_PATH="$RUNNER_TEMP/world-qa-node/node_modules"
+        export QA_OCR_EXECUTABLE="$RUNNER_TEMP/eldoria-world-ocr"
+        swiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o "$QA_OCR_EXECUTABLE"
+        node tools/eldoria-private-beta/qa_static_server.cjs qa-site 18765 >mesh-evidence/server.log 2>&1 &
+        server_pid=$!
+        trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+        for i in {1..40}; do
+          if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi
+          sleep 1
+        done
+        failed=0
+        for variant in candidate control; do
+          cpu=0; if [ "$variant" = candidate ];then cpu=1;fi
+          QA_URL="http://127.0.0.1:18765/candidate/?eldoria_p0_static_mesh_cpu=$cpu&eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1" QA_OUT="mesh-evidence/$variant" node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1
+        done
+        python3 tools/eldoria-private-beta/verify_static_mesh_residency_trial.py mesh-evidence --native || failed=1
+        QA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_static_mesh_cpu=1&eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&eldoria_p0_entry_msaa_off=1' \
+         QA_ENGINE=webkit QA_ENTRY=1 QA_EARLY_ENTRY=1 QA_EARLY_NO_SCREENSHOT=1 QA_RESIZE_STRESS=1 \
+         QA_SKIP_PREFLIGHT=1 QA_LAZY_WORLD=1 QA_EXPECT_VIGILIA=1 QA_EXPECT_ORIGIN=http://127.0.0.1:18765 \
+         QA_REVISION=integrated-mobile21-owner-qa QA_OUT=mesh-evidence/early-residency \
+         node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+        if [ "$failed" != 0 ];then exit 1;fi
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-native-static-mesh-comparison
+        path: mesh-evidence
+        retention-days: 30
+    - uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: world-p0-native-static-mesh-owner-site
+        path: qa-site/candidate
         retention-days: 30
 'on':
   push:
