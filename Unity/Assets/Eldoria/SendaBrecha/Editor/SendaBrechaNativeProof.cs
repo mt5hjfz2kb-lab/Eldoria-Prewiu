@@ -26,6 +26,9 @@ namespace Eldoria.SendaBrecha.Editor
             public bool physicalIphoneTested;
             public bool artApproved;
             public int capturedPng;
+            public bool positiveGateChangesVisibleActors;
+            public bool victoryRouteChecked;
+            public bool defeatRouteChecked;
             public int finalSoldiers;
             public int totalStages;
             public string result;
@@ -74,15 +77,33 @@ namespace Eldoria.SendaBrecha.Editor
                 if(pixels) UnityEngine.Object.DestroyImmediate(pixels);
             }
         }
-        [MenuItem("Eldoria/Prototipos/Senda de la Brecha (crear escena temporal)")]
+        [MenuItem("Eldoria/Prototipos/Senda de la Brecha (escena aislada)")]
         public static void Preview()
         {
-            if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
-            var root=new GameObject("SendaBrecha only - prototype UNSAVED");
-            root.AddComponent<SendaBrechaPrototype>().Initialize();
+            if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            CreateIsolatedScene(false);
+            Debug.Log("SENDA_PREVIEW_READY: Press Play to generate runtime 3D geometry, then use COMENZAR EXPEDICIÓN / arrows or swipe. No beta files modified.");
+        }
+        [MenuItem("Eldoria/Prototipos/Senda de la Brecha (guardar escena aislada)")]
+        public static void SaveStandaloneScene()
+        {
+            if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            CreateIsolatedScene(true);
+        }
+        private static void CreateIsolatedScene(bool save)
+        {
+            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var root=new GameObject("SendaBrecha standalone 3D - prototype (runtime generated)");
+            root.AddComponent<SendaBrechaPrototype>();
             Selection.activeGameObject=root;
-            Debug.Log("SENDA_PREVIEW_READY: Press Play, then use COMENZAR EXPEDICIÓN / arrows or swipe. Not in main/beta.");
+            if(save)
+            {
+                const string folder="Assets/Eldoria/SendaBrecha/Scenes";
+                if(!AssetDatabase.IsValidFolder(folder))AssetDatabase.CreateFolder("Assets/Eldoria/SendaBrecha","Scenes");
+                const string path=folder+"/SendaBrecha_Experimental.unity";
+                Need(EditorSceneManager.SaveScene(scene,path),"Failed to save isolated Senda scene: "+path);
+                Debug.Log("SENDA_STANDALONE_SCENE_SAVED "+path+" (not in production build scenes)");
+            }
         }
         public static void Run()
         {
@@ -102,7 +123,16 @@ namespace Eldoria.SendaBrecha.Editor
                 Need(game.SceneCamera!=null && game.SceneCamera.gameObject.scene==SceneManager.GetActiveScene(),
                     "Generated camera must belong to isolated scene");
                 Need(SendaBrechaPrototype.Waves.Length==6, "Exactly six event chapters expected");
+                Need(game.HasLoadedScene,"Procedural 3D runtime world must initialize");
                 SaveCapture(game.SceneCamera,output,"01-intro-390x844.png",390,844);
+                // The initial prototype incorrectly showed 14 actors at 22 virtual troops,
+                // so recruiting did not visibly grow the army. This regression must fail.
+                game.Begin();
+                int initialVisualCount=game.VisibleSoldiers;
+                game.SetLane(0);Advance(game,4.5f);
+                Need(game.GateTaken && game.Soldiers==32 && game.VisibleSoldiers>initialVisualCount,
+                    "Recruit gate must visibly grow the real 3D soldier formation");
+                SaveCapture(game.SceneCamera,output,"02-recruits-grow-on-gate-390x844.png",390,844);
                 game.Begin();
                 Need(game.State==SendaBrechaPrototype.Phase.Running && game.Soldiers==22,"Start gameplay state");
                 game.SetLane(0);Advance(game,3);
@@ -128,13 +158,27 @@ namespace Eldoria.SendaBrecha.Editor
                     Advance(game,.25f);
                 }
                 Need(game.State!=SendaBrechaPrototype.Phase.Running,"Finite encounter, no endless stage loop");
-                Need(game.Stage==5,"All six stages must be reached");
-                SaveCapture(game.SceneCamera,output,"07-final-frame-390x844.png",390,844);
+                Need(game.State==SendaBrechaPrototype.Phase.Victory && game.Stage==5,
+                    "Favorable real six-stage route must result in victory");
+                SaveCapture(game.SceneCamera,output,"08-victory-390x844.png",390,844);
+                int victorySoldiers=game.Soldiers;
+                game.Begin();
+                while(game.State==SendaBrechaPrototype.Phase.Running && game.Elapsed<80)
+                {
+                    game.SetLane(0);Advance(game,.25f);
+                }
+                Need(game.State==SendaBrechaPrototype.Phase.Defeat,
+                    "Risk route must also allow genuine defeat and replay");
+                SaveCapture(game.SceneCamera,output,"09-defeat-390x844.png",390,844);
+                game.Begin();
+                Need(game.State==SendaBrechaPrototype.Phase.Running && game.Soldiers==22 && game.Stage==0,
+                    "Replay must reset all virtual progression without touching game state");
                 var report=new ProofReport
                 {
                     mainSceneModified=false,physicalIphoneTested=false,artApproved=false,
-                    capturedPng=7,finalSoldiers=game.Soldiers,totalStages=game.Stage+1,
-                    result=game.State.ToString()
+                    capturedPng=9,finalSoldiers=victorySoldiers,totalStages=6,
+                    positiveGateChangesVisibleActors=true,victoryRouteChecked=true,defeatRouteChecked=true,
+                    result="VictoryAndDefeatNativeSimulationPass"
                 };
                 File.WriteAllText(Path.Combine(output,"proof.json"),JsonUtility.ToJson(report,true));
                 Debug.Log("SENDA_NATIVE_PROOF_PASS stages=6 result="+report.result+" captures="+report.capturedPng+
