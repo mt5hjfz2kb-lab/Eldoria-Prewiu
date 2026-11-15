@@ -106,7 +106,7 @@ jobs:
 
         modes=[x.split(''='',1)[1] for x in lines if x.startswith(''mode='')]
 
-        assert len(modes)==1 and modes[0] in [''control'',''comparison'']
+        assert len(modes)==1 and modes[0] in [''control'',''comparison'',''msaa'']
 
         with open(os.environ[''GITHUB_OUTPUT''],''a'') as out:out.write(''mode=''+modes[0]+''\n'')
 
@@ -155,7 +155,49 @@ jobs:
         name: world-p0-published-control-proof
         path: control-evidence
         retention-days: 30
-'on':
+  same-build-msaa:
+    needs: route
+    if: needs.route.outputs.mode == 'msaa'
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: 'tools/eldoria-private-beta
+
+          tools/art-direction/ai-authoring'
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        run-id: 43653390105
+        name: world-p0-mobile21-owner-site
+        github-token: ${{ github.token }}
+        path: qa-site/candidate
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Compare identical compiled world with and without world-camera MSAA
+      env:
+        QA_EXPECT_SOURCE: d0b21fd5708c5070d1bd62dc6c6a98399c549051
+        QA_REQUIRE_CONSTRUCTION: '1'
+        QA_OCR_EXECUTABLE: ${{ runner.temp }}/eldoria-world-ocr
+      run: "set -euo pipefail\nnpm install --prefix \"$RUNNER_TEMP/world-qa-node\" --no-save playwright@1.55.0\n\"$RUNNER_TEMP/world-qa-node/node_modules/.bin/playwright\"\
+        \ install webkit\nswiftc tools/eldoria-private-beta/actual_ui_ocr.swift -o \"$QA_OCR_EXECUTABLE\"\nexport NODE_PATH=\"\
+        $RUNNER_TEMP/world-qa-node/node_modules\"\nmkdir -p msaa-evidence\nnode tools/eldoria-private-beta/qa_static_server.cjs\
+        \ qa-site 18765 >msaa-evidence/server.log 2>&1 &\nserver_pid=$!\ntrap 'kill \"$server_pid\" 2>/dev/null || true' EXIT\n\
+        for i in {1..40}; do\n if curl -fsS -o /dev/null http://127.0.0.1:18765/candidate/release-identity.json; then break;fi\n\
+        \ sleep 1\ndone\nfailed=0\nQA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1'\
+        \ QA_OUT=msaa-evidence/default node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1\nQA_URL='http://127.0.0.1:18765/candidate/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_profile=1&eldoria_p0_world_msaa_off=1'\
+        \ QA_OUT=msaa-evidence/no-world-msaa node tools/eldoria-private-beta/qa_world_entry_public.cjs || failed=1\ngrep -F\
+        \ 'ELDORIA_P0_WORLD_CAMERA_MSAA_OPTIN_DISABLED only_world=1' msaa-evidence/no-world-msaa/console.log\nif [ \"$failed\"\
+        \ != 0 ];then exit 1;fi\n"
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: world-p0-identical-build-msaa-comparison
+        path: msaa-evidence
+        retention-days: 30
+on:
   push:
     branches:
     - fix/eldoria-world-first-entry-p0-20261114
