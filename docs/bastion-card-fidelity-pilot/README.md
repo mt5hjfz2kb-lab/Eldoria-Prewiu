@@ -40,3 +40,14 @@ El inventario del mismo run declara `Universal Render Pipeline/Lit shaderSupport
 El capturador de la PR197 rechaza el A/B/C completo cuando una captura real contiene **0,6 % o más** de píxeles con R/B altos y G bajo, preservando el PNG fallido y el error. Este umbral es una prueba diagnóstica específica de **Valoria/Bastión sin ambientación violeta**, no una regla universal para escenas de Brecha. No introducir un material de sustitución ni ocultar el fallo dentro del piloto: corresponde diagnosticar el pipeline/material del Bastión en su trabajo autorizado sin invadir PR194/P0.
 
 La comparación de fuentes en Ubuntu **sí ha pasado** y ha producido la hoja de materiales A/B/C. Su revisión visual indica que el conjunto A conserva una estructura pictórica más próxima al objetivo que B o C por separado. La hipótesis del simple intercambio de sprites **no está aprobada**, aunque la decisión definitiva exige capturas nativas sin magenta y con textos/3D verdaderos.
+
+
+## Resultado real nativo — 15/11/2026
+
+**Unity Ejecutado y verificado:** [run 43744421786](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43744421786) / commit `a60654bc9c22325921a40aa72546582d3346fd65` / artefacto `14174167789`, 12 PNG originales y `evidence.json`. El código A/B/C se ejecutó en la escena canónica con Bastión, modelo 3D, HUD, textos, costes y botones reales; saveUnchanged=true, no magenta en las 12 capturas. Esto **NO** acredita iPhone físico ni calidad objetivo.
+
+**Evaluación visual del fotograma a 900×1600 y 390×844:** A (interfaz actual) mantiene mayor riqueza y organización de marcos/textos. B (`carved_context`) parece otra estética, sobreimpone ornamento tosco y pierde legibilidad; **RECHAZADA**. C (contorno extraído + material neutro) deja marco rígido, estira decoraciones y tapa/recorta la descripción y costes; **RECHAZADA**. Tampoco A alcanza el concepto: miniatura 3D sin integración escénica/volumen comparable; tipografía y espaciados más pobres. **ART_APPROVED=false** para el cambio propuesto.
+
+**Conclusión causal:** importar 2D exacto de una ilustración no preserva la calidad al 9-slice sobre el layout de nuestra ficha. No promover B/C, no fusionar, no repetir tintados. La ruta posterior debe trabajar una ficha compuesta de zonas reales independientes con marcos de esquinas no deformables, superficie central controlada, huecos de texto medidos y render del Bastión integrado en un recuadro mayor. En primer lugar, demostrar un solo componente en Unity auténtico antes de extenderlo.
+
+**Recurso Windows liberado tras run verificado**. PR #197 se mantiene borrador para auditar el experimento rechazado; sin cambio funcional ni publicación.
