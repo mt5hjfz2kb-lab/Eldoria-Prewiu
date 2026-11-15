@@ -142,7 +142,7 @@ function init(){try{renderer=new THREE.WebGLRenderer({canvas:$('viewport'),alpha
  let touchX=null;$('viewport').addEventListener('pointerdown',e=>touchX=e.clientX);$('viewport').addEventListener('pointerup',e=>{if(touchX!==null&&Math.abs(e.clientX-touchX)>29)steer(e.clientX>touchX?1:-1);touchX=null});
  addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')steer(-1);if(e.key==='ArrowRight'||e.key==='d')steer(1);if(e.key===' '&&!started)start()});
  $('viewport').addEventListener('webglcontextlost',e=>{e.preventDefault();$('error').style.display='flex';started=false});
- window.__senda3d={start,steer,setSpeed:v=>{speed=v},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;hud()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:Math.min(squad.length,Math.max(0,2+Math.ceil(soldiers/4)))})};
+ window.__senda3d={start,steer,setSpeed:v=>{speed=v},setPhase:(s,t)=>{stage=clamp(s,0,5);stepTime=t;started=true;paused=false;gateUsed=t>=4.15;battleDone=t>=9;hud()},state:()=>({started,paused,finished,stage,stepTime,lane,soldiers,damage,armor,score,hasWebGL:!!renderer,visibleActors:squad.filter(u=>u.visible).length})};
  hud();requestAnimationFrame(loop);
  }catch(e){console.error('SENDA_3D_INIT',e);$('error').style.display='flex'}}
 let speed=1;
