@@ -31,3 +31,21 @@ Cambiar de técnica: **no repetir pequeñas variaciones de tinte, filtros ni sha
 - `-quit` con PlayMode diferido hace salir Unity antes de obtener capturas. La ruta Editor síncrona evita esa dependencia y la carga del mundo P0.
 - Las capturas y el manifiesto de artefactos auténticos están conservados en los runs anteriores. Un `CI success` y diferencias de píxeles **no equivalen a ART_APPROVED**.
 - **No modificar** P0/PR194, beta/testers, saves ni escena productiva por esta prueba. Ninguna build WebGL ni APK se produjo.
+
+
+## Ensayos adicionales de composición y acabado — 15/11/2026
+
+**No se autoriza la promoción de ninguna variante.** La primera prueba A/B se completó en Unity Editor (no móvil, sin ejecución real de juego), y las candidatas posteriores también se inspeccionaron visualmente.
+
+| Evidencia | Resultado técnico comprobado | Veredicto artístico |
+| --- | --- | --- |
+| [43725103057](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43725103057) | Editor capturó propuestas con 105 props existentes, aunque el gate final rechazó diferencia demasiado baja | Rechazada: piedras claras con escala errónea, vegetación diminuta o con siluetas incorrectas, composición no mejora |
+| [43725656960](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43725656960) | Native Unity SUCCESS, 46 renderers de decoración reutilizada y 4 PNG A/D | Rechazada: rocas blancas desproporcionadas y grupos de árboles con troncos claros incoherentes; peor que el original |
+| [43725782481](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43725782481) | Native Unity SUCCESS, capturas originales y dos tratamientos G1/G2 sobre cámara original, en ambas orientaciones | Rechazada: el filtro apenas afecta al problema de arquitectura, relieve y vacío del terreno |
+| [43726354590](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43726354590) | Unity compila y escribe A y F; el workflow termina FAIL porque comprueba nombres antiguos G1. El manifiesto declara 7 capas de terreno y 105 prefabs (solo validación de render Editor) | Rechazada: terreno más gris, pero piedras y límites artificiales; no apariencia comercial |
+
+**Conclusión causal:** la brecha entre el concepto deseado y la escena real no se cierra con postprocesos, tintes, color por texturas, rocas automáticas ni clonación masiva. El problema principal es la escasez y la poca coherencia de geometría/arte de producción, además de la composición del entorno. Aumentar polígonos sin dirección artística no sería una solución; tampoco añadir sprites como una imagen de fondo que oculte la falta de interactividad.
+
+**Siguiente enfoque coherente y de coste 0 por defecto:** crear primero una única **zona de referencia** realmente trabajada en Blender/Unity con un kit propio y reutilizable (bastión autorizado, ruina monumental, camino integrado, dos familias de rocas, dos especies de árboles y suelo orgánico). Validar una toma auténtica de Unity a 1600×900 y 390×844 a la **misma cámara**; el resultado debe ser claramente mejor de un vistazo antes de hacer más arte o ampliar el mapa. No hay autorización para meter modelos de terceros sin licencia acreditada ni usar el Bastión vetado. Las escenas, sprites e imágenes conceptuales no son prueba de integración, jugabilidad, rendimiento móvil o aprobación artística.
+
+**Límites al cierre:** PR en borrador; ninguna escena principal ni beta modificada; no build jugable nueva; artApproved=false, physicalMobileTested=false. Reservar Windows de nuevo solo cuando exista una fuente artística nueva que merezca prueba; no acumular más runs de mínimos retoques.
