@@ -47,3 +47,8 @@ intent=Test the actual regenerated round-based foundations (no rectangular pads)
 gameplay_gates=Unity real EditMode 7/7 plus PlayMode 3 live scene/UI callbacks
 capture=10 authentic URP landscape/portrait screenshots; preserve source and XML in exact run artifact
 restrictions=independent experiment only; no main, beta, release, spend or V4.1 experimental combat changes
+
+retry=11
+cause=PlayMode UnityTest cases were discovered during EditMode run and tried to load a scene outside PlayMode
+fix=PlayMode asmdef cross-platform plus explicit class testFilter for each actual test runner
+expected=7 EditMode and 3 PlayMode separate XML files, 10 Unity screenshots, no P0/beta impact
