@@ -190,6 +190,38 @@ namespace Eldoria.BastionCardFidelityPilot.Editor
                 float magentaFraction = errorMagentaPixels/(float)actualPixels.Length;
                 string path = Path.Combine(directory, filename);
                 File.WriteAllBytes(path, pixels.EncodeToPNG());
+                if(magentaFraction >= .006f)
+                {
+                    // The previous run 43623869301 showed a supported URP
+                    // shader on Bastion slots while the GPU painted magenta.
+                    // Preserve exact material names/asset paths without
+                    // mutating them or assuming Shader.isSupported is proof.
+                    var diagnostic = new System.Text.StringBuilder();
+                    diagnostic.AppendLine("BASTION_CARD_REAL_GPU_MAGENTA " +
+                        (magentaFraction * 100f).ToString("F2") + "% / " + filename);
+                    diagnostic.AppendLine("Source SHA: " +
+                        Environment.GetEnvironmentVariable("GITHUB_SHA"));
+                    diagnostic.AppendLine("Camera: " + camera.name);
+                    foreach (var renderer in Object.FindObjectsByType<Renderer>(
+                        FindObjectsSortMode.None).Where(x => x && x.name.Contains("Bastion")).Take(15))
+                    {
+                        var slots = renderer.sharedMaterials;
+                        for(int slot=0;slot<slots.Length;slot++)
+                        {
+                            var material=slots[slot];
+                            if(!material)continue;
+                            var shader=material.shader;
+                            diagnostic.AppendLine("Renderer=" + renderer.name +
+                                " slot=" + slot + " material=" + material.name +
+                                " path=" + AssetDatabase.GetAssetPath(material) +
+                                " shader=" + (shader?shader.name:"NULL") +
+                                " supported=" + (shader && shader.isSupported));
+                        }
+                    }
+                    File.WriteAllText(Path.Combine(directory,
+                        variant + "-shader-diagnostic-" + w + "x" + h + ".txt"),
+                        diagnostic.ToString());
+                }
                 Need(magentaFraction < .006f,
                     "Genuine Unity scene contains " +
                     (magentaFraction*100f).ToString("F2") +
