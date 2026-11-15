@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T01:36:12.390Z",
+  "updated_at": "2026-11-15T01:52:00.221Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_DIAGNOSTIC21_PUBLISHED_PUBLIC_BROWSER_RUNNING",
-      "note": "Reject5881df delivery: its main baseline would roll back delivered90465 navigation fixes. Reconciled source d0b21fd preserves all BreachWatch bytes and published WorldEntryPending while applying only world P0 changes. No main UI edits or other-workstream takeover. PR194 now targets existing frozen published beta branch.",
-      "next": "Complete public player job132658576862 in publication43663397708; inspect screenshots and report. Owner-only MSAA-off URL already provided. Physical iPhone crash resolution remains unconfirmed; no memory-saving claim or tester release. Windows is free.",
+      "phase": "OWNER_DIAGNOSTIC21_PUBLIC_PASS_AWAITING_PHYSICAL_IPHONE_RESULT",
+      "note": "Completed native/build/package, both desktop browser comparisons, durable rollback, owner-only publication and independent public gameplay verification. Genuine remaining external gate is owner's physical iPhone result. No supervision automation; no active Windows or publication job.",
+      "next": "Owner needs to open supplied beta21 MSAA-off URL in physical iPhone Safari and test World -> City -> World. Public job132658576862 passed with zero recorded errors; no physical result received. Do not claim crash solved or memory saving, do not enable testers, and do not rerun Unity blindly. Continue same PR194 from23591c33; Windows free.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9080,12 +9080,22 @@
         "public_source_verified": true,
         "all_public_files_verified": 145,
         "public_browser_job": 132658576862,
-        "public_browser_result": "in_progress",
+        "public_browser_result": "success",
         "owner_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_p0_world_msaa_off=1&eldoria_diag=1&build=world21",
         "published_as": "OWNER_DIAGNOSTIC_NOT_CONFIRMED_IPHONE_FIX",
         "rollback_archive_sha256": "a30724a10bb3aa04d1142a11d0f65dd1ae2c001828eebc574b7c453fd745d14c",
         "publication_proof_artifact": 14141038195,
-        "external_testers_enabled": false
+        "external_testers_enabled": false,
+        "public_browser_artifact": 14141976559,
+        "public_browser_artifact_sha256": "63a4d61f07c95cd14b903b1648ee1748742e188ec76e723054db2d4431a63de6",
+        "public_screenshots_reviewed": true,
+        "public_two_world_entries_and_returns": true,
+        "public_construction_reload_verified": true,
+        "public_errors": [],
+        "rollback_release": 445734680,
+        "rollback_asset": 749410777,
+        "continuation_head": "23591c33a217da0750726138360b7d150e4303d8",
+        "root_cause_confirmed": false
       }
     },
     {
