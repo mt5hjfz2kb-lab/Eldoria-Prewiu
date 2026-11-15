@@ -30,3 +30,8 @@ cause=Windows PowerShell process.ExitCode null; false negative verification, art
 fix=WaitForExit and exact same-run log+scene+ten-PNG fail-closed reconciliation
 mechanics=EldoriaV41GatewayResolver.Campaign selected in experimental gateway
 source_sha=bf89db18403400191a57b8911d431801205a9e6e
+
+retry=8
+unity_result=0; actual Editor created scene and 10 screen captures; postprocess hash gate failed due Select-Object unable to expand Hashtable key
+fix=PowerShell 5.1 explicit Hashtable indexing; separate positive/negative hash smoke on Ubuntu before Windows
+source_sha=c0bf9fd563298a830b21a00db62a4036facac159
