@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T23:56:37.898Z",
+  "updated_at": "2026-11-15T23:59:31.671Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-citadel-art-production-20261115",
       "ownership_state": "claimed",
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "FINAL_VALLEY_PORTRAIT_NATIVE_RUNNING",
+      "phase": "VALLEY_LIGHTING_AND_PORTRAIT_SAMPLE_VERIFIED_WINDOWS_RELEASED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9769,12 +9767,12 @@
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
-        "status": "returned_after_visual_reboot_turn",
+        "status": "completed_and_released_for_next_turn",
         "run_id": 43770724604,
         "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "requested_at": "2026-11-15T22:44:00.333Z",
         "instruction": "Finish this exact native run without interruption, retain all evidence, then yield Windows for one Visual Reboot capture. No source ownership transfer. Owner explicitly authorized alternating turns.",
-        "completed_run": 43776052927,
+        "completed_run": 43777338073,
         "return_after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "visual_reboot_run": 43776990752,
         "released_at": "2026-11-15T23:16:20.904Z"
@@ -9783,27 +9781,27 @@
       "continuation_authority": "Owner explicitly requests continuing Ashen Citadel until artistically presentable; same source owner identity and branch, no claim on Visual Reboot Windows turn.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "running_current_visual_verification",
+        "status": "released",
         "source_sha": "486282eca21e097ffd83c74ca3bbe25600017eb4",
         "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
         "reason": "43775821050 compile failure corrected at 8034917; retry 43776052927 blocked by resource reassignment during checkout (Unity not executed). Please return Windows after current Reboot run; Ashen will retry this exact fixed HEAD and release after terminal native evidence.",
-        "run_id": 43776052927,
+        "run_id": 43777338073,
         "attempt": 2
       },
       "last_native": {
-        "run": 43776052927,
-        "attempt": 2,
-        "head": "8034917ca7efdc20215e56067136c2be4791501c",
-        "artifact": 14187055106,
+        "run": 43777338073,
+        "head": "486282eca21e097ffd83c74ca3bbe25600017eb4",
+        "artifact": 14186822421,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "shadow_affected_pixels": 271354,
-        "visual_review": "Directional shadows and ground colour improved. Final portrait near-ray clearance fix to 6m prepared at current HEAD; pending next native capture."
+        "shadow_affected_pixels": 275994,
+        "shadow_mean_channel_delta": 5.5406,
+        "visual_review": "Real five-stage Unity portraits and landscape reviewed: directional shadows contribute, ground tiling removed, raised valley rim and complete lower-frame coverage. Still needs finer terrain/foliage and UI; no physical iPhone performance or global ART_APPROVED."
       },
-      "final_source_sha": "486282eca21e097ffd83c74ca3bbe25600017eb4",
+      "final_source_sha": "e15baafbeb5487d4bdcd89b77620d9cad479d40a",
       "art_approved": false,
-      "next": "Final portrait clearance native run starting at exact HEAD 486282eca21e097ffd83c74ca3bbe25600017eb4. Preserve this returned turn until run terminates, then release Windows."
+      "next": "Windows released for Visual Reboot next turn. Current art sample and source corrections verified. Next artistic work: finer ground/foliage treatment and UI; retain current tested framing/lighting. Review docs/ashen-citadel/VALLEY_LIGHTING_REVIEW.md."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
