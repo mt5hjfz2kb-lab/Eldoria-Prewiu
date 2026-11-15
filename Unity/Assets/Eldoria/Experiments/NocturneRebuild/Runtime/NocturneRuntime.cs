@@ -48,6 +48,7 @@ namespace Eldoria.Experiments.Nocturne
         private Quaternion cityRotation, worldRotation;
         private float citySize, worldSize;
         private bool cameraInitialized;
+        private int lastScreenWidth = -1, lastScreenHeight = -1;
 
         private static readonly string[] BuildingIds =
             { "sawmill", "barracks", "granary", "stoneworks" };
@@ -120,6 +121,11 @@ namespace Eldoria.Experiments.Nocturne
                 bool changed = gateway.Advance();
                 Redraw(changed);
             }
+            if (Screen.width != lastScreenWidth || Screen.height != lastScreenHeight)
+            {
+                lastScreenWidth=Screen.width; lastScreenHeight=Screen.height;
+                ApplyCameraView();
+            }
             TapScene();
         }
 
@@ -133,6 +139,10 @@ namespace Eldoria.Experiments.Nocturne
                            ? "nivel " + MarchCapacityRules.HeroLevel(s, "lyra") : "bloqueada") +
                    " · Marchas activas: " + MarchCapacityRules.ActiveWorldCount(s) + "/3";
             SelectBuilding("heroes");
+            info = "HÉROES | Aldric: " + MarchCapacityRules.HeroLevel(s,"aldric") +
+                   " · Lyra: " + (s.ChapterThree.LyraRecruited ? "reclutada" : "bloqueada") +
+                   " · Marchas " + MarchCapacityRules.ActiveWorldCount(s) + "/3";
+            Redraw(false);
         }
         public void ShowMailbox()
         {
@@ -141,6 +151,8 @@ namespace Eldoria.Experiments.Nocturne
             info = "BUZÓN | " + count +
                    " cartas del registro de expediciones. Las recompensas se gestionan únicamente mediante el sistema original.";
             SelectBuilding("mail");
+            info = "BUZÓN · " + count + " cartas. Informes y recompensas del sistema original.";
+            Redraw(false);
         }
 
         private void SetView(bool showWorld)
@@ -150,9 +162,7 @@ namespace Eldoria.Experiments.Nocturne
             WorldRoot.SetActive(world);
             if (cameraInitialized)
             {
-                PlayCamera.transform.position = world ? worldCamera : cityCamera;
-                PlayCamera.transform.rotation = world ? worldRotation : cityRotation;
-                PlayCamera.orthographicSize = world ? worldSize : citySize;
+                ApplyCameraView();
             }
             if (CityNavText) CityNavText.color = world ? new Color(.65f,.62f,.55f) : new Color(.93f,.77f,.46f);
             if (WorldNavText) WorldNavText.color = world ? new Color(.93f,.77f,.46f) : new Color(.65f,.62f,.55f);
@@ -166,9 +176,19 @@ namespace Eldoria.Experiments.Nocturne
 
         public void SelectBuilding(string id)
         {
-            selected = id;
             if (world) SetView(false);
+            selected = id;
             Redraw(true);
+        }
+
+        private void ApplyCameraView()
+        {
+            if (!cameraInitialized || !PlayCamera) return;
+            bool portrait = Screen.width <= Screen.height;
+            PlayCamera.transform.position = world ? worldCamera : cityCamera;
+            PlayCamera.transform.rotation = world ? worldRotation : cityRotation;
+            PlayCamera.orthographicSize = world ?
+                (portrait ? 27.7f : worldSize) : (portrait ? 25.8f : citySize);
         }
 
         private void TapScene()
@@ -430,7 +450,6 @@ namespace Eldoria.Experiments.Nocturne
             previousWidth=Screen.width;previousHeight=Screen.height;
             bool landscape=Screen.width > Screen.height;
             if(Scaler)Scaler.matchWidthOrHeight=landscape?1f:0f;
-            if(PlayCamera) PlayCamera.orthographicSize=landscape?14.2f:22.3f;
             if(ContextPanel) ContextPanel.sizeDelta=new Vector2(landscape?-18:-18,landscape?166:184);
             if(WorldChoices) WorldChoices.sizeDelta=new Vector2(-18,landscape?217:232);
             if(CityList)CityList.gameObject.SetActive(true);
