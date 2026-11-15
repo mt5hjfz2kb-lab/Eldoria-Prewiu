@@ -18,7 +18,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
 {
     public sealed partial class AshenCitadelPlayableTests
     {
-        const string ScenePath="Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity";
+        // ScenePath lives in the other half of this partial test fixture.
         private static string EvidencePath=>Path.GetFullPath(
             Path.Combine(UnityEngine.Application.dataPath,"..","ArtEvidence"));
 
