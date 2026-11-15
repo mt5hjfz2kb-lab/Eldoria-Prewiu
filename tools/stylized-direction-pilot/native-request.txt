@@ -1,7 +1,7 @@
-attempt=10
+attempt=11
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=4
-state=G1_G2_FULL_SCREEN_GRAPHIC_FINISH_REAL_UNITY
-reason=Real D/E decoration was objectively ineffective and visually incoherent; try one macroscopic technique change: stylize original Unity camera pixels through a controlled GPU shader. Preserve all actual meshes, shaders, scene and game state. A/G1/G2 real 1600x900 and 390x844; no production release.
+state=TRUE_UNITY_GRAPHIC_FINISH_PLUS_BASTION_CAMERA
+reason=GPU illustrated G2 validated in native run 43725782481. Add G3 using exact existing Bastion renderer as framing anchor for 1600x900 and 390x844; preserve A/G1/G2 exact same-camera controls. No scene persistence or beta modification.
 art_approved=false
