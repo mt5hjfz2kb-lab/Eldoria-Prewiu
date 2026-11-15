@@ -7705,9 +7705,9 @@
       "base_main_sha": "f1c8dd673ee74072d4bcf646da1413cd551ebaf6",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PHYSICAL_IPHONE_BETA21_FAILED_WORLD_ENTRY",
-      "note": "Completed native/build/package, both desktop browser comparisons, durable rollback, owner-only publication and independent public gameplay verification. Genuine remaining external gate is owner's physical iPhone result. No supervision automation; no active Windows or publication job.",
-      "next": "Physical beta21 failed. Do not repeat desktop PASS as device stability. Identify iOS termination evidence and persisted last phase before another build. No Windows claim; continue canonical PR194.",
+      "phase": "IPHONE_WORLD_DIAGNOSTIC_21D4_PUBLISHED_CAUSE_UNKNOWN",
+      "note": "Owner beta21 still fails world entry on physical iPhone. Published local-only 21d4 world-phase journal after exact prepublication and public-origin WebKit gameplay/reload tests. Both passed; this is observability, NOT a crash fix. Original runtime and every protected route preserved.",
+      "next": "Owner reproduces world entry once on Safari URL build=world21d4, then reopens the same page and copies Diagnóstico > Copiar registro. Use persisted native phase before targeted runtime change. Do not request the same absent iOS logs, reset saves, infer jetsam from largestProcess, or claim desktop success resolves iPhone.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -9102,6 +9102,27 @@
           "owner_quote": "Lo mismo me saca del juego cuando voy al mundo",
           "scope": "Owner reports world-entry exit on delivered beta21; exact iOS termination reason not yet captured."
         }
+      },
+      "diagnostic_shell_21d4": {
+        "source": "14c64284f2aef341c1787a1d815e54b369e15efc",
+        "runtime": "d0b21fd5708c5070d1bd62dc6c6a98399c549051",
+        "publication_commit": "44b6b85298276cf5d251e32e4da270666fd3112e",
+        "run": 43697289069,
+        "publication_job": 132760550035,
+        "public_browser_job": 132763285353,
+        "public_browser_result": "success",
+        "public_browser_artifact": 14155622776,
+        "public_browser_zip_sha256": "5e5296c94e030d7f24c38f7cc07f6ad6173cbdc60f926e758b6c4d8dd33414f1",
+        "public_proof_sha256": "1e86acc219a7a05b94bcfcc7c7f901604c70ac4a08412f500a48882fd4c923ba",
+        "shell_sha256": "93e3d72e91b7ffe4689d0845186b0e187a95be911eb4681441c3a0fe6d86c866",
+        "verified_public_files": 146,
+        "rollback_release": 445924796,
+        "rollback_asset": 750405695,
+        "rollback_sha256": "7d053452b9739828310936e1b5e2ce759029fa8f458b24dfeada82d86673208e",
+        "physical_iphone_fixed": false,
+        "external_testers_enabled": false,
+        "windows_claimed": false,
+        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-integrated-vigilia/?eldoria_p0_lazy_world=1&eldoria_diag=1&eldoria_p0_world_msaa_off=1&build=world21d4"
       }
     },
     {
