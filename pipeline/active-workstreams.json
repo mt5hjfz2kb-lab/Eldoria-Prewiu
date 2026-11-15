@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-15T14:33:00Z",
+  "updated_at": "2026-11-15T14:46:10.314Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9591,13 +9591,13 @@
     {
       "id": "eldoria-senda-brecha-lane-event-20261115",
       "title": "La Senda de la Brecha — vertical slice arcade por carriles, sin alterar beta",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 2,
+      "owner": "chatgpt-senda-brecha-ios-unity-20261115",
+      "ownership_state": "claimed",
+      "ownership_revision": 3,
       "branch": "feature/senda-brecha-lane-event-20261115",
       "status": "active",
-      "phase": "SIX_STAGE_THREE_LANE_OFFLINE_PILOT_QA_PASS_PR195_DRAFT_UNITY_FUTURE",
-      "claimed_at": "2026-11-15T13:07:55.336Z",
+      "phase": "OWNER_APPROVED_VISUAL_MECHANIC_IOS_PLAYABLE_URL_VERIFIED_UNITY_SCENE_PENDING",
+      "claimed_at": "2026-11-15T14:52:00+01:00",
       "resources": [],
       "scope": [
         "tools/senda-brecha/**",
@@ -9606,8 +9606,8 @@
       ],
       "base_main_sha": "b3b94857f89bdbe7905af013ec910d4e3658fecc",
       "reason": "Owner explicitly requests preparing standalone lane-battle event from supplied gameplay video; isolate prototype, do not integrate into current iPhone beta or change gameplay economy/saves.",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Only isolated deterministic gameplay prototype with procedural placeholder visuals; no production 2D/3D art, model or paid assets. Future art integration will require its own art-production routing.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Actual 3D procedural scene and visual content is being authored under isolated SendaBrecha path; art approval remains explicitly false; routing documentation to be added before authoring final art assets.",
       "art_approved": false,
       "physical_iphone_verified": false,
       "previous_owner": "chatgpt-senda-brecha-event-20261115",
@@ -9616,7 +9616,7 @@
       "final_reference_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/195",
       "final_source_sha": "f17c6056ad1fb85490f15d0a14477cd49ac39f88",
       "final_evidence": "Canonical six-stage, three-lane standalone browser pilot under tools/senda-brecha/dist/senda-brecha.html. Node 5/5 tests and exhaustive 729 combinations (168 wins/561 losses), Chromium QA 390x844, 320x700, 844x390, 1280x800 all PASS for win/defeat, canvas pointer lane, pause/restart, 0 JS pageerrors. Older 3-stage/two-choice pilot 3e2a83d retained in Git history only, not a second active implementation. NOT Unity, real iPhone, art approved or beta publication.",
-      "next": "Continue SAME canonical PR #195 and workstream ID for owner-authorized Unity adaptation. First playtest for enjoyment, then artistic routing, C# equivalence and isolated Unity scene. Preserve main beta and world iPhone P0; no economic or gameplay integration yet."
+      "next": "Create isolated native Unity scene using only procedural temporary meshes; browser playable link externally tested, full Unity/iPhone art still pending. No shared Windows until owner releases resource."
     },
     {
       "id": "eldoria-stylized-direction-proof-20261115",
