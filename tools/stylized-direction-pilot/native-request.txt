@@ -1,8 +1,7 @@
-# Attempt 8: macro pivot from color filters to physically staged modular 3D
+attempt=8
 workstream_id=eldoria-stylized-direction-proof-20261115
 owner=chatgpt-eldoria-stylized-art-proof-20261115
 ownership_revision=2
-attempt=8
-reason=Native runs 43723401749 and 43723908844 pass technically, but pure shader/palette changes do not improve composition; test disposable original-prefab forest/stone/ruins in Unity Editor camera without changing beta.
-state=REQUEST_EDITOR_NATIVE_MODULAR_COMPOSITION
+state=REAL_EDITOR_CITY_MODULAR_COMPOSITION
+reason=Macro artwork composition uses existing in-project trees, ruins and rocks in actual Unity city. Independent from rejected micro-palette and gameplay saves; no model purchases or beta changes.
 art_approved=false
