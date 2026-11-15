@@ -1,2 +1,2 @@
-mode=gpu-ledger
-21e1 physical post-entry failure. Correct runner.temp expression scope in hosted observer job; no game or public byte changes.
+mode=static-mesh-trial
+reason=Owner21e1 physical post-entry failure; exact four static mesh Read/Write bytes, isolated same-engine comparison; no publication and no Windows claim.
