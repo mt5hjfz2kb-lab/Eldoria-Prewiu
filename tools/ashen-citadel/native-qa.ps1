@@ -235,6 +235,55 @@ if($completed -lt 7 -or $failed -ne 0 -or $skipped -ne 0 -or
 }
 Write-Output "ASHEN_NUNIT_REAL_PASS total=$completed passed=$passed failed=$failed skipped=$skipped"
 
+# The second phase runs the ACTUAL Unity scene in Editor PlayMode, not a
+# camera-only render. It presses real Unity UI Button.onClick callbacks,
+# verifies the starter kingdom hides unbuilt buildings, and switches World/City.
+$uiLog=Join-Path $OutputRoot 'unity-playmode.log'
+$uiResults=Join-Path $OutputRoot 'Ashen-PlayMode-Results.xml'
+$uiArgs='-batchmode -force-d3d11 -projectPath '+$quotedProject+
+    ' -runTests -testPlatform playmode -testResults "'+$uiResults+
+    '" -logFile "'+$uiLog+'"'
+Write-Output ('ASHEN_PLAYMODE_UNITY_BEGIN '+$uiArgs)
+$uiStd=Join-Path $OutputRoot 'playmode-stdout.txt'
+$uiErr=Join-Path $OutputRoot 'playmode-stderr.txt'
+$uiProc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $uiArgs -PassThru `
+    -RedirectStandardOutput $uiStd -RedirectStandardError $uiErr
+$uiDeadline=(Get-Date).AddMinutes(17)
+while(-not $uiProc.HasExited -and (Get-Date) -lt $uiDeadline){
+    Start-Sleep -Seconds 4
+    $uiProc.Refresh()
+}
+if(-not $uiProc.HasExited){
+    & taskkill.exe /PID $uiProc.Id /T /F | Out-Null
+    throw 'ASHEN_PLAYMODE_TIMEOUT'
+}
+$uiProc.WaitForExit()
+$uiProc.Refresh()
+if(-not(Test-Path $uiResults)){
+    if(Test-Path $uiLog){Get-Content $uiLog -Tail 100}
+    throw 'ASHEN_PLAYMODE_XML_MISSING: no real Unity scene test result'
+}
+[xml]$uiXml=Get-Content -LiteralPath $uiResults -Raw
+$uiRoot=$uiXml.DocumentElement
+if($null -eq $uiRoot -or $uiRoot.Name -ne 'test-run'){
+    throw 'ASHEN_PLAYMODE_INVALID_XML'
+}
+$uiTotal=[int]$uiRoot.GetAttribute('total')
+$uiPassed=[int]$uiRoot.GetAttribute('passed')
+$uiFailed=[int]$uiRoot.GetAttribute('failed')
+$uiSkipped=[int]$uiRoot.GetAttribute('skipped')
+if($null -ne $uiProc.ExitCode -and $uiProc.ExitCode -ne 0){
+    if(Test-Path $uiLog){Get-Content $uiLog -Tail 100}
+    throw "ASHEN_PLAYMODE_EDITOR_FAILURE: Unity returned $($uiProc.ExitCode)"
+}
+if($uiTotal -lt 3 -or $uiPassed -ne $uiTotal -or $uiFailed -ne 0 -or
+   $uiSkipped -ne 0 -or $uiRoot.GetAttribute('result') -ne 'Passed'){
+    Write-Output "ASHEN_PLAYMODE_GATE_FAIL total=$uiTotal passed=$uiPassed failed=$uiFailed skipped=$uiSkipped"
+    if(Test-Path $uiLog){Get-Content $uiLog -Tail 100}
+    throw 'ASHEN_PLAYMODE_SCENE_NAVIGATION_REGRESSION'
+}
+Write-Output "ASHEN_PLAYMODE_REAL_PASS total=$uiTotal passed=$uiPassed failed=$uiFailed skipped=$uiSkipped"
+
 $art=Join-Path $project 'Assets/Eldoria/ExperimentalAshenCitadel'
 Copy-Item -LiteralPath $scene -Destination (Join-Path $OutputRoot 'AshenCitadel.unity') -Force
 Copy-Item -LiteralPath $photos -Destination (Join-Path $OutputRoot 'UnityScreenshots') -Recurse -Force
@@ -242,7 +291,8 @@ Copy-Item -LiteralPath $photos -Destination (Join-Path $OutputRoot 'UnityScreens
 # generated scene can later be promoted in the same experiment without GUID loss.
 Copy-Item -LiteralPath $art -Destination (Join-Path $OutputRoot 'UnityExperimentSource') -Recurse -Force
 @{source_sha=$env:GITHUB_SHA;scene_saved=$true;screenshots=$hashes;
-    project='Isolated URP Unity experiment';certification='editor-camera-plus-real-unity-editmode';
-    webgl_playmode=$false;physical_iphone=$false}|
+    project='Isolated URP Unity experiment';certification='editor-camera-plus-real-unity-editmode-and-playmode';
+    unity_editmode_tests=$passed;unity_playmode_tests=$uiPassed;
+    webgl_playmode=$false;editor_playmode=$true;physical_iphone=$false}|
     ConvertTo-Json -Depth 8 | Set-Content -Path (Join-Path $OutputRoot 'native-proof.json') -Encoding UTF8
-Write-Output "ASHEN_REAL_UNITY_SOURCE_PASS: 5 stages, 10 verified screenshots plus real EditMode tests; PlayMode/iPhone still pending."
+Write-Output "ASHEN_REAL_UNITY_SOURCE_PASS: 5 stages, 10 camera PNGs, 7 EditMode assertions, 3 live PlayMode UI tests; mobile/WebGL not yet certified."
