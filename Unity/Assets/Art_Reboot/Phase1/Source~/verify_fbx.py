@@ -17,6 +17,7 @@ for obj in objects:
   assert .023-1e-5 <= u <= .977+1e-5 and .023-1e-5 <= v <= .977+1e-5
  # Every face must stay inside one atlas swatch with padding, never sample the whole sheet.
  for face in mesh.polygons:
+  assert len(face.vertices)==3, (obj.name, face.index, "FBX must be pre-triangulated")
   tiles={(int(mesh.uv_layers.active.data[j].uv.x*4),int(mesh.uv_layers.active.data[j].uv.y*4)) for j in face.loop_indices}
   assert len(tiles)==1, (obj.name,face.index,tiles)
   triangles+=len(face.vertices)-2
