@@ -1,5 +1,21 @@
 # Eldoria — conclusión del ensayo visual de 15/11/2026
 
+## Ensayo v4 — campo visual completo, texturas reales y comparación con ciudad (15/11/2026)
+
+**Implementado/renderizado:** [Blender run 43731045777](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43731045777), SHA `f07baeeb8937345689a8a6ba3ea89673625c9fb6`, SUCCESS; artefacto `14168855695` (~87 MB ZIP). La ejecución contiene capturas de 1400×850 y 760×1240, un .blend editable y un .glb 3D válido. Incluye las fuentes reales del Bastión II, Aserradero, Cuartel AP2 y piezas de arquitectura secundaria. Ningún archivo de la beta o de la escena de producción se reescribió.
+
+**Mejoras que sí se observan frente al ensayo v3:**
+- desaparecen los triángulos grises de fondo por los bordes del terreno;
+- puente con pavimento de piedra reconocible, ribera continua y árboles en franjas coherentes;
+- el elemento patrimonial blanco se hace menos dominante y la fluorescencia de la Brecha se modera;
+- mayor legibilidad del conjunto a escala estratégica.
+
+**Evaluación artística independiente del PASS técnico:** al comparar junto a la captura real de Unity, la ciudad actual mantiene **mejor iluminación, más naturalidad, lectura del puente y ribera, y calidad integrada de materiales**. El nuevo entorno Blender conserva árboles geométricos, demasiado vacío entre edificios y poca vida, y parte de la Brecha en el margen. Por tanto, **NO superar aún el estándar visual del producto**; no fusionar ni presentar v4 como sustitución del juego. Se mantiene `ART_APPROVED=false`.
+
+**Decisión acumulativa:** descartar el cambio global a low-poly/maqueta. Conservar los modelos reales y la cámara legible de Unity, estudiar una estilización selectiva de terreno/vegetación/atmosfera mediante pruebas nativas, no mediante ilustraciones ni simple corrección cromática. Próxima puerta obligatoria: composición integrada con objetos y terreno del juego real, prueba A/B de la **misma** escena/cámara en Unity y verificación WebGL/iPhone antes de adoptar cualquier cambio. Recursos `windows-runner-heavy` liberados; no se solicita una ejecución nativa que compita con la estabilización P0.
+
+---
+
 ## Ensayo 3D estilizado con fuentes reales — 15/11/2026
 
 **Resultado: render de Blender real y fuente 3D editable reproducibles; calidad de producto todavía NO certificada.** El objetivo de 7,5/10 visual sigue pendiente. La beta y `main` no se alteran.
