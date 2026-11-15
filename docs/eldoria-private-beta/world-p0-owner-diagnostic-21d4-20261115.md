@@ -185,3 +185,20 @@ budget defect, not evidence the runtime crashed; slow public startup remains obs
 Outer watchdog corrected to750s; initial330s and reload120s bounds and full90/30/45s
 survival windows remain unchanged. Repeat only residency on unchanged public certificate;
 retain the successful world journey, do not rebuild or republish native code.
+
+Final residency repeat43716300729 / job132818505102 SUCCESS on unchanged public
+inventory93fb983f2e422ec775e7425cd260a492f144fa73172015f219089676ed7642f5.
+Artifact14162373927 ZIP SHA256f0ce17869f129d53fddd8f61df20021a10c4d508fba8e94f46becf34df90dbfa independently verified.
+Report passed=true, zero errors, all resize states, early entry, preserved native source
+and full45s after reload. Actual after-name/reloaded screenshots inspected: Beta QA
+nickname and same city/story state visible. This residency test does not certify world entry;
+the independent public world-entry report in14162123518 does, including two entries/returns
+(12821ms and237ms), zooms and persisted construction.
+
+Owner candidate delivery is complete. Native, same-binary comparison, public file identity,
+world journey and residency gates have evidence. The first public run remains recorded
+as FAILED due to harness outer timeout; the targeted corrected repeat is a separate PASS.
+Physical iPhone crash cause remains UNKNOWN;21e1 is not yet device-accepted and is not
+an external tester release. No further automatic work or reserved Windows resource remains.
+Next owner check uses the new21e1 URL: enter world and return; retain the local journal
+if it exits again. Do not request the already-completed delayed-entry control again.
