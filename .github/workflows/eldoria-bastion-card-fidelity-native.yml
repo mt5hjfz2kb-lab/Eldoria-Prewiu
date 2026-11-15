@@ -1,0 +1,128 @@
+name: Eldoria Bastion card - genuine native UI fidelity A/B
+on:
+  push:
+    branches: [feature/eldoria-bastion-card-fidelity-proof-20261115]
+    paths:
+      - tools/bastion-card-fidelity-pilot/native-request.txt
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-bastion-card-native-single
+  cancel-in-progress: false
+jobs:
+  lease:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Refuse native run without exclusive P0-safe Windows CAS
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os, json, base64, urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]; sha=os.environ["GITHUB_SHA"]
+          headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json","User-Agent":"eldoria-bastion-card-pilot"}
+          def get(path):
+            req=urllib.request.Request("https://api.github.com/repos/"+repo+"/"+path,headers=headers)
+            with urllib.request.urlopen(req, timeout=25) as response:return json.load(response)
+          head=get("git/ref/heads/feature/eldoria-bastion-card-fidelity-proof-20261115")
+          if head["object"]["sha"]!=sha:raise SystemExit("Pilot branch changed; stale request")
+          obj=get("contents/pipeline/active-workstreams.json?ref=main")
+          b64=obj.get("content")
+          if obj.get("encoding")!="base64" or not b64:
+            blob=get("git/blobs/"+obj["sha"])
+            if blob.get("sha")!=obj["sha"] or blob.get("encoding")!="base64":raise SystemExit("Registry SHA mismatch")
+            b64=blob.get("content")
+          registry=json.loads(base64.b64decode(b64))
+          owners=[w for w in registry["active"] if "windows-runner-heavy" in w.get("resources",[])]
+          if len(owners)!=1:raise SystemExit("No exclusive Windows claim; P0 continues")
+          row=owners[0]
+          if row.get("id")!="eldoria-bastion-card-fidelity-proof-20261115" or row.get("owner")!="chatgpt-eldoria-bastion-card-fidelity-20261115" or row.get("ownership_state")!="claimed":
+            raise SystemExit("Windows assigned to another production workstream")
+          print("BASTION_CARD_WINDOWS_CAS_PASS",row.get("ownership_revision"))
+          PY
+  native:
+    needs: lease
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Confirm runner is not executing another Unity or Blender process
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Windows busy: refuse overlapping Unity/Blender'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor unavailable'}
+      - name: Find existing git executable without downloading project ZIP
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'git.exe unavailable'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            Unity
+      - name: Revalidate sole Windows owner after self-hosted queue
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $repo=$env:GITHUB_REPOSITORY
+          $head=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/eldoria-bastion-card-fidelity-proof-20261115" -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+          if($head.object.sha -ne $env:GITHUB_SHA){throw 'Pilot branch advanced'}
+          $f=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/contents/pipeline/active-workstreams.json?ref=main" -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+          $b64=[string]$f.content
+          if($f.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($b64)){
+            $obj=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/blobs/$($f.sha)" -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+            if($obj.sha -ne $f.sha -or $obj.encoding -ne 'base64'){throw 'Registry is not trustworthy'}
+            $b64=[string]$obj.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)) | ConvertFrom-Json
+          $holders=@($registry.active | Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-bastion-card-fidelity-proof-20261115' -or $holders[0].owner -ne 'chatgpt-eldoria-bastion-card-fidelity-20261115'){throw 'CAS lease changed while queued'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Other Unity instance became active'}
+      - name: Render authentic same-camera A and B without touching beta
+        shell: powershell
+        timeout-minutes: 29
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $out=Join-Path $project 'BastionCardFidelityEvidence'
+          $log=Join-Path $env:RUNNER_TEMP 'bastion-card-fidelity-native.log'
+          if(Test-Path $out){Remove-Item $out -Recurse -Force}
+          $arguments='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.BastionCardFidelityPilot.Editor.BastionCardFidelityCapture.CaptureBatch -logFile "'+$log+'"'
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
+          $until=(Get-Date).AddMinutes(25)
+          while(-not $p.HasExited -and (Get-Date) -lt $until){Start-Sleep -Seconds 3;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'Native pilot timed out'}
+          $p.Refresh()
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 140};throw "Unity failed: $($p.ExitCode)"}
+          foreach($variant in @('A-current','B-owner-original')){
+            foreach($size in @('900x1600','390x844','1600x900','844x390')){
+              $image=Join-Path $out "$variant-real-unity-bastion-$size.png"
+              if(-not(Test-Path $image) -or (Get-Item $image).Length -lt 16000){throw "Native PNG missing: $image"}
+            }
+          }
+          $report=Get-Content (Join-Path $out 'evidence.json') -Raw | ConvertFrom-Json
+          if($report.status -ne 'UNITY_CAPTURED_REVIEW_REQUIRED' -or $report.artApproved -or -not $report.saveUnchanged -or $report.shots.Count -ne 8){throw 'Art gate not verified or game state changed'}
+          Write-Output "BASTION_CARD_NATIVE_SOURCE_GATE_PASS_REVIEW_REQUIRED"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-bastion-card-genuine-unity-ab-${{ github.run_id }}
+          path: |
+            Unity/BastionCardFidelityEvidence/*
+          if-no-files-found: warn
+          retention-days: 30
