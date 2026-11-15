@@ -65,3 +65,10 @@ cause=Unity 6000 PlayMode C# CS0102: duplicate ScenePath in partial AshenCitadel
 fix=single ScenePath declared in original partial test file; newly added capture test reuses it
 proof=rerun exact head Unity editor + 7 EditMode + 4 PlayMode including genuine camera-space uGUI screenshots
 scope=experiment only; do not touch production Unity scenes or saved data
+
+retry=14
+objective=Certify latest original stylized prototype after native visual failures, not merge or publish.
+fixes=5000 upward-facing terrain faces from reviewed Blender mesh; compact adaptive Unity UI panels; correct 52px editable nickname; hide daily button under modal.
+source_proof=Roslyn 43769477638 PASS; Blender geometry 43769162890 PASS; original native 43768377565 7 EditMode 4 PlayMode but visual REJECTED.
+native_acceptance=10 actual URP Bastion screenshots+10 composited Canvas ScreenspaceCamera captures; real 7/7 EditMode+>=4 PlayMode; reject collapsed nickname and excessive sheet height.
+strict_limit=experiment branch only, unique own Windows lease, no beta or main or production HUD mutation
