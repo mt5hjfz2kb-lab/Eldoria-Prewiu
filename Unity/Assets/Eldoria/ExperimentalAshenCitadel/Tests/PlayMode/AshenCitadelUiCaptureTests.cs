@@ -16,42 +16,11 @@ using UnityEngine.UI;
 
 namespace Eldoria.ExperimentalAshenCitadel.Tests
 {
-    [TestFixture]
-    public sealed class AshenCitadelUiCaptureTests
+    public sealed partial class AshenCitadelPlayableTests
     {
         const string ScenePath="Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity";
-        private string save,backedUp;
         private static string EvidencePath=>Path.GetFullPath(
             Path.Combine(UnityEngine.Application.dataPath,"..","ArtEvidence"));
-
-        [SetUp]
-        public void PreserveExperimentSave()
-        {
-            save=Path.Combine(UnityEngine.Application.persistentDataPath,
-                "eldoria-ashen-experiment-v1.json");
-            backedUp="";
-            if(File.Exists(save))
-            {
-                backedUp=save+"-capture-backup-"+Guid.NewGuid().ToString("N");
-                File.Move(save,backedUp);
-            }
-        }
-        [TearDown]
-        public void RestoreExperimentSave()
-        {
-            if(!string.IsNullOrEmpty(save)&&File.Exists(save))File.Delete(save);
-            if(!string.IsNullOrEmpty(backedUp)&&File.Exists(backedUp))
-                File.Move(backedUp,save);
-        }
-        private static T Find<T>(string objectName) where T:Component
-        {
-            var component=UnityEngine.Object.FindObjectsByType<T>(
-                FindObjectsInactive.Include,FindObjectsSortMode.None)
-                .FirstOrDefault(x=>x.name==objectName);
-            Assert.That(component,Is.Not.Null,"Expected live component "+objectName);
-            return component;
-        }
-        private static Button Button(string name)=>Find<Button>(name);
 
         private static Color32[] ActualCameraPixels(Camera camera,Canvas canvas,
             int width,int height,bool includeUi)
@@ -122,13 +91,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
         [UnityTest]
         public IEnumerator HeadlessNativeCompositesActualHudAndFourPanelStates()
         {
-            var scene=EditorSceneManager.LoadSceneInPlayMode(ScenePath,
-                new LoadSceneParameters(LoadSceneMode.Single));
-            Assert.That(scene.IsValid(),Is.True);
-            yield return null;
-            yield return null;
-            var camera=Find<Camera>("Ashen · Player camera");
-            var canvas=Find<Canvas>("Ashen · Royal Interface");
+            yield return EnterRealScene();
+            var camera=Find("Ashen · Player camera").GetComponent<Camera>();
+            var canvas=Find("Ashen · Royal Interface").GetComponent<Canvas>();
             Assert.That(canvas.renderMode,Is.EqualTo(RenderMode.ScreenSpaceOverlay),
                 "Actual playable scene must retain its original overlay UI");
             // In headless tests, Camera.Render does not capture an Overlay
@@ -141,7 +106,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
             var frames=new[]{new Vector2Int(390,844),new Vector2Int(1600,900)};
             foreach(var frame in frames)
                 SaveActualUi(camera,canvas,"Welcome",frame.x,frame.y);
-            Button("Close").onClick.Invoke();
+            RequireButton("Close").onClick.Invoke();
             yield return null;
 
             foreach(var v in new[]{
@@ -150,7 +115,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
                 ("Bag","Access · BOLSA"),
                 ("World","Nav · MUNDO")})
             {
-                Button(v.Item2).onClick.Invoke();
+                RequireButton(v.Item2).onClick.Invoke();
                 yield return null;
                 foreach(var frame in frames)
                     SaveActualUi(camera,canvas,v.Item1,frame.x,frame.y);

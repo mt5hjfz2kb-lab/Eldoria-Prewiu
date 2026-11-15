@@ -16,7 +16,7 @@ using UnityEngine.UI;
 namespace Eldoria.ExperimentalAshenCitadel.Tests
 {
     [TestFixture]
-    public sealed class AshenCitadelPlayableTests
+    public sealed partial class AshenCitadelPlayableTests
     {
         const string ScenePath=
             "Assets/Eldoria/ExperimentalAshenCitadel/Scenes/AshenCitadel.unity";
