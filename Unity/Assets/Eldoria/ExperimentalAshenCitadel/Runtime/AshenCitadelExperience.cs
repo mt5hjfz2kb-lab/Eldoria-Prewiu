@@ -15,7 +15,7 @@ using UnityEngine.UI;
 namespace Eldoria.ExperimentalAshenCitadel
 {
     [DefaultExecutionOrder(-500)]
-    public sealed class AshenCitadelExperience : MonoBehaviour
+    public sealed partial class AshenCitadelExperience : MonoBehaviour
     {
         [SerializeField] private GameObject[] stages = new GameObject[5];
         [SerializeField] private GameObject sawmill, barracks, granary, stoneworks;
@@ -54,6 +54,9 @@ namespace Eldoria.ExperimentalAshenCitadel
 
         private void Awake()
         {
+            // The owner-facing I–V profile sets actual game costs and milestones.
+            // Used only in this isolated scene with its own save key.
+            SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
             typeface = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             frame = MakeSprite("AshenPanel", new Vector4(20,20,20,20));
             primary = MakeSprite("AshenButtonPrimary", new Vector4(18,12,18,12));
@@ -75,8 +78,10 @@ namespace Eldoria.ExperimentalAshenCitadel
                 gateway.ConfigureLocalMarchRoutes(new AshenCitadelRoutes());
             EnsureInput();
             BuildInterface();
+            BuildAdditionalAccesses();
             ShowWorld(false);
             Refresh();
+            if(string.IsNullOrWhiteSpace(gateway.Snapshot().PlayerName))ShowNicknamePrompt();
         }
 
         private static Sprite MakeSprite(string resourceName, Vector4 border)
@@ -203,10 +208,12 @@ namespace Eldoria.ExperimentalAshenCitadel
         {
             if(gateway==null)return;
             if(Screen.width!=lastWidth||Screen.height!=lastHeight)ApplySafeArea();
+            ProcessSceneTap();
             if(Time.unscaledTime<nextRefresh)return;
             nextRefresh=Time.unscaledTime+.30f;
             gateway.Advance();
             Refresh();
+            RefreshClockLabel();
         }
         private void Refresh()
         {
