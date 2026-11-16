@@ -4,6 +4,7 @@ on:
     branches: [experiment/ashen-citadel-i-v-20261115]
     paths:
       - 'tools/ashen-citadel/generate_ui_atlas.mjs'
+      - 'tools/ashen-citadel/verify_ui_atlas.mjs'
       - '.github/workflows/ashen-ui-assets.yml'
   workflow_dispatch:
 
@@ -28,12 +29,14 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             tools/ashen-citadel/generate_ui_atlas.mjs
+            tools/ashen-citadel/verify_ui_atlas.mjs
             tools/ashen-citadel/ui-atlas-manifest.json
             Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources
           persist-credentials: true
       - name: Generate 12 source-authored PNG sprites and their SHA256 manifest
         run: |
           node tools/ashen-citadel/generate_ui_atlas.mjs
+          node tools/ashen-citadel/verify_ui_atlas.mjs
           python3 - <<'PY'
           import json,hashlib,struct,zlib,pathlib
           root=pathlib.Path('Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources')
