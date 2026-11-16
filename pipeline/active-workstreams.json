@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T07:47:53.771Z",
+  "updated_at": "2026-11-16T08:02:07.581Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,10 +9745,12 @@
       "ownership_revision": 11,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "OWNER_ACCEPTED_COMPOSITION_PICTORIAL_IDENTITY_AUTHORING",
+      "phase": "PICTORIAL_IDENTITY_NATIVE_RESERVED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9801,7 +9803,7 @@
       },
       "final_source_sha": "e15baafbeb5487d4bdcd89b77620d9cad479d40a",
       "art_approved": false,
-      "next": "Original plan recovered: dark stylized 2.5D, pictorial materials, warm light/cool shadows, modular original I-V, coherent UI. Current pass: inhabited dusk, softer authored pine silhouettes, aged masonry/slate, warm emission, atmospheric depth; genuine Blender sources then native Unity A/B."
+      "next": "One bounded native Unity capture/test of authored foliage, masonry/slate and dusk lighting; release Windows on terminal run."
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
@@ -20290,11 +20292,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": null,
+    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "visual_reboot_completed_resource_available",
+    "status": "ashen_bounded_native_reserved",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
