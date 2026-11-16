@@ -45,8 +45,8 @@ namespace Eldoria.ExperimentalAshenCitadel
         public bool IsWorldVisible => worldMode;
         public PlayerState CurrentState => gateway?.Snapshot();
         public string LastMessage => lastMessage;
-        private static Color Ivory => new Color(.94f,.90f,.82f,1);
-        private static Color Muted => new Color(.75f,.73f,.66f,1);
+        private static Color Ivory => AshenInterfaceIdentity.Ivory;
+        private static Color Muted => AshenInterfaceIdentity.Muted;
 
         public void Configure(GameObject[] levelObjects, GameObject mill, GameObject military,
                               GameObject food, GameObject mine, GameObject city, GameObject world,
@@ -64,10 +64,12 @@ namespace Eldoria.ExperimentalAshenCitadel
             // Used only in this isolated scene with its own save key.
             SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
             typeface = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            frame = MakeSprite("AshenPanel", new Vector4(20,20,20,20));
-            primary = MakeSprite("AshenButtonPrimary", new Vector4(18,12,18,12));
-            secondary = MakeSprite("AshenButtonSecondary", new Vector4(18,12,18,12));
-            crest = MakeSprite("AshenCrest", Vector4.zero);
+            // One source-defined premium kit: all controls share identical,
+            // generated 9-slice material language; gameplay behaviour is unchanged.
+            frame=AshenInterfaceIdentity.Panel;
+            primary=AshenInterfaceIdentity.Primary;
+            secondary=AshenInterfaceIdentity.Secondary;
+            crest=AshenInterfaceIdentity.Crest;
             try
             {
                 // Own persistent save key. Production's filename and WebGL key are untouched.
@@ -126,7 +128,7 @@ namespace Eldoria.ExperimentalAshenCitadel
         {
             var r=Node(parent,name,min,max,insetMin,insetMax);
             var t=r.gameObject.AddComponent<Text>();
-            t.font=typeface;t.fontSize=size;t.fontStyle=FontStyle.Bold;t.color=color;t.alignment=alignment;
+            t.font=typeface;t.fontSize=size;t.fontStyle=size>=16?FontStyle.Bold:FontStyle.Normal;t.color=color;t.alignment=alignment;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;
             t.verticalOverflow=VerticalWrapMode.Truncate;
             t.raycastTarget=false;
@@ -140,8 +142,8 @@ namespace Eldoria.ExperimentalAshenCitadel
             var img=Plate(r,skin,Color.white);
             var button=r.gameObject.AddComponent<Button>();
             button.targetGraphic=img;
-            var colors=button.colors;colors.highlightedColor=new Color(1.0f,.94f,.82f,1);
-            colors.pressedColor=new Color(.75f,.64f,.57f,1);button.colors=colors;
+            var colors=button.colors;colors.highlightedColor=new Color(1.0f,.98f,.89f,1);
+            colors.pressedColor=new Color(.65f,.68f,.68f,1);colors.disabledColor=new Color(.56f,.59f,.61f,.62f);button.colors=colors;
             Label(r,"Caption",fontSize,TextAnchor.MiddleCenter,Ivory,Vector2.zero,Vector2.one,
                   new Vector2(7,3),new Vector2(-7,-3)).text=caption;
             if(clicked!=null)button.onClick.AddListener(()=>clicked());
@@ -166,19 +168,23 @@ namespace Eldoria.ExperimentalAshenCitadel
             // The background environment remains visible between the compact
             // header, 46 px account ribbon and the shallow 74 px footer.
             var header=Node(safe,"Header",new Vector2(0,1),Vector2.one,
-                new Vector2(4,-103),new Vector2(-4,-3));
+                new Vector2(7,-88),new Vector2(-7,-5));
             topHud=header;
             Plate(header,frame,Color.white);
             var emblem=Node(header,"Crest",new Vector2(0,0),new Vector2(0,1),
-                new Vector2(10,17),new Vector2(78,-16));
+                new Vector2(12,11),new Vector2(74,-10));
             Plate(emblem,crest,Color.white);
-            levelText=Label(header,"Realm",18,TextAnchor.MiddleLeft,Ivory,
-                new Vector2(0,.49f),Vector2.one,new Vector2(86,0),new Vector2(-10,-4));
-            resourceText=Label(header,"Resources",13,TextAnchor.MiddleLeft,Muted,
-                new Vector2(0,0),new Vector2(1,.50f),new Vector2(86,2),new Vector2(-8,0));
+            levelText=Label(header,"Realm",17,TextAnchor.MiddleLeft,Ivory,
+                new Vector2(0,.43f),Vector2.one,new Vector2(82,0),new Vector2(-11,-5));
+            resourceText=Label(header,"Resources",12,TextAnchor.MiddleLeft,Muted,
+                new Vector2(0,0),new Vector2(1,.45f),new Vector2(82,3),new Vector2(-10,0));
+            var accent=Node(header,"Warm brass divider",new Vector2(0,0),new Vector2(1,0),
+                new Vector2(82,9),new Vector2(-11,11));
+            var line=Plate(accent,null,new Color(.55f,.40f,.23f,.57f));
+            line.raycastTarget=false;
 
             var bottom=Node(safe,"Bottom navigation",Vector2.zero,new Vector2(1,0),
-                new Vector2(4,4),new Vector2(-4,78));
+                new Vector2(7,5),new Vector2(-7,69));
             bottomHud=bottom;
             Plate(bottom,frame,Color.white);
             string[] nav={"BASTIÓN","EDIFICIOS","EJÉRCITO","MUNDO"};
@@ -187,24 +193,28 @@ namespace Eldoria.ExperimentalAshenCitadel
                 int n=i;
                 float x0=i/4f,x1=(i+1)/4f;
                 Button(bottom,"Nav · "+nav[i],nav[i],secondary,new Vector2(x0,.12f),
-                    new Vector2(x1,.90f),new Vector2(4,0),new Vector2(-4,0),
+                    new Vector2(x1,.92f),new Vector2(4,0),new Vector2(-4,0),
                     ()=>OpenSection(n),12);
             }
             feedbackText=Label(safe,"Message",13,TextAnchor.MiddleCenter,Ivory,
-                new Vector2(0,0),new Vector2(1,0),new Vector2(12,82),new Vector2(-12,112));
+                new Vector2(0,0),new Vector2(1,0),new Vector2(12,75),new Vector2(-12,102));
 
             // Content-driven sheet attached above navigation, not an oversized
             // modal that hides 60% of the kingdom regardless of content.
             popup=Node(safe,"Action sheet",new Vector2(.035f,0),new Vector2(.965f,0),
                 Vector2.zero,Vector2.zero);
             popup.pivot=new Vector2(.5f,0);
-            popup.anchoredPosition=new Vector2(0,114);
+            popup.anchoredPosition=new Vector2(0,105);
             popup.sizeDelta=new Vector2(0,260);
             Plate(popup,frame,Color.white);
             popupTitle=Label(popup,"Sheet title",18,TextAnchor.MiddleLeft,Ivory,
-                new Vector2(0,1),Vector2.one,new Vector2(20,-57),new Vector2(-57,-9));
-            popupDescription=Label(popup,"Description",13,TextAnchor.UpperLeft,Muted,
+                new Vector2(0,1),Vector2.one,new Vector2(19,-54),new Vector2(-58,-11));
+            popupDescription=Label(popup,"Description",14,TextAnchor.UpperLeft,Muted,
                 new Vector2(0,1),Vector2.one,new Vector2(20,-120),new Vector2(-20,-61));
+            var titleRule=Node(popup,"Section accent",new Vector2(0,1),new Vector2(1,1),
+                new Vector2(20,-59),new Vector2(-63,-57));
+            var rule=Plate(titleRule,null,new Color(.61f,.44f,.25f,.84f));
+            rule.raycastTarget=false;
             sheetClose=Button(popup,"Close","×",secondary,new Vector2(1,1),Vector2.one,
                 new Vector2(-52,-53),new Vector2(-13,-13),CloseSheet,21);
 
@@ -276,35 +286,35 @@ namespace Eldoria.ExperimentalAshenCitadel
             float furnitureWidth=Mathf.Min(760f,usableWidth);
             float sheetWidth=Mathf.Min(600f,usableWidth-8f);
             if(topHud!=null)
-                AnchorCentered(topHud,new Vector2(.5f,1f),new Vector2(furnitureWidth,100f),
-                    new Vector2(0,-3f));
+                AnchorCentered(topHud,new Vector2(.5f,1f),new Vector2(furnitureWidth,82f),
+                    new Vector2(0,-6f));
             if(accountHud!=null)
-                AnchorCentered(accountHud,new Vector2(.5f,1f),new Vector2(furnitureWidth,43f),
-                    new Vector2(0,-109f));
+                AnchorCentered(accountHud,new Vector2(.5f,1f),new Vector2(furnitureWidth,39f),
+                    new Vector2(0,-94f));
             if(bottomHud!=null)
-                AnchorCentered(bottomHud,new Vector2(.5f,0f),new Vector2(furnitureWidth,74f),
-                    new Vector2(0,4f));
+                AnchorCentered(bottomHud,new Vector2(.5f,0f),new Vector2(furnitureWidth,64f),
+                    new Vector2(0,5f));
             if(feedbackText!=null)
                 AnchorCentered(feedbackText.rectTransform,new Vector2(.5f,0f),
-                    new Vector2(furnitureWidth-16f,28f),new Vector2(0,82f));
+                    new Vector2(furnitureWidth-16f,25f),new Vector2(0,74f));
             if(popup!=null)
             {
                 AnchorCentered(popup,new Vector2(.5f,0f),
                     new Vector2(sheetWidth,Mathf.Max(195f,popup.sizeDelta.y)),
-                    new Vector2(0,114f));
+                    new Vector2(0,106f));
                 if(popup.gameObject.activeSelf)SizeSheet(sheetRows);
             }
             if(dailyButton!=null)
             {
                 float x=-furnitureWidth/2f+63f;
                 AnchorCentered((RectTransform)dailyButton.transform,
-                    new Vector2(.5f,0),new Vector2(110f,35f),new Vector2(x,115f));
+                    new Vector2(.5f,0),new Vector2(110f,34f),new Vector2(x,106f));
             }
             if(timeText!=null)
             {
                 float x=furnitureWidth/2f-100f;
                 AnchorCentered(timeText.rectTransform,
-                    new Vector2(.5f,0),new Vector2(175f,34f),new Vector2(x,115f));
+                    new Vector2(.5f,0),new Vector2(175f,33f),new Vector2(x,106f));
             }
         }
         // Orthographic portrait rays can begin BELOW the ground even when the
