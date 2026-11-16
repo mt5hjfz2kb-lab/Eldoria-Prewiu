@@ -1,0 +1,28 @@
+{
+    "art_approved":  false,
+    "gameplay_tested":  false,
+    "mobile_tested":  false,
+    "unity_compiled":  true,
+    "scope":  "Isolated hero review scene; original pilot scene unchanged",
+    "unity_rendered":  true,
+    "screenshots":  [
+                        {
+                            "sha256":  "21A004A0F1FE331DBC337CA90778AE3A6E22516A11EF70A58105E34D35B87BC1",
+                            "file":  "unity-1100x1250.png"
+                        },
+                        {
+                            "sha256":  "0B494219A3F145C6617FD1555429EA166E0B5A35BC1FB4AF2B73A1BD2A94E94F",
+                            "file":  "unity-390x844.png"
+                        },
+                        {
+                            "sha256":  "A336CF9D8D44B2EEB410DB804534BE3FA9435F9000A62C559456E4BC8016DC07",
+                            "file":  "unity-1600x900.png"
+                        },
+                        {
+                            "sha256":  "D64D7AFA0CBB910E0B3EF20454545F4ACC71192BB12303EA3AC41B3E4B74E6B8",
+                            "file":  "unity-844x390.png"
+                        }
+                    ],
+    "full_project_integration":  false,
+    "source_sha":  "5cf2ad7a3d4e4af98b58c777f6e2854314c16ef2"
+}
