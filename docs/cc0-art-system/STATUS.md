@@ -117,3 +117,13 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 1. Verificar V11 exacta, abrir PNG I/V y retrato y comparar V9/V10 a cámara equivalente.
 2. Rechazar visualmente si gran nave y árboles siguen siendo simples; buscar solución estructural, no añadir decoraciones arbitrarias.
 3. Optimizar para móvil solo la variante visual elegida; reservar Windows según main/active-workstreams antes de Unity. Las pruebas Blender son evidencia de activos, no de un juego jugable.
+
+## Relevo — correcciones V11 y V12 comprobadas (16-11-2026)
+
+- V11: run https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43891952674 SUCCESS; Blender real, cinco GLB, .blend y capturas I/V + vertical. 11 imágenes embebidas, 1.887 a 2.370 mallas. Problemas visuales: cuerpo central rígido y suelo muy uniforme. No Unity ni iPhone.
+- V12 alternativa paisaje: run https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43894052922 SUCCESS, fuente tools/cc0-art-system/director_v12_living_valley.py. Aporta especies de árboles pero mantiene Bastión alto más rectangular. No aprobar automáticamente.
+- V12 arquitectura: run https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43894465023 SUCCESS, fuente tools/cc0-art-system/director_v12_architecture_terrain.py. Elimina físicamente nave alta anterior y reconstruye volumen y cubierta; exporta cinco GLB y cuatro capturas Blender auténticas con cámaras comparables. Problema detectado por revisión real: discos verdes de suelo demasiado planos.
+- Corrección causal de discos: se reemplazaron parches poligonales por plantas submétricas 3D batched en script. Commit 49b6f2f79080ae6574c192f1cc3fa36dd46e90d9; run https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43896082396. NO declarar PASS hasta comprobar status y capturas reales.
+- V12 estructura sigue con 1.932 a 2.456 mallas sin optimizar; batching antes de Unity móvil. Un glTF y render Blender no certifican FPS, guardados, UX, beta ni iPhone.
+- Derecho/alcance: solo fuente geométrica de autoría Eldoria; imágenes conceptuales IA NO forman parte de modelos. Rama aislada, main intacta, no merge ni publicación.
+- Próximas acciones: inspeccionar run 43896082396 y defectos visibles, elegir una sola base; luego optimizar y probar importación Unity con propiedad legítima del equipo Windows. No ART_APPROVED mientras no exista evaluación real.
