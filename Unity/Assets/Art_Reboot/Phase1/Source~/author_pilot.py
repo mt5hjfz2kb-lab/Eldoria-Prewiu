@@ -10,10 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 random.seed(151126)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
-palette = [(112,115,101),(145,143,120),(77,83,77),(49,63,70),
+palette = [(112,115,101),(145,143,120),(77,83,77),(98,105,114),
            (81,64,46),(126,98,65),(49,66,54),(73,86,63),
            (76,75,61),(103,94,72),(38,44,44),(165,142,96),
-           (255,170,65),(124,62,205),(58,39,70),(31,43,43)]
+           (255,174,74),(153,64,235),(58,39,70),(31,43,43)]
 # Brush-stroke atlas authored by code: broad washes, grain and directional strokes.
 # It is deliberately not described as a manually painted bitmap.
 image=bpy.data.images.new('Reboot_Atlas_256',width=256,height=256,alpha=True)
@@ -31,7 +31,7 @@ image.pixels.foreach_set(pix)
 image.filepath_raw=str(ROOT/'Textures/Reboot_Atlas_256.png');image.file_format='PNG';image.save()
 
 materials=[]
-for name,emission in [('Reboot_Atlas',0),('Reboot_Light',2.4)]:
+for name,emission in [('Reboot_Atlas',0),('Reboot_Light',2.5),('Reboot_Corruption',5.0)]:
  m=bpy.data.materials.new(name);m.use_nodes=True
  n=m.node_tree.nodes; l=m.node_tree.links;p=n.get('Principled BSDF')
  t=n.new('ShaderNodeTexImage');t.image=image;t.interpolation='Linear'
@@ -45,7 +45,7 @@ for name,emission in [('Reboot_Atlas',0),('Reboot_Light',2.4)]:
 groups={}; current='Terrain'
 def finish(o,k,bevel=0,glow=False):
  o.name=current+' / '+o.name;groups.setdefault(current,[]).append(o)
- o.data.materials.clear();o.data.materials.append(materials[int(glow)])
+ o.data.materials.clear();o.data.materials.append(materials[(2 if k==13 else 1) if glow else 0])
  bpy.context.view_layer.objects.active=o
  bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
  if bevel:
@@ -89,23 +89,40 @@ def arch(x,y,z,w,h,k=10,depth=.06):
   q=box('Arch voussoir',(x+math.cos(a)*rr,y+.035,spring+math.sin(a)*rr),(.20,.25,.22),1,.02)
   q.rotation_euler.y=a-math.pi/2
  return o
-def masonry(x,y,z,w,d,h,ruin=False):
+def masonry(x,y,z,w,d,h,ruin=False,damage=False):
  # Courses are broad, not thousands of tiny bricks. Separate caps and repair stones.
  box('Heavy stone body',(x,y,z+h*.5),(w,d,h),0,.075)
  for row in range(int(h/.58)):
   count=max(2,int(w/.8));bw=w/count
   for i in range(count):
    if ruin and row>2 and i>count//2:continue
-   box('Uneven facing',(x-w/2+(i+.5)*bw,y-d/2-.025,z+.27+row*.58),(bw-.035,.12,.50),1 if random.random()<.22 else 0,.028)
+   if damage and row>=3 and random.random()<.23:continue
+   shade=random.choice([0,0,1,2]) if damage else (1 if random.random()<.22 else 0)
+   bx=x-w/2+(i+.5)*bw+(random.uniform(-.055,.055) if damage else 0)
+   bh=.50*(random.uniform(.78,1.06) if damage else 1)
+   brick=box('Chipped varied facing',(bx,y-d/2-.025,z+.27+row*.58),
+             (bw-.04,.12,bh),shade,.018 if damage else .028)
+   if damage and row>=2 and random.random()<.26:
+    rock((bx,y-d/2-.15,z+.28+row*.58),(.12,.09,.11),2)
+
 def roof(x,y,z,w,d,h):
- # Long ridgeline on Y; two strong sloping surfaces, thick eaves and ridge caps.
+ # Underlay makes three lost roof slates read as damage, not a void.
  for side in [-1,1]:
-  for row in range(4):
-   a=row/4;b=(row+1)/4
-   for j in range(5):
-    ya=y-d/2+j*d/5;yb=ya+d/5+.025
-    va=[(x+side*w*.5*a,ya,z+h*(1-a)-.09*math.sin(j*.7)),(x+side*w*.5*b,ya,z+h*(1-b)-.09*math.sin(j*.7)),(x+side*w*.5*b,yb,z+h*(1-b)-.09*math.sin((j+1)*.7)),(x+side*w*.5*a,yb,z+h*(1-a)-.09*math.sin((j+1)*.7))]
-    mesh('Broad slate shingle',va,[(0,1,2,3) if side > 0 else (3,2,1,0)],3)
+  under=[(x, y-d/2, z+h-.065),(x+side*w/2,y-d/2,z-.065),
+         (x+side*w/2,y+d/2,z-.065),(x,y+d/2,z+h-.065)]
+  mesh('Subtle roof underlay',under,[(0,1,2,3) if side>0 else (3,2,1,0)],10)
+  for row in range(6):
+   a=row/6;b=(row+1)/6
+   for j in range(8):
+    if (side,row,j) in {(1,4,1),(-1,3,5),(1,5,6)}:continue
+    ya=y-d/2+j*d/8;yb=ya+d/8+.024
+    sway=.035*math.sin(j*1.3+row*.57)
+    va=[(x+side*w*.5*a,ya,z+h*(1-a)+sway),
+        (x+side*w*.5*b,ya,z+h*(1-b)+sway),
+        (x+side*w*.5*b,yb,z+h*(1-b)+sway+.012),
+        (x+side*w*.5*a,yb,z+h*(1-a)+sway+.012)]
+    tone=7 if (j+row*3)%19==0 else (2 if (j*2+row)%5==0 else 3)
+    mesh('Variegated worn slate',va,[(0,1,2,3) if side>0 else (3,2,1,0)],tone)
   beam('Timber eave',(x+side*w/2,y-d/2,z),(x+side*w/2,y+d/2,z),.16,4)
  for yy in [y-d/2,y+d/2]:
   mesh('Timber gable',[(x-w/2,yy,z),(x+w/2,yy,z),(x,yy,z+h)],[(0,1,2) if yy < y else (2,1,0)],4)
@@ -121,14 +138,30 @@ for j in range(N):
   verts.append((x,y,z))
 for j in range(N-1):
  for i in range(N-1):a=j*N+i;faces.append((a,a+1,a+N+1,a+N))
-ground=mesh('Continuous forest floor',verts,faces,6)
-# Map the ground continuously inside its atlas swatch, not once per grid face.
+ground=mesh('Continuous forest floor',verts,faces,1)
+# Vertex-painted three-tone grass, moss and eroded earth. Smooth, non-tiled transitions.
+# Neutral atlas patch under vertex colours avoids visible square swatch boundaries.
+def smooth(a,b,t):
+ t=max(0,min(1,(t-a)/(b-a)));return t*t*(3-2*t)
+def gaussian(x,y,cx,cy,r):
+ return math.exp(-((x-cx)**2+(y-cy)**2)/(r*r))
+def blend(a,b,t):return tuple(a[i]*(1-t)+b[i]*t for i in range(3))
 for loop in ground.data.loops:
  v=ground.data.vertices[loop.vertex_index].co
- ground.data.uv_layers.active.data[loop.index].uv=((2+(6+(v.x/48+.5)*52)/64)/4,(1+(6+(v.y/48+.5)*52)/64)/4)
- wash=.79+.10*math.sin(v.x*.29)*math.cos(v.y*.33)+.06*math.sin((v.x+v.y)*.51)
- path=math.exp(-v.x*v.x/3)*max(0,min(1,(1-v.y)/3))
- ground.data.color_attributes['Color'].data[loop.index].color=(wash*(1+.30*path),wash*(1-.18*path),wash*(1-.32*path),1)
+ x,y=v.x,v.y
+ ground.data.uv_layers.active.data[loop.index].uv=((1+(6+(x/48+.5)*52)/64)/4,(0+(6+(y/48+.5)*52)/64)/4)
+ noise=.5+.27*math.sin(x*.59+y*.31)+.18*math.cos(x*.27-y*.89)+.09*math.sin(x*1.43+y*1.09)
+ g0=(.36,.55,.30);g1=(.43,.57,.34);g2=(.53,.59,.38)
+ grass=blend(g0,g1,smooth(.23,.53,noise));grass=blend(grass,g2,smooth(.53,.83,noise))
+ earth=max(gaussian(x,y,0,2.1,4.3),gaussian(x,y,-4.55,-1.55,3.0),gaussian(x,y,4.35,.45,2.9))
+ road=math.exp(-x*x/1.7)*max(0,min(1,(2-y)/3))
+ branch=math.exp(-((abs(x)-2.7)/1.4)**2-((y+.95)/.9)**2)
+ patch=smooth(.48,.9,.54+.32*math.sin(x*.7-y*.5)*math.cos(y*.78))
+ earth=max(road*.83,branch*.62,earth*(.48+.18*patch))
+ col=blend(grass,(.65,.53,.34),min(.87,earth))
+ moss=max(gaussian(x,y,-4.8,.5,2.2),gaussian(x,y,-1.7,3.0,1.6))*(.35+.25*patch)
+ col=blend(col,(.31,.46,.27),min(.59,moss))
+ ground.data.color_attributes['Color'].data[loop.index].color=(col[0],col[1],col[2],1)
 for i in range(90):
  x=random.uniform(-10,10);y=random.uniform(-9,10)
  if abs(x)<2 and y<3:continue
