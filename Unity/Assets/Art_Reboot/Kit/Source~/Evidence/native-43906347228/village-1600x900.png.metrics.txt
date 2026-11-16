@@ -1,0 +1,1 @@
+min=4 max=219 magenta=0 pixels=1440000 green_pct=40,76 warm_pct=25,64
