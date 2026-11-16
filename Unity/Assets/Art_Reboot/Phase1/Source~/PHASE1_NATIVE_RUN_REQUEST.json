@@ -1,16 +1,10 @@
 {
-  "phase": "owner_revision_phase1_second_native",
-  "after_source_sha": "8994945fbd36c28804309f8d1558a981943d14f9",
-  "original_native_run": 43834060945,
-  "previous_result": "Unity compiled, first artistic review rejected: white corruption, overly purple-black terrain, roof checker patches",
-  "blender_regeneration_run": 43835238004,
-  "camera": "same 50 degree strategic camera",
-  "author_approval_before_phase2": true,
-  "expected_outcomes": [
-    "violet no longer white",
-    "warm dusk",
-    "subtle slate",
-    "visible grass/earth/moss",
-    "soft shadows"
-  ]
+  "phase": "Phase1 third original Unity review",
+  "source_art_commit": "51a04207b948fe0a555c6f45227fa0af448a0175",
+  "previous_unity_run": 43835673589,
+  "blender_run": 43836604931,
+  "before_root": "Assets/Art_Reboot/Phase1",
+  "camera_tilt_degrees": 50,
+  "request": "One bounded Native editor capture; return shared Windows for next owner after terminal run",
+  "limits": "Phase1 only, no main gameplay or Phase2"
 }
