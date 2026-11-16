@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:02:55.697Z",
+  "updated_at": "2026-11-16T12:04:26.401Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,13 +9742,15 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 24,
+      "ownership_revision": 25,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_MATERIAL_CONTACT_SHADING_SOURCE_READY",
+      "phase": "PREMIUM_FINISH_NATIVE_CAPTURE",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9777,7 +9779,7 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "waiting_for_visual_reboot_terminal_and_release",
+        "status": "reserved_premium_finish_native",
         "source_sha": "c08271ba1a623bbfaef55b5c7c1fb7f5da2a2555"
       },
       "last_native": {
@@ -9808,13 +9810,11 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-hero-d921b074af21",
       "ownership_state": "claimed",
-      "ownership_revision": 47,
+      "ownership_revision": 48,
       "branch": "art/visual-reboot",
       "status": "active",
       "phase": "PHASE1_ENVIRONMENT_VILLAGE_NATIVE_CAPTURE",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9844,8 +9844,9 @@
       "final_source_sha": "aa1acc6864164c87b4d69c3edbe788181d4ea691",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_exact_source_compile_fix_retry",
-        "source_sha": "a918a370debcd50c6eb991e7a53c624ba02c88cc"
+        "status": "yielded_after_verified_terminal_run",
+        "source_sha": "a918a370debcd50c6eb991e7a53c624ba02c88cc",
+        "completed_run": 43862584903
       },
       "native_source_sha": "a918a370debcd50c6eb991e7a53c624ba02c88cc",
       "last_native_attempt": {
@@ -9874,6 +9875,12 @@
         "approved": true,
         "source": "27c147d2d65b2f6bbce136da82e0e40cd43d5f43",
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
+      },
+      "resource_turn_handoff": {
+        "status": "yielded_after_verified_terminal_run",
+        "completed_run": 43862584903,
+        "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+        "note": "Owner-authorized alternating turns. All Visual Reboot run43862584903 jobs completed SUCCESS, artifact14224401610 finalized, no active/queued native for that branch. Preserve source ownership and review status."
       }
     }
   ],
