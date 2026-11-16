@@ -1,3 +1,16 @@
+# ÚLTIMO ESTADO VERIFICADO · 16/11/2026 · segunda revisión Fase 1
+
+- **Rama y alcance:** `art/visual-reboot`, **solo** `Assets/Art_Reboot/Phase1`; las escenas originales y los 3 edificios aprobados no se modifican. No es Ashen Citadel, no es Phase2 ni arte integrado en `main`.
+- **Fuente de prueba nativa:** `8bd9b1e61766394bdc0224bc48d6ee72603fab44`. **GitHub Actions:** [43876725485](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43876725485), `preflight=PASS, lease=PASS, Unity/native=PASS`. Artefacto GitHub `14230771620`, captura y escena guardadas en `Source~/Evidence/native-43876725485/`.
+- **Capturas de Unity Editor, no IA:** `unity-1600x900.png`, `unity-1100x1250.png`, `unity-390x844.png`, `unity-844x390.png` y `corrupt-closeup.png`. Validación SHA-256 de vista general: `E7CAF7A7C09416B88BDB0DF9129ABB05D89AEDE9901C4C527E8246FF63327DF0`. Adjuntas al chat por el asistente.
+- **Geometría:** `environmentTriangles=41454`; FBX regenerado y reimportado en Blender (run `43871239309`), UVs y vertex colors comprobados, las 3 mallas de edificios preservadas con hashes invariables. Cámara principal 42° / yaw -13°; retrato yaw -70°. Aprobación del propietario **solo para edificios**.
+- **Revisión visual objetiva:** nueva composición compacta, suelo ahora verde (anteriormente sepia), grietas/cristales violetas más extensos, más piezas ambientales. Sin embargo: el cielo al atardecer aparece como una franja muy estrecha tras la montaña y pinos; faltan capas de niebla baja visibles; la pared corrupta aún parece mayormente intacta pese a las grietas añadidas; las superficies del suelo y los caminos se ven simples; en retrato algunos edificios quedan superpuestos y no llenan correctamente el encuadre. **ART_APPROVED=false**, juicio artístico del usuario pendiente. No afirmar 9/10.
+- **Efectos:** el artefacto `life-proof.json` demuestra diferencias de emisión en dos tiempos y humo emitido dentro de la simulación del Editor; **no** acredita animación en Play ni iPhone. No hay rendimiento físico, APK/WebGL ni integración de mecánicas de juego validados aquí.
+- **Recursos y coordinación:** Windows liberado tras la ejecución `43876725485` y turno devuelto a Ashen, por CAS en `main:pipeline/active-workstreams.json` (commit `798a899744a4e6dbee2d37d242f4074b6f6237fe`). No pedir nuevos turnos sin rerevisar el registro vivo.
+- **Próximo trabajo (solo tras feedback del propietario):** resolver paisaje de horizonte y cielo, atardecer ámbar, niebla baja localizada, conexión física de corrupción con fábrica del muro, y lectura del encuadre vertical. No rehacer los edificios aprobados. Cualquier iteración necesita capturas **reales** de Unity y nueva revisión artística; no avanzar a Phase2 sin aprobación explícita.
+
+---
+
 # Visual Reboot — piloto real Unity, 16 noviembre 2026
 
 ## Resultado y alcance
