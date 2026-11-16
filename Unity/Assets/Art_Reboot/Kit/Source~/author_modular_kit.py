@@ -138,21 +138,28 @@ class Piece:
         obj=bpy.data.objects.new(self.name,me)
         bpy.context.collection.objects.link(obj)
         for m in materials:me.materials.append(m)
-        uv=me.uv_layers.new(name="UVMap")
+        # Blender 4.0 FBX exporter can silently replace UV0 with generated
+        # 0/1 tile corners when UV/color RNA layers are authored in wrong order.
+        # Author corner colors FIRST, create UVMap LAST, and write as a separate pass.
         col=me.color_attributes.new(name="Color",type='FLOAT_COLOR',domain='CORNER')
         for n,p in enumerate(me.polygons):
             p.material_index=self.slots[n]
-            k=self.swatches[n]
             shade=self.colors[n]
+            for li in p.loop_indices:col.data[li].color=(shade,shade,shade,1)
+        uv=me.uv_layers.new(name="UVMap",do_init=False)
+        for n,p in enumerate(me.polygons):
+            k=self.swatches[n]
             for j,li in enumerate(p.loop_indices):
                 u=(j%4 in (1,2));v=(j%4 in (2,3))
                 uv.data[li].uv=((k%4+(7+(45 if u else 0))/64)/4,
                                 (k//4+(7+(45 if v else 0))/64)/4)
-                # Mix custom stone tonality into vertex colors, never a separate texture.
-                col.data[li].color=(shade,shade,shade,1)
-        samples=[tuple(round(float(uv.data[i].uv[d]),6) for d in (0,1)) for i in range(min(16,len(uv.data)))]
-        assert any(0.01<x<0.99 and 0.01<y<0.99 for x,y in samples), ("UV authoring never reached atlas cells",self.name,samples)
-        print("KIT_AUTHOR_UV_SAMPLES",self.name,samples[:6],flush=True)
+        atlasuv=[tuple(round(float(x.uv[d]),6) for d in (0,1)) for x in uv.data]
+        unique=set(atlasuv)
+        assert len(unique)>8,("Incomplete UV authoring",self.name,sorted(unique)[:12])
+        # Every authored UV stays strictly inside one of the sixteen 64px swatches.
+        assert all(.025<=u<=.98 and .025<=v<=.98 for u,v in unique),("Atlas UV outside safe insets",self.name,sorted(unique)[:12])
+        samples=atlasuv[:6]
+        print("KIT_AUTHOR_UV_SAMPLES",self.name,samples,flush=True)
         assert all(v.co.z>=-.015 for v in me.vertices), "Below-base geometry: "+self.name
         print('KIT_MESH_FINISHED',self.name,flush=True)
         return obj
