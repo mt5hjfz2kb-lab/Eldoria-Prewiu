@@ -1,0 +1,115 @@
+name: "Eldoria CC0 · Director V8 original 3D stone, terrain and forest"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v8.yml"
+      - "tools/cc0-art-system/director_v8_atlas_and_citadel.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-director-v8-ubuntu
+  cancel-in-progress: false
+jobs:
+  author:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v8_atlas_and_citadel.py
+      - name: Retrieve pinned, real, owned V7 models; never touch main
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-director-v7-real-3d
+          run-id: 43880753054
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verify source provenance and 5 models, no false Unity claim
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v8_atlas_and_citadel.py
+          for i in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV7/DirectorV7_Stage$i.glb"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("docs/cc0-art-system/previews/director-v7/director-v7-evidence.json")
+          r=json.loads(p.read_text())
+          assert r['source_run']==43878136136 and r['source_art_is_original']
+          assert not r['vendor_assets_included'] and not r['native_unity_tested']
+          print("V8_SOURCE_V7_REAL_GLTF_PIN_PASS")
+          PY
+      - name: Install only free Blender 4 and NumPy on hosted Ubuntu
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+      - name: Generate V8 genuine sculpted 3D, atlases, terrains, source and screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v8_atlas_and_citadel.py 2>&1 | tee "$RUNNER_TEMP/v8.log"
+          grep -q ELDORIA_V8_AUTHORED_REAL_3D_PASS "$RUNNER_TEMP/v8.log"
+      - name: Physical / visual regression guard; not artistic approval
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageStat, ImageChops
+          import json,struct
+          root=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV8")
+          photos=Path("docs/cc0-art-system/previews/director-v8")
+          e=json.loads((photos/"v8-evidence.json").read_text())
+          assert e['source_run']==43880753054 and e['source_redrawn'] and e['blender_render']
+          assert len(e['stages'])==5 and len(e['frames'])==3
+          assert not e['native_unity_tested'] and not e['mobile_tested'] and not e['art_approved']
+          assert (root/"DirectorV8_Editable_Source.blend").read_bytes()[:7]==b'BLENDER'
+          for lv in range(1,6):
+              p=root/f"DirectorV8_Stage{lv}.glb"
+              b=p.read_bytes()
+              assert b[:4]==b'glTF' and len(b)>800000
+              assert struct.unpack_from('<I',b,8)[0]==len(b)
+              n=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+n])
+              assert len(j.get('images',[]))>=4 and len(j.get('meshes',[]))>=500
+              print('V8_REAL_GLTF',lv,len(b),len(j['meshes']),len(j['images']))
+          photoset={'DirectorV8_BastionI_1600x900.png':(1600,900),
+                    'DirectorV8_BastionV_1600x900.png':(1600,900),
+                    'DirectorV8_BastionV_Portrait_720x1200.png':(720,1200)}
+          for name,wh in photoset.items():
+              f=photos/name
+              im=Image.open(f).convert('RGB')
+              assert im.size==wh and f.stat().st_size>100000
+              mini=im.resize((250,142)) if wh[0]>1000 else im.resize((120,200))
+              px=list(mini.getdata())
+              magenta=sum(r>140 and b>140 and r>g*1.55 and b>g*1.55 for r,g,b in px)/len(px)
+              assert magenta<.017,('Possible missing texture',name,magenta)
+              mean=ImageStat.Stat(mini).mean
+              assert min(mean)>23,('Blank or dark',name,mean)
+              print('V8_REAL_BLENDER_IMAGE',name,round(magenta,5),[round(i,1) for i in mean])
+          i=Image.open(photos/'DirectorV8_BastionI_1600x900.png').convert('RGB')
+          v=Image.open(photos/'DirectorV8_BastionV_1600x900.png').convert('RGB')
+          d=ImageStat.Stat(ImageChops.difference(i.crop((480,120,1160,710)),v.crop((480,120,1160,710)))).mean
+          assert sum(d)/3>6,('Bastion evolution not visible',d)
+          print('V8_RENDER_TECHNICALLY_VALID_NOT_ART_APPROVED')
+          PY
+      - name: Save Blender-authored source, physical GLBs and actual captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-director-v8-real-3d
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV8/
+            docs/cc0-art-system/previews/director-v8/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Prove no modifications to game or paid art
+        run: |
+          git diff --exit-code
+          echo "V8_PINNED_ORIGINAL_SOURCE_NO_MAIN_NO_WINDOWS_PASS"
