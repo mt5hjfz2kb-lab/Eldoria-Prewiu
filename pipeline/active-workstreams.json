@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T13:48:10.747Z",
+  "updated_at": "2026-11-16T13:53:58.187Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9805,13 +9805,13 @@
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
-      "title": "Visual reboot — three-state Bastion visual pilot",
+      "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 52,
+      "ownership_revision": 53,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE1_SECOND_REVIEW_GENUINE_UNITY_EVIDENCE_ART_PENDING",
+      "phase": "PHASE2_KIT_MODULAR_AUTHORIZED_SOURCE_AUTHORING",
       "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
@@ -9821,15 +9821,15 @@
         ".github/workflows/art-visual-reboot-blender.yml"
       ],
       "art_production_routing": "required",
-      "art_approved": false,
+      "art_approved": true,
       "delivery_definition": {
-        "deliverable": "Three-state original art pilot, isolated scene, atlas/vertex colors and URP dusk",
-        "evidence": "Source FBX/GLB/Blend, real Unity renders and independent visual review; mobile separate",
-        "handoff": "Same branch, exact SHA, actual tests and open gates"
+        "deliverable": "Phase2 modular kit grid and separate 3-building Kit sandbox in genuine Unity URP",
+        "evidence": "Blender source, 256 atlas contract, per-piece prefabs FBX, manifest with triangles, native Unity grid + village captures",
+        "handoff": "Await explicit owner review; no main or production merge."
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Generate environment and removable dressing; actual Unity capture after local geometry review. Phase2 blocked.",
+      "next": "Generate original modular pieces under Kit/ using Blender in Ubuntu; prove atlas/material/pivot/triangles; assembly using modular prefabs in copied sandbox Unity; native capture after native Windows turn without interfering with Ashen. Wait owner review before any further phase.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9899,7 +9899,22 @@
           "source_sha": "71a6346ea939d666dc318fb03c40f7bff6a817c7"
         }
       ],
-      "write_scope_released": false
+      "write_scope_released": false,
+      "phase1_approval": {
+        "approved": true,
+        "by": "owner",
+        "at": "2026-11-16",
+        "source": "8bd9b1e61766394bdc0224bc48d6ee72603fab44",
+        "evidence_run": 43876725485,
+        "scope": "Phase1 village artistic approval: existing hero architecture, palette, atlas, 42-degree camera; establishes base, not permission to modify protected approved meshes"
+      },
+      "phase2_authorization": {
+        "requested": "approximately 15 reusable mesh families with intact and damaged walls, curved heavy roofs, towers, workshop props, vegetation, rocks and corruption variants",
+        "output": "Unity Kit grid screenshot + scene screenshot same camera + actual triangle counts",
+        "review_required": true,
+        "restrictions": "All kit mesh objects 256x256 approved atlas and vertex colors, 2-3 shared materials, 4m module pivots at base, original Phase1 source retained. Do not merge main or enter Phase3"
+      },
+      "phase2_art_approved": false
     }
   ],
   "history": [
