@@ -1,0 +1,29 @@
+{
+    "art_approved":  false,
+    "kit_piece_count":  31,
+    "gameplay_tested":  false,
+    "mobile_tested":  false,
+    "unity_compiled":  true,
+    "scope":  "Phase2 real modular kit 31 pieces and sandbox, preserve approved Phase1",
+    "unity_rendered":  true,
+    "screenshots":  [
+                        {
+                            "sha256":  "4B9CE35BC664EE48AAED33EB3323C69A0A5AFB8498C105E7F7C5EF4C14745EFE",
+                            "file":  "kit-grid-2400x1350.png"
+                        },
+                        {
+                            "sha256":  "FAE36747AB19CDA4133DFB3C7352BBD88BA56AC72AFC3FD43A69158939306444",
+                            "file":  "village-1600x900.png"
+                        },
+                        {
+                            "sha256":  "BF14E3426A8D1351243749DE041AFEC39B965BE2E18C8B0F80AD174CE59EC042",
+                            "file":  "village-1100x1250.png"
+                        },
+                        {
+                            "sha256":  "350E24CF5D00CB27CE5112DA4715BE7CC5658799F551518D0B5286B1A0DFC97E",
+                            "file":  "corrupt-kit-detail.png"
+                        }
+                    ],
+    "full_project_integration":  false,
+    "source_sha":  "a86acf1936820bc1a79cb4df415a7ac39fa26732"
+}

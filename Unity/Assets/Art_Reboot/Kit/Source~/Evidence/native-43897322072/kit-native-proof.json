@@ -1,0 +1,20 @@
+{
+    "unity": "6000.3.23f1",
+    "sha": "9cceb95ee17dac105843409d18953e5d73451ab4",
+    "kitScene": "Assets/Art_Reboot/Kit/Scenes/Eldoria_Kit_Sandbox.unity",
+    "kitGridScene": "Assets/Art_Reboot/Kit/Scenes/Phase2_Kit_Grid.unity",
+    "atlas": "2ada56d94ed8e3f3c690fa787a73a0cd38d986d8997c84e125c1cd66b84c0efe",
+    "pieces": 31,
+    "families": 8,
+    "kitTriangles": 36366,
+    "villageInstances": 61,
+    "villageTriangles": 71004,
+    "materialCount": 3,
+    "cameraTilt": 42.0,
+    "cameraYaw": -13.0,
+    "sunElevation": 17.0,
+    "phase1Protected": true,
+    "allBuildingsKitInstances": true,
+    "physicalMobileTested": false,
+    "ownerApproved": false
+}
