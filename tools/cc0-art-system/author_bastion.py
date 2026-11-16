@@ -8,6 +8,7 @@ import bpy
 import math
 import random
 import json
+import os
 from pathlib import Path
 from mathutils import Vector
 from math import radians, sin, cos, pi
