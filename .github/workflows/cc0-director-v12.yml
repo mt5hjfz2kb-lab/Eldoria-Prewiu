@@ -1,0 +1,123 @@
+name: "Eldoria CC0 · V12 genuine rebuilt choir, naturally grounded world"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v12.yml"
+      - "tools/cc0-art-system/director_v12_architecture_terrain.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v12-original-blender-ubuntu
+  cancel-in-progress: false
+jobs:
+  real-architecture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v12_architecture_terrain.py
+      - name: Download pinned real V11 geometry with source material textures
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v11-structural-real3d
+          run-id: 43891952674
+          github-token: ${{ github.token }}
+          path: .
+      - name: Check genuine files and exact source provenance
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v12_architecture_terrain.py
+          for i in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV11Structural/DirectorV11_Stage$i.glb"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('docs/cc0-art-system/previews/director-v11-structural/v11-evidence.json')
+          j=json.loads(p.read_text())
+          assert j["input_run_id"]==43882248142
+          assert len(j["stages"])==5 and len(j["renders"])==3
+          assert j["images_are_real_blender_renders"]
+          assert not j["vendor_assets_included"] and not j["unity_native_tested"] and not j["art_approved"]
+          print("PINNED_V11_AUTHORED_SOURCE_PASS")
+          PY
+      - name: Install free Blender CPU and pillow on hosted Ubuntu only
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Physically replace upper choir and enrich terrain, render four exact captures
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v12_architecture_terrain.py 2>&1 | tee "$RUNNER_TEMP/eldoria-v12.log"
+          grep -q ELDORIA_V12_REAL_ART_PASS "$RUNNER_TEMP/eldoria-v12.log"
+      - name: Verify genuine Blender PNG, five 3D GLBs, physical replacement and comparison
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageStat,ImageChops
+          base=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV12')
+          prev=Path('docs/cc0-art-system/previews/director-v12')
+          rec=json.loads((prev/'v12-evidence.json').read_text())
+          assert rec['source_run']==43891952674
+          assert rec['real_blender_png'] and not rec['native_unity_tested'] and not rec['art_approved']
+          assert not rec['third_party_geometry_present'] and not rec['geometry_overlays_without_removal']
+          assert len(rec['stages'])==5 and len(rec['renders'])==4
+          assert (base/'DirectorV12_Editable_Source.blend').read_bytes()[:7]==b'BLENDER'
+          for i in range(1,6):
+              f=base/('DirectorV12_Stage'+str(i)+'.glb')
+              raw=f.read_bytes()
+              assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+              size=struct.unpack_from('<I',raw,12)[0]
+              gltf=json.loads(raw[20:20+size])
+              assert len(gltf.get('meshes',[]))>500 and len(gltf.get('images',[]))>=4
+              names=[n.get('name','') for n in gltf.get('nodes',[])]
+              if i==5:
+                  assert any(n.startswith('single coherent top choir stone mass') for n in names)
+                  assert any(n.startswith('royal slate choir source roof') for n in names)
+                  assert not any(n.startswith('raised choir stone body') for n in names), 'Old V11 rectangular choir remains'
+              print('ELDORIA_V12_PHYSICAL_MESH_VERIFIED',i,len(gltf['meshes']),len(gltf['images']))
+          dims={
+            'DirectorV12_BastionI_1600x900.png':(1600,900),
+            'DirectorV12_BastionV_1600x900.png':(1600,900),
+            'DirectorV12_BastionV_Close_1600x900.png':(1600,900),
+            'DirectorV12_BastionV_Portrait_720x1200.png':(720,1200)}
+          for name,wh in dims.items():
+              p=prev/name
+              im=Image.open(p).convert('RGB')
+              assert im.size==wh and p.stat().st_size>100000
+              sm=im.resize((240,140))
+              pixels=list(sm.getdata())
+              missing=sum(r>150 and b>140 and r>g*1.55 and b>g*1.55 for r,g,b in pixels)/len(pixels)
+              assert missing<.02,('possible missing material',name,missing)
+          a=Image.open(prev/'DirectorV12_BastionI_1600x900.png').convert('RGB')
+          b=Image.open(prev/'DirectorV12_BastionV_1600x900.png').convert('RGB')
+          roi=(450,100,1130,730)
+          x=ImageStat.Stat(ImageChops.difference(a.crop(roi),b.crop(roi))).mean
+          assert sum(x)/3>5,('No meaningful Bastion I/V progression',x)
+          before=Image.open('docs/cc0-art-system/previews/director-v11-structural/DirectorV11_BastionV_1600x900.png').convert('RGB')
+          structural=ImageStat.Stat(ImageChops.difference(before.crop(roi),b.crop(roi))).mean
+          assert sum(structural)/3>3,('V12 did not change previous baseline',structural)
+          print('ELDORIA_V12_REAL_IMAGES_AND_ARCHITECTURE_PASS',x,structural)
+          PY
+      - name: Preserve all original V12 meshes/Blender source and actual captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v12-actual-improved-architecture
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV12/
+            docs/cc0-art-system/previews/director-v12/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Confirm public game source unchanged
+        run: |
+          git diff --exit-code
+          echo "V12_NO_MAIN_NO_GAME_SOURCE_MODIFICATIONS_PASS"
