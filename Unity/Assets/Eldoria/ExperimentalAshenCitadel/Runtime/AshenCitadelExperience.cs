@@ -40,6 +40,7 @@ namespace Eldoria.ExperimentalAshenCitadel
         private int lastWidth, lastHeight;
         private string lastMessage = "La fortaleza despierta.";
         private int visibleStage;
+        private float feedbackExpires;
 
         public int VisibleStage => visibleStage;
         public bool IsWorldVisible => worldMode;
@@ -233,8 +234,8 @@ namespace Eldoria.ExperimentalAshenCitadel
             topHud=header;
             var back=Plate(header,AshenInterfaceIdentity.StatusChip,Color.white);
             back.raycastTarget=false;
-            var emblem=Node(header,"Crest",Vector2.zero,Vector2.one,
-                new Vector2(7,6),new Vector2(-194,-6));
+            var emblem=Node(header,"Crest",new Vector2(0,0),new Vector2(0,1),
+                new Vector2(8,6),new Vector2(52,-6));
             var emblemImage=Plate(emblem,crest,Color.white);
             emblemImage.raycastTarget=false;
             levelText=Label(header,"Realm",16,TextAnchor.MiddleLeft,Ivory,
@@ -435,9 +436,9 @@ namespace Eldoria.ExperimentalAshenCitadel
                 "   P "+Compact(s.Resources.Stone)+
                 "   C "+Compact(s.Resources.Food);
             feedbackText.text=lastMessage;
-            // A permanent status line over the terrain was a distraction.
-            // Explicit action feedback is shown by the opened contextual sheet.
-            feedbackText.gameObject.SetActive(false);
+            // Transient gateway feedback only, never a permanent status ribbon.
+            feedbackText.gameObject.SetActive(Time.unscaledTime<feedbackExpires &&
+                (popup==null||!popup.gameObject.activeSelf));
         }
         private static string Roman(int level)=>new[]{"I","II","III","IV","V"}[Mathf.Clamp(level-1,0,4)];
         private static string Compact(int number)
@@ -468,6 +469,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
                     s.PlayerId,kind,target,s.Revision));
                 lastMessage=(result.Ok?"✓ ":"• ")+result.Message;
+                feedbackExpires=Time.unscaledTime+2.8f;
                 Debug.Log("ASHEN_GATEWAY kind="+kind+" target="+target+" ok="+result.Ok+" revision="+result.Revision);
             }
             catch(Exception e){lastMessage="Error en operación real: "+e.Message;Debug.LogException(e);}
