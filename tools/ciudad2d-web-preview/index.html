@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Eldoria · Laboratorio de ciudad 2.5D</title>
+<style>
+:root{color-scheme:dark;--gold:#d7b479;--ivory:#f3eadb;--ink:rgba(15,21,28,.89)}*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111b22;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ivory)}
+#stage{position:fixed;inset:0;overflow:hidden;touch-action:none;background:linear-gradient(180deg,#557089 0%,#445f61 45%,#183a2e 100%)}
+#map{display:block;position:absolute;width:100%;height:100%;inset:0;touch-action:none;cursor:grab}
+#map.dragging{cursor:grabbing}
+#hud{position:absolute;top:0;left:0;right:0;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px max(12px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left));background:linear-gradient(180deg,rgba(11,18,24,.96),rgba(17,27,34,.83));border-bottom:1px solid rgba(215,180,121,.48);box-shadow:0 6px 19px rgba(0,0,0,.18);z-index:3}
+.brand{display:flex;flex-direction:column;gap:3px;min-width:0}.brand strong{font-family:Georgia,serif;color:#f5e4bd;font-size:20px;letter-spacing:.13em;white-space:nowrap}.brand small{color:#d3b57d;font-size:11px;letter-spacing:.07em;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.milestones{display:flex;gap:7px;flex-shrink:0}button{font:inherit;cursor:pointer;color:#e9ddc6}
+.milestones button{min-width:59px;min-height:46px;padding:7px;border-radius:7px;border:1px solid #56606a;background:linear-gradient(145deg,#303e4d,#1c2934);box-shadow:inset 0 1px rgba(255,255,255,.08);font-size:14px;font-weight:750}
+.milestones button[aria-pressed="true"]{border-color:#dfb56e;background:linear-gradient(145deg,#5e442a,#2b2931);color:#fff1d1;box-shadow:0 0 0 1px rgba(237,187,89,.18),inset 0 0 9px rgba(248,184,71,.1)}
+#sidebar{position:absolute;bottom:max(15px, env(safe-area-inset-bottom));right:max(14px,env(safe-area-inset-right));display:flex;flex-direction:column;gap:9px;z-index:3}
+#sidebar button{width:49px;height:49px;border-radius:12px;border:1px solid rgba(215,180,121,.55);background:var(--ink);font-size:23px;box-shadow:0 4px 20px #0005}
+#sidebar button:focus-visible,.milestones button:focus-visible,#close:focus-visible{outline:3px solid #e9be7c;outline-offset:2px}
+#hint{position:absolute;bottom:max(15px, env(safe-area-inset-bottom));left:max(13px,env(safe-area-inset-left));max-width:min(75vw,330px);padding:8px 12px;background:rgba(17,23,31,.74);color:#dcd1ba;border-radius:9px;border:1px solid rgba(210,179,125,.25);font-size:12px;line-height:1.5;pointer-events:none;z-index:2}
+#card{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(380px,calc(100vw - 120px));min-height:90px;padding:15px 40px 14px 17px;border-radius:12px;border:1px solid rgba(216,178,110,.62);background:linear-gradient(140deg,rgba(18,25,32,.97),rgba(37,36,32,.97));box-shadow:0 12px 30px rgba(0,0,0,.45);z-index:5}
+#card[hidden]{display:none}#card strong{font-family:Georgia,serif;font-size:18px;color:#f5d8a7}#card p{margin:6px 0 0;font-size:13px;color:#cdd3d1}#close{position:absolute;right:9px;top:9px;border:0;border-radius:6px;background:#3f4141;width:30px;height:30px;font-size:18px}
+#load{position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);background:var(--ink);border-radius:9px;padding:12px 17px;z-index:9}#load[hidden]{display:none}
+@media(max-width:410px){.brand strong{font-size:18px}.brand small{font-size:10px}.milestones button{min-width:57px}.milestones{gap:5px}}
+@media(max-height:470px){#hud{min-height:58px;padding-block:5px}.brand strong{font-size:18px}.brand small{font-size:10px}#hint{display:none}#card{bottom:8px;min-height:63px;padding-top:8px;padding-bottom:8px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="map" aria-label="Ciudad de Valoria, arrastra para recorrerla y toca los edificios" role="img"></canvas>
+  <header id="hud"><div class="brand"><strong>VALORIA</strong><small id="subtitle">CIUDAD 2.5D · BASTIÓN I</small></div>
+   <div class="milestones"><button id="h1" type="button" aria-label="Mostrar Bastión nivel 1" aria-pressed="true">I–IV</button><button id="h5" type="button" aria-label="Mostrar Bastión nivel 5" aria-pressed="false">V–IX</button></div>
+  </header>
+  <nav id="sidebar" aria-label="Navegación de la cámara"><button id="zoomIn" title="Acercar" aria-label="Acercar">+</button><button id="zoomOut" title="Alejar" aria-label="Alejar">−</button><button id="home" title="Centrar" aria-label="Centrar">⌂</button></nav>
+  <div id="hint">Estudio visual independiente · toca edificios · desplaza / pellizca</div>
+  <section id="card" aria-live="polite" hidden><button id="close" aria-label="Cerrar ficha">×</button><strong id="name"></strong><p id="detail"></p></section>
+  <div id="load">Preparando sprites de Valoria…</div>
+</div>
+<script>
+(()=>{
+ 'use strict';
+ const base='../../Unity/Assets/Experimentos/Ciudad2D/Sprites/';
+ const files=['Terreno.png','Bastion_Nivel01.png','Bastion_Nivel05.png','Cuartel.png','SalonHeroes.png','Aserradero.png','Granero.png','Cantera.png'];
+ const images=Object.create(null);const stage=document.getElementById('stage');const canvas=document.getElementById('map');const ctx=canvas.getContext('2d',{alpha:false});
+ const load=document.getElementById('load');const card=document.getElementById('card');const hint=document.getElementById('hint');
+ const buildings=[
+  {id:'cuartel',name:'Cuartel',file:'Cuartel.png',x:206,y:547,s:.189*1254/860},
+  {id:'salon',name:'Salón de Héroes',file:'SalonHeroes.png',x:719,y:546,s:.195*1254/860},
+  {id:'aserradero',name:'Aserradero',file:'Aserradero.png',x:172,y:964,s:.213*1254/860},
+  {id:'granero',name:'Granero',file:'Granero.png',x:751,y:962,s:.211*1254/860},
+  {id:'cantera',name:'Cantera',file:'Cantera.png',x:470,y:1178,s:.225*1254/860},
+  {id:'bastion',name:'Bastión',file:'Bastion_Nivel01.png',x:470,y:824,s:.43}
+ ];
+ let level=1,selected=null,camera={x:470.5,y:836,z:1},view={w:390,h:844},loaded=false;
+ let pointer=null;let pinchDistance=null;const pointers=new Map();
+ const $=id=>document.getElementById(id);
+ const isLandscape=()=>view.w/view.h>1.2;
+ function baseScale(){return isLandscape()?view.w/(941*1.04):view.h/(1672*1.02)}
+ function currentScale(){return baseScale()*camera.z}
+ function currentBastion(){return level===5?{file:'Bastion_Nivel05.png',s:.47}:{file:'Bastion_Nivel01.png',s:.43}}
+ function clampCamera(){
+  const s=currentScale(),hx=view.w/(2*s),hy=view.h/(2*s);
+  const minx=hx>470.5?470.5:hx,maxx=hx>470.5?470.5:941-hx;
+  const miny=hy>836?836:hy,maxy=hy>836?836:1672-hy;
+  camera.x=Math.max(minx,Math.min(maxx,camera.x));camera.y=Math.max(miny,Math.min(maxy,camera.y));
+ }
+ function setHome(){camera={x:470.5,y:isLandscape()?666:836,z:1};clampCamera();draw()}
+ function resize(){const rect=stage.getBoundingClientRect();view={w:rect.width,h:rect.height};const dpr=Math.min(3,window.devicePixelRatio||1);canvas.width=Math.round(view.w*dpr);canvas.height=Math.round(view.h*dpr);canvas.style.width=view.w+'px';canvas.style.height=view.h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);setHome()}
+ function world(p){const s=currentScale();return {x:camera.x+(p.x-view.w/2)/s,y:camera.y+(p.y-view.h/2)/s}}
+ function screen(x,y){const s=currentScale();return {x:(x-camera.x)*s+view.w/2,y:(y-camera.y)*s+view.h/2}}
+ function visibleBuildings(){return buildings.map(b=>{
+  const chosen=b.id==='bastion'?currentBastion():b;const img=images[chosen.file];return {...b,img,s:chosen.s,bb:{x:b.x-img.width*chosen.s/2,y:b.y-img.height*chosen.s,w:img.width*chosen.s,h:img.height*chosen.s}};
+ }).sort((a,b)=>a.y-b.y)}
+ function draw(){
+  if(!loaded)return;
+  const dpr=Math.min(3,window.devicePixelRatio||1);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,view.w,view.h);ctx.fillStyle='#2b4146';ctx.fillRect(0,0,view.w,view.h);
+  ctx.save();const s=currentScale();ctx.translate(view.w/2,view.h/2);ctx.scale(s,s);ctx.translate(-camera.x,-camera.y);
+  ctx.drawImage(images['Terreno.png'],0,0,941,1672);
+  for(const b of visibleBuildings())ctx.drawImage(b.img,b.bb.x,b.bb.y,b.bb.w,b.bb.h);
+  ctx.restore();
+ }
+ function markButtons(){ $('h1').setAttribute('aria-pressed',String(level===1));$('h5').setAttribute('aria-pressed',String(level===5));$('subtitle').textContent='CIUDAD 2.5D · BASTIÓN '+(level===5?'V':'I') }
+ function setLevel(n){level=n>=5?5:1;markButtons();if(selected)showCard(selected);draw()}
+ function showCard(id){const b=buildings.find(x=>x.id===id);if(!b)return;selected=id;$('name').textContent=b.name;const real=b.id==='bastion'?level:1;$('detail').textContent='Nivel de estudio: '+real+' · Arte disponible: hito '+(b.id==='bastion'&&level===5?'V':'I')+' · Sin alterar la partida';card.hidden=false;hint.style.display='none'}
+ function hit(point){const q=world(point);for(const b of visibleBuildings().reverse()){
+  const r=b.bb;if(q.x<r.x+r.w*.15||q.x>r.x+r.w*.85||q.y<r.y+r.h*.20||q.y>r.y+r.h*.96)continue;
+  return b.id;
+ }return null}
+ function point(event){const r=canvas.getBoundingClientRect();return {x:event.clientX-r.left,y:event.clientY-r.top}}
+ function gestureDistance(){const values=[...pointers.values()];return values.length<2?0:Math.hypot(values[0].x-values[1].x,values[0].y-values[1].y)}
+ function zoomAt(mult,focal){const before=world(focal);camera.z=Math.max(1,Math.min(2.25,camera.z*mult));const s=currentScale();camera.x=before.x-(focal.x-view.w/2)/s;camera.y=before.y-(focal.y-view.h/2)/s;clampCamera();draw()}
+ canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);const p=point(e);pointers.set(e.pointerId,p);if(pointers.size===1){pointer={start:p,last:p,moved:false}}else{pointer=null;pinchDistance=gestureDistance()}});
+ canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const p=point(e);pointers.set(e.pointerId,p);
+  if(pointers.size>1){const next=gestureDistance();if(pinchDistance&&next>5)zoomAt(next/pinchDistance,p);pinchDistance=next;return}
+  if(!pointer)return;const dx=p.x-pointer.last.x,dy=p.y-pointer.last.y;if(Math.hypot(p.x-pointer.start.x,p.y-pointer.start.y)>12)pointer.moved=true;
+  if(pointer.moved){const s=currentScale();camera.x-=dx/s;camera.y-=dy/s;clampCamera();draw();canvas.classList.add('dragging')}pointer.last=p;
+ });
+ function onUp(e){if(!pointers.has(e.pointerId))return;const p=point(e);pointers.delete(e.pointerId);if(pointer&&!pointer.moved&&pointers.size===0){const id=hit(p);if(id)showCard(id)}if(pointers.size===0){pointer=null;pinchDistance=null;canvas.classList.remove('dragging')}else{pointer=null;pinchDistance=null}}
+ canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',onUp);
+ canvas.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.deltaY<0?1.12:.89,point(e))},{passive:false});
+ $('h1').addEventListener('click',()=>setLevel(1));$('h5').addEventListener('click',()=>setLevel(5));$('close').addEventListener('click',()=>{card.hidden=true;selected=null;hint.style.display='' });
+ $('zoomIn').addEventListener('click',()=>zoomAt(1.2,{x:view.w/2,y:view.h/2}));$('zoomOut').addEventListener('click',()=>zoomAt(1/1.2,{x:view.w/2,y:view.h/2}));$('home').addEventListener('click',setHome);
+ window.addEventListener('keydown',e=>{if(e.key==='1')setLevel(1);if(e.key==='5')setLevel(5);if(e.key==='+')zoomAt(1.2,{x:view.w/2,y:view.h/2});if(e.key==='-')zoomAt(1/1.2,{x:view.w/2,y:view.h/2});if(e.key==='Home')setHome()});
+ window.addEventListener('resize',resize);
+ window.__city2dQA={get state(){return {loaded,level,selected,camera:{...camera},view:{...view},buildings:buildings.map(b=>({id:b.id,name:b.name}))}},project:(x,y)=>screen(x,y),setLevel,showCard};
+ Promise.all(files.map(name=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>{images[name]=i;resolve()};i.onerror=()=>reject(new Error('Falta sprite: '+name));i.src=base+name}))).then(()=>{loaded=true;load.hidden=true;markButtons();resize();}).catch(error=>{load.textContent=error.message;console.error(error)});
+})();
+</script>
+</body></html>
