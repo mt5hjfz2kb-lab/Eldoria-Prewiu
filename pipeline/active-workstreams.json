@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T14:48:58.189Z",
+  "updated_at": "2026-11-16T15:02:22.236Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9808,10 +9808,10 @@
       "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 55,
+      "ownership_revision": 56,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE2_KIT_NATIVE_VALIDATED_VISUAL_REWORK_REQUIRED",
+      "phase": "PHASE2_KIT_CORRECTED_UV_WAITING_FOR_NATIVE_TURN",
       "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
@@ -9829,7 +9829,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Generate original modular pieces under Kit/ using Blender in Ubuntu; prove atlas/material/pivot/triangles; assembly using modular prefabs in copied sandbox Unity; native capture after native Windows turn without interfering with Ashen. Wait owner review before any further phase.",
+      "next": "Re-capture corrected 31-piece modular kit and 3-building sandbox in real Unity; inspect art and correct if necessary; deliver gallery + scene + polygon table, await owner approval.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9842,8 +9842,9 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "yielded_after_verified_native",
-        "completed_run": 43887687518
+        "status": "pending_next_authorized_turn",
+        "source_sha": "51733f40d61914c1548f8536715cfb10fb97afeb",
+        "reason": "Blender FBX UV corrected and independently reimported for all 31 pieces; request one new genuine Unity kit capture with same camera after Ashen releases Windows"
       },
       "native_source_sha": "a86acf1936820bc1a79cb4df415a7ac39fa26732",
       "last_native_attempt": {
@@ -9873,10 +9874,11 @@
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
       },
       "resource_turn_handoff": {
-        "status": "released_after_native_proof",
-        "completed_run": 43887687518,
-        "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "note": "Original Unity kit captures verified, art quality rejected; Windows free for Ashen. Source/approved Phase1 unchanged."
+        "status": "ready_for_next_bounded_native_turn",
+        "previous_visual_run": 43887687518,
+        "currently_reserved_by": "eldoria-ashen-citadel-original-i-v-20261115",
+        "artistic_evidence": "First Unity art rejected due FBX UV0 0/1; regenerated 31 FBX to fractional atlas UV and added gallery floor",
+        "note": "Do not preempt Ashen: transfer only after its explicit verified release"
       },
       "last_native": {
         "run": 43887687518,
