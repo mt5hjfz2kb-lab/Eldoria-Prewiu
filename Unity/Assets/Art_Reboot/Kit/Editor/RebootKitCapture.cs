@@ -436,7 +436,11 @@ namespace Eldoria.ArtReboot.Kit.Editor
             p("Corrupt_Roots",2.3f,0,-4.45f,0);
             p("Corrupt_Roots",4.25f,0,-1.6f,-90);
             p("Corrupt_Roots",6.45f,1.5f,1.25f,180);
-            p("Corrupt_Roots",1.6f,3.88f,-1.85f,90);
+            // Roots and shards actually penetrate the bowed slate roof rather
+            // than merely standing around a mostly intact building.
+            p("Corrupt_Roots",1.6f,5.05f,-1.85f,90);
+            p("Crystal_Small",2.4f,4.45f,2.75f,0);
+            p("Crystal_Medium",-1.15f,5.30f,1.45f,0);
             p("Crystal_Large",4.8f,0,-4.1f,0);
             p("Crystal_Medium",-2.75f,0,-4.4f,0);
             p("Crystal_Medium",5.90f,0,2.1f,0);
