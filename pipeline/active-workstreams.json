@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T15:18:17.480Z",
+  "updated_at": "2026-11-16T15:28:32.814Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 34,
+      "ownership_revision": 35,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
       "phase": "PREMIUM_SETTLEMENT_AND_VIGILIA_UI_NATIVE_QA",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9769,17 +9767,18 @@
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
-        "status": "available_after_phase2_visual_native",
-        "completed_run": 43887687518,
-        "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "note": "No Ashen ownership, source or content changes. Pin new exact source before running."
+        "status": "yielded_after_terminal_ashen_native",
+        "completed_run": 43893235513,
+        "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+        "note": "Existing owner-authorized alternating PC turn. No Ashen sources or owner changed; runner returns after one native proof."
       },
       "continuation_session": "b9db0d2d3e7b",
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "Owner requested simultaneous substantial scene richness and real playable UI. Native five-level city/world proof plus UI screenshot flows. No game main changes."
+        "status": "one_bounded_turn_yielded_under_existing_rotation",
+        "completed_ashen_run": 43893235513,
+        "return_after_visual": true
       },
       "last_native": {
         "run": 43884660555,
@@ -9808,11 +9807,13 @@
       "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 57,
+      "ownership_revision": 58,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE2_KIT_CORRECTED_UV_WAITING_FOR_NATIVE_TURN",
-      "resources": [],
+      "phase": "PHASE2_KIT_FINAL_NATIVE_CAPTURE",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9842,11 +9843,11 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "pending_after_current_ashen_owner_yield",
-        "source_sha": "d7713d5fd295bf5e023005c9bda5c8d2329ca653",
-        "reason": "Owner-directed Phase2 finish; 31 kit pieces + gallery + forge split-shed + gable source and Blender FBX QA pass. Need one bounded genuine Unity capture after Ashen yields. Do not interrupt Ashen processes."
+        "status": "reserved_exact_source_under_authorized_rotation",
+        "source_sha": "1a6ed7b8bcc927f4c7530faadbf2db74ca8798f1",
+        "previous_ashen_run": 43893235513
       },
-      "native_source_sha": "a86acf1936820bc1a79cb4df415a7ac39fa26732",
+      "native_source_sha": "1a6ed7b8bcc927f4c7530faadbf2db74ca8798f1",
       "last_native_attempt": {
         "run": 43876327593,
         "source": "94a095407cc43df527693d75f4bffda0bb767376",
@@ -9874,11 +9875,9 @@
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
       },
       "resource_turn_handoff": {
-        "status": "ready_for_next_bounded_native_turn",
-        "previous_visual_run": 43887687518,
-        "currently_reserved_by": "eldoria-ashen-citadel-original-i-v-20261115",
-        "artistic_evidence": "First Unity art rejected due FBX UV0 0/1; regenerated 31 FBX to fractional atlas UV and added gallery floor",
-        "note": "Do not preempt Ashen: transfer only after its explicit verified release"
+        "status": "one_bounded_native_turn",
+        "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+        "note": "Release Windows promptly after native run and evidence, original Phase1 unchanged."
       },
       "last_native": {
         "run": 43887687518,
@@ -20351,11 +20350,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "current_run_id": null,
-    "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+    "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_holder_visual_requested_next",
+    "status": "visual_phase2_exact_source_native_reserved",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
@@ -20363,7 +20362,7 @@
       "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
       "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
     ],
-    "previous_completed_run": 43887687518,
+    "previous_completed_run": 43893235513,
     "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
     "completed_visual_reboot_run": 43780662139
   }
