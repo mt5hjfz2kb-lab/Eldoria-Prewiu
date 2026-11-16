@@ -1,0 +1,17 @@
+[
+  {
+    "mode": "ruin",
+    "triangles": 15901,
+    "uv_color_valid": true
+  },
+  {
+    "mode": "corrupt",
+    "triangles": 31684,
+    "uv_color_valid": true
+  },
+  {
+    "mode": "environment",
+    "triangles": 16874,
+    "uv_color_valid": true
+  }
+]

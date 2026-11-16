@@ -1,0 +1,10 @@
+{
+  "mode": "corrupt",
+  "triangles": 31684,
+  "source_parts": 765,
+  "removed_parts": 29,
+  "reused_fallen_parts": 0,
+  "approved_author_sha256": "9fee38798db909a533a95a0e01c3b62f14a47c8cd89dce9f226fe1b117b2ad51",
+  "approved_hero_fbx_sha256": "9ff5b1b2b746c222a2e92b8ee371574d3c521fcb39f10cd50656a24bcf2a47ad",
+  "unity_verified": false
+}
