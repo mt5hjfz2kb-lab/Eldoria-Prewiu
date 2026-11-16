@@ -92,20 +92,20 @@ floor.scale=(49,40,1)
 mat=bpy.data.materials.new("REVIEW ONLY mossy ground")
 mat.use_nodes=True
 bs=mat.node_tree.nodes.get("Principled BSDF")
-bs.inputs["Base Color"].default_value=(.23,.29,.20,1);bs.inputs["Roughness"].default_value=.93
+bs.inputs["Base Color"].default_value=(.31,.37,.27,1);bs.inputs["Roughness"].default_value=.93
 floor.data.materials.append(mat)
 
 def light(name,pos,color,power,size):
  bpy.ops.object.light_add(type="AREA",location=pos)
  ob=bpy.context.object;ob.name=name;ob.data.energy=power;ob.data.color=color
  ob.data.shape="DISK";ob.data.size=size
-light("Warm low amber",(0,-29,29),(1,.70,.43),3400,26)
-light("Blue violet wrap",(-30,30,31),(.54,.62,1),2400,31)
-light("Warm residence fill",(20,-20,14),(1,.85,.60),800,19)
+light("Warm low amber",(0,-29,29),(1,.72,.48),4600,26)
+light("Blue violet wrap",(-30,30,31),(.58,.65,1),3200,31)
+light("Warm residence fill",(20,-20,14),(1,.86,.65),1200,19)
 world=bpy.data.worlds.new("Dusk warm horizon")
 world.use_nodes=True
-world.node_tree.nodes.get("Background").inputs["Color"].default_value=(.19,.18,.30,1)
-world.node_tree.nodes.get("Background").inputs["Strength"].default_value=.65
+world.node_tree.nodes.get("Background").inputs["Color"].default_value=(.24,.21,.32,1)
+world.node_tree.nodes.get("Background").inputs["Strength"].default_value=.82
 bpy.context.scene.world=world
 # Approximate Unity's 42 degree pitched architectural comparison camera.
 bpy.ops.object.camera_add(location=(9,-52,49))
@@ -118,6 +118,7 @@ for layer in scene.view_layers:layer.cycles.use_denoising=False
 scene.render.resolution_x=1600;scene.render.resolution_y=900;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 scene.view_settings.view_transform="AgX"
+scene.view_settings.exposure=.52
 out=os.environ.get("KIT_VILLAGE_PREVIEW_OUTPUT",str(source/"Evidence/blender-village-review.png"))
 Path(out).parent.mkdir(parents=True,exist_ok=True)
 scene.render.filepath=out;bpy.ops.render.render(write_still=True)
