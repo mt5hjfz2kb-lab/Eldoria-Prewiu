@@ -106,21 +106,26 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             {
                 var imported=Import("AshenBastion_"+n,stagesRoot.transform);
                 imported.name="Stage_"+n;
+                AshenArchitecturalFinishing.Add(imported,"Bastion",n,Colors);
                 BindClick(imported,"Bastión","bastion","building",
                     new Vector3(0,3.4f,0),new Vector3(18.6f,8f,17.6f));
                 imported.SetActive(n==1);stages[n-1]=imported;
             }
             var sawmill=Import("Ashen_Sawmill",sceneRoot.transform);
             sawmill.transform.position=new Vector3(-17.2f,0f,-6.2f);
+            AshenArchitecturalFinishing.Add(sawmill,"Sawmill",0,Colors);
             BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             var barracks=Import("Ashen_Barracks",sceneRoot.transform);
             barracks.transform.position=new Vector3(16.8f,0f,-7.5f);
+            AshenArchitecturalFinishing.Add(barracks,"Barracks",0,Colors);
             BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,3f,0),new Vector3(7.4f,7f,7f));
             var granary=Import("Ashen_Granary",sceneRoot.transform);
             granary.transform.position=new Vector3(-16.6f,0f,7.8f);
+            AshenArchitecturalFinishing.Add(granary,"Granary",0,Colors);
             BindClick(granary,"Granero","granary","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             var stoneworks=Import("Ashen_Stoneworks",sceneRoot.transform);
             stoneworks.transform.position=new Vector3(17.4f,0f,8.8f);
+            AshenArchitecturalFinishing.Add(stoneworks,"Stoneworks",0,Colors);
             BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             // Distinctive landscape frame, sparse around the playable fortress.
             var treePrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Pine.obj");
