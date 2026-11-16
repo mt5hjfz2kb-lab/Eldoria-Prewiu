@@ -5,7 +5,7 @@ on:
     paths: [Unity/Assets/Art_Reboot/**, .github/workflows/art-visual-reboot-native.yml]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   actions: read
 concurrency:
   group: visual-reboot-native
@@ -83,6 +83,63 @@ jobs:
         shell: powershell
         run: |
           & "$pwd/visual-reboot-source/Unity/Assets/Art_Reboot/Phase1/Source~/native_capture.ps1" -SourceRoot "$pwd/visual-reboot-source" -OutputRoot "$pwd/visual-reboot-evidence-$env:GITHUB_RUN_ID"
+      - name: Save genuine Unity scene, revised volume and original screenshots to isolated source
+        if: success()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          Set-StrictMode -Version Latest
+          $source="$pwd/visual-reboot-source"
+          $branchArt=Join-Path $source 'Unity/Assets/Art_Reboot/Phase1'
+          $proof=Join-Path $pwd ("visual-reboot-evidence-"+$env:GITHUB_RUN_ID)
+          $from=Join-Path $proof 'ImportedArtReboot/Phase1'
+          foreach($rel in @(
+            'Scenes/Eldoria_Visual_Sandbox.unity',
+            'Materials/Reboot_Dusk.asset','Materials/Reboot_URP.asset',
+            'Materials/Reboot_Emission.mat','Materials/Reboot_Corruption.mat',
+            'Materials/Reboot_LowMist.mat','Materials/Reboot_ArcaneParticles.mat',
+            'Materials/Reboot_LowMist_0.asset','Materials/Reboot_LowMist_1.asset'
+          )){
+            $a=Join-Path $from $rel; $z=Join-Path $branchArt $rel
+            if(-not(Test-Path -LiteralPath $a)){throw "Missing generated Unity asset: $rel"}
+            Copy-Item -LiteralPath $a -Destination $z -Force
+            if(Test-Path -LiteralPath ($a+'.meta')){
+              Copy-Item -LiteralPath ($a+'.meta') -Destination ($z+'.meta') -Force
+            }
+          }
+          $evidence=Join-Path $branchArt ("Source~/Evidence/native-"+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Force -Path $evidence | Out-Null
+          foreach($rel in @(
+            'unity-1100x1250.png','unity-390x844.png',
+            'unity-1600x900.png','unity-844x390.png',
+            'capture.json','native-proof.json','model-world-bounds.txt'
+          )){
+            $a=Join-Path $proof $rel
+            if(-not(Test-Path -LiteralPath $a)){throw "Missing true Unity evidence: $rel"}
+            Copy-Item -LiteralPath $a -Destination (Join-Path $evidence $rel) -Force
+          }
+          $pngHashes=Get-Content -LiteralPath (Join-Path $proof 'native-proof.json') -Raw | ConvertFrom-Json
+          $manifest=@{
+            phase='Phase1 owner art revision';native_run=$env:GITHUB_RUN_ID
+            source_sha=$env:GITHUB_SHA
+            note='True native Unity rendered captures; artistic approval and real iPhone performance not asserted'
+            art_approved=$false;physical_iphone_tested=$false
+            png_hashes=$pngHashes.screenshots
+          }
+          ($manifest|ConvertTo-Json -Depth 8) | Set-Content -LiteralPath (Join-Path $branchArt 'Evidence/phase1_revision_run.json')
+          Push-Location $source
+          try{
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A -- Unity/Assets/Art_Reboot/Phase1
+            git diff --cached --quiet
+            if($LASTEXITCODE -ne 0){
+              git commit -m "art: persist reviewed Phase1 URP scene and genuine native screenshots [phase1-provisional]"
+              if($LASTEXITCODE -ne 0){throw 'Commit failed'}
+              git push origin HEAD:art/visual-reboot
+              if($LASTEXITCODE -ne 0){throw 'Non-fast-forward or GitHub write rejected; evidence remains in artifact'}
+            }
+          }finally{Pop-Location}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
