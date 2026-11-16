@@ -1,0 +1,78 @@
+name: "CC0 System — publisher-only Quaternius audit, private inputs"
+on:
+  push:
+    branches:
+      - experiment/eldoria-cc0-art-system-20261116
+    paths:
+      - ".github/workflows/cc0-art-system-quaternius.yml"
+      - "tools/cc0-art-system/audit_quaternius_files.py"
+      - "tools/cc0-art-system/render_quaternius_kit.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-cc0-art-system-actual-quaternius
+  cancel-in-progress: false
+jobs:
+  download-import-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/cc0-art-system/audit_quaternius_files.py
+            tools/cc0-art-system/render_quaternius_kit.py
+      - name: Prepare ephemeral audit tools (no paid service)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-venv
+          python3 -m venv "$RUNNER_TEMP/eldoria-q-audit"
+          "$RUNNER_TEMP/eldoria-q-audit/bin/pip" -q install --disable-pip-version-check 'gdown>=5,<7'
+      - name: Download exactly six named original 2022 CC0 glTF files and publisher license to private runner disk
+        env:
+          ELDORIA_VENDOR_REVIEW: ${{ runner.temp }}/eldoria-source-2022
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/eldoria-q-audit/bin/python" tools/cc0-art-system/audit_quaternius_files.py
+      - name: Import actual publisher glTF into Blender and render image (not Unity)
+        env:
+          ELDORIA_VENDOR_REVIEW: ${{ runner.temp }}/eldoria-source-2022
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/render_quaternius_kit.py 2>&1 | tee "$RUNNER_TEMP/eldoria-q-render.log"
+          grep -q QUATERNIUS_REAL_BLENDER_MODELS_PASS "$RUNNER_TEMP/eldoria-q-render.log"
+      - name: Verify public proof contains only PNG and JSON, not raw vendor geometry
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('_vendor_render_output')
+          image=root/'Quaternius_Source_2022_ActualModels.png'
+          audit=root/'Quaternius_ActualModels_Audit.json'
+          assert image.read_bytes()[:8] == b'\x89PNG\r\n\x1a\n'
+          assert image.stat().st_size>100000
+          obj=json.loads(audit.read_text())
+          assert obj['blender_native_import_pass'] and not obj['unity_native_import_pass']
+          assert obj['rights_to_redistribute_sources']=='not_certified'
+          assert obj['license_text_mismatch'] is True
+          assert len(obj['models'])==6
+          assert sorted(str(f.suffix) for f in root.iterdir())==['.json','.png']
+          print('QUATERNIUS_PROOF_NO_RAW_ASSET_LEAK_PASS',image.stat().st_size)
+          PY
+      - name: Upload flattened vendor-style image + metadata only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quaternius-actual-source-style-audit
+          path: |
+            _vendor_render_output/Quaternius_Source_2022_ActualModels.png
+            _vendor_render_output/Quaternius_ActualModels_Audit.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Confirm no changes to tracked assets or game
+        run: |
+          git diff --exit-code
+          echo "SOURCE_REMAINED_UNPUBLISHED"
