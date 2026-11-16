@@ -1,0 +1,140 @@
+name: "Eldoria CC0 V16 | move real districts and improve 3D readability"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v16-spread.yml"
+      - "tools/cc0-art-system/director_v16_separate_industries.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v16-separate-districts-ubuntu
+  cancel-in-progress: false
+jobs:
+  authentic-composition:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v16_separate_industries.py
+      - name: Download pinned commercial-safe actual 3D V15 source (never concept images)
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v15-stone-slate-cc0-pbr
+          run-id: 43907312243
+          github-token: ${{ github.token }}
+          path: .
+      - name: Guard correct source, provenance and exact five levels
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v16_separate_industries.py
+          for i in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV15/DirectorV15_Stage$i.glb"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          evidence=json.loads(Path("docs/cc0-art-system/previews/director-v15/v15-evidence.json").read_text())
+          assert evidence["source_run_id"]==43904480456
+          assert evidence["license"]=="CC0 1.0" and evidence["source_md5_verified"]
+          assert len(evidence["input_evidence"])==6 and len(evidence["stages"])==5
+          assert evidence["images_are_real_blender"] and not evidence["raw_asset_geometry_added"]
+          assert not evidence["art_approved"] and not evidence["unity_tested"]
+          print("V16_REAL_SOURCE_V15_LICENSE_AND_GEOMETRY_PASS")
+          PY
+      - name: Install free Blender and numerical utilities on hosted Linux
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Physically relocate each entire district and reauthor roads and work yards
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v16_separate_industries.py 2>&1 | tee "$RUNNER_TEMP/v16-model-and-render.log"
+          grep -q ELDORIA_CC0_V16_REAL_DISTRICTS_PASS "$RUNNER_TEMP/v16-model-and-render.log"
+      - name: Validate actual relocated meshes, texture, five 3D stages, and eight render images
+        run: |
+          python3 - <<'PY'
+          import json,struct,math
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          d=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV16")
+          p=Path("docs/cc0-art-system/previews/director-v16")
+          q=json.loads((p/"v16-evidence.json").read_text())
+          assert q["source_run_id"]==43907312243
+          assert q["no_concept_images_used"] and q["no_vendor_3d_geometry_added"]
+          assert q["blender_render_verified"]
+          assert not q["unity_verified"] and not q["iphone_verified"] and not q["art_approved"]
+          assert len(q["physical_stages"])==5 and len(q["captured_real_images"])==8
+          assert (d/"DirectorV16_Editable_Source.blend").read_bytes()[:7]==b"BLENDER"
+          assert (d/"V16_Grounded_DistrictPaths.png").stat().st_size>70000
+          for row in q["reposition_by_world_units"]:
+              regions=row["districts"]
+              assert len(regions)==4
+              for key in ("sawmill","quarry","barracks","granary"):
+                  st=regions[key]
+                  assert st["objects_moved"]>=15,(row["stage"],key,st)
+                  assert st["new_distance"]-st["old_distance"]>7,(row["stage"],key)
+              print("V16_PHYSICAL_DISTRIC_SPREAD",row["stage"],regions)
+          landmarks={
+            "sawmill":("ASERRADERO /",(-32.0,-12.5)),
+            "quarry":("CANTERA /",(-33.2,18.4)),
+            "barracks":("CUARTEL /",(34.5,18.4)),
+            "granary":("GRANERO /",(32.0,-15.5))
+          }
+          for st in range(1,6):
+              blob=(d/("DirectorV16_Stage"+str(st)+".glb")).read_bytes()
+              assert blob[:4]==b"glTF" and struct.unpack_from("<I",blob,8)[0]==len(blob)
+              n=struct.unpack_from("<I",blob,12)[0]
+              data=json.loads(blob[20:20+n])
+              assert len(data.get("meshes",[]))>600 and len(data.get("images",[]))>=9
+              nodes=data["nodes"]
+              for label,(prefix,(cx,cy)) in landmarks.items():
+                  positions=[u["translation"] for u in nodes
+                             if u.get("name","").startswith(prefix) and "translation" in u]
+                  assert len(positions)>3,(label,st,len(positions))
+                  avg=(sum(v[0] for v in positions)/len(positions),
+                       -sum(v[2] for v in positions)/len(positions))
+                  assert abs(avg[0]-cx)<6 and abs(avg[1]-cy)<6,(
+                      "3D industry not physically moved",st,label,avg,(cx,cy))
+                  print("V16_REAL_MESH_ANCHOR",st,label,avg)
+              print("V16_STAGE_GLTF_VALID",st,len(data["meshes"]),len(data["images"]))
+          expected={
+            "DirectorV16_BastionI_1600x900.png":(1600,900),
+            "DirectorV16_BastionV_1600x900.png":(1600,900),
+            "DirectorV16_BastionV_Close_1600x900.png":(1600,900),
+            "DirectorV16_BastionV_Portrait_720x1200.png":(720,1200),
+            "DirectorV16_sawmill_1024x768.png":(1024,768),
+            "DirectorV16_quarry_1024x768.png":(1024,768),
+            "DirectorV16_barracks_1024x768.png":(1024,768),
+            "DirectorV16_granary_1024x768.png":(1024,768)
+          }
+          for name,wh in expected.items():
+              img=Image.open(p/name).convert("RGB")
+              assert img.size==wh and (p/name).stat().st_size>100000,name
+              print("V16_RENDER_ACTUAL",name,(p/name).stat().st_size)
+          old=Image.open("docs/cc0-art-system/previews/director-v15/DirectorV15_BastionV_1600x900.png").convert("RGB")
+          new=Image.open(p/"DirectorV16_BastionV_1600x900.png").convert("RGB")
+          difference=sum(ImageStat.Stat(ImageChops.difference(old,new)).mean)/3
+          assert difference>5,("No visible relocation",difference)
+          print("V16_DELTA_REAL_IMAGE",difference,"NOT ART-APPROVED, NOT UNITY-TESTED")
+          PY
+      - name: Save original Blender/GLB and 8 genuine views for human quality evaluation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v16-separated-real-city
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV16/
+            docs/cc0-art-system/previews/director-v16/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Verify production and other branches are untouched
+        run: |
+          git diff --exit-code
+          echo "ELDORIA_V16_ISOLATED_CC0_BRANCH_ONLY_PASS"
