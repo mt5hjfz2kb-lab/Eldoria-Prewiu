@@ -23,7 +23,7 @@ namespace Eldoria.ExperimentalAshenCitadel
         [SerializeField] private Camera playerCamera;
 
         private LocalGateway gateway;
-        private Font typeface;
+        private Font typeface, titleTypeface, emphasisTypeface;
         private Sprite frame, primary, secondary, crest;
         private RectTransform safe;
         private RectTransform popup, topHud, bottomHud, accountHud;
@@ -63,7 +63,12 @@ namespace Eldoria.ExperimentalAshenCitadel
             // The owner-facing I–V profile sets actual game costs and milestones.
             // Used only in this isolated scene with its own save key.
             SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
-            typeface = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            // Embed real OFL-licensed typography rather than platform-dependent
+            // LegacyRuntime text. Marcellus handles titles, Alegreya Sans body.
+            typeface=Resources.Load<Font>("Fonts/AlegreyaSans-Regular")??
+                Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            titleTypeface=Resources.Load<Font>("Fonts/Marcellus-Regular")??typeface;
+            emphasisTypeface=Resources.Load<Font>("Fonts/AlegreyaSans-Bold")??typeface;
             // One source-defined premium kit: all controls share identical,
             // generated 9-slice material language; gameplay behaviour is unchanged.
             frame=AshenInterfaceIdentity.Panel;
@@ -128,7 +133,11 @@ namespace Eldoria.ExperimentalAshenCitadel
         {
             var r=Node(parent,name,min,max,insetMin,insetMax);
             var t=r.gameObject.AddComponent<Text>();
-            t.font=typeface;t.fontSize=size;t.fontStyle=size>=16?FontStyle.Bold:FontStyle.Normal;t.color=color;t.alignment=alignment;
+            bool title=name=="Realm"||name=="Sheet title";
+            bool emphasis=name=="Caption";
+            t.font=title?titleTypeface:emphasis?emphasisTypeface:typeface;
+            t.fontSize=size;t.fontStyle=FontStyle.Normal;
+            t.color=color;t.alignment=alignment;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;
             t.verticalOverflow=VerticalWrapMode.Truncate;
             t.raycastTarget=false;
@@ -184,9 +193,9 @@ namespace Eldoria.ExperimentalAshenCitadel
             var emblem=Node(header,"Crest",new Vector2(0,0),new Vector2(0,1),
                 new Vector2(12,11),new Vector2(74,-10));
             Plate(emblem,crest,Color.white);
-            levelText=Label(header,"Realm",17,TextAnchor.MiddleLeft,Ivory,
+            levelText=Label(header,"Realm",18,TextAnchor.MiddleLeft,Ivory,
                 new Vector2(0,.43f),Vector2.one,new Vector2(82,0),new Vector2(-11,-5));
-            resourceText=Label(header,"Resources",12,TextAnchor.MiddleLeft,Muted,
+            resourceText=Label(header,"Resources",14,TextAnchor.MiddleLeft,Muted,
                 new Vector2(0,0),new Vector2(1,.45f),new Vector2(82,3),new Vector2(-10,0));
             var accent=Node(header,"Warm brass divider",new Vector2(0,0),new Vector2(1,0),
                 new Vector2(82,9),new Vector2(-11,11));
@@ -197,14 +206,16 @@ namespace Eldoria.ExperimentalAshenCitadel
                 new Vector2(7,5),new Vector2(-7,69));
             bottomHud=bottom;
             Plate(bottom,frame,Color.white);
-            string[] nav={"BASTIÓN","EDIFICIOS","EJÉRCITO","MUNDO"};
+            // Short functional captions remain readable beside semantic glyphs
+            // even on the narrow portrait iPhone navigation.
+            string[] nav={"BASTIÓN","OBRAS","TROPAS","MUNDO"};
             for(int i=0;i<nav.Length;i++)
             {
                 int n=i;
                 float x0=i/4f,x1=(i+1)/4f;
                 Button(bottom,"Nav · "+nav[i],nav[i],secondary,new Vector2(x0,.12f),
                     new Vector2(x1,.92f),new Vector2(4,0),new Vector2(-4,0),
-                    ()=>OpenSection(n),12);
+                    ()=>OpenSection(n),13);
             }
             feedbackText=Label(safe,"Message",13,TextAnchor.MiddleCenter,Ivory,
                 new Vector2(0,0),new Vector2(1,0),new Vector2(12,75),new Vector2(-12,102));
@@ -219,7 +230,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             Plate(popup,frame,Color.white);
             popupTitle=Label(popup,"Sheet title",18,TextAnchor.MiddleLeft,Ivory,
                 new Vector2(0,1),Vector2.one,new Vector2(19,-54),new Vector2(-58,-11));
-            popupDescription=Label(popup,"Description",14,TextAnchor.UpperLeft,Muted,
+            popupDescription=Label(popup,"Description",15,TextAnchor.UpperLeft,Muted,
                 new Vector2(0,1),Vector2.one,new Vector2(20,-120),new Vector2(-20,-61));
             var titleRule=Node(popup,"Section accent",new Vector2(0,1),new Vector2(1,1),
                 new Vector2(20,-59),new Vector2(-63,-57));
@@ -257,7 +268,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             sheetRows=rows;
             int hardBreaks=sheetDescription.Split('\n').Length;
             float lineEstimate=Mathf.Ceil(sheetDescription.Length/44f)+Mathf.Max(0,hardBreaks-1);
-            float descriptionHeight=Mathf.Clamp(37f+lineEstimate*14f,66f,135f);
+            float descriptionHeight=Mathf.Clamp(38f+lineEstimate*16f,68f,145f);
             popupDescription.rectTransform.offsetMin=new Vector2(20,-(61+descriptionHeight));
             popupDescription.rectTransform.offsetMax=new Vector2(-20,-61);
             var scrollRect=sheetScroll.GetComponent<RectTransform>();
@@ -422,7 +433,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 var item=Button(popupActionArea,spec.Item1,spec.Item1,
                     spec.Item3?primary:secondary,
                     new Vector2(0,1),new Vector2(1,1),
-                    new Vector2(0,bottom),new Vector2(0,top),spec.Item2,13);
+                    new Vector2(0,bottom),new Vector2(0,top),spec.Item2,14);
                 item.interactable=spec.Item3;
             }
             if(dailyButton!=null)dailyButton.gameObject.SetActive(false);
