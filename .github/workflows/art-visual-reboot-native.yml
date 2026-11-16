@@ -95,6 +95,7 @@ jobs:
           $from=Join-Path $proof 'ImportedArtReboot/Phase1'
           foreach($rel in @(
             'Scenes/Hero_Review.unity',
+            'Models/Reboot_Hero.fbx.meta','Textures/Hero_Atlas_256.png.meta',
             'Materials/Hero_Surface.mat','Materials/Hero_Emission.mat',
             'Materials/Hero_Floor.mat','Materials/Hero_Profile.asset',
             'Materials/Reboot_Dusk.asset','Materials/Reboot_URP.asset',

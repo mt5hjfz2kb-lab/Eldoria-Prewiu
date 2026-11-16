@@ -78,7 +78,7 @@ namespace Eldoria.ArtReboot.Editor
                 fill.type=LightType.Directional;fill.transform.rotation=Quaternion.Euler(48,145,0);
                 fill.color=new Color(.64f,.73f,1);fill.intensity=.35f;fill.shadows=LightShadows.None;
                 var floor=GameObject.CreatePrimitive(PrimitiveType.Plane);floor.name="Neutral review floor";
-                floor.transform.localScale=new Vector3(20,1,20);floor.transform.position=new Vector3(0,-.12f,0);
+                floor.transform.localScale=new Vector3(20,1,20);floor.transform.position=new Vector3(0,bounds.min.y-.005f,0);
                 var floorMat=new Material(Shader.Find("Universal Render Pipeline/Lit"));floorMat.SetColor("_BaseColor",new Color(.22f,.25f,.29f));
                 AssetDatabase.CreateAsset(floorMat,Root+"/Materials/Hero_Floor.mat");floor.GetComponent<Renderer>().sharedMaterial=floorMat;
                 var camera = new GameObject("Game camera 50 -13 close-up").AddComponent<Camera>();

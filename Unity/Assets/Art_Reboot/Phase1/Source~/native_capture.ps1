@@ -63,7 +63,7 @@ foreach($size in @('1100x1250','390x844','1600x900','844x390')){
  $hashes+=@{file=$name;sha256=(Get-FileHash $path -Algorithm SHA256).Hash}
 }
 Copy-Item (Join-Path $project 'Assets/Art_Reboot') (Join-Path $OutputRoot 'ImportedArtReboot') -Recurse
-@{source_sha=$env:GITHUB_SHA;screenshots=$hashes;scope='Isolated visual import lab with copied inactive source hierarchy';
+@{source_sha=$env:GITHUB_SHA;screenshots=$hashes;scope='Isolated hero review scene; original pilot scene unchanged';
   unity_compiled=$true;unity_rendered=$true;gameplay_tested=$false;full_project_integration=$false;
   mobile_tested=$false;art_approved=$false}|ConvertTo-Json -Depth 8 | Set-Content (Join-Path $OutputRoot 'native-proof.json')
 Write-Output 'REBOOT_NATIVE_IMPORT_AND_CAPTURE_COMPLETE_REQUIRES_VISUAL_REVIEW'
@@ -75,4 +75,14 @@ if($root.StartsWith($env:RUNNER_TEMP) -and (Split-Path $root -Leaf) -eq ('visual
  & $env:ComSpec /d /c ('rd /s /q "'+$extended+'"')
  if(Test-Path -LiteralPath $root){throw 'Own scratch cleanup incomplete; evidence retained'}
  Write-Output 'REBOOT_OWN_SCRATCH_REMOVED' 
+}
+
+# Prior failed import is this workstream's own scratch; its full log is retained in artifact 14215617104.
+# Remove only after this replacement capture has completed and copied its evidence.
+$failedOwnRoot=Join-Path $env:RUNNER_TEMP 'visual-reboot-43846720539'
+if(Test-Path -LiteralPath $failedOwnRoot){
+ $failedExtended='\\?\'+[IO.Path]::GetFullPath($failedOwnRoot)
+ & $env:ComSpec /d /c ('rd /s /q "'+$failedExtended+'"')
+ if(Test-Path -LiteralPath $failedOwnRoot){throw 'Prior own failed-import scratch cleanup incomplete'}
+ Write-Output 'REBOOT_PRIOR_FAILED_OWN_SCRATCH_REMOVED'
 }
