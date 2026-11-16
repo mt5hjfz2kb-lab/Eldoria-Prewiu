@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T08:53:06.068Z",
+  "updated_at": "2026-11-16T08:58:29.177Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9811,11 +9811,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 29,
+      "ownership_revision": 30,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE1_NATIVE_VERIFIED_ART_QA_REVISIONS_NEEDED",
-      "resources": [],
+      "phase": "PHASE1_SECOND_NATIVE_ART_CAPTURE_QUEUED",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9831,7 +9833,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Correct overexposed violet corruption, severe dark purple ground/sunset, roof tile checkering and torch blowout; generate real Unity same-camera A/B. Still Phase1 only; no Phase2.",
+      "next": "Only second native Phase1 A/B of warm dusk/art fixes. Release Windows and inspect actual PNG before art review; no Phase2.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9844,13 +9846,12 @@
       "final_source_sha": "a41c07323b07539bdadda483a06b4266d420e55c",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_terminal_native_run",
-        "requested_at": "2026-11-16T08:46:49.051Z",
-        "source_sha": "237dfc52d7406553842764cc97f9e3d457afbaeb",
-        "release_on_terminal_run": true,
-        "after_run_id": 43834060945
+        "status": "claimed_second_bounded_capture",
+        "requested_at": "2026-11-16T08:58:29.177Z",
+        "source_sha": "b9acb3a7986cfc77af3629905839f9d1dc6b19e3",
+        "release_on_terminal_run": true
       },
-      "native_source_sha": "237dfc52d7406553842764cc97f9e3d457afbaeb",
+      "native_source_sha": "b9acb3a7986cfc77af3629905839f9d1dc6b19e3",
       "last_native_attempt": {
         "run": 43834060945,
         "source": "237dfc52d7406553842764cc97f9e3d457afbaeb",
