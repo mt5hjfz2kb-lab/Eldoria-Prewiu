@@ -101,21 +101,55 @@ def mesh(name,vertices,faces,ma):
  return obj
 
 def gable(name,x,y,z,width,depth,rise,ma):
- # Distinctive oversized, curved-ended double-pitched roof. Roof is true 3D.
- n=8;verts=[];faces=[]
- for row,yy in enumerate([y-depth*.52,y+depth*.52]):
-  for i in range(n+1):
-   q=-1+2*i/n; hump=max(0,1-abs(q)**1.23)
-   cx=x+q*width*.55
-   h=z+rise*hump+(0.18 if abs(q)>.80 else 0)
-   verts.append((cx,yy,h))
- for i in range(n):faces.append((i,i+1,n+2+i,n+1+i))
- faces.extend([(0,n,2*n+1,n+1),(n,0,n+1,2*n+1)])
- ob=mesh(name,verts,faces,ma)
- cyl('handcrafted ridge copper '+name,(x,y,z+rise),.12,depth*1.08,BRASS,9,(pi/2,0,0))
- for direction in (-1,1):
-  cube('heavy decorated gable end',(x+direction*width*.54,y,z+.10),(width*.036,depth*1.08,.28),SLATE_EDGE,.07)
- return ob
+ # Actual enclosed 3D pitched roof, not a folded sheet with black/open gable ends.
+ # Eaves are oversized, laminated and slightly upturned for mobile silhouette.
+ subdivisions=8
+ xvals=[(-.5+i/subdivisions)*width for i in range(subdivisions+1)]
+ yvals=[-depth*.53,depth*.53]
+ def height(i):
+  q=abs(xvals[i])/(width*.5)
+  return z+rise*(1-q**1.13)+.22*(q**7)
+ # Top, underside and end faces are real mesh polygons: no see-through gables.
+ v=[];f=[]
+ for lift in (0,-.43):
+  for yy in yvals:
+   for i,xx in enumerate(xvals):
+    v.append((x+xx,y+yy,height(i)+lift))
+ stride=subdivisions+1
+ for i in range(subdivisions):
+  f.append((i,i+1,stride+i+1,stride+i))
+  f.append((2*stride+i,3*stride+i,3*stride+i+1,2*stride+i+1))
+  for row in (0,1):
+   a=row*stride+i;b=a+2*stride
+   f.append((a,b,b+1,a+1))
+ for row in (0,1):
+  for i in (0,subdivisions):
+   a=row*stride+i;b=a+2*stride
+   opposite=(1-row)*stride+i
+   f.append((a,opposite,opposite+2*stride,b))
+ roof=mesh(name+' / enclosed gable',v,f,ma)
+ for poly in roof.data.polygons:poly.use_smooth=True
+ # Two warm finished timber end-fascias and a long copper ridge.
+ for side in (-1,1):
+  yy=y+side*depth*.54
+  for i in range(subdivisions):
+   x1=x+xvals[i];x2=x+xvals[i+1];h1=height(i);h2=height(i+1)
+   dx=x2-x1;dz=h2-h1
+   ob=cube(name+' / carved gable fascia',((x1+x2)*.5,yy,(h1+h2)*.5-.10),
+           (math.hypot(dx,dz)+.04,.22,.22),OAK,.025)
+   ob.rotation_euler[1]=-math.atan2(dz,dx)
+ cyl(name+' / warm metal ridge',(x,y,z+rise+.06),.08,depth*1.11,BRASS,10,(pi/2,0,0))
+ # Rhythmic staggered slate seams: few broad bands, readable on a phone.
+ for sign in (-1,1):
+  for i in range(1,5):
+   q=.18*i
+   xx=x+sign*q*width*.5
+   h=z+rise*(1-q**1.13)+.22*q**7+.024
+   strip=cube(name+' / roof slate joint', (xx,y,h),
+              (.045,depth*1.02,.047),SLATE_EDGE,.015)
+   strip.rotation_euler[1]=sign*math.atan2(rise*(1-q**1.13)-rise*(1-(q+.12)**1.13),width*.06)
+ return roof
+
 
 def wall(name,x,y,z,w,d,h):
  cube(name+' / mass',(x,y,z+h*.5),(w,d,h),STONE,.23)
