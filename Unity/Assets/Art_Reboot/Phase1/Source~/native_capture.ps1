@@ -39,7 +39,7 @@ $deps=@{'com.unity.render-pipelines.universal'=$urp;'com.unity.modules.imageconv
  (@{dependencies=$deps}|ConvertTo-Json -Depth 5),([Text.UTF8Encoding]::new($false)))
 $env:REBOOT_CAPTURE_OUTPUT=$OutputRoot
 $log=Join-Path $OutputRoot 'unity-editor.log'
-$arguments='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.ArtReboot.Editor.RebootPilotCapture.BuildAndCapture -logFile "'+$log+'"'
+$arguments='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.ArtReboot.Editor.RebootHeroCapture.BuildAndCapture -logFile "'+$log+'"'
 $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
 $deadline=(Get-Date).AddMinutes(35)
 while(-not $p.HasExited -and (Get-Date) -lt $deadline){Start-Sleep -Seconds 4;$p.Refresh()}

@@ -94,7 +94,9 @@ jobs:
           $proof=Join-Path $pwd ("visual-reboot-evidence-"+$env:GITHUB_RUN_ID)
           $from=Join-Path $proof 'ImportedArtReboot/Phase1'
           foreach($rel in @(
-            'Scenes/Eldoria_Visual_Sandbox.unity',
+            'Scenes/Hero_Review.unity',
+            'Materials/Hero_Surface.mat','Materials/Hero_Emission.mat',
+            'Materials/Hero_Floor.mat','Materials/Hero_Profile.asset',
             'Materials/Reboot_Dusk.asset','Materials/Reboot_URP.asset',
             'Materials/Reboot_Emission.mat','Materials/Reboot_Corruption.mat',
             'Materials/Reboot_LowMist.mat','Materials/Reboot_ArcaneParticles.mat',
@@ -120,7 +122,7 @@ jobs:
           }
           $pngHashes=Get-Content -LiteralPath (Join-Path $proof 'native-proof.json') -Raw | ConvertFrom-Json
           $manifest=@{
-            phase='Phase1 owner art revision';native_run=$env:GITHUB_RUN_ID
+            phase='Hero form correction review';native_run=$env:GITHUB_RUN_ID
             source_sha=$env:GITHUB_SHA
             note='True native Unity rendered captures; artistic approval and real iPhone performance not asserted'
             art_approved=$false;physical_iphone_tested=$false
@@ -134,7 +136,7 @@ jobs:
             git add -A -- Unity/Assets/Art_Reboot/Phase1
             git diff --cached --quiet
             if($LASTEXITCODE -ne 0){
-              git commit -m "art: persist reviewed Phase1 URP scene and genuine native screenshots [phase1-provisional]"
+              git commit -m "art: persist hero review scene and genuine native screenshots [phase1-provisional]"
               if($LASTEXITCODE -ne 0){throw 'Commit failed'}
               git push origin HEAD:art/visual-reboot
               if($LASTEXITCODE -ne 0){throw 'Non-fast-forward or GitHub write rejected; evidence remains in artifact'}

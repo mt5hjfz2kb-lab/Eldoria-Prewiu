@@ -1,6 +1,6 @@
 """Read-only live lease validation; no lease acquisition or resource reassignment."""
 import base64,json,os,urllib.request
-OWNER='chatgpt-visual-reboot-recovery-55321388b3c8'
+OWNER='chatgpt-visual-reboot-hero-d921b074af21'
 ID='eldoria-art-visual-reboot-phase1-20261115'
 BRANCH='art/visual-reboot'
 def validate(reg, head, current_head):

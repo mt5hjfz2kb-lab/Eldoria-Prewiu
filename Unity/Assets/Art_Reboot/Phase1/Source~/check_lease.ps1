@@ -16,7 +16,7 @@ $holders=@($registry.active | Where-Object {$_.resources -contains 'windows-runn
 if($holders.Count -ne 1){throw 'No sole Windows holder'}
 $w=$holders[0]
 if($w.id -ne 'eldoria-art-visual-reboot-phase1-20261115' -or
- $w.owner -ne 'chatgpt-visual-reboot-recovery-55321388b3c8' -or
+ $w.owner -ne 'chatgpt-visual-reboot-hero-d921b074af21' -or
  $w.branch -ne 'art/visual-reboot' -or $w.ownership_state -ne 'claimed' -or $w.status -ne 'active'){
  throw 'Windows reservation belongs to another owner/task'
 }

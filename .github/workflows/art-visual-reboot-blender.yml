@@ -1,16 +1,16 @@
-name: "Visual reboot · regenerate isolated Phase1 Blender source"
+name: "Visual reboot · hero geometry preparation"
 on:
   push:
     branches: [art/visual-reboot]
     paths:
-      - ".github/workflows/art-visual-reboot-blender.yml"
-      - "Unity/Assets/Art_Reboot/Phase1/Source~/author_pilot.py"
+      - .github/workflows/art-visual-reboot-blender.yml
+      - Unity/Assets/Art_Reboot/Phase1/Source~/author_hero.py
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
   group: visual-reboot-blender
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   regenerate:
     runs-on: ubuntu-24.04
@@ -18,59 +18,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
-          fetch-depth: 1
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            Unity/Assets/Art_Reboot/**
-      - name: Verify original authoring script parses before Blender
-        run: python3 -m py_compile Unity/Assets/Art_Reboot/Phase1/Source~/author_pilot.py
-      - name: Install free Blender without using the shared Windows PC
+          sparse-checkout: Unity/Assets/Art_Reboot
+      - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends blender python3-numpy
-          blender --version | head -n 2
-      - name: Rebuild original mesh, source, palette and geometry evidence
+          sudo apt-get install -y --no-install-recommends blender python3-numpy python3-pil
+      - name: Build isolated hero and silhouette evidence
         run: |
           set -euo pipefail
-          cd Unity/Assets/Art_Reboot/Phase1/Source~
-          blender -b -t 4 --python author_pilot.py -- --skip-render 2>&1 | tee "$RUNNER_TEMP/blender-phase1.log"
-          if grep -qE 'Traceback \(most recent call last\)|Error: Python' "$RUNNER_TEMP/blender-phase1.log"; then
-            echo "Blender returned but script raised an exception"; exit 1
-          fi
-          grep -q REBOOT_GEOMETRY "$RUNNER_TEMP/blender-phase1.log"
-          blender -b -t 4 --python verify_fbx.py 2>&1 | tee "$RUNNER_TEMP/fbx-reimport.log"
-          if grep -qE 'Traceback \(most recent call last\)|Error: Python' "$RUNNER_TEMP/fbx-reimport.log"; then
-            echo "FBX reimport failed"; exit 1
-          fi
-          grep -q BLENDER_FBX_REIMPORT_PASS "$RUNNER_TEMP/fbx-reimport.log"
-      - name: Validate generated binaries are present and source limits held
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import json
-          root=Path("Unity/Assets/Art_Reboot/Phase1")
-          data=json.loads((root/"Evidence/geometry.json").read_text())
-          assert data["mesh_objects"]==4, data
-          assert 21000<data["triangles"]<100000 and data["materials"]==3, data
-          for p in ["Models/Reboot_Pilot.fbx","Textures/Reboot_Atlas_256.png","Source~/Reboot_Pilot.glb","Source~/Reboot_Pilot.blend"]:
-              f=root/p
-              assert f.is_file() and f.stat().st_size>1000, str(f)
-              print(str(f),f.stat().st_size)
-          print("BLENDER_GEOMETRY_PASS",data["triangles"])
-          PY
-      - name: Commit regenerated authored assets only to experimental branch
+          python3 Unity/Assets/Art_Reboot/Phase1/Source~/HeroReview/silhouettes.py
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Phase1/Source~/author_hero.py -- --skip-render 2>&1 | tee "$RUNNER_TEMP/hero.log"
+          if grep -qE 'Traceback|Error: Python' "$RUNNER_TEMP/hero.log"; then exit 1; fi
+          grep -q HERO_GEOMETRY_COMPLETE "$RUNNER_TEMP/hero.log"
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Phase1/Source~/verify_hero.py 2>&1 | tee "$RUNNER_TEMP/hero-verify.log"
+          grep -q HERO_FBX_PASS "$RUNNER_TEMP/hero-verify.log"
+      - name: Persist hero without changing pilot scene
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Unity/Assets/Art_Reboot/Phase1/Models/Reboot_Pilot.fbx \
-            Unity/Assets/Art_Reboot/Phase1/Textures/Reboot_Atlas_256.png \
-            Unity/Assets/Art_Reboot/Phase1/Source~/Reboot_Pilot.glb \
-            Unity/Assets/Art_Reboot/Phase1/Source~/Reboot_Pilot.blend \
-            Unity/Assets/Art_Reboot/Phase1/Evidence/geometry.json
-          if git diff --cached --quiet; then
-            echo "Identical Blender generated assets"; exit 0
-          fi
-          git commit -m "art: generated Phase1 dusk revision original FBX/Blend/GLB/atlas [blender verified]"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Unity/Assets/Art_Reboot/Phase1/Models/Reboot_Hero.fbx Unity/Assets/Art_Reboot/Phase1/Textures/Hero_Atlas_256.png Unity/Assets/Art_Reboot/Phase1/Source~/HeroReview
+          git diff --cached --quiet && exit 0
+          git commit -m 'art: generated Casa de la Campana hero source; Unity capture pending'
           git push origin HEAD:art/visual-reboot
