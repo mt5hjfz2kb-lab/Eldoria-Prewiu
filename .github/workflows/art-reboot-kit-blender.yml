@@ -1,0 +1,73 @@
+name: "Art Reboot Phase2 · modular kit Blender 31 assets and polygon gate"
+on:
+  push:
+    branches: [art/visual-reboot]
+    paths:
+      - .github/workflows/art-reboot-kit-blender.yml
+      - Unity/Assets/Art_Reboot/Kit/Source~/author_modular_kit.py
+      - Unity/Assets/Art_Reboot/Kit/Source~/verify_kit.py
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: art-reboot-kit-blender
+  cancel-in-progress: false
+jobs:
+  regenerate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Art_Reboot
+            .github/workflows/art-reboot-kit-blender.yml
+      - name: Install Blender offline-capable runtime package
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender python3-numpy python3-pil
+      - name: Generate all kit pieces from Blender source in bounded batch
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Kit/Source~/author_modular_kit.py 2>&1 | tee "$RUNNER_TEMP/kit-generator.log"
+          grep -q 'BLENDER_KIT_PASS' "$RUNNER_TEMP/kit-generator.log"
+          if grep -Eq 'Traceback|Error: Python' "$RUNNER_TEMP/kit-generator.log"; then exit 1; fi
+      - name: Reimport every FBX in fresh Blender and independently verify
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Kit/Source~/verify_kit.py 2>&1 | tee "$RUNNER_TEMP/kit-verify.log"
+          grep -q 'KIT_FBX_REIMPORT_PASS' "$RUNNER_TEMP/kit-verify.log"
+          if grep -Eq 'Traceback|Error: Python' "$RUNNER_TEMP/kit-verify.log"; then exit 1; fi
+      - name: Validate catalog and exact triangle summary
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('Unity/Assets/Art_Reboot/Kit/Source~/kit_manifest.json')
+          d=json.loads(p.read_text())
+          ids={x['id'] for x in d['pieces']}
+          assert len(ids)==31 and len(d['pieces'])==31
+          assert sum(x['triangles'] for x in d['pieces'])==d['total_triangles']
+          assert len(d['materials'])==3
+          print('KIT_MANIFEST_PASS pieces=31 triangles='+str(d['total_triangles']))
+          PY
+      - name: Save generated production FBX, Blender source and exact polygon catalog
+        run: |
+          set -euo pipefail
+          find Unity/Assets/Art_Reboot/Kit -type f -name '*.blend1' -delete
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A -- Unity/Assets/Art_Reboot/Kit/Models Unity/Assets/Art_Reboot/Kit/Source~/modular_kit.blend Unity/Assets/Art_Reboot/Kit/Source~/kit_manifest.json Unity/Assets/Art_Reboot/Kit/Source~/kit_polygons.csv
+          git diff --cached --quiet && exit 0
+          git commit -m "art(phase2): persist native Blender 31-piece kit and measured polygon inventory"
+          for attempt in 1 2 3; do
+            git fetch origin art/visual-reboot
+            git rebase origin/art/visual-reboot
+            if git push origin HEAD:art/visual-reboot; then
+              echo "KIT_ASSETS_PERSISTED"
+              exit 0
+            fi
+          done
+          echo "Concurrent branch changes blocked safe kit commit" >&2
+          exit 1
