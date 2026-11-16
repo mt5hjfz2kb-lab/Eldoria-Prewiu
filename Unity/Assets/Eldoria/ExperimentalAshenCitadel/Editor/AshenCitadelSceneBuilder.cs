@@ -51,23 +51,23 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             }
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.25f,.29f,.42f);
-            RenderSettings.ambientEquatorColor=new Color(.16f,.18f,.28f);
-            RenderSettings.ambientGroundColor=new Color(.10f,.105f,.14f);
+            RenderSettings.ambientSkyColor=new Color(.36f,.42f,.56f);
+            RenderSettings.ambientEquatorColor=new Color(.25f,.29f,.38f);
+            RenderSettings.ambientGroundColor=new Color(.16f,.17f,.21f);
             RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.37f);
             RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=65;RenderSettings.fogEndDistance=165;
             QualitySettings.shadows=UnityEngine.ShadowQuality.All;
 
             var key=new GameObject("Sun · amber key");
             var sun=key.AddComponent<Light>();
-            sun.type=LightType.Directional;sun.intensity=1.15f;
-            sun.color=new Color(1f,.77f,.53f);
+            sun.type=LightType.Directional;sun.intensity=1.60f;
+            sun.color=new Color(1f,.86f,.68f);
             RenderSettings.sun=sun;
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.72f;sun.shadowBias=.2f;sun.shadowNormalBias=.25f;
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=.64f;sun.shadowBias=.2f;sun.shadowNormalBias=.25f;
             sun.GetUniversalAdditionalLightData().usePipelineSettings=false;
             sun.transform.rotation=Quaternion.Euler(24,-52,0);
             var fill=new GameObject("Sky · cold fill").AddComponent<Light>();
-            fill.type=LightType.Directional;fill.intensity=.23f;fill.color=new Color(.54f,.67f,.77f);
+            fill.type=LightType.Directional;fill.intensity=.28f;fill.color=new Color(.54f,.67f,.77f);
             fill.transform.rotation=Quaternion.Euler(56,145,0);
             fill.shadows=LightShadows.None;
 
@@ -119,20 +119,24 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var rockPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Rock.obj");
             if(!treePrefab||!rockPrefab)throw new InvalidOperationException("Missing authored flora assets");
             var random=new System.Random(1795);
-            // An organic silhouette instead of a circular row of identical trees.
-            // Conifers form small pockets along the ravine, never on the main road.
-            for(int i=0;i<86;i++)
+            // Art-directed woodland masses: asymmetrical groves with clear approach.
+            // Reuse the authored pine; broad scale variation avoids evenly spaced rows.
+            var groves=new[]{new Vector2(-25,13),new Vector2(23,17),
+                new Vector2(-29,-17),new Vector2(29,-23),new Vector2(-9,29),
+                new Vector2(16,33),new Vector2(-34,30)};
+            for(int i=0;i<78;i++)
             {
-                float angle=i*2.39996323f+Mathf.Sin(i*1.13f)*.20f;
-                float radius=17.5f+Mathf.Sqrt((i+.5f)/86f)*24f;
-                var pos=new Vector3(Mathf.Cos(angle)*radius,0,Mathf.Sin(angle)*radius*.80f);
-                if(Mathf.Abs(pos.x)<5f && pos.z<0)continue;
-                var tree=ImportPrefab(treePrefab,sceneRoot.transform,"Pine · "+i);
-                pos.y=ValleyHeight(pos.x,pos.z);
-                tree.transform.position=pos;
-                tree.transform.localScale=new Vector3(.75f+.38f*(float)random.NextDouble(),
-                    .70f+.42f*(float)random.NextDouble(),.75f+.38f*(float)random.NextDouble());
-                tree.transform.rotation=Quaternion.Euler(0,(i*47f)%360f,0);
+                var grove=groves[i%groves.Length];
+                float angle=(float)random.NextDouble()*Mathf.PI*2f;
+                float radius=Mathf.Sqrt((float)random.NextDouble())*8f;
+                var pos=new Vector3(grove.x+Mathf.Cos(angle)*radius,0,grove.y+Mathf.Sin(angle)*radius*.75f);
+                if(Mathf.Abs(pos.x)<18f && Mathf.Abs(pos.z)<13f)continue;
+                if(Mathf.Abs(pos.x)<6f && pos.z<0)continue;
+                var tree=ImportPrefab(treePrefab,sceneRoot.transform,"Pine grove · "+i);
+                pos.y=ValleyHeight(pos.x,pos.z);tree.transform.position=pos;
+                float scale=.52f+.66f*(float)random.NextDouble();
+                tree.transform.localScale=new Vector3(scale,scale*(.85f+.30f*(float)random.NextDouble()),scale);
+                tree.transform.rotation=Quaternion.Euler(0,(float)random.NextDouble()*360f,0);
             }
             for(int i=0;i<27;i++)
             {
@@ -229,6 +233,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             if(!File.Exists(assetPath))throw new FileNotFoundException(assetPath);
             var shader=Shader.Find("Universal Render Pipeline/Lit");
             if(shader==null)throw new InvalidOperationException("URP Lit shader missing; no fallback/pink renders accepted");
+            var valleyGround=CreateValleyGroundTexture();
             string current=null;
             foreach(var raw in File.ReadAllLines(assetPath))
             {
@@ -261,9 +266,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 // one 128px tile over the entire 146m² world.
                 if(current=="moss" || current=="soil")
                     mat.SetTextureScale("_BaseMap",Vector2.one);
-                if(current=="moss"){
+                if(current=="moss" || current=="soil"){
                     mat.SetColor("_BaseColor",Color.white);
-                    mat.SetTexture("_BaseMap",CreateValleyGroundTexture());
+                    mat.SetTexture("_BaseMap",valleyGround);
                     mat.SetTextureScale("_BaseMap",Vector2.one/36f);
                     mat.SetTextureOffset("_BaseMap",new Vector2(.5f,.5f));
                 }
@@ -292,7 +297,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         {
             var profile=ScriptableObject.CreateInstance<VolumeProfile>();profile.name="Ashen inhabited dusk";
             var bloom=profile.Add<Bloom>(true);bloom.intensity.Override(.22f);bloom.threshold.Override(1.15f);bloom.scatter.Override(.55f);
-            var grade=profile.Add<ColorAdjustments>(true);grade.postExposure.Override(.10f);grade.contrast.Override(9f);grade.saturation.Override(-8f);
+            var grade=profile.Add<ColorAdjustments>(true);grade.postExposure.Override(.22f);grade.contrast.Override(5f);grade.saturation.Override(2f);
             var split=profile.Add<SplitToning>(true);split.shadows.Override(new Color(.45f,.47f,.55f));split.highlights.Override(new Color(.55f,.51f,.45f));split.balance.Override(-8f);
             var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.Neutral);
             var path=MaterialPath+"AshenDuskVolume.asset";
@@ -316,7 +321,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         }
         private static Texture2D CreateValleyGroundTexture()
         {
-            const int size=512;
+            const int size=1024;
             var tex=new Texture2D(size,size,TextureFormat.RGBA32,true){name="Ashen valley hand-layered ground",
                 wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Trilinear,anisoLevel=4};
             var pixels=new Color[size*size];
@@ -324,17 +329,32 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float wx=(x/(float)(size-1)-.5f)*180f,wz=(y/(float)(size-1)-.5f)*180f;
                 float broad=Mathf.PerlinNoise(wx*.045f+29f,wz*.045f+51f);
                 float detail=Mathf.PerlinNoise(wx*.39f+17f,wz*.39f+11f);
-                var col=Color.Lerp(new Color(.15f,.205f,.20f),new Color(.30f,.335f,.235f),broad);
-                col*=.86f+detail*.25f;
+                var col=Color.Lerp(new Color(.22f,.275f,.19f),new Color(.39f,.405f,.255f),broad);
+                col*=.90f+detail*.20f;
+                float meadow=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.25f,.75f,Mathf.PerlinNoise(wx*.13f+5f,wz*.13f+3f)));
+                col=Color.Lerp(col,new Color(.34f,.37f,.235f),meadow*.28f);
                 float fleck=Mathf.PerlinNoise(wx*1.4f+73f,wz*1.4f+23f);
                 col=Color.Lerp(col,new Color(.38f,.365f,.245f),Mathf.Clamp01((fleck-.58f)*2.8f)*.25f);
                 float routeX=Mathf.Sin((wz+8f)*.15f)*.66f+Mathf.Sin((wz+8f)*.52f)*.17f;
                 float route=Mathf.Clamp01(1f-(Mathf.Abs(wx-routeX)-1.3f)/2.1f)*
                     Mathf.Clamp01((-wz-6f)/3f)*Mathf.Clamp01((wz+44f)/4f);
-                col=Color.Lerp(col,new Color(.35f,.31f,.225f)*( .9f+detail*.18f),route*.85f);
+                // Two worn wheel tracks and a mossy centre, with irregular soft margins.
+                float tracks=Mathf.Exp(-Mathf.Pow((Mathf.Abs(wx-routeX)-.90f)/.42f,2f));
+                float brokenEdge=.72f+.28f*Mathf.PerlinNoise(wx*.8f+61f,wz*.8f+21f);
+                col=Color.Lerp(col,new Color(.42f,.36f,.26f)*(.91f+detail*.18f),route*brokenEdge*(.58f+.25f*tracks));
+                // Small-scale mineral flecks provide ground scale without a tiled grid.
+                float grit=Mathf.Clamp01((fleck-.64f)*5f);
+                col=Color.Lerp(col,new Color(.49f,.46f,.35f),grit*route*.32f);
                 float edge=Mathf.Max(Mathf.Abs(wx)/10f,Mathf.Abs(wz)/9f);
                 float apron=(1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(1f,1.25f,edge)))*Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.88f,1f,edge));
-                col=Color.Lerp(col,new Color(.245f,.25f,.205f),apron*.60f);
+                col=Color.Lerp(col,new Color(.27f,.265f,.205f),apron*.52f);
+                // Soft contact wear around existing auxiliaries, not rectangular plots.
+                for(int ix=0;ix<2;ix++)for(int iz=0;iz<2;iz++){
+                    float bx=ix==0?-13.4f:13.4f,bz=iz==0?-4.5f:4.8f;
+                    float distance=Mathf.Sqrt((wx-bx)*(wx-bx)+(wz-bz)*(wz-bz));
+                    float wear=(1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(2.6f,5.2f,distance)))*(.62f+detail*.28f);
+                    col=Color.Lerp(col,new Color(.32f,.29f,.225f),wear*.48f);
+                }
                 pixels[y*size+x]=col;
             }
             tex.SetPixels(pixels);tex.Apply(true,false);

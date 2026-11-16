@@ -66,7 +66,7 @@ jobs:
           w=holders[0]
           if(w.get("id")!="eldoria-ashen-citadel-original-i-v-20261115" or
              w.get("branch")!="experiment/ashen-citadel-i-v-20261115" or
-             w.get("owner")!="chatgpt-ashen-citadel-art-production-20261115" or
+             w.get("owner")!="chatgpt-ashen-finish-e4ce5efc6a5b" or
              w.get("ownership_state")!="claimed" or w.get("status")!="active"):
               raise SystemExit("Windows belongs to a different task")
           print("ASHEN_WINDOWS_LEASE_CAS_PASS",w["id"],w.get("ownership_revision"))
@@ -141,7 +141,7 @@ jobs:
           $data=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64))|ConvertFrom-Json
           $holders=@($data.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-ashen-citadel-original-i-v-20261115' -or
-            $holders[0].owner -ne 'chatgpt-ashen-citadel-art-production-20261115'){
+            $holders[0].owner -ne 'chatgpt-ashen-finish-e4ce5efc6a5b'){
             throw 'Native resource has been reassigned; fail closed'
           }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count -gt 0){throw 'Unity became busy after checkout'}
