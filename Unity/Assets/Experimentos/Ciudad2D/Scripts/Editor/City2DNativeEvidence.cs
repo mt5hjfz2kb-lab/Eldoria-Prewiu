@@ -27,13 +27,17 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             var evidenceRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", OutputFolder));
             Directory.CreateDirectory(evidenceRoot);
-            var previousScene = EditorSceneManager.GetActiveScene();
-            string oldPath = previousScene.path;
+            // En ejecucion manual no descartar trabajo sin guardar.
+            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                return;
+            var previousSetup = EditorSceneManager.GetSceneManagerSetup();
             Camera camera = null;
             RenderTexture priorTarget = null;
             var records = new List<string>();
             try
             {
+                string reportPath = Path.Combine(evidenceRoot, "evidence.json");
+                if (File.Exists(reportPath)) File.Delete(reportPath); // Nunca aceptar un PASS antiguo.
                 City2DSceneBuilder.Rebuild();
                 var scene = EditorSceneManager.OpenScene(City2DSceneBuilder.ScenePath, OpenSceneMode.Single);
                 if (!scene.IsValid() || !scene.isLoaded || !scene.path.EndsWith(ExpectedSceneName, StringComparison.Ordinal))
@@ -45,6 +49,12 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 var ground = GameObject.Find("Terreno_Valoria");
                 if (fitting == null || ground == null || ground.GetComponent<SpriteRenderer>()?.sprite == null)
                     throw new InvalidOperationException("Camara/terreno reales ausentes");
+
+                var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
+                if (bridge == null) throw new InvalidOperationException("Falta el puente de estado");
+                bridge.RebindSceneBuildings(); // Debera hacer lo mismo tras deserializar en PlayMode.
+                if (bridge.RegisteredBuildingCount != 6)
+                    throw new InvalidOperationException("Los seis eventos de edificios no han sido registrados");
 
                 var all = UnityEngine.Object.FindObjectsByType<CityBuilding>(FindObjectsSortMode.None);
                 if (all.Length != 6) throw new InvalidOperationException("Se esperaban seis edificios");
@@ -96,7 +106,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"art_approved\":false,\n" +
                     "  \"device_qa\":\"PENDING\",\n" +
                     "  \"captures\":[\n" + string.Join(",\n", records) + "\n  ]\n}\n";
-                File.WriteAllText(Path.Combine(evidenceRoot, "evidence.json"), json, Encoding.UTF8);
+                File.WriteAllText(reportPath, json, Encoding.UTF8);
                 Debug.Log("[Ciudad2D] NATIVE_RENDER_CAPTURE_PASS " + records.Count);
             }
             catch (Exception e)
@@ -107,11 +117,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             finally
             {
                 if (camera != null) camera.targetTexture = priorTarget;
-                // Nunca dejar abierta una escena real ni editar el entorno productivo.
-                if (!string.IsNullOrEmpty(oldPath) &&
-                    !string.Equals(oldPath, City2DSceneBuilder.ScenePath, StringComparison.OrdinalIgnoreCase) &&
-                    File.Exists(oldPath))
-                    EditorSceneManager.OpenScene(oldPath, OpenSceneMode.Single);
+                // Respetar escenas previas del editor interactivo; CI es desechable.
+                if (!Application.isBatchMode && previousSetup != null && previousSetup.Length > 0)
+                    EditorSceneManager.RestoreSceneManagerSetup(previousSetup);
             }
         }
 
