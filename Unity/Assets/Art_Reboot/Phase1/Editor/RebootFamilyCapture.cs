@@ -75,7 +75,7 @@ namespace Eldoria.ArtReboot.Editor
                     var expected=JsonUtility.FromJson<Geometry>(File.ReadAllText(geometry));
                     if(expected==null||triangles[k]!=expected.triangles)throw new InvalidOperationException("Triangle mismatch: "+names[k]);
                 }
-                if(Mathf.Abs(bounds[3].size.x-48)>.1f)throw new InvalidOperationException("Terrain scale error");
+                if(Mathf.Abs(bounds[3].size.x-144)>.1f)throw new InvalidOperationException("Terrain scale error");
                 File.WriteAllText(Path.Combine(output,"model-world-bounds.txt"),string.Join("\n",names.Select((n,i)=>n+": "+bounds[i]+" triangles="+triangles[i])));
                 RenderSettings.skybox=null;RenderSettings.ambientMode=AmbientMode.Custom;
                 RenderSettings.ambientSkyColor=new Color(.42f,.40f,.42f);RenderSettings.ambientEquatorColor=new Color(.29f,.31f,.38f);RenderSettings.ambientGroundColor=new Color(.16f,.20f,.22f);
@@ -85,7 +85,7 @@ namespace Eldoria.ArtReboot.Editor
                 var fill=new GameObject("Cool open sky").AddComponent<Light>();fill.transform.SetParent(root.transform,false);fill.type=LightType.Directional;fill.transform.rotation=Quaternion.Euler(48,145,0);fill.color=new Color(.61f,.65f,.88f);fill.intensity=.30f;fill.shadows=LightShadows.None;
                 var torch=new GameObject("One shared entrance torch light").AddComponent<Light>();torch.transform.SetParent(root.transform,false);torch.type=LightType.Point;torch.transform.position=new Vector3(-.55f,1.9f,4.75f);torch.color=new Color(1,.65f,.34f);torch.intensity=.52f;torch.range=3.5f;torch.shadows=LightShadows.None;
                 var atmosphere=new GameObject("Low layered atmosphere");atmosphere.transform.SetParent(root.transform,false);BuildLowGroundMist(atmosphere);
-                var particles=BuildCorruptionParticles(root);if(particles.particleCount<2)throw new InvalidOperationException("No corruption particles");
+                var particles=BuildCorruptionParticles(root);int capturedParticleCount=particles.particleCount;if(capturedParticleCount<2)throw new InvalidOperationException("No corruption particles");
                 var camera=new GameObject("Game camera 50 minus13").AddComponent<Camera>();camera.transform.SetParent(root.transform,false);camera.orthographic=true;camera.nearClipPlane=.1f;camera.farClipPlane=120;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=RenderSettings.fogColor;camera.allowHDR=true;
                 camera.GetUniversalAdditionalCameraData().renderPostProcessing=true;camera.GetUniversalAdditionalCameraData().antialiasing=AntialiasingMode.SubpixelMorphologicalAntiAliasing;
                 var volume=new GameObject("Warm dusk grading").AddComponent<Volume>();volume.transform.SetParent(root.transform,false);volume.isGlobal=true;
@@ -101,11 +101,11 @@ namespace Eldoria.ArtReboot.Editor
                 for(int k=1;k<=2;k++)
                 {
                     for(int j=0;j<4;j++)objects[j].SetActive(j==k);
-                    atmosphere.SetActive(false);particles.gameObject.SetActive(k==2);RenderSettings.fog=false;
+                    atmosphere.SetActive(false);particles.gameObject.SetActive(k==2);if(k==2){particles.Simulate(6f,true,true,true);particles.Pause(true);}RenderSettings.fog=false;
                     Fit(camera,bounds[k],1100,1250,30);Capture(camera,1100,1250,Path.Combine(output,names[k].ToLowerInvariant()+"-closeup.png"));
                 }
                 for(int j=0;j<4;j++)objects[j].SetActive(true);atmosphere.SetActive(true);particles.gameObject.SetActive(true);RenderSettings.fog=true;
-                File.WriteAllText(Path.Combine(output,"capture.json"),JsonUtility.ToJson(new Proof{unity=UnityEngine.Application.unityVersion,sourceSHA=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene=Root+"/Scenes/Phase1_HeroFamily.unity",heroTriangles=triangles[0],ruinTriangles=triangles[1],corruptTriangles=triangles[2],environmentTriangles=triangles[3],particles=particles.particleCount,note="Actual Unity render. Hero form approved by owner; ruin and corrupt derived from that exact source. Phase1 scene candidate; Phase2 not started. Physical mobile performance untested."},true));
+                File.WriteAllText(Path.Combine(output,"capture.json"),JsonUtility.ToJson(new Proof{unity=UnityEngine.Application.unityVersion,sourceSHA=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene=Root+"/Scenes/Phase1_HeroFamily.unity",heroTriangles=triangles[0],ruinTriangles=triangles[1],corruptTriangles=triangles[2],environmentTriangles=triangles[3],particles=capturedParticleCount,note="Actual Unity render. Hero form approved by owner; ruin and corrupt derived from that exact source. Phase1 scene candidate; Phase2 not started. Physical mobile performance untested."},true));
                 Debug.Log("REBOOT_CAPTURE_OUTPUT "+output);
             }
             finally
@@ -215,7 +215,7 @@ namespace Eldoria.ArtReboot.Editor
             go.transform.localPosition = new Vector3(12.7f, 1.3f, -.2f);
             var particles = go.AddComponent<ParticleSystem>();
             var main = particles.main;
-            main.playOnAwake = false;
+            main.playOnAwake = true;
             main.loop = true;
             main.duration = 7f;
             main.maxParticles = 28;

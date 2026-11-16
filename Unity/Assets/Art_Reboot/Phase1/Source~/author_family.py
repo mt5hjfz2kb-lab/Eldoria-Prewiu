@@ -116,10 +116,10 @@ if mode=='corrupt':
   for a,b in zip(points[:-1],points[1:]):
    a=Vector(a);b=Vector(b);delta=b-a
    side=(Vector((-delta.y,delta.x,0)) if ground else Vector((delta.z,0,-delta.x))).normalized()
-   for mult,k,glow in [(3.2,14,False),(1,13,True)]:
+   for mult,k,glow in [(2.0,14,False),(1,13,True)]:
     off=Vector((0,0,.008 if glow else 0)) if ground else Vector((0,-.008 if glow else 0,0))
     vv=[tuple(a-side*width*mult+off),tuple(a+side*width*mult+off),tuple(b+side*width*mult+off),tuple(b-side*width*mult+off)]
-    mesh('Luminous structural fracture' if glow else 'Dark structural split',vv,[(0,1,2,3)],k,glow=glow)
+    mesh('Luminous structural fracture' if glow else 'Dark structural split',vv,[(3,2,1,0) if ground else (0,1,2,3)],k,glow=glow)
  crack([(3.35,-.23,.2),(3.1,-.23,1.45),(3.27,-.18,2.4),(2.78,-.17,3.3),(2.93,-.13,4.45),(2.55,-.10,5.65)],.045)
  crack([(3.24,-.23,2.4),(2.5,-.23,2.7),(2.15,-.23,2.65)],.03)
  for b,t,r in [((2.9,-.10,2.45),(2.15,-1.1,4.30),.36),((3.18,-.1,2.15),(3.85,-.75,3.50),.25),((1.6,.6,3.95),(.95,.28,6.1),.42),((1.95,.8,4.0),(2.4,1.1,5.45),.26),((2.45,.65,8.9),(2.05,.4,10.85),.30),((2.8,.9,9.1),(3.4,1.0,10.3),.23),((3.7,-.2,.0),(4.2,-.6,2.25),.46),((3.4,-.3,0),(2.8,-.8,1.35),.29)]:crystal(b,t,r)
@@ -136,21 +136,23 @@ if mode=='environment':
  for j in range(n):
   for i in range(n):
    x=(i-32)*.75;y=(j-32)*.75
+   if i in (0,64):x=-72 if i==0 else 72
+   if j in (0,64):y=-72 if j==0 else 72
    z=-.12+.035*math.sin(x*.55)*math.cos(y*.48)
    verts.append((x,y,z))
  for j in range(n-1):
   for i in range(n-1):a=j*n+i;faces.append((a,a+1,a+n+1,a+n))
- terrain=mesh('Continuous three-state clearing',verts,faces,6)
+ terrain=mesh('Continuous three-state clearing',verts,faces,7)
  for lp in terrain.data.loops:
   v=terrain.data.vertices[lp.vertex_index].co
   wave=.5+.26*math.sin(v.x*.39+math.sin(v.y*.43))+.22*math.cos(v.y*.50-v.x*.18)
-  color=Vector((.78,.94,.64)).lerp(Vector((1.37,1.33,.84)),max(0,min(1,wave)))
+  color=Vector((.55,.78,.50)).lerp(Vector((1.0,1.0,.85)),max(0,min(1,wave)))
   dirt=math.exp(-v.x*v.x/2.2)*max(0,min(1,(8-v.y)/4))
   for xx,yy in placements:
    edge=max(abs(v.x-xx)/4.35,abs(v.y-yy)/2.8);dirt=max(dirt,.91*math.exp(-max(0,edge-.9)**2*3))
-  color=color.lerp(Vector((1.8,1.24,.78)),min(.95,dirt))
+  color=color.lerp(Vector((1.0,.72,.45)),min(.95,dirt))
   terrain.data.color_attributes['Color'].data[lp.index].color=(*color,1)
-  terrain.data.uv_layers.active.data[lp.index].uv=((2+(6+(v.x/48+.5)*52)/64)/4,(1+(6+(v.y/48+.5)*52)/64)/4)
+  terrain.data.uv_layers.active.data[lp.index].uv=((3+(6+(max(0,min(1,v.x/48+.5)))*52)/64)/4,(1+(6+(max(0,min(1,v.y/48+.5)))*52)/64)/4)
  def paving(a,b,broken=False):
   a=Vector(a);b=Vector(b);delta=b-a;num=max(1,int(delta.length/.82));perp=Vector((-delta.y,delta.x,0)).normalized()
   for i in range(num):
