@@ -135,6 +135,21 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
             yield return null;
             Assert.That(Find("Daily treasury").gameObject.activeInHierarchy,Is.True,
                 "Daily access must return when a panel closes");
+            // The user-approved city HUD must be genuinely unobstructed when
+            // no contextual panel is open. Test the actual uGUI hierarchy.
+            var floatingStatus=Find("Compact realm status").GetComponent<RectTransform>();
+            var floatingNav=Find("Floating navigation").GetComponent<RectTransform>();
+            var utilities=Find("Floating utilities").GetComponent<RectTransform>();
+            Assert.That(floatingStatus.rect.width,Is.LessThan(280f),
+                "Compact realm status must not become a wide permanent top banner");
+            Assert.That(floatingNav.rect.height,Is.LessThan(92f),
+                "Navigation must remain four isolated bottom medallions");
+            Assert.That(utilities.rect.width,Is.LessThan(102f),
+                "Utility actions must stay in a tiny upper-right floating cluster");
+            Assert.That(sheet.gameObject.activeInHierarchy,Is.False,
+                "City must show its playable buildings with no permanent modal");
+            foreach(var frame in frames)
+                SaveActualUi(camera,canvas,"CityIdle",frame.x,frame.y);
 
             foreach(var v in new[]{
                 ("City","Nav · BASTIÓN"),
@@ -150,7 +165,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Tests
                 foreach(var frame in frames)
                     SaveActualUi(camera,canvas,v.Item1,frame.x,frame.y);
             }
-            Debug.Log("ASHEN_REAL_UNITY_UI_COMPLETE 10 composited UI PNG, no real-iPhone claim");
+            Debug.Log("ASHEN_REAL_UNITY_UI_COMPLETE 12 composited UI PNG including real unobstructed CityIdle; no real-iPhone claim");
             canvas.renderMode=RenderMode.ScreenSpaceOverlay;
         }
     }
