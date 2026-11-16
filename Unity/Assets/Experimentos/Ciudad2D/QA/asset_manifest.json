@@ -1,61 +1,100 @@
 {
   "project": "Eldoria-Prewiu",
-  "branch": "experimento-ciudad-2d",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "base_branch": "experimento-ciudad-2d",
+  "scope": "Unity/Assets/Experimentos/Ciudad2D",
   "scene": "Unity/Assets/Experimentos/Ciudad2D/Experimento_Ciudad2D.unity",
-  "source": "conversation PNG attachments",
-  "terrain": {
-    "name": "Terreno.png",
-    "size": [
-      941,
-      1672
-    ],
-    "sha256": "18a4720066654de558310c7d3902587141feaf0524fa77d1def18b94df6e7f4e"
+  "visual_bands": {
+    "level_1_art": "1-4",
+    "level_5_art": "5-9",
+    "future": "10+ retains latest completed art without faking next tier"
   },
-  "buildings": [
-    {
-      "file": "Bastion.png",
-      "anchor_x_px": 470,
-      "anchor_y_px": 824,
-      "scale": 0.293
+  "sprites": {
+    "Aserradero.png": {
+      "size": [
+        860,
+        860
+      ],
+      "mode": "RGBA",
+      "bytes": 794545,
+      "sha256": "28701b28af610f00ab8e52b1354cf2f6a5bd26301fb3d4d26c1e93f753b51859"
     },
-    {
-      "file": "Cuartel.png",
-      "anchor_x_px": 206,
-      "anchor_y_px": 547,
-      "scale": 0.189
+    "Bastion_Nivel01.png": {
+      "size": [
+        762,
+        699
+      ],
+      "mode": "RGBA",
+      "bytes": 877517,
+      "sha256": "00e48d7fa15b9b7e88db779ed374c228e5416d80f6e08457c93027a78f4a392b"
     },
-    {
-      "file": "SalonHeroes.png",
-      "anchor_x_px": 719,
-      "anchor_y_px": 546,
-      "scale": 0.195
+    "Bastion_Nivel05.png": {
+      "size": [
+        764,
+        854
+      ],
+      "mode": "RGBA",
+      "bytes": 1209051,
+      "sha256": "8ffc9f1c04c262893c454f784afb3404c0e390cac811a3c1f1d894201ba48a89"
     },
-    {
-      "file": "Aserradero.png",
-      "anchor_x_px": 172,
-      "anchor_y_px": 964,
-      "scale": 0.213
+    "Cantera.png": {
+      "size": [
+        860,
+        860
+      ],
+      "mode": "RGBA",
+      "bytes": 781460,
+      "sha256": "e92b18108ca78171e5f985f0cbe78502ed802c6d94208e3297c4e2ef01d36cfc"
     },
-    {
-      "file": "Granero.png",
-      "anchor_x_px": 751,
-      "anchor_y_px": 962,
-      "scale": 0.211
+    "Cuartel.png": {
+      "size": [
+        860,
+        860
+      ],
+      "mode": "RGBA",
+      "bytes": 709775,
+      "sha256": "bef0200b51976d5f2d9d9437bf9b6fd816f79f82ed495286b45ba813e86e2d4d"
     },
-    {
-      "file": "Cantera.png",
-      "anchor_x_px": 470,
-      "anchor_y_px": 1178,
-      "scale": 0.225
+    "Granero.png": {
+      "size": [
+        860,
+        860
+      ],
+      "mode": "RGBA",
+      "bytes": 727702,
+      "sha256": "21365309f8a761289090c716a49884715843abf823f4d92a9b6337c6d93a89a2"
+    },
+    "SalonHeroes.png": {
+      "size": [
+        860,
+        860
+      ],
+      "mode": "RGBA",
+      "bytes": 703747,
+      "sha256": "26782fdae9ebe93e53755bd13c47ce8cd4442c07aa1ca786362d13c5c90e077c"
+    },
+    "Terreno.png": {
+      "size": [
+        941,
+        1672
+      ],
+      "mode": "RGB",
+      "bytes": 2258609,
+      "sha256": "cc5ca910ef0056266e7fdbd47c191d373c44c8bf9c88cc8dc00339c5694dc10d"
     }
-  ],
-  "checks": {
-    "sprite_inspection": "done",
-    "composite": "done outside Unity",
-    "unity_editor": "not available",
-    "compile": "not tested",
-    "play_clicks": "not tested",
-    "unity_screenshot": "not available"
   },
-  "note": "User must import 7 PNG using ZIP because connector cannot upload binary blobs from conversation."
+  "checks": {
+    "8_png_alpha_dimension_sha": "done_offline",
+    "offline_composite": "done_pillow_portrait_and_landscape",
+    "unity_import_and_compile": "not_run",
+    "unity_editor_scene": "not_run",
+    "unity_playmode_touch": "not_run",
+    "iphone_android_webgl": "not_run",
+    "art_approval": false
+  },
+  "warnings": [
+    "Landscape is an intentionally cropped/pannable viewport.",
+    "The portrait/landscape visual composites are offline evidence, NOT Unity screenshots.",
+    "This sandbox does not modify real saves, commands or current game scenes."
+  ]
 }

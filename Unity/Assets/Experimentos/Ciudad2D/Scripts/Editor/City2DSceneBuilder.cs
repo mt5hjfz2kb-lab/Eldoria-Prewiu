@@ -10,158 +10,184 @@ using UnityEngine.SceneManagement;
 
 namespace Eldoria.Experimentos.Ciudad2D.Editor
 {
+    /// <summary>
+    /// Monta y guarda una escena de prueba auténtica cuando Unity importa los PNG.
+    /// Trabaja SOLO en Assets/Experimentos/Ciudad2D; no incluye la escena en builds.
+    /// </summary>
     [InitializeOnLoad]
     public static class City2DSceneBuilder
     {
         public const string Folder = "Assets/Experimentos/Ciudad2D/";
         public const string ScenePath = Folder + "Experimento_Ciudad2D.unity";
-        private const string Sprites = Folder + "Sprites/";
-        private const string SceneMarker = "Ciudad2D_EscenaGenerada";
+        private const string SpritesFolder = Folder + "Sprites/";
+        private const string SceneMarker = "Ciudad2D_Piloto_Hitos_I_V";
         private static bool building;
 
         private struct Placement
         {
-            public string Path;
-            public string Name;
-            public Vector2 PixelAnchor;
-            public float Scale;
-            public Placement(string path, string name, float x, float y, float scale)
+            public readonly string Id;
+            public readonly string Filename;
+            public readonly string Title;
+            public readonly Vector2 PixelAnchor;
+            public readonly float Scale;
+            public Placement(string id, string filename, string title, float x, float y, float scale)
             {
-                Path = path;
-                Name = name;
-                PixelAnchor = new Vector2(x, y);
-                Scale = scale;
+                Id = id; Filename = filename; Title = title;
+                PixelAnchor = new Vector2(x, y); Scale = scale;
             }
         }
 
-        private static readonly Placement[] Buildings =
+        private static readonly Placement[] Subsidiaries =
         {
-            new Placement("Bastion.png", "Bastión", 470, 824, 0.293f),
-            new Placement("Cuartel.png", "Cuartel", 206, 547, 0.189f),
-            new Placement("SalonHeroes.png", "Salón de Héroes", 719, 546, 0.195f),
-            new Placement("Aserradero.png", "Aserradero", 172, 964, 0.213f),
-            new Placement("Granero.png", "Granero", 751, 962, 0.211f),
-            new Placement("Cantera.png", "Cantera", 470, 1178, 0.225f),
+            new Placement("cuartel", "Cuartel.png", "Cuartel", 206, 547, 0.189f * 1254f / 860f),
+            new Placement("salon", "SalonHeroes.png", "Salón de Héroes", 719, 546, 0.195f * 1254f / 860f),
+            new Placement("aserradero", "Aserradero.png", "Aserradero", 172, 964, 0.213f * 1254f / 860f),
+            new Placement("granero", "Granero.png", "Granero", 751, 962, 0.211f * 1254f / 860f),
+            new Placement("cantera", "Cantera.png", "Cantera", 470, 1178, 0.225f * 1254f / 860f),
         };
 
-        static City2DSceneBuilder()
-        {
-            EditorApplication.delayCall += BuildIfReady;
-        }
+        static City2DSceneBuilder() { EditorApplication.delayCall += BuildIfReady; }
 
-        [MenuItem("Eldoria/Experimentos/Ciudad 2D/Reconstruir escena")]
-        public static void Rebuild()
-        {
-            Build(true);
-        }
+        [MenuItem("Eldoria/Experimentos/Ciudad 2D/Reconstruir escena hitos I-V")]
+        public static void Rebuild() { Build(true); }
 
-        public static void BuildIfReady()
-        {
-            Build(false);
-        }
+        public static void BuildIfReady() { Build(false); }
+
+        private static Sprite Load(string filename) =>
+            AssetDatabase.LoadAssetAtPath<Sprite>(SpritesFolder + filename);
 
         private static void Build(bool forced)
         {
             if (building || EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
 
-            var terrain = AssetDatabase.LoadAssetAtPath<Sprite>(Sprites + "Terreno.png");
-            if (terrain == null)
+            var terrain = Load("Terreno.png");
+            var first = Load("Bastion_Nivel01.png");
+            var fifth = Load("Bastion_Nivel05.png");
+            if (terrain == null || first == null || fifth == null)
             {
-                if (forced) Debug.LogWarning("[Ciudad2D] Falta Sprites/Terreno.png.");
+                if (forced) Debug.LogWarning("[Ciudad2D] Faltan terreno o sprites de Bastión 01/05.");
                 return;
             }
-            foreach (var b in Buildings)
-            {
-                if (AssetDatabase.LoadAssetAtPath<Sprite>(Sprites + b.Path) == null)
+            foreach (var spec in Subsidiaries)
+                if (Load(spec.Filename) == null)
                 {
-                    if (forced) Debug.LogWarning("[Ciudad2D] Falta Sprites/" + b.Path);
+                    if (forced) Debug.LogWarning("[Ciudad2D] Falta Sprites/" + spec.Filename);
                     return;
                 }
-            }
-            if (!forced && SceneAlreadyBuilt()) return;
 
+            if (!forced && AlreadyBuilt()) return;
             building = true;
-            Scene current = SceneManager.GetActiveScene();
+            Scene previouslyActive = SceneManager.GetActiveScene();
             Scene isolated = default;
             try
             {
                 isolated = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
                 SceneManager.SetActiveScene(isolated);
 
-                var terrainObject = new GameObject("Terreno");
-                var terrainRenderer = terrainObject.AddComponent<SpriteRenderer>();
-                terrainRenderer.sprite = terrain;
-                terrainRenderer.sortingOrder = -10000;
-                terrainObject.transform.position = Vector3.zero;
+                var background = new GameObject("Terreno_Valoria");
+                var groundRenderer = background.AddComponent<SpriteRenderer>();
+                groundRenderer.sprite = terrain;
+                groundRenderer.sortingOrder = -10000;
 
-                var cameraObject = new GameObject("Camera_Ciudad2D");
-                cameraObject.tag = "MainCamera";
-                cameraObject.transform.position = new Vector3(0f, 0f, -10f);
-                var camera = cameraObject.AddComponent<Camera>();
-                camera.orthographic = true;
-                camera.clearFlags = CameraClearFlags.SolidColor;
-                camera.backgroundColor = new Color(0.24f, 0.39f, 0.34f, 1f);
-                camera.nearClipPlane = 0.01f;
-                camera.farClipPlane = 100f;
-                camera.transparencySortMode = TransparencySortMode.CustomAxis;
-                camera.transparencySortAxis = Vector3.up;
-                cameraObject.AddComponent<AudioListener>();
-                cameraObject.AddComponent<Physics2DRaycaster>();
-                cameraObject.AddComponent<City2DCameraFit>().SetGround(terrainRenderer);
+                var camRoot = new GameObject("CamaraOrto_Ciudad2D");
+                camRoot.tag = "MainCamera";
+                camRoot.transform.position = new Vector3(0, 0, -10f);
+                var cam = camRoot.AddComponent<Camera>();
+                cam.orthographic = true;
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = new Color(0.11f, 0.17f, 0.22f, 1f);
+                cam.nearClipPlane = 0.01f;
+                cam.farClipPlane = 100f;
+                cam.transparencySortMode = TransparencySortMode.CustomAxis;
+                cam.transparencySortAxis = Vector3.up;
+                camRoot.AddComponent<AudioListener>();
+                camRoot.AddComponent<Physics2DRaycaster>();
+                camRoot.AddComponent<City2DCameraFit>().SetGround(groundRenderer);
 
-                var events = new GameObject("EventSystem_Ciudad2D");
-                events.AddComponent<EventSystem>();
-                var input = events.AddComponent<InputSystemUIInputModule>();
+                var eventSystem = new GameObject("EventSystem_Ciudad2D");
+                eventSystem.AddComponent<EventSystem>();
+                var input = eventSystem.AddComponent<InputSystemUIInputModule>();
                 if (input.actionsAsset == null) input.AssignDefaultActions();
 
-                foreach (var spec in Buildings)
+                var bridgeRoot = new GameObject("SoloLectura_ProgresionVisual");
+                var bridge = bridgeRoot.AddComponent<City2DStateBridge>();
+
+                // Todos los sprites se ordenan por la cota de sus pies; no son UI pintada.
+                // Bastión 1-4 e hito 5-9 cambian únicamente esta presentación.
+                var bastion = new GameObject("Bastión");
+                bastion.transform.position = PositionOf(470, 824, terrain);
+                var bastionRenderer = bastion.AddComponent<SpriteRenderer>();
+                bastionRenderer.sortingOrder = OrderFor(824, terrain);
+                bastion.AddComponent<BoxCollider2D>();
+                var bastionBuilding = bastion.AddComponent<CityBuilding>();
+                bastionBuilding.Configure("bastion", "Bastión", 1, new[]
                 {
-                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(Sprites + spec.Path);
-                    var go = new GameObject(spec.Name);
-                    var renderer = go.AddComponent<SpriteRenderer>();
-                    renderer.sprite = sprite;
-                    float x = (spec.PixelAnchor.x / 941f - 0.5f) * terrain.bounds.size.x;
-                    float y = (0.5f - spec.PixelAnchor.y / 1672f) * terrain.bounds.size.y;
-                    go.transform.position = new Vector3(x, y, -0.05f);
-                    go.transform.localScale = Vector3.one * spec.Scale;
-                    renderer.sortingOrder = -Mathf.RoundToInt(y * 100f);
-                    var hit = go.AddComponent<BoxCollider2D>();
-                    hit.size = new Vector2(sprite.bounds.size.x * 0.70f, sprite.bounds.size.y * 0.55f);
-                    hit.offset = new Vector2(0f, sprite.bounds.size.y * 0.33f);
-                    go.AddComponent<CityBuilding>().Configure(spec.Name, 10);
+                    new CityBuilding.VisualTier(1, first, 0.43f),
+                    new CityBuilding.VisualTier(5, fifth, 0.47f),
+                });
+                bridge.Register(bastionBuilding);
+
+                foreach (var spec in Subsidiaries)
+                {
+                    var sprite = Load(spec.Filename);
+                    var obj = new GameObject(spec.Title);
+                    obj.transform.position = PositionOf(spec.PixelAnchor.x, spec.PixelAnchor.y, terrain);
+                    var renderer = obj.AddComponent<SpriteRenderer>();
+                    renderer.sortingOrder = OrderFor(spec.PixelAnchor.y, terrain);
+                    obj.AddComponent<BoxCollider2D>();
+                    var buildingComponent = obj.AddComponent<CityBuilding>();
+                    buildingComponent.Configure(spec.Id, spec.Title, 1,
+                        new[] { new CityBuilding.VisualTier(1, sprite, spec.Scale) });
+                    bridge.Register(buildingComponent);
                 }
+
+                var uiRoot = new GameObject("ControlesVisuales_NoJugables");
+                uiRoot.AddComponent<City2DPilotHud>().Configure(bridge);
 
                 new GameObject(SceneMarker);
                 if (!EditorSceneManager.SaveScene(isolated, ScenePath))
-                    throw new InvalidOperationException("Unity no pudo guardar " + ScenePath);
-                Debug.Log("[Ciudad2D] Escena 2D creada con 7 sprites y 6 edificios interactivos: " + ScenePath);
+                    throw new InvalidOperationException("Unity no pudo escribir " + ScenePath);
+                Debug.Log("[Ciudad2D] Escena I-V guardada: 8 sprites, 6 edificios, 2 hitos, " + ScenePath);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Debug.LogError("[Ciudad2D] Falló la creación aislada de la escena: " + e);
+                Debug.LogError("[Ciudad2D] Fallo al construir sandbox: " + exception);
             }
             finally
             {
-                if (current.IsValid() && current.isLoaded) SceneManager.SetActiveScene(current);
+                if (previouslyActive.IsValid() && previouslyActive.isLoaded)
+                    SceneManager.SetActiveScene(previouslyActive);
                 if (isolated.IsValid() && isolated.isLoaded)
                     EditorSceneManager.CloseScene(isolated, true);
                 building = false;
             }
         }
 
-        private static bool SceneAlreadyBuilt()
+        private static Vector3 PositionOf(float px, float py, Sprite terrain)
         {
-            var asset = AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
-            if (asset == null) return false;
-            var scene = SceneManager.GetSceneByPath(ScenePath);
-            if (scene.IsValid() && scene.isLoaded)
-                foreach (var root in scene.GetRootGameObjects())
-                    if (root.name == SceneMarker) return true;
+            float x = (px / 941f - 0.5f) * terrain.bounds.size.x;
+            float y = (0.5f - py / 1672f) * terrain.bounds.size.y;
+            return new Vector3(x, y, -0.05f);
+        }
+
+        private static int OrderFor(float py, Sprite terrain)
+        {
+            float y = (0.5f - py / 1672f) * terrain.bounds.size.y;
+            return -Mathf.RoundToInt(y * 100f);
+        }
+
+        private static bool AlreadyBuilt()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null) return false;
             var deps = AssetDatabase.GetDependencies(ScenePath, false);
-            foreach (var dependency in deps)
-                if (dependency == Sprites + "Bastion.png") return true;
-            return false;
+            bool seenFirst = false, seenFifth = false;
+            foreach (var path in deps)
+            {
+                if (path == SpritesFolder + "Bastion_Nivel01.png") seenFirst = true;
+                if (path == SpritesFolder + "Bastion_Nivel05.png") seenFifth = true;
+            }
+            return seenFirst && seenFifth;
         }
     }
 }

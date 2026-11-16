@@ -5,44 +5,48 @@ using UnityEngine;
 
 namespace Eldoria.Experimentos.Ciudad2D.Editor
 {
+    /// <summary>Importador limitado exclusivamente a los sprites del sandbox.</summary>
     internal sealed class City2DSpriteImporter : AssetPostprocessor
     {
         private const string SpriteFolder = "Assets/Experimentos/Ciudad2D/Sprites/";
 
         private void OnPreprocessTexture()
         {
-            if (!assetPath.StartsWith(SpriteFolder, StringComparison.Ordinal)) return;
-            if (!assetPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) return;
+            if (!assetPath.StartsWith(SpriteFolder, StringComparison.Ordinal) ||
+                !assetPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) return;
+
             var importer = (TextureImporter)assetImporter;
-            bool ground = assetPath.EndsWith("/Terreno.png", StringComparison.OrdinalIgnoreCase);
+            bool terrain = assetPath.EndsWith("/Terreno.png", StringComparison.OrdinalIgnoreCase);
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
             importer.spritePixelsPerUnit = 100f;
-            var settings = new TextureImporterSettings();
-            importer.ReadTextureSettings(settings);
-            settings.spriteMeshType = SpriteMeshType.FullRect;
-            settings.spriteAlignment = (int)(ground ? SpriteAlignment.Center : SpriteAlignment.BottomCenter);
-            settings.spritePivot = ground ? new Vector2(0.5f, 0.5f) : new Vector2(0.5f, 0f);
-            importer.SetTextureSettings(settings);
             importer.mipmapEnabled = false;
-            importer.alphaIsTransparency = !ground;
+            importer.alphaIsTransparency = !terrain;
             importer.textureCompression = TextureImporterCompression.CompressedHQ;
             importer.compressionQuality = 100;
             importer.maxTextureSize = 2048;
             importer.npotScale = TextureImporterNPOTScale.None;
             importer.filterMode = FilterMode.Bilinear;
+
+            var settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            settings.spriteMeshType = SpriteMeshType.FullRect;
+            settings.spriteAlignment = (int)(terrain ? SpriteAlignment.Center : SpriteAlignment.BottomCenter);
+            settings.spritePivot = terrain ? new Vector2(0.5f, 0.5f) : new Vector2(0.5f, 0f);
+            importer.SetTextureSettings(settings);
+
+            // La optimización final por plataforma depende de capturas/profiler físicos.
+            // No se impone Android ASTC ni iOS ASTC sin comprobar compresión visual.
         }
 
-        private static void OnPostprocessAllAssets(string[] importedAssets,
-            string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        private static void OnPostprocessAllAssets(string[] imported, string[] deleted,
+            string[] moved, string[] movedFrom)
         {
-            foreach (string p in importedAssets)
+            foreach (string path in imported)
             {
-                if (p.StartsWith(SpriteFolder, StringComparison.Ordinal))
-                {
-                    EditorApplication.delayCall += City2DSceneBuilder.BuildIfReady;
-                    return;
-                }
+                if (!path.StartsWith(SpriteFolder, StringComparison.Ordinal)) continue;
+                EditorApplication.delayCall += City2DSceneBuilder.BuildIfReady;
+                break;
             }
         }
     }

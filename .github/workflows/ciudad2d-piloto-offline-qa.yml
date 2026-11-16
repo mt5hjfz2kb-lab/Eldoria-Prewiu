@@ -1,0 +1,32 @@
+name: Ciudad2D Hitos I-V - comprobación offline
+
+on:
+  push:
+    branches:
+      - art/ciudad-2d-hitos-1-5-20261116
+    paths:
+      - Unity/Assets/Experimentos/Ciudad2D/**
+      - .github/workflows/ciudad2d-piloto-offline-qa.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-sprites-and-visual-bands:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout limitado al experimento
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Experimentos/Ciudad2D
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Instalar Pillow para inspección de imágenes
+        run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Validar SHA, dimensiones, alfa y no mutación de partida
+        run: python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py

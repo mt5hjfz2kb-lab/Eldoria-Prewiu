@@ -1,63 +1,159 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Eldoria.Experimentos.Ciudad2D
 {
+    /// <summary>
+    /// Presentación aislada. Nunca compra mejoras, cambia el guardado ni inventa niveles.
+    /// Cada versión gráfica permanece estable entre hitos 1, 5, 10, 15...
+    /// </summary>
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
     public sealed class CityBuilding : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private string buildingName = "Edificio";
-        [Min(1)] [SerializeField] private int level = 10;
-        [SerializeField, Range(0.02f, 0.30f)] private float bounceDuration = 0.16f;
-        [SerializeField, Range(1.01f, 1.25f)] private float bounceMultiplier = 1.085f;
+        [Serializable]
+        public struct VisualTier
+        {
+            [Min(1)] public int MinLevel;
+            public Sprite Sprite;
+            [Min(0.01f)] public float Scale;
+
+            public VisualTier(int minLevel, Sprite sprite, float scale)
+            {
+                MinLevel = minLevel;
+                Sprite = sprite;
+                Scale = scale;
+            }
+        }
+
+        [SerializeField] private string buildingId = "bastion";
+        [SerializeField] private string displayName = "Bastión";
+        [SerializeField] private int level = 1;
+        [SerializeField] private VisualTier[] visualTiers = Array.Empty<VisualTier>();
+        [SerializeField, Range(0.06f, 0.30f)] private float bounceDuration = 0.16f;
+        [SerializeField, Range(1.01f, 1.20f)] private float bounceMultiplier = 1.07f;
+
+        private SpriteRenderer visual;
+        private BoxCollider2D hitbox;
         private Coroutine bounce;
-        private Vector3 restScale;
+        private Vector3 baselineScale = Vector3.one;
+        private int selectedArtLevel;
 
-        public string BuildingName => buildingName;
+        public string BuildingId => buildingId;
+        public string DisplayName => displayName;
         public int Level => level;
+        public int SelectedArtLevel => selectedArtLevel;
+        public event Action<CityBuilding> Selected;
 
-        public void Configure(string newName, int newLevel)
+        // Importante: no es 1, 6, 11... Los hitos son 1, 5, 10, 15.
+        public static int PlannedMilestone(int actualLevel)
         {
-            buildingName = newName;
-            level = Mathf.Max(1, newLevel);
+            return actualLevel <= 0 ? 0 : actualLevel < 5 ? 1 : (actualLevel / 5) * 5;
         }
 
-        private void Awake() => restScale = transform.localScale;
-
-        public void OnPointerClick(PointerEventData eventData)
+        public void Configure(string id, string title, int initialLevel, VisualTier[] tiers)
         {
-            if (!isActiveAndEnabled || eventData == null ||
-                eventData.button != PointerEventData.InputButton.Left)
-                return;
-            Activate();
+            buildingId = id ?? string.Empty;
+            displayName = title ?? string.Empty;
+            visualTiers = tiers ?? Array.Empty<VisualTier>();
+            CacheComponents();
+            SetLevel(initialLevel);
         }
 
-        public void Activate()
+        private void Awake()
         {
-            Debug.Log($"[Ciudad2D] {buildingName} — nivel {level}", this);
-            if (!isActiveAndEnabled) return;
+            CacheComponents();
+            // La versión inicial puede ser configurada durante la construcción de escena.
+            if (visualTiers != null && visualTiers.Length != 0) SetLevel(level);
+        }
+
+        private void CacheComponents()
+        {
+            if (visual == null) visual = GetComponent<SpriteRenderer>();
+            if (hitbox == null) hitbox = GetComponent<BoxCollider2D>();
+        }
+
+        public void SetLevel(int nextLevel)
+        {
+            CacheComponents();
             if (bounce != null)
             {
                 StopCoroutine(bounce);
-                transform.localScale = restScale;
+                bounce = null;
             }
-            bounce = StartCoroutine(Bounce());
+            level = Mathf.Max(0, nextLevel);
+            bool present = level > 0;
+            if (visual != null) visual.enabled = present;
+            if (hitbox != null) hitbox.enabled = present;
+            if (!present) { selectedArtLevel = 0; return; }
+
+            // Máximo umbral con sprite real disponible <= nivel real.
+            int bestLevel = -1;
+            VisualTier best = default;
+            if (visualTiers != null)
+            {
+                foreach (var tier in visualTiers)
+                {
+                    if (tier.Sprite == null || tier.MinLevel > level || tier.MinLevel <= bestLevel) continue;
+                    bestLevel = tier.MinLevel;
+                    best = tier;
+                }
+            }
+            // No inventar arte de nivel 10/15 mientras no se haya producido.
+            if (bestLevel < 0 && visualTiers != null)
+            {
+                foreach (var tier in visualTiers)
+                {
+                    if (tier.Sprite == null || (bestLevel >= 0 && tier.MinLevel >= bestLevel)) continue;
+                    bestLevel = tier.MinLevel;
+                    best = tier;
+                }
+            }
+            if (bestLevel < 0)
+            {
+                selectedArtLevel = 0;
+                if (visual != null) visual.enabled = false;
+                if (hitbox != null) hitbox.enabled = false;
+                return;
+            }
+            selectedArtLevel = bestLevel;
+            visual.sprite = best.Sprite;
+            baselineScale = Vector3.one * Mathf.Max(0.01f, best.Scale);
+            transform.localScale = baselineScale;
+            // Collision centrada en el edificio; no en el cielo o el humo.
+            if (hitbox != null)
+            {
+                var size = best.Sprite.bounds.size;
+                hitbox.size = new Vector2(size.x * 0.72f, size.y * 0.52f);
+                hitbox.offset = new Vector2(0, size.y * 0.28f);
+            }
         }
 
-        private IEnumerator Bounce()
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!isActiveAndEnabled || level <= 0 || eventData == null ||
+                eventData.button != PointerEventData.InputButton.Left) return;
+            Debug.Log($"[Ciudad2D] {displayName} — nivel real {level}, arte hito {selectedArtLevel}", this);
+            Selected?.Invoke(this);
+            if (bounce != null) StopCoroutine(bounce);
+            transform.localScale = baselineScale;
+            bounce = StartCoroutine(Pulse());
+        }
+
+        private IEnumerator Pulse()
         {
             float elapsed = 0f;
             while (elapsed < bounceDuration)
             {
                 elapsed += Time.unscaledDeltaTime;
                 float t = Mathf.Clamp01(elapsed / bounceDuration);
-                float pulse = Mathf.Sin(t * Mathf.PI);
-                transform.localScale = restScale * Mathf.Lerp(1f, bounceMultiplier, pulse);
+                transform.localScale = baselineScale *
+                    (1f + (bounceMultiplier - 1f) * Mathf.Sin(t * Mathf.PI));
                 yield return null;
             }
-            transform.localScale = restScale;
+            transform.localScale = baselineScale;
             bounce = null;
         }
 
@@ -65,7 +161,7 @@ namespace Eldoria.Experimentos.Ciudad2D
         {
             if (bounce != null) StopCoroutine(bounce);
             bounce = null;
-            if (restScale != Vector3.zero) transform.localScale = restScale;
+            transform.localScale = baselineScale;
         }
     }
 }
