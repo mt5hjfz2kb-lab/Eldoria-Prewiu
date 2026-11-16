@@ -30,7 +30,7 @@ namespace Eldoria.ArtReboot.CC0System.Editor
             Directory.CreateDirectory(Scenes);
             Directory.CreateDirectory(Proof);
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            for (int stage = 1; stage <= 5; stage += 4)
+            for (int stage = 1; stage <= 5; stage++)
             {
                 var source = Models + "CC0_Valoria_Stage" + stage + ".glb";
                 var model = AssetDatabase.LoadAssetAtPath<GameObject>(source);
@@ -113,9 +113,13 @@ namespace Eldoria.ArtReboot.CC0System.Editor
                     !EditorSceneManager.SaveScene(scene, Scenes + "/CC0_Valoria_Sandbox.unity", true))
                     throw new InvalidOperationException("Sandbox scene copy save failed");
 
-                Capture(cam, stage, 1600, 900, 25f, new Vector3(29, 35, 43), "landscape");
-                Capture(cam, stage, 390, 844, 18f, new Vector3(23, 35, 43), "portrait");
-                Capture(cam, stage, 1100, 1250, 22f, new Vector3(29, 35, 43), "review");
+                // Only endpoint captures are mandatory; all five stages remain available as serialized Unity scenes.
+                if (stage == 1 || stage == 5)
+                {
+                    Capture(cam, stage, 1600, 900, 25f, new Vector3(29, 35, 43), "landscape");
+                    Capture(cam, stage, 390, 844, 18f, new Vector3(23, 35, 43), "portrait");
+                    Capture(cam, stage, 1100, 1250, 22f, new Vector3(29, 35, 43), "review");
+                }
                 Debug.Log("ELDORIA_CC0_NATIVE_AUTHORING_STAGE_" + stage +
                           " — real Unity Editor scene and renders; NOT art-approved or phone tested.");
             }
