@@ -23,7 +23,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             tools/cc0-art-system/director_v9_natural_forest_and_integrated_keep.py
-      - name: Retrieve pinned, real, owned V7 models; never touch main
+      - name: Retrieve pinned, real, owned V8 models; never touch main
         uses: actions/download-artifact@v4
         with:
           name: eldoria-cc0-director-v8-real-3d
@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           python3 -m py_compile tools/cc0-art-system/director_v9_natural_forest_and_integrated_keep.py
           for i in 1 2 3 4 5; do
-            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV7/DirectorV8_Stage$i.glb"
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV8/DirectorV8_Stage$i.glb"
           done
           python3 - <<'PY'
           import json
@@ -44,7 +44,7 @@ jobs:
           r=json.loads(p.read_text())
           assert r['source_run']==43880753054 and r['source_redrawn']
           assert not r['art_approved'] and not r['native_unity_tested']
-          print("V9_SOURCE_V7_REAL_GLTF_PIN_PASS")
+          print("V9_SOURCE_V8_REAL_GLTF_PIN_PASS")
           PY
       - name: Install only free Blender 4 and NumPy on hosted Ubuntu
         run: |
