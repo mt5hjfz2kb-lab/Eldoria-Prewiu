@@ -245,6 +245,28 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 }
                 if(atlasInterior!=uv0.Length || regions.Count<1)
                     throw new InvalidOperationException("Missing fractional atlas UV0: "+item.id);
+                // Every triangle must sample exactly ONE atlas cell. This native
+                // importer gate would have rejected the visible rainbow mosaics
+                // in the previous render even though its triangle count passed.
+                for(int submesh=0;submesh<mesh.subMeshCount;submesh++)
+                {
+                    var indices=mesh.GetIndices(submesh);
+                    for(int i=0;i+2<indices.Length;i+=3)
+                    {
+                        int cell=-1;
+                        for(int k=0;k<3;k++)
+                        {
+                            var uv=uv0[indices[i+k]];
+                            int ix=Mathf.Clamp(Mathf.FloorToInt(uv.x*4),0,3);
+                            int iy=Mathf.Clamp(Mathf.FloorToInt(uv.y*4),0,3);
+                            int next=iy*4+ix;
+                            if(cell>=0 && next!=cell)
+                                throw new InvalidOperationException("Cross-swatch native UV triangle in "+item.id+
+                                    " submesh "+submesh+" triangle "+(i/3)+" : "+cell+" to "+next);
+                            cell=next;
+                        }
+                    }
+                }
                 var cols=mesh.colors;
                 if(cols.Length!=mesh.vertexCount)
                     throw new InvalidOperationException("Missing Color vertex attributes after FBX import: "+item.id);
