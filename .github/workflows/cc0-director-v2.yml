@@ -5,6 +5,8 @@ on:
     paths:
       - ".github/workflows/cc0-director-v2.yml"
       - "tools/cc0-art-system/upgrade_director_v2.py"
+      - "tools/cc0-art-system/director_v3_details.py"
+      - "tools/cc0-art-system/qa_director_v2_images.py"
       - "tools/cc0-art-system/author_bastion.py"
   workflow_dispatch:
 permissions:
@@ -35,12 +37,14 @@ jobs:
       - name: Verify input and syntax before running Blender
         run: |
           python3 -m py_compile tools/cc0-art-system/upgrade_director_v2.py
+          python3 -m py_compile tools/cc0-art-system/director_v3_details.py
+          python3 -m py_compile tools/cc0-art-system/qa_director_v2_images.py
           test -s Unity/Assets/Art_Reboot/CC0System/CityFinish/CC0_Valoria_CityFinish.blend
           test -s Unity/Assets/Art_Reboot/CC0System/CityFinish/CC0_Valoria_CityStage5.glb
       - name: Install free Blender on hosted Ubuntu, no shared Windows or paid services
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
           blender --version | head -2
       - name: Restore upstream original image texture dependencies deterministically
         env:
@@ -89,6 +93,9 @@ jobs:
               print("REAL_3D_STAGE_AND_TERRAIN_TEXTURE_QA",stage,len(raw),len(j['meshes']),len(j['images']))
           print("REAL_EDITOR_ART_SOURCE_AND_FRAMES_VERIFIED")
           PY
+      - name: Real-image QA detects magenta, white terrain and progression regression
+        run: |
+          python3 tools/cc0-art-system/qa_director_v2_images.py             --images docs/cc0-art-system/previews/director-v2             --report docs/cc0-art-system/previews/director-v2/visual-regression.json
       - name: Preserve true artwork and editable source without modifying branch
         if: always()
         uses: actions/upload-artifact@v4
