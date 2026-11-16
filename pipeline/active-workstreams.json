@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T23:00:00Z",
+  "updated_at": "2026-11-16T23:27:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9937,7 +9937,7 @@
       "ownership_revision": 1,
       "branch": "art/ciudad-2d-hitos-1-5-20261116",
       "status": "active",
-      "phase": "OWNER_PRIORITY_EXCLUSIVE_UNITY_QA_PENDING",
+      "phase": "NATIVE_FAILED_MISSING_PHYSICS2D_FIX_IN_EXPERIMENTAL_MANIFEST",
       "claimed_at": "2026-11-16T22:58:00Z",
       "resources": [
         "windows-runner-heavy"
@@ -9946,12 +9946,16 @@
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
         "tools/ciudad2d-native/**",
-        "docs/ciudad2d/**"
+        "docs/ciudad2d/**",
+        "Unity/Packages/manifest.json (experimental branch only; enable Physics 2D)"
       ],
       "art_production_routing": "required",
       "user_authorization": "Owner directs prioritization of isolated 2.5D experiment, Nov 16 2026, without changing game mechanics or disturbing running jobs.",
       "write_scope_released": false,
-      "pc_priority_authorized_at": "2026-11-16T23:00:00Z"
+      "pc_priority_authorized_at": "2026-11-16T23:00:00Z",
+      "last_native_run": 43978644209,
+      "last_native_conclusion": "failed_missing_physics2d_module",
+      "native_artifact": 14281921993
     }
   ],
   "history": [
