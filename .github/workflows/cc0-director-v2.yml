@@ -1,0 +1,93 @@
+name: "Eldoria CC0 · Director V2 genuine 3D geometry + real Blender captures"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v2.yml"
+      - "tools/cc0-art-system/upgrade_director_v2.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-director-v2-ubuntu
+  cancel-in-progress: false
+jobs:
+  real-original-city:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/cc0-art-system
+            docs/cc0-art-system
+      - name: Acquire exact last-known-good AUTHOR-OWNED geometry, no vendor packs
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-coherent-city-five-stages
+          run-id: 43852991470
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verify input and syntax before running Blender
+        run: |
+          python3 -m py_compile tools/cc0-art-system/upgrade_director_v2.py
+          test -s Unity/Assets/Art_Reboot/CC0System/CityFinish/CC0_Valoria_CityFinish.blend
+          test -s Unity/Assets/Art_Reboot/CC0System/CityFinish/CC0_Valoria_CityStage5.glb
+      - name: Install free Blender on hosted Ubuntu, no shared Windows or paid services
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          blender --version | head -2
+      - name: Actually rebuild Valoria in Blender and export 5 new original GLBs
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/upgrade_director_v2.py 2>&1 | tee "$RUNNER_TEMP/eldoria-director-v2.log"
+          grep -q ELDORIA_DIRECTOR_V2_REAL_ART_PASS "$RUNNER_TEMP/eldoria-director-v2.log"
+      - name: Verify real images, editable source, 5 GLBs, vertex-painted terrain & provenance
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          base=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV2")
+          imgs=Path("docs/cc0-art-system/previews/director-v2")
+          blend=base/"DirectorV2_Master.blend"
+          assert blend.read_bytes().startswith(b'BLENDER') and blend.stat().st_size>400000
+          evidence=json.loads((imgs/"director-v2-evidence.json").read_text())
+          assert evidence["physical_3d_stage_count"]==5
+          assert evidence["third_party_meshes_used"]==[]
+          assert evidence["real_blender_renders"] and not evidence["unity_tested"] and not evidence["art_approved"]
+          expect={"DirectorV2_BastionI_1600x900.png":(1600,900),
+                  "DirectorV2_BastionV_1600x900.png":(1600,900),
+                  "DirectorV2_BastionV_Portrait_720x1200.png":(720,1200)}
+          for n,wh in expect.items():
+              b=(imgs/n).read_bytes()
+              assert len(b)>90000 and b[:8]==b'\x89PNG\r\n\x1a\n'
+              assert struct.unpack(">II",b[16:24])==wh,(n,wh)
+          for stage in range(1,6):
+              p=base/("DirectorV2_ValoriaStage"+str(stage)+".glb")
+              raw=p.read_bytes()
+              assert raw[:4]==b"glTF" and struct.unpack("<I",raw[8:12])[0]==len(raw)
+              header_len=struct.unpack("<I",raw[12:16])[0]
+              j=json.loads(raw[20:20+header_len])
+              assert len(j.get("meshes",[]))>=200
+              assert any('COLOR_0' in prim.get('attributes',{})
+                         for mesh in j.get('meshes',[]) for prim in mesh.get('primitives',[]))
+              print("REAL_3D_STAGE_AND_TERRAIN_QA",stage,len(raw),len(j['meshes']))
+          print("REAL_EDITOR_ART_SOURCE_AND_FRAMES_VERIFIED")
+          PY
+      - name: Preserve true artwork and editable source without modifying branch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-director-v2-real-art
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV2/
+            docs/cc0-art-system/previews/director-v2/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: State status truthfully
+        run: echo "REAL BLENDER source and imported GLB only; no actual Unity or iPhone test claimed."
