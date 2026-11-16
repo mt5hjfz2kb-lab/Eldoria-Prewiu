@@ -1,1 +1,1 @@
-Architectural identity: enduring west watchtower, lower hall, deep gate, differentiated auxiliary silhouettes. Same light/camera/gameplay; 2026-11-16.
+Architecture capture investigation: retain first frame, warm render after level/camera switch, compare actual PNGs for transient stretched triangles. 2026-11-16.

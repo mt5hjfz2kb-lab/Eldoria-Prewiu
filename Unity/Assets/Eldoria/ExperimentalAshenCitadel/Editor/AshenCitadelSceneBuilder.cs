@@ -521,6 +521,14 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     camera.targetTexture=rt;camera.aspect=(float)viewport.x/viewport.y;
                     var request=new RenderPipeline.StandardRequest{destination=rt};
                     if(!RenderPipeline.SupportsRenderRequest(camera,request))throw new InvalidOperationException("URP render request unsupported");
+                    // Each level/camera swap gets an explicit warm render. Retain the
+                    // first frame as diagnostic evidence, rather than silently discarding it.
+                    RenderPipeline.SubmitRenderRequest(camera,request);
+                    RenderTexture.active=rt;
+                    var first=new Texture2D(viewport.x,viewport.y,TextureFormat.RGB24,false);
+                    first.ReadPixels(new Rect(0,0,viewport.x,viewport.y),0,0);first.Apply(false);
+                    File.WriteAllBytes(Path.Combine(outDir,"Diagnostic_FirstFrame_"+l+"_"+viewport.x+"x"+viewport.y+".png"),first.EncodeToPNG());
+                    UnityEngine.Object.DestroyImmediate(first);
                     RenderPipeline.SubmitRenderRequest(camera,request);
                     RenderTexture.active=rt;
                     var image=new Texture2D(viewport.x,viewport.y,TextureFormat.RGB24,false);
