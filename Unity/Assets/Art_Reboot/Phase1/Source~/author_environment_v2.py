@@ -93,7 +93,7 @@ def tuft(x,y,size=1):
  for k in range(random.randint(4,7)):
   a=random.uniform(0,math.tau);w=random.uniform(.045,.10)*size;h=random.uniform(.25,.62)*size
   dx,dy=math.cos(a)*w,math.sin(a)*w
-  off=len(grass_vertices);grass_vertices.extend([(x-dx,y-dy,z),(x+dx,y+dy,z),(x+math.cos(a+.7)*.18*size,y+math.sin(a+.7)*.18*size,z+h)]);grass_faces.extend([(off,off+1,off+2),(off+2,off+1,off)])
+  off=len(grass_vertices);grass_vertices.extend([(x-dx,y-dy,z),(x+dx,y+dy,z),(x+math.cos(a+.7)*.18*size,y+math.sin(a+.7)*.18*size,z+h)]);grass_vertices.extend(grass_vertices[-3:]);grass_faces.extend([(off,off+1,off+2),(off+5,off+4,off+3)])
   random.uniform(.60,.95);random.uniform(.72,1)
 for i in range(390):
  x=random.uniform(-18,18);y=random.uniform(-11,20)
