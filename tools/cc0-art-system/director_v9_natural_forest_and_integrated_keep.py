@@ -170,7 +170,7 @@ def roads_xy(x,y):
     return np.sqrt(d)
 def natural_ground():
     # Make the 1024^2 ground texture from several deterministic spatial scales.
-    n=1536
+    n=1024
     x=np.linspace(X0,X0+W,n,dtype=np.float32)
     y=np.linspace(Y0,Y0+H,n,dtype=np.float32)
     X,Y=np.meshgrid(x,y)
