@@ -124,7 +124,7 @@ jobs:
           foreach($rel in @(
             'unity-1100x1250.png','unity-390x844.png','ruin-closeup.png','corrupt-closeup.png',
             'unity-1600x900.png','unity-844x390.png',
-            'capture.json','life-proof.json','native-proof.json','model-world-bounds.txt'
+            'village-life-t0.png','village-life-t2.png','capture.json','life-proof.json','native-proof.json','model-world-bounds.txt'
           )){
             $a=Join-Path $proof $rel
             if(-not(Test-Path -LiteralPath $a)){throw "Missing true Unity evidence: $rel"}

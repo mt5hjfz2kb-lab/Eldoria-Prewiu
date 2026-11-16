@@ -99,7 +99,12 @@ namespace Eldoria.ArtReboot.Editor
                 {
                     Fit(camera,allBounds,size.x,size.y,38);Capture(camera,size.x,size.y,Path.Combine(output,$"unity-{size.x}x{size.y}.png"));
                 }
-                Fit(camera,allBounds,1100,1250,38);EditorSceneManager.SaveScene(scene,Root+"/Scenes/Phase1_Village_Atmosphere.unity");
+                Fit(camera,allBounds,1100,1250,38);
+                var cloth=AssetDatabase.LoadAssetAtPath<Material>(Root+"/Materials/Village_Cloth.mat");
+                cloth.SetFloat("_Phase",0);life.Evaluate(0);Capture(camera,1100,1250,Path.Combine(output,"village-life-t0.png"));
+                cloth.SetFloat("_Phase",2);life.Evaluate(2);foreach(var p in smoke){p.Simulate(8,true,true,true);p.Pause(true);}Capture(camera,1100,1250,Path.Combine(output,"village-life-t2.png"));
+                if(File.ReadAllBytes(Path.Combine(output,"village-life-t0.png")).SequenceEqual(File.ReadAllBytes(Path.Combine(output,"village-life-t2.png"))))throw new InvalidOperationException("Life frames unchanged");
+                cloth.SetFloat("_Phase",1.2f);EditorUtility.SetDirty(cloth);AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene,Root+"/Scenes/Phase1_Village_Atmosphere.unity");
                 for(int k=1;k<=2;k++)
                 {
                     for(int j=0;j<4;j++)objects[j].SetActive(j==k||j==3);
