@@ -66,6 +66,30 @@ def new_uv_on_meshes():
         meshes+=1
     if meshes<150:raise RuntimeError("No real material geometry received projected UVs")
     return {"uv_meshes":meshes,"uv_loops":loops}
+def bake_stylized_cc0_diffuse(source,role):
+    """Physical pre-mixed image keeps the glTF material valid in Unity glTFast."""
+    import numpy as np
+    w,h=source.size
+    data=np.empty(w*h*4,dtype=np.float32)
+    source.pixels.foreach_get(data)
+    pixels=data.reshape((-1,4))
+    # Subtle stylized direction instead of photographic stone pasted unchanged.
+    if role=="stone":
+        target=np.array([.42,.39,.35],dtype=np.float32)
+        strength=.26
+    else:
+        target=np.array([.075,.105,.15],dtype=np.float32)
+        strength=.31
+    pixels[:,:3] *= (1.0-strength)
+    pixels[:,:3] += target[None,:]*strength
+    image=bpy.data.images.new("V15_CC0_Baked_"+role,width=w,height=h,alpha=True)
+    image.pixels.foreach_set(np.clip(data,0,1))
+    image.file_format="PNG"
+    image.filepath_raw=str(OUT/("V15_CC0_Stylized_"+role+"_albedo.png"))
+    image.save()
+    print("V15_BAKED_REAL_PBR_DIFFUSE",role,w,h)
+    return image
+
 def repoint_materials(images):
     touched=[]
     for m in bpy.data.materials:
@@ -78,25 +102,18 @@ def repoint_materials(images):
         nodes=m.node_tree.nodes
         bs=nodes.get("Principled BSDF")
         if bs is None:continue
-        # Blend publisher diffuse into the original approved-ish stylization, not a full
-        # photo-texture replacement. This preserves coherent color treatment.
+        # Bake a genuinely physical diffuse texture: glTF exporters cannot
+        # reliably serialize arbitrary MixRGB shader graphs into glTF PBR.
+        # Direct image->Principled link is the supported, auditable path.
         mapping=nodes.new("ShaderNodeUVMap")
         mapping.uv_map="V15_PBR_PhysicalUV"
         diffuse=nodes.new("ShaderNodeTexImage")
-        diffuse.image=images[role+"_diff"]
+        diffuse.image=bake_stylized_cc0_diffuse(images[role+"_diff"],role)
         m.node_tree.links.new(mapping.outputs["UV"],diffuse.inputs["Vector"])
         base=bs.inputs["Base Color"]
-        mix=nodes.new("ShaderNodeMixRGB")
-        mix.blend_type="MIX"
-        mix.inputs[0].default_value=.42 if role=="stone" else .48
-        if base.is_linked:
-            prior=base.links[0].from_socket
-            m.node_tree.links.remove(base.links[0])
-            m.node_tree.links.new(prior,mix.inputs[1])
-        else:
-            mix.inputs[1].default_value=base.default_value
-        m.node_tree.links.new(diffuse.outputs["Color"],mix.inputs[2])
-        m.node_tree.links.new(mix.outputs[0],base)
+        for old_link in list(base.links):
+            m.node_tree.links.remove(old_link)
+        m.node_tree.links.new(diffuse.outputs["Color"],base)
         # Real normal-map microrelief, limited strength to avoid plastic overprocessing.
         normaltex=nodes.new("ShaderNodeTexImage")
         normaltex.image=images[role+"_normal"]
