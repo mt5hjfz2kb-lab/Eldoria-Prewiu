@@ -67,6 +67,9 @@ def image_texture(name, color, kind):
     for y in range(size):
         for x in range(size):
             n = (.5*sin(x*.41+y*.67+tag)+.5*cos(x*.11-y*.29+tag))*.055
+            if kind=="earth":
+                n *= .19  # broad organic terrain; texture grain must not resemble a checkerboard
+                n += .023*sin(x*.064+y*.09)
             if kind=="ashlar":
                 line = (y%22 in (0,1) or (x+(y//22%2)*18)%43 in (0,1))
                 n += -.23 if line else .019*cos((x//43+y//22)*2.1)
@@ -75,7 +78,7 @@ def image_texture(name, color, kind):
             elif kind=="roof":
                 n += -.17 if y%17 in (0,1) or (x+(y//17%2)*14)%29 in (0,1) else .015*cos(x+y)
             elif kind=="earth":
-                n += .038*cos(x*.3+y*.19) + .035*sin(x*.13-y*.41)
+                n += .018*cos(x*.13+y*.11) + .012*sin(x*.10-y*.17)
             elif kind=="leaf":
                 n += .065*cos((x+y)*.38)
             elif kind=="metal":
@@ -129,6 +132,7 @@ M={
  "fire":material("TorchFlame","#FFC46F",emit=3.7),
  "violet":material("VeilViolet","#8052AE",emit=2.5),
  "void":material("BreachGlass","#211B32",rough=.24),
+ "gate_dark":material("GatewayDepth","#161C22",rough=.92),
  "cloth":material("WineBanners","#655065"),
  "river":material("ShadowRiver","#3E606A",rough=.21,metal=.15)
 }
@@ -193,7 +197,10 @@ def roof(name,cx,cy,z,w,d,rise,col="World"):
         # Barge boards visually anchor the roof to timber structure
         cube(name+" | fascia",(cx+x,cy,z-.13),(.22,d+.16,.19),"wood_dark",col)
 def arch_gate(cx,cy,z=0,col="Stage1"):
-    cube("gate passage | deep void",(cx,cy,z+2.0),(3.05,1.0,4.1),"void",col)
+    cube("gate passage | stone shadow",(cx,cy,z+2.0),(3.05,1.0,4.1),"gate_dark",col)
+    cube("gate | dark reinforced wood door",(cx,cy+.53,z+2.0),(2.83,.26,3.92),"wood_dark",col)
+    for strip in (-.9,.9):
+        cube("gate | dark oak reinforcement",(cx+strip,cy-.5,z+2.0),(.20,.18,3.8),"wood",col)
     for sx in (-1,1):
         cube("gate ashlar jamb",(cx+sx*2.0,cy,z+2.05),(.85,1.5,4.1),"wall_light",col,.06)
         for n in range(4):
@@ -245,6 +252,19 @@ def fortress():
     for x in (-3.1,-1.1,1.1,3.1):
         window(x,.92,3.45,base)
     cube("entry court | fortified foundation",(0,-1.8,.6),(17,7.2,1.0),"wall_dark",base,.10)
+    # Broken roof timbers and rain-damaged shelter at level I; upper completed roof masks them later.
+    for j in range(5):
+        yy=2.0+j*1.15
+        cube("stage I | exposed charred roof beam",(-2.8+random.uniform(-.2,.2),yy,6.27),
+             (7.4,.17,.22),"wood_dark",base,.04,rot=random.uniform(-.05,.05))
+    for j in range(12):
+        bx=random.uniform(-4.5,4.5); by=random.uniform(2,8.3)
+        cube("stage I | damaged slate debris",(bx,by,6.18),(random.uniform(.4,1.2),random.uniform(.3,.85),.08),
+             "roof_alt",base,.01,rot=random.uniform(-.6,.6))
+    for j in range(3):
+        bx=-5.4+j*.35
+        cube("stage I | temporary timber scaffold",(bx,-.1,3.35),(.15,.15,6.6),"wood",base,.01)
+        cube("stage I | scaffold brace",(bx,-.1,2.65),(1.6,.16,.13),"wood",base,.01,rot=.13)
     # Arch and secure entrance anchor stays identical at every stage.
     arch_gate(0,-5.48,.9,base)
     for s in (-1,1):
@@ -308,13 +328,13 @@ def cottage(name,x,y,w,d,h,col,industrial=False):
             cube(name+" | timber stock",(x+w*.45+i*.35,y-3.1,.36+i*.03),
                  (.28,2.1,.25),"wood",col,.02)
 def terrain():
-    n=46
+    n=58
     verts=[]
     faces=[]
     for iy in range(n+1):
-        y=-29.0+iy*60/n
+        y=-52.0+iy*104/n
         for ix in range(n+1):
-            x=-32+ix*64/n
+            x=-56+ix*112/n
             ht=.12*sin(x*.28)*cos(y*.21)+.17*sin(x*.11+y*.16)
             ht -= .05*max(0,1-abs(x)/3)
             verts.append((x,y,ht))
@@ -323,6 +343,11 @@ def terrain():
             a=iy*(n+1)+ix
             faces.append((a,a+1,a+n+2,a+n+1))
     plane_poly("worn Valoria terrain mesh",verts,faces,"grass","World")
+    # Correct the source UV scale: broad landscape colour variation, not 6-metre noisy tiling.
+    terrain_obj=bpy.context.scene.objects.get("worn Valoria terrain mesh")
+    if terrain_obj and terrain_obj.data.uv_layers.active:
+        for uv in terrain_obj.data.uv_layers.active.data:
+            uv.uv=(uv.uv[0]*.23,uv.uv[1]*.23)
     # Painterly patches add transitions, not geometric construction parcels.
     for k in range(75):
         x=random.uniform(-28,28);y=random.uniform(-26,28)
@@ -342,19 +367,23 @@ def terrain():
                 random.choice(["wall","wall_dark"]),"World",7)
 def paths():
     # Real flagstones are laid along a curve from the foreground to the entrance.
-    for k in range(29):
-        t=k/28
+    for k in range(34):
+        t=k/33
         y=-26+20*t
-        x=2.6*sin(t*pi)*sin(t*1.8)-.1
-        half=2.75-1.45*t
-        cube("route | irregular limestone slab",(x+random.uniform(-.15,.15),y,.11),
-             (half*2,random.uniform(.7,1.04),.16),
-             random.choice(["soil","wall_light","wall"]),"Route",.08,
-             rot=random.uniform(-.05,.05))
-        for sx in (-1,1):
-            if k%2==0:
-                cyl("route scattered stone",(x+sx*(half+random.uniform(.35,1.5)),
-                       y+random.uniform(-.35,.35),.25),random.uniform(.22,.53),.32,
+        x=1.8*sin(t*pi)*sin(t*1.8)-.1
+        half=2.55-1.35*t
+        cube("route | packed dirt base",(x,y,.09),(half*2.15,1.03,.11),
+             "soil","Route",.07,rot=random.uniform(-.025,.025))
+        for lane in (-1,0,1):
+            lx=x+lane*half*.59+random.uniform(-.24,.24)
+            cube("route | individual worn cobblestone",(lx,y+random.uniform(-.19,.2),.19),
+                 (random.uniform(.55,1.0),random.uniform(.43,.68),.16),
+                 random.choice(["wall_light","wall","wall_dark"]),"Route",.055,
+                 rot=random.uniform(-.13,.13))
+        if k%3==0:
+            for sx in (-1,1):
+                cyl("route | side loose rock",(x+sx*(half+random.uniform(.45,.8)),
+                       y+random.uniform(-.35,.35),.25),random.uniform(.22,.52),.30,
                     "wall_dark","Route",8)
     # Smaller linked roads imply a functioning economy.
     for xo,direc in ((-15,-1),(15,1)):
@@ -364,9 +393,11 @@ def paths():
             cube("side lane uneven flagstone",(xx,yy,.12),(1.15,.95,.12),"soil","Route",.04,rot=.13*direc)
 def forest():
     # Dense at edges and behind the castle; preserve stage I/V visibility.
-    for i in range(91):
-        x=random.uniform(-30,30);y=random.uniform(-24,28)
-        if abs(x)<17 and -11<y<15:continue
+    for i in range(133):
+        x=random.uniform(-48,48);y=random.uniform(-42,44)
+        # Preserve clear full sightline of the gate and route on authentic gameplay camera.
+        if abs(x)<19 and -29<y<15:continue
+        if abs(x)<17 and y<1:continue
         if x<-23 and abs(y)<22:continue
         h=random.uniform(3.6,8.5)
         cyl("pine trunk",(x,y,h*.24),.20,h*.48,"wood_dark","Foliage",7)
@@ -433,14 +464,14 @@ def light_and_camera():
     S.world=world
     world.use_nodes=True
     bg=world.node_tree.nodes.get("Background")
-    bg.inputs["Color"].default_value=(.31,.38,.48,1)
-    bg.inputs["Strength"].default_value=.72
+    bg.inputs["Color"].default_value=(.29,.35,.47,1)
+    bg.inputs["Strength"].default_value=.54
     bpy.ops.object.light_add(type='SUN',location=(0,0,45))
     sun=bpy.context.object
     sun.name="Sunset | amber low sun"
-    sun.rotation_euler=(radians(66),radians(12),radians(-38))
-    sun.data.energy=2.15
-    sun.data.color=(1.0,.79,.56)
+    sun.rotation_euler=(radians(73),radians(12),radians(-38))
+    sun.data.energy=3.10
+    sun.data.color=(1.0,.71,.49)
     sun.data.angle=radians(2.8)
     # No broad local point-light field, only physically motivated torches.
     for x in (-1.7,1.7):
