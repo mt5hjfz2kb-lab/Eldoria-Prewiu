@@ -50,7 +50,7 @@ def material(code):
     if m is None:
         # Blender discards unreferenced source materials when writing .blend.
         # Create the missing master explicitly, preserving the same palette.
-        palette={"ED_WineBanners":("#655065",.90),
+        palette={"ED_WineBanners":("#493548",.90),
                  "ED_RubbleStone":("#596369",.84),
                  "ED_GrassOlive":("#556750",.93),
                  "ED_MossPines":("#61735B",.94)}
@@ -65,6 +65,36 @@ def material(code):
         bs.inputs["Roughness"].default_value=rough
         m.diffuse_color=(*col,1)
     return m
+def darken_source_materials():
+    """Baked reproducible texture changes, not Blender-only color grading."""
+    profiles={
+        "stone":(.79,.84,.88),
+        "light":(.85,.88,.88),
+        "dark":(.85,.89,.94),
+        "roof":(1.03,1.03,1.02),
+        "earth":(.95,.96,.94),
+        "meadow":(1.03,1.05,1.03)
+    }
+    for key,fac in profiles.items():
+        m=material(key)
+        if not m.use_nodes:continue
+        for node in m.node_tree.nodes:
+            if node.type != 'TEX_IMAGE' or not node.image:continue
+            src=node.image
+            new=src.copy()
+            new.name="ELDORIA_CityFinish_"+key
+            data=list(src.pixels[:])
+            for i in range(0,len(data),4):
+                for t in range(3):
+                    data[i+t]=min(1,max(0,data[i+t]*fac[t]))
+            new.pixels[:]=data
+            path=DEST/("ELDORIA_CityFinish_"+key+"_albedo.png")
+            new.filepath_raw=str(path)
+            new.file_format="PNG"
+            new.save()
+            node.image=new
+            print("ELDORIA_BAKED_MASTER_TINT",key,str(path))
+darken_source_materials()
 def attach(obj,m,col):
     obj.data.materials.append(material(m))
     dest=collection(col)
@@ -170,8 +200,9 @@ def industrial_detail():
     # Granary x=22, y=-9.2: two distinctive silos/standing grain bags.
     x,y=sites["Granary"]
     for i in range(2):
-        sx=x-3.9+i*2.15
-        sy=y+2.9
+        # Place silos on the camera-facing east side, outside building walls.
+        sx=x+4.45+i*2.15
+        sy=y-.8
         cylinder("granary | round masonry silo",(sx,sy,2.05),1.0,3.9,"stone","GranaryDetail",12)
         cone("granary | charcoal conical lid",(sx,sy,4.73),1.3,.1,1.55,
              "roof","GranaryDetail",12)
@@ -268,9 +299,9 @@ if window.use_nodes:
     bs=window.node_tree.nodes.get("Principled BSDF")
     if bs:
         emission=bs.inputs.get("Emission Strength")
-        if emission: emission.default_value=1.55
+        if emission: emission.default_value=.95
 scene.world.node_tree.nodes["Background"].inputs["Color"].default_value=(.28,.34,.43,1)
-scene.world.node_tree.nodes["Background"].inputs["Strength"].default_value=.62
+scene.world.node_tree.nodes["Background"].inputs["Strength"].default_value=.69
 for o in bpy.data.objects:
     if o.type=="LIGHT" and o.data.type=="SUN":
         o.data.energy=3.12
