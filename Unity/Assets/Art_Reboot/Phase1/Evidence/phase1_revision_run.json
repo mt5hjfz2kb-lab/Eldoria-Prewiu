@@ -1,25 +1,25 @@
 {
     "png_hashes":  [
                        {
-                           "sha256":  "BF320B448DCCC8B265257ED87B3931F0A3A0C3DFE686DB59B1A5F83B282F59FE",
+                           "sha256":  "A715BBF5DBCA8FE02EB6E57D64F3C1973206071E8C7EA41B820B9E5FC558960E",
                            "file":  "unity-1100x1250.png"
                        },
                        {
-                           "sha256":  "29026D7D920CF49979E5F725CEC9BC44240886402777CC21BFD9547E11D5D705",
+                           "sha256":  "EB7DF830A3BFD829D22C77DA67220D16EF09A6381511F6E02E8B1413574EAE58",
                            "file":  "unity-390x844.png"
                        },
                        {
-                           "sha256":  "22EE2498EF914770523830FE1478DC11BE3D3077063C3D795F3AD8180F187D77",
+                           "sha256":  "62992CF858098A70742D2ABDEE2859EE92251E5BF30AFE3DD1E224493ADD91FF",
                            "file":  "unity-1600x900.png"
                        },
                        {
-                           "sha256":  "4431072BC9B53227DA5896059997CCA9177B876ED66919A167CA54939EB86888",
+                           "sha256":  "18664A32CD19351ED333EF5DF51C96BDA4CF5337911CD77762E20F74765325A8",
                            "file":  "unity-844x390.png"
                        }
                    ],
-    "native_run":  "43852572242",
+    "native_run":  "43853944970",
     "note":  "True native Unity rendered captures; artistic approval and real iPhone performance not asserted",
-    "source_sha":  "5367f1874f97cb955a52200f75f53fa2c23b4368",
+    "source_sha":  "27c147d2d65b2f6bbce136da82e0e40cd43d5f43",
     "physical_iphone_tested":  false,
     "phase":  "Phase1 approved hero family review",
     "art_approved":  false
