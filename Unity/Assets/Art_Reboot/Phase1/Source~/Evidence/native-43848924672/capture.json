@@ -1,0 +1,20 @@
+{
+    "unity": "6000.3.23f1",
+    "sourceSHA": "f1876818638d23558ca7d2f0f20671c118fe7fff",
+    "scene": "Assets/Art_Reboot/Phase1/Scenes/Hero_Review.unity",
+    "note": "Hero alone, game camera rotation (50,-13,0), reframed for close-up. Asset placement yaw corrected 180 degrees after native rear-view diagnosis. Neutral review lighting. Scene assembly and derivatives awaiting owner approval. Not mobile performance proof.",
+    "sunElevation": 32.0,
+    "sunIntensity": 1.5,
+    "torchIntensity": 0.0,
+    "fogStart": 0.0,
+    "fogEnd": 0.0,
+    "bloomThreshold": 1.100000023841858,
+    "bloomIntensity": 0.11999999731779099,
+    "groundMistLowY": 0.0,
+    "groundMistHighY": 0.0,
+    "shadowMapResolution": 0,
+    "shadowCascades": 0,
+    "particleCount": 0,
+    "triangles": 32804,
+    "cameraTilt": 50.0
+}
