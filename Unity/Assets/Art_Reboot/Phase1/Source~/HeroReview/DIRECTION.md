@@ -28,3 +28,7 @@ Native attempt 43846720539 compiled but stopped before rendering: Unity expanded
 and split the mesh under its 16-bit index import. Capture now verifies all imported parts, summed
 triangle count against source geometry.json, attributes on every part and their combined bounds.
 Keep 16-bit import compatibility rather than assuming one renderer. Failure logs retained in artifact 14215617104.
+
+Native 43848005730 succeeded technically (32804 triangles; five PNGs) but showed the BACK of the hero.
+Do not deliver that image as accepted art. Preserve its evidence. Correction is asset-placement yaw +180 degrees,
+with unchanged game camera (50,-13,0), imported geometry, lighting and materials. Re-run real Unity to verify facade.

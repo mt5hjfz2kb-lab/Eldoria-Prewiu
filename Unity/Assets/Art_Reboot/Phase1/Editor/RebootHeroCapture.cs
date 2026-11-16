@@ -50,6 +50,9 @@ namespace Eldoria.ArtReboot.Editor
                 var glow = MaterialAsset("Hero_Emission", shader, atlas, 1.2f);
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
                 var hero = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
+                // Native evidence 43848005730 showed the FBX facade facing away from the fixed game camera.
+                // Rotate the asset placement, not the camera; preserve the tested importer and mesh units.
+                hero.transform.rotation = Quaternion.Euler(0,180,0) * hero.transform.rotation;
                 var renderers = hero.GetComponentsInChildren<MeshRenderer>();
                 if (renderers.Length == 0) throw new InvalidOperationException("No imported hero mesh");
                 long triangles = 0;
@@ -126,7 +129,7 @@ namespace Eldoria.ArtReboot.Editor
                     unity=UnityEngine.Application.unityVersion,sourceSHA=Environment.GetEnvironmentVariable("GITHUB_SHA"),
                     scene=Root+"/Scenes/Hero_Review.unity",cameraTilt=50,triangles=triangles,
                     sunElevation=32,sunIntensity=1.5f,bloomIntensity=.12f,bloomThreshold=1.1f,
-                    note="Hero alone, game camera rotation (50,-13,0), reframed for close-up. Neutral review lighting. Scene assembly and derivatives awaiting owner approval. Not mobile performance proof."
+                    note="Hero alone, game camera rotation (50,-13,0), reframed for close-up. Asset placement yaw corrected 180 degrees after native rear-view diagnosis. Neutral review lighting. Scene assembly and derivatives awaiting owner approval. Not mobile performance proof."
                 },true));
                 Debug.Log("REBOOT_CAPTURE_OUTPUT "+output);
             }
