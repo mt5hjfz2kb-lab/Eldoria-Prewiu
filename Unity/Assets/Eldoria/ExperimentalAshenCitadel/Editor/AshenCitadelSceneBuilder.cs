@@ -107,7 +107,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             var barracks=Import("Ashen_Barracks",sceneRoot.transform);
             barracks.transform.position=new Vector3(16.8f,0f,-7.5f);
-            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
+            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,3f,0),new Vector3(7.4f,7f,7f));
             var granary=Import("Ashen_Granary",sceneRoot.transform);
             granary.transform.position=new Vector3(-16.6f,0f,7.8f);
             BindClick(granary,"Granero","granary","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));

@@ -162,6 +162,14 @@ def main():
                 if hasattr(obj.data, "use_auto_smooth"): obj.data.use_auto_smooth = False
         cam=camera_and_lights()
         build_environment(level,colors,MESHES,import_obj,remap,pbr)
+        if "--clay" in args:
+            clay=bpy.data.materials.new("Neutral structural review");clay.use_nodes=True
+            node=clay.node_tree.nodes.get("Principled BSDF")
+            node.inputs["Base Color"].default_value=(.42,.42,.42,1)
+            node.inputs["Roughness"].default_value=.85
+            for ob in bpy.context.scene.objects:
+                if ob.type=="MESH":
+                    for i in range(len(ob.data.materials)):ob.data.materials[i]=clay
         engine=configure_render()
         outpath=out/f"Bastion_{level}_blender.png"
         bpy.context.scene.render.filepath=str(outpath)
