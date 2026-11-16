@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T09:18:02.809927+00:00",
+  "updated_at": "2026-11-16T09:21:30.261Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3164,7 +3164,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-07,
+        "skin_weights_sum_max_error": 1.1920929e-7,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -6691,7 +6691,7 @@
             "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
             "rig_joint_count": 12,
             "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-            "skin_weights_sum_max_error": 1.1920929e-07,
+            "skin_weights_sum_max_error": 1.1920929e-7,
             "static_retained": true,
             "art_approved": false,
             "isolated_unity_import_tested": false,
@@ -9814,13 +9814,11 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE1_THIRD_NATIVE_OWNED_SINGLE_TURN",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "phase": "PHASE1_NATIVE_ART_CORRECTIONS_COMPLETE_AWAIT_OWNER_APPROVAL",
+      "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9836,7 +9834,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Run one exact third Phase1 Unity art capture; review real PNG and return shared Windows after terminal; no Phase2.",
+      "next": "Deliver exact same-camera Unity PNG comparison and light/fog/bloom settings; await owner approval before Phase2. No merge/publication.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9846,28 +9844,35 @@
         "lease_tests": "8/8 PASS",
         "windows_executed": false
       },
-      "final_source_sha": "a41c07323b07539bdadda483a06b4266d420e55c",
+      "final_source_sha": "438a45fa04eb938bba6504149eeab550498ec7e5",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed_one_bounded_native_turn",
+        "status": "released_after_terminal_success",
         "requested_at": "2026-11-16T09:15:55.459Z",
         "source_sha": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4",
-        "after_terminal_return_to": "eldoria-ashen-citadel-original-i-v-20261115"
+        "after_terminal_return_to": "eldoria-ashen-citadel-original-i-v-20261115",
+        "after_run_id": 43838220850,
+        "release_at": "2026-11-16T09:21:30.261Z",
+        "note": "Ashen owner already released its own Windows reservation; leave Windows free and preserve source owners"
       },
       "native_source_sha": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4",
       "last_native_attempt": {
-        "run": 43834060945,
-        "source": "237dfc52d7406553842764cc97f9e3d457afbaeb",
-        "result": "success_compiled_and_captured_art_quality_rejected",
+        "run": 43838220850,
+        "source": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4",
+        "result": "success_native_compile_four_captures_scene_persisted_visual_review_ready",
         "unity_executed": true,
-        "artifact": 14210471705
+        "artifact": 14211467854,
+        "scene_persisted_commit": "438a45fa04eb938bba6504149eeab550498ec7e5",
+        "physical_mobile_tested": false,
+        "art_approved": false
       },
       "owner_revision_request": {
         "at": "2026-11-16T07:37:07.758Z",
         "scope": "warm dusk, emissive habitation, varied ground, localized violet corruption and slow rising particles, weathering, slate roof, smaller pines/story props, soft mobile shadows",
         "baseline_source": "a41c07323b07539bdadda483a06b4266d420e55c",
         "approval_required_before_phase2": true
-      }
+      },
+      "reviewed_source_sha": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4"
     }
   ],
   "history": [
@@ -11848,7 +11853,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -11859,7 +11864,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
