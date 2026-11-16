@@ -293,22 +293,22 @@
       "id": "Roof_Gable",
       "family": "roofs",
       "fbx": "Models/Roof_Gable.fbx",
-      "triangles": 3286,
-      "faces": 1768,
+      "triangles": 5574,
+      "faces": 3120,
       "grid_m": 4,
       "footprint_cells": [
         2,
         2
       ],
       "local_min_m": [
-        -4.352,
-        -4.51,
+        -4.4,
+        -4.55,
         0.0
       ],
       "local_max_m": [
-        4.352,
+        4.4,
         4.564,
-        2.931
+        2.919
       ],
       "pivot_m": [
         0,
@@ -361,22 +361,22 @@
       "id": "Roof_Shed",
       "family": "roofs",
       "fbx": "Models/Roof_Shed.fbx",
-      "triangles": 896,
-      "faces": 464,
+      "triangles": 1072,
+      "faces": 568,
       "grid_m": 4,
       "footprint_cells": [
         1,
         1
       ],
       "local_min_m": [
-        -2.392,
-        -2.671,
+        -2.398,
+        -2.679,
         0.0
       ],
       "local_max_m": [
-        2.392,
-        2.62,
-        1.829
+        2.398,
+        2.653,
+        1.85
       ],
       "pivot_m": [
         0,
@@ -1072,5 +1072,5 @@
       "vertex_color_layer": "Color"
     }
   ],
-  "total_triangles": 33902
+  "total_triangles": 36366
 }
