@@ -106,7 +106,7 @@ const makeLandscape=function makeLandscape(){
   const previousPavingSeed=seed;
   let paving=0;
   function flag(x,z,w,d,tone){
-    const y=height(x,z)+.035+rand()*.008,c=.07+rand()*.07;
+    const y=height(x,z)+.035+rand()*.008,c=.025+rand()*.045;
     const points=[[x-w+c,z-d],[x+w-c,z-d],[x+w,z-d+c],
       [x+w,z+d-c],[x+w-c,z+d],[x-w+c,z+d],[x-w,z+d-c],[x-w,z-d+c]];
     const ring=points.map(([px,pz])=>[px,y,pz]);
@@ -119,17 +119,17 @@ const makeLandscape=function makeLandscape(){
     if((x>-3.8&&x<-.45&&z>.6&&z<4.5)||(x>-.95&&x<4.1&&z>-2.9&&z<2.5))continue;
     if(rand()<.09)continue;
     flag(x+(rand()-.5)*.04,z+(rand()-.5)*.04,.29+rand()*.02,.27+rand()*.035,
-      rand()<.25?"basalt":"cut");
+      rand()<.07?"basalt":"cut");
   }
   for(let row=0;row<20;row++)for(let col=0;col<6;col++){
-    const z=-11.45-row*.68,x=(col-2.5)*.64+Math.sin((z+8)*.15)*.66;
-    if(rand()<.16+row*.026||Math.abs(x)>1.9+rand()*.25)continue;
-    flag(x,z,.26+rand()*.04,.25+rand()*.04,rand()<.3?"basalt":"cut");
+    const z=-11.45-row*.68,x=(col-2.5)*.64+(row%2)*.24+Math.sin((z+8)*.15)*.66;
+    if(rand()<.035+Math.pow(row/20,2)*.48+(col===0||col===5?.18:0)||Math.abs(x)>2.2+rand()*.2)continue;
+    flag(x+(rand()-.5)*.045,z+(rand()-.5)*.035,.303+rand()*.013,.315+rand()*.015,rand()<.07?"basalt":"cut");
   }
   for(const [px,pz] of [[-17.2,-6.2],[16.8,-7.5],[-16.6,7.8],[17.4,8.8]]){
     for(let row=0;row<3;row++)for(let col=0;col<7;col++){
-      if(rand()<.22+row*.15)continue;
-      flag(px+(col-3)*.64,pz-2.95-row*.68,.26,.26,rand()<.4?"basalt":"cut");
+      if(rand()<.06+row*.20)continue;
+      flag(px+(col-3)*.64+(row%2)*.24,pz-2.95-row*.68,.30,.31,rand()<.07?"basalt":"cut");
     }
   }
   // Preserve unrelated rock positions from the preceding 34-stone path.

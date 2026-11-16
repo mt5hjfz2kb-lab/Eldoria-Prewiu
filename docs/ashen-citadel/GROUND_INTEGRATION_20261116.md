@@ -11,3 +11,6 @@ Broad 19cm soil crown across settlement, feathered over14m outside core; no indi
 
 ## Gates
 Deterministic OBJ regeneration and upward paving winding; source/art validation; Blender geometry review; actual same-camera Unity I/V and portrait, gameplay tests. Soil texture is Unity-authored and requires native visual review. No final art approval or mobile-performance claim.
+
+## First native review and correction
+Run43865170576/sourceee98973 completed success; actual V landscape/portrait inspected. Soil contact improved, but the approach looked like disconnected checkered tiles. Reject that path treatment as final: reduce colour alternation, narrow joints, stagger courses and concentrate loss on verge/distant end. Preserve all other layout/material/camera changes for a focused corrective A/B.
