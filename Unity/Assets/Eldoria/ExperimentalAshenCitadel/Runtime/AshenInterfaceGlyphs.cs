@@ -30,6 +30,12 @@ namespace Eldoria.ExperimentalAshenCitadel
         public static void RebindAfterBake(){Cache.Clear();}
         public static Sprite SourceGlyph(string key)
         {
+            var tex=SourceGlyphTexture(key);
+            var sprite=Sprite.Create(tex,new Rect(0,0,64,64),new Vector2(.5f,.5f),100f);
+            sprite.name="Ashen glyph "+key;return sprite;
+        }
+        public static Texture2D SourceGlyphTexture(string key)
+        {
             const int size=64;
             var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,false)
             {name="Ashen glyph "+key,wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
@@ -43,8 +49,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                     (byte)Mathf.RoundToInt(Mathf.Clamp01(coverage)*250f));
             }
             tex.SetPixels32(pixels);tex.Apply(false,false);
-            var sprite=Sprite.Create(tex,new Rect(0,0,size,size),new Vector2(.5f,.5f),100f);
-            sprite.name="Ashen glyph "+key;return sprite;
+            return tex;
         }
         private static float Box(float x,float y,float cx,float cy,float hx,float hy)
         {
