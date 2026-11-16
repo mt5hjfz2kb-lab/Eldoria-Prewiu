@@ -145,7 +145,20 @@ class Piece:
         for n,p in enumerate(me.polygons):
             p.material_index=self.slots[n]
             shade=self.colors[n]
-            for li in p.loop_indices:col.data[li].color=(shade,shade,shade,1)
+            k=self.swatches[n]
+            # Vertex tint only; the approved 256px atlas never changes.
+            if k==3:
+                tint=(1.09,.87,.82) if n%6 else (.92,.95,1.04)
+            elif k in (0,1,2):
+                tint=(1.02,.98,.93) if n%4 else (.95,.96,1.02)
+            elif k in (4,5,10,11):
+                tint=(1.03,.96,.86)
+            elif self.slots[n]==2 or k in (13,14):
+                tint=(1.28,.66,1.16)
+            else:
+                tint=(1.,1.,.96)
+            rgba=tuple(min(1.24,shade*t) for t in tint)+(1.,)
+            for li in p.loop_indices:col.data[li].color=rgba
         uv=me.uv_layers.new(name="UVMap",do_init=False)
         for n,p in enumerate(me.polygons):
             k=self.swatches[n]
@@ -264,10 +277,16 @@ def roof_gable(p,w=8.40,d=8.48,height=2.63):
                 def point(u,v):
                     return (side*w*.5*u+.06*math.sin(v*8),
                             -d*.5+d*v,
-                            height*max(0,1-u)**1.40 + .06*math.sin(v*6)*u + .02)
+                            height*max(0,1-u)**1.35 + .11*math.sin(math.pi*u) + .12*u**7 + .04*math.sin(v*6)*u + .02)
                 p.slate((point(u0,v0),point(u1,v0),point(u1,v1),point(u0,v1)),
-                         3,thick=.12,shade=p.rng.choice((.89,.94,.99,1.05)))
-        p.rod((side*w*.50,-d*.51,.04),(side*w*.50,d*.51,.04),.25,4)
+                         3,thick=.17,shade=p.rng.choice((.88,.94,1.01,1.06)))
+        for i in range(8):
+            y0=-d*.51+i*d*1.02/8
+            y1=-d*.51+(i+1)*d*1.02/8
+            curl=lambda y:.13+.04*math.sin((y+d*.51)/d*math.pi)
+            p.rod((side*w*.50,y0,curl(y0)),(side*w*.50,y1,curl(y1)),.34,4,shade=.91)
+        for yy in (-d*.49,d*.49):
+            p.box((side*w*.50,yy,.16),(.40,.55,.30),4,bevel=.065,shade=.84)
         for i in range(5):
             yy=-d*.47+i*d/4
             p.rod((0,yy,height-.08),(side*w*.5,yy,.04),.14,4)
@@ -275,7 +294,20 @@ def roof_gable(p,w=8.40,d=8.48,height=2.63):
         p.rod((0,yy,height),(0,yy,.08),.19,4)
         p.rod((-w*.48,yy,.10),(0,yy,height),.20,4)
         p.rod((w*.48,yy,.10),(0,yy,height),.20,4)
-    p.rod((0,-d*.53,height),(0,d*.53,height),.28,4)
+    # Bowed slate cap row and carved segmented bargeboards recreate the
+    # hero building's heavy organic eave rather than straight roof rails.
+    for i in range(10):
+        yy=-d*.50+(i+.5)*d/10
+        p.box((.025*math.sin(i*1.8),yy,height+.13),(.40,d/10*.95,.20),3,bevel=.035,rot=.04*math.sin(i),shade=p.rng.choice((.90,1.03)))
+    p.rod((0,-d*.53,height),(0,d*.53,height),.32,4)
+    def gable_height(u):
+        return height*max(0,1-u)**1.35 + .11*math.sin(math.pi*u) + .12*u**7 + .02
+    for yy in (-d*.52,d*.52):
+        for side in (-1,1):
+            for j in range(6):
+                a=j/6;b=(j+1)/6
+                p.rod((side*w*.5*a,yy,gable_height(a)),
+                      (side*w*.5*b,yy,gable_height(b)),.28,4,shade=.94)
     # Approved hero architecture uses a filled timber-and-plaster gable beneath
     # each heavy curved roof. This is part of the SAME repeatable roof module;
     # its absence previously made the modular houses look hollow and assembled.
@@ -317,10 +349,13 @@ def roof_shed(p):
         for j in range(6):
             y0=-d*.5+j*d/6;y1=y0+d/6+.022
             def point(x,y):
-                return (x,y,.14+1.56*((y+d*.5)/d)**.92+.05*math.sin(x*1.8))
-            p.slate([point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)],3,.10,shade=p.rng.choice((.90,.96,1.04)))
+                t=(y+d*.5)/d
+                return (x,y,.14+1.56*t**.92+.11*(1-t)**5+.05*math.sin(x*1.8))
+            p.slate([point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)],3,.15,shade=p.rng.choice((.88,.96,1.05)))
     for x in (-w*.48,w*.48):
-        p.rod((x,-d*.52,.12),(x,d*.51,1.74),.18,4)
+        p.rod((x,-d*.52,.25),(x,d*.51,1.72),.28,4)
+        for y in (-d*.48,d*.48):
+            p.box((x,y,.25 if y<0 else 1.76),(.38,.41,.28),4,bevel=.065,shade=.9)
     for y in (-d*.48,d*.48):
         p.rod((-w*.52,y,.12+1.56*(y+d*.5)/d),(w*.52,y,.12+1.56*(y+d*.5)/d),.18,4)
 
