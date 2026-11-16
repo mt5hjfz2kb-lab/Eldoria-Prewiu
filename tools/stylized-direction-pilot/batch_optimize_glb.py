@@ -8,6 +8,7 @@ This does NOT establish physical iPhone or Unity performance approval.
 from collections import defaultdict
 from pathlib import Path
 import json
+import struct
 import sys
 import time
 import numpy as np
@@ -56,11 +57,19 @@ def execute(source,dest):
         out.add_geometry(combined,geom_name=zone+'__'+material,
                          node_name=zone+'__'+material,transform=np.eye(4))
     dest.parent.mkdir(parents=True,exist_ok=True)
-    out.export(str(dest),file_type='glb')
+    # trimesh defaults to omitting glTF NORMAL attributes. On original roof
+    # gables and bevelled masonry that silently destroys authored shading.
+    # Force emission of the original transformed, concatenated normal streams.
+    dest.write_bytes(out.export(file_type='glb',include_normals=True))
     result=trimesh.load(str(dest),force='scene')
     vertices_after=sum(len(g.vertices) for g in result.geometry.values())
     faces_after=sum(len(g.faces) for g in result.geometry.values())
     assert vertices_after==vertices
+    raw=dest.read_bytes()
+    json_len=struct.unpack('<I',raw[12:16])[0]
+    tree=json.loads(raw[20:20+json_len])
+    primitives=[p for m in tree.get('meshes',[]) for p in m.get('primitives',[])]
+    assert primitives and all('NORMAL' in p.get('attributes',{}) for p in primitives), 'GLB missing authored normals'
     assert faces_after==faces
     assert len(result.geometry)<len(scene.geometry)*.20
     old_materials={getattr(g.visual.material,'name','') for g in scene.geometry.values()}
@@ -78,6 +87,7 @@ def execute(source,dest):
               'spatial_region_detection':'evaluated_world_bounds_not_node_origin',
               'isolated_regions':sorted(region_names),
               'world_bounds_preserved':True,
+              'gltf_normal_attributes_preserved':True,
               'source_bytes':source.stat().st_size,
               'derived_bytes':dest.stat().st_size,
               'seconds':round(time.monotonic()-started,2),
