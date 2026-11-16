@@ -9745,12 +9745,10 @@
       "ownership_revision": 12,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "FINISHING_SAME_CAMERA",
+      "phase": "FINISHING_NATIVE_VERIFIED_REVIEW",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9783,23 +9781,22 @@
       "continuation_authority": "Owner: Sigue afinándolo; explicitly authorized main coordination update in follow-up Autorizo. Improve reviewed Ashen finish, isolated branch, no gameplay or publication.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "One bounded finishing comparison after successful prior native run 43828204694."
+        "status": "released_after_terminal_success",
+        "run_id": 43832430172,
+        "source_sha": "41f3e984dd0cb41c9004a455321b56af21751925"
       },
       "last_native": {
-        "run": 43777338073,
-        "head": "486282eca21e097ffd83c74ca3bbe25600017eb4",
-        "artifact": 14186822421,
+        "run": 43832430172,
+        "head": "41f3e984dd0cb41c9004a455321b56af21751925",
+        "artifact": 14208894317,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "shadow_affected_pixels": 275994,
-        "shadow_mean_channel_delta": 5.5406,
-        "visual_review": "Real five-stage Unity portraits and landscape reviewed: directional shadows contribute, ground tiling removed, raised valley rim and complete lower-frame coverage. Still needs finer terrain/foliage and UI; no physical iPhone performance or global ART_APPROVED."
+        "visual_review": "Actual V landscape / I portrait inspected: clearer stone/slate, soft road transition, clustered trees. Retained increment; ground smooth, rocks generic, UI and physical mobile unverified. Not ART_APPROVED."
       },
-      "final_source_sha": "e15baafbeb5487d4bdcd89b77620d9cad479d40a",
+      "final_source_sha": "f61b7268f687560600bda443e6f7da3c1975d2e3",
       "art_approved": false,
-      "next": "One bounded native Unity capture/test of authored foliage, masonry/slate and dusk lighting; release Windows on terminal run.",
+      "next": "Review finish increment; further art refinement should address terrain structure/ground contacts, not another exposure-only cycle. No native runs pending.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
@@ -11846,7 +11843,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -11857,7 +11854,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
