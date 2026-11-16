@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T11:10:59.431Z",
+  "updated_at": "2026-11-16T11:45:36.445Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,10 +9742,10 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 19,
+      "ownership_revision": 20,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "MASONRY_NATIVE_SUCCESS_VISUAL_REVIEW_BLOCKED_ENVIRONMENT",
+      "phase": "STRUCTURAL_IDENTITY_REDESIGN",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [],
@@ -9774,7 +9774,7 @@
         "note": "Existing owner-authorized alternating Windows turns. Native run 43845247032 completed all steps successfully; no running native job observed. Source ownership unchanged."
       },
       "continuation_session": "b9db0d2d3e7b",
-      "continuation_authority": "Owner 16 November: Arregla esos defectos que acabas de ver — stone repetition and rectangular wall massing. Same isolated branch; source authoring before native verification.",
+      "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "released_native_complete",
