@@ -151,3 +151,16 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 **Estado real de V13 al registrar esta línea:** workflow lanzado; no declarar técnica ni estética aprobada hasta conclusión de Action y examen visual de PNG. No hay aún prueba física de iPhone, Android ni WebGL. No se ha modificado `main`.
 
 **Criterios de cierre:** inspeccionar capturas reales V13 y anotar defectos; comprobar que nueva nave supera V12 y que no hay dobles cubiertas; medir mallas y agrupar estáticas; ejecutar SceneBuilder en Unity con permiso/recurso real, comprobar materiales, dirección de cámara y el fallo de reinicio del mundo en la beta de forma independiente. No fusionar ni declarar arte premium por CI verde.
+
+## Actualización V13-V14 — ejecución sobre modelos reales, 16/11/2026
+
+**V13 VERIFICADA TÉCNICAMENTE:** [Action #43902021480](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43902021480) concluyó SUCCESS. Artefacto `eldoria-cc0-v13-authentic-architecture` con GLB I–V, BLEND editable, atlas físico de terreno y cuatro capturas reales de Blender. El proceso elimina 89 piezas de coro anterior antes de reconstruir la zona gótica de Bastión V; el QA comprueba que el modelo exportado contiene nueva geometría y ya no contiene `single coherent top choir stone mass`.
+
+**Crítica artística real V13:** [captura V13 V y acercamiento en artifact del run](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43902021480) muestran puerta mejor articulada y nueva fachada con ventanas góticas, pero la escena sigue muy uniforme y oscura, con poca textura en el suelo y poca riqueza visual de ciudad. NO se aprueba premium. **No usar imágenes conceptuales creadas con IA como resultados del proyecto.**
+
+**V14 IMPLEMENTADA Y EN COMPROBACIÓN:**
+- `tools/cc0-art-system/director_v14_env_arch_finish.py` importa los cinco GLB V13 físicos y cambia materiales de terreno con una nueva textura propia 768×768, pinta sendas orgánicas directamente en textura físicamente exportable, genera vegetación 3D batched, piedras con geometría irregular y enriquece detalles imperiales, cantera, aserradero, granero y cuartel.
+- `.github/workflows/cc0-director-v14.yml` importa el artefacto exacto V13, verifica propiedad de fuentes, genera cinco GLB físicos, BLEND editable y cuatro PNG auténticas con misma cámara. [Run #43904480456](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43904480456). **No declarar pass hasta obtener conclusión y examinar imágenes.**
+- `Unity/Assets/Art_Reboot/CC0System/Editor/CC0V13SceneBuilder.cs` ya registrado; se confirmó documentalmente que el proyecto tiene el editor importer `com.unity.cloud.gltfast 6.14.1` y que glTFast crea prefabs importados desde GLB. NO se ha ejecutado Unity ni capturado la escena en el Editor, y el código no demuestra compilación.
+
+**Siguiente fase obligatoria:** abrir y comparar V14 real contra V13, identificar si logra mejora cualitativa y, solo después, llevar la geometría a Unity, optimizar mallas por materiales, capturar realmente en Editor, probar WebGL/iPhone. Nunca tocar `main` ni otras ramas gráficas sin autorización.
