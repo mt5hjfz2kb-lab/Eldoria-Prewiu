@@ -674,15 +674,22 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 tex=new Texture2D(width,height,TextureFormat.RGB24,false);
                 tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();
                 var pixels=tex.GetPixels32();
-                int min=255,max=0,magenta=0;
+                int min=255,max=0,magenta=0,green=0,warm=0;
                 foreach(var pixel in pixels)
                 {
                     int l=(pixel.r+pixel.g+pixel.b)/3;
                     min=Math.Min(min,l);max=Math.Max(max,l);
                     if(pixel.r>220&&pixel.b>220&&pixel.g<40)magenta++;
+                    if(pixel.g>pixel.r+8&&pixel.g>pixel.b+3&&pixel.g>44)green++;
+                    if(pixel.r>pixel.g+10)warm++;
                 }
                 File.WriteAllBytes(path,tex.EncodeToPNG());
-                File.WriteAllText(path+".metrics.txt",$"min={min} max={max} magenta={magenta} pixels={pixels.Length}");
+                float greenPct=100f*green/pixels.Length;
+                float warmPct=100f*warm/pixels.Length;
+                File.WriteAllText(path+".metrics.txt",
+                    $"min={min} max={max} magenta={magenta} pixels={pixels.Length} green_pct={greenPct:F2} warm_pct={warmPct:F2}");
+                Debug.Log("KIT_CAPTURE_COLOR_QA "+Path.GetFileName(path)+
+                    $" green={greenPct:F2}% warm={warmPct:F2}% (palette advisory; owner must approve art)");
                 if(max-min<20||magenta>pixels.Length/1000)
                     throw new InvalidOperationException("Rejected near-empty or magenta Unity capture "+Path.GetFileName(path));
             }
