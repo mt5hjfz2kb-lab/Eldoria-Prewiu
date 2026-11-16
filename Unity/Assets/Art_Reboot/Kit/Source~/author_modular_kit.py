@@ -130,14 +130,16 @@ class Piece:
         minz=min(v[2] for v in self.vertices)
         if abs(minz)>.001:
             self.vertices=[(x,y,z-minz) for (x,y,z) in self.vertices]
+        print('KIT_MESH_PREP',self.name,len(self.vertices),len(self.faces),flush=True)
         me=bpy.data.meshes.new(self.name)
         me.from_pydata(self.vertices,[],self.faces)
         me.update()
+        print('KIT_MESH_CREATED',self.name,flush=True)
         obj=bpy.data.objects.new(self.name,me)
         bpy.context.collection.objects.link(obj)
         for m in materials:me.materials.append(m)
         uv=me.uv_layers.new(name="UVMap")
-        col=me.vertex_colors.new(name="Color")
+        col=me.color_attributes.new(name="Color",type='FLOAT_COLOR',domain='CORNER')
         for n,p in enumerate(me.polygons):
             p.material_index=self.slots[n]
             k=self.swatches[n]
@@ -149,6 +151,7 @@ class Piece:
                 # Mix custom stone tonality into vertex colors, never a separate texture.
                 col.data[li].color=(shade,shade,shade,1)
         assert all(v.co.z>=-.015 for v in me.vertices), "Below-base geometry: "+self.name
+        print('KIT_MESH_FINISHED',self.name,flush=True)
         return obj
 
 entries=[]
@@ -156,6 +159,7 @@ def save(piece):
     assert piece.faces, piece.name
     print('KIT_GENERATING',piece.name,'raw_faces',len(piece.faces),flush=True)
     obj=piece.mesh()
+    print('KIT_EXPORT_PREP',piece.name,flush=True)
     bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
     path=MODELS/(piece.name+".fbx")
     bpy.ops.export_scene.fbx(filepath=str(path),use_selection=True,
@@ -163,6 +167,7 @@ def save(piece):
         apply_unit_scale=True,global_scale=1.0,mesh_smooth_type='FACE',
         use_mesh_modifiers=True,add_leaf_bones=False,bake_anim=False,
         path_mode='AUTO')
+    print('KIT_EXPORT_DONE',piece.name,flush=True)
     tri=sum(len(f)-2 for f in piece.faces)
     xs=[v[0] for v in piece.vertices];ys=[v[1] for v in piece.vertices];zs=[v[2] for v in piece.vertices]
     record={"id":piece.name,"family":piece.family,"fbx":"Models/"+piece.name+".fbx",
