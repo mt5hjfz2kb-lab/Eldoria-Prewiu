@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:59:52.539Z",
+  "updated_at": "2026-11-16T13:29:49.171Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9804,13 +9804,15 @@
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
       "title": "Visual reboot — three-state Bastion visual pilot",
-      "owner": "chatgpt-visual-reboot-hero-d921b074af21",
+      "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 50,
+      "ownership_revision": 51,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE1_ENVIRONMENT_SECOND_REVIEW_ART_REJECTED",
-      "resources": [],
+      "phase": "PHASE1_SECOND_REVISION_NATIVE_CAPTURING",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9840,10 +9842,11 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43868342891
+        "status": "reserved_exact_source_for_native_capture",
+        "source_sha": "94a095407cc43df527693d75f4bffda0bb767376",
+        "reason": "User requested continue to actual Unity screenshots, no other Windows holder or active branch native jobs"
       },
-      "native_source_sha": "940f6848124f326985e99d4d08105c44ea5b59fd",
+      "native_source_sha": "94a095407cc43df527693d75f4bffda0bb767376",
       "last_native_attempt": {
         "run": 43862025708,
         "source": "05f8b8ae788225d9bd304a23869215317c248d83",
@@ -9858,7 +9861,7 @@
         "approval_required_before_phase2": true
       },
       "reviewed_source_sha": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4",
-      "previous_owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
+      "previous_owner": "chatgpt-visual-reboot-hero-d921b074af21",
       "owner_hero_approval": {
         "approved": true,
         "at": "2026-11-16T10:36:12.502Z",
@@ -9872,10 +9875,9 @@
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
       },
       "resource_turn_handoff": {
-        "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43868342891,
+        "status": "bounded_visual_capture_reserved",
         "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "note": "Native run successfully compiled and generated original screenshot; artistic review failed so Phase1 remains open; shared Windows returned immediately."
+        "note": "Release after one completed native capture and evidence collection; do not change other workstreams"
       },
       "last_native": {
         "run": 43868342891,
@@ -9885,7 +9887,16 @@
         "art_approved": false,
         "visual_review": "orange/sepia veil, flat orange sky, ground colors not differentiated enough, crystals insufficiently integrated into wall/ground, needs another artistic pass",
         "physical_mobile": false
-      }
+      },
+      "ownership_history": [
+        {
+          "owner": "chatgpt-visual-reboot-hero-d921b074af21",
+          "revision": 50,
+          "reason": "User-directed continuation after previous conversation reached capacity",
+          "source_sha": "71a6346ea939d666dc318fb03c40f7bff6a817c7"
+        }
+      ],
+      "write_scope_released": false
     }
   ],
   "history": [
@@ -20316,11 +20327,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_turn_available",
+    "status": "visual_bounded_native_reserved",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
