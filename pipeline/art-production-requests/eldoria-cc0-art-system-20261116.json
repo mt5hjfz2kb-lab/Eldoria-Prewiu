@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-cc0-art-system-20261116",
+  "workstream_id": "eldoria-cc0-art-system-20261116",
+  "enabled": false,
+  "status": "ISOLATED_SOURCE_PREPARATION",
+  "asset_or_sector": "Nuevo sistema gráfico comercialmente viable: Valoria I-V, mundo, personajes, HUD; fuentes Quaternius y UI controlada",
+  "profile": "environment_composition",
+  "visual_gate_state": "DOCUMENTED_NOT_RENDERED",
+  "ai_authorship_policy": "required",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "physical_asset_import": false,
+    "original_authoring": true,
+    "independent_sandbox": true,
+    "unity_native_capture_planned": true
+  },
+  "validation": {
+    "source_gate": "Solo archivos nuevos aislados en rama. Sin paquetes externos añadidos sin revisar redistribución pública.",
+    "final_gate": "Capturas verdaderas Unity de Bastión I/V y mundo, contraste con estado real del juego, pruebas iPhone y evidencia de licencias separadas."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0
+}
