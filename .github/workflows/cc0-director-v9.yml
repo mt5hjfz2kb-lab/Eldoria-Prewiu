@@ -66,7 +66,7 @@ jobs:
           root=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV9")
           photos=Path("docs/cc0-art-system/previews/director-v9")
           e=json.loads((photos/"v9-evidence.json").read_text())
-          assert e['source_run']==43880753054 and e['source_redrawn'] and e['blender_render']
+          assert e['source_run']==43882248142 and e['source_redrawn'] and e['blender_render']
           assert len(e['stages'])==5 and len(e['frames'])==3
           assert not e['native_unity_tested'] and not e['mobile_tested'] and not e['art_approved']
           assert (root/"DirectorV9_Editable_Source.blend").read_bytes()[:7]==b'BLENDER'
