@@ -38,7 +38,7 @@ def material(name,srgb,rough=.82,metal=0,emissive=0):
  n.inputs['Roughness'].default_value=rough
  n.inputs['Metallic'].default_value=metal
  if emissive:
-  n.inputs['Emission'].default_value=(*(linear(v) for v in srgb),1)
+  if 'Emission' in n.inputs:n.inputs['Emission'].default_value=(*(linear(v) for v in srgb),1)
   if 'Emission Color' in n.inputs:n.inputs['Emission Color'].default_value=(*(linear(v) for v in srgb),1)
   if 'Emission Strength' in n.inputs:n.inputs['Emission Strength'].default_value=emissive
  return m
