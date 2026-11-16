@@ -1,0 +1,44 @@
+name: "Art Reboot Phase2 · Blender source studio preview without Windows"
+on:
+  push:
+    branches: [art/visual-reboot]
+    paths:
+      - .github/workflows/art-reboot-kit-preview.yml
+      - Unity/Assets/Art_Reboot/Kit/Source~/render_kit_studio.py
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: art-reboot-kit-preview
+  cancel-in-progress: false
+jobs:
+  studio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Art_Reboot/Kit
+            Unity/Assets/Art_Reboot/Phase1/Textures/Hero_Atlas_256.png
+      - name: Install Blender for original-source preview (not Unity certification)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender python3-numpy
+      - name: Render source kit in independent neutral studio
+        env:
+          KIT_BLENDER_PREVIEW_OUTPUT: ${{ runner.temp }}/kit-blender-source-review.png
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Kit/Source~/render_kit_studio.py 2>&1 | tee "$RUNNER_TEMP/preview.log"
+          grep -q KIT_STUDIO_SOURCE_PREVIEW_PASS "$RUNNER_TEMP/preview.log"
+          test -s "$KIT_BLENDER_PREVIEW_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase2-original-blender-studio-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/kit-blender-source-review.png
+            ${{ runner.temp }}/preview.log
+          if-no-files-found: warn
+          retention-days: 7
