@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T15:28:32.814Z",
+  "updated_at": "2026-11-16T15:31:44.924Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9807,10 +9807,10 @@
       "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 58,
+      "ownership_revision": 59,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE2_KIT_FINAL_NATIVE_CAPTURE",
+      "phase": "PHASE2_KIT_FINAL_NATIVE_RUNNING",
       "resources": [
         "windows-runner-heavy"
       ],
@@ -9843,11 +9843,12 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_exact_source_under_authorized_rotation",
-        "source_sha": "1a6ed7b8bcc927f4c7530faadbf2db74ca8798f1",
-        "previous_ashen_run": 43893235513
+        "status": "reserved_exact_head_for_phase2_kit",
+        "source_sha": "9cceb95ee17dac105843409d18953e5d73451ab4",
+        "previous_ashen_run": 43893235513,
+        "reason": "Bounded Unity native validation of enhanced kit; 31 source FBX and original scenes only"
       },
-      "native_source_sha": "1a6ed7b8bcc927f4c7530faadbf2db74ca8798f1",
+      "native_source_sha": "9cceb95ee17dac105843409d18953e5d73451ab4",
       "last_native_attempt": {
         "run": 43876327593,
         "source": "94a095407cc43df527693d75f4bffda0bb767376",
@@ -20354,7 +20355,7 @@
     "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "visual_phase2_exact_source_native_reserved",
+    "status": "visual_phase2_native_exact_source_pinned",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
