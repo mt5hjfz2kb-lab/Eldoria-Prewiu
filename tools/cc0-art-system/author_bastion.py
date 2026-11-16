@@ -524,9 +524,11 @@ def main():
     composition()
     cam=light_and_camera()
     # L5 is the protagonist; render both levels using IDENTICAL framing.
-    output(5,"CC0_BastionV_Lookdev_1440x900.png",1440,900)
-    output(1,"CC0_BastionI_Lookdev_1440x900.png",1440,900)
-    output(5,"CC0_BastionV_Portrait_720x1200.png",720,1200,camera_x=22)
+    skip_lookdev = os.environ.get("ELDORIA_SKIP_LOOKDEV_RENDERS")=="1"
+    if not skip_lookdev:
+        output(5,"CC0_BastionV_Lookdev_1440x900.png",1440,900)
+        output(1,"CC0_BastionI_Lookdev_1440x900.png",1440,900)
+        output(5,"CC0_BastionV_Portrait_720x1200.png",720,1200,camera_x=22)
     S.camera.location.x=29
     S.camera.rotation_euler=(Vector((0,1.5,4.6))-S.camera.location).to_track_quat('-Z','Y').to_euler()
     export_glb(1,"CC0_Valoria_Stage1.glb")
