@@ -65,3 +65,14 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 - **Pendientes genuinos:** inspeccionar visualmente V7 A/B, repetir optimización estática sobre los modelos V7 (no asumir resultados de V6), ejecutar integración Unity aislada solo cuando Windows esté correctamente reservado y probar el dispositivo real. **No fusionar ni publicar**.
 
 **Evidencia / principio de honestidad:** Blender render success ≠ unidad artística aceptable; GLB texturas rebake success ≠ iPhone performance. Mantener referencias y defectos al cambiar de conversación.
+
+## Director V8 — reconstrucción material y arquitectónica (16/11/2026)
+
+**Punto de partida verificable:** [Director V7 run 43880753054](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43880753054) = 5 GLB de autoría Eldoria + fuente BLEND + 3 capturas reales Blender; sin prueba Unity o móvil. Revisión visual independiente: aspecto aún demasiado plano, árboles geométricos y pálidos, textura de tierra débil y torre superior aislada.
+
+**Nuevo trabajo real en la misma rama:**
+- `tools/cc0-art-system/director_v8_atlas_and_citadel.py` importa V7 real del run exacto; reemplaza suelo por altura y textura de 1024×1024 con caminos coloreados en terreno; introduce tres atlas físicos 1024×1024 (piedra, pizarra y madera), retoma materiales compartidos, sustituye coníferas por copas orgánicas con geometría propia, construye nave gótica conectada y tejados de capilla, mejora cuartel/granero/cantera/aserradero y mantiene cinco exportaciones físicas.
+- `.github/workflows/cc0-director-v8.yml` ejecuta Blender 4 sobre Ubuntu alojado sin Windows compartido, con input inmóvil [V7 #43880753054](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43880753054). Espera tres capturas auténticas 1600×900 (I, V) y 720×1200 (V), cinco GLB, BLEND editable y evidencia técnica en `eldoria-cc0-director-v8-real-3d`.
+- **Run inicial V8 [#43882248142](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43882248142):** lanzado; su éxito, calidad de capturas y rendimiento NO deben darse por supuestos mientras no terminen la ejecución y la revisión.
+
+**Límites:** no modifica `main`; no incorpora fuentes privadas de Quaternius; no es conversión de imagen conceptual a 3D; no certifica rendimiento ni calidad artística Unity/iPhone. Siguiente obligación: inspeccionar fotos reales V8, medir fallos geométricos y corregir antes de declarar mejora sustancial.
