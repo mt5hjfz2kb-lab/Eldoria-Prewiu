@@ -24,6 +24,11 @@ jobs:
         with:
           fetch-depth: 1
           ref: experiment/ashen-citadel-i-v-20261115
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/ashen-citadel/generate_ui_atlas.mjs
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources
           persist-credentials: true
       - name: Generate 12 source-authored PNG sprites and their SHA256 manifest
         run: |
