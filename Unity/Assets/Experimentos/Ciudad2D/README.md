@@ -34,9 +34,6 @@ No se tocan `ProjectSettings`, `Valoria_City_World_UI.unity`, código existente 
 
 `QA/asset_manifest.json` contiene dimensiones, tamaño y SHA-256 de los ocho PNG y estados de pruebas. `QA/preview-I-V.png` es exclusivamente composición Pillow, no captura del motor. `QA/validate_pilot.py` valida los sprites, los límites de hitos y la ausencia de mutaciones en el adaptador. Cada defecto detectado debe documentarse antes de abrir el siguiente bloque de producción.
 
-## Pase de riqueza ambiental (segunda iteración aislada)
-
-Se han incorporado **9 props originales** y 10 colocaciones independientes: árbol antiguo, matorrales, muro derruido, carreta, pozo, suministros, valla, antorchas y grieta violeta. Son sprites RGBA individuales con pivot a los pies, sorting por coordenada y sin colliders, guardados solo en `Sprites/Props` y renderizados como objetos independientes en Unity y el inspector web. Su estilo, identidad y ubicación son **candidatos**, no arte aprobado. El fondo y seis edificios originales siguen independientes; ninguna regla ni guardado cambia. `QA/validate_props.py` verifica los SHA256, los tamaños y el alfa de los PNG. El pase de arte no certifica PlayMode ni dispositivos físicos.
 
 ## Iteración 3 · barrios habitados y arte modular (16/11/2026)
 
@@ -48,3 +45,13 @@ Se han incorporado **9 props originales** y 10 colocaciones independientes: árb
 - Verificaciones: Pillow + JSON + SHA y navegador interactivo (cuando finalice Actions), **no PlayMode ni prueba física**. Nunca atribuir las composiciones QA a capturas nativas.
 - El PC Windows se utiliza exclusivamente si la reserva viva `windows-runner-heavy` se transfiere a `eldoria-city2d-illustrated-proof-20261116`. El workflow nativo existente comprueba esta condición y marca `skipped` en otro caso; no interferir con Ashen/Visual Reboot. La autorización condicional del propietario no elimina las reservas de otros chats.
 - Pendiente artístico: un terreno reautoría con caminos menos geométricos y más niveles de identidad; no escalar a docenas de edificios antes de ver capturas reales de Unity.
+
+## Prioridad vigente: progresión real y terreno extensible — 16/11/2026
+
+**Decisión posterior que prevalece sobre la descripción inicial:** la primera demo que mostraba los seis edificios completos a nivel 1 queda sustituida. `City2DProgressionPolicy` respeta `LocalGateway` sin mutarlo: Aserradero I, Cuartel II, Granero III, Cantera productiva V; sólo muestra el edificio construido cuando su nivel persistido es mayor que cero. Una parcela puede estar bloqueada, disponible, en construcción o terminada. Las pruebas I–V usan snapshots ficticios del estudio, no guardados del jugador. El Salón de Héroes no se presenta como un edificio construido: aún no hay una regla de obra/nivel propio.
+
+El nuevo `QA/city_layout.json` (schema 4) conserva posiciones y 22 elementos de escena independientes, con ventanas `min_bastion`/`max_bastion` para que los decorados ruinosos desaparezcan al desarrollarse sus barrios. Hay tres reservas de expansión en el mapa, **todavía sin terreno nuevo**; no se estira la lámina del fondo.
+
+Controles de estudio: capítulos I, II, III, IV y V. La variante visual del Bastión sigue siendo I (niveles 1–4) / V (niveles 5–9), pero el resto de parcelas cambia según las reglas del capítulo y la construcción finalizada. Las pruebas del navegador cubren las cinco composiciones y cuatro resoluciones. **No confundir la web de inspección con la beta real**.
+
+Plan de producción completo: `docs/ciudad2d/PRODUCTION_SYSTEM.md` en la rama (ciudad, mundo, combate, héroes, cartas, Vigilantes, Exploradores, Bolsa, Buzón, cofre y tutorial). La visibilidad real en Unity, eventos de puntero, lectura de instantánea y rendimiento en dispositivos siguen requiriendo QA nativa.

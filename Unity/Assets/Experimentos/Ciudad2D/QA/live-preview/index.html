@@ -16,8 +16,8 @@
 #heading{min-width:0;flex:1;padding-top:1px} #heading b{font-size:16px;line-height:1.1;letter-spacing:.095em;font-weight:600;display:block} #heading span{display:block;color:#cfbe9d;font:11px/1.3 system-ui,sans-serif;letter-spacing:.04em;margin-top:5px}
 #phase{padding:6px 9px;min-width:65px;text-align:center;font:10px/1.4 system-ui,sans-serif;color:#e5d7c2;border:1px solid var(--line);background:#18232bc9;border-radius:4px;letter-spacing:.07em}
 #phase b{display:block;font:19px/1.05 Georgia,serif;color:var(--gold)}
-#toolbar{margin-left:auto;display:flex;gap:7px;pointer-events:auto;padding:0 13px 0}
-.chip{background:linear-gradient(170deg,rgba(52,61,60,.94),rgba(14,21,29,.96));color:var(--ivory);border:1px solid #887758;border-radius:4px;padding:8px 10px;min-width:65px;font:12px/1.1 system-ui,sans-serif;letter-spacing:.035em;box-shadow:inset 0 1px 0 #ffffff1d,0 3px 14px #0003}
+#toolbar{margin-left:auto;display:flex;gap:5px;pointer-events:auto;padding:0 13px 0}
+.chip{background:linear-gradient(170deg,rgba(52,61,60,.94),rgba(14,21,29,.96));color:var(--ivory);border:1px solid #887758;border-radius:4px;padding:8px 7px;min-width:38px;font:12px/1.1 system-ui,sans-serif;letter-spacing:.035em;box-shadow:inset 0 1px 0 #ffffff1d,0 3px 14px #0003}
 .chip[aria-pressed=true]{background:linear-gradient(180deg,#765b36,#342b22);border-color:#e6bf78;color:#ffecbd;box-shadow:0 0 11px #a77b3136,inset 0 0 0 1px #f2d09142}
 #bottom{pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 11px calc(env(safe-area-inset-bottom) + 11px);background:linear-gradient(0deg,rgba(10,14,19,.94),rgba(10,14,19,.7) 60%,transparent)}
 #status{color:#c6bda8;font:10px/1.25 system-ui,sans-serif;letter-spacing:.07em;text-shadow:0 1px 4px black}
@@ -28,13 +28,13 @@
 #sheet{display:none;position:absolute;left:9px;right:9px;bottom:calc(env(safe-area-inset-bottom) + 118px);margin:0 auto;max-width:470px;padding:17px 18px 16px;background:linear-gradient(160deg,#2c3031,#121921 90%);border:1px solid #9b804e;border-radius:5px;box-shadow:0 16px 30px #000a;z-index:3;pointer-events:auto}
 #sheet.open{display:block} #sheet h2{margin:0 30px 7px 0;font-size:20px;font-weight:500;color:var(--gold)} #sheet p{font:13px/1.5 system-ui,sans-serif;color:#e0d8c9;margin:6px 0} #close{position:absolute;right:9px;top:8px;border:0;background:transparent;color:var(--ivory);font-size:23px}
 #debug{display:none;position:absolute;right:10px;top:100px;padding:8px;color:white;background:#111b;font:10px monospace}
-@media (orientation:landscape){#top{padding-top:calc(env(safe-area-inset-top) + 5px);padding-left:calc(env(safe-area-inset-left) + 8px);padding-right:calc(env(safe-area-inset-right) + 8px)}#crest{width:32px;height:35px;font-size:18px}#heading b{font-size:14px}#heading span{font-size:9px;margin-top:2px}#phase{padding:3px 8px}#phase b{font-size:15px}#toolbar{position:absolute;right:calc(env(safe-area-inset-right) + 9px);top:62px;flex-direction:column}.chip{min-width:57px}#bottom{align-items:flex-start;padding-bottom:calc(env(safe-area-inset-bottom) + 5px)}#selection{max-width:320px;padding:6px 8px}#selection-mark{width:29px;height:29px;font-size:15px}#selection-main b{font-size:12px}#selection-main span{font-size:10px}#status{font-size:9px}#sheet{left:auto;right:78px;bottom:68px;max-width:min(400px,75vw)}}
+@media (orientation:landscape){#top{padding-top:calc(env(safe-area-inset-top) + 5px);padding-left:calc(env(safe-area-inset-left) + 8px);padding-right:calc(env(safe-area-inset-right) + 8px)}#crest{width:32px;height:35px;font-size:18px}#heading b{font-size:14px}#heading span{font-size:9px;margin-top:2px}#phase{padding:3px 8px}#phase b{font-size:15px}#toolbar{position:absolute;right:calc(env(safe-area-inset-right) + 9px);top:62px;flex-direction:column;gap:3px}.chip{min-width:38px;padding:5px 6px}#bottom{align-items:flex-start;padding-bottom:calc(env(safe-area-inset-bottom) + 5px)}#selection{max-width:320px;padding:6px 8px}#selection-mark{width:29px;height:29px;font-size:15px}#selection-main b{font-size:12px}#selection-main span{font-size:10px}#status{font-size:9px}#sheet{left:auto;right:78px;bottom:68px;max-width:min(400px,75vw)}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <canvas id="world" aria-label="Ciudad de Valoria, toca los edificios para inspeccionarlos"></canvas><div id="veil"></div>
-<div id="hud"><div><div id="top"><div id="crest" aria-hidden="true">⚜</div><div id="heading"><b>VALORIA</b><span>CIUDAD DE LA BRECHA · ESTUDIO 2.5D</span></div><div id="phase">BASTIÓN<b id="phase-value">I</b></div></div><div id="toolbar"><button class="chip" id="tier1" type="button" aria-pressed="true">I–IV</button><button class="chip" id="tier5" type="button" aria-pressed="false">V–IX</button><button class="chip" id="recenter" type="button" aria-label="Centrar vista">⌖</button></div></div><div id="bottom"><div id="status">PRUEBA VISUAL · BARRIOS MODULARES · SIN PARTIDAS</div><div id="selection"><div id="selection-mark" aria-hidden="true">⚒</div><div id="selection-main"><b id="name">Explora la ciudad</b><span id="subtitle">Toca un edificio · arrastra para mover · pellizca para ampliar</span></div><button id="detail" type="button">DETALLE</button></div></div></div>
+<div id="hud"><div><div id="top"><div id="crest" aria-hidden="true">⚜</div><div id="heading"><b>VALORIA</b><span>CIUDAD DE LA BRECHA · ESTUDIO 2.5D</span></div><div id="phase">BASTIÓN<b id="phase-value">I</b></div></div><div id="toolbar"><button class="chip" id="tier1" type="button" aria-pressed="true">I</button><button class="chip" id="tier2" type="button" aria-pressed="false">II</button><button class="chip" id="tier3" type="button" aria-pressed="false">III</button><button class="chip" id="tier4" type="button" aria-pressed="false">IV</button><button class="chip" id="tier5" type="button" aria-pressed="false">V</button><button class="chip" id="recenter" type="button" aria-label="Centrar vista">⌖</button></div></div><div id="bottom"><div id="status">PRUEBA VISUAL · BARRIOS MODULARES · SIN PARTIDAS</div><div id="selection"><div id="selection-mark" aria-hidden="true">⚒</div><div id="selection-main"><b id="name">Explora la ciudad</b><span id="subtitle">Toca un edificio · arrastra para mover · pellizca para ampliar</span></div><button id="detail" type="button">DETALLE</button></div></div></div>
 <div id="sheet" role="dialog" aria-label="Información de edificio" aria-modal="false"><button id="close" type="button" aria-label="Cerrar">×</button><h2 id="sheettitle"></h2><p id="sheetbody"></p><p>Esta pantalla es una simulación visual. No modifica el juego, los recursos ni el progreso.</p></div>
 <div id="debug"></div>
 <script>
@@ -48,10 +48,43 @@ const descriptions={
  bastion:'Corazón de Valoria',aserradero:'Producción de madera',
  granero:'Reserva de alimentos',cantera:'Extracción de piedra'
 };
-const imgs={},alpha={};let artLevel=1,sel=null,zoom=1,centerX=W/2,centerY=H/2,baseScale=1,scale=1,landscape=false,activePointers=new Map(),lastDistance=null,lastPoint=null,dragPx=0,frame=0,ready=false;
+const imgs={},alpha={};let stage=1,artLevel=1,sel=null,zoom=1,centerX=W/2,centerY=H/2,baseScale=1,scale=1,landscape=false,activePointers=new Map(),lastDistance=null,lastPoint=null,dragPx=0,frame=0,ready=false;
 const clicks=[];
-function select(id){sel=entries.find(e=>e.id===id)||null;document.getElementById('sheet').classList.remove('open');document.getElementById('name').textContent=sel?sel.name:'Explora la ciudad';document.getElementById('subtitle').textContent=sel?`${sel.t} · ${sel.id==='bastion'?'Ilustración nivel '+artLevel:'Ilustración base'} `:'Toca un edificio · arrastra para mover · pellizca para ampliar';document.getElementById('detail').style.display=sel?'block':'none';clicks.push(id||null);}
-function tier(level){artLevel=level>=5?5:1;const b=entries.find(e=>e.id==='bastion');b.file=artLevel===5?b.level5File:b.baseFile;b.s=artLevel===5?b.scale5:b.baseScale;document.getElementById('tier1').setAttribute('aria-pressed',String(artLevel===1));document.getElementById('tier5').setAttribute('aria-pressed',String(artLevel===5));document.getElementById('phase-value').textContent=artLevel===5?'V':'I';if(sel)select(sel.id);}
+// Only the real authoritative building unlock thresholds are shown. This is an
+// illustrative chapter fixture, not a fabricated save or a construction command.
+const ruleMin={bastion:1,aserradero:1,cuartel:2,granero:3,cantera:5,salon:Infinity};
+const completedAt={aserradero:2,cuartel:3,granero:4,cantera:Infinity,salon:Infinity};
+function stateFor(e){
+ if(e.id==='salon'||stage<ruleMin[e.id])return {phase:'locked',level:0};
+ if(e.id==='bastion')return {phase:'built',level:stage};
+ if(stage<completedAt[e.id])return {phase:'available',level:0};
+ const level=e.id==='aserradero'?stage<3?1:2:e.id==='cuartel'?stage<4?1:2:e.id==='granero'?stage<5?1:2:1;
+ return {phase:'built',level};
+}
+function select(id){
+ const target=entries.find(e=>e.id===id)||null;
+ sel=target&&stateFor(target).phase!=='locked'?target:null;
+ document.getElementById('sheet').classList.remove('open');
+ document.getElementById('name').textContent=sel?sel.name:'Explora la ciudad';
+ const status=sel?stateFor(sel):null;
+ const text=status?.phase==='available'?'Parcela desbloqueada · edificio aún sin construir':
+    status?.phase==='under-construction'?'Obra en curso · edificio sin terminar':
+    sel?`${sel.t} · nivel ${status.level} · arte ${sel.id==='bastion'?artLevel:'I'}`:
+    'Toca una parcela disponible o un edificio · arrastra · pellizca';
+ document.getElementById('subtitle').textContent=text;
+ document.getElementById('detail').style.display=sel?'block':'none';
+ clicks.push(sel?.id||null);
+}
+function tier(level){
+ stage=Math.min(5,Math.max(1,Math.round(level)));artLevel=stage>=5?5:1;
+ const b=entries.find(e=>e.id==='bastion');b.file=artLevel===5?b.level5File:b.baseFile;
+ b.s=artLevel===5?b.scale5:b.baseScale;
+ for(let n=1;n<=5;n++)document.getElementById('tier'+n).setAttribute('aria-pressed',String(stage===n));
+ document.getElementById('phase-value').textContent=['','I','II','III','IV','V'][stage];
+ document.getElementById('status').textContent=`CAPÍTULO ${stage} · RECONSTRUCCIÓN FICTICIA · NO CAMBIA LA PARTIDA`;
+ if(sel)select(sel.id);
+}
+function shownDecor(d){return stage>=(d.minBastion||1)&&(!d.maxBastion||stage<=d.maxBastion);}
 function clampView(){const visibleW=canvas.clientWidth/scale,visibleH=canvas.clientHeight/scale;centerX=Math.min(Math.max(centerX,visibleW/2),Math.max(visibleW/2,W-visibleW/2));centerY=Math.min(Math.max(centerY,visibleH/2),Math.max(visibleH/2,H-visibleH/2));if(visibleW>=W)centerX=W/2;if(visibleH>=H)centerY=H/2;}
 function resize(reset=false){const w=canvas.clientWidth,h=canvas.clientHeight,ratio=Math.min(2,devicePixelRatio||1);canvas.width=Math.ceil(w*ratio);canvas.height=Math.ceil(h*ratio);landscape=w/h>1.2;baseScale=landscape?w/(W*1.04):Math.max(Math.min(w/W,h/H),h/(H*1.02));scale=baseScale*zoom;if(reset){centerX=W/2;centerY=landscape?670:H/2;zoom=1;scale=baseScale;}clampView();}
 function worldToScreen(x,y){return [(x-centerX)*scale+canvas.clientWidth/2,(y-centerY)*scale+canvas.clientHeight/2];}
@@ -60,16 +93,23 @@ function img(name){return imgs[name]||null;}
 function drawImage(name,x,y,w,h){const im=img(name);if(im)ctx.drawImage(im,x,y,w,h);}
 function draw(){frame++;const ratio=canvas.width/canvas.clientWidth;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#18252b';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);ctx.save();ctx.translate(canvas.clientWidth/2,canvas.clientHeight/2);ctx.scale(scale,scale);ctx.translate(-centerX,-centerY);
  drawImage('Terreno.png',0,0,W,H);
- for(const o of [...entries.map(e=>({...e,kind:'building'})),...decor.map(e=>({...e,kind:'decor'}))].sort((a,b)=>a.y-b.y)){
+ for(const o of [...entries.filter(e=>stateFor(e).phase==='built').map(e=>({...e,kind:'building'})),
+                   ...decor.filter(shownDecor).map(e=>({...e,kind:'decor'}))].sort((a,b)=>a.y-b.y)){
   const im=img(o.file);if(!im)continue;const dw=im.width*o.s,dh=im.height*o.s,x=o.x-dw/2,y=o.y-dh;
-  // very subtle contact darkening: art is painted, no fake plinths
   ctx.fillStyle='rgba(11,19,19,.08)';ctx.beginPath();ctx.ellipse(o.x,o.y-8,dw*.32,10,0,0,Math.PI*2);ctx.fill();
   drawImage(o.file,x,y,dw,dh);
   if(o.kind==='building'&&sel?.id===o.id){ctx.strokeStyle='rgba(248,215,151,.85)';ctx.lineWidth=2/scale;ctx.beginPath();ctx.ellipse(o.x,o.y-dh*.18,dw*.39,Math.max(12,dh*.115),0,0,Math.PI*2);ctx.stroke();}
  }
+ for(const e of entries){
+  if(stateFor(e).phase!=='available')continue;
+  // A visually lightweight parcel is NOT the finished building.
+  const r=28;
+  ctx.save();ctx.setLineDash([6,5]);ctx.lineWidth=1.7;ctx.strokeStyle='rgba(236,194,112,.9)';ctx.fillStyle='rgba(49,35,20,.16)';
+  ctx.beginPath();ctx.ellipse(e.x,e.y-8,r*1.5,r*.65,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+ }
  // flame glows are emissive-only in the web study, no dynamic point lights
  const t=performance.now()/1000;
- for(const g of glows){
+ for(const g of glows.filter(shownDecor)){
   const r=g.radius, pulse=0.18+0.03*Math.sin(t*4.4+g.x*.017);
   const grad=ctx.createRadialGradient(g.x,g.y,1,g.x,g.y,r);
   grad.addColorStop(0,`rgba(255,170,73,${(g.opacity*pulse).toFixed(3)})`);
@@ -79,6 +119,12 @@ function draw(){frame++;const ratio=canvas.width/canvas.clientWidth;ctx.setTrans
  ctx.restore();requestAnimationFrame(draw);
 }
 function clickPoint(cx,cy){const [x,y]=screenToWorld(cx,cy);for(const o of entries.slice().sort((a,b)=>b.y-a.y)){
+ const phase=stateFor(o).phase;
+ if(phase==='locked')continue;
+ if(phase==='available'){
+   if(Math.abs(x-o.x)<42&&Math.abs(y-o.y+8)<36){select(o.id);return o.id;}
+   continue;
+ }
  const im=img(o.file);if(!im)continue;const dw=im.width*o.s,dh=im.height*o.s,ix=(x-(o.x-dw/2))/o.s,iy=(y-(o.y-dh))/o.s;
  if(ix<0||iy<0||ix>=im.width||iy>=im.height)continue;
  const a=alpha[o.file];if(a){const px=Math.floor(ix),py=Math.floor(iy);if(a[(py*im.width+px)]<50)continue;}
@@ -89,23 +135,30 @@ function pointerMove(e){if(!activePointers.has(e.pointerId))return;const old=act
 function pointerUp(e){if(!activePointers.has(e.pointerId))return;activePointers.delete(e.pointerId);if(activePointers.size<2)lastDistance=null;if(activePointers.size===0&&dragPx<9&&e.target===canvas){const r=canvas.getBoundingClientRect();clickPoint(e.clientX-r.left,e.clientY-r.top);} }
 canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('pointermove',pointerMove);canvas.addEventListener('pointerup',pointerUp);canvas.addEventListener('pointercancel',e=>{activePointers.delete(e.pointerId);lastDistance=null;});
 canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;const before=screenToWorld(x,y);zoom=Math.min(2.3,Math.max(1,zoom*(e.deltaY<0?1.12:.89)));scale=baseScale*zoom;const after=screenToWorld(x,y);centerX+=before[0]-after[0];centerY+=before[1]-after[1];clampView();},{passive:false});
-document.getElementById('tier1').onclick=()=>tier(1);document.getElementById('tier5').onclick=()=>tier(5);document.getElementById('recenter').onclick=()=>resize(true);
-document.getElementById('detail').onclick=()=>{if(!sel)return;document.getElementById('sheettitle').textContent=sel.name;document.getElementById('sheetbody').textContent=sel.id==='bastion'?`Bastión · variante gráfica ${artLevel===1?'I (niveles 1–4)':'V (niveles 5–9)'}. En niveles 10–14 y 15–19 se mantiene el último arte disponible hasta crear nuevos hitos.`:`${sel.t}. Ilustración única temporal; los niveles progresan sin cambios de aspecto hasta disponer del siguiente hito.`;document.getElementById('sheet').classList.add('open');};document.getElementById('close').onclick=()=>document.getElementById('sheet').classList.remove('open');
+for(let n=1;n<=5;n++)document.getElementById('tier'+n).onclick=()=>tier(n);
+document.getElementById('recenter').onclick=()=>resize(true);
+document.getElementById('detail').onclick=()=>{if(!sel)return;document.getElementById('sheettitle').textContent=sel.name;document.getElementById('sheetbody').textContent=stateFor(sel).phase==='available'?'Parcela disponible por las reglas del capítulo. El edificio aún NO se ha construido; esta vista no permite realizar órdenes.':sel.id==='bastion'?`Bastión · arte ${artLevel===1?'I (niveles 1–4)':'V (niveles 5–9)'}. Los niveles 10+ conservan V hasta producir otra ilustración.`:`${sel.t}. Nivel ${stateFor(sel).level}, ilustración temporal única.`;document.getElementById('sheet').classList.add('open');};document.getElementById('close').onclick=()=>document.getElementById('sheet').classList.remove('open');
 async function load(){
  const response=await fetch('../city_layout.json',{cache:'no-store'});
  if(!response.ok)throw new Error('No se puede cargar city_layout.json');
  const layout=await response.json();
- if(layout.schema!==3||layout.coordinate_width!==W||layout.coordinate_height!==H||
-    layout.buildings.length!==6||layout.decor.length!==16||layout.glows.length!==7)
+ if(layout.schema!==4||layout.coordinate_width!==W||layout.coordinate_height!==H||
+    layout.buildings.length!==6||layout.decor.length!==22||layout.glows.length!==7)
     throw new Error('Layout de Unity y navegador no coincide');
  layoutVersion=layout.schema;
+ for(const b of layout.buildings){
+   if(ruleMin[b.id]!==Infinity && b.required_bastion!==ruleMin[b.id])
+     throw new Error('Desbloqueo no coincide con LocalGateway: '+b.id);
+   if(b.id==='salon'&&b.has_persisted_level!==false)
+     throw new Error('Salon has no independent persistent level');
+ }
  entries=layout.buildings.map(e=>({
   id:e.id,name:e.title,file:e.filename,baseFile:e.filename,level5File:e.level5_filename||'',
   x:e.x,y:e.y,s:e.scale,baseScale:e.scale,scale5:e.level5_scale||0,
   t:descriptions[e.id]||'Edificio de Valoria'
  }));
- decor=layout.decor.map(e=>({id:e.id,file:e.filename,x:e.x,y:e.y,s:e.scale}));
- glows=layout.glows.map(e=>({...e}));
+ decor=layout.decor.map(e=>({id:e.id,file:e.filename,x:e.x,y:e.y,s:e.scale,minBastion:e.min_bastion,maxBastion:e.max_bastion||0}));
+ glows=layout.glows.map(e=>({...e,minBastion:e.min_bastion,maxBastion:e.max_bastion||0}));
  imageFiles=Array.from(new Set(['Terreno.png',...entries.flatMap(e=>[e.file,e.level5File].filter(Boolean)),...decor.map(e=>e.file)]));
  const items=await Promise.all(imageFiles.map(name=>new Promise((resolve,reject)=>{
   const im=new Image();im.onload=()=>resolve([name,im]);
@@ -122,10 +175,10 @@ async function load(){
   for(let j=0;j<a.length;j++)a[j]=data[j*4+3];
   alpha[name]=a;
  }
- ready=true;resize(true);requestAnimationFrame(draw);
+ ready=true;tier(1);resize(true);requestAnimationFrame(draw);
 }
 window.addEventListener('resize',()=>resize(false));
-window.city2dDebug={get state(){return {ready,artLevel,selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,clicks:clicks.slice()};},select,tier,clickPoint,recenter:()=>resize(true),worldToScreen};
+window.city2dDebug={get state(){return {ready,stage,artLevel,visibility:Object.fromEntries(entries.map(e=>[e.id,stateFor(e)])),selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,clicks:clicks.slice()};},select,tier,clickPoint,recenter:()=>resize(true),worldToScreen};
 load().catch(e=>{document.getElementById('status').textContent='ERROR EN RECURSOS: '+e.message;console.error(e);});
 })();
 </script>

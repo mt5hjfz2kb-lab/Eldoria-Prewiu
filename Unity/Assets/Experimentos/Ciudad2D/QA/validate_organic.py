@@ -6,14 +6,18 @@ from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]
 QA=ROOT/'QA';S=ROOT/'Sprites'
 manifest=json.loads((QA/'city_layout.json').read_text(encoding='utf-8'))
-assert manifest['schema']==3
+assert manifest['schema']==4
 assert [manifest['coordinate_width'],manifest['coordinate_height']]==[941,1672]
 bs=manifest['buildings'];decor=manifest['decor'];fx=manifest['glows']
-assert len(bs)==6 and len(decor)==16 and len(fx)==7
+assert len(bs)==6 and len(decor)==22 and len(fx)==7
 assert set(b['id'] for b in bs)=={'bastion','cuartel','salon','aserradero','granero','cantera'}
 assert len({b['id'] for b in bs})==len(bs) and len({x['id'] for x in decor})==len(decor)
 assert sum(bool(b.get('level5_filename')) for b in bs)==1
 assert next(b for b in bs if b['id']=='bastion')['level5_filename']=='Bastion_Nivel05.png'
+assert {b['id']:b['required_bastion'] for b in bs}=={'bastion':1,'aserradero':1,'cuartel':2,'granero':3,'cantera':5,'salon':0}
+assert all(d['min_bastion']>=1 and (not d['max_bastion'] or d['max_bastion']>=d['min_bastion']) for d in decor)
+assert all(g['min_bastion']>=1 for g in fx)
+assert len(manifest['future_districts'])>=2 and all(d['status']=='reserved_not_rendered' for d in manifest['future_districts'])
 for data in bs+decor:
     assert 0<=data['x']<=941 and 0<=data['y']<=1672 and .1 <= data['scale']<=.6, data
     if data in bs: name=data['filename']
@@ -40,7 +44,14 @@ assert 'Assets/Eldoria' not in builder
 assert 'EditorSceneManager.SaveScene(isolated, ScenePath)' in builder
 state=(ROOT/'Scripts/City2DStateBridge.cs').read_text(encoding='utf-8')
 assert 'ApplySnapshot(PlayerState snapshot)' in state and '.Execute(' not in state and '.Save(' not in state
+rules=(ROOT/'Scripts/City2DProgressionPolicy.cs').read_text(encoding='utf-8')
+for fragment in ['case "aserradero": return 1', 'case "cuartel": return 2', 'case "granero": return 3', 'case "cantera": return 5', 'case "salon"']:
+    if fragment=='case "salon"': continue
+    assert fragment in rules,fragment
+assert 'return int.MaxValue' in rules and 'state.BuildingCompletesUtcTicks > 0' in rules
+assert 'SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key))' in state
 web=(QA/'live-preview/index.html').read_text(encoding='utf-8')
-assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==16' in web
+assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==22' in web
 assert 'b.file=artLevel===5?b.level5File:b.baseFile' in web
-print('CITY2D_LAYOUT3_OFFLINE_PASS: 6 buildings, 16 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')
+assert 'function stateFor(e)' in web and 'stateFor(e).phase' in web
+print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 22 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')

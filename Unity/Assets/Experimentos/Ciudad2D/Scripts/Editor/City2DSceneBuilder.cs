@@ -19,7 +19,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         public const string ScenePath = Folder + "Experimento_Ciudad2D.unity";
         private const string SpritesFolder = Folder + "Sprites/";
         private const string LayoutPath = Folder + "QA/city_layout.json";
-        private const string SceneMarker = "Ciudad2D_Organica_I_V_Layout3";
+        private const string SceneMarker = "Ciudad2D_ProgresionReal_Layout4";
         private static bool building;
 
         [Serializable] private sealed class Layout
@@ -35,16 +35,21 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             public string id, title, filename, level5_filename;
             public float x, y, scale, level5_scale;
+            public int required_bastion;
+            public string build_contract;
+            public bool has_persisted_level;
         }
         [Serializable] private sealed class Decoration
         {
             public string id, filename;
             public float x, y, scale;
+            public int min_bastion, max_bastion;
         }
         [Serializable] private sealed class Glow
         {
             public string id;
             public float x, y, radius, opacity;
+            public int min_bastion, max_bastion;
         }
 
         static City2DSceneBuilder() { EditorApplication.delayCall += BuildIfReady; }
@@ -58,10 +63,10 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(LayoutPath);
             if (asset == null) return null;
             var result = JsonUtility.FromJson<Layout>(asset.text);
-            if (result == null || result.schema != 3 || result.coordinate_width != 941 ||
+            if (result == null || result.schema != 4 || result.coordinate_width != 941 ||
                 result.coordinate_height != 1672 || result.buildings == null ||
                 result.buildings.Length != 6 || result.decor == null || result.glows == null)
-                throw new InvalidOperationException("Layout3 is invalid; refuse rebuilding sandbox");
+                throw new InvalidOperationException("Layout4 is invalid; refuse rebuilding sandbox");
             var ids = new HashSet<string>(StringComparer.Ordinal);
             foreach (var spec in result.buildings)
             {
@@ -72,8 +77,15 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     throw new InvalidOperationException("Invalid/missing building layout sprite: " + (spec?.id ?? "null"));
             }
             foreach (var spec in result.decor)
-                if (spec == null || spec.scale <= 0 || Sprite(spec.filename) == null)
+                if (spec == null || spec.scale <= 0 || spec.min_bastion < 1 ||
+                    (spec.max_bastion > 0 && spec.max_bastion < spec.min_bastion) ||
+                    Sprite(spec.filename) == null)
                     throw new InvalidOperationException("Invalid/missing decoration in layout");
+            foreach (var spec in result.glows)
+                if (spec == null || spec.min_bastion < 1 || spec.radius <= 0)
+                    throw new InvalidOperationException("Invalid glow rule in layout");
+            if (Sprite("Props/MuroDerruido.png") == null || Sprite("Props/VallaLenador.png") == null)
+                throw new InvalidOperationException("Missing unfinished parcel indicator sprites");
             if (Sprite("Props/HaloAntorcha.png") == null) throw new InvalidOperationException("Missing halo sprite");
             return result;
         }
@@ -87,7 +99,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             Layout layout;
             try { layout = ReadLayout(); }
             catch (Exception e) { Debug.LogError("[Ciudad2D] " + e); return; }
-            if (layout == null) { if (forced) Debug.LogWarning("[Ciudad2D] Missing layout3"); return; }
+            if (layout == null) { if (forced) Debug.LogWarning("[Ciudad2D] Missing layout4"); return; }
             if (!forced && AlreadyBuilt()) return;
             building = true;
             Scene prior = SceneManager.GetActiveScene();
@@ -134,6 +146,23 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         };
                     var buildingComponent = obj.AddComponent<CityBuilding>();
                     buildingComponent.Configure(spec.id,spec.title,1,tiers);
+                    if (spec.id != "bastion")
+                    {
+                        // Early parcels show ruins/works, NEVER completed building art.
+                        var readyMarker = new GameObject("ParcelaDisponible_" + spec.id).AddComponent<SpriteRenderer>();
+                        readyMarker.transform.position = obj.transform.position;
+                        readyMarker.transform.localScale = Vector3.one * 0.35f;
+                        readyMarker.sprite = Sprite("Props/MuroDerruido.png");
+                        readyMarker.sortingOrder = renderer.sortingOrder;
+                        readyMarker.color = new Color(1f, 1f, 1f, 0.82f);
+                        var workMarker = new GameObject("ObraEnCurso_" + spec.id).AddComponent<SpriteRenderer>();
+                        workMarker.transform.position = obj.transform.position;
+                        workMarker.transform.localScale = Vector3.one * 0.43f;
+                        workMarker.sprite = Sprite("Props/VallaLenador.png");
+                        workMarker.sortingOrder = renderer.sortingOrder;
+                        workMarker.color = new Color(1f, 0.87f, 0.64f, 0.88f);
+                        buildingComponent.ConfigurePlotMarkers(readyMarker, workMarker);
+                    }
                     bridge.Register(buildingComponent);
                 }
                 foreach (var spec in layout.decor)
@@ -144,6 +173,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     var renderer = obj.AddComponent<SpriteRenderer>();
                     renderer.sprite = Sprite(spec.filename);
                     renderer.sortingOrder = OrderFor(spec.y,terrain);
+                    obj.AddComponent<City2DAmbientGating>().Configure(spec.min_bastion,spec.max_bastion);
                     // Non-interactive: no collider or saved state.
                 }
                 foreach (var spec in layout.glows)
@@ -156,12 +186,15 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     renderer.sortingOrder = 9000;
                     renderer.color = new Color(1f,1f,1f,Mathf.Clamp01(spec.opacity));
                     obj.AddComponent<City2DTorchPulse>().Configure(spec.opacity, spec.x * .017f);
+                    obj.AddComponent<City2DAmbientGating>().Configure(spec.min_bastion,spec.max_bastion);
                 }
+                bridge.RebindSceneBuildings();
+                bridge.SetDemoBastionLevel(1);
                 new GameObject("ControlesVisuales_NoJugables").AddComponent<City2DPilotHud>().Configure(bridge);
                 new GameObject(SceneMarker);
                 if (!EditorSceneManager.SaveScene(isolated, ScenePath))
                     throw new InvalidOperationException("Unity could not save isolated scene");
-                Debug.Log("[Ciudad2D] Scene Layout3 saved with " + layout.buildings.Length +
+                Debug.Log("[Ciudad2D] Scene Layout4 saved with " + layout.buildings.Length +
                           " buildings, " + layout.decor.Length + " props, " + layout.glows.Length + " light overlays");
             }
             catch (Exception e) { Debug.LogError("[Ciudad2D] Build failed " + e); throw; }

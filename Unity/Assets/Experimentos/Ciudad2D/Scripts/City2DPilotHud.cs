@@ -4,9 +4,8 @@ using UnityEngine.UI;
 namespace Eldoria.Experimentos.Ciudad2D
 {
     /// <summary>
-    /// Interfaz de laboratorio, aislada del HUD del juego.
-    /// Tamaño tactil verificable en 390x844 y 844x390; sin panel permanente inferior.
-    /// Nunca compra niveles ni altera la partida.
+    /// Controles ligeros solo para inspeccionar el pase artístico. No simulan
+    /// compra ni construcción. La UI definitiva de Vigilia permanece intacta.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class City2DPilotHud : MonoBehaviour
@@ -15,75 +14,59 @@ namespace Eldoria.Experimentos.Ciudad2D
         private CanvasScaler scaler;
         private Text heading;
         private Text selection;
-        private RectTransform selectionHolder;
-        private Button first;
-        private Button fifth;
-        private Image firstImage;
-        private Image fifthImage;
+        private Button[] chapterButtons = new Button[5];
         private Font font;
         private CityBuilding selected;
-
-        private static readonly Color Parchment = new Color(0.97f, 0.94f, 0.85f, 1f);
-        private static readonly Color Gold = new Color(0.91f, 0.72f, 0.38f, 1f);
-        private static readonly Color Ink = new Color(0.035f, 0.055f, 0.078f, 0.84f);
-        private static readonly Color ButtonIdle = new Color(0.13f, 0.20f, 0.26f, 0.97f);
-        private static readonly Color ButtonActive = new Color(0.37f, 0.27f, 0.14f, 1f);
+        private static readonly Color Parchment = new Color(0.95f, 0.91f, 0.80f, 1f);
+        private static readonly Color Gold = new Color(0.78f, 0.64f, 0.38f, 1f);
+        private static readonly Color Ink = new Color(0.055f, 0.083f, 0.12f, 0.92f);
 
         public void Configure(City2DStateBridge source) { bridge = source; }
 
         private void Start()
         {
-            if (bridge == null)
-            {
-                Debug.LogWarning("[Ciudad2D] Falta StateBridge", this);
-                return;
-            }
-
+            if (bridge == null) { Debug.LogWarning("[Ciudad2D] Falta StateBridge", this); return; }
             font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            if (font == null) font = Font.CreateDynamicFontFromOSFont("Arial", 16);
+            if (font == null) font = Font.CreateDynamicFontFromOSFont("Arial", 22);
 
-            var canvasGo = new GameObject("Ciudad2D_HUD_Ligero", typeof(RectTransform),
+            var canvasGo = new GameObject("Ciudad2D_HUD_Demostracion", typeof(RectTransform),
                 typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasGo.transform.SetParent(transform, false);
             var canvas = canvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 80;
-
             scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
-            UpdateScale();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(941, 1672);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
 
-            var top = MakeBox(canvasGo.transform, "HUD_Superior_68px", Ink);
+            var top = MakeBox(canvasGo.transform, "CintaSuperior", Ink);
             Position(top, new Vector2(0, 1), new Vector2(1, 1),
-                new Vector2(0, -68), Vector2.zero);
+                new Vector2(0, -113), new Vector2(0, 0));
+            var title = MakeText(top, "VALORIA   ·   ESTUDIO 2D", 29, Parchment, TextAnchor.MiddleLeft);
+            Position(title.GetComponent<RectTransform>(), new Vector2(0, 0), new Vector2(1, 1),
+                new Vector2(26, 36), new Vector2(-290, -2));
+            heading = MakeText(top, "BASTIÓN I  /  Nivel 1–4", 21, Gold, TextAnchor.MiddleLeft);
+            Position(heading.GetComponent<RectTransform>(), new Vector2(0, 0), new Vector2(1, 1),
+                new Vector2(28, 2), new Vector2(-290, -48));
 
-            var accent = MakeBox(top, "Filete_Oro", new Color(0.58f, 0.45f, 0.24f, 0.85f));
-            Position(accent, new Vector2(0, 0), new Vector2(1, 0),
-                Vector2.zero, new Vector2(0, 2));
+            // These are storyboard snapshots, never upgrades or real-save edits.
+            string[] numerals = { "I", "II", "III", "IV", "V" };
+            for (int i = 0; i < chapterButtons.Length; i++)
+            {
+                int chapter = i + 1;
+                chapterButtons[i] = MakeButton(top, numerals[i],
+                    new Vector2(-390 + i * 75, 16), new Vector2(68, 65));
+                chapterButtons[i].onClick.AddListener(() => bridge.SetDemoBastionLevel(chapter));
+            }
 
-            var title = MakeText(top, "VALORIA  /  CIUDAD 2D", 17, Parchment, TextAnchor.MiddleLeft);
-            Position(title.rectTransform, new Vector2(0, 0), new Vector2(1, 1),
-                new Vector2(16, 31), new Vector2(-153, -3));
-
-            heading = MakeText(top, "BASTIÓN I  ·  NIVELES 1–4", 13, Gold, TextAnchor.MiddleLeft);
-            Position(heading.rectTransform, new Vector2(0, 0), new Vector2(1, 1),
-                new Vector2(16, 5), new Vector2(-153, -34));
-
-            first = MakeButton(top, "I–IV", new Vector2(-138, 11), new Vector2(60, 46));
-            fifth = MakeButton(top, "V–IX", new Vector2(-72, 11), new Vector2(60, 46));
-            firstImage = first.GetComponent<Image>();
-            fifthImage = fifth.GetComponent<Image>();
-            first.onClick.AddListener(() => bridge.SetDemoBastionLevel(1));
-            fifth.onClick.AddListener(() => bridge.SetDemoBastionLevel(5));
-
-            selectionHolder = MakeBox(canvasGo.transform, "Seleccion_Contextual_56px", Ink);
-            Position(selectionHolder, Vector2.zero, new Vector2(1, 0),
-                Vector2.zero, new Vector2(0, 56));
-
-            selection = MakeText(selectionHolder, string.Empty, 16, Parchment, TextAnchor.MiddleCenter);
-            Position(selection.rectTransform, Vector2.zero, Vector2.one,
-                new Vector2(12, 3), new Vector2(-12, -3));
-            selectionHolder.gameObject.SetActive(false);
+            var bottom = MakeBox(canvasGo.transform, "EstadoSeleccion", Ink);
+            Position(bottom, new Vector2(0, 0), new Vector2(1, 0),
+                new Vector2(0, 0), new Vector2(0, 92));
+            selection = MakeText(bottom, "Toca un edificio    •    Comparador aislado, sin cambios en la partida", 22,
+                Parchment, TextAnchor.MiddleLeft);
+            Position(selection.GetComponent<RectTransform>(), new Vector2(0, 0), new Vector2(1, 1),
+                new Vector2(30, 4), new Vector2(-18, -4));
 
             bridge.BuildingSelected += OnSelected;
             bridge.LevelsChanged += Refresh;
@@ -92,16 +75,8 @@ namespace Eldoria.Experimentos.Ciudad2D
 
         private void Update()
         {
-            if (scaler != null) UpdateScale();
-        }
-
-        private void UpdateScale()
-        {
-            // En 390x844 y 844x390, los botones permanecen >=44 px fisicos.
-            // En iPhone retina se escalan sin ocupar mas puntos logicos.
-            float byWidth = Screen.width / 390f;
-            float byHeight = Screen.height / 844f;
-            scaler.scaleFactor = Mathf.Clamp(Mathf.Min(byWidth, byHeight), 1f, 3f);
+            if (scaler != null)
+                scaler.matchWidthOrHeight = Screen.width > Screen.height ? 1f : 0f;
         }
 
         private void OnSelected(CityBuilding building)
@@ -113,28 +88,22 @@ namespace Eldoria.Experimentos.Ciudad2D
         private void Refresh()
         {
             if (bridge == null || heading == null) return;
-            bool live = bridge.IsLiveBound;
-            int current = bridge.DemoBastionLevel;
-            heading.text = live ? "PROGRESIÓN REAL  ·  SOLO LECTURA" :
-                "BASTIÓN " + (current >= 5 ? "V" : "I") +
-                "  ·  NIVELES " + (current >= 5 ? "5–9" : "1–4");
-            first.interactable = !live;
-            fifth.interactable = !live;
-            if (firstImage != null) firstImage.color = current < 5 ? ButtonActive : ButtonIdle;
-            if (fifthImage != null) fifthImage.color = current >= 5 ? ButtonActive : ButtonIdle;
-
-            if (selectionHolder == null) return;
-            selectionHolder.gameObject.SetActive(selected != null);
-            if (selected != null && selection != null)
-                selection.text = selected.DisplayName.ToUpperInvariant() +
-                    "   ·   NIVEL " + selected.Level +
-                    "   ·   ARTE " + selected.SelectedArtLevel +
-                    (live ? "   ·   PARTIDA" : "   ·   DEMO");
+            string mode = bridge.IsLiveBound ? "LECTURA DE PARTIDA" : "PRUEBA VISUAL";
+            heading.text = bridge.IsLiveBound ? mode :
+                "CAPÍTULO " + bridge.DemoBastionLevel + "  /  ARTE " +
+                (bridge.DemoBastionLevel >= 5 ? "V (5–9)" : "I (1–4)");
+            foreach (var button in chapterButtons)
+                if (button != null) button.interactable = !bridge.IsLiveBound;
+            if (selection != null)
+                selection.text = selected == null ? "Toca un edificio    •    " + mode + " · sin modificar guardados" :
+                    selected.DisplayName + "   ·   " + selected.PlotPhase +
+                    (selected.PlotPhase == City2DPlotPhase.Built ? " nivel " + selected.Level +
+                    " · Arte " + selected.SelectedArtLevel : " · Sin edificio terminado") + "   ·   " + mode;
         }
 
-        private RectTransform MakeBox(Transform parent, string name, Color color)
+        private RectTransform MakeBox(Transform parent, string label, Color color)
         {
-            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+            var go = new GameObject(label, typeof(RectTransform), typeof(Image));
             go.transform.SetParent(parent, false);
             go.GetComponent<Image>().color = color;
             return (RectTransform)go.transform;
@@ -152,29 +121,30 @@ namespace Eldoria.Experimentos.Ciudad2D
             t.alignment = anchor;
             t.raycastTarget = false;
             t.resizeTextForBestFit = true;
-            t.resizeTextMinSize = 11;
+            t.resizeTextMinSize = 14;
             t.resizeTextMaxSize = size;
             return t;
         }
 
-        private Button MakeButton(RectTransform parent, string label, Vector2 position, Vector2 size)
+        private Button MakeButton(RectTransform parent, string label, Vector2 fromRight, Vector2 size)
         {
             var go = new GameObject("Hito_" + label, typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = rt.anchorMax = new Vector2(1, 0);
-            rt.pivot = Vector2.zero;
-            rt.anchoredPosition = position;
+            rt.pivot = new Vector2(0, 0);
+            rt.anchoredPosition = fromRight;
             rt.sizeDelta = size;
-
-            go.GetComponent<Image>().color = ButtonIdle;
+            var image = go.GetComponent<Image>();
+            image.color = new Color(0.16f, 0.23f, 0.31f, 1f);
             var button = go.GetComponent<Button>();
-            var colors = button.colors;
-            colors.highlightedColor = new Color(0.52f, 0.41f, 0.24f, 1f);
-            colors.pressedColor = new Color(0.48f, 0.35f, 0.20f, 1f);
-            button.colors = colors;
-            var t = MakeText(rt, label, 16, Parchment, TextAnchor.MiddleCenter);
-            Position(t.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var cb = button.colors;
+            cb.highlightedColor = new Color(0.75f, 0.72f, 0.61f, 1f);
+            cb.pressedColor = new Color(0.45f, 0.39f, 0.29f, 1f);
+            button.colors = cb;
+            var txt = MakeText(rt, label, 25, Parchment, TextAnchor.MiddleCenter);
+            Position(txt.GetComponent<RectTransform>(), new Vector2(0, 0), new Vector2(1, 1),
+                new Vector2(0, 0), new Vector2(0, 0));
             return button;
         }
 

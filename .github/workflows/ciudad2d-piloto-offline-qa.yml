@@ -45,11 +45,12 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/QA/asset_manifest.json
             Unity/Assets/Experimentos/Ciudad2D/QA/city_layout.json
             Unity/Assets/Experimentos/Ciudad2D/QA/organic-I-V.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/progresion-I-III-V.jpg
           if-no-files-found: error
           retention-days: 14
 
   interactive-browser:
-    runs-on: ubuntu-22.04 # Playwright 1.56 browser installation supports Jammy
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

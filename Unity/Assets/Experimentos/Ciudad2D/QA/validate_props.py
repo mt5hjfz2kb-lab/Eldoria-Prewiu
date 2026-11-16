@@ -3,6 +3,7 @@
 from pathlib import Path
 from hashlib import sha256
 from PIL import Image
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 PROPS = {
@@ -25,12 +26,11 @@ for name,(dims,digest) in PROPS.items():
   assert im.mode=='RGBA', (name,im.mode)
   assert im.getchannel('A').getextrema()[0] < 30, name
   assert im.getchannel('A').getextrema()[1] > 220, name
-import json
-layout=json.loads((ROOT/'QA'/'city_layout.json').read_text(encoding='utf-8'))
-configured={x['filename'] for x in layout['decor']}
-for name in PROPS:
- assert 'Props/'+name in configured, name
 builder=(ROOT/'Scripts'/'Editor'/'City2DSceneBuilder.cs').read_text(encoding='utf-8')
-assert 'JsonUtility.FromJson<Layout>' in builder
+layout=json.loads((ROOT/'QA/city_layout.json').read_text(encoding='utf-8'))
+referenced={Path(x['filename']).name for x in layout['decor']}
+for name in PROPS:
+ assert name in referenced, name
+assert 'foreach (var spec in layout.decor)' in builder
 assert 'AddComponent<BoxCollider2D>()' in builder
 print('DECOR_OFFLINE_PASS: 9 transparent cutouts, reproducible SHA256/dimensions, independently placed Unity sprites')

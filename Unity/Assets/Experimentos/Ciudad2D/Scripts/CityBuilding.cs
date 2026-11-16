@@ -40,6 +40,9 @@ namespace Eldoria.Experimentos.Ciudad2D
         private Coroutine bounce;
         private Vector3 baselineScale = Vector3.one;
         private int selectedArtLevel;
+        private City2DPlotPhase plotPhase = City2DPlotPhase.Built;
+        [SerializeField] private SpriteRenderer availableMarker, constructionMarker;
+        public City2DPlotPhase PlotPhase => plotPhase;
 
         public string BuildingId => buildingId;
         public string DisplayName => displayName;
@@ -73,6 +76,22 @@ namespace Eldoria.Experimentos.Ciudad2D
         {
             if (visual == null) visual = GetComponent<SpriteRenderer>();
             if (hitbox == null) hitbox = GetComponent<BoxCollider2D>();
+        }
+
+        public void ConfigurePlotMarkers(SpriteRenderer available, SpriteRenderer underConstruction)
+        {
+            availableMarker = available;
+            constructionMarker = underConstruction;
+            SetAppearance(new City2DPlotView(plotPhase, level, 1));
+        }
+
+        public void SetAppearance(City2DPlotView view)
+        {
+            plotPhase = view.Phase;
+            SetLevel(view.Phase == City2DPlotPhase.Built ? view.BuiltLevel : 0);
+            if (availableMarker != null) availableMarker.enabled = view.Phase == City2DPlotPhase.Available;
+            if (constructionMarker != null) constructionMarker.enabled = view.Phase == City2DPlotPhase.UnderConstruction;
+            if (hitbox != null) hitbox.enabled = view.Phase != City2DPlotPhase.Locked;
         }
 
         public void SetLevel(int nextLevel)
@@ -133,9 +152,9 @@ namespace Eldoria.Experimentos.Ciudad2D
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (!isActiveAndEnabled || level <= 0 || eventData == null ||
+            if (!isActiveAndEnabled || plotPhase == City2DPlotPhase.Locked || eventData == null ||
                 eventData.button != PointerEventData.InputButton.Left) return;
-            Debug.Log($"[Ciudad2D] {displayName} — nivel real {level}, arte hito {selectedArtLevel}", this);
+            Debug.Log($"[Ciudad2D] {displayName} — fase {plotPhase}, nivel {level}, arte hito {selectedArtLevel}", this);
             Selected?.Invoke(this);
             if (bounce != null) StopCoroutine(bounce);
             transform.localScale = baselineScale;

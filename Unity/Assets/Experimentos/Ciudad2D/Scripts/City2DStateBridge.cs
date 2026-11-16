@@ -16,35 +16,13 @@ namespace Eldoria.Experimentos.Ciudad2D
         private readonly Dictionary<string, CityBuilding> buildings = new Dictionary<string, CityBuilding>();
         private ICommandGateway gateway;
         private int demoBastionLevel = 1;
+        private readonly List<City2DAmbientGating> ambientGates = new List<City2DAmbientGating>();
         private float nextReadTime;
 
         public bool IsLiveBound => gateway != null;
         public int DemoBastionLevel => demoBastionLevel;
         public event Action<CityBuilding> BuildingSelected;
         public event Action LevelsChanged;
-
-        // Los diccionarios y los eventos C# NO sobreviven a la serializacion
-        // de una escena Unity. El Register del Builder, hecho en EditMode,
-        // no sirve tras abrirla en PlayMode: reconstruir siempre en runtime.
-        public int RegisteredBuildingCount => buildings.Count;
-
-        private void Awake() => RebindSceneBuildings();
-
-        private void Start()
-        {
-            RebindSceneBuildings();
-            if (!IsLiveBound) SetDemoBastionLevel(demoBastionLevel);
-        }
-
-        public void RebindSceneBuildings()
-        {
-            foreach (var building in UnityEngine.Object.FindObjectsByType<CityBuilding>(FindObjectsSortMode.None))
-            {
-                // No capturar edificios de otras escenas ni del juego real.
-                if (building.gameObject.scene == gameObject.scene)
-                    Register(building);
-            }
-        }
 
         public void Register(CityBuilding building)
         {
@@ -69,8 +47,10 @@ namespace Eldoria.Experimentos.Ciudad2D
         {
             if (IsLiveBound) return;
             demoBastionLevel = selectedLevel >= 5 ? 5 : 1;
-            if (buildings.TryGetValue("bastion", out var bastion) && bastion != null)
-                bastion.SetLevel(demoBastionLevel);
+            foreach (var pair in buildings)
+                if (pair.Value != null)
+                    pair.Value.SetAppearance(City2DProgressionPolicy.DemoStage(demoBastionLevel, pair.Key));
+            foreach (var prop in ambientGates) if (prop != null) prop.Apply(demoBastionLevel);
             LevelsChanged?.Invoke();
         }
 
@@ -95,20 +75,12 @@ namespace Eldoria.Experimentos.Ciudad2D
         public void ApplySnapshot(PlayerState snapshot)
         {
             if (snapshot == null) return;
-            Apply("bastion", snapshot.BastionLevel);
-            Apply("aserradero", snapshot.SawmillLevel);
-            Apply("cuartel", snapshot.BarracksLevel);
-            Apply("granero", snapshot.ChapterThree != null ? snapshot.ChapterThree.GranaryLevel : 0);
-            Apply("cantera", snapshot.ChapterThree != null ? snapshot.ChapterThree.StoneworksLevel : 0);
-            // Salón de Héroes: arte de muestra. No existe nivel persistido separado.
-            // No inferir una mejora del edificio a partir de los niveles de héroes.
+            foreach (var pair in buildings)
+                if (pair.Value != null)
+                    pair.Value.SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key));
+            foreach (var prop in ambientGates)
+                if (prop != null) prop.Apply(snapshot.BastionLevel);
             LevelsChanged?.Invoke();
-        }
-
-        private void Apply(string id, int level)
-        {
-            if (buildings.TryGetValue(id, out var building) && building != null)
-                building.SetLevel(level);
         }
 
         private void OnDestroy()

@@ -17,8 +17,25 @@ with sync_playwright() as p:
         page.goto(URL,wait_until='load',timeout=20000)
         page.wait_for_function('window.city2dDebug.state.ready && window.city2dDebug.state.frames>3',timeout=30000)
         state=page.evaluate('window.city2dDebug.state')
-        assert state['imageCount']==23 and state['buildingCount']==6 and state['decorCount']==16 and state['glowCount']==7 and state['layoutVersion']==3, state
+        assert state['imageCount']==23 and state['buildingCount']==6 and state['decorCount']==22 and state['glowCount']==7 and state['layoutVersion']==4, state
         assert state['landscape']==(w>h),state
+        # Check all five canonical story stages; no building is pre-built at unlock.
+        expected={
+          1:{'aserradero':'available','cuartel':'locked','granero':'locked','cantera':'locked','salon':'locked'},
+          2:{'aserradero':'built','cuartel':'available','granero':'locked','cantera':'locked','salon':'locked'},
+          3:{'aserradero':'built','cuartel':'built','granero':'available','cantera':'locked','salon':'locked'},
+          4:{'aserradero':'built','cuartel':'built','granero':'built','cantera':'locked','salon':'locked'},
+          5:{'aserradero':'built','cuartel':'built','granero':'built','cantera':'available','salon':'locked'},
+        }
+        for chapter in range(1,6):
+            page.locator(f'#tier{chapter}').click()
+            live=page.evaluate('window.city2dDebug.state')
+            assert live['stage']==chapter,live
+            for bid,phase in expected[chapter].items():
+                assert live['visibility'][bid]['phase']==phase,(name,chapter,bid,live['visibility'][bid])
+            # No complete building is allowed in a locked or available parcel.
+            if chapter in (1,3,5):page.screenshot(path=str(OUT/f'{name}-capitulo-{chapter}.png'))
+        page.locator('#tier1').click()
         page.screenshot(path=str(OUT/f'{name}-i.png'))
         page.locator('#tier5').click()
         assert page.evaluate('window.city2dDebug.state.artLevel')==5
@@ -53,7 +70,7 @@ with sync_playwright() as p:
         z=page.evaluate('window.city2dDebug.state.zoom')
         assert z>oldzoom,(z,oldzoom)
         assert not errors,errors
-        report.append({'name':name,'viewport':[w,h],'loaded':state['imageCount'],'tier_change':True,'bastion_click_hit':hit,'zoom_after_wheel':z,'errors':errors})
+        report.append({'name':name,'viewport':[w,h],'loaded':state['imageCount'],'tier_change':True,'bastion_click_hit':hit,'zoom_after_wheel':z,'chapter_checks':5,'errors':errors})
         page.close()
     browser.close()
 (OUT/'browser-proof.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
