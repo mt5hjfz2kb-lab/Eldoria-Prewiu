@@ -41,7 +41,7 @@ jobs:
           import json,hashlib,struct,zlib,pathlib
           root=pathlib.Path('Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources')
           manifest=json.loads(pathlib.Path('tools/ashen-citadel/ui-atlas-manifest.json').read_text())
-          assert len(manifest['assets'])==12
+          assert len(manifest['assets'])==14
           for item in manifest['assets']:
               p=root/item['name'];b=p.read_bytes()
               assert hashlib.sha256(b).hexdigest()==item['sha256']
@@ -49,7 +49,7 @@ jobs:
               assert struct.unpack('>II',b[16:24])==(item['width'],item['height'])
               assert b[25]==6
               print('ASHEN_UI_PNG_VERIFIED',p.name,len(b))
-          print('ASHEN_UI_GENERATOR_PASS 12 imported asset candidates')
+          print('ASHEN_UI_GENERATOR_PASS 14 imported asset candidates')
           PY
       - name: Commit generated PNG art to the same isolated branch
         shell: bash
