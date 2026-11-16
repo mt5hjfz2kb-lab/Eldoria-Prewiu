@@ -1,3 +1,31 @@
+# Estado vivo — Eldoria CC0 Art System
+
+**Fecha de actualización:** 16/11/2026, revisión Director V4.  
+**Identificador único:** `eldoria-cc0-art-system-20261116`.  
+**Rama:** `experiment/eldoria-cc0-art-system-20261116` — SIN MERGE A `main`.
+
+## Último trabajo real, persistente entre chats
+
+1. **Fuente inicial ya generada y probada:** Director V3 tiene 5 GLB auténticos y `.blend` reproducibles. [Run 43866662062](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43866662062), artifact `eldoria-director-v2-real-art`. La fuente NO contiene modelos de otros proveedores ni imágenes conceptuales en lugar de mallas.
+2. **Revisión V4 implementada:** [`tools/cc0-art-system/director_v4_surface_and_architecture.py`](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/experiment/eldoria-cc0-art-system-20261116/tools/cc0-art-system/director_v4_surface_and_architecture.py) aplica UV, texturas físicas propias, tratamiento de terreno, portal/tejado imperial y pequeños elementos de identidad para cantera, aserradero, cuartel y granero. Cinco GLB exportables y capturas genuinas, nunca arte conceptual.
+3. **Primera V4: técnicamente producida, NO aprobada.** [Run 43870376065](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43870376065): Blender exportó las 5 mallas (1809–2067), 11 imágenes incrustadas y tres capturas; el gate final falló porque la diferencia visual global I/V era 3.3 (foco central 7.8), y los renders se observaron demasiado oscuros. **No ocultar este fallo.**
+4. **Corrección V4 vigente:** nueva exposición, color de piedra/cubierta, luz de ambiente, cámara cercana de Bastión V. Workflows pendientes de confirmar: [run 43871986597](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43871986597) y [run 43872065620](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43872065620). NO declarar PASS antes de ver sus conclusiones y las capturas.
+5. **Optimización posterior preparada:** `tools/cc0-art-system/batch_director_v4.py` agrupa mallas por material/distrito y verifica recuento de polígonos, UV y AABB. Todavía no certificada sobre la versión V4 corregida.
+6. **Estado Unity:** ningún build real, escena nativa ni prueba iPhone certificados en esta rama. Windows compartido está en otro workstream según `main/pipeline/active-workstreams.json`; no reclamar o ejecutar sin cesión legítima.
+7. **Licencia:** el pack original Quaternius fue investigado e importado solo para una comparativa de Blender; la versión V4 usa geometría propia. Las condiciones QAL vs CC0 de distintas fechas siguen registradas en `asset-lock.json`. No promover recursos externos a repo público sin licencia individual.
+
+## Decisión visual
+
+La imagen de IA del chat anterior es una **referencia deseada**, no evidencia de modelos ni capturas de Unity. El V3 original no alcanzaba riqueza de materiales, terreno ni geometría. El V4 debe revisarse por sus PNG reales; si los cambios no alcanzan una escena clara, adulta y atractiva, diagnosticar técnica/proporciones antes de otras microiteraciones. No presentar un screenshot oscuro o una exportación verde como calidad comercial.
+
+## Cómo continuar
+
+Leer `main/AGENTS.md`, `main/pipeline/active-workstreams.json`, `docs/cc0-art-system/README.md`, `asset-lock.json`, `V4_CONTINUITY.md`, este STATUS y los runs arriba. Mantener propietarios de otras ramas, sin tocar `main`, sin coste ni publicaciones. Descargar artifact V4 de ejecución aprobada; inspeccionar las imágenes auténticas; registrar defectos y mejorar. Solo entonces generar versión optimizada y preparar Unity real cuando pueda reservarse Windows. Registrar al final HEAD, run, capturas y valoración independiente.
+
+---
+
+## Registro histórico anterior a Director V4
+
 # Estado comprobado y relevo — Eldoria sistema gráfico gratuito
 
 **Fecha de auditoría:** 16-11-2026.  
