@@ -283,8 +283,10 @@ namespace Eldoria.ArtReboot.Editor
             if (renderers == null || renderers.arraySize != 1)
                 throw new InvalidOperationException("Unexpected mobile renderer topology.");
             renderers.GetArrayElementAtIndex(0).objectReferenceValue = renderer;
+            var softShadows = settings.FindProperty("m_SoftShadowsSupported");
+            if (softShadows == null) throw new InvalidOperationException("URP soft-shadow schema differs.");
+            softShadows.boolValue = true;
             settings.ApplyModifiedPropertiesWithoutUndo();
-            pipeline.supportsSoftShadows = true;
             EditorUtility.SetDirty(pipeline);
             return pipeline;
         }
