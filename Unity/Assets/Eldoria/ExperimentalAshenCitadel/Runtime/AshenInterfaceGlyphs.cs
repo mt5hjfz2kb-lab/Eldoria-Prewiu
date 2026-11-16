@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace Eldoria.ExperimentalAshenCitadel
 {
-    internal static class AshenInterfaceGlyphs
+    public static class AshenInterfaceGlyphs
     {
         private static readonly Dictionary<string,Sprite> Cache=new Dictionary<string,Sprite>();
-        internal static Sprite ForControl(string controlName)
+        public static Sprite ForControl(string controlName)
         {
             string key=null;
             if(controlName.StartsWith("Nav · BASTIÓN"))key="castle";
@@ -23,6 +23,13 @@ namespace Eldoria.ExperimentalAshenCitadel
             else if(controlName.StartsWith("Access · RETOS"))key="quest";
             if(key==null)return null;
             if(Cache.TryGetValue(key,out var cached))return cached;
+            var imported=Resources.Load<Sprite>("AshenPremiumGlyph_"+key);
+            if(imported!=null){Cache[key]=imported;return imported;}
+            var generated=SourceGlyph(key);Cache[key]=generated;return generated;
+        }
+        public static void RebindAfterBake(){Cache.Clear();}
+        public static Sprite SourceGlyph(string key)
+        {
             const int size=64;
             var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,false)
             {name="Ashen glyph "+key,wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
@@ -35,9 +42,9 @@ namespace Eldoria.ExperimentalAshenCitadel
                 pixels[y*size+x]=new Color32(190,154,96,
                     (byte)Mathf.RoundToInt(Mathf.Clamp01(coverage)*250f));
             }
-            tex.SetPixels32(pixels);tex.Apply(false,true);
+            tex.SetPixels32(pixels);tex.Apply(false,false);
             var sprite=Sprite.Create(tex,new Rect(0,0,size,size),new Vector2(.5f,.5f),100f);
-            sprite.name="Ashen glyph "+key;Cache[key]=sprite;return sprite;
+            sprite.name="Ashen glyph "+key;return sprite;
         }
         private static float Box(float x,float y,float cx,float cy,float hx,float hy)
         {
