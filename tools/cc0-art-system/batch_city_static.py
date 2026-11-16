@@ -42,22 +42,40 @@ for stage in range(1,6):
     positions={}
     input_mesh_count=len(original)
     for o in original:
-        if len(o.data.materials)!=1:
-            raise RuntimeError("Unexpected multi-material mesh after GLB import: "+o.name)
-        mat=o.data.materials[0]
-        if mat is None:raise RuntimeError("Unassigned material: "+o.name)
+        if len(o.data.materials)<1:
+            raise RuntimeError("Source mesh lacks materials: "+o.name)
         pos=o.matrix_world.translation
         district=zone(pos)
-        key=(district,mat.name)
-        if key not in groups:
-            groups[key]=bmesh.new()
-            mats_by_key[key]=mat
         # Evaluated source may contain modifiers. Do not change originals.
         eval_o=o.evaluated_get(bpy.context.evaluated_depsgraph_get())
         temp=bpy.data.meshes.new_from_object(eval_o, preserve_all_data_layers=True,
                                              depsgraph=bpy.context.evaluated_depsgraph_get())
         temp.transform(o.matrix_world)
-        groups[key].from_mesh(temp)
+        for material_index in sorted({f.material_index for f in temp.polygons}):
+            if material_index >= len(o.data.materials):
+                raise RuntimeError("Bad material index in "+o.name)
+            mat=o.data.materials[material_index]
+            if mat is None:
+                raise RuntimeError("Unassigned material in "+o.name)
+            key=(district,mat.name)
+            if key not in groups:
+                groups[key]=bmesh.new()
+                mats_by_key[key]=mat
+            # Partition only polygons belonging to this material; one actual
+            # merged mesh and one submesh per material/district, with UV kept.
+            tmpbm=bmesh.new()
+            tmpbm.from_mesh(temp)
+            tmpbm.faces.ensure_lookup_table()
+            for face in list(tmpbm.faces):
+                if face.material_index!=material_index:
+                    tmpbm.faces.remove(face)
+                else:
+                    face.material_index=0
+            separated=bpy.data.meshes.new("batch_segment_"+o.name)
+            tmpbm.to_mesh(separated)
+            tmpbm.free()
+            groups[key].from_mesh(separated)
+            bpy.data.meshes.remove(separated)
         bpy.data.meshes.remove(temp)
     # Preserve original material objects during source deletion (Blender may otherwise orphan them).
     for m in mats_by_key.values():m.use_fake_user=True
