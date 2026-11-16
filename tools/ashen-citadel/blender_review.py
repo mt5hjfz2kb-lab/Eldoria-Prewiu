@@ -151,7 +151,8 @@ def main():
     colors=palette()
     evidence=[]
     engine=None
-    for level in range(1,6):
+    levels=[int(v) for v in args[args.index("--levels")+1].split(",")] if "--levels" in args else list(range(1,6))
+    for level in levels:
         reset()
         objs=import_obj(MESHES/f"AshenBastion_{level}.obj")
         remap(objs,colors)

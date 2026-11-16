@@ -103,70 +103,120 @@ const author=function author(){
   function base(){contourPlate(10.3,9.1,-.24,.045,24,1.2);
    box(0,.07,-8.0,3.4,.10,5.7,"cut");for(let i=0;i<5;i++)box(0,.10+i*.11,-11+i*.41,3.8-i*.3,.19,.50,"stoneLight");
   }
+  // Ashen identity: the surviving west watchtower, split-chevron stonework,
+  // steep slate roofs and an inhabited lower hall; progression grows around it.
+  function crest(x,y,z,size=.65){
+    poly([[x,y+size,z],[x+size*.62,y,z],[x,y-size*.45,z],[x-size*.62,y,z]],"brass");
+    poly([[x,y+size*.58,z-.02],[x+size*.24,y+.02,z-.02],[x,y-size*.2,z-.02],[x-size*.24,y+.02,z-.02]],"banner");
+  }
+  function buttress(x,z,h,w=.55){
+    // Tapered stone shoulder instead of a narrow decorative vertical strip.
+    const a=[[x-w,.2,z-.65],[x+w,.2,z-.65],[x+w*.55,.2,z+.35],[x-w*.55,.2,z+.35]],
+          b=[[x-w*.45,h,z-.12],[x+w*.45,h,z-.12],[x+w*.45,h,z+.35],[x-w*.45,h,z+.35]];
+    poly(a,"cut");poly([...b].reverse(),"stoneLight");
+    for(let i=0;i<4;i++)poly([b[i],b[(i+1)%4],a[(i+1)%4],a[i]],i===0?"stoneLight":"stone");
+  }
+  function watchtower(level){
+    const x=-2.15,z=2.7,h=4.9+level*.72;
+    box(x,.2,z,3.0,h,3.35,"stone");
+    for(let dx of [-1.42,1.42])buttress(x+dx,z-1.8,h*.70,.35);
+    box(x,h-.35,z,3.32,.35,3.66,"stoneLight");
+    box(x,h,z,3.48,.54,3.82,"cut");
+    for(let dx of [-.9,.9])window(x+dx,h-1.6,z-1.74);
+    // Tall four-plane hipped cap; distinct from the round corner turrets.
+    const y=h+.55,rx=2.05,rz=2.20,top=y+2.4+level*.10;
+    const A=[x-rx,y,z-rz],B=[x+rx,y,z-rz],C=[x+rx,y,z+rz],D=[x-rx,y,z+rz],
+      E=[x,y+2.4+level*.10,z-.66],F=[x,y+2.4+level*.10,z+.66];
+    poly([A,E,B],"roof");poly([B,E,F,C],"slate");poly([C,F,D],"roof");poly([D,F,E,A],"roof");
+    box(x,top,z,.12,.20,1.75,"brass");
+    crest(x,h+.03,z-1.94,.40);
+    banner(x-.55,top-.15,z-.10);
+    if(level>=4){
+      // Projecting upper oriel makes the tower identifiable from the player camera.
+      box(x,h-2.3,z-1.94,1.52,1.6,.72,"stoneLight");
+      roof(x,h-.7,z-2.03,1.78,.95,.68);window(x,h-2.1,z-2.35);
+    }
+  }
   function castle(level){
    base();
+   const w=level>=4?16.4:14.4,d=level>=4?14:12.1,wh=level>=4?3.8:3;
    if(level===1){
-     hall(0,1.4,5.3,5.8,3.7,1);door(0,.32,-1.51,1.5,2.45);
      for(let x of [-6.2,6.2])for(let z=-5.9;z<=5.9;z+=.38){box(x,.13,z,.35,2.15,.35,"wood");cone(x,2.28,z,.30,.48,4,"oak");}
      for(let z of [-5.9,5.9])for(let x=-5.8;x<=5.8;x+=.38){if(z===-5.9&&Math.abs(x)<2)continue;box(x,.13,z,.34,2.15,.35,"wood");cone(x,2.28,z,.29,.48,4,"oak");}
      door(0,.18,-6.0,2.20,2.25);
-     for(let x of [-4.1,4.1]){box(x,.16,0,2.4,1.8,2.7,"wood");roof(x,1.96,0,2.8,3.13,1.1);torch(x,1.7,-2);}
    }else{
-     const w=level>=4?16.4:14.4,d=level>=4?14.0:12.1,wh=level>=4?3.8:3.0;
      ring(w,d,wh);
-     hall(0,1.4,6.0+Math.max(0,level-3)*.52,5.9+Math.max(0,level-3)*.48,4.0+Math.max(0,level-3)*.62,level);
-     for(let sx of [-1,1])tower(sx*w/2,-d/2,.2,wh+(level-2)*.45,level>=4?1.38:1.12,true);
-     if(level>=3){
-       for(let sx of [-1,1])tower(sx*w/2,d/2,.2,wh+.32,1.07,level>=4);
-       for(let sx of [-1,1]){
-         const x=sx*4.05;box(x,.26,2.3,2.40,2.78+(level-3)*.24,3.2,"stone");
-         roof(x,3.05+(level-3)*.24,2.3,2.75,3.5,1.1);
-         window(x,1.33,.65);
-       }
-       banner(-5.4,wh+1.55,-d/2+.2);banner(5.2,wh+1.55,-d/2+.2);
-     }else{
-       box(-3.8,.23,1.9,2.3,2.05,3.25,"wood");roof(-3.8,2.28,1.9,2.8,3.55,1.05);
-     }
-     for(const sx of [-1,1])torch(sx*2.75,1.6,-d/2-.65);
-     if(level>=4){
-       box(0,4.20,1.35,4.2,3.18,4.4,"stoneLight");roof(0,7.38,1.35,4.75,4.98,2.18);
-       for(let x of [-1.30,1.30])window(x,5.25,-1.01);
-       box(0,.16,-d/2-1.5,4.2,2.1,2.1,"stone");
-       box(0,2.26,-d/2-1.5,4.62,.32,2.35,"stoneLight");
-       for(let x of [-1.6,1.6])box(x,.15,-d/2-1.8,.63,2.2,.75,"cut");
-     }
-     if(level>=5){
-       for(let x of [-2.85,2.85]){
-         prism(x,6.05,1.40,1.35,2.50,8,"stoneLight");
-         prism(x,8.54,1.4,1.55,.28,8,"brass");
-         cone(x,8.82,1.4,1.65,2.74,8,"roof");
-         banner(x-1,9,-.1);
-       }
-       prism(0,9.3,1.4,.99,.56,8,"stoneLight");cone(0,9.85,1.4,1.13,2.24,8,"roof");
-       for(let x of [-5.3,-2.2,2.2,5.3]){box(x,.25,-2.85,.50,4.45,.90,"cut");}
-       // A single scarce violet sign preserves the atmosphere without neon clutter.
-       box(0,7.30,-1.0,.48,.57,.11,"violet");
-     }
+     tower(-w/2,-d/2,.2,wh+.48,1.25,false);
+     tower(w/2,-d/2,.2,wh+.82,1.18,true);
+     if(level>=3){tower(-w/2,d/2,.2,wh+.22,1.12,false);tower(w/2,d/2,.2,wh+.15,.95,false);}
+   }
+   // The old tower stays west/back at every tier; the great hall grows beside it.
+   watchtower(level);
+   const hh=2.6+level*.46;
+   hall(1.35,-.20,4.25+level*.18,5.20,hh,level);
+   door(1.35,.32,-2.91,1.35,2.25);
+   for(let x of [-.88,3.58])buttress(x,-2.95,hh*.84,.32);
+   crest(1.35,hh-.25,-2.88,.46);
+   if(level>=2){
+     box(3.65,.22,3.9,2.6,2.15,2.5,"wood");roof(3.65,2.37,3.9,3.05,2.95,1.0);
+   }
+   if(level>=3){
+     // Enclosed gallery with rhythmic supports, lower than the landmark tower.
+     box(3.8,2.0,2.1,1.85,1.24,3.8,"plaster");roof(3.8,3.24,2.1,2.3,4.2,1.15);
+     for(let z of [.5,2.1,3.7])box(4.5,.22,z,.3,2.1,.32,"stoneLight");
+   }
+   const front=level===1?-6:-d/2;
+   for(let x of [-2.55,2.55])torch(x,1.6,front-.7);
+   if(level>=4){
+     // Deep gatehouse with side piers; entry remains visible rather than walled over.
+     for(let x of [-2.0,2.0]){box(x,.2,front-.9,1.15,3.85,2.2,"stone");buttress(x,front-2.15,2.9,.48);}
+     box(0,3.12,front-.9,5.35,1.20,2.2,"stoneLight");
+     roof(0,4.32,front-.9,5.85,2.72,1.15);crest(0,3.72,front-2.04,.58);
+   }
+   if(level===5){
+     // One vertical accent on the opposite rear wall balances, not duplicates, the keep.
+     tower(6.6,5.5,.2,6.6,1.08,true);
+     for(let x of [-5.5,5.3])banner(x,wh+.4,front+.15);
+     for(let z of [-3.3,.3,3.9])buttress(-w/2-.10,z,wh*.87,.30);
    }
   }
   function aux(kind){
    if(kind!=="Pine"&&kind!=="Rock")contourPlate(3.15,3.00,-.15,.19,12,.70);
    if(kind==="Sawmill"){
-     box(0,.2,0,3.7,2.3,3.1,"wood");roof(0,2.52,0,4.2,3.6,1.55);
-     for(let i=0;i<6;i++)box(-1.8+i*.7,.16,-2.15,.53,.30,1.6,i%2?"oak":"wood");
-     prism(1.8,.42,1.1,.95,.18,12,"iron");prism(1.8,.60,1.1,.21,1.2,8,"wood");
-     for(let i=0;i<8;i++){let a=2*Math.PI*i/8;box(1.8+Math.cos(a)*.8,.62,1.1+Math.sin(a)*.8,.23,.23,.40,"oak");}
+     // Open timber workshop; posts, saw bench and stacked sawn boards visible under roof.
+     box(0,.18,1.15,3.5,2.30,.35,"wood");
+     for(let x of [-1.7,1.7])for(let z of [-1.25,1.15]){box(x,.20,z,.25,2.55,.25,"oak");}
+     roof(0,2.75,0,4.35,3.65,1.25);
+     box(0,1.15,-.25,2.60,.22,.95,"oak");
+     for(let x of [-1,1])box(x,.2,-.25,.20,.95,.65,"wood");
+     for(let i=0;i<5;i++)box(-1.55+i*.70,.20,-2.1,.48,.30,1.45,i%2?"oak":"wood");
+     for(let i=0;i<3;i++)box(2.1,.2+i*.26,.15,1.0,.22,2.55,"oak");
+     crest(0,2.92,-1.84,.33);
    }else if(kind==="Barracks"){
-     box(0,.2,0,3.8,2.9,3.9,"stone");roof(0,3.1,0,4.2,4.35,1.7);door(0,.2,-1.98,1.45,2.3);
-     for(let x of [-1.52,1.52])box(x,.2,-2.05,.28,2.82,.25,"cut");banner(1.4,2.65,-1.45);
+     box(0,.2,0,3.8,2.9,3.9,"stone");roof(0,3.1,0,4.4,4.45,1.55);door(0,.2,-1.98,1.45,2.3);
+     for(let x of [-1.52,1.52])buttress(x,-2.05,2.65,.35);
+     // Low fortified side watch platform, shield emblem, paired spear rack.
+     box(2.05,.20,.65,1.3,3.6,2.6,"stone");battlements(2.05,3.8,-.65,1.5);battlements(2.05,3.8,1.95,1.5);
+     crest(0,2.95,-2.06,.46);banner(-1.45,2.6,-1.55);
+     for(let x of [-.65,-.22,.22,.65]){box(x,.18,-2.70,.055,1.7,.07,"wood");cone(x,1.88,-2.70,.105,.3,4,"iron");}
    }else if(kind==="Granary"){
-     box(0,.48,0,3.6,2.2,4.0,"plaster");roof(0,2.68,0,4.1,4.52,1.82);
-     for(let x of [-1.5,-.5,.5,1.5])box(x,.30,-2.06,.15,2.31,.2,"wood");
-     for(let x of [-1.2,1.2])prism(x,.05,1.95,.65,.83,8,"oak");
+     // Raised timber crib on stone feet; ventilation gap clearly visible.
+     for(let x of [-1.35,1.35])for(let z of [-1.55,1.55]){prism(x,.05,z,.35,.95,6,"stone");prism(x,.85,z,.50,.16,6,"cut");}
+     box(0,1.04,0,3.65,.22,4.1,"oak");box(0,1.26,0,3.4,1.85,3.85,"plaster");
+     roof(0,3.11,0,4.15,4.65,1.9);
+     for(let x of [-1.6,0,1.6])box(x,1.26,-1.98,.16,1.85,.18,"wood");
+     for(let y of [1.42,2.85])box(0,y,-1.99,3.45,.13,.18,"wood");
+     for(let x of [-.8,.8]){box(x,2.1,-2.01,.54,.53,.06,"iron");for(let y=2.12;y<2.64;y+=.14)box(x,y,-2.07,.62,.065,.09,"oak");}
+     for(let i=0;i<4;i++)box(.15,.2+i*.22,-2.9+i*.25,1.10,.23,.38,"wood");
+     crest(0,3.25,-1.99,.3);prism(2,.20,.8,.48,.82,9,"oak");
    }else if(kind==="Stoneworks"){
-     box(0,.20,0,3.5,2.4,3.0,"cut");roof(0,2.6,0,3.9,3.4,1.2);
-     for(let i=0;i<10;i++)box((i%4)*1.06-1.6,.16,-1.9-Math.floor(i/4)*.66,.82,.4,.54,i%2?"stoneLight":"stone");
-     prism(-1.7,.2,1.3,.65,.78,8,"stoneLight");torch(-1.6,1.9,-1.45);
+     // Low open mason's shelter and a timber lifting gantry identify its purpose.
+     box(0,.2,.8,3.35,1.85,1.65,"cut");roof(0,2.05,.8,3.9,2.25,1.05);
+     for(let x of [-1.65,1.65])box(x,.20,-1.5,.26,3.5,.28,"wood");
+     box(0,3.5,-1.5,4.1,.32,.35,"oak");box(.5,1.25,-1.5,.06,2.3,.06,"iron");
+     box(.5,.85,-1.5,.95,.65,.65,"stoneLight");
+     for(let i=0;i<6;i++)box((i%3)*.8-1.25,.20+Math.floor(i/3)*.43,-2.45,.7,.40,.68,i%2?"stoneLight":"stone");
+     crest(0,2.13,-.35,.30);
    }else if(kind==="Pine"){
      prism(0,0,0,.17,5.2,7,"wood");
      // Asymmetric overlapping boughs: irregular silhouette, no stacked lampshades.
@@ -218,7 +268,7 @@ const author=function author(){
     stats.Pine={vertices:ls.filter(x=>x.startsWith("v ")).length,polygons:faces.length,triangles:faces.reduce((a,f)=>a+f.trim().split(/\s+/).length-3,0)};continue;
   }
   const m=mesh("Ashen_"+kind);m.aux(kind);let result=m.finish();outputs[dir+`Ashen_${kind}.obj`]=result.obj;stats[kind]=result.stats;}
- outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"FIRST_AUTHORING_PASS_UNITY_UNTESTED",authorship:"Original 3D polygon meshes and 18-color material palette; no previous Bastion reused",levels:["Timber redoubt","Stone watch","Fortified ward","Royal stronghold","Ash crown"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
+ outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"ARCHITECTURAL_IDENTITY_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
  return outputs;
 };
 for (const [p,content] of Object.entries(author())){fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,content,"utf8");console.log(p,Buffer.byteLength(content));}

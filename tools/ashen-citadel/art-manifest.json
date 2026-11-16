@@ -1,60 +1,60 @@
 {
   "name": "Ashen Citadel",
-  "state": "FIRST_AUTHORING_PASS_UNITY_UNTESTED",
-  "authorship": "Original 3D polygon meshes and 18-color material palette; no previous Bastion reused",
+  "state": "ARCHITECTURAL_IDENTITY_CANDIDATE_NATIVE_PENDING",
+  "authorship": "Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",
   "levels": [
-    "Timber redoubt",
-    "Stone watch",
-    "Fortified ward",
-    "Royal stronghold",
-    "Ash crown"
+    "Old watch redoubt",
+    "Stone enclosure",
+    "Garrison ward",
+    "Gatehouse stronghold",
+    "Ashen watch citadel"
   ],
   "coordinateSystem": "X/Y(up)/Z; front is -Z; unit metres",
   "stats": {
     "bastion1": {
-      "vertices": 6678,
-      "polygons": 1794,
-      "trianglesUpperBound": 7176
+      "vertices": 6325,
+      "polygons": 1705,
+      "trianglesUpperBound": 6820
     },
     "bastion2": {
-      "vertices": 3568,
-      "polygons": 888,
-      "trianglesUpperBound": 3552
+      "vertices": 4155,
+      "polygons": 1035,
+      "trianglesUpperBound": 4140
     },
     "bastion3": {
-      "vertices": 4888,
-      "polygons": 1206,
-      "trianglesUpperBound": 4824
+      "vertices": 5153,
+      "polygons": 1273,
+      "trianglesUpperBound": 5092
     },
     "bastion4": {
-      "vertices": 5478,
-      "polygons": 1354,
-      "trianglesUpperBound": 5416
+      "vertices": 6125,
+      "polygons": 1517,
+      "trianglesUpperBound": 6068
     },
     "bastion5": {
-      "vertices": 6784,
-      "polygons": 1676,
-      "trianglesUpperBound": 6704
+      "vertices": 6687,
+      "polygons": 1651,
+      "trianglesUpperBound": 6604
     },
     "Sawmill": {
-      "vertices": 746,
-      "polygons": 184,
-      "trianglesUpperBound": 736
+      "vertices": 658,
+      "polygons": 168,
+      "trianglesUpperBound": 672
     },
     "Barracks": {
-      "vertices": 679,
-      "polygons": 173,
-      "trianglesUpperBound": 692
+      "vertices": 903,
+      "polygons": 233,
+      "trianglesUpperBound": 932
     },
     "Granary": {
-      "vertices": 482,
-      "polygons": 120,
-      "trianglesUpperBound": 480
+      "vertices": 1120,
+      "polygons": 273,
+      "trianglesUpperBound": 1092
     },
     "Stoneworks": {
-      "vertices": 656,
-      "polygons": 166,
-      "trianglesUpperBound": 664
+      "vertices": 562,
+      "polygons": 144,
+      "trianglesUpperBound": 576
     },
     "Pine": {
       "vertices": 918,
