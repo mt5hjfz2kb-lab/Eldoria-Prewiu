@@ -18,7 +18,7 @@ Escena montada: `Assets/Art_Reboot/Phase1/Scenes/Eldoria_Visual_Sandbox.unity`. 
 
 Para reproducir el aspecto certificado, usar `Art Reboot/Build and capture phase 1`, que selecciona temporalmente el pipeline propio y restaura el anterior. Abrir sólo la escena utiliza el pipeline activo del proyecto y no garantiza el mismo postprocesado. El menú exige escenas guardadas y Edit Mode; no se debe desactivar el guard de Play/build para eludir V4.1.
 
-Fuente inicial certificada: .blend + FBX + GLB, cuatro familias de malla, 21.865 triángulos, atlas 256², dos materiales y cámara 50°. Revisión artística regenerada: cuatro familias, 22.927 triángulos, tres materiales diferenciados; su prueba Unity definitiva sigue pendiente. Fuente FBX reimportada en Blender con UV por cara contenida en una sola casilla y todas las caras triangulares. Transferencias binarias verificadas por hash Git.
+Fuente inicial certificada: .blend + FBX + GLB, cuatro familias de malla, 21.865 triángulos, atlas 256², dos materiales y cámara 50°. Revisión artística regenerada: cuatro familias, 22.927 triángulos, tres materiales diferenciados; su compilación, importación y cuatro capturas Unity reales están verificadas en el run 43838220850. Fuente FBX reimportada en Blender con UV por cara contenida en una sola casilla y todas las caras triangulares. Transferencias binarias verificadas por hash Git.
 
 ## Técnicas verificadas y errores que no repetir
 
@@ -49,11 +49,11 @@ El propietario exigió ocho correcciones: ocaso cálido con sol bajo; ventanas/a
 
 - **Primera prueba de correcciones:** Unity 6000.3.23f1, run [43834060945](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43834060945), SHA `237dfc52`, ZIP artefacto 14210471705, PASS técnico. Rechazo visual por tierra demasiado oscura/violeta, corrupción casi blanca y tejas con contraste cuadriculado.
 - **Segunda prueba:** run [43835673589](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43835673589), SHA `b9acb3a7`, ZIP artefacto 14210836999, PASS técnico. Revisada la captura real: entorno excesivamente sepia, corrupción magenta y huecos cuadrados artificiales; NO art approved.
-- **Tercera pasada de fuente preparada:** equilibrar mezcla de cielo y niebla a azul-gris neutro con sol ámbar; verdes más explícitos por vértice; cristal de paleta azul-violeta menos saturada; eliminar huecos geométricos artificiales del tejado (las tejas caídas siguen junto al edificio); suavizar fuerza de sombras a 0,62 y una luz local de antorchas a 0,52. Blender CI regenerado con FBX reimportado y UV por cara comprobadas; **no afirmar calidad final hasta examinar una captura Unity de este SHA**.
+- **Tercera revisión verificada en Unity, no aprobada por propietario:** equilibrar mezcla de cielo y niebla a azul-gris neutro con sol ámbar; verdes más explícitos por vértice; cristal de paleta azul-violeta menos saturada; eliminar huecos geométricos artificiales del tejado (las tejas caídas siguen junto al edificio); suavizar fuerza de sombras a 0,62 y una luz local de antorchas a 0,52. Blender CI PASS con FBX reimportado y UV por cara comprobadas. Unity 6000.3.23f1/URP 17.3: [run 43838220850](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43838220850) SUCCESS sobre SHA `f36f8a870043e73a73dc63c280a407bc2ef6f4b4`, artefacto `14211467854`, escena guardada y cuatro PNG reales; SHA de fuente de escena/arte conservado en `438a45fa04eb938bba6504149eeab550498ec7e5`. Inspección visual propia: composición continua, suelo verde/tierra más legibles, corrupción violeta, techo sin huecos cuadrados; **no confundir con aprobación del propietario**.
 
-### Parámetros previstos de la tercera pasada (hasta que Unity los certifique)
+### Valores de la tercera pasada certificados en `capture.json` de Unity 43838220850
 
-| Efecto | Valor de fuente |
+| Efecto | Valor certificado / configuración de fuente |
 |---|---|
 | Sol principal | Elevación 16°, Y -35°, intensidad 1,65, RGB (1; 0,735; 0,46) |
 | Sombra | URP Soft, 2 cascadas, shadowmap 2048, distancia 42m, fuerza 0,62 |
@@ -67,3 +67,9 @@ El propietario exigió ocho correcciones: ocaso cálido con sol bajo; ventanas/a
 | Emisión cálida y corrupta | _Glow 1,75 y 1,35; corrupción únicamente en torre y entorno |
 
 **Estado de aprobación:** pendiente. No hay prueba iPhone físico, performance, integración de gameplay, publicación, mezcla a main, ni permiso para Fase 2.
+
+### Cierre técnico de la Fase 1 (no aprobación artística)
+
+- Capturas originales Unity 1100×1250, 390×844, 1600×900 y 844×390; el archivo real `Source~/Evidence/native-43838220850/capture.json` registra 22.927 triángulos, 13 partículas simuladas en Editor, sol a 16°, niebla a 20–58 m, dos capas de niebla baja, sombra a 2048 con dos cascadas y bloom 1,05/0,21.
+- Procedimiento de diagnóstico iterativo: primera captura técnicamente válida pero blanco quemado y rosa en corrupción; segunda técnicamente válida pero sepia y cuadrículas de tejado; tercera verificada con nueva paleta, luz, sombras y tejas. Validación de importación Blender y Unity independiente del juicio artístico.
+- `main` no contiene los modelos revisados ni la Fase 2. El ejecutor Windows se liberó tras la prueba (coordinación en main, sin alterar la titularidad del otro experimento). Las capturas son Editor URP; NO hay certificación de FPS, Play Mode, Android/WebGL ni iPhone físico. La autorización para la Fase 2 continúa cerrada, a la espera de aprobación expresa del propietario.
