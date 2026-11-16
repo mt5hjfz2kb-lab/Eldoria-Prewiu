@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-cc0-art-system-20261116",
+  "branch": "experiment/eldoria-cc0-art-system-20261116",
+  "created_date": "2026-11-16",
+  "budget_eur": 0,
+  "engine": "Unity 6000.3.23f1 URP 17.3.0",
+  "assets": [
+    {
+      "id": "q_fantasy_rts",
+      "name": "Ultimate Fantasy RTS",
+      "url": "https://quaternius.com/packs/ultimatefantasyrts.html",
+      "domains": [
+        "bastion",
+        "sawmill",
+        "quarry",
+        "barracks"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_ruins",
+      "name": "Ultimate Modular Ruins",
+      "url": "https://quaternius.com/packs/ultimatemodularruins.html",
+      "domains": [
+        "bastion",
+        "city_ruins",
+        "breach"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_village",
+      "name": "Medieval Village Pack",
+      "url": "https://quaternius.com/packs/medievalvillage.html",
+      "domains": [
+        "granary",
+        "forge",
+        "hospital"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_nature",
+      "name": "Ultimate Stylized Nature",
+      "url": "https://quaternius.com/packs/ultimatestylizednature.html",
+      "domains": [
+        "world",
+        "vegetation",
+        "nodes"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_props",
+      "name": "Fantasy Props MegaKit",
+      "url": "https://quaternius.com/packs/fantasypropsmegakit.html",
+      "domains": [
+        "inventory",
+        "city_detail",
+        "buildings"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "free_subset_expected": true,
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_characters",
+      "name": "Universal Base Characters",
+      "url": "https://quaternius.com/packs/universalbasecharacters.html",
+      "domains": [
+        "heroes",
+        "civilians",
+        "troops"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "free_subset_expected": true,
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_outfits",
+      "name": "Modular Character Outfits Fantasy",
+      "url": "https://quaternius.com/packs/modularcharacteroutfitsfantasy.html",
+      "domains": [
+        "heroes",
+        "troops"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "free_subset_expected": true,
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "q_anim",
+      "name": "Universal Animation Library",
+      "url": "https://quaternius.com/packs/universalanimationlibrary.html",
+      "domains": [
+        "heroes",
+        "troops",
+        "civilians"
+      ],
+      "license_page": "CC0 badge",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "free_subset_expected": true,
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "cinder",
+      "name": "Cinder UI",
+      "url": "https://ashbloomgames.itch.io/cinder-ui",
+      "domains": [
+        "HUD",
+        "ui",
+        "cards"
+      ],
+      "license_page": "free commercial, no redistribution as asset pack",
+      "provenance": "listing_verified",
+      "import_state": "blocked_public_repo",
+      "source_public_allowed": "NO",
+      "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "kenney_ui",
+      "name": "Kenney Fantasy UI Borders",
+      "url": "https://kenney.nl/assets/fantasy-ui-borders",
+      "domains": [
+        "ui_fallback"
+      ],
+      "license_page": "CC0 listing",
+      "provenance": "listing_verified",
+      "import_state": "not_downloaded",
+      "source_public_allowed": "UNVERIFIED",
+      "commercial_game_allowed": "listing_yes"
+    }
+  ],
+  "license_policy": {
+    "quaternius_current_terms": "https://quaternius.com/license.html",
+    "current_QAL_updated": "2026-08-28",
+    "rule": "ZIP-level license evidence wins over website label; record exact ZIP hash, version, acquisition date, private proof, permitted use in game and permitted redistrib of sources separately",
+    "public_repository_must_not_host_uncleared_source": true
+  },
+  "art_approval": false,
+  "native_unity_verified": false,
+  "physical_iphone_verified": false,
+  "notes": "No binaries in public repo without positive per-file source-redistribution authorization; truthful status required."
+}
