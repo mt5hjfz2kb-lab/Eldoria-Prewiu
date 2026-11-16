@@ -5,6 +5,8 @@ on:
     paths:
       - ".github/workflows/cc0-art-system-hybrid.yml"
       - "tools/cc0-art-system/render_hybrid_valoria.py"
+      - "tools/cc0-art-system/author_bastion.py"
+      - "tools/cc0-art-system/audit_quaternius_files.py"
   workflow_dispatch:
 permissions:
   contents: write
