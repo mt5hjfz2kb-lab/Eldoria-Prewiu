@@ -1,0 +1,100 @@
+name: "CC0 System — Director V4 real 3D surfaces and Valoria architectural QA"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v4.yml"
+      - "tools/cc0-art-system/director_v4_surface_and_architecture.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v4-ubuntu
+  cancel-in-progress: false
+jobs:
+  authentic-v4:
+    name: "Baked materials, detailed fortress, 5 GLBs + real Blender captures"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/cc0-art-system
+      - name: Fetch EXACT V3 real physical models, preserving source provenance
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-director-v2-real-art
+          run-id: 43866662062
+          github-token: ${{ github.token }}
+          path: .
+      - name: Syntax and physical input guard
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v4_surface_and_architecture.py
+          test -s Unity/Assets/Art_Reboot/CC0System/DirectorV2/DirectorV2_ValoriaStage5.glb
+          test -s Unity/Assets/Art_Reboot/CC0System/DirectorV2/DirectorV2_Terrain_Albedo.png
+      - name: Install free Blender 4, numpy and Pillow on hosted Ubuntu only
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+      - name: Apply physically reproducible V4 mesh, UV, surface and terrain revisions
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v4_surface_and_architecture.py 2>&1 | tee "$RUNNER_TEMP/eldoria-director-v4.log"
+          grep -q ELDORIA_DIRECTOR_V4_REAL_ASSETS_PASS "$RUNNER_TEMP/eldoria-director-v4.log"
+      - name: Verify 5 complete physical GLBs, original textures and genuine PNG frames
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          base=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV4")
+          pictures=Path("docs/cc0-art-system/previews/director-v4")
+          obj=json.loads((pictures/"DirectorV4_Provenance.json").read_text())
+          assert obj["actual_blender_render"] and not obj["unity_editor_render"]
+          assert not obj["art_approved"] and not obj["mobile_tested"]
+          assert obj["owned_original_source"] and not obj["external_assets_imported"]
+          assert len(obj["meshes"])==5 and len(obj["frames"])==3
+          for stage in range(1,6):
+              f=base/("DirectorV4_ValoriaStage"+str(stage)+".glb")
+              raw=f.read_bytes()
+              assert len(raw)>300000 and raw[:4]==b"glTF"
+              assert struct.unpack("<I",raw[8:12])[0]==len(raw)
+              size=struct.unpack("<I",raw[12:16])[0]
+              j=json.loads(raw[20:20+size])
+              assert len(j.get("meshes",[]))>500 and len(j.get("images",[]))>=8,(stage,len(j.get("images",[])))
+              print("V4_PHYSICAL_ASSET_CHECK",stage,len(j["meshes"]),len(j["images"]))
+          blend=base/"DirectorV4_Valoria_Master.blend"
+          assert blend.read_bytes()[:7]==b"BLENDER"
+          for profile,wh in (("DirectorV4_Bastion1_1600x900.png",(1600,900)),
+                             ("DirectorV4_Bastion5_1600x900.png",(1600,900)),
+                             ("DirectorV4_Bastion5_720x1200.png",(720,1200))):
+              image=pictures/profile
+              raw=image.read_bytes()
+              assert len(raw)>100000 and raw[:8]==b'\x89PNG\r\n\x1a\n'
+              assert struct.unpack(">II",raw[16:24])==wh
+              print("V4_GENUINE_BLENDER_CAPTURE",profile,len(raw))
+          a=Image.open(pictures/"DirectorV4_Bastion1_1600x900.png").convert("RGB")
+          b=Image.open(pictures/"DirectorV4_Bastion5_1600x900.png").convert("RGB")
+          mean=sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)/3
+          assert mean>6,("No meaningful level progression",mean)
+          print("V4_LEVEL_I_TO_V_DIFFERENCE_PASS",round(mean,3))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-cc0-director-v4-actual-models
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV4/
+            docs/cc0-art-system/previews/director-v4/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: No main, Unity production or shared Windows was modified
+        run: |
+          git diff --exit-code
+          echo "V4_ISOLATED_NO_MAIN_NO_WINDOWS_PASS"
