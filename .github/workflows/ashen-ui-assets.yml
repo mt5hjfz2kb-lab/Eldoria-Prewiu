@@ -28,6 +28,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             tools/ashen-citadel/generate_ui_atlas.mjs
+            tools/ashen-citadel/ui-atlas-manifest.json
             Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources
           persist-credentials: true
       - name: Generate 12 source-authored PNG sprites and their SHA256 manifest
@@ -54,7 +55,7 @@ jobs:
           git config user.name "ashen-asset-build[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources/AshenPremium*.png
-          git add tools/ashen-citadel/ui-atlas-manifest.json
+          git add --sparse tools/ashen-citadel/ui-atlas-manifest.json
           if git diff --cached --quiet; then
             echo ASHEN_UI_SPRITES_ALREADY_REPRODUCIBLE
             exit 0
