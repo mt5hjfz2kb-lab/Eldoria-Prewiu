@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T13:29:49.171Z",
+  "updated_at": "2026-11-16T13:32:15.709Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9842,17 +9842,16 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_exact_source_for_native_capture",
-        "source_sha": "94a095407cc43df527693d75f4bffda0bb767376",
+        "status": "reserved_retry_after_rejected_owner_guard",
+        "source_sha": "8bd9b1e61766394bdc0224bc48d6ee72603fab44",
         "reason": "User requested continue to actual Unity screenshots, no other Windows holder or active branch native jobs"
       },
-      "native_source_sha": "94a095407cc43df527693d75f4bffda0bb767376",
+      "native_source_sha": "8bd9b1e61766394bdc0224bc48d6ee72603fab44",
       "last_native_attempt": {
-        "run": 43862025708,
-        "source": "05f8b8ae788225d9bd304a23869215317c248d83",
-        "result": "compile_failed_missing_runtime_assembly_reference",
-        "artifact": 14224680843,
-        "correction": "Dedicated runtime assembly and explicit Editor assembly reference added; geometry unchanged"
+        "run": 43876327593,
+        "source": "94a095407cc43df527693d75f4bffda0bb767376",
+        "result": "lease_rejected_old_owner_guard",
+        "correction": "Both Python and PowerShell guard owners and fixture synchronized to current authorized workstream"
       },
       "owner_revision_request": {
         "at": "2026-11-16T07:37:07.758Z",
