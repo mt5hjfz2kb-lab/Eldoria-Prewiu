@@ -174,3 +174,15 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 - **Unity:** `CC0V13SceneBuilder.cs` y `CC0V14SceneBuilder.cs` registrados para usar glTFast 6.14.1. Son scripts candidatos, **aún sin ejecución real**. No deducir FPS o estabilidad iPhone del éxito en Blender.
 
 **Mandato siguiente:** abrir el render real V15, comprobar continuidad estilizada y ausencia de fototextura pegada; si da peor resultado que V14, no promover. Preparar una prueba aislada en Unity con escena real y verificarla en Editor/iPhone sólo cuando runner disponible con propiedad clara.
+
+## V16 — separación física de cuatro industrias y revisión de identidad (16-11-2026)
+
+**Objetivo aprobado:** distanciar aserradero, cantera, cuartel y granero del Bastión, moviendo sus piezas reales, no una representación 2D; mejorar sus diferencias de silueta y sus accesos. **Nombre canónico del experimento:** Eldoria CC0 Art System — Sistema artístico gratuito reproducible. **Rama:** `experiment/eldoria-cc0-art-system-20261116`. Esta rama no sustituye `main`.
+
+**Autoría implementada:** `tools/cc0-art-system/director_v16_separate_industries.py`, tomando **cinco GLB físicos de V15** del Action [43907312243](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43907312243). Reubica completos y por nombre de origen los cuatro grupos, registra cada objeto trasladado, desplaza aserradero (-22,-7.5)→(-32,-12.5), cantera (-23.5,11.8)→(-33.2,18.4), cuartel (23.8,11.4)→(34.5,18.4), granero (22,-9.2)→(32,-15.5), con incremento de distancia al Bastión >7 m. Conserva sistemas, progresión Bastión I–V y archivos fuente.
+
+**Calidad geométrica real:** nueva textura física de 896² con caminos curvos hasta cada nuevo emplazamiento; limpieza de los antiguos segmentos de carretera y vegetación que obstaculiza las nuevas ubicaciones. Aserradero con rueda y canal de agua modelados, cantera con terrazas y gran puente grúa, cuartel con patio militar, parapetos, torre y dianas, granero con silos independientes, provisiones y cosecha en malla agrupada. El objetivo es evitar cuatro edificios idénticos pegados al núcleo. Sin imágenes conceptuales ni geometría no autorizada de terceros. Los PBR CC0 Poly Haven de V15 permanecen.
+
+**Ejecución QA:** `.github/workflows/cc0-director-v16-spread.yml`, [Action #43911033294](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43911033294). Comprueba cinco GLB, BLEND editable, ocho PNG *verdaderas* (I, V, cercano, vertical y un detalle por industria), traslados de geometría mediante posiciones reales de nodos y un informe de evidencias JSON. **En ejecución al escribir esto; NO declarar éxito sin verificar conclusión y abrir capturas.**
+
+**Pendiente:** análisis visual auténtico y iteración; batching de nueva geometría, importación/captura Unity 6000.3 real, rendimiento WebGL/iPhone, confirmación de correspondencia de accesos/botones. No modificar main ni interferir con Windows compartido. Estar separado y superar CI de Blender NO significa resultado premium ni juego jugable.
