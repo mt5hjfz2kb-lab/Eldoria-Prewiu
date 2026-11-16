@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T16:23:41.561Z",
+  "updated_at": "2026-11-16T16:27:30.676Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,13 +9742,15 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
       "phase": "PREMIUM_UI_FONTS_NATIVE_REVIEWED_TITLE_FIT_PENDING",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9767,17 +9769,17 @@
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
-        "status": "yielded_under_owner_authorized_rotation",
-        "completed_run": 43905069629,
-        "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "note": "One bounded Phase2 Unity proof after Ashen completed with no active branch CI; source/owner not changed."
+        "status": "available_after_visual_native",
+        "completed_run": 43906347228,
+        "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+        "note": "Shared Windows available to Ashen; owner/source unchanged. Pin exact source for future run."
       },
       "continuation_session": "b9db0d2d3e7b",
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "yielded_to_other_active_workstream",
-        "last_completed_ashen_run": 43905069629
+        "status": "returned_after_visual_verified_terminal",
+        "previous_visual_run": 43906347228
       },
       "last_native": {
         "run": 43905069629,
@@ -9806,13 +9808,11 @@
       "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 62,
+      "ownership_revision": 63,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE2_KIT_FINAL_UNITY_NATIVE_TURN",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "phase": "PHASE2_KIT_SOURCE_AND_UNITY_COMPLETE_AWAITING_OWNER_VISUAL_APPROVAL",
+      "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9829,7 +9829,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "One final exact-HEAD Unity native capture with approved Phase1 camera/palette; visual inspect both PNG and file inventory; release Windows to Ashen; wait owner art approval. No main gameplay merge.",
+      "next": "Await owner's subjective approval of the delivered Phase2 modular kit; do not proceed to Phase3 or merge. If owner requests corrections, reuse same branch and regenerate genuine evidence.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9839,12 +9839,11 @@
         "lease_tests": "8/8 PASS",
         "windows_executed": false
       },
-      "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
+      "final_source_sha": "3e1d8003a8347be123bf58a2caca6a730f2b321a",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_exact_source_for_native_capture",
-        "source_sha": "805ac1a333e0bab076ac0794e422f2ef3d2ecf1c",
-        "previous_ashen_run": 43905069629
+        "status": "released_after_verified_phase2_native",
+        "completed_run": 43906347228
       },
       "native_source_sha": "805ac1a333e0bab076ac0794e422f2ef3d2ecf1c",
       "last_native_attempt": {
@@ -9874,27 +9873,33 @@
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
       },
       "resource_turn_handoff": {
-        "status": "bounded_phase2_native_reserved",
+        "status": "yielded_after_complete_native_proof",
+        "completed_run": 43906347228,
         "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "previous_ashen_completed_run": 43905069629,
-        "note": "Return single Windows runner after native evidence and review; preserve both owner scopes."
+        "note": "Unity 6000.3.23f1 native success; four genuine captures, both scenes and CSV committed; 31 FBX source verified. Release PC, await owner artistic review, no Phase3/main merge."
       },
       "last_native": {
-        "run": 43897322072,
-        "source": "9cceb95ee17dac105843409d18953e5d73451ab4",
-        "artifact": 14240441169,
+        "run": 43906347228,
+        "source": "805ac1a333e0bab076ac0794e422f2ef3d2ecf1c",
+        "artifact": 14246505598,
         "result": "success",
         "unity_compiled": true,
         "unity_rendered": true,
-        "kitPieces": 31,
-        "kitTriangles": 36366,
-        "architectureInstances": 61,
-        "assemblyTriangles": 71004,
-        "kitThreeMaterials": true,
+        "pieces": 31,
+        "kitTriangles": 37968,
+        "buildingKitInstances": 61,
+        "buildingTriangles": 74534,
+        "materials": 3,
+        "atlas_sha256": "2ada56d94ed8e3f3c690fa787a73a0cd38d986d8997c84e125c1cd66b84c0efe",
+        "camera_pitch_degrees": 42,
+        "camera_yaw_degrees": -13,
+        "scene_committed_to_branch": true,
         "phase1Protected": true,
-        "sceneCommittedToBranch": true,
-        "artApproved": false,
-        "visualReview": "UV artifacts fixed; real native gallery and village screenshots stored. Visual review identifies pink fog from 65m camera distance vs Phase1 38m, weak forest/path density, detached wall on workshop due corner piece, wall openings rectangular. Needs correct source and recapture before owner review."
+        "physical_mobile_tested": false,
+        "ownerApproved": false,
+        "visualReview": "Real Unity original grid+hamlet+portrait+corruption PNGs inspected. UV swatches correct, pink veil corrected, 44 pines and trails, distinct house and workshop, source kit present. Reuse works; visibly modular vs Phase1 hero, owner art approval needed per express instruction.",
+        "greenPct1600x900": 40.76,
+        "previousGreenPct1600x900": 3.82
       },
       "ownership_history": [
         {
@@ -9919,7 +9924,8 @@
         "review_required": true,
         "restrictions": "All kit mesh objects 256x256 approved atlas and vertex colors, 2-3 shared materials, 4m module pivots at base, original Phase1 source retained. Do not merge main or enter Phase3"
       },
-      "phase2_art_approved": false
+      "phase2_art_approved": false,
+      "phase2_implementation_complete": true
     }
   ],
   "history": [
@@ -20350,11 +20356,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "phase2_visual_native_reserved",
+    "status": "ashen_turn_available",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
@@ -20362,7 +20368,7 @@
       "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
       "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
     ],
-    "previous_completed_run": 43905069629,
+    "previous_completed_run": 43906347228,
     "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
     "completed_visual_reboot_run": 43780662139
   }
