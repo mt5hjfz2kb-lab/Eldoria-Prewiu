@@ -21,7 +21,7 @@ for obj in objects:
   tiles={(int(mesh.uv_layers.active.data[j].uv.x*4),int(mesh.uv_layers.active.data[j].uv.y*4)) for j in face.loop_indices}
   assert len(tiles)==1, (obj.name,face.index,tiles)
   triangles+=len(face.vertices)-2
-assert triangles==21321,triangles
+assert triangles==21865,triangles
 materials={m.name for o in objects for m in o.data.materials}
 assert materials=={'Reboot_Atlas','Reboot_Light'},materials
 print(json.dumps({'status':'BLENDER_FBX_REIMPORT_PASS','meshes':len(objects),'triangles':triangles,'uv_face_in_single_atlas_tile':True,'vertex_colors':True,'unity_tested':False},indent=2))

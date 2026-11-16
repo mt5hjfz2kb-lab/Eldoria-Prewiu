@@ -80,8 +80,8 @@ namespace Eldoria.ArtReboot.Editor
                     string.Join("\n", renderers.Select(r => r.name + " " + r.bounds + " scale=" + r.transform.lossyScale)));
                 if (Mathf.Abs(terrainBounds.size.x - 48) > .1f || Mathf.Abs(terrainBounds.size.z - 48) > .1f)
                     throw new InvalidOperationException("Imported world metres differ from Blender's 48m terrain: " + terrainBounds);
-                if (triangles != 21321) throw new InvalidOperationException("FBX topology differs from authored source: " + triangles);
-                RenderSettings.ambientMode = AmbientMode.Trilight;
+                if (triangles != 21865) throw new InvalidOperationException("FBX topology differs from authored source: " + triangles);
+                RenderSettings.ambientMode = AmbientMode.Custom;
                 RenderSettings.ambientSkyColor = new Color(.24f, .31f, .44f);
                 RenderSettings.ambientEquatorColor = new Color(.15f, .19f, .22f);
                 RenderSettings.ambientGroundColor = new Color(.08f, .09f, .08f);
@@ -106,7 +106,7 @@ namespace Eldoria.ArtReboot.Editor
                 fill.type = LightType.Directional;
                 fill.transform.rotation = Quaternion.Euler(48, 145, 0);
                 fill.color = new Color(.49f, .65f, 1f);
-                fill.intensity = .48f;
+                fill.intensity = .65f;
                 fill.shadows = LightShadows.None;
                 var camera = new GameObject("Strategic 50 degree camera").AddComponent<Camera>();
                 camera.transform.SetParent(root.transform, false);
@@ -143,10 +143,10 @@ namespace Eldoria.ArtReboot.Editor
                 foreach (var size in new[] { new Vector2Int(1100,1250), new Vector2Int(390,844), new Vector2Int(1600,900), new Vector2Int(844,390) })
                 {
                     // Keep geometry and angle fixed. Fit all three buildings at narrow aspect ratios.
-                    camera.orthographicSize = Mathf.Max(10, 6.5f / ((float)size.x / size.y));
+                    FitBuildings(camera, renderers, size.x, size.y);
                     Capture(camera, size.x, size.y, Path.Combine(output, $"unity-{size.x}x{size.y}.png"));
                 }
-                camera.orthographicSize = 10;
+                FitBuildings(camera, renderers, 1100, 1250);
                 Capture(camera, 1100, 1250, Path.Combine(output, "unity-repeat-1100x1250.png"));
                 File.WriteAllText(Path.Combine(output,"capture.json"), JsonUtility.ToJson(new Evidence
                 {
@@ -177,6 +177,26 @@ namespace Eldoria.ArtReboot.Editor
                 if (!File.ReadAllBytes(original).SequenceEqual(originalBytes))
                     throw new InvalidOperationException("Original scene bytes changed during capture.");
             }
+        }
+
+        static void FitBuildings(Camera camera, MeshRenderer[] renderers, int width, int height)
+        {
+            float horizontal = 0, vertical = 0;
+            foreach (var renderer in renderers.Where(r => r.name != "Terrain"))
+            {
+                var bounds = renderer.bounds;
+                for (int x = -1; x <= 1; x += 2)
+                for (int y = -1; y <= 1; y += 2)
+                for (int z = -1; z <= 1; z += 2)
+                {
+                    var world = bounds.center + Vector3.Scale(bounds.extents, new Vector3(x,y,z));
+                    var point = camera.transform.InverseTransformPoint(world);
+                    horizontal = Mathf.Max(horizontal, Mathf.Abs(point.x));
+                    vertical = Mathf.Max(vertical, Mathf.Abs(point.y));
+                }
+            }
+            camera.orthographicSize = Mathf.Max(10, vertical * 1.12f,
+                horizontal * 1.12f / ((float)width / height));
         }
 
         static void PrepareModel(string output)
@@ -264,6 +284,8 @@ namespace Eldoria.ArtReboot.Editor
                 throw new InvalidOperationException("Unexpected mobile renderer topology.");
             renderers.GetArrayElementAtIndex(0).objectReferenceValue = renderer;
             settings.ApplyModifiedPropertiesWithoutUndo();
+            pipeline.supportsSoftShadows = true;
+            EditorUtility.SetDirty(pipeline);
             return pipeline;
         }
 

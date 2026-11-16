@@ -121,7 +121,14 @@ for j in range(N):
   verts.append((x,y,z))
 for j in range(N-1):
  for i in range(N-1):a=j*N+i;faces.append((a,a+1,a+N+1,a+N))
-mesh('Continuous forest floor',verts,faces,6)
+ground=mesh('Continuous forest floor',verts,faces,6)
+# Map the ground continuously inside its atlas swatch, not once per grid face.
+for loop in ground.data.loops:
+ v=ground.data.vertices[loop.vertex_index].co
+ ground.data.uv_layers.active.data[loop.index].uv=((2+(6+(v.x/48+.5)*52)/64)/4,(1+(6+(v.y/48+.5)*52)/64)/4)
+ wash=.79+.10*math.sin(v.x*.29)*math.cos(v.y*.33)+.06*math.sin((v.x+v.y)*.51)
+ path=math.exp(-v.x*v.x/3)*max(0,min(1,(1-v.y)/3))
+ ground.data.color_attributes['Color'].data[loop.index].color=(wash*(1+.30*path),wash*(1-.18*path),wash*(1-.32*path),1)
 for i in range(90):
  x=random.uniform(-10,10);y=random.uniform(-9,10)
  if abs(x)<2 and y<3:continue
@@ -192,10 +199,10 @@ for side in [-1,1]:
  for i in range(5):box('Branch path',(side*(1.2+i*.57),-.7-i*.13,.025),(.55,.65,.12),9,.065,random.uniform(-.2,.2))
 for x,y,s in [(-7,3,1.1),(-6.7,6.2,1.4),(-3.8,7.4,1.0),(0,7.8,1.15),(4.9,6.6,1.1),(7.4,3.3,1.25),(8,-1.8,.8),(-7,-4.4,.75)]:
  beam('Pine trunk',(x,y,0),(x+.12,y,4*s),.20*s,4)
- for j in range(4):
-  rad=(1.35-j*.22)*s;zc=1.6*s+j*.67*s;vv=[(x+.06*j,y,zc+1.25*s)];ff=[]
+ for j in range(6):
+  rad=(1.35-j*.17)*s;zc=1.4*s+j*.55*s;vv=[(x+.035*j,y,zc+.85*s)];ff=[]
   for a in range(18):
-   angle=a*math.tau/18+j*.25;rr=rad*(1 if a%2 else .65)*random.uniform(.86,1.07)
+   angle=a*math.tau/18+j*.25;rr=rad*(1 if a%2 else .83)*random.uniform(.86,1.07)
    vv.append((x+math.cos(angle)*rr,y+math.sin(angle)*rr,zc-random.uniform(.05,.27)*s))
   for a in range(18):ff.append((0,1+a,1+(a+1)%18))
   ff.append(tuple(range(18,0,-1)));mesh('Irregular pine branches',vv,ff,6 if j%2 else 7)
