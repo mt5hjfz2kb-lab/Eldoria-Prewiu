@@ -20,7 +20,7 @@ namespace Eldoria.ArtReboot.Editor
         {
             public string unity,sourceSHA,scene,note;
             public long heroTriangles,ruinTriangles,corruptTriangles,environmentTriangles;
-            public float cameraTilt=42,cameraYaw=-13,sunElevation=16,sunIntensity=1.65f,fogStart=24,fogEnd=64,bloomIntensity=.38f,bloomThreshold=1.05f;
+            public float cameraTilt=42,cameraYaw=-13,sunElevation=16,sunIntensity=1.45f,fogStart=47,fogEnd=92,bloomIntensity=.42f,bloomThreshold=1.05f;
             public int shadowResolution=2048,shadowCascades=2,particles;
             public bool approvedHeroBytesPreserved=true,originalScenesPreserved=true,physicalMobileTested=false;
         }
@@ -78,11 +78,11 @@ namespace Eldoria.ArtReboot.Editor
                 if(Mathf.Abs(bounds[3].size.x-180)>.1f)throw new InvalidOperationException("Terrain scale error");
                 File.WriteAllText(Path.Combine(output,"model-world-bounds.txt"),string.Join("\n",names.Select((n,i)=>n+": "+bounds[i]+" triangles="+triangles[i])));
                 RenderSettings.skybox=CreateSky();RenderSettings.ambientMode=AmbientMode.Trilight;
-                RenderSettings.ambientSkyColor=new Color(.56f,.51f,.62f);RenderSettings.ambientEquatorColor=new Color(.41f,.38f,.53f);RenderSettings.ambientGroundColor=new Color(.20f,.22f,.29f);
-                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogColor=new Color(.61f,.43f,.30f);RenderSettings.fogStartDistance=24;RenderSettings.fogEndDistance=64;
+                RenderSettings.ambientSkyColor=new Color(.44f,.47f,.63f);RenderSettings.ambientEquatorColor=new Color(.37f,.40f,.54f);RenderSettings.ambientGroundColor=new Color(.23f,.25f,.33f);
+                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogColor=new Color(.55f,.42f,.48f);RenderSettings.fogStartDistance=47;RenderSettings.fogEndDistance=92;
                 var sun=new GameObject("Low amber dusk sun").AddComponent<Light>();sun.transform.SetParent(root.transform,false);sun.type=LightType.Directional;
-                sun.transform.rotation=Quaternion.Euler(16,-35,0);sun.color=new Color(1,.735f,.46f);sun.intensity=1.65f;sun.shadows=LightShadows.Soft;sun.shadowStrength=.60f;sun.shadowBias=.028f;sun.shadowNormalBias=.12f;RenderSettings.sun=sun;
-                var fill=new GameObject("Cool open sky").AddComponent<Light>();fill.transform.SetParent(root.transform,false);fill.type=LightType.Directional;fill.transform.rotation=Quaternion.Euler(48,145,0);fill.color=new Color(.61f,.65f,.88f);fill.intensity=.48f;fill.shadows=LightShadows.None;
+                sun.transform.rotation=Quaternion.Euler(16,-35,0);sun.color=new Color(1,.78f,.59f);sun.intensity=1.45f;sun.shadows=LightShadows.Soft;sun.shadowStrength=.60f;sun.shadowBias=.028f;sun.shadowNormalBias=.12f;RenderSettings.sun=sun;
+                var fill=new GameObject("Cool open sky").AddComponent<Light>();fill.transform.SetParent(root.transform,false);fill.type=LightType.Directional;fill.transform.rotation=Quaternion.Euler(48,145,0);fill.color=new Color(.64f,.71f,.99f);fill.intensity=.55f;fill.shadows=LightShadows.None;
                 var torch=new GameObject("One shared entrance torch light").AddComponent<Light>();torch.transform.SetParent(root.transform,false);torch.type=LightType.Point;torch.transform.position=new Vector3(-.55f,1.9f,2.25f);torch.color=new Color(1,.65f,.34f);torch.intensity=.52f;torch.range=3.5f;torch.shadows=LightShadows.None;
                 var atmosphere=new GameObject("Low layered atmosphere");atmosphere.transform.SetParent(root.transform,false);BuildLowGroundMist(atmosphere);
                 var particles=BuildCorruptionParticles(root);int capturedParticleCount=particles.particleCount;if(capturedParticleCount<2)throw new InvalidOperationException("No corruption particles");
@@ -157,7 +157,7 @@ namespace Eldoria.ArtReboot.Editor
                     float pool=Mathf.Clamp01(back*.8f+sides*.55f)*(.65f+.35f*Mathf.Sin(xx*.38f+zz*.23f));
                     float edge=Mathf.Sin(Mathf.PI*x/(n-1))*Mathf.Sin(Mathf.PI*z/(n-1));
                     int i=z*n+x;v[i]=new Vector3(xx,.12f+layer*.33f,zz);
-                    var col=Color.Lerp(new Color(.23f,.23f,.42f),new Color(.68f,.40f,.19f),back);
+                    var col=Color.Lerp(new Color(.25f,.22f,.39f),new Color(.56f,.42f,.35f),back);
                     col.a=pool*edge*(layer==0?.42f:layer==1?.24f:.12f);c[i]=col;
                 }
                 int q=0;for(int z=0;z<n-1;z++)for(int x=0;x<n-1;x++){int i=z*n+x;t[q++]=i;t[q++]=i+n;t[q++]=i+1;t[q++]=i+1;t[q++]=i+n;t[q++]=i+n+1;}
@@ -253,7 +253,7 @@ namespace Eldoria.ArtReboot.Editor
             }
             bloom.active = true;
             bloom.threshold.Override(1.05f);
-            bloom.intensity.Override(.38f);
+            bloom.intensity.Override(.42f);
             bloom.scatter.Override(.66f);
             if (!profile.TryGet<Tonemapping>(out var tonemapping))
             {
@@ -267,15 +267,15 @@ namespace Eldoria.ArtReboot.Editor
                 AssetDatabase.AddObjectToAsset(grading, profile);
             }
             grading.contrast.Override(3f);
-            grading.postExposure.Override(.25f);
-            grading.saturation.Override(0f);
+            grading.postExposure.Override(.14f);
+            grading.saturation.Override(8f);
             if (!profile.TryGet<SplitToning>(out var split))
             {
                 split = profile.Add<SplitToning>(true);
                 AssetDatabase.AddObjectToAsset(split, profile);
             }
             split.shadows.Override(new Color(.43f, .40f, .53f));
-            split.highlights.Override(new Color(1f, .81f, .59f));
+            split.highlights.Override(new Color(1f, .87f, .73f));
             split.balance.Override(-8f);
             EditorUtility.SetDirty(profile);
         }
