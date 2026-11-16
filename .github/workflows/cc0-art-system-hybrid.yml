@@ -1,0 +1,115 @@
+name: "CC0 System — original Bastion + genuine Quaternius city, isolated lookdev"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-art-system-hybrid.yml"
+      - "tools/cc0-art-system/render_hybrid_valoria.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: eldoria-cc0-art-hybrid-ubuntu
+  cancel-in-progress: false
+jobs:
+  real-model-city:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+          sparse-checkout: |
+            tools/cc0-art-system
+            docs/cc0-art-system
+            Unity/Assets/Art_Reboot/CC0System
+      - name: Python syntax gate
+        run: |
+          python3 -m py_compile tools/cc0-art-system/author_bastion.py
+          python3 -m py_compile tools/cc0-art-system/audit_quaternius_files.py
+          python3 -m py_compile tools/cc0-art-system/render_hybrid_valoria.py
+      - name: Install free Blender and downloader on hosted Ubuntu, NOT Windows
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-venv
+          python3 -m venv "$RUNNER_TEMP/eldoria-free-asset"
+          "$RUNNER_TEMP/eldoria-free-asset/bin/pip" -q install 'gdown>=5,<7'
+      - name: Audit genuine artist models into ephemeral private scratch only
+        env:
+          ELDORIA_VENDOR_EXTENDED: "1"
+          ELDORIA_VENDOR_REVIEW: ${{ runner.temp }}/eldoria-quaternius-ephemeral
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/eldoria-free-asset/bin/python" tools/cc0-art-system/audit_quaternius_files.py
+      - name: Rebuild owned architectural source as editable Blender geometry
+        env:
+          ELDORIA_SKIP_LOOKDEV_RENDERS: "1"
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/author_bastion.py 2>&1 | tee "$RUNNER_TEMP/own-source.log"
+          grep -q ELDORIA_CC0_AUTHORING_PASS "$RUNNER_TEMP/own-source.log"
+      - name: Combine Bastion and genuine separate Quaternius economy, ruins and forest
+        env:
+          ELDORIA_VENDOR_REVIEW: ${{ runner.temp }}/eldoria-quaternius-ephemeral
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/render_hybrid_valoria.py 2>&1 | tee "$RUNNER_TEMP/hybrid-render.log"
+          grep -q ELDORIA_HYBRID_REAL_MODELS_PASS "$RUNNER_TEMP/hybrid-render.log"
+      - name: Validate images and legal boundary
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          base=Path("_vendor_hybrid_output")
+          expected={"Eldoria_Hybrid_SourceModels_Bastion1_1600x900.png":(1600,900),
+                    "Eldoria_Hybrid_SourceModels_Bastion5_1600x900.png":(1600,900),
+                    "Eldoria_Hybrid_SourceModels_Bastion5_720x1200.png":(720,1200)}
+          for name,wh in expected.items():
+              p=base/name
+              raw=p.read_bytes()
+              assert len(raw)>80000 and raw[:8]==b'\x89PNG\r\n\x1a\n',name
+              assert struct.unpack(">II",raw[16:24])==wh,name
+              print("COMPOSITED_IMAGE_VALID",name,len(raw))
+          obj=json.loads((base/"Eldoria_Hybrid_Proof.json").read_text())
+          assert obj["actual_quaternius_blender_import"] is True
+          assert obj["unity_native_import"] is False
+          assert obj["commercial_redistribution_certified"] is False
+          assert obj["art_approved"] is False
+          assert len(obj["models"])>=16 and len(obj["composite_evidence_images"])==3
+          assert sorted(f.suffix for f in base.iterdir())==[".json",".png",".png",".png"]
+          print("HYBRID_SOURCE_NOT_REDISTRIBUTED_PASS",len(obj["models"]))
+          PY
+      - name: Preserve flattened visual study as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-actual-quaternius-hybrid-valoria
+          path: _vendor_hybrid_output/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Version ONLY flattened rendered proof on isolated branch
+        run: |
+          set -euo pipefail
+          mkdir -p docs/cc0-art-system/previews/hybrid
+          cp _vendor_hybrid_output/*.png _vendor_hybrid_output/*.json docs/cc0-art-system/previews/hybrid/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/cc0-art-system/previews/hybrid/*.png docs/cc0-art-system/previews/hybrid/*.json
+          if git diff --cached --quiet; then echo "Identical proof"; exit 0; fi
+          git commit -m "art(cc0): genuine Quaternius pilot renders, no raw vendor assets"
+          for attempt in 1 2 3; do
+            git fetch --no-tags origin experiment/eldoria-cc0-art-system-20261116
+            git rebase FETCH_HEAD || { git rebase --abort; exit 1; }
+            if git push origin HEAD:refs/heads/experiment/eldoria-cc0-art-system-20261116; then
+              echo "HYBRID_REAL_MODEL_IMAGES_COMMITTED"
+              break
+            fi
+            if [ "$attempt" = 3 ]; then exit 1; fi
+          done
+      - name: No vendor raw 3D in public commit
+        run: |
+          if git show --name-only --pretty=format: HEAD | grep -E '^docs/cc0-art-system/previews/hybrid/.*\.(gltf|fbx|bin|blend|obj)$'; then
+            echo "VENDOR_SOURCE_LEAK_BLOCKED"; exit 1
+          fi
+          echo "PUBLIC_RENDER_ONLY_PASS"
