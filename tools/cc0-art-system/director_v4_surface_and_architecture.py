@@ -379,7 +379,9 @@ def capture(stage,suffix,size=(1600,900),portrait=False):
 def output_stage(stage):
     f=SOURCE/("DirectorV2_ValoriaStage"+str(stage)+".glb")
     if not f.exists():raise FileNotFoundError(f)
-    bpy.ops.wm.read_factory_settings(use_empty=True)
+    # Preserve the V4 materials and texture datablocks across stage imports.
+    bpy.ops.object.select_all(action="SELECT")
+    bpy.ops.object.delete(use_global=False)
     bpy.ops.import_scene.gltf(filepath=str(f),import_pack_images=True)
     mats=rebake_materials()
     ident_buildings(stage)
