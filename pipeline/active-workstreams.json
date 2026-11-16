@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T10:41:19.525Z",
+  "updated_at": "2026-11-16T10:47:56.739Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "ORGANIC_ARCHITECTURE_NATIVE_VERIFICATION",
+      "phase": "ORGANIC_ARCHITECTURE_NATIVE_REVIEWED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9779,21 +9777,21 @@
       "continuation_authority": "Owner: Sigue afinándolo; explicitly authorized main coordination update in follow-up Autorizo. Improve reviewed Ashen finish, isolated branch, no gameplay or publication.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "Continue owner-requested organic geometry on source c33ee4a; same workstream logical owner, new execution session; native comparison and existing tests."
+        "status": "released_native_complete",
+        "released_at": "2026-11-16T10:47:56.739Z"
       },
       "last_native": {
-        "run": 43846509441,
-        "head": "b7646dad75ecdb53b2a4c0792968c141cc630e6a",
-        "artifact": 14214989589,
+        "run": 43851110708,
+        "head": "16761f13eaf6ba12059ccae73b50852f3ddc3aa1",
+        "artifact": 14217547766,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Distinct saw bay, timber silo, garrison longhouse and derrick/canvas yard. Matte leaf clusters replace rejected glossy domes; worn ground and visible broken paving. I/IV/V landscape and V portrait inspected. Physical mobile unverified; not ART_APPROVED."
+        "visual_review": "I/II/IV/V landscape and V portrait inspected against craft baseline. Continuous curved roofs, profiled silo and fabric canopy readable. Surface repetition and small mobile details remain; physical device untested."
       },
-      "final_source_sha": "b7646dad75ecdb53b2a4c0792968c141cc630e6a",
+      "final_source_sha": "16761f13eaf6ba12059ccae73b50852f3ddc3aa1",
       "art_approved": false,
-      "next": "Owner review of distinct craft-settlement architecture; future surface/joinery refinement and physical mobile profiling.",
+      "next": "Organic geometry pass completed and Unity verified; surface refinement and physical-device profiling remain separate.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
