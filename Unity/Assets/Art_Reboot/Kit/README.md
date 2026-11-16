@@ -21,3 +21,14 @@
 ## Cómo verificar
 
 `blender -b -t 4 --python Assets/Art_Reboot/Kit/Source~/author_modular_kit.py`, desde el directorio `Unity`; `blender -b -t 4 --python .../verify_kit.py` reimporta los FBX y rechaza alteraciones de pivotes, UV y triángulos. Los procedimientos CI guardan la salida `BLENDER_KIT_PASS` y `UNITY_KIT_CAPTURE_PASS`, con run exacto y capturas verificadas, nunca renders conceptuales.
+
+
+## Evidencia y diagnóstico — 16/11/2026 (revisión de arte, no publicación)
+
+- El primer render Unity genuino, [Actions 43887687518](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43887687518), SHA `a86acf1936820bc1a79cb4df415a7ac39fa26732`, artefacto `14235198402`, es **PASS técnico, RECHAZADO artísticamente**. Importó 31 modelos, montó 57 instancias arquitectónicas y generó PNG originales; sin embargo el mosaico rojo/magenta en muros/tejados no cumple.
+- **Causa comprobada en FBX binario, no una conjetura de iluminación:** `LayerElementUV/UV` de los FBX antiguos contenía únicamente (0,0), (0,1), (1,0), (1,1), por lo que cada cara mostraba los 16 swatches del atlas completo. El test de reimportación anterior solo comprobaba existencia de UV, por eso lo había permitido.
+- **Corrección implementada:** en `author_modular_kit.py` se crean/asignan primero los `Color` por esquina y **después** los UV por esquina en una pasada independiente. En `verify_kit.py` se reimporta cada FBX y se exigen coordenadas UV fraccionales y celdas reales, además de triángulos, base y materiales.
+- **Resultado probado:** [Blender CI 43890882454](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43890882454) `SUCCESS`: las 31 mallas pasan exportación y reimportación con UV fraccionales. El total es **33.372 triángulos** (tres materiales, atlas 256² con SHA `2ada56d94ed8e3f3c690fa787a73a0cd38d986d8997c84e125c1cd66b84c0efe`).
+- **Mejora de presentación implementada, aún no probada en Unity:** exposición en cuadrícula 8×4 con suelo neutro usando `Kit_Surface`; taller con orientación de tejado perpendicular y chimenea más alta; fachada corrupta con raíces que suben al tejado. Mantener cámara de 42° / yaw −13° en la escena y no tocar Fase1.
+- **Pendiente obligatorio:** nueva ejecución Unity nativa en turno exclusivo Windows; verificar capturas reales `kit-grid-2400x1350.png` y `village-1600x900.png`, y valorar calidad, no solo compilación. Las capturas antiguas del run 43887687518 deben archivarse como **rechazadas**, no como entrega aprobada. `phase2_art_approved=false`. No instalar arte en main ni avanzar a Fase3.
+
