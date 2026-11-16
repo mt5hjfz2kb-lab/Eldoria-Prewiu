@@ -63,6 +63,11 @@ foreach($name in @('kit-grid-2400x1350.png','village-1600x900.png','village-1100
  $hashes+=@{file=$name;sha256=(Get-FileHash $path -Algorithm SHA256).Hash}
 }
 Copy-Item (Join-Path $project 'Assets/Art_Reboot/Kit') (Join-Path $OutputRoot 'ImportedKit') -Recurse
+$kitMeta=Join-Path $project 'Assets/Art_Reboot/Kit.meta'
+if(Test-Path -LiteralPath $kitMeta){
+ Copy-Item -LiteralPath $kitMeta -Destination (Join-Path $OutputRoot 'ImportedKit.meta')
+}
+
 @{source_sha=$env:GITHUB_SHA;screenshots=$hashes;scope='Phase2 real modular kit 31 pieces and sandbox, preserve approved Phase1';
   unity_compiled=$true;unity_rendered=$true;gameplay_tested=$false;full_project_integration=$false;
   mobile_tested=$false;art_approved=$false;kit_piece_count=31}|ConvertTo-Json -Depth 8 | Set-Content (Join-Path $OutputRoot 'native-proof.json')
