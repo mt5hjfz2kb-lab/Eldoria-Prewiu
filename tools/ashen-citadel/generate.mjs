@@ -12,6 +12,13 @@ const author=function author(){
   function box(x,y,z,w,h,d,m="stone"){
    if(w<=0||h<=0||d<=0)throw Error("Invalid box");
    const x0=x-w/2,x1=x+w/2,z0=z-d/2,z1=z+d/2,y0=y<=.55?-.10:y,y1=y+h;
+   // Small vertical masonry arrises, no random vertex displacement.
+   if(["stone","stoneLight","plaster","cut"].includes(m)&&w>.6&&d>.4&&h>.6){
+     const b=Math.min(.13,w*.06,d*.06),foot=[[x0+b,z0],[x1-b,z0],[x1,z0+b],[x1,z1-b],[x1-b,z1],[x0+b,z1],[x0,z1-b],[x0,z0+b]];
+     const low=foot.map(([xx,zz])=>[xx,y0,zz]),high=foot.map(([xx,zz])=>[xx,y1,zz]);
+     poly(low,m);poly([...high].reverse(),m);
+     for(let i=0;i<8;i++){const j=(i+1)%8;poly([high[i],high[j],low[j],low[i]],m);}return;
+   }
    const v=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];
    for(const ii of [[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7],[3,2,1,0]])poly(ii.map(i=>v[i]).reverse(),m);
   }
@@ -33,12 +40,31 @@ const author=function author(){
     poly(low,m);poly([...high].reverse(),m);
     for(let i=0;i<n;i++)poly([high[i],high[(i+1)%n],low[(i+1)%n],low[i]],m);
   }
-  function roof(x,y,z,w,d,raise=1.5){
-   const A=[x-w/2,y,z-d/2],B=[x+w/2,y,z-d/2],C=[x+w/2,y,z+d/2],D=[x-w/2,y,z+d/2],E=[x,y+raise,z-d/2],F=[x,y+raise,z+d/2];
-   poly([D,F,E,A],"roof");poly([E,F,C,B],"roof");poly([E,B,A],"slate");poly([F,D,C],"slate");
-   box(x,y+raise,z,.14,.12,d+.2,"brass");
-   for(let u=1;u<4;u++){const xx=w*u/8,yy=y+raise*(1-u/4);
-     box(x-xx,yy,z,.10,.065,d+.13,"slate");box(x+xx,yy,z,.10,.065,d+.13,"slate");}
+  function roofShell(point,nu,nv,m,edge,thick=.09){
+    const lower=p=>[p[0],p[1]-thick,p[2]];
+    for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){
+      const a=point(i/nu,j/nv),b=point((i+1)/nu,j/nv),c=point((i+1)/nu,(j+1)/nv),d=point(i/nu,(j+1)/nv);
+      poly([a,d,c,b],m);poly([lower(a),lower(b),lower(c),lower(d)],m==="roof"?"wood":m);
+    }
+    const rim=[];for(let i=0;i<nu;i++)rim.push(point(i/nu,0));for(let j=0;j<nv;j++)rim.push(point(1,j/nv));
+    for(let i=nu;i>0;i--)rim.push(point(i/nu,1));for(let j=nv;j>0;j--)rim.push(point(0,j/nv));
+    for(let i=0;i<rim.length;i++){const a=rim[i],b=rim[(i+1)%rim.length];poly([a,b,lower(b),lower(a)],edge);}
+  }
+  function roof(x,y,z,w,d,raise=1.5,m="roof"){
+    // Unequal ridge and slightly swept eaves form one continuous roof shell.
+    const point=(u,v)=>{const q=u*2-1,a=Math.abs(q);return[x+w*q/2+w*.035*(1-a),y+raise*(1-a-.20*Math.sin(Math.PI*a))-.055*Math.sin(Math.PI*v),z+d*(v-.5)];};
+    roofShell(point,8,4,m,m==="roof"?"slate":"wood",.11);
+    for(let j=0;j<4;j++){const a=point(.5,j/4),b=point(.5,(j+1)/4);a[1]+=.055;b[1]+=.055;beam(a,b,.075,m==="roof"?"brass":"wood");}
+    // Closed gable cheeks follow the shell, rather than leaving roof pieces floating.
+    for(const v of [0,1])for(let i=0;i<8;i++){
+      const a=point(i/8,v),b=point((i+1)/8,v),c=[b[0],y-.11,b[2]],d=[a[0],y-.11,a[2]];
+      poly(v===0?[d,c,b,a]:[a,b,c,d],m==="roof"?"slate":"wood");
+    }
+  }
+  function profileRound(x,y,z,profile,n,m){
+    const rings=profile.map(([yy,r])=>Array.from({length:n},(_,i)=>[x+Math.cos(i*2*Math.PI/n)*r,y+yy,z+Math.sin(i*2*Math.PI/n)*r]));
+    poly(rings[0],m==="roof"?"wood":m);poly([...rings.at(-1)].reverse(),m);
+    for(let k=1;k<rings.length;k++)for(let i=0;i<n;i++){const j=(i+1)%n;poly([rings[k][i],rings[k][j],rings[k-1][j],rings[k-1][i]],m);}
   }
   function window(x,y,z){
    box(x,y,z,.55,.88,.09,"iron");
@@ -47,12 +73,29 @@ const author=function author(){
    box(x,y-.13,z-.08,.72,.13,.18,"stoneLight");
    box(x-.02,y+.08,z-.12,.05,.54,.06,"iron");
   }
+  function extrudeFront(points,front,back,m){
+    const a=points.map(([x,y])=>[x,y,front]),b=points.map(([x,y])=>[x,y,back]);
+    poly([...a].reverse(),m);poly(b,m);
+    for(let i=0;i<a.length;i++){const j=(i+1)%a.length;poly([a[i],a[j],b[j],b[i]],m);}
+  }
   function door(x,y,z,w=1.5,h=2.3){
-   box(x,y,z,w+.45,h+.2,.3,"stoneLight");
-   box(x,y+.03,z-.23,w,h-.1,.2,"wood");
-   for(let k=-2;k<=2;k++)box(x+k*(w-.18)/5,y+.10,z-.36,.055,h-.25,.065,"oak");
-   for(let h0 of [.6,1.8])box(x,y+h0,z-.40,w-.12,.12,.11,"iron");
-   for(let k of [-.35,.35])box(x+k,y+1.12,z-.49,.07,.08,.10,"brass");
+    const spring=y+h*.70,rr=w/2,rise=h*.30;
+    for(const side of [-1,1])box(x+side*(rr+.13),y,z,.26,h*.70,.35,"stoneLight");
+    for(let i=0;i<9;i++){
+      const a=Math.PI*i/9+.012,b=Math.PI*(i+1)/9-.012;
+      const p=t=>[x+Math.cos(t)*(rr+.27),spring+Math.sin(t)*(rise+.27)];
+      const q=t=>[x+Math.cos(t)*rr,spring+Math.sin(t)*rise];
+      extrudeFront([q(a),p(a),p(b),q(b)],z-.20,z+.18,i%3===0?"cut":"stoneLight");
+    }
+    const outline=[[x-rr,y],[x+rr,y]];
+    for(let i=0;i<=12;i++){const a=Math.PI*i/12;outline.push([x+Math.cos(a)*rr,spring+Math.sin(a)*rise]);}
+    extrudeFront(outline,z-.26,z-.08,"wood");
+    for(let k=-2;k<=2;k++){
+      const xx=k*(w-.18)/5,top=spring+rise*Math.sqrt(Math.max(0,1-xx*xx/(rr*rr)));
+      box(x+xx,y+.10,z-.32,.045,top-y-.15,.055,"oak");
+    }
+    for(let t of [.25,.58])box(x,y+h*t,z-.36,w-.12,.10,.09,"iron");
+    for(let k of [-.20,.20])box(x+k,y+h*.45,z-.43,.07,.10,.09,"brass");
   }
   function banner(x,y,z){
    box(x,y,z,.085,2.9,.09,"brass");box(x+.44,y+2.72,z,.92,.08,.09,"brass");
@@ -65,9 +108,9 @@ const author=function author(){
       box(x+(axis==="x"?off:0),y,z+(axis==="z"?off:0),axis==="x"?.63:.40,.5,axis==="z"?.63:.4,"cut");}
   }
   function tower(x,z,y,h,r=1.2,withRoof=true){
-   prism(x,y,z,r,h,8,"stone");prism(x,y+h-.45,z,r*1.14,.42,8,"stoneLight");
-   prism(x,y+h-.08,z,r*1.16,.21,8,"cut");
-   if(withRoof){cone(x,y+h+.14,z,r*1.28,2.2,8,"roof");prism(x,y+h+2.26,z,.08,.40,8,"brass");}
+   prism(x,y,z,r,h,12,"stone");prism(x,y+h-.45,z,r*1.14,.42,12,"stoneLight");
+   prism(x,y+h-.08,z,r*1.16,.21,12,"cut");
+   if(withRoof){profileRound(x,y+h+.14,z,[[0,r*1.28],[.18,r*1.16],[.75,r*.73],[1.45,r*.35],[2.2,.025]],12,"roof");prism(x,y+h+2.26,z,.08,.40,8,"brass");}
    else for(let j=0;j<8;j+=2){const a=2*Math.PI*j/8;box(x+Math.cos(a)*r,y+h+.07,z+Math.sin(a)*r,.38,.46,.38,"cut");}
    window(x,y+h*.43,z-r+.03);
   }
@@ -191,19 +234,24 @@ const author=function author(){
     for(let i=0;i<n;i++){let j=(i+1)%n;poly([rings[0][i],rings[0][j],rings[1][j],rings[1][i]],m);}
   }
   function shed(x,y,z,w,d,rise,m="wood"){
-    const a=[x-w/2,y,z-d/2],b=[x-w/2,y+rise,z+d/2],c=[x+w/2,y+rise,z+d/2],e=[x+w/2,y,z-d/2];
-    poly([a,b,c,e],m);poly([e,c,b,a],m);
-    beam(a,b,.10,"oak");beam(e,c,.10,"oak");beam(a,e,.12,"wood");beam(b,c,.12,"wood");
-    for(let i=1;i<5;i++){const t=i/5;beam([x-w/2,y+rise*t,z-d/2+d*t],[x+w/2,y+rise*t,z-d/2+d*t],.055,"oak");}
+    const cloth=m==="banner",sag=cloth?.28:.12;
+    const point=(u,v)=>[x+w*(u-.5),y+rise*v-sag*Math.sin(Math.PI*u)*(.35+.65*Math.sin(Math.PI*v)),z+d*(v-.5)];
+    roofShell(point,6,4,m,cloth?"banner":"wood",cloth?.025:.10);
+    for(let j=0;j<4;j++){beam(point(0,j/4),point(0,(j+1)/4),.09,"wood");beam(point(1,j/4),point(1,(j+1)/4),.09,"wood");}
+    // Cloth hangs between supports; wooden roofs have two integrated battens.
+    for(const v of cloth?[0,1]:[0,.40,.75,1])for(let i=0;i<6;i++)beam(point(i/6,v),point((i+1)/6,v),cloth?.025:.055,cloth?"iron":"oak");
   }
   function barrel(x,z,r=.4,h=.8){prism(x,.08,z,r,h,10,"oak");for(let y of [.22,h*.75])prism(x,y,z,r+.025,.075,10,"iron");}
   function aux(kind){
    // No display plinths: posts, walls and feet extend slightly into terrain.
    if(kind==="Sawmill"){
      // Long open sawing bay with a high rear roof and a lower working canopy.
-     for(let x of [-2.45,0,2.45])for(let z of [-.8,1.8])box(x,.12,z,.23,3.2,.25,"wood");
+     for(let x of [-2.45,2.45])for(let z of [-.8,1.8])box(x,.12,z,.25,2.82,.27,"wood");
+     box(0,.12,1.8,.25,3.56,.27,"wood");
      box(0,.15,1.85,5.2,2.6,.18,"oak");
-     shed(0,2.85,.65,5.7,3.45,.85,"wood");shed(-.35,2.35,-1.7,4.9,1.55,.5,"oak");
+     roof(0,2.9,.65,5.7,3.45,.85,"wood");
+     const bow=[[-2.45,2.65,-.8],[-1.7,3.0,-.8],[-.8,3.40,-.8],[.2,3.48,-.8],[1.15,3.22,-.8],[2.45,2.65,-.8]];
+     for(let i=1;i<bow.length;i++)beam(bow[i-1],bow[i],.13,"wood");shed(-.35,2.35,-1.7,4.9,1.55,.5,"oak");
      for(let x of [-2.45,2.45]){box(x,.12,-2.4,.22,2.35,.22,"wood");beam([x,1.6,-2.4],[x,2.6,-1.4],.11,"oak");}
      for(let x of [-1.8,1.8])box(x,.08,-.2,.30,1.0,.8,"wood");box(0,1.0,-.2,4.4,.25,1.05,"oak");
      beam([-1.9,1.48,-.2],[1.7,1.48,-.2],.30,"wood",10,"oak");
@@ -238,9 +286,12 @@ const author=function author(){
      for(let y of [1.0,2.4])box(-.95,y,-1.55,3.0,.13,.17,"oak");
      box(-.95,.85,-1.64,1.0,1.5,.12,"wood");
      for(let i=0;i<3;i++)box(-.95,.10+i*.24,-2.8+i*.28,1.35,.26,.42,"wood");
-     prism(1.8,.08,.75,1.08,.55,12,"stone");prism(1.8,.63,.75,1.03,3.95,12,"oak");
-     for(let y of [1.0,2.0,3.5,4.45])prism(1.8,y,.75,1.075,.10,12,"iron");
-     cone(1.8,4.6,.75,1.30,1.25,12,"wood");prism(1.8,5.82,.75,.08,.30,6,"iron");
+     prism(1.8,.08,.75,1.04,.55,12,"stone");
+     const profile=[[0,.95],[.55,1.08],[1.85,1.12],[3.1,1.04],[3.95,.92]];
+     profileRound(1.8,.63,.75,profile,14,"oak");
+     for(const [yy,r] of profile.slice(1))prism(1.8,.63+yy-.05,.75,r+.025,.10,14,"iron");
+     profileRound(1.8,4.58,.75,[[0,1.24],[.17,1.19],[.48,.88],[.95,.38],[1.35,.045]],14,"wood");
+     prism(1.8,5.90,.75,.06,.20,6,"iron");
      for(let i=0;i<7;i++)box(1.8,.55+i*.47,-.39,.65,.08,.12,"wood");
      for(let x of [1.42,2.18])box(x,.10,-.39,.08,3.7,.09,"wood");
      barrel(2.35,-1.7,.44,.88);barrel(1.25,-2.05,.34,.65);
@@ -311,7 +362,7 @@ const author=function author(){
     stats.Pine={vertices:ls.filter(x=>x.startsWith("v ")).length,polygons:faces.length,triangles:faces.reduce((a,f)=>a+f.trim().split(/\s+/).length-3,0)};continue;
   }
   const m=mesh("Ashen_"+kind);m.aux(kind);let result=m.finish();outputs[dir+`Ashen_${kind}.obj`]=result.obj;stats[kind]=result.stats;}
- outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"CRAFT_SETTLEMENT_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
+ outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"ORGANIC_ARCHITECTURE_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
  return outputs;
 };
 for (const [p,content] of Object.entries(author())){fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,content,"utf8");console.log(p,Buffer.byteLength(content));}
