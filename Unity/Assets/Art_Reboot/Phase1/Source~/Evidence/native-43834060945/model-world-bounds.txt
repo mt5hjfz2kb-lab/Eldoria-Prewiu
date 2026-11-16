@@ -1,0 +1,4 @@
+01_Reclaimed_Hall Center: (-0.28, 3.28, 1.48), Extents: (2.98, 3.37, 3.19) scale=(100.00, 100.00, 100.00)
+02_Roofless_Ruin Center: (-4.59, 1.27, -1.83), Extents: (2.10, 1.49, 2.01) scale=(100.00, 100.00, 100.00)
+03_Corrupted_Watchtower Center: (4.40, 2.36, -0.07), Extents: (1.75, 2.49, 2.03) scale=(100.00, 100.00, 100.00)
+Terrain Center: (0.00, 1.96, 0.00), Extents: (24.00, 2.59, 24.00) scale=(100.00, 100.00, 100.00)

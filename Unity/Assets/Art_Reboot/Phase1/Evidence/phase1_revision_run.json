@@ -1,0 +1,26 @@
+{
+    "png_hashes":  [
+                       {
+                           "sha256":  "4D54408D059B9FEC05D4AF9427D1AE24688D75BD5732EC009D2AAD0F6256C78A",
+                           "file":  "unity-1100x1250.png"
+                       },
+                       {
+                           "sha256":  "C80E2CEA3B1E16985DC10B8DC7E4176EC18BB9D961B0D30A6FA8ACE31E52ABCC",
+                           "file":  "unity-390x844.png"
+                       },
+                       {
+                           "sha256":  "3BCDDB6A6E59BA566B1CE0BB4F84B326C09AFCE23C27EDFED33ED65D6CAD83C4",
+                           "file":  "unity-1600x900.png"
+                       },
+                       {
+                           "sha256":  "10F5671A1F093B2B6E59583BFCDE45007C727BAEDC6E32670B2F1F412EB26971",
+                           "file":  "unity-844x390.png"
+                       }
+                   ],
+    "native_run":  "43834060945",
+    "note":  "True native Unity rendered captures; artistic approval and real iPhone performance not asserted",
+    "source_sha":  "237dfc52d7406553842764cc97f9e3d457afbaeb",
+    "physical_iphone_tested":  false,
+    "phase":  "Phase1 owner art revision",
+    "art_approved":  false
+}
