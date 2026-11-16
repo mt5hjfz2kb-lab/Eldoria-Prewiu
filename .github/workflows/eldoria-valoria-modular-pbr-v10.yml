@@ -31,7 +31,7 @@ jobs:
         run: |
           git clone -q --filter=blob:none --no-checkout --depth 1 https://github.com/agentkaerf/FreeModels.git third_party/FreeModels
           git -C third_party/FreeModels sparse-checkout init --cone
-          git -C third_party/FreeModels sparse-checkout set 'Medieval Village MegaKit[Standard]' 'Stylized Nature MegaKit[Standard]'
+          git -C third_party/FreeModels sparse-checkout set --skip-checks 'Medieval Village MegaKit[Standard]' 'Stylized Nature MegaKit[Standard]'
           git -C third_party/FreeModels checkout -q HEAD
           grep -q 'CC0 1.0 Universal' 'third_party/FreeModels/Medieval Village MegaKit[Standard]/License_Standard.txt'
           grep -q 'CC0 1.0 Universal' 'third_party/FreeModels/Stylized Nature MegaKit[Standard]/License_Standard.txt'
