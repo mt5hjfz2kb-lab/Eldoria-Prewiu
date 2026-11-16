@@ -89,6 +89,9 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 var kitRoot=new GameObject("Phase2 reusable kit aligned on 4m-grid");
                 ApplyDusk(kitRoot,false);
                 var galleryCamera=NewCamera(kitRoot);
+                galleryCamera.clearFlags=CameraClearFlags.SolidColor;
+                galleryCamera.backgroundColor=new Color(.21f,.20f,.29f,1);
+                BuildGalleryFloor(kitRoot);
                 var galleryBounds=BuildGallery(kitRoot, kitScene, catalog);
                 Fit(galleryCamera,galleryBounds,2400,1350,new Vector3(42,-14,0),1.08f);
                 Capture(galleryCamera,2400,1350,Path.Combine(output,"kit-grid-2400x1350.png"));
@@ -258,6 +261,49 @@ namespace Eldoria.ArtReboot.Kit.Editor
             instances++;trianglesInstanced+=entries[id].triangles;
             return prefab;
         }
+        static void BuildGalleryFloor(GameObject root)
+        {
+            // Presentation-only studio floor, NOT one of the 31 kit prefabs.
+            // Individual grounded cells make shape, scale and pivot checkable in one PNG.
+            var vertices=new List<Vector3>();
+            var colors=new List<Color>();
+            var uv=new List<Vector2>();
+            var indices=new List<int>();
+            for(int row=0;row<4;row++)for(int column=0;column<8;column++)
+            {
+                float cx=(column-3.5f)*7.15f;
+                float cz=(1.5f-row)*8.75f;
+                float w=6.85f,d=8.35f;
+                int n=vertices.Count;
+                vertices.Add(new Vector3(cx-w*.5f,-.17f,cz-d*.5f));
+                vertices.Add(new Vector3(cx-w*.5f,-.17f,cz+d*.5f));
+                vertices.Add(new Vector3(cx+w*.5f,-.17f,cz+d*.5f));
+                vertices.Add(new Vector3(cx+w*.5f,-.17f,cz-d*.5f));
+                // Neutral stone patch within the owner-approved 256 atlas.
+                for(int i=0;i<4;i++)
+                {
+                    uv.Add(new Vector2(.095f,.095f));
+                    colors.Add((column+row)%2==0?
+                        new Color(.82f,.80f,.77f,1):
+                        new Color(.70f,.71f,.72f,1));
+                }
+                indices.Add(n);indices.Add(n+1);indices.Add(n+2);
+                indices.Add(n);indices.Add(n+2);indices.Add(n+3);
+            }
+            var mesh=new Mesh{indexFormat=IndexFormat.UInt32};
+            mesh.SetVertices(vertices);mesh.SetColors(colors);mesh.SetUVs(0,uv);
+            mesh.SetTriangles(indices,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
+            const string assetPath=Kit+"/Materials/Kit_GalleryFloor.asset";
+            var stored=AssetDatabase.LoadAssetAtPath<Mesh>(assetPath);
+            if(stored==null){AssetDatabase.CreateAsset(mesh,assetPath);stored=mesh;}
+            else{EditorUtility.CopySerialized(mesh,stored);Object.DestroyImmediate(mesh);}
+            var go=new GameObject("Studio review board - 8 by 4 neutral atlas cells");
+            go.transform.SetParent(root.transform,false);
+            go.AddComponent<MeshFilter>().sharedMesh=stored;
+            var render=go.AddComponent<MeshRenderer>();render.sharedMaterial=surface;
+            render.receiveShadows=true;
+        }
+
         static Bounds BuildGallery(GameObject root, Scene scene, Catalog catalog)
         {
             Bounds b=new Bounds();bool first=true;
