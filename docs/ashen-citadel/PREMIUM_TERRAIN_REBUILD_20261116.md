@@ -31,3 +31,18 @@ The source generator is seeded, preserves five structural Bastion variants, save
 ## Reconstruction invariants
 
 Only the independent City view uses this mesh. Keep the old `AshenLandscape.obj` source unmodified because the separate World view still uses it. No legacy Bastion or main repository art is imported. Geometry is generated in Unity at edit-time and saved as an asset, not a mock-up, reference painting or dynamically generated image.
+
+## Genuine Unity V2–V3 review and acceptance decision
+
+- **V2** `c16b00a30c05fe69a468aa9229379b346eb1cad5`; native run **43883041688**, artifact **14232794149**: 7/7 EditMode and 4/4 PlayMode; ten image hashes verified. Sculpted/smoothed continuous terrain and blue-noise fitted stone paths replaced the wide repeated tiled carpet. However the ground-cover silhouettes were excessively black and read like bird-shaped spikes. **Visual regression rejected**, despite green tests.
+- **V3** `d561872156bf0bc845f9ab585d01f0b2c02bfdce`; native run **43884660555**, artifact **14234376960** (ZIP digest `sha256:91e5120f56baecfe8e480f17b70d31849d383992e95eb1098ca01792ea00faa8`). 7/7 EditMode and 4/4 PlayMode passed, all ten I–V / 1600×900 and 390×844 screenshot hashes verified. Real same-camera Bastion V views independently reviewed.
+- **Validated visual changes:** smooth terrain shading rather than faceted foreground ground triangles; organic tighter footpath with dirt shoulder; fewer rectangular pavers; removed oversimplified smooth-gray city pebble objects; separated vegetation into its own lightweight mesh with no shadow casting, soft natural colours and shorter blades; and reinforced activity-ground around workshops. The former stark black spiky plants no longer dominate the scene. Secondary architectural identity and Bastion evolution I–V preserved.
+- **Quality judgement:** V3 is a substantial upgrade over the original repeating path and the failed V2 foliage. It is **not final premium-art approval**: meadow and distant scenery remain quite sparse, sunlight is still hard, buildings have some repeated roof/surface modules, and actual screen-space richness on portrait is limited. Do not confuse the 11 passed mechanics/tests with artistic quality.
+- **Scope and environment:** the source lives only in `experiment/ashen-citadel-i-v-20261115`; City-only terrain edit-time mesh; separate World, production `main` and authoritative rules unchanged. Physical iPhone/WebGL, GPU and battery/performance profiling unverified. Shared Windows reservation released after V3 completed, no ongoing background job or promise.
+
+### Lessons captured
+
+1. Flat-shaded, triangle-duplicated meadow geometry caused obvious ground facets: explicit continuous finite-difference terrain normals solved it.
+2. Even irregular polygon meshes can look like a carpet if row-and-column seeds and broad packed-earth rectangles dictate their silhouette: random rejection-sampled seeds, clipped octagonal Voronoi, and a narrower road work better.
+3. Plant silhouette and material/shadow behaviour have to be evaluated as one system. Dark double-sided triangular grasses with mesh-wide shadow casting produced near-black 'bird' clumps; simply increasing saturation did not solve the cause. A separate, shadow-free material + smaller grass shapes yielded the clearer native image.
+4. Rendering and automated tests are necessary but not sufficient. V2 technically passed but was visually rejected, then iterated to V3 without disturbing gameplay.
