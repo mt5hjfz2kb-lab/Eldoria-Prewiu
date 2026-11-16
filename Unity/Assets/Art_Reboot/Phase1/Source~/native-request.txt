@@ -1,5 +1,5 @@
-Phase 1 — SEGUNDA REVISIÓN · only original Unity screenshots.
-All three owner-approved FBX meshes and atlas are hash protected.
-Blender generated environment PASS run 43866972734; prior native 43862584903 was visual FAIL (underexposed, white crystals, no sky).
-This capture validates new terrain edge, workshop dressing left of village, warm dusk, purple crystals, smoke and 42-degree camera.
-Windows: one coordinated bounded turn; no Ashen, gameplay, main art, Phase 2 or mobile claims.
+FASE 1 SEGUNDA REVISION: capturing the EXACT latest isolated art/visual-reboot branch.
+Preserve all three approved building meshes + textures by hash, no main gameplay/Phase 2.
+Blender generator #43871239309 regenerated terrain with camera portrait fix; new sky gradient and wall-integrated purple fissures.
+Native Editor Unity6000.3.23f1, URP17.3.0, four viewports plus corruption close-up required.
+Return original screenshots and provenance. No art approval inferred from technical success.
