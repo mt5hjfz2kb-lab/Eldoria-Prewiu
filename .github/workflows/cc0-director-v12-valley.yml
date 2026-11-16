@@ -1,0 +1,110 @@
+name: "Eldoria CC0 · independent V12 sculpted terrain with mixed native forest and textured citadel"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v12-valley.yml"
+      - "tools/cc0-art-system/director_v12_living_valley.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v12-structural-ubuntu
+  cancel-in-progress: false
+jobs:
+  real-3d:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v12_living_valley.py
+      - name: Download pinned and verified owner-authored V8 only
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-director-v8-real-3d
+          run-id: 43882248142
+          github-token: ${{ github.token }}
+          path: .
+      - name: Check five real stage inputs and genuine source provenance
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v12_living_valley.py
+          for i in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV8/DirectorV8_Stage$i.glb"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('docs/cc0-art-system/previews/director-v8/v8-evidence.json')
+          j=json.loads(p.read_text())
+          assert j["source_run"]==43880753054
+          assert j["source_rights"]=="original Eldoria 3D only; no vendor source"
+          assert j["blender_render"] and not j["native_unity_tested"] and not j["art_approved"]
+          print("ELDORIA_V12_TEXTURED_SOURCE_GUARD_PASS")
+          PY
+      - name: Install free Blender on hosted Ubuntu, never shared Windows
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+      - name: Model true physical forest and differentiated stone/roof districts
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v12_living_valley.py 2>&1 | tee "$RUNNER_TEMP/v12-structural.log"
+          grep -q ELDORIA_V12_REAL_ART_PASS "$RUNNER_TEMP/v12-structural.log"
+      - name: Verify actual exported 3D geometry and real images, no fake approval
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          d=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV12Structural')
+          p=Path('docs/cc0-art-system/previews/director-v12-structural')
+          m=json.loads((p/'v12-evidence.json').read_text())
+          assert m['input_run_id']==43882248142
+          assert len(m['stages'])==5 and len(m['renders'])==3
+          assert not m['unity_native_tested'] and not m['iphone_tested'] and not m['art_approved']
+          assert not m['vendor_assets_included']
+          assert (d/'DirectorV12_Editable_Source.blend').read_bytes()[:7]==b'BLENDER'
+          for i in range(1,6):
+            b=(d/f'DirectorV12_Stage{i}.glb').read_bytes()
+            assert len(b)>1000000 and b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+            length=struct.unpack_from('<I',b,12)[0]
+            j=json.loads(b[20:20+length])
+            assert len(j.get('meshes',[]))>500 and len(j.get('images',[]))>=4
+            assert any(x.get('name','').startswith('V12_') for x in j.get('materials',[]))
+            print('V12_TEXTURED_GLB_PASS',i,len(j['meshes']),len(j['images']))
+          frames={'DirectorV12_BastionI_1600x900.png':(1600,900),
+                  'DirectorV12_BastionV_1600x900.png':(1600,900),
+                  'DirectorV12_BastionV_Portrait_720x1200.png':(720,1200)}
+          for name,wh in frames.items():
+            f=p/name; im=Image.open(f).convert('RGB')
+            assert im.size==wh and f.stat().st_size>100000
+            sm=im.resize((240,140));px=list(sm.getdata())
+            magenta=sum(r>150 and b>140 and r>g*1.55 and b>g*1.55 for r,g,b in px)/len(px)
+            assert magenta<.02,('missing-textures',name,magenta)
+          a=Image.open(p/'DirectorV12_BastionI_1600x900.png').convert('RGB')
+          b=Image.open(p/'DirectorV12_BastionV_1600x900.png').convert('RGB')
+          diff=ImageStat.Stat(ImageChops.difference(a.crop((450,100,1130,730)),b.crop((450,100,1130,730)))).mean
+          assert sum(diff)/3>5,('no Bastion progression',diff)
+          print('V12_TEXTURED_TECH_VALID_NOT_ART_APPROVED')
+          PY
+      - name: Save all V12 physical outputs and authentic PNGs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v12-structural-real3d
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV12Structural/
+            docs/cc0-art-system/previews/director-v12-structural/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Confirm game source and main unchanged
+        run: |
+          git diff --exit-code
+          echo "V12_TEXTURED_OWNED_MESHES_ONLY_PASS"
