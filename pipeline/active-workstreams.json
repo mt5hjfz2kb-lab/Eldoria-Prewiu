@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T15:02:22.236Z",
+  "updated_at": "2026-11-16T15:18:17.480Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9808,7 +9808,7 @@
       "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 56,
+      "ownership_revision": 57,
       "branch": "art/visual-reboot",
       "status": "active",
       "phase": "PHASE2_KIT_CORRECTED_UV_WAITING_FOR_NATIVE_TURN",
@@ -9829,7 +9829,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Re-capture corrected 31-piece modular kit and 3-building sandbox in real Unity; inspect art and correct if necessary; deliver gallery + scene + polygon table, await owner approval.",
+      "next": "Native Unity Phase2 gallery and 3-building sandbox exact HEAD after Ashen yield; inspect UV cells/sky/forge; artistic signoff pending.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9842,9 +9842,9 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "pending_next_authorized_turn",
-        "source_sha": "51733f40d61914c1548f8536715cfb10fb97afeb",
-        "reason": "Blender FBX UV corrected and independently reimported for all 31 pieces; request one new genuine Unity kit capture with same camera after Ashen releases Windows"
+        "status": "pending_after_current_ashen_owner_yield",
+        "source_sha": "d7713d5fd295bf5e023005c9bda5c8d2329ca653",
+        "reason": "Owner-directed Phase2 finish; 31 kit pieces + gallery + forge split-shed + gable source and Blender FBX QA pass. Need one bounded genuine Unity capture after Ashen yields. Do not interrupt Ashen processes."
       },
       "native_source_sha": "a86acf1936820bc1a79cb4df415a7ac39fa26732",
       "last_native_attempt": {
@@ -20353,9 +20353,9 @@
     "mode": "one_bounded_native_execution_per_turn",
     "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "current_run_id": null,
-    "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_turn_available",
+    "status": "ashen_holder_visual_requested_next",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
