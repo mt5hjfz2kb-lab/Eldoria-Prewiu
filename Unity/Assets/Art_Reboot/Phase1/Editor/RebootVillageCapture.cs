@@ -20,7 +20,7 @@ namespace Eldoria.ArtReboot.Editor
         {
             public string unity,sourceSHA,scene,note;
             public long heroTriangles,ruinTriangles,corruptTriangles,environmentTriangles;
-            public float cameraTilt=42,cameraYaw=-13,sunElevation=16,sunIntensity=1.45f,fogStart=47,fogEnd=92,bloomIntensity=.42f,bloomThreshold=1.05f;
+            public float cameraTilt=42,cameraYaw=-13,phonePortraitYaw=-70,sunElevation=16,sunIntensity=1.45f,fogStart=47,fogEnd=92,bloomIntensity=.42f,bloomThreshold=1.05f;
             public int shadowResolution=2048,shadowCascades=2,particles;
             public bool approvedHeroBytesPreserved=true,originalScenesPreserved=true,physicalMobileTested=false;
         }
@@ -125,7 +125,11 @@ namespace Eldoria.ArtReboot.Editor
         }
         static void Fit(Camera camera,Bounds bounds,int width,int height,float distance)
         {
-            var rotation=Quaternion.Euler(42,-13,0);camera.transform.SetPositionAndRotation(bounds.center-rotation*Vector3.forward*distance,rotation);
+            // Very tall phone captures need a cross-village axis, otherwise orthographic
+            // horizontal fit leaves enormous sky/floor bands and tiny buildings.
+            // Landscape and near-square detail captures retain approved 42/-13 framing.
+            float yaw = (float)width/height < .60f ? -70f : -13f;
+            var rotation=Quaternion.Euler(42,yaw,0);camera.transform.SetPositionAndRotation(bounds.center-rotation*Vector3.forward*distance,rotation);
             float horizontal=0,vertical=0;
             for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)for(int z=-1;z<=1;z+=2)
             {
