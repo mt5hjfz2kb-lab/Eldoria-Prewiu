@@ -360,12 +360,12 @@ namespace Eldoria.ArtReboot.Kit.Editor
             p("Wall_Straight_Intact",-2,0,4,180);p("Wall_Window_Intact",2,0,4,180);
             p("Wall_Straight_Intact",-4,0,-2,90);p("Wall_Corner_Intact",-4,0,2,90);
             p("Wall_Straight_Intact",4,0,-2,-90);p("Wall_Straight_Intact",4,0,2,-90);
-            p("Roof_Gable",0,3.67f,0,180);
+            p("Roof_Gable",0,3.67f,0,90);
             // Asymmetric timber lean-to and heavy forge stack create a different silhouette.
             p("Roof_Shed",5.95f,3.14f,-1.65f,90);
             for(float x=4.3f;x<8.5f;x+=3.8f)
                 for(float z=-3.85f;z<.25f;z+=3.8f)p("Beam",x,0,z,0);
-            p("Chimney",3.4f,2.25f,1.15f,0);
+            p("Chimney",3.4f,3.24f,2.20f,0);
             p("Shield",-1.8f,1.42f,-4.53f,0);
             p("Balcony",.7f,2.6f,4.7f,180);
             p("Rock_Small",5.5f,0,-4.2f,0);
@@ -384,6 +384,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
             p("Corrupt_Roots",2.3f,0,-4.45f,0);
             p("Corrupt_Roots",4.25f,0,-1.6f,-90);
             p("Corrupt_Roots",6.45f,1.5f,1.25f,180);
+            p("Corrupt_Roots",1.6f,3.88f,-1.85f,90);
             p("Crystal_Large",4.8f,0,-4.1f,0);
             p("Crystal_Medium",-2.75f,0,-4.4f,0);
             p("Crystal_Medium",5.90f,0,2.1f,0);
