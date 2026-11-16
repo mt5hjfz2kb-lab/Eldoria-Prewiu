@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T18:45:00Z",
+  "updated_at": "2026-11-16T22:58:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9927,6 +9927,27 @@
       },
       "phase2_art_approved": false,
       "phase2_implementation_complete": true
+    },
+    {
+      "id": "eldoria-city2d-illustrated-proof-20261116",
+      "title": "Valoria 2.5D ilustrada — desbloqueos reales, crecimiento y QA nativa",
+      "owner": "chatgpt-eldoria-city2d-priority-20261116",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "art/ciudad-2d-hitos-1-5-20261116",
+      "status": "active",
+      "phase": "REAL_UNLOCK_VISIBILITY_IN_PROGRESS",
+      "claimed_at": "2026-11-16T22:58:00Z",
+      "resources": [],
+      "scope": [
+        "Unity/Assets/Experimentos/Ciudad2D/**",
+        ".github/workflows/ciudad2d-*.yml",
+        "tools/ciudad2d-native/**",
+        "docs/ciudad2d/**"
+      ],
+      "art_production_routing": "required",
+      "user_authorization": "Owner directs prioritization of isolated 2.5D experiment, Nov 16 2026, without changing game mechanics or disturbing running jobs.",
+      "write_scope_released": false
     }
   ],
   "history": [
