@@ -421,7 +421,11 @@ def glb(stage):
     model_data.append(info)
     print("V6_PHYSICAL_GLTF",json.dumps(info))
 def build(stage):
+    global M
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    # Blender deletes all datablocks on a factory reset, including materials.
+    # Recreate master materials per level after reset; never reuse stale RNA handles.
+    M={key:mat(key,*params) for key,params in palette.items()}
     src=SRC/("DirectorV5_Stage"+str(stage)+".glb")
     if not src.is_file():raise RuntimeError("V5 physically pinned source missing "+str(src))
     bpy.ops.import_scene.gltf(filepath=str(src),import_pack_images=True)
