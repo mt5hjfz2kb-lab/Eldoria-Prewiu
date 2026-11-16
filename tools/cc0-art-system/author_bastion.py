@@ -367,31 +367,28 @@ def terrain():
             cyl("riverbank boulder",(xx,yy,.2),random.uniform(.25,.7),random.uniform(.3,.7),
                 random.choice(["wall","wall_dark"]),"World",7)
 def paths():
-    # Real flagstones are laid along a curve from the foreground to the entrance.
+    # A broken medieval stone-and-dirt route, deliberately NOT a checkerboard.
+    # Overlapping earth base is continuous and the setts sit irregularly within it.
     for k in range(34):
         t=k/33
         y=-26+20*t
         x=1.8*sin(t*pi)*sin(t*1.8)-.1
-        half=2.55-1.35*t
-        cube("route | packed dirt base",(x,y,.09),(half*2.15,1.03,.11),
-             "soil","Route",.07,rot=random.uniform(-.025,.025))
-        for lane in (-1,0,1):
-            lx=x+lane*half*.59+random.uniform(-.24,.24)
-            cube("route | individual worn cobblestone",(lx,y+random.uniform(-.19,.2),.19),
-                 (random.uniform(.55,1.0),random.uniform(.43,.68),.16),
-                 random.choice(["wall_light","wall","wall_dark"]),"Route",.055,
-                 rot=random.uniform(-.13,.13))
-        if k%3==0:
+        half=2.5-1.25*t
+        cube("route | interrupted compacted earth",(x,y,.08),(half*2.07,1.08,.11),
+             "soil","Route",.025,rot=random.uniform(-.04,.04))
+        for n in range(random.choice((2,2,3))):
+            lx=x+random.uniform(-half*.77,half*.77)
+            ly=y+random.uniform(-.33,.33)
+            cube("route | varied uneven stone",(lx,ly,.16),
+                 (random.uniform(.38,.78),random.uniform(.41,.80),.10),
+                 random.choice(["wall_light","wall","wall_dark","soil"]),
+                 "Route",.035,rot=random.uniform(-.26,.26))
+        if k%4==0:
             for sx in (-1,1):
-                cyl("route | side loose rock",(x+sx*(half+random.uniform(.45,.8)),
-                       y+random.uniform(-.35,.35),.25),random.uniform(.22,.52),.30,
-                    "wall_dark","Route",8)
-    # Smaller linked roads imply a functioning economy.
-    for xo,direc in ((-15,-1),(15,1)):
-        for i in range(11):
-            xx=xo+(i-5)*.36
-            yy=-9+i*.95
-            cube("side lane uneven flagstone",(xx,yy,.12),(1.15,.95,.12),"soil","Route",.04,rot=.13*direc)
+                cyl("route | worn outer stone",(x+sx*(half+random.uniform(.35,.85)),
+                       y+random.uniform(-.45,.45),.23),
+                    random.uniform(.20,.50),.27,"wall_dark","Route",7)
+    # Real side connections are laid out when composing the separated industries.
 def forest():
     # Dense at edges and behind the castle; preserve stage I/V visibility.
     for i in range(133):
