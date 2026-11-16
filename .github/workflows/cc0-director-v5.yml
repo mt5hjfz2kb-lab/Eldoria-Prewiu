@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
           blender --version | head -2
       - name: Generate 5 actual original 3D models, an editable source and 3 real Blender renders
         shell: bash
