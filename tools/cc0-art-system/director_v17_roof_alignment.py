@@ -78,8 +78,10 @@ def repair_roofs(stage):
         cx,cy=ROOF_SOURCE_CENTERS[region]
         if abs(pos.x-cx)>1.0 or abs(pos.y-cy)>1.0:
             raise RuntimeError("Roof is not at suspected old physical coordinates "+str((stage,region,tuple(pos))))
-        dx=NEW[region][0]-cx
-        dy=NEW[region][1]-cy
+        # Preserve the same whole-district displacement used by V16. The
+        # actual roof centroid need not equal the district's nominal anchor.
+        dx=NEW[region][0]-OLD[region][0]
+        dy=NEW[region][1]-OLD[region][1]
         mat=obj.matrix_world.copy()
         mat.translation+=Vector((dx,dy,0))
         obj.matrix_world=mat
