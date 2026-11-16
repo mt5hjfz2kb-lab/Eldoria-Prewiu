@@ -143,17 +143,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 tree.transform.localScale=new Vector3(scale,scale*(.85f+.30f*(float)random.NextDouble()),scale);
                 tree.transform.rotation=Quaternion.Euler(0,(float)random.NextDouble()*360f,0);
             }
-            for(int i=0;i<27;i++)
-            {
-                float angle=i*2.349963f;
-                float radius=19f+20f*(float)random.NextDouble();
-                if(radius<25f)continue;
-                var rock=ImportPrefab(rockPrefab,sceneRoot.transform,"Natural fieldstone · "+i);
-                rock.transform.position=new Vector3(Mathf.Cos(angle)*radius,-.04f,Mathf.Sin(angle)*radius*.87f);
-                var rp=rock.transform.position;rp.y=ValleyHeight(rp.x,rp.z)-.04f;rock.transform.position=rp;
-                rock.transform.localScale=Vector3.one*Mathf.Lerp(.36f,1.00f,(float)random.NextDouble());
-                rock.transform.rotation=Quaternion.Euler(0,(i*83f)%360f,0);
-            }
+            // The premium ground now contains authored faceted rock outcrops.
+            // Drop the older smooth pebble prefabs in the CITY only; retain them
+            // in the separate World scene and leave its mechanics unaffected.
             var world=new GameObject("Ashen Frontier · authored experiment");
             var frontierTerrain=Import("AshenLandscape",world.transform);
             frontierTerrain.name="Ashen frontier · true 3D landscape";
@@ -303,7 +295,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     var grassPath=MaterialPath+"grass_"+current+".mat";
                     var grass=AssetDatabase.LoadAssetAtPath<Material>(grassPath);
                     if(grass==null){grass=new Material(shader);AssetDatabase.CreateAsset(grass,grassPath);}
-                    grass.SetColor("_BaseColor",current=="leafLight"?new Color(.43f,.45f,.23f):new Color(.24f,.33f,.19f));grass.SetTexture("_BaseMap",null);grass.SetFloat("_Smoothness",.025f);grass.SetFloat("_Metallic",0f);grass.SetFloat("_Cull",0f);EditorUtility.SetDirty(grass);Colors["grass_"+current]=grass;
+                    grass.SetColor("_BaseColor",current=="leafLight"?new Color(.59f,.57f,.34f):new Color(.40f,.47f,.29f));grass.SetTexture("_BaseMap",null);grass.SetFloat("_Smoothness",.025f);grass.SetFloat("_Metallic",0f);grass.SetFloat("_Cull",0f);EditorUtility.SetDirty(grass);Colors["grass_"+current]=grass;
                 }
             }
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);
