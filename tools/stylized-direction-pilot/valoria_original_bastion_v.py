@@ -517,6 +517,10 @@ exec(compile(open('tools/stylized-direction-pilot/valoria_characterful_city_v7.p
 exec(compile(open('tools/stylized-direction-pilot/valoria_citadel_massing_v8.py',encoding='utf-8').read(),
              'valoria_citadel_massing_v8.py','exec'),globals())
 
+# V9 separate compact alternative. Substantial geometry rebuild and authored palette.
+exec(compile(open('tools/stylized-direction-pilot/valoria_mobile_citadel_v9.py',encoding='utf-8').read(),
+             'valoria_mobile_citadel_v9.py','exec'),globals())
+
 def area(name,location,power,color,size):
  light=bpy.data.lights.new(name,'AREA');light.energy=power;light.color=color;light.shape='DISK';light.size=size
  obj=bpy.data.objects.new(name,light);bpy.context.collection.objects.link(obj)
@@ -543,8 +547,8 @@ def frame(name,resX,resY,position,target,scale):
  bpy.ops.render.render(write_still=True)
 
 # Distinct from legacy Valoria: iconic readable vertical masses, bold roofs and warm/cool contrast.
-frame('original-bastion-v-landscape.png',1440,900,(72,-88,77),(0,4,3.2),84)
-frame('original-bastion-v-portrait.png',800,1400,(72,-88,79),(0,5,3.8),67)
+frame('original-bastion-v-landscape.png',1600,1000,(70,-83,111),(0,4,2.7),101)
+frame('original-bastion-v-portrait.png',900,1600,(70,-83,110),(0,6,2.9),78)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'valoria-original-identity.blend'))
 # Genuine 3D GLB; original editable project is the source of truth.
 bpy.ops.export_scene.gltf(filepath=str(out/'valoria-original-bastion-v.glb'),
@@ -562,6 +566,8 @@ manifest={'original_authored_geometry':True,
  'art_pass_counts':V6_STYLE_COUNTS,
  'architectural_identity_pass':'tools/stylized-direction-pilot/valoria_characterful_city_v7.py',
  'architectural_components_v7':style_count,
+ 'compact_mobile_v9':V9_METRICS,
+ 'mobile_language_art':'low horizontal keep, five separated recognizable functional areas, four resource roof palettes',
  'citadel_v8':v8_proof}
 (out/'visual-proof.json').write_text(json.dumps(manifest,indent=2))
 print('VALORIA_ORIGINAL_BLENDER_PASS',json.dumps(manifest))
