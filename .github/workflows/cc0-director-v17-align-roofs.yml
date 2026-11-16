@@ -1,0 +1,134 @@
+name: "Eldoria CC0 V17 | correct four world-space detached industrial roofs"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v17-align-roofs.yml"
+      - "tools/cc0-art-system/director_v17_roof_alignment.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v17-roof-corrected-ubuntu
+  cancel-in-progress: false
+jobs:
+  authentic-repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v17_roof_alignment.py
+      - name: Download pinned actual V16 physical city and source evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v16-separated-real-city
+          run-id: 43911033294
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verify genuine five-stage 3D source and Python syntax
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v17_roof_alignment.py
+          for stage in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV16/DirectorV16_Stage$stage.glb"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path('docs/cc0-art-system/previews/director-v16/v16-evidence.json').read_text())
+          assert j["source_run_id"]==43907312243
+          assert len(j["physical_stages"])==5 and len(j["captured_real_images"])==8
+          assert j["no_concept_images_used"] and j["no_vendor_3d_geometry_added"]
+          assert not j["art_approved"] and not j["unity_verified"]
+          print("V17_PINNED_REAL_V16_OWNER_SOURCE_PASS")
+          PY
+      - name: Install free Blender headless on hosted Linux only
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Reposition actual world-coordinate heavy slate meshes and remove obsolete duplicate roofs
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v17_roof_alignment.py 2>&1 | tee "$RUNNER_TEMP/v17.log"
+          grep -q ELDORIA_CC0_V17_DETACHED_ROOFS_FIXED "$RUNNER_TEMP/v17.log"
+      - name: Assert exported actual roof vertices align with complete relocated buildings
+        run: |
+          python3 - <<'PY'
+          import json,struct,math
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          base=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV17")
+          prev=Path("docs/cc0-art-system/previews/director-v17")
+          j=json.loads((prev/"v17-evidence.json").read_text())
+          assert j["source_run_id"]==43911033294
+          assert j["concept_image_used"] is False and j["actual_3d_roof_transform_fixed"] is True
+          assert j["duplicate_roof_family_deleted"] and not j["premium_art_approved"]
+          assert len(j["stages"])==5 and len(j["renders"])==8
+          assert (base/"DirectorV17_Editable_Source.blend").read_bytes()[:7]==b"BLENDER"
+          expected={
+            "sawmill":("ASERRADERO / open waterwheel workshop heavy slate",(-32,-12.5)),
+            "quarry":("CANTERA / small sheltered stone-cutting workshop heavy slate",(-28.8,17.3)),
+            "barracks":("CUARTEL / stone guardhouse and barracks heavy slate",(33.5,18.4)),
+            "granary":("GRANERO / long grain warehouse heavy slate",(31,-15.5))
+          }
+          for stage in range(1,6):
+            b=(base/f"DirectorV17_Stage{stage}.glb").read_bytes()
+            assert len(b)>1000000 and b[:4]==b'glTF'
+            assert struct.unpack_from("<I",b,8)[0]==len(b)
+            n=struct.unpack_from("<I",b,12)[0]
+            data=json.loads(b[20:20+n])
+            nodes=data["nodes"]
+            for region,(prefix,(cx,cy)) in expected.items():
+                located=[x for x in nodes if x.get("name","").startswith(prefix)]
+                assert len(located)==1,(region,len(located))
+                node=located[0]
+                mesh=data["meshes"][node["mesh"]]
+                position_accessor=data["accessors"][mesh["primitives"][0]["attributes"]["POSITION"]]
+                lo,hi=position_accessor["min"],position_accessor["max"]
+                local=[(hi[i]+lo[i])/2 for i in range(3)]
+                t=node.get("translation",[0,0,0])
+                wx=local[0]+t[0]
+                wy=-(local[2]+t[2])
+                assert abs(wx-cx)<3 and abs(wy-cy)<3,(
+                    "detached roof still at old coordinates",stage,region,wx,wy,(cx,cy))
+                print("V17_PHYSICAL_ROOF_CENTER_VALID",stage,region,round(wx,2),round(wy,2))
+            assert len(data.get("images",[]))>=9 and len(data.get("meshes",[]))>500
+            print("V17_PHYSICAL_GLTF_PASS",stage,len(data["meshes"]),len(data["images"]))
+          images={"DirectorV17_BastionI_1600x900.png":(1600,900),
+                  "DirectorV17_BastionV_1600x900.png":(1600,900),
+                  "DirectorV17_BastionV_Close_1600x900.png":(1600,900),
+                  "DirectorV17_BastionV_Portrait_720x1200.png":(720,1200),
+                  "DirectorV17_sawmill_1024x768.png":(1024,768),
+                  "DirectorV17_quarry_1024x768.png":(1024,768),
+                  "DirectorV17_barracks_1024x768.png":(1024,768),
+                  "DirectorV17_granary_1024x768.png":(1024,768)}
+          for filename,dims in images.items():
+            p=prev/filename
+            im=Image.open(p).convert("RGB")
+            assert im.size==dims and p.stat().st_size>100000
+            print("V17_GENUINE_RENDER",filename,p.stat().st_size)
+          old=Image.open("docs/cc0-art-system/previews/director-v16/DirectorV16_BastionV_1600x900.png").convert("RGB")
+          new=Image.open(prev/"DirectorV17_BastionV_1600x900.png").convert("RGB")
+          diff=sum(ImageStat.Stat(ImageChops.difference(old,new)).mean)/3
+          assert diff>2,("No visible physical roof change",diff)
+          print("V17_VERIFIED_ROOT_CAUSE_FIXED",diff,"NOT UNITY OR PREMIUM APPROVED")
+          PY
+      - name: Save editable Blender source, five physical GLB and eight real screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v17-roofs-physically-repaired
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV17/
+            docs/cc0-art-system/previews/director-v17/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Verify all production game source untouched
+        run: |
+          git diff --exit-code
+          echo "V17_REPAIRED_SOURCE_ONLY_ISOLATED"
