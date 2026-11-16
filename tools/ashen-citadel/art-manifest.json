@@ -1,6 +1,6 @@
 {
   "name": "Ashen Citadel",
-  "state": "GROUNDED_SETTLEMENT_CANDIDATE_NATIVE_PENDING",
+  "state": "CRAFT_SETTLEMENT_CANDIDATE_NATIVE_PENDING",
   "authorship": "Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",
   "levels": [
     "Old watch redoubt",
@@ -37,24 +37,24 @@
       "trianglesUpperBound": 6412
     },
     "Sawmill": {
-      "vertices": 735,
-      "polygons": 191,
-      "trianglesUpperBound": 764
+      "vertices": 1110,
+      "polygons": 267,
+      "trianglesUpperBound": 1068
     },
     "Barracks": {
-      "vertices": 931,
-      "polygons": 237,
-      "trianglesUpperBound": 948
+      "vertices": 1759,
+      "polygons": 435,
+      "trianglesUpperBound": 1740
     },
     "Granary": {
-      "vertices": 1458,
-      "polygons": 345,
-      "trianglesUpperBound": 1380
+      "vertices": 1696,
+      "polygons": 380,
+      "trianglesUpperBound": 1520
     },
     "Stoneworks": {
-      "vertices": 574,
-      "polygons": 142,
-      "trianglesUpperBound": 568
+      "vertices": 736,
+      "polygons": 184,
+      "trianglesUpperBound": 736
     },
     "Pine": {
       "vertices": 918,

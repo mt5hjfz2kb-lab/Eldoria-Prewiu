@@ -78,6 +78,34 @@ const makeLandscape=function makeLandscape(){
       tri(v1,mid,v2,i%7===0?"leafLight":"leaf");undergrowth++;
     }
   }
+  // Art-directed pockets of low shrubs, never an even scatter or a ring of plots.
+  const pockets=[[-12.7,4.2],[-11.9,-6.7],[11.9,6.4],[12.3,-4.8],[-20.7,1.2],[21.3,1.1],[-8.5,-13.5],[7.2,-15.5],[-21,14],[20,16],[-26,-14],[27,-11]];
+  for(let k=0;k<pockets.length;k++){
+    const [px,pz]=pockets[k];
+    for(let b=0;b<6;b++){
+      const x=px+(rand()-.5)*3.1,z=pz+(rand()-.5)*2.1,y=height(x,z);
+      const rx=.28+rand()*.40,rz=.25+rand()*.35,h=.22+rand()*.40;
+      for(let j=0;j<7;j++){
+        const a=j*Math.PI*2/7,aa=(j+1)*Math.PI*2/7;
+        const v0=[x+Math.cos(a)*rx,y+.04,z+Math.sin(a)*rz],v1=[x+Math.cos(aa)*rx,y+.04,z+Math.sin(aa)*rz];
+        const t0=[x+Math.cos(a)*rx*.72,y+h*.7,z+Math.sin(a)*rz*.72],t1=[x+Math.cos(aa)*rx*.72,y+h*.7,z+Math.sin(aa)*rz*.72];
+        const tone=(j+b)%4===0?"leafLight":"leaf";
+        tri(t1,v1,v0,tone);tri(t0,t1,v0,tone);
+        tri([x+.06,y+h,z-.03],t1,t0,tone);
+      }
+      for(let j=0;j<5;j++){
+        const a=j*2.4,xx=x+Math.cos(a)*rx*1.4,zz=z+Math.sin(a)*rz*1.4;
+        tri([xx-.04,y,zz],[xx+.07,y+.22+rand()*.18,zz+.04],[xx+.06,y,zz+.08],"leafLight");undergrowth++;
+      }
+    }
+  }
+  // Broken flagstones disappear into the approach rather than outlining a platform.
+  for(let i=0;i<34;i++){
+    const z=-12-rand()*18,x=(rand()-.5)*3.7+Math.sin(z*.15)*.5,y=height(x,z)+.018;
+    const w=.12+rand()*.25,d=.10+rand()*.25;
+    const a=[x-w,y,z-d],b=[x-w*.7,y,z+d],c=[x+w,y,z+d*.6],e=[x+w*.8,y,z-d*.9];
+    tri(a,b,c,i%4===0?"basalt":"cut");tri(a,c,e,i%4===0?"basalt":"cut");
+  }
   // Strata: natural basalt outcrops, mesh (not random cubes) with stone palettes.
   let stones=0;
   for(let i=0;i<70;i++){

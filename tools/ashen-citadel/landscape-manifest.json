@@ -1,9 +1,9 @@
 {
-  "vertices": 22446,
-  "faces": 7482,
-  "triangles": 7482,
-  "undergrowth_blades": 1083,
-  "boulders": 64,
+  "vertices": 27888,
+  "faces": 9296,
+  "triangles": 9296,
+  "undergrowth_blades": 1443,
+  "boulders": 58,
   "materials": [
     "basalt",
     "cut",

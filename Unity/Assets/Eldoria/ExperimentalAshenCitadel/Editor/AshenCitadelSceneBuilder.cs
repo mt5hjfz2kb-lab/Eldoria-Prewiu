@@ -104,16 +104,16 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             }
             var sawmill=Import("Ashen_Sawmill",sceneRoot.transform);
             sawmill.transform.position=new Vector3(-17.2f,0f,-6.2f);
-            BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
+            BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
             var barracks=Import("Ashen_Barracks",sceneRoot.transform);
             barracks.transform.position=new Vector3(16.8f,0f,-7.5f);
-            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
+            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
             var granary=Import("Ashen_Granary",sceneRoot.transform);
             granary.transform.position=new Vector3(-16.6f,0f,7.8f);
-            BindClick(granary,"Granero","granary","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
+            BindClick(granary,"Granero","granary","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
             var stoneworks=Import("Ashen_Stoneworks",sceneRoot.transform);
             stoneworks.transform.position=new Vector3(17.4f,0f,8.8f);
-            BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
+            BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
             // Distinctive landscape frame, sparse around the playable fortress.
             var treePrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Pine.obj");
             var rockPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Rock.obj");
@@ -288,7 +288,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     var grassPath=MaterialPath+"grass_"+current+".mat";
                     var grass=AssetDatabase.LoadAssetAtPath<Material>(grassPath);
                     if(grass==null){grass=new Material(shader);AssetDatabase.CreateAsset(grass,grassPath);}
-                    grass.SetColor("_BaseColor",col);grass.SetTexture("_BaseMap",null);Colors["grass_"+current]=grass;
+                    grass.SetColor("_BaseColor",current=="leafLight"?new Color(.43f,.45f,.23f):new Color(.24f,.33f,.19f));grass.SetTexture("_BaseMap",null);Colors["grass_"+current]=grass;
                 }
             }
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);
@@ -335,10 +335,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float wx=(x/(float)(size-1)-.5f)*180f,wz=(y/(float)(size-1)-.5f)*180f;
                 float broad=Mathf.PerlinNoise(wx*.045f+29f,wz*.045f+51f);
                 float detail=Mathf.PerlinNoise(wx*.39f+17f,wz*.39f+11f);
-                var col=Color.Lerp(new Color(.22f,.275f,.19f),new Color(.39f,.405f,.255f),broad);
+                var col=Color.Lerp(new Color(.19f,.245f,.14f),new Color(.43f,.43f,.275f),Mathf.InverseLerp(.23f,.77f,broad));
                 col*=.90f+detail*.20f;
                 float meadow=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.25f,.75f,Mathf.PerlinNoise(wx*.13f+5f,wz*.13f+3f)));
-                col=Color.Lerp(col,new Color(.34f,.37f,.235f),meadow*.28f);
+                col=Color.Lerp(col,new Color(.34f,.37f,.235f),meadow*.38f);
                 float fleck=Mathf.PerlinNoise(wx*1.4f+73f,wz*1.4f+23f);
                 col=Color.Lerp(col,new Color(.38f,.365f,.245f),Mathf.Clamp01((fleck-.58f)*2.8f)*.25f);
                 float routeX=Mathf.Sin((wz+8f)*.15f)*.66f+Mathf.Sin((wz+8f)*.52f)*.17f;
@@ -354,7 +354,8 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 // Connected foot traffic: long soft paths, never circular plots or raised pads.
                 var homes=new[]{new Vector2(-17.2f,-6.2f),new Vector2(16.8f,-7.5f),
                     new Vector2(-16.6f,7.8f),new Vector2(17.4f,8.8f)};
-                foreach(var home in homes){
+                for(int homeIndex=0;homeIndex<homes.Length;homeIndex++){
+                    var home=homes[homeIndex];
                     float side=home.x<0?-1f:1f;
                     var start=new Vector2(side*2.8f,-12f);
                     var end=new Vector2(home.x,home.y-2.7f);
@@ -363,7 +364,13 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     float dist=Mathf.Min(SegmentDistance(new Vector2(wx,wz),start,bend),
                         SegmentDistance(new Vector2(wx,wz),bend,end));
                     float worn=1f-Mathf.SmoothStep(.55f,1.9f+(detail-.5f)*.8f,dist);
-                    col=Color.Lerp(col,new Color(.39f,.33f,.245f)*(.89f+detail*.22f),worn*.67f);
+                    col=Color.Lerp(col,new Color(.39f,.33f,.245f)*(.89f+detail*.22f),worn*.78f);
+                    float hx=wx-home.x,hz=wz-home.y;
+                    float activity=Mathf.Exp(-((hx-.25f)*(hx-.25f)/10f+(hz+2.2f)*(hz+2.2f)/4.5f));
+                    activity*=Mathf.SmoothStep(.20f,.75f,Mathf.PerlinNoise(wx*.9f+11f,wz*.9f+36f));
+                    var workTone=homeIndex==0?new Color(.50f,.41f,.25f):homeIndex==2?new Color(.48f,.44f,.26f):
+                        homeIndex==3?new Color(.49f,.47f,.38f):new Color(.35f,.30f,.22f);
+                    col=Color.Lerp(col,workTone,activity*.75f);
                 }
                 float dry=Mathf.PerlinNoise(wx*.19f+37f,wz*.19f+7f);
                 col=Color.Lerp(col,new Color(.40f,.39f,.26f),Mathf.Clamp01((dry-.60f)*3f)*.30f);
