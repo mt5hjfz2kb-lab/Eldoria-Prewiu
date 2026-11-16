@@ -13,7 +13,7 @@ Never silently imports/redistributes Quaternius or other vendors.
 Blender 4.0.2 command: blender -b -t 4 --python-exit-code 1 --python
 tools/cc0-art-system/upgrade_director_v2.py
 """
-import bpy, math, json, random, struct
+import bpy, math, json, random, struct, os
 from mathutils import Vector
 from pathlib import Path
 from math import sin, cos, pi, radians
@@ -27,6 +27,33 @@ PREV.mkdir(parents=True,exist_ok=True)
 if not SRC.is_file():
     raise RuntimeError("Need the exact good source from run 43852991470, not the crashed later revision")
 bpy.ops.wm.open_mainfile(filepath=str(SRC))
+# The upstream editable BLEND can point at textures in a sibling Generated/
+# directory. A missing image appears vivid magenta in Blender and is NOT a
+# cosmetically acceptable render. Recover by published filename, then fail closed.
+SEARCH_TEXTURES=[
+    ROOT/"Unity/Assets/Art_Reboot/CC0System/Generated",
+    ROOT/"Unity/Assets/Art_Reboot/CC0System/CityFinish"]
+def relink_source_textures():
+    missing=[]
+    repaired=[]
+    for image in bpy.data.images:
+        if image.source!="FILE" or image.packed_file:continue
+        resolved=Path(bpy.path.abspath(image.filepath))
+        if resolved.is_file():continue
+        base=Path(image.filepath).name
+        choices=[folder/base for folder in SEARCH_TEXTURES]
+        replacement_path=next((t for t in choices if t.is_file()),None)
+        if replacement_path:
+            image.filepath=str(replacement_path)
+            try: image.reload()
+            except Exception:pass
+            repaired.append((image.name,str(replacement_path)))
+        else:
+            missing.append((image.name,image.filepath))
+    if missing:
+        raise RuntimeError("UNRESOLVED_SOURCE_TEXTURES: "+repr(missing[:15]))
+    print("ELDORIA_SOURCE_TEXTURES_VERIFIED",len(repaired))
+relink_source_textures()
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
 scene.cycles.samples=22
@@ -260,36 +287,59 @@ def make_ground():
         for ix in range(sx):
             p=iy*(sx+1)+ix
             faces.append((p,p+1,p+sx+2,p+sx+1))
-    # Deliberately deterministic ground material. Vertex colors are connected to
-    # Principled Base Color and exported as glTF COLOR_0, not a Blender-only shader.
-    mesh=bpy.data.meshes.new("Valoria Natural Terrain Mesh V2")
-    mesh.from_pydata(verts,[],faces)
-    mesh.update()
-    layer=mesh.vertex_colors.new(name="ValoriaTerrainColor")
-    for poly in mesh.polygons:
-        for loop in poly.loop_indices:
-            vid=mesh.loops[loop].vertex_index
-            x,y,z=verts[vid]
-            no=.5*sin(x*.17+y*.29)+.22*cos(x*.36-y*.13)+.19*sin(x*.04-y*.07)
-            grass=(.27+.046*no,.354+.057*no,.284+.040*no)
-            dirt=(.33+.032*no,.298+.029*no,.224+.022*no)
-            dist=road_dist2(x,y)
-            width=(1.65 if y<0 else 1.22)
-            mix=max(0.0,min(.96,math.exp(-dist/(2*width*width))))
-            # A darker traveled center, fading naturally into the nearby grass.
-            rgbv=tuple(grass[i]*(1-mix)+dirt[i]*mix for i in range(3))
-            layer.data[loop].color=(*rgbv,1)
-    worldmat=bpy.data.materials.new("EldoriaV2_GrassRoadVertexColor")
-    worldmat.use_nodes=True
-    bs=worldmat.node_tree.nodes.get("Principled BSDF")
-    bs.inputs["Roughness"].default_value=.96
+
+    # Bake actual textured dirt trails and grass into an image. This is a
+    # portable UV/color source understood by Blender, glTF, and URP. It does
+    # not depend on material node features missing in the game importer.
+    width,height_px=384,384
+    image=bpy.data.images.new("DirectorV2_Valoria_GrassRoad_Albedo",
+                              width=width,height=height_px,alpha=False)
+    pixels=[0.]*(width*height_px*4)
+    for py in range(height_px):
+        y=-52+(py+.5)*104/height_px
+        for px in range(width):
+            x=-56+(px+.5)*112/width
+            nois=.48*sin(x*.17+y*.27)+.22*cos(x*.43-y*.13)+.15*sin(x*.055-y*.073)
+            ground=(.235+.052*nois,.338+.051*nois,.252+.040*nois)
+            bare=(.328+.026*nois,.285+.025*nois,.213+.017*nois)
+            near=road_dist2(x,y)
+            w=1.80 if y<0 else 1.25
+            dirt_mix=max(0.,min(.94,math.exp(-near/(2*w*w))))
+            # rich green field transitioning organically into ochre earth
+            col=tuple(min(.9,max(.04,ground[j]*(1-dirt_mix)+bare[j]*dirt_mix))
+                      for j in range(3))
+            off=(py*width+px)*4
+            pixels[off:off+4]=(*col,1)
+    image.pixels[:]=pixels
+    image.filepath_raw=str(DEST/"DirectorV2_Terrain_Albedo.png")
+    image.file_format="PNG"
+    image.save()
+    image.pack()  # the editable .blend remains portable without sidecars
+    terrainmat=bpy.data.materials.new("EldoriaV2_Terrain_BakedTexture")
+    terrainmat.use_nodes=True
+    nodes=terrainmat.node_tree.nodes
+    bs=nodes.get("Principled BSDF")
     bs.inputs["Base Color"].default_value=(1,1,1,1)
-    tex=worldmat.node_tree.nodes.new("ShaderNodeVertexColor")
-    tex.layer_name="ValoriaTerrainColor"
-    worldmat.node_tree.links.new(tex.outputs["Color"],bs.inputs["Base Color"])
-    ob=bpy.data.objects.new("REAL TERRAIN | dyed dirt roads and meadow",mesh)
+    bs.inputs["Roughness"].default_value=.97
+    diffuse=nodes.new("ShaderNodeTexImage")
+    diffuse.image=image
+    diffuse.interpolation="Linear"
+    terrainmat.node_tree.links.new(diffuse.outputs["Color"],bs.inputs["Base Color"])
+    mesh=bpy.data.meshes.new("Valoria_NaturalTerrain_V2_Baked")
+    mesh.from_pydata(verts,[],faces)
+    mesh.materials.append(terrainmat)
+    mesh.update()
+    uv=mesh.uv_layers.new(name="TerrainUV")
+    for polygon in mesh.polygons:
+        for idx in polygon.loop_indices:
+            vid=mesh.loops[idx].vertex_index
+            xx,yy,_=verts[vid]
+            uv.data[idx].uv=((xx+56)/112,(yy+52)/104)
+    ob=bpy.data.objects.new("PHYSICAL TERRAIN | grass blends into worn tracks",mesh)
     group("V2_Landscape").objects.link(ob)
     counts["new_meshes"]+=1
+    print("ELDORIA_V2_BAKED_TERRAIN_TEXTURE",image.filepath_raw,os.path.getsize(image.filepath_raw))
+
 make_ground()
 
 def wheel():
@@ -555,7 +605,11 @@ def write_stage(stage):
           "color_0":sum(any("COLOR_0" in p.get("attributes",{})
                 for p in m.get("primitives",[])) for m in gltf.get("meshes",[]))}
     print("V2_DIRECTOR_REAL_3D_EXPORT",json.dumps(info))
-    if info["color_0"]<1: raise RuntimeError("Terrain vertex colors missing in physical GLB")
+    texture_count=len(gltf.get("images",[]))
+    if texture_count<1:
+        raise RuntimeError("No physically embedded texture images in GLB "+str(stage))
+    info["embedded_images"]=texture_count
+    print("V2_PHYSICAL_TEXTURED_TERRAIN_PRESENT",stage,texture_count)
     return info
 exported=[write_stage(x) for x in range(1,6)]
 report={"creator":"Eldoria DirectorV2 original Python/Blender script",
