@@ -1,1 +1,1 @@
-Craft settlement final: replace rejected glossy shrub domes with matte leaf clusters; raise paving above road; fit new interaction bounds. Same-camera native I-V.
+Organic architecture native verification: source c33ee4addbb6053cc6a5119c97094433591ee163. Continuous roof shells, arched portals, shaped silo and sagging canvas. Same cameras I-V and existing gameplay tests. Continuation b9db0d2d3e7b, 2026-11-16.
