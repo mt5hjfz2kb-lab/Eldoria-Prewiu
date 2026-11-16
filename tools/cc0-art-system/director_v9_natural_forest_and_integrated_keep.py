@@ -24,7 +24,7 @@ PALETTE={
     "stone":"#807C73","edge":"#AC9D87","shadow":"#444D54",
     "roof":"#293848","wood":"#654735","darkwood":"#2E302F",
     "bronze":"#A88550","iron":"#2A2F34",
-    "leaf1":"#173226","leaf2":"#254636","leaf3":"#345440",
+    "leaf1":"#142A20","leaf2":"#1D3628","leaf3":"#294535",
     "bark":"#4B4138","sedge":"#54684C","moss":"#3E5644",
     "amber":"#F2AD61","purple":"#493855","grain":"#A78A50",
     "earth":"#5C5140","rock":"#545E5B","rock2":"#77786C"
@@ -243,6 +243,31 @@ def remove_previous_lookdev():
       "V8 gnarled tree trunk",
       "V8 mossy outcrop",
       "Icosphere",
+      # Entire previous V8-specific architecture MUST be replaced, not overlaid.
+      "Valoria imperial restored upper hall",
+      "imperial long hall",
+      "integrated chapel masonry return",
+      "side chapel ",
+      "chapel flying wall strut",
+      "integrated ashlar buttress",
+      "stratified stone cap",
+      "historic stained glass recess",
+      "ogive vertical jamb",
+      "ogive west rising","ogive east rising",
+      "glazing lead sash","lead gothic transverse",
+      "fortress gate defense tower cap",
+      "ornamented slate watch roof","low bronze spire tip",
+      "Valoria central heraldic mount","Valoria violet royal banner",
+      "sawmill grouped timber supplies",
+      "sawmill exposed industrial roof support",
+      "worked quarry geological shelf",
+      "quarry long counterweighted derrick","quarry suspended chain",
+      "quarry chiseled suspended block",
+      "granary cylindrical carved silo",
+      "granary ashlar banded masonry","granary weatherproof slate cap",
+      "fortified barracks weapon store",
+      "barracks martial gable","cuartel standing training pike",
+      "cuartel tip","military purple standard",
       "fortress linked lateral chapel")
     deleted={}
     for o in list(bpy.data.objects):
@@ -445,9 +470,9 @@ def distinctive_fortress(stage):
     if stage<5:return
     # The high hall is integral to the keep roof and has broad slope, not a white
     # turret stacked above it. A readable 2.5D silhouette at phone resolution.
-    cube("Valoria imperial restored upper hall",(0,6.8,12.8),
-         (7.2,7.6,8.5),"ashlar",col,.12)
-    gable("imperial long hall",0,2.9,11.6,17.0,8.1,4.2,col)
+    cube("Valoria imperial restored upper hall",(0,6.8,11.72),
+         (7.2,7.6,7.1),"ashlar",col,.12)
+    gable("imperial long hall",0,2.9,11.6,15.3,8.1,3.85,col)
     for x in (-3.45,3.45):
         cube("integrated ashlar buttress",(x,2.45,11.1),
              (.52,1.36,12.5),"edge",col,.06)
@@ -556,7 +581,7 @@ def distinctive_v9_finish(stage):
         for k in range(9):
             t=(k+.5)/10
             left=side*(3.89*(1-t))
-            h=17.16+4.05*t
+            h=15.40+3.77*t
             for y in (3.6,5.35,7.10,8.85,10.6):
                 beam("slate roof course / sculpted overlap",
                      (left,y,h), (left,y+.72,h),
@@ -658,6 +683,11 @@ def build(stage):
     distinctive_fortress(stage)
     economic_details()
     distinctive_v9_finish(stage)
+    # Guard the actual geometric root cause of a black doubled facade.
+    upper=[o for o in bpy.data.objects if o.type=="MESH"
+           and o.name.startswith("Valoria imperial restored upper hall")]
+    if len(upper) != (1 if stage==5 else 0):
+        raise RuntimeError("DUPLICATE_KEEP_GEOMETRY: "+str((stage,len(upper))))
     mood_and_camera()
     if stage==1:render("DirectorV9_BastionI_1600x900.png",1,(1600,900))
     elif stage==5:
