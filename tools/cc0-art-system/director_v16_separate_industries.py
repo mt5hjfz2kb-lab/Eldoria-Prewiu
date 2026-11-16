@@ -178,6 +178,19 @@ def relocate(stage):
                      "old_distance":round(old_dist,3),"new_distance":round(new_dist,3)}
         print("V16_DISTRICT_PHYSICALLY_RELOCATED",stage,region,out[region])
     return out
+def clear_district_sightlines():
+    """Only prune forest/scatter at moved building footprints; retain rest of valley."""
+    prefixes=("v11 spruce","v11 evergreen","v14 fir trunk","v14 irregular",
+              "icosphere","v14 angular natural boulder","v11 highland")
+    killed=0
+    for o in list(bpy.data.objects):
+        if o.type!="MESH" or not o.name.lower().startswith(prefixes):continue
+        p=o.matrix_world.translation
+        if any(abs(p.x-cx)<7.5 and abs(p.y-cy)<7.1 for cx,cy in NEW.values()):
+            bpy.data.objects.remove(o,do_unlink=True)
+            killed+=1
+    return killed
+
 def clear_obsolete_road_meshes():
     # Rebuild roads as an actual diffuse terrain texture; no walkway left
     # behind at the old site when whole industries are moved.
@@ -481,12 +494,14 @@ def gltf(stage):
 def main():
     global M
     for stage in range(1,6):
+        R.seed(16112026)
         bpy.ops.wm.read_factory_settings(use_empty=True)
         path=INPUT/("DirectorV15_Stage"+str(stage)+".glb")
         if not path.exists():raise RuntimeError("Original physical GLB missing: "+str(path))
         bpy.ops.import_scene.gltf(filepath=str(path),import_pack_images=True)
         M=materials()
         moved=relocate(stage)
+        sightline_pruned=clear_district_sightlines()
         removed=clear_obsolete_road_meshes()
         ground=finish_terrain(stage)
         add_sawmill()
@@ -506,7 +521,7 @@ def main():
             bpy.ops.wm.save_as_mainfile(filepath=str(OUTPUT/"DirectorV16_Editable_Source.blend"))
         model=gltf(stage)
         STAGES.append(model)
-        RELOCATION.append({"stage":stage,"districts":moved,"old_route_meshes_removed":removed,"painted_world":ground})
+        RELOCATION.append({"stage":stage,"districts":moved,"old_route_meshes_removed":removed,"forest_obstruction_removed":sightline_pruned,"painted_world":ground})
         print("V16_TRUE_GLTF_AND_RELOCATIONS",stage,json.dumps(model))
     evidence={"project":"Eldoria CC0 Art System","release":"Director V16/real separated industry",
        "source_run_id":SOURCE_VERSION,"source_materials":"V15 owner authored + documented Poly Haven CC0",
