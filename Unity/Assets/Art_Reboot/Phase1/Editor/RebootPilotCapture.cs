@@ -55,7 +55,7 @@ namespace Eldoria.ArtReboot.Editor
                 var atlas = PrepareAtlas(output);
                 var stone = MaterialAsset("Reboot_Surface", shader, atlas, 0);
                 var glow = MaterialAsset("Reboot_Emission", shader, atlas, 1.75f);
-                var corruption = MaterialAsset("Reboot_Corruption", shader, atlas, 1.65f);
+                var corruption = MaterialAsset("Reboot_Corruption", shader, atlas, 1.35f);
                 var root = new GameObject(Generated);
                 var model = AssetDatabase.LoadAssetAtPath<GameObject>(Root + "/Models/Reboot_Pilot.fbx");
                 if (model == null) throw new InvalidOperationException("FBX is not imported.");
@@ -88,13 +88,13 @@ namespace Eldoria.ArtReboot.Editor
                     || triangles != geometry.triangles)
                     throw new InvalidOperationException($"Authored FBX topology mismatch: Unity={triangles}, Blender={geometry?.triangles}");
                 RenderSettings.ambientMode = AmbientMode.Custom;
-                RenderSettings.ambientSkyColor = new Color(.48f, .40f, .36f);
-                RenderSettings.ambientEquatorColor = new Color(.31f, .30f, .38f);
-                RenderSettings.ambientGroundColor = new Color(.19f, .18f, .22f);
+                RenderSettings.ambientSkyColor = new Color(.42f, .40f, .42f);
+                RenderSettings.ambientEquatorColor = new Color(.29f, .31f, .38f);
+                RenderSettings.ambientGroundColor = new Color(.16f, .20f, .22f);
                 RenderSettings.skybox = null;
                 RenderSettings.fog = true;
                 RenderSettings.fogMode = FogMode.Linear;
-                RenderSettings.fogColor = new Color(.44f, .38f, .35f);
+                RenderSettings.fogColor = new Color(.36f, .38f, .43f);
                 RenderSettings.fogStartDistance = 20f;
                 RenderSettings.fogEndDistance = 58f;
                 var sun = new GameObject("Warm sunset").AddComponent<Light>();
@@ -104,7 +104,7 @@ namespace Eldoria.ArtReboot.Editor
                 sun.color = new Color(1f, .735f, .46f);
                 sun.intensity = 1.65f;
                 sun.shadows = LightShadows.Soft;
-                sun.shadowStrength = .73f;
+                sun.shadowStrength = .62f;
                 sun.shadowBias = .028f;
                 sun.shadowNormalBias = .17f;
                 RenderSettings.sun = sun;
@@ -118,10 +118,10 @@ namespace Eldoria.ArtReboot.Editor
                 // Exactly one realtime local light illuminates both emissive entrance torches.
                 var flameFill = new GameObject("Single shared torch point light").AddComponent<Light>();
                 flameFill.transform.SetParent(root.transform, false);
-                flameFill.transform.localPosition = new Vector3(0f, 1.8f, -.22f);
+                flameFill.transform.localPosition = new Vector3(0f, 2.15f, -.85f);
                 flameFill.type = LightType.Point;
                 flameFill.color = new Color(1f, .65f, .34f);
-                flameFill.intensity = .65f;
+                flameFill.intensity = .52f;
                 flameFill.range = 3.5f;
                 flameFill.shadows = LightShadows.None;
                 BuildLowGroundMist(root);
@@ -174,7 +174,7 @@ namespace Eldoria.ArtReboot.Editor
                     unity = UnityEngine.Application.unityVersion, triangles = triangles,
                     sourceSHA = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local-unrecorded",
                     scene = RebootSandboxGuard.ScenePath, cameraTilt = 50,
-                    sunElevation = 16f, sunIntensity = 1.65f, torchIntensity = .65f,
+                    sunElevation = 16f, sunIntensity = 1.65f, torchIntensity = .52f,
                     fogStart = 20f, fogEnd = 58f, bloomThreshold = 1.05f, bloomIntensity = .21f,
                     groundMistLowY = .19f, groundMistHighY = .55f,
                     shadowMapResolution = 2048, shadowCascades = 2, particleCount = corruptParticles.particleCount,
@@ -529,7 +529,7 @@ namespace Eldoria.ArtReboot.Editor
                 for (int frame = 0; frame < 3; frame++)
                 {
                     var probe = new SphericalHarmonicsL2();
-                    probe.AddAmbientLight(new Color(.31f, .28f, .30f));
+                    probe.AddAmbientLight(new Color(.28f, .30f, .33f));
                     RenderSettings.ambientProbe = probe;
                     RenderPipeline.SubmitRenderRequest(camera, request);
                 }
