@@ -18,38 +18,38 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         public static void Bake()
         {
             Directory.CreateDirectory(ResourcesRoot);
-            BakeSprite("AshenPremiumPanel",AshenInterfaceIdentity.SourcePanel(),
+            BakeSprite("AshenPremiumPanel",AshenInterfaceIdentity.SourcePanelTexture(),
                 new Vector4(18,18,18,18),true);
-            BakeSprite("AshenPremiumButtonPrimary",AshenInterfaceIdentity.SourcePrimary(),
+            BakeSprite("AshenPremiumButtonPrimary",AshenInterfaceIdentity.SourcePrimaryTexture(),
                 new Vector4(19,14,19,14),false);
-            BakeSprite("AshenPremiumButtonSecondary",AshenInterfaceIdentity.SourceSecondary(),
+            BakeSprite("AshenPremiumButtonSecondary",AshenInterfaceIdentity.SourceSecondaryTexture(),
                 new Vector4(19,14,19,14),false);
-            BakeSprite("AshenPremiumCrest",AshenInterfaceIdentity.SourceCrest(),
+            BakeSprite("AshenPremiumCrest",AshenInterfaceIdentity.SourceCrestTexture(),
                 Vector4.zero,false);
             foreach(string key in new[]{"castle","workshop","army","compass",
                 "mail","bag","hero","quest"})
                 BakeSprite("AshenPremiumGlyph_"+key,
-                    AshenInterfaceGlyphs.SourceGlyph(key),Vector4.zero,false);
+                    AshenInterfaceGlyphs.SourceGlyphTexture(key),Vector4.zero,false);
             AssetDatabase.SaveAssets();
             AshenInterfaceIdentity.RebindAfterBake();
             AshenInterfaceGlyphs.RebindAfterBake();
             Debug.Log("ASHEN_UI_PREMIUM_SPRITES_BAKED: 4 skins + 8 glyphs; source colours and 9-slice validated");
         }
-        private static void BakeSprite(string name,Sprite temporary,Vector4 border,bool darkPanel)
+        private static void BakeSprite(string name,Texture2D source,Vector4 border,bool darkPanel)
         {
-            if(temporary==null||temporary.texture==null)
+            if(source==null)
                 throw new InvalidOperationException("Ashen UI source raster missing: "+name);
-            var source=temporary.texture;
             int width=source.width,height=source.height;
             if(darkPanel)
             {
-                var centre=source.GetPixel(width/2,height/2);
-                if(centre.r>.34f||centre.g>.34f||centre.b>.36f)
-                    throw new InvalidOperationException("Ashen premium frame source not dark at centre");
+                Color32 sample=source.GetPixels32()[(height/2)*width+width/2];
+                Debug.Log("ASHEN_UI_PANEL_SOURCE_MID_RGB "+sample.r+","+sample.g+","+sample.b);
+                if(sample.r>90||sample.g>90||sample.b>100)
+                    throw new InvalidOperationException("Ashen premium frame source not dark at centre; actual RGB="+
+                        sample.r+","+sample.g+","+sample.b);
             }
             string path=ResourcesRoot+name+".png";
             File.WriteAllBytes(path,source.EncodeToPNG());
-            UnityEngine.Object.DestroyImmediate(temporary);
             UnityEngine.Object.DestroyImmediate(source);
             AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
             var importer=AssetImporter.GetAtPath(path) as TextureImporter;
