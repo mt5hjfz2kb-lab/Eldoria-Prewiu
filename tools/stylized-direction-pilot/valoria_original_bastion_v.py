@@ -81,7 +81,7 @@ def crafted_texture(ma,kind,color,size=256):
  pixels=[0.0]*(size*size*4)
  for y in range(size):
   for x in range(size):
-   tone=1+.060*sin(x*.043+2*sin(y*.034))+.050*cos(y*.049+x*.021)+.021*sin(x*.47+y*.18)
+   tone=(1+.028*sin(x*.27)*cos(y*.31)+.018*cos(x*.62+y*.57)*sin(y*.41) if kind in ('foliage','soil') else 1+.060*sin(x*.043+2*sin(y*.034))+.050*cos(y*.049+x*.021)+.021*sin(x*.47+y*.18))
    if kind=='roof':
     row=y//27;tx=(x+row%2*23)%51;ty=y%27
     if tx<2 or ty<2:tone*=.70
