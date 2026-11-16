@@ -16,3 +16,8 @@ Reviewed actual Unity-Technologies Graphics 6000.3/staging ScreenSpaceAmbientOcc
 
 ## Gates
 Source integrity; Blender preview; actual native Unity compile/render/test; same-camera A/B; artifact hashes. Physical mobile profiling and final artistic approval remain separate.
+
+## Actual result and evidence
+Native run43863284139 SUCCESS on source3b9c246eb5f0a611873dfa89aa9ea3997aaa7238. Artifact14223478528; ZIP SHA256 b5bf561c4910417a5b159a4c807e8e2ce026e64a1f6b735eff8d3d46f8efe92c. All10 screenshot hashes independently verified; EditMode7/7, PlayMode4/4. Blender CI43863010821 and source43863010818 succeeded. Genuine Unity I/V landscape and V portrait visually inspected against run43861251720. Renderer asset contains active SSAO and materials contain normal maps. Contact shading and timber/slate contrast visibly improved, especially wall corners, courtyard and porch interiors. The result is a moderate material/light improvement, NOT definitive premium art acceptance: ground remains simplistic, several silhouettes rigid, portrait details small. No physical iPhone/WebGL performance claim. Windows released after all jobs terminal success. No production presentation/gameplay modifications.
+
+Learning: surface normals + contact occlusion solve material depth, but cannot resolve simple environment composition or architectural silhouette. A future larger premium uplift should prioritize ground/courtyard integration and larger distinguishing architectural forms, not another micro-pass of colour adjustments.
