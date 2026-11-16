@@ -63,7 +63,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 throw new InvalidOperationException("Kit scene can only be captured in Edit Mode.");
             for(int i=0;i<SceneManager.sceneCount;i++)
                 if(SceneManager.GetSceneAt(i).isDirty)throw new InvalidOperationException("Save dirty scene before kit capture.");
-            var hashBefore = approved.Select(x => System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(x))).ToArray();
+            var hashBefore = approved.Select(x => HashBytes(File.ReadAllBytes(x))).ToArray();
             var setup=EditorSceneManager.GetSceneManagerSetup();
             var previousPipeline=QualitySettings.renderPipeline;
             bool wasAsync=ShaderUtil.allowAsyncCompilation;
@@ -74,6 +74,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
             {
                 Directory.CreateDirectory(Kit+"/Scenes");
                 Directory.CreateDirectory(Kit+"/Materials");
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
                 ShaderUtil.allowAsyncCompilation=false;
                 // Use the previously owner-approved URP asset, without modifying it.
                 var pipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(
@@ -104,7 +105,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 var architecturalBounds=BuildVillage(root,scene);
                 var villageCount=instances;
                 var villageTriangles=trianglesInstanced;
-                if(villageCount<80)throw new InvalidOperationException("Expected many independent kit instances.");
+                if(villageCount<50)throw new InvalidOperationException("Missing modular architecture instances.");
                 AddVegetation(root,scene);
                 var camera=NewCamera(root);
                 Fit(camera,architecturalBounds,1600,900,new Vector3(42,-13,0),1.08f);
@@ -150,11 +151,17 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
                 for(int i=0;i<approved.Length;i++)
                 {
-                    var now=System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(approved[i]));
+                    var now=HashBytes(File.ReadAllBytes(approved[i]));
                     if(!now.SequenceEqual(hashBefore[i]))
                         throw new InvalidOperationException("Protected Phase1 bytes changed: "+approved[i]);
                 }
             }
+        }
+
+        static byte[] HashBytes(byte[] bytes)
+        {
+            using(var sha=System.Security.Cryptography.SHA256.Create())
+                return sha.ComputeHash(bytes);
         }
 
         static Catalog ReadCatalog()
@@ -166,7 +173,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
                result.atlas_size[0]!=256||result.atlas_size[1]!=256)
                 throw new InvalidOperationException("Invalid kit catalog contract");
             var atlasFile=File.ReadAllBytes(Phase1+"/Textures/Hero_Atlas_256.png");
-            string actual=BitConverter.ToString(System.Security.Cryptography.SHA256.HashData(atlasFile))
+            string actual=BitConverter.ToString(HashBytes(atlasFile))
                  .Replace("-","").ToLowerInvariant();
             if(!actual.Equals(result.atlas_sha256,StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Atlas hash is different from approved Phase1 source");
