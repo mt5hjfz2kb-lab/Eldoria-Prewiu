@@ -14,6 +14,8 @@ namespace Eldoria.ExperimentalAshenCitadel
         private static Sprite primary;
         private static Sprite secondary;
         private static Sprite crest;
+        private static Sprite medallion;
+        private static Sprite statusChip;
 
         public static Sprite Panel => panel??(panel=Resources.Load<Sprite>("AshenPremiumPanel")??
             Make("Ashen · slate frame",256,256,18,18,SamplePanel));
@@ -23,11 +25,13 @@ namespace Eldoria.ExperimentalAshenCitadel
             Make("Ashen · quiet action",256,72,19,14,(x,y)=>SampleButton(x,y,false)));
         public static Sprite Crest => crest??(crest=Resources.Load<Sprite>("AshenPremiumCrest")??
             Make("Ashen · citadel seal",128,128,0,0,SampleCrest));
+        public static Sprite FloatingMedallion => medallion??(medallion=Resources.Load<Sprite>("AshenPremiumMedallion")??Secondary);
+        public static Sprite StatusChip => statusChip??(statusChip=Resources.Load<Sprite>("AshenPremiumStatusChip")??Secondary);
         // Editor bakes the source-defined raster into real Unity Sprite assets.
         // Runtime may use a generated fallback if a scene has never been rebuilt.
         public static void RebindAfterBake()
         {
-            panel=null;primary=null;secondary=null;crest=null;
+            panel=null;primary=null;secondary=null;crest=null;medallion=null;statusChip=null;
         }
         // Editor baking must always rasterise the authored SOURCE, not a
         // previously imported sprite that may contain an older art version.
