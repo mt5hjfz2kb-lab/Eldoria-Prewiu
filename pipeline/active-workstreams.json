@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T09:26:16.978186+00:00",
+  "updated_at": "2026-11-16T09:39:03.630310+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,12 +9745,10 @@
       "ownership_revision": 13,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "GROUNDED_SETTLEMENT_NATIVE_PENDING",
+      "phase": "GROUNDED_SETTLEMENT_NATIVE_REVIEWED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9783,21 +9781,22 @@
       "continuation_authority": "Owner: Sigue afinándolo; explicitly authorized main coordination update in follow-up Autorizo. Improve reviewed Ashen finish, isolated branch, no gameplay or publication.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "Owner requested separated auxiliaries, no platforms, settlement identity; Blender I/V reviewed."
+        "status": "released_native_complete",
+        "reason": "Owner requested separated auxiliaries, no platforms, settlement identity; Blender I/V reviewed.",
+        "released_at": "2026-11-16T09:39:03.630294+00:00"
       },
       "last_native": {
-        "run": 43837348051,
-        "head": "6080de8c8630da95c33cca59e79cb71bbba9cd0e",
-        "artifact": 14211975993,
+        "run": 43840861529,
+        "head": "86bccf9d708a0d75681ddb632ac5a7dad677ddeb",
+        "artifact": 14213435782,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Actual landscapes I-V and portrait V inspected; architectural silhouette and functional auxiliaries improved. Second-render capture removes observed stretched triangles; cause unproven. Physical mobile unverified; not ART_APPROVED."
+        "visual_review": "Separated auxiliaries, removed plinth rims, footings grounded, functional details, quieter stone and worn paths. Corrected cropped portrait; all four auxiliaries visible. Ground remains smooth; physical mobile unverified. Not ART_APPROVED."
       },
-      "final_source_sha": "6080de8c8630da95c33cca59e79cb71bbba9cd0e",
+      "final_source_sha": "86bccf9d708a0d75681ddb632ac5a7dad677ddeb",
       "art_approved": false,
-      "next": "Owner visual review; future finish needs material/terrain identity and physical mobile validation.",
+      "next": "Owner review of grounded settlement; future material/ground finish and physical mobile evaluation.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
