@@ -135,7 +135,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             var r=Node(parent,name,min,max,insetMin,insetMax);
             var t=r.gameObject.AddComponent<Text>();
             bool title=name=="Realm"||name=="Sheet title";
-            bool emphasis=name=="Caption";
+            bool emphasis=name=="Caption"||name=="Compact caption"||name=="Resources";
             t.font=title?titleTypeface:emphasis?emphasisTypeface:typeface;
             t.fontSize=size;t.fontStyle=FontStyle.Normal;
             t.color=color;t.alignment=alignment;
@@ -201,7 +201,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             }
             if(showCaption)
             {
-                var label=Label(r,"Compact caption",10,TextAnchor.MiddleCenter,Ivory,
+                var label=Label(r,"Compact caption",12,TextAnchor.MiddleCenter,Ivory,
                     Vector2.zero,new Vector2(1,0),new Vector2(0f,2f),
                     new Vector2(0f,23f));
                 label.text=caption;
@@ -240,7 +240,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             emblemImage.raycastTarget=false;
             levelText=Label(header,"Realm",16,TextAnchor.MiddleLeft,Ivory,
                 new Vector2(0,.49f),Vector2.one,new Vector2(55,0),new Vector2(-9,-3));
-            resourceText=Label(header,"Resources",11,TextAnchor.MiddleLeft,Muted,
+            resourceText=Label(header,"Resources",12,TextAnchor.MiddleLeft,Muted,
                 Vector2.zero,new Vector2(1,.49f),new Vector2(55,3),new Vector2(-8,0));
 
             var bottom=Node(safe,"Floating navigation",Vector2.zero,new Vector2(1,0),
@@ -266,8 +266,8 @@ namespace Eldoria.ExperimentalAshenCitadel
                 Vector2.zero,Vector2.zero);
             popup.pivot=new Vector2(.5f,0);
             popup.anchoredPosition=new Vector2(0,90);
-            popup.sizeDelta=new Vector2(0,238);
-            var sheetBack=Plate(popup,frame,new Color(1f,1f,1f,.96f));
+            popup.sizeDelta=new Vector2(0,204);
+            var sheetBack=Plate(popup,frame,new Color(1f,1f,1f,.93f));
             sheetBack.raycastTarget=true;
             popupTitle=Label(popup,"Sheet title",18,TextAnchor.MiddleLeft,Ivory,
                 new Vector2(0,1),Vector2.one,new Vector2(19,-54),new Vector2(-58,-11));
@@ -309,7 +309,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             sheetRows=rows;
             int hardBreaks=sheetDescription.Split('\n').Length;
             float lineEstimate=Mathf.Ceil(sheetDescription.Length/44f)+Mathf.Max(0,hardBreaks-1);
-            float descriptionHeight=Mathf.Clamp(38f+lineEstimate*16f,68f,145f);
+            float descriptionHeight=Mathf.Clamp(27f+lineEstimate*15f,52f,116f);
             popupDescription.rectTransform.offsetMin=new Vector2(20,-(61+descriptionHeight));
             popupDescription.rectTransform.offsetMax=new Vector2(-20,-61);
             var scrollRect=sheetScroll.GetComponent<RectTransform>();
@@ -317,10 +317,10 @@ namespace Eldoria.ExperimentalAshenCitadel
             const float rowStep=54f;
             float contentHeight=Mathf.Max(1f,rows*rowStep);
             ((RectTransform)popupActionArea).sizeDelta=new Vector2(0,contentHeight);
-            float preferredHeight=85f+descriptionHeight+Mathf.Min(rows,5)*rowStep+20f;
+            float preferredHeight=70f+descriptionHeight+Mathf.Min(rows,5)*rowStep+12f;
             float safeHeight=safe.rect.height>200?safe.rect.height:844f;
-            float maxHeight=Mathf.Max(215f,Mathf.Min(374f,safeHeight*.49f));
-            popup.sizeDelta=new Vector2(popup.sizeDelta.x,Mathf.Clamp(preferredHeight,188f,maxHeight));
+            float maxHeight=Mathf.Max(185f,Mathf.Min(345f,safeHeight*.45f));
+            popup.sizeDelta=new Vector2(popup.sizeDelta.x,Mathf.Clamp(preferredHeight,152f,maxHeight));
             if(sheetScroll!=null)sheetScroll.verticalNormalizedPosition=1f;
         }
 
@@ -346,7 +346,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             float viewportWidth=844f*width/height;
             float usableWidth=Mathf.Max(280f,viewportWidth-8f);
             float furnitureWidth=Mathf.Min(760f,usableWidth);
-            float sheetWidth=Mathf.Min(600f,usableWidth-8f);
+            float sheetWidth=Mathf.Min(342f,usableWidth-16f);
             if(topHud!=null)
             {
                 float chipWidth=Mathf.Min(247f,usableWidth-109f);
@@ -367,9 +367,9 @@ namespace Eldoria.ExperimentalAshenCitadel
                     new Vector2(0,82f));
             if(popup!=null)
             {
-                AnchorCentered(popup,new Vector2(.5f,0f),
-                    new Vector2(Mathf.Min(sheetWidth,396f),Mathf.Max(188f,popup.sizeDelta.y)),
-                    new Vector2(0,90f));
+                AnchorCentered(popup,new Vector2(0f,0f),
+                    new Vector2(sheetWidth,Mathf.Max(152f,popup.sizeDelta.y)),
+                    new Vector2(12f,86f));
                 if(popup.gameObject.activeSelf)SizeSheet(sheetRows);
             }
             if(dailyButton!=null)
@@ -432,9 +432,9 @@ namespace Eldoria.ExperimentalAshenCitadel
             if(granary!=null)granary.SetActive(!worldMode && s.ChapterThree!=null && s.ChapterThree.GranaryLevel>0);
             if(stoneworks!=null)stoneworks.SetActive(!worldMode && s.ChapterThree!=null && s.ChapterThree.StoneworksLevel>0);
             levelText.text="BASTIÓN "+Roman(visibleStage);
-            resourceText.text="M "+Compact(s.Resources.Wood)+
-                "   P "+Compact(s.Resources.Stone)+
-                "   C "+Compact(s.Resources.Food);
+            resourceText.text="M:"+Compact(s.Resources.Wood)+
+                "  P:"+Compact(s.Resources.Stone)+
+                "  C:"+Compact(s.Resources.Food);
             feedbackText.text=lastMessage;
             // Transient gateway feedback only, never a permanent status ribbon.
             feedbackText.gameObject.SetActive(Time.unscaledTime<feedbackExpires &&
