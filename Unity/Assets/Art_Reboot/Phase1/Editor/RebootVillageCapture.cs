@@ -20,7 +20,7 @@ namespace Eldoria.ArtReboot.Editor
         {
             public string unity,sourceSHA,scene,note;
             public long heroTriangles,ruinTriangles,corruptTriangles,environmentTriangles;
-            public float cameraTilt=42,cameraYaw=-13,sunElevation=16,sunIntensity=1.65f,fogStart=65,fogEnd=110,bloomIntensity=.48f,bloomThreshold=1.05f;
+            public float cameraTilt=42,cameraYaw=-13,sunElevation=16,sunIntensity=1.65f,fogStart=24,fogEnd=64,bloomIntensity=.38f,bloomThreshold=1.05f;
             public int shadowResolution=2048,shadowCascades=2,particles;
             public bool approvedHeroBytesPreserved=true,originalScenesPreserved=true,physicalMobileTested=false;
         }
@@ -44,7 +44,7 @@ namespace Eldoria.ArtReboot.Editor
                 if(atlas==null||atlas.width!=256)throw new InvalidOperationException("Approved atlas unavailable");
                 var surface=MaterialAsset("Village_Surface",shader,atlas,0);
                 var warm=MaterialAsset("Village_WarmLight",shader,atlas,1.75f);
-                var corruption=MaterialAsset("Village_Corruption",shader,atlas,8.0f);
+                var corruption=MaterialAsset("Village_Corruption",shader,atlas,2.3f);
                 var names=new[]{"Hero","Ruin","Corrupt","EnvironmentV2"};
                 var positions=new[]{new Vector3(0,0,4.5f),new Vector3(-7.2f,0,-1.9f),new Vector3(7.1f,0,.6f),Vector3.zero};
                 var objects=new GameObject[4];var bounds=new Bounds[4];var triangles=new long[4];
@@ -78,11 +78,11 @@ namespace Eldoria.ArtReboot.Editor
                 if(Mathf.Abs(bounds[3].size.x-180)>.1f)throw new InvalidOperationException("Terrain scale error");
                 File.WriteAllText(Path.Combine(output,"model-world-bounds.txt"),string.Join("\n",names.Select((n,i)=>n+": "+bounds[i]+" triangles="+triangles[i])));
                 RenderSettings.skybox=CreateSky();RenderSettings.ambientMode=AmbientMode.Trilight;
-                RenderSettings.ambientSkyColor=new Color(.40f,.38f,.52f);RenderSettings.ambientEquatorColor=new Color(.30f,.27f,.39f);RenderSettings.ambientGroundColor=new Color(.13f,.15f,.25f);
-                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogColor=new Color(.57f,.34f,.18f);RenderSettings.fogStartDistance=65;RenderSettings.fogEndDistance=110;
+                RenderSettings.ambientSkyColor=new Color(.56f,.51f,.62f);RenderSettings.ambientEquatorColor=new Color(.41f,.38f,.53f);RenderSettings.ambientGroundColor=new Color(.20f,.22f,.29f);
+                RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogColor=new Color(.61f,.43f,.30f);RenderSettings.fogStartDistance=24;RenderSettings.fogEndDistance=64;
                 var sun=new GameObject("Low amber dusk sun").AddComponent<Light>();sun.transform.SetParent(root.transform,false);sun.type=LightType.Directional;
                 sun.transform.rotation=Quaternion.Euler(16,-35,0);sun.color=new Color(1,.735f,.46f);sun.intensity=1.65f;sun.shadows=LightShadows.Soft;sun.shadowStrength=.60f;sun.shadowBias=.028f;sun.shadowNormalBias=.12f;RenderSettings.sun=sun;
-                var fill=new GameObject("Cool open sky").AddComponent<Light>();fill.transform.SetParent(root.transform,false);fill.type=LightType.Directional;fill.transform.rotation=Quaternion.Euler(48,145,0);fill.color=new Color(.61f,.65f,.88f);fill.intensity=.30f;fill.shadows=LightShadows.None;
+                var fill=new GameObject("Cool open sky").AddComponent<Light>();fill.transform.SetParent(root.transform,false);fill.type=LightType.Directional;fill.transform.rotation=Quaternion.Euler(48,145,0);fill.color=new Color(.61f,.65f,.88f);fill.intensity=.48f;fill.shadows=LightShadows.None;
                 var torch=new GameObject("One shared entrance torch light").AddComponent<Light>();torch.transform.SetParent(root.transform,false);torch.type=LightType.Point;torch.transform.position=new Vector3(-.55f,1.9f,2.25f);torch.color=new Color(1,.65f,.34f);torch.intensity=.52f;torch.range=3.5f;torch.shadows=LightShadows.None;
                 var atmosphere=new GameObject("Low layered atmosphere");atmosphere.transform.SetParent(root.transform,false);BuildLowGroundMist(atmosphere);
                 var particles=BuildCorruptionParticles(root);int capturedParticleCount=particles.particleCount;if(capturedParticleCount<2)throw new InvalidOperationException("No corruption particles");
@@ -132,7 +132,7 @@ namespace Eldoria.ArtReboot.Editor
                 var p=camera.transform.InverseTransformPoint(bounds.center+Vector3.Scale(bounds.extents,new Vector3(x,y,z)));
                 horizontal=Mathf.Max(horizontal,Mathf.Abs(p.x));vertical=Mathf.Max(vertical,Mathf.Abs(p.y));
             }
-            camera.orthographicSize=Mathf.Max(vertical,horizontal/((float)width/height))*1.025f;
+            camera.orthographicSize=Mathf.Max(vertical,horizontal/((float)width/height))*1.01f;
         }
         static Material CreateSky()
         {
@@ -253,7 +253,7 @@ namespace Eldoria.ArtReboot.Editor
             }
             bloom.active = true;
             bloom.threshold.Override(1.05f);
-            bloom.intensity.Override(.48f);
+            bloom.intensity.Override(.38f);
             bloom.scatter.Override(.66f);
             if (!profile.TryGet<Tonemapping>(out var tonemapping))
             {
@@ -267,6 +267,7 @@ namespace Eldoria.ArtReboot.Editor
                 AssetDatabase.AddObjectToAsset(grading, profile);
             }
             grading.contrast.Override(3f);
+            grading.postExposure.Override(.25f);
             grading.saturation.Override(0f);
             if (!profile.TryGet<SplitToning>(out var split))
             {
@@ -366,7 +367,7 @@ namespace Eldoria.ArtReboot.Editor
                 for (int frame = 0; frame < 3; frame++)
                 {
                     var probe = new SphericalHarmonicsL2();
-                    probe.AddAmbientLight(new Color(.28f, .30f, .33f));
+                    probe.AddAmbientLight(new Color(.42f, .41f, .47f));
                     RenderSettings.ambientProbe = probe;
                     RenderPipeline.SubmitRenderRequest(camera, request);
                 }
