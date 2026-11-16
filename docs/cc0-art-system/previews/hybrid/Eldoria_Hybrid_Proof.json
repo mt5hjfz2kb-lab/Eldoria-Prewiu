@@ -1,0 +1,344 @@
+{
+  "approach": "true Quaternius RTS + modular ruins + forest meshes combined temporarily with original Eldoria Bastion",
+  "hybrid_source_downloads": "exact files from original Quaternius Google Drive by file ID",
+  "source_artifacts_public": false,
+  "actual_quaternius_blender_import": true,
+  "unity_native_import": false,
+  "art_approved": false,
+  "commercial_redistribution_certified": false,
+  "composite_evidence_images": [
+    {
+      "file": "Eldoria_Hybrid_SourceModels_Bastion1_1600x900.png",
+      "bytes": 2511935,
+      "stage": 1,
+      "width": 1600,
+      "height": 900,
+      "type": "genuine Blender render, not Unity"
+    },
+    {
+      "file": "Eldoria_Hybrid_SourceModels_Bastion5_1600x900.png",
+      "bytes": 2561743,
+      "stage": 5,
+      "width": 1600,
+      "height": 900,
+      "type": "genuine Blender render, not Unity"
+    },
+    {
+      "file": "Eldoria_Hybrid_SourceModels_Bastion5_720x1200.png",
+      "bytes": 1543810,
+      "stage": 5,
+      "width": 720,
+      "height": 1200,
+      "type": "genuine Blender render, not Unity"
+    }
+  ],
+  "models": [
+    {
+      "name": "Barracks_SecondAge_Level3.gltf",
+      "type": "building",
+      "mesh_count": 1,
+      "size": [
+        1.7114,
+        1.6426,
+        1.8462
+      ],
+      "scale": 4.87497,
+      "position": [
+        23.2,
+        11.0,
+        0.0
+      ],
+      "publisher_file_sha256": "7b961ec2083c8a1f7058028500798071b922e37ed4a90f954a1452c09d132e70"
+    },
+    {
+      "name": "Storage_FirstAge_Level1.gltf",
+      "type": "building",
+      "mesh_count": 1,
+      "size": [
+        1.4105,
+        1.4661,
+        0.7613
+      ],
+      "scale": 6.0024,
+      "position": [
+        22.8,
+        -9.0,
+        0.0
+      ],
+      "publisher_file_sha256": "baca6e2b0be3b8a85381e6f62cacb08e5875dbbd767d7acd97c65e4250f9d2d3"
+    },
+    {
+      "name": "Mine.gltf",
+      "type": "building",
+      "mesh_count": 1,
+      "size": [
+        1.2843,
+        1.3612,
+        1.1693
+      ],
+      "scale": 6.31778,
+      "position": [
+        -20.3,
+        12.3,
+        0.0
+      ],
+      "publisher_file_sha256": "523f1e38238e252e0e263aae8857c698b63572a5d7811a59c80c966ec26e941d"
+    },
+    {
+      "name": "Logs.gltf",
+      "type": "building",
+      "mesh_count": 1,
+      "size": [
+        1.1616,
+        0.8352,
+        0.2457
+      ],
+      "scale": 2.92689,
+      "position": [
+        -18.9,
+        -7.8,
+        0
+      ],
+      "publisher_file_sha256": "95d60b52a6316d06ba42f1c59b79c9147c11f1736671626c956d4eadcf994638"
+    },
+    {
+      "name": "Wall_ArchRound_Broken.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        3.9932,
+        0.31,
+        3.9848
+      ],
+      "scale": 0.92658,
+      "position": [
+        -26.1,
+        17.0,
+        0
+      ],
+      "publisher_file_sha256": "1ee949732ccc1599411c8cc6fa2ed7cacf983967695d90f78b3813fdb732d7e8"
+    },
+    {
+      "name": "Wall_Broken.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        1.9904,
+        0.2859,
+        1.9473
+      ],
+      "scale": 2.00966,
+      "position": [
+        -24.6,
+        19.8,
+        0
+      ],
+      "publisher_file_sha256": "6a4383be9c0b2101e1d471d8bb2a33e8b36ca95ca5b86e6b775b12b09ae76439"
+    },
+    {
+      "name": "Wall_Overgrown.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        1.9904,
+        0.3039,
+        1.9845
+      ],
+      "scale": 1.9594,
+      "position": [
+        -26.7,
+        22.5,
+        0
+      ],
+      "publisher_file_sha256": "c0ea1ec251962e5cd04afee5d444cc9019faa1a7b1caed0033ce318dc3f04beb"
+    },
+    {
+      "name": "Arch_Gothic.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        3.0919,
+        0.491,
+        3.7605
+      ],
+      "scale": 1.35837,
+      "position": [
+        -20.6,
+        23.2,
+        0
+      ],
+      "publisher_file_sha256": "af85f55a727388fbad67a62ffc7e30365b4a99241ff3b93e41711c15a5d5299f"
+    },
+    {
+      "name": "PineTree_2.fbx",
+      "type": "foliage",
+      "mesh_count": 1,
+      "size": [
+        3.2769,
+        2.9795,
+        6.9086
+      ],
+      "scale": 1.00704,
+      "position": [
+        -27.8,
+        5.6,
+        0.0
+      ],
+      "publisher_file_sha256": "205a4e0d02ab870c7e7ca605116d99ab0d0421c8d960d311f576f4e25356d719"
+    },
+    {
+      "name": "PineTree_4.fbx",
+      "type": "foliage",
+      "mesh_count": 1,
+      "size": [
+        4.8425,
+        3.2498,
+        4.4848
+      ],
+      "scale": 0.82602,
+      "position": [
+        -29.0,
+        -10.5,
+        0.0
+      ],
+      "publisher_file_sha256": "24fdc539049d00b1354d4a6c28882dfcb5612c3277d344ad07ae90199ba467b5"
+    },
+    {
+      "name": "PineTree_4.fbx",
+      "type": "foliage",
+      "mesh_count": 1,
+      "size": [
+        4.8425,
+        3.2498,
+        4.4848
+      ],
+      "scale": 0.74342,
+      "position": [
+        27.0,
+        19.4,
+        0.0
+      ],
+      "publisher_file_sha256": "24fdc539049d00b1354d4a6c28882dfcb5612c3277d344ad07ae90199ba467b5"
+    },
+    {
+      "name": "PineTree_2.fbx",
+      "type": "foliage",
+      "mesh_count": 1,
+      "size": [
+        3.2769,
+        2.9795,
+        6.9086
+      ],
+      "scale": 1.15962,
+      "position": [
+        30.0,
+        -12.5,
+        0.0
+      ],
+      "publisher_file_sha256": "205a4e0d02ab870c7e7ca605116d99ab0d0421c8d960d311f576f4e25356d719"
+    },
+    {
+      "name": "PineTree_4.fbx",
+      "type": "foliage",
+      "mesh_count": 1,
+      "size": [
+        4.8425,
+        3.2498,
+        4.4848
+      ],
+      "scale": 0.90863,
+      "position": [
+        -31.0,
+        21.2,
+        0.0
+      ],
+      "publisher_file_sha256": "24fdc539049d00b1354d4a6c28882dfcb5612c3277d344ad07ae90199ba467b5"
+    },
+    {
+      "name": "PineTree_2.fbx",
+      "type": "foliage",
+      "mesh_count": 1,
+      "size": [
+        3.2769,
+        2.9795,
+        6.9086
+      ],
+      "scale": 0.97652,
+      "position": [
+        32.7,
+        6.0,
+        0.0
+      ],
+      "publisher_file_sha256": "205a4e0d02ab870c7e7ca605116d99ab0d0421c8d960d311f576f4e25356d719"
+    },
+    {
+      "name": "Rock_1.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        0.7107,
+        0.8874,
+        1.0825
+      ],
+      "scale": 2.1411,
+      "position": [
+        -24,
+        -12,
+        0
+      ],
+      "publisher_file_sha256": "1e3f10636f718113bce4a3715328bbe91c9836b9dbb5563b6a49f403df53324e"
+    },
+    {
+      "name": "Rock_1.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        0.7107,
+        0.8874,
+        1.0825
+      ],
+      "scale": 2.1411,
+      "position": [
+        -27,
+        -8,
+        0
+      ],
+      "publisher_file_sha256": "1e3f10636f718113bce4a3715328bbe91c9836b9dbb5563b6a49f403df53324e"
+    },
+    {
+      "name": "Rock_1.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        0.7107,
+        0.8874,
+        1.0825
+      ],
+      "scale": 2.1411,
+      "position": [
+        28,
+        0,
+        0
+      ],
+      "publisher_file_sha256": "1e3f10636f718113bce4a3715328bbe91c9836b9dbb5563b6a49f403df53324e"
+    },
+    {
+      "name": "Rock_1.fbx",
+      "type": "ruin",
+      "mesh_count": 1,
+      "size": [
+        0.7107,
+        0.8874,
+        1.0825
+      ],
+      "scale": 2.1411,
+      "position": [
+        19,
+        24,
+        0
+      ],
+      "publisher_file_sha256": "1e3f10636f718113bce4a3715328bbe91c9836b9dbb5563b6a49f403df53324e"
+    }
+  ],
+  "source_raw_archived": false
+}
