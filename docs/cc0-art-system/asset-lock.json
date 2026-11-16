@@ -18,12 +18,24 @@
       ],
       "license_page": "CC0 badge",
       "provenance": "listing_verified",
-      "import_state": "not_downloaded",
+      "import_state": "six_original_files_blender_imported_in_ephemeral_runner",
       "source_public_allowed": "UNVERIFIED",
       "commercial_game_allowed": "listing_yes",
       "publisher_2022_google_drive_folder": "https://drive.google.com/drive/folders/1h7sztlZyavWla-JDk3jp6KiWDdMh08yd?usp=sharing",
       "download_verified_at": "published in original publisher source HTML, NOT downloaded in this branch",
-      "publisher_source_html": "https://github.com/Quaternius/quaternius.github.io/blob/main/packs/ultimatefantasyrts.html"
+      "publisher_source_html": "https://github.com/Quaternius/quaternius.github.io/blob/main/packs/ultimatefantasyrts.html",
+      "proof_run_id": 43844725460,
+      "proof_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43844725460",
+      "publisher_licence_discrepancy": "Original 2022 Drive License.txt names Ultimate Platformer Pack, although Ultimate Fantasy RTS listing says CC0. Do not certify redistribution without resolving rights.",
+      "validated_files": {
+        "Barracks_SecondAge_Level3.gltf": "7b961ec2083c8a1f7058028500798071b922e37ed4a90f954a1452c09d132e70",
+        "TownCenter_SecondAge_Level3.gltf": "b9409cd1b8bd0fa808cf8f7df214f84058cb6c82d74edba0306c19e20a120d95",
+        "Storage_FirstAge_Level1.gltf": "baca6e2b0be3b8a85381e6f62cacb08e5875dbbd767d7acd97c65e4250f9d2d3",
+        "Mine.gltf": "523f1e38238e252e0e263aae8857c698b63572a5d7811a59c80c966ec26e941d",
+        "Resource_PineTree_Group.gltf": "b41d6c14abbaa51c26854f605f1a485b3959767ed6a9d2869b9fda444aede6f5",
+        "WallTowers_Door_FirstAge.gltf": "0a0045379efa0c1bd4ec63e4fb263741aac3a8b420eb61dbee252973b0b14cfe"
+      },
+      "visual_finding": "TownCenter_SecondAge_Level3 is a fountain/plaza, NOT a Bastion; use secondary only"
     },
     {
       "id": "q_ruins",
@@ -177,5 +189,6 @@
   "art_approval": false,
   "native_unity_verified": false,
   "physical_iphone_verified": false,
-  "notes": "No binaries in public repo without positive per-file source-redistribution authorization; truthful status required."
+  "notes": "No binaries in public repo without positive per-file source-redistribution authorization; truthful status required.",
+  "licensing_updates": "Quaternius selected originals downloaded only in temporary CI; public repo has screenshots and import scripts, not these vendor sources; 2022 wrong pack name in License.txt explicitly recorded."
 }
