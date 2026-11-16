@@ -174,6 +174,10 @@ namespace Eldoria.ArtReboot.Editor
                     unity = UnityEngine.Application.unityVersion, triangles = triangles,
                     sourceSHA = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local-unrecorded",
                     scene = RebootSandboxGuard.ScenePath, cameraTilt = 50,
+                    sunElevation = 16f, sunIntensity = 1.65f, torchIntensity = 1.15f,
+                    fogStart = 20f, fogEnd = 58f, bloomThreshold = 1.1f, bloomIntensity = .24f,
+                    groundMistLowY = .19f, groundMistHighY = .55f,
+                    shadowMapResolution = 2048, shadowCascades = 2, particleCount = corruptParticles.particleCount,
                     note = "Actual Edit Mode URP render requests. Particle emitter simulated in Editor; physical mobile, gameplay, runtime motion and performance remain unverified. Artistic review required."
                 }, true));
                 Debug.Log("REBOOT_CAPTURE_OUTPUT " + output);
@@ -198,6 +202,165 @@ namespace Eldoria.ArtReboot.Editor
                 if (!File.ReadAllBytes(original).SequenceEqual(originalBytes))
                     throw new InvalidOperationException("Original scene bytes changed during capture.");
             }
+        }
+
+
+        // Separate 3D ground-hugging haze from the built-in distant linear fog.
+        // Two vertex-alpha meshes, no large textures and no extra dynamic lights.
+        static void BuildLowGroundMist(GameObject root)
+        {
+            const string shaderPath = Root + "/Materials/Reboot_Atmosphere.shader";
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>(shaderPath);
+            if (shader == null || ShaderUtil.ShaderHasError(shader))
+                throw new InvalidOperationException("URP vertex-alpha atmosphere shader unavailable.");
+            const string materialPath = Root + "/Materials/Reboot_LowMist.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            material.shader = shader;
+            material.SetFloat("_EmissionScale", 1f);
+            EditorUtility.SetDirty(material);
+            for (int layer = 0; layer < 2; layer++)
+            {
+                var meshPath = Root + "/Materials/Reboot_LowMist_" + layer + ".asset";
+                var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshPath);
+                if (mesh == null)
+                {
+                    const int n = 13;
+                    var verts = new Vector3[n * n];
+                    var colors = new Color[n * n];
+                    var tris = new int[(n - 1) * (n - 1) * 6];
+                    for (int z = 0; z < n; z++)
+                    for (int x = 0; x < n; x++)
+                    {
+                        float xx = -13f + x * (26f / (n - 1));
+                        float zz = -11f + z * (25f / (n - 1));
+                        float back = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(-7f, 12f, zz));
+                        float edge = Mathf.Sin(Mathf.PI * x / (n - 1)) * Mathf.Sin(Mathf.PI * z / (n - 1));
+                        float density = (layer == 0 ? .22f : .12f) * (.35f + .65f * back) * edge;
+                        int index = z * n + x;
+                        verts[index] = new Vector3(xx, layer == 0 ? .19f : .55f, zz);
+                        colors[index] = new Color(.42f, .40f, .58f, density);
+                    }
+                    int t = 0;
+                    for (int z = 0; z < n - 1; z++)
+                    for (int x = 0; x < n - 1; x++)
+                    {
+                        int i = z * n + x;
+                        tris[t++] = i; tris[t++] = i + n; tris[t++] = i + 1;
+                        tris[t++] = i + 1; tris[t++] = i + n; tris[t++] = i + n + 1;
+                    }
+                    mesh = new Mesh { name = "Low mist vertex alpha " + layer };
+                    mesh.vertices = verts;
+                    mesh.colors = colors;
+                    mesh.triangles = tris;
+                    mesh.RecalculateBounds();
+                    AssetDatabase.CreateAsset(mesh, meshPath);
+                }
+                var go = new GameObject(layer == 0 ? "Low dense ground haze" : "Far hovering mist");
+                go.transform.SetParent(root.transform, false);
+                go.AddComponent<MeshFilter>().sharedMesh = mesh;
+                var renderer = go.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+                renderer.sortingOrder = layer;
+            }
+        }
+
+        // Slow ascending particles are a real ParticleSystem, not painted spheres.
+        // They remain local to the fractured watchtower and cast no extra shadows.
+        static ParticleSystem BuildCorruptionParticles(GameObject root)
+        {
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>(
+                Root + "/Materials/Reboot_Atmosphere.shader");
+            if (shader == null) throw new InvalidOperationException("Particle shader missing.");
+            const string path = Root + "/Materials/Reboot_ArcaneParticles.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+            material.shader = shader;
+            material.SetFloat("_EmissionScale", 4.4f);
+            EditorUtility.SetDirty(material);
+            var go = new GameObject("Localized slowly rising arcane motes");
+            go.transform.SetParent(root.transform, false);
+            go.transform.localPosition = new Vector3(4.35f, .32f, -.85f);
+            var particles = go.AddComponent<ParticleSystem>();
+            var main = particles.main;
+            main.playOnAwake = false;
+            main.loop = true;
+            main.duration = 7f;
+            main.maxParticles = 28;
+            main.simulationSpace = ParticleSystemSimulationSpace.Local;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(3.8f, 6.2f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(.08f, .20f);
+            main.startSize = new ParticleSystem.MinMaxCurve(.045f, .11f);
+            main.startColor = new ParticleSystem.MinMaxGradient(
+                new Color(.72f, .32f, 1f, .72f));
+            var emission = particles.emission;
+            emission.rateOverTime = new ParticleSystem.MinMaxCurve(2.6f);
+            var shape = particles.shape;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = new Vector3(2.05f, .2f, 1.8f);
+            var velocity = particles.velocityOverLifetime;
+            velocity.enabled = true;
+            velocity.space = ParticleSystemSimulationSpace.Local;
+            velocity.y = new ParticleSystem.MinMaxCurve(.20f, .36f);
+            var renderer = go.GetComponent<ParticleSystemRenderer>();
+            renderer.renderMode = ParticleSystemRenderMode.Billboard;
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            particles.Simulate(6f, true, true, true);
+            particles.Pause(true);
+            Debug.Log("REBOOT_ARCANE_PARTICLES " + particles.particleCount);
+            return particles;
+        }
+
+        static void ConfigureDuskProfile(VolumeProfile profile)
+        {
+            if (!profile.TryGet<Bloom>(out var bloom))
+            {
+                bloom = profile.Add<Bloom>(true);
+                AssetDatabase.AddObjectToAsset(bloom, profile);
+            }
+            bloom.active = true;
+            bloom.threshold.Override(1.1f);
+            bloom.intensity.Override(.24f);
+            bloom.scatter.Override(.66f);
+            if (!profile.TryGet<Tonemapping>(out var tonemapping))
+            {
+                tonemapping = profile.Add<Tonemapping>(true);
+                AssetDatabase.AddObjectToAsset(tonemapping, profile);
+            }
+            tonemapping.mode.Override(TonemappingMode.ACES);
+            if (!profile.TryGet<ColorAdjustments>(out var grading))
+            {
+                grading = profile.Add<ColorAdjustments>(true);
+                AssetDatabase.AddObjectToAsset(grading, profile);
+            }
+            grading.contrast.Override(9f);
+            grading.saturation.Override(-6f);
+            if (!profile.TryGet<SplitToning>(out var split))
+            {
+                split = profile.Add<SplitToning>(true);
+                AssetDatabase.AddObjectToAsset(split, profile);
+            }
+            split.shadows.Override(new Color(.34f, .29f, .53f));
+            split.highlights.Override(new Color(1f, .76f, .48f));
+            split.balance.Override(-20f);
+            EditorUtility.SetDirty(profile);
+        }
+
+        [Serializable] sealed class GeneratedGeometry
+        {
+            public int triangles, mesh_objects;
         }
 
         static void FitBuildings(Camera camera, MeshRenderer[] renderers, int width, int height)
@@ -307,6 +470,19 @@ namespace Eldoria.ArtReboot.Editor
             var softShadows = settings.FindProperty("m_SoftShadowsSupported");
             if (softShadows == null) throw new InvalidOperationException("URP soft-shadow schema differs.");
             softShadows.boolValue = true;
+            // Mobile-minded, two near-field cascades with verified URP17 serialization names.
+            var resolution = settings.FindProperty("m_MainLightShadowmapResolution");
+            var cascades = settings.FindProperty("m_ShadowCascadeCount");
+            var split = settings.FindProperty("m_Cascade2Split");
+            var distance = settings.FindProperty("m_ShadowDistance");
+            var softness = settings.FindProperty("m_SoftShadowQuality");
+            if (resolution == null || cascades == null || split == null || distance == null || softness == null)
+                throw new InvalidOperationException("URP shadow schema differs; do not silently downgrade.");
+            resolution.intValue = 2048;
+            cascades.intValue = 2;
+            split.floatValue = .37f;
+            distance.floatValue = 42f;
+            softness.intValue = 2;
             settings.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(pipeline);
             return pipeline;
@@ -381,6 +557,9 @@ namespace Eldoria.ArtReboot.Editor
         [Serializable] sealed class Evidence
         {
             public string unity, sourceSHA, scene, note;
+            public float sunElevation, sunIntensity, torchIntensity, fogStart, fogEnd,
+                         bloomThreshold, bloomIntensity, groundMistLowY, groundMistHighY;
+            public int shadowMapResolution, shadowCascades, particleCount;
             public long triangles;
             public float cameraTilt;
         }
