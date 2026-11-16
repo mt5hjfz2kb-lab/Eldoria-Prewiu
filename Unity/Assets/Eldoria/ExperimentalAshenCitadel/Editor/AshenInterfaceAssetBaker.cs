@@ -22,13 +22,15 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             VerifyImportedSprite("AshenPremiumButtonPrimary",new Vector4(19,14,19,14));
             VerifyImportedSprite("AshenPremiumButtonSecondary",new Vector4(19,14,19,14));
             VerifyImportedSprite("AshenPremiumCrest",Vector4.zero);
+            VerifyImportedSprite("AshenPremiumMedallion",Vector4.zero);
+            VerifyImportedSprite("AshenPremiumStatusChip",new Vector4(16,14,16,14));
             foreach(string key in new[]{"castle","workshop","army","compass",
                 "mail","bag","hero","quest"})
                 VerifyImportedSprite("AshenPremiumGlyph_"+key,Vector4.zero);
             AssetDatabase.SaveAssets();
             AshenInterfaceIdentity.RebindAfterBake();
             AshenInterfaceGlyphs.RebindAfterBake();
-            Debug.Log("ASHEN_UI_PREMIUM_SPRITES_IMPORTED 12 canonical PNGs; 9-slice borders verified");
+            Debug.Log("ASHEN_UI_PREMIUM_SPRITES_IMPORTED 14 canonical PNGs; 9-slice borders verified");
         }
         private static void VerifyImportedSprite(string name,Vector4 border)
         {
