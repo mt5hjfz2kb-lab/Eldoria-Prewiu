@@ -94,20 +94,23 @@ jobs:
           $proof=Join-Path $pwd ("visual-reboot-evidence-"+$env:GITHUB_RUN_ID)
           $from=Join-Path $proof 'ImportedArtReboot/Phase1'
           foreach($rel in @(
-            'Scenes/Phase1_HeroFamily.unity',
-            'Models/Reboot_Ruin.fbx.meta',
-            'Models/Reboot_Corrupt.fbx.meta',
-            'Models/Reboot_Environment.fbx.meta',
-            'Materials/Family_Surface.mat',
-            'Materials/Family_WarmLight.mat',
-            'Materials/Family_Corruption.mat',
-            'Materials/Family_Dusk.asset',
-            'Materials/Family_URP.asset',
-            'Materials/Family_Renderer.asset',
-            'Materials/Family_LowMist.mat',
-            'Materials/Family_ArcaneParticles.mat',
-            'Materials/Family_LowMist_0.asset',
-            'Materials/Family_LowMist_1.asset'
+            'Scenes/Phase1_Village_Atmosphere.unity',
+            'Models/Reboot_EnvironmentV2.fbx.meta',
+            'Materials/Village_Surface.mat',
+            'Materials/Village_WarmLight.mat',
+            'Materials/Village_Corruption.mat',
+            'Materials/Village_Dusk.asset',
+            'Materials/Village_URP.asset',
+            'Materials/Village_Renderer.asset',
+            'Materials/Village_LowMist.mat',
+            'Materials/Village_LowMist_0.asset',
+            'Materials/Village_LowMist_1.asset',
+            'Materials/Village_LowMist_2.asset',
+            'Materials/Village_ArcaneParticles.mat',
+            'Materials/Village_Sky.mat',
+            'Materials/Village_Smoke.mat',
+            'Materials/Village_Cloth.mat',
+            'Materials/Village_ClothMesh.asset'
           )){
             $a=Join-Path $from $rel; $z=Join-Path $branchArt $rel
             if(-not(Test-Path -LiteralPath $a)){throw "Missing generated Unity asset: $rel"}
@@ -121,7 +124,7 @@ jobs:
           foreach($rel in @(
             'unity-1100x1250.png','unity-390x844.png','ruin-closeup.png','corrupt-closeup.png',
             'unity-1600x900.png','unity-844x390.png',
-            'capture.json','native-proof.json','model-world-bounds.txt'
+            'capture.json','life-proof.json','native-proof.json','model-world-bounds.txt'
           )){
             $a=Join-Path $proof $rel
             if(-not(Test-Path -LiteralPath $a)){throw "Missing true Unity evidence: $rel"}
@@ -129,7 +132,7 @@ jobs:
           }
           $pngHashes=Get-Content -LiteralPath (Join-Path $proof 'native-proof.json') -Raw | ConvertFrom-Json
           $manifest=@{
-            phase='Phase1 approved hero family review';native_run=$env:GITHUB_RUN_ID
+            phase='Phase1 village environment second review';native_run=$env:GITHUB_RUN_ID
             source_sha=$env:GITHUB_SHA
             note='True native Unity rendered captures; artistic approval and real iPhone performance not asserted'
             art_approved=$false;physical_iphone_tested=$false
