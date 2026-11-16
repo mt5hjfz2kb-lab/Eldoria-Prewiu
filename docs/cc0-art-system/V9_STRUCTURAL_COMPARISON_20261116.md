@@ -35,3 +35,23 @@
 Un CI en verde no equivale a `ART_APPROVED`; no afirmar integración Unity ni iPhone sin ejecución real. No agregar paquetes comerciales sin licencia de redistribución de fuente. No acceder al Windows ajeno; el registro en main debe comprobarse antes de reservarlo.
 
 **Estado al redactar:** V8 real validado; generación V9 estructural y alternativa natural lanzadas, pendientes de inspección de resultados. Actualizar esta línea con el estado exacto al final del lote, sin extrapolar una ejecución pendiente.
+
+
+## Resultado visual medido de las primeras dos V9 (no vender CI como calidad)
+
+Se descargaron los **PNG auténticos de Blender** y se inspeccionaron a escala natural.
+
+| Muestra real | CI | Resultado visual | Región de torre principal 770:1025 x 60:337 |
+| --- | --- | --- | --- |
+| V8 referencia, #43882248142 | PASS | Bloques todavía simples, con arbolado pálido | 36,2 % de píxeles con luminancia < 35 |
+| V9 natural #43885990178 | PASS técnico | **RECHAZADA**: fachada central negra y árboles verdes casi grises; no cumple el objetivo | 66,6 % de píxeles con luminancia < 35 |
+| V9 estructural #43884858236 | PASS técnico | **REVISIÓN**: mejor continuidad geométrica, pero frontones casi blancos y bosque excesivamente claro | 5,3 % de la zona con luminancia > 185 (V8: 0,6 %) |
+
+Los porcentajes son solo diagnósticos cuantitativos de defectos **visibles** sobre el mismo encuadre, no notas estéticas ni pruebas del Player.
+
+### Hipótesis de causa y cambio sistémico
+
+La arquitectura estructural V9 definía valores de paleta en hexadecimal sRGB y los escribía sin conversión en las entradas `Principled BSDF / Base Color`, que esperan color en espacio lineal. Eso aclara indebidamente piedra, madera y follaje, en especial bajo una configuración de exposición y sol altas. Se ha modificado `hexrgb` para aplicar correctamente la transferencia sRGB→lineal antes de asignar los colores a materiales, junto con una luz menos agresiva. El test de esta hipótesis es el mismo pipeline de 5 niveles y 3 capturas [run #43886721399](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43886721399); **no declarar que mejora hasta inspeccionar los PNG corregidos**.
+
+La segunda causa es arquitectónica: añadir relieves de un solo color sobre masas rectangulares no produce una fachada integrada. Esta hipótesis se comprobará de manera independiente tras resolver la desviación cromática.
+
