@@ -14,7 +14,15 @@ Shader "Eldoria/ArtReboot/SunsetSky"
  CBUFFER_END
  struct A {float4 p:POSITION;};struct V{float4 p:SV_POSITION;float3 ray:TEXCOORD0;};
  V vert(A i){V o;o.p=TransformObjectToHClip(i.p.xyz);o.ray=i.p.xyz;return o;}
- half4 frag(V i):SV_Target {float h=saturate(normalize(i.ray).y);return half4(lerp(_Horizon.rgb,_Zenith.rgb,pow(h,.55)),1);}
+ half4 frag(V i):SV_Target {
+   // In an orthographic camera tilted down ~42 degrees, all visible rays
+   // have negative Y: saturate(ray.y) flattened the entire sky to Horizon.
+   // Remap the below-horizontal range to make real violet/amber dusk gradient.
+   float rayY=normalize(i.ray).y;
+   float h=saturate((rayY + .88)*2.7);
+   float t=h*h*(3.0-2.0*h);
+   return half4(lerp(_Horizon.rgb,_Zenith.rgb,t),1);
+ }
  ENDHLSL
  }
  }
