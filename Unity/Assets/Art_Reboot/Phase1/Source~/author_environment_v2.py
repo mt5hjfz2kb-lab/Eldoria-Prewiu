@@ -46,7 +46,7 @@ for j in range(n):
  for i in range(n):
   x=(i-40)*.65;y=-27+j*.575
   if i in (0,80):x=-90 if i==0 else 90
-  if j in (0,80):y=-27 if j==0 else 19
+  if j in (0,80):y=-27 if j==0 else 20.2+1.2*math.sin(x*.16)+.6*math.sin(x*.41)
   verts.append((x,y,ground(x,y)))
 for j in range(n-1):
  for i in range(n-1):a=j*n+i;faces.append((a,a+1,a+n+1,a+n))
@@ -54,12 +54,12 @@ terrain=mesh('Rolling clearing with flat building contact',verts,faces,7)
 for lp in terrain.data.loops:
  v=terrain.data.vertices[lp.vertex_index].co
  wave=.5+.22*math.sin(v.x*.47+math.sin(v.y*.36))+.2*math.cos(v.y*.52-v.x*.24)
- greens=[Vector((.48,.70,.47)),Vector((.66,.84,.55)),Vector((.87,.96,.62)),Vector((1,.93,.68))]
+ greens=[Vector((.39,.78,.43)),Vector((.54,.86,.47)),Vector((.69,.91,.54)),Vector((.76,.85,.52))]
  t=max(0,min(2.999,wave*3));color=greens[int(t)].lerp(greens[min(3,int(t)+1)],t-int(t))
  dirt=max(math.exp(-((v.x+.5)/1.2)**2)*max(0,min(1,(4-v.y)/3)),0)
  for xx,yy in placements:
-  edge=max(abs(v.x-xx)/4.3,abs(v.y-yy)/2.6);dirt=max(dirt,.9*math.exp(-max(0,edge-.8)**2*4))
- color=color.lerp(Vector((1,.65,.38)),min(.95,dirt))
+  edge=max(abs(v.x-xx)/4.3,abs(v.y-yy)/2.6);dirt=max(dirt,.72*math.exp(-max(0,edge-.8)**2*4))
+ color=color.lerp(Vector((.79,.57,.38)),min(.85,dirt))
  terrain.data.color_attributes['Color'].data[lp.index].color=(*color,1)
  terrain.data.uv_layers.active.data[lp.index].uv=((3+(8+min(1,max(0,v.x/40+.5))*48)/64)/4,(1+(8+min(1,max(0,v.y/40+.5))*48)/64)/4)
 def paving(a,b):
@@ -136,8 +136,25 @@ def crystal(base,tip,r):
  vv.append(tuple(tip));o=mesh('Invading violet crystal',vv,[tuple(range(5,-1,-1))]+[(i,(i+1)%6,6) for i in range(6)],13,True)
  for poly in o.data.polygons:
   fac=random.uniform(.62,1)
-  for li in poly.loop_indices:o.data.color_attributes['Color'].data[li].color=(fac*.85,fac*.72,fac,1)
+  for li in poly.loop_indices:o.data.color_attributes['Color'].data[li].color=(fac*.75,fac*.28,fac*1.05,1)
 for b,t,r in [((3.2,0,2),(4.15,-.45,5.4),.60),((2.7,.2,4.6),(1.8,-.6,7.1),.45),((2.2,.7,8.6),(1.5,.3,11.4),.43),((3.5,.5,0),(4.75,.1,3.6),.65),((3.3,-1.1,0),(2.6,-1.6,2.1),.35),((1.3,-.8,4.1),(.6,-1.4,6.2),.4),((3.6,1.1,0),(5.3,1.5,2.4),.4),((2.5,-1.6,0),(1.4,-2.0,1.25),.3),((3,-.3,5.3),(3.7,-.8,6.9),.27)]:crystal(b,t,r)
+
+# Corruption inhabits the APPROVED wall, not only loose crystals at its edge.
+# All geometry below is removable external dressing; never mutate original buildings.
+def creeping_wall_root(points,width=.12):
+ for a,b in zip(points,points[1:]):
+  beam('Dark root invaded facade',a,b,width,14)
+ emissive_ribbon('Violet fissure within facade',[(x,y-.105,z) for x,y,z in points],width*.47,(1,0,0))
+for rel in [
+ [(1.83,-2.26,.24),(1.60,-2.27,.88),(1.81,-2.27,1.67),(1.50,-2.29,2.56),(1.25,-2.33,3.35)],
+ [(-2.64,-2.26,.25),(-2.44,-2.28,.97),(-2.68,-2.29,1.73),(-2.35,-2.29,2.49)],
+ [(1.74,-2.28,1.48),(2.32,-2.29,1.99),(2.65,-2.29,2.45)]]:
+ creeping_wall_root([(cx+x,cy+y,z) for x,y,z in rel],.10 if len(rel)<5 else .14)
+for i in range(38):
+ x=random.choice([-2.73,-2.45,1.65,2.0])+random.uniform(-.25,.25)
+ y=cy-2.23-random.uniform(.015,.09);z=random.uniform(.25,3.08)
+ rock((cx+x,y,z),(random.uniform(.10,.27),.09,random.uniform(.07,.22)),14 if i%4 else 6)
+
 # Wide broken earth lips with jagged tapering emissive interior (not parallel neon rails).
 def fissure(points,width):
  for i,(a,b) in enumerate(zip(points,points[1:])):
@@ -152,6 +169,17 @@ for ang,length in [(-1.35,4.1),(-2.6,3.8),(.35,2.8)]:
  pts=[(cx+3.35,cy-.2,0)]
  for i in range(1,8):pts.append((cx+3.35+math.cos(ang)*length*i/7+random.uniform(-.23,.23),cy-.2+math.sin(ang)*length*i/7+random.uniform(-.23,.23),0))
  fissure(pts,.14)
+
+# Front ground roots connect the corruption to masonry and disturb the settlement floor.
+for x0,y0,ang,length in [(cx+1.5,cy-2.63,-1.25,4.2),(cx-1.55,cy-2.64,-2.15,3.25)]:
+ pts=[(x0,y0,0)]
+ for j in range(1,8):
+  pts.append((x0+math.cos(ang)*length*j/7+random.uniform(-.20,.20),y0+math.sin(ang)*length*j/7+random.uniform(-.17,.17),0))
+ fissure(pts,.105)
+for i in range(9):
+ x=cx+random.uniform(-2.6,2.6);y=cy+random.uniform(-4.1,-2.9)
+ box('Fallen roof slate at invaded entrance',(x,y,ground(x,y)+.14),(.38,.47,.08),3,.018,random.uniform(-1,1))
+
 # Dark moss at joints, fallen slate and a visibly twisted timber brace on the invaded side.
 for i in range(24):
  z=random.uniform(.3,5.3);x=cx+random.uniform(2.1,3.5);y=cy-.23
