@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEditor;
+using Eldoria.Domain;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -73,7 +74,31 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     CityBuilding.PlannedMilestone(9) != 5 || CityBuilding.PlannedMilestone(10) != 10)
                     throw new InvalidOperationException("La formula de hitos ha cambiado");
 
-                // Comprobar transiciones sin modificar PlayerState ni save.
+                // Usar el mismo PlayerState real que recibe el juego: SOLO LECTURA.
+                // El objeto es una fixture temporal, no un guardado real.
+                var fixture = new PlayerState
+                {
+                    BastionLevel = 4,
+                    SawmillLevel = 2,
+                    BarracksLevel = 2,
+                    ChapterThree = new BastionThreeState
+                    {
+                        GranaryLevel = 2,
+                        StoneworksLevel = 1
+                    }
+                };
+                bridge.ApplySnapshot(fixture);
+                if (bastion.Level != 4 || bastion.SelectedArtLevel != 1)
+                    throw new InvalidOperationException("Snapshot de nivel 4 no mostro hito I");
+                fixture.BastionLevel = 5;
+                bridge.ApplySnapshot(fixture);
+                if (bastion.Level != 5 || bastion.SelectedArtLevel != 5)
+                    throw new InvalidOperationException("Snapshot de nivel 5 no mostro hito V");
+                if (fixture.SawmillLevel != 2 || fixture.BarracksLevel != 2 ||
+                    fixture.ChapterThree.GranaryLevel != 2 || fixture.ChapterThree.StoneworksLevel != 1)
+                    throw new InvalidOperationException("La presentacion altero la fixture de partida");
+
+                // Comprobar transiciones sin modificar datos ni save.
                 bastion.SetLevel(4);
                 AssertMilestone(bastion, 1);
                 bastion.SetLevel(5);
@@ -101,6 +126,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"engine\":\"Unity\",\n" +
                     "  \"mode\":\"Editor_RenderTexture_no_PlayMode\",\n" +
                     "  \"level_transition_pass\":true,\n" +
+                    "  \"domain_snapshot_read_only_pass\":true,\n" +
                     "  \"six_sprite_colliders_pass\":true,\n" +
                     "  \"game_state_modified\":false,\n" +
                     "  \"art_approved\":false,\n" +
