@@ -23,7 +23,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
     public static class OriginalIdentityUnityAB
     {
         const string Scene = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
-        const string Import = "StagedOriginalBastionV/valoria-original-bastion-v.glb";
+        const string Import = "StagedOriginalBastionV/valoria-original-bastion-v-mobile.glb";
         static readonly string[] OldIds={"bastion-v","aserradero-v","cuartel-v","granero-v","cantera-v"};
         static readonly float[] Angles={235f,313f,231f,306f,318f};
         [Serializable] sealed class Proof
@@ -129,10 +129,10 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 }
                 finally {loader.Dispose();}
                 var renderers=newRoot.GetComponentsInChildren<Renderer>(true);
-                if(renderers.Length<50)throw new InvalidOperationException("New city GLB contains insufficient physical meshes");
+                if(renderers.Length<40 || renderers.Length>260)throw new InvalidOperationException("Expected mobile-batched original GLB (40..260 physical mesh renderers), observed "+renderers.Length);
                 var artBounds=Bounds(newRoot);
                 float width=Mathf.Max(artBounds.size.x,artBounds.size.z);
-                if(width<65 || width>160)throw new InvalidOperationException("Original artwork has unexpected world scale "+width);
+                if(width<225 || width>260)throw new InvalidOperationException("Expected original V7 continuous 240m terrain scale, observed "+width);
                 // All geometry is from the new GLB. Align its river-valley centre to the
                 // authentic city centre without moving the camera or staging any old props.
                 var mainFocus=new Vector3(keep.center.x,keep.min.y,keep.center.z);
@@ -142,7 +142,7 @@ namespace Eldoria.StylizedDirectionPilot.Editor
                 var evidence=new Proof{
                     artSourceSha=Environment.GetEnvironmentVariable("ORIGINAL_ART_SHA")??"artifact-unpinned",
                     gitSourceSha=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local-unpinned",
-                    stagedLegacyPrefabs=matched,importedOriginalMeshRenderers=renderers.Length
+                    stagedLegacyPrefabs=matched,importedOriginalMeshRenderers=renderers.Length,originalModelSourceImported=true
                 };
                 File.WriteAllText(Path.Combine(result,"native-original-bastion-v-proof.json"),
                     JsonUtility.ToJson(evidence,true));
