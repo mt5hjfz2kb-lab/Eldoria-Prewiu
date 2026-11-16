@@ -36,12 +36,19 @@ def execute(source,dest):
         if not len(geo.faces): continue
         material=getattr(geo.visual,'material',None)
         material_name=getattr(material,'name',None) or 'UNMATERIALIZED'
-        x,z=transform[0,3],transform[2,3]
-        if len(geo.faces)>10000 or 'ONE unified sculpted terrain' in str(node):
-            zone='TerrenoUnificado'
-        else:zone=zone_of(x,z)
+        # Mesh-authored geometry (terrain, enclosed roofs, stone arches) often
+        # has IDENTITY node transform and world-space vertices. Transform-only
+        # placement would incorrectly group those roof faces with Bastion V,
+        # breaking per-building visibility/selection. Use true WORLD centroid.
         part=geo.copy()
         part.apply_transform(transform)
+        world_center=(part.bounds[0]+part.bounds[1])*.5
+        x,z=float(world_center[0]),float(world_center[2])
+        if len(part.faces)>10000 or 'ONE unified sculpted terrain' in str(node):
+            zone='TerrenoUnificado'
+        elif 'river' in str(node).lower() or 'bridge' in str(node).lower():
+            zone='Infraestructura'
+        else:zone=zone_of(x,z)
         buckets[(zone,material_name)].append(part)
     out=trimesh.Scene()
     for (zone,material),meshes in sorted(buckets.items()):
@@ -59,12 +66,18 @@ def execute(source,dest):
     old_materials={getattr(g.visual.material,'name','') for g in scene.geometry.values()}
     new_materials={getattr(g.visual.material,'name','') for g in result.geometry.values()}
     assert old_materials==new_materials
+    assert np.allclose(scene.bounds,result.bounds,atol=.0005,rtol=0), 'world geometry drift'
+    region_names={key[0] for key in buckets}
+    assert all(x in region_names for x in ('BastionV','Aserradero','Cuartel','Granero','Cantera'))
     assert all(g.visual.kind=='texture' and len(g.visual.uv)==len(g.vertices)
                for g in result.geometry.values())
     manifest={'source_meshes':len(scene.geometry),'derived_meshes':len(result.geometry),
               'source_vertices':vertices,'derived_vertices':vertices_after,
               'source_faces':faces,'derived_faces':faces_after,
               'materials':len(new_materials),
+              'spatial_region_detection':'evaluated_world_bounds_not_node_origin',
+              'isolated_regions':sorted(region_names),
+              'world_bounds_preserved':True,
               'source_bytes':source.stat().st_size,
               'derived_bytes':dest.stat().st_size,
               'seconds':round(time.monotonic()-started,2),
