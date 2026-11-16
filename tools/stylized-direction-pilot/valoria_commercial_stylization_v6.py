@@ -40,7 +40,7 @@ for roof in gables:
     # End walls are entirely new triangle mesh surfaces; nothing paper-thin/painted.
     name=roof.name.split(' / enclosed gable')[0]
     crafted=OAK if ('Sawmill' in name or 'Granary' in name) else PLASTER if ('Gatehouse' in name or 'Barracks' in name) else STONE
-    for end,side in ((loY+.23,-1),(hiY-.23,1)):
+    for end,side in ((loY-.10,-1),(hiY+.10,1)):
         verts=[];faces=[]
         steps=12
         for j in range(steps+1):
@@ -50,8 +50,7 @@ for roof in gables:
             verts.extend([(x,end,loZ-.24),(x,end,max(loZ-.21,upper))])
             if j>0:
                 k=2*j
-                faces.append((k-2,k-1,k+1,k))
-                faces.append((k,k+1,k-1,k-2))
+                faces.append((k,k+1,k-1,k-2) if side==-1 else (k-2,k-1,k+1,k))
         curved_panel('V6 solid handcrafted '+name+' gable',verts,faces,crafted)
         # High contrast timber at the visible eaves, readable at iPhone width.
         for a in (-1,1):
