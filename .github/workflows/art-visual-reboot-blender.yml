@@ -10,7 +10,7 @@ permissions:
   contents: write
 concurrency:
   group: visual-reboot-blender
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   regenerate:
     runs-on: ubuntu-24.04
