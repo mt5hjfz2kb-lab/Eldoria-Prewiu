@@ -27,27 +27,27 @@ ground.scale=(30,19,1)
 mat=bpy.data.materials.new("STUDIO ONLY soft-slate stone")
 mat.diffuse_color=(.23,.24,.27,1);mat.use_nodes=True
 bs=mat.node_tree.nodes.get("Principled BSDF")
-bs.inputs["Base Color"].default_value=(.32,.32,.36,1)
+bs.inputs["Base Color"].default_value=(.37,.36,.39,1)
 bs.inputs["Roughness"].default_value=.92
 ground.data.materials.append(mat)
 def light(name,loc,power,temperature,size):
     bpy.ops.object.light_add(type='AREA',location=loc)
     ob=bpy.context.object;ob.name=name;ob.data.energy=power;ob.data.shape='DISK';ob.data.size=size
     ob.data.color=temperature
-light("Dusk broad key",(5,-30,40),3500,(1,.74,.48),30)
-light("Violet reflection",(48,30,28),2600,(.64,.65,1),30)
-light("Neutral overhead",(23,8,45),1400,(.78,.83,1),35)
+light("Dusk broad key",(5,-30,40),4700,(1,.74,.48),30)
+light("Violet reflection",(48,30,28),3500,(.64,.65,1),30)
+light("Neutral overhead",(23,8,45),1900,(.78,.83,1),35)
 world=bpy.data.worlds.new("review dusk hemisphere")
 world.use_nodes=True
 back=world.node_tree.nodes.get("Background")
-back.inputs["Color"].default_value=(.16,.15,.24,1)
-back.inputs["Strength"].default_value=.65
+back.inputs["Color"].default_value=(.23,.20,.30,1)
+back.inputs["Strength"].default_value=.78
 bpy.context.scene.world=world
 bpy.ops.object.camera_add(location=(25.6,-52,65))
 camera=bpy.context.object;target=Vector((23.9,10.6,3.1))
 camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler()
 camera.data.type='ORTHO'
-camera.data.ortho_scale=73
+camera.data.ortho_scale=66
 bpy.context.scene.camera=camera
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
@@ -59,6 +59,7 @@ scene.render.resolution_x=2000
 scene.render.resolution_y=1125
 scene.render.resolution_percentage=100
 scene.view_settings.view_transform='AgX'
+scene.view_settings.exposure=.48
 scene.render.image_settings.file_format="PNG"
 output=os.environ.get("KIT_BLENDER_PREVIEW_OUTPUT",str(src/"Evidence/blender-kit-review.png"))
 Path(output).parent.mkdir(parents=True,exist_ok=True)
