@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:04:26.401Z",
+  "updated_at": "2026-11-16T12:09:15.609Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 25,
+      "ownership_revision": 26,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_FINISH_NATIVE_CAPTURE",
+      "phase": "PREMIUM_FINISH_NATIVE_COMPLETE_VISUAL_REVIEW",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9770,27 +9768,23 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
         "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43861251720,
+        "completed_run": 43863284139,
         "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "return_after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "note": "Owner-authorized alternating Windows turns. Latest Ashen native run43861251720 and all jobs verified terminal success; no running Ashen job. Source owner and scope unchanged."
+        "note": "All Ashen jobs terminal success; artifact finalized. Resource free for next authorized turn; source owner retained."
       },
       "continuation_session": "b9db0d2d3e7b",
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_premium_finish_native",
+        "status": "released_after_verified_terminal_native",
         "source_sha": "c08271ba1a623bbfaef55b5c7c1fb7f5da2a2555"
       },
       "last_native": {
-        "run": 43861251720,
-        "head": "8897cbac2572fd746018041754813908f1082514",
-        "artifact": 14223955921,
+        "run": 43863284139,
+        "head": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
+        "artifact": 14223478528,
         "result": "success",
-        "editmode_passed": 7,
-        "playmode_passed": 4,
-        "screenshot_hashes_verified": 10,
-        "visual_review": "Actual Unity I/V landscape and V portrait inspected. More coherent roof silhouettes and structural connections; residual geometric rigidity and small portrait detail remain.",
+        "visual_review": "Downloaded for inspection; technical success is not artistic approval",
         "physical_mobile": false
       },
       "final_source_sha": "8897cbac2572fd746018041754813908f1082514",
