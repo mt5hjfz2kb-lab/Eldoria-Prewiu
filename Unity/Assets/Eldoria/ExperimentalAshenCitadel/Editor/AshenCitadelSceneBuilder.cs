@@ -42,7 +42,8 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 settings.FindProperty("m_SoftShadowsSupported").boolValue=true;
                 settings.ApplyModifiedPropertiesWithoutUndo();
                 pipeline.mainLightShadowmapResolution=2048;pipeline.shadowCascadeCount=2;
-                pipeline.shadowDepthBias=.2f;pipeline.shadowNormalBias=.25f;
+                pipeline.shadowDepthBias=.12f;pipeline.shadowNormalBias=.18f;
+                AddPrivateContactShadows(pipeline);
                 var pipelinePath=Root+"/Materials/AshenLookdevPipeline.asset";
                 var savedPipeline=AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(pipelinePath);
                 if(savedPipeline==null){AssetDatabase.CreateAsset(pipeline,pipelinePath);savedPipeline=pipeline;}
@@ -51,23 +52,23 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             }
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.36f,.42f,.56f);
-            RenderSettings.ambientEquatorColor=new Color(.25f,.29f,.38f);
-            RenderSettings.ambientGroundColor=new Color(.16f,.17f,.21f);
+            RenderSettings.ambientSkyColor=new Color(.27f,.34f,.47f);
+            RenderSettings.ambientEquatorColor=new Color(.19f,.23f,.31f);
+            RenderSettings.ambientGroundColor=new Color(.105f,.115f,.15f);
             RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.37f);
             RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=65;RenderSettings.fogEndDistance=165;
             QualitySettings.shadows=UnityEngine.ShadowQuality.All;
 
             var key=new GameObject("Sun · amber key");
             var sun=key.AddComponent<Light>();
-            sun.type=LightType.Directional;sun.intensity=1.60f;
+            sun.type=LightType.Directional;sun.intensity=1.85f;
             sun.color=new Color(1f,.86f,.68f);
             RenderSettings.sun=sun;
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.64f;sun.shadowBias=.2f;sun.shadowNormalBias=.25f;
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=.82f;sun.shadowBias=.12f;sun.shadowNormalBias=.18f;
             sun.GetUniversalAdditionalLightData().usePipelineSettings=false;
             sun.transform.rotation=Quaternion.Euler(24,-52,0);
             var fill=new GameObject("Sky · cold fill").AddComponent<Light>();
-            fill.type=LightType.Directional;fill.intensity=.28f;fill.color=new Color(.54f,.67f,.77f);
+            fill.type=LightType.Directional;fill.intensity=.12f;fill.color=new Color(.54f,.67f,.77f);
             fill.transform.rotation=Quaternion.Euler(56,145,0);
             fill.shadows=LightShadows.None;
 
@@ -247,7 +248,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var mPath=MaterialPath+current+".mat";
                 var mat=AssetDatabase.LoadAssetAtPath<Material>(mPath);
                 if(!mat){mat=new Material(shader){name="Ashen "+current};AssetDatabase.CreateAsset(mat,mPath);}
-                mat.shader=shader;mat.SetColor("_BaseColor",col);
+                mat.shader=shader;
+                // Distinct material families: cool slate, aged timber, warm cut stone.
+                if(current=="roof"||current=="slate")col*=new Color(.78f,.87f,.98f);
+                if(current=="wood"||current=="oak")col*=new Color(.85f,.80f,.74f);
+                mat.SetColor("_BaseColor",col);
                 // Match the actual Blender source: stone 256 px, other reusable
                 // artist-authored textures 128 px, multiplied by this palette color.
                 var textureFamily=
@@ -282,7 +287,12 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     mat.SetFloat("_Cull",0f);mat.SetOverrideTag("RenderType","TransparentCutout");mat.renderQueue=2450;
                 }
                 if(current=="warm"){mat.EnableKeyword("_EMISSION");mat.SetColor("_EmissionColor",new Color(3.8f,1.55f,.32f));}
-                mat.SetFloat("_Smoothness",current=="brass"?.35f:.09f);
+                if(new[]{"Stone","Plaster","Roof","Wood"}.Contains(textureFamily)){
+                    mat.SetTexture("_BumpMap",CreateSurfaceNormal(textureFamily));
+                    mat.SetFloat("_BumpScale",textureFamily=="Stone"?.48f:textureFamily=="Roof"?.65f:.30f);
+                    mat.EnableKeyword("_NORMALMAP");
+                }
+                mat.SetFloat("_Smoothness",current=="brass"?.45f:current=="roof"||current=="slate"?.24f:current=="iron"?.28f:.06f);
                 mat.SetFloat("_Metallic",current=="brass"?.42f:.01f);
                 EditorUtility.SetDirty(mat);Colors[current]=mat;
                 if(current=="leaf"||current=="leafLight"){
@@ -295,11 +305,68 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);
             AssetDatabase.SaveAssets();
         }
+        // Clone renderer data as well as the pipeline. Never add features to production assets.
+        private static void AddPrivateContactShadows(UniversalRenderPipelineAsset pipeline)
+        {
+            var settings=new SerializedObject(pipeline);
+            var list=settings.FindProperty("m_RendererDataList");
+            var index=settings.FindProperty("m_DefaultRendererIndex").intValue;
+            var source=list.GetArrayElementAtIndex(index).objectReferenceValue as UniversalRendererData;
+            if(source==null)throw new InvalidOperationException("Ashen requires a Universal renderer");
+            var path=MaterialPath+"AshenContactRenderer.asset";
+            if(AssetDatabase.LoadAssetAtPath<UniversalRendererData>(path)!=null)AssetDatabase.DeleteAsset(path);
+            var renderer=UnityEngine.Object.Instantiate(source);renderer.name="Ashen private contact renderer";
+            renderer.rendererFeatures.Clear();
+            AssetDatabase.CreateAsset(renderer,path);
+            var ao=ScriptableObject.CreateInstance<ScreenSpaceAmbientOcclusion>();
+            ao.name="Ashen restrained contact occlusion";
+            var serialized=new SerializedObject(ao);
+            var config=serialized.FindProperty("m_Settings");
+            config.FindPropertyRelative("AOMethod").enumValueIndex=1;
+            config.FindPropertyRelative("Downsample").boolValue=true;
+            config.FindPropertyRelative("Source").enumValueIndex=1;
+            config.FindPropertyRelative("Intensity").floatValue=1.35f;
+            config.FindPropertyRelative("Radius").floatValue=.65f;
+            config.FindPropertyRelative("DirectLightingStrength").floatValue=.18f;
+            config.FindPropertyRelative("Samples").enumValueIndex=1;
+            config.FindPropertyRelative("Falloff").floatValue=150f;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            AssetDatabase.AddObjectToAsset(ao,renderer);renderer.rendererFeatures.Add(ao);
+            ao.Create();renderer.SetDirty();EditorUtility.SetDirty(renderer);
+            list.GetArrayElementAtIndex(index).objectReferenceValue=renderer;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        // Derive subtle relief from the authored surface tile; imported as tangent-space normal.
+        private static Texture2D CreateSurfaceNormal(string family)
+        {
+            var path=Root+"/Textures/Ashen"+family+"Normal.png";
+            var existing=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if(existing!=null)return existing;
+            var source=new Texture2D(2,2,TextureFormat.RGBA32,false,true);
+            source.LoadImage(File.ReadAllBytes(Root+"/Textures/Ashen"+family+".png"));
+            int w=source.width,h=source.height;var values=source.GetPixels();var normals=new Color[w*h];
+            for(int y=0;y<h;y++)for(int x=0;x<w;x++){
+                float dx=values[y*w+(x+1)%w].r-values[y*w+(x+w-1)%w].r;
+                float dy=values[((y+1)%h)*w+x].r-values[((y+h-1)%h)*w+x].r;
+                var n=new Vector3(-dx*3f,-dy*3f,1f).normalized;
+                normals[y*w+x]=new Color(n.x*.5f+.5f,n.y*.5f+.5f,n.z*.5f+.5f,1);
+            }
+            var output=new Texture2D(w,h,TextureFormat.RGBA32,false,true);
+            output.SetPixels(normals);output.Apply();File.WriteAllBytes(path,output.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(source);UnityEngine.Object.DestroyImmediate(output);
+            AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
+            var importer=(TextureImporter)AssetImporter.GetAtPath(path);
+            importer.textureType=TextureImporterType.NormalMap;importer.sRGBTexture=false;
+            importer.mipmapEnabled=true;importer.wrapMode=TextureWrapMode.Repeat;importer.anisoLevel=4;
+            importer.SaveAndReimport();return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
+
         private static void AddDuskGrade()
         {
             var profile=ScriptableObject.CreateInstance<VolumeProfile>();profile.name="Ashen inhabited dusk";
             var bloom=profile.Add<Bloom>(true);bloom.intensity.Override(.22f);bloom.threshold.Override(1.15f);bloom.scatter.Override(.55f);
-            var grade=profile.Add<ColorAdjustments>(true);grade.postExposure.Override(.22f);grade.contrast.Override(5f);grade.saturation.Override(2f);
+            var grade=profile.Add<ColorAdjustments>(true);grade.postExposure.Override(.12f);grade.contrast.Override(12f);grade.saturation.Override(4f);
             var split=profile.Add<SplitToning>(true);split.shadows.Override(new Color(.45f,.47f,.55f));split.highlights.Override(new Color(.55f,.51f,.45f));split.balance.Override(-8f);
             var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.Neutral);
             var path=MaterialPath+"AshenDuskVolume.asset";

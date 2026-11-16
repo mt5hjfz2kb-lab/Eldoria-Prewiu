@@ -45,6 +45,8 @@ def palette():
     return values
 
 def pbr(material, rgb, material_key=None):
+    if material_key in ["roof","slate"]:rgb=tuple(a*b for a,b in zip(rgb,(.78,.87,.98)))
+    if material_key in ["wood","oak"]:rgb=tuple(a*b for a,b in zip(rgb,(.85,.80,.74)))
     material.diffuse_color=(rgb[0],rgb[1],rgb[2],1)
     material.use_nodes=True
     bsdf=material.node_tree.nodes.get("Principled BSDF")
@@ -52,7 +54,7 @@ def pbr(material, rgb, material_key=None):
         color=bsdf.inputs.get("Base Color")
         if color:color.default_value=(rgb[0],rgb[1],rgb[2],1)
         rough=bsdf.inputs.get("Roughness")
-        if rough:rough.default_value=.66
+        if rough:rough.default_value=.76 if material_key in ["roof","slate"] else .94
         metal=bsdf.inputs.get("Metallic")
         if metal:metal.default_value=.34 if "brass" in material.name.lower() else 0
         if material_key=="basalt":
@@ -78,6 +80,11 @@ def pbr(material, rgb, material_key=None):
             for current in list(color.links):links.remove(current)
             links.new(texture.outputs["Color"],multiply.inputs[2])
             links.new(multiply.outputs["Color"],color)
+            if family in ["Stone","Plaster","Roof","Wood"]:
+                bump=nodes.new("ShaderNodeBump");bump.inputs["Strength"].default_value=.32
+                bump.inputs["Distance"].default_value=.055
+                links.new(texture.outputs["Color"],bump.inputs["Height"])
+                links.new(bump.outputs["Normal"],bsdf.inputs["Normal"])
             if family=="Needles":
                 links.new(texture.outputs["Alpha"],bsdf.inputs["Alpha"])
                 if hasattr(material,"surface_render_method"):material.surface_render_method="DITHERED"
