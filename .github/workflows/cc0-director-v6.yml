@@ -1,0 +1,108 @@
+name: "Eldoria CC0 · Director V6 physical terrain, forest and architecture"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v6.yml"
+      - "tools/cc0-art-system/director_v6_structural_redraw.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v6-ubuntu-authoring
+  cancel-in-progress: false
+jobs:
+  author:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v6_structural_redraw.py
+      - name: Recover exact V5 real physical meshes, never imported vendor raws
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-director-v5-real-3d
+          run-id: 43874433432
+          github-token: ${{ github.token }}
+          path: .
+      - name: Validate preflight and Python syntax
+        run: |
+          python3 -m py_compile tools/cc0-art-system/director_v6_structural_redraw.py
+          for lv in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV5/DirectorV5_Stage$lv.glb"
+          done
+      - name: Install zero-cost Blender 4 and numpy on hosted Ubuntu, not shared Windows
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+      - name: Physically rebuild all 5 stages and create 3 true Blender images
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v6_structural_redraw.py 2>&1 | tee "$RUNNER_TEMP/eldoria-v6-author.log"
+          grep -q ELDORIA_V6_PHYSICAL_3D_AND_RENDER_PASS "$RUNNER_TEMP/eldoria-v6-author.log"
+      - name: Verify GLB vertex-painted landscape, embedded assets, and I/V visible progression
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          a=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV6')
+          p=Path('docs/cc0-art-system/previews/director-v6')
+          report=json.loads((p/'director-v6-evidence.json').read_text())
+          assert report['source_action']==43874433432
+          assert report['rendered_in_blender'] and not report['native_unity_tested']
+          assert not report['art_approved'] and not report['third_party_models_copied']
+          assert len(report['levels'])==5 and len(report['frames'])==3
+          for lvl in range(1,6):
+              f=a/f'DirectorV6_Stage{lvl}.glb'
+              b=f.read_bytes()
+              assert len(b)>500000 and b[:4]==b'glTF'
+              assert struct.unpack_from('<I',b,8)[0]==len(b)
+              n=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+n])
+              color=sum(any('COLOR_0' in z.get('attributes',{}) for z in m.get('primitives',[])) for m in j.get('meshes',[]))
+              assert color>=1,('Lost painted real terrain',lvl)
+              assert len(j.get('images',[]))>=8,('Lost physically embedded textures',lvl)
+              print('V6_REAL_MODEL_VALIDATED',lvl,len(b),len(j['meshes']),color)
+          images={'DirectorV6_BastionI_1600x900.png':(1600,900),
+                  'DirectorV6_BastionV_1600x900.png':(1600,900),
+                  'DirectorV6_BastionV_Portrait_720x1200.png':(720,1200)}
+          for name,wh in images.items():
+              file=p/name
+              img=Image.open(file).convert('RGB')
+              assert img.size==wh and file.stat().st_size>100000
+              mean=ImageStat.Stat(img).mean
+              assert min(mean)>22,('Dark/blank frame',name,mean)
+              px=list(img.resize((250,142)).getdata())
+              m=sum(r>150 and b>130 and r>g*1.6 and b>g*1.6 for r,g,b in px)/len(px)
+              assert m<.018,('Probable missing image/material magenta',name,m)
+              print('V6_REAL_RENDER',name,[round(x,2) for x in mean],'magenta',round(m,5))
+          A=Image.open(p/'DirectorV6_BastionI_1600x900.png').convert('RGB')
+          B=Image.open(p/'DirectorV6_BastionV_1600x900.png').convert('RGB')
+          box=(490,80,1110,670)
+          diff=sum(ImageStat.Stat(ImageChops.difference(A.crop(box),B.crop(box))).mean)/3
+          assert diff>5,('No visible stronghold upgrade',diff)
+          print('V6_NATIVE_BLENDER_I_V_CHANGE',round(diff,3))
+          print('V6_TECHNICAL_PROOF_PASS__ART_REVIEW_STILL_NEEDED')
+          PY
+      - name: Preserve physical source and captures for independent inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-director-v6-real-3d
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV6/
+            docs/cc0-art-system/previews/director-v6/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: This run never edits main, vendor raws, or Windows runner
+        run: |
+          git diff --exit-code
+          echo 'ELDORIA_V6_ISOLATED_ART_ONLY_PASS'
