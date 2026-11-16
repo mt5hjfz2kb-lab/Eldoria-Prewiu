@@ -20,28 +20,29 @@ namespace Eldoria.ExperimentalAshenCitadel
 
         private void BuildAdditionalAccesses()
         {
-            // A secondary functional navigation tier. Same original button family.
-            var toolbar=Node(safe,"Account navigation",
-                new Vector2(0,1),new Vector2(1,1),
-                new Vector2(8,-169),new Vector2(-8,-122));
+            // Two small floating utility-medallion pairs at the upper right.
+            // They do not block the skyline or form a secondary horizontal bar.
+            var toolbar=Node(safe,"Floating utilities",
+                new Vector2(1,1),new Vector2(1,1),
+                Vector2.zero,Vector2.zero);
             accountHud=toolbar;
-            var background=Plate(toolbar,frame,Color.white);
-            background.raycastTarget=false;
             var commands=new (string name,Action activate)[]{
                 ("CORREO",OpenMailbox),("BOLSA",OpenBag),
                 ("HÉROES",OpenHeroes),("RETOS",OpenChallenge)
             };
             for(int i=0;i<commands.Length;i++)
             {
-                var n=i;var m=commands.Length;
-                Button(toolbar,"Access · "+commands[n].name,commands[n].name,secondary,
-                    new Vector2(n/(float)m,.07f),new Vector2((n+1)/(float)m,.94f),
-                    new Vector2(3,0),new Vector2(-3,0),commands[n].activate,13);
+                var n=i;
+                float x=(n%2==0)?.25f:.75f;
+                float y=(n<2)?.75f:.25f;
+                FloatingAction(toolbar,"Access · "+commands[n].name,commands[n].name,
+                    new Vector2(x,y),new Vector2(44,46),
+                    commands[n].activate,false);
             }
-            dailyButton=Button(safe,"Daily treasury","TRIBUTO",primary,
+            dailyButton=Button(safe,"Daily treasury","TRIBUTO",AshenInterfaceIdentity.StatusChip,
                 new Vector2(0,.0f),new Vector2(.33f,0),
                 new Vector2(12,115),new Vector2(-4,153),OpenDaily,13);
-            timeText=Label(safe,"Timekeeper",14,TextAnchor.MiddleRight,Muted,
+            timeText=Label(safe,"Timekeeper",12,TextAnchor.MiddleRight,Muted,
                 new Vector2(.4f,0),new Vector2(1,0),
                 new Vector2(0,113),new Vector2(-12,153));
             RefreshClockLabel();
