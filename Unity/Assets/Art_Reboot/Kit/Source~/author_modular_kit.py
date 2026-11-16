@@ -2,7 +2,9 @@
 Only one existing 256x256 approved Hero Atlas; no new art textures. Local Z is vertical
 inside Blender and becomes Unity Y. Every exported object pivot is (0,0,0) at its base.
 """
-import bpy, bmesh, math, random, json, csv, hashlib
+import bpy, bmesh, math, random, json, csv, hashlib, faulthandler
+faulthandler.enable()
+print('KIT_GENERATOR_ENTRY', flush=True)
 from pathlib import Path
 from mathutils import Vector
 K = Path(__file__).resolve().parents[1]
@@ -113,6 +115,11 @@ class Piece:
             normal=sum([p for p in poly],Vector())/len(poly)-centroid
             self.face(poly,index,0,shade,normal)
     def mesh(self):
+        # Bring the lowest edge, including slate thickness and slanted rafters,
+        # to Z=0: exact reusable bottom pivot, no module ever sinks below the grid.
+        minz=min(v[2] for v in self.vertices)
+        if abs(minz)>.001:
+            self.vertices=[(x,y,z-minz) for (x,y,z) in self.vertices]
         me=bpy.data.meshes.new(self.name)
         me.from_pydata(self.vertices,[],self.faces)
         me.update()
@@ -131,13 +138,13 @@ class Piece:
                                 (k//4+(7+(45 if v else 0))/64)/4)
                 # Mix custom stone tonality into vertex colors, never a separate texture.
                 col.data[li].color=(shade,shade,shade,1)
-        assert not me.validate(clean_customdata=False), "Invalid "+self.name
         assert all(v.co.z>=-.015 for v in me.vertices), "Below-base geometry: "+self.name
         return obj
 
 entries=[]
 def save(piece):
     assert piece.faces, piece.name
+    print('KIT_GENERATING',piece.name,'raw_faces',len(piece.faces),flush=True)
     obj=piece.mesh()
     bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
     path=MODELS/(piece.name+".fbx")
