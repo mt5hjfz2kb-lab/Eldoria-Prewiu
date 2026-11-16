@@ -193,9 +193,9 @@ namespace Eldoria.ExperimentalAshenCitadel
             var emblem=Node(header,"Crest",new Vector2(0,0),new Vector2(0,1),
                 new Vector2(12,11),new Vector2(74,-10));
             Plate(emblem,crest,Color.white);
-            levelText=Label(header,"Realm",18,TextAnchor.MiddleLeft,Ivory,
+            levelText=Label(header,"Realm",16,TextAnchor.MiddleLeft,Ivory,
                 new Vector2(0,.43f),Vector2.one,new Vector2(82,0),new Vector2(-11,-5));
-            resourceText=Label(header,"Resources",14,TextAnchor.MiddleLeft,Muted,
+            resourceText=Label(header,"Resources",13,TextAnchor.MiddleLeft,Muted,
                 new Vector2(0,0),new Vector2(1,.45f),new Vector2(82,3),new Vector2(-10,0));
             var accent=Node(header,"Warm brass divider",new Vector2(0,0),new Vector2(1,0),
                 new Vector2(82,9),new Vector2(-11,11));
