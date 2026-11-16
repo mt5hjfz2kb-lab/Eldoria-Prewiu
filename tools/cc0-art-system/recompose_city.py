@@ -362,38 +362,6 @@ for s in (-1,1):
     block("royal banner | bronze edge",(x,-5.45,3.31),
           (.91,.11,.08),"gold","Stage5Detail")
 
-
-# Rebuilt imperial keep: a readable founder's insignia and vertical masonry,
-# designed as actual geometry attached to the keep rather than a generic decal.
-# The early levels show the remains, level V visibly recovers civic authority.
-for side in (-1,1):
-    x=side*2.66
-    block("Bastion V | dressed keep quoin",
-          (x,3.32,9.13),(.61,.58,6.1),"stone","Stage5Detail",bevel=.055)
-    for z in (6.28,8.04,10.02,11.73):
-        block("Bastion V | individual cut limestone course",
-              (x,3.06,z),(.79,.40,.19),"light","Stage5Detail",bevel=.028)
-    # Bronze-capped corner pilasters, flat against the original keep face.
-    block("Bastion V | capstone",
-          (x,3.22,12.17),(.78,.66,.34),"dark","Stage5Detail",bevel=.055)
-# Round sigil points toward the player camera, bordered by five aged-bronze rivets.
-cylinder("Bastion V | royal heraldic bronze roundel",(0,3.18,10.9),
-         .70,.15,"gold","Stage5Detail",v=18,rotate=(radians(90),0,0))
-cylinder("Bastion V | deep wine heraldic field",(0,3.06,10.9),
-         .52,.16,"cloth","Stage5Detail",v=18,rotate=(radians(90),0,0))
-for i in range(5):
-    angle=(i*2*pi/5)-pi/2
-    block("Bastion V | Valoria relief sun-ray",
-          (sin(angle)*.36,2.95,10.9+cos(angle)*.36),
-          (.135,.14,.31),"gold","Stage5Detail",rot=0,bevel=.03)
-for sign in (-1,1):
-    # A pair of narrow ochre cloth pennants delineate the high keep's face.
-    block("Bastion V | imperial pennon",(sign*1.33,3.08,10.52),
-          (.24,.15,1.7),"cloth","Stage5Detail",bevel=.017)
-    block("Bastion V | pennon brass tip",(sign*1.33,3.04,9.68),
-          (.27,.15,.12),"gold","Stage5Detail",bevel=.025)
-
-
 # soften harsh windows, late-day aura. Do not spend game runtime on volumetric fog.
 window=material("amber")
 if window.use_nodes:
