@@ -1,0 +1,215 @@
+name: Ciudad2D - prueba autentica Unity con reserva exclusiva
+
+on:
+  push:
+    branches:
+      - art/ciudad-2d-hitos-1-5-20261116
+    paths:
+      - .github/workflows/ciudad2d-native-proof.yml
+      - tools/ciudad2d-native/request.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ciudad2d-native-exclusive
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-native/request.json
+            /.github/workflows/ciudad2d-native-proof.yml
+      - name: Validate live registry, SHA and exclusive native ownership without Windows
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, urllib.request
+          from pathlib import Path
+          REPO = 'mt5hjfz2kb-lab/Eldoria-Prewiu'
+          request = json.loads(Path('tools/ciudad2d-native/request.json').read_text())
+          assert request['schema'] == 1
+          assert request['branch'] == 'art/ciudad-2d-hitos-1-5-20261116'
+          assert request['workstream_id'] == 'eldoria-city2d-illustrated-proof-20261116'
+          assert os.environ['GITHUB_REPOSITORY'] == REPO
+          assert os.environ['GITHUB_REF_NAME'] == request['branch']
+          token = os.environ['GH_TOKEN']
+          def github(url):
+              req=urllib.request.Request('https://api.github.com/repos/'+REPO+'/'+url, headers={
+                  'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json',
+                  'X-GitHub-Api-Version':'2022-11-28',
+              })
+              with urllib.request.urlopen(req,timeout=30) as resp:return json.load(resp)
+          # GitHub Content API may omit content for >1 MB registry.
+          entry=github('contents/pipeline/active-workstreams.json?ref=main')
+          encoded=entry.get('content')
+          if not encoded:
+              blob=github('git/blobs/'+entry['sha'])
+              assert blob['sha']==entry['sha'] and blob['encoding']=='base64'
+              encoded=blob['content']
+          registry=json.loads(base64.b64decode(encoded))
+          holders=[x for x in registry['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          owned=[x for x in holders if x['id']==request['workstream_id']]
+          rotation=registry.get('resource_rotation') or {}
+          approved=(request.get('allow_native') is True
+              and len(holders)==1 and len(owned)==1
+              and owned[0].get('ownership_state')=='claimed'
+              and rotation.get('current_workstream')==request['workstream_id']
+              and owned[0].get('branch')==request['branch']
+              and request.get('owner')==owned[0].get('owner')
+              and request.get('ownership_revision')==owned[0].get('ownership_revision'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('authorized='+str(approved).lower()+'\n')
+          if approved:
+              print('CITY2D_NATIVE_LEASE_EXCLUSIVE_AUTHORIZED')
+          else:
+              print('CITY2D_NATIVE_SAFE_SKIP: exclusive Windows rotation is not ours.')
+              print('Browser / offline proof remains valid, Unity and iPhone are NOT certified.')
+          PY
+
+  unity-native:
+    needs: preflight
+    if: needs.preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Verify reservation and native process absence again on Windows
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{ Authorization='Bearer '+$env:GH_TOKEN; Accept='application/vnd.github+json' }
+          $api='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/'
+          $info=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $encoded=$info.content
+          if(-not $encoded){
+            $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$info.sha) -Headers $h
+            if($blob.sha -ne $info.sha -or $blob.encoding -ne 'base64'){throw 'Registry blob mismatched'}
+            $encoded=$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\\s',''))) | ConvertFrom-Json
+          $lease=@($registry.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          if($lease.Count -ne 1 -or $lease[0].id -ne 'eldoria-city2d-illustrated-proof-20261116' -or
+             $registry.resource_rotation.current_workstream -ne 'eldoria-city2d-illustrated-proof-20261116'){
+             throw 'Windows native lease no longer granted to City2D'
+          }
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+             throw 'Native PC busy. Do not interrupt any other project.'
+          }
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path -LiteralPath $env:UNITY_EDITOR_PATH -PathType Leaf)){
+             throw 'Unity 6000.3.23f1 editor path unavailable'
+          }
+          Write-Host 'CITY2D_EXCLUSIVE_NATIVE_PREFLIGHT_PASS'
+
+      - name: Restore installed Git to PATH without installing software
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $d="$env:LOCALAPPDATA/GitHubDesktop"
+            $possible=Get-ChildItem $d -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object { Test-Path -LiteralPath $_ } |
+              Select-Object -First 1
+            if(-not $possible){ throw 'No Git installation available. Do not download entire repository.' }
+            $dir=Split-Path $possible
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          git --version
+
+      - name: Create isolated shallow sparse candidate, never touch main checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if($env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$'){throw 'Invalid pinned source SHA'}
+          $dest=Join-Path $env:RUNNER_TEMP ('city2d-native-'+$env:GITHUB_RUN_ID)
+          if(Test-Path -LiteralPath $dest){throw 'Scratch folder already exists; refuse overwrite'}
+          & git init -q $dest
+          if($LASTEXITCODE){throw 'Git init failed'}
+          & git -C $dest remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'Git origin failed'}
+          $patterns=@(
+            '/Unity/Assets/Experimentos/Ciudad2D/'
+            '/Unity/Assets/Eldoria/Scripts/Domain/'
+            '/Unity/Assets/Eldoria/Scripts/Application/'
+            '/Unity/Packages/'
+            '/Unity/ProjectSettings/'
+          )
+          & git -C $dest sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          & git -C $dest fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Filtered shallow Git fetch failed'}
+          & git -C $dest checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned sparse Git checkout failed'}
+          $got=(& git -C $dest rev-parse HEAD).Trim()
+          if($got -ne $env:GITHUB_SHA){throw "Source mismatch $got"}
+          if(-not(Test-Path -LiteralPath (Join-Path $dest 'Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel05.png'))){
+            throw 'Bastion sprite missing from exact SHA'
+          }
+          "CITY2D_SOURCE_ROOT=$dest" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host ('CITY2D_PINNED_SOURCE '+$got)
+
+      - name: Render authentic Unity Editor frames and validate tier snapshots
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('city2d-native-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.Ciudad2D.Editor.City2DNativeEvidence.Capture',
+            '-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1600000)){
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Unity scratch editor timed out'
+          }
+          if($proc.ExitCode -ne 0){
+            if(Test-Path -LiteralPath $log){Get-Content -LiteralPath $log -Tail 230}
+            throw ('Unity native proof failed code '+$proc.ExitCode)
+          }
+          $evidence=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Ciudad2DNativeEvidence/evidence.json'
+          if(-not(Test-Path -LiteralPath $evidence)){throw 'Unity did not generate evidence.json'}
+          $data=Get-Content -LiteralPath $evidence -Raw | ConvertFrom-Json
+          if(@($data.captures).Count -ne 6 -or -not $data.domain_snapshot_read_only_pass -or
+             $data.art_approved -or $data.device_qa -ne 'PENDING'){
+            throw 'Genuine native evidence incomplete or falsely claims artistic approval'
+          }
+          foreach($entry in $data.captures){
+            $file=Join-Path (Split-Path $evidence) $entry.file
+            if(-not(Test-Path -LiteralPath $file) -or (Get-Item $file).Length -lt 8000){
+              throw ('Missing authentic Unity screenshot '+$entry.file)
+            }
+            if((Get-FileHash -Algorithm SHA256 -LiteralPath $file).Hash.ToLowerInvariant() -ne $entry.sha256){
+              throw ('Screenshot digest mismatch '+$entry.file)
+            }
+          }
+          Get-Content $evidence
+
+      - name: Preserve evidence, log and exact Unity source identity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-real-unity-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/city2d-native-${{ github.run_id }}.log
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.json
+          if-no-files-found: warn
+          retention-days: 14
