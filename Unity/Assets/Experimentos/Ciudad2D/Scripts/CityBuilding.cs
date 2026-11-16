@@ -40,7 +40,7 @@ namespace Eldoria.Experimentos.Ciudad2D
         private Coroutine bounce;
         private Vector3 baselineScale = Vector3.one;
         private int selectedArtLevel;
-        private City2DPlotPhase plotPhase = City2DPlotPhase.Built;
+        [SerializeField] private City2DPlotPhase plotPhase = City2DPlotPhase.Built;
         [SerializeField] private SpriteRenderer availableMarker, constructionMarker;
         public City2DPlotPhase PlotPhase => plotPhase;
 
@@ -69,7 +69,8 @@ namespace Eldoria.Experimentos.Ciudad2D
         {
             CacheComponents();
             // La versión inicial puede ser configurada durante la construcción de escena.
-            if (visualTiers != null && visualTiers.Length != 0) SetLevel(level);
+            if (visualTiers != null && visualTiers.Length != 0)
+                SetAppearance(new City2DPlotView(plotPhase, level, 1));
         }
 
         private void CacheComponents()
