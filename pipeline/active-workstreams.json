@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:23:49.908Z",
+  "updated_at": "2026-11-16T12:36:11.037Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
       "phase": "GROUND_PATH_CORRECTION_NATIVE_CAPTURE",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9770,16 +9768,16 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
         "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43865170576,
+        "completed_run": 43866203492,
         "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "note": "All Ashen jobs terminal success, artifact finalized. Windows free; retain source owners."
+        "note": "Bounded visual Unity turn after native terminal success and empty actions queue; Ashen owner/source unchanged."
       },
       "continuation_session": "b9db0d2d3e7b",
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_after_actual_visual_rejection",
-        "source_sha": "90714f5560e741b4789df163e07911acbd469465"
+        "status": "yielded_after_terminal_native",
+        "completed_run": 43866203492
       },
       "last_native": {
         "run": 43865170576,
@@ -9806,11 +9804,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-hero-d921b074af21",
       "ownership_state": "claimed",
-      "ownership_revision": 48,
+      "ownership_revision": 49,
       "branch": "art/visual-reboot",
       "status": "active",
       "phase": "PHASE1_ENVIRONMENT_VILLAGE_NATIVE_CAPTURE",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9840,11 +9840,11 @@
       "final_source_sha": "aa1acc6864164c87b4d69c3edbe788181d4ea691",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "yielded_after_verified_terminal_run",
-        "source_sha": "a918a370debcd50c6eb991e7a53c624ba02c88cc",
-        "completed_run": 43862584903
+        "status": "reserved_exact_source_for_native_capture",
+        "source_sha": "a50cf0fd5d4e07ed9f2cde020b4b91d2cc2065c0",
+        "previous_ashen_run": 43866203492
       },
-      "native_source_sha": "a918a370debcd50c6eb991e7a53c624ba02c88cc",
+      "native_source_sha": "a50cf0fd5d4e07ed9f2cde020b4b91d2cc2065c0",
       "last_native_attempt": {
         "run": 43862025708,
         "source": "05f8b8ae788225d9bd304a23869215317c248d83",
@@ -9873,10 +9873,10 @@
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
       },
       "resource_turn_handoff": {
-        "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43862584903,
+        "status": "visual_native_turn_claimed",
+        "previous_ashen_completed_run": 43866203492,
         "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "note": "Owner-authorized alternating turns. All Visual Reboot run43862584903 jobs completed SUCCESS, artifact14224401610 finalized, no active/queued native for that branch. Preserve source ownership and review status."
+        "note": "Release Windows after one bounded native capture, retain original building meshes."
       }
     }
   ],
@@ -20308,11 +20308,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-    "current_run_id": 43828204694,
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
+    "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_bounded_native_reserved",
+    "status": "visual_bounded_native_reserved",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
@@ -20320,7 +20320,7 @@
       "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
       "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
     ],
-    "previous_completed_run": 43777338073,
+    "previous_completed_run": 43866203492,
     "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
     "completed_visual_reboot_run": 43780662139
   }
