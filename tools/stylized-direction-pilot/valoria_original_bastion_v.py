@@ -13,7 +13,12 @@ out.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene=bpy.context.scene
 scene.render.engine='CYCLES'
-scene.cycles.samples=18
+scene.cycles.samples=28
+# Ubuntu's distro Blender 4.0 is built without OpenImageDenoiser; render pure pathtraced samples.
+if hasattr(scene.cycles,'use_denoising'): scene.cycles.use_denoising=False
+if hasattr(scene.cycles,'use_preview_denoising'): scene.cycles.use_preview_denoising=False
+for layer in scene.view_layers:
+ if hasattr(layer,'cycles') and hasattr(layer.cycles,'use_denoising'): layer.cycles.use_denoising=False
 scene.render.threads_mode='FIXED'
 scene.render.threads=4
 scene.render.image_settings.file_format='PNG'
