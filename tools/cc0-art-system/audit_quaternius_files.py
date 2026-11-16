@@ -19,6 +19,21 @@ SOURCE={
  "WallTowers_Door_FirstAge.gltf":"1mIK14JIPfTFfDNNW1mxngv05qCzIfFkU",
  "License.txt":"1Vf_6mtufbmV2mQHY35l9tPqaR3Oe8Did"
 }
+# Publisher's own files, discovered from their original free Google Drive folders.
+# Extended mode is for a TEMPORARY comparison only. It does not enable public source redistribution.
+EXTRA_SOURCE={
+ "Logs.gltf":"1U6BkCyI4-KYHr7rzpqm_JZFL6sdEL0Kl",
+ "Arch_Gothic.fbx":"1BosiU788r0JDB6UjJs4J6xyZodnO8HkE",
+ "Wall_Broken.fbx":"1LckK0F3U4gNfjeJTjH6v_aVEMCHfs6oN",
+ "Wall_ArchRound_Broken.fbx":"1fTXukvgRgvE412XIT__7fIXsX34NlK-C",
+ "Wall_Overgrown.fbx":"1hHFIgvXRMmkP_gvuvCBSVENDGo6JqhrD",
+ "PineTree_2.fbx":"1pnd2TAW6hiM4-WBbPcOqKR_bu_LX2YXL",
+ "PineTree_4.fbx":"1NVFiSrmHS_kVdezB_dDJeJwgrYdQ4tFP",
+ "Rock_1.fbx":"1vZ86JxEpULzDBJgUvaD5CgdtvMhjN3rP"
+}
+if os.environ.get("ELDORIA_VENDOR_EXTENDED")=="1":
+    SOURCE.update(EXTRA_SOURCE)
+
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 TMP=pathlib.Path(os.environ.get("ELDORIA_VENDOR_REVIEW", str(ROOT/"_vendor_review_temp")))
 TMP.mkdir(parents=True,exist_ok=True)
@@ -64,6 +79,10 @@ for name,file_id in SOURCE.items():
                                       if x.get("type")=="VEC3"), 
                        "self_contained_buffers":True})
         if record["meshes"]<1: raise RuntimeError(f"{name} missing meshes")
+    elif name.endswith(".fbx"):
+        if not (data.startswith(b"Kaydara FBX Binary") or b"FBX" in data[:100]):
+            raise RuntimeError(f"Unexpected FBX payload for {name}")
+        record["format"]="FBX"
     else:
         license_text=data.decode("utf-8")
         if "CC0 1.0" not in license_text:
