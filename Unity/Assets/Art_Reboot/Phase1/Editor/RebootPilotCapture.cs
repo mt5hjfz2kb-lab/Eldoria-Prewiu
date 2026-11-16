@@ -54,7 +54,8 @@ namespace Eldoria.ArtReboot.Editor
                     throw new InvalidOperationException("Pilot Shader Graph failed import/compilation; no fallback shader accepted.");
                 var atlas = PrepareAtlas(output);
                 var stone = MaterialAsset("Reboot_Surface", shader, atlas, 0);
-                var glow = MaterialAsset("Reboot_Emission", shader, atlas, 2.4f);
+                var glow = MaterialAsset("Reboot_Emission", shader, atlas, 2.5f);
+                var corruption = MaterialAsset("Reboot_Corruption", shader, atlas, 5f);
                 var root = new GameObject(Generated);
                 var model = AssetDatabase.LoadAssetAtPath<GameObject>(Root + "/Models/Reboot_Pilot.fbx");
                 if (model == null) throw new InvalidOperationException("FBX is not imported.");
@@ -70,6 +71,7 @@ namespace Eldoria.ArtReboot.Editor
                         throw new InvalidOperationException("Imported vertex colors or UV0 absent: " + renderer.name);
                     for (int i = 0; i < mesh.subMeshCount; i++) triangles += (long)mesh.GetIndexCount(i) / 3;
                     renderer.sharedMaterials = renderer.sharedMaterials.Select(m =>
+                        m != null && m.name.IndexOf("Corruption", StringComparison.OrdinalIgnoreCase) >= 0 ? corruption :
                         m != null && m.name.IndexOf("Light", StringComparison.OrdinalIgnoreCase) >= 0 ? glow : stone).ToArray();
                     renderer.shadowCastingMode = ShadowCastingMode.On;
                     renderer.receiveShadows = true;
@@ -80,34 +82,52 @@ namespace Eldoria.ArtReboot.Editor
                     string.Join("\n", renderers.Select(r => r.name + " " + r.bounds + " scale=" + r.transform.lossyScale)));
                 if (Mathf.Abs(terrainBounds.size.x - 48) > .1f || Mathf.Abs(terrainBounds.size.z - 48) > .1f)
                     throw new InvalidOperationException("Imported world metres differ from Blender's 48m terrain: " + terrainBounds);
-                if (triangles != 21865) throw new InvalidOperationException("FBX topology differs from authored source: " + triangles);
+                var geometry = JsonUtility.FromJson<GeneratedGeometry>(
+                    File.ReadAllText(Root + "/Evidence/geometry.json"));
+                if (geometry == null || geometry.mesh_objects != 4 || geometry.triangles < 22000
+                    || triangles != geometry.triangles)
+                    throw new InvalidOperationException($"Authored FBX topology mismatch: Unity={triangles}, Blender={geometry?.triangles}");
                 RenderSettings.ambientMode = AmbientMode.Custom;
-                RenderSettings.ambientSkyColor = new Color(.24f, .31f, .44f);
-                RenderSettings.ambientEquatorColor = new Color(.15f, .19f, .22f);
-                RenderSettings.ambientGroundColor = new Color(.08f, .09f, .08f);
+                RenderSettings.ambientSkyColor = new Color(.29f, .34f, .46f);
+                RenderSettings.ambientEquatorColor = new Color(.19f, .19f, .30f);
+                RenderSettings.ambientGroundColor = new Color(.09f, .075f, .14f);
                 RenderSettings.skybox = null;
                 RenderSettings.fog = true;
                 RenderSettings.fogMode = FogMode.Linear;
-                RenderSettings.fogColor = new Color(.20f, .27f, .34f);
-                RenderSettings.fogStartDistance = 25;
-                RenderSettings.fogEndDistance = 72;
+                RenderSettings.fogColor = new Color(.28f, .265f, .365f);
+                RenderSettings.fogStartDistance = 20f;
+                RenderSettings.fogEndDistance = 58f;
                 var sun = new GameObject("Warm sunset").AddComponent<Light>();
                 sun.transform.SetParent(root.transform, false);
                 sun.type = LightType.Directional;
-                sun.transform.rotation = Quaternion.Euler(32, -35, 0);
-                sun.color = new Color(1, .76f, .50f);
-                sun.intensity = 1.45f;
+                sun.transform.rotation = Quaternion.Euler(16f, -35f, 0f);
+                sun.color = new Color(1f, .735f, .46f);
+                sun.intensity = 1.65f;
                 sun.shadows = LightShadows.Soft;
-                sun.shadowBias = .04f;
-                sun.shadowNormalBias = .25f;
+                sun.shadowStrength = .86f;
+                sun.shadowBias = .028f;
+                sun.shadowNormalBias = .17f;
                 RenderSettings.sun = sun;
                 var fill = new GameObject("Cool open-sky fill").AddComponent<Light>();
                 fill.transform.SetParent(root.transform, false);
                 fill.type = LightType.Directional;
                 fill.transform.rotation = Quaternion.Euler(48, 145, 0);
-                fill.color = new Color(.49f, .65f, 1f);
-                fill.intensity = .65f;
+                fill.color = new Color(.54f, .60f, .98f);
+                fill.intensity = .23f;
                 fill.shadows = LightShadows.None;
+                // Exactly one realtime local light illuminates both emissive entrance torches.
+                var flameFill = new GameObject("Single shared torch point light").AddComponent<Light>();
+                flameFill.transform.SetParent(root.transform, false);
+                flameFill.transform.localPosition = new Vector3(0f, 1.8f, -.22f);
+                flameFill.type = LightType.Point;
+                flameFill.color = new Color(1f, .47f, .18f);
+                flameFill.intensity = 1.15f;
+                flameFill.range = 4.6f;
+                flameFill.shadows = LightShadows.None;
+                BuildLowGroundMist(root);
+                var corruptParticles = BuildCorruptionParticles(root);
+                if (corruptParticles.particleCount < 2)
+                    throw new InvalidOperationException("Corruption particles did not simulate in capture scene.");
                 var camera = new GameObject("Strategic 50 degree camera").AddComponent<Camera>();
                 camera.transform.SetParent(root.transform, false);
                 var rotation = Quaternion.Euler(50, -13, 0);
@@ -135,6 +155,7 @@ namespace Eldoria.ArtReboot.Editor
                     var tone = profile.Add<Tonemapping>(true); tone.mode.Override(TonemappingMode.ACES);
                     foreach (var component in profile.components) AssetDatabase.AddObjectToAsset(component, profile);
                 }
+                ConfigureDuskProfile(profile);
                 volume.sharedProfile = profile;
                 AssetDatabase.SaveAssets();
                 if (!(GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset))
@@ -153,7 +174,7 @@ namespace Eldoria.ArtReboot.Editor
                     unity = UnityEngine.Application.unityVersion, triangles = triangles,
                     sourceSHA = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local-unrecorded",
                     scene = RebootSandboxGuard.ScenePath, cameraTilt = 50,
-                    note = "Actual Edit Mode URP render requests. No gameplay, physical mobile, ParticleSystem or performance certification. Artistic review required."
+                    note = "Actual Edit Mode URP render requests. Particle emitter simulated in Editor; physical mobile, gameplay, runtime motion and performance remain unverified. Artistic review required."
                 }, true));
                 Debug.Log("REBOOT_CAPTURE_OUTPUT " + output);
             }
