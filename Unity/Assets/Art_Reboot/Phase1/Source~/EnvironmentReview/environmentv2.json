@@ -1,0 +1,15 @@
+{
+  "mode": "environmentv2",
+  "triangles": 39668,
+  "source_parts": 758,
+  "removed_parts": 0,
+  "reused_fallen_parts": 0,
+  "approved_author_sha256": "9fee38798db909a533a95a0e01c3b62f14a47c8cd89dce9f226fe1b117b2ad51",
+  "approved_hero_fbx_sha256": "9ff5b1b2b746c222a2e92b8ee371574d3c521fcb39f10cd50656a24bcf2a47ad",
+  "approved_buildings_sha256": {
+    "Hero": "9ff5b1b2b746c222a2e92b8ee371574d3c521fcb39f10cd50656a24bcf2a47ad",
+    "Ruin": "059d6bd60b89fe7d788a48adf67ea4cb0e0fa385d66646a8bfcfa20a1fc84785",
+    "Corrupt": "d45a7b8b53ca7da32d397cff934e56cdf83f81e799b9d89987013985469e4e30"
+  },
+  "unity_verified": false
+}
