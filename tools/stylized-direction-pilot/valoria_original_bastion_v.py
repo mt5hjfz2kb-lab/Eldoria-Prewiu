@@ -25,13 +25,13 @@ scene.render.image_settings.file_format='PNG'
 scene.render.resolution_percentage=100
 scene.view_settings.view_transform='Standard'
 scene.view_settings.look='Medium High Contrast'
-scene.view_settings.exposure=0
+scene.view_settings.exposure=.42
 scene.view_settings.gamma=1
 scene.world=bpy.data.worlds.new('Valoria newly authored dusk sky')
 scene.world.use_nodes=True
 bg=scene.world.node_tree.nodes.get('Background')
 bg.inputs['Color'].default_value=(.40,.48,.58,1)
-bg.inputs['Strength'].default_value=.65
+bg.inputs['Strength'].default_value=.83
 
 def linear(x):
  return x/12.92 if x<=.04045 else ((x+.055)/1.055)**2.4
@@ -333,6 +333,88 @@ cyl('quarry winch',(x+0.4,y+1.9,qz+7.4),.72,1.65,BRASS,12,(0,pi/2,0))
 for j in range(14):
  xx=x-7+(j%5)*1.9;yy=y-7+(j//5)*1.6
  cube('dressed stone yard',(xx,yy,qz+.38),(.95+R.random()*.6,1.15,.63),ROCK[j%3],.08)
+
+# SIGNATURE ART PASS — original, physical, mobile-readable architecture (not recolor).
+# Real defenses around the gate; different masses, repeated consistent craftsmanship.
+for side in (-1,1):
+ xx=kx+side*12.4
+ wall('fortress defensive forecourt wing',xx,-1.5,kz,10.2,3.9,4.6)
+ for dx in (-3.5,-1.25,1.25,3.5):
+  cube('gatehouse merlon on walk',(xx+dx,-1.5,kz+5.02),
+       (.95,2.6,1.05),LIME,.12)
+ # The projecting flared sloped base buttresses prevent flat box-like walls.
+ for yoffset in (-5.2,1.1,8.5):
+  bx=kx+side*(11.0 if yoffset<5 else 9.8)
+  cube('bastion curved base buttress',(bx,ky+yoffset,kz+3.65),
+       (1.6,1.6,7.2),STONE,.29)
+  cube('honed external stone ledge',(bx,ky+yoffset,kz+7.0),
+       (1.90,1.87,.34),LIME,.11)
+# Sculpted gate arch voussoirs and central heraldic device, expressed in actual 3D.
+for a in range(11):
+ angle=pi*(a/10)
+ ax=kx+2.62*cos(angle);az=kz+6.45+2.00*sin(angle)
+ block=cube('arched royal entry voussoir',(ax,-6.11,az),
+            (.74,.64,.50),LIME,.085)
+ block.rotation_euler[1]=angle
+ico('cast bronze emblem medallion',(kx,-6.38,kz+8.70),
+    (1.2,.21,1.2),BRASS,2)
+for sy in (-1,1):
+ cube('Valorian crossed crest',(kx+sy*.28,-6.63,kz+8.7),(.18,.17,1.50),
+      BANNER_TRIM,.045)
+# Intentional rough staggered ashlar on the accessible front wall and towers.
+for floor in (3.0,5.45,8.5):
+ for i in range(11):
+  x=kx-9.0+i*1.75+(.75 if floor==5.45 else 0)
+  if abs(x-kx)<2.7 and floor<6.3:continue
+  cube('laid hand-dressed stone face',(x,ky-8.14,kz+floor),
+       (1.50,.18,.32),LIME if i%4==0 else STONE,.11)
+for side in (-1,1):
+ tx=kx+side*11.5
+ for k in range(3):
+  window(tx,ky+1.09,kz+4.0+k*3.5,'front',.72)
+# Portal approach is physically anchored in the existing sculpted dirt path.
+for i in range(4):
+ y=-8.3+i*.83;x=kx
+ cube('gate arrival dressed stone step',(x,y,ground(x,y)+.11+i*.04),
+      (6.25-i*.28,.73,.24),STONE if i%2 else LIME,.065)
+# Contrast silhouette with small crafted inhabited structures.
+for x,y,height in [(-35,-9,4.0),(-25,-11,4.1),(34,10,4.7),(22,13,4.6),
+                   (-26,20,4.9),(29,-13,4.2)]:
+ z=ground(x,y)
+ cube('warm timber braced beam',(x,y,z+height*.42),(.34,.38,height*.83),WOOD,.09)
+ cube('timber gable wall bracket',(x,y,z+height*.85),(1.30,.52,.29),OAK,.06)
+# Four strategically positioned chimneys with believable roof penetration.
+for xx,yy,zz in [(-30,-10,sz+7.4),(28,10,qz+9.3),(-30,19,gz+7.3),(-2,8,kz+17.5)]:
+ cube('aged masonry chimney shaft',(xx+2,yy+1.5,zz),(1.20,1.30,3.9),SHADOW,.18)
+ cube('chimney rain cover',(xx+2,yy+1.5,zz+2.0),(1.65,1.7,.36),LIME,.10)
+# Public space life is represented by work props, not new unapproved houses.
+for j in range(4):
+ cube('cordwood stack near sawmill',(-26+j*.85,-19.5,ground(-26,-19.5)+.45),
+      (.65,3.2,.82),WOOD,.06)
+for j in range(5):
+ ico('granary golden storage basket',(-36+j*1.2,13.8,ground(-36+j*1.2,13.8)+.49),
+     (.48,.58,.46),EARTH2,1)
+for j in range(9):
+ x=21+(j%3)*1.7;y=-23+(j//3)*1.45
+ cube('stonecutters pallet loaded ashlar',(x,y,ground(x,y)+.37),
+      (1.25,1.07,.59),STONE if j%2 else LIME,.10)
+# Soft unlit vegetation patches add a screen-space layer between ground and masonry.
+for i in range(115):
+ x=R.uniform(-52,52);y=R.uniform(-43,42)
+ if abs(y+29+1.8*sin(x*.11))<6.5:continue
+ if (x+2)**2+(y-8)**2<295:continue
+ if (x+30)**2+(y+10)**2<100:continue
+ if (x-28)**2+(y-10)**2<110:continue
+ plant=ico('clustered wild sage scrub',(x,y,ground(x,y)+.33),
+           (R.uniform(.33,.85),R.uniform(.32,.79),R.uniform(.34,.72)),
+           R.choice((GRASS_B,LEAF,PINE[1])),1)
+ # Intentional asymmetry and colour family unified.
+# Real crafted lantern posts (later mobile UI does not rely on these as buttons).
+for xx,yy in [(-7,-12),(5,-11),(-22,-18),(16,1),(20,-17),(-27,14)]:
+ zz=ground(xx,yy)
+ cyl('roadway lantern support',(xx,yy,zz+1.7),.14,3.2,OAK,9)
+ cube('lantern mounted iron cap',(xx,yy,zz+3.23),(.83,.75,.35),DARK,.06)
+ ico('lantern small physical amber window',(xx,yy,zz+2.83),(.40,.38,.52),GLASS,1)
 
 # Irregular, half-buried low-poly rock at natural terrain edges.
 for i in range(95):
