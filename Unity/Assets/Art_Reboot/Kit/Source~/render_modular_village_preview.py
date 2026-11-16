@@ -31,7 +31,7 @@ def put(kind,center,x=0,y=0,z=0,rot=0):
     ob.name="VILLAGE / "+kind
     instances.append(kind)
     return ob
-house=(-11,0,4);workshop=(11,0,4);corrupt=(0,0,-13)
+house=(-9,0,4);workshop=(9,0,4);corrupt=(0,0,-11)
 def p(kind,x,y,z,rot=0):put(kind,house,x,y,z,rot)
 for id,x,z,rot in [
  ("Wall_Door_Intact",-2,-4,0),("Wall_Window_Intact",2,-4,0),
@@ -47,7 +47,7 @@ for id,x,y,z,rot in [("Roof_Gable",0,3.67,0,0),("Tower_Bell",6,0,1,0),
 def p(kind,x,y,z,rot=0):put(kind,workshop,x,y,z,rot)
 for id,x,z,rot in [("Wall_Door_Intact",-2,-2,0),("Wall_Window_Intact",2,-2,0),
  ("Wall_Straight_Intact",-2,2,180),("Wall_Window_Intact",2,2,180),
- ("Wall_Corner_Intact",-4,0,90),("Wall_Straight_Intact",4,0,-90)]:
+ ("Wall_Straight_Intact",-4,0,90),("Wall_Straight_Intact",4,0,-90)]:
  p(id,x,0,z,rot)
 for id,x,y,z,rot in [("Roof_Shed",-2,3.65,0,0),("Roof_Shed",2,3.65,0,0),
  ("Chimney",2.65,3.20,.95,0),("Roof_Shed",6.35,2.9,-1.25,90),
@@ -74,17 +74,32 @@ for id,x,y,z,rot in [("Roof_Gable",0,3.67,0,0),("Tower_Broken",6,0,1.4,0),
  ("Fallen_Log",8.1,0,-2.4,0)]:
  p(id,x,y,z,rot)
 
-# Context: same three varied pine sizes, framing paths and grounded foliage.
-pines=[(-28,6),(-29,-6),(-26,19),(27,8),(30,-11),(25,20),
- (-20,26),(-13,27),(0,27),(12,28),(20,24),(-30,-22),(-19,-24),
- (-12,-27),(4,-29),(14,-28),(26,-23),(-31,0),(32,0),(-21,14),(20,15)]
+# Context mirrors the actual Unity sandbox: compact three-building footprint,
+# 44 three-height pines and a connected stone trail with 4m module pivots.
+pines=[(-29,5),(-31,-6),(-26,16),(29,8),(31,-11),(27,20),
+ (-20,25),(-13,27),(0,27),(12,28),(20,24),(-30,-22),
+ (-19,-24),(-12,-29),(4,-29),(14,-28),(26,-23),(-32,1),
+ (32,1),(-22,17),(23,16),(-27,-15),(-25,10),(-28,22),
+ (-25,27),(-17,31),(-9,29),(-3,31),(6,29),(15,31),
+ (22,29),(29,25),(30,15),(32,-5),(27,-17),(20,-27),
+ (9,-31),(-3,-30),(-17,-28),(-29,-26),(-31,14),
+ (24,-7),(-24,-8),(26,-1)]
 for i,(x,z) in enumerate(pines):
  put(["Pine_Small","Pine_Medium","Pine_Tall"][i%3],(0,0,0),x,0,z,random.randrange(0,360))
  if i%3==0:put("Shrubs",(0,0,0),x+1.4,0,z-1.8)
-for i,(x,z) in enumerate([(-11,-1),(-9,-6),(-6,-9),(-2,-9),
- (2,-8),(5,-6),(8,-2),(11,-1)]):
- put("Path_Slab",(0,0,0),x,.02,z,(-11 if i%2==0 else 14))
- if i%2==0:put("Tall_Grass",(0,0,0),x+1.85,0,z+.6)
+paths=[]
+z=-15
+while z<=-3:
+ paths.append((.38*math.sin(z*.25),z));z+=1.55
+x=-9
+while x<=9.1:
+ paths.append((x,-2.2+.10*x));x+=1.5
+z=-1.5
+while z<=1.8:
+ paths.append((9,z));z+=1.35
+for i,(x,z) in enumerate(paths):
+ put("Path_Slab",(0,0,0),x,.015,z,-8 if i%2==0 else 12)
+ if i%3==0:put("Tall_Grass",(0,0,0),x+1.70,0,z+.65,i*17)
 # A plain review floor, not source art: source textures remain EXACT.
 bpy.ops.mesh.primitive_plane_add(size=2,location=(0,-4,-.13))
 floor=bpy.context.object;floor.name="REVIEW ONLY / ground"
