@@ -31,16 +31,27 @@ namespace Eldoria.ExperimentalAshenCitadel
         }
         // Editor baking must always rasterise the authored SOURCE, not a
         // previously imported sprite that may contain an older art version.
-        public static Sprite SourcePanel()=>
-            Make("Ashen source slate frame",256,256,18,18,SamplePanel);
-        public static Sprite SourcePrimary()=>
-            Make("Ashen source primary",256,72,19,14,(x,y)=>SampleButton(x,y,true));
-        public static Sprite SourceSecondary()=>
-            Make("Ashen source secondary",256,72,19,14,(x,y)=>SampleButton(x,y,false));
-        public static Sprite SourceCrest()=>
-            Make("Ashen source citadel seal",128,128,0,0,SampleCrest);
+        // Dedicated raw texture path avoids Sprite.texture returning an
+        // atlas/proxy or transient white fallback during headless Editor baking.
+        public static Texture2D SourcePanelTexture()=>
+            MakeTexture("Ashen source slate frame",256,256,SamplePanel);
+        public static Texture2D SourcePrimaryTexture()=>
+            MakeTexture("Ashen source primary",256,72,(x,y)=>SampleButton(x,y,true));
+        public static Texture2D SourceSecondaryTexture()=>
+            MakeTexture("Ashen source secondary",256,72,(x,y)=>SampleButton(x,y,false));
+        public static Texture2D SourceCrestTexture()=>
+            MakeTexture("Ashen source citadel seal",128,128,SampleCrest);
 
         private static Sprite Make(string name,int width,int height,int bx,int by,Func<int,int,Color32> colour)
+        {
+            var texture=MakeTexture(name,width,height,colour);
+            var border=new Vector4(bx,by,bx,by);
+            var sprite=Sprite.Create(texture,new Rect(0,0,width,height),
+                new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect,border);
+            sprite.name=name;return sprite;
+        }
+        private static Texture2D MakeTexture(string name,int width,int height,
+            Func<int,int,Color32> colour)
         {
             var texture=new Texture2D(width,height,TextureFormat.RGBA32,false,false)
             {
@@ -52,11 +63,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 pixels[y*width+x]=colour(x,y);
             texture.SetPixels32(pixels);
             texture.Apply(false,false);
-            var border=new Vector4(bx,by,bx,by);
-            var sprite=Sprite.Create(texture,new Rect(0,0,width,height),
-                new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect,border);
-            sprite.name=name;
-            return sprite;
+            return texture;
         }
         private static float Noise(int x,int y)
         {
