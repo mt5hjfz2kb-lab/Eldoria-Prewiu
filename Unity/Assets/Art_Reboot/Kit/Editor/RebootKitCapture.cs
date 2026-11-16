@@ -230,6 +230,26 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 if(mesh==null||!mesh.HasVertexAttribute(VertexAttribute.TexCoord0)||
                    !mesh.HasVertexAttribute(VertexAttribute.Color))
                     throw new InvalidOperationException("Missing authored atlas UV or vertex colors: "+item.id);
+                // The previous render had rainbow/checkerboard faces although all
+                // FBX objects imported. Reject importer-generated 0/1 default UVs.
+                var uv0=mesh.uv;
+                if(uv0.Length!=mesh.vertexCount || uv0.Length==0)
+                    throw new InvalidOperationException("Lost UV0 on FBX import: "+item.id);
+                int atlasInterior=0;var regions=new HashSet<int>();
+                foreach(var uv in uv0)
+                {
+                    if(uv.x<.017f||uv.x>.983f||uv.y<.017f||uv.y>.983f)
+                        throw new InvalidOperationException("Out-of-bounds/tiling UV0 in "+item.id+" : "+uv);
+                    atlasInterior++;
+                    regions.Add(Mathf.Clamp((int)(uv.y*4),0,3)*4+Mathf.Clamp((int)(uv.x*4),0,3));
+                }
+                if(atlasInterior!=uv0.Length || regions.Count<1)
+                    throw new InvalidOperationException("Missing fractional atlas UV0: "+item.id);
+                var cols=mesh.colors;
+                if(cols.Length!=mesh.vertexCount)
+                    throw new InvalidOperationException("Missing Color vertex attributes after FBX import: "+item.id);
+                Debug.Log("KIT_UV0_NATIVE "+item.id+" vertices="+uv0.Length+" uniqueCells="+regions.Count+
+                          " sample="+uv0[0].ToString("F4"));
                 int triangles=0;for(int s=0;s<mesh.subMeshCount;s++)triangles+=(int)mesh.GetIndexCount(s)/3;
                 if(triangles!=item.triangles)throw new InvalidOperationException("FBX triangles mismatch "+item.id+": "+triangles+" != "+item.triangles);
                 total+=triangles;
