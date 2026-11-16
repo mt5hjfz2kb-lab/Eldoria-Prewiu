@@ -9,53 +9,68 @@
       941,
       1672
     ],
-    "sha256": "18a4720066654de558310c7d3902587141feaf0524fa77d1def18b94df6e7f4e"
+    "sha256": "18a4720066654de558310c7d3902587141feaf0524fa77d1def18b94df6e7f4e",
+    "git_blob_sha1": "7d6f7ffdf539f4b96abf9661e934bc29308f6087"
   },
   "buildings": [
     {
       "file": "Bastion.png",
       "anchor_x_px": 470,
       "anchor_y_px": 824,
-      "scale": 0.293
+      "scale": 0.293,
+      "sha256": "2a649ec6e4a649c98e406e54acfc702568445ae1fd13a029d5b97e9479741d84",
+      "git_blob_sha1": "01eb823b36ee902bc12e441a58048d011369b13b"
     },
     {
       "file": "Cuartel.png",
       "anchor_x_px": 206,
       "anchor_y_px": 547,
-      "scale": 0.189
+      "scale": 0.189,
+      "sha256": "fe7c28acb93195b92718a69fffb6f014243e1058f2f49bed502f223803f4824a",
+      "git_blob_sha1": "0bf0032b3662f1a2fa1fa8e7b2bf4453022033fe"
     },
     {
       "file": "SalonHeroes.png",
       "anchor_x_px": 719,
       "anchor_y_px": 546,
-      "scale": 0.195
+      "scale": 0.195,
+      "sha256": "75a6db1036529d4929228a77b7c558685411becbc1cb6a65767066cad62ff5d3",
+      "git_blob_sha1": "39a7d608a98476bd02ed5022ade212c7bd90bc13"
     },
     {
       "file": "Aserradero.png",
       "anchor_x_px": 172,
       "anchor_y_px": 964,
-      "scale": 0.213
+      "scale": 0.213,
+      "sha256": "5d8c4d19f66b21def2f5312f3b47a9efb75ad8fbf4e4b6b8f84d117286a1c6dd",
+      "git_blob_sha1": "20e0b74d1a7e474ca352687802727527111e3783"
     },
     {
       "file": "Granero.png",
       "anchor_x_px": 751,
       "anchor_y_px": 962,
-      "scale": 0.211
+      "scale": 0.211,
+      "sha256": "64e2a7319da7bd8bf1379b4595ec037e37563b9d24f8251b60bc8236ce889a7d",
+      "git_blob_sha1": "602a16624570426ba222eb4b948cb915da3dc22a"
     },
     {
       "file": "Cantera.png",
       "anchor_x_px": 470,
       "anchor_y_px": 1178,
-      "scale": 0.225
+      "scale": 0.225,
+      "sha256": "5a523ab52769d9f79b9c599a6913be0dd15a967dc27d9b9ab5f8dfdc0f55ef30",
+      "git_blob_sha1": "a0c36c93f631e77b0c67f6d186a0305387aa0a98"
     }
   ],
   "checks": {
     "sprite_inspection": "done",
-    "composite": "done outside Unity",
-    "unity_editor": "not available",
-    "compile": "not tested",
-    "play_clicks": "not tested",
-    "unity_screenshot": "not available"
+    "composite": "preview composited outside Unity; NOT native screenshot",
+    "unity_editor": "not executed in connected environment",
+    "compile": "not executed",
+    "play_clicks": "not executed",
+    "unity_screenshot": "not executed",
+    "binary_git_upload": "7/7 original PNGs stored on branch, exact Git object SHA verified",
+    "alpha_and_dimensions": "verified with Pillow in transfer environment"
   },
-  "note": "User must import 7 PNG using ZIP because connector cannot upload binary blobs from conversation."
+  "note": "All seven PNGs are now in the isolated Git branch. No manual ZIP extraction is necessary; opening the experiment in Unity should trigger the Editor scene builder. Real Editor compile / Play / pointer / screenshot still require native validation."
 }
