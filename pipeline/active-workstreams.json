@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:17:01.872Z",
+  "updated_at": "2026-11-16T12:21:56.913Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 28,
+      "ownership_revision": 29,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "GROUND_INTEGRATION_NATIVE_CAPTURE",
+      "phase": "GROUND_INTEGRATION_NATIVE_COMPLETE_VISUAL_REVIEW",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9770,27 +9768,24 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-ashen-citadel-original-i-v-20261115.json",
       "resource_turn_handoff": {
         "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43863284139,
+        "completed_run": 43865170576,
         "next_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "note": "All Ashen jobs terminal success; artifact finalized. Resource free for next authorized turn; source owner retained."
+        "note": "All Ashen jobs terminal success, artifact finalized. Windows free; retain source owners."
       },
       "continuation_session": "b9db0d2d3e7b",
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_exact_ground_integration",
+        "status": "released_after_verified_terminal_native",
         "source_sha": "d5b3d416b61b367eb55bbf18c884b3f8adb02850"
       },
       "last_native": {
-        "run": 43863284139,
-        "head": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
-        "artifact": 14223478528,
+        "run": 43865170576,
+        "head": "ee98973cca12d5439aacdb27b797d42de52ebfa6",
+        "artifact": 14225331596,
         "result": "success",
-        "visual_review": "Actual I/V landscape and V portrait reviewed against preceding structural version. Improved contact depth and material separation, but terrain and geometry remain simplified; no final ART_APPROVED.",
-        "physical_mobile": false,
-        "editmode_passed": 7,
-        "playmode_passed": 4,
-        "screenshot_hashes_verified": 10
+        "visual_review": "Downloading for inspection",
+        "physical_mobile": false
       },
       "final_source_sha": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
       "art_approved": false,
