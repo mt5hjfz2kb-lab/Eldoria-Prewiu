@@ -376,20 +376,30 @@ namespace Eldoria.ArtReboot.Kit.Editor
         static void BuildWorkshop(Action<string,Vector3,float> add,Vector3 center)
         {
             Action<string,float,float,float,float> p=(id,x,y,z,rot)=>add(id,center+new Vector3(x,y,z),rot);
-            p("Wall_Door_Intact",-2,0,-4,0);p("Wall_Window_Intact",2,0,-4,0);
-            p("Wall_Straight_Intact",-2,0,4,180);p("Wall_Window_Intact",2,0,4,180);
-            p("Wall_Straight_Intact",-4,0,-2,90);p("Wall_Corner_Intact",-4,0,2,90);
-            p("Wall_Straight_Intact",4,0,-2,-90);p("Wall_Straight_Intact",4,0,2,-90);
-            p("Roof_Gable",0,3.67f,0,90);
-            // Asymmetric timber lean-to and heavy forge stack create a different silhouette.
-            p("Roof_Shed",5.95f,3.14f,-1.65f,90);
-            for(float x=4.3f;x<8.5f;x+=3.8f)
-                for(float z=-3.85f;z<.25f;z+=3.8f)p("Beam",x,0,z,0);
-            p("Chimney",3.4f,3.24f,2.20f,0);
-            p("Shield",-1.8f,1.42f,-4.53f,0);
-            p("Balcony",.7f,2.6f,4.7f,180);
-            p("Rock_Small",5.5f,0,-4.2f,0);
-            p("Rock_Medium",6.3f,0,-5.1f,0);
+            // A low, broad two-bay working hall, NOT a duplicate of the bell-house.
+            // Two distinct 4m shed pitches replace the 8m domestic gable; a large
+            // central chimney and an open timber lean-to identify its function.
+            // Every visible architectural mesh is a reusable Kit FBX instance.
+            p("Wall_Door_Intact",-2,0,-2,0);
+            p("Wall_Window_Intact",2,0,-2,0);
+            p("Wall_Straight_Intact",-2,0,2,180);
+            p("Wall_Window_Intact",2,0,2,180);
+            p("Wall_Corner_Intact",-4,0,0,90);
+            p("Wall_Straight_Intact",4,0,0,-90);
+            p("Roof_Shed",-2,3.65f,0,0);
+            p("Roof_Shed",2,3.65f,0,0);
+            p("Chimney",2.65f,3.20f,.95f,0);
+            // An independent open forge bay with a curved single-slope roof.
+            p("Roof_Shed",6.35f,2.9f,-1.25f,90);
+            for(float x=4.6f;x<=8.2f;x+=3.6f)
+                for(float z=-3.10f;z<=.5f;z+=3.6f)
+                    p("Beam",x,0,z,0);
+            p("Balcony",.5f,2.40f,2.6f,180);
+            p("Shield",-2.12f,1.5f,-2.5f,0);
+            p("Beam",-3.9f,0,-1.8f,0);
+            p("Rock_Large",6.2f,0,-3.1f,0);
+            p("Rock_Small",5.7f,0,-4.0f,0);
+            p("Fallen_Log",8.1f,0,2.6f,180);
         }
         static void BuildCorruptFort(Action<string,Vector3,float> add,Vector3 center)
         {
@@ -463,8 +473,14 @@ namespace Eldoria.ArtReboot.Kit.Editor
             var t=new int[(n-1)*(n-1)*6];
             for(int z=0;z<n;z++)for(int x=0;x<n;x++)
             {
-                float xx=(x-(n-1)*.5f)*step;float zz=(z-(n-1)*.5f)*step;
+                float xx=(x-(n-1)*.5f)*step;
+                // The back landscape must end beyond the trees; otherwise a
+                // 42-degree orthographic view sees an endless flat ground plane
+                // instead of the requested sunset sky gradient.
+                float zz=-50f+z*(81f/(n-1));
                 float h=.14f*(float)Math.Sin(xx*.21f)*(float)Math.Cos(zz*.18f)+.18f*(float)Math.Sin(zz*.47f);
+                float backRidge=Mathf.SmoothStep(0,1,Mathf.InverseLerp(21f,31f,zz));
+                h+=backRidge*(.38f+.20f*Mathf.Sin(xx*.19f)+.12f*Mathf.Sin(xx*.37f));
                 float flatten=Mathf.Clamp01((new Vector2(xx+11,zz-4).magnitude-4)/5f);
                 flatten=Mathf.Min(flatten,Mathf.Clamp01((new Vector2(xx-11,zz-4).magnitude-4)/5f));
                 flatten=Mathf.Min(flatten,Mathf.Clamp01((new Vector2(xx,zz+13).magnitude-4)/5f));
