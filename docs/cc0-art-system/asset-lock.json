@@ -178,6 +178,56 @@
       "import_state": "not_downloaded",
       "source_public_allowed": "UNVERIFIED",
       "commercial_game_allowed": "listing_yes"
+    },
+    {
+      "id": "ph_stone_brick_wall_001",
+      "name": "Poly Haven / Stone Brick Wall 001, 1K CC0",
+      "url": "https://polyhaven.com/a/stone_brick_wall_001",
+      "license_url": "https://polyhaven.com/license",
+      "license": "CC0 1.0",
+      "license_confirmed_official": true,
+      "role": "Stone/ashlar physically baked diffuse, OpenGL normal and roughness, with original stylized tint",
+      "import_state": "V15 experimental only, no Unity approval",
+      "tested_run": 43907312243,
+      "files": {
+        "diffuse": {
+          "size": 259947,
+          "md5": "fe05d5a4be3e01e7d922e7e935d8dfd9"
+        },
+        "normal_gl": {
+          "size": 355904,
+          "md5": "a389d00861e02eef39967dde975a8af4"
+        },
+        "roughness": {
+          "size": 197026,
+          "md5": "dac1157e3105f9cd63df26d72873d538"
+        }
+      }
+    },
+    {
+      "id": "ph_roof_slates_02",
+      "name": "Poly Haven / Roof Slates 02, 1K CC0",
+      "url": "https://polyhaven.com/a/roof_slates_02",
+      "license_url": "https://polyhaven.com/license",
+      "license": "CC0 1.0",
+      "license_confirmed_official": true,
+      "role": "Slate roof albedo, OpenGL normal and roughness, physically applied to UV on owner GLBs",
+      "import_state": "V15 experimental only, no Unity approval",
+      "tested_run": 43907312243,
+      "files": {
+        "diffuse": {
+          "size": 515626,
+          "md5": "d7683ac63f6d46159790186f2e19919f"
+        },
+        "normal_gl": {
+          "size": 763206,
+          "md5": "e661093ac3305df7de9159ad07ef5f75"
+        },
+        "roughness": {
+          "size": 307076,
+          "md5": "90922aa9a6fe1bd6b6fc59548e476705"
+        }
+      }
     }
   ],
   "license_policy": {
@@ -190,5 +240,7 @@
   "native_unity_verified": false,
   "physical_iphone_verified": false,
   "notes": "No binaries in public repo without positive per-file source-redistribution authorization; truthful status required.",
-  "licensing_updates": "Quaternius selected originals downloaded only in temporary CI; public repo has screenshots and import scripts, not these vendor sources; 2022 wrong pack name in License.txt explicitly recorded."
+  "licensing_updates": "Quaternius selected originals downloaded only in temporary CI; public repo has screenshots and import scripts, not these vendor sources; 2022 wrong pack name in License.txt explicitly recorded.",
+  "last_legal_review": "2026-11-16",
+  "polyhaven_cc0_policy": "Download direct image URLs only at build time; compare publisher MD5 and local SHA256; embed derived 1K maps in GLBs. No API use from shipping game. No vendor models."
 }
