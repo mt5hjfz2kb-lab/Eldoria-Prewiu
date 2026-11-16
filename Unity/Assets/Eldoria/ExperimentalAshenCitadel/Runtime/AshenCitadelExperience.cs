@@ -315,7 +315,8 @@ namespace Eldoria.ExperimentalAshenCitadel
         {
             if(camera==null||width<1||height<1)return;
             camera.aspect=width/(float)height;
-            camera.orthographicSize=width<height?43f:17f;
+            // Keep the full 46-metre settlement width visible on narrow phones.
+            camera.orthographicSize=width<height?23f/camera.aspect:17f;
             float lowest=camera.ViewportPointToRay(new Vector3(.5f,0,0)).origin.y;
             float upward=-camera.transform.forward.y;
             if(lowest<6f && upward>.01f)
