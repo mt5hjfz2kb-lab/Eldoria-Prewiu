@@ -93,6 +93,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var cityTerrain=Import("AshenLandscape",sceneRoot.transform);
             cityTerrain.name="Ashen valley · true 3D landscape";
             DisableDecorativeColliders(cityTerrain);
+            // The old sculpted terrain stays intact for the World tab. In the City, it is
+            // replaced by one reproducible, denser environment with irregular paving.
+            cityTerrain.SetActive(false);
+            AshenPremiumTerrainBuilder.Build(sceneRoot.transform,Colors);
             var stagesRoot=new GameObject("Bastion stage variants");stagesRoot.transform.SetParent(sceneRoot.transform,false);
             var stages=new GameObject[5];
             for(int n=1;n<=5;n++)
