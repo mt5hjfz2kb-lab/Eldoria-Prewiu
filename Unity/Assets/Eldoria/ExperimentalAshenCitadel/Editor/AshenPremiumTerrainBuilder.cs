@@ -21,6 +21,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         {
             internal readonly List<Vector3> vertices=new List<Vector3>(210000);
             internal readonly List<Vector2> uv=new List<Vector2>(210000);
+            internal readonly List<Vector3> normals=new List<Vector3>(210000);
             internal readonly List<int>[] indices=new List<int>[8];
             internal Geometry(){for(int i=0;i<indices.Length;i++)indices[i]=new List<int>();}
             internal void Tri(int mat,Vector3 a,Vector3 b,Vector3 c)
@@ -30,6 +31,14 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 uv.Add(new Vector2(a.x*.2f,a.z*.2f));
                 uv.Add(new Vector2(b.x*.2f,b.z*.2f));
                 uv.Add(new Vector2(c.x*.2f,c.z*.2f));
+                Vector3 face=Vector3.Cross(b-a,c-a).normalized;
+                if(mat==Meadow||mat==Earth){
+                    normals.Add(SmoothLandNormal(a));
+                    normals.Add(SmoothLandNormal(b));
+                    normals.Add(SmoothLandNormal(c));
+                }else{
+                    normals.Add(face);normals.Add(face);normals.Add(face);
+                }
                 indices[mat].Add(start);indices[mat].Add(start+1);indices[mat].Add(start+2);
             }
             internal void UpQuad(int mat,Vector3 a,Vector3 b,Vector3 c,Vector3 d)
@@ -71,6 +80,13 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             lo+(hi-lo)*(float)random.NextDouble();
         private static Vector3 At(float x,float z,float offset=0f)=>
             new Vector3(x,SoilHeight(x,z)+offset,z);
+        private static Vector3 SmoothLandNormal(Vector3 p)
+        {
+            const float step=.40f;
+            float slopeX=(SoilHeight(p.x+step,p.z)-SoilHeight(p.x-step,p.z))/(2f*step);
+            float slopeZ=(SoilHeight(p.x,p.z+step)-SoilHeight(p.x,p.z-step))/(2f*step);
+            return new Vector3(-slopeX,1f,-slopeZ).normalized;
+        }
 
         internal static GameObject Build(Transform cityParent,IReadOnlyDictionary<string,Material> palette)
         {
@@ -84,9 +100,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var mesh=new Mesh{name="Ashen premium · sculpted meadow, organic paving and inhabited detail"};
             mesh.indexFormat=IndexFormat.UInt32;
             mesh.SetVertices(geo.vertices);mesh.SetUVs(0,geo.uv);
+            mesh.SetNormals(geo.normals);
             mesh.subMeshCount=geo.indices.Length;
             for(int i=0;i<geo.indices.Length;i++)mesh.SetTriangles(geo.indices[i],i,false);
-            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            mesh.RecalculateBounds();
             var existing=AssetDatabase.LoadAssetAtPath<Mesh>(MeshAsset);
             if(existing==null){AssetDatabase.CreateAsset(mesh,MeshAsset);existing=mesh;}
             else{EditorUtility.CopySerialized(mesh,existing);UnityEngine.Object.DestroyImmediate(mesh);}
@@ -115,13 +132,18 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         private static void AddWornRoad(Geometry g)
         {
             // Smoothly curving compact-earth base beneath fitted, irregular stone islands.
-            for(int i=0;i<99;i++)
+            // Narrow earth core under the stones; wider shoulders are blended by
+            // the authored ground texture. No sharp 4.7m-wide raised road carpet.
+            for(int i=0;i<109;i++)
             {
-                float z0=-43f+i*.37f,z1=z0+.37f;
-                float width0=2.35f+.22f*Mathf.Sin(z0*.27f),width1=2.35f+.22f*Mathf.Sin(z1*.27f);
+                float z0=-43f+i*.34f,z1=z0+.34f;
+                float worn0=Mathf.InverseLerp(-43f,-8f,z0);
+                float worn1=Mathf.InverseLerp(-43f,-8f,z1);
+                float width0=Mathf.Lerp(.86f,1.60f,worn0)+.12f*Mathf.Sin(z0*.49f);
+                float width1=Mathf.Lerp(.86f,1.60f,worn1)+.12f*Mathf.Sin(z1*.49f);
                 float x0=TrackX(z0),x1=TrackX(z1);
-                Vector3 a=At(x0-width0,z0,.016f),b=At(x0+width0,z0,.016f);
-                Vector3 c=At(x1+width1,z1,.016f),d=At(x1-width1,z1,.016f);
+                Vector3 a=At(x0-width0,z0,.012f),b=At(x0+width0,z0,.012f);
+                Vector3 c=At(x1+width1,z1,.012f),d=At(x1-width1,z1,.012f);
                 g.UpQuad(Earth,a,b,c,d);
             }
         }
@@ -135,37 +157,51 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         {
             var sets=new List<List<Seed>>();
             var approach=new List<Seed>();
-            // Jittered sites become clipped Voronoi polygons, NOT repeated rectangles.
-            for(float z=-8.5f;z>=-39;z-=.79f)
-            for(float x=-2.5f;x<=2.6f;x+=.77f)
+            // Blue-noise-like scatter without a row/column grid. The approach
+            // is a stone-centred worn track, not a carpet of identical pavers.
+            for(int attempt=0;attempt<1150;attempt++)
             {
-                float zz=z+Rand(rng,-.23f,.23f);
-                float xx=x+Rand(rng,-.27f,.27f)+(Mathf.RoundToInt(-z/.79f)%2)*.18f+TrackX(zz);
+                float zz=Rand(rng,-41f,-8.5f);
+                float xx=TrackX(zz)+Rand(rng,-2.12f,2.12f);
                 float edge=Mathf.Abs(xx-TrackX(zz));
-                float chance=Mathf.Lerp(.93f,.50f,Mathf.InverseLerp(-9f,-39f,zz));
-                chance*=edge>2.1f?.48f:1f;
-                if((float)rng.NextDouble()>chance)continue;
-                approach.Add(new Seed(new Vector2(xx,zz),Rand(rng,.58f,.94f)));
+                float nearGate=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(-41f,-8.5f,zz));
+                float probability=Mathf.Lerp(.55f,.93f,nearGate)*
+                    (edge>1.38f?Mathf.Lerp(.75f,.24f,Mathf.InverseLerp(1.38f,2.12f,edge)):1f);
+                if((float)rng.NextDouble()>probability)continue;
+                var candidate=new Vector2(xx,zz);
+                bool tooClose=false;
+                foreach(var existing in approach)
+                    if((existing.p-candidate).sqrMagnitude<.49f){tooClose=true;break;}
+                if(tooClose)continue;
+                approach.Add(new Seed(candidate,Rand(rng,.53f,.82f)));
             }
             sets.Add(approach);
             var courtyard=new List<Seed>();
-            for(float z=-5.2f;z<5f;z+=.77f)
-            for(float x=-6.85f;x<6.85f;x+=.80f)
+            for(int attempt=0;attempt<530;attempt++)
             {
-                float xx=x+Rand(rng,-.28f,.28f)+(Mathf.RoundToInt(z/.77f)%2)*.20f;
-                float zz=z+Rand(rng,-.23f,.23f);
-                if(Footprint(xx,zz)||((float)rng.NextDouble()<.19f))continue;
-                courtyard.Add(new Seed(new Vector2(xx,zz),Rand(rng,.58f,.88f)));
+                float xx=Rand(rng,-6.9f,6.9f),zz=Rand(rng,-5.45f,5.35f);
+                if(Footprint(xx,zz)||(float)rng.NextDouble()<.19f)continue;
+                var candidate=new Vector2(xx,zz);
+                bool tooClose=false;
+                foreach(var existing in courtyard)
+                    if((existing.p-candidate).sqrMagnitude<.51f){tooClose=true;break;}
+                if(tooClose)continue;
+                courtyard.Add(new Seed(candidate,Rand(rng,.48f,.80f)));
             }
             sets.Add(courtyard);
             foreach(var b in Workshops)
             {
                 var apron=new List<Seed>();
-                for(float z=-4.0f;z<=-1.75f;z+=.74f)
-                for(float x=-2.0f;x<=2.0f;x+=.72f)
+                for(int attempt=0;attempt<90;attempt++)
                 {
-                    if((float)rng.NextDouble()<.27f)continue;
-                    apron.Add(new Seed(b+new Vector2(x+Rand(rng,-.2f,.2f),z+Rand(rng,-.2f,.2f)),Rand(rng,.50f,.85f)));
+                    float dx=Rand(rng,-2.15f,2.15f),dz=Rand(rng,-4.20f,-1.5f);
+                    if((float)rng.NextDouble()<.24f)continue;
+                    var candidate=b+new Vector2(dx,dz);
+                    bool tooClose=false;
+                    foreach(var existing in apron)
+                        if((existing.p-candidate).sqrMagnitude<.44f){tooClose=true;break;}
+                    if(tooClose)continue;
+                    apron.Add(new Seed(candidate,Rand(rng,.48f,.76f)));
                 }
                 sets.Add(apron);
             }
@@ -173,9 +209,15 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             foreach(var set in sets)
             foreach(var seed in set)
             {
-                var polygon=new List<Vector2>{seed.p+new Vector2(-seed.size,-seed.size),
-                    seed.p+new Vector2(seed.size,-seed.size),seed.p+new Vector2(seed.size,seed.size),
-                    seed.p+new Vector2(-seed.size,seed.size)};
+                // Chipped 8-sided outlines rather than square defaults. Neighbour
+                // bisectors fit stones without creating a visible tile grid.
+                var polygon=new List<Vector2>(8);
+                float rotate=Rand(rng,-.12f,.12f);
+                for(int k=0;k<8;k++){
+                    float angle=rotate+Mathf.PI*2f*k/8f;
+                    float radius=seed.size*Rand(rng,.83f,1.12f);
+                    polygon.Add(seed.p+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*radius);
+                }
                 foreach(var other in set)
                 {
                     Vector2 between=other.p-seed.p;
@@ -184,7 +226,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     if(polygon.Count<3)break;
                 }
                 if(polygon.Count<3)continue;
-                float shrink=Rand(rng,.89f,.96f);
+                float shrink=Rand(rng,.93f,.985f);
                 var centre=Vector2.zero;
                 foreach(var point in polygon)centre+=point;
                 centre/=polygon.Count;
@@ -195,10 +237,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 foreach(var pt in polygon)
                 {
                     Vector2 q=centre+(pt-centre)*shrink;
-                    float high=Rand(rng,.058f,.084f);
-                    top.Add(At(q.x,q.y,high));bottom.Add(At(q.x,q.y,.010f));
+                    float high=Rand(rng,.039f,.062f);
+                    top.Add(At(q.x,q.y,high));bottom.Add(At(q.x,q.y,.006f));
                 }
-                var mid=At(centre.x,centre.y,.075f);
+                var mid=At(centre.x,centre.y,.059f);
                 for(int i=0;i<top.Count;i++)
                 {
                     int next=(i+1)%top.Count;
@@ -267,12 +309,12 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 new Vector2(11,14),new Vector2(-21,-1),new Vector2(22,1),
                 new Vector2(-28,22),new Vector2(26,-22),new Vector2(0,22)};
             foreach(var b in pockets)
-            for(int clump=0;clump<75;clump++)
+            for(int clump=0;clump<35;clump++)
             {
                 float x=b.x+Rand(rng,-7,7),z=b.y+Rand(rng,-5.5f,5.5f);
                 if(Protected(x,z))continue;
-                int leaves=5+RandomInt(rng,6);
-                float h=Rand(rng,.27f,.72f),w=Rand(rng,.13f,.25f);
+                int leaves=4+RandomInt(rng,4);
+                float h=Rand(rng,.18f,.43f),w=Rand(rng,.20f,.39f);
                 for(int i=0;i<leaves;i++)
                 {
                     float a=2*Mathf.PI*i/leaves+Rand(rng,-.20f,.20f);
