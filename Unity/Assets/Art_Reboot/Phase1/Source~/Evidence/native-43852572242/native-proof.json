@@ -1,0 +1,28 @@
+{
+    "art_approved":  false,
+    "gameplay_tested":  false,
+    "mobile_tested":  false,
+    "unity_compiled":  true,
+    "scope":  "Isolated Phase1 hero family; approved hero and original scenes unchanged",
+    "unity_rendered":  true,
+    "screenshots":  [
+                        {
+                            "sha256":  "BF320B448DCCC8B265257ED87B3931F0A3A0C3DFE686DB59B1A5F83B282F59FE",
+                            "file":  "unity-1100x1250.png"
+                        },
+                        {
+                            "sha256":  "29026D7D920CF49979E5F725CEC9BC44240886402777CC21BFD9547E11D5D705",
+                            "file":  "unity-390x844.png"
+                        },
+                        {
+                            "sha256":  "22EE2498EF914770523830FE1478DC11BE3D3077063C3D795F3AD8180F187D77",
+                            "file":  "unity-1600x900.png"
+                        },
+                        {
+                            "sha256":  "4431072BC9B53227DA5896059997CCA9177B876ED66919A167CA54939EB86888",
+                            "file":  "unity-844x390.png"
+                        }
+                    ],
+    "full_project_integration":  false,
+    "source_sha":  "5367f1874f97cb955a52200f75f53fa2c23b4368"
+}
