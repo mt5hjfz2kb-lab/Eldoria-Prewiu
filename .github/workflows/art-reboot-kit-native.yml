@@ -127,7 +127,9 @@ jobs:
           try{
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -A -- Unity/Assets/Art_Reboot/Kit Unity/Assets/Art_Reboot/Kit.meta
+            git add -A -- Unity/Assets/Art_Reboot/Kit
+            if(Test-Path 'Unity/Assets/Art_Reboot/Kit.meta'){git add -A -- Unity/Assets/Art_Reboot/Kit.meta}
+            if($LASTEXITCODE -ne 0){throw 'Git add failed'}
             git diff --cached --quiet
             if($LASTEXITCODE -ne 0){
               git commit -m "art(phase2): preserve real Unity Kit grid and 3-building modular sandbox [kit-native-proof]"
