@@ -1,24 +1,26 @@
-name: Ciudad2D Hitos I-V - comprobación offline
+name: Ciudad2D Hitos I-V - inspeccion visual interactiva
 
 on:
   push:
     branches:
       - art/ciudad-2d-hitos-1-5-20261116
     paths:
-      - Unity/Assets/Experimentos/Ciudad2D/**
-      - .github/workflows/ciudad2d-piloto-offline-qa.yml
+      - 'Unity/Assets/Experimentos/Ciudad2D/**'
+      - '.github/workflows/ciudad2d-piloto-offline-qa.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+concurrency:
+  group: ciudad2d-piloto-ubuntu-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  inspect-sprites-and-visual-bands:
+  inspect-art:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
-      - name: Checkout limitado al experimento
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             Unity/Assets/Experimentos/Ciudad2D
@@ -26,7 +28,53 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Instalar Pillow para inspección de imágenes
-        run: python -m pip install --disable-pip-version-check pillow==11.3.0
-      - name: Validar SHA, dimensiones, alfa y no mutación de partida
-        run: python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py
+      - name: Inspect sprite assets and visual level bands
+        run: |
+          python -m pip install --disable-pip-version-check pillow==11.3.0
+          python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py
+      - name: Preserve compare images and audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-offline-art-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/QA/preview-I-V.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/landscape-hito-V-844x390.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/asset_manifest.json
+          if-no-files-found: error
+          retention-days: 14
+
+  interactive-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Experimentos/Ciudad2D
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned browser harness
+        run: |
+          python -m pip install --disable-pip-version-check playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Serve isolated assets and test responsive viewing + real input
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd Unity/Assets/Experimentos/Ciudad2D
+          python -m http.server 8765 >/tmp/ciudad2d-browser.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          cd - >/dev/null
+          python Unity/Assets/Experimentos/Ciudad2D/QA/live-preview/check_web.py
+      - name: Preserve original Chrome screenshot evidence + report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-browser-proof-${{ github.run_id }}
+          path: Unity/Assets/Experimentos/Ciudad2D/QA/evidence/
+          if-no-files-found: warn
+          retention-days: 14
