@@ -12,8 +12,9 @@ V6 real GLBs from Actions 43878136136 are the ONLY input. For all 5 levels:
 - preserve exact spatial anchors, render the same camera I/V + phone portrait.
 Original source geometry only. No Unity or physical-phone pass claimed.
 """
-import bpy,math,json,struct,random
+import bpy,math,json,struct,random,hashlib,io
 import numpy as np
+from PIL import Image as PILImage
 from pathlib import Path
 from math import sin,cos,pi,radians
 from mathutils import Vector
@@ -132,11 +133,14 @@ def remove_exact():
                 deleted[p]=deleted.get(p,0)+1
                 break
     return deleted
-def repaint_real_pngs():
-    """V6's 0 painted images diagnostic demonstrated a shader-only tint failure.
+def repaint_real_pngs(source_glb):
+    """Extract and color-grade actual PNGs from the physical GLB BIN buffer.
 
-    This pass edits PNG pixel buffers by original image name and re-embeds them
-    into each exported .glb. No generated image is used as a geometry substitute.
+    Blender 4 imported several packed pictures with no resolvable filepath or
+    pixel buffer, so image.reload and image.pixels cannot alter their bytes.
+    Operate on the exact physically embedded PNGs instead, save new own source
+    textures, then reconnect image texture nodes to those real local files.
+    Verify sha256(before)!=sha256(after) for every re-baked image.
     """
     ratios={
       "DirectorV4_stone_Diffuse":(.77,.75,.72),
@@ -148,39 +152,64 @@ def repaint_real_pngs():
       "DirectorV4_wooddark_Diffuse":(.83,.79,.74),
       "ED_CC0_ForgedIron":(.84,.86,.88),
       "ED_CC0_AgedBronze":(.87,.82,.74)}
-    n=0;bytes_changed=[]
-    for image in bpy.data.images:
-        base=image.name.split(".")[0]
-        factor=ratios.get(base)
-        if not factor or image.source!="FILE":continue
-        if not image.has_data:
-            try:image.reload()
-            except Exception:pass
-        if not image.has_data:continue
-        count=image.size[0]*image.size[1]*4
-        if count<16:continue
-        arr=np.empty(count,dtype=np.float32)
-        image.pixels.foreach_get(arr)
-        arr=arr.reshape((-1,4))
-        original=arr[:,:3].copy()
-        arr[:,:3]*=np.array(factor,dtype=np.float32)[None,:]
-        np.clip(arr,0,1,out=arr)
-        diff=float(np.abs(arr[:,:3]-original).mean())
-        if diff<1e-4:continue
-        image.pixels.foreach_set(arr.reshape(-1))
-        image.update()
-        # GLB automatically embeds this image; pack keeps editable .blend portable.
-        try:image.pack()
-        except Exception:pass
-        n+=1
-        bytes_changed.append((image.name,round(diff,5)))
-    # Normalize untextured old V5 material colors only when visibly overbright.
+    raw=source_glb.read_bytes()
+    json_length=struct.unpack_from("<I",raw,12)[0]
+    meta=json.loads(raw[20:20+json_length])
+    at=20+json_length
+    bin_length,bin_type=struct.unpack_from("<I4s",raw,at)
+    if bin_type!=b"BIN\x00":raise RuntimeError("Source glTF has no BIN chunk")
+    base_offset=at+8
+    staged={}
+    files=[]
+    for image in meta.get("images",[]):
+        name=image.get("name","")
+        factor=ratios.get(name)
+        if factor is None or "bufferView" not in image:continue
+        view=meta["bufferViews"][image["bufferView"]]
+        start=base_offset+view.get("byteOffset",0)
+        end=start+view["byteLength"]
+        original=raw[start:end]
+        if not original.startswith(b"\x89PNG\r\n\x1a\n"):
+            raise RuntimeError("Physical source image is not PNG: "+name)
+        picture=PILImage.open(io.BytesIO(original)).convert("RGBA")
+        arr=np.asarray(picture).astype(np.float32).copy()
+        for chan in range(3):
+            arr[:,:,chan]*=factor[chan]
+        arranged=PILImage.fromarray(np.clip(arr,0,255).astype(np.uint8),"RGBA")
+        outpath=OUT/("DirectorV7_REBAKED_"+name+".png")
+        arranged.save(outpath,format="PNG",optimize=True)
+        changed=outpath.read_bytes()
+        before=hashlib.sha256(original).hexdigest()
+        after=hashlib.sha256(changed).hexdigest()
+        if before==after:raise RuntimeError("Physical image stayed identical: "+name)
+        loaded=bpy.data.images.load(str(outpath),check_existing=False)
+        loaded.name="DirectorV7_REBAKED_"+name
+        staged[name]=loaded
+        files.append({"name":name,"old_sha256":before,"new_sha256":after,
+                      "bytes":len(changed)})
+    replaced=0
+    for material in bpy.data.materials:
+        if not material.use_nodes:continue
+        for node in material.node_tree.nodes:
+            if node.type!="TEX_IMAGE" or not node.image:continue
+            oldname=node.image.name.split(".")[0]
+            found=staged.get(oldname)
+            if found:
+                node.image=found
+                replaced+=1
+    if replaced<6 or len(files)<6:
+        raise RuntimeError("Cannot physically reconnect rebaked GLB materials: "+
+                           repr((len(files),replaced,
+                                 [x.name for x in bpy.data.images][:35])))
+    # Normalize untextured stone and rocks as an additional safety net.
     for m in bpy.data.materials:
         if not m.use_nodes:continue
         if m.name.startswith("ELDORIA_V6_rocklight"):
             bs=m.node_tree.nodes.get("Principled BSDF")
             if bs:bs.inputs["Base Color"].default_value=(.35,.38,.35,1)
-    return n,bytes_changed
+    print("ELDORIA_V7_ACTUAL_PBR_IMAGE_BYTES_CHANGED",len(files),replaced)
+    return len(files),files
+
 def grow_fir(x,y,z,h,mt):
     """Branch-like, uneven, downward fir silhouettes, not stacked ice-cream cones.
 
@@ -371,7 +400,7 @@ def build(stage):
     random.seed(161126)
     mt=palette()
     discarded=remove_exact()
-    n,files=repaint_real_pngs()
+    n,files=repaint_real_pngs(source)
     if n<5:raise RuntimeError("Source textures were not actually re-baked into V7: "+str(files))
     trees=rewrite_forest(mt)
     integrated_architecture(stage,mt)
