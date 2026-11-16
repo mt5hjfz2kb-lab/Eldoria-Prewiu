@@ -14,3 +14,10 @@ Authorship is explicit shape/assembly code in generate.mjs; Blender imports, ins
 
 ## Verification targets
 Same-camera I/V Unity before/after, all I–V variants, readable auxiliaries, no disconnected roof masses or obstructed main gate; unchanged 7 EditMode and 4 PlayMode tests. Final visual review and physical mobile performance are separate gates. No publication or ART_APPROVED by CI alone.
+
+## Delivered native evidence
+Source 6080de8c8630da95c33cca59e79cb71bbba9cd0e; successful native run 43837348051; artifact 14211975993. Seven EditMode and four PlayMode tests passed. All ten delivered screenshot SHA256 values match native-proof.json. Native landscape I–V and portrait V inspected: continuous watchtower identity, asymmetric tower hierarchy, deep entrance and functional auxiliary silhouettes.
+
+The first geometry run 43836405149 showed stretched triangles on landscape I/IV, absent from source bounds and Blender review. Capture now retains a diagnostic first frame and submits a second render before final readback. Final I/IV have no visible stretched triangles. This is a capture mitigation, not a proven root-cause fix or evidence of physical-device stability. First-frame evidence remains in the native artifact.
+
+Art critique: geometry is more legible and coherent, but stone repetition, smooth terrain, generic rocks and small heraldic details still limit identity. This is a reviewed increment, not ART_APPROVED. Physical iPhone and WebGL not tested by this pass. No production art merge or publication.
