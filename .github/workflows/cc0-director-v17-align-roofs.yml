@@ -11,7 +11,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-cc0-v17-roof-corrected-ubuntu
-  cancel-in-progress: false
+  cancel-in-progress: true  # only this isolated V17 group; supersede known-invalid roof math runs
 jobs:
   authentic-repair:
     runs-on: ubuntu-24.04
