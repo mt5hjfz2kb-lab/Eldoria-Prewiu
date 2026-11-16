@@ -33,7 +33,7 @@ magic,version,length=struct.unpack_from('<III',glb)
 assert magic==0x46546c67 and version==2 and length==len(glb)
 n,kind=struct.unpack_from('<II',glb,12);g=json.loads(glb[20:20+n])
 assert len(g['images'])==1,'Multiple bitmap textures'
-assert len(g['materials'])==2,'Unexpected material count'
+assert len(g['materials'])==3,'Expected atlas, warm emission and isolated violet emission'
 assert all('COLOR_0' in p['attributes'] and 'TEXCOORD_0' in p['attributes'] for m in g['meshes'] for p in m['primitives'])
 graph=(ROOT/'Materials/Reboot_Atlas.shadergraph').read_text();decoder=json.JSONDecoder();objects=[]
 while graph.strip():
