@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T22:58:00Z",
+  "updated_at": "2026-11-16T23:00:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -14,7 +14,8 @@
       "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
       "eldoria-aldric-dialogue-bust-20261027",
       "eldoria-forja-oscura-visual-proof-20261107",
-      "eldoria-daily-treasures-20261108"
+      "eldoria-daily-treasures-20261108",
+      "eldoria-city2d-illustrated-proof-20261116"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
@@ -9936,9 +9937,11 @@
       "ownership_revision": 1,
       "branch": "art/ciudad-2d-hitos-1-5-20261116",
       "status": "active",
-      "phase": "REAL_UNLOCK_VISIBILITY_IN_PROGRESS",
+      "phase": "OWNER_PRIORITY_EXCLUSIVE_UNITY_QA_PENDING",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -9947,7 +9950,8 @@
       ],
       "art_production_routing": "required",
       "user_authorization": "Owner directs prioritization of isolated 2.5D experiment, Nov 16 2026, without changing game mechanics or disturbing running jobs.",
-      "write_scope_released": false
+      "write_scope_released": false,
+      "pc_priority_authorized_at": "2026-11-16T23:00:00Z"
     }
   ],
   "history": [
@@ -20375,23 +20379,44 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
-    "authorized_at": "2026-11-15T22:44:00.333Z",
+    "authorized_by": "Owner directly prioritizes City2D experiment PC resource in this conversation, 2026-11-16",
+    "authorized_at": "2026-11-16T23:00:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "current_run_id": null,
-    "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_turn_available",
+    "status": "city2d_one_bounded_native_turn",
     "rules": [
-      "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
-      "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
-      "Retain both source owners/scopes/branches. Transfer ONLY windows-runner-heavy via fresh CAS.",
-      "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
-      "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
+      "Never cancel or interrupt any running Windows/Unity/Blender process; recheck running jobs and processes immediately before Editor.",
+      "Owner explicitly directs this experiment to take the next available native PC turn over earlier Ashen/Visual rotation.",
+      "One bounded exact-source isolated Unity proof. Do not edit any production scene or canonical gameplay/save.",
+      "Release windows-runner-heavy after native proof completes or fails and report evidence honestly."
     ],
     "previous_completed_run": 43906347228,
     "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
-    "completed_visual_reboot_run": 43780662139
+    "completed_visual_reboot_run": 43780662139,
+    "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
+    "previous_rotation": {
+      "resource": "windows-runner-heavy",
+      "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
+      "authorized_at": "2026-11-15T22:44:00.333Z",
+      "mode": "one_bounded_native_execution_per_turn",
+      "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+      "current_run_id": null,
+      "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+      "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
+      "status": "ashen_turn_available",
+      "rules": [
+        "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
+        "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
+        "Retain both source owners/scopes/branches. Transfer ONLY windows-runner-heavy via fresh CAS.",
+        "Each owner releases Windows while reviewing artifacts or editing source. No automatic expiry or takeover from inactivity.",
+        "After one Visual Reboot native run and clean exit, return Windows availability to Ashen Citadel; respect other legitimate concurrent jobs."
+      ],
+      "previous_completed_run": 43906347228,
+      "note": "First real Visual Reboot Unity invocation completed with exit 1, artifact preserved; Windows returned to Ashen immediately while Visual Reboot diagnoses off-PC. All source owners unchanged.",
+      "completed_visual_reboot_run": 43780662139
+    }
   }
 }
