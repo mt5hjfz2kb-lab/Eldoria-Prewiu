@@ -1,41 +1,29 @@
 {
-  "sourceRecovered": "855af6dd4ea7c37318796847a71778377fd513d8",
+  "source_sha": "d74be4ee7d90c07a11becc62c480f37358596e0e",
+  "run": 43779933745,
+  "artifact": 14188480494,
+  "zip_sha256": "3d8174fcee473165bcf612de067e9a9c3df885af1eec1bc8b62ce16a6e3ebc09",
+  "native_result": "success",
+  "unity_compiled": true,
+  "unity_rendered": true,
+  "unity_exit_code": 0,
+  "own_scratch_removed": true,
+  "triangles": 21865,
+  "mesh_families": 4,
+  "materials": 2,
+  "atlas": [
+    256,
+    256
+  ],
+  "four_png_hashes_verified": true,
+  "repeated_first_frame_mean_pixel_difference": 0,
+  "four_views_visually_reviewed": true,
+  "buildings_uncropped": true,
   "source_integrity": "PASS",
   "blender_fbx_reimport": "PASS",
-  "triangles": 21308,
-  "meshes": 4,
-  "uv_per_face_single_tile": true,
-  "unity_compiled": false,
-  "unity_rendered": false,
   "physical_mobile_tested": false,
+  "full_game_integration": false,
+  "gameplay_tested": false,
   "art_approved": false,
-  "csharp_syntax": "PASS_TREE_SITTER_NOT_UNITY_COMPILATION",
-  "lease_regression_tests": {
-    "total": 8,
-    "passed": 8
-  },
-  "canonical_art_planner": "PASS",
-  "workflow_yaml": "PARSE_PASS",
-  "powershell_parse_executed": true,
-  "remote_preflight": {
-    "run": 43768175996,
-    "source": "acafc10c6b4d699c31a8d36201fe89dbb3901da3",
-    "result": "success",
-    "powershell_parser": "PASS",
-    "lease_tests": "8/8 PASS",
-    "windows_job": "skipped"
-  },
-  "native_attempt": {
-    "run": 43771635637,
-    "source": "57ab4c3cbeb67bdda115e74bda37861125c8131e",
-    "artifact": 14184368867,
-    "zip_sha256": "0b6016755581238a2f0c1a08e2a9ab29569c68f89f0b5e062eeb4fecdbb76383",
-    "editor_assembly_compiled": true,
-    "capture_method_executed": true,
-    "exit_code": 1,
-    "screenshots": 0,
-    "masked_primary_exception": true,
-    "empty_scene_restore_fixed_in_source": true,
-    "fix_unity_verified": false
-  }
+  "visual_assessment": "Reviewable stylized three-state pilot. Correct textures, world units, roof, continuous terrain, readable state silhouettes and stable dusk. Remaining artistic limitations: deliberately simple architecture, stylized conifers and sparse environment; not final production art."
 }

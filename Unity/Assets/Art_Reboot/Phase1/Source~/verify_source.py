@@ -11,8 +11,23 @@ assert tracked_original==before,'Original scene changed in branch'
 if (REPO/original).exists():
  assert (REPO/original).read_bytes()==before,'Original scene changed in working tree'
 scene=(ROOT/'Scenes/Eldoria_Visual_Sandbox.unity').read_text()
-assert scene==re.sub('m_IsActive: 1','m_IsActive: 0',before.decode()),'Unexpected sandbox modification before Unity assembly'
-assert 'm_IsActive: 1' not in scene,'Active original object'
+if 'Reboot_Phase1_Authored' not in scene:
+ assert scene==re.sub('m_IsActive: 1','m_IsActive: 0',before.decode()),'Unexpected sandbox modification before Unity assembly'
+else:
+ # Unity reserializes the assembled scene. Preserve every original GameObject
+ # by file ID and keep it inactive, while allowing the new authored hierarchy.
+ def gameobjects(text):
+  result={}
+  for block in re.split(r'(?m)^--- !u!',text)[1:]:
+   match=re.match(r'1 &(-?\d+)\nGameObject:',block)
+   if match:result[match.group(1)]=block
+  return result
+ original_objects=gameobjects(before.decode()); current_objects=gameobjects(scene)
+ assert original_objects, 'No original scene objects found'
+ for fileid in original_objects:
+  assert fileid in current_objects, 'Original object missing: '+fileid
+  assert re.search(r'(?m)^  m_IsActive: 0$',current_objects[fileid]),'Active original object: '+fileid
+
 glb=(ROOT/'Source~/Reboot_Pilot.glb').read_bytes()
 magic,version,length=struct.unpack_from('<III',glb)
 assert magic==0x46546c67 and version==2 and length==len(glb)

@@ -1,0 +1,8 @@
+{
+    "unity": "6000.3.23f1",
+    "sourceSHA": "d74be4ee7d90c07a11becc62c480f37358596e0e",
+    "scene": "Assets/Art_Reboot/Phase1/Scenes/Eldoria_Visual_Sandbox.unity",
+    "note": "Actual Edit Mode URP render requests. No gameplay, physical mobile, ParticleSystem or performance certification. Artistic review required.",
+    "triangles": 21865,
+    "cameraTilt": 50.0
+}
