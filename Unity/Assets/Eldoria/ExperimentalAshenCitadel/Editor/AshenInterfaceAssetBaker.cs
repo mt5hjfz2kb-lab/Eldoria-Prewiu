@@ -1,8 +1,9 @@
-// Persistent Unity sprites for the Ashen Citadel UI.
-// The first attempt used transient Texture2D/Sprite.Create with Image.Type.Sliced;
-// real native screenshots showed bright white central panels (missing persisted
-// sliced texture), despite passing all gameplay tests. Source-authored pixels
-// must be imported as real Sprite assets before scene/UI capture or mobile build.
+// Persistent authored PNG Sprite imports for the Ashen Citadel UI.
+// Previous Unity headless Texture2D.SetPixels32 produced white panels even
+// with a mathematically dark palette. The canonical assets now come from
+// deterministic Node/png source committed alongside its SHA256 manifest.
+// This Editor step ONLY configures native TextureImporter and validates
+// persistent resources; it never overwrites them with transient textures.
 using System;
 using System.IO;
 using Eldoria.ExperimentalAshenCitadel;
@@ -17,59 +18,50 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             "Assets/Eldoria/ExperimentalAshenCitadel/Resources/";
         public static void Bake()
         {
-            Directory.CreateDirectory(ResourcesRoot);
-            BakeSprite("AshenPremiumPanel",AshenInterfaceIdentity.SourcePanelTexture(),
-                new Vector4(18,18,18,18),true);
-            BakeSprite("AshenPremiumButtonPrimary",AshenInterfaceIdentity.SourcePrimaryTexture(),
-                new Vector4(19,14,19,14),false);
-            BakeSprite("AshenPremiumButtonSecondary",AshenInterfaceIdentity.SourceSecondaryTexture(),
-                new Vector4(19,14,19,14),false);
-            BakeSprite("AshenPremiumCrest",AshenInterfaceIdentity.SourceCrestTexture(),
-                Vector4.zero,false);
+            VerifyImportedSprite("AshenPremiumPanel",new Vector4(18,18,18,18));
+            VerifyImportedSprite("AshenPremiumButtonPrimary",new Vector4(19,14,19,14));
+            VerifyImportedSprite("AshenPremiumButtonSecondary",new Vector4(19,14,19,14));
+            VerifyImportedSprite("AshenPremiumCrest",Vector4.zero);
             foreach(string key in new[]{"castle","workshop","army","compass",
                 "mail","bag","hero","quest"})
-                BakeSprite("AshenPremiumGlyph_"+key,
-                    AshenInterfaceGlyphs.SourceGlyphTexture(key),Vector4.zero,false);
+                VerifyImportedSprite("AshenPremiumGlyph_"+key,Vector4.zero);
             AssetDatabase.SaveAssets();
             AshenInterfaceIdentity.RebindAfterBake();
             AshenInterfaceGlyphs.RebindAfterBake();
-            Debug.Log("ASHEN_UI_PREMIUM_SPRITES_BAKED: 4 skins + 8 glyphs; source colours and 9-slice validated");
+            Debug.Log("ASHEN_UI_PREMIUM_SPRITES_IMPORTED 12 canonical PNGs; 9-slice borders verified");
         }
-        private static void BakeSprite(string name,Texture2D source,Vector4 border,bool darkPanel)
+        private static void VerifyImportedSprite(string name,Vector4 border)
         {
-            if(source==null)
-                throw new InvalidOperationException("Ashen UI source raster missing: "+name);
-            int width=source.width,height=source.height;
-            if(darkPanel)
-            {
-                Color32 sample=source.GetPixels32()[(height/2)*width+width/2];
-                Debug.Log("ASHEN_UI_PANEL_SOURCE_MID_RGB "+sample.r+","+sample.g+","+sample.b);
-                if(sample.r>90||sample.g>90||sample.b>100)
-                    throw new InvalidOperationException("Ashen premium frame source not dark at centre; actual RGB="+
-                        sample.r+","+sample.g+","+sample.b);
-            }
             string path=ResourcesRoot+name+".png";
-            File.WriteAllBytes(path,source.EncodeToPNG());
-            UnityEngine.Object.DestroyImmediate(source);
+            if(!File.Exists(path))
+                throw new InvalidOperationException("Missing canonical Ashen premium source PNG: "+
+                    path+" (run tools/ashen-citadel/generate_ui_atlas.mjs)");
+            byte[] data=File.ReadAllBytes(path);
+            if(data.Length<128||data[0]!=137||data[1]!=80||data[2]!=78||data[3]!=71)
+                throw new InvalidOperationException("Corrupt Ashen premium PNG: "+path);
             AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
             var importer=AssetImporter.GetAtPath(path) as TextureImporter;
-            if(importer==null)throw new InvalidOperationException("Could not import UI raster "+path);
+            if(importer==null)
+                throw new InvalidOperationException("Ashen PNG importer unavailable: "+path);
+            bool changed=importer.textureType!=TextureImporterType.Sprite ||
+                importer.spriteImportMode!=SpriteImportMode.Single ||
+                importer.spriteBorder!=border || importer.mipmapEnabled ||
+                !importer.sRGBTexture || !importer.alphaIsTransparency;
             importer.textureType=TextureImporterType.Sprite;
             importer.spriteImportMode=SpriteImportMode.Single;
             importer.spritePixelsPerUnit=100f;
             importer.spriteBorder=border;
             importer.mipmapEnabled=false;
-            importer.isReadable=false;
             importer.filterMode=FilterMode.Bilinear;
             importer.sRGBTexture=true;
             importer.alphaIsTransparency=true;
             importer.textureCompression=TextureImporterCompression.Uncompressed;
-            importer.SaveAndReimport();
+            if(changed)importer.SaveAndReimport();
             var sprite=AssetDatabase.LoadAssetAtPath<Sprite>(path);
             if(sprite==null||sprite.texture==null)
-                throw new InvalidOperationException("Ashen UI Sprite asset failed to import: "+path);
+                throw new InvalidOperationException("Ashen imported Sprite is missing: "+path);
             if(Mathf.Abs(sprite.border.x-border.x)>.5f)
-                throw new InvalidOperationException("Ashen UI Sprite border failed on "+path);
+                throw new InvalidOperationException("Ashen Sprite border mismatched: "+path);
         }
     }
 }
