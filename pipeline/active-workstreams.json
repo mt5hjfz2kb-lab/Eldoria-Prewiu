@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T14:36:34.190Z",
+  "updated_at": "2026-11-16T14:37:13.387Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9842,11 +9842,11 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_phase2_modular_kit_native",
-        "source_sha": "2fcc45357c5bf7eba0a6e43b458f27523306e730",
+        "status": "reserved_exact_head_for_phase2_kit",
+        "source_sha": "a86acf1936820bc1a79cb4df415a7ac39fa26732",
         "reason": "Genuine Unity 31-piece gallery and modular village capture; no current heavy holder or running branch workflow"
       },
-      "native_source_sha": "2fcc45357c5bf7eba0a6e43b458f27523306e730",
+      "native_source_sha": "a86acf1936820bc1a79cb4df415a7ac39fa26732",
       "last_native_attempt": {
         "run": 43876327593,
         "source": "94a095407cc43df527693d75f4bffda0bb767376",
