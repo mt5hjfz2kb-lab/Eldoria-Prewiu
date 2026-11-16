@@ -28,7 +28,7 @@ jobs:
       - name: Prepare ephemeral audit tools (no paid service)
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-venv
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-venv python3-numpy
           python3 -m venv "$RUNNER_TEMP/eldoria-q-audit"
           "$RUNNER_TEMP/eldoria-q-audit/bin/pip" -q install --disable-pip-version-check 'gdown>=5,<7'
       - name: Download exactly six named original 2022 CC0 glTF files and publisher license to private runner disk
