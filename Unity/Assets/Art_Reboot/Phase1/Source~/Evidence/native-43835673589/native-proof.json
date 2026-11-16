@@ -1,0 +1,28 @@
+{
+    "art_approved":  false,
+    "gameplay_tested":  false,
+    "mobile_tested":  false,
+    "unity_compiled":  true,
+    "scope":  "Isolated visual import lab with copied inactive source hierarchy",
+    "unity_rendered":  true,
+    "screenshots":  [
+                        {
+                            "sha256":  "B4891DDDFF15DD9541C8F8E5C8A5844836F8201C87DFD480F3779EEB5A193C5E",
+                            "file":  "unity-1100x1250.png"
+                        },
+                        {
+                            "sha256":  "AFDC6DDAFDC0092EDF63FDF3926B013F597317B47C27D860D70617AEF9FC18E6",
+                            "file":  "unity-390x844.png"
+                        },
+                        {
+                            "sha256":  "4697202317925371D30B6A1AA49E7A5BE9F3BC7683B46A10C2A3913C53D68C61",
+                            "file":  "unity-1600x900.png"
+                        },
+                        {
+                            "sha256":  "B662727BAF222FE7637B4245AE6389A6DE17D9649527BFB828A0AC1BD9315898",
+                            "file":  "unity-844x390.png"
+                        }
+                    ],
+    "full_project_integration":  false,
+    "source_sha":  "b9acb3a7986cfc77af3629905839f9d1dc6b19e3"
+}
