@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T17:10:27.817Z",
+  "updated_at": "2026-11-16T17:24:05.478Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,12 +9745,10 @@
       "ownership_revision": 38,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "MINIMAL_PREMIUM_UI_ARCHITECTURE_NATIVE_FINAL_VALIDATION",
+      "phase": "MINIMAL_PREMIUM_UI_AND_ARCHITECTURE_NATIVE_REVIEWED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9778,22 +9776,22 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "Owner-directed major minimalist floating City HUD and distinct physically integrated premium architecture; stage-aware mobile camera plus contextual inspector above keep. Native exact-source 7 EditMode/4 PlayMode + CityIdle/Welcome/Mail/Bag/World photos."
+        "status": "released_native_complete",
+        "completed_run": 43915637621
       },
       "last_native": {
-        "run": 43905069629,
-        "head": "5a79f9ff53a153cc4b6ca4d06070b266ba1a6153",
-        "artifact": 14245362250,
+        "run": 43915637621,
+        "head": "e69d858a3efe7e760cabb0aa6f10ddde62fc080c",
+        "artifact": 14249927459,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Real Unity 390x844 City/Bag/World/Welcome and Bastion V reviewed. Dark slate/brass 9-slice persisted correctly, icons mapped to functioning controls; Marcellus/Alegreya Sans font assets imported and captions fit. Found clipped second title line 'BASTIÓN I'; corrected heading 18→16 and resource 14→13 in later source 33de41fa68be but visual screenshot for that tiny fix still pending. Not ART_APPROVED.",
+        "visual_review": "Actually inspected Unity 390x844 CityIdle vs contextual City and 1600x900 Bastion V. Dark full-width header/footer removed; status chip, 4 utility medals and 4 nav medals float unobtrusively in idle City. Opens a compact upper-left inspector; it still partly overlaps upper Keep roof when opened and small description text is hard to read. Architecture connected with wooden walkway/catwalk and craft-specific props; cleaned up previous floating granary staves and cross-roof scaffolding. All 10 Bastion screenshots sha256 verified and 12 UI captures present. NOT ART_APPROVED. No physical iPhone.",
         "physical_mobile": false
       },
-      "final_source_sha": "33de41fa68bef6ef4af55955cc465a43c33853d8",
+      "final_source_sha": "e69d858a3efe7e760cabb0aa6f10ddde62fc080c",
       "art_approved": false,
-      "next": "Inspect genuine 390x844 UI CityIdle and City popup (fortress must stay visible), all V architectural details after removal of detached poles and scaffold intersections; verify same-camera 1600x900 and gameplay, preserve isolated branch.",
+      "next": "Owner review of verified minimal CityIdle UI and Bastion V. Improve open inspector readability/occlusion only after owner feedback; actual phone/GPU/WebGL testing remains pending. Keep isolated experiment separate from main.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
