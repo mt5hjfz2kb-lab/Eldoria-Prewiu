@@ -22,6 +22,7 @@ scene.view_settings.view_transform='Standard'
 scene.view_settings.look='Medium High Contrast'
 scene.view_settings.exposure=0
 scene.view_settings.gamma=1
+scene.world=bpy.data.worlds.new('Valoria newly authored dusk sky')
 scene.world.use_nodes=True
 bg=scene.world.node_tree.nodes.get('Background')
 bg.inputs['Color'].default_value=(.40,.48,.58,1)
