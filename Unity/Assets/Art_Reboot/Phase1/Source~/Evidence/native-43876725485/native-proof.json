@@ -1,0 +1,28 @@
+{
+    "art_approved":  false,
+    "gameplay_tested":  false,
+    "mobile_tested":  false,
+    "unity_compiled":  true,
+    "scope":  "Isolated Phase1 village environment revision; all approved building meshes preserved",
+    "unity_rendered":  true,
+    "screenshots":  [
+                        {
+                            "sha256":  "4E0C62343F72C3E437375B221E889ECF3E80955A62CF325AF0D51998C5939C85",
+                            "file":  "unity-1100x1250.png"
+                        },
+                        {
+                            "sha256":  "7EE3FC29CF941B08E98BF2C6451F56AD59A28C0E04B375488867E0F9F6ABCE83",
+                            "file":  "unity-390x844.png"
+                        },
+                        {
+                            "sha256":  "E7CAF7A7C09416B88BDB0DF9129ABB05D89AEDE9901C4C527E8246FF63327DF0",
+                            "file":  "unity-1600x900.png"
+                        },
+                        {
+                            "sha256":  "953AFA61F9D7C6B78766DCB1574E4CA8AAD5B34C649A3181FE2238C78812F085",
+                            "file":  "unity-844x390.png"
+                        }
+                    ],
+    "full_project_integration":  false,
+    "source_sha":  "8bd9b1e61766394bdc0224bc48d6ee72603fab44"
+}
