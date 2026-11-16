@@ -12,6 +12,7 @@ header=header.replace("(112,115,101),(145,143,120),(77,83,77),(104,118,133)","(1
 header=header.replace("wash=.96+", "wash=.96+")
 # Dark painted edge wash inside every atlas swatch, preserving modest wood grain.
 header=header.replace("grain=random.uniform(-.018,.018)","grain=random.uniform(-.012,.012)\n  if k in (0,1,2,3): wash*=.70+.30*min(1,min(u-3,60-u,v-3,60-v)/8)")
+header=header.replace('.065*math.sin(u*.72+math.sin(v*.08))','.15*math.sin(u*.72+math.sin(v*.08))')
 exec(compile(header,'reused-authoring-primitives','exec'),globals())
 random.seed(161126);current='Hero'
 def tint_object(o,rgb):
@@ -32,6 +33,18 @@ def tapered(name,x,y,z,w,d,h,k=0,t=.93):
  return solid(name,vs,[(0,3,2,1),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7),(4,5,6,7)],k,.055)
 def slab(name,top,k,thick=.10):
  return solid(name,top+[(x,y,z-thick) for x,y,z in top],[(0,1,2,3),(7,6,5,4),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)],k,.025)
+def arch(x,y,z,w,h,k=10,depth=.06):
+ r=w/2;spring=z+h-r
+ poly=[(x-r,y,z),(x+r,y,z),(x+r,y,spring)]+[(x+math.cos(i*math.pi/12)*r,y,spring+math.sin(i*math.pi/12)*r) for i in range(1,13)]
+ o=mesh('Arched inset',poly,[tuple(range(len(poly)))],k,glow=k==12)
+ for side in [-1,1]:box('Arch jamb',(x+side*(r+.075),y+.035,z+(h-r)/2),(.15,.20,h-r),1,.02)
+ for i in range(9):
+  a=i*math.pi/9+.009;b=(i+1)*math.pi/9-.009
+  pts=[]
+  for yy in [y-.065,y+.10]:
+   pts += [(x+math.cos(ang)*rad,yy,spring+math.sin(ang)*rad) for rad,ang in [(r,a),(r+.16,a),(r+.16,b),(r,b)]]
+  solid('Fitted arch wedge',pts,[(0,1,2,3),(7,6,5,4),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)],1,.014)
+ return o
 def stone_wall(x,y,z,w,d,h):
  tapered('Recessed dark mortar core',x,y,z,w-.10,d-.10,h,2)
  # Broad, staggered irregular courses; widths and row heights differ, no square grid.
@@ -96,8 +109,8 @@ for z in [.62,1.33]:box('Door iron strap',(-.55,-2.09,z),(1.28,.08,.09),10,.018)
 for i in range(3):box('Worn entry step',(-.55,-2.18-i*.34,.12-i*.035),(1.85,.40,.22),0,.05)
 # Three windows and diagonal timbering under gable.
 for xx in [-2.24,.99]:
- arch(xx,-2.19,2.20,.62,.67,12)
- box('Window bar',(xx,-2.23,2.52),(.055,.10,.52),4,.01)
+ arch(xx,-2.19,2.10,.62,.55,12)
+ box('Window bar',(xx,-2.23,2.36),(.055,.10,.43),4,.01)
 beam('Gable king post',(-.64,-2.62,3.24),(-.64,-2.62,5.94),.19,4)
 for xx in [-2.50,1.17]:beam('Gable diagonal',(xx,-2.60,3.28),(-.64,-2.60,4.65),.15,4)
 # Round dormer medallion in front gable, wood ring and bronze emblem.
