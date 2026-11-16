@@ -123,6 +123,10 @@ jobs:
             if(-not(Test-Path -LiteralPath $p)){throw "Missing original Unity evidence: $name"}
             Copy-Item -LiteralPath $p -Destination (Join-Path $evDir $name)
           }
+          # Retain objective original-frame colour and clipping diagnostics.
+          Get-ChildItem -Path $e -Filter '*.png.metrics.txt' -File | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $evDir $_.Name) -Force
+          }
           Push-Location $root
           try{
             git config user.name "github-actions[bot]"
