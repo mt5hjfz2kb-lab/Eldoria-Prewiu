@@ -98,6 +98,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             AddPaving(geo,rng);
             AddRockOutcrops(geo,rng);
             AddCraftDebris(geo,rng);
+            AddSettlementStory(geo,rng);
             AddEarthPatches(geo,rng);
             var foliage=new Geometry();
             AddPlants(foliage,rng);
@@ -369,6 +370,134 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     g.Tri(material,root,left,tip);g.Tri(material,root,tip,right);
                 }
             }
+        }
+        // Inhabited craft silhouettes, purpose-built in the same authored city
+        // mesh: these are environmental props only, never new game actions.
+        private static void AddSettlementStory(Geometry g,System.Random rng)
+        {
+            // A ruined stone well by the gate anchors a recognisable village
+            // landmark without obstructing the main approach.
+            StoneWell(g,-7.3f,-11.3f);
+            // Saw-mill: loose timber in a few worked stacks, not uniform cubes.
+            for(int row=0;row<3;row++)
+            for(int i=0;i<5;i++)
+            {
+                float x=-20.8f+i*.53f+Rand(rng,-.07f,.07f);
+                float z=-11.4f+row*.68f;
+                Vector3 a=At(x,z,.12f+row*.055f);
+                Vector3 b=At(x+.1f,z+1.7f+Rand(rng,-.2f,.2f),.12f+row*.055f);
+                TimberBeam(g,a,b,.16f+Rand(rng,-.025f,.025f),Timber);
+            }
+            // Garrison: wooden targets and a low practical equipment rack.
+            for(int i=0;i<3;i++)
+            {
+                float x=19.4f+i*1.20f,z=-12.3f-i*.21f;
+                TimberBeam(g,At(x,z,.025f),At(x,z,1.62f),.085f,Timber);
+                TimberBeam(g,At(x-.33f,z,1.36f),At(x+.33f,z,1.36f),.075f,Timber);
+                Target(g,x,z,1.30f);
+            }
+            // Granary: stacked harvest sacks and bound sheaves. Silhouette
+            // groups sit at the loading apron, not on a decorative plinth.
+            for(int row=0;row<2;row++)
+            for(int i=0;i<4;i++)
+            {
+                float x=-20.6f+i*.77f,z=2.2f+row*.90f;
+                float y=.08f+row*.36f;
+                Cuboid(g,x,z,.64f,.66f,.33f,y,Limestone);
+                TimberBeam(g,At(x-.2f,z-.25f,y+.37f),At(x+.21f,z+.27f,y+.37f),
+                    .045f,Timber);
+            }
+            for(int i=0;i<5;i++)
+            {
+                float x=-19.7f+i*.63f,z=5.8f+Rand(rng,-.25f,.25f);
+                TimberBeam(g,At(x,z,.04f),At(x+.13f,z+.66f,.80f),.09f,Timber);
+                TimberBeam(g,At(x+.17f,z,.04f),At(x,z+.61f,.77f),.09f,Timber);
+            }
+            // Quarry: dressed slabs and raw blocks at noticeably different
+            // heights and angles, rather than repeated foundation tiles.
+            for(int i=0;i<13;i++)
+            {
+                float x=21.0f+Rand(rng,-2.5f,2.4f),z=4.0f+Rand(rng,-1.1f,1.5f);
+                float w=Rand(rng,.37f,.82f),d=Rand(rng,.33f,.67f);
+                Cuboid(g,x,z,w,d,Rand(rng,.22f,.65f),.01f,
+                    i%4==0?Basalt:i%3==0?Limestone:Cutstone);
+            }
+        }
+        private static void Cuboid(Geometry g,float x,float z,float width,
+            float depth,float height,float offset,int material)
+        {
+            float xl=x-width*.5f,xr=x+width*.5f,zf=z-depth*.5f,zb=z+depth*.5f;
+            Vector3 p0=At(xl,zf,offset),p1=At(xr,zf,offset);
+            Vector3 p2=At(xr,zb,offset),p3=At(xl,zb,offset);
+            Vector3 t0=p0+Vector3.up*height,t1=p1+Vector3.up*height;
+            Vector3 t2=p2+Vector3.up*height,t3=p3+Vector3.up*height;
+            g.UpQuad(material,t0,t1,t2,t3);
+            g.Tri(material,p0,t1,p1);g.Tri(material,p0,t0,t1);
+            g.Tri(material,p1,t2,p2);g.Tri(material,p1,t1,t2);
+            g.Tri(material,p2,t3,p3);g.Tri(material,p2,t2,t3);
+            g.Tri(material,p3,t0,p0);g.Tri(material,p3,t3,t0);
+        }
+        private static void TimberBeam(Geometry g,Vector3 a,Vector3 b,float radius,int material)
+        {
+            Vector3 along=(b-a).normalized;
+            Vector3 right=Vector3.Cross(along,Vector3.up);
+            if(right.sqrMagnitude<.01f)right=Vector3.right;
+            right.Normalize();
+            Vector3 up=Vector3.Cross(along,right).normalized;
+            Vector3[] aa=new Vector3[4],bb=new Vector3[4];
+            for(int i=0;i<4;i++)
+            {
+                float angle=(i+.5f)*Mathf.PI*.5f;
+                Vector3 offset=radius*(Mathf.Cos(angle)*right+Mathf.Sin(angle)*up);
+                aa[i]=a+offset;bb[i]=b+offset;
+            }
+            for(int i=0;i<4;i++)
+            {
+                int next=(i+1)%4;
+                g.Tri(material,aa[i],bb[next],aa[next]);
+                g.Tri(material,aa[i],bb[i],bb[next]);
+            }
+        }
+        private static void StoneWell(Geometry g,float x,float z)
+        {
+            const int sides=12;
+            float outer=1.12f,inner=.74f,high=.74f;
+            for(int i=0;i<sides;i++)
+            {
+                float a=2*Mathf.PI*i/sides,b=2*Mathf.PI*(i+1)/sides;
+                Vector3 oi=At(x+outer*Mathf.Cos(a),z+outer*Mathf.Sin(a),.02f);
+                Vector3 oj=At(x+outer*Mathf.Cos(b),z+outer*Mathf.Sin(b),.02f);
+                Vector3 ii=At(x+inner*Mathf.Cos(a),z+inner*Mathf.Sin(a),.02f);
+                Vector3 ij=At(x+inner*Mathf.Cos(b),z+inner*Mathf.Sin(b),.02f);
+                Vector3 to=oi+Vector3.up*high,tj=oj+Vector3.up*high;
+                Vector3 ti=ii+Vector3.up*high,tij=ij+Vector3.up*high;
+                int mat=i%6==0?Limestone:Cutstone;
+                g.Tri(mat,oi,tj,oj);g.Tri(mat,oi,to,tj);
+                g.Tri(mat,to,ti,tij);g.Tri(mat,to,tij,tj);
+                g.Tri(Basalt,ii,ij,tij);g.Tri(Basalt,ii,tij,ti);
+            }
+            TimberBeam(g,At(x-.83f,z,.60f),At(x-.83f,z,2.45f),.14f,Timber);
+            TimberBeam(g,At(x+.83f,z,.60f),At(x+.83f,z,2.45f),.14f,Timber);
+            TimberBeam(g,At(x-.97f,z,2.44f),At(x+.97f,z,2.44f),.15f,Timber);
+            TimberBeam(g,At(x,z,2.40f),At(x,z,1.10f),.058f,Timber);
+        }
+        private static void Target(Geometry g,float x,float z,float height)
+        {
+            // Small octagonal practice board, visible from the gameplay camera.
+            const int sides=8;
+            Vector3 centre=At(x,z-.09f,height);
+            Vector3 previous=Vector3.zero,first=Vector3.zero;
+            for(int i=0;i<=sides;i++)
+            {
+                float a=2*Mathf.PI*(i%sides)/sides;
+                Vector3 edge=At(x+.33f*Mathf.Cos(a),z-.09f,
+                    height+.33f*Mathf.Sin(a));
+                if(i==0){first=edge;previous=edge;continue;}
+                g.Tri(i%3==0?Basalt:Limestone,centre,edge,previous);
+                previous=edge;
+            }
+            TimberBeam(g,At(x-.30f,z-.13f,height),At(x+.30f,z-.13f,height),
+                .038f,Timber);
         }
         private static void AddEarthPatches(Geometry g,System.Random rng)
         {
