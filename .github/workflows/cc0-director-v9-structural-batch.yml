@@ -1,0 +1,90 @@
+name: "Eldoria CC0 · V9 structural mobile mesh batching, physical GLB"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v9-structural-batch.yml"
+      - "tools/cc0-art-system/batch_v9_structural.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v9-structural-batching
+  cancel-in-progress: false
+jobs:
+  batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 33
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/batch_v9_structural.py
+      - name: Fetch pinned sRGB-corrected native Blender V9 output from exact run
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v9-structural-real3d
+          run-id: 43886721399
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verify actual unoptimized 5 stages and provenance
+        run: |
+          python3 -m py_compile tools/cc0-art-system/batch_v9_structural.py
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          base=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV9Structural')
+          ev=json.loads(Path('docs/cc0-art-system/previews/director-v9-structural/v9-evidence.json').read_text())
+          assert ev['input_run_id']==43882248142 and ev['images_are_real_blender_renders']
+          assert not ev['vendor_assets_included'] and not ev['unity_native_tested']
+          assert len(ev['stages'])==5
+          for i in range(1,6):
+              p=base/f'DirectorV9_Stage{i}.glb'
+              b=p.read_bytes()
+              assert len(b)>1000000 and b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+          print('V9_BATCH_PINNED_INPUTS_PASS')
+          PY
+      - name: Install free Blender and Python dependencies (Ubuntu, not Windows)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+      - name: Batch V9 physical meshes by material and district
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/batch_v9_structural.py 2>&1 | tee "$RUNNER_TEMP/v9batch.log"
+          grep -q ELDORIA_STATIC_CITY_ALL_STAGES_PASS "$RUNNER_TEMP/v9batch.log"
+      - name: Assert physical glTF validity, polygons unchanged, mobile reduction
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          root=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV9StructuralOptimized')
+          report=json.loads((root/'batch-report.json').read_text())
+          assert report['all_geometry_author_owned'] and not report['unity_tested'] and not report['iphone_tested']
+          assert len(report['stages'])==5
+          for rec in report['stages']:
+              n=rec['stage']
+              assert rec['faces_before']==rec['faces_after'],rec
+              assert rec['original_meshes']>500 and 0<rec['optimized_meshes']<=220,rec
+              assert rec['draw_mesh_reduction']>.7,rec
+              p=root/f'DirectorV9Structural_BatchedStage{n}.glb'
+              b=p.read_bytes();assert b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+              l=struct.unpack_from('<I',b,12)[0];j=json.loads(b[20:20+l])
+              assert len(j['meshes'])==rec['optimized_meshes'],rec
+              print('V9_STRUCTURAL_BATCH_QA',n,rec['original_meshes'],rec['optimized_meshes'],rec['draw_mesh_reduction'])
+          print('V9_BATCH_TECH_ONLY_NOT_MOBILE_CERTIFIED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-cc0-v9-structural-batched-glb
+          path: Unity/Assets/Art_Reboot/CC0System/DirectorV9StructuralOptimized/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: No game source modification or release
+        run: |
+          git diff --exit-code
+          echo "V9_BATCH_ISOLATED_NO_MAIN_NO_WINDOWS_PASS"
