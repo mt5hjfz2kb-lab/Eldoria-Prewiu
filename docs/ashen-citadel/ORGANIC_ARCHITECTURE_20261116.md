@@ -11,3 +11,11 @@ Reuse check found production Aserradero_AP2, Cuartel_AP2 and Granero_BIII; adapt
 
 ## Validation
 UV/source integrity and winding; Blender I/V; same-camera native I–V and portrait; existing 7 EditMode + 4 PlayMode tests. Explicitly inspect eave/wall contact, roof thickness, arch normals, silhouette, room for selection and no clipped auxiliaries. The roof-normal guard stays unchanged: slate exterior faces point outward/up, timber soffits point down. Physical mobile and final artistic approval remain separate.
+
+## Native result — completed 16 November
+
+Geometry c33ee4addbb6053cc6a5119c97094433591ee163; exact native source 16761f13eaf6ba12059ccae73b50852f3ddc3aa1. Run 43851110708 SUCCESS, artifact 14217547766; archive SHA256 2e8aed831bca5312c079fb485cb24a645bf842fc781027994e5d27c7b333555c. All ten screenshot hashes verified. NUnit XML: 7 EditMode + 4 PlayMode passed, zero failed/skipped. Blender workflow 43849214620 SUCCESS. Local source integrity/outward winding pass.
+
+Same-camera Unity comparison to b7646da: closed curved roofs replace flat fitted planes; fuller silo and shaped cap; sagging canvas without roof-like timber stripes. Arched portals most visible in level I, partly occluded by higher gatehouse. Inspected I/II/IV/V landscape and V portrait: no missing materials, floating platforms or clipped auxiliaries. Structural profiles improved, but some wall massing remains box-like; stone tiling remains repetitive and mobile overview is small. Not final commercial art approval or physical iPhone/WebGL validation. Windows released after terminal success and cleanup.
+
+Lesson: controlled shell profiles with matching gable closure improve structural continuity without random noise. Keep light/camera identical for form comparisons. Future surface refinement is separate from this completed geometry pass.
