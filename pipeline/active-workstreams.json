@@ -9740,12 +9740,12 @@
     {
       "id": "eldoria-ashen-citadel-original-i-v-20261115",
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
-      "owner": "chatgpt-ashen-citadel-art-production-20261115",
+      "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 12,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PICTORIAL_IDENTITY_NATIVE_RUNNING",
+      "phase": "FINISHING_SAME_CAMERA",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9779,14 +9779,12 @@
         "visual_reboot_run": 43776990752,
         "released_at": "2026-11-15T23:16:20.904Z"
       },
-      "continuation_session": "237e5d69e3a9",
-      "continuation_authority": "Owner 2026-11-16 accepts composition and explicitly requests recovering original plan and achieving attractive art with freely chosen technique and graphic identity. Same Ashen branch; no Visual Reboot phase instructions imported.",
+      "continuation_session": "e4ce5efc6a5b",
+      "continuation_authority": "Owner: Sigue afinándolo; explicitly authorized main coordination update in follow-up Autorizo. Improve reviewed Ashen finish, isolated branch, no gameplay or publication.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "running",
-        "run_id": 43828204694,
-        "source_sha": "019a24510e62dff53679d034874f51fd890199f1",
-        "reason": "One bounded native Unity artistic capture and gameplay regression; release at terminal."
+        "status": "reserved",
+        "reason": "One bounded finishing comparison after successful prior native run 43828204694."
       },
       "last_native": {
         "run": 43777338073,
@@ -9801,7 +9799,15 @@
       },
       "final_source_sha": "e15baafbeb5487d4bdcd89b77620d9cad479d40a",
       "art_approved": false,
-      "next": "One bounded native Unity capture/test of authored foliage, masonry/slate and dusk lighting; release Windows on terminal run."
+      "next": "One bounded native Unity capture/test of authored foliage, masonry/slate and dusk lighting; release Windows on terminal run.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-ashen-citadel-art-production-20261115",
+          "revision": 11,
+          "reason": "Owner directed continuation after context limit"
+        }
+      ],
+      "write_scope_released": false
     },
     {
       "id": "eldoria-art-visual-reboot-phase1-20261115",
@@ -11840,7 +11846,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -11851,7 +11857,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
