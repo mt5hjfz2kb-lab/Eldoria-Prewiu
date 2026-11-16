@@ -1,6 +1,5 @@
-FASE 2 KIT MODULAR / primer render nativo Unity.
-No borrar ni modificar geometria aprobada Fase 1.
-Blender generator #43884855932 SUCCESS; verify/import 31 FBX with 33372 triangles + approved 256atlas.
-Only Kit/Scenes/Phase2_Kit_Grid.unity and Kit/Scenes/Eldoria_Kit_Sandbox.unity.
-Capture 2400x1350 kit-grid, 1600x900 same Phase1 camera and 1100x1250, plus closeup.
-Preserve Phase1 hash and new evidence; no claims of artistic approval.
+FASE 2 FINAL: Unity 6 real capture of 31 interchangeable modular kit parts.
+Source 906eb2b6cbcf34ca9af1115057940ea078a64173. Blender verified 36,366 triangles, 3 materials, same approved atlas 256x256.
+Capture grid, three distinct modular buildings same 42°/−13° camera, corrupted detail.
+Geometry approved in Phase 1 never touched. Evaluate actual PNG before artistic sign-off.
+Do not touch main or the Ashen experiment. Bounded shared Windows turn.
