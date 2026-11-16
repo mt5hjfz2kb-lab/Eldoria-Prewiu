@@ -12,9 +12,9 @@ Actual native Unity artifact 14207886409, run 43828204694, source 019a24510e62df
 - Grade: exposure .22, contrast 5, saturation 2; bloom unchanged.
 - Ground texture 1024 square instead of 512; estimated RGBA32 mip memory increases from ~1.33 MiB to ~5.33 MiB. Profile on device before adoption. Author-time generation shared between the two materials.
 
-## Verification and blocker
-Local diff inspected. No runtime/gameplay/test files changed. This candidate has NOT been rendered in Unity and must not be described as a proven visual improvement.
+## Verified result
+Owner explicitly authorized the main coordination update. Native Unity run 43832430172 passed on source 41f3e984dd0cb41c9004a455321b56af21751925, artifact 14208894317. All ten native capture hashes verified; 7/7 EditMode and 4/4 PlayMode, zero failures or skipped tests. Source syntax CI also passed.
 
-Automatic approval review rejected the attempted main coordination update (same canonical workstream handoff) because current user authorization covers isolated-branch continuation, not a main write. No workaround attempted; no native job dispatched. Registry update requires explicit owner approval before the shared Windows run. Proposed scope: only pipeline/active-workstreams.json, changing the Ashen entry's owner/revision/continuation state, preserving all other entries. Then synchronize the existing native workflow's owner checks to that new claimed identity, without relaxing guards.
+Actual V landscape and I portrait captures inspected against the prior run: masonry and slate read more clearly; road no longer reads as a hard separate ribbon; forest masses have clearings and broader scale variety. Retain as a useful finish increment, not ART_APPROVED. Ground still smooth in large areas; rocks remain generic, auxiliary plinths read as hard outlines, UI remains rough and mobile architecture still small. These need separate deliberate refinement, not another global brightness increase. No physical iPhone/WebGL/performance certification.
 
-Next: authorized coordination update, publish isolated candidate, run existing source/native QA, inspect same-camera I/V PNGs and all gameplay test results, retain only visibly better outcome. Release Windows after terminal job. No physical iPhone, WebGL or ART_APPROVED claim.
+Camera and architecture unchanged; no gameplay changes or production publication. Windows released after successful terminal native job. Evidence remains linked to the exact source SHA, not the later documentation commit.
