@@ -1,0 +1,61 @@
+{
+  "project": "Eldoria-Prewiu",
+  "branch": "experimento-ciudad-2d",
+  "scene": "Unity/Assets/Experimentos/Ciudad2D/Experimento_Ciudad2D.unity",
+  "source": "conversation PNG attachments",
+  "terrain": {
+    "name": "Terreno.png",
+    "size": [
+      941,
+      1672
+    ],
+    "sha256": "18a4720066654de558310c7d3902587141feaf0524fa77d1def18b94df6e7f4e"
+  },
+  "buildings": [
+    {
+      "file": "Bastion.png",
+      "anchor_x_px": 470,
+      "anchor_y_px": 824,
+      "scale": 0.293
+    },
+    {
+      "file": "Cuartel.png",
+      "anchor_x_px": 206,
+      "anchor_y_px": 547,
+      "scale": 0.189
+    },
+    {
+      "file": "SalonHeroes.png",
+      "anchor_x_px": 719,
+      "anchor_y_px": 546,
+      "scale": 0.195
+    },
+    {
+      "file": "Aserradero.png",
+      "anchor_x_px": 172,
+      "anchor_y_px": 964,
+      "scale": 0.213
+    },
+    {
+      "file": "Granero.png",
+      "anchor_x_px": 751,
+      "anchor_y_px": 962,
+      "scale": 0.211
+    },
+    {
+      "file": "Cantera.png",
+      "anchor_x_px": 470,
+      "anchor_y_px": 1178,
+      "scale": 0.225
+    }
+  ],
+  "checks": {
+    "sprite_inspection": "done",
+    "composite": "done outside Unity",
+    "unity_editor": "not available",
+    "compile": "not tested",
+    "play_clicks": "not tested",
+    "unity_screenshot": "not available"
+  },
+  "note": "User must import 7 PNG using ZIP because connector cannot upload binary blobs from conversation."
+}
