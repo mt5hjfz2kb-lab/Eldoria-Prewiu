@@ -74,6 +74,52 @@ ROCK=[material('24 / pebble moss',(.42,.47,.40)),material('25 / cool bank stone'
 VIOLET=material('27 / distant Breach geode',(.57,.28,.71),.38,.0,1.05)
 LEAF=material('28 / grass tufts',(.29,.43,.29))
 
+# Source-owned albedo PNGs packed inside the original Blender file and GLB.
+# Avoid shader-only Blender noise that would disappear on export to Unity.
+def crafted_texture(ma,kind,color,size=256):
+ image=bpy.data.images.new('Original_'+ma.name[:18]+'_'+kind,width=size,height=size,alpha=True)
+ pixels=[0.0]*(size*size*4)
+ for y in range(size):
+  for x in range(size):
+   tone=1+.060*sin(x*.043+2*sin(y*.034))+.050*cos(y*.049+x*.021)+.021*sin(x*.47+y*.18)
+   if kind=='roof':
+    row=y//27;tx=(x+row%2*23)%51;ty=y%27
+    if tx<2 or ty<2:tone*=.70
+    elif tx<5 or ty<5:tone*=1.13
+   elif kind=='masonry':
+    row=y//39;tx=(x+row%2*34)%69;ty=y%39
+    if tx<3 or ty<3:tone*=.76
+    elif tx<6 or ty<6:tone*=1.11
+   elif kind=='wood':
+    tone*=1+.095*sin(x*.13+sin(y*.026)*3)+.04*cos(x*.42)
+    if x%57<2:tone*=.82
+   elif kind=='foliage':
+    tone*=1+.13*sin(x*.065+y*.032)+.08*cos(x*.14-y*.07)
+   elif kind=='soil':tone*=1+.16*sin(x*.026+y*.045)
+   ix=(y*size+x)*4
+   for ch in range(3):pixels[ix+ch]=linear(min(.99,max(.012,color[ch]*tone)))
+   pixels[ix+3]=1
+ image.pixels.foreach_set(pixels)
+ image.pack()
+ tex=ma.node_tree.nodes.new('ShaderNodeTexImage')
+ tex.name='SOURCE OWNED portable painted atlas'
+ tex.image=image
+ tex.extension='REPEAT'
+ ma.node_tree.links.new(tex.outputs['Color'],ma.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+ return image
+
+for mat,kind,color in (
+ (STONE,'masonry',(.66,.65,.59)),(LIME,'masonry',(.78,.75,.66)),
+ (SHADOW,'masonry',(.39,.42,.42)),(SLATE,'roof',(.29,.40,.57)),
+ (SLATE_EDGE,'roof',(.42,.54,.66)),(OAK,'wood',(.39,.27,.20)),
+ (WOOD,'wood',(.62,.44,.29)),(BARK,'wood',(.34,.29,.24)),
+ (GRASS,'foliage',(.40,.53,.37)),(GRASS_B,'foliage',(.45,.57,.39)),
+ (EARTH,'soil',(.59,.47,.36)),(EARTH2,'soil',(.70,.58,.40))):
+ crafted_texture(mat,kind,color)
+for mat in PINE:crafted_texture(mat,'foliage',tuple(mat.diffuse_color[:3]))
+for mat in ROCK:crafted_texture(mat,'masonry',tuple(mat.diffuse_color[:3]))
+
+
 def cube(name,location,dims,ma,bevel=0):
  bpy.ops.mesh.primitive_cube_add(size=1,location=location)
  ob=bpy.context.object;ob.name=name;ob.dimensions=dims
@@ -98,6 +144,11 @@ def ico(name,loc,scale,ma,sub=1):
 def mesh(name,vertices,faces,ma):
  m=bpy.data.meshes.new(name);m.from_pydata(vertices,[],faces);m.update()
  obj=bpy.data.objects.new(name,m);bpy.context.collection.objects.link(obj);m.materials.append(ma)
+ uv=m.uv_layers.new(name='Painted atlas world UV')
+ for poly in m.polygons:
+  for li in poly.loop_indices:
+   co=m.vertices[m.loops[li].vertex_index].co
+   uv.data[li].uv=(co.x/7.5,co.y/7.5)
  return obj
 
 def gable(name,x,y,z,width,depth,rise,ma):
@@ -209,13 +260,7 @@ for iy in range(depth-1):
   a=iy*width+ix;faces.append((a,a+1,a+1+width,a+width))
 terrain=mesh('ONE unified sculpted terrain, no legacy assets',verts,faces,GRASS)
 for p in terrain.data.polygons:p.use_smooth=True
-bs=GRASS.node_tree.nodes.get('Principled BSDF')
-t=GRASS.node_tree.nodes.new('ShaderNodeTexNoise');t.inputs['Scale'].default_value=2.9
-ramp=GRASS.node_tree.nodes.new('ShaderNodeValToRGB')
-ramp.color_ramp.elements[0].position=.22;ramp.color_ramp.elements[0].color=(.09,.17,.10,1)
-ramp.color_ramp.elements[1].position=.78;ramp.color_ramp.elements[1].color=(.28,.36,.17,1)
-GRASS.node_tree.links.new(t.outputs['Fac'],ramp.inputs['Fac'])
-GRASS.node_tree.links.new(ramp.outputs['Color'],bs.inputs['Base Color'])
+# Permanent albedo of the terrain is embedded, with no viewport-only node override.
 
 def ribbon(name,poly,width,ma,offset=.052):
  v=[];f=[]
@@ -486,8 +531,8 @@ def frame(name,resX,resY,position,target,scale):
  bpy.ops.render.render(write_still=True)
 
 # Distinct from legacy Valoria: iconic readable vertical masses, bold roofs and warm/cool contrast.
-frame('original-bastion-v-landscape.png',1440,900,(72,-88,77),(0,4,3.2),103)
-frame('original-bastion-v-portrait.png',800,1400,(72,-88,79),(0,5,3.8),77)
+frame('original-bastion-v-landscape.png',1440,900,(72,-88,77),(0,4,3.2),84)
+frame('original-bastion-v-portrait.png',800,1400,(72,-88,79),(0,5,3.8),67)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'valoria-original-identity.blend'))
 # Genuine 3D GLB; original editable project is the source of truth.
 bpy.ops.export_scene.gltf(filepath=str(out/'valoria-original-bastion-v.glb'),
