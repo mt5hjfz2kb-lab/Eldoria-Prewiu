@@ -134,8 +134,19 @@ jobs:
             if($LASTEXITCODE -ne 0){
               git commit -m "art(phase2): preserve real Unity Kit grid and 3-building modular sandbox [kit-native-proof]"
               if($LASTEXITCODE -ne 0){throw 'Cannot commit kit evidence'}
-              git push origin HEAD:art/visual-reboot
-              if($LASTEXITCODE -ne 0){throw 'Concurrent changes rejected; native artifact retains original evidence'}
+              # Another source-only push may have advanced the branch during
+              # the Unity render. Integrate safely without force-push or loss
+              # of real scene evidence; the artifact remains the fallback.
+              $published=$false
+              for($attempt=1;$attempt -le 3;$attempt++){
+                git fetch origin art/visual-reboot
+                if($LASTEXITCODE -ne 0){throw 'Cannot fetch current visual branch'}
+                git rebase origin/art/visual-reboot
+                if($LASTEXITCODE -ne 0){throw 'Real concurrent scene/source conflict; do not overwrite any branch'}
+                git push origin HEAD:art/visual-reboot
+                if($LASTEXITCODE -eq 0){$published=$true;break}
+              }
+              if(-not $published){throw 'Concurrent commits prevented safe native evidence publication; artifact retained'}
             }
           }finally{Pop-Location}
       - name: Upload true native evidence for review even if integration fails
