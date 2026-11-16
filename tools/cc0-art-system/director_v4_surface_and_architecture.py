@@ -20,13 +20,13 @@ OUT=ROOT/"Unity/Assets/Art_Reboot/CC0System/DirectorV4"
 PREV=ROOT/"docs/cc0-art-system/previews/director-v4"
 for p in (OUT, PREV):p.mkdir(parents=True,exist_ok=True)
 palette={
-"stone":((134,136,133), "ashlar"),
-"edge":((178,169,152), "ashlar"),
-"dark":((79,93,99), "ashlar"),
-"roof":((55,72,83), "slate"),
-"wood":((116,83,58), "wood"),
-"wooddark":((63,49,41), "wood"),
-"rock":((108,116,111), "rock")
+"stone":((160,155,145), "ashlar"),
+"edge":((191,184,169), "ashlar"),
+"dark":((104,113,119), "ashlar"),
+"roof":((89,109,124), "slate"),
+"wood":((137,101,70), "wood"),
+"wooddark":((77,62,50), "wood"),
+"rock":((125,132,125), "rock")
 }
 def texture(kind,base,name):
     """Original deterministic tiny tileable painted materials, not downloaded assets."""
@@ -75,9 +75,9 @@ def improve_terrain():
     undul=np.sin(yx[1]*.017+np.cos(yx[0]*.025))*4.4
     # Different biological green patches and compacted paths preserve old layout.
     boost=(broad-127)*.16+grain+undul
-    x[:,:,0]=x[:,:,0]*1.10+boost*.95
-    x[:,:,1]=x[:,:,1]*1.13+boost*1.03
-    x[:,:,2]=x[:,:,2]*1.03+boost*.83
+    x[:,:,0]=x[:,:,0]*1.24+boost*1.3
+    x[:,:,1]=x[:,:,1]*1.27+boost*1.26
+    x[:,:,2]=x[:,:,2]*1.13+boost*.96
     Image.fromarray(np.clip(x,0,255).astype(np.uint8),"RGB").save(TERRAIN_FILE)
 improve_terrain()
 def normalized(name):
@@ -332,34 +332,34 @@ def add_environment():
 def lighting(scene):
     scene.view_settings.view_transform="Filmic"
     scene.view_settings.look="Medium High Contrast"
-    scene.view_settings.exposure=.07
+    scene.view_settings.exposure=.86
     w=scene.world
     if w:
         w.use_nodes=True
         bg=w.node_tree.nodes.get("Background")
         if bg:
-            bg.inputs["Color"].default_value=(.35,.40,.52,1)
-            bg.inputs["Strength"].default_value=.58
+            bg.inputs["Color"].default_value=(.44,.47,.56,1)
+            bg.inputs["Strength"].default_value=.93
     for ob in bpy.data.objects:
         if ob.type!="LIGHT":continue
         if ob.data.type=="SUN":
-            ob.data.energy=3.00
-            ob.data.color=(1.0,.77,.57)
+            ob.data.energy=3.72
+            ob.data.color=(1.0,.81,.66)
             ob.data.angle=radians(3.8)
             ob.rotation_euler=(radians(67),radians(12),radians(-36))
         if ob.data.type=="POINT":
             ob.data.energy=min(105,ob.data.energy)
-def capture(stage,suffix,size=(1600,900),portrait=False):
+def capture(stage,suffix,size=(1600,900),portrait=False,hero=False):
     cam=bpy.context.scene.camera
     if cam is None:
         bpy.ops.object.camera_add(location=(35,-50,40))
         cam=bpy.context.object
         bpy.context.scene.camera=cam
     cam.data.type="ORTHO"
-    cam.location=(38,-54,43) if not portrait else (33,-47,42)
+    cam.location=(30,-44,39) if hero else (38,-54,43) if not portrait else (33,-47,42)
     aim=Vector((0,-1,4.1))
     cam.rotation_euler=(aim-cam.location).to_track_quat("-Z","Y").to_euler()
-    cam.data.ortho_scale=64 if not portrait else 55
+    cam.data.ortho_scale=47 if hero else 62 if not portrait else 55
     scene=bpy.context.scene
     scene.render.engine="CYCLES"
     scene.cycles.samples=24
@@ -391,6 +391,7 @@ def output_stage(stage):
     if stage in (1,5):
         frames.append(capture(stage,f"DirectorV4_Bastion{stage}_1600x900.png"))
         if stage==5:
+            frames.append(capture(stage,"DirectorV4_Bastion5_Hero_1600x900.png",hero=True))
             frames.append(capture(stage,"DirectorV4_Bastion5_720x1200.png",(720,1200),True))
             scene=bpy.context.scene
             scene.render.filepath=""
