@@ -137,3 +137,17 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 - **Límite técnico:** el tamaño del GLB y la prueba Blender no certifican FPS, draw calls, memoria, Unity, WebGL, iPhone, Android ni funcionamiento de gameplay. Antes de presentar una beta: batching/LODs de las 2.456 mallas, conservar GUIDs/puntos de acción y comprobar con captura real de Unity bajo reserva legítima del Windows compartido.
 - **Reproducibilidad pendiente:** el script está versionado y la fuente V11 está fijada a #43891952674, pero GitHub Actions conserva artifacts solo 30 días. Debe consolidarse una fuente maestra propia duradera y un rebuild completo antes de depender de ella a largo plazo.
 - **Próxima decisión basada en evidencia:** escoger entre la geometría V12 corregida y la variante de paisaje V12 #43894052922 con capturas de la misma cámara. No fusionar automáticamente variantes ni usar ilustraciones IA como supuestos assets.
+
+## V13: reconstrucción física de la fachada y prueba de Unity separada (16/11/2026)
+
+**Propósito:** responder al encargo explícito de realizar correcciones directamente en la geometría del juego. Prohibido sustituir modelado por imágenes conceptuales.
+
+**Trabajo implementado en esta rama, no en main:**
+- `tools/cc0-art-system/director_v13_gothic_facade.py`: importa los cinco GLB originales V12 de [Action 43896519558](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43896519558). En nivel V exige eliminar físicamente el coro anterior (mínimo 30 piezas) antes de construir una fachada gótica de piedra, cubierta inclinada con vertientes y coursing, ventanas ojivales, contrafuertes conectados y herrería real de puerta. No inventa materiales desde una imagen conceptual ni introduce vendor meshes.
+- El script también diferencia cantera (grúa), aserradero (rueda y madera), granero (provisiones y silo) y cuartel (dianas); añade textura de variación geográfica de 512 × 512 al **suelo existente**, preservando el trazado de caminos y sin planos decorativos flotantes.
+- `.github/workflows/cc0-director-v13.yml`: ejecución Linux hospedada [#43902021480](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43902021480) sin ocupar Windows; exige exportar cinco GLB, una fuente BLEND y cuatro capturas **reales de Blender** (I, V, V cerca, V vertical), verificando ausencia de geometría vieja superpuesta y textura física integrada.
+- `Unity/Assets/Art_Reboot/CC0System/Editor/CC0V13SceneBuilder.cs`: generador de cinco escenas editor independientes y capturas reales Unity I y V; utiliza `com.unity.cloud.gltfast 6.14.1` instalado en `Unity/Packages/manifest.json`. **Código registrado, todavía no ejecutado/compilado en Unity:** exige copiar los GLB reales del artifact V13 a `Unity/Assets/Art_Reboot/CC0System/DirectorV13/` sin tocar escenas de producción.
+
+**Estado real de V13 al registrar esta línea:** workflow lanzado; no declarar técnica ni estética aprobada hasta conclusión de Action y examen visual de PNG. No hay aún prueba física de iPhone, Android ni WebGL. No se ha modificado `main`.
+
+**Criterios de cierre:** inspeccionar capturas reales V13 y anotar defectos; comprobar que nueva nave supera V12 y que no hay dobles cubiertas; medir mallas y agrupar estáticas; ejecutar SceneBuilder en Unity con permiso/recurso real, comprobar materiales, dirección de cámara y el fallo de reinicio del mundo en la beta de forma independiente. No fusionar ni declarar arte premium por CI verde.
