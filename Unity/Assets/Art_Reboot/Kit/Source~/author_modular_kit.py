@@ -210,7 +210,7 @@ def masonry(p,damaged=False,corner=False,door=False,window=False):
     if damaged:
         # Broken plaster edges, a braced collapse and earth-contact rubble.
         for x in (-1.35,-.62,.70,1.6):
-            z=p.rng.uniform(.06,.3)
+            z=p.rng.uniform(.19,.34)
             p.box((x,-.53,z),(.55,.60,.22),p.rng.choice((0,1,2)),bevel=.065,rot=p.rng.uniform(-.25,.25))
         p.rod((-1.88,-.43,.37),(-.61,-.55,2.63),.22,4)
         p.rod((1.80,-.40,.55),(.90,-.45,3.02),.17,4)
