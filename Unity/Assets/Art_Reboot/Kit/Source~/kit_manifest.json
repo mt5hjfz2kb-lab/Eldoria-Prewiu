@@ -395,22 +395,22 @@
       "id": "Tower_Bell",
       "family": "towers",
       "fbx": "Models/Tower_Bell.fbx",
-      "triangles": 11100,
-      "faces": 6550,
+      "triangles": 5292,
+      "faces": 3118,
       "grid_m": 4,
       "footprint_cells": [
         1,
         1
       ],
       "local_min_m": [
-        -2.235,
-        -2.235,
+        -2.05,
+        -2.05,
         0.0
       ],
       "local_max_m": [
-        2.235,
-        2.235,
-        7.575
+        2.05,
+        2.05,
+        7.59
       ],
       "pivot_m": [
         0,
@@ -429,22 +429,22 @@
       "id": "Tower_Broken",
       "family": "towers",
       "fbx": "Models/Tower_Broken.fbx",
-      "triangles": 9592,
-      "faces": 5668,
+      "triangles": 4884,
+      "faces": 2886,
       "grid_m": 4,
       "footprint_cells": [
         1,
         1
       ],
       "local_min_m": [
-        -2.235,
-        -2.235,
+        -2.05,
+        -2.45,
         0.0
       ],
       "local_max_m": [
-        2.409,
-        2.235,
-        5.943
+        2.05,
+        2.276,
+        5.939
       ],
       "pivot_m": [
         0,
@@ -1072,5 +1072,5 @@
       "vertex_color_layer": "Color"
     }
   ],
-  "total_triangles": 43888
+  "total_triangles": 33372
 }
