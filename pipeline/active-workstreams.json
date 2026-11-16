@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T14:48:07.186Z",
+  "updated_at": "2026-11-16T14:48:58.189Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 34,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_GROUND_V3_NATIVE_REVIEWED",
+      "phase": "PREMIUM_SETTLEMENT_AND_VIGILIA_UI_NATIVE_QA",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9778,8 +9778,8 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "returned_after_phase2_visual_native",
-        "previous_visual_run": 43887687518
+        "status": "reserved",
+        "reason": "Owner requested simultaneous substantial scene richness and real playable UI. Native five-level city/world proof plus UI screenshot flows. No game main changes."
       },
       "last_native": {
         "run": 43884660555,
@@ -9793,7 +9793,7 @@
       },
       "final_source_sha": "d561872156bf0bc845f9ab585d01f0b2c02bfdce",
       "art_approved": false,
-      "next": "Owner review of native V3 screenshots; separately test device performance/memory, and consider major structural environment/storytelling accents only if necessary. Main game unchanged.",
+      "next": "Native Unity compile/capture with real 1600x900 and 390x844 I-V and UI City/World/Bag/Mailbox/Welcome; visual critique against V3 and full EditMode/PlayMode.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
