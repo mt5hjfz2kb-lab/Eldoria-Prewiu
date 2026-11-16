@@ -170,7 +170,7 @@ namespace Eldoria.ArtReboot.Editor
         {
             var shader=AssetDatabase.LoadAssetAtPath<Shader>(Root+"/Materials/Village_SoftParticle.shader");if(shader==null||ShaderUtil.ShaderHasError(shader))throw new InvalidOperationException("Smoke shader invalid");
             string path=Root+"/Materials/Village_Smoke.mat";var mat=AssetDatabase.LoadAssetAtPath<Material>(path);if(mat==null){mat=new Material(shader);AssetDatabase.CreateAsset(mat,path);}mat.SetFloat("_EmissionScale",1);
-            var locations=new[]{new Vector3(-2.3f,6.0f,5.62f),new Vector3(3.5f,4.5f,2.1f),new Vector3(4.8f,6f,1.72f)};
+            var locations=new[]{new Vector3(-2.3f,6.0f,5.62f),new Vector3(3.5f,4.5f,2.1f),new Vector3(-10.8f,4.7f,-.4f)};
             var result=new ParticleSystem[locations.Length];
             for(int i=0;i<locations.Length;i++){
                 var o=new GameObject("Slow chimney smoke "+i);o.transform.SetParent(root.transform,false);o.transform.position=locations[i];var p=o.AddComponent<ParticleSystem>();var m=p.main;
