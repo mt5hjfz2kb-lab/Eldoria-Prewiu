@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T16:20:06.267Z",
+  "updated_at": "2026-11-16T16:23:41.561Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 37,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_SETTLEMENT_AND_VIGILIA_UI_NATIVE_QA",
+      "phase": "PREMIUM_UI_FONTS_NATIVE_REVIEWED_TITLE_FIT_PENDING",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [],
@@ -9776,22 +9776,22 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "yielded_after_verified_terminal_ashen_run",
-        "completed_run": 43905069629
+        "status": "yielded_to_other_active_workstream",
+        "last_completed_ashen_run": 43905069629
       },
       "last_native": {
-        "run": 43884660555,
-        "head": "d561872156bf0bc845f9ab585d01f0b2c02bfdce",
-        "artifact": 14234376960,
+        "run": 43905069629,
+        "head": "5a79f9ff53a153cc4b6ca4d06070b266ba1a6153",
+        "artifact": 14245362250,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Real I–V landscape/mobile screenshots; all ten hashes verified. New meadow geometry and narrower fitted approach visibly improve composition. Black birdlike grass silhouettes in V2 fixed with distinct unlit/no-shadow foliage renderer and sparse short tufts; large generic city pebble prefabs removed; ground workyard wear and groups improved. Fortified city still somewhat visually sparse and material detailing not ART_APPROVED.",
+        "visual_review": "Real Unity 390x844 City/Bag/World/Welcome and Bastion V reviewed. Dark slate/brass 9-slice persisted correctly, icons mapped to functioning controls; Marcellus/Alegreya Sans font assets imported and captions fit. Found clipped second title line 'BASTIÓN I'; corrected heading 18→16 and resource 14→13 in later source 33de41fa68be but visual screenshot for that tiny fix still pending. Not ART_APPROVED.",
         "physical_mobile": false
       },
-      "final_source_sha": "d561872156bf0bc845f9ab585d01f0b2c02bfdce",
+      "final_source_sha": "33de41fa68bef6ef4af55955cc465a43c33853d8",
       "art_approved": false,
-      "next": "Native Unity compile/capture with real 1600x900 and 390x844 I-V and UI City/World/Bag/Mailbox/Welcome; visual critique against V3 and full EditMode/PlayMode.",
+      "next": "When native runner is released, capture isolated Ashen head again to confirm both lines of Marcellus title fit, 7 EditMode + 4 PlayMode. Then owner reviews premium environment and playable UI; physical iPhone/WebGL profiling remains separate.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
