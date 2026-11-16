@@ -305,7 +305,13 @@ for o in joined:
  assert not o.data.validate(verbose=True,clean_customdata=False), 'Invalid authored mesh: '+o.name
  o.select_set(True)
 bpy.ops.export_scene.fbx(filepath=str(ROOT/'Models/Reboot_Pilot.fbx'),use_selection=True,object_types={'MESH'},apply_unit_scale=True,axis_forward='-Z',axis_up='Y',add_leaf_bones=False,bake_anim=False,path_mode='RELATIVE',use_mesh_modifiers=True,use_triangles=True)
-bpy.ops.export_scene.gltf(filepath=str(ROOT/'Source~/Reboot_Pilot.glb'),export_format='GLB',use_selection=True,export_yup=True,export_materials='EXPORT',export_all_vertex_colors=True)
+# Blender 4.0 and 4.3 expose different glTF color-attribute controls.
+# Select the supported API by runtime introspection; verify actual COLOR_0 after export.
+gltf_args=dict(filepath=str(ROOT/'Source~/Reboot_Pilot.glb'),export_format='GLB',
+               use_selection=True,export_yup=True,export_materials='EXPORT')
+if 'export_all_vertex_colors' in bpy.ops.export_scene.gltf.get_rna_type().properties:
+ gltf_args['export_all_vertex_colors']=True
+bpy.ops.export_scene.gltf(**gltf_args)
 triangles=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in joined)
 (ROOT/'Evidence/geometry.json').write_text(json.dumps({'generator':'Blender '+bpy.app.version_string,'seed':151126,'triangles':triangles,'mesh_objects':len(joined),'materials':len(materials),'atlas':[256,256],'units':'metres','pivot':'world origin, ground plane z=0','families':[o.name for o in joined],'unity_verified':False},indent=2))
 
