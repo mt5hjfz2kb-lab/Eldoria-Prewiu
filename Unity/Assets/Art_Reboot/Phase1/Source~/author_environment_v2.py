@@ -44,9 +44,9 @@ def ground(x,y):
 n=81;verts=[];faces=[]
 for j in range(n):
  for i in range(n):
-  x=(i-40)*.65;y=-27+j*.575
+  x=(i-40)*.65;y=(-65+4*j if j<10 else -25+(j-10)*.65)
   if i in (0,80):x=-90 if i==0 else 90
-  if j in (0,80):y=-27 if j==0 else 20.2+1.2*math.sin(x*.16)+.6*math.sin(x*.41)
+  if j==80:y=22+1.5*math.sin(x*.16)+.5*math.sin(x*.41)
   verts.append((x,y,ground(x,y)))
 for j in range(n-1):
  for i in range(n-1):a=j*n+i;faces.append((a,a+1,a+n+1,a+n))
