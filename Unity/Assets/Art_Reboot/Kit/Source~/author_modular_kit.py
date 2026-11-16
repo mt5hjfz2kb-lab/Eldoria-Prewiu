@@ -276,6 +276,19 @@ def roof_gable(p,w=8.40,d=8.48,height=2.63):
         p.rod((-w*.48,yy,.10),(0,yy,height),.20,4)
         p.rod((w*.48,yy,.10),(0,yy,height),.20,4)
     p.rod((0,-d*.53,height),(0,d*.53,height),.28,4)
+    # Approved hero architecture uses a filled timber-and-plaster gable beneath
+    # each heavy curved roof. This is part of the SAME repeatable roof module;
+    # its absence previously made the modular houses look hollow and assembled.
+    for yy,sign in ((-d*.48,-1),(d*.48,1)):
+        p.face([(-w*.48,yy,.12),(w*.48,yy,.12),(0,yy,height*.94)],
+               5,shade=.92,outward=(0,sign,0))
+        p.rod((-w*.48,yy+sign*.075,.16),(w*.48,yy+sign*.075,.16),.16,4)
+        p.rod((0,yy+sign*.085,.12),(0,yy+sign*.085,height*.92),.22,4)
+        for side in (-1,1):
+            p.rod((side*w*.45,yy+sign*.09,.17),
+                  (side*.14,yy+sign*.09,height*.88),.21,4)
+            p.rod((side*w*.27,yy+sign*.11,.19),
+                  (0,yy+sign*.11,height*.70),.13,4)
 
 def roof_tower(p):
     w=4.50;h=2.25
