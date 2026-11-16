@@ -32,6 +32,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check pillow==11.3.0
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py
+          python Unity/Assets/Experimentos/Ciudad2D/QA/validate_props.py
       - name: Preserve compare images and audit
         if: always()
         uses: actions/upload-artifact@v4

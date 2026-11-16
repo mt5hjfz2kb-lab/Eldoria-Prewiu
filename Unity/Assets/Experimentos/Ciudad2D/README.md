@@ -33,3 +33,7 @@ No se tocan `ProjectSettings`, `Valoria_City_World_UI.unity`, código existente 
 ## Evidencia
 
 `QA/asset_manifest.json` contiene dimensiones, tamaño y SHA-256 de los ocho PNG y estados de pruebas. `QA/preview-I-V.png` es exclusivamente composición Pillow, no captura del motor. `QA/validate_pilot.py` valida los sprites, los límites de hitos y la ausencia de mutaciones en el adaptador. Cada defecto detectado debe documentarse antes de abrir el siguiente bloque de producción.
+
+## Pase de riqueza ambiental (segunda iteración aislada)
+
+Se han incorporado **9 props originales** y 10 colocaciones independientes: árbol antiguo, matorrales, muro derruido, carreta, pozo, suministros, valla, antorchas y grieta violeta. Son sprites RGBA individuales con pivot a los pies, sorting por coordenada y sin colliders, guardados solo en `Sprites/Props` y renderizados como objetos independientes en Unity y el inspector web. Su estilo, identidad y ubicación son **candidatos**, no arte aprobado. El fondo y seis edificios originales siguen independientes; ninguna regla ni guardado cambia. `QA/validate_props.py` verifica los SHA256, los tamaños y el alfa de los PNG. El pase de arte no certifica PlayMode ni dispositivos físicos.

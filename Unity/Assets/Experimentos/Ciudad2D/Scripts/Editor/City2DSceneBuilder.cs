@@ -46,6 +46,21 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             new Placement("cantera", "Cantera.png", "Cantera", 470, 1178, 0.225f * 1254f / 860f),
         };
 
+        // Material de escena independiente, sin Collider ni reglas de gameplay.
+        private static readonly Placement[] AmbientProps =
+        {
+            new Placement("decor_0","Props/ArbolAntiguo.png","ArbolAntiguo",319,443,0.44f),
+            new Placement("decor_1","Props/MatojosFlores.png","MatojosFlores",608,400,0.30f),
+            new Placement("decor_2","Props/MatojosFlores.png","MatojosFlores",611,799,0.27f),
+            new Placement("decor_3","Props/MuroDerruido.png","MuroDerruido",493,368,0.30f),
+            new Placement("decor_4","Props/CarroMadera.png","CarroMadera",290,1091,0.34f),
+            new Placement("decor_5","Props/PozoPiedra.png","PozoPiedra",660,1115,0.34f),
+            new Placement("decor_6","Props/AlmacenBarriles.png","AlmacenBarriles",815,1085,0.27f),
+            new Placement("decor_7","Props/VallaLenador.png","VallaLenador",315,867,0.28f),
+            new Placement("decor_8","Props/AntorchasGuardian.png","AntorchasGuardian",477,868,0.20f),
+            new Placement("decor_9","Props/FisuraBrecha.png","FisuraBrecha",527,422,0.27f),
+        };
+
         static City2DSceneBuilder() { EditorApplication.delayCall += BuildIfReady; }
 
         [MenuItem("Eldoria/Experimentos/Ciudad 2D/Reconstruir escena hitos I-V")]
@@ -73,6 +88,13 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if (Load(spec.Filename) == null)
                 {
                     if (forced) Debug.LogWarning("[Ciudad2D] Falta Sprites/" + spec.Filename);
+                    return;
+                }
+
+            foreach (var prop in AmbientProps)
+                if (Load(prop.Filename) == null)
+                {
+                    if (forced) Debug.LogWarning("[Ciudad2D] Falta atrezzo " + prop.Filename);
                     return;
                 }
 
@@ -142,13 +164,25 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     bridge.Register(buildingComponent);
                 }
 
+                // El atrezzo se ordena por altura de sus pies en el mismo espacio
+                // isométrico de las construcciones. No se puede seleccionar.
+                foreach (var spec in AmbientProps)
+                {
+                    var obj = new GameObject("Atrezzo_" + spec.Id);
+                    obj.transform.position = PositionOf(spec.PixelAnchor.x, spec.PixelAnchor.y, terrain);
+                    obj.transform.localScale = Vector3.one * spec.Scale;
+                    var renderer = obj.AddComponent<SpriteRenderer>();
+                    renderer.sprite = Load(spec.Filename);
+                    renderer.sortingOrder = OrderFor(spec.PixelAnchor.y, terrain);
+                }
+
                 var uiRoot = new GameObject("ControlesVisuales_NoJugables");
                 uiRoot.AddComponent<City2DPilotHud>().Configure(bridge);
 
                 new GameObject(SceneMarker);
                 if (!EditorSceneManager.SaveScene(isolated, ScenePath))
                     throw new InvalidOperationException("Unity no pudo escribir " + ScenePath);
-                Debug.Log("[Ciudad2D] Escena I-V guardada: 8 sprites, 6 edificios, 2 hitos, " + ScenePath);
+                Debug.Log("[Ciudad2D] Escena I-V guardada: 8 sprites de escena + 9 atrezzo, 6 edificios, 2 hitos, " + ScenePath);
             }
             catch (Exception exception)
             {
@@ -187,7 +221,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if (path == SpritesFolder + "Bastion_Nivel01.png") seenFirst = true;
                 if (path == SpritesFolder + "Bastion_Nivel05.png") seenFifth = true;
             }
-            return seenFirst && seenFifth;
+            return seenFirst && seenFifth && Array.Exists(deps, x => x == SpritesFolder + "Props/ArbolAntiguo.png");
         }
     }
 }

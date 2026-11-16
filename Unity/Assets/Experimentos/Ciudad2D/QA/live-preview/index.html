@@ -49,7 +49,19 @@ const W=941,H=1672,entries=[
  {id:'granero',name:'Granero',file:'Granero.png',x:751,y:962,s:0.211*1254/860,t:'Reserva de alimentos'},
  {id:'cantera',name:'Cantera',file:'Cantera.png',x:470,y:1178,s:0.225*1254/860,t:'Extracción de piedra'}
  ];
-const imageFiles=['Terreno.png','Bastion_Nivel01.png','Bastion_Nivel05.png',...entries.filter(e=>e.id!=='bastion').map(e=>e.file)];
+const decor=[
+ {file:'Props/ArbolAntiguo.png',x:319,y:443,s:0.44},
+ {file:'Props/MatojosFlores.png',x:608,y:400,s:0.30},
+ {file:'Props/MatojosFlores.png',x:611,y:799,s:0.27},
+ {file:'Props/MuroDerruido.png',x:493,y:368,s:0.30},
+ {file:'Props/CarroMadera.png',x:290,y:1091,s:0.34},
+ {file:'Props/PozoPiedra.png',x:660,y:1115,s:0.34},
+ {file:'Props/AlmacenBarriles.png',x:815,y:1085,s:0.27},
+ {file:'Props/VallaLenador.png',x:315,y:867,s:0.28},
+ {file:'Props/AntorchasGuardian.png',x:477,y:868,s:0.20},
+ {file:'Props/FisuraBrecha.png',x:527,y:422,s:0.27}
+];
+const imageFiles=['Terreno.png','Bastion_Nivel01.png','Bastion_Nivel05.png',...entries.filter(e=>e.id!=='bastion').map(e=>e.file),...Array.from(new Set(decor.map(e=>e.file)))];
 const imgs={},alpha={};let artLevel=1,sel=null,zoom=1,centerX=W/2,centerY=H/2,baseScale=1,scale=1,landscape=false,activePointers=new Map(),lastDistance=null,lastPoint=null,dragPx=0,frame=0,ready=false;
 const clicks=[];
 function select(id){sel=entries.find(e=>e.id===id)||null;document.getElementById('sheet').classList.remove('open');document.getElementById('name').textContent=sel?sel.name:'Explora la ciudad';document.getElementById('subtitle').textContent=sel?`${sel.t} · ${sel.id==='bastion'?'Ilustración nivel '+artLevel:'Ilustración base'} `:'Toca un edificio · arrastra para mover · pellizca para ampliar';document.getElementById('detail').style.display=sel?'block':'none';clicks.push(id||null);}
@@ -62,12 +74,12 @@ function img(name){return imgs[name]||null;}
 function drawImage(name,x,y,w,h){const im=img(name);if(im)ctx.drawImage(im,x,y,w,h);}
 function draw(){frame++;const ratio=canvas.width/canvas.clientWidth;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#18252b';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);ctx.save();ctx.translate(canvas.clientWidth/2,canvas.clientHeight/2);ctx.scale(scale,scale);ctx.translate(-centerX,-centerY);
  drawImage('Terreno.png',0,0,W,H);
- for(const o of entries.slice().sort((a,b)=>a.y-b.y)){
+ for(const o of [...entries.map(e=>({...e,kind:'building'})),...decor.map(e=>({...e,kind:'decor'}))].sort((a,b)=>a.y-b.y)){
   const im=img(o.file);if(!im)continue;const dw=im.width*o.s,dh=im.height*o.s,x=o.x-dw/2,y=o.y-dh;
   // very subtle contact darkening: art is painted, no fake plinths
   ctx.fillStyle='rgba(11,19,19,.08)';ctx.beginPath();ctx.ellipse(o.x,o.y-8,dw*.32,10,0,0,Math.PI*2);ctx.fill();
   drawImage(o.file,x,y,dw,dh);
-  if(sel?.id===o.id){ctx.strokeStyle='rgba(248,215,151,.85)';ctx.lineWidth=2/scale;ctx.beginPath();ctx.ellipse(o.x,o.y-dh*.18,dw*.39,Math.max(12,dh*.115),0,0,Math.PI*2);ctx.stroke();}
+  if(o.kind==='building'&&sel?.id===o.id){ctx.strokeStyle='rgba(248,215,151,.85)';ctx.lineWidth=2/scale;ctx.beginPath();ctx.ellipse(o.x,o.y-dh*.18,dw*.39,Math.max(12,dh*.115),0,0,Math.PI*2);ctx.stroke();}
  }
  // flame glows are emissive-only in the web study, no dynamic point lights
  const t=performance.now()/1000;
@@ -90,7 +102,7 @@ canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('poin
 canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;const before=screenToWorld(x,y);zoom=Math.min(2.3,Math.max(1,zoom*(e.deltaY<0?1.12:.89)));scale=baseScale*zoom;const after=screenToWorld(x,y);centerX+=before[0]-after[0];centerY+=before[1]-after[1];clampView();},{passive:false});
 document.getElementById('tier1').onclick=()=>tier(1);document.getElementById('tier5').onclick=()=>tier(5);document.getElementById('recenter').onclick=()=>resize(true);
 document.getElementById('detail').onclick=()=>{if(!sel)return;document.getElementById('sheettitle').textContent=sel.name;document.getElementById('sheetbody').textContent=sel.id==='bastion'?`Bastión · variante gráfica ${artLevel===1?'I (niveles 1–4)':'V (niveles 5–9)'}. En niveles 10–14 y 15–19 se mantiene el último arte disponible hasta crear nuevos hitos.`:`${sel.t}. Ilustración única temporal; los niveles progresan sin cambios de aspecto hasta disponer del siguiente hito.`;document.getElementById('sheet').classList.add('open');};document.getElementById('close').onclick=()=>document.getElementById('sheet').classList.remove('open');
-async function load(){const items=await Promise.all(imageFiles.map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve([name,im]);im.onerror=()=>reject(new Error('Falta '+name));im.src=artPath+encodeURIComponent(name);})));for(const [name,im] of items){imgs[name]=im;if(name!=='Terreno.png'){const off=document.createElement('canvas');off.width=im.width;off.height=im.height;const c=off.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0);const data=c.getImageData(0,0,im.width,im.height).data;const a=new Uint8Array(im.width*im.height);for(let j=0;j<a.length;j++)a[j]=data[j*4+3];alpha[name]=a;}}ready=true;resize(true);requestAnimationFrame(draw);}
+async function load(){const items=await Promise.all(imageFiles.map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve([name,im]);im.onerror=()=>reject(new Error('Falta '+name));im.src=artPath+name.split('/').map(encodeURIComponent).join('/');})));for(const [name,im] of items){imgs[name]=im;if(name!=='Terreno.png'){const off=document.createElement('canvas');off.width=im.width;off.height=im.height;const c=off.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0);const data=c.getImageData(0,0,im.width,im.height).data;const a=new Uint8Array(im.width*im.height);for(let j=0;j<a.length;j++)a[j]=data[j*4+3];alpha[name]=a;}}ready=true;resize(true);requestAnimationFrame(draw);}
 window.addEventListener('resize',()=>resize(false));
 window.city2dDebug={get state(){return {ready,artLevel,selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,clicks:clicks.slice()};},select,tier,clickPoint,recenter:()=>resize(true),worldToScreen};
 load().catch(e=>{document.getElementById('status').textContent='ERROR EN RECURSOS: '+e.message;console.error(e);});

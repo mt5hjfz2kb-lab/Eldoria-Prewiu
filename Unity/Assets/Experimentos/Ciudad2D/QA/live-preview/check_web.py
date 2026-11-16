@@ -17,7 +17,7 @@ with sync_playwright() as p:
         page.goto(URL,wait_until='load',timeout=20000)
         page.wait_for_function('window.city2dDebug.state.ready && window.city2dDebug.state.frames>3',timeout=30000)
         state=page.evaluate('window.city2dDebug.state')
-        assert state['imageCount']==8, state
+        assert state['imageCount']==17, state
         assert state['landscape']==(w>h),state
         page.screenshot(path=str(OUT/f'{name}-i.png'))
         page.locator('#tier5').click()
