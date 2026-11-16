@@ -129,6 +129,15 @@ def roof(x,y,z,w,d,h):
   for side in [-1,1]:beam('Gable brace',(x+side*w/2,yy-.04,z),(x,yy-.04,z+h),.13,5)
  beam('Ridge beam',(x,y-d/2-.08,z+h),(x,y+d/2+.08,z+h),.16,5)
 
+def emissive_ribbon(name,coords,width,axis):
+ # Narrow glow strips laid on wall or on the forest floor, not a huge neon decal.
+ side=Vector(axis).normalized()*width*.5
+ verts=[]
+ for p in coords:
+  q=Vector(p);verts.extend([tuple(q-side),tuple(q+side)])
+ faces=[(2*i,2*i+1,2*i+3,2*i+2) for i in range(len(coords)-1)]
+ return mesh(name,verts,faces,13,glow=True)
+
 # Organic continuous ground: no floating board, no rectangular plot outlines.
 verts=[];faces=[];N=65
 for j in range(N):
@@ -176,6 +185,14 @@ box('Foundation terrace',(cx,cy,.16),(5.4,4.5,.45),2,.11)
 for j in range(4):box('Entry stair',(0,-.43-j*.36,.20-j*.055),(1.9,.4,.25),1,.04)
 masonry(cx,cy,.38,4.4,3.5,2.8)
 roof(cx,cy,3.25,4.95,4.1,1.8)
+# Old habitation: moss clings to protected eaves and the lower wall.
+for qx,qy,qz in [(-2.23,1.23,3.28),(2.22,2.85,3.37),(-1.9,3.5,3.44),
+                  (-1.62,.36,.50),(1.76,.36,.54),(-2.10,3.7,.58)]:
+ rock((qx,qy,qz),(.17,.24,.075),7)
+# Lost slate near the eaves, colored like the repaired roof.
+for k,(qx,qy) in enumerate([(2.25,.12),(2.45,.55),(-2.51,1.35)]):
+ tile=box('Fallen slate',(qx,qy,.17),(.35,.28,.045),3 if k!=1 else 2,.008)
+ tile.rotation_euler.z=.35*k-.15
 arch(0,.29,.45,1.12,2.15,4)
 for x in [-1.38,1.38]:
  arch(x,.27,1.34,.48,1.1,12)
@@ -196,6 +213,15 @@ for x in [-1.1,1.1]:
  box('Door hinge',(x*.4,.19,1.1),(.38,.05,.07),10,.01)
 # A repair timber and mixed stone patches communicate habitation without clutter.
 beam('Repair lintel',(-1.7,.13,2.78),(1.7,.13,2.78),.14,5)
+box('Later stone repair with different mortar',(1.92,.305,1.30),(.45,.105,1.14),2,.012)
+for qx,qz in [(-1.86,.95),(-1.63,2.32),(1.94,2.15)]:
+ box('Aged damp stain',(qx,.224,qz),(.31,.028,.26),8,.005)
+# Exactly two sculpted torches; the Unity scene supplies ONE shared point light.
+for qx in [-1.88,1.88]:
+ beam('Torch bracket',(qx,.11,1.20),(qx,-.11,1.53),.065,10)
+ box('Torch bronze cup',(qx,-.13,1.56),(.18,.20,.12),4,.015)
+ bpy.ops.mesh.primitive_cone_add(vertices=7,radius1=.095,radius2=.005,depth=.30,location=(qx,-.14,1.77))
+ o=bpy.context.object;o.name='Warm torch flame';finish(o,12,glow=True)
 
 current='02_Roofless_Ruin'
 rx,ry=-4.55,-1.55
@@ -207,6 +233,10 @@ for side in [-1,1]:
   rock((rx+side*1.35,ry-1.25+j*.8,h),(.26,.35,.15),7)
 box('Standing rear wall',(rx,ry+1.35,1.25),(2.8,.4,2.5),0,.06)
 arch(rx,ry+1.12,1.0,.7,1.4,10)
+mesh('Low warm light in ruin side',
+     [(rx-.88,ry+1.108,.88),(rx-.48,ry+1.108,.88),
+      (rx-.48,ry+1.108,1.55),(rx-.88,ry+1.108,1.55)],
+     [(0,1,2,3)],12,glow=True)
 beam('Collapsed charred rafter',(rx-1.2,ry-1.1,.3),(rx+.8,ry+1.3,1.75),.18,10)
 beam('Snapped beam',(rx-.7,ry+.5,.2),(rx+1.5,ry-1.25,.5),.2,4)
 for i in range(18):
@@ -217,20 +247,34 @@ current='03_Corrupted_Watchtower'
 tx,ty=4.35,.45
 box('Fractured footing',(tx,ty,.12),(3.15,3.0,.4),2,.08)
 # Two offset halves leave a real geometric rupture; violet is confined to the wound.
-masonry(tx-.72,ty,.32,1.20,2.45,3.5)
-masonry(tx+.73,ty+.16,.32,1.1,2.3,4.1)
+masonry(tx-.72,ty,.32,1.20,2.45,3.5,damage=True)
+masonry(tx+.73,ty+.16,.32,1.1,2.3,4.1,damage=True)
 mesh('Visible arcane wound',[(tx-.1,ty-1.245,.4),(tx+.17,ty-1.245,.4),(tx+.33,ty-1.245,1.8),(tx+.05,ty-1.245,2.5),(tx+.22,ty-1.245,3.8),(tx-.05,ty-1.245,3.5),(tx-.2,ty-1.245,2.5),(tx+.02,ty-1.245,1.7)],[(0,1,2,3,4,5,6,7)],13,True)
 for x,z in [(tx-1.1,3.95),(tx-.45,3.95),(tx+.55,4.55),(tx+1.2,4.55)]:box('Shattered crown',(x,ty-.95,z),(.42,.47,.6),2,.035,random.uniform(-.12,.12))
-for i in range(7):
- x=tx+random.uniform(-1,1);y=ty-1.4-random.random()*.65;h=random.uniform(.3,1)
- bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=.14,radius2=.018,depth=h,location=(x,y,h*.5+.12));o=bpy.context.object;o.name='Arcane shard';o.rotation_euler=(.15,random.uniform(-.5,.5),0);finish(o,13,glow=True)
+# Larger unmistakable fissure-crystals. Their glow is local to the watchtower.
+for i in range(9):
+ x=tx+random.uniform(-1.2,1.2);y=ty-1.35-random.random()*.7;h=random.uniform(.65,1.8)
+ bpy.ops.mesh.primitive_cone_add(vertices=5,radius1=random.uniform(.16,.30),radius2=.017,depth=h,location=(x,y,h*.5+.12))
+ o=bpy.context.object;o.name='Jagged violet shard';o.rotation_euler=(.15,random.uniform(-.45,.45),0);finish(o,13,glow=True)
+emissive_ribbon('Broken wall violet fissure',
+ [(tx-.12,ty-1.27,.48),(tx+.07,ty-1.27,1.13),
+  (tx-.11,ty-1.27,1.94),(tx+.03,ty-1.27,2.65),
+  (tx-.15,ty-1.27,3.35)],.075,(1,0,0))
+for b in [-1,1]:
+ emissive_ribbon('Localized ground light fracture',
+  [(tx+b*.18,ty-1.37,.068),
+   (tx+b*.47,ty-1.75,.069),
+   (tx+b*.31,ty-2.11,.069),
+   (tx+b*.72,ty-2.55,.070)],.075,(1,0,0))
 for i in range(8):rock((tx+random.uniform(-1.8,1.8),ty+random.uniform(-1.6,1.6),.1),(.3,.27,.22),14 if i<3 else 2)
 
 current='Terrain'
 # Stones connect the three buildings without implying new gameplay parcels.
 for side in [-1,1]:
  for i in range(5):box('Branch path',(side*(1.2+i*.57),-.7-i*.13,.025),(.55,.65,.12),9,.065,random.uniform(-.2,.2))
-for x,y,s in [(-7,3,1.1),(-6.7,6.2,1.4),(-3.8,7.4,1.0),(0,7.8,1.15),(4.9,6.6,1.1),(7.4,3.3,1.25),(8,-1.8,.8),(-7,-4.4,.75)]:
+# Reduce previous pines by roughly 35%, diversify heights and keep silhouettes clear.
+for x,y,s in [(-7.8,3.2,.72),(-7.6,6.3,.83),(-4.9,8.1,.59),(-.1,8.9,.80),
+              (5.1,8.0,.73),(8.0,3.5,.91),(8.9,-2.0,.52),(-8.6,-4.5,.46)]:
  beam('Pine trunk',(x,y,0),(x+.12,y,4*s),.20*s,4)
  for j in range(6):
   rad=(1.35-j*.17)*s;zc=1.4*s+j*.55*s;vv=[(x+.035*j,y,zc+.85*s)];ff=[]
@@ -239,7 +283,14 @@ for x,y,s in [(-7,3,1.1),(-6.7,6.2,1.4),(-3.8,7.4,1.0),(0,7.8,1.15),(4.9,6.6,1.1
    vv.append((x+math.cos(angle)*rr,y+math.sin(angle)*rr,zc-random.uniform(.05,.27)*s))
   for a in range(18):ff.append((0,1+a,1+(a+1)%18))
   ff.append(tuple(range(18,0,-1)));mesh('Irregular pine branches',vv,ff,6 if j%2 else 7)
-for x,y,s in [(-7,1,1.4),(-5.3,5.5,1.3),(5.4,4.5,1.1),(7,1,1),(-7.5,-2,.8)]:rock((x,y,.22*s),(s,s*.8,s*.65),2)
+for x,y,s in [(-7,1,1.4),(-5.3,5.5,1.3),(5.4,4.5,1.1),(7,1,1),(-7.5,-2,.8)]:
+ rock((x,y,.22*s),(s,s*.8,s*.65),2)
+# Two fallen conifers and one rotten stump behind the ruined building.
+for a,b in [((-7.55,-1.7,.23),(-6.15,-.76,.34)),((-7.45,-3.15,.24),(-6.2,-3.76,.22))]:
+ beam('Storm-fallen trunk',a,b,.22,4)
+ for p in [a,b]:rock(p,(.18,.16,.13),7)
+bpy.ops.mesh.primitive_cylinder_add(vertices=9,radius=.26,depth=.43,location=(-6.5,-2.46,.21))
+o=bpy.context.object;o.name='Old stump near ruin';finish(o,4,.026)
 
 # Join into four grounded export families, not one renderer per stone.
 joined=[]
