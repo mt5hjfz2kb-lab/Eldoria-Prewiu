@@ -1,0 +1,130 @@
+name: "Eldoria CC0 | V15 authentic Poly Haven PBR material test on Blender GLBs"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v15-pbr.yml"
+      - "tools/cc0-art-system/director_v15_real_pbr.py"
+      - "tools/cc0-art-system/audit_polyhaven_cc0.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v15-real-pbr-ubuntu
+  cancel-in-progress: false
+jobs:
+  cc0-real-materials:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v15_real_pbr.py
+            tools/cc0-art-system/audit_polyhaven_cc0.py
+      - name: Download audited owner-authored V14 city meshes and images
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v14-owned-physical-3d
+          run-id: 43904480456
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verify source rights, version and reproducibility
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v15_real_pbr.py tools/cc0-art-system/audit_polyhaven_cc0.py
+          for stage in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV14/DirectorV14_Stage$stage.glb"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path("docs/cc0-art-system/previews/director-v14/v14-evidence.json").read_text())
+          assert d["source_run_id"]==43902021480
+          assert d["actual_blender_captures"] and len(d["stages"])==5
+          assert not d["third_party_meshes_included"] and not d["art_approved"]
+          assert not d["unity_tested"] and not d["iphone_tested"]
+          print("V15_OWNER_SOURCE_STAGE_I_V_PASS")
+          PY
+      - name: Download six genuine CC0 1K PBR maps from Poly Haven and verify official MD5
+        env:
+          ELDORIA_PBR_REVIEW: ${{ runner.temp }}/eldoria-polyhaven-cc0
+        run: |
+          set -euo pipefail
+          python3 tools/cc0-art-system/audit_polyhaven_cc0.py 2>&1 | tee "$RUNNER_TEMP/polyhaven-cc0.log"
+          grep -q ELDORIA_CC0_PHYSICAL_TEXTURE_INPUTS_PASS "$RUNNER_TEMP/polyhaven-cc0.log"
+      - name: Install free Blender with NumPy and no shared Windows
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Actually bake CC0 PBR materials, project UVs and export five GLBs
+        env:
+          ELDORIA_PBR_REVIEW: ${{ runner.temp }}/eldoria-polyhaven-cc0
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v15_real_pbr.py 2>&1 | tee "$RUNNER_TEMP/v15.log"
+          grep -q ELDORIA_V15_VERIFIED_CC0_PBR_PHYSICAL_PASS "$RUNNER_TEMP/v15.log"
+      - name: Confirm source identity, physical PBR texture, comparison and four real screenshots
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          from PIL import Image,ImageChops,ImageStat
+          base=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV15")
+          prev=Path("docs/cc0-art-system/previews/director-v15")
+          d=json.loads((prev/"v15-evidence.json").read_text())
+          assert d["source_run_id"]==43904480456
+          assert d["license"]=="CC0 1.0" and d["source_md5_verified"]
+          assert len(d["input_evidence"])==6
+          assert not d["raw_asset_geometry_added"] and not d["art_approved"]
+          assert not d["unity_tested"] and not d["iphone_tested"]
+          assert len(d["stages"])==5 and len(d["renders"])==4
+          assert (base/"DirectorV15_Editable_Source.blend").read_bytes()[:7]==b'BLENDER'
+          for role in ("stone","slate"):
+            assert (base/("V15_CC0_Stylized_"+role+"_albedo.png")).stat().st_size>25000
+          for stage in range(1,6):
+            b=(base/("DirectorV15_Stage"+str(stage)+".glb")).read_bytes()
+            assert len(b)>1500000 and b[:4]==b'glTF'
+            assert struct.unpack_from("<I",b,8)[0]==len(b)
+            n=struct.unpack_from("<I",b,12)[0]
+            j=json.loads(b[20:20+n])
+            names=[m.get("name","") for m in j.get("materials",[])]
+            actual=[]
+            for m in j.get("materials",[]):
+                if m.get("name","").startswith(("V8_master_ashlar","V8_master_roof")) and "baseColorTexture" in m.get("pbrMetallicRoughness",{}):
+                    actual.append(m["name"])
+            assert len(actual)>=2,("Blender texture not exportable to Unity GLB",actual)
+            assert len(j.get("images",[]))>=12,("No physically embedded real 1K maps",stage)
+            print("V15_GLTF_CC0_PBR_PASS",stage,len(j["meshes"]),len(j["images"]),actual[:4])
+          frames={
+            "DirectorV15_BastionI_1600x900.png":(1600,900),
+            "DirectorV15_BastionV_1600x900.png":(1600,900),
+            "DirectorV15_BastionV_Close_1600x900.png":(1600,900),
+            "DirectorV15_BastionV_Portrait_720x1200.png":(720,1200)}
+          for file,wh in frames.items():
+            p=prev/file;im=Image.open(p).convert("RGB")
+            assert im.size==wh and p.stat().st_size>100000
+          v15=Image.open(prev/"DirectorV15_BastionV_1600x900.png").convert("RGB")
+          v14=Image.open("docs/cc0-art-system/previews/director-v14/DirectorV14_BastionV_1600x900.png").convert("RGB")
+          roi=(280,150,1300,820)
+          diff=sum(ImageStat.Stat(ImageChops.difference(v15.crop(roi),v14.crop(roi))).mean)/3
+          assert diff>2,("No genuine material effect",diff)
+          print("V15_GENUINE_MATERIAL_A_B_DIFFERENCE",diff,"NOT ART APPROVED OR UNITY TESTED")
+          PY
+      - name: Preserve real geometry, Blender source, authentic PNGs and CC0 proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v15-stone-slate-cc0-pbr
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV15/
+            docs/cc0-art-system/previews/director-v15/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Shipping game and main left unchanged
+        run: |
+          git diff --exit-code
+          echo "V15_PBR_ISOLATED_ONLY_PASS"
