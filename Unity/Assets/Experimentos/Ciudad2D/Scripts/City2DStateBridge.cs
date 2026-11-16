@@ -24,6 +24,24 @@ namespace Eldoria.Experimentos.Ciudad2D
         public event Action<CityBuilding> BuildingSelected;
         public event Action LevelsChanged;
 
+        // Unity serializes objects, not dictionaries or C# event subscriptions.
+        public int RegisteredBuildingCount => buildings.Count;
+        private void Awake() => RebindSceneBuildings();
+        private void Start()
+        {
+            RebindSceneBuildings();
+            if (!IsLiveBound) SetDemoBastionLevel(demoBastionLevel);
+        }
+
+        public void RebindSceneBuildings()
+        {
+            foreach (var b in UnityEngine.Object.FindObjectsByType<CityBuilding>(FindObjectsSortMode.None))
+                if (b.gameObject.scene == gameObject.scene) Register(b);
+            ambientGates.Clear();
+            foreach (var prop in UnityEngine.Object.FindObjectsByType<City2DAmbientGating>(FindObjectsSortMode.None))
+                if (prop.gameObject.scene == gameObject.scene) ambientGates.Add(prop);
+        }
+
         public void Register(CityBuilding building)
         {
             if (building == null || string.IsNullOrEmpty(building.BuildingId)) return;
@@ -39,6 +57,7 @@ namespace Eldoria.Experimentos.Ciudad2D
         public void BindGateway(ICommandGateway authoritativeGateway)
         {
             gateway = authoritativeGateway;
+            if (buildings.Count == 0) RebindSceneBuildings();
             nextReadTime = 0f;
             if (gateway != null) ReadLiveSnapshot();
         }
@@ -46,7 +65,7 @@ namespace Eldoria.Experimentos.Ciudad2D
         public void SetDemoBastionLevel(int selectedLevel)
         {
             if (IsLiveBound) return;
-            demoBastionLevel = selectedLevel >= 5 ? 5 : 1;
+            demoBastionLevel = Mathf.Clamp(selectedLevel, 1, 5);
             foreach (var pair in buildings)
                 if (pair.Value != null)
                     pair.Value.SetAppearance(City2DProgressionPolicy.DemoStage(demoBastionLevel, pair.Key));
