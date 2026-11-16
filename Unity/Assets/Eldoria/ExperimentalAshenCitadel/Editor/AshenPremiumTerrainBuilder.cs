@@ -213,7 +213,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var output=new List<Vector2>();
             for(int i=0;i<points.Count;i++)
             {
-                var a=points[i],b=points[(i+1)%points.Count];
+                Vector2 a=points[i],b=points[(i+1)%points.Count];
                 float da=Vector2.Dot(a,normal)-limit,db=Vector2.Dot(b,normal)-limit;
                 bool insideA=da<=0f,insideB=db<=0f;
                 if(insideA)output.Add(a);
@@ -277,7 +277,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 {
                     float a=2*Mathf.PI*i/leaves+Rand(rng,-.20f,.20f);
                     float px=x+Mathf.Cos(a)*w,pz=z+Mathf.Sin(a)*w;
-                    var v0=At(x,z,.035f),tip=At(px+Mathf.Cos(a)*w,pz+Mathf.Sin(a)*w,h);
+                    Vector3 v0=At(x,z,.035f),tip=At(px+Mathf.Cos(a)*w,pz+Mathf.Sin(a)*w,h);
                     var v1=At(px-Mathf.Sin(a)*w*.45f,pz+Mathf.Cos(a)*w*.45f,.07f);
                     var v2=At(px+Mathf.Sin(a)*w*.45f,pz-Mathf.Cos(a)*w*.45f,.07f);
                     g.Tri((i+clump)%5==0?FoliageLight:Foliage,v0,tip,v1);
@@ -291,16 +291,16 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             {
                 float x=-17.2f+Rand(rng,-3.6f,3.6f),z=-6.2f+Rand(rng,-5.2f,-3.1f);
                 float len=Rand(rng,.50f,1.7f),width=Rand(rng,.09f,.18f);
-                var a=At(x-width,z,.08f),b=At(x+width,z,.08f);
-                var c=At(x+width,z+len,.08f),d=At(x-width,z+len,.08f);
+                Vector3 a=At(x-width,z,.08f),b=At(x+width,z,.08f);
+                Vector3 c=At(x+width,z+len,.08f),d=At(x-width,z+len,.08f);
                 g.UpQuad(Timber,a,b,c,d);
             }
             for(int i=0;i<28;i++)
             {
                 float x=17.4f+Rand(rng,-4.3f,4.3f),z=8.8f+Rand(rng,-5.4f,-3.5f);
                 float radius=Rand(rng,.17f,.43f),high=Rand(rng,.10f,.31f);
-                var p0=At(x-radius,z-radius,.015f),p1=At(x+radius,z-radius,.015f);
-                var p2=At(x+radius,z+radius,.015f),p3=At(x-radius,z+radius,.015f);
+                Vector3 p0=At(x-radius,z-radius,.015f),p1=At(x+radius,z-radius,.015f);
+                Vector3 p2=At(x+radius,z+radius,.015f),p3=At(x-radius,z+radius,.015f);
                 var top=At(x,z,high);int material=i%7==0?Basalt:Limestone;
                 g.Tri(material,top,p1,p0);g.Tri(material,top,p2,p1);
                 g.Tri(material,top,p3,p2);g.Tri(material,top,p0,p3);
