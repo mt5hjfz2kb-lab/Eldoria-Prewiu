@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T08:02:07.581Z",
+  "updated_at": "2026-11-16T08:03:42.307Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 11,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PICTORIAL_IDENTITY_NATIVE_RESERVED",
+      "phase": "PICTORIAL_IDENTITY_NATIVE_RUNNING",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9783,12 +9783,10 @@
       "continuation_authority": "Owner 2026-11-16 accepts composition and explicitly requests recovering original plan and achieving attractive art with freely chosen technique and graphic identity. Same Ashen branch; no Visual Reboot phase instructions imported.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
-        "source_sha": "486282eca21e097ffd83c74ca3bbe25600017eb4",
-        "after_workstream": "eldoria-art-visual-reboot-phase1-20261115",
-        "reason": "43775821050 compile failure corrected at 8034917; retry 43776052927 blocked by resource reassignment during checkout (Unity not executed). Please return Windows after current Reboot run; Ashen will retry this exact fixed HEAD and release after terminal native evidence.",
-        "run_id": 43777338073,
-        "attempt": 2
+        "status": "running",
+        "run_id": 43828204694,
+        "source_sha": "019a24510e62dff53679d034874f51fd890199f1",
+        "reason": "One bounded native Unity artistic capture and gameplay regression; release at terminal."
       },
       "last_native": {
         "run": 43777338073,
@@ -20293,7 +20291,7 @@
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
     "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-    "current_run_id": null,
+    "current_run_id": 43828204694,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
     "status": "ashen_bounded_native_reserved",
