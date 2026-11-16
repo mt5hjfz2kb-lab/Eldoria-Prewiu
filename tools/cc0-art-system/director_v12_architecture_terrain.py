@@ -207,30 +207,38 @@ def replace_choir():
              .08,"metal",area)
     return len(to_remove)
 def environmental_details(stage):
-    # Macro-level ground variation. Build *two* physically consolidated meshes
-    # rather than thousands of disconnected decals / floating platforms.
-    r=random.Random(120113)
-    for key,n in (("grass",180),("ground",125),("moss",100)):
-        vertices=[];faces=[]
-        for i in range(n):
+    # Visual QA on genuine run 43894465023 exposed the cause of polygon
+    # "green discs": the previous 180/125/100 seven-sided ground patches.
+    # Remove that method entirely. Replace with sub-metre vertical 3D plants
+    # batched per material, visually integrated with the existing real terrain.
+    # Nothing should read as a decal, raised pad or construction parcel.
+    for material,count in (("grass",810),("moss",490),("ground",160)):
+        vertices=[]
+        faces=[]
+        for i in range(count):
             x=r.uniform(-45,45);y=r.uniform(-43,42)
-            if abs(x)<11 and -12<y<14:continue
+            if abs(x)<11 and -13<y<14:continue
             if abs(x-22)<6 and -14<y<-4:continue
             if abs(x+22)<6 and -13<y<-3:continue
-            # Triangulated organic field patches, match source ground formula.
-            rad=r.uniform(.3,1.45)
-            skew=r.uniform(.65,1.3)
-            center=(x,y,ground_z(x,y)+.017)
-            points=[center]
-            for j in range(7):
-                t=j*2*pi/7
-                px=x+rad*cos(t)*r.uniform(.88,1.13)
-                py=y+rad*skew*sin(t)*r.uniform(.87,1.14)
-                points.append((px,py,ground_z(px,py)+.024))
-            n0=len(vertices);vertices.extend(points)
-            for j in range(7):
-                faces.append((n0,n0+1+j,n0+1+(j+1)%7))
-        if vertices:geom("one batched natural terrain tint "+key,vertices,faces,key,"V12_ORGANIC_GROUND")
+            if abs(x-23)<7 and 4<y<17:continue
+            gz=ground_z(x,y)+.022
+            blades=2 if material=="ground" else 3
+            # Small, angled grass blades; their tips rise above the surface.
+            # Soil litter has <= 4cm relief and cannot look like a flat plate.
+            maxheight=.042 if material=="ground" else (.30 if material=="grass" else .24)
+            for k in range(blades):
+                angle=r.uniform(-pi,pi)
+                rr=.05+r.uniform(.012,.09)
+                height=maxheight*r.uniform(.60,1.25)
+                dx=cos(angle)*rr;dy=sin(angle)*rr
+                n=len(vertices)
+                vertices.extend([
+                  (x-dx,y-dy,gz),(x+dx,y+dy,gz),
+                  (x+r.uniform(-.09,.09),y+r.uniform(-.09,.09),gz+height)])
+                faces.append((n,n+1,n+2))
+        if faces:
+            geom("one genuinely batched low meadow growth "+material,
+                 vertices,faces,material,"V12_NATIVE_TERRAIN_DETAIL")
     # No four square plots, no generic city sprawl. Add low erosion stones in
     # visual clusters at creek, mill and quarry transitions.
     for i in range(26):
