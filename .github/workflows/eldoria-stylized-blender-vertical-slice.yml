@@ -4,6 +4,7 @@ on:
     branches: [feature/eldoria-stylized-direction-proof-20261115]
     paths:
       - tools/stylized-direction-pilot/valoria_original_bastion_v.py
+      - tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py
       - .github/workflows/eldoria-stylized-blender-vertical-slice.yml
   workflow_dispatch:
 permissions:
@@ -22,6 +23,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/stylized-direction-pilot/valoria_original_bastion_v.py
+            /tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py
       - name: Install standard free CPU Blender
         run: |
           sudo apt-get update -qq
