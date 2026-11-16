@@ -29,6 +29,16 @@ namespace Eldoria.ExperimentalAshenCitadel
         {
             panel=null;primary=null;secondary=null;crest=null;
         }
+        // Editor baking must always rasterise the authored SOURCE, not a
+        // previously imported sprite that may contain an older art version.
+        public static Sprite SourcePanel()=>
+            Make("Ashen source slate frame",256,256,18,18,SamplePanel);
+        public static Sprite SourcePrimary()=>
+            Make("Ashen source primary",256,72,19,14,(x,y)=>SampleButton(x,y,true));
+        public static Sprite SourceSecondary()=>
+            Make("Ashen source secondary",256,72,19,14,(x,y)=>SampleButton(x,y,false));
+        public static Sprite SourceCrest()=>
+            Make("Ashen source citadel seal",128,128,0,0,SampleCrest);
 
         private static Sprite Make(string name,int width,int height,int bx,int by,Func<int,int,Color32> colour)
         {
