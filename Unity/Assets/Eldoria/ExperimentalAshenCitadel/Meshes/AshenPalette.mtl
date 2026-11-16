@@ -101,7 +101,7 @@ Kd 0.6941 0.6431 0.5608
 Ks .06 .06 .06
 Ns 10
 illum 2
-map_Kd ../Textures/AshenStone.png
+map_Kd ../Textures/AshenPlaster.png
 
 newmtl soil
 Ka .08 .08 .08

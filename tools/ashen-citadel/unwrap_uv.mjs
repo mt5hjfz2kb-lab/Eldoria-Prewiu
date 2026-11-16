@@ -3,7 +3,7 @@
 // distortion-free and does not change geometry or ownership.
 import fs from "node:fs";
 const groups={
- Stone:["basalt","stone","stoneLight","cut","plaster"],
+ Stone:["basalt","stone","stoneLight","cut"],Plaster:["plaster"],
  Roof:["roof","slate"],Wood:["wood","oak"],
  Moss:["soil","moss","leaf","leafLight"],
  Metal:["iron","brass","warm"],Cloth:["banner","violet"]
@@ -11,8 +11,9 @@ const groups={
 export function unwrap(text){
  const lines=text.trimEnd().split("\n"),coords=[[0,0,0]],uv=[];
  for(const line of lines)if(line.startsWith("v "))coords.push(line.slice(2).trim().split(/\s+/).map(Number));
- const out=[];
+ const out=[];let material="";
  for(const line of lines){
+  if(line.startsWith("usemtl "))material=line.slice(7).trim();
   if(line.startsWith("vt "))continue;
   if(!line.startsWith("f ")){out.push(line);continue;}
   const ids=line.slice(2).trim().split(/\s+/).map(s=>Number(s.split("/")[0]));
@@ -22,7 +23,7 @@ export function unwrap(text){
   const axis=n[1]>=n[0]&&n[1]>=n[2]?"y":n[0]>n[2]?"x":"z";
   for(const i of ids){
    const p=coords[i],u=axis==="y"?[p[0],p[2]]:axis==="x"?[p[2],p[1]]:[p[0],p[1]];
-   const pair=u.map(v=>(v*.46).toFixed(5));
+   const pair=u.map(v=>(v*(["stone","stoneLight","cut"].includes(material)?.24:.46)).toFixed(5));
    if(uv[i]&&uv[i].join("/")!==pair.join("/"))throw Error("Nonunique UV face mapping");
    uv[i]=pair;
   }

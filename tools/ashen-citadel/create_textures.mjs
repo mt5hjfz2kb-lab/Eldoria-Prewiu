@@ -2,8 +2,8 @@
 // Run from repo root: node tools/ashen-citadel/create_textures.mjs
 import fs from "node:fs"; import path from "node:path";
 const makeTextures=function makeTextures(){
- const paths={Stone:"AshenStone.png",Roof:"AshenRoof.png",Wood:"AshenWood.png",Moss:"AshenMoss.png",Metal:"AshenMetal.png",Cloth:"AshenCloth.png"};
- const W=128,H=128;
+ const paths={Stone:"AshenStone.png",Plaster:"AshenPlaster.png",Roof:"AshenRoof.png",Wood:"AshenWood.png",Moss:"AshenMoss.png",Metal:"AshenMetal.png",Cloth:"AshenCloth.png"};
+
  function hash(x,y,z=0){
   let n=(Math.imul((x|0)+1009,374761393)+Math.imul((y|0)+829,668265263)+Math.imul((z|0)+3,2246822519))>>>0;
   n=(Math.imul(n^(n>>>13),1274126177))>>>0;return ((n^(n>>>16))>>>0)/4294967295;
@@ -12,15 +12,22 @@ const makeTextures=function makeTextures(){
    const grain=hash(Math.floor(x/5),Math.floor(y/6),3)*.07+hash(x,y,5)*.035;
    let v=.80+grain;
    if(kind==="Stone"){
-     const row=Math.floor(y/16),shift=(row%2)*13+(row%3)*5;
-     const width=24+(row%3)*8;
-     const xx=(x+shift+Math.sin(y*.23+row))%width,yy=y%16;
-     const block=hash(Math.floor((x+shift)/width),row,11);
-     // Long unequal coursed stones, quieter mortar, mineral variation within each block.
-     v=.81+block*.13+grain*.20+.025*Math.sin(x*.12+y*.17);
-     if(xx<.8||yy<.8)v=.73+grain*.3;
-     else if(yy>14.5)v-=.018;
-     if(yy>2&&yy<4)v+=.018;
+     // Periodic uneven courses; each row has its own unequal block boundaries.
+     const edges=[0,27,59,88,123,150,191,221,256];
+     const row=edges.findIndex((e,i)=>i<8&&y>=e&&y<edges[i+1]);
+     const yy=y-edges[row],height=edges[row+1]-edges[row];
+     const widths=Array.from({length:5},(_,i)=>.65+hash(i,row,19));
+     const total=widths.reduce((a,b)=>a+b,0);let at=0;
+     const xx=(x+row*37)%256;let column=0,left=0,right=256;
+     for(let i=0;i<5;i++){const end=at+256*widths[i]/total;if(xx<end){column=i;left=at;right=end;break;}at=end;}
+     const edge=Math.min(xx-left,right-xx,yy,height-yy);
+     const mineral=.025*Math.sin(x*Math.PI/64)*Math.cos(y*Math.PI/128);
+     v=.855+.065*hash(column,row,11)+mineral+grain*.20;
+     if(edge<1.2)v=.79+grain*.20;
+     else if(edge<2.6)v-=.025;
+   } else if(kind==="Plaster"){
+     // Limewash has broad low-contrast mineral clouds, never brick joints.
+     v=.90+.020*Math.sin(x*Math.PI/32)*Math.cos(y*Math.PI/64)+.012*Math.cos(x*Math.PI/64)+grain*.15;
    } else if(kind==="Roof"){
      const row=Math.floor(y/16),xx=(x+(row%2)*16)%32,yy=y%16;
      v=.76+hash(Math.floor((x+(row%2)*16)/32),row,27)*.16+grain*.20;
@@ -51,6 +58,7 @@ const makeTextures=function makeTextures(){
    const l=Math.round(v*255);return[l,l,l,255];
  }
  function png(kind){
+   const W=kind==="Stone"?256:128,H=W;
    const raw=new Uint8Array(H*(1+W*4));let i=0;
    for(let y=0;y<H;y++){raw[i++]=0;for(let x=0;x<W;x++){for(const v of sample(kind,x,y))raw[i++]=v;}}
    const blocks=[0x78,0x01];for(let k=0;k<raw.length;){const n=Math.min(65535,raw.length-k),final=k+n===raw.length;

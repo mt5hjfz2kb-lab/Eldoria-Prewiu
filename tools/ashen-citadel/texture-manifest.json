@@ -1,13 +1,12 @@
 {
   "authorship": "Original deterministic hand-designed grayscale material patterns",
-  "textureSize": "128×128 RGBA",
+  "textureSize": "Stone 256x256 RGBA; others 128x128 RGBA",
   "materialGroups": {
     "Stone": [
       "basalt",
       "stone",
       "stoneLight",
-      "cut",
-      "plaster"
+      "cut"
     ],
     "Roof": [
       "roof",
@@ -31,12 +30,15 @@
     "Cloth": [
       "banner",
       "violet"
+    ],
+    "Plaster": [
+      "plaster"
     ]
   },
   "files": [
     {
       "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenStone.png",
-      "bytes": 65737
+      "bytes": 262488
     },
     {
       "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenRoof.png",
@@ -56,6 +58,10 @@
     },
     {
       "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenCloth.png",
+      "bytes": 65737
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ExperimentalAshenCitadel/Textures/AshenPlaster.png",
       "bytes": 65737
     }
   ],

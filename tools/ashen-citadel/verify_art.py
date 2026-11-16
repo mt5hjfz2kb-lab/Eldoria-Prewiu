@@ -93,9 +93,10 @@ def validate_png(path,dimensions):
 for filename,size in [("AshenPanel.png",(256,256)),("AshenButtonPrimary.png",(256,72)),
                       ("AshenButtonSecondary.png",(256,72)),("AshenCrest.png",(128,128))]:
     validate_png(resources/filename,size)
-for name in ["AshenStone.png","AshenRoof.png","AshenWood.png","AshenMoss.png","AshenMetal.png","AshenCloth.png"]:
+for name in ["AshenPlaster.png","AshenRoof.png","AshenWood.png","AshenMoss.png","AshenMetal.png","AshenCloth.png"]:
     validate_png(source/"Textures"/name,(128,128))
+validate_png(source/"Textures"/"AshenStone.png",(256,256))
 mtl=(meshes/"AshenPalette.mtl").read_text()
 if mtl.count("map_Kd ../Textures/Ashen")!=18:failures.append("MTL must bind all 18 authored materials")
 if failures:raise SystemExit("\n".join(failures))
-print("ASHEN_ART_SOURCE_INTEGRITY_PASS: 12 UV-mapped OBJ / 18 materials / 6 textures / 4 sprites")
+print("ASHEN_ART_SOURCE_INTEGRITY_PASS: 12 UV-mapped OBJ / 18 materials / 7 textures / 4 sprites")

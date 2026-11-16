@@ -14,10 +14,13 @@ const author=function author(){
    const x0=x-w/2,x1=x+w/2,z0=z-d/2,z1=z+d/2,y0=y<=.55?-.10:y,y1=y+h;
    // Small vertical masonry arrises, no random vertex displacement.
    if(["stone","stoneLight","plaster","cut"].includes(m)&&w>.6&&d>.4&&h>.6){
-     const b=Math.min(.13,w*.06,d*.06),foot=[[x0+b,z0],[x1-b,z0],[x1,z0+b],[x1,z1-b],[x1-b,z1],[x0+b,z1],[x0,z1-b],[x0,z0+b]];
-     const low=foot.map(([xx,zz])=>[xx,y0,zz]),high=foot.map(([xx,zz])=>[xx,y1,zz]);
-     poly(low,m);poly([...high].reverse(),m);
-     for(let i=0;i<8;i++){const j=(i+1)%8;poly([high[i],high[j],low[j],low[i]],m);}return;
+     const major=w>2&&d>2&&h>2, b=major?Math.min(.48,w*.14,d*.14):Math.min(.13,w*.06,d*.06);
+     const foot=[[x0+b,z0],[x1-b,z0],[x1,z0+b],[x1,z1-b],[x1-b,z1],[x0+b,z1],[x0,z1-b],[x0,z0+b]];
+     // The lower wall is one continuous battered solid, not a raised plinth.
+     const levels=major?[[y0,1.055],[y0+Math.min(1.1,h*.30),1],[y1,.985]]:[[y0,1],[y1,1]];
+     const rings=levels.map(([yy,scale])=>foot.map(([xx,zz])=>[x+(xx-x)*scale,yy,z+(zz-z)*scale]));
+     poly(rings[0],m);poly([...rings.at(-1)].reverse(),m);
+     for(let k=1;k<rings.length;k++)for(let i=0;i<8;i++){const j=(i+1)%8;poly([rings[k][i],rings[k][j],rings[k-1][j],rings[k-1][i]],m);}return;
    }
    const v=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];
    for(const ii of [[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7],[3,2,1,0]])poly(ii.map(i=>v[i]).reverse(),m);
@@ -267,6 +270,13 @@ const author=function author(){
      box(-.45,1.25,-1.35,5.2,.16,.18,"wood");box(-.45,2.67,-1.35,5.2,.18,.18,"wood");
      roof(-.45,2.8,.55,5.75,4.25,1.30);door(-.9,.10,-1.44,1.2,2.0);
      for(let x of [-2.10,.65])window(x,1.6,-1.44);
+     // Side timber frame joins the longhouse walls beneath the eave.
+     for(const x of [-3.035,2.135]){
+       for(const z of [-1.05,.55,2.15])box(x,1.12,z,.16,1.67,.16,"wood");
+       beam([x,1.32,-1.05],[x,2.58,.45],.07,"oak");
+       beam([x,2.58,.65],[x,1.32,2.15],.07,"oak");
+       box(x,2.65,.55,.18,.16,3.6,"wood");
+     }
      // Lower entrance porch and a projecting wing replace the tower silhouette.
      box(2.0,.10,-1.25,1.5,2.05,2.6,"wood");shed(2.0,2.05,-1.25,1.95,3.0,.30,"slate");
      for(let x of [-1.7,-.1])box(x,.10,-2.55,.18,2.0,.18,"wood");shed(-.9,2.05,-2.1,2.1,1.6,.45,"banner");
@@ -284,6 +294,11 @@ const author=function author(){
      shed(-.95,2.75,.1,3.65,3.85,1.0,"wood");
      for(let x of [-2.38,-.95,.48])box(x,.85,-1.55,.14,1.9,.18,"wood");
      for(let y of [1.0,2.4])box(-.95,y,-1.55,3.0,.13,.17,"oak");
+     for(const x of [-2.46,.56]){
+       for(const z of [-1.35,1.55])box(x,.85,z,.16,1.9,.16,"wood");
+       beam([x,1.02,-1.25],[x,2.52,1.45],.075,"oak");
+       box(x,2.62,.1,.17,.13,3.0,"wood");
+     }
      box(-.95,.85,-1.64,1.0,1.5,.12,"wood");
      for(let i=0;i<3;i++)box(-.95,.10+i*.24,-2.8+i*.28,1.35,.26,.42,"wood");
      prism(1.8,.08,.75,1.04,.55,12,"stone");
@@ -362,7 +377,7 @@ const author=function author(){
     stats.Pine={vertices:ls.filter(x=>x.startsWith("v ")).length,polygons:faces.length,triangles:faces.reduce((a,f)=>a+f.trim().split(/\s+/).length-3,0)};continue;
   }
   const m=mesh("Ashen_"+kind);m.aux(kind);let result=m.finish();outputs[dir+`Ashen_${kind}.obj`]=result.obj;stats[kind]=result.stats;}
- outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"ORGANIC_ARCHITECTURE_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
+ outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"MASONRY_MASSING_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
  return outputs;
 };
 for (const [p,content] of Object.entries(author())){fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,content,"utf8");console.log(p,Buffer.byteLength(content));}

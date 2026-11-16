@@ -248,10 +248,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var mat=AssetDatabase.LoadAssetAtPath<Material>(mPath);
                 if(!mat){mat=new Material(shader){name="Ashen "+current};AssetDatabase.CreateAsset(mat,mPath);}
                 mat.shader=shader;mat.SetColor("_BaseColor",col);
-                // Match the actual Blender source: six UV-mapped 128 px reusable
-                // artist-authored textures, multiplied by this palette color.
+                // Match the actual Blender source: stone 256 px, other reusable
+                // artist-authored textures 128 px, multiplied by this palette color.
                 var textureFamily=
-                    new[]{"basalt","stone","stoneLight","cut","plaster"}.Contains(current)?"Stone":
+                    current=="plaster"?"Plaster":
+                    new[]{"basalt","stone","stoneLight","cut"}.Contains(current)?"Stone":
                     new[]{"roof","slate"}.Contains(current)?"Roof":
                     new[]{"wood","oak"}.Contains(current)?"Wood":
                     new[]{"soil","moss","leaf","leafLight"}.Contains(current)?"Moss":

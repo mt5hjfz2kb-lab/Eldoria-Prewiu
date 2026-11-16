@@ -59,7 +59,7 @@ def pbr(material, rgb, material_key=None):
             for link in list(color.links):material.node_tree.links.remove(link)
         if material_key and material_key!="basalt":
             groups={
-                "Stone":["basalt","stone","stoneLight","cut","plaster"],
+                "Stone":["basalt","stone","stoneLight","cut"],"Plaster":["plaster"],
                 "Roof":["roof","slate"],"Wood":["wood","oak"],
                 "Moss":["soil","moss","leaf","leafLight"],
                 "Metal":["iron","brass","warm"],"Cloth":["banner","violet"]
