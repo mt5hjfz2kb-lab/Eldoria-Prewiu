@@ -532,8 +532,8 @@ def main():
         output(5,"CC0_BastionV_Portrait_720x1200.png",720,1200,camera_x=22)
     S.camera.location.x=29
     S.camera.rotation_euler=(Vector((0,1.5,4.6))-S.camera.location).to_track_quat('-Z','Y').to_euler()
-    export_glb(1,"CC0_Valoria_Stage1.glb")
-    export_glb(5,"CC0_Valoria_Stage5.glb")
+    for stage in range(1,6):
+        export_glb(stage,f"CC0_Valoria_Stage{stage}.glb")
     for i in range(2,6):
         COLS["Stage"+str(i)].hide_render=False
     S.render.filepath=""
@@ -545,7 +545,7 @@ def main():
       "blender_render":True,
       "commercial_assets_used":["only owned procedural geometry/textures"],
       "external_sources_imported":[],
-      "stage1_glb":"CC0_Valoria_Stage1.glb","stage5_glb":"CC0_Valoria_Stage5.glb",
+      "stages_glb":[f"CC0_Valoria_Stage{x}.glb" for x in range(1,6)],
       "blend_source":"CC0_Valoria_Source.blend","art_approved":False,
       "renders":["CC0_BastionV_Lookdev_1440x900.png",
                  "CC0_BastionI_Lookdev_1440x900.png",
