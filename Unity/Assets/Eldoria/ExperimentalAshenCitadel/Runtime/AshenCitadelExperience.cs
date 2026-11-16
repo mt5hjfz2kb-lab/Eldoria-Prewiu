@@ -208,12 +208,13 @@ namespace Eldoria.ExperimentalAshenCitadel
             Plate(bottom,frame,Color.white);
             // Short functional captions remain readable beside semantic glyphs
             // even on the narrow portrait iPhone navigation.
-            string[] nav={"BASTIÓN","OBRAS","TROPAS","MUNDO"};
+            string[] nav={"BASTIÓN","EDIFICIOS","EJÉRCITO","MUNDO"};
+            string[] shortLabels={"BASTIÓN","OBRAS","TROPAS","MUNDO"};
             for(int i=0;i<nav.Length;i++)
             {
                 int n=i;
                 float x0=i/4f,x1=(i+1)/4f;
-                Button(bottom,"Nav · "+nav[i],nav[i],secondary,new Vector2(x0,.12f),
+                Button(bottom,"Nav · "+nav[i],shortLabels[i],secondary,new Vector2(x0,.12f),
                     new Vector2(x1,.92f),new Vector2(4,0),new Vector2(-4,0),
                     ()=>OpenSection(n),13);
             }
