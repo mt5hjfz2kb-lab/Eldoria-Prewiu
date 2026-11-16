@@ -14,8 +14,8 @@ import bpy, math, json, random, struct, hashlib
 
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE=ROOT/"Unity/Assets/Art_Reboot/CC0System/DirectorV8"
-DEST=ROOT/"Unity/Assets/Art_Reboot/CC0System/DirectorV9"
-PREVIEW=ROOT/"docs/cc0-art-system/previews/director-v9"
+DEST=ROOT/"Unity/Assets/Art_Reboot/CC0System/DirectorV9Structural"
+PREVIEW=ROOT/"docs/cc0-art-system/previews/director-v9-structural"
 for p in (DEST,PREVIEW): p.mkdir(parents=True,exist_ok=True)
 R=random.Random(9112026)
 STATS=[]
