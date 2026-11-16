@@ -2,7 +2,8 @@
   "name": "Eldoria.ArtReboot.Editor",
   "references": [
     "Unity.RenderPipelines.Core.Runtime",
-    "Unity.RenderPipelines.Universal.Runtime"
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Eldoria.ArtReboot.Runtime"
   ],
   "includePlatforms": [
     "Editor"

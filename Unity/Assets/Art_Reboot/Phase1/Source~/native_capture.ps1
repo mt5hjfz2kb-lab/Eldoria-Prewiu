@@ -79,10 +79,13 @@ if($root.StartsWith($env:RUNNER_TEMP) -and (Split-Path $root -Leaf) -eq ('visual
 
 # Prior failed import is this workstream's own scratch; its full log is retained in artifact 14215617104.
 # Remove only after this replacement capture has completed and copied its evidence.
-$failedOwnRoot=Join-Path $env:RUNNER_TEMP 'visual-reboot-43846720539'
+foreach($failedRun in @('43846720539','43862025708')){
+$failedOwnRoot=Join-Path $env:RUNNER_TEMP ('visual-reboot-'+$failedRun)
 if(Test-Path -LiteralPath $failedOwnRoot){
  $failedExtended='\\?\'+[IO.Path]::GetFullPath($failedOwnRoot)
  & $env:ComSpec /d /c ('rd /s /q "'+$failedExtended+'"')
  if(Test-Path -LiteralPath $failedOwnRoot){throw 'Prior own failed-import scratch cleanup incomplete'}
  Write-Output 'REBOOT_PRIOR_FAILED_OWN_SCRATCH_REMOVED'
+}
+
 }
