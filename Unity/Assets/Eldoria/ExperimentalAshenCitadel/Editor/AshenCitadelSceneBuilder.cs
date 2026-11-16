@@ -399,6 +399,8 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             var tex=new Texture2D(size,size,TextureFormat.RGBA32,true){name="Ashen valley hand-layered ground",
                 wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Trilinear,anisoLevel=4};
             var pixels=new Color[size*size];
+            var homes=new[]{new Vector2(-17.2f,-6.2f),new Vector2(16.8f,-7.5f),
+                new Vector2(-16.6f,7.8f),new Vector2(17.4f,8.8f)};
             for(int y=0;y<size;y++)for(int x=0;x<size;x++){
                 float wx=(x/(float)(size-1)-.5f)*180f,wz=(y/(float)(size-1)-.5f)*180f;
                 float broad=Mathf.PerlinNoise(wx*.045f+29f,wz*.045f+51f);
@@ -420,8 +422,6 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float grit=Mathf.Clamp01((fleck-.64f)*5f);
                 col=Color.Lerp(col,new Color(.49f,.46f,.35f),grit*route*.32f);
                 // Connected foot traffic: long soft paths, never circular plots or raised pads.
-                var homes=new[]{new Vector2(-17.2f,-6.2f),new Vector2(16.8f,-7.5f),
-                    new Vector2(-16.6f,7.8f),new Vector2(17.4f,8.8f)};
                 for(int homeIndex=0;homeIndex<homes.Length;homeIndex++){
                     var home=homes[homeIndex];
                     float side=home.x<0?-1f:1f;
@@ -431,7 +431,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     var bend=new Vector2(side*13.1f,-11.7f);
                     float dist=Mathf.Min(SegmentDistance(new Vector2(wx,wz),start,bend),
                         SegmentDistance(new Vector2(wx,wz),bend,end));
-                    float worn=1f-Mathf.SmoothStep(.55f,1.9f+(detail-.5f)*.8f,dist);
+                    float worn=1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.55f,1.9f+(detail-.5f)*.8f,dist));
                     col=Color.Lerp(col,new Color(.39f,.33f,.245f)*(.89f+detail*.22f),worn*.93f);
                     float hx=wx-home.x,hz=wz-home.y;
                     float activity=Mathf.Exp(-((hx-.25f)*(hx-.25f)/13f+(hz+1.0f)*(hz+1.0f)/13f));
@@ -443,8 +443,8 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float dry=Mathf.PerlinNoise(wx*.19f+37f,wz*.19f+7f);
                 col=Color.Lerp(col,new Color(.40f,.39f,.26f),Mathf.Clamp01((dry-.60f)*3f)*.30f);
                 float yardEdge=Mathf.Max(Mathf.Abs(wx)/8.3f,Mathf.Abs(wz)/6.9f);
-                float yard=1f-Mathf.SmoothStep(.84f,1.13f+(detail-.5f)*.12f,yardEdge);
-                col=Color.Lerp(col,new Color(.36f,.315f,.25f)*(.88f+detail*.24f),yard*.94f);
+                float yard=1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.84f,1.13f+(detail-.5f)*.12f,yardEdge));
+                col=Color.Lerp(col,new Color(.36f,.315f,.25f)*(.88f+detail*.24f),yard*.72f);
                 pixels[y*size+x]=col;
             }
             tex.SetPixels(pixels);tex.Apply(true,false);
