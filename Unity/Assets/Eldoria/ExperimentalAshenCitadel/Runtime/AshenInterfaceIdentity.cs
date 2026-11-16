@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Eldoria.ExperimentalAshenCitadel
 {
-    internal static class AshenInterfaceIdentity
+    public static class AshenInterfaceIdentity
     {
         internal static readonly Color Ivory=new Color(.95f,.91f,.82f);
         internal static readonly Color Muted=new Color(.74f,.77f,.74f);
@@ -15,10 +15,20 @@ namespace Eldoria.ExperimentalAshenCitadel
         private static Sprite secondary;
         private static Sprite crest;
 
-        internal static Sprite Panel => panel??(panel=Make("Ashen · slate frame",256,256,18,18,SamplePanel));
-        internal static Sprite Primary => primary??(primary=Make("Ashen · action",256,72,19,14,(x,y)=>SampleButton(x,y,true)));
-        internal static Sprite Secondary => secondary??(secondary=Make("Ashen · quiet action",256,72,19,14,(x,y)=>SampleButton(x,y,false)));
-        internal static Sprite Crest => crest??(crest=Make("Ashen · citadel seal",128,128,0,0,SampleCrest));
+        public static Sprite Panel => panel??(panel=Resources.Load<Sprite>("AshenPremiumPanel")??
+            Make("Ashen · slate frame",256,256,18,18,SamplePanel));
+        public static Sprite Primary => primary??(primary=Resources.Load<Sprite>("AshenPremiumButtonPrimary")??
+            Make("Ashen · action",256,72,19,14,(x,y)=>SampleButton(x,y,true)));
+        public static Sprite Secondary => secondary??(secondary=Resources.Load<Sprite>("AshenPremiumButtonSecondary")??
+            Make("Ashen · quiet action",256,72,19,14,(x,y)=>SampleButton(x,y,false)));
+        public static Sprite Crest => crest??(crest=Resources.Load<Sprite>("AshenPremiumCrest")??
+            Make("Ashen · citadel seal",128,128,0,0,SampleCrest));
+        // Editor bakes the source-defined raster into real Unity Sprite assets.
+        // Runtime may use a generated fallback if a scene has never been rebuilt.
+        public static void RebindAfterBake()
+        {
+            panel=null;primary=null;secondary=null;crest=null;
+        }
 
         private static Sprite Make(string name,int width,int height,int bx,int by,Func<int,int,Color32> colour)
         {
@@ -31,7 +41,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             for(int y=0;y<height;y++)for(int x=0;x<width;x++)
                 pixels[y*width+x]=colour(x,y);
             texture.SetPixels32(pixels);
-            texture.Apply(false,true);
+            texture.Apply(false,false);
             var border=new Vector4(bx,by,bx,by);
             var sprite=Sprite.Create(texture,new Rect(0,0,width,height),
                 new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect,border);
