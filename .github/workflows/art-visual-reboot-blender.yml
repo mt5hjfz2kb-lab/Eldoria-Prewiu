@@ -36,7 +36,20 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Blender writes a backup on resave; do not persist noncanonical .blend1 files.
+          find Unity/Assets/Art_Reboot/Phase1/Source~/EnvironmentReview -maxdepth 1 -type f -name '*.blend1' -delete
           git add Unity/Assets/Art_Reboot/Phase1/Models/Reboot_EnvironmentV2.fbx Unity/Assets/Art_Reboot/Phase1/Source~/EnvironmentReview
           git diff --cached --quiet && exit 0
           git commit -m 'art: generated village environment and additive dressing; approved buildings preserved; Unity capture pending'
-          git push origin HEAD:art/visual-reboot
+          # A separate capture/metadata commit can advance the branch while Blender runs.
+          # Rebase only this derived-art commit; fail on real content conflicts and never force-push.
+          for attempt in 1 2 3; do
+            git fetch origin art/visual-reboot
+            git rebase origin/art/visual-reboot
+            if git push origin HEAD:art/visual-reboot; then
+              echo ENVIRONMENT_DERIVED_ART_PERSISTED
+              exit 0
+            fi
+          done
+          echo 'Concurrent branch movement prevented safe derived-art persistence' >&2
+          exit 1
