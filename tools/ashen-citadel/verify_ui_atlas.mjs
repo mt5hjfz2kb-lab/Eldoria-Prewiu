@@ -6,7 +6,7 @@ import {createHash} from "node:crypto";
 
 const root="Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources";
 const manifest=JSON.parse(fs.readFileSync("tools/ashen-citadel/ui-atlas-manifest.json","utf8"));
-if(manifest.assets.length!==12)throw Error("Expected 12 premium UI images");
+if(manifest.assets.length!==14)throw Error("Expected 12 premium UI images");
 function parsePng(file){
  const b=fs.readFileSync(file);
  if(!b.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))throw Error("Bad PNG signature "+file);
