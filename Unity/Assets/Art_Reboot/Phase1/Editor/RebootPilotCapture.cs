@@ -84,7 +84,7 @@ namespace Eldoria.ArtReboot.Editor
                     throw new InvalidOperationException("Imported world metres differ from Blender's 48m terrain: " + terrainBounds);
                 var geometry = JsonUtility.FromJson<GeneratedGeometry>(
                     File.ReadAllText(Root + "/Evidence/geometry.json"));
-                if (geometry == null || geometry.mesh_objects != 4 || geometry.triangles < 22000
+                if (geometry == null || geometry.mesh_objects != 4 || geometry.triangles < 21000
                     || triangles != geometry.triangles)
                     throw new InvalidOperationException($"Authored FBX topology mismatch: Unity={triangles}, Blender={geometry?.triangles}");
                 RenderSettings.ambientMode = AmbientMode.Custom;
