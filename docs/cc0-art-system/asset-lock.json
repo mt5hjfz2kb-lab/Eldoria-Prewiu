@@ -20,7 +20,10 @@
       "provenance": "listing_verified",
       "import_state": "not_downloaded",
       "source_public_allowed": "UNVERIFIED",
-      "commercial_game_allowed": "listing_yes"
+      "commercial_game_allowed": "listing_yes",
+      "publisher_2022_google_drive_folder": "https://drive.google.com/drive/folders/1h7sztlZyavWla-JDk3jp6KiWDdMh08yd?usp=sharing",
+      "download_verified_at": "published in original publisher source HTML, NOT downloaded in this branch",
+      "publisher_source_html": "https://github.com/Quaternius/quaternius.github.io/blob/main/packs/ultimatefantasyrts.html"
     },
     {
       "id": "q_ruins",
@@ -35,7 +38,10 @@
       "provenance": "listing_verified",
       "import_state": "not_downloaded",
       "source_public_allowed": "UNVERIFIED",
-      "commercial_game_allowed": "listing_yes"
+      "commercial_game_allowed": "listing_yes",
+      "publisher_2022_google_drive_folder": "https://drive.google.com/drive/folders/1ETp2ldaHaP0BkS4FBmkT-g9Yf88T_cIX?usp=sharing",
+      "download_verified_at": "published in original publisher source HTML, NOT downloaded in this branch",
+      "publisher_source_html": "https://github.com/Quaternius/quaternius.github.io/blob/main/packs/ultimatemodularruins.html"
     },
     {
       "id": "q_village",
@@ -65,7 +71,10 @@
       "provenance": "listing_verified",
       "import_state": "not_downloaded",
       "source_public_allowed": "UNVERIFIED",
-      "commercial_game_allowed": "listing_yes"
+      "commercial_game_allowed": "listing_yes",
+      "publisher_2022_google_drive_folder": "https://drive.google.com/drive/folders/1IV3bXHzkNvuNWFHPi4KPx-G4ghuxIuT-?usp=sharing",
+      "download_verified_at": "published in original publisher source HTML, NOT downloaded in this branch",
+      "publisher_source_html": "https://github.com/Quaternius/quaternius.github.io/blob/main/packs/ultimatestylizednature.html"
     },
     {
       "id": "q_props",
