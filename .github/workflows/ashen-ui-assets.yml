@@ -66,3 +66,13 @@ jobs:
           git commit -m "art(ashen): bake 12 reproducible premium UI PNG sprites"
           git push origin HEAD:experiment/ashen-citadel-i-v-20261115
           echo ASHEN_UI_SPRITES_PUBLISHED_ISOLATED_BRANCH
+      - name: Preserve the exact 12 source PNGs for visual audit and review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ashen-premium-ui-source-${{ github.run_id }}
+          path: |
+            Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources/AshenPremium*.png
+            tools/ashen-citadel/ui-atlas-manifest.json
+          retention-days: 14
+          if-no-files-found: warn
