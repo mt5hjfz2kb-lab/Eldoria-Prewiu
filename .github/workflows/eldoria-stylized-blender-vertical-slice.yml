@@ -1,12 +1,13 @@
-name: Eldoria stylized — NEW original Bastion V from zero (Blender)
+name: Eldoria compact V9 — five readable original 3D buildings (Blender)
 on:
   push:
-    branches: [feature/eldoria-stylized-direction-proof-20261115]
+    branches: [art/valoria-compact-mobile-v9-20261116]
     paths:
       - tools/stylized-direction-pilot/valoria_original_bastion_v.py
       - tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py
       - tools/stylized-direction-pilot/valoria_characterful_city_v7.py
       - tools/stylized-direction-pilot/valoria_citadel_massing_v8.py
+      - tools/stylized-direction-pilot/valoria_mobile_citadel_v9.py
       - .github/workflows/eldoria-stylized-blender-vertical-slice.yml
   workflow_dispatch:
 permissions:
@@ -28,6 +29,7 @@ jobs:
             /tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py
             /tools/stylized-direction-pilot/valoria_characterful_city_v7.py
             /tools/stylized-direction-pilot/valoria_citadel_massing_v8.py
+            /tools/stylized-direction-pilot/valoria_mobile_citadel_v9.py
       - name: Install standard free CPU Blender
         run: |
           sudo apt-get update -qq
@@ -51,7 +53,7 @@ jobs:
               b = (p/name).read_bytes()
               assert b[:8] == b'\x89PNG\r\n\x1a\n'
               width,height = struct.unpack('>II', b[16:24])
-              assert (width,height) in [(1440,900),(800,1400)], 'Unexpected capture size'
+              assert (width,height) in [(1600,1000),(900,1600)], 'Unexpected capture size'
               print('REAL_BLENDER_PNG', name, width, height)
           b=(p/'valoria-original-bastion-v.glb').read_bytes()
           assert b[:4] == b'glTF' and struct.unpack('<I',b[8:12])[0]==len(b), 'invalid GLB header'
