@@ -27,3 +27,13 @@ Implemented in isolated source commit `8fae11c43a671e20a8e8650ab5c1c29f935315db`
 Regression source check `tools/ashen-citadel/verify-ground-falloff.mjs` is wired into isolated source QA. The independently checked boundary/monotonicity model passed 1,000 sampled transitions across five procedural detail values; this verifies the *mathematical intent*, not the Unity render. The actual Unity compile, same-camera screenshots, 7 EditMode + 4 PlayMode tests and iPhone performance are still separate gates. Do not mark ART_APPROVED or claim final visual quality until those are inspected.
 
 Next verification order: obtain terminal result/artifacts for the pending paving proof if available, reserve the shared Windows runner through the canonical main registry when free, capture the new source SHA with identical I–V cameras, then inspect path softness, stone regularity, building-to-ground transitions and mobile framing. Do not bypass the main runner lease or disturb unrelated jobs.
+
+## Native evidence recovered and actually inspected (16 November 2026)
+
+Recovered exact Unity native run **43866203492**, artifact **14225881950**, source commit `4a3dcc8d893eb021296ce61f7f113d39d6501313`. Artifact SHA256 `57de0435322e107e28336947e21f6e62aaa797ef4ba98e0a78050d28b3c90d46`. The ten I–V landscape/portrait PNG hashes match `native-proof.json`; EditMode **7/7** and PlayMode **4/4** pass.
+
+**Observed on genuine 1600x900 Unity Bastion V frame:** fortress and all four secondary structures are distinct, support contact is acceptable, courtyard/approach has more actual flagstones. However the approach still forms parallel small rectangular stone tracks, recognizably repetitive. The broader grass remains flat, with disconnected rock/foliage clusters and harsh long shadows. The footprint of the courtyard is less visually rich than the buildings; this is **not** a premium-art acceptance.
+
+**Observed on 390x844 Unity frame:** all four secondary structures appear in view, but city and labels/details appear small; no performance or physical iPhone claim is supported.
+
+This native evidence predates the separately implemented and source-checked *normalized wear mask* correction. The masks should improve the dirt/stone transition mathematically, but **the corrected C# source has not yet been rendered or visually approved in Unity**. Shared Windows runner remained held by a different workstream when inspected, so no conflicting native job was dispatched. Next isolated test should compare the same 1600x900 frame and 390x844 frame with identical lighting and camera, explicitly reviewing whether the approach still resembles laid tiles.
