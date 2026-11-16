@@ -1,10 +1,10 @@
-name: "Visual reboot · hero geometry preparation"
+name: "Visual reboot · approved hero family preparation"
 on:
   push:
     branches: [art/visual-reboot]
     paths:
       - .github/workflows/art-visual-reboot-blender.yml
-      - Unity/Assets/Art_Reboot/Phase1/Source~/author_hero.py
+      - Unity/Assets/Art_Reboot/Phase1/Source~/author_family.py
   workflow_dispatch:
 permissions:
   contents: write
@@ -23,21 +23,22 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends blender python3-numpy python3-pil
-      - name: Build isolated hero and silhouette evidence
+      - name: Derive family without rewriting approved hero
         run: |
           set -euo pipefail
-          python3 Unity/Assets/Art_Reboot/Phase1/Source~/HeroReview/silhouettes.py
-          blender -b -t 4 --python Unity/Assets/Art_Reboot/Phase1/Source~/author_hero.py -- --skip-render 2>&1 | tee "$RUNNER_TEMP/hero.log"
-          if grep -qE 'Traceback|Error: Python' "$RUNNER_TEMP/hero.log"; then exit 1; fi
-          grep -q HERO_GEOMETRY_COMPLETE "$RUNNER_TEMP/hero.log"
-          blender -b -t 4 --python Unity/Assets/Art_Reboot/Phase1/Source~/verify_hero.py 2>&1 | tee "$RUNNER_TEMP/hero-verify.log"
-          grep -q HERO_FBX_PASS "$RUNNER_TEMP/hero-verify.log"
-      - name: Persist hero without changing pilot scene
+          for mode in ruin corrupt environment; do
+            blender -b -t 4 --python Unity/Assets/Art_Reboot/Phase1/Source~/author_family.py -- --$mode --skip-render 2>&1 | tee "$RUNNER_TEMP/$mode.log"
+            if grep -qE 'Traceback|Error: Python' "$RUNNER_TEMP/$mode.log"; then exit 1; fi
+            grep -q FAMILY_GEOMETRY_COMPLETE "$RUNNER_TEMP/$mode.log"
+          done
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Phase1/Source~/verify_family.py 2>&1 | tee "$RUNNER_TEMP/family-verify.log"
+          grep -q FAMILY_FBX_PASS "$RUNNER_TEMP/family-verify.log"
+      - name: Persist derived family only
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Unity/Assets/Art_Reboot/Phase1/Models/Reboot_Hero.fbx Unity/Assets/Art_Reboot/Phase1/Textures/Hero_Atlas_256.png Unity/Assets/Art_Reboot/Phase1/Source~/HeroReview
+          git add Unity/Assets/Art_Reboot/Phase1/Models/Reboot_Ruin.fbx Unity/Assets/Art_Reboot/Phase1/Models/Reboot_Corrupt.fbx Unity/Assets/Art_Reboot/Phase1/Models/Reboot_Environment.fbx Unity/Assets/Art_Reboot/Phase1/Source~/Family
           git diff --cached --quiet && exit 0
-          git commit -m 'art: generated Casa de la Campana hero source; Unity capture pending'
+          git commit -m 'art: generated approved hero ruin, corruption and clearing; Unity capture pending'
           git push origin HEAD:art/visual-reboot

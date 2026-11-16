@@ -94,14 +94,20 @@ jobs:
           $proof=Join-Path $pwd ("visual-reboot-evidence-"+$env:GITHUB_RUN_ID)
           $from=Join-Path $proof 'ImportedArtReboot/Phase1'
           foreach($rel in @(
-            'Scenes/Hero_Review.unity',
-            'Models/Reboot_Hero.fbx.meta','Textures/Hero_Atlas_256.png.meta',
-            'Materials/Hero_Surface.mat','Materials/Hero_Emission.mat',
-            'Materials/Hero_Floor.mat','Materials/Hero_Profile.asset',
-            'Materials/Reboot_Dusk.asset','Materials/Reboot_URP.asset',
-            'Materials/Reboot_Emission.mat','Materials/Reboot_Corruption.mat',
-            'Materials/Reboot_LowMist.mat','Materials/Reboot_ArcaneParticles.mat',
-            'Materials/Reboot_LowMist_0.asset','Materials/Reboot_LowMist_1.asset'
+            'Scenes/Phase1_HeroFamily.unity',
+            'Models/Reboot_Ruin.fbx.meta',
+            'Models/Reboot_Corrupt.fbx.meta',
+            'Models/Reboot_Environment.fbx.meta',
+            'Materials/Family_Surface.mat',
+            'Materials/Family_WarmLight.mat',
+            'Materials/Family_Corruption.mat',
+            'Materials/Family_Dusk.asset',
+            'Materials/Family_URP.asset',
+            'Materials/Family_Renderer.asset',
+            'Materials/Family_LowMist.mat',
+            'Materials/Family_ArcaneParticles.mat',
+            'Materials/Family_LowMist_0.asset',
+            'Materials/Family_LowMist_1.asset'
           )){
             $a=Join-Path $from $rel; $z=Join-Path $branchArt $rel
             if(-not(Test-Path -LiteralPath $a)){throw "Missing generated Unity asset: $rel"}
@@ -113,7 +119,7 @@ jobs:
           $evidence=Join-Path $branchArt ("Source~/Evidence/native-"+$env:GITHUB_RUN_ID)
           New-Item -ItemType Directory -Force -Path $evidence | Out-Null
           foreach($rel in @(
-            'unity-1100x1250.png','unity-390x844.png','unity-hero-silhouette.png',
+            'unity-1100x1250.png','unity-390x844.png','ruin-closeup.png','corrupt-closeup.png',
             'unity-1600x900.png','unity-844x390.png',
             'capture.json','native-proof.json','model-world-bounds.txt'
           )){
@@ -123,7 +129,7 @@ jobs:
           }
           $pngHashes=Get-Content -LiteralPath (Join-Path $proof 'native-proof.json') -Raw | ConvertFrom-Json
           $manifest=@{
-            phase='Hero form correction review';native_run=$env:GITHUB_RUN_ID
+            phase='Phase1 approved hero family review';native_run=$env:GITHUB_RUN_ID
             source_sha=$env:GITHUB_SHA
             note='True native Unity rendered captures; artistic approval and real iPhone performance not asserted'
             art_approved=$false;physical_iphone_tested=$false
@@ -137,7 +143,7 @@ jobs:
             git add -A -- Unity/Assets/Art_Reboot/Phase1
             git diff --cached --quiet
             if($LASTEXITCODE -ne 0){
-              git commit -m "art: persist hero review scene and genuine native screenshots [phase1-provisional]"
+              git commit -m "art: persist Phase1 hero family scene and genuine native screenshots [phase1-provisional]"
               if($LASTEXITCODE -ne 0){throw 'Commit failed'}
               git push origin HEAD:art/visual-reboot
               if($LASTEXITCODE -ne 0){throw 'Non-fast-forward or GitHub write rejected; evidence remains in artifact'}

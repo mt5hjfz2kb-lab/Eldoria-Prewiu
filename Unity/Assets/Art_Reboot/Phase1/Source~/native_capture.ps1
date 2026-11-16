@@ -39,7 +39,7 @@ $deps=@{'com.unity.render-pipelines.universal'=$urp;'com.unity.modules.imageconv
  (@{dependencies=$deps}|ConvertTo-Json -Depth 5),([Text.UTF8Encoding]::new($false)))
 $env:REBOOT_CAPTURE_OUTPUT=$OutputRoot
 $log=Join-Path $OutputRoot 'unity-editor.log'
-$arguments='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.ArtReboot.Editor.RebootHeroCapture.BuildAndCapture -logFile "'+$log+'"'
+$arguments='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.ArtReboot.Editor.RebootFamilyCapture.BuildAndCapture -logFile "'+$log+'"'
 $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru
 $deadline=(Get-Date).AddMinutes(35)
 while(-not $p.HasExited -and (Get-Date) -lt $deadline){Start-Sleep -Seconds 4;$p.Refresh()}
@@ -63,7 +63,7 @@ foreach($size in @('1100x1250','390x844','1600x900','844x390')){
  $hashes+=@{file=$name;sha256=(Get-FileHash $path -Algorithm SHA256).Hash}
 }
 Copy-Item (Join-Path $project 'Assets/Art_Reboot') (Join-Path $OutputRoot 'ImportedArtReboot') -Recurse
-@{source_sha=$env:GITHUB_SHA;screenshots=$hashes;scope='Isolated hero review scene; original pilot scene unchanged';
+@{source_sha=$env:GITHUB_SHA;screenshots=$hashes;scope='Isolated Phase1 hero family; approved hero and original scenes unchanged';
   unity_compiled=$true;unity_rendered=$true;gameplay_tested=$false;full_project_integration=$false;
   mobile_tested=$false;art_approved=$false}|ConvertTo-Json -Depth 8 | Set-Content (Join-Path $OutputRoot 'native-proof.json')
 Write-Output 'REBOOT_NATIVE_IMPORT_AND_CAPTURE_COMPLETE_REQUIRES_VISUAL_REVIEW'
