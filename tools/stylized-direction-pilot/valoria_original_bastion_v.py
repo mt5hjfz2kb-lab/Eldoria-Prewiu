@@ -94,10 +94,10 @@ def crafted_texture(ma,kind,color,size=256):
     tone*=1+.095*sin(x*.13+sin(y*.026)*3)+.04*cos(x*.42)
     if x%57<2:tone*=.82
    elif kind=='foliage':
-    tone*=1+.13*sin(x*.065+y*.032)+.08*cos(x*.14-y*.07)
+    tone*=1+.032*sin(x*.065+y*.032)+.016*cos(x*.14-y*.07)
    elif kind=='soil':tone*=1+.16*sin(x*.026+y*.045)
    ix=(y*size+x)*4
-   for ch in range(3):pixels[ix+ch]=linear(min(.99,max(.012,color[ch]*tone)))
+   for ch in range(3):pixels[ix+ch]=min(.99,max(.012,color[ch]*tone))
    pixels[ix+3]=1
  image.pixels.foreach_set(pixels)
  image.pack()
@@ -148,7 +148,7 @@ def mesh(name,vertices,faces,ma):
  for poly in m.polygons:
   for li in poly.loop_indices:
    co=m.vertices[m.loops[li].vertex_index].co
-   uv.data[li].uv=(co.x/7.5,co.y/7.5)
+   uv.data[li].uv=(co.x/(23.0 if 'terrain' in name else 7.5),co.y/(23.0 if 'terrain' in name else 7.5))
  return obj
 
 def gable(name,x,y,z,width,depth,rise,ma):
@@ -250,11 +250,11 @@ def ground(x,y):
  return n+shoulder+river
 
 # authored single undulating ground, seamless paths and river embankment.
-verts=[];faces=[];width=112;depth=105
+verts=[];faces=[];width=181;depth=181
 for iy in range(depth):
- y=-47+iy*1.00
+ y=-90+iy*1.00
  for ix in range(width):
-  x=-56+ix*1.00;verts.append((x,y,ground(x,y)))
+  x=-90+ix*1.00;verts.append((x,y,ground(x,y)))
 for iy in range(depth-1):
  for ix in range(width-1):
   a=iy*width+ix;faces.append((a,a+1,a+1+width,a+width))
