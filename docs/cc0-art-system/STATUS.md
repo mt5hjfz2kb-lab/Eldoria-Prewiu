@@ -101,3 +101,19 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 - **Límites:** Unity V10 NO ejecutada, iPhone y Android NO probados, ART NO aprobado, main sin cambios y Windows reservado para otro workstream.
 
 **Siguiente acción autónoma:** verificar ambos runs, descargar PNGs reales y comparar V9/V10, diagnosticar macrocambios y corregir si sigue fallando. Luego optimizar mallas del V10 escogido, y solo con reserva legítima comprobar Unity con capturas reales. Un CI exitoso no equivale a calidad aceptable.
+
+
+## Pruebas V10 corregidas y V11 de atlas propios (16-11-2026)
+
+- **V10 geometría integrada real:** [Action #43889934794](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43889934794) SUCCESS: cinco GLB y editable .blend, tres renders genuinos Blender; usuario puede comparar Bastión I/V. Se eliminan volúmenes de cubiertas antiguas que coexistían en el GLB V8. **Revisión visual:** mayor unión de alas, pero cuerpo superior sigue demasiado liso/blanco; no ART_APPROVED.
+- **V10 materiales primer intento rechazado:** [#43889437704](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43889437704) generó archivos pero falló QA visual con *99,996 %* de píxeles casi negros en región de torre superior. **Causa probada en código:** el ciclo de Blender reinicia escena con read_factory_settings, importa GLB sin luces y recrea una cámara, pero no reconstruía sol/ambiente/antorchas; no era falta de calidad del GLB en sí.
+- **V10 iluminación recuperada:** [#43891297913](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43891297913) SUCCESS tras añadir restore_v9_physical_lighting en tools/cc0-art-system/director_v10_physical_materials.py. Restauradas 3 fuentes de luz determinísticas, color y exposición originales. PNG real ahora legible con nuevos atlas de ladrillo, pizarra y roble. **Técnico probado, calidad comercial NO.**
+- **V9 batching verificado:** [#43888770748](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43888770748) SUCCESS. Bastión V pasó de 2.442 mallas importadas a 202 mallas agrupadas (reducción 91,73 %), con exactamente 130.643 caras preservadas. No medir como draw calls GPU ni FPS.
+- **V11 combinación física:** tools/cc0-art-system/director_v11_textured_citadel.py reusa **materiales realmente texturizados V8_master_ashlar, V8_master_roof, V8_master_timber** sobre los volúmenes reconstruidos de V10 y genera mapeado UV físico para polígonos de cubierta/fachada. No tiene paquetes externos ni imágenes AI como textura. [Prueba #43891952674](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43891952674) se debe verificar y descargar; **no declarar finalizada ni aprobada sin inspeccionar PNG real**.
+- Todo lo anterior es exclusivamente **Blender aislado**; NO se ha importado/probado esta línea en Unity/Editor/iPhone. No fusionar en main ni ocupar Windows reservado para art/visual-reboot.
+
+### Prioridad de continuación
+
+1. Verificar V11 exacta, abrir PNG I/V y retrato y comparar V9/V10 a cámara equivalente.
+2. Rechazar visualmente si gran nave y árboles siguen siendo simples; buscar solución estructural, no añadir decoraciones arbitrarias.
+3. Optimizar para móvil solo la variante visual elegida; reservar Windows según main/active-workstreams antes de Unity. Las pruebas Blender son evidencia de activos, no de un juego jugable.
