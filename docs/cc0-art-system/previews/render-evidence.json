@@ -7,8 +7,13 @@
     "only owned procedural geometry/textures"
   ],
   "external_sources_imported": [],
-  "stage1_glb": "CC0_Valoria_Stage1.glb",
-  "stage5_glb": "CC0_Valoria_Stage5.glb",
+  "stages_glb": [
+    "CC0_Valoria_Stage1.glb",
+    "CC0_Valoria_Stage2.glb",
+    "CC0_Valoria_Stage3.glb",
+    "CC0_Valoria_Stage4.glb",
+    "CC0_Valoria_Stage5.glb"
+  ],
   "blend_source": "CC0_Valoria_Source.blend",
   "art_approved": false,
   "renders": [
