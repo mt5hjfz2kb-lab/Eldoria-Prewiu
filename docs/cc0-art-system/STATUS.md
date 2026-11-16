@@ -42,3 +42,16 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 5. Solo tras inspección artística positiva: instalar modelos originales/optimizados en sandbox Unity aislado, probar los botones y escenas, capturar desde el Editor y validar dispositivo físico cuando sea posible. Sin fusionar ni publicar sin aprobación del propietario.
 
 **Principio rector:** código ejecutado ≠ geometría válida ≠ calidad visual ≠ juego estable. Distinguir siempre estas cuatro cosas.
+
+## Director V6 — reconstrucción estructural de presentación (16/11/2026)
+
+**Motivo:** las capturas reales de V5 en [Action #43874433432](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43874433432) muestran caminos superpuestos claros, terreno plano con poco interés, árboles repetitivos y arquitectura secundaria poco diferencial. El modelo V5 sirve como base geométrica, **no está aprobado**.
+
+**Código nuevo:**
+- `tools/cc0-art-system/director_v6_structural_redraw.py`: importa cada GLB físico de V5; elimina mallas problemáticas, **reconstruye una superficie continua con senderos pintados por vértice**, añade coníferas irregulares reales, vegetación, texturas originales retocadas físicamente, refuerzos del Bastión V y siluetas de los cuatro edificios funcionales; genera 5 GLB y una fuente editable Blender.
+- `.github/workflows/cc0-director-v6.yml`: Ubuntu alojado, sin Windows compartido ni gasto; input **exacto** del artifact V5 run `43874433432`; comprueba glTF/COLOR_0/texturas, 3 render PNG, salto visual I/V y límites de licencias. Artefacto esperado `eldoria-cc0-director-v6-real-3d`.
+- Primera ejecución `43877803268`: Blender arrancó e importó V5; **FALLÓ** por uso de materiales borrados en el reinicio de escena `read_factory_settings`. Se corrigió regenerando los materiales tras cada reinicio; [segunda ejecución #43878136136](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43878136136) es la referencia para comprobar el estado real. **No declarar PASS sin verificar conclusión y revisar PNG.**
+
+**Prueba de aceptación del trabajo, por orden:** Blender fuente/modelos reales y capturas, inspección artística que demuestre corrección de suelo/vegetación/edificios, agrupación 3D actualizada por materiales/sector, integración Unity aislada mediante reserva Windows legítima y test móvil. El primer PASS es técnico, jamás ART_APPROVED.
+
+**Aislamiento:** esta versión solo edita su rama; las mallas externas de Quaternius NO se incorporan al código. Ni main, ni publicación, ni fuentes del Bastión vetado, ni saves, ni gameplay.
