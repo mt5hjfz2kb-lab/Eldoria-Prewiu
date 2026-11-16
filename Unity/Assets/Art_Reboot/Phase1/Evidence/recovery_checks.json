@@ -25,5 +25,14 @@
   "full_game_integration": false,
   "gameplay_tested": false,
   "art_approved": false,
-  "visual_assessment": "Reviewable stylized three-state pilot. Correct textures, world units, roof, continuous terrain, readable state silhouettes and stable dusk. Remaining artistic limitations: deliberately simple architecture, stylized conifers and sparse environment; not final production art."
+  "visual_assessment": "Reviewable stylized three-state pilot. Correct textures, world units, roof, continuous terrain, readable state silhouettes and stable dusk. Remaining artistic limitations: deliberately simple architecture, stylized conifers and sparse environment; not final production art.",
+  "saved_scene_reopen": {
+    "source_sha": "a41c07323b07539bdadda483a06b4266d420e55c",
+    "run": 43780662139,
+    "artifact": 14188780604,
+    "zip_sha256": "91c23827a508d0802b1e3fa07330157ab3789a161c444bf872072c741d5a1ac4",
+    "result": "success",
+    "four_png_identical_to_reviewed_source": true,
+    "own_scratch_removed": true
+  }
 }

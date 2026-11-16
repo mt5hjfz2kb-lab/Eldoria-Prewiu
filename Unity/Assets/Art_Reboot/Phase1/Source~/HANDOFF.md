@@ -8,6 +8,10 @@ Run nativo **43779933745**, fuente **d74be4ee7d90c07a11becc62c480f37358596e0e**,
 
 Las cuatro PNG originales y pruebas están en `Source~/Evidence/native-43779933745/`. La repetición de1100×1250 al final coincide píxel a píxel con la primera (diferencia media/máxima0). Inspección visual realizada en1100×1250,390×844,1600×900 y844×390: los tres edificios completos, sin atlas extendido, cuadrados de sombra en tejado ni suelo cuadriculado. No sustituir estas imágenes con renders Blender.
 
+## Reapertura de la escena guardada
+
+Run **43780662139**, fuente guardada **a41c07323b07539bdadda483a06b4266d420e55c**: SUCCESS, compilación/captura/cierre/limpieza correctos. Artefacto14188780604, ZIP SHA256 `91c23827a508d0802b1e3fa07330157ab3789a161c444bf872072c741d5a1ac4`, descargado y verificado. Las cuatro PNG coinciden byte a byte con las imágenes revisadas del run43779933745. No hace falta volver a ejecutar Unity por esta actualización exclusivamente documental.
+
 ## Abrir y reproducir
 
 Escena montada: `Assets/Art_Reboot/Phase1/Scenes/Eldoria_Visual_Sandbox.unity`. Materiales, perfil de volumen, renderer y pipeline propios incluidos bajo `Materials/`. La jerarquía histórica copiada permanece inactiva; la escena original mantiene sus bytes.
