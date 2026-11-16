@@ -4,12 +4,12 @@
   "workstream_id": "eldoria-art-visual-reboot-phase1-20261115",
   "enabled": true,
   "status": "ACTIVE",
-  "asset_or_sector": "Art_Reboot/Phase1 three-state Bastion pilot",
+  "asset_or_sector": "Art_Reboot/Phase1 isolated hero form revision",
   "profile": "environment_composition",
-  "visual_gate_state": "SOURCE_VERIFIED_NATIVE_PENDING",
+  "visual_gate_state": "NATIVE_VERIFIED_OWNER_APPROVAL_PENDING",
   "ai_authorship_policy": "required",
-  "diagnosis": "Assemble already authored and reimport-verified Blender assets in isolated URP scene. Native material/light/readability is unverified. No old Bastion asset, no gameplay changes.",
-  "geometry_gap_proven": false,
+  "diagnosis": "Owner rejected box-like buildings. Hero reconstructed from three black contour studies; actual Unity form and silhouette reviewed. Await owner before same-base ruin/corrupt derivatives and scene assembly.",
+  "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
     "approved": false,
@@ -20,8 +20,8 @@
     "blender_material_consolidation": true
   },
   "validation": {
-    "source_gate": "Four mesh families, 21308 triangles, one 256 atlas; per-face UV tile check and vertex colors on actual FBX reimport",
-    "final_gate": "Real Unity URP screenshots and independent visual review; no claim of full game integration or mobile performance"
+    "source_gate": "32804 triangles; FBX reimport UV and colors verified; 256 atlas; actual Unity sums every 16-bit imported mesh part",
+    "final_gate": "Native43848924672, sourcef1876818638d23558ca7d2f0f20671c118fe7fff; four actual PNGs plus black silhouette; independent visual review. Owner approval pending; physical mobile not tested."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
