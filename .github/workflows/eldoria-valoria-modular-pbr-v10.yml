@@ -25,7 +25,7 @@ jobs:
       - name: Install standard real Blender renderer, no proprietary assets
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender git
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender git python3-numpy
           blender --version | head -2
       - name: Fetch only two public licensed source folders, verify CC0 in source
         run: |
