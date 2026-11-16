@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:36:11.037Z",
+  "updated_at": "2026-11-16T12:37:49.979Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9841,10 +9841,10 @@
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "reserved_exact_source_for_native_capture",
-        "source_sha": "a50cf0fd5d4e07ed9f2cde020b4b91d2cc2065c0",
+        "source_sha": "940f6848124f326985e99d4d08105c44ea5b59fd",
         "previous_ashen_run": 43866203492
       },
-      "native_source_sha": "a50cf0fd5d4e07ed9f2cde020b4b91d2cc2065c0",
+      "native_source_sha": "940f6848124f326985e99d4d08105c44ea5b59fd",
       "last_native_attempt": {
         "run": 43862025708,
         "source": "05f8b8ae788225d9bd304a23869215317c248d83",
