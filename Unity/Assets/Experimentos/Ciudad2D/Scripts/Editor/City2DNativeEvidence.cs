@@ -63,11 +63,16 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 foreach (var b in all)
                 {
                     if (b.BuildingId == "bastion") bastion = b;
-                    if (b.Level <= 0 || b.SelectedArtLevel != 1)
-                        throw new InvalidOperationException("Edificio sin primer hito: " + b.BuildingId);
+                    City2DPlotPhase expected = b.BuildingId == "bastion" ? City2DPlotPhase.Built :
+                        b.BuildingId == "aserradero" ? City2DPlotPhase.Available : City2DPlotPhase.Locked;
+                    if (b.PlotPhase != expected)
+                        throw new InvalidOperationException("Parcela prematura: " + b.BuildingId + " " + b.PlotPhase);
                     var col = b.GetComponent<BoxCollider2D>();
-                    if (col == null || !col.enabled || b.GetComponent<SpriteRenderer>()?.sprite == null)
-                        throw new InvalidOperationException("Collider o sprite faltante: " + b.BuildingId);
+                    var renderer = b.GetComponent<SpriteRenderer>();
+                    if (col == null || renderer == null || renderer.sprite == null ||
+                        col.enabled != (expected != City2DPlotPhase.Locked) ||
+                        renderer.enabled != (expected == City2DPlotPhase.Built))
+                        throw new InvalidOperationException("Edificio visible o collider incorrecto: " + b.BuildingId);
                 }
                 if (bastion == null) throw new InvalidOperationException("Falta Bastion");
                 if (CityBuilding.PlannedMilestone(4) != 1 || CityBuilding.PlannedMilestone(5) != 5 ||
@@ -98,6 +103,28 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     fixture.ChapterThree.GranaryLevel != 2 || fixture.ChapterThree.StoneworksLevel != 1)
                     throw new InvalidOperationException("La presentacion altero la fixture de partida");
 
+                if (City2DProgressionPolicy.FromSnapshot(fixture, "cantera").Phase != City2DPlotPhase.Locked)
+                    throw new InvalidOperationException("Cantera disponible antes de Bastión V");
+                fixture.BastionLevel = 5;
+                bridge.ApplySnapshot(fixture);
+                if (City2DProgressionPolicy.FromSnapshot(fixture, "cantera").Phase != City2DPlotPhase.Available)
+                    throw new InvalidOperationException("La cantera debe ser una parcela, no una cantera construida");
+                fixture.BuildingTaskId = "c3:stoneworks:qa-only";
+                fixture.BuildingCompletesUtcTicks = 123456789;
+                bridge.ApplySnapshot(fixture);
+                var quarry = Array.Find(all, item => item.BuildingId == "cantera");
+                if (quarry == null || quarry.PlotPhase != City2DPlotPhase.UnderConstruction ||
+                    quarry.GetComponent<SpriteRenderer>().enabled)
+                    throw new InvalidOperationException("Obra visible indebidamente como edificio terminado");
+                fixture.BuildingCompletesUtcTicks = 0;
+                fixture.BuildingTaskId = "";
+                fixture.ChapterThree.StoneworksLevel = 1;
+                bridge.ApplySnapshot(fixture);
+                if (quarry.PlotPhase != City2DPlotPhase.Built || !quarry.GetComponent<SpriteRenderer>().enabled)
+                    throw new InvalidOperationException("La cantera construida no aparece al terminar");
+                if (fixture.BastionLevel != 5 || fixture.ChapterThree.StoneworksLevel != 1)
+                    throw new InvalidOperationException("La presentación mutó los datos de la fixture");
+                
                 // Comprobar transiciones sin modificar datos ni save.
                 bastion.SetLevel(4);
                 AssertMilestone(bastion, 1);
@@ -114,10 +141,11 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 bastion.SetLevel(1);
 
                 priorTarget = camera.targetTexture;
-                CaptureOne(evidenceRoot, camera, fitting, bastion, 1, 390, 844, records);
-                CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 390, 844, records);
-                CaptureOne(evidenceRoot, camera, fitting, bastion, 1, 844, 390, records);
-                CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 844, 390, records);
+                foreach (var chapter in new[] {1,2,3,4,5})
+                {
+                    CaptureOne(evidenceRoot, camera, fitting, bastion, chapter, 390, 844, records);
+                    CaptureOne(evidenceRoot, camera, fitting, bastion, chapter, 844, 390, records);
+                }
                 CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1170, 2532, records);
                 CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1600, 900, records);
 
@@ -127,6 +155,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"mode\":\"Editor_RenderTexture_no_PlayMode\",\n" +
                     "  \"level_transition_pass\":true,\n" +
                     "  \"domain_snapshot_read_only_pass\":true,\n" +
+                    "  \"visibility_policy_pass\":true,\n" +
                     "  \"six_sprite_colliders_pass\":true,\n" +
                     "  \"game_state_modified\":false,\n" +
                     "  \"art_approved\":false,\n" +
@@ -159,8 +188,10 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         private static void CaptureOne(string root, Camera cam, City2DCameraFit fit,
             CityBuilding bastion, int level, int width, int height, List<string> evidence)
         {
-            bastion.SetLevel(level);
-            AssertMilestone(bastion, level == 1 ? 1 : 5);
+            var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
+            if (bridge == null) throw new InvalidOperationException("Bridge not found during capture");
+            bridge.SetDemoBastionLevel(level);
+            AssertMilestone(bastion, level >= 5 ? 5 : 1);
             fit.SetEvidenceViewport(width, height);
             var rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
             var previous = RenderTexture.active;
