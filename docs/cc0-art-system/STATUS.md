@@ -1,37 +1,40 @@
-# Estado comprobable — Sistema artístico gratuito (Eldoria)
+# Estado comprobado y relevo — Eldoria sistema gráfico gratuito
 
-**Rama aislada:** `experiment/eldoria-cc0-art-system-20261116`  
+**Fecha de auditoría:** 16-11-2026.  
 **Workstream:** `eldoria-cc0-art-system-20261116`  
-**Fecha de revisión:** 16/11/2026. Este documento NO es una aprobación de arte ni publica una beta.
+**Rama única:** `experiment/eldoria-cc0-art-system-20261116`. `main` NO modificada. No utilizar Windows compartido sin registro y coordinación.
 
-## Hecho y confirmado
+## Estado exacto por hito
 
-- **Creación, aislamiento y contrato:** `docs/cc0-art-system/README.md` y `asset-lock.json` presentes en esta rama, sin merges ni cambios en `main`.
-- **Fuente original reproducible de Bastión I–V:** `tools/cc0-art-system/author_bastion.py` ejecutado en Blender 4.0.2 sobre Ubuntu, con archivos `.blend`, `.glb`, materiales y tres capturas auténticas de Blender (NO Unity). Ejecución de arte `43837586794` éxito; [evidencias en carpeta](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/tree/experiment/eldoria-cc0-art-system-20261116/docs/cc0-art-system/previews).
-- **Quaternius real, no inventado:** 6 ficheros originales del pack Ultimate Fantasy RTS descargados desde Google Drive del autor, verificados por hash SHA-256 e importados físicamente en Blender, con captura real de comparación (incluye cuartel, mina, almacén, puerta y árboles). [Run 43844725460](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43844725460) SUCCESS; artifact `quaternius-actual-source-style-audit`.
-- **Conclusión visual de la muestra:** el recurso `TownCenter_SecondAge_Level3.gltf` representa una fuente monumental y NO el Bastión. Quaternius es valioso para piezas secundarias y árboles; calidad/coherencia con nuestro Bastión sigue a examen. La captura de seis modelos **no equivale a una ciudad integrada**.
-- **Licencias:** ficha de Quaternius marcada CC0, carpeta de descarga original confirmada, `License.txt` suministrado en la carpeta nombra por error Ultimate Platformer Pack; QAL de 2026 contiene restricciones de redistribución de fuentes. Por tanto **NO** publicar originales FBX/glTF en GitHub público sin resolver derechos por archivo. Las pruebas descargan a almacenamiento efímero de runner y publican solo PNG + auditoría.
-- **Generador de escena Unity:** `Unity/Assets/Art_Reboot/CC0System/Editor/CC0SystemSceneBuilder.cs` implementado como candidato. **No ejecutado ni validado en Unity**: escenas, imágenes nativas, WebGL, Android y iPhone siguen pendientes.
+| Hito | Estado | Evidencia reproducible |
+| --- | --- | --- |
+| Contrato, fuentes y licencias | REGISTRADOS | `README.md`, `asset-lock.json`, `ART_REVIEW_AND_PIVOT_20261116.md` |
+| Bastión I–V fuente única | PROBADO en Blender | [run #43847137592](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43847137592): `CC0_Valoria_Stage1..5.glb` y `CC0_Valoria_Source.blend`, material propio |
+| Descarga original de seis modelos Quaternius | PROBADO en Blender | [run #43844725460](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43844725460): originales comprobados con SHA, imagen real |
+| Composición mixta con ruinas, cuartel, granero, mina, árboles | TÉCNICAMENTE PROBADA, ARTÍSTICAMENTE RECHAZADA | [run #43847893229](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43847893229); tres PNG guardadas en `previews/hybrid`, sin originales externos en Git |
+| Nueva composición uniforme con cuatro industrias separadas | CANDIDATA EN QA | [workflow `cc0-art-system-city-finish.yml`](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/workflows/cc0-art-system-city-finish.yml); script `tools/cc0-art-system/recompose_city.py` genera 5 GLB, 1 BLEND, cuatro PNG |
+| Importación en Unity, capturas reales Unity | NO PROBADA | `Unity/Assets/Art_Reboot/CC0System/Editor/CC0SystemSceneBuilder.cs` es código candidato; falta ejecución y contraste |
+| Gameplay, beta, rendimiento iPhone/Android | NO PROBADO | Ningún render Blender certifica lógica, FPS, memoria o estabilidad WebGL |
+| Licencia de redistribución de vendor source | NO ACREDITADA | Licencia específica sin verificar; sitio dice CC0 y `License.txt` original mal titulado. Fuentes externas conservadas solo en runner temporal. |
 
-## Prueba comparativa en curso
+## Resultado crítico (NO repetir error)
 
-- [x] Guion híbrido `render_hybrid_valoria.py` implementado: fortaleza propia + modelos reales del editor (cuartel, granero, mina, troncos, ruinas, coníferas y rocas) con paleta común y sin plataformas nuevas.
-- [x] Workflow alojado Ubuntu `.github/workflows/cc0-art-system-hybrid.yml`, completamente independiente del PC compartido.
-- [ ] Verificar el run híbrido actual y sus tres imágenes 1600x900 / 720x1200.
-- [ ] Crítica real de composición, proporciones, iluminación, conservación de silueta I/V y uniformidad entre packs. Si la combinación resulta pobre, pivotar antes de llevarla a Unity.
+La superposición directa de Quaternius Ultimate Fantasy RTS sobre la fortaleza original produjo modelos demasiado pálidos/simplificados, diferentes escalas y baja identidad de ciudad; desaturar materiales no solucionó el choque de estilos. **No promover esa composición** a Unity por el mero PASS de CI. `TownCenter` del pack es una fuente ornamental, no un Bastión. El registro completo está en `ART_REVIEW_AND_PIVOT_20261116.md`.
 
-## Reglas de relevo
+## Pivote artístico en ejecución
 
-1. Al abrir otro chat, leer `main/AGENTS.md` y `pipeline/active-workstreams.json` (muy extenso, buscar el ID específico), luego estos archivos de la rama. No inferir permisos por silencio.
-2. Leer HEAD/runs exactos de la rama y comprobar estado del workflow híbrido. No reutilizar citas de otras ramas.
-3. No ocupar Windows sin reserva: el registro principal asigna recurso Windows a otros workstreams. No alterar `main`, `art/visual-reboot`, `experiment/nocturne-rebuild-bastion-i-v-20261115` ni PR #196.
-4. No generar, instalar ni publicar licencias dudosas; no gastar créditos; no fusionar ni promover arte hasta pruebas.
-5. Siguiente hito verificable: imágenes híbridas de calidad suficiente, después escena Unity y prueba de viewport real, después móvil.
+Crear arquitectura secundaria nueva sobre los mismos materiales/proporciones de la fortaleza, sin casas-plataforma. Aserradero con taller y pila de madera; Granero con silos/sacos; Cuartel con torre/estandarte; Cantera con extracción/grúa. Todos separados y conectados con senderos orgánicos en terreno continuo, manteniendo la diferencia real I–V. Quaternius permanece como posible recurso DONANTE para piezas compatibles tras rematerialización y licencias, NO como selección ciega.
 
-## Estados separados
+## Riesgo de rendimiento
 
-- **Investigado:** fuentes, packs, ediciones y licencias públicas.
-- **Implementado:** scripts Blender, manifiesto, escena Unity solo como código y pipelines de captura.
-- **Probado:** geometría propia/render Blender, 6 assets reales de Quaternius importados en Blender.
-- **NO probado:** combinación híbrida hasta que su run complete, integración Unity y móviles.
-- **NO aprobado:** calidad visual de juego, licencia de redistribución global y beta tester.
+`CC0_Valoria_Stage5.glb` base tiene **1165 mallas** (recuento inspeccionado del GLB físico), demasiado alto para aceptarlo como viable en iPhone sin análisis. La fase siguiente requiere **batching estático por material/distrito, LOD/ocultación**, comprobación real de mallas/draw calls en Unity y pruebas físicas. Un GLB de tamaño pequeño no prueba rendimiento.
+
+## Orden de continuación
+
+1. Leer `main/AGENTS.md` y registro `pipeline/active-workstreams.json` vigente; no pisar propietarios de `art/visual-reboot`, Nocturne ni beta.
+2. Leer esta rama: `README.md`, `asset-lock.json`, `ART_REVIEW_AND_PIVOT_20261116.md` y este STATUS.
+3. Comprobar exactamente el último run de `cc0-art-system-city-finish.yml`, actualmente lanzado como `43848940733`. No afirmar PASS si sigue ejecutándose o falla. Examinar sus PNGs reales y el contador de mallas. Reanudar allí con defectos medibles.
+4. Solo si la composición alcanza un resultado estético prometedor, promover en ESTA rama sus modelos originales a `Unity/Assets/Art_Reboot/CC0System/CityFinish`, preparar importación nativa cuando el runner/ownership lo permita y capturar vistas Unity.
+5. Nunca fusionar, publicar o marcar `ART_APPROVED` sin evidencia real y aceptación del propietario.
+
+**Investigado:** catálogo y licencias. **Implementado:** generadores, estudio híbrido, builder Unity no probado, composición nueva. **Probado:** fuente original 5 GLB + estudio Quaternius en Blender. **Por verificar:** nuevo acabado, batching, Unity, gameplay y móvil.
