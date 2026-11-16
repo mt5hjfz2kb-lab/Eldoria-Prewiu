@@ -47,7 +47,23 @@ def material(code):
         "amber":"ED_WarmWindow","violet":"ED_VeilViolet"}
     key=names[code]
     m=bpy.data.materials.get(key)
-    if m is None: raise RuntimeError("Missing source master material: "+key)
+    if m is None:
+        # Blender discards unreferenced source materials when writing .blend.
+        # Create the missing master explicitly, preserving the same palette.
+        palette={"ED_WineBanners":("#655065",.90),
+                 "ED_RubbleStone":("#596369",.84),
+                 "ED_GrassOlive":("#556750",.93),
+                 "ED_MossPines":("#61735B",.94)}
+        if key not in palette:
+            raise RuntimeError("Missing source master material: "+key)
+        h,rough=palette[key]
+        col=tuple(int(h[i:i+2],16)/255 for i in (1,3,5))
+        m=bpy.data.materials.new(key)
+        m.use_nodes=True
+        bs=m.node_tree.nodes.get("Principled BSDF")
+        bs.inputs["Base Color"].default_value=(*col,1)
+        bs.inputs["Roughness"].default_value=rough
+        m.diffuse_color=(*col,1)
     return m
 def attach(obj,m,col):
     obj.data.materials.append(material(m))
