@@ -260,8 +260,8 @@ namespace Eldoria.ExperimentalAshenCitadel
                 new Vector2(18,66),new Vector2(-18,92));
             feedbackText.gameObject.SetActive(false);
 
-            // Content-driven sheet attached above navigation, not an oversized
-            // modal that hides 60% of the kingdom regardless of content.
+            // Temporary contextual inspector sits over the sky/treeline,
+            // deliberately above the Citadel: no permanent visual occlusion.
             popup=Node(safe,"Action sheet",new Vector2(.035f,0),new Vector2(.965f,0),
                 Vector2.zero,Vector2.zero);
             popup.pivot=new Vector2(.5f,0);
@@ -319,7 +319,7 @@ namespace Eldoria.ExperimentalAshenCitadel
             ((RectTransform)popupActionArea).sizeDelta=new Vector2(0,contentHeight);
             float preferredHeight=70f+descriptionHeight+Mathf.Min(rows,5)*rowStep+12f;
             float safeHeight=safe.rect.height>200?safe.rect.height:844f;
-            float maxHeight=Mathf.Max(185f,Mathf.Min(345f,safeHeight*.45f));
+            float maxHeight=Mathf.Max(185f,Mathf.Min(295f,safeHeight*.39f));
             popup.sizeDelta=new Vector2(popup.sizeDelta.x,Mathf.Clamp(preferredHeight,152f,maxHeight));
             if(sheetScroll!=null)sheetScroll.verticalNormalizedPosition=1f;
         }
@@ -367,17 +367,17 @@ namespace Eldoria.ExperimentalAshenCitadel
                     new Vector2(0,82f));
             if(popup!=null)
             {
-                AnchorCentered(popup,new Vector2(0f,0f),
+                AnchorCentered(popup,new Vector2(0f,1f),
                     new Vector2(sheetWidth,Mathf.Max(152f,popup.sizeDelta.y)),
-                    new Vector2(12f,86f));
+                    new Vector2(12f,-112f));
                 if(popup.gameObject.activeSelf)SizeSheet(sheetRows);
             }
             if(dailyButton!=null)
             {
                 float x=-Mathf.Min(374f,usableWidth)/2f+59f;
                 AnchorCentered((RectTransform)dailyButton.transform,
-                    new Vector2(.5f,0),new Vector2(105f,30f),
-                    new Vector2(x,91f));
+                    new Vector2(.5f,0),new Vector2(105f,42f),
+                    new Vector2(x,94f));
             }
             if(timeText!=null)
             {
