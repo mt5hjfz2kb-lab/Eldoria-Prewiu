@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "allow_native": false,
+  "reason": "Windows is currently reserved by explicit Ashen Citadel / Visual Reboot rotation; do not consume shared PC before a new ownership CAS and owner-authorized turn",
+  "playmode_certified": false,
+  "art_approved": false
+}
