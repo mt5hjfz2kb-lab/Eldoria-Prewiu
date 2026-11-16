@@ -1,24 +1,89 @@
 {
-  "name": "Ashen Citadel UI atlas",
-  "files": [
+  "generator": "ashen-premium-ui-atlas-v1",
+  "assets": [
     {
-      "name": "AshenPanel.png",
-      "bytes": 262488
+      "name": "AshenPremiumPanel.png",
+      "width": 256,
+      "height": 256,
+      "size": 30333,
+      "sha256": "130d881a7e8995fb166fb307180d1c997451837f47912185c395cf7c6bf08b48"
     },
     {
-      "name": "AshenButtonPrimary.png",
-      "bytes": 73873
+      "name": "AshenPremiumButtonPrimary.png",
+      "width": 256,
+      "height": 72,
+      "size": 10610,
+      "sha256": "4e937ea12aeaef5e4d08d208a3519f3a4f767cddf3e97a7757bb3c70bd322b0c"
     },
     {
-      "name": "AshenButtonSecondary.png",
-      "bytes": 73873
+      "name": "AshenPremiumButtonSecondary.png",
+      "width": 256,
+      "height": 72,
+      "size": 8659,
+      "sha256": "dba7b8c021e5194d15b9dbec932cf255eaba66c090e22bb2d1d44f427d438751"
     },
     {
-      "name": "AshenCrest.png",
-      "bytes": 65737
+      "name": "AshenPremiumCrest.png",
+      "width": 128,
+      "height": 128,
+      "size": 1179,
+      "sha256": "39324882415c4e3ccd59e1026e63a350faac020ed0cc58068c5d92f340424d17"
+    },
+    {
+      "name": "AshenPremiumGlyph_castle.png",
+      "width": 64,
+      "height": 64,
+      "size": 390,
+      "sha256": "b81e54391e1214a6f686826054e77cd4028c494927a5e624511f41ac35605276"
+    },
+    {
+      "name": "AshenPremiumGlyph_workshop.png",
+      "width": 64,
+      "height": 64,
+      "size": 930,
+      "sha256": "cc5f9e98321fdaf5b65926c9f8cae019b3eb2156c92ed806763598056f758128"
+    },
+    {
+      "name": "AshenPremiumGlyph_army.png",
+      "width": 64,
+      "height": 64,
+      "size": 1262,
+      "sha256": "8b98bd231125d87d4f21c1ae9359cadb3d7e304213b87e9b3bf3a4da654f228a"
+    },
+    {
+      "name": "AshenPremiumGlyph_compass.png",
+      "width": 64,
+      "height": 64,
+      "size": 728,
+      "sha256": "3c229932fa5dc8ca13a3c982412f4b0191f70ba7530c43cae57a32305c647183"
+    },
+    {
+      "name": "AshenPremiumGlyph_mail.png",
+      "width": 64,
+      "height": 64,
+      "size": 630,
+      "sha256": "feb600a03946966170fc316da84958c17bed30c6db12745364c1575c74517098"
+    },
+    {
+      "name": "AshenPremiumGlyph_bag.png",
+      "width": 64,
+      "height": 64,
+      "size": 970,
+      "sha256": "e35acc7d1f42fecccb3143c739e2a6080df372c7a0b2bed0117807c90aef7759"
+    },
+    {
+      "name": "AshenPremiumGlyph_hero.png",
+      "width": 64,
+      "height": 64,
+      "size": 1312,
+      "sha256": "1fb70652612dfb02c1dd01d1ea8754373dc424f3fb3c466e432d2f283e4feeac"
+    },
+    {
+      "name": "AshenPremiumGlyph_quest.png",
+      "width": 64,
+      "height": 64,
+      "size": 901,
+      "sha256": "f800da55bc2f77d41e9fcf5f813a0b7c98ef2e9e5941b2fbd04cefc59d2838d7"
     }
-  ],
-  "origin": "Original handcrafted pixel/gradient textures; used as 9-sliced frame and button plates",
-  "approved": false,
-  "unityVerified": false
+  ]
 }
