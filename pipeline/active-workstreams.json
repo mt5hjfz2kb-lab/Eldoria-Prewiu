@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T08:53:06.068Z",
+  "updated_at": "2026-11-16T09:15:55.459Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,15 +9742,13 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
       "phase": "ARCHITECTURAL_IDENTITY_NATIVE_PENDING",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9783,8 +9781,11 @@
       "continuation_authority": "Owner: Sigue afinándolo; explicitly authorized main coordination update in follow-up Autorizo. Improve reviewed Ashen finish, isolated branch, no gameplay or publication.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "Owner-authorized geometry refinement: same Ashen I-V scene and auxiliary identity."
+        "status": "temporarily_yielded_after_completed_native_for_authorized_shared_turn",
+        "reason": "Owner-authorized geometry refinement: same Ashen I-V scene and auxiliary identity.",
+        "releasable_native_run": 43837348051,
+        "temporary_to": "eldoria-art-visual-reboot-phase1-20261115",
+        "source_ownership_unchanged": true
       },
       "last_native": {
         "run": 43832430172,
@@ -9812,11 +9813,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 29,
+      "ownership_revision": 30,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE1_NATIVE_VERIFIED_ART_QA_REVISIONS_NEEDED",
-      "resources": [],
+      "phase": "PHASE1_THIRD_NATIVE_OWNED_SINGLE_TURN",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9832,7 +9835,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Correct overexposed violet corruption, severe dark purple ground/sunset, roof tile checkering and torch blowout; generate real Unity same-camera A/B. Still Phase1 only; no Phase2.",
+      "next": "Run one exact third Phase1 Unity art capture; review real PNG and return shared Windows after terminal; no Phase2.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9845,13 +9848,12 @@
       "final_source_sha": "a41c07323b07539bdadda483a06b4266d420e55c",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_terminal_native_run",
-        "requested_at": "2026-11-16T08:46:49.051Z",
-        "source_sha": "237dfc52d7406553842764cc97f9e3d457afbaeb",
-        "release_on_terminal_run": true,
-        "after_run_id": 43834060945
+        "status": "claimed_one_bounded_native_turn",
+        "requested_at": "2026-11-16T09:15:55.459Z",
+        "source_sha": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4",
+        "after_terminal_return_to": "eldoria-ashen-citadel-original-i-v-20261115"
       },
-      "native_source_sha": "237dfc52d7406553842764cc97f9e3d457afbaeb",
+      "native_source_sha": "f36f8a870043e73a73dc63c280a407bc2ef6f4b4",
       "last_native_attempt": {
         "run": 43834060945,
         "source": "237dfc52d7406553842764cc97f9e3d457afbaeb",
