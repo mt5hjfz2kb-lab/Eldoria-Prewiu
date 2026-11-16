@@ -342,6 +342,7 @@ namespace Eldoria.ExperimentalAshenCitadel
         {
             if(width<1||height<1||safe==null||responsiveScaler==null)return;
             FrameCameraForViewport(playerCamera,width,height);
+            ApplyStageAwarePortraitFraming(width,height);
             responsiveScaler.matchWidthOrHeight=1f;
             float viewportWidth=844f*width/height;
             float usableWidth=Mathf.Max(280f,viewportWidth-8f);
@@ -387,6 +388,21 @@ namespace Eldoria.ExperimentalAshenCitadel
                     new Vector2(x,91f));
             }
         }
+        // Stage I contains only the founding tower and palisade: do not
+        // present 70% empty green terrain just to reserve space for later
+        // structures. The shot naturally opens as economic buildings unlock.
+        // This affects initial portrait framing only; player zoom/world, state,
+        // mechanics and all landscape art source meshes remain untouched.
+        private void ApplyStageAwarePortraitFraming(int width,int height)
+        {
+            if(playerCamera==null||gateway==null||worldMode||width>=height)return;
+            int stage=Mathf.Clamp(gateway.Snapshot().BastionLevel,1,5);
+            float halfWidth=stage==1?13.5f:
+                stage==2?20.5f:
+                stage==3?21f:
+                stage==4?21.7f:22.7f;
+            playerCamera.orthographicSize=halfWidth/playerCamera.aspect;
+        }
         // Orthographic portrait rays can begin BELOW the ground even when the
         // camera centre is above it. Increasing terrain size cannot fix this.
         // Translate along the view axis (unchanged composition) until the lowest
@@ -424,7 +440,10 @@ namespace Eldoria.ExperimentalAshenCitadel
         private void Refresh()
         {
             var s=gateway.Snapshot();
+            int priorStage=visibleStage;
             visibleStage=Mathf.Clamp(s.BastionLevel,1,5);
+            if(priorStage!=visibleStage && !worldMode)
+                ApplyStageAwarePortraitFraming(Screen.width,Screen.height);
             for(int i=0;i<stages.Length;i++)if(stages[i]!=null)
                 stages[i].SetActive(!worldMode && i==visibleStage-1);
             if(sawmill!=null)sawmill.SetActive(!worldMode && s.SawmillLevel>0);
@@ -458,6 +477,7 @@ namespace Eldoria.ExperimentalAshenCitadel
                 playerCamera.transform.position=p;
                 playerCamera.transform.LookAt(show?new Vector3(0,0,55):new Vector3(0,1.8f,0));
                 FrameCameraForViewport(playerCamera,Screen.width,Screen.height);
+                if(!show)ApplyStageAwarePortraitFraming(Screen.width,Screen.height);
             }
             Refresh();
         }
