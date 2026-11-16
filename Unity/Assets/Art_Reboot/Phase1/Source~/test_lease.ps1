@@ -14,7 +14,7 @@ function Invoke-RestMethod {
 $passed=0
 foreach($case in @('valid','foreign_owner','foreign_task','two_holders','no_holder','stale_head','wrong_pin','inactive')){
  $global:RebootLeaseFixtureHead=$env:GITHUB_SHA
- $w=[pscustomobject]@{id='eldoria-art-visual-reboot-phase1-20261115';owner='chatgpt-visual-reboot-hero-d921b074af21';
+ $w=[pscustomobject]@{id='eldoria-art-visual-reboot-phase1-20261115';owner='chatgpt-visual-reboot-phase1-continuation-20261116';
  branch='art/visual-reboot';ownership_state='claimed';status='active';resources=@('windows-runner-heavy');native_source_sha=$env:GITHUB_SHA;ownership_revision=2}
  $global:RebootLeaseFixtureEntries=@($w)
  switch($case){
