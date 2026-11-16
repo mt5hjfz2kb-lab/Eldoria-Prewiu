@@ -1,0 +1,73 @@
+name: Eldoria original Valoria V10 - real modular CC0 PBR 3D
+on:
+  push:
+    branches: [art/valoria-modular-pbr-v10-20261116]
+    paths:
+      - tools/stylized-direction-pilot/valoria_modular_pbr_v10.py
+      - .github/workflows/eldoria-valoria-modular-pbr-v10.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: valoria-modular-cc0-pbr-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  actual-3d-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/stylized-direction-pilot/valoria_modular_pbr_v10.py
+      - name: Install standard real Blender renderer, no proprietary assets
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender git
+          blender --version | head -2
+      - name: Fetch only two public licensed source folders, verify CC0 in source
+        run: |
+          git clone -q --filter=blob:none --no-checkout --depth 1 https://github.com/agentkaerf/FreeModels.git third_party/FreeModels
+          git -C third_party/FreeModels sparse-checkout init --cone
+          git -C third_party/FreeModels sparse-checkout set 'Medieval Village MegaKit[Standard]' 'Stylized Nature MegaKit[Standard]'
+          git -C third_party/FreeModels checkout -q HEAD
+          grep -q 'CC0 1.0 Universal' 'third_party/FreeModels/Medieval Village MegaKit[Standard]/License_Standard.txt'
+          grep -q 'CC0 1.0 Universal' 'third_party/FreeModels/Stylized Nature MegaKit[Standard]/License_Standard.txt'
+          sha256sum 'third_party/FreeModels/Medieval Village MegaKit[Standard]/License_Standard.txt'
+          git -C third_party/FreeModels rev-parse HEAD | tee upstream-source-pin.txt
+      - name: Render two real PBR Blender viewpoints and export editable 3D sources
+        run: |
+          mkdir -p out-cc0-modular-v10
+          export QUATERNIUS_SOURCE_SHA="$(git -C third_party/FreeModels rev-parse HEAD)"
+          blender -b -t 4 --python-exit-code 1 --python tools/stylized-direction-pilot/valoria_modular_pbr_v10.py -- \
+            --assets "$PWD/third_party/FreeModels" --out "$PWD/out-cc0-modular-v10"
+      - name: Technical structure gate does not constitute art approval
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,struct
+          p=pathlib.Path('out-cc0-modular-v10')
+          for f,size in [('bastion-v-pbr-wide.png',(1440,900)),('bastion-v-pbr-mobile.png',(900,1600))]:
+            b=(p/f).read_bytes()
+            assert b[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',b[16:24])==size
+            assert len(b)>100000, (f,len(b))
+          blend=(p/'valoria-modular-pbr-v10.blend').read_bytes()
+          glb=(p/'valoria-modular-pbr-v10.glb').read_bytes()
+          assert blend[:7]==b'BLENDER' and len(blend)>200000
+          assert glb[:4]==b'glTF' and struct.unpack('<I',glb[8:12])[0]==len(glb)
+          m=json.loads((p/'visual-proof.json').read_text())
+          assert m['textured_model_types']>=10
+          assert m['instanced_original_model_meshes']>60
+          assert len(m['source_commit'])==40
+          assert m['licence']=='CC0 1.0 Universal'
+          assert not m['art_approved'] and not m['unity_render'] and not m['iphone_tested']
+          print('VALORIA_V10_REAL_PBR_TECHNICAL_SOURCE_PASS',m['source_commit'],m['textured_model_types'],m['instanced_original_model_meshes'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-real-pbr-v10-${{ github.sha }}
+          path: out-cc0-modular-v10/
+          if-no-files-found: warn
+          retention-days: 30
