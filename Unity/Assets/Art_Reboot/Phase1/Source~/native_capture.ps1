@@ -69,5 +69,10 @@ Copy-Item (Join-Path $project 'Assets/Art_Reboot') (Join-Path $OutputRoot 'Impor
 Write-Output 'REBOOT_NATIVE_IMPORT_AND_CAPTURE_COMPLETE_REQUIRES_VISUAL_REVIEW'
 # Scratch is preserved for a failed run. Only delete own scratch after evidence copy succeeds.
 if($root.StartsWith($env:RUNNER_TEMP) -and (Split-Path $root -Leaf) -eq ('visual-reboot-'+$env:GITHUB_RUN_ID)){
- Remove-Item -LiteralPath $root -Recurse -Force
+ # Windows PowerShell 5 Remove-Item fails on long Unity PackageCache paths.
+ # Extended-length cmd removal is confined to this run's known scratch root.
+ $extended='\\?\'+[IO.Path]::GetFullPath($root)
+ & $env:ComSpec /d /c ('rd /s /q "'+$extended+'"')
+ if(Test-Path -LiteralPath $root){throw 'Own scratch cleanup incomplete; evidence retained'}
+ Write-Output 'REBOOT_OWN_SCRATCH_REMOVED' 
 }

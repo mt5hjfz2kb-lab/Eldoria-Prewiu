@@ -2,7 +2,7 @@
 Run: blender -b -t 4 --python author_pilot.py
 Preview is Blender evidence, never a Unity screenshot.
 """
-import bpy, math, random, json
+import bpy, math, random, json, sys
 from pathlib import Path
 from mathutils import Vector
 
@@ -105,10 +105,10 @@ def roof(x,y,z,w,d,h):
    for j in range(5):
     ya=y-d/2+j*d/5;yb=ya+d/5+.025
     va=[(x+side*w*.5*a,ya,z+h*(1-a)-.09*math.sin(j*.7)),(x+side*w*.5*b,ya,z+h*(1-b)-.09*math.sin(j*.7)),(x+side*w*.5*b,yb,z+h*(1-b)-.09*math.sin((j+1)*.7)),(x+side*w*.5*a,yb,z+h*(1-a)-.09*math.sin((j+1)*.7))]
-    mesh('Broad slate shingle',va,[(0,1,2,3),(3,2,1,0)],3)
+    mesh('Broad slate shingle',va,[(0,1,2,3) if side > 0 else (3,2,1,0)],3)
   beam('Timber eave',(x+side*w/2,y-d/2,z),(x+side*w/2,y+d/2,z),.16,4)
  for yy in [y-d/2,y+d/2]:
-  mesh('Timber gable',[(x-w/2,yy,z),(x+w/2,yy,z),(x,yy,z+h)],[(0,1,2),(2,1,0)],4)
+  mesh('Timber gable',[(x-w/2,yy,z),(x+w/2,yy,z),(x,yy,z+h)],[(0,1,2) if yy < y else (2,1,0)],4)
   for side in [-1,1]:beam('Gable brace',(x+side*w/2,yy-.04,z),(x,yy-.04,z+h),.13,5)
  beam('Ridge beam',(x,y-d/2-.08,z+h),(x,y+d/2+.08,z+h),.16,5)
 
@@ -231,5 +231,5 @@ nt.links.new(rl.outputs['Mist'],factor.inputs[0]);nt.links.new(factor.outputs[0]
 scene.render.image_settings.file_format='PNG';scene.render.filepath=str(ROOT/'Evidence/blender_preview.png')
 image.pack();image.filepath='//../Textures/Reboot_Atlas_256.png'
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'Source~/Reboot_Pilot.blend'),compress=True)
-bpy.ops.render.render(write_still=True)
+if '--skip-render' not in sys.argv:bpy.ops.render.render(write_still=True)
 print('REBOOT_GEOMETRY',triangles,'triangles; preview is Blender, Unity pending')

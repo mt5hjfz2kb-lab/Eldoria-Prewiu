@@ -27,6 +27,8 @@ namespace Eldoria.ArtReboot.Editor
                     throw new InvalidOperationException("Save your open scenes before the isolated capture.");
             var setup = EditorSceneManager.GetSceneManagerSetup();
             var previousPipeline = QualitySettings.renderPipeline;
+            bool previousAsync = ShaderUtil.allowAsyncCompilation;
+            ShaderUtil.allowAsyncCompilation = false;
             string original = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
             byte[] originalBytes = File.ReadAllBytes(original);
             var requestedOutput = Environment.GetEnvironmentVariable("REBOOT_CAPTURE_OUTPUT");
@@ -94,11 +96,18 @@ namespace Eldoria.ArtReboot.Editor
                 sun.type = LightType.Directional;
                 sun.transform.rotation = Quaternion.Euler(32, -35, 0);
                 sun.color = new Color(1, .76f, .50f);
-                sun.intensity = 2.2f;
+                sun.intensity = 1.45f;
                 sun.shadows = LightShadows.Soft;
                 sun.shadowBias = .04f;
                 sun.shadowNormalBias = .25f;
                 RenderSettings.sun = sun;
+                var fill = new GameObject("Cool open-sky fill").AddComponent<Light>();
+                fill.transform.SetParent(root.transform, false);
+                fill.type = LightType.Directional;
+                fill.transform.rotation = Quaternion.Euler(48, 145, 0);
+                fill.color = new Color(.49f, .65f, 1f);
+                fill.intensity = .48f;
+                fill.shadows = LightShadows.None;
                 var camera = new GameObject("Strategic 50 degree camera").AddComponent<Camera>();
                 camera.transform.SetParent(root.transform, false);
                 var rotation = Quaternion.Euler(50, -13, 0);
@@ -134,9 +143,11 @@ namespace Eldoria.ArtReboot.Editor
                 foreach (var size in new[] { new Vector2Int(1100,1250), new Vector2Int(390,844), new Vector2Int(1600,900), new Vector2Int(844,390) })
                 {
                     // Keep geometry and angle fixed. Fit all three buildings at narrow aspect ratios.
-                    camera.orthographicSize = Mathf.Max(10, 8.8f / ((float)size.x / size.y));
+                    camera.orthographicSize = Mathf.Max(10, 6.5f / ((float)size.x / size.y));
                     Capture(camera, size.x, size.y, Path.Combine(output, $"unity-{size.x}x{size.y}.png"));
                 }
+                camera.orthographicSize = 10;
+                Capture(camera, 1100, 1250, Path.Combine(output, "unity-repeat-1100x1250.png"));
                 File.WriteAllText(Path.Combine(output,"capture.json"), JsonUtility.ToJson(new Evidence
                 {
                     unity = UnityEngine.Application.unityVersion, triangles = triangles,
@@ -156,6 +167,7 @@ namespace Eldoria.ArtReboot.Editor
             finally
             {
                 QualitySettings.renderPipeline = previousPipeline;
+                ShaderUtil.allowAsyncCompilation = previousAsync;
                 // Fresh batchmode projects can start with no loaded/active scene.
                 // Unity rejects restoring that empty SceneSetup array.
                 if (setup.Any(s => s.isLoaded) && setup.Count(s => s.isActive) == 1)
@@ -288,7 +300,15 @@ namespace Eldoria.ArtReboot.Editor
                 }
                 if (!RenderPipeline.SupportsRenderRequest(camera, request))
                     throw new InvalidOperationException("URP render request unavailable.");
-                RenderPipeline.SubmitRenderRequest(camera, request);
+                // Update the explicit sky probe on every request, avoiding an
+                // inherited sky probe on the first batch Editor frame.
+                for (int frame = 0; frame < 3; frame++)
+                {
+                    var probe = new SphericalHarmonicsL2();
+                    probe.AddAmbientLight(new Color(.16f, .21f, .29f));
+                    RenderSettings.ambientProbe = probe;
+                    RenderPipeline.SubmitRenderRequest(camera, request);
+                }
                 RenderTexture.active = target;
                 pixels = new Texture2D(width, height, TextureFormat.RGB24, false);
                 pixels.ReadPixels(new Rect(0,0,width,height),0,0); pixels.Apply();
