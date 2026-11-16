@@ -11,6 +11,8 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
     internal static class AshenPremiumTerrainBuilder
     {
         private const string MeshAsset="Assets/Eldoria/ExperimentalAshenCitadel/Meshes/AshenPremiumTerrain.asset";
+        private const string FoliageAsset="Assets/Eldoria/ExperimentalAshenCitadel/Meshes/AshenPremiumFoliage.asset";
+        private const string LeafMaterialRoot="Assets/Eldoria/ExperimentalAshenCitadel/Materials/";
         // Meadow, earth, limestone, dressed stone, basalt, timber, and two foliage tones.
         private const int Meadow=0, Earth=1, Limestone=2, Cutstone=3, Basalt=4,
             Timber=5, Foliage=6, FoliageLight=7;
@@ -95,28 +97,66 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             AddWornRoad(geo);
             AddPaving(geo,rng);
             AddRockOutcrops(geo,rng);
-            AddPlants(geo,rng);
             AddCraftDebris(geo,rng);
-            var mesh=new Mesh{name="Ashen premium · sculpted meadow, organic paving and inhabited detail"};
-            mesh.indexFormat=IndexFormat.UInt32;
-            mesh.SetVertices(geo.vertices);mesh.SetUVs(0,geo.uv);
-            mesh.SetNormals(geo.normals);
-            mesh.subMeshCount=geo.indices.Length;
-            for(int i=0;i<geo.indices.Length;i++)mesh.SetTriangles(geo.indices[i],i,false);
-            mesh.RecalculateBounds();
-            var existing=AssetDatabase.LoadAssetAtPath<Mesh>(MeshAsset);
-            if(existing==null){AssetDatabase.CreateAsset(mesh,MeshAsset);existing=mesh;}
-            else{EditorUtility.CopySerialized(mesh,existing);UnityEngine.Object.DestroyImmediate(mesh);}
+            AddEarthPatches(geo,rng);
+            var foliage=new Geometry();
+            AddPlants(foliage,rng);
+            var groundMesh=SaveMesh(geo,MeshAsset,0,6,
+                "Ashen premium · meadow, irregular stonework and lived-in yards");
+            var foliageMesh=SaveMesh(foliage,FoliageAsset,6,2,
+                "Ashen premium · separate soft meadow undergrowth");
             var result=new GameObject("ASHEN · inhabited terrain / dressed path / artisan yards");
             result.transform.SetParent(cityParent,false);
-            result.AddComponent<MeshFilter>().sharedMesh=existing;
+            result.AddComponent<MeshFilter>().sharedMesh=groundMesh;
             var renderer=result.AddComponent<MeshRenderer>();
             renderer.sharedMaterials=new[]{palette["moss"],palette["soil"],palette["stoneLight"],
-                palette["cut"],palette["basalt"],palette["oak"],palette["grass_leaf"],palette["grass_leafLight"]};
+                palette["cut"],palette["basalt"],palette["oak"]};
             renderer.receiveShadows=true;renderer.shadowCastingMode=ShadowCastingMode.On;
-            Debug.Log("ASHEN_PREMIUM_TERRAIN_BUILT vertices="+geo.vertices.Count+
-                " triangles="+(geo.vertices.Count/3)+" materialSections="+geo.indices.Length);
+            var grassObject=new GameObject("Soft undergrowth · no black shadow silhouettes");
+            grassObject.transform.SetParent(result.transform,false);
+            grassObject.AddComponent<MeshFilter>().sharedMesh=foliageMesh;
+            var grassRenderer=grassObject.AddComponent<MeshRenderer>();
+            grassRenderer.sharedMaterials=new[]{
+                LeafMaterial("AshenPremiumFoliageOlive",new Color(.30f,.375f,.235f)),
+                LeafMaterial("AshenPremiumFoliageSage",new Color(.43f,.44f,.285f))};
+            grassRenderer.receiveShadows=false;
+            grassRenderer.shadowCastingMode=ShadowCastingMode.Off;
+            Debug.Log("ASHEN_PREMIUM_TERRAIN_BUILT groundVertices="+geo.vertices.Count+
+                " softPlantVertices="+foliage.vertices.Count+
+                " groundTriangles="+(geo.vertices.Count/3)+
+                " undergrowthTriangles="+(foliage.vertices.Count/3));
             return result;
+        }
+        private static Mesh SaveMesh(Geometry g,string path,int materialStart,int materialCount,string name)
+        {
+            var mesh=new Mesh{name=name};
+            mesh.indexFormat=IndexFormat.UInt32;
+            mesh.SetVertices(g.vertices);mesh.SetUVs(0,g.uv);mesh.SetNormals(g.normals);
+            mesh.subMeshCount=materialCount;
+            for(int i=0;i<materialCount;i++)
+                mesh.SetTriangles(g.indices[i+materialStart],i,false);
+            mesh.RecalculateBounds();
+            var original=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if(original==null){AssetDatabase.CreateAsset(mesh,path);return mesh;}
+            EditorUtility.CopySerialized(mesh,original);
+            UnityEngine.Object.DestroyImmediate(mesh);
+            EditorUtility.SetDirty(original);return original;
+        }
+        private static Material LeafMaterial(string name,Color shade)
+        {
+            var path=LeafMaterialRoot+name+".mat";
+            var material=AssetDatabase.LoadAssetAtPath<Material>(path);
+            if(material==null)
+            {
+                var shader=Shader.Find("Universal Render Pipeline/Unlit");
+                if(shader==null)throw new InvalidOperationException("Ashen foliage needs URP/Unlit");
+                material=new Material(shader);
+                AssetDatabase.CreateAsset(material,path);
+            }
+            material.SetColor("_BaseColor",shade);
+            material.SetFloat("_Cull",0f);
+            EditorUtility.SetDirty(material);
+            return material;
         }
         private static void AddContinuousMeadow(Geometry g)
         {
@@ -287,7 +327,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var peak=At(x,z,height*1.22f);
                 for(int i=0;i<sides;i++)
                 {
-                    int j=(i+1)%sides;int mat=(i+n)%5==0?Limestone:Basalt;
+                    int j=(i+1)%sides;int mat=(i+n)%6==0?Cutstone:Basalt;
                     g.Tri(mat,crown[j],crown[i],peak);
                     g.Tri(mat,floor[j],floor[i],crown[i]);
                     g.Tri(mat,floor[j],crown[i],crown[j]);
@@ -309,22 +349,53 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 new Vector2(11,14),new Vector2(-21,-1),new Vector2(22,1),
                 new Vector2(-28,22),new Vector2(26,-22),new Vector2(0,22)};
             foreach(var b in pockets)
-            for(int clump=0;clump<35;clump++)
+            for(int clump=0;clump<27;clump++)
             {
                 float x=b.x+Rand(rng,-7,7),z=b.y+Rand(rng,-5.5f,5.5f);
                 if(Protected(x,z))continue;
-                int leaves=4+RandomInt(rng,4);
-                float h=Rand(rng,.18f,.43f),w=Rand(rng,.20f,.39f);
-                for(int i=0;i<leaves;i++)
+                int blades=4+RandomInt(rng,3);
+                float h=Rand(rng,.16f,.39f),w=Rand(rng,.18f,.34f);
+                for(int i=0;i<blades;i++)
                 {
-                    float a=2*Mathf.PI*i/leaves+Rand(rng,-.20f,.20f);
-                    float px=x+Mathf.Cos(a)*w,pz=z+Mathf.Sin(a)*w;
-                    Vector3 v0=At(x,z,.035f),tip=At(px+Mathf.Cos(a)*w,pz+Mathf.Sin(a)*w,h);
-                    var v1=At(px-Mathf.Sin(a)*w*.45f,pz+Mathf.Cos(a)*w*.45f,.07f);
-                    var v2=At(px+Mathf.Sin(a)*w*.45f,pz-Mathf.Cos(a)*w*.45f,.07f);
-                    g.Tri((i+clump)%5==0?FoliageLight:Foliage,v0,tip,v1);
-                    g.Tri((i+clump)%5==0?FoliageLight:Foliage,v0,v2,tip);
+                    float angle=2f*Mathf.PI*i/blades+Rand(rng,-.22f,.22f);
+                    float ux=Mathf.Cos(angle),uz=Mathf.Sin(angle);
+                    float px=x+ux*w*.58f,pz=z+uz*w*.58f;
+                    float side=w*Rand(rng,.14f,.28f);
+                    var root=At(x,z,.015f);
+                    var left=At(px-uz*side,pz+ux*side,h*.56f);
+                    var right=At(px+uz*side,pz-ux*side,h*.56f);
+                    var tip=At(x+ux*w*1.5f,z+uz*w*1.5f,h);
+                    int material=(i+clump)%5==0?FoliageLight:Foliage;
+                    g.Tri(material,root,left,tip);g.Tri(material,root,tip,right);
                 }
+            }
+        }
+        private static void AddEarthPatches(Geometry g,System.Random rng)
+        {
+            // Uneven soil/leaf-litter clusters replace the empty flat green
+            // gaps around working buildings. Irregular flush polygons,
+            // never rectangles, raised pads or hard-bordered plot circles.
+            var clusters=new[]{new Vector2(-17,-12),new Vector2(17,-12),
+                new Vector2(-16,3),new Vector2(16,3),new Vector2(-12,-16),
+                new Vector2(12,-15),new Vector2(-20,13),new Vector2(21,14)};
+            foreach(var centre in clusters)
+            for(int j=0;j<10;j++)
+            {
+                float x=centre.x+Rand(rng,-4f,4f),z=centre.y+Rand(rng,-3.5f,3.5f);
+                if(Mathf.Abs(x)<10f&&Mathf.Abs(z)<9f)continue;
+                float rx=Rand(rng,.44f,1.55f),rz=Rand(rng,.39f,1.16f);
+                int count=8;
+                var middle=At(x,z,.014f);
+                var boundary=new Vector3[count];
+                for(int k=0;k<count;k++)
+                {
+                    float a=2*Mathf.PI*k/count;
+                    float scale=Rand(rng,.70f,1.18f);
+                    boundary[k]=At(x+Mathf.Cos(a)*rx*scale,
+                        z+Mathf.Sin(a)*rz*scale,.013f);
+                }
+                for(int k=0;k<count;k++)
+                    g.Tri(Earth,middle,boundary[(k+1)%count],boundary[k]);
             }
         }
         private static void AddCraftDebris(Geometry g,System.Random rng)
