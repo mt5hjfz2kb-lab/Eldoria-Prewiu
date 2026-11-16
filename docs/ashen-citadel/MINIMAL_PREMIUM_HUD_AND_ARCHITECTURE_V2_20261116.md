@@ -37,3 +37,20 @@ Previously verified: authentic first-pass minimalist native screenshots `4391079
 5. iPhone physical FPS/memory and WebGL remain unverified, so do not mark `ART_APPROVED` without separate evidence.
 
 The main source is deliberately left unchanged. Preserve this contract if the task moves to a new chat.
+
+## Final verified Unity V2 — 16 November 2026
+
+- Actual native Unity job **43915637621 — SUCCESS**, exact source `e69d858a3efe7e760cabb0aa6f10ddde62fc080c`; artifact `14249927459`; archived artifact SHA256 `5671267c44a22c5b20f6cf9365c8f695c6de849d9b4cf55056c94c37cc127d9c`.
+- Native `Ashen-EditMode-Results.xml` **7/7 passed** and `Ashen-PlayMode-Results.xml` **4/4 passed**, zero skips/failures. The original proof file records 10 authentic Unity I–V screenshots (5 stages × horizontal/portrait), all ten PNG SHA256 verified; additionally, 12 genuine composited uGUI PlayMode screenshots are present for **CityIdle, City, Welcome, World, Bag and Mailbox**, both 390×844 and 1600×900.
+- **Actual visual inspection:** `Ashen_UI_CityIdle_390x844.png` shows the small Bastion I courtyard and keep occupying far more of the display, unimpeded by the old solid top and bottom bands. Top-left dark material chip, four independent upper-right utility medallions and four lower-left/right game navigation medallions are coherent; the 12 source PNG assets and Marcellus/Alegreya font family are no longer transient white textures. The original huge dark bars are demonstrably gone.
+- The contextual `Ashen_UI_City_390x844.png` opens a **temporary** top-left inspector rather than a permanent panel, with the true gameplay actions and source data. It still overlaps part of the historical tower roof while open, and its descriptive text is small. **That remains an artistic/usability limitation, not a technical defect or final design approval.**
+- `Ashen_Bastion_5_1600x900.png` confirms the new connected wooden catwalk, guard gallery, forge/quarry crane and distinctive secondary economic structures. Previous orphan floating finial, roof-crossing gable poles and silo staves were removed after inspecting the first native geometry candidate.
+- **Decision:** This is a **substantial improvement in screen visibility** and architectural character, with genuine engine proof and passing game regressions. It still uses economical stylized modular geometry and has unresolved typography density/context inspector occlusion; the workstream remains `ART_APPROVED=false`. **Physical iPhone, WebGL, memory and thermal profiling not tested.** Main game and beta unchanged.
+
+### Accumulated QA lessons
+
+- Art quality gates must inspect **CityIdle** as well as City with an opened panel: the previous screenshot suite only tested contextual states and could incorrectly pass a blocked City view.
+- Generated/sliced Unity textures must exist as reproducible imported sprites in the isolated Resources folder; temporary `Sprite.Create` produced solid white UI despite passing functionality.
+- Hiding full-width HUD backgrounds and offering smaller metal medallions raises actual **3D screen exposure** more than another ornate full-screen UI reference.
+- Architecture micro-props can create floating sticks; inspect their world intersections in real Unity, remove crossing/detached elements rather than merely changing materials. This work is art source backed, not a concept render.
+- All evidence is tied to exact source SHA, not a later documentation commit. Native UI screenshots are Editor-camera composited PlayMode captures, **not** GameView on an actual iPhone.
