@@ -1,0 +1,6 @@
+FASE 2 KIT MODULAR / primer render nativo Unity.
+No borrar ni modificar geometria aprobada Fase 1.
+Blender generator #43884855932 SUCCESS; verify/import 31 FBX with 33372 triangles + approved 256atlas.
+Only Kit/Scenes/Phase2_Kit_Grid.unity and Kit/Scenes/Eldoria_Kit_Sandbox.unity.
+Capture 2400x1350 kit-grid, 1600x900 same Phase1 camera and 1100x1250, plus closeup.
+Preserve Phase1 hash and new evidence; no claims of artistic approval.
