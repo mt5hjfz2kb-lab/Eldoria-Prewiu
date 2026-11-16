@@ -1,0 +1,79 @@
+name: "CC0 System — optimize Valoria static geometry by district/material"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-art-system-batch.yml"
+      - "tools/cc0-art-system/batch_city_static.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-static-batching-ubuntu
+  cancel-in-progress: false
+jobs:
+  batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system
+      - name: Fetch exact already-verified own city GLBs (no duplicate rendering)
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-coherent-city-five-stages
+          run-id: 43848940733
+          github-token: ${{ github.token }}
+          path: .
+      - name: Confirm source 5 GLB supplied by exact same run
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/CityFinish/CC0_Valoria_CityStage$i.glb"
+          done
+          python3 -m py_compile tools/cc0-art-system/batch_city_static.py
+      - name: Install free Blender and dependencies, hosted Ubuntu ONLY
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+      - name: Merge static geometry physically (5 stages, district/material)
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/batch_city_static.py 2>&1 | tee "$RUNNER_TEMP/cc0-static.log"
+          grep -q ELDORIA_STATIC_CITY_ALL_STAGES_PASS "$RUNNER_TEMP/cc0-static.log"
+      - name: Verify 5 GLB manifests and exact polygon count preservation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          base=Path('Unity/Assets/Art_Reboot/CC0System/CityFinishOptimized')
+          report=json.loads((base/'batch-report.json').read_text())
+          assert len(report["stages"])==5
+          for r in report['stages']:
+              n=r['stage']
+              assert r['faces_before']==r['faces_after'],r
+              assert 0<r['optimized_meshes']<=160,r
+              assert 0<r['draw_mesh_reduction']<1,r
+              f=base/('CC0_Valoria_StaticStage'+str(n)+'.glb')
+              b=f.read_bytes()
+              assert b[:4]==b'glTF' and len(b)>10000
+              assert struct.unpack('<I',b[8:12])[0]==len(b)
+              jlen=struct.unpack('<I',b[12:16])[0]
+              j=json.loads(b[20:20+jlen])
+              assert len(j['meshes'])==r['optimized_meshes']
+              print('ELDORIA_BATCH_VERIFIED',n,r['original_meshes'],r['optimized_meshes'],r['draw_mesh_reduction'])
+          assert report['all_geometry_author_owned'] and not report['unity_tested'] and not report['art_approved']
+          PY
+      - name: Upload five physical optimized GLB and real report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-batched-city-i-v
+          path: Unity/Assets/Art_Reboot/CC0System/CityFinishOptimized/
+          retention-days: 30
+          if-no-files-found: warn
