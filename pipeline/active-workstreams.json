@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T13:53:58.187Z",
+  "updated_at": "2026-11-16T14:28:42.398Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,12 +9745,10 @@
       "ownership_revision": 33,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_TERRAIN_REBUILD_NATIVE_CANDIDATE",
+      "phase": "PREMIUM_GROUND_V3_NATIVE_REVIEWED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9778,22 +9776,22 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved",
-        "reason": "Owner-authorized substantial rebuild of terrain, approach, courtyard, vegetation and contact in isolated Ashen City; same-camera Unity I-V acceptance proof."
+        "status": "released_native_complete",
+        "completed_run": 43884660555
       },
       "last_native": {
-        "run": 43870533193,
-        "head": "310cee1f41999a0aec5eee4b88304a55f45a6d5d",
-        "artifact": 14228156458,
+        "run": 43884660555,
+        "head": "d561872156bf0bc845f9ab585d01f0b2c02bfdce",
+        "artifact": 14234376960,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "10 screenshot hashes verified. Corrected ground mask is mathematically valid and renders, but the visible quality increase is marginal (about 1% of pixels differ by >10 RGB at 1600x900); path still reads as repeated rectangular stones and broad grass is flat. Not ART_APPROVED.",
+        "visual_review": "Real I–V landscape/mobile screenshots; all ten hashes verified. New meadow geometry and narrower fitted approach visibly improve composition. Black birdlike grass silhouettes in V2 fixed with distinct unlit/no-shadow foliage renderer and sparse short tufts; large generic city pebble prefabs removed; ground workyard wear and groups improved. Fortified city still somewhat visually sparse and material detailing not ART_APPROVED.",
         "physical_mobile": false
       },
-      "final_source_sha": "310cee1f41999a0aec5eee4b88304a55f45a6d5d",
+      "final_source_sha": "d561872156bf0bc845f9ab585d01f0b2c02bfdce",
       "art_approved": false,
-      "next": "Native compile/capture and 7 EditMode+4 PlayMode, inspect actual images. Do not mark ART_APPROVED if no substantial visual improvement.",
+      "next": "Owner review of native V3 screenshots; separately test device performance/memory, and consider major structural environment/storytelling accents only if necessary. Main game unchanged.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
