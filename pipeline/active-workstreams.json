@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T16:27:30.676Z",
+  "updated_at": "2026-11-16T17:10:27.817Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 38,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_UI_FONTS_NATIVE_REVIEWED_TITLE_FIT_PENDING",
+      "phase": "MINIMAL_PREMIUM_UI_ARCHITECTURE_NATIVE_FINAL_VALIDATION",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9778,8 +9778,8 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "returned_after_visual_verified_terminal",
-        "previous_visual_run": 43906347228
+        "status": "reserved",
+        "reason": "Owner-directed major minimalist floating City HUD and distinct physically integrated premium architecture; stage-aware mobile camera plus contextual inspector above keep. Native exact-source 7 EditMode/4 PlayMode + CityIdle/Welcome/Mail/Bag/World photos."
       },
       "last_native": {
         "run": 43905069629,
@@ -9793,7 +9793,7 @@
       },
       "final_source_sha": "33de41fa68bef6ef4af55955cc465a43c33853d8",
       "art_approved": false,
-      "next": "When native runner is released, capture isolated Ashen head again to confirm both lines of Marcellus title fit, 7 EditMode + 4 PlayMode. Then owner reviews premium environment and playable UI; physical iPhone/WebGL profiling remains separate.",
+      "next": "Inspect genuine 390x844 UI CityIdle and City popup (fortress must stay visible), all V architectural details after removal of detached poles and scaffold intersections; verify same-camera 1600x900 and gameplay, preserve isolated branch.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
