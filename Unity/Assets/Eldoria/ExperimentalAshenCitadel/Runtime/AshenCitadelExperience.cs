@@ -144,8 +144,18 @@ namespace Eldoria.ExperimentalAshenCitadel
             button.targetGraphic=img;
             var colors=button.colors;colors.highlightedColor=new Color(1.0f,.98f,.89f,1);
             colors.pressedColor=new Color(.65f,.68f,.68f,1);colors.disabledColor=new Color(.56f,.59f,.61f,.62f);button.colors=colors;
-            Label(r,"Caption",fontSize,TextAnchor.MiddleCenter,Ivory,Vector2.zero,Vector2.one,
-                  new Vector2(7,3),new Vector2(-7,-3)).text=caption;
+            var glyph=AshenInterfaceGlyphs.ForControl(name);
+            Text captionText=Label(r,"Caption",fontSize,TextAnchor.MiddleCenter,Ivory,
+                Vector2.zero,Vector2.one,new Vector2(glyph!=null?27:7,3),
+                new Vector2(-7,-3));
+            captionText.text=caption;
+            if(glyph!=null)
+            {
+                var iconRect=Node(r,"Functional glyph",new Vector2(0,.5f),new Vector2(0,.5f),
+                    new Vector2(7,-11),new Vector2(27,11));
+                var icon=Plate(iconRect,glyph,Color.white);
+                icon.raycastTarget=false;
+            }
             if(clicked!=null)button.onClick.AddListener(()=>clicked());
             return button;
         }
