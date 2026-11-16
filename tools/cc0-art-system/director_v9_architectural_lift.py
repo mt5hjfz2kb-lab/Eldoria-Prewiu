@@ -22,8 +22,15 @@ STATS=[]
 FRAMES=[]
 M={}
 def hexrgb(h):
+    # Color management: #RRGGBB defines display-space sRGB values, but
+    # Blender Principled BSDF color sockets use scene-linear RGB.
+    # Feeding sRGB floats directly previously caused chalk-white masonry
+    # and mint-grey firs despite their intended dark palette.
     s=h.lstrip('#')
-    return tuple(int(s[i:i+2],16)/255.0 for i in (0,2,4))
+    values=[int(s[i:i+2],16)/255.0 for i in (0,2,4)]
+    def srgb_to_linear(v):
+        return v/12.92 if v<=0.04045 else ((v+0.055)/1.055)**2.4
+    return tuple(srgb_to_linear(v) for v in values)
 def mat(name,hexcolor,rough=.86,emission=0):
     m=bpy.data.materials.new("V9_"+name)
     m.use_nodes=True
@@ -401,16 +408,16 @@ def ambience():
     scene.render.threads=4
     scene.view_settings.view_transform="Filmic"
     scene.view_settings.look="Medium High Contrast"
-    scene.view_settings.exposure=.35
+    scene.view_settings.exposure=.07
     world=bpy.data.worlds.new("V9 late bronze autumn dusk")
     scene.world=world;world.use_nodes=True
     bg=world.node_tree.nodes["Background"]
     bg.inputs["Color"].default_value=(.34,.39,.46,1)
-    bg.inputs["Strength"].default_value=.76
+    bg.inputs["Strength"].default_value=.70
     bpy.ops.object.light_add(type="SUN",location=(0,0,45))
     sun=bpy.context.object
     sun.rotation_euler=(radians(73),radians(8),radians(-34))
-    sun.data.energy=3.4
+    sun.data.energy=2.75
     sun.data.color=(1,.76,.55)
     sun.data.angle=radians(3.9)
     for xx in (-1.7,1.7):
