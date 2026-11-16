@@ -1,0 +1,1076 @@
+{
+  "version": 2,
+  "blender": "4.0.2",
+  "source": "Blender native scripted deterministic Kit generator",
+  "owner_approval": "Phase1 approved, Phase2 pending",
+  "atlas": "Assets/Art_Reboot/Phase1/Textures/Hero_Atlas_256.png",
+  "atlas_size": [
+    256,
+    256
+  ],
+  "atlas_sha256": "2ada56d94ed8e3f3c690fa787a73a0cd38d986d8997c84e125c1cd66b84c0efe",
+  "grid_m": 4,
+  "materials": [
+    "Kit_Surface",
+    "Kit_WarmLight",
+    "Kit_Corruption"
+  ],
+  "material_count": 3,
+  "pieces": [
+    {
+      "id": "Wall_Straight_Intact",
+      "family": "masonry",
+      "fbx": "Models/Wall_Straight_Intact.fbx",
+      "triangles": 1804,
+      "faces": 1066,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -1.955,
+        -0.438,
+        -0.0
+      ],
+      "local_max_m": [
+        1.968,
+        0.19,
+        3.67
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Straight_Damaged",
+      "family": "masonry",
+      "fbx": "Models/Wall_Straight_Damaged.fbx",
+      "triangles": 2024,
+      "faces": 1196,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -1.968,
+        -0.86,
+        -0.0
+      ],
+      "local_max_m": [
+        1.969,
+        0.19,
+        3.67
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Corner_Intact",
+      "family": "masonry",
+      "fbx": "Models/Wall_Corner_Intact.fbx",
+      "triangles": 1892,
+      "faces": 1118,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.035,
+        -0.438,
+        -0.0
+      ],
+      "local_max_m": [
+        1.968,
+        3.69,
+        3.7
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Corner_Damaged",
+      "family": "masonry",
+      "fbx": "Models/Wall_Corner_Damaged.fbx",
+      "triangles": 2112,
+      "faces": 1248,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.035,
+        -0.846,
+        -0.0
+      ],
+      "local_max_m": [
+        2.004,
+        3.69,
+        3.7
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Door_Intact",
+      "family": "masonry",
+      "fbx": "Models/Wall_Door_Intact.fbx",
+      "triangles": 704,
+      "faces": 416,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.0,
+        -1.12,
+        -0.0
+      ],
+      "local_max_m": [
+        2.0,
+        0.26,
+        3.7
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Door_Damaged",
+      "family": "masonry",
+      "fbx": "Models/Wall_Door_Damaged.fbx",
+      "triangles": 1100,
+      "faces": 650,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.0,
+        -1.12,
+        -0.0
+      ],
+      "local_max_m": [
+        2.0,
+        0.26,
+        3.7
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Window_Intact",
+      "family": "masonry",
+      "fbx": "Models/Wall_Window_Intact.fbx",
+      "triangles": 528,
+      "faces": 312,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.0,
+        -0.438,
+        -0.0
+      ],
+      "local_max_m": [
+        2.0,
+        0.26,
+        3.695
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Wall_Window_Damaged",
+      "family": "masonry",
+      "fbx": "Models/Wall_Window_Damaged.fbx",
+      "triangles": 924,
+      "faces": 546,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.0,
+        -0.873,
+        -0.0
+      ],
+      "local_max_m": [
+        2.0,
+        0.26,
+        3.695
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Roof_Gable",
+      "family": "roofs",
+      "fbx": "Models/Roof_Gable.fbx",
+      "triangles": 2756,
+      "faces": 1454,
+      "grid_m": 4,
+      "footprint_cells": [
+        2,
+        2
+      ],
+      "local_min_m": [
+        -4.352,
+        -4.51,
+        0.0
+      ],
+      "local_max_m": [
+        4.352,
+        4.564,
+        2.931
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Roof_Tower",
+      "family": "roofs",
+      "fbx": "Models/Roof_Tower.fbx",
+      "triangles": 2392,
+      "faces": 1204,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.25,
+        -2.25,
+        0.0
+      ],
+      "local_max_m": [
+        2.25,
+        2.25,
+        3.388
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Roof_Shed",
+      "family": "roofs",
+      "fbx": "Models/Roof_Shed.fbx",
+      "triangles": 896,
+      "faces": 464,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.392,
+        -2.671,
+        0.0
+      ],
+      "local_max_m": [
+        2.392,
+        2.62,
+        1.829
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Tower_Bell",
+      "family": "towers",
+      "fbx": "Models/Tower_Bell.fbx",
+      "triangles": 11100,
+      "faces": 6550,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.235,
+        -2.235,
+        0.0
+      ],
+      "local_max_m": [
+        2.235,
+        2.235,
+        7.575
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Tower_Broken",
+      "family": "towers",
+      "fbx": "Models/Tower_Broken.fbx",
+      "triangles": 9592,
+      "faces": 5668,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.235,
+        -2.235,
+        0.0
+      ],
+      "local_max_m": [
+        2.409,
+        2.235,
+        5.943
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Chimney",
+      "family": "architectural_props",
+      "fbx": "Models/Chimney.fbx",
+      "triangles": 1848,
+      "faces": 1092,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -1.07,
+        -1.07,
+        0.0
+      ],
+      "local_max_m": [
+        1.07,
+        1.07,
+        4.465
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Balcony",
+      "family": "architectural_props",
+      "fbx": "Models/Balcony.fbx",
+      "triangles": 484,
+      "faces": 286,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.275,
+        -1.085,
+        0.0
+      ],
+      "local_max_m": [
+        2.175,
+        1.085,
+        1.461
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Shield",
+      "family": "architectural_props",
+      "fbx": "Models/Shield.fbx",
+      "triangles": 148,
+      "faces": 94,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.64,
+        -0.282,
+        0.0
+      ],
+      "local_max_m": [
+        0.64,
+        0.13,
+        1.65
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Beam",
+      "family": "architectural_props",
+      "fbx": "Models/Beam.fbx",
+      "triangles": 132,
+      "faces": 78,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.24,
+        -0.24,
+        0.0
+      ],
+      "local_max_m": [
+        0.39,
+        0.32,
+        4.3
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Pine_Small",
+      "family": "vegetation",
+      "fbx": "Models/Pine_Small.fbx",
+      "triangles": 441,
+      "faces": 279,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.917,
+        -0.9,
+        0.0
+      ],
+      "local_max_m": [
+        0.962,
+        0.845,
+        3.763
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Pine_Medium",
+      "family": "vegetation",
+      "fbx": "Models/Pine_Medium.fbx",
+      "triangles": 441,
+      "faces": 279,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -1.447,
+        -1.345,
+        0.0
+      ],
+      "local_max_m": [
+        1.596,
+        1.36,
+        6.139
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Pine_Tall",
+      "family": "vegetation",
+      "fbx": "Models/Pine_Tall.fbx",
+      "triangles": 441,
+      "faces": 279,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.286,
+        -2.107,
+        0.0
+      ],
+      "local_max_m": [
+        2.335,
+        2.309,
+        9.357
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Fallen_Log",
+      "family": "vegetation",
+      "fbx": "Models/Fallen_Log.fbx",
+      "triangles": 572,
+      "faces": 338,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -2.137,
+        -0.928,
+        0.0
+      ],
+      "local_max_m": [
+        2.187,
+        0.857,
+        0.833
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Shrubs",
+      "family": "vegetation",
+      "fbx": "Models/Shrubs.fbx",
+      "triangles": 40,
+      "faces": 40,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.587,
+        -0.936,
+        0.0
+      ],
+      "local_max_m": [
+        0.705,
+        0.841,
+        0.69
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Tall_Grass",
+      "family": "vegetation",
+      "fbx": "Models/Tall_Grass.fbx",
+      "triangles": 32,
+      "faces": 32,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.867,
+        -0.558,
+        0.0
+      ],
+      "local_max_m": [
+        0.701,
+        0.727,
+        1.598
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Rock_Small",
+      "family": "rocks",
+      "fbx": "Models/Rock_Small.fbx",
+      "triangles": 27,
+      "faces": 18,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.342,
+        -0.27,
+        0.0
+      ],
+      "local_max_m": [
+        0.401,
+        0.314,
+        0.249
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Rock_Medium",
+      "family": "rocks",
+      "fbx": "Models/Rock_Medium.fbx",
+      "triangles": 27,
+      "faces": 18,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.813,
+        -0.612,
+        0.0
+      ],
+      "local_max_m": [
+        0.798,
+        0.693,
+        0.591
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Rock_Large",
+      "family": "rocks",
+      "fbx": "Models/Rock_Large.fbx",
+      "triangles": 27,
+      "faces": 18,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -1.412,
+        -1.128,
+        0.0
+      ],
+      "local_max_m": [
+        1.379,
+        1.252,
+        1.223
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Path_Slab",
+      "family": "paths",
+      "fbx": "Models/Path_Slab.fbx",
+      "triangles": 88,
+      "faces": 52,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.678,
+        -0.511,
+        0.0
+      ],
+      "local_max_m": [
+        1.125,
+        0.828,
+        0.22
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Crystal_Small",
+      "family": "corruption",
+      "fbx": "Models/Crystal_Small.fbx",
+      "triangles": 116,
+      "faces": 74,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.426,
+        -0.24,
+        -0.0
+      ],
+      "local_max_m": [
+        0.34,
+        0.437,
+        1.0
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Crystal_Medium",
+      "family": "corruption",
+      "fbx": "Models/Crystal_Medium.fbx",
+      "triangles": 116,
+      "faces": 74,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.591,
+        -0.505,
+        -0.0
+      ],
+      "local_max_m": [
+        0.591,
+        0.505,
+        2.15
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Crystal_Large",
+      "family": "corruption",
+      "fbx": "Models/Crystal_Large.fbx",
+      "triangles": 116,
+      "faces": 74,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -1.196,
+        -1.022,
+        -0.0
+      ],
+      "local_max_m": [
+        1.196,
+        1.022,
+        4.35
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    },
+    {
+      "id": "Corrupt_Roots",
+      "family": "corruption",
+      "fbx": "Models/Corrupt_Roots.fbx",
+      "triangles": 968,
+      "faces": 572,
+      "grid_m": 4,
+      "footprint_cells": [
+        1,
+        1
+      ],
+      "local_min_m": [
+        -0.907,
+        -0.26,
+        0.0
+      ],
+      "local_max_m": [
+        1.468,
+        0.12,
+        3.422
+      ],
+      "pivot_m": [
+        0,
+        0,
+        0
+      ],
+      "materials": [
+        "Kit_Surface",
+        "Kit_WarmLight",
+        "Kit_Corruption"
+      ],
+      "uv_layer": "UVMap",
+      "vertex_color_layer": "Color"
+    }
+  ],
+  "total_triangles": 43888
+}
