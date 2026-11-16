@@ -6,6 +6,7 @@ on:
       - 'Unity/Assets/Eldoria/ExperimentalAshenCitadel/**/*.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs'
       - 'tools/ashen-citadel/UnitySyntaxAudit/**'
+      - 'tools/ashen-citadel/verify-ground-falloff.mjs'
       - '.github/workflows/ashen-citadel-source-qa.yml'
   workflow_dispatch:
 permissions:
@@ -25,6 +26,7 @@ jobs:
           fetch-depth: 1
           sparse-checkout: |
             tools/ashen-citadel/UnitySyntaxAudit
+            tools/ashen-citadel/verify-ground-falloff.mjs
             Unity/Assets/Eldoria/ExperimentalAshenCitadel/Runtime
             Unity/Assets/Eldoria/ExperimentalAshenCitadel/Editor
             Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs
@@ -41,3 +43,6 @@ jobs:
         run: |
           set -euo pipefail
           dotnet run --project tools/ashen-citadel/UnitySyntaxAudit/UnitySyntaxAudit.csproj --configuration Release -- "$PWD"
+      - name: Ground color masks are bounded and correctly normalized
+        shell: bash
+        run: node tools/ashen-citadel/verify-ground-falloff.mjs
