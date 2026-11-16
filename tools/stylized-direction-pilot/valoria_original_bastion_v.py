@@ -509,6 +509,10 @@ for k in range(12):
 exec(compile(open('tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py',encoding='utf-8').read(),
              'valoria_commercial_stylization_v6.py','exec'),globals())
 
+# V7 distinct architectural and lived-in city art. Source remains original and editable.
+exec(compile(open('tools/stylized-direction-pilot/valoria_characterful_city_v7.py',encoding='utf-8').read(),
+             'valoria_characterful_city_v7.py','exec'),globals())
+
 def area(name,location,power,color,size):
  light=bpy.data.lights.new(name,'AREA');light.energy=power;light.color=color;light.shape='DISK';light.size=size
  obj=bpy.data.objects.new(name,light);bpy.context.collection.objects.link(obj)
@@ -551,6 +555,8 @@ manifest={'original_authored_geometry':True,
  'source_script':'tools/stylized-direction-pilot/valoria_original_bastion_v.py',
  'original_art_pass':'tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py',
  'style_pass':'V6 substantial geometry + hand-crafted roof repairs and ecology',
- 'art_pass_counts':V6_STYLE_COUNTS}
+ 'art_pass_counts':V6_STYLE_COUNTS,
+ 'architectural_identity_pass':'tools/stylized-direction-pilot/valoria_characterful_city_v7.py',
+ 'architectural_components_v7':style_count}
 (out/'visual-proof.json').write_text(json.dumps(manifest,indent=2))
 print('VALORIA_ORIGINAL_BLENDER_PASS',json.dumps(manifest))
