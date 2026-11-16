@@ -37,3 +37,13 @@ Artefactos previstos al pasar el workflow: valoria-original-identity.blend, valo
 - No afirmar calidad alcanzada hasta inspeccionar el PNG real; ART_APPROVED=false.
 - No afirmar integración Unity ni ejecución móvil sin sus pruebas.
 - main y la beta permanecen sin cambios. Gasto cero. La PR sigue en borrador.
+
+## Resultado comprobado — render original Blender V5 (16/11/2026)
+
+- **Ejecución real y completada:** [GitHub Actions #43931187213](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43931187213) **SUCCESS**, fuente exacta `4b58ce2bd3cc327ab9b3119ebe598eac4913d202`.
+- **Artefacto original:** `14258606381` (ZIP `valoria-original-from-zero-4b58ce2bd3cc327ab9b3119ebe598eac4913d202`), contiene PNG paisaje 1440×900, PNG retrato 800×1400, fuente editable `.blend`, `.glb` físico y `visual-proof.json`. Archivos descargados e inspeccionados desde sus bytes originales.
+- **Inspección GLB 2.0 realizada:** 1.146 meshes, 19 imágenes/texturas embebidas, sin importar los modelos artísticos anteriores de Eldoria ni assets comerciales.
+- **Evolución real:** V1 #43927228616 generó una ciudad original, pero las cubiertas estaban abiertas y pareció maqueta; V2 #43928780724 cerró tejados y talló aleros; V3 #43929190007 añadió patio defensivo y oficios; V4 #43930367413 añadió texturas reales pero su tratamiento de color doble y césped repetitivo empeoraron la imagen; V5 corrigió la conversión gamma, atenuó la variación del terreno y aumentó el tamaño de la superficie física para que desapareciera el contorno artificial del mapa en el encuadre.
+- **Evaluación artística HONESTA de V5:** mejora substancial de legibilidad y material frente a la versión inicial, y arquitectura original totalmente distinta de `main`. Aún se aprecia repetición diagonal en las superficies vegetales, árboles geométricos, edificios secundarios de acabado modesto y falta animación/vida. **No afirmar acabado premium, ni calidad igual a Kingshot / Top Heroes, ni aprobación artística.** `ART_APPROVED=false`.
+- **QA pendiente:** importar el `.glb` real en Unity con escena y cámara idénticas a las del juego, inspeccionar siluetas y materiales URP, verificar controles, estados I–V, performance en iPhone y optimizar 1.146 meshes; la clase `OriginalIdentityUnityAB.cs` es fuente experimental y no constituye prueba compilada.
+- **Decisión:** conservar el trabajo original Blender V5 como primer candidato visible; no mergear `main`, no publicar beta, no borrar alternativas previas ni confundir captura de Blender con Unity real.
