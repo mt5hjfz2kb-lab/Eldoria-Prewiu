@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T14:28:42.398Z",
+  "updated_at": "2026-11-16T14:36:34.190Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9806,11 +9806,13 @@
       "title": "Visual reboot — modular kit Phase 2, based on owner-approved Phase 1",
       "owner": "chatgpt-visual-reboot-phase1-continuation-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 53,
+      "ownership_revision": 54,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE2_KIT_MODULAR_AUTHORIZED_SOURCE_AUTHORING",
-      "resources": [],
+      "phase": "PHASE2_KIT_NATIVE_QA_RESERVED",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9840,10 +9842,11 @@
       "final_source_sha": "f2f78a34ef94e3fa5c4cdc96d6e7b8a48d6e8a5e",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "yielded_after_verified_native",
-        "completed_run": 43876725485
+        "status": "reserved_phase2_modular_kit_native",
+        "source_sha": "2fcc45357c5bf7eba0a6e43b458f27523306e730",
+        "reason": "Genuine Unity 31-piece gallery and modular village capture; no current heavy holder or running branch workflow"
       },
-      "native_source_sha": "8bd9b1e61766394bdc0224bc48d6ee72603fab44",
+      "native_source_sha": "2fcc45357c5bf7eba0a6e43b458f27523306e730",
       "last_native_attempt": {
         "run": 43876327593,
         "source": "94a095407cc43df527693d75f4bffda0bb767376",
@@ -9871,10 +9874,9 @@
         "scope": "All building base meshes approved and preserved. Requested environment/atmosphere revision with compact42deg village, additive workshop identity/corruption, living effects. Wait owner approval after village and detail captures."
       },
       "resource_turn_handoff": {
-        "status": "yielded_after_verified_terminal_run",
-        "completed_run": 43876725485,
+        "status": "bounded_native_capture_reserved",
         "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
-        "note": "Unity native successful, original screenshots delivered; artistic signoff withheld. Windows turn returned to Ashen."
+        "note": "One exact Phase2 Unity capture; preserve Ashen and release Windows after terminal evidence"
       },
       "last_native": {
         "run": 43876725485,
@@ -20343,11 +20345,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "ashen_turn_available",
+    "status": "phase2_kit_native_reserved",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
