@@ -363,7 +363,7 @@ def botanical_forest():
     oak_prototypes=[make_broadleaf(i) for i in range(7)]
     pine_base=tree_mesh(291)
     pine_mesh=bpy.data.meshes.new("V9 asymmetric deep pine")
-    pine_mesh.from_pydata(*pine_base[:2]);pine_mesh.update()
+    pine_mesh.from_pydata(pine_base[0],[],pine_base[1]);pine_mesh.update()
     for k in ("leaf1","leaf2","leaf3"):pine_mesh.materials.append(M[k])
     for p,m in zip(pine_mesh.polygons,pine_base[2]):p.material_index=m
     count={"broadleaf":0,"pine":0,"foliage_ground":0,"boulders":0}
@@ -571,8 +571,8 @@ def distinctive_v9_finish(stage):
             cube("lateral chapel voussoir",(x,1.93,z+.49),
                  (.83,.25,.14),"edge",col,.015)
     # Distinct thresholds, not a field of gold accents.
-    cube("Valoria stepped main gate shadow",(0,-6.10,3.2),
-         (2.4,.22,4.2),"darkwood",col,.08)
+    cube("Valoria dressed gate threshold",(0,-6.10,.93),
+         (3.2,.23,.26),"shadow",col,.055)
     beam("gate lintel stone relief",(-2.3,-6.24,5.3),(2.3,-6.24,5.3),
          .32,"edge",col)
 
