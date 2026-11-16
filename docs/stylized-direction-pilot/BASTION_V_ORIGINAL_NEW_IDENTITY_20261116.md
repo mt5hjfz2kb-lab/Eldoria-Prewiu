@@ -47,3 +47,14 @@ Artefactos previstos al pasar el workflow: valoria-original-identity.blend, valo
 - **Evaluación artística HONESTA de V5:** mejora substancial de legibilidad y material frente a la versión inicial, y arquitectura original totalmente distinta de `main`. Aún se aprecia repetición diagonal en las superficies vegetales, árboles geométricos, edificios secundarios de acabado modesto y falta animación/vida. **No afirmar acabado premium, ni calidad igual a Kingshot / Top Heroes, ni aprobación artística.** `ART_APPROVED=false`.
 - **QA pendiente:** importar el `.glb` real en Unity con escena y cámara idénticas a las del juego, inspeccionar siluetas y materiales URP, verificar controles, estados I–V, performance en iPhone y optimizar 1.146 meshes; la clase `OriginalIdentityUnityAB.cs` es fuente experimental y no constituye prueba compilada.
 - **Decisión:** conservar el trabajo original Blender V5 como primer candidato visible; no mergear `main`, no publicar beta, no borrar alternativas previas ni confundir captura de Blender con Unity real.
+
+
+## V6: modificación sustancial de geometría original — 16/11/2026
+
+- Objetivo: lenguaje comercial de estrategia móvil como referencia de legibilidad, arquitectura completamente propia de Eldoria; no reutilizar modelos de main ni copiar modelos comerciales.
+- Nueva fuente implementada: tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py, commit 68068ec5feab1f818a00286b2512419d04386d72. Se ejecuta en Blender tras la creación original V5 y antes de capturas y exportación.
+- Arquitectura física: todos los triángulos abiertos de los tejados reciben auténtico muro a dos caras; entramado de carpintería, cumbrera, gárgolas arquitectónicas, puertas reforzadas, dos torreones decagonales con cubiertas cónicas, nuevos heraldos de la Brecha; edificios secundarios nuevos con señas propias: aserradero abierto, cuartel entrenando, silos del granero, soportes y sillares de cantera.
+- Terreno ampliado y arbolado nuevo: 240 m de topografía continua; 102 árboles de volúmenes de follaje, no billboards ni imágenes.
+- Cambio real sobre rama aislada: scripts y workflow conectados mediante commits c042a52597e0467206f5da30f6558d6c3ee3601e y 4070eb34338a71c7aa6cc69da9d617d97f98a5dd. Run Blender físico: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43933731714
+- El run 43933720935 fue un commit intermedio sin sparse checkout del módulo V6 y falló; quedó corregido al actualizar workflow. No debe presentarse como prueba válida.
+- Todavía hay que inspeccionar capturas reales y GLB, evaluar acabado artístico, optimizar para móvil e importar a Unity. Hasta entonces ART_APPROVED=false, UNITY_NOT_RENDERED, MOBILE_NOT_TESTED. No tocar main ni confundir CI verde con aceptación estética.
