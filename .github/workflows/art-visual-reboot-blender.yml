@@ -19,6 +19,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Unity/Assets/Art_Reboot/**
       - name: Verify original authoring script parses before Blender
         run: python3 -m py_compile Unity/Assets/Art_Reboot/Phase1/Source~/author_pilot.py
       - name: Install free Blender without using the shared Windows PC
