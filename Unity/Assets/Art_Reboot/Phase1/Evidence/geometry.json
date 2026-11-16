@@ -1,9 +1,9 @@
 {
-  "generator": "Blender 4.3.2",
+  "generator": "Blender 4.0.2",
   "seed": 151126,
-  "triangles": 21865,
+  "triangles": 22989,
   "mesh_objects": 4,
-  "materials": 2,
+  "materials": 3,
   "atlas": [
     256,
     256
