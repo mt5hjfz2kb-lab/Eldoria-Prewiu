@@ -80,7 +80,7 @@ namespace Eldoria.ArtReboot.Editor
                     string.Join("\n", renderers.Select(r => r.name + " " + r.bounds + " scale=" + r.transform.lossyScale)));
                 if (Mathf.Abs(terrainBounds.size.x - 48) > .1f || Mathf.Abs(terrainBounds.size.z - 48) > .1f)
                     throw new InvalidOperationException("Imported world metres differ from Blender's 48m terrain: " + terrainBounds);
-                if (triangles != 21308) throw new InvalidOperationException("FBX topology differs from authored source: " + triangles);
+                if (triangles != 21321) throw new InvalidOperationException("FBX topology differs from authored source: " + triangles);
                 RenderSettings.ambientMode = AmbientMode.Trilight;
                 RenderSettings.ambientSkyColor = new Color(.24f, .31f, .44f);
                 RenderSettings.ambientEquatorColor = new Color(.15f, .19f, .22f);

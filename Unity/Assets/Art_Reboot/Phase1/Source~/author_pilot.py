@@ -149,7 +149,9 @@ for x in [-3.02,-2.25,-1.48]:
  for y in [2.55,4.45]:box('Battlement',(x,y,5.48),(.43,.42,.52),0,.045)
 arch(-2.25,2.52,3.48,.38,.95,12)
 beam('Renewed banner staff',(-2.3,3.5,5.1),(-2.3,3.5,6.65),.075,4)
-mesh('Ochre repaired banner',[(-2.28,3.5,6.55),(-1.25,3.47,6.47),(-1.22,3.6,5.9),(-1.73,3.5,6.02),(-2.28,3.5,5.93)],[(0,1,2,3,4),(4,3,2,1,0)],11)
+flag=[(-2.28,3.5,6.55),(-1.25,3.47,6.47),(-1.22,3.6,5.9),(-1.73,3.5,6.02),(-2.28,3.5,5.93)]
+mesh('Ochre repaired banner',flag+[(x,y+.018,z) for x,y,z in flag],
+     [(0,1,2,3,4),(9,8,7,6,5)]+[(i,(i+1)%5,(i+1)%5+5,i+5) for i in range(5)],11)
 for x in [-1.1,1.1]:
  box('Door hinge',(x*.4,.19,1.1),(.38,.05,.07),10,.01)
 # A repair timber and mixed stone patches communicate habitation without clutter.
@@ -208,7 +210,9 @@ for key,objects in groups.items():
  bpy.context.scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
  bpy.ops.object.transform_apply(location=False,rotation=True,scale=True);joined.append(o)
 bpy.ops.object.select_all(action='DESELECT')
-for o in joined:o.select_set(True)
+for o in joined:
+ assert not o.data.validate(verbose=True,clean_customdata=False), 'Invalid authored mesh: '+o.name
+ o.select_set(True)
 bpy.ops.export_scene.fbx(filepath=str(ROOT/'Models/Reboot_Pilot.fbx'),use_selection=True,object_types={'MESH'},apply_unit_scale=True,axis_forward='-Z',axis_up='Y',add_leaf_bones=False,bake_anim=False,path_mode='RELATIVE',use_mesh_modifiers=True,use_triangles=True)
 bpy.ops.export_scene.gltf(filepath=str(ROOT/'Source~/Reboot_Pilot.glb'),export_format='GLB',use_selection=True,export_yup=True,export_materials='EXPORT',export_all_vertex_colors=True)
 triangles=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in joined)
