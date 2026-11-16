@@ -1,0 +1,115 @@
+name: "Eldoria CC0 | V13 physical medieval keep and ground restoration"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v13.yml"
+      - "tools/cc0-art-system/director_v13_gothic_facade.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v13-true-3d-ubuntu
+  cancel-in-progress: false
+jobs:
+  authored-geometry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v13_gothic_facade.py
+      - name: Download exact owner-authored V12 GLBs and renders
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v12-actual-improved-architecture
+          run-id: 43896519558
+          github-token: ${{ github.token }}
+          path: .
+      - name: Source, license, script and five levels verified
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v13_gothic_facade.py
+          for level in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV12/DirectorV12_Stage$level.glb"
+          done
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path("docs/cc0-art-system/previews/director-v12/v12-evidence.json").read_text())
+          assert j["source_run"]==43891952674 and len(j["stages"])==5
+          assert j["real_blender_png"] and not j["native_unity_tested"]
+          assert not j["third_party_geometry_present"] and not j["art_approved"]
+          print("ELDORIA_V13_AUTHORED_INPUTS_PASS")
+          PY
+      - name: Install free headless Blender (hosted Linux, not shared Windows)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Replace physical choir, reinforce facade and terrain, render original GLBs
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v13_gothic_facade.py 2>&1 | tee "$RUNNER_TEMP/v13.log"
+          grep -q ELDORIA_V13_AUTHENTIC_OWNER_MESH_PASS "$RUNNER_TEMP/v13.log"
+      - name: Validate five actual GLBs and genuine A/B captures
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          d=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV13")
+          p=Path("docs/cc0-art-system/previews/director-v13")
+          q=json.loads((p/"v13-evidence.json").read_text())
+          assert q["source_workflow_run"]==43896519558
+          assert len(q["stages"])==5 and len(q["renders"])==4
+          assert not q["third_party_meshes_added"] and not q["art_approved"]
+          assert not q["unity_native_tested"] and not q["iphone_tested"]
+          assert (d/"DirectorV13_Editable_Source.blend").read_bytes()[:7]==b"BLENDER"
+          for st in range(1,6):
+            b=(d/("DirectorV13_Stage"+str(st)+".glb")).read_bytes()
+            assert len(b)>1000000 and b[:4]==b'glTF'
+            assert struct.unpack_from("<I",b,8)[0]==len(b)
+            n=struct.unpack_from("<I",b,12)[0]
+            j=json.loads(b[20:20+n])
+            assert len(j.get("images",[]))>=5 and len(j.get("meshes",[]))>450
+            names=[v.get("name","") for v in j.get("nodes",[])]
+            assert any(v.startswith("V13 stacked grain storage sack") for v in names)
+            if st==5:
+              assert any(v.startswith("V13 monumental cathedral choir continuous slate planes") for v in names)
+              assert not any(v.startswith("single coherent top choir stone mass") for v in names)
+            print("V13_PHYSICAL_STAGE",st,len(j["meshes"]),len(j["images"]))
+          for name,dims in {
+            "DirectorV13_BastionI_1600x900.png":(1600,900),
+            "DirectorV13_BastionV_1600x900.png":(1600,900),
+            "DirectorV13_BastionV_Close_1600x900.png":(1600,900),
+            "DirectorV13_BastionV_Portrait_720x1200.png":(720,1200)
+          }.items():
+            im=Image.open(p/name).convert("RGB")
+            assert im.size==dims and (p/name).stat().st_size>100000
+          a=Image.open(p/"DirectorV13_BastionI_1600x900.png").convert("RGB")
+          b=Image.open(p/"DirectorV13_BastionV_1600x900.png").convert("RGB")
+          previous=Image.open("docs/cc0-art-system/previews/director-v12/DirectorV12_BastionV_1600x900.png").convert("RGB")
+          roi=(450,110,1130,720)
+          delta=lambda u,v:sum(ImageStat.Stat(ImageChops.difference(u.crop(roi),v.crop(roi))).mean)/3
+          assert delta(a,b)>5,("No I/V improvement",delta(a,b))
+          assert delta(previous,b)>4,("No material change vs V12",delta(previous,b))
+          print("V13_AUTHENTIC_DIFF_PASS_NO_UNITY_NO_ART_APPROVAL",delta(a,b),delta(previous,b))
+          PY
+      - name: Archive physical GLBs and true render images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v13-authentic-architecture
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV13/
+            docs/cc0-art-system/previews/director-v13/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Ensure shipping code and branch still untouched
+        run: |
+          git diff --exit-code
+          echo "ELDORIA_V13_MAIN_UNTOUCHED"
