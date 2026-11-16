@@ -104,16 +104,16 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             }
             var sawmill=Import("Ashen_Sawmill",sceneRoot.transform);
             sawmill.transform.position=new Vector3(-17.2f,0f,-6.2f);
-            BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
+            BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             var barracks=Import("Ashen_Barracks",sceneRoot.transform);
             barracks.transform.position=new Vector3(16.8f,0f,-7.5f);
-            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
+            BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             var granary=Import("Ashen_Granary",sceneRoot.transform);
             granary.transform.position=new Vector3(-16.6f,0f,7.8f);
-            BindClick(granary,"Granero","granary","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
+            BindClick(granary,"Granero","granary","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             var stoneworks=Import("Ashen_Stoneworks",sceneRoot.transform);
             stoneworks.transform.position=new Vector3(17.4f,0f,8.8f);
-            BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,2f,0),new Vector3(6.6f,6.5f,6.8f));
+            BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,3f,0),new Vector3(7f,7f,7f));
             // Distinctive landscape frame, sparse around the playable fortress.
             var treePrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Pine.obj");
             var rockPrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Rock.obj");
@@ -288,7 +288,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     var grassPath=MaterialPath+"grass_"+current+".mat";
                     var grass=AssetDatabase.LoadAssetAtPath<Material>(grassPath);
                     if(grass==null){grass=new Material(shader);AssetDatabase.CreateAsset(grass,grassPath);}
-                    grass.SetColor("_BaseColor",current=="leafLight"?new Color(.43f,.45f,.23f):new Color(.24f,.33f,.19f));grass.SetTexture("_BaseMap",null);Colors["grass_"+current]=grass;
+                    grass.SetColor("_BaseColor",current=="leafLight"?new Color(.43f,.45f,.23f):new Color(.24f,.33f,.19f));grass.SetTexture("_BaseMap",null);grass.SetFloat("_Smoothness",.025f);grass.SetFloat("_Metallic",0f);grass.SetFloat("_Cull",0f);EditorUtility.SetDirty(grass);Colors["grass_"+current]=grass;
                 }
             }
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);

@@ -85,13 +85,15 @@ const makeLandscape=function makeLandscape(){
     for(let b=0;b<6;b++){
       const x=px+(rand()-.5)*3.1,z=pz+(rand()-.5)*2.1,y=height(x,z);
       const rx=.28+rand()*.40,rz=.25+rand()*.35,h=.22+rand()*.40;
-      for(let j=0;j<7;j++){
-        const a=j*Math.PI*2/7,aa=(j+1)*Math.PI*2/7;
-        const v0=[x+Math.cos(a)*rx,y+.04,z+Math.sin(a)*rz],v1=[x+Math.cos(aa)*rx,y+.04,z+Math.sin(aa)*rz];
-        const t0=[x+Math.cos(a)*rx*.72,y+h*.7,z+Math.sin(a)*rz*.72],t1=[x+Math.cos(aa)*rx*.72,y+h*.7,z+Math.sin(aa)*rz*.72];
-        const tone=(j+b)%4===0?"leafLight":"leaf";
-        tri(t1,v1,v0,tone);tri(t0,t1,v0,tone);
-        tri([x+.06,y+h,z-.03],t1,t0,tone);
+      // Small overlapping leaves, not closed faceted domes that read as green rocks.
+      for(let j=0;j<22;j++){
+        const theta=j*2.39996,ring=Math.sqrt(rand()),xx=x+Math.cos(theta)*rx*ring,zz=z+Math.sin(theta)*rz*ring;
+        const yy=y+.10+h*(1-ring*.7)+rand()*.07;
+        const len=.13+rand()*.16,w=.055+rand()*.075;
+        const ux=Math.cos(theta),uz=Math.sin(theta),vx=-uz,vz=ux;
+        const base=[xx-ux*len,yy-.045,zz-uz*len],tip=[xx+ux*len,yy+.07,zz+uz*len];
+        const left=[xx+vx*w,yy+.025,zz+vz*w],right=[xx-vx*w,yy+.025,zz-vz*w];
+        const tone=j%7===0?"leafLight":"leaf";tri(base,left,tip,tone);tri(base,tip,right,tone);
       }
       for(let j=0;j<5;j++){
         const a=j*2.4,xx=x+Math.cos(a)*rx*1.4,zz=z+Math.sin(a)*rz*1.4;
@@ -101,7 +103,7 @@ const makeLandscape=function makeLandscape(){
   }
   // Broken flagstones disappear into the approach rather than outlining a platform.
   for(let i=0;i<34;i++){
-    const z=-12-rand()*18,x=(rand()-.5)*3.7+Math.sin(z*.15)*.5,y=height(x,z)+.018;
+    const z=-12-rand()*18,x=(rand()-.5)*3.7+Math.sin(z*.15)*.5,y=height(x,z)+.072;
     const w=.12+rand()*.25,d=.10+rand()*.25;
     const a=[x-w,y,z-d],b=[x-w*.7,y,z+d],c=[x+w,y,z+d*.6],e=[x+w*.8,y,z-d*.9];
     tri(a,b,c,i%4===0?"basalt":"cut");tri(a,c,e,i%4===0?"basalt":"cut");

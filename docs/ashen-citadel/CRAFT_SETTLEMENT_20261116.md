@@ -16,3 +16,7 @@ Reuse query found current production Aserradero_AP2/Cuartel_AP2/Granero_BIII. Co
 
 ## Acceptance evidence
 Macro silhouette and actual Unity same-camera A/B, supports on ground, no cut-off auxiliaries at 390x844, all five castle stages preserved, source/UV/winding and existing 7+4 Unity tests. Blender is structural preview; physical mobile remains unverified. No self-issued ART_APPROVED.
+
+Local verification: original fortress meshes unchanged; four new auxiliaries total 1,266 polygons (prior 915). Source integrity, winding and C# syntax passed. Blender V assembled scene rendered and editable source saved. Projected secondary extents stay within the existing 46m portrait width. Static inspection found paving initially below the 0.045m road ribbon: raise paving to 0.072m before final evidence; this changes only small ground faces.
+
+First Unity run 43845247032 / c5a95d4026f5bcdd4b752fdab488730e90e66bf9 / artifact 14214833753: secondary massing reads distinctly and supports are grounded. Native image exposed shrub domes looking like glossy green rocks, so that treatment was visually rejected. Replace domes with overlapping individual leaf geometry and explicit matte, non-metallic, two-sided foliage material. Preserve building changes.

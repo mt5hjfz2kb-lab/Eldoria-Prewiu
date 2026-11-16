@@ -1,1 +1,1 @@
-Craft settlement: distinct secondary massing, timber silo, open saw bay, garrison longhouse, derrick yard, richer terrain. Same camera/light. 2026-11-16.
+Craft settlement final: replace rejected glossy shrub domes with matte leaf clusters; raise paving above road; fit new interaction bounds. Same-camera native I-V.
