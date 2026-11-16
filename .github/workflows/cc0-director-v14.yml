@@ -1,0 +1,115 @@
+name: "Eldoria CC0 | V14 physical terrain and imperial visual detail"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v14.yml"
+      - "tools/cc0-art-system/director_v14_env_arch_finish.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v14-true-blender-ubuntu
+  cancel-in-progress: false
+jobs:
+  real-geometry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v14_env_arch_finish.py
+      - name: Obtain exact verified V13 authored original geometry
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v13-authentic-architecture
+          run-id: 43902021480
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verify provenance and Python syntax
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v14_env_arch_finish.py
+          for stage in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV13/DirectorV13_Stage$stage.glb"
+          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          m=json.loads(Path("docs/cc0-art-system/previews/director-v13/v13-evidence.json").read_text())
+          assert m["source_workflow_run"]==43896519558
+          assert len(m["stages"])==5 and len(m["renders"])==4
+          assert m["real_blender_images"] and not m["third_party_meshes_added"]
+          assert not m["unity_native_tested"] and not m["art_approved"]
+          print("V14_SOURCE_GUARD_REAL_V13_PASS")
+          PY
+      - name: Install free native Blender and numpy on hosted Ubuntu only
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Bake actual landscape textures and flora/fortress details into owner-authored 3D
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v14_env_arch_finish.py 2>&1 | tee "$RUNNER_TEMP/v14.log"
+          grep -q ELDORIA_CC0_V14_PHYSICAL_ART_PASS "$RUNNER_TEMP/v14.log"
+      - name: Require five physical GLBs and four genuine PNG with no concept substitution
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct,json
+          from PIL import Image,ImageChops,ImageStat
+          src=Path("Unity/Assets/Art_Reboot/CC0System/DirectorV14")
+          prev=Path("docs/cc0-art-system/previews/director-v14")
+          m=json.loads((prev/"v14-evidence.json").read_text())
+          assert m["source_run_id"]==43902021480
+          assert m["actual_blender_captures"] and not m["art_approved"]
+          assert not m["third_party_meshes_included"] and not m["unity_tested"] and not m["iphone_tested"]
+          assert len(m["stages"])==5 and len(m["renders"])==4
+          assert (src/"DirectorV14_Editable_Source.blend").read_bytes()[:7]==b"BLENDER"
+          assert (src/"V14_Valoria_AuthorOwnedRoadsAndMeadow.png").stat().st_size>70000
+          for st in range(1,6):
+            data=(src/("DirectorV14_Stage"+str(st)+".glb")).read_bytes()
+            assert len(data)>1500000 and data[:4]==b'glTF'
+            assert struct.unpack_from("<I",data,8)[0]==len(data)
+            n=struct.unpack_from("<I",data,12)[0]
+            gltf=json.loads(data[20:20+n])
+            names=[a.get("name","") for a in gltf.get("nodes",[])]
+            assert any(a.startswith("V14 physically batched highland vegetation") for a in names)
+            if st==5:
+              assert any(a.startswith("V14 royal long pendent cloth") for a in names)
+              assert any(a.startswith("V13 monumental cathedral choir continuous slate planes") for a in names)
+            assert len(gltf.get("images",[]))>=5
+            print("V14_REAL_MESH_STAGE",st,len(gltf["meshes"]),len(gltf["images"]))
+          frames={
+            "DirectorV14_BastionI_1600x900.png":(1600,900),
+            "DirectorV14_BastionV_1600x900.png":(1600,900),
+            "DirectorV14_BastionV_Close_1600x900.png":(1600,900),
+            "DirectorV14_BastionV_Portrait_720x1200.png":(720,1200)}
+          for file,dims in frames.items():
+            im=Image.open(prev/file).convert("RGB")
+            assert im.size==dims and (prev/file).stat().st_size>100000
+          a=Image.open(prev/"DirectorV14_BastionV_1600x900.png").convert("RGB")
+          old=Image.open("docs/cc0-art-system/previews/director-v13/DirectorV13_BastionV_1600x900.png").convert("RGB")
+          roi=(200,100,1390,810)
+          different=sum(ImageStat.Stat(ImageChops.difference(a.crop(roi),old.crop(roi))).mean)/3
+          assert different>3,("No meaningful visible change",different)
+          print("V14_AUTHENTIC_CHANGE_GROUNDED",different,"NOT UNITY OR MOBILE PASS")
+          PY
+      - name: Preserve editable 3D and real renders in private Action artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-v14-owned-physical-3d
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV14/
+            docs/cc0-art-system/previews/director-v14/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Ensure no production project modification
+        run: |
+          git diff --exit-code
+          echo "V14_MAIN_AND_OTHER_WORKSTREAMS_UNTOUCHED"
