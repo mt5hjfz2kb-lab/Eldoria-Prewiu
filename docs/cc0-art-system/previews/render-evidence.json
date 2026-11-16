@@ -1,0 +1,19 @@
+{
+  "producer": "Blender script owned original composition, no external packs actually imported",
+  "source": "tools/cc0-art-system/author_bastion.py",
+  "native_unity_render": false,
+  "blender_render": true,
+  "commercial_assets_used": [
+    "only owned procedural geometry/textures"
+  ],
+  "external_sources_imported": [],
+  "stage1_glb": "CC0_Valoria_Stage1.glb",
+  "stage5_glb": "CC0_Valoria_Stage5.glb",
+  "blend_source": "CC0_Valoria_Source.blend",
+  "art_approved": false,
+  "renders": [
+    "CC0_BastionV_Lookdev_1440x900.png",
+    "CC0_BastionI_Lookdev_1440x900.png",
+    "CC0_BastionV_Portrait_720x1200.png"
+  ]
+}
