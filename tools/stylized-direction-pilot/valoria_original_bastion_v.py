@@ -513,6 +513,10 @@ exec(compile(open('tools/stylized-direction-pilot/valoria_commercial_stylization
 exec(compile(open('tools/stylized-direction-pilot/valoria_characterful_city_v7.py',encoding='utf-8').read(),
              'valoria_characterful_city_v7.py','exec'),globals())
 
+# V8 substantial skyline rebuilding; removes the former oversized house-like roof.
+exec(compile(open('tools/stylized-direction-pilot/valoria_citadel_massing_v8.py',encoding='utf-8').read(),
+             'valoria_citadel_massing_v8.py','exec'),globals())
+
 def area(name,location,power,color,size):
  light=bpy.data.lights.new(name,'AREA');light.energy=power;light.color=color;light.shape='DISK';light.size=size
  obj=bpy.data.objects.new(name,light);bpy.context.collection.objects.link(obj)
@@ -557,6 +561,7 @@ manifest={'original_authored_geometry':True,
  'style_pass':'V6 substantial geometry + hand-crafted roof repairs and ecology',
  'art_pass_counts':V6_STYLE_COUNTS,
  'architectural_identity_pass':'tools/stylized-direction-pilot/valoria_characterful_city_v7.py',
- 'architectural_components_v7':style_count}
+ 'architectural_components_v7':style_count,
+ 'citadel_v8':v8_proof}
 (out/'visual-proof.json').write_text(json.dumps(manifest,indent=2))
 print('VALORIA_ORIGINAL_BLENDER_PASS',json.dumps(manifest))
