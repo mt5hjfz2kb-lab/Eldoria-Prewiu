@@ -187,7 +187,8 @@ jobs:
           $evidence=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Ciudad2DNativeEvidence/evidence.json'
           if(-not(Test-Path -LiteralPath $evidence)){throw 'Unity did not generate evidence.json'}
           $data=Get-Content -LiteralPath $evidence -Raw | ConvertFrom-Json
-          if(@($data.captures).Count -ne 6 -or -not $data.domain_snapshot_read_only_pass -or
+          if(@($data.captures).Count -ne 12 -or -not $data.domain_snapshot_read_only_pass -or
+             -not $data.visibility_policy_pass -or
              $data.art_approved -or $data.device_qa -ne 'PENDING'){
             throw 'Genuine native evidence incomplete or falsely claims artistic approval'
           }

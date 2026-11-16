@@ -2,8 +2,11 @@
   "schema": 1,
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
-  "allow_native": false,
-  "reason": "Windows is currently reserved by explicit Ashen Citadel / Visual Reboot rotation; do not consume shared PC before a new ownership CAS and owner-authorized turn",
+  "allow_native": true,
+  "reason": "User prioritizes isolated City2D native QA on the shared Windows PC, no running GitHub jobs and exclusive live CAS claim confirmed.",
   "playmode_certified": false,
-  "art_approved": false
+  "art_approved": false,
+  "owner": "chatgpt-eldoria-city2d-priority-20261116",
+  "ownership_revision": 1,
+  "requested_art_stage": "genuine Unity RenderTexture I/II/III/IV/V and readonly building phase checks"
 }
