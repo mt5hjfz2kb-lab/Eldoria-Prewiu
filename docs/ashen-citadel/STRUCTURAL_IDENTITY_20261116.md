@@ -13,3 +13,8 @@ Reuse: retain and substantially reshape current owner-reviewed Ashen sources. Pr
 
 ## Review gates
 Deterministic source/UV/normals; Blender colored plus neutral clay (new --clay option) to check silhouettes without texturing; same-camera real Unity I–V/portrait; existing gameplay tests. Generated art is explicitly directed source geometry and genuine Blender/Unity rendering, not interactive sculpting. No ART_APPROVED or physical mobile claim.
+
+## Verified result
+Native run 43861251720 completed SUCCESS on exact source 8897cbac2572fd746018041754813908f1082514; artifact 14223955921, ZIP SHA256 1e8d16aee252f6dbd75337b829a6e947a3c13ac557ac14c29ed5ed5b96619830. All ten screenshot hashes independently match native-proof.json. Unity EditMode 7/7 and PlayMode 4/4 passed. Source and Blender CI succeeded; deterministic generation, winding, art validation and auxiliary selection bounds passed.
+
+Actual Blender colored I/V and clay V inspected; actual Unity I/V landscape and V portrait inspected. Continuous sawmill and barracks roofs improve whole-building silhouettes; granary roof joins silo, quarry shelter shares crane anchor, Bastion facade reads less horizontally segmented. Not final artistic approval: Bastion remains geometrically rigid, secondary structures retain simple forms, and portrait framing makes details small. No physical iPhone or WebGL runtime validation. No production gameplay or main presentation changes. Windows native jobs are terminal success; resource already yielded to Visual Reboot by registry revision22, preserve that handoff.
