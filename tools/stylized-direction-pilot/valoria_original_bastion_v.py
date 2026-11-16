@@ -250,11 +250,11 @@ def ground(x,y):
  return n+shoulder+river
 
 # authored single undulating ground, seamless paths and river embankment.
-verts=[];faces=[];width=181;depth=181
+verts=[];faces=[];width=241;depth=241
 for iy in range(depth):
- y=-90+iy*1.00
+ y=-120+iy*1.00
  for ix in range(width):
-  x=-90+ix*1.00;verts.append((x,y,ground(x,y)))
+  x=-120+ix*1.00;verts.append((x,y,ground(x,y)))
 for iy in range(depth-1):
  for ix in range(width-1):
   a=iy*width+ix;faces.append((a,a+1,a+1+width,a+width))
@@ -505,6 +505,10 @@ for k in range(12):
   cube('readable masonry bridge paver',(x,y,ground(0,-29)+1.46),
        (1.42,.9,.12),R.choice([STONE,LIME,SHADOW]),.055)
 
+# V6 procedural commercial stylization, authored independently from legacy models.
+exec(compile(open('tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py',encoding='utf-8').read(),
+             'valoria_commercial_stylization_v6.py','exec'),globals())
+
 def area(name,location,power,color,size):
  light=bpy.data.lights.new(name,'AREA');light.energy=power;light.color=color;light.shape='DISK';light.size=size
  obj=bpy.data.objects.new(name,light);bpy.context.collection.objects.link(obj)
@@ -544,6 +548,9 @@ manifest={'original_authored_geometry':True,
  'level':'Bastion V','mesh_objects':geo,'pine_trees':count,
  'concept_only':False,'real_editable_blender_source':True,
  'look':'mature accessible 3D mobile strategy, original Eldoria identity',
- 'source_script':'tools/stylized-direction-pilot/valoria_original_bastion_v.py'}
+ 'source_script':'tools/stylized-direction-pilot/valoria_original_bastion_v.py',
+ 'original_art_pass':'tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py',
+ 'style_pass':'V6 substantial geometry + hand-crafted roof repairs and ecology',
+ 'art_pass_counts':V6_STYLE_COUNTS}
 (out/'visual-proof.json').write_text(json.dumps(manifest,indent=2))
 print('VALORIA_ORIGINAL_BLENDER_PASS',json.dumps(manifest))
