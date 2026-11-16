@@ -118,7 +118,8 @@ bpy.ops.mesh.primitive_uv_sphere_add(segments=12,ring_count=6,radius=1,location=
 beam('Shield split-chevron',(-.90,-2.75,4.37),(-.64,-2.75,4.68),.07,4)
 beam('Shield split-chevron',(-.64,-2.75,4.68),(-.39,-2.75,4.37),.07,4)
 # Tower is deliberately offset to right/front so silhouette and belfry remain exposed.
-tx,ty=2.25,.12
+tower_start=set(bpy.context.scene.objects)
+tx,ty=2.70,.85
 stone_wall(tx,ty,0,1.68,1.90,5.72)
 for zz in [1.75,4.85,5.70]:box('Tower irregular belt',(tx,ty,zz),(1.78,2.0,.18),1,.035)
 arch(tx,ty-1.00,3.88,.53,1.0,12)
@@ -139,19 +140,22 @@ for j in range(len(profile)-1):
 solid('Cast bronze bell',verts,faces,11,.02)
 beam('Bell clapper',(tx,ty-.56,6.65),(tx+.02,ty-.56,6.23),.09,10)
 curved_roof(tx,ty,7.63,2.35,2.35,1.13)
+# Tower raised 10 percent and set back: the contour separates at the actual game view.
+for ob in set(bpy.context.scene.objects)-tower_start:
+ ob.location.z*=1.10;ob.scale.z*=1.10
 # Cantilever balcony, separate light silhouette, not a platform under building.
-box('Balcony floor',(3.25,-.22,2.45),(1.65,1.76,.18),4,.04)
-for yy in [-1.0,.54]:
- for xx in [2.7,3.3,4.0]:beam('Balcony baluster',(xx,yy,2.45),(xx,yy,3.13),.09,4)
- beam('Balcony handrail',(2.65,yy,3.16),(4.05,yy,3.16),.15,5)
-beam('Balcony outer rail',(4.0,-1,3.16),(4.0,.54,3.16),.15,5)
-for yy in [-.8,.45]:beam('Balcony supporting knee',(2.87,yy,1.60),(3.86,yy,2.40),.20,4)
+box('Balcony floor',(3.55,.27,2.45),(1.65,1.76,.18),4,.04)
+for yy in [-.50,1.04]:
+ for xx in [3.0,3.6,4.3]:beam('Balcony baluster',(xx,yy,2.45),(xx,yy,3.13),.09,4)
+ beam('Balcony handrail',(2.95,yy,3.16),(4.35,yy,3.16),.15,5)
+beam('Balcony outer rail',(4.3,-.50,3.16),(4.3,1.04,3.16),.15,5)
+for yy in [-.3,.95]:beam('Balcony supporting knee',(3.17,yy,1.60),(4.16,yy,2.40),.20,4)
 # Crooked chimney emerging behind left slope.
 stone_wall(-2.30,1.12,4.20,.66,.78,1.62)
 box('Chimney stone cap',(-2.30,1.12,5.85),(.90,1.0,.22),1,.05)
 box('Soot in chimney',(-2.30,1.12,5.975),(.55,.65,.05),10,.01)
 # Small irregular moss clusters on selected seams, not all over silhouette.
-for x,y,z in [(-2.8,-1.88,.20),(-1.8,-1.9,.12),(1.5,-1.8,.14),(2.95,-.85,.20),(-2.8,-1.2,3.4)]:
+for x,y,z in [(-2.8,-1.88,.20),(-1.8,-1.9,.12),(1.5,-1.8,.14),(3.48,-.12,.12),(-2.8,-1.2,3.4)]:
  for i in range(3):rock((x+i*.10,y,z),(random.uniform(.10,.20),.08,.05),7)
 # Export hero as one renderer with slots, enabling future damage variants from same editable source.
 objects=[o for o in bpy.context.scene.objects if o.type=='MESH']

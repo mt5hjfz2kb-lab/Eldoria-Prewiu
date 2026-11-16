@@ -18,3 +18,13 @@ Independent visual review identified black gaps in arch voussoirs and upper wind
 Replaced rotated rectangular voussoirs with fitted wedge meshes; lowered and shortened front windows.
 Final local Blender preview shows bell, continuous arch rings and both window arches.
 Blender structural validation is separate from Unity render and owner art acceptance.
+
+Actual 3D silhouette at the game view initially merged tower into the roof.
+Macro correction: tower +0.45m right / +0.73m back, height +10%; balcony follows its structural support.
+Independent review accepts the form as a candidate for owner review after native capture; no art approval inferred.
+Known finish limits: some facade symmetry remains, timber grain is restrained.
+
+Native attempt 43846720539 compiled but stopped before rendering: Unity expanded the FBX UV/color corners
+and split the mesh under its 16-bit index import. Capture now verifies all imported parts, summed
+triangle count against source geometry.json, attributes on every part and their combined bounds.
+Keep 16-bit import compatibility rather than assuming one renderer. Failure logs retained in artifact 14215617104.

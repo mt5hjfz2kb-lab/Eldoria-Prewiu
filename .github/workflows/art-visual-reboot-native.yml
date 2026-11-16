@@ -112,7 +112,7 @@ jobs:
           $evidence=Join-Path $branchArt ("Source~/Evidence/native-"+$env:GITHUB_RUN_ID)
           New-Item -ItemType Directory -Force -Path $evidence | Out-Null
           foreach($rel in @(
-            'unity-1100x1250.png','unity-390x844.png',
+            'unity-1100x1250.png','unity-390x844.png','unity-hero-silhouette.png',
             'unity-1600x900.png','unity-844x390.png',
             'capture.json','native-proof.json','model-world-bounds.txt'
           )){
