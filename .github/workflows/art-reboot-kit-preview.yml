@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/art-reboot-kit-preview.yml
       - Unity/Assets/Art_Reboot/Kit/Source~/render_kit_studio.py
+      - Unity/Assets/Art_Reboot/Kit/Source~/render_modular_village_preview.py
   workflow_dispatch:
 permissions:
   contents: read
@@ -33,12 +34,22 @@ jobs:
           blender -b -t 4 --python Unity/Assets/Art_Reboot/Kit/Source~/render_kit_studio.py 2>&1 | tee "$RUNNER_TEMP/preview.log"
           grep -q KIT_STUDIO_SOURCE_PREVIEW_PASS "$RUNNER_TEMP/preview.log"
           test -s "$KIT_BLENDER_PREVIEW_OUTPUT"
+      - name: Render an independent three-building kit assembly for pre-Unity art critique
+        env:
+          KIT_VILLAGE_PREVIEW_OUTPUT: ${{ runner.temp }}/kit-blender-assembled-village.png
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python Unity/Assets/Art_Reboot/Kit/Source~/render_modular_village_preview.py 2>&1 | tee "$RUNNER_TEMP/assembled-preview.log"
+          grep -q BLENDER_ASSEMBLED_KIT_PASS "$RUNNER_TEMP/assembled-preview.log"
+          test -s "$KIT_VILLAGE_PREVIEW_OUTPUT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: phase2-original-blender-studio-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/kit-blender-source-review.png
+            ${{ runner.temp }}/kit-blender-assembled-village.png
             ${{ runner.temp }}/preview.log
+            ${{ runner.temp }}/assembled-preview.log
           if-no-files-found: warn
           retention-days: 7
