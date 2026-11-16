@@ -1,0 +1,59 @@
+name: "EXPERIMENT Ashen Citadel · deterministic premium UI sprite assets"
+on:
+  push:
+    branches: [experiment/ashen-citadel-i-v-20261115]
+    paths:
+      - 'tools/ashen-citadel/generate_ui_atlas.mjs'
+      - '.github/workflows/ashen-ui-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ashen-ui-assets-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout ONLY isolated art experiment
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: experiment/ashen-citadel-i-v-20261115
+          persist-credentials: true
+      - name: Generate 12 source-authored PNG sprites and their SHA256 manifest
+        run: |
+          node tools/ashen-citadel/generate_ui_atlas.mjs
+          python3 - <<'PY'
+          import json,hashlib,struct,zlib,pathlib
+          root=pathlib.Path('Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources')
+          manifest=json.loads(pathlib.Path('tools/ashen-citadel/ui-atlas-manifest.json').read_text())
+          assert len(manifest['assets'])==12
+          for item in manifest['assets']:
+              p=root/item['name'];b=p.read_bytes()
+              assert hashlib.sha256(b).hexdigest()==item['sha256']
+              assert b[:8]==b'\x89PNG\r\n\x1a\n'
+              assert struct.unpack('>II',b[16:24])==(item['width'],item['height'])
+              assert b[25]==6
+              print('ASHEN_UI_PNG_VERIFIED',p.name,len(b))
+          print('ASHEN_UI_GENERATOR_PASS 12 imported asset candidates')
+          PY
+      - name: Commit generated PNG art to the same isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ashen-asset-build[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Unity/Assets/Eldoria/ExperimentalAshenCitadel/Resources/AshenPremium*.png
+          git add tools/ashen-citadel/ui-atlas-manifest.json
+          if git diff --cached --quiet; then
+            echo ASHEN_UI_SPRITES_ALREADY_REPRODUCIBLE
+            exit 0
+          fi
+          git commit -m "art(ashen): bake 12 reproducible premium UI PNG sprites"
+          git push origin HEAD:experiment/ashen-citadel-i-v-20261115
+          echo ASHEN_UI_SPRITES_PUBLISHED_ISOLATED_BRANCH
