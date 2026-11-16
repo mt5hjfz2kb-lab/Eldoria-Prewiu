@@ -172,15 +172,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 g.Beam(1,new Vector3(5.76f,4.40f,-2.0f),
                     new Vector3(5.76f,4.40f,3.36f),.09f);
             }
-            if(level>=5){
-                // Forged chevron finial visible at mobile scale.
-                g.Beam(6,new Vector3(-2.15f,10.30f,2.70f),
-                    new Vector3(-2.15f,11.24f,2.70f),.075f);
-                g.Beam(2,new Vector3(-2.78f,10.74f,2.70f),
-                    new Vector3(-2.15f,11.24f,2.70f),.060f);
-                g.Beam(2,new Vector3(-2.15f,11.24f,2.70f),
-                    new Vector3(-1.51f,10.74f,2.70f),.060f);
-            }
+            // No disconnected roof finial: the first native visual review
+            // revealed the prototype ornament apparently floating above the
+            // distant roof. Keep the historic tower roof itself as the accent.
         }
         private static void Sawmill(Shape g)
         {
@@ -205,28 +199,21 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         }
         private static void Barracks(Shape g)
         {
-            // Larger unified gable and occupational heraldry.
-            g.Beam(0,new Vector3(-2.40f,2.73f,-2.48f),
-                new Vector3(0f,4.22f,-2.48f),.11f);
-            g.Beam(0,new Vector3(0f,4.22f,-2.48f),
-                new Vector3(2.40f,2.73f,-2.48f),.11f);
-            g.Beam(1,new Vector3(-2.38f,2.72f,-2.48f),
-                new Vector3(2.38f,2.72f,-2.48f),.13f);
-            g.Medallion(2,new Vector3(0f,3.18f,-2.56f),.34f);
-            g.Cloth(-2.68f,3.15f,-2.54f,.49f,.90f);
-            g.Cloth(2.68f,3.15f,-2.54f,.49f,.90f);
+            // Integrate porch joinery BELOW the existing roof eave; earlier
+            // V2 diagonal gable beams crossed the slate roof in real Unity.
+            g.Beam(1,new Vector3(-2.38f,2.34f,-2.49f),
+                new Vector3(2.38f,2.34f,-2.49f),.11f);
+            g.Cloth(-2.60f,2.48f,-2.66f,.42f,.75f);
+            g.Cloth(2.60f,2.48f,-2.66f,.42f,.75f);
             g.Box(4,new Vector3(-1.8f,4.40f,1.46f),new Vector3(.32f,.59f,.33f));
             g.Box(3,new Vector3(-1.8f,5.0f,1.46f),new Vector3(.42f,.12f,.44f));
         }
         private static void Granary(Shape g)
         {
-            // Full-height silo staves and a tangible horizontal loading link.
-            for(int i=0;i<14;i++){
-                float a=2*Mathf.PI*i/14f;
-                float x=1.8f+1.061f*Mathf.Cos(a),z=.75f+1.061f*Mathf.Sin(a);
-                g.Beam(i%4==0?1:0,new Vector3(x,.78f,z),
-                    new Vector3(x,4.33f,z),.045f);
-            }
+            // Unity V2 revealed new thin vertical staves detached from the
+            // silo and protruding through the granary roof. Retain the
+            // underlying sculpted rounded silo and strengthen only its
+            // already-authored, physically joined transfer beam.
             g.Beam(0,new Vector3(-.58f,2.27f,.52f),
                 new Vector3(1.09f,3.10f,.52f),.17f);
             for(int i=0;i<4;i++){
@@ -240,12 +227,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
         {
             // Shared hoist frame and spoked winch wheel. Larger purpose-specific
             // silhouette, not more random stone scatter or a second roof.
-            g.Beam(0,new Vector3(1.28f,.18f,-.71f),
-                new Vector3(1.29f,4.12f,.65f),.16f);
-            g.Beam(1,new Vector3(-1.76f,.15f,1.54f),
-                new Vector3(1.29f,3.86f,.65f),.16f);
-            g.Beam(0,new Vector3(1.28f,3.35f,.66f),
-                new Vector3(1.28f,3.90f,-2.45f),.095f);
+            // Existing canvas and mast already have their own continuous
+            // frame. Omit the additional V2 diagonal beams that crossed the
+            // cloth like unfinished construction scaffolding.
             var centre=new Vector3(.72f,1.63f,.62f);
             for(int i=0;i<12;i++){
                 float a=2*Mathf.PI*i/12f,b=2*Mathf.PI*(i+1)/12f;
