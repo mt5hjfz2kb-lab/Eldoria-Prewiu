@@ -1,0 +1,21 @@
+{
+  "phase": "phase1_owner_revision",
+  "branch": "art/visual-reboot",
+  "source_art_commit": "15feb43212bbc97c984c88e686316d09bdad64ad",
+  "blender_run": 43833572959,
+  "geometry_triangles": 22989,
+  "mesh_families": 4,
+  "native_camera": "same position and 50-degree tilt; same framing algorithm",
+  "capture_sizes": [
+    "1100x1250",
+    "390x844",
+    "1600x900",
+    "844x390"
+  ],
+  "approvals": {
+    "phase2": false,
+    "art": false,
+    "physical_iphone": false
+  },
+  "note": "This file requests a one-time native Unity capture only. Main and gameplay remain unchanged."
+}
