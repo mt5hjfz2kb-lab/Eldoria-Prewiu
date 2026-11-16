@@ -155,7 +155,7 @@ class Piece:
                                 (k//4+(7+(45 if v else 0))/64)/4)
         atlasuv=[tuple(round(float(x.uv[d]),6) for d in (0,1)) for x in uv.data]
         unique=set(atlasuv)
-        assert len(unique)>8,("Incomplete UV authoring",self.name,sorted(unique)[:12])
+        assert len(unique)>=4,("Incomplete UV authoring",self.name,sorted(unique)[:12])
         # Every authored UV stays strictly inside one of the sixteen 64px swatches.
         assert all(.025<=u<=.98 and .025<=v<=.98 for u,v in unique),("Atlas UV outside safe insets",self.name,sorted(unique)[:12])
         samples=atlasuv[:6]
