@@ -1,0 +1,106 @@
+name: "Eldoria CC0 · Director V7 physical textures and integrated architecture"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v7.yml"
+      - "tools/cc0-art-system/director_v7_material_architecture.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v7-physical-model-authoring
+  cancel-in-progress: false
+jobs:
+  author:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v7_material_architecture.py
+      - name: Retrieve exact owned V6 models, not AI lookdev or uncured vendor sources
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-director-v6-real-3d
+          run-id: 43878136136
+          github-token: ${{ github.token }}
+          path: .
+      - name: Validate source and prepare free Blender CPU
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v7_material_architecture.py
+          for i in 1 2 3 4 5; do
+            test -s "Unity/Assets/Art_Reboot/CC0System/DirectorV6/DirectorV6_Stage$i.glb"
+          done
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+      - name: Generate physically revised materials, roofs, trees and 5 real GLBs
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v7_material_architecture.py 2>&1 | tee "$RUNNER_TEMP/v7-art.log"
+          grep -q ELDORIA_V7_PHYSICAL_SOURCE_AND_RENDER_PASS "$RUNNER_TEMP/v7-art.log"
+      - name: Verify real image paint, meshes and artistic comparison gate without false ART_APPROVED
+        run: |
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          from PIL import Image,ImageStat,ImageChops
+          a=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV7')
+          p=Path('docs/cc0-art-system/previews/director-v7')
+          info=json.loads((p/'director-v7-evidence.json').read_text())
+          assert info['source_run']==43878136136
+          assert info['rendered_in_blender'] and not info['native_unity_tested'] and not info['art_approved']
+          assert not info['vendor_assets_included']
+          assert len(info['levels'])==5 and len(info['frames'])==3
+          for row in info['metrics']:
+              assert row['baked_texture_images']>=5, row
+              print('V7_PHYSICAL_IMAGE_BYTES_REPAINTED',row['stage'],row['baked_texture_images'])
+          for i in range(1,6):
+              f=a/('DirectorV7_Stage'+str(i)+'.glb')
+              b=f.read_bytes()
+              assert len(b)>500000 and b[:4]==b'glTF'
+              assert struct.unpack_from('<I',b,8)[0]==len(b)
+              n=struct.unpack_from('<I',b,12)[0]
+              j=json.loads(b[20:20+n])
+              assert len(j['images'])>=8
+              assert any('COLOR_0' in prim.get('attributes',{}) for mesh in j['meshes'] for prim in mesh.get('primitives',[]))
+              print('V7_TRUE_GLB',i,len(b),'meshes',len(j['meshes']))
+          pics={
+              'DirectorV7_BastionI_1600x900.png':(1600,900),
+              'DirectorV7_BastionV_1600x900.png':(1600,900),
+              'DirectorV7_BastionV_Portrait_720x1200.png':(720,1200)}
+          for name,wh in pics.items():
+              f=p/name
+              im=Image.open(f).convert('RGB')
+              assert im.size==wh and f.stat().st_size>90000
+              means=ImageStat.Stat(im).mean
+              assert min(means)>25 and max(means)<215, (name,means)
+              print('V7_REAL_BLENDER_PNG',name,list(map(lambda x:round(x,1),means)))
+          first=Image.open(p/'DirectorV7_BastionI_1600x900.png').convert('RGB')
+          last=Image.open(p/'DirectorV7_BastionV_1600x900.png').convert('RGB')
+          roi=(450,60,1130,760)
+          diff=sum(ImageStat.Stat(ImageChops.difference(first.crop(roi),last.crop(roi))).mean)/3
+          assert diff>5,(diff,'Bastion progression not visible')
+          assert (a/'DirectorV7_Editable_Source.blend').read_bytes().startswith(b'BLENDER')
+          print('V7_AUTHENTIC_LEVEL_PROGRESSION',round(diff,3))
+          print('V7_TECHNICAL_PASS_QUALITY_STILL_REQUIRES_INSPECTION')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-cc0-director-v7-real-3d
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV7/
+            docs/cc0-art-system/previews/director-v7/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Isolation control
+        run: |
+          git diff --exit-code
+          echo "ELDORIA_V7_NO_MAIN_CHANGES_NO_WINDOWS_USED"
