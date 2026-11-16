@@ -150,6 +150,9 @@ class Piece:
                                 (k//4+(7+(45 if v else 0))/64)/4)
                 # Mix custom stone tonality into vertex colors, never a separate texture.
                 col.data[li].color=(shade,shade,shade,1)
+        samples=[tuple(round(float(uv.data[i].uv[d]),6) for d in (0,1)) for i in range(min(16,len(uv.data)))]
+        assert any(0.01<x<0.99 and 0.01<y<0.99 for x,y in samples), ("UV authoring never reached atlas cells",self.name,samples)
+        print("KIT_AUTHOR_UV_SAMPLES",self.name,samples[:6],flush=True)
         assert all(v.co.z>=-.015 for v in me.vertices), "Below-base geometry: "+self.name
         print('KIT_MESH_FINISHED',self.name,flush=True)
         return obj
