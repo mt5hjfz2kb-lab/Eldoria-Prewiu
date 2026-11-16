@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T00:03:49.419Z",
+  "updated_at": "2026-11-16T00:07:56.373Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9808,11 +9808,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "NATIVE_FOUR_CAPTURES_CREATED_CLEANUP_FAILED_VISUAL_REVIEW",
-      "resources": [],
+      "phase": "NATIVE_VISUAL_LIGHTING_AND_CLEANUP_VALIDATION",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9841,12 +9843,12 @@
       "final_source_sha": "0a5836cea35eded51374b508d20a01288ba6aceb",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_one_execution",
+        "status": "granted_one_execution",
         "after_run_id": 43777338073,
         "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
         "requested_at": "2026-11-15T22:44:00.333Z"
       },
-      "native_source_sha": "32a2afedd50b50c46ffe263bfb75c14b2e6735a6",
+      "native_source_sha": "647ca4e7f0bd3024e5f19abe05f0d42162c3116f",
       "last_native_attempt": {
         "run": 43777779389,
         "source": "32a2afedd50b50c46ffe263bfb75c14b2e6735a6",
@@ -20284,11 +20286,11 @@
     "authorized_by": "Owner explicitly requested alternating the shared PC between these two existing experiments in this conversation.",
     "authorized_at": "2026-11-15T22:44:00.333Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": null,
+    "current_workstream": "eldoria-art-visual-reboot-phase1-20261115",
     "current_run_id": null,
     "next_workstream": "eldoria-ashen-citadel-original-i-v-20261115",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "visual_reboot_completed_resource_available",
+    "status": "visual_reboot_turn_claimed",
     "rules": [
       "Do not cancel or interrupt current run 43770724604; keep its lease valid until it completes and processes/artifacts are settled.",
       "After this run, give the next single native import/capture to art/visual-reboot before another Ashen native run.",
