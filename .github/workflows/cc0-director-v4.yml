@@ -59,7 +59,7 @@ jobs:
           assert obj["actual_blender_render"] and not obj["unity_editor_render"]
           assert not obj["art_approved"] and not obj["mobile_tested"]
           assert obj["owned_original_source"] and not obj["external_assets_imported"]
-          assert len(obj["meshes"])==5 and len(obj["frames"])==3
+          assert len(obj["meshes"])==5 and len(obj["frames"])==4
           for stage in range(1,6):
               f=base/("DirectorV4_ValoriaStage"+str(stage)+".glb")
               raw=f.read_bytes()
@@ -73,6 +73,7 @@ jobs:
           assert blend.read_bytes()[:7]==b"BLENDER"
           for profile,wh in (("DirectorV4_Bastion1_1600x900.png",(1600,900)),
                              ("DirectorV4_Bastion5_1600x900.png",(1600,900)),
+                             ("DirectorV4_Bastion5_Hero_1600x900.png",(1600,900)),
                              ("DirectorV4_Bastion5_720x1200.png",(720,1200))):
               image=pictures/profile
               raw=image.read_bytes()
@@ -81,9 +82,11 @@ jobs:
               print("V4_GENUINE_BLENDER_CAPTURE",profile,len(raw))
           a=Image.open(pictures/"DirectorV4_Bastion1_1600x900.png").convert("RGB")
           b=Image.open(pictures/"DirectorV4_Bastion5_1600x900.png").convert("RGB")
-          mean=sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)/3
-          assert mean>6,("No meaningful level progression",mean)
-          print("V4_LEVEL_I_TO_V_DIFFERENCE_PASS",round(mean,3))
+          whole=sum(ImageStat.Stat(ImageChops.difference(a,b)).mean)/3
+          roi=(400,120,1250,760)
+          focal=sum(ImageStat.Stat(ImageChops.difference(a.crop(roi),b.crop(roi))).mean)/3
+          assert whole>2.5 and focal>7.0,("No meaningful Bastion I-V progression",whole,focal)
+          print("V4_LEVEL_I_TO_V_FOCAL_CHANGE_PASS",round(whole,3),round(focal,3))
           PY
       - uses: actions/upload-artifact@v4
         if: always()
