@@ -46,3 +46,17 @@ Only the independent City view uses this mesh. Keep the old `AshenLandscape.obj`
 2. Even irregular polygon meshes can look like a carpet if row-and-column seeds and broad packed-earth rectangles dictate their silhouette: random rejection-sampled seeds, clipped octagonal Voronoi, and a narrower road work better.
 3. Plant silhouette and material/shadow behaviour have to be evaluated as one system. Dark double-sided triangular grasses with mesh-wide shadow casting produced near-black 'bird' clumps; simply increasing saturation did not solve the cause. A separate, shadow-free material + smaller grass shapes yielded the clearer native image.
 4. Rendering and automated tests are necessary but not sufficient. V2 technically passed but was visually rejected, then iterated to V3 without disturbing gameplay.
+
+## Landscape storytelling / economic areas — new authored source candidate
+
+Following the V3 native visual proof, additional substantial *environment* and *interface* work was authorized, not a merge. The existing premium city ground geometry `AshenPremiumTerrainBuilder` was extended (source commit `55ec81f30c081b959d1a79afd2fa5af686fef331`) with real non-interactable environment detail grouped by activity rather than scattered uniformly:
+
+- A landmark stone well with a dressed circular rim and dark timber crossbar at the public approach, distinct from the Keep.
+- A sawmill timber stockyard with layered irregular timber pieces placed on sculpted soil.
+- Training yard silhouettes near the barracks, with upright targets and a functional-looking rack.
+- Granary loading apron with grouped harvest sacks, bound bundles and irregular heights.
+- Quarry area with stacks of dressed/raw stone blocks of different mass and height.
+
+All of these are authored mesh polygons inside the same generated **City-only** art source; there are no new click targets, fake resources, gameplay formulas or changes to `main`. Existing permitted materials are used. Their actual legibility in **Unity capture is still pending** while the Windows runner is held by another workstream. The source Roslyn contract passed (run 43889058583). Do not conflate that with physical rendering or artistic quality.
+
+This environment pass is intentionally distinct from the previous microscopic recolouring changes: it adds larger objects with identifiable economic and narrative function that should be recognisable in the mobile framing, subject to native evidence.
