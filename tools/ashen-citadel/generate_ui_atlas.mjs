@@ -130,11 +130,45 @@ function png(width,height,sample){
  return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),
    chunk("IHDR",ihdr),chunk("IDAT",deflateSync(raw,{level:9})),chunk("IEND",Buffer.alloc(0))]);
 }
+
+// Floating controls use small transparent cut-out silhouettes, not rectangular
+// cards; 4× soft ring highlights give a materially legible metal/stone button.
+function medallion(x,y){
+  const dx=x-47.5,dy=y-47.5,r=Math.hypot(dx,dy),a=Math.atan2(dy,dx);
+  const outside=clamp(47.5-r,0,1);
+  if(outside<=0)return vec(0,0,0,0);
+  const n=(noise(x,y)-.5)*3;
+  const reflection=4*Math.cos(a+1.8)+4*Math.sin(a*.9+.4);
+  if(r>44)return vec(34,42,42,outside*230);
+  if(r>42.5)return vec(104+reflection,86+reflection*.55,56,250);
+  if(r>40.2)return vec(178+reflection,138+reflection*.5,78,251);
+  if(r>38.5)return vec(51,48,36,248);
+  if(r>36.8)return vec(127,102,62,250);
+  const indent=Math.exp(-Math.pow(r-32,2)/13)*4;
+  let hi=5*Math.max(0,(dx-dy)/120);
+  return vec(20+n+hi+indent,31+n+hi,40+n+hi,231+4*Math.sin(r*.25));
+}
+// Narrow status chips have a quiet brushed metal lip and softly transparent
+// slate core; the city is always visible outside their silhouettes.
+function chip(x,y){
+  const dx=Math.abs(x-127.5)-119,dy=Math.abs(y-39.5)-31;
+  const d=Math.hypot(Math.max(dx,0),Math.max(dy,0))+Math.min(Math.max(dx,dy),0)-8;
+  if(d>1)return vec(0,0,0,0);
+  const aa=clamp(1-d,0,1),n=(noise(x,y)-.5)*4;
+  if(d>-.8)return vec(12,17,19,aa*211);
+  if(d>-2.1)return vec(129,101,62,229);
+  if(d>-3.8)return vec(49,46,40,230);
+  let l=3*Math.cos(y/80*Math.PI)+2.5*x/256;
+  return vec(19+n+l,30+n+l,38+n+l,196);
+}
+
 const output=[
  ["AshenPremiumPanel.png",256,256,panel],
  ["AshenPremiumButtonPrimary.png",256,72,(x,y)=>button(x,y,true)],
  ["AshenPremiumButtonSecondary.png",256,72,(x,y)=>button(x,y,false)],
  ["AshenPremiumCrest.png",128,128,crest],
+ ["AshenPremiumMedallion.png",96,96,medallion],
+ ["AshenPremiumStatusChip.png",256,80,chip],
  ...["castle","workshop","army","compass","mail","bag","hero","quest"].map(k=>
    ["AshenPremiumGlyph_"+k+".png",64,64,(x,y)=>glyph(k,x,y)])
 ];
@@ -147,7 +181,7 @@ for(const [name,w,h,sample] of output){
 const centre=panel(128,128);
 if(centre[0]>=90||centre[1]>=90||centre[2]>=100)
   throw Error("Dark slate panel source failed its centre-pixel gate: "+centre.join(","));
-const manifest={generator:"ashen-premium-ui-atlas-v1",assets:result};
+const manifest={generator:"ashen-premium-floating-ui-v2",assets:result};
 fs.writeFileSync("tools/ashen-citadel/ui-atlas-manifest.json",
   JSON.stringify(manifest,null,2)+"\n");
 console.log("ASHEN_PREMIUM_UI_ATLAS_PASS",result.length,"PNG Sprites; centre RGB",
