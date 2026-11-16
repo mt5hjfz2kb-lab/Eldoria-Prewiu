@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T00:32:53.233Z",
+  "updated_at": "2026-11-16T07:37:07.759Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9808,10 +9808,10 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 26,
+      "ownership_revision": 27,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PILOT_NATIVE_CAPTURE_AND_SAVED_SCENE_REOPEN_PASS",
+      "phase": "PHASE1_OWNER_ART_REVISION_IN_PROGRESS",
       "resources": [],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
@@ -9828,7 +9828,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Three-state visual pilot source, assembled Unity scene and four reviewed native PNGs saved on its own branch. Full gameplay integration, physical iPhone/performance and final artistic approval are separate unverified gates. Windows free; retain Ashen source ownership.",
+      "next": "Implement only owner's eight Phase1 art corrections, same comparison camera. Deliver native capture plus settings, then wait for explicit owner approval. Do not start Phase2.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9853,6 +9853,12 @@
         "result": "success_saved_scene_reopen_and_cleanup",
         "unity_executed": true,
         "artifact": 14188780604
+      },
+      "owner_revision_request": {
+        "at": "2026-11-16T07:37:07.758Z",
+        "scope": "warm dusk, emissive habitation, varied ground, localized violet corruption and slow rising particles, weathering, slate roof, smaller pines/story props, soft mobile shadows",
+        "baseline_source": "a41c07323b07539bdadda483a06b4266d420e55c",
+        "approval_required_before_phase2": true
       }
     }
   ],
