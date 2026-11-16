@@ -1,0 +1,115 @@
+name: "Eldoria CC0 · V10 original physical masonry and slate atlases"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-director-v10.yml"
+      - "tools/cc0-art-system/director_v10_physical_materials.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-cc0-v10-original-materials-ubuntu
+  cancel-in-progress: false
+jobs:
+  real-3d:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system/director_v10_physical_materials.py
+      - name: Retrieve only the exact physically authored and sRGB-corrected V9 proof
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-cc0-v9-structural-real3d
+          run-id: 43886721399
+          github-token: ${{ github.token }}
+          path: .
+      - name: Strict source and syntax preflight
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/cc0-art-system/director_v10_physical_materials.py
+          python3 - <<'PY'
+          import json,struct
+          from pathlib import Path
+          root=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV9Structural')
+          j=json.loads(Path('docs/cc0-art-system/previews/director-v9-structural/v9-evidence.json').read_text())
+          assert j['input_run_id']==43882248142 and not j['vendor_assets_included']
+          assert not j['art_approved'] and not j['unity_native_tested']
+          assert len(j['stages'])==5
+          for i in range(1,6):
+              p=root/f'DirectorV9_Stage{i}.glb'
+              b=p.read_bytes()
+              assert len(b)>1000000 and b[:4]==b'glTF' and struct.unpack_from('<I',b,8)[0]==len(b)
+          print('V10_PINNED_V9_PHYSICAL_SOURCE_PASS')
+          PY
+      - name: Free Blender 4 and NumPy, hosted Ubuntu, no shared Windows
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+      - name: Physically bake repeatable masonry, roof and wood atlases and export 5 GLBs
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/director_v10_physical_materials.py 2>&1 | tee "$RUNNER_TEMP/v10.log"
+          grep -q V10_AUTHORED_MATERIALS_REAL_ART_PASS "$RUNNER_TEMP/v10.log"
+      - name: Verify physical texture atlas source and visual sanity, not aesthetic approval
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageChops,ImageStat
+          import struct,json
+          p=Path('Unity/Assets/Art_Reboot/CC0System/DirectorV10')
+          imgs=Path('docs/cc0-art-system/previews/director-v10')
+          report=json.loads((imgs/'v10-evidence.json').read_text())
+          assert report['source_run']==43886721399 and len(report['stages'])==5
+          assert not report['vendor_assets_used'] and not report['ai_illustration_used_as_model']
+          assert report['blender_render'] and not report['native_unity_tested'] and not report['art_approved']
+          assert (p/'DirectorV10_Editable_Source.blend').read_bytes()[:7]==b'BLENDER'
+          for i in range(1,6):
+              raw=(p/f'DirectorV10_Stage{i}.glb').read_bytes()
+              assert raw[:4]==b'glTF' and len(raw)>1000000 and struct.unpack_from('<I',raw,8)[0]==len(raw)
+              n=struct.unpack_from('<I',raw,12)[0]
+              j=json.loads(raw[20:20+n])
+              assert len(j.get('meshes',[]))>500 and len(j.get('images',[]))>=8
+              assert any(m['name'].startswith('V10_MASTER_') for m in j.get('materials',[]))
+              print('V10_PHYSICAL_TEX_GLB',i,len(j['meshes']),len(j['images']))
+          cases={'DirectorV10_BastionI_1600x900.png':(1600,900),
+                 'DirectorV10_BastionV_1600x900.png':(1600,900),
+                 'DirectorV10_BastionV_Portrait_720x1200.png':(720,1200)}
+          for name,dim in cases.items():
+              f=imgs/name;im=Image.open(f).convert('RGB')
+              assert im.size==dim and f.stat().st_size>100000
+              mini=im.resize((250,140))
+              pix=list(mini.getdata())
+              magenta=sum(r>150 and b>140 and r>g*1.5 and b>g*1.5 for r,g,b in pix)/len(pix)
+              assert magenta<.018,(name,magenta)
+          main=Image.open(imgs/'DirectorV10_BastionV_1600x900.png').convert('RGB')
+          keep=main.crop((770,60,1025,337))
+          vals=[sum(rgb)/3 for rgb in keep.getdata()]
+          dark=sum(v<35 for v in vals)/len(vals)
+          assert dark<.53,('V10 black castle regression',dark)
+          assert sum(v>185 for v in vals)/len(vals)<.10
+          a=Image.open(imgs/'DirectorV10_BastionI_1600x900.png').convert('RGB')
+          diff=ImageStat.Stat(ImageChops.difference(
+                  a.crop((450,100,1140,730)), main.crop((450,100,1140,730)))).mean
+          assert sum(diff)/3>6,('No real visible city progression',diff)
+          print('V10_REAL_GFX_SOURCE_QA_PASS_NOT_ART_APPROVED',dark,diff)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-cc0-director-v10-real-materials
+          path: |
+            Unity/Assets/Art_Reboot/CC0System/DirectorV10/
+            docs/cc0-art-system/previews/director-v10/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Confirm no original game or main modification
+        run: |
+          git diff --exit-code
+          echo "V10_AN_ISOLATED_EXPERIMENT_NOT_A_UNITY_CERTIFICATION"
