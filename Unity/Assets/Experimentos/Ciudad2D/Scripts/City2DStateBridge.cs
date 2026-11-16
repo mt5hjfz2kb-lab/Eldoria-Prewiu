@@ -23,6 +23,29 @@ namespace Eldoria.Experimentos.Ciudad2D
         public event Action<CityBuilding> BuildingSelected;
         public event Action LevelsChanged;
 
+        // Los diccionarios y los eventos C# NO sobreviven a la serializacion
+        // de una escena Unity. El Register del Builder, hecho en EditMode,
+        // no sirve tras abrirla en PlayMode: reconstruir siempre en runtime.
+        public int RegisteredBuildingCount => buildings.Count;
+
+        private void Awake() => RebindSceneBuildings();
+
+        private void Start()
+        {
+            RebindSceneBuildings();
+            if (!IsLiveBound) SetDemoBastionLevel(demoBastionLevel);
+        }
+
+        public void RebindSceneBuildings()
+        {
+            foreach (var building in UnityEngine.Object.FindObjectsByType<CityBuilding>(FindObjectsSortMode.None))
+            {
+                // No capturar edificios de otras escenas ni del juego real.
+                if (building.gameObject.scene == gameObject.scene)
+                    Register(building);
+            }
+        }
+
         public void Register(CityBuilding building)
         {
             if (building == null || string.IsNullOrEmpty(building.BuildingId)) return;
