@@ -1,0 +1,146 @@
+name: "Art Reboot Phase2 · real Unity URP modular kit and hamlet proof"
+on:
+  push:
+    branches: [art/visual-reboot]
+    paths:
+      - Unity/Assets/Art_Reboot/Kit/**
+      - .github/workflows/art-reboot-kit-native.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: art-reboot-kit-native
+  cancel-in-progress: false
+jobs:
+  preflight:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message,'[kit-native]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Art_Reboot/Kit
+            Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.py
+            Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.ps1
+            Unity/Assets/Art_Reboot/Phase1/Source~/test_lease.py
+            Unity/Assets/Art_Reboot/Phase1/Source~/test_lease.ps1
+      - name: Validate Windows script grammar without occupying the PC
+        shell: pwsh
+        run: |
+          $t=$null;$errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$pwd/Unity/Assets/Art_Reboot/Kit/Source~/native_kit_capture.ps1",
+            [ref]$t,[ref]$errors)|Out-Null
+          if($errors.Count){$errors | Format-List;throw 'PowerShell parse failed'}
+          & "$pwd/Unity/Assets/Art_Reboot/Phase1/Source~/test_lease.ps1"
+      - name: Assert FBX catalog exists and expected geometry was actually persisted
+        run: |
+          python3 - <<'PY'
+          import pathlib,json
+          root=pathlib.Path('Unity/Assets/Art_Reboot/Kit')
+          manifest=json.loads((root/'Source~/kit_manifest.json').read_text())
+          assert len(manifest['pieces'])==31 and manifest['material_count']==3
+          assert manifest['total_triangles']==sum(x['triangles'] for x in manifest['pieces'])
+          assert all((root/x['fbx']).is_file() for x in manifest['pieces'])
+          print('KIT_NATIVE_PREFLIGHT_PASS',manifest['total_triangles'])
+          PY
+  lease:
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: Unity/Assets/Art_Reboot/Phase1/Source~
+      - name: Read live canonical Windows holder and exact source SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.py
+  native:
+    needs: lease
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Refuse occupied or low-space shared computer before checkout
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Windows PC in use'}
+          if((Get-PSDrive C).Free -lt 20GB){throw 'Not enough room for isolated Unity import'}
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $git)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: kit-source
+          clean: false
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Unity/Assets/Art_Reboot/**
+            Unity/Assets/Art_Reboot.meta
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity*
+            Unity/Assets/Eldoria/Content/EldoriaMobileURP.asset*
+            Unity/Assets/Eldoria/Content/EldoriaForwardRenderer.asset*
+            Unity/Assets/UniversalRenderPipelineGlobalSettings.asset*
+            Unity/ProjectSettings/**
+            Unity/Packages/manifest.json
+      - name: Recheck exact live lease before running Unity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: '& "$pwd/kit-source/Unity/Assets/Art_Reboot/Phase1/Source~/check_lease.ps1"'
+      - name: Import all 31 reusable FBX, assemble buildings, and render genuine captures
+        shell: powershell
+        run: |
+          & "$pwd/kit-source/Unity/Assets/Art_Reboot/Kit/Source~/native_kit_capture.ps1" -SourceRoot "$pwd/kit-source" -OutputRoot "$pwd/kit-native-evidence-$env:GITHUB_RUN_ID"
+      - name: Preserve exact imported kit scene, Unity metadata, native captures and manifest
+        if: success()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          Set-StrictMode -Version Latest
+          $root="$pwd/kit-source"
+          $phase2=Join-Path $root 'Unity/Assets/Art_Reboot/Kit'
+          $e=Join-Path $pwd ("kit-native-evidence-"+$env:GITHUB_RUN_ID)
+          $from=Join-Path $e 'ImportedKit'
+          if(-not(Test-Path (Join-Path $from 'Scenes/Eldoria_Kit_Sandbox.unity'))){throw 'Kit scene not produced'}
+          if(-not(Test-Path (Join-Path $from 'Scenes/Phase2_Kit_Grid.unity'))){throw 'Grid scene not produced'}
+          Copy-Item -Path (Join-Path $from '*') -Destination $phase2 -Force -Recurse
+          $originalMeta=Join-Path $e 'ImportedKit.meta'
+          if(Test-Path $originalMeta){Copy-Item $originalMeta -Destination (Join-Path $root 'Unity/Assets/Art_Reboot/Kit.meta') -Force}
+          $evDir=Join-Path $phase2 ("Source~/Evidence/native-"+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Force -Path $evDir | Out-Null
+          foreach($name in @('kit-grid-2400x1350.png','village-1600x900.png',
+                               'village-1100x1250.png','corrupt-kit-detail.png',
+                               'kit-native-proof.json','kit-polygons.csv','kit-grid-index.csv',
+                               'native-proof.json')){
+            $p=Join-Path $e $name
+            if(-not(Test-Path -LiteralPath $p)){throw "Missing original Unity evidence: $name"}
+            Copy-Item -LiteralPath $p -Destination (Join-Path $evDir $name)
+          }
+          Push-Location $root
+          try{
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A -- Unity/Assets/Art_Reboot/Kit Unity/Assets/Art_Reboot/Kit.meta
+            git diff --cached --quiet
+            if($LASTEXITCODE -ne 0){
+              git commit -m "art(phase2): preserve real Unity Kit grid and 3-building modular sandbox [kit-native-proof]"
+              if($LASTEXITCODE -ne 0){throw 'Cannot commit kit evidence'}
+              git push origin HEAD:art/visual-reboot
+              if($LASTEXITCODE -ne 0){throw 'Concurrent changes rejected; native artifact retains original evidence'}
+            }
+          }finally{Pop-Location}
+      - name: Upload true native evidence for review even if integration fails
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: art-reboot-kit-native-${{ github.run_id }}
+          path: kit-native-evidence-${{ github.run_id }}/**
+          if-no-files-found: warn
+          retention-days: 14
