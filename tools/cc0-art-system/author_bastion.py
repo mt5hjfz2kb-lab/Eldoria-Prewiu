@@ -100,7 +100,8 @@ def material(name, color, kind=None, rough=.79, metal=0, emit=0):
         tex.image=image
         m.node_tree.links.new(tex.outputs["Color"],shader.inputs["Base Color"])
     if emit:
-        shader.inputs["Emission"].default_value=(*rgb(color),1)
+        emission_socket = "Emission Color" if "Emission Color" in shader.inputs else "Emission"
+        shader.inputs[emission_socket].default_value=(*rgb(color),1)
         shader.inputs["Emission Strength"].default_value=emit
     return m
 
