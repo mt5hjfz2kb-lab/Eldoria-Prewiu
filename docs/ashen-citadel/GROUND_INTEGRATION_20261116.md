@@ -37,3 +37,11 @@ Recovered exact Unity native run **43866203492**, artifact **14225881950**, sour
 **Observed on 390x844 Unity frame:** all four secondary structures appear in view, but city and labels/details appear small; no performance or physical iPhone claim is supported.
 
 This native evidence predates the separately implemented and source-checked *normalized wear mask* correction. The masks should improve the dirt/stone transition mathematically, but **the corrected C# source has not yet been rendered or visually approved in Unity**. Shared Windows runner remained held by a different workstream when inspected, so no conflicting native job was dispatched. Next isolated test should compare the same 1600x900 frame and 390x844 frame with identical lighting and camera, explicitly reviewing whether the approach still resembles laid tiles.
+
+## Second native pass — normalized wear masks (verified)
+
+Native Unity run `43870533193` finished **SUCCESS**, exact head `310cee1f41999a0aec5eee4b88304a55f45a6d5d`, artifact `14228156458`, ZIP SHA256 `76de9b5cb444a74182a25639702130f05a3a67ee6cf33d39fcc0b3da5eec021c`. All ten Bastion I–V landscape/mobile screenshot SHA256 values verified; **EditMode 7/7 and PlayMode 4/4** passed; source compilation and full Unity rendering succeeded.
+
+The new capture was compared to the previous same-camera source `4a3dcc8d893eb021296ce61f7f113d39d6501313`. Technical falloff correction is real but the visual improvement is marginal: in Bastion V landscape, only about **1% of pixels** changed by more than 10 RGB units, with mean absolute RGB changes approximately **0.36/0.21/0.16 on an 8-bit scale**. The approach still reads as a grid of small rectangular pavers, secondary work areas remain too empty and the grass is largely flat. On mobile, details are still small, despite all structures being inside the frame.
+
+**Quality decision:** keep the corrected math and reproducible tests, but reject this pass as the final premium artistic solution. The next independent pass must change the **design of the geometry and scene composition** (less regular paving, better material-ground integration, landscape vegetation masses), not repeat global brightness or color tweaks. Shared Windows lease released after terminal native success; gameplay/main art remain untouched. Physical iPhone, WebGL, FPS and memory profiling remain unverified.
