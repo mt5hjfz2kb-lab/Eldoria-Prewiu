@@ -32,6 +32,10 @@ ROOFS={
  "quarry":"CANTERA / small sheltered stone-cutting workshop heavy slate",
  "barracks":"CUARTEL / stone guardhouse and barracks heavy slate",
  "granary":"GRANERO / long grain warehouse heavy slate"}
+# Exact geometry bounds independently measured in the physical V16 GLB, not a
+# generic district waypoint. The quarry workshop is east of its extraction site.
+ROOF_SOURCE_CENTERS={"sawmill":(-22.0,-7.5),"quarry":(-19.1,10.7),
+                     "barracks":(22.8,11.4),"granary":(21.0,-9.2)}
 # Every one of these combinations was visually and physically duplicated in V16.
 # Exact prefix matching, never generalized "all roofs" deletion.
 REMOVE_PREFIXES=(
@@ -71,8 +75,8 @@ def repair_roofs(stage):
         if len(roof)!=1:raise RuntimeError("V17 expected one, not "+str(len(roof))+" physical roof "+prefix)
         obj=roof[0]
         pos=center_world(obj)
-        cx,cy=OLD[region]
-        if abs(pos.x-cx)>3 or abs(pos.y-cy)>3:
+        cx,cy=ROOF_SOURCE_CENTERS[region]
+        if abs(pos.x-cx)>1.0 or abs(pos.y-cy)>1.0:
             raise RuntimeError("Roof is not at suspected old physical coordinates "+str((stage,region,tuple(pos))))
         dx=NEW[region][0]-cx
         dy=NEW[region][1]-cy
