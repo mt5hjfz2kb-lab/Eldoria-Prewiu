@@ -87,3 +87,17 @@ El nuevo Director V5 modifica físicamente: **sendas sobre terreno (sin platafor
 - **Riesgo de continuidad:** GitHub Actions conserva los binarios solo 30 días; los scripts y reglas permanecen en la rama, pero una cadena de builds anclada a artifacts viejos puede caducar. Debe documentarse/automatizarse un rebuild completo por scripts originales antes de considerar la fuente reproducible a largo plazo. No publicar modelos de terceros sin prueba de licencias.
 
 **Estado honesto:** investigado sí; implementado y renderizado V8 sí; V9 nuevas pruebas y correcciones en curso; aprobado artísticamente NO; Unity NO; iPhone/WebGL NO; `main` intacta.
+
+
+## Continuación V10 — arquitectura integrada y comparación real (16/11/2026)
+
+**Encargo vigente:** sustituir retoques conceptuales por correcciones de geometría física y capturas nativas. Rama/workstream sin cambios.
+
+- **Base V9 comprobada:** [Actions #43886721399](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43886721399) SUCCESS. Capturas reales I/V en 1600×900 y V en 720×1200 inspeccionadas. Evolución visible, pero nave alta rectangular, tejados planos y suelo simplificado. La alternativa V9 de bosque mixto #43886355573 aparece más clara y rompe paleta; ninguna variante tiene aprobación artística.
+- **Causa comprobada en GLB, no supuesto visual:** el nivel V incluye a la vez las mallas nombradas "Valoria imperial restored upper hall", "BASTION V / actually roofed royal nave" y "upper Valoria great hall cast masonry" junto con antiguas cubiertas. La superposición es motivo plausible de las estructuras pegadas.
+- **Corrección geométrica V10:** fuente en tools/cc0-art-system/director_v10_integrated_citadel.py. Elimina primero arquitectura alta V8 obsoleta, reconstruye un solo cuerpo de nave con coro superior, tejados inclinados cruzados, transeptos físicamente conectados, contrafuertes, marcos profundos y portón. Etapas I-IV conservadas; la fuente es V8 real fijada a run #43882248142, sin paquete externo ni ilustración IA usada como textura.
+- **Prueba nueva:** [Action #43889934794](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43889934794). Consultar conclusión y capturas antes de afirmar que V10 está terminada.
+- **Otra variante sin mezclar:** director_v10_physical_materials.py [Action #43889437704](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43889437704). Atlas físicos, una hipótesis independiente; comparar imágenes A/B, no fusionar sin comprobar.
+- **Límites:** Unity V10 NO ejecutada, iPhone y Android NO probados, ART NO aprobado, main sin cambios y Windows reservado para otro workstream.
+
+**Siguiente acción autónoma:** verificar ambos runs, descargar PNGs reales y comparar V9/V10, diagnosticar macrocambios y corregir si sigue fallando. Luego optimizar mallas del V10 escogido, y solo con reserva legítima comprobar Unity con capturas reales. Un CI exitoso no equivale a calidad aceptable.
