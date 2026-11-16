@@ -53,8 +53,41 @@ Artefactos previstos al pasar el workflow: valoria-original-identity.blend, valo
 
 - Objetivo: lenguaje comercial de estrategia móvil como referencia de legibilidad, arquitectura completamente propia de Eldoria; no reutilizar modelos de main ni copiar modelos comerciales.
 - Nueva fuente implementada: tools/stylized-direction-pilot/valoria_commercial_stylization_v6.py, commit 68068ec5feab1f818a00286b2512419d04386d72. Se ejecuta en Blender tras la creación original V5 y antes de capturas y exportación.
-- Arquitectura física: todos los triángulos abiertos de los tejados reciben auténtico muro a dos caras; entramado de carpintería, cumbrera, gárgolas arquitectónicas, puertas reforzadas, dos torreones decagonales con cubiertas cónicas, nuevos heraldos de la Brecha; edificios secundarios nuevos con señas propias: aserradero abierto, cuartel entrenando, silos del granero, soportes y sillares de cantera.
+- Arquitectura física: todos los triángulos abiertos de los tejados reciben auténtico muro a dos caras; entramado de carpintería, cumbrera, puertas reforzadas, dos torreones decagonales con cubiertas cónicas, nuevos heraldos de la Brecha; edificios secundarios nuevos con señas propias: aserradero abierto, cuartel entrenando, silos del granero, soportes y sillares de cantera.
 - Terreno ampliado y arbolado nuevo: 240 m de topografía continua; 102 árboles de volúmenes de follaje, no billboards ni imágenes.
 - Cambio real sobre rama aislada: scripts y workflow conectados mediante commits c042a52597e0467206f5da30f6558d6c3ee3601e y 4070eb34338a71c7aa6cc69da9d617d97f98a5dd. Run Blender físico: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43933731714
 - El run 43933720935 fue un commit intermedio sin sparse checkout del módulo V6 y falló; quedó corregido al actualizar workflow. No debe presentarse como prueba válida.
 - Todavía hay que inspeccionar capturas reales y GLB, evaluar acabado artístico, optimizar para móvil e importar a Unity. Hasta entonces ART_APPROVED=false, UNITY_NOT_RENDERED, MOBILE_NOT_TESTED. No tocar main ni confundir CI verde con aceptación estética.
+
+
+## V7: prueba final auditada del lenguaje estilizado, 16/11/2026
+
+- Ejecución Blender real: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43935355062
+  **SUCCESS**. Código arte del render: 1b6ea675b1eac73573ad15319be8ec3ab1f710b3.
+  Artefacto verificable de GitHub Actions: 14262245173. Dos capturas auténticas:
+  horizontal 1440×900 y vertical 800×1400, y fuente .blend completamente editable.
+- Corrección de defecto estructural confirmado por imagen: el techo V6 conservaba
+  grandes regiones negras bajo las cubiertas porque se generaron caras opuestas
+  coplanares. V7 reconstruye las fachadas de los hastiales con normales exteriores
+  y sin caras duplicadas; capturas inspeccionadas muestran todas las fachadas
+  continuas con ventana redonda y materiales. No es un filtro cromático.
+- Corregida la repetición diagonal visible en césped cambiando el patrón original
+  del albedo procedural de hierba; render final inspeccionado sin las rayas v6.
+- Medición de GLB final: 2143 mallas, 263043 vértices, 189864 caras, 35 materiales,
+  26 imágenes/texturas internas, solo geometría de este experimento original.
+- Optimización derivada y reversible, validada sobre el GLB final con
+  tools/stylized-direction-pilot/batch_optimize_glb.py (primer prototipo ejecutado
+  localmente): 2143 -> 144 mallas (reducción del 93,3%). Idéntico nº de caras,
+  vértices, materiales, UV completas y texturas; tamaño 12,4 MB -> 8,7 MB aprox.
+  NO se ha comprobado FPS real ni importación a URP.
+- Unity importer aislado actualizado para exigir la versión mobile-batched y la
+  extensión de topografía, conservando captura A/B con la cámara existente.
+  El archivo de C# está preparado pero **no se ha ejecutado en Unity**.
+- Valoración cualitativa: es una mejora importante de composición, identidad
+  arquitectónica, cubierta/materiales y bosque. Ahora resulta legible como 3D
+  de estrategia móvil estilizada. Quedan limitaciones reales de animación, vida
+  ambiental, UI integrada, la visibilidad de la Brecha, gama de estados I–IV y
+  coherencia en juego. No etiquetar como nivel comercial 9/10 por un render.
+- No se ha tocado main; no se ha publicado beta ni se ha pedido merge; la
+  aprobación artística sigue **pendiente de revisión del propietario**.
+  ART_APPROVED=false, UNITY_RENDERED=false, MOBILE_TESTED=false.
