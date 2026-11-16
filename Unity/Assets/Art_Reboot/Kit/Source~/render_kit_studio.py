@@ -51,8 +51,10 @@ camera.data.ortho_scale=73
 bpy.context.scene.camera=camera
 scene=bpy.context.scene
 scene.render.engine="CYCLES"
-scene.cycles.samples=20
-scene.cycles.use_denoising=True
+scene.cycles.samples=28
+# Ubuntu Blender build lacks OpenImageDenoiser: render without it instead of inventing support.
+scene.cycles.use_denoising=False
+for layer in scene.view_layers:layer.cycles.use_denoising=False
 scene.render.resolution_x=2000
 scene.render.resolution_y=1125
 scene.render.resolution_percentage=100
