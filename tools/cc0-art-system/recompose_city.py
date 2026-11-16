@@ -164,30 +164,30 @@ def terrain_height(x,y):
     return (.12*sin(x*.28)*cos(y*.21)+.17*sin(x*.11+y*.16)
             -.05*max(0,1-abs(x)/3))
 
-def road_soil_material():
-    name="ED_CityFinish_RoadLoam"
+def road_material(name,colour):
     m=bpy.data.materials.get(name)
     if m:return m
     m=bpy.data.materials.new(name)
-    m.diffuse_color=(.35,.30,.24,1)
+    m.diffuse_color=(*colour,1)
     m.use_nodes=True
     bs=m.node_tree.nodes.get("Principled BSDF")
-    bs.inputs["Base Color"].default_value=(.35,.30,.24,1)
+    bs.inputs["Base Color"].default_value=(*colour,1)
     bs.inputs["Roughness"].default_value=.98
     return m
-ROAD_LOAM=road_soil_material()
+ROAD_LOAM=road_material("ED_CityFinish_CompactSoil",(.275,.267,.219))
+ROAD_EDGE=road_material("ED_CityFinish_TurfSoilEdge",(.263,.316,.243))
 
 def organic_road(name,points,width=2.4,n=30,stone_density=.5):
-    """Continuous curved terrain-hugging loam, with sparse broken historical setts.
+    """Contiguous terrain-conforming footpath, with tapering vegetated shoulders.
 
-    A strip of contiguous triangles is legitimate terrain dressing (not a raised
-    platform or a checkerboard) and works in imported GLB / URP. The same function
-    creates the main entry road and the four narrow service footpaths.
+    No raised platform, no tile grid. Loam center and irregular turf shoulders
+    share the same continuous mesh but use two complementary earthy materials.
     """
     P=[Vector(p) for p in points]
     assert len(P)==4
-    verts=[]
+    vertices=[]
     faces=[]
+    face_materials=[]
     uvraw=[]
     for i in range(n):
         t=i/(n-1)
@@ -197,34 +197,41 @@ def organic_road(name,points,width=2.4,n=30,stone_density=.5):
         if tan.length<.001:tan=Vector((0,1,0))
         tan.normalize()
         lateral=Vector((-tan.y,tan.x,0))
-        # Organic narrowing, irregular banks rather than parallel tile edges.
-        local_width=width*(1.0-.08*t+random.uniform(-.055,.055))
-        for sign in (-1,1):
-            p=pos+lateral*(sign*local_width*.5)
-            z=terrain_height(p.x,p.y)+.047
-            verts.append((p.x,p.y,z))
-            uvraw.append((t*5, float(sign>0)))
+        local_width=width*(1.0-.08*t+random.uniform(-.08,.08))
+        offset=(.70+random.uniform(-.08,.08))*local_width*.5
+        for k,dist in enumerate((-1.20,-.70,.70,1.20)):
+            if k in (0,3):
+                dist+=(random.uniform(-.16,.16))
+            p=pos+lateral*(dist*local_width*.5)
+            # Longitudinally smooth, spatially grounded. Edge sits closer to turf.
+            z=terrain_height(p.x,p.y)+(.014 if k in (0,3) else .026)
+            vertices.append((p.x,p.y,z))
+            uvraw.append((t*6,k/3))
         if i>0:
-            off=2*i
-            faces.append((off-2,off,off+1,off-1))
+            j=4*i
+            for lane in range(3):
+                faces.append((j-4+lane,j+lane,j+lane+1,j-3+lane))
+                face_materials.append(1 if lane!=1 else 0)
         if i%2==0 and random.random()<stone_density:
-            # One or two free-form setts per metre, no rhythmic grid.
             for _ in range(random.choice((1,1,2))):
                 p=pos+lateral*random.uniform(-local_width*.35,local_width*.35)
-                z=terrain_height(p.x,p.y)+.096
+                z=terrain_height(p.x,p.y)+.08
                 block(name+" | embedded broken flagstone",
-                      (p.x,p.y,z),(.39+random.random()*.3,.37+random.random()*.36,.10),
+                      (p.x,p.y,z),(.39+random.random()*.34,.35+random.random()*.38,.082),
                       random.choice(("stone","light","dark","earth")),"Roads",
-                      rot=math.atan2(tan.y,tan.x)+random.uniform(-.27,.27),bevel=.025)
-    mesh=bpy.data.meshes.new("GroundedRoadMesh_"+name)
-    mesh.from_pydata(verts,[],faces)
+                      rot=math.atan2(tan.y,tan.x)+random.uniform(-.32,.32),bevel=.024)
+    mesh=bpy.data.meshes.new("EarthenRoadMesh_"+name)
+    mesh.from_pydata(vertices,[],faces)
     mesh.materials.append(ROAD_LOAM)
+    mesh.materials.append(ROAD_EDGE)
     mesh.update()
-    road=bpy.data.objects.new("Grounded native track | "+name,mesh)
+    for face,idx in zip(mesh.polygons,face_materials):
+        face.material_index=idx
+    road=bpy.data.objects.new("Embedded historic track | "+name,mesh)
     collection("Roads").objects.link(road)
     uv=mesh.uv_layers.new(name="terrainRoadUV")
-    for p in mesh.polygons:
-        for idx in p.loop_indices:
+    for face in mesh.polygons:
+        for idx in face.loop_indices:
             uv.data[idx].uv=uvraw[mesh.loops[idx].vertex_index]
     return road
 
