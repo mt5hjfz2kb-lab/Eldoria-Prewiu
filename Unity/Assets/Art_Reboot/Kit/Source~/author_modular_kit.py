@@ -210,6 +210,26 @@ def construct(name,family,func,grid=(1,1)):
     func(p)
     save(p)
 
+def arched_hero_trim(p,radius,spring,lit=False):
+    """Hand-set segmented stone arch with warm leaded inset for modular openings.
+    This reuses the approved atlas and the 3 existing shared kit materials.
+    """
+    n=9
+    for i in range(n):
+        a=i*math.pi/n;b=(i+1)*math.pi/n
+        aa=a+.010;bb=b-.010
+        ra=radius+.015*math.sin(i*2.17)
+        rb=radius+.015*math.sin((i+1)*2.17)
+        p.rod((ra*math.cos(aa),-.45,spring+ra*.72*math.sin(aa)),
+              (rb*math.cos(bb),-.45,spring+rb*.72*math.sin(bb)),
+              p.rng.uniform(.20,.26),1,shade=p.rng.uniform(.91,1.03))
+        if lit:
+            # A curved window crown above the rectangular leaded panes.
+            p.face([(0,-.305,spring),
+                    (radius*.88*math.cos(a),-.305,spring+radius*.60*math.sin(a)),
+                    (radius*.88*math.cos(b),-.305,spring+radius*.60*math.sin(b))],
+                   12,slot=1,shade=.96,outward=(0,-1,0))
+
 def masonry(p,damaged=False,corner=False,door=False,window=False):
     w=4.0;h=3.7
     # Mortar is recessed; individual irregular stone blocks form staggered courses.
@@ -223,6 +243,7 @@ def masonry(p,damaged=False,corner=False,door=False,window=False):
             p.box((0,-.32,1.65),(.10,.12,1.48),4,bevel=.017)
             p.box((0,-.33,1.61),(1.78,.11,.10),4,bevel=.014)
             for xx in (-.97,.97):p.rod((xx,-.24,1.0),(xx,-.24,2.4),.15,4)
+            arched_hero_trim(p,.94,2.18,lit=True)
         else:
             p.box((0,0,3.15),(2.2,.44,1.1),0,bevel=.08)
             for x in [-.85,-.55,-.27,0,.27,.55,.85]:
@@ -230,6 +251,7 @@ def masonry(p,damaged=False,corner=False,door=False,window=False):
             for z in (.44,1.53):
                 p.box((0,-.345,z),(1.77,.09,.095),10,bevel=.012)
             p.box((0,-.58,.09),(2.25,1.08,.18),1,bevel=.07)
+            arched_hero_trim(p,1.08,2.03,lit=False)
         p.box((0,0,.12),(4,.52,.22),2,bevel=.055)
     else:
         p.box((0,.07,1.84),(3.91,.24,3.65),2,bevel=.12)
