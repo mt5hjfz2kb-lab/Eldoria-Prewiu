@@ -24,6 +24,14 @@ for item in m["pieces"]:
     tris=sum(len(p.vertices)-2 for p in mesh.polygons)
     assert tris==item["triangles"],(item["id"],tris,item["triangles"])
     assert len(mesh.uv_layers)>0,(item["id"],"UV missing")
+    uv_values=[(float(u.uv.x),float(u.uv.y)) for u in mesh.uv_layers[0].data]
+    unique=set((round(x,5),round(y,5)) for x,y in uv_values)
+    assert len(unique)>8,(item["id"],"Atlas UV cells lost after FBX export",sorted(unique)[:12])
+    assert any(.01<x<.99 and .01<y<.99 for x,y in unique),(item["id"],"No valid fractional atlas UV",sorted(unique)[:12])
+    assert all(-.002<=x<=1.002 and -.002<=y<=1.002 for x,y in unique),(item["id"],"UVs outside atlas")
+    if item["id"] in ("Roof_Gable","Wall_Straight_Intact"):
+        print("KIT_REIMPORTED_UV_SAMPLES",item["id"],sorted(unique)[:15],flush=True)
+
     assert len(mesh.color_attributes)>0,(item["id"],"vertex colors missing")
     assert len(mesh.materials)<=3,(item["id"],"material budget exceeded")
     assert len(mesh.polygons)>0 and not mesh.validate(clean_customdata=False),(item["id"],"mesh invalid")
