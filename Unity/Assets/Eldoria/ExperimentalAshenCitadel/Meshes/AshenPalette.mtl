@@ -9,7 +9,7 @@ map_Kd ../Textures/AshenStone.png
 
 newmtl stone
 Ka .08 .08 .08
-Kd 0.4000 0.4118 0.3804
+Kd 0.5373 0.5294 0.4941
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -17,7 +17,7 @@ map_Kd ../Textures/AshenStone.png
 
 newmtl stoneLight
 Ka .08 .08 .08
-Kd 0.6667 0.6392 0.5608
+Kd 0.7255 0.6745 0.5804
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -57,7 +57,7 @@ map_Kd ../Textures/AshenWood.png
 
 newmtl roof
 Ka .08 .08 .08
-Kd 0.2471 0.2706 0.3137
+Kd 0.2039 0.2745 0.3647
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -65,7 +65,7 @@ map_Kd ../Textures/AshenRoof.png
 
 newmtl slate
 Ka .08 .08 .08
-Kd 0.3686 0.3961 0.4392
+Kd 0.3216 0.4000 0.4863
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -89,7 +89,7 @@ map_Kd ../Textures/AshenMetal.png
 
 newmtl banner
 Ka .08 .08 .08
-Kd 0.4706 0.2471 0.2863
+Kd 0.4392 0.2275 0.3059
 Ks .06 .06 .06
 Ns 10
 illum 2
@@ -125,7 +125,7 @@ Kd 0.1608 0.3020 0.2824
 Ks .06 .06 .06
 Ns 10
 illum 2
-map_Kd ../Textures/AshenMoss.png
+map_Kd ../Textures/AshenNeedles.png
 
 newmtl leafLight
 Ka .08 .08 .08
@@ -133,7 +133,7 @@ Kd 0.2392 0.3765 0.3294
 Ks .06 .06 .06
 Ns 10
 illum 2
-map_Kd ../Textures/AshenMoss.png
+map_Kd ../Textures/AshenNeedles.png
 
 newmtl violet
 Ka .08 .08 .08

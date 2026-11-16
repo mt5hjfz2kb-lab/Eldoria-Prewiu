@@ -12,16 +12,18 @@ const makeTextures=function makeTextures(){
    const grain=hash(Math.floor(x/5),Math.floor(y/6),3)*.07+hash(x,y,5)*.035;
    let v=.80+grain;
    if(kind==="Stone"){
-     const row=Math.floor(y/32),shift=(row%2)*16,xx=(x+shift)%32,yy=y%32;
+     const row=Math.floor(y/32),shift=(row%2)*16;
+     const xx=(x+shift+2*Math.sin(y*.19+row*2))%32,yy=y%32;
      const block=hash(Math.floor((x+shift)/32),row,11);
-     v=.80+block*.13+grain*.44;
-     if(xx<=1||yy<=1)v=.57+grain*.5;
-     else if(xx>=29||yy>=29)v=.73+grain;
-     if(hash(x,y,20)>.991)v=.65;
+     // Broad brushed stone tones and softened irregular joints, not a wire grid.
+     v=.82+block*.105+grain*.24+.024*Math.sin(x*.22+y*.13);
+     if(xx<1.1||yy<1.1)v=.70+grain*.4;
+     else if(xx>29.5||yy>29)v=.80+grain*.4;
+     if(yy>3&&yy<6)v+=.025;
    } else if(kind==="Roof"){
      const row=Math.floor(y/16),xx=(x+(row%2)*16)%32,yy=y%16;
-     v=.73+hash(Math.floor((x+(row%2)*16)/32),row,27)*.17+grain*.32;
-     if(yy<2||xx<2)v=.49+grain*.8;
+     v=.76+hash(Math.floor((x+(row%2)*16)/32),row,27)*.16+grain*.20;
+     if(yy<2||xx<2)v=.62+grain*.5;
      if(yy>12)v+=.04;
    } else if(kind==="Wood"){
      const stripe=x%32,plank=Math.floor(x/32);

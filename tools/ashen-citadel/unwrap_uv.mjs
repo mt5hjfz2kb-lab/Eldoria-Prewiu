@@ -41,14 +41,14 @@ export function bindMtl(text){
   if(line.trim()==="illum 2"&&key){
    const family=Object.keys(groups).find(g=>groups[g].includes(key));
    if(!family)throw Error("Unknown material "+key);
-   out.push("map_Kd ../Textures/Ashen"+family+".png");
+   out.push("map_Kd ../Textures/Ashen"+(["leaf","leafLight"].includes(key)?"Needles":family)+".png");
   }
  }
  return out.join("\n")+"\n";
 }
 const root="Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes/";
 for(const name of [...Array.from({length:5},(_,i)=>"AshenBastion_"+(i+1)),
-      ..."Sawmill Barracks Granary Stoneworks Pine Rock".split(" ").map(n=>"Ashen_"+n)]){
+      ..."Sawmill Barracks Granary Stoneworks Rock".split(" ").map(n=>"Ashen_"+n)]){
  const file=root+name+".obj";
  fs.writeFileSync(file,unwrap(fs.readFileSync(file,"utf8")));
  console.log("ASHEN_UV_OK",name);

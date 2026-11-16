@@ -51,23 +51,23 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             }
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.20f,.27f,.36f);
-            RenderSettings.ambientEquatorColor=new Color(.12f,.16f,.20f);
-            RenderSettings.ambientGroundColor=new Color(.095f,.10f,.09f);
-            RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.29f);
-            RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=85;RenderSettings.fogEndDistance=190;
+            RenderSettings.ambientSkyColor=new Color(.25f,.29f,.42f);
+            RenderSettings.ambientEquatorColor=new Color(.16f,.18f,.28f);
+            RenderSettings.ambientGroundColor=new Color(.10f,.105f,.14f);
+            RenderSettings.fog=true;RenderSettings.fogColor=new Color(.26f,.29f,.37f);
+            RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=65;RenderSettings.fogEndDistance=165;
             QualitySettings.shadows=UnityEngine.ShadowQuality.All;
 
             var key=new GameObject("Sun · amber key");
             var sun=key.AddComponent<Light>();
-            sun.type=LightType.Directional;sun.intensity=1.65f;
-            sun.color=new Color(1f,.84f,.69f);
+            sun.type=LightType.Directional;sun.intensity=1.15f;
+            sun.color=new Color(1f,.77f,.53f);
             RenderSettings.sun=sun;
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.88f;sun.shadowBias=.2f;sun.shadowNormalBias=.25f;
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=.72f;sun.shadowBias=.2f;sun.shadowNormalBias=.25f;
             sun.GetUniversalAdditionalLightData().usePipelineSettings=false;
-            sun.transform.rotation=Quaternion.Euler(35,-52,0);
+            sun.transform.rotation=Quaternion.Euler(24,-52,0);
             var fill=new GameObject("Sky · cold fill").AddComponent<Light>();
-            fill.type=LightType.Directional;fill.intensity=.12f;fill.color=new Color(.54f,.67f,.77f);
+            fill.type=LightType.Directional;fill.intensity=.23f;fill.color=new Color(.54f,.67f,.77f);
             fill.transform.rotation=Quaternion.Euler(56,145,0);
             fill.shadows=LightShadows.None;
 
@@ -78,9 +78,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.25f,.28f,.28f);
             camera.nearClipPlane=.3f;camera.farClipPlane=180f;
-            camera.allowHDR=false;camera.allowMSAA=true;camera.depth=0;
+            camera.allowHDR=true;camera.allowMSAA=true;camera.depth=0;
             cameraGO.AddComponent<AudioListener>();
-            cameraGO.AddComponent<UniversalAdditionalCameraData>().renderShadows=true;
+            var cameraData=cameraGO.AddComponent<UniversalAdditionalCameraData>();
+            cameraData.renderShadows=true;cameraData.renderPostProcessing=true;
+            AddDuskGrade();
             cameraGO.transform.position=new Vector3(20,24,-28);
             cameraGO.transform.LookAt(new Vector3(0,2.5f,0));
 
@@ -128,8 +130,8 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var tree=ImportPrefab(treePrefab,sceneRoot.transform,"Pine · "+i);
                 pos.y=ValleyHeight(pos.x,pos.z);
                 tree.transform.position=pos;
-                tree.transform.localScale=new Vector3(.77f+.55f*(float)random.NextDouble(),
-                    .72f+.72f*(float)random.NextDouble(),.77f+.55f*(float)random.NextDouble());
+                tree.transform.localScale=new Vector3(.75f+.38f*(float)random.NextDouble(),
+                    .70f+.42f*(float)random.NextDouble(),.75f+.38f*(float)random.NextDouble());
                 tree.transform.rotation=Quaternion.Euler(0,(i*47f)%360f,0);
             }
             for(int i=0;i<27;i++)
@@ -213,7 +215,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     if(id==null)
                         throw new InvalidOperationException("Unknown imported material in "+name+": '"+src+
                             "'. Fix OBJ/MTL binding; do not hide magenta with a fallback.");
-                    mats[i]=Colors[id];count++;
+                    mats[i]=Colors[name=="AshenLandscape" && (id=="leaf"||id=="leafLight")?"grass_"+id:id];count++;
                 }
                 r.sharedMaterials=mats;r.shadowCastingMode=ShadowCastingMode.On;r.receiveShadows=true;
             }
@@ -253,7 +255,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 var texturePath=Root+"/Textures/Ashen"+textureFamily+".png";
                 var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
                 if(texture==null)throw new FileNotFoundException("Required authored texture not imported: "+texturePath);
-                mat.SetTexture("_BaseMap",current=="basalt"?null:texture);
+                mat.SetTexture("_BaseMap",new[]{"basalt","leaf","leafLight","warm"}.Contains(current)?null:texture);
                 // Terrain UV0 comes from a single large floor primitive.
                 // Repeat the lightweight moss/soil atlas instead of stretching
                 // one 128px tile over the entire 146m² world.
@@ -265,14 +267,43 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     mat.SetTextureScale("_BaseMap",Vector2.one/36f);
                     mat.SetTextureOffset("_BaseMap",new Vector2(.5f,.5f));
                 }
-                if(current=="warm"){mat.EnableKeyword("_EMISSION");mat.SetColor("_EmissionColor",new Color(.65f,.32f,.08f));}
+                if(current=="leaf" || current=="leafLight"){
+                    var needles=AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Textures/AshenNeedles.png");
+                    if(needles==null)throw new FileNotFoundException("Original needle texture missing");
+                    mat.SetTexture("_BaseMap",needles);mat.SetColor("_BaseColor",current=="leaf"?new Color(.72f,.84f,.82f):new Color(.90f,.95f,.85f));
+                    mat.SetFloat("_AlphaClip",1f);mat.SetFloat("_Cutoff",.36f);mat.EnableKeyword("_ALPHATEST_ON");
+                    mat.SetFloat("_Cull",0f);mat.SetOverrideTag("RenderType","TransparentCutout");mat.renderQueue=2450;
+                }
+                if(current=="warm"){mat.EnableKeyword("_EMISSION");mat.SetColor("_EmissionColor",new Color(3.8f,1.55f,.32f));}
                 mat.SetFloat("_Smoothness",current=="brass"?.35f:.09f);
                 mat.SetFloat("_Metallic",current=="brass"?.42f:.01f);
                 EditorUtility.SetDirty(mat);Colors[current]=mat;
+                if(current=="leaf"||current=="leafLight"){
+                    var grassPath=MaterialPath+"grass_"+current+".mat";
+                    var grass=AssetDatabase.LoadAssetAtPath<Material>(grassPath);
+                    if(grass==null){grass=new Material(shader);AssetDatabase.CreateAsset(grass,grassPath);}
+                    grass.SetColor("_BaseColor",col);grass.SetTexture("_BaseMap",null);Colors["grass_"+current]=grass;
+                }
             }
             if(Colors.Count<16)throw new InvalidDataException("Incomplete authored material palette: "+Colors.Count);
             AssetDatabase.SaveAssets();
         }
+        private static void AddDuskGrade()
+        {
+            var profile=ScriptableObject.CreateInstance<VolumeProfile>();profile.name="Ashen inhabited dusk";
+            var bloom=profile.Add<Bloom>(true);bloom.intensity.Override(.22f);bloom.threshold.Override(1.15f);bloom.scatter.Override(.55f);
+            var grade=profile.Add<ColorAdjustments>(true);grade.postExposure.Override(.10f);grade.contrast.Override(9f);grade.saturation.Override(-8f);
+            var split=profile.Add<SplitToning>(true);split.shadows.Override(new Color(.45f,.47f,.55f));split.highlights.Override(new Color(.55f,.51f,.45f));split.balance.Override(-8f);
+            var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.Neutral);
+            var path=MaterialPath+"AshenDuskVolume.asset";
+            var old=AssetDatabase.LoadAssetAtPath<VolumeProfile>(path);
+            if(old!=null)AssetDatabase.DeleteAsset(path);
+            AssetDatabase.CreateAsset(profile,path);
+            foreach(var component in profile.components)AssetDatabase.AddObjectToAsset(component,profile);
+            var volume=new GameObject("Ashen dusk · selective bloom and restrained colour").AddComponent<Volume>();
+            volume.isGlobal=true;volume.priority=10;volume.sharedProfile=profile;
+        }
+
         // Keep the central building plots planar; raise the wooded rim, not the foundations.
         private static float ValleyHeight(float x,float z)
         {
@@ -293,8 +324,10 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float wx=(x/(float)(size-1)-.5f)*180f,wz=(y/(float)(size-1)-.5f)*180f;
                 float broad=Mathf.PerlinNoise(wx*.045f+29f,wz*.045f+51f);
                 float detail=Mathf.PerlinNoise(wx*.39f+17f,wz*.39f+11f);
-                var col=Color.Lerp(new Color(.18f,.235f,.18f),new Color(.32f,.36f,.24f),broad);
-                col*=.90f+detail*.20f;
+                var col=Color.Lerp(new Color(.15f,.205f,.20f),new Color(.30f,.335f,.235f),broad);
+                col*=.86f+detail*.25f;
+                float fleck=Mathf.PerlinNoise(wx*1.4f+73f,wz*1.4f+23f);
+                col=Color.Lerp(col,new Color(.38f,.365f,.245f),Mathf.Clamp01((fleck-.58f)*2.8f)*.25f);
                 float routeX=Mathf.Sin((wz+8f)*.15f)*.66f+Mathf.Sin((wz+8f)*.52f)*.17f;
                 float route=Mathf.Clamp01(1f-(Mathf.Abs(wx-routeX)-1.3f)/2.1f)*
                     Mathf.Clamp01((-wz-6f)/3f)*Mathf.Clamp01((wz+44f)/4f);

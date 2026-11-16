@@ -16,9 +16,12 @@ for p in sorted(root.glob('*.obj')):
    for j in range(1,len(idx)-1):
     b=v[idx[j]];c=v[idx[j+1]]
     cross=(b[1]*c[2]-b[2]*c[1],b[2]*c[0]-b[0]*c[2],b[0]*c[1]-b[1]*c[0])
-    vol+=sum(a[k]*cross[k] for k in range(3))/6
+    # Open two-sided foliage cards have no enclosed volume. Validate the
+    # closed trunk for this model and keep all architectural solid checks.
+    if not (p.stem=='Ashen_Pine' and mat in ('leaf','leafLight')):
+     vol+=sum(a[k]*cross[k] for k in range(3))/6
     ny=(b[2]-a[2])*(c[0]-a[0])-(b[0]-a[0])*(c[2]-a[2])
-    if mat=='roof' and ny < -1e-7:bad_roofs+=1
+    if (mat=='roof' or (p.stem=='Ashen_Pine' and mat in ('leaf','leafLight'))) and ny < -1e-7:bad_roofs+=1
  if vol<=0 or bad_roofs:fail.append(f'{p.name}: signed volume={vol:.3f}, inward roof triangles={bad_roofs}')
  print(p.name,round(vol,3),bad_roofs)
 if fail:raise SystemExit('\n'.join(fail))

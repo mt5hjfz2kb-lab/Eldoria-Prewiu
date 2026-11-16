@@ -66,6 +66,7 @@ def pbr(material, rgb, material_key=None):
             }
             family=next((g for g,keys in groups.items() if material_key in keys),None)
             if not family:raise RuntimeError("No mobile texture group for "+material_key)
+            if material_key in ["leaf","leafLight"]:family="Needles";rgb=(.72,.84,.82)
             path=MESHES.parent/"Textures"/("Ashen"+family+".png")
             if not path.is_file():raise FileNotFoundError(str(path))
             image=bpy.data.images.load(str(path),check_existing=True)
@@ -77,6 +78,10 @@ def pbr(material, rgb, material_key=None):
             for current in list(color.links):links.remove(current)
             links.new(texture.outputs["Color"],multiply.inputs[2])
             links.new(multiply.outputs["Color"],color)
+            if family=="Needles":
+                links.new(texture.outputs["Alpha"],bsdf.inputs["Alpha"])
+                if hasattr(material,"surface_render_method"):material.surface_render_method="DITHERED"
+                else:material.blend_method="CLIP"
     return material
 
 def remap(objects,pal):
