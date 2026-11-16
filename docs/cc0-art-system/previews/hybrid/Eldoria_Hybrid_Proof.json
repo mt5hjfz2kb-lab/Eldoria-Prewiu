@@ -9,7 +9,7 @@
   "composite_evidence_images": [
     {
       "file": "Eldoria_Hybrid_SourceModels_Bastion1_1600x900.png",
-      "bytes": 2511935,
+      "bytes": 2503144,
       "stage": 1,
       "width": 1600,
       "height": 900,
@@ -17,7 +17,7 @@
     },
     {
       "file": "Eldoria_Hybrid_SourceModels_Bastion5_1600x900.png",
-      "bytes": 2561743,
+      "bytes": 2552737,
       "stage": 5,
       "width": 1600,
       "height": 900,
@@ -25,7 +25,7 @@
     },
     {
       "file": "Eldoria_Hybrid_SourceModels_Bastion5_720x1200.png",
-      "bytes": 1543810,
+      "bytes": 1538027,
       "stage": 5,
       "width": 720,
       "height": 1200,
