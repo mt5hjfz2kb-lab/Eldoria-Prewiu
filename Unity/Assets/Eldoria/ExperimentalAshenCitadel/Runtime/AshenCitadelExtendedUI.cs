@@ -36,12 +36,12 @@ namespace Eldoria.ExperimentalAshenCitadel
                 var n=i;var m=commands.Length;
                 Button(toolbar,"Access · "+commands[n].name,commands[n].name,secondary,
                     new Vector2(n/(float)m,.07f),new Vector2((n+1)/(float)m,.94f),
-                    new Vector2(3,0),new Vector2(-3,0),commands[n].activate,12);
+                    new Vector2(3,0),new Vector2(-3,0),commands[n].activate,13);
             }
             dailyButton=Button(safe,"Daily treasury","TRIBUTO",primary,
                 new Vector2(0,.0f),new Vector2(.33f,0),
-                new Vector2(12,115),new Vector2(-4,153),OpenDaily,11);
-            timeText=Label(safe,"Timekeeper",12,TextAnchor.MiddleRight,Muted,
+                new Vector2(12,115),new Vector2(-4,153),OpenDaily,13);
+            timeText=Label(safe,"Timekeeper",14,TextAnchor.MiddleRight,Muted,
                 new Vector2(.4f,0),new Vector2(1,0),
                 new Vector2(0,113),new Vector2(-12,153));
             RefreshClockLabel();
