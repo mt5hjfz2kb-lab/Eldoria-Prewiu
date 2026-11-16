@@ -542,6 +542,13 @@ if amb and amb.use_nodes:
     shader=amb.node_tree.nodes.get("Principled BSDF")
     if shader and "Emission Strength" in shader.inputs:
         shader.inputs["Emission Strength"].default_value=.85
+# Production revision: V3 functional buildings and living landscape.
+# The implementation is a separate real Blender script, not an image prompt.
+stage3=ROOT/"tools/cc0-art-system/director_v3_details.py"
+if not stage3.is_file():
+    raise RuntimeError("Missing V3 owned geometry implementation: "+str(stage3))
+exec(compile(stage3.read_text(encoding="utf-8"),str(stage3),"exec"),globals())
+counts["actual_final_mesh_objects"]=sum(o.type=="MESH" for o in bpy.data.objects)
 cam=scene.camera
 cam.data.type="ORTHO"
 def stage_visible(stage):
@@ -612,7 +619,8 @@ def write_stage(stage):
     print("V2_PHYSICAL_TEXTURED_TERRAIN_PRESENT",stage,texture_count)
     return info
 exported=[write_stage(x) for x in range(1,6)]
-report={"creator":"Eldoria DirectorV2 original Python/Blender script",
+report={"creator":"Eldoria DirectorV2 + DirectorV3 detailed geometry Python/Blender",
+        "art_revision":"Director V3 functional districts and living terrain",
         "source":"known-good original source, GitHub Action 43852991470",
         "script":"tools/cc0-art-system/upgrade_director_v2.py",
         "third_party_meshes_used":[],
