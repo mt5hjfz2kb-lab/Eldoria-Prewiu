@@ -13,7 +13,7 @@ root = Path(__file__).resolve().parent
 asset_dirs = [root/'../../Sprites', root/'../../Unity/Assets/Experimentos/Ciudad2D/Sprites']
 sprites = next((d.resolve() for d in asset_dirs if (d/'Terreno.png').exists()), None)
 assert sprites is not None, 'Sprite source not found'
-output = root.parent/'evidence-web'
+output = root/'evidence-web'
 output.mkdir(parents=True,exist_ok=True)
 html = (root/'index.html').read_text(encoding='utf8')
 assets = {p.name:'data:image/png;base64,'+base64.b64encode(p.read_bytes()).decode('ascii') for p in sprites.glob('*.png')}
