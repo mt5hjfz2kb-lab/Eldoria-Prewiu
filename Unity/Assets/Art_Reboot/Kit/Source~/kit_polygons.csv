@@ -7,7 +7,7 @@ Wall_Door_Intact,masonry,704,1,1
 Wall_Door_Damaged,masonry,1100,1,1
 Wall_Window_Intact,masonry,528,1,1
 Wall_Window_Damaged,masonry,924,1,1
-Roof_Gable,roofs,2756,2,2
+Roof_Gable,roofs,3286,2,2
 Roof_Tower,roofs,2392,1,1
 Roof_Shed,roofs,896,1,1
 Tower_Bell,towers,5292,1,1

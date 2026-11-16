@@ -293,8 +293,8 @@
       "id": "Roof_Gable",
       "family": "roofs",
       "fbx": "Models/Roof_Gable.fbx",
-      "triangles": 2756,
-      "faces": 1454,
+      "triangles": 3286,
+      "faces": 1768,
       "grid_m": 4,
       "footprint_cells": [
         2,
@@ -1072,5 +1072,5 @@
       "vertex_color_layer": "Color"
     }
   ],
-  "total_triangles": 33372
+  "total_triangles": 33902
 }
