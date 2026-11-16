@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T08:03:42.307Z",
+  "updated_at": "2026-11-16T08:46:49.052Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9811,11 +9811,13 @@
       "title": "Visual reboot — three-state Bastion visual pilot",
       "owner": "chatgpt-visual-reboot-recovery-55321388b3c8",
       "ownership_state": "claimed",
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "branch": "art/visual-reboot",
       "status": "active",
-      "phase": "PHASE1_OWNER_ART_REVISION_IN_PROGRESS",
-      "resources": [],
+      "phase": "PHASE1_ART_REVISION_NATIVE_CAPTURE_QUEUED",
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Art_Reboot/**",
         "Unity/Assets/Art_Reboot.meta",
@@ -9831,7 +9833,7 @@
       },
       "claimed_at": "2026-11-15T22:04:54.580Z",
       "authorization": "Owner explicitly authorized updating only the coordination registry in main in this conversation. Art and code remain isolated on art/visual-reboot. No authority over Ashen Citadel or its Windows reservation. Owner now explicitly authorizes shared Windows turn-taking after current executions finish, without cancelling runs or changing source owners.",
-      "next": "Implement only owner's eight Phase1 art corrections, same comparison camera. Deliver native capture plus settings, then wait for explicit owner approval. Do not start Phase2.",
+      "next": "One real Unity Phase1 visual revision import/capture, then release Windows. Deliver same-camera PNG and exact settings to owner; Phase2 remains prohibited.",
       "art_production_request": "pipeline/art-production-requests/eldoria-art-visual-reboot-phase1-20261115.json",
       "last_preflight": {
         "run": 43768175996,
@@ -9844,12 +9846,12 @@
       "final_source_sha": "a41c07323b07539bdadda483a06b4266d420e55c",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_one_execution",
-        "after_run_id": 43777338073,
-        "turn_scope": "ONE isolated Unity import/capture; then release resource for Ashen Citadel.",
-        "requested_at": "2026-11-15T22:44:00.333Z"
+        "status": "claimed_one_bounded_native_capture",
+        "requested_at": "2026-11-16T08:46:49.051Z",
+        "source_sha": "237dfc52d7406553842764cc97f9e3d457afbaeb",
+        "release_on_terminal_run": true
       },
-      "native_source_sha": "a41c07323b07539bdadda483a06b4266d420e55c",
+      "native_source_sha": "237dfc52d7406553842764cc97f9e3d457afbaeb",
       "last_native_attempt": {
         "run": 43780662139,
         "source": "a41c07323b07539bdadda483a06b4266d420e55c",
