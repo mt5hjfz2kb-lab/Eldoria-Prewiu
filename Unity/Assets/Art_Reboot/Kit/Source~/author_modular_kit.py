@@ -307,16 +307,18 @@ construct("Roof_Shed","roofs",roof_shed,(1,1))
 
 def tower(p,ruin=False):
     width=3.92
-    for row in range(12):
-        z=row*.45
+    # Mobile-first: nine staggered broad irregular courses, not 240 micro-bricks.
+    # Keeps the approved tower silhouette while reducing triangles ~50%.
+    for row in range(9):
+        z=row*.60
         for side in range(4):
-            for col in range(5):
-                if ruin and row>6 and (col+side*2+row*3)%5<2:continue
+            for col in range(3):
+                if ruin and row>5 and (col+side*2+row*3)%5<2:continue
                 axis=side*math.pi/2
-                x=-1.80+col*.90
+                x=-1.37+col*1.37
                 y=-1.88
                 X=x*math.cos(axis)-y*math.sin(axis);Y=x*math.sin(axis)+y*math.cos(axis)
-                p.box((X,Y,z+.245),(.87,.29,.44),p.rng.choice((0,0,1,2)),bevel=.045,rot=axis,shade=p.rng.uniform(.86,1.06))
+                p.box((X,Y,z+.29),(1.33,.34,.56),p.rng.choice((0,0,1,2)),bevel=.065,rot=axis,shade=p.rng.uniform(.86,1.06))
     if ruin:
         for i in range(14):
             a=i*2.399;rad=p.rng.uniform(.45,2.35)
