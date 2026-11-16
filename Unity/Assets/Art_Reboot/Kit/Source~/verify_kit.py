@@ -29,6 +29,15 @@ for item in m["pieces"]:
     assert len(unique)>=4,(item["id"],"Atlas UV cells lost after FBX export",sorted(unique)[:12])
     assert any(.01<x<.99 and .01<y<.99 for x,y in unique),(item["id"],"No valid fractional atlas UV",sorted(unique)[:12])
     assert all(-.002<=x<=1.002 and -.002<=y<=1.002 for x,y in unique),(item["id"],"UVs outside atlas")
+    # Crucial artistic gate: every polygon's UV must remain strictly in a
+    # single 64x64 swatch after FBX export + independent Blender reimport.
+    # Prior mosaic roofs came from UVs spanning many unrelated atlas colours.
+    for poly in mesh.polygons:
+        faceuv=[mesh.uv_layers[0].data[li].uv for li in poly.loop_indices]
+        swatches={(min(3,int(v.x*4)),min(3,int(v.y*4))) for v in faceuv}
+        assert len(swatches)==1,(item["id"],"A face spans multiple atlas swatches",poly.index,swatches)
+        assert all(.008<(v.x*4)%1<.988 and .008<(v.y*4)%1<.988 for v in faceuv),(
+          item["id"],"UV too close to a neighbouring swatch",poly.index)
     if item["id"] in ("Roof_Gable","Wall_Straight_Intact"):
         print("KIT_REIMPORTED_UV_SAMPLES",item["id"],sorted(unique)[:15],flush=True)
 
