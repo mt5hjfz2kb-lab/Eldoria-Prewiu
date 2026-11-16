@@ -10,10 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 random.seed(151126)
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
-palette = [(112,115,101),(145,143,120),(77,83,77),(98,105,114),
+palette = [(112,115,101),(145,143,120),(86,91,99),(113,120,130),
            (81,64,46),(126,98,65),(49,66,54),(73,86,63),
            (76,75,61),(103,94,72),(38,44,44),(165,142,96),
-           (255,174,74),(153,64,235),(58,39,70),(31,43,43)]
+           (255,174,74),(112,38,202),(58,39,70),(31,43,43)]
 # Brush-stroke atlas authored by code: broad washes, grain and directional strokes.
 # It is deliberately not described as a manually painted bitmap.
 image=bpy.data.images.new('Reboot_Atlas_256',width=256,height=256,alpha=True)
@@ -114,15 +114,20 @@ def roof(x,y,z,w,d,h):
   for row in range(6):
    a=row/6;b=(row+1)/6
    for j in range(8):
-    if (side,row,j) in {(1,4,1),(-1,3,5),(1,5,6)}:continue
+    if (side,row,j) in {(1,4,1),(-1,3,5)}:continue
     ya=y-d/2+j*d/8;yb=ya+d/8+.024
     sway=.035*math.sin(j*1.3+row*.57)
     va=[(x+side*w*.5*a,ya,z+h*(1-a)+sway),
         (x+side*w*.5*b,ya,z+h*(1-b)+sway),
         (x+side*w*.5*b,yb,z+h*(1-b)+sway+.012),
         (x+side*w*.5*a,yb,z+h*(1-a)+sway+.012)]
-    tone=7 if (j+row*3)%19==0 else (2 if (j*2+row)%5==0 else 3)
-    mesh('Variegated worn slate',va,[(0,1,2,3) if side>0 else (3,2,1,0)],tone)
+    tile=mesh('Variegated worn slate',va,[(0,1,2,3) if side>0 else (3,2,1,0)],3)
+    # Three related slate brightnesses are painted into vertex colours: no tile-grid palette jumps.
+    slate_tint=random.choice([.88,.98,1.07])
+    layer=tile.data.color_attributes['Color']
+    for li in range(len(layer.data)):
+     c=layer.data[li].color
+     layer.data[li].color=(c.r*slate_tint,c.g*slate_tint,c.b*slate_tint,1)
   beam('Timber eave',(x+side*w/2,y-d/2,z),(x+side*w/2,y+d/2,z),.16,4)
  for yy in [y-d/2,y+d/2]:
   mesh('Timber gable',[(x-w/2,yy,z),(x+w/2,yy,z),(x,yy,z+h)],[(0,1,2) if yy < y else (2,1,0)],4)
@@ -160,16 +165,16 @@ for loop in ground.data.loops:
  x,y=v.x,v.y
  ground.data.uv_layers.active.data[loop.index].uv=((1+(6+(x/48+.5)*52)/64)/4,(0+(6+(y/48+.5)*52)/64)/4)
  noise=.5+.27*math.sin(x*.59+y*.31)+.18*math.cos(x*.27-y*.89)+.09*math.sin(x*1.43+y*1.09)
- g0=(.36,.55,.30);g1=(.43,.57,.34);g2=(.53,.59,.38)
+ g0=(.51,.65,.38);g1=(.59,.69,.43);g2=(.67,.70,.48)
  grass=blend(g0,g1,smooth(.23,.53,noise));grass=blend(grass,g2,smooth(.53,.83,noise))
  earth=max(gaussian(x,y,0,2.1,4.3),gaussian(x,y,-4.55,-1.55,3.0),gaussian(x,y,4.35,.45,2.9))
  road=math.exp(-x*x/1.7)*max(0,min(1,(2-y)/3))
  branch=math.exp(-((abs(x)-2.7)/1.4)**2-((y+.95)/.9)**2)
  patch=smooth(.48,.9,.54+.32*math.sin(x*.7-y*.5)*math.cos(y*.78))
  earth=max(road*.83,branch*.62,earth*(.48+.18*patch))
- col=blend(grass,(.65,.53,.34),min(.87,earth))
+ col=blend(grass,(.72,.62,.45),min(.87,earth))
  moss=max(gaussian(x,y,-4.8,.5,2.2),gaussian(x,y,-1.7,3.0,1.6))*(.35+.25*patch)
- col=blend(col,(.31,.46,.27),min(.59,moss))
+ col=blend(col,(.40,.54,.33),min(.59,moss))
  ground.data.color_attributes['Color'].data[loop.index].color=(col[0],col[1],col[2],1)
 for i in range(90):
  x=random.uniform(-10,10);y=random.uniform(-9,10)
