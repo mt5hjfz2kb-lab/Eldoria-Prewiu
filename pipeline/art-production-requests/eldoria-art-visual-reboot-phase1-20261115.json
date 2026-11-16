@@ -4,11 +4,11 @@
   "workstream_id": "eldoria-art-visual-reboot-phase1-20261115",
   "enabled": true,
   "status": "ACTIVE",
-  "asset_or_sector": "Art_Reboot/Phase1 isolated hero form revision",
+  "asset_or_sector": "Art_Reboot/Phase1 approved hero family isolated scene",
   "profile": "environment_composition",
-  "visual_gate_state": "NATIVE_VERIFIED_OWNER_APPROVAL_PENDING",
+  "visual_gate_state": "FAMILY_NATIVE_VERIFIED_OWNER_REVIEW_PENDING",
   "ai_authorship_policy": "required",
-  "diagnosis": "Owner rejected box-like buildings. Hero reconstructed from three black contour studies; actual Unity form and silhouette reviewed. Await owner before same-base ruin/corrupt derivatives and scene assembly.",
+  "diagnosis": "Owner approved hero from native43848924672. Ruin and corrupted variants derive from the exact approved construction. Phase1 family assembled in a new scene with protected hero/model/atlas and original scenes. Phase2 remains blocked until owner review.",
   "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
@@ -20,10 +20,11 @@
     "blender_material_consolidation": true
   },
   "validation": {
-    "source_gate": "32804 triangles; FBX reimport UV and colors verified; 256 atlas; actual Unity sums every 16-bit imported mesh part",
-    "final_gate": "Native43848924672, sourcef1876818638d23558ca7d2f0f20671c118fe7fff; four actual PNGs plus black silhouette; independent visual review. Owner approval pending; physical mobile not tested."
+    "source_gate": "32804 hero + 15901 ruin + 31684 corrupted + 16874 environment triangles; FBX roundtrip UV/colors and exact approved hero hash verified. Unity sums imported mesh parts.",
+    "final_gate": "Native43853944970, source27c147d2d65b2f6bbce136da82e0e40cd43d5f43, scene commit3057e214eb13cce5f08df3eb16db7eacbb454d7d. Unity6000.3.23f1 compiled/rendered four viewports plus two closeups; all four PNG SHA256 values match native proof; 11 particles; approved hero and original scene bytes preserved. Owner Phase1 composition approval pending; physical mobile untested."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
-  "budget_eur": 0
+  "budget_eur": 0,
+  "owner_hero_approved": true
 }
