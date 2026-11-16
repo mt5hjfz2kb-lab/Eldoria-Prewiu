@@ -2,7 +2,8 @@
 Only one existing 256x256 approved Hero Atlas; no new art textures. Local Z is vertical
 inside Blender and becomes Unity Y. Every exported object pivot is (0,0,0) at its base.
 """
-import bpy, bmesh, math, random, json, csv, hashlib, faulthandler
+import bpy, bmesh, math, random, json, csv, hashlib, faulthandler, gc
+gc.disable() # Avoid native Blender 4.0 mathutils collection crash during batch mesh construction.
 faulthandler.enable()
 print('KIT_GENERATOR_ENTRY', flush=True)
 from pathlib import Path
@@ -49,11 +50,19 @@ class Piece:
         self.vertices=[];self.faces=[];self.colors=[];self.swatches=[];self.slots=[]
         self.rng=random.Random(2161126 + sum((i+11)*ord(c) for i,c in enumerate(name)))
     def face(self, points, k=0, slot=0, shade=1.0, outward=None):
-        p=[Vector(q) for q in points]
+        # Pure float tuples: Blender 4.0 mathutils.Vector can segfault during
+        # garbage collection when thousands of faces are emitted at once.
+        p=[tuple(float(q) for q in xyz) for xyz in points]
         if len(p)<3:return
-        if outward is not None and (p[1]-p[0]).cross(p[2]-p[0]).dot(Vector(outward))<0:p.reverse()
+        if outward is not None:
+            ab=[p[1][i]-p[0][i] for i in range(3)]
+            ac=[p[2][i]-p[0][i] for i in range(3)]
+            cross=(ab[1]*ac[2]-ab[2]*ac[1],
+                   ab[2]*ac[0]-ab[0]*ac[2],
+                   ab[0]*ac[1]-ab[1]*ac[0])
+            if sum(cross[i]*outward[i] for i in range(3))<0:p.reverse()
         start=len(self.vertices)
-        self.vertices.extend(tuple(q) for q in p)
+        self.vertices.extend(p)
         self.faces.append(tuple(range(start,start+len(p))))
         self.swatches.append(int(k));self.slots.append(int(slot))
         self.colors.append(max(.56,min(1.18,shade*self.rng.uniform(.94,1.06))))
@@ -65,11 +74,11 @@ class Piece:
         def trans(p):
             return (c.x+co*p[0]-si*p[1],c.y+si*p[0]+co*p[1],c.z+p[2])
         def put(points):
-            points=[Vector(p) for p in points]
-            center_local=sum(points,Vector())/len(points)
+            # Scalar centroid avoids keeping temporary native Vector proxies alive.
+            center_local=[sum(p[i] for p in points)/len(points) for i in range(3)]
             self.face([trans(p) for p in points],k,slot,shade,
-                      (co*center_local.x-si*center_local.y,
-                       si*center_local.x+co*center_local.y, center_local.z))
+                      (co*center_local[0]-si*center_local[1],
+                       si*center_local[0]+co*center_local[1], center_local[2]))
         for a in range(3):
             other=[z for z in range(3) if z!=a]
             for sign in [-1,1]:
@@ -106,13 +115,14 @@ class Piece:
         for i in range(before,len(self.vertices)):
             self.vertices[i]=tuple(rotation @ Vector(self.vertices[i])+middle)
     def slate(self, quad, index=3,thick=.10,shade=1):
-        # Slightly nonparallel heavy overlapping slate with actual thickness.
-        zdrop=Vector((0,0,-thick))
-        top=[Vector(x) for x in quad]
-        down=[x+zdrop for x in top]
-        centroid=sum(top+down,Vector())/8
-        for poly in [top,down[::-1],*[ [top[j],top[(j+1)%4],down[(j+1)%4],down[j]] for j in range(4) ]]:
-            normal=sum([p for p in poly],Vector())/len(poly)-centroid
+        top=[tuple(float(x) for x in q) for q in quad]
+        down=[(x,y,z-thick) for x,y,z in top]
+        whole=top+down
+        centroid=[sum(p[i] for p in whole)/len(whole) for i in range(3)]
+        polys=[top,down[::-1]]
+        polys += [[top[j],top[(j+1)%4],down[(j+1)%4],down[j]] for j in range(4)]
+        for poly in polys:
+            normal=[sum(p[i] for p in poly)/len(poly)-centroid[i] for i in range(3)]
             self.face(poly,index,0,shade,normal)
     def mesh(self):
         # Bring the lowest edge, including slate thickness and slanted rafters,
