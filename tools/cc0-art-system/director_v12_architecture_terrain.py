@@ -207,6 +207,7 @@ def replace_choir():
              .08,"metal",area)
     return len(to_remove)
 def environmental_details(stage):
+    r=random.Random(120113)
     # Visual QA on genuine run 43894465023 exposed the cause of polygon
     # "green discs": the previous 180/125/100 seven-sided ground patches.
     # Remove that method entirely. Replace with sub-metre vertical 3D plants
