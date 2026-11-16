@@ -268,6 +268,46 @@ def life_and_ground():
         x=20+i*1.4
         beam("barracks reinforced spear standard",
              (x,5.6,.2),(x,5.6,3.4),.095,"iron",cat)
+
+def restore_v9_physical_lighting():
+    """Importing a mesh GLB does NOT restore the previous Blender scene's lights.
+
+    The V9 glTF is correct, but Blender's read_factory_settings() deliberately
+    removes cameras/world/lights. V10 must restore the SAME evidence-class
+    sunset setup before every render; exposure is NOT artificially increased.
+    This was the exact cause of the all-black render in run 43889437704.
+    """
+    scene=bpy.context.scene
+    if any(o.type=="LIGHT" for o in bpy.data.objects):
+        raise RuntimeError("Unexpected inherited light: need deterministic original V9 light rig")
+    world=bpy.data.worlds.new("Eldoria V10 / V9 physical dusk light rig")
+    scene.world=world
+    world.use_nodes=True
+    back=world.node_tree.nodes.get("Background")
+    back.inputs["Color"].default_value=(.34,.39,.46,1.0)
+    back.inputs["Strength"].default_value=.70
+    bpy.ops.object.light_add(type="SUN",location=(0,0,45))
+    sun=bpy.context.object
+    sun.name="Eldoria V10 / warm sun"
+    sun.rotation_euler=(radians(73),radians(8),radians(-34))
+    sun.data.energy=2.75
+    sun.data.color=(1,.76,.55)
+    sun.data.angle=radians(3.9)
+    for x in (-1.7,1.7):
+        bpy.ops.object.light_add(type="POINT",location=(x,-6.5,3.3))
+        lamp=bpy.context.object
+        lamp.name="Eldoria V10 / functional gate torch"
+        lamp.data.energy=110
+        lamp.data.color=(1,.60,.36)
+        lamp.data.shadow_soft_size=.8
+    scene.view_settings.view_transform="Filmic"
+    scene.view_settings.look="Medium High Contrast"
+    scene.view_settings.exposure=.07
+    lights=[o for o in bpy.data.objects if o.type=="LIGHT"]
+    assert len(lights)==3 and len([o for o in lights if o.data.type=="SUN"])==1
+    print("V10_DETERMINISTIC_SUNSET_LIGHTS_RESTORED", len(lights))
+
+
 def render(stage,name,size,portrait=False):
     scene=bpy.context.scene
     cam=scene.camera
@@ -318,6 +358,7 @@ def main():
         replaced=rematerial()
         landmarks(stage)
         life_and_ground()
+        restore_v9_physical_lighting()
         if stage==1:
             render(stage,"DirectorV10_BastionI_1600x900.png",[1600,900])
         if stage==5:
