@@ -18,7 +18,7 @@ Escena montada: `Assets/Art_Reboot/Phase1/Scenes/Eldoria_Visual_Sandbox.unity`. 
 
 Para reproducir el aspecto certificado, usar `Art Reboot/Build and capture phase 1`, que selecciona temporalmente el pipeline propio y restaura el anterior. Abrir sólo la escena utiliza el pipeline activo del proyecto y no garantiza el mismo postprocesado. El menú exige escenas guardadas y Edit Mode; no se debe desactivar el guard de Play/build para eludir V4.1.
 
-Fuente: .blend + FBX + GLB, cuatro familias de malla,21865triángulos, atlas256² y dos materiales, colores por vértice, cámara50°. Fuente FBX reimportada en Blender con UV por cara contenida en una sola casilla y todas las caras triangulares. Transferencias binarias verificadas por hash Git.
+Fuente inicial certificada: .blend + FBX + GLB, cuatro familias de malla, 21.865 triángulos, atlas 256², dos materiales y cámara 50°. Revisión artística regenerada: cuatro familias, 22.927 triángulos, tres materiales diferenciados; su prueba Unity definitiva sigue pendiente. Fuente FBX reimportada en Blender con UV por cara contenida en una sola casilla y todas las caras triangulares. Transferencias binarias verificadas por hash Git.
 
 ## Técnicas verificadas y errores que no repetir
 
@@ -35,8 +35,35 @@ Fuente: .blend + FBX + GLB, cuatro familias de malla,21865triángulos, atlas256�
 
 Piloto visual revisable, no ART_APPROVED. Mejora comprobada sobre el estado recuperado: materiales y escala correctos, luz estable, tejado reparado, suelo continuo y coníferas más llenas; los tres estados se distinguen. La arquitectura y vegetación siguen estilizadas y sencillas; no se declara calidad comercial ni nota9/10.
 
-No probado: rendimiento móvil físico, Play/WebGL/Android, integración completa del juego ni partículas. El laboratorio conserva intencionadamente fuera las dependencias de gameplay/V4.1. Esas verificaciones no se infieren de capturas de Editor.
+La primera y segunda corrección de la Fase 1 simularon ParticleSystem en el Editor (13 y 12 partículas, respectivamente); NO se ha verificado el movimiento durante Play ni en móvil. No probado: rendimiento móvil físico, Play/WebGL/Android ni integración completa del juego. El laboratorio conserva intencionadamente fuera las dependencias de gameplay/V4.1. Esas verificaciones no se infieren de capturas de Editor.
 
 ## Coordinación
 
 Windows se libera al terminar cada ejecución; conservar propietario y fuentes de Ashen Citadel. Releer registro vivo y ejecuciones antes de reclamar un nuevo turno; no desplazar un retry ya en cola. No crear supervisiones periódicas ni mezclar ramas. La autorización de alternancia y coordinación en main ya fue concedida.
+
+## Revisión artística solicitada el 16/11/2026 — SOLO Fase 1
+
+El propietario exigió ocho correcciones: ocaso cálido con sol bajo; ventanas/antorchas emisivas; suelo de tres verdes, tierra y musgo; corrupción violeta confinada; piedra vieja/reparada; tejado de pizarra legible; coníferas reducidas con tocones; sombra suave móvil. Misma cámara de 50° y cuatro grupos FBX; no tocar Fase 2, main (salvo coordinación) ni reglas de juego.
+
+### Evidencia y fallos de calidad, no confundir con éxito técnico
+
+- **Primera prueba de correcciones:** Unity 6000.3.23f1, run [43834060945](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43834060945), SHA `237dfc52`, ZIP artefacto 14210471705, PASS técnico. Rechazo visual por tierra demasiado oscura/violeta, corrupción casi blanca y tejas con contraste cuadriculado.
+- **Segunda prueba:** run [43835673589](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/43835673589), SHA `b9acb3a7`, ZIP artefacto 14210836999, PASS técnico. Revisada la captura real: entorno excesivamente sepia, corrupción magenta y huecos cuadrados artificiales; NO art approved.
+- **Tercera pasada de fuente preparada:** equilibrar mezcla de cielo y niebla a azul-gris neutro con sol ámbar; verdes más explícitos por vértice; cristal de paleta azul-violeta menos saturada; eliminar huecos geométricos artificiales del tejado (las tejas caídas siguen junto al edificio); suavizar fuerza de sombras a 0,62 y una luz local de antorchas a 0,52. Blender CI regenerado con FBX reimportado y UV por cara comprobadas; **no afirmar calidad final hasta examinar una captura Unity de este SHA**.
+
+### Parámetros previstos de la tercera pasada (hasta que Unity los certifique)
+
+| Efecto | Valor de fuente |
+|---|---|
+| Sol principal | Elevación 16°, Y -35°, intensidad 1,65, RGB (1; 0,735; 0,46) |
+| Sombra | URP Soft, 2 cascadas, shadowmap 2048, distancia 42m, fuerza 0,62 |
+| Ambiente cielo / horizonte / suelo | (0,42;0,40;0,42) / (0,29;0,31;0,38) / (0,16;0,20;0,22) |
+| Sonda ambiental explícita | (0,28; 0,30; 0,33) |
+| Luz local | Una sola Point Light, intensidad 0,52, alcance 3,5m; 2 antorchas emisivas |
+| Niebla lineal | 20–58 m, RGB (0,36;0,38;0,43) |
+| Niebla volumétrica fingida | Dos mallas con alfa de vértice, alturas 0,19 y 0,55m |
+| Bloom | Threshold 1,05; intensity 0,21; scatter 0,66 |
+| Color grading | ACES, contraste +3, saturación 0, sombras RGB (0,43;0,40;0,53), luces (1;0,81;0,59), balance -8 |
+| Emisión cálida y corrupta | _Glow 1,75 y 1,35; corrupción únicamente en torre y entorno |
+
+**Estado de aprobación:** pendiente. No hay prueba iPhone físico, performance, integración de gameplay, publicación, mezcla a main, ni permiso para Fase 2.
