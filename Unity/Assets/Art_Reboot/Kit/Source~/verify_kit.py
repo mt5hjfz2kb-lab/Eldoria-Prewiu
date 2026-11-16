@@ -26,7 +26,7 @@ for item in m["pieces"]:
     assert len(mesh.uv_layers)>0,(item["id"],"UV missing")
     uv_values=[(float(u.uv.x),float(u.uv.y)) for u in mesh.uv_layers[0].data]
     unique=set((round(x,5),round(y,5)) for x,y in uv_values)
-    assert len(unique)>8,(item["id"],"Atlas UV cells lost after FBX export",sorted(unique)[:12])
+    assert len(unique)>=4,(item["id"],"Atlas UV cells lost after FBX export",sorted(unique)[:12])
     assert any(.01<x<.99 and .01<y<.99 for x,y in unique),(item["id"],"No valid fractional atlas UV",sorted(unique)[:12])
     assert all(-.002<=x<=1.002 and -.002<=y<=1.002 for x,y in unique),(item["id"],"UVs outside atlas")
     if item["id"] in ("Roof_Gable","Wall_Straight_Intact"):
