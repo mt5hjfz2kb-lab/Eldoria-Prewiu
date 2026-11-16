@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T09:15:55.459Z",
+  "updated_at": "2026-11-16T09:18:02.809927+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3164,7 +3164,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-7,
+        "skin_weights_sum_max_error": 1.1920929e-07,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -6691,7 +6691,7 @@
             "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
             "rig_joint_count": 12,
             "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-            "skin_weights_sum_max_error": 1.1920929e-7,
+            "skin_weights_sum_max_error": 1.1920929e-07,
             "static_retained": true,
             "art_approved": false,
             "isolated_unity_import_tested": false,
@@ -9745,7 +9745,7 @@
       "ownership_revision": 13,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "ARCHITECTURAL_IDENTITY_NATIVE_PENDING",
+      "phase": "ARCHITECTURAL_IDENTITY_NATIVE_REVIEWED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [],
@@ -9781,24 +9781,25 @@
       "continuation_authority": "Owner: Sigue afinándolo; explicitly authorized main coordination update in follow-up Autorizo. Improve reviewed Ashen finish, isolated branch, no gameplay or publication.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "temporarily_yielded_after_completed_native_for_authorized_shared_turn",
+        "status": "released_native_complete",
         "reason": "Owner-authorized geometry refinement: same Ashen I-V scene and auxiliary identity.",
         "releasable_native_run": 43837348051,
         "temporary_to": "eldoria-art-visual-reboot-phase1-20261115",
-        "source_ownership_unchanged": true
+        "source_ownership_unchanged": true,
+        "released_at": "2026-11-16T09:18:02.809910+00:00"
       },
       "last_native": {
-        "run": 43832430172,
-        "head": "41f3e984dd0cb41c9004a455321b56af21751925",
-        "artifact": 14208894317,
+        "run": 43837348051,
+        "head": "6080de8c8630da95c33cca59e79cb71bbba9cd0e",
+        "artifact": 14211975993,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Actual V landscape / I portrait inspected: clearer stone/slate, soft road transition, clustered trees. Retained increment; ground smooth, rocks generic, UI and physical mobile unverified. Not ART_APPROVED."
+        "visual_review": "Actual landscapes I-V and portrait V inspected; architectural silhouette and functional auxiliaries improved. Second-render capture removes observed stretched triangles; cause unproven. Physical mobile unverified; not ART_APPROVED."
       },
-      "final_source_sha": "f61b7268f687560600bda443e6f7da3c1975d2e3",
+      "final_source_sha": "6080de8c8630da95c33cca59e79cb71bbba9cd0e",
       "art_approved": false,
-      "next": "Same-camera native validation of changed architecture after Blender I/V review",
+      "next": "Owner visual review; future finish needs material/terrain identity and physical mobile validation.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
@@ -11847,7 +11848,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -11858,7 +11859,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
