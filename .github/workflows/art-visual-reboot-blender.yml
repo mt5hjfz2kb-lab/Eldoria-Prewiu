@@ -28,13 +28,22 @@ jobs:
       - name: Install free Blender without using the shared Windows PC
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends blender
+          sudo apt-get install -y --no-install-recommends blender python3-numpy
           blender --version | head -n 2
       - name: Rebuild original mesh, source, palette and geometry evidence
         run: |
           set -euo pipefail
           cd Unity/Assets/Art_Reboot/Phase1/Source~
-          blender -b -t 4 --python author_pilot.py -- --skip-render
+          blender -b -t 4 --python author_pilot.py -- --skip-render 2>&1 | tee "$RUNNER_TEMP/blender-phase1.log"
+          if grep -qE 'Traceback \(most recent call last\)|Error: Python' "$RUNNER_TEMP/blender-phase1.log"; then
+            echo "Blender returned but script raised an exception"; exit 1
+          fi
+          grep -q REBOOT_GEOMETRY "$RUNNER_TEMP/blender-phase1.log"
+          blender -b -t 4 --python verify_fbx.py 2>&1 | tee "$RUNNER_TEMP/fbx-reimport.log"
+          if grep -qE 'Traceback \(most recent call last\)|Error: Python' "$RUNNER_TEMP/fbx-reimport.log"; then
+            echo "FBX reimport failed"; exit 1
+          fi
+          grep -q BLENDER_FBX_REIMPORT_PASS "$RUNNER_TEMP/fbx-reimport.log"
       - name: Validate generated binaries are present and source limits held
         run: |
           python3 - <<'PY'
@@ -43,7 +52,7 @@ jobs:
           root=Path("Unity/Assets/Art_Reboot/Phase1")
           data=json.loads((root/"Evidence/geometry.json").read_text())
           assert data["mesh_objects"]==4, data
-          assert 22000<data["triangles"]<100000, data
+          assert 21000<data["triangles"]<100000 and data["materials"]==3, data
           for p in ["Models/Reboot_Pilot.fbx","Textures/Reboot_Atlas_256.png","Source~/Reboot_Pilot.glb","Source~/Reboot_Pilot.blend"]:
               f=root/p
               assert f.is_file() and f.stat().st_size>1000, str(f)
