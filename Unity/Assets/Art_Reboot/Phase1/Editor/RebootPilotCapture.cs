@@ -54,8 +54,8 @@ namespace Eldoria.ArtReboot.Editor
                     throw new InvalidOperationException("Pilot Shader Graph failed import/compilation; no fallback shader accepted.");
                 var atlas = PrepareAtlas(output);
                 var stone = MaterialAsset("Reboot_Surface", shader, atlas, 0);
-                var glow = MaterialAsset("Reboot_Emission", shader, atlas, 2.5f);
-                var corruption = MaterialAsset("Reboot_Corruption", shader, atlas, 5f);
+                var glow = MaterialAsset("Reboot_Emission", shader, atlas, 1.75f);
+                var corruption = MaterialAsset("Reboot_Corruption", shader, atlas, 1.65f);
                 var root = new GameObject(Generated);
                 var model = AssetDatabase.LoadAssetAtPath<GameObject>(Root + "/Models/Reboot_Pilot.fbx");
                 if (model == null) throw new InvalidOperationException("FBX is not imported.");
@@ -88,13 +88,13 @@ namespace Eldoria.ArtReboot.Editor
                     || triangles != geometry.triangles)
                     throw new InvalidOperationException($"Authored FBX topology mismatch: Unity={triangles}, Blender={geometry?.triangles}");
                 RenderSettings.ambientMode = AmbientMode.Custom;
-                RenderSettings.ambientSkyColor = new Color(.29f, .34f, .46f);
-                RenderSettings.ambientEquatorColor = new Color(.19f, .19f, .30f);
-                RenderSettings.ambientGroundColor = new Color(.09f, .075f, .14f);
+                RenderSettings.ambientSkyColor = new Color(.48f, .40f, .36f);
+                RenderSettings.ambientEquatorColor = new Color(.31f, .30f, .38f);
+                RenderSettings.ambientGroundColor = new Color(.19f, .18f, .22f);
                 RenderSettings.skybox = null;
                 RenderSettings.fog = true;
                 RenderSettings.fogMode = FogMode.Linear;
-                RenderSettings.fogColor = new Color(.28f, .265f, .365f);
+                RenderSettings.fogColor = new Color(.44f, .38f, .35f);
                 RenderSettings.fogStartDistance = 20f;
                 RenderSettings.fogEndDistance = 58f;
                 var sun = new GameObject("Warm sunset").AddComponent<Light>();
@@ -104,7 +104,7 @@ namespace Eldoria.ArtReboot.Editor
                 sun.color = new Color(1f, .735f, .46f);
                 sun.intensity = 1.65f;
                 sun.shadows = LightShadows.Soft;
-                sun.shadowStrength = .86f;
+                sun.shadowStrength = .73f;
                 sun.shadowBias = .028f;
                 sun.shadowNormalBias = .17f;
                 RenderSettings.sun = sun;
@@ -112,7 +112,7 @@ namespace Eldoria.ArtReboot.Editor
                 fill.transform.SetParent(root.transform, false);
                 fill.type = LightType.Directional;
                 fill.transform.rotation = Quaternion.Euler(48, 145, 0);
-                fill.color = new Color(.54f, .60f, .98f);
+                fill.color = new Color(.61f, .65f, .88f);
                 fill.intensity = .23f;
                 fill.shadows = LightShadows.None;
                 // Exactly one realtime local light illuminates both emissive entrance torches.
@@ -120,9 +120,9 @@ namespace Eldoria.ArtReboot.Editor
                 flameFill.transform.SetParent(root.transform, false);
                 flameFill.transform.localPosition = new Vector3(0f, 1.8f, -.22f);
                 flameFill.type = LightType.Point;
-                flameFill.color = new Color(1f, .47f, .18f);
-                flameFill.intensity = 1.15f;
-                flameFill.range = 4.6f;
+                flameFill.color = new Color(1f, .65f, .34f);
+                flameFill.intensity = .65f;
+                flameFill.range = 3.5f;
                 flameFill.shadows = LightShadows.None;
                 BuildLowGroundMist(root);
                 var corruptParticles = BuildCorruptionParticles(root);
@@ -174,8 +174,8 @@ namespace Eldoria.ArtReboot.Editor
                     unity = UnityEngine.Application.unityVersion, triangles = triangles,
                     sourceSHA = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local-unrecorded",
                     scene = RebootSandboxGuard.ScenePath, cameraTilt = 50,
-                    sunElevation = 16f, sunIntensity = 1.65f, torchIntensity = 1.15f,
-                    fogStart = 20f, fogEnd = 58f, bloomThreshold = 1.1f, bloomIntensity = .24f,
+                    sunElevation = 16f, sunIntensity = 1.65f, torchIntensity = .65f,
+                    fogStart = 20f, fogEnd = 58f, bloomThreshold = 1.05f, bloomIntensity = .21f,
                     groundMistLowY = .19f, groundMistHighY = .55f,
                     shadowMapResolution = 2048, shadowCascades = 2, particleCount = corruptParticles.particleCount,
                     note = "Actual Edit Mode URP render requests. Particle emitter simulated in Editor; physical mobile, gameplay, runtime motion and performance remain unverified. Artistic review required."
@@ -240,10 +240,10 @@ namespace Eldoria.ArtReboot.Editor
                         float zz = -11f + z * (25f / (n - 1));
                         float back = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(-7f, 12f, zz));
                         float edge = Mathf.Sin(Mathf.PI * x / (n - 1)) * Mathf.Sin(Mathf.PI * z / (n - 1));
-                        float density = (layer == 0 ? .22f : .12f) * (.35f + .65f * back) * edge;
+                        float density = (layer == 0 ? .17f : .09f) * (.35f + .65f * back) * edge;
                         int index = z * n + x;
                         verts[index] = new Vector3(xx, layer == 0 ? .19f : .55f, zz);
-                        colors[index] = new Color(.42f, .40f, .58f, density);
+                        colors[index] = new Color(.47f, .44f, .52f, density);
                     }
                     int t = 0;
                     for (int z = 0; z < n - 1; z++)
@@ -286,7 +286,7 @@ namespace Eldoria.ArtReboot.Editor
                 AssetDatabase.CreateAsset(material, path);
             }
             material.shader = shader;
-            material.SetFloat("_EmissionScale", 4.4f);
+            material.SetFloat("_EmissionScale", 2.0f);
             EditorUtility.SetDirty(material);
             var go = new GameObject("Localized slowly rising arcane motes");
             go.transform.SetParent(root.transform, false);
@@ -331,8 +331,8 @@ namespace Eldoria.ArtReboot.Editor
                 AssetDatabase.AddObjectToAsset(bloom, profile);
             }
             bloom.active = true;
-            bloom.threshold.Override(1.1f);
-            bloom.intensity.Override(.24f);
+            bloom.threshold.Override(1.05f);
+            bloom.intensity.Override(.21f);
             bloom.scatter.Override(.66f);
             if (!profile.TryGet<Tonemapping>(out var tonemapping))
             {
@@ -345,16 +345,16 @@ namespace Eldoria.ArtReboot.Editor
                 grading = profile.Add<ColorAdjustments>(true);
                 AssetDatabase.AddObjectToAsset(grading, profile);
             }
-            grading.contrast.Override(9f);
-            grading.saturation.Override(-6f);
+            grading.contrast.Override(3f);
+            grading.saturation.Override(0f);
             if (!profile.TryGet<SplitToning>(out var split))
             {
                 split = profile.Add<SplitToning>(true);
                 AssetDatabase.AddObjectToAsset(split, profile);
             }
-            split.shadows.Override(new Color(.34f, .29f, .53f));
-            split.highlights.Override(new Color(1f, .76f, .48f));
-            split.balance.Override(-20f);
+            split.shadows.Override(new Color(.43f, .40f, .53f));
+            split.highlights.Override(new Color(1f, .81f, .59f));
+            split.balance.Override(-8f);
             EditorUtility.SetDirty(profile);
         }
 
@@ -526,7 +526,7 @@ namespace Eldoria.ArtReboot.Editor
                 for (int frame = 0; frame < 3; frame++)
                 {
                     var probe = new SphericalHarmonicsL2();
-                    probe.AddAmbientLight(new Color(.16f, .21f, .29f));
+                    probe.AddAmbientLight(new Color(.31f, .28f, .30f));
                     RenderSettings.ambientProbe = probe;
                     RenderPipeline.SubmitRenderRequest(camera, request);
                 }
