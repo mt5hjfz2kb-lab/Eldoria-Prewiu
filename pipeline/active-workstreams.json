@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:10:45.020Z",
+  "updated_at": "2026-11-16T12:17:01.872Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,13 +9742,15 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_FINISH_NATIVE_REVIEWED",
+      "phase": "GROUND_INTEGRATION_NATIVE_CAPTURE",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9776,8 +9778,8 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_verified_terminal_native",
-        "source_sha": "c08271ba1a623bbfaef55b5c7c1fb7f5da2a2555"
+        "status": "reserved_exact_ground_integration",
+        "source_sha": "d5b3d416b61b367eb55bbf18c884b3f8adb02850"
       },
       "last_native": {
         "run": 43863284139,
@@ -9792,7 +9794,7 @@
       },
       "final_source_sha": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
       "art_approved": false,
-      "next": "Delivered genuine premium material/light images. Larger uplift should prioritize courtyard/ground integration and distinctive architectural forms rather than more color micro-passes. Physical mobile/WebGL remains unverified. Windows free; preserve other authorized resource turns.",
+      "next": "Owner continues premium refinement. Exact source d5b3d416 adds fitted courtyard paving, continuous soil crown and clearer paths. Blender V checked; one actual Unity I-V capture/test batch. No other Windows holder or running Windows job observed; preserve other workstreams.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
