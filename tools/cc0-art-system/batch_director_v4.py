@@ -37,6 +37,11 @@ for stage in range(1,6):
     original=[o for o in bpy.data.objects if o.type=="MESH"]
     if len(original)<400:raise RuntimeError("Too few source meshes")
     tris_before=sum(len(o.data.polygons) for o in original)
+    # Compare physically transformed bounds, not only polygon counts.
+    coords=[o.matrix_world @ Vector(v) for o in original for v in o.bound_box]
+    before_min=[min(c[i] for c in coords) for i in range(3)]
+    before_max=[max(c[i] for c in coords) for i in range(3)]
+    uv_objects_before=sum(len(o.data.uv_layers)>0 for o in original)
     mats_by_key={}
     groups={}
     positions={}
@@ -102,6 +107,19 @@ for stage in range(1,6):
         obj.matrix_world=Matrix.Identity(4)
         output_objs.append(obj)
     tris_after=sum(len(o.data.polygons) for o in output_objs)
+    coords_after=[o.matrix_world @ Vector(v) for o in output_objs for v in o.bound_box]
+    after_min=[min(c[i] for c in coords_after) for i in range(3)]
+    after_max=[max(c[i] for c in coords_after) for i in range(3)]
+    max_bbox_deviation=max(
+        abs(before_min[i]-after_min[i]) for i in range(3))
+    max_bbox_deviation=max(max_bbox_deviation,max(
+        abs(before_max[i]-after_max[i]) for i in range(3)))
+    if max_bbox_deviation>0.04:
+        raise RuntimeError("World-space AABB changed during batching: "+
+                           repr((stage,before_min,before_max,after_min,after_max)))
+    uv_objects_after=sum(len(o.data.uv_layers)>0 for o in output_objs)
+    if uv_objects_before>0 and uv_objects_after<1:
+        raise RuntimeError("Original UV mapping lost during batching")
     if tris_after!=tris_before:
         raise RuntimeError("Triangle/face count changed: "+str((stage,tris_before,tris_after)))
     # Data physically rebatched, no source references or vendor meshes.
@@ -118,6 +136,9 @@ for stage in range(1,6):
     entry={"stage":stage,"original_meshes":input_mesh_count,
            "optimized_meshes":new_count,"draw_mesh_reduction":round(1-new_count/input_mesh_count,4),
            "faces_before":tris_before,"faces_after":tris_after,
+           "max_bbox_deviation":round(float(max_bbox_deviation),6),
+           "uv_objects_before":uv_objects_before,
+           "uv_objects_after":uv_objects_after,
            "district_roots":list(roots.keys()),
            "materials":len(j.get("materials",[])),
            "file_bytes":path.stat().st_size}
