@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:09:15.609Z",
+  "updated_at": "2026-11-16T12:10:45.020Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9742,10 +9742,10 @@
       "title": "Ashen Citadel — autonomous original art experiment Bastion I–V, isolated playable Unity proof",
       "owner": "chatgpt-ashen-finish-e4ce5efc6a5b",
       "ownership_state": "claimed",
-      "ownership_revision": 26,
+      "ownership_revision": 27,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "PREMIUM_FINISH_NATIVE_COMPLETE_VISUAL_REVIEW",
+      "phase": "PREMIUM_FINISH_NATIVE_REVIEWED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [],
@@ -9784,12 +9784,15 @@
         "head": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
         "artifact": 14223478528,
         "result": "success",
-        "visual_review": "Downloaded for inspection; technical success is not artistic approval",
-        "physical_mobile": false
+        "visual_review": "Actual I/V landscape and V portrait reviewed against preceding structural version. Improved contact depth and material separation, but terrain and geometry remain simplified; no final ART_APPROVED.",
+        "physical_mobile": false,
+        "editmode_passed": 7,
+        "playmode_passed": 4,
+        "screenshot_hashes_verified": 10
       },
-      "final_source_sha": "8897cbac2572fd746018041754813908f1082514",
+      "final_source_sha": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
       "art_approved": false,
-      "next": "Owner requested premium finish. Source c08271b adds normal detail, separated material response, cloned private SSAO renderer and key/fill contrast. Blender V reviewed, native Unity A/B pending shared Windows release after Visual Reboot43862584903. Preserve all other scopes and active run.",
+      "next": "Delivered genuine premium material/light images. Larger uplift should prioritize courtyard/ground integration and distinctive architectural forms rather than more color micro-passes. Physical mobile/WebGL remains unverified. Windows free; preserve other authorized resource turns.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
