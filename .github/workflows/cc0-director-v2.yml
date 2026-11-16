@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/cc0-director-v2.yml"
       - "tools/cc0-art-system/upgrade_director_v2.py"
+      - "tools/cc0-art-system/author_bastion.py"
   workflow_dispatch:
 permissions:
   contents: read
@@ -41,6 +42,15 @@ jobs:
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
           blender --version | head -2
+      - name: Restore upstream original image texture dependencies deterministically
+        env:
+          ELDORIA_SKIP_LOOKDEV_RENDERS: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/author_bastion.py > "$RUNNER_TEMP/eldoria-original-input.log" 2>&1 || { tail -75 "$RUNNER_TEMP/eldoria-original-input.log"; exit 1; }
+          grep -q ELDORIA_CC0_AUTHORING_PASS "$RUNNER_TEMP/eldoria-original-input.log"
+          test -s Unity/Assets/Art_Reboot/CC0System/Generated/ED_CC0_OldAshlar.png
       - name: Actually rebuild Valoria in Blender and export 5 new original GLBs
         shell: bash
         run: |
@@ -74,9 +84,9 @@ jobs:
               header_len=struct.unpack("<I",raw[12:16])[0]
               j=json.loads(raw[20:20+header_len])
               assert len(j.get("meshes",[]))>=200
-              assert any('COLOR_0' in prim.get('attributes',{})
-                         for mesh in j.get('meshes',[]) for prim in mesh.get('primitives',[]))
-              print("REAL_3D_STAGE_AND_TERRAIN_QA",stage,len(raw),len(j['meshes']))
+              assert len(j.get('images',[]))>0, "No embedded glTF texture images"
+              assert (base/"DirectorV2_Terrain_Albedo.png").stat().st_size>5000
+              print("REAL_3D_STAGE_AND_TERRAIN_TEXTURE_QA",stage,len(raw),len(j['meshes']),len(j['images']))
           print("REAL_EDITOR_ART_SOURCE_AND_FRAMES_VERIFIED")
           PY
       - name: Preserve true artwork and editable source without modifying branch
