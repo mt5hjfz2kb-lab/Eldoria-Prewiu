@@ -115,7 +115,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 Capture(camera,1600,900,Path.Combine(output,"village-1600x900.png"));
                 Fit(camera,architecturalBounds,1100,1250,new Vector3(42,-13,0),1.08f);
                 Capture(camera,1100,1250,Path.Combine(output,"village-1100x1250.png"));
-                var corruptBounds=new Bounds(new Vector3(0,4,-13),new Vector3(14,10,13));
+                var corruptBounds=new Bounds(new Vector3(0,4,-11),new Vector3(14,10,13));
                 Fit(camera,corruptBounds,1100,1250,new Vector3(42,-13,0),1.07f);
                 Capture(camera,1100,1250,Path.Combine(output,"corrupt-kit-detail.png"));
                 // The owner-approved camera remains the one saved in the scene.
@@ -376,9 +376,9 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 foreach(var r in g.GetComponentsInChildren<MeshRenderer>())
                     if(first){b=r.bounds;first=false;}else b.Encapsulate(r.bounds);
             };
-            BuildHouse(add,new Vector3(-11,0,4));
-            BuildWorkshop(add,new Vector3(11,0,4));
-            BuildCorruptFort(add,new Vector3(0,0,-13));
+            BuildHouse(add,new Vector3(-9,0,4));
+            BuildWorkshop(add,new Vector3(9,0,4));
+            BuildCorruptFort(add,new Vector3(0,0,-11));
             if(first)throw new InvalidOperationException("Kit settlement has no geometry");
             return b;
         }
@@ -406,7 +406,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
             p("Wall_Window_Intact",2,0,-2,0);
             p("Wall_Straight_Intact",-2,0,2,180);
             p("Wall_Window_Intact",2,0,2,180);
-            p("Wall_Corner_Intact",-4,0,0,90);
+            p("Wall_Straight_Intact",-4,0,0,90);
             p("Wall_Straight_Intact",4,0,0,-90);
             p("Roof_Shed",-2,3.65f,0,0);
             p("Roof_Shed",2,3.65f,0,0);
@@ -455,14 +455,24 @@ namespace Eldoria.ArtReboot.Kit.Editor
             var props=new GameObject("Varying pines, paths, stones and living ground").transform;
             props.SetParent(root.transform,false);
             var rnd=new System.Random(2161126);
+            // Dense staggered 3-height pine boundary with a readable woodland
+            // clearing through the actual village roads. Kit pieces only.
             var pinelist=new[]{
-                new Vector2(-28,6),new Vector2(-29,-6),new Vector2(-26,19),
-                new Vector2(27,8),new Vector2(30,-11),new Vector2(25,20),
-                new Vector2(-20,26),new Vector2(-13,27),new Vector2(0,27),
+                new Vector2(-29,5),new Vector2(-31,-6),new Vector2(-26,16),
+                new Vector2(29,8),new Vector2(31,-11),new Vector2(27,20),
+                new Vector2(-20,25),new Vector2(-13,27),new Vector2(0,27),
                 new Vector2(12,28),new Vector2(20,24),new Vector2(-30,-22),
-                new Vector2(-19,-24),new Vector2(-12,-27),new Vector2(4,-29),
-                new Vector2(14,-28),new Vector2(26,-23),new Vector2(-31,0),
-                new Vector2(32,0),new Vector2(-21,14),new Vector2(20,15)
+                new Vector2(-19,-24),new Vector2(-12,-29),new Vector2(4,-29),
+                new Vector2(14,-28),new Vector2(26,-23),new Vector2(-32,1),
+                new Vector2(32,1),new Vector2(-22,17),new Vector2(23,16),
+                new Vector2(-27,-15),new Vector2(-25,10),new Vector2(-28,22),
+                new Vector2(-25,27),new Vector2(-17,31),new Vector2(-9,29),
+                new Vector2(-3,31),new Vector2(6,29),new Vector2(15,31),
+                new Vector2(22,29),new Vector2(29,25),new Vector2(30,15),
+                new Vector2(32,-5),new Vector2(27,-17),new Vector2(20,-27),
+                new Vector2(9,-31),new Vector2(-3,-30),new Vector2(-17,-28),
+                new Vector2(-29,-26),new Vector2(-31,14),new Vector2(24,-7),
+                new Vector2(-24,-8),new Vector2(26,-1)
             };
             for(int i=0;i<pinelist.Length;i++)
             {
@@ -471,16 +481,21 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 if(i%3==0)
                     Place("Shrubs",props,scene,new Vector3(v.x+1.4f,0,v.y-1.8f),rnd.Next(0,360));
             }
-            var tracks=new[]{
-                new Vector2(-11,-1),new Vector2(-9,-6),new Vector2(-6,-9),
-                new Vector2(-2,-9),new Vector2(2,-8),new Vector2(5,-6),
-                new Vector2(8,-2),new Vector2(11,-1)
-            };
-            for(int i=0;i<tracks.Length;i++)
+            // Real connected stone path: the historic three-building hamlet
+            // must read as one settlement, not three buildings on a blank floor.
+            var tracks=new List<Vector2>();
+            for(float z=-15f;z<=-3f;z+=1.55f)
+                tracks.Add(new Vector2(.38f*Mathf.Sin(z*.25f),z));
+            for(float x=-9f;x<=9.1f;x+=1.50f)
+                tracks.Add(new Vector2(x,-2.2f+.10f*x));
+            for(float z=-1.5f;z<=1.8f;z+=1.35f)
+                tracks.Add(new Vector2(9f,z));
+            for(int i=0;i<tracks.Count;i++)
             {
                 var v=tracks[i];
-                Place("Path_Slab",props,scene,new Vector3(v.x, .02f,v.y),i%2==0?-11:14);
-                if(i%2==0)Place("Tall_Grass",props,scene,new Vector3(v.x+1.85f,0,v.y+.6f),i*17);
+                Place("Path_Slab",props,scene,new Vector3(v.x, .015f,v.y),i%2==0?-8:12);
+                if(i%3==0)
+                    Place("Tall_Grass",props,scene,new Vector3(v.x+1.70f,0,v.y+.65f),i*17);
             }
             for(int i=0;i<17;i++)
             {
@@ -507,18 +522,18 @@ namespace Eldoria.ArtReboot.Kit.Editor
                 float h=.14f*(float)Math.Sin(xx*.21f)*(float)Math.Cos(zz*.18f)+.18f*(float)Math.Sin(zz*.47f);
                 float backRidge=Mathf.SmoothStep(0,1,Mathf.InverseLerp(21f,31f,zz));
                 h+=backRidge*(.38f+.20f*Mathf.Sin(xx*.19f)+.12f*Mathf.Sin(xx*.37f));
-                float flatten=Mathf.Clamp01((new Vector2(xx+11,zz-4).magnitude-4)/5f);
-                flatten=Mathf.Min(flatten,Mathf.Clamp01((new Vector2(xx-11,zz-4).magnitude-4)/5f));
-                flatten=Mathf.Min(flatten,Mathf.Clamp01((new Vector2(xx,zz+13).magnitude-4)/5f));
+                float flatten=Mathf.Clamp01((new Vector2(xx+9,zz-4).magnitude-4)/5f);
+                flatten=Mathf.Min(flatten,Mathf.Clamp01((new Vector2(xx-9,zz-4).magnitude-4)/5f));
+                flatten=Mathf.Min(flatten,Mathf.Clamp01((new Vector2(xx,zz+11).magnitude-4)/5f));
                 h*=flatten;
                 // The working buildings are never raised onto independent polygonal pads.
                 int i=z*n+x;v[i]=new Vector3(xx,h-.04f,zz);
                 float rough=.5f+.18f*Mathf.Sin(xx*.58f+zz*.43f)+.15f*Mathf.Cos(xx*.27f-zz*.64f);
                 var moss=Color.Lerp(new Color(.45f,.72f,.42f),new Color(.62f,.78f,.50f),Mathf.Clamp01(rough));
                 float road=Mathf.Exp(-Mathf.Pow(xx*.18f+zz*.09f,2))*Mathf.Clamp01((1-zz/25f));
-                float apron=Mathf.Exp(-new Vector2(xx+11,zz-4).sqrMagnitude/50f) +
-                            Mathf.Exp(-new Vector2(xx-11,zz-4).sqrMagnitude/50f) +
-                            Mathf.Exp(-new Vector2(xx,zz+13).sqrMagnitude/55f);
+                float apron=Mathf.Exp(-new Vector2(xx+9,zz-4).sqrMagnitude/50f) +
+                            Mathf.Exp(-new Vector2(xx-9,zz-4).sqrMagnitude/50f) +
+                            Mathf.Exp(-new Vector2(xx,zz+11).sqrMagnitude/55f);
                 col[i]=Color.Lerp(moss,new Color(.79f,.62f,.45f),Mathf.Clamp01(road*.48f+apron*.47f));
                 uv[i]=new Vector2((1+(8+36f*x/(n-1))/64f)/4f,(8+36f*z/(n-1))/256f);
             }
@@ -584,23 +599,23 @@ namespace Eldoria.ArtReboot.Kit.Editor
             sky.SetColor("_Zenith",new Color(.23f,.19f,.43f));
             RenderSettings.skybox=sky;
             RenderSettings.ambientMode=AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor=new Color(.49f,.46f,.57f);
-            RenderSettings.ambientEquatorColor=new Color(.35f,.36f,.53f);
-            RenderSettings.ambientGroundColor=new Color(.21f,.22f,.31f);
+            RenderSettings.ambientSkyColor=new Color(.44f,.47f,.63f);
+            RenderSettings.ambientEquatorColor=new Color(.37f,.40f,.54f);
+            RenderSettings.ambientGroundColor=new Color(.23f,.25f,.33f);
             RenderSettings.fog=dusk;RenderSettings.fogMode=FogMode.Linear;
-            RenderSettings.fogStartDistance=50;RenderSettings.fogEndDistance=115;
-            RenderSettings.fogColor=new Color(.53f,.40f,.46f);
+            RenderSettings.fogStartDistance=47;RenderSettings.fogEndDistance=92;
+            RenderSettings.fogColor=new Color(.55f,.42f,.48f);
             var sun=new GameObject("17 degree amber directional light").AddComponent<Light>();
             sun.transform.SetParent(root.transform,false);
             sun.type=LightType.Directional;
-            sun.transform.rotation=Quaternion.Euler(17,-31,0);
-            sun.color=new Color(1,.77f,.54f);sun.intensity=1.47f;
-            sun.shadows=LightShadows.Soft;sun.shadowStrength=.67f;sun.shadowNormalBias=.11f;
+            sun.transform.rotation=Quaternion.Euler(16,-35,0);
+            sun.color=new Color(1,.78f,.59f);sun.intensity=1.45f;
+            sun.shadows=LightShadows.Soft;sun.shadowStrength=.60f;sun.shadowNormalBias=.12f;
             RenderSettings.sun=sun;
             var skyfill=new GameObject("Blue-violet diffuse open sky").AddComponent<Light>();
             skyfill.transform.SetParent(root.transform,false);skyfill.type=LightType.Directional;
-            skyfill.transform.rotation=Quaternion.Euler(46,156,0);
-            skyfill.color=new Color(.60f,.64f,.90f);skyfill.intensity=.40f;
+            skyfill.transform.rotation=Quaternion.Euler(48,145,0);
+            skyfill.color=new Color(.64f,.71f,.99f);skyfill.intensity=.55f;
             skyfill.shadows=LightShadows.None;
             var profile=AssetDatabase.LoadAssetAtPath<VolumeProfile>(Phase1+"/Materials/Village_Dusk.asset");
             if(profile==null)throw new InvalidOperationException("Owner-approved grading asset missing");
@@ -621,7 +636,7 @@ namespace Eldoria.ArtReboot.Kit.Editor
         static void Fit(Camera camera,Bounds bounds,int width,int height,Vector3 euler,float padding)
         {
             var rot=Quaternion.Euler(euler);
-            camera.transform.SetPositionAndRotation(bounds.center-rot*Vector3.forward*65f,rot);
+            camera.transform.SetPositionAndRotation(bounds.center-rot*Vector3.forward*38f,rot);
             float xMax=0,yMax=0;
             for(int sx=-1;sx<=1;sx+=2)
             for(int sy=-1;sy<=1;sy+=2)
