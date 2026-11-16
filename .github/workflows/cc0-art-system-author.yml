@@ -1,0 +1,81 @@
+name: "CC0 System — isolated original Blender Bastion visual proof"
+on:
+  push:
+    branches:
+      - experiment/eldoria-cc0-art-system-20261116
+    paths:
+      - ".github/workflows/cc0-art-system-author.yml"
+      - "tools/cc0-art-system/author_bastion.py"
+      - "tools/cc0-art-system/validate_render.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: eldoria-cc0-art-system-blender
+  cancel-in-progress: false
+jobs:
+  make-proof:
+    name: "Original geometry / render / physical meshes (Ubuntu, no shared Windows)"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+          sparse-checkout: |
+            tools/cc0-art-system
+            docs/cc0-art-system
+            Unity/Assets/Art_Reboot/CC0System
+      - name: Validate authoring script syntax
+        run: |
+          python3 -m py_compile tools/cc0-art-system/author_bastion.py
+          python3 -m py_compile tools/cc0-art-system/validate_render.py
+      - name: Install free Blender on GitHub-hosted Ubuntu only
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          blender --version | head -2
+      - name: Produce genuine textured geometry, editable Blender source and 3 renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/author_bastion.py 2>&1 | tee "$RUNNER_TEMP/cc0-blender.log"
+          grep -q ELDORIA_CC0_AUTHORING_PASS "$RUNNER_TEMP/cc0-blender.log"
+      - name: Validate render provenance, dimensions, GLB geometry and files
+        run: python3 tools/cc0-art-system/validate_render.py
+      - name: Preserve inspectible artifact even without a branch commit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cc0-bastion-original-lookdev-proof
+          path: |
+            docs/cc0-art-system/previews
+            Unity/Assets/Art_Reboot/CC0System/Generated/*.glb
+            Unity/Assets/Art_Reboot/CC0System/Generated/*.blend
+            Unity/Assets/Art_Reboot/CC0System/Generated/*.png
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Commit reproducible owned source and renders to isolated branch only
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/cc0-art-system/previews Unity/Assets/Art_Reboot/CC0System/Generated
+          if git diff --cached --quiet; then
+            echo "No source/render changes"
+            exit 0
+          fi
+          git commit -m "art(cc0-system): verified original textured Bastion GLB, editable BLEND and renders"
+          for attempt in 1 2 3; do
+            git fetch --no-tags origin experiment/eldoria-cc0-art-system-20261116
+            git rebase FETCH_HEAD || { git rebase --abort; exit 1; }
+            if git push origin HEAD:refs/heads/experiment/eldoria-cc0-art-system-20261116; then
+              echo "ELDORIA_CC0_ART_COMMITTED"
+              break
+            fi
+            if [ "$attempt" = 3 ]; then
+              echo "Concurrently modified branch; artifacts retained" >&2
+              exit 1
+            fi
+          done
