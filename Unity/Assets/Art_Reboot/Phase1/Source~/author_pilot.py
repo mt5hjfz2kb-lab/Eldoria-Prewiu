@@ -127,7 +127,7 @@ def roof(x,y,z,w,d,h):
     layer=tile.data.color_attributes['Color']
     for li in range(len(layer.data)):
      c=layer.data[li].color
-     layer.data[li].color=(c.r*slate_tint,c.g*slate_tint,c.b*slate_tint,1)
+     layer.data[li].color=(c[0]*slate_tint,c[1]*slate_tint,c[2]*slate_tint,1)
   beam('Timber eave',(x+side*w/2,y-d/2,z),(x+side*w/2,y+d/2,z),.16,4)
  for yy in [y-d/2,y+d/2]:
   mesh('Timber gable',[(x-w/2,yy,z),(x+w/2,yy,z),(x,yy,z+h)],[(0,1,2) if yy < y else (2,1,0)],4)
