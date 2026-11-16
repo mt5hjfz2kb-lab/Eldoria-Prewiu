@@ -151,36 +151,98 @@ def shifted_cottages():
     return {k:to for k,(fr,to) in sources.items()}
 sites=shifted_cottages()
 
-def organic_road(name,points,cols=3,n=23):
-    """A curved, irregular dirt/stone track. No rectangle/platform tiles."""
-    # cubic Bézier with authored control points.
+# The initial proof road was an assembly of visible raised rectangular slabs:
+# it looked like a black ladder in the camera. Replace in the source scene,
+# not just hide from Blender, so Unity GLB can never reintroduce it.
+old_route=bpy.data.collections.get("Route")
+if old_route:
+    for old_obj in list(old_route.objects):
+        bpy.data.objects.remove(old_obj,do_unlink=True)
+
+def terrain_height(x,y):
+    # Exact sampling formula used by the authored terrain in author_bastion.py.
+    return (.12*sin(x*.28)*cos(y*.21)+.17*sin(x*.11+y*.16)
+            -.05*max(0,1-abs(x)/3))
+
+def road_soil_material():
+    name="ED_CityFinish_RoadLoam"
+    m=bpy.data.materials.get(name)
+    if m:return m
+    m=bpy.data.materials.new(name)
+    m.diffuse_color=(.35,.30,.24,1)
+    m.use_nodes=True
+    bs=m.node_tree.nodes.get("Principled BSDF")
+    bs.inputs["Base Color"].default_value=(.35,.30,.24,1)
+    bs.inputs["Roughness"].default_value=.98
+    return m
+ROAD_LOAM=road_soil_material()
+
+def organic_road(name,points,width=2.4,n=30,stone_density=.5):
+    """Continuous curved terrain-hugging loam, with sparse broken historical setts.
+
+    A strip of contiguous triangles is legitimate terrain dressing (not a raised
+    platform or a checkerboard) and works in imported GLB / URP. The same function
+    creates the main entry road and the four narrow service footpaths.
+    """
     P=[Vector(p) for p in points]
     assert len(P)==4
+    verts=[]
+    faces=[]
+    uvraw=[]
     for i in range(n):
         t=i/(n-1)
         pos=((1-t)**3*P[0]+3*(1-t)**2*t*P[1]+3*(1-t)*t*t*P[2]+t**3*P[3])
-        tan=3*(1-t)**2*(P[1]-P[0])+6*(1-t)*t*(P[2]-P[1])+3*t*t*(P[3]-P[2])
-        if tan.length<.001: continue
+        tan=(3*(1-t)**2*(P[1]-P[0])+6*(1-t)*t*(P[2]-P[1])+
+             3*t*t*(P[3]-P[2]))
+        if tan.length<.001:tan=Vector((0,1,0))
         tan.normalize()
-        normal=Vector((-tan.y,tan.x,0))
-        angle=math.atan2(tan.y,tan.x)
-        road_width=2.4-.7*t
-        # Real scattered stones, not perfect rectangular rows.
-        for lane in range(cols):
-            offset=(lane-(cols-1)/2)*road_width/cols
-            wobble=random.uniform(-.14,.14)
-            p=pos+normal*(offset+wobble)
-            m=random.choice(["stone","light","earth","dark"])
-            block(name+" | aged irregular setts",
-                  (p.x,p.y,.17+random.uniform(-.012,.015)),
-                  (random.uniform(.43,.66),random.uniform(.48,.75),.12),
-                  m,"Roads",rot=angle+random.uniform(-.18,.18),bevel=.04)
+        lateral=Vector((-tan.y,tan.x,0))
+        # Organic narrowing, irregular banks rather than parallel tile edges.
+        local_width=width*(1.0-.08*t+random.uniform(-.055,.055))
+        for sign in (-1,1):
+            p=pos+lateral*(sign*local_width*.5)
+            z=terrain_height(p.x,p.y)+.047
+            verts.append((p.x,p.y,z))
+            uvraw.append((t*5, float(sign>0)))
+        if i>0:
+            off=2*i
+            faces.append((off-2,off,off+1,off-1))
+        if i%2==0 and random.random()<stone_density:
+            # One or two free-form setts per metre, no rhythmic grid.
+            for _ in range(random.choice((1,1,2))):
+                p=pos+lateral*random.uniform(-local_width*.35,local_width*.35)
+                z=terrain_height(p.x,p.y)+.096
+                block(name+" | embedded broken flagstone",
+                      (p.x,p.y,z),(.39+random.random()*.3,.37+random.random()*.36,.10),
+                      random.choice(("stone","light","dark","earth")),"Roads",
+                      rot=math.atan2(tan.y,tan.x)+random.uniform(-.27,.27),bevel=.025)
+    mesh=bpy.data.meshes.new("GroundedRoadMesh_"+name)
+    mesh.from_pydata(verts,[],faces)
+    mesh.materials.append(ROAD_LOAM)
+    mesh.update()
+    road=bpy.data.objects.new("Grounded native track | "+name,mesh)
+    collection("Roads").objects.link(road)
+    uv=mesh.uv_layers.new(name="terrainRoadUV")
+    for p in mesh.polygons:
+        for idx in p.loop_indices:
+            uv.data[idx].uv=uvraw[mesh.loops[idx].vertex_index]
+    return road
 
-# Lanes are functionally linked to the fortress but do not look like construction parcels.
-organic_road("sawmill supply lane",[(-3,-16,0),(-9,-19,0),(-16,-15,0),(-22,-12,0)])
-organic_road("granary service lane",[(3,-16,0),(8,-19,0),(14,-15,0),(22,-12,0)])
-organic_road("quarry track",[(-18,-10,0),(-26,-7,0),(-27,3,0),(-23,8,0)],n=17)
-organic_road("barracks stone track",[(18,-10,0),(27,-5,0),(27,4,0),(24,7,0)],n=17)
+organic_road("Bastion approach",
+    [(-.2,-29,0),(.9,-22,0),(-2.2,-13,0),(0,-6.1,0)],
+    width=3.65,n=52,stone_density=.88)
+organic_road("Sawmill supply lane",
+    [(-2.7,-17,0),(-10.0,-19,0),(-15.0,-16.0,0),(-22.0,-12.0,0)],
+    width=1.85,n=25,stone_density=.43)
+organic_road("Granary service lane",
+    [(2.6,-18.0,0),(8.0,-18.0,0),(16,-14,0),(22.0,-11.6,0)],
+    width=1.9,n=25,stone_density=.38)
+organic_road("Quarry track",
+    [(-18.0,-12.0,0),(-25.0,-7.0,0),(-28.0,2.0,0),(-23.0,8.0,0)],
+    width=1.70,n=21,stone_density=.28)
+organic_road("Barracks route",
+    [(16.5,-12.0,0),(28.0,-5.0,0),(29.0,3.0,0),(24.0,7.0,0)],
+    width=1.7,n=20,stone_density=.38)
 
 def industrial_detail():
     # Sawmill x=-22, y=-7.5: blade, beams, stacked wood; no artificial footprint base.
