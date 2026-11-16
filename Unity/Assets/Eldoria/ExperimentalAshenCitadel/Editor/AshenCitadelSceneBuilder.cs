@@ -31,6 +31,9 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             Directory.CreateDirectory(MaterialPath);
             AssetDatabase.Refresh();
             CreateMaterials();
+            // Native GUI captures and device builds use persistent imported 9-slice
+            // sprites. Transient Sprite.Create textures produced white UI panels.
+            AshenInterfaceAssetBaker.Bake();
             // Private look-development pipeline; never mutate the production asset.
             var sourcePipeline=GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;
             if(sourcePipeline!=null){
