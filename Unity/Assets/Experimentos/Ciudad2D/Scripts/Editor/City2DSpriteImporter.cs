@@ -17,6 +17,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
 
             var importer = (TextureImporter)assetImporter;
             bool terrain = assetPath.EndsWith("/Terreno.png", StringComparison.OrdinalIgnoreCase);
+            bool halo = assetPath.EndsWith("/Props/HaloAntorcha.png", StringComparison.OrdinalIgnoreCase);
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
             importer.spritePixelsPerUnit = 100f;
@@ -31,8 +32,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;
-            settings.spriteAlignment = (int)(terrain ? SpriteAlignment.Center : SpriteAlignment.BottomCenter);
-            settings.spritePivot = terrain ? new Vector2(0.5f, 0.5f) : new Vector2(0.5f, 0f);
+            settings.spriteAlignment = (int)((terrain || halo) ? SpriteAlignment.Center : SpriteAlignment.BottomCenter);
+            settings.spritePivot = terrain || halo ? new Vector2(0.5f, 0.5f) : new Vector2(0.5f, 0f);
             importer.SetTextureSettings(settings);
 
             // La optimización final por plataforma depende de capturas/profiler físicos.
@@ -44,8 +45,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             foreach (string path in imported)
             {
-                if (!path.StartsWith(SpriteFolder, StringComparison.Ordinal)) continue;
-                EditorApplication.delayCall += City2DSceneBuilder.BuildIfReady;
+                if (!path.StartsWith(SpriteFolder, StringComparison.Ordinal) &&
+                    path != "Assets/Experimentos/Ciudad2D/QA/city_layout.json") continue;
+                EditorApplication.delayCall += City2DSceneBuilder.Rebuild;
                 break;
             }
         }

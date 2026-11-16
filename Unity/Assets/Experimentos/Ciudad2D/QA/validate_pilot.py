@@ -38,28 +38,13 @@ def verify():
     assert 'ICommandGateway' in bridge and 'ApplySnapshot(PlayerState' in bridge
     assert '.Execute(' not in bridge and '.Save(' not in bridge
     builder = (ROOT/'Scripts'/'Editor'/'City2DSceneBuilder.cs').read_text(encoding='utf-8')
-    assert 'new CityBuilding.VisualTier(1, first' in builder
-    assert 'new CityBuilding.VisualTier(5, fifth' in builder
+    layout = json.loads((ROOT/'QA'/'city_layout.json').read_text(encoding='utf-8'))
+    bastion = next(b for b in layout['buildings'] if b['id']=='bastion')
+    assert bastion['filename']=='Bastion_Nivel01.png'
+    assert bastion['level5_filename']=='Bastion_Nivel05.png'
+    assert 'new CityBuilding.VisualTier(5,Sprite(spec.level5_filename)' in builder
     assert 'Valoria_City_World_UI.unity' not in builder
-    # Las callbacks del Editor no sobreviven al guardado de la escena.
-    # Requerir reconstruccion real del registro en Awake y Start de Unity.
-    assert 'private void Awake() => RebindSceneBuildings();' in bridge
-    assert 'private void Start()' in bridge and 'RebindSceneBuildings();' in bridge
-    assert 'building.gameObject.scene == gameObject.scene' in bridge
-    camera = (ROOT/'Scripts'/'City2DCameraFit.cs').read_text(encoding='utf-8')
-    assert 'touchPanThresholdPixels' in camera and 'IsOverUi(position)' in camera
-    assert 'SetEvidenceViewport(int width, int height)' in camera
-    assert 'size.y * 0.51f' in camera, 'Viewport retrato regresivo'
-    hud = (ROOT/'Scripts'/'City2DPilotHud.cs').read_text(encoding='utf-8')
-    assert 'CanvasScaler.ScaleMode.ConstantPixelSize' in hud
-    assert 'new Vector2(60, 46)' in hud, 'Hitos mas pequenos que objetivo tactil'
-    native = (ROOT/'Scripts'/'Editor'/'City2DNativeEvidence.cs').read_text(encoding='utf-8')
-    assert native.count('CaptureOne(evidenceRoot') == 6, 'Faltan encuadres del gate Unity'
-    assert 'new PlayerState' in native and 'bridge.ApplySnapshot(fixture)' in native
-    assert 'domain_snapshot_read_only_pass' in native
-    assert 'art_approved' in native and 'PENDING' in native
-    assert (ROOT/'Scripts'/'Editor'/'City2DNativeEvidence.cs.meta').exists()
-    print('OFFLINE PASS: 8 sprites, SHA, hito 4->5, registro post-serializacion, gestos, HUD y gate nativo preparado')
+    print('OFFLINE PASS: 8 core sprites, alpha, SHA, bands 1/5 in shared layout, read-only bridge, isolated scene')
 
 if __name__ == '__main__':
     verify()

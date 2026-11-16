@@ -1,0 +1,86 @@
+{
+  "CasasMercaderes": {
+    "size": [
+      489,
+      432
+    ],
+    "sha256": "2aea5384aaa0fb89d6ff95b26e38c499415d9ec6d9989b24a8ef720ad9224d11",
+    "bytes": 398595,
+    "crop": [
+      9,
+      32,
+      498,
+      464
+    ]
+  },
+  "PuestoMercado": {
+    "size": [
+      477,
+      340
+    ],
+    "sha256": "bbcc57ef6ca015090a4931af2c539267e6bfe03bdcd6a5fb766fabe859001e16",
+    "bytes": 323386,
+    "crop": [
+      14,
+      102,
+      491,
+      442
+    ]
+  },
+  "HuertosValoria": {
+    "size": [
+      512,
+      336
+    ],
+    "sha256": "00b4538bf9af20d971225c906c8cb21f773d5f9fbfa631272f557f44f3697499",
+    "bytes": 360908,
+    "crop": [
+      0,
+      114,
+      512,
+      450
+    ]
+  },
+  "ArboledaAntigua": {
+    "size": [
+      490,
+      457
+    ],
+    "sha256": "46d235cfa5f747cc4a4e3cdefce579e057c256a8b0d42aaf4392d2507e7b007a",
+    "bytes": 442909,
+    "crop": [
+      10,
+      16,
+      500,
+      473
+    ]
+  },
+  "CasasDelPozo": {
+    "size": [
+      502,
+      370
+    ],
+    "sha256": "0e911f5f909432a162d172d663f84c1d7f9115f1b07869d17036fc4d6ba3316f",
+    "bytes": 390018,
+    "crop": [
+      4,
+      74,
+      506,
+      444
+    ]
+  },
+  "AtalayaValoria": {
+    "size": [
+      485,
+      453
+    ],
+    "sha256": "762fdf2da0045d8d6bb4395e58767fde25883ae6cda550664c0f8f273c32e0f5",
+    "bytes": 391844,
+    "crop": [
+      7,
+      13,
+      492,
+      466
+    ]
+  }
+}

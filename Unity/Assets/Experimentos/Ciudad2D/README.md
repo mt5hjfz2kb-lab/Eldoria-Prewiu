@@ -37,3 +37,14 @@ No se tocan `ProjectSettings`, `Valoria_City_World_UI.unity`, código existente 
 ## Pase de riqueza ambiental (segunda iteración aislada)
 
 Se han incorporado **9 props originales** y 10 colocaciones independientes: árbol antiguo, matorrales, muro derruido, carreta, pozo, suministros, valla, antorchas y grieta violeta. Son sprites RGBA individuales con pivot a los pies, sorting por coordenada y sin colliders, guardados solo en `Sprites/Props` y renderizados como objetos independientes en Unity y el inspector web. Su estilo, identidad y ubicación son **candidatos**, no arte aprobado. El fondo y seis edificios originales siguen independientes; ninguna regla ni guardado cambia. `QA/validate_props.py` verifica los SHA256, los tamaños y el alfa de los PNG. El pase de arte no certifica PlayMode ni dispositivos físicos.
+
+## Iteración 3 · barrios habitados y arte modular (16/11/2026)
+
+- Un único `QA/city_layout.json` controla los seis edificios independientes, sus hitos I/V, las 16 colocaciones de decoración y siete destellos ambientales. Lo consumen el constructor de escena Unity y el inspector web; el renderizador Pillow lo usa como evidencia no nativa.
+- Seis sprites RGBA nuevos, originales y separados: viviendas mercantiles, puesto de mercado, huertos, arboleda, casas junto al pozo y atalaya. Fuente: atlas generado para esta iteración y dividido sin pintar edificios dentro del fondo. Los sprites fuente se conservan en el paquete de trabajo; todas las versiones finales se almacenan en el repositorio con SHA-256.
+- La asimetría procede de una zona habitada al oeste y una zona productiva/agrícola al sudeste. El trazado empedrado y la muralla originales siguen teniendo simetría; **no se considera corregido el terreno por completo**. Ninguna decoración tiene collider, estado persistente ni recursos propios.
+- Se ha añadido `City2DTorchPulse.cs`: siete overlays de brillo anaranjado reutilizan un PNG de halo de 96 px, sin luces dinámicas costosas. Animación local por tiempo y alpha de SpriteRenderer; en Editor la imagen es estática.
+- Cada edición del layout o importación de un sprite dispara reconstrucción **solo** de la escena sandbox. Nada se añade a Build Settings y no se escribe en la partida.
+- Verificaciones: Pillow + JSON + SHA y navegador interactivo (cuando finalice Actions), **no PlayMode ni prueba física**. Nunca atribuir las composiciones QA a capturas nativas.
+- El PC Windows se utiliza exclusivamente si la reserva viva `windows-runner-heavy` se transfiere a `eldoria-city2d-illustrated-proof-20261116`. El workflow nativo existente comprueba esta condición y marca `skipped` en otro caso; no interferir con Ashen/Visual Reboot. La autorización condicional del propietario no elimina las reservas de otros chats.
+- Pendiente artístico: un terreno reautoría con caminos menos geométricos y más niveles de identidad; no escalar a docenas de edificios antes de ver capturas reales de Unity.

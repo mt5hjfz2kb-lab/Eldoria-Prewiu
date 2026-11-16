@@ -34,38 +34,24 @@
 </head>
 <body>
 <canvas id="world" aria-label="Ciudad de Valoria, toca los edificios para inspeccionarlos"></canvas><div id="veil"></div>
-<div id="hud"><div><div id="top"><div id="crest" aria-hidden="true">⚜</div><div id="heading"><b>VALORIA</b><span>CIUDAD DE LA BRECHA · ESTUDIO 2.5D</span></div><div id="phase">BASTIÓN<b id="phase-value">I</b></div></div><div id="toolbar"><button class="chip" id="tier1" type="button" aria-pressed="true">I–IV</button><button class="chip" id="tier5" type="button" aria-pressed="false">V–IX</button><button class="chip" id="recenter" type="button" aria-label="Centrar vista">⌖</button></div></div><div id="bottom"><div id="status">PRUEBA VISUAL · ARTE SIN VINCULAR A PARTIDAS</div><div id="selection"><div id="selection-mark" aria-hidden="true">⚒</div><div id="selection-main"><b id="name">Explora la ciudad</b><span id="subtitle">Toca un edificio · arrastra para mover · pellizca para ampliar</span></div><button id="detail" type="button">DETALLE</button></div></div></div>
+<div id="hud"><div><div id="top"><div id="crest" aria-hidden="true">⚜</div><div id="heading"><b>VALORIA</b><span>CIUDAD DE LA BRECHA · ESTUDIO 2.5D</span></div><div id="phase">BASTIÓN<b id="phase-value">I</b></div></div><div id="toolbar"><button class="chip" id="tier1" type="button" aria-pressed="true">I–IV</button><button class="chip" id="tier5" type="button" aria-pressed="false">V–IX</button><button class="chip" id="recenter" type="button" aria-label="Centrar vista">⌖</button></div></div><div id="bottom"><div id="status">PRUEBA VISUAL · BARRIOS MODULARES · SIN PARTIDAS</div><div id="selection"><div id="selection-mark" aria-hidden="true">⚒</div><div id="selection-main"><b id="name">Explora la ciudad</b><span id="subtitle">Toca un edificio · arrastra para mover · pellizca para ampliar</span></div><button id="detail" type="button">DETALLE</button></div></div></div>
 <div id="sheet" role="dialog" aria-label="Información de edificio" aria-modal="false"><button id="close" type="button" aria-label="Cerrar">×</button><h2 id="sheettitle"></h2><p id="sheetbody"></p><p>Esta pantalla es una simulación visual. No modifica el juego, los recursos ni el progreso.</p></div>
 <div id="debug"></div>
 <script>
 (()=>{'use strict';
 const canvas=document.getElementById('world'),ctx=canvas.getContext('2d',{alpha:false,desynchronized:false});
 const artPath='../../Sprites/';
-const W=941,H=1672,entries=[
- {id:'cuartel',name:'Cuartel',file:'Cuartel.png',x:206,y:547,s:0.189*1254/860,t:'Preparación de las tropas'},
- {id:'salon',name:'Salón de Héroes',file:'SalonHeroes.png',x:719,y:546,s:0.195*1254/860,t:'Guardia y vínculos de héroes'},
- {id:'bastion',name:'Bastión',file:'Bastion_Nivel01.png',x:470,y:824,s:0.43,t:'Corazón de Valoria'},
- {id:'aserradero',name:'Aserradero',file:'Aserradero.png',x:172,y:964,s:0.213*1254/860,t:'Producción de madera'},
- {id:'granero',name:'Granero',file:'Granero.png',x:751,y:962,s:0.211*1254/860,t:'Reserva de alimentos'},
- {id:'cantera',name:'Cantera',file:'Cantera.png',x:470,y:1178,s:0.225*1254/860,t:'Extracción de piedra'}
- ];
-const decor=[
- {file:'Props/ArbolAntiguo.png',x:319,y:443,s:0.44},
- {file:'Props/MatojosFlores.png',x:608,y:400,s:0.30},
- {file:'Props/MatojosFlores.png',x:611,y:799,s:0.27},
- {file:'Props/MuroDerruido.png',x:493,y:368,s:0.30},
- {file:'Props/CarroMadera.png',x:290,y:1091,s:0.34},
- {file:'Props/PozoPiedra.png',x:660,y:1115,s:0.34},
- {file:'Props/AlmacenBarriles.png',x:815,y:1085,s:0.27},
- {file:'Props/VallaLenador.png',x:315,y:867,s:0.28},
- {file:'Props/AntorchasGuardian.png',x:477,y:868,s:0.20},
- {file:'Props/FisuraBrecha.png',x:527,y:422,s:0.27}
-];
-const imageFiles=['Terreno.png','Bastion_Nivel01.png','Bastion_Nivel05.png',...entries.filter(e=>e.id!=='bastion').map(e=>e.file),...Array.from(new Set(decor.map(e=>e.file)))];
+const W=941,H=1672;
+let entries=[],decor=[],glows=[],imageFiles=[],layoutVersion=0;
+const descriptions={
+ cuartel:'Preparación de las tropas',salon:'Guardia y vínculos de héroes',
+ bastion:'Corazón de Valoria',aserradero:'Producción de madera',
+ granero:'Reserva de alimentos',cantera:'Extracción de piedra'
+};
 const imgs={},alpha={};let artLevel=1,sel=null,zoom=1,centerX=W/2,centerY=H/2,baseScale=1,scale=1,landscape=false,activePointers=new Map(),lastDistance=null,lastPoint=null,dragPx=0,frame=0,ready=false;
 const clicks=[];
 function select(id){sel=entries.find(e=>e.id===id)||null;document.getElementById('sheet').classList.remove('open');document.getElementById('name').textContent=sel?sel.name:'Explora la ciudad';document.getElementById('subtitle').textContent=sel?`${sel.t} · ${sel.id==='bastion'?'Ilustración nivel '+artLevel:'Ilustración base'} `:'Toca un edificio · arrastra para mover · pellizca para ampliar';document.getElementById('detail').style.display=sel?'block':'none';clicks.push(id||null);}
-function tier(level){artLevel=level>=5?5:1;const b=entries.find(e=>e.id==='bastion');b.file=artLevel===5?'Bastion_Nivel05.png':'Bastion_Nivel01.png';b.s=artLevel===5?.47:.43;document.getElementById('tier1').setAttribute('aria-pressed',String(artLevel===1));document.getElementById('tier5').setAttribute('aria-pressed',String(artLevel===5));document.getElementById('phase-value').textContent=artLevel===5?'V':'I';if(sel)select(sel.id);}
+function tier(level){artLevel=level>=5?5:1;const b=entries.find(e=>e.id==='bastion');b.file=artLevel===5?b.level5File:b.baseFile;b.s=artLevel===5?b.scale5:b.baseScale;document.getElementById('tier1').setAttribute('aria-pressed',String(artLevel===1));document.getElementById('tier5').setAttribute('aria-pressed',String(artLevel===5));document.getElementById('phase-value').textContent=artLevel===5?'V':'I';if(sel)select(sel.id);}
 function clampView(){const visibleW=canvas.clientWidth/scale,visibleH=canvas.clientHeight/scale;centerX=Math.min(Math.max(centerX,visibleW/2),Math.max(visibleW/2,W-visibleW/2));centerY=Math.min(Math.max(centerY,visibleH/2),Math.max(visibleH/2,H-visibleH/2));if(visibleW>=W)centerX=W/2;if(visibleH>=H)centerY=H/2;}
 function resize(reset=false){const w=canvas.clientWidth,h=canvas.clientHeight,ratio=Math.min(2,devicePixelRatio||1);canvas.width=Math.ceil(w*ratio);canvas.height=Math.ceil(h*ratio);landscape=w/h>1.2;baseScale=landscape?w/(W*1.04):Math.min(w/W,h/H);scale=baseScale*zoom;if(reset){centerX=W/2;centerY=landscape?670:H/2;zoom=1;scale=baseScale;}clampView();}
 function worldToScreen(x,y){return [(x-centerX)*scale+canvas.clientWidth/2,(y-centerY)*scale+canvas.clientHeight/2];}
@@ -83,9 +69,12 @@ function draw(){frame++;const ratio=canvas.width/canvas.clientWidth;ctx.setTrans
  }
  // flame glows are emissive-only in the web study, no dynamic point lights
  const t=performance.now()/1000;
- for(const [x,y,r] of [[84,193,42],[858,194,42],[105,1239,39],[831,1245,39],[479,1320,31]]){
-  let brightness=.07+.016*Math.sin(t*5+x);
-  const grad=ctx.createRadialGradient(x,y,2,x,y,r);grad.addColorStop(0,`rgba(255,163,65,${brightness})`);grad.addColorStop(1,'rgba(255,121,53,0)');ctx.fillStyle=grad;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+ for(const g of glows){
+  const r=g.radius, pulse=0.18+0.03*Math.sin(t*4.4+g.x*.017);
+  const grad=ctx.createRadialGradient(g.x,g.y,1,g.x,g.y,r);
+  grad.addColorStop(0,`rgba(255,170,73,${(g.opacity*pulse).toFixed(3)})`);
+  grad.addColorStop(1,'rgba(255,121,53,0)');
+  ctx.fillStyle=grad;ctx.beginPath();ctx.arc(g.x,g.y,r,0,Math.PI*2);ctx.fill();
  }
  ctx.restore();requestAnimationFrame(draw);
 }
@@ -102,9 +91,41 @@ canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('poin
 canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;const before=screenToWorld(x,y);zoom=Math.min(2.3,Math.max(1,zoom*(e.deltaY<0?1.12:.89)));scale=baseScale*zoom;const after=screenToWorld(x,y);centerX+=before[0]-after[0];centerY+=before[1]-after[1];clampView();},{passive:false});
 document.getElementById('tier1').onclick=()=>tier(1);document.getElementById('tier5').onclick=()=>tier(5);document.getElementById('recenter').onclick=()=>resize(true);
 document.getElementById('detail').onclick=()=>{if(!sel)return;document.getElementById('sheettitle').textContent=sel.name;document.getElementById('sheetbody').textContent=sel.id==='bastion'?`Bastión · variante gráfica ${artLevel===1?'I (niveles 1–4)':'V (niveles 5–9)'}. En niveles 10–14 y 15–19 se mantiene el último arte disponible hasta crear nuevos hitos.`:`${sel.t}. Ilustración única temporal; los niveles progresan sin cambios de aspecto hasta disponer del siguiente hito.`;document.getElementById('sheet').classList.add('open');};document.getElementById('close').onclick=()=>document.getElementById('sheet').classList.remove('open');
-async function load(){const items=await Promise.all(imageFiles.map(name=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve([name,im]);im.onerror=()=>reject(new Error('Falta '+name));im.src=artPath+name.split('/').map(encodeURIComponent).join('/');})));for(const [name,im] of items){imgs[name]=im;if(name!=='Terreno.png'){const off=document.createElement('canvas');off.width=im.width;off.height=im.height;const c=off.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0);const data=c.getImageData(0,0,im.width,im.height).data;const a=new Uint8Array(im.width*im.height);for(let j=0;j<a.length;j++)a[j]=data[j*4+3];alpha[name]=a;}}ready=true;resize(true);requestAnimationFrame(draw);}
+async function load(){
+ const response=await fetch('../city_layout.json',{cache:'no-store'});
+ if(!response.ok)throw new Error('No se puede cargar city_layout.json');
+ const layout=await response.json();
+ if(layout.schema!==3||layout.coordinate_width!==W||layout.coordinate_height!==H||
+    layout.buildings.length!==6||layout.decor.length!==16||layout.glows.length!==7)
+    throw new Error('Layout de Unity y navegador no coincide');
+ layoutVersion=layout.schema;
+ entries=layout.buildings.map(e=>({
+  id:e.id,name:e.title,file:e.filename,baseFile:e.filename,level5File:e.level5_filename||'',
+  x:e.x,y:e.y,s:e.scale,baseScale:e.scale,scale5:e.level5_scale||0,
+  t:descriptions[e.id]||'Edificio de Valoria'
+ }));
+ decor=layout.decor.map(e=>({id:e.id,file:e.filename,x:e.x,y:e.y,s:e.scale}));
+ glows=layout.glows.map(e=>({...e}));
+ imageFiles=Array.from(new Set(['Terreno.png',...entries.flatMap(e=>[e.file,e.level5File].filter(Boolean)),...decor.map(e=>e.file)]));
+ const items=await Promise.all(imageFiles.map(name=>new Promise((resolve,reject)=>{
+  const im=new Image();im.onload=()=>resolve([name,im]);
+  im.onerror=()=>reject(new Error('Falta '+name));
+  im.src=artPath+name.split('/').map(encodeURIComponent).join('/');
+ })));
+ for(const [name,im] of items){
+  imgs[name]=im;
+  if(name==='Terreno.png')continue;
+  const off=document.createElement('canvas');off.width=im.width;off.height=im.height;
+  const c=off.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0);
+  const data=c.getImageData(0,0,im.width,im.height).data;
+  const a=new Uint8Array(im.width*im.height);
+  for(let j=0;j<a.length;j++)a[j]=data[j*4+3];
+  alpha[name]=a;
+ }
+ ready=true;resize(true);requestAnimationFrame(draw);
+}
 window.addEventListener('resize',()=>resize(false));
-window.city2dDebug={get state(){return {ready,artLevel,selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,clicks:clicks.slice()};},select,tier,clickPoint,recenter:()=>resize(true),worldToScreen};
+window.city2dDebug={get state(){return {ready,artLevel,selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,clicks:clicks.slice()};},select,tier,clickPoint,recenter:()=>resize(true),worldToScreen};
 load().catch(e=>{document.getElementById('status').textContent='ERROR EN RECURSOS: '+e.message;console.error(e);});
 })();
 </script>
