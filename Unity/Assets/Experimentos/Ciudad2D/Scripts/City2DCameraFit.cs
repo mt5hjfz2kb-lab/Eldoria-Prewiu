@@ -74,9 +74,12 @@ namespace Eldoria.Experimentos.Ciudad2D
 
             Vector2 size = ground.sprite.bounds.size;
             float contain = Mathf.Max(size.y * 0.5f, size.x / (2f * aspect));
+            // En retrato se prioriza llenar la pantalla, conservando las seis
+            // parcelas: un recorte lateral moderado evita bandas vacias.
+            // La camara admite desplazamiento X acotado para ver las murallas.
             float desired = nowLandscape
                 ? size.x * landscapeWidthAllowance / (2f * aspect)
-                : contain;
+                : size.y * 0.51f;
             sceneCamera.orthographicSize = Mathf.Clamp(desired / zoom, contain * 0.16f, contain);
             lastWidth = ViewWidth;
             lastHeight = ViewHeight;
