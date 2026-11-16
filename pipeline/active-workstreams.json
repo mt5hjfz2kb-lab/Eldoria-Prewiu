@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T12:52:04.182Z",
+  "updated_at": "2026-11-16T12:59:52.539Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,12 +9745,10 @@
       "ownership_revision": 32,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "GROUND_WEAR_FALLOFF_NATIVE_PENDING",
+      "phase": "GROUND_WEAR_NATIVE_REVIEWED_FURTHER_ART_REQUIRED",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/ExperimentalAshenCitadel/**",
         "tools/ashen-citadel/**",
@@ -9778,22 +9776,22 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "reserved_native_requested",
-        "reason": "Owner directs continuation; exact bounded Unity I-V native capture for normalized wear-mask C# and material comparison"
+        "status": "released_native_complete",
+        "completed_run": 43870533193
       },
       "last_native": {
-        "run": 43866203492,
-        "head": "4a3dcc8d893eb021296ce61f7f113d39d6501313",
-        "artifact": 14225881950,
+        "run": 43870533193,
+        "head": "310cee1f41999a0aec5eee4b88304a55f45a6d5d",
+        "artifact": 14228156458,
         "result": "success",
         "editmode_passed": 7,
         "playmode_passed": 4,
-        "visual_review": "Actual Bastion V 1600x900 and 390x844 examined. Staggered low-contrast stones improved but still too regularly rectangular; all four secondary buildings visible. Ten hashes verified. Current C# normalized dirt/yard falloff correction NOT YET captured.",
+        "visual_review": "10 screenshot hashes verified. Corrected ground mask is mathematically valid and renders, but the visible quality increase is marginal (about 1% of pixels differ by >10 RGB at 1600x900); path still reads as repeated rectangular stones and broad grass is flat. Not ART_APPROVED.",
         "physical_mobile": false
       },
-      "final_source_sha": "3b9c246eb5f0a611873dfa89aa9ea3997aaa7238",
+      "final_source_sha": "310cee1f41999a0aec5eee4b88304a55f45a6d5d",
       "art_approved": false,
-      "next": "Capture latest exact experiment branch source with Unity; inspect courtyard brown-mask transitions and stone path at same camera. Test 7 EditMode/4 PlayMode. Keep main gameplay untouched.",
+      "next": "Architectural-grade premium ground solution: break repeated paver geometry and enrich ground/vegetation structure; verify same-camera true Unity screenshots and iPhone performance separately. Avoid more global color tweaks.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
