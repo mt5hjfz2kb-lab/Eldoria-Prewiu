@@ -27,6 +27,9 @@ for c in list(bpy.data.collections):
 S = bpy.context.scene
 S.render.engine = 'CYCLES'
 S.cycles.samples = 20
+S.cycles.use_denoising = False  # Ubuntu package can lack OpenImageDenoiser
+for layer in S.view_layers:
+    layer.cycles.use_denoising = False
 S.render.threads_mode = 'FIXED'
 S.render.threads = 4
 S.render.resolution_percentage = 100
