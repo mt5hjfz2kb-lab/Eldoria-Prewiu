@@ -44,9 +44,9 @@ def ground(x,y):
 n=81;verts=[];faces=[]
 for j in range(n):
  for i in range(n):
-  x=(i-40)*.65;y=(j-40)*.65
+  x=(i-40)*.65;y=-27+j*.575
   if i in (0,80):x=-90 if i==0 else 90
-  if j in (0,80):y=-90 if j==0 else 90
+  if j in (0,80):y=-27 if j==0 else 19
   verts.append((x,y,ground(x,y)))
 for j in range(n-1):
  for i in range(n-1):a=j*n+i;faces.append((a,a+1,a+n+1,a+n))
@@ -82,8 +82,8 @@ def pine(x,y,h):
   o=mesh('Varied pine crown',vv,[(0,i+1,(i+1)%14+1) for i in range(14)]+[tuple(range(14,0,-1))],7 if j%2 else 6)
   tint_object(o,(random.uniform(.68,.95),random.uniform(.80,1),random.uniform(.73,.92)))
 for i in range(65):
- if i<38:x=random.uniform(-19,20);y=random.uniform(11.5,24)
- else:x=random.choice([-1,1])*random.uniform(14,21);y=random.uniform(-5,16)
+ if i<38:x=random.uniform(-19,20);y=random.uniform(8.8,16.0)
+ else:x=random.choice([-1,1])*random.uniform(14,21);y=random.uniform(-5,13)
  pine(x,y,random.uniform(3.4,7.4))
 # Lower, shaded foreground framing; keep village doorways and path readable.
 for x,y,h in [(-13,-7,6.2),(14,-5,5.8),(-17,-10,4.2)]:pine(x,y,h)
@@ -111,23 +111,24 @@ for x in [-1.65,.60]:
  beam('Warm entrance torch',(x,2.25,0),(x,2.25,1.82),.11,4)
  o=rock((x,2.25,1.9),(.12,.12,.25),12);o.data.materials[0]=materials[1]
 # Workshop identity is an additive, smaller side annex, preserving approved shell.
-cx,cy=7.1,.6
-for x,y in [(cx-4.35,cy-.1),(cx-4.35,cy+2.0),(cx-2.75,cy-.1),(cx-2.75,cy+2.0)]:beam('Workshop lean-to post',(x,y,0),(x,y,2.45),.16,4)
+wx,wy=-7.2,-1.9
+for x,y in [(wx-4.35,wy-.1),(wx-4.35,wy+2.0),(wx-2.75,wy-.1),(wx-2.75,wy+2.0)]:beam('Workshop lean-to post',(x,y,0),(x,y,2.45),.16,4)
 for i in range(7):
- y=cy-.25+i*.37
- slab('Lean-to slate overhang',[(cx-4.7,y,2.35),(cx-2.45,y,3.20),(cx-2.45,y+.42,3.20),(cx-4.7,y+.42,2.35)],3,.11)
-stone_wall(cx-3.6,cy+1.5,0,.95,.95,4.35)
-box('Workshop chimney crown',(cx-3.6,cy+1.5,4.35),(1.2,1.2,.22),1,.05)
-box('Dark workshop chimney opening',(cx-3.6,cy+1.5,4.48),(.65,.65,.04),10,.015)
-box('Workbench',(cx-3.7,cy-.25,1.05),(1.3,.65,.14),4,.045)
-for x in [cx-4.15,cx-3.25]:beam('Workbench leg',(x,cy-.25,.05),(x,cy-.25,1.05),.15,4)
+ y=wy-.25+i*.37
+ slab('Lean-to slate overhang',[(wx-4.7,y,2.35),(wx-2.45,y,3.20),(wx-2.45,y+.42,3.20),(wx-4.7,y+.42,2.35)],3,.11)
+stone_wall(wx-3.6,wy+1.5,0,.95,.95,4.35)
+box('Workshop chimney crown',(wx-3.6,wy+1.5,4.35),(1.2,1.2,.22),1,.05)
+box('Dark workshop chimney opening',(wx-3.6,wy+1.5,4.48),(.65,.65,.04),10,.015)
+box('Workbench',(wx-3.7,wy-.25,1.05),(1.3,.65,.14),4,.045)
+for x in [wx-4.15,wx-3.25]:beam('Workbench leg',(x,wy-.25,.05),(x,wy-.25,1.05),.15,4)
 # Wheel as a legible secondary silhouette on the workshop front.
-wc=Vector((cx-3.65,cy-.65,.80));rr=.64
+wc=Vector((wx-3.65,wy-.65,.80));rr=.64
 for i in range(12):
  a=i*math.tau/12;b=(i+1)*math.tau/12
  p=wc+Vector((math.cos(a)*rr,0,math.sin(a)*rr));q=wc+Vector((math.cos(b)*rr,0,math.sin(b)*rr));beam('Workshop wheel rim',p,q,.13,4)
  if i%2==0:beam('Wheel spoke',wc,p,.08,5)
 # Extra corruption is a removable dressing layer, never overwrites approved building meshes.
+cx,cy=7.1,.6
 def crystal(base,tip,r):
  base=Vector(base)+Vector((cx,cy,0));tip=Vector(tip)+Vector((cx,cy,0));axis=(tip-base).normalized();u=axis.cross(Vector((0,1,0))).normalized();v=axis.cross(u);vv=[]
  for i in range(6):
