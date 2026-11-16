@@ -227,7 +227,8 @@ namespace Eldoria.ArtReboot.Editor
             {
                 var meshPath = Root + "/Materials/Reboot_LowMist_" + layer + ".asset";
                 var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshPath);
-                if (mesh == null)
+                bool createMeshAsset = mesh == null;
+                // Recompute every capture. Reusing a persisted Mesh must not freeze older mist colours.
                 {
                     const int n = 13;
                     var verts = new Vector3[n * n];
@@ -253,12 +254,14 @@ namespace Eldoria.ArtReboot.Editor
                         tris[t++] = i; tris[t++] = i + n; tris[t++] = i + 1;
                         tris[t++] = i + 1; tris[t++] = i + n; tris[t++] = i + n + 1;
                     }
-                    mesh = new Mesh { name = "Low mist vertex alpha " + layer };
+                    if (mesh == null) mesh = new Mesh { name = "Low mist vertex alpha " + layer };
+                    mesh.Clear();
                     mesh.vertices = verts;
                     mesh.colors = colors;
                     mesh.triangles = tris;
                     mesh.RecalculateBounds();
-                    AssetDatabase.CreateAsset(mesh, meshPath);
+                    if (createMeshAsset) AssetDatabase.CreateAsset(mesh, meshPath);
+                    else EditorUtility.SetDirty(mesh);
                 }
                 var go = new GameObject(layer == 0 ? "Low dense ground haze" : "Far hovering mist");
                 go.transform.SetParent(root.transform, false);
