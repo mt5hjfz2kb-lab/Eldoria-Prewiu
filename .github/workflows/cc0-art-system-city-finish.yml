@@ -1,0 +1,93 @@
+name: "CC0 System — coherent Valoria I–V city architecture, real Blender QA"
+on:
+  push:
+    branches: [experiment/eldoria-cc0-art-system-20261116]
+    paths:
+      - ".github/workflows/cc0-art-system-city-finish.yml"
+      - "tools/cc0-art-system/recompose_city.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-cc0-city-finish-ubuntu
+  cancel-in-progress: false
+jobs:
+  source-art:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            tools/cc0-art-system
+            docs/cc0-art-system
+            Unity/Assets/Art_Reboot/CC0System
+      - name: Syntax guard
+        run: |
+          python3 -m py_compile tools/cc0-art-system/author_bastion.py
+          python3 -m py_compile tools/cc0-art-system/recompose_city.py
+      - name: Install only free Blender CPU and no paid services
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+      - name: Generate original source geometry & textures
+        env:
+          ELDORIA_SKIP_LOOKDEV_RENDERS: "1"
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/author_bastion.py 2>&1 | tee "$RUNNER_TEMP/cc0-author.log"
+          grep -q ELDORIA_CC0_AUTHORING_PASS "$RUNNER_TEMP/cc0-author.log"
+      - name: Recompose physically connected city and show 5 genuine Bastion levels
+        run: |
+          set -euo pipefail
+          blender -b -t 4 --python-exit-code 1 --python tools/cc0-art-system/recompose_city.py 2>&1 | tee "$RUNNER_TEMP/city-finish.log"
+          grep -q ELDORIA_CC0_COHERENT_CITY_FINISH_PASS "$RUNNER_TEMP/city-finish.log"
+      - name: Validate PNG dimensions, all five true 3D models and editable source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct
+          base=Path("Unity/Assets/Art_Reboot/CC0System/CityFinish")
+          images=Path("docs/cc0-art-system/previews/city-finish")
+          assert (base/"CC0_Valoria_CityFinish.blend").read_bytes().startswith(b'BLENDER')
+          for stage in range(1,6):
+              path=base/("CC0_Valoria_CityStage"+str(stage)+".glb")
+              raw=path.read_bytes()
+              assert len(raw)>100000 and raw[:4]==b'glTF',path
+              assert struct.unpack("<I",raw[8:12])[0]==len(raw),path
+              length,kind=struct.unpack("<I4s",raw[12:20])
+              assert kind==b'JSON',path
+              obj=json.loads(raw[20:20+length])
+              print("ELDORIA_MODEL_QA",stage,len(raw),"meshes",len(obj.get("meshes",[])),
+                    "materials",len(obj.get("materials",[])))
+          dims={"CC0_City_BastionI_1600x900.png":(1600,900),
+                "CC0_City_BastionV_1600x900.png":(1600,900),
+                "CC0_City_BastionV_Close_1600x900.png":(1600,900),
+                "CC0_City_BastionV_Portrait_720x1200.png":(720,1200)}
+          for n,wh in dims.items():
+              p=images/n
+              raw=p.read_bytes()
+              assert len(raw)>100000 and raw[:8]==b'\x89PNG\r\n\x1a\n'
+              assert struct.unpack(">II",raw[16:24])==wh
+              print("ELDORIA_CITY_FRAME_QA",n,len(raw))
+          meta=json.loads((images/"city-finish-evidence.json").read_text())
+          assert meta["stage_count"]==5 and meta["third_party_3d_in_exports"] is False
+          assert meta["unity_native_render"] is False and meta["provisional_art_not_approved"] is True
+          print("COHERENT_CITY_PROOF_PASS_NO_UNITY_OR_ART_APPROVAL")
+          PY
+      - name: Preserve preview captures and physically importable owned models for inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-cc0-coherent-city-five-stages
+          path: |
+            docs/cc0-art-system/previews/city-finish/
+            Unity/Assets/Art_Reboot/CC0System/CityFinish/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Confirm original public branch was not modified by this job
+        run: |
+          git diff --name-only | head -30
+          echo "READ_ONLY_ISOLATED_NATIVE_BLENDER_PROOF"
