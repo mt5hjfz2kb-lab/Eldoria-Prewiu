@@ -1,5 +1,5 @@
 {
-  "generator": "ashen-premium-ui-atlas-v1",
+  "generator": "ashen-premium-floating-ui-v2",
   "assets": [
     {
       "name": "AshenPremiumPanel.png",
@@ -28,6 +28,20 @@
       "height": 128,
       "size": 1179,
       "sha256": "39324882415c4e3ccd59e1026e63a350faac020ed0cc58068c5d92f340424d17"
+    },
+    {
+      "name": "AshenPremiumMedallion.png",
+      "width": 96,
+      "height": 96,
+      "size": 5692,
+      "sha256": "6a00eeab8181dc14b9752388d9ea3e0123c64413cf45c4114909128331bbb061"
+    },
+    {
+      "name": "AshenPremiumStatusChip.png",
+      "width": 256,
+      "height": 80,
+      "size": 9091,
+      "sha256": "8277a0a1bf2996a2dffd4a3d8b3b4bd55a017109a7b2830d4d47b493c04b6c93"
     },
     {
       "name": "AshenPremiumGlyph_castle.png",
