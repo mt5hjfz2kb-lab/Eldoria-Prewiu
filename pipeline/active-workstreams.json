@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-16T13:40:29.331Z",
+  "updated_at": "2026-11-16T13:48:10.747Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9745,7 +9745,7 @@
       "ownership_revision": 33,
       "branch": "experiment/ashen-citadel-i-v-20261115",
       "status": "active",
-      "phase": "GROUND_WEAR_NATIVE_REVIEWED_FURTHER_ART_REQUIRED",
+      "phase": "PREMIUM_TERRAIN_REBUILD_NATIVE_CANDIDATE",
       "claimed_at": "2026-11-15T20:04:55.940Z",
       "art_production_routing": "required",
       "resources": [
@@ -9778,8 +9778,8 @@
       "continuation_authority": "Owner: Haz eso after five-building structural redesign proposal. Unify primary structures, preserve settlement spacing and gameplay.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "returned_turn_available_to_ashen",
-        "previous_visual_run": 43876725485
+        "status": "reserved",
+        "reason": "Owner-authorized substantial rebuild of terrain, approach, courtyard, vegetation and contact in isolated Ashen City; same-camera Unity I-V acceptance proof."
       },
       "last_native": {
         "run": 43870533193,
@@ -9793,7 +9793,7 @@
       },
       "final_source_sha": "310cee1f41999a0aec5eee4b88304a55f45a6d5d",
       "art_approved": false,
-      "next": "Architectural-grade premium ground solution: break repeated paver geometry and enrich ground/vegetation structure; verify same-camera true Unity screenshots and iPhone performance separately. Avoid more global color tweaks.",
+      "next": "Native compile/capture and 7 EditMode+4 PlayMode, inspect actual images. Do not mark ART_APPROVED if no substantial visual improvement.",
       "ownership_history": [
         {
           "owner": "chatgpt-ashen-citadel-art-production-20261115",
