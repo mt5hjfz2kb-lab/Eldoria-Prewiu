@@ -11,11 +11,12 @@ const author=function author(){
   function poly(a,m){const inds=[];for(const pos of a){vertices.push(pos);inds.push(vertices.length);}faces[m||"stone"].push(inds);}
   function box(x,y,z,w,h,d,m="stone"){
    if(w<=0||h<=0||d<=0)throw Error("Invalid box");
-   const x0=x-w/2,x1=x+w/2,z0=z-d/2,z1=z+d/2,y0=y,y1=y+h;
+   const x0=x-w/2,x1=x+w/2,z0=z-d/2,z1=z+d/2,y0=y<=.55?-.10:y,y1=y+h;
    const v=[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]];
    for(const ii of [[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7],[3,2,1,0]])poly(ii.map(i=>v[i]).reverse(),m);
   }
   function prism(x,y,z,r,h,n=8,m="stone"){
+   const topY=y+h;if(y<=.20)y=-.10;h=topY-y;
    const B=[],T=[];for(let i=0;i<n;i++){let a=2*Math.PI*i/n;B.push([x+Math.cos(a)*r,y,z+Math.sin(a)*r]);T.push([x+Math.cos(a)*r,y+h,z+Math.sin(a)*r]);}
    poly(B,m);poly([...T].reverse(),m);
    for(let i=0;i<n;i++)poly([T[i],T[(i+1)%n],B[(i+1)%n],B[i]],m);
@@ -100,7 +101,7 @@ const author=function author(){
     for(let i=0;i<n;i++)poly([high[i],high[(i+1)%n],low[(i+1)%n],low[i]],"basalt");
     for(let i=0;i<n;i++)poly([[0,top,0],high[(i+1)%n],high[i]],"moss");
   }
-  function base(){contourPlate(10.3,9.1,-.24,.045,24,1.2);
+  function base(){ // No surrounding plinth: structural footings meet the continuous meadow.
    box(0,.07,-8.0,3.4,.10,5.7,"cut");for(let i=0;i<5;i++)box(0,.10+i*.11,-11+i*.41,3.8-i*.3,.19,.50,"stoneLight");
   }
   // Ashen identity: the surviving west watchtower, split-chevron stonework,
@@ -181,7 +182,7 @@ const author=function author(){
    }
   }
   function aux(kind){
-   if(kind!=="Pine"&&kind!=="Rock")contourPlate(3.15,3.00,-.15,.19,12,.70);
+   // No display plinths: posts, walls and feet extend slightly into terrain.
    if(kind==="Sawmill"){
      // Open timber workshop; posts, saw bench and stacked sawn boards visible under roof.
      box(0,.18,1.15,3.5,2.30,.35,"wood");
@@ -191,13 +192,20 @@ const author=function author(){
      for(let x of [-1,1])box(x,.2,-.25,.20,.95,.65,"wood");
      for(let i=0;i<5;i++)box(-1.55+i*.70,.20,-2.1,.48,.30,1.45,i%2?"oak":"wood");
      for(let i=0;i<3;i++)box(2.1,.2+i*.26,.15,1.0,.22,2.55,"oak");
-     crest(0,2.92,-1.84,.33);
+     crest(0,2.92,-1.84,.43);
+     // Saw blade and timber frame give the workshop a readable working identity.
+     box(.1,1.37,-.24,1.65,.40,.055,"iron");
+     for(let i=0;i<9;i++)cone(-.62+i*.18,1.77,-.24,.055,.10,3,"iron");
+     box(-1.75,2.22,-1.45,.1,.12,1.1,"oak");
+     box(-1.75,1.65,-1.95,.72,.55,.08,"wood");crest(-1.75,1.86,-2.02,.24);
    }else if(kind==="Barracks"){
      box(0,.2,0,3.8,2.9,3.9,"stone");roof(0,3.1,0,4.4,4.45,1.55);door(0,.2,-1.98,1.45,2.3);
      for(let x of [-1.52,1.52])buttress(x,-2.05,2.65,.35);
      // Low fortified side watch platform, shield emblem, paired spear rack.
      box(2.05,.20,.65,1.3,3.6,2.6,"stone");battlements(2.05,3.8,-.65,1.5);battlements(2.05,3.8,1.95,1.5);
-     crest(0,2.95,-2.06,.46);banner(-1.45,2.6,-1.55);
+     crest(0,2.95,-2.06,.64);banner(-1.45,2.6,-1.55);
+     box(1.18,3.15,1.1,.62,2.05,.68,"basalt");box(1.18,5.1,1.1,.82,.22,.88,"cut");
+     for(let x of [-1.05,1.05]){box(x,1.15,-2.3,.42,.73,.1,"banner");crest(x,1.60,-2.38,.26);}
      for(let x of [-.65,-.22,.22,.65]){box(x,.18,-2.70,.055,1.7,.07,"wood");cone(x,1.88,-2.70,.105,.3,4,"iron");}
    }else if(kind==="Granary"){
      // Raised timber crib on stone feet; ventilation gap clearly visible.
@@ -208,7 +216,9 @@ const author=function author(){
      for(let y of [1.42,2.85])box(0,y,-1.99,3.45,.13,.18,"wood");
      for(let x of [-.8,.8]){box(x,2.1,-2.01,.54,.53,.06,"iron");for(let y=2.12;y<2.64;y+=.14)box(x,y,-2.07,.62,.065,.09,"oak");}
      for(let i=0;i<4;i++)box(.15,.2+i*.22,-2.9+i*.25,1.10,.23,.38,"wood");
-     crest(0,3.25,-1.99,.3);prism(2,.20,.8,.48,.82,9,"oak");
+     crest(0,3.25,-1.99,.43);prism(2,.20,.8,.48,.82,9,"oak");
+     roof(0,5.0,0,1.20,1.45,.45);box(0,4.6,0,.8,.5,1.05,"wood");
+     for(let z of [-.6,1.65]){prism(2.15,.18,z,.42,.70,9,"oak");prism(2.15,.27,z,.44,.09,9,"iron");}
    }else if(kind==="Stoneworks"){
      // Low open mason's shelter and a timber lifting gantry identify its purpose.
      box(0,.2,.8,3.35,1.85,1.65,"cut");roof(0,2.05,.8,3.9,2.25,1.05);
@@ -216,7 +226,9 @@ const author=function author(){
      box(0,3.5,-1.5,4.1,.32,.35,"oak");box(.5,1.25,-1.5,.06,2.3,.06,"iron");
      box(.5,.85,-1.5,.95,.65,.65,"stoneLight");
      for(let i=0;i<6;i++)box((i%3)*.8-1.25,.20+Math.floor(i/3)*.43,-2.45,.7,.40,.68,i%2?"stoneLight":"stone");
-     crest(0,2.13,-.35,.30);
+     crest(0,2.13,-.35,.45);
+     prism(-1.25,.18,-3.1,.55,.26,8,"cut");box(-1.25,.48,-3.1,.55,.65,.6,"stoneLight");
+     box(1.2,.95,-1.7,.8,.10,.18,"iron");
    }else if(kind==="Pine"){
      prism(0,0,0,.17,5.2,7,"wood");
      // Asymmetric overlapping boughs: irregular silhouette, no stacked lampshades.
@@ -268,7 +280,7 @@ const author=function author(){
     stats.Pine={vertices:ls.filter(x=>x.startsWith("v ")).length,polygons:faces.length,triangles:faces.reduce((a,f)=>a+f.trim().split(/\s+/).length-3,0)};continue;
   }
   const m=mesh("Ashen_"+kind);m.aux(kind);let result=m.finish();outputs[dir+`Ashen_${kind}.obj`]=result.obj;stats[kind]=result.stats;}
- outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"ARCHITECTURAL_IDENTITY_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
+ outputs["tools/ashen-citadel/art-manifest.json"]=JSON.stringify({name:"Ashen Citadel",state:"GROUNDED_SETTLEMENT_CANDIDATE_NATIVE_PENDING",authorship:"Directed west watchtower / lower hall architecture and functional auxiliaries; original 18-color palette; geometry source code, Blender review and editable export",levels:["Old watch redoubt","Stone enclosure","Garrison ward","Gatehouse stronghold","Ashen watch citadel"],coordinateSystem:"X/Y(up)/Z; front is -Z; unit metres",stats,palette,reuse:"Original architecture selected after inventory inspection; no legacy Bastion and no mismatched productions",limits:["Unity import/render not yet certified","Gameplay and mobile performance not yet tested"]},null,2)+"\n";
  return outputs;
 };
 for (const [p,content] of Object.entries(author())){fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,content,"utf8");console.log(p,Buffer.byteLength(content));}

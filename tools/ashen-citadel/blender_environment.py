@@ -28,10 +28,10 @@ def build_environment(level,palette,meshes_dir,import_obj,remap,pbr):
         mesh_obj.name="ASHEN · authored continuous valley + wild verge"
     # Look-dev assumes the building has been completed at that stage.
     # Gameplay visibility and timers remain driven solely by saved PlayerState.
-    add_model("Ashen_Sawmill",[(-12.4,-2.5,1.0,.10)])
-    if level>=2:add_model("Ashen_Barracks",[(12.2,-2.8,1.0,-.18)])
-    if level>=3:add_model("Ashen_Granary",[(-12.5,7.3,1.0,.18)])
-    if level>=5:add_model("Ashen_Stoneworks",[(12.7,7.5,1.0,-.20)])
+    add_model("Ashen_Sawmill",[(-17.2,-6.2,1.0,0)])
+    if level>=2:add_model("Ashen_Barracks",[(16.8,-7.5,1.0,0)])
+    if level>=3:add_model("Ashen_Granary",[(-16.6,7.8,1.0,0)])
+    if level>=5:add_model("Ashen_Stoneworks",[(17.4,8.8,1.0,0)])
 
     rng=random.Random(4923)
     trees=[]

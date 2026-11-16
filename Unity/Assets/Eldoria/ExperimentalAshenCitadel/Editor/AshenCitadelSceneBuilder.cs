@@ -103,16 +103,16 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 imported.SetActive(n==1);stages[n-1]=imported;
             }
             var sawmill=Import("Ashen_Sawmill",sceneRoot.transform);
-            sawmill.transform.position=new Vector3(-13.4f,.08f,-4.5f);
+            sawmill.transform.position=new Vector3(-17.2f,0f,-6.2f);
             BindClick(sawmill,"Aserradero","sawmill","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             var barracks=Import("Ashen_Barracks",sceneRoot.transform);
-            barracks.transform.position=new Vector3(13.4f,.08f,-4.5f);
+            barracks.transform.position=new Vector3(16.8f,0f,-7.5f);
             BindClick(barracks,"Cuartel","barracks","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             var granary=Import("Ashen_Granary",sceneRoot.transform);
-            granary.transform.position=new Vector3(-13.4f,.08f,4.8f);
+            granary.transform.position=new Vector3(-16.6f,0f,7.8f);
             BindClick(granary,"Granero","granary","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             var stoneworks=Import("Ashen_Stoneworks",sceneRoot.transform);
-            stoneworks.transform.position=new Vector3(13.4f,.08f,4.8f);
+            stoneworks.transform.position=new Vector3(17.4f,0f,8.8f);
             BindClick(stoneworks,"Taller de piedra","stoneworks","building",new Vector3(0,2f,0),new Vector3(5.1f,5f,5.1f));
             // Distinctive landscape frame, sparse around the playable fortress.
             var treePrefab=AssetDatabase.LoadAssetAtPath<GameObject>(MeshPath+"Ashen_Pine.obj");
@@ -130,7 +130,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 float angle=(float)random.NextDouble()*Mathf.PI*2f;
                 float radius=Mathf.Sqrt((float)random.NextDouble())*8f;
                 var pos=new Vector3(grove.x+Mathf.Cos(angle)*radius,0,grove.y+Mathf.Sin(angle)*radius*.75f);
-                if(Mathf.Abs(pos.x)<18f && Mathf.Abs(pos.z)<13f)continue;
+                if(Mathf.Abs(pos.x)<23f && Mathf.Abs(pos.z)<15f)continue;
                 if(Mathf.Abs(pos.x)<6f && pos.z<0)continue;
                 var tree=ImportPrefab(treePrefab,sceneRoot.transform,"Pine grove · "+i);
                 pos.y=ValleyHeight(pos.x,pos.z);tree.transform.position=pos;
@@ -142,6 +142,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             {
                 float angle=i*2.349963f;
                 float radius=19f+20f*(float)random.NextDouble();
+                if(radius<25f)continue;
                 var rock=ImportPrefab(rockPrefab,sceneRoot.transform,"Natural fieldstone · "+i);
                 rock.transform.position=new Vector3(Mathf.Cos(angle)*radius,-.04f,Mathf.Sin(angle)*radius*.87f);
                 var rp=rock.transform.position;rp.y=ValleyHeight(rp.x,rp.z)-.04f;rock.transform.position=rp;
@@ -319,6 +320,11 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             return -.06f+(noise*.55f+Mathf.Sin(x*.12f-z*.14f)*.35f)*t+
                 t*t*2.2f;
         }
+        private static float SegmentDistance(Vector2 p,Vector2 a,Vector2 b)
+        {
+            var d=b-a;float t=Mathf.Clamp01(Vector2.Dot(p-a,d)/d.sqrMagnitude);
+            return Vector2.Distance(p,a+d*t);
+        }
         private static Texture2D CreateValleyGroundTexture()
         {
             const int size=1024;
@@ -345,16 +351,22 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 // Small-scale mineral flecks provide ground scale without a tiled grid.
                 float grit=Mathf.Clamp01((fleck-.64f)*5f);
                 col=Color.Lerp(col,new Color(.49f,.46f,.35f),grit*route*.32f);
-                float edge=Mathf.Max(Mathf.Abs(wx)/10f,Mathf.Abs(wz)/9f);
-                float apron=(1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(1f,1.25f,edge)))*Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.88f,1f,edge));
-                col=Color.Lerp(col,new Color(.27f,.265f,.205f),apron*.52f);
-                // Soft contact wear around existing auxiliaries, not rectangular plots.
-                for(int ix=0;ix<2;ix++)for(int iz=0;iz<2;iz++){
-                    float bx=ix==0?-13.4f:13.4f,bz=iz==0?-4.5f:4.8f;
-                    float distance=Mathf.Sqrt((wx-bx)*(wx-bx)+(wz-bz)*(wz-bz));
-                    float wear=(1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(2.6f,5.2f,distance)))*(.62f+detail*.28f);
-                    col=Color.Lerp(col,new Color(.32f,.29f,.225f),wear*.48f);
+                // Connected foot traffic: long soft paths, never circular plots or raised pads.
+                var homes=new[]{new Vector2(-17.2f,-6.2f),new Vector2(16.8f,-7.5f),
+                    new Vector2(-16.6f,7.8f),new Vector2(17.4f,8.8f)};
+                foreach(var home in homes){
+                    float side=home.x<0?-1f:1f;
+                    var start=new Vector2(side*2.8f,-12f);
+                    var end=new Vector2(home.x,home.y-2.7f);
+                    // Route via the outside of the walls, instead of crossing the fortress.
+                    var bend=new Vector2(side*13.1f,-11.7f);
+                    float dist=Mathf.Min(SegmentDistance(new Vector2(wx,wz),start,bend),
+                        SegmentDistance(new Vector2(wx,wz),bend,end));
+                    float worn=1f-Mathf.SmoothStep(.55f,1.9f+(detail-.5f)*.8f,dist);
+                    col=Color.Lerp(col,new Color(.39f,.33f,.245f)*(.89f+detail*.22f),worn*.67f);
                 }
+                float dry=Mathf.PerlinNoise(wx*.19f+37f,wz*.19f+7f);
+                col=Color.Lerp(col,new Color(.40f,.39f,.26f),Mathf.Clamp01((dry-.60f)*3f)*.30f);
                 pixels[y*size+x]=col;
             }
             tex.SetPixels(pixels);tex.Apply(true,false);

@@ -12,14 +12,15 @@ const makeTextures=function makeTextures(){
    const grain=hash(Math.floor(x/5),Math.floor(y/6),3)*.07+hash(x,y,5)*.035;
    let v=.80+grain;
    if(kind==="Stone"){
-     const row=Math.floor(y/32),shift=(row%2)*16;
-     const xx=(x+shift+2*Math.sin(y*.19+row*2))%32,yy=y%32;
-     const block=hash(Math.floor((x+shift)/32),row,11);
-     // Broad brushed stone tones and softened irregular joints, not a wire grid.
-     v=.82+block*.105+grain*.24+.024*Math.sin(x*.22+y*.13);
-     if(xx<1.1||yy<1.1)v=.70+grain*.4;
-     else if(xx>29.5||yy>29)v=.80+grain*.4;
-     if(yy>3&&yy<6)v+=.025;
+     const row=Math.floor(y/16),shift=(row%2)*13+(row%3)*5;
+     const width=24+(row%3)*8;
+     const xx=(x+shift+Math.sin(y*.23+row))%width,yy=y%16;
+     const block=hash(Math.floor((x+shift)/width),row,11);
+     // Long unequal coursed stones, quieter mortar, mineral variation within each block.
+     v=.81+block*.13+grain*.20+.025*Math.sin(x*.12+y*.17);
+     if(xx<.8||yy<.8)v=.73+grain*.3;
+     else if(yy>14.5)v-=.018;
+     if(yy>2&&yy<4)v+=.018;
    } else if(kind==="Roof"){
      const row=Math.floor(y/16),xx=(x+(row%2)*16)%32,yy=y%16;
      v=.76+hash(Math.floor((x+(row%2)*16)/32),row,27)*.16+grain*.20;

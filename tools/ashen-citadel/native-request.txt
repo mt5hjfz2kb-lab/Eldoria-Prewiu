@@ -1,1 +1,1 @@
-Architecture capture investigation: retain first frame, warm render after level/camera switch, compare actual PNGs for transient stretched triangles. 2026-11-16.
+Grounded settlement: no plates, separated auxiliaries, worn links, quieter stone, functional identity; native I-V verification. 2026-11-16T10:30Z

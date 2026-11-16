@@ -62,9 +62,8 @@ const makeLandscape=function makeLandscape(){
   }
   // Sculpted grassy hummocks and beds of undergrowth, strongly less repetitive
   // than the tree-ring algorithm; all triangles are actual 3D geometry.
-  const excluded=(x,z)=> (Math.abs(x)<9&&Math.abs(z)<10)|| (Math.abs(x)<4.5&&z<0&&z>-42)||
-    (Math.abs(x-13.4)<4.2&&Math.abs(z+4.5)<4.0)|| (Math.abs(x+13.4)<4.2&&Math.abs(z+4.5)<4.0)||
-    (Math.abs(x-13.4)<4.2&&Math.abs(z-4.8)<4.0)|| (Math.abs(x+13.4)<4.2&&Math.abs(z-4.8)<4.0);
+  const excluded=(x,z)=> (Math.abs(x)<11&&Math.abs(z)<11)|| (Math.abs(x)<4.5&&z<0&&z>-42)||
+    [[-17.2,-6.2],[16.8,-7.5],[-16.6,7.8],[17.4,8.8]].some(([a,b])=>Math.abs(x-a)<4.7&&Math.abs(z-b)<4.7);
   let undergrowth=0;
   for(let i=0;i<325;i++){
     const x=(rand()-.5)*86,z=(rand()-.5)*78;
