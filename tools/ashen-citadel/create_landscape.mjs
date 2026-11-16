@@ -12,7 +12,8 @@ const makeLandscape=function makeLandscape(){
   function height(x,z){
     let rad=Math.hypot(x*.85,z),s=Math.max(0,Math.min(1,(rad-18)/29));
     let lev=(noise(x,z)*.55+Math.sin(x*.12-z*.14)*.35)*s + s*s*2.2;
-    return -.060+lev;
+    const settlement=.19*(1-Math.max(0,Math.min(1,(rad-20)/14)));
+    return -.060+lev+settlement;
   }
   function emit(p,mat,uv){
     let idx=[];
@@ -54,7 +55,7 @@ const makeLandscape=function makeLandscape(){
     const path=(t,dir)=>{
       const z=-8-34*t,x=Math.sin((z+8)*.15)*.66 + Math.sin((z+8)*.52)*.17;
       const width=2.05+.12*Math.sin(t*17)+.15*Math.sin(t*46);
-      const xx=x+dir*width, yy=height(xx,z)+.045;
+      const xx=x+dir*width, yy=height(xx,z)+.006;
       return [xx,yy,z];
     };
     const a=path(p,-1),b=path(p,1),c=path(q,1),d=path(q,-1);
@@ -101,13 +102,38 @@ const makeLandscape=function makeLandscape(){
       }
     }
   }
-  // Broken flagstones disappear into the approach rather than outlining a platform.
-  for(let i=0;i<34;i++){
-    const z=-12-rand()*18,x=(rand()-.5)*3.7+Math.sin(z*.15)*.5,y=height(x,z)+.072;
-    const w=.12+rand()*.25,d=.10+rand()*.25;
-    const a=[x-w,y,z-d],b=[x-w*.7,y,z+d],c=[x+w,y,z+d*.6],e=[x+w*.8,y,z-d*.9];
-    tri(a,b,c,i%4===0?"basalt":"cut");tri(a,c,e,i%4===0?"basalt":"cut");
+  // Flush chipped paving: dense courtyard, worn public route and open thresholds.
+  const previousPavingSeed=seed;
+  let paving=0;
+  function flag(x,z,w,d,tone){
+    const y=height(x,z)+.035+rand()*.008,c=.07+rand()*.07;
+    const points=[[x-w+c,z-d],[x+w-c,z-d],[x+w,z-d+c],
+      [x+w,z+d-c],[x+w-c,z+d],[x-w+c,z+d],[x-w,z+d-c],[x-w,z-d+c]];
+    const ring=points.map(([px,pz])=>[px,y,pz]);
+    for(let k=0;k<8;k++)tri([x,y,z],ring[(k+1)%8],ring[k],tone);
+    paving++;
   }
+  for(let row=0;row<17;row++)for(let col=0;col<18;col++){
+    const z=-5.45+row*.65,x=-5.65+col*.65+(row%2)*.30;
+    if(x>5.8||z>5.45)continue;
+    if((x>-3.8&&x<-.45&&z>.6&&z<4.5)||(x>-.95&&x<4.1&&z>-2.9&&z<2.5))continue;
+    if(rand()<.09)continue;
+    flag(x+(rand()-.5)*.04,z+(rand()-.5)*.04,.29+rand()*.02,.27+rand()*.035,
+      rand()<.25?"basalt":"cut");
+  }
+  for(let row=0;row<20;row++)for(let col=0;col<6;col++){
+    const z=-11.45-row*.68,x=(col-2.5)*.64+Math.sin((z+8)*.15)*.66;
+    if(rand()<.16+row*.026||Math.abs(x)>1.9+rand()*.25)continue;
+    flag(x,z,.26+rand()*.04,.25+rand()*.04,rand()<.3?"basalt":"cut");
+  }
+  for(const [px,pz] of [[-17.2,-6.2],[16.8,-7.5],[-16.6,7.8],[17.4,8.8]]){
+    for(let row=0;row<3;row++)for(let col=0;col<7;col++){
+      if(rand()<.22+row*.15)continue;
+      flag(px+(col-3)*.64,pz-2.95-row*.68,.26,.26,rand()<.4?"basalt":"cut");
+    }
+  }
+  // Preserve unrelated rock positions from the preceding 34-stone path.
+  seed=previousPavingSeed;for(let i=0;i<136;i++)rand();
   // Strata: natural basalt outcrops, mesh (not random cubes) with stone palettes.
   let stones=0;
   for(let i=0;i<70;i++){
@@ -137,7 +163,7 @@ const makeLandscape=function makeLandscape(){
     if(mat!==current){lines.push("usemtl "+mat);current=mat;}
     lines.push("f "+inds.map(i=>`${i}/${i}`).join(" "));
   }
-  return {obj:lines.join("\n")+"\n",stats:{vertices:vs,faces:fs,triangles:fs,undergrowth_blades:undergrowth,boulders:stones,materials:[...new Set(faces.map(x=>x[0]))].sort()}};
+  return {obj:lines.join("\n")+"\n",stats:{vertices:vs,faces:fs,triangles:fs,undergrowth_blades:undergrowth,boulders:stones,inset_paving_stones:paving,materials:[...new Set(faces.map(x=>x[0]))].sort()}};
 };
 const result=makeLandscape();
 const dst="Unity/Assets/Eldoria/ExperimentalAshenCitadel/Meshes/AshenLandscape.obj";

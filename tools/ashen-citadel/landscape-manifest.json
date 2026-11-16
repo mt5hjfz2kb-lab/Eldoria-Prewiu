@@ -1,9 +1,10 @@
 {
-  "vertices": 33207,
-  "faces": 11069,
-  "triangles": 11069,
+  "vertices": 40347,
+  "faces": 13449,
+  "triangles": 13449,
   "undergrowth_blades": 1443,
   "boulders": 63,
+  "inset_paving_stones": 306,
   "materials": [
     "basalt",
     "cut",

@@ -386,7 +386,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
             float noise=Mathf.Sin(x*.41f+Mathf.Cos(z*.18f))*Mathf.Cos(z*.47f)*.5f+
                 Mathf.Sin(x*.11f+z*.24f)*.38f+Mathf.Sin(x*.82f-z*.60f)*.12f;
             return -.06f+(noise*.55f+Mathf.Sin(x*.12f-z*.14f)*.35f)*t+
-                t*t*2.2f;
+                t*t*2.2f+.19f*(1f-Mathf.Clamp01((rad-20f)/14f));
         }
         private static float SegmentDistance(Vector2 p,Vector2 a,Vector2 b)
         {
@@ -415,7 +415,7 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                 // Two worn wheel tracks and a mossy centre, with irregular soft margins.
                 float tracks=Mathf.Exp(-Mathf.Pow((Mathf.Abs(wx-routeX)-.90f)/.42f,2f));
                 float brokenEdge=.72f+.28f*Mathf.PerlinNoise(wx*.8f+61f,wz*.8f+21f);
-                col=Color.Lerp(col,new Color(.42f,.36f,.26f)*(.91f+detail*.18f),route*brokenEdge*(.58f+.25f*tracks));
+                col=Color.Lerp(col,new Color(.42f,.36f,.26f)*(.91f+detail*.18f),route*brokenEdge*(.82f+.15f*tracks));
                 // Small-scale mineral flecks provide ground scale without a tiled grid.
                 float grit=Mathf.Clamp01((fleck-.64f)*5f);
                 col=Color.Lerp(col,new Color(.49f,.46f,.35f),grit*route*.32f);
@@ -432,16 +432,19 @@ namespace Eldoria.ExperimentalAshenCitadel.Editor
                     float dist=Mathf.Min(SegmentDistance(new Vector2(wx,wz),start,bend),
                         SegmentDistance(new Vector2(wx,wz),bend,end));
                     float worn=1f-Mathf.SmoothStep(.55f,1.9f+(detail-.5f)*.8f,dist);
-                    col=Color.Lerp(col,new Color(.39f,.33f,.245f)*(.89f+detail*.22f),worn*.78f);
+                    col=Color.Lerp(col,new Color(.39f,.33f,.245f)*(.89f+detail*.22f),worn*.93f);
                     float hx=wx-home.x,hz=wz-home.y;
-                    float activity=Mathf.Exp(-((hx-.25f)*(hx-.25f)/10f+(hz+2.2f)*(hz+2.2f)/4.5f));
-                    activity*=Mathf.SmoothStep(.20f,.75f,Mathf.PerlinNoise(wx*.9f+11f,wz*.9f+36f));
+                    float activity=Mathf.Exp(-((hx-.25f)*(hx-.25f)/13f+(hz+1.0f)*(hz+1.0f)/13f));
+                    activity*=.78f+.22f*Mathf.PerlinNoise(wx*.9f+11f,wz*.9f+36f);
                     var workTone=homeIndex==0?new Color(.50f,.41f,.25f):homeIndex==2?new Color(.48f,.44f,.26f):
                         homeIndex==3?new Color(.49f,.47f,.38f):new Color(.35f,.30f,.22f);
-                    col=Color.Lerp(col,workTone,activity*.75f);
+                    col=Color.Lerp(col,workTone,activity*.96f);
                 }
                 float dry=Mathf.PerlinNoise(wx*.19f+37f,wz*.19f+7f);
                 col=Color.Lerp(col,new Color(.40f,.39f,.26f),Mathf.Clamp01((dry-.60f)*3f)*.30f);
+                float yardEdge=Mathf.Max(Mathf.Abs(wx)/8.3f,Mathf.Abs(wz)/6.9f);
+                float yard=1f-Mathf.SmoothStep(.84f,1.13f+(detail-.5f)*.12f,yardEdge);
+                col=Color.Lerp(col,new Color(.36f,.315f,.25f)*(.88f+detail*.24f),yard*.94f);
                 pixels[y*size+x]=col;
             }
             tex.SetPixels(pixels);tex.Apply(true,false);
