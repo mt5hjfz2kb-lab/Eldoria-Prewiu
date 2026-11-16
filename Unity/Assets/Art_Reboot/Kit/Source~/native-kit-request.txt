@@ -1,5 +1,6 @@
-FASE 2 FINAL: Unity 6 real capture of 31 interchangeable modular kit parts.
-Source 906eb2b6cbcf34ca9af1115057940ea078a64173. Blender verified 36,366 triangles, 3 materials, same approved atlas 256x256.
-Capture grid, three distinct modular buildings same 42°/−13° camera, corrupted detail.
-Geometry approved in Phase 1 never touched. Evaluate actual PNG before artistic sign-off.
-Do not touch main or the Ashen experiment. Bounded shared Windows turn.
+FASE 2— FINAL native Unity capture, owner-requested, isolated art/visual-reboot source ad1453f45625653dab5e16209bd930e00ba6c7ac.
+Exactly 31 modular Kit FBX, 37,968 source triangles, 3 shared materials, approved Hero_Atlas_256.png intact.
+Scene: home bell tower, low smithy chimney + lean-to and corrupted ruins, from Kit pieces only; compact 44 pine forest, joined paths.
+Use Phase1-approved 42deg/yaw -13 camera; 38m camera distance to remove pink veil; low amber light with blue-violet shadow and dusk gradient.
+Save 2400x1350 kit gallery, 1600x900 hamlet, portrait & corrupt detail, scenes in GitHub, true polygon inventory, source SHA.
+Do not touch Phase1 original buildings, main game, Ashen assets or Phase3. Wait owner art approval.
