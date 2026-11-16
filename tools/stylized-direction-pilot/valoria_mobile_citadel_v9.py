@@ -195,7 +195,7 @@ shield(x,y-9.56,base+9.12,.83)
 # Compact twin front octagonal turrets with recognisable paired slate caps.
 for side in (-1,1):
     tx=x+side*10.20;ty=y-6.15
-    octagon('front fortress flanking stone tower',tx,ty,base,8.52,2.36)
+    octagon('front fortress flanking stone tower',tx,ty,base,2.36,8.52)
     cone('front octagonal turret',tx,ty,base+8.74,2.7,3.36,NAVY)
     for zz in (base+3.15,base+5.8):
         block('turret warm slim window',(tx,ty-2.42,zz),
@@ -208,7 +208,7 @@ for side in (-1,1):
           (1.1,.14,1.90),BANNER,.04)
 # One asymmetrical *short* imperial belfry at the rear; only single tall point.
 bx,by=x+6.1,y+5.0
-octagon('command bell tower',bx,by,base+6.9,7.25,2.62,CREAM)
+octagon('command bell tower',bx,by,base+6.9,2.62,7.25,CREAM)
 cone('command only spire',bx,by,base+14.4,2.93,4.5,NAVY_LIGHT)
 block('command tower illuminated arched face',
       (bx,by-2.66,base+12.1),(.74,.29,1.55),GLASS,.09)
