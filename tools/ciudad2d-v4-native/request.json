@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "comparison": "premium V3 accepted candidate versus isolated V4 with 2 cropped art layers (Cuartel functional archery targets and shadow)",
+  "source_assets_sha": {
+    "Cuartel_Entrenamiento_RecorteV1.png": "63e328378003e01d57c2bbda51d30c53e21382a8adb9ffc1121ee3c21f46e124",
+    "Cuartel_Entrenamiento_RecorteV1_Shadow.png": "5caa4da6c80658ee77e8f7a067142e42bca532ca435601be44b7e7a7260473d3"
+  },
+  "allow_native": true,
+  "art_approved": false,
+  "physical_iphone": "PENDING",
+  "no_gameplay_changes": true,
+  "expected": "11 real Unity 6.3 frames and one Editor-discovered test entering PlayMode including UnderConstruction test",
+  "run_previous_valid": 44116723739
+}
