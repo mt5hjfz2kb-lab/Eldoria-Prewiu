@@ -60,6 +60,8 @@ jobs:
         run: |
           python Unity/Assets/Experimentos/Ciudad2D/BlenderPilot/Source~/verify_pilot.py \
             --dir "$RUNNER_TEMP/city2d-blender"
+          python Unity/Assets/Experimentos/Ciudad2D/BlenderPilot/Source~/prepare_pilot_assets.py \
+            --dir "$RUNNER_TEMP/city2d-blender"
           python - <<'PY'
           import hashlib,pathlib,os
           root=pathlib.Path(os.environ['RUNNER_TEMP'])/'city2d-blender'
