@@ -291,10 +291,15 @@ jobs:
         run: |
           & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_quality_v4_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
 
-      - name: Build separate Premium V1 city and prove actual PlayMode controls
+      - name: Six-mode native A-F art comparison incl independent Quarry (60 renders)
         shell: powershell
         run: |
-          & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
+          & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_quality_v5_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
+
+      - name: Build separate Premium V2 scene with four buildings and genuine PlayMode
+        shell: powershell
+        run: |
+          & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v2_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
 
       - name: Preserve evidence, log and exact Unity source identity
         if: always()
@@ -311,6 +316,10 @@ jobs:
             ${{ runner.temp }}/city2d-quality-v2-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-quality-v3-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-quality-v4-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-quality-v5-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-premium-v2-scene-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-premium-v2-playmode-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-premium-v2-playmode-${{ github.run_id }}.xml
             ${{ runner.temp }}/city2d-premium-scene-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-premium-playmode-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-premium-playmode-${{ github.run_id }}.xml
@@ -319,6 +328,12 @@ jobs:
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableEvidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV1.unity
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV1.unity.meta
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV5Evidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV5Evidence/*.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/*.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV2.unity
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV2.unity.meta
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/*.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV3Evidence/*.png
