@@ -1,0 +1,265 @@
+{
+  "schema": 1,
+  "v3_source_run": 44116723739,
+  "v3_artifact": 14344216728,
+  "v4_source_run": 44129165952,
+  "v4_artifact": 14350165548,
+  "source_commit": "a087785f19f60d3b2db27860763975004c1a01f3",
+  "engine": "Unity",
+  "mode": "Editor_RenderTexture",
+  "native_frame_count_v3": 11,
+  "native_frame_count_v4": 11,
+  "full_v3_capture_sha256": [
+    {
+      "file": "premium_bastion1_390x844.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "premium_bastion3_390x844.png",
+      "sha256": "777f4b1e16ac077576050e75a962887314ec9643e1f767c86a7e3280a9b29e41",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "premium_bastion5_390x844.png",
+      "sha256": "107acb83881919d34a9f275b7c34654a916bac3cf20048d31b9aeb39ba1da524",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532.png",
+      "sha256": "9f4d850998b6a2e07edce54df21fce4f6f5cedd566096f5d55544c06899e2187",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_844x390.png",
+      "sha256": "6d27f5d747db52df686ba567d5eef125787b0576b795f65d255ddab48c6c2721",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "0edcb7d36625909365f64095b33a71050e6026944c3e75e0b3d37b7954340459",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "1d6ed3e175d80247a3f19589792ab0dc56f5ae6784aa7f3ac14df5e33cf9ba9b",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_granero_close.png",
+      "sha256": "1da422b557d1395f30b9c88356acd78209136f57346780ba73d6a847db94dc1a",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_cantera_close.png",
+      "sha256": "df6f4a05e4c2869eae15942c0a369de8f9c4fda114f87c1ab5e9800c51e9688c",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_quarry_built_390x844.png",
+      "sha256": "2579c801e42c061752f9c614392b4039a739ed17d432b7a374def54b143ffa3e",
+      "width": 390,
+      "height": 844,
+      "stage": 5,
+      "quarry_built_qa_only": true
+    },
+    {
+      "file": "premium_bastion5_quarry_built_detail_1170x2532.png",
+      "sha256": "f5674eeefde109655b69786e4e5afbf1e199355408953b2fa06b40d57bddafaf",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5,
+      "quarry_built_qa_only": true
+    }
+  ],
+  "full_v4_capture_sha256": [
+    {
+      "file": "premium_bastion1_390x844.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "premium_bastion3_390x844.png",
+      "sha256": "5311a4f3b377f374631fb4f3a5ab16dfe50d803358d868a84f6aa1bf7ac77324",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "premium_bastion5_390x844.png",
+      "sha256": "c868ac3b43e7e6d3e06429bc0b96aadd7534b16b9a64044f49d8b5b90d125b79",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532.png",
+      "sha256": "48ca707c0466711a5ad05c301d78465d74435de0e56ebf58f49fe34784b0c0c1",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_844x390.png",
+      "sha256": "6d27f5d747db52df686ba567d5eef125787b0576b795f65d255ddab48c6c2721",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "ec861ced82f67d6b7ae12d22d688a708728fd765ebe98225be6118d8cc54ffca",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "bab8d4bab8aa4f0dfbc9412adc20ca7a74c9106adadd8c64ad6a853218034312",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_granero_close.png",
+      "sha256": "1da422b557d1395f30b9c88356acd78209136f57346780ba73d6a847db94dc1a",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_1170x2532_cantera_close.png",
+      "sha256": "df6f4a05e4c2869eae15942c0a369de8f9c4fda114f87c1ab5e9800c51e9688c",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "premium_bastion5_quarry_built_390x844.png",
+      "sha256": "ef5d606e692336eaa9befe9c9092435e1de5a8e9c786a98b28c3ec242aaf29b2",
+      "width": 390,
+      "height": 844,
+      "stage": 5,
+      "quarry_built_qa_only": true
+    },
+    {
+      "file": "premium_bastion5_quarry_built_detail_1170x2532.png",
+      "sha256": "f5674eeefde109655b69786e4e5afbf1e199355408953b2fa06b40d57bddafaf",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5,
+      "quarry_built_qa_only": true
+    }
+  ],
+  "v3_artifact_zip_sha256": "653bfd6a07f474e027881475bfcaa575b0db4c36cf664dab2deb96439aac37f0",
+  "v4_artifact_zip_sha256": "713da9ed32ced7f22061a11cae6e8ed8d442b2d3d580955ff10747202eae3f0f",
+  "original_v4_frames": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion1_390x844.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion3_390x844.png",
+      "sha256": "5311a4f3b377f374631fb4f3a5ab16dfe50d803358d868a84f6aa1bf7ac77324"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion5_390x844.png",
+      "sha256": "c868ac3b43e7e6d3e06429bc0b96aadd7534b16b9a64044f49d8b5b90d125b79"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion5_1170x2532.png",
+      "sha256": "48ca707c0466711a5ad05c301d78465d74435de0e56ebf58f49fe34784b0c0c1"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion5_844x390.png",
+      "sha256": "6d27f5d747db52df686ba567d5eef125787b0576b795f65d255ddab48c6c2721"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "ec861ced82f67d6b7ae12d22d688a708728fd765ebe98225be6118d8cc54ffca"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/premium_bastion5_quarry_built_390x844.png",
+      "sha256": "ef5d606e692336eaa9befe9c9092435e1de5a8e9c786a98b28c3ec242aaf29b2"
+    }
+  ],
+  "derived_pairwise_reviews": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_Bastion1_V3_V4_AB.jpg",
+      "sha256": "6ae96a890d7d6454852ddc7a4a90811390c728e2d798462e6068ad86db61e76b",
+      "not_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_Bastion3_V3_V4_AB.jpg",
+      "sha256": "0b9abdbe6df062686f596f0d7479cf45c152f223e29b1dbd4c20191295a94252",
+      "not_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_Bastion5_V3_V4_AB.jpg",
+      "sha256": "1edcf663042950196582667fd7eaf02803ed137d14b7378a896a774e10332e4e",
+      "not_native_capture": true
+    }
+  ],
+  "archived_separate_Unity_scene": {
+    "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV4_44129165952.unity",
+    "sha256": "50828c0e678337e459d394ad8c734efe2d5cfd9196d8cbeab7e29c7b38d6266c",
+    "Unity_saved_scene": true,
+    "generated_from_native_run": 44129165952
+  },
+  "difference_metrics_are_diagnostics_not_art_scores": {
+    "1": {
+      "whole_mean_rgb": 0.0,
+      "cuartel_roi_mean_rgb": 0.0,
+      "other_areas_mean_rgb": 0.0,
+      "difference_bbox": null
+    },
+    "3": {
+      "whole_mean_rgb": 0.1454,
+      "cuartel_roi_mean_rgb": 2.4164,
+      "other_areas_mean_rgb": 0.0,
+      "difference_bbox": [
+        81,
+        246,
+        123,
+        288
+      ]
+    },
+    "5": {
+      "whole_mean_rgb": 0.1454,
+      "cuartel_roi_mean_rgb": 2.4164,
+      "other_areas_mean_rgb": 0.0,
+      "difference_bbox": [
+        81,
+        246,
+        123,
+        288
+      ]
+    }
+  },
+  "canon_quarry_stage5": "Available, not Built",
+  "post_built_quarry_fixture_only": true,
+  "originals_preserved": true,
+  "no_main_or_gameplay_changes": true,
+  "art_approved": false,
+  "physical_iPhone": "NOT_TESTED"
+}
