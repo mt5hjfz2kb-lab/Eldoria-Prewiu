@@ -50,7 +50,7 @@ def isolate(image):
     corners=np.concatenate([pixels[:70,:70].reshape(-1,3),
                             pixels[:70,-70:].reshape(-1,3),
                             pixels[-70:,:70].reshape(-1,3),
-                            pixels[-70,-70:].reshape(1,3)])
+                            pixels[-70:,-70:].reshape(-1,3)])
     # Preserve actual corner RGB as a recorded, source-dependent estimate,
     # not invented black or a global hue/saturation transform.
     bg=np.median(corners,axis=0)
