@@ -1,0 +1,71 @@
+name: Ciudad2D - conservar pruebas nativas Forja V3 en rama aislada
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-ai/persist_ab_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: ciudad2d-forja-native-archive-ubuntu-only
+  cancel-in-progress: false
+jobs:
+  archive-real-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-ai/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+            /Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/forja_guardia/v3/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6
+      - name: Download exact prior Unity artifact from official GitHub Actions API
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/14312049118/zip" \
+            --output /tmp/city2d-unity-forja-v3-isolated.zip
+          test "$(wc -c </tmp/city2d-unity-forja-v3-isolated.zip)" -gt 100000000
+      - name: Revalidate 10 original Unity PNG hashes, produce archival A/B with unchanged controls
+        run: python tools/ciudad2d-ai/persist_native_forja_v3.py
+      - name: Keep durable artifact independent of commit result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-forja-v3-genuine-native-review-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/QA/ForjaV3_NATIVE_AB_390x844.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ForjaV3_NATIVE_DETAIL_A_B.jpg
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/forja_guardia/v3/UNITY_REAL_AB_EVIDENCE.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve curated genuine-Unity evidence on isolated branch, remove one-time request
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-ai/persist_ab_request.json
+          git add --sparse -- \
+            Unity/Assets/Experimentos/Ciudad2D/QA/ForjaV3_NATIVE_AB_390x844.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/ForjaV3_NATIVE_DETAIL_A_B.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/forja_guardia/v3/UNITY_REAL_AB_EVIDENCE.json
+          git diff --cached --quiet && { echo 'Missing native comparison output'; exit 1; }
+          git commit -m 'qa(city2d): preserve authentic 10-SHA Forge V3 A/B and zero-change controls'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
