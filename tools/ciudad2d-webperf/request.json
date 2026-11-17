@@ -15,5 +15,5 @@
   "notes": "Only package artifact for localhost/Wi-Fi. iPhone physical playtesting cannot be asserted from CI.",
   "retry": 2,
   "previous_run": 44196010124,
-  "previous_failure": "Unity compilation CS0234 due Application namespace collision; fixed using UnityEngine.Application.dataPath on three references."
+  "previous_failure": "Unity editor C# compiler error CS0234: Application.dataPath resolved to Eldoria.Application namespace; fixed with fully qualified UnityEngine.Application.dataPath at three occurrences."
 }
