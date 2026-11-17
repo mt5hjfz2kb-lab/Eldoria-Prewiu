@@ -6,6 +6,11 @@ on:
     paths:
       - 'Unity/Assets/Experimentos/Ciudad2D/ArtBible/**'
       - '.github/workflows/ciudad2d-visual-bible.yml'
+      - 'Unity/Assets/Experimentos/Ciudad2D/QA/ambient_life_v1.json'
+      - 'Unity/Assets/Experimentos/Ciudad2D/QA/ambient_art_manifest_v1.json'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DAmbientMotion.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DAmbientSceneFactory.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Humo_Valoria_*.png'
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +25,9 @@ jobs:
           sparse-checkout: |
             Unity/Assets/Experimentos/Ciudad2D/ArtBible
             Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Props
+            Unity/Assets/Experimentos/Ciudad2D/Scripts
+            Unity/Assets/Experimentos/Ciudad2D/QA
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -48,6 +56,8 @@ jobs:
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_forja_v3.py
       - name: 'Ensure true Bastion I-V art status — five native milestones, only two unique masters'
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_bastion_stages.py
+      - name: Validate living city stage policy, archived smoke sources and 10 visual-only effects
+        run: python Unity/Assets/Experimentos/Ciudad2D/QA/validate_ambient_life.py
       - uses: actions/upload-artifact@v4
         with:
           name: ciudad2d-visual-bible-manifest-${{ github.run_id }}
