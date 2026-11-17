@@ -39,11 +39,11 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         static void BuildCore(bool capture)
         {
             var previous=EditorSceneManager.GetSceneManagerSetup();
-            if(!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if(!UnityEngine.Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
             try
             {
-                if(Application.isBatchMode)
+                if(UnityEngine.Application.isBatchMode)
                 {
                     var scratch=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
                     if(!EditorSceneManager.SaveScene(scratch,Root+"QA/PremiumPreviewScratch.unity"))
@@ -99,7 +99,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             }
             finally
             {
-                if(!Application.isBatchMode && previous!=null && previous.Length>0)
+                if(!UnityEngine.Application.isBatchMode && previous!=null && previous.Length>0)
                     EditorSceneManager.RestoreSceneManagerSetup(previous);
             }
         }
@@ -151,7 +151,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             string path=AssetDatabase.GetAssetPath(sprite);
             if(!path.StartsWith(Root,StringComparison.Ordinal))
                 throw new InvalidOperationException("Non-City2D visual source");
-            string physical=Path.GetFullPath(Path.Combine(Application.dataPath,
+            string physical=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
                 "..",path.Replace('/',Path.DirectorySeparatorChar)));
             var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);
             try
@@ -179,7 +179,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             var fit=camera!=null?camera.GetComponent<City2DCameraFit>():null;
             if(camera==null||fit==null||!camera.orthographic)
                 throw new InvalidOperationException("Premium capture lost ortho camera");
-            var folder=Path.GetFullPath(Path.Combine(Application.dataPath,"..",Output));
+            var folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",Output));
             Directory.CreateDirectory(folder);
             var report=Path.Combine(folder,"evidence.json");
             if(File.Exists(report))File.Delete(report);
