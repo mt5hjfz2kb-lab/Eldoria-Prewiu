@@ -1,6 +1,6 @@
 # Eldoria · Ciudad 2.5D ilustrada, hitos I/V (sandbox)
 
-**Estado:** obra gráfica y código preparados; composición auditada con Pillow; **sin captura de Unity ni compilación PlayMode certificada**. La escena presente en Git está vacía hasta que el Editor importe los ocho sprites y la regenere. No afirmar que la ciudad es jugable hasta probar PlayMode y punteros.
+**Estado actualizado (17/11/2026):** importación/compilación y **12 capturas auténticas de Unity Editor** verificadas en el run [44013497619](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44013497619), fuente exacta `3d4d2b441b3546e85d92a9f6fb4672b1e8b7fb01`. Archivo `QA/NATIVE_EVIDENCE_20261117.json` y galería `QA/native-I-III-V.jpg`. **No es PlayMode, QA de dispositivo físico, aprobación artística ni integración de gameplay**. La escena de Git es un marcador que el Editor regenera en un checkout aislado; no añadirla a Build Settings sin pruebas posteriores.
 
 **Rama única de este pase:** `art/ciudad-2d-hitos-1-5-20261116`, derivada de `experimento-ciudad-2d` en `1e3d2215451aa2db78c1db3e703608b556e17240`. `main`, escenas reales, sistemas y guardados no se han editado. No añadir `Experimento_Ciudad2D.unity` a Build Settings hasta aprobar arte, QA Unity y perfiles móviles.
 

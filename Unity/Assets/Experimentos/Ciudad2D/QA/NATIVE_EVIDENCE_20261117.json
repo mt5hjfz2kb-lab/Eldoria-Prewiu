@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "source_repository": "mt5hjfz2kb-lab/Eldoria-Prewiu",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "exact_unity_source": "3d4d2b441b3546e85d92a9f6fb4672b1e8b7fb01",
+  "unity_version": "6000.3.23f1",
+  "run_id": 44013497619,
+  "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44013497619",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "artifact": {
+    "id": 14298285831,
+    "name": "ciudad2d-real-unity-44013497619",
+    "size_zip_bytes": 16180605,
+    "zip_digest_sha256": "3a9120ae52a1c0f6ceab2c134642a9c0762b57af5de68bc5ce7d50a5e21b4d99",
+    "expires_on": "2026-12-01"
+  },
+  "report": {
+    "engine": "Unity",
+    "mode": "Editor_RenderTexture_no_PlayMode",
+    "capture_count": 12,
+    "all_capture_dimensions_and_sha256_independently_verified": true,
+    "visual_milestones": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "width_height": [
+      [
+        390,
+        844
+      ],
+      [
+        844,
+        390
+      ],
+      [
+        1170,
+        2532
+      ],
+      [
+        1600,
+        900
+      ]
+    ],
+    "domain_snapshot_read_only_pass": true,
+    "level_transition_pass": true,
+    "visibility_policy_pass": true,
+    "six_sprite_colliders_pass": true,
+    "game_state_modified": false,
+    "art_approved": false,
+    "device_qa": "PENDING"
+  },
+  "contact_sheet": {
+    "path": "Unity/Assets/Experimentos/Ciudad2D/QA/native-I-III-V.jpg",
+    "sha256": "5d7e5748a7f11b24034219e568d06d2912ceb4bc193807e360efc51debd40ee8",
+    "source_photos": [
+      "bastion-1-390x844.png",
+      "bastion-3-390x844.png",
+      "bastion-5-390x844.png"
+    ],
+    "montage_is_derivative_of_genuine_unity_captures": true
+  },
+  "limitations": [
+    "No PlayMode pointer/touch tests.",
+    "No physical iPhone or Android performance test.",
+    "No approval of art style; square plinths and mismatched illumination remain.",
+    "No Save/Reload gameplay integrated in this sandbox.",
+    "No WebGL deployment of the candidate."
+  ],
+  "evidence_retention_note": "The original native artifact expires in 14 days; the curated contact sheet and provenance manifest are committed permanently."
+}
