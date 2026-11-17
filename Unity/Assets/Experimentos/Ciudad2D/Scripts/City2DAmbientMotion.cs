@@ -14,15 +14,18 @@ namespace Eldoria.Experimentos.Ciudad2D
         public enum MotionKind { Smoke, Ember }
 
         private SpriteRenderer visual;
-        private CityBuilding owner;
-        private string effectId = "";
-        private MotionKind kind;
-        private Vector3 anchor;
-        private Vector3 sourceScale;
-        private float opacity, risePixels, driftPixels, period, phase;
-        private int minimumBastion = 1;
-        private int currentStage = 1;
-        private bool configured;
+        // CRITICAL: these values are authored in Editor and MUST survive Unity
+        // scene serialization, domain reload and real PlayMode. Unserialized
+        // fields caused the failed genuine PlayMode run #44052522821.
+        [SerializeField] private CityBuilding owner;
+        [SerializeField] private string effectId = "";
+        [SerializeField] private MotionKind kind;
+        [SerializeField] private Vector3 anchor;
+        [SerializeField] private Vector3 sourceScale;
+        [SerializeField] private float opacity, risePixels, driftPixels, period, phase;
+        [SerializeField] private int minimumBastion = 1;
+        [SerializeField] private int currentStage = 1;
+        [SerializeField] private bool configured;
         private bool activeForStage;
 
         public string EffectId => effectId;
