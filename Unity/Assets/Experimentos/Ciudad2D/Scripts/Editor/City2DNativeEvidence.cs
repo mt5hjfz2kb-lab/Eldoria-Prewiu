@@ -171,6 +171,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 }
                 CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1170, 2532, records);
                 CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1600, 900, records);
+                // True Unity RenderTexture close-up at iPhone resolution: not a Photoshop enlargement.
+                CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1170, 2532, records, 1.42f);
 
                 // Una captura por si misma nunca debe aprobar una experiencia de juego.
                 string json = "{\n" +
@@ -182,6 +184,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"six_sprite_colliders_pass\":true,\n" +
                     "  \"game_state_modified\":false,\n" +
                     "  \"quality_import_uncompressed_pass\":true,\n" +
+                    "  \"quality_crisp_bake_pass\":true,\n" +
                     "  \"retina_terrain_rendered_pass\":true,\n" +
                     "  \"quality_import_no_mipmap_pass\":true,\n" +
                     "  \"art_approved\":false,\n" +
@@ -214,7 +217,11 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 new { File="Retina/Terreno_Organico.png", Width=1412, Height=2508 },
                 new { File="Bastion_Nivel05.png", Width=764, Height=854 },
                 new { File="Bastion_Nivel01.png", Width=762, Height=699 },
-                new { File="Cuartel.png", Width=860, Height=860 }
+                new { File="Cuartel.png", Width=860, Height=860 },
+                new { File="Generated/Cuartel_Crisp.png", Width=860, Height=860 },
+                new { File="Generated/Aserradero_Crisp.png", Width=860, Height=860 },
+                new { File="Generated/Granero_Crisp.png", Width=860, Height=860 },
+                new { File="Generated/Cantera_Crisp.png", Width=860, Height=860 }
             };
             foreach (var sprite in expected)
             {
@@ -246,13 +253,15 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         }
 
         private static void CaptureOne(string root, Camera cam, City2DCameraFit fit,
-            CityBuilding bastion, int level, int width, int height, List<string> evidence)
+            CityBuilding bastion, int level, int width, int height, List<string> evidence,
+            float evidenceZoom = 1f)
         {
             var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
             if (bridge == null) throw new InvalidOperationException("Bridge not found during capture");
             bridge.SetDemoBastionLevel(level);
             AssertMilestone(bastion, level >= 5 ? 5 : 1);
             fit.SetEvidenceViewport(width, height);
+            if (evidenceZoom > 1.001f) fit.SetEvidenceZoom(evidenceZoom);
             var rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
             var previous = RenderTexture.active;
             var previousTarget = cam.targetTexture;
@@ -270,7 +279,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 byte[] png = readback.EncodeToPNG();
                 if (png == null || png.Length < 8000)
                     throw new InvalidOperationException("PNG de Unity vacio");
-                string filename = "bastion-" + level + "-" + width + "x" + height + ".png";
+                string filename = "bastion-" + level + "-" + width + "x" + height + (evidenceZoom > 1.001f ? "-detalle" : "") + ".png";
                 File.WriteAllBytes(Path.Combine(root, filename), png);
                 using (var sha = SHA256.Create())
                 {
