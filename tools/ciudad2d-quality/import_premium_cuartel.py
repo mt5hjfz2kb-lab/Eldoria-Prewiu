@@ -17,7 +17,7 @@ DEST=CITY/'Sprites/Candidates'
 QA=CITY/'QA'
 REQUEST=Path(__file__).parent/'pending_cuartel_premium.json'
 EXPECTED_SOURCE='644c3ffdf8429a710606fbff0d09b72671a5c8e5e18b152e4d761c821f9157ae'
-EXPECTED_RESULT='1a83ed05571a4d847417df5053fb496ecfecbd6b208da41737656c9802707948'
+EXPECTED_RESULT='0dcb8edb8237621f13893893edce20fec51deb1248df8bcbc3a89ea3990b4062'
 DATASET='/datasets/1ce6ec50-03fd-4c60-b5f0-0d33cb7ddce9.png'
 def sha(data):return hashlib.sha256(data).hexdigest()
 def save_meta(path):
