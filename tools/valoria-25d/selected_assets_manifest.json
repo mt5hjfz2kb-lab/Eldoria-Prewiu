@@ -1,0 +1,574 @@
+{
+  "schema": 1,
+  "origin_main_sha": "904ff183ffb9053f68b9c0f359b2e9d3d40ce805",
+  "artist_source_commit": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+  "unity_source_sha256": "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06",
+  "runtime_scripts": [
+    "City2DAmbientGating.cs",
+    "City2DAmbientMotion.cs",
+    "City2DCameraFit.cs",
+    "City2DPilotHud.cs",
+    "City2DPremiumShadowGate.cs",
+    "City2DProgressionPolicy.cs",
+    "City2DStateBridge.cs",
+    "City2DTorchPulse.cs",
+    "CityBuilding.cs"
+  ],
+  "resolved_scene_guids": [
+    "00bbb31007d8183f204292fbb77681fd",
+    "03c700d122e350bc9755bbdd7a100d83",
+    "0d51c7ad19ae4208bfb997dd8c9f9112",
+    "15b5f040b8336a5f2eca7b86924bdce0",
+    "193b1e9c3228acc31cc8113910996a38",
+    "1f47cfdf75ec4a33a605f32ad469a1c7",
+    "254a2ca7d20e4c678813090a78c7d5c6",
+    "36f6ff7cd4b41d14f79d571a92d59f76",
+    "3dbe8ae16731bca7f792d3cc40a82984",
+    "3ef02f72c9386544a3199dba43d0e653",
+    "4355b8eef5b94df69bea509576d570ee",
+    "4835621cab825bdc8f64c9d468701559",
+    "55381edacaaa5651bd100c10493cda1c",
+    "566213fb054b4cb1a8895145617f2fc8",
+    "5efc07b06fcb607931f319c545558e56",
+    "63376534720123b79bd2e5c1179801db",
+    "6751e0503f3b11f186f33d09a04661c8",
+    "6a6616ef0da644fabd70acf29cc5dbb9",
+    "6b60e1e57510145a885bb688468afc77",
+    "7d637ab34de2c55ae1b2a4405ed71859",
+    "8ad721bc07d68683448da7dcc62149cf",
+    "8f51f9cfda7e4f22a97aeb1b1c892e72",
+    "ab3648c117964db5895a8388a1e9acaa",
+    "afffda9e0f31e365720322a6db603baa",
+    "befc4df0f1b3e972a618442aa45200dc",
+    "bf2309a52ae422034b616c75cabac399",
+    "c00e97daa856423587da35947adbc2ee",
+    "c8329c4c305761d92bb7480e39284c2d",
+    "cc0749f886504705b8d1627fc4b0cc72",
+    "d68a45cc39189903f3194c7896e0e60f",
+    "d8bbd5d4d703b264cdec16615dc1581e",
+    "db6cfefd7b115d3dae2b1405a99f621e",
+    "dbbd9d0014582f2f81bae9dc26b8cf7f",
+    "e0c949fc1cfc5b1583fcc8a0c3472447",
+    "e1b41619f2925b9133320654a1c49c82",
+    "e25cd01d94cc49b9abe7f152fc784b87",
+    "e4079382b8d35d2d700b21d3979b810e",
+    "ece438f5eb882557fe2f4a00063c4a67",
+    "f3d5bc666aeb42869b3062356f974693"
+  ],
+  "external_engine_or_main_guids": [
+    "0000000000000000e000000000000000",
+    "0000000000000000f000000000000000",
+    "01614664b831546d2ae94a42149d80ac",
+    "56666c5a40171f54783dd416a44f42bf",
+    "76c392e42b5098c458856cdf6ecaaaa1",
+    "ca9f5fa95ffab41fb9a615ab714db018"
+  ],
+  "note_external_guids": "Unity built-in or canonical main GUID; validate in real Editor, never pretend all are sourced.",
+  "four_premium_candidates": [
+    "Cuartel_Premium_V2.png",
+    "Cuartel_Premium_ShadowV2.png",
+    "Aserradero_Premium_V2.png",
+    "Aserradero_Premium_V2_Shadow.png",
+    "Granero_Premium_V1.png",
+    "Granero_Premium_V1_Shadow.png",
+    "Cantera_Premium_V1.png",
+    "Cantera_Premium_V1_Shadow.png"
+  ],
+  "copied_files": [
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DAmbientGating.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DAmbientGating.cs",
+      "sha256": "a79beb2d69ae2f0b5a00d26fa599137018a6b714288435c47f92d21164b9ec85",
+      "bytes": 1041
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DAmbientGating.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DAmbientGating.cs.meta",
+      "sha256": "fc584b6edd0f480ca8281eda458c78374701a1966f95d07db458fcf3a34e45ae",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DAmbientMotion.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DAmbientMotion.cs",
+      "sha256": "733943b46c8e4ce18757f3ee0e6b450829f18fc8f1e8afdb186c810275b5397d",
+      "bytes": 4564
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DAmbientMotion.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DAmbientMotion.cs.meta",
+      "sha256": "8032e3f8123bbc8ed828b58165ff85e4936b900104fc285330f1434fb7d21447",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DCameraFit.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DCameraFit.cs",
+      "sha256": "0f2261539b2f7ba8b583e07d18636a91169308bced1d818afb6a1d61b00adc13",
+      "bytes": 9166
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DCameraFit.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DCameraFit.cs.meta",
+      "sha256": "400e7551aa4f18ed0c23dc74fb91071e21ff343a6a0e93885fa361e06de95962",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DPilotHud.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DPilotHud.cs",
+      "sha256": "5a54a54ace2717bb749389a0f600690e6185e2f8d1a5f6a7f9fc134db9f232fc",
+      "bytes": 7690
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DPilotHud.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DPilotHud.cs.meta",
+      "sha256": "f3ea15ede59befb70334f99a3178d3d135bb1021ddc64aeb1bde96b19e825f40",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DPremiumShadowGate.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DPremiumShadowGate.cs",
+      "sha256": "e72db9ef3364a6859de3af8873cee6a095ecc514cdbc8eb71dc05dcd90fc0c5d",
+      "bytes": 1708
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DPremiumShadowGate.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DPremiumShadowGate.cs.meta",
+      "sha256": "7038ed5b418ed320a1bc946ef45eda04e848725f785029714a1ecbbcb9bbfb49",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DProgressionPolicy.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DProgressionPolicy.cs",
+      "sha256": "ee17b32db03c611969457d31617482bbee2ac828a21fd734ce3eb56193b1d4bd",
+      "bytes": 4475
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DProgressionPolicy.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DProgressionPolicy.cs.meta",
+      "sha256": "304a6edb6b869eb604c30b37bcefe3568d79005085db3f381557c73a7703ec69",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DStateBridge.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DStateBridge.cs",
+      "sha256": "05d07eb69f353af1490a388356cd704fc52a5ab46c5cd97ecfe4d10f2344e6df",
+      "bytes": 5088
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DStateBridge.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DStateBridge.cs.meta",
+      "sha256": "48e1c4c80702cc9de4e2fa010ee4e2fe07f3dd11d87a35a330014ab46d0e4b9c",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DTorchPulse.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DTorchPulse.cs",
+      "sha256": "dbf2bf18fcd664098d56094be5ddb10f1669e3eeb7e5399f2330145b563dabae",
+      "bytes": 1691
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DTorchPulse.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/City2DTorchPulse.cs.meta",
+      "sha256": "b3238cb58da55728dab562e85132ff18e31e5470478af44f44bbdb09584f88ab",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/CityBuilding.cs",
+      "destination": "Unity/Assets/Valoria25D/Runtime/CityBuilding.cs",
+      "sha256": "da18816784ed94657a463c4179f0ae1d5c808df11cd18a0c48f6f1591d0f91eb",
+      "bytes": 8183
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Scripts/CityBuilding.cs.meta",
+      "destination": "Unity/Assets/Valoria25D/Runtime/CityBuilding.cs.meta",
+      "sha256": "cb023d483a200616665b74b22d679d47b7017f07a5f7ed7ed9dbbb2510658609",
+      "bytes": 240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel01.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Bastion_Nivel01.png",
+      "sha256": "00e48d7fa15b9b7e88db779ed374c228e5416d80f6e08457c93027a78f4a392b",
+      "bytes": 877517
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel01.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Bastion_Nivel01.png.meta",
+      "sha256": "5bcd7a116532e1fa387c380b24390636c4aea1ef290e6548ae2d78b443369fa0",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel05.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Bastion_Nivel05.png",
+      "sha256": "8ffc9f1c04c262893c454f784afb3404c0e390cac811a3c1f1d894201ba48a89",
+      "bytes": 1209051
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel05.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Bastion_Nivel05.png.meta",
+      "sha256": "ca9302952b3d5c036ba73edd9f6e31abac709b702f72c97c86bc8c5373af9469",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V2.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Aserradero_Premium_V2.png",
+      "sha256": "d692c25b525a50b5e9f227df6d4b721a5269173a7acffcf7b044dd7a2da6c518",
+      "bytes": 1989417
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V2.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Aserradero_Premium_V2.png.meta",
+      "sha256": "f1f6fa1e3f1a983867da69367b226dae67ec2fa7f1a1bc0b8862024e35e78325",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V2_Shadow.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Aserradero_Premium_V2_Shadow.png",
+      "sha256": "ceef16582f477c951f8587c8bd8f2c588ad23299b7ede664eb9df1b60a3a0fc2",
+      "bytes": 24956
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V2_Shadow.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Aserradero_Premium_V2_Shadow.png.meta",
+      "sha256": "d5a9506d0bcd1d521af2d06c190aa5518b86d0b90f9a28911d60de0e639aad2b",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cantera_Premium_V1.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cantera_Premium_V1.png",
+      "sha256": "dd6a4d7acd67d2de2e8ae53dc8d433e4e03bb136e7130d13130087de3e3f649b",
+      "bytes": 1997545
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cantera_Premium_V1.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cantera_Premium_V1.png.meta",
+      "sha256": "184596b117277a0ac27fa04224a56dd241459b2db56f049d15714b21594088f2",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cantera_Premium_V1_Shadow.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cantera_Premium_V1_Shadow.png",
+      "sha256": "e42096dd255f96c0e3e979ae9321d3bf6ba20ccea52c53426c4f845e875fc8de",
+      "bytes": 31032
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cantera_Premium_V1_Shadow.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cantera_Premium_V1_Shadow.png.meta",
+      "sha256": "3cd02117d3e09c58167203f8aaef7742b7cd6b18b4b4da3bcde46a065da0b4f2",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png",
+      "sha256": "9d128fe0a7d0c229c1c3b14b098eaef17e6df79ac557ed283a3893bb4a22c5a6",
+      "bytes": 30043
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png.meta",
+      "sha256": "d1b08195a70bf27eec35fc6e150df3e87094f12ceadd29af8394652c1b4b1048",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_V2.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cuartel_Premium_V2.png",
+      "sha256": "0dcb8edb8237621f13893893edce20fec51deb1248df8bcbc3a89ea3990b4062",
+      "bytes": 1978950
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_V2.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Cuartel_Premium_V2.png.meta",
+      "sha256": "1506fb58721c21bb704d4967d929df23f008f9de0367e5de225750caabc68d29",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Granero_Premium_V1.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Granero_Premium_V1.png",
+      "sha256": "699c8c15f5147cc634ea39d1197e13058831786f6da60cab81d711f118118229",
+      "bytes": 2210448
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Granero_Premium_V1.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Granero_Premium_V1.png.meta",
+      "sha256": "1b9105480222418823dd79a4e2fba53f1eb13ade60629d45ade75c9ff3652a38",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Granero_Premium_V1_Shadow.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Granero_Premium_V1_Shadow.png",
+      "sha256": "bb1eafec64ba5b7a62c3dbf8aa80f8a48b4ead4504c581c188fff6a414fe1532",
+      "bytes": 23822
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Granero_Premium_V1_Shadow.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Candidates/Granero_Premium_V1_Shadow.png.meta",
+      "sha256": "dfd6123f52b873b86afaca6e1b38edf281006446050bacf78cb1db88d148ec08",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/AlmacenBarriles.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/AlmacenBarriles.png",
+      "sha256": "39fdcf000a82299d220a1b0125e54fde825f9172e0227bbad3e0d06068530737",
+      "bytes": 190008
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/AlmacenBarriles.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/AlmacenBarriles.png.meta",
+      "sha256": "bed4a6f30b9aa8374000e56994b966616bc86fe4ef8538cda1e1d22bdda1f650",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/AntorchasGuardian.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/AntorchasGuardian.png",
+      "sha256": "e82c06881a0edad65f0c70c267f3a56448c032286ce462a4609905295f46cd17",
+      "bytes": 164270
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/AntorchasGuardian.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/AntorchasGuardian.png.meta",
+      "sha256": "5746c15a0016aa8859d11dc9884331f722e8c3400b0d12bb18b39407786013b2",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/ArbolAntiguo.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/ArbolAntiguo.png",
+      "sha256": "263516708e6fede98d537cff871b07e98c0074fe2923eabc4919eba659c4bb1b",
+      "bytes": 216240
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/ArbolAntiguo.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/ArbolAntiguo.png.meta",
+      "sha256": "2472f0f18ecbc8d71ab8d0a39821433720bb81563679ac6b363ff87ea87b4653",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/ArboledaAntigua.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/ArboledaAntigua.png",
+      "sha256": "46d235cfa5f747cc4a4e3cdefce579e057c256a8b0d42aaf4392d2507e7b007a",
+      "bytes": 442909
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/ArboledaAntigua.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/ArboledaAntigua.png.meta",
+      "sha256": "ce1a76217fe0c705ff06035ac8a58ca9c320435a112992941d3c29f405b41151",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/AtalayaValoria.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/AtalayaValoria.png",
+      "sha256": "762fdf2da0045d8d6bb4395e58767fde25883ae6cda550664c0f8f273c32e0f5",
+      "bytes": 391844
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/AtalayaValoria.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/AtalayaValoria.png.meta",
+      "sha256": "73816884351e27b00c5836a64aa78f1a1eb65cff401396cd2d659b85d69fc8b2",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/CarroMadera.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/CarroMadera.png",
+      "sha256": "27c3f6abd18f18cdbf902c603a37aa11abfaee81a2f245b661fcca350ba20f0c",
+      "bytes": 233468
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/CarroMadera.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/CarroMadera.png.meta",
+      "sha256": "442c7a99f8a1cfadf460fc3dbd05a818ef435d2239d1d69dc09c40a21057223e",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/CasasDelPozo.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/CasasDelPozo.png",
+      "sha256": "0e911f5f909432a162d172d663f84c1d7f9115f1b07869d17036fc4d6ba3316f",
+      "bytes": 390018
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/CasasDelPozo.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/CasasDelPozo.png.meta",
+      "sha256": "709e5bc6a7ceabeacecea08ed4c792b35162fbab00121a7aae10d70cc37d86a4",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/CasasMercaderes.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/CasasMercaderes.png",
+      "sha256": "2aea5384aaa0fb89d6ff95b26e38c499415d9ec6d9989b24a8ef720ad9224d11",
+      "bytes": 398595
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/CasasMercaderes.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/CasasMercaderes.png.meta",
+      "sha256": "051f70c487f1d9362e5ed33ef03db9cd854cd573261f5925f3bec24b98bcea93",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Chispa_Valoria_V2.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/Chispa_Valoria_V2.png",
+      "sha256": "ff8e034f20932b657fef9755d2caade53b38a951f96954c06a39605985a95422",
+      "bytes": 1449
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Chispa_Valoria_V2.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/Chispa_Valoria_V2.png.meta",
+      "sha256": "8d00182a8090eff3e0c8d9955b59eaa34e042ef29afea24aa01ea6631c4e36a8",
+      "bytes": 778
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/FisuraBrecha.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/FisuraBrecha.png",
+      "sha256": "0704007cd027a8533c3514566e109588d321ea5753921e2da17d878fbcf40c53",
+      "bytes": 162311
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/FisuraBrecha.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/FisuraBrecha.png.meta",
+      "sha256": "f87b90059959072014e23035ba774282be7890de4d66908f9214d9ee93840d19",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/HaloAntorcha.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/HaloAntorcha.png",
+      "sha256": "b17a84d66dfba3aa8d1469f8f4ad5c511eeea8883783902faed5a9718288a5cc",
+      "bytes": 1833
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/HaloAntorcha.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/HaloAntorcha.png.meta",
+      "sha256": "9dc26233d07982eb25d1690448e772c4c8a2489a4422d9d2f27e15f7876b9e6d",
+      "bytes": 778
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/HuertosValoria.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/HuertosValoria.png",
+      "sha256": "00b4538bf9af20d971225c906c8cb21f773d5f9fbfa631272f557f44f3697499",
+      "bytes": 360908
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/HuertosValoria.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/HuertosValoria.png.meta",
+      "sha256": "944ce95fdfaea7f44aaad8b6988a8b4b4bab9e34ae0ae0353f8bc2d4960804fc",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Humo_Valoria_A.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/Humo_Valoria_A.png",
+      "sha256": "d1a4ff4ffa9791799a608f1aa179711aa9823fd3933972a1398b3310a33340ca",
+      "bytes": 9520
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Humo_Valoria_A.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/Humo_Valoria_A.png.meta",
+      "sha256": "4947c56e232e8a87d821670e5a7ce92407bb6a6671708ae682d4e00649b65579",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Humo_Valoria_B.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/Humo_Valoria_B.png",
+      "sha256": "8dcdc8a052a5a7e50b25c919b2e89bef577b8968cb0bcdbf97c08b2a8f62ec86",
+      "bytes": 9788
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Humo_Valoria_B.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/Humo_Valoria_B.png.meta",
+      "sha256": "daa3b2d8e31aa8f99134dc82247cb48acfaba62f246fd1d1c1c01e62f078c8e0",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/MatojosFlores.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/MatojosFlores.png",
+      "sha256": "5d25f70b346b6b4c3c4de776e697f4f2db724d59bcb807ec5fb0f005598ee114",
+      "bytes": 199816
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/MatojosFlores.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/MatojosFlores.png.meta",
+      "sha256": "0da3877f1d2cc2827a56e290f464e29f650138e7edba8f1ad045f0c1a515aba7",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/MuroDerruido.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/MuroDerruido.png",
+      "sha256": "c2de297a5e560ad0f209d5bb585b7dfb441c63b591da58d1bc08751080b203ad",
+      "bytes": 212983
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/MuroDerruido.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/MuroDerruido.png.meta",
+      "sha256": "dd957c25e2d7f9cc787fbdd6ab71e1d99b965ab434dd3b7c5c9856eed8238b10",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/PozoPiedra.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/PozoPiedra.png",
+      "sha256": "17bc3648a4455e1fb62a065e10caf29620cd477590412b072192a7a359057690",
+      "bytes": 222649
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/PozoPiedra.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/PozoPiedra.png.meta",
+      "sha256": "c9b8a2c36f5c5b2aa7f20275f63a0c6d82aa9d58ef830da8e6fef8f4c5d4c05a",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/PuestoMercado.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/PuestoMercado.png",
+      "sha256": "bbcc57ef6ca015090a4931af2c539267e6bfe03bdcd6a5fb766fabe859001e16",
+      "bytes": 323386
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/PuestoMercado.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/PuestoMercado.png.meta",
+      "sha256": "58b3c8d0dca3bd8468c6a1069851671cbcf9d5d20327c48692cfcb5caa513c7c",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/VallaLenador.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/VallaLenador.png",
+      "sha256": "81cbda8363fb09a91979d92fb24d83032d8b329cb52fd4fa5fa49321ffd6b069",
+      "bytes": 248159
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/VallaLenador.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Props/VallaLenador.png.meta",
+      "sha256": "effc3f89f27bd628758bf75a1dcfef98b998b48d67b8d12045b9f4f33f7bbcce",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Retina/Terreno_Organico.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Retina/Terreno_Organico.png",
+      "sha256": "b6162d56eefaec1b607ec957d4d17beba8898578bfd7a2bf6453c1771351629d",
+      "bytes": 7008631
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Retina/Terreno_Organico.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/Retina/Terreno_Organico.png.meta",
+      "sha256": "f6d58949169f71567df18dc482c654718742efb9a5bf08e0fd3bb6f153212faa",
+      "bytes": 778
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/SalonHeroes.png",
+      "destination": "Unity/Assets/Valoria25D/Sprites/SalonHeroes.png",
+      "sha256": "26782fdae9ebe93e53755bd13c47ce8cd4442c07aa1ca786362d13c5c90e077c",
+      "bytes": 703747
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/Sprites/SalonHeroes.png.meta",
+      "destination": "Unity/Assets/Valoria25D/Sprites/SalonHeroes.png.meta",
+      "sha256": "2490d2b5f182b4dd6f02f8541291a26fc9e857b4da6b662275bf4826d3c25959",
+      "bytes": 776
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity",
+      "destination": "Unity/Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity",
+      "sha256": "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06",
+      "bytes": 228583
+    },
+    {
+      "source": "Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity.meta",
+      "destination": "Unity/Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity.meta",
+      "sha256": "f63f17184fffc1af2469cd48110b7477a2f990c6f28a74f267549f03c065d6b7",
+      "bytes": 159
+    }
+  ],
+  "qa_assets_copied": false,
+  "main_edited": false,
+  "art_branch_edited": false
+}
