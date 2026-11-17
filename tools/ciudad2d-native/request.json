@@ -3,20 +3,21 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Retry separate premium City2D PlayMode proof after real Unity compiler failure #44074423180: fully qualify UnityEngine.Application in three new visual-only preview/test scripts; all 45 V4 A-E native captures already proved at #44072129744.",
+  "reason": "Owner-approved four-building premium Valoria isolated candidate proof; source-locked quarry RGBA+shadow, six A-F comparisons, true Editor PlayMode; fixed Unity 6.3 -runTests + -quit incompatibility that produced absent XML on 44075610009.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 7,
-  "requested_art_stage": "Premium V1 independent scene, 5 SHA-verified captures and genuine Editor PlayMode pointer/HUD/plot-shadow tests; no main or saves",
-  "retry_ordinal": 20,
+  "requested_art_stage": "Cuartel V2, Aserradero V2, Granero V1, Cantera V1; 60 real Unity 390x844/1170x2532/844x390 A-F, dedicated 9-frame independent PremiumV2 scene, real PlayMode HUD/pointer/stage shadow gates; no main or gameplay writes",
+  "retry_ordinal": 21,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 44074423180,
+  "last_failed_run": 44075610009,
   "last_failed_errors": [
-    "Unity CS0234: unqualified Application.isPlaying collided with Eldoria.Application namespace in premium shadow gate; all new visual source files qualified."
+    "Unity 6000.3 Test Framework CLI does not allow -quit with -runTests, leading to Unity exit 0 with no premium test NUnit XML; corrected in both premium runners."
   ],
   "previous_successful_run": 44047998748,
   "blender_artifact_id": 14306050951,
   "blender_artifact_sha": "32aba6521f5ce3b6ba30aa727b15109d026788af",
-  "previous_failed_run": 44052522821
+  "previous_failed_run": 44052522821,
+  "physical_iphone_test": "PENDING"
 }
