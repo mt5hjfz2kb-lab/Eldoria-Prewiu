@@ -3,12 +3,17 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Second exclusive native proof, after 2026-11-16 first run 43978644209 failed solely because com.unity.modules.physics2d was disabled; builtin module enabled only in experimental branch manifest.json.",
+  "reason": "Fix CS0234: fully qualify UnityEngine.Application (conflict with Eldoria.Application namespace); isolated exact-source render retry; no production scenes",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 1,
   "requested_art_stage": "genuine Unity RenderTexture I/II/III/IV/V and readonly building phase checks",
-  "retry_ordinal": 1,
-  "engine_module_added_in_branch": true
+  "retry_ordinal": 2,
+  "engine_module_added_in_branch": true,
+  "last_failed_run": 43979377209,
+  "last_failed_errors": [
+    "City2DNativeEvidence.cs CS0234 Application.dataPath",
+    "City2DNativeEvidence.cs CS0234 Application.isBatchMode"
+  ]
 }

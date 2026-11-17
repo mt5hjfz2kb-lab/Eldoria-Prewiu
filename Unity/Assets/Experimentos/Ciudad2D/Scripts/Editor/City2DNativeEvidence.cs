@@ -26,10 +26,10 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         [MenuItem("Eldoria/Experimentos/Ciudad 2D/Capturas nativas I-V")]
         public static void Capture()
         {
-            var evidenceRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", OutputFolder));
+            var evidenceRoot = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", OutputFolder));
             Directory.CreateDirectory(evidenceRoot);
             // En ejecucion manual no descartar trabajo sin guardar.
-            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if (!UnityEngine.Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
             var previousSetup = EditorSceneManager.GetSceneManagerSetup();
             Camera camera = null;
@@ -173,7 +173,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             {
                 if (camera != null) camera.targetTexture = priorTarget;
                 // Respetar escenas previas del editor interactivo; CI es desechable.
-                if (!Application.isBatchMode && previousSetup != null && previousSetup.Length > 0)
+                if (!UnityEngine.Application.isBatchMode && previousSetup != null && previousSetup.Length > 0)
                     EditorSceneManager.RestoreSceneManagerSetup(previousSetup);
             }
         }
