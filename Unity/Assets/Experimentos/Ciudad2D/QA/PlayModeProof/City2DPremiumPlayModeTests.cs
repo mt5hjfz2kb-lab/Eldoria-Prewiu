@@ -78,8 +78,8 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
         public IEnumerator PremiumScene_GenuinePlayMode_StagesSpritesShadowsPointer()
         {
             yield return new EnterPlayMode();
-            Assert.IsTrue(Application.isPlaying);
-            Assert.IsTrue(File.Exists(Path.Combine(Application.dataPath,"../"+ScenePath)));
+            Assert.IsTrue(UnityEngine.Application.isPlaying);
+            Assert.IsTrue(File.Exists(Path.Combine(UnityEngine.Application.dataPath,"../"+ScenePath)));
             var load=EditorSceneManager.LoadSceneAsyncInPlayMode(
                 ScenePath,new LoadSceneParameters(LoadSceneMode.Single));
             Assert.NotNull(load);
