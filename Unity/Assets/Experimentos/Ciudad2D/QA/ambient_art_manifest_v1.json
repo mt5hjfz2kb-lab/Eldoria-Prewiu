@@ -29,10 +29,34 @@
   ],
   "all_original_city_sprites_unchanged": true,
   "master_images_untouched": true,
-  "unity_capture": "PENDING",
-  "playmode": "PENDING",
+  "unity_capture": "PASS_REAL_EDITOR_10_PAIRED_16_SEQUENCE_SOURCE_SHA_44053638485",
+  "playmode": "PASS_TRUE_EDITOR_PLAYMODE_44053638485",
   "device": "PENDING",
   "no_ai_generation_credits_used": true,
   "source_technique": "fixed Gaussian wisps with seeded low-frequency noise; alpha blur",
-  "notes": "Subtle overlay at chimney coordinates; standalone sprites cannot replace original painted chimney smoke"
+  "notes": "Subtle overlay at chimney coordinates; standalone sprites cannot replace original painted chimney smoke",
+  "native_run_id": 44053638485,
+  "native_source_sha": "bae3e874efd11529c3bd13441c56fabd4acdc0b5",
+  "archive_run_id": 44055343658,
+  "native_image_count": 26,
+  "three_stages_gate_pass": {
+    "stage1": {
+      "active": 4,
+      "smoke": 0,
+      "ember": 4
+    },
+    "stage3": {
+      "active": 8,
+      "smoke": 4,
+      "ember": 4
+    },
+    "stage5": {
+      "active": 10,
+      "smoke": 6,
+      "ember": 4
+    }
+  },
+  "art_approved": false,
+  "visual_conclusion": "Smoke visible but understated; ambient flame embers nearly invisible at 390x844, needs targeted art revision before commercial approval; no proof of physically tested iPhone.",
+  "original_two_wisps_sha_preserved": true
 }
