@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "source_sha": "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06",
+  "source_run": 44133747143,
+  "source_commit": "a922225f4f073aeb2d6081e8dd634f54109ca399",
+  "target": "Unity WebGL, Unity 6000.3.23f1, mobile Safari",
+  "purpose": "Isolated V6 interactive city FPS and stability evaluation on owner's iPhone, without shipping a public beta",
+  "no_publish": true,
+  "no_main_changes": true,
+  "no_gameplay_changes": true,
+  "no_reinstall_software": true,
+  "one_bounded_native_lease": true,
+  "physical_iphone_qa": "PENDING",
+  "notes": "Only package artifact for localhost/Wi-Fi. iPhone physical playtesting cannot be asserted from CI."
+}
