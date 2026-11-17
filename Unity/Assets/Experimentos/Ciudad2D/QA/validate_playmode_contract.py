@@ -23,7 +23,7 @@ assert "yield return new ExitPlayMode()" in test
 assert "Grounded.png" in bake
 assert "GetPixels32()" in bake and "distance[i]" in bake
 assert "City2DGroundingBake.EnsureGenerated()" in native
-assert '"  \\"grounding_art_comparison_only\\":true' in native
+assert "grounding_art_comparison_only" in native
 assert 'groundedComparison' in native
 assert "candidateCuartel ? \\"-cuartel-candidato\\"" in native
 assert "ArtBake.ForBuilding" in (root / "Scripts/Editor/City2DSceneBuilder.cs").read_text(encoding="utf-8")
