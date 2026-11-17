@@ -13,7 +13,7 @@
   "one_bounded_native_lease": true,
   "physical_iphone_qa": "PENDING",
   "notes": "Only package artifact for localhost/Wi-Fi. iPhone physical playtesting cannot be asserted from CI.",
-  "retry": 1,
-  "previous_run": 44195892047,
-  "previous_failure": "Static preflight mismatch of CIUDAD2D_WEBPERF_V6_READY marker, before occupying Windows; now corrected."
+  "retry": 2,
+  "previous_run": 44196010124,
+  "previous_failure": "Unity compilation CS0234 due Application namespace collision; fixed using UnityEngine.Application.dataPath on three references."
 }
