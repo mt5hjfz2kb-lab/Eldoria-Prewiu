@@ -21,11 +21,16 @@ namespace Eldoria.Experimentos.Ciudad2D
         private void Awake() { graphic = GetComponent<SpriteRenderer>(); Apply(opacity); }
         private void Update()
         {
+            if (UnityEngine.Application.isPlaying) EvaluateAtTime(Time.unscaledTime);
+        }
+
+        /// <summary>Same runtime formula for deterministic Editor animation frames.</summary>
+        public void EvaluateAtTime(float seconds)
+        {
             // Two low-amplitude, phase-offset harmonics avoid a synchronized
             // mechanical sine. No dynamic lights, new textures, or color filters.
-            float t = Time.unscaledTime;
-            float slow = Mathf.Sin(t * 3.1f + phase);
-            float quick = Mathf.Sin(t * 8.7f + phase * 2.31f);
+            float slow = Mathf.Sin(seconds * 3.1f + phase);
+            float quick = Mathf.Sin(seconds * 8.7f + phase * 2.31f);
             float intensity = Mathf.Clamp(0.88f + 0.085f * slow + 0.035f * quick, .71f, 1f);
             Apply(opacity * intensity);
         }
