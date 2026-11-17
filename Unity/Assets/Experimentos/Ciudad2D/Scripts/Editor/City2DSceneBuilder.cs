@@ -187,6 +187,30 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         workMarker.color = new Color(1f, 0.87f, 0.64f, 0.88f);
                         buildingComponent.ConfigurePlotMarkers(readyMarker, workMarker);
                     }
+                    // Small vegetation over platform corners, independent of
+                    // unlocked plots and invisible until the building is Built.
+                    if (spec.id == "cuartel" || spec.id == "aserradero" ||
+                        spec.id == "granero" || spec.id == "cantera")
+                    {
+                        var foliage = Sprite("Props/MatojosFlores.png");
+                        if (foliage != null)
+                        {
+                            var seam = new SpriteRenderer[2];
+                            float offset = spec.id == "granero" ? 114f : 105f;
+                            for (int k = 0; k < 2; ++k)
+                            {
+                                var detail = new GameObject("NaturalizarPlinto_" + spec.id + "_" + k);
+                                detail.transform.position = PositionOf(
+                                    spec.x + (k == 0 ? -offset : offset * .89f),
+                                    spec.y - (k == 0 ? 10f : 17f), terrain);
+                                detail.transform.localScale = Vector3.one * (k == 0 ? .17f : .21f);
+                                seam[k] = detail.AddComponent<SpriteRenderer>();
+                                seam[k].sprite = foliage;
+                                seam[k].sortingOrder = renderer.sortingOrder + 3;
+                            }
+                            buildingComponent.ConfigureGroundSeam(seam);
+                        }
+                    }
                     bridge.Register(buildingComponent);
                 }
                 foreach (var spec in layout.decor)

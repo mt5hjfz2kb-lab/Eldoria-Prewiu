@@ -42,6 +42,7 @@ namespace Eldoria.Experimentos.Ciudad2D
         private int selectedArtLevel;
         [SerializeField] private City2DPlotPhase plotPhase = City2DPlotPhase.Built;
         [SerializeField] private SpriteRenderer availableMarker, constructionMarker;
+        [SerializeField] private SpriteRenderer[] groundSeamDetails = Array.Empty<SpriteRenderer>();
         public City2DPlotPhase PlotPhase => plotPhase;
 
         public string BuildingId => buildingId;
@@ -86,10 +87,27 @@ namespace Eldoria.Experimentos.Ciudad2D
             SetAppearance(new City2DPlotView(plotPhase, level, 1));
         }
 
+        // Grass/shrubs hide hard right-angled sprite edges only when a plot
+        // is actually built. No resource, level, save or collider changes.
+        public void ConfigureGroundSeam(SpriteRenderer[] details)
+        {
+            groundSeamDetails = details ?? Array.Empty<SpriteRenderer>();
+            UpdateGroundSeamVisibility();
+        }
+
+        private void UpdateGroundSeamVisibility()
+        {
+            bool show = plotPhase == City2DPlotPhase.Built && level > 0;
+            if (groundSeamDetails == null) return;
+            foreach (var detail in groundSeamDetails)
+                if (detail != null) detail.enabled = show;
+        }
+
         public void SetAppearance(City2DPlotView view)
         {
             plotPhase = view.Phase;
             SetLevel(view.Phase == City2DPlotPhase.Built ? view.BuiltLevel : 0);
+            UpdateGroundSeamVisibility();
             if (availableMarker != null) availableMarker.enabled = view.Phase == City2DPlotPhase.Available;
             if (constructionMarker != null) constructionMarker.enabled = view.Phase == City2DPlotPhase.UnderConstruction;
             if (hitbox != null) hitbox.enabled = view.Phase != City2DPlotPhase.Locked;
