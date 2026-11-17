@@ -22,9 +22,13 @@
       ],
       "model": "nano-banana-2-lite",
       "task_id": "512b4dd8-4197-474f-8758-d06ab28e06b0",
-      "output": "JPG",
+      "output": "JPG original + PNG transparent Runway task, not imported",
       "native_unity_capture": false,
-      "art_assessment": "pending original asset mask and native comparison"
+      "art_assessment": "awaiting mask pixel review and native Unity comparison",
+      "background_removal_task_id": "a382070c-3986-4a01-b192-d33a9e68612f",
+      "provider_png_with_alpha_generated": true,
+      "alpha_pixel_audit": "PENDING",
+      "asset_in_github": false
     },
     {
       "id": "observatorio_brecha",
@@ -32,9 +36,13 @@
       "distinct_function": "world discovery; conceptual only",
       "model": "nano-banana-2-lite",
       "task_id": "1aba8e1c-1d9c-4ae9-ab08-ec825470db9e",
-      "output": "JPG",
+      "output": "JPG original + PNG transparent Runway task, not imported",
       "native_unity_capture": false,
-      "art_assessment": "pending asset inspection"
+      "art_assessment": "awaiting mask pixel review and native Unity comparison",
+      "background_removal_task_id": "5fec8a9e-b251-4654-9692-64fd1df6d4bc",
+      "provider_png_with_alpha_generated": true,
+      "alpha_pixel_audit": "PENDING",
+      "asset_in_github": false
     },
     {
       "id": "archivo_cartografos",
@@ -54,5 +62,6 @@
     "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
     "7fc65a78-e970-4669-9e08-3fd64a1546f7"
   ],
-  "truth": "Visual master assets copied and procedure recorded. Three exported RGBA candidate sprites and Unity captures for them are NOT YET IMPLEMENTED. Do not mark finished."
+  "truth": "Visual master assets copied and procedure recorded. Three exported RGBA candidate sprites and Unity captures for them are NOT YET IMPLEMENTED. Do not mark finished.",
+  "notes": "Runway background removal emitted two PNGs on server (task IDs saved), but exact binary bytes and SHA are not yet available in the experimental branch. All three Unity native images and artistic approval remain blocked. Runway available workspace credits observed 0 after the two 1-credit cutouts."
 }
