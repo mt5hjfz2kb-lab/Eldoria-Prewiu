@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "asset_id": "cantera",
+  "status": "QUARANTINED_PREMIUM_SOURCE_ART_NOT_APPROVED",
+  "model": "ChatGPT image generation; exact model seed not disclosed",
+  "generation_id": "d3717480-cc51-4acc-88c0-58a64a64ef47",
+  "hosted_source_asset_id": "5e88bd34-1f54-46aa-8b38-2b0a95630245",
+  "actual_master_ref_image_conditioning_verified": false,
+  "master_visual_standard": "ArtBible/Masters/Bastion_V_MASTER.png",
+  "source_original_sha256": "52bfb5e84546443295d933f83269dcbf2f4521a85549c917b684f8dae69116a5",
+  "source_dimensions": [
+    1536,
+    1024
+  ],
+  "source": "Cantera_Premium_V1_Source.png",
+  "candidate": "Cantera_Premium_V1.png",
+  "candidate_sha256": "dd6a4d7acd67d2de2e8ae53dc8d433e4e03bb136e7130d13130087de3e3f649b",
+  "dimensions": [
+    1490,
+    1490
+  ],
+  "mask": "Cantera_Premium_V1_Mask.png",
+  "mask_sha256": "ad0d25a817293d6bb285fb5996d9307b7f3fa75d92e4c06772e8109081598368",
+  "separate_contact_shadow": "Cantera_Premium_V1_Shadow.png",
+  "shadow_sha256": "e42096dd255f96c0e3e979ae9321d3bf6ba20ccea52c53426c4f845e875fc8de",
+  "shadow_dimensions": [
+    745,
+    745
+  ],
+  "shadow_scale_correction": 2.0,
+  "source_foot_original_image_px": 1412,
+  "segmentation": {
+    "source_background_rgb": [
+      12.0,
+      12.0,
+      14.0
+    ],
+    "source_bbox": [
+      85,
+      43,
+      1431,
+      960
+    ],
+    "rescued_dark_roof_pixels": 232,
+    "maximum_alpha": 255,
+    "side": 1490,
+    "method": "border-connected near-charcoal removal, 7px close + roof-only 23px restoration; no global RGB filters"
+  },
+  "previews": {
+    "black": "e7e1a008dc19664fc61653b46166fd657921672bdc0df1b4c1902083b61cfb35",
+    "grey": "8942fd1dcce3ee9099c71c39779afbb2468fa13a0f49dedfc8bf879a7154ac63",
+    "green": "0993888def95a4cceab50745c9ae304cb04d0482aa040c57ebc80bd9c95cda90",
+    "real_ground_offline_sha256": "993df2291630245887886b46a5b51fd66ba8d08f2725edcc5e251f9de7622d67"
+  },
+  "known_art_caveat": "Raised geological bench is architecturally justified as an excavation; verify no large square tile in Unity. Crane ropes and smoke require close alpha QA.",
+  "city_original_unchanged": true,
+  "physical_iphone": "NOT_TESTED",
+  "native_unity": "PENDING",
+  "art_approved": false
+}

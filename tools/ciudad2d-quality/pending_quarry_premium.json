@@ -1,8 +1,0 @@
-{
-  "schema": 1,
-  "source_asset_id": "5e88bd34-1f54-46aa-8b38-2b0a95630245",
-  "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/dfa4dca0-ea9d-44b2-8dad-ce27d763a3da.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZjQzNTU5NDBmNGU4MjRiZSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTAwODk2MH0.JUH9DytcAxN62nqAIrmXtCl2fVv8zx8OGZ1cDcSjbto",
-  "note": "One-use signed URL for exact single-quarry picture, must be removed by workflow after committing; no new generation requested",
-  "retry": 2,
-  "retry_reason": "Fix exact source corner array indexing; no new generation and unchanged asset identity"
-}
