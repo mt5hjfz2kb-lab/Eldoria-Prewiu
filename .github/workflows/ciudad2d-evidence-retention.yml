@@ -1,0 +1,39 @@
+name: Ciudad2D - limpieza de paquetes de pruebas redundantes
+
+on:
+  push:
+    branches:
+      - art/ciudad-2d-hitos-1-5-20261116
+    paths:
+      - tools/ciudad2d-quality/artifact_cleanup_request.json
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: ciudad2d-explicit-artifact-cleanup
+  cancel-in-progress: false
+
+jobs:
+  archive-preserving-cleanup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout only scripts and immutable retained proof, not entire Unity
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-quality/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV5_NATIVE_EVIDENCE.json
+            /Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_NATIVE_EVIDENCE.json
+            /Unity/Assets/Experimentos/Ciudad2D/QA/NativeV5/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/
+
+      - name: Verify all 20 kept Unity PNG hashes and full A-F manifests before optional deletion
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: python3 tools/ciudad2d-quality/safe_artifact_cleanup.py
