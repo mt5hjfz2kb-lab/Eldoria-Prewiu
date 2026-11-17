@@ -1,0 +1,58 @@
+name: Ciudad2D — sombra aislada Cuartel premium V2
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-quality/shadow_v2_request.json']
+permissions:
+  contents: write
+concurrency:
+  group: ciudad2d-premium-cuartel-shadow
+  cancel-in-progress: false
+jobs:
+  make-shadow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-quality/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png.meta
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6
+      - name: Render independent shadow with exact source and output SHA gates
+        run: python tools/ciudad2d-quality/create_shadow_v2.py
+      - name: Preserve source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-cuartel-v2-contact-shadow-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_ShadowManifest.json
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Commit candidate shadow only, remove one-shot request
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-quality/shadow_v2_request.json
+          git add --sparse -- \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_ShadowManifest.json
+          git diff --cached --quiet && { echo 'No validated shadow'; exit 1; }
+          git commit -m 'art(city2d): archive source-hashed premium Cuartel contact shadow'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
