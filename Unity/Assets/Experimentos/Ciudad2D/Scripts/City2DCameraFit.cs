@@ -54,6 +54,18 @@ namespace Eldoria.Experimentos.Ciudad2D
             Refit();
         }
 
+        // Editor screenshot-only: focus the exact same physical art slot for
+        // both A and B. This never changes the gameplay camera or persistent pan.
+        public void SetEvidenceFocus(Vector2 worldPosition)
+        {
+            if (evidenceWidth<=0 || evidenceHeight<=0)
+                throw new System.InvalidOperationException("Evidence focus requires a fixed viewport");
+            if (ground==null || ground.sprite==null)
+                throw new System.InvalidOperationException("Evidence terrain missing");
+            pan=worldPosition-(Vector2)ground.bounds.center;
+            ApplyCameraPosition();
+        }
+
         public void ClearEvidenceViewport()
         {
             evidenceWidth = evidenceHeight = 0;
