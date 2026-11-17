@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "forja_guardia_v2",
+  "status": "QUARANTINED_NOT_APPROVED",
+  "source_task": "SAME_PHOTO_REPAIR_NO_GENERATION",
+  "source_sha256": "2818301296a6dfd19325ccc2689eb6c822d779fd4f69dca8595e4fc94b22a5d2",
+  "mask_sha256": null,
+  "crop_rect": [
+    117,
+    55,
+    912,
+    872
+  ],
+  "sprite_size": [
+    879,
+    879
+  ],
+  "sprite_sha256": "317b4d48e482fbc86da8ed761a15e0a98a1a6563e36ca24b6dc7cf6053f8e4fb",
+  "foot_px": [
+    440,
+    816
+  ],
+  "foot_norm": [
+    0.50057,
+    0.92833
+  ],
+  "unity_native_capture": "PENDING",
+  "art_review": "PENDING"
+}

@@ -1,7 +1,0 @@
-{
-  "schema": 1,
-  "change": "recover documented source pixels lost by provider alpha",
-  "source_sha256": "dd84edb2c00fe23b2a92e68b60aed7b8d1ceb3bccfd137bfe433a3b9d3144ab8",
-  "preserve_v1": true,
-  "art_approved": false
-}

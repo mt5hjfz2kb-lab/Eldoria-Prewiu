@@ -1,0 +1,30 @@
+{
+  "schema": 2,
+  "id": "forja_guardia",
+  "variant": "B2_original_photo_alpha_recovery",
+  "status": "QUARANTINED_NOT_ART_APPROVED",
+  "v1_original_sha256": "dd84edb2c00fe23b2a92e68b60aed7b8d1ceb3bccfd137bfe433a3b9d3144ab8",
+  "v1_provider_cutout_sha256": "e6a314dc1b90b0186c72430590568c6db845e880de0e4f17067af6a1ebffe37c",
+  "v1_candidate_preserved": true,
+  "generated_new_image": false,
+  "changed_regions": [
+    "original navy flag x606:709 y84:137",
+    "original forge smoke ellipse center(764,267) radii(123,142)"
+  ],
+  "smoke_fx_sha256": "aaf77e400d02c489db9b2aa316581697265dd0b8c21704ac3c7abdf60098a3c4",
+  "repaired_cutout_sha256": "2818301296a6dfd19325ccc2689eb6c822d779fd4f69dca8595e4fc94b22a5d2",
+  "new_candidate_path": "Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/Versions/Forja_Guardia_RGBA_v2.png",
+  "new_candidate_sha256": "317b4d48e482fbc86da8ed761a15e0a98a1a6563e36ca24b6dc7cf6053f8e4fb",
+  "new_candidate_dimensions": [
+    879,
+    879
+  ],
+  "foot_pixel": [
+    440,
+    816
+  ],
+  "shadow_separate": "PENDING",
+  "Unity_native_capture_v2": false,
+  "art_approved": false,
+  "iPhone": false
+}
