@@ -3,17 +3,19 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Genuine Editor PlayMode retry after domain type resolution via loaded Unity assemblies; native A/B and pointer, HUD, camera and read-only PlayerState checks.",
+  "reason": "Exact Blender source pair at cd5e81 with footprint-cropped Cycles contact shadow; compare A/B at all canonical viewports in Unity, verify 16 render PNG and genuine PlayMode.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
-  "ownership_revision": 6,
-  "requested_art_stage": "Grounded stone-platform edge A/B + Unity Test Runner genuine PlayMode interaction proof",
-  "retry_ordinal": 13,
+  "ownership_revision": 7,
+  "requested_art_stage": "Cuartel+Aserradero shared Blender source -> transparent paired sprites -> real Unity A/B, no gameplay write",
+  "retry_ordinal": 14,
   "engine_module_added_in_branch": true,
   "last_failed_run": 44027950725,
   "last_failed_errors": [
     "Unity Editor PlayMode scene/HUD/pointer checks passed but domain fixture lookup used fixed Assembly-CSharp; domain PlayerState in different loaded assembly. Runtime lookup now searches AppDomain assemblies."
   ],
-  "previous_successful_run": 44023117740
+  "previous_successful_run": 44023117740,
+  "blender_artifact_id": 14305422270,
+  "blender_artifact_sha": "cd5e81fd3af554229456be2ed71daf7387af914b"
 }
