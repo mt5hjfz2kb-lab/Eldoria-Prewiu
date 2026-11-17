@@ -20,6 +20,7 @@ with sync_playwright() as p:
         assert state['imageCount']==24 and state['buildingCount']==6 and state['decorCount']==32 and state['glowCount']==7 and state['layoutVersion']==4, state
         assert state['landscape']==(w>h),state
         assert state['terrainName']=='Terreno_Organico.png',state
+        assert state['alphaMaskCount']==7, state  # 5 subsidiaries + 2 Bastion tiers, not props
         page.locator('#terrainCompare').click()
         assert page.evaluate('window.city2dDebug.state.terrainName')=='Terreno.png'
         if name=='iphone_portrait': page.screenshot(path=str(OUT/'iphone_portrait-terreno-anterior.png'))

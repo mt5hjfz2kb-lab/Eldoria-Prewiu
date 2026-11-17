@@ -176,9 +176,11 @@ async function load(){
   im.onerror=()=>reject(new Error('Falta '+name));
   im.src=artPath+name.split('/').map(encodeURIComponent).join('/');
  })));
+ const selectableFiles=new Set(entries.flatMap(e=>[e.baseFile,e.level5File].filter(Boolean)));
  for(const [name,im] of items){
   imgs[name]=im;
-  if(name===terrainPrimary||name===terrainPrevious)continue;
+  // Only buildings need pixel-accurate hit masks; decorative props and terrains never do.
+  if(!selectableFiles.has(name))continue;
   const off=document.createElement('canvas');off.width=im.width;off.height=im.height;
   const c=off.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0);
   const data=c.getImageData(0,0,im.width,im.height).data;
@@ -189,7 +191,7 @@ async function load(){
  ready=true;tier(1);resize(true);requestAnimationFrame(draw);
 }
 window.addEventListener('resize',()=>resize(false));
-window.city2dDebug={get state(){return {ready,stage,artLevel,visibility:Object.fromEntries(entries.map(e=>[e.id,stateFor(e)])),selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,terrainName,terrainMode,clicks:clicks.slice()};},select,tier,toggleTerrain,clickPoint,recenter:()=>resize(true),worldToScreen};
+window.city2dDebug={get state(){return {ready,stage,artLevel,visibility:Object.fromEntries(entries.map(e=>[e.id,stateFor(e)])),selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,alphaMaskCount:Object.keys(alpha).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,terrainName,terrainMode,clicks:clicks.slice()};},select,tier,toggleTerrain,clickPoint,recenter:()=>resize(true),worldToScreen};
 load().catch(e=>{document.getElementById('status').textContent='ERROR EN RECURSOS: '+e.message;console.error(e);});
 })();
 </script>
