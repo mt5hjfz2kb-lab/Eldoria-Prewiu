@@ -96,6 +96,31 @@ def main():
         out.save(file,quality=95)
         derivatives.append({"file":str(file.relative_to(REPO)),"sha256":digest(file.read_bytes()),
                             "not_native_capture":True})
+    # Preserve the actual 234K-byte Unity scene as an independent historical
+    # archive. The active QA scene path remains free so scene generators V2/V3/V4
+    # can be rerun without overwriting previous candidates.
+    v4zip=Path("/tmp/ciudad2d-functional-v4.zip")
+    with zipfile.ZipFile(v4zip) as archive:
+        scenes=[n for n in archive.namelist()
+                if n.endswith("/QA/Experimento_Ciudad2D_PremiumV4.unity")]
+        assert len(scenes)==1,"Real Unity V4 scene was not archived"
+        scene=archive.read(scenes[0])
+        assert scene.startswith(b"%YAML 1.1")
+        assert b"QA_V4_CuartelArcheryTargets" in scene
+        assert b"QA_V4_CuartelArcheryContactShadow" in scene
+        archived=QA/"ArchivedScenes"
+        archived.mkdir(exist_ok=True)
+        target=archived/"Experimento_Ciudad2D_PremiumV4_44129165952.unity"
+        assert not target.exists()
+        target.write_bytes(scene)
+        uid="d6fac8e2907d4c97ae3bb6b8ec3bad4a"
+        target.with_suffix(".unity.meta").write_text(
+            "fileFormatVersion: 2\\nguid: "+uid+
+            "\\nDefaultImporter:\\n  externalObjects: {}\\n  userData:\\n"
+            "  assetBundleName:\\n  assetBundleVariant:\\n",encoding="utf-8")
+    archived_scene={"file":str(target.relative_to(REPO)),
+                    "sha256":digest(scene),"Unity_saved_scene":True,
+                    "generated_from_native_run":req["v4_run"]}
     proof={
         "schema":1,"v3_source_run":req["v3_run"],"v3_artifact":req["v3_artifact"],
         "v4_source_run":req["v4_run"],"v4_artifact":req["v4_artifact"],
@@ -106,6 +131,7 @@ def main():
         "full_v4_capture_sha256":new["captures"],
         "v3_artifact_zip_sha256":sha_old,"v4_artifact_zip_sha256":sha_new,
         "original_v4_frames":keep,"derived_pairwise_reviews":derivatives,
+        "archived_separate_Unity_scene":archived_scene,
         "difference_metrics_are_diagnostics_not_art_scores":diffs,
         "canon_quarry_stage5":"Available, not Built",
         "post_built_quarry_fixture_only":True,
