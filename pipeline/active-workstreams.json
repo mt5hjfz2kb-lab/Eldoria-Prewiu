@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-17T05:08:33.182Z",
+  "updated_at": "2026-11-17T05:15:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9937,11 +9937,9 @@
       "ownership_revision": 4,
       "branch": "art/ciudad-2d-hitos-1-5-20261116",
       "status": "active",
-      "phase": "NATIVE_ART_SEAMS_REVIEW_RESERVED",
+      "phase": "NATIVE_SEAMS_PASS_VISUAL_NOT_APPROVED_ART_SOURCE_REAUTHOR_NEXT",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -9953,7 +9951,7 @@
       "user_authorization": "Owner directs prioritization of isolated 2.5D experiment, Nov 16 2026, without changing game mechanics or disturbing running jobs.",
       "write_scope_released": false,
       "pc_priority_authorized_at": "2026-11-16T23:00:00Z",
-      "last_native_run": 44019684673,
+      "last_native_run": 44022014699,
       "last_native_conclusion": "success",
       "native_artifact": 14299014672,
       "art_approved": false,
@@ -20391,18 +20389,18 @@
     "authorized_by": "Owner directly prioritizes City2D experiment PC resource in this conversation, 2026-11-16",
     "authorized_at": "2026-11-16T23:00:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "current_workstream": null,
     "current_run_id": null,
-    "next_workstream": null,
+    "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "city2d_native_organic_plinth_retouch_claimed",
+    "status": "city2d_native_turn_released_after_seams",
     "rules": [
       "Never cancel or interrupt any running Windows/Unity/Blender process; recheck running jobs and processes immediately before Editor.",
       "Owner explicitly directs this experiment to take the next available native PC turn over earlier Ashen/Visual rotation.",
       "One bounded exact-source isolated Unity proof. Do not edit any production scene or canonical gameplay/save.",
       "Release windows-runner-heavy after native proof completes or fails and report evidence honestly."
     ],
-    "previous_completed_run": 44019684673,
+    "previous_completed_run": 44022014699,
     "note": "City2D exact source 3d4d2b441b3546e85d92a9f6fb4672b1e8b7fb01 native RenderTexture proof succeeded with 12 verified PNG. Shared Windows lease released; next bounded native turn may be re-claimed after fresh CAS and process/queue preflight, preserve other owner scopes.",
     "completed_visual_reboot_run": 43780662139,
     "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
