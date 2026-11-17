@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "EXTRACTED_CANDIDATE_NOT_ART_APPROVED",
+  "source": "Sprites/Candidates/Cuartel_Premium_V2.png",
+  "source_sha256": "0dcb8edb8237621f13893893edce20fec51deb1248df8bcbc3a89ea3990b4062",
+  "functional_identity": "two archery targets with wooden supports from own Cuartel V2",
+  "candidate": "Sprites/Candidates/Cuartel_Entrenamiento_RecorteV1.png",
+  "candidate_sha256": "63e328378003e01d57c2bbda51d30c53e21382a8adb9ffc1121ee3c21f46e124",
+  "dimensions": [
+    202,
+    181
+  ],
+  "shadow": "Sprites/Candidates/Cuartel_Entrenamiento_RecorteV1_Shadow.png",
+  "shadow_sha256": "5caa4da6c80658ee77e8f7a067142e42bca532ca435601be44b7e7a7260473d3",
+  "no_square_platform": true,
+  "separate_alpha": true,
+  "pivot": "BottomCenter",
+  "pixels_per_unit": 100,
+  "mask": "warm-color constrained convex targets, explicit braces, local alpha",
+  "previews": [
+    {
+      "file": "CuartelEntrenamientoV1_dark_OFFLINE.png",
+      "sha256": "ecc3e443f36d68f55852b283bbb769012c8d992adf691049fc1a62a916382d94",
+      "not_Unity": true
+    },
+    {
+      "file": "CuartelEntrenamientoV1_grey_OFFLINE.png",
+      "sha256": "230fbf87bb02e899e488816fec02e9d11fc4cc0772bfe8a2b447eb0d57f8848f",
+      "not_Unity": true
+    },
+    {
+      "file": "CuartelEntrenamientoV1_green_OFFLINE.png",
+      "sha256": "f9232aab2ef04427b09d295c6d813f25ea6e64a344ec541a7f0eb5aea03e6e16",
+      "not_Unity": true
+    },
+    {
+      "file": "CuartelEntrenamientoV1_black_OFFLINE.png",
+      "sha256": "46b9f50360f3d5340e1a09c6d98186ed80d6281fd92218077d5333269595651f",
+      "not_Unity": true
+    }
+  ],
+  "Unity": "PENDING",
+  "PlayMode": "PENDING",
+  "physical_iPhone": "PENDING",
+  "main_modified": false,
+  "gameplay_modified": false
+}
