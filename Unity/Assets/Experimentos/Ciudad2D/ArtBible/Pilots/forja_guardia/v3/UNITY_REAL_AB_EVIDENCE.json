@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "repo": "mt5hjfz2kb-lab/Eldoria-Prewiu",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "native_run_id": 44047998748,
+  "artifact_id": 14312049118,
+  "head_sha": "cda19dcca27f0ecc96b5a2bff389d1c4afbbf409",
+  "engine": "Unity",
+  "mode": "Editor_RenderTexture",
+  "capture_count": 10,
+  "original_captures": [
+    {
+      "file": "A_original_390x844.png",
+      "sha256": "305168f9cf1efb0a9fbf916cafe43911ef4d362878f3fab9d05584096f2a6cf7",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "A_original_1170x2532.png",
+      "sha256": "d906a080f0cee5753cf376d0c0a91b2c429c04f23593d292767447e3770d4896",
+      "size": [
+        1170,
+        2532
+      ]
+    },
+    {
+      "file": "A_original_844x390.png",
+      "sha256": "90e71785ba025f794892e0ad12abd1285682d5f78cea61f1c0a3f80f8384cb82",
+      "size": [
+        844,
+        390
+      ]
+    },
+    {
+      "file": "A_original_1170x2532_zoom.png",
+      "sha256": "0e977a1f5cdf29c34f528d4ce2aac0aea6c29187949ad3772e0a9f61d0a9c314",
+      "size": [
+        1170,
+        2532
+      ]
+    },
+    {
+      "file": "A_original_1170x2532_forja_detail.png",
+      "sha256": "fd4b2fa7218ddd195a44ba979cccc00c0d29aa4cf32b04ad16b4dbf17a75b29f",
+      "size": [
+        1170,
+        2532
+      ]
+    },
+    {
+      "file": "B_new_ai_390x844.png",
+      "sha256": "6827ba667463bfef678ebe4f54d1eb41dc1eacacf082ebb304f23af1b8c343c8",
+      "size": [
+        390,
+        844
+      ]
+    },
+    {
+      "file": "B_new_ai_1170x2532.png",
+      "sha256": "3d5ac04fcf04bf1df766f66431fb6273e427d970985af8f97815858d6cc56cb1",
+      "size": [
+        1170,
+        2532
+      ]
+    },
+    {
+      "file": "B_new_ai_844x390.png",
+      "sha256": "4946d0f9fdb6b985071182789a4a06658ef532a0fade363b05a496528ee186a6",
+      "size": [
+        844,
+        390
+      ]
+    },
+    {
+      "file": "B_new_ai_1170x2532_zoom.png",
+      "sha256": "6aacfc2445a36e16665b4d86bd6ad5be91e04fce911749ef958cb7dc3d2bbe3c",
+      "size": [
+        1170,
+        2532
+      ]
+    },
+    {
+      "file": "B_new_ai_1170x2532_forja_detail.png",
+      "sha256": "0a10ea04499fefd906c17d9720e14f2e19f952967fefeb61436677ce9b0249aa",
+      "size": [
+        1170,
+        2532
+      ]
+    }
+  ],
+  "curated_jpgs": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ForjaV3_NATIVE_AB_390x844.jpg",
+      "sha256": "60e3eb5b8bba9989dd8ea16221e800807801aa0fa2cf430b2dfc2c97f880132a"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ForjaV3_NATIVE_DETAIL_A_B.jpg",
+      "sha256": "119812c3d55ad87292095467548274b80dca71ec23ea2bf4cd6bc2e4decf9b77"
+    }
+  ],
+  "pixel_test": {
+    "forge_region_mae": 10.4308,
+    "nonforge_mid_mae": 0.0,
+    "nonforge_south_mae": 0.0,
+    "unchanged_controls": true
+  },
+  "curated_images_are_crops_of_native_Unity_screenshots": true,
+  "curated_images_not_new_Unity_captures": true,
+  "forja_contact_shadow_separate": true,
+  "forja_v3_art_approved": false,
+  "three_buildings_homogeneous": false,
+  "physical_iPhone": "PENDING",
+  "staging_only_no_gameplay_or_main_modification": true,
+  "source_zip_sha256": "d9308d9e6ebaf24d13c0cd58fb2144fbef49d29a62e8a6b8054da3b0fc47aeeb"
+}
