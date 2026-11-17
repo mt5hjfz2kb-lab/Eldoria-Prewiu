@@ -256,6 +256,11 @@ jobs:
           }
           Write-Host ("REAL_PLAYMODE_TEST_PASS "+$passed+" of "+$tests)
 
+      - name: Capture true Unity Editor I-III-V living city snapshots at two times
+        shell: powershell
+        run: |
+          & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_ambient_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
+
       - name: Render locked-camera Unity A/B using source-traced Blender pair
         shell: powershell
         run: |
@@ -282,7 +287,10 @@ jobs:
             ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.xml
             ${{ runner.temp }}/city2d-blender-ab-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-ai-gallery-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-ambient-native-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-forja-v3-gallery-${{ github.run_id }}.log
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAmbientEvidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAmbientEvidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/*.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAIPilotEvidence/*.png
