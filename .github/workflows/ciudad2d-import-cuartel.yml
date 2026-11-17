@@ -1,0 +1,65 @@
+name: Ciudad2D - importar candidato Cuartel sin alterar juego
+
+on:
+  push:
+    branches:
+      - art/ciudad-2d-hitos-1-5-20261116
+    paths:
+      - tools/ciudad2d-import/candidate_url.txt
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ciudad2d-cuartel-candidate-isolated
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout isolated branch and original sources
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-import/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+      - name: Prepare image analysis
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download one exact user-authorized artwork candidate, never print signed URL
+        run: |
+          python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.11.0.86
+          python tools/ciudad2d-import/import_cuartel.py
+      - name: Commit only candidate artwork to isolated branch and delete ephemeral URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm --quiet -- tools/ciudad2d-import/candidate_url.txt
+          git add -- \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Candidato.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Candidato.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_manifest.json
+          git diff --cached --quiet && { echo "Nothing generated; refusing empty commit"; exit 1; }
+          git commit -m "art(city2d): save high-detail Cuartel candidate without plinth, unapproved"
+          git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+      - name: Preserve input/output candidate for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-cuartel-candidate
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/*.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_manifest.json
+          if-no-files-found: warn
+          retention-days: 14
