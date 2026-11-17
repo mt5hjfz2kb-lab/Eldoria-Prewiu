@@ -59,6 +59,8 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_*.jpg
             Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_NATIVE_EVIDENCE.json
             Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/*.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV4_44129165952.unity
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV4_44129165952.unity.meta
           if-no-files-found: warn
           retention-days: 21
       - name: Persist verified native evidence, keeping previous versions intact
@@ -68,7 +70,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git rm --quiet -- tools/ciudad2d-quality/functional_v4_archive_request.json
-          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_*.jpg Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_NATIVE_EVIDENCE.json Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/
+          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_*.jpg Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_NATIVE_EVIDENCE.json Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/ Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/
           git diff --cached --quiet && { echo 'No new native review'; exit 1; }
           git commit -m 'qa(ciudad2d): retain 22 SHA-verified Unity V3/V4 frames and locked Cuartel target art gate'
           for i in 1 2 3 4 5 6 7 8; do
