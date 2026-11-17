@@ -19,7 +19,8 @@ $report=Join-Path $folder 'evidence.json'
 if(-not(Test-Path -LiteralPath $report)){throw 'Living city genuine Unity evidence missing'}
 $j=Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
 if($j.engine -ne 'Unity' -or $j.mode -ne 'Editor_RenderTexture_two_times' -or
-   @($j.captures).Count -ne 10 -or @($j.stage_gates).Count -ne 3 -or
+   @($j.captures).Count -ne 10 -or @($j.animation_frames).Count -ne 16 -or
+   -not $j.torch_flicker_evaluated_at_each_time -or @($j.stage_gates).Count -ne 3 -or
    -not $j.original_bastion_I_for_1_4_and_V_for_5 -or
    -not $j.no_unique_bastion_II_III_IV_required -or
    -not $j.original_scene_read_only -or $j.gameplay_or_saves_modified -or
@@ -62,5 +63,20 @@ foreach($stage in @(1,3,5)){
   if($hashA -eq $hashB){throw ('Effect not animated in actual Unity rendered frames '+$a)}
  }
 }
+$distinct=@{}
+foreach($frame in $j.animation_frames){
+  $file=Join-Path $folder $frame.file
+  if(-not(Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).Length -lt 8000){
+    throw ('Missing actual Unity animation frame '+$frame.file)
+  }
+  $hash=(Get-FileHash -Algorithm SHA256 -LiteralPath $file).Hash.ToLowerInvariant()
+  if($hash -ne $frame.sha256){throw ('Animation source frame hash mismatch '+$frame.file)}
+  if([int]$frame.width -ne 390 -or [int]$frame.height -ne 844){
+    throw ('Animation frame cannot be cropped/upscaled '+$frame.file)
+  }
+  $distinct[$hash]=$true
+}
+if($distinct.Count -lt 12){throw 'Too few distinct rendered frames to claim visible motion'}
+Write-Host 'CITY2D_16_GENUINE_UNITY_ANIMATION_FRAMES_SHA_AND_DISTINCTNESS_PASS'
 Write-Host ('CITY2D_REAL_UNITY_LIVING_AMBIENT_10_SHA_PASS_SHA='+$env:GITHUB_SHA)
 Write-Host 'ART_APPROVAL_PENDING PHYSICAL_IPHONE_PENDING ORIGINAL_GAMEPLAY_UNCHANGED'
