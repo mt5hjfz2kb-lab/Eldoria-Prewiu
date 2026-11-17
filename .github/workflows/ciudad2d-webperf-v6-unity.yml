@@ -25,6 +25,8 @@ jobs:
             /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DWebPerfProbe.cs
             /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DWebPerfBuild.cs
             /Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
+            /tools/ciudad2d-webperf/serve.py
+            /tools/ciudad2d-webperf/README_PRUEBA_IPHONE.md
       - name: Verify immutable PremiumV6 scene and read-only export contract
         shell: bash
         run: |
@@ -161,6 +163,7 @@ jobs:
             '/Unity/Assets/Eldoria/Scripts/Application/'
             '/Unity/Packages/'
             '/Unity/ProjectSettings/'
+            '/tools/ciudad2d-webperf/'
           )
           git -C $dest sparse-checkout set --no-cone @patterns
           if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
@@ -198,6 +201,11 @@ jobs:
           if($js.Count -ne 1 -or $wasm.Count -ne 1 -or $data.Count -ne 1){
             throw ('Incomplete WebGL player: loader='+$js.Count+' wasm='+$wasm.Count+' data='+$data.Count)
           }
+          $readme=Join-Path $env:CITY2D_WEBPERF_SOURCE 'tools/ciudad2d-webperf/README_PRUEBA_IPHONE.md'
+          $server=Join-Path $env:CITY2D_WEBPERF_SOURCE 'tools/ciudad2d-webperf/serve.py'
+          if(-not(Test-Path $server) -or -not(Test-Path $readme)){throw 'Local WebGL runner instructions missing'}
+          Copy-Item -LiteralPath $server -Destination (Join-Path $built 'serve.py')
+          Copy-Item -LiteralPath $readme -Destination (Join-Path $built 'README_PRUEBA_IPHONE.md')
           Write-Host 'CIUDAD2D_REAL_UNITY_WEBGL_BUILD_COMPLETE_UNPUBLISHED'
       - name: Package full playable files as private GitHub Actions artifact
         if: always()
