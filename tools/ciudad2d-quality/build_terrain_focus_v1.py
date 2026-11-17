@@ -58,6 +58,11 @@ def main():
  if not 10000<changed<600000:
   raise ValueError('Focal retouch either ineffective or global')
  OUTPUT.parent.mkdir(parents=True,exist_ok=True);Image.fromarray(result,'RGB').save(OUTPUT,optimize=True)
+ # Stable Unity GUID is mandatory: the preview must open on other machines.
+ template=(CITY/'Sprites/Terreno_Organico.png.meta').read_text(encoding='utf-8')
+ guid=hashlib.md5(str(OUTPUT.relative_to(ROOT)).encode()).hexdigest()
+ template=re.sub(r'guid: [a-f0-9]{32}','guid: '+guid,template,count=1)
+ OUTPUT.with_suffix('.png.meta').write_text(template,encoding='utf-8')
  # Source A and B files saved in original resolution; these previews are NOT Unity.
  sheet=Image.new('RGB',(941*2,1672))
  sheet.paste(im,(0,0));sheet.paste(Image.fromarray(result,'RGB'),(941,0))
