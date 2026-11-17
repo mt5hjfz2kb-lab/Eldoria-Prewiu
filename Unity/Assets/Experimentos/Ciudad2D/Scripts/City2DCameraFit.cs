@@ -41,9 +41,19 @@ namespace Eldoria.Experimentos.Ciudad2D
             // Exclusivo de capturas: en juego siempre se usan Screen.width/height.
             evidenceWidth = Mathf.Max(1, width);
             evidenceHeight = Mathf.Max(1, height);
+            zoom = 1f; // Each evidence frame starts with the same overview.
             lastWidth = -1;
             Refit();
         }
+        /// <summary>Evidence-only detail view. User camera zoom stays gesture-driven.</summary>
+        public void SetEvidenceZoom(float multiplier)
+        {
+            if (evidenceWidth == 0 || evidenceHeight == 0)
+                throw new System.InvalidOperationException("Detail zoom only available during evidence capture");
+            zoom = Mathf.Clamp(multiplier, 1f, 1.95f);
+            Refit();
+        }
+
         public void ClearEvidenceViewport()
         {
             evidenceWidth = evidenceHeight = 0;
