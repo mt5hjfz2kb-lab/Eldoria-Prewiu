@@ -51,6 +51,19 @@ jobs:
           assert 'Experimento_Ciudad2D_PremiumV3.unity' in test
           print('CITY2D_V3_STATIC_PREFLIGHT_PASS_REAL_SCENE_AND_OUTPUT_NOT_V2')
           PY
+      - name: Parse V3 PowerShell runner syntax without running Unity or reserving Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $p='Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v3_native.ps1'
+          $tokens=$null
+          $problems=$null
+          [void][System.Management.Automation.Language.Parser]::ParseFile($p,[ref]$tokens,[ref]$problems)
+          if(@($problems).Count -gt 0){
+            foreach($err in $problems){Write-Host $err.ToString()}
+            throw 'Invalid V3 PowerShell: native PC is not allocated'
+          }
+          Write-Host 'CIUDAD2D_V3_POWERSHELL_SYNTAX_PASS'
       - name: Read current resource reservation from main; never take PC if not owned
         id: lease
         shell: bash
