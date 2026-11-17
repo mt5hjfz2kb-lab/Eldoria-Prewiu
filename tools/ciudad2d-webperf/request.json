@@ -12,5 +12,8 @@
   "no_reinstall_software": true,
   "one_bounded_native_lease": true,
   "physical_iphone_qa": "PENDING",
-  "notes": "Only package artifact for localhost/Wi-Fi. iPhone physical playtesting cannot be asserted from CI."
+  "notes": "Only package artifact for localhost/Wi-Fi. iPhone physical playtesting cannot be asserted from CI.",
+  "retry": 1,
+  "previous_run": 44195892047,
+  "previous_failure": "Static preflight mismatch of CIUDAD2D_WEBPERF_V6_READY marker, before occupying Windows; now corrected."
 }
