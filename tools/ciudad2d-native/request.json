@@ -3,15 +3,17 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "REAL Editor PlayMode via Unity Test Framework 1.6: load isolated saved scene, actual EventSystem pointer click on HUD/buildings, camera portrait/landscape and no gateway write; native grounded Cuartel art A/B 15 screenshots.",
+  "reason": "Retry genuine EditMode UnityTest EnterPlayMode proof and 15 native A/B frames after removing duplicate asmdef references; exact isolated branch only.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 6,
   "requested_art_stage": "Grounded stone-platform edge A/B + Unity Test Runner genuine PlayMode interaction proof",
-  "retry_ordinal": 10,
+  "retry_ordinal": 11,
   "engine_module_added_in_branch": true,
-  "last_failed_run": null,
-  "last_failed_errors": [],
+  "last_failed_run": 44026959806,
+  "last_failed_errors": [
+    "Unity 6.3 PlayModeProof.asmdef duplicated UnityEngine.TestRunner and UnityEditor.TestRunner references, fixed by retaining only optionalUnityReferences: TestAssemblies."
+  ],
   "previous_successful_run": 44023117740
 }
