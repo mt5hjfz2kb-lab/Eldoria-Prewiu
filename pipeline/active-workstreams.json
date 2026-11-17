@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-17T03:59:40Z",
+  "updated_at": "2026-11-17T04:35:15.668Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9934,12 +9934,14 @@
       "title": "Valoria 2.5D ilustrada — desbloqueos reales, crecimiento y QA nativa",
       "owner": "chatgpt-eldoria-city2d-priority-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "branch": "art/ciudad-2d-hitos-1-5-20261116",
       "status": "active",
-      "phase": "UNITY_EDITOR_RENDER_PASS_12_SHA_VERIFIED_PLAYMODE_AND_MOBILE_PENDING",
+      "phase": "NATIVE_SHARPNESS_A_B_PROOF_RESERVED",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -20388,11 +20390,11 @@
     "authorized_by": "Owner directly prioritizes City2D experiment PC resource in this conversation, 2026-11-16",
     "authorized_at": "2026-11-16T23:00:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": null,
+    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "current_run_id": null,
-    "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "next_workstream": null,
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "city2d_native_turn_released_next_playmode_proof_pending",
+    "status": "city2d_native_sharpness_proof_claimed",
     "rules": [
       "Never cancel or interrupt any running Windows/Unity/Blender process; recheck running jobs and processes immediately before Editor.",
       "Owner explicitly directs this experiment to take the next available native PC turn over earlier Ashen/Visual rotation.",
