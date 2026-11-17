@@ -12,7 +12,8 @@ bake = (root / "Scripts/Editor/City2DGroundingBake.cs").read_text(encoding="utf-
 native = (root / "Scripts/Editor/City2DNativeEvidence.cs").read_text(encoding="utf-8")
 assert asm["includePlatforms"] == ["Editor"]
 assert "TestAssemblies" in asm["optionalUnityReferences"]
-assert "nunit.framework.dll" in asm["precompiledReferences"]
+assert "UnityEngine.TestRunner" not in asm["references"] and "UnityEditor.TestRunner" not in asm["references"]
+assert asm["overrideReferences"] is False
 assert "yield return new EnterPlayMode()" in test
 assert "EditorSceneManager.LoadSceneAsyncInPlayMode" in test
 assert "Application.isPlaying" in test
