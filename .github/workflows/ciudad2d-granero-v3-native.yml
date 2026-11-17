@@ -1,4 +1,5 @@
 name: Ciudad2D - A/B real Unity Granero V3 aislado
+# Exact-source retry only after confirming the complete Granero Swap call is valid C#.
 # Second source-pinned attempt: corrected distinct V3 evidence output and C# comments.
 on:
   push:
