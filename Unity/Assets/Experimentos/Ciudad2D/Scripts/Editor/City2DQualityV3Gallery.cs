@@ -227,7 +227,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                                 new Vector3(0f,prevGround-nextGround,0f);
                             shadowObj.transform.position=cuartel.transform.position;
                             shadowObj.transform.localScale=cuartel.transform.localScale;
-                            shade.enabled=true;
+                            // No shadow of a building that is not yet built.
+                            shade.enabled=render.enabled;
                         }
                         else
                         {
