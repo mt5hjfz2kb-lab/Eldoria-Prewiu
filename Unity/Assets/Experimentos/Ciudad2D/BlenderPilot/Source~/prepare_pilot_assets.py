@@ -4,7 +4,7 @@ All operations deterministic. Does NOT modify original .blend/source renders.
 Output is a pair of sprites for Unity (rgba, aligned, no rectangular ground).
 """
 import argparse,hashlib,json,pathlib
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 parse=argparse.ArgumentParser()
 parse.add_argument('--dir',required=True,type=pathlib.Path)
 args=parse.parse_args()
@@ -34,6 +34,20 @@ for name in ('Cuartel','Aserradero'):
     box=(x0,top,x1,bottom)
     # The same cropped extent is used for both render passes.
     cc=color.crop(box); ss=shadow.crop(box)
+    # Physically rendered shadow catcher extends over the whole floor and
+    # looks like a huge dark rectangle on the painted city. Keep ONLY the
+    # contact region around the actual ground footprint, with a soft falloff.
+    # Ground anchor follows the color silhouette rather than image edges.
+    anchor_x = w//2 - x0
+    anchor_y = cbox[3] - top - max(20, (cbox[3]-cbox[1])*.065)
+    radius_x = max(100, (cbox[2]-cbox[0])*.54)
+    radius_y = max(52, (cbox[3]-cbox[1])*.145)
+    footprint = Image.new('L', cc.size, 0)
+    d = ImageDraw.Draw(footprint)
+    d.ellipse((round(anchor_x-radius_x), round(anchor_y-radius_y),
+               round(anchor_x+radius_x), round(anchor_y+radius_y)), fill=255)
+    footprint = footprint.filter(ImageFilter.GaussianBlur(radius=max(12, round(radius_y*.22))))
+    ss.putalpha(ImageChops.multiply(ss.getchannel('A'), footprint))
     if cc.size!=ss.size:raise ValueError('Color/shadow registration drift')
     for output,im in [(name+'_Ready.png',cc),(name+'_ShadowReady.png',ss)]:
         im.save(root/output,optimize=True)
@@ -50,6 +64,7 @@ for name in ('Cuartel','Aserradero'):
       'shadow_ready_sha256':hashlib.sha256((root/(name+'_ShadowReady.png')).read_bytes()).hexdigest(),
       'color_alpha_gt40_count':alpha_count,'shadow_alpha_gt3_count':shadow_count,
       'render_3d_mesh_objects':manifest['buildings'][name]['mesh_objects'],
+      'shadow_contact_mask':{'method':'original Cycles shadow x Gaussian softened measured footprint', 'anchor': [int(anchor_x),round(anchor_y)],'radii':[round(radius_x),round(radius_y)]},
       'approved':False
     }
 (root/'unity-sprite-contract.json').write_text(json.dumps(report,indent=2)+'\n')
