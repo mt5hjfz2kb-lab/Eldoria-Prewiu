@@ -12,7 +12,7 @@ for terrain in (manifest['terrain_file'],manifest['terrain_previous_file']):
     with Image.open(S/terrain) as im: assert im.size==(941,1672) and im.mode=='RGB'
 assert [manifest['coordinate_width'],manifest['coordinate_height']]==[941,1672]
 bs=manifest['buildings'];decor=manifest['decor'];fx=manifest['glows']
-assert len(bs)==6 and len(decor)==32 and len(fx)==7
+assert len(bs)==6 and len(decor)==23 and len(fx)==7
 assert set(b['id'] for b in bs)=={'bastion','cuartel','salon','aserradero','granero','cantera'}
 assert len({b['id'] for b in bs})==len(bs) and len({x['id'] for x in decor})==len(decor)
 assert sum(bool(b.get('level5_filename')) for b in bs)==1
@@ -56,10 +56,10 @@ assert 'return int.MaxValue' in rules and 'state.BuildingCompletesUtcTicks > 0' 
 assert rules.index('if (state.BastionLevel < required)') < rules.index('if (level > 0) return new City2DPlotView(City2DPlotPhase.Built'), 'Invalid future building must stay hidden'
 assert 'SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key))' in state
 web=(QA/'live-preview/index.html').read_text(encoding='utf-8')
-assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==32' in web
+assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==23' in web
 assert 'b.file=artLevel===5?b.level5File:b.baseFile' in web
 assert 'function toggleTerrain()' in web and 'drawImage(terrainName' in web
 assert "'Props/MuroDerruido.png':'Props/VallaLenador.png'" in web
 assert 'const markers=entries.filter(' in web
 assert 'function stateFor(e)' in web and 'stateFor(e).phase' in web
-print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 32 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')
+print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 23 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')
