@@ -17,6 +17,8 @@ namespace Eldoria.Experimentos.Ciudad2D
         private ICommandGateway gateway;
         private int demoBastionLevel = 1;
         private readonly List<City2DAmbientGating> ambientGates = new List<City2DAmbientGating>();
+        private readonly List<City2DAmbientMotion> ambientMotion = new List<City2DAmbientMotion>();
+        public int RegisteredAmbientEffectCount => ambientMotion.Count;
         private float nextReadTime;
 
         public bool IsLiveBound => gateway != null;
@@ -40,6 +42,9 @@ namespace Eldoria.Experimentos.Ciudad2D
             ambientGates.Clear();
             foreach (var prop in UnityEngine.Object.FindObjectsByType<City2DAmbientGating>(FindObjectsSortMode.None))
                 if (prop.gameObject.scene == gameObject.scene) ambientGates.Add(prop);
+            ambientMotion.Clear();
+            foreach (var effect in UnityEngine.Object.FindObjectsByType<City2DAmbientMotion>(FindObjectsSortMode.None))
+                if (effect.gameObject.scene == gameObject.scene) ambientMotion.Add(effect);
         }
 
         public void Register(CityBuilding building)
@@ -70,6 +75,7 @@ namespace Eldoria.Experimentos.Ciudad2D
                 if (pair.Value != null)
                     pair.Value.SetAppearance(City2DProgressionPolicy.DemoStage(demoBastionLevel, pair.Key));
             foreach (var prop in ambientGates) if (prop != null) prop.Apply(demoBastionLevel);
+            foreach (var effect in ambientMotion) if (effect != null) effect.ApplyStage(demoBastionLevel);
             LevelsChanged?.Invoke();
         }
 
@@ -99,6 +105,8 @@ namespace Eldoria.Experimentos.Ciudad2D
                     pair.Value.SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key));
             foreach (var prop in ambientGates)
                 if (prop != null) prop.Apply(snapshot.BastionLevel);
+            foreach (var effect in ambientMotion)
+                if (effect != null) effect.ApplyStage(snapshot.BastionLevel);
             LevelsChanged?.Invoke();
         }
 
