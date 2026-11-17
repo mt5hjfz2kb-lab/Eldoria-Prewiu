@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "engine": "Unity",
+  "mode": "Editor_RenderTexture",
+  "source_run_id": 44053638485,
+  "source_artifact_id": 14315821510,
+  "source_commit_sha": "bae3e874efd11529c3bd13441c56fabd4acdc0b5",
+  "source_artifact_zip_sha256": "14b73c193e71bf8fc082770158af4bfae183dcb7bc1e807584b9511846a50e44",
+  "source_captures": [
+    {
+      "file": "bastion1_390x844_t1.png",
+      "stage": 1,
+      "width": 390,
+      "height": 844,
+      "sha256": "3a066b21ee4eff3dece9f417c13eb660d5fb8d029a96c2065cdc5c22a3ef48ec"
+    },
+    {
+      "file": "bastion1_390x844_t2.png",
+      "stage": 1,
+      "width": 390,
+      "height": 844,
+      "sha256": "c45b2f86285c66a00799e1f760d15ec6bbb99b05b9f3f9038709029ebd610cf6"
+    },
+    {
+      "file": "bastion3_390x844_t1.png",
+      "stage": 3,
+      "width": 390,
+      "height": 844,
+      "sha256": "f66174553e7429f1c8eaa4a0c4a9ab57a98adfe473b425edc569ebd295d3a022"
+    },
+    {
+      "file": "bastion3_390x844_t2.png",
+      "stage": 3,
+      "width": 390,
+      "height": 844,
+      "sha256": "df62d589489f0d67e30758eeb0ba66e7297736f3a8e0c52111b0a048f0760674"
+    },
+    {
+      "file": "bastion5_390x844_t1.png",
+      "stage": 5,
+      "width": 390,
+      "height": 844,
+      "sha256": "e7928d6f8aa38ea0144eb52c8abfe8bcaa591460368d85025dfc747aecb43787"
+    },
+    {
+      "file": "bastion5_390x844_t2.png",
+      "stage": 5,
+      "width": 390,
+      "height": 844,
+      "sha256": "5ee4d02594d701b9d9fa533e41c2b0ff8a8dd5e22bec1e0a3246e5c3a2f6c124"
+    },
+    {
+      "file": "bastion5_1170x2532_t1.png",
+      "stage": 5,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "1124a70673bc7ab08b181221def2668f8bb93ed57561a717daeb1f6ead8656e9"
+    },
+    {
+      "file": "bastion5_1170x2532_t2.png",
+      "stage": 5,
+      "width": 1170,
+      "height": 2532,
+      "sha256": "6fda3f3344f3deaba1e701be7244045ea7a9b773621e5069c5af6b0934b8eaf4"
+    },
+    {
+      "file": "bastion5_844x390_t1.png",
+      "stage": 5,
+      "width": 844,
+      "height": 390,
+      "sha256": "8f942011b35d96582679642d85f4146cdb2a4570820322ba66e21f76894e073c"
+    },
+    {
+      "file": "bastion5_844x390_t2.png",
+      "stage": 5,
+      "width": 844,
+      "height": 390,
+      "sha256": "2e423aec294d49464dcb9ef090cfbcba8bed93095be1b88d69b90b1cde0b8a6e"
+    }
+  ],
+  "source_animation_frames": [
+    {
+      "file": "living_bastion5_390x844_f00.png",
+      "sha256": "5ea13932b2e30cccd1528ad64629cc4890c7df89ad686b73e68bedae56f28a75",
+      "width": 390,
+      "height": 844,
+      "seconds": 0.6
+    },
+    {
+      "file": "living_bastion5_390x844_f01.png",
+      "sha256": "6f83a5c7ec4124fae65a86818374f2ac26b20262dd0ba13db485a7a2fd5202d3",
+      "width": 390,
+      "height": 844,
+      "seconds": 0.9400001
+    },
+    {
+      "file": "living_bastion5_390x844_f02.png",
+      "sha256": "8c9b5dc97791e079f5c78c2047791d6812896e40d7636cb91523b0e052822875",
+      "width": 390,
+      "height": 844,
+      "seconds": 1.28
+    },
+    {
+      "file": "living_bastion5_390x844_f03.png",
+      "sha256": "eb3318d320bb2097a08a7aad3d11182cf60800272992c4739a1ec25a26c7d4c8",
+      "width": 390,
+      "height": 844,
+      "seconds": 1.62
+    },
+    {
+      "file": "living_bastion5_390x844_f04.png",
+      "sha256": "b157b3928a51687e3dca5077d8868af2c06fee17411e218f33d9d90d48e0ca8e",
+      "width": 390,
+      "height": 844,
+      "seconds": 1.96
+    },
+    {
+      "file": "living_bastion5_390x844_f05.png",
+      "sha256": "cdb39f03fca977e2f59fce7d485a160ea2329fb69cb638b4e6a295e3db1cb8bf",
+      "width": 390,
+      "height": 844,
+      "seconds": 2.3
+    },
+    {
+      "file": "living_bastion5_390x844_f06.png",
+      "sha256": "4507b49ea5723663d55f705b9344ea9d7ab8736cf22e2974a9ddd972afdf3967",
+      "width": 390,
+      "height": 844,
+      "seconds": 2.64
+    },
+    {
+      "file": "living_bastion5_390x844_f07.png",
+      "sha256": "df0b07202853e41c9fbc2da80d4d38e34ecfd8244db4ad0f112f485a9feba7b2",
+      "width": 390,
+      "height": 844,
+      "seconds": 2.98
+    },
+    {
+      "file": "living_bastion5_390x844_f08.png",
+      "sha256": "e516f500ca8f30d3db5c8de4f95dbd0faa8e0be8357df8608baf3dcb945f28e6",
+      "width": 390,
+      "height": 844,
+      "seconds": 3.32
+    },
+    {
+      "file": "living_bastion5_390x844_f09.png",
+      "sha256": "f35d6e86b8fbe15d852d06ba3a0281e7d59d363f7cfebba7e9a09ff87cd153e1",
+      "width": 390,
+      "height": 844,
+      "seconds": 3.66
+    },
+    {
+      "file": "living_bastion5_390x844_f10.png",
+      "sha256": "6d9a4dfcc65ca7479f53812ab9b87c9d9e7beb93236a17366c839b97288da52d",
+      "width": 390,
+      "height": 844,
+      "seconds": 4
+    },
+    {
+      "file": "living_bastion5_390x844_f11.png",
+      "sha256": "fc3cae4280e5a19aaf55ebe881e0b5d8bcfb92407c25b95d85f8b488b8f17de6",
+      "width": 390,
+      "height": 844,
+      "seconds": 4.34
+    },
+    {
+      "file": "living_bastion5_390x844_f12.png",
+      "sha256": "7b209d59b6ef5358e41da8a1ce1df5c203cdd8fd37dec1372d6fd044274acbbd",
+      "width": 390,
+      "height": 844,
+      "seconds": 4.68
+    },
+    {
+      "file": "living_bastion5_390x844_f13.png",
+      "sha256": "ef6f20e5ecdaa8333c834c40fb48d51a921bbab74f98231eed6ef099956386e6",
+      "width": 390,
+      "height": 844,
+      "seconds": 5.02
+    },
+    {
+      "file": "living_bastion5_390x844_f14.png",
+      "sha256": "ba9fcb00f844531825bbe81b03158ac028ce80b56343bfe99d168dede5363e2d",
+      "width": 390,
+      "height": 844,
+      "seconds": 5.36
+    },
+    {
+      "file": "living_bastion5_390x844_f15.png",
+      "sha256": "886c67afb927773bb8dcbdb732acf340948c1fba852ccec015a938e653fedfd3",
+      "width": 390,
+      "height": 844,
+      "seconds": 5.7
+    }
+  ],
+  "derivatives": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_I_III_V_NATIVE.jpg",
+      "sha256": "6d8d1c12e5ecc7d49524cb1131b6af591f83fa8f6486b839ca97628a98889253",
+      "size_bytes": 1086575
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_V_Motion_NATIVE.webp",
+      "sha256": "cad120a83370ba5e5efa5434b00bf095c2a9e1fba3bbd28b5c7ebf98b5d0c665",
+      "size_bytes": 853542
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_V_Motion_NATIVE.gif",
+      "sha256": "f3001664ee228aa54b6aa66b7f33ef8637de65479872f7ffd1863a8ff6e242bb",
+      "size_bytes": 4985169
+    }
+  ],
+  "original_frame_count": 26,
+  "loop_frame_count": 16,
+  "min_changed_pixels_between_adjacent_real_frames": 7884,
+  "max_changed_pixels_between_adjacent_real_frames": 9712,
+  "no_synthesized_frames": true,
+  "images_derived_from_exact_Unity_captures": true,
+  "art_approved": false,
+  "playmode_animation_performance_not_tested": true,
+  "physical_iphone_not_tested": true,
+  "gameplay_unchanged": true
+}
