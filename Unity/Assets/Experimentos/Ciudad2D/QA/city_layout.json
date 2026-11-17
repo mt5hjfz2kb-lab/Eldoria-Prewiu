@@ -2,7 +2,7 @@
   "schema": 4,
   "coordinate_width": 941,
   "coordinate_height": 1672,
-  "notes": "Single layout authority. Buildings gated by real LocalGateway completion, NOT merely Bastion stage; decor has min_bastion stage. Reserved future districts are informational and cannot be rendered before terrain authoring. | Chapter-aware clusters fill empty quarters with vegetation, civilian housing, market goods and temporary works, still subordinate to gameplay buildings.",
+  "notes": "Single layout authority. Buildings gated by real LocalGateway completion, NOT merely Bastion stage; decor has min_bastion stage. Reserved future districts are informational and cannot be rendered before terrain authoring. | Chapter-aware clusters fill empty quarters with vegetation, civilian housing, market goods and temporary works, still subordinate to gameplay buildings. | Premium mobile readability B: remove nine duplicated vegetative clutter props, original 32 prop layout preserved in ArtBible control A.",
   "buildings": [
     {
       "id": "bastion",
@@ -90,24 +90,6 @@
       "x": 319,
       "y": 443,
       "scale": 0.44,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
-      "id": "decor_01",
-      "filename": "Props/MatojosFlores.png",
-      "x": 608,
-      "y": 400,
-      "scale": 0.3,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
-      "id": "decor_02",
-      "filename": "Props/MatojosFlores.png",
-      "x": 611,
-      "y": 799,
-      "scale": 0.27,
       "min_bastion": 1,
       "max_bastion": 0
     },
@@ -265,51 +247,6 @@
       "max_bastion": 4
     },
     {
-      "id": "decor_20",
-      "filename": "Props/ArboledaAntigua.png",
-      "x": 742,
-      "y": 549,
-      "scale": 0.32,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
-      "id": "decor_21",
-      "filename": "Props/ArbolAntiguo.png",
-      "x": 392,
-      "y": 1170,
-      "scale": 0.19,
-      "min_bastion": 1,
-      "max_bastion": 2
-    },
-    {
-      "id": "decor_22",
-      "filename": "Props/ArboledaAntigua.png",
-      "x": 615,
-      "y": 464,
-      "scale": 0.2,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
-      "id": "decor_23",
-      "filename": "Props/MatojosFlores.png",
-      "x": 390,
-      "y": 546,
-      "scale": 0.21,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
-      "id": "decor_24",
-      "filename": "Props/MatojosFlores.png",
-      "x": 654,
-      "y": 600,
-      "scale": 0.22,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
       "id": "decor_25",
       "filename": "Props/CasasMercaderes.png",
       "x": 246,
@@ -328,15 +265,6 @@
       "max_bastion": 0
     },
     {
-      "id": "decor_27",
-      "filename": "Props/ArboledaAntigua.png",
-      "x": 107,
-      "y": 568,
-      "scale": 0.22,
-      "min_bastion": 1,
-      "max_bastion": 0
-    },
-    {
       "id": "decor_28",
       "filename": "Props/AlmacenBarriles.png",
       "x": 361,
@@ -352,15 +280,6 @@
       "y": 821,
       "scale": 0.14,
       "min_bastion": 3,
-      "max_bastion": 0
-    },
-    {
-      "id": "decor_30",
-      "filename": "Props/ArbolAntiguo.png",
-      "x": 814,
-      "y": 802,
-      "scale": 0.19,
-      "min_bastion": 1,
       "max_bastion": 0
     },
     {
