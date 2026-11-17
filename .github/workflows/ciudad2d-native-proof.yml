@@ -187,10 +187,11 @@ jobs:
           $evidence=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Ciudad2DNativeEvidence/evidence.json'
           if(-not(Test-Path -LiteralPath $evidence)){throw 'Unity did not generate evidence.json'}
           $data=Get-Content -LiteralPath $evidence -Raw | ConvertFrom-Json
-          if(@($data.captures).Count -ne 13 -or -not $data.domain_snapshot_read_only_pass -or
+          if(@($data.captures).Count -ne 14 -or -not $data.domain_snapshot_read_only_pass -or
              -not $data.visibility_policy_pass -or
              -not $data.quality_import_uncompressed_pass -or
              -not $data.quality_crisp_bake_pass -or
+             -not $data.candidate_cuartel_comparison_only -or
              -not $data.retina_terrain_rendered_pass -or
              -not $data.quality_import_no_mipmap_pass -or
              $data.art_approved -or $data.device_qa -ne 'PENDING'){
