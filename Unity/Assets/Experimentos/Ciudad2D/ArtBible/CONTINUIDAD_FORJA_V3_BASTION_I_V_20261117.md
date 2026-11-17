@@ -12,7 +12,7 @@ El método 2.5D ilustrado ya está implementado y probado con capturas auténtic
 - Sombra independiente `Sprites/AIPilot/Versions/Forja_Guardia_ContactShadow_v3.png`, SHA-256 `24bcd1e5ec6abbbf5ce3455632b3728a5a732a2057a46d17625483a5167c8e80`. Derivada de la huella alfa baja; **aproximación 2D**, no render de sombras físicamente correcto ni aprobación de suelo.
 - [Importación y hash #44044752465](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44044752465), [capa de sombra #44046028729](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44046028729).
 - [Unity nativo #44045010681](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44045010681), ocho imágenes A/B, y [#44046565867](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44046565867), diez imágenes incluidas tomas enfocadas a la Forja y sombra; fuentes y SHA verificables.
-- **Cambio importante del experimento:** la primera galería con tres recursos IA situados simultáneamente inducía una conclusión visual injusta: el Observatorio V1, desproporcionadamente alto, invadía la toma cercana de la Forja. Se corrigió `City2DAIPilotGallery.CaptureForjaV3` para mantener los otros dos edificios originales y comparar **una sola variable**. La nueva ejecución [#44047998748](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44047998748) está destinada a cerrar esa comparación.
+- **Cambio importante del experimento:** la primera galería con tres recursos IA situados simultáneamente inducía una conclusión visual injusta: el Observatorio V1, desproporcionadamente alto, invadía la toma cercana de la Forja. Se corrigió `City2DAIPilotGallery.CaptureForjaV3` para mantener los otros dos edificios originales y comparar **una sola variable**. La nueva ejecución [#44047998748](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44047998748) **terminó SUCCESS** y verificó diez PNG de Unity con SHA. La prueba mantuvo Aserradero y Granero originales idénticos y cambió exclusivamente Cuartel por Forja V3 en galería artística, sin incorporarlo al juego.
 
 ### Evaluación artística independiente de la compilación
 
@@ -38,3 +38,15 @@ El método 2.5D ilustrado ya está implementado y probado con capturas auténtic
 Mantener los seis maestros originales, la escena 2.5D, el terreno A/B, las versiones Blender y las tres fuentes IA. Consolidar V3 como **candidato de estudio, no nuevo maestro aprobado**. No tocar `main`, mecánicas, economía, guardados o escenas jugables.
 
 **Próximo gate genuino de producción:** conseguir Bastión II con referencia original REAL y alfa correcto; juzgarlo en Unity bajo la misma cámara y solo si mantiene identidad generar III/IV. No construir montajes simulados como si fueran cinco niveles reales. No pasar a interfaz/pantallas/mundo mientras haya tres niveles sin arte satisfactorio.
+
+### Evidencia persistida y control de píxeles fuera del edificio
+
+La ejecución Ubuntu [#44049475695](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44049475695) descargó el artefacto exacto `14312049118` de Unity, revalidó 10 SHA originales y **registró una comparativa real permanente**:
+
+- `QA/ForjaV3_NATIVE_AB_390x844.jpg`, derivada sin alterar píxeles de las dos capturas originales a 390×844.
+- `QA/ForjaV3_NATIVE_DETAIL_A_B.jpg`, recortes idénticos de ambas capturas genuinas a 1170×2532 (los recortes JPG no son renders nuevos).
+- `ArtBible/Pilots/forja_guardia/v3/UNITY_REAL_AB_EVIDENCE.json`, fuente exacta `cda19dcca27f0ecc96b5a2bff389d1c4afbbf409`, SHA de cada imagen y ZIP fuente.
+
+**Prueba de variable única:** en `390×844`, MAE RGB de la zona de Forja `10,4308/255`, pero dos regiones de control ajenas al edificio conservaron MAE `0,0`. Esto evidencia que se ha sustituido visualmente SOLO un sprite, no que el resultado alcance calidad premium. El terreno y otros sistemas no cambiaron; ninguna prueba física iPhone.
+
+**Conclusión técnica/artística:** V3 demuestra que podemos obtener y colocar un taller más rico y sin plataforma cuadrada mediante una fuente ilustrada. La coherencia de **un catálogo** (Forja, Observatorio, Archivo) no está validada: la perspectiva y escala del Observatorio son insuficientes y el Archivo requiere un pass de heráldica y encuadre. El Bastión II, III y IV sigue sin sprites únicos; no avanzar todavía a interfaz ni mundo.
