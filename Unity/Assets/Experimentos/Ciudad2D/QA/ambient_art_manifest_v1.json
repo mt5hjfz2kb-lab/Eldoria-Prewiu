@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "state": "TECHNICAL_SOURCE_PREP_ART_REVIEW_PENDING",
+  "assets": [
+    {
+      "name": "Humo_Valoria_A.png",
+      "sha256": "d1a4ff4ffa9791799a608f1aa179711aa9823fd3933972a1398b3310a33340ca",
+      "dimensions": [
+        160,
+        240
+      ],
+      "alpha_min": 0,
+      "alpha_max": 114,
+      "seed": 37,
+      "script": "tools/ciudad2d-ambient/build_ambient_sprites.py"
+    },
+    {
+      "name": "Humo_Valoria_B.png",
+      "sha256": "8dcdc8a052a5a7e50b25c919b2e89bef577b8968cb0bcdbf97c08b2a8f62ec86",
+      "dimensions": [
+        160,
+        240
+      ],
+      "alpha_min": 0,
+      "alpha_max": 107,
+      "seed": 120,
+      "script": "tools/ciudad2d-ambient/build_ambient_sprites.py"
+    }
+  ],
+  "all_original_city_sprites_unchanged": true,
+  "master_images_untouched": true,
+  "unity_capture": "PENDING",
+  "playmode": "PENDING",
+  "device": "PENDING",
+  "no_ai_generation_credits_used": true,
+  "source_technique": "fixed Gaussian wisps with seeded low-frequency noise; alpha blur",
+  "notes": "Subtle overlay at chimney coordinates; standalone sprites cannot replace original painted chimney smoke"
+}

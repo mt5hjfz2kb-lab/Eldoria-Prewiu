@@ -1,7 +1,0 @@
-{
-  "schema": 1,
-  "requested": "reproducible smoke sprite A and B for artist review",
-  "asset_sha_inputs": "script pinned by git SHA",
-  "no_gameplay_changes": true,
-  "no_source_overwrite": true
-}
