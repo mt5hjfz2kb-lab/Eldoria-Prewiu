@@ -3,15 +3,15 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Native 14-frame Unity screenshot A/B: preserve original Cuartel and compare higher-detail transparent Cuartel candidate without square plinth; keep gameplay untouched",
+  "reason": "REAL Editor PlayMode via Unity Test Framework 1.6: load isolated saved scene, actual EventSystem pointer click on HUD/buildings, camera portrait/landscape and no gateway write; native grounded Cuartel art A/B 15 screenshots.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
-  "ownership_revision": 5,
-  "requested_art_stage": "Stage V Cuartel art candidate visual A/B, Retina terrain, 14 SHA-verified Unity Editor RenderTexture captures",
-  "retry_ordinal": 9,
+  "ownership_revision": 6,
+  "requested_art_stage": "Grounded stone-platform edge A/B + Unity Test Runner genuine PlayMode interaction proof",
+  "retry_ordinal": 10,
   "engine_module_added_in_branch": true,
   "last_failed_run": null,
   "last_failed_errors": [],
-  "previous_successful_run": 44022014699
+  "previous_successful_run": 44023117740
 }
