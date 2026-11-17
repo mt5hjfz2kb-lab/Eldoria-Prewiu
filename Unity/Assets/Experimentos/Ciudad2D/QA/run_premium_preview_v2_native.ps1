@@ -67,10 +67,14 @@ Write-Host 'PREMIUM_V2_REAL_UNITY_SCENE_COPY_AND_9_SOURCE_SHA_PASS_ART_UNAPPROVE
 $xml=Join-Path $env:RUNNER_TEMP ('city2d-premium-v2-playmode-'+$env:GITHUB_RUN_ID+'.xml')
 $testlog=Join-Path $env:RUNNER_TEMP ('city2d-premium-v2-playmode-'+$env:GITHUB_RUN_ID+'.log')
 $filter='Eldoria.Experimentos.Ciudad2D.PlayModeProof.PremiumVisualSceneProofV2.PremiumV2Scene_GenuinePlayMode_StagesSpritesShadowsPointer'
-# Unity 6000.3: -quit is NOT supported while -runTests executes.
-# Unity Test Framework exits the Editor itself after it writes its NUnit XML.
+# This fixture lives in an Editor-only test assembly and explicitly
+# transitions to real PlayMode with yield return new EnterPlayMode().
+# Unity Test Framework must therefore DISCOVER it under EditMode, exactly as
+# the existing passing City2DRealPlayModeTests; -testPlatform PlayMode yielded
+# zero tests in runs 44096819463 and 44096910663.
+# Do NOT add -quit: Test Framework exits automatically after XML is written.
 $args=@('-batchmode','-force-d3d11','-projectPath',$project,
-  '-runTests','-testPlatform','PlayMode','-testFilter',$filter,
+  '-runTests','-testPlatform','EditMode','-testFilter',$filter,
   '-testResults',$xml,'-logFile',$testlog)
 $job=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
 if(-not $job.WaitForExit(900000)){
