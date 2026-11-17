@@ -3,17 +3,17 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Retry after C# CS0234 Application.dataPath namespace error: fixed to UnityEngine.Application.dataPath; require 15 native A/B PNGs, genuine PlayMode HUD/pointer/camera and read-only snapshot.",
+  "reason": "Genuine Editor PlayMode retry after domain type resolution via loaded Unity assemblies; native A/B and pointer, HUD, camera and read-only PlayerState checks.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 6,
   "requested_art_stage": "Grounded stone-platform edge A/B + Unity Test Runner genuine PlayMode interaction proof",
-  "retry_ordinal": 12,
+  "retry_ordinal": 13,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 44027489015,
+  "last_failed_run": 44027950725,
   "last_failed_errors": [
-    "Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DGroundingBake.cs(122,33) CS0234 Application.dataPath resolved to Eldoria.Application namespace; qualified UnityEngine.Application.dataPath."
+    "Unity Editor PlayMode scene/HUD/pointer checks passed but domain fixture lookup used fixed Assembly-CSharp; domain PlayerState in different loaded assembly. Runtime lookup now searches AppDomain assemblies."
   ],
   "previous_successful_run": 44023117740
 }
