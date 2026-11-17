@@ -60,7 +60,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     throw new InvalidOperationException("Unknown ambient kind: "+effect.kind);
                 if (smoke != (effect.sprite == "Props/Humo_Valoria_A.png" ||
                              effect.sprite == "Props/Humo_Valoria_B.png") ||
-                    !smoke && effect.sprite != "Props/HaloAntorcha.png")
+                    !smoke && effect.sprite != "Props/Chispa_Valoria_V2.png")
                     throw new InvalidOperationException("Unexpected ambient source: "+effect.sprite);
                 var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(SpriteRoot+effect.sprite);
                 if (sprite == null) throw new InvalidOperationException("Ambient source missing: "+effect.sprite);
