@@ -59,6 +59,26 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             catch (TargetInvocationException ex) { throw ex.InnerException ?? ex; }
         }
 
+        private static void SetDomainMember(object value, string name, object next)
+        {
+            var type = value.GetType();
+            var field = type.GetField(name, PublicInstance);
+            if (field != null) { field.SetValue(value, next); return; }
+            var property = type.GetProperty(name, PublicInstance);
+            Assert.NotNull(property, "Domain snapshot missing " + name);
+            property.SetValue(value, next);
+        }
+
+        private static object ReadDomainMember(object value, string name)
+        {
+            var type = value.GetType();
+            var field = type.GetField(name, PublicInstance);
+            if (field != null) return field.GetValue(value);
+            var property = type.GetProperty(name, PublicInstance);
+            Assert.NotNull(property, "Domain snapshot missing " + name);
+            return property.GetValue(value);
+        }
+
         private static string Plot(Component b) => Value(b, "PlotPhase").ToString();
         private static int Level(Component b) => Convert.ToInt32(Value(b, "Level"));
 
@@ -146,6 +166,31 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             var labels = UnityEngine.Object.FindObjectsByType<Text>(FindObjectsSortMode.None);
             Assert.IsTrue(labels.Any(t => t.text != null && t.text.Contains("Cuartel") &&
                 t.text.Contains("Built")), "HUD selection did not update after real component click");
+
+            // Authoritative DOMAIN contract replayed as an ephemeral fixture.
+            // No ICommandGateway write, no save file and no upgrade action.
+            var stateType = Type.GetType("Eldoria.Domain.PlayerState, Assembly-CSharp");
+            var chapterType = Type.GetType("Eldoria.Domain.BastionThreeState, Assembly-CSharp");
+            Assert.NotNull(stateType, "Cannot resolve real domain PlayerState");
+            Assert.NotNull(chapterType, "Cannot resolve real chapter state");
+            object state = Activator.CreateInstance(stateType);
+            object chapter = Activator.CreateInstance(chapterType);
+            SetDomainMember(state, "BastionLevel", 5);
+            SetDomainMember(state, "SawmillLevel", 2);
+            SetDomainMember(state, "BarracksLevel", 2);
+            SetDomainMember(chapter, "GranaryLevel", 1);
+            SetDomainMember(chapter, "StoneworksLevel", 0);
+            SetDomainMember(state, "ChapterThree", chapter);
+            Call(bridge, "ApplySnapshot", state);
+            yield return null;
+            AssertBuilding("cantera", "Available", false);
+            SetDomainMember(chapter, "StoneworksLevel", 1);
+            Call(bridge, "ApplySnapshot", state);
+            yield return null;
+            AssertBuilding("cantera", "Built", true);
+            Assert.AreEqual(1, Convert.ToInt32(ReadDomainMember(chapter, "StoneworksLevel")),
+                "Presentation must never mutate domain progress");
+            Assert.IsFalse((bool)Value(bridge, "IsLiveBound"), "No gateway write may occur");
 
             var fit = Find("City2DCameraFit");
             Call(fit, "SetEvidenceViewport", 1170, 2532);
