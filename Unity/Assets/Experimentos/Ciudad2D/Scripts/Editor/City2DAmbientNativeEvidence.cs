@@ -113,18 +113,20 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 bridge.SetDemoBastionLevel(5);
                 fit.SetEvidenceViewport(390,844);
                 var motionSequence=new List<string>();
+                var distinctFrameHashes=new HashSet<string>(StringComparer.Ordinal);
                 for(int frame=0;frame<16;frame++)
                 {
                     float seconds=0.6f+frame*.34f;
                     byte[] png=CaptureAtTime(cam,all,seconds,390,844);
+                    distinctFrameHashes.Add(Sha(png));
                     string name="living_bastion5_390x844_f"+frame.ToString("D2")+".png";
                     File.WriteAllBytes(Path.Combine(output,name),png);
                     motionSequence.Add("{\"file\":\""+name+"\",\"sha256\":\""+
                         Sha(png)+"\",\"width\":390,\"height\":844,\"seconds\":"+
                         seconds.ToString(System.Globalization.CultureInfo.InvariantCulture)+"}");
                 }
-                if(motionSequence.Select(item=>item).Distinct().Count()!=16)
-                    throw new InvalidOperationException("Living city sequence unexpectedly duplicated");
+                if(motionSequence.Count != 16 || distinctFrameHashes.Count < 12)
+                    throw new InvalidOperationException("Living city is visually static across genuine Unity frames");
 
                 string data="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture_two_times\","+
                     "\"source_scene\":\"Experimento_Ciudad2D.unity\","+
