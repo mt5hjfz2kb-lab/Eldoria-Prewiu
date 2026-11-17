@@ -64,6 +64,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     throw new InvalidOperationException("Escena nativa no usa el candidato orgánico versionado");
 
                 VerifyUncompressedSpriteImports();
+                if (ground.GetComponent<SpriteRenderer>().sprite.texture.width != 1412 ||
+                    ground.GetComponent<SpriteRenderer>().sprite.texture.height != 2508)
+                    throw new InvalidOperationException("Retina terrain absent from authentic Unity render");
 
                 var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
                 if (bridge == null) throw new InvalidOperationException("Falta el puente de estado");
@@ -179,6 +182,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"six_sprite_colliders_pass\":true,\n" +
                     "  \"game_state_modified\":false,\n" +
                     "  \"quality_import_uncompressed_pass\":true,\n" +
+                    "  \"retina_terrain_rendered_pass\":true,\n" +
                     "  \"quality_import_no_mipmap_pass\":true,\n" +
                     "  \"art_approved\":false,\n" +
                     "  \"device_qa\":\"PENDING\",\n" +
@@ -207,6 +211,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             string folder = City2DSceneBuilder.Folder + "Sprites/";
             var expected = new[] {
                 new { File="Terreno_Organico.png", Width=941, Height=1672 },
+                new { File="Retina/Terreno_Organico.png", Width=1412, Height=2508 },
                 new { File="Bastion_Nivel05.png", Width=764, Height=854 },
                 new { File="Bastion_Nivel01.png", Width=762, Height=699 },
                 new { File="Cuartel.png", Width=860, Height=860 }

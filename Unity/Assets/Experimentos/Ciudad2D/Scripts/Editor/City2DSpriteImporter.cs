@@ -21,7 +21,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             bool halo = assetPath.EndsWith("/Props/HaloAntorcha.png", StringComparison.OrdinalIgnoreCase);
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
-            importer.spritePixelsPerUnit = 100f;
+            // A Retina terrain source is 1.5x baked; keep world units stable.
+            importer.spritePixelsPerUnit = assetPath.Contains("/Sprites/Retina/") ? 150f : 100f;
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = !terrain;
             // Lossless Editor proof in isolated sandbox. Do not assume this profile

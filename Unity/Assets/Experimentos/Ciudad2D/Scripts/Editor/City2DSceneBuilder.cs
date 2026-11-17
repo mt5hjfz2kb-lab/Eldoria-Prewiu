@@ -58,7 +58,16 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         public static void Rebuild() { Build(true); }
         public static void BuildIfReady() { Build(false); }
 
-        private static Sprite Sprite(string path) => AssetDatabase.LoadAssetAtPath<Sprite>(SpritesFolder + path);
+        private static Sprite Sprite(string path)
+        {
+            // Sandboxed optional Retina source. No gameplay or other scene imports.
+            if (path == "Terreno_Organico.png")
+            {
+                var hd = AssetDatabase.LoadAssetAtPath<Sprite>(SpritesFolder + "Retina/" + path);
+                if (hd != null) return hd;
+            }
+            return AssetDatabase.LoadAssetAtPath<Sprite>(SpritesFolder + path);
+        }
         private static Layout ReadLayout()
         {
             var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(LayoutPath);
@@ -234,7 +243,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             foreach (var required in new[] {
                 SpritesFolder+"Bastion_Nivel01.png", SpritesFolder+"Bastion_Nivel05.png",
                 SpritesFolder+"Props/AtalayaValoria.png", SpritesFolder+"Props/HaloAntorcha.png",
-                SpritesFolder+layout.terrain_file })
+                (AssetDatabase.LoadAssetAtPath<Sprite>(SpritesFolder + "Retina/" + layout.terrain_file) != null
+                    ? SpritesFolder + "Retina/" + layout.terrain_file
+                    : SpritesFolder + layout.terrain_file) })
                 if (Array.IndexOf(deps,required) < 0) return false;
             return true;
         }
