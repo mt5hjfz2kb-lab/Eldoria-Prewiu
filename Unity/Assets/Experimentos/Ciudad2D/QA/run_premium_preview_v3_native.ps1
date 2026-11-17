@@ -101,6 +101,6 @@ $matchingTests=@($results.SelectNodes('//test-case') | Where-Object {
   $_.GetAttribute('name') -like '*PremiumV3Scene_GenuinePlayMode_StagesSpritesShadowsPointer*'
 })
 if($matchingTests.Count -ne 1 -or $matchingTests[0].GetAttribute('result') -ne 'Passed'){
-  throw 'The actual premium V2 PlayMode test did not run and pass'
+  throw 'The actual premium V3 PlayMode test did not run and pass'
 }
 Write-Host 'PREMIUM_V3_REAL_PLAYMODE_SCENE_SHADOW_PLOT_TOUCH_HUD_PASS_NO_IPHONE_CLAIM'
