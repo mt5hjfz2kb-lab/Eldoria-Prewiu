@@ -306,58 +306,78 @@ jobs:
         run: |
           & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v2_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
 
-      - name: Preserve evidence, log and exact Unity source identity
+      # Each Unity run may generate hundreds of full-resolution comparison frames.
+      # Their SHA-256s remain in evidence.json; selected native screenshots are
+      # versioned separately under QA/NativeV6 and review montages in GitHub.
+      # Never re-upload every historical V2-V6 PNG in a single artifact.
+      - name: Preserve compact, verifiable Unity evidence (not all historical PNGs)
+        id: compact_upload
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ciudad2d-real-unity-${{ github.run_id }}
+          name: ciudad2d-curated-unity-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/city2d-native-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.xml
-            ${{ runner.temp }}/city2d-blender-ab-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-ai-gallery-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-ambient-native-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-quality-v2-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-quality-v3-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-quality-v4-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-quality-v5-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-quality-v6-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-premium-v2-scene-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-premium-v2-playmode-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-premium-v2-playmode-${{ github.run_id }}.xml
-            ${{ runner.temp }}/city2d-premium-scene-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-premium-playmode-${{ github.run_id }}.log
-            ${{ runner.temp }}/city2d-premium-playmode-${{ github.run_id }}.xml
-            ${{ runner.temp }}/city2d-forja-v3-gallery-${{ github.run_id }}.log
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableEvidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableEvidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV1.unity
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV1.unity.meta
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV5Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV5Evidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/*.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPlayModeEvidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAmbientEvidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DBlenderPilotEvidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAIPilotEvidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV2Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV3Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV5Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/evidence.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/A_32_original_bastion5_390x844_standard.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion1_390x844_standard.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion3_390x844_standard.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_390x844_standard.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_1170x2532_standard.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_844x390_standard.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_1170x2532_cuartel_close.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_1170x2532_aserradero_close.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_1170x2532_granero_close.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV6Evidence/F_23_all_four_premium_bastion5_1170x2532_cantera_close.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/premium_bastion5_390x844.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV2Evidence/premium_bastion5_1170x2532.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV2.unity
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV2.unity.meta
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV3Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV3Evidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV2Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV2Evidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAmbientEvidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAmbientEvidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAIPilotEvidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAIPilotEvidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DBlenderPilotEvidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DBlenderPilotEvidence/*.json
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPlayModeEvidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.png
-            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.json
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 7
+
+      # Only the uniquely named scratch clone of this exact Actions run may
+      # be cleaned. Never touch the live checkout, Unity installation or
+      # another workflow's reservation. Keep scratch on upload failure.
+      - name: Safely remove only this run's temporary Unity clone after upload
+        if: always() && steps.compact_upload.outcome == 'success'
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $expected=[IO.Path]::GetFullPath((Join-Path $env:RUNNER_TEMP ('city2d-native-'+$env:GITHUB_RUN_ID)))
+          if(-not $env:CITY2D_SOURCE_ROOT){ throw 'Refuse scratch cleanup: source root unset' }
+          $actual=[IO.Path]::GetFullPath($env:CITY2D_SOURCE_ROOT)
+          if(-not [string]::Equals($actual,$expected,[StringComparison]::OrdinalIgnoreCase)){
+            throw 'Refuse scratch cleanup: not this run isolated clone'
+          }
+          if($actual -notmatch ('city2d-native-'+[regex]::Escape($env:GITHUB_RUN_ID)+'$')){
+            throw 'Refuse scratch cleanup: unexpected final path'
+          }
+          if(-not (Test-Path -LiteralPath $actual -PathType Container)){
+            Write-Host 'CITY2D_SCRATCH_ALREADY_GONE'; exit 0
+          }
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            Write-Warning 'Unity or Blender still running; skip scratch deletion'
+            exit 0
+          }
+          $before=(Get-ChildItem -LiteralPath $actual -File -Recurse -ErrorAction SilentlyContinue |
+            Measure-Object -Property Length -Sum).Sum
+          Remove-Item -LiteralPath $actual -Recurse -Force -ErrorAction Stop
+          Write-Host ("CITY2D_ISOLATED_SCRATCH_REMOVED_BYTES="+$before)
