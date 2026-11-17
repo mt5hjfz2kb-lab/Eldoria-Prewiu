@@ -45,6 +45,11 @@ jobs:
                            'scenes=new[]{TestScene}','CIUDAD2D_WEBPERF_V6_WEBGL_BUILD_PASS']:
               assert required in code,required
           assert code.count('UnityEngine.Application.dataPath') == 3
+          assert 'AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport)' in code
+          assert 'AssetDatabase.ImportAsset(Source,' in code
+          assert 'City2DPremiumPreviewV6.Build();' in code
+          assert 'City2DPremiumPreviewV6.PremiumScene' in code
+
           assert 'Application.dataPath' not in code.replace('UnityEngine.Application.dataPath','')
           assert 'CIUDAD2D_WEBPERF_V6_READY' in runtime
           assert 'ICommandGateway' in runtime and 'never uses ICommandGateway' in runtime
