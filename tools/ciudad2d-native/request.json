@@ -3,15 +3,15 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Quality gate: lossless Unity Sprite texture imports, 12 genuine RenderTexture screenshots at 390x844 / 1170x2532, evidence verified against previous compressed Unity run 44013497619",
+  "reason": "Validate exact versioned Retina terrain (source 941x1672, bake 1412x2508 at 150 PPU) in real Unity Editor; compare with compressed and uncompressed 1170x2532 native screenshots",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
-  "ownership_revision": 2,
-  "requested_art_stage": "Uncompressed texture import quality audit + actual Unity screenshot comparisons, isolated from game",
-  "retry_ordinal": 6,
+  "ownership_revision": 3,
+  "requested_art_stage": "Retina art source, genuine Unity 12 RenderTexture frames, checksum and artifact review",
+  "retry_ordinal": 7,
   "engine_module_added_in_branch": true,
   "last_failed_run": null,
   "last_failed_errors": [],
-  "previous_successful_run": 44013497619
+  "previous_successful_run": 44018257414
 }
