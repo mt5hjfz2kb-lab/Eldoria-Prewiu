@@ -7,6 +7,9 @@ ROOT=Path(__file__).resolve().parents[1]
 QA=ROOT/'QA';S=ROOT/'Sprites'
 manifest=json.loads((QA/'city_layout.json').read_text(encoding='utf-8'))
 assert manifest['schema']==4
+assert manifest['terrain_file']=='Terreno_Organico.png' and manifest['terrain_previous_file']=='Terreno.png'
+for terrain in (manifest['terrain_file'],manifest['terrain_previous_file']):
+    with Image.open(S/terrain) as im: assert im.size==(941,1672) and im.mode=='RGB'
 assert [manifest['coordinate_width'],manifest['coordinate_height']]==[941,1672]
 bs=manifest['buildings'];decor=manifest['decor'];fx=manifest['glows']
 assert len(bs)==6 and len(decor)==32 and len(fx)==7
@@ -36,6 +39,7 @@ for g in fx:
     assert 10<=g['radius']<=60 and 0<g['opacity']<=.5
     assert 0<=g['x']<=941 and 0<=g['y']<=1672
 builder=(ROOT/'Scripts/Editor/City2DSceneBuilder.cs').read_text(encoding='utf-8')
+assert 'Sprite(layout.terrain_file)' in builder
 assert 'QA/city_layout.json' in builder and 'JsonUtility.FromJson<Layout>' in builder
 assert 'SpriteRenderer' in builder and 'OrderFor(spec.y,terrain)' in builder
 assert 'EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive)' in builder
@@ -54,5 +58,6 @@ assert 'SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key))'
 web=(QA/'live-preview/index.html').read_text(encoding='utf-8')
 assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==32' in web
 assert 'b.file=artLevel===5?b.level5File:b.baseFile' in web
+assert 'function toggleTerrain()' in web and 'drawImage(terrainName' in web
 assert 'function stateFor(e)' in web and 'stateFor(e).phase' in web
 print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 32 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')

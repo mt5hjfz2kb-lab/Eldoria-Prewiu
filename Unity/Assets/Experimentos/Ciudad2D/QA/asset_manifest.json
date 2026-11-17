@@ -81,6 +81,16 @@
       "mode": "RGB",
       "bytes": 2258609,
       "sha256": "cc5ca910ef0056266e7fdbd47c191d373c44c8bf9c88cc8dc00339c5694dc10d"
+    },
+    "Terreno_Organico.png": {
+      "size": [
+        941,
+        1672
+      ],
+      "mode": "RGB",
+      "bytes": 3095571,
+      "sha256": "9e257856139e39c5245dc8196a2131816bdd87ac4635b5fae679f6e65cb24db6",
+      "art_approved": false
     }
   },
   "checks": {
@@ -99,13 +109,15 @@
     "unlock_visibility_pure_policy": "static_source_verified_offline_not_native",
     "scenario_progression_composites": "rendered_offline_for_stages_1_to_5",
     "unity_native_stage_visibility": "pending_real_editor",
-    "expansion_terrain_painted": "not_started_reserved_only"
+    "expansion_terrain_painted": "not_started_reserved_only",
+    "terrain_organic_ab": "integrated_candidate_browser_QA_pending"
   },
   "warnings": [
     "Landscape is an intentionally cropped/pannable viewport.",
     "The portrait/landscape visual composites are offline evidence, NOT Unity screenshots.",
     "This sandbox does not modify real saves, commands or current game scenes.",
-    "6 newly generated cutouts and shared layout3 are unapproved art candidates. Offline and browser QA cannot certify Unity Editor or devices."
+    "6 newly generated cutouts and shared layout3 are unapproved art candidates. Offline and browser QA cannot certify Unity Editor or devices.",
+    "Organic terrain is an isolated artistic candidate; player progression, buildings and saves remain unchanged."
   ],
   "layout_revision": "organic-layout3",
   "organic_sprite_atlas_source": "OpenAI image generation of six separate isometric environment props, 2026-11-16; original atlas preserved in downloadable working artifact; final cutouts versioned separately.",

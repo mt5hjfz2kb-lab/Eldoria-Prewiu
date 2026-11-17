@@ -60,6 +60,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 var ground = GameObject.Find("Terreno_Valoria");
                 if (fitting == null || ground == null || ground.GetComponent<SpriteRenderer>()?.sprite == null)
                     throw new InvalidOperationException("Camara/terreno reales ausentes");
+                if (ground.GetComponent<SpriteRenderer>().sprite.name != "Terreno_Organico")
+                    throw new InvalidOperationException("Escena nativa no usa el candidato orgánico versionado");
 
                 var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
                 if (bridge == null) throw new InvalidOperationException("Falta el puente de estado");

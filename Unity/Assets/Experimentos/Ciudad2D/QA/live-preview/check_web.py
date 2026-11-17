@@ -17,8 +17,15 @@ with sync_playwright() as p:
         page.goto(URL,wait_until='load',timeout=20000)
         page.wait_for_function('window.city2dDebug.state.ready && window.city2dDebug.state.frames>3',timeout=30000)
         state=page.evaluate('window.city2dDebug.state')
-        assert state['imageCount']==23 and state['buildingCount']==6 and state['decorCount']==32 and state['glowCount']==7 and state['layoutVersion']==4, state
+        assert state['imageCount']==24 and state['buildingCount']==6 and state['decorCount']==32 and state['glowCount']==7 and state['layoutVersion']==4, state
         assert state['landscape']==(w>h),state
+        assert state['terrainName']=='Terreno_Organico.png',state
+        page.locator('#terrainCompare').click()
+        assert page.evaluate('window.city2dDebug.state.terrainName')=='Terreno.png'
+        if name=='iphone_portrait': page.screenshot(path=str(OUT/'iphone_portrait-terreno-anterior.png'))
+        page.locator('#terrainCompare').click()
+        assert page.evaluate('window.city2dDebug.state.terrainName')=='Terreno_Organico.png'
+        if name=='iphone_portrait': page.screenshot(path=str(OUT/'iphone_portrait-terreno-organico.png'))
         # Check all five canonical story stages; no building is pre-built at unlock.
         expected={
           1:{'aserradero':'available','cuartel':'locked','granero':'locked','cantera':'locked','salon':'locked'},
@@ -70,7 +77,7 @@ with sync_playwright() as p:
         z=page.evaluate('window.city2dDebug.state.zoom')
         assert z>oldzoom,(z,oldzoom)
         assert not errors,errors
-        report.append({'name':name,'viewport':[w,h],'loaded':state['imageCount'],'tier_change':True,'bastion_click_hit':hit,'zoom_after_wheel':z,'chapter_checks':5,'errors':errors})
+        report.append({'name':name,'viewport':[w,h],'loaded':state['imageCount'],'tier_change':True,'bastion_click_hit':hit,'zoom_after_wheel':z,'chapter_checks':5,'terrain_ab':True,'errors':errors})
         page.close()
     browser.close()
 (OUT/'browser-proof.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')

@@ -34,7 +34,7 @@
 </head>
 <body>
 <canvas id="world" aria-label="Ciudad de Valoria, toca los edificios para inspeccionarlos"></canvas><div id="veil"></div>
-<div id="hud"><div><div id="top"><div id="crest" aria-hidden="true">⚜</div><div id="heading"><b>VALORIA</b><span>CIUDAD DE LA BRECHA · ESTUDIO 2.5D</span></div><div id="phase">BASTIÓN<b id="phase-value">I</b></div></div><div id="toolbar"><button class="chip" id="tier1" type="button" aria-pressed="true">I</button><button class="chip" id="tier2" type="button" aria-pressed="false">II</button><button class="chip" id="tier3" type="button" aria-pressed="false">III</button><button class="chip" id="tier4" type="button" aria-pressed="false">IV</button><button class="chip" id="tier5" type="button" aria-pressed="false">V</button><button class="chip" id="recenter" type="button" aria-label="Centrar vista">⌖</button></div></div><div id="bottom"><div id="status">PRUEBA VISUAL · BARRIOS MODULARES · SIN PARTIDAS</div><div id="selection"><div id="selection-mark" aria-hidden="true">⚒</div><div id="selection-main"><b id="name">Explora la ciudad</b><span id="subtitle">Toca un edificio · arrastra para mover · pellizca para ampliar</span></div><button id="detail" type="button">DETALLE</button></div></div></div>
+<div id="hud"><div><div id="top"><div id="crest" aria-hidden="true">⚜</div><div id="heading"><b>VALORIA</b><span>CIUDAD DE LA BRECHA · ESTUDIO 2.5D</span></div><div id="phase">BASTIÓN<b id="phase-value">I</b></div></div><div id="toolbar"><button class="chip" id="tier1" type="button" aria-pressed="true">I</button><button class="chip" id="tier2" type="button" aria-pressed="false">II</button><button class="chip" id="tier3" type="button" aria-pressed="false">III</button><button class="chip" id="tier4" type="button" aria-pressed="false">IV</button><button class="chip" id="tier5" type="button" aria-pressed="false">V</button><button class="chip" id="terrainCompare" type="button" aria-pressed="true" aria-label="Comparar fondo anterior y orgánico">SUELO B</button><button class="chip" id="recenter" type="button" aria-label="Centrar vista">⌖</button></div></div><div id="bottom"><div id="status">PRUEBA VISUAL · BARRIOS MODULARES · SIN PARTIDAS</div><div id="selection"><div id="selection-mark" aria-hidden="true">⚒</div><div id="selection-main"><b id="name">Explora la ciudad</b><span id="subtitle">Toca un edificio · arrastra para mover · pellizca para ampliar</span></div><button id="detail" type="button">DETALLE</button></div></div></div>
 <div id="sheet" role="dialog" aria-label="Información de edificio" aria-modal="false"><button id="close" type="button" aria-label="Cerrar">×</button><h2 id="sheettitle"></h2><p id="sheetbody"></p><p>Esta pantalla es una simulación visual. No modifica el juego, los recursos ni el progreso.</p></div>
 <div id="debug"></div>
 <script>
@@ -43,6 +43,7 @@ const canvas=document.getElementById('world'),ctx=canvas.getContext('2d',{alpha:
 const artPath='../../Sprites/';
 const W=941,H=1672;
 let entries=[],decor=[],glows=[],imageFiles=[],layoutVersion=0;
+let terrainPrimary="Terreno.png",terrainPrevious="Terreno.png",terrainName="Terreno.png",terrainMode="organic";
 const descriptions={
  cuartel:'Preparación de las tropas',salon:'Guardia y vínculos de héroes',
  bastion:'Corazón de Valoria',aserradero:'Producción de madera',
@@ -84,6 +85,13 @@ function tier(level){
  document.getElementById('status').textContent=`CAPÍTULO ${stage} · RECONSTRUCCIÓN FICTICIA · NO CAMBIA LA PARTIDA`;
  if(sel)select(sel.id);
 }
+function toggleTerrain(){
+ terrainMode=terrainMode==='organic'?'original':'organic';
+ terrainName=terrainMode==='organic'?terrainPrimary:terrainPrevious;
+ const button=document.getElementById('terrainCompare');
+ button.textContent=terrainMode==='organic'?'SUELO B':'SUELO A';
+ button.setAttribute('aria-pressed',String(terrainMode==='organic'));
+}
 function shownDecor(d){return stage>=(d.minBastion||1)&&(!d.maxBastion||stage<=d.maxBastion);}
 function clampView(){const visibleW=canvas.clientWidth/scale,visibleH=canvas.clientHeight/scale;centerX=Math.min(Math.max(centerX,visibleW/2),Math.max(visibleW/2,W-visibleW/2));centerY=Math.min(Math.max(centerY,visibleH/2),Math.max(visibleH/2,H-visibleH/2));if(visibleW>=W)centerX=W/2;if(visibleH>=H)centerY=H/2;}
 function resize(reset=false){const w=canvas.clientWidth,h=canvas.clientHeight,ratio=Math.min(2,devicePixelRatio||1);canvas.width=Math.ceil(w*ratio);canvas.height=Math.ceil(h*ratio);landscape=w/h>1.2;baseScale=landscape?w/(W*1.04):Math.max(Math.min(w/W,h/H),h/(H*1.02));scale=baseScale*zoom;if(reset){centerX=W/2;centerY=landscape?670:H/2;zoom=1;scale=baseScale;}clampView();}
@@ -92,7 +100,7 @@ function screenToWorld(x,y){return [(x-canvas.clientWidth/2)/scale+centerX,(y-ca
 function img(name){return imgs[name]||null;}
 function drawImage(name,x,y,w,h){const im=img(name);if(im)ctx.drawImage(im,x,y,w,h);}
 function draw(){frame++;const ratio=canvas.width/canvas.clientWidth;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#18252b';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);ctx.save();ctx.translate(canvas.clientWidth/2,canvas.clientHeight/2);ctx.scale(scale,scale);ctx.translate(-centerX,-centerY);
- drawImage('Terreno.png',0,0,W,H);
+ drawImage(terrainName,0,0,W,H);
  for(const o of [...entries.filter(e=>stateFor(e).phase==='built').map(e=>({...e,kind:'building'})),
                    ...decor.filter(shownDecor).map(e=>({...e,kind:'decor'}))].sort((a,b)=>a.y-b.y)){
   const im=img(o.file);if(!im)continue;const dw=im.width*o.s,dh=im.height*o.s,x=o.x-dw/2,y=o.y-dh;
@@ -137,6 +145,7 @@ canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('poin
 canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;const before=screenToWorld(x,y);zoom=Math.min(2.3,Math.max(1,zoom*(e.deltaY<0?1.12:.89)));scale=baseScale*zoom;const after=screenToWorld(x,y);centerX+=before[0]-after[0];centerY+=before[1]-after[1];clampView();},{passive:false});
 for(let n=1;n<=5;n++)document.getElementById('tier'+n).onclick=()=>tier(n);
 document.getElementById('recenter').onclick=()=>resize(true);
+document.getElementById('terrainCompare').onclick=()=>toggleTerrain();
 document.getElementById('detail').onclick=()=>{if(!sel)return;document.getElementById('sheettitle').textContent=sel.name;document.getElementById('sheetbody').textContent=stateFor(sel).phase==='available'?'Parcela disponible por las reglas del capítulo. El edificio aún NO se ha construido; esta vista no permite realizar órdenes.':sel.id==='bastion'?`Bastión · arte ${artLevel===1?'I (niveles 1–4)':'V (niveles 5–9)'}. Los niveles 10+ conservan V hasta producir otra ilustración.`:`${sel.t}. Nivel ${stateFor(sel).level}, ilustración temporal única.`;document.getElementById('sheet').classList.add('open');};document.getElementById('close').onclick=()=>document.getElementById('sheet').classList.remove('open');
 async function load(){
  const response=await fetch('../city_layout.json',{cache:'no-store'});
@@ -146,6 +155,10 @@ async function load(){
     layout.buildings.length!==6||layout.decor.length!==32||layout.glows.length!==7)
     throw new Error('Layout de Unity y navegador no coincide');
  layoutVersion=layout.schema;
+ terrainPrimary=layout.terrain_file;
+ terrainPrevious=layout.terrain_previous_file;
+ if(terrainPrimary!=='Terreno_Organico.png'||terrainPrevious!=='Terreno.png')throw new Error('Terreno A/B no autorizado por layout');
+ terrainName=terrainPrimary;terrainMode='organic';
  for(const b of layout.buildings){
    if(ruleMin[b.id]!==Infinity && b.required_bastion!==ruleMin[b.id])
      throw new Error('Desbloqueo no coincide con LocalGateway: '+b.id);
@@ -159,7 +172,7 @@ async function load(){
  }));
  decor=layout.decor.map(e=>({id:e.id,file:e.filename,x:e.x,y:e.y,s:e.scale,minBastion:e.min_bastion,maxBastion:e.max_bastion||0}));
  glows=layout.glows.map(e=>({...e,minBastion:e.min_bastion,maxBastion:e.max_bastion||0}));
- imageFiles=Array.from(new Set(['Terreno.png',...entries.flatMap(e=>[e.file,e.level5File].filter(Boolean)),...decor.map(e=>e.file)]));
+ imageFiles=Array.from(new Set([terrainPrimary,terrainPrevious,...entries.flatMap(e=>[e.file,e.level5File].filter(Boolean)),...decor.map(e=>e.file)]));
  const items=await Promise.all(imageFiles.map(name=>new Promise((resolve,reject)=>{
   const im=new Image();im.onload=()=>resolve([name,im]);
   im.onerror=()=>reject(new Error('Falta '+name));
@@ -167,7 +180,7 @@ async function load(){
  })));
  for(const [name,im] of items){
   imgs[name]=im;
-  if(name==='Terreno.png')continue;
+  if(name===terrainPrimary||name===terrainPrevious)continue;
   const off=document.createElement('canvas');off.width=im.width;off.height=im.height;
   const c=off.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0);
   const data=c.getImageData(0,0,im.width,im.height).data;
@@ -178,7 +191,7 @@ async function load(){
  ready=true;tier(1);resize(true);requestAnimationFrame(draw);
 }
 window.addEventListener('resize',()=>resize(false));
-window.city2dDebug={get state(){return {ready,stage,artLevel,visibility:Object.fromEntries(entries.map(e=>[e.id,stateFor(e)])),selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,clicks:clicks.slice()};},select,tier,clickPoint,recenter:()=>resize(true),worldToScreen};
+window.city2dDebug={get state(){return {ready,stage,artLevel,visibility:Object.fromEntries(entries.map(e=>[e.id,stateFor(e)])),selected:sel?.id||null,zoom,scale,centerX,centerY,landscape,frames:frame,imageCount:Object.keys(imgs).length,buildingCount:entries.length,decorCount:decor.length,glowCount:glows.length,layoutVersion,terrainName,terrainMode,clicks:clicks.slice()};},select,tier,toggleTerrain,clickPoint,recenter:()=>resize(true),worldToScreen};
 load().catch(e=>{document.getElementById('status').textContent='ERROR EN RECURSOS: '+e.message;console.error(e);});
 })();
 </script>

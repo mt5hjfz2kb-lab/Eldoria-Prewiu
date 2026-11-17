@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SPRITES = ROOT / "Sprites"
 EXPECT = {
     "Terreno.png": (941, 1672),
+    "Terreno_Organico.png": (941, 1672),
     "Bastion_Nivel01.png": (762, 699),
     "Bastion_Nivel05.png": (764, 854),
     "Cuartel.png": (860, 860),

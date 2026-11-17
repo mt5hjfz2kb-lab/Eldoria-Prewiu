@@ -25,6 +25,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         [Serializable] private sealed class Layout
         {
             public int schema;
+            public string terrain_file, terrain_previous_file;
             public int coordinate_width;
             public int coordinate_height;
             public BuildingPlacement[] buildings;
@@ -63,7 +64,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(LayoutPath);
             if (asset == null) return null;
             var result = JsonUtility.FromJson<Layout>(asset.text);
-            if (result == null || result.schema != 4 || result.coordinate_width != 941 ||
+            if (result == null || result.schema != 4 || result.terrain_file != "Terreno_Organico.png" ||
+                result.terrain_previous_file != "Terreno.png" || result.coordinate_width != 941 ||
                 result.coordinate_height != 1672 || result.buildings == null ||
                 result.buildings.Length != 6 || result.decor == null || result.glows == null)
                 throw new InvalidOperationException("Layout4 is invalid; refuse rebuilding sandbox");
@@ -84,6 +86,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             foreach (var spec in result.glows)
                 if (spec == null || spec.min_bastion < 1 || spec.radius <= 0)
                     throw new InvalidOperationException("Invalid glow rule in layout");
+            if (Sprite(result.terrain_file) == null || Sprite(result.terrain_previous_file) == null)
+                throw new InvalidOperationException("Missing A/B terrain candidates");
             if (Sprite("Props/MuroDerruido.png") == null || Sprite("Props/VallaLenador.png") == null)
                 throw new InvalidOperationException("Missing unfinished parcel indicator sprites");
             if (Sprite("Props/HaloAntorcha.png") == null) throw new InvalidOperationException("Missing halo sprite");
@@ -102,13 +106,13 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     Debug.LogWarning("[Ciudad2D] Save or open a scene before rebuilding; native capture creates its own disposable scene.");
                 return;
             }
-            var terrain = Sprite("Terreno.png");
-            if (terrain == null) return;
             Layout layout;
             try { layout = ReadLayout(); }
             catch (Exception e) { Debug.LogError("[Ciudad2D] " + e); return; }
             if (layout == null) { if (forced) Debug.LogWarning("[Ciudad2D] Missing layout4"); return; }
-            if (!forced && AlreadyBuilt()) return;
+            var terrain = Sprite(layout.terrain_file);
+            if (terrain == null) throw new InvalidOperationException("Missing primary organic terrain");
+            if (!forced && AlreadyBuilt(layout)) return;
             building = true;
             Scene prior = SceneManager.GetActiveScene();
             Scene isolated = default;
@@ -223,13 +227,14 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             return -Mathf.RoundToInt((.5f-y/1672f)*terrain.bounds.size.y*100f);
         }
-        private static bool AlreadyBuilt()
+        private static bool AlreadyBuilt(Layout layout)
         {
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null) return false;
             var deps = AssetDatabase.GetDependencies(ScenePath,false);
             foreach (var required in new[] {
                 SpritesFolder+"Bastion_Nivel01.png", SpritesFolder+"Bastion_Nivel05.png",
-                SpritesFolder+"Props/AtalayaValoria.png", SpritesFolder+"Props/HaloAntorcha.png" })
+                SpritesFolder+"Props/AtalayaValoria.png", SpritesFolder+"Props/HaloAntorcha.png",
+                SpritesFolder+layout.terrain_file })
                 if (Array.IndexOf(deps,required) < 0) return false;
             return true;
         }

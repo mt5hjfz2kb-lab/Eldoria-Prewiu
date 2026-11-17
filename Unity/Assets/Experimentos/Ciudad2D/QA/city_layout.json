@@ -463,5 +463,8 @@
       "status": "reserved_not_rendered",
       "terrain_extension_required": true
     }
-  ]
+  ],
+  "terrain_file": "Terreno_Organico.png",
+  "terrain_previous_file": "Terreno.png",
+  "terrain_status": "ART_CANDIDATE_NOT_APPROVED"
 }

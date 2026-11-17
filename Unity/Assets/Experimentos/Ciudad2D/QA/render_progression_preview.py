@@ -14,7 +14,7 @@ def status(stage,bid):
     return 'built' if stage >= DONE[bid] else 'available'
 
 def build(stage):
-    result=Image.open(ART/'Terreno.png').convert('RGBA')
+    result=Image.open(ART/L.get('terrain_file','Terreno.png')).convert('RGBA')
     rows=[]
     for e in L['buildings']:
         phase=status(stage,e['id'])

@@ -18,7 +18,7 @@ def render(level:int):
         items.append((filename,b['x'],b['y'],scale))
     for d in LAYOUT['decor']:
         items.append((d['filename'],d['x'],d['y'],d['scale']))
-    out=Image.open(SPRITES/'Terreno.png').convert('RGBA')
+    out=Image.open(SPRITES/LAYOUT.get('terrain_file','Terreno.png')).convert('RGBA')
     for filename,x,y,scale in sorted(items,key=lambda row:row[2]):
         im=Image.open(SPRITES/filename).convert('RGBA')
         w,h=round(im.width*scale),round(im.height*scale)

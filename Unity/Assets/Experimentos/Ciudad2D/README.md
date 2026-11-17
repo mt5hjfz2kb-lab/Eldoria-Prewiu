@@ -55,3 +55,9 @@ El nuevo `QA/city_layout.json` (schema 4) conserva posiciones y 22 elementos de 
 Controles de estudio: capítulos I, II, III, IV y V. La variante visual del Bastión sigue siendo I (niveles 1–4) / V (niveles 5–9), pero el resto de parcelas cambia según las reglas del capítulo y la construcción finalizada. Las pruebas del navegador cubren las cinco composiciones y cuatro resoluciones. **No confundir la web de inspección con la beta real**.
 
 Plan de producción completo: `docs/ciudad2d/PRODUCTION_SYSTEM.md` en la rama (ciudad, mundo, combate, héroes, cartas, Vigilantes, Exploradores, Bolsa, Buzón, cofre y tutorial). La visibilidad real en Unity, eventos de puntero, lectura de instantánea y rendimiento en dispositivos siguen requiriendo QA nativa.
+
+## Contraste de terreno A/B — 17/11/2026
+
+`Sprites/Terreno_Organico.png` conserva tamaño 941×1672 y las mismas coordenadas de seis edificios, pero elimina el patrón de anillos repetitivos, incorpora caminos irregulares, vegetación, piedra envejecida y presencia lejana de la Brecha. Se mantiene el terreno anterior `Terreno.png` como control exacto y el inspector web permite **SUELO A/B**, sin cambiar etapas ni estado del jugador. `QA/city_layout.json` es la única autoridad sobre el fondo seleccionado para la escena Unity. Ambos son recursos originales del experimento, sin reutilizar GLB vetados.
+
+El nuevo fondo es una **propuesta artística sin aprobación definitiva**; debemos comprobar en capturas nativas las bases integradas de edificios, el contraste, la lectura táctil y las cuatro orientaciones. Las ampliaciones hacia los futuros distritos siguen reservadas pero no pintadas, no se estira el fondo para simular territorio. No se modifica `main`, contenido del juego ni guardados.
