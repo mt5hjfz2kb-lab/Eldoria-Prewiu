@@ -1,0 +1,81 @@
+name: Ciudad2D - Blender Cuartel y Aserradero 3D to RGBA (isolated)
+on:
+  push:
+    branches:
+      - art/ciudad-2d-hitos-1-5-20261116
+    paths:
+      - 'Unity/Assets/Experimentos/Ciudad2D/BlenderPilot/**'
+      - '.github/workflows/ciudad2d-blender-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ciudad2d-blender-ubuntu-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  model-and-prerender:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            Unity/Assets/Experimentos/Ciudad2D/BlenderPilot
+      - name: Acquire exact sibling kit geometry READ ONLY (no other branch writes)
+        shell: bash
+        run: |
+          set -euo pipefail
+          KIT_COMMIT=84bb8e7a83810f4b722c764938a5d36e20b906d5
+          mkdir -p "$RUNNER_TEMP/kit"
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$KIT_COMMIT"
+          for name in Wall_Door_Intact Wall_Window_Intact Wall_Straight_Intact Roof_Gable Tower_Bell Roof_Tower Roof_Shed Chimney Shield; do
+            git show "$KIT_COMMIT:Unity/Assets/Art_Reboot/Kit/Models/$name.fbx" > "$RUNNER_TEMP/kit/$name.fbx"
+            test -s "$RUNNER_TEMP/kit/$name.fbx"
+          done
+          echo "KIT_ROOT=$RUNNER_TEMP/kit" >> "$GITHUB_ENV"
+          echo "KIT_PINNED_SOURCE $KIT_COMMIT"
+      - name: Install Blender 4 (open-source DCC) and quality verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          python -m pip install --disable-pip-version-check pillow==11.3.0
+          blender --version | head -2
+      - name: Create TWO native 3D models from shared Blender camera and materials
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/city2d-blender"
+          blender -b -t 4 --python-exit-code 1 \
+            --python Unity/Assets/Experimentos/Ciudad2D/BlenderPilot/Source~/author_pilot.py \
+            -- --kit-dir "$KIT_ROOT" --output "$RUNNER_TEMP/city2d-blender" --samples 20 --size 1050 \
+            > "$RUNNER_TEMP/blender-execution.log" 2>&1 || {
+              tail -150 "$RUNNER_TEMP/blender-execution.log"; exit 1;
+            }
+          tail -6 "$RUNNER_TEMP/blender-execution.log"
+      - name: Reject fake backgrounds, missing shadows or unverifiable 3D source
+        shell: bash
+        run: |
+          python Unity/Assets/Experimentos/Ciudad2D/BlenderPilot/Source~/verify_pilot.py \
+            --dir "$RUNNER_TEMP/city2d-blender"
+          python - <<'PY'
+          import hashlib,pathlib,os
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'city2d-blender'
+          for name in ['Cuartel_Color.png','Cuartel_ContactShadow.png','Aserradero_Color.png','Aserradero_ContactShadow.png','Valoria_Buildings_Master.blend']:
+              p=root/name
+              print('BLENDER_FILE',name,p.stat().st_size,hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Preserve complete editable master and independent render passes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-blender-pair-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/city2d-blender/*.png
+            ${{ runner.temp }}/city2d-blender/*.blend
+            ${{ runner.temp }}/city2d-blender/*.json
+            ${{ runner.temp }}/blender-execution.log
+          if-no-files-found: warn
+          retention-days: 30
