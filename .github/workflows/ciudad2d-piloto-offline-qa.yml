@@ -34,6 +34,7 @@ jobs:
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_props.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_organic.py
+          python Unity/Assets/Experimentos/Ciudad2D/QA/validate_quality_v2.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_ground_seams.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_cuartel_candidate.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_playmode_contract.py
