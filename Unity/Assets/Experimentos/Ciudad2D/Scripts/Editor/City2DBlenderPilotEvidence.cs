@@ -95,8 +95,15 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     trial.Color=trial.ColorGo.AddComponent<SpriteRenderer>();
                     trial.Color.sprite=color;
                     trial.Color.sortingOrder=original.sortingOrder;
+                    // A transparent 1050px canvas is not a 1050px-wide building.
+                    // Match visible alpha support to the unmodified 860px
+                    // original, verified against source SHA and Blender bbox:
+                    // Cuartel 845/860 vs 782/1050; Aserradero 849/860 vs 722/1050.
+                    float oldVisibleRatio = name=="cuartel" ? 845f/860f : 849f/860f;
+                    float blenderVisibleRatio = name=="cuartel" ? 782f/1050f : 722f/1050f;
+                    float apparentWidthCorrection = oldVisibleRatio/blenderVisibleRatio;
                     trial.ColorGo.transform.localScale=Vector3.one *
-                        (trial.WorldFootWidth / Mathf.Max(0.001f,color.bounds.size.x));
+                        (trial.WorldFootWidth / Mathf.Max(0.001f,color.bounds.size.x)) * apparentWidthCorrection;
                     trial.Color.enabled=false;
                     trial.ShadowGo=new GameObject("Blender_Shadow_"+name);
                     trial.ShadowGo.transform.position=p.transform.position;
