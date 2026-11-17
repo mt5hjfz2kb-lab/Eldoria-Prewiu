@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "TERRAIN_CANDIDATE_UNAPPROVED",
+  "status": "REJECTED_ARTISTICALLY_INEFFECTIVE",
   "original_sha256": "9e257856139e39c5245dc8196a2131816bdd87ac4635b5fae679f6e65cb24db6",
   "candidate_sha256": "25df4405920d32345a5cb72b90ec7de6046d3f31e4192dcfc2c4e561e89f32cd",
   "candidate": "Sprites/Candidates/Terreno_Organico_FocoV1.png",
@@ -74,7 +74,8 @@
   "no_global_filter": true,
   "no_extra_terrain_or_geometry": true,
   "preview_sha256": "ef96227a43fe4a65ad98bc1bdb6ae0829a6c07463e67a0e3e2f6f94693f5e1d6",
-  "Unity_AB": "PENDING",
+  "Unity_AB": "NOT_RUN_REJECTED_BEFORE_UNITY",
   "art_approved": false,
-  "iPhone": "PENDING"
+  "iPhone": "PENDING",
+  "review_reason": "Only 0.79% source pixels vary >2 RGB and mean absolute RGB delta 0.1478; human review of offline A/B shows virtually no perceptible mobile reading improvement. Do NOT integrate; retain original and candidate as falsifiable test."
 }
