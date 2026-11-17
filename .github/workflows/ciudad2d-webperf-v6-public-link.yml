@@ -86,6 +86,7 @@ jobs:
                 sum(f.stat().st_size for f in target.rglob('*') if f.is_file()))
           PY
       - name: Commit only additive isolated WebGL files to this art branch
+        id: publish
         shell: bash
         run: |
           set -euo pipefail
@@ -99,6 +100,8 @@ jobs:
             if git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
               echo "CIUDAD2D_CDN_PUBLISH_COMMIT=$(git rev-parse HEAD)"
               echo "DIRECT_PROD_CDN=https://rawcdn.githack.com/mt5hjfz2kb-lab/Eldoria-Prewiu/$(git rev-parse HEAD)/webperf-live/valoria-v6/index.html"
+              echo "url=https://rawcdn.githack.com/mt5hjfz2kb-lab/Eldoria-Prewiu/$(git rev-parse HEAD)/webperf-live/valoria-v6/index.html" >> "$GITHUB_OUTPUT"
+              echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
@@ -106,3 +109,41 @@ jobs:
             sleep 2
           done
           echo 'Concurrent update conflict, no public link confirmed'; exit 1
+      - name: Verify external CDN HTML is published without touching Eldoria Pages
+        if: steps.publish.outputs.url != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="${{ steps.publish.outputs.url }}"
+          for i in $(seq 1 40); do
+            if curl -fLsS --max-time 35 "$URL" -o /tmp/ciudad2d-published-index.html; then
+              if grep -q 'createUnityInstance' /tmp/ciudad2d-published-index.html; then
+                echo "PUBLIC_DEMO_HTML_READY URL=$URL"
+                exit 0
+              fi
+            fi
+            sleep 6
+          done
+          echo "The external CDN did not serve the real Unity HTML, not yet playable"; exit 1
+      - uses: actions/setup-node@v4
+        if: steps.publish.outputs.url != ''
+        with:
+          node-version: '22'
+      - name: Browser smoke of standalone CDN Unity V6 (not physical iPhone)
+        if: steps.publish.outputs.url != ''
+        continue-on-error: true
+        shell: bash
+        env:
+          CIUDAD2D_WEBPERF_URL: ${{ steps.publish.outputs.url }}
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          node tools/ciudad2d-webperf/check_browser.cjs
+      - name: Preserve browser screenshot and runtime errors if any
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-webperf-cdn-browser-${{ github.run_id }}
+          if-no-files-found: warn
+          path: ciudad2d-webperf-browser-proof/
+          retention-days: 14
