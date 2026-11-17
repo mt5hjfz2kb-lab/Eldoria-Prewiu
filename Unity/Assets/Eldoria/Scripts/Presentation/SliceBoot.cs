@@ -13,6 +13,20 @@ namespace Eldoria.Presentation
                 ? "eldoria-unity-slice-v1.json"
                 : "eldoria-unity-slice-owner-i-ii-v1.json");
 
+        /// <summary>
+        /// Composition-only factory for the isolated 2.5D city.
+        /// Uses EXACTLY the existing owner save key/file and the canonical gateway.
+        /// This does not duplicate economic rules, create rewards or write other saves.
+        /// </summary>
+        public static ICommandGateway OpenCity25DGateway()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(
+                Eldoria.Domain.SliceContentProfiles.OwnerIiiId);
+#endif
+            return new LocalGateway(new SystemClock(), CreateStore());
+        }
+
         public static void ResetLocalSaveAndRestart()
         {
             DeleteLocalSave();
@@ -32,6 +46,9 @@ namespace Eldoria.Presentation
 #if UNITY_WEBGL && !UNITY_EDITOR
             Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(Eldoria.Domain.SliceContentProfiles.OwnerIiiId);
 #endif
+            // The independently assembled 2.5D scene owns a single camera,
+            // EventSystem and small HUD. Never spawn the legacy presenter there.
+            if (SceneManager.GetActiveScene().name == "Valoria25D_Gameplay") return;
             if (Object.FindFirstObjectByType<SlicePresenter>() != null) return;
             var obj = new GameObject("Eldoria composition root");
             Object.DontDestroyOnLoad(obj);
