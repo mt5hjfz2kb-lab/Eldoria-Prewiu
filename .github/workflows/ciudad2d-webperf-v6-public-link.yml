@@ -1,0 +1,108 @@
+name: Ciudad2D V6 - publicar solo demo WebGL aislada en CDN independiente
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-webperf/public_link_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: ciudad2d-webperf-public-demo-cdn
+  cancel-in-progress: false
+jobs:
+  publish-demo-subpath:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-webperf/
+            /webperf-live/valoria-v6/
+      - name: Validate request and exact Unity build without altering main/Pages
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          from pathlib import Path
+          p=Path('tools/ciudad2d-webperf/public_link_request.json')
+          x=json.loads(p.read_text())
+          assert x['schema']==1 and x['no_main_changes'] and x['no_pages_redeployment']
+          assert x['scope']=='public unadvertised isolated Valoria V6 WebGL trial only'
+          assert x['build_id']>0 and x['artifact_id']>0 and len(x['build_sha'])==40
+          repo=os.environ['GITHUB_REPOSITORY']
+          req=urllib.request.Request(
+              'https://api.github.com/repos/'+repo+'/actions/runs/'+str(x['build_id']),
+              headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                       'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(req,timeout=50) as f:run=json.load(f)
+          assert run['conclusion']=='success' and run['head_sha']==x['build_sha']
+          assert run['head_branch']=='art/ciudad-2d-hitos-1-5-20261116'
+          print('SOURCE_PINNED_REAL_UNITY_WEBGL_COMPLETED_SUCCESS, NO_MAIN_NO_PAGES')
+          PY
+      - name: Retrieve built Unity files, no rebuilding or modifications to art
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ID=$(python3 -c "import json;print(json.load(open('tools/ciudad2d-webperf/public_link_request.json'))['artifact_id'])")
+          curl --fail --silent --show-error --location --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$ID/zip" \
+            -o /tmp/city2d-public-webgl.zip
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,shutil
+          z=Path('/tmp/city2d-public-webgl.zip')
+          assert z.stat().st_size>100000,'Artifact appears empty or failed'
+          scratch=Path('/tmp/ciudad2d-demo-publish')
+          with zipfile.ZipFile(z) as a:a.extractall(scratch)
+          candidates=[p for p in scratch.rglob('trial_manifest.json')
+                      if (p.parent/'index.html').is_file()]
+          assert len(candidates)==1,('Expected one genuine Unity trial',candidates)
+          origin=candidates[0].parent
+          m=json.loads(candidates[0].read_text())
+          assert m['target']=='WebGL' and m['playable_city_trial_only'] is True
+          assert m['source_Unity_scene_sha256']=='aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06'
+          assert m['main_modified'] is False and m['gameplay_modified'] is False
+          build=origin/'Build'
+          assert any(build.glob('*.wasm')) and any(build.glob('*.data')) and any(build.glob('*.loader.js'))
+          assets=[f for f in origin.rglob('*') if f.is_file()]
+          assert assets and max(f.stat().st_size for f in assets)<95_000_000,(
+            'An asset is too big for GitHub storage; compress WebGL data in a new isolated build')
+          target=Path('webperf-live/valoria-v6')
+          assert not target.exists(), 'Never overwrite a previous independent V6 preview'
+          shutil.copytree(origin,target)
+          (target/'SOURCE_INFO.txt').write_text(
+            'Unity V6 isolated public test, not production beta. Original GitHub Actions build '
+            +str(json.load(open('tools/ciudad2d-webperf/public_link_request.json'))['build_id'])
+            +'\n',encoding='utf-8')
+          print('READY_STANDALONE_PUBLIC_WEBGL_BYTES',
+                sum(f.stat().st_size for f in target.rglob('*') if f.is_file()))
+          PY
+      - name: Commit only additive isolated WebGL files to this art branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-webperf/public_link_request.json
+          git add --sparse --force webperf-live/valoria-v6/
+          git diff --cached --quiet && { echo 'Nothing staged'; exit 1; }
+          git commit -m 'preview(ciudad2d): expose only isolated Unity V6 WebGL files for standalone CDN link'
+          for i in 1 2 3 4 5 6 7 8; do
+            if git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+              echo "CIUDAD2D_CDN_PUBLISH_COMMIT=$(git rev-parse HEAD)"
+              echo "DIRECT_PROD_CDN=https://rawcdn.githack.com/mt5hjfz2kb-lab/Eldoria-Prewiu/$(git rev-parse HEAD)/webperf-live/valoria-v6/index.html"
+              exit 0
+            fi
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            sleep 2
+          done
+          echo 'Concurrent update conflict, no public link confirmed'; exit 1
