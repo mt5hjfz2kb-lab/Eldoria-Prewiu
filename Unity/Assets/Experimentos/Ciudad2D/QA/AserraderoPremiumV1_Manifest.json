@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "SOURCE_AND_ALPHA_VERIFIED_ART_NOT_APPROVED",
+  "origin_generation": "93593bfc-8521-46eb-a402-4a71a563ae6f",
+  "generator": "first_party_image_generation",
+  "direct_master_reference_conditioning_proven": false,
+  "visual_reference": "ArtBible/Masters/Bastion_V_MASTER.png and Cuartel Premium V2",
+  "original_workflow": "source 1536x1024 neutral charcoal illustration; use 15 RGB max-channel background distance; largest 8-connected component; roof-only enclosed hole fill y<530; 9 px close; alpha Gaussian 0.6 px; bbox margin 38, bottom center; separate alpha-footprint-based shadow",
+  "calibrated_matte_rgb": [
+    14,
+    14,
+    20
+  ],
+  "fill_dark_roof_holes_px": 30542,
+  "origin_original_preserved": true,
+  "early_partial_cutout_not_promoted": true,
+  "source_photos_and_RGBA": {
+    "source": {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_SourceV1.png",
+      "sha256": "4bbbb369b6bf873f801ddc14366cb1231eedafc3414546f1642024845338533a",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "hosted_source_asset_id": "74beb27e-1a19-44fa-afa4-6671db682fb7"
+    },
+    "rgba": {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V1.png",
+      "sha256": "4fa333a21db0150179b6dd1158b559623d52765de90c82cc8b807ea30eaffa9e",
+      "dimensions": [
+        1507,
+        1507
+      ],
+      "mode": "RGBA",
+      "hosted_source_asset_id": "86081b14-8699-4969-8f26-c1f33c20ea62"
+    },
+    "shadow": {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_ShadowV1.png",
+      "sha256": "900eeab27836e647671820287a38fefb0050cea64bf991f53ad01bcc27a4ae7c",
+      "dimensions": [
+        1507,
+        1507
+      ],
+      "mode": "RGBA",
+      "hosted_source_asset_id": "ccc3da73-f055-4802-97df-2b41cb388ea0"
+    },
+    "green_review_sha256": "057370874783a3264acbc8cdfe3bcb488fd330e13f65a72ae741df7ca82f84cd",
+    "grey_review_sha256": "cc9e8d108f1d0aea112eca58900fdf59802dd3834795835a140d02d1b92ec923"
+  },
+  "reproducible_specification": true,
+  "exact_bytes_source_sha_fixed": true,
+  "sawmill_function": "Open mechanical saw, wood wheel, logs, sawdust, weathered oak and deep blue slate",
+  "original_City2D_buildings_untouched": true,
+  "existing_art_ForgV3_CuartelV2_untouched": true,
+  "not_a_proof_of_uniform_3_buildings": true,
+  "in_Unity": "PENDING",
+  "art_approved": false,
+  "physical_iPhone": "PENDING"
+}
