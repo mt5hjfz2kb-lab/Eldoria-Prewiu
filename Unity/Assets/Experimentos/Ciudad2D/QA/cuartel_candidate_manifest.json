@@ -10,7 +10,11 @@
     1594,
     1733
   ],
-  "state": "NOT_INTEGRATED_ART_REVIEW_PENDING",
+  "state": "REJECTED_VISUAL_ART_DIRECTION",
   "security": "signed source URL consumed only in ephemeral branch input, not persisted in manifest",
-  "limitations": "Background segmentation and in-game perspective/alpha require native Unity review."
+  "limitations": "Background segmentation and in-game perspective/alpha require native Unity review.",
+  "visual_review_date": "2026-11-17",
+  "issues": "line-art outlines, cartoon shading inconsistent with existing pre-render 2.5D stone; first cutout retained unwanted neutral matte; no Unity scene integration",
+  "gameplay_impact": "none; sprite is not referenced by city_layout.json and remains outside production scene",
+  "conclusion": "Do not integrate; re-author from a coherent source pipeline and compare in real Unity before approval."
 }
