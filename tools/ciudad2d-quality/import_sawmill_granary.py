@@ -55,7 +55,6 @@ def download(url,cfg):
 def isolate(rgb,kind,cfg):
  H,W=rgb.shape[:2]
  corners=np.concatenate([rgb[:70,:70].reshape(-1,3),rgb[:70,-70:].reshape(-1,3),
-                         rgb[-70:,:70].reshape(-1,3),rgb[-70,-70:].reshape(1,3),
                          rgb[-70:,:70].reshape(-1,3),rgb[-70:,-70:].reshape(-1,3)])
  backdrop=np.median(corners,axis=0)
  if np.max(np.abs(backdrop-np.array(cfg['calibration'])))>5:
