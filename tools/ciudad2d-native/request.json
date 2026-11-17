@@ -3,15 +3,15 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Fix CS0234: fully qualify UnityEngine.Application (conflict with Eldoria.Application namespace); isolated exact-source render retry; no production scenes",
+  "reason": "Native C# compile now passes; fix Unity 6.3 batchmode unsaved default scene by saving isolated scratch before additive scene import; no production scenes",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 1,
   "requested_art_stage": "genuine Unity RenderTexture I/II/III/IV/V and readonly building phase checks",
-  "retry_ordinal": 2,
+  "retry_ordinal": 3,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 43979377209,
+  "last_failed_run": 44011201913,
   "last_failed_errors": [
     "City2DNativeEvidence.cs CS0234 Application.dataPath",
     "City2DNativeEvidence.cs CS0234 Application.isBatchMode"

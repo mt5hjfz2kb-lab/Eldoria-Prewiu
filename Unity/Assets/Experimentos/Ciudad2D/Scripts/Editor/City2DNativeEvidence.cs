@@ -32,6 +32,16 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             if (!UnityEngine.Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
             var previousSetup = EditorSceneManager.GetSceneManagerSetup();
+            // Unity batchmode starts from an unnamed, unsaved default scene.
+            // An additive scene cannot be created from that state in Unity 6.3.
+            // Save an isolated, disposable scratch scene before invoking the builder.
+            if (UnityEngine.Application.isBatchMode)
+            {
+                var scratch = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                const string scratchPath = City2DSceneBuilder.Folder + "QA/City2D_NativeScratch.unity";
+                if (!EditorSceneManager.SaveScene(scratch, scratchPath))
+                    throw new InvalidOperationException("Could not save disposable City2D native scratch scene");
+            }
             Camera camera = null;
             RenderTexture priorTarget = null;
             var records = new List<string>();

@@ -94,6 +94,14 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             if (building || EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
+            // Editor startup may expose an untitled default scene. Never use an
+            // additive import from it, and never auto-save somebody's open work.
+            if (string.IsNullOrEmpty(SceneManager.GetActiveScene().path))
+            {
+                if (forced)
+                    Debug.LogWarning("[Ciudad2D] Save or open a scene before rebuilding; native capture creates its own disposable scene.");
+                return;
+            }
             var terrain = Sprite("Terreno.png");
             if (terrain == null) return;
             Layout layout;
