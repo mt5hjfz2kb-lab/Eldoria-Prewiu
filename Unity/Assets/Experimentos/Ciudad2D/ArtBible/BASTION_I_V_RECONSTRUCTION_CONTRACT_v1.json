@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "goal": "Rebuild art-only visual I–V city progression at premium consistency before UI/screen/world phase",
+  "control": "Unity/Assets/Experimentos/Ciudad2D/ArtBible/Masters/Bastion_V_MASTER.png",
+  "current_unity_proof": {
+    "run_id": 44045010681,
+    "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44045010681",
+    "source_commit": "13ffd5572988a24b1a72c2896b03296c1203b1eb",
+    "engine": "Unity 6000.3.23f1",
+    "mode": "Editor_RenderTexture",
+    "resolution": [
+      390,
+      844
+    ],
+    "notes": "Five genuine screenshots of existing I–V city flow, not new intermediate sprite art"
+  },
+  "stages": [
+    {
+      "level": 1,
+      "visual_stage": "Bastion I master",
+      "status": "FROZEN_ORIGINAL",
+      "sprite": "Sprites/Bastion_Nivel01.png",
+      "master_sha256": "00e48d7fa15b9b7e88db779ed374c228e5416d80f6e08457c93027a78f4a392b",
+      "native_capture_sha256": "72b29b46e433a39bb17bccce79c138c97e8c05fd41e66fc079ba9b0b49b151f0",
+      "architectural_directive": "Original compact damaged wall, tall single slate watchtower and restored front gate; do not mutate this source"
+    },
+    {
+      "level": 2,
+      "visual_stage": "Bastion II",
+      "status": "MISSING_UNIQUE_PREMIUM_SPRITE",
+      "sprite": "Sprites/Bastion_Nivel02.png",
+      "native_capture_sha256": "45cf0c227099475d1f76aa3500879c5cf80f14d800f3da4523827db6f47ca40d",
+      "currently_renders": "Bastion I original master",
+      "architectural_directive": "Preserve I's gate and watchtower silhouette, repair one side wall and establish enclosed stone wing; slightly richer functional defenses, not a new castle"
+    },
+    {
+      "level": 3,
+      "visual_stage": "Bastion III",
+      "status": "MISSING_UNIQUE_PREMIUM_SPRITE",
+      "sprite": "Sprites/Bastion_Nivel03.png",
+      "native_capture_sha256": "2170c587ee68663b52a797f0435366c2842e2315cb52894dedeb9036213086f0",
+      "currently_renders": "Bastion I original master",
+      "architectural_directive": "True volumetric growth: rebuilt wing, new living hall, raised outer rampart, blue-slate roofs with consistent 3/4 view"
+    },
+    {
+      "level": 4,
+      "visual_stage": "Bastion IV",
+      "status": "MISSING_UNIQUE_PREMIUM_SPRITE",
+      "sprite": "Sprites/Bastion_Nivel04.png",
+      "native_capture_sha256": "f55806e99a1f70046655ac397fea0f85be92537ccf6389c888ae95a498de5818",
+      "currently_renders": "Bastion I original master",
+      "architectural_directive": "Nearly V mass, stronger wall/tower pair but not fully monumental; gate and crest remain in same anchor, prevent teleporting architecture"
+    },
+    {
+      "level": 5,
+      "visual_stage": "Bastion V master",
+      "status": "FROZEN_ORIGINAL",
+      "sprite": "Sprites/Bastion_Nivel05.png",
+      "master_sha256": "8ffc9f1c04c262893c454f784afb3404c0e390cac811a3c1f1d894201ba48a89",
+      "native_capture_sha256": "79881784d284af8a2a0241c580b607b3c48958ca0fdb04a9e64850b98bebc6ed",
+      "architectural_directive": "Exact existing monumental V; two rounded frontal towers, slate roofs, stone mass and blue/gold banner authoritative"
+    }
+  ],
+  "preservation": {
+    "main_unchanged": true,
+    "no_gameplay_or_save_modifications": true,
+    "originals_immutable": true
+  },
+  "current_unique_bastion_sprites": 2,
+  "target_unique_bastion_sprites": 5,
+  "quality_gate": {
+    "minimum_art_score_per_stage": 8,
+    "out_of": 10,
+    "source_original_and_alpha_sha": true,
+    "mobile_readability": true,
+    "same_orthographic_angle": true,
+    "consistent_sun_direction": true,
+    "separate_shadows": true,
+    "no_plinths": true,
+    "authentic_unity_screenshots": true,
+    "physical_iphone": "NOT_TESTED"
+  },
+  "generator_reliability": {
+    "runway_status": "NO_CREDITS",
+    "first_party_tool_output": "A separate Forge V3 asset was usable, but subsequent stage-generation requests yielded infographics, not editable isometric sprites",
+    "model_locked_reference": "NOT_PROVEN",
+    "seed_recovery": "UNKNOWN",
+    "conclusion": "Do not commit composites as stage sprites or claim a 5-tier rebuild. Resume art production only with reliable generation/reference control."
+  },
+  "stage_2_3_4_art_approved": false,
+  "visual_reconstruction_complete": false,
+  "interface_world_phase_allowed": false
+}
