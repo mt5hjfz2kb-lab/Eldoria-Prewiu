@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "observatorio_brecha",
+  "status": "QUARANTINED_NOT_APPROVED",
+  "source_task": "5fec8a9e-b251-4654-9692-64fd1df6d4bc",
+  "source_sha256": "fd00ac0943e757c4ce8b087710ad17085e4088d51a87929cf5894d0cc0506339",
+  "mask_sha256": null,
+  "crop_rect": [
+    242,
+    0,
+    792,
+    966
+  ],
+  "sprite_size": [
+    1028,
+    1028
+  ],
+  "sprite_sha256": "74d058a9b891515a6ae8d263d380f0bf8d75c528f94b6138bf15aa3ac434e014",
+  "foot_px": [
+    514,
+    965
+  ],
+  "foot_norm": [
+    0.5,
+    0.93872
+  ],
+  "unity_native_capture": "PENDING",
+  "art_review": "PENDING"
+}

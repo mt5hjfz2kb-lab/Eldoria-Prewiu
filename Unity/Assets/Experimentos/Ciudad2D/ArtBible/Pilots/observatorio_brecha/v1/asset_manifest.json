@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "id": "observatorio_brecha",
+  "state": "QUARANTINED_VISUAL_NOT_APPROVED",
+  "original_task_id": "1aba8e1c-1d9c-4ae9-ab08-ec825470db9e",
+  "alpha_task_id": "5fec8a9e-b251-4654-9692-64fd1df6d4bc",
+  "references": "ArtBible/master_manifest_v1.json; previous generation master sheet",
+  "original_file": "source.jpg",
+  "original_sha256": "627637f5ec3b25369f7d4072145cefc5d691cb93885b0a917e5fd52eb05414bb",
+  "provider_cutout_file": "provider_cutout.png",
+  "provider_sha256": "fd00ac0943e757c4ce8b087710ad17085e4088d51a87929cf5894d0cc0506339",
+  "mask_file": "mask_from_provider.png",
+  "mask_sha256": "0e4cd98f0f6e5236a5831da8386241e6af6e73ccaebab0ba0de210a00dccc417",
+  "original_dimensions": [
+    1024,
+    1024
+  ],
+  "provider_dimensions": [
+    1024,
+    1024
+  ],
+  "provider_alpha_extrema": [
+    0,
+    255
+  ],
+  "transparent_fraction": 0.7185,
+  "corner_alphas": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "Unity_candidate_path": "Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/Observatorio_Brecha_RGBA.png",
+  "Unity_candidate_sha256": "74d058a9b891515a6ae8d263d380f0bf8d75c528f94b6138bf15aa3ac434e014",
+  "Unity_candidate_dimensions": [
+    1028,
+    1028
+  ],
+  "foot_pixel": [
+    514,
+    965
+  ],
+  "foot_placement_review": "PENDING",
+  "contact_shadow_layer": "PENDING",
+  "edge_and_smoke_review": "PENDING",
+  "source_URL_not_preserved": true,
+  "art_approved": false,
+  "Unity_capture": false,
+  "PlayMode": false,
+  "iPhone": false
+}
