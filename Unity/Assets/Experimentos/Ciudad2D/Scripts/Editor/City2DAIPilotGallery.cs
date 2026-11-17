@@ -33,13 +33,21 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             { .27558837f, .310636f, .307713f };
 
         [MenuItem("Eldoria/Experimentos/Ciudad 2D/Arte IA / Comparar tres nuevos con maestros")]
-        public static void Capture()
+        public static void Capture() { CaptureForMode(false); }
+
+        [MenuItem("Eldoria/Experimentos/Ciudad 2D/Arte IA / Comparar Forja V3 con originales")]
+        public static void CaptureForjaV3() { CaptureForMode(true); }
+
+        // Run the exact same camera and ground for the existing three-building
+        // baseline and the new isolated V3 test. The game's city never changes.
+        private static void CaptureForMode(bool forgeV3)
         {
             if (!UnityEngine.Application.isBatchMode &&
                 !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             var previousSetup=EditorSceneManager.GetSceneManagerSetup();
+            var folderName=forgeV3?"Ciudad2DForjaV3Evidence":OutFolder;
             var exportPath=Path.GetFullPath(Path.Combine(
-                UnityEngine.Application.dataPath,"..",OutFolder));
+                UnityEngine.Application.dataPath,"..",folderName));
             Directory.CreateDirectory(exportPath);
             var report=Path.Combine(exportPath,"evidence.json");
             if(File.Exists(report)) File.Delete(report);
@@ -54,11 +62,14 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             {
                 source[i]=AssetDatabase.LoadAssetAtPath<Sprite>(
                     SpriteRoot+Originals[i]);
+                var candidateName=forgeV3&&i==0
+                    ?"Versions/Forja_Guardia_RGBA_v3.png":Candidates[i];
                 candidate[i]=AssetDatabase.LoadAssetAtPath<Sprite>(
-                    CandidateRoot+Candidates[i]);
+                    CandidateRoot+candidateName);
                 if(source[i]==null || candidate[i]==null) throw new
                     InvalidOperationException("AI A/B not ready: THREE individual " +
-                        "candidate sprites required, missing "+Candidates[i]);
+                        "candidate sprites required, missing "+
+                        (forgeV3&&i==0?"Forja V3":Candidates[i]));
                 ValidateSprite(candidate[i],Candidates[i]);
                 sourcePixels[i]=MeasureFootprint(source[i]);
                 candidatePixels[i]=MeasureFootprint(candidate[i]);
@@ -135,14 +146,17 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 }
                 string result="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture\","+
                     "\"gallery_only\":true,\"three_new_buildings_present\":true,"+
+                    "\"forja_variant\":\""+(forgeV3?"V3":"V1")+"\","+
+                    "\"master_art_unchanged\":true,"+
                     "\"camera_and_terrain_locked\":true,\"visible_alpha_width_aligned\":true,"+
                     "\"alpha_ground_foot_aligned_to_original\":true,\"main_modified\":false,"+
                     "\"gameplay_or_save_modified\":false,\"art_approved\":false,"+
                     "\"playmode_interaction_not_certified_in_gallery\":true,"+
                     "\"captures\":["+string.Join(",",evidence)+"]}\n";
                 File.WriteAllText(report,result,Encoding.UTF8);
-                EditorSceneManager.SaveScene(stage,Root+"QA/Valoria_ArtBible_Sandbox.unity");
-                Debug.Log("[Ciudad2D] AI_GALLERY_6_NATIVE_CAPTURES_READY_ART_NOT_APPROVED");
+                EditorSceneManager.SaveScene(stage,Root+"QA/"+
+                    (forgeV3?"Valoria_ArtBible_Sandbox_ForjaV3.unity":"Valoria_ArtBible_Sandbox.unity"));
+                Debug.Log("[Ciudad2D] AI_GALLERY_8_NATIVE_CAPTURES_READY_ART_NOT_APPROVED"+(forgeV3?"_FORJA_V3":""));
             }
             finally
             {
