@@ -1,0 +1,55 @@
+name: Ciudad2D - recuperar recortes Runway aislados
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-ai/pending_import.json']
+permissions:
+  contents: write
+concurrency:
+  group: ciudad2d-ai-assets-ubuntu-only
+  cancel-in-progress: false
+jobs:
+  preserve-assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-ai/
+            /Unity/Assets/Experimentos/Ciudad2D/ArtBible/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png.meta
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Recover and audit original images and real-alpha sprites (not artistic approval)
+        run: python tools/ciudad2d-ai/import_existing_pilot.py
+      - name: Preserve QA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-ai-recovery-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Commit two recovered candidates; remove transient source URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-ai/pending_import.json
+          git add --sparse -A -- Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/ Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/
+          git diff --cached --quiet && { echo 'No recovered assets'; exit 1; }
+          git commit -m 'art(city2d): preserve two Runway pilot sources, masks and unapproved sprites'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
