@@ -72,3 +72,13 @@ El nuevo fondo es una **propuesta artística sin aprobación definitiva**; debem
 - Sigue pendiente corregir el plinto rectangular incorporado a cada uno de los sprites secundarios. Más enfoque no resolverá su geometría ni la identidad del conjunto: requiere reautoría de arte o integración de nuevas bases naturales.
 - QA reproducible: QA/compare_native.py acepta ZIP o carpeta de evidencia auténtica, comprueba motor/modo/SHA/dimensiones y produce comparativa sin reescalado más métricas.
 - No se ha validado PlayMode, dispositivos físicos, memoria móvil ni aprobación artística. Evitar convertir resultados de CI en certificación visual.
+
+## Decisión nueva: vida de la ciudad I–V sin fabricar Bastiones II/III/IV (17/11/2026)
+
+**Vigente y prioritario:** el Bastión conserva sprite I en niveles 1–4 y sprite V al alcanzar 5. El propietario no exige una imagen arquitectónica distinta en los niveles II, III y IV. Mantener el crecimiento real de parcelas/construcciones y centrarse en que Valoria parezca habitada. `ArtBible/BASTION_SHARED_TIERS_ACCEPTED_v2.json` sustituye la antigua condición de cinco sprites únicos sin eliminar evidencias ni decisiones históricas.
+
+**Capa ambiental v1 en sandbox:** diez efectos de `QA/ambient_life_v1.json`, creados mediante `City2DAmbientSceneFactory` y animados por `City2DAmbientMotion`: seis volutas tenues en chimeneas de edificios **Built** (cuartel, aserradero, granero; nunca solares bloqueados/en obra), cuatro brasas pequeñas; siete halos preexistentes conservados con parpadeo más orgánico. Dos PNG de humo `Props/Humo_Valoria_A/B.png` versionados y generados de forma reproducible sin IA de pago; no se toca ningún sprite anterior.
+
+**Gates:** static source/alpha SHA y 10 efectos (CI); PlayMode real para estado, HUD y clics; RenderTexture Unity de I/III/V en dos instantes y secuencia genuina de 16 fotogramas V para juzgar movimiento; calidad pictórica y dispositivo físico siempre por separado. Un workflow verde nunca aprueba automáticamente el acabado visual ni el rendimiento iPhone.
+
+**Fuentes:** `ArtBible/CAPA_VIDA_AMBIENTAL_20261117.md`, `QA/ambient_art_manifest_v1.json`, `QA/validate_ambient_life.py`, `QA/run_ambient_native.ps1`. No modificar `main`, guardados ni contratos de construcción. No avanzar a interfaz/mundo solo por generar un efecto o un GIF.
