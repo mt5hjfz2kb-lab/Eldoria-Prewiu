@@ -63,7 +63,9 @@ Write-Host 'PREMIUM_V1_REAL_UNITY_SCENE_COPY_AND_5_SOURCE_SHA_PASS_ART_UNAPPROVE
 $xml=Join-Path $env:RUNNER_TEMP ('city2d-premium-playmode-'+$env:GITHUB_RUN_ID+'.xml')
 $testlog=Join-Path $env:RUNNER_TEMP ('city2d-premium-playmode-'+$env:GITHUB_RUN_ID+'.log')
 $filter='Eldoria.Experimentos.Ciudad2D.PlayModeProof.PremiumVisualSceneProof.PremiumScene_GenuinePlayMode_StagesSpritesShadowsPointer'
-$args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+# Unity 6000.3: -quit is NOT supported while -runTests executes.
+# Unity Test Framework exits the Editor itself after it writes its NUnit XML.
+$args=@('-batchmode','-force-d3d11','-projectPath',$project,
   '-runTests','-testPlatform','PlayMode','-testFilter',$filter,
   '-testResults',$xml,'-logFile',$testlog)
 $job=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
