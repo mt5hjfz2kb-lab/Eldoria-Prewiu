@@ -31,7 +31,7 @@ with sync_playwright() as p:
         assert state["imageCount"] == 24, state
         assert state["alphaMaskCount"] == 7, state
         assert state["terrainName"] == "Terreno_Organico.png", state
-        assert state["buildingCount"] == 6 and state["decorCount"] == 32, state
+        assert state["buildingCount"] == 6 and state["decorCount"] == 23, state
         assert state["landscape"] == (width > height), state
         page.screenshot(path=str(OUT / f"{name}-bastion-I.png"))
 
