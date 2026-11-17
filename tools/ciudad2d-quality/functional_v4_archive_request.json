@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "v3_run": 44116723739,
+  "v3_artifact": 14344216728,
+  "v4_run": 44129165952,
+  "v4_artifact": 14350165548,
+  "v4_sha": "a087785f19f60d3b2db27860763975004c1a01f3",
+  "v3_sha": "d300417e34d6a27bd8426852c7617036dc660657",
+  "description": "Archive 22 original SHA-certified Unity frames from V3/V4, A/B, built-only Cuartel training targets, and saved independent V4 scene. Never rerun Unity or touch main.",
+  "art_approved": false,
+  "iPhone_physical": "PENDING"
+}
