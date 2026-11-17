@@ -3,17 +3,20 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Final one-variable visual A/B. Only Forja V3 changes; other two buildings must remain original to avoid Observatory's false size/occlusion. 10 source-locked Unity screenshots including actual Forja focus and shadow on real terrain.",
+  "reason": "Regression after real PlayMode failure #44052522821: serialize all owner/anchor/phase/config of ambient motion across scene reload; verify stage1 embers, III/V built smoke, pointer HUD, native 10 images and 16-frame living-city sequence.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 7,
-  "requested_art_stage": "Single-variable Forja V3 candidate, independent shadow, 390x844/1170x2532/844x390 and forge focus, no three-sprite quality approval.",
-  "retry_ordinal": 18,
+  "requested_art_stage": "Living-city atmosphere smoke/embers, PlayMode serialized reload, 10 native A/B timing captures, 16 real Unity animation frames, untouched original I for 1–4 and V for 5",
+  "retry_ordinal": 19,
   "engine_module_added_in_branch": true,
-  "last_failed_run": null,
-  "last_failed_errors": [],
-  "previous_successful_run": 44046565867,
+  "last_failed_run": 44052522821,
+  "last_failed_errors": [
+    "Genuine PlayMode at stage1 expected four ambient ember SpriteRenderers, observed zero; editor-created private motion config was not serialized, fixed by [SerializeField] persistent values in City2DAmbientMotion.cs"
+  ],
+  "previous_successful_run": 44047998748,
   "blender_artifact_id": 14306050951,
-  "blender_artifact_sha": "32aba6521f5ce3b6ba30aa727b15109d026788af"
+  "blender_artifact_sha": "32aba6521f5ce3b6ba30aa727b15109d026788af",
+  "previous_failed_run": 44052522821
 }
