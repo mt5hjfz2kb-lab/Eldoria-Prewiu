@@ -3,5 +3,7 @@
   "run_id": 44096910663,
   "artifact_id": 14335228213,
   "source_sha": "22924d71820f3f0d037bfbcac28b50ca9d29022a",
-  "purpose": "Archive SHA-verified actual Unity Editor A-F screenshots and exact selected raw PNGs for four-premium 2.5D visual QA; never promotes art or gameplay."
+  "purpose": "Archive SHA-verified actual Unity Editor A-F screenshots and exact selected raw PNGs for four-premium 2.5D visual QA; never promotes art or gameplay.",
+  "retry": 2,
+  "reason": "Fixed V5 audit: source-locked Unity stage V quarry plot is AVAILABLE, never Built; 60 original screenshots must be archived without faking quarry art visibility"
 }
