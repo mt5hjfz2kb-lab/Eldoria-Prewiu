@@ -10,7 +10,7 @@ assert m["schema"]==1
 assert m["state"] in {"NOT_INTEGRATED_ART_REVIEW_PENDING", "REJECTED_VISUAL_ART_DIRECTION"}
 # Never interpret technical validity of a PNG as artistic approval.
 if m["state"]=="REJECTED_VISUAL_ART_DIRECTION":
-    assert m.get("gameplay_impact")=="none"
+    assert m.get("gameplay_impact","").startswith("none;"), "Rejected art must have zero gameplay impact"
     assert "Do not integrate" in m.get("conclusion","")
     assert m.get("visual_review_date") and m.get("issues")
 assert m["candidate_dimensions"]==[1594,1733]
