@@ -106,6 +106,28 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             if (phase == "Locked") Assert.IsFalse(collider.enabled, id + " cannot be touched before unlock");
         }
 
+        private static void AssertAmbientLife(int expectedActive,int expectedSmoke)
+        {
+            var type=RuntimeType("City2DAmbientMotion");
+            var objects=UnityEngine.Object.FindObjectsByType(type,FindObjectsSortMode.None);
+            Assert.AreEqual(10,objects.Length,"Ten environment effects must survive genuine PlayMode");
+            int active=0,smoke=0;
+            foreach(var obj in objects)
+            {
+                var motion=(Component)obj;
+                Assert.IsTrue((bool)Value(motion,"IsPurePresentation"));
+                Assert.IsNull(motion.GetComponent<Collider2D>(),"Ambient sprite cannot block clicks");
+                bool enabled=(bool)Value(motion,"ActiveForStage");
+                Assert.AreEqual(enabled,(bool)Value(motion,"VisualEnabled"),
+                    "Ambient renderer gate differs from stage/built predicate");
+                if(!enabled)continue;
+                active++;
+                if(Value(motion,"Kind").ToString()=="Smoke")smoke++;
+            }
+            Assert.AreEqual(expectedActive,active,"Stage and built-state animation gating");
+            Assert.AreEqual(expectedSmoke,smoke,"Smoke cannot appear on unbuilt plots");
+        }
+
         [UnityTest, Timeout(120000)]
         public IEnumerator GenuineSavedScene_EnteredPlayMode_HudPointerAndCameraContract()
         {
@@ -132,6 +154,7 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             AssertBuilding("granero", "Locked", false);
             AssertBuilding("cantera", "Locked", false);
             AssertBuilding("salon", "Locked", false);
+            AssertAmbientLife(4,0); // only gate embers, no smoke on undeveloped plots
 
             Assert.NotNull(EventSystem.current, "EventSystem missing in PlayMode");
             var buttons = UnityEngine.Object.FindObjectsByType<Button>(FindObjectsSortMode.None);
@@ -153,6 +176,7 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             AssertBuilding("cuartel", "Built", true);
             AssertBuilding("granero", "Available", false);
             AssertBuilding("cantera", "Locked", false);
+            AssertAmbientLife(8,4); // Aserradero and Cuartel smoke, Granero not yet built
 
             var cuartel = Find("CityBuilding", "cuartel");
             var cuartelCollider = cuartel.GetComponent<BoxCollider2D>();
@@ -202,6 +226,7 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             AssertBuilding("cantera", "Built", true);
             Assert.AreEqual(1, Convert.ToInt32(ReadDomainMember(chapter, "StoneworksLevel")),
                 "Presentation must never mutate domain progress");
+            AssertAmbientLife(10,6); // three constructed chimneys, no effects in locked plots
             Assert.IsFalse((bool)Value(bridge, "IsLiveBound"), "No gateway write may occur");
 
             var fit = Find("City2DCameraFit");
