@@ -52,9 +52,10 @@ namespace Eldoria.Experimentos.Ciudad2D
                 case "granero": level = c != null ? c.GranaryLevel : 0; break;
                 case "cantera": level = c != null ? c.StoneworksLevel : 0; break;
             }
-            if (level > 0) return new City2DPlotView(City2DPlotPhase.Built, level, required);
+            // Require canonical Bastion unlock even for inconsistent legacy data.
             if (state.BastionLevel < required)
                 return new City2DPlotView(City2DPlotPhase.Locked, 0, required);
+            if (level > 0) return new City2DPlotView(City2DPlotPhase.Built, level, required);
             string task = state.BuildingTaskId ?? string.Empty;
             string prefix = id == "aserradero" ? "sawmill:" :
                 id == "cuartel" ? "barracks:" :

@@ -49,6 +49,7 @@ for fragment in ['case "aserradero": return 1', 'case "cuartel": return 2', 'cas
     if fragment=='case "salon"': continue
     assert fragment in rules,fragment
 assert 'return int.MaxValue' in rules and 'state.BuildingCompletesUtcTicks > 0' in rules
+assert rules.index('if (state.BastionLevel < required)') < rules.index('if (level > 0) return new City2DPlotView(City2DPlotPhase.Built'), 'Invalid future building must stay hidden'
 assert 'SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key))' in state
 web=(QA/'live-preview/index.html').read_text(encoding='utf-8')
 assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==32' in web

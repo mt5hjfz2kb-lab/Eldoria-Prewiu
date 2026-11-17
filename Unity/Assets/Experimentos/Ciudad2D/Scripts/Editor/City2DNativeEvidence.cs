@@ -99,7 +99,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     ChapterThree = new BastionThreeState
                     {
                         GranaryLevel = 2,
-                        StoneworksLevel = 1
+                        StoneworksLevel = 0
                     }
                 };
                 bridge.ApplySnapshot(fixture);
@@ -110,9 +110,14 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if (bastion.Level != 5 || bastion.SelectedArtLevel != 5)
                     throw new InvalidOperationException("Snapshot de nivel 5 no mostro hito V");
                 if (fixture.SawmillLevel != 2 || fixture.BarracksLevel != 2 ||
-                    fixture.ChapterThree.GranaryLevel != 2 || fixture.ChapterThree.StoneworksLevel != 1)
+                    fixture.ChapterThree.GranaryLevel != 2 || fixture.ChapterThree.StoneworksLevel != 0)
                     throw new InvalidOperationException("La presentacion altero la fixture de partida");
 
+                // A corrupted or legacy-invalid snapshot must not display a future building.
+                fixture.ChapterThree.StoneworksLevel = 1;
+                if (City2DProgressionPolicy.FromSnapshot(fixture, "cantera").Phase != City2DPlotPhase.Locked)
+                    throw new InvalidOperationException("Invalid pre-V stoneworks appeared early");
+                fixture.ChapterThree.StoneworksLevel = 0;
                 if (City2DProgressionPolicy.FromSnapshot(fixture, "cantera").Phase != City2DPlotPhase.Locked)
                     throw new InvalidOperationException("Cantera disponible antes de Bastión V");
                 fixture.BastionLevel = 5;
