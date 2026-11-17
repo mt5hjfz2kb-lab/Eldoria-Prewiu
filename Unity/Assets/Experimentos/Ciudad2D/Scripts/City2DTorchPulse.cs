@@ -21,7 +21,12 @@ namespace Eldoria.Experimentos.Ciudad2D
         private void Awake() { graphic = GetComponent<SpriteRenderer>(); Apply(opacity); }
         private void Update()
         {
-            float intensity = 0.85f + 0.15f * Mathf.Sin(Time.unscaledTime * 4.4f + phase);
+            // Two low-amplitude, phase-offset harmonics avoid a synchronized
+            // mechanical sine. No dynamic lights, new textures, or color filters.
+            float t = Time.unscaledTime;
+            float slow = Mathf.Sin(t * 3.1f + phase);
+            float quick = Mathf.Sin(t * 8.7f + phase * 2.31f);
+            float intensity = Mathf.Clamp(0.88f + 0.085f * slow + 0.035f * quick, .71f, 1f);
             Apply(opacity * intensity);
         }
         private void Apply(float alpha)
