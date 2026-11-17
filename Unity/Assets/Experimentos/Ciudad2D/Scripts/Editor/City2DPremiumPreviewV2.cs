@@ -221,19 +221,47 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 records.Add("{\"file\":\""+file+"\",\"sha256\":\""+Sha(bytes)+"\","+
                     "\"width\":1170,\"height\":2532,\"stage\":5}");
             }
-            if(records.Count!=9)throw new InvalidOperationException("Nine source-verified camera frames expected");
+            // Canonical stage V keeps Cantera Available, not Built. Preserve
+            // that true screenshot above. Add TWO clearly labeled QA frames
+            // for the valid post-build state without changing progression.
+            var quarry=premiumBuildings["cantera"];
+            if(quarry.PlotPhase!=City2DPlotPhase.Available ||
+               quarry.GetComponent<SpriteRenderer>().enabled)
+                throw new InvalidOperationException("Stage V quarry must be Available before QA fixture");
+            quarry.SetAppearance(new City2DPlotView(City2DPlotPhase.Built,1,5));
+            foreach(var shade in UnityEngine.Object.FindObjectsByType<City2DPremiumShadowGate>(
+                FindObjectsSortMode.None)) shade.Refresh();
+            if(!quarry.GetComponent<SpriteRenderer>().enabled)
+                throw new InvalidOperationException("Built quarry QA sprite did not appear");
+            fit.SetEvidenceViewport(390,844);
+            fit.SetEvidenceFocus(Vector2.zero);
+            string builtFile="premium_bastion5_quarry_built_390x844.png";
+            var builtBytes=Render(camera,390,844);
+            File.WriteAllBytes(Path.Combine(folder,builtFile),builtBytes);
+            records.Add("{\"file\":\""+builtFile+"\",\"sha256\":\""+Sha(builtBytes)+"\","+
+                "\"width\":390,\"height\":844,\"stage\":5,\"quarry_built_qa_only\":true}");
+            fit.SetEvidenceViewport(1170,2532);
+            fit.SetEvidenceZoom(1.75f);
+            fit.SetEvidenceFocus((Vector2)quarry.transform.position);
+            builtFile="premium_bastion5_quarry_built_detail_1170x2532.png";
+            builtBytes=Render(camera,1170,2532);
+            File.WriteAllBytes(Path.Combine(folder,builtFile),builtBytes);
+            records.Add("{\"file\":\""+builtFile+"\",\"sha256\":\""+Sha(builtBytes)+"\","+
+                "\"width\":1170,\"height\":2532,\"stage\":5,\"quarry_built_qa_only\":true}");
+            if(records.Count!=11)throw new InvalidOperationException("Eleven source-verified camera frames expected");
             var json="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture\","+
                 "\"source_scene\":\"Experimento_Ciudad2D_PremiumV2.unity\","+
                 "\"isolate_only\":true,\"plot_state_read_only\":true,"+
                 "\"four_premium_candidates\":[\"cuartel\",\"aserradero\",\"granero\",\"cantera\"],"+
-                "\"cantera_premium\":true,\"bastion_I_1_to_4_V_at_5\":true,"+
+                "\"cantera_premium\":true,\"quarry_unbuilt_at_default_stage5\":true,"+
+                "\"quarry_built_qa_fixture_only\":true,\"bastion_I_1_to_4_V_at_5\":true,"+
                 "\"shadows_independent_built_gated\":true,"+
                 "\"ambient_smoke_sources_after_deduplication\":2,"+
                 "\"gameplay_modified\":false,\"main_modified\":false,"+
                 "\"art_approved\":false,\"iPhone_physical_test\":\"PENDING\","+
                 "\"captures\":["+string.Join(",",records)+"]}\n";
             File.WriteAllText(report,json,Encoding.UTF8);
-            Debug.Log("[Ciudad2D] PREMIUM_PREVIEW_9_TRUE_UNITY_RENDER_FRAMES_NO_PLAYMODE_CERTIFICATION");
+            Debug.Log("[Ciudad2D] PREMIUM_PREVIEW_11_TRUE_UNITY_RENDER_FRAMES_NO_PLAYMODE_CERTIFICATION");
         }
         static byte[] Render(Camera camera,int w,int h)
         {
