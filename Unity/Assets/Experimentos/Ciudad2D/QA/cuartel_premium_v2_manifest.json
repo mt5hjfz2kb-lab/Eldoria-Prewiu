@@ -1,0 +1,51 @@
+{
+  "schema": 2,
+  "state": "ORIGINAL_AND_RGBA_ARCHIVED_NOT_ART_APPROVED",
+  "asset": "Cuartel_Premium_V2",
+  "source_generation_id": "58988476-fb28-45a1-afe2-ca0cc81e48d4",
+  "hosted_image_asset_id": "825a691e-090f-48d1-a9f2-70c375aef87e",
+  "generator": "first_party_image_generation",
+  "direct_master_image_conditioning_proven": false,
+  "source_original_sha256": "644c3ffdf8429a710606fbff0d09b72671a5c8e5e18b152e4d761c821f9157ae",
+  "source_original_dimensions": [
+    1536,
+    1024
+  ],
+  "candidate_sha256": "0dcb8edb8237621f13893893edce20fec51deb1248df8bcbc3a89ea3990b4062",
+  "candidate_dimensions": [
+    1479,
+    1479
+  ],
+  "source_alpha_extracted": "connected neutral matte; scoped roof/flag repair of 9128 source pixels",
+  "source_rgb_unchanged": true,
+  "mask_sha256": "373b7e445d5e9b8b6bcca58847b2b39738db175092e5e73492521bb2fa202293",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "crop_rect": [
+    103,
+    12,
+    1422,
+    978
+  ],
+  "bottom_center_pivot": true,
+  "preview_images": {
+    "grey": {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_grey_OFFLINE_NOT_UNITY.jpg",
+      "sha256": "b2f0c7221239ffa832077e1fe415c662ed9031e0f2ee1657cb5b060d93805f85"
+    },
+    "green": {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_green_OFFLINE_NOT_UNITY.jpg",
+      "sha256": "253d779da18a2aa4a28b0fb525c7218469f075ce6a210a06782dcc4b4731f68e"
+    }
+  },
+  "legacy_cuartel_unchanged": true,
+  "forja_v3_unchanged": true,
+  "bastion_v_unchanged": true,
+  "no_pedestal_rectangle_in_new_original": true,
+  "native_unity_capture": "PENDING",
+  "contact_shadow_independent": "PENDING",
+  "art_approved": false,
+  "physical_iphone": "PENDING"
+}
