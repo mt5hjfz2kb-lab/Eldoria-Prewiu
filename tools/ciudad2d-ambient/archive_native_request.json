@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "run_id": 44053638485,
+  "artifact_id": 14315821510,
+  "source_sha": "bae3e874efd11529c3bd13441c56fabd4acdc0b5",
+  "purpose": "Preserve authentic Unity 26 source-hashed screenshots, 16 frame native motion and compare I-III-V from real Unity, no fabricated art",
+  "no_gameplay_writes": true,
+  "art_approved": false
+}
