@@ -119,7 +119,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             if (!asset.StartsWith(Sandbox, StringComparison.Ordinal))
                 throw new ArgumentException("Only isolated art files permitted");
-            return Path.Combine(Application.dataPath,
+            return Path.Combine(UnityEngine.Application.dataPath,
                 asset.Substring("Assets/".Length).Replace('/', Path.DirectorySeparatorChar));
         }
     }
