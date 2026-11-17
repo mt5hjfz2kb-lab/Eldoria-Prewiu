@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-17T05:54:00Z",
+  "updated_at": "2026-11-17T06:12:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9937,11 +9937,9 @@
       "ownership_revision": 6,
       "branch": "art/ciudad-2d-hitos-1-5-20261116",
       "status": "active",
-      "phase": "REAL_PLAYMODE_AND_GROUNDED_ART_AB_NATIVE_RESERVED",
+      "phase": "UNITY_REAL_PLAYMODE_AND_15_AB_NATIVE_PASS_ART_NOT_APPROVED_NEXT_BLENDER_PAIR",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -9953,14 +9951,14 @@
       "user_authorization": "Owner directs prioritization of isolated 2.5D experiment, Nov 16 2026, without changing game mechanics or disturbing running jobs.",
       "write_scope_released": false,
       "pc_priority_authorized_at": "2026-11-16T23:00:00Z",
-      "last_native_run": 44023117740,
+      "last_native_run": 44028864959,
       "last_native_conclusion": "success",
-      "native_artifact": 14299014672,
+      "native_artifact": 14303994319,
       "art_approved": false,
-      "playmode_certified": false,
+      "playmode_certified": true,
       "device_qa": "pending",
       "native_source_sha": "75ee8c52e55a70632e512e19fc3ed0197a3fe42c",
-      "last_qa_message": "Unity Editor generated 13 authentic PNGs at exact source, 1.42x closeup, reversible secondary-sprite sharpen; gameplay snapshot rules still read-only.",
+      "last_qa_message": "Actual Unity Editor 15 A/B PNG + Test Framework EnterPlayMode: scene, HUD, pointer, camera 2 orientations, PlayerState read-only PASS. Art still not approved; previous mask pipeline not promoted.",
       "visual_review": "Candidate disappears in A/B render, screenshots checked; technical pass not accepted as visual pass",
       "requested_native_gate": "Editor PlayMode pointer/HUD/camera + 15 Unity renders with grounded Cuartel A/B"
     }
@@ -20393,11 +20391,11 @@
     "authorized_by": "Owner directly prioritizes City2D experiment PC resource in this conversation, 2026-11-16",
     "authorized_at": "2026-11-16T23:00:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "current_workstream": null,
     "current_run_id": null,
     "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "city2d_true_playmode_and_grounding_reserved",
+    "status": "windows_released_after_city2d_real_playmode_qa",
     "rules": [
       "Never cancel or interrupt any running Windows/Unity/Blender process; recheck running jobs and processes immediately before Editor.",
       "Owner explicitly directs this experiment to take the next available native PC turn over earlier Ashen/Visual rotation.",
