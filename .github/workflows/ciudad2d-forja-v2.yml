@@ -1,0 +1,55 @@
+name: Ciudad2D - reparar humo y heráldica Forja B2 sin re-generar
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-ai/forja_v2_request.json']
+permissions:
+  contents: write
+concurrency:
+  group: ciudad2d-forja-v2-ubuntu-only
+  cancel-in-progress: false
+jobs:
+  restore-sourced-pixels:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-ai/
+            /Unity/Assets/Experimentos/Ciudad2D/ArtBible/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.11.0.86
+      - name: Reconstruct only lost original-source smoke/flag pixels, preserve V1
+        run: python tools/ciudad2d-ai/restore_forja_v2.py
+      - name: Preserve QA and layer sources; not Unity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-forja-b2-alpha-repair-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/forja_guardia/v2/
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/Versions/Forja_Guardia_RGBA_v2.png
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Commit variant B2 to branch only, never overwrite master or B1
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-ai/forja_v2_request.json
+          git add --sparse -A -- Unity/Assets/Experimentos/Ciudad2D/ArtBible/Pilots/forja_guardia/v2/ Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/Versions/
+          git diff --cached --quiet && { echo 'No new B2 source-recovered variant'; exit 1; }
+          git commit -m 'art(city2d): preserve target-repaired Forja B2, with original B1 unchanged'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
