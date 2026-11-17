@@ -6,5 +6,7 @@
   "original_scene_untouched": true,
   "art_approved": false,
   "physical_iPhone": "NOT_TESTED",
-  "purpose": "One-time archive and compare exact 45 source-verified Unity frames I III V across five art modes"
+  "purpose": "One-time archive and compare exact 45 source-verified Unity frames I III V across five art modes",
+  "retry": 2,
+  "recovery_reason": "Original 45 source SHA passed; previous archive upload succeeded but github commit step had broken line continuation, now corrected; do not regenerate Unity frames"
 }
