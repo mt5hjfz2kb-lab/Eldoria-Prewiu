@@ -23,9 +23,10 @@ if($j.engine -ne 'Unity' -or $j.mode -ne 'Editor_RenderTexture' -or
    -not $j.camera_and_terrain_locked -or -not $j.visible_alpha_width_aligned -or
    -not $j.alpha_ground_foot_aligned_to_original -or
    $j.forja_variant -ne 'V3' -or -not $j.master_art_unchanged -or
+   -not $j.forja_contact_shadow_separate -or -not $j.shadow_is_footprint_approximation -or
    $j.art_approved -or $j.main_modified -or $j.gameplay_or_save_modified -or
    -not $j.playmode_interaction_not_certified_in_gallery -or
-   @($j.captures).Count -ne 8){throw 'Gallery native evidence contract invalid'}
+   @($j.captures).Count -ne 10){throw 'Gallery native evidence contract invalid'}
 $files=@{}
 foreach($entry in $j.captures){
   $file=Join-Path $folder $entry.file
@@ -45,9 +46,9 @@ foreach($entry in $j.captures){
   }finally{$image.Dispose()}
 }
 foreach($mode in @('A_original','B_new_ai')){
-  foreach($suffix in @('390x844.png','1170x2532.png','844x390.png','1170x2532_zoom.png')){
+  foreach($suffix in @('390x844.png','1170x2532.png','844x390.png','1170x2532_zoom.png','1170x2532_forja_detail.png')){
     $fileName=$mode+'_'+$suffix
     if(-not $files.ContainsKey($fileName)){throw ('Required A/B PNG missing '+$fileName)}
   }
 }
-Write-Host ('UNITY_REAL_EDITOR_GALLERY_8_IMAGES_SHA_VERIFIED_ART_NOT_APPROVED sha='+$env:GITHUB_SHA)
+Write-Host ('UNITY_REAL_EDITOR_GALLERY_10_IMAGES_SHA_VERIFIED_ART_NOT_APPROVED sha='+$env:GITHUB_SHA)
