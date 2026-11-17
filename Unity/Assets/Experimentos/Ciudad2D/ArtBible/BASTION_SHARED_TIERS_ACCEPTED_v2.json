@@ -1,0 +1,46 @@
+{
+  "schema": 2,
+  "design_decision_date": "2026-11-17",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "supersedes_for_production_priority": "ArtBible/BASTION_I_V_RECONSTRUCTION_CONTRACT_v1.json",
+  "rationale": "Owner no longer requires a different Bastion illustration at each level II/III/IV. The goal is a coherent, high-quality five-stage CITY progression, not five Bastion sprites.",
+  "bastion_stage_art": [
+    {
+      "bastion_level": 1,
+      "approved_tier_reference": "Bastion_Nivel01.png",
+      "required_new_art": false
+    },
+    {
+      "bastion_level": 2,
+      "approved_tier_reference": "Bastion_Nivel01.png",
+      "required_new_art": false
+    },
+    {
+      "bastion_level": 3,
+      "approved_tier_reference": "Bastion_Nivel01.png",
+      "required_new_art": false
+    },
+    {
+      "bastion_level": 4,
+      "approved_tier_reference": "Bastion_Nivel01.png",
+      "required_new_art": false
+    },
+    {
+      "bastion_level": 5,
+      "approved_tier_reference": "Bastion_Nivel05.png",
+      "required_new_art": false
+    }
+  ],
+  "required_unique_bastion_sprites": 2,
+  "owner_authorization": "Proceed with isolated living-city layer while retaining Bastion I (stages 1-4) and V (5). Any later change must be separately approved.",
+  "no_claim_of_final_art_approval": true,
+  "objective_next": "Subtle, state-gated smoke, fire embers, and existing torch flicker in the actual 2.5D Unity city; avoid cartoon particles and unrelated buildings",
+  "editor_scene_allowed": true,
+  "main_migration_allowed": false,
+  "gameplay_rules_changed": false,
+  "no_new_buildings": true,
+  "scene_existing": true,
+  "v1_archive_not_deleted": true,
+  "art_quality_still_review_required": true,
+  "physical_iphone_not_tested": true
+}
