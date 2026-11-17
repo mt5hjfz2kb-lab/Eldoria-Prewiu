@@ -46,7 +46,7 @@ jobs:
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_three_candidates.py
       - name: Verify frozen Forge V3 and independent contact shadow bytes
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_forja_v3.py
-      - name: Ensure true Bastion I-V art status: five native milestones, only two unique masters
+      - name: 'Ensure true Bastion I-V art status — five native milestones, only two unique masters'
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_bastion_stages.py
       - uses: actions/upload-artifact@v4
         with:
