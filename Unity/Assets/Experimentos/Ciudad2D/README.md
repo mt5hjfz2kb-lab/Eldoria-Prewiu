@@ -61,3 +61,14 @@ Plan de producción completo: `docs/ciudad2d/PRODUCTION_SYSTEM.md` en la rama (c
 `Sprites/Terreno_Organico.png` conserva tamaño 941×1672 y las mismas coordenadas de seis edificios, pero elimina el patrón de anillos repetitivos, incorpora caminos irregulares, vegetación, piedra envejecida y presencia lejana de la Brecha. Se mantiene el terreno anterior `Terreno.png` como control exacto y el inspector web permite **SUELO A/B**, sin cambiar etapas ni estado del jugador. `QA/city_layout.json` es la única autoridad sobre el fondo seleccionado para la escena Unity. Ambos son recursos originales del experimento, sin reutilizar GLB vetados.
 
 El nuevo fondo es una **propuesta artística sin aprobación definitiva**; debemos comprobar en capturas nativas las bases integradas de edificios, el contraste, la lectura táctil y las cuatro orientaciones. Las ampliaciones hacia los futuros distritos siguen reservadas pero no pintadas, no se estira el fondo para simular territorio. No se modifica `main`, contenido del juego ni guardados.
+
+
+### 17/11/2026 — calidad 2.5D: pruebas verificables y límites
+
+- Run 44013497619: 12 PNG auténticos de Unity Editor con compresión, SHA verificados.
+- Run 44018257414: textura sin compresión; diferencia RGB media ~0,107/255 y variación de bordes <0,2 %. La compresión NO explicaba la falta de nitidez.
+- Run 44019544727: fondo Retina 1412x2508, horneado desde 941x1672, PPU150; 12 imágenes nativas. La energía de bordes del encuadre completo aumentó ~25,8 %, sin añadir detalle artístico de origen.
+- Run 44019684673: fondo Retina más bake de contraste reversible de cuatro edificios; 13 PNG de Unity Editor, incluido primer plano 1,42x; todos con SHA verificado. Frente al anterior: +9,42 % de bordes en imagen completa y +20–28 % en zonas laterales; la medida NO garantiza calidad premium.
+- Sigue pendiente corregir el plinto rectangular incorporado a cada uno de los sprites secundarios. Más enfoque no resolverá su geometría ni la identidad del conjunto: requiere reautoría de arte o integración de nuevas bases naturales.
+- QA reproducible: QA/compare_native.py acepta ZIP o carpeta de evidencia auténtica, comprueba motor/modo/SHA/dimensiones y produce comparativa sin reescalado más métricas.
+- No se ha validado PlayMode, dispositivos físicos, memoria móvil ni aprobación artística. Evitar convertir resultados de CI en certificación visual.
