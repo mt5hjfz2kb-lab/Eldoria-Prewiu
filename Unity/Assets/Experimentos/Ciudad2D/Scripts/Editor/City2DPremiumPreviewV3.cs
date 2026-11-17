@@ -74,7 +74,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "Aserradero_Premium_V2_Shadow.png",2f);
                 // Granero only: preserve original RGBA and independent shadow. Test 15%
                 // larger silhouette and 0.23 leftward world offset in real Unity.
-                // Candidate evaluation, not an accepted art change.\n                Swap(buildings,"granero","Granero_Premium_V1.png",
+                // Candidate evaluation, not an accepted art change.
+                Swap(buildings,"granero","Granero_Premium_V1.png",
                     "Granero_Premium_V1_Shadow.png",2f,1.15f);
                 Swap(buildings,"cantera","Cantera_Premium_V1.png",
                     "Cantera_Premium_V1_Shadow.png",2f);
