@@ -31,11 +31,11 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         {
             if (EditorUserBuildSettings.activeBuildTarget!=BuildTarget.WebGL)
                 throw new InvalidOperationException("Invoke the Editor with -buildTarget WebGL before Build");
-            string path=Path.GetFullPath(Path.Combine(Application.dataPath,"..",Source));
+            string path=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",Source));
             if(!File.Exists(path)||Sha(File.ReadAllBytes(path))!=SourceSha)
                 throw new InvalidOperationException("Archived original PremiumV6 scene has invalid SHA");
             Directory.CreateDirectory(Path.GetFullPath(
-                Path.Combine(Application.dataPath,"..",Folder+"QA/WebPerf")));
+                Path.Combine(UnityEngine.Application.dataPath,"..",Folder+"QA/WebPerf")));
             var original=EditorSceneManager.OpenScene(Source,OpenSceneMode.Single);
             if(!original.IsValid()||!original.isLoaded)
                 throw new InvalidOperationException("Archived Unity scene not loadable");
@@ -62,7 +62,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             if(!EditorSceneManager.SaveScene(trial,TestScene))
                 throw new InvalidOperationException("Cannot save isolated runtime probe");
 
-            string output=Path.GetFullPath(Path.Combine(Application.dataPath,"..",Output));
+            string output=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",Output));
             if(Directory.Exists(output))
                 throw new InvalidOperationException("Refusing to overwrite a prior WebPerf build");
             Directory.CreateDirectory(output);
