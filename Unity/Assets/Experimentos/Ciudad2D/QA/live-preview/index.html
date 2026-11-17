@@ -150,7 +150,7 @@ async function load(){
  if(!response.ok)throw new Error('No se puede cargar city_layout.json');
  const layout=await response.json();
  if(layout.schema!==4||layout.coordinate_width!==W||layout.coordinate_height!==H||
-    layout.buildings.length!==6||layout.decor.length!==32||layout.glows.length!==7)
+    layout.buildings.length!==6||layout.decor.length!==23||layout.glows.length!==7)
     throw new Error('Layout de Unity y navegador no coincide');
  layoutVersion=layout.schema;
  terrainPrimary=layout.terrain_file;
