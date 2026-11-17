@@ -166,6 +166,184 @@ jobs:
           "CITY2D_SOURCE_ROOT=$dest" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           Write-Host ('CITY2D_PINNED_SOURCE '+$got)
 
+      - name: Stage pinned Blender 3D-to-sprite pair and verify original source SHA
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $req=Get-Content (Join-Path $env:CITY2D_SOURCE_ROOT 'tools/ciudad2d-native/request.json') -Raw | ConvertFrom-Json
+          if($req.blender_artifact_id -lt 1 -or $req.blender_artifact_sha -notmatch '^[a-f0-9]{40}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('city2d-native-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.Ciudad2D.Editor.City2DNativeEvidence.Capture',
+            '-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1600000)){
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Unity scratch editor timed out'
+          }
+          if($proc.ExitCode -ne 0){
+            if(Test-Path -LiteralPath $log){Get-Content -LiteralPath $log -Tail 230}
+            throw ('Unity native proof failed code '+$proc.ExitCode)
+          }
+          $evidence=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Ciudad2DNativeEvidence/evidence.json'
+          if(-not(Test-Path -LiteralPath $evidence)){throw 'Unity did not generate evidence.json'}
+          $data=Get-Content -LiteralPath $evidence -Raw | ConvertFrom-Json
+          if(@($data.captures).Count -ne 15 -or -not $data.domain_snapshot_read_only_pass -or
+             -not $data.visibility_policy_pass -or
+             -not $data.quality_import_uncompressed_pass -or
+             -not $data.quality_crisp_bake_pass -or
+             -not $data.candidate_cuartel_comparison_only -or
+             -not $data.grounding_art_comparison_only -or
+             -not $data.retina_terrain_rendered_pass -or
+             -not $data.quality_import_no_mipmap_pass -or
+             $data.art_approved -or $data.device_qa -ne 'PENDING'){
+            throw 'Genuine native evidence incomplete or falsely claims artistic approval'
+          }
+          foreach($entry in $data.captures){
+            $file=Join-Path (Split-Path $evidence) $entry.file
+            if(-not(Test-Path -LiteralPath $file) -or (Get-Item $file).Length -lt 8000){
+              throw ('Missing authentic Unity screenshot '+$entry.file)
+            }
+            if((Get-FileHash -Algorithm SHA256 -LiteralPath $file).Hash.ToLowerInvariant() -ne $entry.sha256){
+              throw ('Screenshot digest mismatch '+$entry.file)
+            }
+          }
+          Get-Content $evidence
+
+      - name: Execute true Editor PlayMode, pointer dispatch and native HUD proof
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('city2d-playmode-'+$env:GITHUB_RUN_ID+'.log')
+          $xml=Join-Path $env:RUNNER_TEMP ('city2d-playmode-'+$env:GITHUB_RUN_ID+'.xml')
+          $filter='Eldoria.Experimentos.Ciudad2D.PlayModeProof.RealSceneInteractions.GenuineSavedScene_EnteredPlayMode_HudPointerAndCameraContract'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,
+            '-runTests','-testPlatform','EditMode','-testFilter',$filter,
+            '-testResults',$xml,'-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1050000)){
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Unity PlayMode scratch test timed out'
+          }
+          if(-not(Test-Path -LiteralPath $xml)){
+            if(Test-Path $log){Get-Content $log -Tail 160}
+            throw ('Unity test framework did not emit XML, exit '+$proc.ExitCode)
+          }
+          [xml]$data=Get-Content -LiteralPath $xml -Raw
+          $tests=[int]$data.DocumentElement.GetAttribute('total')
+          $passed=[int]$data.DocumentElement.GetAttribute('passed')
+          $failed=[int]$data.DocumentElement.GetAttribute('failed')
+          if($tests -lt 1 -or $passed -lt 1 -or $failed -ne 0 -or $proc.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw ("Genuine PlayMode test failed: total=$tests passed=$passed failed=$failed exit="+$proc.ExitCode)
+          }
+          $dir=Join-Path $project 'Ciudad2DPlayModeEvidence'
+          foreach($name in @('city2d-playmode-iPhone-1170x2532.png','city2d-playmode-horizontal-844x390.png')){
+            $image=Join-Path $dir $name
+            if(-not(Test-Path -LiteralPath $image) -or (Get-Item $image).Length -lt 8000){
+              throw ('True PlayMode screenshot missing: '+$name)
+            }
+            Write-Host ("PLAYMODE_SCREENSHOT "+$name+" SHA256="+(Get-FileHash -Algorithm SHA256 -LiteralPath $image).Hash)
+          }
+          Write-Host ("REAL_PLAYMODE_TEST_PASS "+$passed+" of "+$tests)
+
+      - name: Compare ORIGINAL vs Blender-derived sprites with 16 genuine Unity A/B frames
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('city2d-blender-ab-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.Ciudad2D.Editor.City2DBlenderPilotEvidence.Capture',
+            '-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1200000)){
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Unity Blender A/B render timed out'
+          }
+          if($proc.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 130}
+            throw ('Unity Blender A/B render failed '+$proc.ExitCode)
+          }
+          $folder=Join-Path $project 'Ciudad2DBlenderPilotEvidence'
+          $evidence=Join-Path $folder 'evidence.json'
+          if(-not(Test-Path $evidence)){throw 'Unity Blender A/B evidence missing'}
+          $j=Get-Content $evidence -Raw | ConvertFrom-Json
+          if(@($j.captures).Count -ne 16 -or -not $j.comparison_camera_locked -or
+             -not $j.two_building_layers -or -not $j.unchanged_unity_hotspots -or
+             -not $j.progression_real_read_only -or $j.gameplay_or_save_modified -or
+             $j.art_approved -or $j.device_qa -ne 'PENDING'){
+            throw 'Unity Blender A/B violated state or review contract'
+          }
+          foreach($entry in $j.captures){
+            $file=Join-Path $folder $entry.file
+            if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 8000){
+              throw ('Missing Unity A/B image '+$entry.file)
+            }
+            if((Get-FileHash -Algorithm SHA256 $file).Hash.ToLowerInvariant() -ne $entry.sha256){
+              throw ('Unity A/B file digest mismatch '+$entry.file)
+            }
+          }
+          Write-Host 'CITY2D_BLENDER_UNITY_AB_16_SOURCE_VERIFIED'
+
+      - name: Preserve evidence, log and exact Unity source identity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-real-unity-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/city2d-native-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.xml
+            ${{ runner.temp }}/city2d-blender-ab-${{ github.run_id }}.log
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DBlenderPilotEvidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DBlenderPilotEvidence/*.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPlayModeEvidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.json
+          if-no-files-found: warn
+          retention-days: 14
+){
+            throw 'A/B Blender artifact/source SHA not explicitly pinned'
+          }
+          $url="https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/$($req.blender_artifact_id)/zip"
+          $zip=Join-Path $env:RUNNER_TEMP ('city2d-blender-source-'+$env:GITHUB_RUN_ID+'.zip')
+          $directory=Join-Path $env:RUNNER_TEMP ('city2d-blender-source-'+$env:GITHUB_RUN_ID)
+          Invoke-WebRequest -Uri $url -Headers @{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'} -MaximumRedirection 8 -OutFile $zip
+          Expand-Archive -LiteralPath $zip -DestinationPath $directory
+          $src=Join-Path $directory 'city2d-blender'
+          if(-not(Test-Path $src)){throw 'Blender original artifact missing exact source directory'}
+          $contract=Get-Content (Join-Path $src 'unity-sprite-contract.json') -Raw | ConvertFrom-Json
+          $manifest=Get-Content (Join-Path $src 'blender-pilot-manifest.json') -Raw | ConvertFrom-Json
+          if($manifest.kit_ref -ne 'art/visual-reboot@84bb8e7a83810f4b722c764938a5d36e20b906d5'){
+            throw 'Blender provenance changed unexpectedly'
+          }
+          if((Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $src 'Valoria_Buildings_Master.blend')).Hash.ToLowerInvariant() -ne $contract.blender_master_sha256){
+            throw 'Blender source integrity mismatch'
+          }
+          $dest=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/Sprites/BlenderPilot'
+          New-Item -ItemType Directory -Path $dest -Force | Out-Null
+          foreach($name in @('Cuartel','Aserradero')){
+            $row=$contract.buildings.$name
+            foreach($file in @(@{src="$($name)_Ready.png";hash=$row.ready_sha256},
+                                @{src="$($name)_ShadowReady.png";hash=$row.shadow_ready_sha256})){
+              $original=Join-Path $src $file.src
+              if(-not(Test-Path $original) -or (Get-FileHash $original -Algorithm SHA256).Hash.ToLowerInvariant() -ne $file.hash){
+                throw ('RGBA/shadow not reproducible from Blender source: '+$file.src)
+              }
+              Copy-Item -LiteralPath $original -Destination (Join-Path $dest $file.src)
+            }
+          }
+          Copy-Item (Join-Path $src 'unity-sprite-contract.json') (Join-Path $dest 'origin-contract.json')
+          Write-Host ('CITY2D_PAIR_STAGE_PASS '+$req.blender_artifact_id)
+
       - name: Render authentic Unity Editor frames and validate tier snapshots
         shell: powershell
         run: |
