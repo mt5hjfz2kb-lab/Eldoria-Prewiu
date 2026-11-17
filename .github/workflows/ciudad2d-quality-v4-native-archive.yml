@@ -66,14 +66,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git rm --quiet -- tools/ciudad2d-quality/quality_v4_archive_request.json
-          git add --sparse -- \
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_Bastion1_A_B_C_D_E.jpg
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_Bastion3_A_B_C_D_E.jpg \
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_Bastion5_A_B_C_D_E.jpg \
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_CuartelDetail_A_B_C_D_E.jpg
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_AserraderoDetail_A_B_C_D_E.jpg
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_GraneroDetail_A_B_C_D_E.jpg \
-            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_NATIVE_EVIDENCE.json
+          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_*.jpg Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4_NATIVE_EVIDENCE.json
           git diff --cached --quiet && { echo 'No native review'; exit 1; }
           git commit -m 'qa(city2d): archive 45 real Unity 5-mode Cuartel Sawmill Granary matching captures'
           if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
