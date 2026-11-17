@@ -3,17 +3,16 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Fix NativeEvidence invalid fixture (StoneworksLevel must be 0 at Bastion IV), plus guard future building visibility against inconsistent saved snapshots; scratch scene compile/import passed",
+  "reason": "Correct native fixture to use Bastion IV for invalid early Stoneworks, then retest exact current organic 2.5D candidate; no gameplay changes",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 1,
   "requested_art_stage": "genuine Unity RenderTexture I/II/III/IV/V and readonly building phase checks",
-  "retry_ordinal": 4,
+  "retry_ordinal": 5,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 44011981904,
+  "last_failed_run": 44012758328,
   "last_failed_errors": [
-    "City2DNativeEvidence.cs CS0234 Application.dataPath",
-    "City2DNativeEvidence.cs CS0234 Application.isBatchMode"
+    "Native evidence fixture incorrectly expected pre-V lock while BastionLevel was still 5"
   ]
 }

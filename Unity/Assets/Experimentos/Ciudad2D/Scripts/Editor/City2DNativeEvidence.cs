@@ -116,6 +116,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     throw new InvalidOperationException("La presentacion altero la fixture de partida");
 
                 // A corrupted or legacy-invalid snapshot must not display a future building.
+                fixture.BastionLevel = 4; // Test truly pre-V, after testing the V transition above.
                 fixture.ChapterThree.StoneworksLevel = 1;
                 if (City2DProgressionPolicy.FromSnapshot(fixture, "cantera").Phase != City2DPlotPhase.Locked)
                     throw new InvalidOperationException("Invalid pre-V stoneworks appeared early");
