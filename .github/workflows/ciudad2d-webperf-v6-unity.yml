@@ -44,7 +44,7 @@ jobs:
           for required in ['BuildTarget.WebGL','PlayerSettings.WebGL.showDiagnostics=true',
                            'scenes=new[]{TestScene}','CIUDAD2D_WEBPERF_V6_WEBGL_BUILD_PASS']:
               assert required in code,required
-          assert 'CITY2D_WEBPERF_V6_READY' in runtime
+          assert 'CIUDAD2D_WEBPERF_V6_READY' in runtime
           assert 'ICommandGateway' in runtime and 'never uses ICommandGateway' in runtime
           print('CIUDAD2D_WEBPERF_SOURCE_SHA_ISOLATION_NO_PUBLICATION_PREFLIGHT_PASS')
           PY
