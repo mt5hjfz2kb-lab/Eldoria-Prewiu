@@ -25,6 +25,32 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/ciudad2d-native/request.json
+            /Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v3_native.ps1
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DPremiumPreviewV3.cs
+            /Unity/Assets/Experimentos/Ciudad2D/QA/PlayModeProof/City2DPremiumPlayModeTestsV3.cs
+      - name: Check V3 invocation and generated scene/evidence contracts before allocating PC
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          base=Path('Unity/Assets/Experimentos/Ciudad2D')
+          ps=(base/'QA/run_premium_preview_v3_native.ps1').read_text()
+          cs=(base/'Scripts/Editor/City2DPremiumPreviewV3.cs').read_text()
+          test=(base/'QA/PlayModeProof/City2DPremiumPlayModeTestsV3.cs').read_text()
+          assert "$program='Eldoria.Experimentos.Ciudad2D.Editor.City2DPremiumPreviewV3.Capture'" in ps
+          assert "$proof=Join-Path $project 'Ciudad2DPremiumPlayableV3Evidence'" in ps
+          assert "PremiumVisualSceneProofV3.PremiumV3Scene_GenuinePlayMode" in ps
+          assert "Experimento_Ciudad2D_PremiumV3.unity" in ps
+          assert 'const string Output="Ciudad2DPremiumPlayableV3Evidence";' in cs
+          assert 'public static class City2DPremiumPreviewV3' in cs
+          assert 'PremiumScene=Root+"QA/Experimento_Ciudad2D_PremiumV3.unity"' in cs
+          assert '                Swap(buildings,"granero","Granero_Premium_V1.png",' in cs
+          assert '                    "Granero_Premium_V1_Shadow.png",2f,1.15f);' in cs
+          assert 'public sealed class PremiumVisualSceneProofV3' in test
+          assert 'PremiumV3Scene_GenuinePlayMode_StagesSpritesShadowsPointer' in test
+          assert 'Experimento_Ciudad2D_PremiumV3.unity' in test
+          print('CITY2D_V3_STATIC_PREFLIGHT_PASS_REAL_SCENE_AND_OUTPUT_NOT_V2')
+          PY
       - name: Read current resource reservation from main; never take PC if not owned
         id: lease
         shell: bash
