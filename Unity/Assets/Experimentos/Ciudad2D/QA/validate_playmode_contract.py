@@ -19,7 +19,7 @@ assert "EditorSceneManager.LoadSceneAsyncInPlayMode" in test
 assert "Application.isPlaying" in test
 assert "ExecuteEvents.pointerClickHandler" in test
 assert "Physics2D.OverlapPoint" in test
-assert "City2DPlayModeEvidence" in test
+assert "Ciudad2DPlayModeEvidence" in test
 assert "yield return new ExitPlayMode()" in test
 assert "Grounded.png" in bake
 assert "GetPixels32()" in bake and "distance[i]" in bake
