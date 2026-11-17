@@ -3,6 +3,7 @@
 No novel building, gameplay, scene, or master PNG edits; output is a disposable
 candidate with a separate blue-violet contact shadow and exact source SHA.
 """
+# The PNGs emitted here are strictly art candidates; no main/production scene import.
 from pathlib import Path
 import hashlib
 import json
