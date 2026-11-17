@@ -62,15 +62,24 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             {
                 source[i]=AssetDatabase.LoadAssetAtPath<Sprite>(
                     SpriteRoot+Originals[i]);
-                var candidateName=forgeV3&&i==0
-                    ?"Versions/Forja_Guardia_RGBA_v3.png":Candidates[i];
-                candidate[i]=AssetDatabase.LoadAssetAtPath<Sprite>(
-                    CandidateRoot+candidateName);
-                if(source[i]==null || candidate[i]==null) throw new
-                    InvalidOperationException("AI A/B not ready: THREE individual " +
-                        "candidate sprites required, missing "+
-                        (forgeV3&&i==0?"Forja V3":Candidates[i]));
-                ValidateSprite(candidate[i],Candidates[i]);
+                // A proper one-variable experiment: only Forge V3 changes.
+                // Do NOT let the out-of-scale Observatory/Archive contaminate
+                // its near-camera visual quality or ground-contact verdict.
+                if(forgeV3 && i>0)
+                {
+                    candidate[i]=source[i]; // Both control buildings remain byte-identical.
+                }
+                else
+                {
+                    var candidateName=forgeV3
+                        ?"Versions/Forja_Guardia_RGBA_v3.png":Candidates[i];
+                    candidate[i]=AssetDatabase.LoadAssetAtPath<Sprite>(
+                        CandidateRoot+candidateName);
+                    if(candidate[i]==null)
+                        throw new InvalidOperationException("AI candidate missing: "+candidateName);
+                    ValidateSprite(candidate[i],candidateName);
+                }
+                if(source[i]==null) throw new InvalidOperationException("Original missing: "+Originals[i]);
                 sourcePixels[i]=MeasureFootprint(source[i]);
                 candidatePixels[i]=MeasureFootprint(candidate[i]);
             }
@@ -183,7 +192,10 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     }
                 }
                 string result="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture\","+
-                    "\"gallery_only\":true,\"three_new_buildings_present\":true,"+
+                    "\"gallery_only\":true,\"three_new_buildings_present\":"+(forgeV3?"false":"true")+","+
+                    "\"forja_isolated_one_variable\":"+(forgeV3?"true":"false")+","+
+                    "\"other_two_original_sprites_locked\":"+(forgeV3?"true":"false")+","+
+
                     "\"forja_variant\":\""+(forgeV3?"V3":"V1")+"\","+
                     "\"forja_contact_shadow_separate\":"+(forgeV3?"true":"false")+","+
                     "\"shadow_is_footprint_approximation\":"+(forgeV3?"true":"false")+","+
