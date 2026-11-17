@@ -19,7 +19,8 @@ $report=Join-Path $folder 'evidence.json'
 if(-not(Test-Path -LiteralPath $report)){throw 'Native Forja V3 gallery evidence absent'}
 $j=Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
 if($j.engine -ne 'Unity' -or $j.mode -ne 'Editor_RenderTexture' -or
-   -not $j.gallery_only -or -not $j.three_new_buildings_present -or
+   -not $j.gallery_only -or $j.three_new_buildings_present -or
+   -not $j.forja_isolated_one_variable -or -not $j.other_two_original_sprites_locked -or
    -not $j.camera_and_terrain_locked -or -not $j.visible_alpha_width_aligned -or
    -not $j.alpha_ground_foot_aligned_to_original -or
    $j.forja_variant -ne 'V3' -or -not $j.master_art_unchanged -or
