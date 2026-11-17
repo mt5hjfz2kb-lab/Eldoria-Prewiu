@@ -6,6 +6,7 @@ on:
       - art/ciudad-2d-hitos-1-5-20261116
     paths:
       - tools/ciudad2d-import/candidate_url.txt
+      - .github/workflows/ciudad2d-import-cuartel.yml
 
 permissions:
   contents: write
@@ -44,7 +45,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm --quiet -- tools/ciudad2d-import/candidate_url.txt
-          git add -- \
+          git add --sparse -- \
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png \
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png.meta \
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Candidato.png \
@@ -52,7 +53,12 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_manifest.json
           git diff --cached --quiet && { echo "Nothing generated; refusing empty commit"; exit 1; }
           git commit -m "art(city2d): save high-detail Cuartel candidate without plinth, unapproved"
-          git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            echo "Branch advanced; safely rebasing candidate commit."
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
       - name: Preserve input/output candidate for visual review
         if: always()
         uses: actions/upload-artifact@v4
