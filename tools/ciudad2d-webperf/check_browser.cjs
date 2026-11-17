@@ -23,8 +23,17 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    page.on('console',m=>logs.push({level:m.type(),text:m.text()}));
    page.on('pageerror',e=>errors.push(String(e)));
    page.on('requestfailed',r=>failedRequests.push({url:r.url(),failure:r.failure()}));
-   await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
-   await page.waitForSelector('canvas',{timeout:30000});
+   const first=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
+   report.finalUrl=page.url();
+   report.httpStatus=first?.status();
+   report.pageTitle=await page.title();
+   report.initialBody=(await page.locator('body').innerText({timeout:12000}).catch(()=>'' )).slice(0,1200);
+   report.initialHtmlPrefix=(await page.content()).slice(0,1500);
+   report.initialCanvasCount=await page.locator('canvas').count();
+   console.log('CDN_INITIAL',JSON.stringify({
+      url:report.finalUrl,status:report.httpStatus,title:report.pageTitle,
+      canvasCount:report.initialCanvasCount,body:report.initialBody.slice(0,250)}));
+   await page.waitForSelector('canvas',{state:'attached',timeout:100000});
    await page.waitForFunction(()=>{const c=document.querySelector('canvas');
      return c&&c.width>100&&c.height>100;},{timeout:120000});
    for(let i=0;i<90;i++){
@@ -45,7 +54,17 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    report.passed=report.canvas.width>100&&report.canvas.height>100&&
      report.fpsSamples.length>0&&errors.length===0;
    if(!report.passed)throw new Error('Runtime loaded, but frame sampling/console check failed');
- }catch(e){report.error=String(e);throw e}
+ }catch(e){
+   report.error=String(e);
+   try {
+     report.finalUrl=page.url();
+     report.pageTitle=await page.title();
+     report.bodyAtFailure=(await page.locator('body').innerText({timeout:12000}).catch(()=>'' )).slice(0,1800);
+     report.htmlAtFailure=(await page.content()).slice(0,2000);
+     await page.screenshot({path:out+'/failure.png',fullPage:true,timeout:15000});
+   }catch(nested){report.screenshotError=String(nested);}
+   throw e
+ }
  finally{
    report.console_tail=logs.slice(-120);
    fs.writeFileSync(out+'/proof.json',JSON.stringify(report,null,2));
