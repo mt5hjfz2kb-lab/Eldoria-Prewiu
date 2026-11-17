@@ -26,7 +26,7 @@ assert "GetPixels32()" in bake and "distance[i]" in bake
 assert "City2DGroundingBake.EnsureGenerated()" in native
 assert "grounding_art_comparison_only" in native
 assert 'groundedComparison' in native
-assert "candidateCuartel ? \\"-cuartel-candidato\\"" in native
+assert 'candidateCuartel ? "-cuartel-candidato"' in native
 assert "ArtBake.ForBuilding" in (root / "Scripts/Editor/City2DSceneBuilder.cs").read_text(encoding="utf-8")
 assert "GroundingBake.ForBuilding" not in (root / "Scripts/Editor/City2DSceneBuilder.cs").read_text(encoding="utf-8")
 print("CITY2D_PLAYMODE_STATIC_PREPARED — Native Unity Test Runner result required")
