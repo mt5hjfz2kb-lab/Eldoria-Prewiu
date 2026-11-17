@@ -1,0 +1,535 @@
+{
+  "schema": 1,
+  "source_run_id": 44105205248,
+  "source_artifact_id": 14337998938,
+  "source_commit_sha": "747b24ffe5c47b9f1070c06d2285fbb0aaf1dbe0",
+  "source_zip_sha256": "feafa95a9c97f07056a8b2fcca57f82dc3c9a846aa7aaa253179eb069d2100b8",
+  "engine": "Unity",
+  "mode": "Editor_RenderTexture",
+  "verified_original_frame_count": 60,
+  "all_original_capture_sha256": [
+    {
+      "file": "A_32_original_bastion1_390x844_standard.png",
+      "sha256": "5bf8641302e27eb79027592ef31ab2f0047382acf4660c7274b4fe737bd87c5a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "B_23_quiet_bastion1_390x844_standard.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "C_23_premium_bastion1_390x844_standard.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion1_390x844_standard.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion1_390x844_standard.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "F_23_all_four_premium_bastion1_390x844_standard.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a",
+      "width": 390,
+      "height": 844,
+      "stage": 1
+    },
+    {
+      "file": "A_32_original_bastion3_390x844_standard.png",
+      "sha256": "94831421062b06c58a0ac88f7b527b05665723561cf7bd49ad7d4dc87e7b8c56",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "A_32_original_bastion3_1170x2532_standard.png",
+      "sha256": "87f24f619cfe40f89843e86e3a5462ef17de0e8a5f996463244e2e483fa7db28",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "B_23_quiet_bastion3_390x844_standard.png",
+      "sha256": "113bbcc3031dd98f6f45613a45dbd9099ac43c03e7d8f109551c73ee1959698f",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "B_23_quiet_bastion3_1170x2532_standard.png",
+      "sha256": "12c94ed1045fef8266a5766b07b9a42d6e35b5edb810362fef53e90753d9b79a",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "C_23_premium_bastion3_390x844_standard.png",
+      "sha256": "fc3c90c42b0135a3f9c3eb5c0e992a8fe25f3fdd71e8e1cb93885b3226c7328d",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "C_23_premium_bastion3_1170x2532_standard.png",
+      "sha256": "89759ce3d53fc8e7001c94e05a27269ebd9b44b8c77789148807354d957e7f97",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion3_390x844_standard.png",
+      "sha256": "ac4f104ca7b25007625de7dc298bcb5189028ec3dcbbfa871639d574b65048e7",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion3_1170x2532_standard.png",
+      "sha256": "771559a5e7304baab359835d6754e14cc2a8e67d57d36490b16336ab23a9ba21",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion3_390x844_standard.png",
+      "sha256": "ac4f104ca7b25007625de7dc298bcb5189028ec3dcbbfa871639d574b65048e7",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion3_1170x2532_standard.png",
+      "sha256": "771559a5e7304baab359835d6754e14cc2a8e67d57d36490b16336ab23a9ba21",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "F_23_all_four_premium_bastion3_390x844_standard.png",
+      "sha256": "ac4f104ca7b25007625de7dc298bcb5189028ec3dcbbfa871639d574b65048e7",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "F_23_all_four_premium_bastion3_1170x2532_standard.png",
+      "sha256": "771559a5e7304baab359835d6754e14cc2a8e67d57d36490b16336ab23a9ba21",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "A_32_original_bastion5_390x844_standard.png",
+      "sha256": "22179e042f704533000d4d595871d306eb0b859edf256e0b00f9879558f7aea8",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_standard.png",
+      "sha256": "99cffb116783bccd6a5db5f4a6ff58fc21518f81440a7bb27fd009083ea02be3",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_844x390_standard.png",
+      "sha256": "a8c1cd4fc747b02fe4c27bf0f2b9f4f72dbe0a8bc6da74dc599e73b0f2cdf686",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "36dcd74353a63caea5a606c8c6bb3de27dff79c2a353b0314aee1baae39012d1",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "47714af719ccc6d68253a2ae3699d65db7ffec5022eda2801bff5f0c2e1a40df",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_granero_close.png",
+      "sha256": "59c60631fcab91497690858974736ca5b40078e837c5bf7b93e9a4adb4cacf95",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_cantera_close.png",
+      "sha256": "22499726beef2525dedcd32f43b9588d28fa1bb9c164ca715fb00ddea3f54692",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_390x844_standard.png",
+      "sha256": "26e3cfba87a02245076d2955b83bb7b7eea573a38327b73cf4781fc0dfe14b35",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_standard.png",
+      "sha256": "7cb12e621b2215564038c9a0ac4a6cf46227b05c24730a1d5301cecaa64accd9",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_844x390_standard.png",
+      "sha256": "783f6f18df14f13ed99165d1547d966da7b76fa20e955ac670968a88c588643c",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "ea35f1c2231f71cf4bdc76ee753c93007728dca58ff5da7f6718e4879b3bb68e",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "921281e1a178824c639125466990dbc95e922b07cabb57603c9ea1e79414f05c",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_granero_close.png",
+      "sha256": "4195321795b8acb827f3c4a293478d006b07a7f8d8badf774555f039196faf88",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_cantera_close.png",
+      "sha256": "3362bdbfb0f2ed8b46eb2eb8402fd7e34d07380b7fb2204ec67e951ae332c234",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_390x844_standard.png",
+      "sha256": "4fa803c7aa75776a3b103a9e0766434d0617f6c1512929feafdd898bbd33cdde",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_standard.png",
+      "sha256": "3f9829a8a050ee4f4d856b2fe21fa54af6a7a76e465de844ebcf0e68d1938f95",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_844x390_standard.png",
+      "sha256": "783f6f18df14f13ed99165d1547d966da7b76fa20e955ac670968a88c588643c",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "3d9bfac56819852142285b77e7d9f13ff1b6408bfdcd930efd20f3906d087773",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "29eb91a738161f28af6bcd356079f3d8336e184351c3856513744dc974963777",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_granero_close.png",
+      "sha256": "4195321795b8acb827f3c4a293478d006b07a7f8d8badf774555f039196faf88",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_cantera_close.png",
+      "sha256": "3362bdbfb0f2ed8b46eb2eb8402fd7e34d07380b7fb2204ec67e951ae332c234",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_390x844_standard.png",
+      "sha256": "2cf1bd468122a136a73fdcc9c20735ae8575f3b17d2012936e8becdcdb35f42d",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_1170x2532_standard.png",
+      "sha256": "e3b4df9b02d5e8eb3c0eb15980bc7dc3012283c8cb4096e85da46ae59f6ecaf6",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_844x390_standard.png",
+      "sha256": "0b7ece86708cb0968ffafb9b862e52cf1867c69198f49eeb2bc4edaee0d981ed",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "85495afdb8dffad0bc0e576aeab54bc80d91230115372b75b13beef748c14c38",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "8636e662bbe7805403d8a3618c96210a61ba9b5c53f692f0f8419bd3c3779f73",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_1170x2532_granero_close.png",
+      "sha256": "4195321795b8acb827f3c4a293478d006b07a7f8d8badf774555f039196faf88",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "D_23_cuartel_sawmill_bastion5_1170x2532_cantera_close.png",
+      "sha256": "509465b85469bc386ac58b6bc6a69f112a10378e24815b61eae00d3d4782476d",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_390x844_standard.png",
+      "sha256": "35885fd339e8279b1ccdac55d04b5f4c793d8783c995272969e1fe1b9eb7b482",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_1170x2532_standard.png",
+      "sha256": "3a5e848af87def08151234c33464ef10846a2d04ceea589c8a659afca81d08af",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_844x390_standard.png",
+      "sha256": "fe3701151430f89ca8b9e5474f108fc34faa602476271459f973bd0bb170fa9b",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "85495afdb8dffad0bc0e576aeab54bc80d91230115372b75b13beef748c14c38",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "8636e662bbe7805403d8a3618c96210a61ba9b5c53f692f0f8419bd3c3779f73",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_1170x2532_granero_close.png",
+      "sha256": "2c46e6ad447dccdaba5c3c956d29f4d422ddf946b2c3bb283cbe85a40988383f",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "E_23_cuartel_sawmill_granary_bastion5_1170x2532_cantera_close.png",
+      "sha256": "4aeed080a239a821c0dcfb4aed2ed06ae8fb9a706052a4f8dae460fa14ded464",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_390x844_standard.png",
+      "sha256": "f5de95d03696c88b199e537dd01f2189c715a14ea4a8d626d209bdd048c9337f",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_1170x2532_standard.png",
+      "sha256": "6e0b953288913b5cac1a982d1add1e8e892e97564eb64c35554a1bfdb3695be5",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_844x390_standard.png",
+      "sha256": "e2cf42adce660ca0c9bffc7a10c1bfae3a424bb49648ce9bbe549ba3c2c64f1a",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "f687eddcba88bb32cdba0a9959912d500e02715897c1af09b1b1a762b2b054e0",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "bb2eabf98f1d6e4625ac02d724ceae0a6d49a181e1d98218d8a2f73726a53bd6",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_1170x2532_granero_close.png",
+      "sha256": "8819e620bc421b917a46d38d0d48897499315f12e25815fcca5cff1741a857ea",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "F_23_all_four_premium_bastion5_1170x2532_cantera_close.png",
+      "sha256": "1d0a33042086c44bb44e293c2893ce9e8972599b36e0eee4bbd2f8160a221193",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    }
+  ],
+  "archived_native_png_files": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/A_32_original_bastion5_390x844_standard.png",
+      "sha256": "22179e042f704533000d4d595871d306eb0b859edf256e0b00f9879558f7aea8"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion1_390x844_standard.png",
+      "sha256": "1a2fa30819337850a95e5b6469abfe62033ef2fbeec8f206c2797798ef51a25a"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion3_390x844_standard.png",
+      "sha256": "ac4f104ca7b25007625de7dc298bcb5189028ec3dcbbfa871639d574b65048e7"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_390x844_standard.png",
+      "sha256": "f5de95d03696c88b199e537dd01f2189c715a14ea4a8d626d209bdd048c9337f"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_1170x2532_standard.png",
+      "sha256": "6e0b953288913b5cac1a982d1add1e8e892e97564eb64c35554a1bfdb3695be5"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_844x390_standard.png",
+      "sha256": "e2cf42adce660ca0c9bffc7a10c1bfae3a424bb49648ce9bbe549ba3c2c64f1a"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "f687eddcba88bb32cdba0a9959912d500e02715897c1af09b1b1a762b2b054e0"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_1170x2532_aserradero_close.png",
+      "sha256": "bb2eabf98f1d6e4625ac02d724ceae0a6d49a181e1d98218d8a2f73726a53bd6"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_1170x2532_granero_close.png",
+      "sha256": "8819e620bc421b917a46d38d0d48897499315f12e25815fcca5cff1741a857ea"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/NativeV6/F_23_all_four_premium_bastion5_1170x2532_cantera_close.png",
+      "sha256": "1d0a33042086c44bb44e293c2893ce9e8972599b36e0eee4bbd2f8160a221193"
+    }
+  ],
+  "derived_review_jpg_files": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_Bastion1_A_to_F_REVIEW.jpg",
+      "sha256": "de4b9483e0d316c7ef2839e462e4769dab444f2ce3ecaacf72cf0c042a78da4c",
+      "not_a_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_Bastion3_A_to_F_REVIEW.jpg",
+      "sha256": "8b8274cc4effdf4ed8561b8288879274ae16e03b0ff159450deb53f37fae08b7",
+      "not_a_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_Bastion5_A_to_F_REVIEW.jpg",
+      "sha256": "1cda062c5a0e7df3bc3bfca0ada3d6d5688fa4485ebcefb630af4fc87d870758",
+      "not_a_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_cuartel_DETAIL_A_to_F_REVIEW.jpg",
+      "sha256": "fc5fdeeda169b2932b8003b0636e2fa7b312d28c9c837916d2dfe7da19b69eac",
+      "not_a_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_aserradero_DETAIL_A_to_F_REVIEW.jpg",
+      "sha256": "79238c7e16191c520d08d62029dcd29849f0286fc253828021bf679674f91bd6",
+      "not_a_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_granero_DETAIL_A_to_F_REVIEW.jpg",
+      "sha256": "20e53544a7e2183259655253ee92a2a6e7de479e74f5d6c67165ab7fc2207e88",
+      "not_a_native_capture": true
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV6_cantera_DETAIL_A_to_F_REVIEW.jpg",
+      "sha256": "804303c5df8d812070adcd7df08b15be0d9c939e91f20e873d9c95953b723198",
+      "not_a_native_capture": true
+    }
+  ],
+  "quarry_source_sha256": "dd6a4d7acd67d2de2e8ae53dc8d433e4e03bb136e7130d13130087de3e3f649b",
+  "quarry_contact_shadow_sha256": "e42096dd255f96c0e3e979ae9321d3bf6ba20ccea52c53426c4f845e875fc8de",
+  "screen_differences_are_not_art_scores": {
+    "1": {
+      "original_A_vs_all_premium_F_mean_RGB": 1.29911,
+      "quarry_E_to_F_mean_RGB": 0.0
+    },
+    "3": {
+      "original_A_vs_all_premium_F_mean_RGB": 4.4236,
+      "quarry_E_to_F_mean_RGB": 0.0
+    },
+    "5": {
+      "original_A_vs_all_premium_F_mean_RGB": 8.03408,
+      "quarry_E_to_F_mean_RGB": 1.9406
+    }
+  },
+  "original_control_A_retained": true,
+  "no_gameplay_or_main_modifications": true,
+  "canonical_stage5_quarry_status": "Available, not Built",
+  "completed_quarry_shown_in_explicit_V6_qa_fixture": true,
+  "fixture_saved_to_actual_gameplay_state": false,
+  "playmode_of_new_premium_scene": "SEPARATE_TEST",
+  "physical_iphone": "NOT_TESTED",
+  "premium_art_approved": false
+}

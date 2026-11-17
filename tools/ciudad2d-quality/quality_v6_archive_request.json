@@ -1,7 +1,0 @@
-{
-  "schema": 1,
-  "run_id": 44105205248,
-  "artifact_id": 14337998938,
-  "source_sha": "747b24ffe5c47b9f1070c06d2285fbb0aaf1dbe0",
-  "reason": "Preserve 60 verified original Unity V6 captures, including post-construction quarry QA, without rerunning Unity or changing the canonical game state."
-}
