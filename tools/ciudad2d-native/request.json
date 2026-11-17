@@ -3,17 +3,17 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Retry genuine EditMode UnityTest EnterPlayMode proof and 15 native A/B frames after removing duplicate asmdef references; exact isolated branch only.",
+  "reason": "Retry after C# CS0234 Application.dataPath namespace error: fixed to UnityEngine.Application.dataPath; require 15 native A/B PNGs, genuine PlayMode HUD/pointer/camera and read-only snapshot.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 6,
   "requested_art_stage": "Grounded stone-platform edge A/B + Unity Test Runner genuine PlayMode interaction proof",
-  "retry_ordinal": 11,
+  "retry_ordinal": 12,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 44026959806,
+  "last_failed_run": 44027489015,
   "last_failed_errors": [
-    "Unity 6.3 PlayModeProof.asmdef duplicated UnityEngine.TestRunner and UnityEditor.TestRunner references, fixed by retaining only optionalUnityReferences: TestAssemblies."
+    "Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DGroundingBake.cs(122,33) CS0234 Application.dataPath resolved to Eldoria.Application namespace; qualified UnityEngine.Application.dataPath."
   ],
   "previous_successful_run": 44023117740
 }
