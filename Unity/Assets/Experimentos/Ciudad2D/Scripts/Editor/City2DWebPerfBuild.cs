@@ -36,9 +36,37 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 throw new InvalidOperationException("Archived original PremiumV6 scene has invalid SHA");
             Directory.CreateDirectory(Path.GetFullPath(
                 Path.Combine(UnityEngine.Application.dataPath,"..",Folder+"QA/WebPerf")));
-            var original=EditorSceneManager.OpenScene(Source,OpenSceneMode.Single);
+            // The first WebGL trial proved the exact SHA is present but a
+            // just-imported archived scene may not yet be registered by Unity.
+            // Perform synchronous scene import before opening it.
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            AssetDatabase.ImportAsset(Source,
+                ImportAssetOptions.ForceSynchronousImport|ImportAssetOptions.ForceUpdate);
+            string sceneActuallyOpened=Source;
+            Scene original=default;
+            if(AssetDatabase.LoadAssetAtPath<SceneAsset>(Source)!=null)
+            {
+                try { original=EditorSceneManager.OpenScene(Source,OpenSceneMode.Single); }
+                catch(ArgumentException ex)
+                {
+                    Debug.LogWarning("[Ciudad2D WebGL] Archived Unity scene could not open: "+
+                        ex.Message+"; regenerating read-only V6 in scratch");
+                }
+            }
             if(!original.IsValid()||!original.isLoaded)
-                throw new InvalidOperationException("Archived Unity scene not loadable");
+            {
+                // A fallback from the same premium source/art, never an unrelated scene.
+                // The known passing V6 builder creates only sandbox scenes and
+                // has no data/gameplay/save actions.
+                City2DPremiumPreviewV6.Build();
+                sceneActuallyOpened=City2DPremiumPreviewV6.PremiumScene;
+                AssetDatabase.ImportAsset(sceneActuallyOpened,
+                    ImportAssetOptions.ForceSynchronousImport);
+                original=EditorSceneManager.OpenScene(sceneActuallyOpened,OpenSceneMode.Single);
+                Debug.Log("[Ciudad2D WebGL] Runtime source regenerated from immutable V6 assets");
+            }
+            if(!original.IsValid()||!original.isLoaded)
+                throw new InvalidOperationException("Neither archived nor rebuilt V6 scene could load");
             if(AssetDatabase.LoadAssetAtPath<SceneAsset>(TestScene)!=null)
                 throw new InvalidOperationException("Do not overwrite an earlier separate WebPerf scene");
             if(!EditorSceneManager.SaveScene(original,TestScene,true))
@@ -92,6 +120,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 string manifest="{"+
                     "\"engine\":\"Unity 6000.3\","+
                     "\"source_Unity_scene\":\""+Source+"\","+
+                    "\"runtime_scene_generated_from\":\""+sceneActuallyOpened+"\","+
                     "\"source_Unity_scene_sha256\":\""+SourceSha+"\","+
                     "\"trial_scene\":\""+TestScene+"\","+
                     "\"target\":\"WebGL\","+
