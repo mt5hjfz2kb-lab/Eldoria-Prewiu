@@ -141,6 +141,27 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
                 FindObjectsSortMode.None).Any(x=>x.text!=null &&
                      x.text.Contains("Cuartel") && x.text.Contains("Built")),
                 "Premium scene selection must update existing HUD");
+            // Transient presentation-only construction fixture; never issues a command.
+            // Verify that the training decoration does not exist on an unfinished plot.
+            var phaseClass=Runtime("City2DPlotPhase");
+            var viewClass=Runtime("City2DPlotView");
+            var setter=barracks.GetType().GetMethod("SetAppearance",
+                BindingFlags.Instance|BindingFlags.Public);
+            Assert.NotNull(setter);
+            var working=Activator.CreateInstance(viewClass,
+                new object[]{Enum.Parse(phaseClass,"UnderConstruction"),0,3});
+            setter.Invoke(barracks,new[]{working});
+            yield return null;
+            Assert.AreEqual("UnderConstruction",Property(barracks,"PlotPhase").ToString());
+            Assert.IsFalse(barracks.GetComponent<SpriteRenderer>().enabled);
+            Assert.AreEqual(0,ActiveTrainingDetails(),
+                "Training prop cannot appear while Cuartel is under construction");
+            var finished=Activator.CreateInstance(viewClass,
+                new object[]{Enum.Parse(phaseClass,"Built"),1,3});
+            setter.Invoke(barracks,new[]{finished});
+            yield return null;
+            Assert.AreEqual(2,ActiveTrainingDetails(),
+                "Targets and contact must return after Cuartel has been built");
             SetStage(bridge,5);yield return null;
             // Canonical demo stage V unlocks Cantera but does NOT build it.
             // It would violate game rules to expect its sprite/shadow here.
