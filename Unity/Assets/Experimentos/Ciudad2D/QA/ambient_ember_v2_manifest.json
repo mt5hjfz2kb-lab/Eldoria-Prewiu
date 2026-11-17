@@ -1,0 +1,18 @@
+{
+  "schema": 2,
+  "asset": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/Chispa_Valoria_V2.png",
+  "sha256": "ff8e034f20932b657fef9755d2caade53b38a951f96954c06a39605985a95422",
+  "size": [
+    48,
+    72
+  ],
+  "alpha_extrema": [
+    0,
+    235
+  ],
+  "original_HaloAntorcha_unchanged": true,
+  "motion_script_unchanged": true,
+  "asset_art_approved": false,
+  "unity_capture": "PENDING",
+  "physical_iPhone": "PENDING"
+}
