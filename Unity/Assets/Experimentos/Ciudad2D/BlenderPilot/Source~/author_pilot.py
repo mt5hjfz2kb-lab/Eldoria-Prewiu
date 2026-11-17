@@ -55,6 +55,31 @@ def mat(name, rgb, rough=.73,metal=0,variation=.14):
   bump.inputs['Distance'].default_value=.034
   l.new(noise.outputs['Fac'],bump.inputs['Height'])
   l.new(bump.outputs['Normal'],bs.inputs['Normal'])
+  # Authored procedural surfaces, not a universal flat swatch:
+  # broad brick blocks for masonry and true staggered small-scale slate.
+  if name in ('Limestone_WarmGrey','Trim_Stone','Slate_Blue'):
+   brick=n.new('ShaderNodeTexBrick')
+   brick.inputs['Scale'].default_value=4.0 if name!='Slate_Blue' else 8.0
+   brick.inputs['Brick Width'].default_value=.62 if name!='Slate_Blue' else .47
+   brick.inputs['Row Height'].default_value=.32 if name!='Slate_Blue' else .15
+   brick.inputs['Mortar Size'].default_value=.016 if name!='Slate_Blue' else .013
+   brick.inputs['Mortar Smooth'].default_value=.08
+   if name=='Slate_Blue':
+    brick.inputs['Color1'].default_value=(.065,.12,.24,1)
+    brick.inputs['Color2'].default_value=(.12,.18,.31,1)
+    brick.inputs['Mortar'].default_value=(.025,.042,.085,1)
+   elif name=='Limestone_WarmGrey':
+    brick.inputs['Color1'].default_value=(.50,.43,.35,1)
+    brick.inputs['Color2'].default_value=(.39,.35,.29,1)
+    brick.inputs['Mortar'].default_value=(.22,.20,.18,1)
+   else:
+    brick.inputs['Color1'].default_value=(.68,.58,.46,1)
+    brick.inputs['Color2'].default_value=(.53,.45,.36,1)
+    brick.inputs['Mortar'].default_value=(.29,.26,.22,1)
+   l.new(brick.outputs['Color'],bs.inputs['Base Color'])
+   l.new(brick.outputs['Fac'],bump.inputs['Height'])
+   bump.inputs['Strength'].default_value=.20
+   bump.inputs['Distance'].default_value=.025
  return m
 stone=mat('Limestone_WarmGrey',(.53,.45,.35),variation=.30)
 limestone=mat('Trim_Stone',(.72,.61,.45),variation=.23)
