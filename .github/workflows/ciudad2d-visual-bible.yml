@@ -6,6 +6,10 @@ on:
     paths:
       - 'Unity/Assets/Experimentos/Ciudad2D/ArtBible/**'
       - '.github/workflows/ciudad2d-visual-bible.yml'
+      - 'Unity/Assets/Experimentos/Ciudad2D/QA/validate_ambient_life.py'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DStateBridge.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DTorchPulse.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DAmbientNativeEvidence.cs'
       - 'Unity/Assets/Experimentos/Ciudad2D/QA/ambient_life_v1.json'
       - 'Unity/Assets/Experimentos/Ciudad2D/QA/ambient_art_manifest_v1.json'
       - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DAmbientMotion.cs'
