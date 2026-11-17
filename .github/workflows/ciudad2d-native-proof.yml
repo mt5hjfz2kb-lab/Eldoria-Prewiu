@@ -266,6 +266,11 @@ jobs:
         run: |
           & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_ai_gallery.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
 
+      - name: Capture isolated premium Forja V3 against same real Unity baseline
+        shell: powershell
+        run: |
+          & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_forja_v3_gallery.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
+
       - name: Preserve evidence, log and exact Unity source identity
         if: always()
         uses: actions/upload-artifact@v4
@@ -277,6 +282,9 @@ jobs:
             ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.xml
             ${{ runner.temp }}/city2d-blender-ab-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-ai-gallery-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-forja-v3-gallery-${{ github.run_id }}.log
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DForjaV3Evidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAIPilotEvidence/*.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DAIPilotEvidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DBlenderPilotEvidence/*.png
