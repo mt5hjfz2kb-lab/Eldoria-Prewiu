@@ -37,6 +37,7 @@ jobs:
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_quality_v2.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_quality_v3.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_quality_v4.py
+          python Unity/Assets/Experimentos/Ciudad2D/QA/validate_quality_v5.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_ground_seams.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_cuartel_candidate.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_playmode_contract.py
@@ -69,6 +70,7 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/QA/preview-I-V.png
             Unity/Assets/Experimentos/Ciudad2D/QA/landscape-hito-V-844x390.png
             Unity/Assets/Experimentos/Ciudad2D/QA/asset_manifest.json
+            Unity/Assets/Experimentos/Ciudad2D/QA/QualityV5_TheoreticalTextureBudget.json
             Unity/Assets/Experimentos/Ciudad2D/QA/city_layout.json
             Unity/Assets/Experimentos/Ciudad2D/QA/organic-I-V.jpg
             Unity/Assets/Experimentos/Ciudad2D/QA/progresion-I-III-V.jpg
