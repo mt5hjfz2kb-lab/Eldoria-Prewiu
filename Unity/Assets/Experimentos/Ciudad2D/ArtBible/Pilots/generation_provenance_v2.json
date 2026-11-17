@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "scope": "Art-only proof. Neither 3D/gameplay construction nor production art approval.",
+  "masters_manifest": "ArtBible/master_manifest_v1.json",
+  "masters_bindings_for_two_runway": "Valoria_Maestros_Referencia_A0.png composite referenced in previous tasks; exact composite bytes not recovered in this turn; source masters immutable in repository.",
+  "candidates": [
+    {
+      "id": "forja_guardia",
+      "provider": "Runway",
+      "model": "nano-banana-2-lite",
+      "task_id": "512b4dd8-4197-474f-8758-d06ab28e06b0",
+      "alpha_task_id": "a382070c-3986-4a01-b192-d33a9e68612f",
+      "prompt": "Single standalone game-ready 2.5D isometric illustration of a NEW VALORIA FORGE WORKSHOP, using the attached reference sheet ONLY as a binding visual STYLE REFERENCE, not copying existing buildings. Distinctive open blacksmith hearth and working anvil, old gray limestone, worn oak structural timbers, deep blue slate tiles, restrained antique gold and Valoria navy-and-gold heraldry, warmly illuminated arched windows, warm late-day low sun and violet-blue shadows. Medium-high 3/4 orthographic camera looking down from ~40°, facades and left/right roof faces visible, same silhouette density and painterly detail as the Bastion V reference, scale suitable for mobile 4X game, premium mature dark medieval fantasy. One entire isolated building centered, roof and base fully inside frame, no rectangular stone foundation or tile island, no terrain slab, no grass platform, no display stand, no people, no text, no UI, plain uniform near-black background removable by segmentation. Fine readable hand-painted textures, precisely coherent warm/cool lighting and anti-aliased silhouettes. Do not make a collage.",
+      "generation_reference_use": "Prior task attached composite masters; current raw master sheet binary not recovered independently.",
+      "sha_original": "dd84edb2c00fe23b2a92e68b60aed7b8d1ceb3bccfd137bfe433a3b9d3144ab8",
+      "sha_rgba": "620fb58c48dafc4963c11467c4bc10900b14404b07de228876cc2eeb139f9b8d",
+      "sprite": "Sprites/AIPilot/Forja_Guardia_RGBA.png",
+      "visual_gate": "UNAPPROVED: smoke lost in provider cutout, lower right fine details need repair; shared lighting/perspective test pending."
+    },
+    {
+      "id": "observatorio_brecha",
+      "provider": "Runway",
+      "model": "nano-banana-2-lite",
+      "task_id": "1aba8e1c-1d9c-4ae9-ab08-ec825470db9e",
+      "alpha_task_id": "5fec8a9e-b251-4654-9692-64fd1df6d4bc",
+      "prompt": "Single game-ready isometric 2.5D illustration of a NEW VALORIA ARCANE OBSERVATORY. Use the attached master reference as artistic STYLE ONLY. Tall octagonal masonry observatory with timber balcony, heavy blue-slate roof, brass armillary sphere and telescope, warm arched windows, restrained violet Breach crystal, navy/gold heraldry. Same fixed high 3/4 camera perspective, dense painterly rich details, warm limestone/old oak/blue slate palette, amber sunset light from upper-left, cool violet-blue shadows. One isolated full building in frame, clear edges, no rectangular stone platform, no terrain or grass tile, no characters, no lettering or UI; uniform plain black background for real alpha extraction.",
+      "generation_reference_use": "Prior task attached composite masters; current raw master sheet binary not recovered independently.",
+      "sha_original": "627637f5ec3b25369f7d4072145cefc5d691cb93885b0a917e5fd52eb05414bb",
+      "sha_rgba": "74d058a9b891515a6ae8d263d380f0bf8d75c528f94b6138bf15aa3ac434e014",
+      "sprite": "Sprites/AIPilot/Observatorio_Brecha_RGBA.png",
+      "visual_gate": "UNAPPROVED: tower looks vertically front-facing/less depth than Bastion V; dark metal and thin flag segmentation; footprint and mobile readability pending."
+    },
+    {
+      "id": "archivo_cartografos",
+      "provider": "ChatGPT image generation; hosted copy in Runway Assets for GitHub transfer",
+      "model": "not_exposed_by_first_party_generation_tool",
+      "generation_id": "f785b806-0718-4667-bf58-251d3400d3e2",
+      "source_asset_id": "0e90eb09-99c3-4acf-9766-e17b5c41d051",
+      "prompt_provenance": "Exact generation prompt not exposed (tool reported an empty prompt). Request specified isometric cartographers' archive, dark fantasy, worn irregular stone, deep-blue slate roofs, antique gold, warm windows, asymmetrical wings + tower; no ground slab or characters.",
+      "generation_reference_use": "Master contact sheet inspected before generation, but direct image-reference conditioning is NOT independently evidenced.",
+      "historical_failed_attempts_model": "gen-4-image-turbo",
+      "historical_failed_attempt_task": "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
+      "historical_error": "INTERNAL.BAD_OUTPUT.CODE01",
+      "sha_original": "0f3a1ead1d0a84402c8493a84cbbe4a660c0e7fbcf144c5ad3138f43069396df",
+      "sha_rgba": "7bb221f5f766ff41f731756ada234ed6e923e5fd0f4cecf19d98bce290cf415c",
+      "sprite": "Sprites/AIPilot/Archivo_Cartografos_RGBA.png",
+      "alpha_method": "Border-connected near-charcoal flood + architecture-only 7..31 px morphological close + 3 px anti-aliased edge decontamination, sources frozen.",
+      "visual_gate": "UNAPPROVED: visibly richer stone/roof detail but differing material render/solar heraldry; mobile composition and alpha at 1x pending."
+    }
+  ],
+  "provider_failure_context": "Runway available credits 0 at recovery, third original made using other generator; therefore THREE TECHNICAL SPRITES DOES NOT PROVE A SINGLE REPRODUCIBLE MODEL.",
+  "art_approved": false,
+  "editor_unity_ab": "PENDING",
+  "playmode_for_new_three": "NOT_TESTED",
+  "physical_iPhone": "NOT_TESTED",
+  "contact_shadows": "PENDING"
+}
