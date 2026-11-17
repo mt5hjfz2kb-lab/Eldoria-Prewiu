@@ -1,0 +1,210 @@
+name: Ciudad2D - A/B real Unity Granero V6 aislado
+# Exact-source retry only after confirming the complete Granero Swap call is valid C#.
+# Second source-pinned attempt: corrected distinct V6 evidence output and C# comments.
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-v6-native/request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ciudad2d-native-exclusive
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-native/request.json
+            /Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v6_native.ps1
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DPremiumPreviewV6.cs
+            /Unity/Assets/Experimentos/Ciudad2D/QA/PlayModeProof/City2DPremiumPlayModeTestsV6.cs
+      - name: Check V6 invocation and generated scene/evidence contracts before allocating PC
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          base=Path('Unity/Assets/Experimentos/Ciudad2D')
+          ps=(base/'QA/run_premium_preview_v6_native.ps1').read_text()
+          cs=(base/'Scripts/Editor/City2DPremiumPreviewV6.cs').read_text()
+          test=(base/'QA/PlayModeProof/City2DPremiumPlayModeTestsV6.cs').read_text()
+          assert "$program='Eldoria.Experimentos.Ciudad2D.Editor.City2DPremiumPreviewV6.Capture'" in ps
+          assert "$proof=Join-Path $project 'Ciudad2DPremiumPlayableV6Evidence'" in ps
+          assert "PremiumVisualSceneProofV6.PremiumV6Scene_GenuinePlayMode" in ps
+          assert "Experimento_Ciudad2D_PremiumV6.unity" in ps
+          assert 'const string Output="Ciudad2DPremiumPlayableV6Evidence";' in cs
+          assert 'public static class City2DPremiumPreviewV6' in cs
+          assert 'PremiumScene=Root+"QA/Experimento_Ciudad2D_PremiumV6.unity"' in cs
+          assert '                Swap(buildings,"granero","Granero_Premium_V1.png",' in cs
+          assert '                    "Granero_Premium_V1_Shadow.png",2f,1.15f);' in cs
+          assert 'public sealed class PremiumVisualSceneProofV6' in test
+          assert 'PremiumV6Scene_GenuinePlayMode_StagesSpritesShadowsPointer' in test
+          assert 'Experimento_Ciudad2D_PremiumV6.unity' in test
+          assert '"Cuartel_Premium_ShadowV2.png",1f,1.14f);' in cs
+          assert 'cuartel_visual_scale_factor' in cs
+          assert 'cuartel_visual_scale_factor' in ps
+          assert 'UnderConstruction' in test
+          assert 'City2DFunctionalDetailGate' not in cs
+          print('CITY2D_V6_STATIC_PREFLIGHT_PASS_REAL_SCENE_AND_OUTPUT_NOT_V2')
+          PY
+      - name: Parse V6 PowerShell runner syntax without running Unity or reserving Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $p='Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v6_native.ps1'
+          $tokens=$null
+          $problems=$null
+          [void][System.Management.Automation.Language.Parser]::ParseFile($p,[ref]$tokens,[ref]$problems)
+          if(@($problems).Count -gt 0){
+            foreach($err in $problems){Write-Host $err.ToString()}
+            throw 'Invalid V6 PowerShell: native PC is not allocated'
+          }
+          Write-Host 'CIUDAD2D_V6_POWERSHELL_SYNTAX_PASS'
+      - name: Read current resource reservation from main; never take PC if not owned
+        id: lease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          from pathlib import Path
+          req=json.loads(Path('tools/ciudad2d-native/request.json').read_text())
+          repo=os.environ['GITHUB_REPOSITORY']
+          def get(url):
+              rq=urllib.request.Request(f'https://api.github.com/repos/{repo}/'+url,
+                  headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                           'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(rq,timeout=35) as f:return json.load(f)
+          entry=get('contents/pipeline/active-workstreams.json?ref=main')
+          if entry.get('content'):
+              raw=base64.b64decode(entry['content'])
+          else:
+              blob=get('git/blobs/'+entry['sha'])
+              assert blob['sha']==entry['sha'] and blob['encoding']=='base64'
+              raw=base64.b64decode(blob['content'])
+          j=json.loads(raw)
+          holders=[x for x in j['active'] if 'windows-runner-heavy' in x.get('resources',[])]
+          active=holders[0] if len(holders)==1 else {}
+          ok=(req.get('allow_native') is True and req.get('schema')==1
+              and req.get('branch')==os.environ['GITHUB_REF_NAME']
+              and len(holders)==1
+              and active.get('id')=='eldoria-city2d-illustrated-proof-20261116'
+              and active.get('ownership_state')=='claimed'
+              and j.get('resource_rotation',{}).get('current_workstream')==active['id']
+              and req.get('owner')==active.get('owner')
+              and req.get('ownership_revision')==active.get('ownership_revision'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('authorized='+str(ok).lower()+'\n')
+          print('CITY2D_V6_LEASE_APPROVED' if ok else 'CITY2D_V6_SAFE_SKIP_PC_NOT_OWNED')
+          PY
+  unity-cuartel-v6:
+    needs: preflight
+    if: needs.preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 32
+    steps:
+      - name: Check lease, running processes and Unity path on Windows
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $api='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/'
+          $r=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $s=$r.content
+          if(-not $s){
+            $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$r.sha) -Headers $h
+            if($blob.sha -ne $r.sha){throw 'Lease blob SHA mismatch'}
+            $s=$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($s -replace '\s',''))) | ConvertFrom-Json
+          $all=@($registry.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          if($all.Count -ne 1 -or $all[0].id -ne 'eldoria-city2d-illustrated-proof-20261116' -or
+             $all[0].ownership_state -ne 'claimed' -or
+             $registry.resource_rotation.current_workstream -ne 'eldoria-city2d-illustrated-proof-20261116'){
+            throw 'Runner lease was transferred: refusing to use Windows.'
+          }
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            throw 'Native PC is busy: refusing to interrupt another job.'
+          }
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path -LiteralPath $env:UNITY_EDITOR_PATH -PathType Leaf)){
+            throw 'Required Unity Editor unavailable.'
+          }
+          Write-Host 'CITY2D_V6_EXCLUSIVE_WINDOWS_PREFLIGHT_PASS'
+      - name: Locate installed Git
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $d="$env:LOCALAPPDATA/GitHubDesktop"
+            $exe=Get-ChildItem $d -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+            if(-not $exe){throw 'Git unavailable: refusing full repository checkout'}
+            $dir=Split-Path $exe
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - name: Create SHA-pinned isolated sparse checkout - do not touch main
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if($env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$'){throw 'Invalid exact commit'}
+          $dest=Join-Path $env:RUNNER_TEMP ('city2d-cuartel-v6-'+$env:GITHUB_RUN_ID)
+          if(Test-Path -LiteralPath $dest){throw 'Scratch checkout exists'}
+          git init -q $dest
+          if($LASTEXITCODE){throw 'git init failed'}
+          git -C $dest remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'git remote failed'}
+          $patterns=@(
+            '/Unity/Assets/Experimentos/Ciudad2D/'
+            '/Unity/Assets/Eldoria/Scripts/Domain/'
+            '/Unity/Assets/Eldoria/Scripts/Application/'
+            '/Unity/Packages/'
+            '/Unity/ProjectSettings/'
+          )
+          git -C $dest sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Git sparse setup failed'}
+          git -C $dest fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned fetch failed'}
+          git -C $dest checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned checkout failed'}
+          if((& git -C $dest rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source SHA mismatch'}
+          $p=Join-Path $dest 'Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v6_native.ps1'
+          if(-not(Test-Path -LiteralPath $p)){throw 'Granero V6 script missing'}
+          "CITY2D_SOURCE_ROOT=$dest" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host "CITY2D_V6_PINNED_SOURCE $env:GITHUB_SHA"
+      - name: Render V6 and execute real Unity test with original V2 preserved
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $script=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_premium_preview_v6_native.ps1'
+          & $script -SourceRoot $env:CITY2D_SOURCE_ROOT
+          if($LASTEXITCODE -and $LASTEXITCODE -ne 0){throw "Native v6 failed $LASTEXITCODE"}
+      - name: Preserve V6 native PNG evidence and PlayMode XML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-cuartel-v6-native-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV6Evidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPremiumPlayableV6Evidence/*.json
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Assets/Experimentos/Ciudad2D/QA/Experimento_Ciudad2D_PremiumV6.unity
+            ${{ runner.temp }}/city2d-premium-v6-*.log
+            ${{ runner.temp }}/city2d-premium-v6-*.xml
+            ${{ runner.temp }}/city2d-premium-v2-*.log
