@@ -20,3 +20,12 @@
 2. Ajustes de consistencia entre edificios, suelo, luz, sombras de contacto y eliminación de bases ortogonales artificiales.
 3. Prueba real en iPhone y Android de legibilidad, presupuesto de memoria y compresión de producción (ASTC).
 4. Integración de candidatos arquitectónicos únicamente tras verificar recortes y render en Unity, sin inventar lógica ni reglas de desbloqueo.
+
+
+## Verificación 13 capturas auténticas — 44019684673
+
+- La ejecución [44019684673](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44019684673) compiló correctamente Unity 6000.3.23f1 con el horneado de bordes de cuatro edificios y produjo **13 PNG con SHA-256**. El último es `bastion-5-1170x2532-detalle.png` con encuadre de cámara **1,42×** y fuente nativa, no imagen aumentada con software.
+- Comparación emparejada a **1170×2532** contra la captura Retina anterior [44019544727](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44019544727): en recortes fijos, variación de la varianza del Laplaciano **Cuartel +30,19 %**, **Aserradero +30,27 %**, **Granero +33,10 %**. En terreno de control **0,00 %**, puerta **0,00 %**. Es una métrica de bordes, no de calidad subjetiva ni detalle semántico nuevo.
+- Inspección visual de los recortes nativos: la mejora de bordes es moderada pero positiva, sin halos llamativos a tamaño de consulta; se mantiene como **candidato reversible** en la rama. El color, perspectiva y plataformas grises de los edificios secundarios siguen sin cumplir el acabado del terreno y Bastión. `art_approved=false`; la imagen de Unity no es un juego móvil listo.
+- Pruebas de reparación de plataformas **fuera de Unity**: (a) transparencia suavizada progresiva de 44 px produce bordes fantasmas; (b) desgaste irregular de 12 px apenas elimina la sensación de base rectangular. **Ambas técnicas fueron descartadas y no se implementaron**; no repetirlas como solución de producción.
+- Próxima dirección con mayor potencial: **reautoría de los sprites completos con bases orgánicas** y escala/iluminación homogeneizadas, sin tocar construcción o guardados. Hay cinco candidatos ilustrados en el espacio de trabajo, todavía no integrados en GitHub/Unity y no validados. Validar cada uno primero en la escena nativa y sobre el suelo real.
