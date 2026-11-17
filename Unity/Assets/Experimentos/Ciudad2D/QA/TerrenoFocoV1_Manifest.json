@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "status": "TERRAIN_CANDIDATE_UNAPPROVED",
+  "original_sha256": "9e257856139e39c5245dc8196a2131816bdd87ac4635b5fae679f6e65cb24db6",
+  "candidate_sha256": "25df4405920d32345a5cb72b90ec7de6046d3f31e4192dcfc2c4e561e89f32cd",
+  "candidate": "Sprites/Candidates/Terreno_Organico_FocoV1.png",
+  "size": [
+    941,
+    1672
+  ],
+  "original_retained": true,
+  "changed_pixels_above_2_RGB": 12464,
+  "changed_fraction": 0.0079,
+  "max_channel_delta": 12,
+  "mean_abs_RGB": 0.1478,
+  "editable_rois": [
+    {
+      "id": "bastion",
+      "center": [
+        470,
+        824
+      ],
+      "radius": [
+        145,
+        190
+      ]
+    },
+    {
+      "id": "cuartel",
+      "center": [
+        206,
+        547
+      ],
+      "radius": [
+        125,
+        165
+      ]
+    },
+    {
+      "id": "aserradero",
+      "center": [
+        172,
+        964
+      ],
+      "radius": [
+        125,
+        165
+      ]
+    },
+    {
+      "id": "granero",
+      "center": [
+        751,
+        962
+      ],
+      "radius": [
+        125,
+        165
+      ]
+    },
+    {
+      "id": "cantera",
+      "center": [
+        470,
+        1178
+      ],
+      "radius": [
+        145,
+        190
+      ]
+    }
+  ],
+  "method": "source-locked bilateral microdetail reduction in vegetated building-adjacent areas, roads protected",
+  "no_global_filter": true,
+  "no_extra_terrain_or_geometry": true,
+  "preview_sha256": "ef96227a43fe4a65ad98bc1bdb6ae0829a6c07463e67a0e3e2f6f94693f5e1d6",
+  "Unity_AB": "PENDING",
+  "art_approved": false,
+  "iPhone": "PENDING"
+}
