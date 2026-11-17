@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "source_run": 44198281174,
+  "source_sha": "ef911b18dd43ca9e35dcc657002fff7ea567b476",
+  "artifact_id": 14379519631,
+  "no_public_deploy": true,
+  "cdn_commit": "79de29f69f4894039be453b47874c7e98039b5fd",
+  "goal": "distinguish local Unity startup from direct CDN page, preserve full HTML and screenshot on failure, do not claim iPhone hardware tested"
+}
