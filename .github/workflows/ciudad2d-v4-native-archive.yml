@@ -1,0 +1,80 @@
+name: Ciudad2D - archivo A/B autentico Unity V3 vs V4 Cuartel
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-quality/functional_v4_archive_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: ciudad2d-functional-v4-archive-ubuntu
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-quality/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Fetch both original Unity artifact archives without occupying Windows
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          x=json.load(open('tools/ciudad2d-quality/functional_v4_archive_request.json'))
+          assert x['schema']==1 and x['v3_run']==44116723739
+          assert x['v3_artifact']==14344216728
+          for k in ('v3','v4'):
+            assert isinstance(x[k+'_artifact'],int) and x[k+'_artifact']>0
+          PY
+          for v in v3 v4; do
+            ID=$(python3 -c "import json;print(json.load(open('tools/ciudad2d-quality/functional_v4_archive_request.json'))['${v}_artifact'])")
+            curl --fail --show-error --silent --location --retry 3 \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$ID/zip" \
+              -o "/tmp/ciudad2d-functional-$v.zip"
+            test "$(wc -c <"/tmp/ciudad2d-functional-$v.zip")" -gt 5000000
+          done
+      - name: Validate original Unity PNG SHAs and preserve A/B, no re-render
+        run: python tools/ciudad2d-quality/archive_functional_v4.py
+      - name: Upload reviewed evidence before Git commit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-v4-authentic-native-review-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_*.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_NATIVE_EVIDENCE.json
+            Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/*.png
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Persist verified native evidence, keeping previous versions intact
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-quality/functional_v4_archive_request.json
+          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_*.jpg Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV4Functional_NATIVE_EVIDENCE.json Unity/Assets/Experimentos/Ciudad2D/QA/NativeV4Functional/
+          git diff --cached --quiet && { echo 'No new native review'; exit 1; }
+          git commit -m 'qa(ciudad2d): retain 22 SHA-verified Unity V3/V4 frames and locked Cuartel target art gate'
+          for i in 1 2 3 4 5 6 7 8; do
+            if git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then exit 0; fi
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            sleep 1
+          done
+          echo 'Concurrent branch update exhausted safe retries'; exit 1
