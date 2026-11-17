@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageChops, ImageStat
 REPO=Path(__file__).resolve().parents[2]
 CITY=REPO/"Unity/Assets/Experimentos/Ciudad2D"
 QA=CITY/"QA"
-REQ=Path(__file__).parent/"functional_v6_archive_request.json"
+REQ=Path(__file__).parent/"scale_v6_archive_request.json"
 FRAMES=(
     "premium_bastion1_390x844.png",
     "premium_bastion3_390x844.png",
