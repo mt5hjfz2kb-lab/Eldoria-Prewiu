@@ -59,6 +59,18 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             catch (TargetInvocationException ex) { throw ex.InnerException ?? ex; }
         }
 
+        private static Type DomainType(string name)
+        {
+            string qualified = "Eldoria.Domain." + name;
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var found = assembly.GetType(qualified, false);
+                if (found != null) return found;
+            }
+            Assert.Fail("Real domain type not loaded: " + qualified);
+            return null;
+        }
+
         private static void SetDomainMember(object value, string name, object next)
         {
             var type = value.GetType();
@@ -169,8 +181,8 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
 
             // Authoritative DOMAIN contract replayed as an ephemeral fixture.
             // No ICommandGateway write, no save file and no upgrade action.
-            var stateType = Type.GetType("Eldoria.Domain.PlayerState, Assembly-CSharp");
-            var chapterType = Type.GetType("Eldoria.Domain.BastionThreeState, Assembly-CSharp");
+            var stateType = DomainType("PlayerState");
+            var chapterType = DomainType("BastionThreeState");
             Assert.NotNull(stateType, "Cannot resolve real domain PlayerState");
             Assert.NotNull(chapterType, "Cannot resolve real chapter state");
             object state = Activator.CreateInstance(stateType);
