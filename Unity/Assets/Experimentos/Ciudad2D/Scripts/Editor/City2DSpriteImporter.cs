@@ -24,11 +24,16 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             importer.spritePixelsPerUnit = 100f;
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = !terrain;
-            importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            // Lossless Editor proof in isolated sandbox. Do not assume this profile
+            // is safe for final mobile memory/ASTC without physical tests.
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
             importer.compressionQuality = 100;
-            importer.maxTextureSize = 2048;
+            importer.maxTextureSize = 4096;
             importer.npotScale = TextureImporterNPOTScale.None;
+            // Bilinear for illustrated contours; no mipmaps, and clamp seams.
+            // PNG source detail (terrain 941x1672) remains a hard limitation.
             importer.filterMode = FilterMode.Bilinear;
+            importer.wrapMode = TextureWrapMode.Clamp;
 
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);

@@ -63,6 +63,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if (ground.GetComponent<SpriteRenderer>().sprite.name != "Terreno_Organico")
                     throw new InvalidOperationException("Escena nativa no usa el candidato orgánico versionado");
 
+                VerifyUncompressedSpriteImports();
+
                 var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
                 if (bridge == null) throw new InvalidOperationException("Falta el puente de estado");
                 bridge.RebindSceneBuildings(); // Debera hacer lo mismo tras deserializar en PlayMode.
@@ -176,6 +178,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"visibility_policy_pass\":true,\n" +
                     "  \"six_sprite_colliders_pass\":true,\n" +
                     "  \"game_state_modified\":false,\n" +
+                    "  \"quality_import_uncompressed_pass\":true,\n" +
+                    "  \"quality_import_no_mipmap_pass\":true,\n" +
                     "  \"art_approved\":false,\n" +
                     "  \"device_qa\":\"PENDING\",\n" +
                     "  \"captures\":[\n" + string.Join(",\n", records) + "\n  ]\n}\n";
@@ -193,6 +197,39 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 // Respetar escenas previas del editor interactivo; CI es desechable.
                 if (!UnityEngine.Application.isBatchMode && previousSetup != null && previousSetup.Length > 0)
                     EditorSceneManager.RestoreSceneManagerSetup(previousSetup);
+            }
+        }
+
+        // Editor import audit: verifies effective texture assets, never inferred
+        // from file extensions or a software-upscaled screenshot.
+        private static void VerifyUncompressedSpriteImports()
+        {
+            string folder = City2DSceneBuilder.Folder + "Sprites/";
+            var expected = new[] {
+                new { File="Terreno_Organico.png", Width=941, Height=1672 },
+                new { File="Bastion_Nivel05.png", Width=764, Height=854 },
+                new { File="Bastion_Nivel01.png", Width=762, Height=699 },
+                new { File="Cuartel.png", Width=860, Height=860 }
+            };
+            foreach (var sprite in expected)
+            {
+                string path = folder + sprite.File;
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                var asset = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (importer == null || asset == null || asset.texture == null)
+                    throw new InvalidOperationException("Texture audit missing sprite: " + path);
+                var tex = asset.texture;
+                if (importer.textureCompression != TextureImporterCompression.Uncompressed)
+                    throw new InvalidOperationException("Texture audit compressed: " + path);
+                if (importer.mipmapEnabled)
+                    throw new InvalidOperationException("Texture audit mipmaps enabled: " + path);
+                if (tex.filterMode != FilterMode.Bilinear)
+                    throw new InvalidOperationException("Texture audit filter mismatch: " + path);
+                if (tex.width != sprite.Width || tex.height != sprite.Height)
+                    throw new InvalidOperationException("Texture audit rescaled source: " + path +
+                        " got " + tex.width + "x" + tex.height);
+                Debug.Log("[Ciudad2D] NATIVE_TEXTURE_QUALITY_PASS " + sprite.File +
+                    " " + tex.width + "x" + tex.height + " " + tex.graphicsFormat);
             }
         }
 
