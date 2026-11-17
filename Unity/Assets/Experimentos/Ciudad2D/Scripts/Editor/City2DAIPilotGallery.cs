@@ -74,6 +74,18 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 sourcePixels[i]=MeasureFootprint(source[i]);
                 candidatePixels[i]=MeasureFootprint(candidate[i]);
             }
+            Sprite shadow=null;
+            if(forgeV3)
+            {
+                shadow=AssetDatabase.LoadAssetAtPath<Sprite>(
+                    CandidateRoot+"Versions/Forja_Guardia_ContactShadow_v3.png");
+                if(shadow==null)
+                    throw new InvalidOperationException("Missing independent V3 contact-shadow layer");
+                ValidateSprite(shadow,"ForjaV3 shadow");
+                if(shadow.texture.width!=candidate[0].texture.width ||
+                   shadow.texture.height!=candidate[0].texture.height)
+                    throw new InvalidOperationException("V3 contact shadow not pixel-aligned");
+            }
             var bastion=AssetDatabase.LoadAssetAtPath<Sprite>(
                 SpriteRoot+"Bastion_Nivel05.png");
             if(bastion==null) throw new InvalidOperationException("Bastion master missing");
@@ -101,6 +113,15 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     art[i]=NewSprite("PROOF_ONLY_"+Candidates[i],source[i],
                         Slots[i].x,Slots[i].y,OriginalScales[i],terrain,
                         -Mathf.RoundToInt((.5f-Slots[i].y/1672f)*terrain.bounds.size.y*100f));
+                SpriteRenderer shadowLayer=null;
+                if(forgeV3)
+                {
+                    var shadowObj=new GameObject("PROOF_ONLY_ForjaV3_ContactShadow");
+                    shadowLayer=shadowObj.AddComponent<SpriteRenderer>();
+                    shadowLayer.sprite=shadow;
+                    shadowLayer.sortingOrder=art[0].sortingOrder-1;
+                    shadowLayer.enabled=false;
+                }
                 var evidence=new System.Collections.Generic.List<string>();
                 var originalsPosition=new Vector3[3];
                 for(int i=0;i<3;i++) originalsPosition[i]=art[i].transform.position;
@@ -126,6 +147,12 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         art[i].transform.position=originalsPosition[i]+
                             new Vector3(0f,sourceFoot-targetFoot,0f);
                     }
+                    if(shadowLayer!=null)
+                    {
+                        shadowLayer.transform.position=art[0].transform.position;
+                        shadowLayer.transform.localScale=art[0].transform.localScale;
+                        shadowLayer.enabled=mode=="B_new_ai";
+                    }
                     foreach(var wh in new[]{new[]{390,844},new[]{1170,2532},
                                              new[]{844,390}})
                     {
@@ -143,10 +170,23 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     File.WriteAllBytes(Path.Combine(exportPath,closeup),detail);
                     evidence.Add("{\"file\":\""+closeup+"\",\"sha256\":\""+
                         Sha(detail)+"\",\"width\":1170,\"height\":2532,\"zoom\":1.42}");
+                    if(forgeV3)
+                    {
+                        fit.SetEvidenceViewport(1170,2532);
+                        fit.SetEvidenceZoom(1.95f);
+                        fit.SetEvidenceFocus((Vector2)art[0].transform.position);
+                        string focusFile=mode+"_1170x2532_forja_detail.png";
+                        var detailForja=CaptureFrame(cam,1170,2532);
+                        File.WriteAllBytes(Path.Combine(exportPath,focusFile),detailForja);
+                        evidence.Add("{\"file\":\""+focusFile+"\",\"sha256\":\""+
+                            Sha(detailForja)+"\",\"width\":1170,\"height\":2532,\"focused\":\"forja\",\"zoom\":1.95}");
+                    }
                 }
                 string result="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture\","+
                     "\"gallery_only\":true,\"three_new_buildings_present\":true,"+
                     "\"forja_variant\":\""+(forgeV3?"V3":"V1")+"\","+
+                    "\"forja_contact_shadow_separate\":"+(forgeV3?"true":"false")+","+
+                    "\"shadow_is_footprint_approximation\":"+(forgeV3?"true":"false")+","+
                     "\"master_art_unchanged\":true,"+
                     "\"camera_and_terrain_locked\":true,\"visible_alpha_width_aligned\":true,"+
                     "\"alpha_ground_foot_aligned_to_original\":true,\"main_modified\":false,"+
