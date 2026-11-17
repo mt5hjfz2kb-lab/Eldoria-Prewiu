@@ -1,0 +1,57 @@
+name: Ciudad2D — terreno focal local v1 sin tocar original
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-quality/pending_terrain_focus_v1.json']
+permissions:
+  contents: write
+concurrency:
+  group: ciudad2d-terrain-focus-source-ubuntu
+  cancel-in-progress: false
+jobs:
+  focus-candidate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-quality/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno_Organico.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno_Organico.png.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/city_layout.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.11.0.86
+      - name: Produce local background focus without touching original 941x1672 terrain
+        run: python tools/ciudad2d-quality/build_terrain_focus_v1.py
+      - name: Archive honest offline A/B before Unity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-terrain-focus-v1-unapproved-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Terreno_Organico_FocoV1.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/TerrenoFocoV1_A_B_OFFLINE_NOT_UNITY.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/TerrenoFocoV1_Manifest.json
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Commit candidate only, source original untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-quality/pending_terrain_focus_v1.json
+          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Terreno_Organico_FocoV1.png Unity/Assets/Experimentos/Ciudad2D/QA/TerrenoFocoV1_*.*
+          git diff --cached --quiet && { echo 'No verified retouch'; exit 1; }
+          git commit -m 'art(city2d): archive local-focus terrain B without altering original'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
