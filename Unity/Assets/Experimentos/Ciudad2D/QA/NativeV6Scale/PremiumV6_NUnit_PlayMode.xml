@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1,5011367">
+  <test-suite type="TestSuite" id="1000" name="Unity" fullname="Unity" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.501137" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1015" name="Eldoria.Ciudad2D.PlayModeProof.dll" fullname="C:/actions-runner-eldoria/_work/_temp/city2d-cuartel-v6-44133747143/Unity/Library/ScriptAssemblies/Eldoria.Ciudad2D.PlayModeProof.dll" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.438129" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="46928" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1016" name="Eldoria" fullname="Eldoria" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.437539" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1017" name="Experimentos" fullname="Eldoria.Experimentos" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.436906" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1018" name="Ciudad2D" fullname="Eldoria.Experimentos.Ciudad2D" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.436315" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1019" name="PlayModeProof" fullname="Eldoria.Experimentos.Ciudad2D.PlayModeProof" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.435607" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1011" name="PremiumVisualSceneProofV6" fullname="Eldoria.Experimentos.Ciudad2D.PlayModeProof.PremiumVisualSceneProofV6" classname="Eldoria.Experimentos.Ciudad2D.PlayModeProof.PremiumVisualSceneProofV6" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-17 17:15:12Z" end-time="2026-11-17 17:15:14Z" duration="1.433909" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1012" name="PremiumV6Scene_GenuinePlayMode_StagesSpritesShadowsPointer" fullname="Eldoria.Experimentos.Ciudad2D.PlayModeProof.PremiumVisualSceneProofV6.PremiumV6Scene_GenuinePlayMode_StagesSpritesShadowsPointer" methodname="PremiumV6Scene_GenuinePlayMode_StagesSpritesShadowsPointer" classname="Eldoria.Experimentos.Ciudad2D.PlayModeProof.PremiumVisualSceneProofV6" runstate="Runnable" seed="130630724" result="Passed" start-time="2026-11-17 17:15:10Z" end-time="2026-11-17 17:15:14Z" duration="3.559149" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="Timeout" value="120000" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Ciudad2D] Cuartel — fase Built, nivel 1, arte hito 1
+[Ciudad2D] Granero — fase Built, nivel 2, arte hito 1
+[Ciudad2D] PREMIUM_TRUE_PLAYMODE_PASS 4 candidate sprites, touch, HUD, read-only stages, shadow gates
+Saving results to: C:/Users/crist/AppData/LocalLow/DefaultCompany/Unity\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
