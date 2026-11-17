@@ -1,0 +1,470 @@
+{
+  "schema": 4,
+  "coordinate_width": 941,
+  "coordinate_height": 1672,
+  "notes": "Single layout authority. Buildings gated by real LocalGateway completion, NOT merely Bastion stage; decor has min_bastion stage. Reserved future districts are informational and cannot be rendered before terrain authoring. | Chapter-aware clusters fill empty quarters with vegetation, civilian housing, market goods and temporary works, still subordinate to gameplay buildings.",
+  "buildings": [
+    {
+      "id": "bastion",
+      "title": "Bastión",
+      "filename": "Bastion_Nivel01.png",
+      "x": 470,
+      "y": 824,
+      "scale": 0.43,
+      "level5_filename": "Bastion_Nivel05.png",
+      "level5_scale": 0.47,
+      "required_bastion": 1,
+      "build_contract": "bastion",
+      "has_persisted_level": true
+    },
+    {
+      "id": "cuartel",
+      "title": "Cuartel",
+      "filename": "Cuartel.png",
+      "x": 206,
+      "y": 547,
+      "scale": 0.27558837,
+      "level5_filename": "",
+      "level5_scale": 0,
+      "required_bastion": 2,
+      "build_contract": "barracks",
+      "has_persisted_level": true
+    },
+    {
+      "id": "salon",
+      "title": "Salón de Héroes",
+      "filename": "SalonHeroes.png",
+      "x": 719,
+      "y": 546,
+      "scale": 0.28433721,
+      "level5_filename": "",
+      "level5_scale": 0,
+      "required_bastion": 0,
+      "build_contract": "not authored",
+      "has_persisted_level": false
+    },
+    {
+      "id": "aserradero",
+      "title": "Aserradero",
+      "filename": "Aserradero.png",
+      "x": 172,
+      "y": 964,
+      "scale": 0.31058372,
+      "level5_filename": "",
+      "level5_scale": 0,
+      "required_bastion": 1,
+      "build_contract": "sawmill",
+      "has_persisted_level": true
+    },
+    {
+      "id": "granero",
+      "title": "Granero",
+      "filename": "Granero.png",
+      "x": 751,
+      "y": 962,
+      "scale": 0.30766744,
+      "level5_filename": "",
+      "level5_scale": 0,
+      "required_bastion": 3,
+      "build_contract": "granary",
+      "has_persisted_level": true
+    },
+    {
+      "id": "cantera",
+      "title": "Cantera",
+      "filename": "Cantera.png",
+      "x": 470,
+      "y": 1178,
+      "scale": 0.3280814,
+      "level5_filename": "",
+      "level5_scale": 0,
+      "required_bastion": 5,
+      "build_contract": "stoneworks",
+      "has_persisted_level": true
+    }
+  ],
+  "decor": [
+    {
+      "id": "decor_00",
+      "filename": "Props/ArbolAntiguo.png",
+      "x": 319,
+      "y": 443,
+      "scale": 0.44,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_01",
+      "filename": "Props/MatojosFlores.png",
+      "x": 608,
+      "y": 400,
+      "scale": 0.3,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_02",
+      "filename": "Props/MatojosFlores.png",
+      "x": 611,
+      "y": 799,
+      "scale": 0.27,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_03",
+      "filename": "Props/MuroDerruido.png",
+      "x": 493,
+      "y": 368,
+      "scale": 0.3,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_04",
+      "filename": "Props/CarroMadera.png",
+      "x": 290,
+      "y": 1091,
+      "scale": 0.34,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_05",
+      "filename": "Props/PozoPiedra.png",
+      "x": 660,
+      "y": 1115,
+      "scale": 0.34,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_06",
+      "filename": "Props/AlmacenBarriles.png",
+      "x": 815,
+      "y": 1085,
+      "scale": 0.27,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_07",
+      "filename": "Props/VallaLenador.png",
+      "x": 315,
+      "y": 867,
+      "scale": 0.28,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_08",
+      "filename": "Props/AntorchasGuardian.png",
+      "x": 477,
+      "y": 868,
+      "scale": 0.2,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_09",
+      "filename": "Props/FisuraBrecha.png",
+      "x": 527,
+      "y": 422,
+      "scale": 0.27,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_10",
+      "filename": "Props/CasasMercaderes.png",
+      "x": 143,
+      "y": 704,
+      "scale": 0.31,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_11",
+      "filename": "Props/PuestoMercado.png",
+      "x": 640,
+      "y": 1040,
+      "scale": 0.28,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_12",
+      "filename": "Props/HuertosValoria.png",
+      "x": 805,
+      "y": 1129,
+      "scale": 0.27,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_13",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 117,
+      "y": 1135,
+      "scale": 0.27,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_14",
+      "filename": "Props/CasasDelPozo.png",
+      "x": 787,
+      "y": 754,
+      "scale": 0.28,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_15",
+      "filename": "Props/AtalayaValoria.png",
+      "x": 303,
+      "y": 1012,
+      "scale": 0.24,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_16",
+      "filename": "Props/MuroDerruido.png",
+      "x": 213,
+      "y": 545,
+      "scale": 0.42,
+      "min_bastion": 1,
+      "max_bastion": 1
+    },
+    {
+      "id": "decor_17",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 168,
+      "y": 962,
+      "scale": 0.37,
+      "min_bastion": 1,
+      "max_bastion": 1
+    },
+    {
+      "id": "decor_18",
+      "filename": "Props/MatojosFlores.png",
+      "x": 740,
+      "y": 971,
+      "scale": 0.38,
+      "min_bastion": 1,
+      "max_bastion": 2
+    },
+    {
+      "id": "decor_19",
+      "filename": "Props/MuroDerruido.png",
+      "x": 465,
+      "y": 1191,
+      "scale": 0.46,
+      "min_bastion": 1,
+      "max_bastion": 4
+    },
+    {
+      "id": "decor_20",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 742,
+      "y": 549,
+      "scale": 0.32,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_21",
+      "filename": "Props/ArbolAntiguo.png",
+      "x": 392,
+      "y": 1170,
+      "scale": 0.19,
+      "min_bastion": 1,
+      "max_bastion": 2
+    },
+    {
+      "id": "decor_22",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 615,
+      "y": 464,
+      "scale": 0.2,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_23",
+      "filename": "Props/MatojosFlores.png",
+      "x": 390,
+      "y": 546,
+      "scale": 0.21,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_24",
+      "filename": "Props/MatojosFlores.png",
+      "x": 654,
+      "y": 600,
+      "scale": 0.22,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_25",
+      "filename": "Props/CasasMercaderes.png",
+      "x": 246,
+      "y": 758,
+      "scale": 0.19,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_26",
+      "filename": "Props/PuestoMercado.png",
+      "x": 674,
+      "y": 879,
+      "scale": 0.21,
+      "min_bastion": 4,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_27",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 107,
+      "y": 568,
+      "scale": 0.22,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_28",
+      "filename": "Props/AlmacenBarriles.png",
+      "x": 361,
+      "y": 1058,
+      "scale": 0.18,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_29",
+      "filename": "Props/AntorchasGuardian.png",
+      "x": 593,
+      "y": 821,
+      "scale": 0.14,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_30",
+      "filename": "Props/ArbolAntiguo.png",
+      "x": 814,
+      "y": 802,
+      "scale": 0.19,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_31",
+      "filename": "Props/VallaLenador.png",
+      "x": 567,
+      "y": 1150,
+      "scale": 0.17,
+      "min_bastion": 2,
+      "max_bastion": 4
+    }
+  ],
+  "glows": [
+    {
+      "id": "muralla_oeste",
+      "x": 159,
+      "y": 236,
+      "radius": 38,
+      "opacity": 0.42,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "muralla_este",
+      "x": 779,
+      "y": 233,
+      "radius": 38,
+      "opacity": 0.41,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "puerta_oeste",
+      "x": 360,
+      "y": 1368,
+      "radius": 27,
+      "opacity": 0.32,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "puerta_este",
+      "x": 534,
+      "y": 1366,
+      "radius": 27,
+      "opacity": 0.33,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "entrada_bastion_oeste",
+      "x": 382,
+      "y": 755,
+      "radius": 24,
+      "opacity": 0.25,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "entrada_bastion_este",
+      "x": 546,
+      "y": 757,
+      "radius": 24,
+      "opacity": 0.27,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "campamento",
+      "x": 480,
+      "y": 847,
+      "radius": 16,
+      "opacity": 0.19,
+      "min_bastion": 2,
+      "max_bastion": 0
+    }
+  ],
+  "future_districts": [
+    {
+      "id": "oeste",
+      "name": "Arrabal de los vigías",
+      "anchor_x": -150,
+      "anchor_y": 800,
+      "status": "reserved_not_rendered",
+      "terrain_extension_required": true
+    },
+    {
+      "id": "este",
+      "name": "Distrito de talleres",
+      "anchor_x": 1100,
+      "anchor_y": 1000,
+      "status": "reserved_not_rendered",
+      "terrain_extension_required": true
+    },
+    {
+      "id": "norte",
+      "name": "Marcas de la Brecha",
+      "anchor_x": 470,
+      "anchor_y": -180,
+      "status": "reserved_not_rendered",
+      "terrain_extension_required": true
+    }
+  ],
+  "terrain_file": "Terreno_Organico.png",
+  "terrain_previous_file": "Terreno.png",
+  "terrain_status": "ART_CANDIDATE_NOT_APPROVED"
+}
