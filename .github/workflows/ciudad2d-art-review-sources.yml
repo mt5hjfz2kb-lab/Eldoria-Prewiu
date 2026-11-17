@@ -1,0 +1,40 @@
+name: Ciudad2D - immutable art sources for offline visual inspection
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['.github/workflows/ciudad2d-art-review-sources.yml']
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/
+            /Unity/Assets/Experimentos/Ciudad2D/ArtBible/Masters/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/city_layout.json
+            /Unity/Assets/Experimentos/Ciudad2D/QA/render_progression_preview.py
+      - name: Verify sources without rewriting or re-rendering any project assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for p in Cuartel_Premium_V2 Aserradero_Premium_V2 Granero_Premium_V1 Cantera_Premium_V1; do
+            test -s "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/$p.png"
+          done
+          test -s "Unity/Assets/Experimentos/Ciudad2D/ArtBible/Masters/Bastion_V_MASTER.png"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-source-visual-review-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/*.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/*.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno_Organico.png
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/Masters/*.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/city_layout.json
+          retention-days: 7
+          if-no-files-found: error
