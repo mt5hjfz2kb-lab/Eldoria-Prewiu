@@ -72,11 +72,13 @@ def main():
             'original_A_vs_all_premium_F_mean_RGB':round(float(np.abs(variants[0]-variants[5]).mean()),5),
             'quarry_E_to_F_mean_RGB':round(float(np.abs(variants[4]-variants[5]).mean()),5)
         }
-    if differences['5']['quarry_E_to_F_mean_RGB']<.04:
-        raise ValueError('Quarry did not visibly render at Bastion V')
-    for stage in ('1','3'):
+    # The canonical DemoStage(5,"cantera") is AVAILABLE (stoneworks=0),
+    # not Built. Therefore the correct old six-mode gallery must NOT display
+    # the new quarry in ANY stage. The separate V6 post-build QA suite handles
+    # quality of its actual constructed appearance without changing progression.
+    for stage in ('1','3','5'):
         if differences[stage]['quarry_E_to_F_mean_RGB']>.005:
-            raise ValueError('Quarry rendered while its plot should still be unavailable/locked')
+            raise ValueError('Quarry art rendered on a canonical not-yet-built plot at stage '+stage)
     for name in ('cuartel','aserradero','granero','cantera'):
         overview=Image.new('RGB',(390*6,893),(24,35,45))
         draw=ImageDraw.Draw(overview)
@@ -119,6 +121,9 @@ def main():
         'quarry_source_sha256':SHA_CANTERA,'quarry_contact_shadow_sha256':SHA_SHADOW,
         'screen_differences_are_not_art_scores':differences,
         'original_control_A_retained':True,'no_gameplay_or_main_modifications':True,
+        'canonical_stage5_quarry_status':'Available, not Built',
+        'quarry_invisible_in_this_gallery_by_design':True,
+        'constructed_quarry_visual_qa':'SEPARATE_V6_BUILT_FIXTURE',
         'playmode_of_new_premium_scene':'SEPARATE_TEST',
         'physical_iphone':'NOT_TESTED',
         'premium_art_approved':False
