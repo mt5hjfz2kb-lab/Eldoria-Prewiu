@@ -52,6 +52,8 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Cantera.png
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel01.png
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel05.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_CandidatoV2.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_SourceV2.png
           if-no-files-found: error
           retention-days: 7
       - name: Preserve compare images and audit
