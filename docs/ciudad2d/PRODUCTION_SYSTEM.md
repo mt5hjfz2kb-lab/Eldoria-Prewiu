@@ -62,3 +62,7 @@ No confundir la cantera de producción de ciudad (stoneworks, desde V) con el **
 - Las tres zonas externas están **reservadas** en datos, no es expansión real del terreno; no confundir diseño escalable con ampliación ya implementada.
 - El Salón de Héroes **no posee regla de nivel de parcela** en los datos actuales; resolver esto con el propietario y contrato canónico cuando se aborde la integración.
 - Verificación en navegador y comprobaciones estáticas no validan automáticamente runtime nativo ni memoria de iPhone.
+
+## Pase urbano de densidad controlada — 17/11/2026
+
+Diez colocaciones adicionales, usando exclusivamente sprites originales ya versionados, completan arboledas, patios, ruinas, puestos y suministros entre las parcelas. Cada pieza conserva `min_bastion`/`max_bastion`: una mejora del Bastión NO construye edificios económicos. Las viviendas adicionales son arquitectura ambiental, no un comando ni una mejora ficticia. Se preservan los seis puntos de construcción. El fondo simétrico anterior permanece como estado técnico mientras se evalúa un nuevo terreno ilustrado con recorridos irregulares; no presentarlo como arte aprobado. La previsualización offline se regenera en CI a partir del mismo JSON de Unity.

@@ -17,7 +17,7 @@ with sync_playwright() as p:
         page.goto(URL,wait_until='load',timeout=20000)
         page.wait_for_function('window.city2dDebug.state.ready && window.city2dDebug.state.frames>3',timeout=30000)
         state=page.evaluate('window.city2dDebug.state')
-        assert state['imageCount']==23 and state['buildingCount']==6 and state['decorCount']==22 and state['glowCount']==7 and state['layoutVersion']==4, state
+        assert state['imageCount']==23 and state['buildingCount']==6 and state['decorCount']==32 and state['glowCount']==7 and state['layoutVersion']==4, state
         assert state['landscape']==(w>h),state
         # Check all five canonical story stages; no building is pre-built at unlock.
         expected={

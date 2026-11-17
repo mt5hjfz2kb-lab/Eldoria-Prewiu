@@ -9,7 +9,7 @@ manifest=json.loads((QA/'city_layout.json').read_text(encoding='utf-8'))
 assert manifest['schema']==4
 assert [manifest['coordinate_width'],manifest['coordinate_height']]==[941,1672]
 bs=manifest['buildings'];decor=manifest['decor'];fx=manifest['glows']
-assert len(bs)==6 and len(decor)==22 and len(fx)==7
+assert len(bs)==6 and len(decor)==32 and len(fx)==7
 assert set(b['id'] for b in bs)=={'bastion','cuartel','salon','aserradero','granero','cantera'}
 assert len({b['id'] for b in bs})==len(bs) and len({x['id'] for x in decor})==len(decor)
 assert sum(bool(b.get('level5_filename')) for b in bs)==1
@@ -51,7 +51,7 @@ for fragment in ['case "aserradero": return 1', 'case "cuartel": return 2', 'cas
 assert 'return int.MaxValue' in rules and 'state.BuildingCompletesUtcTicks > 0' in rules
 assert 'SetAppearance(City2DProgressionPolicy.FromSnapshot(snapshot, pair.Key))' in state
 web=(QA/'live-preview/index.html').read_text(encoding='utf-8')
-assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==22' in web
+assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==32' in web
 assert 'b.file=artLevel===5?b.level5File:b.baseFile' in web
 assert 'function stateFor(e)' in web and 'stateFor(e).phase' in web
-print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 22 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')
+print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 32 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')

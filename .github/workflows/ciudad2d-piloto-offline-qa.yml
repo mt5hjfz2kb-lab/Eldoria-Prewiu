@@ -34,6 +34,7 @@ jobs:
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_props.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_organic.py
+          python Unity/Assets/Experimentos/Ciudad2D/QA/render_progression_preview.py
       - name: Preserve compare images and audit
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,6 +47,8 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/QA/city_layout.json
             Unity/Assets/Experimentos/Ciudad2D/QA/organic-I-V.jpg
             Unity/Assets/Experimentos/Ciudad2D/QA/progresion-I-III-V.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/progresion-I-III-V.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/progresion-bastion-*.png
           if-no-files-found: error
           retention-days: 14
 

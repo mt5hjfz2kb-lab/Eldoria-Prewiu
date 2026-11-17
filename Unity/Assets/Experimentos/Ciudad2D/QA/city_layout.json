@@ -2,7 +2,7 @@
   "schema": 4,
   "coordinate_width": 941,
   "coordinate_height": 1672,
-  "notes": "Single layout authority. Buildings gated by real LocalGateway completion, NOT merely Bastion stage; decor has min_bastion stage. Reserved future districts are informational and cannot be rendered before terrain authoring.",
+  "notes": "Single layout authority. Buildings gated by real LocalGateway completion, NOT merely Bastion stage; decor has min_bastion stage. Reserved future districts are informational and cannot be rendered before terrain authoring. | Chapter-aware clusters fill empty quarters with vegetation, civilian housing, market goods and temporary works, still subordinate to gameplay buildings.",
   "buildings": [
     {
       "id": "bastion",
@@ -281,6 +281,96 @@
       "scale": 0.19,
       "min_bastion": 1,
       "max_bastion": 2
+    },
+    {
+      "id": "decor_22",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 615,
+      "y": 464,
+      "scale": 0.2,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_23",
+      "filename": "Props/MatojosFlores.png",
+      "x": 390,
+      "y": 546,
+      "scale": 0.21,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_24",
+      "filename": "Props/MatojosFlores.png",
+      "x": 654,
+      "y": 600,
+      "scale": 0.22,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_25",
+      "filename": "Props/CasasMercaderes.png",
+      "x": 246,
+      "y": 758,
+      "scale": 0.19,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_26",
+      "filename": "Props/PuestoMercado.png",
+      "x": 674,
+      "y": 879,
+      "scale": 0.21,
+      "min_bastion": 4,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_27",
+      "filename": "Props/ArboledaAntigua.png",
+      "x": 107,
+      "y": 568,
+      "scale": 0.22,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_28",
+      "filename": "Props/AlmacenBarriles.png",
+      "x": 361,
+      "y": 1058,
+      "scale": 0.18,
+      "min_bastion": 2,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_29",
+      "filename": "Props/AntorchasGuardian.png",
+      "x": 593,
+      "y": 821,
+      "scale": 0.14,
+      "min_bastion": 3,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_30",
+      "filename": "Props/ArbolAntiguo.png",
+      "x": 814,
+      "y": 802,
+      "scale": 0.19,
+      "min_bastion": 1,
+      "max_bastion": 0
+    },
+    {
+      "id": "decor_31",
+      "filename": "Props/VallaLenador.png",
+      "x": 567,
+      "y": 1150,
+      "scale": 0.17,
+      "min_bastion": 2,
+      "max_bastion": 4
     }
   ],
   "glows": [
