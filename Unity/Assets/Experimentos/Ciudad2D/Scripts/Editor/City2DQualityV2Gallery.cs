@@ -174,9 +174,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         foreach(var gate in restored)
                         {
                             gate.Apply(stage);
-                            gate.GetComponent<SpriteRenderer>().enabled=
-                                mode=="A_32_original"&&
-                                stage>=int.Parse("1"); // visibility refined below
+                            gate.GetComponent<SpriteRenderer>().enabled=false; // Then restore only true A scene as staged.
                         }
                         // The imported stage windows still govern control props.
                         if(mode=="A_32_original")
