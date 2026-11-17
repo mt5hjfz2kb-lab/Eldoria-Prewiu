@@ -23,11 +23,11 @@ $manifest=Join-Path $proof 'evidence.json'
 if(-not(Test-Path $manifest)){throw 'Premium actual Unity captures missing'}
 $j=Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
 if($j.engine -ne 'Unity' -or $j.mode -ne 'Editor_RenderTexture' -or
-   @($j.captures).Count -ne 9 -or
+   @($j.captures).Count -ne 11 -or
    @($j.four_premium_candidates).Count -ne 4 -or
    -not $j.shadows_independent_built_gated -or
    -not $j.bastion_I_1_to_4_V_at_5 -or
-   -not $j.cantera_premium -or
+   -not $j.cantera_premium -or -not $j.quarry_unbuilt_at_default_stage5 -or -not $j.quarry_built_qa_fixture_only -or
    $j.gameplay_modified -or $j.main_modified -or $j.art_approved -or
    $j.iPhone_physical_test -ne 'PENDING'){
  throw 'Premium scene independent proof truth contract incorrect'
@@ -57,10 +57,12 @@ foreach($item in @('premium_bastion1_390x844.png',
                    'premium_bastion5_1170x2532_cuartel_close.png',
                    'premium_bastion5_1170x2532_aserradero_close.png',
                    'premium_bastion5_1170x2532_granero_close.png',
-                   'premium_bastion5_1170x2532_cantera_close.png')){
+                   'premium_bastion5_1170x2532_cantera_close.png',
+                   'premium_bastion5_quarry_built_390x844.png',
+                   'premium_bastion5_quarry_built_detail_1170x2532.png')){
  if(-not $hashes.ContainsKey($item)){throw ('Missing premium stage/resolution '+$item)}
 }
-Write-Host 'PREMIUM_V2_REAL_UNITY_SCENE_COPY_AND_9_SOURCE_SHA_PASS_ART_UNAPPROVED'
+Write-Host 'PREMIUM_V2_REAL_UNITY_SCENE_COPY_AND_11_SOURCE_SHA_PASS_ART_UNAPPROVED'
 
 # Run a completely different Unity invocation that enters actual Editor PlayMode
 # and tests pointer dispatch, HUD, read-only states and shadow built-gates.
