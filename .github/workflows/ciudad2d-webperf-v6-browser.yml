@@ -98,9 +98,29 @@ jobs:
           done
           cat /tmp/city2d-webperf-local.log
           exit 1
-      - name: Verify actual WebGL startup, canvas, FPS samples and mobile viewport
+      - name: Verify actual LOCAL WebGL startup, canvas, FPS samples and mobile viewport
+        id: local
+        continue-on-error: true
         env:
           CIUDAD2D_WEBPERF_URL: http://127.0.0.1:8765/
+        shell: bash
+        run: |
+          node tools/ciudad2d-webperf/check_browser.cjs
+      - name: Keep local result before visiting CDN
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p ciudad2d-webperf-local-proof
+          if test -d ciudad2d-webperf-browser-proof; then
+            cp -r ciudad2d-webperf-browser-proof/. ciudad2d-webperf-local-proof/
+            rm -rf ciudad2d-webperf-browser-proof
+          fi
+      - name: Diagnose exact deployed CDN page and Unity runtime without publishing
+        if: always()
+        continue-on-error: true
+        env:
+          CIUDAD2D_WEBPERF_URL: https://rawcdn.githack.com/mt5hjfz2kb-lab/Eldoria-Prewiu/79de29f69f4894039be453b47874c7e98039b5fd/webperf-live/valoria-v6/index.html
+        shell: bash
         run: node tools/ciudad2d-webperf/check_browser.cjs
       - name: Retain browser logs, screenshot and evidence
         if: always()
@@ -109,6 +129,7 @@ jobs:
           name: ciudad2d-v6-webperf-browser-smoke-${{ github.run_id }}
           path: |
             ciudad2d-webperf-browser-proof/
+            ciudad2d-webperf-local-proof/
             /tmp/city2d-webperf-local.log
           if-no-files-found: warn
           retention-days: 14
