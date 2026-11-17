@@ -3,15 +3,15 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Validate exact versioned Retina terrain (source 941x1672, bake 1412x2508 at 150 PPU) in real Unity Editor; compare with compressed and uncompressed 1170x2532 native screenshots",
+  "reason": "Review ground-seam naturalization of four secondary buildings in genuine 13-frame Unity Editor capture; verify no bushes on locked or unbuilt parcels, no gameplay mutation",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
-  "ownership_revision": 3,
-  "requested_art_stage": "Retina art source, genuine Unity 12 RenderTexture frames, checksum and artifact review",
-  "retry_ordinal": 7,
+  "ownership_revision": 4,
+  "requested_art_stage": "Bastion I-V + natural plinth camouflage, genuine 1.42x detail, source-matched SHA, quality regression",
+  "retry_ordinal": 8,
   "engine_module_added_in_branch": true,
   "last_failed_run": null,
   "last_failed_errors": [],
-  "previous_successful_run": 44018257414
+  "previous_successful_run": 44019684673
 }
