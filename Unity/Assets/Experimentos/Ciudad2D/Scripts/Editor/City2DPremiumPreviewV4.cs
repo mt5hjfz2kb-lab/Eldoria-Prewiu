@@ -22,7 +22,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         const string Root="Assets/Experimentos/Ciudad2D/";
         const string OldScene=Root+"Experimento_Ciudad2D.unity";
         public const string PremiumScene=Root+"QA/Experimento_Ciudad2D_PremiumV4.unity";
-        const string Output="Ciudad2DPremiumPlayableV3Evidence";
+        const string Output="Ciudad2DPremiumPlayableV4Evidence";
 
         [MenuItem("Eldoria/Experimentos/Ciudad2D/Crear preview jugable Premium V4 (Granero legible)")]
         public static void Build()
@@ -111,7 +111,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if(!EditorSceneManager.SaveScene(scene,PremiumScene))
                     throw new InvalidOperationException("Unable to save NEW premium scene");
                 if(capture)CaptureEvidence(scene,bridge);
-                Debug.Log("[Ciudad2D] PREMIUM_V4_GRANERO_READABILITY_CANDIDATE_NOT_APPROVED");
+                Debug.Log("[Ciudad2D] PREMIUM_V4_CUARTEL_TRAINING_CANDIDATE_NOT_APPROVED");
             }
             finally
             {
