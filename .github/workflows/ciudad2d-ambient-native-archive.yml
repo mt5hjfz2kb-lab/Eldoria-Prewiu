@@ -1,0 +1,77 @@
+name: Ciudad2D — archivar secuencia real de Unity 2.5D
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-ambient/archive_native_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: ciudad2d-ambient-native-archive-ubuntu
+  cancel-in-progress: false
+jobs:
+  publish-authentic-motion:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-ambient/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6
+      - name: Download pinned genuine Unity frames from official GitHub Actions artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARTIFACT=$(python - <<'PY'
+          import json
+          print(json.load(open('tools/ciudad2d-ambient/archive_native_request.json'))['artifact_id'])
+          PY
+          )
+          curl --fail --silent --show-error --location --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$ARTIFACT/zip" \
+            --output /tmp/ciudad2d-ambient-native-source.zip
+          test "$(wc -c </tmp/ciudad2d-ambient-native-source.zip)" -gt 8000000
+      - name: Reverify all 26 original frame SHA and archive real animation
+        run: python tools/ciudad2d-ambient/archive_native_animation.py
+      - name: Preserve audit even if branch update conflicts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-living-city-real-unity-review-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_I_III_V_NATIVE.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_V_Motion_NATIVE.webp
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_V_Motion_NATIVE.gif
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_NATIVE_PROVENANCE.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Commit only derived review evidence, preserve original game and delete transient request
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-ambient/archive_native_request.json
+          git add --sparse -- \
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_I_III_V_NATIVE.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_V_Motion_NATIVE.webp \
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_V_Motion_NATIVE.gif \
+            Unity/Assets/Experimentos/Ciudad2D/QA/AmbientLiving_NATIVE_PROVENANCE.json
+          git diff --cached --quiet && { echo 'No validated native frames'; exit 1; }
+          git commit -m 'qa(city2d): preserve 16 native Unity ambient frames and I-III-V real stills'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
