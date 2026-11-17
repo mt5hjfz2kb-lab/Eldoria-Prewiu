@@ -1,6 +1,6 @@
 # Valoria 2.5D — Capa de vida ambiental v1
 **Alcance:** experimento aislado en `Unity/Assets/Experimentos/Ciudad2D/`, no en escenas jugables, `main` ni guardados.  
-**Estado:** arte generado y cableado en Unity; verificación artística/Unity pendiente de resultados nativos. Esta documentación no es aprobación visual.
+**Estado actualizado:** arte generado, PlayMode y prueba Unity Editor real **verificados**, revisión artística y dispositivos físicos **pendientes**. No es aprobación visual definitiva.
 
 ## Decisión actual del propietario
 
@@ -33,3 +33,14 @@ Los sprites `Humo_Valoria_A/B.png` se generan con el script reproducible `tools/
 Elimina o reduce el efecto que produzca duplicación desagradable del humo ya dibujado, un halo visible sobre los edificios, cortes bruscos al reiniciar la animación, un punto de origen incorrecto, movimiento sincronizado de toda la ciudad, exceso de decoración sobre calles o bloqueo de eventos de puntero. Mantener el atardecer y los sprites originales sin filtros de color globales.
 
 **Próxima evidencia:** imágenes reales de Unity en dos instantes, de las fases I, III y V, seguidas de una revisión artística. No ampliar a interfaz/pantallas/mundo hasta decidir si la ciudad y esta vida ambiental son suficientemente coherentes.
+
+## Evidencia nativa completada el 17/11/2026
+
+- [Unity auténtico #44053638485](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44053638485) — `success`, fuente `bae3e874efd11529c3bd13441c56fabd4acdc0b5`. Prueba **PlayMode real** de controles/selección/estado de parcelas y humo condicionado por construcción completada. Tras corregir el problema de serialización detectado en la ejecución fallida #44052522821, los componentes conservan propietario, fase, posición y parámetros a través del guardado y carga de escena.
+- **10 capturas de Editor** a dos tiempos: hitos I, III y V a 390×844; V también a 1170×2532 y 844×390. **16 fotogramas auténticos de Unity** a 390×844 en cinco segundos de animación, sin interpolar, con SHA y diferencia comprobados. JSON fuente `Ciudad2DAmbientEvidence/evidence.json` dentro del artefacto de Actions `14315821510`.
+- **Gating comprobado:** nivel I — 4 brasas activas / 0 humo; III — 4 brasas / 4 humo; V — 4 brasas / 6 humo. Ninguna animación se puede seleccionar como edificio y `PlayerState` no se escribió.
+- [Archivo de revisión #44055343658](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44055343658): las imágenes de `QA/AmbientLiving_I_III_V_NATIVE.jpg`, `QA/AmbientLiving_V_Motion_NATIVE.webp` y `QA/AmbientLiving_V_Motion_NATIVE.gif` se derivan exclusivamente de capturas reales de Unity cuyos 26 SHA se verificaron. Cada derivado mantiene SHA en `QA/AmbientLiving_NATIVE_PROVENANCE.json`.
+- **Evaluación visual independiente:** el movimiento del humo existe y es suficientemente discreto para no desentonar con los materiales pintados. Sin embargo, las motas de brasa originales son prácticamente imperceptibles a 390×844; se debe revisar su fuente, escala y emplazamiento **antes de declararlas una mejora artística significativa**. No confundir los 16 hashes distintos con la calidad estética del movimiento.
+- **Pendiente:** aprobación artística del propietario y perfil físico en iPhone/Android/WebGL. No se han añadido habitantes que caminen, movimiento de carros, sonido ni simulación económica; no atribuirlos a esta fase.
+
+**Decisión de calidad:** conservar V1 como piloto comprobado, no aplicar filtros globales ni aumentar al azar emisiones. Cualquier iteración del fuego necesita demostrar en una nueva comparación Unity que el efecto resulta legible y natural, evitando destellos llamativos o burbujas naranjas. Mantener los dos Bastiones I/V actuales.
