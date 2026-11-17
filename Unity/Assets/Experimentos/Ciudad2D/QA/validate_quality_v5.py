@@ -74,9 +74,14 @@ assert 'PremiumV2Scene_GenuinePlayMode_StagesSpritesShadowsPointer' in test
 assert 'Assert.AreEqual(4,ActiveShadows()' in test
 assert 'Cantera_Premium_V1' in test
 qa=(QA/'run_premium_preview_v2_native.ps1').read_text()
-testline=qa[qa.find('# Unity 6000.3:'):]
-assert "'-runTests'" in testline
-assert "'-quit'" not in testline.split("'-runTests'")[0].split("$args=@(")[-1]
+# Test assembly is Editor-only. The fixture explicitly yields
+# EnterPlayMode, so discovery must use the EditMode runner; do not use
+# PlayMode discovery (that silently executed zero tests).
+testline=qa[qa.index("$filter="):]
+assert "'-runTests','-testPlatform','EditMode','-testFilter',$filter" in testline
+assert 'PremiumV2Scene_GenuinePlayMode_StagesSpritesShadowsPointer' in testline
+invocation=testline[testline.index("$args=@("):testline.index("$job=Start-Process")]
+assert "'-quit'" not in invocation
 total=sum(item['rgba32_bytes'] for item in records)
 report={'schema':1,'scope':'hypothetical simultaneously loaded four premium sprites and shadows',
         'bytes_if_RGBA32_no_mips':total,'estimated_MiB':round(total/1048576,2),
