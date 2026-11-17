@@ -100,9 +100,9 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
             // This is a REAL transition to Editor PlayMode (not an edit-mode
             // RenderTexture proof). Does not include the scene in Build Settings.
             yield return new EnterPlayMode();
-            Assert.IsTrue(Application.isPlaying, "Unity did not enter genuine PlayMode");
+            Assert.IsTrue(UnityEngine.Application.isPlaying, "Unity did not enter genuine PlayMode");
 
-            Assert.IsTrue(File.Exists(Path.Combine(Application.dataPath, "../" + ScenePath)));
+            Assert.IsTrue(File.Exists(Path.Combine(UnityEngine.Application.dataPath, "../" + ScenePath)));
             var pending = EditorSceneManager.LoadSceneAsyncInPlayMode(
                 ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
             Assert.NotNull(pending, "Unity cannot load isolated scene in PlayMode");
@@ -211,7 +211,7 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
         private static void CapturePlaymodeCamera(Camera camera, string fileName)
         {
             var path = Path.GetFullPath(Path.Combine(
-                Application.dataPath, "../Ciudad2DPlayModeEvidence", fileName));
+                UnityEngine.Application.dataPath, "../Ciudad2DPlayModeEvidence", fileName));
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             int w = fileName.Contains("horizontal") ? 844 : 1170;
             int h = fileName.Contains("horizontal") ? 390 : 2532;
