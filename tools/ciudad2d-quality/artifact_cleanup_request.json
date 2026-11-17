@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "dry_run": true,
+  "delete_artifact_ids": [
+    14335228213,
+    14337998938
+  ],
+  "reason": "Both huge historical 60-frame Unity artifacts are represented by 20 SHA-protected native PNGs and 120 frame hashes kept in the isolated branch, plus 40 MiB V6 portable review artifact."
+}
