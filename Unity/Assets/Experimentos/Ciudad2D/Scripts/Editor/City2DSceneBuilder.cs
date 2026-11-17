@@ -115,6 +115,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     Debug.LogWarning("[Ciudad2D] Save or open a scene before rebuilding; native capture creates its own disposable scene.");
                 return;
             }
+            // Bake reversible contrast study variants into the sandbox only.
+            // No source PNG is overwritten and no production scene is opened.
+            City2DArtBake.EnsureGenerated();
             Layout layout;
             try { layout = ReadLayout(); }
             catch (Exception e) { Debug.LogError("[Ciudad2D] " + e); return; }
@@ -160,7 +163,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     renderer.sortingOrder = OrderFor(spec.y,terrain);
                     obj.AddComponent<BoxCollider2D>();
                     var tiers = string.IsNullOrEmpty(spec.level5_filename)
-                        ? new[] { new CityBuilding.VisualTier(1,Sprite(spec.filename),spec.scale) }
+                        ? new[] { new CityBuilding.VisualTier(1,City2DArtBake.ForBuilding(spec.id,spec.filename),spec.scale) }
                         : new[] {
                             new CityBuilding.VisualTier(1,Sprite(spec.filename),spec.scale),
                             new CityBuilding.VisualTier(5,Sprite(spec.level5_filename),spec.level5_scale)
