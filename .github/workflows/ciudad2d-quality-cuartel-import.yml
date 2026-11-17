@@ -1,0 +1,65 @@
+name: Ciudad2D — Cuartel premium V2 con fuente y alfa auditados
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-quality/pending_cuartel_premium.json']
+permissions:
+  contents: write
+concurrency:
+  group: ciudad2d-premium-cuartel-ubuntu
+  cancel-in-progress: false
+jobs:
+  import-isolated-art:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-quality/
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.11.0.86
+      - name: Verify exact original bytes and generate matched RGBA without modifying masters
+        run: python tools/ciudad2d-quality/import_premium_cuartel.py
+      - name: Preserve exact source, cleaned RGBA and art comparisons even on later failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-cuartel-premium-source-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_*.png
+            Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_*_OFFLINE_NOT_UNITY.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_premium_v2_manifest.json
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Commit only new Candidate source and mask, remove one-use URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-quality/pending_cuartel_premium.json
+          git add --sparse -- \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_SourceV2.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_SourceV2.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_MaskV2.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_MaskV2.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_V2.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_V2.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_grey_OFFLINE_NOT_UNITY.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/CuartelPremiumV2_green_OFFLINE_NOT_UNITY.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_premium_v2_manifest.json
+          git diff --cached --quiet && { echo 'No source-verified Cuartel candidate'; exit 1; }
+          git commit -m 'art(city2d): archive source-exact premium Cuartel V2 without touching originals'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
