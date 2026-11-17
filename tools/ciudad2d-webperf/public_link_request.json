@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "scope": "public unadvertised isolated Valoria V6 WebGL trial only",
+  "build_id": 44198281174,
+  "artifact_id": 14379519631,
+  "build_sha": "ef911b18dd43ca9e35dcc657002fff7ea567b476",
+  "target": "standalone HTTPS CDN URL for real Unity 2.5D playable scene on iPhone Safari",
+  "no_main_changes": true,
+  "no_pages_redeployment": true,
+  "no_gameplay_changes": true,
+  "no_beta_merge": true,
+  "tests": "Validate Unity Build/WebAssembly, unchanged source scene, external HTML CDN, browser startup smoke",
+  "physical_iphone_test": "PENDING",
+  "owner_request": "Provide actual playable link to test performance, November 17 2026"
+}
