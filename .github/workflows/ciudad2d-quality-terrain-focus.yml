@@ -47,7 +47,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git rm --quiet -- tools/ciudad2d-quality/pending_terrain_focus_v1.json
-          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Terreno_Organico_FocoV1.png Unity/Assets/Experimentos/Ciudad2D/QA/TerrenoFocoV1_*.*
+          git add --sparse -- Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Terreno_Organico_FocoV1.png Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Terreno_Organico_FocoV1.png.meta Unity/Assets/Experimentos/Ciudad2D/QA/TerrenoFocoV1_*.*
           git diff --cached --quiet && { echo 'No verified retouch'; exit 1; }
           git commit -m 'art(city2d): archive local-focus terrain B without altering original'
           if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
