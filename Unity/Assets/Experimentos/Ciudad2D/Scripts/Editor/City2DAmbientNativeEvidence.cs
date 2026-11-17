@@ -107,11 +107,32 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 }
                 if (records.Count != 10)
                     throw new InvalidOperationException("Expected ten Unity ambient captures");
+
+                // Sequence from actual Unity Camera.Render, not generated frames,
+                // screenshot interpolation or a composited 2D simulation.
+                bridge.SetDemoBastionLevel(5);
+                fit.SetEvidenceViewport(390,844);
+                var motionSequence=new List<string>();
+                for(int frame=0;frame<16;frame++)
+                {
+                    float seconds=0.6f+frame*.34f;
+                    byte[] png=CaptureAtTime(cam,all,seconds,390,844);
+                    string name="living_bastion5_390x844_f"+frame.ToString("D2")+".png";
+                    File.WriteAllBytes(Path.Combine(output,name),png);
+                    motionSequence.Add("{\"file\":\""+name+"\",\"sha256\":\""+
+                        Sha(png)+"\",\"width\":390,\"height\":844,\"seconds\":"+
+                        seconds.ToString(System.Globalization.CultureInfo.InvariantCulture)+"}");
+                }
+                if(motionSequence.Select(item=>item).Distinct().Count()!=16)
+                    throw new InvalidOperationException("Living city sequence unexpectedly duplicated");
+
                 string data="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture_two_times\","+
                     "\"source_scene\":\"Experimento_Ciudad2D.unity\","+
                     "\"time_samples_seconds\":[1.2,3.4],\"captures\":["
                     +string.Join(",",records)+"],\"stage_gates\":["
-                    +string.Join(",",gates)+"],"+
+                    +string.Join(",",gates)+"],\"animation_frames\":["+
+                    string.Join(",",motionSequence)+"],\"animation_frame_interval_ms\":340,"+
+                    "\"torch_flicker_evaluated_at_each_time\":true,"+
                     "\"original_bastion_I_for_1_4_and_V_for_5\":true,"+
                     "\"no_unique_bastion_II_III_IV_required\":true,"+
                     "\"original_scene_read_only\":true,"+
@@ -132,6 +153,10 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             City2DAmbientMotion[] effects, float seconds, int width, int height)
         {
             foreach (var e in effects) e.EvaluateAtTime(seconds);
+            foreach (var flame in UnityEngine.Object.FindObjectsByType<City2DTorchPulse>(
+                FindObjectsSortMode.None))
+                if(flame.gameObject.scene==cam.gameObject.scene)
+                    flame.EvaluateAtTime(seconds);
             var rt = new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
             var prior = RenderTexture.active;
             var oldTarget = cam.targetTexture;
