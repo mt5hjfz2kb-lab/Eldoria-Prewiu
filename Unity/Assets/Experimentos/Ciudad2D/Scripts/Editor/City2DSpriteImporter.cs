@@ -17,7 +17,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
 
             var importer = (TextureImporter)assetImporter;
             bool terrain = (assetPath.EndsWith("/Terreno.png", StringComparison.OrdinalIgnoreCase) ||
-                assetPath.EndsWith("/Terreno_Organico.png", StringComparison.OrdinalIgnoreCase));
+                assetPath.EndsWith("/Terreno_Organico.png", StringComparison.OrdinalIgnoreCase) ||
+                assetPath.EndsWith("/Candidates/Terreno_Organico_FocoV1.png", StringComparison.OrdinalIgnoreCase));
             bool halo = assetPath.EndsWith("/Props/HaloAntorcha.png", StringComparison.OrdinalIgnoreCase);
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
