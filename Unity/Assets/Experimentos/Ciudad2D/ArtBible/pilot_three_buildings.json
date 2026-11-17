@@ -7,11 +7,11 @@
     "Bastion_I_MASTER.png",
     "Aserradero_MASTER.png"
   ],
-  "generation_recipe": "STYLE_BASE_v1 + FUNCTION_v1",
+  "generation_recipe": "Shared STYLE_BASE_v1 and FUNCTION_v1 art direction; model/procedure NOT identical for third, therefore consistency/reproducibility NOT proven",
   "background_alpha_required": true,
-  "unity_integration": "not_proven",
+  "unity_integration": "verified_editor_gallery_only",
   "art_approved": false,
-  "status": "PILOT_PARTIAL_NOT_CERTIFIED",
+  "status": "THREE_SOURCE_RGBA_STORED_EDITOR_AB_PASS_ART_REVIEW_NOT_APPROVED",
   "entries": [
     {
       "id": "forja_guardia",
@@ -22,13 +22,19 @@
       ],
       "model": "nano-banana-2-lite",
       "task_id": "512b4dd8-4197-474f-8758-d06ab28e06b0",
-      "output": "JPG original + PNG transparent Runway task, not imported",
-      "native_unity_capture": false,
-      "art_assessment": "awaiting mask pixel review and native Unity comparison",
+      "output": "Frozen original JPG + SAM3 RGBA + alpha mask + PNG for Unity; version B2 corrects only source-photo banner and smoke, unapproved",
+      "native_unity_capture": true,
+      "art_assessment": "Unity Editor A/B at 390x844 etc passed technically. Visual: provider removed smoke and flag; B2 repaired with source pixels but not captured in Unity. Architectural richness/perspective/contact shadow remain under review.",
       "background_removal_task_id": "a382070c-3986-4a01-b192-d33a9e68612f",
       "provider_png_with_alpha_generated": true,
-      "alpha_pixel_audit": "PENDING",
-      "asset_in_github": false
+      "alpha_pixel_audit": "SHA_AND_RGBA_PASSED_44040992476",
+      "asset_in_github": true,
+      "candidate_sha256": "620fb58c48dafc4963c11467c4bc10900b14404b07de228876cc2eeb139f9b8d",
+      "candidate": "Sprites/AIPilot/Forja_Guardia_RGBA.png",
+      "alternate_v2_sha256": "317b4d48e482fbc86da8ed761a15e0a98a1a6563e36ca24b6dc7cf6053f8e4fb",
+      "alternate_v2": "Sprites/AIPilot/Versions/Forja_Guardia_RGBA_v2.png",
+      "alternate_v2_unity_gallery": false,
+      "art_approved": false
     },
     {
       "id": "observatorio_brecha",
@@ -36,24 +42,36 @@
       "distinct_function": "world discovery; conceptual only",
       "model": "nano-banana-2-lite",
       "task_id": "1aba8e1c-1d9c-4ae9-ab08-ec825470db9e",
-      "output": "JPG original + PNG transparent Runway task, not imported",
-      "native_unity_capture": false,
-      "art_assessment": "awaiting mask pixel review and native Unity comparison",
+      "output": "Frozen original JPG + SAM3 RGBA + alpha mask + PNG for Unity",
+      "native_unity_capture": true,
+      "art_assessment": "Unity Editor A/B technically passed. Visual: rigid and too upright/vertically dominant relative to Bastion V; texture depth, contact and relation to city remain art-blockers.",
       "background_removal_task_id": "5fec8a9e-b251-4654-9692-64fd1df6d4bc",
       "provider_png_with_alpha_generated": true,
-      "alpha_pixel_audit": "PENDING",
-      "asset_in_github": false
+      "alpha_pixel_audit": "SHA_AND_RGBA_PASSED_44040992476",
+      "asset_in_github": true,
+      "candidate_sha256": "74d058a9b891515a6ae8d263d380f0bf8d75c528f94b6138bf15aa3ac434e014",
+      "candidate": "Sprites/AIPilot/Observatorio_Brecha_RGBA.png",
+      "art_approved": false
     },
     {
       "id": "archivo_cartografos",
       "concept": "Archivo de Cartógrafos",
       "distinct_function": "research/library; conceptual only",
-      "model": "gen-4-image-turbo",
-      "task_id": "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
-      "status": "GENERATOR_FAILED",
+      "model": "first_party_image_generation_model_unexposed",
+      "task_id": "f785b806-0718-4667-bf58-251d3400d3e2",
+      "status": "SAVED_RGBA_EDITOR_RENDER_CONFIRMED_ART_NOT_APPROVED",
       "error": "INTERNAL.BAD_OUTPUT.CODE01",
-      "native_unity_capture": false,
-      "art_assessment": "not generated, must not count as third asset"
+      "native_unity_capture": true,
+      "art_assessment": "Unity Editor A/B technically passed. Visual: architectural detail richer, but the old Granero slot crops the right side in portrait; heraldry/material treatment differs. Shared generator with original two NOT proven.",
+      "output": "New original RGB PNG + technical charcoal segmentation RGBA + mask + Unity candidate PNG; separate image generator",
+      "asset_in_github": true,
+      "alpha_pixel_audit": "SHA_AND_RGBA_PASSED_44040992476",
+      "candidate_sha256": "7bb221f5f766ff41f731756ada234ed6e923e5fd0f4cecf19d98bce290cf415c",
+      "candidate": "Sprites/AIPilot/Archivo_Cartografos_RGBA.png",
+      "historical_turbo_fail_task_id": "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
+      "historical_turbo_fail_error": "INTERNAL.BAD_OUTPUT.CODE01",
+      "model_provenance": "ArtBible/Pilots/generation_provenance_v2.json",
+      "art_approved": false
     }
   ],
   "failed_turbo_tasks": [
@@ -62,6 +80,12 @@
     "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
     "7fc65a78-e970-4669-9e08-3fd64a1546f7"
   ],
-  "truth": "Visual master assets copied and procedure recorded. Three exported RGBA candidate sprites and Unity captures for them are NOT YET IMPLEMENTED. Do not mark finished.",
-  "notes": "Runway background removal emitted two PNGs on server (task IDs saved), but exact binary bytes and SHA are not yet available in the experimental branch. All three Unity native images and artistic approval remain blocked. Runway available workspace credits observed 0 after the two 1-credit cutouts."
+  "truth": "Three exact original sources and three alpha PNG candidates are now in isolated Github branch with SHA. Native Unity Editor A/B run #44040675403 produced 8 verified screenshots. This does NOT prove matching-art quality, same model reproducibility, new pilot PlayMode, or physical iPhone stability. B2 Forja is quarantine not yet captured in Unity.",
+  "notes": "Native source HEAD pinned to b7b914176... during gallery. Runway had 0 credits at previous check; Archivo created by different first-party generator, not original failed gen-4 pipeline. Historic failure task IDs preserved; neither masters nor gameplay modified. Source JPG + SAM3 cutout retained V1. B2 smoke and banner restored from source without new generation.",
+  "unity_gallery_run_id": 44040675403,
+  "unity_gallery_source_sha": "b7b914176821d6400a77fa6953acbc9469f1f1c1",
+  "unity_gallery_capture_count": 8,
+  "unity_gallery_artifact_id": 14310200292,
+  "playmode_for_new_candidates": false,
+  "iPhone_for_new_candidates": false
 }
