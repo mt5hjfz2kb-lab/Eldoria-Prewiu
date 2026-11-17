@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source_sha256": "0dcb8edb8237621f13893893edce20fec51deb1248df8bcbc3a89ea3990b4062",
+  "shadow_sha256": "9d128fe0a7d0c229c1c3b14b098eaef17e6df79ac557ed283a3893bb4a22c5a6",
+  "size": [
+    1479,
+    1479
+  ],
+  "foot_px": 1392,
+  "separate_layer": true,
+  "shadow_is_illustrative_not_physical": true,
+  "source_unchanged": true,
+  "art_approved": false,
+  "unity_AB": "PENDING",
+  "iphone": "PENDING"
+}
