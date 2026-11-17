@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "candidate_sha256": "ed42684004cd891c83d933d38b195fb794f5db8449bb4436b2c043a7ab8c99ad",
+  "shadow_sha256": "24bcd1e5ec6abbbf5ce3455632b3728a5a732a2057a46d17625483a5167c8e80",
+  "shadow_path": "Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/Versions/Forja_Guardia_ContactShadow_v3.png",
+  "dimensions": [
+    1433,
+    1433
+  ],
+  "foot_bottom_px": 1361,
+  "source_foot_y_cutoff": 1173,
+  "method": "source RGBA lower-19%-foot occupancy, horizontally 24px blurred, vertical two Gaussian layers, edge clipped",
+  "alpha_range": [
+    0,
+    91
+  ],
+  "separate_layer": true,
+  "original_colour_sprite_unchanged": true,
+  "art_status": "REVIEW_PENDING",
+  "unity_capture": "PENDING",
+  "real_physical_shadow": false,
+  "art_approved": false
+}
