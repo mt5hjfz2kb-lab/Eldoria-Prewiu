@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "approval_scope": "approved_by_owner_as_visual_reference_only_not_overall_game_art_final",
+  "provenance": "original 2D experimental repository sprites; exact generation service/prompt for historical originals not independently evidenced, do not invent",
+  "immutable_blobs": true,
+  "source_sha_at_freeze": "bfe76ca758859fb11cf47837ac50fb8dbba26fb2",
+  "masters": [
+    {
+      "file": "Bastion_V_MASTER.png",
+      "role": "primario",
+      "source": "Sprites/Bastion_Nivel05.png",
+      "size": [
+        764,
+        854
+      ],
+      "sha256": "8ffc9f1c04c262893c454f784afb3404c0e390cac811a3c1f1d894201ba48a89",
+      "git_blob": "0e42028ec7fc0ebb33a0f4248331022662514ea0"
+    },
+    {
+      "file": "Bastion_I_MASTER.png",
+      "role": "primario_progresion",
+      "source": "Sprites/Bastion_Nivel01.png",
+      "size": [
+        762,
+        699
+      ],
+      "sha256": "00e48d7fa15b9b7e88db779ed374c228e5416d80f6e08457c93027a78f4a392b",
+      "git_blob": "4b694524238e5b7d32f2eb0473195cff74f2bf62"
+    },
+    {
+      "file": "Cuartel_MASTER.png",
+      "role": "secundario",
+      "source": "Sprites/Cuartel.png",
+      "size": [
+        860,
+        860
+      ],
+      "sha256": "bef0200b51976d5f2d9d9437bf9b6fd816f79f82ed495286b45ba813e86e2d4d",
+      "git_blob": "dbf48df9199f03830621432b645223d602edf322"
+    },
+    {
+      "file": "Aserradero_MASTER.png",
+      "role": "secundario",
+      "source": "Sprites/Aserradero.png",
+      "size": [
+        860,
+        860
+      ],
+      "sha256": "28701b28af610f00ab8e52b1354cf2f6a5bd26301fb3d4d26c1e93f753b51859",
+      "git_blob": "8c7fd292379526e0341e3df7456f8615d2da5c49"
+    },
+    {
+      "file": "Granero_MASTER.png",
+      "role": "secundario",
+      "source": "Sprites/Granero.png",
+      "size": [
+        860,
+        860
+      ],
+      "sha256": "21365309f8a761289090c716a49884715843abf823f4d92a9b6337c6d93a89a2",
+      "git_blob": "69a8f1988d3c911730b4cc53015ed8e7c3a7d054"
+    },
+    {
+      "file": "Cantera_MASTER.png",
+      "role": "secundario",
+      "source": "Sprites/Cantera.png",
+      "size": [
+        860,
+        860
+      ],
+      "sha256": "e92b18108ca78171e5f985f0cbe78502ed802c6d94208e3297c4e2ef01d36cfc",
+      "git_blob": "12c85d8eae7ac6446fe538b51f57ea86571b6496"
+    }
+  ]
+}

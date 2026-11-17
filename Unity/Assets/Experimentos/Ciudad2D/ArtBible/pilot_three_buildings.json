@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "goal": "three new art-only experiments, not gameplay buildings",
+  "date": "2026-11-17",
+  "required_master_ids": [
+    "Bastion_V_MASTER.png",
+    "Bastion_I_MASTER.png",
+    "Aserradero_MASTER.png"
+  ],
+  "generation_recipe": "STYLE_BASE_v1 + FUNCTION_v1",
+  "background_alpha_required": true,
+  "unity_integration": "not_proven",
+  "art_approved": false,
+  "status": "PILOT_PARTIAL_NOT_CERTIFIED",
+  "entries": [
+    {
+      "id": "forja_guardia",
+      "concept": "Forja de la Guardia",
+      "distinct_function": "crafting props; conceptual only",
+      "master_sheets_used": [
+        "Valoria_Maestros_Referencia_A0.png"
+      ],
+      "model": "nano-banana-2-lite",
+      "task_id": "512b4dd8-4197-474f-8758-d06ab28e06b0",
+      "output": "JPG",
+      "native_unity_capture": false,
+      "art_assessment": "pending original asset mask and native comparison"
+    },
+    {
+      "id": "observatorio_brecha",
+      "concept": "Observatorio de la Brecha",
+      "distinct_function": "world discovery; conceptual only",
+      "model": "nano-banana-2-lite",
+      "task_id": "1aba8e1c-1d9c-4ae9-ab08-ec825470db9e",
+      "output": "JPG",
+      "native_unity_capture": false,
+      "art_assessment": "pending asset inspection"
+    },
+    {
+      "id": "archivo_cartografos",
+      "concept": "Archivo de Cartógrafos",
+      "distinct_function": "research/library; conceptual only",
+      "model": "gen-4-image-turbo",
+      "task_id": "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
+      "status": "GENERATOR_FAILED",
+      "error": "INTERNAL.BAD_OUTPUT.CODE01",
+      "native_unity_capture": false,
+      "art_assessment": "not generated, must not count as third asset"
+    }
+  ],
+  "failed_turbo_tasks": [
+    "ed19b700-f358-4b4f-b0e8-e381ccab795b",
+    "dcb99ac7-9b08-4c42-a484-289e2e7c814b",
+    "49f9a92d-02e4-4e33-a7e7-a7d64bf4f7c5",
+    "7fc65a78-e970-4669-9e08-3fd64a1546f7"
+  ],
+  "truth": "Visual master assets copied and procedure recorded. Three exported RGBA candidate sprites and Unity captures for them are NOT YET IMPLEMENTED. Do not mark finished."
+}
