@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "source_retrieval": "Runway-hosted original generated illustration URLs; not a new paid generation",
+  "processing": "Connected neutral-matte extraction, restricted roof rescue for sawmill, exact foot + half-res contact shadow",
+  "status": "TWO_CANDIDATES_ARCHIVED_ART_NOT_APPROVED",
+  "original_buildings_unmodified": true,
+  "Bastion_I_V_unchanged": true,
+  "entries": {
+    "aserradero": {
+      "source_filename": "Aserradero_Premium_V2_Source.png",
+      "source_sha256": "4bbbb369b6bf873f801ddc14366cb1231eedafc3414546f1642024845338533a",
+      "candidate": "Aserradero_Premium_V2.png",
+      "candidate_sha256": "d692c25b525a50b5e9f227df6d4b721a5269173a7acffcf7b044dd7a2da6c518",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "candidate_dimensions": [
+        1506,
+        1506
+      ],
+      "mask_sha256": "77a2813430f7180cb7f219528752fe8ff60959749a3a1a7855fe2ab9a9f27c4e",
+      "separate_shadow": "Aserradero_Premium_V2_Shadow.png",
+      "shadow_sha256": "ceef16582f477c951f8587c8bd8f2c588ad23299b7ede664eb9df1b60a3a0fc2",
+      "shadow_dimensions": [
+        753,
+        753
+      ],
+      "shadow_scale_correction": 2.0,
+      "preview_sha256": "9242db1f9785b3d2902317375059b6f1e83368bac01cfd378a948e9c8507f08e",
+      "generation_id": "93593bfc-8521-46eb-a402-4a71a563ae6f",
+      "direct_reference_image_conditioning_proven": false,
+      "background_extraction": {
+        "background_rgb": [
+          14.0,
+          14.0,
+          20.0
+        ],
+        "threshold": 15,
+        "bbox_original": [
+          82,
+          22,
+          1438,
+          956
+        ],
+        "rescued_roof_source_pixels": 650
+      },
+      "bottom_center_sprite_pivot": true,
+      "original_RGB_painterly_pixels_preserved": true,
+      "not_art_approved": true,
+      "native_Unity_AB": "PENDING",
+      "iPhone_physical": "PENDING"
+    },
+    "granero": {
+      "source_filename": "Granero_Premium_V1_Source.png",
+      "source_sha256": "a824e4b0dc9b935ba6e5bdae253187ce2d424bc61c305269930917b7b83438e4",
+      "candidate": "Granero_Premium_V1.png",
+      "candidate_sha256": "699c8c15f5147cc634ea39d1197e13058831786f6da60cab81d711f118118229",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "candidate_dimensions": [
+        1574,
+        1574
+      ],
+      "mask_sha256": "974d84f907fccb50aa55510f15b5b65a90044d78a1796a45cb2ffbb458bb3f13",
+      "separate_shadow": "Granero_Premium_V1_Shadow.png",
+      "shadow_sha256": "bb1eafec64ba5b7a62c3dbf8aa80f8a48b4ead4504c581c188fff6a414fe1532",
+      "shadow_dimensions": [
+        787,
+        787
+      ],
+      "shadow_scale_correction": 2.0,
+      "preview_sha256": "03ff911b1eb08ddcf8e7de10a5696ad9f14226a977ea474d63ed637f48970d0d",
+      "generation_id": "2baa3194-653f-44b7-aae8-7a2cc48b690a",
+      "direct_reference_image_conditioning_proven": false,
+      "background_extraction": {
+        "background_rgb": [
+          7.0,
+          7.0,
+          11.0
+        ],
+        "threshold": 18,
+        "bbox_original": [
+          65,
+          14,
+          1489,
+          939
+        ],
+        "rescued_roof_source_pixels": 0
+      },
+      "bottom_center_sprite_pivot": true,
+      "original_RGB_painterly_pixels_preserved": true,
+      "not_art_approved": true,
+      "native_Unity_AB": "PENDING",
+      "iPhone_physical": "PENDING"
+    }
+  }
+}
