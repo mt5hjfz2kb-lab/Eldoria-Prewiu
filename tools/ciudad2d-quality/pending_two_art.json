@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "urls": {
+    "aserradero": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/eda3cd16-b593-4053-bf42-31de4aba2b4f.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNTMwMWI5NWQzMDk3YjFjYiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTA3MzExN30.iTRhVkBovCafTea6_Oczfm4hoLDHoCF04zdRUwLgGtg",
+    "granero": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/ad5ff29f-a3d0-4d47-a923-d95516464ca2.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTg5OGUzYzNkOTJlMTA3NiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTA4NDYxMX0.-qebfQIexGE4c8MAZTnLX09xps8ha-NirQakzGZaW84"
+  },
+  "sources_expected": [
+    "4bbbb369b6bf873f801ddc14366cb1231eedafc3414546f1642024845338533a",
+    "a824e4b0dc9b935ba6e5bdae253187ce2d424bc61c305269930917b7b83438e4"
+  ],
+  "one_shot": true,
+  "art_approved": false
+}
