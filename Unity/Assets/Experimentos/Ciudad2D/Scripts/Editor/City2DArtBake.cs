@@ -73,6 +73,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     Color32[] original = rawTex.GetPixels32();
                     Color32[] output = new Color32[original.Length];
 
+                    int[] ax = { -1, 1, 0, 0 }, ay = { 0, 0, -1, 1 };
                     for (int y = 0; y < height; ++y)
                     for (int x = 0; x < width; ++x)
                     {
@@ -80,7 +81,6 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         Color32 p = original[index];
                         if (p.a < 24) { output[index] = p; continue; }
                         float red = 0f, green = 0f, blue = 0f, sum = 0f;
-                        int[] ax = { -1, 1, 0, 0 }, ay = { 0, 0, -1, 1 };
                         for (int k = 0; k < 4; ++k)
                         {
                             int nx = Mathf.Clamp(x + ax[k], 0, width - 1);
