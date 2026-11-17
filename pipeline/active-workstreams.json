@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-17T06:12:00Z",
+  "updated_at": "2026-11-17T06:39:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -9934,12 +9934,14 @@
       "title": "Valoria 2.5D ilustrada — desbloqueos reales, crecimiento y QA nativa",
       "owner": "chatgpt-eldoria-city2d-priority-20261116",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "branch": "art/ciudad-2d-hitos-1-5-20261116",
       "status": "active",
-      "phase": "UNITY_REAL_PLAYMODE_AND_15_AB_NATIVE_PASS_ART_NOT_APPROVED_NEXT_BLENDER_PAIR",
+      "phase": "BLENDER_3D_TO_2D_TWO_BUILDINGS_TRUE_UNITY_AB_GATE",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -9960,7 +9962,9 @@
       "native_source_sha": "75ee8c52e55a70632e512e19fc3ed0197a3fe42c",
       "last_qa_message": "Actual Unity Editor 15 A/B PNG + Test Framework EnterPlayMode: scene, HUD, pointer, camera 2 orientations, PlayerState read-only PASS. Art still not approved; previous mask pipeline not promoted.",
       "visual_review": "Candidate disappears in A/B render, screenshots checked; technical pass not accepted as visual pass",
-      "requested_native_gate": "Editor PlayMode pointer/HUD/camera + 15 Unity renders with grounded Cuartel A/B"
+      "requested_native_gate": "Editor PlayMode pointer/HUD/camera + 15 Unity renders with grounded Cuartel A/B",
+      "blender_source_artifact": 14305422270,
+      "blender_source_branch_sha": "cd5e81fd3af554229456be2ed71daf7387af914b"
     }
   ],
   "history": [
@@ -20391,11 +20395,11 @@
     "authorized_by": "Owner directly prioritizes City2D experiment PC resource in this conversation, 2026-11-16",
     "authorized_at": "2026-11-16T23:00:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": null,
+    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "current_run_id": null,
     "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
     "return_to": "eldoria-ashen-citadel-original-i-v-20261115",
-    "status": "windows_released_after_city2d_real_playmode_qa",
+    "status": "city2d_blender_two_buildings_true_unity_proof_reserved",
     "rules": [
       "Never cancel or interrupt any running Windows/Unity/Blender process; recheck running jobs and processes immediately before Editor.",
       "Owner explicitly directs this experiment to take the next available native PC turn over earlier Ashen/Visual rotation.",
