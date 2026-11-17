@@ -208,6 +208,44 @@ jobs:
           }
           Get-Content $evidence
 
+      - name: Execute true Editor PlayMode, pointer dispatch and native HUD proof
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:CITY2D_SOURCE_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('city2d-playmode-'+$env:GITHUB_RUN_ID+'.log')
+          $xml=Join-Path $env:RUNNER_TEMP ('city2d-playmode-'+$env:GITHUB_RUN_ID+'.xml')
+          $filter='Eldoria.Experimentos.Ciudad2D.PlayModeProof.RealSceneInteractions.GenuineSavedScene_EnteredPlayMode_HudPointerAndCameraContract'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,
+            '-runTests','-testPlatform','EditMode','-testFilter',$filter,
+            '-testResults',$xml,'-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1050000)){
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Unity PlayMode scratch test timed out'
+          }
+          if(-not(Test-Path -LiteralPath $xml)){
+            if(Test-Path $log){Get-Content $log -Tail 160}
+            throw ('Unity test framework did not emit XML, exit '+$proc.ExitCode)
+          }
+          [xml]$data=Get-Content -LiteralPath $xml -Raw
+          $tests=[int]$data.DocumentElement.GetAttribute('total')
+          $passed=[int]$data.DocumentElement.GetAttribute('passed')
+          $failed=[int]$data.DocumentElement.GetAttribute('failed')
+          if($tests -lt 1 -or $passed -lt 1 -or $failed -ne 0 -or $proc.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw ("Genuine PlayMode test failed: total=$tests passed=$passed failed=$failed exit="+$proc.ExitCode)
+          }
+          $dir=Join-Path $project 'Ciudad2DPlayModeEvidence'
+          foreach($name in @('city2d-playmode-iPhone-1170x2532.png','city2d-playmode-horizontal-844x390.png')){
+            $image=Join-Path $dir $name
+            if(-not(Test-Path -LiteralPath $image) -or (Get-Item $image).Length -lt 8000){
+              throw ('True PlayMode screenshot missing: '+$name)
+            }
+            Write-Host ("PLAYMODE_SCREENSHOT "+$name+" SHA256="+(Get-FileHash -Algorithm SHA256 -LiteralPath $image).Hash)
+          }
+          Write-Host ("REAL_PLAYMODE_TEST_PASS "+$passed+" of "+$tests)
+
       - name: Preserve evidence, log and exact Unity source identity
         if: always()
         uses: actions/upload-artifact@v4
@@ -215,6 +253,9 @@ jobs:
           name: ciudad2d-real-unity-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/city2d-native-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-playmode-${{ github.run_id }}.xml
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DPlayModeEvidence/*.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DNativeEvidence/*.json
           if-no-files-found: warn
