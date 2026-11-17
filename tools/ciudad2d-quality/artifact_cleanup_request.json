@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
-  "dry_run": true,
+  "dry_run": false,
   "delete_artifact_ids": [
     14335228213,
     14337998938
