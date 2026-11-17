@@ -44,6 +44,8 @@ jobs:
           PY
       - name: Check actual three candidate originals, RGBA and SHA without claiming art acceptance
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_three_candidates.py
+      - name: Verify frozen Forge V3 and independent contact shadow bytes
+        run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_forja_v3.py
       - uses: actions/upload-artifact@v4
         with:
           name: ciudad2d-visual-bible-manifest-${{ github.run_id }}
