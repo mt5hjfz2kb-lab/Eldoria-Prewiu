@@ -5,8 +5,7 @@ on:
     branches:
       - art/ciudad-2d-hitos-1-5-20261116
     paths:
-      - tools/ciudad2d-import/candidate_url.txt
-      - .github/workflows/ciudad2d-import-cuartel.yml
+      - tools/ciudad2d-import/candidate_url_v2.txt
 
 permissions:
   contents: write
@@ -37,20 +36,20 @@ jobs:
       - name: Download one exact user-authorized artwork candidate, never print signed URL
         run: |
           python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.11.0.86
-          python tools/ciudad2d-import/import_cuartel.py
+          python tools/ciudad2d-import/import_cuartel_v2.py
       - name: Commit only candidate artwork to isolated branch and delete ephemeral URL
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm --quiet -- tools/ciudad2d-import/candidate_url.txt
+          git rm --quiet -- tools/ciudad2d-import/candidate_url_v2.txt
           git add --sparse -- \
-            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png \
-            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png.meta \
-            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Candidato.png \
-            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Candidato.png.meta \
-            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_manifest.json
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_SourceV2.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_SourceV2.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_CandidatoV2.png \
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_CandidatoV2.png.meta \
+            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_v2_manifest.json
           git diff --cached --quiet && { echo "Nothing generated; refusing empty commit"; exit 1; }
           git commit -m "art(city2d): save high-detail Cuartel candidate without plinth, unapproved"
           if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
@@ -63,9 +62,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ciudad2d-cuartel-candidate
+          name: ciudad2d-cuartel-candidate-v2
           path: |
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/*.png
-            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_manifest.json
+            Unity/Assets/Experimentos/Ciudad2D/QA/cuartel_candidate_v2_manifest.json
           if-no-files-found: warn
           retention-days: 14
