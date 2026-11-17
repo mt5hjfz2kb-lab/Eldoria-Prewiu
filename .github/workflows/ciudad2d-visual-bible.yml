@@ -1,0 +1,35 @@
+name: Ciudad2D visual masters — immutable SHA and pilot honesty
+on:
+  push:
+    branches:
+      - art/ciudad-2d-hitos-1-5-20261116
+    paths:
+      - 'Unity/Assets/Experimentos/Ciudad2D/ArtBible/**'
+      - '.github/workflows/ciudad2d-visual-bible.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Check six approved visual references and incomplete three-candidate gate
+        run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_art_bible.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-visual-bible-manifest-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/master_manifest_v1.json
+            Unity/Assets/Experimentos/Ciudad2D/ArtBible/pilot_three_buildings.json
+          if-no-files-found: error
+          retention-days: 14
