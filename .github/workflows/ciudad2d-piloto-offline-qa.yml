@@ -34,6 +34,7 @@ jobs:
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_pilot.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_props.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_organic.py
+          python Unity/Assets/Experimentos/Ciudad2D/QA/validate_sharpness.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/render_progression_preview.py
       - name: Preserve compare images and audit
         if: always()
