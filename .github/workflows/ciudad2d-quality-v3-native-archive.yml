@@ -1,0 +1,81 @@
+name: Ciudad2D — archivar A-B-C-D real del Aserradero premium
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-quality/quality_v3_archive_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: ciudad2d-quality-v3-archive-ubuntu
+  cancel-in-progress: false
+jobs:
+  archive-native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 19
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-quality/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0 numpy==2.2.6
+      - name: Fetch source SHA-pinned Unity artifact from official GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARTIFACT=$(python - <<'PY'
+          import json
+          print(json.load(open('tools/ciudad2d-quality/quality_v3_archive_request.json'))['artifact_id'])
+          PY
+          )
+          curl --fail --silent --show-error --location --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$ARTIFACT/zip" \
+            --output /tmp/ciudad2d-premium-v3-exact-unity.zip
+          test "$(wc -c </tmp/ciudad2d-premium-v3-exact-unity.zip)" -gt 15000000
+      - name: Confirm 32 actual Unity PNG SHAs and produce 4-mode review
+        run: python tools/ciudad2d-quality/archive_quality_v3.py
+      - name: Keep independent review artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-quality-v3-review-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_Bastion1_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_Bastion3_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_Bastion5_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_CuartelDetail_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_AserraderoDetail_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_NATIVE_EVIDENCE.json
+          if-no-files-found: warn
+          retention-days: 21
+      - name: Commit only derived reviews, no production game files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm --quiet -- tools/ciudad2d-quality/quality_v3_archive_request.json
+          git add --sparse -- \
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_Bastion1_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_Bastion3_A_B_C_D.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_Bastion5_A_B_C_D.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_CuartelDetail_A_B_C_D.jpg
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_AserraderoDetail_A_B_C_D.jpg \
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV3_NATIVE_EVIDENCE.json
+          git diff --cached --quiet && { echo 'No native review'; exit 1; }
+          git commit -m 'qa(city2d): archive 32 source-verified 4-mode premium Sawmill comparisons with original controls'
+          if ! git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116; then
+            git fetch --no-tags origin art/ciudad-2d-hitos-1-5-20261116
+            git rebase FETCH_HEAD
+            git push origin HEAD:refs/heads/art/ciudad-2d-hitos-1-5-20261116
+          fi
