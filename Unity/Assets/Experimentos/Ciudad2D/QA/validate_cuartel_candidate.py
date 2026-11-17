@@ -6,7 +6,13 @@ from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]
 MAN=ROOT/"QA/cuartel_candidate_manifest.json"
 m=json.loads(MAN.read_text(encoding="utf-8"))
-assert m["schema"]==1 and m["state"]=="NOT_INTEGRATED_ART_REVIEW_PENDING"
+assert m["schema"]==1
+assert m["state"] in {"NOT_INTEGRATED_ART_REVIEW_PENDING", "REJECTED_VISUAL_ART_DIRECTION"}
+# Never interpret technical validity of a PNG as artistic approval.
+if m["state"]=="REJECTED_VISUAL_ART_DIRECTION":
+    assert m.get("gameplay_impact")=="none"
+    assert "Do not integrate" in m.get("conclusion","")
+    assert m.get("visual_review_date") and m.get("issues")
 assert m["candidate_dimensions"]==[1594,1733]
 candidate=ROOT/"Sprites/Candidates/Cuartel_Candidato.png"
 source=ROOT/"Sprites/Candidates/Cuartel_Runway_Source.png"
