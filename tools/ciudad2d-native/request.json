@@ -3,16 +3,15 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Correct native fixture to use Bastion IV for invalid early Stoneworks, then retest exact current organic 2.5D candidate; no gameplay changes",
+  "reason": "Quality gate: lossless Unity Sprite texture imports, 12 genuine RenderTexture screenshots at 390x844 / 1170x2532, evidence verified against previous compressed Unity run 44013497619",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
-  "ownership_revision": 1,
-  "requested_art_stage": "genuine Unity RenderTexture I/II/III/IV/V and readonly building phase checks",
-  "retry_ordinal": 5,
+  "ownership_revision": 2,
+  "requested_art_stage": "Uncompressed texture import quality audit + actual Unity screenshot comparisons, isolated from game",
+  "retry_ordinal": 6,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 44012758328,
-  "last_failed_errors": [
-    "Native evidence fixture incorrectly expected pre-V lock while BastionLevel was still 5"
-  ]
+  "last_failed_run": null,
+  "last_failed_errors": [],
+  "previous_successful_run": 44013497619
 }
