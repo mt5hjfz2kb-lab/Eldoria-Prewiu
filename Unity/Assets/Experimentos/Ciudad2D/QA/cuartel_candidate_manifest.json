@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source": "Runway generated original Cuartel isolated asset",
+  "task_id": "8acabc64-899d-4a77-889a-710e8eb9537c",
+  "source_image": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Runway_Source.png",
+  "source_sha256": "90d1a0c4d3eea39e6e1d48ac9885c10d5ad02af2ce454068a5f22276b51459d6",
+  "candidate_image": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Candidato.png",
+  "candidate_sha256": "e139260a74776a72b911b707a88eab1c5525dbd011e4505239040eb18bcf436e",
+  "candidate_dimensions": [
+    1594,
+    1733
+  ],
+  "state": "NOT_INTEGRATED_ART_REVIEW_PENDING",
+  "security": "signed source URL consumed only in ephemeral branch input, not persisted in manifest",
+  "limitations": "Background segmentation and in-game perspective/alpha require native Unity review."
+}
