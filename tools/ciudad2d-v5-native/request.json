@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "review": "V4 target oversized in genuine 1170x2532 Unity close-up; V5 target source unchanged, display 0.30 vs 0.44 and x offset 1.11 vs 0.77 world units",
+  "source_asset_sha": "63e328378003e01d57c2bbda51d30c53e21382a8adb9ffc1121ee3c21f46e124",
+  "v4_run": 44129165952,
+  "expect": "11 genuine Unity RenderTexture captures and real PlayMode underconstruction, stages I/III/V, HUD touch, target proportions, shadow gating",
+  "no_gameplay_changes": true,
+  "no_main_changes": true,
+  "physical_iPhone": "PENDING",
+  "art_approved": false
+}
