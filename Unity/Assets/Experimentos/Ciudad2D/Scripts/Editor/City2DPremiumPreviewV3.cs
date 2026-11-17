@@ -22,7 +22,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         const string Root="Assets/Experimentos/Ciudad2D/";
         const string OldScene=Root+"Experimento_Ciudad2D.unity";
         public const string PremiumScene=Root+"QA/Experimento_Ciudad2D_PremiumV3.unity";
-        const string Output="Ciudad2DPremiumPlayableV2Evidence";
+        const string Output="Ciudad2DPremiumPlayableV3Evidence";
 
         [MenuItem("Eldoria/Experimentos/Ciudad2D/Crear preview jugable Premium V3 (Granero legible)")]
         public static void Build()
@@ -72,7 +72,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "Cuartel_Premium_ShadowV2.png",1f);
                 Swap(buildings,"aserradero","Aserradero_Premium_V2.png",
                     "Aserradero_Premium_V2_Shadow.png",2f);
-                // Granero only: preserve original RGBA and independent shadow. Test 15%\n                // larger silhouette and 0.23 leftward world offset in real Unity.\n                // Candidate evaluation, not an accepted art change.\n                Swap(buildings,"granero","Granero_Premium_V1.png",
+                // Granero only: preserve original RGBA and independent shadow. Test 15%
+                // larger silhouette and 0.23 leftward world offset in real Unity.
+                // Candidate evaluation, not an accepted art change.\n                Swap(buildings,"granero","Granero_Premium_V1.png",
                     "Granero_Premium_V1_Shadow.png",2f,1.15f);
                 Swap(buildings,"cantera","Cantera_Premium_V1.png",
                     "Cantera_Premium_V1_Shadow.png",2f);
@@ -98,7 +100,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if(!EditorSceneManager.SaveScene(scene,PremiumScene))
                     throw new InvalidOperationException("Unable to save NEW premium scene");
                 if(capture)CaptureEvidence(scene,bridge);
-                Debug.Log("[Ciudad2D] PREMIUM_V2_CREATED_FOUR_CANDIDATES_ART_UNAPPROVED");
+                Debug.Log("[Ciudad2D] PREMIUM_V3_GRANERO_READABILITY_CANDIDATE_NOT_APPROVED");
             }
             finally
             {
