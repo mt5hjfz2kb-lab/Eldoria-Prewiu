@@ -1,19 +1,14 @@
 {
   "name": "Eldoria.Ciudad2D.PlayModeProof",
   "rootNamespace": "Eldoria.Experimentos.Ciudad2D.PlayModeProof",
-  "references": [
-    "UnityEngine.TestRunner",
-    "UnityEditor.TestRunner"
-  ],
+  "references": [],
   "includePlatforms": [
     "Editor"
   ],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
-  "overrideReferences": true,
-  "precompiledReferences": [
-    "nunit.framework.dll"
-  ],
+  "overrideReferences": false,
+  "precompiledReferences": [],
   "autoReferenced": false,
   "defineConstraints": [
     "UNITY_INCLUDE_TESTS"
