@@ -37,6 +37,20 @@ jobs:
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_art_bake_contract.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/validate_sharpness.py
           python Unity/Assets/Experimentos/Ciudad2D/QA/render_progression_preview.py
+      - name: Preserve read-only original building sprite sources for pixel-level art QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-original-sprites-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Cuartel.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Aserradero.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Granero.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Cantera.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel01.png
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel05.png
+          if-no-files-found: error
+          retention-days: 7
       - name: Preserve compare images and audit
         if: always()
         uses: actions/upload-artifact@v4
