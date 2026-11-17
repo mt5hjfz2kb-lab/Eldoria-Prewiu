@@ -27,4 +27,16 @@ assert data['target_unique_bastion_sprites']==5
 assert data['stage_2_3_4_art_approved'] is False
 assert data['interface_world_phase_allowed'] is False
 assert data['visual_reconstruction_complete'] is False
-print('NATIVE_I_TO_V_BASELINE_5_HASHES_SAVED; UNIQUE_ART_TIERS_2_OF_5; ART_NOT_APPROVED')
+# 17 Nov direction change: unique Bastion II/III/IV sprites are no longer
+# required. V1 is retained only as historical evidence, not a stop condition.
+policy=json.loads((root/'BASTION_SHARED_TIERS_ACCEPTED_v2.json').read_text())
+assert policy['schema']==2
+assert policy['required_unique_bastion_sprites']==2
+assert policy['main_migration_allowed'] is False
+assert policy['no_claim_of_final_art_approval'] is True
+assert [(e['bastion_level'],e['approved_tier_reference']) for e in policy['bastion_stage_art']]==[
+    (1,'Bastion_Nivel01.png'),(2,'Bastion_Nivel01.png'),
+    (3,'Bastion_Nivel01.png'),(4,'Bastion_Nivel01.png'),
+    (5,'Bastion_Nivel05.png')]
+assert all(e['required_new_art'] is False for e in policy['bastion_stage_art'])
+print('NATIVE_I_TO_V_BASELINE_5_HASHES_SAVED | BASTION_I_SHARED_1_TO_4_V_AT_5_ACCEPTED | AMBIENCE_STUDY_ALLOWED | ART_AND_IPHONE_PENDING')
