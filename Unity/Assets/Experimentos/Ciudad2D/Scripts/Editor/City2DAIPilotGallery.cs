@@ -30,12 +30,12 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         private static readonly Vector2[] Slots =
             { new Vector2(206,547), new Vector2(172,964), new Vector2(751,962) };
         private static readonly float[] OriginalScales =
-            { .27558837f, .310636f, .307443f };
+            { .27558837f, .310636f, .307713f };
 
         [MenuItem("Eldoria/Experimentos/Ciudad 2D/Arte IA / Comparar tres nuevos con maestros")]
         public static void Capture()
         {
-            if (!Application.isBatchMode &&
+            if (!UnityEngine.Application.isBatchMode &&
                 !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             var previousSetup=EditorSceneManager.GetSceneManagerSetup();
             var exportPath=Path.GetFullPath(Path.Combine(
@@ -73,6 +73,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 ground.sortingOrder=-10000;
                 var cameraGO=new GameObject("ArtBible_LockedCamera");
                 cameraGO.tag="MainCamera";
+                cameraGO.transform.position=new Vector3(0f,0f,-10f);
                 var cam=cameraGO.AddComponent<Camera>();
                 cam.orthographic=true;
                 cam.clearFlags=CameraClearFlags.SolidColor;
