@@ -1,0 +1,212 @@
+name: Ciudad2D V6 - WebGL jugable y prueba de FPS sin publicar beta
+on:
+  push:
+    branches: [art/ciudad-2d-hitos-1-5-20261116]
+    paths: ['tools/ciudad2d-webperf/request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ciudad2d-native-exclusive
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/ciudad2d-webperf/
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DWebPerfProbe.cs
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DWebPerfBuild.cs
+            /Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
+      - name: Verify immutable PremiumV6 scene and read-only export contract
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('Unity/Assets/Experimentos/Ciudad2D')
+          req=json.loads(pathlib.Path('tools/ciudad2d-webperf/request.json').read_text())
+          assert req['schema']==1
+          assert req['no_publish'] and req['no_main_changes'] and req['no_gameplay_changes']
+          assert req['source_sha']=='aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06'
+          scene=root/'QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity'
+          assert hashlib.sha256(scene.read_bytes()).hexdigest()==req['source_sha']
+          code=(root/'Scripts/Editor/City2DWebPerfBuild.cs').read_text()
+          runtime=(root/'Scripts/City2DWebPerfProbe.cs').read_text()
+          for required in ['BuildTarget.WebGL','PlayerSettings.WebGL.showDiagnostics=true',
+                           'scenes=new[]{TestScene}','CIUDAD2D_WEBPERF_V6_WEBGL_BUILD_PASS']:
+              assert required in code,required
+          assert 'CITY2D_WEBPERF_V6_READY' in runtime
+          assert 'ICommandGateway' in runtime and 'never uses ICommandGateway' in runtime
+          print('CIUDAD2D_WEBPERF_SOURCE_SHA_ISOLATION_NO_PUBLICATION_PREFLIGHT_PASS')
+          PY
+      - name: Confirm shared PC lease belongs to City2D
+        id: lease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          from pathlib import Path
+          req=json.loads(Path('tools/ciudad2d-webperf/request.json').read_text())
+          repository=os.environ['GITHUB_REPOSITORY']
+          def gh(path):
+              url='https://api.github.com/repos/'+repository+'/'+path
+              headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                       'Accept':'application/vnd.github+json'}
+              with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=40) as f:
+                  return json.load(f)
+          entry=gh('contents/pipeline/active-workstreams.json?ref=main')
+          content=entry.get('content')
+          if content:
+              raw=base64.b64decode(content)
+          else:
+              blob=gh('git/blobs/'+entry['sha'])
+              assert blob['sha']==entry['sha'] and blob['encoding']=='base64'
+              raw=base64.b64decode(blob['content'])
+          registry=json.loads(raw)
+          holders=[x for x in registry.get('active',[])
+                   if 'windows-runner-heavy' in x.get('resources',[])]
+          owner=holders[0] if len(holders)==1 else {}
+          valid=(len(holders)==1
+                 and owner.get('id')=='eldoria-city2d-illustrated-proof-20261116'
+                 and owner.get('ownership_state')=='claimed'
+                 and owner.get('owner')=='chatgpt-eldoria-city2d-priority-20261116'
+                 and registry.get('resource_rotation',{}).get('current_workstream')==owner.get('id')
+                 and req.get('branch')==os.environ['GITHUB_REF_NAME'])
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('authorized='+str(valid).lower()+'\n')
+          print('WEBPERF_LEASE_AUTHORIZED' if valid else
+                'WEBPERF_NO_PC_PERMISSION: skip Windows; no job interruption')
+          PY
+  unity-webperf-build:
+    needs: preflight
+    if: needs.preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Recheck Windows lease, free space, Unity and WebGL module
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $api='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/'
+          $entry=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $encoded=$entry.content
+          if(-not $encoded){
+            $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$entry.sha) -Headers $h
+            if($blob.sha -ne $entry.sha -or $blob.encoding -ne 'base64'){throw 'Registry SHA mismatch'}
+            $encoded=$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($registry.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-city2d-illustrated-proof-20261116' -or
+             $holders[0].ownership_state -ne 'claimed' -or
+             $registry.resource_rotation.current_workstream -ne 'eldoria-city2d-illustrated-proof-20261116'){
+            throw 'PC lease changed: refusing to run Unity'
+          }
+          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+            throw 'PC is running another Unity/Blender task: no interruption permitted'
+          }
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path -LiteralPath $env:UNITY_EDITOR_PATH)){
+            throw 'Unity 6000.3 Editor unavailable'
+          }
+          $editorHome=Split-Path -Parent $env:UNITY_EDITOR_PATH
+          $module=Join-Path $editorHome 'Data/PlaybackEngines/WebGLSupport'
+          if(-not(Test-Path $module -PathType Container)){
+            throw ('UNITY_WEBGL_MODULE_NOT_INSTALLED: '+$module+'; do not install software without approval')
+          }
+          $drive=(Get-Item $env:RUNNER_TEMP).PSDrive
+          if($drive.Free -lt 8GB){throw ('INSUFFICIENT_FREE_SPACE: '+[math]::Round($drive.Free/1GB,2)+' GiB')}
+          Write-Host ('WEBPERF_EXCLUSIVE_PREFLIGHT_PASS WebGLModule='+$module+' freeGiB='+[math]::Round($drive.Free/1GB,2))
+      - name: Find existing Git without installing new tools
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $d="$env:LOCALAPPDATA/GitHubDesktop"
+            $exe=Get-ChildItem $d -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $exe){throw 'Git unavailable; refuse full repository download'}
+            $dir=Split-Path $exe
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          git --version
+      - name: Clone only the exact isolated CI source, never main checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if($env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$'){throw 'Invalid pinned SHA'}
+          $dest=Join-Path $env:RUNNER_TEMP ('ciudad2d-webperf-v6-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $dest){throw 'Refuse to reuse scratch project'}
+          git init -q $dest
+          if($LASTEXITCODE){throw 'git init failed'}
+          git -C $dest remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'git remote failed'}
+          $patterns=@(
+            '/Unity/Assets/Experimentos/Ciudad2D/'
+            '/Unity/Assets/Eldoria/Scripts/Domain/'
+            '/Unity/Assets/Eldoria/Scripts/Application/'
+            '/Unity/Packages/'
+            '/Unity/ProjectSettings/'
+          )
+          git -C $dest sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          git -C $dest fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned sparse fetch failed'}
+          git -C $dest checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Pinned checkout failed'}
+          if((& git -C $dest rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Unexpected source SHA'}
+          "CITY2D_WEBPERF_SOURCE=$dest" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host ('WEBPERF_PINNED_SOURCE='+$env:GITHUB_SHA)
+      - name: Build real Unity WebGL playable V6, keep only QA scene and FPS diagnostic
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:CITY2D_WEBPERF_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('city2d-webperf-v6-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-buildTarget','WebGL','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.Ciudad2D.Editor.City2DWebPerfBuild.Build',
+            '-logFile',$log)
+          $unity=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $unity.WaitForExit(1200000)){
+            & taskkill.exe /PID $unity.Id /T /F | Out-Null
+            throw 'Unity WebGL build timed out'
+          }
+          if($unity.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw ('Unity WebGL build failed, exit '+$unity.ExitCode)
+          }
+          $built=Join-Path $project 'Ciudad2D_WebPerfV6_Build'
+          if(-not(Test-Path (Join-Path $built 'index.html'))){throw 'No playable HTML'}
+          if(-not(Test-Path (Join-Path $built 'trial_manifest.json'))){throw 'No original Unity proof JSON'}
+          $js=@(Get-ChildItem (Join-Path $built 'Build') -File -Filter '*.loader.js')
+          $wasm=@(Get-ChildItem (Join-Path $built 'Build') -File -Filter '*.wasm')
+          $data=@(Get-ChildItem (Join-Path $built 'Build') -File -Filter '*.data')
+          if($js.Count -ne 1 -or $wasm.Count -ne 1 -or $data.Count -ne 1){
+            throw ('Incomplete WebGL player: loader='+$js.Count+' wasm='+$wasm.Count+' data='+$data.Count)
+          }
+          Write-Host 'CIUDAD2D_REAL_UNITY_WEBGL_BUILD_COMPLETE_UNPUBLISHED'
+      - name: Package full playable files as private GitHub Actions artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciudad2d-v6-webperf-playable-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          compression-level: 6
+          path: |
+            ${{ env.CITY2D_WEBPERF_SOURCE }}/Unity/Ciudad2D_WebPerfV6_Build/**
+            ${{ runner.temp }}/city2d-webperf-v6-*.log
