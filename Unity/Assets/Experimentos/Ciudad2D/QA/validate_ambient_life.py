@@ -42,5 +42,11 @@ for name in ['City2DAmbientMotion.cs','City2DAmbientGating.cs','City2DStateBridg
     assert (scripts/name).is_file(),name
 assert 'City2DAmbientSceneFactory.Populate' in (scripts/'Editor/City2DSceneBuilder.cs').read_text()
 assert 'ApplyStage(snapshot.BastionLevel)' in (scripts/'City2DStateBridge.cs').read_text()
+motion=(scripts/'City2DAmbientMotion.cs').read_text()
+for critical in ('[SerializeField] private CityBuilding owner;',
+                 '[SerializeField] private Vector3 anchor;',
+                 '[SerializeField] private Vector3 sourceScale;',
+                 '[SerializeField] private bool configured;'):
+    assert critical in motion, 'Unity scene reload would lose ambient setup: '+critical
 print('VALORIA_LIVING_CITY_TEN_EFFECTS_SOURCE_SHA_AND_BUILT_PLOT_CONTRACT_PASS')
 print('NO NEW BASTION_II_III_IV_ART_REQUIRED | NATIVE_ANIMATION_PROOF_PENDING')
