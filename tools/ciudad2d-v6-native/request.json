@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "branch": "art/ciudad-2d-hitos-1-5-20261116",
+  "reason": "Artistically reject V4/V5 extra target cutout after genuine Unity review; V6 retains authentic Cuartel Premium V2 complete source, scales 1.14x only to improve legibility at 390x844, keeps Granero V3 size. No extra props.",
+  "compare_against": "V3 at 44116723739",
+  "scale_factor_cuartel": 1.14,
+  "Cantera": "available at stage5 until built; only built QA fixture",
+  "art_approved": false,
+  "no_main_or_gameplay_changes": true,
+  "physical_iPhone": "PENDING"
+}
