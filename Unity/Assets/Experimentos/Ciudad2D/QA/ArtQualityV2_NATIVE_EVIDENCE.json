@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "engine": "Unity",
+  "capture_mode": "Editor_RenderTexture",
+  "source_run_id": 44062701820,
+  "source_artifact_id": 14319815692,
+  "source_branch_head_sha": "50844f91c1edb4f0634d25b8cfd15e1c5a5ab7f8",
+  "source_zip_sha256": "863ed36b909e60055fcc918d4f34bc0b9472638b4712adc5d888d0c33b37940b",
+  "source_original_pngs": [
+    {
+      "file": "A_32_original_bastion3_390x844_standard.png",
+      "sha256": "94831421062b06c58a0ac88f7b527b05665723561cf7bd49ad7d4dc87e7b8c56",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "A_32_original_bastion3_1170x2532_standard.png",
+      "sha256": "87f24f619cfe40f89843e86e3a5462ef17de0e8a5f996463244e2e483fa7db28",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "B_23_quiet_bastion3_390x844_standard.png",
+      "sha256": "113bbcc3031dd98f6f45613a45dbd9099ac43c03e7d8f109551c73ee1959698f",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "B_23_quiet_bastion3_1170x2532_standard.png",
+      "sha256": "12c94ed1045fef8266a5766b07b9a42d6e35b5edb810362fef53e90753d9b79a",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "C_23_premium_bastion3_390x844_standard.png",
+      "sha256": "fc3c90c42b0135a3f9c3eb5c0e992a8fe25f3fdd71e8e1cb93885b3226c7328d",
+      "width": 390,
+      "height": 844,
+      "stage": 3
+    },
+    {
+      "file": "C_23_premium_bastion3_1170x2532_standard.png",
+      "sha256": "89759ce3d53fc8e7001c94e05a27269ebd9b44b8c77789148807354d957e7f97",
+      "width": 1170,
+      "height": 2532,
+      "stage": 3
+    },
+    {
+      "file": "A_32_original_bastion5_390x844_standard.png",
+      "sha256": "90b404318f43d66707f220b8e674973fa80599fc57f5367b351747d642827e07",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_standard.png",
+      "sha256": "0aa63bdfcb1303cb26c90307f9ce24011d14833aca8ff24f1917f9fbf0bfd0bf",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_844x390_standard.png",
+      "sha256": "dd74904ff1680319c25d3459b06e395d0e58f7835e74bcff5d40c9bf0c94f453",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "A_32_original_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "41db43ffcb214980e53a0e25da9f459e05f1f26d0dc14634f796cf6f2e9ff933",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_390x844_standard.png",
+      "sha256": "131a4bb8ceeb8d206bb20cbdb885e47248395891b4bcc149ff599639fa14a8cb",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_standard.png",
+      "sha256": "4df40ea2e6da6448ed4c77e699cc7004cd601c4b2543125a52a1ed74873eed2c",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_844x390_standard.png",
+      "sha256": "6caf1bdfd25b2eab206ae9321accad3868684966da99bb090c12107e8a0b48e1",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "B_23_quiet_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "e7dc3b9cdf674a6ece13ac58a0418a85d828348966e5fec49405470888ada558",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_390x844_standard.png",
+      "sha256": "53c392b3bb9163d9b7320cf44bcdd9599e382fd47107579b44fb3095d97666d0",
+      "width": 390,
+      "height": 844,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_standard.png",
+      "sha256": "e39b9eb6d605d2a926fe5f2c0d57472cab73fc750eefb342cb2f6812e399c6ea",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_844x390_standard.png",
+      "sha256": "d7893ee89227d0a069ae2a398a568fd8a4996fe710904b8c9b73767adb8c8a24",
+      "width": 844,
+      "height": 390,
+      "stage": 5
+    },
+    {
+      "file": "C_23_premium_bastion5_1170x2532_cuartel_close.png",
+      "sha256": "feac998d774e27714e95509c2e19c1030c851646a306a2f89f0bf70a817591ea",
+      "width": 1170,
+      "height": 2532,
+      "stage": 5
+    }
+  ],
+  "number_authentic_pngs": 18,
+  "derived_review_jpgs_not_native_captures": [
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV2_BastionIII_A_B_C.jpg",
+      "sha256": "c8a020c419f432e7e676d054a5bd29297c7102ed703243c28a1391154edf8168"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV2_BastionV_A_B_C.jpg",
+      "sha256": "5b23053a67df1541539e44c4b8a30be70d29fe47f7c17b20111b68d25128caf0"
+    },
+    {
+      "file": "Unity/Assets/Experimentos/Ciudad2D/QA/ArtQualityV2_CuartelDetail_A_B_C.jpg",
+      "sha256": "50d9b1c63a74163f8974ca73283320ca3dc6b82280e079b12397eaa2e9ac70e8"
+    }
+  ],
+  "density_test": {
+    "original_props": 32,
+    "quiet_props": 23,
+    "deleted_duplicate_plants": 9,
+    "differences": {
+      "3": {
+        "pixel_MAE_A_to_B": 1.275,
+        "pixel_MAE_B_to_C": 1.39253
+      },
+      "5": {
+        "pixel_MAE_A_to_B": 1.21412,
+        "pixel_MAE_B_to_C": 1.39253
+      }
+    }
+  },
+  "source_cuartel_sha256": "0dcb8edb8237621f13893893edce20fec51deb1248df8bcbc3a89ea3990b4062",
+  "source_shadow_sha256": "9d128fe0a7d0c229c1c3b14b098eaef17e6df79ac557ed283a3893bb4a22c5a6",
+  "no_iPhone_physical_claim": true,
+  "candidate_not_playmode_touch_tested": true,
+  "source_untouched": true,
+  "art_approved": false,
+  "limitations": "Aserradero, Granero and Cantera remain original sprites with geometric plinths; premium source consistency for these is still pending."
+}
