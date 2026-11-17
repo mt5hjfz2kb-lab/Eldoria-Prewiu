@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "source_sha256": "644c3ffdf8429a710606fbff0d09b72671a5c8e5e18b152e4d761c821f9157ae",
+  "url": "https://d2jqrm6oza8nb6.cloudfront.net/datasets/1ce6ec50-03fd-4c60-b5f0-0d33cb7ddce9.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2YzZTE5YmU0NjdlYTJkOSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTA1MTQ1NH0.AgnLaOgUubYkSe-F6jbkIXwQB1zFGqvLzn3WkQQe5ko",
+  "purpose": "one-use source retrieval, delete signed URL and do not persist"
+}
