@@ -25,6 +25,22 @@ jobs:
       - run: python -m pip install --disable-pip-version-check pillow==11.3.0
       - name: Check six approved visual references and incomplete three-candidate gate
         run: python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/validate_art_bible.py
+      - name: Smoke-test real RGBA normalization without mutating approved masters
+        run: |
+          python Unity/Assets/Experimentos/Ciudad2D/ArtBible/QA/preprocess_candidate.py \
+            --source Unity/Assets/Experimentos/Ciudad2D/ArtBible/Masters/Bastion_V_MASTER.png \
+            --asset-id immutable-master-smoke \
+            --out-dir /tmp/valoria-normalize-smoke \
+            --task-id QA_SOURCE_NOT_NEW_ART
+          python - <<'PY'
+          import hashlib, json, pathlib
+          root=pathlib.Path('Unity/Assets/Experimentos/Ciudad2D/ArtBible/Masters')
+          data=json.loads((pathlib.Path('/tmp/valoria-normalize-smoke')/'immutable-master-smoke_MANIFEST.json').read_text())
+          assert data['status']=='QUARANTINED_NOT_APPROVED'
+          assert data['source_sha256']==hashlib.sha256((root/'Bastion_V_MASTER.png').read_bytes()).hexdigest()
+          assert (pathlib.Path('/tmp/valoria-normalize-smoke')/'immutable-master-smoke_RGBA.png').is_file()
+          print('ALPHA_FOOT_PIPELINE_TECH_SMOKE_PASS_NOT_NEW_ART')
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: ciudad2d-visual-bible-manifest-${{ github.run_id }}
