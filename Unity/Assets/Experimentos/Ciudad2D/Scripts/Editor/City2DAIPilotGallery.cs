@@ -49,6 +49,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 "Valoria approved ground candidate absent. Never invent a ground.");
 
             Sprite[] candidate=new Sprite[3],source=new Sprite[3];
+            Footprint[] candidatePixels=new Footprint[3],sourcePixels=new Footprint[3];
             for(int i=0;i<3;i++)
             {
                 source[i]=AssetDatabase.LoadAssetAtPath<Sprite>(
@@ -59,6 +60,8 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     InvalidOperationException("AI A/B not ready: THREE individual " +
                         "candidate sprites required, missing "+Candidates[i]);
                 ValidateSprite(candidate[i],Candidates[i]);
+                sourcePixels[i]=MeasureFootprint(source[i]);
+                candidatePixels[i]=MeasureFootprint(candidate[i]);
             }
             var bastion=AssetDatabase.LoadAssetAtPath<Sprite>(
                 SpriteRoot+"Bastion_Nivel05.png");
@@ -88,15 +91,29 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         Slots[i].x,Slots[i].y,OriginalScales[i],terrain,
                         -Mathf.RoundToInt((.5f-Slots[i].y/1672f)*terrain.bounds.size.y*100f));
                 var evidence=new System.Collections.Generic.List<string>();
+                var originalsPosition=new Vector3[3];
+                for(int i=0;i<3;i++) originalsPosition[i]=art[i].transform.position;
                 foreach(var mode in new[]{"A_original","B_new_ai"})
                 {
                     for(int i=0;i<3;i++)
                     {
-                        art[i].sprite=mode=="A_original"?source[i]:candidate[i];
-                        // Same apparent footprint, not same image canvas size.
-                        float width=source[i].bounds.size.x*OriginalScales[i];
-                        art[i].transform.localScale=Vector3.one *
-                            (width/Mathf.Max(.001f,art[i].sprite.bounds.size.x));
+                        bool isOriginal=mode=="A_original";
+                        art[i].sprite=isOriginal?source[i]:candidate[i];
+                        var current=isOriginal?sourcePixels[i]:candidatePixels[i];
+                        // Compare visible, alpha-backed silhouettes, not padded PNG canvas.
+                        float worldVisibleWidth=sourcePixels[i].Width /
+                            source[i].pixelsPerUnit*OriginalScales[i];
+                        float scale=worldVisibleWidth /
+                            Mathf.Max(.001f,current.Width/art[i].sprite.pixelsPerUnit);
+                        art[i].transform.localScale=Vector3.one*scale;
+                        // Baseline A is immutable; only move B to share its visible
+                        // foot-ground anchor. Padding in RGBA is NOT a raised plinth.
+                        float sourceFoot=sourcePixels[i].MinimumY /
+                            source[i].pixelsPerUnit*OriginalScales[i];
+                        float targetFoot=current.MinimumY /
+                            art[i].sprite.pixelsPerUnit*scale;
+                        art[i].transform.position=originalsPosition[i]+
+                            new Vector3(0f,sourceFoot-targetFoot,0f);
                     }
                     foreach(var wh in new[]{new[]{390,844},new[]{1170,2532},
                                              new[]{844,390}})
@@ -108,10 +125,18 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         evidence.Add("{\"file\":\""+file+"\",\"sha256\":\""+
                             Sha(bytes)+"\",\"width\":"+wh[0]+",\"height\":"+wh[1]+"}");
                     }
+                    fit.SetEvidenceViewport(1170,2532);
+                    fit.SetEvidenceZoom(1.42f);
+                    string closeup=mode+"_1170x2532_zoom.png";
+                    var detail=CaptureFrame(cam,1170,2532);
+                    File.WriteAllBytes(Path.Combine(exportPath,closeup),detail);
+                    evidence.Add("{\"file\":\""+closeup+"\",\"sha256\":\""+
+                        Sha(detail)+"\",\"width\":1170,\"height\":2532,\"zoom\":1.42}");
                 }
                 string result="{\"engine\":\"Unity\",\"mode\":\"Editor_RenderTexture\","+
                     "\"gallery_only\":true,\"three_new_buildings_present\":true,"+
-                    "\"camera_and_terrain_locked\":true,\"main_modified\":false,"+
+                    "\"camera_and_terrain_locked\":true,\"visible_alpha_width_aligned\":true,"+
+                    "\"alpha_ground_foot_aligned_to_original\":true,\"main_modified\":false,"+
                     "\"gameplay_or_save_modified\":false,\"art_approved\":false,"+
                     "\"playmode_interaction_not_certified_in_gallery\":true,"+
                     "\"captures\":["+string.Join(",",evidence)+"]}\n";
@@ -125,6 +150,41 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                    previousSetup!=null&&previousSetup.Length>0)
                     EditorSceneManager.RestoreSceneManagerSetup(previousSetup);
             }
+        }
+
+        private struct Footprint
+        {
+            public float Width;
+            public float MinimumY;
+        }
+        private static Footprint MeasureFootprint(Sprite sprite)
+        {
+            // Read source PNG into temporary memory. Never change Unity importer or
+            // replace the master; the actual alpha silhouette controls the pivot.
+            string asset=AssetDatabase.GetAssetPath(sprite);
+            string file=Path.GetFullPath(Path.Combine(
+                UnityEngine.Application.dataPath,"..",asset));
+            var tex=new Texture2D(2,2,TextureFormat.RGBA32,false);
+            try
+            {
+                if(!tex.LoadImage(File.ReadAllBytes(file),false))
+                    throw new InvalidOperationException("Unable to decode art PNG "+asset);
+                var pixels=tex.GetPixels32();
+                int minimumX=tex.width,maximumX=-1,minimumY=tex.height;
+                for(int y=0;y<tex.height;y++)
+                    for(int x=0;x<tex.width;x++)
+                    {
+                        if(pixels[y*tex.width+x].a<=32) continue;
+                        minimumX=Math.Min(minimumX,x);
+                        maximumX=Math.Max(maximumX,x);
+                        minimumY=Math.Min(minimumY,y);
+                    }
+                if(maximumX<minimumX || minimumY>=tex.height)
+                    throw new InvalidOperationException("Empty alpha silhouette "+asset);
+                return new Footprint { Width=maximumX-minimumX+1,
+                                       MinimumY=minimumY };
+            }
+            finally { UnityEngine.Object.DestroyImmediate(tex); }
         }
 
         private static void ValidateSprite(Sprite sprite,string name)
