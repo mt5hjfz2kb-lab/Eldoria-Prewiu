@@ -357,7 +357,7 @@ jobs:
       # be cleaned. Never touch the live checkout, Unity installation or
       # another workflow's reservation. Keep scratch on upload failure.
       - name: Safely remove only this run's temporary Unity clone after upload
-        if: always() && steps.compact_upload.outcome == 'success'
+        if: success() && steps.compact_upload.outcome == 'success'
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
