@@ -1,4 +1,8 @@
 # Valoria 2.5D — auditoría de continuidad artística (Forja V3 / Bastión I–V)
+
+> **DIRECCIÓN POSTERIOR QUE PREVALECE (17/11/2026):** no es necesario crear arte propio de Bastión II, III ni IV. Se mantiene Bastión I en niveles 1–4 y Bastión V en 5. El trabajo artístico puede avanzar a la **capa de vida ambiental** en la escena aislada. Ver [BASTION_SHARED_TIERS_ACCEPTED_v2.json](BASTION_SHARED_TIERS_ACCEPTED_v2.json) y [CAPA_VIDA_AMBIENTAL_20261117.md](CAPA_VIDA_AMBIENTAL_20261117.md). La conclusión histórica que exigía tres nuevos Bastiones está superada y no debe bloquear esta fase; esto no implica aprobación definitiva del arte en dispositivos.
+
+
 **Fecha:** 17/11/2026 · Rama aislada `art/ciudad-2d-hitos-1-5-20261116`.
 
 ## Diagnóstico de trabajo, no aprobación automática
