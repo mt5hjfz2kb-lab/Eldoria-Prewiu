@@ -64,6 +64,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     throw new InvalidOperationException("Escena nativa no usa el candidato orgánico versionado");
 
                 VerifyUncompressedSpriteImports();
+                City2DGroundingBake.EnsureGenerated();
                 if (ground.GetComponent<SpriteRenderer>().sprite.texture.width != 1412 ||
                     ground.GetComponent<SpriteRenderer>().sprite.texture.height != 2508)
                     throw new InvalidOperationException("Retina terrain absent from authentic Unity render");
@@ -176,6 +177,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 // Additional non-production AB evidence: another candidate authored
                 // outside gameplay; original Cuartel remains untouched and default.
                 CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1170, 2532, records, 1f, true);
+                // Platform-edge A/B uses the CURRENT artwork as its source;
+                // visually inspect this proof before making it the default.
+                CaptureOne(evidenceRoot, camera, fitting, bastion, 5, 1170, 2532, records, 1f, false, true);
 
                 // Una captura por si misma nunca debe aprobar una experiencia de juego.
                 string json = "{\n" +
@@ -191,6 +195,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "  \"retina_terrain_rendered_pass\":true,\n" +
                     "  \"quality_import_no_mipmap_pass\":true,\n" +
                     "  \"candidate_cuartel_comparison_only\":true,\n" +
+                    "  \"grounding_art_comparison_only\":true,\n" +
                     "  \"art_approved\":false,\n" +
                     "  \"device_qa\":\"PENDING\",\n" +
                     "  \"captures\":[\n" + string.Join(",\n", records) + "\n  ]\n}\n";
@@ -259,7 +264,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
 
         private static void CaptureOne(string root, Camera cam, City2DCameraFit fit,
             CityBuilding bastion, int level, int width, int height, List<string> evidence,
-            float evidenceZoom = 1f, bool candidateCuartel = false)
+            float evidenceZoom = 1f, bool candidateCuartel = false, bool groundedComparison = false)
         {
             var bridge = UnityEngine.Object.FindFirstObjectByType<City2DStateBridge>();
             if (bridge == null) throw new InvalidOperationException("Bridge not found during capture");
@@ -271,11 +276,13 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             Sprite previousCandidateSprite = null;
             Transform candidateTransform = null;
             Vector3 previousCandidateScale = Vector3.one;
-            if (candidateCuartel)
+            if (candidateCuartel || groundedComparison)
             {
                 var source = AssetDatabase.LoadAssetAtPath<Sprite>(
-                    City2DSceneBuilder.Folder + "Sprites/Candidates/Cuartel_Candidato.png");
-                if (source == null) throw new InvalidOperationException("Cuartel candidate missing");
+                    City2DSceneBuilder.Folder + (groundedComparison
+                        ? "Sprites/Generated/Cuartel_Grounded.png"
+                        : "Sprites/Candidates/Cuartel_Candidato.png"));
+                if (source == null) throw new InvalidOperationException("Cuartel A/B source missing");
                 foreach (var sceneBuilding in UnityEngine.Object.FindObjectsByType<CityBuilding>(
                              FindObjectsSortMode.None))
                 {
@@ -310,7 +317,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 byte[] png = readback.EncodeToPNG();
                 if (png == null || png.Length < 8000)
                     throw new InvalidOperationException("PNG de Unity vacio");
-                string filename = "bastion-" + level + "-" + width + "x" + height + (candidateCuartel ? "-cuartel-candidato" : (evidenceZoom > 1.001f ? "-detalle" : "")) + ".png";
+                string filename = "bastion-" + level + "-" + width + "x" + height + (candidateCuartel ? "-cuartel-candidato" : (groundedComparison ? "-cuartel-grounded" : (evidenceZoom > 1.001f ? "-detalle" : ""))) + ".png";
                 File.WriteAllBytes(Path.Combine(root, filename), png);
                 using (var sha = SHA256.Create())
                 {
