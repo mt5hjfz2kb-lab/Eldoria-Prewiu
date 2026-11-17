@@ -3,15 +3,15 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Review ground-seam naturalization of four secondary buildings in genuine 13-frame Unity Editor capture; verify no bushes on locked or unbuilt parcels, no gameplay mutation",
+  "reason": "Native 14-frame Unity screenshot A/B: preserve original Cuartel and compare higher-detail transparent Cuartel candidate without square plinth; keep gameplay untouched",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
-  "ownership_revision": 4,
-  "requested_art_stage": "Bastion I-V + natural plinth camouflage, genuine 1.42x detail, source-matched SHA, quality regression",
-  "retry_ordinal": 8,
+  "ownership_revision": 5,
+  "requested_art_stage": "Stage V Cuartel art candidate visual A/B, Retina terrain, 14 SHA-verified Unity Editor RenderTexture captures",
+  "retry_ordinal": 9,
   "engine_module_added_in_branch": true,
   "last_failed_run": null,
   "last_failed_errors": [],
-  "previous_successful_run": 44019684673
+  "previous_successful_run": 44022014699
 }
