@@ -19,7 +19,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
         public const string ScenePath = Folder + "Experimento_Ciudad2D.unity";
         private const string SpritesFolder = Folder + "Sprites/";
         private const string LayoutPath = Folder + "QA/city_layout.json";
-        private const string SceneMarker = "Ciudad2D_ProgresionReal_Layout4";
+        private const string SceneMarker = "Ciudad2D_ProgresionReal_Layout4_AmbienteVivoV1";
         private static bool building;
 
         [Serializable] private sealed class Layout
@@ -155,6 +155,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                 if (input.actionsAsset == null) input.AssignDefaultActions();
                 var bridge = new GameObject("SoloLectura_ProgresionVisual").AddComponent<City2DStateBridge>();
 
+                var canonicalBuildings = new Dictionary<string, CityBuilding>(StringComparer.Ordinal);
                 foreach (var spec in layout.buildings)
                 {
                     var obj = new GameObject(spec.title);
@@ -212,6 +213,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         }
                     }
                     bridge.Register(buildingComponent);
+                    canonicalBuildings.Add(spec.id, buildingComponent);
                 }
                 foreach (var spec in layout.decor)
                 {
@@ -236,14 +238,20 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     obj.AddComponent<City2DTorchPulse>().Configure(spec.opacity, spec.x * .017f);
                     obj.AddComponent<City2DAmbientGating>().Configure(spec.min_bastion,spec.max_bastion);
                 }
+                int aliveEffects = City2DAmbientSceneFactory.Populate(terrain,canonicalBuildings);
+                if (aliveEffects != 10)
+                    throw new InvalidOperationException("Ambient V1 must have ten authored effects");
                 bridge.RebindSceneBuildings();
+                if (bridge.RegisteredAmbientEffectCount != aliveEffects)
+                    throw new InvalidOperationException("Ambient life controls were not registered");
                 bridge.SetDemoBastionLevel(1);
                 new GameObject("ControlesVisuales_NoJugables").AddComponent<City2DPilotHud>().Configure(bridge);
                 new GameObject(SceneMarker);
                 if (!EditorSceneManager.SaveScene(isolated, ScenePath))
                     throw new InvalidOperationException("Unity could not save isolated scene");
                 Debug.Log("[Ciudad2D] Scene Layout4 saved with " + layout.buildings.Length +
-                          " buildings, " + layout.decor.Length + " props, " + layout.glows.Length + " light overlays");
+                          " buildings, " + layout.decor.Length + " props, " + layout.glows.Length +
+                          " original light overlays, " + aliveEffects + " visual-only living ambient sprites");
             }
             catch (Exception e) { Debug.LogError("[Ciudad2D] Build failed " + e); throw; }
             finally
@@ -270,6 +278,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             foreach (var required in new[] {
                 SpritesFolder+"Bastion_Nivel01.png", SpritesFolder+"Bastion_Nivel05.png",
                 SpritesFolder+"Props/AtalayaValoria.png", SpritesFolder+"Props/HaloAntorcha.png",
+                SpritesFolder+"Props/Humo_Valoria_A.png", SpritesFolder+"Props/Humo_Valoria_B.png",
                 (AssetDatabase.LoadAssetAtPath<Sprite>(SpritesFolder + "Retina/" + layout.terrain_file) != null
                     ? SpritesFolder + "Retina/" + layout.terrain_file
                     : SpritesFolder + layout.terrain_file) })
