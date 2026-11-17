@@ -286,6 +286,11 @@ jobs:
         run: |
           & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_quality_v3_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
 
+      - name: Five-mode Granero V1 and Aserradero V2 premium scene native A-E (45 renders)
+        shell: powershell
+        run: |
+          & (Join-Path $env:CITY2D_SOURCE_ROOT 'Unity/Assets/Experimentos/Ciudad2D/QA/run_quality_v4_native.ps1') -SourceRoot $env:CITY2D_SOURCE_ROOT
+
       - name: Preserve evidence, log and exact Unity source identity
         if: always()
         uses: actions/upload-artifact@v4
@@ -300,7 +305,10 @@ jobs:
             ${{ runner.temp }}/city2d-ambient-native-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-quality-v2-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-quality-v3-${{ github.run_id }}.log
+            ${{ runner.temp }}/city2d-quality-v4-${{ github.run_id }}.log
             ${{ runner.temp }}/city2d-forja-v3-gallery-${{ github.run_id }}.log
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/*.png
+            ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV4Evidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV3Evidence/*.png
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV3Evidence/*.json
             ${{ env.CITY2D_SOURCE_ROOT }}/Unity/Ciudad2DQualityV2Evidence/*.png
