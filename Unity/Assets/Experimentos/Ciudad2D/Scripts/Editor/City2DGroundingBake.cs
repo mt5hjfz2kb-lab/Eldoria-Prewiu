@@ -88,6 +88,19 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                         pixel.a = (byte)Mathf.Clamp(Mathf.RoundToInt(pixel.a * blend), 0, 255);
                         output[i] = pixel;
                     }
+                    // Reject an empty/mis-matted art replacement before Unity
+                    // imports it. The previous Cuartel A/B failed this visual gate.
+                    int sourceOpaque = 0, groundedOpaque = 0;
+                    for (int i = 0; i < pixels.Length; i++)
+                    {
+                        if (pixels[i].a >= 128) sourceOpaque++;
+                        if (output[i].a >= 128) groundedOpaque++;
+                    }
+                    if (sourceOpaque < 1000 || groundedOpaque < sourceOpaque * .90f)
+                        throw new InvalidOperationException("Grounded candidate erased " + name +
+                            " opaque=" + groundedOpaque + "/" + sourceOpaque);
+                    Debug.Log("[Ciudad2D] GROUNDED_ALPHA_COVERAGE " + name +
+                        " " + groundedOpaque + "/" + sourceOpaque);
                     var image = new Texture2D(w, h, TextureFormat.RGBA32, false);
                     image.SetPixels32(output);
                     image.Apply(false, false);
