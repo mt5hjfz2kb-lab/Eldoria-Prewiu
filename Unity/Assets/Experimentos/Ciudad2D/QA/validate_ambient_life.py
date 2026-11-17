@@ -26,7 +26,7 @@ assert types.count('smoke')==6 and types.count('ember')==4
 assert amb.get('ember_art_version')==2 and amb.get('ember_original_halo_preserved') is True
 assert all(e['sprite']=='Props/Chispa_Valoria_V2.png' for e in amb['effects'] if e['kind']=='ember')
 ember=json.loads((QA/'ambient_ember_v2_manifest.json').read_text())
-sprite=S/'Props/Chispa_Valoria_V2.png'
+sprite=ROOT/'Sprites/Props/Chispa_Valoria_V2.png'
 assert hashlib.sha256(sprite.read_bytes()).hexdigest()==ember['sha256']==amb['ember_sha256']
 with Image.open(sprite) as im:
     assert im.mode=='RGBA' and im.size==(48,72) and im.getchannel('A').getextrema()==(0,235)
