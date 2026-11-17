@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "resampling_not_new_detail",
+  "source": "Sprites/Terreno_Organico.png",
+  "source_sha256": "9e257856139e39c5245dc8196a2131816bdd87ac4635b5fae679f6e65cb24db6",
+  "retina": "Sprites/Retina/Terreno_Organico.png",
+  "retina_sha256": "b6162d56eefaec1b607ec957d4d17beba8898578bfd7a2bf6453c1771351629d",
+  "original_size": [
+    941,
+    1672
+  ],
+  "baked_size": [
+    1412,
+    2508
+  ],
+  "ppu_original": 100,
+  "ppu_baked": 150,
+  "method": "Pillow 11.3.0 Lanczos 1.5x + UnsharpMask r1.05 p95 threshold3",
+  "limitations": [
+    "No additional original semantic detail",
+    "Not certified on mobile memory/GPU"
+  ]
+}
