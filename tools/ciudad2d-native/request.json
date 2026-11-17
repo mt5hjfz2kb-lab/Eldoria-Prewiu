@@ -3,17 +3,17 @@
   "workstream_id": "eldoria-city2d-illustrated-proof-20261116",
   "branch": "art/ciudad-2d-hitos-1-5-20261116",
   "allow_native": true,
-  "reason": "Regression after real PlayMode failure #44052522821: serialize all owner/anchor/phase/config of ambient motion across scene reload; verify stage1 embers, III/V built smoke, pointer HUD, native 10 images and 16-frame living-city sequence.",
+  "reason": "Retry separate premium City2D PlayMode proof after real Unity compiler failure #44074423180: fully qualify UnityEngine.Application in three new visual-only preview/test scripts; all 45 V4 A-E native captures already proved at #44072129744.",
   "playmode_certified": false,
   "art_approved": false,
   "owner": "chatgpt-eldoria-city2d-priority-20261116",
   "ownership_revision": 7,
-  "requested_art_stage": "Living-city atmosphere smoke/embers, PlayMode serialized reload, 10 native A/B timing captures, 16 real Unity animation frames, untouched original I for 1–4 and V for 5",
-  "retry_ordinal": 19,
+  "requested_art_stage": "Premium V1 independent scene, 5 SHA-verified captures and genuine Editor PlayMode pointer/HUD/plot-shadow tests; no main or saves",
+  "retry_ordinal": 20,
   "engine_module_added_in_branch": true,
-  "last_failed_run": 44052522821,
+  "last_failed_run": 44074423180,
   "last_failed_errors": [
-    "Genuine PlayMode at stage1 expected four ambient ember SpriteRenderers, observed zero; editor-created private motion config was not serialized, fixed by [SerializeField] persistent values in City2DAmbientMotion.cs"
+    "Unity CS0234: unqualified Application.isPlaying collided with Eldoria.Application namespace in premium shadow gate; all new visual source files qualified."
   ],
   "previous_successful_run": 44047998748,
   "blender_artifact_id": 14306050951,
