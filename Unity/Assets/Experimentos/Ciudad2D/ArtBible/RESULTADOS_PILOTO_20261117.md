@@ -1,5 +1,11 @@
 # Valoria 2.5D — Resultado verificable del cambio de método, 17/11/2026
 
+> **ESTADO ACTUAL ACTUALIZADO:** [RESULTADOS_PILOTO_20261117_ACTUALIZACION.md](RESULTADOS_PILOTO_20261117_ACTUALIZACION.md). La instantánea histórica que sigue se conserva para auditoría, **pero está superada**: ya existen tres PNG RGBA en GitHub y una galería A/B real de Unity Editor (Actions #44040675403); sigue faltando la aprobación artística, sombras y reproducibilidad homogénea. No interpretar las frases originales «no existe tercer sprite» o «no hay capturas Unity» como estado actual.
+
+---
+
+
+
 **Decisión: ilustración IA con referencias = prometedora, PERO todavía NO certificada para producción. Mantener Blender como herramienta complementaria, no método obligatorio. ART_APPROVED=false.**
 
 ## Lo que está implementado y probado
