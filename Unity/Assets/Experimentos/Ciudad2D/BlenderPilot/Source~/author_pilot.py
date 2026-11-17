@@ -31,12 +31,12 @@ scene.render.film_transparent=True
 scene.render.image_settings.file_format='PNG'
 scene.render.image_settings.color_mode='RGBA'
 scene.render.image_settings.color_depth='8'
-try:scene.view_settings.view_transform='AgX'
+try:scene.view_settings.view_transform='Standard'
 except Exception:scene.view_settings.view_transform='Standard'
 world=bpy.data.worlds.new('Valoria Dusk');scene.world=world
 world.use_nodes=True
-world.node_tree.nodes['Background'].inputs['Color'].default_value=(.38,.43,.54,1)
-world.node_tree.nodes['Background'].inputs['Strength'].default_value=.52
+world.node_tree.nodes['Background'].inputs['Color'].default_value=(.28,.29,.34,1)
+world.node_tree.nodes['Background'].inputs['Strength'].default_value=.28
 random.seed(417)
 def mat(name, rgb, rough=.73,metal=0,variation=.14):
  m=bpy.data.materials.new(name);m.use_nodes=True;n=m.node_tree.nodes;l=m.node_tree.links
@@ -56,14 +56,14 @@ def mat(name, rgb, rough=.73,metal=0,variation=.14):
   l.new(noise.outputs['Fac'],bump.inputs['Height'])
   l.new(bump.outputs['Normal'],bs.inputs['Normal'])
  return m
-stone=mat('Limestone_WarmGrey',(.41,.38,.31),variation=.24)
-limestone=mat('Trim_Stone',(.59,.54,.46),variation=.15)
-wood=mat('Oak_Old',(.28,.18,.11),variation=.26)
-newwood=mat('Oak_Cut',(.52,.32,.17),variation=.17)
-slate=mat('Slate_Blue',(.14,.22,.31),variation=.24)
-gold=mat('Brass',(.48,.33,.15),.40,.65,.13)
+stone=mat('Limestone_WarmGrey',(.53,.45,.35),variation=.30)
+limestone=mat('Trim_Stone',(.72,.61,.45),variation=.23)
+wood=mat('Oak_Old',(.40,.23,.12),variation=.29)
+newwood=mat('Oak_Cut',(.62,.35,.15),variation=.24)
+slate=mat('Slate_Blue',(.055,.12,.27),variation=.28)
+gold=mat('Brass',(.82,.52,.12),.35,.62,.11)
 iron=mat('Iron',(.14,.15,.16),.48,.8,.12)
-navy=mat('Heraldry_Blue',(.075,.13,.27),.88,0,.10)
+navy=mat('Heraldry_Blue',(.045,.085,.25),.76,0,.10)
 glow=mat('Window_Amber',(.9,.43,.11),.26,0,0)
 glow.node_tree.nodes['Principled BSDF'].inputs['Emission Color'].default_value=(1,.37,.08,1)
 glow.node_tree.nodes['Principled BSDF'].inputs['Emission Strength'].default_value=.9
@@ -82,7 +82,7 @@ def cube(name,loc,size,ma,group,bevel=.05):
  o.data.materials.append(ma);parent(o,group)
  if bevel:
   b=o.modifiers.new('WornCornice','BEVEL');b.width=min(bevel,min(size)*.18);b.segments=2
-  o.modifiers.new('FaceNormals','WEIGHTED_NORMAL')
+  # Worn stone remains authored; avoid deprecated WeightedNormals in Blender 4
  return o
 def cylinder(name,loc,r,depth,ma,group,verts=14):
  bpy.ops.mesh.primitive_cylinder_add(vertices=verts,radius=r,depth=depth,location=loc)
@@ -195,6 +195,54 @@ for i in range(3):
 beam('SteelSaw',(1.35,-1.06,.14),(1.35,-1.06,3.14),.046,iron,g)
 cube('SawBlade',(1.35,-1.12,1.8),(.11,.06,2.4),iron,g,.02)
 flag('Miller',(-3.7,-1.8,3.1),g)
+
+# Visual-authoring refinement, using the SAME material kit in both buildings.
+# Separate original meshes; no rectangular ground or post-sharpening.
+g='Cuartel'
+for xx in (-3.15,-1.55,1.6,3.15):
+ # Deep warm cutouts on the front facade; narrow apertures read on mobile.
+ cube('Amber_LitLancet',(xx,-2.315,2.05),(.28,.065,.69),glow,g,.02)
+ for dx in (-.23,.23):
+  beam('Window_StoneJamb',(xx+dx,-2.36,1.65),(xx+dx,-2.36,2.43),.075,limestone,g)
+ beam('Window_Glint',(xx-.19,-2.392,2.47),(xx+.19,-2.392,2.47),.05,gold,g)
+# The central stone doorway is now visually distinct from the broad wall.
+for xx in (-.86,.86):
+ cube('Barracks_Door_Pier',(xx,-2.57,1.50),(.22,.30,2.95),limestone,g,.05)
+beam('Barracks_Door_Crown',(-1.05,-2.6,2.98),(1.05,-2.6,2.98),.12,gold,g)
+# Hand-placed metallic roof lines and decorative upper dormers.
+for yy,zz in ((-.2,6.11),(.7,5.80)):
+ beam('Slate_RidgeCap',(-4.6,yy,zz),(4.4,yy,zz),.08,gold if yy<0 else limestone,g)
+for xx in (-2.8,2.55):
+ cube('Slate_Dormer_Front',(xx,-1.03,4.55),(.62,.32,.94),wood,g,.045)
+ cube('Dormer_Amber',(xx,-1.222,4.65),(.36,.075,.62),glow,g,.02)
+for xx in (-2.0,0.0,2.0):
+ # Iron-crested banners above the soldier entry, no carnival saturation.
+ beam('Barracks_Crest_Lance',(xx,-2.51,3.08),(xx,-2.51,3.81),.055,iron,g)
+ cylinder('Barracks_Crest_Finial',(xx,-2.51,3.84),.12,.18,gold,g)
+g='Aserradero'
+# Replace empty machine-table reading with an actual saw workbench,
+# orange workshop windows and joinery on the front posts.
+for xx in (-3.65,3.65):
+ cube('WoodWorkshop_Lamp',(xx,-2.02,2.72),(.32,.27,.44),glow,g,.05)
+ beam('Workshop_Lantern_Iron',(xx,-2.18,2.45),(xx,-2.18,2.93),.04,iron,g)
+for xx in (-2.35,.05,2.35):
+ beam('ExposedEaveRail',(xx,-2.11,3.58),(xx,-2.11,3.92),.11,newwood,g)
+# The machine is not just a plank: actual disc, rim and radial teeth.
+wheel=cylinder('Saw_Machine_Disc',(1.25,-1.39,1.6),.50,.055,iron,g,32)
+wheel.rotation_euler[0]=math.pi/2
+for i in range(14):
+ theta=math.tau*i/14
+ x=1.25+.53*math.cos(theta);z=1.6+.53*math.sin(theta)
+ beam('Saw_Tooth',(x,-1.45,z),(x+.09*math.cos(theta),-1.45,z+.09*math.sin(theta)),.05,iron,g)
+for xx in (-2.55,-.85,1.25):
+ cube('Plank_Stack',(xx,-2.84,.26),(1.35,.43,.20),newwood,g,.025)
+for i in range(5):
+ y=.87+i*.26
+ beam('Waterwheel_Aqueduct',(1.6,y,3.85),(4.5,y,3.85),.036,wood,g)
+for z in (1.1,1.75,2.4):
+ beam('Waterwheel_Support',(2.68,1.72,z),(3.52,2.0,z),.08,wood,g)
+log['art_pass']='shared_3d_materials_amber_masonry_slates_and_wood_detail_v2'
+
 log['buildings']={
  'Cuartel':{'identity':'stone garrison + off-center tower + training targets','footprint':[9.6,6.0]},
  'Aserradero':{'identity':'open timber saw shop + working wheel + logs','footprint':[9.5,6.4]}
@@ -212,8 +260,8 @@ def area(name,loc,power,rgb):
  d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=rgb;d.shape='DISK';d.size=5
  obj=bpy.data.objects.new(name,d);scene.collection.objects.link(obj)
  obj.location=loc;obj.rotation_euler=(look-obj.location).to_track_quat('-Z','Y').to_euler()
-area('Sun_Amber_Sunset',(-9,-8,13),1500,(1,.74,.53))
-area('Sky_BlueFill',(9,7,10),840,(.53,.62,.94))
+area('Sun_Amber_Sunset',(-9,-8,13),2100,(1,.76,.58))
+area('Sky_BlueFill',(9,7,10),430,(.58,.67,.98))
 # Plane is Cycles shadow catcher, never baked as rectangular slab.
 bpy.ops.mesh.primitive_plane_add(size=30,location=(0,0,-.015))
 catcher=bpy.context.object;catcher.name='CYCLES_CONTACT_SHADOW_ONLY';catcher.is_shadow_catcher=True
