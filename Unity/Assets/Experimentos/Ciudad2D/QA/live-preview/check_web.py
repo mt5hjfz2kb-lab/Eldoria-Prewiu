@@ -43,6 +43,16 @@ with sync_playwright() as p:
             # No complete building is allowed in a locked or available parcel.
             if chapter in (1,3,5):page.screenshot(path=str(OUT/f'{name}-capitulo-{chapter}.png'))
         page.locator('#tier1').click()
+        if name in ('iphone_portrait', 'iphone_resolution'):
+            # Actual pointer events: a legally available parcel is clickable, locked buildings are not.
+            for bid, point, expected in [
+                ('aserradero', (172, 918), 'aserradero'),
+                ('cuartel', (206, 525), None),
+            ]:
+                px, py = page.evaluate('([x,y])=>window.city2dDebug.worldToScreen(x,y)', list(point))
+                if 10 < px < w-10 and 110 < py < h-85:
+                    page.mouse.click(px, py)
+                    assert page.evaluate('window.city2dDebug.state.selected') == expected, (name, bid, expected)
         page.screenshot(path=str(OUT/f'{name}-i.png'))
         page.locator('#tier5').click()
         assert page.evaluate('window.city2dDebug.state.artLevel')==5
