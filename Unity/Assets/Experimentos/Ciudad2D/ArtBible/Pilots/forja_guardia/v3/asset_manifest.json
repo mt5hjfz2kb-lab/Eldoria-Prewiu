@@ -1,0 +1,45 @@
+{
+  "schema": 3,
+  "id": "forja_guardia",
+  "variant": "V3_single_image_new_art",
+  "status": "ART_NOT_APPROVED_UNITY_CAPTURE_PENDING",
+  "generation_id": "bc3db193-9156-4774-9616-628dd28d5b5a",
+  "source_origin": "ChatGPT image generation, imported into Runway-hosted asset without additional generation",
+  "hosted_asset_id": "8f281509-5a09-43e8-b15b-6e2ee6b4ee42",
+  "generation_reference_master_directly_attached": false,
+  "visual_master": "ArtBible/Masters/Bastion_V_MASTER.png",
+  "source_sha256": "1fb781c22a60ae61ce4a3cb28d6f394be3b15d8d344ca5e48a3afbd37877bd63",
+  "candidate_sha256": "ed42684004cd891c83d933d38b195fb794f5db8449bb4436b2c043a7ab8c99ad",
+  "source_dimensions": [
+    1536,
+    1024
+  ],
+  "candidate_dimensions": [
+    1433,
+    1433
+  ],
+  "alpha_range": [
+    0,
+    254
+  ],
+  "alpha_pixels_0": 801673,
+  "alpha_corners": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "foot_px": [
+    716,
+    1361
+  ],
+  "source_preserved": true,
+  "v1_and_v2_unchanged": true,
+  "contact_shadow": "PENDING",
+  "alpha_edge_visual_review": "PENDING",
+  "unity_native_art_comparison": "PENDING",
+  "quality_compared_with_bastion_master": "PENDING",
+  "same_generator_3_building_proof": false,
+  "art_approved": false,
+  "physical_iphone": false
+}
