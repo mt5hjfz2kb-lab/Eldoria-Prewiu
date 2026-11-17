@@ -59,5 +59,7 @@ web=(QA/'live-preview/index.html').read_text(encoding='utf-8')
 assert "fetch('../city_layout.json'" in web and 'layout.decor.length!==32' in web
 assert 'b.file=artLevel===5?b.level5File:b.baseFile' in web
 assert 'function toggleTerrain()' in web and 'drawImage(terrainName' in web
+assert "'Props/MuroDerruido.png':'Props/VallaLenador.png'" in web
+assert 'const markers=entries.filter(' in web
 assert 'function stateFor(e)' in web and 'stateFor(e).phase' in web
 print('CITY2D_LAYOUT4_OFFLINE_PASS: 6 buildings, 32 decor placements, 7 glows, 6 new premium assets, isolated scene, game state read-only')

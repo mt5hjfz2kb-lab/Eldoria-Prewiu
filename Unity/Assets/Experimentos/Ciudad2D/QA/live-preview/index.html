@@ -101,19 +101,17 @@ function img(name){return imgs[name]||null;}
 function drawImage(name,x,y,w,h){const im=img(name);if(im)ctx.drawImage(im,x,y,w,h);}
 function draw(){frame++;const ratio=canvas.width/canvas.clientWidth;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#18252b';ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);ctx.save();ctx.translate(canvas.clientWidth/2,canvas.clientHeight/2);ctx.scale(scale,scale);ctx.translate(-centerX,-centerY);
  drawImage(terrainName,0,0,W,H);
+ // Plot art shares the same sprites and foot-anchored depth ordering as Unity.
+ const markers=entries.filter(e=>stateFor(e).phase==='available'||stateFor(e).phase==='under-construction')
+   .map(e=>({...e,kind:'marker',
+     file:stateFor(e).phase==='available'?'Props/MuroDerruido.png':'Props/VallaLenador.png',
+     s:stateFor(e).phase==='available'?0.35:0.43}));
  for(const o of [...entries.filter(e=>stateFor(e).phase==='built').map(e=>({...e,kind:'building'})),
-                   ...decor.filter(shownDecor).map(e=>({...e,kind:'decor'}))].sort((a,b)=>a.y-b.y)){
+                   ...decor.filter(shownDecor).map(e=>({...e,kind:'decor'})),...markers].sort((a,b)=>a.y-b.y)){
   const im=img(o.file);if(!im)continue;const dw=im.width*o.s,dh=im.height*o.s,x=o.x-dw/2,y=o.y-dh;
   ctx.fillStyle='rgba(11,19,19,.08)';ctx.beginPath();ctx.ellipse(o.x,o.y-8,dw*.32,10,0,0,Math.PI*2);ctx.fill();
   drawImage(o.file,x,y,dw,dh);
   if(o.kind==='building'&&sel?.id===o.id){ctx.strokeStyle='rgba(248,215,151,.85)';ctx.lineWidth=2/scale;ctx.beginPath();ctx.ellipse(o.x,o.y-dh*.18,dw*.39,Math.max(12,dh*.115),0,0,Math.PI*2);ctx.stroke();}
- }
- for(const e of entries){
-  if(stateFor(e).phase!=='available')continue;
-  // A visually lightweight parcel is NOT the finished building.
-  const r=28;
-  ctx.save();ctx.setLineDash([6,5]);ctx.lineWidth=1.7;ctx.strokeStyle='rgba(236,194,112,.9)';ctx.fillStyle='rgba(49,35,20,.16)';
-  ctx.beginPath();ctx.ellipse(e.x,e.y-8,r*1.5,r*.65,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
  }
  // flame glows are emissive-only in the web study, no dynamic point lights
  const t=performance.now()/1000;
@@ -130,7 +128,7 @@ function clickPoint(cx,cy){const [x,y]=screenToWorld(cx,cy);for(const o of entri
  const phase=stateFor(o).phase;
  if(phase==='locked')continue;
  if(phase==='available'){
-   if(Math.abs(x-o.x)<42&&Math.abs(y-o.y+8)<36){select(o.id);return o.id;}
+   if(Math.abs(x-o.x)<62&&y<=o.y+14&&y>=o.y-110){select(o.id);return o.id;}
    continue;
  }
  const im=img(o.file);if(!im)continue;const dw=im.width*o.s,dh=im.height*o.s,ix=(x-(o.x-dw/2))/o.s,iy=(y-(o.y-dh))/o.s;
