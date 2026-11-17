@@ -16,8 +16,18 @@ for m in manifest['masters']:
         assert list(im.size)==m['size'] and im.mode=='RGBA',path
 assert pilot['schema']==1 and len(pilot['entries'])==3
 assert pilot['status']!='ART_APPROVED' and pilot['art_approved'] is False
-assert pilot['unity_integration']!='verified'
+# Editor RenderTexture gallery is now evidenced by one immutable action run.
+# This is NOT PlayMode coverage of any pilot building or iPhone validation.
+gallery=pilot.get('unity_integration')=='verified_editor_gallery_only'
+if gallery:
+    assert pilot.get('unity_gallery_run_id')==44040675403
+    assert pilot.get('unity_gallery_source_sha')=='b7b914176821d6400a77fa6953acbc9469f1f1c1'
+    assert pilot.get('unity_gallery_capture_count')==8
+    assert pilot.get('playmode_for_new_candidates') is False
+    assert pilot.get('iPhone_for_new_candidates') is False
+else:
+    assert pilot['unity_integration']!='verified'
 for row in pilot['entries']:
-    assert row.get('native_unity_capture') is False
+    assert row.get('native_unity_capture') is gallery
     assert row.get('art_assessment'),row
-print('VISUAL_MASTER_6_SHA_PASS | PILOT_3_ENTRIES_NOT_ART_CERTIFIED')
+print('VISUAL_MASTER_6_SHA_PASS | PILOT_3_ENTRIES_NOT_ART_CERTIFIED | EDITOR_GALLERY='+str(gallery))
