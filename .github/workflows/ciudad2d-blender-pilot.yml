@@ -40,7 +40,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
           python -m pip install --disable-pip-version-check pillow==11.3.0
           blender --version | head -2
       - name: Create TWO native 3D models from shared Blender camera and materials
