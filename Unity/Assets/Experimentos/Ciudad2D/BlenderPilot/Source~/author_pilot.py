@@ -20,6 +20,11 @@ bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene
 scene.render.engine='CYCLES';scene.cycles.samples=a.samples
 scene.cycles.device='CPU'
+# Ubuntu's packaged Blender omits OpenImageDenoiser; disabling denoising is
+# necessary for reproducible Cycles renders on the open-source CI runner.
+for view_layer in scene.view_layers:
+ if hasattr(view_layer, 'cycles'): view_layer.cycles.use_denoising=False
+if hasattr(scene.cycles, 'use_denoising'): scene.cycles.use_denoising=False
 scene.render.resolution_x=a.size;scene.render.resolution_y=a.size
 scene.render.resolution_percentage=100
 scene.render.film_transparent=True
