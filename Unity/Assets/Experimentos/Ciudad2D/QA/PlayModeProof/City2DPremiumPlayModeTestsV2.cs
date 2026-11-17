@@ -122,9 +122,31 @@ namespace Eldoria.Experimentos.Ciudad2D.PlayModeProof
                      x.text.Contains("Cuartel") && x.text.Contains("Built")),
                 "Premium scene selection must update existing HUD");
             SetStage(bridge,5);yield return null;
-            Assert.AreEqual(4,ActiveShadows(),"All four constructed premium shadows at Bastion V");
+            // Canonical demo stage V unlocks Cantera but does NOT build it.
+            // It would violate game rules to expect its sprite/shadow here.
+            Assert.AreEqual(3,ActiveShadows(),"Three completed plots; quarry is available, not built");
+            Assert.AreEqual("Available",Property(quarry,"PlotPhase").ToString());
+            Assert.IsFalse(quarry.GetComponent<SpriteRenderer>().enabled);
             Assert.IsTrue(granary.GetComponent<SpriteRenderer>().enabled);
+
+            // A separate, temporary visual-only fixture represents a player
+            // who actually built the quarry after reaching Bastion V. This
+            // calls the existing presentation setter; never grants resources,
+            // executes commands or writes a PlayerState/save.
+            var phaseType=Runtime("City2DPlotPhase");
+            var viewType=Runtime("City2DPlotView");
+            var built=Enum.Parse(phaseType,"Built");
+            var builtView=Activator.CreateInstance(viewType,new object[]{built,1,5});
+            var showQuarry=quarry.GetType().GetMethod("SetAppearance",
+                BindingFlags.Instance|BindingFlags.Public);
+            Assert.NotNull(showQuarry);
+            showQuarry.Invoke(quarry,new[]{builtView});
+            yield return null;
+            Assert.AreEqual(4,ActiveShadows(),
+                "Four independent shadows only AFTER quarry was built");
             Assert.IsTrue(quarry.GetComponent<SpriteRenderer>().enabled);
+            Assert.IsTrue(quarry.GetComponent<Collider2D>().enabled,
+                "Built quarry must retain its actual interactive collider");
             Assert.IsFalse((bool)Property(bridge,"IsLiveBound"),
                 "Visual preview cannot bind or write authoritative game state");
             Assert.NotNull(Camera.main);
