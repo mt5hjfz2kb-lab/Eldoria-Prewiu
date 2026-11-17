@@ -26,7 +26,10 @@ for name in ('Cuartel','Aserradero'):
     assert ca.getpixel((0,0))<10 and sa.getpixel((0,0))<10,name
     left=min(cbox[0],sbox[0]); right=max(cbox[2],sbox[2])
     top=max(0,min(cbox[1],sbox[1])-18)
-    bottom=min(h,max(cbox[3],sbox[3])+18)
+    # Anchor the exported sprite at the actual building feet, not the
+    # distant floor shadow. Otherwise Unity BottomCenter floats the entire
+    # finished building 200+ source pixels above its plot!
+    bottom=min(h,cbox[3]+14)
     # Keep the calibrated camera projection origin (x=w/2) fixed,
     # rather than centering a potentially asymmetric building.
     half=max(w//2-left,right-w//2)+18
@@ -58,6 +61,8 @@ for name in ('Cuartel','Aserradero'):
     report['buildings'][name]={
       'src_color_alpha_bbox':list(cbox),'src_shadow_alpha_bbox':list(sbox),
       'cropping_rect':list(box),'output_dimensions':list(cc.size),
+      'foot_transparent_bottom_px':int(bottom-cbox[3]),
+      'actual_source_alpha_bbox':list(cbox),
       'source_color_sha256':manifest['buildings'][name]['color_sha256'],
       'source_shadow_sha256':manifest['buildings'][name]['shadow_sha256'],
       'ready_sha256':hashlib.sha256((root/(name+'_Ready.png')).read_bytes()).hexdigest(),
