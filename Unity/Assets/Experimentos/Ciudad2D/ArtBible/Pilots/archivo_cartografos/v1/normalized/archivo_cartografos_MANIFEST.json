@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "archivo_cartografos",
+  "status": "QUARANTINED_NOT_APPROVED",
+  "source_task": "f785b806-0718-4667-bf58-251d3400d3e2",
+  "source_sha256": "de3d952ca8eee82732dd69f22aa652d2a2f1b4561ae496c58e6cb7fb39991be3",
+  "mask_sha256": null,
+  "crop_rect": [
+    60,
+    0,
+    1464,
+    986
+  ],
+  "sprite_size": [
+    1496,
+    1496
+  ],
+  "sprite_sha256": "7bb221f5f766ff41f731756ada234ed6e923e5fd0f4cecf19d98bce290cf415c",
+  "foot_px": [
+    748,
+    1403
+  ],
+  "foot_norm": [
+    0.5,
+    0.93783
+  ],
+  "unity_native_capture": "PENDING",
+  "art_review": "PENDING"
+}

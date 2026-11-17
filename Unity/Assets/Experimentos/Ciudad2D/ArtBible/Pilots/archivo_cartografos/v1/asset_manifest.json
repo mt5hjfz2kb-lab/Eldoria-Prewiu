@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "id": "archivo_cartografos",
+  "model": "first_party_image_generation_not_nano_banana",
+  "generation_id": "f785b806-0718-4667-bf58-251d3400d3e2",
+  "runway_upload_asset_id": "0e90eb09-99c3-4acf-9766-e17b5c41d051",
+  "model_seed": "unknown",
+  "exact_provider_prompt": "not_exposed",
+  "reference_images": "visual comparison with six masters recorded; direct reference-conditioning not independently verified",
+  "status": "QUARANTINED_NOT_ART_APPROVED",
+  "original_source": "source_original.png",
+  "original_sha256": "0f3a1ead1d0a84402c8493a84cbbe4a660c0e7fbcf144c5ad3138f43069396df",
+  "original_dimensions": [
+    1536,
+    1024
+  ],
+  "source_type": "PNG_RGB_mattee",
+  "segmentation_method": "border_flood_RGBd23; ROI_close_7_to31; soft_edge_3; v1",
+  "background_rgb": [
+    34.0,
+    32.0,
+    32.0
+  ],
+  "mask_sha256": "dc60d2531c6706e15f690b844bbf5ca4d7452ce3c1f0561e67884e69e1ff896d",
+  "cutout_sha256": "de3d952ca8eee82732dd69f22aa652d2a2f1b4561ae496c58e6cb7fb39991be3",
+  "sprite_path": "Unity/Assets/Experimentos/Ciudad2D/Sprites/AIPilot/Archivo_Cartografos_RGBA.png",
+  "sprite_sha256": "7bb221f5f766ff41f731756ada234ed6e923e5fd0f4cecf19d98bce290cf415c",
+  "sprite_dimensions": [
+    1496,
+    1496
+  ],
+  "foot_pixel": [
+    748,
+    1403
+  ],
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "transparent_fraction": 0.4965,
+  "manual_alpha_edge_approval": false,
+  "contact_shadow_separate": "PENDING",
+  "Unity_native_captures": false,
+  "PlayMode": false,
+  "iPhone": false,
+  "art_approved": false,
+  "reproducible_same_generator_as_two_previous": false
+}
