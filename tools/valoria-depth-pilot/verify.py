@@ -71,7 +71,7 @@ def source_gate():
     assert "importer.ReadTextureSettings(importSettings);" in editor
     assert "importer.SetTextureSettings(importSettings);" in editor
     assert "ti.SetTextureSettings(workerSettings);" in editor
-    assert not re.search(r"\\b(?:importer|ti)\\.spriteAlignment\\b", editor)
+    assert not re.search(r"\b(?:importer|ti)\.spriteAlignment\b", editor)
     assert "CorrectLocalOcclusion" in editor
     # A native Editor render cannot rely on a PlayMode-only LateUpdate.
     assert 'contact.gameObject.scene == scene) contact.Refresh();' in editor
