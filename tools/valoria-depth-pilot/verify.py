@@ -190,6 +190,54 @@ def movies(folder):
             assert out.is_file() and out.stat().st_size > 12000, out
     print("SIX_VIDEO_CLIPS_FROM_NATIVE_UNITY_FRAMES_ONLY_PASS")
 
+    # True native-frame A/B, not keyframe interpolation or a moving still.
+    # check_frames() already SHA-verifies EACH Unity PNG and camera identity.
+    for trajectory in ("pan", "approach", "retreat"):
+        inputs = []
+        for variant in ("A", "B"):
+            inputs += [
+                "-framerate", "12", "-start_number", "0",
+                "-i", str(folder / f"{variant}_{trajectory}_%02d_390x844.png")
+            ]
+        target = folder / f"AB_{trajectory}_390x844.mp4"
+        subprocess.run([
+            ffmpeg, "-hide_banner", "-loglevel", "error", "-y",
+            *inputs, "-filter_complex",
+            "[0:v][1:v]hstack=inputs=2,setsar=1[v]",
+            "-map", "[v]", "-frames:v", "18",
+            "-c:v", "libx264", "-crf", "19",
+            "-preset", "medium", "-pix_fmt", "yuv420p",
+            "-movflags", "+faststart", str(target)
+        ], check=True)
+        assert target.is_file() and target.stat().st_size > 14000, target
+
+    sequence_inputs = []
+    for trajectory in ("pan", "approach", "retreat"):
+        for variant in ("A", "B"):
+            sequence_inputs.extend([
+                "-framerate", "12", "-start_number", "0",
+                "-i", str(folder / f"{variant}_{trajectory}_%02d_390x844.png")
+            ])
+    # All 54 frames are original Unity engine renders at the same real camera
+    # poses. FFmpeg only places A and B next to each other and concatenates
+    # contiguous trajectories; it does not animate a still or synthesize depth.
+    combined = folder / "AB_all_three_real_Unity_camera_paths_390x844.mp4"
+    subprocess.run([
+        ffmpeg, "-hide_banner", "-loglevel", "error", "-y",
+        *sequence_inputs,
+        "-filter_complex",
+        "[0:v][1:v]hstack=inputs=2,setsar=1[h0];"
+        "[2:v][3:v]hstack=inputs=2,setsar=1[h1];"
+        "[4:v][5:v]hstack=inputs=2,setsar=1[h2];"
+        "[h0][h1][h2]concat=n=3:v=1:a=0[v]",
+        "-map", "[v]", "-frames:v", "54",
+        "-c:v", "libx264", "-crf", "19", "-preset", "medium",
+        "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+        str(combined)
+    ], check=True)
+    assert combined.is_file() and combined.stat().st_size > 35000, combined
+    print("FOUR_SIDE_BY_SIDE_AB_VIDEOS_FROM_TRUE_UNITY_CAMERA_FRAMES_PASS")
+
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
