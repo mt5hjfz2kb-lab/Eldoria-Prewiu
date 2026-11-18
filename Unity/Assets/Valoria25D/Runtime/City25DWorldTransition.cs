@@ -85,6 +85,7 @@ namespace Eldoria.Valoria25D
                 // Frontier prevents the main 3D HUD entering the 2.5D city.
                 var presenter = worldOnly.AddComponent<SlicePresenter>();
                 presenter.Initialize(existingGateway);
+                presenter.HideOwnerResetInExternalWorld=true;
                 presenter.ExternalSceneNameResolver = name =>
                     name == "Valoria" || name == "ValoriaWebGL" || name == CityScene
                         ? CityScene : name;
