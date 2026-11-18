@@ -18,7 +18,8 @@ namespace Eldoria.Valoria25D
         private RectTransform panel;
         private Text resources, power, title, explanation, cost, requirements;
         private Text primaryText, recruitText, feedback;
-        private Button primary, recruit;
+        private Button primary, recruit, march;
+        private Button[] developmentChoices;
         private RectTransform parcelPicker;
         private GameObject feedbackStrip;
         private bool showingPanel;
@@ -128,6 +129,26 @@ namespace Eldoria.Valoria25D
                 new Vector2(4,8),new Vector2(-10,47));
             recruitText=recruit.GetComponentInChildren<Text>();
             recruit.gameObject.SetActive(false);
+            march=Button(panel,"MARCHA",controller.RunConfigureMarch,.24f,.28f);
+            Anchor(march.GetComponent<RectTransform>(),new Vector2(.68f,0),new Vector2(1,0),
+                new Vector2(4,8),new Vector2(-10,47));
+            march.gameObject.SetActive(false);
+
+            // Chapter IV development is a real irreversible gateway decision.
+            // Three separate choices, never a default or invented payout.
+            string[] developmentLabels={"PRODUCCIÓN","DEFENSA","CIVIL"};
+            string[] developmentIds={"production","defense","civil"};
+            developmentChoices=new Button[developmentIds.Length];
+            for(int i=0;i<developmentIds.Length;i++)
+            {
+                int index=i;
+                developmentChoices[i]=Button(panel,developmentLabels[i],
+                    ()=>controller.RunDevelopmentPriority(developmentIds[index]),.22f,.28f);
+                Anchor(developmentChoices[i].GetComponent<RectTransform>(),
+                    new Vector2(i/3f,0),new Vector2((i+1)/3f,0),
+                    new Vector2(4,8),new Vector2(-4,47));
+                developmentChoices[i].gameObject.SetActive(false);
+            }
             showingPanel=false;
             panel.gameObject.SetActive(false);
             AdjustLayout();
@@ -177,12 +198,44 @@ namespace Eldoria.Valoria25D
             explanation.text=offer.Description+"\nFase: "+appearance.Phase;
             cost.text=offer.Cost;
             requirements.text=string.IsNullOrEmpty(offer.Requirements)?"":("Falta: "+offer.Requirements);
+            bool developmentNeeded=selectedId=="bastion" &&
+                state.BastionLevel==4 &&
+                string.IsNullOrEmpty(state.ChapterThree?.DevelopmentPriority);
+            primary.gameObject.SetActive(!developmentNeeded);
+            if(developmentChoices!=null)
+                foreach(var item in developmentChoices)
+                    if(item!=null)item.gameObject.SetActive(developmentNeeded);
+            if(developmentNeeded)
+            {
+                explanation.text="Bastión IV · elige una prioridad de desarrollo real";
+                requirements.text="La elección es irreversible. El sistema conserva sus recompensas en bolsa/buzón.";
+                cost.text="Elige PRODUCCIÓN, DEFENSA o CIVIL";
+            }
             primary.interactable=offer.CanAttempt;
             primaryText.text=offer.Kind=="Build"?"CONSTRUIR":
                 offer.Kind=="UpgradeBuilding"?"MEJORAR":
                 offer.Kind=="AdvanceBastion"?"MEJORAR BASTIÓN":
                 offer.CanAttempt?"ACCION":"NO DISPONIBLE";
             bool showRecruit=selectedId=="cuartel"&&state.BarracksLevel>0;
+            bool showMarch=showRecruit&&state.BastionLevel>=2;
+            march.gameObject.SetActive(showMarch);
+            // Use the three columns only when Cuartel actually has recruitment
+            // and march preparation; all buttons dispatch canonical commands.
+            if(showRecruit)
+            {
+                Anchor(primary.GetComponent<RectTransform>(),
+                    new Vector2(0,0),new Vector2(.34f,0),
+                    new Vector2(10,8),new Vector2(-4,47));
+                Anchor(recruit.GetComponent<RectTransform>(),
+                    new Vector2(.34f,0),new Vector2(.68f,0),
+                    new Vector2(4,8),new Vector2(-4,47));
+            }
+            else
+            {
+                Anchor(primary.GetComponent<RectTransform>(),
+                    new Vector2(0,0),new Vector2(.67f,0),
+                    new Vector2(10,8),new Vector2(-4,47));
+            }
             recruit.gameObject.SetActive(showRecruit);
             if(showRecruit)
             {
