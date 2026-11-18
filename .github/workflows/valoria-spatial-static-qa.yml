@@ -1,0 +1,39 @@
+name: Valoria Spatial 2.5D - isolated static A-B integrity
+on:
+  push:
+    branches:
+      - art/valoria-spatial-coherence-20261118
+    paths:
+      - 'Unity/Assets/Experimentos/ValoriaSpatial25D/**'
+      - '.github/workflows/valoria-spatial-static-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-integrity-no-unity:
+    name: A/B byte control, GUIDs and static domain isolation
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout minimal V6 scene and pilot only
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
+            Unity/Assets/Experimentos/ValoriaSpatial25D/
+      - name: Static source integrity (not Unity)
+        run: |
+          python3 Unity/Assets/Experimentos/ValoriaSpatial25D/QA/validate_spatial_sources.py | tee valoria_spatial_static_evidence.json
+      - name: Upload static provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-spatial-static-evidence
+          path: valoria_spatial_static_evidence.json
+          retention-days: 14
+          if-no-files-found: warn
