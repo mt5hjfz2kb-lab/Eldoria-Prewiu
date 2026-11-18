@@ -152,12 +152,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(snapshot==null||SawmillRenderer==null)return;
             var stage=ParcelBuildingStates.For(snapshot,"sawmill");
-            // The in-world parcel is not a separate economy or state machine.
-            // Provisional state silhouettes will be replaced by authored build-phase sprites.
+            // Three independently authored visuals; only the canonical snapshot
+            // chooses which one is visible. No tinted finished-building ghost.
             SawmillRenderer.enabled=true;
-            SawmillRenderer.color=stage==ParcelBuildingState.BUILT
-                ? Color.white : stage==ParcelBuildingState.UNDER_CONSTRUCTION
-                    ? new Color(1f,.85f,.64f,.7f) : new Color(.65f,.75f,.66f,.24f);
+            SawmillRenderer.color=Color.white;
+            SawmillRenderer.sprite=stage==ParcelBuildingState.BUILT
+                ? Modular25DArt.Sawmill()
+                : stage==ParcelBuildingState.UNDER_CONSTRUCTION
+                    ? Modular25DArt.SawmillWorksite() : Modular25DArt.SawmillSite();
         }
 
         public bool HitSawmill(Vector2 world)
