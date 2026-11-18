@@ -19,6 +19,8 @@ namespace Eldoria.Valoria25D
         private Text resources, power, title, explanation, cost, requirements;
         private Text primaryText, recruitText, feedback;
         private Button primary, recruit;
+        private RectTransform parcelPicker;
+        private GameObject feedbackStrip;
         private bool showingPanel;
         private bool isLandscape;
         private static readonly Color Dark=new Color(.035f,.061f,.10f,.93f);
@@ -68,9 +70,36 @@ namespace Eldoria.Valoria25D
             var worldBtn=Button(dock,"MUNDO",()=>controller.ShowWorldEntry(),.17f,.45f);
             Anchor(worldBtn.GetComponent<RectTransform>(),new Vector2(1,0),new Vector2(1,1),
                 new Vector2(-105,6),new Vector2(-5,-6));
-            feedback=Text(dock,"Selecciona una parcela",11,Muted,TextAnchor.MiddleCenter);
-            Anchor(feedback.rectTransform,new Vector2(0,0),new Vector2(1,1),
+            // New-build plots have no finished sprites. Players must be able to
+            // select them without guessing where invisible art/colliders live.
+            // Only four compact shortcuts, no new game state or fake construction.
+            var parcels=Button(dock,"EDIFICIOS",ToggleParcelPicker,.22f,.27f);
+            Anchor(parcels.GetComponent<RectTransform>(),new Vector2(0,0),new Vector2(1,1),
                 new Vector2(109,4),new Vector2(-110,-4));
+            parcelPicker=Box(rt,"SelectorParcelasReales",Dark);
+            Anchor(parcelPicker,new Vector2(0,0),new Vector2(1,0),
+                new Vector2(4,86),new Vector2(-4,136));
+            string[] ids={"aserradero","cuartel","granero","cantera"};
+            string[] labels={"ASERRADERO","CUARTEL","GRANERO","CANTERA"};
+            for(int i=0;i<ids.Length;i++)
+            {
+                string id=ids[i];float left=i/4f;float right=(i+1)/4f;
+                var choice=Button(parcelPicker,labels[i],()=>controller.Select(id),.18f,.25f);
+                Anchor(choice.GetComponent<RectTransform>(),
+                    new Vector2(left,0),new Vector2(right,1),
+                    new Vector2(2,4),new Vector2(-2,-4));
+            }
+            parcelPicker.gameObject.SetActive(false);
+            // A compact transient confirmation/error strip is separate from
+            // all four plot choices; the navigation buttons remain reachable.
+            var status=Box(rt,"MensajeComandoReal",Dark);
+            feedbackStrip=status.gameObject;
+            Anchor(status,new Vector2(0,0),new Vector2(1,0),
+                new Vector2(0,54),new Vector2(0,82));
+            feedback=Text(status,"",11,Muted,TextAnchor.MiddleCenter);
+            Anchor(feedback.rectTransform,Vector2.zero,Vector2.one,
+                new Vector2(10,2),new Vector2(-10,-2));
+            feedbackStrip.SetActive(false);
 
             panel=Box(rt,"PanelEdificioFuncional",Panel);
             Anchor(panel,new Vector2(0,0),new Vector2(1,0),
@@ -107,8 +136,15 @@ namespace Eldoria.Valoria25D
         public void OpenPanel()
         {
             showingPanel=true;
+            if(parcelPicker!=null)parcelPicker.gameObject.SetActive(false);
             if(panel!=null)panel.gameObject.SetActive(true);
             controller?.Refresh();
+        }
+        public void ToggleParcelPicker()
+        {
+            if(parcelPicker==null)return;
+            if(showingPanel)ClosePanel();
+            parcelPicker.gameObject.SetActive(!parcelPicker.gameObject.activeSelf);
         }
         public void ClosePanel()
         {
@@ -120,6 +156,8 @@ namespace Eldoria.Valoria25D
             if(feedback==null)return;
             feedback.text=text??"";
             feedback.color=isError?new Color(1f,.58f,.50f,1f):Muted;
+            if(feedbackStrip!=null)
+                feedbackStrip.SetActive(!string.IsNullOrWhiteSpace(text));
         }
         public void ApplySnapshot(PlayerState state,string selectedId,long nowTicks)
         {
