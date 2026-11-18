@@ -1,0 +1,202 @@
+name: Valoria depth pilot - real Unity A B native proof (exclusive lease)
+on:
+  workflow_dispatch:
+  push:
+    branches: [art/valoria-25d-profundidad-piloto]
+    paths: ['.github/workflows/valoria-depth-pilot-native-ab.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-depth-native-exclusive
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      allowed: ${{ steps.lease.outputs.allowed }}
+    steps:
+      - id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,base64,os,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          def fetch(p):
+              q=urllib.request.Request("https://api.github.com/repos/"+repo+"/"+p,
+                headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+                         "Accept":"application/vnd.github+json"})
+              with urllib.request.urlopen(q,timeout=45) as f:return json.load(f)
+          entry=fetch("contents/pipeline/active-workstreams.json?ref=main")
+          encoded=entry.get("content")
+          if not encoded:
+              blob=fetch("git/blobs/"+entry["sha"])
+              assert blob["sha"]==entry["sha"] and blob["encoding"]=="base64"
+              encoded=blob["content"]
+          data=json.loads(base64.b64decode(encoded))
+          holder=[x for x in data.get("active",[])
+                  if "windows-runner-heavy" in x.get("resources",[])]
+          expected="eldoria-valoria-25d-depth-motion-pilot-20261118"
+          allowed=(len(holder)==1 and holder[0].get("id")==expected
+              and holder[0].get("ownership_state")=="claimed"
+              and holder[0].get("branch")==os.environ.get("GITHUB_REF_NAME")
+              and data.get("resource_rotation",{}).get("current_workstream")==expected)
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+              f.write("allowed="+str(allowed).lower()+"\n")
+          print("LEASE_ALLOWED" if allowed else
+             "SAFE_SKIP: runner belongs to another workstream; integration unaffected")
+          PY
+  unity:
+    needs: preflight
+    if: needs.preflight.outputs.allowed == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Revalidate ownership and idle Windows before starting
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $entry=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$entry.sha) -Headers $h
+          if($blob.sha -ne $entry.sha){throw 'Registry CAS failed'}
+          $data=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $owner=@($data.active | Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+          $id='eldoria-valoria-25d-depth-motion-pilot-20261118'
+          if($owner.Count -ne 1 -or $owner[0].id -ne $id -or
+              $owner[0].ownership_state -ne 'claimed' -or
+              $data.resource_rotation.current_workstream -ne $id){throw 'Lease changed'}
+          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Native PC busy; never cancel work of another chat'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor unavailable'}
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 8GB){throw 'Insufficient free scratch disk'}
+      - name: Sparse SHA-pinned disposable project (no main or integration checkout)
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $d="$env:LOCALAPPDATA/GitHubDesktop"
+            $exe=Get-ChildItem $d -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $exe){throw 'Git unavailable'}
+            $env:PATH="$(Split-Path $exe);$env:PATH"
+          }
+          $dest=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $dest){throw 'Refuse to overwrite prior scratch'}
+          git init -q $dest
+          if($LASTEXITCODE){throw 'git init failed'}
+          git -C $dest remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          $patterns=@('/Unity/Assets/Experimentos/Ciudad2D/',
+                      '/Unity/Assets/Experimentos/Ciudad2DDepthPilot/',
+                      '/Unity/Assets/Eldoria/Scripts/Domain/',
+                      '/Unity/Assets/Eldoria/Scripts/Application/',
+                      '/Unity/Packages/','/Unity/ProjectSettings/',
+                      '/tools/valoria-depth-pilot/')
+          git -C $dest sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'sparse config failed'}
+          git -C $dest fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'source fetch failed'}
+          git -C $dest checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE -or (git -C $dest rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
+            throw 'Unpinned source'}
+          "DEPTH_ROOT=$dest" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Genuine Unity Editor A/B motion frames
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:DEPTH_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('depth-ab-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.Ciudad2DDepthPilot.Editor.DepthPilotNativeCapture.Capture',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2100000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Only this disposable capture process timed out'}
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 220}
+            throw ('Native Unity failed '+$p.ExitCode)}
+          $root=Join-Path $project 'Ciudad2DDepthPilotEvidence'
+          $manifest=Join-Path $root 'evidence.json'
+          if(-not(Test-Path $manifest)){throw 'No Unity evidence.json'}
+          $data=Get-Content $manifest -Raw | ConvertFrom-Json
+          if($data.engine -ne 'Unity' -or $data.mode -ne 'Editor_RenderTexture' -or
+              @($data.frames).Count -ne 114 -or $data.art_approved -ne 'NO'){
+            throw 'Invalid native Unity evidence contract'}
+          foreach($frame in $data.frames){
+            $file=Join-Path $root $frame.file
+            if(-not(Test-Path $file) -or
+              (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $frame.sha256){
+              throw ('Frame missing or corrupt '+$frame.file)}
+          }
+          Write-Host 'REAL_UNITY_DEPTH_114_SOURCE_FRAMES_VERIFIED'
+      - name: Genuine Unity PlayMode on independent B
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:DEPTH_ROOT 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('depth-test-'+$env:GITHUB_RUN_ID+'.log')
+          $xml=Join-Path $env:RUNNER_TEMP ('depth-test-'+$env:GITHUB_RUN_ID+'.xml')
+          $filter='Eldoria.Experimentos.Ciudad2DDepthPilot.Tests.DepthPilotPlayModeTests.PilotB_RealPlayMode_StatesOcclusionSelectionAndZoom'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-runTests',
+             '-testPlatform','EditMode','-testFilter',$filter,
+             '-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1200000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Only this disposable test process timed out'}
+          if(-not(Test-Path $xml)){
+            if(Test-Path $log){Get-Content $log -Tail 120}
+            throw 'No native NUnit XML'}
+          [xml]$report=Get-Content $xml -Raw
+          if([int]$report.'test-run'.failed -ne 0 -or [int]$report.'test-run'.passed -lt 1){
+             Get-Content $log -Tail 120
+             throw 'Native PlayMode regression'}
+          Copy-Item $xml (Join-Path $project 'Ciudad2DDepthPilotEvidence/PlayMode.xml')
+          Write-Host 'UNITY_DEPTH_PILOT_PLAYMODE_PASS'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-depth-frames-${{ github.run_id }}
+          path: ${{ env.DEPTH_ROOT }}/Unity/Ciudad2DDepthPilotEvidence/
+          retention-days: 7
+          if-no-files-found: warn
+  package-movies:
+    needs: unity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-depth-pilot/
+            /Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-depth-frames-${{ github.run_id }}
+          path: native
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pillow==11.3.0
+      - name: Verify genuine frames and encode six original-frame MP4 clips
+        run: |
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+          python tools/valoria-depth-pilot/verify.py --frames native --movies
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-depth-verified-video-${{ github.run_id }}
+          path: |
+            native/*.mp4
+            native/evidence.json
+            native/validation.json
+            native/PlayMode.xml
+          retention-days: 7
