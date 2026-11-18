@@ -37,6 +37,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             public string variant, trajectory, file, sha256;
             public int frame, width, height;
             public float zoom, focusX, focusY, seconds;
+            public float actualCameraX, actualCameraY, actualOrthographicSize;
         }
 
         [Serializable]
@@ -87,10 +88,13 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
                 EnsureContactArt();
                 BuildB();
                 var output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", Output));
+                if (Directory.Exists(output))
+                    throw new InvalidOperationException("Evidence folder already exists; refuse to mix captures");
                 Directory.CreateDirectory(output);
                 var records = new List<FrameRecord>(120);
                 CaptureVariant("A", Reference, output, records);
                 CaptureVariant("B", PilotScene, output, records);
+                ValidateArchive(); // post-render byte identity, not just preflight
                 VerifyPairs(records);
                 var manifest = new Evidence { frames = records.ToArray() };
                 File.WriteAllText(Path.Combine(output, "evidence.json"),
@@ -169,7 +173,8 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             var scene = EditorSceneManager.OpenScene(PilotScene, OpenSceneMode.Single);
             var buildings = Buildings(scene);
             var root = new GameObject("DepthPilot_B_OptIn_NoPersistentState");
-            SceneManager.MoveGameObjectToScene(root, scene);
+            if (root.scene != scene)
+                throw new InvalidOperationException("Opt-in root was not created in B scene");
             CorrectLocalOcclusion(scene, buildings);
             foreach (var id in new[] { "bastion", "aserradero", "granero" })
                 InstallContact(root.transform, buildings[id]);
@@ -436,7 +441,10 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
                 file = file, sha256 = Sha(bytes),
                 width = width, height = height,
                 focusX = pose.Focus.x, focusY = pose.Focus.y,
-                zoom = pose.Zoom, seconds = seconds
+                zoom = pose.Zoom, seconds = seconds,
+                actualCameraX = camera.transform.position.x,
+                actualCameraY = camera.transform.position.y,
+                actualOrthographicSize = camera.orthographicSize
             });
         }
 
@@ -484,7 +492,10 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
                     pair[0].zoom != pair[1].zoom ||
                     pair[0].focusX != pair[1].focusX ||
                     pair[0].focusY != pair[1].focusY ||
-                    pair[0].seconds != pair[1].seconds)
+                    pair[0].seconds != pair[1].seconds ||
+                    Mathf.Abs(pair[0].actualCameraX - pair[1].actualCameraX) > 0.00001f ||
+                    Mathf.Abs(pair[0].actualCameraY - pair[1].actualCameraY) > 0.00001f ||
+                    Mathf.Abs(pair[0].actualOrthographicSize - pair[1].actualOrthographicSize) > 0.00001f)
                     throw new InvalidOperationException("Camera A/B mismatch at " + group.Key);
             }
         }
