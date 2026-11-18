@@ -24,7 +24,18 @@ namespace Eldoria.Presentation
         public bool ExternalNavigationOwned { get; set; }
         public bool LegacyWebNavigationAllowed => !ExternalNavigationOwned;
         public Func<long> UtcNowTicks = () => DateTime.UtcNow.Ticks;
-        void NavigateScene(string target) { if(SceneHost!=null)SceneHost.Navigate(target);else SceneManager.LoadScene(target); }
+        // Optional presentation-only scene redirect for the isolated V6 city.
+        // In the canonical main vertical slice this remains null, preserving
+        // the original Valoria/Frontier navigation byte-for-byte semantically.
+        public Func<string,string> ExternalSceneNameResolver { get; set; }
+        void NavigateScene(string target)
+        {
+            if(SceneHost!=null) { SceneHost.Navigate(target); return; }
+            var resolved=ExternalSceneNameResolver?.Invoke(target)??target;
+            if(string.IsNullOrEmpty(resolved))
+                throw new InvalidOperationException("Navigation target missing");
+            SceneManager.LoadScene(resolved);
+        }
         public void Inspect(string id) { Select(id); }
         public void ShowExpedition(string id) { currentBuildingId=""; OpenWorldPanel(id); }
         public void RefreshState() { Refresh(); }
