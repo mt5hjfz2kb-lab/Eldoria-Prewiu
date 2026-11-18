@@ -111,6 +111,12 @@ jobs:
           if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $manifest.unity_source_sha256){
              throw 'Premium V6 scene content changed'
           }
+          $manifestPath=Join-Path $root 'Unity/Packages/manifest.json'
+          $packages=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+          if($packages.dependencies.'com.unity.modules.physics2d' -ne '1.0.0'){
+             throw 'Unity Physics2D must be explicitly enabled on the isolated integration branch'
+          }
+          Write-Host 'VALORIA25D_PHYSICS2D_MODULE_PRESENT'
           Write-Host 'VALORIA25D_SELECTIVE_PREMIUM_V6_SHA_PASS'
       - name: Run true Unity EditMode, EnterPlayMode, screenshots and WebGL build
         shell: powershell
