@@ -1,0 +1,143 @@
+name: Valoria25D - archive only passing real Unity gameplay scene and QA evidence
+on:
+  push:
+    branches: [integration/valoria-25d-playable-20261117]
+    paths: ['tools/valoria-25d/archive_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria25d-passing-native-archive
+  cancel-in-progress: false
+jobs:
+  archive-real-scene:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-25d/
+            /Unity/Assets/Valoria25D/Scenes/
+            /Unity/Assets/Valoria25D/QA/
+      - name: Verify exact successful native Unity run before retrieving any art
+        id: source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          from pathlib import Path
+          req=json.loads(Path('tools/valoria-25d/archive_request.json').read_text())
+          assert req['schema']==1 and len(req['source_sha'])==40
+          assert req['no_main_change'] and req['no_art_change']
+          assert req['scene_path']=='Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity'
+          repo=os.environ['GITHUB_REPOSITORY']
+          url=f'https://api.github.com/repos/{repo}/actions/runs/'+str(req['native_run'])
+          rq=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                           'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(rq,timeout=50) as f:run=json.load(f)
+          assert run['conclusion']=='success' and run['head_sha']==req['source_sha']
+          assert run['head_branch']=='integration/valoria-25d-playable-20261117'
+          assert run['path']=='.github/workflows/valoria25d-native.yml'
+          print('PASS_SOURCE_NUNIT_PLAYMODE_REAL_UNITY_PROOF_BUILD_SOURCE_ID_MATCH')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('id='+str(req['native_run'])+'\n')
+          PY
+      - name: Download original Unity scene, raw screenshot files, test XML
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.source.outputs.id }}
+          name: valoria25d-real-integration-${{ steps.source.outputs.id }}
+          path: native-artifact
+      - name: Validate NUnit, native Unity pixel hashes, source art identity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,xml.etree.ElementTree as ET,hashlib,shutil
+          root=pathlib.Path('native-artifact')
+          req=json.loads(pathlib.Path('tools/valoria-25d/archive_request.json').read_text())
+          tests=[('gateway',6),('playmode',1)]
+          for name,minimum in tests:
+              results=list(root.rglob('valoria25d-'+name+'-*.xml'))
+              assert len(results)==1,(name,results)
+              xml=ET.parse(results[0]).getroot()
+              assert xml.tag=='test-run'
+              total=int(xml.attrib['total']);passed=int(xml.attrib['passed']);failed=int(xml.attrib['failed'])
+              assert total>=minimum and passed==total and failed==0, (name,total,passed,failed)
+              print('VALORIA25D_REAL_NUNIT_PROOF',name,total,'passed')
+          scenes=list(root.rglob('Valoria25D_Gameplay.unity'))
+          assert len(scenes)==1,scenes
+          source=scenes[0];yaml=source.read_text()
+          assert 'm_Name: Valoria25D_RealGameplayRoot' in yaml
+          assert 'm_Name: CamaraOrto_Ciudad2D' in yaml
+          assert 'm_Name: EventSystem_Ciudad2D' in yaml
+          assert 'm_Name: SombraPremium_cuartel' in yaml
+          assert 'm_Name: SombraPremium_aserradero' in yaml
+          assert 'm_Name: SombraPremium_granero' in yaml
+          assert 'm_Name: SombraPremium_cantera' in yaml
+          assert 'm_Name: ControlesVisuales_NoJugables' not in yaml
+          dest=pathlib.Path('Unity/Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity')
+          assert not dest.exists(), 'No replacement of already archived playable scenes'
+          dest.parent.mkdir(parents=True,exist_ok=True)
+          shutil.copy2(source,dest)
+          old_meta=source.with_suffix('.unity.meta')
+          if old_meta.is_file():shutil.copy2(old_meta,dest.with_suffix('.unity.meta'))
+          else:
+              dest.with_suffix('.unity.meta').write_text(
+                  'fileFormatVersion: 2\nguid: e5b833201831486d8c9504b02636919b\nDefaultImporter:\n'
+                  '  externalObjects: {}\n  userData:\n  assetBundleName:\n  assetBundleVariant:\n')
+          files=list(root.rglob('evidence.json'))
+          assert len(files)==1,files
+          data=json.loads(files[0].read_text())
+          assert data['engine']=='Unity' and data['real_gateway_and_save'] is True
+          assert len(data['captures'])>=3
+          out=pathlib.Path('Unity/Assets/Valoria25D/QA/NativeProof_'+str(req['native_run']))
+          out.mkdir(parents=True,exist_ok=False)
+          records=[]
+          for capture in data['captures']:
+              source_png=files[0].parent/capture['file']
+              assert source_png.is_file(),source_png
+              raw=source_png.read_bytes()
+              actual=hashlib.sha256(raw).hexdigest()
+              assert capture['sha256']==actual, capture['file']
+              assert len(raw)>8000
+              shutil.copy2(source_png,out/capture['file'])
+              records.append({'name':capture['file'],'sha256':actual,
+                              'width':capture['width'],'height':capture['height']})
+          shutil.copy2(files[0],out/'evidence.json')
+          proof={'schema':1,'source_run':req['native_run'],'source_sha':req['source_sha'],
+                 'source_v6_sha256':'aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06',
+                 'scene':'Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity',
+                 'scene_sha256':hashlib.sha256(dest.read_bytes()).hexdigest(),
+                 'verified_original_nunit':{'gateway':6,'playmode':1},
+                 'real_unity_captures':records,'simulated_economy':False,
+                 'main_modified':False,'art_branch_modified':False,
+                 'iphone_hardware_test':'PENDING'}
+          (out/'NATIVE_GATEWAY_PLAYMODE_VERIFIED.json').write_text(
+              json.dumps(proof,indent=2,ensure_ascii=False)+'\n')
+          print('ARCHIVED_REAL_UNITY_PLAYABLE_SCENE_WITH_SHA_VERIFIED_FRAMES',
+                proof['scene_sha256'],len(records))
+          PY
+      - name: Commit only gameplay scene and exact verified native artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --sparse -f Unity/Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity*
+          git add --sparse -f Unity/Assets/Valoria25D/QA/NativeProof_*
+          git commit -m 'qa(valoria25d): archive immutable authentic Unity playable scene plus successful tests and SHA captured frames'
+          for attempt in 1 2 3 4 5 6; do
+            if git push origin HEAD:refs/heads/integration/valoria-25d-playable-20261117; then
+              echo "REAL_UNITY_PLAYABLE_SCENE_ARCHIVED_COMMIT=$(git rev-parse HEAD)"
+              exit 0
+            fi
+            git fetch --no-tags origin integration/valoria-25d-playable-20261117
+            git rebase FETCH_HEAD
+          done
+          exit 1
