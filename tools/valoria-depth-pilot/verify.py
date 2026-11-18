@@ -78,6 +78,13 @@ def source_gate():
     assert editor.index('contact.gameObject.scene == scene) contact.Refresh();') < \
         editor.index('var map = Buildings(scene);')
     assert "OriginalArchive" in editor and "Valoria_Depth_A_ExactV6.unity" in editor
+    # Native Unity #44283728868 compiled but Editor capture aborted on a
+    # LF-only metadata assertion. Windows CRLF must be accepted as valid YAML.
+    assert 'metadata.Replace("\\r\\n", "\\n").Replace("\\r", "\\n")' in editor
+    assert "Array.Exists(lines, line =>" in editor
+    assert 'lines.Length < 5 || normalized.Contains' in editor
+    assert "validGuid || !validImporter" in editor
+
     assert "ReferenceSha256" in editor
     assert "DepthPilotActivity" in editor
     assert "Camera.Render()" in editor or "camera.Render()" in editor

@@ -223,6 +223,9 @@ jobs:
 
   package-movies:
     needs: unity
+    # If capture succeeded but a later PlayMode check fails, still inspect and
+    # package original *authentic* motion frames. Never claim PlayMode passed.
+    if: always() && (needs.unity.result == 'success' || needs.unity.result == 'failure')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:

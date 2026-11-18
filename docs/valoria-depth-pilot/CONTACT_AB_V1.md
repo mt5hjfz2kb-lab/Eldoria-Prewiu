@@ -68,3 +68,13 @@ Esta técnica evita depender de un importador tolerante con metadatos corruptos.
 - **Corrección implementada:** `TextureImporter.ReadTextureSettings` → `TextureImporterSettings.spriteAlignment` / `spritePivot` → `TextureImporter.SetTextureSettings` → `SaveAndReimport`. Para sombra: pivot central. Para trabajador: pivot de pie personalizado (0.5,0). Añadido guardia que impide volver a escribir `importer.spriteAlignment` o `ti.spriteAlignment`.
 - **Otro defecto detectado:** `Remove-Item -Recurse` de PowerShell falló en una ruta larga de `Unity/Library/PackageCache`. Aunque el artefacto con logs se subió, la limpieza del directorio `valoria-depth-44281717983` quedó por comprobar. La siguiente receta debe usar una limpieza segura robusta o conservar el checkout si sigue activo algún proceso. Nunca borrar carpetas de otros trabajos ni afirmar disco liberado sin medir.
 - **Estado:** reparado en fuente; **COMPILACIÓN DE LA REPARACIÓN NO VERIFICADA**. Premium V6 original, main (salvo reserva del PC) e integración permanecen intactos. No declarar éxito visual.
+
+## Cuarto intento nativo y fidelidad del control A
+
+[Unity #44283728868](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44283728868) compiló realmente los scripts nuevos y comenzó `DepthPilotNativeCapture.Capture`. Se detuvo en `ValidateArchive` porque el control A esperó LF exacto en la metadata, mientras Windows Git usó saltos CRLF normales. El control binario SHA-256 del YAML de A y su espejo **ya había pasado** antes de ese error. Por tanto, el fallo no demuestra daño en el arte.
+
+- Corrección en fuente: normalizar CRLF/CR/LF y verificar **líneas reales**, `guid` y sección `DefaultImporter`, sin exigir un byte de salto concreto. Prohibido rebajar el SHA original.
+- Comprobación estática nueva: exigir explícitamente esa normalización para impedir reincidir.
+- Resultado: capturas B/PlayMode/MP4 **todavía no obtenidas**; cambio de metadata aún sin ejecutar en Unity.
+- A diferencia de los intentos anteriores, el helper Win `cleanup-owned-temp.ps1` basado en robocopy de ruta exacta informó `SAFE_DEPTH_SCRATCH_CLEANUP_PASS` para #44283728868. No extrapolar a todos los clones antiguos.
+- Recurso PC exclusivo devuelto a `eldoria-city2d-illustrated-proof-20261116`, main registry commit `d020b8688a12ff26dc58575e7dbf85ff0ac2b0fc`. Sin cambios en integración funcional ni publicación.
