@@ -17,7 +17,9 @@ SOURCE = Path("Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/"
 PILOT = Path("Unity/Assets/Experimentos/Ciudad2DDepthPilot")
 C_SHARP = [
     PILOT / "DepthPilotActivity.cs",
+    PILOT / "DepthPilotContact.cs",
     PILOT / "Editor/DepthPilotNativeCapture.cs",
+    PILOT / "Tests/DepthPilotPlayModeTests.cs",
 ]
 EXPECTED = 2 * 3 * (18 + 1)
 
