@@ -46,7 +46,12 @@ class SandboxSourceContracts(unittest.TestCase):
 
     def test_production_gameplay_authority(self):
         src = content(SCRIPTS / "Modular25DGameplay.cs")
-        self.assertIn("new LocalGateway(new SystemClock(),new FileStateStore(SandboxSavePath))", src)
+        self.assertIn("save=new FileStateStore(SandboxSavePath);", src)
+        self.assertIn("save=new IsolatedWebGlPrefsStore();", src)
+        self.assertIn("gateway=new LocalGateway(new SystemClock(),save);", src)
+        self.assertIn('const string Key = "eldoria.experiment.modular25d.bastion1.v1";', src)
+        self.assertIn("PlayerPrefs.Save();", src)
+        self.assertIn("state.SchemaVersion!=1", src)
         self.assertIn('new GameCommand(Guid.NewGuid().ToString("N"),before.PlayerId,', src)
         self.assertIn('"Build",SawmillId,before.Revision', src)
         self.assertIn('public const string SawmillId = "sawmill"', src)
