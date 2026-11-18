@@ -9939,9 +9939,7 @@
       "status": "active",
       "phase": "BLENDER_3D_TO_2D_TWO_BUILDINGS_TRUE_UNITY_AB_GATE",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -9976,7 +9974,9 @@
       "status": "active",
       "phase": "ONE_BOUNDED_NATIVE_AB_EDITOR_PLAYMODE_AND_VIDEO",
       "claimed_at": "2026-11-18T09:20:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2DDepthPilot/**",
         ".github/workflows/valoria-depth-pilot-*.yml",
@@ -9988,8 +9988,8 @@
       "device_qa": "pending",
       "user_authorization": "Owner explicitly requests alternating exclusive PC time with the other Valoria experiment on 2026-11-18; only one bounded native A/B turn; no cancel or interruption.",
       "control_v6_sha256": "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06",
-      "source_head": "bcd957b0326b8af9db790616b978e1166e32e720",
-      "native_status": "REAL_UNITY_COMPILE_BLOCKED_BY_TEXTUREIMPORTER_SPRITEALIGNMENT_FIXED_SOURCE_PENDING_RETEST",
+      "source_head": "0ed507ad0cae1cd6ef6b7ee5515fd2bc98e34647",
+      "native_status": "UNITY_REAL_AB_RETRY_AFTER_OFFICIAL_TEXTURE_IMPORTER_API_FIX",
       "last_native_run": 44281717983,
       "last_native_conclusion": "failure",
       "native_failure_causes": [
@@ -20425,14 +20425,14 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner: continue depth work while alternating PC with City2D, Nov 18 2026; no City2D native processes/runs active at this allocation.",
+    "authorized_by": "Owner continuation of Valoria A/B with exclusive PC alternation on 2026-11-18",
     "authorized_at": "2026-11-18T09:20:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "current_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
     "current_run_id": null,
-    "next_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
-    "return_to": "eldoria-valoria-25d-depth-motion-pilot-20261118",
-    "status": "city2d_slot_restored_after_depth_native_compiler_failure",
+    "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "return_to": "eldoria-city2d-illustrated-proof-20261116",
+    "status": "depth_pilot_single_verified_api_retry_on_unoccupied_pc",
     "rules": [
       "Never cancel another workstream or interrupt active Unity/Blender processes.",
       "Only this branch and exact archived V6 control may be used for 1 bounded Unity A/B run.",
@@ -20440,7 +20440,7 @@
       "No merge, no beta publication, no artistic PASS without actual original Unity frames."
     ],
     "previous_completed_run": 44023117740,
-    "note": "Third bounded depth native run #44281717983 failed during C# compile, no A/B frames; two importer API errors fixed in source. Windows returned immediately to City2D; next depth turn only by fresh CAS and live process/queue checks. Clean only own temporary checkout 44281717983 when future lease allows.",
+    "note": "Temporary owner-authorized PC borrow after no active native City2D jobs; Unity 6000.3 importer CS1061 fixed in experiment only; use one bounded run, return to City2D immediately; no main gameplay/scene writes.",
     "completed_visual_reboot_run": 43780662139,
     "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
     "previous_rotation": {
@@ -20475,6 +20475,8 @@
     "latest_source_asset_audit_run": 44280257279,
     "last_depth_pilot_run": 44281717983,
     "last_depth_pilot_result": "failure: two CS1061 fixed in source, NOT Unity-retested",
-    "last_depth_temp_cleanup": "partial failure due long Windows PackageCache paths; must verify safe release next turn"
+    "last_depth_temp_cleanup": "partial failure due long Windows PackageCache paths; must verify safe release next turn",
+    "last_software_api_check": "Unity official 6000.3 TextureImporterSettings.spriteAlignment/spritePivot",
+    "last_depth_previous_run": 44281717983
   }
 }
