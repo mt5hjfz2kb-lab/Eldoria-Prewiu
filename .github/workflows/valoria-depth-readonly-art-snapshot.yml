@@ -63,9 +63,11 @@ jobs:
             bbox=alpha.getbbox()
             assert bbox is not None,(name,'empty_alpha')
             px=alpha.load()
-            bottom=[(x,y) for y in range(min(h,bbox[3]),bbox[1]-1,-1)
-                    for x in range(bbox[0],bbox[2]) if px[x,y]>80]
-            support_bottom=max((y for x,y in bottom),default=-1)
+            support_bottom=-1
+            for y in range(min(h,bbox[3])-1,bbox[1]-1,-1):
+             if any(px[x,y]>80 for x in range(bbox[0],bbox[2])):
+              support_bottom=y
+              break
             band_y0=max(0,support_bottom-max(4,h//30))
             band=[(x,y,px[x,y]) for y in range(band_y0,support_bottom+1)
                    for x in range(bbox[0],bbox[2]) if px[x,y]>80]
