@@ -358,10 +358,10 @@ namespace Eldoria.Valoria25D.PlayModeProof
                     }
                 }
                 Assert.That(qaPath,Does.Contain("valoria25d-qa-"));
+                yield return new ExitPlayMode();
             }
             finally
             {
-                yield return new ExitPlayMode();
                 Environment.SetEnvironmentVariable("VALORIA25D_QA_SAVE_PATH",previous);
                 if(File.Exists(qaPath))File.Delete(qaPath);
             }
