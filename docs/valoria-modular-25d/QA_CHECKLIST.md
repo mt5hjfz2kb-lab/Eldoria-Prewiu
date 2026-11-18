@@ -8,7 +8,7 @@
 - [ ] Persistencia efectiva tras cerrar/reabrir juego; no doble comando ni doble pago.
 - [ ] Personaje pasa delante y detrás del mismo árbol con oclusión coherente.
 - [ ] Los habitantes evitan obstáculos visuales; no flota ninguno.
-- [ ] Estado previo / obra / construido tienen imágenes propias y están integrados (PENDIENTE en candidato).
+- [x] Implementación fuente: estados previo / obra / construido tienen sprites de autoría separados conectados al estado canónico. **Sin validación de render ni PlayMode.**
 - [ ] Capturas Unity reales 390×844 y 1170×2532, horizontal y acercamientos.
 - [ ] Capturas reales disponibles/obra/construido y personaje/oclusiones.
 - [ ] Vídeo auténtico de cámara pan/zoom, recorrido de personaje; no movimiento de imagen plana.
