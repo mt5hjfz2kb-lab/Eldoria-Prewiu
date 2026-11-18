@@ -24,6 +24,19 @@ namespace Eldoria.Presentation
             Eldoria.Domain.SliceContentProfiles.SetRuntimeProfileOverride(
                 Eldoria.Domain.SliceContentProfiles.OwnerIiiId);
 #endif
+#if UNITY_EDITOR
+            // Isolation for REAL Editor PlayMode only. A separate QA save name
+            // cannot accidentally touch the PC user's canonical Eldoria save.
+            string qaPath=System.Environment.GetEnvironmentVariable("VALORIA25D_QA_SAVE_PATH");
+            if(!string.IsNullOrEmpty(qaPath))
+            {
+                var file=System.IO.Path.GetFileName(qaPath);
+                if(!file.StartsWith("valoria25d-qa-",System.StringComparison.Ordinal)||
+                    !file.EndsWith(".json",System.StringComparison.OrdinalIgnoreCase))
+                    throw new System.InvalidOperationException("Refusing non-QA City25D save override");
+                return new LocalGateway(new SystemClock(), new FileStateStore(qaPath));
+            }
+#endif
             return new LocalGateway(new SystemClock(), CreateStore());
         }
 
