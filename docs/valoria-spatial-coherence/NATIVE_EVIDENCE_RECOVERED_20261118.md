@@ -78,3 +78,22 @@ sombras, niebla o brillo para disimularlo.
 **Dictamen:** test nativo previo recuperado y auditado; mejoría artística
 comercial todavía NO demostrada. Nuestra variante B sigue pendiente de
 una prueba Unity independiente autorizada.
+
+## Archivo reproducible publicado en GitHub Actions
+
+Tras corregir la dependencia externa FFmpeg para no depender de `apt-get`
+bloqueado en un runner Ubuntu, la ejecución de recuperación
+[44390677388](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44390677388)
+ha terminado en **success** sin tocar el Windows self-hosted.
+
+Artefacto `valoria-verified-unity-AB-movies`, ID `14468640850`:
+cuatro vídeos de comparación (tres trayectorias y un resumen), seis
+vídeos individuales A/B y `recovered_unity_verified.json`.
+Se comprobaron de nuevo 114 PNG SHA-256, 57 parejas de cámara idénticas,
+1/1 Test Framework, movimiento real en cada ruta y SHA-256 de los cuatro
+vídeos de comparación. El ZIP de salida quedó contrastado localmente,
+incluyendo los cuatro hashes. Sin interpolación ni frame fabricado.
+
+No es evidencia de compilación ni de calidad de nuestra **otra** B
+`art/valoria-spatial-coherence-20261118`; esa ejecución nativa está
+pendiente de una reserva legítima del PC.
