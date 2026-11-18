@@ -294,38 +294,61 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             if (built == null || built.sprite == null)
                 throw new InvalidOperationException("Contact owner has no premium sprite");
 
-            // Measure actual lowest painted pixels; the PNG canvas rect is not the foot.
-            // Use a support band rather than a guessed offset or a blurred rectangular matte.
+            // Structural support != lowest opaque alpha pixel. The V6 drawings
+            // have barrels, logs and scattered grain below the main building.
+            // The old "bottom alpha band" measured a stump in Aserradero and
+            // loose grain in Granero, displacing our contact shadow sideways.
+            // Use the LOWEST BROAD silhouette row (>=92% of max row occupancy)
+            // then average a short band ABOVE that row for a stable support center.
+            // This is deliberately a measured visual hypothesis, not a
+            // redefinition of the game's footprint, collider or owner transform.
             string source = Physical(AssetDatabase.GetAssetPath(built.sprite));
             var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             Vector3 foot;
             try
             {
                 if (!ImageConversion.LoadImage(tex, File.ReadAllBytes(source), false))
-                    throw new InvalidOperationException("Cannot inspect actual alpha support");
+                    throw new InvalidOperationException("Cannot inspect premium sprite alpha");
                 var data = tex.GetPixels32();
-                int bottom = tex.height;
+                int[] counts = new int[tex.height];
+                int maximum = 0;
                 for (int y = 0; y < tex.height; ++y)
+                {
+                    int rowCount = 0;
                     for (int x = 0; x < tex.width; ++x)
-                        if (data[y * tex.width + x].a > 80)
-                            bottom = Math.Min(bottom, y);
-                if (bottom == tex.height) throw new InvalidOperationException("Empty building alpha");
-                double total = 0, weightedX = 0;
-                int top = Math.Min(tex.height - 1, bottom + Math.Max(4, tex.height / 28));
-                for (int y = bottom; y <= top; ++y)
+                        if (data[y * tex.width + x].a > 80) ++rowCount;
+                    counts[y] = rowCount;
+                    if (rowCount > maximum) maximum = rowCount;
+                }
+                if (maximum < 64)
+                    throw new InvalidOperationException("Premium building alpha too sparse");
+                int broadThreshold = Mathf.CeilToInt(maximum * 0.92f);
+                int supportY = -1;
+                for (int y = 0; y < counts.Length; ++y)
+                    if (counts[y] >= broadThreshold) { supportY = y; break; }
+                if (supportY < 0)
+                    throw new InvalidOperationException("No broad alpha support row found");
+                int upper = Math.Min(tex.height - 1, supportY + Math.Max(3, tex.height / 75));
+                double weightedX = 0, total = 0;
+                for (int y = supportY; y <= upper; ++y)
                     for (int x = 0; x < tex.width; ++x)
                     {
                         byte alpha = data[y * tex.width + x].a;
-                        if (alpha < 80) continue;
+                        if (alpha <= 80) continue;
                         total += alpha;
-                        weightedX += x * alpha;
+                        weightedX += alpha * x;
                     }
-                float supportX = total > 0 ? (float)(weightedX / total) : tex.width * .5f;
+                if (total < 1) throw new InvalidOperationException("Empty broad alpha support");
+                float supportX = (float)(weightedX / total);
                 float localX = (supportX - built.sprite.pivot.x) /
                     built.sprite.pixelsPerUnit * owner.transform.lossyScale.x;
-                float localY = (bottom - built.sprite.pivot.y) /
+                float localY = (supportY - built.sprite.pivot.y) /
                     built.sprite.pixelsPerUnit * owner.transform.lossyScale.y;
                 foot = new Vector3(localX, localY, 0f);
+                Debug.Log("[DepthPilot] BroadSupport " + owner.BuildingId +
+                    " rowY=" + supportY + " alphaPeak=" + maximum +
+                    " x=" + supportX.ToString("F1") +
+                    " (measured candidate, not collider/ground truth)");
             }
             finally { UnityEngine.Object.DestroyImmediate(tex); }
 
