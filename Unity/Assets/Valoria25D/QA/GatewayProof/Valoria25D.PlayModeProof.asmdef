@@ -1,0 +1,26 @@
+{
+  "name": "Eldoria.Valoria25D.PlayModeProof",
+  "rootNamespace": "Eldoria.Valoria25D.PlayModeProof",
+  "references": [
+    "Eldoria.Domain",
+    "Eldoria.Application",
+    "Eldoria.Infrastructure",
+    "Eldoria.Presentation"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
