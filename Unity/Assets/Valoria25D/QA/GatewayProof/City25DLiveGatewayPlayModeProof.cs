@@ -263,14 +263,17 @@ namespace Eldoria.Valoria25D.PlayModeProof
             Environment.SetEnvironmentVariable("VALORIA25D_QA_SAVE_PATH",qaPath);
             try
             {
-                yield return new EnterPlayMode();
                 Assert.That(File.Exists(Path.Combine(UnityEngine.Application.dataPath,
                     "../"+PlayableScene)),Is.True,
                     "The scene constructor must save a concrete .unity file");
-                var load=EditorSceneManager.LoadSceneAsyncInPlayMode(PlayableScene,
-                    new LoadSceneParameters(LoadSceneMode.Single));
-                Assert.NotNull(load);
-                while(!load.isDone)yield return null;
+                // Load BEFORE entering PlayMode. Otherwise SliceBoot would
+                // bootstrap a legacy presenter on the test runner's default
+                // scene, and its DontDestroyOnLoad HUD would be carried here.
+                // A real player enters this scene directly, as the build does.
+                var edited=EditorSceneManager.OpenScene(PlayableScene,
+                    UnityEditor.SceneManagement.OpenSceneMode.Single);
+                Assert.IsTrue(edited.IsValid()&&edited.isLoaded);
+                yield return new EnterPlayMode();
                 yield return null;
                 yield return null;
                 Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("Valoria25D_Gameplay"));
