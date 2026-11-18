@@ -1,0 +1,218 @@
+name: Valoria spatial B - native Unity A/B proof (exclusive reservation required)
+on:
+  push:
+    branches:
+      - art/valoria-spatial-coherence-20261118
+    paths:
+      - '.github/workflows/valoria-spatial-native-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: valoria-spatial-native-bounded
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+    steps:
+      - id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          token=os.environ['GH_TOKEN']
+          def fetch(path):
+              req=urllib.request.Request(
+                  'https://api.github.com/repos/'+repo+'/'+path,
+                  headers={'Authorization':'Bearer '+token,
+                           'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req,timeout=35) as f:
+                  return json.load(f)
+          item=fetch('contents/pipeline/active-workstreams.json?ref=main')
+          content=item.get('content')
+          if not content:
+              blob=fetch('git/blobs/'+item['sha'])
+              assert blob['sha']==item['sha'] and blob['encoding']=='base64'
+              content=blob['content']
+          registry=json.loads(base64.b64decode(content))
+          leased=[w for w in registry.get('active',[])
+                  if 'windows-runner-heavy' in w.get('resources',[])]
+          our_branch=os.environ['GITHUB_REF_NAME']
+          holders=[w for w in leased
+                   if w.get('branch')==our_branch and
+                      w.get('ownership_state')=='claimed' and
+                      w.get('status')=='active' and
+                      isinstance(w.get('owner'),str) and w['owner']]
+          approved=(len(leased)==1 and len(holders)==1 and
+                    registry.get('resource_rotation',{}).get('current_workstream')==
+                    holders[0].get('id') and our_branch ==
+                    'art/valoria-spatial-coherence-20261118')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('authorized='+str(approved).lower()+'\n')
+          print('UNITY_NATIVE_EXCLUSIVE_LEASE_CONFIRMED' if approved else
+                'SAFE_SKIP: Current Windows owner is another workstream; no PC touched')
+          PY
+
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 52
+    steps:
+      - name: Recheck registry claim, idle Unity, Editor and minimum free space
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $api = "https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $h = @{Authorization='Bearer '+$env:GH_TOKEN; Accept='application/vnd.github+json'}
+          $entry=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$entry.sha) -Headers $h
+          if($blob.sha -ne $entry.sha){throw 'Registry blob mismatch'}
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $leases=@($registry.active | Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+          if($leases.Count -ne 1 -or $leases[0].branch -ne $env:GITHUB_REF_NAME -or
+             $leases[0].ownership_state -ne 'claimed' -or
+             $registry.resource_rotation.current_workstream -ne $leases[0].id){
+            throw 'Runner borrowed or original owner still holds reservation'
+          }
+          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Another Unity/Blender process is active; no interruption'
+          }
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH -PathType Leaf)){
+            throw 'Installed Unity 6000.3.23f1 unavailable'
+          }
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 8GB){throw 'Insufficient scratch space'}
+          Write-Host 'VALORIA_SPATIAL_EXCLUSIVE_NATIVE_PREFLIGHT_PASS'
+
+      - name: Fetch SHA-pinned isolated Unity project, never main checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $source=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $source){throw 'Git unavailable; refuse fallback full repository download'}
+            $env:PATH="$(Split-Path $source);$env:PATH"
+          }
+          $gitExe=(Get-Command git.exe -ErrorAction Stop).Source
+          Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $gitExe)
+          if($env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$'){throw 'Invalid pinned SHA'}
+          $dest=Join-Path $env:RUNNER_TEMP ('valoria-spatial-'+$env:GITHUB_RUN_ID)
+          if(Test-Path -LiteralPath $dest){throw 'Never overwrite a previous scratch checkout'}
+          git init -q $dest
+          if($LASTEXITCODE){throw 'git init failed'}
+          git -C $dest remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'git remote failed'}
+          $patterns=@(
+            '/Unity/Assets/Experimentos/Ciudad2D/'
+            '/Unity/Assets/Experimentos/ValoriaSpatial25D/'
+            '/Unity/Assets/Eldoria/Scripts/Domain/'
+            '/Unity/Assets/Eldoria/Scripts/Application/'
+            '/Unity/Packages/'
+            '/Unity/ProjectSettings/'
+            '/tools/valoria-spatial/'
+          )
+          git -C $dest sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'sparse checkout failed'}
+          git -C $dest fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'SHA-pinned fetch failed'}
+          git -C $dest checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE -or (git -C $dest rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
+            throw 'Source SHA mismatch'
+          }
+          foreach($required in @(
+            'Unity/Assets/Experimentos/ValoriaSpatial25D/Scenes/Valoria_Spatial_A_Control.unity',
+            'Unity/Assets/Experimentos/ValoriaSpatial25D/Scenes/Valoria_Spatial_B_Pilot.unity')){
+            if(-not(Test-Path (Join-Path $dest $required))){throw "Missing source scene $required"}
+          }
+          "SPATIAL_ROOT=$dest" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host ('SPATIAL_PINNED_SOURCE '+$env:GITHUB_SHA)
+
+      - name: Run real Unity Editor RenderTexture A/B 104 images
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $exe=(Get-Command git.exe -ErrorAction SilentlyContinue)
+          if(-not $exe -or -not(Test-Path $exe.Source)){throw 'Git missing from Unity Package Manager PATH'}
+          $log=Join-Path $env:RUNNER_TEMP ('valoria-spatial-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',
+            (Join-Path $env:SPATIAL_ROOT 'Unity'),'-executeMethod',
+            'Eldoria.Experimentos.ValoriaSpatial25D.Editor.SpatialPilotNativeEvidence.Capture',
+            '-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(1800000)){
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Only our own Unity process timed out'
+          }
+          if($proc.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 170}
+            throw ('Unity spatial capture failed exit '+$proc.ExitCode)
+          }
+          $out=Join-Path $env:SPATIAL_ROOT 'Unity/ValoriaSpatialNativeEvidence'
+          $json=Join-Path $out 'evidence.json'
+          if(-not(Test-Path $json)){throw 'No genuine Unity evidence manifest'}
+          $data=Get-Content $json -Raw | ConvertFrom-Json
+          if(@($data.frames).Count -ne 104 -or $data.art_approval -eq $true -or
+             $data.engine -notlike 'Unity*' -or $data.physically_tested -eq $true){
+            throw 'Native frame provenance/state manifest mismatch'
+          }
+          foreach($frame in $data.frames){
+            $path=Join-Path $out $frame.file
+            if(-not(Test-Path -LiteralPath $path) -or
+               (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash.ToLowerInvariant() -ne $frame.sha256){
+               throw 'A/B PNG hash mismatch'
+            }
+          }
+          Write-Host 'NATIVE_REAL_UNITY_SPATIAL_104_VERIFIED_NOT_ART_APPROVED'
+
+      - id: proof
+        name: Preserve 104 original Unity frames and compilation log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-spatial-native-source-${{ github.run_id }}
+          path: |
+            ${{ env.SPATIAL_ROOT }}/Unity/ValoriaSpatialNativeEvidence/
+            ${{ runner.temp }}/valoria-spatial-${{ github.run_id }}.log
+          retention-days: 10
+          if-no-files-found: warn
+
+      - name: Remove only our isolated scratch after upload, never another workstream
+        if: always() && steps.proof.outcome == 'success' && steps.proof.outputs.artifact-id != ''
+        continue-on-error: true
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $exact=Join-Path $env:RUNNER_TEMP ('valoria-spatial-'+$env:GITHUB_RUN_ID)
+          if(-not $env:SPATIAL_ROOT -or
+            [IO.Path]::GetFullPath($env:SPATIAL_ROOT) -ne [IO.Path]::GetFullPath($exact)){
+            throw 'Owned cleanup path mismatch'
+          }
+          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+            Write-Warning 'Native process still running, preserve scratch; no cancellation'
+            exit 0
+          }
+          $helper=Join-Path $exact 'tools/valoria-spatial/cleanup-owned-scratch.ps1'
+          if(-not(Test-Path $helper)){throw 'Cleanup helper missing'}
+          $copy=Join-Path $env:RUNNER_TEMP ('valoria-spatial-clean-'+$env:GITHUB_RUN_ID+'.ps1')
+          Copy-Item -LiteralPath $helper -Destination $copy
+          try {
+            & $copy -RunId ([long]$env:GITHUB_RUN_ID)
+          } finally {
+            Remove-Item -LiteralPath $copy -Force -ErrorAction SilentlyContinue
+          }
