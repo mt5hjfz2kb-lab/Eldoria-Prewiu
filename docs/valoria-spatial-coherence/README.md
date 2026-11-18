@@ -13,6 +13,7 @@ Its existing Git blob SHA-1 at branch creation is `4785b9bdbd77a5f700a2fd4d835ac
 
 Earlier authentic Unity Editor V6 images are preserved in `QA/NativeV6Scale/` and their manifest; `docs/ciudad2d/CIERRE_VALORIA_PREMIUM_V6_20261117.md` records [native run 44133747143](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44133747143) and 1 successful PlayMode test. **That does not validate this new branch B.**
 
+\n### Metadatos de escena A archivada (defecto de procedencia detectado)\n\nEl fichero original `ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity.meta` contiene los caracteres literales `\\n` en lugar de saltos de línea reales; su importación en un checkout nuevo requiere verificación Unity. **No se corrige ese archivo reclamado por el otro chat.** Para no depender de ese `.meta`, este piloto incorpora `Scenes/Valoria_Spatial_A_Control.unity` como copia de los mismos 228583 bytes de YAML y un `.meta` nuevo con saltos válidos. La utilidad de captura abre esa copia A; el verificador estático comprueba igualdad binaria con el archivo archivado. No se trata de una nueva ilustración ni cambia los recursos compartidos.\n
 New **scene B** (verifiable separate Unity scene asset):
 `Unity/Assets/Experimentos/ValoriaSpatial25D/Scenes/Valoria_Spatial_B_Pilot.unity`.
 

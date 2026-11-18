@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CITY = ROOT.parent / "Ciudad2D"
 A = CITY / "QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity"
+CONTROL = ROOT / "Scenes/Valoria_Spatial_A_Control.unity"
 B = ROOT / "Scenes/Valoria_Spatial_B_Pilot.unity"
 CODE = ROOT / "SpatialPilotBootstrap.cs"
 EDITOR = ROOT / "Editor/SpatialPilotNativeEvidence.cs"
@@ -17,8 +18,9 @@ ROOT_NEW = "SceneRoots:\n  m_ObjectHideFlags: 0\n  m_Roots:\n  - {fileID: 700000
 ROOT_OLD = "SceneRoots:\n  m_ObjectHideFlags: 0\n  m_Roots:\n"
 
 def verify() -> dict:
-    assert all(p.is_file() for p in (A, B, CODE, EDITOR, SCRIPT_META)), "Required file missing"
+    assert all(p.is_file() for p in (A, CONTROL, B, CODE, EDITOR, SCRIPT_META)), "Required file missing"
     base = A.read_bytes()
+    assert CONTROL.read_bytes() == base, 'Isolated A control must match archival original exactly'
     candidate = B.read_bytes()
     assert candidate.count(MARKER.encode()) == 1, "B-only component absent or duplicated"
     assert candidate.count(BEFORE_ROOT.encode()) == 1, "B lost canonical SceneRoots"
@@ -47,6 +49,7 @@ def verify() -> dict:
         "unity_run": "NOT_EXECUTED",
         "art_approved": False,
         "source_A_exactly_recoverable_from_B": True,
+        "isolated_A_byte_equal_to_original_archive": True,
         "V6_archived_bytes": len(base),
         "B_scene_bytes": len(candidate),
         "B_additional_scene_bytes": len(candidate) - len(base),

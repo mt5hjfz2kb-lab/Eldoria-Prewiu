@@ -20,7 +20,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
     {
         private const string Root = "Assets/Experimentos/";
         private const string SceneA = Root +
-            "Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity";
+            "ValoriaSpatial25D/Scenes/Valoria_Spatial_A_Control.unity";
         private const string SceneB = Root +
             "ValoriaSpatial25D/Scenes/Valoria_Spatial_B_Pilot.unity";
         private const string OutputDirectory = "ValoriaSpatialNativeEvidence";
