@@ -97,8 +97,8 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Tests
 
             Invoke(bridge, "SetDemoBastionLevel", 5);
             yield return null;
-            Assert.IsTrue((bool)Read(granary, "Level").Equals(1));
-            Assert.IsTrue((bool)Read(saw, "Level").Equals(1));
+            Assert.IsTrue((bool)Read(granary, "Level").Equals(2));
+            Assert.IsTrue((bool)Read(saw, "Level").Equals(2));
             foreach (var w in workers)
             {
                 Invoke(w, "Sample", 1.25f);
