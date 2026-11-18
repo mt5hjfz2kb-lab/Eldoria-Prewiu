@@ -15,7 +15,7 @@
   "no_beta_publish": true,
   "owner_authorization": "The user explicitly requested a City2D V6 integration successor branch built from main and permission to use Unity resources; same City2D workstream lease, no competing job allowed",
   "physical_iPhone_test": "PENDING",
-  "retry": 2,
-  "last_failed_run": 44207233346,
-  "last_failure": "Unity archived source scene failed import because original copied .unity.meta contained literal backslash-n instead of actual YAML newlines; corrected exact GUID/meta only, source .unity unchanged, and preflight validates metadata before editor."
+  "retry": 3,
+  "last_failed_run": 44208239432,
+  "last_failure": "PowerShell metadata guard used regex anchors on Windows CRLF (false-negative), despite corrected valid scene GUID. Validation now normalizes each YAML line, detects literal backslash-n, and preserves exact source scene."
 }
