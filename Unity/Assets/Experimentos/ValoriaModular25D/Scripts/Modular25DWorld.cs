@@ -68,9 +68,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddProp(scenery,Modular25DArt.Rock(),new Vector2(-.15f,-4.65f));
 
             CreateVillager(people,"Valoria citizen A",new [] {
-                new Vector2(-3.9f,-3.6f),new Vector2(-3.4f,-2.5f),
-                new Vector2(-3.08f,-.55f),new Vector2(-2.3f,.1f),
-                new Vector2(-3.08f,-.55f),new Vector2(-3.4f,-2.5f)
+                // Pass on the east edge of the tree crown; keep the feet
+                // off its narrow trunk while crossing in front and behind.
+                new Vector2(-3.9f,-3.6f),new Vector2(-2.70f,-2.5f),
+                new Vector2(-2.62f,-.55f),new Vector2(-2.3f,.1f),
+                new Vector2(-2.62f,-.55f),new Vector2(-2.70f,-2.5f)
             },0f);
             CreateVillager(people,"Valoria citizen B",new [] {
                 new Vector2(.15f,-4.8f),new Vector2(1.65f,-4.2f),
