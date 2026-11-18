@@ -33,3 +33,13 @@ El fondo pintado no aporta geometría que ocluya los edificios; orden Y solo dec
 - Unity Windows #44275806196: superó la resolución del paquete Git, alcanzó la compilación C# y encontró cinco `CS0234` por confusión `Application.isPlaying` con el namespace del proyecto `Eldoria.Application`. Corregidos en fuente todos los usos nuevos con `UnityEngine.Application` (runtime, Editor y pruebas, incluyendo la otra prueba aislada B-cielo).
 - Ambos intentos **NO generaron imágenes A/B válidas** y no acreditan profundidad, calidad, PlayMode ni rendimiento. Los errores y correcciones están versionados; la próxima ejecución nativa es imprescindible para comprobarlos.
 - PC vuelve al titular City2D después de este turno; el piloto no ha ocupado la rama de integración funcional.
+
+## Corrección de una incoherencia de evidencia detectada en revisión de fuente
+
+La actualización `City2DStateBridge.SetDemoBastionLevel(5)` activa los edificios
+ya construidos, pero `DepthPilotContact.LateUpdate()` se ejecuta solo en PlayMode.
+En una captura `Editor_RenderTexture`, las sombras de apoyo del candidato B
+podían seguir invisibles. El método `PrepareStage` ahora invoca
+`DepthPilotContact.Refresh()` explícitamente **después** del cambio de etapa.
+Se añade un control de fuente que impide repetir esta omisión. Hasta obtener
+PNG originales de Unity, el efecto visual continúa SIN VERIFICAR.

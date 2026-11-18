@@ -151,6 +151,13 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             foreach (var shadow in UnityEngine.Object.FindObjectsByType<City2DPremiumShadowGate>(
                 FindObjectsSortMode.None))
                 if (shadow.gameObject.scene == scene) shadow.Refresh();
+            // Critical for Editor RenderTexture A/B: LateUpdate only refreshes
+            // our new footprint contacts during PlayMode, not in Editor Capture.
+            // Refresh after setting stage V so B actually renders the measured
+            // contact improvement under the correct completed buildings.
+            foreach (var contact in UnityEngine.Object.FindObjectsByType<DepthPilotContact>(
+                FindObjectsSortMode.None))
+                if (contact.gameObject.scene == scene) contact.Refresh();
             var map = Buildings(scene);
             if (map["aserradero"].PlotPhase != City2DPlotPhase.Built ||
                 map["granero"].PlotPhase != City2DPlotPhase.Built ||

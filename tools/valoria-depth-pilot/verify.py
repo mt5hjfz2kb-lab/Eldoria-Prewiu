@@ -58,6 +58,10 @@ def source_gate():
     assert "owner.PlotPhase == City2DPlotPhase.Built" in runtime
     assert "Sample(float seconds)" in runtime
     assert "CorrectLocalOcclusion" in editor
+    # A native Editor render cannot rely on a PlayMode-only LateUpdate.
+    assert 'contact.gameObject.scene == scene) contact.Refresh();' in editor
+    assert editor.index('contact.gameObject.scene == scene) contact.Refresh();') < \
+        editor.index('var map = Buildings(scene);')
     assert "ReferenceSha256" in editor
     assert "DepthPilotActivity" in editor
     assert "Camera.Render()" in editor or "camera.Render()" in editor
