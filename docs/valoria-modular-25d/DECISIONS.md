@@ -28,7 +28,7 @@ La escena debe medir en dispositivo si Tilemap batchea mejor, antes de congelar 
 
 ## Riesgos activos y siguientes correcciones
 1. **Arte candidato no aprobado**: el generador de polígonos puede parecer demasiado rígido/esquemático. Se requiere captura auténtica nativa para evaluar siluetas en 390×844, luego redibujar volumen/curvatura/control de color; no declarar 8/10 por compilar.
-2. Los estados iniciales del Aserradero cambian tinte, **no tienen un sprite de obra distinto**. Reautorizar estados con la misma biblioteca raster; nunca otra UI que simule gasto.
+2. Los estados del Aserradero ya utilizan **tres recursos de arte diferentes** (`SawmillSite`, `SawmillWorksite`, `Sawmill`) seleccionados por `ParcelBuildingStates`. Falta comprobar en Unity la transición, profundidad, legibilidad y calidad de los tres; nunca simular gasto en UI.
 3. Sin navegación ni colisión real. Los recorridos prefijados deben cruzar visualmente árbol sin atravesar su tronco; comprobar en secuencia.
 4. El HUD está en ScreenSpaceOverlay y las capturas Camera.Render solo muestran mundo; capturar GameView realmente para aceptación UI.
 5. Falta PlayMode, import/compilación, WebGL, prueba táctil, persistencia recargada, rendimiento iPhone y aprobación propietario. No rellenar vacíos con pruebas simuladas.
