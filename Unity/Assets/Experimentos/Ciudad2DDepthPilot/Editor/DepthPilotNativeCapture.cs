@@ -278,7 +278,13 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
             importer.spritePixelsPerUnit = 160f;
-            importer.spriteAlignment = (int)SpriteAlignment.Center;
+            // Unity 6000.3: spriteAlignment belongs to TextureImporterSettings,
+            // not TextureImporter (real CS1061 in native run 44281717983).
+            var importSettings = new TextureImporterSettings();
+            importer.ReadTextureSettings(importSettings);
+            importSettings.spriteAlignment = (int)SpriteAlignment.Center;
+            importSettings.spritePivot = new Vector2(0.5f, 0.5f);
+            importer.SetTextureSettings(importSettings);
             importer.alphaIsTransparency = true;
             importer.filterMode = FilterMode.Bilinear;
             importer.mipmapEnabled = false;
@@ -607,7 +613,11 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             ti.textureType = TextureImporterType.Sprite;
             ti.spriteImportMode = SpriteImportMode.Single;
             ti.spritePixelsPerUnit = 160f;
-            ti.spriteAlignment = (int)SpriteAlignment.BottomCenter;
+            var workerSettings = new TextureImporterSettings();
+            ti.ReadTextureSettings(workerSettings);
+            workerSettings.spriteAlignment = (int)SpriteAlignment.Custom;
+            workerSettings.spritePivot = new Vector2(0.5f, 0f);
+            ti.SetTextureSettings(workerSettings);
             ti.alphaIsTransparency = true;
             ti.filterMode = FilterMode.Bilinear;
             ti.mipmapEnabled = false;
