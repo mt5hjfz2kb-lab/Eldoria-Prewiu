@@ -49,10 +49,28 @@ if(-not $validGuid -or -not $validImporter -or -not $validHeader -or $literalBac
     throw 'Malformed scene GUID YAML .meta; abort before long Unity import'
 }
 Write-Host 'VALORIA25D_V6_SCENE_META_VALID_GUID_YAML_PASS'
-Invoke-Unity 'scene' @('-batchmode','-quit','-force-d3d11','-projectPath',$project,
-    '-executeMethod','Eldoria.Valoria25D.Editor.City25DGameplaySceneBuilder.Build') 18
-if(-not(Test-Path (Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity'))){
-    throw 'No authentic Unity gameplay scene authored'
+$scene=Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity'
+if(Test-Path $scene){
+    # A previously 7/7-certified native .unity scene is committed by exact SHA.
+    # Reuse it, never invoke the destructive regenerate-overwrite path.
+    $archive=Join-Path $project 'Assets/Valoria25D/QA/NativeProof_44264410756/NATIVE_GATEWAY_PLAYMODE_VERIFIED.json'
+    if(-not(Test-Path $archive)){throw 'Native gameplay scene exists but source certification missing'}
+    $proof=Get-Content -LiteralPath $archive -Raw | ConvertFrom-Json
+    $sceneSha=(Get-FileHash -Algorithm SHA256 $scene).Hash.ToLowerInvariant()
+    if($proof.scene_sha256 -ne $sceneSha -or $proof.source_run -ne 44264410756){
+        throw 'Original archived gameplay scene SHA changed; no unsafe overwrites'
+    }
+    Invoke-Unity 'scene-verify' @('-batchmode','-quit','-force-d3d11',
+        '-projectPath',$project,
+        '-executeMethod','Eldoria.Valoria25D.Editor.City25DGameplaySceneBuilder.VerifyExisting') 18
+    Write-Host 'VALORIA25D_ARCHIVED_CITY_SCENE_REUSED_NO_OVERWRITE'
+}
+else{
+    Invoke-Unity 'scene' @('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+        '-executeMethod','Eldoria.Valoria25D.Editor.City25DGameplaySceneBuilder.Build') 18
+}
+if(-not(Test-Path $scene)){
+    throw 'No authentic Unity gameplay scene available'
 }
 $gatewayXml=Join-Path $env:RUNNER_TEMP ('valoria25d-gateway-'+$env:GITHUB_RUN_ID+'.xml')
 Invoke-Unity 'gateway' @('-batchmode','-force-d3d11','-projectPath',$project,
