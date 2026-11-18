@@ -70,6 +70,9 @@ def verify() -> dict:
             if abs(cross)>1: signs.add(cross>0)
         assert len(signs)==1, f"Non-convex foreground {region['id']}"
     assert "ForegroundRegionCount" in source and "drawGroundForeground = true" in source
+    assert "zoom=1.34f" in native, "Pan evidence must not use clamped 1.0 overview zoom"
+    assert "actual_camera_x" in native and "actual_camera_y" in native
+    assert "Actual orthographic camera did NOT pan" in native
     assert "Camera.main" in native and "RenderTexture" in native
     assert "EditorSceneManager.OpenScene" in native and "Sha(File.ReadAllBytes(sourceOnDisk))" in native
     assert "SetDemoBastionLevel" in native and "File.WriteAllBytes" in native

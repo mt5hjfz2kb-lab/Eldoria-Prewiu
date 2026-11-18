@@ -109,3 +109,7 @@ La prueba automática `44280576195` produjo una evidencia **offline auténtica**
 ### Personaje que atraviesa el acceso (prueba de oclusión, no de arte de personaje)
 
 Se añade un cuarto figurante exclusivamente al sandbox B, vinculado al Bastión, que sigue la calzada central desde el patio hasta el exterior por el vano real de la puerta. No atraviesa las alas de piedra. Cruza la posición de profundidad del arco, y el capturador exige que su orden de render quede detrás y delante del muro en instantes distintos. Las seis tomas finales de la secuencia se enfocan en esa puerta; también se añaden vistas móviles y retina de detalle. El resultado sigue pendiente de Unity y una revisión de que el *dibujo*, no solo el número de orden, oculte correctamente al visitante.
+
+### Corrección de guion nativo: pan realmente movido
+
+Se detectó a partir de `City2DCameraFit.Refit/ApplyCameraPosition` que el zoom 1.0 recorta el pan de la vista completa y podría dar una secuencia sin movimiento real. Por eso el segmento horizontal y vertical ahora usa zoom 1.34; el capturador registra la posición efectiva de Unity Camera por fotograma y falla explícitamente si no hay desplazamiento X e Y verificable. La última vista vuelve a zoom 1.0 para recuperar el conjunto. La secuencia **aún no se ha ejecutado**.

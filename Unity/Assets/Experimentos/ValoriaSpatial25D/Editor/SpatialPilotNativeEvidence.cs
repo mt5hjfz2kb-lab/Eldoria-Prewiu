@@ -31,6 +31,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
             public string file, variant, camera_step, sha256, scene_asset_path;
             public int width, height, stage, frame_number;
             public float simulated_seconds, zoom, focus_x, focus_y;
+            public float actual_camera_x, actual_camera_y, actual_orthographic_size;
             public bool editor_render_texture, camera_moved_in_unity;
         }
 
@@ -199,11 +200,13 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 {
                     label="horizontal";
                     x=Mathf.Lerp(-1.5f,1.5f,step/7f);
+                    zoom=1.34f;
                 }
                 else if(step<16)
                 {
                     label="vertical";
                     y=Mathf.Lerp(-2f,2f,(step-8)/7f);
+                    zoom=1.34f;
                 }
                 else if(step<24)
                 {
@@ -211,7 +214,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                     float v=(step-16)/7f;
                     x=Mathf.Lerp(0,saw.x,v);
                     y=Mathf.Lerp(0,saw.y,v);
-                    zoom=Mathf.Lerp(1f,1.8f,v);
+                    zoom=Mathf.Lerp(1.34f,1.8f,v);
                 }
                 else if(step<30)
                 {
@@ -238,6 +241,18 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 CaptureOne(variant,source,scene,camera,fit,bridge,pilot,pose,
                     directory,frames,step);
             }
+            // Pan and zoom must really move the Unity Camera, not only a UI pose field.
+            var horizontal = frames.FindAll(f => f.variant == variant &&
+                                                  f.camera_step == "horizontal");
+            var vertical = frames.FindAll(f => f.variant == variant &&
+                                                f.camera_step == "vertical");
+            if (horizontal.Count != 8 || vertical.Count != 8 ||
+                Mathf.Abs(horizontal[0].actual_camera_x -
+                          horizontal[7].actual_camera_x) < .05f ||
+                Mathf.Abs(vertical[0].actual_camera_y -
+                          vertical[7].actual_camera_y) < .05f)
+                throw new InvalidOperationException(
+                    "Actual orthographic camera did NOT pan during A/B native evidence");
             if (Sha(File.ReadAllBytes(sourceOnDisk)) != originalSourceSha)
                 throw new InvalidOperationException(
                     "A/B serialized scene bytes changed during capture: " + source);
@@ -278,6 +293,9 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 stage=pose.stage,frame_number=index,zoom=pose.zoom,
                 focus_x=pose.focusX,focus_y=pose.focusY,
                 simulated_seconds=pose.seconds,
+                actual_camera_x=camera.transform.position.x,
+                actual_camera_y=camera.transform.position.y,
+                actual_orthographic_size=camera.orthographicSize,
                 camera_moved_in_unity=index>=0,editor_render_texture=true,
                 sha256=Sha(png)
             });
