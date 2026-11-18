@@ -9939,9 +9939,7 @@
       "status": "active",
       "phase": "BLENDER_3D_TO_2D_TWO_BUILDINGS_TRUE_UNITY_AB_GATE",
       "claimed_at": "2026-11-16T22:58:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2D/**",
         ".github/workflows/ciudad2d-*.yml",
@@ -9976,7 +9974,9 @@
       "status": "active",
       "phase": "ONE_BOUNDED_NATIVE_AB_EDITOR_PLAYMODE_AND_VIDEO",
       "claimed_at": "2026-11-18T09:20:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Experimentos/Ciudad2DDepthPilot/**",
         ".github/workflows/valoria-depth-pilot-*.yml",
@@ -9988,8 +9988,8 @@
       "device_qa": "pending",
       "user_authorization": "Owner explicitly requests alternating exclusive PC time with the other Valoria experiment on 2026-11-18; only one bounded native A/B turn; no cancel or interruption.",
       "control_v6_sha256": "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06",
-      "source_head": "f95b614dee785f06034191d063cd8c5f475af153",
-      "native_status": "SOURCE_FIXED_AFTER_TWO_NATIVE_FAILURES; NOT YET RETESTED_IN_UNITY",
+      "source_head": "8ee63b684af749adf19d5b73cda15895a2aceabe",
+      "native_status": "NEXT_SINGLE_AB_FULL_PROOF_AUTHORIZED_2026_11_18",
       "last_native_run": 44275806196,
       "last_native_conclusion": "failure",
       "native_failure_causes": [
@@ -20423,14 +20423,14 @@
   },
   "resource_rotation": {
     "resource": "windows-runner-heavy",
-    "authorized_by": "Owner explicitly requests alternate PC turns for Valoria V6 depth pilot and ongoing City2D on 2026-11-18",
+    "authorized_by": "Owner: continue depth work while alternating PC with City2D, Nov 18 2026; no City2D native processes/runs active at this allocation.",
     "authorized_at": "2026-11-18T09:20:00Z",
     "mode": "one_bounded_native_execution_per_turn",
-    "current_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "current_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
     "current_run_id": null,
-    "next_workstream": "eldoria-valoria-25d-depth-motion-pilot-20261118",
-    "return_to": "eldoria-valoria-25d-depth-motion-pilot-20261118",
-    "status": "pc_returned_to_city2d_next_turn_after_depth_pilot_failed_native_start_and_compilation",
+    "next_workstream": "eldoria-city2d-illustrated-proof-20261116",
+    "return_to": "eldoria-city2d-illustrated-proof-20261116",
+    "status": "depth_borrow_idle_windows_single_turn_only_return_to_city2d_after_completion",
     "rules": [
       "Never cancel another workstream or interrupt active Unity/Blender processes.",
       "Only this branch and exact archived V6 control may be used for 1 bounded Unity A/B run.",
@@ -20438,7 +20438,7 @@
       "No merge, no beta publication, no artistic PASS without actual original Unity frames."
     ],
     "previous_completed_run": 44023117740,
-    "note": "User-authorized alternating PC slots: after two depth-pilot attempts with no valid Unity frames, the Windows resource is returned to City2D. Depth candidate remains isolated, compiler error addressed at f95b614 but unverified. Only after City2D finishes its own bounded native turn may depth pilot acquire the next slot by fresh CAS and live process/queue checks.",
+    "note": "Strict temporary borrow only. City2D retains code/branch ownership; its idle PC lease returns immediately after the bounded depth A/B run succeeds/fails. No cancellation; native Windows preflight separately checks running Unity/Blender processes.",
     "completed_visual_reboot_run": 43780662139,
     "priority_override_scope": "Only windows-runner-heavy; all other branch owners and active production scopes retained",
     "previous_rotation": {
@@ -20468,6 +20468,8 @@
       44275806196
     ],
     "last_depth_pilot_status": "NATIVE_RENDER_NOT_PRODUCED; SOURCE_FIX_PENDING_NATIVE_RETEST",
-    "last_depth_pilot_checkout_cleanup": "44275072091 scratch cleaned by retry. 44275806196 failed compilation scratch may remain and must be checked before future run."
+    "last_depth_pilot_checkout_cleanup": "44275072091 scratch cleaned by retry. 44275806196 failed compilation scratch may remain and must be checked before future run.",
+    "last_depth_pilot_source_sha": "8ee63b684af749adf19d5b73cda15895a2aceabe",
+    "latest_source_asset_audit_run": 44280257279
   }
 }
