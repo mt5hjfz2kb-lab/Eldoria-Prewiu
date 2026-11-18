@@ -1,0 +1,93 @@
+name: Valoria depth - exact V6 art pixels and alpha support read-only audit
+on:
+  push:
+    branches: [art/valoria-25d-profundidad-piloto]
+    paths: ['.github/workflows/valoria-depth-readonly-art-snapshot.yml']
+permissions:
+  contents: read
+concurrency:
+  group: valoria-depth-art-snapshot-source-only
+  cancel-in-progress: false
+jobs:
+  exact-v6-source-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Bastion_Nivel05.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno_Organico.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_V2.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V2.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Granero_Premium_V1.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Cuartel_Premium_ShadowV2.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Aserradero_Premium_V2_Shadow.png
+            /Unity/Assets/Experimentos/Ciudad2D/Sprites/Candidates/Granero_Premium_V1_Shadow.png
+            /Unity/Assets/Experimentos/Ciudad2D/ArtBible/master_manifest_v1.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check pillow==11.3.0
+      - name: Preserve original RGBA and audit *actual* alpha footprint, no visual modification
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import hashlib,json,shutil
+          root=Path('Unity/Assets/Experimentos/Ciudad2D')
+          targets={
+           'bastion': 'Sprites/Bastion_Nivel05.png',
+           'ground': 'Sprites/Terreno_Organico.png',
+           'cuartel': 'Sprites/Candidates/Cuartel_Premium_V2.png',
+           'aserradero': 'Sprites/Candidates/Aserradero_Premium_V2.png',
+           'granero': 'Sprites/Candidates/Granero_Premium_V1.png',
+           'shadow_cuartel': 'Sprites/Candidates/Cuartel_Premium_ShadowV2.png',
+           'shadow_aserradero': 'Sprites/Candidates/Aserradero_Premium_V2_Shadow.png',
+           'shadow_granero': 'Sprites/Candidates/Granero_Premium_V1_Shadow.png',
+          }
+          out=Path('valoria-depth-art-source');out.mkdir(exist_ok=True)
+          manifest={'engine':'source_original_png—not_Unity_capture',
+           'baseline_commit':'10dbc197d48ea8517c6a3dd6c22f1a2abf75d508',
+           'lossless_original_copy':True,'visual_edit':False,'audit':{}}
+          for name,rel in targets.items():
+           src=root/rel
+           assert src.is_file() and src.stat().st_size>1000,rel
+           with Image.open(src) as im:
+            rgba=im.convert('RGBA')
+            w,h=rgba.size
+            alpha=rgba.getchannel('A')
+            bbox=alpha.getbbox()
+            assert bbox is not None,(name,'empty_alpha')
+            px=alpha.load()
+            bottom=[(x,y) for y in range(min(h,bbox[3]),bbox[1]-1,-1)
+                    for x in range(bbox[0],bbox[2]) if px[x,y]>80]
+            support_bottom=max((y for x,y in bottom),default=-1)
+            band_y0=max(0,support_bottom-max(4,h//30))
+            band=[(x,y,px[x,y]) for y in range(band_y0,support_bottom+1)
+                   for x in range(bbox[0],bbox[2]) if px[x,y]>80]
+            mass=sum(a for x,y,a in band)
+            weighted_x=sum(x*a for x,y,a in band)/mass if mass else None
+            manifest['audit'][name]={
+             'relative_source':rel,'sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
+             'width':w,'height':h,'alpha_bbox_top_origin':bbox,
+             'support_bottom_y_top_origin':support_bottom,
+             'alpha_support_centroid_x':weighted_x,
+             'support_band_rows': [band_y0,support_bottom],
+             'support_band_count':len(band),'source_bytes':src.stat().st_size
+            }
+           shutil.copyfile(src,out/(name+'.png'))
+          (out/'audit.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False))
+          print('READ_ONLY_PREMIUM_V6_ALPHA_FOOTPRINT_AUDIT_COMPLETE',
+                json.dumps({k:(v['width'],v['height'],v['alpha_bbox_top_origin'])
+                 for k,v in manifest['audit'].items()}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-depth-v6-original-alpha-audit
+          path: valoria-depth-art-source/
+          if-no-files-found: error
+          retention-days: 3
