@@ -10,7 +10,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     /// <summary>
     /// Thin presentation adapter to the canonical Eldoria command gateway.
     /// No invented wallet, production rate, timer, unlock rule or parallel save.
-    /// A separate actual FileStateStore protects the player's existing beta.
+    /// A separate canonical IStateStore protects the player's existing beta.
     /// </summary>
     [DefaultExecutionOrder(-300)]
     public sealed class Modular25DGameplay : MonoBehaviour
@@ -36,7 +36,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // Select an existing, complete content profile, never splice QA_FAST
                 // initial resources with owner-facing build costs and timers.
                 SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
-                gateway=new LocalGateway(new SystemClock(),new FileStateStore(SandboxSavePath));
+                // The existing FileStateStore is authoritative on native targets.
+                // In WebGL the canonical project uses PlayerPrefs.Save to flush
+                // durable browser storage; the virtual filesystem does not
+                // guarantee immediate persistence across a browser refresh.
+                IStateStore save;
+#if UNITY_WEBGL && !UNITY_EDITOR
+                save=new IsolatedWebGlPrefsStore();
+#else
+                save=new FileStateStore(SandboxSavePath);
+#endif
+                gateway=new LocalGateway(new SystemClock(),save);
                 lastSnapshot=gateway.Snapshot();
                 world.Apply(lastSnapshot);
                 SetMessage("Partida experimental aislada · mecánicas reales de Eldoria");
@@ -140,6 +150,40 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 catch(Exception error){SetMessage("Estado inaccesible: "+error.Message);}
             }
         }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        /// <summary>
+        /// The exact WebGL storage principle already used by SliceBoot; this
+        /// adapter only changes the SANDBOX key, never the economic rules.
+        /// </summary>
+        sealed class IsolatedWebGlPrefsStore : IStateStore
+        {
+            const string Key = "eldoria.experiment.modular25d.bastion1.v1";
+            public PlayerState Load()
+            {
+                if(!PlayerPrefs.HasKey(Key))return null;
+                string json=PlayerPrefs.GetString(Key,"");
+                if(string.IsNullOrEmpty(json))return null;
+                try
+                {
+                    var state=JsonUtility.FromJson<PlayerState>(json);
+                    if(state==null||state.SchemaVersion!=1)
+                        throw new InvalidDataException("Unknown sandbox save schema");
+                    return state;
+                }
+                catch(Exception e)
+                {
+                    throw new InvalidDataException(
+                        "Experimental WebGL save unreadable; original preserved",e);
+                }
+            }
+            public void Save(PlayerState state)
+            {
+                PlayerPrefs.SetString(Key,JsonUtility.ToJson(state,true));
+                PlayerPrefs.Save();
+            }
+        }
+#endif
 
         void OnDestroy()
         {
