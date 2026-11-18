@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "branch": "integration/valoria-25d-playable-20261117",
+  "origin_main_sha": "904ff183ffb9053f68b9c0f359b2e9d3d40ce805",
+  "v6_source_scene_sha256": "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06",
+  "requested_tests": [
+    "real LocalGateway build and upgrade, resource cost, timer, save recovery",
+    "real recruitment and no double actions",
+    "true Editor EnterPlayMode unique input and touch",
+    "native Unity evidence 390x844, 1170x2532, 844x390",
+    "isolated Unity WebGL candidate"
+  ],
+  "no_main_write": true,
+  "no_art_write": true,
+  "no_beta_publish": true,
+  "owner_authorization": "The user explicitly requested a City2D V6 integration successor branch built from main and permission to use Unity resources; same City2D workstream lease, no competing job allowed",
+  "physical_iPhone_test": "PENDING"
+}
