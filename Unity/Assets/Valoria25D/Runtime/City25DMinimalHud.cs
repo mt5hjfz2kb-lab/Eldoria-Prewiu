@@ -24,6 +24,7 @@ namespace Eldoria.Valoria25D
         private GameObject feedbackStrip;
         private bool showingPanel;
         private bool isLandscape;
+        private float feedbackUntil;
         private static readonly Color Dark=new Color(.035f,.061f,.10f,.93f);
         private static readonly Color Panel=new Color(.095f,.085f,.074f,.95f);
         private static readonly Color Accent=new Color(.76f,.62f,.36f,1f);
@@ -95,12 +96,12 @@ namespace Eldoria.Valoria25D
             // all four plot choices; the navigation buttons remain reachable.
             var status=Box(rt,"MensajeComandoReal",Dark);
             feedbackStrip=status.gameObject;
-            Anchor(status,new Vector2(0,0),new Vector2(1,0),
-                new Vector2(0,54),new Vector2(0,82));
+            Anchor(status,new Vector2(0,1),new Vector2(1,1),
+                new Vector2(0,-117),new Vector2(0,-91));
             feedback=Text(status,"",11,Muted,TextAnchor.MiddleCenter);
             Anchor(feedback.rectTransform,Vector2.zero,Vector2.one,
                 new Vector2(10,2),new Vector2(-10,-2));
-            feedbackStrip.SetActive(false);
+            feedbackStrip.SetActive(true);
 
             panel=Box(rt,"PanelEdificioFuncional",Panel);
             Anchor(panel,new Vector2(0,0),new Vector2(1,0),
@@ -177,8 +178,8 @@ namespace Eldoria.Valoria25D
             if(feedback==null)return;
             feedback.text=text??"";
             feedback.color=isError?new Color(1f,.58f,.50f,1f):Muted;
-            if(feedbackStrip!=null)
-                feedbackStrip.SetActive(!string.IsNullOrWhiteSpace(text));
+            feedbackUntil=Time.unscaledTime+6f;
+            if(feedbackStrip!=null)feedbackStrip.SetActive(true);
         }
         public void ApplySnapshot(PlayerState state,string selectedId,long nowTicks)
         {
@@ -190,6 +191,13 @@ namespace Eldoria.Valoria25D
             power.text="BASTIÓN "+state.BastionLevel+
                 "  ·  PODER "+parts.Total.ToString("N0")+
                 "  ·  Tropas "+state.Available.Total;
+            // Continuous guidance from the existing canonical mission key;
+            // accepted/rejected command messages take precedence briefly.
+            if(feedback!=null && Time.unscaledTime>=feedbackUntil)
+            {
+                feedback.text=City25DObjectiveCopy.Read(state);
+                feedback.color=Muted;
+            }
             if(!showingPanel||panel==null||!panel.gameObject.activeSelf)return;
             var offer=City25DActionCatalog.Building(state,selectedId,nowTicks);
             var level=City25DActionCatalog.BuildingLevel(state,selectedId);
