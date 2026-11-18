@@ -95,3 +95,9 @@ Keep B's `ValoriaSpatial25D` code and scene segregated. Selectively reuse only c
 ### Corrección preventiva de compilación tras comparar el piloto paralelo (18/11)
 
 El piloto de profundidad `art/valoria-25d-profundidad-piloto` encontró en una prueba Unity auténtica errores `CS0234` porque `Application` fue interpretado como el namespace `Eldoria.Application`, no como la clase Unity. Se han cualificado todos los accesos del sandbox espacial mediante `UnityEngine.Application` y añadido guardia en la prueba estática. **La prueba nativa de esta rama sigue pendiente.** La rotación registrada en main pertenece a Ciudad2D y al piloto de profundidad canónico, no habilita por sí sola otro acceso paralelo desde esta rama.
+
+### Prueba B1 — segmentos de muralla desde los píxeles originales (sin repintar)
+
+IMPLEMENTADO EN FUENTE; **NO APROBADO EN UNITY**. Cinco regiones convexas extraen visualmente fragmentos de la muralla frontal de `Terreno_Organico` en el plano original; su malla reproduce los mismos UV de la misma textura del terreno. Esto no crea un atlas nuevo, no sustituye terreno por superficies simples, no mueve los edificios con paralaje artificial y no difumina las bases de ningún edificio.
+
+El piloto usa un `MeshRenderer` transparente por fragmento y orden de render determinado por la coordenada de apoyo de esa muralla. Permite que un actor detrás del tramo quede realmente oculto sin repintar el original. Tiene un riesgo real: si el polígono abarca suelo, puede tapar al actor donde no corresponde, y si las muestras del shader no coinciden con el sprite original, puede producir bordes visibles. **Rechazar y redibujar los contornos tras capturas Unity antes de extenderlo.** Fuente: `SpatialTerrainForeground.cs`, `Shaders/SpatialForegroundCrop.shader`, `Data/foreground_contours_v1.json`. No hay perfiles GPU o pruebas móviles.

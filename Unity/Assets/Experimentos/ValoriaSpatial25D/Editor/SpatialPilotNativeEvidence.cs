@@ -136,6 +136,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
             {
                 pilot.EnsureBuilt();
                 if (!pilot.IsReady || pilot.WorkerCount != 3 ||
+                    pilot.ForegroundRegionCount != 5 ||
                     pilot.OcclusionTree == null ||
                     pilot.WorkerFor("aserradero") == null ||
                     pilot.WorkerFor("cuartel") == null ||

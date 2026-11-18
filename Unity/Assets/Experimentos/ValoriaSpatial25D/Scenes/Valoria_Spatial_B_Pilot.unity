@@ -8093,6 +8093,9 @@ MonoBehaviour:
   occlusionTree: {fileID: 21300000, guid: 36f6ff7cd4b41d14f79d571a92d59f76, type: 3}
   walkingSpeed: 0.46
   drawOcclusionTree: 1
+  foregroundLayout: {fileID: 4900000, guid: 4a5c410de3d947fb82294881f7705912, type: 3}
+  foregroundShader: {fileID: 4800000, guid: aa33b39dbfa34f0c80b7e86d0db257d1, type: 3}
+  drawGroundForeground: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

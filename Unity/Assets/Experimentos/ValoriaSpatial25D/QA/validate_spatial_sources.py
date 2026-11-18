@@ -12,6 +12,9 @@ B = ROOT / "Scenes/Valoria_Spatial_B_Pilot.unity"
 CODE = ROOT / "SpatialPilotBootstrap.cs"
 WORKER = ROOT / "SpatialPilotWorker.cs"
 ART = ROOT / "SpatialPilotActorArt.cs"
+WALL = ROOT / "SpatialTerrainForeground.cs"
+LAYOUT = ROOT / "Data/foreground_contours_v1.json"
+SHADER = ROOT / "Shaders/SpatialForegroundCrop.shader"
 EDITOR = ROOT / "Editor/SpatialPilotNativeEvidence.cs"
 SCRIPT_META = ROOT / "SpatialPilotBootstrap.cs.meta"
 MARKER = "--- !u!1 &700000010\n"
@@ -20,7 +23,7 @@ ROOT_NEW = "SceneRoots:\n  m_ObjectHideFlags: 0\n  m_Roots:\n  - {fileID: 700000
 ROOT_OLD = "SceneRoots:\n  m_ObjectHideFlags: 0\n  m_Roots:\n"
 
 def verify() -> dict:
-    assert all(p.is_file() for p in (A, CONTROL, B, CODE, WORKER, ART, EDITOR, SCRIPT_META)), "Required file missing"
+    assert all(p.is_file() for p in (A, CONTROL, B, CODE, WORKER, ART, WALL, LAYOUT, SHADER, EDITOR, SCRIPT_META)), "Required file missing"
     base = A.read_bytes()
     assert CONTROL.read_bytes() == base, 'Isolated A control must match archival original exactly'
     candidate = B.read_bytes()
@@ -32,7 +35,7 @@ def verify() -> dict:
     assert without_component.count(ROOT_NEW.encode()) == 1, "B root only once"
     restored = without_component.replace(ROOT_NEW.encode(), ROOT_OLD.encode(), 1)
     assert restored == base, "B differs from A beyond the isolated presentation bootstrap"
-    source = "\\n".join(p.read_text(encoding="utf-8") for p in (CODE, WORKER, ART))
+    source = "\\n".join(p.read_text(encoding="utf-8") for p in (CODE, WORKER, ART, WALL))
     native = EDITOR.read_text(encoding="utf-8")
     meta = SCRIPT_META.read_text(encoding="utf-8")
     guid = "4f88a89cd5134ddc8c10e4ff743dbef5"
@@ -47,6 +50,26 @@ def verify() -> dict:
         assert "UnityEngine.Application." in source_text
         import re
         assert not re.search(r"(?<!UnityEngine\\.)\\bApplication\\.", source_text), "Unqualified Application may bind Eldoria.Application namespace"
+    # Five convex fragments share the source terrain texture; no masking by green patches.
+    data = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    assert data["schema"] == 1 and data["coordinate_width"] == 941 and data["coordinate_height"] == 1672
+    assert len(data["regions"]) == 5
+    wall_source = WALL.read_text(encoding="utf-8")
+    assert "sharedCutoutMaterial.mainTexture = texture" in wall_source
+    assert '"UniversalPipeline"' in SHADER.read_text(encoding="utf-8")
+    for region in data["regions"]:
+        points = region["contour"]
+        assert 3 <= len(points) <= 14
+        assert 0 <= region["foot_y"] <= 1672
+        for point in points:
+            assert 0 <= point["x"] <= 941 and 0 <= point["y"] <= 1672
+        signs = set()
+        for j in range(len(points)):
+            a,b,c = points[j],points[(j+1)%len(points)],points[(j+2)%len(points)]
+            cross = (b["x"]-a["x"])*(c["y"]-b["y"])-(b["y"]-a["y"])*(c["x"]-b["x"])
+            if abs(cross)>1: signs.add(cross>0)
+        assert len(signs)==1, f"Non-convex foreground {region['id']}"
+    assert "ForegroundRegionCount" in source and "drawGroundForeground = true" in source
     assert "Camera.main" in native and "RenderTexture" in native
     assert "EditorSceneManager.OpenScene" in native and "Sha(File.ReadAllBytes(sourceOnDisk))" in native
     assert "SetDemoBastionLevel" in native and "File.WriteAllBytes" in native

@@ -26,6 +26,11 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
         private readonly List<SpatialPilotWorker> actors = new List<SpatialPilotWorker>(3);
         private Transform generated;
         private SpriteRenderer testTree;
+        [SerializeField] private TextAsset foregroundLayout;
+        [SerializeField] private Shader foregroundShader;
+        [SerializeField] private bool drawGroundForeground = true;
+        private SpatialTerrainForeground foreground;
+        public int ForegroundRegionCount => foreground != null ? foreground.RegionCount : 0;
         private bool ready;
         private float elapsed;
 
@@ -82,6 +87,29 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
             rootObject.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
             rootObject.transform.SetParent(transform, false);
             generated = rootObject.transform;
+
+            // Duplicate exact painted-wall texels in separate depth slots.
+            // This is an occlusion pilot, not a new ground illustration.
+            if (drawGroundForeground)
+            {
+                SpriteRenderer ground = null;
+                foreach (var candidate in FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None))
+                    if (candidate.gameObject.scene == gameObject.scene &&
+                        candidate.gameObject.name == "Terreno_Valoria")
+                    {
+                        ground = candidate;
+                        break;
+                    }
+                if (ground == null)
+                    throw new InvalidOperationException("V6 ground sprite missing");
+                var cutout = new GameObject("B_PaintedWallForeground_OcclusionOnly");
+                cutout.hideFlags = HideFlags.DontSave;
+                cutout.transform.SetParent(generated, false);
+                foreground = cutout.AddComponent<SpatialTerrainForeground>();
+                foreground.Configure(ground, foregroundLayout, foregroundShader);
+                if (foreground.RegionCount != 5)
+                    throw new InvalidOperationException("Five wall regions expected");
+            }
 
             // One independent foreground object, not another background photograph.
             // It must share world coordinates with actor feet and building pivots.
@@ -187,6 +215,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
             var go = generated.gameObject;
             generated = null;
             testTree = null;
+            foreground = null;
             actors.Clear();
             if (UnityEngine.Application.isPlaying) Destroy(go);
             else DestroyImmediate(go);
