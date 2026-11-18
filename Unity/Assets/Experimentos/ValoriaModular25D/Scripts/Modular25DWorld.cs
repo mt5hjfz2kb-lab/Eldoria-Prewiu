@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Eldoria.Domain;
 using UnityEngine;
+using UnityEngine.EventSystems;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -209,85 +211,137 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void Update(){transform.localRotation=Quaternion.Euler(0,0,Mathf.Sin(Time.time*.54f+Seed)*.65f);}
     }
 
+
+    /// <summary>
+    /// One gesture owner. A drag or pinch can NEVER also select a building.
+    /// World interaction is blocked by actual uGUI raycasts, not estimated
+    /// screen bands that fail with aspect ratio or open construction panels.
+    /// </summary>
     internal sealed class Modular25DCameraInput : MonoBehaviour
     {
         Camera camera;
         Modular25DWorld world;
-        Vector2 lastPointer;
-        bool moving;
-        float pinchDistance;
-        float startOrthoSize;
-        void Start(){world=GetComponent<Modular25DWorld>();camera=world.ViewCamera;startOrthoSize=camera.orthographicSize;}
+        Vector2 pressAt, previous;
+        bool held, dragged, beganOnUI, pinched;
+        float previousPinch, homeSize;
+
+        void Start()
+        {
+            world=GetComponent<Modular25DWorld>();
+            camera=world.ViewCamera;
+            // Portrait keeps both structures legible; landscape does not zoom
+            // out to a tiny settlement merely because the aspect ratio doubled.
+            homeSize=Mathf.Clamp(4.65f/Mathf.Max(.42f,camera.aspect),5.3f,10.8f);
+            Home();
+        }
+
+        bool IsUI(Vector2 screen)
+        {
+            var events=EventSystem.current;
+            if(events==null)return false;
+            var data=new PointerEventData(events){position=screen};
+            var hits=new List<RaycastResult>();
+            events.RaycastAll(data,hits);
+            return hits.Count!=0;
+        }
+
+        void Begin(Vector2 at)
+        {
+            held=true;dragged=false;pinched=false;
+            pressAt=at;previous=at;beganOnUI=IsUI(at);
+        }
+
+        void Move(Vector2 at)
+        {
+            if(!held)return;
+            if((at-pressAt).sqrMagnitude>100f)dragged=true;
+            if(dragged&&!beganOnUI)Pan(at-previous);
+            previous=at;
+        }
+
+        void End(Vector2 at)
+        {
+            if(!held)return;
+            bool tap=!dragged&&!pinched&&!beganOnUI;
+            held=false;dragged=false;pinched=false;beganOnUI=false;
+            previousPinch=0f;
+            if(tap)TrySelect(at);
+        }
+
         void Update()
         {
             if(camera==null)return;
 #if ENABLE_INPUT_SYSTEM
-            var touches=Touchscreen.current;
-            if(touches!=null)
+            var touchscreen=Touchscreen.current;
+            if(touchscreen!=null)
             {
-                var first=touches.primaryTouch;
-                if(first.press.isPressed)
+                var one=touchscreen.primaryTouch;
+                var two=touchscreen.touches.Count>1?touchscreen.touches[1]:null;
+                bool first=one.press.isPressed;
+                bool second=two!=null && two.press.isPressed;
+                bool began=one.press.wasPressedThisFrame;
+                bool ended=one.press.wasReleasedThisFrame;
+                if(began)Begin(one.position.ReadValue());
+                if(first&&second)
                 {
-                    Vector2 pos=first.position.ReadValue();
-                    if(!moving){moving=true;lastPointer=pos;}
-                    Vector2 delta=pos-lastPointer;
-                    // Pan in camera-local world pixels; no camera rotation.
-                    Pan(delta);lastPointer=pos;
+                    pinched=true;
+                    float d=Vector2.Distance(one.position.ReadValue(),two.position.ReadValue());
+                    if(previousPinch>2f&&d>2f&&!beganOnUI)
+                        Zoom(previousPinch/d);
+                    previousPinch=d;
+                    previous=one.position.ReadValue();
+                    return;
                 }
-                else if(moving)
-                {
-                    moving=false;
-                    if((lastPointer).sqrMagnitude>0)TrySelect(lastPointer);
-                }
-                var second=touches.touches.Count>1?touches.touches[1]:null;
-                if(second!=null && first.press.isPressed && second.press.isPressed)
-                {
-                    float d=Vector2.Distance(first.position.ReadValue(),second.position.ReadValue());
-                    if(pinchDistance>2f)Zoom(pinchDistance/d);
-                    pinchDistance=d;
-                }
-                else pinchDistance=0;
-                return;
+                previousPinch=0f;
+                if(first)Move(one.position.ReadValue());
+                if(ended)End(one.position.ReadValue());
+                // A Touchscreen device may exist on desktop with zero touches:
+                // do not swallow real mouse events just because it is connected.
+                if(first||began||ended||held)return;
             }
             var mouse=Mouse.current;
             if(mouse!=null)
             {
                 Vector2 pos=mouse.position.ReadValue();
                 if(mouse.leftButton.wasPressedThisFrame||mouse.middleButton.wasPressedThisFrame)
-                {moving=true;lastPointer=pos;}
-                if(moving && (mouse.leftButton.isPressed||mouse.middleButton.isPressed))
-                {Pan(pos-lastPointer);lastPointer=pos;}
-                if(moving && (mouse.leftButton.wasReleasedThisFrame||mouse.middleButton.wasReleasedThisFrame))
-                {moving=false;TrySelect(pos);}
+                    Begin(pos);
+                if(held&&(mouse.leftButton.isPressed||mouse.middleButton.isPressed))
+                    Move(pos);
+                if(held&&(mouse.leftButton.wasReleasedThisFrame||mouse.middleButton.wasReleasedThisFrame))
+                    End(pos);
                 float wheel=mouse.scroll.ReadValue().y;
-                if(Mathf.Abs(wheel)>.01f)Zoom(Mathf.Exp(-wheel*.00065f));
+                if(Mathf.Abs(wheel)>.01f&&!IsUI(pos))
+                    Zoom(Mathf.Exp(-Mathf.Clamp(wheel/120f,-3f,3f)*.12f));
             }
 #else
             if(Input.touchCount>0)
             {
-                Touch t=Input.GetTouch(0);
-                if(t.phase==TouchPhase.Began){moving=true;lastPointer=t.position;}
-                else if(t.phase==TouchPhase.Moved){Pan(t.position-lastPointer);lastPointer=t.position;}
-                else if(t.phase==TouchPhase.Ended){moving=false;TrySelect(t.position);}
-                if(Input.touchCount>1)
+                var touch=Input.GetTouch(0);
+                if(touch.phase==TouchPhase.Began)Begin(touch.position);
+                if(Input.touchCount>=2)
                 {
-                    float d=Vector2.Distance(Input.GetTouch(0).position,Input.GetTouch(1).position);
-                    if(pinchDistance>2f)Zoom(pinchDistance/d);
-                    pinchDistance=d;
+                    pinched=true;
+                    float d=Vector2.Distance(touch.position,Input.GetTouch(1).position);
+                    if(previousPinch>2f&&d>2f&&!beganOnUI)Zoom(previousPinch/d);
+                    previousPinch=d;
+                    previous=touch.position;
+                    return;
                 }
-                else pinchDistance=0;
+                previousPinch=0f;
+                if(touch.phase==TouchPhase.Moved)Move(touch.position);
+                if(touch.phase==TouchPhase.Ended||touch.phase==TouchPhase.Canceled)End(touch.position);
+                return;
             }
-            else
-            {
-                Vector2 mouse=Input.mousePosition;
-                if(Input.GetMouseButtonDown(0)){moving=true;lastPointer=mouse;}
-                if(moving&&Input.GetMouseButton(0)){Pan(mouse-lastPointer);lastPointer=mouse;}
-                if(moving&&Input.GetMouseButtonUp(0)){moving=false;TrySelect(mouse);}
-                float wheel=Input.mouseScrollDelta.y;
-                if(Mathf.Abs(wheel)>.01f)Zoom(Mathf.Exp(-wheel*.1f));
-            }
+            Vector2 position=Input.mousePosition;
+            if(Input.GetMouseButtonDown(0)||Input.GetMouseButtonDown(2))Begin(position);
+            if(held&&(Input.GetMouseButton(0)||Input.GetMouseButton(2)))Move(position);
+            if(held&&(Input.GetMouseButtonUp(0)||Input.GetMouseButtonUp(2)))End(position);
+            float wheelLegacy=Input.mouseScrollDelta.y;
+            if(Mathf.Abs(wheelLegacy)>.01f&&!IsUI(position))
+                Zoom(Mathf.Exp(-wheelLegacy*.12f));
 #endif
         }
+
         void Pan(Vector2 pixels)
         {
             if(pixels.sqrMagnitude<.001f)return;
@@ -297,21 +351,23 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             p.y=Mathf.Clamp(p.y-pixels.y*scale,-5f,5f);
             camera.transform.position=p;
         }
+
         void Zoom(float ratio)
         {
+            if(float.IsNaN(ratio)||float.IsInfinity(ratio)||ratio<=0)return;
             camera.orthographicSize=Mathf.Clamp(camera.orthographicSize*ratio,4.2f,11.8f);
         }
+
         public void Home()
         {
             if(camera==null)return;
-            camera.orthographicSize=startOrthoSize;
+            camera.orthographicSize=homeSize;
             camera.transform.position=new Vector3(.18f,.15f,-30f);
         }
+
         void TrySelect(Vector2 screen)
         {
-            if(world==null||world.Hud==null)return;
-            // UI owns top/bottom strips; an isolated camera touch cannot click through HUD.
-            if(screen.y<Screen.height*.13f||screen.y>Screen.height*.83f)return;
+            if(world==null||world.Hud==null||IsUI(screen))return;
             Vector3 p=camera.ScreenToWorldPoint(new Vector3(screen.x,screen.y,30f));
             if(world.HitSawmill(p))world.Hud.OpenSawmill();
         }
