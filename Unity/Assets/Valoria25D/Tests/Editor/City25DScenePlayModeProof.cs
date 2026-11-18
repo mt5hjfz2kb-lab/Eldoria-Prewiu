@@ -8,7 +8,9 @@ using System.Security.Cryptography;
 using NUnit.Framework;
 using Eldoria.Application;
 using Eldoria.Domain;
+using UnityEditor;
 using UnityEditor.SceneManagement;
+using Eldoria.Presentation;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -120,6 +122,19 @@ namespace Eldoria.Valoria25D.Tests
             Assert.AreEqual(6,components.Length);
             var sawmill=components.Single(c=>
                 (string)Prop(c,"BuildingId")=="aserradero");
+            // A fresh Bastion I has no visible sawmill sprite. The four-plot
+            // selector must make its REAL build offer discoverable by touch.
+            var picker=UnityEngine.Object.FindObjectsByType<Button>(
+                FindObjectsSortMode.None).SingleOrDefault(x=>x.gameObject.name=="Button_EDIFICIOS");
+            Assert.NotNull(picker,"Invisible unbuilt parcels need a visible selector");
+            picker.onClick.Invoke();
+            var sawmillShortcut=UnityEngine.Object.FindObjectsByType<Button>(
+                FindObjectsSortMode.None).SingleOrDefault(x=>x.gameObject.name=="Button_ASERRADERO");
+            Assert.NotNull(sawmillShortcut);
+            sawmillShortcut.onClick.Invoke();
+            Assert.AreEqual("aserradero",(string)Prop(root,"SelectedId"));
+            Assert.That((string)Prop(ui,"DisplayedTitle"),Does.Contain("Aserradero"));
+
             var camera=Camera.main;Assert.NotNull(camera);
             var fit=camera.GetComponent(FromArt("City2DCameraFit"));
             Assert.NotNull(fit);
@@ -188,6 +203,98 @@ namespace Eldoria.Valoria25D.Tests
                 "\"captures\":["+string.Join(",",manifest)+"]}\n");
             Debug.Log("VALORIA25D_REAL_PLAYMODE_TOUCH_SAVE_GATEWAY_SINGLE_HUD_PASS");
             yield return new ExitPlayMode();
+        }
+
+        [UnityTest,Timeout(180000)]
+        public IEnumerator OriginalFrontier4X_RoundTripRetainsSaveAndNeverDuplicatesHud()
+        {
+            // The main game's Frontier marker and all domain rules are unchanged.
+            // Only this disposable Unity Editor project is allowed to stage two
+            // build scenes. Source/main Build Settings are never committed.
+            const string originalWorld="Assets/Eldoria/Scenes/Frontier.unity";
+            Assert.IsTrue(File.Exists(Path.Combine(UnityEngine.Application.dataPath,
+                "..",originalWorld)),"Existing 4X scene must be available");
+            var settingsBefore=EditorBuildSettings.scenes;
+            var qaPath=Environment.GetEnvironmentVariable("VALORIA25D_QA_SAVE_PATH");
+            Assert.IsFalse(string.IsNullOrEmpty(qaPath));
+            try
+            {
+                EditorBuildSettings.scenes=new[]{
+                    new EditorBuildSettingsScene(ScenePath,true),
+                    new EditorBuildSettingsScene(originalWorld,true)
+                };
+                var scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
+                Assert.IsTrue(scene.IsValid()&&scene.isLoaded);
+                yield return new EnterPlayMode();
+                yield return null;yield return null;yield return null;
+                var controller=Single("City25DPlayableController");
+                var originalGateway=(ICommandGateway)Prop(controller,"Gateway");
+                Assert.NotNull(originalGateway);
+                var before=originalGateway.Snapshot();
+                var world=UnityEngine.Object.FindObjectsByType<Button>(
+                    FindObjectsSortMode.None).SingleOrDefault(
+                        x=>x.gameObject.name=="Button_MUNDO");
+                Assert.NotNull(world,"Original world navigation button missing");
+                world.onClick.Invoke();
+                yield return null;yield return null;yield return null;
+                Assert.AreEqual("Frontier",SceneManager.GetActiveScene().name,
+                    "MUNDO must lead to the EXISTING unchanged 4X world scene");
+                var borrowed=UnityEngine.Object.FindFirstObjectByType<SlicePresenter>();
+                Assert.NotNull(borrowed,"Original world must own one canonical SlicePresenter");
+                Assert.IsFalse(borrowed.gameObject.scene.name=="DontDestroyOnLoad",
+                    "Borrowed world presenter may never persist into 2.5D city");
+                var field=typeof(SlicePresenter).GetField("gateway",
+                    BindingFlags.Instance|BindingFlags.NonPublic);
+                Assert.NotNull(field);
+                Assert.AreSame(originalGateway,field.GetValue(borrowed),
+                    "World must receive the SAME LocalGateway as the 2.5D city");
+                Assert.AreEqual(1,UnityEngine.Object.FindObjectsByType<Camera>(
+                    FindObjectsSortMode.None).Length,"World must own one camera");
+                Assert.AreEqual(1,UnityEngine.Object.FindObjectsByType<EventSystem>(
+                    FindObjectsSortMode.None).Length,"World must own one input EventSystem");
+                Assert.AreEqual(1,UnityEngine.Object.FindObjectsByType<Canvas>(
+                    FindObjectsSortMode.None).Length,"World must own one HUD canvas");
+                Assert.NotNull(GameObject.Find("World Region 1 · root"),
+                    "The original existing world runtime must render, not a mock");
+                Assert.NotNull(GameObject.Find("World Region 1 · forest target"),
+                    "Original world gathering node must be present");
+                Assert.IsTrue(UnityEngine.Application.CanStreamedLevelBeLoaded(
+                    "Valoria25D_Gameplay"));
+
+                var back=UnityEngine.Object.FindObjectsByType<Button>(
+                    FindObjectsSortMode.None).FirstOrDefault(x=>
+                    {
+                        var label=x.GetComponentInChildren<Text>();
+                        return label!=null && (label.text??"").Contains("CIUDAD");
+                    });
+                Assert.NotNull(back,"Existing world must expose CITY return");
+                back.onClick.Invoke();
+                yield return null;yield return null;yield return null;
+                Assert.AreEqual("Valoria25D_Gameplay",SceneManager.GetActiveScene().name,
+                    "World return must restore Premium V6, not old production city");
+                Assert.IsNull(UnityEngine.Object.FindFirstObjectByType<SlicePresenter>(),
+                    "Legacy world HUD cannot persist on top of 2.5D city");
+                Assert.AreEqual(1,UnityEngine.Object.FindObjectsByType<Camera>(
+                    FindObjectsSortMode.None).Length);
+                Assert.AreEqual(1,UnityEngine.Object.FindObjectsByType<EventSystem>(
+                    FindObjectsSortMode.None).Length);
+                Assert.AreEqual(1,UnityEngine.Object.FindObjectsByType<Canvas>(
+                    FindObjectsSortMode.None).Length);
+                var restored=Single("City25DPlayableController");
+                Assert.IsTrue((bool)Prop(restored,"Ready"));
+                var reopened=(ICommandGateway)Prop(restored,"Gateway");
+                var after=reopened.Snapshot();
+                Assert.AreEqual(before.BastionLevel,after.BastionLevel);
+                Assert.AreEqual(before.Resources.Wood,after.Resources.Wood);
+                Assert.AreEqual(before.Resources.Stone,after.Resources.Stone);
+                Assert.AreEqual(before.Resources.Food,after.Resources.Food);
+                Debug.Log("VALORIA25D_ORIGINAL_WORLD_ROUNDTRIP_REAL_SAVE_ONE_HUD_PASS");
+                yield return new ExitPlayMode();
+            }
+            finally
+            {
+                EditorBuildSettings.scenes=settingsBefore;
+            }
         }
     }
 }
