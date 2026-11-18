@@ -77,7 +77,7 @@ Invoke-Unity 'gateway' @('-batchmode','-force-d3d11','-projectPath',$project,
     '-runTests','-testPlatform','EditMode',
     '-testFilter','Eldoria.Valoria25D.Tests.City25DGatewayIntegrationTests',
     '-testResults',$gatewayXml) 15
-Assert-Xml $gatewayXml 6 'canonical-gateway'
+Assert-Xml $gatewayXml 9 'canonical-gateway'
 $env:VALORIA25D_QA_SAVE_PATH=Join-Path $env:RUNNER_TEMP ('valoria25d-qa-'+$env:GITHUB_RUN_ID+'.json')
 if(Test-Path $env:VALORIA25D_QA_SAVE_PATH){throw 'Previous QA save exists'}
 $playXml=Join-Path $env:RUNNER_TEMP ('valoria25d-playmode-'+$env:GITHUB_RUN_ID+'.xml')
