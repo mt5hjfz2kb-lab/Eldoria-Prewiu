@@ -19,7 +19,7 @@
 - **Cámara:** ortográfica fija; traslación y zoom touch/puntero, sin rotación.
 - **Interfaz:** status de recursos y botón funcional de construcción, panel con cierre y botón para centrar.
 
-**IMPORTANTE** La escena es un **primer candidato funcional**: arte programático estilizado, no calidad 8/10 verificada. El estado disponible/en construcción se distingue ahora por tinte de un mismo edificio (provisional); necesita sprites propios y revisión visual antes de aprobar. No prometer producción de madera pasiva en Bastión I: la economía de producción real está gobernada por las reglas canónicas y su desbloqueo posterior.
+**IMPORTANTE** La escena es un **primer candidato funcional**: arte programático estilizado, no calidad 8/10 verificada. Tres sprites originales distinguen parcela disponible, obra y edificio terminado. Su integración visual y comportamiento siguen pendientes de comprobación en Unity antes de aprobar. No prometer producción de madera pasiva en Bastión I: la economía de producción real está gobernada por las reglas canónicas y su desbloqueo posterior.
 
 ## Entradas y fronteras
 
