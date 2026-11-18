@@ -35,9 +35,17 @@ if(-not(Test-Path (Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_Premi
 $sourceMeta=Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity.meta'
 if(-not(Test-Path $sourceMeta)){throw 'Unity premium V6 scene .meta missing'}
 $metaText=Get-Content -LiteralPath $sourceMeta -Raw
-if($metaText.Contains('\\n') -or
-   $metaText -notmatch '(?m)^guid: ec837f59b040445da407785c6f670ecd$' -or
-   $metaText -notmatch '(?m)^DefaultImporter:$'){
+$metaLines=@(Get-Content -LiteralPath $sourceMeta | ForEach-Object { $_.Trim() })
+# Git's core.autocrlf on Windows may preserve CRLF; matching raw YAML lines
+# with $ anchors fails on CRLF. Validate normalized records instead.
+$validGuid=$metaLines -contains 'guid: ec837f59b040445da407785c6f670ecd'
+$validImporter=$metaLines -contains 'DefaultImporter:'
+$validHeader=$metaLines.Count -ge 7 -and $metaLines[0] -eq 'fileFormatVersion: 2'
+$literalBackslashN=$metaText.Contains([char]92 + 'n')
+if(-not $validGuid -or -not $validImporter -or -not $validHeader -or $literalBackslashN){
+    Write-Host ('VALORIA25D_META_DIAG lines='+$metaLines.Count+
+      ' guid='+$validGuid+' importer='+$validImporter+
+      ' header='+$validHeader+' literalEscapes='+$literalBackslashN)
     throw 'Malformed scene GUID YAML .meta; abort before long Unity import'
 }
 Write-Host 'VALORIA25D_V6_SCENE_META_VALID_GUID_YAML_PASS'
