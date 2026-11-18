@@ -1,0 +1,33 @@
+name: Valoria Modular 2.5D — isolated static contracts
+
+on:
+  push:
+    branches:
+      - experiment/valoria-modular-25d-bastion1-from-zero-20261118
+    paths:
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/**'
+      - 'docs/valoria-modular-25d/**'
+      - 'tools/valoria-modular25d/**'
+      - '.github/workflows/valoria-modular25d-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout isolated candidate and main for scope guard
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run non-Unity reproducible source contracts
+        run: |
+          python3 -m py_compile tools/valoria-modular25d/verify_source.py
+          python3 tools/valoria-modular25d/verify_source.py
+      - name: State the limits of this job
+        if: always()
+        run: |
+          echo "This job does NOT run Unity, does NOT use windows-runner-heavy, and does NOT certify PlayMode, WebGL, iPhone, screenshots, memory or art."
