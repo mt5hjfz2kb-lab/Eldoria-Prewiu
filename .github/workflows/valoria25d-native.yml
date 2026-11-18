@@ -80,6 +80,15 @@ jobs:
             '/Unity/Assets/Eldoria/Scripts/Application/'
             '/Unity/Assets/Eldoria/Scripts/Infrastructure/'
             '/Unity/Assets/Eldoria/Scripts/Presentation/'
+            # Reuse the REAL main world scene and selected pre-existing licensed
+            # inventory. No 2.5D world authoring and no historical art imports.
+            '/Unity/Assets/Eldoria/Scenes/Frontier.unity'
+            '/Unity/Assets/Eldoria/Scenes/Frontier.unity.meta'
+            '/Unity/Assets/Eldoria/Resources/WorldInventory/'
+            '/Unity/Assets/Eldoria/Resources/WorldPlayerCity/'
+            '/Unity/Assets/Eldoria/Resources/Valoria/UrbanProps/'
+            '/Unity/Assets/Eldoria/Resources/Valoria/ExternalAssetLibrary.asset'
+            '/Unity/Assets/Eldoria/Resources/Valoria/ExternalAssetLibrary.asset.meta'
             '/Unity/Packages/'
             '/Unity/ProjectSettings/'
             '/tools/valoria-25d/'
@@ -117,6 +126,10 @@ jobs:
              throw 'Unity Physics2D must be explicitly enabled on the isolated integration branch'
           }
           Write-Host 'VALORIA25D_PHYSICS2D_MODULE_PRESENT'
+          if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/Scenes/Frontier.unity'))){
+            throw 'Existing Frontier world missing from native checkout'
+          }
+          Write-Host 'VALORIA25D_EXISTING_FRONTIER_SOURCE_PRESENT'
           Write-Host 'VALORIA25D_SELECTIVE_PREMIUM_V6_SHA_PASS'
       - name: Run true Unity EditMode, EnterPlayMode, screenshots and WebGL build
         shell: powershell
