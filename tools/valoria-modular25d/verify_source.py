@@ -68,22 +68,32 @@ class SandboxSourceContracts(unittest.TestCase):
 
     def test_reusable_depth_and_animated_walk(self):
         world = content(SCRIPTS / "Modular25DWorld.cs")
+        walker = content(SCRIPTS / "Modular25DWalker.cs")
         self.assertIn("FootOrder(float y)", world)
-        self.assertIn("body.sortingOrder=sort;", world)
-        self.assertIn("shadow.sortingOrder=sort-1;", world)
-        self.assertIn("Vector2.MoveTowards", world)
-        self.assertIn("Modular25DArt.Villager(", world)
+        self.assertIn("body.sortingOrder=sort;", walker)
+        self.assertIn("shadow.sortingOrder=sort-1;", walker)
+        self.assertIn("Vector2.MoveTowards", walker)
+        self.assertIn("Modular25DArt.Villager(", walker)
         self.assertIn("row=-10;row<=10", world)
         self.assertIn("col=-10;col<=10", world)
 
     def test_camera_input_does_not_tap_after_drag_or_pinch(self):
-        source = content(SCRIPTS / "Modular25DWorld.cs")
+        source = content(SCRIPTS / "Modular25DCameraInput.cs")
         self.assertIn("bool tap=!dragged&&!pinched&&!beganOnUI;", source)
         self.assertIn("if(tap)TrySelect(at);", source)
         self.assertIn("events.RaycastAll(data,hits);", source)
         self.assertIn("if(dragged&&!beganOnUI)Pan(at-previous);", source)
         self.assertIn("camera.aspect", source)
         self.assertNotIn("if(moving){moving=false;TrySelect", source)
+
+    def test_each_component_has_unambiguous_monoscript(self):
+        # Unity's script importer chooses the MonoBehaviour whose name equals
+        # the source file; extra behaviour classes in World.cs were unsafe.
+        for name in ("Modular25DWalker", "Modular25DTreeSway",
+                     "Modular25DCameraInput"):
+            source = content(SCRIPTS / (name + ".cs"))
+            self.assertIn("public sealed class " + name + " : MonoBehaviour", source)
+            self.assertTrue((SCRIPTS / (name + ".cs.meta")).exists())
 
     def test_capture_cannot_claim_proof_without_engine(self):
         editor = content(BASE / "Editor/Modular25DEditorTasks.cs")
