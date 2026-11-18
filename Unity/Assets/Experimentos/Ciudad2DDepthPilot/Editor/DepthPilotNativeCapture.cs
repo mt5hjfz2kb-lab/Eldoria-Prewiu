@@ -84,6 +84,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             {
                 ValidateArchive();
                 CreateWorkerArt();
+                EnsureContactArt();
                 BuildB();
                 var output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", Output));
                 Directory.CreateDirectory(output);
@@ -161,6 +162,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
                 return;
             }
             CreateWorkerArt();
+            EnsureContactArt();
             var sourceScene = EditorSceneManager.OpenScene(Reference, OpenSceneMode.Single);
             if (!EditorSceneManager.SaveScene(sourceScene, PilotScene, true))
                 throw new InvalidOperationException("Cannot create an isolated V6 scene copy");
@@ -169,6 +171,8 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             var root = new GameObject("DepthPilot_B_OptIn_NoPersistentState");
             SceneManager.MoveGameObjectToScene(root, scene);
             CorrectLocalOcclusion(scene, buildings);
+            foreach (var id in new[] { "bastion", "aserradero", "granero" })
+                InstallContact(root.transform, buildings[id]);
             InstallWorker(root.transform, buildings["aserradero"], "Leñador", "ToolAxe.png",
                 new Vector3(0.53f, -0.26f, 0f), 0.38f, 0f, true);
             InstallWorker(root.transform, buildings["granero"], "Almacen", "ToolSack.png",
@@ -204,8 +208,114 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
                     break;
                 }
             }
-            // Existing premium contact-shadow PNGs and building sprites stay byte-identical.
-            // Their relative geometry must be reviewed on actual Unity frames before any shift.
+            // Keep the painted premium shadows untouched, but place them behind
+            // the separately measurable inner contact that anchors to the alpha-foot.
+            foreach (var id in new[] { "aserradero", "granero" })
+            {
+                var existing = GameObject.Find("SombraPremium_" + id);
+                if (existing == null || existing.scene != scene)
+                    throw new InvalidOperationException("Missing premium painted shadow " + id);
+                var visual = existing.GetComponent<SpriteRenderer>();
+                if (visual == null) throw new InvalidOperationException("Shadow renderer missing");
+                visual.sortingOrder = buildings[id].GetComponent<SpriteRenderer>().sortingOrder - 2;
+            }
+            // No new geometry or altered textures: never hide plinths behind foliage.
+        }
+
+
+        private static void EnsureContactArt()
+        {
+            const string filename = "SupportContact.png";
+            string path = Generated + filename;
+            Directory.CreateDirectory(Physical(Generated));
+            if (!File.Exists(Physical(path)))
+            {
+                const int w = 256, h = 96;
+                var tex = new Texture2D(w, h, TextureFormat.RGBA32, false);
+                try
+                {
+                    for (int y = 0; y < h; ++y)
+                        for (int x = 0; x < w; ++x)
+                        {
+                            float dx = (x + .5f - w * .5f) / (w * .47f);
+                            float dy = (y + .5f - h * .5f) / (h * .41f);
+                            float e = Mathf.Max(0f, 1f - dx * dx - dy * dy);
+                            float alpha = .14f * e * e;
+                            tex.SetPixel(x, y, new Color(.16f, .13f, .22f, alpha));
+                        }
+                    tex.Apply();
+                    File.WriteAllBytes(Physical(path), tex.EncodeToPNG());
+                }
+                finally { UnityEngine.Object.DestroyImmediate(tex); }
+            }
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null) throw new InvalidOperationException("Contact texture import failed");
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = 160f;
+            importer.spriteAlignment = (int)SpriteAlignment.Center;
+            importer.alphaIsTransparency = true;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.mipmapEnabled = false;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            importer.SaveAndReimport();
+        }
+
+        private static void InstallContact(Transform root, CityBuilding owner)
+        {
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(Generated + "SupportContact.png");
+            if (sprite == null) throw new InvalidOperationException("Missing inner contact alpha");
+            var built = owner.GetComponent<SpriteRenderer>();
+            if (built == null || built.sprite == null)
+                throw new InvalidOperationException("Contact owner has no premium sprite");
+
+            // Measure actual lowest painted pixels; the PNG canvas rect is not the foot.
+            // Use a support band rather than a guessed offset or a blurred rectangular matte.
+            string source = Physical(AssetDatabase.GetAssetPath(built.sprite));
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            Vector3 foot;
+            try
+            {
+                if (!ImageConversion.LoadImage(tex, File.ReadAllBytes(source), false))
+                    throw new InvalidOperationException("Cannot inspect actual alpha support");
+                var data = tex.GetPixels32();
+                int bottom = tex.height;
+                for (int y = 0; y < tex.height; ++y)
+                    for (int x = 0; x < tex.width; ++x)
+                        if (data[y * tex.width + x].a > 80)
+                            bottom = Math.Min(bottom, y);
+                if (bottom == tex.height) throw new InvalidOperationException("Empty building alpha");
+                double total = 0, weightedX = 0;
+                int top = Math.Min(tex.height - 1, bottom + Math.Max(4, tex.height / 28));
+                for (int y = bottom; y <= top; ++y)
+                    for (int x = 0; x < tex.width; ++x)
+                    {
+                        byte alpha = data[y * tex.width + x].a;
+                        if (alpha < 80) continue;
+                        total += alpha;
+                        weightedX += x * alpha;
+                    }
+                float supportX = total > 0 ? (float)(weightedX / total) : tex.width * .5f;
+                float localX = (supportX - built.sprite.pivot.x) /
+                    built.sprite.pixelsPerUnit * owner.transform.lossyScale.x;
+                float localY = (bottom - built.sprite.pivot.y) /
+                    built.sprite.pixelsPerUnit * owner.transform.lossyScale.y;
+                foot = new Vector3(localX, localY, 0f);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(tex); }
+
+            var obj = new GameObject("ContactoFisico_" + owner.BuildingId);
+            obj.transform.SetParent(root, false);
+            var renderer = obj.AddComponent<SpriteRenderer>();
+            renderer.sprite = sprite;
+            float footprintWidth = built.bounds.size.x * .58f;
+            obj.transform.localScale = new Vector3(
+                footprintWidth / sprite.bounds.size.x,
+                footprintWidth * .16f / sprite.bounds.size.y, 1f);
+            obj.AddComponent<DepthPilotContact>().Configure(owner, renderer, foot);
+            if (obj.GetComponent<Collider2D>() != null)
+                throw new InvalidOperationException("Contact shadow must not block interaction");
         }
 
         private static void InstallWorker(Transform root, CityBuilding owner,
