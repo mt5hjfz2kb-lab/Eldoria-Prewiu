@@ -1,0 +1,153 @@
+name: Valoria25D - publish SHA-pinned verified real Unity WebGL candidate only
+on:
+  push:
+    branches: [integration/valoria-25d-playable-20261117]
+    paths: ['tools/valoria-25d/publish_request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria25d-candidate-artifact-publication
+  cancel-in-progress: false
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-25d/
+            /playable/valoria25d-v1/
+      - name: Validate exact successful real Unity build and original PlayMode test run
+        id: source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request
+          from pathlib import Path
+          j=json.loads(Path('tools/valoria-25d/publish_request.json').read_text())
+          assert j['schema']==1 and j['source_run']==44264410756
+          assert j['source_sha']=='15f0de669716cf5d3755b7c043c7fe4168812dc4'
+          assert j['no_main_write'] and j['no_art_write'] and j['no_beta_replacement']
+          api='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/'
+          def get(path):
+              rq=urllib.request.Request(api+path,headers={
+                  'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                  'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(rq,timeout=45) as f:return json.load(f)
+          r=get('actions/runs/'+str(j['source_run']))
+          assert r['status']=='completed' and r['conclusion']=='success'
+          assert r['head_sha']==j['source_sha']
+          assert r['head_branch']=='integration/valoria-25d-playable-20261117'
+          a=get('actions/runs/'+str(j['source_run'])+'/artifacts')
+          artifacts=[x for x in a['artifacts'] if not x['expired'] and
+                     x['name']=='valoria25d-real-integration-'+str(j['source_run'])]
+          assert len(artifacts)==1
+          assert artifacts[0]['id']==j['artifact_id']
+          print('REAL_UNITY_SHA_PINNED_6_GATEWAY_1_PLAYMODE_CERTIFIED_BUILD')
+          PY
+      - name: Download exact Unity WebGL executable and verify SHA/source/release isolation
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ID=$(python3 -c "import json;print(json.load(open('tools/valoria-25d/publish_request.json'))['artifact_id'])")
+          curl -fsSL --retry 4 -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/$ID/zip" \
+            -o /tmp/valoria25d-real-webgl-native.zip
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,shutil,xml.etree.ElementTree as ET,hashlib
+          z=Path('/tmp/valoria25d-real-webgl-native.zip')
+          assert z.stat().st_size>30_000_000
+          scratch=Path('/tmp/valoria25d-verified-unity-candidate')
+          with zipfile.ZipFile(z) as a:a.extractall(scratch)
+          for typ,minimum in [('gateway',6),('playmode',1)]:
+              files=list(scratch.rglob('valoria25d-'+typ+'-*.xml'))
+              assert len(files)==1, (typ,files)
+              suite=ET.parse(files[0]).getroot()
+              assert suite.tag=='test-run'
+              assert int(suite.attrib['total'])>=minimum
+              assert int(suite.attrib['passed'])==int(suite.attrib['total'])
+              assert int(suite.attrib['failed'])==0
+          recorded=list(scratch.rglob('Valoria25DGameplayEvidence/evidence.json'))
+          assert len(recorded)==1
+          verified=json.loads(recorded[0].read_text())
+          assert verified['engine']=='Unity' and verified['real_gateway_and_save']
+          assert len(verified['captures'])>=3
+          for shot in verified['captures']:
+              original=recorded[0].parent/shot['file']
+              assert hashlib.sha256(original.read_bytes()).hexdigest()==shot['sha256']
+          manifest=list(scratch.rglob('Valoria25D_CandidateWebGL/integration_manifest.json'))
+          assert len(manifest)==1
+          source=manifest[0].parent
+          m=json.loads(manifest[0].read_text())
+          assert m['canonical_LocalGateway'] and m['canonical_save_key']
+          assert m['no_main_modification'] and m['world_reconstructed']==False
+          assert m['scene']=='Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity'
+          assert m['source_v6_scene_sha256']=='aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06'
+          assert (source/'index.html').is_file()
+          build=source/'Build'
+          assert len(list(build.glob('*.wasm')))==1 and len(list(build.glob('*.data')))==1
+          assert len(list(build.glob('*.loader.js')))==1
+          target=Path('playable/valoria25d-v1')
+          assert not target.exists(), 'Never overwrite prior stable test link'
+          for p in source.rglob('*'):
+              if p.is_file():assert p.stat().st_size<95_000_000,(p,p.stat().st_size)
+          shutil.copytree(source,target)
+          (target/'SOURCE_CERTIFICATION.json').write_text(json.dumps({
+              'native_run':44264410756,'source_sha':'15f0de669716cf5d3755b7c043c7fe4168812dc4',
+              'unity_gateway_tests_pass':6,'unity_playmode_tests_pass':1,
+              'sha_verified_native_frames':len(verified['captures']),
+              'main_modified':False,'art_modified':False,'world_rebuilt':False,
+              'iphone_hardware_test':'PENDING','continuous_bastion_i_v_gate':'NOT_YET_PROVEN',
+              'scope':'Standalone isolated Unity WebGL visual/gameplay city candidate'
+          },indent=2)+'\n')
+          print('UNITY_WEBGL_CANDIDATE_INTACT',sum(p.stat().st_size for p in target.rglob('*') if p.is_file()))
+          PY
+      - name: Publish additive Unity candidate under isolated integration branch
+        id: push
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --sparse --force playable/valoria25d-v1/
+          git diff --cached --name-only | grep -q 'playable/valoria25d-v1/Build/'
+          git commit -m 'candidate(valoria25d): publish source-verified Unity WebGL playable city V6 without replacing beta'
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if git push origin HEAD:refs/heads/integration/valoria-25d-playable-20261117; then
+              SHA=$(git rev-parse HEAD)
+              echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+              echo "url=https://rawcdn.githack.com/mt5hjfz2kb-lab/Eldoria-Prewiu/$SHA/playable/valoria25d-v1/index.html" >> "$GITHUB_OUTPUT"
+              echo "CANDIDATE_COMMIT=$SHA"
+              exit 0
+            fi
+            git fetch --no-tags origin integration/valoria-25d-playable-20261117
+            git rebase FETCH_HEAD
+            sleep 2
+          done
+          echo 'Concurrent branch conflict; no published link claimed';exit 1
+      - name: Check live CDN serves the real Unity bootstrap HTML
+        if: steps.push.outputs.url != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="${{ steps.push.outputs.url }}"
+          for n in $(seq 1 45); do
+            if curl -fLsS --max-time 40 "$URL" -o /tmp/valoria25d-cdn.html; then
+              if grep -q 'createUnityInstance' /tmp/valoria25d-cdn.html; then
+                echo "VALORIA25D_CANDIDATE_HTML_PUBLISHED $URL"
+                exit 0
+              fi
+            fi
+            sleep 5
+          done
+          echo 'CDN did not serve Unity HTML';exit 1
