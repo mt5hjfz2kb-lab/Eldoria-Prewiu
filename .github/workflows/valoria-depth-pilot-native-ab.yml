@@ -201,6 +201,7 @@ jobs:
           if-no-files-found: warn
       - name: Clean ONLY our current run via guarded long-path-safe robocopy after archived evidence
         if: always() && steps.archive-proof.outcome == 'success' && steps.archive-proof.outputs.artifact-id != ''
+        continue-on-error: true
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
