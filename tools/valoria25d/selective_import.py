@@ -39,7 +39,7 @@ for n in runtime:
         assert from_path.is_file(), from_path
         shutil.copy2(from_path,scripts/(n+suffix))
 
-referenced=set(re.findall(rb'guid: ([a-f0-9]{32})',scene))
+referenced={x.decode('ascii') for x in re.findall(rb'guid: ([a-f0-9]{32})',scene)}
 found={}
 for meta in (src/'Sprites').rglob('*.png.meta'):
     txt=meta.read_text(errors='replace')
