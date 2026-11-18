@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Eldoria.Experimentos.Ciudad2D;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -21,6 +22,57 @@ namespace Eldoria.Valoria25D.Editor
     {
         public const string Original="Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity";
         public const string Playable="Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity";
+
+        private const string ArchivedGameplaySha256 =
+            "024e5dd1be2b83e8a687737b0c5417ceebb766480843d2167e0bf5f7da7c4b30";
+        private const string ImmutableArtSha256 =
+            "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06";
+
+        static string Hash(string path)
+        {
+            using(var hash=SHA256.Create())
+                return BitConverter.ToString(hash.ComputeHash(File.ReadAllBytes(path)))
+                    .Replace("-","").ToLowerInvariant();
+        }
+
+        [MenuItem("Eldoria/Valoria25D/Verificar escena jugable archivada (no sobrescribir)")]
+        public static void VerifyExisting()
+        {
+            var root=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,".."));
+            string sourcePath=Path.Combine(root,Original);
+            string existingPath=Path.Combine(root,Playable);
+            if(!File.Exists(sourcePath)||Hash(sourcePath)!=ImmutableArtSha256)
+                throw new InvalidOperationException("Original V6 scene changed or missing");
+            if(!File.Exists(existingPath)||Hash(existingPath)!=ArchivedGameplaySha256)
+                throw new InvalidOperationException(
+                    "Previously approved gameplay scene absent or changed; never overwrite silently");
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            AssetDatabase.ImportAsset(Playable,ImportAssetOptions.ForceSynchronousImport);
+            if(AssetDatabase.LoadAssetAtPath<SceneAsset>(Playable)==null)
+                throw new InvalidOperationException("Archived gameplay scene failed Unity import");
+            Scene scene=EditorSceneManager.OpenScene(Playable,OpenSceneMode.Single);
+            var players=UnityEngine.Object.FindObjectsByType<City25DPlayableController>(
+                FindObjectsSortMode.None).Where(x=>x.gameObject.scene==scene).ToArray();
+            var plots=UnityEngine.Object.FindObjectsByType<CityBuilding>(
+                FindObjectsSortMode.None).Where(x=>x.gameObject.scene==scene).ToArray();
+            var shadows=UnityEngine.Object.FindObjectsByType<City2DPremiumShadowGate>(
+                FindObjectsSortMode.None).Where(x=>x.gameObject.scene==scene).ToArray();
+            var cameras=UnityEngine.Object.FindObjectsByType<Camera>(
+                FindObjectsSortMode.None).Where(x=>x.gameObject.scene==scene).ToArray();
+            var systems=UnityEngine.Object.FindObjectsByType<EventSystem>(
+                FindObjectsSortMode.None).Where(x=>x.gameObject.scene==scene).ToArray();
+            if(!scene.IsValid()||!scene.isLoaded||players.Length!=1||
+               plots.Length!=6||shadows.Length!=4||
+               cameras.Length!=1||systems.Length!=1||
+               UnityEngine.Object.FindObjectsByType<City2DPilotHud>(
+                   FindObjectsInactive.Include,FindObjectsSortMode.None)
+                   .Any(x=>x.gameObject.scene==scene))
+                throw new InvalidOperationException(
+                    "Prior-certified 2.5D playable source lost a unique root or premium V6 geometry");
+            Debug.Log("VALORIA25D_ARCHIVED_SOURCE_SHA_VERIFIED_REUSE "+
+                      "source="+ImmutableArtSha256+" gameplay="+ArchivedGameplaySha256+
+                      " one_camera=true one_input=true six_plots=true four_shadows=true");
+        }
 
         [MenuItem("Eldoria/Valoria25D/Crear escena jugable aislada")]
         public static void Build()
