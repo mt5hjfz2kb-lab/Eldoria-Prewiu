@@ -22,7 +22,7 @@ La escena debe medir en dispositivo si Tilemap batchea mejor, antes de congelar 
 - Silueta: Bastión I compacto con torre reparada irregular, portón, resto imperial derrumbado y andamiaje; Aserradero mucho más bajo con taller abierto, banco de sierra y pila de troncos.
 - Autoría: algoritmo C# trazable con semilla fija y funciones `Poly,Line,Ellipse`, doble resolución y filtrado bilineal. No copia sprites ajenos, no usa el GLB vetado.
 - Animación: dos frames de marcha por personaje, ruta en coordenadas de mundo, sorting cada frame; árbol con sway de baja amplitud.
-- UI: uGUI por datos de `PlayerState`; construcción via `ICommandGateway.Execute`, lectura del reloj UTC de la partida, persistencia via `FileStateStore`.
+- UI: uGUI por datos de `PlayerState`; construcción vía `ICommandGateway.Execute`, lectura del reloj UTC de la partida, persistencia vía el contrato `IStateStore` existente (nativo: `FileStateStore` sandbox; WebGL: adaptador aislado de `PlayerPrefs` con `Save()` en cada commit, siguiendo el mismo patrón de `SliceBoot`). No se altera economía ni archivo beta.
 - Memoria inicial: texturas de suelo 132×68×4 variantes×4 tipos (ARGB32), 480×416 Bastión, 362×299 Aserradero; generadas una vez, sin mipmaps. Estas son **dimensiones**, no memoria GPU verificada. Medir CPU de creación de texturas, GC, batch/draw calls y memoria WebGL/iPhone antes de escalar.
 - Export: conservar `.meta` para que Unity preserve referencias; arte se materializa desde C# en PlayMode. Futuros niveles deben pasar a atlas/fuente master tras aprobación humana, no depender del frame runtime indefinidamente.
 
