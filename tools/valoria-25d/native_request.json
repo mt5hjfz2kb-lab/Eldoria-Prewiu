@@ -15,12 +15,12 @@
   "no_beta_publish": true,
   "owner_authorization": "The user explicitly requested a City2D V6 integration successor branch built from main and permission to use Unity resources; same City2D workstream lease, no competing job allowed",
   "physical_iPhone_test": "PENDING",
-  "retry": 4,
-  "last_failed_run": 44208239432,
-  "last_failure": "PowerShell metadata guard used regex anchors on Windows CRLF (false-negative), despite corrected valid scene GUID. Validation now normalizes each YAML line, detects literal backslash-n, and preserves exact source scene.",
+  "retry": 5,
+  "last_failed_run": 44268782339,
+  "last_failure": "Native runner attempted to overwrite the immutable already-archived, 7/7-tested gameplay .unity scene. Now checks exact SHA and invokes read-only Unity VerifyExisting instead of Build; no scene replacement.",
   "last_successful_run": 44264410756,
-  "focus": "Integrate original existing Frontier 4X scene in isolated WebGL candidate; one shared LocalGateway, return to PremiumV6 without duplicated HUD, native 2 PlayMode suite; visible plot picker for unfinished buildings; regression original 6 gateway tests; no main/world edits",
-  "expected_editmode_tests": 6,
+  "focus": "Real World Frontier roundtrip without duplicate HUD, discoverable plot picker, B2 marching, B3 canonical missions, IV-V irreversible choice; retain archived PremiumV6 and compile isolated new WebGL",
+  "expected_editmode_tests": 9,
   "expected_playmode_tests": 2,
   "last_request": "2026-11-18 approved integrated 2.5D city scope"
 }
