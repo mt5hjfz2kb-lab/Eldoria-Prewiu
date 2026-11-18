@@ -29,6 +29,8 @@ jobs:
             Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno_Organico.png
       - name: Install pinned C# parser (not Unity)
         run: python3 -m pip install --disable-pip-version-check tree-sitter==0.25.2 tree-sitter-c-sharp==0.23.5
+      - name: Parse native movie validator (no frames fabricated)
+        run: python3 -m py_compile Unity/Assets/Experimentos/ValoriaSpatial25D/QA/validate_native_capture.py
       - name: Parse all five sandbox C# files
         run: python3 Unity/Assets/Experimentos/ValoriaSpatial25D/QA/validate_csharp_syntax.py
       - name: Static source integrity (not Unity)
