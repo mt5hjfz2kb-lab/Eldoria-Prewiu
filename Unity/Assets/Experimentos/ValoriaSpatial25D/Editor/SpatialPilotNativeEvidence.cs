@@ -71,14 +71,14 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 AssetDatabase.LoadAssetAtPath<SceneAsset>(SceneB) == null)
                 throw new InvalidOperationException("Canonical A or isolated B is missing");
             var original = EditorSceneManager.GetSceneManagerSetup();
-            if (!Application.isBatchMode &&
+            if (!UnityEngine.Application.isBatchMode &&
                 !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
 
             // All output is outside Unity/Assets so no import/postprocessor
             // can modify source assets. A and B are loaded read-only.
             string directory = Path.GetFullPath(
-                Path.Combine(Application.dataPath, "..", OutputDirectory));
+                Path.Combine(UnityEngine.Application.dataPath, "..", OutputDirectory));
             Directory.CreateDirectory(directory);
             var samples = new List<Frame>(110);
             try
@@ -87,7 +87,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                     RecordVariant(variant, directory, samples);
                 var info = new Evidence
                 {
-                    unity_version = Application.unityVersion,
+                    unity_version = UnityEngine.Application.unityVersion,
                     generated_utc = DateTime.UtcNow.ToString("o"),
                     control_source_scene = SceneA,
                     candidate_scene = SceneB,
@@ -101,7 +101,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
             }
             finally
             {
-                if (!Application.isBatchMode && original != null && original.Length > 0)
+                if (!UnityEngine.Application.isBatchMode && original != null && original.Length > 0)
                     EditorSceneManager.RestoreSceneManagerSetup(original);
             }
         }
@@ -110,7 +110,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
         {
             string source = variant == "A" ? SceneA : SceneB;
             string sourceOnDisk = Path.GetFullPath(Path.Combine(
-                Application.dataPath, "..", source));
+                UnityEngine.Application.dataPath, "..", source));
             string originalSourceSha = Sha(File.ReadAllBytes(sourceOnDisk));
             Scene scene = EditorSceneManager.OpenScene(source, OpenSceneMode.Single);
             if (!scene.IsValid() || !scene.isLoaded ||

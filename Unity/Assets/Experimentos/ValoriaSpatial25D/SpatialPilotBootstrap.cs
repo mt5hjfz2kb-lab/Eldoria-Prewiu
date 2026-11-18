@@ -40,10 +40,10 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
             if (!ready) EnsureBuilt();
             if (!ready) return;
 
-            if (Application.isPlaying)
+            if (UnityEngine.Application.isPlaying)
                 elapsed += Time.deltaTime;
             // In edit mode choose an informative, but explicitly static pose.
-            SampleAt(Application.isPlaying ? elapsed : 3.6f);
+            SampleAt(UnityEngine.Application.isPlaying ? elapsed : 3.6f);
         }
 
         public void EnsureBuilt()
@@ -188,7 +188,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
             generated = null;
             testTree = null;
             actors.Clear();
-            if (Application.isPlaying) Destroy(go);
+            if (UnityEngine.Application.isPlaying) Destroy(go);
             else DestroyImmediate(go);
         }
     }

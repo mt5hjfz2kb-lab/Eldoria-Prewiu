@@ -91,3 +91,7 @@ Keep B's `ValoriaSpatial25D` code and scene segregated. Selectively reuse only c
 | Commercial visual quality 8–8.5/10 | **NOT ESTABLISHED** |
 | Performance, WebGL, physical devices | **PENDING** |
 | Main and functional branch changes | **NONE** |
+
+### Corrección preventiva de compilación tras comparar el piloto paralelo (18/11)
+
+El piloto de profundidad `art/valoria-25d-profundidad-piloto` encontró en una prueba Unity auténtica errores `CS0234` porque `Application` fue interpretado como el namespace `Eldoria.Application`, no como la clase Unity. Se han cualificado todos los accesos del sandbox espacial mediante `UnityEngine.Application` y añadido guardia en la prueba estática. **La prueba nativa de esta rama sigue pendiente.** La rotación registrada en main pertenece a Ciudad2D y al piloto de profundidad canónico, no habilita por sí sola otro acceso paralelo desde esta rama.

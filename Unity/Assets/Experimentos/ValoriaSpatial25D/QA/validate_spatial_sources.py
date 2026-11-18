@@ -43,6 +43,10 @@ def verify() -> dict:
         'CreateWorker("granero"', "FootOrder", "SampleAt"])
     for forbidden in ("GameCommand", "SaveGame", "LocalGateway", "PlayerState", "ICommandGateway"):
         assert forbidden not in source, f"Unexpected game-domain access: {forbidden}"
+    for source_text in (CODE.read_text(encoding="utf-8"), EDITOR.read_text(encoding="utf-8")):
+        assert "UnityEngine.Application." in source_text
+        import re
+        assert not re.search(r"(?<!UnityEngine\\.)\\bApplication\\.", source_text), "Unqualified Application may bind Eldoria.Application namespace"
     assert "Camera.main" in native and "RenderTexture" in native
     assert "EditorSceneManager.OpenScene" in native and "Sha(File.ReadAllBytes(sourceOnDisk))" in native
     assert "SetDemoBastionLevel" in native and "File.WriteAllBytes" in native
