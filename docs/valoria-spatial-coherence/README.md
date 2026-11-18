@@ -105,3 +105,7 @@ El piloto usa un `MeshRenderer` transparente por fragmento y orden de render det
 ### Corrección de contornos v2 tras inspeccionar la textura original
 
 La prueba automática `44280576195` produjo una evidencia **offline auténtica** desde `Terreno_Organico.png` (941×1672). La reproducción de la misma fuente bajo siete máscaras tiene diferencia de píxeles cero en el escenario estático. Al revisar la previsualización se comprobó que las cinco regiones iniciales atravesaban la abertura del portón y sobrepasaban parte de la muralla: se **rechazaron esas coordenadas**. Se han sustituido por siete regiones más precisas: ala oeste, torre oeste, pilar oeste, arco superior, pilar este, torre este y ala este, manteniendo abierto el vano central. Las siete siguen siendo una prueba de composición, no una máscara oclusora aprobada sin imágenes en movimiento de Unity.
+
+### Personaje que atraviesa el acceso (prueba de oclusión, no de arte de personaje)
+
+Se añade un cuarto figurante exclusivamente al sandbox B, vinculado al Bastión, que sigue la calzada central desde el patio hasta el exterior por el vano real de la puerta. No atraviesa las alas de piedra. Cruza la posición de profundidad del arco, y el capturador exige que su orden de render quede detrás y delante del muro en instantes distintos. Las seis tomas finales de la secuencia se enfocan en esa puerta; también se añaden vistas móviles y retina de detalle. El resultado sigue pendiente de Unity y una revisión de que el *dibujo*, no solo el número de orden, oculte correctamente al visitante.

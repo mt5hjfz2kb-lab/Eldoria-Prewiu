@@ -135,12 +135,13 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
             if (pilot != null)
             {
                 pilot.EnsureBuilt();
-                if (!pilot.IsReady || pilot.WorkerCount != 3 ||
+                if (!pilot.IsReady || pilot.WorkerCount != 4 ||
                     pilot.ForegroundRegionCount != 7 ||
                     pilot.OcclusionTree == null ||
                     pilot.WorkerFor("aserradero") == null ||
                     pilot.WorkerFor("cuartel") == null ||
-                    pilot.WorkerFor("granero") == null)
+                    pilot.WorkerFor("granero") == null ||
+                    pilot.WorkerFor("bastion") == null)
                     throw new InvalidOperationException("B spatial actors not bootstrapped");
             }
             var ids = new Dictionary<string, CityBuilding>(StringComparer.Ordinal);
@@ -150,6 +151,27 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
             if (ids.Count != 6 || !ids.ContainsKey("aserradero"))
                 throw new InvalidOperationException("Six original building IDs required");
             Vector2 saw = ids["aserradero"].transform.position;
+            var sceneGround = GameObject.Find("Terreno_Valoria").GetComponent<SpriteRenderer>();
+            if (sceneGround == null || sceneGround.sprite == null)
+                throw new InvalidOperationException("No genuine terrain for gate frame");
+            Vector2 gate = sceneGround.transform.TransformPoint(new Vector3(
+                (470f / 941f - .5f) * sceneGround.sprite.bounds.size.x,
+                (.5f - 1390f / 1672f) * sceneGround.sprite.bounds.size.y, 0f));
+            if (pilot != null)
+            {
+                bool inBack = false, inFront = false;
+                for (float seconds = 0; seconds < 22f; seconds += .25f)
+                {
+                    pilot.SampleAt(seconds);
+                    int guardOrder = pilot.WorkerFor("bastion").Image.sortingOrder;
+                    int gateOrder = pilot.GateCrownOrder;
+                    inBack |= guardOrder < gateOrder;
+                    inFront |= guardOrder > gateOrder;
+                }
+                if (!inBack || !inFront)
+                    throw new InvalidOperationException(
+                        "Gate visitor never crossed behind AND ahead of the painted gate");
+            }
             var staticPoses = new [] {
                 new Pose(1,390,844,0,0,1,0,"overview_I"),
                 new Pose(3,390,844,0,0,1,0,"overview_III"),
@@ -158,7 +180,9 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 new Pose(5,844,390,0,0,1,0,"overview_V_landscape"),
                 new Pose(5,390,844,saw.x,saw.y,1.75f,4.2f,"aserradero_close"),
                 new Pose(5,1170,2532,saw.x,saw.y,1.75f,6f,"aserradero_retina"),
-                new Pose(5,390,844,saw.x,saw.y,1.75f,8f,"actor_tree_crossing")
+                new Pose(5,390,844,saw.x,saw.y,1.75f,8f,"actor_tree_crossing"),
+                new Pose(5,390,844,gate.x,gate.y,1.8f,6f,"gate_close"),
+                new Pose(5,1170,2532,gate.x,gate.y,1.8f,7f,"gate_retina")
             };
             foreach (var pose in staticPoses)
                 CaptureOne(variant,source,scene,camera,fit,bridge,pilot,pose,
@@ -166,7 +190,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
 
             // One frame of actual Unity render per camera state and time sample,
             // identical A/B camera path. B additionally advances actor sprite state.
-            for (int step = 0; step < 36; ++step)
+            for (int step = 0; step < 42; ++step)
             {
                 float progress = step/35f;
                 float x=0, y=0, zoom=1f;
@@ -194,7 +218,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                     label="occlusion_crossing";
                     x=saw.x;y=saw.y;zoom=1.8f;
                 }
-                else
+                else if (step < 36)
                 {
                     label="return_overview";
                     float v=(step-30)/5f;
@@ -202,9 +226,15 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                     y=Mathf.Lerp(saw.y,0,v);
                     zoom=Mathf.Lerp(1.8f,1f,v);
                 }
+                else
+                {
+                    label="gate_portal_occlusion";
+                    x=gate.x; y=gate.y; zoom=1.8f;
+                }
                 // 0.3s steps allow the woodcutter to pass before/behind the
                 // independently sorted tree in a time-sampled Unity scene.
-                var pose = new Pose(5,390,844,x,y,zoom,step*0.30f,label);
+                var seconds = step < 36 ? step * .30f : (step - 36) * 1.15f;
+                var pose = new Pose(5,390,844,x,y,zoom,seconds,label);
                 CaptureOne(variant,source,scene,camera,fit,bridge,pilot,pose,
                     directory,frames,step);
             }
@@ -225,10 +255,10 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
             {
                 pilot.SampleAt(pose.seconds);
                 int visible = 0;
-                foreach(var id in new[]{"aserradero","cuartel","granero"})
+                foreach(var id in new[]{"bastion","aserradero","cuartel","granero"})
                     if(pilot.WorkerFor(id).IsVisible)visible++;
-                int expected = pose.stage >= 4 ? 3 : pose.stage >= 3 ? 2 :
-                               pose.stage >= 2 ? 1 : 0;
+                int expected = pose.stage >= 4 ? 4 : pose.stage >= 3 ? 3 :
+                               pose.stage >= 2 ? 2 : 1;
                 if(visible != expected)
                     throw new InvalidOperationException("Worker gating invalid at stage "+
                         pose.stage+": "+visible+" vs "+expected);

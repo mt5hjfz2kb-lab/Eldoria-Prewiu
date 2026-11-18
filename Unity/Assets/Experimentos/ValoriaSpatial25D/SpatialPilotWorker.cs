@@ -12,15 +12,17 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
         private Vector2[] waypoints;
         private Role role;
         private float speed, phase;
+        private Vector2 pathWorldOrigin;
         private SpriteRenderer image, contact;
         public CityBuilding Owner => owner;
         public SpriteRenderer Image => image;
         public bool IsVisible => image != null && image.enabled;
 
         public void Configure(CityBuilding parent, Role occupation,
-                              Vector2[] path, float unitsPerSecond, float phaseSeconds)
+                              Vector2[] path, float unitsPerSecond, float phaseSeconds, Vector2? routeOrigin = null)
         {
             owner = parent;
+            pathWorldOrigin = routeOrigin ?? (Vector2)parent.transform.position;
             role = occupation;
             waypoints = path;
             speed = Mathf.Max(0.10f, unitsPerSecond);
@@ -79,8 +81,8 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
                 t -= .16f;
             }
 
-            Vector3 p = owner.transform.position;
-            transform.position = new Vector3(p.x + local.x, p.y + local.y, -.045f);
+            transform.position = new Vector3(pathWorldOrigin.x + local.x,
+                                             pathWorldOrigin.y + local.y, -.045f);
             // Visible legs/arms change with movement; stable pose during activity.
             int pose = working ? 2 : ((Mathf.FloorToInt(seconds * 3f + phase) & 1) == 0 ? 0 : 1);
             image.sprite = SpatialPilotActorArt.Frame(role, pose);

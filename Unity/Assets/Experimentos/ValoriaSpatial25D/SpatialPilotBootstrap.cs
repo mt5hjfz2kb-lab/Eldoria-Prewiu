@@ -131,7 +131,8 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
             CreateWorker("aserradero", SpatialPilotWorker.Role.Woodcutter, -1f, 0.0f);
             CreateWorker("cuartel", SpatialPilotWorker.Role.Recruit, 1f, 1.6f);
             CreateWorker("granero", SpatialPilotWorker.Role.Porter, 1f, 2.8f);
-            ready = actors.Count == 3;
+            CreateGateVisitor();
+            ready = actors.Count == 4;
         }
 
         private void CreateWorker(string id, SpatialPilotWorker.Role role, float side, float phase)
@@ -153,6 +154,49 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
             worker.Configure(owner, role, waypoints, walkingSpeed, phase);
             actors.Add(worker);
         }
+
+        private void CreateGateVisitor()
+        {
+            // One QA-only guard follows the painted access path THROUGH the arch,
+            // never through a stone wing. The exact scene terrain provides scale.
+            SpriteRenderer baseGround = null;
+            foreach (var candidate in FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None))
+                if (candidate.gameObject.scene == gameObject.scene &&
+                    candidate.gameObject.name == "Terreno_Valoria")
+                {
+                    baseGround = candidate;
+                    break;
+                }
+            if (baseGround == null || baseGround.sprite == null)
+                throw new InvalidOperationException("Gate visitor requires real V6 ground");
+            Vector2 center = LayoutPoint(baseGround, 470, 1390);
+            var routePixels = new [] {
+                new Vector2(471,1220), new Vector2(471,1265),
+                new Vector2(473,1345), new Vector2(471,1410),
+                new Vector2(469,1510), new Vector2(466,1540),
+                new Vector2(469,1495), new Vector2(471,1360),
+                new Vector2(472,1270)
+            };
+            var route = new Vector2[routePixels.Length];
+            for (int i = 0; i < route.Length; ++i)
+                route[i] = LayoutPoint(baseGround, routePixels[i].x, routePixels[i].y) - center;
+            var obj = new GameObject("B_VisitantePuerta_OcclusionProof");
+            obj.transform.SetParent(generated, false);
+            var guard = obj.AddComponent<SpatialPilotWorker>();
+            guard.Configure(owners["bastion"], SpatialPilotWorker.Role.Recruit,
+                route, walkingSpeed, 0f, center);
+            actors.Add(guard);
+        }
+
+        private static Vector2 LayoutPoint(SpriteRenderer ground, float x, float y)
+        {
+            var sprite = ground.sprite;
+            var local = new Vector3((x / 941f - .5f) * sprite.bounds.size.x,
+                                    (.5f - y / 1672f) * sprite.bounds.size.y, 0f);
+            return ground.transform.TransformPoint(local);
+        }
+
+        public int GateCrownOrder => foreground != null ? foreground.OrderFor("gate_crown") : 0;
 
         private static float HalfWidth(CityBuilding b)
         {

@@ -35,11 +35,18 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
         }
 
         private readonly List<Mesh> meshes = new List<Mesh>();
+        private readonly Dictionary<string, Renderer> parts = new Dictionary<string, Renderer>(StringComparer.Ordinal);
         private Material sharedCutoutMaterial;
         private SpriteRenderer ground;
         private GameObject graphics;
         public int RegionCount { get; private set; }
         public bool IsPurePresentation => true;
+        public int OrderFor(string regionId)
+        {
+            return parts.TryGetValue(regionId, out var renderer) && renderer != null
+                ? renderer.sortingOrder
+                : throw new InvalidOperationException("Unknown original-terrace occluder: " + regionId);
+        }
 
         public void Configure(SpriteRenderer source, TextAsset json, Shader shader)
         {
@@ -96,6 +103,7 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
                 float localY = (.5f - shape.foot_y / 1672f) * sprite.bounds.size.y;
                 var worldFoot = graphics.transform.TransformPoint(new Vector3(0f, localY, 0f));
                 renderer.sortingOrder = SpatialPilotBootstrap.FootOrder(worldFoot.y);
+                parts.Add(shape.id, renderer);
                 if (item.GetComponent<Collider2D>() != null || item.GetComponent<Collider>() != null)
                     throw new InvalidOperationException("Foreground mask may not block taps");
                 RegionCount++;
