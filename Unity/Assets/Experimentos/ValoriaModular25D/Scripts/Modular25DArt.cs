@@ -193,6 +193,57 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
+        public static Sprite SawmillSite()
+        {
+            return Make("sawmill_available",362,299,96f,P(.5f,.085f),a =>
+            {
+                // Ground-level site, not an elevated rectangle or a ghost building.
+                a.Poly(C(97,88,72,110),P(47,61),P(107,102),P(184,115),
+                    P(299,77),P(324,51),P(233,29),P(99,35));
+                a.Poly(C(143,131,103,125),P(64,66),P(124,98),P(186,106),P(282,76),
+                    P(222,48),P(121,46));
+                for(int j=0;j<3;j++)
+                {
+                    int x=77+j*92;
+                    a.Line(P(x,51),P(x+3,81),8,Timber);
+                    a.Line(P(x-7,81),P(x+11,81),4,TimberLight);
+                }
+                a.Poly(StoneDark,P(109,49),P(133,62),P(154,53),P(132,41));
+                a.Poly(StoneLight,P(194,67),P(223,80),P(240,64),P(216,52));
+                a.Line(P(135,72),P(215,86),7,Timber);
+                a.Line(P(145,75),P(210,89),3,TimberLight);
+            });
+        }
+
+        public static Sprite SawmillWorksite()
+        {
+            return Make("sawmill_under_construction",362,299,96f,P(.5f,.085f),a =>
+            {
+                // Different silhouette from the finished workshop. Only partial
+                // timberwork and scaffolding are present while the real UTC job runs.
+                a.Poly(C(113,99,79,135),P(49,70),P(126,112),P(224,112),P(320,71),P(197,40));
+                a.Line(P(109,64),P(108,184),13,Timber);
+                a.Line(P(276,67),P(272,179),13,Timber);
+                a.Line(P(108,181),P(272,176),14,TimberLight);
+                a.Line(P(106,102),P(277,96),11,Timber);
+                a.Line(P(107,170),P(264,88),7,TimberLight);
+                a.Line(P(267,164),P(123,86),8,Timber);
+                a.Line(P(151,86),P(168,232),7,TimberLight);
+                a.Line(P(168,229),P(214,213),7,TimberLight);
+                a.Line(P(213,211),P(237,87),7,TimberLight);
+                a.Poly(Ink,P(136,174),P(165,241),P(181,247),P(213,232),P(215,217),P(173,233));
+                a.Poly(Slate,P(147,174),P(166,234),P(181,237),P(181,204));
+                a.Poly(SlateLight,P(181,204),P(181,236),P(209,225),P(211,216));
+                for(int j=0;j<3;j++)
+                {
+                    float y=58+j*13;
+                    a.Poly(Timber,P(27,y),P(90,y+18),P(142,y+12),P(84,y-6));
+                    a.Line(P(35,y+2),P(88,y+16),3,TimberLight);
+                }
+                a.Poly(StoneDark,P(252,54),P(282,67),P(303,58),P(284,42));
+            });
+        }
+
         public static Sprite Tree(int variant)
         {
             return Make("pine_"+variant,170,245,96f,P(.5f,.06f),a =>
