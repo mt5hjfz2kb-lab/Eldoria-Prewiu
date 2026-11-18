@@ -19,6 +19,7 @@ namespace Eldoria.Valoria25D.Editor
     public static class City25DCandidateBuild
     {
         public const string Folder="Valoria25D_CandidateWebGL";
+        public const string OriginalWorld="Assets/Eldoria/Scenes/Frontier.unity";
         public static void WebGL()
         {
             if(EditorUserBuildSettings.activeBuildTarget!=BuildTarget.WebGL)
@@ -28,6 +29,13 @@ namespace Eldoria.Valoria25D.Editor
             AssetDatabase.ImportAsset(scene,ImportAssetOptions.ForceSynchronousImport);
             if(AssetDatabase.LoadAssetAtPath<SceneAsset>(scene)==null)
                 throw new InvalidOperationException("Integrated City25D scene absent");
+            if(!File.Exists(Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
+                "..",OriginalWorld))))
+                throw new InvalidOperationException("Original Frontier 4X scene not included in isolated candidate");
+            AssetDatabase.ImportAsset(OriginalWorld,ImportAssetOptions.ForceSynchronousImport);
+            if(AssetDatabase.LoadAssetAtPath<SceneAsset>(OriginalWorld)==null)
+                throw new InvalidOperationException("Original Frontier 4X scene not imported");
+
             var opened=EditorSceneManager.OpenScene(scene,OpenSceneMode.Single);
             if(!opened.IsValid()||!opened.isLoaded)
                 throw new InvalidOperationException("Candidate scene invalid");
@@ -49,7 +57,7 @@ namespace Eldoria.Valoria25D.Editor
                 PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Disabled;
                 PlayerSettings.WebGL.showDiagnostics=true;
                 var options=new BuildPlayerOptions {
-                    scenes=new[]{scene},
+                    scenes=new[]{scene,OriginalWorld},
                     locationPathName=output,
                     target=BuildTarget.WebGL,
                     options=BuildOptions.None
@@ -71,6 +79,8 @@ namespace Eldoria.Valoria25D.Editor
                     "\"main_base\":\"904ff183ffb9053f68b9c0f359b2e9d3d40ce805\","+
                     "\"source_v6_scene_sha256\":\"aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06\","+
                     "\"scene\":\""+scene+"\","+
+                    "\"existing_world_scene\":\""+OriginalWorld+"\","+
+                    "\"existing_world_preserved\":true,"+
                     "\"target\":\"WebGL\","+
                     "\"canonical_LocalGateway\":true,"+
                     "\"canonical_save_key\":true,"+
@@ -80,6 +90,7 @@ namespace Eldoria.Valoria25D.Editor
                     "\"art_approval\":\"V6 candidate unchanged\","+
                     "\"build_size_bytes\":"+report.summary.totalSize+
                     "}\n",new UTF8Encoding(false));
+                Debug.Log("VALORIA25D_ORIGINAL_FRONTIER_SCENE_INCLUDED existing_4x_unchanged=true");
                 Debug.Log("VALORIA25D_CANDIDATE_WEBGL_BUILD_SUCCESS"+
                     " from_main=true real_gateway=true no_public_beta=true");
             }
