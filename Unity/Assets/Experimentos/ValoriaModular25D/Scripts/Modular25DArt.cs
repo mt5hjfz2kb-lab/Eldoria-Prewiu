@@ -66,12 +66,28 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     var c = i%4==0 ? GrassLight : C(77,109,81,170);
                     a.Ellipse(x,y,2+(float)random.NextDouble()*5,1.1f,c);
                 }
-                if (kind==1 || kind==2)
+                if (kind==1)
                 {
-                    Color32 earth = kind==1 ? Earth : EarthLight;
-                    a.Poly(earth,P(29,31),P(61,47),P(108,34),P(69,17),P(31,24));
+                    // A road must actually meet opposite diamond edges.
+                    // Organic interior variation, fixed seam endpoints across tiles.
+                    float bend=variation*1.7f;
+                    a.Poly(Earth,P(14,42),P(29,49),P(66,46+bend),
+                        P(107,17),P(120,25),P(108,31),P(70,58+bend),P(22,52));
+                    a.Poly(C(151,133,97,135),P(26,45),P(66,43+bend),
+                        P(108,22),P(111,28),P(68,53+bend),P(27,49));
+                    for(int i=0;i<8;i++)
+                    {
+                        float x=29+(float)random.NextDouble()*72;
+                        float y=53f-(x-28f)*.36f+(float)random.NextDouble()*9f;
+                        a.Ellipse(x,y,1.5f,1.1f,StoneLight);
+                    }
+                }
+                else if (kind==2)
+                {
+                    // Soil is only a ground-level construction parcel.
+                    a.Poly(EarthLight,P(28,31),P(61,48),P(108,34),P(69,17),P(31,24));
                     a.Poly(C(145,129,100,135),P(42,31),P(62,42),P(94,32),P(67,23));
-                    for(int i=0;i<11;i++)
+                    for(int i=0;i<8;i++)
                     {
                         float x=44+(float)random.NextDouble()*49;
                         float y=25+(float)random.NextDouble()*15;
