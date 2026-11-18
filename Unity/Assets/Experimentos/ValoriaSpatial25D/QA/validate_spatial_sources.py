@@ -10,6 +10,8 @@ A = CITY / "QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity"
 CONTROL = ROOT / "Scenes/Valoria_Spatial_A_Control.unity"
 B = ROOT / "Scenes/Valoria_Spatial_B_Pilot.unity"
 CODE = ROOT / "SpatialPilotBootstrap.cs"
+WORKER = ROOT / "SpatialPilotWorker.cs"
+ART = ROOT / "SpatialPilotActorArt.cs"
 EDITOR = ROOT / "Editor/SpatialPilotNativeEvidence.cs"
 SCRIPT_META = ROOT / "SpatialPilotBootstrap.cs.meta"
 MARKER = "--- !u!1 &700000010\n"
@@ -18,7 +20,7 @@ ROOT_NEW = "SceneRoots:\n  m_ObjectHideFlags: 0\n  m_Roots:\n  - {fileID: 700000
 ROOT_OLD = "SceneRoots:\n  m_ObjectHideFlags: 0\n  m_Roots:\n"
 
 def verify() -> dict:
-    assert all(p.is_file() for p in (A, CONTROL, B, CODE, EDITOR, SCRIPT_META)), "Required file missing"
+    assert all(p.is_file() for p in (A, CONTROL, B, CODE, WORKER, ART, EDITOR, SCRIPT_META)), "Required file missing"
     base = A.read_bytes()
     assert CONTROL.read_bytes() == base, 'Isolated A control must match archival original exactly'
     candidate = B.read_bytes()
@@ -30,7 +32,7 @@ def verify() -> dict:
     assert without_component.count(ROOT_NEW.encode()) == 1, "B root only once"
     restored = without_component.replace(ROOT_NEW.encode(), ROOT_OLD.encode(), 1)
     assert restored == base, "B differs from A beyond the isolated presentation bootstrap"
-    source = CODE.read_text(encoding="utf-8")
+    source = "\\n".join(p.read_text(encoding="utf-8") for p in (CODE, WORKER, ART))
     native = EDITOR.read_text(encoding="utf-8")
     meta = SCRIPT_META.read_text(encoding="utf-8")
     guid = "4f88a89cd5134ddc8c10e4ff743dbef5"
