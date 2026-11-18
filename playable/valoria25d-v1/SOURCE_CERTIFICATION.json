@@ -1,0 +1,13 @@
+{
+  "native_run": 44264410756,
+  "source_sha": "15f0de669716cf5d3755b7c043c7fe4168812dc4",
+  "unity_gateway_tests_pass": 6,
+  "unity_playmode_tests_pass": 1,
+  "sha_verified_native_frames": 3,
+  "main_modified": false,
+  "art_modified": false,
+  "world_rebuilt": false,
+  "iphone_hardware_test": "PENDING",
+  "continuous_bastion_i_v_gate": "NOT_YET_PROVEN",
+  "scope": "Standalone isolated Unity WebGL visual/gameplay city candidate"
+}
