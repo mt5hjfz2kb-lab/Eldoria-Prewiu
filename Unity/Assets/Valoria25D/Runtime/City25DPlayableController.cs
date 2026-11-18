@@ -193,6 +193,31 @@ namespace Eldoria.Valoria25D
             }
             ExecuteOffer(offer);
         }
+        public void RunConfigureMarch()
+        {
+            if(gateway==null)return;
+            // The historical SlicePresenter uses this exact canonical order.
+            // No troop composition, recruitment or combat logic is reproduced.
+            ExecuteOffer(new City25DActionCatalog.Offer(
+                "Preparar marcha", "Marcha automática permitida por las reglas existentes",
+                "ConfigureMarch", "march-main"));
+        }
+
+        public void RunDevelopmentPriority(string choice)
+        {
+            if(gateway==null)return;
+            if(choice!="production" && choice!="defense" && choice!="civil")
+            {
+                hud?.SetFeedback("Prioridad de desarrollo desconocida",true);
+                return;
+            }
+            // Chapter IV uses one irreversible canonical player decision;
+            // rewards remain mailbox/bag ledger entries, never granted by UI.
+            ExecuteOffer(new City25DActionCatalog.Offer(
+                "Prioridad de desarrollo", "Decisión real del capítulo IV",
+                "ChooseDevelopment",choice));
+        }
+
         public void ShowWorldEntry()
         {
             if (gateway == null)
