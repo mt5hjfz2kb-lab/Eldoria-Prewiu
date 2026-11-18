@@ -41,7 +41,7 @@ def source_gate():
         assert "LocalGateway" not in s
         assert "GameCommand" not in s
     runtime = C_SHARP[0].read_text()
-    editor = C_SHARP[1].read_text()
+    editor = C_SHARP[2].read_text()
     assert "owner.PlotPhase == City2DPlotPhase.Built" in runtime
     assert "Sample(float seconds)" in runtime
     assert "CorrectLocalOcclusion" in editor
@@ -79,7 +79,8 @@ def check_frames(folder):
     pairs = {}
     for entry in frames:
         for name in ("variant", "trajectory", "file", "sha256", "frame", "width",
-                     "height", "zoom", "focusX", "focusY", "seconds"):
+                     "height", "zoom", "focusX", "focusY", "seconds",
+                     "actualCameraX", "actualCameraY", "actualOrthographicSize"):
             assert name in entry, (entry, name)
         assert entry["variant"] in ("A", "B")
         assert entry["trajectory"] in ("pan", "approach", "retreat")
@@ -99,6 +100,9 @@ def check_frames(folder):
         a, b = values["A"], values["B"]
         assert (a["zoom"], a["focusX"], a["focusY"], a["seconds"]) == (
             b["zoom"], b["focusX"], b["focusY"], b["seconds"]), key
+        assert abs(a["actualCameraX"] - b["actualCameraX"]) <= 1e-5, key
+        assert abs(a["actualCameraY"] - b["actualCameraY"]) <= 1e-5, key
+        assert abs(a["actualOrthographicSize"] - b["actualOrthographicSize"]) <= 1e-5, key
         if a["width"] == 390:
             with Image.open(folder / a["file"]) as ia, Image.open(folder / b["file"]) as ib:
                 bbox = ImageChops.difference(ia.convert("RGB"), ib.convert("RGB")).getbbox()
