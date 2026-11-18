@@ -7,7 +7,7 @@
 1. Abrir el proyecto Unity 6000.3.23f1 de ESTA RAMA, no la escena de producción.
 2. Abrir `Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity` (o menú **Eldoria → Experimentos → Valoria modular 2.5D**).
 3. PlayMode: tocar la parcela del aserradero o el botón inferior ASERRADERO; pulsar CONSTRUIR si es posible.
-4. Observar costes/madera descontada por `LocalGateway.Execute(new GameCommand(..., "Build", "sawmill", ...))`, temporizador UTC y guardado persistente. Cerrar/reabrir PlayMode para comprobar recuperación. No se modifica la partida beta, se guarda en `eldoria-experiment-modular-25d-bastion1-v1.json`.
+4. Observar costes/madera descontada por `LocalGateway.Execute(new GameCommand(..., "Build", "sawmill", ...))`, temporizador UTC y guardado persistente. Cerrar/reabrir PlayMode para comprobar recuperación. No se modifica la partida beta: en Editor/nativo se usa `eldoria-experiment-modular-25d-bastion1-v1.json`; en WebGL se usa una clave `PlayerPrefs` exclusiva con `PlayerPrefs.Save` para evitar depender de la sincronización diferida de IDBFS. Ambas persistencias están **pendientes de ensayo real**.
 5. Mantener separadas las pruebas del editor y el dispositivo físico. Abrir el menú solo cuando el runner Windows esté legítimamente liberado y reclamado.
 
 ## Qué es realmente modular
