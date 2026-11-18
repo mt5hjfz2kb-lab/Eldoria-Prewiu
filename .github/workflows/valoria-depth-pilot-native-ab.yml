@@ -1,4 +1,5 @@
 name: Valoria depth pilot - real Unity A B native proof (exclusive lease)
+# One owner-authorized PC rotation on 2026-11-18; never cancel other Unity work.
 on:
   workflow_dispatch:
   push:
@@ -168,6 +169,24 @@ jobs:
           path: ${{ env.DEPTH_ROOT }}/Unity/Ciudad2DDepthPilotEvidence/
           retention-days: 7
           if-no-files-found: warn
+      - name: Remove only this successful temporary checkout after evidence upload
+        if: success()
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $expected=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$env:GITHUB_RUN_ID)
+          if(-not $env:DEPTH_ROOT -or
+             [IO.Path]::GetFullPath($env:DEPTH_ROOT) -ne [IO.Path]::GetFullPath($expected)){
+            throw 'Scratch cleanup path verification failed'
+          }
+          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+            Write-Host 'Native processes still present; preserve scratch rather than delete'
+            exit 0
+          }
+          $manifest=Join-Path $expected 'Unity/Ciudad2DDepthPilotEvidence/evidence.json'
+          if(-not(Test-Path $manifest)){throw 'No source evidence, preserve checkout'}
+          Remove-Item -LiteralPath $expected -Recurse -Force
+          Write-Host 'Removed only our complete disposable depthpilot checkout'
   package-movies:
     needs: unity
     runs-on: ubuntu-24.04
