@@ -28,7 +28,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             Root+"QA/DepthPilot/Experimento_Ciudad2D_V6_Depth_B.unity";
         public const string SourceSha256 =
             "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06";
-        private const string Output = "Ciudad2DDepthPilotEvidence";
+        private const string Output = "Ciudad2DSkyParallaxPilotEvidence";
         private const int MobileFps = 8;
         private const int FramesPerPhase = 8;
 
