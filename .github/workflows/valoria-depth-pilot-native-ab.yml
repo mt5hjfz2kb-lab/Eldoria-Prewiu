@@ -95,20 +95,8 @@ jobs:
           $gitDir=Split-Path -Parent $gitExe
           if(-not(Test-Path $gitExe)){throw 'Git executable unexpectedly missing'}
           Add-Content -Path $env:GITHUB_PATH -Value $gitDir
-          # Clean ONLY our previous failed checkout after checking process absence
-          # and absence of render evidence; no other project folders are touched.
-          foreach($priorId in @(44275072091,44275806196)){
-            $prior=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$priorId)
-            if(Test-Path $prior){
-              if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
-                throw 'Native processes alive, refusing own prior scratch cleanup'
-              }
-              if(-not(Test-Path (Join-Path $prior 'Unity/Ciudad2DDepthPilotEvidence/evidence.json'))){
-                Remove-Item -LiteralPath $prior -Recurse -Force
-                Write-Host ('Deleted only our failed, no-evidence depthpilot checkout '+$priorId)
-              } else { Write-Host ('Prior original evidence exists: preserve '+$priorId) }
-            }
-          }
+          # Cleanup runs ONLY after our own pinned checkout exists, using
+          # the repository-sourced guarded robocopy script (not Remove-Item).
           $dest=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$env:GITHUB_RUN_ID)
           if(Test-Path $dest){throw 'Refuse to overwrite prior scratch'}
           git init -q $dest
@@ -127,6 +115,18 @@ jobs:
           git -C $dest checkout -q --detach $env:GITHUB_SHA
           if($LASTEXITCODE -or (git -C $dest rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
             throw 'Unpinned source'}
+          $cleaner=Join-Path $dest 'tools/valoria-depth-pilot/cleanup-owned-temp.ps1'
+          if(-not(Test-Path -LiteralPath $cleaner)){throw 'Missing safe cleanup helper'}
+          foreach($previousId in @(44275072091,44275806196,44281717983)){
+            $old=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$previousId)
+            if(Test-Path -LiteralPath $old){
+              try {
+                & $cleaner -RunId $previousId -Execute
+              } catch {
+                Write-Warning ('Own previous scratch not removed: '+$previousId+' '+$_.Exception.Message)
+              }
+            }
+          }
           "DEPTH_ROOT=$dest" | Out-File $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Genuine Unity Editor A/B motion frames
         shell: powershell
@@ -199,8 +199,8 @@ jobs:
             ${{ runner.temp }}/depth-test-${{ github.run_id }}.log
           retention-days: 7
           if-no-files-found: warn
-      - name: Remove ONLY our disposable checkout after successful artifact upload
-        if: always() && steps.archive-proof.outcome == 'success'
+      - name: Clean ONLY our current run via guarded long-path-safe robocopy after archived evidence
+        if: always() && steps.archive-proof.outcome == 'success' && steps.archive-proof.outputs.artifact-id != ''
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
@@ -209,13 +209,16 @@ jobs:
              [IO.Path]::GetFullPath($env:DEPTH_ROOT) -ne [IO.Path]::GetFullPath($expected)){
             throw 'Scratch cleanup path verification failed'
           }
-          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
-            Write-Host 'Unity/Blender still active; preserve scratch, no interruption'
-            exit 0
+          $source=Join-Path $env:DEPTH_ROOT 'tools/valoria-depth-pilot/cleanup-owned-temp.ps1'
+          if(-not(Test-Path -LiteralPath $source)){throw 'No verified cleanup script'}
+          # Execute helper from OUTSIDE the scratch that it will delete.
+          $helper=Join-Path $env:RUNNER_TEMP ('valoria-depth-cleaner-'+$env:GITHUB_RUN_ID+'.ps1')
+          Copy-Item -LiteralPath $source -Destination $helper
+          try {
+            & $helper -RunId ([long]$env:GITHUB_RUN_ID) -Execute -EvidenceArchived
+          } finally {
+            Remove-Item -LiteralPath $helper -Force -ErrorAction SilentlyContinue
           }
-          if(-not(Test-Path $expected)){exit 0}
-          Remove-Item -LiteralPath $expected -Recurse -Force
-          Write-Host 'Cleaned only this run scratch; logs and any genuine frames archived'
 
   package-movies:
     needs: unity
