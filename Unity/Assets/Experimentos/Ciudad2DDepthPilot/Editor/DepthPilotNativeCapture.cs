@@ -135,9 +135,22 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             if (actual != ReferenceSha256 || actualMirror != ReferenceSha256)
                 throw new InvalidOperationException("Original/mirror V6 SHA-256 differs: " +
                     actual + " / " + actualMirror);
+            // Git checkout on Windows may normalize LF to CRLF, which is valid
+            // YAML. Require actual distinct lines and exact stable GUID; never
+            // require a specific platform line-ending byte sequence.
             string metadata = File.ReadAllText(mirror + ".meta");
-            if (metadata.Contains("\\n") || !metadata.Contains("\nguid: 1d2c41bf88e98f7008b735d3dfadec38\n"))
-                throw new InvalidOperationException("Mirror A scene .meta is not a valid multi-line YAML file");
+            string normalized = metadata.Replace("\r\n", "\n").Replace("\r", "\n");
+            string[] lines = normalized.Split('\n');
+            bool validGuid = Array.Exists(lines, line =>
+                string.Equals(line.Trim(),
+                    "guid: 1d2c41bf88e98f7008b735d3dfadec38",
+                    StringComparison.Ordinal));
+            bool validImporter = Array.Exists(lines, line =>
+                string.Equals(line.Trim(), "DefaultImporter:", StringComparison.Ordinal));
+            if (lines.Length < 5 || normalized.Contains("\\n") ||
+                !validGuid || !validImporter)
+                throw new InvalidOperationException(
+                    "Mirror A Unity scene metadata lacks actual lines or expected GUID");
         }
 
         private static Dictionary<string, CityBuilding> Buildings(Scene scene)
