@@ -51,7 +51,7 @@ def source_gate():
         source = src.read_text(encoding="utf-8")
         # This namespace collision was missed by Tree-sitter but failed real Unity
         # with CS0234 in run 44275806196. Do not repeat the same omission.
-        assert not re.search(r"(?<![\\w.])Application\\.", source), (
+        assert not re.search(r"(?<![\w.])Application\.", source), (
             f"Unqualified Unity Application: CS0234 risk in {src}")
     runtime = C_SHARP[0].read_text()
     editor = C_SHARP[2].read_text()
