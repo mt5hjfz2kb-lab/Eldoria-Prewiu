@@ -16,6 +16,8 @@ SOURCE_SHA = "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06"
 SOURCE = Path("Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/"
               "Experimento_Ciudad2D_PremiumV6_44133747143.unity")
 PILOT = Path("Unity/Assets/Experimentos/Ciudad2DDepthPilot")
+MIRROR = PILOT / "Scenes/Valoria_Depth_A_ExactV6.unity"
+MIRROR_META = PILOT / "Scenes/Valoria_Depth_A_ExactV6.unity.meta"
 C_SHARP = [
     PILOT / "DepthPilotActivity.cs",
     PILOT / "DepthPilotContact.cs",
@@ -37,6 +39,13 @@ def sha256(path):
 def source_gate():
     assert SOURCE.exists(), f"V6 archive unavailable: {SOURCE}"
     assert sha256(SOURCE) == SOURCE_SHA, "Archived Premium V6 source altered"
+    assert MIRROR.is_file(), "Original mirror scene missing"
+    assert sha256(MIRROR) == SOURCE_SHA, "Mirror is not identical byte-for-byte to V6"
+    assert MIRROR_META.is_file(), "Mirror .meta missing"
+    meta = MIRROR_META.read_text(encoding="utf-8")
+    assert "\\n" not in meta, "Malformed literal-backslash-n Unity mirror metadata"
+    assert "guid: 1d2c41bf88e98f7008b735d3dfadec38" in meta
+    assert meta.count("\n") >= 5, "Mirror metadata does not have real LF separators"
     for src in C_SHARP:
         assert src.exists(), f"Missing pilot source {src}"
         s = src.read_text(encoding="utf-8")
@@ -62,6 +71,7 @@ def source_gate():
     assert 'contact.gameObject.scene == scene) contact.Refresh();' in editor
     assert editor.index('contact.gameObject.scene == scene) contact.Refresh();') < \
         editor.index('var map = Buildings(scene);')
+    assert "OriginalArchive" in editor and "Valoria_Depth_A_ExactV6.unity" in editor
     assert "ReferenceSha256" in editor
     assert "DepthPilotActivity" in editor
     assert "Camera.Render()" in editor or "camera.Render()" in editor

@@ -21,8 +21,12 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
     public static class DepthPilotNativeCapture
     {
         private const string Root = "Assets/Experimentos/Ciudad2DDepthPilot/";
-        private const string Reference =
+        private const string OriginalArchive =
             "Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity";
+        // Exact binary copy of A (identical SHA256), with fresh valid scene .meta
+        // because archived scene .meta literally contains "\\n" separators.
+        // Never overwrite or repair the source archive on its owner's branch.
+        private const string Reference = Root + "Scenes/Valoria_Depth_A_ExactV6.unity";
         private const string ReferenceSha256 =
             "aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06";
         private const string PilotScene = Root + "Valoria_Depth_B.unity";
@@ -47,6 +51,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             public string mode = "Editor_RenderTexture";
             public string comparison = "immutable Premium V6 source vs isolated depth pilot B";
             public string baseline_scene = Reference;
+            public string original_archive_scene = OriginalArchive;
             public string baseline_scene_sha256 = ReferenceSha256;
             public string pilot_scene = PilotScene;
             public string motion_capture = "actual rendered frames; no interpolated stills";
@@ -121,11 +126,18 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
 
         private static void ValidateArchive()
         {
-            string source = Physical(Reference);
-            if (!File.Exists(source)) throw new FileNotFoundException("Premium V6 source", source);
+            string source = Physical(OriginalArchive);
+            string mirror = Physical(Reference);
+            if (!File.Exists(source) || !File.Exists(mirror))
+                throw new FileNotFoundException("Missing original or byte-identical mirror of Premium V6");
             string actual = Sha(File.ReadAllBytes(source));
-            if (actual != ReferenceSha256)
-                throw new InvalidOperationException("Premium V6 source changed: " + actual);
+            string actualMirror = Sha(File.ReadAllBytes(mirror));
+            if (actual != ReferenceSha256 || actualMirror != ReferenceSha256)
+                throw new InvalidOperationException("Original/mirror V6 SHA-256 differs: " +
+                    actual + " / " + actualMirror);
+            string metadata = File.ReadAllText(mirror + ".meta");
+            if (metadata.Contains("\\n") || !metadata.Contains("\nguid: 1d2c41bf88e98f7008b735d3dfadec38\n"))
+                throw new InvalidOperationException("Mirror A scene .meta is not a valid multi-line YAML file");
         }
 
         private static Dictionary<string, CityBuilding> Buildings(Scene scene)

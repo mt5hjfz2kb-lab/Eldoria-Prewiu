@@ -43,3 +43,20 @@ podían seguir invisibles. El método `PrepareStage` ahora invoca
 `DepthPilotContact.Refresh()` explícitamente **después** del cambio de etapa.
 Se añade un control de fuente que impide repetir esta omisión. Hasta obtener
 PNG originales de Unity, el efecto visual continúa SIN VERIFICAR.
+
+## Copia A binariamente idéntica con metadatos Unity válidos
+
+Detectado en el repositorio: el fichero heredado
+`QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity.meta`
+contiene caracteres literales `\\n` en lugar de saltos de línea y no es
+metadato YAML válido. El original **no se edita**. Se incorpora a esta rama
+experimental la escena espejo `Scenes/Valoria_Depth_A_ExactV6.unity` con
+exactamente el mismo blob de Git
+`4785b9bdbd77a5f700a2fd4d835ac3ac39c3e362` y un `.meta`
+correctamente formado. Antes y después del render se verifican los SHA-256
+de las DOS escenas, que deben ser
+`aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06`.
+A se captura desde la copia exacta; B se crea como variante de esa copia.
+El control A original y su fichero .meta permanecen inalterados en la rama
+de origen, sin cambio alguno de contenido ni pérdida de recursos premium.
+Esta técnica evita depender de un importador tolerante con metadatos corruptos.
