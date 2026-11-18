@@ -1,0 +1,26 @@
+{
+  "name": "Valoria25D.Integration.Tests",
+  "rootNamespace": "Eldoria.Valoria25D.Tests",
+  "references": [
+    "Eldoria.Domain",
+    "Eldoria.Application",
+    "Eldoria.Infrastructure",
+    "Eldoria.Presentation"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
