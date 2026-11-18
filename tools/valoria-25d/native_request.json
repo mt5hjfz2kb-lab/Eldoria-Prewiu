@@ -14,5 +14,8 @@
   "no_art_write": true,
   "no_beta_publish": true,
   "owner_authorization": "The user explicitly requested a City2D V6 integration successor branch built from main and permission to use Unity resources; same City2D workstream lease, no competing job allowed",
-  "physical_iPhone_test": "PENDING"
+  "physical_iPhone_test": "PENDING",
+  "retry": 1,
+  "last_failed_run": 44206547744,
+  "last_failure": "Unity compilation CS1069: Physics2D BoxCollider2D module missing in main Packages/manifest.json; added com.unity.modules.physics2d 1.0.0 solely to integration branch, matching proven art branch."
 }
