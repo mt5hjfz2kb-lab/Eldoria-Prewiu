@@ -65,9 +65,9 @@ if(Test-Path $env:VALORIA25D_QA_SAVE_PATH){throw 'Previous QA save exists'}
 $playXml=Join-Path $env:RUNNER_TEMP ('valoria25d-playmode-'+$env:GITHUB_RUN_ID+'.xml')
 Invoke-Unity 'playmode' @('-batchmode','-force-d3d11','-projectPath',$project,
     '-runTests','-testPlatform','EditMode',
-    '-testFilter','Eldoria.Valoria25D.Tests.City25DScenePlayModeProof.RealV6City_CanonicalGatewaySaveBuildTouchAndNonDuplicatedHUD',
+    '-testFilter','Eldoria.Valoria25D.Tests.City25DScenePlayModeProof',
     '-testResults',$playXml) 15
-Assert-Xml $playXml 1 'scene-playmode'
+Assert-Xml $playXml 2 'city-plus-existing-world-playmode'
 $proof=Join-Path $project 'Valoria25DGameplayEvidence/evidence.json'
 if(-not(Test-Path $proof)){throw 'Native Unity screenshot manifest missing'}
 $captures=Get-Content -LiteralPath $proof -Raw | ConvertFrom-Json
