@@ -60,3 +60,11 @@ A se captura desde la copia exacta; B se crea como variante de esa copia.
 El control A original y su fichero .meta permanecen inalterados en la rama
 de origen, sin cambio alguno de contenido ni pérdida de recursos premium.
 Esta técnica evita depender de un importador tolerante con metadatos corruptos.
+
+## Tercer intento nativo, error real de Unity 6.3 (18/11/2026)
+
+- [Run #44281717983](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44281717983): preflight Windows y checkout aislado pasan; `com.arloopa.unitysplats` resuelve Git correctamente; Unity llega a compilar, pero falla en `DepthPilotNativeCapture.cs` con **dos CS1061**: `TextureImporter.spriteAlignment` no existe. No llegó a generar `evidence.json`, PNG A/B ni vídeo; `PlayMode` no se ejecutó.
+- **Causa verificada con API Unity 6000.3:** `spriteAlignment` es propiedad de `TextureImporterSettings`, no de `TextureImporter`. Fuente oficial: https://docs.unity.com/en-us/engine/6000.3/script-reference/unityeditor/textureimportersettings .
+- **Corrección implementada:** `TextureImporter.ReadTextureSettings` → `TextureImporterSettings.spriteAlignment` / `spritePivot` → `TextureImporter.SetTextureSettings` → `SaveAndReimport`. Para sombra: pivot central. Para trabajador: pivot de pie personalizado (0.5,0). Añadido guardia que impide volver a escribir `importer.spriteAlignment` o `ti.spriteAlignment`.
+- **Otro defecto detectado:** `Remove-Item -Recurse` de PowerShell falló en una ruta larga de `Unity/Library/PackageCache`. Aunque el artefacto con logs se subió, la limpieza del directorio `valoria-depth-44281717983` quedó por comprobar. La siguiente receta debe usar una limpieza segura robusta o conservar el checkout si sigue activo algún proceso. Nunca borrar carpetas de otros trabajos ni afirmar disco liberado sin medir.
+- **Estado:** reparado en fuente; **COMPILACIÓN DE LA REPARACIÓN NO VERIFICADA**. Premium V6 original, main (salvo reserva del PC) e integración permanecen intactos. No declarar éxito visual.
