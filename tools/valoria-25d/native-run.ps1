@@ -32,6 +32,15 @@ function Assert-Xml([string]$file,[int]$minTotal,[string]$label) {
 if(-not(Test-Path (Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity'))){
     throw 'No selectively migrated V6 Unity scene'
 }
+$sourceMeta=Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity.meta'
+if(-not(Test-Path $sourceMeta)){throw 'Unity premium V6 scene .meta missing'}
+$metaText=Get-Content -LiteralPath $sourceMeta -Raw
+if($metaText.Contains('\\n') -or
+   $metaText -notmatch '(?m)^guid: ec837f59b040445da407785c6f670ecd$' -or
+   $metaText -notmatch '(?m)^DefaultImporter:$'){
+    throw 'Malformed scene GUID YAML .meta; abort before long Unity import'
+}
+Write-Host 'VALORIA25D_V6_SCENE_META_VALID_GUID_YAML_PASS'
 Invoke-Unity 'scene' @('-batchmode','-quit','-force-d3d11','-projectPath',$project,
     '-executeMethod','Eldoria.Valoria25D.Editor.City25DGameplaySceneBuilder.Build') 18
 if(-not(Test-Path (Join-Path $project 'Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity'))){
