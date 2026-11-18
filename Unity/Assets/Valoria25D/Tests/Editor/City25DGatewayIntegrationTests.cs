@@ -176,6 +176,81 @@ namespace Eldoria.Valoria25D.Tests
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(before));
             Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(wood-SliceRules.SawmillWoodCost));
         }
+
+        [Test] public void MarchPreparation_CanonicalCommandUsesExistingTroopsAndSave()
+        {
+            var clock=new Clock();
+            var store=new Store { Initial=Seed(2,1,1) };
+            var game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().MarchConfigured,Is.False);
+            var command=Do(game,"ConfigureMarch","march-main","march-qa-real");
+            Assert.That(command.Ok,Is.True,command.Message);
+            var state=game.Snapshot();
+            Assert.That(state.MarchConfigured,Is.True);
+            Assert.That(state.PreparedTroops.Total,Is.GreaterThan(0));
+            Assert.That(state.PreparedTroops.Total,Is.LessThanOrEqualTo(state.Available.Total));
+            Assert.That(state.ChapterProgress.MarchConfirmed,Is.True);
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().PreparedTroops.Total,Is.EqualTo(state.PreparedTroops.Total));
+            Assert.That(game.Snapshot().MarchConfigured,Is.True);
+        }
+
+        [Test] public void ChapterThree_FissureInvestigationAndLyraUseAuthoritativeUTC()
+        {
+            var clock=new Clock();var store=new Store { Initial=Seed(3,1,1) };
+            var game=new LocalGateway(clock,store);
+            Assert.That(Do(game,"ContactLyra","fissure-valoria").Ok,Is.False,
+                "No UI may unlock Lyra before the real investigation");
+            var start=Do(game,"InvestigateFissure","fissure-valoria","fissure-qa");
+            Assert.That(start.Ok,Is.True,start.Message);
+            var pending=game.Snapshot();
+            Assert.That(pending.ChapterThree.FissureExplored,Is.False);
+            Assert.That(pending.ChapterThree.InvestigationEndsUtcTicks,
+                Is.EqualTo(clock.UtcTicks+TimeSpan.FromMinutes(20).Ticks));
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().ChapterThree.InvestigationEndsUtcTicks,
+                Is.EqualTo(pending.ChapterThree.InvestigationEndsUtcTicks));
+            clock.NextSeconds(1201);
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().ChapterThree.FissureExplored,Is.True);
+            Assert.That(game.Snapshot().ChapterThree.InvestigationEndsUtcTicks,Is.Zero);
+            Assert.That(Do(game,"ContactLyra","fissure-valoria").Ok,Is.True);
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().ChapterThree.LyraContacted,Is.True);
+        }
+
+        [Test] public void BastionFourToFive_UsesIrreversibleDevelopmentChoiceAndRealDeadline()
+        {
+            var clock=new Clock();var seed=Seed(4,2,2);
+            seed.ChapterThree.GranaryLevel=2;
+            var store=new Store { Initial=seed };
+            var game=new LocalGateway(clock,store);
+            Assert.That(Do(game,"AdvanceBastion","bastion").Ok,Is.False,
+                "Cannot skip the real chapter IV development choice");
+            var choice=Do(game,"ChooseDevelopment","production","priority-real");
+            Assert.That(choice.Ok,Is.True,choice.Message);
+            Assert.That(game.Snapshot().ChapterThree.DevelopmentPriority,
+                Is.EqualTo("production"));
+            Assert.That(Do(game,"ChooseDevelopment","defense").Ok,Is.False,
+                "A second UI press cannot replace or regrant a priority bonus");
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().ChapterThree.DevelopmentPriority,
+                Is.EqualTo("production"));
+            var next=BastionProgressionCatalog.ForLevel(5);
+            Assert.That(BastionProgressionCatalog.RequirementsMet(game.Snapshot(),next),
+                Is.True,BastionProgressionCatalog.MissingSummary(game.Snapshot(),next));
+            Assert.That(Do(game,"AdvanceBastion","bastion").Ok,Is.True);
+            var running=game.Snapshot();
+            Assert.That(running.BastionLevel,Is.EqualTo(4));
+            Assert.That(running.BastionUpgradeCompletesUtcTicks,
+                Is.EqualTo(clock.UtcTicks+TimeSpan.FromSeconds(next.DurationSeconds).Ticks));
+            clock.NextSeconds(next.DurationSeconds+1);
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().BastionLevel,Is.EqualTo(5));
+            Assert.That(game.Snapshot().BastionUpgradeCompletesUtcTicks,Is.Zero);
+            Assert.That(game.Snapshot().ChapterThree.DevelopmentPriority,
+                Is.EqualTo("production"));
+        }
     }
 }
 #endif
