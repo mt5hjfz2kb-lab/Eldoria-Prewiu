@@ -107,8 +107,8 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D
                 cutout.transform.SetParent(generated, false);
                 foreground = cutout.AddComponent<SpatialTerrainForeground>();
                 foreground.Configure(ground, foregroundLayout, foregroundShader);
-                if (foreground.RegionCount != 5)
-                    throw new InvalidOperationException("Five wall regions expected");
+                if (foreground.RegionCount != 7)
+                    throw new InvalidOperationException("Seven aligned wall regions expected");
             }
 
             // One independent foreground object, not another background photograph.

@@ -70,7 +70,7 @@ def check() -> dict:
         "dimensions":[width,height],
         "original_alpha_opaque":True,
         "static_roundtrip_identical":True,
-        "five_convex_source_regions":len(records)==5,
+        "seven_convex_source_regions":len(records)==7,
         "region_coverage_percent":round(100*coverage/(width*height),2),
         "regions":records,
         "preview":str(preview.relative_to(REPO)),

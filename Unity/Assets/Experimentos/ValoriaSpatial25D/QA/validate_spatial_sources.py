@@ -50,10 +50,10 @@ def verify() -> dict:
         assert "UnityEngine.Application." in source_text
         import re
         assert not re.search(r"(?<!UnityEngine\\.)\\bApplication\\.", source_text), "Unqualified Application may bind Eldoria.Application namespace"
-    # Five convex fragments share the source terrain texture; no masking by green patches.
+    # Seven convex fragments share the source terrain texture; no masking by green patches.
     data = json.loads(LAYOUT.read_text(encoding="utf-8"))
     assert data["schema"] == 1 and data["coordinate_width"] == 941 and data["coordinate_height"] == 1672
-    assert len(data["regions"]) == 5
+    assert len(data["regions"]) == 7
     wall_source = WALL.read_text(encoding="utf-8")
     assert "sharedCutoutMaterial.mainTexture = texture" in wall_source
     assert '"UniversalPipeline"' in SHADER.read_text(encoding="utf-8")
