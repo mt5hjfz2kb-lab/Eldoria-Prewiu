@@ -54,7 +54,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Tests
         [UnityTest, Timeout(120000)]
         public IEnumerator PilotB_RealPlayMode_StatesOcclusionSelectionAndZoom()
         {
-            Assert.IsTrue(File.Exists(Path.Combine(Application.dataPath,
+            Assert.IsTrue(File.Exists(Path.Combine(UnityEngine.Application.dataPath,
                 "../" + ScenePath)), "B scene must be generated in isolated Editor proof");
             yield return new EnterPlayMode();
             var loaded = EditorSceneManager.LoadSceneAsyncInPlayMode(

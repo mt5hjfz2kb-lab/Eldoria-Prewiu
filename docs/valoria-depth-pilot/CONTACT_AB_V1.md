@@ -26,3 +26,10 @@ No tocar main ni integration/valoria-25d-playable-20261117. No ocupar el Windows
 
 ## Límite de técnica
 El fondo pintado no aporta geometría que ocluya los edificios; orden Y solo decide qué sprite va delante, no intersecciones internas. Añado únicamente contacto anclado, efectos de profundidad local y actividades pequeñas. Si el resultado no mejora el vídeo o los personajes rebajan el acabado premium, descartar esta B y explorar segmentación verificada del terreno o geometría selectiva. Nunca expandir sin QA visual y técnica positiva.
+
+## Diagnostico tras los dos intentos reales (18/11/2026)
+
+- Unity Windows #44275072091: arrancó, no llegó a compilar por falta de Git.exe en PATH heredado por el Package Manager para `com.arloopa.unitysplats`. El workflow ahora persiste el directorio Git mediante `GITHUB_PATH` y verifica Git antes de ejecutar Unity.
+- Unity Windows #44275806196: superó la resolución del paquete Git, alcanzó la compilación C# y encontró cinco `CS0234` por confusión `Application.isPlaying` con el namespace del proyecto `Eldoria.Application`. Corregidos en fuente todos los usos nuevos con `UnityEngine.Application` (runtime, Editor y pruebas, incluyendo la otra prueba aislada B-cielo).
+- Ambos intentos **NO generaron imágenes A/B válidas** y no acreditan profundidad, calidad, PlayMode ni rendimiento. Los errores y correcciones están versionados; la próxima ejecución nativa es imprescindible para comprobarlos.
+- PC vuelve al titular City2D después de este turno; el piloto no ha ocupado la rama de integración funcional.

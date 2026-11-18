@@ -77,7 +77,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
         [MenuItem("Eldoria/Experimentos/Valoria profundidad/Capturar movimiento A-B real")]
         public static void Capture()
         {
-            if (!Application.isBatchMode &&
+            if (!UnityEngine.Application.isBatchMode &&
                 !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
             var setup = EditorSceneManager.GetSceneManagerSetup();
@@ -87,7 +87,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
                 CreateWorkerArt();
                 EnsureContactArt();
                 BuildB();
-                var output = Path.GetFullPath(Path.Combine(Application.dataPath, "..", Output));
+                var output = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", Output));
                 if (Directory.Exists(output))
                     throw new InvalidOperationException("Evidence folder already exists; refuse to mix captures");
                 Directory.CreateDirectory(output);
@@ -104,13 +104,13 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot.Editor
             }
             finally
             {
-                if (!Application.isBatchMode && setup != null && setup.Length > 0)
+                if (!UnityEngine.Application.isBatchMode && setup != null && setup.Length > 0)
                     EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
         }
 
         private static string Physical(string assetPath) =>
-            Path.GetFullPath(Path.Combine(Application.dataPath, "..", assetPath));
+            Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", assetPath));
 
         private static string Sha(byte[] bytes)
         {

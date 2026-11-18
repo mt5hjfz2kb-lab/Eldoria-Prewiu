@@ -44,7 +44,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot
 
         private void LateUpdate()
         {
-            if (Application.isPlaying) Refresh();
+            if (UnityEngine.Application.isPlaying) Refresh();
         }
     }
 }

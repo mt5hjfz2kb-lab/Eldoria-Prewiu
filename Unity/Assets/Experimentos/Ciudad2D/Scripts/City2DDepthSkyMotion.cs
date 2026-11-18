@@ -51,7 +51,7 @@ namespace Eldoria.Experimentos.Ciudad2D
 
         private void LateUpdate()
         {
-            if (Application.isPlaying && configured && observer != null)
+            if (UnityEngine.Application.isPlaying && configured && observer != null)
                 EvaluateForCamera(observer.transform.position);
         }
 
@@ -89,7 +89,7 @@ namespace Eldoria.Experimentos.Ciudad2D
         {
             if (isolatedMaterial == null) return;
             visual.sharedMaterial = null;
-            if (Application.isPlaying) Destroy(isolatedMaterial);
+            if (UnityEngine.Application.isPlaying) Destroy(isolatedMaterial);
             else DestroyImmediate(isolatedMaterial);
             isolatedMaterial = null;
         }

@@ -90,9 +90,9 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
                     "Pilot B already exists. Never overwrite a review candidate; archive it first.");
 
             var setup=EditorSceneManager.GetSceneManagerSetup();
-            if(!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if(!UnityEngine.Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;
-            string outDir=Path.GetFullPath(Path.Combine(Application.dataPath,"..",Output));
+            string outDir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",Output));
             if (Directory.Exists(outDir))
                 throw new InvalidOperationException("Existing A/B evidence. Never mix runs.");
             Directory.CreateDirectory(outDir);
@@ -132,7 +132,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
             }
             finally
             {
-                if (!Application.isBatchMode && setup!=null && setup.Length>0)
+                if (!UnityEngine.Application.isBatchMode && setup!=null && setup.Length>0)
                     EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
         }
@@ -318,7 +318,7 @@ namespace Eldoria.Experimentos.Ciudad2D.Editor
 
         private static string Physical(string asset)
         {
-            return Path.GetFullPath(Path.Combine(Application.dataPath,"..",
+            return Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",
                 asset.Replace('/',Path.DirectorySeparatorChar)));
         }
 

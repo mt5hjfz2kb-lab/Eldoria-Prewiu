@@ -59,7 +59,7 @@ namespace Eldoria.Experimentos.Ciudad2D
 
         private void Update()
         {
-            if (Application.isPlaying) EvaluateAtTime(Time.unscaledTime);
+            if (UnityEngine.Application.isPlaying) EvaluateAtTime(Time.unscaledTime);
         }
 
         private void OnDisable()

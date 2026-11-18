@@ -77,7 +77,7 @@ namespace Eldoria.Experimentos.Ciudad2DDepthPilot
 
         private void LateUpdate()
         {
-            if (Application.isPlaying) Sample(Time.unscaledTime);
+            if (UnityEngine.Application.isPlaying) Sample(Time.unscaledTime);
         }
     }
 }
