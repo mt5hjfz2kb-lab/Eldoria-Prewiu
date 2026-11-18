@@ -66,6 +66,12 @@ def source_gate():
     editor = C_SHARP[2].read_text()
     assert "owner.PlotPhase == City2DPlotPhase.Built" in runtime
     assert "Sample(float seconds)" in runtime
+    # Exact Unity 6.3 compiler failure CS1061: TextureImporter has no spriteAlignment.
+    assert "new TextureImporterSettings()" in editor
+    assert "importer.ReadTextureSettings(importSettings);" in editor
+    assert "importer.SetTextureSettings(importSettings);" in editor
+    assert "ti.SetTextureSettings(workerSettings);" in editor
+    assert not re.search(r"\\b(?:importer|ti)\\.spriteAlignment\\b", editor)
     assert "CorrectLocalOcclusion" in editor
     # A native Editor render cannot rely on a PlayMode-only LateUpdate.
     assert 'contact.gameObject.scene == scene) contact.Refresh();' in editor
