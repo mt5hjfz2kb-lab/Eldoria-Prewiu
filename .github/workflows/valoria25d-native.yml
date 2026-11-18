@@ -1,0 +1,137 @@
+name: Valoria25D - real Unity scene, gateway, PlayMode, WebGL candidate
+on:
+  push:
+    branches: [integration/valoria-25d-playable-20261117]
+    paths: [tools/valoria-25d/native_request.json]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ciudad2d-native-exclusive
+  cancel-in-progress: false
+jobs:
+  native:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Check City2D owner's exclusive Windows reservation and absence of running Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $api='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/'
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $entry=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $encoded=$entry.content
+          if(-not $encoded){
+            $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$entry.sha) -Headers $h
+            if($blob.sha -ne $entry.sha -or $blob.encoding -ne 'base64'){throw 'Registry SHA mismatch'}
+            $encoded=$blob.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($encoded -replace '\s',''))) | ConvertFrom-Json
+          $owners=@($registry.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-city2d-illustrated-proof-20261116' -or
+             $owners[0].owner -ne 'chatgpt-eldoria-city2d-priority-20261116' -or
+             $owners[0].ownership_state -ne 'claimed' -or
+             $registry.resource_rotation.current_workstream -ne 'eldoria-city2d-illustrated-proof-20261116'){
+             throw 'Native Windows lease not controlled by this City2D workstream'
+          }
+          if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+             throw 'PC busy: never interrupt existing Unity/Blender work'
+          }
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path -LiteralPath $env:UNITY_EDITOR_PATH)){
+             throw 'Installed Unity 6000.3.23f1 missing'
+          }
+          $module=Join-Path (Split-Path -Parent $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/WebGLSupport'
+          if(-not(Test-Path $module -PathType Container)){throw 'WebGL module not installed'}
+          $drive=(Get-Item $env:RUNNER_TEMP).PSDrive
+          if($drive.Free -lt 12GB){throw 'Insufficient scratch disk'}
+          Write-Host ('VALORIA25D_SAFE_NATIVE_RESERVATION_PASS freeGiB='+[math]::Round($drive.Free/1GB,2))
+      - name: Find installed Git, do not install software
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $d="$env:LOCALAPPDATA/GitHubDesktop"
+            $exe=Get-ChildItem $d -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+            if(-not $exe){throw 'Installed git unavailable'}
+            $dir=Split-Path $exe;$env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          git --version
+      - name: Create new immutable SHA-pinned sparse integration workspace
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if($env:GITHUB_SHA -notmatch '^[a-f0-9]{40}$'){throw 'Invalid source SHA'}
+          $dest=Join-Path $env:RUNNER_TEMP ('valoria25d-integration-'+$env:GITHUB_RUN_ID)
+          if(Test-Path -LiteralPath $dest){throw 'Scratch already exists'}
+          git init -q $dest
+          if($LASTEXITCODE){throw 'git init failed'}
+          git -C $dest remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          if($LASTEXITCODE){throw 'origin failed'}
+          $patterns=@(
+            '/Unity/Assets/Valoria25D/'
+            '/Unity/Assets/Eldoria/Scripts/Domain/'
+            '/Unity/Assets/Eldoria/Scripts/Application/'
+            '/Unity/Assets/Eldoria/Scripts/Infrastructure/'
+            '/Unity/Assets/Eldoria/Scripts/Presentation/'
+            '/Unity/Packages/'
+            '/Unity/ProjectSettings/'
+            '/tools/valoria-25d/'
+          )
+          git -C $dest sparse-checkout set --no-cone @patterns
+          if($LASTEXITCODE){throw 'Sparse checkout error'}
+          git -C $dest fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'SHA fetch error'}
+          git -C $dest checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'SHA checkout error'}
+          if((& git -C $dest rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source mismatch'}
+          "VALORIA25D_SOURCE_ROOT=$dest" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host ('VALORIA25D_SHA_PINNED='+$env:GITHUB_SHA)
+      - name: Validate source import and no modifications to original gameplay
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=$env:VALORIA25D_SOURCE_ROOT
+          $request=Get-Content (Join-Path $root 'tools/valoria-25d/native_request.json') -Raw | ConvertFrom-Json
+          if($request.origin_main_sha -ne '904ff183ffb9053f68b9c0f359b2e9d3d40ce805' -or
+             -not $request.no_main_write -or -not $request.no_art_write -or -not $request.no_beta_publish){
+             throw 'Integration scope contract broken'
+          }
+          $manifest=Get-Content (Join-Path $root 'tools/valoria-25d/selected_assets_manifest.json') -Raw | ConvertFrom-Json
+          if($manifest.unity_source_sha256 -ne 'aa566bf6a075868ad852ac865aa8a8cb867d1ade601ac3dd74e8e091f44f0b06'){
+             throw 'Premium V6 source identity mismatch'
+          }
+          $source=Join-Path $root 'Unity/Assets/Valoria25D/Scenes/Valoria25D_PremiumV6_Source.unity'
+          if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $manifest.unity_source_sha256){
+             throw 'Premium V6 scene content changed'
+          }
+          Write-Host 'VALORIA25D_SELECTIVE_PREMIUM_V6_SHA_PASS'
+      - name: Run true Unity EditMode, EnterPlayMode, screenshots and WebGL build
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $script=Join-Path $env:VALORIA25D_SOURCE_ROOT 'tools/valoria-25d/native-run.ps1'
+          & $script -SourceRoot $env:VALORIA25D_SOURCE_ROOT
+          if($LASTEXITCODE -and $LASTEXITCODE -ne 0){throw "Native runner failed exit=$LASTEXITCODE"}
+      - name: Preserve exact scene, native tests, screenshots and build even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria25d-real-integration-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            ${{ env.VALORIA25D_SOURCE_ROOT }}/Unity/Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity
+            ${{ env.VALORIA25D_SOURCE_ROOT }}/Unity/Assets/Valoria25D/Scenes/Valoria25D_Gameplay.unity.meta
+            ${{ env.VALORIA25D_SOURCE_ROOT }}/Unity/Valoria25DGameplayEvidence/*.png
+            ${{ env.VALORIA25D_SOURCE_ROOT }}/Unity/Valoria25DGameplayEvidence/*.json
+            ${{ env.VALORIA25D_SOURCE_ROOT }}/Unity/Valoria25D_CandidateWebGL/**
+            ${{ runner.temp }}/valoria25d-*.log
+            ${{ runner.temp }}/valoria25d-gateway-*.xml
+            ${{ runner.temp }}/valoria25d-playmode-*.xml
