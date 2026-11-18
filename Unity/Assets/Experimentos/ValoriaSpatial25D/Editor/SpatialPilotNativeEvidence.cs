@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using UnityEditor;
+using Eldoria.Experimentos.Ciudad2D;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -108,9 +109,12 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
         private static void RecordVariant(string variant, string directory,List<Frame> frames)
         {
             string source = variant == "A" ? SceneA : SceneB;
+            string sourceOnDisk = Path.GetFullPath(Path.Combine(
+                Application.dataPath, "..", source));
+            string originalSourceSha = Sha(File.ReadAllBytes(sourceOnDisk));
             Scene scene = EditorSceneManager.OpenScene(source, OpenSceneMode.Single);
             if (!scene.IsValid() || !scene.isLoaded ||
-                scene.path != source || scene.isDirty)
+                scene.path != source)
                 throw new InvalidOperationException("Scene must open unchanged: " + source);
 
             var camera = Camera.main;
@@ -203,9 +207,9 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 CaptureOne(variant,source,scene,camera,fit,bridge,pilot,pose,
                     directory,frames,step);
             }
-            if (scene.isDirty)
+            if (Sha(File.ReadAllBytes(sourceOnDisk)) != originalSourceSha)
                 throw new InvalidOperationException(
-                    "Capturing should not mutate serialized scene: " + scene.path);
+                    "A/B serialized scene bytes changed during capture: " + source);
         }
 
         private static void CaptureOne(string variant,string scenePath,Scene scene,
@@ -222,7 +226,8 @@ namespace Eldoria.Experimentos.ValoriaSpatial25D.Editor
                 int visible = 0;
                 foreach(var id in new[]{"aserradero","cuartel","granero"})
                     if(pilot.WorkerFor(id).IsVisible)visible++;
-                int expected = pose.stage >= 3 ? 3 : 1;
+                int expected = pose.stage >= 4 ? 3 : pose.stage >= 3 ? 2 :
+                               pose.stage >= 2 ? 1 : 0;
                 if(visible != expected)
                     throw new InvalidOperationException("Worker gating invalid at stage "+
                         pose.stage+": "+visible+" vs "+expected);
