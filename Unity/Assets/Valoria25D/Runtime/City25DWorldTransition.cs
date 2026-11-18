@@ -90,6 +90,11 @@ namespace Eldoria.Valoria25D
                     name == "Valoria" || name == "ValoriaWebGL" || name == CityScene
                         ? CityScene : name;
                 presenter.OnSceneLoaded(loaded,mode);
+                // Add only a small command surface into the original World HUD.
+                // No second canvas, event system, camera or replacement 4X art.
+                var missions=new GameObject("Valoria25D_CanonicalWorldActions");
+                missions.transform.SetParent(worldOnly.transform,false);
+                missions.AddComponent<City25DExistingWorldMissions>().Configure(existingGateway);
                 if (UnityEngine.Object.FindFirstObjectByType<SlicePresenter>() != presenter)
                     throw new InvalidOperationException("The original world did not keep one presenter");
                 Debug.Log("VALORIA25D_ORIGINAL_FRONTIER_READY owner_gateway_shared=true "+
