@@ -195,11 +195,15 @@ namespace Eldoria.Valoria25D
         }
         public void ShowWorldEntry()
         {
-            // Preserve the old 4X code/assets and do not silently switch into
-            // an uninitialized Frontier scene without its canonical presenter.
-            hud?.SetFeedback(
-                "Mundo 4X existente conservado. Transición pendiente de su prueba de compatibilidad; la ciudad sigue jugable.",
-                false);
+            if (gateway == null)
+            {
+                hud?.SetFeedback("La partida real no está disponible",true);
+                return;
+            }
+            // Reuse the CURRENT canonical gateway in the existing Frontier scene.
+            // No simulation, world reconstruction, new rewards or altered rules.
+            if (!City25DWorldTransition.TryEnter(gateway,out var reason))
+                hud?.SetFeedback(reason,true);
         }
         private void OnDestroy()
         {
