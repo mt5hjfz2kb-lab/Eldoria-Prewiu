@@ -5,6 +5,9 @@ on:
       - art/valoria-25d-profundidad-piloto
     paths:
       - 'Unity/Assets/Experimentos/Ciudad2DDepthPilot/**'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DDepthSkyMotion.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DGroundedActivity.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DDepthPilotEvidence.cs'
       - 'tools/valoria-depth-pilot/**'
       - 'docs/valoria-depth-pilot/**'
       - '.github/workflows/valoria-depth-pilot-source-gate.yml'
@@ -25,6 +28,9 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /Unity/Assets/Experimentos/Ciudad2DDepthPilot/
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DDepthSkyMotion.cs
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DGroundedActivity.cs
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DDepthPilotEvidence.cs
             /Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
             /tools/valoria-depth-pilot/
       - uses: actions/setup-python@v5

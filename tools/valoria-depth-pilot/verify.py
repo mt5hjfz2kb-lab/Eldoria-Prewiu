@@ -7,6 +7,7 @@ Requires exactly the authentic Unity Editor RenderTexture output for --frames.
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -20,6 +21,11 @@ C_SHARP = [
     PILOT / "DepthPilotContact.cs",
     PILOT / "Editor/DepthPilotNativeCapture.cs",
     PILOT / "Tests/DepthPilotPlayModeTests.cs",
+]
+RELATED_DEPTH_CS = [
+    Path("Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DDepthSkyMotion.cs"),
+    Path("Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DGroundedActivity.cs"),
+    Path("Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DDepthPilotEvidence.cs"),
 ]
 EXPECTED = 2 * 3 * (18 + 1)
 
@@ -40,6 +46,13 @@ def source_gate():
         assert "ICommandGateway" not in s
         assert "LocalGateway" not in s
         assert "GameCommand" not in s
+    for src in C_SHARP + RELATED_DEPTH_CS:
+        assert src.exists(), f"Missing depth pilot C# source {src}"
+        source = src.read_text(encoding="utf-8")
+        # This namespace collision was missed by Tree-sitter but failed real Unity
+        # with CS0234 in run 44275806196. Do not repeat the same omission.
+        assert not re.search(r"(?<![\\w.])Application\\.", source), (
+            f"Unqualified Unity Application: CS0234 risk in {src}")
     runtime = C_SHARP[0].read_text()
     editor = C_SHARP[2].read_text()
     assert "owner.PlotPhase == City2DPlotPhase.Built" in runtime
@@ -56,10 +69,10 @@ def source_gate():
     from tree_sitter import Language, Parser
     import tree_sitter_c_sharp
     parser = Parser(Language(tree_sitter_c_sharp.language()))
-    for src in C_SHARP:
+    for src in C_SHARP + RELATED_DEPTH_CS:
         root = parser.parse(src.read_bytes()).root_node
         assert not root.has_error, f"C# syntax error in {src}"
-    print("SOURCE_GATE_PASS: exact V6 archive; two isolated C# sources; "
+    print("SOURCE_GATE_PASS: exact V6 archive; seven C# sources; "
           "Tree-sitter syntax PASS; Unity compilation NOT TESTED")
 
 

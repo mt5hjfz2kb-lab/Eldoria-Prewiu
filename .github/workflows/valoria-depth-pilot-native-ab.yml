@@ -97,15 +97,17 @@ jobs:
           Add-Content -Path $env:GITHUB_PATH -Value $gitDir
           # Clean ONLY our previous failed checkout after checking process absence
           # and absence of render evidence; no other project folders are touched.
-          $prior=Join-Path $env:RUNNER_TEMP 'valoria-depth-44275072091'
-          if(Test-Path $prior){
-            if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
-              throw 'Native processes alive, refusing own prior scratch cleanup'
+          foreach($priorId in @(44275072091,44275806196)){
+            $prior=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$priorId)
+            if(Test-Path $prior){
+              if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+                throw 'Native processes alive, refusing own prior scratch cleanup'
+              }
+              if(-not(Test-Path (Join-Path $prior 'Unity/Ciudad2DDepthPilotEvidence/evidence.json'))){
+                Remove-Item -LiteralPath $prior -Recurse -Force
+                Write-Host ('Deleted only our failed, no-evidence depthpilot checkout '+$priorId)
+              } else { Write-Host ('Prior original evidence exists: preserve '+$priorId) }
             }
-            if(-not(Test-Path (Join-Path $prior 'Unity/Ciudad2DDepthPilotEvidence/evidence.json'))){
-              Remove-Item -LiteralPath $prior -Recurse -Force
-              Write-Host 'Deleted only our failed 44275072091 no-evidence checkout'
-            } else { Write-Host 'Prior original evidence exists; preserve checkout' }
           }
           $dest=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$env:GITHUB_RUN_ID)
           if(Test-Path $dest){throw 'Refuse to overwrite prior scratch'}
