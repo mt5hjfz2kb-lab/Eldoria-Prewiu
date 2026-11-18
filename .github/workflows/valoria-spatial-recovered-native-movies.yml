@@ -1,0 +1,53 @@
+name: Valoria recovered native A-B movies (Ubuntu only, no Unity or PC)
+on:
+  push:
+    branches:
+      - art/valoria-spatial-coherence-20261118
+    paths:
+      - '.github/workflows/valoria-spatial-recovered-native-movies.yml'
+      - 'tools/valoria-spatial-recovery/verify_recovered_native.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-spatial-recovery/
+      - name: Download EXACT source run 44285505085 artifact, never regenerate Unity frames
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: 44285505085
+          name: valoria-depth-frames-44285505085
+          github-token: ${{ github.token }}
+          path: recovered/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare external verification tools on Ubuntu only
+        run: |
+          python -m pip install --disable-pip-version-check pillow==11.3.0
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y ffmpeg; fi
+      - name: Prove 114 SHA-backed Unity frames, 57 matched A/B poses, real camera and PlayMode
+        run: |
+          python tools/valoria-spatial-recovery/verify_recovered_native.py \
+             --source recovered/valoria-depth-44285505085/Unity/Ciudad2DDepthPilotEvidence \
+             --out output
+      - name: Retain four real-Unity-frame videos and validation manifest
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-verified-unity-AB-movies
+          path: output/
+          retention-days: 30
+          if-no-files-found: error
