@@ -187,15 +187,20 @@ jobs:
              throw 'Native PlayMode regression'}
           Copy-Item $xml (Join-Path $project 'Ciudad2DDepthPilotEvidence/PlayMode.xml')
           Write-Host 'UNITY_DEPTH_PILOT_PLAYMODE_PASS'
-      - uses: actions/upload-artifact@v4
+      - id: archive-proof
+        name: Preserve original native frames AND Unity diagnostic logs
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: valoria-depth-frames-${{ github.run_id }}
-          path: ${{ env.DEPTH_ROOT }}/Unity/Ciudad2DDepthPilotEvidence/
+          path: |
+            ${{ env.DEPTH_ROOT }}/Unity/Ciudad2DDepthPilotEvidence/
+            ${{ runner.temp }}/depth-ab-${{ github.run_id }}.log
+            ${{ runner.temp }}/depth-test-${{ github.run_id }}.log
           retention-days: 7
           if-no-files-found: warn
-      - name: Remove only this successful temporary checkout after evidence upload
-        if: success()
+      - name: Remove ONLY our disposable checkout after successful artifact upload
+        if: always() && steps.archive-proof.outcome == 'success'
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
@@ -205,13 +210,13 @@ jobs:
             throw 'Scratch cleanup path verification failed'
           }
           if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
-            Write-Host 'Native processes still present; preserve scratch rather than delete'
+            Write-Host 'Unity/Blender still active; preserve scratch, no interruption'
             exit 0
           }
-          $manifest=Join-Path $expected 'Unity/Ciudad2DDepthPilotEvidence/evidence.json'
-          if(-not(Test-Path $manifest)){throw 'No source evidence, preserve checkout'}
+          if(-not(Test-Path $expected)){exit 0}
           Remove-Item -LiteralPath $expected -Recurse -Force
-          Write-Host 'Removed only our complete disposable depthpilot checkout'
+          Write-Host 'Cleaned only this run scratch; logs and any genuine frames archived'
+
   package-movies:
     needs: unity
     runs-on: ubuntu-24.04
