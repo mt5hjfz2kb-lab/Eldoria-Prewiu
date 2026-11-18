@@ -28,6 +28,10 @@ namespace Eldoria.Presentation
         // In the canonical main vertical slice this remains null, preserving
         // the original Valoria/Frontier navigation byte-for-byte semantically.
         public Func<string,string> ExternalSceneNameResolver { get; set; }
+        // A transient presenter borrowed by the 2.5D world must not expose
+        // the legacy hard-reset command, whose restart target is not the 2.5D scene.
+        public bool HideOwnerResetInExternalWorld { get; set; }
+
         void NavigateScene(string target)
         {
             if(SceneHost!=null) { SceneHost.Navigate(target); return; }
@@ -1008,7 +1012,7 @@ namespace Eldoria.Presentation
             resetButton.GetComponent<LayoutElement>().ignoreLayout=true;
             resetButtonText=resetButton.GetComponentInChildren<Text>();
             if(resetButtonText!=null)resetButtonText.fontSize=11;
-            if(SceneHost!=null)resetButton.gameObject.SetActive(false);
+            if(SceneHost!=null||HideOwnerResetInExternalWorld)resetButton.gameObject.SetActive(false);
 
             var quest=new GameObject("Quest panel",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
             var qrt=quest.GetComponent<RectTransform>();qrt.SetParent(safe,false);
