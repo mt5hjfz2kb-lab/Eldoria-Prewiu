@@ -89,6 +89,24 @@ jobs:
             if(-not $exe){throw 'Git unavailable'}
             $env:PATH="$(Split-Path $exe);$env:PATH"
           }
+          # Unity Package Manager resolves a Git-based package in a NEW job step.
+          # Propagate the actual Git directory with GITHUB_PATH, not just process PATH.
+          $gitExe=(Get-Command git.exe -ErrorAction Stop).Source
+          $gitDir=Split-Path -Parent $gitExe
+          if(-not(Test-Path $gitExe)){throw 'Git executable unexpectedly missing'}
+          Add-Content -Path $env:GITHUB_PATH -Value $gitDir
+          # Clean ONLY our previous failed checkout after checking process absence
+          # and absence of render evidence; no other project folders are touched.
+          $prior=Join-Path $env:RUNNER_TEMP 'valoria-depth-44275072091'
+          if(Test-Path $prior){
+            if(@(Get-Process Unity,UnityShaderCompiler,UnityPackageManager,blender -ErrorAction SilentlyContinue).Count){
+              throw 'Native processes alive, refusing own prior scratch cleanup'
+            }
+            if(-not(Test-Path (Join-Path $prior 'Unity/Ciudad2DDepthPilotEvidence/evidence.json'))){
+              Remove-Item -LiteralPath $prior -Recurse -Force
+              Write-Host 'Deleted only our failed 44275072091 no-evidence checkout'
+            } else { Write-Host 'Prior original evidence exists; preserve checkout' }
+          }
           $dest=Join-Path $env:RUNNER_TEMP ('valoria-depth-'+$env:GITHUB_RUN_ID)
           if(Test-Path $dest){throw 'Refuse to overwrite prior scratch'}
           git init -q $dest
@@ -112,6 +130,11 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
+          $git=(Get-Command git.exe -ErrorAction SilentlyContinue)
+          if(-not $git -or -not(Test-Path $git.Source)){
+            throw 'Git PATH was not propagated to Unity process; abort before launch'
+          }
+          git --version
           $project=Join-Path $env:DEPTH_ROOT 'Unity'
           $log=Join-Path $env:RUNNER_TEMP ('depth-ab-'+$env:GITHUB_RUN_ID+'.log')
           $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
