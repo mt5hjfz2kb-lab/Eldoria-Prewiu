@@ -1,0 +1,53 @@
+name: Valoria 2.5D depth pilot - static scope and immutable V6 gate
+on:
+  push:
+    branches:
+      - art/valoria-25d-profundidad-piloto
+    paths:
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DDepthSkyMotion.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DGroundedActivity.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DDepthPilotEvidence.cs'
+      - 'Unity/Assets/Experimentos/Ciudad2D/Shaders/**'
+      - 'tools/valoria-depth-pilot/**'
+      - '.github/workflows/valoria-depth-pilot-static.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-depth-pilot-source-only
+  cancel-in-progress: false
+
+jobs:
+  static-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DDepthSkyMotion.cs
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DDepthSkyMotion.cs.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DGroundedActivity.cs
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/City2DGroundedActivity.cs.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DDepthPilotEvidence.cs
+            /Unity/Assets/Experimentos/Ciudad2D/Scripts/Editor/City2DDepthPilotEvidence.cs.meta
+            /Unity/Assets/Experimentos/Ciudad2D/Shaders/
+            /Unity/Assets/Experimentos/Ciudad2D/Shaders.meta
+            /Unity/Packages/manifest.json
+            /tools/valoria-depth-pilot/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check immutable Premium V6 and isolated same-pose A/B source contract
+        run: python tools/valoria-depth-pilot/validate_source.py
+      - name: Do not claim a Unity render, quality grade, or mobile proof
+        run: |
+          echo 'STATIC_SOURCE_PASS_ONLY'
+          echo 'NO_WINDOWS_RUNNER_INVOCATION'
+          echo 'NOT_NATIVE_AB_UNITY_EVIDENCE'
+          echo 'NOT_IPHONE_TESTED'
