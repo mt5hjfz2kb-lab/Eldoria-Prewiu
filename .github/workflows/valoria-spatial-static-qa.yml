@@ -26,9 +26,22 @@ jobs:
           sparse-checkout: |
             Unity/Assets/Experimentos/Ciudad2D/QA/ArchivedScenes/Experimento_Ciudad2D_PremiumV6_44133747143.unity
             Unity/Assets/Experimentos/ValoriaSpatial25D/
+            Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno_Organico.png
       - name: Static source integrity (not Unity)
         run: |
           python3 Unity/Assets/Experimentos/ValoriaSpatial25D/QA/validate_spatial_sources.py | tee valoria_spatial_static_evidence.json
+      - name: Check source-matched wall regions and no static color change (offline, NOT Unity)
+        run: |
+          python3 -m pip install --disable-pip-version-check pillow==11.3.0
+          python3 Unity/Assets/Experimentos/ValoriaSpatial25D/QA/verify_wall_offline.py
+      - name: Upload wall-region diagnostic and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-spatial-wall-offline-diagnostic
+          path: Unity/Assets/Experimentos/ValoriaSpatial25D/QA/generated-offline/
+          retention-days: 14
+          if-no-files-found: warn
       - name: Upload static provenance
         if: always()
         uses: actions/upload-artifact@v4
