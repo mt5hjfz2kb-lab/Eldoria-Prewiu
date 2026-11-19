@@ -81,7 +81,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(ground==null || ground.ChunkCount!=81)
                     throw new Exception("Ground chunks are not actually present: "+(ground==null?-1:ground.ChunkCount));
                 var landscape=world.GetComponentInChildren<Modular25DLandscape>();
-                if(landscape==null||landscape.RoadCount!=2||landscape.FootprintCount!=2)
+                if(landscape==null||landscape.RoadCount!=2||landscape.FootprintCount!=2||
+                   !landscape.OriginalCobbleRoadLoaded)
                     throw new Exception("Actual Unity spatial terrain integration missing: roads="+
                         (landscape==null?-1:landscape.RoadCount)+" footprints="+
                         (landscape==null?-1:landscape.FootprintCount));
