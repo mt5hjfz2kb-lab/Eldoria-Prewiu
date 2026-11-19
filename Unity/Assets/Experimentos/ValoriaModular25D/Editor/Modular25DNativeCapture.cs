@@ -34,7 +34,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string engine, engineVersion, sourceBranch, sourceSha, scenePath, generatedAtUtc;
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
-            public bool continuousTerrainPresent, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms;
+            public bool continuousTerrainPresent, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms;
             public int sourceFrames, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
             public string disclaimer="Unity Editor Camera.Render on real scene, no PlayMode, no UI overlay, no physical device.";
             public List<Frame> frames = new List<Frame>();
@@ -80,7 +80,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 var ground=world.GetComponentInChildren<Modular25DGround>();
                 if(ground==null || ground.ChunkCount!=81)
                     throw new Exception("Ground chunks are not actually present: "+(ground==null?-1:ground.ChunkCount));
+                var landscape=world.GetComponentInChildren<Modular25DLandscape>();
+                if(landscape==null||landscape.RoadCount!=2||landscape.FootprintCount!=2)
+                    throw new Exception("Actual Unity spatial terrain integration missing: roads="+
+                        (landscape==null?-1:landscape.RoadCount)+" footprints="+
+                        (landscape==null?-1:landscape.FootprintCount));
                 report.continuousTerrainPresent=true;
+                report.roadAndFootprintKits=true;
                 report.noLegacyHudInEditorPreview=world.Gameplay==null&&world.Hud==null;
                 if(!report.noLegacyHudInEditorPreview)
                     throw new Exception("Native Editor probe unexpectedly spawned gameplay or legacy HUD");
