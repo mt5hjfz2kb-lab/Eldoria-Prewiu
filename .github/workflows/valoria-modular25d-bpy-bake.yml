@@ -8,6 +8,7 @@ on:
       - 'tools/valoria-modular25d/blender/bake_valoria.py'
       - 'tools/valoria-modular25d/blender/postprocess_sprites.py'
       - 'tools/valoria-modular25d/painterly_props/paint_props.py'
+      - 'tools/valoria-modular25d/painterly_props/paint_villagers.py'
       - '.github/workflows/valoria-modular25d-bpy-bake.yml'
   workflow_dispatch:
 
@@ -51,6 +52,8 @@ jobs:
           # Original 2D brush strokes replace only low-poly source rocks/bushes.
           # Keep original premium buildings and oak sources untouched.
           python tools/valoria-modular25d/painterly_props/paint_props.py \
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
+          python tools/valoria-modular25d/painterly_props/paint_villagers.py \
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
       - name: Verify independent RGBA sprites, transparent background, unique stable pivots
         run: |
