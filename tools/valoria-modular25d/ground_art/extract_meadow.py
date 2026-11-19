@@ -93,6 +93,87 @@ TextureImporter:
             raise AssertionError("Vertical tile seam")
         if tiled.getpixel((i,0))!=tiled.getpixel((i,511)):
             raise AssertionError("Horizontal tile seam")
+
+    # Second independent, spatially repeatable material. An exact 117x208
+    # original artist-rendered stone PATH detail from the same Eldoria file
+    # is mirrored to create one 256x512 vertical ribbon. Its alpha fades into
+    # meadow: no city's walls, gates, characters or backplate are imported.
+    ROAD_CROP=(413,1430,530,1638)
+    pathcrop=im.crop(ROAD_CROP).convert("RGBA")
+    left=ImageOps.mirror(pathcrop)
+    pair=Image.new("RGBA",(pathcrop.width*2,pathcrop.height))
+    pair.paste(left,(0,0));pair.paste(pathcrop,(pathcrop.width,0))
+    pair=pair.resize((256,256),Image.Resampling.LANCZOS)
+    road=Image.new("RGBA",(256,512))
+    road.paste(pair,(0,0))
+    road.paste(ImageOps.flip(pair),(0,256))
+    px=road.load()
+    for y in range(512):
+        for x in range(256):
+            cross=abs(x/255.0-.5)*2.0
+            phase=max(0.0,min(1.0,(cross-.59)/(.96-.59)))
+            phase=phase*phase*(3-2*phase)
+            r,g,b,a=px[x,y]
+            px[x,y]=(r,g,b,round(244*(1-phase)))
+    for y in range(512):
+        # Exact output alpha=0 at both edges, so green exterior never has
+        # a straight tile seam. Colour mismatch is invisible at alpha 0.
+        if road.getpixel((0,y))[3]!=0 or road.getpixel((255,y))[3]!=0:
+            raise AssertionError("World road alpha must be 0 at meadow edge")
+    for x in range(256):
+        r0,g0,b0,a0=road.getpixel((x,0))
+        r1,g1,b1,a1=road.getpixel((x,511))
+        if abs(r0-r1)+abs(g0-g1)+abs(b0-b1)>3 or a0!=a1:
+            # Explicitly harmonize the periodic top/bottom edge colour.
+            edge=tuple(round((a+b)/2) for a,b in zip((r0,g0,b0),(r1,g1,b1)))+(a0,)
+            road.putpixel((x,0),edge);road.putpixel((x,511),edge)
+    roadpath=dst/"OrganicCobbleRoad.png"
+    road.save(roadpath,optimize=True)
+    (dst/"OrganicCobbleRoad.png.meta").write_text("""fileFormatVersion: 2
+guid: 1a70b59fc9a14c689016de9e1c536a29
+TextureImporter:
+  serializedVersion: 12
+  externalObjects: {}
+  mipmaps:
+    enableMipMap: 0
+  sRGBTexture: 1
+  isReadable: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  nPOTScale: 0
+  alphaIsTransparency: 1
+  alphaSource: 1
+  textureType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureCompression: 2
+    compressionQuality: 100
+""",encoding="utf8")
+    roadfacts={
+        "asset":"OrganicCobbleRoad",
+        "sourceRef":SOURCE_COMMIT,"sourceSha256":SOURCE_SHA,
+        "source":"original Eldoria user-owned artist terrain; path-only crop",
+        "crop":list(ROAD_CROP),"outputPixels":[256,512],
+        "method":"horizontal mirrored paving, vertical mirrored repeat, feathered alpha ground contact",
+        "fullSceneBackground":False,"otherGameAssetsCopied":False,
+        "artApproved":False,"unityVerified":False,
+        "sha256":hashlib.sha256(roadpath.read_bytes()).hexdigest()
+    }
+    (dst/"OrganicCobbleRoad.provenance.json").write_text(
+        json.dumps(roadfacts,indent=2,ensure_ascii=False)+"\n",encoding="utf8")
+    print("ELDORIA_ORIGINAL_COBBLES_AUTHORED",roadfacts["sha256"],roadpath.stat().st_size)
+
     print("ELDORIA_ORIGINAL_TILE_ART_INTEGRITY_PASS",facts["sha256"],target.stat().st_size)
 
 if __name__=="__main__":
