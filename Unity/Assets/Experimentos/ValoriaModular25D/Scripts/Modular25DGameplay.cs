@@ -26,7 +26,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public event Action<string> MessageChanged;
         public bool IsAuthoritative => gateway != null;
         public string LastMessage => feedback;
-        public string SandboxSavePath => Path.Combine(Application.persistentDataPath,IsolatedSaveName);
+        public string SandboxSavePath => Path.Combine(UnityEngine.Application.persistentDataPath,IsolatedSaveName);
 
         void Awake()
         {
