@@ -29,8 +29,14 @@ def rgba(hexcode,alpha=1.0):
     return tuple(int(v[i:i+2],16)/255.0 for i in (0,2,4))+(alpha,)
 
 def mat(key, variant=None, emission=0.0):
+    """Unified handcrafted-material palette. Procedural microtexture, no external PBR set.
+
+    Macro-silhouette is geometry. Stone/roof/wood surface variation is rendered
+    into sprites from a single shared camera and light rig. Never random per run.
+    """
     name="Eldoria | "+key+(" | "+str(variant) if variant is not None else "")
-    if name in bpy.data.materials:return bpy.data.materials[name]
+    if name in bpy.data.materials:
+        return bpy.data.materials[name]
     color=rgba(PAL[key])
     if variant is not None:
         k=1.0+float(variant)
@@ -38,15 +44,88 @@ def mat(key, variant=None, emission=0.0):
     m=bpy.data.materials.new(name)
     m.diffuse_color=color
     m.use_nodes=True
-    shader=m.node_tree.nodes.get("Principled BSDF")
+    nodes=m.node_tree.nodes
+    links=m.node_tree.links
+    shader=nodes.get("Principled BSDF")
     shader.inputs["Base Color"].default_value=color
-    shader.inputs["Roughness"].default_value=.86 if key not in ("iron","amber") else .48
+    shader.inputs["Roughness"].default_value=.91 if key not in ("iron","amber") else .55
+    roughness=shader.inputs.get("Metallic")
+    if roughness and key=="iron":
+        roughness.default_value=.62
+
+    # Stone must read as ancient worn blocks, not an untextured grey box.
+    # Shared noise parameters preserve material identity across all assets.
+    stone_keys={"stone","stone_light","stone_dark","stone_moss","mortar"}
+    timber_keys={"timber","wood_light","wood_dark"}
+    roof_keys={"roof","roof_light","roof_dark"}
+    foliage_keys={"pine","pine_light","greens"}
+    if key in stone_keys|timber_keys|roof_keys|foliage_keys|{"dirt","cloth","skin"}:
+        tex=nodes.new("ShaderNodeTexNoise")
+        tex.label="Eroded material grain"
+        tex.inputs["Scale"].default_value=(
+            23 if key in stone_keys else
+            42 if key in timber_keys else
+            35 if key in roof_keys else
+            16 if key in foliage_keys else 28)
+        tex.inputs["Detail"].default_value=3.5
+        tex.inputs["Roughness"].default_value=.72
+        ramp=nodes.new("ShaderNodeValToRGB")
+        ramp.label="Restricted material ink"
+        ramp.color_ramp.elements.remove(ramp.color_ramp.elements[1])
+        def shade(factor):
+            return tuple(max(0,min(1,c*factor)) for c in color[:3])+(1,)
+        def el(pos,val):
+            e=ramp.color_ramp.elements.new(pos)
+            e.color=shade(val)
+        ramp.color_ramp.elements[0].position=.18
+        ramp.color_ramp.elements[0].color=shade(.69 if key in stone_keys else .72)
+        el(.44,.91)
+        el(.63,1.06)
+        el(.82,1.19 if key not in foliage_keys else 1.12)
+        links.new(tex.outputs["Fac"],ramp.inputs["Fac"])
+        links.new(ramp.outputs["Color"],shader.inputs["Base Color"])
+        bump=nodes.new("ShaderNodeBump")
+        bump.inputs["Strength"].default_value=(
+            .27 if key in stone_keys else .18 if key in timber_keys else .11)
+        bump.inputs["Distance"].default_value=.055 if key in stone_keys else .020
+        links.new(tex.outputs["Fac"],bump.inputs["Height"])
+        links.new(bump.outputs["Normal"],shader.inputs["Normal"])
+        if key in timber_keys:
+            wave=nodes.new("ShaderNodeTexWave")
+            wave.wave_type="BANDS"
+            wave.bands_direction="Z"
+            wave.inputs["Scale"].default_value=7.5
+            wave.inputs["Distortion"].default_value=3.4
+            mix=nodes.new("ShaderNodeMixRGB")
+            mix.blend_type="MULTIPLY"
+            mix.inputs[0].default_value=.26
+            links.new(ramp.outputs["Color"],mix.inputs[1])
+            links.new(wave.outputs["Color"],mix.inputs[2])
+            links.new(mix.outputs["Color"],shader.inputs["Base Color"])
+
+    if key=="amber":
+        socket=shader.inputs.get("Emission Color") or shader.inputs.get("Emission")
+        if socket:
+            socket.default_value=color
+        strength=shader.inputs.get("Emission Strength")
+        if strength:
+            strength.default_value=2.2
+    if key=="void":
+        socket=shader.inputs.get("Emission Color") or shader.inputs.get("Emission")
+        if socket:
+            socket.default_value=color
+        strength=shader.inputs.get("Emission Strength")
+        if strength:
+            strength.default_value=.68
     if emission:
         socket=shader.inputs.get("Emission Color") or shader.inputs.get("Emission")
-        if socket:socket.default_value=color
+        if socket:
+            socket.default_value=color
         strength=shader.inputs.get("Emission Strength")
-        if strength:strength.default_value=emission
+        if strength:
+            strength.default_value=emission
     return m
+
 
 def cube(name,loc,scale,material,bevel=0.04,spin=0):
     bpy.ops.mesh.primitive_cube_add(size=1, location=loc)
@@ -150,32 +229,48 @@ def gable_roof(name,xleft,xright,yfront,yback,eave_z,ridge_z):
              (xx,yback+.14,eave_z-.02),.055,"timber",5)
 
 def stone_tower():
-    # Remnant of an Imperial watchtower, not a clean cylindrical stack.
-    centre=(-1.75,.80)
-    n=9
+    """Open imperial sentry turret with ruined crenels and carved stonework."""
+    centre=(-1.68,.87)
+    n=10
     outline=[]
     for i in range(n):
         ang=math.tau*i/n
-        r=.73+RND.uniform(-.12,.13)
+        r=.69+RND.uniform(-.055,.075)
         outline.append((centre[0]+r*math.cos(ang),centre[1]+r*math.sin(ang)))
-    tops=[3.15+RND.uniform(-.18,.18) for _ in outline]
-    irregular_wall("imperial round tower",outline,tops,0,("stone_dark","stone","stone_light"))
-    # Missing battlement and sharp ruined crenels: deliberate asymmetry.
-    for i in (0,1,2,4,6,7):
-        x,y=outline[i];z=tops[i]
-        stone("chipped battlement",(x,y,z+.16),(.30,.34,.32))
-    for row in range(7):
-        zz=.32+row*.36
-        for i in range(9):
-            if RND.random()<.40:continue
-            angle=(i+.4*(row%2))*math.tau/9
-            x=centre[0]+.72*math.cos(angle)
-            y=centre[1]+.72*math.sin(angle)
-            # Narrow ridged stones make masonry read at 390px, not texture spam.
-            stone("tower dressed stone", (x,y,zz),(.17,.14,.09),
-                "stone_light" if i%5==0 else "stone")
-    cube("arrow slit",(-2.48,.54,1.68),(.022,.21,.52),"iron",.008,spin=-.38)
-    cube("tower warm slit",(-2.51,.54,1.66),(.024,.06,.30),"amber",.001)
+    tops=[4.18+RND.uniform(-.08,.10) for _ in outline]
+    irregular_wall("ancient imperial watchtower",outline,tops,0,
+                   ("stone_dark","stone","stone_light","stone_moss"))
+    # Upper open sentry ring: shorter gap-tooth rhythm, weathered missing merlon.
+    for i in range(n):
+        if i in (2,7):
+            continue
+        x,y=outline[i]
+        stone("crenellated tower rim",(x,y,tops[i]+.22),
+              (.28,.29,.47),"stone_light" if i%3==0 else "stone")
+    # Hand-set bands of dressed masonry break the monolithic surface.
+    for row in range(10):
+        zz=.33+row*.36
+        for i in range(12):
+            if RND.random()<.33:
+                continue
+            ang=(i+(row%2)*.42)*math.tau/12
+            x=centre[0]+.68*math.cos(ang)
+            y=centre[1]+.68*math.sin(ang)
+            stone("tower chipped bond",(x,y,zz),(.14,.12,.084),
+                 "stone_light" if (row+i)%7==0 else "stone")
+    # Deep narrow windows with tiny amber slit, readable on mobile.
+    for z in (1.18,2.47,3.46):
+        cube("tower black arrow slit",(-2.37,.62,z),(.033,.25,.45),"iron",.011,spin=-.4)
+        cube("tower window ember",(-2.42,.59,z),(.034,.07,.20),"amber",.007)
+    # Very compact dark blue cap, no roof competing with the Bastion gate.
+    for j in range(n):
+        a=math.tau*j/n
+        x=centre[0]+.56*math.cos(a)
+        y=centre[1]+.56*math.sin(a)
+        beam("open watch parapet ring",(x,y,4.18),
+             (centre[0]+.56*math.cos(a+math.tau/n),
+              centre[1]+.56*math.sin(a+math.tau/n),4.18),.063,"stone_light",6)
+
 
 def bastion():
     """Tier-I recovery fort: low crenellated court, rear refuge and two DIFFERENT towers.
@@ -330,30 +425,46 @@ def sawmill(stage):
         beam("rail for timber",(-1.50,-.95,.21),(1.50,-.95,.21),.055,"wood_dark")
 
 def pine(seed):
-    """Asymmetric conifer silhouette with distributed bough clusters, not origami fans."""
+    """Natural 2.5D evergreen, not the rejected stack of faceted blocks."""
     rng=random.Random(seed+721)
-    h=2.60+seed*.22
-    beam("ancient lichen trunk",(0,0,0),(.04,-.07,h*.90),.145,"timber",8)
-    for tier in range(7):
-        z=.48+tier*(h-.35)/7
-        radius=(1.15-tier*.135)
-        n=7 if tier<4 else 6
-        for branch in range(n):
-            theta=(branch/n)*math.tau+tier*.26+rng.uniform(-.20,.20)
-            rr=radius*(.60+rng.random()*.24)
-            x,y=math.cos(theta)*rr,math.sin(theta)*rr
-            bz=z+rng.uniform(-.09,.11)
-            beam("visible dark bough",(.03,-.04,bz+.07),(x,y,bz-.10),
-                 .035,"wood_dark",5)
-            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,
-                    radius=.30+rng.random()*.10,
-                    location=(x,y,bz+.12))
-            ob=bpy.context.object;ob.name="irregular evergreen needle cluster"
-            ob.scale=(1.1,.9+rng.random()*.18,1.2+rng.random()*.32)
-            ob.data.materials.append(mat("pine" if branch%4 else "pine_light"))
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=.25,
-                                         location=(.04,-.03,h))
+    h=2.85+seed*.28
+    lean=rng.uniform(-.12,.12)
+    beam("bent ancient tree trunk",(0,0,0),(lean,-.04,h*.93),.13,"timber",10)
+    # Dark bough silhouette with uneven clusters, smooth volume at this scale.
+    for tier in range(8):
+        z=.43+tier*(h-.52)/8
+        r=1.24*(1-tier/9.0)**1.12
+        n=8 if tier<4 else 6
+        for j in range(n):
+            angle=j*math.tau/n+tier*.32+rng.uniform(-.21,.21)
+            distance=r*(.62+rng.random()*.24)
+            x=math.cos(angle)*distance+lean*.25
+            y=math.sin(angle)*distance
+            dz=rng.uniform(-.13,.12)
+            beam("thin pine branch",(.02,-.02,z+.11),
+                 (x,y,z-.16+dz),.025,"wood_dark",6)
+            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,
+                radius=.24+rng.random()*.09,location=(x,y,z+.09+dz))
+            branch=bpy.context.object
+            branch.name="Organic conifer needles"
+            branch.scale=(1.22,.86,1.63)
+            for poly in branch.data.polygons:
+                poly.use_smooth=True
+            branch.data.materials.append(mat("pine_light" if j%5==0 else "pine"))
+            # Fine downward spruce fronds add spiky breakup to the silhouette.
+            for t in range(3):
+                theta=angle+.2*(t-1)
+                rr=distance+r*(.10+.15*t)
+                nx=math.cos(theta)*rr+lean*.25
+                ny=math.sin(theta)*rr
+                mesh("spruce needle sprays",[
+                    (x,y,z+.40+dz),(nx-.10,ny,z-.28+dz),
+                    (nx,ny,z-.39+dz),(nx+.10,ny,z-.28+dz)
+                ],[(0,1,2,3)],["pine_light" if t==1 and j%4==0 else "pine"])
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=.22,
+                                         location=(lean,-.02,h))
     bpy.context.object.data.materials.append(mat("pine"))
+
 
 def villager(frame):
     step=[-.15,.15][frame%2]
@@ -390,7 +501,7 @@ def setup():
     bpy.ops.object.delete(use_global=False)
     scene=bpy.context.scene
     scene.render.engine='CYCLES'
-    scene.cycles.samples=12
+    scene.cycles.samples=24
     scene.render.resolution_x=704
     scene.render.resolution_y=704
     scene.render.resolution_percentage=100
@@ -401,7 +512,7 @@ def setup():
     scene.world.use_nodes=True
     bg=scene.world.node_tree.nodes.get("Background")
     bg.inputs["Color"].default_value=(.30,.37,.45,1)
-    bg.inputs["Strength"].default_value=.60
+    bg.inputs["Strength"].default_value=.46
     scene.view_settings.view_transform='Standard'
     try:scene.view_settings.look='Medium High Contrast'
     except Exception:pass
@@ -417,7 +528,7 @@ def setup():
     # Warm west key, cool opposite fill. Shared for EVERY asset.
     for location,color,power,energy in [
       ((-5,-7,12),(.99,.79,.59),800,6),
-      ((6,5,7),(.51,.68,.95),300,7)
+      ((6,5,7),(.51,.68,.95),165,7)
     ]:
         bpy.ops.object.light_add(type='AREA',location=location)
         ob=bpy.context.object
