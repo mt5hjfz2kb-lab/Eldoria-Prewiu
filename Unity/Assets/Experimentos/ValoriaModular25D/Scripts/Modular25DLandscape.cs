@@ -249,9 +249,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void EdgeProps()
         {
             var rnd=new System.Random(88215);
-            for(int i=0;i<65;i++)
+            for(int i=0;i<48;i++)
             {
-                bool nearKeep=i<36;
+                bool nearKeep=i<25;
                 Vector2 centre=nearKeep?Keep:Sawmill;
                 float theta=(i*.61803398875f+rnd.Next(100)*.003f)*Mathf.PI*2f;
                 float rx=nearKeep?2.8f:2.2f;
@@ -262,11 +262,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // Leave the road and the actual entrance walkable and clean.
                 if(Mathf.Abs(at.x+2.62f)<.64f&&at.y<1.1f)continue;
                 if(!nearKeep&&at.x>1.12f&&at.y<-.8f&&at.y>-3.9f)continue;
-                Sprite art=(i%7==0)?Modular25DArt.Rock():Modular25DArt.Bush(i%3);
+                // Ground strokes outnumber stones. Keep big rocks outside the gate.
+                // Tufts break the alpha edge of the footprint without forming
+                // an unnatural bracelet of boulders around the castle.
+                Sprite art=(i%13==0)?Modular25DArt.Rock():
+                    (i%4==0)?Modular25DArt.Bush(i%3):
+                              Modular25DArt.Tuft(i%2);
                 var go=new GameObject("Ground contact — local grass/stone "+i);
                 go.transform.SetParent(transform,false);
                 go.transform.localPosition=new Vector3(at.x,at.y,-.02f);
-                float sz=.27f+(float)rnd.NextDouble()*.27f;
+                float sz=.27f+(float)rnd.NextDouble()*.24f;
                 go.transform.localScale=Vector3.one*sz;
                 var sr=go.AddComponent<SpriteRenderer>();
                 sr.sprite=art;
