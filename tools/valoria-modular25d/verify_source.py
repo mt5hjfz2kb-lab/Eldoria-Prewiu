@@ -2,6 +2,9 @@
 """Fast, non-Unity checks. PASS here is never a Unity, art or device approval."""
 from pathlib import Path
 import re
+import hashlib
+import json
+import struct
 import subprocess
 import unittest
 
@@ -121,6 +124,34 @@ class SandboxSourceContracts(unittest.TestCase):
             for forbidden in ("HeroBastionGenerated", "Valoria_HeroBastion_v1.glb",
                               "PremiumV6", "main/Valoria_City_World_UI"):
                 self.assertNotIn(forbidden, src, str(path))
+
+    def test_high_detail_generated_originals_have_exact_real_unity_imports(self):
+        # Validate ACTUAL binary sprites committed on the isolated Unity branch.
+        # The 10/11 Blender environment assets may be rebuilt separately, but
+        # the two hero-building images must not silently revert to plastic
+        # Blender boxes without source evidence and a new review.
+        directory=BASE/"Resources/ValoriaModular25D"
+        manifest=json.loads((directory/"sprite_manifest.json").read_text(encoding="utf-8"))
+        entries={x["name"]:x for x in manifest["sprites"]}
+        expected={
+            "bastion_i":("5992c968f67c6855a97eb5db4d24c9bcd4e06af5b1062c25cc35d0e1e27e3154",(480,314),0.048),
+            "sawmill_i":("5a5c5f38604881da76d43c65eb999e69736d5bcaaf0d432df0661163ccde81f6",(362,273),0.07),
+        }
+        for name,(sha,size,pivot_y) in expected.items():
+            src=directory/(name+".png")
+            data=src.read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(),sha)
+            self.assertTrue(data.startswith(b"\x89PNG\r\n\x1a\n"))
+            self.assertEqual(struct.unpack(">II",data[16:24]),size)
+            self.assertEqual(data[25],6,"Require RGBA PNG, not an opaque backplate")
+            meta=content(Path(str(src)+".meta"))
+            self.assertIn("spritePixelsToUnits: 96",meta)
+            self.assertIn("spriteAlignment: 9",meta)
+            self.assertIn(f"spritePivot: {{x: 0.500000, y: {pivot_y:.6f}}}",meta)
+            self.assertEqual(entries[name]["sha256"],sha)
+            self.assertIn("ChatGPT",entries[name]["source"])
+            self.assertFalse(entries[name]["art_approved"])
+            self.assertFalse(entries[name]["unity_render_checked"])
 
     def test_scope_when_git_checkout_has_main(self):
         # Fails closed if the experiment begins changing canonical code or a
