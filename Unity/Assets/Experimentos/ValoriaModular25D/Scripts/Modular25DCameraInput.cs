@@ -21,7 +21,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             camera=world.ViewCamera;
             // Portrait keeps both structures legible; landscape does not zoom
             // out to a tiny settlement merely because the aspect ratio doubled.
-            homeSize=Mathf.Clamp(4.10f/Mathf.Max(.42f,camera.aspect),5.3f,10.8f);
+            homeSize=Mathf.Clamp(3.65f/Mathf.Max(.42f,camera.aspect),5.3f,10.8f);
             Home();
         }
 
