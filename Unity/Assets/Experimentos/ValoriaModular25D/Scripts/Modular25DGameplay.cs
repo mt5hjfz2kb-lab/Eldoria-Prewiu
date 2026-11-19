@@ -26,7 +26,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public event Action<string> MessageChanged;
         public bool IsAuthoritative => gateway != null;
         public string LastMessage => feedback;
-        public string SandboxSavePath => Path.Combine(UnityEngine.Application.persistentDataPath,IsolatedSaveName);
+        public string SandboxSavePath
+        {
+            get
+            {
+#if UNITY_EDITOR
+                // Unique by Windows GitHub run ID. Editor PlayMode certification
+                // must NEVER read/write the user's own sandbox or beta save.
+                var nativeId=System.Environment.GetEnvironmentVariable("ELDORIA_MOD25D_PLAYMODE_RUN");
+                if(!string.IsNullOrEmpty(nativeId))
+                {
+                    if(nativeId.Length<7||nativeId.Length>20)
+                        throw new InvalidOperationException("Invalid isolated PlayMode run id");
+                    foreach(var ch in nativeId)if(ch<'0'||ch>'9')
+                        throw new InvalidOperationException("Unsafe isolated PlayMode run id");
+                    return Path.Combine(UnityEngine.Application.persistentDataPath,
+                        "eldoria-experiment-modular25d-playmode-"+nativeId+".json");
+                }
+#endif
+                return Path.Combine(UnityEngine.Application.persistentDataPath,IsolatedSaveName);
+            }
+        }
 
         void Awake()
         {
