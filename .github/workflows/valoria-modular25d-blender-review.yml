@@ -1,11 +1,6 @@
 name: Valoria Modular 2.5D — Blender sprite studio review (not Unity)
 
 on:
-  push:
-    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
-    paths:
-      - 'tools/valoria-modular25d/blender/**'
-      - '.github/workflows/valoria-modular25d-blender-review.yml'
   workflow_dispatch:
 
 permissions:
