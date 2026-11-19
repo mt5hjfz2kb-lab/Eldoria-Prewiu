@@ -1,0 +1,134 @@
+name: Valoria Modular 2.5D — reuse proven Eldoria art props as modular sprites
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths: ['.github/workflows/valoria-modular25d-import-original-props.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: valoria-mod25d-original-props-import
+  cancel-in-progress: false
+jobs:
+  art-import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 30
+          persist-credentials: true
+          sparse-checkout: |
+            Unity/Assets/Experimentos/ValoriaModular25D
+            .github/workflows
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Import only pinned original Eldoria prop bytes — no other work modified
+        shell: bash
+        run: |
+          set -euo pipefail
+          ORIGINAL=10dbc197d48ea8517c6a3dd6c22f1a2abf75d508
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$ORIGINAL"
+          mkdir -p Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps
+          python - <<'PY'
+          import hashlib,subprocess,json,pathlib,os
+          original="10dbc197d48ea8517c6a3dd6c22f1a2abf75d508"
+          name_info={
+           "ArbolAntiguo":("263516708e6fede98d537cff871b07e98c0074fe2923eabc4919eba659c4bb1b",176,.50,.09),
+           "ArboledaAntigua":("46d235cfa5f747cc4a4e3cdefce579e057c256a8b0d42aaf4392d2507e7b007a",182,.50,.08),
+           "MatojosFlores":("5d25f70b346b6b4c3c4de776e697f4f2db724d59bcb807ec5fb0f005598ee114",320,.50,.08),
+           "MuroDerruido":("c2de297a5e560ad0f209d5bb585b7dfb441c63b591da58d1bc08751080b203ad",230,.50,.08),
+           "PozoPiedra":("17bc3648a4455e1fb62a065e10caf29620cd477590412b072192a7a359057690",237,.50,.08),
+           "CarroMadera":("27c3f6abd18f18cdbf902c603a37aa11abfaee81a2f245b661fcca350ba20f0c",235,.50,.08),
+           "VallaLenador":("81cbda8363fb09a91979d92fb24d83032d8b329cb52fd4fa5fa49321ffd6b069",260,.50,.08),
+           "HuertosValoria":("00b4538bf9af20d971225c906c8cb21f773d5f9fbfa631272f557f44f3697499",245,.50,.08)
+          }
+          target=pathlib.Path("Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps")
+          records=[]
+          for name,(expected,ppu,px,py) in name_info.items():
+            src=f"{original}:Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/{name}.png"
+            raw=subprocess.check_output(["git","show",src])
+            sha=hashlib.sha256(raw).hexdigest()
+            if sha!=expected:raise RuntimeError(f"Original {name} source provenance mismatched")
+            output=target/(name+".png")
+            output.write_bytes(raw)
+            guid=hashlib.md5(("eldoria-modular25d-recovered-original-"+name).encode()).hexdigest()
+            # Keep the original PNG and original Eldoria authorship, with new
+            # isolated GUIDs and ground-foot pivots in the new Unity scene.
+            meta=f"""fileFormatVersion: 2
+          guid: {guid}
+          TextureImporter:
+            serializedVersion: 12
+            externalObjects: {{}}
+            mipmaps:
+              enableMipMap: 0
+              sRGBTexture: 1
+            isReadable: 0
+            textureFormat: 1
+            maxTextureSize: 2048
+            textureSettings:
+              serializedVersion: 2
+              filterMode: 1
+              aniso: 1
+              mipBias: 0
+              wrapU: 1
+              wrapV: 1
+            nPOTScale: 0
+            alphaIsTransparency: 1
+            alphaSource: 1
+            textureType: 8
+            spriteMode: 1
+            spriteMeshType: 0
+            spritePixelsToUnits: {ppu}
+            spriteAlignment: 9
+            spritePivot: {{x: {px:.6f}, y: {py:.6f}}}
+            spriteBorder: {{x: 0, y: 0, z: 0, w: 0}}
+            platformSettings:
+            - serializedVersion: 4
+              buildTarget: DefaultTexturePlatform
+              maxTextureSize: 2048
+              resizeAlgorithm: 0
+              textureCompression: 2
+              compressionQuality: 100
+          """
+            # YAML strips 10 spaces inside Python heredoc; actual content is
+            # normalized here to avoid YAML indentation leaking into .meta.
+            import textwrap
+            (target/(name+".png.meta")).write_text(textwrap.dedent(meta),encoding="utf8")
+            records.append({"name":name,"sha256":sha,"guid":guid,"ppu":ppu,"pivot":[px,py],
+              "sourceRef":original,"sourceBranch":"art/ciudad-2d-hitos-1-5-20261116",
+              "artApproved":False,"unityPlayModeVerified":False})
+          (target/"provenance.json").write_text(json.dumps({"source":"Original Eldoria existing assets","sprites":records},indent=2)+"\n",encoding="utf8")
+          parent=target.parent
+          directorymeta="fileFormatVersion: 2\nguid: "+hashlib.md5(b"eldoria-modular25d-recovered-props").hexdigest()+"\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData:\n  assetBundleName:\n  assetBundleVariant:\n"
+          pathlib.Path(str(target)+".meta").write_text(directorymeta,encoding="utf8")
+          print("EXACT_PREVIOUS_ORIGINALS_RESOURCED",len(records))
+          PY
+      - name: Preserve source-verified set for artist inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: modular25d-recovered-original-eldoria-props
+          path: Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/
+          retention-days: 15
+      - name: Commit only isolated new resources without overwriting other branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="experiment/valoria-modular-25d-bastion1-from-zero-20261118"
+          git config user.name "eldoria-props-ci"
+          git config user.email "eldoria-props-ci@users.noreply.github.com"
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps.meta
+          git commit -m "art(modular25d): reuse eight earlier original Eldoria 2D props with isolated Unity importer IDs and pinned provenance"
+          for attempt in 1 2 3; do
+            git fetch --quiet origin "refs/heads/$branch:refs/remotes/origin/$branch"
+            git rebase "refs/remotes/origin/$branch"
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo "ORIGINAL_PROPS_IMPORTED_FAST_FORWARD"
+              exit 0
+            fi
+          done
+          echo "CONCURRENT_SOURCE_CHANGE: exact authoring artifact retained, no force push"
+          exit 1
