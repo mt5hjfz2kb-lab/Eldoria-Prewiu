@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 40
           persist-credentials: true
           filter: blob:none
           sparse-checkout: |
