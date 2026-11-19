@@ -2,7 +2,11 @@ name: Valoria Modular 2.5D — real Unity Bastion I native evidence
 on:
   push:
     branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
-    paths: ['.github/workflows/valoria-modular25d-unity-native.yml']
+    paths:
+      - '.github/workflows/valoria-modular25d-unity-native.yml'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png'
   workflow_dispatch:
 permissions:
   contents: read
@@ -70,6 +74,20 @@ jobs:
             throw 'Existing Windows native process: refuse interference'}
           if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
             throw 'Unity editor executable unavailable'}
+          # Reclaim ONLY our earlier failed source-pinned native scratch.
+          # Run 44521712783 already preserved its diagnostic artifact.
+          # Never touch other workstreams' checkout/Library or live Unity.
+          $previous=Join-Path $env:RUNNER_TEMP 'eldoria-mod25d-44521712783'
+          if(Test-Path -LiteralPath $previous){
+            $empty=Join-Path $env:RUNNER_TEMP ('eldoria-mod25d-empty-'+$env:GITHUB_RUN_ID)
+            New-Item -ItemType Directory -Force -Path $empty | Out-Null
+            & robocopy.exe $empty $previous /MIR /R:0 /W:0 /NFL /NDL /NJH /NJS | Out-Null
+            $robocode=$LASTEXITCODE
+            if($robocode -gt 7){throw ('Own scratch cleanup failed: robocopy '+$robocode)}
+            Remove-Item -LiteralPath $empty -Force -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath $previous -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Host 'ELDORIA_MOD25D_EXCLUSIVE_OLD_SCRATCH_CLEANED'
+          }
           if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 7GB){throw 'Insufficient scratch disk'}
           Write-Host 'SAFE_NATIVE_PC_AND_OWNER_PASS'
       - name: Restore GitHub Desktop Git to PATH for Unity Package Manager
