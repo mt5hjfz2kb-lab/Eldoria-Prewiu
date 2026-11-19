@@ -1,0 +1,39 @@
+name: Valoria Modular 2.5D — CC0 painted art feasibility A/B
+
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths:
+      - 'tools/valoria-modular25d/cc0_review/compare.py'
+      - '.github/workflows/valoria-modular25d-cc0-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  art-source-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            tools/valoria-modular25d/cc0_review
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Download genuine CC0 source images and compare without changing Unity
+        run: |
+          python tools/valoria-modular25d/cc0_review/compare.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-modular25d-cc0-source-ab
+          path: tools/valoria-modular25d/cc0_review/evidence/
+          if-no-files-found: warn
+          retention-days: 21
