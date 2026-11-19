@@ -1,0 +1,70 @@
+name: Valoria Modular25D — original artist grass as seamless sprite-independent material
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths:
+      - '.github/workflows/valoria-modular25d-import-original-meadow.yml'
+      - 'tools/valoria-modular25d/ground_art/extract_meadow.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: valoria-mod25d-ground-material-authoring
+  cancel-in-progress: false
+jobs:
+  artist-material:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 30
+          filter: blob:none
+          persist-credentials: true
+          sparse-checkout: |
+            tools/valoria-modular25d
+            Unity/Assets/Experimentos/ValoriaModular25D
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read pinned previous Eldoria illustration without modifying source branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC=10dbc197d48ea8517c6a3dd6c22f1a2abf75d508
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$SRC"
+          git show "$SRC:Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno.png" \
+            > "$RUNNER_TEMP/eldoria-owned-grass.png"
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 tools/valoria-modular25d/ground_art/extract_meadow.py \
+            "$RUNNER_TEMP/eldoria-owned-grass.png" \
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
+      - name: Preserve artist source-derived reusable material, not a Unity image
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-mod25d-original-grass-512-reusable-tile
+          path: |
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.png.meta
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.provenance.json
+          retention-days: 14
+          if-no-files-found: error
+      - name: Version only isolated material with correct original provenance and no force
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch=experiment/valoria-modular-25d-bastion1-from-zero-20261118
+          git config user.name "eldoria-terrain-authoring-ci"
+          git config user.email "eldoria-terrain-authoring-ci@users.noreply.github.com"
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile*
+          git commit -m "art(modular25d): import original painterly seamless grass-only tile with fixed-source SHA"
+          for attempt in 1 2 3; do
+            git fetch --quiet origin "refs/heads/$branch:refs/remotes/origin/$branch"
+            git rebase "refs/remotes/origin/$branch"
+            if git push origin "HEAD:refs/heads/$branch"; then
+              echo 'REPRODUCIBLE_ORIGINAL_GRASS_MATERIAL_IMPORTED'
+              exit 0
+            fi
+          done
+          echo 'Concurrent commit changed; material artifact retained, no force overwrite'
+          exit 1
