@@ -35,6 +35,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Transform buildings = NewRoot("Buildings - foot anchored");
             Transform scenery = NewRoot("Scenery - dynamic occlusion");
             Transform people = NewRoot("People - actual movement");
+            Transform paths = NewRoot("Paths - continuous earth ribbons");
 
             for(int row=-10;row<=10;row++)
             for(int col=-10;col<=10;col++)
@@ -50,6 +51,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     -3000 + col + row,ground);
             }
 
+            BuildPaths(paths);
             AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-1.15f,1.3f),
                 FootOrder(1.3f),buildings);
             SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
@@ -79,9 +81,117 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(2.5f,-3.6f),new Vector2(1.65f,-4.2f)
             },1.8f);
 
+            AddNaturalDetail(scenery);
             Gameplay=gameObject.AddComponent<Modular25DGameplay>();
             Hud=gameObject.AddComponent<Modular25DInterface>();
             gameObject.AddComponent<Modular25DCameraInput>();
+        }
+
+        void BuildPaths(Transform parent)
+        {
+            // Paths are real scene elements between tiles and inhabitants, not
+            // discontinuous brown islands painted into individual grass diamonds.
+            // Their points follow the walkable isometric world plane exactly.
+            var main=new[]{
+                new Vector2(-4.85f,-5.3f),new Vector2(-3.88f,-3.76f),
+                new Vector2(-2.70f,-2.5f),new Vector2(-2.63f,-1.56f),
+                new Vector2(-2.62f,-.55f),new Vector2(-2.3f,.1f),
+                new Vector2(-1.15f,.85f)
+            };
+            var lumber=new[]{
+                new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
+                new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
+                new Vector2(1.95f,-2.55f)
+            };
+            for(int path=0;path<2;path++)
+            {
+                var pts=path==0?main:lumber;
+                AddRoadStroke(parent,path==0?"Old Imperial Way":"Timber haulers' path",
+                    pts,1.28f,new Color(.28f,.30f,.25f,.93f),-2899);
+                AddRoadStroke(parent,path==0?"Packed earth centre":"Wheel-worn dirt",
+                    pts,.91f,new Color(.53f,.43f,.30f,.88f),-2898);
+                AddRoadStroke(parent,path==0?"Irregular central foot track":"Drag mark",
+                    pts,.43f,new Color(.61f,.52f,.39f,.53f),-2897);
+            }
+        }
+
+        static void AddRoadStroke(Transform parent,string label,Vector2[] points,
+            float width,Color color,int order)
+        {
+            var go=new GameObject("Ground route | "+label);
+            go.transform.SetParent(parent,false);
+            var line=go.AddComponent<LineRenderer>();
+            line.positionCount=points.Length;
+            for(int i=0;i<points.Length;i++)
+                line.SetPosition(i,new Vector3(points[i].x,points[i].y,0));
+            line.useWorldSpace=true;
+            line.startWidth=width;line.endWidth=width*.94f;
+            line.numCornerVertices=4;line.numCapVertices=5;
+            line.alignment=LineAlignment.View;
+            line.startColor=color;line.endColor=color;
+            line.sortingOrder=order;
+            var shader=Shader.Find("Sprites/Default");
+            if(shader==null)shader=Shader.Find("Universal Render Pipeline/Unlit");
+            if(shader==null)
+            {
+                Debug.LogWarning("[Modular25D] No compatible line shader; path hidden until URP material resolved.");
+                line.enabled=false;
+            }
+            else
+            {
+                var material=new Material(shader){name="Eldoria modular route | "+label};
+                line.sharedMaterial=material;
+            }
+        }
+
+        void AddNaturalDetail(Transform root)
+        {
+            // Constrained small scatter; central building hitboxes and the
+            // 0.9-unit main paths remain unobstructed. Never create plinths.
+            var random=new System.Random(11813);
+            int placed=0;
+            for(int attempt=0;attempt<300&&placed<46;attempt++)
+            {
+                float x=-7f+(float)random.NextDouble()*14f;
+                float y=-6.2f+(float)random.NextDouble()*12.5f;
+                var point=new Vector2(x,y);
+                if(Vector2.Distance(point,new Vector2(-1.15f,1.3f))<2.5f ||
+                   Vector2.Distance(point,new Vector2(1.95f,-2.2f))<2.15f ||
+                   Vector2.Distance(point,new Vector2(-3.15f,-1.4f))<.64f)
+                    continue;
+                if(DistanceToRoad(point)<.68f)continue;
+                var prop=random.Next(7)==0 ? Modular25DArt.Rock() :
+                    Modular25DArt.Bush(random.Next(3));
+                var draw=AddSprite("Interchangeable grass / stone "+placed,
+                    prop,point,FootOrder(point.y),root);
+                float scale=.30f+(float)random.NextDouble()*.39f;
+                draw.transform.localScale=Vector3.one*scale;
+                placed++;
+            }
+        }
+
+        static float DistanceToRoad(Vector2 point)
+        {
+            var guide=new []{
+                new Vector2(-4.85f,-5.3f),new Vector2(-3.88f,-3.76f),
+                new Vector2(-2.70f,-2.5f),new Vector2(-2.63f,-1.56f),
+                new Vector2(-2.62f,-.55f),new Vector2(-2.3f,.1f),
+                new Vector2(-1.15f,.85f)
+            };
+            var branch=new[]{
+                new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
+                new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
+                new Vector2(1.95f,-2.55f)
+            };
+            float best=float.MaxValue;
+            foreach(var route in new []{guide,branch})
+                for(int i=1;i<route.Length;i++)
+                {
+                    Vector2 span=route[i]-route[i-1];
+                    float t=Mathf.Clamp01(Vector2.Dot(point-route[i-1],span)/span.sqrMagnitude);
+                    best=Mathf.Min(best,Vector2.Distance(point,route[i-1]+span*t));
+                }
+            return best;
         }
 
         Transform NewRoot(string name)
