@@ -302,6 +302,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
+        /// <summary>Small independently authored painted meadow-tuft sprite.</summary>
+        public static Sprite Tuft(int variant)
+        {
+            return Resources.Load<Sprite>("ValoriaModular25D/tuft_"+Mathf.Clamp(variant,0,1))
+                ?? Bush(Mathf.Clamp(variant,0,1));
+        }
+
         public static Sprite Bush(int variant)
         {
             return Make("bush_"+variant,114,79,96f,P(.5f,.15f),a =>
