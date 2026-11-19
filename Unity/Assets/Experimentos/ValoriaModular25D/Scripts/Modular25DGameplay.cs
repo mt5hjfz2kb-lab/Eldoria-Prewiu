@@ -40,7 +40,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         throw new InvalidOperationException("Invalid isolated PlayMode run id");
                     foreach(var ch in nativeId)if(ch<'0'||ch>'9')
                         throw new InvalidOperationException("Unsafe isolated PlayMode run id");
-                    return Path.Combine(UnityEngine.Application.persistentDataPath,
+                    // CI may supply a directory INSIDE its own isolated
+                    // SHA-pinned scratch project. Never write to the actual
+                    // player's AppData or beta. Local manual testing without
+                    // that env still uses a distinct QA-only save filename.
+                    var isolated=System.Environment.GetEnvironmentVariable(
+                        "ELDORIA_MOD25D_PLAYMODE_OUTPUT");
+                    var root=string.IsNullOrWhiteSpace(isolated)
+                        ? UnityEngine.Application.persistentDataPath
+                        : Path.GetFullPath(isolated);
+                    if(!Directory.Exists(root))
+                        throw new DirectoryNotFoundException("Missing QA-only save folder: "+root);
+                    return Path.Combine(root,
                         "eldoria-experiment-modular25d-playmode-"+nativeId+".json");
                 }
 #endif
