@@ -43,7 +43,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
                 new Vector2(-2.63f,-1.56f),new Vector2(-2.62f,-.55f),
-                new Vector2(-2.3f,.1f),new Vector2(-1.15f,.85f)};
+                new Vector2(-1.86f,-.05f),new Vector2(-1.15f,.85f)};
             var lumber=new[]{
                 new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
                 new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
@@ -115,6 +115,47 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 c*=.91f+.18f*small;
                 c.a=edge*(.72f+.25f*erosion);
                 pixels[y*RoadW+x]=(Color32)c;
+            }
+            // GROUND-TRUTHED ARTIST CHANGE: small chipped individual slabs
+            // along a walkable earth route. This is precisely what the earlier
+            // flat LineRenderer strokes could never express. All stones live
+            // inside this modular road material; no city-sized illustration
+            // or separate camera-facing billboard is involved.
+            var cobbles=new System.Random(53377);
+            for(int n=0;n<390;n++)
+            {
+                int lane=n%5;
+                int cx=lane==0?RoadW/2+cobbles.Next(-43,44)
+                    :lane%2==0?RoadW/2+cobbles.Next(-68,-46)
+                             :RoadW/2+cobbles.Next(46,69);
+                int cy=cobbles.Next(RoadH);
+                int rx=cobbles.Next(7,16),ry=cobbles.Next(5,14);
+                var shade=(float)cobbles.NextDouble();
+                Color baseStone=Color.Lerp(
+                    new Color(.48f,.44f,.36f,1),
+                    new Color(.71f,.68f,.57f,1),shade);
+                for(int dy=-ry;dy<=ry;dy++)for(int dx=-rx;dx<=rx;dx++)
+                {
+                    int x=cx+dx;
+                    if(x<0||x>=RoadW)continue;
+                    int y=(cy+dy+RoadH)%RoadH;
+                    float normalized=(dx*dx)/(float)(rx*rx)+
+                        (dy*dy)/(float)(ry*ry);
+                    float fractured=(N(x*.18f,y*.21f,889)-.5f)*.23f;
+                    if(normalized>1f+fractured)continue;
+                    float edgeShade=Sm(.68f,1.12f,normalized);
+                    float direction=.11f*(-dx/(float)rx+dy/(float)ry);
+                    var color=Color.Lerp(baseStone,
+                        new Color(.28f,.30f,.28f,1),edgeShade*.47f);
+                    color=Color.Lerp(color,new Color(.84f,.78f,.63f,1),
+                        Mathf.Clamp01(direction)*.33f);
+                    int index=y*RoadW+x;
+                    Color ground=pixels[index];
+                    float opacity=lane==0?.58f:.76f;
+                    var mixed=Color.Lerp(ground,color,opacity);
+                    mixed.a=ground.a;
+                    pixels[index]=(Color32)mixed;
+                }
             }
             // End rows are identical so repetition along kilometres does not
             // introduce a transverse seam.
