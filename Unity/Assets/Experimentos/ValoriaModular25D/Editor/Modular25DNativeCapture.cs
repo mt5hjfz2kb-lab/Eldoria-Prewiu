@@ -35,7 +35,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
             public bool continuousTerrainPresent, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms;
-            public int sourceFrames, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
+            public int sourceFrames, originalArtResourcesLoaded, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
             public string disclaimer="Unity Editor Camera.Render on real scene, no PlayMode, no UI overlay, no physical device.";
             public List<Frame> frames = new List<Frame>();
         }
@@ -87,6 +87,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         (landscape==null?-1:landscape.FootprintCount));
                 report.continuousTerrainPresent=true;
                 report.roadAndFootprintKits=true;
+                var originalArt=new[]{
+                    "bastion_i","sawmill_i","sawmill_available","sawmill_under_construction",
+                    "oak_0","oak_1","ruin_arch_0","ruin_arch_1",
+                    "stone","bush_0","bush_1","bush_2","tuft_0","tuft_1"
+                };
+                foreach(var key in originalArt)
+                {
+                    var sprite=Resources.Load<Sprite>("ValoriaModular25D/"+key);
+                    if(sprite==null)
+                        throw new Exception("Missing original independent 2.5D Sprite: "+key);
+                    report.originalArtResourcesLoaded++;
+                }
                 report.noLegacyHudInEditorPreview=world.Gameplay==null&&world.Hud==null;
                 if(!report.noLegacyHudInEditorPreview)
                     throw new Exception("Native Editor probe unexpectedly spawned gameplay or legacy HUD");
