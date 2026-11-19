@@ -6,7 +6,7 @@ olive/stone colour family and transparent ground pivots as the settlement.
 No copied game art and no full-scene background.
 """
 from pathlib import Path
-import hashlib, json, math, random, sys
+import hashlib, json, math, random, re, sys
 from PIL import Image, ImageDraw, ImageFilter
 
 OUT=Path(sys.argv[1] if len(sys.argv)>1 else "/tmp/eldoria-painted-props")
@@ -131,6 +131,11 @@ if manifest.exists():
     data=json.loads(manifest.read_text(encoding="utf-8"))
     entries={item["name"]:item for item in data.get("sprites",[])}
     painted_names={"stone","bush_0","bush_1","bush_2","tuft_0","tuft_1"}
+    # The pivot is the contact point, not the centre of the projected
+    # shadow. Blender's previous bush pivot left foliage embedded in earth.
+    pivots={"stone":[.5,.22],"bush_0":[.5,.16],
+        "bush_1":[.5,.16],"bush_2":[.5,.16],
+        "tuft_0":[.5,.18],"tuft_1":[.5,.18]}
     for path in sorted(OUT.glob("*.png")):
         from PIL import Image
         name=path.stem
@@ -138,12 +143,24 @@ if manifest.exists():
         im=Image.open(path)
         entries[name]={
             "name":name,"size":list(im.size),
-            "foot_pivot": entries.get(name,{}).get("foot_pivot",[.5,.18]),
+            "foot_pivot":pivots[name],
             "sha256":hashlib.sha256(path.read_bytes()).hexdigest(),
             "bytes":path.stat().st_size,
             "source":"original deterministic painted 2.5D foliage"
         }
     data["sprites"]=[entries[name] for name in sorted(entries)]
+    # Preserve old GUIDs for already-imported rock and bush resources,
+    # changing only their painted-world contact pivot.
+    for key in ("stone","bush_0","bush_1","bush_2"):
+        meta=OUT/(key+".png.meta")
+        if not meta.exists():raise RuntimeError("Missing protected GUID: "+key)
+        original=meta.read_text(encoding="utf-8")
+        values=pivots[key]
+        changed,n=re.subn(r"spritePivot: \{x: [^}]+\}",
+            "spritePivot: {x: %.6f, y: %.6f}" % tuple(values),original)
+        if n!=1:raise RuntimeError("Unsafe importer pivot metadata: "+key)
+        meta.write_text(changed,encoding="utf-8")
+
     # Stable GUIDs for NEW independent tuft resources. Existing bush/rock
     # metas remain untouched, preserving Unity import identity and original
     # artist placement. PPU=96 matches all other modular 2.5D sprites.
