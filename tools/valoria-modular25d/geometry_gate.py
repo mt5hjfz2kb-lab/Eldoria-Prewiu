@@ -2,8 +2,10 @@
 import math, unittest
 from pathlib import Path
 
-WORLD = (Path(__file__).resolve().parents[2] /
-         "Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs").read_text(encoding="utf8")
+SCRIPT_DIR = Path(__file__).resolve().parents[2] / "Unity/Assets/Experimentos/ValoriaModular25D/Scripts"
+WORLD = (SCRIPT_DIR/"Modular25DWorld.cs").read_text(encoding="utf8")
+WALKER = (SCRIPT_DIR/"Modular25DWalker.cs").read_text(encoding="utf8")
+CAMERA = (SCRIPT_DIR/"Modular25DCameraInput.cs").read_text(encoding="utf8")
 TREE=(-3.15,-1.4)
 PATH=[(-3.9,-3.6),(-2.70,-2.5),(-2.62,-.55),(-2.3,.1),
       (-2.62,-.55),(-2.70,-2.5)]
@@ -36,8 +38,8 @@ class SpatialGate(unittest.TestCase):
         self.assertTrue(max(y for x,y in PATH)>TREE[1])
         for a,b in zip(PATH,PATH[1:]):
             self.assertLess(math.dist(a,b),2.5)
-        self.assertIn("body.sortingOrder=sort;",WORLD)
-        self.assertIn("shadow.sortingOrder=sort-1;",WORLD)
+        self.assertIn("body.sortingOrder=sort;",WALKER)
+        self.assertIn("shadow.sortingOrder=sort-1;",WALKER)
 
     def test_bastion_and_sawmill_separated_from_player_routes(self):
         # The sawmill's approximate footprint is not a radius: only check that
