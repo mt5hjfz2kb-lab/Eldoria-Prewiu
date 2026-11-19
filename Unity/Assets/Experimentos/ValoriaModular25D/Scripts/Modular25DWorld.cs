@@ -193,6 +193,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void AddOak(Transform root,Vector2 foot,int variant,float scale)
         {
+            // Warm sunlight from the NW projects the canopy softly toward
+            // the SE. A separate translucent world sprite grounds the tree.
+            var cast=AddSprite("Oak projected canopy shade",
+                Modular25DArt.Shadow(250,84),foot+new Vector2(.46f,-.33f),
+                FootOrder(foot.y)-3,root);
+            cast.color=new Color(.68f,.75f,.59f,.79f);
+            cast.transform.localScale=Vector3.one*scale;
             AddContact("tree_contact",foot,95,FootOrder(foot.y)-1,root);
             var oak=AddSprite("Olive oak "+variant,Modular25DArt.Oak(variant),
                 foot,FootOrder(foot.y),root);
