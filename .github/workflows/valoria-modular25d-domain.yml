@@ -1,0 +1,36 @@
+name: Valoria Modular 2.5D — real canonical sawmill gateway domain
+
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths:
+      - 'tools/valoria-modular25d/GatewayConstructionSmoke.*'
+      - '.github/workflows/valoria-modular25d-domain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  real-gateway-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Checkout canonical domain and isolated tests only
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            tools/valoria-modular25d
+      - name: Execute actual LocalGateway and serialized build life cycle
+        run: |
+          dotnet --version
+          dotnet run --project tools/valoria-modular25d/GatewayConstructionSmoke.csproj --configuration Release
+      - name: QA scope disclosure
+        if: always()
+        run: |
+          echo "Domain: real command, cost, timer, idempotence, insufficient resources and serialization. Unity/PlayMode/iPhone are NOT tested by this job."
