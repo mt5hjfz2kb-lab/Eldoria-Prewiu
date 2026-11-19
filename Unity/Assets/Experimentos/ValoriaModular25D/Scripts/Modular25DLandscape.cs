@@ -21,6 +21,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         readonly List<Material> materials=new List<Material>();
         bool built;
         public int RoadCount { get; private set; }
+        public bool OriginalCobbleRoadLoaded { get; private set; }
         public int FootprintCount { get; private set; }
 
         public void Build()
@@ -33,10 +34,26 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Debug.LogError("[Modular25D] Sprites/Default unavailable; landscape cannot integrate.",this);
                 return;
             }
-            var road=MakeRoadTexture();
-            var roadMat=new Material(shader){name="Valoria earth road — feathered, painted"};
-            roadMat.mainTexture=road;
-            materials.Add(roadMat);
+            var earth=MakeRoadTexture();
+            var earthMat=new Material(shader){name="Valoria haulers' earth road — original paint system"};
+            earthMat.mainTexture=earth;
+            materials.Add(earthMat);
+            // The larger Imperial Way gets a REAL illustrated paving material
+            // sampled from the user-owned Eldoria terrain, cropped to path
+            // pixels only, with soft edges. It remains mapped on the same
+            // world-space spline mesh, not a giant image of a finished city.
+            var artistPath=Resources.Load<Texture2D>("ValoriaModular25D/OrganicCobbleRoad");
+            OriginalCobbleRoadLoaded=artistPath!=null;
+            Material imperialMat=earthMat;
+            if(OriginalCobbleRoadLoaded)
+            {
+                imperialMat=new Material(shader){name="Valoria original illustrated cobblestone road"};
+                imperialMat.mainTexture=artistPath;
+                materials.Add(imperialMat);
+            }
+            else
+                Debug.LogError("[Modular25D] No source-authored road tile; "+
+                    "fallback is not artistic acceptance.",this);
             // The road is described as spatial segments; bend is interpolated,
             // not simulated by shifting a static full-scene background.
             var main=new []{
@@ -48,8 +65,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
                 new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
                 new Vector2(1.95f,-2.55f)};
-            AddRoad("Imperial path — dirt, ruts, grass edges",main,1.78f,roadMat);
-            AddRoad("Haulers' path — compacted earth",lumber,1.47f,roadMat);
+            AddRoad("Imperial Way — original illustrated paving",main,1.69f,imperialMat);
+            AddRoad("Haulers' path — compacted earth and gravel",lumber,1.47f,earthMat);
 
             var keep=MakeFootprint("Bastion",new Color(.49f,.41f,.31f,1),
                 new Color(.74f,.69f,.52f,1),true);
