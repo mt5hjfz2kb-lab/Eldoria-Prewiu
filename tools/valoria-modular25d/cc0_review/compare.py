@@ -13,7 +13,7 @@ from urllib.request import Request,urlopen
 from PIL import Image,ImageDraw,ImageEnhance
 import hashlib,json,io
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=Path(__file__).resolve().parents[3]
 OUT=ROOT/"tools/valoria-modular25d/cc0_review/evidence"
 OUT.mkdir(parents=True,exist_ok=True)
 ROOTGAME=ROOT/"Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D"
