@@ -79,8 +79,14 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn("shadow.sortingOrder=sort-1;", walker)
         self.assertIn("Vector2.MoveTowards", walker)
         self.assertIn("Modular25DArt.Villager(", walker)
-        self.assertIn("row=-10;row<=10", world)
-        self.assertIn("col=-10;col<=10", world)
+        ground = content(SCRIPTS / "Modular25DGround.cs")
+        self.assertIn("terrain.Build();", world)
+        self.assertIn("class Modular25DGround : MonoBehaviour", ground)
+        self.assertIn("ChunkCount++",ground)
+        self.assertIn("renderer.sortingOrder=-6000;", ground)
+        self.assertIn("TextureWrapMode.Repeat",ground)
+        self.assertNotIn("for(int row=-10;row<=10",world)
+        self.assertNotIn("for(int col=-10;col<=10",world)
 
     def test_camera_input_does_not_tap_after_drag_or_pinch(self):
         source = content(SCRIPTS / "Modular25DCameraInput.cs")
