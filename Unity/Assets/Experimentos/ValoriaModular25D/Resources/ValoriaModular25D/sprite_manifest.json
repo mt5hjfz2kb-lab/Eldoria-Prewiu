@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "authoring": "original Blender bake 2.5D",
+  "engine_proof": false,
+  "generated_from": "tools/valoria-modular25d/blender/bake_valoria.py",
+  "palette": "baked common materials + shared camera and lights",
+  "sprites": [
+    {
+      "name": "bastion_i",
+      "size": [
+        461,
+        509
+      ],
+      "foot_pivot": [
+        0.527115,
+        0.301293
+      ],
+      "sha256": "012c14f2a88951534b4b47d1f223aef00ebe3247d771b5f56de6c50cf8c24514",
+      "bytes": 214718,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "bush_0",
+      "size": [
+        131,
+        110
+      ],
+      "foot_pivot": [
+        0.496183,
+        0.366893
+      ],
+      "sha256": "a6fb5798e78c845ba84bfd0b770737bce8b5172303c1070f0da4a980b9b755a3",
+      "bytes": 12948,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "bush_1",
+      "size": [
+        131,
+        113
+      ],
+      "foot_pivot": [
+        0.48855,
+        0.339454
+      ],
+      "sha256": "8edd4e88dc0cbe210bc1f0ea17679882f1eea6f1ee793858b03aa019d3b85da2",
+      "bytes": 13382,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "bush_2",
+      "size": [
+        126,
+        122
+      ],
+      "foot_pivot": [
+        0.507937,
+        0.363592
+      ],
+      "sha256": "203636d7bb5b7c8a2764916aa6d8db0f38b3c34ebfe46d5f1a065827fac5bc74",
+      "bytes": 13362,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "pine_0",
+      "size": [
+        213,
+        268
+      ],
+      "foot_pivot": [
+        0.464789,
+        0.154322
+      ],
+      "sha256": "55bea787343d4122dc2d1e39b6a4651343f869df226283b5b08ebceb3457b34b",
+      "bytes": 53121,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "pine_1",
+      "size": [
+        213,
+        288
+      ],
+      "foot_pivot": [
+        0.488263,
+        0.174855
+      ],
+      "sha256": "df20bc3b2a52c802145f85e0b05ae871c74ef0a79bf30496f15323207f84cb99",
+      "bytes": 56688,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "pine_2",
+      "size": [
+        227,
+        304
+      ],
+      "foot_pivot": [
+        0.493392,
+        0.185389
+      ],
+      "sha256": "6204a46facbee4d0139f8579c6943b14fd4b7903b8391abe12a35abc6286800c",
+      "bytes": 62247,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "sawmill_available",
+      "size": [
+        349,
+        253
+      ],
+      "foot_pivot": [
+        0.501433,
+        0.400626
+      ],
+      "sha256": "91640393cc524b916521a7ddd4b4ed6f74c40a5715b0e00d19f4fc47a22ca86d",
+      "bytes": 55542,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "sawmill_i",
+      "size": [
+        361,
+        328
+      ],
+      "foot_pivot": [
+        0.501385,
+        0.315117
+      ],
+      "sha256": "29926c9aa66324bd688599edb8bbf883f7b4318c9f5200a1ac100ace95b170f4",
+      "bytes": 105613,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "sawmill_under_construction",
+      "size": [
+        350,
+        321
+      ],
+      "foot_pivot": [
+        0.514286,
+        0.321988
+      ],
+      "sha256": "3e3f50f3c74667c7c13ac7b49cd1a2e55913cc355ef907883631dc17bc19d471",
+      "bytes": 96746,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "stone",
+      "size": [
+        100,
+        97
+      ],
+      "foot_pivot": [
+        0.5,
+        0.364518
+      ],
+      "sha256": "1a06a3a2aa25b70e30dc4149d5134e756f48aeb67dfaa1b9fe9c23cefa6cabd7",
+      "bytes": 7298,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "villager_walk_0",
+      "size": [
+        96,
+        166
+      ],
+      "foot_pivot": [
+        0.458333,
+        0.170833
+      ],
+      "sha256": "75f3890cf9f596996713be3e8adc43066dd43627297beda2836d44f214898b0b",
+      "bytes": 13730,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "villager_walk_1",
+      "size": [
+        101,
+        163
+      ],
+      "foot_pivot": [
+        0.485149,
+        0.155572
+      ],
+      "sha256": "e9a1994b725260f00979779579b518f75d4f9cd1fc5f73742a4152f461e6f7ed",
+      "bytes": 14635,
+      "source": "Blender-generated original - not Unity"
+    }
+  ]
+}
