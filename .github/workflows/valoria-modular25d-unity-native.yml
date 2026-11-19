@@ -221,11 +221,21 @@ jobs:
           $passed=[int]$xml.DocumentElement.GetAttribute('passed')
           $failed=[int]$xml.DocumentElement.GetAttribute('failed')
           $skipped=[int]$xml.DocumentElement.GetAttribute('skipped')
+          # ALWAYS preserve the actual NUnit failure messages to avoid
+          # blind guessing or repeating a 40min Unity job without diagnosis.
+          Copy-Item -LiteralPath $results -Destination (Join-Path $dir 'NUnit.xml')
           if($total -lt 1 -or $passed -lt 1 -or $failed -ne 0 -or $skipped -ne 0 -or $p.ExitCode -ne 0){
-            if(Test-Path $log){Get-Content $log -Tail 200}
+            $failedTests=@($xml.SelectNodes('//test-case[@result="Failed"]'))
+            foreach($t in $failedTests){
+              Write-Host ('FAILED_PLAYMODE_TEST '+$t.GetAttribute('fullname'))
+              $message=$t.SelectSingleNode('failure/message')
+              $stack=$t.SelectSingleNode('failure/stack-trace')
+              if($message){Write-Host ('FAILURE_REASON '+$message.InnerText)}
+              if($stack){Write-Host ('FAILURE_STACK '+$stack.InnerText)}
+            }
+            if(Test-Path $log){Get-Content $log -Tail 170}
             throw ("ACTUAL_PLAYMODE_NOT_VALIDATED total=$total pass=$passed failed=$failed skipped=$skipped exit="+$p.ExitCode)
           }
-          Copy-Item -LiteralPath $results -Destination (Join-Path $dir 'NUnit.xml')
           Write-Host "REAL_MODULAR25D_PLAYMODE_PASS $passed/$total; image not a device test."
       - name: Check isolated WebGL player build support and attempt export
         id: webgl_gate
