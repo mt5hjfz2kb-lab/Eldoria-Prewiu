@@ -29,8 +29,8 @@
         112
       ],
       "foot_pivot": [
-        0.496183,
-        0.372597
+        0.5,
+        0.16
       ],
       "sha256": "9b73412dd985b1f9bfc2b1d9144c2d2f1dcd3bc8f9fb01c78662676cfad5db29",
       "bytes": 19421,
@@ -43,8 +43,8 @@
         112
       ],
       "foot_pivot": [
-        0.492424,
-        0.339454
+        0.5,
+        0.16
       ],
       "sha256": "8c6698026844783814123301cc83559e764afcfdd4af0485c7f2c7a0d36f58bc",
       "bytes": 19151,
@@ -57,8 +57,8 @@
         112
       ],
       "foot_pivot": [
-        0.507937,
-        0.363592
+        0.5,
+        0.16
       ],
       "sha256": "7c37cd21fe892670509fe35b2f2b676ab2df3c90e11b9851cbb129f1db84f56f",
       "bytes": 20764,
@@ -74,8 +74,8 @@
         0.467577,
         0.091499
       ],
-      "sha256": "4138110c208f1e88dd2e7cb0ec329c31d80640f248c0df9181920159c83a32eb",
-      "bytes": 82732,
+      "sha256": "fa623dbb36beacbbb45f512f096dff8226f4c3d679cc995608a5785671d77d43",
+      "bytes": 82720,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -88,8 +88,8 @@
         0.516129,
         0.084482
       ],
-      "sha256": "15eadb38dfaae29f64d357cfe0fb0a3b238e2797e0927b5885a7d9cc95c38229",
-      "bytes": 76614,
+      "sha256": "396fa570061dd060d0845f725a656370ceb7f027c22ba00551854463aae25464",
+      "bytes": 76642,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -102,8 +102,8 @@
         0.494208,
         0.283255
       ],
-      "sha256": "b301a567af28a41a47ed6469cdfef8ad693e619c32793c6d5663662c29243ff8",
-      "bytes": 71253,
+      "sha256": "83e817a5e3dc652f2ef9487eb41a35c65050bfc0aaeff030123e2864aad33653",
+      "bytes": 71255,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -116,8 +116,8 @@
         0.477612,
         0.241946
       ],
-      "sha256": "35bc5110eb012243d60cb3347f28f7f14b209eb42ee1f2a081854a7defa46afd",
-      "bytes": 76242,
+      "sha256": "ed8765687d397a1a8f101c06308c5972e1fef5d72f73cefa258ffcbf64ca8fb9",
+      "bytes": 76232,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -130,8 +130,36 @@
         0.498084,
         0.243588
       ],
-      "sha256": "0193d7f36bcc7cc82994143fcf83443cc38fa524310c0f429aad43b9da6c7470",
-      "bytes": 76994,
+      "sha256": "ce477eee8bf65903c36f348a76ca325faaf43b762b627b2c457c129e0d238712",
+      "bytes": 76995,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "ruin_arch_0",
+      "size": [
+        288,
+        282
+      ],
+      "foot_pivot": [
+        0.569444,
+        0.281412
+      ],
+      "sha256": "b3d0fbe7b676f5b4ca938f774f06584cae4a4aeb7f6162f6219343b5314dd1a0",
+      "bytes": 71086,
+      "source": "Blender-generated original - not Unity"
+    },
+    {
+      "name": "ruin_arch_1",
+      "size": [
+        288,
+        316
+      ],
+      "foot_pivot": [
+        0.451389,
+        0.260627
+      ],
+      "sha256": "0716666a570aa59f83a9ab1967843256839c916fe03e555c3f26f1f29804f95b",
+      "bytes": 80668,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -144,8 +172,8 @@
         0.5,
         0.401405
       ],
-      "sha256": "81ce265df453d5cf3a32c0a86e715165b3df423d8f989c4310e1ba41088c6c1e",
-      "bytes": 57275,
+      "sha256": "d9fd14820f42ea02d3fa7a39e1bfdd09da38362488ef056d066f18c60c755ad1",
+      "bytes": 57262,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -175,8 +203,8 @@
         0.512821,
         0.321988
       ],
-      "sha256": "0e44c02f4451ec3a45d9f9321d1646555239ecb9af0c05a232b5ba476c30834d",
-      "bytes": 103759,
+      "sha256": "75523ad4abab722ea09977f0ed73c12409fbeeb0b45fc4c89164b0b6caf59c5b",
+      "bytes": 103744,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -187,7 +215,7 @@
       ],
       "foot_pivot": [
         0.5,
-        0.364518
+        0.22
       ],
       "sha256": "3c6daa3f675d62e8051044baaf9558a84913277587bc9d4c68bf433934170561",
       "bytes": 16048,
@@ -245,8 +273,8 @@
         0.485149,
         0.155572
       ],
-      "sha256": "4f0279decdd96091208c362c5decbcbfc045c6453937a2d112d97de93e80a596",
-      "bytes": 14494,
+      "sha256": "4501adde64f7aa86718e210551b558567b557f95f64d188ca1400cc962928119",
+      "bytes": 14489,
       "source": "Blender-generated original - not Unity"
     }
   ],
