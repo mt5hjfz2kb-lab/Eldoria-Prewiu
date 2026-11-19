@@ -76,7 +76,7 @@
       ],
       "sha256": "fa623dbb36beacbbb45f512f096dff8226f4c3d679cc995608a5785671d77d43",
       "bytes": 82720,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "oak_1",
@@ -90,7 +90,7 @@
       ],
       "sha256": "396fa570061dd060d0845f725a656370ceb7f027c22ba00551854463aae25464",
       "bytes": 76642,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "pine_0",
@@ -104,7 +104,7 @@
       ],
       "sha256": "83e817a5e3dc652f2ef9487eb41a35c65050bfc0aaeff030123e2864aad33653",
       "bytes": 71255,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "pine_1",
@@ -118,7 +118,7 @@
       ],
       "sha256": "ed8765687d397a1a8f101c06308c5972e1fef5d72f73cefa258ffcbf64ca8fb9",
       "bytes": 76232,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "pine_2",
@@ -132,7 +132,7 @@
       ],
       "sha256": "ce477eee8bf65903c36f348a76ca325faaf43b762b627b2c457c129e0d238712",
       "bytes": 76995,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "sawmill_available",
@@ -146,7 +146,7 @@
       ],
       "sha256": "d9fd14820f42ea02d3fa7a39e1bfdd09da38362488ef056d066f18c60c755ad1",
       "bytes": 57262,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "sawmill_i",
@@ -177,7 +177,7 @@
       ],
       "sha256": "75523ad4abab722ea09977f0ed73c12409fbeeb0b45fc4c89164b0b6caf59c5b",
       "bytes": 103744,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "stone",
@@ -233,7 +233,7 @@
       ],
       "sha256": "e640fa7c241073d273cb0143b09f29ba889b19dea5c23c253dbad30b1aec7008",
       "bytes": 13702,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     },
     {
       "name": "villager_walk_1",
@@ -247,7 +247,7 @@
       ],
       "sha256": "4501adde64f7aa86718e210551b558567b557f95f64d188ca1400cc962928119",
       "bytes": 14489,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "Blender-generated original - not Unity"
     }
   ],
   "paintedGroundProps": true
