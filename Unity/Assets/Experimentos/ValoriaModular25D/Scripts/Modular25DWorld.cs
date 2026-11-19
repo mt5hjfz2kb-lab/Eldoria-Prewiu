@@ -21,6 +21,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DGameplay Gameplay { get; private set; }
         public Modular25DInterface Hud { get; private set; }
         public SpriteRenderer SawmillRenderer { get; private set; }
+        public int RecoveredPropsPlaced { get; private set; }
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
@@ -65,21 +66,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Shared warm-olive broadleaf art replaces the isolated dark
             // blue low-poly pine cluster. The occlusion test still crosses
             // behind and in front of the SAME physical tree foot anchor.
-            // Small independent ancient imperial ruins give the first scene
-            // reconstruction lore and depth without a pre-painted panorama.
-            // Foot-Y order puts both BEHIND Bastion I and its future levels.
-            AddRuin(scenery,new Vector2(-2.71f,5.23f),0,.74f);
-            AddRuin(scenery,new Vector2(2.73f,5.03f),1,.68f);
-            AddOak(scenery,new Vector2(-3.15f,-1.4f),0,1.17f);
-            AddOak(scenery,new Vector2(3.76f,1.55f),1,.95f);
-            AddTree(scenery,new Vector2(-4.9f,2.7f),2,.72f);
-            AddTree(scenery,new Vector2(4.6f,-4.1f),0,.78f);
-            AddOak(scenery,new Vector2(-4.35f,-4.45f),1,.77f);
-            AddProp(scenery,Modular25DArt.Bush(0),new Vector2(-2.6f,-3.55f),.58f);
-            AddProp(scenery,Modular25DArt.Bush(1),new Vector2(3.25f,-4.15f),.57f);
-            AddProp(scenery,Modular25DArt.Rock(),new Vector2(-4.15f,.6f),.58f);
-            AddProp(scenery,Modular25DArt.Rock(),new Vector2(4.55f,-.45f),.48f);
-            AddProp(scenery,Modular25DArt.Rock(),new Vector2(-.15f,-4.65f),.5f);
+            // Reuse actual original Eldoria high-detail hand-authored RGBA
+            // assets from the City2D art experiment as independent 2.5D
+            // sprites. The artist-approved DESIGN DIRECTION is not treated
+            // as a full-scene background. No geometry/cardboard duplication.
+            AddOriginalProp(scenery,"MuroDerruido",new Vector2(-2.2f,4.14f),.88f);
+            AddOriginalProp(scenery,"ArbolAntiguo",new Vector2(3.37f,3.31f),.88f);
+            AddOriginalProp(scenery,"ArboledaAntigua",new Vector2(-3.15f,-1.4f),.85f);
+            AddOriginalProp(scenery,"ArboledaAntigua",new Vector2(3.04f,1.49f),.78f);
+            AddOriginalProp(scenery,"MatojosFlores",new Vector2(-1.53f,3.29f),.76f);
+            AddOriginalProp(scenery,"MatojosFlores",new Vector2(2.49f,.31f),.55f);
+            AddOriginalProp(scenery,"PozoPiedra",new Vector2(.19f,-.97f),.72f);
+            AddOriginalProp(scenery,"CarroMadera",new Vector2(3.08f,-3.78f),.70f);
+            AddOriginalProp(scenery,"VallaLenador",new Vector2(2.40f,-4.43f),.68f);
+            AddOriginalProp(scenery,"HuertosValoria",new Vector2(-1.98f,-4.73f),.57f);
+            // Smaller ground elements stay original independent sprites; no
+            // blind 3D low-poly boulders that contradict the rendered buildings.
+            AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.6f,-3.92f),.46f);
+            AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.26f,.94f),.53f);
 
             CreateVillager(people,"Valoria citizen A",new [] {
                 // Pass on the east edge of the tree crown; keep the feet
@@ -194,6 +198,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             var shadow=AddSprite(name,Modular25DArt.Shadow(width,28),position,order,parent);
             shadow.color=new Color(1f,1f,1f,.7f);
+        }
+
+        void AddOriginalProp(Transform parent,string name,Vector2 foot,float scale)
+        {
+            var sprite=Resources.Load<Sprite>("ValoriaModular25D/RecoveredProps/"+name);
+            if(sprite==null)
+            {
+                Debug.LogError("[Valoria Modular25D] Missing original image-authored prop "+
+                    name+"; refuse to fake the visual-quality gate.",this);
+                return;
+            }
+            var visual=AddSprite("Original Eldoria art | "+name,sprite,
+                foot,FootOrder(foot.y),parent);
+            visual.transform.localScale=Vector3.one*scale;
+            // The original sprites include hand-painted ground contact and
+            // light/shadow from a consistent isometric direction. A second
+            // baked shadow sprite would produce doubled dark blobs.
+            RecoveredPropsPlaced++;
         }
 
         void AddRuin(Transform root,Vector2 foot,int variant,float scale)
