@@ -87,12 +87,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         (landscape==null?-1:landscape.FootprintCount));
                 report.continuousTerrainPresent=true;
                 var actualGroundRenderer=ground.GetComponentInChildren<MeshRenderer>();
-                if(actualGroundRenderer==null ||
+                if(!ground.OriginalProjectMeadowLoaded ||
+                   actualGroundRenderer==null ||
                    actualGroundRenderer.sharedMaterial==null ||
                    actualGroundRenderer.sharedMaterial.mainTexture==null ||
-                   actualGroundRenderer.sharedMaterial.mainTexture.name!=
-                       "Valoria hand-painted meadow | seamless tile from owned original art")
-                    throw new Exception("Authentic Unity terrain is still showing emergency procedural fallback.");
+                   actualGroundRenderer.sharedMaterial.mainTexture.name!="OrganicMeadowTile")
+                    throw new Exception("Unity is not using the reusable grass-only original Eldoria artist tile.");
                 report.paintedGroundSourceLoaded=true;
                 report.roadAndFootprintKits=true;
                 var originalArt=new[]{
