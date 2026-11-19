@@ -51,7 +51,7 @@ class SpatialGate(unittest.TestCase):
     def test_both_buildings_framed_in_mobile_orthographic_camera(self):
         for width,height in [(390,844),(1170,2532),(844,390)]:
             aspect=width/height
-            size=min(10.8,max(5.3,4.65/max(.42,aspect)))
+            size=min(10.8,max(5.3,4.10/max(.42,aspect)))
             camera_centre=(.18,.15)
             halfwidth=size*aspect
             for name,(x,y) in [("bastion",BASTION),("sawmill",SAWMILL)]:
