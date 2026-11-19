@@ -73,13 +73,26 @@ internal static class GatewayConstructionSmoke
         Check(complete.BuildingCompletesUtcTicks==0&&string.IsNullOrEmpty(complete.BuildingTaskId)&&
             complete.CompletedTaskIds.Contains("sawmill:sawmill-event-1"),
             "completed task cleared and ledger persisted");
-        Check(complete.Resources.Wood==wood-cost,"completion never repays or double-charges");
+        // Hosted non-Unity OWNER_I_II grants the canonical Chapter-I mission
+        // reward (+120 wood) on the FIRST finished sawmill. In real Unity,
+        // ResourceRewardRules issues a bag packet instead of adding directly to
+        // the wallet. The previous equality incorrectly treated this earned
+        // milestone as a duplicate or overcharge.
+        Check(complete.ChapterProgress.GrantedRewards.Contains("c1-sawmill"),
+            "canonical Chapter-I completion reward recorded exactly once");
+        int firstCompletionWood=complete.Resources.Wood;
+        Check(firstCompletionWood==wood-cost+120,
+            "one debit plus exactly one real hosted-profile Chapter-I reward");
         gateway.Advance();
         gateway=new LocalGateway(clock,store);
         Check(gateway.Snapshot().CompletedTaskIds.Count(x=>x=="sawmill:sawmill-event-1")==1,
             "reload never duplicates completion");
+        Check(gateway.Snapshot().Resources.Wood==firstCompletionWood &&
+            gateway.Snapshot().ChapterProgress.GrantedRewards.Count(x=>x=="c1-sawmill")==1,
+            "reward ledger idempotent after reload");
         Check(!Send(gateway,"sawmill-event-3").Ok,"already-built sawmill cannot be rebuilt");
-        Check(gateway.Snapshot().Resources.Wood==wood-cost,"already-built request spends nothing");
+        Check(gateway.Snapshot().Resources.Wood==firstCompletionWood,
+            "already-built request spends nothing and does not replay mission reward");
         var low=new LocalGateway(clock,new Store(new PlayerState {
             Resources=new ResourceWallet {Wood=cost-1,Stone=150,Food=0}
         }));
