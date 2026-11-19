@@ -207,15 +207,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 float stoneZone=cobbled?(1f-Sm(-.15f,.52f,yy))*(1f-Sm(.47f,.77f,Mathf.Abs(xx))):0f;
                 if(stoneZone>0)
                 {
-                    float tilex=xx*8.5f+Mathf.Floor(yy*10f)*.5f;
-                    float tiley=yy*10f;
+                    float tilex=xx*5.8f+Mathf.Floor(yy*6.6f)*.5f;
+                    float tiley=yy*6.6f;
                     float edgeX=Mathf.Abs(tilex-Mathf.Round(tilex));
                     float edgeY=Mathf.Abs(tiley-Mathf.Round(tiley));
-                    float seam=1f-Sm(.36f,.47f,Mathf.Min(edgeX,edgeY));
+                    float seam=1f-Sm(.035f,.115f,Mathf.Min(edgeX,edgeY));
                     Color paving=Color.Lerp(new Color(.35f,.35f,.29f,1),
                         new Color(.65f,.60f,.49f,1),dirt*.78f+fine*.22f);
                     paving=Color.Lerp(paving,shade,seam*.33f);
-                    c=Color.Lerp(c,paving,stoneZone*.77f);
+                    c=Color.Lerp(c,paving,stoneZone*.90f);
                 }
                 // Sawdust subtly warms the middle of the mill footprint.
                 if(!cobbled)
@@ -242,7 +242,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             go.transform.localScale=Vector3.one*scale;
             var sr=go.AddComponent<SpriteRenderer>();
             sr.sprite=sprite;
-            sr.sortingOrder=-4300;
+            sr.sortingOrder=-4050;
             FootprintCount++;
         }
 
