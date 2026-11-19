@@ -8,16 +8,19 @@
     {
       "name": "bastion_i",
       "size": [
-        459,
-        578
+        480,
+        314
       ],
       "foot_pivot": [
-        0.527233,
-        0.258405
+        0.5,
+        0.048
       ],
-      "sha256": "d0d6a2d9bc35162008386fd12304c9627032c7ecbb92116c57ad821fc2fee0d5",
-      "bytes": 260114,
-      "source": "Blender-generated original - not Unity"
+      "sha256": "5992c968f67c6855a97eb5db4d24c9bcd4e06af5b1062c25cc35d0e1e27e3154",
+      "bytes": 233179,
+      "source": "original ChatGPT 2.5D generated sprite; alpha/crop postprocessed; NOT Unity",
+      "generation_id": "ac1ba197-84c5-407b-86ad-c83c53e73ec2",
+      "art_approved": false,
+      "unity_render_checked": false
     },
     {
       "name": "bush_0",
@@ -121,15 +124,18 @@
       "name": "sawmill_i",
       "size": [
         362,
-        328
+        273
       ],
       "foot_pivot": [
         0.5,
-        0.315117
+        0.07
       ],
-      "sha256": "54349e52cc1685eadbe4866d6b87338868da9aeb9b05a664bc78bae454113b85",
-      "bytes": 110608,
-      "source": "Blender-generated original - not Unity"
+      "sha256": "5a5c5f38604881da76d43c65eb999e69736d5bcaaf0d432df0661163ccde81f6",
+      "bytes": 180836,
+      "source": "original ChatGPT 2.5D generated sprite; alpha/crop postprocessed; NOT Unity",
+      "generation_id": "e475b613-4030-4fd2-9c0d-0c8fce453220",
+      "art_approved": false,
+      "unity_render_checked": false
     },
     {
       "name": "sawmill_under_construction",
@@ -187,5 +193,7 @@
       "bytes": 14490,
       "source": "Blender-generated original - not Unity"
     }
-  ]
+  ],
+  "updated_art_candidate": "2.5d-premium-imagegen-original-20261119",
+  "premium_bastion_sawmill_combination_qa": "PENDING_UNITY_PLAYMODE_AND_OWNER_ART_APPROVAL"
 }
