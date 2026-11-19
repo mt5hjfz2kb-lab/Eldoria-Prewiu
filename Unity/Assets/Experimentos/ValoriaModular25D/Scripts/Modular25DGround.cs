@@ -85,10 +85,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var t=new Texture2D(TextureSize,TextureSize,TextureFormat.RGBA32,false,false){
                 name="Valoria olive grass | painterly repeatable material v2",
                 wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Bilinear};
-            var darkest=new Color(.235f,.333f,.167f,1);
-            var moss=new Color(.315f,.410f,.190f,1);
-            var open=new Color(.385f,.478f,.229f,1);
-            var sun=new Color(.510f,.550f,.289f,1);
+            var darkest=new Color(.263f,.361f,.181f,1);
+            var moss=new Color(.344f,.449f,.215f,1);
+            var open=new Color(.408f,.513f,.248f,1);
+            var sun=new Color(.535f,.575f,.304f,1);
             var dry=new Color(.470f,.415f,.292f,1);
             var pixels=new Color32[TextureSize*TextureSize];
             for(int y=0;y<TextureSize;y++)
@@ -115,7 +115,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 float sweep=Mathf.Sin(tau*(u*67f+v*31f)+
                     (Noise(u,v,13)-.5f)*tau*1.2f);
                 float fibre=Mathf.Max(0f,sweep*.5f+.5f);
-                float amount=(detail-.5f)*.12f+(fibre-.5f)*.055f;
+                float amount=(detail-.5f)*.086f+(fibre-.5f)*.014f;
                 c*=1f+amount;
                 c.a=1;
                 pixels[y*TextureSize+x]=(Color32)c;
@@ -123,7 +123,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Individual micro-paint marks, not a copy of the concept image:
             // constrained hues, oriented 8px tufts, subtle layered strokes.
             var random=new System.Random(51269);
-            for(int tuft=0;tuft<16000;tuft++)
+            for(int tuft=0;tuft<11800;tuft++)
             {
                 int x=random.Next(TextureSize),y=random.Next(TextureSize);
                 int len=2+random.Next(7);
