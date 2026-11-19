@@ -2,6 +2,7 @@
 """Fast, non-Unity checks. PASS here is never a Unity, art or device approval."""
 from pathlib import Path
 import re
+import base64
 import hashlib
 import json
 import struct
@@ -83,7 +84,7 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn("landscape.Build();",world)
         self.assertNotIn("BuildPaths(paths);",world)
         self.assertNotIn("AddRoadStroke(",world)
-        self.assertIn("TextureSize = 768",meadow)
+        self.assertIn("TextureSize = 512",meadow)
         self.assertIn("Eldoria olive grass",meadow) if False else None
         self.assertIn("Valoria olive grass",meadow)
         self.assertIn("modular directional ribbon",landscape)
@@ -93,6 +94,24 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn("RoadCount++",landscape)
         self.assertIn("FootprintCount++",landscape)
         self.assertIn("landscape.RoadCount!=2||landscape.FootprintCount!=2",capture)
+
+    def test_original_owned_painterly_grass_is_byte_exact_and_tiled(self):
+        # Only grass pixels were sampled from the original Eldoria *concept*
+        # image; NEVER a city panorama or any competitor's copyright art.
+        root=BASE/"Resources/ValoriaModular25D"
+        source=(root/"grass_reference_b64.txt").read_text().strip()
+        data=base64.b64decode(source,validate=True)
+        self.assertEqual(len(data),826)
+        self.assertEqual(hashlib.sha256(data).hexdigest(),
+            "7a27f0f1f8b057b20820d8942cbddb44bca973dcf3ccef7c8103d8b4dc708559")
+        self.assertTrue(data.startswith(b"\\xff\\xd8"))
+        self.assertTrue(data.endswith(b"\\xff\\xd9"))
+        ground=content(SCRIPTS/"Modular25DGround.cs")
+        self.assertIn("MakePaintedSource(source.text)",ground)
+        self.assertIn("binary.Length!=826",ground)
+        self.assertIn("src.width!=128 || src.height!=128",ground)
+        self.assertIn("TextureWrapMode.Repeat",ground)
+        self.assertIn("pixels[a]=pixels[b]",ground)
 
     def test_reusable_depth_and_animated_walk(self):
         world = content(SCRIPTS / "Modular25DWorld.cs")
