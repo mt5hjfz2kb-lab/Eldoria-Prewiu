@@ -273,87 +273,106 @@ def stone_tower():
 
 
 def bastion():
-    """Tier-I recovery fort: low crenellated court, rear refuge and two DIFFERENT towers.
-    The focal silhouette is military and damaged, never a tall generic farmhouse.
+    """Eldoria Bastion I: a damaged early-military gatehouse, NOT a townhouse.
+
+    Macro pivot after rejecting both roof-dominated candidates: gatehouse and
+    strong irregular curtain walls must define the silhouette. A tiny artisan
+    shelter is subordinate. All modules touch real terrain and have no plinth.
     """
-    # Rough masonry boundary; gaps are real, so terrain shows between walls.
-    sections=[
-      ("front left",[(-2.15,-1.78),(-.61,-1.82),(-.60,-1.55),(-2.08,-1.49)],1.73),
-      ("front right",[(.62,-1.82),(2.13,-1.75),(2.12,-1.49),(.60,-1.55)],1.68),
-      ("west wall",[(-2.12,-1.74),(-1.87,-1.78),(-1.83,1.17),(-2.10,1.15)],1.68),
-      ("north wall",[(-2.07,1.14),(1.54,1.17),(1.56,1.46),(-2.03,1.47)],1.60),
-      ("broken east wall",[(1.83,-1.60),(2.15,-1.57),(2.16,1.43),(1.84,1.38)],1.38)
+    # Military footprint, asymmetrical from the FIRST level.
+    walls=[
+      ("front west",[(-2.12,-1.72),(-.62,-1.77),(-.60,-1.49),(-2.08,-1.43)],2.05),
+      ("front east",[(.62,-1.76),(2.10,-1.68),(2.10,-1.42),(.60,-1.49)],2.05),
+      ("west", [(-2.13,-1.72),(-1.81,-1.73),(-1.78,1.22),(-2.09,1.22)],1.90),
+      ("northern", [(-2.08,1.22),(1.48,1.20),(1.51,1.49),(-2.08,1.50)],1.84),
+      ("eastern broken",[(1.80,-1.42),(2.11,-1.45),(2.15,1.42),(1.87,1.39)],1.52)
     ]
-    for name,pts,h in sections:
-        wallheights=[h+RND.uniform(-.035,.035) for _ in pts]
-        if name=="broken east wall":wallheights=[1.56,1.63,.76,1.18]
-        irregular_wall("bastion court "+name,pts,wallheights,0,
-            ("stone_dark","stone","stone_light","stone_moss"))
-        # Cap stones do not form an exact continuous rectangle.
-        for j in range(8):
-            u=(j+.2)/8
-            x=pts[0][0]*(1-u)+pts[1][0]*u
-            y=pts[0][1]*(1-u)+pts[1][1]*u
-            if RND.random()>.65:continue
-            stone("dressed parapet edge",(x,y,h+.05),(.18,.18,.16),
-                  "stone_light" if j%4==0 else "stone")
-    # Crenels along the two facing walls; irregular ruin omissions.
-    for sign in (-1,1):
-        for j in range(5):
-            x=(.70+j*.27)*sign
-            if RND.random()<.16:continue
-            stone("uneven defensive battlement",(x,-1.66,1.87),(.21,.30,.31))
-    # Rear refuge with sloped roof, deliberately SMALLER than the stone defences.
-    refuge=[(-.94,.04),(1.09,.04),(1.18,.35),(1.13,1.35),(-1.03,1.36)]
-    irregular_wall("sheltered timber hall",refuge,[2.05,2.10,2.06,2.12,2.11],0,
-                   ("stone_dark","stone_moss","stone","stone_light"))
-    gable_roof("refuge pitch",-1.12,1.25,-.15,1.56,2.09,2.85)
-    # Asymmetric watchtower and truncated corrupted eastern turret.
+    for name,pts,h in walls:
+        elevations=[h+RND.uniform(-.06,.06) for _ in pts]
+        if name=="eastern broken":elevations=[1.94,1.42,.82,1.26]
+        irregular_wall(name+" curtain wall",pts,elevations,0,
+                       ("stone_dark","stone","stone_light","stone_moss"))
+        if name!="eastern broken":
+            for j in range(9):
+                t=(j+.5)/9
+                x=pts[0][0]+(pts[1][0]-pts[0][0])*t
+                y=pts[0][1]+(pts[1][1]-pts[0][1])*t
+                if j%3!=1:
+                    stone("chipped wall merlon",(x,y,h+.15),(.19,.24,.31),
+                          "stone_light" if j%6==0 else "stone")
+    # Tall imperial watch post to the north-west, visibly higher than all
+    # buildings. Its front is partially collapsed, not newly pristine.
     stone_tower()
-    east=[(1.53,-.26),(2.07,-.49),(2.50,-.19),(2.58,.32),
-          (2.20,.62),(1.63,.35)]
-    irregular_wall("collapsed east watch turret",east,[2.08,1.74,1.12,1.29,1.55,1.83],0,
-                  ("stone_dark","stone","stone_moss"))
-    for idx in (0,2,4):
-        x,y=east[idx]
-        stone("fallen damaged turret coping",(x,y,1.44+idx*.08),(.30,.31,.29))
-    # Distinct gatehouse: arched opening cut by intentional left/right sections.
-    cube("recessed central gate",(0,-1.82,.73),(.90,.10,1.46),"iron",.12)
-    for xx in (-.53,.53):
-        beam("repaired gate jamb",(xx,-1.91,.16),(xx,-1.91,1.51),.115,"stone_light",6)
-    for j in range(9):
-        theta=math.pi*j/8
-        x=.55*math.cos(theta)
-        z=1.42+.35*math.sin(theta)
-        stone("mismatched keystone",(x,-1.94,z),(.19,.24,.21),
+    # Surviving eastern gate-tower is shorter and partially dismantled.
+    east=[(1.44,-.38),(2.08,-.62),(2.53,-.28),(2.55,.35),
+          (2.15,.67),(1.53,.38)]
+    irregular_wall("wounded eastern gate turret",east,
+                   [2.66,2.56,1.47,1.31,1.96,2.48],0,
+                   ("stone_dark","stone","stone_moss","stone_light"))
+    for i,(x,y) in enumerate(east):
+        if i%3==2:continue
+        stone("partial eastern turret crown",(x,y,2.46 if i<2 else 1.75),
+              (.22,.20,.30),"stone_light" if i%2 else "stone")
+    # Main gate arch is the HERO, with hewn voussoirs and independent door.
+    for x in (-.61,.61):
+        stone("gatehouse buttress",(x,-1.87,1.06),(.42,.49,2.14))
+        beam("old timber reinforcing gate jamb",(x,-2.12,.12),
+             (x,-2.13,1.83),.071,"timber",7)
+    cube("recessed double oak portal",(0,-1.96,.81),(1.07,.16,1.55),"wood_dark",.045)
+    for j in range(11):
+        th=math.pi*j/10
+        x=.58*math.cos(th)
+        z=1.72+.45*math.sin(th)
+        stone("gate rebuilt irregular voussoir",(x,-2.05,z),(.19,.22,.23),
               "stone_light" if j%3==0 else "stone")
-    for x in (-.26,0,.26):
-        beam("gate oak board",(x,-1.96,.12),(x,-1.96,1.32),.061,"timber",7)
-    beam("gated iron crossbar",(-.41,-1.99,.64),(.41,-1.99,.64),.036,"iron",6)
-    # Ramshackle reinforcement only on one flank, from the real earth.
-    for x in (1.43,2.06):
-        beam("scaffold at damaged wall",(x,-2.06,0),(x+.05,-2.06,2.28),.078,"timber",7)
-    beam("unfinished repair platform",(1.38,-2.09,1.42),(2.38,-2.09,1.40),.10,"wood_light")
-    beam("reused diagonal brace",(1.44,-2.10,.16),(2.07,-2.10,2.13),.061,"timber",6)
-    for x in (-.77,.83):
-        beam("gate torch mount",(x,-1.99,1.02),(x,-2.01,1.48),.047,"wood_dark")
-        stone("torch iron basket",(x,-2.04,1.53),(.14,.13,.13),"iron")
-        cube("warm torch fire",(x,-2.05,1.71),(.10,.10,.19),"amber",.04)
-    # Imperial crest, weathered fabric, and a single violet fissure scar.
-    beam("heraldic mast",(-.94,-1.72,1.7),(-.94,-1.72,3.37),.043,"wood_dark",7)
-    mesh("torn imperial standard",[(-.94,-1.75,3.26),(-.20,-1.80,3.10),
-             (-.49,-1.83,2.66),(-.71,-1.84,2.79),(-.94,-1.75,2.56)],
-         [(0,1,2,3,4)],["cloth"])
-    for k in range(4):
-        beam("tarnished valoria sun mark",(-.84+k*.09,-1.87,2.89),
-             (-.76+k*.09,-1.87,3.00),.013,"amber",5)
-    # Stone debris is scattered around footprints, never on artificial platforms.
-    rubble((.05,0),37,2.74)
-    for k in range(4):
-        x=2.24+RND.random()*.33
-        z=.19+k*.34
-        beam("violet glow in broken stone",(x,-.20,z),(x+.07,-.23,z+.23),
-             .011,"void",5)
+    beam("gate arch keystone copper line",(-.15,-2.04,2.09),(.15,-2.04,2.09),
+         .035,"wood_light")
+    for x in (-.34,-.10,.12,.35):
+        beam("oak plank split",(x,-2.052,.12),(x,-2.052,1.54),.035,"timber",7)
+    for z in (.49,1.12):
+        beam("crosswise iron brace",(-.42,-2.08,z),(.42,-2.08,z),.041,"iron",6)
+    for x in (-.32,.30):
+        stone("iron gate boss",(x,-2.10,.80),(.08,.035,.10),"amber")
+    # The gatehouse cap is STONE and militarily recognisable, no giant roof.
+    cube("weathered gate platform",(0,-1.74,2.30),(1.62,.74,.20),"stone",.06)
+    for xx in (-.76,-.26,.22,.72):
+        stone("gate parapet battlement",(xx,-1.95,2.54),(.24,.28,.38))
+    # Small occupied rear timber shelter occupies less than 20% of silhouette,
+    # evidence of reconstruction rather than a generic farmhouse.
+    shelter=[(-.72,.46),(.67,.48),(.70,.69),(.60,1.30),(-.77,1.29)]
+    irregular_wall("small rebuilt hall",shelter,
+                   [1.47,1.47,1.56,1.55,1.51],0,
+                   ("stone_dark","stone_moss","stone_light","stone"))
+    gable_roof("half-restored timber roof",-.80,.75,.40,1.39,1.49,2.06)
+    for x in (-.65,.58):
+        beam("survivor wall timber joist",(x,.40,.10),(x,.40,1.55),.085,"timber")
+    # Scaffolding on the breached eastern wall reads as construction.
+    for x in (1.45,2.16):
+        beam("unfinished repair mast",(x,-1.87,.03),(x,-1.87,2.60),.085,"timber",7)
+    for z in (.9,1.65):
+        beam("scaffold access deck",(1.28,-1.97,z),(2.37,-1.97,z),.096,"wood_light",7)
+    beam("cross-brace 1",(1.43,-2.04,.18),(2.20,-2.04,2.44),.061,"timber",5)
+    beam("cross-brace 2",(2.18,-2.06,.15),(1.44,-2.06,1.67),.053,"timber",5)
+    # Actual handlaid banners and iron-basket torches, not giant decor covers.
+    for x in (-.88,.90):
+        beam("warm iron torch arm",(x,-1.95,1.20),(x,-2.04,1.65),.052,"wood_dark")
+        stone("raised torch basket",(x,-2.08,1.63),(.15,.16,.13),"iron")
+        cube("warm tiny ember",(x,-2.11,1.78),(.10,.10,.19),"amber",.02)
+    beam("bent royal banner pole",(-1.05,-1.68,1.75),(-1.05,-1.68,3.46),.047,"wood_dark")
+    mesh("battle-worn banner",[(-1.04,-1.76,3.41),(-.36,-1.85,3.29),
+       (-.59,-1.87,2.75),(-.78,-1.84,2.95),(-1.04,-1.76,2.63)],
+       [(0,1,2,3,4)],["cloth"])
+    for i in range(4):
+        beam("Valoria gilded insignia",(-.99+i*.11,-1.88,3.12),
+             (-.95+i*.11,-1.88,2.92),.011,"amber",4)
+    # Collapsed imperial stone scattered in world space, not a base island.
+    rubble((.0,.0),34,2.67)
+    for j in range(5):
+        x=2.21+RND.random()*.32
+        z=.15+j*.31
+        beam("faint violet fissure etched in old tower",(x,-.28,z),
+             (x+.05,-.30,z+.24),.012,"void",5)
+
 
 def sawmill(stage):
     # Shared low, asymmetric woodworks footprint; three fully distinct builds.
