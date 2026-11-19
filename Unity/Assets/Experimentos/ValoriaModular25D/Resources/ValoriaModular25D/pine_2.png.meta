@@ -25,7 +25,7 @@ TextureImporter:
   spriteMeshType: 0
   spritePixelsToUnits: 96
   spriteAlignment: 9
-  spritePivot: {x: 0.493392, y: 0.185389}
+  spritePivot: {x: 0.498084, y: 0.243588}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   platformSettings:
   - serializedVersion: 4

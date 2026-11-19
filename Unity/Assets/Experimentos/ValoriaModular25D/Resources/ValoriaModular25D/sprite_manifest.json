@@ -9,42 +9,42 @@
       "name": "bastion_i",
       "size": [
         461,
-        509
+        582
       ],
       "foot_pivot": [
         0.527115,
-        0.301293
+        0.263502
       ],
-      "sha256": "012c14f2a88951534b4b47d1f223aef00ebe3247d771b5f56de6c50cf8c24514",
-      "bytes": 214718,
+      "sha256": "e9f561ad2278c58d29a915d6d9c87f9e60a71f3e8ec1b50425d84450af22c91b",
+      "bytes": 263725,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "bush_0",
       "size": [
         131,
-        110
+        111
       ],
       "foot_pivot": [
         0.496183,
-        0.366893
+        0.372597
       ],
-      "sha256": "a6fb5798e78c845ba84bfd0b770737bce8b5172303c1070f0da4a980b9b755a3",
-      "bytes": 12948,
+      "sha256": "ddfb565fb528c643a014a768ccf3f71ecb52316890e1a285afee842be9a8fcce",
+      "bytes": 13850,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "bush_1",
       "size": [
-        131,
+        132,
         113
       ],
       "foot_pivot": [
-        0.48855,
+        0.492424,
         0.339454
       ],
-      "sha256": "8edd4e88dc0cbe210bc1f0ea17679882f1eea6f1ee793858b03aa019d3b85da2",
-      "bytes": 13382,
+      "sha256": "9eae81a2b6770862fa29450e2ebc914a40bbfae1bb153cd98480c9c57808d94b",
+      "bytes": 14419,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -57,92 +57,92 @@
         0.507937,
         0.363592
       ],
-      "sha256": "203636d7bb5b7c8a2764916aa6d8db0f38b3c34ebfe46d5f1a065827fac5bc74",
-      "bytes": 13362,
+      "sha256": "844d8bd68a234f50effdfdc3598543e713a5ff0e294adddf7521caad369f2c3e",
+      "bytes": 14633,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "pine_0",
       "size": [
-        213,
-        268
+        259,
+        319
       ],
       "foot_pivot": [
-        0.464789,
-        0.154322
+        0.494208,
+        0.283255
       ],
-      "sha256": "55bea787343d4122dc2d1e39b6a4651343f869df226283b5b08ebceb3457b34b",
-      "bytes": 53121,
+      "sha256": "4ca49bcb37c3ef782e93e6435fc45e5d1799fdbdfc458246cdfbf97a07bf603c",
+      "bytes": 71115,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "pine_1",
       "size": [
-        213,
-        288
+        268,
+        328
       ],
       "foot_pivot": [
-        0.488263,
-        0.174855
+        0.477612,
+        0.241946
       ],
-      "sha256": "df20bc3b2a52c802145f85e0b05ae871c74ef0a79bf30496f15323207f84cb99",
-      "bytes": 56688,
+      "sha256": "331f6f3df73f2f035ffcddb248c1872f43f8b5c721aa9462e57860c5cd1ea015",
+      "bytes": 75778,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "pine_2",
       "size": [
-        227,
-        304
+        261,
+        334
       ],
       "foot_pivot": [
-        0.493392,
-        0.185389
+        0.498084,
+        0.243588
       ],
-      "sha256": "6204a46facbee4d0139f8579c6943b14fd4b7903b8391abe12a35abc6286800c",
-      "bytes": 62247,
+      "sha256": "2892ee3a9a67b71b2112767c968552dcb0c9614c22c208f9135f889b71a4b803",
+      "bytes": 76542,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "sawmill_available",
       "size": [
-        349,
-        253
+        350,
+        255
       ],
       "foot_pivot": [
-        0.501433,
-        0.400626
+        0.5,
+        0.401405
       ],
-      "sha256": "91640393cc524b916521a7ddd4b4ed6f74c40a5715b0e00d19f4fc47a22ca86d",
-      "bytes": 55542,
+      "sha256": "d9fd14820f42ea02d3fa7a39e1bfdd09da38362488ef056d066f18c60c755ad1",
+      "bytes": 57262,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "sawmill_i",
       "size": [
-        361,
+        362,
         328
       ],
       "foot_pivot": [
-        0.501385,
+        0.5,
         0.315117
       ],
-      "sha256": "29926c9aa66324bd688599edb8bbf883f7b4318c9f5200a1ac100ace95b170f4",
-      "bytes": 105613,
+      "sha256": "e9ec7be2885c7aca5de385f0e8bb5abfce8753011ed426bb5003a785bed52e07",
+      "bytes": 110592,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "sawmill_under_construction",
       "size": [
-        350,
+        351,
         321
       ],
       "foot_pivot": [
-        0.514286,
+        0.512821,
         0.321988
       ],
-      "sha256": "3e3f50f3c74667c7c13ac7b49cd1a2e55913cc355ef907883631dc17bc19d471",
-      "bytes": 96746,
+      "sha256": "75523ad4abab722ea09977f0ed73c12409fbeeb0b45fc4c89164b0b6caf59c5b",
+      "bytes": 103744,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -155,22 +155,22 @@
         0.5,
         0.364518
       ],
-      "sha256": "1a06a3a2aa25b70e30dc4149d5134e756f48aeb67dfaa1b9fe9c23cefa6cabd7",
-      "bytes": 7298,
+      "sha256": "0b73142d682d28b4b313c632f1444473ec4c8da9337201fb2a9088bbe054e210",
+      "bytes": 7943,
       "source": "Blender-generated original - not Unity"
     },
     {
       "name": "villager_walk_0",
       "size": [
-        96,
+        97,
         166
       ],
       "foot_pivot": [
-        0.458333,
+        0.463918,
         0.170833
       ],
-      "sha256": "75f3890cf9f596996713be3e8adc43066dd43627297beda2836d44f214898b0b",
-      "bytes": 13730,
+      "sha256": "e640fa7c241073d273cb0143b09f29ba889b19dea5c23c253dbad30b1aec7008",
+      "bytes": 13702,
       "source": "Blender-generated original - not Unity"
     },
     {
@@ -183,8 +183,8 @@
         0.485149,
         0.155572
       ],
-      "sha256": "e9a1994b725260f00979779579b518f75d4f9cd1fc5f73742a4152f461e6f7ed",
-      "bytes": 14635,
+      "sha256": "4501adde64f7aa86718e210551b558567b557f95f64d188ca1400cc962928119",
+      "bytes": 14489,
       "source": "Blender-generated original - not Unity"
     }
   ]
