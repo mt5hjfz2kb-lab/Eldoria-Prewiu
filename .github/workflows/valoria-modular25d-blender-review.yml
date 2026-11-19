@@ -17,8 +17,8 @@ concurrency:
 
 jobs:
   bake-review:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,7 +31,7 @@ jobs:
       - name: Install no-credit CPU 3D asset authoring tools (not Unity)
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender python3-pil
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends blender python3-pil
           blender --version | head -n 4
       - name: Verify generator syntax without changing game
         run: |
