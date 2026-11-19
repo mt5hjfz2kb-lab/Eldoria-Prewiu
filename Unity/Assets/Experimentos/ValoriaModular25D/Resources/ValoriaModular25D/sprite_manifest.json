@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "authoring": "original Blender bake 2.5D",
+  "authoring": "modular premium image-authored buildings + original Blender supporting sprites",
   "engine_proof": false,
   "generated_from": "tools/valoria-modular25d/blender/bake_valoria.py",
   "palette": "baked common materials + shared camera and lights",
@@ -193,7 +193,5 @@
       "bytes": 14490,
       "source": "Blender-generated original - not Unity"
     }
-  ],
-  "updated_art_candidate": "2.5d-premium-imagegen-original-20261119",
-  "premium_bastion_sawmill_combination_qa": "PENDING_UNITY_PLAYMODE_AND_OWNER_ART_APPROVAL"
+  ]
 }
