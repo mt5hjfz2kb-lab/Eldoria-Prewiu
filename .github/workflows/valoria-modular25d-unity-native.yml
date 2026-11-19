@@ -128,9 +128,20 @@ jobs:
           if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
           git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
           if($LASTEXITCODE){throw 'Git fetch failed'}
-          git -C $root checkout -q --detach $env:GITHUB_SHA
-          if($LASTEXITCODE -or (git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
-            throw 'SHA-pinned checkout mismatch'}
+          # Windows schannel can drop a promisor-blob response near the end
+          # of an otherwise correct sparse checkout (run 44545156060).
+          # Retry only this RUN's own scratch checkout. Never reuse, delete
+          # or touch another workstream's Git/Unity folders.
+          git -C $root config http.version HTTP/1.1
+          $checkoutOk=$false
+          for($attempt=1;$attempt -le 3;$attempt++){
+            git -C $root checkout -q --detach $env:GITHUB_SHA
+            if($LASTEXITCODE -eq 0){$checkoutOk=$true;break}
+            Write-Warning ('Transient promisor-blob checkout failure; same SHA retry '+$attempt)
+            Start-Sleep -Seconds (4*$attempt)
+          }
+          if(-not $checkoutOk -or (git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
+            throw 'SHA-pinned checkout unresolved after bounded retries'}
           foreach($p in @('Unity/Packages/manifest.json','Unity/ProjectSettings/ProjectVersion.txt',
            'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png',
            'Unity/Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity',
