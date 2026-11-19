@@ -156,6 +156,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 Render(cam,output,report,"08-sawmill-built-390x844",390,844,home,8.5f);
                 Render(cam,output,report,"09-sawmill-built-1170x2532",1170,2532,home,8.5f);
                 Render(cam,output,report,"10-built-sawmill-closeup",1170,2532,new Vector3(1.95f,-1.4f,-30f),4.6f);
+                // Wider photographic checkpoints are REAL Unity frames of
+                // actual independent objects; no synthesized composite.
+                Render(cam,output,report,"11-city-mobile-hero-390x844",
+                    390,844,new Vector3(.12f,-.20f,-30f),7.9f);
+                Render(cam,output,report,"12-ruins-backdrop",
+                    390,844,new Vector3(0f,3.10f,-30f),6.2f);
+                Render(cam,output,report,"13-tree-occlusion-ground",
+                    390,844,new Vector3(-2.42f,-1.35f,-30f),5.2f);
 
                 var moneyBeforeRetry=complete.Resources.Wood;
                 var again=gateway.Execute(new GameCommand("mod25d-native-duplicate-attempt-"+sourceSha,
