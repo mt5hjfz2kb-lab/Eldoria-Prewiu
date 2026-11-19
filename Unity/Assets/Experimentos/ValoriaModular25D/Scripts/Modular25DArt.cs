@@ -271,6 +271,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
+        /// <summary>Independent original deciduous game sprite baked from
+        /// the same fixed projection and palette as the buildings.</summary>
+        public static Sprite Oak(int variant)
+        {
+            variant=Mathf.Clamp(variant,0,1);
+            // Explicitly no fake 3D geometry fallback: the forest sprite is
+            // part of the present original-art package, not a city backplate.
+            var oak=Resources.Load<Sprite>("ValoriaModular25D/oak_"+variant);
+            if(oak==null)Debug.LogWarning("[Modular25D] Missing oak_"+variant+
+                " — fallback pine until original forest assets are imported.");
+            return oak ?? Tree(variant);
+        }
+
         public static Sprite Tree(int variant)
         {
             return Make("pine_"+variant,170,245,96f,P(.5f,.06f),a =>
