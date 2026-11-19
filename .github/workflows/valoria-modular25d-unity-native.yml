@@ -190,6 +190,103 @@ jobs:
           }
           Write-Host 'UNITY_REAL_SAVED_SCENE_42_FRAMES_AND_GATEWAY_PASS'
           Get-Content $manifest -Head 28
+      - name: Actual PlayMode on saved isolated modular scene, Unity UI click and authoritative construction
+        id: playmode_gate
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-playmode-'+$env:GITHUB_RUN_ID+'.log')
+          $results=Join-Path $env:RUNNER_TEMP ('mod25d-playmode-'+$env:GITHUB_RUN_ID+'.xml')
+          $dir=Join-Path $project 'Artifacts/ValoriaModular25D/PlayMode'
+          New-Item -ItemType Directory -Path $dir -Force|Out-Null
+          $env:ELDORIA_MOD25D_PLAYMODE_RUN=$env:GITHUB_RUN_ID
+          $env:ELDORIA_MOD25D_PLAYMODE_OUTPUT=$dir
+          $filter='Eldoria.Modular25D.Tests.BastionIRealPlayModeTests.BastionIRealScene_ActualPlayMode_UI_Build_TouchAndSave'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,
+            '-runTests','-testPlatform','EditMode','-testFilter',$filter,
+            '-testResults',$results,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2100000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw 'Real PlayMode test hung in isolated scratch'
+          }
+          if(-not(Test-Path $results)){
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            throw ('No native EditMode-to-PlayMode result XML, exit '+$p.ExitCode)
+          }
+          [xml]$xml=Get-Content -LiteralPath $results -Raw
+          $total=[int]$xml.DocumentElement.GetAttribute('total')
+          $passed=[int]$xml.DocumentElement.GetAttribute('passed')
+          $failed=[int]$xml.DocumentElement.GetAttribute('failed')
+          $skipped=[int]$xml.DocumentElement.GetAttribute('skipped')
+          if($total -lt 1 -or $passed -lt 1 -or $failed -ne 0 -or $skipped -ne 0 -or $p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            throw ("ACTUAL_PLAYMODE_NOT_VALIDATED total=$total pass=$passed failed=$failed skipped=$skipped exit="+$p.ExitCode)
+          }
+          Copy-Item -LiteralPath $results -Destination (Join-Path $dir 'NUnit.xml')
+          Write-Host "REAL_MODULAR25D_PLAYMODE_PASS $passed/$total; image not a device test."
+      - name: Check isolated WebGL player build support and attempt export
+        id: webgl_gate
+        continue-on-error: true
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $editorDir=Split-Path $env:UNITY_EDITOR_PATH -Parent
+          $module=Join-Path $editorDir 'Data/PlaybackEngines/WebGLSupport'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $status=Join-Path $project 'Artifacts/ValoriaModular25D/webgl-status.json'
+          $dest=Split-Path -Parent $status
+          New-Item -ItemType Directory -Force -Path $dest|Out-Null
+          if(-not(Test-Path -LiteralPath $module -PathType Container)){
+            '{"build":"NOT_AVAILABLE","reason":"Installed Unity has no WebGLSupport","deviceQA":"NOT_TESTED"}'|
+              Set-Content -LiteralPath $status -Encoding utf8
+            Write-Warning 'WebGLSupport module not installed. No fake build.'
+            exit 0
+          }
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-webgl-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DEditorTasks.BuildIsolatedWebGL',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            '{"build":"FAILED","reason":"WebGL build timed out","deviceQA":"NOT_TESTED"}'|
+              Set-Content $status
+            throw 'Isolated WebGL build exceeded bound'
+          }
+          $web=Join-Path $project 'Builds/ValoriaModular25D_WebGL'
+          if($p.ExitCode -ne 0 -or -not(Test-Path -LiteralPath (Join-Path $web 'index.html'))){
+            if(Test-Path $log){Get-Content $log -Tail 150}
+            '{"build":"FAILED","reason":"Unity BuildPipeline did not succeed","deviceQA":"NOT_TESTED"}'|Set-Content $status
+            throw ('Isolated WebGL exporter failed code '+$p.ExitCode)
+          }
+          '{"build":"SUCCEEDED","deviceQA":"NOT_TESTED","gameSource":"source-pinned standalone modular scene"}'|
+            Set-Content $status
+          Write-Host 'MODULAR25D_WEBGL_STANDALONE_BUILD_SUCCEEDED'
+      - name: Preserve PlayMode result, sandbox-only save and WebGL status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-actual-playmode-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.xml
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/webgl-status.json
+            ${{runner.temp}}/mod25d-playmode-${{github.run_id}}.log
+            ${{runner.temp}}/mod25d-webgl-${{github.run_id}}.log
+          retention-days: 15
+          if-no-files-found: warn
+      - name: Preserve isolated WebGL build if a real player was produced
+        if: always() && steps.webgl_gate.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-webgl-player-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Builds/ValoriaModular25D_WebGL/
+          retention-days: 14
+          if-no-files-found: warn
       - name: Archive verified genuine Unity captures and diagnostic log even on failure
         if: always()
         uses: actions/upload-artifact@v4
