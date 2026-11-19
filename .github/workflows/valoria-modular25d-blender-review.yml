@@ -1,0 +1,65 @@
+name: Valoria Modular 2.5D — Blender sprite studio review (not Unity)
+
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths:
+      - 'tools/valoria-modular25d/blender/**'
+      - '.github/workflows/valoria-modular25d-blender-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valoria-modular25d-blender-review
+  cancel-in-progress: false
+
+jobs:
+  bake-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/valoria-modular25d
+            Unity/Assets/Experimentos/ValoriaModular25D
+      - name: Install no-credit CPU 3D asset authoring tools (not Unity)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y blender python3-pil
+          blender --version | head -n 4
+      - name: Verify generator syntax without changing game
+        run: |
+          python3 -m py_compile tools/valoria-modular25d/blender/bake_valoria.py tools/valoria-modular25d/blender/postprocess_sprites.py
+      - name: Bake one coherent original architectural sprite family
+        env:
+          ELDORIA_BAKE_ONLY: bastion_i,sawmill_i,sawmill_available,sawmill_under_construction,pine_0,villager_walk_0
+        run: |
+          mkdir -p "$RUNNER_TEMP/eldoria-blender-candidates"
+          blender -b -t 3 --factory-startup \
+            --python tools/valoria-modular25d/blender/bake_valoria.py \
+            -- "$RUNNER_TEMP/eldoria-blender-candidates"
+      - name: Crop to precise foot pivots and preserve quality evidence
+        run: |
+          /usr/bin/python3 tools/valoria-modular25d/blender/postprocess_sprites.py \
+            "$RUNNER_TEMP/eldoria-blender-candidates"
+          mkdir -p tools/valoria-modular25d/blender/QA
+          cp "$RUNNER_TEMP/eldoria-blender-candidates/artist-only-review-NOT-UNITY.png" \
+            tools/valoria-modular25d/blender/QA/artist-only-review-NOT-UNITY.png
+          echo "ASSET_SOURCES_ONLY: generated source sprites, not captures from Unity."
+          git status --short | head -80
+      - name: Preserve inspectable sprite candidates — NOT Unity images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-modular25d-original-sprite-candidates
+          path: |
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/
+            tools/valoria-modular25d/blender/QA/
+          if-no-files-found: warn
+          retention-days: 21
