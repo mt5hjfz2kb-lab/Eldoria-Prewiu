@@ -357,10 +357,31 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
-        public static Sprite Shadow(int width, int height)
+        /// <summary>Soft shadow pigment, the same material family as the olive
+        /// meadow. Reusable under every building, actor and tree.</summary>
+        public static Sprite Shadow(int width,int height)
         {
-            return Make("contact_"+width+"_"+height,width,height,96f,P(.5f,.5f),a =>
-                a.Ellipse(width*.5f,height*.5f,width*.43f,height*.38f,C(20,30,30,70)));
+            string key="contact_"+width+"_"+height;
+            if(Cache.TryGetValue(key,out var sprite))return sprite;
+            var texture=new Texture2D(width,height,TextureFormat.RGBA32,false,false){
+                name="Eldoria soft ground shadow "+width+"x"+height,
+                filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};
+            var pixels=new Color32[width*height];
+            for(int y=0;y<height;y++)for(int x=0;x<width;x++)
+            {
+                float nx=2f*(x+.5f)/(float)width-1f;
+                float ny=2f*(y+.5f)/(float)height-1f;
+                float radial=nx*nx+ny*ny;
+                float fade=Mathf.Pow(Mathf.Clamp01(1f-radial),2.1f);
+                pixels[y*width+x]=new Color32(27,39,24,(byte)Mathf.RoundToInt(142f*fade));
+            }
+            texture.SetPixels32(pixels);
+            texture.Apply(false,true);
+            sprite=Sprite.Create(texture,new Rect(0,0,width,height),
+                new Vector2(.5f,.5f),96f,0,SpriteMeshType.FullRect);
+            sprite.name=key;
+            Cache[key]=sprite;
+            return sprite;
         }
 
         sealed class Paint
