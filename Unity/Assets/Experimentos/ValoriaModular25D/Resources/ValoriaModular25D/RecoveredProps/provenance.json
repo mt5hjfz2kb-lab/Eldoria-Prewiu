@@ -1,0 +1,117 @@
+{
+  "source": "Original Eldoria existing assets",
+  "sprites": [
+    {
+      "name": "ArbolAntiguo",
+      "sha256": "263516708e6fede98d537cff871b07e98c0074fe2923eabc4919eba659c4bb1b",
+      "guid": "41f7de0fc5b263856eae7a2841b4dc33",
+      "ppu": 176,
+      "pivot": [
+        0.5,
+        0.09
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "ArboledaAntigua",
+      "sha256": "46d235cfa5f747cc4a4e3cdefce579e057c256a8b0d42aaf4392d2507e7b007a",
+      "guid": "bc63753e84955523504d57ae82edef55",
+      "ppu": 182,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "MatojosFlores",
+      "sha256": "5d25f70b346b6b4c3c4de776e697f4f2db724d59bcb807ec5fb0f005598ee114",
+      "guid": "fe5733a6ad1f0243d24adcb603c3ad9f",
+      "ppu": 320,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "MuroDerruido",
+      "sha256": "c2de297a5e560ad0f209d5bb585b7dfb441c63b591da58d1bc08751080b203ad",
+      "guid": "6eb518dee3d8b032cb07e48d0a7414e7",
+      "ppu": 230,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "PozoPiedra",
+      "sha256": "17bc3648a4455e1fb62a065e10caf29620cd477590412b072192a7a359057690",
+      "guid": "f1841b7b21fd45667cf8dfd198775252",
+      "ppu": 237,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "CarroMadera",
+      "sha256": "27c3f6abd18f18cdbf902c603a37aa11abfaee81a2f245b661fcca350ba20f0c",
+      "guid": "6e95c516327d99347933cea8bbef6791",
+      "ppu": 235,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "VallaLenador",
+      "sha256": "81cbda8363fb09a91979d92fb24d83032d8b329cb52fd4fa5fa49321ffd6b069",
+      "guid": "a462e21457ed31d2c2c7f24a5f7d9325",
+      "ppu": 260,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    },
+    {
+      "name": "HuertosValoria",
+      "sha256": "00b4538bf9af20d971225c906c8cb21f773d5f9fbfa631272f557f44f3697499",
+      "guid": "d3c5811e257bea039fa5043765966fe9",
+      "ppu": 245,
+      "pivot": [
+        0.5,
+        0.08
+      ],
+      "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+      "sourceBranch": "art/ciudad-2d-hitos-1-5-20261116",
+      "artApproved": false,
+      "unityPlayModeVerified": false
+    }
+  ]
+}
