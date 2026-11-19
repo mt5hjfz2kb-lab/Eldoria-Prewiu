@@ -34,7 +34,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string engine, engineVersion, sourceBranch, sourceSha, scenePath, generatedAtUtc;
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
-            public bool continuousTerrainPresent, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms;
+            public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms;
             public int sourceFrames, originalArtResourcesLoaded, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
             public string disclaimer="Unity Editor Camera.Render on real scene, no PlayMode, no UI overlay, no physical device.";
             public List<Frame> frames = new List<Frame>();
@@ -86,6 +86,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         (landscape==null?-1:landscape.RoadCount)+" footprints="+
                         (landscape==null?-1:landscape.FootprintCount));
                 report.continuousTerrainPresent=true;
+                var actualGroundRenderer=ground.GetComponentInChildren<MeshRenderer>();
+                if(actualGroundRenderer==null ||
+                   actualGroundRenderer.sharedMaterial==null ||
+                   actualGroundRenderer.sharedMaterial.mainTexture==null ||
+                   actualGroundRenderer.sharedMaterial.mainTexture.name!=
+                       "Valoria hand-painted meadow | seamless tile from owned original art")
+                    throw new Exception("Authentic Unity terrain is still showing emergency procedural fallback.");
+                report.paintedGroundSourceLoaded=true;
                 report.roadAndFootprintKits=true;
                 var originalArt=new[]{
                     "bastion_i","sawmill_i","sawmill_available","sawmill_under_construction",
