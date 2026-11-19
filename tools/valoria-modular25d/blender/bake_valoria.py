@@ -300,7 +300,7 @@ def pine(seed):
     # Asymmetric clustered tiers; deliberately not perfect cone triangles.
     for tier in range(5):
         z=.55+tier*(h-.4)/5
-        rr=(1.08-tiert*.10) if False else 1.00-tier*.15
+        rr=1.00-tier*.15
         for branch in range(7):
             angle=math.tau*(branch/7)+tier*.14+rng.uniform(-.22,.22)
             direction=(math.cos(angle),math.sin(angle))
@@ -393,8 +393,8 @@ def setup():
 scene,camera=setup()
 spec=[("bastion_i",bastion),
       ("sawmill_i",lambda:sawmill("built")),
-      ("sawmill_site",lambda:sawmill("site")),
-      ("sawmill_worksite",lambda:sawmill("worksite")),
+      ("sawmill_available",lambda:sawmill("site")),
+      ("sawmill_under_construction",lambda:sawmill("worksite")),
       ("pine_0",lambda:pine(0)),("pine_1",lambda:pine(1)),
       ("pine_2",lambda:pine(2)),
       ("villager_walk_0",lambda:villager(0)),("villager_walk_1",lambda:villager(1)),
