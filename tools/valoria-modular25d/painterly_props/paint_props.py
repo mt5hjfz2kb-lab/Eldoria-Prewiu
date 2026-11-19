@@ -130,9 +130,12 @@ manifest=OUT/"sprite_manifest.json"
 if manifest.exists():
     data=json.loads(manifest.read_text(encoding="utf-8"))
     entries={item["name"]:item for item in data.get("sprites",[])}
+    painted_names={"stone","bush_0","bush_1","bush_2","tuft_0","tuft_1"}
     for path in sorted(OUT.glob("*.png")):
         from PIL import Image
-        name=path.stem;im=Image.open(path)
+        name=path.stem
+        if name not in painted_names: continue  # preserve premium provenance
+        im=Image.open(path)
         entries[name]={
             "name":name,"size":list(im.size),
             "foot_pivot": entries.get(name,{}).get("foot_pivot",[.5,.18]),
