@@ -37,19 +37,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Transform people = NewRoot("People - actual movement");
             Transform paths = NewRoot("Paths - continuous earth ribbons");
 
-            for(int row=-10;row<=10;row++)
-            for(int col=-10;col<=10;col++)
-            {
-                Vector2 pos=new Vector2((col-row)*GroundSpacingX,(col+row)*GroundSpacingY);
-                int seed=Mathf.Abs(col*67+row*97);
-                int kind=0;
-                // Simple dirt transitions and a winding walkable track.
-                if(Mathf.Abs(pos.y + pos.x*.68f + .4f)<.68f && pos.x>-2.4f && pos.x<3.7f) kind=1;
-                else if(Mathf.Abs(pos.x-1.9f)<1.35f && Mathf.Abs(pos.y+2f)<1.25f)kind=2;
-                else if(seed%19==0)kind=3;
-                AddSprite("ground("+col+","+row+")", Modular25DArt.Tile(kind,seed%4),pos,
-                    -3000 + col + row,ground);
-            }
+            // PRODUCTION PIVOT: separate 8x8 m contiguous terrain chunks.
+            // A bounded 21x21 diamond carpet visibly ended in the 390x844
+            // camera; the continuous repeatable material fixes that root cause.
+            // Routes and contact props stay separate and can be reordered.
+            var terrain=ground.gameObject.AddComponent<Modular25DGround>();
+            terrain.Build();
 
             BuildPaths(paths);
             AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-1.15f,1.3f),
