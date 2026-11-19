@@ -1,0 +1,22 @@
+{
+  "asset": "OrganicCobbleRoad",
+  "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+  "sourceSha256": "cc5ca910ef0056266e7fdbd47c191d373c44c8bf9c88cc8dc00339c5694dc10d",
+  "source": "original Eldoria user-owned artist terrain; path-only crop",
+  "crop": [
+    413,
+    1430,
+    530,
+    1638
+  ],
+  "outputPixels": [
+    256,
+    512
+  ],
+  "method": "horizontal mirrored paving, vertical mirrored repeat, feathered alpha ground contact",
+  "fullSceneBackground": false,
+  "otherGameAssetsCopied": false,
+  "artApproved": false,
+  "unityVerified": false,
+  "sha256": "b9e33ed04089fcfb6d06f7c23ff69ca90f0885d3dfde1fbaf1bb9c0c2fda009e"
+}
