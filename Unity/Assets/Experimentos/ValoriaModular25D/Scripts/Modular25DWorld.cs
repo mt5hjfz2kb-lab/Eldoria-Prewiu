@@ -62,15 +62,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             AddContact("Bastion_contact",new Vector2(-1.15f,1.22f),300,FootOrder(1.3f)-2,buildings);
             AddContact("Aserradero_contact",new Vector2(1.95f,-2.27f),220,FootOrder(-2.2f)-2,buildings);
 
-            AddTree(scenery,new Vector2(-3.15f,-1.4f),0);
-            AddTree(scenery,new Vector2(3.8f,1.6f),1);
-            AddTree(scenery,new Vector2(-4.9f,2.7f),2);
-            AddTree(scenery,new Vector2(4.6f,-4.1f),0);
-            AddProp(scenery,Modular25DArt.Bush(0),new Vector2(-2.6f,-3.55f));
-            AddProp(scenery,Modular25DArt.Bush(1),new Vector2(3.25f,-4.15f));
-            AddProp(scenery,Modular25DArt.Rock(),new Vector2(-4.15f,.6f));
-            AddProp(scenery,Modular25DArt.Rock(),new Vector2(4.55f,-.45f));
-            AddProp(scenery,Modular25DArt.Rock(),new Vector2(-.15f,-4.65f));
+            // Shared warm-olive broadleaf art replaces the isolated dark
+            // blue low-poly pine cluster. The occlusion test still crosses
+            // behind and in front of the SAME physical tree foot anchor.
+            AddOak(scenery,new Vector2(-3.15f,-1.4f),0,1.17f);
+            AddOak(scenery,new Vector2(3.76f,1.55f),1,.95f);
+            AddTree(scenery,new Vector2(-4.9f,2.7f),2,.72f);
+            AddTree(scenery,new Vector2(4.6f,-4.1f),0,.78f);
+            AddOak(scenery,new Vector2(-4.35f,-4.45f),1,.77f);
+            AddProp(scenery,Modular25DArt.Bush(0),new Vector2(-2.6f,-3.55f),.58f);
+            AddProp(scenery,Modular25DArt.Bush(1),new Vector2(3.25f,-4.15f),.57f);
+            AddProp(scenery,Modular25DArt.Rock(),new Vector2(-4.15f,.6f),.58f);
+            AddProp(scenery,Modular25DArt.Rock(),new Vector2(4.55f,-.45f),.48f);
+            AddProp(scenery,Modular25DArt.Rock(),new Vector2(-.15f,-4.65f),.5f);
 
             CreateVillager(people,"Valoria citizen A",new [] {
                 // Pass on the east edge of the tree crown; keep the feet
@@ -99,7 +103,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // 0.9-unit main paths remain unobstructed. Never create plinths.
             var random=new System.Random(11813);
             int placed=0;
-            for(int attempt=0;attempt<300&&placed<46;attempt++)
+            for(int attempt=0;attempt<320&&placed<29;attempt++)
             {
                 float x=-7f+(float)random.NextDouble()*14f;
                 float y=-6.2f+(float)random.NextDouble()*12.5f;
@@ -109,11 +113,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                    Vector2.Distance(point,new Vector2(-3.15f,-1.4f))<.64f)
                     continue;
                 if(DistanceToRoad(point)<.68f)continue;
-                var prop=random.Next(7)==0 ? Modular25DArt.Rock() :
+                var prop=random.Next(9)==0 ? Modular25DArt.Rock() :
                     Modular25DArt.Bush(random.Next(3));
                 var draw=AddSprite("Interchangeable grass / stone "+placed,
                     prop,point,FootOrder(point.y),root);
-                float scale=.30f+(float)random.NextDouble()*.39f;
+                float scale=.27f+(float)random.NextDouble()*.25f;
                 draw.transform.localScale=Vector3.one*scale;
                 placed++;
             }
@@ -186,16 +190,28 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             shadow.color=new Color(1f,1f,1f,.7f);
         }
 
-        void AddTree(Transform root,Vector2 foot,int variant)
+        void AddOak(Transform root,Vector2 foot,int variant,float scale)
         {
-            AddContact("tree_contact",foot,90,FootOrder(foot.y)-1,root);
+            AddContact("tree_contact",foot,95,FootOrder(foot.y)-1,root);
+            var oak=AddSprite("Olive oak "+variant,Modular25DArt.Oak(variant),
+                foot,FootOrder(foot.y),root);
+            oak.transform.localScale=Vector3.one*scale;
+            // Keep trunk/feet grounded; canopy in fixed-depth 2.5D remains
+            // an occluder rather than a billboard rotating with camera.
+        }
+
+        void AddTree(Transform root,Vector2 foot,int variant,float scale)
+        {
+            AddContact("tree_contact",foot,87,FootOrder(foot.y)-1,root);
             var tree=AddSprite("Pine "+variant,Modular25DArt.Tree(variant),foot,FootOrder(foot.y),root);
+            tree.transform.localScale=Vector3.one*scale;
             tree.gameObject.AddComponent<Modular25DTreeSway>().Seed=variant*1.13f+foot.x;
         }
 
-        void AddProp(Transform root,Sprite sprite,Vector2 foot)
+        void AddProp(Transform root,Sprite sprite,Vector2 foot,float scale=1f)
         {
-            AddSprite("Separate environment prop",sprite,foot,FootOrder(foot.y),root);
+            var prop=AddSprite("Separate environment prop",sprite,foot,FootOrder(foot.y),root);
+            prop.transform.localScale=Vector3.one*scale;
         }
 
         void CreateVillager(Transform parent,string name,Vector2[] route,float delay)
