@@ -1,0 +1,70 @@
+name: Valoria Modular25D — original Eldoria 2D prop gallery (read only)
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths: ['.github/workflows/valoria-modular25d-existing-props-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  extract-reviewed-pieces:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            .github/workflows/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read-only source original Eldoria graphics from earlier experiment
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 --filter=blob:none origin art/ciudad-2d-hitos-1-5-20261116
+          mkdir -p /tmp/eldoria-props-old
+          for name in ArbolAntiguo ArboledaAntigua MatojosFlores MuroDerruido PozoPiedra CarroMadera VallaLenador HuertosValoria AntorchasGuardian AtalayaValoria CasasDelPozo PuestoMercado; do
+            git show "FETCH_HEAD:Unity/Assets/Experimentos/Ciudad2D/Sprites/Props/$name.png" > "/tmp/eldoria-props-old/$name.png"
+            test -s "/tmp/eldoria-props-old/$name.png"
+          done
+      - name: Confirm alpha transparency and build honest source contact sheet
+        shell: bash
+        run: |
+          python -m pip install --quiet Pillow==11.3.0
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          import hashlib,json
+          p=Path("/tmp/eldoria-props-old")
+          names=["ArbolAntiguo","ArboledaAntigua","MatojosFlores","MuroDerruido","PozoPiedra","CarroMadera","VallaLenador","HuertosValoria","AntorchasGuardian","AtalayaValoria","CasasDelPozo","PuestoMercado"]
+          records=[]
+          review=Image.new("RGB",(1440,1230),(38,48,44));d=ImageDraw.Draw(review)
+          for i,name in enumerate(names):
+            x=i%4*360;y=i//4*410
+            raw=(p/(name+".png")).read_bytes()
+            im=Image.open(p/(name+".png"))
+            work=im.convert("RGBA")
+            work.thumbnail((344,369),Image.Resampling.LANCZOS)
+            review.paste(work,(x+8+(344-work.width)//2,y+12+(357-work.height)),work)
+            d.text((x+16,y+376),name,fill=(240,234,221))
+            records.append({"name":name,"size":list(im.size),
+                "mode":im.mode,"alphaRange":list(im.convert("RGBA").getchannel("A").getextrema()),
+                "sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw),
+                "source":"Eldoria prior City2D original sprite (read-only)"} )
+          review.save(p/"Eldoria_original_prop_contact_NOT_UNITY.jpg",quality=90)
+          (p/"evidence.json").write_text(json.dumps(records,indent=2))
+          print("ORIGINAL_SOURCE_PROPS_DISCOVERED",json.dumps(records))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-original-props-art-review
+          path: |
+            /tmp/eldoria-props-old/*.png
+            /tmp/eldoria-props-old/*.jpg
+            /tmp/eldoria-props-old/evidence.json
+          retention-days: 16
+          if-no-files-found: error
