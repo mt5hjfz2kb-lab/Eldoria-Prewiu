@@ -91,6 +91,26 @@ jobs:
             echo "Exact baked resources unchanged"
           else
             git commit -m "art(modular25d): import 13 original Blender-baked RGBA game sprites [NOT APPROVED]"
-            git push origin HEAD:refs/heads/experiment/valoria-modular-25d-bastion1-from-zero-20261118
+            # Bring unrelated documents/probes forward, but NEVER overwrite a
+            # concurrent artist source edit or force an existing branch ref.
+            branch=experiment/valoria-modular-25d-bastion1-from-zero-20261118
+            for attempt in 1 2 3; do
+              git fetch --quiet origin "refs/heads/$branch:refs/remotes/origin/$branch"
+              if ! git diff --quiet "$GITHUB_SHA" "refs/remotes/origin/$branch" -- \
+                    tools/valoria-modular25d/blender/bake_valoria.py \
+                    tools/valoria-modular25d/blender/postprocess_sprites.py; then
+                echo "ART_SOURCE_SUPERSEDED: do not publish a stale Blender bake"
+                exit 1
+              fi
+              git rebase "refs/remotes/origin/$branch"
+              if git push origin "HEAD:refs/heads/$branch"; then
+                echo "ART_BAKE_FAST_FORWARD_WRITTEN"
+                break
+              fi
+              if [ "$attempt" = 3 ]; then
+                echo "ART_BAKE_CONCURRENT_WRITES_UNRESOLVED; artifact retained"
+                exit 1
+              fi
+            done
           fi
           echo "Baked art is an unapproved candidate. Source images are NOT Unity gameplay screenshots."
