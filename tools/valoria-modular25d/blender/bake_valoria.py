@@ -178,51 +178,87 @@ def stone_tower():
     cube("tower warm slit",(-2.51,.54,1.66),(.024,.06,.30),"amber",.001)
 
 def bastion():
-    # Low rebuilt hall, angled corners and a distinct collapsed eastern bulwark.
-    footprint=[(-1.68,-1.36),(-1.28,-1.74),(1.22,-1.65),
-       (1.66,-1.32),(1.72,1.04),(1.31,1.48),(-1.31,1.48),(-1.67,1.16)]
-    height=[2.05,2.0,2.05,2.11,2.08,2.03,2.16,2.06]
-    irregular_wall("rebuilt keep with cut corners",footprint,height,0,
-                   ("stone_dark","stone","stone_light","stone_moss"))
-    # Texture read from true geometry: irregular individual coping and stone seams.
-    masonry_face("front wall",-1.75,-1.30,1.23,.21,1.90,22)
-    for xx in (-1.48,-1.12,.92,1.42):
-        beam("timber earthquake bracing",(xx,-1.79,.18),(xx,-1.79,2.18),.07,"timber",7)
-    gable_roof("slate keep", -1.73,1.69,-1.53,1.55,2.10,3.36)
+    """Tier-I recovery fort: low crenellated court, rear refuge and two DIFFERENT towers.
+    The focal silhouette is military and damaged, never a tall generic farmhouse.
+    """
+    # Rough masonry boundary; gaps are real, so terrain shows between walls.
+    sections=[
+      ("front left",[(-2.15,-1.78),(-.61,-1.82),(-.60,-1.55),(-2.08,-1.49)],1.73),
+      ("front right",[(.62,-1.82),(2.13,-1.75),(2.12,-1.49),(.60,-1.55)],1.68),
+      ("west wall",[(-2.12,-1.74),(-1.87,-1.78),(-1.83,1.17),(-2.10,1.15)],1.68),
+      ("north wall",[(-2.07,1.14),(1.54,1.17),(1.56,1.46),(-2.03,1.47)],1.60),
+      ("broken east wall",[(1.83,-1.60),(2.15,-1.57),(2.16,1.43),(1.84,1.38)],1.38)
+    ]
+    for name,pts,h in sections:
+        wallheights=[h+RND.uniform(-.035,.035) for _ in pts]
+        if name=="broken east wall":wallheights=[1.56,1.63,.76,1.18]
+        irregular_wall("bastion court "+name,pts,wallheights,0,
+            ("stone_dark","stone","stone_light","stone_moss"))
+        # Cap stones do not form an exact continuous rectangle.
+        for j in range(8):
+            u=(j+.2)/8
+            x=pts[0][0]*(1-u)+pts[1][0]*u
+            y=pts[0][1]*(1-u)+pts[1][1]*u
+            if RND.random()>.65:continue
+            stone("dressed parapet edge",(x,y,h+.05),(.18,.18,.16),
+                  "stone_light" if j%4==0 else "stone")
+    # Crenels along the two facing walls; irregular ruin omissions.
+    for sign in (-1,1):
+        for j in range(5):
+            x=(.70+j*.27)*sign
+            if RND.random()<.16:continue
+            stone("uneven defensive battlement",(x,-1.66,1.87),(.21,.30,.31))
+    # Rear refuge with sloped roof, deliberately SMALLER than the stone defences.
+    refuge=[(-.94,.04),(1.09,.04),(1.18,.35),(1.13,1.35),(-1.03,1.36)]
+    irregular_wall("sheltered timber hall",refuge,[2.05,2.10,2.06,2.12,2.11],0,
+                   ("stone_dark","stone_moss","stone","stone_light"))
+    gable_roof("refuge pitch",-1.12,1.25,-.15,1.56,2.09,2.85)
+    # Asymmetric watchtower and truncated corrupted eastern turret.
     stone_tower()
-    # Stone-framed gate facing the path, with actual raised arch stones.
-    cube("dark recessed gate",(0,-1.815,.74),(.90,.12,1.47),"iron",.11)
-    for xx in (-.52,.52):
-        beam("hewn gate post",(xx,-1.89,.18),(xx,-1.89,1.47),.105,"stone_light",5)
-    for i in range(8):
-        th=math.pi*(i/7)
-        a=(.51*math.cos(th),-1.90,1.40+.37*math.sin(th))
-        stone("voussoir of rebuilt arch",a,(.17,.21,.19),"stone_light" if i%2==0 else "stone")
-    for xx in (-.28,.02,.28):
-        beam("iron-trimmed timber door",(xx,-1.94,.20),(xx,-1.94,1.33),.046,"wood_light",6)
-    beam("gate horizontal brace",(-.46,-1.95,.64),(.46,-1.95,.64),.042,"iron",6)
-    # Small torch emissive without 10 realtime point lights.
-    for x in (-.75,.78):
-        beam("wall-mounted torch",(x,-1.98,1.20),(x,-1.99,1.48),.05,"wood_dark")
-        cube("amber torch flame",(x,-2.00,1.57),(.11,.09,.20),"amber",.04)
-    # Irregular attached wreckage: no rectangular sprite plinth.
-    irregular_wall("severed eastern wall",[(1.95,.12),(2.43,.21),(2.56,1.61),(2.02,1.64)],
-                   [1.83,1.28,2.02,1.33],0,("stone_dark","stone","stone_moss"))
-    for i in range(10):
-        x=2.0+RND.random()*.7;y=.3+RND.random()*1.3
-        stone("collapsed wall rubble",(x,y,.10),(.16+.12*RND.random(),.24,.19))
-    # Mason's scaffolding: irregular rhythms and diagonals rather than boxes.
-    for x in (1.45,2.14):
-        beam("support pole",(x,-1.98,0),(x,-1.98,2.49),.075,"timber")
-    beam("scaffold deck",(1.22,-2.08,1.45),(2.48,-2.08,1.45),.10,"wood_light")
-    beam("scaffold crossbar",(1.4,-2.02,.18),(2.15,-2.02,2.02),.055,"timber")
-    # A restrained muted imperial banner, worn and uneven.
-    mesh("frayed Valoria pennant",[(1.07,-1.79,2.01),(1.07,-1.90,.92),
-          (.74,-1.93,1.25),(.55,-1.96,.73),(.40,-1.99,1.84)],
+    east=[(1.53,-.26),(2.07,-.49),(2.50,-.19),(2.58,.32),
+          (2.20,.62),(1.63,.35)]
+    irregular_wall("collapsed east watch turret",east,[2.08,1.74,1.12,1.29,1.55,1.83],0,
+                  ("stone_dark","stone","stone_moss"))
+    for idx in (0,2,4):
+        x,y=east[idx]
+        stone("fallen damaged turret coping",(x,y,1.44+idx*.08),(.30,.31,.29))
+    # Distinct gatehouse: arched opening cut by intentional left/right sections.
+    cube("recessed central gate",(0,-1.82,.73),(.90,.10,1.46),"iron",.12)
+    for xx in (-.53,.53):
+        beam("repaired gate jamb",(xx,-1.91,.16),(xx,-1.91,1.51),.115,"stone_light",6)
+    for j in range(9):
+        theta=math.pi*j/8
+        x=.55*math.cos(theta)
+        z=1.42+.35*math.sin(theta)
+        stone("mismatched keystone",(x,-1.94,z),(.19,.24,.21),
+              "stone_light" if j%3==0 else "stone")
+    for x in (-.26,0,.26):
+        beam("gate oak board",(x,-1.96,.12),(x,-1.96,1.32),.061,"timber",7)
+    beam("gated iron crossbar",(-.41,-1.99,.64),(.41,-1.99,.64),.036,"iron",6)
+    # Ramshackle reinforcement only on one flank, from the real earth.
+    for x in (1.43,2.06):
+        beam("scaffold at damaged wall",(x,-2.06,0),(x+.05,-2.06,2.28),.078,"timber",7)
+    beam("unfinished repair platform",(1.38,-2.09,1.42),(2.38,-2.09,1.40),.10,"wood_light")
+    beam("reused diagonal brace",(1.44,-2.10,.16),(2.07,-2.10,2.13),.061,"timber",6)
+    for x in (-.77,.83):
+        beam("gate torch mount",(x,-1.99,1.02),(x,-2.01,1.48),.047,"wood_dark")
+        stone("torch iron basket",(x,-2.04,1.53),(.14,.13,.13),"iron")
+        cube("warm torch fire",(x,-2.05,1.71),(.10,.10,.19),"amber",.04)
+    # Imperial crest, weathered fabric, and a single violet fissure scar.
+    beam("heraldic mast",(-.94,-1.72,1.7),(-.94,-1.72,3.37),.043,"wood_dark",7)
+    mesh("torn imperial standard",[(-.94,-1.75,3.26),(-.20,-1.80,3.10),
+             (-.49,-1.83,2.66),(-.71,-1.84,2.79),(-.94,-1.75,2.56)],
          [(0,1,2,3,4)],["cloth"])
-    for j in range(4):
-        beam("imperial stitching",(.93-j*.12,-1.98,1.70),(.93-j*.12,-1.98,1.36),.009,"amber")
-    rubble((.0,0),26,2.6)
+    for k in range(4):
+        beam("tarnished valoria sun mark",(-.84+k*.09,-1.87,2.89),
+             (-.76+k*.09,-1.87,3.00),.013,"amber",5)
+    # Stone debris is scattered around footprints, never on artificial platforms.
+    rubble((.05,0),37,2.74)
+    for k in range(4):
+        x=2.24+RND.random()*.33
+        z=.19+k*.34
+        beam("violet glow in broken stone",(x,-.20,z),(x+.07,-.23,z+.23),
+             .011,"void",5)
 
 def sawmill(stage):
     # Shared low, asymmetric woodworks footprint; three fully distinct builds.
@@ -294,28 +330,30 @@ def sawmill(stage):
         beam("rail for timber",(-1.50,-.95,.21),(1.50,-.95,.21),.055,"wood_dark")
 
 def pine(seed):
+    """Asymmetric conifer silhouette with distributed bough clusters, not origami fans."""
     rng=random.Random(seed+721)
-    h=2.5+seed*.23
-    beam("wind-leaning trunk",(0,0,0),(.08,-.05,h*.83),.16,"timber",8)
-    # Asymmetric clustered tiers; deliberately not perfect cone triangles.
-    for tier in range(5):
-        z=.55+tier*(h-.4)/5
-        rr=1.00-tier*.15
-        for branch in range(7):
-            angle=math.tau*(branch/7)+tier*.14+rng.uniform(-.22,.22)
-            direction=(math.cos(angle),math.sin(angle))
-            bx=.06+direction[0]*rr*.60
-            by=-.05+direction[1]*rr*.60
-            centre=(.06,-.05,z+.20)
-            tip=(bx*1.17,by*1.17,z-.22)
-            mesh("interleaved needle fan",[
-                 (centre[0],centre[1],centre[2]+.56),
-                 (bx-direction[1]*rr*.24,by+direction[0]*rr*.24,z+.05),
-                 (tip[0],tip[1],tip[2]),
-                 (bx+direction[1]*rr*.24,by-direction[0]*rr*.24,z+.05)],
-                 [(0,1,2,3)],[
-                    "pine" if branch%3 else "pine_light"])
-    cube("top dry branch",(.04,-.05,h+.12),(.07,.06,.25),"wood_dark",.01)
+    h=2.60+seed*.22
+    beam("ancient lichen trunk",(0,0,0),(.04,-.07,h*.90),.145,"timber",8)
+    for tier in range(7):
+        z=.48+tier*(h-.35)/7
+        radius=(1.15-tier*.135)
+        n=7 if tier<4 else 6
+        for branch in range(n):
+            theta=(branch/n)*math.tau+tier*.26+rng.uniform(-.20,.20)
+            rr=radius*(.60+rng.random()*.24)
+            x,y=math.cos(theta)*rr,math.sin(theta)*rr
+            bz=z+rng.uniform(-.09,.11)
+            beam("visible dark bough",(.03,-.04,bz+.07),(x,y,bz-.10),
+                 .035,"wood_dark",5)
+            bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,
+                    radius=.30+rng.random()*.10,
+                    location=(x,y,bz+.12))
+            ob=bpy.context.object;ob.name="irregular evergreen needle cluster"
+            ob.scale=(1.1,.9+rng.random()*.18,1.2+rng.random()*.32)
+            ob.data.materials.append(mat("pine" if branch%4 else "pine_light"))
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=.25,
+                                         location=(.04,-.03,h))
+    bpy.context.object.data.materials.append(mat("pine"))
 
 def villager(frame):
     step=[-.15,.15][frame%2]
