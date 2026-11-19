@@ -107,6 +107,28 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                         throw new Exception("Missing original independent 2.5D Sprite: "+key);
                     report.originalArtResourcesLoaded++;
                 }
+                var importedProps=new[]{
+                    "ArbolAntiguo","ArboledaAntigua","MatojosFlores","MuroDerruido",
+                    "PozoPiedra","CarroMadera","VallaLenador","HuertosValoria"
+                };
+                foreach(var name in importedProps)
+                {
+                    var original=Resources.Load<Sprite>(
+                        "ValoriaModular25D/RecoveredProps/"+name);
+                    if(original==null)
+                        throw new Exception("Missing original artist-rendered Eldoria source: "+name);
+                    report.originalArtResourcesLoaded++;
+                }
+                foreach(var actor in new[]{"villager_walk_0","villager_walk_1"})
+                {
+                    var illustration=Resources.Load<Sprite>("ValoriaModular25D/"+actor);
+                    if(illustration==null)
+                        throw new Exception("Painted two-frame actor does not exist: "+actor);
+                    report.originalArtResourcesLoaded++;
+                }
+                if(world.RecoveredPropsPlaced<10||report.originalArtResourcesLoaded!=24)
+                    throw new Exception("Visual source cannot pass if high-detail originals are not ACTUALLY instantiated: "+
+                        world.RecoveredPropsPlaced+" placed, "+report.originalArtResourcesLoaded+" registered.");
                 report.noLegacyHudInEditorPreview=world.Gameplay==null&&world.Hud==null;
                 if(!report.noLegacyHudInEditorPreview)
                     throw new Exception("Native Editor probe unexpectedly spawned gameplay or legacy HUD");
