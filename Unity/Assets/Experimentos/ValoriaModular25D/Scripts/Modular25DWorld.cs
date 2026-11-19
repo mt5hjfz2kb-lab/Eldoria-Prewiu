@@ -26,8 +26,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         const float GroundSpacingY = .5f;
         public static int FootOrder(float y) { return Mathf.RoundToInt(1000f-y*100f); }
 
-        void Awake()
+        void Awake() => BuildWorld(true);
+
+#if UNITY_EDITOR
+        // Genuine Unity Editor camera proof without entering PlayMode. It never
+        // opens the beta save, spawns the HUD, or issues any gameplay command.
+        public void BuildForNativeEditor() => BuildWorld(false);
+#endif
+
+        void BuildWorld(bool withRuntime)
         {
+            if(ViewCamera!=null)return;
             // This scene is its own experimental host; no part of the canonical
             // Valoria scene, prefabs, economics, or saves is mutated.
             ViewCamera = SetupCamera();
@@ -75,9 +84,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             },1.8f);
 
             AddNaturalDetail(scenery);
-            Gameplay=gameObject.AddComponent<Modular25DGameplay>();
-            Hud=gameObject.AddComponent<Modular25DInterface>();
-            gameObject.AddComponent<Modular25DCameraInput>();
+            if(withRuntime)
+            {
+                Gameplay=gameObject.AddComponent<Modular25DGameplay>();
+                Hud=gameObject.AddComponent<Modular25DInterface>();
+                gameObject.AddComponent<Modular25DCameraInput>();
+            }
         }
 
         void BuildPaths(Transform parent)
