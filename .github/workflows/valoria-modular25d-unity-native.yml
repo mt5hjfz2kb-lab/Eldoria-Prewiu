@@ -5,6 +5,10 @@ on:
     paths:
       - '.github/workflows/valoria-modular25d-unity-native.yml'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGround.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png'
   workflow_dispatch:
@@ -160,6 +164,7 @@ jobs:
              $e.sourceSha -ne $env:GITHUB_SHA -or $e.sourceFrames -lt 42 -or
              -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
              -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
+             -not $e.roadAndFootprintKits -or
              $e.artApproved -ne 'NO' -or $e.physicalIphone -ne 'NOT_TESTED'){
             throw 'Incomplete original-source QA; do not claim Unity/PlayMode approval'}
           foreach($x in $e.frames){
@@ -207,7 +212,9 @@ jobs:
           open("frames_directory","w").write(directory)
           print("VERIFIED_GENUINE_UNITY_FRAMES",len(data["frames"]))
           PY
-          ffmpeg -hide_banner -loglevel error -y -framerate 10 -i "$(cat frames_directory)/movement-%03d.png" \
+          python3 -m pip install --disable-pip-version-check --quiet imageio-ffmpeg==0.6.0
+          FFMPEG="$(python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')"
+          "$FFMPEG" -hide_banner -loglevel error -y -framerate 10 -i "$(cat frames_directory)/movement-%03d.png" \
             -c:v libx264 -crf 20 -pix_fmt yuv420p -movflags +faststart BastionI_Unity_EditorMovement.mp4
           test -s BastionI_Unity_EditorMovement.mp4
       - uses: actions/upload-artifact@v4
