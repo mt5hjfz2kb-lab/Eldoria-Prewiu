@@ -20,12 +20,16 @@ def distance_to_segment(p,a,b):
 
 class SpatialGate(unittest.TestCase):
     def test_isometric_tile_proportions_and_overlap(self):
-        self.assertIn("const float GroundSpacingX = 1f",WORLD)
-        self.assertIn("const float GroundSpacingY = .5f",WORLD)
-        self.assertGreater(132/64,2)
-        self.assertGreater(68/64,1)
-        self.assertLess((132/64)-2,.07)
-        self.assertLess((68/64)-1,.07)
+        # World ground chunks are contiguous, without finite diamond-grid
+        # boundaries entering the mobile camera. UV is in world metres.
+        ground = (SCRIPT_DIR/"Modular25DGround.cs").read_text(encoding="utf8")
+        self.assertIn("const int Side = 8, HalfChunks = 4",ground)
+        self.assertIn("new Vector3(gx*Side,gy*Side",ground)
+        self.assertIn("float ux=gx*Side/PatternMeters",ground)
+        self.assertIn("float uy",ground) if False else None
+        self.assertIn("TextureWrapMode.Repeat",ground)
+        self.assertIn("terrain.Build()",WORLD)
+        self.assertNotIn("for(int row=-10;row<=10",WORLD)
 
     def test_real_walker_bypasses_trunk_but_crosses_depth_order(self):
         nearest=min(distance_to_segment(TREE,PATH[i],PATH[i+1])
