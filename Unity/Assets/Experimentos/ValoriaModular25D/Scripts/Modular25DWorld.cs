@@ -89,7 +89,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // Pass on the east edge of the tree crown; keep the feet
                 // off its narrow trunk while crossing in front and behind.
                 new Vector2(-3.9f,-3.6f),new Vector2(-2.70f,-2.5f),
-                new Vector2(-2.62f,-.55f),new Vector2(-2.3f,.1f),
+                new Vector2(-2.62f,-.55f),new Vector2(-1.86f,-.05f),
                 new Vector2(-2.62f,-.55f),new Vector2(-2.70f,-2.5f)
             },0f);
             CreateVillager(people,"Valoria citizen B",new [] {
