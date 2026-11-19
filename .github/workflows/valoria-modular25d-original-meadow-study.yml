@@ -1,0 +1,58 @@
+name: Valoria Modular 2.5D — inspect original grass pixels before terrain material design
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths: ['.github/workflows/valoria-modular25d-original-meadow-study.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          fetch-depth: 1
+          sparse-checkout: |
+            .github/workflows/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read exact prior Eldoria grass source — never modify owning art branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          PIN=10dbc197d48ea8517c6a3dd6c22f1a2abf75d508
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$PIN"
+          mkdir -p /tmp/eldoria-meadow-source
+          git show "$PIN:Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno.png" \
+            > /tmp/eldoria-meadow-source/Terreno.png
+          test "$(sha256sum /tmp/eldoria-meadow-source/Terreno.png|cut -d' ' -f1 |wc -c)" -eq 65
+      - name: Read original raster and package full-pixel inspection source only
+        run: |
+          python -m pip install -q Pillow==11.3.0
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import hashlib,json
+          p=Path("/tmp/eldoria-meadow-source/Terreno.png")
+          raw=p.read_bytes()
+          im=Image.open(p)
+          meta={"source":"Original user-owned Eldoria City2D artist terrain",
+                "sourceRef":"10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+                "sourceFile":"Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno.png",
+                "size":list(im.size),"mode":im.mode,
+                "sha256":hashlib.sha256(raw).hexdigest(),"notUnity":True,
+                "artApproved":False}
+          Path("/tmp/eldoria-meadow-source/evidence.json").write_text(json.dumps(meta,indent=2))
+          print("ELDORIA_SOURCE_INSPECTION",json.dumps(meta))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-original-meadow-pixels-for-source-derived-tile-review
+          path: /tmp/eldoria-meadow-source/
+          retention-days: 10
+          if-no-files-found: error
