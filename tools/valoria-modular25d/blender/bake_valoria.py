@@ -550,6 +550,62 @@ def oak(seed):
         stone("trunk root stone",(xx,.08,.055),
               (.18,.12,.10),"stone_moss")
 
+
+def imperial_ruin(seed):
+    """Small independent world prop: the shattered pre-Breach aqueduct.
+    One world-ground foot, same orthographic camera, stone shader and NW
+    light as Bastion I; NO background panorama.
+    """
+    rng=random.Random(73213+seed*317)
+    left=(-.95,.17);right=(1.02,.19)
+    for side,(xx,yy) in enumerate((left,right)):
+        top=(2.00 if seed==0 else 2.42)+rng.uniform(-.18,.22)
+        for tier in range(int(top/.31)):
+            z=.23+tier*.31
+            x=xx+rng.uniform(-.018,.018)
+            for face in range(2):
+                stone("imperial aqueduct course",
+                    (x+(face-.5)*.12,yy,z),
+                    (.60,.52,.28),rng.choice(["stone","stone","stone_light","stone_moss"]))
+        for zz in (.52,1.20):
+            beam("broken ancient column seam",
+                (xx-.22,yy-.30,zz),(xx+.23,yy-.30,zz+.03),
+                .014,"mortar",6)
+    # Broken outer wall on the taller side, without plinth or uniform rectangles.
+    wall=left if seed%2==0 else right
+    for i in range(5):
+        xx=wall[0]+(-.44 if seed%2==0 else .48)
+        z=.22+i*.36
+        stone("mossy fractured sidewall",(xx,wall[1]+.16,z),
+            (.46,.42,.34),"stone_dark" if i==0 else "stone")
+    for i in range(11):
+        theta=math.pi*i/10
+        if i in ((1,7,8) if seed==0 else (4,5,9)):
+            continue
+        x=.06+1.08*math.cos(theta)
+        z=1.72+.80*math.sin(theta)
+        if seed==1:z+=.12
+        stone("fragmented pre-Breach arch voussoir",
+            (x,-.10,z),(.26,.38,.36),
+            "stone_light" if i%4==0 else "stone")
+    beam("shattered old iron brace",(-.76,-.30,1.39),
+         (.55,-.35,1.47),.022,"iron",6)
+    # A modest violet scar, not fantasy glitter carpeting.
+    for i in range(4):
+        x=(-.85 if seed%2==0 else .88)+rng.uniform(-.07,.07)
+        z=.50+i*.22
+        beam("geological fissure on broken masonry",
+            (x,-.37,z),(x+.045,-.39,z+.17),
+            .010,"void",5)
+    for i in range(12):
+        a=rng.random()*math.tau
+        rr=1.08+rng.random()*.65
+        x=math.cos(a)*rr;y=math.sin(a)*rr
+        size=.11+rng.random()*.24
+        stone("imperial arch debris",(x,y,size*.36),
+            (size*1.15,size*.90,size*.5),
+            "stone_moss" if i%4==0 else "stone")
+
 def villager(frame):
     step=[-.15,.15][frame%2]
     for sx in (-1,1):
@@ -631,6 +687,7 @@ spec=[("bastion_i",bastion),
       ("pine_0",lambda:pine(0)),("pine_1",lambda:pine(1)),
       ("pine_2",lambda:pine(2)),
       ("oak_0",lambda:oak(0)),("oak_1",lambda:oak(1)),
+      ("ruin_arch_0",lambda:imperial_ruin(0)),("ruin_arch_1",lambda:imperial_ruin(1)),
       ("villager_walk_0",lambda:villager(0)),("villager_walk_1",lambda:villager(1)),
       ("bush_0",lambda:bush(0)),("bush_1",lambda:bush(1)),
       ("bush_2",lambda:bush(2)),("stone",loose_stone)]
