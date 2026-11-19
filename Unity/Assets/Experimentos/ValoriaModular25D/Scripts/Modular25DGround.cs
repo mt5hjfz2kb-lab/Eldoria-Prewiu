@@ -16,11 +16,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         const float PatternMeters = 21f;
         Material material;
         Texture2D texture;
+        bool generatedAtRuntime;
+        public bool OriginalProjectMeadowLoaded { get; private set; }
         public int ChunkCount { get; private set; }
         public void Build()
         {
             if (ChunkCount != 0) return;
-            texture=MakeTexture();
+            // Eldoria's OWN earlier illustrated ground is cropped to a tiny
+            // tile and imported independently. No city background, backdrop
+            // or castle walls are loaded in this material.
+            texture=Resources.Load<Texture2D>("ValoriaModular25D/OrganicMeadowTile");
+            OriginalProjectMeadowLoaded=texture!=null;
+            if(texture==null)
+            {
+                Debug.LogError("[Modular25D] Original Eldoria grass tile missing; "+
+                    "do not visually approve emergency procedural fallback.",this);
+                generatedAtRuntime=true;
+                texture=MakeTexture();
+            }
+            else
+            {
+                generatedAtRuntime=false;
+                texture.wrapMode=TextureWrapMode.Repeat;
+                texture.filterMode=FilterMode.Bilinear;
+            }
             var shader=Shader.Find("Sprites/Default");
             if(shader==null)shader=Shader.Find("Universal Render Pipeline/Unlit");
             if(shader==null)
@@ -251,7 +270,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(mesh!=null&&mesh.sharedMesh!=null)Destroy(mesh.sharedMesh);
             }
             if(material!=null)Destroy(material);
-            if(texture!=null)Destroy(texture);
+            if(generatedAtRuntime&&texture!=null)Destroy(texture);
         }
     }
 }
