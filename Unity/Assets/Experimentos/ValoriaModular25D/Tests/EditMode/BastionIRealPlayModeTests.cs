@@ -57,6 +57,7 @@ namespace Eldoria.Modular25D.Tests
             // a second persistent old HUD over this standalone experiment.
             EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
             yield return new EnterPlayMode();
+            Debug.Log("MOD25D_QA_STEP_1_ENTER_PLAY");
             for(int i=0;i<12;i++)yield return null;
             Assert.That(UnityEngine.Application.isPlaying,Is.True);
             Assert.That(SceneManager.GetActiveScene().name,
@@ -87,6 +88,7 @@ namespace Eldoria.Modular25D.Tests
                 Is.EqualTo(1),"Only compact modular HUD should be active");
             Assert.NotNull(EventSystem.current,"Unity real touch event system missing");
 
+            Debug.Log("MOD25D_QA_STEP_2_WORLD_HUD_AND_ART");
             var first=Call(gameplay,"Snapshot");
             Assert.NotNull(first);
             Assert.That((int)Member(first,"BastionLevel"),Is.EqualTo(1));
@@ -115,6 +117,7 @@ namespace Eldoria.Modular25D.Tests
             ExecuteEvents.Execute<IPointerClickHandler>(build.gameObject,data,
                 ExecuteEvents.pointerClickHandler);
             yield return null;
+            Debug.Log("MOD25D_QA_STEP_3_CLICKED_CANONICAL_BUILD");
             var after=Call(gameplay,"Snapshot");
             Assert.That((int)Member(Member(after,"Resources"),"Wood"),
                 Is.EqualTo(initialWood-80),"Canonical real debit mismatch");
@@ -126,6 +129,7 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(save);
             Assert.That(save,Does.Contain("eldoria-experiment-modular25d-playmode-"+run));
             Assert.IsTrue(File.Exists(save),"Actual persistent test save missing");
+            Debug.Log("MOD25D_QA_STEP_4_BUILD_AND_FILE_VERIFIED");
 
             // Camera Home is a runtime action, not an inert button/gesture.
             var camera=Member(world,"ViewCamera") as Camera;
@@ -134,14 +138,17 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(input);
             camera.transform.position+=new Vector3(1.4f,-1.2f,0);
             Call(input,"Home");
+            Debug.Log("MOD25D_QA_STEP_5_CAMERA_HOME");
             Assert.That(Vector3.Distance(camera.transform.position,original),
                 Is.LessThan(.02f),"Home did not restore the world camera");
 
             // Real Unity Transform and sprite foot ordering change in PlayMode.
             var walker=all.FirstOrDefault(x=>x&&x.GetType().Name=="Modular25DWalker");
             Assert.NotNull(walker);
+            Debug.Log("MOD25D_QA_STEP_6_BEFORE_WALK");
             var before=walker.transform.position;
             for(int i=0;i<26;i++)yield return null;
+            Debug.Log("MOD25D_QA_STEP_7_AFTER_WALK");
             Assert.Greater(Vector3.Distance(before,walker.transform.position),.01f,
                 "Animated inhabitant is a static illustration, not a moving actor");
 
