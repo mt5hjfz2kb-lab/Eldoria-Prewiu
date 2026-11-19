@@ -58,7 +58,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
 
         static void PlayerStateCapture(Modular25DWorld world,int width,int height,string label)
         {
-            string folder=Path.GetFullPath(Path.Combine(Application.dataPath,"..",EvidencePath));
+            string folder=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"..",EvidencePath));
             Directory.CreateDirectory(folder);
             string filename=Path.Combine(folder,label+"-"+DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")+".png");
             var camera=world.ViewCamera;
@@ -76,7 +76,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 texture.Apply();
                 File.WriteAllBytes(filename,texture.EncodeToPNG());
                 File.WriteAllText(filename+".provenance.txt",
-                    "source=Unity Camera.Render real\nengine="+Application.unityVersion+
+                    "source=Unity Camera.Render real\nengine="+UnityEngine.Application.unityVersion+
                     "\nscene="+SceneManager.GetActiveScene().path+
                     "\ntimestamp_utc="+DateTime.UtcNow.ToString("o")+
                     "\nresolution="+width+"x"+height+
@@ -126,7 +126,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         public static void BuildIsolatedWebGL()
         {
             string outFolder=Path.GetFullPath(
-                Path.Combine(Application.dataPath,"..","Builds","ValoriaModular25D_WebGL"));
+                Path.Combine(UnityEngine.Application.dataPath,"..","Builds","ValoriaModular25D_WebGL"));
             Directory.CreateDirectory(outFolder);
             BuildReport report=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                 scenes=new[]{ScenePath},
