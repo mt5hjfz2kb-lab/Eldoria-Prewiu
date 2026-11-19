@@ -1,0 +1,23 @@
+{
+  "asset": "OrganicMeadowTile",
+  "origin": "original Eldoria project City2D artist background, cropped to GRASS-ONLY texture",
+  "sourceRef": "10dbc197d48ea8517c6a3dd6c22f1a2abf75d508",
+  "sourcePath": "Unity/Assets/Experimentos/Ciudad2D/Sprites/Terreno.png",
+  "sourceSha256": "cc5ca910ef0056266e7fdbd47c191d373c44c8bf9c88cc8dc00339c5694dc10d",
+  "crop": [
+    355,
+    350,
+    547,
+    542
+  ],
+  "method": "192px painted patch + mirrored 2x2 periodic continuity, 512px material",
+  "buildingsExtracted": false,
+  "fullSceneBackground": false,
+  "artApproved": false,
+  "physicalDeviceTested": false,
+  "pixels": [
+    512,
+    512
+  ],
+  "sha256": "8655d6634235b6b9082d1a7b718f2a8ad0b42a31b5fdaf8c7468368bae806503"
+}
