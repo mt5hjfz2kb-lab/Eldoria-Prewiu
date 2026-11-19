@@ -104,8 +104,8 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertEqual(len(data),826)
         self.assertEqual(hashlib.sha256(data).hexdigest(),
             "7a27f0f1f8b057b20820d8942cbddb44bca973dcf3ccef7c8103d8b4dc708559")
-        self.assertTrue(data.startswith(b"\\xff\\xd8"))
-        self.assertTrue(data.endswith(b"\\xff\\xd9"))
+        self.assertTrue(data.startswith(b"\xff\xd8"))
+        self.assertTrue(data.endswith(b"\xff\xd9"))
         ground=content(SCRIPTS/"Modular25DGround.cs")
         self.assertIn("MakePaintedSource(source.text)",ground)
         self.assertIn("binary.Length!=826",ground)
