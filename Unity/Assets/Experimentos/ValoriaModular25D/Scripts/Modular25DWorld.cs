@@ -113,8 +113,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                    Vector2.Distance(point,new Vector2(-3.15f,-1.4f))<.64f)
                     continue;
                 if(DistanceToRoad(point)<.68f)continue;
-                var prop=random.Next(9)==0 ? Modular25DArt.Rock() :
-                    Modular25DArt.Bush(random.Next(3));
+                var prop=random.Next(16)==0 ? Modular25DArt.Rock() :
+                    random.Next(4)==0?Modular25DArt.Bush(random.Next(3)):
+                                      Modular25DArt.Tuft(random.Next(2));
                 var draw=AddSprite("Interchangeable grass / stone "+placed,
                     prop,point,FootOrder(point.y),root);
                 float scale=.27f+(float)random.NextDouble()*.25f;
