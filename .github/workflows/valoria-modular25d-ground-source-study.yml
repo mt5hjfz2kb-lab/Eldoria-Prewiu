@@ -1,0 +1,66 @@
+name: Valoria Modular 2.5D — compare earlier original terrain assets (read only)
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths:
+      - '.github/workflows/valoria-modular25d-ground-source-study.yml'
+permissions:
+  contents: read
+jobs:
+  visual-source-inspection:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Fetch only two source terrain PNGs from historical City2D branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 --filter=blob:none origin art/ciudad-2d-hitos-1-5-20261116
+          mkdir -p /tmp/eldoria-ground-study
+          for name in Terreno Terreno_Organico; do
+            git show "FETCH_HEAD:Unity/Assets/Experimentos/Ciudad2D/Sprites/$name.png" > "/tmp/eldoria-ground-study/$name.png"
+            test -s "/tmp/eldoria-ground-study/$name.png"
+          done
+      - name: Read actual alpha/dimensions and produce an ARTIST review only
+        run: |
+          python3 -m pip install --quiet Pillow==11.3.0
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw
+          import hashlib,json,os
+          src="/tmp/eldoria-ground-study/"
+          board=Image.new("RGB",(1440,1000),(32,43,43))
+          d=ImageDraw.Draw(board)
+          records={}
+          for i,name in enumerate(("Terreno","Terreno_Organico")):
+            path=src+name+".png"
+            original=Image.open(path)
+            rgba=original.convert("RGBA")
+            thumb=rgba.copy()
+            thumb.thumbnail((690,920),Image.Resampling.LANCZOS)
+            x=20+i*720+(690-thumb.width)//2
+            y=50+(920-thumb.height)//2
+            board.paste(thumb,(x,y),thumb)
+            d.text((20+i*720,18),name,fill=(241,233,211))
+            records[name]={
+              "size":list(original.size),"mode":original.mode,
+              "alphaExtrema":list(rgba.getchannel("A").getextrema()),
+              "sha256":hashlib.sha256(open(path,"rb").read()).hexdigest()
+            }
+          board.save(src+"original-terrain-review-NOT-UNITY.png")
+          open(src+"facts.json","w").write(json.dumps(records,indent=2))
+          print("PREVIOUS_TERRAIN_SOURCE_READ_ONLY",json.dumps(records))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: valoria-modular25d-previous-ground-study
+          path: |
+            /tmp/eldoria-ground-study/original-terrain-review-NOT-UNITY.png
+            /tmp/eldoria-ground-study/facts.json
+            /tmp/eldoria-ground-study/Terreno_Organico.png
+          retention-days: 10
+          if-no-files-found: error
