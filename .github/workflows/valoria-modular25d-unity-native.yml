@@ -1,4 +1,4 @@
-# Native v19: original buildings, olive oaks, shaded ruins and painted
+# Native v20: original concept-derived seamless meadow, buildings, oaks, ruins and painted
 # ground vegetation; all captured by actual Unity 6000.3 Camera.Render.
 name: Valoria Modular 2.5D — real Unity Bastion I native evidence
 on:
@@ -178,6 +178,7 @@ jobs:
              -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
              -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
              -not $e.roadAndFootprintKits -or
+             -not $e.paintedGroundSourceLoaded -or
              $e.originalArtResourcesLoaded -lt 14 -or
              $e.artApproved -ne 'NO' -or $e.physicalIphone -ne 'NOT_TESTED'){
             throw 'Incomplete original-source QA; do not claim Unity/PlayMode approval'}
