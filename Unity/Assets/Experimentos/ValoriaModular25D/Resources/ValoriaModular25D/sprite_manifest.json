@@ -17,7 +17,10 @@
       ],
       "sha256": "5992c968f67c6855a97eb5db4d24c9bcd4e06af5b1062c25cc35d0e1e27e3154",
       "bytes": 233179,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "original ChatGPT 2.5D generated sprite; alpha/crop postprocessed; NOT Unity",
+      "generation_id": "ac1ba197-84c5-407b-86ad-c83c53e73ec2",
+      "art_approved": false,
+      "unity_render_checked": false
     },
     {
       "name": "bush_0",
@@ -157,7 +160,10 @@
       ],
       "sha256": "5a5c5f38604881da76d43c65eb999e69736d5bcaaf0d432df0661163ccde81f6",
       "bytes": 180836,
-      "source": "original deterministic painted 2.5D foliage"
+      "source": "original ChatGPT 2.5D generated sprite; alpha/crop postprocessed; NOT Unity",
+      "generation_id": "e475b613-4030-4fd2-9c0d-0c8fce453220",
+      "art_approved": false,
+      "unity_render_checked": false
     },
     {
       "name": "sawmill_under_construction",
