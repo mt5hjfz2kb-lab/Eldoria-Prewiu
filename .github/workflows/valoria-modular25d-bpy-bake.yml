@@ -7,6 +7,7 @@ on:
     paths:
       - 'tools/valoria-modular25d/blender/bake_valoria.py'
       - 'tools/valoria-modular25d/blender/postprocess_sprites.py'
+      - 'tools/valoria-modular25d/painterly_props/paint_props.py'
       - '.github/workflows/valoria-modular25d-bpy-bake.yml'
   workflow_dispatch:
 
@@ -47,6 +48,10 @@ jobs:
           ELDORIA_BAKE_ONLY=sawmill_available,sawmill_under_construction,pine_0,pine_1,pine_2,oak_0,oak_1,villager_walk_0,villager_walk_1,bush_0,bush_1,bush_2,stone \
             python tools/valoria-modular25d/blender/bake_valoria.py -- "$RUNNER_TEMP/eldoria-art-candidates"
           python tools/valoria-modular25d/blender/postprocess_sprites.py "$RUNNER_TEMP/eldoria-art-candidates"
+          # Original 2D brush strokes replace only low-poly source rocks/bushes.
+          # Keep original premium buildings and oak sources untouched.
+          python tools/valoria-modular25d/painterly_props/paint_props.py \
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D
       - name: Verify independent RGBA sprites, transparent background, unique stable pivots
         run: |
           python - <<'PY'
@@ -55,9 +60,9 @@ jobs:
           import json
           d=Path("Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D")
           obj=json.loads((d/"sprite_manifest.json").read_text())
-          assert len(obj["sprites"])==15, f"Expected all 13 isolated sprites, got {len(obj['sprites'])}"
+          assert len(obj["sprites"])==17, f"Expected all 17 isolated sprites, got {len(obj['sprites'])}"
           names={x["name"] for x in obj["sprites"]}
-          for expected in ["bastion_i","sawmill_i","sawmill_available","sawmill_under_construction","pine_0","pine_1","pine_2","oak_0","oak_1","villager_walk_0","villager_walk_1","bush_0","bush_1","bush_2","stone"]:
+          for expected in ["bastion_i","sawmill_i","sawmill_available","sawmill_under_construction","pine_0","pine_1","pine_2","oak_0","oak_1","villager_walk_0","villager_walk_1","bush_0","bush_1","bush_2","stone","tuft_0","tuft_1"]:
               assert expected in names, expected
           for item in obj["sprites"]:
               p=d/(item["name"]+".png")
@@ -68,7 +73,7 @@ jobs:
               assert alpha.getextrema()[0]==0 and alpha.getextrema()[1]>200, p
               assert all(0<=v<=1 for v in item["foot_pivot"]),p
               print("SPRITE_CANDIDATE",item["name"],im.size,item["foot_pivot"])
-          print("ALL_15_ART_RESOURCE_INTEGRITY_PASS — not Unity playtest or art approval")
+          print("ALL_17_ART_RESOURCE_INTEGRITY_PASS — not Unity playtest or art approval")
           PY
       - name: Preserve source-sprites and contact sheet for human review
         uses: actions/upload-artifact@v4
@@ -93,7 +98,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Exact baked resources unchanged"
           else
-            git commit -m "art(modular25d): import 15 original Blender-baked RGBA game sprites [NOT APPROVED]"
+            git commit -m "art(modular25d): import 17 original modular 2.5D game sprites (Blender + painted props) [NOT APPROVED]"
             # Bring unrelated documents/probes forward, but NEVER overwrite a
             # concurrent artist source edit or force an existing branch ref.
             branch=experiment/valoria-modular-25d-bastion1-from-zero-20261118
