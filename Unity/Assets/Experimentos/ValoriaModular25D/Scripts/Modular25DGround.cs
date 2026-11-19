@@ -11,7 +11,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DisallowMultipleComponent]
     public sealed class Modular25DGround : MonoBehaviour
     {
-        const int Side = 8, HalfChunks = 4, TextureSize = 512;
+        const int Side = 8, HalfChunks = 4, TextureSize = 768;
         const float PatternMeters = 21f;
         Material material;
         Texture2D texture;
@@ -77,22 +77,87 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
         static Texture2D MakeTexture()
         {
+            // Unified Valoria palette sampled/compared against the approved
+            // *direction* (not a slice of the image): deep olive grass, yellow
+            // highlights, occasional warm-earth patches and directional
+            // painted grass fibres. This is one seamless reusable MATERIAL.
+            const float tau=Mathf.PI*2f;
             var t=new Texture2D(TextureSize,TextureSize,TextureFormat.RGBA32,false,false){
-                name="Eldoria 512px repeatable procedural grass",wrapMode=TextureWrapMode.Repeat,
-                filterMode=FilterMode.Bilinear};
-            Color a=new Color(.29f,.40f,.30f,1),b=new Color(.37f,.51f,.37f,1),
-                c=new Color(.44f,.56f,.37f,1),dry=new Color(.54f,.50f,.35f,1);
+                name="Valoria olive grass | painterly repeatable material v2",
+                wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Bilinear};
+            var darkest=new Color(.235f,.333f,.167f,1);
+            var moss=new Color(.315f,.410f,.190f,1);
+            var open=new Color(.385f,.478f,.229f,1);
+            var sun=new Color(.510f,.550f,.289f,1);
+            var dry=new Color(.470f,.415f,.292f,1);
             var pixels=new Color32[TextureSize*TextureSize];
-            for(int y=0;y<TextureSize;y++)for(int x=0;x<TextureSize;x++)
+            for(int y=0;y<TextureSize;y++)
+            for(int x=0;x<TextureSize;x++)
             {
                 float u=x/(float)(TextureSize-1),v=y/(float)(TextureSize-1);
-                float macro=Noise(u,v,3)*.56f+Noise(u,v,7)*.31f+Noise(u,v,16)*.13f;
-                float fine=Noise(u,v,48)*.70f+Noise(u,v,96)*.30f;
-                Color mix=Color.Lerp(a,b,Mathf.Clamp01(macro*.92f+.12f));
-                mix=Color.Lerp(mix,c,Mathf.Clamp01((macro-.55f)*1.4f));
-                mix=Color.Lerp(mix,dry,Mathf.Clamp01((Noise(u,v,5)-.66f)*.8f));
-                mix*=.94f+.12f*fine;mix.a=1f;
-                pixels[y*TextureSize+x]=mix;
+                // Periodic value noise. No seam across 8x8-m material chunks.
+                // Macro variation uses broad COLOR FIELDS, not uniform fine
+                // static like the earlier rejected procedural green mat.
+                float macro=Noise(u,v,2)*.43f+
+                    Noise(u,v,5)*.39f+Noise(u,v,11)*.18f;
+                float hummock=Noise(u,v,9);
+                float detail=Noise(u,v,37)*.65f+Noise(u,v,107)*.35f;
+                float sunlit=Mathf.Clamp01((macro-.24f)*1.63f);
+                Color c=Color.Lerp(darkest,moss,Mathf.Clamp01(sunlit*.72f+.15f));
+                c=Color.Lerp(c,open,Mathf.Clamp01((macro-.46f)*1.7f+.16f));
+                c=Color.Lerp(c,sun,Mathf.Clamp01((hummock-.60f)*1.23f));
+                float wear=Noise(u,v,4)*.69f+Noise(u,v,9)*.31f;
+                // Small dusty occlusions from historical rebuilding, not
+                // random hard circular platforms or unnaturally brown grass.
+                c=Color.Lerp(c,dry,Mathf.Clamp01((wear-.69f)*2.0f)*.43f);
+                // Shared shallow grass brush direction (NW light, SE shadow).
+                // Integer periods keep the repeated atlas tile seamless.
+                float sweep=Mathf.Sin(tau*(u*67f+v*31f)+
+                    (Noise(u,v,13)-.5f)*tau*1.2f);
+                float fibre=Mathf.Max(0f,sweep*.5f+.5f);
+                float amount=(detail-.5f)*.12f+(fibre-.5f)*.055f;
+                c*=1f+amount;
+                c.a=1;
+                pixels[y*TextureSize+x]=(Color32)c;
+            }
+            // Individual micro-paint marks, not a copy of the concept image:
+            // constrained hues, oriented 8px tufts, subtle layered strokes.
+            var random=new System.Random(51269);
+            for(int tuft=0;tuft<16000;tuft++)
+            {
+                int x=random.Next(TextureSize),y=random.Next(TextureSize);
+                int len=2+random.Next(7);
+                int bend=random.Next(-2,3);
+                bool light=random.Next(3)!=0;
+                for(int k=0;k<len;k++)
+                {
+                    int px=(x+bend*k/Mathf.Max(1,len)+k/3+TextureSize)%TextureSize;
+                    int py=(y+k)%TextureSize;
+                    int ix=py*TextureSize+px;
+                    Color color=pixels[ix];
+                    float f=(len-k)/(float)len;
+                    color=Color.Lerp(color,light?
+                        new Color(.57f,.61f,.29f,1):
+                        new Color(.21f,.31f,.16f,1),.13f*f);
+                    pixels[ix]=(Color32)color;
+                }
+            }
+            // Rare multi-pixel pale flowers. These remain decorative ground
+            // texture, not the reusable props (those are separate sprites).
+            for(int flower=0;flower<95;flower++)
+            {
+                int x=random.Next(TextureSize),y=random.Next(TextureSize);
+                float patch=Noise(x/(float)TextureSize,y/(float)TextureSize,8);
+                if(patch<.51f)continue;
+                for(int ox=-1;ox<=1;ox++)for(int oy=-1;oy<=1;oy++)
+                {
+                    int px=(x+ox+TextureSize)%TextureSize;
+                    int py=(y+oy+TextureSize)%TextureSize;
+                    int ix=py*TextureSize+px;
+                    float alpha=ox==0&&oy==0?.31f:.10f;
+                    pixels[ix]=(Color32)Color.Lerp((Color)pixels[ix],
+                        new Color(.84f,.82f,.59f,1),alpha);
+                }
             }
             for(int y=0;y<TextureSize;y++)
                 pixels[y*TextureSize+TextureSize-1]=pixels[y*TextureSize];
