@@ -8,6 +8,7 @@ on:
       - '.github/workflows/valoria-modular25d-unity-native.yml'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/EditMode/BastionIRealPlayModeTests.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGround.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs'
