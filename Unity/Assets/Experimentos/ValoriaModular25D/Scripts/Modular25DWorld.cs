@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 namespace Eldoria.Experimentos.ValoriaModular25D
 {
     /// <summary>
-    /// Small spatial world, not a sliced illustration: interchangeable ground diamonds,
+    /// Small spatial world, not a sliced illustration: connected ground texture chunks,
     /// two independent structures, local props, actual moving agents and foot-Y sorting.
     /// World geometry and logic are intentionally independent of the canonical city scene.
     /// </summary>
@@ -40,11 +40,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // This scene is its own experimental host; no part of the canonical
             // Valoria scene, prefabs, economics, or saves is mutated.
             ViewCamera = SetupCamera();
-            Transform ground = NewRoot("Ground - individual 2:1 diamond tiles");
+            Transform ground = NewRoot("Ground - contiguous 8m chunks with painterly grass material");
             Transform buildings = NewRoot("Buildings - foot anchored");
             Transform scenery = NewRoot("Scenery - dynamic occlusion");
             Transform people = NewRoot("People - actual movement");
-            Transform paths = NewRoot("Paths - continuous earth ribbons");
+            Transform paths = NewRoot("Footprints + organic dirt road meshes");
 
             // PRODUCTION PIVOT: separate 8x8 m contiguous terrain chunks.
             // A bounded 21x21 diamond carpet visibly ended in the 390x844
@@ -53,7 +53,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var terrain=ground.gameObject.AddComponent<Modular25DGround>();
             terrain.Build();
 
-            BuildPaths(paths);
+            var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();
+            landscape.Build();
             AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-1.15f,1.3f),
                 FootOrder(1.3f),buildings);
             SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
@@ -89,63 +90,6 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Gameplay=gameObject.AddComponent<Modular25DGameplay>();
                 Hud=gameObject.AddComponent<Modular25DInterface>();
                 gameObject.AddComponent<Modular25DCameraInput>();
-            }
-        }
-
-        void BuildPaths(Transform parent)
-        {
-            // Paths are real scene elements between tiles and inhabitants, not
-            // discontinuous brown islands painted into individual grass diamonds.
-            // Their points follow the walkable isometric world plane exactly.
-            var main=new[]{
-                new Vector2(-4.85f,-5.3f),new Vector2(-3.88f,-3.76f),
-                new Vector2(-2.70f,-2.5f),new Vector2(-2.63f,-1.56f),
-                new Vector2(-2.62f,-.55f),new Vector2(-2.3f,.1f),
-                new Vector2(-1.15f,.85f)
-            };
-            var lumber=new[]{
-                new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
-                new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
-                new Vector2(1.95f,-2.55f)
-            };
-            for(int path=0;path<2;path++)
-            {
-                var pts=path==0?main:lumber;
-                AddRoadStroke(parent,path==0?"Old Imperial Way":"Timber haulers' path",
-                    pts,1.28f,new Color(.28f,.30f,.25f,.93f),-2899);
-                AddRoadStroke(parent,path==0?"Packed earth centre":"Wheel-worn dirt",
-                    pts,.91f,new Color(.53f,.43f,.30f,.88f),-2898);
-                AddRoadStroke(parent,path==0?"Irregular central foot track":"Drag mark",
-                    pts,.43f,new Color(.61f,.52f,.39f,.53f),-2897);
-            }
-        }
-
-        static void AddRoadStroke(Transform parent,string label,Vector2[] points,
-            float width,Color color,int order)
-        {
-            var go=new GameObject("Ground route | "+label);
-            go.transform.SetParent(parent,false);
-            var line=go.AddComponent<LineRenderer>();
-            line.positionCount=points.Length;
-            for(int i=0;i<points.Length;i++)
-                line.SetPosition(i,new Vector3(points[i].x,points[i].y,0));
-            line.useWorldSpace=true;
-            line.startWidth=width;line.endWidth=width*.94f;
-            line.numCornerVertices=4;line.numCapVertices=5;
-            line.alignment=LineAlignment.View;
-            line.startColor=color;line.endColor=color;
-            line.sortingOrder=order;
-            var shader=Shader.Find("Sprites/Default");
-            if(shader==null)shader=Shader.Find("Universal Render Pipeline/Unlit");
-            if(shader==null)
-            {
-                Debug.LogWarning("[Modular25D] No compatible line shader; path hidden until URP material resolved.");
-                line.enabled=false;
-            }
-            else
-            {
-                var material=new Material(shader){name="Eldoria modular route | "+label};
-                line.sharedMaterial=material;
             }
         }
 
