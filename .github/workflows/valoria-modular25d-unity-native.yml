@@ -1,0 +1,200 @@
+name: Valoria Modular 2.5D — real Unity Bastion I native evidence
+on:
+  push:
+    branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
+    paths: ['.github/workflows/valoria-modular25d-unity-native.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-modular25d-exclusive-unity-native
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      allowed: ${{steps.check.outputs.allowed}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{github.token}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          ident="eldoria-valoria-modular25d-bastion1-20261119"
+          def gh(endpoint):
+            req=urllib.request.Request("https://api.github.com/repos/"+repo+"/"+endpoint,
+                headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json"})
+            with urllib.request.urlopen(req,timeout=35) as f:return json.load(f)
+          meta=gh("contents/pipeline/active-workstreams.json?ref=main")
+          blob=gh("git/blobs/"+meta["sha"])
+          assert blob["sha"]==meta["sha"] and blob["encoding"]=="base64"
+          state=json.loads(base64.b64decode(blob["content"]))
+          leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
+          branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
+          ok=(len(leases)==1 and leases[0]["id"]==ident and
+             leases[0].get("ownership_revision")==1 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-modular25d-native-20261119" and
+             state.get("resource_rotation",{}).get("current_workstream")==ident and
+             branch["object"]["sha"]==os.environ["GITHUB_SHA"])
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
+          print("MOD25D_NATIVE_LEASE_PASS" if ok else "MOD25D_SAFE_SKIP_STALE_OR_FOREIGN_LEASE")
+          PY
+  unity:
+    needs: preflight
+    if: needs.preflight.outputs.allowed == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Recheck owner, Windows process safety and installed Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{github.token}
+        run: |
+          $ErrorActionPreference='Stop'
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $meta=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$meta.sha) -Headers $h
+          if($blob.sha -ne $meta.sha){throw 'Registry changed unexpectedly'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          $id='eldoria-valoria-modular25d-bastion1-20261119'
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 1 -or
+             $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            throw 'Existing Windows native process: refuse interference'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'Unity editor executable unavailable'}
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 7GB){throw 'Insufficient scratch disk'}
+          Write-Host 'SAFE_NATIVE_PC_AND_OWNER_PASS'
+      - name: Restore GitHub Desktop Git to PATH for Unity Package Manager
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $paths=@(Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object{Test-Path $_})
+            if(-not $paths.Count){throw 'No installed Git; do not download software'}
+            $dir=Split-Path $paths[0]
+            $env:PATH="$dir;$env:PATH"
+          } else {$dir=Split-Path $git.Source}
+          Add-Content -Path $env:GITHUB_PATH -Value $dir
+          git --version
+      - name: Materialize source-pinned isolated Unity project without modifying main
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ('eldoria-mod25d-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
+          git init -q $root
+          git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          $includes=@('/Unity/Assets/Experimentos/ValoriaModular25D/',
+           '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
+           '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
+           '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
+           '/Unity/Assets/DefaultVolumeProfile.asset',
+           '/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset',
+           '/Unity/Packages/','/Unity/ProjectSettings/')
+          git -C $root sparse-checkout set --no-cone @includes
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git fetch failed'}
+          git -C $root checkout -q --detach $env:GITHUB_SHA
+          if($LASTEXITCODE -or (git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
+            throw 'SHA-pinned checkout mismatch'}
+          foreach($p in @('Unity/Packages/manifest.json','Unity/ProjectSettings/ProjectVersion.txt',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs')){
+             if(-not(Test-Path (Join-Path $root $p))){throw "Missing SHA-pinned Unity input $p"}
+          }
+          "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "MOD25D_CHECKOUT_PINNED $env:GITHUB_SHA"
+      - name: Render actual Unity camera frames and validate canonical build + file reload
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-native-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DNativeCapture.Capture',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 240}
+            throw 'Scratch Unity capture timed out'}
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw ('Unity native capture FAILED '+$p.ExitCode)}
+          $out=Join-Path $project 'Artifacts/ValoriaModular25D/Native'
+          $manifest=Join-Path $out 'evidence.json'
+          if(-not(Test-Path $manifest)){throw 'Missing real Unity evidence'}
+          $e=Get-Content $manifest -Raw|ConvertFrom-Json
+          if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or
+             $e.sourceSha -ne $env:GITHUB_SHA -or $e.sourceFrames -lt 42 -or
+             -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
+             -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
+             $e.artApproved -ne 'NO' -or $e.physicalIphone -ne 'NOT_TESTED'){
+            throw 'Incomplete original-source QA; do not claim Unity/PlayMode approval'}
+          foreach($x in $e.frames){
+            $p=Join-Path $out $x.file
+            if(-not(Test-Path $p) -or (Get-Item $p).Length -lt 5000){throw ('Missing frame '+$x.file)}
+            if((Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $x.sha256){
+              throw ('Altered frame '+$x.file)}
+          }
+          Write-Host 'UNITY_REAL_SAVED_SCENE_42_FRAMES_AND_GATEWAY_PASS'
+          Get-Content $manifest -Head 28
+      - name: Archive verified genuine Unity captures and diagnostic log even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-genuine-unity-${{github.run_id}
+          path: |
+            ${{env.MOD25D_SOURCE}/Unity/Artifacts/ValoriaModular25D/Native/*.png
+            ${{env.MOD25D_SOURCE}/Unity/Artifacts/ValoriaModular25D/Native/evidence.json
+            ${{runner.temp}/mod25d-native-${{github.run_id}.log
+          retention-days: 14
+          if-no-files-found: warn
+  video:
+    needs: unity
+    if: needs.unity.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-mod25d-genuine-unity-${{github.run_id}
+          path: native
+      - name: Check SHA256 originals then assemble only genuine Unity-rendered frames
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,hashlib,glob
+          paths=glob.glob("native/**/evidence.json",recursive=True)
+          assert len(paths)==1,paths
+          data=json.load(open(paths[0],encoding="utf-8-sig"))
+          assert data["engine"]=="Unity" and data["sourceFrames"]>=42
+          directory=os.path.dirname(paths[0])
+          for x in data["frames"]:
+            path=os.path.join(directory,x["file"])
+            assert hashlib.sha256(open(path,"rb").read()).hexdigest()==x["sha256"],path
+          open("frames_directory","w").write(directory)
+          print("VERIFIED_GENUINE_UNITY_FRAMES",len(data["frames"]))
+          PY
+          ffmpeg -hide_banner -loglevel error -y -framerate 10 -i "$(cat frames_directory)/movement-%03d.png" \
+            -c:v libx264 -crf 20 -pix_fmt yuv420p -movflags +faststart BastionI_Unity_EditorMovement.mp4
+          test -s BastionI_Unity_EditorMovement.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-source-verified-video-${{github.run_id}
+          path: BastionI_Unity_EditorMovement.mp4
+          retention-days: 14
+          if-no-files-found: error
