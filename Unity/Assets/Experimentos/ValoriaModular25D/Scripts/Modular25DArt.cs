@@ -33,6 +33,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         static Sprite Make(string key, int w, int h, float ppu, Vector2 pivot, Action<Paint> draw)
         {
             if (Cache.TryGetValue(key, out var s)) return s;
+
+            // Optional production artwork: each original Blender bake is an
+            // independent Sprite in this experiment's own Resources folder.
+            // The procedural fallback lets the sandbox compile and test even
+            // before artistic QA accepts a new family. Do not use image backplates.
+            var baked = Resources.Load<Sprite>("ValoriaModular25D/" + key);
+            if (baked != null)
+            {
+                Cache.Add(key, baked);
+                return baked;
+            }
             var paint = new Paint(w,h);
             draw(paint);
             var pixels = paint.Resolve();
