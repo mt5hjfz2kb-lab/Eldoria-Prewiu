@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Eldoria.Experimentos.ValoriaModular25D
@@ -11,7 +12,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DisallowMultipleComponent]
     public sealed class Modular25DGround : MonoBehaviour
     {
-        const int Side = 8, HalfChunks = 4, TextureSize = 768;
+        const int Side = 8, HalfChunks = 4, TextureSize = 512;
         const float PatternMeters = 21f;
         Material material;
         Texture2D texture;
@@ -75,8 +76,84 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float b=Mathf.Lerp(Hash(x,y+1,frequency),Hash(x+1,y+1,frequency),tx);
             return Mathf.Lerp(a,b,ty);
         }
+        static Texture2D MakePaintedSource(string encoded)
+        {
+            // This 128x128 JPEG is a crop of an ORIGINAL Eldoria art-direction
+            // concept generated in this project, from GRASS-ONLY pixels.
+            // The full city image is NEVER used as a Unity backplate.
+            // It is encoded as a tiny Resources TextAsset with fixed SHA256.
+            // Sample alpha=1 throughout and bake a periodic source tile ONCE.
+            var binary=Convert.FromBase64String(encoded.Trim());
+            if(binary.Length!=826 || binary[0]!=255 || binary[1]!=216 ||
+               binary[binary.Length-2]!=255 || binary[binary.Length-1]!=217)
+                throw new InvalidOperationException("Ground art source JPEG integrity failed.");
+            var src=new Texture2D(2,2,TextureFormat.RGBA32,false,false);
+            if(!ImageConversion.LoadImage(src,binary,false))
+            {
+                UnityEngine.Object.Destroy(src);
+                throw new InvalidOperationException("Ground JPEG source failed to decode in Unity.");
+            }
+            if(src.width!=128 || src.height!=128)
+            {
+                UnityEngine.Object.Destroy(src);
+                throw new InvalidOperationException("Ground JPEG source was resized.");
+            }
+            src.wrapMode=TextureWrapMode.Clamp;
+            src.filterMode=FilterMode.Bilinear;
+            var tile=new Texture2D(TextureSize,TextureSize,TextureFormat.RGBA32,false,false){
+                name="Valoria hand-painted meadow | seamless tile from owned original art",
+                wrapMode=TextureWrapMode.Repeat,
+                filterMode=FilterMode.Bilinear};
+            var pixels=new Color32[TextureSize*TextureSize];
+            for(int y=0;y<TextureSize;y++)for(int x=0;x<TextureSize;x++)
+            {
+                float u=x/(float)(TextureSize-1);
+                float v=y/(float)(TextureSize-1);
+                float ox=Mathf.Repeat(u+.5f,1f);
+                float oy=Mathf.Repeat(v+.5f,1f);
+                // Image offset moves the source's edge seam into the centre.
+                // Blend it with contiguous source through an elliptical cross
+                // mask. Keep the tile perimeter untouched for smooth UV wrap.
+                float dx=(u-.5f)/.125f,dy=(v-.5f)/.125f;
+                float blend=.94f*Mathf.Max(
+                    Mathf.Exp(-dx*dx),Mathf.Exp(-dy*dy));
+                Color original=src.GetPixelBilinear(u,v);
+                Color shifted=src.GetPixelBilinear(ox,oy);
+                Color painted=Color.Lerp(shifted,original,blend);
+                painted.a=1f;
+                pixels[y*TextureSize+x]=(Color32)painted;
+            }
+            // Explicitly equalize opposite edges for a truly wrap-safe texture.
+            for(int x=0;x<TextureSize;x++)
+            {
+                int a=x,b=(TextureSize-1)*TextureSize+x;
+                Color32 p=pixels[a],q=pixels[b];
+                pixels[a]=pixels[b]=(Color32)Color.Lerp((Color)p,(Color)q,.5f);
+            }
+            for(int y=0;y<TextureSize;y++)
+            {
+                int a=y*TextureSize,b=a+TextureSize-1;
+                Color32 p=pixels[a],q=pixels[b];
+                pixels[a]=pixels[b]=(Color32)Color.Lerp((Color)p,(Color)q,.5f);
+            }
+            tile.SetPixels32(pixels);tile.Apply(false,true);
+            UnityEngine.Object.Destroy(src);
+            return tile;
+        }
+
         static Texture2D MakeTexture()
         {
+            var source=Resources.Load<TextAsset>("ValoriaModular25D/grass_reference_b64");
+            if(source!=null)
+            {
+                try{return MakePaintedSource(source.text);}
+                catch(Exception error)
+                {
+                    Debug.LogError("[Modular25D] Original painterly meadow unavailable: "+error+
+                        ". Procedural emergency fallback is NOT art-approved.");
+                }
+            }
+            else Debug.LogError("[Modular25D] Missing hand-painted grass source; emergency fallback is NOT art-approved.");
             // Unified Valoria palette sampled/compared against the approved
             // *direction* (not a slice of the image): deep olive grass, yellow
             // highlights, occasional warm-earth patches and directional
