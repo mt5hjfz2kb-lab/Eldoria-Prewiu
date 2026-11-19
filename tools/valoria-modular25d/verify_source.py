@@ -74,6 +74,26 @@ class SandboxSourceContracts(unittest.TestCase):
             self.assertIn(name, world)
         self.assertIn('ParcelBuildingStates.For(snapshot,"sawmill")', world)
 
+    def test_ground_language_is_modular_with_building_integration(self):
+        world=content(SCRIPTS / "Modular25DWorld.cs")
+        meadow=content(SCRIPTS / "Modular25DGround.cs")
+        landscape=content(SCRIPTS / "Modular25DLandscape.cs")
+        capture=content(BASE / "Editor/Modular25DNativeCapture.cs")
+        self.assertIn("var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();",world)
+        self.assertIn("landscape.Build();",world)
+        self.assertNotIn("BuildPaths(paths);",world)
+        self.assertNotIn("AddRoadStroke(",world)
+        self.assertIn("TextureSize = 768",meadow)
+        self.assertIn("Eldoria olive grass",meadow) if False else None
+        self.assertIn("Valoria olive grass",meadow)
+        self.assertIn("modular directional ribbon",landscape)
+        self.assertIn("new Vector3(p.x,p.y,-.075f)",landscape)
+        self.assertIn('PutFoot("Bastion',landscape)
+        self.assertIn('PutFoot("Sawmill',landscape)
+        self.assertIn("RoadCount++",landscape)
+        self.assertIn("FootprintCount++",landscape)
+        self.assertIn("landscape.RoadCount!=2||landscape.FootprintCount!=2",capture)
+
     def test_reusable_depth_and_animated_walk(self):
         world = content(SCRIPTS / "Modular25DWorld.cs")
         walker = content(SCRIPTS / "Modular25DWalker.cs")
