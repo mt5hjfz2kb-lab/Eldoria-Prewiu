@@ -68,9 +68,29 @@ DefaultImporter:
 for folder in (ROOT.parent,ROOT):
     Path(str(folder)+".meta").write_text(folder_meta(folder),encoding="utf-8")
 
+PROTECTED_PREMIUM = {"bastion_i", "sawmill_i"}
+existing_manifest = ROOT / "sprite_manifest.json"
+preserved = []
+if existing_manifest.is_file():
+    previous = json.loads(existing_manifest.read_text(encoding="utf-8"))
+    preserved = [x for x in previous.get("sprites", [])
+                 if x.get("name") in PROTECTED_PREMIUM and
+                 x.get("art_approved") is False and "ChatGPT" in x.get("source", "")]
+    if len(preserved) != 2:
+        raise RuntimeError("Premium original sprites missing or provenance changed; refuse destructive fallback")
+    for item in preserved:
+        png=ROOT/(item["name"]+".png")
+        if hashlib.sha256(png.read_bytes()).hexdigest() != item["sha256"]:
+            raise RuntimeError("Protected premium sprite has changed bytes: "+item["name"])
+else:
+    # Initial source bootstrap may legitimately have no manifest.
+    preserved = []
+
 out=[]
 for source in sorted(ORIGIN.glob("*_uncropped.png")):
     key=source.name.removesuffix("_uncropped.png")
+    if key in PROTECTED_PREMIUM and preserved:
+        raise RuntimeError("Refuse to overwrite image-authored premium source "+key)
     record=json.loads((ORIGIN/(key+".json")).read_text(encoding="utf-8"))
     image=Image.open(source).convert("RGBA")
     alpha=image.getchannel("A")
@@ -99,9 +119,13 @@ for source in sorted(ORIGIN.glob("*_uncropped.png")):
        bytes=path.stat().st_size,source="Blender-generated original - not Unity"))
     print("ART_ASSET",key,cropped.size,tuple(round(v,3) for v in (pivot_x,pivot_y)),path.stat().st_size)
 
+# The source sprites remain modular, and the premium image-authored
+# heroes are versioned exact originals, never silently replaced with cubes.
+out=sorted(preserved+out,key=lambda item:item["name"])
 # Do not save a decorative JPG/PNG into the main scene. The authored resources
 # remain separate files. A contact sheet is strictly for artist-side review.
-manifest={"schema":1,"authoring":"original Blender bake 2.5D","engine_proof":False,
+manifest={"schema":1,"authoring":"modular premium image-authored buildings + original Blender supporting sprites",
+          "engine_proof":False,
           "generated_from":"tools/valoria-modular25d/blender/bake_valoria.py",
           "palette":"baked common materials + shared camera and lights",
           "sprites":out}

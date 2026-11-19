@@ -42,7 +42,10 @@ jobs:
         run: |
           python -m py_compile tools/valoria-modular25d/blender/bake_valoria.py tools/valoria-modular25d/blender/postprocess_sprites.py
           mkdir -p "$RUNNER_TEMP/eldoria-art-candidates"
-          python tools/valoria-modular25d/blender/bake_valoria.py -- "$RUNNER_TEMP/eldoria-art-candidates"
+          # Preserve the versioned original premium buildings; Blender only
+          # regenerates supporting scenery, animations and construction states.
+          ELDORIA_BAKE_ONLY=sawmill_available,sawmill_under_construction,pine_0,pine_1,pine_2,villager_walk_0,villager_walk_1,bush_0,bush_1,bush_2,stone \
+            python tools/valoria-modular25d/blender/bake_valoria.py -- "$RUNNER_TEMP/eldoria-art-candidates"
           python tools/valoria-modular25d/blender/postprocess_sprites.py "$RUNNER_TEMP/eldoria-art-candidates"
       - name: Verify independent RGBA sprites, transparent background, unique stable pivots
         run: |
