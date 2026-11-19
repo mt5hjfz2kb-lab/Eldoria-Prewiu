@@ -65,6 +65,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Shared warm-olive broadleaf art replaces the isolated dark
             // blue low-poly pine cluster. The occlusion test still crosses
             // behind and in front of the SAME physical tree foot anchor.
+            // Small independent ancient imperial ruins give the first scene
+            // reconstruction lore and depth without a pre-painted panorama.
+            // Foot-Y order puts both BEHIND Bastion I and its future levels.
+            AddRuin(scenery,new Vector2(-2.71f,5.23f),0,.74f);
+            AddRuin(scenery,new Vector2(2.73f,5.03f),1,.68f);
             AddOak(scenery,new Vector2(-3.15f,-1.4f),0,1.17f);
             AddOak(scenery,new Vector2(3.76f,1.55f),1,.95f);
             AddTree(scenery,new Vector2(-4.9f,2.7f),2,.72f);
@@ -189,6 +194,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             var shadow=AddSprite(name,Modular25DArt.Shadow(width,28),position,order,parent);
             shadow.color=new Color(1f,1f,1f,.7f);
+        }
+
+        void AddRuin(Transform root,Vector2 foot,int variant,float scale)
+        {
+            var asset=Modular25DArt.ImperialRuin(variant);
+            if(asset==null)return; // Missing art is a failed QA gate, never a fake backdrop.
+            var shade=AddSprite("Ruin stone contact",Modular25DArt.Shadow(186,46),
+                foot+new Vector2(.19f,-.13f),FootOrder(foot.y)-2,root);
+            shade.color=new Color(.71f,.75f,.67f,.72f);
+            shade.transform.localScale=Vector3.one*scale;
+            var ruin=AddSprite("Pre-Breach ruined arch "+variant,
+                asset,foot,FootOrder(foot.y),root);
+            ruin.transform.localScale=Vector3.one*scale;
         }
 
         void AddOak(Transform root,Vector2 foot,int variant,float scale)
