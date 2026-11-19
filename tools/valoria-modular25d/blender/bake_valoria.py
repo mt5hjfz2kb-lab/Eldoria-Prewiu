@@ -20,7 +20,7 @@ PAL = {
     "roof_dark": "#263B4B", "timber": "#734C38", "wood_light": "#BA8156",
     "wood_dark": "#4A342E", "iron": "#293338",
     "amber": "#E6AF67", "cloth": "#58667D", "void": "#755581",
-    "greens": "#486D5A", "pine": "#365A50", "pine_light": "#668875",
+    "greens": "#5C7842", "pine": "#3B5C3C", "pine_light": "#859A59",
     "dirt": "#826F54", "skin": "#D2AE88"
 }
 
@@ -485,6 +485,71 @@ def pine(seed):
     bpy.context.object.data.materials.append(mat("pine"))
 
 
+
+def oak(seed):
+    """Original olive deciduous tree. Curved root, ramified boughs, uneven
+    leaf masses and lighter NW facets: same ortho camera/light as Bastion.
+    A *new independent RGBA prop*, not extracted from a city illustration.
+    """
+    rng=random.Random(82213+seed*31)
+    h=3.55+seed*.27
+    lean=.13 if seed==0 else -.18
+    beam("oak bent timber trunk",(0,0,0),
+         (lean,-.10,h*.57),.17,"timber",10)
+    # The upper limbs reach into a wide asymmetrical crown.
+    tips=[]
+    for b in range(11):
+        angle=math.tau*b/11+.12*seed
+        ring=.58+rng.random()*.77
+        bx=lean+math.cos(angle)*ring
+        by=-.1+math.sin(angle)*ring*.77
+        bz=h*(.51+.26*rng.random())
+        tips.append((bx,by,bz))
+        beam("weathered radial oak branch",
+             (lean,-.08,h*.49), (bx,by,bz),.065+rng.random()*.025,
+             "wood_dark",7)
+    # Rotated volumetric clumps have irregular silhouettes; every leaf mass
+    # uses the same warmer material family as the new meadow grass.
+    for i in range(84):
+        angle=math.tau*(i*.61803398875)
+        radius=(.25+.92*math.sqrt(rng.random()))
+        x=lean+.11+math.cos(angle)*radius*1.24
+        y=-.02+math.sin(angle)*radius*.91
+        z=h*(.61+.30*rng.random())
+        if i<14:
+            tip=tips[i%len(tips)]
+            x=(x+tip[0])*.5;y=(y+tip[1])*.5;z=(z+tip[2])*.5
+        rr=.19+rng.random()*.24
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=rr,
+            location=(x,y,z))
+        crown=bpy.context.object
+        crown.name="olive oak foliage volume"
+        crown.scale=(1.20+.14*rng.random(),.83+.13*rng.random(),
+                     .88+.22*rng.random())
+        crown.data.materials.append(mat(
+           "pine_light" if (i+seed)%7==0 else "greens" if i%4 else "pine"))
+        for face in crown.data.polygons:face.use_smooth=True
+        if i%2==0:
+            # Individual shaded leaf planes break the broccoli-sphere
+            # silhouette, but do not create a stack of triangles or platforms.
+            for j in range(3):
+                phi=angle+(.55*j)
+                dx=math.cos(phi)*rr*.77
+                dy=math.sin(phi)*rr*.77
+                zz=z+.05+rr*.5
+                mesh("oak leaf fan",[
+                    (x+dx-.18,y+dy,zz-.04),
+                    (x+dx,y+dy-.11,zz+.18),
+                    (x+dx+.21,y+dy,zz-.05),
+                    (x+dx,y+dy+.08,zz-.12)
+                ],[(0,1,2,3)],["pine_light" if j==0 else "greens"])
+    # Fallen bark pieces intentionally belong to the prop and are anchored
+    # at ground height; contact/soil comes from Modular25DLandscape.
+    for i in range(3):
+        xx=(i-1)*.19
+        stone("trunk root stone",(xx,.08,.055),
+              (.18,.12,.10),"stone_moss")
+
 def villager(frame):
     step=[-.15,.15][frame%2]
     for sx in (-1,1):
@@ -565,6 +630,7 @@ spec=[("bastion_i",bastion),
       ("sawmill_under_construction",lambda:sawmill("worksite")),
       ("pine_0",lambda:pine(0)),("pine_1",lambda:pine(1)),
       ("pine_2",lambda:pine(2)),
+      ("oak_0",lambda:oak(0)),("oak_1",lambda:oak(1)),
       ("villager_walk_0",lambda:villager(0)),("villager_walk_1",lambda:villager(1)),
       ("bush_0",lambda:bush(0)),("bush_1",lambda:bush(1)),
       ("bush_2",lambda:bush(2)),("stone",loose_stone)]
