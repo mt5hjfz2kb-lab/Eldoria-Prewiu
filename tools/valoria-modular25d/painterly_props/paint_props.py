@@ -141,6 +141,50 @@ if manifest.exists():
             "source":"original deterministic painted 2.5D foliage"
         }
     data["sprites"]=[entries[name] for name in sorted(entries)]
+    # Stable GUIDs for NEW independent tuft resources. Existing bush/rock
+    # metas remain untouched, preserving Unity import identity and original
+    # artist placement. PPU=96 matches all other modular 2.5D sprites.
+    for index in (0,1):
+        key="tuft_"+str(index)
+        guid=hashlib.md5(("eldoria-mod25d-painterly-"+key).encode()).hexdigest()
+        meta=OUT/(key+".png.meta")
+        meta.write_text("""fileFormatVersion: 2
+guid: %s
+TextureImporter:
+  serializedVersion: 12
+  externalObjects: {}
+  mipmaps:
+    enableMipMap: 0
+    sRGBTexture: 1
+  isReadable: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  alphaIsTransparency: 1
+  alphaSource: 1
+  textureType: 8
+  spriteMode: 1
+  spriteMeshType: 0
+  spritePixelsToUnits: 96
+  spriteAlignment: 9
+  spritePivot: {x: 0.500000, y: 0.180000}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureCompression: 2
+    compressionQuality: 100
+""" % guid,encoding="utf-8")
     data["paintedGroundProps"]=True
     manifest.write_text(json.dumps(data,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
 print("PAINTERLY_GROUND_PROPS_PASS "+str([(p.name,p.stat().st_size) for p in OUT.glob("*.png")]))
