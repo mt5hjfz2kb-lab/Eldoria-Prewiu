@@ -273,6 +273,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         /// <summary>Independent original deciduous game sprite baked from
         /// the same fixed projection and palette as the buildings.</summary>
+        /// <summary>Ancient Valorian arch debris; original independently
+        /// baked world prop with a transparent contact pivot.</summary>
+        public static Sprite ImperialRuin(int variant)
+        {
+            var sprite=Resources.Load<Sprite>("ValoriaModular25D/ruin_arch_"+Mathf.Clamp(variant,0,1));
+            if(sprite==null)
+                Debug.LogWarning("[Modular25D] Missing isolated imperial arch sprite.");
+            return sprite;
+        }
+
         public static Sprite Oak(int variant)
         {
             variant=Mathf.Clamp(variant,0,1);
