@@ -143,14 +143,21 @@ namespace Eldoria.Modular25D.Tests
                 Is.LessThan(.02f),"Home did not restore the world camera");
 
             // Real Unity Transform and sprite foot ordering change in PlayMode.
-            var walker=all.FirstOrDefault(x=>x&&x.GetType().Name=="Modular25DWalker");
-            Assert.NotNull(walker);
+            // Only Citizen A has zero spawn delay. FindObjectsByType has no
+            // guaranteed enumeration order: choosing B (1.8s delay) and
+            // waiting 26 ultra-fast batchmode frames was a false regression.
+            var walker=all.FirstOrDefault(x=>x&&
+                x.GetType().Name=="Modular25DWalker"&&
+                x.gameObject.name=="Valoria citizen A");
+            Assert.NotNull(walker,"The actual moving road-side Citizen A must exist");
             Debug.Log("MOD25D_QA_STEP_6_BEFORE_WALK");
             var before=walker.transform.position;
-            for(int i=0;i<26;i++)yield return null;
+            float deadline=Time.realtimeSinceStartup+2.0f;
+            while(Vector3.Distance(before,walker.transform.position)<.03f &&
+                  Time.realtimeSinceStartup<deadline)yield return null;
             Debug.Log("MOD25D_QA_STEP_7_AFTER_WALK");
-            Assert.Greater(Vector3.Distance(before,walker.transform.position),.01f,
-                "Animated inhabitant is a static illustration, not a moving actor");
+            Assert.Greater(Vector3.Distance(before,walker.transform.position),.025f,
+                "Citizen A did not traverse a real Unity world path within bounded realtime");
 
             Debug.Log("ELDORIA_MODULAR25D_PLAYMODE_PASS source-scene real Canvas pointer "+
                 "canonical cost save camera and moving inhabitant; NO_DEVICE_APPROVAL");
