@@ -47,6 +47,9 @@ jobs:
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.png
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.png.meta
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile.provenance.json
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicCobbleRoad.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicCobbleRoad.png.meta
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicCobbleRoad.provenance.json
           retention-days: 14
           if-no-files-found: error
       - name: Version only isolated material with correct original provenance and no force
@@ -57,7 +60,12 @@ jobs:
           git config user.name "eldoria-terrain-authoring-ci"
           git config user.email "eldoria-terrain-authoring-ci@users.noreply.github.com"
           git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicMeadowTile*
-          git commit -m "art(modular25d): import original painterly seamless grass-only tile with fixed-source SHA"
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/OrganicCobbleRoad*
+          if git diff --cached --quiet; then
+            echo 'Exact source-derived tiles already versioned, no duplicate commit'
+            exit 0
+          fi
+          git commit -m "art(modular25d): import original painterly grass and footpath paving tiles from pinned Eldoria source"
           for attempt in 1 2 3; do
             git fetch --quiet origin "refs/heads/$branch:refs/remotes/origin/$branch"
             git rebase "refs/remotes/origin/$branch"
