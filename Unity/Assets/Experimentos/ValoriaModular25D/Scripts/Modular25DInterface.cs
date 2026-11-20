@@ -91,9 +91,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             face.GetComponent<Image>().type=Image.Type.Simple;
             face.GetComponent<Image>().preserveAspect=true;
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(38f, 9f), new Vector2(105f, 29f));
+                new Vector2(62f, 9f), new Vector2(84f, 29f));
             level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(38f, -17f), new Vector2(105f, 28f));
+                new Vector2(62f, -17f), new Vector2(84f, 28f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.

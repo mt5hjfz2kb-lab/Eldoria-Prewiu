@@ -43,6 +43,25 @@ def main():
      bounds=(max(0,left-pad),max(0,top-pad),
              min(original.width,right+pad),min(original.height,bottom+pad))
      actual=original.crop(bounds).resize(original.size,Image.Resampling.LANCZOS)
+     # Text-safe insets: the painted jewel in the center of the
+     # lozenge clashed with MADERA / PIEDRA / COMIDA and VALORIA. Use
+     # the original outer filigree, add a deep enamel writing field
+     # WITHIN the artifact instead of floating black HUD labels.
+     insets={
+       "resource_siglet":(200,47,540,215),
+       "identity_crest":(315,52,552,212),
+       "objective_rune":(165,49,525,208),
+       "world_rune":(112,48,515,215)
+     }
+     if name in insets:
+      from PIL import ImageDraw
+      mask=Image.new("RGBA",actual.size)
+      painter=ImageDraw.Draw(mask)
+      x0,y0,x1,y1=insets[name]
+      painter.rounded_rectangle((x0,y0,x1,y1),radius=31,fill=(30,20,47,225))
+      painter.rounded_rectangle((x0+5,y0+5,x1-5,y1-5),
+        radius=28,outline=(122,88,146,95),width=3)
+      actual=Image.alpha_composite(actual,mask)
      actual.save(dest,optimize=True,compress_level=9)
     origin="original_illustration_png_opaque_art_bounds_normalized"
    else:
