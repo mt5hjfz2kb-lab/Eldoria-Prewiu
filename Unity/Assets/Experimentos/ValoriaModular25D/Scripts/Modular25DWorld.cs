@@ -59,11 +59,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();
             landscape.Build();
-            AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-1.15f,1.3f),
+            AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-.65f,1.3f),
                 FootOrder(1.3f),buildings);
             SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
-                new Vector2(1.95f,-2.2f),FootOrder(-2.2f),buildings);
-            AddContact("Bastion_contact",new Vector2(-1.15f,1.22f),300,FootOrder(1.3f)-2,buildings);
+                new Vector2(1.30f,-2.2f),FootOrder(-2.2f),buildings);
+            AddContact("Bastion_contact",new Vector2(-.65f,1.22f),300,FootOrder(1.3f)-2,buildings);
             // The finished illustrated sprite already contains ground contact.
             // Its broad baked exterior shadow is trimmed by Modular25DArt; do
             // not add another large dark ellipse over the sawdust footprint.
@@ -79,7 +79,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             // The old masonry belongs on one ridge behind the Keep, rather
             // than random low-poly stone fragments beside the lawn.
-            AddOriginalProp(ruins,"MuroDerruido",new Vector2(-2.2f,4.14f),.88f);
+            AddOriginalProp(ruins,"MuroDerruido",new Vector2(-1.85f,4.14f),.88f);
             AddOriginalProp(ruins,"MatojosFlores",new Vector2(-.20f,4.65f),.54f);
             AddOriginalProp(ruins,"MatojosFlores",new Vector2(-1.53f,3.29f),.63f);
 
@@ -95,16 +95,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             // A well and a recognizable cultivated enclosure give the central
             // yard a social purpose, without introducing any new game mechanic.
-            AddOriginalProp(commons,"PozoPiedra",new Vector2(.19f,-.97f),.72f);
-            AddOriginalProp(commons,"HuertosValoria",new Vector2(-2.05f,-4.74f),.61f);
+            AddOriginalProp(commons,"PozoPiedra",new Vector2(-.64f,-1.02f),.71f);
+            AddOriginalProp(commons,"HuertosValoria",new Vector2(-1.98f,-4.74f),.67f);
             AddOriginalProp(commons,"MatojosFlores",new Vector2(-2.75f,-5.56f),.45f);
 
             // Timber staging visibly connects sawmill to the haulers' road.
             // Both props come from the same original painted wood/material kit.
-            AddOriginalProp(lumber,"CarroMadera",new Vector2(3.12f,-3.73f),.74f);
-            AddOriginalProp(lumber,"VallaLenador",new Vector2(2.38f,-4.36f),.75f);
-            AddOriginalProp(lumber,"MatojosFlores",new Vector2(3.72f,-2.18f),.47f);
-            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.49f,.31f),.53f);
+            AddOriginalProp(lumber,"CarroMadera",new Vector2(2.56f,-3.73f),.74f);
+            AddOriginalProp(lumber,"VallaLenador",new Vector2(1.77f,-4.36f),.75f);
+            AddOriginalProp(lumber,"MatojosFlores",new Vector2(3.17f,-2.18f),.47f);
+            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.26f,.31f),.53f);
 
             // Low-detail ground silhouettes stay rare and are never mistaken
             // for buildings or construction props.
@@ -115,16 +115,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // Real keep gate route: a messenger approaches the courtyard
                 // and returns on the curving walkable cobblestone road.
                 new Vector2(-3.9f,-3.6f),new Vector2(-2.70f,-2.5f),
-                new Vector2(-2.62f,-.55f),new Vector2(-1.86f,-.05f),
-                new Vector2(-2.62f,-.55f),new Vector2(-2.70f,-2.5f)
+                new Vector2(-2.42f,-.55f),new Vector2(-1.46f,-.05f),
+                new Vector2(-2.42f,-.55f),new Vector2(-2.70f,-2.5f)
             },0f);
             CreateVillager(people,"Valoria citizen B",new [] {
                 // A hauler uses the connecting side-road, not a decorative
                 // patrol in an unrelated empty part of the meadow.
-                new Vector2(.15f,-3.5f),new Vector2(1.32f,-3.47f),
-                new Vector2(2.63f,-3.68f),new Vector2(1.32f,-3.47f)
+                new Vector2(-.21f,-3.50f),new Vector2(.76f,-3.47f),
+                new Vector2(1.95f,-3.68f),new Vector2(.76f,-3.47f)
             },1.8f);
-            CreateWorkshopWorker(people,new Vector2(2.06f,-4.04f));
+            CreateWorkshopWorker(people,new Vector2(1.45f,-4.04f));
             SettlementZonesPlaced=4;
 
             AddNaturalDetail(scenery);
@@ -146,7 +146,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 "Lumberyard verge", "Southern growing plot" };
             var centres=new[]{
                 new Vector2(-1.2f,4.50f),new Vector2(-3.36f,-2.35f),
-                new Vector2(.49f,-.08f),new Vector2(3.55f,-4.70f),
+                new Vector2(.19f,-.08f),new Vector2(2.92f,-4.70f),
                 new Vector2(-2.94f,-5.56f)
             };
             var radii=new[]{
@@ -168,9 +168,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     if(DistanceToRoad(at)<.53f)continue;
                     // Roads, actual entrances, their independent future plots
                     // and the working actor's contact point remain accessible.
-                    if(Vector2.Distance(at,new Vector2(-1.15f,1.3f))<2.20f||
-                       Vector2.Distance(at,new Vector2(1.95f,-2.2f))<1.65f||
-                       Vector2.Distance(at,new Vector2(2.06f,-4.04f))<.42f)
+                    if(Vector2.Distance(at,new Vector2(-.65f,1.3f))<2.20f||
+                       Vector2.Distance(at,new Vector2(1.30f,-2.2f))<1.65f||
+                       Vector2.Distance(at,new Vector2(1.45f,-4.04f))<.42f)
                         continue;
                     var art=Modular25DArt.Tuft((zone+placed)%2);
                     var sr=AddSprite(names[zone]+" | grass transition "+placed,
@@ -187,13 +187,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var guide=new []{
                 new Vector2(-4.85f,-5.3f),new Vector2(-3.88f,-3.76f),
                 new Vector2(-2.70f,-2.5f),new Vector2(-2.63f,-1.56f),
-                new Vector2(-2.62f,-.55f),new Vector2(-2.3f,.1f),
-                new Vector2(-1.15f,.85f)
+                new Vector2(-2.42f,-.55f),new Vector2(-1.75f,.1f),
+                new Vector2(-.65f,.85f)
             };
             var branch=new[]{
                 new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
-                new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
-                new Vector2(1.95f,-2.55f)
+                new Vector2(-.21f,-3.50f),new Vector2(.64f,-3.41f),
+                new Vector2(1.30f,-2.55f)
             };
             float best=float.MaxValue;
             foreach(var route in new []{guide,branch})
@@ -376,7 +376,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public bool HitSawmill(Vector2 world)
         {
             // World-space footprint, independent of sprite alpha and canvas scaling.
-            return world.x>.10f && world.x<3.87f && world.y>-2.48f && world.y<.92f;
+            return world.x>-.55f && world.x<3.22f && world.y>-2.48f && world.y<.92f;
         }
     }
 }

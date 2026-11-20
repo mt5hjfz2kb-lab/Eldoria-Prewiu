@@ -7,10 +7,10 @@ WORLD = (SCRIPT_DIR/"Modular25DWorld.cs").read_text(encoding="utf8")
 WALKER = (SCRIPT_DIR/"Modular25DWalker.cs").read_text(encoding="utf8")
 CAMERA = (SCRIPT_DIR/"Modular25DCameraInput.cs").read_text(encoding="utf8")
 TREE=(-3.15,-1.4)
-PATH=[(-3.9,-3.6),(-2.70,-2.5),(-2.62,-.55),(-2.3,.1),
-      (-2.62,-.55),(-2.70,-2.5)]
-SAWMILL=(1.95,-2.2)
-BASTION=(-1.15,1.3)
+PATH=[(-3.9,-3.6),(-2.70,-2.5),(-2.42,-.55),(-1.46,-.05),
+      (-2.42,-.55),(-2.70,-2.5)]
+SAWMILL=(1.30,-2.2)
+BASTION=(-.65,1.3)
 
 def distance_to_segment(p,a,b):
     px,py=p;ax,ay=a;bx,by=b
@@ -48,19 +48,23 @@ class SpatialGate(unittest.TestCase):
     def test_bastion_and_sawmill_separated_from_player_routes(self):
         # The sawmill's approximate footprint is not a radius: only check that
         # no agent walks inside the gameplay hit-box by source coordinates.
-        self.assertTrue(all(not(.10<x<3.87 and -2.48<y<.92)
+        self.assertTrue(all(not(-.55<x<3.22 and -2.48<y<.92)
                             for x,y in PATH))
-        self.assertGreater(math.dist(SAWMILL,BASTION),4.25)
+        self.assertGreater(math.dist(SAWMILL,BASTION),3.9)
 
     def test_both_buildings_framed_in_mobile_orthographic_camera(self):
         for width,height in [(390,844),(1170,2532),(844,390)]:
             aspect=width/height
-            size=min(6.6,max(4.2,2.95/max(.42,aspect)))
-            camera_centre=(.18,-.19)
+            size=min(7.95,max(4.2,3.55/max(.42,aspect)))
+            camera_centre=(.05,-.40)
             halfwidth=size*aspect
-            for name,(x,y) in [("bastion",BASTION),("sawmill",SAWMILL)]:
-                self.assertLess(abs(x-camera_centre[0])+1.0,halfwidth,
-                    f"{name} horizontal overflow {width}x{height}")
+            # Real authored art widths at 96 px/world unit, not +/-1 fake bounds.
+            for name,(x,y),radius in [
+                ("bastion",BASTION,480/192),
+                ("sawmill",SAWMILL,362/192)
+            ]:
+                self.assertLess(abs(x-camera_centre[0])+radius+.10,halfwidth,
+                    f"{name} ORIGINAL SPRITE CROPPED {width}x{height}")
                 self.assertLess(abs(y-camera_centre[1])+1.5,size,
                     f"{name} vertical overflow {width}x{height}")
 

@@ -14,8 +14,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     public sealed class Modular25DLandscape : MonoBehaviour
     {
         const int RoadW=256, RoadH=512, FootW=512, FootH=320;
-        static readonly Vector2 Keep=new Vector2(-1.15f,1.3f);
-        static readonly Vector2 Sawmill=new Vector2(1.95f,-2.2f);
+        static readonly Vector2 Keep=new Vector2(-.65f,1.3f);
+        static readonly Vector2 Sawmill=new Vector2(1.30f,-2.2f);
         readonly List<Mesh> meshes=new List<Mesh>();
         readonly List<Texture2D> textures=new List<Texture2D>();
         readonly List<Material> materials=new List<Material>();
@@ -64,12 +64,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var main=new []{
                 new Vector2(-6.65f,-7.5f),new Vector2(-4.85f,-5.3f),
                 new Vector2(-3.88f,-3.76f),new Vector2(-2.70f,-2.5f),
-                new Vector2(-2.63f,-1.56f),new Vector2(-2.62f,-.55f),
-                new Vector2(-1.86f,-.05f),new Vector2(-1.15f,.85f)};
+                new Vector2(-2.53f,-1.56f),new Vector2(-2.42f,-.55f),
+                new Vector2(-1.46f,-.05f),new Vector2(-.65f,.85f)};
             var lumber=new[]{
                 new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
-                new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
-                new Vector2(1.95f,-2.55f)};
+                new Vector2(-.21f,-3.50f),new Vector2(.64f,-3.41f),
+                new Vector2(1.30f,-2.55f)};
             // Keep both branches legible but reduce their over-wide grey ribbons.
             // Their spline geometry, world-space UVs and hit-tested entrances stay.
             AddRoad("Imperial Way — original illustrated paving",main,1.47f,imperialMat,true);
@@ -88,7 +88,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Different alpha / sorting from the two functional footprints.
             var yard=MakeCommonsSoil();
             PutCommons("Worked stone and soil | civic commons",yard,
-                new Vector2(-.22f,-1.52f),.69f);
+                new Vector2(-.62f,-1.52f),.78f);
             EdgeProps();
         }
 
@@ -402,8 +402,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 var at=centre+new Vector2(Mathf.Cos(theta)*rx*margin,
                     Mathf.Sin(theta)*ry*margin-.18f);
                 // Leave the road and the actual entrance walkable and clean.
-                if(Mathf.Abs(at.x+2.62f)<.64f&&at.y<1.1f)continue;
-                if(!nearKeep&&at.x>1.12f&&at.y<-.8f&&at.y>-3.9f)continue;
+                if(Mathf.Abs(at.x+2.42f)<.64f&&at.y<1.1f)continue;
+                if(!nearKeep&&at.x>.56f&&at.y<-.8f&&at.y>-3.9f)continue;
                 // Ground strokes outnumber stones. Keep big rocks outside the gate.
                 // Tufts break the alpha edge of the footprint without forming
                 // an unnatural bracelet of boulders around the castle.

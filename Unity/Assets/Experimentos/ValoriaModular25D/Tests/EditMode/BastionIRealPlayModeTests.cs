@@ -188,7 +188,7 @@ namespace Eldoria.Modular25D.Tests
             var camera=Member(world,"ViewCamera") as Camera;
             var original=camera.transform.position;
             Assert.That(camera.orthographicSize,
-                Is.EqualTo(Mathf.Clamp(2.95f/Mathf.Max(.42f,camera.aspect),4.2f,6.6f)).Within(.02f),
+                Is.EqualTo(Mathf.Clamp(3.55f/Mathf.Max(.42f,camera.aspect),4.2f,7.95f)).Within(.02f),
                 "Player and captured authentic Unity Camera must share actual framing");
             var input=all.FirstOrDefault(x=>x&&x.GetType().Name=="Modular25DCameraInput");
             Assert.NotNull(input);

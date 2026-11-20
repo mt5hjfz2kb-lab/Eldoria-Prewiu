@@ -17,10 +17,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         // Same geometry in the real player and the native Editor A/B.
         // Reduce unused meadow while framing Keep, courtyard and working mill.
-        public static Vector3 HomePosition => new Vector3(.18f,-.19f,-30f);
+        public static Vector3 HomePosition => new Vector3(.05f,-.40f,-30f);
         public static float HomeSizeForAspect(float aspect)
         {
-            return Mathf.Clamp(2.95f/Mathf.Max(.42f,aspect),4.2f,6.6f);
+            return Mathf.Clamp(3.55f/Mathf.Max(.42f,aspect),4.2f,7.95f);
         }
 
         void Start()
