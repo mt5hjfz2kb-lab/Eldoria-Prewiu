@@ -164,7 +164,9 @@ try{
     let home=null,h=null;
     if(height>width){
       // Touch the actual bottom-right uGUI CENTRAR button, not C# Home.
-      await page.touchscreen.tap(Math.round(width*.825),Math.round(height*.94));
+      // Updated clustered HUD: CIUDAD is the lower-right secondary
+      // medallion, center x~253/390, y~55/844 from bottom.
+      await page.touchscreen.tap(Math.round(width*.65),Math.round(height*.935));
       await page.waitForTimeout(800);
       home=await capture(page,'camera-home-restored',width,height);
       h=imageDifference(before.bytes,home.bytes,roi);

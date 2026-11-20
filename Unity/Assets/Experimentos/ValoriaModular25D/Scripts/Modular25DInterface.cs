@@ -221,7 +221,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
                 actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
                 new Vector2(0f, -80f), new Vector2(270f, 42f),
-                () => gateway.BuildSawmill());
+                () =>
+                {
+                    // Only a successful real LocalGateway construction
+                    // dismisses the panel. Failed commands keep the panel
+                    // open so the feedback is actionable. The worksite,
+                    // progress clock and spend persist through the canonical
+                    // gateway; no synthetic game state is introduced.
+                    var result=gateway.BuildSawmill();
+                    if(result.Ok)ClosePanels();
+                });
             actionLabel = action.GetComponentInChildren<Text>();
             var close = ButtonPlate("Close sawmill", sheet, "×", navPlate,
                 new Vector2(1f, 1f), new Vector2(.5f, .5f),
@@ -496,40 +505,65 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             identity.anchoredPosition = new Vector2(10f, -top);
             identity.sizeDelta = new Vector2(194f, 68f);
 
-            resourceRow.anchorMin = resourceRow.anchorMax =
-                wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
-            resourceRow.pivot = wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
-            resourceRow.anchoredPosition = wide ?
-                new Vector2(-10f, -top) : new Vector2(0f, -top - 98f);
-            resourceRow.sizeDelta = new Vector2(365f, 44f);
-            for (int i = 0; i < resourceChips.Length; i++)
+            // Above-the-fold information is reserved for identity/resources.
+            // Objective and action medallions move to a deliberate compact
+            // bottom cluster in portrait; no full-width navigation slab.
+            resourceRow.anchorMin=resourceRow.anchorMax=
+                wide?new Vector2(1f,1f):new Vector2(.5f,1f);
+            resourceRow.pivot=wide?new Vector2(1f,1f):new Vector2(.5f,1f);
+            resourceRow.anchoredPosition=wide?
+                new Vector2(-12f,-top):new Vector2(0f,-top-82f);
+            resourceRow.sizeDelta=new Vector2(365f,44f);
+            for(int i=0;i<resourceChips.Length;i++)
             {
-                resourceChips[i].anchorMin = resourceChips[i].anchorMax =
-                    new Vector2(0f, .5f);
-                resourceChips[i].pivot = new Vector2(0f, .5f);
-                float cw = 117f;
-                resourceChips[i].sizeDelta = new Vector2(cw, 43f);
-                resourceChips[i].anchoredPosition = new Vector2(i * (cw + 6f), 0f);
+                var chip=resourceChips[i];
+                chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
+                chip.pivot=new Vector2(0f,.5f);
+                chip.sizeDelta=new Vector2(117f,43f);
+                chip.anchoredPosition=new Vector2(i*123f,0f);
             }
 
-            inspect.anchorMin=inspect.anchorMax=new Vector2(0f,0f);
-            inspect.pivot=new Vector2(0f,0f);
-            inspect.sizeDelta=new Vector2(86f,80f);
-            inspect.anchoredPosition=new Vector2(12f,bottom+8f);
-            center.anchorMin=center.anchorMax=new Vector2(1f,0f);
-            center.pivot=new Vector2(1f,0f);
-            center.sizeDelta=new Vector2(86f,80f);
-            center.anchoredPosition=new Vector2(-12f,bottom+8f);
-            statusDock.anchorMin=statusDock.anchorMax=new Vector2(.5f,0f);
-            statusDock.pivot=new Vector2(.5f,0f);
-            statusDock.sizeDelta=new Vector2(86f,80f);
-            statusDock.anchoredPosition=new Vector2(0f,bottom+8f);
+            // Reference-style illustrated action group: keep the quest on
+            // the bottom-left, place WORK as the obvious dominant lower-
+            // right action, and stage secondary controls compactly beside
+            // or above it, depending on available orientation.
+            foreach(var dock in new[]{inspect,center,statusDock})
+            {
+                dock.anchorMin=dock.anchorMax=new Vector2(1f,0f);
+                dock.pivot=new Vector2(1f,0f);
+            }
+            if(wide)
+            {
+                inspect.sizeDelta=new Vector2(68f,64f);
+                inspect.anchoredPosition=new Vector2(-10f,bottom+7f);
+                center.sizeDelta=new Vector2(68f,64f);
+                center.anchoredPosition=new Vector2(-86f,bottom+7f);
+                statusDock.sizeDelta=new Vector2(68f,64f);
+                statusDock.anchoredPosition=new Vector2(-162f,bottom+7f);
+            }
+            else
+            {
+                inspect.sizeDelta=new Vector2(86f,80f);
+                inspect.anchoredPosition=new Vector2(-10f,bottom+9f);
+                center.sizeDelta=new Vector2(74f,74f);
+                center.anchoredPosition=new Vector2(-100f,bottom+9f);
+                statusDock.sizeDelta=new Vector2(68f,68f);
+                statusDock.anchoredPosition=new Vector2(-10f,bottom+99f);
+            }
+            foreach(var dock in new[]{inspect,center,statusDock})
+            {
+                var caption=dock.GetComponentInChildren<Text>(true);
+                caption.fontSize=wide?10:11;
+                caption.rectTransform.anchoredPosition=new Vector2(0f,wide?-24f:-30f);
+                caption.rectTransform.sizeDelta=new Vector2(dock.rect.width-3f,20f);
+            }
+
             objective.anchorMin=objective.anchorMax=
-                wide?new Vector2(0f,1f):new Vector2(1f,1f);
-            objective.pivot=wide?new Vector2(0f,1f):new Vector2(1f,1f);
-            objective.sizeDelta=new Vector2(172f,50f);
-            objective.anchoredPosition=wide?new Vector2(12f,-top-83f):
-                new Vector2(-12f,-top-139f);
+                wide?new Vector2(0f,1f):new Vector2(0f,0f);
+            objective.pivot=wide?new Vector2(0f,1f):new Vector2(0f,0f);
+            objective.sizeDelta=wide?new Vector2(180f,52f):new Vector2(190f,60f);
+            objective.anchoredPosition=wide?
+                new Vector2(12f,-top-83f):new Vector2(10f,bottom+12f);
 
             if (wide)
             {
@@ -567,35 +601,36 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             lastSafeArea = safe;
         }
 
-        private static RectTransform CreateResource(Transform parent, int index, string caption,
-            Sprite art, out Text value, out Image icon)
+        private static RectTransform CreateResource(Transform parent,int index,string caption,
+            Sprite art,out Text value,out Image icon)
         {
-            var chip = Plate("Resource " + caption, parent, resourcePlate,
-                new Vector2(0f, .5f), new Vector2(0f, .5f),
-                new Vector2(index * 123f, 0f), new Vector2(117f, 43f));
-            var medallion = Plate(caption + " seal", chip, portraitPlate,
-                new Vector2(0f, .5f), new Vector2(0f, .5f),
-                new Vector2(19f, 0f), new Vector2(27f, 27f));
-            icon = medallion.GetComponent<Image>();
-            var symbol=Plate(caption + " icon", medallion, art,
-                new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(22f,22f));
-            symbol.GetComponent<Image>().type=Image.Type.Simple;
-            symbol.GetComponent<Image>().color=Color.white;
-            // Native Chromium QA found completely EMPTY counters despite
-            // correct canonical snapshots. 14/20px-high Text rects with
-            // VerticalWrapMode.Truncate can drop the entire line for this
-            // font's actual line-height at phone scale. Keep the two-line
-            // ledger but allocate enough baseline room, and do not truncate
-            // glyphs at the chip's own edge.
-            var captionText = Label(caption, chip, 10, false, PaleGold,
-                TextAnchor.MiddleLeft, new Vector2(23f, 10f), new Vector2(77f, 24f));
-            captionText.verticalOverflow = VerticalWrapMode.Overflow;
-            value = Label("0", chip, 16, false, WarmWhite,
-                TextAnchor.MiddleLeft, new Vector2(23f, -8f), new Vector2(80f, 32f));
-            value.verticalOverflow = VerticalWrapMode.Overflow;
-            value.resizeTextForBestFit = true;
-            value.resizeTextMinSize = 12;
-            value.resizeTextMaxSize = 16;
+            // Strategy-game resource counter: an instantly recognizable,
+            // fully illustrated material and one readable live number. The
+            // older two-line mini-labels sat on the gemstone/rim and looked
+            // like debug text on a phone. Three clearly different icons
+            // already identify wood, stone and grain.
+            var chip=Plate("Resource "+caption,parent,resourcePlate,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(index*123f,0f),new Vector2(117f,43f));
+            var image=Plate(caption+" original resource art",chip,art,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(10f,0f),new Vector2(42f,42f));
+            icon=image.GetComponent<Image>();
+            icon.type=Image.Type.Simple;
+            icon.preserveAspect=true;
+            icon.color=Color.white;
+            value=Label("0",chip,18,false,WarmWhite,TextAnchor.MiddleRight,
+                new Vector2(21f,0f),new Vector2(65f,33f));
+            value.verticalOverflow=VerticalWrapMode.Overflow;
+            value.horizontalOverflow=HorizontalWrapMode.Overflow;
+            value.resizeTextForBestFit=true;
+            value.resizeTextMinSize=14;
+            value.resizeTextMaxSize=18;
+            // Two-point UI shadow increases readability on polished violet
+            // enamel without a solid text box covering the source artwork.
+            var shadow=value.gameObject.AddComponent<Shadow>();
+            shadow.effectColor=new Color(.07f,.03f,.13f,.9f);
+            shadow.effectDistance=new Vector2(1f,-1f);
             return chip;
         }
 

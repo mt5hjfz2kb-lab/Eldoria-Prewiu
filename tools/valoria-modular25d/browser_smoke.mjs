@@ -214,7 +214,9 @@ try {
       throw Error(width+'x'+height+': HUD top edge appears cropped: '+
         JSON.stringify(top));
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
-    await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 50 / 844));
+    // The primary original OBRAS medallion now lives at the bottom-right,
+    // center x=337/390, y=56/844 from the bottom in the 390x844 reference.
+    await page.mouse.click(box.x + box.width * (337 / 390), box.y + box.height * (1 - 56 / 844));
     await page.waitForTimeout(650);
     const opened = await capture('real-sawmill-build-panel');
     const change = pixelChange(before.bytes, opened.bytes);
@@ -226,8 +228,12 @@ try {
     await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 145 / 844));
     await page.waitForTimeout(800);
     const building = await capture('real-build-command');
-    // Both frames have the identical open modal and full brightness;
-    // only the Wood digits should change, not a startup fade.
+    // A successful authoritative Build must dismiss the panel. Check the
+    // ORIGINAL real screenshot surface at the panel's center changed back
+    // to the rendered world, while wood was spent exactly once.
+    const closed= pixelChange(opened.bytes,building.bytes);
+    if(closed.changedSamples<Math.max(120,Math.floor(closed.totalSamples*.04)))
+      throw Error(width+'x'+height+': successful Build failed to dismiss the actual construction panel');
     const paid=woodBalancePixels(opened.bytes,building.bytes);
     if(paid.changed<25 || paid.ratio<.034)
       throw Error(width+'x'+height+': Build did not change the real wood balance glyphs: '+paid.ratio.toFixed(3));
@@ -251,6 +257,7 @@ try {
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
       screenshots: [before, opened, building, reloaded].map(({ filename, sha256 }) => ({ filename, sha256 })),
       woodBalanceBuildChange: paid, browserReloadWoodRetention: retained,
+      successfulBuildClosedModal: closed,
       noPageError: true, noRequestFailures: true, topBarContrast: top,
       bootReadiness: firstReadiness, reloadReadiness,
       gameplayBuildPersistence: 'SCREEN_VERIFIED_WOOD_BALANCE_AFTER_REAL_BROWSER_RELOAD_NOT_DIRECT_IDBFS_INSPECTION'

@@ -150,7 +150,11 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Simple),
                 "Do not slice hand-painted edge and center gems into thin lines");
             Assert.That(header.GetComponentsInChildren<Text>(true)
-                .Any(x=>x.text=="MADERA"),Is.True,"Live wood capsule missing");
+                .Count(x=>x.text=="0" || int.TryParse(x.text,out _)),Is.GreaterThanOrEqualTo(3),
+                "Three resource values must be readable without tiny labels on gold borders");
+            Assert.That(header.GetComponentsInChildren<Image>(true)
+                .Count(x=>x.sprite!=null && x.sprite.name.StartsWith("icon_")),Is.EqualTo(3),
+                "Exactly three painted resource icons must identify wood, stone and food");
             foreach(var item in new[]{"icon_wood","icon_stone","icon_food",
                 "icon_hammer","icon_city","icon_task"})
                 Assert.NotNull(Resources.Load<Sprite>(
@@ -235,13 +239,25 @@ namespace Eldoria.Modular25D.Tests
                 var identity=world.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
                 Assert.NotNull(identity,"Corona identity crest missing");
-                // Two separate 9-slices must NEVER overlap vertically:
-                // portrait seal bottom is -top-68 and resource row top is
-                // -top-98+22. This leaves a genuine 8px safety interval.
-                Assert.LessOrEqual(
-                    header.anchoredPosition.y+header.rect.height*.5f,
-                    identity.anchoredPosition.y-identity.rect.height-4f,
+                // resourceRow has top pivot=1; its anchoredPosition is
+                // the visual top edge, not its center. Demand 8pt gap.
+                Assert.LessOrEqual(header.anchoredPosition.y,
+                    identity.anchoredPosition.y-identity.rect.height-8f,
                     "Portrait resources overlap Valoria identity golden crest");
+                var quest=world.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x&&x.name=="Current real construction objective");
+                Assert.NotNull(quest);
+                Assert.That(quest.anchorMin.y,Is.EqualTo(0f).Within(.01f),
+                    "The main objective should occupy bottom-left, away from the scene's keep");
+                var cameraDock=world.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x&&x.name=="Center camera");
+                Assert.NotNull(cameraDock);
+                float sceneWidth=Screen.width/Mathf.Max(.01f,
+                    header.GetComponentInParent<Canvas>().scaleFactor);
+                Assert.LessOrEqual(
+                    quest.anchoredPosition.x+quest.rect.width+8f,
+                    sceneWidth+cameraDock.anchoredPosition.x-cameraDock.rect.width,
+                    "The quest and camera medallion must not overlap at phone size");
             }
             Assert.That(world.GetComponentsInChildren<SpriteRenderer>(true)
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
@@ -347,8 +363,14 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(Member(ui,"cachedSawmillPhase").ToString(),
                 Is.EqualTo("UNDER_CONSTRUCTION"),
                 "Floating 2.5D nameplate must track canonical BUILD phase; no stale fixed completed/available position");
+            Assert.IsFalse(panel.activeInHierarchy,
+                "Successful canonical construction must immediately dismiss the detail panel");
+            Assert.IsTrue(center.gameObject.activeInHierarchy,
+                "Close after Build must restore navigation without a second tap");
+            Call(ui,"OpenSawmill");
+            yield return null;
             Assert.IsTrue(progress.gameObject.activeInHierarchy,
-                "After authoritative Build the real progress track must be visible");
+                "Reopening the construction panel must show real canonical progress");
             Assert.That(fill.sizeDelta.x,Is.GreaterThanOrEqualTo(2f));
             Assert.That(fill.sizeDelta.x,Is.LessThanOrEqualTo(181f),
                 "Progress UI must be bounded by the real canonical construction time");
