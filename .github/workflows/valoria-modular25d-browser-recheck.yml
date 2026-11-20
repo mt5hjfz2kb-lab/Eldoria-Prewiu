@@ -1,0 +1,125 @@
+name: Valoria Modular 2.5D — browser-only regression on certified Unity player
+
+on:
+  push:
+    branches:
+      - experiment/valoria-modular-25d-bastion1-from-zero-20261118
+    paths:
+      - 'tools/valoria-modular25d/browser_smoke.mjs'
+      - '.github/workflows/valoria-modular25d-browser-recheck.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: eldoria-modular25d-no-windows-chromium
+  cancel-in-progress: false
+
+jobs:
+  chromium-same-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      ELDORIA_PLAYER_SHA: 195eebb016b91ae38f27f31b01084295733fab19
+      ELDORIA_PLAYER_RUN: '44697658660'
+    steps:
+      - name: Checkout isolated smoke and compare immutable game source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/valoria-modular25d
+          sparse-checkout-cone-mode: true
+      - name: Reject any changed Unity input from the certified native player
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 --filter=blob:none origin "$ELDORIA_PLAYER_SHA"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$GITHUB_SHA"
+          # The run 44697658660 built this exact Unity program and all original art.
+          # This cheap test may change only browser QA, NEVER its built player.
+          if ! git diff --quiet "$ELDORIA_PLAYER_SHA" "$GITHUB_SHA" -- \
+            Unity/Assets/Experimentos/ValoriaModular25D \
+            Unity/Assets/Eldoria Unity/Packages Unity/ProjectSettings \
+            tools/valoria-modular25d/scope_isolated_webgl_guard.ps1 \
+            tools/valoria-modular25d/isolate_webgl_resources.ps1; then
+            echo 'UNITY_SOURCE_CHANGED_SINCE_PINNED_WEBGL: fresh Windows native certification required'
+            exit 2
+          fi
+          echo "CERTIFIED_UNITY_SOURCES_IDENTICAL player=$ELDORIA_PLAYER_SHA qa=$GITHUB_SHA"
+      - name: Fetch exact native-built isolated WebGL player
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{github.token}}
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: 44697658660
+          name: eldoria-mod25d-webgl-player-44697658660
+          path: webgl
+      - name: Fetch native NUnit and resource isolation evidence
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{github.token}}
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: 44697658660
+          name: eldoria-mod25d-actual-playmode-44697658660
+          path: unity-metadata
+      - name: Validate source-pinned Unity artifacts, original game state and WebGL payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,json,glob,xml.etree.ElementTree as ET,hashlib
+          def unique(pattern):
+            matches=glob.glob(pattern,recursive=True)
+            assert len(matches)==1,(pattern,matches)
+            return matches[0]
+          w=json.load(open(unique("unity-metadata/**/webgl-status.json"),encoding="utf-8-sig"))
+          i=json.load(open(unique("unity-metadata/**/WebGLResourceIsolation.json"),encoding="utf-8-sig"))
+          g=json.load(open(unique("unity-metadata/**/WebGLIsolationGuard.json"),encoding="utf-8-sig"))
+          x=ET.parse(unique("unity-metadata/**/NUnit.xml")).getroot()
+          assert all(d["sourceSha"]==os.environ["ELDORIA_PLAYER_SHA"] for d in [w,i,g])
+          assert w["build"]=="SUCCEEDED" and w["resourceIsolation"] and w["totalOutputBytes"]>1000000
+          assert i["originalModularResourcesUnchanged"] and i["mainGitSourcesUnchanged"]
+          assert g["sandboxOnly"] and g["canonicalGuard"]=="UNCHANGED_IN_GIT_REQUIRED_FOR_EVERY_OTHER_WEBGL_BUILD"
+          assert x.attrib["passed"]=="1" and x.attrib["failed"]=="0"
+          assert os.path.isfile('webgl/index.html')
+          actual=sum(os.path.getsize(p) for p in glob.glob('webgl/**/*',recursive=True) if os.path.isfile(p))
+          assert actual==w['totalOutputBytes'],(actual,w['totalOutputBytes'])
+          print("REAL_UNITY_SOURCE_WEBGL_AND_1_NUNIT_PROOF_OK",actual)
+          PY
+      - name: Execute latest real Chromium UI and browser reload smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --version
+          npm install --no-save --no-audit --no-fund --package-lock=false playwright-core@1.56.1 pngjs@7.0.0
+          node --check tools/valoria-modular25d/browser_smoke.mjs
+          node tools/valoria-modular25d/browser_smoke.mjs webgl browser-evidence
+          python3 - <<'PY'
+          import json,hashlib,os
+          a=json.load(open('browser-evidence/browser-evidence.json',encoding='utf-8'))
+          assert a['status']=='BROWSER_UI_SMOKE_PASSED_NOT_DEVICE_QA',a.get('failure')
+          assert a['sourceSha']==os.environ['ELDORIA_PLAYER_SHA']
+          assert a['testScriptSha']==os.environ['GITHUB_SHA']
+          assert [(x['width'],x['height']) for x in a['resolutions']]==[(390,844),(1170,2532)]
+          assert a['actualBrowserHUD'] and a['physicalIphone']=='NOT_TESTED'
+          for row in a['resolutions']:
+            assert row['noPageError'] and row['noRequestFailures']
+            assert row['gameplayBuildPersistence'].startswith('SCREEN_VERIFIED_')
+            for shot in row['screenshots']:
+              p='browser-evidence/'+shot['filename']
+              assert hashlib.sha256(open(p,'rb').read()).hexdigest()==shot['sha256']
+          print('BROWSER_REAL_GAME_HUD_BUILD_RELOAD_PASS; IPHONE_AND_ART_APPROVAL_PENDING')
+          PY
+      - name: Preserve authentic browser evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-browser-recheck-${{github.run_id}}
+          path: browser-evidence/
+          retention-days: 14
+          if-no-files-found: warn
