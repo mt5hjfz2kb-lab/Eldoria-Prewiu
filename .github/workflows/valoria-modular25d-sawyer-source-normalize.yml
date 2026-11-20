@@ -88,7 +88,7 @@ jobs:
             echo 'SOURCE_BRANCH_MOVED_STOP_WITHOUT_WRITING'; exit 1; }
           git config user.name 'Eldoria source asset automation'
           git config user.email 'eldoria-source-qa@users.noreply.github.com'
-          git add --             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0.png             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1.png             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sprite_manifest.json             tools/valoria-modular25d/verify_source.py             tools/valoria-modular25d/provenance/worker_saw_original_indexed/             docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json             .github/workflows/valoria-modular25d-umbral-static.yml
+          git add --             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0.png             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1.png             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sprite_manifest.json             tools/valoria-modular25d/verify_source.py             tools/valoria-modular25d/provenance/worker_saw_original_indexed/             docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json 
           git diff --cached --check
           git diff --cached --quiet && { echo 'SOURCE_NO_CHANGE'; exit 0; }
           git commit -m 'fix(modular25d): preserve artist pixels, re-encode indexed worker animation to Unity RGBA6'
