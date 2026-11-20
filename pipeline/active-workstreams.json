@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-20T09:46:59.306Z",
+  "updated_at": "2026-11-20T10:24:49.691Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10008,13 +10008,13 @@
     {
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
-      "owner": "chatgpt-eldoria-mod25d-correction-20261120",
-      "ownership_state": "claimed",
-      "ownership_revision": 4,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 5,
+      "write_scope_released": true,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
       "status": "active",
-      "phase": "REV4_LANDSCAPE_HUD_EXACT_UNITY_20261120",
+      "phase": "BASTION_I_MODULAR25D_TECHNICAL_DELIVERED_ART_AND_IPHONE_PENDING",
       "claimed_at": "2026-11-20T00:34:46.251Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: continue existing exclusive modular 2.5D Bastion I experiment in same branch, inspect native evidence, improve halo/footprints/characters/HUD, validate isolated WebGL, no main gameplay or Premium V6 edits, no third-party credits.",
@@ -10025,11 +10025,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
-      "device_qa": "pending physical iPhone, GPU FPS/memory",
+      "device_qa": "PENDING owner physical iPhone/Safari FPS/memory/temperature/stability; not implied by Linux Chromium",
       "delivery_definition": {
         "deliverable": "Bastion I standalone 2.5D modular scene with original premium sprites, sawmill real construction, characters and camera.",
         "evidence": "Exact branch HEAD Windows Unity 6000.3.23f1 compiled, PlayMode/captures/video and isolated WebGL build, Save/Reload proof; visual approval and physical iPhone gate separate.",
@@ -10047,15 +10045,23 @@
           "revision": 3,
           "reason": "Owner explicitly directs continuation in this chat, preserving same ID/branch and previous ownership; rev4 transfer, no running branch/Windows jobs observed",
           "at": "2026-11-20T00:34:46.251Z"
+        },
+        {
+          "owner": "chatgpt-eldoria-mod25d-correction-20261120",
+          "revision": 4,
+          "at": "2026-11-20T10:24:49.691Z",
+          "reason": "Technical delivery certified exact-source Unity+PlayMode+WebGL+Chromium landscape/portrait+video run 44713811420; original art and domain preserved. Owner artistic acceptance and physical iPhone remain independent."
         }
       ],
-      "handoff_note": "Owner's next chat should claim SAME workstream, update owner/revision, keep branch scope, request Windows only when free, update guarded native workflow to match new owner/revision. See docs/valoria-modular-25d/HANDOFF_20261120.md on experimental branch. WebGL failed frozen terrain query tape; last native 44612966834.",
+      "handoff_note": "Technical source e681fda70aaa985dc62a928e4c9c6a0c63628cd5 certified by 44713811420; HEAD 63c4059 is documentation-only. See docs/valoria-modular-25d/DELIVERY_20261120_NATIVE_WEBGL_CAMERA.md and PRODUCTION_GUIDE_BASTION_I_20261120.md. Art approval and physical iPhone separate. Owner/Windows released to available rev5; reuse SAME canonical ID on authorized continuation.",
       "reclaim_note": "User-directed continuation 2026-11-20 of existing Bastion I modular 2.5D workstream, transferring rev3 to rev4. No windows-runner-heavy reservation at transfer. Preserve main, Premium V6, other experiment scopes; no credits; exact HEAD recheck before push.",
-      "last_native_run": 44707009109,
-      "last_native_head": "15671bb9a5353746a1f4276586908fb71af30a9b",
-      "last_native_status": "PASS Unity 6000.3.23f1 45 frames, 1 NUnit entering PlayMode, 20.64MB real WebGL player, Chromium HUD/build/wood balance across reload at 390x844 and 1170x2532, video",
+      "last_native_run": 44713811420,
+      "last_native_head": "e681fda70aaa985dc62a928e4c9c6a0c63628cd5",
+      "last_native_status": "PASS: Unity 6000.3.23f1, 45 authentic frames, NUnit 1/1 EditMode enters PlayMode, 20.64MB one-scene WebGL, Chromium 390x844/1170x2532 actual UI/build/reload, 390x844/844x390 native touch drag/pinch/Home, source-verified MP4",
       "last_browser_failure": "Initial dark first frame misclassified by top pixel-only HUD test; image shows safe-area header is correctly inset. Inspect new browser test with real source-pinned player.",
-      "next_native_head": "b00897b081fe3e0e143a51df37a71533fad25beb"
+      "next_native_head": "b00897b081fe3e0e143a51df37a71533fad25beb",
+      "last_browser_run": 44713811420,
+      "released_at": "2026-11-20T10:24:49.691Z"
     }
   ],
   "history": [
@@ -20486,11 +20492,11 @@
     "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
     "authorized_at": "2026-11-19T12:01:31.172Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_workstream": null,
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "rev4_landscape_native_20261120",
+    "status": "available_after_modular25d_complete_native_44713811420",
     "rules": [
       "No cancellation of ongoing Unity jobs or interruption of other writers.",
       "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
@@ -20554,6 +20560,6 @@
       "last_depth_previous_run": 44281717983,
       "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
     },
-    "note": "One bounded native exact-SHA run to certify compact landscape HUD, existing original sprite/terrain/gameplay and WebGL. Release after results and artifact inspection."
+    "note": "Latest exact-source run 44713811420 fully SUCCESS, branch doc-only follow-up 63c4059 static SUCCESS. Exclusive Windows released; no branch jobs active/queued; iPhone/subjective art unapproved."
   }
 }
