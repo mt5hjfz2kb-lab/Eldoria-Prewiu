@@ -114,6 +114,10 @@ namespace Eldoria.Modular25D.Tests
             var sceneCanvas=world.GetComponentsInChildren<Canvas>(true);
             Assert.That(sceneCanvas.Count(x=>x.enabled && x.gameObject.activeInHierarchy),
                 Is.EqualTo(1),"Only compact modular HUD should be active");
+            var firstMessage=Member(ui,"message") as Text;
+            Assert.NotNull(firstMessage);
+            Assert.IsTrue(string.IsNullOrEmpty(firstMessage.text),
+                "A premium game HUD must not show a permanent prototype debug banner");
             Assert.NotNull(EventSystem.current,"Unity real touch event system missing");
             var header=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Live resource strip");

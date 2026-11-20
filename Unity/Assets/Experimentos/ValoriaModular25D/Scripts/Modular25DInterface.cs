@@ -19,7 +19,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         GameObject panel;
         Text resources,level,stage,cost,clock,message;
         Button build;
-        float nextTick;
+        float nextTick,feedbackHideAt;
         Canvas hudCanvas;
         RectTransform hudTop, inspectRect, centerRect, sawmillPanelRect, feedbackRect;
         int lastLayoutWidth=-1, lastLayoutHeight=-1;
@@ -191,12 +191,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(lastLayoutWidth!=Screen.width || lastLayoutHeight!=Screen.height ||
                lastSafeArea!=Screen.safeArea)
                 UpdateResponsiveLayout();
+            if(feedbackHideAt>0f&&Time.unscaledTime>=feedbackHideAt)
+            {
+                feedbackHideAt=0f;
+                if(message!=null)message.text="";
+            }
             if(Time.unscaledTime<nextTick)return;
             nextTick=Time.unscaledTime+.3f;
             if(panel!=null&&panel.activeSelf)Refresh(gateway.Snapshot());
         }
 
-        void Feedback(string text){if(message!=null)message.text=text??"";}
+        void Feedback(string text)
+        {
+            if(message==null)return;
+            var value=text??"";
+            // Debug provenance remains available in the build evidence/logs,
+            // but must not permanently float across the premium game scene.
+            if(value.StartsWith("Partida experimental aislada",StringComparison.OrdinalIgnoreCase))
+                value="";
+            message.text=value;
+            feedbackHideAt=value.Length>0?Time.unscaledTime+2.7f:0f;
+        }
 
         public void OpenSawmill()
         {
