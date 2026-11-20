@@ -16,11 +16,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         float previousPinch, homeSize;
 
         // Same geometry in the real player and the native Editor A/B.
-        // Reduce unused meadow while framing Keep, courtyard and working mill.
-        public static Vector3 HomePosition => new Vector3(.05f,-.40f,-30f);
+        // Commercial Bastion-I hero composition: both authored buildings occupy
+        // more of a phone viewport. Terrain stays continuous and exploration
+        // retains unrestricted pan/zoom, only Home framing is changed.
+        public static Vector3 HomePosition => new Vector3(-.02f,-.40f,-30f);
         public static float HomeSizeForAspect(float aspect)
         {
-            return Mathf.Clamp(3.55f/Mathf.Max(.42f,aspect),5.05f,7.95f);
+            return Mathf.Clamp(3.05f/Mathf.Max(.42f,aspect),4.90f,7.10f);
         }
 
         void Start()
