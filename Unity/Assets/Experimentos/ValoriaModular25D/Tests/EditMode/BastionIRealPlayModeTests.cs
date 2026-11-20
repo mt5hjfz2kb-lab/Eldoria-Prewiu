@@ -135,7 +135,7 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.type==Image.Type.Sliced),
                 Is.GreaterThanOrEqualTo(3),"Three independently rendered resource plates are required");
             Assert.That((string)ui.GetType().GetField("UiEdition").GetRawConstantValue(),
-                Does.Contain("Umbral"),"This isolated branch must use the new layout, not Vigilia controls");
+                Does.Contain("Corona de la Brecha"),"Original chosen art direction must replace Umbral");
             var uiSheet=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill parchment sheet");
             Assert.NotNull(uiSheet,"The new contextual parchment panel must exist");
@@ -143,16 +143,17 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Sliced));
             Assert.That(header.GetComponentsInChildren<Text>(true)
                 .Any(x=>x.text=="MADERA"),Is.True,"Live wood capsule missing");
-            var originalIconBytes=Resources.Load<TextAsset>(
-                "ValoriaModular25D/UI/UmbralII/umbral_gameplay_icons_png");
-            Assert.NotNull(originalIconBytes,"Source-authored transparent six-icon game atlas is missing");
-            Assert.That(originalIconBytes.bytes.Length,Is.GreaterThan(2000));
+            foreach(var item in new[]{"icon_wood","icon_stone","icon_food",
+                "icon_hammer","icon_city","icon_task"})
+                Assert.NotNull(Resources.Load<Sprite>(
+                    "ValoriaModular25D/UI/CoronaBrecha/"+item),
+                    "Selected original source icon missing: "+item);
             var gameIcons=world.GetComponentsInChildren<Image>(true)
-                .Where(x=>x && x.sprite!=null &&
-                    x.sprite.name.StartsWith("Original Eldoria Umbral II"))
+                .Where(x=>x && x.sprite!=null && x.sprite.name.StartsWith("icon_"))
                 .Select(x=>x.sprite.name).Distinct().ToArray();
             Assert.That(gameIcons.Length,Is.GreaterThanOrEqualTo(6),
-                "Commercial HUD must use all six original resource/action game icons, not dummy symbols");
+                "Six illustrated Corona resource/action icons must actually render");
+
             // Commercial-world readable labels must be actual tap targets
             // positioned by the same camera Transform as the 2.5D scene.
             var tagKeep=world.GetComponentsInChildren<RectTransform>(true)
@@ -171,14 +172,15 @@ namespace Eldoria.Modular25D.Tests
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             // The game HUD must use authored, border-preserving pieces,
             // not a substituted procedural panel on a flat mockup.
-            foreach(var item in new[]{
-                "dock_medallion","resource_capsule","parchment_frame",
-                "green_action","burgundy_objective"})
+            foreach(var item in new[]{"identity_crest","resource_siglet",
+                "nav_medallion","portrait_ring","world_rune","objective_rune",
+                "action_arcane","panel_obsidian"})
             {
-                var skin=Resources.Load<Sprite>("ValoriaModular25D/UI/UmbralII/"+item);
-                Assert.NotNull(skin,"Missing exact original premium Umbral II material "+item);
-                Assert.That(skin.border.x,Is.GreaterThanOrEqualTo(16f),
-                    "One authored UI material lost its 9-slice border "+item);
+                var skin=Resources.Load<Sprite>(
+                    "ValoriaModular25D/UI/CoronaBrecha/"+item);
+                Assert.NotNull(skin,"Corona original 9-slice missing: "+item);
+                Assert.That(skin.border.x,Is.GreaterThanOrEqualTo(32f),
+                    "Corona independent authored frame lost its 9-slice border "+item);
             }
 
             var aldric=Resources.Load<Sprite>("ValoriaModular25D/UI/UmbralII/aldric_avatar");

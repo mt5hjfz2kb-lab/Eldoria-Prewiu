@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Eldoria.Experimentos.ValoriaModular25D
 {
     /// <summary>
-    /// UMBRAL UI: a separate, experimental presentation skin for Bastion I.
+    /// CORONA DE LA BRECHA UI: illustrated arcane medallions, identity and 9-slice surfaces.
     /// One dynamic Canvas, the canonical LocalGateway, and only two real player
     /// actions (inspect the sawmill and reset the camera). No invented systems.
     /// New 9-slice materials are created once as small in-memory textures;
@@ -17,20 +17,20 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DefaultExecutionOrder(-200)]
     public sealed class Modular25DInterface : MonoBehaviour
     {
-        public const string UiEdition = "Umbral II - Ciudad y Bastion comercial / Eldoria";
-        private static readonly Color32 Slate = new Color32(20, 38, 48, 242);
-        private static readonly Color32 SlateLight = new Color32(40, 62, 70, 238);
-        private static readonly Color32 Parchment = new Color32(235, 222, 192, 250);
-        private static readonly Color32 ParchmentLight = new Color32(249, 240, 217, 252);
-        private static readonly Color32 AntiqueBrass = new Color32(181, 141, 88, 255);
-        private static readonly Color32 PaleGold = new Color32(228, 197, 139, 255);
-        private static readonly Color32 WarmWhite = new Color32(246, 238, 217, 255);
-        private static readonly Color32 DarkInk = new Color32(39, 47, 49, 255);
-        private static readonly Color32 MutedInk = new Color32(93, 90, 77, 255);
-        private static readonly Color32 Green = new Color32(59, 105, 98, 255);
-        private static readonly Color32 Red = new Color32(151, 77, 69, 255);
+        public const string UiEdition = "Corona de la Brecha - Eldoria 2.5D";
+        private static readonly Color32 Slate = new Color32(27, 20, 43, 242);
+        private static readonly Color32 SlateLight = new Color32(55, 40, 72, 238);
+        private static readonly Color32 Parchment = new Color32(33, 25, 48, 250);
+        private static readonly Color32 ParchmentLight = new Color32(65, 48, 83, 252);
+        private static readonly Color32 AntiqueBrass = new Color32(201, 156, 84, 255);
+        private static readonly Color32 PaleGold = new Color32(245, 213, 156, 255);
+        private static readonly Color32 WarmWhite = new Color32(248, 238, 220, 255);
+        private static readonly Color32 DarkInk = new Color32(26, 20, 40, 255);
+        private static readonly Color32 MutedInk = new Color32(203, 181, 217, 255);
+        private static readonly Color32 Green = new Color32(80, 209, 195, 255);
+        private static readonly Color32 Red = new Color32(184, 84, 120, 255);
 
-        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate;
+        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, identityPlate, navPlate;
         private static Sprite woodIcon, stoneIcon, foodIcon, hammerIcon, cityIcon, taskIcon;
         private static Texture2D originalIconAtlas;
         private Modular25DGameplay gateway;
@@ -60,7 +60,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (EventSystem.current == null)
                 new GameObject("ValoriaModular25D Events", typeof(EventSystem), typeof(InputSystemUIInputModule));
             InitializeArt();
-            var root = new GameObject("UMBRAL | Valoria functional HUD",
+            var root = new GameObject("CORONA DE LA BRECHA | HUD original",
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             root.transform.SetParent(transform, false);
             hudCanvas = root.GetComponent<Canvas>();
@@ -75,25 +75,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             // Header is NOT one dark full-width strip. The game view remains
             // visible between a short identity seal and three resource chips.
-            identity = Plate("Valoria identity", rootTransform, slatePlate,
+            identity = Plate("Valoria identity", rootTransform, identityPlate,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
-                new Vector2(165f, 51f));
+                new Vector2(194f, 68f));
             var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
-                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(27f, 0f),
-                new Vector2(42f, 42f));
+                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(34f, 0f),
+                new Vector2(59f, 59f));
             var aldricAvatar=Resources.Load<Sprite>(
                 "ValoriaModular25D/UI/UmbralII/aldric_avatar");
             if(aldricAvatar==null)
                 throw new InvalidOperationException(
                     "Umbral II requires Eldoria's authentic Sir Aldric portrait.");
             var face=Plate("Authentic Sir Aldric character portrait",sigil,aldricAvatar,
-                new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(36f,36f));
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(44f,44f));
             face.GetComponent<Image>().type=Image.Type.Simple;
             face.GetComponent<Image>().preserveAspect=true;
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(26f, 8f), new Vector2(112f, 25f));
+                new Vector2(38f, 9f), new Vector2(105f, 29f));
             level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(26f, -13f), new Vector2(114f, 27f));
+                new Vector2(38f, -17f), new Vector2(105f, 28f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
@@ -158,9 +158,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f, 0f), new Vector2(.5f, 0f), new Vector2(0f, 110f),
                 new Vector2(355f, 244f));
             buildingSheet = sheet.gameObject;
-            Label("ASERRADERO", sheet, 23, true, DarkInk, TextAnchor.MiddleLeft,
+            Label("ASERRADERO", sheet, 23, true, WarmWhite, TextAnchor.MiddleLeft,
                 new Vector2(-54f, 84f), new Vector2(205f, 31f));
-            Label("TALLER DE VALORIA", sheet, 11, false, MutedInk, TextAnchor.MiddleLeft,
+            Label("TALLER DE VALORIA", sheet, 11, false, PaleGold, TextAnchor.MiddleLeft,
                 new Vector2(-54f, 61f), new Vector2(215f, 17f));
             AccentHairline("Divider", sheet, AntiqueBrass,
                 new Vector2(0f, 44f), new Vector2(310f, 1.5f));
@@ -176,11 +176,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             preview.type = Image.Type.Simple;
             preview.color = Color.white;
             preview.raycastTarget = false;
-            stage = Label("", sheet, 14, false, DarkInk, TextAnchor.MiddleLeft,
+            stage = Label("", sheet, 14, false, WarmWhite, TextAnchor.MiddleLeft,
                 new Vector2(54f, 26f), new Vector2(195f, 22f));
             cost = Label("", sheet, 13, false, MutedInk, TextAnchor.MiddleLeft,
                 new Vector2(54f, 0f), new Vector2(195f, 19f));
-            remaining = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
+            remaining = Label("", sheet, 13, false, WarmWhite, TextAnchor.MiddleLeft,
                 new Vector2(54f, -28f), new Vector2(195f, 19f));
 
             // Commercial construction feedback, but backed solely by the
@@ -216,11 +216,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             statusSheet=Plate("Valoria state parchment",rootTransform,parchmentPlate,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 new Vector2(0f,112f),new Vector2(330f,170f));
-            Label("ESTADO DE VALORIA",statusSheet,23,true,DarkInk,TextAnchor.MiddleCenter,
+            Label("ESTADO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
                 new Vector2(0f,57f),new Vector2(278f,28f));
             AccentHairline("State divider",statusSheet,AntiqueBrass,
                 new Vector2(0f,35f),new Vector2(281f,1.5f));
-            stateSummary=Label("",statusSheet,14,false,DarkInk,TextAnchor.MiddleLeft,
+            stateSummary=Label("",statusSheet,14,false,WarmWhite,TextAnchor.MiddleLeft,
                 new Vector2(0f,-15f),new Vector2(278f,83f));
             var closeStatus=ButtonPlate("Close state",statusSheet,"×",slatePlate,
                 new Vector2(1f,1f),new Vector2(.5f,.5f),new Vector2(-27f,-22f),
@@ -439,14 +439,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             identity.anchorMin = identity.anchorMax = new Vector2(0f, 1f);
             identity.pivot = new Vector2(0f, 1f);
-            identity.anchoredPosition = new Vector2(12f, -top);
-            identity.sizeDelta = new Vector2(165f, 51f);
+            identity.anchoredPosition = new Vector2(10f, -top);
+            identity.sizeDelta = new Vector2(194f, 68f);
 
             resourceRow.anchorMin = resourceRow.anchorMax =
                 wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
             resourceRow.pivot = wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
             resourceRow.anchoredPosition = wide ?
-                new Vector2(-12f, -top) : new Vector2(0f, -top - 61f);
+                new Vector2(-10f, -top) : new Vector2(0f, -top - 82f);
             resourceRow.sizeDelta = new Vector2(365f, 44f);
             for (int i = 0; i < resourceChips.Length; i++)
             {
@@ -460,22 +460,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             inspect.anchorMin=inspect.anchorMax=new Vector2(0f,0f);
             inspect.pivot=new Vector2(0f,0f);
-            inspect.sizeDelta=new Vector2(116f,54f);
+            inspect.sizeDelta=new Vector2(86f,80f);
             inspect.anchoredPosition=new Vector2(12f,bottom+8f);
             center.anchorMin=center.anchorMax=new Vector2(1f,0f);
             center.pivot=new Vector2(1f,0f);
-            center.sizeDelta=new Vector2(108f,54f);
+            center.sizeDelta=new Vector2(86f,80f);
             center.anchoredPosition=new Vector2(-12f,bottom+8f);
             statusDock.anchorMin=statusDock.anchorMax=new Vector2(.5f,0f);
             statusDock.pivot=new Vector2(.5f,0f);
-            statusDock.sizeDelta=new Vector2(110f,54f);
+            statusDock.sizeDelta=new Vector2(86f,80f);
             statusDock.anchoredPosition=new Vector2(0f,bottom+8f);
             objective.anchorMin=objective.anchorMax=
                 wide?new Vector2(0f,1f):new Vector2(1f,1f);
             objective.pivot=wide?new Vector2(0f,1f):new Vector2(1f,1f);
             objective.sizeDelta=new Vector2(172f,50f);
-            objective.anchoredPosition=wide?new Vector2(12f,-top-62f):
-                new Vector2(-12f,-top-114f);
+            objective.anchoredPosition=wide?new Vector2(12f,-top-83f):
+                new Vector2(-12f,-top-139f);
 
             if (wide)
             {
@@ -497,7 +497,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {
                 sheet.anchorMin = sheet.anchorMax = new Vector2(.5f, 0f);
                 sheet.pivot = new Vector2(.5f, 0f);
-                sheet.anchoredPosition = new Vector2(0f, bottom + 69f);
+                sheet.anchoredPosition = new Vector2(0f, bottom + 95f);
                 sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 244f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(.5f, 1f);
                 noticeRoot.pivot = new Vector2(.5f, 1f);
@@ -505,7 +505,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 noticeRoot.sizeDelta = new Vector2(324f, 35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
                 statusSheet.pivot=new Vector2(.5f,0f);
-                statusSheet.anchoredPosition=new Vector2(0f,bottom+69f);
+                statusSheet.anchoredPosition=new Vector2(0f,bottom+95f);
                 statusSheet.sizeDelta=new Vector2(Mathf.Min(330f,w/scale-28f),170f);
             }
             lastWidth = w;
@@ -577,27 +577,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return rect;
         }
 
-        private static RectTransform DockButton(string name,Transform parent,string title,
-            Sprite icon,Vector2 anchor,Vector2 pivot,UnityEngine.Events.UnityAction click)
+        private static RectTransform DockButton(string name,Transform parent,string caption,
+            Sprite symbol,Vector2 anchor,Vector2 pivot,UnityEngine.Events.UnityAction click)
         {
-            var button=ButtonPlate(name,parent,title,slatePlate,anchor,pivot,
-                Vector2.zero,new Vector2(110f,54f),click);
-            var rect=button.GetComponent<RectTransform>();
-            var text=button.GetComponentInChildren<Text>();
-            text.fontSize=13;
-            text.rectTransform.anchoredPosition=new Vector2(13f,0f);
-            text.rectTransform.sizeDelta=new Vector2(73f,48f);
-            var medallion=Plate(name+" artistic emblem",rect,portraitPlate,
-                new Vector2(0f,.5f),new Vector2(.5f,.5f),
-                new Vector2(23f,0f),new Vector2(34f,34f));
-            if(icon!=portraitPlate)
-            {
-                var inner=Plate(name+" functional icon",medallion,icon,
-                    new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                    Vector2.zero,new Vector2(23f,23f));
-                inner.GetComponent<Image>().type=Image.Type.Simple;
-                inner.GetComponent<Image>().color=Color.white;
-            }
+            // A real carved *round medallion*, not a recolored Umbral tile.
+            var control=ButtonPlate(name,parent,caption,navPlate,anchor,pivot,
+                Vector2.zero,new Vector2(86f,80f),click);
+            var rect=control.GetComponent<RectTransform>();
+            var word=control.GetComponentInChildren<Text>();
+            word.fontSize=10;
+            word.color=PaleGold;
+            word.alignment=TextAnchor.MiddleCenter;
+            word.rectTransform.anchoredPosition=new Vector2(0f,-24f);
+            word.rectTransform.sizeDelta=new Vector2(80f,20f);
+            word.verticalOverflow=VerticalWrapMode.Overflow;
+            var jewel=Plate(name+" illustrated system emblem",rect,symbol,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(0f,8f),new Vector2(42f,42f));
+            jewel.GetComponent<Image>().type=Image.Type.Simple;
+            jewel.GetComponent<Image>().preserveAspect=true;
             return rect;
         }
 
@@ -619,7 +617,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             colours.fadeDuration = .09f;
             button.colors = colours;
             Label(caption, rect, 14, false,
-                name == "Execute canonical Build command" ? WarmWhite : PaleGold,
+                name == "Execute canonical Build command" ? DarkInk : PaleGold,
                 TextAnchor.MiddleCenter, Vector2.zero, new Vector2(size.x - 12f, size.y - 5f));
             button.onClick.AddListener(click);
             return button;
@@ -654,71 +652,34 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         /// Four tiny, original material plates. No screenshot crops or baked text.
         /// Reusable 9-slice allows responsive resizing without enlarged corners.
         /// </summary>
+        private static Sprite NeedCorona(string key)
+        {
+            var sprite=Resources.Load<Sprite>("ValoriaModular25D/UI/CoronaBrecha/"+key);
+            if(sprite==null)
+                throw new InvalidOperationException("Missing original Corona de la Brecha source sprite: "+key+
+                    ". Generate kit via tools/valoria-corona-brecha/bake.py; never silently replace it with Umbral II.");
+            return sprite;
+        }
+
+        // Each illustrated texture has a stable GUID and independent editable
+        // source; uses authentic, new UI art rather than old Umbral colors.
         private static void InitializeArt()
         {
-            if (slatePlate != null) return;
-            // The family is authored as five ORIGINAL reusable 9-slice PNGs
-            // with common medallion/brass palette and non-stretch corners.
-            // This is a genuine production asset pipeline, not a screenshot
-            // crop or four flat colored UI primitives. The bronze portrait
-            // comes from the existing licensed Vigilia kit, used legally
-            // without replacing the game's protected original textures.
-            const string art="ValoriaModular25D/UI/";
-            const string skins=art+"UmbralII/";
-            slatePlate=Resources.Load<Sprite>(skins+"dock_medallion");
-            resourcePlate=Resources.Load<Sprite>(skins+"resource_capsule");
-            parchmentPlate=Resources.Load<Sprite>(skins+"parchment_frame");
-            actionPlate=Resources.Load<Sprite>(skins+"green_action");
-            burgundyPlate=Resources.Load<Sprite>(skins+"burgundy_objective");
-            portraitPlate=Resources.Load<Sprite>(art+"brass_portrait");
-            if(slatePlate==null||resourcePlate==null||parchmentPlate==null||
-               actionPlate==null||burgundyPlate==null||portraitPlate==null)
-                throw new InvalidOperationException(
-                    "Umbral II: missing original scalable material artwork (5 authored panels + licensed portrait)");
-            LoadOriginalGameIconAtlas();
-        }
-
-        /// <summary>
-        /// Six ORIGINAL Eldoria game icons, not a generic procedurally
-        /// rendered emoji or imported art from the reference games. The
-        /// source atlas and exact RGBA pixel proof are version-controlled.
-        /// The PNG data is packaged as a Unity TextAsset because the
-        /// original modular build found a Windows SpriteImporter
-        /// inconsistency with a different indexed artist PNG.
-        /// </summary>
-        private static void LoadOriginalGameIconAtlas()
-        {
-            const string path="ValoriaModular25D/UI/UmbralII/umbral_gameplay_icons_png";
-            var source=Resources.Load<TextAsset>(path);
-            if(source==null || source.bytes==null || source.bytes.Length<1500)
-                throw new InvalidOperationException(
-                    "Umbral II requires source-authored gameplay resource icons as a binary TextAsset.");
-            originalIconAtlas=new Texture2D(2,2,TextureFormat.RGBA32,false,false);
-            originalIconAtlas.name="Original Eldoria Umbral II six game icon atlas";
-            originalIconAtlas.wrapMode=TextureWrapMode.Clamp;
-            originalIconAtlas.filterMode=FilterMode.Bilinear;
-            if(!ImageConversion.LoadImage(originalIconAtlas,source.bytes,false) ||
-               originalIconAtlas.width!=144 || originalIconAtlas.height!=96)
-                throw new InvalidOperationException(
-                    "Original Eldoria six icon PNG atlas is not the expected 144x96 RGBA art.");
-            woodIcon=AtlasIcon(0,"wood");
-            stoneIcon=AtlasIcon(1,"stone");
-            foodIcon=AtlasIcon(2,"food");
-            hammerIcon=AtlasIcon(3,"construction");
-            cityIcon=AtlasIcon(4,"city");
-            taskIcon=AtlasIcon(5,"task");
-        }
-
-        private static Sprite AtlasIcon(int index,string label)
-        {
-            const int cell=48;
-            int column=index%3;
-            int row=index/3;
-            var sprite=Sprite.Create(originalIconAtlas,
-                new Rect(column*cell,(1-row)*cell,cell,cell),
-                new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect);
-            sprite.name="Original Eldoria Umbral II "+label;
-            return sprite;
+            if(slatePlate!=null)return;
+            identityPlate=NeedCorona("identity_crest");
+            slatePlate=NeedCorona("world_rune");
+            resourcePlate=NeedCorona("resource_siglet");
+            portraitPlate=NeedCorona("portrait_ring");
+            navPlate=NeedCorona("nav_medallion");
+            parchmentPlate=NeedCorona("panel_obsidian");
+            actionPlate=NeedCorona("action_arcane");
+            burgundyPlate=NeedCorona("objective_rune");
+            woodIcon=NeedCorona("icon_wood");
+            stoneIcon=NeedCorona("icon_stone");
+            foodIcon=NeedCorona("icon_food");
+            hammerIcon=NeedCorona("icon_hammer");
+            cityIcon=NeedCorona("icon_city");
+            taskIcon=NeedCorona("icon_task");
         }
 
         private static Sprite MaterialSprite(string name, Color32 bottom, Color32 top,
