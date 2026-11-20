@@ -10,6 +10,7 @@ on:
       - 'tools/valoria-modular25d/browser_smoke.mjs'
       - 'tools/valoria-modular25d/browser_camera_smoke.mjs'
       - 'docs/valoria-modular-25d/UI_UMBRAL_V1.md'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/**'
       - '.github/workflows/valoria-modular25d-umbral-static.yml'
 
 permissions:
@@ -56,6 +57,22 @@ jobs:
           assert 'public void OpenSawmill()' in src
           assert 'buildingSheet' in test and 'Independent resources' in test
           assert 'Execute canonical Build command' in test
+          # Source-level proof only: four materials do not certify the
+          # rendered UI, but missing or modified art MUST block Unity QA.
+          import hashlib,json
+          palette=Path('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII')
+          proof=json.loads(Path('docs/valoria-modular-25d/UMBRAL_II_MATERIALS_SOURCE.json').read_text())
+          assert len(proof['sprites'])==5
+          for item in proof['sprites']:
+              asset=palette/(item['name']+'.png')
+              raw=asset.read_bytes()
+              assert raw[:8]==bytes.fromhex('89504e470d0a1a0a')
+              assert hashlib.sha256(raw).hexdigest()==item['sha256']
+              meta=(palette/(item['name']+'.png.meta')).read_text()
+              assert 'guid: '+item['guid'] in meta and 'spriteBorder: {x: '+str(item['border']) in meta
+              assert 'Resources.Load<Sprite>(skins+' in src
+          print('UMBRAL2_REAL_5_PNG_MATERIAL_SOURCE_SHA_AND_SLICED_BORDERS_PASS')
+
           print('UMBRAL_SOURCE_CONTRACT_PASS; UNITY_RUNTIME_AND_ART_NOT_YET_TESTED')
           PY
       - name: Validate both original sawyer PNG streams and Unity sprite import metadata
