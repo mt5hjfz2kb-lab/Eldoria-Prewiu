@@ -115,12 +115,13 @@ function woodBalancePixels(a, b) {
   if(original.width!==current.width || original.height!==current.height)
     throw Error('Wood label screenshot dimensions changed');
   const w=original.width,h=original.height;
-  // Source-backed 117x52 illustrated capsule: the wood number is right-
-  // aligned in its 60pt text box around 19.5–30% of the 390px width, at
-  // 15–19% of the viewport height after the 82pt identity seal.
-  // This crop must be checked against the next *actual* WebGL screenshots.
-  const left=Math.round(w*.195),right=Math.round(w*.30);
-  const top=Math.round(h*.15),bottom=Math.round(h*.19);
+  // The exact real Unity Chrome source #44816471118 gave a bounding
+  // box of wood digit changes x=97..114, y=133..144 in 390x844.
+  // The NEW layout moves resources from top+105 to top (minus 105px).
+  // Expected new true-difference region x=97..114, y=28..39.
+  // This is a source-grounded crop candidate, not proof of new WebGL.
+  const left=Math.round(w*.215),right=Math.round(w*.313);
+  const top=Math.round(h*.028),bottom=Math.round(h*.055);
   let changed=0,total=0;
   for(let y=top;y<bottom;y++)for(let x=left;x<right;x++) {
     const i=(y*w+x)*4;
@@ -211,11 +212,11 @@ try {
       throw Error(width+'x'+height+': HUD top edge appears cropped: '+
         JSON.stringify(top));
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
-    // The primary original OBRAS medallion now lives at the bottom-right,
-    // center x=337/390, y=56/844 from the bottom in the 390x844 reference.
-    // Crest of OBRAS remains center x337, shifted upward 11 reference
-    // pixels to reserve a clean caption below the painted gold ring.
-    await page.mouse.click(box.x + box.width * (337 / 390), box.y + box.height * (1 - 67 / 844));
+    // Six-slot HUD: OBRAS occupies the last stable cell (slot 5).
+    // Source UI NavigationCell(5,390,0,0,8,false) has x center ~352
+    // and y center ~56 from the bottom. Click its REAL Unity button.
+    await page.mouse.click(box.x + box.width * (352 / 390),
+                           box.y + box.height * (1 - 56 / 844));
     await page.waitForTimeout(650);
     const opened = await capture('real-sawmill-build-panel');
     const change = pixelChange(before.bytes, opened.bytes);
