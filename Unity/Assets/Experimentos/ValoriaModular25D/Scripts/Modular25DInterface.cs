@@ -138,30 +138,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // camera and point only to canonical, currently implemented UI.
             bastionTag=ButtonPlate("Bastion world nameplate",rootTransform,"BASTIÓN · I",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(150f,34f),OpenStatus).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(110f,49f),OpenStatus).GetComponent<RectTransform>();
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
-            bastionTagText.fontSize=14;
+            bastionTagText.fontSize=11;
             bastionTagText.color=PaleGold;
             // Building nameplates are wayfinding, NOT a second enormous
             // turquoise Build CTA. The actual action stays in the real modal.
             // Keep the two original art plates short/readable in world-space.
             var keepGlyph=Plate("Bastion nameplate original icon",bastionTag,cityIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-57f,0f),new Vector2(23f,23f));
+                new Vector2(-42f,0f),new Vector2(18f,18f));
             keepGlyph.GetComponent<Image>().preserveAspect=true;
             bastionTagText.rectTransform.anchoredPosition=new Vector2(10f,0f);
-            bastionTagText.rectTransform.sizeDelta=new Vector2(120f,30f);
+            bastionTagText.rectTransform.sizeDelta=new Vector2(78f,28f);
             sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"ASERRADERO",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(180f,44f),OpenSawmill).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(112f,50f),OpenSawmill).GetComponent<RectTransform>();
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
-            sawmillTagText.fontSize=13;
+            sawmillTagText.fontSize=11;
             sawmillTagText.color=PaleGold;
-            sawmillTagText.rectTransform.anchoredPosition=new Vector2(11f,0f);
-            sawmillTagText.rectTransform.sizeDelta=new Vector2(146f,32f);
+            sawmillTagText.rectTransform.anchoredPosition=new Vector2(12f,0f);
+            sawmillTagText.rectTransform.sizeDelta=new Vector2(80f,30f);
             var sawmillGlyph=Plate("Sawmill nameplate original icon",sawmillTag,hammerIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-68f,0f),new Vector2(24f,24f));
+                new Vector2(-43f,0f),new Vector2(18f,18f));
             sawmillGlyph.GetComponent<Image>().preserveAspect=true;
             // Visible AFTER the successful Build auto-dismiss: real progress
             // belongs on the construction parcel, not a persistent modal.
@@ -284,7 +284,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             constructionProgressRoot.gameObject.SetActive(false);
             action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
                 actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
-                new Vector2(0f, -80f), new Vector2(270f, 42f),
+                new Vector2(0f, -80f), new Vector2(118f, 53f),
                 () =>
                 {
                     // Only a successful real LocalGateway construction
@@ -296,6 +296,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     if(result.Ok)ClosePanels();
                 });
             actionLabel = action.GetComponentInChildren<Text>();
+            actionLabel.fontSize=12;
+            actionLabel.resizeTextForBestFit=true;
+            actionLabel.resizeTextMinSize=10;
+            actionLabel.resizeTextMaxSize=14;
+            actionLabel.verticalOverflow=VerticalWrapMode.Overflow;
             var close = ButtonPlate("Close sawmill", sheet, "×", navPlate,
                 new Vector2(1f, 1f), new Vector2(.5f, .5f),
                 new Vector2(-27f, -25f), new Vector2(46f, 46f),
@@ -492,15 +497,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 long timeLeft=building==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? gateway.SawmillSecondsRemaining() : 0L;
                 sawmillTagText.text=building==ParcelBuildingState.BUILT
-                    ? "ASERRADERO · "+s.SawmillLevel
+                    ? "ASERR. "+s.SawmillLevel
                     : building==ParcelBuildingState.UNDER_CONSTRUCTION
                         ? "OBRA  "+(timeLeft/60L).ToString()+":"+(timeLeft%60L).ToString("00")
                         : "ASERRADERO";
                 bool constructing=building==ParcelBuildingState.UNDER_CONSTRUCTION;
                 sawmillTagText.rectTransform.anchoredPosition=
-                    new Vector2(11f,constructing?5f:0f);
+                    new Vector2(12f,constructing?3f:0f);
                 sawmillTagText.rectTransform.sizeDelta=
-                    new Vector2(146f,constructing?23f:32f);
+                    new Vector2(80f,constructing?23f:30f);
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(false);
                 if(activityTitle!=null)
