@@ -2,7 +2,7 @@
 // This is not an iPhone performance, memory or artistic approval certificate.
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
+import http from 'node:http';
 import { createHash } from 'node:crypto';
 import { chromium } from 'playwright-core';
 import { PNG } from 'pngjs';
@@ -16,15 +16,45 @@ const chrome = [process.env.CHROME_PATH, '/usr/bin/google-chrome', '/usr/bin/goo
   .filter(Boolean).find(fs.existsSync);
 if (!chrome) throw Error('Chromium/Chrome not installed on ephemeral runner; browser QA blocked, not passed');
 
-const port = 18757;
-const url = 'http://127.0.0.1:' + port + '/index.html';
-const server = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1', '--directory', webRoot],
-  { stdio: ['ignore', 'pipe', 'pipe'] });
+// Unity gzip/Brotli builds require explicit Content-Encoding and wasm MIME;
+// Python http.server lacks these. Host only the exact downloaded artifact.
+const mime = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript',
+  '.wasm': 'application/wasm',
+  '.data': 'application/octet-stream',
+  '.json': 'application/json',
+  '.css': 'text/css',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon'
+};
+const server = http.createServer((req, res) => {
+  let relative;
+  try { relative = decodeURIComponent(new URL(req.url, 'http://localhost').pathname).replace(/^\/+/, ''); }
+  catch { res.writeHead(400); res.end(); return; }
+  const file = path.resolve(webRoot, relative || 'index.html');
+  if (!file.startsWith(webRoot + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
+    res.writeHead(404); res.end('File not in source-pinned WebGL artifact'); return;
+  }
+  const compressed = file.endsWith('.gz') ? '.gz' : file.endsWith('.br') ? '.br' : '';
+  const base = compressed ? file.slice(0, -compressed.length) : file;
+  if (compressed) res.setHeader('Content-Encoding', compressed === '.gz' ? 'gzip' : 'br');
+  res.setHeader('Content-Type', mime[path.extname(base)] || 'application/octet-stream');
+  res.setHeader('Cache-Control', 'no-store');
+  res.writeHead(200);
+  fs.createReadStream(file).pipe(res);
+});
+await new Promise((resolve, reject) => {
+  server.once('error', reject);
+  server.listen(0, '127.0.0.1', resolve);
+});
+const url = 'http://127.0.0.1:' + server.address().port + '/index.html';
 const manifest = {
   status: 'NOT_YET_TESTED',
   sourceSha: process.env.GITHUB_SHA || 'UNPINNED',
   engine: 'Unity WebGL real browser player',
   browser: 'Chrome/Chromium headless with SwiftShader',
+  hosting: 'temporary same-origin HTTP server with Unity gzip/Brotli and WebAssembly MIME headers',
   realGameView: false,
   actualBrowserHUD: false,
   physicalIphone: 'NOT_TESTED',
@@ -55,16 +85,8 @@ function pixelChange(a, b) {
   return { changedSamples: changes, totalSamples: checked, ratio: changes / Math.max(1, checked) };
 }
 try {
-  let ready = false;
-  for (let n = 0; n < 90; n++) {
-    if (server.exitCode !== null) throw Error('Local HTTP server failed before browser test');
-    try {
-      const r = await fetch(url);
-      if (r.ok) { ready = true; break; }
-    } catch {}
-    await delay(250);
-  }
-  if (!ready) throw Error('WebGL local HTTP server did not respond');
+  const ready = await fetch(url);
+  if (!ready.ok) throw Error('Isolated WebGL local HTTP returned ' + ready.status);
   browser = await chromium.launch({
     headless: true, executablePath: chrome,
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--use-gl=angle', '--use-angle=swiftshader',
@@ -144,6 +166,6 @@ try {
   throw e;
 } finally {
   if (browser) await browser.close();
-  server.kill('SIGTERM');
+  await new Promise(resolve => server.close(resolve));
   fs.writeFileSync(path.join(out, 'browser-evidence.json'), JSON.stringify(manifest, null, 2) + '\n');
 }
