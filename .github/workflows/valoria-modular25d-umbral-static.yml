@@ -58,6 +58,40 @@ jobs:
           assert 'Execute canonical Build command' in test
           print('UMBRAL_SOURCE_CONTRACT_PASS; UNITY_RUNTIME_AND_ART_NOT_YET_TESTED')
           PY
+      - name: Validate both original sawyer PNG streams and Unity sprite import metadata
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,struct,zlib
+          root=Path("Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D")
+          guids=set()
+          for name in ("worker_saw_0","worker_saw_1"):
+              p=root/(name+".png")
+              meta=(root/(name+".png.meta")).read_text()
+              b=p.read_bytes()
+              assert b[:8]==b"\\x89PNG\\r\\n\\x1a\\n",name
+              n=8
+              frames=[]
+              width=height=0
+              while n<len(b):
+                  length=struct.unpack(">I",b[n:n+4])[0]
+                  kind=b[n+4:n+8]
+                  chunk=b[n+8:n+8+length]
+                  crc=struct.unpack(">I",b[n+8+length:n+12+length])[0]
+                  assert zlib.crc32(kind+chunk)&0xffffffff==crc,(name,kind,"CRC")
+                  if kind==b"IHDR":width,height=struct.unpack(">II",chunk[:8])
+                  if kind==b"IDAT":frames.append(chunk)
+                  n+=12+length
+                  if kind==b"IEND":break
+              assert n==len(b) and width>16 and height>16 and frames
+              assert zlib.decompress(b"".join(frames))
+              assert "textureType: 8" in meta and "spriteMode: 1" in meta
+              assert "spritePixelsToUnits: 100" in meta
+              guid=re.search(r"guid:\\s*([0-9a-f]{32})",meta).group(1)
+              assert guid not in guids;guids.add(guid)
+              print("ORIGINAL_SAWYER_PNG_AND_SPRITE_META_PASS",name,width,height,len(b),guid)
+          PY
       - name: Disclose test limitations
         if: always()
         run: |
