@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "7800fa5c5943742f2d7d0d90b914ab377ab50b5a",
+  "source_before_request": "37b6f43be664b33d1bad27a261e243f097c05658",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
@@ -27,7 +27,7 @@
   "premium_original_png_count": 14,
   "art_after_bake_check": "15 original Unity PNG verified by art-bake run 44815699535; source 580x260 material crops changed ONLY where expressly required by authored text-safe/5-region remap; preserved original source and GUIDs; no gameplay edits.",
   "previous_native_qa_run": 44811887444,
-  "quality_gate": "Only source SHA of this final request; true Unity 6.3 PlayMode, Camera.Render 42+ frames, original premium game UI 390x844 and 1170x2532, portrait landscape native touch pan pinch, real Build/Save, repeated browser reload. Manual artistic inspection required; no physical iPhone claim",
+  "quality_gate": "Final exact-HEAD Unity 6000.3.23f1 native render + EditMode PlayMode actual game; new illustrated source 15 PNG from 44815699535, true ratio nameplates and CTA, 390x844 + 1170x2532 +844x390 mobile safe layout, 230->150, immediate panel dismissal, in-world live countdown, repeatable save/reload, camera gestures and no crash. Human visual review required, physical iPhone not certified.",
   "visual_acceptance_revision": "Corona polished illustrated UI after transparent gutter normalization, center enamel writing-field, un-sliced source image material",
   "test_prior_failures": "Image.Type.Sliced compressed central illustrated art to a line at 390x844. Actual source now uses Type.Simple with full-alpha-cropped original PNG visual, preserved original premium source.",
   "previous_native_pending_run": 44803984603,
@@ -49,7 +49,7 @@
     "390x844-real-after-browser-reload.png",
     "844x390-camera-home.png"
   ],
-  "visual_revision": "Corona commercial HUD v5: full illustrated icons, compact corner navigation, separate quest, natural premium jewels scaled with original aspect and unchanged city/world",
+  "visual_revision": "Corona Premium V6 — commercial strategy HUD: art-correct 15 PNGs, true scaled dimensions, single medallions, in-world countdown, auto-close Build and safe UI clusters, no fake systems",
   "browser_prior_success_unchanged_gateway": 44807702613,
   "qa_requirements": [
     "No duplicate premium icons on quest or dock, no tinting full-color materials",
@@ -63,5 +63,13 @@
     "No main, no beta or gameplay domain changes, no unfounded art acceptance"
   ],
   "mobile_device_tested": false,
-  "preview_source_sha": "aadf471144f11d114d9aa22d42e446844fff87fb"
+  "preview_source_sha": "aadf471144f11d114d9aa22d42e446844fff87fb",
+  "last_source_verified_asset_bake": 44815699535,
+  "last_verified_browser_baseline": 44807702613,
+  "user_requests": {
+    "auto_close_panel_on_success": true,
+    "commercial_reference_quality": "target_not_yet_approved",
+    "no_automations": true,
+    "no_intermediate_reporting": true
+  }
 }
