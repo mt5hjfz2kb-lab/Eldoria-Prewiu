@@ -1,0 +1,176 @@
+name: Senda Brecha | isolated native 3D evidence
+"on":
+  push:
+    branches:
+      - feature/senda-brecha-lane-event-20261115
+    paths:
+      - tools/senda-brecha/native/request.txt
+permissions:
+  contents: read
+concurrency:
+  group: senda-brecha-exclusive-native
+  cancel-in-progress: false
+jobs:
+  preflight:
+    name: source-and-exclusive-lease
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/SendaBrecha
+            tools/senda-brecha
+      - name: Require exact single Windows resource owner and current branch head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,json,os,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          hdr={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'senda-native-exclusive-preflight'}
+          def get(path):
+              with urllib.request.urlopen(urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=hdr),timeout=35) as h:return json.load(h)
+          entry=get('contents/pipeline/active-workstreams.json?ref=main')
+          if entry.get('encoding')!='base64' or not entry.get('content'):
+              entry=get('git/blobs/'+entry['sha'])
+          doc=json.loads(base64.b64decode(entry['content']))
+          holders=[v for v in doc['active'] if 'windows-runner-heavy' in v.get('resources',[])]
+          assert len(holders)==1,'Windows is not exclusively reserved; refuse native run'
+          w=holders[0]
+          assert (w['id']=='eldoria-senda-brecha-lane-event-20261115' and
+                  w['owner']=='chatgpt-senda-brecha-ios-unity-20261115' and
+                  w['ownership_state']=='claimed'),'Other workstream owns Windows'
+          assert w['branch']=='feature/senda-brecha-lane-event-20261115'
+          current=get('git/ref/heads/feature/senda-brecha-lane-event-20261115')['object']['sha']
+          assert current==os.environ['GITHUB_SHA'],'Branch moved after native request'
+          print('SENDA_EXCLUSIVE_CAS_PREFLIGHT_PASS owner='+w['owner']+' revision='+str(w['ownership_revision']))
+          PY
+      - name: Source and 729-route static contract (not Unity compile)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/senda-brecha/tests/unity_3d_contract.py
+          test -f Unity/Assets/Eldoria/SendaBrecha/Editor/SendaBrechaNativeProof.cs
+          test -f Unity/Assets/Eldoria/SendaBrecha/SendaBrechaPrototype.cs
+  native:
+    name: isolated-unity-6000-3-23f1-gpu-proof
+    needs: preflight
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - name: Verify actual installed Editor and idle host
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path -LiteralPath $env:UNITY_EDITOR_PATH)){throw 'Unity 6000.3.23f1 Editor unavailable'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity/Blender already running; refuse overlap'}
+      - name: Resolve existing Git, never download a full repository archive
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Git unavailable; do not download giant source archive'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Git not functional'}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity/Assets/Eldoria/SendaBrecha
+            tools/senda-brecha
+      - name: Recheck owner resource lease immediately before starting Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $hdr=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='senda-native-exact-lease'}
+          $u="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $p=Invoke-RestMethod -Uri $u -Headers $hdr
+          if($p.encoding -ne 'base64' -or -not $p.content){$p=Invoke-RestMethod -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/git/blobs/$($p.sha)" -Headers $hdr}
+          $doc=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($p.content -replace '\s',''))) | ConvertFrom-Json
+          $owners=@($doc.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
+          if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-senda-brecha-lane-event-20261115' -or
+             $owners[0].owner -ne 'chatgpt-senda-brecha-ios-unity-20261115' -or
+             $owners[0].ownership_state -ne 'claimed'){throw 'Windows lease changed; refusing Unity'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native process active; refusing overlap'}
+      - name: Build disposable minimal Unity project, without original game assets
+        id: mini
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $mini=Join-Path $env:RUNNER_TEMP "senda-native-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          if(Test-Path -LiteralPath $mini){throw 'Disposable path unexpectedly exists; refuse overwrite'}
+          New-Item -ItemType Directory -Path (Join-Path $mini 'Assets/Eldoria') -Force | Out-Null
+          New-Item -ItemType Directory -Path (Join-Path $mini 'Packages') -Force | Out-Null
+          New-Item -ItemType Directory -Path (Join-Path $mini 'ProjectSettings') -Force | Out-Null
+          $source=Join-Path $env:GITHUB_WORKSPACE 'Unity/Assets/Eldoria/SendaBrecha'
+          if(-not(Test-Path -LiteralPath (Join-Path $source 'SendaBrechaPrototype.cs'))){throw 'Source absent'}
+          Copy-Item -LiteralPath $source -Destination (Join-Path $mini 'Assets/Eldoria/SendaBrecha') -Recurse -Force
+          Copy-Item -LiteralPath "$source.meta" -Destination (Join-Path $mini 'Assets/Eldoria/SendaBrecha.meta')
+          # Windows PowerShell 5.1 Set-Content -Encoding UTF8 inserts a BOM (U+FEFF).
+          # Unity PackageManager rejects the BOM before the JSON opening brace.
+          $utf8=New-Object System.Text.UTF8Encoding($false)
+          # IMGUI is a built-in module in Unity 6000.3; the disposable project must explicitly enable it
+          # because SendaBrechaPrototype uses GUIStyle for its standalone playable controls.
+          [System.IO.File]::WriteAllText((Join-Path $mini 'Packages/manifest.json'),'{"dependencies":{"com.unity.modules.imgui":"1.0.0","com.unity.modules.physics":"1.0.0","com.unity.modules.imageconversion":"1.0.0"}}',$utf8)
+          [System.IO.File]::WriteAllText((Join-Path $mini 'ProjectSettings/ProjectVersion.txt'),"m_EditorVersion: 6000.3.23f1`nm_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)`n",$utf8)
+          "mini=$mini" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host 'MINI_PROJECT_CREATED: Only SendaBrecha source and builtin Unity; no current beta/source assets.'
+      - name: Execute native EditMode real camera GPU proof
+        shell: powershell
+        env:
+          MINI: ${{ steps.mini.outputs.mini }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'senda-native-evidence'
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          $env:SENDA_BRECHA_CAPTURE_DIR=$out
+          $log=Join-Path $out 'unity-editor.log'
+          $arguments='-batchmode -quit -force-d3d11 -projectPath "'+$env:MINI+'" -executeMethod Eldoria.SendaBrecha.Editor.SendaBrechaNativeProof.Run -logFile "'+$log+'"'
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $arguments -PassThru -Wait
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 130}; throw "Unity actual GPU proof exited $($process.ExitCode)"}
+          $report=Join-Path $out 'proof.json'
+          if(-not(Test-Path -LiteralPath $report)){throw 'Real Unity proof report absent; Editor exit alone is not success'}
+          $p=Get-Content $report -Raw | ConvertFrom-Json
+          if($p.capturedPng -ne 9 -or !$p.positiveGateChangesVisibleActors -or !$p.victoryRouteChecked -or !$p.defeatRouteChecked -or
+             $p.result -ne 'VictoryAndDefeatNativeSimulationPass' -or $p.mainSceneModified -or $p.artApproved -or $p.physicalIphoneTested){throw 'Exact event native proof contract failed'}
+          $png=@(Get-ChildItem -LiteralPath $out -Filter '*.png')
+          if($png.Count -ne 9){throw "Expected 9 independent GPU PNG images, got $($png.Count)"}
+          foreach($f in $png){if($f.Length -lt 1000){throw "Empty GPU capture: $($f.Name)"}}
+          Write-Host "SENDA_UNITY_REAL_GPU_PASS screenshots=$($png.Count) unity=$($p.unity) rendered3D=TRUE HUD_CAPTURED=FALSE iphone=FALSE artApproval=FALSE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: senda-brecha-native-3d-${{ github.sha }}
+          path: senda-native-evidence/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Delete only this completed run's disposable Unity import Library
+        if: always()
+        shell: powershell
+        env:
+          MINI: ${{ steps.mini.outputs.mini }}
+        run: |
+          if(-not $env:MINI -or -not(Test-Path -LiteralPath $env:MINI)){exit 0}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){Write-Host 'Native process still running; preserve source and Library';exit 0}
+          $directory=(Get-Item -LiteralPath $env:MINI -Force)
+          if($directory.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Refuse to clean reparse-point mini project'}
+          $library=Join-Path $env:MINI 'Library'
+          if(Test-Path -LiteralPath $library){Remove-Item -LiteralPath $library -Recurse -Force}

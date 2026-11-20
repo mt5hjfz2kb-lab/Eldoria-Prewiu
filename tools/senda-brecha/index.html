@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#080d17">
+  <meta name="description" content="La Senda de la Brecha — prototipo táctil independiente de combate por carriles para Eldoria.">
+  <title>La Senda de la Brecha · Prototipo Eldoria</title>
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <main class="game" id="game" aria-label="La Senda de la Brecha, prototipo interactivo">
+    <canvas id="battlefield" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <header class="hud">
+      <div class="hud-top">
+        <div>
+          <div class="smallcaps"><span class="sigil">✧</span> ELDORIA <span class="divider-dot">·</span> EVENTO EXPERIMENTAL</div>
+          <h1>LA SENDA <em>DE LA BRECHA</em></h1>
+        </div>
+        <button type="button" class="icon-button" id="pause" title="Pausar partida" aria-label="Pausar partida">Ⅱ</button>
+      </div>
+      <div class="progress-header">
+        <span id="zoneLabel">EL UMBRAL</span>
+        <span id="roundLabel">TRAMO 1 / 6</span>
+      </div>
+      <div class="progress-track" id="progressTrack" aria-label="Progreso del evento"></div>
+      <div class="stats">
+        <div class="stat"><span class="stat-symbol troops">♟</span><span><strong id="troops">22</strong><small>TROPAS</small></span></div>
+        <div class="stat"><span class="stat-symbol attack">⚔</span><span><strong id="attack">+0%</strong><small>ATAQUE</small></span></div>
+        <div class="stat"><span class="stat-symbol shield">◈</span><span><strong id="shield">0</strong><small>ESCUDOS</small></span></div>
+      </div>
+    </header>
+    <div class="gate-header" id="gateHeader">
+      <div class="gate-title"><span class="goldline"></span><span id="instruction">ELIGE TU PORTAL</span><span class="goldline"></span></div>
+      <div class="gates" id="gates"></div>
+      <div class="gate-timer" id="gateTimer"><span></span></div>
+    </div>
+    <div class="combat-message" id="combatMessage" aria-live="polite"></div>
+    <div class="encounter-info" id="encounterInfo">⚔ <span id="enemyCount">14</span> CORRUPTOS AGUARDAN</div>
+    <footer class="controls">
+      <div class="tip" id="tip">DESLIZA O TOCA UN CARRIL PARA ELEGIR</div>
+      <div class="lanes" id="lanes" role="group" aria-label="Seleccionar carril">
+        <button type="button" class="lane" data-lane="0" aria-label="Carril izquierdo"><span class="lane-arrow">◀</span><span>IZQUIERDA</span></button>
+        <button type="button" class="lane selected" data-lane="1" aria-pressed="true" aria-label="Carril central"><span class="lane-arrow">◆</span><span>CENTRO</span></button>
+        <button type="button" class="lane" data-lane="2" aria-label="Carril derecho"><span class="lane-arrow">▶</span><span>DERECHA</span></button>
+      </div>
+      <div class="footer-note">PROTOTIPO AISLADO · SIN GASTO NI RECOMPENSAS REALES</div>
+    </footer>
+    <div class="modal-wrap" id="startOverlay">
+      <section class="modal" aria-labelledby="startTitle">
+        <div class="crest" aria-hidden="true"><span>✦</span></div>
+        <div class="eyebrow">EVENTO DE PRUEBA · 6 ENCUENTROS</div>
+        <h2 id="startTitle">La Senda<br><i>de la Brecha</i></h2>
+        <p>Guía a una pequeña guardia de Valoria a través del bosque corrompido. Cada portal cambia tus posibilidades de sobrevivir.</p>
+        <div class="feature-row"><span>⚔ Combate automático</span><span>◇ Tres decisiones por tramo</span></div>
+        <div class="feature-row"><span>✧ Un guardián final</span><span>◷ Partidas de ~1 minuto</span></div>
+        <button type="button" id="start" class="primary">INICIAR EXPEDICIÓN <span>›</span></button>
+        <div class="modal-foot">Toca los portales, usa las flechas o desliza para cambiar de carril.</div>
+      </section>
+    </div>
+    <div class="modal-wrap hidden" id="pauseOverlay">
+      <section class="modal short" aria-labelledby="pauseTitle"><div class="eyebrow">PARTIDA PAUSADA</div><h2 id="pauseTitle">El camino espera</h2><p>Tu expedición se ha detenido.</p><button type="button" id="resume" class="primary">CONTINUAR <span>›</span></button><button class="text-button" type="button" id="restartFromPause">REINICIAR</button></section>
+    </div>
+    <div class="modal-wrap hidden" id="endOverlay">
+      <section class="modal" aria-labelledby="endTitle">
+        <div class="crest" id="endCrest" aria-hidden="true"><span>✦</span></div>
+        <div class="eyebrow" id="endLabel">RESULTADO DEL EVENTO</div>
+        <h2 id="endTitle">Victoria</h2>
+        <p id="endBody"></p>
+        <div class="results">
+          <div><strong id="resultStages">6/6</strong><small>TRAMOS</small></div>
+          <div><strong id="resultTroops">0</strong><small>SUPERVIVIENTES</small></div>
+          <div><strong id="resultScore">0</strong><small>PUNTOS</small></div>
+        </div>
+        <div class="result-history" id="resultHistory" aria-label="Historial de encuentros"></div>
+        <button type="button" class="primary" id="retry">VOLVER A INTENTARLO <span>›</span></button>
+        <div class="modal-foot">El evento no modifica tus tropas ni tu partida de Eldoria.</div>
+      </section>
+    </div>
+  </main>
+  <script src="src/rules.js"></script>
+  <script src="src/game.js"></script>
+</body>
+</html>

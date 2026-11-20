@@ -1,0 +1,11 @@
+{
+  "name": "eldoria-senda-brecha-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline playable lane battle event prototype isolated from the Unity beta",
+  "scripts": {
+    "test": "node --test tests/rules.test.js",
+    "build": "node scripts-build.mjs"
+  },
+  "license": "UNLICENSED"
+}
