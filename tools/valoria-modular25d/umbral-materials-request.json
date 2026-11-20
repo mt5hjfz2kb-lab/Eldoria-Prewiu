@@ -7,5 +7,10 @@
   "art_approved": false,
   "unity_tested": false,
   "overwrite_main": false,
-  "no_paid_assets": true
+  "no_paid_assets": true,
+  "revision": 3,
+  "intent": "System-level UI readability fix after authentic 390x844 Chromium capture: remove oversized gilded arcs crossing all title/resource/action text, preserve premium edgework and contrast, regenerate five source-controlled 9-slice assets with hashes.",
+  "evidence_run": 44773827531,
+  "quality_problem": "Screenshots show title and resource labels intersected by gilded arcs in 9-slice crops, CTA too muted; this is global readability issue not decoration.",
+  "keep_gameplay_unchanged": true
 }
