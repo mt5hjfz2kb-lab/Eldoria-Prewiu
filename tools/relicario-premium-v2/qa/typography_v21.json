@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "version": "2.1.0",
+  "tested_in": "Chromium local",
+  "viewports": [
+    "gallery 1440x1120",
+    "gallery 768x1024",
+    "gallery 390x844",
+    "mobile 390x844",
+    "mobile 320x720",
+    "mobile 430x932",
+    "board 390x844"
+  ],
+  "overlaps": 0,
+  "clipped_text": 0,
+  "horizontal_overflows": 0,
+  "stress": "Long title and 4 stats of 10 passed",
+  "pending": [
+    "Unity PlayMode",
+    "iPhone physical",
+    "Owner art approval"
+  ]
+}

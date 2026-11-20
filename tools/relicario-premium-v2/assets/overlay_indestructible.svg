@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="512" viewBox="0 0 320 512">
+  <!-- Eldoria Relicario V2.4: localized enchantment, not another rarity frame.
+       Four independent corner runes + one inlaid infinity seal. No enclosing contour. -->
+  <defs>
+    <linearGradient id="emeraldEtch" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b6f6cf"/>
+      <stop offset=".44" stop-color="#38b98a"/>
+      <stop offset="1" stop-color="#0a6d50"/>
+    </linearGradient>
+    <linearGradient id="inlaidMetal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a7a18f"/>
+      <stop offset=".28" stop-color="#4d594f"/>
+      <stop offset=".58" stop-color="#8e9582"/>
+      <stop offset="1" stop-color="#343930"/>
+    </linearGradient>
+    <radialGradient id="sealStone" cx="45%" cy="28%" r="85%">
+      <stop offset="0" stop-color="#144f40"/>
+      <stop offset=".58" stop-color="#0c2d26"/>
+      <stop offset="1" stop-color="#071711"/>
+    </radialGradient>
+    <filter id="etchedGlow" x="-85%" y="-85%" width="270%" height="270%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+    <filter id="sealGlow" x="-55%" y="-55%" width="210%" height="210%">
+      <feGaussianBlur stdDeviation="2.8"/>
+    </filter>
+  </defs>
+  <!-- Localized engraving: no line goes around any side of the card. -->
+  <g fill="none" stroke="url(#emeraldEtch)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M23 104 Q24 82 48 72 M24 103 Q34 94 48 94" opacity=".49"/>
+    <path d="M273 114 Q291 111 297 96 M276 122 Q292 120 298 107" opacity=".49"/>
+    <path d="M23 474 Q29 488 51 490 M24 476 Q34 480 48 480" opacity=".49"/>
+    <path d="M269 490 Q291 488 297 474 M272 481 Q286 479 296 475" opacity=".49"/>
+  </g>
+  <!-- Soft glints at four points; none connects to create a surrounding outline. -->
+  <g fill="none" stroke="#54e4ad" stroke-width="3.2" stroke-linecap="round" opacity=".13" filter="url(#etchedGlow)">
+    <path d="M23 103 Q24 83 48 74"/>
+    <path d="M276 115 Q292 110 297 98"/>
+    <path d="M24 475 Q30 488 50 490"/>
+    <path d="M271 490 Q291 486 296 476"/>
+  </g>
+  <!-- Four engraved emerald chips, intentionally away from text and side stats. -->
+  <g fill="url(#emeraldEtch)" stroke="#c4f7d6" stroke-width=".38" opacity=".7">
+    <path d="M35 88 L39 84 L43 88 L39 92Z"/>
+    <path d="M279 111 L283 107 L287 111 L283 115Z"/>
+    <path d="M34 485 L38 481 L42 485 L38 489Z"/>
+    <path d="M278 485 L282 481 L286 485 L282 489Z"/>
+  </g>
+  <!-- A restrained inlaid infinity emblem, on the top-right corner of every rarity. -->
+  <g transform="translate(256 71) scale(.88)">
+    <path d="M-4 -20 L22 -22 L38 -7 L38 11 L23 26 L-4 23 L-18 8 L-17 -7Z" fill="#11624b" opacity=".14" filter="url(#sealGlow)"/>
+    <path d="M-5 -21 L23 -21 L40 -5 L40 11 L24 26 L-5 24 L-20 9 L-20 -6Z" fill="url(#inlaidMetal)" stroke="#252820" stroke-width="1.25"/>
+    <path d="M-2 -16 L20 -16 L34 -3 L34 9 L21 20 L-2 19 L-14 7 L-14 -3Z" fill="url(#sealStone)" stroke="#47876c" stroke-width="1.1"/>
+    <path d="M-1 -12 L19 -12 L29 -2 L29 7 L19 15 L-1 15 L-9 6 L-9 -2Z" fill="none" stroke="#3ed49e" stroke-width=".65" opacity=".48"/>
+    <path d="M9 2 C2 -6 -4 -7 -6 0 C-10 9 0 11 9 2 C15 -5 22 -8 26 -1 C30 7 19 11 9 2" fill="none" stroke="#c8f4d7" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="-10" cy="10" r="1.2" fill="#bec1a6" opacity=".65"/>
+    <circle cx="32" cy="-6" r="1.2" fill="#bec1a6" opacity=".65"/>
+  </g>
+</svg>

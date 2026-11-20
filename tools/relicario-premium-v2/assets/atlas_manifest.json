@@ -1,0 +1,41 @@
+{
+  "cardAspect": "5:8",
+  "framePixels": [
+    640,
+    1024
+  ],
+  "origins": {
+    "common": [
+      369,
+      54,
+      584,
+      378
+    ],
+    "rare": [
+      661,
+      54,
+      879,
+      380
+    ],
+    "epic": [
+      960,
+      53,
+      1183,
+      379
+    ],
+    "legendary": [
+      1249,
+      53,
+      1484,
+      379
+    ]
+  },
+  "artWindowPct": {
+    "left": 6.85,
+    "top": 10.55,
+    "width": 86.3,
+    "height": 54.4
+  },
+  "materialMethod": "reference-derived layered RGBA cutout + dynamic HTML/Unity UI; no AI-generated lettering",
+  "status": "art-candidate-unity-unverified"
+}

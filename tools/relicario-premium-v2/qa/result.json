@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "browser": "Chromium",
+  "gallery": {
+    "variants": 8,
+    "allDimensionsEqual": true,
+    "aspect": 0.625,
+    "exactCardMetadata": true
+  },
+  "mobile390x844": {
+    "horizontalOverflow": false,
+    "sameSizeWhenIndestructible": true
+  },
+  "board": {
+    "cells": 9,
+    "cards": 7
+  },
+  "limits": [
+    "No Unity PlayMode",
+    "No physical iPhone",
+    "No aesthetic approval"
+  ]
+}
