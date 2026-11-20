@@ -20,6 +20,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         Text resources,level,stage,cost,clock,message;
         Button build;
         float nextTick;
+        Canvas hudCanvas;
+        RectTransform hudTop, inspectRect, centerRect, sawmillPanelRect, feedbackRect;
+        int lastLayoutWidth=-1, lastLayoutHeight=-1;
+        Rect lastSafeArea;
 
         static readonly Color PanelInk = new Color(.075f,.095f,.108f,.91f);
         static readonly Color Gold = new Color(.86f,.7f,.43f);
@@ -36,6 +40,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
             canvasObj.transform.SetParent(transform,false);
             var canvas=canvasObj.GetComponent<Canvas>();
+            hudCanvas=canvas;
             canvas.renderMode=RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder=240;
             var scaler=canvasObj.GetComponent<CanvasScaler>();
@@ -45,21 +50,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             scaler.matchWidthOrHeight=.3f;
 
             var top=MakePanel("Live resource strip",canvasObj.transform,
-                new Vector2(.5f,1),new Vector2(0,-18),new Vector2(368,64),PanelInk);
+                new Vector2(.5f,1),new Vector2(0,-96),new Vector2(368,64),PanelInk);
+            hudTop=top;
             level=MakeLabel("BASTIÓN I",top,16,Gold,new Vector2(0,18),new Vector2(340,23));
             resources=MakeLabel("",top,14,Ivory,new Vector2(0,-12),new Vector2(342,23));
 
             var select=MakeButton("Inspect sawmill",canvasObj.transform,"ASERRADERO",
                 new Vector2(0,0),new Vector2(88,47),new Vector2(144,52),OpenSawmill);
+            inspectRect=select.GetComponent<RectTransform>();
             select.GetComponent<Image>().color=PanelInk;
             var home=MakeButton("Center camera",canvasObj.transform,"CENTRAR",
                 new Vector2(1,0),new Vector2(-84,47),new Vector2(130,52),
                 ()=>GetComponent<Modular25DCameraInput>().Home());
+            centerRect=home.GetComponent<RectTransform>();
             home.GetComponent<Image>().color=PanelInk;
 
             panel=MakePanel("Real sawmill build action",canvasObj.transform,
                 new Vector2(.5f,0),new Vector2(0,188),new Vector2(364,226),PanelInk).gameObject;
             var body=panel.GetComponent<RectTransform>();
+            sawmillPanelRect=body;
             MakeLabel("ASERRADERO · VALORIA",body,18,Gold,new Vector2(-25,88),new Vector2(305,27));
             MakeButton("Close panel",body,"×",new Vector2(1,1),new Vector2(-20,-22),
                 new Vector2(40,40),()=>panel.SetActive(false));
@@ -70,8 +79,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.0f),new Vector2(0,36),new Vector2(232,49),
                 ()=>gateway.BuildSawmill());
             message=MakeLabel("",canvasObj.transform,12,Gold,
-                new Vector2(0,-98),new Vector2(360,28),new Vector2(.5f,1));
+                new Vector2(0,-155),new Vector2(360,28),new Vector2(.5f,1));
+            feedbackRect=message.rectTransform;
             panel.SetActive(false);
+            UpdateResponsiveLayout();
         }
 
         void OnEnable()
@@ -86,10 +97,47 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             gateway.StateChanged-=Refresh;
             gateway.MessageChanged-=Feedback;
         }
-        void Start(){Refresh(gateway.Snapshot());Feedback(gateway.LastMessage);}
+        void Start()
+        {
+            Canvas.ForceUpdateCanvases();
+            UpdateResponsiveLayout();
+            Refresh(gateway.Snapshot());
+            Feedback(gateway.LastMessage);
+        }
+
+        // Constrain the portrait HUD to screen safe areas, not just a 390x844
+        // screenshot. The previous top strip had its first row outside GameView.
+        // Read the actual CanvasScaler factor: Screen.safeArea uses physical pixels.
+        void UpdateResponsiveLayout()
+        {
+            if(hudCanvas==null||hudTop==null)return;
+            int width=Screen.width,height=Screen.height;
+            Rect safe=Screen.safeArea;
+            if(width<=0||height<=0)return;
+            float scale=Mathf.Max(.01f,hudCanvas.scaleFactor);
+            float safeTop=Mathf.Max(0f,(height-safe.yMax)/scale);
+            float safeBottom=Mathf.Max(0f,safe.yMin/scale);
+            float topClearance=Mathf.Max(64f,safeTop+10f);
+            float bottomClearance=Mathf.Max(36f,safeBottom+10f);
+
+            hudTop.anchoredPosition=new Vector2(0f,-topClearance-32f);
+            feedbackRect.anchoredPosition=new Vector2(0f,-topClearance-88f);
+            inspectRect.anchoredPosition=new Vector2(88f,bottomClearance+34f);
+            centerRect.anchoredPosition=new Vector2(-84f,bottomClearance+34f);
+
+            // Bottom of the action panel stays above the two 52-pt controls.
+            sawmillPanelRect.anchoredPosition=
+                new Vector2(0f,bottomClearance+52f+17f+113f);
+            lastLayoutWidth=width;
+            lastLayoutHeight=height;
+            lastSafeArea=safe;
+        }
 
         void Update()
         {
+            if(lastLayoutWidth!=Screen.width || lastLayoutHeight!=Screen.height ||
+               lastSafeArea!=Screen.safeArea)
+                UpdateResponsiveLayout();
             if(Time.unscaledTime<nextTick)return;
             nextTick=Time.unscaledTime+.3f;
             if(panel!=null&&panel.activeSelf)Refresh(gateway.Snapshot());
@@ -155,7 +203,28 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             rect.anchoredPosition=offset;rect.sizeDelta=size;
             var image=obj.GetComponent<Image>();
             image.color=color;image.raycastTarget=true;
+            // Hairline trims add material detail without another full-screen
+            // image, heavy alpha frame, or blocking the genuine uGUI input.
+            AddHairline(rect,"upper etched bronze",new Vector2(0,size.y*.5f-.8f),
+                new Vector2(size.x-2f,1.6f),new Color(.75f,.61f,.38f,.49f));
+            AddHairline(rect,"lower stone glint",new Vector2(0,-size.y*.5f+.8f),
+                new Vector2(size.x-2f,1.2f),new Color(.75f,.61f,.38f,.25f));
             return rect;
+        }
+
+        static void AddHairline(RectTransform parent,string name,Vector2 at,
+            Vector2 extent,Color tint)
+        {
+            var go=new GameObject(name,typeof(RectTransform),typeof(Image));
+            go.transform.SetParent(parent,false);
+            var rect=go.GetComponent<RectTransform>();
+            rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);
+            rect.pivot=new Vector2(.5f,.5f);
+            rect.anchoredPosition=at;
+            rect.sizeDelta=extent;
+            var image=go.GetComponent<Image>();
+            image.color=tint;
+            image.raycastTarget=false;
         }
 
         static Text MakeLabel(string text,Transform parent,int fontSize,Color color,

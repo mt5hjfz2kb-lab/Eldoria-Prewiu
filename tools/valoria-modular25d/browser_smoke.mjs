@@ -136,6 +136,22 @@ try {
       return { filename: path.basename(file), sha256: sha(bytes), bytes };
     };
     const before = await capture('real-world-hud');
+    // Regression for the real 390x844 WebGL screenshot from run 44651309304:
+    // the top half of BASTIÓN I was cropped by an off-screen HUD strip.
+    // It was visible as a dark full-width bar touching screen row zero.
+    // A mobile safe-area-compliant panel must not cover the first 16 px.
+    const first=PNG.sync.read(before.bytes);
+    let blackSamples=0, totalTop=0;
+    for(let yy=0; yy<Math.min(16,first.height); yy+=2)
+      for(let xx=Math.floor(first.width*.08);xx<Math.floor(first.width*.92);xx+=3) {
+        const offset=(yy*first.width+xx)*4;
+        if(first.data[offset]<48 && first.data[offset+1]<48 && first.data[offset+2]<48)
+          blackSamples++;
+        totalTop++;
+      }
+    const topBlackRatio=blackSamples/Math.max(1,totalTop);
+    if(topBlackRatio>.3)
+      throw Error(width+'x'+height+': HUD intrudes into top safe-area; dark top pixels '+topBlackRatio.toFixed(3));
     // Coordinates come from the actual 390x844 Unity uGUI anchors, not HTML or fake controls.
     await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 47 / 844));
     await page.waitForTimeout(650);
@@ -153,7 +169,7 @@ try {
       width, height, context: scene, sawmillPanelPixelChange: change,
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
       screenshots: [before, opened, building].map(({ filename, sha256 }) => ({ filename, sha256 })),
-      noPageError: true, noRequestFailures: true,
+      noPageError: true, noRequestFailures: true, topBlackRatio,
       gameplayBuildPersistence: 'NOT_VERIFIED_BY_THIS_BROWSER_TEST'
     });
     await ctx.close();
