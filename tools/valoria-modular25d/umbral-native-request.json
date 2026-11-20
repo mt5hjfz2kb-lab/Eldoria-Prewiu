@@ -1,19 +1,24 @@
 {
   "schema": 1,
   "requested_on": "2026-11-20",
-  "purpose": "Final Umbral II commercial material family: render real Unity, PlayMode, canonical sawmill Build, one-time payment, sandbox save, responsive HUD and browser WebGL. Source package 5 authored 9-slice skins with verified SHA.",
-  "source_before_request": "a315d1c8728295247204567ac49083972ec5e2a3",
+  "purpose": "Commercial vertical-slice quality demonstration, not another micro UI tweak: cohesive closer Bastion/Aserradero, shared paths, camera occupancy, world-anchored interactive building labels, new 9-slice material family, illustrated six icon atlas, authentic Aldric portrait, real LocalGateway build+save and isolated WebGL browser proof. Compare against source-pinned prior 44770528023 and avoid false quality claims.",
+  "source_before_request": "e91d5cab5414c011af360cf2bf774cc1b6250979",
   "previous_failed_run": 44763580769,
   "script_scope": "existing Bastion I modular experiment",
   "no_paid_assets": true,
   "overwrite_main": false,
   "asset_conversion_proof": "docs/valoria-modular-25d/WORKER_SAW_BINARY_TEXTASSET_PROOF.json",
   "repair_test": "44770163184: PASS; 2 binary TextAsset aliases identical to original 96x96 RGBA PNGs; original artwork and .meta unchanged",
-  "quality_gate": "Independent Unity camera capture, real pointer click, payment once, reload/save, actual WebGL Chromium landscape+portrait; no physical iPhone claim",
+  "quality_gate": "Screen captures of city+HUD at 390x844, 1170x2532 and horizontal, playable canonical Build/Save, no cropped major buildings or modal/touch overlap, no dummy buttons. Independent art review before freeze.",
   "previous_proof_run": 44770528023,
   "static_art_source_pass": 44773661751,
   "original_png_textasset_proof": "docs/valoria-modular-25d/WORKER_SAW_BINARY_TEXTASSET_PROOF.json",
   "authorial_materials_proof": "docs/valoria-modular-25d/UMBRAL_II_MATERIALS_SOURCE.json",
   "art_approved": false,
-  "physical_iphone_tested": false
+  "physical_iphone_tested": false,
+  "production_vertical_slice_revision": "commercial-scene-and-gameplay-ui-20261120",
+  "control_reference_run": 44770528023,
+  "last_running_native_run": 44773827531,
+  "copyright": "Use ONLY original Eldoria source art; no third party game assets.",
+  "no_main_or_beta_edit": true
 }
