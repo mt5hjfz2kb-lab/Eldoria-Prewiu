@@ -115,8 +115,8 @@ function woodBalancePixels(a, b) {
   if(original.width!==current.width || original.height!==current.height)
     throw Error('Wood label screenshot dimensions changed');
   const w=original.width,h=original.height;
-  const left=Math.round(w*.26),right=Math.round(w*.39);
-  const top=Math.round(h*.113),bottom=Math.round(h*.144);
+  const left=Math.round(w*.16),right=Math.round(w*.31);
+  const top=Math.round(h*.10),bottom=Math.round(h*.14);
   let changed=0,total=0;
   for(let y=top;y<bottom;y++)for(let x=left;x<right;x++) {
     const i=(y*w+x)*4;
@@ -207,14 +207,14 @@ try {
       throw Error(width+'x'+height+': HUD top edge appears cropped: '+
         JSON.stringify(top));
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
-    await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 70 / 844));
+    await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 50 / 844));
     await page.waitForTimeout(650);
     const opened = await capture('real-sawmill-build-panel');
     const change = pixelChange(before.bytes, opened.bytes);
     if (change.changedSamples < Math.max(120, Math.floor(change.totalSamples * .04)))
       throw Error(width + 'x' + height + ': real ASERRADERO click did not reveal its HUD panel (pixel delta too small)');
     // Click the actual CANONICAL command inside that same panel, not a mock API.
-    await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 141 / 844));
+    await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 111 / 844));
     await page.waitForTimeout(800);
     const building = await capture('real-build-command');
     // Both frames have the identical open modal and full brightness;
