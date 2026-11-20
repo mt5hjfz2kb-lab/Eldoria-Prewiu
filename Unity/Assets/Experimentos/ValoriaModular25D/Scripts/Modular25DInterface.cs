@@ -436,10 +436,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var baseRect=hudCanvas.GetComponent<RectTransform>();
             bool hiddenByPanel=(buildingSheet!=null&&buildingSheet.activeSelf)||
                                (statusSheet!=null&&statusSheet.gameObject.activeSelf);
+            // On the genuine 390x844 build the old coordinates placed
+            // BASTIÓN on top of the civic well and ASERRADERO far below the
+            // actual footprint. Bind to the western keep tower and near the
+            // sawmill parcel edge instead; these are world coordinates, not
+            // fixed screenshot pixels, and continue to track pan/zoom.
+            // The north-west anchor is also left of the quest overlay.
             PlaceWorldNameplate(bastionTag,baseRect,
-                new Vector3(-.40f,-.55f,0),hiddenByPanel);
+                new Vector3(-1.63f,3.05f,0f),hiddenByPanel);
             PlaceWorldNameplate(sawmillTag,baseRect,
-                new Vector3(.96f,-3.86f,0),hiddenByPanel);
+                new Vector3(.96f,-2.90f,0f),hiddenByPanel);
         }
 
         private void PlaceWorldNameplate(RectTransform nameplate,RectTransform canvasRect,
