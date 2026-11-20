@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-20T00:34:46.251Z",
+  "updated_at": "2026-11-20T00:43:03.201Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10014,7 +10014,7 @@
       "write_scope_released": false,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
       "status": "active",
-      "phase": "CONTINUE_NATIVE_ART_REPAIR_WEBGL_20261120",
+      "phase": "NATIVE_ART_CORRECTION_AND_ISOLATED_WEBGL_GATE_REV4",
       "claimed_at": "2026-11-20T00:34:46.251Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: continue existing exclusive modular 2.5D Bastion I experiment in same branch, inspect native evidence, improve halo/footprints/characters/HUD, validate isolated WebGL, no main gameplay or Premium V6 edits, no third-party credits.",
@@ -10025,7 +10025,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "pending",
       "delivery_definition": {
@@ -20479,11 +20481,11 @@
     "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
     "authorized_at": "2026-11-19T12:01:31.172Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available_after_modular25d_owner_chat_handoff",
+    "status": "exclusive_modular25d_rev4_corrective_native_run",
     "rules": [
       "No cancellation of ongoing Unity jobs or interruption of other writers.",
       "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
@@ -20547,6 +20549,6 @@
       "last_depth_previous_run": 44281717983,
       "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
     },
-    "note": "PC safely released after latest completed native run 44612966834; next responsible chat must claim before native dispatch. No active Windows runs during handoff."
+    "note": "Owner directed isolated Bastion I 2.5D art correction; current Windows native suite will render A/B against run 44612966834. Release once run settles; no main game or beta modification."
   }
 }
