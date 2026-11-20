@@ -137,13 +137,12 @@ function woodBalancePixels(a, b) {
   if(original.width!==current.width || original.height!==current.height)
     throw Error('Wood label screenshot dimensions changed');
   const w=original.width,h=original.height;
-  // The exact real Unity Chrome source #44816471118 gave a bounding
-  // box of wood digit changes x=97..114, y=133..144 in 390x844.
-  // The NEW layout moves resources from top+105 to top (minus 105px).
-  // Expected new true-difference region x=97..114, y=28..39.
-  // This is a source-grounded crop candidate, not proof of new WebGL.
-  const left=Math.round(w*.215),right=Math.round(w*.313);
-  const top=Math.round(h*.028),bottom=Math.round(h*.055);
+  // Slender ONE-row economy strip: the original wood amount appears in
+  // cell 0 at x~159..192, y~16..41 for the 390x844 reference.
+  // This is a candidate crop from actual Unity source UI geometry;
+  // exact WebGL screenshots must confirm 230 -> 150.
+  const left=Math.round(w*.405),right=Math.round(w*.495);
+  const top=Math.round(h*.018),bottom=Math.round(h*.050);
   let changed=0,total=0;
   for(let y=top;y<bottom;y++)for(let x=left;x<right;x++) {
     const i=(y*w+x)*4;
@@ -153,6 +152,25 @@ function woodBalancePixels(a, b) {
     if(delta>80)changed++;
     total++;
   }
+  return {changed,total,ratio:changed/Math.max(1,total)};
+}
+// The native left drawer slides out of x=51..297 in 390x844 and
+// occupies the middle screen y~330..515. Compare real pixels only.
+function drawerPixels(a,b) {
+  const x=PNG.sync.read(a),y=PNG.sync.read(b);
+  if(x.width!==y.width||x.height!==y.height)
+    throw Error('Drawer screenshots have different dimensions');
+  const w=x.width,h=x.height;
+  let changed=0,total=0;
+  for(let py=Math.floor(h*.34);py<Math.floor(h*.66);py+=3)
+    for(let px=Math.floor(w*.15);px<Math.floor(w*.75);px+=3) {
+      const k=(py*w+px)*4;
+      const delta=Math.abs(x.data[k]-y.data[k])+
+        Math.abs(x.data[k+1]-y.data[k+1])+
+        Math.abs(x.data[k+2]-y.data[k+2]);
+      if(delta>85)changed++;
+      total++;
+    }
   return {changed,total,ratio:changed/Math.max(1,total)};
 }
 function pixelChange(a, b) {
@@ -263,7 +281,22 @@ try {
     const paid=woodBalancePixels(opened.bytes,building.bytes);
     if(paid.changed<25 || paid.ratio<.034)
       throw Error(width+'x'+height+': Build did not change the real wood balance glyphs: '+paid.ratio.toFixed(3));
-    await page.waitForTimeout(2500); // allow PlayerPrefs.Save + browser storage sync
+    // User-requested real left-side construction drawer. It must stay
+    // CLOSED after Build, open only by tapping the narrow visible handle,
+    // and then collapse again without a second game command or cost.
+    await page.mouse.click(box.x+box.width*(26/390),box.y+box.height*.5);
+    await page.waitForTimeout(450);
+    const drawerOpened=await capture('real-left-construction-drawer-open');
+    const drawerSpread=drawerPixels(building.bytes,drawerOpened.bytes);
+    if(drawerSpread.ratio<.12)
+      throw Error(width+'x'+height+': left OBRA drawer did not expand from its hidden position: '+drawerSpread.ratio.toFixed(3));
+    await page.mouse.click(box.x+box.width*(26/390),box.y+box.height*.5);
+    await page.waitForTimeout(400);
+    const drawerClosed=await capture('real-left-construction-drawer-closed');
+    const drawerResidual=drawerPixels(building.bytes,drawerClosed.bytes);
+    if(drawerResidual.ratio>drawerSpread.ratio*.52)
+      throw Error(width+'x'+height+': left OBRA drawer remained over the city after collapsing');
+    await page.waitForTimeout(2500); // PlayerPrefs.Save and browser storage sync
     await page.reload({waitUntil:'domcontentloaded',timeout:60_000});
     await page.waitForFunction(()=>{
       const loading=document.querySelector('#unity-loading-bar');
@@ -281,7 +314,8 @@ try {
     manifest.resolutions.push({
       width, height, context: scene, sawmillPanelPixelChange: change,
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
-      screenshots: [before, opened, building, reloaded].map(({ filename, sha256 }) => ({ filename, sha256 })),
+      screenshots: [before, opened, building, drawerOpened, drawerClosed, reloaded].map(({ filename, sha256 }) => ({ filename, sha256 })),
+      collapsedByDefaultAndDrawerToggle: {opened:drawerSpread,closed:drawerResidual},
       woodBalanceBuildChange: paid, browserReloadWoodRetention: retained,
       successfulBuildClosedModal: closed,
       noPageError: true, noRequestFailures: true, topBarContrast: top,
