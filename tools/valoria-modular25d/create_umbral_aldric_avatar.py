@@ -50,9 +50,11 @@ def main():
         montage.paste(thumb,dest,thumb)
         drawer.text((dest[0],dest[1]+150),str(i)+" "+str(box[1]),fill=(235,219,185))
     montage.save(inspection/"aldric_crop_candidates.jpg",quality=92)
-    # 236px approved crop from Aldric's *own* provenance, already oriented
-    # around face and shoulders. Not a stylized imitation or WOS portrait.
-    crop=src.crop((138,16,374,252))
+    # The 512px original is APPROVED, but its historical crop box belongs
+    # to an earlier upstream portrait. Authentic source inspection found the
+    # face at y=130..440; crop 100..410 frames hair, eyes and shoulders.
+    # Not a stylized imitation or a WOS portrait.
+    crop=src.crop((100,130,410,440))
     crop=crop.resize((112,112),Image.Resampling.LANCZOS)
     # Slight warm midnight background is visible only where source was
     # transparent, providing contrast against the brass medallion.
@@ -95,7 +97,7 @@ def main():
       "source_path":SOURCE,"source_sha256":ORIGINAL_SHA,
       "source_provenance":"ALDRIC_BUST_PROVENANCE.json / already-approved Aldric head and shoulders",
       "original_cropped_pixels_preserved":True,
-      "crop_box_in_512":[138,16,374,252],
+      "crop_box_in_512":[100,130,410,440],
       "output_path":out.relative_to(ROOT).as_posix(),
       "output_sha256":hashlib.sha256(data).hexdigest(),
       "size_bytes":len(data),"size":[128,128],
