@@ -72,10 +72,19 @@ namespace Eldoria.Modular25D.Tests
                 "Four semantic settlement zones must instantiate original authored props");
             Assert.That((int)Member(world,"SettlementZonesPlaced"),Is.EqualTo(4));
             Assert.That((int)Member(world,"WorkshopWorkersPlaced"),Is.EqualTo(1));
-            Assert.NotNull(Modular25DArt.Sawyer(0),
+            // This NUnit asmdef intentionally has NO reference to Assembly-CSharp.
+            // Query the real public Sprite factory through reflection, preserving
+            // the experiment's assembly isolation and the exact original art.
+            var originalArtType=AppDomain.CurrentDomain.GetAssemblies()
+                .Select(a=>a.GetType("Eldoria.Experimentos.ValoriaModular25D.Modular25DArt",false))
+                .FirstOrDefault(t=>t!=null);
+            Assert.NotNull(originalArtType,"Original artist sprite factory not loaded");
+            var sawyerMethod=originalArtType.GetMethod("Sawyer",BindingFlags.Public|BindingFlags.Static);
+            Assert.NotNull(sawyerMethod);
+            Assert.NotNull(sawyerMethod.Invoke(null,new object[]{0}) as Sprite,
                 "Original artist-painted sawyer frame 0 must remain importable");
-            Assert.NotNull(Modular25DArt.Sawyer(1),
-                "Original artist-painted sawyer frame 1 must remain importable; PNG source cannot be replaced");
+            Assert.NotNull(sawyerMethod.Invoke(null,new object[]{1}) as Sprite,
+                "Original artist-painted sawyer frame 1 must remain importable; PNG cannot be replaced");
             var work=Member(world,"WorkshopAction") as Component;
             Assert.NotNull(work,"One original-art real workshop worker is required");
             Assert.IsFalse(work.gameObject.activeInHierarchy,"Unbuilt sawmill cannot be productive");
