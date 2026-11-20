@@ -41,3 +41,15 @@ jobs:
         if: always()
         run: |
           echo "This job does NOT run Unity, does NOT use windows-runner-heavy, and does NOT certify PlayMode, WebGL, iPhone, screenshots, memory or art."
+
+      - name: Preserve original sawmill alpha for reproducible visual diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-original-sawmill-${{ github.run_id }}
+          path: |
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png.meta
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sprite_manifest.json
+          retention-days: 7
+          if-no-files-found: error
