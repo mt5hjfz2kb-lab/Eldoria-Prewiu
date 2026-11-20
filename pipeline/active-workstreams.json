@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-19T12:01:31.172Z",
+  "updated_at": "2026-11-20T00:20:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10008,13 +10008,13 @@
     {
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
-      "owner": "chatgpt-modular25d-native-20261119",
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 2,
+      "write_scope_released": true,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
-      "status": "active",
-      "phase": "SANDBOX_NATIVE_QA_AND_RENDER",
+      "status": "available",
+      "phase": "HANDOFF_NEXT_CHAT_SOURCE_VISUAL_QA_WEBGL",
       "claimed_at": "2026-11-19T12:01:31.172Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-19: continúa, si necesitas el PC úsalo, no hay ningún otro trabajo ahora mismo activo; original request explicitly prohibits main game changes and requires isolated Unity proof.",
@@ -10025,16 +10025,23 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_approved": false,
       "device_qa": "pending",
       "delivery_definition": {
         "deliverable": "Bastion I standalone 2.5D modular scene with original premium sprites, sawmill real construction, characters and camera.",
         "evidence": "Exact branch HEAD Windows Unity 6000.3.23f1 compiled, PlayMode/captures/video and isolated WebGL build, Save/Reload proof; visual approval and physical iPhone gate separate.",
         "handoff": "Native screenshot/video artifact and exact SHA, build/link or blockers, no main gameplay or beta changes."
-      }
+      },
+      "ownership_history": [
+        {
+          "owner": "chatgpt-modular25d-native-20261119",
+          "revision": 1,
+          "reason": "Owner requested handoff to next chat after verifying 45 native Unity frames / 1 real PlayMode scenario; keep original art, isolated source and logs",
+          "at": "2026-11-20T00:20:00Z"
+        }
+      ],
+      "handoff_note": "Owner's next chat should claim SAME workstream, update owner/revision, keep branch scope, request Windows only when free, update guarded native workflow to match new owner/revision. See docs/valoria-modular-25d/HANDOFF_20261120.md on experimental branch. WebGL failed frozen terrain query tape; last native 44612966834."
     }
   ],
   "history": [
@@ -20465,11 +20472,11 @@
     "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
     "authorized_at": "2026-11-19T12:01:31.172Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
+    "current_workstream": null,
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "claimed_modular25d_native",
+    "status": "available_after_modular25d_owner_chat_handoff",
     "rules": [
       "No cancellation of ongoing Unity jobs or interruption of other writers.",
       "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
@@ -20532,6 +20539,7 @@
       "last_software_api_check": "Unity official 6000.3 TextureImporterSettings.spriteAlignment/spritePivot",
       "last_depth_previous_run": 44281717983,
       "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
-    }
+    },
+    "note": "PC safely released after latest completed native run 44612966834; next responsible chat must claim before native dispatch. No active Windows runs during handoff."
   }
 }
