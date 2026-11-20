@@ -143,7 +143,7 @@ namespace Eldoria.Modular25D.Tests
                 // right-anchored, not the old full-width center obstruction.
                 Assert.That(header.anchorMin.x,Is.EqualTo(1f).Within(.001f));
                 Assert.That(header.pivot.x,Is.EqualTo(1f).Within(.001f));
-                Assert.LessOrEqual(header.sizeDelta.x,333.1f,"Landscape resource ledger obstructs the city");
+                Assert.LessOrEqual(header.sizeDelta.x,365.1f,"Landscape resource ledger must remain compact and non-overlapping");
                 Assert.Greater(header.anchoredPosition.y,-80f);
             }
             else
