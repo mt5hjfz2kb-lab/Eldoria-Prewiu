@@ -75,7 +75,7 @@ function topRowStats(bytes) {
   // The newly top-pinned RESOURCE panels begin at reference y=8.
   // Compare only genuinely exposed grass pixels ABOVE that UI; sampling
   // y=8..15 would treat a dark resource capsule as a cropped world frame.
-  const rows=Math.min(7,Math.max(4,Math.floor(h*.008)));
+  const rows=Math.max(1,Math.floor(h/844)); // Above the 2-point safe-top inset.
   for(let y=0;y<rows;y+=2)for(let x=0;x<w;x+=2) {
     const i=(y*w+x)*4;
     const l=(png.data[i]+png.data[i+1]+png.data[i+2])/3;
@@ -307,7 +307,8 @@ try {
     const reloadReadiness=await awaitUnfadedWorld(page,width,height,'after-reload');
     const reloaded=await capture('real-after-browser-reload');
     const retained=woodBalancePixels(building.bytes,reloaded.bytes);
-    if(retained.ratio>.055)
+    const distinctFromStartingBalance=woodBalancePixels(before.bytes,reloaded.bytes);
+    if(retained.changed>=paid.changed*.5 || distinctFromStartingBalance.changed<paid.changed*.5)
       throw Error(width+'x'+height+': Browser reload lost or altered paid wood balance: '+retained.ratio.toFixed(3));
         if (errors.length || failures.length)
       throw Error(width + 'x' + height + ': browser errors: ' + [...errors, ...failures].slice(0, 10).join(' | '));
