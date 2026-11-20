@@ -153,13 +153,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 var cam=world.ViewCamera;
                 var home=Modular25DCameraInput.HomePosition;
                 var portrait=Modular25DCameraInput.HomeSizeForAspect(390f/844f);
-                var landscape=Modular25DCameraInput.HomeSizeForAspect(844f/390f);
+                var landscapeOrtho=Modular25DCameraInput.HomeSizeForAspect(844f/390f);
                 world.Apply(state);
                 if(world.WorkshopAction==null||world.WorkshopAction.gameObject.activeInHierarchy)
                     throw new Exception("Worker visible or missing at unbuilt sawmill");
                 Render(cam,output,report,"01-available-390x844",390,844,home,portrait);
                 Render(cam,output,report,"02-available-1170x2532",1170,2532,home,portrait);
-                Render(cam,output,report,"03-landscape-844x390",844,390,home,landscape);
+                Render(cam,output,report,"03-landscape-844x390",844,390,home,landscapeOrtho);
                 Render(cam,output,report,"04-bastion-closeup",1170,2532,new Vector3(-1.05f,2.15f,-30f),4.5f);
                 Render(cam,output,report,"05-available-sawmill-close",1170,2532,new Vector3(1.95f,-1.4f,-30f),4.6f);
 
