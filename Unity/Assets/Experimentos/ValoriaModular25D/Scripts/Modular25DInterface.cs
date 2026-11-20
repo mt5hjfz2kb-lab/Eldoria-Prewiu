@@ -519,19 +519,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static void InitializeArt()
         {
             if (slatePlate != null) return;
-            // Genuine licensed Vigilia art is used as reusable material skins, not
-            // as a copied layout. Both are 9-sliced with authored borders.
+            // The family is authored as five ORIGINAL reusable 9-slice PNGs
+            // with common medallion/brass palette and non-stretch corners.
+            // This is a genuine production asset pipeline, not a screenshot
+            // crop or four flat colored UI primitives. The bronze portrait
+            // comes from the existing licensed Vigilia kit, used legally
+            // without replacing the game's protected original textures.
             const string art="ValoriaModular25D/UI/";
-            slatePlate=Resources.Load<Sprite>(art+"slate_resource");
+            const string skins=art+"UmbralII/";
+            slatePlate=Resources.Load<Sprite>(skins+"dock_medallion");
+            resourcePlate=Resources.Load<Sprite>(skins+"resource_capsule");
+            parchmentPlate=Resources.Load<Sprite>(skins+"parchment_frame");
+            actionPlate=Resources.Load<Sprite>(skins+"green_action");
+            burgundyPlate=Resources.Load<Sprite>(skins+"burgundy_objective");
             portraitPlate=Resources.Load<Sprite>(art+"brass_portrait");
-            resourcePlate=Resources.Load<Sprite>(art+"slate_resource");
-            burgundyPlate=Resources.Load<Sprite>(art+"burgundy_action");
-            if(slatePlate==null||portraitPlate==null||burgundyPlate==null)
-                throw new InvalidOperationException("Umbral II: mandatory original UI atlas is missing");
-            parchmentPlate=MaterialSprite("Umbral antique vellum",Parchment,
-                ParchmentLight,AntiqueBrass,250,2);
-            actionPlate=MaterialSprite("Umbral mineral green CTA",Green,
-                new Color32(83,145,112,255),PaleGold,250,3);
+            if(slatePlate==null||resourcePlate==null||parchmentPlate==null||
+               actionPlate==null||burgundyPlate==null||portraitPlate==null)
+                throw new InvalidOperationException(
+                    "Umbral II: missing original scalable material artwork (5 authored panels + licensed portrait)");
             woodIcon=ResourceIcon("wood");
             stoneIcon=ResourceIcon("stone");
             foodIcon=ResourceIcon("food");
