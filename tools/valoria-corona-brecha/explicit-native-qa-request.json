@@ -1,0 +1,19 @@
+{
+  "schema": 5,
+  "branch": "experiment/corona-final-true-aspect-mobile-qa-20261120",
+  "source_base": "7909924524953769ad9eab6a6136b1b387b09f85",
+  "purpose": "Prove exact source mobile Corona UI after real Unity native PlayMode reported 27% incorrect resource aspect. Restore source proportions for all three independent resource cards, original Build teal button and both world nameplates. Keep player nick in the common velvet top ribbon and 45pt left hidden activity drawer with live canonical timer.",
+  "gates": [
+    "Full Unity 6.3 editor and PlayMode pass 1/1 (no threshold bypass)",
+    "Original premium resource 580:260 ratio matches runtime in portrait and landscape; painted nameplates 2.23:1 and Build CTA 2.23:1",
+    "Action: true Build cost, modal auto dismiss, task drawer hidden until tapped and opens/closes from left",
+    "Source-bound player nickname shown in same upper ribbon as 3 resources, correct long-name display and full status name",
+    "Unity WebGL Chrome 390x844 and 1170x2532 screenshots plus actual browser reload, no error",
+    "844x390 real touch pan pinch and Home, same scene/World meshes",
+    "No changes to main, real economy, rules, camera, save format, or combat; iPhone physical and artistic acceptance remain separate"
+  ],
+  "art_approved": false,
+  "iphone_tested": false,
+  "mechanics_changed": false,
+  "main_changed": false
+}
