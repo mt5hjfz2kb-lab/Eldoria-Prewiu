@@ -20,7 +20,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public static Vector3 HomePosition => new Vector3(.05f,-.40f,-30f);
         public static float HomeSizeForAspect(float aspect)
         {
-            return Mathf.Clamp(3.55f/Mathf.Max(.42f,aspect),4.2f,7.95f);
+            return Mathf.Clamp(3.55f/Mathf.Max(.42f,aspect),5.05f,7.95f);
         }
 
         void Start()

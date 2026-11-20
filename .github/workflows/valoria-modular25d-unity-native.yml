@@ -10,6 +10,8 @@ on:
       - 'tools/valoria-modular25d/isolate_webgl_resources.ps1'
       - 'tools/valoria-modular25d/browser_smoke.mjs'
       - 'tools/valoria-modular25d/browser_camera_smoke.mjs'
+      - 'tools/valoria-modular25d/verify_source.py'
+      - 'tools/valoria-modular25d/geometry_gate.py'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/EditMode/BastionIRealPlayModeTests.cs'

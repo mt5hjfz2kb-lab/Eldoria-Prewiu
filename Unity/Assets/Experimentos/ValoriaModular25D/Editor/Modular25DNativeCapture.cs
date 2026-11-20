@@ -264,6 +264,34 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             cam.transform.position=position;
             cam.orthographicSize=orthoSize;
             cam.aspect=width/(float)height;
+            if(name=="01-available-390x844"||name=="02-available-1170x2532"||
+               name=="03-landscape-844x390"||name=="08-sawmill-built-390x844"||
+               name=="09-sawmill-built-1170x2532")
+            {
+                // Previous tightly zoomed run 447295 cropped BOTH premium
+                // buildings despite a point-only static camera unit test.
+                // Assert exact native SpriteRenderer GPU-space bounds, never
+                // synthetic rectangles or a mock composite of the scene.
+                float halfH=cam.orthographicSize;
+                float halfW=halfH*cam.aspect;
+                float left=cam.transform.position.x-halfW+.12f;
+                float right=cam.transform.position.x+halfW-.12f;
+                float bottom=cam.transform.position.y-halfH+.12f;
+                float top=cam.transform.position.y+halfH-.12f;
+                foreach(var buildingName in new[]{"Bastion_I_unique","Aserradero_state"})
+                {
+                    var building=GameObject.Find(buildingName)?.GetComponent<SpriteRenderer>();
+                    if(building==null||building.sprite==null||!building.enabled)
+                        throw new Exception("Native premium sprite absent: "+buildingName);
+                    var aabb=building.bounds;
+                    if(aabb.min.x<left||aabb.max.x>right||
+                       aabb.min.y<bottom||aabb.max.y>top)
+                        throw new Exception("MOBILE_CROPPED_AUTHORED_BUILDING "+name+
+                            " "+buildingName+" bounds="+aabb+
+                            " camera="+cam.transform.position+
+                            " orthographicSize="+halfH);
+                }
+            }
             var temp=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
             var prevTarget=cam.targetTexture;
             var prevActive=RenderTexture.active;

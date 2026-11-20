@@ -55,7 +55,7 @@ class SpatialGate(unittest.TestCase):
     def test_both_buildings_framed_in_mobile_orthographic_camera(self):
         for width,height in [(390,844),(1170,2532),(844,390)]:
             aspect=width/height
-            size=min(7.95,max(4.2,3.55/max(.42,aspect)))
+            size=min(7.95,max(5.05,3.55/max(.42,aspect)))
             camera_centre=(.05,-.40)
             halfwidth=size*aspect
             # Real authored art widths at 96 px/world unit, not +/-1 fake bounds.
