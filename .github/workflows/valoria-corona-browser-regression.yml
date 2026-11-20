@@ -1,10 +1,9 @@
 name: Corona — browser-only causal regression on genuine Unity WebGL
+# This replays a fixed old Unity player SHA. The CURRENT living HUD has
+# different hit coordinates; automatically running a new test script against
+# old bytes creates false failures and is not a certification of current art.
+# Trigger manually only when a frozen-player regression is actually desired.
 on:
-  push:
-    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
-    paths:
-      - '.github/workflows/valoria-corona-browser-regression.yml'
-      - 'tools/valoria-modular25d/browser_smoke.mjs'
   workflow_dispatch:
 permissions:
   contents: read
