@@ -11,6 +11,9 @@ on:
 permissions:
   contents: read
   actions: read
+# GitHub concurrency preserves one running + one pending; a new candidate
+# replaces a pending baseline. Always prioritize the latest baseline proof,
+# then queue isolated A/B after baseline completion.
 concurrency:
   group: eldoria-modular25d-exclusive-unity-native
   cancel-in-progress: false
