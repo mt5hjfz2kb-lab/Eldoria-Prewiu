@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "d960008796702e1b2c0bfea4880de0a1302ea72b",
+  "source_before_request": "075e17fd271bcaf27ba2771b6b48dd2b56859a93",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
@@ -19,5 +19,10 @@
     "Native art acceptance not proven",
     "Safari physical iPhone NOT_TESTED",
     "Original high-fidelity concept atlas is a separate reference; exact Unity sprite sources are in CoronaBrecha folder"
-  ]
+  ],
+  "premium_art_revision": "Corona - 14 original imagegen-painted PNG sources (exact Git blob SHA) plus independent SVG source fallback",
+  "premium_original_png_count": 14,
+  "art_after_bake_check": "High fidelity assets are byte identical in tools/valoria-corona-brecha/premium and Unity Resources CoronaBrecha; no stock art, no screenshots of third-party games",
+  "previous_native_qa_run": 44802943006,
+  "quality_gate": "NEW EXACT SHA Unity 6000.3 proof for illustrated assets: 390x844 and 844x390 actual camera, real HUD/WebGL, no overdraw/clipped title or solid icon fallback, usable 9slice borders, canonical Build saved, Safari remains untested"
 }
