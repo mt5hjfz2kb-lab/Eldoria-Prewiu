@@ -31,7 +31,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static readonly Color32 Green = new Color32(80, 209, 195, 255);
         private static readonly Color32 Red = new Color32(184, 84, 120, 255);
 
-        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, identityPlate, navPlate, topVelvetPlate;
+        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, identityPlate, navPlate, topVelvetPlate, activityPanelPlate;
         private static Sprite woodIcon, stoneIcon, foodIcon, hammerIcon, cityIcon, taskIcon;
         private static Texture2D originalIconAtlas;
         private Modular25DGameplay gateway;
@@ -205,7 +205,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Hidden LEFT activity drawer: reuse the existing real quest
             // Button and live construction clock without adding a new
             // command or changing any resource/mission rules.
-            activityDrawer=Plate("Left activity drawer",rootTransform,parchmentPlate,
+            activityDrawer=Plate("Left activity drawer",rootTransform,activityPanelPlate,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(54f,0f),new Vector2(246f,185f));
             activityTitle=Label("TAREAS",activityDrawer,16,true,PaleGold,
@@ -977,6 +977,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(slatePlate!=null)return;
             topVelvetPlate=NeedCorona("top_velvet_ribbon");
+            activityPanelPlate=NeedCorona("activity_panel_wide");
             identityPlate=NeedCorona("identity_crest");
             slatePlate=NeedCorona("world_rune");
             resourcePlate=NeedCorona("resource_siglet");

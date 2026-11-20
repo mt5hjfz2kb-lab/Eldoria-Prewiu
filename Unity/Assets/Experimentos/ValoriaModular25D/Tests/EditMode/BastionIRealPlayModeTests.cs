@@ -251,6 +251,14 @@ namespace Eldoria.Modular25D.Tests
                 .FirstOrDefault(x=>x && x.gameObject.name=="Left activity drawer");
             Assert.NotNull(identity);Assert.NotNull(ribbon);
             Assert.NotNull(handle);Assert.NotNull(drawer);
+            var drawerSkin=drawer.GetComponent<Image>();
+            Assert.NotNull(drawerSkin);
+            Assert.NotNull(drawerSkin.sprite);
+            Assert.That(drawerSkin.sprite.name,Is.EqualTo("activity_panel_wide"),
+                "The left drawer must use a sculpted wide painting instead of squashing a square frame");
+            Assert.That(drawerSkin.sprite.rect.width,Is.EqualTo(720f).Within(.1f));
+            Assert.That(drawerSkin.sprite.rect.height,Is.EqualTo(500f).Within(.1f));
+            Assert.That(drawerSkin.type,Is.EqualTo(Image.Type.Simple));
             Assert.LessOrEqual(ribbon.rect.height,47f);
             var ribbonImage=ribbon.GetComponent<Image>();
             Assert.NotNull(ribbonImage);
