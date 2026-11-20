@@ -1,0 +1,16 @@
+{
+  "schema": 4,
+  "branch": "experiment/corona-final-resource-aspect-fixed-qa-20261120",
+  "source_base": "fcbcd73f61f9a99caf4ccb8db48be0b123100ba0",
+  "purpose": "Proof of the Unity QA regression repair observed on run44833570082 (actual 27% premium resource aspect mismatch). Genuine Unity GameView must render correctly scaled slim one-row player/resource banner with 1512px velvet source, left hidden wide obsidian task drawer, and original 3 real actions in six future bottom slots.",
+  "requirements": [
+    "Actual Unity 6.3 native render 42+ real frames",
+    "Real EditMode-to-PlayMode test 1/1: all painted source materials, 3 resource capsules exact source aspect in portrait/landscape, real PlayerState nickname",
+    "Interactive left drawer closed by default, reveals authentic canonical sawmill time/progress after Build, closes again",
+    "True command Build deduct 80 wood and auto-dismiss panel, FileStateStore saves and reloads, camera Home",
+    "Native WebGL Chrome screenshots 390x844 & 1170x2532, canonical wood glyph 230->150, Browser storage reload",
+    "Chrome 844x390 touch pan/pinch/home, real screenshots and source SHA hashes",
+    "No main or game rules edits; physical iPhone and artistic sign-off separate"
+  ],
+  "never_claim_completed_without_artifact": true
+}
