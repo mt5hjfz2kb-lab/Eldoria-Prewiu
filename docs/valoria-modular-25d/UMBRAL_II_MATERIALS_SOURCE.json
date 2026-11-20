@@ -5,6 +5,7 @@
   "gameplay_changed": false,
   "claims_unity_qa": false,
   "source": "generate_umbral_art_kit.py",
+  "revision": "Umbral II commercial readability pass - edge-only decoration",
   "sprites": [
     {
       "name": "parchment_frame",
@@ -28,8 +29,8 @@
       ],
       "border": 16,
       "guid": "eb0a5167dc243f06e85cf29d8e434610",
-      "sha256": "01f3eccf0ee8a2f27f7ce3060358d026e89e4c712cda5776d9385a9ff9c53d81",
-      "bytes": 9946,
+      "sha256": "7674386c39d495d0d0a8fdf565c5f04f60f4ba61fa05965fa97aa6684edbbdb6",
+      "bytes": 6646,
       "artist_source": "original deterministic Pillow 2.5D UI ornament",
       "visual_approved": false,
       "unity_tested": false
@@ -42,8 +43,8 @@
       ],
       "border": 18,
       "guid": "669f57495f8b4f473e57d34381c3022f",
-      "sha256": "5a848efee79c0e0807ceef24f9d7ad96526448e259ee49189ee751341c635be3",
-      "bytes": 11482,
+      "sha256": "13ab48a586c41fab8bd4f6f03d51774c6a2d30ef04bb2fcdd64ad29bacc962d1",
+      "bytes": 7552,
       "artist_source": "original deterministic Pillow 2.5D UI ornament",
       "visual_approved": false,
       "unity_tested": false
@@ -56,8 +57,8 @@
       ],
       "border": 18,
       "guid": "bad05488e0f7b456561bc1bac4650509",
-      "sha256": "e7ba101d4e3dfb7607a1b237ac6e64aaec0b9abe17bc183fabc4e72f57ba2744",
-      "bytes": 10382,
+      "sha256": "92788778f8556d2b663346436175c16a79283fdf4edf2c916c56601e819dc914",
+      "bytes": 7473,
       "artist_source": "original deterministic Pillow 2.5D UI ornament",
       "visual_approved": false,
       "unity_tested": false
@@ -70,8 +71,8 @@
       ],
       "border": 18,
       "guid": "e1817b21ab5438efde0d91bc5e45cdf8",
-      "sha256": "ac102958b8b58c12889e87a0ddfe620742ef1125264b1749eaa7947881670dd6",
-      "bytes": 10423,
+      "sha256": "f2f3f6b58341135e5b83945cc6096c7195cf3a960d24f06fb1ef5308f48eec61",
+      "bytes": 6824,
       "artist_source": "original deterministic Pillow 2.5D UI ornament",
       "visual_approved": false,
       "unity_tested": false
