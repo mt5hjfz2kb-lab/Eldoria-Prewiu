@@ -344,6 +344,9 @@ namespace Eldoria.Modular25D.Tests
                 "A scheduled build cannot complete instantly");
             Assert.That((long)Member(after,"BuildingCompletesUtcTicks"),Is.GreaterThan(0));
             Assert.IsFalse(build.interactable,"Second click must not double-spend");
+            Assert.That(Member(ui,"cachedSawmillPhase").ToString(),
+                Is.EqualTo("UNDER_CONSTRUCTION"),
+                "Floating 2.5D nameplate must track canonical BUILD phase; no stale fixed completed/available position");
             Assert.IsTrue(progress.gameObject.activeInHierarchy,
                 "After authoritative Build the real progress track must be visible");
             Assert.That(fill.sizeDelta.x,Is.GreaterThanOrEqualTo(2f));

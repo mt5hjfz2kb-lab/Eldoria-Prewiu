@@ -49,6 +49,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Button action;
         private Image woodAccent;
         private float nextTick, noticeExpires;
+        // Read-only presentation cache of the EXISTING canonical construction
+        // phase. Avoid Snapshot() per frame in world-space nameplate tracking.
+        private ParcelBuildingState cachedSawmillPhase=ParcelBuildingState.NOT_BUILT;
         private int lastWidth = -1, lastHeight = -1;
         private Rect lastSafeArea;
 
@@ -356,9 +359,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             level.text = "BASTIÓN " + s.BastionLevel;
             if(bastionTagText!=null)
                 bastionTagText.text="BASTIÓN · "+s.BastionLevel;
+            cachedSawmillPhase=ParcelBuildingStates.For(s,"sawmill");
             if(sawmillTag!=null && sawmillTagText!=null)
             {
-                var building=ParcelBuildingStates.For(s,"sawmill");
+                var building=cachedSawmillPhase;
                 sawmillTagText.text=building==ParcelBuildingState.BUILT
                     ? "ASERRADERO · "+s.SawmillLevel
                     : building==ParcelBuildingState.UNDER_CONSTRUCTION
@@ -436,16 +440,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var baseRect=hudCanvas.GetComponent<RectTransform>();
             bool hiddenByPanel=(buildingSheet!=null&&buildingSheet.activeSelf)||
                                (statusSheet!=null&&statusSheet.gameObject.activeSelf);
-            // On the genuine 390x844 build the old coordinates placed
-            // BASTIÓN on top of the civic well and ASERRADERO far below the
-            // actual footprint. Bind to the western keep tower and near the
-            // sawmill parcel edge instead; these are world coordinates, not
-            // fixed screenshot pixels, and continue to track pan/zoom.
-            // The north-west anchor is also left of the quest overlay.
+            // Actual three-state WebGL evidence: the unbuilt plot finishes
+            // near screen y~570, while the completed sawmill occupies screen
+            // y~450..625. One fixed plaque would overlay the built workshop.
+            // Above the western keep tower, the Bastion label also avoids
+            // the civic well and the quest overlay at the upper right.
             PlaceWorldNameplate(bastionTag,baseRect,
                 new Vector3(-1.63f,3.05f,0f),hiddenByPanel);
+            float millFootY=cachedSawmillPhase==ParcelBuildingState.BUILT
+                ? -3.86f : cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION
+                    ? -3.45f : -2.90f;
             PlaceWorldNameplate(sawmillTag,baseRect,
-                new Vector3(.96f,-2.90f,0f),hiddenByPanel);
+                new Vector3(.96f,millFootY,0f),hiddenByPanel);
         }
 
         private void PlaceWorldNameplate(RectTransform nameplate,RectTransform canvasRect,
