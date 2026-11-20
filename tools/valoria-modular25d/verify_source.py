@@ -49,21 +49,36 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertTrue((BASE / "Scenes/BastionI_Modular25D.unity.meta").is_file())
 
     def test_premium_ui_assets_keep_vigilia_original_bytes_and_licenses(self):
-        root=ROOT/"Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt"
-        ui=BASE/"Resources/ValoriaModular25D/UI"
+        # The isolated static job sparse-checks out the experiment, NOT the
+        # canonical game art. Verify byte-exact copies by original Git blob
+        # hashes, without including or changing the other workstream's files.
+        owned=BASE/"Resources/ValoriaModular25D/UI"
+        canonical_blob_sha1={
+            "slate_resource.png":"eb55936d2e3089aca10d4535bcab2d837fd6472e",
+            "brass_portrait.png":"d519dfee8c4c6719feae47423e6023b5f5783e35",
+            "profile_plate.png":"51dd2c0399d42e85e3a783b1470ab20b66f030a8",
+            "burgundy_action.png":"6b6928a2c93053c16b94fbc6b22b03aa3ddce3c9",
+            "Fonts/CormorantGaramond-SemiBold.ttf":"c30cb04d87c0abdb7bb86db19272d6790ed46758",
+            "Fonts/SourceSans3-Semibold.ttf":"4aff9a3aea9b5f1e746f03ed40e1b293740dc8a2",
+            "Fonts/OFL.txt":"5b8e7415d1dfb3e3167a837c523a90f089903202",
+            "Fonts/OFL_SOURCE_SANS_3.txt":"22c601b82f29fc6bb801445098c9f23ffdca4f94",
+        }
+        for rel,sha in canonical_blob_sha1.items():
+            file=owned/rel
+            data=file.read_bytes()
+            git_blob=(f"blob {len(data)}\\0").encode("utf-8")+data
+            self.assertEqual(hashlib.sha1(git_blob).hexdigest(),sha,
+                             "Licensed original artwork/font has been altered: "+rel)
+            self.assertTrue(Path(str(file)+".meta").is_file())
+            self.assertRegex(guid(Path(str(file)+".meta")),r"^[0-9a-f]{32}$")
         for name in ("slate_resource.png","brass_portrait.png","profile_plate.png","burgundy_action.png"):
-            original=root/"PremiumSurfaces"/name
-            copy=ui/name
-            self.assertEqual(copy.read_bytes(),original.read_bytes())
-            self.assertIn("spriteBorder:",content(ui/(name+".meta")))
-            self.assertNotEqual(guid(ui/(name+".meta")),guid(Path(str(original)+".meta")))
-        for name in ("CormorantGaramond-SemiBold.ttf","SourceSans3-Semibold.ttf"):
-            original=root/"Fonts"/name
-            copy=ui/"Fonts"/name
-            self.assertEqual(copy.read_bytes(),original.read_bytes())
-            self.assertNotEqual(guid(Path(str(copy)+".meta")),guid(Path(str(original)+".meta")))
-        for name in ("OFL.txt","OFL_SOURCE_SANS_3.txt"):
-            self.assertEqual((ui/"Fonts"/name).read_bytes(),(root/"Fonts"/name).read_bytes())
+            self.assertIn("spriteBorder:",content(owned/(name+".meta")))
+        self.assertNotEqual(guid(owned/"slate_resource.png.meta"),
+                            "90ec0b5c9a2b463194f198a623e5e36c")
+        self.assertNotEqual(guid(owned/"Fonts/CormorantGaramond-SemiBold.ttf.meta"),
+                            "f80a1bd0b2b74402a57ff14cfe73040a")
+        self.assertNotEqual(guid(owned/"Fonts/SourceSans3-Semibold.ttf.meta"),
+                            "e34ced249ba448679a6bfe93ba5dc4f4")
         skin=content(SCRIPTS/"Modular25DInterface.cs")
         self.assertIn("image.type=Image.Type.Sliced;",skin)
         self.assertIn("graphic.type=Image.Type.Sliced;",skin)
