@@ -15,6 +15,11 @@ on:
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGround.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DArt.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGameplay.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWalker.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/**'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png'
   workflow_dispatch:

@@ -60,3 +60,9 @@ Candidato siguiente: `tools/valoria-modular25d/isolate_webgl_resources.ps1` arch
 - **Web:** compilación WebGL en scratch y navegador real con HUD/clics; tamaño de transferencia informado, recarga de browser y memoria/RAM revisadas, URL alojada solo con permiso y en destino aislado.
 - **iPhone:** prueba física independiente en Safari, estabilidad, memoria, FPS, controles y orientación. No declarar completado por Chromium ni por NUnit de Editor.
 - **Entrega:** último commit SHA, run, PNG/video/NUnit/logs/manifest con SHA256, diferencias respecto a la prueba anterior, puntos abiertos y ningún cambio en `main`.
+
+## Revisión de caminos 20/11: banda gris demasiado continua
+
+El WebGL 195eebb, ensayado en Chromium con prueba aislada 44705482301, conserva la interacción y la persistencia del Aserradero después de recargar. Su imagen auténtica a 390×844 muestra una franja de adoquines que se lee más como superficie continua clara que como camino orgánico. El PNG `OrganicCobbleRoad` contiene realmente piedras y bordes de hierba, pero su proyección sobre la cinta de malla pierde transición lateral.
+
+Candidato posterior: `Modular25DLandscape.AddRoad` conserva las dos splines y las texturas originales, añadiendo alpha en **9 vértices transversales** con ruido espacial determinista para que ambos bordes se disuelvan gradualmente en el terreno. Pavimento y vía de tierra reciben opacidades distintas; no se genera una nueva imagen de ciudad ni se cambian reglas. La prueba PlayMode exige dos mallas con `colors32`, bancos a alpha cero y centro legible. **No llamar mejora aprobada hasta comparar capturas auténticas del nuevo SHA y verificar navegador móvil.**

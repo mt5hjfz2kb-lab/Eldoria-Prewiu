@@ -83,6 +83,22 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(land);
             Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(2));
             Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(2));
+            var pathMeshes=land.GetComponentsInChildren<MeshFilter>(true);
+            Assert.That(pathMeshes.Length,Is.EqualTo(2),
+                "Both artistic road ribbons must remain separate world meshes");
+            foreach(var road in pathMeshes)
+            {
+                Assert.NotNull(road.sharedMesh);
+                var edgeAlpha=road.sharedMesh.colors32;
+                Assert.That(edgeAlpha.Length,Is.EqualTo(road.sharedMesh.vertexCount),
+                    "Every original road mesh vertex must carry real alpha");
+                Assert.That(edgeAlpha[0].a,Is.EqualTo(0),
+                    "Road must fade fully into grass at outer bank");
+                Assert.That(edgeAlpha[4].a,Is.GreaterThan(110),
+                    "Paved centre must remain readable and continuous");
+                Assert.That(edgeAlpha[8].a,Is.EqualTo(0),
+                    "Opposite bank must fade without a rectangular platform");
+            }
             var sceneCanvas=world.GetComponentsInChildren<Canvas>(true);
             Assert.That(sceneCanvas.Count(x=>x.enabled && x.gameObject.activeInHierarchy),
                 Is.EqualTo(1),"Only compact modular HUD should be active");

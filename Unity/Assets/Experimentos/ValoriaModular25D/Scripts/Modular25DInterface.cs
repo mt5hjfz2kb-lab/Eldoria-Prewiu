@@ -78,9 +78,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             build=MakeButton("Execute canonical Build command",body,"CONSTRUIR",
                 new Vector2(.5f,.0f),new Vector2(0,36),new Vector2(232,49),
                 ()=>gateway.BuildSawmill());
-            message=MakeLabel("",canvasObj.transform,12,Gold,
+            message=MakeLabel("",canvasObj.transform,13,Ivory,
                 new Vector2(0,-155),new Vector2(360,28),new Vector2(.5f,1));
             feedbackRect=message.rectTransform;
+            // No additional floating opaque panel: a discreet 1-pixel text
+            // shadow preserves legibility over painted grass and bright paths.
+            var feedbackShade=message.gameObject.AddComponent<Shadow>();
+            feedbackShade.effectColor=new Color(.035f,.041f,.035f,.89f);
+            feedbackShade.effectDistance=new Vector2(1f,-1f);
+            feedbackShade.useGraphicAlpha=true;
             panel.SetActive(false);
             UpdateResponsiveLayout();
         }

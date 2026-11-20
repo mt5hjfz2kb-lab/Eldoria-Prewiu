@@ -71,8 +71,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(1.95f,-2.55f)};
             // Keep both branches legible but reduce their over-wide grey ribbons.
             // Their spline geometry, world-space UVs and hit-tested entrances stay.
-            AddRoad("Imperial Way — original illustrated paving",main,1.47f,imperialMat);
-            AddRoad("Haulers' path — compacted earth and gravel",lumber,1.26f,earthMat);
+            AddRoad("Imperial Way — original illustrated paving",main,1.47f,imperialMat,true);
+            AddRoad("Haulers' path — compacted earth and gravel",lumber,1.26f,earthMat,false);
 
             var keep=MakeFootprint("Bastion",new Color(.49f,.41f,.31f,1),
                 new Color(.74f,.69f,.52f,1),true);
@@ -189,7 +189,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             return tex;
         }
 
-        void AddRoad(string name,Vector2[] control,float width,Material material)
+        void AddRoad(string name,Vector2[] control,float width,Material material,bool cobbled)
         {
             const int Steps=8,Across=9;
             int samples=(control.Length-1)*Steps+1;
@@ -208,6 +208,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             var vtx=new Vector3[samples*Across];
             var uv=new Vector2[vtx.Length];
+            var edgeColor=new Color32[vtx.Length];
             var tris=new int[(samples-1)*(Across-1)*6];
             float along=0;
             for(int i=0;i<samples;i++)
@@ -226,6 +227,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     Vector2 p=spine[i]+normal*offset;
                     vtx[index]=new Vector3(p.x,p.y,-.075f);
                     uv[index]=new Vector2(u,along/5.5f);
+                    // An original painted tile alone produced a continuous
+                    // light-grey strip, almost like a river in 390x844. Blend
+                    // actual path stones with neighbouring olive grass at
+                    // the banks, without altering the artist's PNG or the
+                    // spline geometry. Vertex alpha is read by Sprites/Default.
+                    float bank=Mathf.Abs(u-.5f)*2f;
+                    float feather=1f-Sm(.37f,.98f,bank);
+                    float erosion=N(p.x*1.7f+u*4.3f,p.y*1.5f+u*6.1f,721);
+                    float patches=N(p.x*4.1f,p.y*3.2f+u*5.1f,203);
+                    float ink=(cobbled ? .71f : .57f)+.19f*erosion+.09f*patches;
+                    float alpha=Mathf.Clamp01(feather*ink);
+                    edgeColor[index]=(Color32)new Color(1f,1f,1f,alpha);
                 }
             }
             int idx=0;
@@ -236,7 +249,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 tris[idx++]=a;tris[idx++]=b;tris[idx++]=a+1;
                 tris[idx++]=a+1;tris[idx++]=b;tris[idx++]=b+1;
             }
-            var mesh=new Mesh{name=name,vertices=vtx,uv=uv,triangles=tris};
+            var mesh=new Mesh{name=name,vertices=vtx,uv=uv,colors32=edgeColor,triangles=tris};
             mesh.RecalculateBounds();
             meshes.Add(mesh);
             var obj=new GameObject(name);
