@@ -157,6 +157,17 @@ namespace Eldoria.Modular25D.Tests
                     "One authored UI material lost its 9-slice border "+item);
             }
 
+            var aldric=Resources.Load<Sprite>("ValoriaModular25D/UI/UmbralII/aldric_avatar");
+            Assert.NotNull(aldric,"The original Sir Aldric headshot must be imported for the functional city HUD");
+            var actualFace=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Authentic Sir Aldric character portrait");
+            Assert.NotNull(actualFace,"No character headshot displayed in Umbral II");
+            var actualFaceImage=actualFace.GetComponent<Image>();
+            Assert.NotNull(actualFaceImage);
+            Assert.That(actualFaceImage.sprite,Is.EqualTo(aldric),
+                "The displayed identity avatar is not the source-certified Aldric image");
+            Assert.That(actualFaceImage.raycastTarget,Is.False,
+                "Decorative portraits must not intercept taps");
             if(Screen.width>Screen.height)
             {
                 // A separate actual Chromium landscape screenshot checks the
