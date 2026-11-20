@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "67f647bd4d8952f9c55c92c33854ea6cb864a8ba",
+  "source_before_request": "ba0ef3de5f55b5c65d063fe5b973712bc3699281",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
@@ -24,11 +24,17 @@
   "premium_original_png_count": 14,
   "art_after_bake_check": "High fidelity assets are byte identical in tools/valoria-corona-brecha/premium and Unity Resources CoronaBrecha; no stock art, no screenshots of third-party games",
   "previous_native_qa_run": 44802943006,
-  "quality_gate": "Exact-HEAD Unity scene camera and real PlayMode; six actual premium pictograms + un-sliced readability, no text collision with title/ring, real Build (230 to 150 wood), persistent file reload, Chromium 390x844 and landscape pan/pinch, no iPhone claim",
+  "quality_gate": "Exact-HEAD authored Corona UI production: true premium 86x80 individual medallions without nested 42px icons, short readable obsidian world labels, modal chrome hides/nav restores, no overlap on mobile, native Unity Camera.Render + PlayMode building and save, isolated WebGL Chromium 390x844 1170x2532 844x390 pan/pinch; no device or art approval from CI.",
   "visual_acceptance_revision": "Corona polished illustrated UI after transparent gutter normalization, center enamel writing-field, un-sliced source image material",
   "test_prior_failures": "Image.Type.Sliced compressed central illustrated art to a line at 390x844. Actual source now uses Type.Simple with full-alpha-cropped original PNG visual, preserved original premium source.",
   "previous_native_pending_run": 44803984603,
   "actual_source_qa_goal": "Real Unity native capture + GameView/PlayMode authentic six premium icons and mobile UI panels, original canonical Build and file reload; WebGL Chrome portrait/landscape with tapping, drag and pinch; verify no title truncation or false color bars; no physical iPhone claim",
   "panel_layout_proof": "docs/valoria-modular-25d/CORONA_BRECHA_ART_DIRECTION_20261120.md",
-  "replaces_stale_request": 44805129776
+  "replaces_stale_request": 44805129776,
+  "previous_browser_failure": "Caused by wrong ROI in browser_smoke: false 0.000 while real 230->150; corrected and verified in independent real browser run 44807702613",
+  "previous_browser_retest_success": 44807702613,
+  "technical_revision": "Corona final native gate after screenshot-grounded visual fix and real browser ROI regression",
+  "requested_on": "2026-11-20",
+  "art_approved": false,
+  "iphone_tested": false
 }
