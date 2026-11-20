@@ -71,7 +71,11 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 function topRowStats(bytes) {
   const png=PNG.sync.read(bytes), w=png.width, h=png.height;
   let edge=0,edgeN=0,center=0,centerN=0;
-  const edgeW=Math.max(6,Math.floor(w*.025));
+  // The real slim 46pt economy RIBBON begins 2px below the physical
+  // top and ends only 3px before either side. Its dark enamel occupies
+  // the former 2.5%-wide "corner grass" probes. Sample the true outer
+  // 0.4% strips instead, which are outside the real uGUI ribbon.
+  const edgeW=Math.max(2,Math.floor(w*.004));
   // The newly top-pinned RESOURCE panels begin at reference y=8.
   // Compare only genuinely exposed grass pixels ABOVE that UI; sampling
   // y=8..15 would treat a dark resource capsule as a cropped world frame.
@@ -252,8 +256,13 @@ try {
     // at both edges. Absolute black pixels are not evidence of clipping:
     // the 44697658660 browser failure was a partially faded game frame.
     const top=topRowStats(before.bytes);
-    if(top.edgeMinusCenter>19)
-      throw Error(width+'x'+height+': HUD top edge appears cropped: '+
+    // The center top is INTENTIONALLY dark due to the full-width
+    // original player/resources ribbon, unlike the old bare-grass HUD.
+    // Comparing dark center against bright edges would falsely flag
+    // it as clipped. The genuine outside 0.4% grass must stay bright
+    // and the separate topPinnedResources test must see painted UI.
+    if(top.edgeLuma<78)
+      throw Error(width+'x'+height+': genuine exterior top-world pixels are dark or cropped: '+
         JSON.stringify(top));
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
     // Six-slot HUD: OBRAS occupies the last stable cell (slot 5).
