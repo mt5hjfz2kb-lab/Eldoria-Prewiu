@@ -66,7 +66,7 @@ class SandboxSourceContracts(unittest.TestCase):
         for rel,sha in canonical_blob_sha1.items():
             file=owned/rel
             data=file.read_bytes()
-            git_blob=(f"blob {len(data)}\\0").encode("utf-8")+data
+            git_blob=(f"blob {len(data)}\0").encode("utf-8")+data
             self.assertEqual(hashlib.sha1(git_blob).hexdigest(),sha,
                              "Licensed original artwork/font has been altered: "+rel)
             self.assertTrue(Path(str(file)+".meta").is_file())
