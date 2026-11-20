@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "requested_on": "2026-11-20",
+  "purpose": "Run native Unity render, PlayMode and isolated WebGL for Umbral II commercial style and source sprite import fallback after resolving CS0122/CS0103 assembly-boundary failure.",
+  "source_before_request": "60a6e087e299368f01e6bdbc733ea4782cf42060",
+  "previous_failed_run": 44756055539,
+  "script_scope": "existing Bastion I modular experiment",
+  "no_paid_assets": true,
+  "overwrite_main": false
+}
