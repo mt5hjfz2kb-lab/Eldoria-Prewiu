@@ -84,6 +84,35 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn("graphic.type=Image.Type.Sliced;",skin)
         self.assertIn("Resources.Load<Font>",skin)
 
+    def test_original_sawyer_binary_textasset_aliases(self):
+        directory=BASE/"Resources/ValoriaModular25D"
+        proof_path=ROOT/"docs/valoria-modular-25d/WORKER_SAW_BINARY_TEXTASSET_PROOF.json"
+        proof=json.loads(proof_path.read_text(encoding="utf8"))
+        self.assertTrue(proof["source_assets_unchanged"])
+        self.assertFalse(proof["engine_verified"],"Do not invent Unity verification")
+        self.assertEqual(len(proof["frames"]),2)
+        cs=content(SCRIPTS/"Modular25DArt.cs")
+        self.assertIn('Resources.Load<TextAsset>("ValoriaModular25D/"+key+"_png")',cs)
+        self.assertIn("ImageConversion.LoadImage(tex,packed.bytes,false)",cs)
+        names=set()
+        for entry in proof["frames"]:
+            name=entry["name"]
+            names.add(name)
+            original=(directory/(name+".png")).read_bytes()
+            packed=(directory/(name+"_png.bytes")).read_bytes()
+            self.assertEqual(packed,original,"Alias differs from original artist PNG: "+name)
+            self.assertEqual(hashlib.sha256(packed).hexdigest(),
+                             entry["original_and_textasset_sha256"])
+            self.assertEqual((entry["geometry"]["width"],entry["geometry"]["height"]),(96,96))
+            self.assertEqual(entry["geometry"]["color_type"],6)
+            self.assertTrue(entry["source_pixels_unchanged"])
+            self.assertEqual(guid(directory/(name+"_png.bytes.meta")),
+                             entry["textasset_guid"])
+            self.assertIn("TextScriptImporter:",content(directory/(name+"_png.bytes.meta")))
+            self.assertNotEqual(guid(directory/(name+".png.meta")),
+                                guid(directory/(name+"_png.bytes.meta")))
+        self.assertEqual(names,{"worker_saw_0","worker_saw_1"})
+
     def test_original_two_frame_sawyer_art_manifest_and_import(self):
         directory=BASE/"Resources/ValoriaModular25D"
         entries={p["name"]:p for p in
