@@ -92,15 +92,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             // Two contextual, accessible actions; no false shortcuts to
             // heroes/world/bag until the gameplay genuinely exposes them.
-            inspect = ButtonPlate("Inspect sawmill", rootTransform, "ASERRADERO",
-                slatePlate, new Vector2(0f, 0f), new Vector2(0f, 0f),
-                new Vector2(12f, 45f), new Vector2(153f, 53f), OpenSawmill).GetComponent<RectTransform>();
-            AccentHairline("Available action", inspect, new Color32(129, 184, 163, 255),
-                new Vector2(-74f, 0f), new Vector2(3f, 35f));
-            center = ButtonPlate("Center camera", rootTransform, "CENTRAR",
-                slatePlate, new Vector2(1f, 0f), new Vector2(1f, 0f),
-                new Vector2(-12f, 45f), new Vector2(113f, 53f),
-                () => GetComponent<Modular25DCameraInput>().Home()).GetComponent<RectTransform>();
+            // Commercial strategy-game grammar: three illustrated action tiles
+            // and one honest contextual task, not an app-style navigation bar.
+            // Every available action has a real behaviour from the sandbox.
+            inspect = DockButton("Inspect sawmill",rootTransform,"ASERRADERO",woodIcon,
+                new Vector2(0f,0f),new Vector2(0f,0f),OpenSawmill);
+            center = DockButton("Center camera",rootTransform,"CIUDAD",portraitPlate,
+                new Vector2(1f,0f),new Vector2(1f,0f),
+                () => GetComponent<Modular25DCameraInput>().Home());
+            statusDock = DockButton("Inspect city status",rootTransform,"ESTADO",stoneIcon,
+                new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
+            objective=ButtonPlate("Current real construction objective",rootTransform,"",
+                burgundyPlate,new Vector2(1f,1f),new Vector2(1f,1f),
+                new Vector2(-12f,-122f),new Vector2(172f,50f),OpenSawmill)
+                .GetComponent<RectTransform>();
+            // A real progression prompt, not a fictional quest/reward.
+            Label("PRÓXIMO PASO",objective,10,true,PaleGold,TextAnchor.MiddleLeft,
+                new Vector2(0f,11f),new Vector2(137f,16f));
+            objectiveText=Label("ASERRADERO · 0/1",objective,12,false,WarmWhite,
+                TextAnchor.MiddleLeft,new Vector2(0f,-8f),new Vector2(141f,24f));
 
             // Context sheet uses warm architectural parchment, a real sprite
             // from the experiment, and original data. Not a generic modal.
@@ -145,6 +155,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             closeText.fontSize = 25;
             buildingSheet.SetActive(false);
 
+            statusSheet=Plate("Valoria state parchment",rootTransform,parchmentPlate,
+                new Vector2(.5f,0f),new Vector2(.5f,0f),
+                new Vector2(0f,112f),new Vector2(330f,170f));
+            Label("ESTADO DE VALORIA",statusSheet,23,true,DarkInk,TextAnchor.MiddleCenter,
+                new Vector2(0f,57f),new Vector2(278f,28f));
+            AccentHairline("State divider",statusSheet,AntiqueBrass,
+                new Vector2(0f,35f),new Vector2(281f,1.5f));
+            stateSummary=Label("",statusSheet,14,false,DarkInk,TextAnchor.MiddleLeft,
+                new Vector2(0f,-15f),new Vector2(278f,83f));
+            var closeStatus=ButtonPlate("Close state",statusSheet,"×",slatePlate,
+                new Vector2(1f,1f),new Vector2(.5f,.5f),new Vector2(-27f,-22f),
+                new Vector2(45f,45f),()=>statusSheet.gameObject.SetActive(false));
+            closeStatus.GetComponentInChildren<Text>().fontSize=23;
+            statusSheet.gameObject.SetActive(false);
+
             noticeRoot = Plate("Temporary canonical feedback", rootTransform, slatePlate,
                 new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
                 new Vector2(324f, 35f));
@@ -179,7 +204,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void OpenSawmill()
         {
             if (buildingSheet == null) return;
+            if(statusSheet!=null)statusSheet.gameObject.SetActive(false);
             buildingSheet.SetActive(true);
+            Refresh(gateway.Snapshot());
+        }
+
+        public void OpenStatus()
+        {
+            if(statusSheet==null)return;
+            if(buildingSheet!=null)buildingSheet.SetActive(false);
+            statusSheet.gameObject.SetActive(true);
             Refresh(gateway.Snapshot());
         }
 
@@ -223,6 +257,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             stoneValue.text = s.Resources.Stone.ToString("N0");
             foodValue.text = s.Resources.Food.ToString("N0");
             woodAccent.color = s.Resources.Wood < SliceRules.SawmillWoodCost ? Red : AntiqueBrass;
+            if(objectiveText!=null)
+                objectiveText.text=s.SawmillLevel>0?"ASERRADERO · 1/1":
+                    s.BuildingCompletesUtcTicks>0?"OBRA EN CURSO":"ASERRADERO · 0/1";
+            if(stateSummary!=null)
+                stateSummary.text="Bastión " + s.BastionLevel + "  ·  Aserradero " + s.SawmillLevel +
+                    "\nMadera: " + s.Resources.Wood.ToString("N0") +
+                    "   Piedra: " + s.Resources.Stone.ToString("N0") +
+                    "\nComida: " + s.Resources.Food.ToString("N0");
             if (buildingSheet == null || !buildingSheet.activeSelf) return;
             var phase = ParcelBuildingStates.For(s, "sawmill");
             cost.text = "MADERA · " + SliceRules.SawmillWoodCost.ToString("N0") + " necesarias";
@@ -289,16 +331,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 resourceChips[i].anchoredPosition = new Vector2(i * (cw + 6f), 0f);
             }
 
-            inspect.anchorMin = inspect.anchorMax = new Vector2(0f, 0f);
-            inspect.pivot = new Vector2(0f, 0f);
-            inspect.localScale = Vector3.one;
-            inspect.sizeDelta = new Vector2(153f, 53f);
-            inspect.anchoredPosition = new Vector2(12f, bottom + 8f);
-            center.anchorMin = center.anchorMax = new Vector2(1f, 0f);
-            center.pivot = new Vector2(1f, 0f);
-            center.localScale = Vector3.one;
-            center.sizeDelta = new Vector2(113f, 53f);
-            center.anchoredPosition = new Vector2(-12f, bottom + 8f);
+            inspect.anchorMin=inspect.anchorMax=new Vector2(0f,0f);
+            inspect.pivot=new Vector2(0f,0f);
+            inspect.sizeDelta=new Vector2(116f,54f);
+            inspect.anchoredPosition=new Vector2(12f,bottom+8f);
+            center.anchorMin=center.anchorMax=new Vector2(1f,0f);
+            center.pivot=new Vector2(1f,0f);
+            center.sizeDelta=new Vector2(108f,54f);
+            center.anchoredPosition=new Vector2(-12f,bottom+8f);
+            statusDock.anchorMin=statusDock.anchorMax=new Vector2(.5f,0f);
+            statusDock.pivot=new Vector2(.5f,0f);
+            statusDock.sizeDelta=new Vector2(110f,54f);
+            statusDock.anchoredPosition=new Vector2(0f,bottom+8f);
+            objective.anchorMin=objective.anchorMax=
+                wide?new Vector2(0f,1f):new Vector2(1f,1f);
+            objective.pivot=wide?new Vector2(0f,1f):new Vector2(1f,1f);
+            objective.sizeDelta=new Vector2(172f,50f);
+            objective.anchoredPosition=wide?new Vector2(12f,-top-62f):
+                new Vector2(-12f,-top-114f);
 
             if (wide)
             {
@@ -311,6 +361,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 noticeRoot.pivot = new Vector2(0f, 1f);
                 noticeRoot.anchoredPosition = new Vector2(12f, -top - 60f);
                 noticeRoot.sizeDelta = new Vector2(290f, 35f);
+                statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
+                statusSheet.pivot=new Vector2(1f,.5f);
+                statusSheet.anchoredPosition=new Vector2(-12f,2f);
+                statusSheet.sizeDelta=new Vector2(328f,170f);
             }
             else
             {
@@ -322,6 +376,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 noticeRoot.pivot = new Vector2(.5f, 1f);
                 noticeRoot.anchoredPosition = new Vector2(0f, -top - 112f);
                 noticeRoot.sizeDelta = new Vector2(324f, 35f);
+                statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
+                statusSheet.pivot=new Vector2(.5f,0f);
+                statusSheet.anchoredPosition=new Vector2(0f,bottom+69f);
+                statusSheet.sizeDelta=new Vector2(Mathf.Min(330f,w/scale-28f),170f);
             }
             lastWidth = w;
             lastHeight = h;
@@ -378,6 +436,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 image.color = Color.white;
             }
             else image.color = Color.clear;
+            return rect;
+        }
+
+        private static RectTransform DockButton(string name,Transform parent,string title,
+            Sprite icon,Vector2 anchor,Vector2 pivot,UnityEngine.Events.UnityAction click)
+        {
+            var button=ButtonPlate(name,parent,title,slatePlate,anchor,pivot,
+                Vector2.zero,new Vector2(110f,54f),click);
+            var rect=button.GetComponent<RectTransform>();
+            var text=button.GetComponentInChildren<Text>();
+            text.fontSize=11;
+            text.rectTransform.anchoredPosition=new Vector2(13f,0f);
+            text.rectTransform.sizeDelta=new Vector2(73f,48f);
+            var medallion=Plate(name+" artistic emblem",rect,portraitPlate,
+                new Vector2(0f,.5f),new Vector2(.5f,.5f),
+                new Vector2(23f,0f),new Vector2(34f,34f));
+            if(icon!=portraitPlate)
+            {
+                var inner=Plate(name+" functional icon",medallion,icon,
+                    new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                    Vector2.zero,new Vector2(23f,23f));
+                inner.GetComponent<Image>().type=Image.Type.Simple;
+                inner.GetComponent<Image>().color=Color.white;
+            }
             return rect;
         }
 
