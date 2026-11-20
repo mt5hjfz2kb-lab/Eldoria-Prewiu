@@ -15,7 +15,7 @@ if(-not(Test-Path -LiteralPath $path)){throw 'Expected canonical source missing;
 # comparison independent of the Windows checkout autocrlf setting.
 # The SHA-pinned original bytes are recorded before any scratch rewrite.
 $old=[IO.File]::ReadAllText($path)
-$normalized=$old.Replace(\"`r`n\",\"`n\")
+$normalized=$old.Replace("`r`n","`n")
 $needle=@'
             if(report.summary.platform==UnityEditor.BuildTarget.WebGL&&!Resources.Load<TextAsset>("World4X/Blender/RuntimeTerrainQueries"))
                 throw new UnityEditor.Build.BuildFailedException("Bake and validate the frozen terrain query tape before building WebGL; see tools/eldoria-private-beta/native/run_structural.ps1");
