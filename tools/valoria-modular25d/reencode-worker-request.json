@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "requested_on": "2026-11-20",
+  "purpose": "Original two-frame worker_saw_0/worker_saw_1 Unity 6.3 import rejects indexed+tRNS PNG; losslessly reencode RGBA preserving pixels, .meta GUIDs and original bytes, not artificial replacement",
+  "source_sha_before_request": "2d497f64aa586c9ee7e87e8c5b9e1357f8b4e06d",
+  "failed_native_runs": [
+    44745994989,
+    44758551800
+  ],
+  "artifact_replacement": false,
+  "no_gameplay_changes": true,
+  "main_unchanged": true
+}
