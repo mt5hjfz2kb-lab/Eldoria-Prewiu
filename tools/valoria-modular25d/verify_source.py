@@ -113,6 +113,17 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn("TextureWrapMode.Repeat",ground)
         self.assertIn("pixels[a]=pixels[b]",ground)
 
+    def test_world_declarations_not_swallowed_by_escaped_comment_newlines(self):
+        # Native Unity 44648516764 failed CS0103: prop/mover were swallowed
+        # by '//' after literal backslash-n comment injection. Roslyn
+        # syntax-only did not catch missing variable declarations.
+        src=content(SCRIPTS / "Modular25DWorld.cs")
+        malformed=[n for n,line in enumerate(src.splitlines(),1)
+                   if line.lstrip().startswith("//") and "\\n" in line]
+        self.assertEqual(malformed,[],f"Literal escaped newlines in comments: {malformed}")
+        self.assertIn("var prop=Modular25DArt.Tuft(random.Next(2));",src)
+        self.assertIn("var mover=actor.AddComponent<Modular25DWalker>();",src)
+
     def test_reusable_depth_and_animated_walk(self):
         world = content(SCRIPTS / "Modular25DWorld.cs")
         walker = content(SCRIPTS / "Modular25DWalker.cs")
