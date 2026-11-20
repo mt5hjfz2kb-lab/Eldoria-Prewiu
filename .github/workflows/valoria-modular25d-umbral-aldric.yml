@@ -74,6 +74,8 @@ jobs:
           path: |
             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png
             docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json
+            tools/valoria-modular25d/inspection_aldric/aldric_original_source.png
+            tools/valoria-modular25d/inspection_aldric/aldric_crop_candidates.jpg
           retention-days: 14
       - name: Commit only original portrait derivative on unchanged branch
         shell: bash
