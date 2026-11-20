@@ -145,6 +145,18 @@ namespace Eldoria.Modular25D.Tests
                 .Any(x=>x.text=="MADERA"),Is.True,"Live wood capsule missing");
             foreach(var key in new[]{"CormorantGaramond-SemiBold","SourceSans3-Semibold"})
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
+            // The game HUD must use authored, border-preserving pieces,
+            // not a substituted procedural panel on a flat mockup.
+            foreach(var item in new[]{
+                "dock_medallion","resource_capsule","parchment_frame",
+                "green_action","burgundy_objective"})
+            {
+                var skin=Resources.Load<Sprite>("ValoriaModular25D/UI/UmbralII/"+item);
+                Assert.NotNull(skin,"Missing exact original premium Umbral II material "+item);
+                Assert.That(skin.border.x,Is.GreaterThanOrEqualTo(16f),
+                    "One authored UI material lost its 9-slice border "+item);
+            }
+
             if(Screen.width>Screen.height)
             {
                 // A separate actual Chromium landscape screenshot checks the
