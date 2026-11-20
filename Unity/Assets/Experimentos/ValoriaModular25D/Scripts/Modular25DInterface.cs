@@ -8,355 +8,481 @@ using UnityEngine.UI;
 namespace Eldoria.Experimentos.ValoriaModular25D
 {
     /// <summary>
-    /// Compact read-only status + one real canonical build action.
-    /// All values come from PlayerState; no decorative or inert buttons.
+    /// UMBRAL UI: a separate, experimental presentation skin for Bastion I.
+    /// One dynamic Canvas, the canonical LocalGateway, and only two real player
+    /// actions (inspect the sawmill and reset the camera). No invented systems.
+    /// New 9-slice materials are created once as small in-memory textures;
+    /// the protected source art, game rules and persistence stay unchanged.
     /// </summary>
     [DefaultExecutionOrder(-200)]
     public sealed class Modular25DInterface : MonoBehaviour
     {
-        Modular25DGameplay gateway;
-        Modular25DWorld world;
-        GameObject panel;
-        Text resources,level,stage,cost,clock,message;
-        Button build;
-        float nextTick,feedbackHideAt;
-        Canvas hudCanvas;
-        RectTransform hudTop, inspectRect, centerRect, sawmillPanelRect, feedbackRect;
-        int lastLayoutWidth=-1, lastLayoutHeight=-1;
-        Rect lastSafeArea;
+        public const string UiEdition = "Umbral - Ceniza y Bronce / Bastion I";
+        private static readonly Color32 Slate = new Color32(20, 38, 48, 242);
+        private static readonly Color32 SlateLight = new Color32(40, 62, 70, 238);
+        private static readonly Color32 Parchment = new Color32(235, 222, 192, 250);
+        private static readonly Color32 ParchmentLight = new Color32(249, 240, 217, 252);
+        private static readonly Color32 AntiqueBrass = new Color32(181, 141, 88, 255);
+        private static readonly Color32 PaleGold = new Color32(228, 197, 139, 255);
+        private static readonly Color32 WarmWhite = new Color32(246, 238, 217, 255);
+        private static readonly Color32 DarkInk = new Color32(39, 47, 49, 255);
+        private static readonly Color32 MutedInk = new Color32(93, 90, 77, 255);
+        private static readonly Color32 Green = new Color32(59, 105, 98, 255);
+        private static readonly Color32 Red = new Color32(151, 77, 69, 255);
 
-        static readonly Color PanelInk = new Color(.075f,.095f,.108f,.86f);
-        static readonly Color Gold = new Color(.86f,.7f,.43f);
-        static readonly Color Ivory = new Color(.92f,.88f,.77f);
+        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate;
+        private Modular25DGameplay gateway;
+        private GameObject buildingSheet;
+        private Canvas hudCanvas;
+        private RectTransform identity, resourceRow, inspect, center, sheet, noticeRoot;
+        private RectTransform[] resourceChips;
+        private Text title, level, woodValue, stoneValue, foodValue;
+        private Text stage, cost, remaining, actionLabel, notice;
+        private Button action;
+        private Image woodAccent;
+        private float nextTick, noticeExpires;
+        private int lastWidth = -1, lastHeight = -1;
+        private Rect lastSafeArea;
 
-        void Awake()
+        private void Awake()
         {
-            world=GetComponent<Modular25DWorld>();
-            gateway=GetComponent<Modular25DGameplay>();
-            if(EventSystem.current==null)
-                new GameObject("ValoriaModular25D Events",
-                    typeof(EventSystem),typeof(InputSystemUIInputModule));
-            var canvasObj=new GameObject("ValoriaModular25D compact HUD",
-                typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
-            canvasObj.transform.SetParent(transform,false);
-            var canvas=canvasObj.GetComponent<Canvas>();
-            hudCanvas=canvas;
-            canvas.renderMode=RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder=240;
-            var scaler=canvasObj.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution=new Vector2(390,844);
-            scaler.screenMatchMode=CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight=.3f;
+            gateway = GetComponent<Modular25DGameplay>();
+            if (gateway == null) throw new InvalidOperationException("Umbral requires the canonical modular gateway");
+            if (EventSystem.current == null)
+                new GameObject("ValoriaModular25D Events", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            InitializeArt();
+            var root = new GameObject("UMBRAL | Valoria functional HUD",
+                typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            root.transform.SetParent(transform, false);
+            hudCanvas = root.GetComponent<Canvas>();
+            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            hudCanvas.sortingOrder = 240;
+            var scaler = root.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(390f, 844f);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = .3f;
+            var rootTransform = root.transform;
 
-            var top=MakePanel("Live resource strip",canvasObj.transform,
-                new Vector2(.5f,1),new Vector2(0,-96),new Vector2(368,64),PanelInk);
-            hudTop=top;
-            level=MakeLabel("BASTIÓN I",top,16,Gold,new Vector2(0,18),new Vector2(340,23));
-            resources=MakeLabel("",top,14,Ivory,new Vector2(0,-12),new Vector2(342,23));
+            // Header is NOT one dark full-width strip. The game view remains
+            // visible between a short identity seal and three resource chips.
+            identity = Plate("Valoria identity", rootTransform, slatePlate,
+                new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
+                new Vector2(165f, 51f));
+            var sigil = Plate("Carved V seal", identity, resourcePlate,
+                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(27f, -25.5f),
+                new Vector2(34f, 35f));
+            Label("V", sigil, 25, true, PaleGold, TextAnchor.MiddleCenter,
+                Vector2.zero, new Vector2(30f, 34f));
+            title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
+                new Vector2(95f, -18f), new Vector2(112f, 25f));
+            level = Label("BASTIÓN I", identity, 11, false, PaleGold, TextAnchor.MiddleLeft,
+                new Vector2(95f, -38f), new Vector2(114f, 20f));
 
-            var select=MakeButton("Inspect sawmill",canvasObj.transform,"ASERRADERO",
-                new Vector2(0,0),new Vector2(88,47),new Vector2(144,52),OpenSawmill);
-            inspectRect=select.GetComponent<RectTransform>();
-            // Leave the source-owned bronze 9-slice at full artist color.
-            // Reapplying PanelInk after MakeButton dimmed its gilded border to
-            // nearly black, undermining the new Vigilia compact HUD.
-            var home=MakeButton("Center camera",canvasObj.transform,"CENTRAR",
-                new Vector2(1,0),new Vector2(-84,47),new Vector2(130,52),
-                ()=>GetComponent<Modular25DCameraInput>().Home());
-            centerRect=home.GetComponent<RectTransform>();
-            // Same original bronze profile art and button state feedback;
-            // do not multiply RGB by the old dark monochrome overlay.
+            resourceRow = Plate("Independent resources", rootTransform, null,
+                new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
+                new Vector2(365f, 44f));
+            resourceChips = new RectTransform[3];
+            resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", "M", out woodValue, out woodAccent);
+            Image stoneAccent;
+            resourceChips[1] = CreateResource(resourceRow, 1, "PIEDRA", "P", out stoneValue, out stoneAccent);
+            Image foodAccent;
+            resourceChips[2] = CreateResource(resourceRow, 2, "COMIDA", "C", out foodValue, out foodAccent);
 
-            panel=MakePanel("Real sawmill build action",canvasObj.transform,
-                new Vector2(.5f,0),new Vector2(0,188),new Vector2(364,226),PanelInk).gameObject;
-            var body=panel.GetComponent<RectTransform>();
-            sawmillPanelRect=body;
-            MakeLabel("ASERRADERO · VALORIA",body,18,Gold,new Vector2(-25,88),new Vector2(305,27));
-            MakeButton("Close panel",body,"×",new Vector2(1,1),new Vector2(-20,-22),
-                new Vector2(40,40),()=>panel.SetActive(false));
-            stage=MakeLabel("",body,15,Ivory,new Vector2(0,46),new Vector2(330,26));
-            cost=MakeLabel("",body,13,Ivory,new Vector2(0,14),new Vector2(330,28));
-            clock=MakeLabel("",body,13,Gold,new Vector2(0,-17),new Vector2(330,25));
-            build=MakeButton("Execute canonical Build command",body,"CONSTRUIR",
-                new Vector2(.5f,.0f),new Vector2(0,36),new Vector2(232,49),
-                ()=>gateway.BuildSawmill());
-            message=MakeLabel("",canvasObj.transform,13,Ivory,
-                new Vector2(0,-155),new Vector2(360,28),new Vector2(.5f,1));
-            feedbackRect=message.rectTransform;
-            // No additional floating opaque panel: a discreet 1-pixel text
-            // shadow preserves legibility over painted grass and bright paths.
-            var feedbackShade=message.gameObject.AddComponent<Shadow>();
-            feedbackShade.effectColor=new Color(.035f,.041f,.035f,.89f);
-            feedbackShade.effectDistance=new Vector2(1f,-1f);
-            feedbackShade.useGraphicAlpha=true;
-            panel.SetActive(false);
-            UpdateResponsiveLayout();
+            // Two contextual, accessible actions; no false shortcuts to
+            // heroes/world/bag until the gameplay genuinely exposes them.
+            inspect = ButtonPlate("Inspect sawmill", rootTransform, "ASERRADERO",
+                slatePlate, new Vector2(0f, 0f), new Vector2(0f, 0f),
+                new Vector2(12f, 45f), new Vector2(153f, 53f), OpenSawmill).GetComponent<RectTransform>();
+            AccentHairline("Available action", inspect, new Color32(129, 184, 163, 255),
+                new Vector2(-74f, 0f), new Vector2(3f, 35f));
+            center = ButtonPlate("Center camera", rootTransform, "CENTRAR",
+                slatePlate, new Vector2(1f, 0f), new Vector2(1f, 0f),
+                new Vector2(-12f, 45f), new Vector2(113f, 53f),
+                () => GetComponent<Modular25DCameraInput>().Home()).GetComponent<RectTransform>();
+
+            // Context sheet uses warm architectural parchment, a real sprite
+            // from the experiment, and original data. Not a generic modal.
+            sheet = Plate("Sawmill parchment sheet", rootTransform, parchmentPlate,
+                new Vector2(.5f, 0f), new Vector2(.5f, 0f), new Vector2(0f, 110f),
+                new Vector2(355f, 228f));
+            buildingSheet = sheet.gameObject;
+            Label("ASERRADERO", sheet, 23, true, DarkInk, TextAnchor.MiddleLeft,
+                new Vector2(-54f, 87f), new Vector2(205f, 31f));
+            Label("TALLER DE VALORIA", sheet, 10, false, MutedInk, TextAnchor.MiddleLeft,
+                new Vector2(-54f, 63f), new Vector2(215f, 17f));
+            AccentHairline("Divider", sheet, AntiqueBrass,
+                new Vector2(0f, 48f), new Vector2(310f, 1.5f));
+            var previewPlate = Plate("Architectural preview", sheet, resourcePlate,
+                new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-117f, -13f),
+                new Vector2(100f, 111f));
+            var view = Plate("Real illustrated sawmill", previewPlate, null,
+                new Vector2(.5f, .5f), new Vector2(.5f, .5f), Vector2.zero,
+                new Vector2(93f, 94f));
+            var preview = view.GetComponent<Image>();
+            preview.sprite = Modular25DArt.Sawmill();
+            preview.preserveAspect = true;
+            preview.raycastTarget = false;
+            stage = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
+                new Vector2(54f, 22f), new Vector2(195f, 25f));
+            cost = Label("", sheet, 12, false, MutedInk, TextAnchor.MiddleLeft,
+                new Vector2(54f, -10f), new Vector2(195f, 25f));
+            remaining = Label("", sheet, 12, false, DarkInk, TextAnchor.MiddleLeft,
+                new Vector2(54f, -42f), new Vector2(195f, 31f));
+            action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
+                actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
+                new Vector2(0f, -88f), new Vector2(307f, 47f),
+                () => gateway.BuildSawmill());
+            actionLabel = action.GetComponentInChildren<Text>();
+            var close = ButtonPlate("Close sawmill", sheet, "×", slatePlate,
+                new Vector2(1f, 1f), new Vector2(.5f, .5f),
+                new Vector2(-27f, -25f), new Vector2(46f, 46f),
+                () => buildingSheet.SetActive(false));
+            var closeText = close.GetComponentInChildren<Text>();
+            closeText.fontSize = 25;
+            buildingSheet.SetActive(false);
+
+            noticeRoot = Plate("Temporary canonical feedback", rootTransform, slatePlate,
+                new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
+                new Vector2(324f, 35f));
+            notice = Label("", noticeRoot, 12, false, WarmWhite, TextAnchor.MiddleCenter,
+                Vector2.zero, new Vector2(300f, 30f));
+            noticeRoot.gameObject.SetActive(false);
+            Layout();
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            if(gateway==null)return;
-            gateway.StateChanged+=Refresh;
-            gateway.MessageChanged+=Feedback;
+            if (gateway == null) return;
+            gateway.StateChanged += Refresh;
+            gateway.MessageChanged += Feedback;
         }
-        void OnDisable()
+
+        private void OnDisable()
         {
-            if(gateway==null)return;
-            gateway.StateChanged-=Refresh;
-            gateway.MessageChanged-=Feedback;
+            if (gateway == null) return;
+            gateway.StateChanged -= Refresh;
+            gateway.MessageChanged -= Feedback;
         }
-        void Start()
+
+        private void Start()
         {
             Canvas.ForceUpdateCanvases();
-            UpdateResponsiveLayout();
+            Layout();
             Refresh(gateway.Snapshot());
             Feedback(gateway.LastMessage);
         }
 
-        // Constrain the portrait HUD to screen safe areas, not just a 390x844
-        // screenshot. The previous top strip had its first row outside GameView.
-        // Read the actual CanvasScaler factor: Screen.safeArea uses physical pixels.
-        void UpdateResponsiveLayout()
-        {
-            if(hudCanvas==null||hudTop==null)return;
-            int width=Screen.width,height=Screen.height;
-            Rect safe=Screen.safeArea;
-            if(width<=0||height<=0)return;
-            float scale=Mathf.Max(.01f,hudCanvas.scaleFactor);
-            float safeTop=Mathf.Max(0f,(height-safe.yMax)/scale);
-            float safeBottom=Mathf.Max(0f,safe.yMin/scale);
-            float topClearance=Mathf.Max(64f,safeTop+10f);
-            float bottomClearance=Mathf.Max(36f,safeBottom+10f);
-
-            bool landscape=width>height;
-            if(landscape)
-            {
-                // Native 844x390 WebGL capture: the old 368x64 strip covered
-                // the Bastion and intercepted touch gestures in the middle.
-                // Keep the resource ledger in the upper-right clear sky.
-                // Uniform scaling also keeps both gold hairlines aligned.
-                hudTop.anchorMin=hudTop.anchorMax=new Vector2(1f,1f);
-                hudTop.pivot=new Vector2(1f,1f);
-                hudTop.localScale=Vector3.one*.67f;
-                hudTop.anchoredPosition=new Vector2(-12f,-Mathf.Max(10f,safeTop+8f));
-
-                feedbackRect.anchorMin=feedbackRect.anchorMax=new Vector2(0f,1f);
-                feedbackRect.pivot=new Vector2(0f,1f);
-                feedbackRect.sizeDelta=new Vector2(260f,36f);
-                feedbackRect.anchoredPosition=new Vector2(12f,-Mathf.Max(12f,safeTop+10f));
-                message.fontSize=11;
-
-                // The functional controls remain reachable but no longer form
-                // two 70px-high blocks across the narrow gameplay viewport.
-                inspectRect.localScale=Vector3.one*.78f;
-                centerRect.localScale=Vector3.one*.78f;
-                inspectRect.anchoredPosition=new Vector2(65f,bottomClearance+25f);
-                centerRect.anchoredPosition=new Vector2(-65f,bottomClearance+25f);
-
-                // Scale the real build panel, not a visual mockup or a second
-                // Canvas. Keep its canonical button and countdown operable.
-                sawmillPanelRect.localScale=Vector3.one*.72f;
-                sawmillPanelRect.anchoredPosition=new Vector2(0f,bottomClearance+108f);
-            }
-            else
-            {
-                // Restore all layout properties on orientation change.
-                hudTop.anchorMin=hudTop.anchorMax=new Vector2(.5f,1f);
-                hudTop.pivot=new Vector2(.5f,.5f);
-                hudTop.localScale=Vector3.one;
-                hudTop.anchoredPosition=new Vector2(0f,-topClearance-32f);
-
-                feedbackRect.anchorMin=feedbackRect.anchorMax=new Vector2(.5f,1f);
-                feedbackRect.pivot=new Vector2(.5f,.5f);
-                feedbackRect.sizeDelta=new Vector2(360f,28f);
-                feedbackRect.anchoredPosition=new Vector2(0f,-topClearance-88f);
-                message.fontSize=13;
-
-                inspectRect.localScale=Vector3.one;
-                centerRect.localScale=Vector3.one;
-                inspectRect.anchoredPosition=new Vector2(88f,bottomClearance+34f);
-                centerRect.anchoredPosition=new Vector2(-84f,bottomClearance+34f);
-                sawmillPanelRect.localScale=Vector3.one;
-                sawmillPanelRect.anchoredPosition=
-                    new Vector2(0f,bottomClearance+52f+17f+113f);
-            }
-            lastLayoutWidth=width;
-            lastLayoutHeight=height;
-            lastSafeArea=safe;
-        }
-
-        void Update()
-        {
-            if(lastLayoutWidth!=Screen.width || lastLayoutHeight!=Screen.height ||
-               lastSafeArea!=Screen.safeArea)
-                UpdateResponsiveLayout();
-            if(feedbackHideAt>0f&&Time.unscaledTime>=feedbackHideAt)
-            {
-                feedbackHideAt=0f;
-                if(message!=null)message.text="";
-            }
-            if(Time.unscaledTime<nextTick)return;
-            nextTick=Time.unscaledTime+.3f;
-            if(panel!=null&&panel.activeSelf)Refresh(gateway.Snapshot());
-        }
-
-        void Feedback(string text)
-        {
-            if(message==null)return;
-            var value=text??"";
-            // Debug provenance remains available in the build evidence/logs,
-            // but must not permanently float across the premium game scene.
-            if(value.StartsWith("Partida experimental aislada",StringComparison.OrdinalIgnoreCase))
-                value="";
-            message.text=value;
-            feedbackHideAt=value.Length>0?Time.unscaledTime+2.7f:0f;
-        }
-
         public void OpenSawmill()
         {
-            if(panel==null)return;
-            panel.SetActive(true);
+            if (buildingSheet == null) return;
+            buildingSheet.SetActive(true);
             Refresh(gateway.Snapshot());
         }
 
-        void Refresh(PlayerState s)
+        private void Update()
         {
-            if(resources==null)return;
-            if(s==null)
+            if (Screen.width != lastWidth || Screen.height != lastHeight ||
+                Screen.safeArea != lastSafeArea)
+                Layout();
+            if (noticeRoot != null && noticeRoot.gameObject.activeSelf &&
+                Time.unscaledTime > noticeExpires)
+                noticeRoot.gameObject.SetActive(false);
+            if (Time.unscaledTime < nextTick) return;
+            nextTick = Time.unscaledTime + .25f;
+            if (buildingSheet != null && buildingSheet.activeSelf)
+                Refresh(gateway.Snapshot());
+        }
+
+        private void Feedback(string value)
+        {
+            if (noticeRoot == null) return;
+            value = value ?? "";
+            if (value.StartsWith("Partida experimental aislada", StringComparison.OrdinalIgnoreCase))
+                value = "";
+            notice.text = value;
+            var show = value.Length > 0;
+            noticeRoot.gameObject.SetActive(show);
+            if (show) noticeExpires = Time.unscaledTime + 2.8f;
+        }
+
+        private void Refresh(PlayerState s)
+        {
+            if (woodValue == null) return;
+            if (s == null)
             {
-                resources.text="Sin conexión con el guardado experimental";
-                if(build!=null)build.interactable=false;
+                woodValue.text = stoneValue.text = foodValue.text = "—";
+                if (action != null) action.interactable = false;
                 return;
             }
-            resources.text="MADERA "+s.Resources.Wood+"    PIEDRA "+s.Resources.Stone+
-                "    COMIDA "+s.Resources.Food;
-            level.text="BASTIÓN "+s.BastionLevel+"  ·  VALORIA";
-            var state=ParcelBuildingStates.For(s,"sawmill");
-            cost.text="Coste canónico: "+SliceRules.SawmillWoodCost+" madera";
-            switch(state)
+            level.text = "BASTIÓN " + s.BastionLevel;
+            woodValue.text = s.Resources.Wood.ToString("N0");
+            stoneValue.text = s.Resources.Stone.ToString("N0");
+            foodValue.text = s.Resources.Food.ToString("N0");
+            woodAccent.color = s.Resources.Wood < SliceRules.SawmillWoodCost ? Red : AntiqueBrass;
+            if (buildingSheet == null || !buildingSheet.activeSelf) return;
+            var phase = ParcelBuildingStates.For(s, "sawmill");
+            cost.text = "MADERA · " + SliceRules.SawmillWoodCost.ToString("N0") + " necesarias";
+            switch (phase)
             {
                 case ParcelBuildingState.BUILT:
-                    stage.text="Construido · Aserradero nivel "+s.SawmillLevel;
-                    clock.text="Estado conservado en el guardado";
-                    build.GetComponentInChildren<Text>().text="YA CONSTRUIDO";
-                    build.interactable=false;break;
+                    stage.text = "CONSTRUIDO · NIVEL " + s.SawmillLevel;
+                    cost.text = "Producción activa";
+                    remaining.text = "La obra está terminada";
+                    actionLabel.text = "CONSTRUIDO";
+                    action.interactable = false;
+                    break;
                 case ParcelBuildingState.UNDER_CONSTRUCTION:
-                    stage.text="Obra iniciada · recursos ya descontados";
-                    clock.text="Tiempo real restante: "+gateway.SawmillSecondsRemaining()+" s";
-                    build.GetComponentInChildren<Text>().text="EN CONSTRUCCIÓN";
-                    build.interactable=false;break;
+                    stage.text = "RECONSTRUCCIÓN EN CURSO";
+                    remaining.text = "Finaliza en " + gateway.SawmillSecondsRemaining() + " s";
+                    actionLabel.text = "EN CONSTRUCCIÓN";
+                    action.interactable = false;
+                    break;
                 case ParcelBuildingState.AVAILABLE:
-                    stage.text="Parcela disponible para construir";
-                    clock.text=s.Resources.Wood<SliceRules.SawmillWoodCost
-                        ?"Madera insuficiente; el sistema rechazará la orden."
-                        :"Listo para reconstruir";
-                    build.GetComponentInChildren<Text>().text="CONSTRUIR";
-                    build.interactable=true;break;
+                    stage.text = "PARCELA DISPONIBLE";
+                    remaining.text = s.Resources.Wood < SliceRules.SawmillWoodCost
+                        ? "Recursos insuficientes" : "Listo para comenzar";
+                    actionLabel.text = "INICIAR OBRA";
+                    action.interactable = s.Resources.Wood >= SliceRules.SawmillWoodCost;
+                    break;
                 default:
-                    stage.text="Parcela bloqueada por la progresión";
-                    clock.text="Requisitos del juego aún no cumplidos";
-                    build.GetComponentInChildren<Text>().text="BLOQUEADO";
-                    build.interactable=false;break;
+                    stage.text = "PENDIENTE DE DESBLOQUEO";
+                    remaining.text = "Continúa la progresión";
+                    actionLabel.text = "BLOQUEADO";
+                    action.interactable = false;
+                    break;
             }
         }
 
-        static RectTransform MakePanel(string name,Transform parent,Vector2 anchor,Vector2 offset,Vector2 size,Color color)
+        private void Layout()
         {
-            var obj=new GameObject(name,typeof(RectTransform),typeof(Image));
-            obj.transform.SetParent(parent,false);
-            var rect=obj.GetComponent<RectTransform>();
-            rect.anchorMin=anchor;rect.anchorMax=anchor;
-            rect.pivot=new Vector2(.5f,.5f);
-            rect.anchoredPosition=offset;rect.sizeDelta=size;
-            var image=obj.GetComponent<Image>();
-            string surface=name=="Live resource strip"?"slate_resource":
-                name=="Real sawmill build action"?"brass_portrait":"profile_plate";
-            var original=Resources.Load<Sprite>("ValoriaModular25D/UI/"+surface);
-            if(original!=null)
+            if (hudCanvas == null || identity == null) return;
+            int w = Screen.width, h = Screen.height;
+            if (w <= 0 || h <= 0) return;
+            float scale = Mathf.Max(.01f, hudCanvas.scaleFactor);
+            var safe = Screen.safeArea;
+            float top = Mathf.Max(0f, (h - safe.yMax) / scale) + 8f;
+            float bottom = Mathf.Max(0f, safe.yMin / scale) + 8f;
+            bool wide = w > h;
+
+            identity.anchorMin = identity.anchorMax = new Vector2(0f, 1f);
+            identity.pivot = new Vector2(0f, 1f);
+            identity.anchoredPosition = new Vector2(12f, -top);
+            identity.sizeDelta = new Vector2(165f, 51f);
+
+            resourceRow.anchorMin = resourceRow.anchorMax =
+                wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
+            resourceRow.pivot = wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
+            resourceRow.anchoredPosition = wide ?
+                new Vector2(-12f, -top) : new Vector2(0f, -top - 61f);
+            resourceRow.sizeDelta = new Vector2(wide ? 333f : 365f, 44f);
+            for (int i = 0; i < resourceChips.Length; i++)
             {
-                image.sprite=original;
-                image.type=Image.Type.Sliced;
-                image.color=new Color(1f,1f,1f,color.a);
+                resourceChips[i].anchorMin = resourceChips[i].anchorMax =
+                    new Vector2(0f, .5f);
+                resourceChips[i].pivot = new Vector2(0f, .5f);
+                float cw = wide ? 107f : 117f;
+                resourceChips[i].sizeDelta = new Vector2(cw, 43f);
+                resourceChips[i].anchoredPosition = new Vector2(i * (cw + 6f), 0f);
+            }
+
+            inspect.anchorMin = inspect.anchorMax = new Vector2(0f, 0f);
+            inspect.pivot = new Vector2(0f, 0f);
+            inspect.localScale = Vector3.one;
+            inspect.sizeDelta = new Vector2(153f, 53f);
+            inspect.anchoredPosition = new Vector2(12f, bottom + 8f);
+            center.anchorMin = center.anchorMax = new Vector2(1f, 0f);
+            center.pivot = new Vector2(1f, 0f);
+            center.localScale = Vector3.one;
+            center.sizeDelta = new Vector2(113f, 53f);
+            center.anchoredPosition = new Vector2(-12f, bottom + 8f);
+
+            if (wide)
+            {
+                // Never build a full-width drawer across a 390px-tall viewport.
+                sheet.anchorMin = sheet.anchorMax = new Vector2(1f, .5f);
+                sheet.pivot = new Vector2(1f, .5f);
+                sheet.anchoredPosition = new Vector2(-12f, 2f);
+                sheet.sizeDelta = new Vector2(326f, 222f);
+                noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(0f, 1f);
+                noticeRoot.pivot = new Vector2(0f, 1f);
+                noticeRoot.anchoredPosition = new Vector2(12f, -top - 60f);
+                noticeRoot.sizeDelta = new Vector2(290f, 35f);
             }
             else
             {
-                Debug.LogError("[MOD25D] Missing source-owned 9-slice: "+surface);
-                image.color=color;
-                AddHairline(rect,"Fallback bronze trim",new Vector2(0,size.y*.5f-.8f),
-                    new Vector2(size.x-2f,1.6f),new Color(.75f,.61f,.38f,.49f));
+                sheet.anchorMin = sheet.anchorMax = new Vector2(.5f, 0f);
+                sheet.pivot = new Vector2(.5f, 0f);
+                sheet.anchoredPosition = new Vector2(0f, bottom + 69f);
+                sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 228f);
+                noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(.5f, 1f);
+                noticeRoot.pivot = new Vector2(.5f, 1f);
+                noticeRoot.anchoredPosition = new Vector2(0f, -top - 112f);
+                noticeRoot.sizeDelta = new Vector2(324f, 35f);
             }
-            image.raycastTarget=true;
+            lastWidth = w;
+            lastHeight = h;
+            lastSafeArea = safe;
+        }
+
+        private static RectTransform CreateResource(Transform parent, int index, string caption,
+            string monogram, out Text value, out Image icon)
+        {
+            var chip = Plate("Resource " + caption, parent, resourcePlate,
+                new Vector2(0f, .5f), new Vector2(0f, .5f),
+                new Vector2(index * 123f, 0f), new Vector2(117f, 43f));
+            var medallion = Plate(caption + " seal", chip, slatePlate,
+                new Vector2(0f, .5f), new Vector2(0f, .5f),
+                new Vector2(19f, 0f), new Vector2(27f, 27f));
+            icon = medallion.GetComponent<Image>();
+            Label(monogram, medallion, 14, true, PaleGold,
+                TextAnchor.MiddleCenter, Vector2.zero, new Vector2(25f, 25f));
+            Label(caption, chip, 9, false, AntiqueBrass,
+                TextAnchor.MiddleLeft, new Vector2(78f, 9f), new Vector2(74f, 14f));
+            value = Label("0", chip, 15, false, WarmWhite,
+                TextAnchor.MiddleLeft, new Vector2(78f, -7f), new Vector2(76f, 20f));
+            return chip;
+        }
+
+        private static void AccentHairline(string name, Transform parent, Color color,
+            Vector2 at, Vector2 size)
+        {
+            var line = Plate(name, parent, null, new Vector2(.5f, .5f),
+                new Vector2(.5f, .5f), at, size);
+            var image = line.GetComponent<Image>();
+            image.color = color;
+            image.raycastTarget = false;
+        }
+
+        private static RectTransform Plate(string name, Transform parent, Sprite skin,
+            Vector2 anchor, Vector2 pivot, Vector2 at, Vector2 size)
+        {
+            var obj = new GameObject(name, typeof(RectTransform), typeof(Image));
+            obj.transform.SetParent(parent, false);
+            var rect = obj.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = anchor;
+            rect.pivot = pivot;
+            rect.anchoredPosition = at;
+            rect.sizeDelta = size;
+            var image = obj.GetComponent<Image>();
+            image.raycastTarget = false;
+            if (skin != null)
+            {
+                image.sprite = skin;
+                image.type = Image.Type.Sliced;
+                image.color = Color.white;
+            }
+            else image.color = Color.clear;
             return rect;
         }
 
-        static void AddHairline(RectTransform parent,string name,Vector2 at,
-            Vector2 extent,Color tint)
+        private static Button ButtonPlate(string name, Transform parent, string caption, Sprite skin,
+            Vector2 anchor, Vector2 pivot, Vector2 at, Vector2 size,
+            UnityEngine.Events.UnityAction click)
         {
-            var go=new GameObject(name,typeof(RectTransform),typeof(Image));
-            go.transform.SetParent(parent,false);
-            var rect=go.GetComponent<RectTransform>();
-            rect.anchorMin=rect.anchorMax=new Vector2(.5f,.5f);
-            rect.pivot=new Vector2(.5f,.5f);
-            rect.anchoredPosition=at;
-            rect.sizeDelta=extent;
-            var image=go.GetComponent<Image>();
-            image.color=tint;
-            image.raycastTarget=false;
+            var rect = Plate(name, parent, skin, anchor, pivot, at, size);
+            var target = rect.GetComponent<Image>();
+            target.raycastTarget = true;
+            var button = rect.gameObject.AddComponent<Button>();
+            button.targetGraphic = target;
+            button.transition = Selectable.Transition.ColorTint;
+            var colours = button.colors;
+            colours.normalColor = Color.white;
+            colours.highlightedColor = new Color(1f, .97f, .87f, 1f);
+            colours.pressedColor = new Color(.74f, .82f, .77f, 1f);
+            colours.disabledColor = new Color(.55f, .57f, .56f, .7f);
+            colours.fadeDuration = .09f;
+            button.colors = colours;
+            Label(caption, rect, 14, false,
+                name == "Execute canonical Build command" ? WarmWhite : PaleGold,
+                TextAnchor.MiddleCenter, Vector2.zero, new Vector2(size.x - 12f, size.y - 5f));
+            button.onClick.AddListener(click);
+            return button;
         }
 
-        static Text MakeLabel(string text,Transform parent,int fontSize,Color color,
-            Vector2 position,Vector2 size,Vector2? anchor=null)
+        private static Text Label(string content, Transform parent, int fontSize, bool inscription,
+            Color color, TextAnchor align, Vector2 at, Vector2 size)
         {
-            var obj=new GameObject("Label - "+text,typeof(RectTransform),typeof(Text));
-            obj.transform.SetParent(parent,false);
-            var rect=obj.GetComponent<RectTransform>();
-            rect.anchorMin=anchor??new Vector2(.5f,.5f);
-            rect.anchorMax=rect.anchorMin;
-            rect.pivot=new Vector2(.5f,.5f);
-            rect.anchoredPosition=position;rect.sizeDelta=size;
-            var label=obj.GetComponent<Text>();
-            string family=fontSize>=16?"CormorantGaramond-SemiBold":"SourceSans3-Semibold";
-            var ownedFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+family);
-            if(ownedFont==null)
-                Debug.LogError("[MOD25D] Licensed original font missing: "+family);
-            label.font=ownedFont!=null?ownedFont:Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            label.text=text;label.fontSize=fontSize;label.color=color;
-            label.alignment=TextAnchor.MiddleCenter;
-            label.horizontalOverflow=HorizontalWrapMode.Wrap;
-            label.verticalOverflow=VerticalWrapMode.Truncate;
-            label.raycastTarget=false;
+            var go = new GameObject("Text " + content, typeof(RectTransform), typeof(Text));
+            go.transform.SetParent(parent, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = new Vector2(.5f, .5f);
+            rect.pivot = new Vector2(.5f, .5f);
+            rect.anchoredPosition = at;
+            rect.sizeDelta = size;
+            var label = go.GetComponent<Text>();
+            var fontName = inscription ? "CormorantGaramond-SemiBold" : "SourceSans3-Semibold";
+            label.font = Resources.Load<Font>("ValoriaModular25D/UI/Fonts/" + fontName);
+            if (label.font == null)
+                label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label.text = content;
+            label.fontSize = fontSize;
+            label.color = color;
+            label.alignment = align;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            label.verticalOverflow = VerticalWrapMode.Truncate;
+            label.raycastTarget = false;
             return label;
         }
 
-        static Button MakeButton(string name,Transform parent,string text,
-            Vector2 anchor,Vector2 offset,Vector2 size,UnityEngine.Events.UnityAction click)
+        /// <summary>
+        /// Four tiny, original material plates. No screenshot crops or baked text.
+        /// Reusable 9-slice allows responsive resizing without enlarged corners.
+        /// </summary>
+        private static void InitializeArt()
         {
-            var rect=MakePanel(name,parent,anchor,offset,size,new Color(.26f,.31f,.31f,.97f));
-            var button=rect.gameObject.AddComponent<Button>();
-            var graphic=rect.GetComponent<Image>();
-            string surface=name=="Execute canonical Build command"?"burgundy_action":"profile_plate";
-            var art=Resources.Load<Sprite>("ValoriaModular25D/UI/"+surface);
-            if(art!=null)
+            if (slatePlate != null) return;
+            slatePlate = MaterialSprite("Umbral oxidized slate", Slate, SlateLight, AntiqueBrass, 236, 0);
+            resourcePlate = MaterialSprite("Umbral mineral inset", new Color32(26, 45, 52, 236),
+                new Color32(48, 66, 69, 237), new Color32(102, 122, 113, 255), 222, 1);
+            parchmentPlate = MaterialSprite("Umbral gilded parchment", Parchment,
+                ParchmentLight, AntiqueBrass, 250, 2);
+            actionPlate = MaterialSprite("Umbral weathered enamel", Green,
+                new Color32(95, 141, 125, 255), PaleGold, 248, 3);
+        }
+
+        private static Sprite MaterialSprite(string name, Color32 bottom, Color32 top,
+            Color32 trim, byte opaque, int variant)
+        {
+            const int n = 64;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false, false);
+            tex.name = name + " source texture";
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
             {
-                graphic.sprite=art;
-                graphic.type=Image.Type.Sliced;
-                graphic.color=Color.white;
+                for (int x = 0; x < n; x++)
+                {
+                    int edge = Mathf.Min(Mathf.Min(x, n - 1 - x), Mathf.Min(y, n - 1 - y));
+                    int corner = Mathf.Min(x, n - 1 - x) + Mathf.Min(y, n - 1 - y);
+                    if (corner < 4)
+                    {
+                        px[y * n + x] = new Color32(0, 0, 0, 0);
+                        continue;
+                    }
+                    Color mixed = Color.Lerp(bottom, top, y / 63f);
+                    int noise = (x * 37 + y * 71 + x * y * 11 + variant * 23) & 7;
+                    float fleck = (noise - 3.5f) / 255f;
+                    if (edge < 2)
+                        mixed = Color.Lerp(mixed, trim, .82f);
+                    else if (edge == 3)
+                        mixed = Color.Lerp(mixed, trim, variant == 2 ? .92f : .63f);
+                    else if (edge < 6)
+                        mixed *= variant == 2 ? .94f : .77f;
+                    if (variant == 2 && y > 8 && y < 56 && x > 8 && x < 56)
+                        mixed *= .985f;
+                    px[y * n + x] = new Color(
+                        Mathf.Clamp01(mixed.r + fleck), Mathf.Clamp01(mixed.g + fleck),
+                        Mathf.Clamp01(mixed.b + fleck), opaque / 255f);
+                }
             }
-            else Debug.LogError("[MOD25D] Missing primary/secondary UI art: "+surface);
-            button.targetGraphic=graphic;
-            button.transition=Selectable.Transition.ColorTint;
-            var states=button.colors;
-            states.normalColor=Color.white;
-            states.highlightedColor=new Color(1f,.97f,.86f,1f);
-            states.pressedColor=new Color(.79f,.76f,.69f,1f);
-            states.selectedColor=new Color(1f,.96f,.83f,1f);
-            states.disabledColor=new Color(.62f,.63f,.62f,.77f);
-            states.fadeDuration=.085f;
-            button.colors=states;
-            MakeLabel(text,rect,14,Ivory,Vector2.zero,new Vector2(size.x-8,size.y-6));
-            button.onClick.AddListener(click);
-            return button;
+            tex.SetPixels32(px);
+            tex.Apply(false, false);
+            var sprite = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(.5f, .5f),
+                100f, 0, SpriteMeshType.FullRect, new Vector4(10, 10, 10, 10));
+            sprite.name = name;
+            return sprite;
         }
     }
 }
