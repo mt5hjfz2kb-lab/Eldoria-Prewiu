@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "requested_on": "2026-11-20",
+  "branch": "experiment/corona-brecha-top-hud-quality-proof-20261120",
+  "source_base": "2e2d67b12ce677ad867c814ebb689279d7a999cf",
+  "reason": "Frozen original Unity 6.3 Corona of the Breach proof: painted resource capsules at upper safe-area edge, crest below in portrait, 6 stable nav slots with only 3 functional actions, smaller medallions and mission above bar.",
+  "required": [
+    "Unity 6.3 actual PlayMode and Camera.Render",
+    "Canonical 230->150 wood, auto dismiss on Build, progress, file save",
+    "Real Chrome WebGL 390x844 and 1170x2532 screenshots plus reload",
+    "Real Chrome touch pan/pinch/home and 844x390 landscape capture",
+    "No fake menu buttons; three future empty slots; portrait/landscape no overlap",
+    "Do not claim commercial art acceptance or physical iPhone test from a build"
+  ],
+  "no_main_changes": true,
+  "no_gameplay_changes": true,
+  "art_approved": false,
+  "device_tested": false
+}
