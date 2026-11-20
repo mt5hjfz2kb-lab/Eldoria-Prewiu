@@ -128,6 +128,30 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn('"ValoriaModular25D/UI/UmbralII/aldric_avatar"',ui)
         self.assertIn('"Authentic Sir Aldric character portrait"',ui)
 
+    def test_original_six_gameplay_icon_png_binary_source(self):
+        manifest=ROOT/"docs/valoria-modular-25d/UMBRAL_II_GAMEPLAY_ICONS_SOURCE.json"
+        d=json.loads(manifest.read_text(encoding="utf8"))
+        self.assertEqual(d["source_palette_sha256"],
+                         "0c656ddb672784f6bea83252cf778e83f5985e93fb02e4cc42bc1b3913838695")
+        raw=base64.b64decode((ROOT/d["source_file"]).read_text(encoding="ascii"))
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),d["source_palette_sha256"])
+        packed=ROOT/d["packed_file"]
+        data=packed.read_bytes()
+        self.assertEqual(hashlib.sha256(data).hexdigest(),d["packed_rgba_sha256"])
+        self.assertEqual(len(data),d["packed_bytes"])
+        self.assertEqual(struct.unpack(">II",data[16:24]),(144,96))
+        self.assertEqual(data[25],6,"Unity runtime must decode standard truecolour RGBA source")
+        self.assertEqual(d["cells_row_major_top_down"],
+                         ["wood","stone","food","hammer","city","task"])
+        self.assertEqual(guid(Path(str(packed)+".meta")),d["textasset_guid"])
+        src=content(SCRIPTS/"Modular25DInterface.cs")
+        self.assertIn('Resources.Load<TextAsset>(path)',src)
+        self.assertIn('originalIconAtlas.width!=144',src)
+        self.assertIn('woodIcon=AtlasIcon(0,"wood")',src)
+        self.assertIn('taskIcon=AtlasIcon(5,"task")',src)
+        self.assertIn('DockButton("Inspect sawmill",rootTransform,"OBRAS",hammerIcon',src)
+        self.assertNotIn('woodIcon=ResourceIcon(',src)
+
     def test_original_two_frame_sawyer_art_manifest_and_import(self):
         directory=BASE/"Resources/ValoriaModular25D"
         entries={p["name"]:p for p in
