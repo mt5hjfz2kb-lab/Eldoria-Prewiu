@@ -1,0 +1,20 @@
+{
+  "schema": 3,
+  "branch": "experiment/corona-final-velvet-wide-drawer-qa-20261120",
+  "source_base": "8cab2206d7a44164fbf70c7c648faffbc159ebbc",
+  "intent": "Prove final original high-DPI engraved velvet PlayerName+resources horizontal ribbon, compact canvas retina UI, 3 real bottom buttons across 6 future positions and hidden left activity drawer with aspect-preserved 720x500 original gold/obsidian art.",
+  "checks": [
+    "Real Unity 6.3 Camera.Render genuine frames",
+    "PlayMode: imported 17 original Corona sprites and proper unique GUID, PlayerState.PlayerName, right-enamel text-safe bounds",
+    "Legible slim resources within same top horizontal band; retina pixelPerfect",
+    "Left 45pt handle opens and collapses activity drawer with actual canonical Sawmill construction countdown and reused real objective, hidden by default",
+    "Actual gameplay Build click deducts 80 wood, auto dismisses panel, persistent state survives reload",
+    "Browser screenshot 390x844 and 1170x2532, 844x390 real camera pan/pinch/home",
+    "Original Unity/browser source SHA pinned and no false game buttons",
+    "No edits main, beta, mechanics; physical iPhone and final artistic acceptance are separate"
+  ],
+  "no_main_changes": true,
+  "no_gameplay_changes": true,
+  "art_approved": false,
+  "device_qa": "NOT_TESTED"
+}
