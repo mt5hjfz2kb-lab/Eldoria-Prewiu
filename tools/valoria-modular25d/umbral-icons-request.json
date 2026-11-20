@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "requested_on": "2026-11-20",
+  "source_sha": "0c437921b71af328496e58b4899ab2473513d000",
+  "goal": "Original high-quality resource/action icon art for Eldoria's commercial Umbral II 2.5D HUD",
+  "source_manifest": "tools/valoria-modular25d/original_umbral_icons48_png.b64",
+  "source_png_sha256": "0c656ddb672784f6bea83252cf778e83f5985e93fb02e4cc42bc1b3913838695",
+  "cells": [
+    "wood",
+    "stone",
+    "food",
+    "hammer",
+    "city",
+    "task"
+  ],
+  "sprite_preview_only": false,
+  "main_changed": false,
+  "no_paid_assets": true
+}
