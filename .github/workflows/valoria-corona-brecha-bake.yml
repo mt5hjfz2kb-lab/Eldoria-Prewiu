@@ -3,8 +3,15 @@ on:
   push:
     branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
     paths:
-      - tools/valoria-corona-brecha/**
-      - .github/workflows/valoria-corona-brecha-bake.yml
+      # Bake only for actual art sources, never for native QA request files.
+      # The old broad directory rule caused unnecessary Ubuntu art jobs
+      # every time Unity QA was queued, which could advance HEAD and make
+      # source-pinned Windows preflight reject an otherwise correct run.
+      - 'tools/valoria-corona-brecha/bake.py'
+      - 'tools/valoria-corona-brecha/manifest.json'
+      - 'tools/valoria-corona-brecha/source/**'
+      - 'tools/valoria-corona-brecha/premium/**'
+      - '.github/workflows/valoria-corona-brecha-bake.yml'
   workflow_dispatch:
 permissions:
   contents: write
