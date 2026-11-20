@@ -445,8 +445,33 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 }
                 else
                 {
-                    Debug.LogError("[Modular25D] Neither original sprite nor its original PNG texture is importable: "+key);
-                    return null;
+                    // Some Unity 6000.3 Windows imports do not expose the
+                    // authored second PNG as a Sprite OR Texture2D, despite
+                    // the source PNG and its GUID being valid. Unity supports
+                    // binary TextAsset .bytes + PNG decoding explicitly.
+                    // The .bytes files are byte-identical copies of the
+                    // original PNGs, not generated/repainted substitute art.
+                    var packed=Resources.Load<TextAsset>("ValoriaModular25D/"+key+"_png");
+                    if(packed==null || packed.bytes==null || packed.bytes.Length<128)
+                    {
+                        Debug.LogError("[Modular25D] Artist-authored PNG unavailable through Sprite, Texture2D and exact .bytes: "+key);
+                        return null;
+                    }
+                    var tex=new Texture2D(2,2,TextureFormat.RGBA32,false,false);
+                    tex.name=key+" exact source pixels from TextAsset";
+                    tex.filterMode=FilterMode.Bilinear;
+                    tex.wrapMode=TextureWrapMode.Clamp;
+                    if(!ImageConversion.LoadImage(tex,packed.bytes,false) ||
+                       tex.width!=96 || tex.height!=96)
+                    {
+                        Debug.LogError("[Modular25D] Original PNG bytes could not be decoded as authored 96x96 RGBA: "+key);
+                        UnityEngine.Object.Destroy(tex);
+                        return null;
+                    }
+                    image=Sprite.Create(tex,new Rect(0,0,tex.width,tex.height),
+                        new Vector2(.5f,.06f),100f,0,SpriteMeshType.FullRect);
+                    image.name=key+" (original PNG from binary TextAsset, no art replacement)";
+                    Debug.LogWarning("[Modular25D] Loaded original artist-authored sawyer PNG via Unity TextAsset bytes: "+key);
                 }
             }
             Cache.Add(key,image);
