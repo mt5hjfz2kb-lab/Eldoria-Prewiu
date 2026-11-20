@@ -68,8 +68,12 @@ namespace Eldoria.Modular25D.Tests
             var worlds=all.Where(x=>x && x.GetType().Name=="Modular25DWorld").ToArray();
             Assert.That(worlds.Length,Is.EqualTo(1),"Only one game world may run");
             var world=worlds[0];
-            Assert.That((int)Member(world,"RecoveredPropsPlaced"),Is.GreaterThanOrEqualTo(10),
-                "Full original-art props must be active, not fake low-poly fallbacks");
+            Assert.That((int)Member(world,"RecoveredPropsPlaced"),Is.GreaterThanOrEqualTo(15),
+                "Four semantic settlement zones must instantiate original authored props");
+            Assert.That((int)Member(world,"SettlementZonesPlaced"),Is.EqualTo(4));
+            Assert.That((int)Member(world,"WorkshopWorkersPlaced"),Is.EqualTo(1));
+            Assert.That(all.Count(x=>x && x.GetType().Name=="Modular25DWorkshopAction"),
+                Is.EqualTo(1),"Sawmill must have one animated worker at the real log rack");
             Assert.NotNull(Member(world,"ViewCamera") as Camera);
             var gameplay=Member(world,"Gameplay") as Component;
             var ui=Member(world,"Hud") as Component;
@@ -83,6 +87,8 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(land);
             Assert.That((int)Member(land,"RoadCount"),Is.EqualTo(2));
             Assert.That((int)Member(land,"FootprintCount"),Is.EqualTo(2));
+            Assert.That((int)Member(land,"CivicCourtyardsBuilt"),Is.EqualTo(1),
+                "The civic courtyard is a third independent, soft-alpha ground element, not a building platform");
             var pathMeshes=land.GetComponentsInChildren<MeshFilter>(true);
             Assert.That(pathMeshes.Length,Is.EqualTo(2),
                 "Both artistic road ribbons must remain separate world meshes");

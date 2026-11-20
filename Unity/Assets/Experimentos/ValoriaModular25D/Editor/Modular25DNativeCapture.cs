@@ -34,7 +34,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
             public string engine, engineVersion, sourceBranch, sourceSha, scenePath, generatedAtUtc;
             public string mode, artApproved="NO", physicalIphone="NOT_TESTED";
             public bool nativeWorldRender, gatewayBuild, savedAndReloaded, noDoublePayment, didNotAlterBeta;
-            public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms;
+            public bool continuousTerrainPresent, paintedGroundSourceLoaded, roadAndFootprintKits, noLegacyHudInEditorPreview, movingCharactersAreUnityTransforms, workshopActorAnimated, composedSettlementZones;
             public int sourceFrames, originalArtResourcesLoaded, bastionLevel, initialWood, afterStartWood, afterCompletedWood, sawmillLevel, completionReceiptCount;
             public string disclaimer="Unity Editor Camera.Render on real scene, no PlayMode, no UI overlay, no physical device.";
             public List<Frame> frames = new List<Frame>();
@@ -96,6 +96,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     throw new Exception("Unity is not using the reusable grass-only original Eldoria artist tile.");
                 report.paintedGroundSourceLoaded=true;
                 report.roadAndFootprintKits=true;
+                report.composedSettlementZones=world.SettlementZonesPlaced==4 &&
+                    world.RecoveredPropsPlaced>=15 && landscape.CivicCourtyardsBuilt==1;
+                if(!report.composedSettlementZones)
+                    throw new Exception("Semantic four-zone settlement / civic clearing not built");
                 var originalArt=new[]{
                     "bastion_i","sawmill_i","sawmill_available","sawmill_under_construction",
                     "oak_0","oak_1","ruin_arch_0","ruin_arch_1",
@@ -195,6 +199,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     390,844,new Vector3(0f,3.10f,-30f),6.2f);
                 Render(cam,output,report,"13-tree-occlusion-ground",
                     390,844,new Vector3(-2.42f,-1.35f,-30f),5.2f);
+                Render(cam,output,report,"14-civic-commons-detail",
+                    1170,2532,new Vector3(-.22f,-1.25f,-30f),5.3f);
+                Render(cam,output,report,"15-lumberyard-worker-detail",
+                    1170,2532,new Vector3(2.20f,-3.37f,-30f),4.0f);
 
                 var moneyBeforeRetry=complete.Resources.Wood;
                 var again=gateway.Execute(new GameCommand("mod25d-native-duplicate-attempt-"+sourceSha,
@@ -208,10 +216,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 // 32 sequential frames. It is explicitly not a PlayMode clip.
                 var walkers=UnityEngine.Object.FindObjectsByType<Modular25DWalker>(FindObjectsSortMode.None);
                 if(walkers.Length<2)throw new Exception("Missing real independent actor sprites");
+                var workshop=UnityEngine.Object.FindObjectsByType<Modular25DWorkshopAction>(
+                    FindObjectsSortMode.None);
+                if(workshop.Length!=1||world.WorkshopWorkersPlaced!=1||!workshop[0].Configured)
+                    throw new Exception("One real illustrated lumberyard worker required");
                 cam.orthographicSize=6.4f;
                 for(int i=0;i<32;i++)
                 {
                     foreach(var w in walkers)w.StepForNativeCapture(.56f);
+                    workshop[0].StepForNativeCapture(.56f);
                     var phase=i/31f;
                     var offset=new Vector3(Mathf.Lerp(-1.70f,.45f,phase),
                         Mathf.Lerp(.13f,1.75f,phase),-30f);
@@ -219,6 +232,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     Render(cam,output,report,"movement-"+i.ToString("D3"),390,844,offset,ortho);
                 }
                 report.movingCharactersAreUnityTransforms=true;
+                report.workshopActorAnimated=workshop[0].WorkCycles>3f;
+                if(!report.workshopActorAnimated)
+                    throw new Exception("No verifiable animated work cycle at sawmill log rack");
                 report.nativeWorldRender=report.frames.Count>=42;
                 report.sourceFrames=report.frames.Count;
                 if(!report.nativeWorldRender)throw new Exception("Fewer frames than expected");

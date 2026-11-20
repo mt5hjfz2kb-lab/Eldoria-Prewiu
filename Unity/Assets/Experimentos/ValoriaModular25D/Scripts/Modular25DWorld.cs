@@ -22,6 +22,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public Modular25DInterface Hud { get; private set; }
         public SpriteRenderer SawmillRenderer { get; private set; }
         public int RecoveredPropsPlaced { get; private set; }
+        public int WorkshopWorkersPlaced { get; private set; }
+        public int SettlementZonesPlaced { get; private set; }
 
         const float GroundSpacingX = 1f;
         const float GroundSpacingY = .5f;
@@ -65,39 +67,64 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Its broad baked exterior shadow is trimmed by Modular25DArt; do
             // not add another large dark ellipse over the sawdust footprint.
 
-            // Shared warm-olive broadleaf art replaces the isolated dark
-            // blue low-poly pine cluster. The occlusion test still crosses
-            // behind and in front of the SAME physical tree foot anchor.
-            // Reuse actual original Eldoria high-detail hand-authored RGBA
-            // assets from the City2D art experiment as independent 2.5D
-            // sprites. The artist-approved DESIGN DIRECTION is not treated
-            // as a full-scene background. No geometry/cardboard duplication.
-            AddOriginalProp(scenery,"MuroDerruido",new Vector2(-2.2f,4.14f),.88f);
-            AddOriginalProp(scenery,"ArbolAntiguo",new Vector2(3.37f,3.31f),.88f);
-            AddOriginalProp(scenery,"ArboledaAntigua",new Vector2(-3.15f,-1.4f),.85f);
-            AddOriginalProp(scenery,"ArboledaAntigua",new Vector2(3.04f,1.49f),.78f);
-            AddOriginalProp(scenery,"MatojosFlores",new Vector2(-1.53f,3.29f),.76f);
-            AddOriginalProp(scenery,"MatojosFlores",new Vector2(2.49f,.31f),.55f);
-            AddOriginalProp(scenery,"PozoPiedra",new Vector2(.19f,-.97f),.72f);
-            AddOriginalProp(scenery,"CarroMadera",new Vector2(3.08f,-3.78f),.70f);
-            AddOriginalProp(scenery,"VallaLenador",new Vector2(2.40f,-4.43f),.68f);
-            AddOriginalProp(scenery,"HuertosValoria",new Vector2(-1.98f,-4.73f),.57f);
-            // Smaller ground elements stay original independent sprites; no
-            // blind 3D low-poly boulders that contradict the rendered buildings.
+            // BASTION I PRODUCTION COMPOSITION: a deliberate rebuilt hamlet,
+            // not random RPG decorations on an empty lawn. Four readable zones
+            // surround a free western plot. Every object is independent 2.5D
+            // and retains real foot-Y sorting/occlusion and original artist PNG.
+            var ruins=NewChildRoot(scenery,"01 | Imperial ridge — pre-Breach masonry");
+            var grove=NewChildRoot(scenery,"02 | Guarded ancient grove — visual frame");
+            var commons=NewChildRoot(scenery,"03 | Rebuilding commons — well and garden");
+            var lumber=NewChildRoot(scenery,"04 | Working lumberyard — cart and log stock");
+
+            // The old masonry belongs on one ridge behind the Keep, rather
+            // than random low-poly stone fragments beside the lawn.
+            AddOriginalProp(ruins,"MuroDerruido",new Vector2(-2.2f,4.14f),.88f);
+            AddOriginalProp(ruins,"MatojosFlores",new Vector2(-.20f,4.65f),.54f);
+            AddOriginalProp(ruins,"MatojosFlores",new Vector2(-1.53f,3.29f),.63f);
+
+            // Two mature tree groupings frame the keep at different depths.
+            // Their intentional open middle preserves the main gate silhouette.
+            AddOriginalProp(grove,"ArbolAntiguo",new Vector2(3.37f,3.31f),.88f);
+            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-3.75f,2.45f),.60f);
+            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-3.15f,-1.4f),.85f);
+            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(3.04f,1.49f),.78f);
+            // The southern foreground is framed only along the extreme left;
+            // the centre stays open for future unbuilt plots.
+            AddOriginalProp(grove,"ArboledaAntigua",new Vector2(-4.10f,-5.55f),.59f);
+
+            // A well and a recognizable cultivated enclosure give the central
+            // yard a social purpose, without introducing any new game mechanic.
+            AddOriginalProp(commons,"PozoPiedra",new Vector2(.19f,-.97f),.72f);
+            AddOriginalProp(commons,"HuertosValoria",new Vector2(-2.05f,-4.74f),.61f);
+            AddOriginalProp(commons,"MatojosFlores",new Vector2(-2.75f,-5.56f),.45f);
+
+            // Timber staging visibly connects sawmill to the haulers' road.
+            // Both props come from the same original painted wood/material kit.
+            AddOriginalProp(lumber,"CarroMadera",new Vector2(3.12f,-3.73f),.74f);
+            AddOriginalProp(lumber,"VallaLenador",new Vector2(2.38f,-4.36f),.75f);
+            AddOriginalProp(lumber,"MatojosFlores",new Vector2(3.72f,-2.18f),.47f);
+            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.49f,.31f),.53f);
+
+            // Low-detail ground silhouettes stay rare and are never mistaken
+            // for buildings or construction props.
             AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.6f,-3.92f),.46f);
             AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.26f,.94f),.53f);
 
             CreateVillager(people,"Valoria citizen A",new [] {
-                // Pass on the east edge of the tree crown; keep the feet
-                // off its narrow trunk while crossing in front and behind.
+                // Real keep gate route: a messenger approaches the courtyard
+                // and returns on the curving walkable cobblestone road.
                 new Vector2(-3.9f,-3.6f),new Vector2(-2.70f,-2.5f),
                 new Vector2(-2.62f,-.55f),new Vector2(-1.86f,-.05f),
                 new Vector2(-2.62f,-.55f),new Vector2(-2.70f,-2.5f)
             },0f);
             CreateVillager(people,"Valoria citizen B",new [] {
-                new Vector2(.15f,-4.8f),new Vector2(1.65f,-4.2f),
-                new Vector2(2.5f,-3.6f),new Vector2(1.65f,-4.2f)
+                // A hauler uses the connecting side-road, not a decorative
+                // patrol in an unrelated empty part of the meadow.
+                new Vector2(.15f,-3.5f),new Vector2(1.32f,-3.47f),
+                new Vector2(2.63f,-3.68f),new Vector2(1.32f,-3.47f)
             },1.8f);
+            CreateWorkshopWorker(people,new Vector2(2.06f,-4.04f));
+            SettlementZonesPlaced=4;
 
             AddNaturalDetail(scenery);
             if(withRuntime)
@@ -110,29 +137,47 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         void AddNaturalDetail(Transform root)
         {
-            // Constrained small scatter; central building hitboxes and the
-            // 0.9-unit main paths remain unobstructed. Never create plinths.
+            // Ground cover belongs to five ecotone edges, not 29 uniform
+            // random locations. Cues: ruined ridge / grove / lane / workshop
+            // / cultivated terrace. All are reusable original tuft sprites.
             var random=new System.Random(11813);
-            int placed=0;
-            for(int attempt=0;attempt<320&&placed<29;attempt++)
+            var names=new[]{ "Ridge", "Forest boundary", "Courtyard verge",
+                "Lumberyard verge", "Southern growing plot" };
+            var centres=new[]{
+                new Vector2(-1.2f,4.50f),new Vector2(-3.36f,-2.35f),
+                new Vector2(.49f,-.08f),new Vector2(3.55f,-4.70f),
+                new Vector2(-2.94f,-5.56f)
+            };
+            var radii=new[]{
+                new Vector2(.95f,.50f),new Vector2(.72f,.82f),
+                new Vector2(.72f,.45f),new Vector2(.66f,.80f),
+                new Vector2(.81f,.56f)
+            };
+            var counts=new[]{4,7,4,6,6};
+            for(int zone=0;zone<centres.Length;zone++)
             {
-                float x=-7f+(float)random.NextDouble()*14f;
-                float y=-6.2f+(float)random.NextDouble()*12.5f;
-                var point=new Vector2(x,y);
-                if(Vector2.Distance(point,new Vector2(-1.15f,1.3f))<2.5f ||
-                   Vector2.Distance(point,new Vector2(1.95f,-2.2f))<2.15f ||
-                   Vector2.Distance(point,new Vector2(-3.15f,-1.4f))<.64f)
-                    continue;
-                if(DistanceToRoad(point)<.68f)continue;
-                // Avoid the angular grey rocks and flat cartoon bushes: they
-                // visibly contradict the premium original oaks/buildings.
-                // Restrict ground scatter to the subtle original painted tufts.
-                var prop=Modular25DArt.Tuft(random.Next(2));
-                var draw=AddSprite("Interchangeable grass / stone "+placed,
-                    prop,point,FootOrder(point.y),root);
-                float scale=.27f+(float)random.NextDouble()*.25f;
-                draw.transform.localScale=Vector3.one*scale;
-                placed++;
+                int placed=0;
+                for(int attempt=0;attempt<80&&placed<counts[zone];attempt++)
+                {
+                    float angle=(float)random.NextDouble()*2f*Mathf.PI;
+                    float radial=Mathf.Sqrt((float)random.NextDouble());
+                    var at=centres[zone]+new Vector2(
+                        Mathf.Cos(angle)*radii[zone].x*radial,
+                        Mathf.Sin(angle)*radii[zone].y*radial);
+                    if(DistanceToRoad(at)<.53f)continue;
+                    // Roads, actual entrances, their independent future plots
+                    // and the working actor's contact point remain accessible.
+                    if(Vector2.Distance(at,new Vector2(-1.15f,1.3f))<2.20f||
+                       Vector2.Distance(at,new Vector2(1.95f,-2.2f))<1.65f||
+                       Vector2.Distance(at,new Vector2(2.06f,-4.04f))<.42f)
+                        continue;
+                    var art=Modular25DArt.Tuft((zone+placed)%2);
+                    var sr=AddSprite(names[zone]+" | grass transition "+placed,
+                        art,at,FootOrder(at.y),root);
+                    float scale=.28f+(float)random.NextDouble()*.18f;
+                    sr.transform.localScale=Vector3.one*scale;
+                    placed++;
+                }
             }
         }
 
@@ -158,6 +203,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     best=Mathf.Min(best,Vector2.Distance(point,route[i-1]+span*t));
                 }
             return best;
+        }
+
+        static Transform NewChildRoot(Transform parent,string name)
+        {
+            var obj=new GameObject(name);
+            obj.transform.SetParent(parent,false);
+            return obj.transform;
         }
 
         Transform NewRoot(string name)
@@ -281,6 +333,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             shadow.transform.localScale=Vector3.one*.54f;
             var mover=actor.AddComponent<Modular25DWalker>();
             mover.Configure(route,delay,body,shadow);
+        }
+
+        void CreateWorkshopWorker(Transform parent,Vector2 foot)
+        {
+            // Work-specific on-the-spot movement by the illustrated log rack.
+            // It is NOT an extra production building, gameplay timer or reward.
+            var actor=new GameObject("Lumberyard worker - sawing at timber rack");
+            actor.transform.SetParent(parent,false);
+            actor.transform.localPosition=new Vector3(foot.x,foot.y,0);
+            var contact=AddSprite("worker ground contact",
+                Modular25DArt.Shadow(64,17),new Vector2(0,-.07f),
+                FootOrder(foot.y)-1,actor.transform);
+            contact.transform.localScale=Vector3.one*.58f;
+            var body=AddSprite("worker illustrated body",Modular25DArt.Villager(0),
+                Vector2.zero,FootOrder(foot.y),actor.transform);
+            body.transform.localScale=Vector3.one*.61f;
+            var action=actor.AddComponent<Modular25DWorkshopAction>();
+            action.Configure(body,contact);
+            WorkshopWorkersPlaced++;
         }
 
         public void Apply(PlayerState snapshot)
