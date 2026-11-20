@@ -1,0 +1,34 @@
+# Eldoria / Valoria — Bastión I 2.5D modular: entrega técnica de candidato
+
+**Fecha:** 20 de noviembre de 2026. **Última escena Unity probada:** `15671bb9a5353746a1f4276586908fb71af30a9b`. **Último navegador QA ampliado:** `dfcb22e5be535c07e174c0d1b47020780fdc5d89` (sin cambios en archivos Unity respecto al SHA probado). **Rama única:** `experiment/valoria-modular-25d-bastion1-from-zero-20261118`.
+
+El trabajo se ha consolidado como una **candidata técnica jugable y evaluable**; **NO** es una aceptación artística comercial, certificación de rendimiento ni una beta integrada. No se han fusionado cambios en `main`, sustituido Premium V6, publicado la beta o consumido créditos de generación.
+
+## Resultado comprobado sobre escena auténtica, no concepto
+
+- [Run nativo Unity + WebGL + vídeo #44707009109](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44707009109) — **SUCCESS completo en 4 trabajos**, fuente exacta `15671bb9`, Unity 6000.3.23f1. Entrega 45 fotogramas de `Camera.Render` con SHA256, vistas 390×844, 1170×2532, horizontal, primeros planos, y 32 pasos de movimiento de habitantes/cámara. MP4 se construye desde esos originales y compara sus hashes. En Editor no aparece `ScreenSpaceOverlay`, por lo que estas capturas no son HUD.
+- **1/1 NUnit**, plataforma EditMode que entra en PlayMode real: escena guardada, Canvas/UI, clic en «ASERRADERO», construcción canónica, descuento de 80 unidades de madera (230→150), temporizador real, persistencia, Home, movimiento y comprobación de que no existe HUD legado duplicado. No sustituye una batería completa de tests de juego.
+- Compilación **WebGL de una sola escena, StrictMode**: `webgl-status.json` `SUCCEEDED`, 20.640.508 bytes de datos construidos, ZIP de GitHub 20.018.923 bytes. Un script de scratch `scope_isolated_webgl_guard.ps1` restringe la excepción de la cinta 4X únicamente a esta escena+destino. `isolate_webgl_resources.ps1` excluye de ese scratch recursos de otros módulos y registra bytes; **el código canónico/guard en Git permanece intacto** y los sprites originales se mantienen. No ejecutar esta poda en la beta o en main.
+- **Chromium real con HUD** en el mismo run: 390×844 y 1170×2532; interacciones «ASERRADERO» y «CONSTRUIR» sobre uGUI real, saldo visual de madera 230→150 y conservación idéntica tras recarga real del navegador; ausencia de errores JS/red en la prueba. Guardado nativo independiente, sin tocar la beta.
+- [Run adicional sin Windows #44712814471](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/44712814471) — **SUCCESS** sobre el ejecutable WebGL inmutable de `15671bb9`; el QA contiene el mismo ensayo de construcción+recarga y ahora prueba `Input.dispatchTouchEvent` de Chromium. En 390×844 desplazamiento de cámara, pinza de dos dedos y botón real «CENTRAR» PASS; en 844×390, desplazamiento y pinza PASS. Las capturas tienen SHA256 y el modo horizontal usa una zona libre de HUD para iniciar el gesto. El primer test con `page.mouse` en navegador táctil fue un falso negativo; el siguiente empezaba sobre HUD horizontal. Ambos fallos se conservaron como evidencia, **sin rebajar los umbrales**.
+- La rama posterior a `15671bb9` contiene exclusivamente `tools/valoria-modular25d/browser_camera_smoke.mjs` y workflows de comprobación estática/Chromium, no fuentes de escena Unity. No utilizar un PASS de una fuente como certificación de otra fuente cambiante: comparar HEAD/diff primero.
+
+## Arte y arquitectura que se mantienen
+
+Bastión I y Aserradero son dos **sprites originales independientes**, junto a textura de hierba continua dividida en 81 mallas de 8×8, dos rutas spline con alfa de borde y huellas diferenciadas, ruinas/árboles/pozo/carro/huertos como props separados, habitantes con escala y orden de profundidad por pie, cámara ortográfica desplazable con zoom y uGUI compacto real. La sombra oscura horneada del Aserradero se atenúa mediante recorte de silueta en memoria; PNG, SHA y metadatos originales se conservan. No hay imagen global de ciudad ni plintos levantados artificiales.
+
+La corrección de los caminos conserva los adoquines de origen y añade `colors32` con alpha lateral a las mallas para fundir con la pradera; se comprueba mediante aserciones en Unity y capturas auténticas. La interfaz incorpora margen de seguridad móvil y comprobación de saldo real. Contratos de producción reutilizables y cómo extenderlos, con límites de atlas/rendimiento, en [PRODUCTION_GUIDE_BASTION_I_20261120.md](PRODUCTION_GUIDE_BASTION_I_20261120.md).
+
+## Pendiente de aceptación / límites probados
+
+1. **Revisión artística del propietario**, preferiblemente moviendo la cámara en la build real; el aspecto todavía puede requerir trabajo de caminos, densidad ambiental y HUD de paisaje. No afirmar puntuación comercial, ni pasar a Bastión II–V sin decisión.
+2. **iPhone Safari físico**: no ejecutado, no medidos FPS, memoria, GC, recalentamiento, multitoque real, reinicios ni uso prolongado. El Chromium emulado verifica funcionamiento del navegador, no equivalencia de GPU o memoria Apple.
+3. **Captura auténtica de GameView de Editor con overlay**: pendiente; existen capturas auténticas del WebGL con HUD, que demuestran la interfaz en el ejecutable pero no el Editor GameView. El MP4 procede de fotogramas de Unity, no de captura física del teléfono.
+4. **Entrega WebGL para el propietario**: el paquete portable con servidor HTTP local y claves de guardado aisladas permite abrir en un Windows y compartir únicamente por Wi-Fi privada con Safari de iPhone. El servidor Windows se compiló desde Go y se probó su contrato en Linux/Go, pero **no** se ejecutó físicamente el .exe en Windows ni el juego en iOS; no hay URL pública alojada.
+5. Escenarios fuera de Bastión I, cuartel/granero/cantera, retención, PvP y estabilidad amplia son fuera del alcance de este experimento. Un PASS de PlayMode 1/1 no los certifica.
+
+## Procedimiento de continuidad
+
+Consultar siempre la entrada del workstream **`eldoria-valoria-modular25d-bastion1-20261119`** en `main/pipeline/active-workstreams.json`, la rama más reciente, `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md` y la titularidad/reserva Windows antes de realizar escrituras. No crear una rama competidora ni usar `main` como destino de arte. Materializar los assets `Unity/Assets/Experimentos/ValoriaModular25D`, `Unity/Assets/Eldoria` y ProjectSettings/Packages en scratch SHA-pinned como en el workflow. Validar original-art resources, economía, 45 PNG, NUnit, MP4, WebGL estrictamente aislado y los dos QA de Chromium; conservar logs y no publicar hasta autorización.
+
+Al cerrar esta entrega técnica, liberar la reserva `windows-runner-heavy` y transferir la identidad canónica al estado `available`, dejando explícitos los pendientes de **aprobación artística e iPhone físico**. No declarar ART_APPROVED automáticamente.
