@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "style": "Corona de la Brecha original real Unity UI",
+  "source_before_request": "d960008796702e1b2c0bfea4880de0a1302ea72b",
+  "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
+  "user_selected": "C",
+  "no_main_changes": true,
+  "no_gameplay_changes": true,
+  "original_sprites": 15,
+  "verification_required": [
+    "Unity6000.3.23f1 editor frame provenance",
+    "actual PlayMode six icons and original eight 9slice UI materials",
+    "canonical Build/Sawmill LocalGateway",
+    "responsive Chromium real HUD 390x844 and 1170x2532",
+    "browser persistence after reload",
+    "touch camera pan pinch portrait and landscape"
+  ],
+  "caveats": [
+    "Native art acceptance not proven",
+    "Safari physical iPhone NOT_TESTED",
+    "Original high-fidelity concept atlas is a separate reference; exact Unity sprite sources are in CoronaBrecha folder"
+  ]
+}

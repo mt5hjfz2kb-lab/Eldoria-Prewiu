@@ -216,7 +216,9 @@ try {
     if (change.changedSamples < Math.max(120, Math.floor(change.totalSamples * .04)))
       throw Error(width + 'x' + height + ': real ASERRADERO click did not reveal its HUD panel (pixel delta too small)');
     // Click the actual CANONICAL command inside that same panel, not a mock API.
-    await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 111 / 844));
+    // Corona's large separately framed detail sheet sits 26 reference pixels above Umbral.
+    // Its real 42px command hitbox center is around y=145 from the safe bottom.
+    await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 145 / 844));
     await page.waitForTimeout(800);
     const building = await capture('real-build-command');
     // Both frames have the identical open modal and full brightness;
