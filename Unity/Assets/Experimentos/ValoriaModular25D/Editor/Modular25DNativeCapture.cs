@@ -163,8 +163,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 Render(cam,output,report,"01-available-390x844",390,844,home,portrait);
                 Render(cam,output,report,"02-available-1170x2532",1170,2532,home,portrait);
                 Render(cam,output,report,"03-landscape-844x390",844,390,home,landscapeOrtho);
-                Render(cam,output,report,"04-bastion-closeup",1170,2532,new Vector3(-.55f,2.15f,-30f),4.5f);
-                Render(cam,output,report,"05-available-sawmill-close",1170,2532,new Vector3(1.30f,-1.4f,-30f),4.6f);
+                Render(cam,output,report,"04-bastion-closeup",1170,2532,new Vector3(-.30f,2.30f,-30f),4.5f);
+                Render(cam,output,report,"05-available-sawmill-close",1170,2532,new Vector3(.96f,-1.27f,-30f),4.6f);
 
                 // These are exactly the user's canonical game rules, not
                 // developer-controlled presentation toggles or fake cost values.
@@ -181,7 +181,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 if(world.WorkshopAction.gameObject.activeInHierarchy)
                     throw new Exception("Worker productive before completion of real worksite");
                 Render(cam,output,report,"06-real-building-worksite",390,844,home,portrait);
-                Render(cam,output,report,"07-worksite-closeup",1170,2532,new Vector3(1.30f,-1.4f,-30),4.6f);
+                Render(cam,output,report,"07-worksite-closeup",1170,2532,new Vector3(.96f,-1.27f,-30),4.6f);
                 report.gatewayBuild=true;
 
                 clock.AdvanceSeconds(SliceRules.SawmillBuildSeconds+1);
@@ -201,7 +201,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     throw new Exception("Finished sawmill worker not active after real save reload");
                 Render(cam,output,report,"08-sawmill-built-390x844",390,844,home,portrait);
                 Render(cam,output,report,"09-sawmill-built-1170x2532",1170,2532,home,portrait);
-                Render(cam,output,report,"10-built-sawmill-closeup",1170,2532,new Vector3(1.30f,-1.4f,-30f),4.6f);
+                Render(cam,output,report,"10-built-sawmill-closeup",1170,2532,new Vector3(.96f,-1.27f,-30f),4.6f);
                 // Wider photographic checkpoints are REAL Unity frames of
                 // actual independent objects; no synthesized composite.
                 Render(cam,output,report,"11-city-mobile-hero-390x844",
@@ -213,7 +213,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 Render(cam,output,report,"14-civic-commons-detail",
                     1170,2532,new Vector3(-.22f,-1.25f,-30f),5.3f);
                 Render(cam,output,report,"15-lumberyard-worker-detail",
-                    1170,2532,new Vector3(1.56f,-3.37f,-30f),4.0f);
+                    1170,2532,new Vector3(1.20f,-3.20f,-30f),4.0f);
 
                 var moneyBeforeRetry=complete.Resources.Wood;
                 var again=gateway.Execute(new GameCommand("mod25d-native-duplicate-attempt-"+sourceSha,
