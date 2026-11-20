@@ -57,7 +57,10 @@ function imageDifference(before,after,area){
 }
 function edgeBrightness(bytes){
   const im=PNG.sync.read(bytes);let sum=0,n=0;
-  for(let y=1;y<12;y+=2)for(let x=10;x<im.width-10;x+=7){
+  // Sample the unoccupied meadow outside the HUD, at both edges.
+  for(let y=Math.floor(im.height*.28);y<im.height*.32;y+=3)
+    for(let x=Math.floor(im.width*.032);x<im.width*.968;x+=3){
+    if(x>im.width*.072 && x<im.width*.928)continue;
     const i=(y*im.width+x)*4;
     sum+=.21*im.data[i]+.72*im.data[i+1]+.07*im.data[i+2];n++;
   }
@@ -157,7 +160,7 @@ try{
     const zoomed=await capture(page,'camera-zoomed',width,height);
     const roi=[Math.round(width*.09),Math.round(height*.22),Math.round(width*.91),Math.round(height*.83)];
     const p= imageDifference(before.bytes,panned.bytes,roi);
-    const z= imageDifference(before.bytes,zoomed.bytes,roi);
+    const z= imageDifference(panned.bytes,zoomed.bytes,roi);
     if(p.changedFraction<.11 || p.meanRgbDifference<9)
       throw Error(width+'x'+height+': dragging did not move actual world enough: '+JSON.stringify(p));
     if(z.changedFraction<.13 || z.meanRgbDifference<10)
