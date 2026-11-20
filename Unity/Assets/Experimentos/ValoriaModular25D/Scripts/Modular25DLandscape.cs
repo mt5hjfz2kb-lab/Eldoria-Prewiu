@@ -262,7 +262,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Color c=Color.Lerp(soil,lit,Mathf.Clamp01(.20f+.54f*dirt));
                 // Stone paving around the keep gate is part of its own
                 // alpha footprint kit, not a rectangular background board.
-                float stoneZone=cobbled?(1f-Sm(-.15f,.52f,yy))*(1f-Sm(.47f,.77f,Mathf.Abs(xx))):0f;
+                // Organic entrance grading: avoid the rectangular hard
+                // cobble inset previously visible as a separate platform.
+                float gateOffset=xx+.15f*yy;
+                float gateWidth=Mathf.Abs(gateOffset)*(1f+.10f*(broad-.5f));
+                float stoneZone=cobbled?
+                    (1f-Sm(-.63f,.76f,yy))*(1f-Sm(.18f,.83f,gateWidth)):
+                    0f;
                 if(stoneZone>0)
                 {
                     float tilex=xx*5.8f+Mathf.Floor(yy*6.6f)*.5f;
@@ -281,7 +287,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     float sawdust=(1f-Sm(.10f,.69f,r))*(.28f+.2f*grit);
                     c=Color.Lerp(c,new Color(.78f,.65f,.40f,1),sawdust);
                 }
-                float alpha=fade*(.51f+.31f*fine);
+                // Blend into actual painted grass and the incoming road rather
+                // than drawing a solid ochre oval around both buildings.
+                float alpha=fade*(.39f+.29f*fine);
                 c.a=Mathf.Clamp01(alpha);
                 pixels[y*FootW+x]=(Color32)c;
             }
@@ -307,9 +315,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void EdgeProps()
         {
             var rnd=new System.Random(88215);
-            for(int i=0;i<48;i++)
+            for(int i=0;i<34;i++)
             {
-                bool nearKeep=i<25;
+                bool nearKeep=i<18;
                 Vector2 centre=nearKeep?Keep:Sawmill;
                 float theta=(i*.61803398875f+rnd.Next(100)*.003f)*Mathf.PI*2f;
                 float rx=nearKeep?2.8f:2.2f;
@@ -323,9 +331,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 // Ground strokes outnumber stones. Keep big rocks outside the gate.
                 // Tufts break the alpha edge of the footprint without forming
                 // an unnatural bracelet of boulders around the castle.
-                Sprite art=(i%13==0)?Modular25DArt.Rock():
-                    (i%4==0)?Modular25DArt.Bush(i%3):
-                              Modular25DArt.Tuft(i%2);
+                // The earlier geometric boulders and flat shrub discs cut
+                // against the high-detail recovered original prop family.
+                Sprite art=Modular25DArt.Tuft(i%2);
                 var go=new GameObject("Ground contact — local grass/stone "+i);
                 go.transform.SetParent(transform,false);
                 go.transform.localPosition=new Vector3(at.x,at.y,-.02f);
