@@ -1,28 +1,31 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "c1bd9be856f12b77ce4f74aca657b61596e3226f",
+  "source_before_request": "7800fa5c5943742f2d7d0d90b914ab377ab50b5a",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
   "no_gameplay_changes": true,
   "original_sprites": 15,
   "verification_required": [
-    "Unity6000.3.23f1 editor frame provenance",
-    "actual PlayMode six icons and original eight 9slice UI materials",
-    "canonical Build/Sawmill LocalGateway",
-    "responsive Chromium real HUD 390x844 and 1170x2532",
-    "browser persistence after reload",
-    "touch camera pan pinch portrait and landscape"
+    "Exact HEAD Unity 6000.3.23f1 source-pinned render and EditMode-to-PlayMode",
+    "Original illustrated 15 Unity PNG imports and aspect-safe premium material layout",
+    "Canonical LocalGateway Build:sawmill with debit, save and scene worksite",
+    "Successful Build immediately dismisses sheet and restores game-view navigation",
+    "After successful Build show true countdown and progress on world Aserradero tag",
+    "Landscape iPhone safe-area side inset layout and 390x844/1170x2532 Chromium screenshots",
+    "Real Chrome browser reload retains paid wood and correct world phase",
+    "Real Chrome touch pan, pinch and CIUDAD click at new dock geometry",
+    "Do not approve visual art automatically from numeric CI; physical Safari untested"
   ],
   "caveats": [
     "Native art acceptance not proven",
     "Safari physical iPhone NOT_TESTED",
     "Original high-fidelity concept atlas is a separate reference; exact Unity sprite sources are in CoronaBrecha folder"
   ],
-  "premium_art_revision": "Corona polished illustrated UI v3 — 14 original premium PNGs, deterministic cropped and text-safe, full source sprites not 9-sliced; Aserradero modal repositioned for portrait+landscape",
+  "premium_art_revision": "14 painterly premium independent RGBA components; preserved source colors, 5-region aspect-safe world/build art (1036x260 and 1665x260), original source provenance, no copied commercial-game art",
   "premium_original_png_count": 14,
-  "art_after_bake_check": "High fidelity assets are byte identical in tools/valoria-corona-brecha/premium and Unity Resources CoronaBrecha; no stock art, no screenshots of third-party games",
+  "art_after_bake_check": "15 original Unity PNG verified by art-bake run 44815699535; source 580x260 material crops changed ONLY where expressly required by authored text-safe/5-region remap; preserved original source and GUIDs; no gameplay edits.",
   "previous_native_qa_run": 44811887444,
   "quality_gate": "Only source SHA of this final request; true Unity 6.3 PlayMode, Camera.Render 42+ frames, original premium game UI 390x844 and 1170x2532, portrait landscape native touch pan pinch, real Build/Save, repeated browser reload. Manual artistic inspection required; no physical iPhone claim",
   "visual_acceptance_revision": "Corona polished illustrated UI after transparent gutter normalization, center enamel writing-field, un-sliced source image material",
@@ -33,7 +36,7 @@
   "replaces_stale_request": 44805129776,
   "previous_browser_failure": "Caused by wrong ROI in browser_smoke: false 0.000 while real 230->150; corrected and verified in independent real browser run 44807702613",
   "previous_browser_retest_success": 44807702613,
-  "technical_revision": "Corona final native gate after screenshot-grounded visual fix and real browser ROI regression",
+  "technical_revision": "Corona icon+resource+CTA source proportions with source-backed world construction timer and auto-dismiss, safe landscape cutouts, original canonical Build",
   "requested_on": "2026-11-20",
   "art_approved": false,
   "iphone_tested": false,
@@ -46,18 +49,19 @@
     "390x844-real-after-browser-reload.png",
     "844x390-camera-home.png"
   ],
-  "visual_revision": "Bastion I original painted premium Corona mobile HUD v4: compact objective/nav + one-line resource icon counters, modal closes immediately after successful real Build",
+  "visual_revision": "Corona commercial HUD v5: full illustrated icons, compact corner navigation, separate quest, natural premium jewels scaled with original aspect and unchanged city/world",
   "browser_prior_success_unchanged_gateway": 44807702613,
   "qa_requirements": [
-    "Native Unity scene Camera.Render and PlayMode 1/1 exact source SHA",
-    "Three resource icons and real numerical balances 390x844 and 1170x2532",
-    "Real OBRAS button at new bottom-right location opens construction panel",
-    "Build real gateway command deducts exactly 80 wood, panel disappears immediately, world/navigation visible",
-    "Failure does not dismiss panel and second spend prevented",
-    "Real Browser persists 150 wood after reload",
-    "Native touch pan/zoom/home test using relocated CIUDAD button",
-    "Landscape 844x390 game area and non-overlapping UI",
-    "No iPhone QA claim, no main/beta mutation, no screenshot simulation"
+    "No duplicate premium icons on quest or dock, no tinting full-color materials",
+    "Real working OBRAS/ESTADO/CIUDAD controls and clickable dynamic building tags",
+    "Upper resources have ratio-correct 580x260 source and three clear numbers",
+    "No overlap of buttons/quest in portrait, no notch intrusion in landscape",
+    "After successful Build: panel closed, badge shows OBRA 0:XX and elapsed real progress",
+    "After failed Build: panel remains open with canonical error; never double-spend",
+    "One 230->150 real wood debit, persisted through browser reload",
+    "Use exact 390x844 and 1170x2532 WebGL + 844x390 gesture captures",
+    "No main, no beta or gameplay domain changes, no unfounded art acceptance"
   ],
-  "mobile_device_tested": false
+  "mobile_device_tested": false,
+  "preview_source_sha": "aadf471144f11d114d9aa22d42e446844fff87fb"
 }
