@@ -397,6 +397,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                         ? "OBRA  "+(timeLeft/60L).ToString()+":"+(timeLeft%60L).ToString("00")
                         : "ASERRADERO";
                 bool constructing=building==ParcelBuildingState.UNDER_CONSTRUCTION;
+                sawmillTagText.rectTransform.anchoredPosition=
+                    new Vector2(11f,constructing?5f:0f);
+                sawmillTagText.rectTransform.sizeDelta=
+                    new Vector2(146f,constructing?23f:32f);
                 if(worldProgressTrack!=null)
                 {
                     worldProgressTrack.gameObject.SetActive(constructing);

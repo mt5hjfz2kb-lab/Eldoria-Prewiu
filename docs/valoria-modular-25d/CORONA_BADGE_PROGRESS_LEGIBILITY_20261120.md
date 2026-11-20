@@ -1,0 +1,3 @@
+# Corona — evitar solape entre cronómetro de obra y barra de progreso
+
+La placa real del Aserradero es un botón ilustrado de 180×44 puntos. Tras el cierre automático del panel, el texto `OBRA 0:06` y la barra canónica comparten espacio. Con un `Text` de 32 puntos de alto, los descendentes podrían tocar la barra, situada en y=-15. Durante la construcción, el texto se sitúa en y=+5 con alto 23; cuando termina, recupera su caja normal 32 y centrado vertical. El track sigue anclado al mismo Sprite, no consume pantalla de la ciudad ni altera la cámara, el reloj, la construcción o el guardado. EditMode-to-PlayMode valida separaciones pero falta captura auténtica del SHA actualizado.

@@ -383,6 +383,12 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(sawmillName.GetComponentsInChildren<Text>(true)
                 .Any(x=>x.text.StartsWith("OBRA")),Is.True,
                 "The actual remaining time must be visible without reopening the panel");
+            var progressClock=sawmillName.GetComponentsInChildren<Text>(true)
+                .First(x=>x.text.StartsWith("OBRA"));
+            Assert.That(progressClock.rectTransform.anchoredPosition.y,
+                Is.GreaterThan(0f),"Visible in-world countdown must sit above its elapsed-time track");
+            Assert.That(progressClock.rectTransform.rect.height,Is.LessThan(25f),
+                "Countdown label must not cover the progress bar at the badge bottom");
             Assert.IsFalse(panel.activeInHierarchy,
                 "Successful canonical construction must immediately dismiss the detail panel");
             Assert.IsTrue(center.gameObject.activeInHierarchy,
