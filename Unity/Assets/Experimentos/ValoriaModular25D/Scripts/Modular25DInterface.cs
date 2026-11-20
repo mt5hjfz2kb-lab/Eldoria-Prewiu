@@ -37,6 +37,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Canvas hudCanvas;
         private RectTransform identity, resourceRow, inspect, center, statusDock, sheet, statusSheet, objective, noticeRoot;
         private RectTransform[] resourceChips;
+        private RectTransform constructionProgressRoot,constructionProgressFill;
         private Text title, level, woodValue, stoneValue, foodValue;
         private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
@@ -123,14 +124,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // from the experiment, and original data. Not a generic modal.
             sheet = Plate("Sawmill parchment sheet", rootTransform, parchmentPlate,
                 new Vector2(.5f, 0f), new Vector2(.5f, 0f), new Vector2(0f, 110f),
-                new Vector2(355f, 228f));
+                new Vector2(355f, 244f));
             buildingSheet = sheet.gameObject;
             Label("ASERRADERO", sheet, 23, true, DarkInk, TextAnchor.MiddleLeft,
-                new Vector2(-54f, 87f), new Vector2(205f, 31f));
-            Label("TALLER DE VALORIA", sheet, 10, false, MutedInk, TextAnchor.MiddleLeft,
-                new Vector2(-54f, 63f), new Vector2(215f, 17f));
+                new Vector2(-54f, 91f), new Vector2(205f, 31f));
+            Label("TALLER DE VALORIA", sheet, 11, false, MutedInk, TextAnchor.MiddleLeft,
+                new Vector2(-54f, 67f), new Vector2(215f, 17f));
             AccentHairline("Divider", sheet, AntiqueBrass,
-                new Vector2(0f, 48f), new Vector2(310f, 1.5f));
+                new Vector2(0f, 51f), new Vector2(310f, 1.5f));
             var previewPlate = Plate("Architectural preview", sheet, resourcePlate,
                 new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-117f, -13f),
                 new Vector2(100f, 111f));
@@ -143,15 +144,33 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             preview.type = Image.Type.Simple;
             preview.color = Color.white;
             preview.raycastTarget = false;
-            stage = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
-                new Vector2(54f, 22f), new Vector2(195f, 25f));
+            stage = Label("", sheet, 14, false, DarkInk, TextAnchor.MiddleLeft,
+                new Vector2(54f, 26f), new Vector2(195f, 22f));
             cost = Label("", sheet, 13, false, MutedInk, TextAnchor.MiddleLeft,
-                new Vector2(54f, -10f), new Vector2(195f, 25f));
+                new Vector2(54f, 0f), new Vector2(195f, 19f));
             remaining = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
-                new Vector2(54f, -42f), new Vector2(195f, 31f));
+                new Vector2(54f, -28f), new Vector2(195f, 19f));
+
+            // Commercial construction feedback, but backed solely by the
+            // canonical action clock. No invented production, new save or
+            // decorative continuously animated fake progress.
+            constructionProgressRoot=Plate("Canonical construction progress frame",sheet,null,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(54f,-50f),new Vector2(190f,10f));
+            constructionProgressRoot.GetComponent<Image>().color=AntiqueBrass;
+            var track=Plate("Dark progress track",constructionProgressRoot,null,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                Vector2.zero,new Vector2(185f,6f));
+            track.GetComponent<Image>().color=Slate;
+            constructionProgressFill=Plate("Real sawmill elapsed time",track,null,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(2f,0f),new Vector2(181f,4f));
+            constructionProgressFill.GetComponent<Image>().color=
+                new Color32(119,188,141,255);
+            constructionProgressRoot.gameObject.SetActive(false);
             action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
                 actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
-                new Vector2(0f, -88f), new Vector2(307f, 47f),
+                new Vector2(0f, -80f), new Vector2(307f, 42f),
                 () => gateway.BuildSawmill());
             actionLabel = action.GetComponentInChildren<Text>();
             var close = ButtonPlate("Close sawmill", sheet, "×", slatePlate,
@@ -274,6 +293,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     "\nComida: " + s.Resources.Food.ToString("N0");
             if (buildingSheet == null || !buildingSheet.activeSelf) return;
             var phase = ParcelBuildingStates.For(s, "sawmill");
+            if(constructionProgressRoot!=null)
+                constructionProgressRoot.gameObject.SetActive(
+                    phase==ParcelBuildingState.UNDER_CONSTRUCTION);
             cost.text = "MADERA · " + SliceRules.SawmillWoodCost.ToString("N0") + " necesarias";
             switch (phase)
             {
@@ -286,7 +308,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     break;
                 case ParcelBuildingState.UNDER_CONSTRUCTION:
                     stage.text = "RECONSTRUCCIÓN EN CURSO";
-                    remaining.text = "Finaliza en " + gateway.SawmillSecondsRemaining() + " s";
+                    var secondsLeft=gateway.SawmillSecondsRemaining();
+                    remaining.text = "Finaliza en " + secondsLeft + " s";
+                    if(constructionProgressFill!=null)
+                    {
+                        float duration=Mathf.Max(1,SliceRules.SawmillBuildSeconds);
+                        float elapsed=Mathf.Clamp01(1f-secondsLeft/duration);
+                        constructionProgressFill.sizeDelta=
+                            new Vector2(Mathf.Max(2f,181f*elapsed),4f);
+                    }
                     actionLabel.text = "EN CONSTRUCCIÓN";
                     action.interactable = false;
                     break;
@@ -363,7 +393,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.anchorMin = sheet.anchorMax = new Vector2(1f, .5f);
                 sheet.pivot = new Vector2(1f, .5f);
                 sheet.anchoredPosition = new Vector2(-12f, 2f);
-                sheet.sizeDelta = new Vector2(326f, 222f);
+                sheet.sizeDelta = new Vector2(326f, 240f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(0f, 1f);
                 noticeRoot.pivot = new Vector2(0f, 1f);
                 noticeRoot.anchoredPosition = new Vector2(12f, -top - 123f);
@@ -378,7 +408,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.anchorMin = sheet.anchorMax = new Vector2(.5f, 0f);
                 sheet.pivot = new Vector2(.5f, 0f);
                 sheet.anchoredPosition = new Vector2(0f, bottom + 69f);
-                sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 228f);
+                sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 244f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(.5f, 1f);
                 noticeRoot.pivot = new Vector2(.5f, 1f);
                 noticeRoot.anchoredPosition = new Vector2(0f, -top - 180f);
