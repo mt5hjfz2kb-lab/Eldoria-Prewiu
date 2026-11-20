@@ -159,14 +159,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(355f, 244f));
             buildingSheet = sheet.gameObject;
             Label("ASERRADERO", sheet, 23, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(-54f, 84f), new Vector2(205f, 31f));
+                new Vector2(-30f, 84f), new Vector2(190f, 31f));
             Label("TALLER DE VALORIA", sheet, 11, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(-54f, 61f), new Vector2(215f, 17f));
+                new Vector2(-30f, 61f), new Vector2(200f, 17f));
             AccentHairline("Divider", sheet, AntiqueBrass,
-                new Vector2(0f, 44f), new Vector2(310f, 1.5f));
+                new Vector2(0f, 44f), new Vector2(270f, 1.5f));
             var previewPlate = Plate("Architectural preview", sheet, portraitPlate,
-                new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-117f, -13f),
-                new Vector2(100f, 111f));
+                new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-84f, -6f),
+                new Vector2(96f, 99f));
             var view = Plate("Real illustrated sawmill", previewPlate, null,
                 new Vector2(.5f, .5f), new Vector2(.5f, .5f), Vector2.zero,
                 new Vector2(93f, 94f));
@@ -176,12 +176,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             preview.type = Image.Type.Simple;
             preview.color = Color.white;
             preview.raycastTarget = false;
-            stage = Label("", sheet, 14, false, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(54f, 26f), new Vector2(195f, 22f));
+            stage = Label("", sheet, 13, false, WarmWhite, TextAnchor.MiddleLeft,
+                new Vector2(56f, 26f), new Vector2(185f, 22f));
             cost = Label("", sheet, 13, false, MutedInk, TextAnchor.MiddleLeft,
-                new Vector2(54f, 0f), new Vector2(195f, 19f));
+                new Vector2(56f, 0f), new Vector2(185f, 19f));
             remaining = Label("", sheet, 13, false, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(54f, -28f), new Vector2(195f, 19f));
+                new Vector2(56f, -28f), new Vector2(185f, 19f));
 
             // Commercial construction feedback, but backed solely by the
             // canonical action clock. No invented production, new save or
@@ -202,7 +202,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             constructionProgressRoot.gameObject.SetActive(false);
             action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
                 actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
-                new Vector2(0f, -80f), new Vector2(307f, 42f),
+                new Vector2(0f, -80f), new Vector2(270f, 42f),
                 () => gateway.BuildSawmill());
             actionLabel = action.GetComponentInChildren<Text>();
             var close = ButtonPlate("Close sawmill", sheet, "×", navPlate,

@@ -28,3 +28,7 @@ La simulación de sprites a tamaño móvil (fuentes pintadas 580×260 para contr
 ## Protección del área tipográfica en las fuentes ilustradas
 
 Además de evitar 9-slice en ilustraciones completas, el área central de un sello tiene gemas y filetes que compiten con números y letras pequeños. Se conserva el arte premium en `premium/` sin alterar y se produce un **inserto de esmalte oscuro con borde violeta** en la zona de texto durante el horneado reproducible de `resource_siglet`, `identity_crest`, `objective_rune` y `world_rune`. Se desplaza el título a la derecha del cristal central. La simulación previa en 390×844 mostró la mejora de contraste; sólo el juego real puede aprobarla. Ningún coste, comando o guardado ha cambiado.
+
+## Panel contextual: geometría y legibilidad en retrato/horizontal
+
+Se compararon dos disposiciones sobre la captura de Unity de 390×844 usando el panel premium exacto (montajes A/B, no screenshot del HUD en marcha). La anterior situaba «ASERRADERO» en x≈21 px y la miniatura en x≈11 px, sobre el marco dorado. La elegida desplaza título/subtítulo al interior, reduce filete a 270 pt, sitúa la miniatura en x≈46 con 96×99 y adapta el texto de estado para no superponerla. La acción principal ocupa 270×42 y queda dentro de las esquinas decoradas tanto a 355 pt de ancho (retrato) como a 326 pt (horizontal). Estas son decisiones de composición comprobadas por superposición 2D; el comportamiento real y la calidad definitiva siguen pendientes de prueba en Unity y Chrome. No se modifica el comando Build ni la semántica del panel.

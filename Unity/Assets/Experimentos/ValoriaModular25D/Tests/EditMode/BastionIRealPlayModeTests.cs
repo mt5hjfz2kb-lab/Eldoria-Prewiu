@@ -140,6 +140,13 @@ namespace Eldoria.Modular25D.Tests
                 .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill parchment sheet");
             Assert.NotNull(uiSheet,"The new contextual parchment panel must exist");
             Assert.NotNull(uiSheet.GetComponent<Image>().sprite,"Original painted obsidian panel must be loaded");
+            var titleRect=uiSheet.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(x=>x.text=="ASERRADERO")?.rectTransform;
+            Assert.NotNull(titleRect);
+            Assert.That(titleRect.anchoredPosition.x,Is.GreaterThan(-40f),
+                "Portrait+landscape dark-fantasy panel title cannot overlap the ornate left frame");
+            Assert.That(titleRect.rect.width,Is.LessThan(200f),
+                "Bastion I construction modal must reserve its close medallion and corner filigree");
             Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Simple),
                 "Do not slice hand-painted edge and center gems into thin lines");
             Assert.That(header.GetComponentsInChildren<Text>(true)
