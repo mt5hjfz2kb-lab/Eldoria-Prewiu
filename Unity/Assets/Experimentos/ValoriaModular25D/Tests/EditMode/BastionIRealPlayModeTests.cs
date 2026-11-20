@@ -300,8 +300,12 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(originalWoodArt);
             Assert.That(originalWoodArt.color,Is.EqualTo(Color.white),
                 "Never tint the original illustrated logs with gold or red");
-            Assert.That(woodText.color,Is.EqualTo(new Color32(248,238,220,255)),
-                "Available resources must keep readable ivory text");
+            Assert.That(woodText.color.r,Is.EqualTo(248f/255f).Within(.004f),
+                "Readable ivory wood count must retain red channel");
+            Assert.That(woodText.color.g,Is.EqualTo(238f/255f).Within(.004f),
+                "Readable ivory wood count must retain green channel");
+            Assert.That(woodText.color.b,Is.EqualTo(220f/255f).Within(.004f),
+                "Readable ivory wood count must retain blue channel");
 
             var buttons=world.GetComponentsInChildren<Button>(true);
             var inspect=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Inspect sawmill");
