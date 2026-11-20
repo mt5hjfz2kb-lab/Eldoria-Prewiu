@@ -32,6 +32,24 @@ def main():
     original=fetch()
     src=Image.open(io.BytesIO(original)).convert("RGBA")
     assert src.size==(512,512),src.size
+    # Preserve a temporary visual inspection contact sheet in the job
+    # artifact; these files are never staged into the experiment branch.
+    inspection=ROOT/"tools/valoria-modular25d/inspection_aldr ic".replace(" ","")
+    inspection.mkdir(parents=True,exist_ok=True)
+    src.save(inspection/"aldric_original_source.png",optimize=True)
+    candidates=[
+        (138,16,374,252),(130,95,374,339),(128,140,384,396),
+        (128,170,384,426),(100,130,410,440),(100,200,412,512),
+        (0,0,512,512),(160,210,400,450)
+    ]
+    montage=Image.new("RGB",(4*160,2*184),(22,36,45))
+    drawer=ImageDraw.Draw(montage)
+    for i,box in enumerate(candidates):
+        thumb=src.crop(box).resize((144,144),Image.Resampling.LANCZOS)
+        dest=((i%4)*160+8,(i//4)*184+8)
+        montage.paste(thumb,dest,thumb)
+        drawer.text((dest[0],dest[1]+150),str(i)+" "+str(box[1]),fill=(235,219,185))
+    montage.save(inspection/"aldric_crop_candidates.jpg",quality=92)
     # 236px approved crop from Aldric's *own* provenance, already oriented
     # around face and shoulders. Not a stylized imitation or WOS portrait.
     crop=src.crop((138,16,374,252))
