@@ -709,7 +709,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             resourceRow.anchorMin=resourceRow.anchorMax=new Vector2(1f,1f);
             resourceRow.pivot=new Vector2(1f,1f);
             resourceRow.anchoredPosition=new Vector2(-right-6f,-top-3f);
-            float economyWidth=Mathf.Min(wide?335f:300f,
+            // The real 1280x720 Unity PlayMode found the old landscape
+            // 335pt resource row stretched 580x260 source capsules by
+            // 27%. Cap all orientations at 270pt. This is SMALLER,
+            // preserves premium artist proportions and liberates map.
+            float economyWidth=Mathf.Min(270f,
                 Mathf.Max(168f,safeWidth-119f));
             resourceRow.sizeDelta=new Vector2(economyWidth,40f);
             float chipWidth=(economyWidth-12f)/3f;
@@ -720,8 +724,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 var chip=resourceChips[i];
                 chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
                 chip.pivot=new Vector2(0f,.5f);
-                chip.sizeDelta=new Vector2(chipWidth,
-                    Mathf.Min(38f,chipWidth*sourceAspect));
+                // Exact painted Sprite ratio, no artificial 38pt cap
+                // which created the 27% landscape distortion in actual
+                // source-pinned Unity test 44833570082.
+                chip.sizeDelta=new Vector2(chipWidth,chipWidth*sourceAspect);
                 chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
                 chip.GetComponent<Image>().preserveAspect=true;
                 float d=Mathf.Clamp(chipWidth*.32f,20f,28f);
