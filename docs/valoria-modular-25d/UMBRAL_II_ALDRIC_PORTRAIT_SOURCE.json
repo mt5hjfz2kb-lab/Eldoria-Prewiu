@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "identity": "Sir Aldric",
+  "source_path": "Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_neutral.png",
+  "source_sha256": "156791ca04f17c45fdc85662a134352902f76229337d02e6210f6dea10c1c685",
+  "source_provenance": "ALDRIC_BUST_PROVENANCE.json / already-approved Aldric head and shoulders",
+  "original_cropped_pixels_preserved": true,
+  "crop_box_in_512": [
+    138,
+    16,
+    374,
+    252
+  ],
+  "output_path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png",
+  "output_sha256": "aa5d13c238dffde7596e1619dc318882104cbf05dd244b5300e9073ab8edc6fd",
+  "size_bytes": 17852,
+  "size": [
+    128,
+    128
+  ],
+  "unity_guid": "50d5b0b7d2702508761fa9c07906c111",
+  "not_gameplay": true,
+  "visual_approval": false,
+  "physical_iphone_tested": false
+}
