@@ -1,0 +1,82 @@
+name: Valoria Modular 2.5D — original PNG bytes packed as Unity TextAssets
+on:
+  push:
+    branches: [experiment/valoria-modular25d-ui-umbral-20261120]
+    paths: ['tools/valoria-modular25d/sawyer-binary-request.json']
+permissions:
+  contents: write
+concurrency:
+  group: valoria-modular25d-original-png-binary-textassets
+  cancel-in-progress: false
+jobs:
+  original-pixels:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/
+            /tools/valoria-modular25d/
+            /docs/valoria-modular-25d/
+      - name: Guard current canonical rev7 owner and branch
+        shell: bash
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          python3 - <<'PY'
+          import json,os,base64,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          assert os.environ['GITHUB_REF_NAME']=='experiment/valoria-modular25d-ui-umbral-20261120'
+          def get(endpoint):
+            q=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+endpoint,
+              headers={'Accept':'application/vnd.github+json','Authorization':'Bearer '+os.environ['GH_TOKEN']})
+            with urllib.request.urlopen(q,timeout=40) as f:return json.load(f)
+          meta=get('contents/pipeline/active-workstreams.json?ref=main')
+          blob=get('git/blobs/'+meta['sha'])
+          assert blob['sha']==meta['sha'] and blob['encoding']=='base64'
+          state=json.loads(base64.b64decode(blob['content']))
+          x=[x for x in state['active'] if x.get('id')=='eldoria-valoria-modular25d-bastion1-20261119']
+          assert len(x)==1 and x[0]['owner']=='chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120'
+          assert x[0]['ownership_state']=='claimed' and x[0]['ownership_revision']==7
+          assert x[0]['branch']==os.environ['GITHUB_REF_NAME']
+          print('OWNER_REV7_SOURCE_ALIAS_PASS')
+          PY
+      - name: Create exact PNG-alias TextAssets and verify SHA / CRC
+        shell: bash
+        run: |
+          python3 -m py_compile tools/valoria-modular25d/package_sawyer_textasset.py
+          python3 tools/valoria-modular25d/package_sawyer_textasset.py
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          proof=json.loads(Path('docs/valoria-modular-25d/WORKER_SAW_BINARY_TEXTASSET_PROOF.json').read_text())
+          assert len(proof['frames'])==2
+          for record in proof['frames']:
+            png=Path(record['source_png']).read_bytes()
+            alias=Path(record['alias_file']).read_bytes()
+            assert alias==png and hashlib.sha256(png).hexdigest()==record['original_and_textasset_sha256']
+            assert record['geometry']['color_type']==6 and record['source_pixels_unchanged']
+          print('BINARY_ALIAS_SHA_AND_PIXEL_IDENTITY_PASS')
+          PY
+      - name: Publish only byte aliases and proof on unchanged isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=experiment/valoria-modular25d-ui-umbral-20261120
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git fetch --no-tags --depth=1 origin "$BRANCH"
+          if [ "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA" ]; then
+            echo SOURCE_BRANCH_MOVED_NO_WRITE; exit 1
+          fi
+          git config user.name 'Eldoria original asset QA'
+          git config user.email 'eldoria-asset-qa@users.noreply.github.com'
+          git add --             'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0_png.bytes'             'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1_png.bytes'             'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0_png.bytes.meta'             'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1_png.bytes.meta'             'docs/valoria-modular-25d/WORKER_SAW_BINARY_TEXTASSET_PROOF.json'
+          git diff --cached --check
+          git diff --cached --quiet && { echo BINARY_TEXTASSETS_ALREADY_VERIFIED; exit 0; }
+          git commit -m 'fix(modular25d): package exact artist PNGs as Unity binary TextAssets without sprite importer'
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo BINARY_ALIAS_COMMIT_PUSHED
