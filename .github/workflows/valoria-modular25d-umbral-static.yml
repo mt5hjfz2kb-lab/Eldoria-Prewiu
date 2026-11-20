@@ -1,0 +1,64 @@
+name: Valoria Modular 2.5D — UMBRAL isolated UI syntax and contract
+
+on:
+  push:
+    branches:
+      - experiment/valoria-modular25d-ui-umbral-20261120
+    paths:
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/**'
+      - 'tools/valoria-modular25d/browser_smoke.mjs'
+      - 'tools/valoria-modular25d/browser_camera_smoke.mjs'
+      - 'docs/valoria-modular-25d/UI_UMBRAL_V1.md'
+      - '.github/workflows/valoria-modular25d-umbral-static.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  umbral-source-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            Unity/Assets/Experimentos/ValoriaModular25D
+            tools/valoria-modular25d
+            docs/valoria-modular-25d/UI_UMBRAL_V1.md
+          sparse-checkout-cone-mode: false
+      - name: Parse all Unity C-sharp with existing Roslyn syntax harness
+        run: |
+          dotnet --list-sdks
+          dotnet run --project tools/valoria-modular25d/roslyn/RoslynSyntaxGate.csproj --configuration Release -- Unity/Assets/Experimentos/ValoriaModular25D
+      - name: Check actual browser test JavaScript syntax
+        run: |
+          node --check tools/valoria-modular25d/browser_smoke.mjs
+          node --check tools/valoria-modular25d/browser_camera_smoke.mjs
+      - name: Verify UI experimental scope and canonical actions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('Unity/Assets/Experimentos/ValoriaModular25D')
+          src=(root/'Scripts/Modular25DInterface.cs').read_text()
+          test=(root/'Tests/EditMode/BastionIRealPlayModeTests.cs').read_text()
+          assert 'UiEdition = "Umbral' in src
+          assert src.count('new GameObject("UMBRAL | Valoria functional HUD"')==1
+          assert src.count('new GameObject("ValoriaModular25D Events"')==1
+          assert 'Screen.safeArea' in src and 'w > h' in src
+          assert 'gateway.BuildSawmill()' in src
+          assert 'gateway.Snapshot()' in src and 'StateChanged += Refresh' in src
+          assert 'new Vector4(10, 10, 10, 10)' in src and 'Image.Type.Sliced' in src
+          assert 'Modular25DArt.Sawmill()' in src
+          assert 'GameCommand(' not in src and 'PlayerPrefs' not in src
+          assert 'public void OpenSawmill()' in src
+          assert 'buildingSheet' in test and 'Independent resources' in test
+          assert 'Execute canonical Build command' in test
+          print('UMBRAL_SOURCE_CONTRACT_PASS; UNITY_RUNTIME_AND_ART_NOT_YET_TESTED')
+          PY
+      - name: Disclose test limitations
+        if: always()
+        run: |
+          echo "Ubuntu source-only; no Unity compiler/PlayMode, no screenshot from current branch, no iPhone proof and no merge."
