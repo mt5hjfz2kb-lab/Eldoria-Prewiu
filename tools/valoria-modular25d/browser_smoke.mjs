@@ -306,6 +306,13 @@ try {
     },null,{timeout:200_000});
     const reloadReadiness=await awaitUnfadedWorld(page,width,height,'after-reload');
     const reloaded=await capture('real-after-browser-reload');
+    // Capture the real finished architecture after the normal six-second construction.
+    // Chromium reload and startup may already have consumed the entire interval.
+    await page.waitForTimeout(7000);
+    const completed=await capture('real-completed-sawmill');
+    await page.mouse.click(box.x+box.width*(352/390),box.y+box.height*(1-56/844));
+    await page.waitForTimeout(500);
+    const completedPanel=await capture('real-completed-sawmill-panel');
     const retained=woodBalancePixels(building.bytes,reloaded.bytes);
     const distinctFromStartingBalance=woodBalancePixels(before.bytes,reloaded.bytes);
     if(retained.changed>=paid.changed*.5 || distinctFromStartingBalance.changed<paid.changed*.5)
@@ -315,7 +322,7 @@ try {
     manifest.resolutions.push({
       width, height, context: scene, sawmillPanelPixelChange: change,
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
-      screenshots: [before, opened, building, drawerOpened, drawerClosed, reloaded].map(({ filename, sha256 }) => ({ filename, sha256 })),
+      screenshots: [before, opened, building, drawerOpened, drawerClosed, reloaded, completed, completedPanel].map(({ filename, sha256 }) => ({ filename, sha256 })),
       collapsedByDefaultAndDrawerToggle: {opened:drawerSpread,closed:drawerResidual},
       woodBalanceBuildChange: paid, browserReloadWoodRetention: retained,
       successfulBuildClosedModal: closed,
