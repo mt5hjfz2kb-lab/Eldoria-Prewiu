@@ -296,6 +296,19 @@ namespace Eldoria.Modular25D.Tests
             var panel=Member(ui,"buildingSheet") as GameObject;
             Assert.NotNull(panel);
             Assert.IsTrue(panel.activeInHierarchy,"Real Unity pointer click failed to open build panel");
+            Assert.IsFalse(inspect.gameObject.activeInHierarchy,
+                "Real Corona modal must hide behind-panel dock hit targets");
+            Assert.IsFalse(center.gameObject.activeInHierarchy,
+                "An open construction modal must not overlap center camera navigation");
+            var currentNameplate=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill world nameplate");
+            Assert.NotNull(currentNameplate);
+            Assert.That(currentNameplate.rect.height,Is.GreaterThanOrEqualTo(44f),
+                "Commercial world nameplate must retain a touch-sized hit target");
+            Assert.That(currentNameplate.GetComponent<Image>().sprite.name,
+                Is.EqualTo("world_rune"),
+                "Teal construction sprite must be reserved for the real Build action");
+
 
             var progress=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Canonical construction progress frame");
@@ -333,6 +346,14 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(save);
             Assert.That(save,Does.Contain("eldoria-experiment-modular25d-playmode-"+run));
             Assert.IsTrue(File.Exists(save),"Actual persistent test save missing");
+            Assert.That(currentNameplate.GetComponent<Image>().sprite.name,
+                Is.EqualTo("world_rune"),
+                "Sawmill phase refresh must never stretch the teal action plate across the map");
+            Call(ui,"ClosePanels");
+            yield return null;
+            Assert.IsFalse(panel.activeInHierarchy,"Close button must dismiss modal");
+            Assert.IsTrue(center.gameObject.activeInHierarchy,
+                "Original active camera button must return when the construction sheet closes");
             Debug.Log("MOD25D_QA_STEP_4_BUILD_AND_FILE_VERIFIED");
 
             // Camera Home is a runtime action, not an inert button/gesture.

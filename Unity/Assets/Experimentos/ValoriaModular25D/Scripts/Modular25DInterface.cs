@@ -91,9 +91,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             face.GetComponent<Image>().type=Image.Type.Simple;
             face.GetComponent<Image>().preserveAspect=true;
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(62f, 9f), new Vector2(84f, 29f));
+                new Vector2(44f, 9f), new Vector2(100f, 29f));
             level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(62f, -17f), new Vector2(84f, 28f));
+                new Vector2(44f, -17f), new Vector2(100f, 28f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
@@ -118,12 +118,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
             bastionTagText.fontSize=14;
             bastionTagText.color=PaleGold;
-            sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"CONSTRUIR ASERRADERO",
-                actionPlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(200f,36f),OpenSawmill).GetComponent<RectTransform>();
+            // Building nameplates are wayfinding, NOT a second enormous
+            // turquoise Build CTA. The actual action stays in the real modal.
+            // Keep the two original art plates short/readable in world-space.
+            var keepGlyph=Plate("Bastion nameplate original icon",bastionTag,cityIcon,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(-57f,0f),new Vector2(23f,23f));
+            keepGlyph.GetComponent<Image>().preserveAspect=true;
+            bastionTagText.rectTransform.anchoredPosition=new Vector2(10f,0f);
+            bastionTagText.rectTransform.sizeDelta=new Vector2(120f,30f);
+            sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"ASERRADERO",
+                slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                Vector2.zero,new Vector2(180f,44f),OpenSawmill).GetComponent<RectTransform>();
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
-            sawmillTagText.fontSize=12;
-            sawmillTagText.color=WarmWhite;
+            sawmillTagText.fontSize=13;
+            sawmillTagText.color=PaleGold;
+            sawmillTagText.rectTransform.anchoredPosition=new Vector2(11f,0f);
+            sawmillTagText.rectTransform.sizeDelta=new Vector2(146f,32f);
+            var sawmillGlyph=Plate("Sawmill nameplate original icon",sawmillTag,hammerIcon,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(-68f,0f),new Vector2(24f,24f));
+            sawmillGlyph.GetComponent<Image>().preserveAspect=true;
 
             // Two contextual, accessible actions; no false shortcuts to
             // heroes/world/bag until the gameplay genuinely exposes them.
@@ -208,7 +223,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var close = ButtonPlate("Close sawmill", sheet, "×", navPlate,
                 new Vector2(1f, 1f), new Vector2(.5f, .5f),
                 new Vector2(-27f, -25f), new Vector2(46f, 46f),
-                () => buildingSheet.SetActive(false));
+                ClosePanels);
             var closeText = close.GetComponentInChildren<Text>();
             closeText.fontSize = 25;
             buildingSheet.SetActive(false);
@@ -224,7 +239,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0f,-15f),new Vector2(278f,83f));
             var closeStatus=ButtonPlate("Close state",statusSheet,"×",navPlate,
                 new Vector2(1f,1f),new Vector2(.5f,.5f),new Vector2(-27f,-22f),
-                new Vector2(45f,45f),()=>statusSheet.gameObject.SetActive(false));
+                new Vector2(45f,45f),ClosePanels);
             closeStatus.GetComponentInChildren<Text>().fontSize=23;
             statusSheet.gameObject.SetActive(false);
 
@@ -262,9 +277,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         public void OpenSawmill()
         {
-            if (buildingSheet == null) return;
+            if(buildingSheet==null)return;
             if(statusSheet!=null)statusSheet.gameObject.SetActive(false);
             buildingSheet.SetActive(true);
+            SetModalChrome();
             Refresh(gateway.Snapshot());
         }
 
@@ -273,7 +289,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(statusSheet==null)return;
             if(buildingSheet!=null)buildingSheet.SetActive(false);
             statusSheet.gameObject.SetActive(true);
+            SetModalChrome();
             Refresh(gateway.Snapshot());
+        }
+
+        public void ClosePanels()
+        {
+            if(buildingSheet!=null)buildingSheet.SetActive(false);
+            if(statusSheet!=null)statusSheet.gameObject.SetActive(false);
+            SetModalChrome();
+        }
+
+        // The 844x390 construction panel occupies the bottom-right camera
+        // region. Showing the CIUDAD dock under it created overlapping hit
+        // targets. Hide ALL three nav medallions while a contextual sheet is
+        // open; they return immediately through the real close control.
+        // No gameplay action or backend state changes here.
+        private void SetModalChrome()
+        {
+            bool open=(buildingSheet!=null&&buildingSheet.activeSelf)||
+                      (statusSheet!=null&&statusSheet.gameObject.activeSelf);
+            if(inspect!=null)inspect.gameObject.SetActive(!open);
+            if(center!=null)center.gameObject.SetActive(!open);
+            if(statusDock!=null)statusDock.gameObject.SetActive(!open);
+            if(objective!=null)objective.gameObject.SetActive(!open);
         }
 
         private void Update()
@@ -323,12 +362,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.text=building==ParcelBuildingState.BUILT
                     ? "ASERRADERO · "+s.SawmillLevel
                     : building==ParcelBuildingState.UNDER_CONSTRUCTION
-                        ? "OBRA EN CURSO" : "CONSTRUIR ASERRADERO";
+                        ? "OBRA EN CURSO" : "ASERRADERO";
+                // Arcane turquoise is reserved for the actual BUILD command.
+                // The world label stays the same readable deep obsidian plaque
+                // in every phase and only its text state changes.
                 var image=sawmillTag.GetComponent<Image>();
-                image.sprite=building==ParcelBuildingState.AVAILABLE
-                    ? actionPlate : building==ParcelBuildingState.UNDER_CONSTRUCTION
-                        ? burgundyPlate : slatePlate;
+                image.sprite=slatePlate;
                 image.type=Image.Type.Simple;
+                sawmillTagText.color=building==ParcelBuildingState.UNDER_CONSTRUCTION
+                    ? WarmWhite : PaleGold;
             }
             woodValue.text = s.Resources.Wood.ToString("N0");
             stoneValue.text = s.Resources.Stone.ToString("N0");
@@ -486,7 +528,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.sizeDelta = new Vector2(326f, 240f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(0f, 1f);
                 noticeRoot.pivot = new Vector2(0f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(12f, -top - 123f);
+                noticeRoot.anchoredPosition = new Vector2(12f, -top - 146f);
                 noticeRoot.sizeDelta = new Vector2(290f, 35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
@@ -501,7 +543,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 244f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(.5f, 1f);
                 noticeRoot.pivot = new Vector2(.5f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(0f, -top - 180f);
+                noticeRoot.anchoredPosition = new Vector2(0f, -top - 221f);
                 noticeRoot.sizeDelta = new Vector2(324f, 35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
                 statusSheet.pivot=new Vector2(.5f,0f);
