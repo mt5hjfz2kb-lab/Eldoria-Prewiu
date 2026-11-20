@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "method": "Unity Resources.Load<TextAsset> + ImageConversion.LoadImage",
+  "purpose": "Unity 6000.3 Windows importer loses source Sprite and Texture2D for frame 1",
+  "source_assets_unchanged": true,
+  "not_new_art": true,
+  "engine_verified": false,
+  "physical_iphone_tested": false,
+  "frames": [
+    {
+      "name": "worker_saw_0",
+      "source_png": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0.png",
+      "unity_textasset_path": "ValoriaModular25D/worker_saw_0_png",
+      "alias_file": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0_png.bytes",
+      "original_and_textasset_sha256": "31efdfda261100db7e599ffff6be13912d3144fd2bb271d726e7daaa4736dcdf",
+      "size_bytes": 8910,
+      "source_png_guid_preserved": true,
+      "source_pixels_unchanged": true,
+      "geometry": {
+        "width": 96,
+        "height": 96,
+        "bit_depth": 8,
+        "color_type": 6
+      },
+      "textasset_guid": "b034554cb92be046bf7565a0fe4389a6"
+    },
+    {
+      "name": "worker_saw_1",
+      "source_png": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1.png",
+      "unity_textasset_path": "ValoriaModular25D/worker_saw_1_png",
+      "alias_file": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1_png.bytes",
+      "original_and_textasset_sha256": "00dc4ae6e2eb81563e4fad085322f0721f1275dedc207ce9b74d13b7ef8a6553",
+      "size_bytes": 8529,
+      "source_png_guid_preserved": true,
+      "source_pixels_unchanged": true,
+      "geometry": {
+        "width": 96,
+        "height": 96,
+        "bit_depth": 8,
+        "color_type": 6
+      },
+      "textasset_guid": "2fa7e3baf1e94dd9d203bfd93ca05cc1"
+    }
+  ]
+}
