@@ -1,10 +1,12 @@
 {
   "schema": 1,
   "requested_on": "2026-11-20",
-  "purpose": "Run native Unity render, PlayMode and isolated WebGL for Umbral II commercial style and source sprite import fallback after resolving CS0122/CS0103 assembly-boundary failure.",
-  "source_before_request": "60a6e087e299368f01e6bdbc733ea4782cf42060",
-  "previous_failed_run": 44756055539,
+  "purpose": "Render and PlayMode validate genuine Umbral II UI with original pixel-identical RGBA6 two-frame sawyer re-import (no art replacement) and isolated WebGL/browser",
+  "source_before_request": "772b3db4e26e90805b5f440daa175b8f8fe8d22d",
+  "previous_failed_run": 44758551800,
   "script_scope": "existing Bastion I modular experiment",
   "no_paid_assets": true,
-  "overwrite_main": false
+  "overwrite_main": false,
+  "asset_conversion_proof": "docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json",
+  "repair_test": "44763361090 static PASS; conversion 44763183139 PASS"
 }
