@@ -113,6 +113,21 @@ class SandboxSourceContracts(unittest.TestCase):
                                 guid(directory/(name+"_png.bytes.meta")))
         self.assertEqual(names,{"worker_saw_0","worker_saw_1"})
 
+    def test_owned_aldric_avatar_is_source_verified(self):
+        original=ROOT/"docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json"
+        d=json.loads(original.read_text(encoding="utf8"))
+        self.assertEqual(d["identity"],"Sir Aldric")
+        self.assertEqual(d["source_sha256"],
+                         "156791ca04f17c45fdc85662a134352902f76229337d02e6210f6dea10c1c685")
+        self.assertEqual(d["crop_box_in_512"],[100,130,410,440])
+        self.assertTrue(d["not_gameplay"])
+        avatar=ROOT/d["output_path"]
+        self.assertEqual(hashlib.sha256(avatar.read_bytes()).hexdigest(),d["output_sha256"])
+        self.assertEqual(guid(Path(str(avatar)+".meta")),d["unity_guid"])
+        ui=content(SCRIPTS/"Modular25DInterface.cs")
+        self.assertIn('"ValoriaModular25D/UI/UmbralII/aldric_avatar"',ui)
+        self.assertIn('"Authentic Sir Aldric character portrait"',ui)
+
     def test_original_two_frame_sawyer_art_manifest_and_import(self):
         directory=BASE/"Resources/ValoriaModular25D"
         entries={p["name"]:p for p in
