@@ -65,17 +65,20 @@ code=contract.read_text(encoding="utf-8")
 for row in results:
     assert row["indexed_sha256"] in code,(row["name"],"source-contract digest absent")
     code=code.replace(row["indexed_sha256"],row["rgba_sha256"])
-    old='("'+row["indexed_sha256"]+'",'+str(row["indexed_bytes"])+')'
-    new='("'+row["rgba_sha256"]+'",'+str(row["rgba_bytes"])+')'
-    if old in code:code=code.replace(old,new)
+    # Replacing the digest above makes the source contract easy to update
+    # without disturbing anything else in its original curated asset list.
+    old='"'+row["rgba_sha256"]+'",'+str(row["indexed_bytes"])
+    new='"'+row["rgba_sha256"]+'",'+str(row["rgba_bytes"])
+    assert old in code,(row["name"],"original expected size tuple not found")
+    code=code.replace(old,new)
 assert 'self.assertEqual(content_bytes[25],3,"Original paletted PNG with alpha, not a backplate")' in code
 code=code.replace('self.assertEqual(content_bytes[25],3,"Original paletted PNG with alpha, not a backplate")',
                   'self.assertEqual(content_bytes[25],6,"Losslessly decoded RGBA PNG with alpha, not a backplate")')
 contract.write_text(code,encoding="utf-8")
 work=static.read_text(encoding="utf-8")
-needle='assert b[25]==3'
-assert needle in work,"Static PNG color-type source guard changed unexpectedly"
-work=work.replace(needle,'assert b[25]==6')
+needle='assert b[:8]==bytes.fromhex("89504e470d0a1a0a"),name'
+assert needle in work,"Static PNG signature source guard changed unexpectedly"
+work=work.replace(needle,needle+'\\n               assert b[25]==6,(name,"RGBA expected after pixel-identical source re-encode")')
 static.write_text(work,encoding="utf-8")
 proof.parent.mkdir(parents=True,exist_ok=True)
 proof.write_text(json.dumps({
