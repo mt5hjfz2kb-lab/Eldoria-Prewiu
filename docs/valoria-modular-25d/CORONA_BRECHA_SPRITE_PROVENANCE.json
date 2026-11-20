@@ -13,9 +13,9 @@
       ],
       "border": 20,
       "guid": "118f0183666919b7a9a56a3905daded4",
-      "sha256": "06973570d647735bbfe18328c94f1cdcadd1be6d222f2f2b3af4041fda791627",
+      "sha256": "40488bcc122fa37ca4b33e21e015cd2a0aa6190ff64e04524d5afe78f1f20336",
       "source_sha256": "06973570d647735bbfe18328c94f1cdcadd1be6d222f2f2b3af4041fda791627",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         580,
         260
@@ -30,9 +30,9 @@
       ],
       "border": 14,
       "guid": "8eef237bab62e926bd6164b257ac31d9",
-      "sha256": "fd60484bb499a21dac0b46567b2bd1bb3f0d59541e6d321d829ae56ac8dc279c",
+      "sha256": "a315e3fed479c6fd895ba70086f5d39c6374c435b301c2da63bdd6c6edc54eec",
       "source_sha256": "fd60484bb499a21dac0b46567b2bd1bb3f0d59541e6d321d829ae56ac8dc279c",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         580,
         260
@@ -49,7 +49,7 @@
       "guid": "01ee3f769f443f4b90582142c506e8eb",
       "sha256": "4b4dd8ebca7301abad866d068cb522c35c32edd5945fcda6c89910a319de78ef",
       "source_sha256": "4b4dd8ebca7301abad866d068cb522c35c32edd5945fcda6c89910a319de78ef",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         340,
         340
@@ -64,9 +64,9 @@
       ],
       "border": 10,
       "guid": "25db349f722ddcc3527a63519cefe562",
-      "sha256": "9849891e7963682e2338186c67bf611df113875b32c60a46f1d81a368f2ed7e6",
+      "sha256": "d6e5a477abe23f8a2a9a18ab86b3d0e457c7dfc7fe26d975c097a4105a8a47bc",
       "source_sha256": "9849891e7963682e2338186c67bf611df113875b32c60a46f1d81a368f2ed7e6",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         340,
         340
@@ -81,9 +81,9 @@
       ],
       "border": 10,
       "guid": "cab43e3c6c3be4a4ff3968716f1afaea",
-      "sha256": "47706e9ca1e8dd2aecdfc2f5799554edf5a667d47a616607260c174916e9c0da",
+      "sha256": "90f586a7c3e28d533c45ca0b54842c168861becc576f3dd93aea3b6f590f8666",
       "source_sha256": "47706e9ca1e8dd2aecdfc2f5799554edf5a667d47a616607260c174916e9c0da",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         580,
         260
@@ -98,9 +98,9 @@
       ],
       "border": 17,
       "guid": "e3c5b1ff16f89d74eeb921d739ee8901",
-      "sha256": "a5e8d020206a248bc316f2ea2799ecc6477ca3ba4aacd30cc1599db699258efa",
+      "sha256": "7a3c9fba8373443d22e75352769171c31bf35456a25ccaf2e175a6222dca52e7",
       "source_sha256": "a5e8d020206a248bc316f2ea2799ecc6477ca3ba4aacd30cc1599db699258efa",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         590,
         260
@@ -115,9 +115,9 @@
       ],
       "border": 14,
       "guid": "890219f666fc398d5ff2d36dc1a428dc",
-      "sha256": "4600f6ee2afd5063d5095b094e2d951013dc0ae0462782f61da4426c360a9a6b",
+      "sha256": "22a647956ab05a4a57fdcf8b238241b22b384b1f749e5f28797fb072f5566020",
       "source_sha256": "4600f6ee2afd5063d5095b094e2d951013dc0ae0462782f61da4426c360a9a6b",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         580,
         260
@@ -132,9 +132,9 @@
       ],
       "border": 56,
       "guid": "2526b4df24834b9220827b955fb43a81",
-      "sha256": "17a07d9c88cf5b8322a80c02c9aba1b74a8af1c83534ec9d55e4d808457241a3",
+      "sha256": "5e58ac3609e438167cf553a0e3e28cdfa5cb19697ea800372031f55e5c64742e",
       "source_sha256": "17a07d9c88cf5b8322a80c02c9aba1b74a8af1c83534ec9d55e4d808457241a3",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
       "export_size": [
         500,
         540
@@ -151,7 +151,7 @@
       "guid": "59ed1d72c5163851bcecd090864a8b04",
       "sha256": "569310b2d72c62faecbffcc80db3ea63ed325125611bb830c97e00f95ff9268b",
       "source_sha256": "569310b2d72c62faecbffcc80db3ea63ed325125611bb830c97e00f95ff9268b",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         288,
         288
@@ -168,7 +168,7 @@
       "guid": "15b8587eb45c3de65f89e92bc8d5205f",
       "sha256": "5ac22b8c710b18e878cfd2958d6adaca6e6cf9cff70a72aa32637d3ad4563a85",
       "source_sha256": "5ac22b8c710b18e878cfd2958d6adaca6e6cf9cff70a72aa32637d3ad4563a85",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         288,
         288
@@ -185,7 +185,7 @@
       "guid": "fb783bcca5f493ddd7257a25e9d9fdb8",
       "sha256": "0fc8a7c834dc153cbb38e05b89eb9a60d8792e6d69a4e09d6a57c5b455453771",
       "source_sha256": "0fc8a7c834dc153cbb38e05b89eb9a60d8792e6d69a4e09d6a57c5b455453771",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         288,
         288
@@ -202,7 +202,7 @@
       "guid": "2f37119d8dcb7251575528e24f392f74",
       "sha256": "170a29ff7d979033380b4c20d6f576bbc40273d1b557f1d6cd82e2cd86be3764",
       "source_sha256": "170a29ff7d979033380b4c20d6f576bbc40273d1b557f1d6cd82e2cd86be3764",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         247,
         256
@@ -219,7 +219,7 @@
       "guid": "a321517c6f055f3f3e7fe40caa8377c7",
       "sha256": "85c986e59e8c58639c26e23a9608c2de76cd03f0f90f2b117f50435bbb369023",
       "source_sha256": "85c986e59e8c58639c26e23a9608c2de76cd03f0f90f2b117f50435bbb369023",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         288,
         288
@@ -236,7 +236,7 @@
       "guid": "82133ad3e3ff7b2a7cbcb9fabdec4325",
       "sha256": "6da30c55de368426bcf5c9146b6d917ab21efd4e98c6e3513e153847177567ff",
       "source_sha256": "6da30c55de368426bcf5c9146b6d917ab21efd4e98c6e3513e153847177567ff",
-      "source_type": "original_image_generated_illustrated_png",
+      "source_type": "original_illustration_png_exact_bytes",
       "export_size": [
         288,
         288
