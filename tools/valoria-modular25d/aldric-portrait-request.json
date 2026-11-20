@@ -7,5 +7,8 @@
   "derivative": "transparent circular avatar for Umbral II Valoria identity",
   "no_new_lore": true,
   "no_paid_assets": true,
-  "no_main_modification": true
+  "no_main_modification": true,
+  "review_round": 2,
+  "previous_avatar_rejected": "Cropped hair/forehead rather than face, need inspect actual approved source",
+  "next_action": "Produce authentic original and 8 crop views, then choose actual face framing before modifying UI"
 }
