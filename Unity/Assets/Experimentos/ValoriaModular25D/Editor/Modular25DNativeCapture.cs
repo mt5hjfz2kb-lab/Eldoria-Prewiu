@@ -127,9 +127,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 foreach(var actor in new[]{"villager_walk_0","villager_walk_1",
                     "worker_saw_0","worker_saw_1"})
                 {
-                    var illustration=Resources.Load<Sprite>("ValoriaModular25D/"+actor);
+                    var illustration=actor.StartsWith("worker_saw_",StringComparison.Ordinal)
+                        ? Modular25DArt.Sawyer(actor.EndsWith("_0",StringComparison.Ordinal)?0:1)
+                        : Resources.Load<Sprite>("ValoriaModular25D/"+actor);
                     if(illustration==null)
-                        throw new Exception("Painted two-frame actor does not exist: "+actor);
+                        throw new Exception("Original painted two-frame actor source unavailable: "+actor);
                     report.originalArtResourcesLoaded++;
                 }
                 if(world.RecoveredPropsPlaced<10||report.originalArtResourcesLoaded!=26)
