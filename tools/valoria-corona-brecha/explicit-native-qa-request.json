@@ -1,0 +1,17 @@
+{
+  "schema": 2,
+  "source_base": "6cb57f0e37a9af8045007f8b711f3dcbe922f4bb",
+  "branch": "experiment/corona-final-slim-velvet-player-drawer-qa-20261120",
+  "goal": "Prove the FINAL real Corona mobile one-line nickname/resource top ribbon using original high-DPI 1512x184 velvet sprite, source-bound PlayerState.PlayerName, a left collapsed Activity Drawer containing real Sawmill timer and quest, and scalable six-slot bottom bar.",
+  "checks": [
+    "Unity 6.3 6000.3.23f1 real scene playmode, imported 16 Corona PNG assets, avatar and canopy",
+    "Actual Build: click legitimate Unity uGUI -> deduct canonical 80 wood, close modal, world progress hidden and left activity tab available",
+    "Real left side drawer: closed by default, tappable, task & canonical clock appear, tap again closes; none of this edits game domain",
+    "Real Chrome WebGL 390x844,1170x2532: original 230→150 visible in shared top ribbon, browser reload persists",
+    "Real 844x390 Chrome touch camera pan/pinch/home with no UI collision",
+    "Save all genuine screenshot PNG with hashes for human inspection at actual phone viewing size",
+    "Do not claim artistic commercial approval until visually evaluated; no physical Safari/iPhone test"
+  ],
+  "no_main_or_beta_changes": true,
+  "no_gameplay_changes": true
+}
