@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "37b6f43be664b33d1bad27a261e243f097c05658",
+  "source_before_request": "f5207c644890ba968fb7d712857e6803b63ad65f",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
@@ -26,8 +26,8 @@
   "premium_art_revision": "14 painterly premium independent RGBA components; preserved source colors, 5-region aspect-safe world/build art (1036x260 and 1665x260), original source provenance, no copied commercial-game art",
   "premium_original_png_count": 14,
   "art_after_bake_check": "15 original Unity PNG verified by art-bake run 44815699535; source 580x260 material crops changed ONLY where expressly required by authored text-safe/5-region remap; preserved original source and GUIDs; no gameplay edits.",
-  "previous_native_qa_run": 44811887444,
-  "quality_gate": "Final exact-HEAD Unity 6000.3.23f1 native render + EditMode PlayMode actual game; new illustrated source 15 PNG from 44815699535, true ratio nameplates and CTA, 390x844 + 1170x2532 +844x390 mobile safe layout, 230->150, immediate panel dismissal, in-world live countdown, repeatable save/reload, camera gestures and no crash. Human visual review required, physical iPhone not certified.",
+  "previous_native_qa_run": 44816471118,
+  "quality_gate": "Exact latest HEAD after suppression of generic success plate: Unity editor + actual PlayMode, 15 source original illustrated assets imported, canonical 230 to150 single debit, after Build panel closes and world tag shows real countdown; no success banner over keep, portrait and 844x390 safe area; Chromium refresh persistence and touch. No artistic approval until genuine captures.",
   "visual_acceptance_revision": "Corona polished illustrated UI after transparent gutter normalization, center enamel writing-field, un-sliced source image material",
   "test_prior_failures": "Image.Type.Sliced compressed central illustrated art to a line at 390x844. Actual source now uses Type.Simple with full-alpha-cropped original PNG visual, preserved original premium source.",
   "previous_native_pending_run": 44803984603,
@@ -49,7 +49,7 @@
     "390x844-real-after-browser-reload.png",
     "844x390-camera-home.png"
   ],
-  "visual_revision": "Corona Premium V6 — commercial strategy HUD: art-correct 15 PNGs, true scaled dimensions, single medallions, in-world countdown, auto-close Build and safe UI clusters, no fake systems",
+  "visual_revision": "Corona Premium V7: true source aspect, 15 original Unity sprites, single mission icon, isolated gold crest lettering, no generic Build-success banner, modal closes on success and world progress visible",
   "browser_prior_success_unchanged_gateway": 44807702613,
   "qa_requirements": [
     "No duplicate premium icons on quest or dock, no tinting full-color materials",
@@ -71,5 +71,6 @@
     "commercial_reference_quality": "target_not_yet_approved",
     "no_automations": true,
     "no_intermediate_reporting": true
-  }
+  },
+  "known_prior_native_browser_failure": "44811887444 source 16e: real Build did spend 230 to150 but screenshot pixel ROI outdated and GUI still showed generic toast and panel (fixed by later source commits); no gameplay failure implied."
 }
