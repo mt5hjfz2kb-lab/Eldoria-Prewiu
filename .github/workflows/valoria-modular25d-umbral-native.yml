@@ -1,0 +1,486 @@
+# Native v20: original concept-derived seamless meadow, buildings, oaks, ruins and painted
+# ground vegetation; all captured by actual Unity 6000.3 Camera.Render.
+name: Valoria Modular 2.5D — UMBRAL II commercial native UI proof
+on:
+  push:
+    branches: [experiment/valoria-modular25d-ui-umbral-20261120]
+    paths:
+      - '.github/workflows/valoria-modular25d-umbral-native.yml'
+      - 'tools/valoria-modular25d/umbral-native-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-modular25d-exclusive-unity-native
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      allowed: ${{steps.check.outputs.allowed}}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{github.token}}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          ident="eldoria-valoria-modular25d-bastion1-20261119"
+          def gh(endpoint):
+            req=urllib.request.Request("https://api.github.com/repos/"+repo+"/"+endpoint,
+                headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json"})
+            with urllib.request.urlopen(req,timeout=35) as f:return json.load(f)
+          meta=gh("contents/pipeline/active-workstreams.json?ref=main")
+          blob=gh("git/blobs/"+meta["sha"])
+          assert blob["sha"]==meta["sha"] and blob["encoding"]=="base64"
+          state=json.loads(base64.b64decode(blob["content"]))
+          leases=[x for x in state["active"] if "windows-runner-heavy" in x.get("resources",[])]
+          branch=gh("git/ref/heads/"+os.environ["GITHUB_REF_NAME"])
+          ok=(len(leases)==1 and leases[0]["id"]==ident and
+             leases[0].get("ownership_revision")==7 and leases[0].get("ownership_state")=="claimed" and
+             leases[0].get("owner")=="chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120" and
+             state.get("resource_rotation",{}).get("current_workstream")==ident and
+             branch["object"]["sha"]==os.environ["GITHUB_SHA"])
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
+          if not ok:
+            raise SystemExit("MOD25D_NATIVE_NOT_CERTIFIED: live owner/revision/branch/Windows lease mismatch")
+          print("MOD25D_NATIVE_LEASE_PASS")
+          PY
+  unity:
+    needs: preflight
+    if: needs.preflight.outputs.allowed == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    steps:
+      - name: Recheck owner, Windows process safety and installed Unity
+        shell: powershell
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          $ErrorActionPreference='Stop'
+          $api="https://api.github.com/repos/$env:GITHUB_REPOSITORY/"
+          $h=@{Authorization='Bearer '+$env:GH_TOKEN;Accept='application/vnd.github+json'}
+          $meta=Invoke-RestMethod -Uri ($api+'contents/pipeline/active-workstreams.json?ref=main') -Headers $h
+          $blob=Invoke-RestMethod -Uri ($api+'git/blobs/'+$meta.sha) -Headers $h
+          if($blob.sha -ne $meta.sha){throw 'Registry changed unexpectedly'}
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($blob.content -replace '\s',''))) | ConvertFrom-Json
+          $held=@($reg.active|Where-Object{@($_.resources) -contains 'windows-runner-heavy'})
+          $id='eldoria-valoria-modular25d-bastion1-20261119'
+          if($held.Count -ne 1 -or $held[0].id -ne $id -or $held[0].ownership_revision -ne 7 -or
+             $held[0].owner -ne 'chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120' -or
+             $reg.resource_rotation.current_workstream -ne $id){throw 'Lease not ours'}
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            throw 'Existing Windows native process: refuse interference'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not(Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'Unity editor executable unavailable'}
+          # Do not clean another run's project, Unity cache or Library.
+          if((Get-Item $env:RUNNER_TEMP).PSDrive.Free -lt 7GB){throw 'Insufficient scratch disk'}
+          Write-Host 'SAFE_NATIVE_PC_AND_OWNER_PASS'
+      - name: Restore GitHub Desktop Git to PATH for Unity Package Manager
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $paths=@(Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object{Test-Path $_})
+            if(-not $paths.Count){throw 'No installed Git; do not download software'}
+            $dir=Split-Path $paths[0]
+            $env:PATH="$dir;$env:PATH"
+          } else {$dir=Split-Path $git.Source}
+          Add-Content -Path $env:GITHUB_PATH -Value $dir
+          git --version
+      - name: Materialize source-pinned isolated Unity project without modifying main
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ('eldoria-mod25d-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
+          git init -q $root
+          git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
+          $includes=@('/tools/valoria-modular25d/',
+           '/Unity/Assets/Experimentos/ValoriaModular25D/',
+           '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
+           '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
+           '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
+           '/Unity/Assets/DefaultVolumeProfile.asset',
+           '/Unity/Assets/UniversalRenderPipelineGlobalSettings.asset',
+           '/Unity/Packages/','/Unity/ProjectSettings/')
+          git -C $root sparse-checkout set --no-cone @includes
+          if($LASTEXITCODE){throw 'Sparse checkout setup failed'}
+          git -C $root fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git fetch failed'}
+          # Windows schannel can drop a promisor-blob response near the end
+          # of an otherwise correct sparse checkout (run 44545156060).
+          # Retry only this RUN's own scratch checkout. Never reuse, delete
+          # or touch another workstream's Git/Unity folders.
+          git -C $root config http.version HTTP/1.1
+          $checkoutOk=$false
+          for($attempt=1;$attempt -le 3;$attempt++){
+            git -C $root checkout -q --detach $env:GITHUB_SHA
+            if($LASTEXITCODE -eq 0){$checkoutOk=$true;break}
+            Write-Warning ('Transient promisor-blob checkout failure; same SHA retry '+$attempt)
+            Start-Sleep -Seconds (4*$attempt)
+          }
+          if(-not $checkoutOk -or (git -C $root rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){
+            throw 'SHA-pinned checkout unresolved after bounded retries'}
+          foreach($p in @('Unity/Packages/manifest.json','Unity/ProjectSettings/ProjectVersion.txt',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Scenes/BastionI_Modular25D.unity',
+           'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs')){
+             if(-not(Test-Path (Join-Path $root $p))){throw "Missing SHA-pinned Unity input $p"}
+          }
+          "MOD25D_SOURCE=$root"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Host "MOD25D_CHECKOUT_PINNED $env:GITHUB_SHA"
+      - name: Render actual Unity camera frames and validate canonical build + file reload
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-native-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-force-d3d11','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DNativeCapture.Capture',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2400000)){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 240}
+            throw 'Scratch Unity capture timed out'}
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 260}
+            throw ('Unity native capture FAILED '+$p.ExitCode)}
+          $out=Join-Path $project 'Artifacts/ValoriaModular25D/Native'
+          $manifest=Join-Path $out 'evidence.json'
+          if(-not(Test-Path $manifest)){throw 'Missing real Unity evidence'}
+          $e=Get-Content $manifest -Raw|ConvertFrom-Json
+          if($e.engine -ne 'Unity' -or $e.engineVersion -ne '6000.3.23f1' -or
+             $e.sourceSha -ne $env:GITHUB_SHA -or $e.sourceFrames -lt 42 -or
+             -not $e.nativeWorldRender -or -not $e.gatewayBuild -or -not $e.savedAndReloaded -or
+             -not $e.noDoublePayment -or -not $e.continuousTerrainPresent -or
+             -not $e.roadAndFootprintKits -or
+             -not $e.paintedGroundSourceLoaded -or
+             $e.originalArtResourcesLoaded -lt 14 -or
+             $e.artApproved -ne 'NO' -or $e.physicalIphone -ne 'NOT_TESTED'){
+            throw 'Incomplete original-source QA; do not claim Unity/PlayMode approval'}
+          foreach($x in $e.frames){
+            $p=Join-Path $out $x.file
+            if(-not(Test-Path $p) -or (Get-Item $p).Length -lt 5000){throw ('Missing frame '+$x.file)}
+            if((Get-FileHash -Algorithm SHA256 $p).Hash.ToLowerInvariant() -ne $x.sha256){
+              throw ('Altered frame '+$x.file)}
+          }
+          Write-Host 'UNITY_REAL_SAVED_SCENE_42_FRAMES_AND_GATEWAY_PASS'
+          Get-Content $manifest -Head 28
+      - name: Actual PlayMode on saved isolated modular scene, Unity UI click and authoritative construction
+        id: playmode_gate
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-playmode-'+$env:GITHUB_RUN_ID+'.log')
+          $results=Join-Path $env:RUNNER_TEMP ('mod25d-playmode-'+$env:GITHUB_RUN_ID+'.xml')
+          $dir=Join-Path $project 'Artifacts/ValoriaModular25D/PlayMode'
+          New-Item -ItemType Directory -Path $dir -Force|Out-Null
+          $env:ELDORIA_MOD25D_PLAYMODE_RUN=$env:GITHUB_RUN_ID
+          $env:ELDORIA_MOD25D_PLAYMODE_OUTPUT=$dir
+          $filter='Eldoria.Modular25D.Tests.BastionIRealPlayModeTests.BastionIRealScene_ActualPlayMode_UI_Build_TouchAndSave'
+          $args=@('-batchmode','-force-d3d11','-projectPath',$project,
+            '-runTests','-testPlatform','EditMode','-testFilter',$filter,
+            '-testResults',$results,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(2100000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw 'Real PlayMode test hung in isolated scratch'
+          }
+          if(-not(Test-Path $results)){
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            throw ('No native EditMode-to-PlayMode result XML, exit '+$p.ExitCode)
+          }
+          [xml]$xml=Get-Content -LiteralPath $results -Raw
+          $total=[int]$xml.DocumentElement.GetAttribute('total')
+          $passed=[int]$xml.DocumentElement.GetAttribute('passed')
+          $failed=[int]$xml.DocumentElement.GetAttribute('failed')
+          $skipped=[int]$xml.DocumentElement.GetAttribute('skipped')
+          # ALWAYS preserve the actual NUnit failure messages to avoid
+          # blind guessing or repeating a 40min Unity job without diagnosis.
+          Copy-Item -LiteralPath $results -Destination (Join-Path $dir 'NUnit.xml')
+          if($total -lt 1 -or $passed -lt 1 -or $failed -ne 0 -or $skipped -ne 0 -or $p.ExitCode -ne 0){
+            $failedTests=@($xml.SelectNodes('//test-case[@result="Failed"]'))
+            foreach($t in $failedTests){
+              Write-Host ('FAILED_PLAYMODE_TEST '+$t.GetAttribute('fullname'))
+              $message=$t.SelectSingleNode('failure/message')
+              $stack=$t.SelectSingleNode('failure/stack-trace')
+              if($message){Write-Host ('FAILURE_REASON '+$message.InnerText)}
+              if($stack){Write-Host ('FAILURE_STACK '+$stack.InnerText)}
+            }
+            if(Test-Path $log){Get-Content $log -Tail 170}
+            throw ("ACTUAL_PLAYMODE_NOT_VALIDATED total=$total pass=$passed failed=$failed skipped=$skipped exit="+$p.ExitCode)
+          }
+          Write-Host "REAL_MODULAR25D_PLAYMODE_PASS $passed/$total; image not a device test."
+      - name: Check isolated WebGL player build support and attempt export
+        id: webgl_gate
+        continue-on-error: true
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $editorDir=Split-Path $env:UNITY_EDITOR_PATH -Parent
+          $module=Join-Path $editorDir 'Data/PlaybackEngines/WebGLSupport'
+          $project=Join-Path $env:MOD25D_SOURCE 'Unity'
+          $status=Join-Path $project 'Artifacts/ValoriaModular25D/webgl-status.json'
+          $dest=Split-Path -Parent $status
+          New-Item -ItemType Directory -Force -Path $dest|Out-Null
+          if(-not(Test-Path -LiteralPath $module -PathType Container)){
+            '{"build":"NOT_AVAILABLE","reason":"Installed Unity has no WebGLSupport","deviceQA":"NOT_TESTED"}'|
+              Set-Content -LiteralPath $status -Encoding utf8
+            Write-Warning 'WebGLSupport module not installed. No fake build.'
+            exit 0
+          }
+          # The global canonical Region1 tape guard is intentionally strict.
+          # For this one-scene experimental player alone, scope the guard in
+          # this RUN's SHA-pinned disposable checkout. Never alter Git main.
+          $scoper=Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/scope_isolated_webgl_guard.ps1'
+          if(-not(Test-Path -LiteralPath $scoper -PathType Leaf)){throw 'Missing pinned standalone terrain guard scope script'}
+          & $scoper -SourceRoot $env:MOD25D_SOURCE
+          if($LASTEXITCODE -ne 0){throw 'Isolated terrain guard scope script failed'}
+          $guardEvidence=Join-Path $dest 'WebGLIsolationGuard.json'
+          if(-not(Test-Path -LiteralPath $guardEvidence)){throw 'Missing isolated guard audit'}
+          $audit=Get-Content -LiteralPath $guardEvidence -Raw|ConvertFrom-Json
+          if($audit.sourceSha -ne $env:GITHUB_SHA -or -not $audit.sandboxOnly -or
+             $audit.canonicalGuard -ne 'UNCHANGED_IN_GIT_REQUIRED_FOR_EVERY_OTHER_WEBGL_BUILD'){
+            throw 'World4X guard scope proof did not pass'
+          }
+          # Unity always packs unrelated Assets/**/Resources even for one scene.
+          # Quarantine only the OTHER Eldoria resources in THIS SHA-pinned
+          # disposable project, after genuine native/PlayMode proof.
+          $isolate=Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/isolate_webgl_resources.ps1'
+          if(-not(Test-Path -LiteralPath $isolate -PathType Leaf)){
+            throw 'Missing source-pinned WebGL resource isolation script'
+          }
+          & $isolate -SourceRoot $env:MOD25D_SOURCE
+          if($LASTEXITCODE -ne 0){throw 'Isolated resources script failed'}
+          $isolationFile=Join-Path $dest 'WebGLResourceIsolation.json'
+          if(-not(Test-Path -LiteralPath $isolationFile -PathType Leaf)){
+            throw 'Resource isolation manifest absent'
+          }
+          $isolation=Get-Content -LiteralPath $isolationFile -Raw|ConvertFrom-Json
+          if($isolation.sourceSha -ne $env:GITHUB_SHA -or -not $isolation.originalModularResourcesUnchanged -or
+             $isolation.scope -ne 'ONLY_UNRELATED_ELDORIA_RESOURCES_IN_OWN_DISPOSABLE_WEBGL_SCRATCH'){
+            throw 'Resource isolation manifest mismatched'
+          }
+          Write-Host "MOD25D_EXCLUDED_UNREFERENCED_GAME_RESOURCES_BYTES $($isolation.excludedSourceBytes)"
+          $log=Join-Path $env:RUNNER_TEMP ('mod25d-webgl-'+$env:GITHUB_RUN_ID+'.log')
+          $args=@('-batchmode','-quit','-projectPath',$project,
+            '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DEditorTasks.BuildIsolatedWebGL',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            '{"build":"FAILED","reason":"WebGL build timed out","deviceQA":"NOT_TESTED"}'|
+              Set-Content $status
+            throw 'Isolated WebGL build exceeded bound'
+          }
+          $web=Join-Path $project 'Builds/ValoriaModular25D_WebGL'
+          if($p.ExitCode -ne 0 -or -not(Test-Path -LiteralPath (Join-Path $web 'index.html'))){
+            if(Test-Path $log){Get-Content $log -Tail 150}
+            '{"build":"FAILED","reason":"Unity BuildPipeline did not succeed","deviceQA":"NOT_TESTED"}'|Set-Content $status
+            throw ('Isolated WebGL exporter failed code '+$p.ExitCode)
+          }
+          $playerFiles=@(Get-ChildItem -LiteralPath $web -Recurse -File -Force)
+          [long]$totalBytes=($playerFiles|Measure-Object -Property Length -Sum).Sum
+          $largest=@($playerFiles|Sort-Object Length -Descending|Select-Object -First 5|
+            ForEach-Object{@{file=$_.FullName.Substring($web.Length).TrimStart([IO.Path]::DirectorySeparatorChar);bytes=[long]$_.Length}})
+          (@{build='SUCCEEDED';deviceQA='NOT_TESTED';sourceSha=$env:GITHUB_SHA;
+             gameSource='source-pinned standalone modular scene';totalOutputBytes=$totalBytes;
+             playerFileCount=$playerFiles.Count;largestFiles=$largest;resourceIsolation=$true;
+             browserTest='PENDING'}|ConvertTo-Json -Depth 5) |
+            Set-Content $status -Encoding UTF8
+          Write-Host "MODULAR25D_WEBGL_STANDALONE_BUILD_SUCCEEDED bytes=$totalBytes"
+      - name: Preserve PlayMode result, sandbox-only save and WebGL status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-mod25d-actual-playmode-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.xml
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/webgl-status.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/WebGLIsolationGuard.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/WebGLResourceIsolation.json
+            ${{runner.temp}}/mod25d-playmode-${{github.run_id}}.log
+            ${{runner.temp}}/mod25d-webgl-${{github.run_id}}.log
+          retention-days: 15
+          if-no-files-found: warn
+      - name: Preserve isolated WebGL build if a real player was produced
+        if: always() && steps.webgl_gate.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-mod25d-webgl-player-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Builds/ValoriaModular25D_WebGL/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve source-authored sawmill PNG separately for pixel-alpha QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-mod25d-original-sawmill-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png
+            ${{env.MOD25D_SOURCE}}/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png.meta
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Archive verified genuine Unity captures and diagnostic log even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-mod25d-genuine-unity-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/*.png
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/Native/evidence.json
+            ${{runner.temp}}/mod25d-native-${{github.run_id}}.log
+          retention-days: 14
+          if-no-files-found: warn
+
+  browser:
+    needs: unity
+    if: needs.unity.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout only owned isolated browser smoke source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/valoria-modular25d
+          sparse-checkout-cone-mode: true
+      - name: Obtain actual WebGL player built by the same SHA's Windows Unity job
+        uses: actions/download-artifact@v4
+        with:
+          name: umbral2-mod25d-webgl-player-${{github.run_id}}
+          path: webgl
+      - name: Retrieve same-run NUnit, WebGL isolation and build-size manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: umbral2-mod25d-actual-playmode-${{github.run_id}}
+          path: unity-metadata
+      - name: Refuse running browser QA against missing or unisolated build
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob,json,os,xml.etree.ElementTree as ET
+          def one(pattern):
+            paths=glob.glob(pattern,recursive=True)
+            assert len(paths)==1,(pattern,paths)
+            return paths[0]
+          w=json.load(open(one("unity-metadata/**/webgl-status.json"),encoding="utf-8-sig"))
+          i=json.load(open(one("unity-metadata/**/WebGLResourceIsolation.json"),encoding="utf-8-sig"))
+          g=json.load(open(one("unity-metadata/**/WebGLIsolationGuard.json"),encoding="utf-8-sig"))
+          n=ET.parse(one("unity-metadata/**/NUnit.xml")).getroot()
+          assert w["sourceSha"]==os.environ["GITHUB_SHA"] and w["build"]=="SUCCEEDED"
+          assert w["resourceIsolation"] and w["totalOutputBytes"]>1_000_000
+          assert i["sourceSha"]==os.environ["GITHUB_SHA"] and i["originalModularResourcesUnchanged"]
+          assert g["sourceSha"]==os.environ["GITHUB_SHA"] and g["sandboxOnly"]
+          assert n.attrib["total"]=="1" and n.attrib["passed"]=="1" and n.attrib["failed"]=="0"
+          print("NATIVE_AND_RESOURCE_ISOLATION_PROOF",w["totalOutputBytes"],"bytes")
+          PY
+      - name: Run real Chrome WebGL graphics and actual uGUI click smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s webgl/index.html
+          node --version
+          npm install --no-save --no-audit --no-fund --package-lock=false playwright-core@1.56.1 pngjs@7.0.0
+          node --check tools/valoria-modular25d/browser_smoke.mjs
+          node tools/valoria-modular25d/browser_smoke.mjs webgl browser-evidence
+          python3 - <<'PY'
+          import json,os
+          p='browser-evidence/browser-evidence.json'
+          d=json.load(open(p,encoding='utf8'))
+          assert d['sourceSha']==os.environ['GITHUB_SHA']
+          assert d['status']=='BROWSER_UI_SMOKE_PASSED_NOT_DEVICE_QA'
+          assert [ (x['width'],x['height']) for x in d['resolutions'] ] == [(390,844),(1170,2532)]
+          assert d['actualBrowserHUD'] and d['physicalIphone']=='NOT_TESTED'
+          print('REAL_CHROMIUM_WEBGL_HUD_INTERACTION_SCREENSHOTS_PASS; NO_IPHONE_CERTIFICATION')
+          PY
+      - name: Verify native touch pan, two-finger zoom and compact landscape camera in genuine Chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ELDORIA_PLAYER_SHA="$GITHUB_SHA"
+          node --check tools/valoria-modular25d/browser_camera_smoke.mjs
+          node tools/valoria-modular25d/browser_camera_smoke.mjs webgl camera-evidence
+          python3 - <<'PY'
+          import json,hashlib,os
+          data=json.load(open('camera-evidence/camera-evidence.json',encoding='utf-8'))
+          assert data['status']=='REAL_BROWSER_PAN_ZOOM_AND_HOME_PASS_NO_IPHONE_CERTIFICATION',data.get('failure')
+          assert data['gameSourceSha']==os.environ['GITHUB_SHA']
+          assert data['testScriptSha']==os.environ['GITHUB_SHA']
+          assert [(x['width'],x['height']) for x in data['cases']]==[(390,844),(844,390)]
+          assert data['cases'][0]['returnHome'] is not None
+          for case in data['cases']:
+            assert case['panning']['changedFraction']>.11
+            assert case['zoom']['changedFraction']>.13
+            for frame in case['frames']:
+              file='camera-evidence/'+frame['name']
+              assert hashlib.sha256(open(file,'rb').read()).hexdigest()==frame['sha256']
+          assert data['iPhoneTested'] is False and data['visualApproved'] is False
+          print('MOD25D_EXACT_SOURCE_REAL_CHROMIUM_TOUCH_PAN_PINCH_HOME_PASS_NOT_IPHONE')
+          PY
+      - name: Preserve authentic browser screenshots and exact-source manifest, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-mod25d-chromium-webgl-ui-${{github.run_id}}
+          path: |
+            browser-evidence/
+            camera-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+
+  video:
+    needs: unity
+    if: needs.unity.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: umbral2-mod25d-genuine-unity-${{github.run_id}}
+          path: native
+      - name: Check SHA256 originals then assemble only genuine Unity-rendered frames
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,hashlib,glob
+          paths=glob.glob("native/**/evidence.json",recursive=True)
+          assert len(paths)==1,paths
+          data=json.load(open(paths[0],encoding="utf-8-sig"))
+          assert data["engine"]=="Unity" and data["sourceFrames"]>=42
+          directory=os.path.dirname(paths[0])
+          for x in data["frames"]:
+            path=os.path.join(directory,x["file"])
+            assert hashlib.sha256(open(path,"rb").read()).hexdigest()==x["sha256"],path
+          open("frames_directory","w").write(directory)
+          print("VERIFIED_GENUINE_UNITY_FRAMES",len(data["frames"]))
+          PY
+          python3 -m pip install --disable-pip-version-check --quiet imageio-ffmpeg==0.6.0
+          FFMPEG="$(python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')"
+          "$FFMPEG" -hide_banner -loglevel error -y -framerate 10 -i "$(cat frames_directory)/movement-%03d.png" \
+            -c:v libx264 -crf 20 -pix_fmt yuv420p -movflags +faststart BastionI_Unity_EditorMovement.mp4
+          test -s BastionI_Unity_EditorMovement.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-mod25d-source-verified-video-${{github.run_id}}
+          path: BastionI_Unity_EditorMovement.mp4
+          retention-days: 14
+          if-no-files-found: error
