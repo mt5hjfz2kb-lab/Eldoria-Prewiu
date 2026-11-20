@@ -36,6 +36,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private GameObject buildingSheet;
         private Canvas hudCanvas;
         private RectTransform identity, resourceRow, inspect, center, statusDock, sheet, statusSheet, objective, noticeRoot;
+        // World-anchored, tap-enabled nameplates: standard strategy-game
+        // readability without hand-painted text embedded in the scenery.
+        private RectTransform bastionTag, sawmillTag;
+        private Text bastionTagText, sawmillTagText;
+        private Modular25DWorld world;
         private RectTransform[] resourceChips;
         private RectTransform constructionProgressRoot,constructionProgressFill;
         private Text title, level, woodValue, stoneValue, foodValue;
@@ -49,7 +54,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private void Awake()
         {
             gateway = GetComponent<Modular25DGameplay>();
-            if (gateway == null) throw new InvalidOperationException("Umbral requires the canonical modular gateway");
+            world = GetComponent<Modular25DWorld>();
+            if (gateway == null || world == null) throw new InvalidOperationException("Umbral requires the canonical modular gateway");
             if (EventSystem.current == null)
                 new GameObject("ValoriaModular25D Events", typeof(EventSystem), typeof(InputSystemUIInputModule));
             InitializeArt();
@@ -97,6 +103,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             resourceChips[1] = CreateResource(resourceRow, 1, "PIEDRA", stoneIcon, out stoneValue, out stoneAccent);
             Image foodAccent;
             resourceChips[2] = CreateResource(resourceRow, 2, "COMIDA", foodIcon, out foodValue, out foodAccent);
+
+            // Each building now communicates its interactive status in world
+            // space like a commercial 4X city. These labels MOVE with the
+            // camera and point only to canonical, currently implemented UI.
+            bastionTag=ButtonPlate("Bastion world nameplate",rootTransform,"BASTIÓN · I",
+                slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                Vector2.zero,new Vector2(150f,34f),OpenStatus).GetComponent<RectTransform>();
+            bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
+            bastionTagText.fontSize=14;
+            bastionTagText.color=PaleGold;
+            sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"CONSTRUIR ASERRADERO",
+                actionPlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                Vector2.zero,new Vector2(172f,34f),OpenSawmill).GetComponent<RectTransform>();
+            sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
+            sawmillTagText.fontSize=12;
+            sawmillTagText.color=WarmWhite;
 
             // Two contextual, accessible actions; no false shortcuts to
             // heroes/world/bag until the gameplay genuinely exposes them.
@@ -225,6 +247,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Layout();
             Refresh(gateway.Snapshot());
             Feedback(gateway.LastMessage);
+            SyncWorldNameplates();
         }
 
         public void OpenSawmill()
@@ -251,6 +274,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (noticeRoot != null && noticeRoot.gameObject.activeSelf &&
                 Time.unscaledTime > noticeExpires)
                 noticeRoot.gameObject.SetActive(false);
+            // Keep labels attached to their actual buildings through pan and
+            // pinch; never leave fixed fake nameplates at screenshot positions.
+            SyncWorldNameplates();
             if (Time.unscaledTime < nextTick) return;
             nextTick = Time.unscaledTime + .25f;
             if (buildingSheet != null && buildingSheet.activeSelf)
@@ -279,6 +305,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 return;
             }
             level.text = "BASTIÓN " + s.BastionLevel;
+            if(bastionTagText!=null)
+                bastionTagText.text="BASTIÓN · "+s.BastionLevel;
+            if(sawmillTag!=null && sawmillTagText!=null)
+            {
+                var building=ParcelBuildingStates.For(s,"sawmill");
+                sawmillTagText.text=building==ParcelBuildingState.BUILT
+                    ? "ASERRADERO · "+s.SawmillLevel
+                    : building==ParcelBuildingState.UNDER_CONSTRUCTION
+                        ? "OBRA EN CURSO" : "CONSTRUIR ASERRADERO";
+                var image=sawmillTag.GetComponent<Image>();
+                image.sprite=building==ParcelBuildingState.AVAILABLE
+                    ? actionPlate : building==ParcelBuildingState.UNDER_CONSTRUCTION
+                        ? burgundyPlate : slatePlate;
+                image.type=Image.Type.Sliced;
+            }
             woodValue.text = s.Resources.Wood.ToString("N0");
             stoneValue.text = s.Resources.Stone.ToString("N0");
             foodValue.text = s.Resources.Food.ToString("N0");
@@ -333,6 +374,45 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     actionLabel.text = "BLOQUEADO";
                     action.interactable = false;
                     break;
+            }
+        }
+
+        private void SyncWorldNameplates()
+        {
+            if(world==null||world.ViewCamera==null||hudCanvas==null||
+               bastionTag==null||sawmillTag==null)return;
+            var baseRect=hudCanvas.GetComponent<RectTransform>();
+            bool hiddenByPanel=(buildingSheet!=null&&buildingSheet.activeSelf)||
+                               (statusSheet!=null&&statusSheet.gameObject.activeSelf);
+            PlaceWorldNameplate(bastionTag,baseRect,
+                new Vector3(-.40f,-.55f,0),hiddenByPanel);
+            PlaceWorldNameplate(sawmillTag,baseRect,
+                new Vector3(.96f,-3.86f,0),hiddenByPanel);
+        }
+
+        private void PlaceWorldNameplate(RectTransform nameplate,RectTransform canvasRect,
+            Vector3 worldPosition,bool modalOpen)
+        {
+            var cam=world.ViewCamera;
+            var screen=cam.WorldToScreenPoint(worldPosition);
+            var inside=screen.z>0&&
+                screen.x>75f&&screen.x<Screen.width-75f&&
+                screen.y>110f&&screen.y<Screen.height-130f;
+            if(nameplate.gameObject.activeSelf!=inside&&!modalOpen)
+                nameplate.gameObject.SetActive(inside);
+            if(modalOpen)
+            {
+                if(nameplate.gameObject.activeSelf)nameplate.gameObject.SetActive(false);
+                return;
+            }
+            if(!inside)return;
+            Vector2 local;
+            if(RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect,new Vector2(screen.x,screen.y),null,out local))
+            {
+                nameplate.anchorMin=nameplate.anchorMax=new Vector2(.5f,.5f);
+                nameplate.pivot=new Vector2(.5f,.5f);
+                nameplate.anchoredPosition=local;
             }
         }
 
