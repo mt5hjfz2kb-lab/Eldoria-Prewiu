@@ -431,9 +431,23 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var image=Resources.Load<Sprite>("ValoriaModular25D/"+key);
             if(image==null)
             {
-                Debug.LogError("[Modular25D] Missing original sawyer frame "+key+
-                    " — do not silently replace with a walking icon.");
-                return null;
+                // A Unity import of one source PNG has intermittently produced
+                // a Texture2D resource without the expected Sprite subasset on
+                // fresh Windows Library builds. Use ONLY the original PNG pixel
+                // texture at its original anchor; never substitute icon art.
+                var original=Resources.Load<Texture2D>("ValoriaModular25D/"+key);
+                if(original!=null && original.width>16 && original.height>16)
+                {
+                    image=Sprite.Create(original,new Rect(0,0,original.width,original.height),
+                        new Vector2(.5f,.06f),100f,0,SpriteMeshType.FullRect);
+                    image.name=key+" (exact original Texture2D import fallback)";
+                    Debug.LogWarning("[Modular25D] Restored original artist-painted frame from imported Texture2D: "+key);
+                }
+                else
+                {
+                    Debug.LogError("[Modular25D] Neither original sprite nor its original PNG texture is importable: "+key);
+                    return null;
+                }
             }
             Cache.Add(key,image);
             return image;
