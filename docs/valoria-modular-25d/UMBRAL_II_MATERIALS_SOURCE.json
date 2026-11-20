@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "style": "Valoria medieval UI, commercial clarity",
+  "output": "Resources/ValoriaModular25D/UI/UmbralII",
+  "gameplay_changed": false,
+  "claims_unity_qa": false,
+  "source": "generate_umbral_art_kit.py",
+  "sprites": [
+    {
+      "name": "parchment_frame",
+      "size": [
+        256,
+        256
+      ],
+      "border": 22,
+      "guid": "361e7e7b8e3aac8983c8ac100258558d",
+      "sha256": "b88f377785ceccf653dd1f10491c4efe29aa4aec175f97079079b6e6b4edd91d",
+      "bytes": 25078,
+      "artist_source": "original deterministic Pillow 2.5D UI ornament",
+      "visual_approved": false,
+      "unity_tested": false
+    },
+    {
+      "name": "resource_capsule",
+      "size": [
+        256,
+        96
+      ],
+      "border": 16,
+      "guid": "eb0a5167dc243f06e85cf29d8e434610",
+      "sha256": "01f3eccf0ee8a2f27f7ce3060358d026e89e4c712cda5776d9385a9ff9c53d81",
+      "bytes": 9946,
+      "artist_source": "original deterministic Pillow 2.5D UI ornament",
+      "visual_approved": false,
+      "unity_tested": false
+    },
+    {
+      "name": "dock_medallion",
+      "size": [
+        256,
+        118
+      ],
+      "border": 18,
+      "guid": "669f57495f8b4f473e57d34381c3022f",
+      "sha256": "5a848efee79c0e0807ceef24f9d7ad96526448e259ee49189ee751341c635be3",
+      "bytes": 11482,
+      "artist_source": "original deterministic Pillow 2.5D UI ornament",
+      "visual_approved": false,
+      "unity_tested": false
+    },
+    {
+      "name": "green_action",
+      "size": [
+        256,
+        96
+      ],
+      "border": 18,
+      "guid": "bad05488e0f7b456561bc1bac4650509",
+      "sha256": "e7ba101d4e3dfb7607a1b237ac6e64aaec0b9abe17bc183fabc4e72f57ba2744",
+      "bytes": 10382,
+      "artist_source": "original deterministic Pillow 2.5D UI ornament",
+      "visual_approved": false,
+      "unity_tested": false
+    },
+    {
+      "name": "burgundy_objective",
+      "size": [
+        256,
+        96
+      ],
+      "border": 18,
+      "guid": "e1817b21ab5438efde0d91bc5e45cdf8",
+      "sha256": "ac102958b8b58c12889e87a0ddfe620742ef1125264b1749eaa7947881670dd6",
+      "bytes": 10423,
+      "artist_source": "original deterministic Pillow 2.5D UI ornament",
+      "visual_approved": false,
+      "unity_tested": false
+    }
+  ]
+}
