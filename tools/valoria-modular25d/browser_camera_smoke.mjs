@@ -107,7 +107,12 @@ try{
     // (not JS-dispatched fake DOM events) and reaches Unity's input bridge.
     const devtools=await ctx.newCDPSession(page);
     await devtools.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
-    const x=Math.round(width*.53),y=Math.round(height*.42);
+    // The actual 844x390 uGUI resource strip spans y=87..175: the
+    // former gesture at y=.42*390=164 was intercepted by HUD as designed.
+    // Start in the exposed world gap, not over a valid interactive panel.
+    const sceneGestureY=height<width ? .57 : .42;
+    const x=Math.round(width*.53),y=Math.round(height*sceneGestureY);
+    if(height<width && y<height*.5)throw Error('Landscape touch starts over HUD');
     const endX=x+Math.round(width*.19),endY=y+Math.round(height*.13);
     await devtools.send('Input.dispatchTouchEvent',{
       type:'touchStart',touchPoints:[{id:1,x,y,force:1}]
@@ -128,7 +133,7 @@ try{
 
     // A real two-finger gesture, not a mouse wheel. Vary the separation
     // frame by frame so the game's actual Touchscreen pinch code is exercised.
-    const cx=Math.round(width*.48),cy=Math.round(height*.42);
+    const cx=Math.round(width*.48),cy=Math.round(height*sceneGestureY);
     const makePoints=half=>[
       {id:2,x:Math.round(cx-half),y:cy,force:1},
       {id:3,x:Math.round(cx+half),y:cy,force:1}
@@ -152,7 +157,7 @@ try{
     if(p.changedFraction<.11 || p.meanRgbDifference<9)
       throw Error(width+'x'+height+': dragging did not move actual world enough: '+JSON.stringify(p));
     if(z.changedFraction<.13 || z.meanRgbDifference<10)
-      throw Error(width+'x'+height+': wheel zoom did not change world enough: '+JSON.stringify(z));
+      throw Error(width+'x'+height+': native touch pinch did not change world enough: '+JSON.stringify(z));
     let home=null,h=null;
     if(height>width){
       // Touch the actual bottom-right uGUI CENTRAR button, not C# Home.
@@ -164,7 +169,7 @@ try{
         throw Error('Real CENTRAR did not restore home frame: '+JSON.stringify({p,z,h}));
     }
     if(errors.length)throw Error('Browser/Unity JS error: '+errors.slice(0,5).join(' | '));
-    manifest.cases.push({width,height,panning:p,zoom:z,returnHome:h,
+    manifest.cases.push({width,height,gestureStart:{x,y},pinchCenter:{x:cx,y:cy},panning:p,zoom:z,returnHome:h,
       assertions:'CDP native single-finger drag, two-finger pinch and actual touch on uGUI CENTRAR in portrait',
       frames:[before,panned,zoomed,...(home?[home]:[])].map(({name,sha256})=>({name,sha256}))});
     await ctx.close();
