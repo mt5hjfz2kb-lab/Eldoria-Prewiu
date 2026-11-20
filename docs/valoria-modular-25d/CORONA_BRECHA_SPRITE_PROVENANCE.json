@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source": "original SVG vector shapes",
+  "source": "premium original illustrated PNGs with independent SVG fallbacks",
   "visual_approved": false,
   "unity_runtime_tested": false,
   "mechanics_changed": false,
@@ -13,8 +13,14 @@
       ],
       "border": 20,
       "guid": "118f0183666919b7a9a56a3905daded4",
-      "sha256": "14264e4081315bc7bf126bc28bbd8267181a49424d3335a9f201505ec68373c4",
-      "source_sha256": "4d8361b768c6c62fd90e906789396365dbcc0ae69e1f67727992faaf267f27cc"
+      "sha256": "06973570d647735bbfe18328c94f1cdcadd1be6d222f2f2b3af4041fda791627",
+      "source_sha256": "06973570d647735bbfe18328c94f1cdcadd1be6d222f2f2b3af4041fda791627",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        580,
+        260
+      ],
+      "svg_fallback_sha256": "4d8361b768c6c62fd90e906789396365dbcc0ae69e1f67727992faaf267f27cc"
     },
     {
       "name": "resource_siglet",
@@ -24,8 +30,14 @@
       ],
       "border": 14,
       "guid": "8eef237bab62e926bd6164b257ac31d9",
-      "sha256": "8acf12fead8b82168fa972c368c88acdc63bede36b6cbc10ecdd5f98bf1c5d3e",
-      "source_sha256": "a308dc17e2005041da34057bf2596c68a21166708a4a7539e552698eb89bb0be"
+      "sha256": "fd60484bb499a21dac0b46567b2bd1bb3f0d59541e6d321d829ae56ac8dc279c",
+      "source_sha256": "fd60484bb499a21dac0b46567b2bd1bb3f0d59541e6d321d829ae56ac8dc279c",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        580,
+        260
+      ],
+      "svg_fallback_sha256": "a308dc17e2005041da34057bf2596c68a21166708a4a7539e552698eb89bb0be"
     },
     {
       "name": "nav_medallion",
@@ -35,8 +47,14 @@
       ],
       "border": 19,
       "guid": "01ee3f769f443f4b90582142c506e8eb",
-      "sha256": "29c47f3e18c1b37c4b27b049236fd96f1fecb5c8b19c6effada2f57b754e7fe9",
-      "source_sha256": "bac2629626613d68ccc847acf28c747f8e9012c7d053282637d64996cd5d034e"
+      "sha256": "4b4dd8ebca7301abad866d068cb522c35c32edd5945fcda6c89910a319de78ef",
+      "source_sha256": "4b4dd8ebca7301abad866d068cb522c35c32edd5945fcda6c89910a319de78ef",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        340,
+        340
+      ],
+      "svg_fallback_sha256": "bac2629626613d68ccc847acf28c747f8e9012c7d053282637d64996cd5d034e"
     },
     {
       "name": "portrait_ring",
@@ -46,8 +64,14 @@
       ],
       "border": 10,
       "guid": "25db349f722ddcc3527a63519cefe562",
-      "sha256": "a8ec61e6bf02a760308d329864ac99b0aff5b32fa38a4ecd853388c2e3db61b0",
-      "source_sha256": "032dabc5deb91828b71d0b5a879720720f0dd90c4f0e8862a3af13e43845272e"
+      "sha256": "9849891e7963682e2338186c67bf611df113875b32c60a46f1d81a368f2ed7e6",
+      "source_sha256": "9849891e7963682e2338186c67bf611df113875b32c60a46f1d81a368f2ed7e6",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        340,
+        340
+      ],
+      "svg_fallback_sha256": "032dabc5deb91828b71d0b5a879720720f0dd90c4f0e8862a3af13e43845272e"
     },
     {
       "name": "world_rune",
@@ -57,8 +81,14 @@
       ],
       "border": 10,
       "guid": "cab43e3c6c3be4a4ff3968716f1afaea",
-      "sha256": "42e91fa693b24d41e3e066f2491ebd89c9be7ac2390804a8c9779af6aaa27eee",
-      "source_sha256": "9b7d0cd5f1f9e891f9e2cdb25d9f54d925b45fa3d36d3d4f3bb2879d5408eb11"
+      "sha256": "47706e9ca1e8dd2aecdfc2f5799554edf5a667d47a616607260c174916e9c0da",
+      "source_sha256": "47706e9ca1e8dd2aecdfc2f5799554edf5a667d47a616607260c174916e9c0da",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        580,
+        260
+      ],
+      "svg_fallback_sha256": "9b7d0cd5f1f9e891f9e2cdb25d9f54d925b45fa3d36d3d4f3bb2879d5408eb11"
     },
     {
       "name": "objective_rune",
@@ -68,8 +98,14 @@
       ],
       "border": 17,
       "guid": "e3c5b1ff16f89d74eeb921d739ee8901",
-      "sha256": "e4685c302ecc4d0883e3d8140e24205aadbd0a9a7c81fc3cf6e372653a76a353",
-      "source_sha256": "c3d6e1af8800bfec187adeb19657a65b9411b67d5dc5e8cb60149f08f73df1ed"
+      "sha256": "a5e8d020206a248bc316f2ea2799ecc6477ca3ba4aacd30cc1599db699258efa",
+      "source_sha256": "a5e8d020206a248bc316f2ea2799ecc6477ca3ba4aacd30cc1599db699258efa",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        590,
+        260
+      ],
+      "svg_fallback_sha256": "c3d6e1af8800bfec187adeb19657a65b9411b67d5dc5e8cb60149f08f73df1ed"
     },
     {
       "name": "action_arcane",
@@ -79,8 +115,14 @@
       ],
       "border": 14,
       "guid": "890219f666fc398d5ff2d36dc1a428dc",
-      "sha256": "e23a3adc27f814f8cc3011b00a39f2a69d7388d1a7854f8134f0d60537309719",
-      "source_sha256": "d6c4de760e1785766551d658211577e48ab7769b4548b09d4f87d565e4df2c96"
+      "sha256": "4600f6ee2afd5063d5095b094e2d951013dc0ae0462782f61da4426c360a9a6b",
+      "source_sha256": "4600f6ee2afd5063d5095b094e2d951013dc0ae0462782f61da4426c360a9a6b",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        580,
+        260
+      ],
+      "svg_fallback_sha256": "d6c4de760e1785766551d658211577e48ab7769b4548b09d4f87d565e4df2c96"
     },
     {
       "name": "panel_obsidian",
@@ -90,8 +132,14 @@
       ],
       "border": 56,
       "guid": "2526b4df24834b9220827b955fb43a81",
-      "sha256": "b574bb3d04aea4209fdfd40e30c56a91aee521e48ceac3e97d2f8ac253f3ffa2",
-      "source_sha256": "9ad7f2ff9df40f4a637557fb300073ae8c8afa82c2c5bbed2e1956f543734c16"
+      "sha256": "17a07d9c88cf5b8322a80c02c9aba1b74a8af1c83534ec9d55e4d808457241a3",
+      "source_sha256": "17a07d9c88cf5b8322a80c02c9aba1b74a8af1c83534ec9d55e4d808457241a3",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        500,
+        540
+      ],
+      "svg_fallback_sha256": "9ad7f2ff9df40f4a637557fb300073ae8c8afa82c2c5bbed2e1956f543734c16"
     },
     {
       "name": "icon_wood",
@@ -101,8 +149,14 @@
       ],
       "border": 0,
       "guid": "59ed1d72c5163851bcecd090864a8b04",
-      "sha256": "3f2cb51f9724a974ad6c2818450f894dca95cb8452684985ee130de06276d9cf",
-      "source_sha256": "4c27984910e77ca35650de3245b67781fc08a497da61496b4e1b0eb359ff74ef"
+      "sha256": "569310b2d72c62faecbffcc80db3ea63ed325125611bb830c97e00f95ff9268b",
+      "source_sha256": "569310b2d72c62faecbffcc80db3ea63ed325125611bb830c97e00f95ff9268b",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        288,
+        288
+      ],
+      "svg_fallback_sha256": "4c27984910e77ca35650de3245b67781fc08a497da61496b4e1b0eb359ff74ef"
     },
     {
       "name": "icon_stone",
@@ -112,8 +166,14 @@
       ],
       "border": 0,
       "guid": "15b8587eb45c3de65f89e92bc8d5205f",
-      "sha256": "d691a9d932431f42dad81f5cb9182c7ca2b57be000e3df044a23952b2f79ff91",
-      "source_sha256": "517f97b2e90aeba10cfc57d2c14be4e52e75d25236766cf70ea8e30d9a437c7d"
+      "sha256": "5ac22b8c710b18e878cfd2958d6adaca6e6cf9cff70a72aa32637d3ad4563a85",
+      "source_sha256": "5ac22b8c710b18e878cfd2958d6adaca6e6cf9cff70a72aa32637d3ad4563a85",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        288,
+        288
+      ],
+      "svg_fallback_sha256": "517f97b2e90aeba10cfc57d2c14be4e52e75d25236766cf70ea8e30d9a437c7d"
     },
     {
       "name": "icon_food",
@@ -123,8 +183,14 @@
       ],
       "border": 0,
       "guid": "fb783bcca5f493ddd7257a25e9d9fdb8",
-      "sha256": "f95cd46ba72fbdc117e5386b3aee0bed2f31fdd3f8acfb5345d3e9650c17c4c4",
-      "source_sha256": "e94dbc2a402bf7a939420e5b266851ea13e9fa44b3c0ca819996458f0cdb3bf0"
+      "sha256": "0fc8a7c834dc153cbb38e05b89eb9a60d8792e6d69a4e09d6a57c5b455453771",
+      "source_sha256": "0fc8a7c834dc153cbb38e05b89eb9a60d8792e6d69a4e09d6a57c5b455453771",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        288,
+        288
+      ],
+      "svg_fallback_sha256": "e94dbc2a402bf7a939420e5b266851ea13e9fa44b3c0ca819996458f0cdb3bf0"
     },
     {
       "name": "icon_hammer",
@@ -134,8 +200,14 @@
       ],
       "border": 0,
       "guid": "2f37119d8dcb7251575528e24f392f74",
-      "sha256": "abce10907c8b7559f30616488db1425efe710228432dd2f8c2b692b679cff686",
-      "source_sha256": "c228c3394d554dfaec38a777396f5c3acb9517eb3951c555805d1f3494bed45b"
+      "sha256": "170a29ff7d979033380b4c20d6f576bbc40273d1b557f1d6cd82e2cd86be3764",
+      "source_sha256": "170a29ff7d979033380b4c20d6f576bbc40273d1b557f1d6cd82e2cd86be3764",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        247,
+        256
+      ],
+      "svg_fallback_sha256": "c228c3394d554dfaec38a777396f5c3acb9517eb3951c555805d1f3494bed45b"
     },
     {
       "name": "icon_city",
@@ -145,8 +217,14 @@
       ],
       "border": 0,
       "guid": "a321517c6f055f3f3e7fe40caa8377c7",
-      "sha256": "511d32062f68b39b15fa5c825ca48cd228825ca1b358035be3d52640cab918b4",
-      "source_sha256": "2d4fe83a96f7da5056ade594db769255994739995c81b0d9411e22b7d167b6bd"
+      "sha256": "85c986e59e8c58639c26e23a9608c2de76cd03f0f90f2b117f50435bbb369023",
+      "source_sha256": "85c986e59e8c58639c26e23a9608c2de76cd03f0f90f2b117f50435bbb369023",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        288,
+        288
+      ],
+      "svg_fallback_sha256": "2d4fe83a96f7da5056ade594db769255994739995c81b0d9411e22b7d167b6bd"
     },
     {
       "name": "icon_task",
@@ -156,8 +234,14 @@
       ],
       "border": 0,
       "guid": "82133ad3e3ff7b2a7cbcb9fabdec4325",
-      "sha256": "f5c8be0a0dfa2325fec1f7c624c554cb28239da2ac12ae8710932694b3202c42",
-      "source_sha256": "c858195922493f8669afed4636ad4ac601a29fc545fd19c861091ded0227b55a"
+      "sha256": "6da30c55de368426bcf5c9146b6d917ab21efd4e98c6e3513e153847177567ff",
+      "source_sha256": "6da30c55de368426bcf5c9146b6d917ab21efd4e98c6e3513e153847177567ff",
+      "source_type": "original_image_generated_illustrated_png",
+      "export_size": [
+        288,
+        288
+      ],
+      "svg_fallback_sha256": "c858195922493f8669afed4636ad4ac601a29fc545fd19c861091ded0227b55a"
     },
     {
       "name": "icon_scroll",
@@ -167,8 +251,14 @@
       ],
       "border": 0,
       "guid": "b40d19d4c59e52025b9bd26725236bcc",
-      "sha256": "2a6f7785e208b02daa65197f37a08f7388d189a65c7390a1fb3eee9e87b8b3c6",
-      "source_sha256": "bef62a79e3ec528deaf4541e6b1567b840ec806e5b88437205fd00730c306140"
+      "sha256": "ee22b26c3998236fd18b0863e2d2acd0f071893fd17f4141985475f01100f883",
+      "source_sha256": "bef62a79e3ec528deaf4541e6b1567b840ec806e5b88437205fd00730c306140",
+      "source_type": "original_deterministic_svg_fallback",
+      "export_size": [
+        288,
+        288
+      ],
+      "svg_fallback_sha256": "bef62a79e3ec528deaf4541e6b1567b840ec806e5b88437205fd00730c306140"
     }
   ]
 }
