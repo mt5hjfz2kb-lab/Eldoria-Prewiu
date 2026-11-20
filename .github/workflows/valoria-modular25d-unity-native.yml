@@ -22,6 +22,7 @@ on:
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWalker.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorkshopAction.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/RecoveredProps/**'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/**'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/bastion_i.png'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png'
   workflow_dispatch:

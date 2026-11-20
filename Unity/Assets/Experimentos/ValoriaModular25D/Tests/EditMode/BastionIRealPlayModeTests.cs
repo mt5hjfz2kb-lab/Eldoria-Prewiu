@@ -115,6 +115,12 @@ namespace Eldoria.Modular25D.Tests
             var header=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Live resource strip");
             Assert.NotNull(header,"Mobile resource bar missing");
+            Assert.NotNull(header.GetComponent<Image>().sprite,"Owned premium resource frame missing");
+            Assert.That(header.GetComponent<Image>().type,Is.EqualTo(Image.Type.Sliced));
+            foreach(var key in new[]{"slate_resource","brass_portrait","profile_plate","burgundy_action"})
+                Assert.NotNull(Resources.Load<Sprite>("ValoriaModular25D/UI/"+key));
+            foreach(var key in new[]{"CormorantGaramond-SemiBold","SourceSans3-Semibold"})
+                Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             if(Screen.width>Screen.height)
             {
                 // A separate actual Chromium landscape screenshot checks the

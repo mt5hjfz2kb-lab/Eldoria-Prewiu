@@ -25,7 +25,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         int lastLayoutWidth=-1, lastLayoutHeight=-1;
         Rect lastSafeArea;
 
-        static readonly Color PanelInk = new Color(.075f,.095f,.108f,.91f);
+        static readonly Color PanelInk = new Color(.075f,.095f,.108f,.86f);
         static readonly Color Gold = new Color(.86f,.7f,.43f);
         static readonly Color Ivory = new Color(.92f,.88f,.77f);
 
@@ -252,13 +252,23 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             rect.pivot=new Vector2(.5f,.5f);
             rect.anchoredPosition=offset;rect.sizeDelta=size;
             var image=obj.GetComponent<Image>();
-            image.color=color;image.raycastTarget=true;
-            // Hairline trims add material detail without another full-screen
-            // image, heavy alpha frame, or blocking the genuine uGUI input.
-            AddHairline(rect,"upper etched bronze",new Vector2(0,size.y*.5f-.8f),
-                new Vector2(size.x-2f,1.6f),new Color(.75f,.61f,.38f,.49f));
-            AddHairline(rect,"lower stone glint",new Vector2(0,-size.y*.5f+.8f),
-                new Vector2(size.x-2f,1.2f),new Color(.75f,.61f,.38f,.25f));
+            string surface=name=="Live resource strip"?"slate_resource":
+                name=="Real sawmill build action"?"brass_portrait":"profile_plate";
+            var original=Resources.Load<Sprite>("ValoriaModular25D/UI/"+surface);
+            if(original!=null)
+            {
+                image.sprite=original;
+                image.type=Image.Type.Sliced;
+                image.color=new Color(1f,1f,1f,color.a);
+            }
+            else
+            {
+                Debug.LogError("[MOD25D] Missing source-owned 9-slice: "+surface);
+                image.color=color;
+                AddHairline(rect,"Fallback bronze trim",new Vector2(0,size.y*.5f-.8f),
+                    new Vector2(size.x-2f,1.6f),new Color(.75f,.61f,.38f,.49f));
+            }
+            image.raycastTarget=true;
             return rect;
         }
 
@@ -288,7 +298,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             rect.pivot=new Vector2(.5f,.5f);
             rect.anchoredPosition=position;rect.sizeDelta=size;
             var label=obj.GetComponent<Text>();
-            label.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            string family=fontSize>=16?"CormorantGaramond-SemiBold":"SourceSans3-Semibold";
+            var ownedFont=Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+family);
+            if(ownedFont==null)
+                Debug.LogError("[MOD25D] Licensed original font missing: "+family);
+            label.font=ownedFont!=null?ownedFont:Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.text=text;label.fontSize=fontSize;label.color=color;
             label.alignment=TextAnchor.MiddleCenter;
             label.horizontalOverflow=HorizontalWrapMode.Wrap;
@@ -302,7 +316,26 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             var rect=MakePanel(name,parent,anchor,offset,size,new Color(.26f,.31f,.31f,.97f));
             var button=rect.gameObject.AddComponent<Button>();
-            button.targetGraphic=rect.GetComponent<Image>();
+            var graphic=rect.GetComponent<Image>();
+            string surface=name=="Execute canonical Build command"?"burgundy_action":"profile_plate";
+            var art=Resources.Load<Sprite>("ValoriaModular25D/UI/"+surface);
+            if(art!=null)
+            {
+                graphic.sprite=art;
+                graphic.type=Image.Type.Sliced;
+                graphic.color=Color.white;
+            }
+            else Debug.LogError("[MOD25D] Missing primary/secondary UI art: "+surface);
+            button.targetGraphic=graphic;
+            button.transition=Selectable.Transition.ColorTint;
+            var states=button.colors;
+            states.normalColor=Color.white;
+            states.highlightedColor=new Color(1f,.97f,.86f,1f);
+            states.pressedColor=new Color(.79f,.76f,.69f,1f);
+            states.selectedColor=new Color(1f,.96f,.83f,1f);
+            states.disabledColor=new Color(.62f,.63f,.62f,.77f);
+            states.fadeDuration=.085f;
+            button.colors=states;
             MakeLabel(text,rect,14,Ivory,Vector2.zero,new Vector2(size.x-8,size.y-6));
             button.onClick.AddListener(click);
             return button;

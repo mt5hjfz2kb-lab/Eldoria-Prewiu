@@ -48,6 +48,27 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertEqual(len(set(ids)), len(ids))
         self.assertTrue((BASE / "Scenes/BastionI_Modular25D.unity.meta").is_file())
 
+    def test_premium_ui_assets_keep_vigilia_original_bytes_and_licenses(self):
+        root=ROOT/"Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt"
+        ui=BASE/"Resources/ValoriaModular25D/UI"
+        for name in ("slate_resource.png","brass_portrait.png","profile_plate.png","burgundy_action.png"):
+            original=root/"PremiumSurfaces"/name
+            copy=ui/name
+            self.assertEqual(copy.read_bytes(),original.read_bytes())
+            self.assertIn("spriteBorder:",content(ui/(name+".meta")))
+            self.assertNotEqual(guid(ui/(name+".meta")),guid(Path(str(original)+".meta")))
+        for name in ("CormorantGaramond-SemiBold.ttf","SourceSans3-Semibold.ttf"):
+            original=root/"Fonts"/name
+            copy=ui/"Fonts"/name
+            self.assertEqual(copy.read_bytes(),original.read_bytes())
+            self.assertNotEqual(guid(Path(str(copy)+".meta")),guid(Path(str(original)+".meta")))
+        for name in ("OFL.txt","OFL_SOURCE_SANS_3.txt"):
+            self.assertEqual((ui/"Fonts"/name).read_bytes(),(root/"Fonts"/name).read_bytes())
+        skin=content(SCRIPTS/"Modular25DInterface.cs")
+        self.assertIn("image.type=Image.Type.Sliced;",skin)
+        self.assertIn("graphic.type=Image.Type.Sliced;",skin)
+        self.assertIn("Resources.Load<Font>",skin)
+
     def test_production_gameplay_authority(self):
         src = content(SCRIPTS / "Modular25DGameplay.cs")
         self.assertIn("save=new FileStateStore(SandboxSavePath);", src)
