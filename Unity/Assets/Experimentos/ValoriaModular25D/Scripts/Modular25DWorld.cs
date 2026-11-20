@@ -380,7 +380,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public bool HitSawmill(Vector2 world)
         {
             // World-space footprint, independent of sprite alpha and canvas scaling.
-            return world.x>-.55f && world.x<3.22f && world.y>-2.48f && world.y<.92f;
+            // Adapt the existing world interaction footprint to the moved
+            // building without changing its canonical Build command or save.
+            return world.x>-.88f && world.x<2.88f && world.y>-2.60f && world.y<1.04f;
         }
     }
 }
