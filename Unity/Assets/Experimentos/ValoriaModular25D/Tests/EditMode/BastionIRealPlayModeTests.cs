@@ -222,6 +222,14 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(panel);
             Assert.IsTrue(panel.activeInHierarchy,"Real Unity pointer click failed to open build panel");
 
+            var progress=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Canonical construction progress frame");
+            Assert.NotNull(progress,"Progress bar source is missing from the real Aserradero panel");
+            Assert.IsFalse(progress.gameObject.activeSelf,
+                "Before construction, do not show a fake or pre-filled timer");
+            var fill=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Real sawmill elapsed time");
+            Assert.NotNull(fill,"Canonical elapsed time fill object must exist");
             var build=buttons.FirstOrDefault(x=>x && x.gameObject.name==
                 "Execute canonical Build command");
             Assert.NotNull(build,"No authoritative construction button");
@@ -237,6 +245,11 @@ namespace Eldoria.Modular25D.Tests
                 "A scheduled build cannot complete instantly");
             Assert.That((long)Member(after,"BuildingCompletesUtcTicks"),Is.GreaterThan(0));
             Assert.IsFalse(build.interactable,"Second click must not double-spend");
+            Assert.IsTrue(progress.gameObject.activeInHierarchy,
+                "After authoritative Build the real progress track must be visible");
+            Assert.That(fill.sizeDelta.x,Is.GreaterThanOrEqualTo(2f));
+            Assert.That(fill.sizeDelta.x,Is.LessThanOrEqualTo(181f),
+                "Progress UI must be bounded by the real canonical construction time");
             Assert.IsFalse(work.gameObject.activeInHierarchy,
                 "Sawyer must be inactive while real worksite timer runs");
             var save=Member(gameplay,"SandboxSavePath") as string;
