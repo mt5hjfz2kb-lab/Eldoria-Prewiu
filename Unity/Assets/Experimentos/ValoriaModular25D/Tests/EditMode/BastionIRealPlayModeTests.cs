@@ -143,6 +143,16 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Sliced));
             Assert.That(header.GetComponentsInChildren<Text>(true)
                 .Any(x=>x.text=="MADERA"),Is.True,"Live wood capsule missing");
+            var originalIconBytes=Resources.Load<TextAsset>(
+                "ValoriaModular25D/UI/UmbralII/umbral_gameplay_icons_png");
+            Assert.NotNull(originalIconBytes,"Source-authored transparent six-icon game atlas is missing");
+            Assert.That(originalIconBytes.bytes.Length,Is.GreaterThan(2000));
+            var gameIcons=world.GetComponentsInChildren<Image>(true)
+                .Where(x=>x && x.sprite!=null &&
+                    x.sprite.name.StartsWith("Original Eldoria Umbral II"))
+                .Select(x=>x.sprite.name).Distinct().ToArray();
+            Assert.That(gameIcons.Length,Is.GreaterThanOrEqualTo(6),
+                "Commercial HUD must use all six original resource/action game icons, not dummy symbols");
             foreach(var key in new[]{"CormorantGaramond-SemiBold","SourceSans3-Semibold"})
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             // The game HUD must use authored, border-preserving pieces,
