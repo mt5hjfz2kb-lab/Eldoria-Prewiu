@@ -6,6 +6,7 @@ on:
     branches: [experiment/valoria-modular-25d-bastion1-from-zero-20261118]
     paths:
       - '.github/workflows/valoria-modular25d-unity-native.yml'
+      - 'tools/valoria-modular25d/scope_isolated_webgl_guard.ps1'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/EditMode/BastionIRealPlayModeTests.cs'
@@ -121,7 +122,8 @@ jobs:
           if(Test-Path $root){throw 'Refuse to overwrite existing scratch'}
           git init -q $root
           git -C $root remote add origin "https://github.com/$env:GITHUB_REPOSITORY.git"
-          $includes=@('/Unity/Assets/Experimentos/ValoriaModular25D/',
+          $includes=@('/tools/valoria-modular25d/',
+           '/Unity/Assets/Experimentos/ValoriaModular25D/',
            '/Unity/Assets/Experimentos/ValoriaModular25D.meta','/Unity/Assets/Experimentos.meta',
            '/Unity/Assets/Eldoria/','/Unity/Assets/Eldoria.meta',
            '/Unity/Assets/Plugins/','/Unity/Assets/Plugins.meta',
@@ -257,6 +259,20 @@ jobs:
             Write-Warning 'WebGLSupport module not installed. No fake build.'
             exit 0
           }
+          # The global canonical Region1 tape guard is intentionally strict.
+          # For this one-scene experimental player alone, scope the guard in
+          # this RUN's SHA-pinned disposable checkout. Never alter Git main.
+          $scoper=Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/scope_isolated_webgl_guard.ps1'
+          if(-not(Test-Path -LiteralPath $scoper -PathType Leaf)){throw 'Missing pinned standalone terrain guard scope script'}
+          & $scoper -SourceRoot $env:MOD25D_SOURCE
+          if($LASTEXITCODE -ne 0){throw 'Isolated terrain guard scope script failed'}
+          $guardEvidence=Join-Path $dest 'WebGLIsolationGuard.json'
+          if(-not(Test-Path -LiteralPath $guardEvidence)){throw 'Missing isolated guard audit'}
+          $audit=Get-Content -LiteralPath $guardEvidence -Raw|ConvertFrom-Json
+          if($audit.sourceSha -ne $env:GITHUB_SHA -or -not $audit.sandboxOnly -or
+             $audit.canonicalGuard -ne 'UNCHANGED_IN_GIT_REQUIRED_FOR_EVERY_OTHER_WEBGL_BUILD'){
+            throw 'World4X guard scope proof did not pass'
+          }
           $log=Join-Path $env:RUNNER_TEMP ('mod25d-webgl-'+$env:GITHUB_RUN_ID+'.log')
           $args=@('-batchmode','-quit','-projectPath',$project,
             '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DEditorTasks.BuildIsolatedWebGL',
@@ -286,6 +302,7 @@ jobs:
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.json
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.xml
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/webgl-status.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/WebGLIsolationGuard.json
             ${{runner.temp}}/mod25d-playmode-${{github.run_id}}.log
             ${{runner.temp}}/mod25d-webgl-${{github.run_id}}.log
           retention-days: 15
