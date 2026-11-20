@@ -71,6 +71,7 @@ jobs:
               meta=(root/(name+".png.meta")).read_text()
               b=p.read_bytes()
               assert b[:8]==bytes.fromhex("89504e470d0a1a0a"),name
+              assert b[25]==6,(name,"Original visual pixels safely normalized to RGBA6")
               n=8
               frames=[]
               width=height=0
