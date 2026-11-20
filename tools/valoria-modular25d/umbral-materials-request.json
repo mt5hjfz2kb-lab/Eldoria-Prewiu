@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "requested_on": "2026-11-20",
+  "source_before_request": "d7413493547eb94648335217c9ab8d38b4b8cb0f",
+  "scope": "art materials only for existing Umbral II HUD",
+  "output": "5 scalable PNG Sprite 9-slice materials with original text-free artwork and deterministic .meta",
+  "art_approved": false,
+  "unity_tested": false,
+  "overwrite_main": false,
+  "no_paid_assets": true
+}
