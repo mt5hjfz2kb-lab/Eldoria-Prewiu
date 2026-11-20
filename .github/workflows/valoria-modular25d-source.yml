@@ -30,6 +30,7 @@ jobs:
           sparse-checkout-cone-mode: true
       - name: Run non-Unity reproducible source contracts
         run: |
+          node --check tools/valoria-modular25d/browser_camera_smoke.mjs
           python3 -m py_compile tools/valoria-modular25d/verify_source.py
           python3 tools/valoria-modular25d/verify_source.py
           python3 tools/valoria-modular25d/geometry_gate.py
