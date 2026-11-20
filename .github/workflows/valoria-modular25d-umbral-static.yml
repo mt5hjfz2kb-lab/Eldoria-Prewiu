@@ -70,7 +70,7 @@ jobs:
               p=root/(name+".png")
               meta=(root/(name+".png.meta")).read_text()
               b=p.read_bytes()
-              assert b[:8]==b"\\x89PNG\\r\\n\\x1a\\n",name
+              assert b[:8]==bytes.fromhex("89504e470d0a1a0a"),name
               n=8
               frames=[]
               width=height=0
@@ -88,7 +88,7 @@ jobs:
               assert zlib.decompress(b"".join(frames))
               assert "textureType: 8" in meta and "spriteMode: 1" in meta
               assert "spritePixelsToUnits: 100" in meta
-              guid=re.search(r"guid:\\s*([0-9a-f]{32})",meta).group(1)
+              guid=next(x.split(":",1)[1].strip() for x in meta.splitlines() if x.startswith("guid:"))
               assert guid not in guids;guids.add(guid)
               print("ORIGINAL_SAWYER_PNG_AND_SPRITE_META_PASS",name,width,height,len(b),guid)
           PY
