@@ -33,6 +33,63 @@ def artist_aspect_recompose(image,target_width):
  assert start==target_width
  return output
 
+def remove_detached_artist_fragments(image, name):
+ """Preserve only the original principal connected illustration and a 2-pixel
+ antialias fringe. Source-proven alpha fragments on icon_wood and panel_obsidian
+ were genuine disconnected output debris, NOT valid resource/gameplay objects.
+ Intentionally do not apply this to icon_food: its spilled grain is artistic.
+ """
+ from PIL import ImageFilter
+ w,h=image.size
+ alpha=image.getchannel("A").tobytes()
+ seen=bytearray(w*h)
+ main=[]
+ discarded=0
+ for seed,value in enumerate(alpha):
+  if value<=20 or seen[seed]: continue
+  queue=[seed];seen[seed]=1;component=[]
+  while queue:
+   index=queue.pop()
+   component.append(index)
+   x=index%w; y=index//w
+   for yy in range(max(0,y-1),min(h,y+2)):
+    for xx in range(max(0,x-1),min(w,x+2)):
+     ni=yy*w+xx
+     if alpha[ni]>20 and not seen[ni]:
+      seen[ni]=1;queue.append(ni)
+  if len(component)>len(main):
+   discarded+=len(main);main=component
+  else: discarded+=len(component)
+ if len(main)<.95*(len(main)+discarded):
+  raise ValueError("Corona painter output is not a single object: "+name)
+ mask=bytearray(w*h)
+ for idx in main:mask[idx]=255
+ fringe=Image.frombytes("L",(w,h),bytes(mask)).filter(ImageFilter.MaxFilter(5))
+ cleaned=Image.composite(image,Image.new("RGBA",image.size),fringe)
+ print("CORONA_ORIGINAL_DETACHED_PIXELS_REMOVED",name,discarded)
+ return cleaned
+
+def remove_identity_horizontal_export_line(original):
+ """Source-grounded two-row artifact with EXACT constant RGBA pixels.
+ Repair with the immediately neighboring original painter pixel rows,
+ preserving the central gold crystal and real antialias edges.
+ """
+ if original.size!=(580,260): raise ValueError("Identity source dimension changed")
+ image=original.copy()
+ p=image.load()
+ mark=(202,153,241,102)
+ repaired=0
+ for x in range(image.width):
+  if p[x,187]==mark and p[x,188]==mark:
+   upper=p[x,186];lower=p[x,189]
+   p[x,187]=tuple(round((2*u+d)/3) for u,d in zip(upper,lower))
+   p[x,188]=tuple(round((u+2*d)/3) for u,d in zip(upper,lower))
+   repaired+=1
+ if not 380<=repaired<=405:
+  raise ValueError("Identity exporter guideline not known; refuse arbitrary image edit: "+str(repaired))
+ print("CORONA_IDENTITY_EXACT_SOURCE_GUIDELINE_REPAIRED",repaired)
+ return image
+
 def main():
  OUT.mkdir(parents=True,exist_ok=True)
  (OUT.parent/"CoronaBrecha.meta").write_text("fileFormatVersion: 2\nguid: 79f6030ed90712d9a1c8a5bd32f9a186\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n")
@@ -59,7 +116,10 @@ def main():
      original.load()
      if original.mode!="RGBA":
       raise ValueError("Original Corona premium art is not RGBA: "+name)
-     alpha=original.getchannel("A").point(lambda pixel:255 if pixel>20 else 0)
+     painted=remove_identity_horizontal_export_line(original) if name=="identity_crest" else original
+     if name in ("panel_obsidian","action_arcane"):
+      painted=remove_detached_artist_fragments(painted,name)
+     alpha=painted.getchannel("A").point(lambda pixel:255 if pixel>20 else 0)
      bounds=alpha.getbbox()
      if not bounds:
       raise ValueError("Original premium frame is transparent: "+name)
@@ -67,26 +127,12 @@ def main():
      pad=4
      bounds=(max(0,left-pad),max(0,top-pad),
              min(original.width,right+pad),min(original.height,bottom+pad))
-     actual=original.crop(bounds).resize(original.size,Image.Resampling.LANCZOS)
-     # Text-safe insets: the painted jewel in the center of the
-     # lozenge clashed with MADERA / PIEDRA / COMIDA and VALORIA. Use
-     # the original outer filigree, add a deep enamel writing field
-     # WITHIN the artifact instead of floating black HUD labels.
-     insets={
-       "resource_siglet":(200,47,540,215),
-       "identity_crest":(315,52,552,212),
-       "objective_rune":(165,49,525,208),
-       "world_rune":(112,48,515,215)
-     }
-     if name in insets:
-      from PIL import ImageDraw
-      mask=Image.new("RGBA",actual.size)
-      painter=ImageDraw.Draw(mask)
-      x0,y0,x1,y1=insets[name]
-      painter.rounded_rectangle((x0,y0,x1,y1),radius=31,fill=(30,20,47,225))
-      painter.rounded_rectangle((x0+5,y0+5,x1-5,y1-5),
-        radius=28,outline=(122,88,146,95),width=3)
-      actual=Image.alpha_composite(actual,mask)
+     actual=painted.crop(bounds).resize(original.size,Image.Resampling.LANCZOS)
+     # The premium source is ALREADY dark amethyst with clean artist-painted
+     # borders. Old rounded_rectangle enamel insets overprinted a SECOND
+     # rectangle over each gem, obscured half the source artwork and looked
+     # unlike a commercial 4X game. Preserve original pixels; text contrast
+     # belongs in live Unity Text/Outline, not in flattened image overlays.
      # Full painted premium ornaments were severely SQUASHED to the
      # world-nameplate (180x44) and real build button (270x42).
      # Adapt the source aspect WITHOUT shrinking the central gold gem.
@@ -100,9 +146,25 @@ def main():
       origin="original_illustration_png_opaque_art_bounds_normalized"
      actual.save(dest,optimize=True,compress_level=9)
    else:
-    import shutil
-    shutil.copyfile(premium,dest)
-    origin="original_illustration_png_exact_bytes"
+    if name=="icon_wood":
+     with Image.open(premium) as original:
+      original.load()
+      if original.mode!="RGBA" or original.size!=(288,288):
+       raise ValueError("Unknown source icon_wood art dimensions")
+      cleaned=remove_detached_artist_fragments(original,name)
+      bounds=cleaned.getchannel("A").point(lambda a:255 if a>20 else 0).getbbox()
+      if not bounds: raise ValueError("Original logs lost during cleanup")
+      padding=7
+      x0,y0,x1,y1=bounds
+      bounds=(max(0,x0-padding),max(0,y0-padding),
+              min(original.width,x1+padding),min(original.height,y1+padding))
+      cleaned.crop(bounds).resize(original.size,Image.Resampling.LANCZOS).save(
+       dest,optimize=True,compress_level=9)
+      origin="original_illustration_png_logs_detached_export_art_removed"
+    else:
+     import shutil
+     shutil.copyfile(premium,dest)
+     origin="original_illustration_png_exact_bytes"
   else:
    cairosvg.svg2png(bytestring=source,write_to=str(dest),output_width=2*w,output_height=2*h)
    origin="original_deterministic_svg_fallback"
