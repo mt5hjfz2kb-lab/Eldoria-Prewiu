@@ -155,11 +155,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(355f, 244f));
             buildingSheet = sheet.gameObject;
             Label("ASERRADERO", sheet, 23, true, DarkInk, TextAnchor.MiddleLeft,
-                new Vector2(-54f, 91f), new Vector2(205f, 31f));
+                new Vector2(-54f, 84f), new Vector2(205f, 31f));
             Label("TALLER DE VALORIA", sheet, 11, false, MutedInk, TextAnchor.MiddleLeft,
-                new Vector2(-54f, 67f), new Vector2(215f, 17f));
+                new Vector2(-54f, 61f), new Vector2(215f, 17f));
             AccentHairline("Divider", sheet, AntiqueBrass,
-                new Vector2(0f, 51f), new Vector2(310f, 1.5f));
+                new Vector2(0f, 44f), new Vector2(310f, 1.5f));
             var previewPlate = Plate("Architectural preview", sheet, resourcePlate,
                 new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-117f, -13f),
                 new Vector2(100f, 111f));
@@ -523,9 +523,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(22f,22f));
             symbol.GetComponent<Image>().type=Image.Type.Simple;
             symbol.GetComponent<Image>().color=Color.white;
-            Label(caption, chip, 11, false, AntiqueBrass,
+            Label(caption, chip, 11, false, PaleGold,
                 TextAnchor.MiddleLeft, new Vector2(23f, 9f), new Vector2(74f, 14f));
-            value = Label("0", chip, 15, false, WarmWhite,
+            value = Label("0", chip, 17, false, WarmWhite,
                 TextAnchor.MiddleLeft, new Vector2(23f, -7f), new Vector2(76f, 20f));
             return chip;
         }
