@@ -125,19 +125,37 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
         [MenuItem("Eldoria/Experimentos/Valoria modular 2.5D/Compilar WebGL aislado")]
         public static void BuildIsolatedWebGL()
         {
+            // The historical canonical World4X terrain gate is global. Only
+            // the disposable Windows scratch has an additional narrowly scoped
+            // prebuild condition for this exact scene/output combination.
+            // Set and restore the Editor build scene list so the scoped guard
+            // can independently prove this player is NOT the canonical world.
+            AuditScene();
+            var originalScenes=EditorBuildSettings.scenes;
             string outFolder=Path.GetFullPath(
                 Path.Combine(UnityEngine.Application.dataPath,"..","Builds","ValoriaModular25D_WebGL"));
             Directory.CreateDirectory(outFolder);
-            BuildReport report=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
-                scenes=new[]{ScenePath},
-                locationPathName=outFolder,
-                target=BuildTarget.WebGL,
-                options=BuildOptions.None
-            });
-            if(report.summary.result!=BuildResult.Succeeded)
-                throw new InvalidOperationException("Isolated WebGL build did not pass: "+report.summary.result);
-            Debug.Log("[Modular25D] WebGL build SUCCESS at "+outFolder+
-                ". Physical iPhone and artistic acceptance remain unverified.");
+            try
+            {
+                EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ScenePath,true)};
+                BuildReport report=BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+                    scenes=new[]{ScenePath},
+                    locationPathName=outFolder,
+                    target=BuildTarget.WebGL,
+                    options=BuildOptions.StrictMode
+                });
+                if(report.summary.result!=BuildResult.Succeeded ||
+                   report.summary.totalErrors!=0 ||
+                   !File.Exists(Path.Combine(outFolder,"index.html")))
+                    throw new InvalidOperationException("Isolated WebGL build did not pass: "+
+                        report.summary.result+" errors="+report.summary.totalErrors);
+                Debug.Log("[Modular25D] Exact single-scene WebGL built at "+outFolder+
+                    ". This does NOT prove a browser run or physical iPhone QA.");
+            }
+            finally
+            {
+                EditorBuildSettings.scenes=originalScenes;
+            }
         }
     }
 }
