@@ -1,0 +1,137 @@
+{
+  "name": "Corona de la Brecha",
+  "schema": 1,
+  "style": "Distinct arcane medallions, obsidian, aged gold and amethyst; teal reserved for Build actions",
+  "colors": {
+    "obsidian": "#1A1428",
+    "violet": "#30223F",
+    "amethyst": "#A85BEB",
+    "gold": "#C99C54",
+    "ivory": "#F1E9D4",
+    "teal": "#63D9CF",
+    "alert": "#B55B80"
+  },
+  "mechanics_change": false,
+  "assets": [
+    {
+      "name": "identity_crest",
+      "size": [
+        320,
+        116
+      ],
+      "border": 28
+    },
+    {
+      "name": "resource_siglet",
+      "size": [
+        320,
+        104
+      ],
+      "border": 28
+    },
+    {
+      "name": "nav_medallion",
+      "size": [
+        168,
+        168
+      ],
+      "border": 20
+    },
+    {
+      "name": "portrait_ring",
+      "size": [
+        168,
+        168
+      ],
+      "border": 20
+    },
+    {
+      "name": "world_rune",
+      "size": [
+        320,
+        94
+      ],
+      "border": 28
+    },
+    {
+      "name": "objective_rune",
+      "size": [
+        350,
+        135
+      ],
+      "border": 28
+    },
+    {
+      "name": "action_arcane",
+      "size": [
+        360,
+        114
+      ],
+      "border": 28
+    },
+    {
+      "name": "panel_obsidian",
+      "size": [
+        512,
+        512
+      ],
+      "border": 64
+    },
+    {
+      "name": "icon_wood",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    },
+    {
+      "name": "icon_stone",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    },
+    {
+      "name": "icon_food",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    },
+    {
+      "name": "icon_hammer",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    },
+    {
+      "name": "icon_city",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    },
+    {
+      "name": "icon_task",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    },
+    {
+      "name": "icon_scroll",
+      "size": [
+        144,
+        144
+      ],
+      "border": 0
+    }
+  ]
+}

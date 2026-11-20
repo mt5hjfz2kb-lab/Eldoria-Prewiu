@@ -1,0 +1,57 @@
+name: Corona de la Brecha — reproducible 15-sprite Unity art bake
+on:
+  push:
+    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    paths:
+      - tools/valoria-corona-brecha/**
+      - .github/workflows/valoria-corona-brecha-bake.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: corona-brecha-visual-asset-bake
+  cancel-in-progress: false
+jobs:
+  bake:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --quiet --disable-pip-version-check cairosvg pillow
+      - name: Bake & validate original source and Unity sprite import metadata
+        run: |
+          python tools/valoria-corona-brecha/bake.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image
+          root=Path('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha')
+          d=json.loads(Path('docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json').read_text())
+          assert len(d['sprites'])==15
+          for item in d['sprites']:
+              with Image.open(root/(item['name']+'.png')) as img:
+                  img.load()
+                  assert img.mode=='RGBA' and img.size==tuple(n*2 for n in item['size'])
+              meta=(root/(item['name']+'.png.meta')).read_text()
+              assert 'guid: '+item['guid'] in meta
+              assert 'spriteBorder: {x: '+str(2*item['border']) in meta
+          print('CORONA_15_PNG_AND_UNITY_METADATA_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-brecha-original-ui-kit
+          path: |
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha
+            docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json
+          retention-days: 21
+      - name: Commit only generated original art in isolated experiment
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha.meta docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json
+          git diff --cached --quiet && exit 0
+          git commit -m "art(corona): bake original 15 PNG sprites with stable Unity metadata"
+          git push origin HEAD:experiment/valoria-corona-de-la-brecha-ui-20261120
