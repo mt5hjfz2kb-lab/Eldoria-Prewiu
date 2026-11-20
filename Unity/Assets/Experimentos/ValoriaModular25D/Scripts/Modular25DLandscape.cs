@@ -35,7 +35,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Debug.LogError("[Modular25D] Sprites/Default unavailable; landscape cannot integrate.",this);
                 return;
             }
-            var earth=MakeRoadTexture();
+            var earth=Resources.Load<Texture2D>("ValoriaModular25D/HaulersEarth");
+            if(earth==null)earth=MakeRoadTexture();
             var earthMat=new Material(shader){name="Valoria haulers' earth road — original paint system"};
             earthMat.mainTexture=earth;
             materials.Add(earthMat);
@@ -233,7 +234,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     int index=i*Across+j;
                     Vector2 p=spine[i]+normal*offset;
                     vtx[index]=new Vector3(p.x,p.y,-.075f);
-                    uv[index]=new Vector2(u,along/5.5f);
+                    uv[index]=new Vector2(u,along/(cobbled ? 5.5f : width*2f));
                     // An original painted tile alone produced a continuous
                     // light-grey strip, almost like a river in 390x844. Blend
                     // actual path stones with neighbouring olive grass at
