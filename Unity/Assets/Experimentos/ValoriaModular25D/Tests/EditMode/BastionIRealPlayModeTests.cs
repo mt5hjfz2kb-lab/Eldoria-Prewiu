@@ -114,18 +114,25 @@ namespace Eldoria.Modular25D.Tests
             var sceneCanvas=world.GetComponentsInChildren<Canvas>(true);
             Assert.That(sceneCanvas.Count(x=>x.enabled && x.gameObject.activeInHierarchy),
                 Is.EqualTo(1),"Only compact modular HUD should be active");
-            var firstMessage=Member(ui,"message") as Text;
+            var firstMessage=Member(ui,"notice") as Text;
             Assert.NotNull(firstMessage);
             Assert.IsTrue(string.IsNullOrEmpty(firstMessage.text),
                 "A premium game HUD must not show a permanent prototype debug banner");
             Assert.NotNull(EventSystem.current,"Unity real touch event system missing");
             var header=world.GetComponentsInChildren<RectTransform>(true)
-                .FirstOrDefault(x=>x && x.gameObject.name=="Live resource strip");
+                .FirstOrDefault(x=>x && x.gameObject.name=="Independent resources");
             Assert.NotNull(header,"Mobile resource bar missing");
-            Assert.NotNull(header.GetComponent<Image>().sprite,"Owned premium resource frame missing");
-            Assert.That(header.GetComponent<Image>().type,Is.EqualTo(Image.Type.Sliced));
-            foreach(var key in new[]{"slate_resource","brass_portrait","profile_plate","burgundy_action"})
-                Assert.NotNull(Resources.Load<Sprite>("ValoriaModular25D/UI/"+key));
+            Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.type==Image.Type.Sliced),
+                Is.GreaterThanOrEqualTo(3),"Three independently rendered resource plates are required");
+            Assert.That((string)ui.GetType().GetField("UiEdition").GetRawConstantValue(),
+                Does.Contain("Umbral"),"This isolated branch must use the new layout, not Vigilia controls");
+            var uiSheet=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill parchment sheet");
+            Assert.NotNull(uiSheet,"The new contextual parchment panel must exist");
+            Assert.NotNull(uiSheet.GetComponent<Image>().sprite,"New parchment nine-slice was not created");
+            Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Sliced));
+            Assert.That(header.GetComponentsInChildren<Text>(true)
+                .Any(x=>x.text=="MADERA"),Is.True,"Live wood capsule missing");
             foreach(var key in new[]{"CormorantGaramond-SemiBold","SourceSans3-Semibold"})
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             if(Screen.width>Screen.height)
@@ -135,7 +142,7 @@ namespace Eldoria.Modular25D.Tests
                 // right-anchored, not the old full-width center obstruction.
                 Assert.That(header.anchorMin.x,Is.EqualTo(1f).Within(.001f));
                 Assert.That(header.pivot.x,Is.EqualTo(1f).Within(.001f));
-                Assert.Less(header.localScale.x,.75f,"Landscape resource HUD too large");
+                Assert.LessOrEqual(header.sizeDelta.x,333.1f,"Landscape resource ledger obstructs the city");
                 Assert.Greater(header.anchoredPosition.y,-80f);
             }
             else
@@ -178,7 +185,7 @@ namespace Eldoria.Modular25D.Tests
             ExecuteEvents.Execute<IPointerClickHandler>(inspect.gameObject,data,
                 ExecuteEvents.pointerClickHandler);
             yield return null;
-            var panel=Member(ui,"panel") as GameObject;
+            var panel=Member(ui,"buildingSheet") as GameObject;
             Assert.NotNull(panel);
             Assert.IsTrue(panel.activeInHierarchy,"Real Unity pointer click failed to open build panel");
 
