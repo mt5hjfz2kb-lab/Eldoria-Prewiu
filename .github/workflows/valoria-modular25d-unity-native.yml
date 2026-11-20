@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/valoria-modular25d-unity-native.yml'
       - 'tools/valoria-modular25d/scope_isolated_webgl_guard.ps1'
+      - 'tools/valoria-modular25d/browser_smoke.mjs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/EditMode/BastionIRealPlayModeTests.cs'

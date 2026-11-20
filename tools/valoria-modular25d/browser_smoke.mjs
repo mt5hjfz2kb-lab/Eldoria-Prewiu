@@ -72,7 +72,10 @@ try {
   });
   for (const [width, height] of [[390, 844], [1170, 2532]]) {
     const ctx = await browser.newContext({
-      viewport: { width, height }, isMobile: true, hasTouch: true, deviceScaleFactor: 1
+      viewport: { width, height }, isMobile: true, hasTouch: true, deviceScaleFactor: 1,
+      // Unity's default WebGL template switches to responsive mobile CSS by UA.
+      // isMobile alone changes viewport emulation, not navigator.userAgent.
+      userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36'
     });
     const page = await ctx.newPage();
     const errors = [], failures = [];
@@ -102,6 +105,8 @@ try {
     if (!scene.visible || !scene.webglContext) throw Error(width + 'x' + height + ': no real visible Unity WebGL canvas/context');
     const box = await page.locator('canvas').boundingBox();
     if (!box) throw Error('Actual Unity canvas has no on-screen bounds');
+    if (box.width > width * 1.05 || box.height > height * 1.05)
+      throw Error(width + 'x' + height + ': WebGL canvas overflows responsive mobile viewport');
     const capture = async label => {
       const file = path.join(out, width + 'x' + height + '-' + label + '.png');
       const bytes = await page.screenshot({ path: file, animations: 'disabled', timeout: 50_000 });
