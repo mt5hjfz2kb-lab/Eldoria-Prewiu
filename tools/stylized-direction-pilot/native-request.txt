@@ -1,0 +1,7 @@
+attempt=14
+workstream_id=eldoria-stylized-direction-proof-20261115
+owner=chatgpt-eldoria-stylized-art-proof-20261115
+ownership_revision=6
+state=REAL_UNITY_TERRAIN_H_ATMOSPHERE_A_B_C
+reason=Previous 43727084829 failed before Unity because workflow hard-coded revision4 after owner CAS already advanced to6. Reconcile the exact lease and re-run existing artistic source unchanged.
+art_approved=false

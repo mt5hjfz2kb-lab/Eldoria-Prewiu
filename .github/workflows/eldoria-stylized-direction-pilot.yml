@@ -1,0 +1,129 @@
+name: Eldoria stylized art direction - real Unity A/B
+on:
+  push:
+    branches: [feature/eldoria-stylized-direction-proof-20261115]
+    paths: ['tools/stylized-direction-pilot/native-request.txt']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-stylized-direction-native
+  cancel-in-progress: true
+jobs:
+  lease:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify exact source and CAS Windows lease before any native work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"];sha=os.environ["GITHUB_SHA"]
+          hdr={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json","User-Agent":"eldoria-style-cas"}
+          def get(path):
+              with urllib.request.urlopen(urllib.request.Request("https://api.github.com/repos/"+repo+"/"+path,headers=hdr),timeout=30) as f:return json.load(f)
+          branch=get("git/ref/heads/feature/eldoria-stylized-direction-proof-20261115")
+          if branch["object"]["sha"]!=sha:raise SystemExit("Pilot branch moved before capture")
+          obj=get("contents/pipeline/active-workstreams.json?ref=main")
+          data=obj.get("content")
+          if obj.get("encoding")!="base64" or not data:
+              blob=get("git/blobs/"+obj["sha"])
+              if blob.get("sha")!=obj["sha"] or blob.get("encoding")!="base64":raise SystemExit("Registry CAS mismatch")
+              data=blob.get("content")
+          if not data:raise SystemExit("Owner registry unavailable")
+          d=json.loads(base64.b64decode(data))
+          holders=[w for w in d["active"] if "windows-runner-heavy" in w.get("resources",[])]
+          if len(holders)!=1:raise SystemExit("Windows not reserved exclusively for stylized pilot")
+          w=holders[0]
+          if (w.get("id")!="eldoria-stylized-direction-proof-20261115" or
+              w.get("owner")!="chatgpt-eldoria-stylized-art-proof-20261115" or
+              w.get("ownership_state")!="claimed" or w.get("ownership_revision")!=6):
+              raise SystemExit("Native lease does not match exact pilot revision")
+          print("ELDORIA_STYLE_EXCLUSIVE_PRECHECK_PASS")
+          PY
+  native:
+    needs: lease
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 35
+    steps:
+      - name: Reconfirm the Windows runner is idle and the installed Unity exists
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native runner busy: refuse concurrent Unity'}
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity 6000.3.23f1 unavailable'}
+      - name: Use already installed git; never download full repository ZIP
+        shell: powershell
+        run: |
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git missing; refuse archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            Unity
+      - name: Check lease again after Windows queue and preserve all caches
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $repo=$env:GITHUB_REPOSITORY
+          $head=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/ref/heads/feature/eldoria-stylized-direction-proof-20261115" -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+          if($head.object.sha -ne $env:GITHUB_SHA){throw 'Branch advanced after dispatch'}
+          $url="https://api.github.com/repos/$repo/contents/pipeline/active-workstreams.json?ref=main"
+          $f=Invoke-RestMethod -Uri $url -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+          $b64=[string]$f.content
+          if($f.encoding -ne 'base64' -or [string]::IsNullOrWhiteSpace($b64)){
+            $obj=Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/git/blobs/$($f.sha)" -Headers @{Authorization="Bearer $env:GH_TOKEN"}
+            if($obj.sha -ne $f.sha -or $obj.encoding -ne 'base64'){throw 'Registry SHA changed unexpectedly'}
+            $b64=[string]$obj.content
+          }
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)) | ConvertFrom-Json
+          $holder=@($registry.active | Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holder.Count -ne 1 -or $holder[0].id -ne 'eldoria-stylized-direction-proof-20261115' -or $holder[0].owner -ne 'chatgpt-eldoria-stylized-art-proof-20261115' -or $holder[0].ownership_revision -ne 6){throw 'Exact Windows lease revoked or superseded'}
+      - name: Real Unity 1600x900 and 390x844 camera A/B
+        shell: powershell
+        timeout-minutes: 29
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $out=Join-Path $project 'StylizedDirectionPilotCaptures'
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-stylized-ab.log'
+          if(Test-Path $out){Remove-Item $out -Recurse -Force}
+          $args='-batchmode -quit -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.StylizedDirectionPilot.Editor.TerrainCompositionAB.Capture -logFile "'+$log+'"'
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $until=(Get-Date).AddMinutes(25)
+          while(-not $p.HasExited -and (Get-Date) -lt $until){Start-Sleep -Seconds 3;$p.Refresh()}
+          if(-not $p.HasExited){& taskkill.exe /PID $p.Id /T /F | Out-Null;throw 'The pilot Unity process timed out'}
+          $p.Refresh()
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Unity pilot error $($p.ExitCode)"}
+          $names=@('A-original-city-1600x900.png','A-original-city-390x844.png','F-painted-landscape-1600x900.png','F-painted-landscape-390x844.png','H-atmospheric-diorama-1600x900.png','H-atmospheric-diorama-390x844.png')
+          foreach($name in $names){
+            $file=Join-Path $out $name
+            if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 30000){throw "Real Unity A/B missing/blank: $name"}
+          }
+          if(-not(Test-Path (Join-Path $out 'landscape-pilot-evidence.json'))){throw 'No source-pinned evidence'}
+          Get-Content (Join-Path $out 'landscape-pilot-evidence.json')
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-stylized-real-unity-ab-${{ github.run_id }}
+          path: |
+            Unity/StylizedDirectionPilotCaptures/*
+            ${{ runner.temp }}/eldoria-stylized-ab.log
+          if-no-files-found: warn
+          retention-days: 14
