@@ -1,0 +1,515 @@
+name: Eldoria Construction Delight - native art A-B proof
+
+on:
+  push:
+    branches: [feature/eldoria-construction-delight-20261104]
+    paths:
+      - 'tools/construction-delight/native-request.json'
+      - 'tools/construction-delight/license-diagnostic-request.json'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: eldoria-construction-delight-native
+  cancel-in-progress: false
+
+jobs:
+  diagnostic:
+    if: ${{ contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    steps:
+      - name: Check live exclusive access without fetching or opening Unity
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const r=await github.rest.repos.getContent({
+              ...context.repo,path:'pipeline/active-workstreams.json',ref:'main'});
+            const d=JSON.parse(Buffer.from(r.data.content,'base64').toString('utf8'));
+            const w=d.active.find(x=>x.id==='eldoria-construction-delight-v1-20261104');
+            const claims=d.active.filter(x=>x.resources?.includes('windows-runner-heavy'));
+            const change=context.payload.head_commit?.message||'';
+            const asksNativeProcess=change.includes('[delight-hub-try]') ||
+                                    change.includes('[delight-hub-license-probe]');
+            if(!w || w.owner!=='chatgpt-eldoria-construction-delight-20261104' ||
+               w.ownership_state!=='claimed' ||
+               w.branch!=='feature/eldoria-construction-delight-20261104')
+              throw Error('Canonical read-only diagnostic has no current owner');
+            if(asksNativeProcess &&
+               (claims.length!==1 || claims[0].id!==w.id))
+              throw Error('Changing or opening a native Windows process requires exclusive lease');
+            core.info(asksNativeProcess ?
+              'NATIVE_DIAGNOSTIC_EXCLUSIVE_LEASE_PASS' :
+              'READ_ONLY_DIAGNOSTIC_NO_HEAVY_LEASE_REQUIRED');
+      - name: Inspect local licensing availability (existence only, never read tokens)
+        shell: powershell
+        run: |
+          $folder=Join-Path $env:LOCALAPPDATA 'Unity/licenses'
+          $entitlement=Join-Path $folder 'UnityEntitlementLicense.xml'
+          $ulf=Join-Path $env:PROGRAMDATA 'Unity/Unity_lic.ulf'
+          $xmlCount=0
+          if(Test-Path $folder){$xmlCount=@(Get-ChildItem $folder -Filter '*.xml' -File -ErrorAction SilentlyContinue).Count}
+          $hub=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'}).Count
+          $client=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity.Licensing.Client'}).Count
+          $editor=@(Get-Process -Name Unity -ErrorAction SilentlyContinue).Count
+          Write-Host "DELIGHT_LICENSE_DIAGNOSTIC entitlement_file_present=$([bool](Test-Path $entitlement))"
+          Write-Host "DELIGHT_LICENSE_DIAGNOSTIC machine_ulf_present=$([bool](Test-Path $ulf))"
+          Write-Host "DELIGHT_LICENSE_DIAGNOSTIC license_xml_files=$xmlCount"
+          Write-Host "DELIGHT_LICENSE_DIAGNOSTIC unity_hub_processes=$hub"
+          Write-Host "DELIGHT_LICENSE_DIAGNOSTIC licensing_client_processes=$client"
+          Write-Host "DELIGHT_LICENSE_DIAGNOSTIC editor_processes=$editor"
+          Write-Host 'READ_ONLY_ONLY: no license strings, refresh, Hub start, process termination or file edits'
+
+      - name: Try normal existing Unity Hub startup with no sign-in, no restart
+        if: ${{ contains(github.event.head_commit.message, '[delight-hub-try]') }}
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Other native programs active; do not interfere'
+          }
+          $hub=Join-Path $env:ProgramFiles 'Unity Hub/Unity Hub.exe'
+          if(-not(Test-Path $hub)){throw 'Unity Hub executable missing; no installation attempted'}
+          $before=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'}).Count
+          if($before -eq 0){
+            Start-Process -FilePath $hub -WindowStyle Minimized
+            Write-Host 'DELIGHT_HUB_START_REQUESTED existing-installed-application-only'
+          }else{
+            Write-Host 'DELIGHT_HUB_ALREADY_RUNNING no-change'
+          }
+          Start-Sleep -Seconds 18
+          $after=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'}).Count
+          $lic=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity.Licensing.Client'}).Count
+          Write-Host "DELIGHT_HUB_AFTER_START processes=$after licensing_client_processes=$lic"
+          Write-Host 'No credentials entered, EULA accepted, license files altered by this workflow, or system restarted'
+
+      - name: Test Unity headless license on a disposable empty project while Hub is active
+        if: ${{ contains(github.event.head_commit.message, '[delight-hub-license-probe]') }}
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Existing native application active, do not interfere'
+          }
+          $editor=$env:UNITY_EDITOR_PATH
+          if(-not(Test-Path $editor)){throw 'Editor binary unavailable'}
+          $project=Join-Path $env:RUNNER_TEMP "DelightLicenseProbe-$env:GITHUB_RUN_ID"
+          $assets=Join-Path $project 'Assets'
+          $settings=Join-Path $project 'ProjectSettings'
+          New-Item -ItemType Directory -Force $assets,$settings|Out-Null
+          Set-Content (Join-Path $settings 'ProjectVersion.txt') 'm_EditorVersion: 6000.3.23f1'
+          $log=Join-Path $env:RUNNER_TEMP "DelightLicenseProbe-$env:GITHUB_RUN_ID.log"
+          $args=@('-batchmode','-nographics','-quit','-projectPath',$project,'-logFile',$log)
+          $p=Start-Process -FilePath $editor -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(180000)){
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+            throw 'Only the isolated license-probe Editor exceeded 3-minute limit'
+          }
+          $body=''
+          if(Test-Path $log){$body=Get-Content $log -Raw}
+          $denied=$body -match 'No valid Unity Editor license found|com.unity.editor.headless.*not found'
+          Write-Host "DELIGHT_LICENSE_PROBE editor_exit=$($p.ExitCode)"
+          Write-Host "DELIGHT_LICENSE_PROBE licence_denied=$denied"
+          Write-Host 'No production project opened and no license/credential contents emitted'
+          if($denied -or $p.ExitCode -eq 198){
+            throw 'Existing Hub session did not restore a valid Unity headless entitlement; human sign-in may be needed'
+          }
+          if($p.ExitCode -ne 0){throw 'Disposable Editor exited abnormally for a reason other than explicit licensing denial'}
+          Write-Host 'DELIGHT_LICENSE_PROBE_PASS'
+
+      - name: Read only Windows logon and Hub session topology
+        if: ${{ contains(github.event.head_commit.message, '[delight-session-inspect]') }}
+        shell: powershell
+        run: |
+          # Windows SessionId, not a Unity account/license identifier.
+          $worker=(Get-Process -Id $PID).SessionId
+          $explorer=@(Get-Process -Name explorer -ErrorAction SilentlyContinue)
+          $hub=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'})
+          $client=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity.Licensing.Client'})
+          $editor=@(Get-Process -Name Unity -ErrorAction SilentlyContinue)
+          $expIds=@($explorer|ForEach-Object {$_.SessionId}|Sort-Object -Unique)
+          $hubIds=@($hub|ForEach-Object {$_.SessionId}|Sort-Object -Unique)
+          $clientIds=@($client|ForEach-Object {$_.SessionId}|Sort-Object -Unique)
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC runner_session=$worker"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC explorer_session_ids=$($expIds -join ',') explorer_count=$($explorer.Count)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC hub_session_ids=$($hubIds -join ',') hub_count=$($hub.Count)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC licensing_client_session_ids=$($clientIds -join ',') client_count=$($client.Count)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC editor_count=$($editor.Count)"
+          $interactive=@($expIds|Where-Object {$_ -gt 0})
+          $hubInInteractive=@($hubIds|Where-Object {$interactive -contains $_})
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC interactive_desktop_available=$($interactive.Count -gt 0)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC hub_in_interactive_desktop=$($hubInInteractive.Count -gt 0)"
+          Write-Host 'No usernames, passwords, license contents, account/session tokens, process mutations or system restart'
+
+      - name: Read only installed Unity CLI signed-in and license status
+        if: ${{ contains(github.event.head_commit.message, '[delight-cli-status]') }}
+        shell: powershell
+        run: |
+          # This step never prints usernames, emails, license identifiers or raw CLI output.
+          # Unity CLI is optional; absence is a legitimate diagnostic result.
+          $cli=Get-Command 'unity' -ErrorAction SilentlyContinue
+          if(-not $cli -or -not $cli.Source){
+            Write-Host 'DELIGHT_CLI_STATUS installed=false'
+            exit 0
+          }
+          if($cli.Source -match '(?i)\\Editor\\Unity.exe$'){
+            Write-Host 'DELIGHT_CLI_STATUS installed=false reason=editor_command_not_cli'
+            exit 0
+          }
+          Write-Host 'DELIGHT_CLI_STATUS installed=true'
+          $env:UNITY_NO_CLI_INVOKED_TELEMETRY='1'
+          foreach($mode in @('auth','license')){
+            $result=''
+            $exit=-1
+            try{
+              $output=& $cli.Source $mode 'status' --format json --non-interactive 2>&1
+              $exit=$LASTEXITCODE
+              $result=$output|Out-String
+            }catch{$exit=-1}
+            $looksSignedOut=($result -match 'NOT_SIGNED_IN|SESSION_EXPIRED|signedIn["'': ]+false')
+            $looksNoLicense=($result -match 'LICENSE_NOT_ACTIVE|No active license|active["'': ]+false')
+            Write-Host "DELIGHT_CLI_STATUS mode=$mode exit=$exit signed_out=$looksSignedOut no_license=$looksNoLicense"
+          }
+          Write-Host 'READ_ONLY_RESULT no secrets, session tokens, usernames or license data exported'
+          # PowerShell 5 uses LASTEXITCODE from the Unity CLI even after Write-Host.
+          # This is a read-only status probe; a signed-out result is evidence,
+          # not a CI script failure. Reset only this PowerShell process exit code.
+          $global:LASTEXITCODE=0
+
+      - name: Inspect whether Unity CLI can adopt an existing Hub sign-in
+        if: ${{ contains(github.event.head_commit.message, '[delight-adoptability-check]') }}
+        shell: powershell
+        run: |
+          $cli=Get-Command 'unity' -ErrorAction SilentlyContinue
+          if(-not $cli){Write-Host 'DELIGHT_AUTH_ADOPTABILITY cli_installed=false';exit 0}
+          $env:UNITY_NO_CLI_INVOKED_TELEMETRY='1'
+          $output=''
+          $code=-1
+          try{
+            $rows=& $cli.Source 'auth' 'status' '--format' 'json' '--non-interactive' 2>&1
+            $code=$LASTEXITCODE
+            $output=$rows|Out-String
+          }catch{$code=-1}
+          $adoptable=($output -match '"adoptable"\s*:\s*true')
+          $expired=($output -match 'SESSION_EXPIRED')
+          $notSigned=($output -match 'NOT_SIGNED_IN')
+          Write-Host "DELIGHT_AUTH_ADOPTABILITY cli_installed=true auth_exit=$code hub_session_adoptable=$adoptable session_expired=$expired not_signed_in=$notSigned"
+          Write-Host 'No CLI login or account switch; no tokens, account identifiers or license data printed'
+          $global:LASTEXITCODE=0
+
+      - name: Inspect only license file timestamps and classification of auth events
+        if: ${{ contains(github.event.head_commit.message, '[delight-license-timeline]') }}
+        shell: powershell
+        run: |
+          # No Editor/Hub process is launched, no license is renewed, no secret
+          # value, username, file body, paths or log text leaves Windows.
+          $files=@(
+            @{label='named_user_entitlement'; path=(Join-Path $env:LOCALAPPDATA 'Unity/licenses/UnityEntitlementLicense.xml')},
+            @{label='unity_licensing_log'; path=(Join-Path $env:LOCALAPPDATA 'Unity/Unity.Licensing.Client.log')},
+            @{label='unity_hub_info_log'; path=(Join-Path $env:APPDATA 'UnityHub/logs/info-log.json')},
+            @{label='unity_entitlements_audit'; path=(Join-Path $env:LOCALAPPDATA 'Unity/Unity.Entitlements.Audit.log')}
+          )
+          $now=[DateTime]::UtcNow
+          foreach($entry in $files){
+            $file=Get-Item -LiteralPath $entry.path -ErrorAction SilentlyContinue
+            if(-not $file){
+              Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) exists=false"
+              continue
+            }
+            $hours=[math]::Round(($now-$file.LastWriteTimeUtc).TotalHours,2)
+            Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) exists=true last_write_utc=$($file.LastWriteTimeUtc.ToString('yyyy-MM-ddTHH:mm:ssZ')) age_hours=$hours"
+            # Account logs are read privately on the PC; print only numerical
+            # incident categories, never paths, credentials or raw messages.
+            if($entry.label -eq 'named_user_entitlement'){continue}
+            try{
+              $tail=Get-Content -LiteralPath $entry.path -Tail 1500 -ErrorAction Stop
+              $events=@{
+                missing_access_token=0
+                signed_out=0
+                refresh_failed=0
+                authentication_error=0
+                entitlement_missing=0
+                licensing_client_connection=0
+              }
+              foreach($line in $tail){
+                if($line -match 'Access token is unavailable'){$events.missing_access_token++}
+                if($line -match 'sign(ed)?[ _-]?out|log(out|ged out)|not signed in'){$events.signed_out++}
+                if($line -match 'token.*(refresh|expired|failed)|refresh.*(fail|error)'){$events.refresh_failed++}
+                if($line -match 'auth.*(fail|error|expired)|invalid.*(token|credentials)'){$events.authentication_error++}
+                if($line -match 'entitlement.*(not found|missing|0 free|no valid)'){$events.entitlement_missing++}
+                if($line -match 'LicensingClient|licensing client'){$events.licensing_client_connection++}
+              }
+              Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) sanitized_counts=$($events|ConvertTo-Json -Compress)"
+            }catch{
+              Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) content_accessible=false"
+            }
+          }
+          Write-Host 'DELIGHT_LICENSE_TIMELINE_READ_ONLY_COMPLETE no credentials, tokens, raw logs or license XML output'
+
+      - name: Check named user license expiration timestamps without exposing XML
+        if: ${{ contains(github.event.head_commit.message, '[delight-license-expiry]') }}
+        shell: powershell
+        run: |
+          $license=Join-Path $env:LOCALAPPDATA 'Unity/licenses/UnityEntitlementLicense.xml'
+          if(-not(Test-Path $license)){Write-Host 'DELIGHT_EXPIRY named_user_xml=false';exit 0}
+          # Confidential Unity license contents remain on the original Windows
+          # runner. Only date proximity and counts are emitted.
+          $file=Get-Item -LiteralPath $license -ErrorAction Stop
+          $body=Get-Content -LiteralPath $license -Raw -ErrorAction Stop
+          $pattern='[12][0-9]{3}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,7})?(?:Z|[+\-][0-2][0-9]:[0-5][0-9])'
+          $matches=[regex]::Matches($body,$pattern)
+          $dates=New-Object 'System.Collections.Generic.List[System.DateTime]'
+          foreach($item in $matches){
+            try{
+              $date=[DateTimeOffset]::Parse($item.Value,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime
+              $dates.Add($date)
+            }catch{}
+          }
+          $failure=[DateTime]'2026-11-04T07:55:23Z'
+          $lastSuccess=[DateTime]'2026-11-04T00:42:56Z'
+          $nearFailure=@($dates|Where-Object { [math]::Abs(($_-$failure).TotalHours) -le 4 })
+          $inGap=@($dates|Where-Object {$_ -gt $lastSuccess -and $_ -le $failure})
+          $afterLastSuccess=@($dates|Where-Object {$_ -gt $lastSuccess})
+          $thirtyDays=$file.LastWriteTimeUtc.AddDays(30)
+          $delta=[math]::Round(($failure-$thirtyDays).TotalMinutes,1)
+          Write-Host "DELIGHT_EXPIRY recognized_iso_dates=$($dates.Count) near_first_failure_4h=$($nearFailure.Count) dates_between_last_success_and_failure=$($inGap.Count)"
+          Write-Host "DELIGHT_EXPIRY dates_after_success=$($afterLastSuccess.Count) file_age_at_failure_days=$([math]::Round(($failure-$file.LastWriteTimeUtc).TotalDays,3)) failure_minutes_after_30days=$delta"
+          Write-Host 'DELIGHT_EXPIRY_READONLY_COMPLETE no XML or token values exported, no files modified'
+
+      - name: Classify local entitlement expiration field safely
+        if: ${{ contains(github.event.head_commit.message, '[delight-expiry-details]') }}
+        shell: powershell
+        run: |
+          $f=Join-Path $env:LOCALAPPDATA 'Unity/licenses/UnityEntitlementLicense.xml'
+          if(-not(Test-Path $f)){Write-Host 'DELIGHT_EXPIRY_DETAIL exists=false';exit 0}
+          # The XML remains on Windows. Export ONLY sanitized field labels and
+          # date distance relative to the historical failure, no names/IDs/tokens.
+          $xml=Get-Content -LiteralPath $f -Raw -ErrorAction Stop
+          $pat='[12][0-9]{3}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,7})?(?:Z|[+\-][0-2][0-9]:[0-5][0-9])'
+          $fail=[datetime]'2026-11-04T07:55:23Z'
+          $prior=[datetime]'2026-11-04T00:42:56Z'
+          $m=[regex]::Matches($xml,$pat)
+          $index=0
+          foreach($match in $m){
+            try{
+              $stamp=[DateTimeOffset]::Parse($match.Value,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime
+              # Display dates alone, never the enclosing XML. This also
+              # lets QA detect whether the earlier interval filter was affected
+              # by a date/time kind conversion on Windows PowerShell 5.1.
+              $start=[math]::Max(0,$match.Index-90)
+              $context=$xml.Substring($start,$match.Index-$start).ToLowerInvariant()
+              $field='unclassified'
+              if($context -match 'expir|validto|enddate|validuntil|validtill'){$field='expiry_label'}
+              elseif($context -match 'issue|issued|activation|created|startdate'){$field='issue_label'}
+              $index++
+              Write-Host "DELIGHT_EXPIRY_DETAIL candidate=$index field_class=$field utc=$($stamp.ToString('yyyy-MM-ddTHH:mm:ssZ')) minutes_before_failed_launch=$([math]::Round(($fail-$stamp).TotalMinutes,1))"
+            }catch{
+              Write-Host 'DELIGHT_EXPIRY_DETAIL invalid_iso_value_skipped'
+            }
+          }
+          Write-Host "DELIGHT_EXPIRY_DETAIL matched_dates=$index values_released=only_timestamps_and_field_classes"
+
+  source-domain:
+    if: ${{ contains(github.event.head_commit.message, '[delight-domain-test]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/construction-delight
+            /Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs
+            /Unity/Assets/Eldoria/ConstructionDelight
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Compile exact Unity C# source against disposable domain fixture
+        shell: bash
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+        run: |
+          set -euo pipefail
+          dotnet run --project tools/construction-delight/DomainProbe.csproj --configuration Release
+          dotnet run --project tools/construction-delight/SyntaxProbe.csproj --configuration Release
+
+  native-art:
+    if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') && !contains(github.event.head_commit.message, '[delight-domain-test]') }}
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    defaults:
+      run:
+        working-directory: delight-source
+    steps:
+      - name: Recover Git from installed GitHub Desktop if needed
+        working-directory: .
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+
+      - name: Ensure enough free disk before isolated Unity checkout
+        working-directory: .
+        shell: powershell
+        run: |
+          $root=[IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE)
+          $freeGiB=[math]::Floor((New-Object IO.DriveInfo $root).AvailableFreeSpace/1GB)
+          Write-Host "DELIGHT_FREE_GIB=$freeGiB"
+          if($freeGiB -lt 30){throw 'Insufficient disk for isolated Unity checkout; never modify other worktrees'}
+
+      - name: Fail fast if live Windows claim was transferred
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const f=await github.rest.repos.getContent({
+              ...context.repo,path:'pipeline/active-workstreams.json',ref:'main'});
+            const d=JSON.parse(Buffer.from(f.data.content,'base64').toString('utf8'));
+            const w=d.active.find(x=>x.id==='eldoria-construction-delight-v1-20261104');
+            const claims=d.active.filter(x=>x.resources?.includes('windows-runner-heavy'));
+            if(!w||w.owner!=='chatgpt-eldoria-construction-delight-20261104'||
+               w.branch!=='main'||w.ownership_state!=='claimed'||
+               claims.length!==1||claims[0].id!==w.id){
+              throw Error('Windows claim unavailable; no Editor launched or full checkout performed');
+            }
+            core.info('DELIGHT_EARLY_CAS_LEASE_PASS revision='+w.ownership_revision);
+
+      - name: Verify Unity Editor license in an isolated empty project before heavy checkout
+        working-directory: .
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Native Unity or Blender in use; never interrupt an existing session'
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor binary unavailable'}
+          $folder=Join-Path $env:RUNNER_TEMP "DelightPreflight-$env:GITHUB_RUN_ID"
+          $settings=Join-Path $folder 'ProjectSettings'
+          $log=Join-Path $env:RUNNER_TEMP "DelightPreflight-$env:GITHUB_RUN_ID.log"
+          if(Test-Path $folder){throw 'Existing preflight folder must be investigated, not overwritten'}
+          New-Item -ItemType Directory -Force (Join-Path $folder 'Assets'),$settings|Out-Null
+          Set-Content -Path (Join-Path $settings 'ProjectVersion.txt') -Value 'm_EditorVersion: 6000.3.23f1'
+          try{
+            $args=@('-batchmode','-nographics','-quit','-projectPath',$folder,'-logFile',$log)
+            $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $p.WaitForExit(180000)){
+              Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+              throw 'Only own disposable Unity preflight exceeded three-minute cap'
+            }
+            if($p.ExitCode -eq 198){
+              Write-Host 'DELIGHT_LICENSE_BLOCKED: Unity Editor returned 198 before the full project was downloaded'
+              throw 'A valid Editor license is unavailable in this Windows login; sign in to Unity Hub in the desktop session'
+            }
+            if($p.ExitCode -ne 0){
+              Write-Host "DELIGHT_EDITOR_PREFLIGHT_FAIL exit=$($p.ExitCode)"
+              throw 'Isolated Editor preflight failed for a non-licensing reason'
+            }
+            Write-Host 'DELIGHT_EDITOR_PREFLIGHT_PASS exact Editor 6000.3.23f1, no project data changed'
+          }finally{
+            # No Unity process is left active and no production project is touched.
+            if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force -ErrorAction SilentlyContinue}
+          }
+
+      - uses: actions/checkout@v4
+        with:
+          path: delight-source
+          clean: false
+          fetch-depth: 1
+          # Sparse-checkout retained: checkout@v4 explicitly ignores
+          # sparse-checkout when filter is supplied.
+          # Same exact Unity source, without cloning unrelated multi-GB art
+          # history, previous captures and archived Blender experiments.
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: delight-live-main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/active-workstreams.json
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require live exclusive Windows and exact branch lease
+        shell: powershell
+        run: |
+          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/delight-live-main/pipeline/active-workstreams.json" eldoria-construction-delight-v1-20261104
+          if($LASTEXITCODE){throw 'Delight native lease missing/stale; Unity not started'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native PC occupied; do not interrupt'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
+          $v=& $env:UNITY_EDITOR_PATH -version
+          if($v -notmatch '6000\.3\.23f1'){throw "Unity version mismatch: $v"}
+
+      - name: Reversible Search-index startup workaround
+        shell: powershell
+        run: |
+          $settings=Join-Path $PWD 'Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "delight-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "delight-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $settings){
+            Copy-Item $settings $backup -Force
+            $data=Get-Content $settings -Raw -Encoding UTF8|ConvertFrom-Json -ErrorAction Stop
+            if($data.PSObject.Properties['roots']){$data.roots=@();$data|ConvertTo-Json -Depth 32|Set-Content $settings -Encoding UTF8}
+          }else{
+            New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null
+            $data=[ordered]@{name='Assets';type='asset';roots=@();includes=@();excludes=@('Assets/Temp/','Assets/External/','Temp/');options=@{disabled=$false;types=$true;properties=$true;extended=$true;dependencies=$true};baseScore=999}
+            $data|ConvertTo-Json -Depth 16|Set-Content $settings -Encoding UTF8
+            Set-Content $created 'temporary'
+          }
+
+      - name: Execute real camera A-B, exact Unity code and saved game commands
+        shell: powershell
+        run: |
+          $log=Join-Path $env:RUNNER_TEMP 'ConstructionDelight-native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.ConstructionDelightNativeCapture.Run',
+            '-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $PWD -PassThru
+          if(-not $p.WaitForExit(1200000)){
+            if(Test-Path $log){Get-Content $log -Tail 120}
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Own Unity proof exceeded 20 minutes'
+          }
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 200}
+            throw "Unity native A-B failed: $($p.ExitCode)"
+          }
+          $folder=Join-Path $PWD 'artifacts/construction-delight-native'
+          $receipt=Join-Path $folder 'result.json'
+          if(-not(Test-Path $receipt)){throw 'Missing real Unity native proof'}
+          $d=Get-Content $receipt -Raw|ConvertFrom-Json
+          $pngs=@(Get-ChildItem $folder -Filter '*.png' -File)
+          if($d.status -ne 'NATIVE_PASS' -or $d.images -ne 72 -or $pngs.Count -ne 72){
+            throw "Real camera evidence failed: $($pngs.Count) images"
+          }
+          Copy-Item $log (Join-Path $folder 'unity-native.log') -Force
+          Write-Host 'DELIGHT_UNITY_NATIVE_PASS=72_CAMERA_CAPTURES_24_TECHNIQUE_8_HAMMER_PROOFS'
+
+      - name: Restore original editor Search settings
+        if: always()
+        shell: powershell
+        run: |
+          $settings=Join-Path $PWD 'Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "delight-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "delight-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $backup){Copy-Item $backup $settings -Force}
+          elseif((Test-Path $created) -and (Test-Path $settings)){Remove-Item $settings -Force}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: construction-delight-unity-${{ github.sha }}
+          path: delight-source/artifacts/construction-delight-native/
+          if-no-files-found: warn
+          retention-days: 14
