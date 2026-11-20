@@ -29,6 +29,8 @@ jobs:
             tools/valoria-modular25d
             docs/valoria-modular-25d/UI_UMBRAL_V1.md
             docs/valoria-modular-25d/UMBRAL_II_MATERIALS_SOURCE.json
+            docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json
+            docs/valoria-modular-25d/UMBRAL_II_GAMEPLAY_ICONS_SOURCE.json
           sparse-checkout-cone-mode: false
       - name: Parse all Unity C-sharp with existing Roslyn syntax harness
         run: |
@@ -72,6 +74,23 @@ jobs:
               meta=(palette/(item['name']+'.png.meta')).read_text()
               assert 'guid: '+item['guid'] in meta and 'spriteBorder: {x: '+str(item['border']) in meta
               assert 'Resources.Load<Sprite>(skins+' in src
+          from pathlib import Path
+          import base64,struct
+          portrait=json.loads(Path('docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json').read_text())
+          face=Path(portrait['output_path'])
+          assert face.is_file() and hashlib.sha256(face.read_bytes()).hexdigest()==portrait['output_sha256']
+          assert portrait['crop_box_in_512']==[100,130,410,440]
+          assert 'Resources.Load<Sprite>(' in src and 'aldric_avatar' in src
+          atlas=json.loads(Path('docs/valoria-modular-25d/UMBRAL_II_GAMEPLAY_ICONS_SOURCE.json').read_text())
+          original=base64.b64decode(Path(atlas['source_file']).read_text())
+          assert hashlib.sha256(original).hexdigest()==atlas['source_palette_sha256']
+          packed=Path(atlas['packed_file']).read_bytes()
+          assert hashlib.sha256(packed).hexdigest()==atlas['packed_rgba_sha256']
+          assert struct.unpack('>II',packed[16:24])==(144,96)
+          assert packed[25]==6 and atlas['cells_row_major_top_down']==['wood','stone','food','hammer','city','task']
+          assert 'LoadOriginalGameIconAtlas();' in src and 'Sprite.Create(originalIconAtlas' in src
+          print('UMBRAL2_FACE_AND_SIX_ILLUSTRATED_RESOURCE_ACTION_ICONS_SHA_PASS')
+
           print('UMBRAL2_REAL_5_PNG_MATERIAL_SOURCE_SHA_AND_SLICED_BORDERS_PASS')
 
           print('UMBRAL_SOURCE_CONTRACT_PASS; UNITY_RUNTIME_AND_ART_NOT_YET_TESTED')
