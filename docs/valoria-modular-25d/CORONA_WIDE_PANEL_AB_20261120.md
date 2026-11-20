@@ -19,3 +19,9 @@ Un algoritmo de remapeo por cinco regiones en el horneador original `tools/valor
 El workflow `corona-wide-panel-ab.yml` hornea en Ubuntu, compara hashes de catorce fuentes intactas, prueba alpha/dimensiones y adjunta dos capturas del material a tamaño de UI. El primer método de bandas repetidas fue **rechazado** por generar costuras verticales evidentes; este remapeo continuo carece de esos empalmes.
 
 El resultado no se integra a la rama principal de Corona hasta **comparación en Unity real** del panel con widgets de construcción, texto y hitboxes. No se modifica `LocalGateway`, edificios ni cámaras. Aprobación artística comercial e iPhone todavía pendientes.
+
+## Límite de concurrencia observado (20/11/2026)
+
+GitHub Actions conserva **un trabajo en ejecución y uno pendiente por cada grupo de concurrencia**, incluso con `cancel-in-progress: false`. Al solicitar el ensayo Unity A/B `44811819374`, quedó sustituida la prueba principal pendiente `44809310004` (sin ejecutarse). Se reestableció la prioridad de la captura del experimento principal mediante `44811887444` (commit `16e463c7`, único cambio: comentarios del workflow). Por tanto, el trabajo A/B `44811819374` quedó cancelado **sin generar captura real**.
+
+**Regla de continuidad:** no enviar una nueva prueba nativa A/B al grupo `eldoria-modular25d-exclusive-unity-native` hasta que la prueba principal `44811887444` y su antecesora `44808347374` hayan terminado. Después, reactivar la prueba A/B únicamente mediante cambio aislado al workflow de esta rama, manteniendo el mismo grupo y sin tocar el código de juego. La comparación artística debe hacerse con capturas efectivas de motor a 390×844, 1170×2532 y 844×390, no con `visual-ab.png`.
