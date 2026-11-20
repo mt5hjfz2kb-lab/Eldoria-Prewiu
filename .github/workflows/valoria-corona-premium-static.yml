@@ -1,0 +1,40 @@
+name: Corona de la Brecha — original premium asset source integrity (no Unity)
+on:
+  push:
+    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    paths:
+      - '.github/workflows/valoria-corona-premium-static.yml'
+      - 'tools/valoria-corona-brecha/qa_premium_art.py'
+      - 'docs/valoria-modular-25d/CORONA_BRECHA_PREMIUM_SPRITES_PROVENANCE.json'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  art_source_only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-corona-brecha/qa_premium_art.py
+            /docs/valoria-modular-25d/CORONA_BRECHA_PREMIUM_SPRITES_PROVENANCE.json
+            /Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrechaPremium/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check --quiet pillow
+      - name: Verify exact source-blob hashes, RGBA and Unity GUIDs
+        run: python tools/valoria-corona-brecha/qa_premium_art.py
+      - name: Save actual original sprite contact sheet and integrity JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: corona-premium-actual-source-qa
+          path: artifacts/corona-premium/
+          if-no-files-found: warn
+          retention-days: 21
