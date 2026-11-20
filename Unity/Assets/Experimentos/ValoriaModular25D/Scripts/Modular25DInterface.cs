@@ -95,7 +95,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Commercial strategy-game grammar: three illustrated action tiles
             // and one honest contextual task, not an app-style navigation bar.
             // Every available action has a real behaviour from the sandbox.
-            inspect = DockButton("Inspect sawmill",rootTransform,"ASERRADERO",woodIcon,
+            inspect = DockButton("Inspect sawmill",rootTransform,"OBRAS",woodIcon,
                 new Vector2(0f,0f),new Vector2(0f,0f),OpenSawmill);
             center = DockButton("Center camera",rootTransform,"CIUDAD",portraitPlate,
                 new Vector2(1f,0f),new Vector2(1f,0f),
@@ -320,13 +320,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             resourceRow.pivot = wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
             resourceRow.anchoredPosition = wide ?
                 new Vector2(-12f, -top) : new Vector2(0f, -top - 61f);
-            resourceRow.sizeDelta = new Vector2(wide ? 333f : 365f, 44f);
+            resourceRow.sizeDelta = new Vector2(365f, 44f);
             for (int i = 0; i < resourceChips.Length; i++)
             {
                 resourceChips[i].anchorMin = resourceChips[i].anchorMax =
                     new Vector2(0f, .5f);
                 resourceChips[i].pivot = new Vector2(0f, .5f);
-                float cw = wide ? 107f : 117f;
+                float cw = 117f;
                 resourceChips[i].sizeDelta = new Vector2(cw, 43f);
                 resourceChips[i].anchoredPosition = new Vector2(i * (cw + 6f), 0f);
             }
@@ -359,7 +359,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.sizeDelta = new Vector2(326f, 222f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(0f, 1f);
                 noticeRoot.pivot = new Vector2(0f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(12f, -top - 60f);
+                noticeRoot.anchoredPosition = new Vector2(12f, -top - 123f);
                 noticeRoot.sizeDelta = new Vector2(290f, 35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
@@ -374,7 +374,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 228f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(.5f, 1f);
                 noticeRoot.pivot = new Vector2(.5f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(0f, -top - 112f);
+                noticeRoot.anchoredPosition = new Vector2(0f, -top - 180f);
                 noticeRoot.sizeDelta = new Vector2(324f, 35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
                 statusSheet.pivot=new Vector2(.5f,0f);
@@ -400,7 +400,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(22f,22f));
             symbol.GetComponent<Image>().type=Image.Type.Simple;
             symbol.GetComponent<Image>().color=Color.white;
-            Label(caption, chip, 9, false, AntiqueBrass,
+            Label(caption, chip, 10, false, AntiqueBrass,
                 TextAnchor.MiddleLeft, new Vector2(23f, 9f), new Vector2(74f, 14f));
             value = Label("0", chip, 15, false, WarmWhite,
                 TextAnchor.MiddleLeft, new Vector2(23f, -7f), new Vector2(76f, 20f));
@@ -446,7 +446,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Vector2.zero,new Vector2(110f,54f),click);
             var rect=button.GetComponent<RectTransform>();
             var text=button.GetComponentInChildren<Text>();
-            text.fontSize=11;
+            text.fontSize=12;
             text.rectTransform.anchoredPosition=new Vector2(13f,0f);
             text.rectTransform.sizeDelta=new Vector2(73f,48f);
             var medallion=Plate(name+" artistic emblem",rect,portraitPlate,
