@@ -22,10 +22,33 @@ def main():
   # higher-quality source PNG or silently mix art when a supplied file fails.
   premium=R/"tools/valoria-corona-brecha/premium"/(name+".png")
   if premium.exists():
-   import shutil
-   shutil.copyfile(premium,dest)  # byte-exact original PNG, not a re-render
-   origin="original_image_generated_illustrated_png"
+   # Preserve the artist's original PNG byte-for-byte as the SOURCE in premium/.
+   # The artwork's large transparent authoring margins destroyed readability
+   # when rendered at 117x43. Crop to nontrivial-alpha bounds and fill the
+   # output source frame; use Image.Type.Simple on these complete illustrations.
    art_source=premium.read_bytes()
+   frames={"identity_crest","resource_siglet","world_rune","objective_rune",
+           "action_arcane","panel_obsidian","portrait_ring"}
+   if name in frames:
+    with Image.open(premium) as original:
+     original.load()
+     if original.mode!="RGBA":
+      raise ValueError("Original Corona premium art is not RGBA: "+name)
+     alpha=original.getchannel("A").point(lambda pixel:255 if pixel>20 else 0)
+     bounds=alpha.getbbox()
+     if not bounds:
+      raise ValueError("Original premium frame is transparent: "+name)
+     left,top,right,bottom=bounds
+     pad=4
+     bounds=(max(0,left-pad),max(0,top-pad),
+             min(original.width,right+pad),min(original.height,bottom+pad))
+     actual=original.crop(bounds).resize(original.size,Image.Resampling.LANCZOS)
+     actual.save(dest,optimize=True,compress_level=9)
+    origin="original_illustration_png_opaque_art_bounds_normalized"
+   else:
+    import shutil
+    shutil.copyfile(premium,dest)
+    origin="original_illustration_png_exact_bytes"
   else:
    cairosvg.svg2png(bytestring=source,write_to=str(dest),output_width=2*w,output_height=2*h)
    origin="original_deterministic_svg_fallback"

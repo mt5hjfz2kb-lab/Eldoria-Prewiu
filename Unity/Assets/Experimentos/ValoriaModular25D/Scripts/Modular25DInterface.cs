@@ -164,7 +164,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(-54f, 61f), new Vector2(215f, 17f));
             AccentHairline("Divider", sheet, AntiqueBrass,
                 new Vector2(0f, 44f), new Vector2(310f, 1.5f));
-            var previewPlate = Plate("Architectural preview", sheet, resourcePlate,
+            var previewPlate = Plate("Architectural preview", sheet, portraitPlate,
                 new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-117f, -13f),
                 new Vector2(100f, 111f));
             var view = Plate("Real illustrated sawmill", previewPlate, null,
@@ -205,7 +205,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0f, -80f), new Vector2(307f, 42f),
                 () => gateway.BuildSawmill());
             actionLabel = action.GetComponentInChildren<Text>();
-            var close = ButtonPlate("Close sawmill", sheet, "×", slatePlate,
+            var close = ButtonPlate("Close sawmill", sheet, "×", navPlate,
                 new Vector2(1f, 1f), new Vector2(.5f, .5f),
                 new Vector2(-27f, -25f), new Vector2(46f, 46f),
                 () => buildingSheet.SetActive(false));
@@ -222,7 +222,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0f,35f),new Vector2(281f,1.5f));
             stateSummary=Label("",statusSheet,14,false,WarmWhite,TextAnchor.MiddleLeft,
                 new Vector2(0f,-15f),new Vector2(278f,83f));
-            var closeStatus=ButtonPlate("Close state",statusSheet,"×",slatePlate,
+            var closeStatus=ButtonPlate("Close state",statusSheet,"×",navPlate,
                 new Vector2(1f,1f),new Vector2(.5f,.5f),new Vector2(-27f,-22f),
                 new Vector2(45f,45f),()=>statusSheet.gameObject.SetActive(false));
             closeStatus.GetComponentInChildren<Text>().fontSize=23;
@@ -328,7 +328,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 image.sprite=building==ParcelBuildingState.AVAILABLE
                     ? actionPlate : building==ParcelBuildingState.UNDER_CONSTRUCTION
                         ? burgundyPlate : slatePlate;
-                image.type=Image.Type.Sliced;
+                image.type=Image.Type.Simple;
             }
             woodValue.text = s.Resources.Wood.ToString("N0");
             stoneValue.text = s.Resources.Stone.ToString("N0");
@@ -570,7 +570,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (skin != null)
             {
                 image.sprite = skin;
-                image.type = Image.Type.Sliced;
+                // These are complete painted ornaments, not tileable border strips.
+                // Slicing them shrinks the purple center to a line at 390px.
+                image.type = Image.Type.Simple;
                 image.color = Color.white;
             }
             else image.color = Color.clear;

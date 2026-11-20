@@ -132,15 +132,16 @@ namespace Eldoria.Modular25D.Tests
             var header=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Independent resources");
             Assert.NotNull(header,"Mobile resource bar missing");
-            Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.type==Image.Type.Sliced),
+            Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.sprite.name=="resource_siglet" && x.type==Image.Type.Simple),
                 Is.GreaterThanOrEqualTo(3),"Three independently rendered resource plates are required");
             Assert.That((string)ui.GetType().GetField("UiEdition").GetRawConstantValue(),
                 Does.Contain("Corona de la Brecha"),"Original chosen art direction must replace Umbral");
             var uiSheet=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill parchment sheet");
             Assert.NotNull(uiSheet,"The new contextual parchment panel must exist");
-            Assert.NotNull(uiSheet.GetComponent<Image>().sprite,"New parchment nine-slice was not created");
-            Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Sliced));
+            Assert.NotNull(uiSheet.GetComponent<Image>().sprite,"Original painted obsidian panel must be loaded");
+            Assert.That(uiSheet.GetComponent<Image>().type,Is.EqualTo(Image.Type.Simple),
+                "Do not slice hand-painted edge and center gems into thin lines");
             Assert.That(header.GetComponentsInChildren<Text>(true)
                 .Any(x=>x.text=="MADERA"),Is.True,"Live wood capsule missing");
             foreach(var item in new[]{"icon_wood","icon_stone","icon_food",
@@ -272,8 +273,8 @@ namespace Eldoria.Modular25D.Tests
                 var image=control.GetComponent<Image>();
                 Assert.NotNull(image,"An operational compact HUD button has no graphic");
                 Assert.NotNull(image.sprite,"Original Vigilia 9-slice button art is not imported");
-                Assert.That(image.type,Is.EqualTo(Image.Type.Sliced),
-                    "Premium artwork must use proper scalable borders");
+                Assert.That(image.type,Is.EqualTo(Image.Type.Simple),
+                    "Complex Corona medallion must render intact, not distorted by 9-slice");
                 Assert.That(image.color.r,Is.GreaterThan(.95f),
                     "Artwork was darkened by the old solid-color prototype HUD tint");
                 Assert.That(image.color.g,Is.GreaterThan(.95f));
