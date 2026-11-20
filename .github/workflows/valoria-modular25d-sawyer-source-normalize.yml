@@ -1,0 +1,88 @@
+name: Valoria Modular 2.5D — indexed sawyer RGBA lossless import compatibility
+on:
+  push:
+    branches:
+      - experiment/valoria-modular25d-ui-umbral-20261120
+    paths:
+      - tools/valoria-modular25d/reencode-worker-request.json
+permissions:
+  contents: write
+concurrency:
+  group: valoria-modular25d-original-sawyer-asset-reencode
+  cancel-in-progress: false
+jobs:
+  convert-original-pixels:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/
+            /tools/valoria-modular25d/
+            /docs/valoria-modular-25d/
+            /.github/workflows/valoria-modular25d-umbral-static.yml
+      - name: Authorize only current isolated UI owner and matching branch SHA
+        shell: bash
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,base64
+          repo=os.environ['GITHUB_REPOSITORY']
+          assert os.environ['GITHUB_REF_NAME']=='experiment/valoria-modular25d-ui-umbral-20261120'
+          url='https://api.github.com/repos/'+repo+'/contents/pipeline/active-workstreams.json?ref=main'
+          req=urllib.request.Request(url,headers={
+            'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+            'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(req,timeout=35) as r:m=json.load(r)
+          s=json.loads(base64.b64decode(m['content']))
+          x=[a for a in s['active'] if a.get('id')=='eldoria-valoria-modular25d-bastion1-20261119']
+          assert len(x)==1 and x[0]['owner']=='chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120'
+          assert x[0]['ownership_revision']==7 and x[0]['ownership_state']=='claimed'
+          assert x[0]['branch']==os.environ['GITHUB_REF_NAME']
+          print('ISOLATED_UI_SOURCE_WRITE_OWNER_REV7_PASS')
+          PY
+      - name: Reencode only the original 96px sawyer frames and prove pixel identity
+        shell: bash
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check pillow==11.3.0
+          python3 tools/valoria-modular25d/reencode_sawyer_lossless.py
+          python3 -m py_compile tools/valoria-modular25d/reencode_sawyer_lossless.py
+          python3 - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          source=Path('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D')
+          proof=json.loads(Path('docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json').read_text())
+          assert len(proof['assets'])==2
+          for x in proof['assets']:
+            p=source/(x['name']+'.png')
+            b=p.read_bytes()
+            assert b[25]==6 and hashlib.sha256(b).hexdigest()==x['rgba_sha256']
+            backup=Path('tools/valoria-modular25d/provenance/worker_saw_original_indexed')/(x['name']+'.indexed.png')
+            assert backup.read_bytes()[25]==3
+            assert hashlib.sha256(backup.read_bytes()).hexdigest()==x['indexed_sha256']
+            assert x['pixel_identical'] and x['guid_meta_preserved']
+          print('BOTH_SOURCE_FRAMES_LOSSLESS_PIXEL_IDENTITY_PASS')
+          PY
+      - name: Commit only source PNG repair and traceable metadata when branch unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          BR='experiment/valoria-modular25d-ui-umbral-20261120'
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git fetch --no-tags --depth=1 origin "$BR"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA" || {
+            echo 'SOURCE_BRANCH_MOVED_STOP_WITHOUT_WRITING'; exit 1; }
+          git config user.name 'Eldoria source asset automation'
+          git config user.email 'eldoria-source-qa@users.noreply.github.com'
+          git add --             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_0.png             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/worker_saw_1.png             Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sprite_manifest.json             tools/valoria-modular25d/verify_source.py             tools/valoria-modular25d/provenance/worker_saw_original_indexed/             docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json             .github/workflows/valoria-modular25d-umbral-static.yml
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'SOURCE_NO_CHANGE'; exit 0; }
+          git commit -m 'fix(modular25d): preserve artist pixels, re-encode indexed worker animation to Unity RGBA6'
+          git push origin "HEAD:refs/heads/$BR"
+          echo 'LOSSLESS_RGBA_SOURCE_COMMITTED_AND_PROVENANCE_PRESERVED'
