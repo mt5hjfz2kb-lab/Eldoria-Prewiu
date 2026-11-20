@@ -285,6 +285,13 @@ namespace Eldoria.Modular25D.Tests
             }
             Assert.That(woodText.text,Is.EqualTo(initialWood.ToString("N0")),
                 "Visible wood label must reflect the canonical gateway snapshot");
+            var originalWoodArt=header.GetComponentsInChildren<Image>(true)
+                .FirstOrDefault(x=>x.sprite!=null && x.sprite.name=="icon_wood");
+            Assert.NotNull(originalWoodArt);
+            Assert.That(originalWoodArt.color,Is.EqualTo(Color.white),
+                "Never tint the original illustrated logs with gold or red");
+            Assert.That(woodText.color,Is.EqualTo(new Color32(248,238,220,255)),
+                "Available resources must keep readable ivory text");
 
             var buttons=world.GetComponentsInChildren<Button>(true);
             var inspect=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Inspect sawmill");

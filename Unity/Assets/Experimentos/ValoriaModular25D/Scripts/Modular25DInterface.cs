@@ -420,7 +420,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             woodValue.text = s.Resources.Wood.ToString("N0");
             stoneValue.text = s.Resources.Stone.ToString("N0");
             foodValue.text = s.Resources.Food.ToString("N0");
-            woodAccent.color = s.Resources.Wood < SliceRules.SawmillWoodCost ? Red : AntiqueBrass;
+            // Preserve the artist's original full-color logs. Tinting the
+            // *whole* premium illustration with AntiqueBrass destroyed its
+            // wood/rope/material separation. Only numbers convey shortages.
+            woodAccent.color=Color.white;
+            woodValue.color=s.Resources.Wood<SliceRules.SawmillWoodCost
+                ? Red : WarmWhite;
             if(objectiveText!=null)
                 objectiveText.text=s.SawmillLevel>0?"ASERRADERO · 1/1":
                     s.BuildingCompletesUtcTicks>0?"OBRA EN CURSO":"ASERRADERO · 0/1";
@@ -652,7 +657,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             icon.preserveAspect=true;
             icon.color=Color.white;
             value=Label("0",chip,18,false,WarmWhite,TextAnchor.MiddleRight,
-                new Vector2(21f,0f),new Vector2(65f,33f));
+                new Vector2(25f,0f),new Vector2(60f,33f));
             value.verticalOverflow=VerticalWrapMode.Overflow;
             value.horizontalOverflow=HorizontalWrapMode.Overflow;
             value.resizeTextForBestFit=true;
