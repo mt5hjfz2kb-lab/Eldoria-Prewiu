@@ -70,14 +70,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
                 new Vector2(165f, 51f));
             var sigil = Plate("Carved V seal", identity, resourcePlate,
-                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(27f, -25.5f),
+                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(27f, 0f),
                 new Vector2(34f, 35f));
             Label("V", sigil, 25, true, PaleGold, TextAnchor.MiddleCenter,
                 Vector2.zero, new Vector2(30f, 34f));
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(95f, -18f), new Vector2(112f, 25f));
+                new Vector2(26f, 8f), new Vector2(112f, 25f));
             level = Label("BASTIÓN I", identity, 11, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(95f, -38f), new Vector2(114f, 20f));
+                new Vector2(26f, -14f), new Vector2(114f, 20f));
 
             resourceRow = Plate("Independent resources", rootTransform, null,
                 new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
@@ -122,6 +122,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var preview = view.GetComponent<Image>();
             preview.sprite = Modular25DArt.Sawmill();
             preview.preserveAspect = true;
+            preview.type = Image.Type.Simple;
+            preview.color = Color.white;
             preview.raycastTarget = false;
             stage = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
                 new Vector2(54f, 22f), new Vector2(195f, 25f));
@@ -338,9 +340,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             Label(monogram, medallion, 14, true, PaleGold,
                 TextAnchor.MiddleCenter, Vector2.zero, new Vector2(25f, 25f));
             Label(caption, chip, 9, false, AntiqueBrass,
-                TextAnchor.MiddleLeft, new Vector2(78f, 9f), new Vector2(74f, 14f));
+                TextAnchor.MiddleLeft, new Vector2(23f, 9f), new Vector2(74f, 14f));
             value = Label("0", chip, 15, false, WarmWhite,
-                TextAnchor.MiddleLeft, new Vector2(78f, -7f), new Vector2(76f, 20f));
+                TextAnchor.MiddleLeft, new Vector2(23f, -7f), new Vector2(76f, 20f));
             return chip;
         }
 
