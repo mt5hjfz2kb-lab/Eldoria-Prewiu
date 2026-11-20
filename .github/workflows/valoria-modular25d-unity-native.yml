@@ -9,6 +9,7 @@ on:
       - 'tools/valoria-modular25d/scope_isolated_webgl_guard.ps1'
       - 'tools/valoria-modular25d/isolate_webgl_resources.ps1'
       - 'tools/valoria-modular25d/browser_smoke.mjs'
+      - 'tools/valoria-modular25d/browser_camera_smoke.mjs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/EditMode/BastionIRealPlayModeTests.cs'
@@ -16,7 +17,6 @@ on:
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs'
-      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DArt.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGameplay.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWalker.cs'
@@ -441,12 +441,38 @@ jobs:
           assert d['actualBrowserHUD'] and d['physicalIphone']=='NOT_TESTED'
           print('REAL_CHROMIUM_WEBGL_HUD_INTERACTION_SCREENSHOTS_PASS; NO_IPHONE_CERTIFICATION')
           PY
+      - name: Verify native touch pan, two-finger zoom and compact landscape camera in genuine Chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ELDORIA_PLAYER_SHA="$GITHUB_SHA"
+          node --check tools/valoria-modular25d/browser_camera_smoke.mjs
+          node tools/valoria-modular25d/browser_camera_smoke.mjs webgl camera-evidence
+          python3 - <<'PY'
+          import json,hashlib,os
+          data=json.load(open('camera-evidence/camera-evidence.json',encoding='utf-8'))
+          assert data['status']=='REAL_BROWSER_PAN_ZOOM_AND_HOME_PASS_NO_IPHONE_CERTIFICATION',data.get('failure')
+          assert data['gameSourceSha']==os.environ['GITHUB_SHA']
+          assert data['testScriptSha']==os.environ['GITHUB_SHA']
+          assert [(x['width'],x['height']) for x in data['cases']]==[(390,844),(844,390)]
+          assert data['cases'][0]['returnHome'] is not None
+          for case in data['cases']:
+            assert case['panning']['changedFraction']>.11
+            assert case['zoom']['changedFraction']>.13
+            for frame in case['frames']:
+              file='camera-evidence/'+frame['name']
+              assert hashlib.sha256(open(file,'rb').read()).hexdigest()==frame['sha256']
+          assert data['iPhoneTested'] is False and data['visualApproved'] is False
+          print('MOD25D_EXACT_SOURCE_REAL_CHROMIUM_TOUCH_PAN_PINCH_HOME_PASS_NOT_IPHONE')
+          PY
       - name: Preserve authentic browser screenshots and exact-source manifest, even on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: eldoria-mod25d-chromium-webgl-ui-${{github.run_id}}
-          path: browser-evidence/
+          path: |
+            browser-evidence/
+            camera-evidence/
           if-no-files-found: warn
           retention-days: 14
 
