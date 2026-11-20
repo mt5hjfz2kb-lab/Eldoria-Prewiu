@@ -37,6 +37,28 @@ jobs:
         run: |
           dotnet --list-sdks
           dotnet run --project tools/valoria-modular25d/roslyn/RoslynSyntaxGate.csproj --configuration Release -- Unity/Assets/Experimentos/ValoriaModular25D
+      - name: Parse real PowerShell and JavaScript source before shared native execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/valoria-modular25d/browser_smoke.mjs
+          command -v pwsh
+          pwsh -NoProfile -NonInteractive -Command '
+            $paths=@(
+              "tools/valoria-modular25d/scope_isolated_webgl_guard.ps1",
+              "tools/valoria-modular25d/isolate_webgl_resources.ps1"
+            )
+            foreach($path in $paths){
+              $tokens=$null; $errors=$null
+              [System.Management.Automation.Language.Parser]::ParseFile(
+                $path,[ref]$tokens,[ref]$errors)|Out-Null
+              if($errors.Count){
+                foreach($error in $errors){Write-Error ("SCRIPT_PARSE_ERROR "+$path+" "+$error)}
+                exit 2
+              }
+              Write-Host ("STATIC_POWERSHELL_PARSE_PASS "+$path)
+            }
+          '
       - name: State the limits of this job
         if: always()
         run: |
