@@ -576,7 +576,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 caption.fontSize=wide?9:10;
                 caption.alignment=TextAnchor.MiddleCenter;
                 caption.rectTransform.anchoredPosition=
-                    new Vector2(0f,-cell.width*.5f+1f);
+                    new Vector2(0f,-cell.width*.5f-9f);
                 caption.rectTransform.sizeDelta=new Vector2(cell.width+5f,16f);
             }
         }

@@ -366,8 +366,9 @@ namespace Eldoria.Modular25D.Tests
             {
                 var caption=control.GetComponentInChildren<Text>(true);
                 Assert.NotNull(caption,"Missing original Corona icon caption");
-                Assert.Less(caption.rectTransform.anchoredPosition.y,-35f,
-                    "Captions must sit below painted medals, not over their detailed object artwork");
+                Assert.LessOrEqual(caption.rectTransform.anchoredPosition.y,
+                    -control.GetComponent<RectTransform>().rect.width*.5f-4f,
+                    "Captions must sit BELOW the original sculpted medallions at every responsive size");
                 Assert.NotNull(caption.GetComponent<Outline>(),
                     "Ivory-on-grass navigation caption requires unobtrusive four-way outline");
                 var image=control.GetComponent<Image>();

@@ -72,7 +72,10 @@ function topRowStats(bytes) {
   const png=PNG.sync.read(bytes), w=png.width, h=png.height;
   let edge=0,edgeN=0,center=0,centerN=0;
   const edgeW=Math.max(6,Math.floor(w*.025));
-  const rows=Math.max(10,Math.floor(h*.018));
+  // The newly top-pinned RESOURCE panels begin at reference y=8.
+  // Compare only genuinely exposed grass pixels ABOVE that UI; sampling
+  // y=8..15 would treat a dark resource capsule as a cropped world frame.
+  const rows=Math.min(7,Math.max(4,Math.floor(h*.008)));
   for(let y=0;y<rows;y+=2)for(let x=0;x<w;x+=2) {
     const i=(y*w+x)*4;
     const l=(png.data[i]+png.data[i+1]+png.data[i+2])/3;
