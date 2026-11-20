@@ -17,6 +17,14 @@ jobs:
     timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-corona-brecha/
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/
+            docs/valoria-modular-25d/
+            .github/workflows/valoria-corona-brecha-bake.yml
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -54,4 +62,7 @@ jobs:
           git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha.meta docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json
           git diff --cached --quiet && exit 0
           git commit -m "art(corona): bake original 15 PNG sprites with stable Unity metadata"
+          # Other independent source commits may advance the visual branch while
+          # this art bake runs; preserve both via a non-force fast-forward rebase.
+          git pull --rebase origin experiment/valoria-corona-de-la-brecha-ui-20261120
           git push origin HEAD:experiment/valoria-corona-de-la-brecha-ui-20261120
