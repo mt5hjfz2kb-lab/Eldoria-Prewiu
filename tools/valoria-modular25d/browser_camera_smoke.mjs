@@ -114,7 +114,8 @@ try{
     // The unoccupied earth zone y=.68*390=265 has no interactive HUD.
     // In portrait retain the already-proven y=.42 touch origin.
     const sceneGestureY=height<width ? .68 : .42;
-    const x=Math.round(width*.53),y=Math.round(height*sceneGestureY);
+    const gestureX=height<width ? .27 : .53;
+    const x=Math.round(width*gestureX),y=Math.round(height*sceneGestureY);
     if(height<width && y<height*.5)throw Error('Landscape touch starts over HUD');
     const endX=x+Math.round(width*.19),endY=y+Math.round(height*.13);
     await devtools.send('Input.dispatchTouchEvent',{
@@ -136,7 +137,7 @@ try{
 
     // A real two-finger gesture, not a mouse wheel. Vary the separation
     // frame by frame so the game's actual Touchscreen pinch code is exercised.
-    const cx=Math.round(width*.48),cy=Math.round(height*sceneGestureY);
+    const cx=Math.round(width*(height<width ? .27 : .48)),cy=Math.round(height*sceneGestureY);
     const makePoints=half=>[
       {id:2,x:Math.round(cx-half),y:cy,force:1},
       {id:3,x:Math.round(cx+half),y:cy,force:1}
