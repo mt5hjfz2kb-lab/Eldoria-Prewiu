@@ -31,7 +31,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static readonly Color32 Green = new Color32(80, 209, 195, 255);
         private static readonly Color32 Red = new Color32(184, 84, 120, 255);
 
-        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, identityPlate, navPlate, topVelvetPlate, activityPanelPlate;
+        private static Sprite slatePlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, navPlate, topVelvetPlate, activityPanelPlate;
         private static Sprite woodIcon, stoneIcon, foodIcon, hammerIcon, cityIcon, taskIcon;
         private static Texture2D originalIconAtlas;
         private Modular25DGameplay gateway;
@@ -77,9 +77,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             hudCanvas.pixelPerfect=true;
             var scaler = root.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(390f, 844f);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = .3f;
+            scaler.referenceResolution = new Vector2(390f, 390f);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             var rootTransform = root.transform;
 
             // One continuous 46-point ribbon shares player name and wallet.
@@ -92,11 +91,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 Vector2.zero,new Vector2(365f,1.2f));
             topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,55);
-            identity = Plate("Valoria identity", rootTransform, identityPlate,
+            identity = Plate("Valoria identity", rootTransform, null,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
                 new Vector2(102f, 44f));
             var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
-                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(18f,0f),
+                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(24f,0f),
                 new Vector2(35f,35f));
             var aldricAvatar=Resources.Load<Sprite>(
                 "ValoriaModular25D/UI/UmbralII/aldric_avatar");
@@ -111,13 +110,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Real PlayerState.PlayerName is the user-selected name. Valoria
             // remains a fallback only for an older unnamed test save.
             title = Label("VALORIA", identity, 14, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(26f,7f),new Vector2(42f,22f));
+                new Vector2(26f,6f),new Vector2(42f,23f));
             title.resizeTextForBestFit=true;
             title.resizeTextMinSize=10;
             title.resizeTextMaxSize=14;
-            title.horizontalOverflow=HorizontalWrapMode.Overflow;
+            title.horizontalOverflow=HorizontalWrapMode.Wrap;
             level = Label("BAST. 1", identity, 9, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(26f,-10f),new Vector2(42f,16f));
+                new Vector2(26f,-9f),new Vector2(42f,16f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
@@ -138,30 +137,30 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // camera and point only to canonical, currently implemented UI.
             bastionTag=ButtonPlate("Bastion world nameplate",rootTransform,"BASTIÓN · I",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(110f,49f),OpenStatus).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(slatePlate.rect.width * 44f / slatePlate.rect.height, 44f),OpenStatus).GetComponent<RectTransform>();
             bastionTagText=bastionTag.GetComponentInChildren<Text>(true);
-            bastionTagText.fontSize=11;
+            bastionTagText.fontSize=14;
             bastionTagText.color=PaleGold;
             // Building nameplates are wayfinding, NOT a second enormous
             // turquoise Build CTA. The actual action stays in the real modal.
             // Keep the two original art plates short/readable in world-space.
             var keepGlyph=Plate("Bastion nameplate original icon",bastionTag,cityIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-42f,0f),new Vector2(18f,18f));
+                new Vector2(-48f,0f),new Vector2(23f,23f));
             keepGlyph.GetComponent<Image>().preserveAspect=true;
             bastionTagText.rectTransform.anchoredPosition=new Vector2(10f,0f);
-            bastionTagText.rectTransform.sizeDelta=new Vector2(78f,28f);
+            bastionTagText.rectTransform.sizeDelta=new Vector2(100f,28f);
             sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"ASERRADERO",
                 slatePlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(112f,50f),OpenSawmill).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(slatePlate.rect.width * 44f / slatePlate.rect.height, 44f),OpenSawmill).GetComponent<RectTransform>();
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
-            sawmillTagText.fontSize=11;
+            sawmillTagText.fontSize=14;
             sawmillTagText.color=PaleGold;
             sawmillTagText.rectTransform.anchoredPosition=new Vector2(12f,0f);
-            sawmillTagText.rectTransform.sizeDelta=new Vector2(80f,30f);
+            sawmillTagText.rectTransform.sizeDelta=new Vector2(100f,30f);
             var sawmillGlyph=Plate("Sawmill nameplate original icon",sawmillTag,hammerIcon,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-43f,0f),new Vector2(18f,18f));
+                new Vector2(-48f,0f),new Vector2(23f,23f));
             sawmillGlyph.GetComponent<Image>().preserveAspect=true;
             // Visible AFTER the successful Build auto-dismiss: real progress
             // belongs on the construction parcel, not a persistent modal.
@@ -209,17 +208,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(54f,0f),new Vector2(246f,185f));
             activityTitle=Label("TAREAS",activityDrawer,16,true,PaleGold,
-                TextAnchor.MiddleCenter,new Vector2(0f,69f),new Vector2(198f,25f));
+                TextAnchor.MiddleCenter,new Vector2(0f,49f),new Vector2(198f,25f));
             objective.SetParent(activityDrawer,false);
             objective.anchorMin=objective.anchorMax=new Vector2(.5f,.5f);
             objective.pivot=new Vector2(.5f,.5f);
             objective.anchoredPosition=new Vector2(0f,9f);
             activityProgress=Label("ASERRADERO",activityDrawer,13,false,WarmWhite,
-                TextAnchor.MiddleCenter,new Vector2(0f,-48f),new Vector2(198f,24f));
+                TextAnchor.MiddleCenter,new Vector2(0f,-39f),new Vector2(198f,24f));
             activityProgress.verticalOverflow=VerticalWrapMode.Overflow;
             activityTrack=Plate("Activity real construction track",activityDrawer,null,
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(0f,-67f),new Vector2(178f,7f));
+                new Vector2(0f,-59f),new Vector2(178f,7f));
             activityTrack.GetComponent<Image>().color=new Color32(20,13,38,232);
             activityFill=Plate("Activity canonical construction fill",activityTrack,null,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
@@ -236,7 +235,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             // Context sheet uses warm architectural parchment, a real sprite
             // from the experiment, and original data. Not a generic modal.
-            sheet = Plate("Sawmill parchment sheet", rootTransform, parchmentPlate,
+            sheet = Plate("Sawmill parchment sheet", rootTransform, activityPanelPlate,
                 new Vector2(.5f, 0f), new Vector2(.5f, 0f), new Vector2(0f, 110f),
                 new Vector2(355f, 244f));
             buildingSheet = sheet.gameObject;
@@ -246,12 +245,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(-30f, 61f), new Vector2(200f, 17f));
             AccentHairline("Divider", sheet, AntiqueBrass,
                 new Vector2(0f, 44f), new Vector2(270f, 1.5f));
-            var previewPlate = Plate("Architectural preview", sheet, portraitPlate,
-                new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-84f, -6f),
+            var previewPlate = Plate("Architectural preview", sheet, null,
+                new Vector2(.5f, .5f), new Vector2(.5f, .5f), new Vector2(-88f, -2f),
                 new Vector2(96f, 99f));
             var view = Plate("Real illustrated sawmill", previewPlate, null,
                 new Vector2(.5f, .5f), new Vector2(.5f, .5f), Vector2.zero,
-                new Vector2(93f, 94f));
+                new Vector2(103f, 100f));
             var preview = view.GetComponent<Image>();
             preview.sprite = Modular25DArt.Sawmill();
             preview.preserveAspect = true;
@@ -284,7 +283,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             constructionProgressRoot.gameObject.SetActive(false);
             action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
                 actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
-                new Vector2(0f, -80f), new Vector2(118f, 53f),
+                new Vector2(0f, -80f), new Vector2(actionPlate.rect.width * 44f / actionPlate.rect.height, 44f),
                 () =>
                 {
                     // Only a successful real LocalGateway construction
@@ -296,10 +295,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     if(result.Ok)ClosePanels();
                 });
             actionLabel = action.GetComponentInChildren<Text>();
-            actionLabel.fontSize=12;
+            actionLabel.color=WarmWhite;
+            actionLabel.fontSize=15;
             actionLabel.resizeTextForBestFit=true;
             actionLabel.resizeTextMinSize=10;
-            actionLabel.resizeTextMaxSize=14;
+            actionLabel.resizeTextMaxSize=15;
             actionLabel.verticalOverflow=VerticalWrapMode.Overflow;
             var close = ButtonPlate("Close sawmill", sheet, "×", navPlate,
                 new Vector2(1f, 1f), new Vector2(.5f, .5f),
@@ -309,7 +309,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             closeText.fontSize = 25;
             buildingSheet.SetActive(false);
 
-            statusSheet=Plate("Valoria state parchment",rootTransform,parchmentPlate,
+            statusSheet=Plate("Valoria state parchment",rootTransform,activityPanelPlate,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 new Vector2(0f,112f),new Vector2(330f,170f));
             Label("ESTADO DE VALORIA",statusSheet,23,true,WarmWhite,TextAnchor.MiddleCenter,
@@ -505,7 +505,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.rectTransform.anchoredPosition=
                     new Vector2(12f,constructing?3f:0f);
                 sawmillTagText.rectTransform.sizeDelta=
-                    new Vector2(80f,constructing?23f:30f);
+                    new Vector2(100f,constructing?23f:30f);
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(false);
                 if(activityTitle!=null)
@@ -626,27 +626,31 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var cam=world.ViewCamera;
             var screen=cam.WorldToScreenPoint(worldPosition);
             var safe=Screen.safeArea;
-            var inside=screen.z>0&&
-                screen.x>safe.xMin+68f&&screen.x<safe.xMax-68f&&
-                screen.y>safe.yMin+105f&&screen.y<safe.yMax-125f;
-            if(nameplate.gameObject.activeSelf!=inside&&!modalOpen)
-                nameplate.gameObject.SetActive(inside);
-            if(modalOpen)
-            {
-                if(nameplate.gameObject.activeSelf)nameplate.gameObject.SetActive(false);
-                return;
-            }
-            if(!inside)return;
-            Vector2 local;
-            if(RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect,new Vector2(screen.x,screen.y),null,out local))
-            {
-                nameplate.anchorMin=nameplate.anchorMax=new Vector2(.5f,.5f);
-                nameplate.pivot=new Vector2(.5f,.5f);
+            float scale=hudCanvas.scaleFactor;
+            var size=nameplate.rect.size*scale;
+            var bounds=new Rect((Vector2)screen-size*.5f,size);
+            bool visible=!modalOpen && screen.z>0f &&
+                safe.Contains(bounds.min) && safe.Contains(bounds.max) &&
+                !OverlapsControl(bounds,topRibbon) && !OverlapsControl(bounds,activityHandle) &&
+                !OverlapsControl(bounds,statusDock) && !OverlapsControl(bounds,center) &&
+                !OverlapsControl(bounds,inspect) && !OverlapsControl(bounds,activityDrawer);
+            if(nameplate.gameObject.activeSelf!=visible)
+                nameplate.gameObject.SetActive(visible);
+            if(visible && RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect,screen,null,out var local))
                 nameplate.anchoredPosition=local;
-            }
         }
 
+        // All controls share the overlay canvas. Test their on-screen bounds
+        // so rotating or using a Retina framebuffer keeps the same clearance.
+        private static bool OverlapsControl(Rect bounds,RectTransform control)
+        {
+            if(!control || !control.gameObject.activeInHierarchy)return false;
+            Rect rect=control.rect;
+            Vector2 min=RectTransformUtility.WorldToScreenPoint(null,control.TransformPoint(rect.min));
+            Vector2 max=RectTransformUtility.WorldToScreenPoint(null,control.TransformPoint(rect.max));
+            return bounds.Overlaps(Rect.MinMaxRect(min.x,min.y,max.x,max.y));
+        }
 
         // Six stable slots at the lower edge. Only slots 3, 4 and 5
         // currently have real actions (Estado, Ciudad, Obras). Slots
@@ -703,23 +707,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // physical pixels and the entire strip hugs the safe top edge.
             topRibbon.anchorMin=topRibbon.anchorMax=new Vector2(.5f,1f);
             topRibbon.pivot=new Vector2(.5f,1f);
+            float stripWidth=Mathf.Min(390f,safeWidth);
+            float stripLeft=left+(safeWidth-stripWidth)*.5f;
             topRibbon.anchoredPosition=new Vector2((left-right)*.5f,-top);
-            topRibbon.sizeDelta=new Vector2(safeWidth-6f,46f);
-            topRibbonHairline.sizeDelta=new Vector2(safeWidth-18f,1.2f);
+            topRibbon.sizeDelta=new Vector2(stripWidth-6f,46f);
+            topRibbonHairline.sizeDelta=new Vector2(stripWidth-18f,1.2f);
 
             identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
             identity.pivot=new Vector2(0f,1f);
-            identity.anchoredPosition=new Vector2(left+6f,-top-1f);
+            identity.anchoredPosition=new Vector2(stripLeft+6f,-top-1f);
             identity.sizeDelta=new Vector2(102f,44f);
             resourceRow.anchorMin=resourceRow.anchorMax=new Vector2(1f,1f);
             resourceRow.pivot=new Vector2(1f,1f);
-            resourceRow.anchoredPosition=new Vector2(-right-6f,-top-3f);
+            resourceRow.anchoredPosition=new Vector2(stripLeft+stripWidth-width-6f,-top-3f);
             // The real 1280x720 Unity PlayMode found the old landscape
             // 335pt resource row stretched 580x260 source capsules by
             // 27%. Cap all orientations at 270pt. This is SMALLER,
             // preserves premium artist proportions and liberates map.
             float economyWidth=Mathf.Min(270f,
-                Mathf.Max(168f,safeWidth-119f));
+                Mathf.Max(168f,stripWidth-119f));
             resourceRow.sizeDelta=new Vector2(economyWidth,40f);
             float chipWidth=(economyWidth-12f)/3f;
             float sourceAspect=resourcePlate.rect.height/
@@ -740,16 +746,17 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     " original resource art") as RectTransform;
                 if(art!=null)
                 {
-                    art.anchoredPosition=new Vector2(6f,0f);
+                    art.anchoredPosition=new Vector2(8f,0f);
                     art.sizeDelta=new Vector2(d,d);
                 }
                 var number=i==0?woodValue:i==1?stoneValue:foodValue;
                 if(number!=null)
                 {
-                    number.rectTransform.anchoredPosition=new Vector2(-5f,0f);
+                    number.rectTransform.anchoredPosition=new Vector2(-12f,0f);
                     number.rectTransform.sizeDelta=new Vector2(
-                        Mathf.Clamp(chipWidth-d-12f,26f,46f),31f);
+                        Mathf.Clamp(chipWidth-d-19f,22f,46f),31f);
                     number.fontSize=chipWidth<82f?14:16;
+                    number.resizeTextMaxSize=number.fontSize;
                 }
             }
 
@@ -774,18 +781,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             activityDrawer.pivot=new Vector2(0f,.5f);
             activityDrawer.anchoredPosition=new Vector2(left+51f,wide?-4f:0f);
             activityDrawer.sizeDelta=wide?new Vector2(243f,173f):
-                new Vector2(246f,185f);
+                new Vector2(246f,171f);
             objective.anchorMin=objective.anchorMax=new Vector2(.5f,.5f);
             objective.pivot=new Vector2(.5f,.5f);
             objective.anchoredPosition=new Vector2(0f,wide?8f:9f);
-            objective.sizeDelta=new Vector2(185f,72f);
+            objective.sizeDelta=new Vector2(186f,65f);
+            objective.GetComponent<Image>().preserveAspect=true;
 
             if(wide)
             {
                 sheet.anchorMin=sheet.anchorMax=new Vector2(1f,.5f);
                 sheet.pivot=new Vector2(1f,.5f);
                 sheet.anchoredPosition=new Vector2(-12f-right,2f);
-                sheet.sizeDelta=new Vector2(326f,240f);
+                sheet.sizeDelta=new Vector2(346f,240f);
                 noticeRoot.anchorMin=noticeRoot.anchorMax=new Vector2(0f,1f);
                 noticeRoot.pivot=new Vector2(0f,1f);
                 noticeRoot.anchoredPosition=new Vector2(left+12f,-top-67f);
@@ -793,7 +801,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
                 statusSheet.anchoredPosition=new Vector2(-12f-right,2f);
-                statusSheet.sizeDelta=new Vector2(328f,170f);
+                statusSheet.sizeDelta=new Vector2(328f,228f);
             }
             else
             {
@@ -810,7 +818,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 statusSheet.pivot=new Vector2(.5f,0f);
                 statusSheet.anchoredPosition=new Vector2(0f,bottom+95f);
                 statusSheet.sizeDelta=new Vector2(
-                    Mathf.Min(330f,safeWidth-28f),170f);
+                    Mathf.Min(330f,safeWidth-28f),229f);
             }
             lastWidth=w;
             lastHeight=h;
@@ -828,6 +836,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var chip=Plate("Resource "+caption,parent,resourcePlate,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(index*123f,0f),new Vector2(117f,52f));
+            chip.GetComponent<Image>().color=new Color32(158,149,165,255);
             var image=Plate(caption+" original resource art",chip,art,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(10f,0f),new Vector2(42f,42f));
@@ -989,12 +998,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(slatePlate!=null)return;
             topVelvetPlate=NeedCorona("top_velvet_ribbon");
             activityPanelPlate=NeedCorona("activity_panel_wide");
-            identityPlate=NeedCorona("identity_crest");
             slatePlate=NeedCorona("world_rune");
             resourcePlate=NeedCorona("resource_siglet");
             portraitPlate=NeedCorona("portrait_ring");
             navPlate=NeedCorona("nav_medallion");
-            parchmentPlate=NeedCorona("panel_obsidian");
             actionPlate=NeedCorona("action_arcane");
             burgundyPlate=NeedCorona("objective_rune");
             woodIcon=NeedCorona("icon_wood");
@@ -1050,3 +1057,4 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
     }
 }
+
