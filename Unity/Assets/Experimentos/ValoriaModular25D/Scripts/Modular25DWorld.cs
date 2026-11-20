@@ -61,7 +61,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
                 new Vector2(1.95f,-2.2f),FootOrder(-2.2f),buildings);
             AddContact("Bastion_contact",new Vector2(-1.15f,1.22f),300,FootOrder(1.3f)-2,buildings);
-            AddContact("Aserradero_contact",new Vector2(1.95f,-2.27f),220,FootOrder(-2.2f)-2,buildings);
+            // The finished illustrated sprite already contains ground contact.\n            // Its broad baked exterior shadow is trimmed by Modular25DArt; do\n            // not add another large dark ellipse over the sawdust footprint.
 
             // Shared warm-olive broadleaf art replaces the isolated dark
             // blue low-poly pine cluster. The occlusion test still crosses
@@ -122,9 +122,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                    Vector2.Distance(point,new Vector2(-3.15f,-1.4f))<.64f)
                     continue;
                 if(DistanceToRoad(point)<.68f)continue;
-                var prop=random.Next(16)==0 ? Modular25DArt.Rock() :
-                    random.Next(4)==0?Modular25DArt.Bush(random.Next(3)):
-                                      Modular25DArt.Tuft(random.Next(2));
+                // Avoid the angular grey rocks and flat cartoon bushes: they\n                // visibly contradict the premium original oaks/buildings.\n                // Restrict ground scatter to the subtle original painted tufts.\n                var prop=Modular25DArt.Tuft(random.Next(2));
                 var draw=AddSprite("Interchangeable grass / stone "+placed,
                     prop,point,FootOrder(point.y),root);
                 float scale=.27f+(float)random.NextDouble()*.25f;
@@ -271,7 +269,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(0,-.08f),0,actor.transform);
             var body=AddSprite("four-frame gait",Modular25DArt.Villager(0),
                 Vector2.zero,0,actor.transform);
-            var mover=actor.AddComponent<Modular25DWalker>();
+            // Original actor sheet is a much larger pixel figure than the\n            // detailed building sprites. Reduce visible body, preserve world\n            // foot anchor and Y-sorting for honest occlusion behind trees.\n            body.transform.localScale=Vector3.one*.55f;\n            shadow.transform.localScale=Vector3.one*.54f;\n            var mover=actor.AddComponent<Modular25DWalker>();
             mover.Configure(route,delay,body,shadow);
         }
 
