@@ -345,6 +345,29 @@ namespace Eldoria.Modular25D.Tests
             }
             Assert.That(woodText.text,Is.EqualTo(initialWood.ToString("N0")),
                 "Visible wood label must reflect the canonical gateway snapshot");
+            var compact=ui.GetType().GetMethod("CompactResource",
+                BindingFlags.Public|BindingFlags.Static);
+            Assert.NotNull(compact,"Missing compact source-bound future resource formatting");
+            Assert.That(compact.Invoke(null,new object[]{1000L}).ToString(),
+                Is.EqualTo("1K"));
+            Assert.That(compact.Invoke(null,new object[]{1000000L}).ToString(),
+                Is.EqualTo("1M"));
+            foreach(var chip in header.GetComponentsInChildren<RectTransform>(true)
+                .Where(x=>x && x.name.StartsWith("Resource ")))
+            {
+                var icon=chip.GetComponentsInChildren<Image>(true)
+                    .FirstOrDefault(x=>x.sprite!=null && x.sprite.name.StartsWith("icon_"));
+                var number=chip.GetComponentInChildren<Text>(true);
+                Assert.NotNull(icon);
+                Assert.NotNull(number);
+                float artRight=icon.rectTransform.anchoredPosition.x+
+                    icon.rectTransform.rect.width;
+                float textLeft=chip.rect.width+
+                    number.rectTransform.anchoredPosition.x-
+                    number.rectTransform.rect.width;
+                Assert.LessOrEqual(artRight,textLeft+2f,
+                    "Long-term resource amounts must not overlay illustrated materials");
+            }
             var originalWoodArt=header.GetComponentsInChildren<Image>(true)
                 .FirstOrDefault(x=>x.sprite!=null && x.sprite.name=="icon_wood");
             Assert.NotNull(originalWoodArt);

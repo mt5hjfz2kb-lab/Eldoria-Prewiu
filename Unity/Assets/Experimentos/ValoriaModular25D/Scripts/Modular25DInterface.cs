@@ -387,6 +387,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (show) noticeExpires = Time.unscaledTime + 2.8f;
         }
 
+        // WOS/Kingshot-sized resource indicators must remain legible
+        // even when the canonical wallet grows past four or six digits.
+        // The small HUD uses compact display only; status/gameplay/Save
+        // always retain the unrounded authoritative resource amount.
+        public static string CompactResource(long amount)
+        {
+            if(amount<1000L)return amount.ToString("N0");
+            double v=amount;
+            int tier=0;
+            while(v>=1000d && tier<3){v/=1000d;tier++;}
+            string suffix=tier==1?"K":tier==2?"M":"B";
+            string mask=v>=100d?"0":v>=10d?"0.#":"0.#";
+            return v.ToString(mask,System.Globalization.CultureInfo.CurrentCulture)+suffix;
+        }
+
         private void Refresh(PlayerState s)
         {
             if (woodValue == null) return;
@@ -435,9 +450,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.color=building==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? WarmWhite : PaleGold;
             }
-            woodValue.text = s.Resources.Wood.ToString("N0");
-            stoneValue.text = s.Resources.Stone.ToString("N0");
-            foodValue.text = s.Resources.Food.ToString("N0");
+            woodValue.text = CompactResource(s.Resources.Wood);
+            stoneValue.text = CompactResource(s.Resources.Stone);
+            foodValue.text = CompactResource(s.Resources.Food);
             // Preserve the artist's original full-color logs. Tinting the
             // *whole* premium illustration with AntiqueBrass destroyed its
             // wood/rope/material separation. Only numbers convey shortages.
@@ -619,6 +634,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     Mathf.Min(52f,capsuleWidth*sourceHeightPerWidth));
                 chip.anchoredPosition=new Vector2(i*(capsuleWidth+6f),0f);
                 chip.GetComponent<Image>().preserveAspect=true;
+                // The resource icon and number occupy disjoint zones even
+                // when an iPhone landscape cutout shrinks each capsule.
+                // Do not stretch any original premium illustration.
+                float iconDiameter=Mathf.Clamp(capsuleWidth*.32f,28f,42f);
+                var art=chip.Find((i==0?"MADERA":i==1?"PIEDRA":"COMIDA")+
+                    " original resource art") as RectTransform;
+                if(art!=null)
+                    art.sizeDelta=new Vector2(iconDiameter,iconDiameter);
+                var number=i==0?woodValue:i==1?stoneValue:foodValue;
+                if(number!=null)
+                {
+                    number.rectTransform.sizeDelta=new Vector2(
+                        Mathf.Clamp(capsuleWidth-iconDiameter-17f,39f,62f),33f);
+                    number.fontSize=capsuleWidth<100f?16:18;
+                }
             }
 
             // Landscape: crest left, economy right; portrait: crest is
