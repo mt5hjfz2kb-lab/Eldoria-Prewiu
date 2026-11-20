@@ -363,6 +363,19 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(Member(ui,"cachedSawmillPhase").ToString(),
                 Is.EqualTo("UNDER_CONSTRUCTION"),
                 "Floating 2.5D nameplate must track canonical BUILD phase; no stale fixed completed/available position");
+            var worldTrack=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="World sawmill canonical progress track");
+            Assert.NotNull(worldTrack,"Auto-closing construction needs an in-world visual work timer");
+            Assert.IsTrue(worldTrack.gameObject.activeSelf,
+                "Canonical building phase must expose its real progress on the Aserradero world label");
+            Assert.That(worldTrack.GetComponentInChildren<Image>(true).color.a,
+                Is.GreaterThan(.1f),"World progress track is fully transparent");
+            var sawmillName=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="Sawmill world nameplate");
+            Assert.NotNull(sawmillName);
+            Assert.That(sawmillName.GetComponentsInChildren<Text>(true)
+                .Any(x=>x.text.StartsWith("OBRA")),Is.True,
+                "The actual remaining time must be visible without reopening the panel");
             Assert.IsFalse(panel.activeInHierarchy,
                 "Successful canonical construction must immediately dismiss the detail panel");
             Assert.IsTrue(center.gameObject.activeInHierarchy,

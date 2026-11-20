@@ -44,6 +44,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private Modular25DWorld world;
         private RectTransform[] resourceChips;
         private RectTransform constructionProgressRoot,constructionProgressFill;
+        private RectTransform worldProgressTrack,worldProgressFill;
         private Text title, level, woodValue, stoneValue, foodValue;
         private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
@@ -142,6 +143,18 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),
                 new Vector2(-68f,0f),new Vector2(24f,24f));
             sawmillGlyph.GetComponent<Image>().preserveAspect=true;
+            // Visible AFTER the successful Build auto-dismiss: real progress
+            // belongs on the construction parcel, not a persistent modal.
+            // This understated track has no new game clock or invented rewards.
+            worldProgressTrack=Plate("World sawmill canonical progress track",sawmillTag,null,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(11f,-15f),new Vector2(120f,6f));
+            worldProgressTrack.GetComponent<Image>().color=new Color32(17,11,32,226);
+            worldProgressFill=Plate("World sawmill elapsed canonical fill",worldProgressTrack,null,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(2f,0f),new Vector2(2f,4f));
+            worldProgressFill.GetComponent<Image>().color=new Color32(76,211,192,255);
+            worldProgressTrack.gameObject.SetActive(false);
 
             // Two contextual, accessible actions; no false shortcuts to
             // heroes/world/bag until the gameplay genuinely exposes them.
@@ -340,7 +353,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SyncWorldNameplates();
             if (Time.unscaledTime < nextTick) return;
             nextTick = Time.unscaledTime + .25f;
-            if (buildingSheet != null && buildingSheet.activeSelf)
+            // The Aserradero worksite timer remains readable on the world
+            // even though Build closes its panel. Query at 4 Hz only during
+            // canonical construction or an explicitly opened detail sheet.
+            if(gateway!=null && (cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION ||
+                (buildingSheet!=null&&buildingSheet.activeSelf)))
                 Refresh(gateway.Snapshot());
         }
 
@@ -372,10 +389,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(sawmillTag!=null && sawmillTagText!=null)
             {
                 var building=cachedSawmillPhase;
+                long timeLeft=building==ParcelBuildingState.UNDER_CONSTRUCTION
+                    ? gateway.SawmillSecondsRemaining() : 0L;
                 sawmillTagText.text=building==ParcelBuildingState.BUILT
                     ? "ASERRADERO · "+s.SawmillLevel
                     : building==ParcelBuildingState.UNDER_CONSTRUCTION
-                        ? "OBRA EN CURSO" : "ASERRADERO";
+                        ? "OBRA  "+(timeLeft/60L).ToString()+":"+(timeLeft%60L).ToString("00")
+                        : "ASERRADERO";
+                bool constructing=building==ParcelBuildingState.UNDER_CONSTRUCTION;
+                if(worldProgressTrack!=null)
+                {
+                    worldProgressTrack.gameObject.SetActive(constructing);
+                    if(constructing && worldProgressFill!=null)
+                    {
+                        float duration=Mathf.Max(1f,(float)SliceRules.SawmillBuildSeconds);
+                        float elapsed=Mathf.Clamp01(1f-(float)timeLeft/duration);
+                        worldProgressFill.sizeDelta=new Vector2(
+                            Mathf.Max(2f,116f*elapsed),4f);
+                    }
+                }
                 // Arcane turquoise is reserved for the actual BUILD command.
                 // The world label stays the same readable deep obsidian plaque
                 // in every phase and only its text state changes.

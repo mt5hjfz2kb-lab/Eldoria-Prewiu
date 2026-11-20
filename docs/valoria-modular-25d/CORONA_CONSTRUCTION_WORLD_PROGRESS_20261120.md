@@ -1,0 +1,5 @@
+# Corona — progreso en el mundo tras cerrar la construcción
+
+El propietario ordena que el panel desaparezca al pulsar CONSTRUIR, sin que desaparezca información del trabajo iniciado. Se añadió `worldProgressTrack` y `worldProgressFill` como capas UI hijas de la placa del Aserradero (Transform world-following existente), sin crear edificios ni recursos nuevos. Al completar con éxito `BuildSawmill` el panel se cierra inmediatamente; la placa pasa a **OBRA 0:NN** y una barra turquesa progresa usando exclusivamente `gateway.SawmillSecondsRemaining()` y `SliceRules.SawmillBuildSeconds`. La barra sólo existe durante el estado canónico UNDER_CONSTRUCTION y se oculta al terminar. Se calcula cuatro veces por segundo, no cada frame, de manera que la cámara sigue libre y no se cambia el guardado ni el reloj.
+
+Este cambio es presentación y no equivale a prueba real. NUnit EditMode→PlayMode exige que, al iniciar la construcción, el panel esté cerrado, la placa muestre OBRA y el indicador esté activo, además del descuento único de 80 de madera. Falta la captura auténtica de Unity y Chromium al SHA final.
