@@ -72,9 +72,10 @@ namespace Eldoria.Modular25D.Tests
                 "Four semantic settlement zones must instantiate original authored props");
             Assert.That((int)Member(world,"SettlementZonesPlaced"),Is.EqualTo(4));
             Assert.That((int)Member(world,"WorkshopWorkersPlaced"),Is.EqualTo(1));
-            Assert.NotNull(Resources.Load<Sprite>("ValoriaModular25D/worker_saw_0"));
-            Assert.NotNull(Resources.Load<Sprite>("ValoriaModular25D/worker_saw_1"),
-                "Specific original artist-painted saw and trestle must animate at the built sawmill");
+            Assert.NotNull(Modular25DArt.Sawyer(0),
+                "Original artist-painted sawyer frame 0 must remain importable");
+            Assert.NotNull(Modular25DArt.Sawyer(1),
+                "Original artist-painted sawyer frame 1 must remain importable; PNG source cannot be replaced");
             var work=Member(world,"WorkshopAction") as Component;
             Assert.NotNull(work,"One original-art real workshop worker is required");
             Assert.IsFalse(work.gameObject.activeInHierarchy,"Unbuilt sawmill cannot be productive");
