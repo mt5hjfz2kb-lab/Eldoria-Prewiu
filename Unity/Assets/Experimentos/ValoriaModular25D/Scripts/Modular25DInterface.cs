@@ -70,14 +70,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             identity = Plate("Valoria identity", rootTransform, slatePlate,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
                 new Vector2(165f, 51f));
-            var sigil = Plate("Carved V seal", identity, portraitPlate,
+            var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
                 new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(27f, 0f),
-                new Vector2(38f, 40f));
-            Label("V", sigil, 25, true, PaleGold, TextAnchor.MiddleCenter,
-                Vector2.zero, new Vector2(30f, 34f));
+                new Vector2(42f, 42f));
+            var aldricAvatar=Resources.Load<Sprite>(
+                "ValoriaModular25D/UI/UmbralII/aldric_avatar");
+            if(aldricAvatar==null)
+                throw new InvalidOperationException(
+                    "Umbral II requires Eldoria's authentic Sir Aldric portrait.");
+            var face=Plate("Authentic Sir Aldric character portrait",sigil,aldricAvatar,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(36f,36f));
+            face.GetComponent<Image>().type=Image.Type.Simple;
+            face.GetComponent<Image>().preserveAspect=true;
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
                 new Vector2(26f, 8f), new Vector2(112f, 25f));
-            level = Label("BASTIÓN I", identity, 11, false, PaleGold, TextAnchor.MiddleLeft,
+            level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
                 new Vector2(26f, -14f), new Vector2(114f, 20f));
 
             resourceRow = Plate("Independent resources", rootTransform, null,
@@ -107,9 +114,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(-12f,-122f),new Vector2(172f,50f),OpenSawmill)
                 .GetComponent<RectTransform>();
             // A real progression prompt, not a fictional quest/reward.
-            Label("PRÓXIMO PASO",objective,10,true,PaleGold,TextAnchor.MiddleLeft,
+            Label("PRÓXIMO PASO",objective,11,true,PaleGold,TextAnchor.MiddleLeft,
                 new Vector2(0f,11f),new Vector2(137f,16f));
-            objectiveText=Label("ASERRADERO · 0/1",objective,12,false,WarmWhite,
+            objectiveText=Label("ASERRADERO · 0/1",objective,13,false,WarmWhite,
                 TextAnchor.MiddleLeft,new Vector2(0f,-8f),new Vector2(141f,24f));
 
             // Context sheet uses warm architectural parchment, a real sprite
@@ -138,9 +145,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             preview.raycastTarget = false;
             stage = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
                 new Vector2(54f, 22f), new Vector2(195f, 25f));
-            cost = Label("", sheet, 12, false, MutedInk, TextAnchor.MiddleLeft,
+            cost = Label("", sheet, 13, false, MutedInk, TextAnchor.MiddleLeft,
                 new Vector2(54f, -10f), new Vector2(195f, 25f));
-            remaining = Label("", sheet, 12, false, DarkInk, TextAnchor.MiddleLeft,
+            remaining = Label("", sheet, 13, false, DarkInk, TextAnchor.MiddleLeft,
                 new Vector2(54f, -42f), new Vector2(195f, 31f));
             action = ButtonPlate("Execute canonical Build command", sheet, "CONSTRUIR",
                 actionPlate, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
@@ -400,7 +407,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(22f,22f));
             symbol.GetComponent<Image>().type=Image.Type.Simple;
             symbol.GetComponent<Image>().color=Color.white;
-            Label(caption, chip, 10, false, AntiqueBrass,
+            Label(caption, chip, 11, false, AntiqueBrass,
                 TextAnchor.MiddleLeft, new Vector2(23f, 9f), new Vector2(74f, 14f));
             value = Label("0", chip, 15, false, WarmWhite,
                 TextAnchor.MiddleLeft, new Vector2(23f, -7f), new Vector2(76f, 20f));
@@ -446,7 +453,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 Vector2.zero,new Vector2(110f,54f),click);
             var rect=button.GetComponent<RectTransform>();
             var text=button.GetComponentInChildren<Text>();
-            text.fontSize=12;
+            text.fontSize=13;
             text.rectTransform.anchoredPosition=new Vector2(13f,0f);
             text.rectTransform.sizeDelta=new Vector2(73f,48f);
             var medallion=Plate(name+" artistic emblem",rect,portraitPlate,
