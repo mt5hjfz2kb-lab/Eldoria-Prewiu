@@ -1,0 +1,96 @@
+name: Valoria Umbral II — own Sir Aldric avatar
+on:
+  push:
+    branches: [experiment/valoria-modular25d-ui-umbral-20261120]
+    paths: ['tools/valoria-modular25d/aldric-portrait-request.json']
+permissions:
+  contents: write
+concurrency:
+  group: valoria-umbral2-original-aldric-portrait
+  cancel-in-progress: false
+jobs:
+  avatar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          filter: blob:none
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/
+            /docs/valoria-modular-25d/
+            /tools/valoria-modular25d/
+      - name: Verify exclusive owner via SHA-pinned GitHub registry blob
+        shell: bash
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          python3 - <<'PY'
+          import os,json,base64,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          assert os.environ['GITHUB_REF_NAME']=='experiment/valoria-modular25d-ui-umbral-20261120'
+          def gh(path):
+            req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,
+              headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req,timeout=35) as f:return json.load(f)
+          m=gh('contents/pipeline/active-workstreams.json?ref=main')
+          blob=gh('git/blobs/'+m['sha'])
+          assert blob['encoding']=='base64' and blob['sha']==m['sha']
+          state=json.loads(base64.b64decode(blob['content']))
+          a=[x for x in state['active'] if x.get('id')=='eldoria-valoria-modular25d-bastion1-20261119']
+          assert len(a)==1
+          a=a[0]
+          assert a.get('owner')=='chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120'
+          assert a.get('ownership_revision')==7 and a.get('ownership_state')=='claimed'
+          assert a.get('branch')==os.environ['GITHUB_REF_NAME']
+          print('OWNER_REV7_VERIFIED')
+          PY
+      - name: Create avatar from existing approved Sir Aldric image and verify source hash
+        shell: bash
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check pillow==11.3.0
+          python3 -m py_compile tools/valoria-modular25d/create_umbral_aldric_avatar.py
+          python3 tools/valoria-modular25d/create_umbral_aldric_avatar.py
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json,hashlib
+          d=json.loads(Path('docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json').read_text())
+          p=Path(d['output_path'])
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==d['output_sha256']
+          with Image.open(p) as im:
+            im.load()
+            assert im.mode=='RGBA' and im.size==(128,128) and im.getpixel((0,0))[3]==0
+          print('ALDRIC_ARTIST_ORIGINAL_PORTRAIT_PIXEL_PROOF_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: umbral2-original-aldric-ui-${{github.run_id}}
+          path: |
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png
+            docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json
+          retention-days: 14
+      - name: Commit only original portrait derivative on unchanged branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=experiment/valoria-modular25d-ui-umbral-20261120
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git fetch --no-tags --depth=1 origin "$BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA" || { echo BRANCH_MOVED_STOP; exit 1; }
+          git config user.name 'Eldoria UI art QA'
+          git config user.email 'eldoria-ui-qa@users.noreply.github.com'
+          git add -- \
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png \
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png.meta \
+            docs/valoria-modular-25d/UMBRAL_II_ALDRIC_PORTRAIT_SOURCE.json
+          git diff --cached --check
+          git diff --cached --quiet && { echo PORTRAIT_ALREADY_PRESENT; exit 0; }
+          git commit -m 'art(umbral2): own approved Sir Aldric identity avatar'
+          git push origin "HEAD:refs/heads/$BRANCH"
+          echo "SIR_ALDRIC_PREMIUM_AVATAR_COMMITTED"
