@@ -16,7 +16,6 @@ manifest_path=source/"sprite_manifest.json"
 proof=root/"docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json"
 backup=root/"tools/valoria-modular25d/provenance/worker_saw_original_indexed"
 contract=root/"tools/valoria-modular25d/verify_source.py"
-static=root/".github/workflows/valoria-modular25d-umbral-static.yml"
 
 manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
 entries={e["name"]:e for e in manifest["sprites"]}
@@ -75,11 +74,6 @@ assert 'self.assertEqual(content_bytes[25],3,"Original paletted PNG with alpha, 
 code=code.replace('self.assertEqual(content_bytes[25],3,"Original paletted PNG with alpha, not a backplate")',
                   'self.assertEqual(content_bytes[25],6,"Losslessly decoded RGBA PNG with alpha, not a backplate")')
 contract.write_text(code,encoding="utf-8")
-work=static.read_text(encoding="utf-8")
-needle='assert b[:8]==bytes.fromhex("89504e470d0a1a0a"),name'
-assert needle in work,"Static PNG signature source guard changed unexpectedly"
-work=work.replace(needle,needle+'\n               assert b[25]==6,(name,"RGBA expected after pixel-identical source re-encode")')
-static.write_text(work,encoding="utf-8")
 proof.parent.mkdir(parents=True,exist_ok=True)
 proof.write_text(json.dumps({
     "schema":1,"reason":"Unity 6000.3 Resources.Load rejects original indexed worker_saw_1",
