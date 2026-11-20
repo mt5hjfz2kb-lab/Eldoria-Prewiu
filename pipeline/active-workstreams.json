@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-20T00:30:01.269Z",
+  "updated_at": "2026-11-20T00:34:46.251Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10008,14 +10008,14 @@
     {
       "id": "eldoria-valoria-modular25d-bastion1-20261119",
       "title": "Eldoria — Valoria Bastión I modular 2.5D: premium authored sprites + Unity native proof",
-      "owner": "chatgpt-eldoria-valoria-modular25d-continuation-20261120",
+      "owner": "chatgpt-eldoria-mod25d-correction-20261120",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
       "status": "active",
       "phase": "CONTINUE_NATIVE_ART_REPAIR_WEBGL_20261120",
-      "claimed_at": "2026-11-20T00:30:01.266Z",
+      "claimed_at": "2026-11-20T00:34:46.251Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: continue existing exclusive modular 2.5D Bastion I experiment in same branch, inspect native evidence, improve halo/footprints/characters/HUD, validate isolated WebGL, no main gameplay or Premium V6 edits, no third-party credits.",
       "scope": [
@@ -10039,10 +10039,16 @@
           "revision": 1,
           "reason": "Owner requested handoff to next chat after verifying 45 native Unity frames / 1 real PlayMode scenario; keep original art, isolated source and logs",
           "at": "2026-11-20T00:20:00Z"
+        },
+        {
+          "owner": "chatgpt-eldoria-valoria-modular25d-continuation-20261120",
+          "revision": 3,
+          "reason": "Owner explicitly directs continuation in this chat, preserving same ID/branch and previous ownership; rev4 transfer, no running branch/Windows jobs observed",
+          "at": "2026-11-20T00:34:46.251Z"
         }
       ],
       "handoff_note": "Owner's next chat should claim SAME workstream, update owner/revision, keep branch scope, request Windows only when free, update guarded native workflow to match new owner/revision. See docs/valoria-modular-25d/HANDOFF_20261120.md on experimental branch. WebGL failed frozen terrain query tape; last native 44612966834.",
-      "reclaim_note": "Owner-directed transfer of available revision 2; same canonical workstream; new owner/revision 3; runner initially unreserved; only scoped experimental branch writes and native runners after exclusive reservation."
+      "reclaim_note": "User-directed continuation 2026-11-20 of existing Bastion I modular 2.5D workstream, transferring rev3 to rev4. No windows-runner-heavy reservation at transfer. Preserve main, Premium V6, other experiment scopes; no credits; exact HEAD recheck before push."
     }
   ],
   "history": [
