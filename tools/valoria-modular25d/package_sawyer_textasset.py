@@ -72,9 +72,9 @@ def main():
                   f"guid: {guid}\n"
                   "TextScriptImporter:\n"
                   "  externalObjects: {}\n"
-                  "  userData: \n"
-                  "  assetBundleName: \n"
-                  "  assetBundleVariant: \n")
+                  "  userData:\n"
+                  "  assetBundleName:\n"
+                  "  assetBundleVariant:\n")
         if meta.exists(): assert meta.read_text(encoding="utf-8")==metadata
         else: meta.write_text(metadata,encoding="utf-8")
         assert src.read_bytes()==dst.read_bytes()
