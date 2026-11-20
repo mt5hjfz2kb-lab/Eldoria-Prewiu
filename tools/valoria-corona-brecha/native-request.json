@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "075e17fd271bcaf27ba2771b6b48dd2b56859a93",
+  "source_before_request": "2e68c3fc1cac6c910e71b4811f8c9035d27f873f",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
@@ -24,5 +24,9 @@
   "premium_original_png_count": 14,
   "art_after_bake_check": "High fidelity assets are byte identical in tools/valoria-corona-brecha/premium and Unity Resources CoronaBrecha; no stock art, no screenshots of third-party games",
   "previous_native_qa_run": 44802943006,
-  "quality_gate": "NEW EXACT SHA Unity 6000.3 proof for illustrated assets: 390x844 and 844x390 actual camera, real HUD/WebGL, no overdraw/clipped title or solid icon fallback, usable 9slice borders, canonical Build saved, Safari remains untested"
+  "quality_gate": "NEW EXACT SHA Unity 6000.3 proof for illustrated assets: 390x844 and 844x390 actual camera, real HUD/WebGL, no overdraw/clipped title or solid icon fallback, usable 9slice borders, canonical Build saved, Safari remains untested",
+  "visual_acceptance_revision": "Corona polished illustrated UI after transparent gutter normalization, center enamel writing-field, un-sliced source image material",
+  "test_prior_failures": "Image.Type.Sliced compressed central illustrated art to a line at 390x844. Actual source now uses Type.Simple with full-alpha-cropped original PNG visual, preserved original premium source.",
+  "previous_native_pending_run": 44803984603,
+  "actual_source_qa_goal": "Real Unity native capture + GameView/PlayMode authentic six premium icons and mobile UI panels, original canonical Build and file reload; WebGL Chrome portrait/landscape with tapping, drag and pinch; verify no title truncation or false color bars; no physical iPhone claim"
 }
