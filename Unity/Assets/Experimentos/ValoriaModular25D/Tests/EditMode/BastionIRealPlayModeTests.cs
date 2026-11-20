@@ -229,103 +229,105 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(actualFaceImage.raycastTarget,Is.False,
                 "Decorative portraits must not intercept taps");
 
-            // Test actual size/placement on the Unity Canvas, not a DOM
-            // mock or arbitrary manual screenshot. All existing actions
-            // must fit in six nonoverlapping navigation positions.
+            // Actual mobile Canvas: one 46-point TOP ribbon includes the
+            // player nickname + all 3 independent painted resource cells.
             var canvas=header.GetComponentInParent<Canvas>();
             Assert.NotNull(canvas);
+            Assert.IsTrue(canvas.pixelPerfect,"Retina UI should align to physical pixels");
             float uiScale=Mathf.Max(.01f,canvas.scaleFactor);
             float logicalWidth=Screen.width/uiScale;
             float insetLeft=Mathf.Max(0f,Screen.safeArea.xMin/uiScale);
             float insetRight=Mathf.Max(0f,(Screen.width-Screen.safeArea.xMax)/uiScale);
-            float safeTop=Mathf.Max(0f,(Screen.height-Screen.safeArea.yMax)/uiScale)+8f;
+            float safeTop=Mathf.Max(0f,(Screen.height-Screen.safeArea.yMax)/uiScale)+2f;
             float safeBottom=Mathf.Max(0f,Screen.safeArea.yMin/uiScale)+8f;
             bool wide=Screen.width>Screen.height;
             var identity=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
-            Assert.NotNull(identity);
-            var crownText=identity.GetComponentsInChildren<Text>(true)
-                .FirstOrDefault(x=>x.text=="VALORIA");
-            Assert.NotNull(crownText);
-            float crownTextRight=identity.rect.width*.5f+
-                crownText.rectTransform.anchoredPosition.x+
-                crownText.rectTransform.rect.width*.5f;
-            Assert.LessOrEqual(crownTextRight,identity.rect.width-8f,
-                "Identity lettering must stay inside the painted obsidian and not cover the gold corner gem");
-            Assert.That(header.anchoredPosition.y,Is.EqualTo(-safeTop).Within(1.5f),
-                "Resource capsules must meet top safe area, not float inside the city");
-            Assert.That(identity.anchoredPosition.y,
-                Is.EqualTo(wide?-safeTop:-safeTop-58f).Within(1.5f),
-                "Crest must sit directly below top resources in portrait");
+            var ribbon=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Shared player and resource ribbon");
+            var handle=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Toggle left activities");
+            var drawer=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Left activity drawer");
+            Assert.NotNull(identity);Assert.NotNull(ribbon);
+            Assert.NotNull(handle);Assert.NotNull(drawer);
+            Assert.LessOrEqual(ribbon.rect.height,47f);
+            Assert.LessOrEqual(identity.rect.height,45f);
+            Assert.LessOrEqual(header.rect.height,43f);
+            Assert.That(header.anchoredPosition.y,Is.EqualTo(-safeTop-3f).Within(1.5f),
+                "Resources must be in the same TOP horizontal ribbon as player");
+            Assert.That(identity.anchoredPosition.y,Is.EqualTo(-safeTop-1f).Within(1.5f));
+            Assert.That(ribbon.anchoredPosition.y,Is.EqualTo(-safeTop).Within(1.5f));
             Assert.That(header.GetComponentsInChildren<Image>(true)
                 .Count(x=>x.sprite!=null&&x.sprite.name=="resource_siglet"
-                    &&x.preserveAspect),Is.EqualTo(3),
-                "Real resource capsules cannot distort the artist's material");
-            Assert.That((int)ui.GetType().GetField("FutureNavigationSlots").GetRawConstantValue(),
-                Is.EqualTo(6),
-                "Six stable navigation slots required for future unlocked features");
-            var slotMethod=ui.GetType().GetMethod("NavigationCell",
+                    &&x.preserveAspect),Is.EqualTo(3));
+            float resourceLeft=logicalWidth+header.anchoredPosition.x-header.rect.width;
+            float identityRight=identity.anchoredPosition.x+identity.rect.width;
+            Assert.GreaterOrEqual(resourceLeft,identityRight+4f,
+                "Player nickname and resource panels visually overlap on single strip");
+            var nickname=identity.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(x=>x.text=="VALORIA");
+            Assert.NotNull(nickname);
+            float nicknameRight=identity.rect.width*.5f+
+                nickname.rectTransform.anchoredPosition.x+
+                nickname.rectTransform.rect.width*.5f;
+            Assert.LessOrEqual(nicknameRight,identity.rect.width-3f);
+            var nameMethod=ui.GetType().GetMethod("PlayerDisplayName",
                 BindingFlags.Public|BindingFlags.Static);
-            Assert.NotNull(slotMethod);
-            var slots=new Rect[6];
+            Assert.NotNull(nameMethod);
+            Assert.That((string)nameMethod.Invoke(null,new object[]{"Lyra"}),
+                Is.EqualTo("Lyra"),"Real player nick cannot be a hardcoded city name");
+            Assert.That((string)nameMethod.Invoke(null,new object[]{" "}),
+                Is.EqualTo("VALORIA"));
+            Assert.That((int)ui.GetType().GetField("FutureNavigationSlots").GetRawConstantValue(),
+                Is.EqualTo(6));
+            var cellMethod=ui.GetType().GetMethod("NavigationCell",
+                BindingFlags.Public|BindingFlags.Static);
+            Assert.NotNull(cellMethod);
+            var cells=new Rect[6];
             for(int i=0;i<6;i++)
             {
-                slots[i]=(Rect)slotMethod.Invoke(null,new object[]{
+                cells[i]=(Rect)cellMethod.Invoke(null,new object[]{
                     i,logicalWidth,insetLeft,insetRight,safeBottom,wide});
-                Assert.GreaterOrEqual(slots[i].width,44f,
-                    "A future button must remain comfortably touchable");
-                Assert.GreaterOrEqual(slots[i].xMin,insetLeft+1f);
-                Assert.LessOrEqual(slots[i].xMax,logicalWidth-insetRight-1f);
-                if(i>0)
-                    Assert.LessOrEqual(slots[i-1].xMax+2f,slots[i].xMin,
-                        "Future systems may not collide with existing game buttons");
+                Assert.GreaterOrEqual(cells[i].width,44f);
+                Assert.GreaterOrEqual(cells[i].xMin,insetLeft+1f);
+                Assert.LessOrEqual(cells[i].xMax,logicalWidth-insetRight-1f);
+                if(i>0)Assert.LessOrEqual(cells[i-1].xMax+2f,cells[i].xMin);
             }
-            foreach(var live in new[]{
+            foreach(var item in new[]{
                 new {name="Inspect city status",slot=3},
                 new {name="Center camera",slot=4},
                 new {name="Inspect sawmill",slot=5}
             })
             {
-                var dock=world.GetComponentsInChildren<RectTransform>(true)
-                    .FirstOrDefault(x=>x && x.gameObject.name==live.name);
-                Assert.NotNull(dock);
-                Assert.That(dock.anchoredPosition.x,
-                    Is.EqualTo(slots[live.slot].xMin).Within(1f));
-                Assert.That(dock.anchoredPosition.y,
-                    Is.EqualTo(slots[live.slot].yMin).Within(1f));
-                Assert.GreaterOrEqual(dock.rect.width,44f);
+                var btn=world.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x && x.gameObject.name==item.name);
+                Assert.NotNull(btn);
+                Assert.That(btn.anchoredPosition.x,Is.EqualTo(cells[item.slot].xMin).Within(1f));
+                Assert.That(btn.anchoredPosition.y,Is.EqualTo(cells[item.slot].yMin).Within(1f));
             }
             var quest=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x&&x.gameObject.name=="Current real construction objective");
             Assert.NotNull(quest);
-            Assert.That(quest.GetComponentsInChildren<Image>(true)
-                .Count(x=>x.sprite!=null&&x.sprite.name.StartsWith("icon_")),Is.EqualTo(0),
-                "Premium mission material already contains one illustrated badge");
+            Assert.That(quest.parent,Is.EqualTo(drawer));
+            Assert.IsFalse(drawer.gameObject.activeInHierarchy,
+                "Progress/quest drawer is hidden by default on the left");
+            Assert.GreaterOrEqual(handle.rect.width,44f);
+            Assert.That(handle.anchorMin.x,Is.EqualTo(0f).Within(.001f));
+            Assert.NotNull(handle.GetComponent<Button>());
+            Call(ui,"ToggleActivities");
+            yield return null;
+            Assert.IsTrue(drawer.gameObject.activeInHierarchy,
+                "Tapping left handle must reveal real mission/status");
+            Call(ui,"ToggleActivities");
+            yield return null;
+            Assert.IsFalse(drawer.gameObject.activeInHierarchy,
+                "Drawer must close without covering the city");
             if(wide)
             {
                 Assert.That(header.anchorMin.x,Is.EqualTo(1f).Within(.001f));
-                Assert.That(header.pivot.x,Is.EqualTo(1f).Within(.001f));
-                Assert.That(header.rect.width,Is.LessThanOrEqualTo(365.1f));
-                Assert.GreaterOrEqual(identity.anchoredPosition.x,insetLeft+8f);
-                Assert.GreaterOrEqual(-header.anchoredPosition.x,insetRight+8f);
-                Assert.GreaterOrEqual(
-                    logicalWidth+header.anchoredPosition.x-header.rect.width,
-                    identity.anchoredPosition.x+identity.rect.width+8f,
-                    "Landscape notch may not push economy over the identity crest");
-            }
-            else
-            {
-                Assert.That(quest.anchorMin.y,Is.EqualTo(0f).Within(.01f));
-                Assert.GreaterOrEqual(quest.anchoredPosition.y,slots[5].yMax+7f,
-                    "Mission must sit ABOVE the bottom system navigation, not over it");
-                var titleInCrest=identity.GetComponentsInChildren<Text>(true)
-                    .FirstOrDefault(x=>x.text=="VALORIA");
-                Assert.NotNull(titleInCrest);
-                float textLeft=identity.rect.width*.5f+
-                    titleInCrest.rectTransform.anchoredPosition.x-
-                    titleInCrest.rectTransform.rect.width*.5f;
-                Assert.Greater(textLeft,98f,
-                    "Kingdom title cannot overprint the central amethyst");
+                Assert.GreaterOrEqual(identity.anchoredPosition.x,insetLeft+3f);
+                Assert.GreaterOrEqual(-header.anchoredPosition.x,insetRight+3f);
             }
             Assert.That(world.GetComponentsInChildren<SpriteRenderer>(true)
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
@@ -486,23 +488,30 @@ namespace Eldoria.Modular25D.Tests
                 "Floating 2.5D nameplate must track canonical BUILD phase; no stale fixed completed/available position");
             var worldTrack=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x&&x.gameObject.name=="World sawmill canonical progress track");
-            Assert.NotNull(worldTrack,"Auto-closing construction needs an in-world visual work timer");
-            Assert.IsTrue(worldTrack.gameObject.activeSelf,
-                "Canonical building phase must expose its real progress on the Aserradero world label");
-            Assert.That(worldTrack.GetComponentInChildren<Image>(true).color.a,
-                Is.GreaterThan(.1f),"World progress track is fully transparent");
-            var sawmillName=world.GetComponentsInChildren<RectTransform>(true)
-                .FirstOrDefault(x=>x&&x.gameObject.name=="Sawmill world nameplate");
-            Assert.NotNull(sawmillName);
-            Assert.That(sawmillName.GetComponentsInChildren<Text>(true)
-                .Any(x=>x.text.StartsWith("OBRA")),Is.True,
-                "The actual remaining time must be visible without reopening the panel");
-            var progressClock=sawmillName.GetComponentsInChildren<Text>(true)
-                .First(x=>x.text.StartsWith("OBRA"));
-            Assert.That(progressClock.rectTransform.anchoredPosition.y,
-                Is.GreaterThan(0f),"Visible in-world countdown must sit above its elapsed-time track");
-            Assert.That(progressClock.rectTransform.rect.height,Is.LessThan(25f),
-                "Countdown label must not cover the progress bar at the badge bottom");
+            Assert.NotNull(worldTrack);
+            Assert.IsFalse(worldTrack.gameObject.activeSelf,
+                "The construction timer belongs in the LEFT drawer, never over the town");
+            Assert.IsFalse(currentNameplate.gameObject.activeInHierarchy,
+                "Construction sign must not block the Aserradero façade");
+            Assert.IsFalse(drawer.gameObject.activeInHierarchy,
+                "Successful Build dismisses the modal and leaves task drawer hidden");
+            Call(ui,"ToggleActivities");
+            yield return null;
+            Assert.IsTrue(drawer.gameObject.activeInHierarchy,
+                "User can reopen live construction info from the left handle");
+            var leftStatus=Member(ui,"activityProgress") as Text;
+            Assert.NotNull(leftStatus);
+            Assert.IsTrue(leftStatus.text.StartsWith("ASERRADERO  "),
+                "The left drawer must show the real remaining clock");
+            var leftTrack=Member(ui,"activityTrack") as RectTransform;
+            Assert.NotNull(leftTrack);
+            Assert.IsTrue(leftTrack.gameObject.activeInHierarchy);
+            var leftFill=Member(ui,"activityFill") as RectTransform;
+            Assert.NotNull(leftFill);
+            Assert.That(leftFill.sizeDelta.x,Is.InRange(2f,174f));
+            Call(ui,"ToggleActivities");
+            yield return null;
+            Assert.IsFalse(drawer.gameObject.activeInHierarchy);
             Assert.IsFalse(panel.activeInHierarchy,
                 "Successful canonical construction must immediately dismiss the detail panel");
             var onScreenNotice=Member(ui,"notice") as Text;
