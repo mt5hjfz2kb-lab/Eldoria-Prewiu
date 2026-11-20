@@ -81,7 +81,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // visible between a short identity seal and three resource chips.
             identity = Plate("Valoria identity", rootTransform, identityPlate,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
-                new Vector2(194f, 68f));
+                new Vector2(182f, 82f));
             var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
                 new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(34f, 0f),
                 new Vector2(59f, 59f));
@@ -95,9 +95,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             face.GetComponent<Image>().type=Image.Type.Simple;
             face.GetComponent<Image>().preserveAspect=true;
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(44f, 9f), new Vector2(100f, 29f));
+                new Vector2(37f, 9f), new Vector2(100f, 29f));
             level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(44f, -17f), new Vector2(100f, 28f));
+                new Vector2(37f, -17f), new Vector2(100f, 28f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
@@ -105,7 +105,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             resourceRow = Plate("Independent resources", rootTransform, null,
                 new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
-                new Vector2(365f, 44f));
+                new Vector2(365f, 52f));
             resourceChips = new RectTransform[3];
             resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", woodIcon, out woodValue, out woodAccent);
             Image stoneAccent;
@@ -550,7 +550,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             identity.anchorMin = identity.anchorMax = new Vector2(0f, 1f);
             identity.pivot = new Vector2(0f, 1f);
             identity.anchoredPosition = new Vector2(10f+left, -top);
-            identity.sizeDelta = new Vector2(194f, 68f);
+            identity.sizeDelta = new Vector2(182f, 82f);
 
             // Above-the-fold information is reserved for identity/resources.
             // Objective and action medallions move to a deliberate compact
@@ -559,14 +559,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.pivot=wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.anchoredPosition=wide?
-                new Vector2(-12f-right,-top):new Vector2(0f,-top-82f);
-            resourceRow.sizeDelta=new Vector2(365f,44f);
+                new Vector2(-12f-right,-top):new Vector2(0f,-top-105f);
+            resourceRow.sizeDelta=new Vector2(365f,52f);
             for(int i=0;i<resourceChips.Length;i++)
             {
                 var chip=resourceChips[i];
                 chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
                 chip.pivot=new Vector2(0f,.5f);
-                chip.sizeDelta=new Vector2(117f,43f);
+                chip.sizeDelta=new Vector2(117f,52f);
                 chip.anchoredPosition=new Vector2(i*123f,0f);
             }
 
@@ -608,7 +608,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             objective.anchorMin=objective.anchorMax=
                 wide?new Vector2(0f,1f):new Vector2(0f,0f);
             objective.pivot=wide?new Vector2(0f,1f):new Vector2(0f,0f);
-            objective.sizeDelta=wide?new Vector2(180f,52f):new Vector2(190f,60f);
+            objective.sizeDelta=wide?new Vector2(180f,79f):new Vector2(190f,84f);
             objective.anchoredPosition=wide?
                 new Vector2(12f+left,-top-83f):new Vector2(10f+left,bottom+12f);
 
@@ -658,7 +658,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // already identify wood, stone and grain.
             var chip=Plate("Resource "+caption,parent,resourcePlate,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
-                new Vector2(index*123f,0f),new Vector2(117f,43f));
+                new Vector2(index*123f,0f),new Vector2(117f,52f));
             var image=Plate(caption+" original resource art",chip,art,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(10f,0f),new Vector2(42f,42f));

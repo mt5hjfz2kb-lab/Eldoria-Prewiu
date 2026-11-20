@@ -134,6 +134,13 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(header,"Mobile resource bar missing");
             Assert.That(header.GetComponentsInChildren<Image>(true).Count(x=>x.sprite!=null && x.sprite.name=="resource_siglet" && x.type==Image.Type.Simple),
                 Is.GreaterThanOrEqualTo(3),"Three independently rendered resource plates are required");
+            var material=header.GetComponentsInChildren<Image>(true)
+                .First(x=>x&&x.sprite!=null&&x.sprite.name=="resource_siglet");
+            var onScreenAspect=material.rectTransform.rect.width/
+                Mathf.Max(1f,material.rectTransform.rect.height);
+            var sourceAspect=material.sprite.rect.width/material.sprite.rect.height;
+            Assert.That(Mathf.Abs(onScreenAspect/sourceAspect-1f),Is.LessThan(.12f),
+                "Do not squash the original premium jewel resource source in the phone HUD");
             Assert.That((string)ui.GetType().GetField("UiEdition").GetRawConstantValue(),
                 Does.Contain("Corona de la Brecha"),"Original chosen art direction must replace Umbral");
             var uiSheet=world.GetComponentsInChildren<RectTransform>(true)

@@ -115,15 +115,12 @@ function woodBalancePixels(a, b) {
   if(original.width!==current.width || original.height!==current.height)
     throw Error('Wood label screenshot dimensions changed');
   const w=original.width,h=original.height;
-  // The REAL numeric wood glyph occupies x~.13-.23, not the entire capsule.
-  // Verified against 44770528023 original build 230 -> 150 screenshots.
-  const left=Math.round(w*.13),right=Math.round(w*.24);
-  // Visual evidence from the ACTUAL Corona Unity WebGL run 44802943006:
-  // the glyphs 230 -> 150 are at y = 0.12..0.15 of the viewport, not the
-  // old Umbral region 0.10..0.13. The latter reported ratio 0 even though
-  // the on-screen balance visibly changed (see exact SHA screenshot hashes
-  // in docs/valoria-modular-25d/CORONA_BROWSER_ROI_CAUSAL_FIX_20261120.md).
-  const top=Math.round(h*.12),bottom=Math.round(h*.15);
+  // Source-backed 117x52 illustrated capsule: the wood number is right-
+  // aligned in its 60pt text box around 19.5–30% of the 390px width, at
+  // 15–19% of the viewport height after the 82pt identity seal.
+  // This crop must be checked against the next *actual* WebGL screenshots.
+  const left=Math.round(w*.195),right=Math.round(w*.30);
+  const top=Math.round(h*.15),bottom=Math.round(h*.19);
   let changed=0,total=0;
   for(let y=top;y<bottom;y++)for(let x=left;x<right;x++) {
     const i=(y*w+x)*4;
