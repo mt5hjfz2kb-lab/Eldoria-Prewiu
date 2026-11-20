@@ -172,12 +172,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 burgundyPlate,new Vector2(1f,1f),new Vector2(1f,1f),
                 new Vector2(-12f,-122f),new Vector2(172f,50f),OpenSawmill)
                 .GetComponent<RectTransform>();
-            // A real progression prompt, not a fictional quest/reward.
-            var missionIcon=Plate("Original real objective scroll",objective,taskIcon,
-                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(-64f,0f),new Vector2(28f,28f));
-            missionIcon.GetComponent<Image>().type=Image.Type.Simple;
-            missionIcon.GetComponent<Image>().preserveAspect=true;
+            // The premium objective_rune source ALREADY includes its own
+            // sculpted hanging parchment insignia. Placing a second
+            // illustrated task medallion on top produced a visually noisy
+            // double icon, unlike commercial strategy quest plaques.
+            // Its existing Button keeps the real OpenSawmill action.
             Label("PRÓXIMO PASO",objective,11,true,PaleGold,TextAnchor.MiddleLeft,
                 new Vector2(19f,11f),new Vector2(118f,16f));
             objectiveText=Label("ASERRADERO · 0/1",objective,13,false,WarmWhite,

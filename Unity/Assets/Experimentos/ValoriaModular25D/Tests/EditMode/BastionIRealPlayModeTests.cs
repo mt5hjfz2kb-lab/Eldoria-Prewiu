@@ -275,6 +275,9 @@ namespace Eldoria.Modular25D.Tests
                 Assert.NotNull(quest);
                 Assert.That(quest.anchorMin.y,Is.EqualTo(0f).Within(.01f),
                     "The main objective should occupy bottom-left, away from the scene's keep");
+                Assert.That(quest.GetComponentsInChildren<Image>(true)
+                    .Count(x=>x.sprite!=null && x.sprite.name.StartsWith("icon_")),Is.EqualTo(0),
+                    "The original sculpted mission plaque already has a hanging icon; no duplicate badge");
                 var cameraDock=world.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x&&x.name=="Center camera");
                 Assert.NotNull(cameraDock);
