@@ -59,11 +59,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             var landscape=paths.gameObject.AddComponent<Modular25DLandscape>();
             landscape.Build();
-            AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-.65f,1.3f),
+            AddSprite("Bastion_I_unique",Modular25DArt.Bastion(),new Vector2(-.40f,1.45f),
                 FootOrder(1.3f),buildings);
             SawmillRenderer=AddSprite("Aserradero_state",Modular25DArt.Sawmill(),
-                new Vector2(1.30f,-2.2f),FootOrder(-2.2f),buildings);
-            AddContact("Bastion_contact",new Vector2(-.65f,1.22f),300,FootOrder(1.3f)-2,buildings);
+                new Vector2(.96f,-2.07f),FootOrder(-2.2f),buildings);
+            AddContact("Bastion_contact",new Vector2(-.40f,1.37f),300,FootOrder(1.3f)-2,buildings);
             // The finished illustrated sprite already contains ground contact.
             // Its broad baked exterior shadow is trimmed by Modular25DArt; do
             // not add another large dark ellipse over the sawdust footprint.
@@ -95,36 +95,36 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
             // A well and a recognizable cultivated enclosure give the central
             // yard a social purpose, without introducing any new game mechanic.
-            AddOriginalProp(commons,"PozoPiedra",new Vector2(-.64f,-1.02f),.71f);
+            AddOriginalProp(commons,"PozoPiedra",new Vector2(-.37f,-.92f),.71f);
             AddOriginalProp(commons,"HuertosValoria",new Vector2(-1.98f,-4.74f),.67f);
             AddOriginalProp(commons,"MatojosFlores",new Vector2(-2.75f,-5.56f),.45f);
 
             // Timber staging visibly connects sawmill to the haulers' road.
             // Both props come from the same original painted wood/material kit.
-            AddOriginalProp(lumber,"CarroMadera",new Vector2(2.56f,-3.73f),.74f);
-            AddOriginalProp(lumber,"VallaLenador",new Vector2(1.77f,-4.36f),.75f);
-            AddOriginalProp(lumber,"MatojosFlores",new Vector2(3.17f,-2.18f),.47f);
-            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.26f,.31f),.53f);
+            AddOriginalProp(lumber,"CarroMadera",new Vector2(2.19f,-3.56f),.74f);
+            AddOriginalProp(lumber,"VallaLenador",new Vector2(1.40f,-4.17f),.75f);
+            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.83f,-2.09f),.47f);
+            AddOriginalProp(lumber,"MatojosFlores",new Vector2(2.10f,.45f),.53f);
 
             // Low-detail ground silhouettes stay rare and are never mistaken
             // for buildings or construction props.
-            AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.6f,-3.92f),.46f);
-            AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.26f,.94f),.53f);
+            AddProp(scenery,Modular25DArt.Tuft(0),new Vector2(-.48f,-3.75f),.46f);
+            AddProp(scenery,Modular25DArt.Tuft(1),new Vector2(1.07f,1.05f),.53f);
 
             CreateVillager(people,"Valoria citizen A",new [] {
                 // Real keep gate route: a messenger approaches the courtyard
                 // and returns on the curving walkable cobblestone road.
                 new Vector2(-3.9f,-3.6f),new Vector2(-2.70f,-2.5f),
-                new Vector2(-2.42f,-.55f),new Vector2(-1.46f,-.05f),
-                new Vector2(-2.42f,-.55f),new Vector2(-2.70f,-2.5f)
+                new Vector2(-2.28f,-.40f),new Vector2(-1.23f,.10f),
+                new Vector2(-2.28f,-.40f),new Vector2(-2.70f,-2.5f)
             },0f);
             CreateVillager(people,"Valoria citizen B",new [] {
                 // A hauler uses the connecting side-road, not a decorative
                 // patrol in an unrelated empty part of the meadow.
-                new Vector2(-.21f,-3.50f),new Vector2(.76f,-3.47f),
-                new Vector2(1.95f,-3.68f),new Vector2(.76f,-3.47f)
+                new Vector2(-.21f,-3.50f),new Vector2(.57f,-3.33f),
+                new Vector2(1.62f,-3.52f),new Vector2(.57f,-3.33f)
             },1.8f);
-            CreateWorkshopWorker(people,new Vector2(1.45f,-4.04f));
+            CreateWorkshopWorker(people,new Vector2(1.11f,-3.88f));
             SettlementZonesPlaced=4;
 
             AddNaturalDetail(scenery);
@@ -146,7 +146,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 "Lumberyard verge", "Southern growing plot" };
             var centres=new[]{
                 new Vector2(-1.2f,4.50f),new Vector2(-3.36f,-2.35f),
-                new Vector2(.19f,-.08f),new Vector2(2.92f,-4.70f),
+                new Vector2(.19f,-.08f),new Vector2(2.68f,-4.55f),
                 new Vector2(-2.94f,-5.56f)
             };
             var radii=new[]{
@@ -168,9 +168,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     if(DistanceToRoad(at)<.53f)continue;
                     // Roads, actual entrances, their independent future plots
                     // and the working actor's contact point remain accessible.
-                    if(Vector2.Distance(at,new Vector2(-.65f,1.3f))<2.20f||
-                       Vector2.Distance(at,new Vector2(1.30f,-2.2f))<1.65f||
-                       Vector2.Distance(at,new Vector2(1.45f,-4.04f))<.42f)
+                    if(Vector2.Distance(at,new Vector2(-.40f,1.45f))<2.20f||
+                       Vector2.Distance(at,new Vector2(.96f,-2.07f))<1.65f||
+                       Vector2.Distance(at,new Vector2(1.11f,-3.88f))<.42f)
                         continue;
                     var art=Modular25DArt.Tuft((zone+placed)%2);
                     var sr=AddSprite(names[zone]+" | grass transition "+placed,
@@ -187,12 +187,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var guide=new []{
                 new Vector2(-4.85f,-5.3f),new Vector2(-3.88f,-3.76f),
                 new Vector2(-2.70f,-2.5f),new Vector2(-2.63f,-1.56f),
-                new Vector2(-2.42f,-.55f),new Vector2(-1.75f,.1f),
-                new Vector2(-.65f,.85f)
+                new Vector2(-2.28f,-.40f),new Vector2(-1.75f,.1f),
+                new Vector2(-.40f,1.00f)
             };
             var branch=new[]{
                 new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
-                new Vector2(-.21f,-3.50f),new Vector2(.64f,-3.41f),
+                new Vector2(-.21f,-3.50f),new Vector2(.52f,-3.26f),
                 new Vector2(1.30f,-2.55f)
             };
             float best=float.MaxValue;
