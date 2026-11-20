@@ -161,7 +161,7 @@ try{
     let home=null,h=null;
     if(height>width){
       // Touch the actual bottom-right uGUI CENTRAR button, not C# Home.
-      await page.touchscreen.tap(Math.round(width*.78),Math.round(height*.917));
+      await page.touchscreen.tap(Math.round(width*.825),Math.round(height*.94));
       await page.waitForTimeout(800);
       home=await capture(page,'camera-home-restored',width,height);
       h=imageDifference(before.bytes,home.bytes,roi);
