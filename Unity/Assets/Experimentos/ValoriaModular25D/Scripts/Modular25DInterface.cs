@@ -18,6 +18,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     public sealed class Modular25DInterface : MonoBehaviour
     {
         public const string UiEdition = "Corona de la Brecha - Eldoria 2.5D";
+        public const int FutureNavigationSlots = 6;
         private static readonly Color32 Slate = new Color32(27, 20, 43, 242);
         private static readonly Color32 SlateLight = new Color32(55, 40, 72, 238);
         private static readonly Color32 Parchment = new Color32(33, 25, 48, 250);
@@ -544,111 +545,114 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
         }
 
+
+        // Six stable slots at the lower edge. Only slots 3, 4 and 5
+        // currently have real actions (Estado, Ciudad, Obras). Slots
+        // 0-2 are reserved positions, NOT fake or disabled buttons.
+        public static Rect NavigationCell(int index,float logicalWidth,
+            float leftInset,float rightInset,float bottomInset,bool wide)
+        {
+            if(index<0 || index>=FutureNavigationSlots)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            float safeWidth=logicalWidth-leftInset-rightInset;
+            float step=Mathf.Min(wide?54f:60f,
+                Mathf.Max(49f,(safeWidth-12f)/FutureNavigationSlots));
+            float diameter=Mathf.Max(44f,step-5f);
+            float origin=logicalWidth-rightInset-8f-FutureNavigationSlots*step;
+            return new Rect(
+                origin+index*step+(step-diameter)*.5f,
+                bottomInset+(wide?12f:14f),diameter,diameter+12f);
+        }
+
+        private static void PlaceNavigation(RectTransform rect,Rect cell,bool wide)
+        {
+            rect.anchorMin=rect.anchorMax=new Vector2(0f,0f);
+            rect.pivot=new Vector2(0f,0f);
+            rect.anchoredPosition=cell.position;
+            rect.sizeDelta=cell.size;
+            var caption=rect.GetComponentInChildren<Text>(true);
+            if(caption!=null)
+            {
+                caption.fontSize=wide?9:10;
+                caption.alignment=TextAnchor.MiddleCenter;
+                caption.rectTransform.anchoredPosition=
+                    new Vector2(0f,-cell.width*.5f+1f);
+                caption.rectTransform.sizeDelta=new Vector2(cell.width+5f,16f);
+            }
+        }
+
         private void Layout()
         {
-            if (hudCanvas == null || identity == null) return;
-            int w = Screen.width, h = Screen.height;
-            if (w <= 0 || h <= 0) return;
-            float scale = Mathf.Max(.01f, hudCanvas.scaleFactor);
-            var safe = Screen.safeArea;
-            float top = Mathf.Max(0f, (h - safe.yMax) / scale) + 8f;
-            float bottom = Mathf.Max(0f, safe.yMin / scale) + 8f;
-            // Native iPhone landscape has nonzero LEFT/RIGHT cutouts. The
-            // original Corona layout accounted only for top/bottom insets,
-            // hiding identity and action medallions under the island/notch.
-            float left = Mathf.Max(0f,safe.xMin/scale);
-            float right = Mathf.Max(0f,(w-safe.xMax)/scale);
-            bool wide = w > h;
+            if(hudCanvas==null || identity==null)return;
+            int w=Screen.width,h=Screen.height;
+            if(w<=0 || h<=0)return;
+            float scale=Mathf.Max(.01f,hudCanvas.scaleFactor);
+            Rect safe=Screen.safeArea;
+            float top=Mathf.Max(0f,(h-safe.yMax)/scale)+8f;
+            float bottom=Mathf.Max(0f,safe.yMin/scale)+8f;
+            float left=Mathf.Max(0f,safe.xMin/scale);
+            float right=Mathf.Max(0f,(w-safe.xMax)/scale);
+            float logicalWidth=w/scale;
+            bool wide=w>h;
 
-            identity.anchorMin = identity.anchorMax = new Vector2(0f, 1f);
-            identity.pivot = new Vector2(0f, 1f);
-            identity.anchoredPosition = new Vector2(10f+left, -top);
-            identity.sizeDelta = new Vector2(182f, 82f);
-
-            // Above-the-fold information is reserved for identity/resources.
-            // Objective and action medallions move to a deliberate compact
-            // bottom cluster in portrait; no full-width navigation slab.
+            // Economy touches the TOP safe area in portrait and landscape.
+            // It is never delayed by a large empty gap under the identity.
             resourceRow.anchorMin=resourceRow.anchorMax=
                 wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.pivot=wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.anchoredPosition=wide?
-                new Vector2(-12f-right,-top):new Vector2(0f,-top-105f);
-            // Respect four-sided landscape safe area *and* prevent the
-            // identity crest overlapping the resource ledger. An iPhone
-            // landscape cutout reduces the logical safe width, even though
-            // ordinary Chromium screenshots have no side cutout.
-            float logicalWidth=w/scale;
+                new Vector2(-12f-right,-top):new Vector2(0f,-top);
+            float available=logicalWidth-left-right;
             float economyWidth=wide
-                ? Mathf.Min(365f,Mathf.Max(280f,logicalWidth-left-right-214f))
-                : Mathf.Min(365f,logicalWidth-left-right-16f);
+                ? Mathf.Min(365f,Mathf.Max(280f,available-214f))
+                : Mathf.Min(365f,available-16f);
             resourceRow.sizeDelta=new Vector2(economyWidth,52f);
-            float chipWidth=(economyWidth-12f)/3f;
-            float sourceAspect=resourcePlate.rect.height/
+            float capsuleWidth=(economyWidth-12f)/3f;
+            float sourceHeightPerWidth=resourcePlate.rect.height/
                 Mathf.Max(1f,resourcePlate.rect.width);
             for(int i=0;i<resourceChips.Length;i++)
             {
                 var chip=resourceChips[i];
                 chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
                 chip.pivot=new Vector2(0f,.5f);
-                chip.sizeDelta=new Vector2(chipWidth,
-                    wide?Mathf.Min(52f,chipWidth*sourceAspect):52f);
-                chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
-                chip.GetComponent<Image>().preserveAspect=wide;
+                chip.sizeDelta=new Vector2(capsuleWidth,
+                    Mathf.Min(52f,capsuleWidth*sourceHeightPerWidth));
+                chip.anchoredPosition=new Vector2(i*(capsuleWidth+6f),0f);
+                chip.GetComponent<Image>().preserveAspect=true;
             }
 
-            // Reference-style illustrated action group: keep the quest on
-            // the bottom-left, place WORK as the obvious dominant lower-
-            // right action, and stage secondary controls compactly beside
-            // or above it, depending on available orientation.
-            foreach(var dock in new[]{inspect,center,statusDock})
-            {
-                dock.anchorMin=dock.anchorMax=new Vector2(1f,0f);
-                dock.pivot=new Vector2(1f,0f);
-            }
-            if(wide)
-            {
-                inspect.sizeDelta=new Vector2(68f,64f);
-                inspect.anchoredPosition=new Vector2(-10f-right,bottom+18f);
-                center.sizeDelta=new Vector2(68f,64f);
-                center.anchoredPosition=new Vector2(-86f-right,bottom+18f);
-                statusDock.sizeDelta=new Vector2(68f,64f);
-                statusDock.anchoredPosition=new Vector2(-162f-right,bottom+18f);
-            }
-            else
-            {
-                inspect.sizeDelta=new Vector2(86f,80f);
-                inspect.anchoredPosition=new Vector2(-10f-right,bottom+20f);
-                center.sizeDelta=new Vector2(74f,74f);
-                center.anchoredPosition=new Vector2(-100f-right,bottom+20f);
-                statusDock.sizeDelta=new Vector2(68f,68f);
-                statusDock.anchoredPosition=new Vector2(-10f-right,bottom+120f);
-            }
-            foreach(var dock in new[]{inspect,center,statusDock})
-            {
-                var caption=dock.GetComponentInChildren<Text>(true);
-                caption.fontSize=wide?10:11;
-                caption.rectTransform.anchoredPosition=new Vector2(0f,wide?-37f:-41f);
-                caption.rectTransform.sizeDelta=new Vector2(dock.rect.width-3f,20f);
-            }
+            // Landscape: crest left, economy right; portrait: crest is
+            // directly below the resource ledger, with no overlap.
+            identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
+            identity.pivot=new Vector2(0f,1f);
+            identity.anchoredPosition=new Vector2(10f+left,
+                wide?-top:-top-58f);
+            identity.sizeDelta=new Vector2(182f,82f);
+
+            // 3 active medallions in a scalable grid of six stable cells.
+            // When systems unlock, use the spare left-hand cells.
+            PlaceNavigation(statusDock,NavigationCell(3,logicalWidth,left,right,bottom,wide),wide);
+            PlaceNavigation(center,NavigationCell(4,logicalWidth,left,right,bottom,wide),wide);
+            PlaceNavigation(inspect,NavigationCell(5,logicalWidth,left,right,bottom,wide),wide);
 
             objective.anchorMin=objective.anchorMax=
                 wide?new Vector2(0f,1f):new Vector2(0f,0f);
             objective.pivot=wide?new Vector2(0f,1f):new Vector2(0f,0f);
-            objective.sizeDelta=wide?new Vector2(180f,79f):new Vector2(190f,84f);
+            objective.sizeDelta=new Vector2(185f,72f);
             objective.anchoredPosition=wide?
-                new Vector2(12f+left,-top-83f):new Vector2(10f+left,bottom+12f);
+                new Vector2(12f+left,-top-85f):
+                new Vector2(10f+left,bottom+88f);
 
-            if (wide)
+            if(wide)
             {
-                // Never build a full-width drawer across a 390px-tall viewport.
-                sheet.anchorMin = sheet.anchorMax = new Vector2(1f, .5f);
-                sheet.pivot = new Vector2(1f, .5f);
-                sheet.anchoredPosition = new Vector2(-12f-right, 2f);
-                sheet.sizeDelta = new Vector2(326f, 240f);
-                noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(0f, 1f);
-                noticeRoot.pivot = new Vector2(0f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(12f+left, -top - 146f);
-                noticeRoot.sizeDelta = new Vector2(290f, 35f);
+                sheet.anchorMin=sheet.anchorMax=new Vector2(1f,.5f);
+                sheet.pivot=new Vector2(1f,.5f);
+                sheet.anchoredPosition=new Vector2(-12f-right,2f);
+                sheet.sizeDelta=new Vector2(326f,240f);
+                noticeRoot.anchorMin=noticeRoot.anchorMax=new Vector2(0f,1f);
+                noticeRoot.pivot=new Vector2(0f,1f);
+                noticeRoot.anchoredPosition=new Vector2(12f+left,-top-167f);
+                noticeRoot.sizeDelta=new Vector2(290f,35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
                 statusSheet.anchoredPosition=new Vector2(-12f-right,2f);
@@ -656,22 +660,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             }
             else
             {
-                sheet.anchorMin = sheet.anchorMax = new Vector2(.5f, 0f);
-                sheet.pivot = new Vector2(.5f, 0f);
-                sheet.anchoredPosition = new Vector2(0f, bottom + 95f);
-                sheet.sizeDelta = new Vector2(Mathf.Min(355f, w / scale - 24f), 244f);
-                noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(.5f, 1f);
-                noticeRoot.pivot = new Vector2(.5f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(0f, -top - 221f);
-                noticeRoot.sizeDelta = new Vector2(324f, 35f);
+                sheet.anchorMin=sheet.anchorMax=new Vector2(.5f,0f);
+                sheet.pivot=new Vector2(.5f,0f);
+                sheet.anchoredPosition=new Vector2(0f,bottom+95f);
+                sheet.sizeDelta=new Vector2(
+                    Mathf.Min(355f,logicalWidth-left-right-24f),244f);
+                noticeRoot.anchorMin=noticeRoot.anchorMax=new Vector2(.5f,1f);
+                noticeRoot.pivot=new Vector2(.5f,1f);
+                noticeRoot.anchoredPosition=new Vector2(0f,-top-153f);
+                noticeRoot.sizeDelta=new Vector2(324f,35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
                 statusSheet.pivot=new Vector2(.5f,0f);
                 statusSheet.anchoredPosition=new Vector2(0f,bottom+95f);
-                statusSheet.sizeDelta=new Vector2(Mathf.Min(330f,w/scale-28f),170f);
+                statusSheet.sizeDelta=new Vector2(
+                    Mathf.Min(330f,logicalWidth-left-right-28f),170f);
             }
-            lastWidth = w;
-            lastHeight = h;
-            lastSafeArea = safe;
+            lastWidth=w;
+            lastHeight=h;
+            lastSafeArea=safe;
         }
 
         private static RectTransform CreateResource(Transform parent,int index,string caption,
