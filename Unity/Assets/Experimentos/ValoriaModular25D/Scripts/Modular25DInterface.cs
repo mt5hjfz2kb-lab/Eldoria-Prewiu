@@ -624,22 +624,29 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static RectTransform DockButton(string name,Transform parent,string caption,
             Sprite symbol,Vector2 anchor,Vector2 pivot,UnityEngine.Events.UnityAction click)
         {
-            // A real carved *round medallion*, not a recolored Umbral tile.
-            var control=ButtonPlate(name,parent,caption,navPlate,anchor,pivot,
+            // Art review: each illustrated premium icon already CONTAINS its
+            // complete sculpted medallion. Nesting it inside nav_medallion
+            // rendered two rings and reduced its meaningful artwork to 42px.
+            // Use the original artist sprite as the entire button face.
+            var control=ButtonPlate(name,parent,caption,symbol,anchor,pivot,
                 Vector2.zero,new Vector2(86f,80f),click);
             var rect=control.GetComponent<RectTransform>();
+            var art=control.GetComponent<Image>();
+            art.type=Image.Type.Simple;
+            art.preserveAspect=true;
             var word=control.GetComponentInChildren<Text>();
-            word.fontSize=10;
-            word.color=PaleGold;
+            word.fontSize=11;
+            word.color=WarmWhite;
             word.alignment=TextAnchor.MiddleCenter;
-            word.rectTransform.anchoredPosition=new Vector2(0f,-24f);
-            word.rectTransform.sizeDelta=new Vector2(80f,20f);
+            word.rectTransform.anchoredPosition=new Vector2(0f,-30f);
+            word.rectTransform.sizeDelta=new Vector2(80f,21f);
+            word.horizontalOverflow=HorizontalWrapMode.Overflow;
             word.verticalOverflow=VerticalWrapMode.Overflow;
-            var jewel=Plate(name+" illustrated system emblem",rect,symbol,
-                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                new Vector2(0f,8f),new Vector2(42f,42f));
-            jewel.GetComponent<Image>().type=Image.Type.Simple;
-            jewel.GetComponent<Image>().preserveAspect=true;
+            // A two-vertex outline improves small text on the sculpted lower
+            // part of the medal without a second rectangle or game asset.
+            var shadow=word.gameObject.AddComponent<Shadow>();
+            shadow.effectColor=new Color(.055f,.035f,.09f,.9f);
+            shadow.effectDistance=new Vector2(1f,-1f);
             return rect;
         }
 

@@ -278,14 +278,23 @@ namespace Eldoria.Modular25D.Tests
             foreach(var control in new[]{inspect,center})
             {
                 var image=control.GetComponent<Image>();
-                Assert.NotNull(image,"An operational compact HUD button has no graphic");
-                Assert.NotNull(image.sprite,"Original Vigilia 9-slice button art is not imported");
+                Assert.NotNull(image,"An operational HUD medallion has no graphic");
+                Assert.NotNull(image.sprite,"Original Corona illustrated button art is not imported");
                 Assert.That(image.type,Is.EqualTo(Image.Type.Simple),
-                    "Complex Corona medallion must render intact, not distorted by 9-slice");
+                    "Complete Corona illustrated medallion cannot be distorted by 9-slice");
+                var expected=control.gameObject.name=="Inspect sawmill"
+                    ? "icon_hammer" : "icon_city";
+                Assert.That(image.sprite.name,Is.EqualTo(expected),
+                    "Do not nest a tiny 42px medallion within another ornate ring");
+                Assert.That(image.preserveAspect,Is.True,
+                    "Premium medallion must retain original 1:1 artist silhouette");
                 Assert.That(image.color.r,Is.GreaterThan(.95f),
-                    "Artwork was darkened by the old solid-color prototype HUD tint");
+                    "Artwork was darkened by old prototype UI tint");
                 Assert.That(image.color.g,Is.GreaterThan(.95f));
                 Assert.That(image.color.b,Is.GreaterThan(.95f));
+                Assert.That(control.GetComponentsInChildren<Image>(true)
+                    .Count(x=>x.sprite!=null && x.sprite.name.StartsWith("icon_")),
+                    Is.EqualTo(1),"Only ONE illustrated premium icon per action, no nested duplicate");
             }
             var data=new PointerEventData(EventSystem.current){
                 button=PointerEventData.InputButton.Left,
