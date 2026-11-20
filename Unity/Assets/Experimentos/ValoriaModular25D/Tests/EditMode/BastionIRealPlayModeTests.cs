@@ -72,6 +72,9 @@ namespace Eldoria.Modular25D.Tests
                 "Four semantic settlement zones must instantiate original authored props");
             Assert.That((int)Member(world,"SettlementZonesPlaced"),Is.EqualTo(4));
             Assert.That((int)Member(world,"WorkshopWorkersPlaced"),Is.EqualTo(1));
+            var work=Member(world,"WorkshopAction") as Component;
+            Assert.NotNull(work,"One original-art real workshop worker is required");
+            Assert.IsFalse(work.gameObject.activeInHierarchy,"Unbuilt sawmill cannot be productive");
             Assert.That(all.Count(x=>x && x.GetType().Name=="Modular25DWorkshopAction"),
                 Is.EqualTo(1),"Sawmill must have one animated worker at the real log rack");
             Assert.NotNull(Member(world,"ViewCamera") as Camera);
@@ -167,6 +170,8 @@ namespace Eldoria.Modular25D.Tests
                 "A scheduled build cannot complete instantly");
             Assert.That((long)Member(after,"BuildingCompletesUtcTicks"),Is.GreaterThan(0));
             Assert.IsFalse(build.interactable,"Second click must not double-spend");
+            Assert.IsFalse(work.gameObject.activeInHierarchy,
+                "Sawyer must be inactive while real worksite timer runs");
             var save=Member(gameplay,"SandboxSavePath") as string;
             Assert.NotNull(save);
             Assert.That(save,Does.Contain("eldoria-experiment-modular25d-playmode-"+run));
@@ -176,6 +181,9 @@ namespace Eldoria.Modular25D.Tests
             // Camera Home is a runtime action, not an inert button/gesture.
             var camera=Member(world,"ViewCamera") as Camera;
             var original=camera.transform.position;
+            Assert.That(camera.orthographicSize,
+                Is.EqualTo(Mathf.Clamp(2.95f/Mathf.Max(.42f,camera.aspect),4.2f,6.6f)).Within(.02f),
+                "Player and captured authentic Unity Camera must share actual framing");
             var input=all.FirstOrDefault(x=>x&&x.GetType().Name=="Modular25DCameraInput");
             Assert.NotNull(input);
             camera.transform.position+=new Vector3(1.4f,-1.2f,0);

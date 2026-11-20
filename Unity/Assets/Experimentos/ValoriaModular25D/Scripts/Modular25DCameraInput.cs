@@ -15,13 +15,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         bool held, dragged, beganOnUI, pinched;
         float previousPinch, homeSize;
 
+        // Same geometry in the real player and the native Editor A/B.
+        // Reduce unused meadow while framing Keep, courtyard and working mill.
+        public static Vector3 HomePosition => new Vector3(.18f,-.19f,-30f);
+        public static float HomeSizeForAspect(float aspect)
+        {
+            return Mathf.Clamp(2.95f/Mathf.Max(.42f,aspect),4.2f,6.6f);
+        }
+
         void Start()
         {
             world=GetComponent<Modular25DWorld>();
             camera=world.ViewCamera;
-            // Portrait keeps both structures legible; landscape does not zoom
-            // out to a tiny settlement merely because the aspect ratio doubled.
-            homeSize=Mathf.Clamp(3.65f/Mathf.Max(.42f,camera.aspect),5.3f,10.8f);
+            homeSize=HomeSizeForAspect(camera.aspect);
             Home();
         }
 
@@ -152,7 +158,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(camera==null)return;
             camera.orthographicSize=homeSize;
-            camera.transform.position=new Vector3(.18f,.15f,-30f);
+            camera.transform.position=HomePosition;
         }
 
         void TrySelect(Vector2 screen)

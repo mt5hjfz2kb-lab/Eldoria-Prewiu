@@ -151,11 +151,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     throw new Exception("Native sandbox did not start at Bastion I");
 
                 var cam=world.ViewCamera;
-                var home=new Vector3(.18f,.15f,-30f);
+                var home=Modular25DCameraInput.HomePosition;
+                var portrait=Modular25DCameraInput.HomeSizeForAspect(390f/844f);
+                var landscape=Modular25DCameraInput.HomeSizeForAspect(844f/390f);
                 world.Apply(state);
-                Render(cam,output,report,"01-available-390x844",390,844,home,8.5f);
-                Render(cam,output,report,"02-available-1170x2532",1170,2532,home,8.5f);
-                Render(cam,output,report,"03-landscape-844x390",844,390,home,6.5f);
+                if(world.WorkshopAction==null||world.WorkshopAction.gameObject.activeInHierarchy)
+                    throw new Exception("Worker visible or missing at unbuilt sawmill");
+                Render(cam,output,report,"01-available-390x844",390,844,home,portrait);
+                Render(cam,output,report,"02-available-1170x2532",1170,2532,home,portrait);
+                Render(cam,output,report,"03-landscape-844x390",844,390,home,landscape);
                 Render(cam,output,report,"04-bastion-closeup",1170,2532,new Vector3(-1.05f,2.15f,-30f),4.5f);
                 Render(cam,output,report,"05-available-sawmill-close",1170,2532,new Vector3(1.95f,-1.4f,-30f),4.6f);
 
@@ -171,7 +175,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                    ParcelBuildingStates.For(during,"sawmill")!=ParcelBuildingState.UNDER_CONSTRUCTION)
                     throw new Exception("Canonical debit or worksite transition was not applied");
                 world.Apply(during);
-                Render(cam,output,report,"06-real-building-worksite",390,844,home,8.5f);
+                if(world.WorkshopAction.gameObject.activeInHierarchy)
+                    throw new Exception("Worker productive before completion of real worksite");
+                Render(cam,output,report,"06-real-building-worksite",390,844,home,portrait);
                 Render(cam,output,report,"07-worksite-closeup",1170,2532,new Vector3(1.95f,-1.4f,-30),4.6f);
                 report.gatewayBuild=true;
 
@@ -188,13 +194,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                 report.completionReceiptCount=complete.ChapterProgress.GrantedRewards.FindAll(x=>x=="c1-sawmill").Count;
                 if(report.completionReceiptCount!=1)throw new Exception("Chapter-I receipt missing or duplicated");
                 world.Apply(complete);
-                Render(cam,output,report,"08-sawmill-built-390x844",390,844,home,8.5f);
-                Render(cam,output,report,"09-sawmill-built-1170x2532",1170,2532,home,8.5f);
+                if(!world.WorkshopAction.gameObject.activeInHierarchy)
+                    throw new Exception("Finished sawmill worker not active after real save reload");
+                Render(cam,output,report,"08-sawmill-built-390x844",390,844,home,portrait);
+                Render(cam,output,report,"09-sawmill-built-1170x2532",1170,2532,home,portrait);
                 Render(cam,output,report,"10-built-sawmill-closeup",1170,2532,new Vector3(1.95f,-1.4f,-30f),4.6f);
                 // Wider photographic checkpoints are REAL Unity frames of
                 // actual independent objects; no synthesized composite.
                 Render(cam,output,report,"11-city-mobile-hero-390x844",
-                    390,844,new Vector3(.12f,-.20f,-30f),7.9f);
+                    390,844,home,portrait*1.04f);
                 Render(cam,output,report,"12-ruins-backdrop",
                     390,844,new Vector3(0f,3.10f,-30f),6.2f);
                 Render(cam,output,report,"13-tree-occlusion-ground",
@@ -228,7 +236,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                     var phase=i/31f;
                     var offset=new Vector3(Mathf.Lerp(-1.70f,.45f,phase),
                         Mathf.Lerp(.13f,1.75f,phase),-30f);
-                    float ortho=8.5f-Mathf.Sin(phase*Mathf.PI)*2f;
+                    float ortho=portrait-Mathf.Sin(phase*Mathf.PI)*1.2f;
                     Render(cam,output,report,"movement-"+i.ToString("D3"),390,844,offset,ortho);
                 }
                 report.movingCharactersAreUnityTransforms=true;

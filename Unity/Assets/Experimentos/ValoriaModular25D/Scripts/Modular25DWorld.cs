@@ -23,6 +23,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public SpriteRenderer SawmillRenderer { get; private set; }
         public int RecoveredPropsPlaced { get; private set; }
         public int WorkshopWorkersPlaced { get; private set; }
+        public Modular25DWorkshopAction WorkshopAction { get; private set; }
         public int SettlementZonesPlaced { get; private set; }
 
         const float GroundSpacingX = 1f;
@@ -223,11 +224,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             var root=new GameObject("Orthographic camera - fixed isometric projection");
             root.transform.SetParent(transform,false);
-            root.transform.position=new Vector3(.18f,.15f,-30f);
+            root.transform.position=Modular25DCameraInput.HomePosition;
             root.transform.rotation=Quaternion.identity;
             var camera=root.AddComponent<Camera>();
             camera.orthographic=true;
-            camera.orthographicSize=8.25f;
+            camera.orthographicSize=Modular25DCameraInput.HomeSizeForAspect(390f/844f);
             camera.clearFlags=CameraClearFlags.SolidColor;
             camera.backgroundColor=new Color(.24f,.30f,.26f);
             camera.nearClipPlane=.1f;
@@ -351,6 +352,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             body.transform.localScale=Vector3.one*.61f;
             var action=actor.AddComponent<Modular25DWorkshopAction>();
             action.Configure(body,contact);
+            WorkshopAction=action;
+            actor.SetActive(false); // No productive sawmill before canonical build completion.
             WorkshopWorkersPlaced++;
         }
 
@@ -366,6 +369,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 ? Modular25DArt.Sawmill()
                 : stage==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? Modular25DArt.SawmillWorksite() : Modular25DArt.SawmillSite();
+            if(WorkshopAction!=null)
+                WorkshopAction.gameObject.SetActive(stage==ParcelBuildingState.BUILT);
         }
 
         public bool HitSawmill(Vector2 world)
