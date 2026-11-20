@@ -265,6 +265,14 @@ namespace Eldoria.Modular25D.Tests
                 var identity=world.GetComponentsInChildren<RectTransform>(true)
                     .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
                 Assert.NotNull(identity,"Corona identity crest missing");
+                var royalTitle=identity.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(x=>x.text=="VALORIA");
+                Assert.NotNull(royalTitle);
+                float royalTitleLeft=identity.rect.width*.5f+
+                    royalTitle.rectTransform.anchoredPosition.x-
+                    royalTitle.rectTransform.rect.width*.5f;
+                Assert.Greater(royalTitleLeft,98f,
+                    "VALORIA typography overlaps the original center amethyst instead of its painted enamel inset");
                 // resourceRow has top pivot=1; its anchoredPosition is
                 // the visual top edge, not its center. Demand 8pt gap.
                 Assert.LessOrEqual(header.anchoredPosition.y,

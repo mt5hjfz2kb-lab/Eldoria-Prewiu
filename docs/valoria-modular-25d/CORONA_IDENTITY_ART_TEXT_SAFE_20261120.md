@@ -1,0 +1,3 @@
+# Corona — VALORIA en el área tipográfica real del sello
+
+La fuente ilustrada `identity_crest.png` tiene un engaste violeta central y una reserva oscura para escribir a la derecha, que comienza alrededor del 54% de sus 580 px. En el tamaño de HUD corregido 182×82 eso equivale a x≈99 puntos. El `Text` previo, ancho100, comenzaba en x78 y tapaba el diamante. Se ajustan texto VALORIA y BASTIÓN I a la caja x≈103..181, aplicando autoajuste tipográfico al título entre 16 y19 pt. No se agrega panel flotante ni se altera el retrato de Aldric. NUnit PlayMode verifica que el extremo izquierdo del Text realmente queda dentro del área reservada por la propia ilustración. Pendiente nueva captura auténtica de Unity de esta revisión.
