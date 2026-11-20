@@ -160,7 +160,7 @@ class SandboxSourceContracts(unittest.TestCase):
         # Controlled original-art ecotone clusters replaced uniform random scatter.
         self.assertIn("var art=Modular25DArt.Tuft((zone+placed)%2);",src)
         self.assertIn("SettlementZonesPlaced=4;",src)
-        self.assertIn("CreateWorkshopWorker(people,new Vector2(2.06f,-4.04f));",src)
+        self.assertIn("CreateWorkshopWorker(people,new Vector2(1.45f,-4.04f));",src)
         self.assertIn("var mover=actor.AddComponent<Modular25DWalker>();",src)
         self.assertIn("var mover=actor.AddComponent<Modular25DWalker>();",src)
 
