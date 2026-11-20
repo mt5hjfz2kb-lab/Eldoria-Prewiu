@@ -22,7 +22,7 @@ def sha256(blob):
     return hashlib.sha256(blob).hexdigest()
 
 def validate_png(blob, label):
-    assert blob[:8]==b"\\x89PNG\\r\\n\\x1a\\n",label
+    assert blob[:8]==b"\x89PNG\r\n\x1a\n",label
     assert len(blob)>200,label
     w,h,depth,colour,compression,filtermethod,interlace=struct.unpack(
         ">IIBBBBB",blob[16:29])
@@ -68,13 +68,13 @@ def main():
                          .encode("ascii")).hexdigest()
         if dst.exists(): assert dst.read_bytes()==raw,(name,"preexisting alias differs")
         else: dst.write_bytes(raw)
-        metadata=("fileFormatVersion: 2\\n"
-                  f"guid: {guid}\\n"
-                  "TextScriptImporter:\\n"
-                  "  externalObjects: {}\\n"
-                  "  userData: \\n"
-                  "  assetBundleName: \\n"
-                  "  assetBundleVariant: \\n")
+        metadata=("fileFormatVersion: 2\n"
+                  f"guid: {guid}\n"
+                  "TextScriptImporter:\n"
+                  "  externalObjects: {}\n"
+                  "  userData: \n"
+                  "  assetBundleName: \n"
+                  "  assetBundleVariant: \n")
         if meta.exists(): assert meta.read_text(encoding="utf-8")==metadata
         else: meta.write_text(metadata,encoding="utf-8")
         assert src.read_bytes()==dst.read_bytes()
@@ -94,7 +94,7 @@ def main():
       "purpose":"Unity 6000.3 Windows importer loses source Sprite and Texture2D for frame 1",
       "source_assets_unchanged":True,"not_new_art":True,
       "engine_verified":False,"physical_iphone_tested":False,"frames":records
-    },ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("SOURCE_BINARY_ALIAS_PREPARED_FOR_NATIVE_UNITY_RUNTIME_VERIFICATION")
 
 if __name__=="__main__":
