@@ -509,9 +509,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             var cam=world.ViewCamera;
             var screen=cam.WorldToScreenPoint(worldPosition);
+            var safe=Screen.safeArea;
             var inside=screen.z>0&&
-                screen.x>75f&&screen.x<Screen.width-75f&&
-                screen.y>110f&&screen.y<Screen.height-130f;
+                screen.x>safe.xMin+68f&&screen.x<safe.xMax-68f&&
+                screen.y>safe.yMin+105f&&screen.y<safe.yMax-125f;
             if(nameplate.gameObject.activeSelf!=inside&&!modalOpen)
                 nameplate.gameObject.SetActive(inside);
             if(modalOpen)
@@ -539,11 +540,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var safe = Screen.safeArea;
             float top = Mathf.Max(0f, (h - safe.yMax) / scale) + 8f;
             float bottom = Mathf.Max(0f, safe.yMin / scale) + 8f;
+            // Native iPhone landscape has nonzero LEFT/RIGHT cutouts. The
+            // original Corona layout accounted only for top/bottom insets,
+            // hiding identity and action medallions under the island/notch.
+            float left = Mathf.Max(0f,safe.xMin/scale);
+            float right = Mathf.Max(0f,(w-safe.xMax)/scale);
             bool wide = w > h;
 
             identity.anchorMin = identity.anchorMax = new Vector2(0f, 1f);
             identity.pivot = new Vector2(0f, 1f);
-            identity.anchoredPosition = new Vector2(10f, -top);
+            identity.anchoredPosition = new Vector2(10f+left, -top);
             identity.sizeDelta = new Vector2(194f, 68f);
 
             // Above-the-fold information is reserved for identity/resources.
@@ -553,7 +559,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.pivot=wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.anchoredPosition=wide?
-                new Vector2(-12f,-top):new Vector2(0f,-top-82f);
+                new Vector2(-12f-right,-top):new Vector2(0f,-top-82f);
             resourceRow.sizeDelta=new Vector2(365f,44f);
             for(int i=0;i<resourceChips.Length;i++)
             {
@@ -576,20 +582,20 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(wide)
             {
                 inspect.sizeDelta=new Vector2(68f,64f);
-                inspect.anchoredPosition=new Vector2(-10f,bottom+7f);
+                inspect.anchoredPosition=new Vector2(-10f-right,bottom+7f);
                 center.sizeDelta=new Vector2(68f,64f);
-                center.anchoredPosition=new Vector2(-86f,bottom+7f);
+                center.anchoredPosition=new Vector2(-86f-right,bottom+7f);
                 statusDock.sizeDelta=new Vector2(68f,64f);
-                statusDock.anchoredPosition=new Vector2(-162f,bottom+7f);
+                statusDock.anchoredPosition=new Vector2(-162f-right,bottom+7f);
             }
             else
             {
                 inspect.sizeDelta=new Vector2(86f,80f);
-                inspect.anchoredPosition=new Vector2(-10f,bottom+9f);
+                inspect.anchoredPosition=new Vector2(-10f-right,bottom+9f);
                 center.sizeDelta=new Vector2(74f,74f);
-                center.anchoredPosition=new Vector2(-100f,bottom+9f);
+                center.anchoredPosition=new Vector2(-100f-right,bottom+9f);
                 statusDock.sizeDelta=new Vector2(68f,68f);
-                statusDock.anchoredPosition=new Vector2(-10f,bottom+99f);
+                statusDock.anchoredPosition=new Vector2(-10f-right,bottom+99f);
             }
             foreach(var dock in new[]{inspect,center,statusDock})
             {
@@ -604,22 +610,22 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             objective.pivot=wide?new Vector2(0f,1f):new Vector2(0f,0f);
             objective.sizeDelta=wide?new Vector2(180f,52f):new Vector2(190f,60f);
             objective.anchoredPosition=wide?
-                new Vector2(12f,-top-83f):new Vector2(10f,bottom+12f);
+                new Vector2(12f+left,-top-83f):new Vector2(10f+left,bottom+12f);
 
             if (wide)
             {
                 // Never build a full-width drawer across a 390px-tall viewport.
                 sheet.anchorMin = sheet.anchorMax = new Vector2(1f, .5f);
                 sheet.pivot = new Vector2(1f, .5f);
-                sheet.anchoredPosition = new Vector2(-12f, 2f);
+                sheet.anchoredPosition = new Vector2(-12f-right, 2f);
                 sheet.sizeDelta = new Vector2(326f, 240f);
                 noticeRoot.anchorMin = noticeRoot.anchorMax = new Vector2(0f, 1f);
                 noticeRoot.pivot = new Vector2(0f, 1f);
-                noticeRoot.anchoredPosition = new Vector2(12f, -top - 146f);
+                noticeRoot.anchoredPosition = new Vector2(12f+left, -top - 146f);
                 noticeRoot.sizeDelta = new Vector2(290f, 35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
-                statusSheet.anchoredPosition=new Vector2(-12f,2f);
+                statusSheet.anchoredPosition=new Vector2(-12f-right,2f);
                 statusSheet.sizeDelta=new Vector2(328f,170f);
             }
             else

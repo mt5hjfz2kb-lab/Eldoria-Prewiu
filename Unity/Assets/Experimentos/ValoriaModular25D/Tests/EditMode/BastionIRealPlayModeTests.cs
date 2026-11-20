@@ -230,6 +230,16 @@ namespace Eldoria.Modular25D.Tests
                 Assert.That(header.pivot.x,Is.EqualTo(1f).Within(.001f));
                 Assert.LessOrEqual(header.sizeDelta.x,365.1f,"Landscape resource ledger must remain compact and non-overlapping");
                 Assert.Greater(header.anchoredPosition.y,-80f);
+                var identityWide=world.GetComponentsInChildren<RectTransform>(true)
+                    .First(x=>x&&x.gameObject.name=="Valoria identity");
+                float scaleWide=Mathf.Max(.01f,
+                    header.GetComponentInParent<Canvas>().scaleFactor);
+                Assert.GreaterOrEqual(identityWide.anchoredPosition.x,
+                    Mathf.Max(0f,Screen.safeArea.xMin/scaleWide)+8f,
+                    "Real landscape safe area must protect the keep crest from the camera island");
+                Assert.GreaterOrEqual(-header.anchoredPosition.x,
+                    Mathf.Max(0f,(Screen.width-Screen.safeArea.xMax)/scaleWide)+8f,
+                    "Resources must not be hidden below the landscape notch");
             }
             else
             {
