@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "artist_source": "Original art atlas authored for this Eldoria experiment; no third-party game art",
+  "source_file": "tools/valoria-modular25d/original_umbral_icons48_png.b64",
+  "source_palette_sha256": "0c656ddb672784f6bea83252cf778e83f5985e93fb02e4cc42bc1b3913838695",
+  "original_pixels_rgba_sha256": "36718c93a71ec410dc0503d666beacebee88ba381caba5183a3f0bc097549963",
+  "packed_file": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/umbral_gameplay_icons_png.bytes",
+  "packed_rgba_sha256": "f1f90c0ab73d08ac1f8d1f60f804e8e5bae09824a8019a068d4335971997ef55",
+  "packed_bytes": 9006,
+  "dimensions": [
+    144,
+    96
+  ],
+  "cell_size": 48,
+  "cells_row_major_top_down": [
+    "wood",
+    "stone",
+    "food",
+    "hammer",
+    "city",
+    "task"
+  ],
+  "textasset_guid": "4f35aedc17edb4f5de1f1945049c76df",
+  "visual_art_approved": false,
+  "native_unity_import_verified": false,
+  "physical_iphone_tested": false
+}
