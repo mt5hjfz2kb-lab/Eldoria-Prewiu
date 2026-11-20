@@ -13,7 +13,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     public sealed class Modular25DGround : MonoBehaviour
     {
         const int Side = 8, HalfChunks = 4, TextureSize = 512;
-        const float PatternMeters = 21f;
+        const float PatternMeters = 14f;
         Material material;
         Texture2D texture;
         bool generatedAtRuntime;
@@ -22,10 +22,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void Build()
         {
             if (ChunkCount != 0) return;
-            // Eldoria's OWN earlier illustrated ground is cropped to a tiny
-            // tile and imported independently. No city background, backdrop
-            // or castle walls are loaded in this material.
-            texture=Resources.Load<Texture2D>("ValoriaModular25D/OrganicMeadowTile");
+            // The same wrapping material spans all chunks; roads and buildings
+            // keep their own geometry, contacts and sorting.
+            texture=Resources.Load<Texture2D>("ValoriaModular25D/BastionMeadow");
+            if(texture==null)texture=Resources.Load<Texture2D>("ValoriaModular25D/OrganicMeadowTile");
             OriginalProjectMeadowLoaded=texture!=null;
             if(texture==null)
             {
@@ -38,7 +38,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {
                 generatedAtRuntime=false;
                 texture.wrapMode=TextureWrapMode.Repeat;
-                texture.filterMode=FilterMode.Bilinear;
+                texture.filterMode=FilterMode.Trilinear;
             }
             var shader=Shader.Find("Sprites/Default");
             if(shader==null)shader=Shader.Find("Universal Render Pipeline/Unlit");
