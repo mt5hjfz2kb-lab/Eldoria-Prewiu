@@ -31,7 +31,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static readonly Color32 Red = new Color32(151, 77, 69, 255);
 
         private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate;
-        private static Sprite woodIcon, stoneIcon, foodIcon;
+        private static Sprite woodIcon, stoneIcon, foodIcon, hammerIcon, cityIcon, taskIcon;
+        private static Texture2D originalIconAtlas;
         private Modular25DGameplay gateway;
         private GameObject buildingSheet;
         private Canvas hudCanvas;
@@ -125,22 +126,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Commercial strategy-game grammar: three illustrated action tiles
             // and one honest contextual task, not an app-style navigation bar.
             // Every available action has a real behaviour from the sandbox.
-            inspect = DockButton("Inspect sawmill",rootTransform,"OBRAS",woodIcon,
+            inspect = DockButton("Inspect sawmill",rootTransform,"OBRAS",hammerIcon,
                 new Vector2(0f,0f),new Vector2(0f,0f),OpenSawmill);
-            center = DockButton("Center camera",rootTransform,"CIUDAD",portraitPlate,
+            center = DockButton("Center camera",rootTransform,"CIUDAD",cityIcon,
                 new Vector2(1f,0f),new Vector2(1f,0f),
                 () => GetComponent<Modular25DCameraInput>().Home());
-            statusDock = DockButton("Inspect city status",rootTransform,"ESTADO",stoneIcon,
+            statusDock = DockButton("Inspect city status",rootTransform,"ESTADO",taskIcon,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),OpenStatus);
             objective=ButtonPlate("Current real construction objective",rootTransform,"",
                 burgundyPlate,new Vector2(1f,1f),new Vector2(1f,1f),
                 new Vector2(-12f,-122f),new Vector2(172f,50f),OpenSawmill)
                 .GetComponent<RectTransform>();
             // A real progression prompt, not a fictional quest/reward.
+            var missionIcon=Plate("Original real objective scroll",objective,taskIcon,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(-64f,0f),new Vector2(28f,28f));
+            missionIcon.GetComponent<Image>().type=Image.Type.Simple;
+            missionIcon.GetComponent<Image>().preserveAspect=true;
             Label("PRÓXIMO PASO",objective,11,true,PaleGold,TextAnchor.MiddleLeft,
-                new Vector2(0f,11f),new Vector2(137f,16f));
+                new Vector2(19f,11f),new Vector2(118f,16f));
             objectiveText=Label("ASERRADERO · 0/1",objective,13,false,WarmWhite,
-                TextAnchor.MiddleLeft,new Vector2(0f,-8f),new Vector2(141f,24f));
+                TextAnchor.MiddleLeft,new Vector2(19f,-8f),new Vector2(118f,24f));
 
             // Context sheet uses warm architectural parchment, a real sprite
             // from the experiment, and original data. Not a generic modal.
@@ -654,69 +660,49 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                actionPlate==null||burgundyPlate==null||portraitPlate==null)
                 throw new InvalidOperationException(
                     "Umbral II: missing original scalable material artwork (5 authored panels + licensed portrait)");
-            woodIcon=ResourceIcon("wood");
-            stoneIcon=ResourceIcon("stone");
-            foodIcon=ResourceIcon("food");
+            LoadOriginalGameIconAtlas();
         }
 
-        // Original tiny resources drawn from deterministic layered material shapes.
-        // Actual resource types follow PlayerState; no synthetic currency or counters.
-        private static Sprite ResourceIcon(string kind)
+        /// <summary>
+        /// Six ORIGINAL Eldoria game icons, not a generic procedurally
+        /// rendered emoji or imported art from the reference games. The
+        /// source atlas and exact RGBA pixel proof are version-controlled.
+        /// The PNG data is packaged as a Unity TextAsset because the
+        /// original modular build found a Windows SpriteImporter
+        /// inconsistency with a different indexed artist PNG.
+        /// </summary>
+        private static void LoadOriginalGameIconAtlas()
         {
-            const int n=48;
-            var tex=new Texture2D(n,n,TextureFormat.RGBA32,false);
-            tex.name="Umbral II icon "+kind;
-            tex.wrapMode=TextureWrapMode.Clamp;
-            tex.filterMode=FilterMode.Bilinear;
-            var pixels=new Color32[n*n];
-            void Pixel(int x,int y,Color32 color)
-            {
-                if(x>=0&&x<n&&y>=0&&y<n)pixels[y*n+x]=color;
-            }
-            void Ellipse(int cx,int cy,int rx,int ry,Color32 color)
-            {
-                for(int y=cy-ry;y<=cy+ry;y++)
-                    for(int x=cx-rx;x<=cx+rx;x++)
-                    {
-                        float dx=(x-cx)/(float)Mathf.Max(1,rx);
-                        float dy=(y-cy)/(float)Mathf.Max(1,ry);
-                        if(dx*dx+dy*dy<=1f)Pixel(x,y,color);
-                    }
-            }
-            if(kind=="wood")
-            {
-                Ellipse(22,19,19,12,new Color32(71,48,35,255));
-                for(int y=13;y<29;y++)for(int x=7;x<39;x++)
-                    if(Mathf.Abs(x-23)*.13f+Mathf.Abs(y-20)*.49f<10f)
-                        Pixel(x,y,new Color32(137,83,46,255));
-                Ellipse(14,21,10,10,new Color32(202,152,90,255));
-                Ellipse(14,21,6,6,new Color32(120,78,47,255));
-                Ellipse(14,21,4,4,new Color32(218,173,103,255));
-                Ellipse(14,21,1,1,new Color32(118,76,46,255));
-            }
-            else if(kind=="stone")
-            {
-                Ellipse(22,19,17,13,new Color32(43,53,63,255));
-                Ellipse(22,23,15,12,new Color32(111,127,131,255));
-                Ellipse(18,28,11,7,new Color32(173,182,175,255));
-                Ellipse(31,18,10,8,new Color32(76,92,104,255));
-                Ellipse(16,32,6,3,new Color32(218,207,180,255));
-            }
-            else
-            {
-                for(int j=0;j<5;j++)
-                {
-                    int x=12+j*5;
-                    for(int y=10;y<34;y++)Pixel(x,y,new Color32(160,104,47,255));
-                    Ellipse(x-2,27-j%2*4,4,7,new Color32(220,164,74,255));
-                    Ellipse(x+2,21+j%2*4,4,6,new Color32(246,204,113,255));
-                }
-                Ellipse(24,11,17,3,new Color32(138,92,47,255));
-            }
-            tex.SetPixels32(pixels);
-            tex.Apply(false,true);
-            var sprite=Sprite.Create(tex,new Rect(0,0,n,n),new Vector2(.5f,.5f),100f);
-            sprite.name="Umbral II resource "+kind;
+            const string path="ValoriaModular25D/UI/UmbralII/umbral_gameplay_icons_png";
+            var source=Resources.Load<TextAsset>(path);
+            if(source==null || source.bytes==null || source.bytes.Length<1500)
+                throw new InvalidOperationException(
+                    "Umbral II requires source-authored gameplay resource icons as a binary TextAsset.");
+            originalIconAtlas=new Texture2D(2,2,TextureFormat.RGBA32,false,false);
+            originalIconAtlas.name="Original Eldoria Umbral II six game icon atlas";
+            originalIconAtlas.wrapMode=TextureWrapMode.Clamp;
+            originalIconAtlas.filterMode=FilterMode.Bilinear;
+            if(!ImageConversion.LoadImage(originalIconAtlas,source.bytes,false) ||
+               originalIconAtlas.width!=144 || originalIconAtlas.height!=96)
+                throw new InvalidOperationException(
+                    "Original Eldoria six icon PNG atlas is not the expected 144x96 RGBA art.");
+            woodIcon=AtlasIcon(0,"wood");
+            stoneIcon=AtlasIcon(1,"stone");
+            foodIcon=AtlasIcon(2,"food");
+            hammerIcon=AtlasIcon(3,"construction");
+            cityIcon=AtlasIcon(4,"city");
+            taskIcon=AtlasIcon(5,"task");
+        }
+
+        private static Sprite AtlasIcon(int index,string label)
+        {
+            const int cell=48;
+            int column=index%3;
+            int row=index/3;
+            var sprite=Sprite.Create(originalIconAtlas,
+                new Rect(column*cell,(1-row)*cell,cell,cell),
+                new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect);
+            sprite.name="Original Eldoria Umbral II "+label;
             return sprite;
         }
 
