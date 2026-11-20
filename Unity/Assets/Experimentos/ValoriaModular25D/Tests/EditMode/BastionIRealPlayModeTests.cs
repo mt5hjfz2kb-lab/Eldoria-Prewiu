@@ -252,6 +252,16 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(identity);Assert.NotNull(ribbon);
             Assert.NotNull(handle);Assert.NotNull(drawer);
             Assert.LessOrEqual(ribbon.rect.height,47f);
+            var ribbonImage=ribbon.GetComponent<Image>();
+            Assert.NotNull(ribbonImage);
+            Assert.NotNull(ribbonImage.sprite,"Missing ORIGINAL 1512px velvet-gold Unity material");
+            Assert.That(ribbonImage.sprite.name,Is.EqualTo("top_velvet_ribbon"),
+                "Single horizontal player+wallet bar must use original high-DPI painted material");
+            Assert.That(ribbonImage.sprite.rect.width,Is.GreaterThanOrEqualTo(1512f),
+                "Retina ribbon may not upscale a low-resolution 378px source");
+            Assert.That(ribbonImage.type,Is.EqualTo(Image.Type.Simple));
+            Assert.That(ribbonImage.color,Is.EqualTo(Color.white),
+                "Do not dark-tint original velvet and reduce painted details");
             Assert.LessOrEqual(identity.rect.height,45f);
             Assert.LessOrEqual(header.rect.height,43f);
             Assert.That(header.anchoredPosition.y,Is.EqualTo(-safeTop-3f).Within(1.5f),

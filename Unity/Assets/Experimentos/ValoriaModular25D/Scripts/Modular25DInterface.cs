@@ -31,7 +31,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static readonly Color32 Green = new Color32(80, 209, 195, 255);
         private static readonly Color32 Red = new Color32(184, 84, 120, 255);
 
-        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, identityPlate, navPlate;
+        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate, identityPlate, navPlate, topVelvetPlate;
         private static Sprite woodIcon, stoneIcon, foodIcon, hammerIcon, cityIcon, taskIcon;
         private static Texture2D originalIconAtlas;
         private Modular25DGameplay gateway;
@@ -83,14 +83,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var rootTransform = root.transform;
 
             // One continuous 46-point ribbon shares player name and wallet.
-            topRibbon=Plate("Shared player and resource ribbon",rootTransform,null,
+            topRibbon=Plate("Shared player and resource ribbon",rootTransform,topVelvetPlate,
                 new Vector2(.5f,1f),new Vector2(.5f,1f),Vector2.zero,
                 new Vector2(378f,46f));
-            topRibbon.GetComponent<Image>().color=new Color32(21,13,34,211);
+            topRibbon.GetComponent<Image>().color=Color.white;
+            topRibbon.GetComponent<Image>().preserveAspect=false;
             topRibbonHairline=Plate("Shared ribbon gold seam",topRibbon,null,
                 new Vector2(.5f,0f),new Vector2(.5f,0f),
                 Vector2.zero,new Vector2(365f,1.2f));
-            topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,210);
+            topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,55);
             identity = Plate("Valoria identity", rootTransform, identityPlate,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
                 new Vector2(102f, 44f));
@@ -975,6 +976,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static void InitializeArt()
         {
             if(slatePlate!=null)return;
+            topVelvetPlate=NeedCorona("top_velvet_ribbon");
             identityPlate=NeedCorona("identity_crest");
             slatePlate=NeedCorona("world_rune");
             resourcePlate=NeedCorona("resource_siglet");
