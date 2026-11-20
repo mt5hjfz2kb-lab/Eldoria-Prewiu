@@ -11,7 +11,11 @@ $actual=(git -C $SourceRoot rev-parse HEAD).Trim()
 if($actual -ne $env:GITHUB_SHA){throw 'Source is not pinned to requesting Git SHA'}
 $path=Join-Path $SourceRoot 'Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs'
 if(-not(Test-Path -LiteralPath $path)){throw 'Expected canonical source missing; refuse patch'}
+# Normalize only the disposable checkout text to LF for an exact
+# comparison independent of the Windows checkout autocrlf setting.
+# The SHA-pinned original bytes are recorded before any scratch rewrite.
 $old=[IO.File]::ReadAllText($path)
+$normalized=$old.Replace(\"`r`n\",\"`n\")
 $needle=@'
             if(report.summary.platform==UnityEditor.BuildTarget.WebGL&&!Resources.Load<TextAsset>("World4X/Blender/RuntimeTerrainQueries"))
                 throw new UnityEditor.Build.BuildFailedException("Bake and validate the frozen terrain query tape before building WebGL; see tools/eldoria-private-beta/native/run_structural.ps1");
@@ -36,10 +40,10 @@ $replacement=@'
                     UnityEngine.Debug.Log("[MODULAR25D] Single-scene isolated build verified; canonical 4X terrain prerequisite remains protected.");
             }
 '@
-if(-not $old.Contains($needle)){throw 'Upstream terrain guard changed; stop and re-audit'}
-if($old.Split(@($needle),[StringSplitOptions]::None).Length -ne 2){throw 'Ambiguous 4X guard; refuse'}
+if(-not $normalized.Contains($needle.Replace("`r`n","`n"))){throw 'Upstream terrain guard changed; stop and re-audit'}
+if($normalized.Split(@($needle.Replace("`r`n","`n")),[StringSplitOptions]::None).Length -ne 2){throw 'Ambiguous 4X guard; refuse'}
 $sha=(Get-FileHash -Algorithm SHA256 $path).Hash.ToLowerInvariant()
-$new=$old.Replace($needle,$replacement)
+$new=$normalized.Replace($needle.Replace("`r`n","`n"),$replacement.Replace("`r`n","`n"))
 [IO.File]::WriteAllText($path,$new,(New-Object Text.UTF8Encoding($false)))
 $afterSha=(Get-FileHash -Algorithm SHA256 $path).Hash.ToLowerInvariant()
 $artifacts=Join-Path $SourceRoot 'Unity/Artifacts/ValoriaModular25D'
