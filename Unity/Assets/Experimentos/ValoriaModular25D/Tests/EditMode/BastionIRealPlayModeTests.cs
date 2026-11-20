@@ -247,6 +247,15 @@ namespace Eldoria.Modular25D.Tests
                 Assert.GreaterOrEqual(-header.anchoredPosition.x,
                     Mathf.Max(0f,(Screen.width-Screen.safeArea.xMax)/scaleWide)+8f,
                     "Resources must not be hidden below the landscape notch");
+                var safeWorldWidth=Screen.width/scaleWide;
+                Assert.GreaterOrEqual(
+                    safeWorldWidth+header.anchoredPosition.x-header.rect.width,
+                    identityWide.anchoredPosition.x+identityWide.rect.width+8f,
+                    "Landscape iPhone cutout forced resource capsule to overlap the Valoria identity");
+                Assert.That(header.GetComponentsInChildren<Image>(true)
+                    .Count(x=>x.sprite!=null&&x.sprite.name=="resource_siglet"
+                        &&x.preserveAspect),Is.EqualTo(3),
+                    "Narrow native landscape resources must preserve the original painted material aspect");
             }
             else
             {
@@ -321,6 +330,12 @@ namespace Eldoria.Modular25D.Tests
             Assert.NotNull(center,"Functional centering action absent");
             foreach(var control in new[]{inspect,center})
             {
+                var caption=control.GetComponentInChildren<Text>(true);
+                Assert.NotNull(caption,"Missing original Corona icon caption");
+                Assert.Less(caption.rectTransform.anchoredPosition.y,-35f,
+                    "Captions must sit below painted medals, not over their detailed object artwork");
+                Assert.NotNull(caption.GetComponent<Outline>(),
+                    "Ivory-on-grass navigation caption requires unobtrusive four-way outline");
                 var image=control.GetComponent<Image>();
                 Assert.NotNull(image,"An operational HUD medallion has no graphic");
                 Assert.NotNull(image.sprite,"Original Corona illustrated button art is not imported");

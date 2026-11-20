@@ -560,14 +560,27 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             resourceRow.pivot=wide?new Vector2(1f,1f):new Vector2(.5f,1f);
             resourceRow.anchoredPosition=wide?
                 new Vector2(-12f-right,-top):new Vector2(0f,-top-105f);
-            resourceRow.sizeDelta=new Vector2(365f,52f);
+            // Respect four-sided landscape safe area *and* prevent the
+            // identity crest overlapping the resource ledger. An iPhone
+            // landscape cutout reduces the logical safe width, even though
+            // ordinary Chromium screenshots have no side cutout.
+            float logicalWidth=w/scale;
+            float economyWidth=wide
+                ? Mathf.Min(365f,Mathf.Max(280f,logicalWidth-left-right-214f))
+                : Mathf.Min(365f,logicalWidth-left-right-16f);
+            resourceRow.sizeDelta=new Vector2(economyWidth,52f);
+            float chipWidth=(economyWidth-12f)/3f;
+            float sourceAspect=resourcePlate.rect.height/
+                Mathf.Max(1f,resourcePlate.rect.width);
             for(int i=0;i<resourceChips.Length;i++)
             {
                 var chip=resourceChips[i];
                 chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
                 chip.pivot=new Vector2(0f,.5f);
-                chip.sizeDelta=new Vector2(117f,52f);
-                chip.anchoredPosition=new Vector2(i*123f,0f);
+                chip.sizeDelta=new Vector2(chipWidth,
+                    wide?Mathf.Min(52f,chipWidth*sourceAspect):52f);
+                chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
+                chip.GetComponent<Image>().preserveAspect=wide;
             }
 
             // Reference-style illustrated action group: keep the quest on
@@ -582,26 +595,26 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(wide)
             {
                 inspect.sizeDelta=new Vector2(68f,64f);
-                inspect.anchoredPosition=new Vector2(-10f-right,bottom+7f);
+                inspect.anchoredPosition=new Vector2(-10f-right,bottom+18f);
                 center.sizeDelta=new Vector2(68f,64f);
-                center.anchoredPosition=new Vector2(-86f-right,bottom+7f);
+                center.anchoredPosition=new Vector2(-86f-right,bottom+18f);
                 statusDock.sizeDelta=new Vector2(68f,64f);
-                statusDock.anchoredPosition=new Vector2(-162f-right,bottom+7f);
+                statusDock.anchoredPosition=new Vector2(-162f-right,bottom+18f);
             }
             else
             {
                 inspect.sizeDelta=new Vector2(86f,80f);
-                inspect.anchoredPosition=new Vector2(-10f-right,bottom+9f);
+                inspect.anchoredPosition=new Vector2(-10f-right,bottom+20f);
                 center.sizeDelta=new Vector2(74f,74f);
-                center.anchoredPosition=new Vector2(-100f-right,bottom+9f);
+                center.anchoredPosition=new Vector2(-100f-right,bottom+20f);
                 statusDock.sizeDelta=new Vector2(68f,68f);
-                statusDock.anchoredPosition=new Vector2(-10f-right,bottom+99f);
+                statusDock.anchoredPosition=new Vector2(-10f-right,bottom+120f);
             }
             foreach(var dock in new[]{inspect,center,statusDock})
             {
                 var caption=dock.GetComponentInChildren<Text>(true);
                 caption.fontSize=wide?10:11;
-                caption.rectTransform.anchoredPosition=new Vector2(0f,wide?-24f:-30f);
+                caption.rectTransform.anchoredPosition=new Vector2(0f,wide?-37f:-41f);
                 caption.rectTransform.sizeDelta=new Vector2(dock.rect.width-3f,20f);
             }
 
@@ -668,6 +681,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             icon.color=Color.white;
             value=Label("0",chip,18,false,WarmWhite,TextAnchor.MiddleRight,
                 new Vector2(25f,0f),new Vector2(60f,33f));
+            // Right-edge anchoring keeps amounts out of painted wood/stone
+            // icons as landscape capsules compress to fit notch-safe area.
+            value.rectTransform.anchorMin=value.rectTransform.anchorMax=new Vector2(1f,.5f);
+            value.rectTransform.pivot=new Vector2(1f,.5f);
+            value.rectTransform.anchoredPosition=new Vector2(-6f,0f);
+            value.rectTransform.sizeDelta=new Vector2(62f,33f);
             value.verticalOverflow=VerticalWrapMode.Overflow;
             value.horizontalOverflow=HorizontalWrapMode.Overflow;
             value.resizeTextForBestFit=true;
@@ -736,11 +755,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             word.rectTransform.sizeDelta=new Vector2(80f,21f);
             word.horizontalOverflow=HorizontalWrapMode.Overflow;
             word.verticalOverflow=VerticalWrapMode.Overflow;
-            // A two-vertex outline improves small text on the sculpted lower
-            // part of the medal without a second rectangle or game asset.
-            var shadow=word.gameObject.AddComponent<Shadow>();
-            shadow.effectColor=new Color(.055f,.035f,.09f,.9f);
-            shadow.effectDistance=new Vector2(1f,-1f);
+            // WOS-style captions sit just below the original sculpted
+            // medals, not over the metal/hammer itself. Four-way ivory
+            // outline keeps the caption legible against animated grass.
+            var outline=word.gameObject.AddComponent<Outline>();
+            outline.effectColor=new Color(.075f,.045f,.12f,.92f);
+            outline.effectDistance=new Vector2(1.25f,-1.25f);
             return rect;
         }
 

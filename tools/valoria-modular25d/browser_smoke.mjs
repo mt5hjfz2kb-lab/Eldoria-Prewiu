@@ -213,7 +213,9 @@ try {
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
     // The primary original OBRAS medallion now lives at the bottom-right,
     // center x=337/390, y=56/844 from the bottom in the 390x844 reference.
-    await page.mouse.click(box.x + box.width * (337 / 390), box.y + box.height * (1 - 56 / 844));
+    // Crest of OBRAS remains center x337, shifted upward 11 reference
+    // pixels to reserve a clean caption below the painted gold ring.
+    await page.mouse.click(box.x + box.width * (337 / 390), box.y + box.height * (1 - 67 / 844));
     await page.waitForTimeout(650);
     const opened = await capture('real-sawmill-build-panel');
     const change = pixelChange(before.bytes, opened.bytes);

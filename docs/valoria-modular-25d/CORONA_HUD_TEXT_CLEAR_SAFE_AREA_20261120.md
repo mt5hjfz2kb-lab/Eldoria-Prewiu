@@ -1,0 +1,7 @@
+# Corona — iconos con títulos legibles y cabecera segura en iPhone
+
+La comparación artística interna de la familia de 15 PNG a 390×844 mostró que los rótulos OBRAS/ESTADO/CIUDAD estaban superpuestos a los propios dibujos premium (martillo, plano y ciudad), tapando el detalle de origen. La solución mantiene las ilustraciones a resolución íntegra, desplaza el texto justo debajo del borde del medallón y aplica una `UnityEngine.UI.Outline` discreta de color obsidiana para legibilidad sobre hierba. Los controles se elevan 11pt para no invadir el área segura inferior; ESTADO se eleva de forma coherente para que el subtítulo no choque con OBRAS.
+
+El iPhone en horizontal tiene un `Screen.safeArea.xMin/xMax` horizontal distinto de cero. Con sello de 182pt y fila de recursos fija de 365pt, podían solaparse aunque ambos estuvieran individualmente dentro del área segura. Se mide el ancho lógico seguro y se reduce **solo** el ancho de las tres cápsulas originales cuando hace falta, preservando su proporción pintada en UI (`Image.preserveAspect`) y anclando los números a su borde derecho. Esto evita volver a estirar el arte premium fuera de proporción.
+
+No se modifican comandos, costes, guardado, mundo, cámara ni reglas. Test PlayMode añadido para solape real sello/economía con notch horizontal y para el `Outline`/posición del texto. Evidencia artística definitiva requiere captura Unity/WebGL exact-SHA 390×844, 1170×2532 y 844×390; esta modificación no constituye aprobación comercial por sí sola.
