@@ -1,0 +1,18 @@
+{
+  "schema": 2,
+  "branch": "experiment/corona-brecha-hud-v2-mobile-qa-20261120",
+  "source_base": "bc9bbd4876dc92229c9265ae6e4c6964eb136511",
+  "purpose": "Exact frozen source Unity6.3/PlayMode/WebGL: top resource capsules and six-bottom slots, plus compact 1K/M resources and adaptive icon/text separation at narrow safe-area widths.",
+  "requirements": [
+    "Real Unity Camera.Render and actual PlayMode with 15 original painted PNGs",
+    "Three separate top resource capsules pinned to safe top and future-ready bottom dock 6 slots with 3 real buttons (no fakes)",
+    "Build command from genuine pointer closes panel on success, shows world countdown/progress, 230->150 wood and one-time save",
+    "Chrome 390x844 and 1170x2532 actual screenshots; top pinned painted pixels visible in real image, canonical Build/reload",
+    "Chrome 844x390 genuine touch drag, pinch and center action; no click interception or clipped notches",
+    "Review artwork and overlay placement by human; no automatic artistic acceptance"
+  ],
+  "gameplay_changed": false,
+  "main_changed": false,
+  "iphone_real_tested": false,
+  "art_approved": false
+}

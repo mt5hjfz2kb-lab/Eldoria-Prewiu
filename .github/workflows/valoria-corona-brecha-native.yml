@@ -8,9 +8,12 @@ name: Valoria Modular 2.5D — CORONA DE LA BRECHA actual Unity PlayMode and Web
 # requested via the dedicated native-proof trigger or workflow_dispatch.
 on:
   push:
-    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    branches:
+      - experiment/valoria-corona-de-la-brecha-ui-20261120
+      - experiment/corona-brecha-hud-v2-mobile-qa-20261120
     paths:
       - 'tools/valoria-corona-brecha/explicit-native-qa-request.json'
+      - '.github/workflows/valoria-corona-brecha-native.yml'
   workflow_dispatch:
 permissions:
   contents: read
