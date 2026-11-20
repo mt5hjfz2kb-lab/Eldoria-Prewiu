@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "style": "Corona de la Brecha original real Unity UI",
-  "source_before_request": "ba0ef3de5f55b5c65d063fe5b973712bc3699281",
+  "source_before_request": "6bc06532ab7553a117e268eebe275ec8361d7d7e",
   "parent": "f66cdae8a240e0918af156ef6da457415ed92e4e",
   "user_selected": "C",
   "no_main_changes": true,
@@ -23,8 +23,8 @@
   "premium_art_revision": "Corona polished illustrated UI v3 — 14 original premium PNGs, deterministic cropped and text-safe, full source sprites not 9-sliced; Aserradero modal repositioned for portrait+landscape",
   "premium_original_png_count": 14,
   "art_after_bake_check": "High fidelity assets are byte identical in tools/valoria-corona-brecha/premium and Unity Resources CoronaBrecha; no stock art, no screenshots of third-party games",
-  "previous_native_qa_run": 44802943006,
-  "quality_gate": "Exact-HEAD authored Corona UI production: true premium 86x80 individual medallions without nested 42px icons, short readable obsidian world labels, modal chrome hides/nav restores, no overlap on mobile, native Unity Camera.Render + PlayMode building and save, isolated WebGL Chromium 390x844 1170x2532 844x390 pan/pinch; no device or art approval from CI.",
+  "previous_native_qa_run": 44808347374,
+  "quality_gate": "Only source SHA of this final request; true Unity 6.3 PlayMode, Camera.Render 42+ frames, original premium game UI 390x844 and 1170x2532, portrait landscape native touch pan pinch, real Build/Save, repeated browser reload. Manual artistic inspection required; no physical iPhone claim",
   "visual_acceptance_revision": "Corona polished illustrated UI after transparent gutter normalization, center enamel writing-field, un-sliced source image material",
   "test_prior_failures": "Image.Type.Sliced compressed central illustrated art to a line at 390x844. Actual source now uses Type.Simple with full-alpha-cropped original PNG visual, preserved original premium source.",
   "previous_native_pending_run": 44803984603,
@@ -36,5 +36,14 @@
   "technical_revision": "Corona final native gate after screenshot-grounded visual fix and real browser ROI regression",
   "requested_on": "2026-11-20",
   "art_approved": false,
-  "iphone_tested": false
+  "iphone_tested": false,
+  "new_art_quality_revision": "Premium direct medallion HUD and genuine three-phase dynamic world nameplate anchors; camera/world/gameplay unchanged",
+  "version_gate": "Exact-HEAD candidate after QA feedback from 44802943006 (actual browser) and 44807702613 (actual persistent 230 to 150); current PlayMode includes premium badge source, modal navigation occlusion, original art, canonical construction, original model transforms",
+  "screenshot_acceptance": [
+    "390x844-real-world-hud.png",
+    "390x844-real-sawmill-build-panel.png",
+    "390x844-real-build-command.png",
+    "390x844-real-after-browser-reload.png",
+    "844x390-camera-home.png"
+  ]
 }
