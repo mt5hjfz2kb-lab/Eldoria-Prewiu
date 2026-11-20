@@ -1,0 +1,17 @@
+{
+  "schema": 2,
+  "branch": "experiment/corona-slim-player-resources-drawer-qa-20261120",
+  "source_base": "cadefadf5e9a01faa9595c257431f0282a61a9fb",
+  "purpose": "Source-verified native Unity 6.3 and WebGL proof of the slim same-row PlayerState.PlayerName and 3 resource capsules, pixelPerfect overlay, 45pt collapsed LEFT OBRA drawer with real canonical timer, and three existing lower actions across six future slots.",
+  "requirements": [
+    "Native Unity Render Camera and 47 real frames",
+    "Actual NUnit PlayMode integration tests: avatar, nickname binding, no-overlap slim upper bar, dormant left activity drawer, Build auto-close, 230->150, FileStateStore save and camera Home",
+    "Real WebGL Chromium 390x844 and 1170x2532: 230->150, Build auto-close, left drawer open/collapse screenshot proof, browser reload persistence",
+    "Chrome 844x390 real touch pan/pinch and home view; save all screenshots and original source sha",
+    "No sprites copied from commercial references, no changes in game-domain/main, no physical iPhone QA or artistic signoff claimed"
+  ],
+  "main_changed": false,
+  "mechanics_changed": false,
+  "art_approved": false,
+  "real_iphone_not_tested": true
+}
