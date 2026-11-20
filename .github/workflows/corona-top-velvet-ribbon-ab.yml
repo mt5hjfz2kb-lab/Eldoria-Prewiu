@@ -1,0 +1,48 @@
+name: Corona A/B — original high DPI velvet top ribbon
+on:
+  push:
+    branches: [experiment/corona-top-velvet-ribbon-ab-20261120]
+    paths:
+      - 'tools/valoria-corona-brecha/source/top_velvet_ribbon.svg'
+      - 'tools/valoria-corona-brecha/bake_top_velvet_ribbon.py'
+      - '.github/workflows/corona-top-velvet-ribbon-ab.yml'
+permissions:
+  contents: write
+concurrency:
+  group: corona-velvet-ribbon-ab-only
+  cancel-in-progress: false
+jobs:
+  original-ribbon:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/valoria-corona-brecha/
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/
+            docs/valoria-modular-25d/
+            .github/workflows/corona-top-velvet-ribbon-ab.yml
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --quiet --disable-pip-version-check pillow cairosvg
+      - run: python tools/valoria-corona-brecha/bake_top_velvet_ribbon.py
+      - name: Preserve actual 1512px original material and GUID
+        uses: actions/upload-artifact@v4
+        with:
+          name: corona-high-dpi-velvet-ribbon
+          path: |
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon.png
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon.png.meta
+            docs/valoria-modular-25d/CORONA_VELVET_RIBBON_PROVENANCE.json
+      - name: Commit only original source output on isolated A/B
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon.png Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/top_velvet_ribbon.png.meta docs/valoria-modular-25d/CORONA_VELVET_RIBBON_PROVENANCE.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'art(corona): build original 1512px layered velvet-gold top banner sprite'
+          git pull --rebase origin experiment/corona-top-velvet-ribbon-ab-20261120
+          git push origin HEAD:experiment/corona-top-velvet-ribbon-ab-20261120
