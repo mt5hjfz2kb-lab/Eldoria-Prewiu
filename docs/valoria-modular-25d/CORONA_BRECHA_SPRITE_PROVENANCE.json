@@ -81,11 +81,11 @@
       ],
       "border": 10,
       "guid": "cab43e3c6c3be4a4ff3968716f1afaea",
-      "sha256": "88fe1f8e8b68354f8f8c70ba5eb351c676488c3282887650cf7f69379ad062b9",
+      "sha256": "87f024ec1bb03ad5e544f2f69e3acba6076389482ad4f44ea55628b664f6dc66",
       "source_sha256": "47706e9ca1e8dd2aecdfc2f5799554edf5a667d47a616607260c174916e9c0da",
-      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
+      "source_type": "painted_original_aspect_safe_world_plaque_5_regions",
       "export_size": [
-        580,
+        1036,
         260
       ],
       "svg_fallback_sha256": "9b7d0cd5f1f9e891f9e2cdb25d9f54d925b45fa3d36d3d4f3bb2879d5408eb11"
@@ -115,11 +115,11 @@
       ],
       "border": 14,
       "guid": "890219f666fc398d5ff2d36dc1a428dc",
-      "sha256": "22a647956ab05a4a57fdcf8b238241b22b384b1f749e5f28797fb072f5566020",
+      "sha256": "cd0e3ac075e12b5444cba29a17908e01f985554980f192b6d9a9c21f52ccee0c",
       "source_sha256": "4600f6ee2afd5063d5095b094e2d951013dc0ae0462782f61da4426c360a9a6b",
-      "source_type": "original_illustration_png_opaque_art_bounds_normalized",
+      "source_type": "painted_original_aspect_safe_build_cta_5_regions",
       "export_size": [
-        580,
+        1665,
         260
       ],
       "svg_fallback_sha256": "d6c4de760e1785766551d658211577e48ab7769b4548b09d4f87d565e4df2c96"
