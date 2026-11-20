@@ -218,6 +218,20 @@ namespace Eldoria.Modular25D.Tests
             var wallet=Member(first,"Resources");
             int initialWood=(int)Member(wallet,"Wood");
             Assert.GreaterOrEqual(initialWood,80);
+            var woodText=Member(ui,"woodValue") as Text;
+            var stoneText=Member(ui,"stoneValue") as Text;
+            var foodText=Member(ui,"foodValue") as Text;
+            foreach(var counter in new[]{woodText,stoneText,foodText})
+            {
+                Assert.NotNull(counter,"Actual commercial resource counter missing");
+                Assert.That(counter.verticalOverflow,Is.EqualTo(VerticalWrapMode.Overflow),
+                    "Do not crop all SourceSans resource glyphs at 14/20px height");
+                Assert.That(counter.rectTransform.rect.height,Is.GreaterThanOrEqualTo(30f),
+                    "Resource glyph box must fit actual imported font line metrics");
+                Assert.That(counter.text,Is.Not.Empty,"Numeric counters cannot be empty");
+            }
+            Assert.That(woodText.text,Is.EqualTo(initialWood.ToString("N0")),
+                "Visible wood label must reflect the canonical gateway snapshot");
 
             var buttons=world.GetComponentsInChildren<Button>(true);
             var inspect=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Inspect sawmill");
@@ -265,6 +279,8 @@ namespace Eldoria.Modular25D.Tests
             var after=Call(gameplay,"Snapshot");
             Assert.That((int)Member(Member(after,"Resources"),"Wood"),
                 Is.EqualTo(initialWood-80),"Canonical real debit mismatch");
+            Assert.That(woodText.text,Is.EqualTo((initialWood-80).ToString("N0")),
+                "Actual on-screen HUD wood glyphs must update when the authoritative command spends wood");
             Assert.That((int)Member(after,"SawmillLevel"),Is.EqualTo(0),
                 "A scheduled build cannot complete instantly");
             Assert.That((long)Member(after,"BuildingCompletesUtcTicks"),Is.GreaterThan(0));

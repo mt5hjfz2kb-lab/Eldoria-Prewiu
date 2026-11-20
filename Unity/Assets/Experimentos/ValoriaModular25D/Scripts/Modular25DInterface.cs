@@ -93,7 +93,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
                 new Vector2(26f, 8f), new Vector2(112f, 25f));
             level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(26f, -14f), new Vector2(114f, 20f));
+                new Vector2(26f, -13f), new Vector2(114f, 27f));
+            // SourceSans line metrics exceed the 20px legacy plate: Truncate
+            // silently discarded all small-glyph geometry in actual WebGL.
+            // Let ascenders/descenders use the designed clear lower half.
+            level.verticalOverflow = VerticalWrapMode.Overflow;
 
             resourceRow = Plate("Independent resources", rootTransform, null,
                 new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
@@ -116,7 +120,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             bastionTagText.color=PaleGold;
             sawmillTag=ButtonPlate("Sawmill world nameplate",rootTransform,"CONSTRUIR ASERRADERO",
                 actionPlate,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
-                Vector2.zero,new Vector2(172f,34f),OpenSawmill).GetComponent<RectTransform>();
+                Vector2.zero,new Vector2(200f,36f),OpenSawmill).GetComponent<RectTransform>();
             sawmillTagText=sawmillTag.GetComponentInChildren<Text>(true);
             sawmillTagText.fontSize=12;
             sawmillTagText.color=WarmWhite;
@@ -523,10 +527,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(22f,22f));
             symbol.GetComponent<Image>().type=Image.Type.Simple;
             symbol.GetComponent<Image>().color=Color.white;
-            Label(caption, chip, 11, false, PaleGold,
-                TextAnchor.MiddleLeft, new Vector2(23f, 9f), new Vector2(74f, 14f));
-            value = Label("0", chip, 17, false, WarmWhite,
-                TextAnchor.MiddleLeft, new Vector2(23f, -7f), new Vector2(76f, 20f));
+            // Native Chromium QA found completely EMPTY counters despite
+            // correct canonical snapshots. 14/20px-high Text rects with
+            // VerticalWrapMode.Truncate can drop the entire line for this
+            // font's actual line-height at phone scale. Keep the two-line
+            // ledger but allocate enough baseline room, and do not truncate
+            // glyphs at the chip's own edge.
+            var captionText = Label(caption, chip, 10, false, PaleGold,
+                TextAnchor.MiddleLeft, new Vector2(23f, 10f), new Vector2(77f, 24f));
+            captionText.verticalOverflow = VerticalWrapMode.Overflow;
+            value = Label("0", chip, 16, false, WarmWhite,
+                TextAnchor.MiddleLeft, new Vector2(23f, -8f), new Vector2(80f, 32f));
+            value.verticalOverflow = VerticalWrapMode.Overflow;
+            value.resizeTextForBestFit = true;
+            value.resizeTextMinSize = 12;
+            value.resizeTextMaxSize = 16;
             return chip;
         }
 
