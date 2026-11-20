@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/valoria-modular25d-unity-native.yml'
       - 'tools/valoria-modular25d/scope_isolated_webgl_guard.ps1'
+      - 'tools/valoria-modular25d/isolate_webgl_resources.ps1'
       - 'tools/valoria-modular25d/browser_smoke.mjs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DEditorTasks.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Editor/Modular25DNativeCapture.cs'
@@ -274,6 +275,25 @@ jobs:
              $audit.canonicalGuard -ne 'UNCHANGED_IN_GIT_REQUIRED_FOR_EVERY_OTHER_WEBGL_BUILD'){
             throw 'World4X guard scope proof did not pass'
           }
+          # Unity always packs unrelated Assets/**/Resources even for one scene.
+          # Quarantine only the OTHER Eldoria resources in THIS SHA-pinned
+          # disposable project, after genuine native/PlayMode proof.
+          $isolate=Join-Path $env:MOD25D_SOURCE 'tools/valoria-modular25d/isolate_webgl_resources.ps1'
+          if(-not(Test-Path -LiteralPath $isolate -PathType Leaf)){
+            throw 'Missing source-pinned WebGL resource isolation script'
+          }
+          & $isolate -SourceRoot $env:MOD25D_SOURCE
+          if($LASTEXITCODE -ne 0){throw 'Isolated resources script failed'}
+          $isolationFile=Join-Path $dest 'WebGLResourceIsolation.json'
+          if(-not(Test-Path -LiteralPath $isolationFile -PathType Leaf)){
+            throw 'Resource isolation manifest absent'
+          }
+          $isolation=Get-Content -LiteralPath $isolationFile -Raw|ConvertFrom-Json
+          if($isolation.sourceSha -ne $env:GITHUB_SHA -or -not $isolation.originalModularResourcesUnchanged -or
+             $isolation.scope -ne 'ONLY_UNRELATED_ELDORIA_RESOURCES_IN_OWN_DISPOSABLE_WEBGL_SCRATCH'){
+            throw 'Resource isolation manifest mismatched'
+          }
+          Write-Host "MOD25D_EXCLUDED_UNREFERENCED_GAME_RESOURCES_BYTES $($isolation.excludedSourceBytes)"
           $log=Join-Path $env:RUNNER_TEMP ('mod25d-webgl-'+$env:GITHUB_RUN_ID+'.log')
           $args=@('-batchmode','-quit','-projectPath',$project,
             '-executeMethod','Eldoria.Experimentos.ValoriaModular25D.Editor.Modular25DEditorTasks.BuildIsolatedWebGL',
@@ -291,9 +311,16 @@ jobs:
             '{"build":"FAILED","reason":"Unity BuildPipeline did not succeed","deviceQA":"NOT_TESTED"}'|Set-Content $status
             throw ('Isolated WebGL exporter failed code '+$p.ExitCode)
           }
-          '{"build":"SUCCEEDED","deviceQA":"NOT_TESTED","gameSource":"source-pinned standalone modular scene"}'|
-            Set-Content $status
-          Write-Host 'MODULAR25D_WEBGL_STANDALONE_BUILD_SUCCEEDED'
+          $playerFiles=@(Get-ChildItem -LiteralPath $web -Recurse -File -Force)
+          [long]$totalBytes=($playerFiles|Measure-Object -Property Length -Sum).Sum
+          $largest=@($playerFiles|Sort-Object Length -Descending|Select-Object -First 5|
+            ForEach-Object{@{file=$_.FullName.Substring($web.Length).TrimStart([IO.Path]::DirectorySeparatorChar);bytes=[long]$_.Length}})
+          (@{build='SUCCEEDED';deviceQA='NOT_TESTED';sourceSha=$env:GITHUB_SHA;
+             gameSource='source-pinned standalone modular scene';totalOutputBytes=$totalBytes;
+             playerFileCount=$playerFiles.Count;largestFiles=$largest;resourceIsolation=$true;
+             browserTest='PENDING'}|ConvertTo-Json -Depth 5) |
+            Set-Content $status -Encoding UTF8
+          Write-Host "MODULAR25D_WEBGL_STANDALONE_BUILD_SUCCEEDED bytes=$totalBytes"
       - name: Preserve PlayMode result, sandbox-only save and WebGL status
         if: always()
         uses: actions/upload-artifact@v4
@@ -304,6 +331,7 @@ jobs:
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/PlayMode/*.xml
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/webgl-status.json
             ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/WebGLIsolationGuard.json
+            ${{env.MOD25D_SOURCE}}/Unity/Artifacts/ValoriaModular25D/WebGLResourceIsolation.json
             ${{runner.temp}}/mod25d-playmode-${{github.run_id}}.log
             ${{runner.temp}}/mod25d-webgl-${{github.run_id}}.log
           retention-days: 15
@@ -315,6 +343,16 @@ jobs:
           name: eldoria-mod25d-webgl-player-${{github.run_id}}
           path: |
             ${{env.MOD25D_SOURCE}}/Unity/Builds/ValoriaModular25D_WebGL/
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Preserve source-authored sawmill PNG separately for pixel-alpha QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-original-sawmill-${{github.run_id}}
+          path: |
+            ${{env.MOD25D_SOURCE}}/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png
+            ${{env.MOD25D_SOURCE}}/Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/sawmill_i.png.meta
           retention-days: 14
           if-no-files-found: warn
       - name: Archive verified genuine Unity captures and diagnostic log even on failure

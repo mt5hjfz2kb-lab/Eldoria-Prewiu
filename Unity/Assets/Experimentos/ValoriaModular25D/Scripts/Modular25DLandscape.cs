@@ -49,6 +49,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             {
                 imperialMat=new Material(shader){name="Valoria original illustrated cobblestone road"};
                 imperialMat.mainTexture=artistPath;
+                // The original stones stay unchanged. A restrained warm tint
+                // reduces the bluish floating-sticker effect against olive
+                // meadow without rebuilding a complete city illustration.
+                imperialMat.color=new Color(.93f,.85f,.74f,.93f);
                 materials.Add(imperialMat);
             }
             else
@@ -65,8 +69,10 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(-2.70f,-2.5f),new Vector2(-1.57f,-3.16f),
                 new Vector2(-.21f,-3.50f),new Vector2(1.04f,-3.41f),
                 new Vector2(1.95f,-2.55f)};
-            AddRoad("Imperial Way — original illustrated paving",main,1.69f,imperialMat);
-            AddRoad("Haulers' path — compacted earth and gravel",lumber,1.47f,earthMat);
+            // Keep both branches legible but reduce their over-wide grey ribbons.
+            // Their spline geometry, world-space UVs and hit-tested entrances stay.
+            AddRoad("Imperial Way — original illustrated paving",main,1.47f,imperialMat);
+            AddRoad("Haulers' path — compacted earth and gravel",lumber,1.26f,earthMat);
 
             var keep=MakeFootprint("Bastion",new Color(.49f,.41f,.31f,1),
                 new Color(.74f,.69f,.52f,1),true);
@@ -256,7 +262,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 float r=Mathf.Sqrt(xx*xx+yy*yy);
                 float broad=N(xx*5.2f+10f,yy*6.2f+10f,42);
                 float fine=N(xx*33f,yy*28f,79);
-                float irregular=(broad-.5f)*.20f+(fine-.5f)*.06f;
+                float irregular=(broad-.5f)*.31f+(fine-.5f)*.07f;
                 float fade=1f-Sm(.42f+irregular,1.02f+irregular,r);
                 float dirt=N(xx*14f,yy*12f,8),grit=N(xx*59f,yy*58f,17);
                 Color c=Color.Lerp(soil,lit,Mathf.Clamp01(.20f+.54f*dirt));
@@ -289,7 +295,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 }
                 // Blend into actual painted grass and the incoming road rather
                 // than drawing a solid ochre oval around both buildings.
-                float alpha=fade*(.39f+.29f*fine);
+                float alpha=fade*(cobbled ? .39f+.29f*fine : .29f+.23f*fine);
                 c.a=Mathf.Clamp01(alpha);
                 pixels[y*FootW+x]=(Color32)c;
             }
