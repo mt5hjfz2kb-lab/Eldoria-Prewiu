@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-20T08:44:00.362Z",
+  "updated_at": "2026-11-20T08:59:14.019Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10014,7 +10014,7 @@
       "write_scope_released": false,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
       "status": "active",
-      "phase": "BROWSER_CORRECTION_ON_EXACT_NATIVE_195eebb_NO_WINDOWS",
+      "phase": "EXACT_HEAD_NATIVE_MESH_BANK_ALPHA_AND_HUD_PROOF_REV4",
       "claimed_at": "2026-11-20T00:34:46.251Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: continue existing exclusive modular 2.5D Bastion I experiment in same branch, inspect native evidence, improve halo/footprints/characters/HUD, validate isolated WebGL, no main gameplay or Premium V6 edits, no third-party credits.",
@@ -10025,7 +10025,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "pending",
       "delivery_definition": {
@@ -10052,7 +10054,8 @@
       "last_native_run": 44697658660,
       "last_native_head": "195eebb016b91ae38f27f31b01084295733fab19",
       "last_native_status": "UNITY_AND_WEBGL_COMPILED_RUN_SUCCEEDED_BROWSER_TOP_PIXEL_FALSE_POSITIVE",
-      "last_browser_failure": "Initial dark first frame misclassified by top pixel-only HUD test; image shows safe-area header is correctly inset. Inspect new browser test with real source-pinned player."
+      "last_browser_failure": "Initial dark first frame misclassified by top pixel-only HUD test; image shows safe-area header is correctly inset. Inspect new browser test with real source-pinned player.",
+      "next_native_head": "b00897b081fe3e0e143a51df37a71533fad25beb"
     }
   ],
   "history": [
@@ -20483,11 +20486,11 @@
     "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
     "authorized_at": "2026-11-19T12:01:31.172Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available_after_modular25d_native_run_44697658660",
+    "status": "single_exclusive_mod25d_corrective_native_capture",
     "rules": [
       "No cancellation of ongoing Unity jobs or interruption of other writers.",
       "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
@@ -20551,6 +20554,6 @@
       "last_depth_previous_run": 44281717983,
       "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
     },
-    "note": "Exclusive Unity job 44697658660 completed, Native/PlayMode/WebGL Unity PASS, browser automation failed. Windows released, source workstream rev4 remains claimed for browser-only corrective testing."
+    "note": "Source b00897b: verify new modular path mesh vertex colors, HUD shadow, real Unity captures/NUnit, standalone compact WebGL, browser click/save. Release Windows after bounded job."
   }
 }
