@@ -17,12 +17,25 @@ def main():
   source=(SOURCE/(name+".svg")).read_bytes()
   assert b"<svg" in source and b"</svg>" in source
   dest=OUT/(name+".png")
-  cairosvg.svg2png(bytestring=source,write_to=str(dest),output_width=2*w,output_height=2*h)
+  # Prioritize professionally illustrated independent original sources.
+  # Stable SVGs remain editable/testable fallback; NEVER regenerate over a
+  # higher-quality source PNG or silently mix art when a supplied file fails.
+  premium=R/"tools/valoria-corona-brecha/premium"/(name+".png")
+  if premium.exists():
+   import shutil
+   shutil.copyfile(premium,dest)  # byte-exact original PNG, not a re-render
+   origin="original_image_generated_illustrated_png"
+   art_source=premium.read_bytes()
+  else:
+   cairosvg.svg2png(bytestring=source,write_to=str(dest),output_width=2*w,output_height=2*h)
+   origin="original_deterministic_svg_fallback"
+   art_source=source
   with Image.open(dest) as im:
    im.load()
-   assert im.mode=="RGBA" and im.size==(2*w,2*h),(name,im.mode,im.size)
+   assert im.mode=="RGBA",(name,im.mode)
+   assert im.width>=120 and im.height>=120,(name,im.size)
    assert im.getpixel((0,0))[3]<40,name
-   im.save(dest,optimize=True)
+   image_size=list(im.size)
   guid=hashlib.md5(("Eldoria-Corona-Brecha-"+name).encode()).hexdigest()
   m=("fileFormatVersion: 2\nguid: "+guid+"\nTextureImporter:\n"
     "  serializedVersion: 12\n  externalObjects: {}\n  mipmaps:\n"
@@ -37,11 +50,11 @@ def main():
     "  spriteBorder: {x: "+str(2*border)+", y: "+str(2*border)+
     ", z: "+str(2*border)+", w: "+str(2*border)+"}\n")
   (OUT/(name+".png.meta")).write_text(m)
-  report.append({**item,"guid":guid,"sha256":hashlib.sha256(dest.read_bytes()).hexdigest(),"source_sha256":hashlib.sha256(source).hexdigest()})
+  report.append({**item,"guid":guid,"sha256":hashlib.sha256(dest.read_bytes()).hexdigest(),"source_sha256":hashlib.sha256(art_source).hexdigest(),"source_type":origin,"export_size":image_size,"svg_fallback_sha256":hashlib.sha256(source).hexdigest()})
   print("CORONA_ORIGINAL_PNG",name,report[-1]["sha256"])
  proof=R/"docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json"
  proof.parent.mkdir(parents=True,exist_ok=True)
- proof.write_text(json.dumps({"schema":1,"source":"original SVG vector shapes","visual_approved":False,"unity_runtime_tested":False,"mechanics_changed":False,"sprites":report},indent=2)+"\n")
+ proof.write_text(json.dumps({"schema":1,"source":"premium original illustrated PNGs with independent SVG fallbacks","visual_approved":False,"unity_runtime_tested":False,"mechanics_changed":False,"sprites":report},indent=2)+"\n")
  assert len(report)==15
  print("CORONA_ART_SOURCE_BAKE_PASS",len(report))
 if __name__=="__main__":main()

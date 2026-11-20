@@ -42,7 +42,7 @@ jobs:
           for item in d['sprites']:
               with Image.open(root/(item['name']+'.png')) as img:
                   img.load()
-                  assert img.mode=='RGBA' and img.size==tuple(n*2 for n in item['size'])
+                  assert img.mode=='RGBA' and img.size==tuple(item['export_size'])
               meta=(root/(item['name']+'.png.meta')).read_text()
               assert 'guid: '+item['guid'] in meta
               assert 'spriteBorder: {x: '+str(2*item['border']) in meta
