@@ -287,9 +287,9 @@
         0.5,
         0.06
       ],
-      "sha256": "4fd2ed00f51002de8e0418597697f2fe787089af175bbd510ead8dbb22847e4d",
-      "bytes": 2695,
-      "source": "Original OpenAI-generated component for this Eldoria project; two-frame sawyer and trestle quantized from 512px authorial source 2026-11-20; no third-party asset",
+      "sha256": "31efdfda261100db7e599ffff6be13912d3144fd2bb271d726e7daaa4736dcdf",
+      "bytes": 8910,
+      "source": "Original OpenAI-generated component for this Eldoria project; two-frame sawyer and trestle quantized from 512px authorial source 2026-11-20; no third-party asset; original indexed PNG retained under tools/valoria-modular25d/provenance/worker_saw_original_indexed; exact decoded RGBA pixel identity preserved; Unity import still requires real native verification",
       "generation_id": "aca9f10f-b668-4ea7-b1ab-a4fe2dcec29c",
       "art_approved": false,
       "unity_render_checked": false
@@ -304,9 +304,9 @@
         0.5,
         0.06
       ],
-      "sha256": "133701506f01f482162fce0266a826c78a6ba8200413dd7d054ff086d72aa9e5",
-      "bytes": 2690,
-      "source": "Original OpenAI-generated component for this Eldoria project; two-frame sawyer and trestle quantized from 512px authorial source 2026-11-20; no third-party asset",
+      "sha256": "00dc4ae6e2eb81563e4fad085322f0721f1275dedc207ce9b74d13b7ef8a6553",
+      "bytes": 8529,
+      "source": "Original OpenAI-generated component for this Eldoria project; two-frame sawyer and trestle quantized from 512px authorial source 2026-11-20; no third-party asset; original indexed PNG retained under tools/valoria-modular25d/provenance/worker_saw_original_indexed; exact decoded RGBA pixel identity preserved; Unity import still requires real native verification",
       "generation_id": "aca9f10f-b668-4ea7-b1ab-a4fe2dcec29c",
       "art_approved": false,
       "unity_render_checked": false

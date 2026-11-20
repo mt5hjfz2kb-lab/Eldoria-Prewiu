@@ -89,8 +89,8 @@ class SandboxSourceContracts(unittest.TestCase):
         entries={p["name"]:p for p in
                  json.loads((directory/"sprite_manifest.json").read_text(encoding="utf8"))["sprites"]}
         expected={
-            "worker_saw_0":("4fd2ed00f51002de8e0418597697f2fe787089af175bbd510ead8dbb22847e4d",2695),
-            "worker_saw_1":("133701506f01f482162fce0266a826c78a6ba8200413dd7d054ff086d72aa9e5",2690),
+            "worker_saw_0":("31efdfda261100db7e599ffff6be13912d3144fd2bb271d726e7daaa4736dcdf",8910),
+            "worker_saw_1":("00dc4ae6e2eb81563e4fad085322f0721f1275dedc207ce9b74d13b7ef8a6553",8529),
         }
         for name,(sha,bytecount) in expected.items():
             path=directory/(name+".png")
@@ -98,7 +98,7 @@ class SandboxSourceContracts(unittest.TestCase):
             self.assertEqual(len(content_bytes),bytecount)
             self.assertEqual(hashlib.sha256(content_bytes).hexdigest(),sha)
             self.assertEqual(struct.unpack(">II",content_bytes[16:24]),(96,96))
-            self.assertEqual(content_bytes[25],3,"Original paletted PNG with alpha, not a backplate")
+            self.assertEqual(content_bytes[25],6,"Losslessly decoded RGBA PNG with alpha, not a backplate")
             meta=(directory/(name+".png.meta")).read_text(encoding="utf8")
             self.assertIn("spritePixelsToUnits: 100",meta)
             self.assertIn("spritePivot: {x: 0.500000, y: 0.060000}",meta)

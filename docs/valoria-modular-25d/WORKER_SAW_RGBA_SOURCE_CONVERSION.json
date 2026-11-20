@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "reason": "Unity 6000.3 Resources.Load rejects original indexed worker_saw_1",
+  "hypothesis": "PNG indexed palette+tRNS import compatibility; re-encode RGBA without pixel changes",
+  "original_sources_preserved": true,
+  "art_modified": false,
+  "camera_modified": false,
+  "gameplay_modified": false,
+  "unity_verified": false,
+  "assets": [
+    {
+      "name": "worker_saw_0",
+      "indexed_sha256": "4fd2ed00f51002de8e0418597697f2fe787089af175bbd510ead8dbb22847e4d",
+      "rgba_sha256": "31efdfda261100db7e599ffff6be13912d3144fd2bb271d726e7daaa4736dcdf",
+      "decoded_rgba_pixel_sha256": "4b2cac9b9c9e2da4651521b67193d9faddb362d6ed852d0386db1bcca50b87a7",
+      "indexed_bytes": 2695,
+      "rgba_bytes": 8910,
+      "pixel_identical": true,
+      "guid_meta_preserved": true
+    },
+    {
+      "name": "worker_saw_1",
+      "indexed_sha256": "133701506f01f482162fce0266a826c78a6ba8200413dd7d054ff086d72aa9e5",
+      "rgba_sha256": "00dc4ae6e2eb81563e4fad085322f0721f1275dedc207ce9b74d13b7ef8a6553",
+      "decoded_rgba_pixel_sha256": "9e2f2716387566a405083dc58028ba063c0ded1c9da0c40cfc3c1a7acc368b93",
+      "indexed_bytes": 2690,
+      "rgba_bytes": 8529,
+      "pixel_identical": true,
+      "guid_meta_preserved": true
+    }
+  ]
+}
