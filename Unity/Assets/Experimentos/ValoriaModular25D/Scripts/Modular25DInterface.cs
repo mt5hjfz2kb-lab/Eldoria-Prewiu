@@ -38,6 +38,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private GameObject buildingSheet;
         private Canvas hudCanvas;
         private RectTransform identity, resourceRow, inspect, center, statusDock, sheet, statusSheet, objective, noticeRoot;
+        private RectTransform topRibbon, topRibbonHairline, activityHandle, activityDrawer, activityFill, activityTrack;
+        private Text activityTitle, activityProgress;
+        private bool activityExpanded;
         // World-anchored, tap-enabled nameplates: standard strategy-game
         // readability without hand-painted text embedded in the scenery.
         private RectTransform bastionTag, sawmillTag;
@@ -71,6 +74,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             hudCanvas = root.GetComponent<Canvas>();
             hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             hudCanvas.sortingOrder = 240;
+            hudCanvas.pixelPerfect=true;
             var scaler = root.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(390f, 844f);
@@ -78,14 +82,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             scaler.matchWidthOrHeight = .3f;
             var rootTransform = root.transform;
 
-            // Header is NOT one dark full-width strip. The game view remains
-            // visible between a short identity seal and three resource chips.
+            // One continuous 46-point ribbon shares player name and wallet.
+            topRibbon=Plate("Shared player and resource ribbon",rootTransform,null,
+                new Vector2(.5f,1f),new Vector2(.5f,1f),Vector2.zero,
+                new Vector2(378f,46f));
+            topRibbon.GetComponent<Image>().color=new Color32(21,13,34,211);
+            topRibbonHairline=Plate("Shared ribbon gold seam",topRibbon,null,
+                new Vector2(.5f,0f),new Vector2(.5f,0f),
+                Vector2.zero,new Vector2(365f,1.2f));
+            topRibbonHairline.GetComponent<Image>().color=new Color32(175,132,72,210);
             identity = Plate("Valoria identity", rootTransform, identityPlate,
-                new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
-                new Vector2(182f, 82f));
+                new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(6f, -6f),
+                new Vector2(102f, 44f));
             var sigil = Plate("Sir Aldric portrait bezel", identity, portraitPlate,
-                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(34f, 0f),
-                new Vector2(59f, 59f));
+                new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(18f,0f),
+                new Vector2(35f,35f));
             var aldricAvatar=Resources.Load<Sprite>(
                 "ValoriaModular25D/UI/UmbralII/aldric_avatar");
             if(aldricAvatar==null)
@@ -95,24 +106,25 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f,.5f),new Vector2(.5f,.5f),Vector2.zero,new Vector2(44f,44f));
             face.GetComponent<Image>().type=Image.Type.Simple;
             face.GetComponent<Image>().preserveAspect=true;
-            // Original 580x260 painted crest reserves its right inset for
-            // the text, beginning at ~54% of image width. The previous label
-            // began before this text-safe enamel and overprinted the jewel.
-            title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(46f, 9f), new Vector2(70f, 29f));
+            face.GetComponent<RectTransform>().sizeDelta=new Vector2(28f,28f);
+            // Real PlayerState.PlayerName is the user-selected name. Valoria
+            // remains a fallback only for an older unnamed test save.
+            title = Label("VALORIA", identity, 14, true, WarmWhite, TextAnchor.MiddleLeft,
+                new Vector2(19f,7f), new Vector2(54f,22f));
             title.resizeTextForBestFit=true;
-            title.resizeTextMinSize=16;
-            title.resizeTextMaxSize=19;
-            level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(46f, -17f), new Vector2(70f, 28f));
+            title.resizeTextMinSize=10;
+            title.resizeTextMaxSize=14;
+            title.horizontalOverflow=HorizontalWrapMode.Overflow;
+            level = Label("BASTIÓN I", identity, 9, false, PaleGold, TextAnchor.MiddleLeft,
+                new Vector2(19f,-10f),new Vector2(54f,16f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
             level.verticalOverflow = VerticalWrapMode.Overflow;
 
             resourceRow = Plate("Independent resources", rootTransform, null,
-                new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
-                new Vector2(365f, 52f));
+                new Vector2(1f,1f),new Vector2(1f,1f),Vector2.zero,
+                new Vector2(266f,42f));
             resourceChips = new RectTransform[3];
             resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", woodIcon, out woodValue, out woodAccent);
             Image stoneAccent;
@@ -188,6 +200,38 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(19f,11f),new Vector2(118f,16f));
             objectiveText=Label("ASERRADERO · 0/1",objective,13,false,WarmWhite,
                 TextAnchor.MiddleLeft,new Vector2(19f,-8f),new Vector2(118f,24f));
+
+            // Hidden LEFT activity drawer: reuse the existing real quest
+            // Button and live construction clock without adding a new
+            // command or changing any resource/mission rules.
+            activityDrawer=Plate("Left activity drawer",rootTransform,parchmentPlate,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(54f,0f),new Vector2(246f,185f));
+            activityTitle=Label("TAREAS DE VALORIA",activityDrawer,16,true,PaleGold,
+                TextAnchor.MiddleCenter,new Vector2(0f,69f),new Vector2(198f,25f));
+            objective.SetParent(activityDrawer,false);
+            objective.anchorMin=objective.anchorMax=new Vector2(.5f,.5f);
+            objective.pivot=new Vector2(.5f,.5f);
+            objective.anchoredPosition=new Vector2(0f,9f);
+            activityProgress=Label("ASERRADERO",activityDrawer,13,false,WarmWhite,
+                TextAnchor.MiddleCenter,new Vector2(0f,-48f),new Vector2(198f,24f));
+            activityProgress.verticalOverflow=VerticalWrapMode.Overflow;
+            activityTrack=Plate("Activity real construction track",activityDrawer,null,
+                new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                new Vector2(0f,-67f),new Vector2(178f,7f));
+            activityTrack.GetComponent<Image>().color=new Color32(20,13,38,232);
+            activityFill=Plate("Activity canonical construction fill",activityTrack,null,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),
+                new Vector2(2f,0f),new Vector2(2f,5f));
+            activityFill.GetComponent<Image>().color=new Color32(75,214,199,255);
+            activityTrack.gameObject.SetActive(false);
+            activityHandle=ButtonPlate("Toggle left activities",rootTransform,"",taskIcon,
+                new Vector2(0f,.5f),new Vector2(0f,.5f),Vector2.zero,
+                new Vector2(46f,62f),ToggleActivities).GetComponent<RectTransform>();
+            activityHandle.GetComponent<Image>().type=Image.Type.Simple;
+            activityHandle.GetComponent<Image>().preserveAspect=true;
+            activityDrawer.gameObject.SetActive(false);
+            activityExpanded=false;
 
             // Context sheet uses warm architectural parchment, a real sprite
             // from the experiment, and original data. Not a generic modal.
@@ -306,9 +350,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             SyncWorldNameplates();
         }
 
+        public void ToggleActivities()
+        {
+            if(activityDrawer==null)return;
+            activityExpanded=!activityExpanded;
+            activityDrawer.gameObject.SetActive(activityExpanded);
+            if(activityExpanded&&gateway!=null)Refresh(gateway.Snapshot());
+        }
+
         public void OpenSawmill()
         {
             if(buildingSheet==null)return;
+            if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
+            activityExpanded=false;
             if(statusSheet!=null)statusSheet.gameObject.SetActive(false);
             buildingSheet.SetActive(true);
             SetModalChrome();
@@ -318,6 +372,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void OpenStatus()
         {
             if(statusSheet==null)return;
+            if(activityDrawer!=null)activityDrawer.gameObject.SetActive(false);
+            activityExpanded=false;
             if(buildingSheet!=null)buildingSheet.SetActive(false);
             statusSheet.gameObject.SetActive(true);
             SetModalChrome();
@@ -344,6 +400,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if(center!=null)center.gameObject.SetActive(!open);
             if(statusDock!=null)statusDock.gameObject.SetActive(!open);
             if(objective!=null)objective.gameObject.SetActive(!open);
+            if(activityHandle!=null)activityHandle.gameObject.SetActive(!open);
+            if(open && activityDrawer!=null)
+            {
+                activityDrawer.gameObject.SetActive(false);
+                activityExpanded=false;
+            }
         }
 
         private void Update()
@@ -387,6 +449,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             if (show) noticeExpires = Time.unscaledTime + 2.8f;
         }
 
+        public static string PlayerDisplayName(string savedName)
+        {
+            if(string.IsNullOrWhiteSpace(savedName))return "VALORIA";
+            string name=savedName.Trim();
+            return name.Length>12?name.Substring(0,11)+"…":name;
+        }
+
         // WOS/Kingshot-sized resource indicators must remain legible
         // even when the canonical wallet grows past four or six digits.
         // The small HUD uses compact display only; status/gameplay/Save
@@ -411,6 +480,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if (action != null) action.interactable = false;
                 return;
             }
+            title.text=PlayerDisplayName(s.PlayerName);
             level.text = "BASTIÓN " + s.BastionLevel;
             if(bastionTagText!=null)
                 bastionTagText.text="BASTIÓN · "+s.BastionLevel;
