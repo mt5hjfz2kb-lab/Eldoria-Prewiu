@@ -312,7 +312,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                     remaining.text = "Finaliza en " + secondsLeft + " s";
                     if(constructionProgressFill!=null)
                     {
-                        float duration=Mathf.Max(1,SliceRules.SawmillBuildSeconds);
+                        float duration=Mathf.Max(1f,(float)SliceRules.SawmillBuildSeconds);
                         float elapsed=Mathf.Clamp01(1f-secondsLeft/duration);
                         constructionProgressFill.sizeDelta=
                             new Vector2(Mathf.Max(2f,181f*elapsed),4f);
