@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "requested_on": "2026-11-20",
+  "description": "Unity 6000.3 fails to import original worker_saw_1 as Sprite/Texture2D even after RGBA6 conversion; use byte-identical source PNG as native TextAsset alias .bytes and ImageConversion.LoadImage, no artwork changes",
+  "base_commit": "d5f0693ccde79d1174dd088359a42870f23294a1",
+  "source_pngs": [
+    "worker_saw_0",
+    "worker_saw_1"
+  ],
+  "failed_native_runs": [
+    44745994989,
+    44758551800,
+    44763580769
+  ],
+  "no_gameplay_change": true
+}
