@@ -12,5 +12,8 @@
     44758551800,
     44763580769
   ],
-  "no_gameplay_change": true
+  "no_gameplay_change": true,
+  "attempt": 2,
+  "previous_failure": "git diff --cached --check rejected three trailing spaces in generated .bytes.meta; corrected generator",
+  "source_fix_sha": "e6c3ed12e3285b0fa6a737beb4130b345356554b"
 }
