@@ -8,6 +8,31 @@ R=Path(__file__).resolve().parents[2]
 SOURCE=R/"tools/valoria-corona-brecha/source"
 OUT=R/"Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha"
 SPEC=json.loads((R/"tools/valoria-corona-brecha/manifest.json").read_text())
+def artist_aspect_recompose(image,target_width):
+ """Reuse ONLY original painted source pixels; preserve left/right gemstone
+ terminals plus the central diamond at their correct aspect, expanding
+ solely the left and right enamel fields. This is FIVE-region remapping,
+ not Unity 9-slice across the crystal nor a composed city screenshot.
+ Source must be the premium 580x260 RGBA art. Target widths correspond
+ to the real Unity 180x44 badge and 270x42 Build CTA.
+ """
+ assert image.size==(580,260),("premium art size changed",image.size)
+ assert target_width in (1036,1665)
+ cuts=(0,110,253,327,470,580)
+ west=(target_width-294)//2
+ widths=(110,west,74,target_width-294-west,110)
+ assert sum(widths)==target_width
+ output=Image.new("RGBA",(target_width,260))
+ start=0
+ for index,(x0,x1) in enumerate(zip(cuts,cuts[1:])):
+  strip=image.crop((x0,0,x1,260))
+  if strip.width!=widths[index]:
+   strip=strip.resize((widths[index],260),Image.Resampling.LANCZOS)
+  output.alpha_composite(strip,(start,0))
+  start+=widths[index]
+ assert start==target_width
+ return output
+
 def main():
  OUT.mkdir(parents=True,exist_ok=True)
  (OUT.parent/"CoronaBrecha.meta").write_text("fileFormatVersion: 2\nguid: 79f6030ed90712d9a1c8a5bd32f9a186\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n")
@@ -62,8 +87,18 @@ def main():
       painter.rounded_rectangle((x0+5,y0+5,x1-5,y1-5),
         radius=28,outline=(122,88,146,95),width=3)
       actual=Image.alpha_composite(actual,mask)
+     # Full painted premium ornaments were severely SQUASHED to the
+     # world-nameplate (180x44) and real build button (270x42).
+     # Adapt the source aspect WITHOUT shrinking the central gold gem.
+     if name=="world_rune":
+      actual=artist_aspect_recompose(actual,1036)
+      origin="painted_original_aspect_safe_world_plaque_5_regions"
+     elif name=="action_arcane":
+      actual=artist_aspect_recompose(actual,1665)
+      origin="painted_original_aspect_safe_build_cta_5_regions"
+     else:
+      origin="original_illustration_png_opaque_art_bounds_normalized"
      actual.save(dest,optimize=True,compress_level=9)
-    origin="original_illustration_png_opaque_art_bounds_normalized"
    else:
     import shutil
     shutil.copyfile(premium,dest)

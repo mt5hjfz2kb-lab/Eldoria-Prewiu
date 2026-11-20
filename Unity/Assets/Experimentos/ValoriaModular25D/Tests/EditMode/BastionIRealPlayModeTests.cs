@@ -376,6 +376,18 @@ namespace Eldoria.Modular25D.Tests
             Assert.That(currentNameplate.GetComponent<Image>().sprite.name,
                 Is.EqualTo("world_rune"),
                 "Teal construction sprite must be reserved for the real Build action");
+            foreach(var crafted in new[]{
+                currentNameplate.GetComponent<Image>(),
+                buttons.First(x=>x&&x.gameObject.name=="Execute canonical Build command")
+                    .GetComponent<Image>()
+            })
+            {
+                var sourceRatio=crafted.sprite.rect.width/crafted.sprite.rect.height;
+                var targetRatio=crafted.rectTransform.rect.width/
+                    Mathf.Max(1f,crafted.rectTransform.rect.height);
+                Assert.That(Mathf.Abs(sourceRatio/targetRatio-1f),Is.LessThan(.12f),
+                    "A premium illustrated diamond cannot be flattened to a line by a mismatched UI Rect");
+            }
 
 
             var progress=world.GetComponentsInChildren<RectTransform>(true)
