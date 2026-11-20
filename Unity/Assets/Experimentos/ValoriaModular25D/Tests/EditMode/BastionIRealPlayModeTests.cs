@@ -282,6 +282,11 @@ namespace Eldoria.Modular25D.Tests
                 nickname.rectTransform.anchoredPosition.x+
                 nickname.rectTransform.rect.width*.5f;
             Assert.LessOrEqual(nicknameRight,identity.rect.width-3f);
+            float nicknameLeft=identity.rect.width*.5f+
+                nickname.rectTransform.anchoredPosition.x-
+                nickname.rectTransform.rect.width*.5f;
+            Assert.GreaterOrEqual(nicknameLeft,55f,
+                "Nickname must stay in right painted enamel, never across central amethyst");
             var nameMethod=ui.GetType().GetMethod("PlayerDisplayName",
                 BindingFlags.Public|BindingFlags.Static);
             Assert.NotNull(nameMethod);

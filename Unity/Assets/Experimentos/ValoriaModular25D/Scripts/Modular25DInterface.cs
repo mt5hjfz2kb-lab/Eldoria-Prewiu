@@ -111,13 +111,13 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // Real PlayerState.PlayerName is the user-selected name. Valoria
             // remains a fallback only for an older unnamed test save.
             title = Label("VALORIA", identity, 14, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(19f,7f), new Vector2(54f,22f));
+                new Vector2(26f,7f),new Vector2(42f,22f));
             title.resizeTextForBestFit=true;
             title.resizeTextMinSize=10;
             title.resizeTextMaxSize=14;
             title.horizontalOverflow=HorizontalWrapMode.Overflow;
             level = Label("BASTIÓN I", identity, 9, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(19f,-10f),new Vector2(54f,16f));
+                new Vector2(26f,-10f),new Vector2(42f,16f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.
@@ -454,7 +454,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         {
             if(string.IsNullOrWhiteSpace(savedName))return "VALORIA";
             string name=savedName.Trim();
-            return name.Length>12?name.Substring(0,11)+"…":name;
+            return name.Length>8?name.Substring(0,7)+"…":name;
         }
 
         // WOS/Kingshot-sized resource indicators must remain legible
