@@ -6,14 +6,14 @@
   "source_provenance": "ALDRIC_BUST_PROVENANCE.json / already-approved Aldric head and shoulders",
   "original_cropped_pixels_preserved": true,
   "crop_box_in_512": [
-    138,
-    16,
-    374,
-    252
+    100,
+    130,
+    410,
+    440
   ],
   "output_path": "Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/UmbralII/aldric_avatar.png",
-  "output_sha256": "aa5d13c238dffde7596e1619dc318882104cbf05dd244b5300e9073ab8edc6fd",
-  "size_bytes": 17852,
+  "output_sha256": "1e3c7216b625470730e688398cac457fa63431b04da3e873afc3e4a7e8562049",
+  "size_bytes": 18316,
   "size": [
     128,
     128
