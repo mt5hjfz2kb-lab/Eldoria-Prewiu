@@ -115,8 +115,10 @@ function woodBalancePixels(a, b) {
   if(original.width!==current.width || original.height!==current.height)
     throw Error('Wood label screenshot dimensions changed');
   const w=original.width,h=original.height;
-  const left=Math.round(w*.16),right=Math.round(w*.31);
-  const top=Math.round(h*.10),bottom=Math.round(h*.14);
+  // The REAL numeric wood glyph occupies x~.13-.23, not the entire capsule.
+  // Verified against 44770528023 original build 230 -> 150 screenshots.
+  const left=Math.round(w*.13),right=Math.round(w*.24);
+  const top=Math.round(h*.10),bottom=Math.round(h*.13);
   let changed=0,total=0;
   for(let y=top;y<bottom;y++)for(let x=left;x<right;x++) {
     const i=(y*w+x)*4;
@@ -220,7 +222,7 @@ try {
     // Both frames have the identical open modal and full brightness;
     // only the Wood digits should change, not a startup fade.
     const paid=woodBalancePixels(opened.bytes,building.bytes);
-    if(paid.changed<10 || paid.ratio<.018)
+    if(paid.changed<25 || paid.ratio<.034)
       throw Error(width+'x'+height+': Build did not change the real wood balance glyphs: '+paid.ratio.toFixed(3));
     await page.waitForTimeout(2500); // allow PlayerPrefs.Save + browser storage sync
     await page.reload({waitUntil:'domcontentloaded',timeout:60_000});
@@ -233,7 +235,7 @@ try {
     const reloadReadiness=await awaitUnfadedWorld(page,width,height,'after-reload');
     const reloaded=await capture('real-after-browser-reload');
     const retained=woodBalancePixels(building.bytes,reloaded.bytes);
-    if(retained.ratio>.07)
+    if(retained.ratio>.055)
       throw Error(width+'x'+height+': Browser reload lost or altered paid wood balance: '+retained.ratio.toFixed(3));
         if (errors.length || failures.length)
       throw Error(width + 'x' + height + ': browser errors: ' + [...errors, ...failures].slice(0, 10).join(' | '));
