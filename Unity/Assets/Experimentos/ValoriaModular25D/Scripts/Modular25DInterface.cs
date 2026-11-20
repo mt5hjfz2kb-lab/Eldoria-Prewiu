@@ -501,15 +501,21 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sawmillTagText.rectTransform.sizeDelta=
                     new Vector2(146f,constructing?23f:32f);
                 if(worldProgressTrack!=null)
+                    worldProgressTrack.gameObject.SetActive(false);
+                if(activityTitle!=null)
+                    activityTitle.text=constructing?"OBRA EN CURSO":"TAREAS DE VALORIA";
+                if(activityProgress!=null)
+                    activityProgress.text=constructing
+                        ? "ASERRADERO  "+(timeLeft/60L).ToString()+":"+
+                            (timeLeft%60L).ToString("00")
+                        : building==ParcelBuildingState.BUILT
+                            ? "ASERRADERO CONSTRUIDO":"PARCELA DISPONIBLE";
+                if(activityTrack!=null)activityTrack.gameObject.SetActive(constructing);
+                if(constructing && activityFill!=null)
                 {
-                    worldProgressTrack.gameObject.SetActive(constructing);
-                    if(constructing && worldProgressFill!=null)
-                    {
-                        float duration=Mathf.Max(1f,(float)SliceRules.SawmillBuildSeconds);
-                        float elapsed=Mathf.Clamp01(1f-(float)timeLeft/duration);
-                        worldProgressFill.sizeDelta=new Vector2(
-                            Mathf.Max(2f,116f*elapsed),4f);
-                    }
+                    float duration=Mathf.Max(1f,(float)SliceRules.SawmillBuildSeconds);
+                    float elapsed=Mathf.Clamp01(1f-(float)timeLeft/duration);
+                    activityFill.sizeDelta=new Vector2(Mathf.Max(2f,174f*elapsed),5f);
                 }
                 // Arcane turquoise is reserved for the actual BUILD command.
                 // The world label stays the same readable deep obsidian plaque
@@ -533,7 +539,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 objectiveText.text=s.SawmillLevel>0?"ASERRADERO · 1/1":
                     s.BuildingCompletesUtcTicks>0?"OBRA EN CURSO":"ASERRADERO · 0/1";
             if(stateSummary!=null)
-                stateSummary.text="Bastión " + s.BastionLevel + "  ·  Aserradero " + s.SawmillLevel +
+                stateSummary.text="Jugador: " +
+                    (string.IsNullOrWhiteSpace(s.PlayerName)?"SIN NOMBRE":s.PlayerName.Trim())+
+                    "\nBastión " + s.BastionLevel + "  ·  Aserradero " + s.SawmillLevel +
                     "\nMadera: " + s.Resources.Wood.ToString("N0") +
                     "   Piedra: " + s.Resources.Stone.ToString("N0") +
                     "\nComida: " + s.Resources.Food.ToString("N0");
@@ -599,8 +607,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float millFootY=cachedSawmillPhase==ParcelBuildingState.BUILT
                 ? -3.86f : cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION
                     ? -3.45f : -2.90f;
+            // The OBRA badge is exclusively inside the left drawer when
+            // construction is running. Keep the actual parcel visible.
             PlaceWorldNameplate(sawmillTag,baseRect,
-                new Vector3(.96f,millFootY,0f),hiddenByPanel);
+                new Vector3(.96f,millFootY,0f),
+                hiddenByPanel||cachedSawmillPhase==ParcelBuildingState.UNDER_CONSTRUCTION);
         }
 
         private void PlaceWorldNameplate(RectTransform nameplate,RectTransform canvasRect,
@@ -668,80 +679,94 @@ namespace Eldoria.Experimentos.ValoriaModular25D
 
         private void Layout()
         {
-            if(hudCanvas==null || identity==null)return;
+            if(hudCanvas==null||identity==null)return;
             int w=Screen.width,h=Screen.height;
-            if(w<=0 || h<=0)return;
+            if(w<=0||h<=0)return;
             float scale=Mathf.Max(.01f,hudCanvas.scaleFactor);
             Rect safe=Screen.safeArea;
-            float top=Mathf.Max(0f,(h-safe.yMax)/scale)+8f;
+            float top=Mathf.Max(0f,(h-safe.yMax)/scale)+2f;
             float bottom=Mathf.Max(0f,safe.yMin/scale)+8f;
             float left=Mathf.Max(0f,safe.xMin/scale);
             float right=Mathf.Max(0f,(w-safe.xMax)/scale);
-            float logicalWidth=w/scale;
+            float width=w/scale;
+            float safeWidth=width-left-right;
             bool wide=w>h;
 
-            // Economy touches the TOP safe area in portrait and landscape.
-            // It is never delayed by a large empty gap under the identity.
-            resourceRow.anchorMin=resourceRow.anchorMax=
-                wide?new Vector2(1f,1f):new Vector2(.5f,1f);
-            resourceRow.pivot=wide?new Vector2(1f,1f):new Vector2(.5f,1f);
-            resourceRow.anchoredPosition=wide?
-                new Vector2(-12f-right,-top):new Vector2(0f,-top);
-            float available=logicalWidth-left-right;
-            float economyWidth=wide
-                ? Mathf.Min(365f,Mathf.Max(280f,available-214f))
-                : Mathf.Min(365f,available-16f);
-            resourceRow.sizeDelta=new Vector2(economyWidth,52f);
-            float capsuleWidth=(economyWidth-12f)/3f;
-            float sourceHeightPerWidth=resourcePlate.rect.height/
+            // Exactly ONE 46pt player economy strip. Its hairline and all
+            // three independently-painted resource plates are aligned to
+            // physical pixels and the entire strip hugs the safe top edge.
+            topRibbon.anchorMin=topRibbon.anchorMax=new Vector2(.5f,1f);
+            topRibbon.pivot=new Vector2(.5f,1f);
+            topRibbon.anchoredPosition=new Vector2((left-right)*.5f,-top);
+            topRibbon.sizeDelta=new Vector2(safeWidth-6f,46f);
+            topRibbonHairline.sizeDelta=new Vector2(safeWidth-18f,1.2f);
+
+            identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
+            identity.pivot=new Vector2(0f,1f);
+            identity.anchoredPosition=new Vector2(left+6f,-top-1f);
+            identity.sizeDelta=new Vector2(102f,44f);
+            resourceRow.anchorMin=resourceRow.anchorMax=new Vector2(1f,1f);
+            resourceRow.pivot=new Vector2(1f,1f);
+            resourceRow.anchoredPosition=new Vector2(-right-6f,-top-3f);
+            float economyWidth=Mathf.Min(wide?335f:300f,
+                Mathf.Max(168f,safeWidth-119f));
+            resourceRow.sizeDelta=new Vector2(economyWidth,40f);
+            float chipWidth=(economyWidth-12f)/3f;
+            float sourceAspect=resourcePlate.rect.height/
                 Mathf.Max(1f,resourcePlate.rect.width);
             for(int i=0;i<resourceChips.Length;i++)
             {
                 var chip=resourceChips[i];
                 chip.anchorMin=chip.anchorMax=new Vector2(0f,.5f);
                 chip.pivot=new Vector2(0f,.5f);
-                chip.sizeDelta=new Vector2(capsuleWidth,
-                    Mathf.Min(52f,capsuleWidth*sourceHeightPerWidth));
-                chip.anchoredPosition=new Vector2(i*(capsuleWidth+6f),0f);
+                chip.sizeDelta=new Vector2(chipWidth,
+                    Mathf.Min(38f,chipWidth*sourceAspect));
+                chip.anchoredPosition=new Vector2(i*(chipWidth+6f),0f);
                 chip.GetComponent<Image>().preserveAspect=true;
-                // The resource icon and number occupy disjoint zones even
-                // when an iPhone landscape cutout shrinks each capsule.
-                // Do not stretch any original premium illustration.
-                float iconDiameter=Mathf.Clamp(capsuleWidth*.32f,28f,42f);
+                float d=Mathf.Clamp(chipWidth*.32f,20f,28f);
                 var art=chip.Find((i==0?"MADERA":i==1?"PIEDRA":"COMIDA")+
                     " original resource art") as RectTransform;
                 if(art!=null)
-                    art.sizeDelta=new Vector2(iconDiameter,iconDiameter);
+                {
+                    art.anchoredPosition=new Vector2(6f,0f);
+                    art.sizeDelta=new Vector2(d,d);
+                }
                 var number=i==0?woodValue:i==1?stoneValue:foodValue;
                 if(number!=null)
                 {
+                    number.rectTransform.anchoredPosition=new Vector2(-5f,0f);
                     number.rectTransform.sizeDelta=new Vector2(
-                        Mathf.Clamp(capsuleWidth-iconDiameter-17f,39f,62f),33f);
-                    number.fontSize=capsuleWidth<100f?16:18;
+                        Mathf.Clamp(chipWidth-d-12f,26f,46f),31f);
+                    number.fontSize=chipWidth<82f?14:16;
                 }
             }
 
-            // Landscape: crest left, economy right; portrait: crest is
-            // directly below the resource ledger, with no overlap.
-            identity.anchorMin=identity.anchorMax=new Vector2(0f,1f);
-            identity.pivot=new Vector2(0f,1f);
-            identity.anchoredPosition=new Vector2(10f+left,
-                wide?-top:-top-58f);
-            identity.sizeDelta=new Vector2(182f,82f);
+            // The original six-cell dock stays at the bottom. Only
+            // three actions are real; positions 0..2 remain future slots.
+            PlaceNavigation(statusDock,
+                NavigationCell(3,width,left,right,bottom,wide),wide);
+            PlaceNavigation(center,
+                NavigationCell(4,width,left,right,bottom,wide),wide);
+            PlaceNavigation(inspect,
+                NavigationCell(5,width,left,right,bottom,wide),wide);
 
-            // 3 active medallions in a scalable grid of six stable cells.
-            // When systems unlock, use the spare left-hand cells.
-            PlaceNavigation(statusDock,NavigationCell(3,logicalWidth,left,right,bottom,wide),wide);
-            PlaceNavigation(center,NavigationCell(4,logicalWidth,left,right,bottom,wide),wide);
-            PlaceNavigation(inspect,NavigationCell(5,logicalWidth,left,right,bottom,wide),wide);
-
-            objective.anchorMin=objective.anchorMax=
-                wide?new Vector2(0f,1f):new Vector2(0f,0f);
-            objective.pivot=wide?new Vector2(0f,1f):new Vector2(0f,0f);
+            // The progress/quest card is tucked behind ONE tiny LEFT tab
+            // by default. Opening it never changes the game state.
+            activityHandle.anchorMin=activityHandle.anchorMax=
+                new Vector2(0f,.5f);
+            activityHandle.pivot=new Vector2(0f,.5f);
+            activityHandle.anchoredPosition=new Vector2(left+3f,wide?-5f:0f);
+            activityHandle.sizeDelta=new Vector2(45f,60f);
+            activityDrawer.anchorMin=activityDrawer.anchorMax=
+                new Vector2(0f,.5f);
+            activityDrawer.pivot=new Vector2(0f,.5f);
+            activityDrawer.anchoredPosition=new Vector2(left+51f,wide?-4f:0f);
+            activityDrawer.sizeDelta=wide?new Vector2(243f,173f):
+                new Vector2(246f,185f);
+            objective.anchorMin=objective.anchorMax=new Vector2(.5f,.5f);
+            objective.pivot=new Vector2(.5f,.5f);
+            objective.anchoredPosition=new Vector2(0f,wide?8f:9f);
             objective.sizeDelta=new Vector2(185f,72f);
-            objective.anchoredPosition=wide?
-                new Vector2(12f+left,-top-85f):
-                new Vector2(10f+left,bottom+88f);
 
             if(wide)
             {
@@ -751,8 +776,8 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.sizeDelta=new Vector2(326f,240f);
                 noticeRoot.anchorMin=noticeRoot.anchorMax=new Vector2(0f,1f);
                 noticeRoot.pivot=new Vector2(0f,1f);
-                noticeRoot.anchoredPosition=new Vector2(12f+left,-top-167f);
-                noticeRoot.sizeDelta=new Vector2(290f,35f);
+                noticeRoot.anchoredPosition=new Vector2(left+12f,-top-67f);
+                noticeRoot.sizeDelta=new Vector2(286f,35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(1f,.5f);
                 statusSheet.pivot=new Vector2(1f,.5f);
                 statusSheet.anchoredPosition=new Vector2(-12f-right,2f);
@@ -764,16 +789,16 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 sheet.pivot=new Vector2(.5f,0f);
                 sheet.anchoredPosition=new Vector2(0f,bottom+95f);
                 sheet.sizeDelta=new Vector2(
-                    Mathf.Min(355f,logicalWidth-left-right-24f),244f);
+                    Mathf.Min(355f,safeWidth-24f),244f);
                 noticeRoot.anchorMin=noticeRoot.anchorMax=new Vector2(.5f,1f);
                 noticeRoot.pivot=new Vector2(.5f,1f);
-                noticeRoot.anchoredPosition=new Vector2(0f,-top-153f);
+                noticeRoot.anchoredPosition=new Vector2(0f,-top-66f);
                 noticeRoot.sizeDelta=new Vector2(324f,35f);
                 statusSheet.anchorMin=statusSheet.anchorMax=new Vector2(.5f,0f);
                 statusSheet.pivot=new Vector2(.5f,0f);
                 statusSheet.anchoredPosition=new Vector2(0f,bottom+95f);
                 statusSheet.sizeDelta=new Vector2(
-                    Mathf.Min(330f,logicalWidth-left-right-28f),170f);
+                    Mathf.Min(330f,safeWidth-28f),170f);
             }
             lastWidth=w;
             lastHeight=h;
