@@ -78,7 +78,7 @@ contract.write_text(code,encoding="utf-8")
 work=static.read_text(encoding="utf-8")
 needle='assert b[:8]==bytes.fromhex("89504e470d0a1a0a"),name'
 assert needle in work,"Static PNG signature source guard changed unexpectedly"
-work=work.replace(needle,needle+'\\n               assert b[25]==6,(name,"RGBA expected after pixel-identical source re-encode")')
+work=work.replace(needle,needle+'\n               assert b[25]==6,(name,"RGBA expected after pixel-identical source re-encode")')
 static.write_text(work,encoding="utf-8")
 proof.parent.mkdir(parents=True,exist_ok=True)
 proof.write_text(json.dumps({
