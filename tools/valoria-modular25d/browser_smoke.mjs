@@ -152,15 +152,15 @@ try {
     const topBlackRatio=blackSamples/Math.max(1,totalTop);
     if(topBlackRatio>.3)
       throw Error(width+'x'+height+': HUD intrudes into top safe-area; dark top pixels '+topBlackRatio.toFixed(3));
-    // Coordinates come from the actual 390x844 Unity uGUI anchors, not HTML or fake controls.
-    await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 47 / 844));
+    // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
+    await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 70 / 844));
     await page.waitForTimeout(650);
     const opened = await capture('real-sawmill-build-panel');
     const change = pixelChange(before.bytes, opened.bytes);
     if (change.changedSamples < Math.max(120, Math.floor(change.totalSamples * .04)))
       throw Error(width + 'x' + height + ': real ASERRADERO click did not reveal its HUD panel (pixel delta too small)');
     // Click the actual CANONICAL command inside that same panel, not a mock API.
-    await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 111 / 844));
+    await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 141 / 844));
     await page.waitForTimeout(800);
     const building = await capture('real-build-command');
     if (errors.length || failures.length)
