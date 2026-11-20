@@ -123,6 +123,7 @@ try {
     const page = await ctx.newPage();
     const errors = [], failures = [];
     page.on('pageerror', e => errors.push(e.message));
+    page.on('console', msg => {if(msg.type()==='error') errors.push('UNITY_BROWSER_CONSOLE: '+msg.text());});
     page.on('requestfailed', req => failures.push(req.url() + ': ' + (req.failure()?.errorText || 'network failure')));
     page.on('response', resp => {
       if (resp.status() >= 400 && !resp.url().endsWith('/favicon.ico'))

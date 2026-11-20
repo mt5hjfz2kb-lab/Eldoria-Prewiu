@@ -389,6 +389,31 @@ jobs:
         with:
           name: eldoria-mod25d-webgl-player-${{github.run_id}}
           path: webgl
+      - name: Retrieve same-run NUnit, WebGL isolation and build-size manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-mod25d-actual-playmode-${{github.run_id}}
+          path: unity-metadata
+      - name: Refuse running browser QA against missing or unisolated build
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob,json,os,xml.etree.ElementTree as ET
+          def one(pattern):
+            paths=glob.glob(pattern,recursive=True)
+            assert len(paths)==1,(pattern,paths)
+            return paths[0]
+          w=json.load(open(one("unity-metadata/**/webgl-status.json"),encoding="utf-8-sig"))
+          i=json.load(open(one("unity-metadata/**/WebGLResourceIsolation.json"),encoding="utf-8-sig"))
+          g=json.load(open(one("unity-metadata/**/WebGLIsolationGuard.json"),encoding="utf-8-sig"))
+          n=ET.parse(one("unity-metadata/**/NUnit.xml")).getroot()
+          assert w["sourceSha"]==os.environ["GITHUB_SHA"] and w["build"]=="SUCCEEDED"
+          assert w["resourceIsolation"] and w["totalOutputBytes"]>1_000_000
+          assert i["sourceSha"]==os.environ["GITHUB_SHA"] and i["originalModularResourcesUnchanged"]
+          assert g["sourceSha"]==os.environ["GITHUB_SHA"] and g["sandboxOnly"]
+          assert n.attrib["total"]=="1" and n.attrib["passed"]=="1" and n.attrib["failed"]=="0"
+          print("NATIVE_AND_RESOURCE_ISOLATION_PROOF",w["totalOutputBytes"],"bytes")
+          PY
       - name: Run real Chrome WebGL graphics and actual uGUI click smoke
         shell: bash
         run: |
