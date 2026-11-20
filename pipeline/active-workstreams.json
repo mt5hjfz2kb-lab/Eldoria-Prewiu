@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-20T09:30:15.983Z",
+  "updated_at": "2026-11-20T09:46:59.306Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10014,7 +10014,7 @@
       "write_scope_released": false,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
       "status": "active",
-      "phase": "EXACT_NATIVE_AND_BROWSER_PASS_44707009109_CAMERA_GESTURE_ART_REVIEW_PENDING",
+      "phase": "REV4_LANDSCAPE_HUD_EXACT_UNITY_20261120",
       "claimed_at": "2026-11-20T00:34:46.251Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: continue existing exclusive modular 2.5D Bastion I experiment in same branch, inspect native evidence, improve halo/footprints/characters/HUD, validate isolated WebGL, no main gameplay or Premium V6 edits, no third-party credits.",
@@ -10025,7 +10025,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "pending physical iPhone, GPU FPS/memory",
       "delivery_definition": {
@@ -20484,11 +20486,11 @@
     "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
     "authorized_at": "2026-11-19T12:01:31.172Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available_after_native_and_browser_run_44707009109",
+    "status": "rev4_landscape_native_20261120",
     "rules": [
       "No cancellation of ongoing Unity jobs or interruption of other writers.",
       "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
@@ -20552,6 +20554,6 @@
       "last_depth_previous_run": 44281717983,
       "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
     },
-    "note": "Run 44707009109 Unity/native/PlayMode/WebGL/browser/video SUCCESS and complete; release Windows runner. Workstream source rev4 retained only for browser gesture QA and owner-facing art review; no publishing or main gameplay edits."
+    "note": "One bounded native exact-SHA run to certify compact landscape HUD, existing original sprite/terrain/gameplay and WebGL. Release after results and artifact inspection."
   }
 }
