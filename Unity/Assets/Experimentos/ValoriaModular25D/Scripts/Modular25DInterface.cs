@@ -116,7 +116,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             title.resizeTextMinSize=10;
             title.resizeTextMaxSize=14;
             title.horizontalOverflow=HorizontalWrapMode.Overflow;
-            level = Label("BASTIÓN I", identity, 9, false, PaleGold, TextAnchor.MiddleLeft,
+            level = Label("BAST. 1", identity, 9, false, PaleGold, TextAnchor.MiddleLeft,
                 new Vector2(26f,-10f),new Vector2(42f,16f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
@@ -208,7 +208,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             activityDrawer=Plate("Left activity drawer",rootTransform,parchmentPlate,
                 new Vector2(0f,.5f),new Vector2(0f,.5f),
                 new Vector2(54f,0f),new Vector2(246f,185f));
-            activityTitle=Label("TAREAS DE VALORIA",activityDrawer,16,true,PaleGold,
+            activityTitle=Label("TAREAS",activityDrawer,16,true,PaleGold,
                 TextAnchor.MiddleCenter,new Vector2(0f,69f),new Vector2(198f,25f));
             objective.SetParent(activityDrawer,false);
             objective.anchorMin=objective.anchorMax=new Vector2(.5f,.5f);
@@ -482,7 +482,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 return;
             }
             title.text=PlayerDisplayName(s.PlayerName);
-            level.text = "BASTIÓN " + s.BastionLevel;
+            level.text = "BAST. " + s.BastionLevel;
             if(bastionTagText!=null)
                 bastionTagText.text="BASTIÓN · "+s.BastionLevel;
             cachedSawmillPhase=ParcelBuildingStates.For(s,"sawmill");
@@ -504,7 +504,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 if(worldProgressTrack!=null)
                     worldProgressTrack.gameObject.SetActive(false);
                 if(activityTitle!=null)
-                    activityTitle.text=constructing?"OBRA EN CURSO":"TAREAS DE VALORIA";
+                    activityTitle.text=constructing?"OBRA EN CURSO":"TAREAS";
                 if(activityProgress!=null)
                     activityProgress.text=constructing
                         ? "ASERRADERO  "+(timeLeft/60L).ToString()+":"+
