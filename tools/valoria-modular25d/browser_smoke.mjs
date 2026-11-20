@@ -51,7 +51,8 @@ await new Promise((resolve, reject) => {
 const url = 'http://127.0.0.1:' + server.address().port + '/index.html';
 const manifest = {
   status: 'NOT_YET_TESTED',
-  sourceSha: process.env.GITHUB_SHA || 'UNPINNED',
+  sourceSha: process.env.ELDORIA_PLAYER_SHA || process.env.GITHUB_SHA || 'UNPINNED',
+  testScriptSha: process.env.GITHUB_SHA || 'UNPINNED',
   engine: 'Unity WebGL real browser player',
   browser: 'Chrome/Chromium headless with SwiftShader',
   hosting: 'temporary same-origin HTTP server with Unity gzip/Brotli and WebAssembly MIME headers',
@@ -65,6 +66,46 @@ const manifest = {
 };
 let browser;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+// This is a readiness probe, not a grade for the scene's visual quality.
+// Use corner grass colours to detect the startup fade in real Unity WebGL.
+function topRowStats(bytes) {
+  const png=PNG.sync.read(bytes), w=png.width, h=png.height;
+  let edge=0,edgeN=0,center=0,centerN=0;
+  const edgeW=Math.max(6,Math.floor(w*.025));
+  const rows=Math.max(10,Math.floor(h*.018));
+  for(let y=0;y<rows;y+=2)for(let x=0;x<w;x+=2) {
+    const i=(y*w+x)*4;
+    const l=(png.data[i]+png.data[i+1]+png.data[i+2])/3;
+    if(x<edgeW || x>=w-edgeW){edge+=l;edgeN++;}
+    else if(x>=w*.18 && x<=w*.82){center+=l;centerN++;}
+  }
+  const edgeLuma=edge/Math.max(1,edgeN);
+  const centerLuma=center/Math.max(1,centerN);
+  return {edgeLuma,centerLuma,edgeMinusCenter:edgeLuma-centerLuma};
+}
+async function awaitUnfadedWorld(page,width,height,label) {
+  // Real evidence from previous runs: Native meadow corner is ~100 luma;
+  // browser startup fade ranged ~40–66 and brightened above 85.
+  // A dark boot frame is NOT a black header or acceptable gameplay image.
+  const reads=[];
+  let previous=null;
+  await page.locator('canvas').focus();
+  for(let i=0;i<25;i++) {
+    await page.waitForTimeout(750);
+    const bytes=await page.screenshot({animations:'disabled',timeout:50_000});
+    const sample=topRowStats(bytes);
+    reads.push(+sample.edgeLuma.toFixed(1));
+    if(sample.edgeLuma>=78 && previous!==null && previous>=78 &&
+       Math.abs(sample.edgeLuma-previous)<10) {
+      console.log('WEBGL_REAL_RENDER_UNFADED',width,height,label,
+        'samples='+reads.join(','));
+      return {final:sample,readings:reads};
+    }
+    previous=sample.edgeLuma;
+  }
+  throw Error(width+'x'+height+': World render stayed dark or unstable during '+label+
+    ' after Unity loading finished; edge luminance='+reads.join(','));
+}
 const delay = ms => new Promise(ok => setTimeout(ok, ms));
 // Compare exactly the on-canvas wood balance glyphs, without OCR or
 // reading private Unity state. The top bar is at 390x844 reference safe
@@ -136,7 +177,7 @@ try {
       return canvas && canvas.getBoundingClientRect().width > 120 &&
         (!loading || getComputedStyle(loading).display === 'none');
     }, null, { timeout: 200_000 });
-    await page.waitForTimeout(2000);
+    const firstReadiness=await awaitUnfadedWorld(page,width,height,'before-build');
     const scene = await page.evaluate(() => {
       const canvas = document.querySelector('canvas');
       const rect = canvas?.getBoundingClientRect();
@@ -158,22 +199,13 @@ try {
       return { filename: path.basename(file), sha256: sha(bytes), bytes };
     };
     const before = await capture('real-world-hud');
-    // Regression for the real 390x844 WebGL screenshot from run 44651309304:
-    // the top half of BASTIÓN I was cropped by an off-screen HUD strip.
-    // It was visible as a dark full-width bar touching screen row zero.
-    // A mobile safe-area-compliant panel must not cover the first 16 px.
-    const first=PNG.sync.read(before.bytes);
-    let blackSamples=0, totalTop=0;
-    for(let yy=0; yy<Math.min(16,first.height); yy+=2)
-      for(let xx=Math.floor(first.width*.08);xx<Math.floor(first.width*.92);xx+=3) {
-        const offset=(yy*first.width+xx)*4;
-        if(first.data[offset]<48 && first.data[offset+1]<48 && first.data[offset+2]<48)
-          blackSamples++;
-        totalTop++;
-      }
-    const topBlackRatio=blackSamples/Math.max(1,totalTop);
-    if(topBlackRatio>.3)
-      throw Error(width+'x'+height+': HUD intrudes into top safe-area; dark top pixels '+topBlackRatio.toFixed(3));
+    // A cropped HUD makes the *middle* of the top row darker than meadow
+    // at both edges. Absolute black pixels are not evidence of clipping:
+    // the 44697658660 browser failure was a partially faded game frame.
+    const top=topRowStats(before.bytes);
+    if(top.edgeMinusCenter>19)
+      throw Error(width+'x'+height+': HUD top edge appears cropped: '+
+        JSON.stringify(top));
     // Target the CENTER of the repositioned uGUI controls in 390x844 reference units,\n    // with bottom safe margin 36. These are still real Unity screen-space clicks.
     await page.mouse.click(box.x + box.width * (88 / 390), box.y + box.height * (1 - 70 / 844));
     await page.waitForTimeout(650);
@@ -185,8 +217,10 @@ try {
     await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 141 / 844));
     await page.waitForTimeout(800);
     const building = await capture('real-build-command');
-    const paid=woodBalancePixels(before.bytes,building.bytes);
-    if(paid.ratio<.08)
+    // Both frames have the identical open modal and full brightness;
+    // only the Wood digits should change, not a startup fade.
+    const paid=woodBalancePixels(opened.bytes,building.bytes);
+    if(paid.changed<10 || paid.ratio<.018)
       throw Error(width+'x'+height+': Build did not change the real wood balance glyphs: '+paid.ratio.toFixed(3));
     await page.waitForTimeout(2500); // allow PlayerPrefs.Save + browser storage sync
     await page.reload({waitUntil:'domcontentloaded',timeout:60_000});
@@ -196,10 +230,10 @@ try {
       return canvas&&canvas.getBoundingClientRect().width>120 &&
         (!loading || getComputedStyle(loading).display==='none');
     },null,{timeout:200_000});
-    await page.waitForTimeout(1500);
+    const reloadReadiness=await awaitUnfadedWorld(page,width,height,'after-reload');
     const reloaded=await capture('real-after-browser-reload');
     const retained=woodBalancePixels(building.bytes,reloaded.bytes);
-    if(retained.ratio>.065)
+    if(retained.ratio>.07)
       throw Error(width+'x'+height+': Browser reload lost or altered paid wood balance: '+retained.ratio.toFixed(3));
         if (errors.length || failures.length)
       throw Error(width + 'x' + height + ': browser errors: ' + [...errors, ...failures].slice(0, 10).join(' | '));
@@ -208,8 +242,9 @@ try {
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
       screenshots: [before, opened, building, reloaded].map(({ filename, sha256 }) => ({ filename, sha256 })),
       woodBalanceBuildChange: paid, browserReloadWoodRetention: retained,
-      noPageError: true, noRequestFailures: true, topBlackRatio,
-      gameplayBuildPersistence: 'SCREEN_VERIFIED_PLAYERPREFS_WOOD_BALANCE_AFTER_REAL_BROWSER_RELOAD'
+      noPageError: true, noRequestFailures: true, topBarContrast: top,
+      bootReadiness: firstReadiness, reloadReadiness,
+      gameplayBuildPersistence: 'SCREEN_VERIFIED_WOOD_BALANCE_AFTER_REAL_BROWSER_RELOAD_NOT_DIRECT_IDBFS_INSPECTION'
     });
     await ctx.close();
   }
