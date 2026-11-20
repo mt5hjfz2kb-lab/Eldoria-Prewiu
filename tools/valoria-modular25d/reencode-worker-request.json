@@ -9,5 +9,8 @@
   ],
   "artifact_replacement": false,
   "no_gameplay_changes": true,
-  "main_unchanged": true
+  "main_unchanged": true,
+  "attempt": 2,
+  "last_preflight_error": "large main registry content omitted by Contents API; now fetch exact blob SHA",
+  "preflight_fix_sha": "64ab7aad86f65a606bdc42f6003a7fb625e23d4c"
 }
