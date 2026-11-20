@@ -28,6 +28,7 @@ jobs:
             Unity/Assets/Experimentos/ValoriaModular25D
             tools/valoria-modular25d
             docs/valoria-modular-25d/UI_UMBRAL_V1.md
+            docs/valoria-modular-25d/UMBRAL_II_MATERIALS_SOURCE.json
           sparse-checkout-cone-mode: false
       - name: Parse all Unity C-sharp with existing Roslyn syntax harness
         run: |
