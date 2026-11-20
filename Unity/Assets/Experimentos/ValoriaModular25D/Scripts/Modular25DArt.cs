@@ -177,8 +177,85 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
+
+        // Imported original source stays byte-for-byte unchanged. The supplied
+        // artist alpha includes a broad opaque brown/black cast shadow behind
+        // the upper roof and feet, which becomes an artificial halo on grass.
+        // This narrowly scoped, reproducible silhouette matte removes that
+        // *baked outside shadow*, retaining the detailed authored building.
+        // Coordinates are pixel positions in the 362x273 original, top-left origin.
+        // The foreground is retained with a 3px soft edge, not a rectangular crop.
+        static readonly Vector2[] SawmillSilhouette = {
+            P(82,-2),P(107,-2),P(112,26),P(110,45),P(111,55),
+            P(136,43),P(159,38),P(198,25),P(206,26),P(213,32),
+            P(218,43),P(222,54),P(226,65),P(231,77),P(245,88),
+            P(266,94),P(285,98),P(297,102),P(301,111),P(301,124),
+            P(315,132),P(327,140),P(339,149),P(340,168),P(340,176),
+            P(334,184),P(328,193),P(327,205),P(318,213),P(302,221),
+            P(281,230),P(276,241),P(254,249),P(232,257),P(202,260),
+            P(184,263),P(160,266),P(143,264),P(117,260),P(96,253),
+            P(77,248),P(66,238),P(50,230),P(39,220),P(25,215),
+            P(15,207),P(11,197),P(11,180),P(14,164),P(19,145),
+            P(27,130),P(42,108),P(55,90),P(67,76),P(79,63),P(82,50)
+        };
+
+        static Sprite FinishedSawmillWithCleanMatte(Sprite source)
+        {
+            const string key="sawmill_i_shadow_trimmed_v1";
+            if(Cache.TryGetValue(key,out var result))return result;
+            if(source.texture.width!=362 || source.texture.height!=273 ||
+               !source.texture.isReadable)
+            {
+                Debug.LogError("[Modular25D] Original sawmill alpha cannot be repaired: unreadable or different dimensions. Refuse silent bad-art fallback.");
+                return source;
+            }
+            var old=source.texture.GetPixels32();
+            var output=new Color32[old.Length];
+            int w=source.texture.width,h=source.texture.height;
+            for(int y=0;y<h;y++)for(int x=0;x<w;x++)
+            {
+                int index=y*w+x;
+                Color32 c=old[index];
+                if(c.a==0){output[index]=c;continue;}
+                // Alpha pixels have Unity's bottom-left origin.
+                Vector2 at=new Vector2(x+.5f,h-y-.5f);
+                bool inside=false;
+                float nearest=float.MaxValue;
+                for(int i=0,j=SawmillSilhouette.Length-1;i<SawmillSilhouette.Length;j=i++)
+                {
+                    Vector2 a=SawmillSilhouette[j],bb=SawmillSilhouette[i];
+                    if((a.y>at.y)!=(bb.y>at.y) &&
+                       at.x<(bb.x-a.x)*(at.y-a.y)/(bb.y-a.y)+a.x)
+                        inside=!inside;
+                    var seg=bb-a;
+                    var t=Mathf.Clamp01(Vector2.Dot(at-a,seg)/seg.sqrMagnitude);
+                    nearest=Mathf.Min(nearest,(at-a-seg*t).sqrMagnitude);
+                }
+                // Leave real stone/wood/roof materials untouched away from
+                // the silhouette. No green fringe, shadow paint or hue regrading.
+                float softness=inside?Mathf.SmoothStep(0f,1f,
+                    (Mathf.Sqrt(nearest)-1.6f)/3.0f):0f;
+                c.a=(byte)Mathf.RoundToInt(c.a*softness);
+                output[index]=c;
+            }
+            var texture=new Texture2D(w,h,TextureFormat.RGBA32,false,false){
+                name="Valoria original Aserradero | exterior baked shadow isolated",
+                filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};
+            texture.SetPixels32(output);
+            texture.Apply(false,true);
+            result=Sprite.Create(texture,new Rect(0,0,w,h),
+                new Vector2(source.pivot.x/source.rect.width,
+                    source.pivot.y/source.rect.height),
+                source.pixelsPerUnit,0,SpriteMeshType.FullRect);
+            result.name=key;
+            Cache.Add(key,result);
+            return result;
+        }
+
         public static Sprite Sawmill()
         {
+            var original=Resources.Load<Sprite>("ValoriaModular25D/sawmill_i");
+            if(original!=null)return FinishedSawmillWithCleanMatte(original);
             return Make("sawmill_i",362,299,96f,P(.5f,.085f),a =>
             {
                 // Distinct low workshop: open saw frame, stacked logs and slate lean-to.
