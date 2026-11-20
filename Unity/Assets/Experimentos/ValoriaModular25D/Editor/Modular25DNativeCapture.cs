@@ -92,8 +92,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D.Editor
                    actualGroundRenderer==null ||
                    actualGroundRenderer.sharedMaterial==null ||
                    actualGroundRenderer.sharedMaterial.mainTexture==null ||
-                   actualGroundRenderer.sharedMaterial.mainTexture.name!="OrganicMeadowTile")
-                    throw new Exception("Unity is not using the reusable grass-only original Eldoria artist tile.");
+                   actualGroundRenderer.sharedMaterial.mainTexture!=Resources.Load<Texture2D>("ValoriaModular25D/BastionMeadow") ||
+                   actualGroundRenderer.sharedMaterial.mainTexture.width!=1024)
+                    throw new Exception("Native capture requires the source-pinned 1024px Bastion meadow material on the actual terrain renderer.");
                 report.paintedGroundSourceLoaded=true;
                 report.roadAndFootprintKits=true;
                 report.composedSettlementZones=world.SettlementZonesPlaced==4 &&
