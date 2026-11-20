@@ -172,15 +172,30 @@ namespace Eldoria.Modular25D.Tests
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             // The game HUD must use authored, border-preserving pieces,
             // not a substituted procedural panel on a flat mockup.
-            foreach(var item in new[]{"identity_crest","resource_siglet",
-                "nav_medallion","portrait_ring","world_rune","objective_rune",
-                "action_arcane","panel_obsidian"})
+            // On a Canvas with referencePixelsPerUnit=100 and sprite PPU=200,
+            // a 2x baked PNG spriteBorder value equals the combined onscreen
+            // left+right or top+bottom borders in reference UI points. These
+            // MUST be smaller than the smallest visible control dimensions.
+            // Otherwise Unity shrinks/overlaps the borders and the central
+            // 9-slice field vanishes (confirmed source-quality regression).
+            foreach(var spec in new[]{
+                new {key="identity_crest",border=20f,height=68f},
+                new {key="resource_siglet",border=14f,height=43f},
+                new {key="nav_medallion",border=19f,height=80f},
+                new {key="portrait_ring",border=10f,height=27f},
+                new {key="world_rune",border=10f,height=34f},
+                new {key="objective_rune",border=17f,height=50f},
+                new {key="action_arcane",border=14f,height=42f},
+                new {key="panel_obsidian",border=56f,height=170f}
+            })
             {
                 var skin=Resources.Load<Sprite>(
-                    "ValoriaModular25D/UI/CoronaBrecha/"+item);
-                Assert.NotNull(skin,"Corona original 9-slice missing: "+item);
-                Assert.That(skin.border.x,Is.GreaterThanOrEqualTo(32f),
-                    "Corona independent authored frame lost its 9-slice border "+item);
+                    "ValoriaModular25D/UI/CoronaBrecha/"+spec.key);
+                Assert.NotNull(skin,"Corona original 9-slice missing: "+spec.key);
+                Assert.That(skin.border.x,Is.EqualTo(2f*spec.border).Within(.1f),
+                    "Original Corona sprite border contract changed: "+spec.key);
+                Assert.That(skin.border.y,Is.LessThan(spec.height),
+                    "9-slice vertical borders collapse the center at real UI size: "+spec.key);
             }
 
             var aldric=Resources.Load<Sprite>("ValoriaModular25D/UI/UmbralII/aldric_avatar");

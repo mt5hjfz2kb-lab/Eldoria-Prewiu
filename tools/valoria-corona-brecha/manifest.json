@@ -19,7 +19,7 @@
         320,
         116
       ],
-      "border": 28
+      "border": 20
     },
     {
       "name": "resource_siglet",
@@ -27,7 +27,7 @@
         320,
         104
       ],
-      "border": 28
+      "border": 14
     },
     {
       "name": "nav_medallion",
@@ -35,7 +35,7 @@
         168,
         168
       ],
-      "border": 20
+      "border": 19
     },
     {
       "name": "portrait_ring",
@@ -43,7 +43,7 @@
         168,
         168
       ],
-      "border": 20
+      "border": 10
     },
     {
       "name": "world_rune",
@@ -51,7 +51,7 @@
         320,
         94
       ],
-      "border": 28
+      "border": 10
     },
     {
       "name": "objective_rune",
@@ -59,7 +59,7 @@
         350,
         135
       ],
-      "border": 28
+      "border": 17
     },
     {
       "name": "action_arcane",
@@ -67,7 +67,7 @@
         360,
         114
       ],
-      "border": 28
+      "border": 14
     },
     {
       "name": "panel_obsidian",
@@ -75,7 +75,7 @@
         512,
         512
       ],
-      "border": 64
+      "border": 56
     },
     {
       "name": "icon_wood",
@@ -133,5 +133,21 @@
       ],
       "border": 0
     }
-  ]
+  ],
+  "production_quality_gate": {
+    "reason": "9-sliced sprite border pair must not exceed smallest target rect height; Unity otherwise scales borders down, visually removing the center.",
+    "ppu": 200,
+    "canvasReferencePixelsPerUnit": 100,
+    "smallestTargetHeight": {
+      "identity_crest": 68,
+      "resource_siglet": 43,
+      "nav_medallion": 80,
+      "portrait_ring": 27,
+      "world_rune": 34,
+      "objective_rune": 50,
+      "action_arcane": 42,
+      "panel_obsidian": 170
+    },
+    "formula": "Unity scaled border pair (in Canvas units) = 2 * sourceBorderPixels / (spritePPU / canvasReferencePPU); for authored PNG sourceBorderPixels = 2 * manifest.border, net pair = 2 * manifest.border. Must be strictly less than smallest target height."
+  }
 }
