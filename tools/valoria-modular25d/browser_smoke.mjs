@@ -113,6 +113,25 @@ const delay = ms => new Promise(ok => setTimeout(ok, ms));
 // Compare exactly the on-canvas wood balance glyphs, without OCR or
 // reading private Unity state. The top bar is at 390x844 reference safe
 // coordinates; after Build, the balance must change and survive a REAL reload.
+// Geometrical visual acceptance with actual captured Unity browser pixels:
+// the originally approved 7afd HUD had no painted resources in the upper-right
+// 12..53px region at 390x844 (0% pixels below luma80); the new six-slot
+// composition must put actual ornate resource capsules into the top row.
+// This deliberately tests placement, not mechanical text or CSS mocks.
+function topPinnedResources(bytes) {
+  const png=PNG.sync.read(bytes);
+  const w=png.width,h=png.height;
+  let dark=0,total=0;
+  for(let y=Math.round(h*.015);y<Math.round(h*.065);y+=2)
+    for(let x=Math.round(w*.52);x<Math.round(w*.96);x+=2) {
+      const i=(y*w+x)*4;
+      const l=(png.data[i]+png.data[i+1]+png.data[i+2])/3;
+      if(l<80)dark++;
+      total++;
+    }
+  return {darkSamples:dark,totalSamples:total,
+          darkFraction:dark/Math.max(1,total)};
+}
 function woodBalancePixels(a, b) {
   const original=PNG.sync.read(a), current=PNG.sync.read(b);
   if(original.width!==current.width || original.height!==current.height)
@@ -207,6 +226,10 @@ try {
       return { filename: path.basename(file), sha256: sha(bytes), bytes };
     };
     const before = await capture('real-world-hud');
+    const economyTop=topPinnedResources(before.bytes);
+    if(economyTop.darkFraction<.18)
+      throw Error(width+'x'+height+': Corona economy is NOT visually attached to the top edge: '+
+        JSON.stringify(economyTop));
     // A cropped HUD makes the *middle* of the top row darker than meadow
     // at both edges. Absolute black pixels are not evidence of clipping:
     // the 44697658660 browser failure was a partially faded game frame.
@@ -262,6 +285,7 @@ try {
       woodBalanceBuildChange: paid, browserReloadWoodRetention: retained,
       successfulBuildClosedModal: closed,
       noPageError: true, noRequestFailures: true, topBarContrast: top,
+      topPinnedPaintedResourceCoverage:economyTop,
       bootReadiness: firstReadiness, reloadReadiness,
       gameplayBuildPersistence: 'SCREEN_VERIFIED_WOOD_BALANCE_AFTER_REAL_BROWSER_RELOAD_NOT_DIRECT_IDBFS_INSPECTION'
     });
