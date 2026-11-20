@@ -99,12 +99,12 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             // the text, beginning at ~54% of image width. The previous label
             // began before this text-safe enamel and overprinted the jewel.
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
-                new Vector2(51f, 9f), new Vector2(78f, 29f));
+                new Vector2(46f, 9f), new Vector2(70f, 29f));
             title.resizeTextForBestFit=true;
             title.resizeTextMinSize=16;
             title.resizeTextMaxSize=19;
             level = Label("BASTIÓN I", identity, 12, false, PaleGold, TextAnchor.MiddleLeft,
-                new Vector2(51f, -17f), new Vector2(78f, 28f));
+                new Vector2(46f, -17f), new Vector2(70f, 28f));
             // SourceSans line metrics exceed the 20px legacy plate: Truncate
             // silently discarded all small-glyph geometry in actual WebGL.
             // Let ascenders/descenders use the designed clear lower half.

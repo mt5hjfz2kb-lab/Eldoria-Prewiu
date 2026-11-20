@@ -244,6 +244,14 @@ namespace Eldoria.Modular25D.Tests
             var identity=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
             Assert.NotNull(identity);
+            var crownText=identity.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(x=>x.text=="VALORIA");
+            Assert.NotNull(crownText);
+            float crownTextRight=identity.rect.width*.5f+
+                crownText.rectTransform.anchoredPosition.x+
+                crownText.rectTransform.rect.width*.5f;
+            Assert.LessOrEqual(crownTextRight,identity.rect.width-8f,
+                "Identity lettering must stay inside the painted obsidian and not cover the gold corner gem");
             Assert.That(header.anchoredPosition.y,Is.EqualTo(-safeTop).Within(1.5f),
                 "Resource capsules must meet top safe area, not float inside the city");
             Assert.That(identity.anchoredPosition.y,
