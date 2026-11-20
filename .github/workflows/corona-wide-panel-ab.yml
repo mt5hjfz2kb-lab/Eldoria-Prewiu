@@ -1,0 +1,90 @@
+name: Corona A-B — source-verified wide carved panel
+on:
+  push:
+    branches: [experiment/corona-wide-panel-art-ab-20261120]
+    paths:
+      - '.github/workflows/corona-wide-panel-ab.yml'
+      - 'tools/valoria-corona-brecha/bake.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: corona-wide-panel-only-ubuntu
+  cancel-in-progress: false
+jobs:
+  bake-and-compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            tools/valoria-corona-brecha/
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/
+            docs/valoria-modular-25d/
+            .github/workflows/corona-wide-panel-ab.yml
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --quiet pillow cairosvg
+      - name: Save pre-bake controls and bake original paint
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p wide-panel-proof
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha')
+          baseline={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in root.glob('*.png') if p.name!='panel_obsidian.png'}
+          assert len(baseline)==14,baseline
+          Path('wide-panel-proof/controls.json').write_text(json.dumps(baseline,indent=2))
+          PY
+          python tools/valoria-corona-brecha/bake.py
+          python - <<'PY'
+          import json,hashlib
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          root=Path('Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha')
+          old=json.loads(Path('wide-panel-proof/controls.json').read_text())
+          for name,sha in old.items():
+           assert hashlib.sha256((root/name).read_bytes()).hexdigest()==sha,'Changed another source '+name
+          panel=root/'panel_obsidian.png'
+          with Image.open(panel) as im:
+           im.load()
+           assert im.mode=='RGBA' and im.size==(720,500)
+           assert im.getpixel((0,0))[3]<40
+           new=im.convert('RGBA').resize((355,244),Image.Resampling.LANCZOS)
+          art=Image.open('tools/valoria-corona-brecha/premium/panel_obsidian.png').convert('RGBA')
+          old=art.resize((355,244),Image.Resampling.LANCZOS)
+          canvas=Image.new('RGBA',(770,310),(22,17,35,255))
+          canvas.alpha_composite(old,(15,42))
+          canvas.alpha_composite(new,(400,42))
+          d=ImageDraw.Draw(canvas)
+          d.text((16,12),'CONTROL: ORIGINAL SQUARE SOURCE',fill=(241,214,163))
+          d.text((400,12),'CANDIDATE: WIDE PANEL, CENTRAL GEM INTACT',fill=(241,214,163))
+          canvas.save('wide-panel-proof/visual-ab.png')
+          Path('wide-panel-proof/proof.json').write_text(json.dumps({'source_sha':hashlib.sha256(art.tobytes()).hexdigest(),
+           'candidate_sha256':hashlib.sha256(panel.read_bytes()).hexdigest(),'output':[720,500],
+           'preserved_other_assets':14,'visual_approved':False,'native_unity_tested':False},indent=2))
+          print('CORONA_WIDE_PANEL_ART_SOURCE_PASS_14_OTHER_SPRITES_UNCHANGED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corona-wide-sculpted-panel-ab
+          path: |
+            wide-panel-proof/
+            Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/panel_obsidian.png
+            docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json
+          retention-days: 20
+      - name: Commit candidate art without modifying original experiment
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha/panel_obsidian.png docs/valoria-modular-25d/CORONA_BRECHA_SPRITE_PROVENANCE.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'art(corona ab): wide intact-gem panel, fourteen original sprites untouched'
+          git push origin HEAD:experiment/corona-wide-panel-art-ab-20261120

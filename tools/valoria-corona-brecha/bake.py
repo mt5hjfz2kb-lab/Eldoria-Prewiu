@@ -8,6 +8,36 @@ R=Path(__file__).resolve().parents[2]
 SOURCE=R/"tools/valoria-corona-brecha/source"
 OUT=R/"Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha"
 SPEC=json.loads((R/"tools/valoria-corona-brecha/manifest.json").read_text())
+
+def commercial_wide_panel(artist_png):
+ """Preserve the sculpted CENTRAL gems and solid corners when making a
+ 355:244 mobile modal. Unity Image.Type.Simple stretched the 500x540
+ original to a 355x244 rectangle, flattening every jewel. This
+ deterministic, original-pixel remap only expands the side enamel/rims.
+ The center 93px contains the original crown and remains 1:1.
+ Rejected naive repeated-vertical-strip method (visible seams).
+ """
+ # Authored input from the preserved original PNG is exact 500x540,
+ # normalized by the existing opaque art bounds logic before this call.
+ if artist_png.size!=(500,540):
+  raise ValueError("Corona wide panel source changed: "+str(artist_png.size))
+ base=artist_png.resize((463,500),Image.Resampling.LANCZOS)
+ cuts=(0,103,185,278,363,463)
+ widths=(103,208,93,216,100)
+ assert sum(widths)==720
+ result=Image.new("RGBA",(720,500))
+ dest=0
+ for (left,right),width in zip(zip(cuts,cuts[1:]),widths):
+  strip=base.crop((left,0,right,500))
+  if strip.width!=width:
+   strip=strip.resize((width,500),Image.Resampling.LANCZOS)
+  result.paste(strip,(dest,0))
+  dest+=width
+ assert dest==720 and result.getbbox() is not None
+ # All original pixels are sourced from the user's own painted panel;
+ # this is an artist-material aspect conversion, not a screenshot hack.
+ return result
+
 def main():
  OUT.mkdir(parents=True,exist_ok=True)
  (OUT.parent/"CoronaBrecha.meta").write_text("fileFormatVersion: 2\nguid: 79f6030ed90712d9a1c8a5bd32f9a186\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData: \n  assetBundleName: \n  assetBundleVariant: \n")
@@ -62,8 +92,12 @@ def main():
       painter.rounded_rectangle((x0+5,y0+5,x1-5,y1-5),
         radius=28,outline=(122,88,146,95),width=3)
       actual=Image.alpha_composite(actual,mask)
+     if name=="panel_obsidian":
+      actual=commercial_wide_panel(actual)
+      origin="original_painted_panel_aspect_mapped_720x500_central_gems_intact"
+     else:
+      origin="original_illustration_png_opaque_art_bounds_normalized"
      actual.save(dest,optimize=True,compress_level=9)
-    origin="original_illustration_png_opaque_art_bounds_normalized"
    else:
     import shutil
     shutil.copyfile(premium,dest)
