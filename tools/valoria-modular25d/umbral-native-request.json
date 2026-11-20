@@ -1,12 +1,13 @@
 {
   "schema": 1,
   "requested_on": "2026-11-20",
-  "purpose": "Render and PlayMode validate genuine Umbral II UI with original pixel-identical RGBA6 two-frame sawyer re-import (no art replacement) and isolated WebGL/browser",
-  "source_before_request": "772b3db4e26e90805b5f440daa175b8f8fe8d22d",
-  "previous_failed_run": 44758551800,
+  "purpose": "Unity 6.3 native render/PlayMode/isolated WebGL of Umbral II using source byte-identical sawyer TextAsset PNG aliases; preserve artist source and canonical build",
+  "source_before_request": "29567f0c78eb00fe264fb607a9ef932ea56ec426",
+  "previous_failed_run": 44763580769,
   "script_scope": "existing Bastion I modular experiment",
   "no_paid_assets": true,
   "overwrite_main": false,
-  "asset_conversion_proof": "docs/valoria-modular-25d/WORKER_SAW_RGBA_SOURCE_CONVERSION.json",
-  "repair_test": "44763361090 static PASS; conversion 44763183139 PASS"
+  "asset_conversion_proof": "docs/valoria-modular-25d/WORKER_SAW_BINARY_TEXTASSET_PROOF.json",
+  "repair_test": "44770163184: PASS; 2 binary TextAsset aliases identical to original 96x96 RGBA PNGs; original artwork and .meta unchanged",
+  "quality_gate": "Independent Unity camera capture, real pointer click, payment once, reload/save, actual WebGL Chromium landscape+portrait; no physical iPhone claim"
 }
