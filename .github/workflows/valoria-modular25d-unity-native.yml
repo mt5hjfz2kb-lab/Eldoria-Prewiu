@@ -61,7 +61,9 @@ jobs:
              state.get("resource_rotation",{}).get("current_workstream")==ident and
              branch["object"]["sha"]==os.environ["GITHUB_SHA"])
           with open(os.environ["GITHUB_OUTPUT"],"a") as f:f.write("allowed="+str(ok).lower()+"\n")
-          print("MOD25D_NATIVE_LEASE_PASS" if ok else "MOD25D_SAFE_SKIP_STALE_OR_FOREIGN_LEASE")
+          if not ok:
+            raise SystemExit("MOD25D_NATIVE_NOT_CERTIFIED: live owner/revision/branch/Windows lease mismatch")
+          print("MOD25D_NATIVE_LEASE_PASS")
           PY
   unity:
     needs: preflight
