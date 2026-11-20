@@ -106,8 +106,20 @@ namespace Eldoria.Modular25D.Tests
             var header=world.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x=>x && x.gameObject.name=="Live resource strip");
             Assert.NotNull(header,"Mobile resource bar missing");
-            Assert.Less(header.anchoredPosition.y,
-                -header.rect.height*.5f-18f,"Mobile HUD header is cropped at upper edge");
+            if(Screen.width>Screen.height)
+            {
+                // A separate actual Chromium landscape screenshot checks the
+                // clear center. In Unity ensure the strip is compact and
+                // right-anchored, not the old full-width center obstruction.
+                Assert.That(header.anchorMin.x,Is.EqualTo(1f).Within(.001f));
+                Assert.That(header.pivot.x,Is.EqualTo(1f).Within(.001f));
+                Assert.Less(header.localScale.x,.75f,"Landscape resource HUD too large");
+                Assert.Greater(header.anchoredPosition.y,-80f);
+            }
+            else
+                Assert.Less(header.anchoredPosition.y,
+                    -header.rect.height*.5f-18f,
+                    "Portrait HUD header is cropped at upper edge");
             Assert.That(world.GetComponentsInChildren<SpriteRenderer>(true)
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
                 "Do not restore the second dark contact-shadow oval around the original Aserradero");

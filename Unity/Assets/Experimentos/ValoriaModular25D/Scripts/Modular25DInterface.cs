@@ -126,14 +126,58 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             float topClearance=Mathf.Max(64f,safeTop+10f);
             float bottomClearance=Mathf.Max(36f,safeBottom+10f);
 
-            hudTop.anchoredPosition=new Vector2(0f,-topClearance-32f);
-            feedbackRect.anchoredPosition=new Vector2(0f,-topClearance-88f);
-            inspectRect.anchoredPosition=new Vector2(88f,bottomClearance+34f);
-            centerRect.anchoredPosition=new Vector2(-84f,bottomClearance+34f);
+            bool landscape=width>height;
+            if(landscape)
+            {
+                // Native 844x390 WebGL capture: the old 368x64 strip covered
+                // the Bastion and intercepted touch gestures in the middle.
+                // Keep the resource ledger in the upper-right clear sky.
+                // Uniform scaling also keeps both gold hairlines aligned.
+                hudTop.anchorMin=hudTop.anchorMax=new Vector2(1f,1f);
+                hudTop.pivot=new Vector2(1f,1f);
+                hudTop.localScale=Vector3.one*.67f;
+                hudTop.anchoredPosition=new Vector2(-12f,-Mathf.Max(10f,safeTop+8f));
 
-            // Bottom of the action panel stays above the two 52-pt controls.
-            sawmillPanelRect.anchoredPosition=
-                new Vector2(0f,bottomClearance+52f+17f+113f);
+                feedbackRect.anchorMin=feedbackRect.anchorMax=new Vector2(0f,1f);
+                feedbackRect.pivot=new Vector2(0f,1f);
+                feedbackRect.sizeDelta=new Vector2(260f,36f);
+                feedbackRect.anchoredPosition=new Vector2(12f,-Mathf.Max(12f,safeTop+10f));
+                message.fontSize=11;
+
+                // The functional controls remain reachable but no longer form
+                // two 70px-high blocks across the narrow gameplay viewport.
+                inspectRect.localScale=Vector3.one*.78f;
+                centerRect.localScale=Vector3.one*.78f;
+                inspectRect.anchoredPosition=new Vector2(65f,bottomClearance+25f);
+                centerRect.anchoredPosition=new Vector2(-65f,bottomClearance+25f);
+
+                // Scale the real build panel, not a visual mockup or a second
+                // Canvas. Keep its canonical button and countdown operable.
+                sawmillPanelRect.localScale=Vector3.one*.72f;
+                sawmillPanelRect.anchoredPosition=new Vector2(0f,bottomClearance+108f);
+            }
+            else
+            {
+                // Restore all layout properties on orientation change.
+                hudTop.anchorMin=hudTop.anchorMax=new Vector2(.5f,1f);
+                hudTop.pivot=new Vector2(.5f,.5f);
+                hudTop.localScale=Vector3.one;
+                hudTop.anchoredPosition=new Vector2(0f,-topClearance-32f);
+
+                feedbackRect.anchorMin=feedbackRect.anchorMax=new Vector2(.5f,1f);
+                feedbackRect.pivot=new Vector2(.5f,.5f);
+                feedbackRect.sizeDelta=new Vector2(360f,28f);
+                feedbackRect.anchoredPosition=new Vector2(0f,-topClearance-88f);
+                message.fontSize=13;
+
+                inspectRect.localScale=Vector3.one;
+                centerRect.localScale=Vector3.one;
+                inspectRect.anchoredPosition=new Vector2(88f,bottomClearance+34f);
+                centerRect.anchoredPosition=new Vector2(-84f,bottomClearance+34f);
+                sawmillPanelRect.localScale=Vector3.one;
+                sawmillPanelRect.anchoredPosition=
+                    new Vector2(0f,bottomClearance+52f+17f+113f);
+            }
             lastLayoutWidth=width;
             lastLayoutHeight=height;
             lastSafeArea=safe;

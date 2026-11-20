@@ -14,6 +14,7 @@ on:
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Tests/EditMode/BastionIRealPlayModeTests.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DGround.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DWorld.cs'
+      - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DLandscape.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DInterface.cs'
       - 'Unity/Assets/Experimentos/ValoriaModular25D/Scripts/Modular25DArt.cs'
