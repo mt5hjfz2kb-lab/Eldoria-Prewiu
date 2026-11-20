@@ -39,7 +39,7 @@ const url='http://127.0.0.1:'+server.address().port+'/index.html';
 let browser;
 const manifest={status:'NOT_TESTED',gameSourceSha:process.env.ELDORIA_PLAYER_SHA||'UNPINNED',
  testScriptSha:process.env.GITHUB_SHA||'UNPINNED',engine:'Actual Unity WebGL Chromium camera gestures',
- device:'Chromium synthetic mouse; NOT real iPhone',iPhoneTested:false,visualApproved:false,cases:[]};
+ device:'Chromium DevTools Protocol native touch, simulated fingers; NOT real iPhone',iPhoneTested:false,visualApproved:false,cases:[]};
 function sha(x){return createHash('sha256').update(x).digest('hex')}
 function imageDifference(before,after,area){
   const a=PNG.sync.read(before),b=PNG.sync.read(after);
@@ -101,14 +101,50 @@ try{
     if(!box || Math.abs(box.width-width)>3 || Math.abs(box.height-height)>3)
       throw Error('Canvas does not fit exact mobile viewport '+width+'x'+height);
     const before=await capture(page,'camera-home',width,height);
-    // Real browser mouse drag. The game must handle input in its own Update.
+    // In a TOUCH-emulated browser, page.mouse is not a reliable proxy for
+    // actual mobile swipe/pinch: run 44711503891 moved only characters.
+    // CDP dispatchTouchEvent synthesizes Chromium's native TouchEvents
+    // (not JS-dispatched fake DOM events) and reaches Unity's input bridge.
+    const devtools=await ctx.newCDPSession(page);
+    await devtools.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
     const x=Math.round(width*.53),y=Math.round(height*.42);
-    await page.mouse.move(x,y);await page.mouse.down();
-    await page.mouse.move(x+Math.round(width*.19),y+Math.round(height*.13),{steps:16});
-    await page.mouse.up();await page.waitForTimeout(700);
+    const endX=x+Math.round(width*.19),endY=y+Math.round(height*.13);
+    await devtools.send('Input.dispatchTouchEvent',{
+      type:'touchStart',touchPoints:[{id:1,x,y,force:1}]
+    });
+    await page.waitForTimeout(85);
+    for(let i=1;i<=22;i++){
+      const t=i/22;
+      await devtools.send('Input.dispatchTouchEvent',{
+        type:'touchMove',touchPoints:[{
+          id:1,x:Math.round(x+(endX-x)*t),y:Math.round(y+(endY-y)*t),force:1
+        }]
+      });
+      await page.waitForTimeout(38);
+    }
+    await devtools.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await page.waitForTimeout(800);
     const panned=await capture(page,'camera-panned',width,height);
-    await page.mouse.move(Math.round(width*.49),Math.round(height*.42));
-    await page.mouse.wheel(0,-460);await page.waitForTimeout(900);
+
+    // A real two-finger gesture, not a mouse wheel. Vary the separation
+    // frame by frame so the game's actual Touchscreen pinch code is exercised.
+    const cx=Math.round(width*.48),cy=Math.round(height*.42);
+    const makePoints=half=>[
+      {id:2,x:Math.round(cx-half),y:cy,force:1},
+      {id:3,x:Math.round(cx+half),y:cy,force:1}
+    ];
+    await devtools.send('Input.dispatchTouchEvent',{
+      type:'touchStart',touchPoints:makePoints(37)
+    });
+    await page.waitForTimeout(85);
+    for(let i=1;i<=22;i++){
+      await devtools.send('Input.dispatchTouchEvent',{
+        type:'touchMove',touchPoints:makePoints(37+Math.round(56*i/22))
+      });
+      await page.waitForTimeout(38);
+    }
+    await devtools.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await page.waitForTimeout(900);
     const zoomed=await capture(page,'camera-zoomed',width,height);
     const roi=[Math.round(width*.09),Math.round(height*.22),Math.round(width*.91),Math.round(height*.83)];
     const p= imageDifference(before.bytes,panned.bytes,roi);
@@ -119,8 +155,8 @@ try{
       throw Error(width+'x'+height+': wheel zoom did not change world enough: '+JSON.stringify(z));
     let home=null,h=null;
     if(height>width){
-      // Actual bottom-right uGUI CENTRAR button; no synthetic camera Home call.
-      await page.mouse.click(Math.round(width*.78),Math.round(height*.917));
+      // Touch the actual bottom-right uGUI CENTRAR button, not C# Home.
+      await page.touchscreen.tap(Math.round(width*.78),Math.round(height*.917));
       await page.waitForTimeout(800);
       home=await capture(page,'camera-home-restored',width,height);
       h=imageDifference(before.bytes,home.bytes,roi);
@@ -129,7 +165,7 @@ try{
     }
     if(errors.length)throw Error('Browser/Unity JS error: '+errors.slice(0,5).join(' | '));
     manifest.cases.push({width,height,panning:p,zoom:z,returnHome:h,
-      assertions:'real mouse drag and scroll + physical uGUI center action in portrait',
+      assertions:'CDP native single-finger drag, two-finger pinch and actual touch on uGUI CENTRAR in portrait',
       frames:[before,panned,zoomed,...(home?[home]:[])].map(({name,sha256})=>({name,sha256}))});
     await ctx.close();
   }
