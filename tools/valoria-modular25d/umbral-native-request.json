@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "requested_on": "2026-11-20",
-  "purpose": "Commercial vertical-slice quality demonstration, not another micro UI tweak: cohesive closer Bastion/Aserradero, shared paths, camera occupancy, world-anchored interactive building labels, new 9-slice material family, illustrated six icon atlas, authentic Aldric portrait, real LocalGateway build+save and isolated WebGL browser proof. Compare against source-pinned prior 44770528023 and avoid false quality claims.",
-  "source_before_request": "e91d5cab5414c011af360cf2bf774cc1b6250979",
+  "purpose": "FINAL comprehensive vertical slice QA: exact source new compact town composition, full-size isometric Bastion I and sawmill, two world-following clickable building tags, genuine source Aldric portrait + illustrated six icon atlas, READABLE edge-only Umbral II 9-slice materials (old gold arcs removed), real canonical Build + save, isolated WebGL Chromium.",
+  "source_before_request": "fdc628b608d27c01fa139d5e568627b3e9771fa0",
   "previous_failed_run": 44763580769,
   "script_scope": "existing Bastion I modular experiment",
   "no_paid_assets": true,
@@ -20,5 +20,9 @@
   "control_reference_run": 44770528023,
   "last_running_native_run": 44773827531,
   "copyright": "Use ONLY original Eldoria source art; no third party game assets.",
-  "no_main_or_beta_edit": true
+  "no_main_or_beta_edit": true,
+  "previous_native_source_run": 44781734169,
+  "old_5_material_browser_run": 44773827531,
+  "visual_revision": "Umbral II scene+HUD commercial production review - no crossing ornaments, read all labels at 390x844",
+  "key_acceptance": "Must deliver genuine Unity frames, authentic WebGL HUD screenshot, click build panel, 230->150 source data, reload+touch and landscape, no iPhone claim; fail closed if cropped or missing art."
 }
