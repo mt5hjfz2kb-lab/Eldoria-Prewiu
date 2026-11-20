@@ -1,9 +1,9 @@
 # Native v20: original concept-derived seamless meadow, buildings, oaks, ruins and painted
 # ground vegetation; all captured by actual Unity 6000.3 Camera.Render.
-name: Valoria Modular 2.5D — CORONA DE LA BRECHA actual Unity PlayMode and WebGL
+name: Corona wide-panel A/B — real Unity PlayMode and WebGL
 on:
   push:
-    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    branches: [experiment/corona-wide-panel-art-ab-20261120]
     paths:
       - '.github/workflows/valoria-corona-brecha-native.yml'
       - 'tools/valoria-corona-brecha/native-request.json'
