@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "requested_at": "2026-11-20",
+  "source_sha": "40f360ce8d94982435eaf709f9abe0e791f10866",
+  "identity": "Sir Aldric",
+  "source_provenance": "Unity/Assets/Eldoria/Resources/UI/AldricDialogue/ALDRIC_BUST_PROVENANCE.json",
+  "derivative": "transparent circular avatar for Umbral II Valoria identity",
+  "no_new_lore": true,
+  "no_paid_assets": true,
+  "no_main_modification": true
+}
