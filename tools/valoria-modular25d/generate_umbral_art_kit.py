@@ -58,16 +58,18 @@ def paint(name,w,h,variant):
                           fill=bronze+(255,))
     else:
         if variant=="resource":
-            top,bottom,trim=("#425D66","#203B4B","#8E7655")
+            # High-contrast navy face. Gold must not run through resource
+            # numbers on a 43px phone capsule.
+            top,bottom,trim=("#344E5A","#18303D","#A78A57")
             rad=22*SCALE
         elif variant=="dock":
-            top,bottom,trim=("#496575","#152B3A","#BA975A")
+            top,bottom,trim=("#385263","#152D3F","#C5A269")
             rad=23*SCALE
         elif variant=="green":
-            top,bottom,trim=("#67B584","#286B58","#E0C47F")
+            top,bottom,trim=("#55A47B","#1F7759","#E5C68A")
             rad=24*SCALE
         else:
-            top,bottom,trim=("#9B5C59","#5D394B","#D4A26B")
+            top,bottom,trim=("#7A4452","#452E42","#CCA06A")
             rad=23*SCALE
         top,bottom,trim=map(hexcolor,(top,bottom,trim))
         d.rounded_rectangle((5*SCALE,6*SCALE,W-6*SCALE,H-6*SCALE),
@@ -88,13 +90,16 @@ def paint(name,w,h,variant):
                 gpx[x,y]=tuple(int(max(0,min(255,v+grain))) for v in row)+(255,)
         pic.alpha_composite(Image.composite(gradient,Image.new("RGBA",(W,H)),mask))
         d=ImageDraw.Draw(pic)
+        # Use an uninterrupted center field for gameplay typography.
+        # The previous gilded arc was enlarged across the text by Unity's
+        # sliced-image scaling and made header/resources/objectives unreadable.
+        # Confine ornaments to edge-only bands outside the safe text center.
         d.rounded_rectangle((9*SCALE,8*SCALE,W-10*SCALE,H-14*SCALE),
-            radius=rad-4*SCALE,outline=hexcolor("#A7C0AC")+(255,) if variant=="green"
-                                   else hexcolor("#718A83")+(255,),width=2*SCALE)
-        d.arc((11*SCALE,10*SCALE,W-12*SCALE,H-16*SCALE),
-            185,355,fill=gold+(255,),width=2*SCALE)
-        d.line(((32*SCALE,11*SCALE),(w-33)*SCALE,11*SCALE),
-            fill=hexcolor("#A5B7A9")+(120,),width=2*SCALE)
+            radius=rad-4*SCALE,outline=hexcolor("#6E8F91")+(155,)
+                                    if variant=="green" else hexcolor("#6A8082")+(126,),
+                                    width=1*SCALE)
+        d.line(((23*SCALE,(h-14)*SCALE),((w-24)*SCALE,(h-14)*SCALE)),
+            fill=gold+(105,),width=1*SCALE)
         if variant in ("resource","dock"):
             for x,y in ((19,19),(w-20,19)):
                 d.ellipse(((x-2)*SCALE,(y-2)*SCALE,(x+2)*SCALE,(y+2)*SCALE),
@@ -144,6 +149,7 @@ def main():
     PROOF.write_text(json.dumps({"schema":1,"style":"Valoria medieval UI, commercial clarity",
         "output":"Resources/ValoriaModular25D/UI/UmbralII",
         "gameplay_changed":False,"claims_unity_qa":False,"source":"generate_umbral_art_kit.py",
+        "revision":"Umbral II commercial readability pass - edge-only decoration",
         "sprites":manifest},indent=2,ensure_ascii=False)+"\n",encoding="utf8")
     print("UMBRAL_II_ORIGINAL_MATERIALS_READY_FOR_UNITY_IMPORT")
 
