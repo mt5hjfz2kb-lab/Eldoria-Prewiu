@@ -450,6 +450,10 @@ namespace Eldoria.Modular25D.Tests
                 "Countdown label must not cover the progress bar at the badge bottom");
             Assert.IsFalse(panel.activeInHierarchy,
                 "Successful canonical construction must immediately dismiss the detail panel");
+            var onScreenNotice=Member(ui,"notice") as Text;
+            Assert.NotNull(onScreenNotice);
+            Assert.IsTrue(string.IsNullOrEmpty(onScreenNotice.text),
+                "Do not obscure the premium Bastion with a generic Action started debug toast after Build");
             Assert.IsTrue(center.gameObject.activeInHierarchy,
                 "Close after Build must restore navigation without a second tap");
             Call(ui,"OpenSawmill");

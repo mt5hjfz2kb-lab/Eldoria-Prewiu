@@ -372,6 +372,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             value = value ?? "";
             if (value.StartsWith("Partida experimental aislada", StringComparison.OrdinalIgnoreCase))
                 value = "";
+            // Real WebGL 390x844 showed a giant "Acción iniciada" banner
+            // painted straight across the keep after Build, hiding the
+            // centre of the scene. Successful construction now closes the
+            // sheet and exposes its real timer on the world tag. Duplicating
+            // that with a generic success toast is unnecessary obstruction.
+            // Keep genuine failure/errors visible for user feedback.
+            if (value.Equals("Acción iniciada",StringComparison.OrdinalIgnoreCase))
+                value = "";
             notice.text = value;
             var show = value.Length > 0;
             noticeRoot.gameObject.SetActive(show);
