@@ -9,6 +9,45 @@ SOURCE=R/"tools/valoria-corona-brecha/source"
 OUT=R/"Unity/Assets/Experimentos/ValoriaModular25D/Resources/ValoriaModular25D/UI/CoronaBrecha"
 SPEC=json.loads((R/"tools/valoria-corona-brecha/manifest.json").read_text())
 
+def original_connected_art_only(artist_png):
+ """Remove isolated image-generation alpha chips outside the main frame.
+ Preserve the largest original 8-connected alpha component and a 2px
+ antialias fringe. Specifically prevents the 548-pixel gold sliver
+ floating to the left of the actual obsidian panel.
+ """
+ from PIL import ImageFilter
+ w,h=artist_png.size
+ alpha=artist_png.getchannel("A").tobytes()
+ seen=bytearray(w*h)
+ largest=[]
+ others=0
+ for seed,value in enumerate(alpha):
+  if value<=20 or seen[seed]:
+   continue
+  pending=[seed];seen[seed]=1;connected=[]
+  while pending:
+   index=pending.pop()
+   connected.append(index)
+   x,y=index%w,index//w
+   for ny in range(max(0,y-1),min(h,y+2)):
+    for nx in range(max(0,x-1),min(w,x+2)):
+     j=ny*w+nx
+     if alpha[j]>20 and not seen[j]:
+      seen[j]=1;pending.append(j)
+  if len(connected)>len(largest):
+   others+=len(largest)
+   largest=connected
+  else:
+   others+=len(connected)
+ if len(largest)<.5*w*h:
+  raise ValueError("Corona panel image is disconnected or mostly empty")
+ mask=bytearray(w*h)
+ for i in largest:mask[i]=255
+ feather=Image.frombytes("L",(w,h),bytes(mask)).filter(ImageFilter.MaxFilter(5))
+ result=Image.composite(artist_png,Image.new("RGBA",(w,h)),feather)
+ print("CORONA_PANEL_FLOATING_ISLANDS_REMOVED",others)
+ return result
+
 def commercial_wide_panel(artist_png):
  """Preserve the sculpted CENTRAL gems and solid corners when making a
  355:244 mobile modal. Unity Image.Type.Simple stretched the 500x540
@@ -93,7 +132,7 @@ def main():
         radius=28,outline=(122,88,146,95),width=3)
       actual=Image.alpha_composite(actual,mask)
      if name=="panel_obsidian":
-      actual=commercial_wide_panel(actual)
+      actual=commercial_wide_panel(original_connected_art_only(actual))
       origin="original_painted_panel_aspect_mapped_720x500_central_gems_intact"
      else:
       origin="original_illustration_png_opaque_art_bounds_normalized"
