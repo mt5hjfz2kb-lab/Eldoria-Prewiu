@@ -1,0 +1,9 @@
+# Valoria modular Bastión I — trabajador del Aserradero como componente artístico
+
+- **Estado:** candidato implementable, no aprobado hasta renderizado auténtico Unity y comparación humana A/B en tamaño móvil.
+- **Origen:** arte original generado con OpenAI para Eldoria el 20 de noviembre de 2026; ID de generación `aca9f10f-b668-4ea7-b1ab-a4fe2dcec29c`. No procede de Whiteout Survival, Kingshot, Top Heroes ni bibliotecas de terceros.
+- **Fuente de mayor resolución:** dos PNG RGBA de 512×512 con hashes SHA256 `2ead5833df2f4f71295b904a4f20081fcf6cbe70e00711b78e052d25192552f7`, `156df7dda3a0b186a60d0e78ef923ea4793bbec79bd93594dcf977efb69b1929`. Se mantienen conservadas en los artefactos de autoría locales de la conversación, sin sobrescribir recursos anteriores del repositorio.
+- **Sprites de juego:** `worker_saw_0.png` y `worker_saw_1.png`, independientes, 96×96 PNG8 con alpha, reducción paleta 48 colores mediante FASTOCTREE sin tramado, a partir de fuente RGBA 512 con LANCZOS. SHA256 y tamaños en `sprite_manifest.json`.
+- **Instanciación:** actor unido al puesto de serrado, pie y suelo propios, orden por `FootOrder`, dos fases de sierra (tirar/empujar) sin mover el caballete por el mundo, escala 0,81 a 100 PPU, profundidad independiente. El actor solo se activa con Aserradero BUILT según LocalGateway, nunca con parcela libre u obra.
+- **Compatibilidad:** los recursos anteriores `villager_walk_0` y `villager_walk_1` se conservan para caminantes. No añadir mecánicas, gastos, recursos ni guardados.
+- **Prueba pendiente:** fuente byte-exact → Unity import → Camera.Render detalle de taller y secuencia de 32 fotogramas → PlayMode `Configured`/estados → WebGL/Chromium → iPhone físico → revisión artística de perspectiva, escala, sombras y riqueza respecto al Bastión. Si la nueva ilustración parece una pegatina, revertir solo este recurso, sin sacrificar la arquitectura.

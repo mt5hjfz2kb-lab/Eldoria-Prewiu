@@ -84,6 +84,33 @@ class SandboxSourceContracts(unittest.TestCase):
         self.assertIn("graphic.type=Image.Type.Sliced;",skin)
         self.assertIn("Resources.Load<Font>",skin)
 
+    def test_original_two_frame_sawyer_art_manifest_and_import(self):
+        directory=BASE/"Resources/ValoriaModular25D"
+        entries={p["name"]:p for p in
+                 json.loads((directory/"sprite_manifest.json").read_text(encoding="utf8"))["sprites"]}
+        expected={
+            "worker_saw_0":("4fd2ed00f51002de8e0418597697f2fe787089af175bbd510ead8dbb22847e4d",2695),
+            "worker_saw_1":("133701506f01f482162fce0266a826c78a6ba8200413dd7d054ff086d72aa9e5",2690),
+        }
+        for name,(sha,bytecount) in expected.items():
+            path=directory/(name+".png")
+            content_bytes=path.read_bytes()
+            self.assertEqual(len(content_bytes),bytecount)
+            self.assertEqual(hashlib.sha256(content_bytes).hexdigest(),sha)
+            self.assertEqual(struct.unpack(">II",content_bytes[16:24]),(96,96))
+            self.assertEqual(content_bytes[25],3,"Original paletted PNG with alpha, not a backplate")
+            meta=(directory/(name+".png.meta")).read_text(encoding="utf8")
+            self.assertIn("spritePixelsToUnits: 100",meta)
+            self.assertIn("spritePivot: {x: 0.500000, y: 0.060000}",meta)
+            self.assertEqual(entries[name]["sha256"],sha)
+            self.assertFalse(entries[name]["art_approved"])
+            self.assertFalse(entries[name]["unity_render_checked"])
+        world=content(SCRIPTS/"Modular25DWorld.cs")
+        act=content(SCRIPTS/"Modular25DWorkshopAction.cs")
+        self.assertIn("Modular25DArt.Sawyer(0)",world)
+        self.assertIn("keyframes[stroke>0f?0:1]",act)
+        self.assertNotIn("body.sprite=Modular25DArt.Villager",act)
+
     def test_production_gameplay_authority(self):
         src = content(SCRIPTS / "Modular25DGameplay.cs")
         self.assertIn("save=new FileStateStore(SandboxSavePath);", src)

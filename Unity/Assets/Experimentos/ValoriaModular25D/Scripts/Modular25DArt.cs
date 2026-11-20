@@ -421,6 +421,24 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             });
         }
 
+        // Optional component-specific original art. Unlike the generic 2-frame
+        // villager, this depicts an actual saw and braced log in motion. Preserve
+        // both independent RGBA PNGs with origin/hash; never paint an entire city.
+        public static Sprite Sawyer(int frame)
+        {
+            string key="worker_saw_"+Mathf.Clamp(frame,0,1);
+            if(Cache.TryGetValue(key,out var cached))return cached;
+            var image=Resources.Load<Sprite>("ValoriaModular25D/"+key);
+            if(image==null)
+            {
+                Debug.LogError("[Modular25D] Missing original sawyer frame "+key+
+                    " — do not silently replace with a walking icon.");
+                return null;
+            }
+            Cache.Add(key,image);
+            return image;
+        }
+
         public static Sprite Villager(int frame)
         {
             return Make("villager_walk_"+frame,78,120,96f,P(.5f,.07f),a =>

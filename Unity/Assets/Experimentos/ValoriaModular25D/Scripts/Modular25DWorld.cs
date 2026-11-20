@@ -346,10 +346,14 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var contact=AddSprite("worker ground contact",
                 Modular25DArt.Shadow(64,17),new Vector2(0,-.07f),
                 FootOrder(foot.y)-1,actor.transform);
-            contact.transform.localScale=Vector3.one*.58f;
-            var body=AddSprite("worker illustrated body",Modular25DArt.Villager(0),
+            // Two painterly original keyframes already have a soft foot/trestle
+            // cast. Keep this world contact delicate to avoid a second dark halo.
+            contact.transform.localScale=Vector3.one*.43f;
+            contact.color=new Color(.73f,.77f,.67f,.22f);
+            var body=AddSprite("sawyer at log trestle — original 2.5D keyframe",
+                Modular25DArt.Sawyer(0),
                 Vector2.zero,FootOrder(foot.y),actor.transform);
-            body.transform.localScale=Vector3.one*.61f;
+            body.transform.localScale=Vector3.one*.81f;
             var action=actor.AddComponent<Modular25DWorkshopAction>();
             action.Configure(body,contact);
             WorkshopAction=action;

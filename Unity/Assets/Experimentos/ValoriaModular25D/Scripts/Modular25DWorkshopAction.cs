@@ -12,6 +12,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     public sealed class Modular25DWorkshopAction : MonoBehaviour
     {
         SpriteRenderer body,contact;
+        Sprite[] keyframes;
         float clock;
         public bool Configured { get; private set; }
         public float WorkCycles { get; private set; }
@@ -19,7 +20,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         public void Configure(SpriteRenderer worker,SpriteRenderer ground)
         {
             body=worker;contact=ground;
-            Configured=body!=null&&contact!=null;
+            keyframes=new[]{Modular25DArt.Sawyer(0),Modular25DArt.Sawyer(1)};
+            Configured=body!=null&&contact!=null&&
+                keyframes[0]!=null&&keyframes[1]!=null;
             if(Configured)ApplyPose();
         }
 
@@ -38,13 +41,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         void ApplyPose()
         {
             float stroke=Mathf.Sin(clock*2f*Mathf.PI*1.07f);
-            body.sprite=Modular25DArt.Villager(stroke>0f?0:1);
+            body.sprite=keyframes[stroke>0f?0:1];
             body.flipX=false;
             // Repeated two-phase push and recovery, visually grounded at one
             // sawing station; no pedestrian walking in place or world-space warp.
-            body.transform.localPosition=new Vector3(stroke*.035f,
-                Mathf.Max(0f,stroke)*.018f,0f);
-            body.transform.localRotation=Quaternion.Euler(0f,0f,-stroke*3.0f);
+            body.transform.localPosition=new Vector3(stroke*.018f,
+                Mathf.Max(0f,stroke)*.008f,0f);
+            // Two already-different saw positions carry the readable action.
+            // No body bob/tilt strong enough to make the trestle float.
+            body.transform.localRotation=Quaternion.identity;
             int order=Modular25DWorld.FootOrder(transform.localPosition.y);
             body.sortingOrder=order;
             contact.sortingOrder=order-1;
