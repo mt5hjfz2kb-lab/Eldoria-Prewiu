@@ -40,7 +40,15 @@ jobs:
             'Authorization':'Bearer '+os.environ['GH_TOKEN'],
             'Accept':'application/vnd.github+json'})
           with urllib.request.urlopen(req,timeout=35) as r:m=json.load(r)
-          s=json.loads(base64.b64decode(m['content']))
+          # The canonical registry exceeds 1MB: GitHub Contents JSON returns
+          # metadata but not file contents. Reopen the exact SHA as a git blob.
+          blob_req=urllib.request.Request('https://api.github.com/repos/'+repo+
+              '/git/blobs/'+m['sha'],headers={
+              'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+              'Accept':'application/vnd.github+json'})
+          with urllib.request.urlopen(blob_req,timeout=35) as r:blob=json.load(r)
+          assert blob['sha']==m['sha'] and blob['encoding']=='base64'
+          s=json.loads(base64.b64decode(blob['content']))
           x=[a for a in s['active'] if a.get('id')=='eldoria-valoria-modular25d-bastion1-20261119']
           assert len(x)==1 and x[0]['owner']=='chatgpt-valoria-umbral-commercial-ui-and-continuation-20261120'
           assert x[0]['ownership_revision']==7 and x[0]['ownership_state']=='claimed'
