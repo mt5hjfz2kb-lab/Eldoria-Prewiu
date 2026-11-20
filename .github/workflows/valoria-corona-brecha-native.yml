@@ -1,9 +1,11 @@
-# Native v20: original concept-derived seamless meadow, buildings, oaks, ruins and painted
+# Frozen evidence branch: d7b7dbd6 original 15-source art and correct source-captured HUD; leave branch unchanged.\n# Native v20: original concept-derived seamless meadow, buildings, oaks, ruins and painted
 # ground vegetation; all captured by actual Unity 6000.3 Camera.Render.
 name: Valoria Modular 2.5D — CORONA DE LA BRECHA actual Unity PlayMode and WebGL
 on:
   push:
-    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    branches:
+      - experiment/valoria-corona-de-la-brecha-ui-20261120
+      - experiment/corona-brecha-native-quality-lock-20261120
     paths:
       - '.github/workflows/valoria-corona-brecha-native.yml'
       - 'tools/valoria-corona-brecha/native-request.json'
