@@ -8,7 +8,14 @@
   "no_new_lore": true,
   "no_paid_assets": true,
   "no_main_modification": true,
-  "review_round": 2,
+  "review_round": 3,
   "previous_avatar_rejected": "Cropped hair/forehead rather than face, need inspect actual approved source",
-  "next_action": "Produce authentic original and 8 crop views, then choose actual face framing before modifying UI"
+  "next_action": "Produce authentic original and 8 crop views, then choose actual face framing before modifying UI",
+  "approved_crop_box_in_512": [
+    100,
+    130,
+    410,
+    440
+  ],
+  "reason": "Verified 8 actual original crops; previous crop 138,16..374,252 exposed only the hair. New box frames face and shoulders."
 }
