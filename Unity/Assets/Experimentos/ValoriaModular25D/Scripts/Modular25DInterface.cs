@@ -446,7 +446,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
             resourceRow.pivot = wide ? new Vector2(1f, 1f) : new Vector2(.5f, 1f);
             resourceRow.anchoredPosition = wide ?
-                new Vector2(-10f, -top) : new Vector2(0f, -top - 82f);
+                new Vector2(-10f, -top) : new Vector2(0f, -top - 98f);
             resourceRow.sizeDelta = new Vector2(365f, 44f);
             for (int i = 0; i < resourceChips.Length; i++)
             {

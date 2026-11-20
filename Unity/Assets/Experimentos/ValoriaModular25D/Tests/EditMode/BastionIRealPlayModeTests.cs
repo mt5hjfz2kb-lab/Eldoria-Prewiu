@@ -220,9 +220,21 @@ namespace Eldoria.Modular25D.Tests
                 Assert.Greater(header.anchoredPosition.y,-80f);
             }
             else
+            {
                 Assert.Less(header.anchoredPosition.y,
                     -header.rect.height*.5f-18f,
                     "Portrait HUD header is cropped at upper edge");
+                var identity=world.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
+                Assert.NotNull(identity,"Corona identity crest missing");
+                // Two separate 9-slices must NEVER overlap vertically:
+                // portrait seal bottom is -top-68 and resource row top is
+                // -top-98+22. This leaves a genuine 8px safety interval.
+                Assert.LessOrEqual(
+                    header.anchoredPosition.y+header.rect.height*.5f,
+                    identity.anchoredPosition.y-identity.rect.height-4f,
+                    "Portrait resources overlap Valoria identity golden crest");
+            }
             Assert.That(world.GetComponentsInChildren<SpriteRenderer>(true)
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
                 "Do not restore the second dark contact-shadow oval around the original Aserradero");
