@@ -1,0 +1,34 @@
+name: EONSCAR branding trial — isolated source sanity
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Branding/EonscarTrial/**'
+      - 'Unity/Assets/Eldoria/Branding/EonscarTrial.meta'
+      - 'Unity/Assets/Eldoria/Branding.meta'
+      - 'tools/eonscar-branding-trial/**'
+      - '.github/workflows/eonscar-branding-trial-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # This repository is large; the brand source contract needs only these paths.
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Branding.meta
+            Unity/Assets/Eldoria/Branding/
+            Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs
+            tools/eonscar-branding-trial/
+          sparse-checkout-cone-mode: false
+          lfs: false
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify opt-in scope, Unity metadata and no gameplay mutation
+        run: node tools/eonscar-branding-trial/verify.mjs
+      - name: Verify nine responsive and safe-area viewport geometries
+        run: node tools/eonscar-branding-trial/layout-smoke.mjs
