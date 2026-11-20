@@ -1,0 +1,72 @@
+name: Corona — browser-only causal regression on genuine Unity WebGL
+on:
+  push:
+    branches: [experiment/valoria-corona-de-la-brecha-ui-20261120]
+    paths:
+      - '.github/workflows/valoria-corona-browser-regression.yml'
+      - 'tools/valoria-modular25d/browser_smoke.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-corona-browser-only-70444c
+  cancel-in-progress: false
+jobs:
+  real-chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      ELDORIA_PLAYER_SHA: "70444c18217d3a519f313c840e9fb3b13f2fa033"
+    steps:
+      - name: Source the exact Corona browser QA script, no Unity edits
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/valoria-modular25d
+          sparse-checkout-cone-mode: true
+      - name: Download the actual Unity 6.3 WebGL PLAYER from 44802943006
+        uses: actions/download-artifact@v4
+        with:
+          name: corona-mod25d-webgl-player-44802943006
+          run-id: 44802943006
+          github-token: ${{ github.token }}
+          path: webgl
+      - name: Verify exact frozen engine source, never a synthetic mock
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s webgl/index.html
+          test -s webgl/Build/ValoriaModular25D_WebGL.wasm.gz
+          test -s webgl/Build/ValoriaModular25D_WebGL.data.gz
+          node --version
+          echo "Real Unity WebGL source SHA: $ELDORIA_PLAYER_SHA"
+      - name: Real Chromium click, 230 to 150 wood, actual reload
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --no-audit --no-fund --package-lock=false playwright-core@1.56.1 pngjs@7.0.0
+          node --check tools/valoria-modular25d/browser_smoke.mjs
+          node tools/valoria-modular25d/browser_smoke.mjs webgl browser-evidence
+          python3 - <<'PY'
+          import json,os
+          d=json.load(open("browser-evidence/browser-evidence.json"))
+          assert d["status"]=="BROWSER_UI_SMOKE_PASSED_NOT_DEVICE_QA",d.get("failure")
+          assert d["sourceSha"]==os.environ["ELDORIA_PLAYER_SHA"]
+          assert d["testScriptSha"]==os.environ["GITHUB_SHA"]
+          assert [(c["width"],c["height"]) for c in d["resolutions"]]==[(390,844),(1170,2532)]
+          for c in d["resolutions"]:
+              assert c["woodBalanceBuildChange"]["changed"]>=25
+              assert c["woodBalanceBuildChange"]["ratio"]>=.034
+              assert c["browserReloadWoodRetention"]["ratio"]<=.055
+          print("CORONA_REAL_BROWSER_CLICK_SPEND_RELOAD_PASS; source 70444c; NOT LATEST UI")
+          PY
+      - name: Preserve screenshot evidence even on failure
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: corona-real-browser-roi-fixed-${{ github.run_id }}
+          path: browser-evidence/
+          retention-days: 21
+          if-no-files-found: warn
