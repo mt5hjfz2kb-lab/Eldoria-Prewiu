@@ -327,6 +327,57 @@ jobs:
             ${{runner.temp}}/mod25d-native-${{github.run_id}}.log
           retention-days: 14
           if-no-files-found: warn
+
+  browser:
+    needs: unity
+    if: needs.unity.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout only owned isolated browser smoke source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            tools/valoria-modular25d
+          sparse-checkout-cone-mode: true
+      - name: Obtain actual WebGL player built by the same SHA's Windows Unity job
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-mod25d-webgl-player-${{github.run_id}}
+          path: webgl
+      - name: Run real Chrome WebGL graphics and actual uGUI click smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s webgl/index.html
+          node --version
+          npm install --no-save --no-audit --no-fund --package-lock=false playwright-core@1.56.1 pngjs@7.0.0
+          node --check tools/valoria-modular25d/browser_smoke.mjs
+          node tools/valoria-modular25d/browser_smoke.mjs webgl browser-evidence
+          python3 - <<'PY'
+          import json,os
+          p='browser-evidence/browser-evidence.json'
+          d=json.load(open(p,encoding='utf8'))
+          assert d['sourceSha']==os.environ['GITHUB_SHA']
+          assert d['status']=='BROWSER_UI_SMOKE_PASSED_NOT_DEVICE_QA'
+          assert [ (x['width'],x['height']) for x in d['resolutions'] ] == [(390,844),(1170,2532)]
+          assert d['actualBrowserHUD'] and d['physicalIphone']=='NOT_TESTED'
+          print('REAL_CHROMIUM_WEBGL_HUD_INTERACTION_SCREENSHOTS_PASS; NO_IPHONE_CERTIFICATION')
+          PY
+      - name: Preserve authentic browser screenshots and exact-source manifest, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-mod25d-chromium-webgl-ui-${{github.run_id}}
+          path: browser-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+
   video:
     needs: unity
     if: needs.unity.result == 'success'
