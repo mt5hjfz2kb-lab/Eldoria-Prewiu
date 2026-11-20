@@ -9,7 +9,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     /// projection, one light direction (top-left), common foot pivots and 2x antialiasing.
     /// This is a first functional art candidate; never mistake it for approved final art.
     /// </summary>
-    internal static class Modular25DArt
+    public static class Modular25DArt
     {
         static readonly Color32 Ink = C(36, 42, 48);
         static readonly Color32 Deep = C(59, 69, 77);
