@@ -66,6 +66,27 @@ const manifest = {
 let browser;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const delay = ms => new Promise(ok => setTimeout(ok, ms));
+// Compare exactly the on-canvas wood balance glyphs, without OCR or
+// reading private Unity state. The top bar is at 390x844 reference safe
+// coordinates; after Build, the balance must change and survive a REAL reload.
+function woodBalancePixels(a, b) {
+  const original=PNG.sync.read(a), current=PNG.sync.read(b);
+  if(original.width!==current.width || original.height!==current.height)
+    throw Error('Wood label screenshot dimensions changed');
+  const w=original.width,h=original.height;
+  const left=Math.round(w*.26),right=Math.round(w*.39);
+  const top=Math.round(h*.113),bottom=Math.round(h*.144);
+  let changed=0,total=0;
+  for(let y=top;y<bottom;y++)for(let x=left;x<right;x++) {
+    const i=(y*w+x)*4;
+    const delta=Math.abs(original.data[i]-current.data[i])+
+      Math.abs(original.data[i+1]-current.data[i+1])+
+      Math.abs(original.data[i+2]-current.data[i+2]);
+    if(delta>80)changed++;
+    total++;
+  }
+  return {changed,total,ratio:changed/Math.max(1,total)};
+}
 function pixelChange(a, b) {
   const old = PNG.sync.read(a), next = PNG.sync.read(b);
   if (old.width !== next.width || old.height !== next.height) throw Error('Screenshot sizes differ');
@@ -163,14 +184,31 @@ try {
     await page.mouse.click(box.x + box.width * .5, box.y + box.height * (1 - 141 / 844));
     await page.waitForTimeout(800);
     const building = await capture('real-build-command');
-    if (errors.length || failures.length)
+    const paid=woodBalancePixels(before.bytes,building.bytes);
+    if(paid.ratio<.08)
+      throw Error(width+'x'+height+': Build did not change the real wood balance glyphs: '+paid.ratio.toFixed(3));
+    await page.waitForTimeout(2500); // allow PlayerPrefs.Save + browser storage sync
+    await page.reload({waitUntil:'domcontentloaded',timeout:60_000});
+    await page.waitForFunction(()=>{
+      const loading=document.querySelector('#unity-loading-bar');
+      const canvas=document.querySelector('canvas');
+      return canvas&&canvas.getBoundingClientRect().width>120 &&
+        (!loading || getComputedStyle(loading).display==='none');
+    },null,{timeout:200_000});
+    await page.waitForTimeout(1500);
+    const reloaded=await capture('real-after-browser-reload');
+    const retained=woodBalancePixels(building.bytes,reloaded.bytes);
+    if(retained.ratio>.065)
+      throw Error(width+'x'+height+': Browser reload lost or altered paid wood balance: '+retained.ratio.toFixed(3));
+        if (errors.length || failures.length)
       throw Error(width + 'x' + height + ': browser errors: ' + [...errors, ...failures].slice(0, 10).join(' | '));
     manifest.resolutions.push({
       width, height, context: scene, sawmillPanelPixelChange: change,
       inputActions: ['screen-space ASERRADERO button', 'screen-space CONSTRUIR button'],
-      screenshots: [before, opened, building].map(({ filename, sha256 }) => ({ filename, sha256 })),
+      screenshots: [before, opened, building, reloaded].map(({ filename, sha256 }) => ({ filename, sha256 })),
+      woodBalanceBuildChange: paid, browserReloadWoodRetention: retained,
       noPageError: true, noRequestFailures: true, topBlackRatio,
-      gameplayBuildPersistence: 'NOT_VERIFIED_BY_THIS_BROWSER_TEST'
+      gameplayBuildPersistence: 'SCREEN_VERIFIED_PLAYERPREFS_WOOD_BALANCE_AFTER_REAL_BROWSER_RELOAD'
     });
     await ctx.close();
   }
