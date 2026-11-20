@@ -153,6 +153,20 @@ namespace Eldoria.Modular25D.Tests
                 .Select(x=>x.sprite.name).Distinct().ToArray();
             Assert.That(gameIcons.Length,Is.GreaterThanOrEqualTo(6),
                 "Commercial HUD must use all six original resource/action game icons, not dummy symbols");
+            // Commercial-world readable labels must be actual tap targets
+            // positioned by the same camera Transform as the 2.5D scene.
+            var tagKeep=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Bastion world nameplate");
+            var tagMill=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Sawmill world nameplate");
+            Assert.NotNull(tagKeep,"No world-anchored Bastion identity plate");
+            Assert.NotNull(tagMill,"No world-anchored Aserradero status plate");
+            Assert.NotNull(tagKeep.GetComponent<Button>());
+            Assert.NotNull(tagMill.GetComponent<Button>());
+            Assert.That(tagKeep.GetComponentsInChildren<Text>(true)
+                .Any(x=>x.text.Contains("BASTIÓN")),Is.True);
+            Assert.That(tagMill.GetComponentsInChildren<Text>(true)
+                .Any(x=>x.text.Contains("ASERRADERO")),Is.True);
             foreach(var key in new[]{"CormorantGaramond-SemiBold","SourceSans3-Semibold"})
                 Assert.NotNull(Resources.Load<Font>("ValoriaModular25D/UI/Fonts/"+key));
             // The game HUD must use authored, border-preserving pieces,
