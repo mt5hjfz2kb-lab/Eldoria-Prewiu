@@ -11,7 +11,7 @@
         320,
         116
       ],
-      "border": 28,
+      "border": 20,
       "guid": "118f0183666919b7a9a56a3905daded4",
       "sha256": "14264e4081315bc7bf126bc28bbd8267181a49424d3335a9f201505ec68373c4",
       "source_sha256": "4d8361b768c6c62fd90e906789396365dbcc0ae69e1f67727992faaf267f27cc"
@@ -22,7 +22,7 @@
         320,
         104
       ],
-      "border": 28,
+      "border": 14,
       "guid": "8eef237bab62e926bd6164b257ac31d9",
       "sha256": "8acf12fead8b82168fa972c368c88acdc63bede36b6cbc10ecdd5f98bf1c5d3e",
       "source_sha256": "a308dc17e2005041da34057bf2596c68a21166708a4a7539e552698eb89bb0be"
@@ -33,7 +33,7 @@
         168,
         168
       ],
-      "border": 20,
+      "border": 19,
       "guid": "01ee3f769f443f4b90582142c506e8eb",
       "sha256": "29c47f3e18c1b37c4b27b049236fd96f1fecb5c8b19c6effada2f57b754e7fe9",
       "source_sha256": "bac2629626613d68ccc847acf28c747f8e9012c7d053282637d64996cd5d034e"
@@ -44,7 +44,7 @@
         168,
         168
       ],
-      "border": 20,
+      "border": 10,
       "guid": "25db349f722ddcc3527a63519cefe562",
       "sha256": "a8ec61e6bf02a760308d329864ac99b0aff5b32fa38a4ecd853388c2e3db61b0",
       "source_sha256": "032dabc5deb91828b71d0b5a879720720f0dd90c4f0e8862a3af13e43845272e"
@@ -55,7 +55,7 @@
         320,
         94
       ],
-      "border": 28,
+      "border": 10,
       "guid": "cab43e3c6c3be4a4ff3968716f1afaea",
       "sha256": "42e91fa693b24d41e3e066f2491ebd89c9be7ac2390804a8c9779af6aaa27eee",
       "source_sha256": "9b7d0cd5f1f9e891f9e2cdb25d9f54d925b45fa3d36d3d4f3bb2879d5408eb11"
@@ -66,7 +66,7 @@
         350,
         135
       ],
-      "border": 28,
+      "border": 17,
       "guid": "e3c5b1ff16f89d74eeb921d739ee8901",
       "sha256": "e4685c302ecc4d0883e3d8140e24205aadbd0a9a7c81fc3cf6e372653a76a353",
       "source_sha256": "c3d6e1af8800bfec187adeb19657a65b9411b67d5dc5e8cb60149f08f73df1ed"
@@ -77,7 +77,7 @@
         360,
         114
       ],
-      "border": 28,
+      "border": 14,
       "guid": "890219f666fc398d5ff2d36dc1a428dc",
       "sha256": "e23a3adc27f814f8cc3011b00a39f2a69d7388d1a7854f8134f0d60537309719",
       "source_sha256": "d6c4de760e1785766551d658211577e48ab7769b4548b09d4f87d565e4df2c96"
@@ -88,7 +88,7 @@
         512,
         512
       ],
-      "border": 64,
+      "border": 56,
       "guid": "2526b4df24834b9220827b955fb43a81",
       "sha256": "b574bb3d04aea4209fdfd40e30c56a91aee521e48ceac3e97d2f8ac253f3ffa2",
       "source_sha256": "9ad7f2ff9df40f4a637557fb300073ae8c8afa82c2c5bbed2e1956f543734c16"
