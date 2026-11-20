@@ -107,10 +107,13 @@ try{
     // (not JS-dispatched fake DOM events) and reaches Unity's input bridge.
     const devtools=await ctx.newCDPSession(page);
     await devtools.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
-    // The actual 844x390 uGUI resource strip spans y=87..175: the
-    // former gesture at y=.42*390=164 was intercepted by HUD as designed.
-    // Start in the exposed world gap, not over a valid interactive panel.
-    const sceneGestureY=height<width ? .57 : .42;
+    // In the 844x390 real Chrome capture the Bastion world nameplate spans
+    // approximately y=183..220, while dock buttons occupy y=300..358.
+    // Prior y=.57*390=222 grazed that clickable nameplate: genuine uGUI
+    // correctly intercepted the gesture, so the camera did not pan.
+    // The unoccupied earth zone y=.68*390=265 has no interactive HUD.
+    // In portrait retain the already-proven y=.42 touch origin.
+    const sceneGestureY=height<width ? .68 : .42;
     const x=Math.round(width*.53),y=Math.round(height*sceneGestureY);
     if(height<width && y<height*.5)throw Error('Landscape touch starts over HUD');
     const endX=x+Math.round(width*.19),endY=y+Math.round(height*.13);
