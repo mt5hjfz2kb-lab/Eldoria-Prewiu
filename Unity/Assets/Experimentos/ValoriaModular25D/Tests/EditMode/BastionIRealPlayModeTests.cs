@@ -228,73 +228,96 @@ namespace Eldoria.Modular25D.Tests
                 "The displayed identity avatar is not the source-certified Aldric image");
             Assert.That(actualFaceImage.raycastTarget,Is.False,
                 "Decorative portraits must not intercept taps");
-            if(Screen.width>Screen.height)
+
+            // Test actual size/placement on the Unity Canvas, not a DOM
+            // mock or arbitrary manual screenshot. All existing actions
+            // must fit in six nonoverlapping navigation positions.
+            var canvas=header.GetComponentInParent<Canvas>();
+            Assert.NotNull(canvas);
+            float uiScale=Mathf.Max(.01f,canvas.scaleFactor);
+            float logicalWidth=Screen.width/uiScale;
+            float insetLeft=Mathf.Max(0f,Screen.safeArea.xMin/uiScale);
+            float insetRight=Mathf.Max(0f,(Screen.width-Screen.safeArea.xMax)/uiScale);
+            float safeTop=Mathf.Max(0f,(Screen.height-Screen.safeArea.yMax)/uiScale)+8f;
+            float safeBottom=Mathf.Max(0f,Screen.safeArea.yMin/uiScale)+8f;
+            bool wide=Screen.width>Screen.height;
+            var identity=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
+            Assert.NotNull(identity);
+            Assert.That(header.anchoredPosition.y,Is.EqualTo(-safeTop).Within(1.5f),
+                "Resource capsules must meet top safe area, not float inside the city");
+            Assert.That(identity.anchoredPosition.y,
+                Is.EqualTo(wide?-safeTop:-safeTop-58f).Within(1.5f),
+                "Crest must sit directly below top resources in portrait");
+            Assert.That(header.GetComponentsInChildren<Image>(true)
+                .Count(x=>x.sprite!=null&&x.sprite.name=="resource_siglet"
+                    &&x.preserveAspect),Is.EqualTo(3),
+                "Real resource capsules cannot distort the artist's material");
+            Assert.That((int)ui.GetType().GetField("FutureNavigationSlots").GetRawConstantValue(),
+                Is.EqualTo(6),
+                "Six stable navigation slots required for future unlocked features");
+            var slotMethod=ui.GetType().GetMethod("NavigationCell",
+                BindingFlags.Public|BindingFlags.Static);
+            Assert.NotNull(slotMethod);
+            var slots=new Rect[6];
+            for(int i=0;i<6;i++)
             {
-                // A separate actual Chromium landscape screenshot checks the
-                // clear center. In Unity ensure the strip is compact and
-                // right-anchored, not the old full-width center obstruction.
+                slots[i]=(Rect)slotMethod.Invoke(null,new object[]{
+                    i,logicalWidth,insetLeft,insetRight,safeBottom,wide});
+                Assert.GreaterOrEqual(slots[i].width,44f,
+                    "A future button must remain comfortably touchable");
+                Assert.GreaterOrEqual(slots[i].xMin,insetLeft+1f);
+                Assert.LessOrEqual(slots[i].xMax,logicalWidth-insetRight-1f);
+                if(i>0)
+                    Assert.LessOrEqual(slots[i-1].xMax+2f,slots[i].xMin,
+                        "Future systems may not collide with existing game buttons");
+            }
+            foreach(var live in new[]{
+                new {name="Inspect city status",slot=3},
+                new {name="Center camera",slot=4},
+                new {name="Inspect sawmill",slot=5}
+            })
+            {
+                var dock=world.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x && x.gameObject.name==live.name);
+                Assert.NotNull(dock);
+                Assert.That(dock.anchoredPosition.x,
+                    Is.EqualTo(slots[live.slot].xMin).Within(1f));
+                Assert.That(dock.anchoredPosition.y,
+                    Is.EqualTo(slots[live.slot].yMin).Within(1f));
+                Assert.GreaterOrEqual(dock.rect.width,44f);
+            }
+            var quest=world.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x=>x&&x.gameObject.name=="Current real construction objective");
+            Assert.NotNull(quest);
+            Assert.That(quest.GetComponentsInChildren<Image>(true)
+                .Count(x=>x.sprite!=null&&x.sprite.name.StartsWith("icon_")),Is.EqualTo(0),
+                "Premium mission material already contains one illustrated badge");
+            if(wide)
+            {
                 Assert.That(header.anchorMin.x,Is.EqualTo(1f).Within(.001f));
                 Assert.That(header.pivot.x,Is.EqualTo(1f).Within(.001f));
-                Assert.LessOrEqual(header.sizeDelta.x,365.1f,"Landscape resource ledger must remain compact and non-overlapping");
-                Assert.Greater(header.anchoredPosition.y,-80f);
-                var identityWide=world.GetComponentsInChildren<RectTransform>(true)
-                    .First(x=>x&&x.gameObject.name=="Valoria identity");
-                float scaleWide=Mathf.Max(.01f,
-                    header.GetComponentInParent<Canvas>().scaleFactor);
-                Assert.GreaterOrEqual(identityWide.anchoredPosition.x,
-                    Mathf.Max(0f,Screen.safeArea.xMin/scaleWide)+8f,
-                    "Real landscape safe area must protect the keep crest from the camera island");
-                Assert.GreaterOrEqual(-header.anchoredPosition.x,
-                    Mathf.Max(0f,(Screen.width-Screen.safeArea.xMax)/scaleWide)+8f,
-                    "Resources must not be hidden below the landscape notch");
-                var safeWorldWidth=Screen.width/scaleWide;
+                Assert.That(header.rect.width,Is.LessThanOrEqualTo(365.1f));
+                Assert.GreaterOrEqual(identity.anchoredPosition.x,insetLeft+8f);
+                Assert.GreaterOrEqual(-header.anchoredPosition.x,insetRight+8f);
                 Assert.GreaterOrEqual(
-                    safeWorldWidth+header.anchoredPosition.x-header.rect.width,
-                    identityWide.anchoredPosition.x+identityWide.rect.width+8f,
-                    "Landscape iPhone cutout forced resource capsule to overlap the Valoria identity");
-                Assert.That(header.GetComponentsInChildren<Image>(true)
-                    .Count(x=>x.sprite!=null&&x.sprite.name=="resource_siglet"
-                        &&x.preserveAspect),Is.EqualTo(3),
-                    "Narrow native landscape resources must preserve the original painted material aspect");
+                    logicalWidth+header.anchoredPosition.x-header.rect.width,
+                    identity.anchoredPosition.x+identity.rect.width+8f,
+                    "Landscape notch may not push economy over the identity crest");
             }
             else
             {
-                Assert.Less(header.anchoredPosition.y,
-                    -header.rect.height*.5f-18f,
-                    "Portrait HUD header is cropped at upper edge");
-                var identity=world.GetComponentsInChildren<RectTransform>(true)
-                    .FirstOrDefault(x=>x && x.gameObject.name=="Valoria identity");
-                Assert.NotNull(identity,"Corona identity crest missing");
-                var royalTitle=identity.GetComponentsInChildren<Text>(true)
+                Assert.That(quest.anchorMin.y,Is.EqualTo(0f).Within(.01f));
+                Assert.GreaterOrEqual(quest.anchoredPosition.y,slots[5].yMax+7f,
+                    "Mission must sit ABOVE the bottom system navigation, not over it");
+                var titleInCrest=identity.GetComponentsInChildren<Text>(true)
                     .FirstOrDefault(x=>x.text=="VALORIA");
-                Assert.NotNull(royalTitle);
-                float royalTitleLeft=identity.rect.width*.5f+
-                    royalTitle.rectTransform.anchoredPosition.x-
-                    royalTitle.rectTransform.rect.width*.5f;
-                Assert.Greater(royalTitleLeft,98f,
-                    "VALORIA typography overlaps the original center amethyst instead of its painted enamel inset");
-                // resourceRow has top pivot=1; its anchoredPosition is
-                // the visual top edge, not its center. Demand 8pt gap.
-                Assert.LessOrEqual(header.anchoredPosition.y,
-                    identity.anchoredPosition.y-identity.rect.height-8f,
-                    "Portrait resources overlap Valoria identity golden crest");
-                var quest=world.GetComponentsInChildren<RectTransform>(true)
-                    .FirstOrDefault(x=>x&&x.name=="Current real construction objective");
-                Assert.NotNull(quest);
-                Assert.That(quest.anchorMin.y,Is.EqualTo(0f).Within(.01f),
-                    "The main objective should occupy bottom-left, away from the scene's keep");
-                Assert.That(quest.GetComponentsInChildren<Image>(true)
-                    .Count(x=>x.sprite!=null && x.sprite.name.StartsWith("icon_")),Is.EqualTo(0),
-                    "The original sculpted mission plaque already has a hanging icon; no duplicate badge");
-                var cameraDock=world.GetComponentsInChildren<RectTransform>(true)
-                    .FirstOrDefault(x=>x&&x.name=="Center camera");
-                Assert.NotNull(cameraDock);
-                float sceneWidth=Screen.width/Mathf.Max(.01f,
-                    header.GetComponentInParent<Canvas>().scaleFactor);
-                Assert.LessOrEqual(
-                    quest.anchoredPosition.x+quest.rect.width+8f,
-                    sceneWidth+cameraDock.anchoredPosition.x-cameraDock.rect.width,
-                    "The quest and camera medallion must not overlap at phone size");
+                Assert.NotNull(titleInCrest);
+                float textLeft=identity.rect.width*.5f+
+                    titleInCrest.rectTransform.anchoredPosition.x-
+                    titleInCrest.rectTransform.rect.width*.5f;
+                Assert.Greater(textLeft,98f,
+                    "Kingdom title cannot overprint the central amethyst");
             }
             Assert.That(world.GetComponentsInChildren<SpriteRenderer>(true)
                 .Any(x=>x && x.gameObject.name=="Aserradero_contact"),Is.False,
