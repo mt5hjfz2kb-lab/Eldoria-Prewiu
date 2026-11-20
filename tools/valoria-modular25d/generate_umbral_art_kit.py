@@ -144,7 +144,7 @@ def main():
     PROOF.write_text(json.dumps({"schema":1,"style":"Valoria medieval UI, commercial clarity",
         "output":"Resources/ValoriaModular25D/UI/UmbralII",
         "gameplay_changed":False,"claims_unity_qa":False,"source":"generate_umbral_art_kit.py",
-        "sprites":manifest},indent=2,ensure_ascii=False)+"\\n",encoding="utf8")
+        "sprites":manifest},indent=2,ensure_ascii=False)+"\n",encoding="utf8")
     print("UMBRAL_II_ORIGINAL_MATERIALS_READY_FOR_UNITY_IMPORT")
 
 if __name__=="__main__":main()
