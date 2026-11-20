@@ -6,6 +6,7 @@ on:
       - experiment/valoria-modular-25d-bastion1-from-zero-20261118
     paths:
       - 'tools/valoria-modular25d/browser_smoke.mjs'
+      - 'tools/valoria-modular25d/browser_camera_smoke.mjs'
       - '.github/workflows/valoria-modular25d-browser-recheck.yml'
   workflow_dispatch:
 
@@ -22,8 +23,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     env:
-      ELDORIA_PLAYER_SHA: 195eebb016b91ae38f27f31b01084295733fab19
-      ELDORIA_PLAYER_RUN: '44697658660'
+      ELDORIA_PLAYER_SHA: 15671bb9a5353746a1f4276586908fb71af30a9b
+      ELDORIA_PLAYER_RUN: '44707009109'
     steps:
       - name: Checkout isolated smoke and compare immutable game source
         uses: actions/checkout@v4
@@ -40,7 +41,7 @@ jobs:
           git fetch --no-tags --depth=1 --filter=blob:none origin "$ELDORIA_PLAYER_SHA"
           actual="$(git rev-parse HEAD)"
           test "$actual" = "$GITHUB_SHA"
-          # The run 44697658660 built this exact Unity program and all original art.
+          # The run 44707009109 built this exact Unity program and all original art.
           # This cheap test may change only browser QA, NEVER its built player.
           if ! git diff --quiet "$ELDORIA_PLAYER_SHA" "$GITHUB_SHA" -- \
             Unity/Assets/Experimentos/ValoriaModular25D \
@@ -56,16 +57,16 @@ jobs:
         with:
           github-token: ${{github.token}}
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
-          run-id: 44697658660
-          name: eldoria-mod25d-webgl-player-44697658660
+          run-id: 44707009109
+          name: eldoria-mod25d-webgl-player-44707009109
           path: webgl
       - name: Fetch native NUnit and resource isolation evidence
         uses: actions/download-artifact@v4
         with:
           github-token: ${{github.token}}
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
-          run-id: 44697658660
-          name: eldoria-mod25d-actual-playmode-44697658660
+          run-id: 44707009109
+          name: eldoria-mod25d-actual-playmode-44707009109
           path: unity-metadata
       - name: Validate source-pinned Unity artifacts, original game state and WebGL payload
         shell: bash
@@ -115,11 +116,36 @@ jobs:
               assert hashlib.sha256(open(p,'rb').read()).hexdigest()==shot['sha256']
           print('BROWSER_REAL_GAME_HUD_BUILD_RELOAD_PASS; IPHONE_AND_ART_APPROVAL_PENDING')
           PY
+      - name: Execute real WebGL camera drag, zoom and Home on portrait and landscape
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check tools/valoria-modular25d/browser_camera_smoke.mjs
+          node tools/valoria-modular25d/browser_camera_smoke.mjs webgl camera-evidence
+          python3 - <<'PY'
+          import json,os,hashlib
+          a=json.load(open('camera-evidence/camera-evidence.json',encoding='utf-8'))
+          assert a['status']=='REAL_BROWSER_PAN_ZOOM_AND_HOME_PASS_NO_IPHONE_CERTIFICATION',a.get('failure')
+          assert a['gameSourceSha']==os.environ['ELDORIA_PLAYER_SHA']
+          assert a['testScriptSha']==os.environ['GITHUB_SHA']
+          assert [(c['width'],c['height']) for c in a['cases']]==[(390,844),(844,390)]
+          assert not a['iPhoneTested'] and not a['visualApproved']
+          for c in a['cases']:
+            assert c['panning']['changedFraction']>.11
+            assert c['zoom']['changedFraction']>.13
+            for frame in c['frames']:
+              p='camera-evidence/'+frame['name']
+              assert hashlib.sha256(open(p,'rb').read()).hexdigest()==frame['sha256']
+          assert a['cases'][0]['returnHome'] is not None
+          print('REAL_BROWSER_CAMERA_GESTURES_PASS_SOURCE_PINNED; NO_IPHONE_CERTIFICATION')
+          PY
       - name: Preserve authentic browser evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: eldoria-mod25d-browser-recheck-${{github.run_id}}
-          path: browser-evidence/
+          path: |
+            browser-evidence/
+            camera-evidence/
           retention-days: 14
           if-no-files-found: warn
