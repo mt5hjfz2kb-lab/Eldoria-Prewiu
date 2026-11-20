@@ -121,7 +121,11 @@ class SandboxSourceContracts(unittest.TestCase):
         malformed=[n for n,line in enumerate(src.splitlines(),1)
                    if line.lstrip().startswith("//") and "\\n" in line]
         self.assertEqual(malformed,[],f"Literal escaped newlines in comments: {malformed}")
-        self.assertIn("var prop=Modular25DArt.Tuft(random.Next(2));",src)
+        # Controlled original-art ecotone clusters replaced uniform random scatter.
+        self.assertIn("var art=Modular25DArt.Tuft((zone+placed)%2);",src)
+        self.assertIn("SettlementZonesPlaced=4;",src)
+        self.assertIn("CreateWorkshopWorker(people,new Vector2(2.06f,-4.04f));",src)
+        self.assertIn("var mover=actor.AddComponent<Modular25DWalker>();",src)
         self.assertIn("var mover=actor.AddComponent<Modular25DWalker>();",src)
 
     def test_reusable_depth_and_animated_walk(self):
