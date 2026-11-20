@@ -17,7 +17,7 @@ namespace Eldoria.Experimentos.ValoriaModular25D
     [DefaultExecutionOrder(-200)]
     public sealed class Modular25DInterface : MonoBehaviour
     {
-        public const string UiEdition = "Umbral - Ceniza y Bronce / Bastion I";
+        public const string UiEdition = "Umbral II - Ciudad y Bastion comercial / Eldoria";
         private static readonly Color32 Slate = new Color32(20, 38, 48, 242);
         private static readonly Color32 SlateLight = new Color32(40, 62, 70, 238);
         private static readonly Color32 Parchment = new Color32(235, 222, 192, 250);
@@ -30,14 +30,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static readonly Color32 Green = new Color32(59, 105, 98, 255);
         private static readonly Color32 Red = new Color32(151, 77, 69, 255);
 
-        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate;
+        private static Sprite slatePlate, parchmentPlate, actionPlate, resourcePlate, portraitPlate, burgundyPlate;
+        private static Sprite woodIcon, stoneIcon, foodIcon;
         private Modular25DGameplay gateway;
         private GameObject buildingSheet;
         private Canvas hudCanvas;
-        private RectTransform identity, resourceRow, inspect, center, sheet, noticeRoot;
+        private RectTransform identity, resourceRow, inspect, center, statusDock, sheet, statusSheet, objective, noticeRoot;
         private RectTransform[] resourceChips;
         private Text title, level, woodValue, stoneValue, foodValue;
-        private Text stage, cost, remaining, actionLabel, notice;
+        private Text stage, cost, remaining, actionLabel, notice, objectiveText, stateSummary;
         private Button action;
         private Image woodAccent;
         private float nextTick, noticeExpires;
@@ -69,9 +70,9 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             identity = Plate("Valoria identity", rootTransform, slatePlate,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, -12f),
                 new Vector2(165f, 51f));
-            var sigil = Plate("Carved V seal", identity, resourcePlate,
+            var sigil = Plate("Carved V seal", identity, portraitPlate,
                 new Vector2(0f, .5f), new Vector2(.5f, .5f), new Vector2(27f, 0f),
-                new Vector2(34f, 35f));
+                new Vector2(38f, 40f));
             Label("V", sigil, 25, true, PaleGold, TextAnchor.MiddleCenter,
                 Vector2.zero, new Vector2(30f, 34f));
             title = Label("VALORIA", identity, 19, true, WarmWhite, TextAnchor.MiddleLeft,
@@ -83,11 +84,11 @@ namespace Eldoria.Experimentos.ValoriaModular25D
                 new Vector2(.5f, 1f), new Vector2(.5f, 1f), Vector2.zero,
                 new Vector2(365f, 44f));
             resourceChips = new RectTransform[3];
-            resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", "M", out woodValue, out woodAccent);
+            resourceChips[0] = CreateResource(resourceRow, 0, "MADERA", woodIcon, out woodValue, out woodAccent);
             Image stoneAccent;
-            resourceChips[1] = CreateResource(resourceRow, 1, "PIEDRA", "P", out stoneValue, out stoneAccent);
+            resourceChips[1] = CreateResource(resourceRow, 1, "PIEDRA", stoneIcon, out stoneValue, out stoneAccent);
             Image foodAccent;
-            resourceChips[2] = CreateResource(resourceRow, 2, "COMIDA", "C", out foodValue, out foodAccent);
+            resourceChips[2] = CreateResource(resourceRow, 2, "COMIDA", foodIcon, out foodValue, out foodAccent);
 
             // Two contextual, accessible actions; no false shortcuts to
             // heroes/world/bag until the gameplay genuinely exposes them.
@@ -328,17 +329,19 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         }
 
         private static RectTransform CreateResource(Transform parent, int index, string caption,
-            string monogram, out Text value, out Image icon)
+            Sprite art, out Text value, out Image icon)
         {
             var chip = Plate("Resource " + caption, parent, resourcePlate,
                 new Vector2(0f, .5f), new Vector2(0f, .5f),
                 new Vector2(index * 123f, 0f), new Vector2(117f, 43f));
-            var medallion = Plate(caption + " seal", chip, slatePlate,
+            var medallion = Plate(caption + " seal", chip, portraitPlate,
                 new Vector2(0f, .5f), new Vector2(0f, .5f),
                 new Vector2(19f, 0f), new Vector2(27f, 27f));
             icon = medallion.GetComponent<Image>();
-            Label(monogram, medallion, 14, true, PaleGold,
-                TextAnchor.MiddleCenter, Vector2.zero, new Vector2(25f, 25f));
+            var symbol=Plate(caption + " icon", medallion, art,
+                new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(22f,22f));
+            symbol.GetComponent<Image>().type=Image.Type.Simple;
+            symbol.GetComponent<Image>().color=Color.white;
             Label(caption, chip, 9, false, AntiqueBrass,
                 TextAnchor.MiddleLeft, new Vector2(23f, 9f), new Vector2(74f, 14f));
             value = Label("0", chip, 15, false, WarmWhite,
@@ -434,13 +437,83 @@ namespace Eldoria.Experimentos.ValoriaModular25D
         private static void InitializeArt()
         {
             if (slatePlate != null) return;
-            slatePlate = MaterialSprite("Umbral oxidized slate", Slate, SlateLight, AntiqueBrass, 236, 0);
-            resourcePlate = MaterialSprite("Umbral mineral inset", new Color32(26, 45, 52, 236),
-                new Color32(48, 66, 69, 237), new Color32(102, 122, 113, 255), 222, 1);
-            parchmentPlate = MaterialSprite("Umbral gilded parchment", Parchment,
-                ParchmentLight, AntiqueBrass, 250, 2);
-            actionPlate = MaterialSprite("Umbral weathered enamel", Green,
-                new Color32(95, 141, 125, 255), PaleGold, 248, 3);
+            // Genuine licensed Vigilia art is used as reusable material skins, not
+            // as a copied layout. Both are 9-sliced with authored borders.
+            const string art="ValoriaModular25D/UI/";
+            slatePlate=Resources.Load<Sprite>(art+"slate_resource");
+            portraitPlate=Resources.Load<Sprite>(art+"brass_portrait");
+            resourcePlate=Resources.Load<Sprite>(art+"slate_resource");
+            burgundyPlate=Resources.Load<Sprite>(art+"burgundy_action");
+            if(slatePlate==null||portraitPlate==null||burgundyPlate==null)
+                throw new InvalidOperationException("Umbral II: mandatory original UI atlas is missing");
+            parchmentPlate=MaterialSprite("Umbral antique vellum",Parchment,
+                ParchmentLight,AntiqueBrass,250,2);
+            actionPlate=MaterialSprite("Umbral mineral green CTA",Green,
+                new Color32(83,145,112,255),PaleGold,250,3);
+            woodIcon=ResourceIcon("wood");
+            stoneIcon=ResourceIcon("stone");
+            foodIcon=ResourceIcon("food");
+        }
+
+        // Original tiny resources drawn from deterministic layered material shapes.
+        // Actual resource types follow PlayerState; no synthetic currency or counters.
+        private static Sprite ResourceIcon(string kind)
+        {
+            const int n=48;
+            var tex=new Texture2D(n,n,TextureFormat.RGBA32,false);
+            tex.name="Umbral II icon "+kind;
+            tex.wrapMode=TextureWrapMode.Clamp;
+            tex.filterMode=FilterMode.Bilinear;
+            var pixels=new Color32[n*n];
+            void Pixel(int x,int y,Color32 color)
+            {
+                if(x>=0&&x<n&&y>=0&&y<n)pixels[y*n+x]=color;
+            }
+            void Ellipse(int cx,int cy,int rx,int ry,Color32 color)
+            {
+                for(int y=cy-ry;y<=cy+ry;y++)
+                    for(int x=cx-rx;x<=cx+rx;x++)
+                    {
+                        float dx=(x-cx)/(float)Mathf.Max(1,rx);
+                        float dy=(y-cy)/(float)Mathf.Max(1,ry);
+                        if(dx*dx+dy*dy<=1f)Pixel(x,y,color);
+                    }
+            }
+            if(kind=="wood")
+            {
+                Ellipse(22,19,19,12,new Color32(71,48,35,255));
+                for(int y=13;y<29;y++)for(int x=7;x<39;x++)
+                    if(Mathf.Abs(x-23)*.13f+Mathf.Abs(y-20)*.49f<10f)
+                        Pixel(x,y,new Color32(137,83,46,255));
+                Ellipse(14,21,10,10,new Color32(202,152,90,255));
+                Ellipse(14,21,6,6,new Color32(120,78,47,255));
+                Ellipse(14,21,4,4,new Color32(218,173,103,255));
+                Ellipse(14,21,1,1,new Color32(118,76,46,255));
+            }
+            else if(kind=="stone")
+            {
+                Ellipse(22,19,17,13,new Color32(43,53,63,255));
+                Ellipse(22,23,15,12,new Color32(111,127,131,255));
+                Ellipse(18,28,11,7,new Color32(173,182,175,255));
+                Ellipse(31,18,10,8,new Color32(76,92,104,255));
+                Ellipse(16,32,6,3,new Color32(218,207,180,255));
+            }
+            else
+            {
+                for(int j=0;j<5;j++)
+                {
+                    int x=12+j*5;
+                    for(int y=10;y<34;y++)Pixel(x,y,new Color32(160,104,47,255));
+                    Ellipse(x-2,27-j%2*4,4,7,new Color32(220,164,74,255));
+                    Ellipse(x+2,21+j%2*4,4,6,new Color32(246,204,113,255));
+                }
+                Ellipse(24,11,17,3,new Color32(138,92,47,255));
+            }
+            tex.SetPixels32(pixels);
+            tex.Apply(false,true);
+            var sprite=Sprite.Create(tex,new Rect(0,0,n,n),new Vector2(.5f,.5f),100f);
+            sprite.name="Umbral II resource "+kind;
+            return sprite;
         }
 
         private static Sprite MaterialSprite(string name, Color32 bottom, Color32 top,
