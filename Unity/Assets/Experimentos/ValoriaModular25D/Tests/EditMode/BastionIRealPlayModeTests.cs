@@ -151,6 +151,20 @@ namespace Eldoria.Modular25D.Tests
             var buttons=world.GetComponentsInChildren<Button>(true);
             var inspect=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Inspect sawmill");
             Assert.NotNull(inspect,"Functional sawmill inspection button absent");
+            var center=buttons.FirstOrDefault(x=>x && x.gameObject.name=="Center camera");
+            Assert.NotNull(center,"Functional centering action absent");
+            foreach(var control in new[]{inspect,center})
+            {
+                var image=control.GetComponent<Image>();
+                Assert.NotNull(image,"An operational compact HUD button has no graphic");
+                Assert.NotNull(image.sprite,"Original Vigilia 9-slice button art is not imported");
+                Assert.That(image.type,Is.EqualTo(Image.Type.Sliced),
+                    "Premium artwork must use proper scalable borders");
+                Assert.That(image.color.r,Is.GreaterThan(.95f),
+                    "Artwork was darkened by the old solid-color prototype HUD tint");
+                Assert.That(image.color.g,Is.GreaterThan(.95f));
+                Assert.That(image.color.b,Is.GreaterThan(.95f));
+            }
             var data=new PointerEventData(EventSystem.current){
                 button=PointerEventData.InputButton.Left,
                 position=new Vector2(Screen.width*.5f,Screen.height*.5f)};

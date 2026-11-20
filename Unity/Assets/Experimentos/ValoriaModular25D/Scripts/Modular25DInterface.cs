@@ -58,12 +58,15 @@ namespace Eldoria.Experimentos.ValoriaModular25D
             var select=MakeButton("Inspect sawmill",canvasObj.transform,"ASERRADERO",
                 new Vector2(0,0),new Vector2(88,47),new Vector2(144,52),OpenSawmill);
             inspectRect=select.GetComponent<RectTransform>();
-            select.GetComponent<Image>().color=PanelInk;
+            // Leave the source-owned bronze 9-slice at full artist color.
+            // Reapplying PanelInk after MakeButton dimmed its gilded border to
+            // nearly black, undermining the new Vigilia compact HUD.
             var home=MakeButton("Center camera",canvasObj.transform,"CENTRAR",
                 new Vector2(1,0),new Vector2(-84,47),new Vector2(130,52),
                 ()=>GetComponent<Modular25DCameraInput>().Home());
             centerRect=home.GetComponent<RectTransform>();
-            home.GetComponent<Image>().color=PanelInk;
+            // Same original bronze profile art and button state feedback;
+            // do not multiply RGB by the old dark monochrome overlay.
 
             panel=MakePanel("Real sawmill build action",canvasObj.transform,
                 new Vector2(.5f,0),new Vector2(0,188),new Vector2(364,226),PanelInk).gameObject;
