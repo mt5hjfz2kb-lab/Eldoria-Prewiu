@@ -1,0 +1,164 @@
+{
+  "schema": 2,
+  "family": "Corona de la Brecha premium",
+  "date": "2026-11-20",
+  "sourceType": "Original image generated for this project; individually separated and RGBA optimized",
+  "sourceSheetSha256": "12c0ab695b9d4a784a449577a16ece97aafd2f14d10451385ff6637993da7b38",
+  "importPxPerUnit": 200,
+  "mechanicsChanged": false,
+  "artApproved": false,
+  "unityRuntimeVerified": false,
+  "notes": "These are new art candidates, not substitutes for a Unity capture. All 15 original SVG pieces retained in separate CoronaBrecha directory.",
+  "sprites": [
+    {
+      "name": "portrait_ring",
+      "blob": "cbec33d72027f758d86f40e6fc1417f51c325439",
+      "guid": "9b6dbbf3e2b52abcaae6cacfcce1e892",
+      "border": 20,
+      "width": 336,
+      "height": 336,
+      "sha256": "c19e4f679a21716595b0e24e7ccdf8ea8ee04ce9a15b18a7c0ebcc74470734e4",
+      "bytes": 100368
+    },
+    {
+      "name": "icon_city",
+      "blob": "710dca1aa8175541b8ec842f2654c3e2d8ca4ab6",
+      "guid": "7889cf89c7aef40fd278bd7cffe1e2d6",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "c0b2c80cf1c9b02e788dd6bdee19c910d4c5ebdc9d576da539ef57aa9d5b9e0d",
+      "bytes": 90571
+    },
+    {
+      "name": "icon_hammer",
+      "blob": "6328a8a2868046501e1d491e442b444bb294e638",
+      "guid": "13632317d8f70c095ab7b62adb19e1f8",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "e050a1f9ebe5ea5140a958e7f04676d4fba5b409d8134e6dbce1c33d5aeea43d",
+      "bytes": 98836
+    },
+    {
+      "name": "icon_scroll",
+      "blob": "de31594a44dcbe7ceeef8df271d1729adf709c4c",
+      "guid": "d0e028a1844b994328df8da19e7d07d5",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "98037c7d9bdf0d19a3f9df8f5d642043dbe0e0f1e2f96d38b116050c75c5c26a",
+      "bytes": 104684
+    },
+    {
+      "name": "icon_wood",
+      "blob": "625b4a087436134cc4482b6b997549f99bb12fc7",
+      "guid": "cb3c059de0768ccc7e17827b6b9fde2f",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "474a220759d6dab31e35f26d75492053fb334df87feec32cea5886131d2f1b2e",
+      "bytes": 91214
+    },
+    {
+      "name": "icon_stone",
+      "blob": "0c6d5f166ec3b8216501c561a73e68011e2fc5c8",
+      "guid": "3a9d2a43ee9390a89439ba4a36da6924",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "557c609ee8517a6ba5d3231a68caf6a8d2b22698f2c65e937064c096b0e1c0c4",
+      "bytes": 84083
+    },
+    {
+      "name": "icon_food",
+      "blob": "0130445d4951de920cffa31b370986c5db2a1725",
+      "guid": "e2a0cfeeaefc79b4a4b39820a19ca4aa",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "3166798295641c0b000e7849f9e07b19d9f65d0dd69b9ee676fede7cde4bfc69",
+      "bytes": 105985
+    },
+    {
+      "name": "icon_task",
+      "blob": "e0c55e4f1190861274740c4d4dcb8b7647c6f62b",
+      "guid": "7a9754f9c69f08a6bce67a897805d0de",
+      "border": 0,
+      "width": 288,
+      "height": 288,
+      "sha256": "f89b805846932febf5781593196d273268bb194b14d8697f5cf3923830c1f6b7",
+      "bytes": 71336
+    },
+    {
+      "name": "resource_siglet",
+      "blob": "c2cd0c791189546d09be34594f045f2f361380ce",
+      "guid": "cfd1f3d1dc718073b9c9c98d121982c4",
+      "border": 28,
+      "width": 640,
+      "height": 208,
+      "sha256": "5eee8201d7fc0482c2f4accfb2f415d9e83d86dc17db6d0beef95263442416fc",
+      "bytes": 81283
+    },
+    {
+      "name": "action_arcane",
+      "blob": "e4585d6343705bad924be368416338908d932792",
+      "guid": "0954825278250e5b22d1a1ce0ec01cb4",
+      "border": 28,
+      "width": 720,
+      "height": 228,
+      "sha256": "2309593d9eac30c8da82410502d9ba36539c8a9d5cce12457ba62005adf40339",
+      "bytes": 95877
+    },
+    {
+      "name": "nav_medallion",
+      "blob": "d8613176706d6b05b347a6ecb74dd1b258231f71",
+      "guid": "b2c716d50ac1ddeacc7084fb5fe46bc6",
+      "border": 38,
+      "width": 336,
+      "height": 336,
+      "sha256": "7fc1cfa50b0865a88337a2be2e099673f7857fea8517ea6f6667b2961a81374c",
+      "bytes": 93680
+    },
+    {
+      "name": "panel_obsidian",
+      "blob": "232b5d94967106be8e076eaa501193a767ca185f",
+      "guid": "425c80018446702a234babbc3b60bd09",
+      "border": 112,
+      "width": 512,
+      "height": 512,
+      "sha256": "2e3cebad9c72fb1bfe2c79936fcfd88bde8369bf2018f6a94c1db081df6f901d",
+      "bytes": 137869
+    },
+    {
+      "name": "identity_crest",
+      "blob": "c9f43bf5816f60d33528871db1c80ba62fa699f8",
+      "guid": "c0d699341e1032265b717c461640ca3f",
+      "border": 40,
+      "width": 640,
+      "height": 232,
+      "sha256": "65b319f9543f6d941974ed6311d5d252cf65b921185cc943d6de9db21c2f90cc",
+      "bytes": 98843
+    },
+    {
+      "name": "objective_rune",
+      "blob": "7e0066259d76f3e3735a6077e85094a8752e5c3b",
+      "guid": "860e4e7edcd95b59709e9edbd36238c8",
+      "border": 34,
+      "width": 700,
+      "height": 270,
+      "sha256": "80cce6dfe80556b04f2daeab17d3cdb43c193c0778f512d26d53b1acd69837d9",
+      "bytes": 126941
+    },
+    {
+      "name": "world_rune",
+      "blob": "a689155939dd60e39ec04e62eb036c6df411ba90",
+      "guid": "e4f6cc1ba1cdec0d9f1376f01c338d38",
+      "border": 20,
+      "width": 640,
+      "height": 188,
+      "sha256": "cc96457f255a7c6916146478126d0e79e2d0b18182fb8cc6efa47979c43f0d07",
+      "bytes": 78227
+    }
+  ]
+}
