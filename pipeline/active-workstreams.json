@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-20T10:43:46.112Z",
+  "updated_at": "2026-11-20T10:50:33.010Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -10014,7 +10014,7 @@
       "write_scope_released": false,
       "branch": "experiment/valoria-modular-25d-bastion1-from-zero-20261118",
       "status": "active",
-      "phase": "SPATIAL_RECOMPOSITION_ROADS_ENVIRONMENT_AND_LIFE_V6",
+      "phase": "ART_RECOMPOSITION_NATIVE_QA_REV6",
       "claimed_at": "2026-11-20T10:43:46.112Z",
       "base_main_sha": "60d8ce11dde88960ece713f725d4564283cc6a90",
       "user_authorization": "Owner 2026-11-20: continue existing exclusive modular 2.5D Bastion I experiment in same branch, inspect native evidence, improve halo/footprints/characters/HUD, validate isolated WebGL, no main gameplay or Premium V6 edits, no third-party credits.",
@@ -10025,7 +10025,9 @@
         "tools/valoria-modular25d/**",
         ".github/workflows/valoria-modular25d-*.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_approved": false,
       "device_qa": "PENDING physical Safari iPhone",
       "delivery_definition": {
@@ -20499,11 +20501,11 @@
     "authorized_by": "Owner 2026-11-19: PC can be used for the new Bastion I while no other work is active.",
     "authorized_at": "2026-11-19T12:01:31.172Z",
     "mode": "exclusive_one_workstream_at_a_time",
-    "current_workstream": null,
+    "current_workstream": "eldoria-valoria-modular25d-bastion1-20261119",
     "current_run_id": null,
     "next_workstream": null,
     "return_to": null,
-    "status": "available_after_modular25d_complete_native_44713811420",
+    "status": "reserved_modular25d_rev6_bounded_native_art_ab",
     "rules": [
       "No cancellation of ongoing Unity jobs or interruption of other writers.",
       "Only isolated modular25d branch and native QA; no main gameplay changes, merge, beta publication, paid credits or art approval.",
@@ -20567,6 +20569,6 @@
       "last_depth_previous_run": 44281717983,
       "last_depth_candidate_sha": "43b90dd31173ebe7f11a773ed8cb541f72454013"
     },
-    "note": "Latest exact-source run 44713811420 fully SUCCESS, branch doc-only follow-up 63c4059 static SUCCESS. Exclusive Windows released; no branch jobs active/queued; iPhone/subjective art unapproved."
+    "note": "Exclusive Unity run for spatial composition and environmental work on existing modular25d branch. Source owner rev6; no other running Actions; Unity process safety rechecked on Windows; release after bounded native run(s)."
   }
 }
