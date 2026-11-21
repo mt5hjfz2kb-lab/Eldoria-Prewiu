@@ -1,0 +1,47 @@
+name: Valoria regional WebGL player verification
+on:
+  push:
+    branches: [experiment/corona-retina-building-pass-20261121]
+    paths: [tools/valoria-modular25d/region-browser.json]
+permissions:
+  actions: read
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/valoria-modular25d
+          persist-credentials: false
+      - name: Identify integrated player build
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          file=tools/valoria-modular25d/region-browser.json
+          run=$(jq -er .run "$file")
+          test "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run" --jq .head_sha)" = "$(jq -er .sha "$file")"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ steps.source.outputs.run }}
+          github-token: ${{ github.token }}
+          name: valoria-region1-webgl
+          path: player
+      - name: Inspect native player transfer and boot
+        run: |
+          set -euo pipefail
+          mkdir -p world-browser-evidence
+          du -ah player | sort -hr | head -40 > world-browser-evidence/sizes.txt
+          cat player/index.html > world-browser-evidence/template.html
+          python3 -m pip install --quiet playwright==1.56.0
+          python3 -m http.server 8824 --directory player &
+          python3 -u tools/valoria-modular25d/region-browser.py 'http://127.0.0.1:8824/index.html?eldoria_p0_lazy_world=1'
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regional-browser-result
+          path: world-browser-evidence/
